@@ -71,12 +71,12 @@ import javax.swing.event.ChangeListener;
  */
 public interface ObjectMapping extends Cloneable {
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_MAPPING = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_MAPPING = 1;
 

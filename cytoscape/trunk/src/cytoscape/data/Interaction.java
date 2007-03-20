@@ -34,26 +34,16 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-// Interaction.java:  protein-protein or protein-DNA: parse text file, encapsulate
-
-//----------------------------------------------------------------------------------------
-// RCS: $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data;
 
-//----------------------------------------------------------------------------------------
 import java.io.*;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 
-//----------------------------------------------------------------------------------------
 /**
- *
+ * Interaction.java:  protein-protein or protein-DNA: parse text file, encapsulate
  */
 public class Interaction {
 	private String source;
@@ -61,7 +51,6 @@ public class Interaction {
 	private String interactionType;
 	private Vector allInteractions = new Vector();
 
-	//----------------------------------------------------------------------------------------
 	/**
 	 * Creates a new Interaction object.
 	 *
@@ -74,7 +63,6 @@ public class Interaction {
 		this.interactionType = interactionType;
 		this.targets.addElement(target);
 	} // ctor (3 args)
-	  //----------------------------------------------------------------------------------------
 
 	/**
 	 * Creates a new Interaction object.
@@ -85,7 +73,6 @@ public class Interaction {
 		this(rawText, " ");
 	}
 
-	//----------------------------------------------------------------------------------------
 	/**
 	 * Creates a new Interaction object.
 	 *
@@ -109,7 +96,6 @@ public class Interaction {
 			counter++;
 		}
 	} // ctor (String)
-	  //---------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -120,7 +106,6 @@ public class Interaction {
 		return source;
 	}
 
-	//---------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -130,7 +115,6 @@ public class Interaction {
 		return interactionType;
 	}
 
-	//---------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -140,7 +124,6 @@ public class Interaction {
 		return targets.size();
 	}
 
-	//---------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -154,7 +137,6 @@ public class Interaction {
 
 		return result;
 	} // getTargets
-	  //---------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -177,6 +159,4 @@ public class Interaction {
 
 		return sb.toString();
 	}
-
-	//---------------------------------------------------------------------------------------
 } // Interaction

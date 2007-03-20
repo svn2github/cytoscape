@@ -44,6 +44,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
+
 //----------------------------------------------------------------------------
 /**
  * This interface defines an interpolation function that takes two pairs

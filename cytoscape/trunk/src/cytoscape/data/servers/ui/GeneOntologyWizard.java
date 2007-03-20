@@ -69,6 +69,7 @@ import java.util.Iterator;
 /*
  * Bio Data Server Wizard utility.
  */
+
 /**
  *
  */
@@ -146,7 +147,7 @@ public class GeneOntologyWizard {
 			LoadGeneOntologyTask task;
 
 			oldManifest = ((ManifestFileSelectionPanelDescriptor) manifestDescriptor)
-			                                                                                                                                         .getManifestFileName();
+			                                                                                                                                          .getManifestFileName();
 
 			// First, create manifest if necessary.
 			if (oldManifest == null) {
@@ -181,6 +182,7 @@ public class GeneOntologyWizard {
 	/*
 	 * This file append species name to the end of new manifest files
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -223,7 +225,7 @@ public class GeneOntologyWizard {
 	private void generateManifest() {
 		try {
 			HashMap gaMap = (HashMap) ((AnotationPanelDescriptor) annotationDescriptor)
-			                                                                                                                                                                                                                      .getAnotationFiles();
+			                                                                                                                                                                                                                        .getAnotationFiles();
 			Iterator it = gaMap.keySet().iterator();
 			File[] gaList = new File[gaMap.size()];
 			int idx = 0;

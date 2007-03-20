@@ -48,13 +48,14 @@ import java.util.Map;
  * This panel is for new Gene Ontology data formats. Ask user a OBO file and
  * multiple Gene Association Files.
  */
+
 /**
  *
  */
 public class AnotationPanelDescriptor extends WizardPanelDescriptor implements ActionListener {
 	// Name of the panel
 	/**
-	 * 
+	 *
 	 */
 	public static final String IDENTIFIER = "ANNOTATION_CHOOSE_PANEL";
 	AnotationPanel anotationPanel;
@@ -114,6 +115,7 @@ public class AnotationPanelDescriptor extends WizardPanelDescriptor implements A
 	 *
 	 * Handle actions
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -133,6 +135,7 @@ public class AnotationPanelDescriptor extends WizardPanelDescriptor implements A
 	 * different from the old manifest. By writing proper parser in other
 	 * classes, it can store arbitrary many arguments.
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

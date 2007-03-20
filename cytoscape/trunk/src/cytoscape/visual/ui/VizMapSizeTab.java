@@ -265,7 +265,7 @@ public class VizMapSizeTab extends VizMapTab {
 			return size.checkCalcSelected(c);
 		} else { // pass on to height and width
 			     /* Either height or width has the calculator. Return the first non-null
-			   response.
+			response.
 			*/
 
 			VizMapTab ret = height.checkCalcSelected(c);

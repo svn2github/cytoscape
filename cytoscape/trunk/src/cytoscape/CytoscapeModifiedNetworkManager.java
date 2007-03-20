@@ -64,12 +64,12 @@ import java.util.HashMap;
  */
 public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	/**
-	 * 
+	 *
 	 */
 	public static final String MODIFIED = "Modified";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String CLEAN = "Clean";
 	private static HashMap networkStateMap = new HashMap();

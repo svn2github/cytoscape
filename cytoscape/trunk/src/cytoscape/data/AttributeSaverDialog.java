@@ -214,7 +214,7 @@ public class AttributeSaverDialog extends JDialog {
  */
 class AttributeSaverState implements TableModel {
 	/**
-	 * 
+	 *
 	 */
 	public static String newline = System.getProperty("line.separator");
 

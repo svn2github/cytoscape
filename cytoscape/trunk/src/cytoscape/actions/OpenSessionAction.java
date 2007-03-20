@@ -78,7 +78,7 @@ public class OpenSessionAction extends CytoscapeAction {
 
 	// Extension for the new cytoscape session file
 	/**
-	 * 
+	 *
 	 */
 	public static final String SESSION_EXT = "cys";
 

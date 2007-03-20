@@ -44,6 +44,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
+
 //----------------------------------------------------------------------------
 /**
  * This partial implementation of Interpolator assumes that the domain

@@ -65,6 +65,7 @@ import javax.swing.JOptionPane;
 /*
  * Ontology Mapper will be invoked from this action.
  */
+
 /**
  *
  */
@@ -100,6 +101,7 @@ public class MapOntologyAction extends CytoscapeAction implements PropertyChange
 	 *
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

@@ -61,7 +61,7 @@ import java.awt.event.ActionEvent;
 public class SaveSessionAsAction extends CytoscapeAction {
 	// Extension for the new cytoscape session file
 	/**
-	 * 
+	 *
 	 */
 	public static String SESSION_EXT = ".cys";
 

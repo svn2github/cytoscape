@@ -131,103 +131,103 @@ public abstract class Cytoscape {
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String NETWORK_CREATED = "NETWORK_CREATED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String DATASERVER_CHANGED = "DATASERVER_CHANGED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String CYTOSCAPE_INITIALIZED = "CYTOSCAPE_INITIALIZED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
 	// KONO: 03/10/2006 For vizmap saving and loading
 	/**
-	 * 
+	 *
 	 */
 	public static String SESSION_SAVED = "SESSION_SAVED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String SESSION_LOADED = "SESSION_LOADED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String VIZMAP_RESTORED = "VIZMAP_RESTORED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
 
 	// WANG: 11/14/2006 For plugin to save state
 	/**
-	 * 
+	 *
 	 */
 	public static final String SAVE_PLUGIN_STATE = "SAVE_PLUGIN_STATE";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String RESTORE_PLUGIN_STATE = "RESTORE_PLUGIN_STATE";
 
 	// events for network modification
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_SAVED = "NETWORK_SAVED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
 
 	// Root ontology network in the network panel
 	/**
-	 * 
+	 *
 	 */
 	public static final String ONTOLOGY_ROOT = "ONTOLOGY_ROOT";
 
 	// Events for Preference Dialog (properties).
 	/**
-	 * 
+	 *
 	 */
 	public static final String PREFERENCE_MODIFIED = "PREFERENCE_MODIFIED";
 
 	// Signals that CytoscapeInit properties have been updated.
 	/**
-	 * 
+	 *
 	 */
 	public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
 
@@ -244,48 +244,48 @@ public abstract class Cytoscape {
 	public static int FILE_BY_SUFFIX = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int FILE_GML = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int FILE_SIF = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int FILE_SBML = 3;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int FILE_XGMML = 4;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int FILE_BIOPAX = 5;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int FILE_PSI_MI = 6;
 
 	// constants for tracking selection mode globally
 	/**
-	 * 
+	 *
 	 */
 	public static final int SELECT_NODES_ONLY = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int SELECT_EDGES_ONLY = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int SELECT_NODES_AND_EDGES = 3;
 
@@ -294,22 +294,22 @@ public abstract class Cytoscape {
 
 	// Value to manage session state
 	/**
-	 * 
+	 *
 	 */
 	public static final int SESSION_NEW = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int SESSION_OPENED = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int SESSION_CHANGED = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
@@ -322,7 +322,7 @@ public abstract class Cytoscape {
 	private static String species;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
@@ -955,7 +955,7 @@ public abstract class Cytoscape {
 	 *            network, but no other are also destroyed.
 	 */
 	public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
-		if ( network == null || network == nullNetwork )
+		if ((network == null) || (network == nullNetwork))
 			return;
 
 		String networkId = network.getIdentifier();
@@ -1047,8 +1047,9 @@ public abstract class Cytoscape {
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(CyNetworkView view) {
-		if ( view == null || view == nullNetworkView )
+		if ((view == null) || (view == nullNetworkView))
 			return;
+
 		// System.out.println( "destroying: "+view.getIdentifier()+" :
 		// "+getNetworkViewMap().get( view.getIdentifier() ) );
 		String viewID = view.getIdentifier();

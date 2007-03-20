@@ -61,67 +61,67 @@ import javax.swing.event.SwingPropertyChangeSupport;
  */
 public abstract class NetworkData {
 	/**
-	 * 
+	 *
 	 */
 	public static String NODE_ATTRIBUTE_ADDED = "NODE_ATTRIBUTE_ADDED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String NODE_ATTRIBUTE_REMOVED = "NODE_ATTRIBUTE_REMOVED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String EDGE_ATTRIBUTE_ADDED = "EDGE_ATTRIBUTE_ADDED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String EDGE_ATTRIBUTE_REMOVED = "EDGE_ATTRIBUTE_REMOVED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static int DOUBLE_TYPE = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int STRING_TYPE = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int OBJECT_TYPE = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int NO_SUCH_ATTRIBUTE = -1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int VALUE_NOT_A_DOUBLE = -2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int INSANE_ATTRIBUTE_TYPE = -4;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int WRONG_ATTRIBUTE_TYPE = -8;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int INSANE_ATTRIBUTE_ID = -16;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int ATTRIBUTE_ALREADY_ASSIGNED = -32;
 	protected static Object pcsO = new Object();

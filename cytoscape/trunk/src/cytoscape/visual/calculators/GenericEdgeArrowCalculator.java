@@ -102,7 +102,8 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
 		if (getType() == VizMapUI.EDGE_TGTARROW)
 			return "cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator";
 
-		System.out.println("GenericEdgeArrowCalculator unknown type: " + getType() + " " +  arrowType);
+		System.out.println("GenericEdgeArrowCalculator unknown type: " + getType() + " "
+		                   + arrowType);
 
 		return getClass().getName();
 	}

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,11 +32,11 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape;
 
-import giny.view.*;
 import giny.model.*;
+
+import giny.view.*;
 
 import junit.framework.TestCase;
 
@@ -52,9 +51,9 @@ import swingunit.framework.TestUtility;
 
 import java.awt.Robot;
 
-import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -312,79 +311,96 @@ public class CytoscapeTestSwing extends TestCase {
 		System.out.println("export network and attributes start stop");
 	}
 
+	private void createNewNetworksFromExistingOnes(final EventPlayer player)
+	    throws ExecuteException {
+		System.out.println("create new network from existing one start");
+		// Open an existing network
+		scenario.setTestSetting("PAUSE", "DURATION", "1000");
+		scenario.setTestSetting("IMPORT_NETWORK_FILE", "IMPORT_DIR", "testData");
+		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "galFiltered.sif");
+		player.run(robot, "IMPORT_NETWORK_FILE");
 
-	private void createNewNetworksFromExistingOnes(final EventPlayer player) throws ExecuteException {
-        System.out.println("create new network from existing one start");
-        // Open an existing network
-        scenario.setTestSetting("PAUSE", "DURATION", "1000");
-        scenario.setTestSetting("IMPORT_NETWORK_FILE", "IMPORT_DIR", "testData");
-        scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT",
-                "galFiltered.sif");
-        player.run(robot, "IMPORT_NETWORK_FILE");
+		// select from file
+		scenario.setTestSetting("PAUSE", "DURATION", "1000");
+		scenario.setTestSetting("SELECT_NODES_FROM_FILE", "IMPORT_DIR", "testData");
+		scenario.setTestSetting("SELECT_NODES_FROM_FILE", "FILE_TO_IMPORT",
+		                        "galFiltered.select.from.file.txt");
+		scenario.setTestSetting("PAUSE", "DURATION", "1000");
+		player.run(robot, "SELECT_NODES_FROM_FILE");
 
-        // select from file
-        scenario.setTestSetting("PAUSE", "DURATION", "1000");
-        scenario.setTestSetting("SELECT_NODES_FROM_FILE", "IMPORT_DIR",
-                "testData");
-        scenario.setTestSetting("SELECT_NODES_FROM_FILE", "FILE_TO_IMPORT",
-                "galFiltered.select.from.file.txt");
-        scenario.setTestSetting("PAUSE", "DURATION", "1000");
-        player.run(robot, "SELECT_NODES_FROM_FILE");
-        // store current selection
-        Set nodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
-        HashSet<CyEdge> edges = new HashSet<CyEdge>();
-        // store all edges between these nodes; use another method than getConnectingEdges, we're testing
-        Object[] nodeObj = nodes.toArray();
-        for (int i = 0; i < nodeObj.length; i++)
-        {
-                Node node1 = (Node) nodeObj[i];
-                // store self edges; the current loaded att is string type "interaction" having values pp or pd
-                CyEdge ppSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pp", false);
-                if (ppSelfEdge != null) edges.add(ppSelfEdge);
-                CyEdge pdSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pd", false);
-                if (pdSelfEdge != null) edges.add(pdSelfEdge);
-                // 
-                for (int j = i + 1; j < nodeObj.length; j++)
-                {
-                    Node node2 = (Node)nodeObj[j];
-                    CyEdge ppEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pp", false, true);
-                    if (ppEdge != null) edges.add(ppEdge);
-                    CyEdge pdEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pd", false, true);
-                    if (pdEdge != null) edges.add(pdEdge);
-                    CyEdge pp2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pp", false, true);
-                    if (pp2Edge != null) edges.add(pp2Edge);
-                    CyEdge pd2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pd", false, true);
-                    if (pd2Edge != null) edges.add(pd2Edge);
-                }
-        }
-        
-        // Create network from selected nodes and all edges
-        scenario.setTestSetting("PAUSE", "DURATION", "3000");
-        player.run(robot, "NEW_NETWORK_FROM_SELECTED_NODES_ALL_EDGES");
-        
-        // New network will be current
-        Iterator nodesIter = Cytoscape.getCurrentNetwork().nodesIterator();
-        while (nodesIter.hasNext())
-        {
-            // check whether all nodes present
-            assertTrue(nodes.remove((Node)nodesIter.next()));
-        }
-        // and no more; ie set should be empty
-        assertTrue(nodes.isEmpty());
-        // and check the edges
-        Iterator<CyEdge> iterOverEdges = edges.iterator(); 
-        while(iterOverEdges.hasNext())
-        {
-            CyEdge edge = iterOverEdges.next();
-            assertNotNull(Cytoscape.getCurrentNetwork().getEdge(edge.getRootGraphIndex()));
-        }
-        
-        // Create network from selected edges and selected nodes
-        
-        // Clone current network
-        
-        System.out.println("create new network from existing one stop");
+		// store current selection
+		Set nodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		HashSet<CyEdge> edges = new HashSet<CyEdge>();
 
+		// store all edges between these nodes; use another method than getConnectingEdges, we're testing
+		Object[] nodeObj = nodes.toArray();
+
+		for (int i = 0; i < nodeObj.length; i++) {
+			Node node1 = (Node) nodeObj[i];
+
+			// store self edges; the current loaded att is string type "interaction" having values pp or pd
+			CyEdge ppSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pp", false);
+
+			if (ppSelfEdge != null)
+				edges.add(ppSelfEdge);
+
+			CyEdge pdSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pd", false);
+
+			if (pdSelfEdge != null)
+				edges.add(pdSelfEdge);
+
+			// 
+			for (int j = i + 1; j < nodeObj.length; j++) {
+				Node node2 = (Node) nodeObj[j];
+				CyEdge ppEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pp", false, true);
+
+				if (ppEdge != null)
+					edges.add(ppEdge);
+
+				CyEdge pdEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pd", false, true);
+
+				if (pdEdge != null)
+					edges.add(pdEdge);
+
+				CyEdge pp2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pp", false, true);
+
+				if (pp2Edge != null)
+					edges.add(pp2Edge);
+
+				CyEdge pd2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pd", false, true);
+
+				if (pd2Edge != null)
+					edges.add(pd2Edge);
+			}
+		}
+
+		// Create network from selected nodes and all edges
+		scenario.setTestSetting("PAUSE", "DURATION", "3000");
+		player.run(robot, "NEW_NETWORK_FROM_SELECTED_NODES_ALL_EDGES");
+
+		// New network will be current
+		Iterator nodesIter = Cytoscape.getCurrentNetwork().nodesIterator();
+
+		while (nodesIter.hasNext()) {
+			// check whether all nodes present
+			assertTrue(nodes.remove((Node) nodesIter.next()));
+		}
+
+		// and no more; ie set should be empty
+		assertTrue(nodes.isEmpty());
+
+		// and check the edges
+		Iterator<CyEdge> iterOverEdges = edges.iterator();
+
+		while (iterOverEdges.hasNext()) {
+			CyEdge edge = iterOverEdges.next();
+			assertNotNull(Cytoscape.getCurrentNetwork().getEdge(edge.getRootGraphIndex()));
+		}
+
+		// Create network from selected edges and selected nodes
+
+		// Clone current network
+		System.out.println("create new network from existing one stop");
 	}
 
 	/**

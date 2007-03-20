@@ -61,7 +61,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	protected Map gpToGv; // a map of GraphPerspectives to GraphViews
 
 	/**
-	 * 
+	 *
 	 */
 	public static final GraphViewHandler DEFAULT_GRAPH_VIEW_HANDLER = new BasicGraphViewHandler();
 

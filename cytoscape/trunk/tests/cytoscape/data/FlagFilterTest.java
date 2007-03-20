@@ -107,7 +107,6 @@ public class FlagFilterTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 * Checks that the current state of the filter matches the state described
 	 * by the arguments.
@@ -163,7 +162,6 @@ public class FlagFilterTest extends TestCase {
 		assertTrue(filter.getFlaggedEdges().size() == edgeCount);
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 * Checks that the most recently fired event matches the supplied arguments.
 	 */
@@ -247,7 +245,6 @@ public class FlagFilterTest extends TestCase {
 		assertTrue( listener.getEvent() == savedEvent ); //no event should have been fired
 		*/
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -343,7 +340,6 @@ public class FlagFilterTest extends TestCase {
 		assertTrue(testSet.contains(edge2));
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 */

@@ -36,15 +36,8 @@
 */
 
 // TextHttpReader.java
-
-//---------------------------------------------------------------------------
-//  $Revision$ 
-//  $Date$
-//  $Author$
-//---------------------------------------------------------------------------
 package cytoscape.data.readers;
 
-//------------------------------------------------------------------------------
 import java.io.*;
 
 import java.net.*;
@@ -52,7 +45,6 @@ import java.net.*;
 import java.util.*;
 
 
-//---------------------------------------------------------------------------
 /**
  *
  */
@@ -61,7 +53,6 @@ public class TextHttpReader {
 	StringBuffer sb;
 	String uri;
 
-	//---------------------------------------------------------------------------
 	/**
 	 * Creates a new TextHttpReader object.
 	 *
@@ -73,7 +64,6 @@ public class TextHttpReader {
 		uri = URI;
 		sb = new StringBuffer();
 	} // ctor
-	  //-----------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -87,7 +77,6 @@ public class TextHttpReader {
 
 		return sb.length();
 	} // read
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -102,7 +91,6 @@ public class TextHttpReader {
 
 		return sb.toString();
 	} // read
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -117,7 +105,6 @@ public class TextHttpReader {
 		return getPage(new URL(urlString));
 	}
 
-	//-----------------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -144,7 +131,7 @@ public class TextHttpReader {
 			throw new IOException("\nHTTP response code: " + responseCode);
 
 		BufferedReader theHTML = new BufferedReader(new InputStreamReader(urlConnection
-		                                                                                                                                           .getInputStream()));
+		                                                                                                                              .getInputStream()));
 		String thisLine;
 
 		while ((thisLine = theHTML.readLine()) != null) {
@@ -154,5 +141,4 @@ public class TextHttpReader {
 
 		return result.toString();
 	} // getPage
-	  //-----------------------------------------------------------------------------------------------
 } // TextReader

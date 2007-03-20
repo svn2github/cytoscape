@@ -37,32 +37,23 @@
 
 // AnnotationTest.java
 
-//------------------------------------------------------------------------------
 // todo (pshannon, 19 jan 2003): test the new ctor (with receives no Ontology)
 //                               both with and without an separately assigned ontology
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.annotation.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  * test the Annotation class
  */
 public class AnnotationTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationTest object.
 	 *
@@ -72,7 +63,6 @@ public class AnnotationTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -81,7 +71,6 @@ public class AnnotationTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -90,7 +79,6 @@ public class AnnotationTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * make sure that the ctor properly initializes all relevant data structures
 	 * as seen through the standard getter methods
@@ -110,7 +98,6 @@ public class AnnotationTest extends TestCase {
 		assertTrue(annotation.getOntologyType().equals(ontology.getType()));
 		assertTrue(annotation.getSpecies().equals(species));
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -137,7 +124,6 @@ public class AnnotationTest extends TestCase {
 		assertTrue(annotation.size() == 9);
 		assertTrue(annotation.count() == 4);
 	} // testAdd
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -182,7 +168,6 @@ public class AnnotationTest extends TestCase {
 		assertTrue(classifications[1] == 500);
 		assertTrue(classifications[2] == 520);
 	} // testGet
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -198,7 +183,6 @@ public class AnnotationTest extends TestCase {
 		annotation.add("VNG0009G", 520);
 		assertTrue(annotation.maxDepth() == 3);
 	} // testMaxDepth
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -208,6 +192,4 @@ public class AnnotationTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(AnnotationTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // AnnotationTest

@@ -100,130 +100,130 @@ import javax.swing.event.ChangeListener;
 public class VizMapUI extends JDialog implements CyNetworkListener {
 	// constants for attribute types, one for each tab
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_COLOR = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_BORDER_COLOR = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_LINETYPE = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_SHAPE = 3;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_SIZE = 4;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_LABEL = 5;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_LABEL_FONT = 6;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_LABEL_COLOR = 7;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_COLOR = 8;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_LINETYPE = 9;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_SRCARROW = 10;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_TGTARROW = 11;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_LABEL = 12;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_LABEL_FONT = 13;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_TOOLTIP = 14;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_TOOLTIP = 15;
 
 	// for node and edge label position... if you hadn't already guessed
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_LABEL_POSITION = 16;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_LABEL_POSITION = 17;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_LABEL_COLOR = 18;
 
 	// for creating VizMapTabs with font face/size on one page
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_FONT_FACE = 122;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_FONT_SIZE = 123;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_FONT_FACE = 124;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte EDGE_FONT_SIZE = 125;
 
 	// for creating VizMapTabs with locked node height/width
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_HEIGHT = 126;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte NODE_WIDTH = 127;
 

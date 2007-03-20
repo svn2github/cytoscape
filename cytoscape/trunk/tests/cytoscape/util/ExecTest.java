@@ -36,19 +36,12 @@
 */
 
 // ExecTest.java:  junit test for Exec
-
-//
-// $Revision$
-// $Date$
-//
-//---------------------------------------------------------------------------
 package cytoscape.util;
 
 import cytoscape.AllTests;
 
 import cytoscape.util.Exec;
 
-//---------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.util.Enumeration;
@@ -56,12 +49,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-//---------------------------------------------------------------------------
 /**
  *
  */
 public class ExecTest extends TestCase {
-	//---------------------------------------------------------------------------
 	/**
 	 * Creates a new ExecTest object.
 	 *
@@ -71,7 +62,6 @@ public class ExecTest extends TestCase {
 		super(name);
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 */
@@ -108,7 +98,6 @@ public class ExecTest extends TestCase {
 		String fullResult = sb.toString();
 		assertTrue(fullResult.indexOf("world") >= 0);
 	} // testBasic
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -130,7 +119,6 @@ public class ExecTest extends TestCase {
 		AllTests.standardOut("stdout: " + stdout);
 		AllTests.standardOut("stderr: " + stderr);
 	} // testBasicWithThreadedExec
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -152,7 +140,6 @@ public class ExecTest extends TestCase {
 		AllTests.standardOut("stdout: " + stdout);
 		AllTests.standardOut("stderr: " + stderr);
 	} // testBasicWithThreadedExec2
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -194,7 +181,6 @@ public class ExecTest extends TestCase {
 		assertTrue(fullResult.indexOf("world") >= 0);
 		AllTests.standardOut("--> " + fullResult + " <--");
 	} // testBasicInBackground
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -236,7 +222,6 @@ public class ExecTest extends TestCase {
 		String stderr = sb.toString();
 		assertTrue(stderr.length() == 0);
 	} // testUsingStandardInput
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -275,7 +260,6 @@ public class ExecTest extends TestCase {
 		AllTests.standardOut(fullResult);
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -284,6 +268,4 @@ public class ExecTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(ExecTest.class));
 	}
-
-	//---------------------------------------------------------------------------
 } // ExecTest

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
@@ -217,7 +215,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	private void loadBookmarks() {
 		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory,
 		                                                                     theBookmarks
-		                                                                                                                                                                                                                    .getCategory());
+		                                                                                                                                                                                                                  .getCategory());
 
 		MyListModel theModel = new MyListModel(theDataSourceList);
 		listBookmark.setModel(theModel);
@@ -444,8 +442,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 					BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
 					BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
 					this.dispose();
-				}
-				else if (_btn == btnCancel) {
+				} else if (_btn == btnCancel) {
 					this.dispose();
 				}
 			}

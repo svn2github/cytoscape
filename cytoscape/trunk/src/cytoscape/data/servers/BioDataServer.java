@@ -237,11 +237,11 @@ public class BioDataServer {
 	// TODO:
 	// get rid of manifest file idea...
 	//
-	protected String[] parseLoadFile(String filename, String key)// todo (pshannon 2003/07/01): there is some ugly special casing here, as we
-	// figure
-	// todo: out if the manifest file path is jar, http, or a regular file
-	// system
-	// todo: file. this should be refactored.
+	protected String[] parseLoadFile(String filename, String key) // todo (pshannon 2003/07/01): there is some ugly special casing here, as we
+	                                                              // figure
+	                                                              // todo: out if the manifest file path is jar, http, or a regular file
+	                                                              // system
+	                                                              // todo: file. this should be refactored.
 	 {
 		String rawText;
 
@@ -344,12 +344,13 @@ public class BioDataServer {
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public Ontology[] readOntologyFlatFiles(String[] ontologyFilenames) throws Exception// a quick hack. this is called only if annotation & ontology are each flat
-	// files,
-	// which means they must be read separately. and xml annotation file names
-	// its own
-	// ontology file, and the annotationXmlReader is responsible for loading its
-	// ontology.
+	public Ontology[] readOntologyFlatFiles(String[] ontologyFilenames)
+	    throws Exception // a quick hack. this is called only if annotation & ontology are each flat
+	                     // files,
+	                     // which means they must be read separately. and xml annotation file names
+	                     // its own
+	                     // ontology file, and the annotationXmlReader is responsible for loading its
+	                     // ontology.
 	 {
 		Vector list = new Vector();
 
@@ -564,6 +565,7 @@ public class BioDataServer {
 	/*
 	 * Accept new gene association file. And create Thesaurus file from it.
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

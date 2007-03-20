@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.util;
 
 import cytoscape.AllTests;
@@ -142,7 +140,6 @@ public class GraphSetUtilsTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 */
@@ -160,7 +157,6 @@ public class GraphSetUtilsTest extends TestCase {
 		assertNull(n.getNode(a));
 		assertNull(n.getNode(e));
 	} // testIntersection
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -180,7 +176,6 @@ public class GraphSetUtilsTest extends TestCase {
 		assertNull(x.getEdge(be));
 		assertNull(x.getEdge(bd));
 	} // testDifference
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -199,5 +194,4 @@ public class GraphSetUtilsTest extends TestCase {
 		assertTrue(y.containsNode(y.getNode(d)));
 		assertTrue(y.containsNode(y.getNode(e)));
 	} // testUnion
-	  //-------------------------------------------------------------------------
 }

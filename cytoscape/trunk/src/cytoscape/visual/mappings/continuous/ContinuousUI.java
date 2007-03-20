@@ -69,17 +69,17 @@ import javax.swing.*;
 public class ContinuousUI extends JPanel implements ActionListener {
 	//  Public Constants
 	/**
-	 * 
+	 *
 	 */
 	public static final int LESSER = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int EQUAL = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int GREATER = 2;
 

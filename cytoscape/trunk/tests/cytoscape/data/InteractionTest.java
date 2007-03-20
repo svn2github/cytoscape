@@ -36,19 +36,12 @@
 */
 
 // InteractionTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.Interaction;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
@@ -60,12 +53,10 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 
-//------------------------------------------------------------------------------
 /**
  *
  */
 public class InteractionTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new InteractionTest object.
 	 *
@@ -75,7 +66,6 @@ public class InteractionTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -84,7 +74,6 @@ public class InteractionTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -93,7 +82,6 @@ public class InteractionTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -112,7 +100,6 @@ public class InteractionTest extends TestCase {
 		assertTrue(inter0.numberOfTargets() == 1);
 		assertTrue(inter0.getTargets()[0].equals(target));
 	} // test3ArgCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -138,15 +125,15 @@ public class InteractionTest extends TestCase {
 		assertTrue(inter1.getTargets()[1].equals("YGR254W"));
 		assertTrue(inter1.getTargets()[2].equals("YHR174W"));
 	} // test1ArgCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public void test1ArgCtorOnDegenerateFrom() throws Exception// a degenerate form has -only- a source node:  no interaction type
-	// and no target node
+	public void test1ArgCtorOnDegenerateFrom()
+	    throws Exception // a degenerate form has -only- a source node:  no interaction type
+	                     // and no target node
 	 {
 		AllTests.standardOut("test1ArgCtorOnDegenerateForm");
 
@@ -156,7 +143,6 @@ public class InteractionTest extends TestCase {
 		assertTrue(inter0.getType() == null);
 		assertTrue(inter0.numberOfTargets() == 0);
 	} // test1ArgCtorOnDegenerateForm
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -166,6 +152,4 @@ public class InteractionTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(InteractionTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // InteractionTest

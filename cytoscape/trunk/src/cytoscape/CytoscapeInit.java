@@ -128,7 +128,7 @@ public class CytoscapeInit {
 
 	private static CyInitParams initParams;
 	private static URLClassLoader classLoader;
-	
+
 	// Most-Recently-Used directories and files
 	private static File mrud;
 	private static File mruf;
@@ -186,7 +186,7 @@ public class CytoscapeInit {
 
 				setUpAttributesChangedListener();
 			}
-			
+
 			loadPlugins();
 
 			System.out.println("loading session...");
@@ -261,7 +261,7 @@ public class CytoscapeInit {
 	public static PluginManager getPluginManager() {
 		return pluginMgr;
 	}
-	
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -573,7 +573,7 @@ public class CytoscapeInit {
 		int count = 0;
 
 		plugin_urls.toArray(urls);
-		
+
 		// the creation of the class loader automatically loads the plugins
 		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
 
@@ -613,6 +613,7 @@ public class CytoscapeInit {
 
 				// new-school failed, so revert to old school 
 				Enumeration entries = jar.entries();
+
 				if (entries == null) {
 					continue;
 				}
@@ -685,6 +686,7 @@ public class CytoscapeInit {
 	 *
 	 * @param plugin DOCUMENT ME!
 	 */
+
 	/* TODO add warning to user that another plugin with the same namespace as a previously loaded plugin has been found and will not be
 	 * loaded
 	 */
@@ -711,6 +713,7 @@ public class CytoscapeInit {
 	 */
 	protected Class getPluginClass(String name) {
 		Class c = null;
+
 		try {
 			c = classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
@@ -1012,16 +1015,17 @@ public class CytoscapeInit {
 			System.out.println("Load: " + net);
 
 			CyNetwork network = null;
-			
+
 			boolean createView = false;
+
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
 				createView = true;
 
-			if ( net.matches(FileUtil.urlPattern) ) {
-				try { 
+			if (net.matches(FileUtil.urlPattern)) {
+				try {
 					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
-				} catch ( MalformedURLException mue ) { 
+				} catch (MalformedURLException mue) {
 					mue.printStackTrace();
 					System.out.println("Couldn't load network.  Bad URL!");
 				}

@@ -42,6 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
+
 //----------------------------------------------------------------------------
 import giny.view.NodeView;
 
@@ -53,57 +54,57 @@ import giny.view.NodeView;
  */
 public class ShapeNodeRealizer {
 	/**
-	 * 
+	 *
 	 */
 	public static final byte RECT = (byte) 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte ROUND_RECT = (byte) 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte RECT_3D = (byte) 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte TRAPEZOID = (byte) 3;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte TRAPEZOID_2 = (byte) 4;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte TRIANGLE = (byte) 5;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte PARALLELOGRAM = (byte) 6;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte DIAMOND = (byte) 7;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte ELLIPSE = (byte) 8;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte HEXAGON = (byte) 9;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final byte OCTAGON = (byte) 10;
 

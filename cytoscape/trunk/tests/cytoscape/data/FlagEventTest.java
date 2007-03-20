@@ -34,12 +34,6 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data;
 
 import cytoscape.AllTests;
@@ -50,7 +44,6 @@ import cytoscape.data.FlagFilter;
 
 import giny.model.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
@@ -58,12 +51,10 @@ import java.io.*;
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *
  */
 public class FlagEventTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new FlagEventTest object.
 	 *
@@ -73,7 +64,6 @@ public class FlagEventTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -82,7 +72,6 @@ public class FlagEventTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -91,7 +80,6 @@ public class FlagEventTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * This method makes sure that all of the static contants defined in the class
 	 * have different values.
@@ -105,7 +93,6 @@ public class FlagEventTest extends TestCase {
 		assertTrue(FlagEvent.NODE_SET != FlagEvent.EDGE_SET);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -153,7 +140,6 @@ public class FlagEventTest extends TestCase {
 		FlagEvent edgeSetOff = new FlagEvent(source, edgeSet, false);
 		checkEvent(edgeSetOff, source, edgeSet, FlagEvent.EDGE_SET, false);
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -172,7 +158,6 @@ public class FlagEventTest extends TestCase {
 		assertTrue(event.getEventType() == selectOn);
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -181,6 +166,4 @@ public class FlagEventTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(FlagEventTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 }

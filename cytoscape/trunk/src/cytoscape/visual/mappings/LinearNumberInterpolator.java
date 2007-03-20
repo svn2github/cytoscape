@@ -44,6 +44,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
+
 //----------------------------------------------------------------------------
 /**
  * This subclass of NumberInterpolator further assumes a linear interpolation,

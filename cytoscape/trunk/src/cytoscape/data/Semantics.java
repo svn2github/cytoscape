@@ -102,58 +102,59 @@ public class Semantics {
 	 * replaced by the node id. - Aliases are no longer String object. It's a
 	 * list now.
 	 */
+
 	/**
-	 * 
+	 *
 	 */
 	public static final String GO_COMMON_NAME = "GO Common Name";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String GO_ALIASES = "GO Aliases";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String SPECIES = "species";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String INTERACTION = "interaction";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String MOLECULE_TYPE = "molecule_type";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String PROTEIN = "protein";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String DNA = "DNA";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String RNA = "RNA";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String MOLECULAR_FUNCTION = "molecular_function";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String BIOLOGICAL_PROCESS = "biological_process";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String CELLULAR_COMPONENT = "cellular_component";
 

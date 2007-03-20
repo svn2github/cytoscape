@@ -36,15 +36,9 @@
 */
 
 // MinMaxInt
-
-//--------------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.util;
 
-//--------------------------------------------------------------------------------------
+
 /**
  *  find the min and max of a 1- or 2-d array of ints.
  */
@@ -52,7 +46,6 @@ public class MinMaxInt {
 	int min = new Integer(Integer.MAX_VALUE).intValue();
 	int max = new Integer(Integer.MIN_VALUE).intValue();
 
-	//--------------------------------------------------------------------------------------
 	/**
 	 * Creates a new MinMaxInt object.
 	 *
@@ -69,7 +62,6 @@ public class MinMaxInt {
 				min = val;
 		} // for i
 	} // ctor
-	  //--------------------------------------------------------------------------------------
 
 	/**
 	 * Creates a new MinMaxInt object.
@@ -88,7 +80,6 @@ public class MinMaxInt {
 					min = val;
 			} // for i
 	} // ctor
-	  //--------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -116,6 +107,4 @@ public class MinMaxInt {
 	public String toString() {
 		return min + " -> " + max;
 	}
-
-	//--------------------------------------------------------------------------------------
 } // class MinMaxInt

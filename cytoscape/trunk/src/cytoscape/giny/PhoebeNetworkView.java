@@ -241,8 +241,7 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 						if (edgeSelection) {
 							getCanvas().removeInputEventListener(getEdgeSelectionHandler());
 						}
-					}
-					else if (!slash_pressed && (event.getKeyCode() == KeyEvent.VK_SLASH)) {
+					} else if (!slash_pressed && (event.getKeyCode() == KeyEvent.VK_SLASH)) {
 						//System.out.println( "start taf " );
 						slash_pressed = true;
 						getCanvas().getCamera().addChild(typeAheadNode);
@@ -250,15 +249,13 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 						typeAheadNode.setPaint(new java.awt.Color(0f, 0f, 0f, .6f));
 						typeAheadNode.setTextPaint(java.awt.Color.white);
 						typeAheadNode.setFont(typeAheadNode.getFont().deriveFont(30f));
-					}
-					else if (slash_pressed && (event.getKeyCode() != KeyEvent.VK_ESCAPE)
-					         && (event.getKeyCode() != KeyEvent.VK_BACK_SPACE)) {
+					} else if (slash_pressed && (event.getKeyCode() != KeyEvent.VK_ESCAPE)
+					           && (event.getKeyCode() != KeyEvent.VK_BACK_SPACE)) {
 						//System.out.println( "Normal Press" );
 						typeBuffer.append(KeyEvent.getKeyText(event.getKeyCode()));
 						length++;
 						selectAndZoom();
-					}
-					else if (slash_pressed && (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+					} else if (slash_pressed && (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
 						// System.out.println( "ESCAPRE PRESSED" );
 						resetFind();
 					} else if (slash_pressed && (event.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {

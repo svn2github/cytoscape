@@ -100,7 +100,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	JButton cancelButton = new JButton("Cancel");
 
 	/**
-	 * 
+	 *
 	 */
 	public PreferenceTableModel prefsTM = null;
 	private ListSelectionModel lsm = null;

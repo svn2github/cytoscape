@@ -171,6 +171,7 @@ public class JTreeTable extends JTable {
 	 * thing to do for an editor. Returning -1 for the editing row in this case,
 	 * ensures the editor is never painted.
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

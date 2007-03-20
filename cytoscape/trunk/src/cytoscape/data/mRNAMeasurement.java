@@ -36,15 +36,9 @@
 */
 
 // mRNAMeasurement:  encapsulate the ratio/signficance pair
-
-//-------------------------------------------------------------------------------------------
-// $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data;
 
-//-------------------------------------------------------------------------------------------
+
 /**
  *
  */
@@ -52,7 +46,6 @@ public class mRNAMeasurement implements java.io.Serializable {
 	private double expressionRatio;
 	private double significance;
 
-	//-------------------------------------------------------------------------------------------
 	/**
 	 * Creates a new mRNAMeasurement object.
 	 *
@@ -77,7 +70,6 @@ public class mRNAMeasurement implements java.io.Serializable {
 		}
 	}
 
-	//-------------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -87,7 +79,6 @@ public class mRNAMeasurement implements java.io.Serializable {
 		return expressionRatio;
 	}
 
-	//-------------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -97,7 +88,6 @@ public class mRNAMeasurement implements java.io.Serializable {
 		return significance;
 	}
 
-	//-------------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -111,7 +101,6 @@ public class mRNAMeasurement implements java.io.Serializable {
 
 		return sb.toString();
 	} // toString
-	  //-------------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -122,7 +111,6 @@ public class mRNAMeasurement implements java.io.Serializable {
 		this.expressionRatio = new_ratio;
 	}
 
-	//-------------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -131,6 +119,4 @@ public class mRNAMeasurement implements java.io.Serializable {
 	public void setSignificance(double new_significance) {
 		this.significance = new_significance;
 	}
-
-	//-------------------------------------------------------------------------------------------
 } // mRNAMeasurement

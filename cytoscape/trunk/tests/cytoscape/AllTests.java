@@ -55,7 +55,7 @@ import java.util.regex.*;
  */
 public class AllTests extends TestCase {
 	/**
-	 * 
+	 *
 	 */
 	public static final String TEST_ALL = "JUNIT_TEST_ALL";
 

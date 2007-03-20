@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.util;
 
 import org.jdom.Comment;
@@ -67,17 +65,17 @@ import java.util.jar.Manifest;
  */
 public class JnlpWriterUtil {
 	/**
-	 * 
+	 *
 	 */
 	public Document Doc;
 
 	/**
-	 * 
+	 *
 	 */
 	public Element Root;
 
 	/**
-	 * 
+	 *
 	 */
 	public XMLOutputter Out;
 	protected String Filename;
@@ -86,12 +84,12 @@ public class JnlpWriterUtil {
 	protected String SaveDir;
 
 	/**
-	 * 
+	 *
 	 */
 	public String LibDir;
 
 	/**
-	 * 
+	 *
 	 */
 	public String PluginDir;
 	protected HashMap<String, String> Options;
@@ -140,6 +138,7 @@ public class JnlpWriterUtil {
 	 * Creates jnlp file,
 	 *
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -193,6 +192,7 @@ public class JnlpWriterUtil {
 	/*
 	 * Adding the <information> tag
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 */
@@ -211,6 +211,7 @@ public class JnlpWriterUtil {
 	/*
 	 * Adding the <resource> tag
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 */

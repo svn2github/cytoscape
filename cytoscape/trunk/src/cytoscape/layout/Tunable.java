@@ -53,27 +53,27 @@ public class Tunable {
 	final public static int INTEGER = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	final public static int DOUBLE = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	final public static int BOOLEAN = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	final public static int STRING = 3;
 
 	/**
-	 * 
+	 *
 	 */
 	final public static int NODEATTRIBUTE = 4;
 
 	/**
-	 * 
+	 *
 	 */
 	final public static int EDGEATTRIBUTE = 5;
 
@@ -83,7 +83,7 @@ public class Tunable {
 	final public static int NOINPUT = 0x1;
 
 	/**
-	 * 
+	 *
 	 */
 	final public static int NUMERICATTRIBUTE = 0x2;
 

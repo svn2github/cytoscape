@@ -47,6 +47,7 @@
 //----------------------------------------------------------------------
 package cytoscape.util;
 
+
 //----------------------------------------------------------------------
 import java.awt.*;
 import java.awt.event.*;
@@ -70,7 +71,7 @@ import javax.swing.*;
  */
 public class CytoscapeProgressMonitor extends JFrame implements Runnable {
 	/**
-	 * 
+	 *
 	 */
 	public final static int ONE_SECOND = 1000;
 	private ProgressMonitor pMonitor;

@@ -36,31 +36,22 @@
 */
 
 // AnnotationDescriptionTest
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.annotation.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *  test the AnnotationDescription class, especially with regard to
  *  the 'equals' and 'hashCode' member functions
  */
 public class AnnotationDescriptionTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationDescriptionTest object.
 	 *
@@ -70,7 +61,6 @@ public class AnnotationDescriptionTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -79,7 +69,6 @@ public class AnnotationDescriptionTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -88,7 +77,6 @@ public class AnnotationDescriptionTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * make sure that the ctor properly initializes all relevant data structures
 	 * as seen through the standard getter methods
@@ -106,7 +94,6 @@ public class AnnotationDescriptionTest extends TestCase {
 		assertTrue(desc.getCurator().equals(curator));
 		assertTrue(desc.getType().equals(type));
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -130,7 +117,6 @@ public class AnnotationDescriptionTest extends TestCase {
 		assertTrue(!desc0.equals(desc2));
 		assertTrue(!desc0.equals(new Integer(99)));
 	} // testEquals
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -140,6 +126,4 @@ public class AnnotationDescriptionTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(AnnotationDescriptionTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // AnnotationDescriptionTest

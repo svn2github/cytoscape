@@ -235,6 +235,7 @@ public class Thesaurus implements Serializable {
 	/*
 	 * This method returns all names including aliases and key.
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -277,6 +278,7 @@ public class Thesaurus implements Serializable {
 	 * This is for debugging.
 	 *
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 */

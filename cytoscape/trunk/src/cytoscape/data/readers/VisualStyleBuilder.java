@@ -592,29 +592,25 @@ public class VisualStyleBuilder {
 			ar = Arrow.BLACK_DIAMOND;
 		} else if (intType == EdgeView.EDGE_COLOR_DIAMOND) {
 			ar = Arrow.COLOR_DIAMOND;
-		}
-		else if (intType == EdgeView.WHITE_DELTA) {
+		} else if (intType == EdgeView.WHITE_DELTA) {
 			ar = Arrow.WHITE_DELTA;
 		} else if (intType == EdgeView.BLACK_DELTA) {
 			ar = Arrow.BLACK_DELTA;
 		} else if (intType == EdgeView.EDGE_COLOR_DELTA) {
 			ar = Arrow.COLOR_DELTA;
-		}
-		else if (intType == EdgeView.WHITE_ARROW) {
+		} else if (intType == EdgeView.WHITE_ARROW) {
 			ar = Arrow.WHITE_ARROW;
 		} else if (intType == EdgeView.BLACK_ARROW) {
 			ar = Arrow.BLACK_ARROW;
 		} else if (intType == EdgeView.EDGE_COLOR_ARROW) {
 			ar = Arrow.COLOR_ARROW;
-		}
-		else if (intType == EdgeView.WHITE_T) {
+		} else if (intType == EdgeView.WHITE_T) {
 			ar = Arrow.WHITE_T;
 		} else if (intType == EdgeView.BLACK_T) {
 			ar = Arrow.BLACK_T;
 		} else if (intType == EdgeView.EDGE_COLOR_T) {
 			ar = Arrow.COLOR_T;
-		}
-		else if (intType == EdgeView.WHITE_CIRCLE) {
+		} else if (intType == EdgeView.WHITE_CIRCLE) {
 			ar = Arrow.WHITE_CIRCLE;
 		} else if (intType == EdgeView.BLACK_CIRCLE) {
 			ar = Arrow.BLACK_CIRCLE;

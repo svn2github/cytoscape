@@ -44,7 +44,7 @@ import com.nexes.wizard.WizardPanelDescriptor;
  */
 public class SpeciesPanelDescriptor extends WizardPanelDescriptor {
 	/**
-	 * 
+	 *
 	 */
 	public static final String IDENTIFIER = "SPECIES_PANEL";
 	SpeciesPanel speciesPanel;

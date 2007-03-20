@@ -42,6 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape;
 
+
 //-------------------------------------------------------------------------
 /**
  * Empty implementation of the CyNetworkListener interface, following the

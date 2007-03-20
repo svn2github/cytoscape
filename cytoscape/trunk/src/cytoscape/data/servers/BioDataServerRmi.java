@@ -36,12 +36,6 @@
  */
 
 // BioDataServerRmi.java
-
-//------------------------------------------------------------------------------
-// $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data.servers;
 
 import cytoscape.data.annotation.Annotation;
@@ -80,7 +74,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 	protected Date startTime;
 	protected Date lastAccessTime;
 
-	// ------------------------------------------------------------------------------
 	/**
 	 * Creates a new BioDataServerRmi object.
 	 *
@@ -95,7 +88,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		lastAccessTime = new Date();
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 * if the new annotation is to an already annotated species, curator and
 	 * type, then simply add (with possible overwriting for identical
@@ -121,7 +113,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 			annotations.put(key, newAnnotation);
 		}
 	} // addAnnotation (Annotation)
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -131,7 +122,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		lastAccessTime = new Date();
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -143,7 +133,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		return annotations.size();
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -157,7 +146,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return result;
 	} // getAnnotationDescriptions
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -175,7 +163,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return getAnnotation(description);
 	} // getAnnotations
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -189,7 +176,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return (Annotation) annotations.get(description);
 	} // getAnnotations
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -208,7 +194,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return (getClassifications(description, entity));
 	} // getClassifications
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -225,7 +210,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return annotation.getClassifications(entity);
 	} // getClassifications
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -243,7 +227,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		return annotation.getAllHierarchyPathsAsNames(entity);
 	}
 
-	// ------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -274,7 +257,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return sb.toString();
 	} // describe
-	  // ------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -286,7 +268,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		thesauri.put(species, thesaurus);
 	}
 
-	// ----------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -309,7 +290,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 
 		return commonName;
 	} // getCanonicalName
-	  // ----------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -337,7 +317,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		return result;
 	}
 
-	// ----------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -361,7 +340,6 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		return canonicalName;
 	}
 
-	// ----------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -384,5 +362,4 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 			e.printStackTrace();
 		}
 	} // main
-	  // ------------------------------------------------------------------------------
 } // class BioDataServerRmi

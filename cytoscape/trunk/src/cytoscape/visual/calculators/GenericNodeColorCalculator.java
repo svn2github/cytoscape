@@ -95,6 +95,7 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
 			return "cytoscape.visual.calculators.GenericNodeBorderColorCalculator";
 
 		System.out.println("GenericNodeColorCalculator unknown type:  " + getType() + " " + colType);
+
 		return getClass().getName();
 	}
 

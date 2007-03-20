@@ -32,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.visual;
 
 import cytoscape.visual.calculators.GenericEdgeColorCalculator;
@@ -66,114 +65,84 @@ import cytoscape.visual.calculators.GenericNodeWidthCalculator;
 
 /**
  * Enum for calculator types.<br>
- * 
+ *
  * This will replace public constants defined in VizMapperUI class.<br>
  * This Enum defines visual attributes used in Cytoscape.
- * 
+ *
  * @since Cytoscape 2.5
  * @author kono
- * 
+ *
  */
 public enum VisualPropertyType {
-	NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
-			"defaultNodeFillColor", GenericNodeFillColorCalculator.class), 
-	NODE_BORDER_COLOR(
-			"Node Border Color", "nodeBorderColorCalculator",
-			"node.borderColor", "defaultNodeBorderColor",
-			GenericNodeBorderColorCalculator.class), 
-	NODE_LINETYPE(
-			"Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-			"defaultNodeLineType", GenericNodeLineTypeCalculator.class), 
-	NODE_SHAPE(
-			"Node Shape", "nodeShapeCalculator", "node.shape",
-			"defaultNodeShape", GenericNodeShapeCalculator.class), 
-	NODE_SIZE(
-			"Node Size", "nodeUniformSizeCalculator", "node.size",
-			"defaultNodeSize", GenericNodeUniformSizeCalculator.class), 
-	NODE_WIDTH(
-			"Node Width", "nodeWidthCalculator", "node.width",
-			"defaultNodeWidth", GenericNodeWidthCalculator.class), 
-	NODE_HEIGHT(
-			"Node Height", "nodeHeightCalculator", "node.height",
-			"defaultNodeHight", GenericNodeHeightCalculator.class), 
-	NODE_LABEL(
-			"Node Label", "nodeLabelCalculator", "node.label",
-			"defaultNodeLabel", GenericNodeLabelCalculator.class), 
-	NODE_FONT_FACE(
-			"Node Font Face", "nodeFontFaceCalculator", "node.font",
-			"defaultNodeFont", GenericNodeFontFaceCalculator.class), 
-	NODE_FONT_SIZE(
-			"Node Font Size", "nodeFontSizeCalculator", "node.fontSize",
-			"defaultNodeFontSize", GenericNodeFontSizeCalculator.class), 
-	NODE_LABEL_COLOR(
-			"Node Label Color", "nodeLabelColor", "node.labelColor",
-			"defaultNodeLabelColor", GenericNodeLabelColorCalculator.class), 
-	NODE_TOOLTIP(
-			"Node Tooltip", "nodeTooltipCalculator", "node.toolTip",
-			"defaultNodeToolTip", GenericNodeToolTipCalculator.class), 
-	NODE_LABEL_POSITION(
-			"Node Label Position", "nodeLabelPositionCalculator",
-			"node.labelPosition", "defaultNodeLabelPosition",
-			GenericNodeLabelPositionCalculator.class),
 
-	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color",
-			"defaultEdgeColor", GenericEdgeColorCalculator.class), EDGE_LINETYPE(
-			"Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-			"defaultEdgeLineType", GenericEdgeLineTypeCalculator.class), 
-	@Deprecated
-	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator",
-			"edge.sourceArrow", "defaultEdgeSourceArrow",
-			GenericEdgeSourceArrowCalculator.class), 
-	@Deprecated
-	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator",
-			"edge.targetArrow", "defaultEdgeTargetArrow",
-			GenericEdgeTargetArrowCalculator.class), 
-	EDGE_LABEL("Edge Label",
-			"edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
-			GenericEdgeLabelCalculator.class), 
-	EDGE_FONT_FACE("Edge Font Face",
-			"edgeFontFaceCalculator", "edge.font", "defaultEdgeFont",
-			GenericEdgeFontFaceCalculator.class), 
-	EDGE_FONT_SIZE(
-			"Edge Font Size", "edgeFontSizeCalculator", "edge.fontSize",
-			"defaultEdgeFontSize", GenericEdgeFontSizeCalculator.class), 
-	EDGE_LABEL_COLOR(
-			"Edge Label Color", "edgeLabelColorCalculator", "edge.labelColor",
-			"defaultEdgeLabelColor", GenericEdgeLabelColorCalculator.class), 
-	EDGE_TOOLTIP(
-			"Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip",
-			"defaultEdgeToolTip", GenericEdgeToolTipCalculator.class),
+	NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
+	                "defaultNodeFillColor", GenericNodeFillColorCalculator.class),
+	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
+	                  "defaultNodeBorderColor", GenericNodeBorderColorCalculator.class), 
+	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
+	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class), 
+	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
+	           GenericNodeShapeCalculator.class), 
+	NODE_SIZE("Node Size", "nodeUniformSizeCalculator", "node.size", "defaultNodeSize",
+	          GenericNodeUniformSizeCalculator.class), 
+	NODE_WIDTH("Node Width", "nodeWidthCalculator", "node.width", "defaultNodeWidth",
+	           GenericNodeWidthCalculator.class), 
+	NODE_HEIGHT("Node Height", "nodeHeightCalculator", "node.height", "defaultNodeHight",
+	            GenericNodeHeightCalculator.class), 
+	NODE_LABEL("Node Label", "nodeLabelCalculator", "node.label", "defaultNodeLabel",
+	           GenericNodeLabelCalculator.class), 
+	NODE_FONT_FACE("Node Font Face", "nodeFontFaceCalculator", "node.font", "defaultNodeFont",
+	               GenericNodeFontFaceCalculator.class), 
+	NODE_FONT_SIZE("Node Font Size", "nodeFontSizeCalculator", "node.fontSize",
+	               "defaultNodeFontSize", GenericNodeFontSizeCalculator.class), 
+	NODE_LABEL_COLOR("Node Label Color", "nodeLabelColor", "node.labelColor",
+	                 "defaultNodeLabelColor", GenericNodeLabelColorCalculator.class), 
+	NODE_TOOLTIP("Node Tooltip", "nodeTooltipCalculator", "node.toolTip", "defaultNodeToolTip",
+	             GenericNodeToolTipCalculator.class), 
+	NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator", "node.labelPosition",
+	                    "defaultNodeLabelPosition", GenericNodeLabelPositionCalculator.class), 
+	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
+	           GenericEdgeColorCalculator.class), 
+	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
+	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class), 
+	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
+	              "defaultEdgeSourceArrow", GenericEdgeSourceArrowCalculator.class), 
+	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
+	              "defaultEdgeTargetArrow", GenericEdgeTargetArrowCalculator.class), 
+	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
+	           GenericEdgeLabelCalculator.class), 
+	EDGE_FONT_FACE("Edge Font Face", "edgeFontFaceCalculator", "edge.font", "defaultEdgeFont",
+	               GenericEdgeFontFaceCalculator.class), 
+	EDGE_FONT_SIZE("Edge Font Size", "edgeFontSizeCalculator", "edge.fontSize",
+	               "defaultEdgeFontSize", GenericEdgeFontSizeCalculator.class), 
+	EDGE_LABEL_COLOR("Edge Label Color", "edgeLabelColorCalculator", "edge.labelColor",
+	                 "defaultEdgeLabelColor", GenericEdgeLabelColorCalculator.class), 
+	EDGE_TOOLTIP("Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip", "defaultEdgeToolTip",
+	             GenericEdgeToolTipCalculator.class), 
 
 	//New from 2.5: line can have arbitrary width.
-	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator",
-			"node.lineWidth", "defaultNodeLineWidth",
-			GenericNodeLineWidthCalculator.class), 
-	EDGE_LINE_WIDTH(
-			"Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
-			"defaultEdgeLineWidth", GenericEdgeLineWidthCalculator.class),
-	
-	// New from 2.5: arrows have its own color, shape, and size.
-	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape",
-			"edgeSourceArrowShapeCalculator", "edge.sourceArrowShape",
-			"defaultEdgeSourceArrowShape",
-			GenericEdgeSourceArrowShapeCalculator.class), 
-	EDGE_TGTARROW_SHAPE(
-			"Edge Target Arrow Shape", "edgeTargetArrowShapeCalculator",
-			"edge.targetArrowShape", "defaultEdgeTargetArrowShape",
-			GenericEdgeTargetArrowShapeCalculator.class), 
-	EDGE_SRCARROW_COLOR(
-			"Edge Source Arrow Color", "edgeSourceArrowColorCalculator",
-			"edge.sourceArrowColor", "defaultEdgeSourceArrowColor",
-			GenericEdgeSourceArrowColorCalculator.class), 
-	EDGE_TGTARROW_COLOR(
-			"Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
-			"edge.targetArrowColor", "defaultEdgeTargetArrowColor",
-			GenericEdgeTargetArrowColorCalculator.class),
-			
-	// Will be used in future.
-	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator",
-			"edge.labelPosition", "defaultEdgeLabelPosition", null);
+	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator", "node.lineWidth",
+	                "defaultNodeLineWidth", GenericNodeLineWidthCalculator.class), 
+	EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
+	                "defaultEdgeLineWidth", GenericEdgeLineWidthCalculator.class), 
 
+	// New from 2.5: arrows have its own color, shape, and size.
+	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape", "edgeSourceArrowShapeCalculator",
+	                    "edge.sourceArrowShape", "defaultEdgeSourceArrowShape",
+	                    GenericEdgeSourceArrowShapeCalculator.class), 
+	EDGE_TGTARROW_SHAPE("Edge Target Arrow Shape", "edgeTargetArrowShapeCalculator",
+	                    "edge.targetArrowShape", "defaultEdgeTargetArrowShape",
+	                    GenericEdgeTargetArrowShapeCalculator.class), 
+	EDGE_SRCARROW_COLOR("Edge Source Arrow Color", "edgeSourceArrowColorCalculator",
+	                    "edge.sourceArrowColor", "defaultEdgeSourceArrowColor",
+	                    GenericEdgeSourceArrowColorCalculator.class), 
+	EDGE_TGTARROW_COLOR("Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
+	                    "edge.targetArrowColor", "defaultEdgeTargetArrowColor",
+	                    GenericEdgeTargetArrowColorCalculator.class), 
+
+	// Will be used in future.
+	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
+	                    "defaultEdgeLabelPosition", null);
 	/*
 	 * String returned by toString() method.
 	 */
@@ -194,9 +163,9 @@ public enum VisualPropertyType {
 	/*
 	 * private constructor to put name into this enum.
 	 */
-	private VisualPropertyType(final String calcName,
-			final String propertyLabel, final String bypassAttrName,
-			final String defaultPropertyLabel, final Class calculatorClass) {
+	private VisualPropertyType(final String calcName, final String propertyLabel,
+	                           final String bypassAttrName, final String defaultPropertyLabel,
+	                           final Class calculatorClass) {
 		this.calcName = calcName;
 		this.propertyLabel = propertyLabel;
 		this.bypassAttrName = bypassAttrName;
@@ -214,7 +183,7 @@ public enum VisualPropertyType {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getName() {
@@ -223,7 +192,7 @@ public enum VisualPropertyType {
 
 	/**
 	 * Returns string used as property label in VS prop file.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getPropertyLabel() {
@@ -232,7 +201,7 @@ public enum VisualPropertyType {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getBypassAttrName() {
@@ -241,7 +210,7 @@ public enum VisualPropertyType {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getDefaultPropertyLabel() {
@@ -250,10 +219,10 @@ public enum VisualPropertyType {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param baseKey
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getDefaultPropertyKey(final String baseKey) {
@@ -262,7 +231,7 @@ public enum VisualPropertyType {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Class getCalculatorClass() {
@@ -272,9 +241,9 @@ public enum VisualPropertyType {
 	/**
 	 * Return position in thie enum as byte.<br>
 	 * Will be used as type.
-	 * 
+	 *
 	 * DO NOT USE THIS. This is only for backward compatibility.
-	 * 
+	 *
 	 * @return byte type
 	 */
 	@Deprecated
@@ -284,18 +253,15 @@ public enum VisualPropertyType {
 
 	/**
 	 * DO NOT USE THIS. This is only for backward compatibility.
-	 * 
+	 *
 	 * @param type
 	 * @return
 	 */
 	@Deprecated
 	public static VisualPropertyType getVisualPorpertyType(byte type) {
-
 		/*
 		 * Type is always equal to ordinal.
 		 */
 		return values()[type];
-
 	}
-
 }

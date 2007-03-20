@@ -36,19 +36,12 @@
 */
 
 // TextJarReaderTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.readers;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.readers.TextJarReader;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.IOException;
@@ -56,12 +49,10 @@ import java.io.IOException;
 import java.net.URL;
 
 
-//-----------------------------------------------------------------------------------------
 /**
  *
  */
 public class TextJarReaderTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new TextJarReaderTest object.
 	 *
@@ -71,7 +62,6 @@ public class TextJarReaderTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -139,7 +129,6 @@ public class TextJarReaderTest extends TestCase {
 		fail("didn't catch an expected exception for url: " + url.toString());
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -148,6 +137,4 @@ public class TextJarReaderTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(TextJarReaderTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // TextJarReaderTest

@@ -64,17 +64,17 @@ import javax.swing.JFileChooser;
  */
 public abstract class FileUtil {
 	/**
-	 * 
+	 *
 	 */
 	public static int LOAD = FileDialog.LOAD;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int SAVE = FileDialog.SAVE;
 
 	/**
-	 * 
+	 *
 	 */
 	public static int CUSTOM = LOAD + SAVE;
 

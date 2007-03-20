@@ -70,7 +70,7 @@ import javax.swing.AbstractAction;
  */
 public class ExportAction extends CytoscapeAction {
 	/**
-	 * 
+	 *
 	 */
 	public final static String MENU_LABEL = "Export As...";
 

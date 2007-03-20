@@ -96,13 +96,12 @@ public class GenericNodeFillColorCalculator extends GenericNodeColorCalculator
 		return "Node Color";
 	}
 
-    /**
+	/**
 	 * Used to set the various properties throughout the hierarchy.
 	 */
 	private void set() {
-		set( VizMapUI.NODE_COLOR, "nodeFillColorCalculator", "Node Color" );
+		set(VizMapUI.NODE_COLOR, "nodeFillColorCalculator", "Node Color");
 	}
-
 
 	GenericNodeFillColorCalculator() {
 		super();

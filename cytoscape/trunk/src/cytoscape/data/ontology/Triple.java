@@ -53,6 +53,7 @@ public class Triple extends AbstractChangeable implements org.biojava.ontology.T
 	 *
 	 * @see org.biojava.ontology.Triple#getObject()
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -67,6 +68,7 @@ public class Triple extends AbstractChangeable implements org.biojava.ontology.T
 	 *
 	 * @see org.biojava.ontology.Triple#getPredicate()
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -81,6 +83,7 @@ public class Triple extends AbstractChangeable implements org.biojava.ontology.T
 	 *
 	 * @see org.biojava.ontology.Triple#getSubject()
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

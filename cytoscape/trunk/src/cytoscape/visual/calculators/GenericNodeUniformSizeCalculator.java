@@ -94,12 +94,12 @@ public class GenericNodeUniformSizeCalculator extends GenericNodeSizeCalculator
 		return "Node Size";
 	}
 
-    /**
-     * Used to set the various properties throughout the hierarchy.
-     */
-    private void set() {
-        set( VizMapUI.NODE_SIZE, "nodeUniformSizeCalculator", "Node Size" );
-    }
+	/**
+	 * Used to set the various properties throughout the hierarchy.
+	 */
+	private void set() {
+		set(VizMapUI.NODE_SIZE, "nodeUniformSizeCalculator", "Node Size");
+	}
 
 	GenericNodeUniformSizeCalculator() {
 		super();

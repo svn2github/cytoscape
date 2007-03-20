@@ -94,11 +94,11 @@ public class GenericNodeWidthCalculator extends GenericNodeSizeCalculator
 		return "Node Width";
 	}
 
-	/** 
+	/**
 	 * Used to set the various properties throughout the hierarchy.
 	 */
 	private void set() {
-		set( VizMapUI.NODE_WIDTH, "nodeWidthCalculator", "Node Width" );
+		set(VizMapUI.NODE_WIDTH, "nodeWidthCalculator", "Node Width");
 	}
 
 	GenericNodeWidthCalculator() {

@@ -36,21 +36,13 @@
 */
 
 // Ontology.java
-
-//------------------------------------------------------------------------------
-// $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import java.io.*;
 
-//-----------------------------------------------------------------------------------
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *  Contains a collection of OntologyTerms, each of which may have pointers
  *  to other terms, creating a hierarchical controlled vocabulary.  The pointers
@@ -67,7 +59,6 @@ public class Ontology implements Serializable {
 	protected String ontologyType; // biological process, metabolic pathway, ...
 	protected HashMap termHash;
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  @param curator        The institute or group which maintains this ontology
 	 *  @param ontolotyType   The nature of this ontology, eg, "metabolic pathway",
@@ -78,7 +69,6 @@ public class Ontology implements Serializable {
 		this.ontologyType = ontologyType;
 		termHash = new HashMap();
 	} // ctor
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -89,7 +79,6 @@ public class Ontology implements Serializable {
 		return curator;
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -99,7 +88,6 @@ public class Ontology implements Serializable {
 		return ontologyType;
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -108,7 +96,6 @@ public class Ontology implements Serializable {
 	public void add(OntologyTerm newTerm) {
 		termHash.put(new Integer(newTerm.getId()), newTerm);
 	} // add
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -118,7 +105,6 @@ public class Ontology implements Serializable {
 	public int size() {
 		return termHash.size();
 	} // size
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -129,7 +115,6 @@ public class Ontology implements Serializable {
 		return termHash;
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -141,7 +126,6 @@ public class Ontology implements Serializable {
 		return termHash.containsKey(new Integer(id));
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -153,7 +137,6 @@ public class Ontology implements Serializable {
 		return (OntologyTerm) termHash.get(new Integer(id));
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  get all unique paths from the termID to the root of the ontology, in reverse
 	 *  order, with the most general classification first, and most specific last.  for some
@@ -181,7 +164,6 @@ public class Ontology implements Serializable {
 
 		return result;
 	} // getAllHierarchyPaths
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -207,7 +189,6 @@ public class Ontology implements Serializable {
 
 		return result;
 	} // getAllHierarchyPathsAsNames
-	  //------------------------------------------------------------------------------
 
 	protected Vector getAllHierarchyPathsAsVector(int termID) {
 		Vector nestedLists = recursiveGetPath(termID, new Vector());
@@ -220,7 +201,6 @@ public class Ontology implements Serializable {
 
 		return flattenedList;
 	} // getAllHierarchyPathsAsVector
-	  //------------------------------------------------------------------------------
 
 	protected Vector recursiveGetPath(int termID, Vector path) {
 		Integer ID = new Integer(termID);
@@ -252,7 +232,6 @@ public class Ontology implements Serializable {
 
 		return path;
 	} // recursiveGetPath
-	  //------------------------------------------------------------------------------
 
 	protected Vector oldRecursiveGetPath(int termID, Vector path) {
 		Integer ID = new Integer(termID);
@@ -288,7 +267,6 @@ public class Ontology implements Serializable {
 
 		return path;
 	} // oldRecursiveGetPath
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -299,7 +277,6 @@ public class Ontology implements Serializable {
 		return new OntologyDescription(curator, ontologyType);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -312,5 +289,4 @@ public class Ontology implements Serializable {
 
 		return sb.toString();
 	} // toString
-	  //------------------------------------------------------------------------------
 } // class Ontology

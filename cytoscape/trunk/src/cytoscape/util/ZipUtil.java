@@ -69,8 +69,9 @@ public class ZipUtil {
 	 * and 9 will make the most space-efficeint zip file. However, it takes
 	 * long!
 	 */
+
 	/**
-	 * 
+	 *
 	 */
 	public static final int DEF_COMPRESSION_LEVEL = 1;
 	private String zipArchiveName;

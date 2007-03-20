@@ -69,6 +69,7 @@ public class CytoPanelState {
 	/*
 	 * In case a someone wants to translated a state into printable strings
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

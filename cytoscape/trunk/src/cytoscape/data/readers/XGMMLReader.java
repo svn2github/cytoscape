@@ -39,9 +39,9 @@ package cytoscape.data.readers;
 import cern.colt.list.IntArrayList;
 
 import cytoscape.CyEdge;
+import cytoscape.CyGroup;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.CyGroup;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -561,7 +561,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		// Get the actual node of the parent
 		final CyNode groupNode = Cytoscape.getCyNode(name, false);
 
-		List<CyNode>nodeList = new ArrayList();
+		List<CyNode> nodeList = new ArrayList();
 
 		while (it.hasNext()) {
 			GraphicNode childNode = (GraphicNode) it.next();
@@ -579,7 +579,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			if (targetNodeName == null)
 				continue;
 
-			CyNode targetChildNode = (CyNode)Cytoscape.getRootGraph().getNode(targetNodeName);
+			CyNode targetChildNode = (CyNode) Cytoscape.getRootGraph().getNode(targetNodeName);
 
 			nodeList.add(targetChildNode);
 		}
@@ -630,6 +630,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
+
 		CyNetwork network = ((CyNetworkView) myView).getNetwork();
 
 		/*
@@ -637,6 +638,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		 * that this must be done in depth-first order!
 		 */
 		ArrayList<CyGroup> groupList = new ArrayList();
+
 		for (int i = 0; i < groupTree.size(); i++) {
 			GraphicNode parent = (GraphicNode) groupTree.get(i++);
 			List children = (List) groupTree.get(i);
@@ -667,12 +669,14 @@ public class XGMMLReader extends AbstractGraphReader {
 		// Finally, for each group, we want to remove the parent from the network and set
 		// (and notify) the appropriate viewer.
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
 		for (int i = 0; i < groupList.size(); i++) {
 			CyGroup group = groupList.get(i);
 			CyNode groupNode = group.getGroupNode();
+
 			// Get the viewer
 			String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
-			                                                  CyGroup.GROUP_VIEWER_ATTR); 
+			                                                  CyGroup.GROUP_VIEWER_ATTR);
 			// Remove the group node from the network (but not from the rootGraph)
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 
@@ -1082,7 +1086,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		/* check args
 		if (dataType == null) {
-			return;
+		    return;
 		}
 		*/
 
@@ -1459,7 +1463,7 @@ public class XGMMLReader extends AbstractGraphReader {
 				attrs.add(curObj);
 			} else if (curObj.getClass() == JAXBElement.class) {
 				// Recurse
-				getNodesAndEdges(((JAXBElement<GraphicGraph>)curObj).getValue(), parent);
+				getNodesAndEdges(((JAXBElement<GraphicGraph>) curObj).getValue(), parent);
 			}
 		}
 

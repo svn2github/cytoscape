@@ -38,9 +38,6 @@
 // Exec.java
 
 // exec a child process, and get its stdout & stderr
-//---------------------------------------------------------------------------
-// rcs:  $Revision$ $Date$
-//---------------------------------------------------------------------------
 package cytoscape.util;
 
 import java.io.*;
@@ -48,8 +45,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import java.lang.Process;
-
-//---------------------------------------------------------------------------
 import java.lang.Runtime;
 import java.lang.Runtime;
 
@@ -57,7 +52,6 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 
-//---------------------------------------------------------------------------
 /**
  *
  */
@@ -70,7 +64,6 @@ public class Exec {
 	String stdout;
 	String stderr;
 
-	//---------------------------------------------------------------------------
 	/**
 	 * Creates a new Exec object.
 	 */
@@ -78,7 +71,6 @@ public class Exec {
 		this(null);
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 * Creates a new Exec object.
 	 *
@@ -90,7 +82,6 @@ public class Exec {
 		stderrResults = new Vector(10);
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -100,7 +91,6 @@ public class Exec {
 		stringToSendToStandardInput = input;
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -119,7 +109,6 @@ public class Exec {
 
 		cmd = revisedCmd;
 	} // setRunInBackground
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -136,7 +125,6 @@ public class Exec {
 
 		return sb.toString();
 	} // getCmd
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -160,9 +148,9 @@ public class Exec {
 			//Process process = runtime.exec (cmd);
 			Process process = runtime.exec(cmdSB.toString());
 			BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process
-			                                                                                                                                                       .getInputStream()));
+			                                                                                                                                           .getInputStream()));
 			BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process
-			                                                                                                                                                         .getErrorStream()));
+			                                                                                                                                             .getErrorStream()));
 
 			if (stringToSendToStandardInput != null) {
 				// A PrintStream adds functionality to another output stream, namely the
@@ -204,7 +192,6 @@ public class Exec {
 
 		return execExitValue;
 	} // run
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -227,9 +214,9 @@ public class Exec {
 		Process process = runtime.exec(cmdSB.toString());
 
 		final BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process
-		                                                                                                                                                                                                                              .getInputStream()));
+		                                                                                                                                                                                                                 .getInputStream()));
 		final BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process
-		                                                                                                                                                                                                                                .getErrorStream()));
+		                                                                                                                                                                                                                   .getErrorStream()));
 		final StringBuffer stdoutSB = new StringBuffer();
 		final StringBuffer stderrSB = new StringBuffer();
 
@@ -276,7 +263,6 @@ public class Exec {
 
 		return execExitValue;
 	} // runThreaded
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -287,7 +273,6 @@ public class Exec {
 		return stdoutResults;
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -297,7 +282,6 @@ public class Exec {
 		return stderrResults;
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -307,7 +291,6 @@ public class Exec {
 		return stdout;
 	}
 
-	//---------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -316,6 +299,4 @@ public class Exec {
 	public String getStderrAsString() {
 		return stderr;
 	}
-
-	//---------------------------------------------------------------------------
 } // Exec.java

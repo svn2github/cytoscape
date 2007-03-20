@@ -36,12 +36,6 @@
 */
 
 // ThesaurusFlatFileReaderTest
-
-//------------------------------------------------------------------------------
-// $Revision$  
-// $Date$
-// $Author$
-//------------------------------------------------------------------------------
 package cytoscape.data.synonyms.readers;
 
 import cytoscape.AllTests;
@@ -57,18 +51,15 @@ import org.jdom.input.*;
 
 import org.jdom.output.*;
 
-//------------------------------------------------------------------------------
 import java.io.*;
 
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  * test the ThesaurusFlatFileReader class
  */
 public class ThesaurusFlatFileReaderTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new ThesaurusFlatFileReaderTest object.
 	 *
@@ -78,7 +69,6 @@ public class ThesaurusFlatFileReaderTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -87,7 +77,6 @@ public class ThesaurusFlatFileReaderTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -96,7 +85,6 @@ public class ThesaurusFlatFileReaderTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  read a small sample yeast thesaurus file
 	 */
@@ -144,7 +132,6 @@ public class ThesaurusFlatFileReaderTest extends TestCase {
 			assertTrue(alternateNames.length == alternateNameCount[i]);
 		}
 	} // testReadSmallYeastThesaurus
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -154,5 +141,4 @@ public class ThesaurusFlatFileReaderTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(ThesaurusFlatFileReaderTest.class));
 	} // main
-	  //------------------------------------------------------------------------------
 } // class ThesaurusFlatFileReaderTest

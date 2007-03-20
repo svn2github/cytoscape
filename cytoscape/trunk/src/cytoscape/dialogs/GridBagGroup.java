@@ -61,17 +61,17 @@ import javax.swing.border.*;
  */
 public class GridBagGroup {
 	/**
-	 * 
+	 *
 	 */
 	public JPanel panel;
 
 	/**
-	 * 
+	 *
 	 */
 	public GridBagLayout gridbag;
 
 	/**
-	 * 
+	 *
 	 */
 	public GridBagConstraints constraints;
 

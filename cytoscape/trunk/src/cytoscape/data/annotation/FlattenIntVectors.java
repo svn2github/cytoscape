@@ -34,20 +34,11 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-// FlattenIntVectors//-------------------------------------------------------------------------------
-
-// $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
-//-----------------------------------------------------------------------------------
 import java.util.Vector;
 
 
-//-------------------------------------------------------------------------------
 /**  given a vector which nests other vectors, each resolving
  *   eventually to a list of Integers, flatten it out into a simple 1-level-deep
  *   vector of Integer vectors.
@@ -63,7 +54,6 @@ import java.util.Vector;
 public class FlattenIntVectors {
 	Vector result = new Vector();
 
-	//-------------------------------------------------------------------------------
 	/**
 	 * Creates a new FlattenIntVectors object.
 	 *
@@ -73,7 +63,6 @@ public class FlattenIntVectors {
 		flatten(v);
 	}
 
-	//-------------------------------------------------------------------------------
 	private void flatten(Vector v) {
 		if (v == null)
 			return;
@@ -91,7 +80,6 @@ public class FlattenIntVectors {
 			} // for i
 		} // else
 	} // flatten
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -101,6 +89,4 @@ public class FlattenIntVectors {
 	public Vector getResult() {
 		return result;
 	}
-
-	//-------------------------------------------------------------------------------
 } // FlattenIntVectors

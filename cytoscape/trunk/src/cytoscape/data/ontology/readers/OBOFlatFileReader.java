@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data.ontology.readers;
 
 import cytoscape.CyNetwork;
@@ -100,12 +98,12 @@ import java.util.TreeSet;
  */
 public class OBOFlatFileReader implements OntologyReader {
 	/**
-	 * 
+	 *
 	 */
 	public static final String ONTOLOGY_DAG_ROOT = "Ontology DAGs";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String OBO_PREFIX = "ontology";
 	private static final String DEF_ORIGIN = "def_origin";
@@ -278,7 +276,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				Map<String, String> synoMap = termAttributes.getMapAttribute(id,
 				                                                             OBO_PREFIX + "."
 				                                                             + OBOTags.SYNONYM
-				                                                                                                                                                                                                                                                                         .toString());
+				                                                                                                                                                                                                                                                                       .toString());
 
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();

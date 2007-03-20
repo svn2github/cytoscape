@@ -36,12 +36,6 @@
 */
 
 // InteractionsReaderTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.readers;
 
 import cytoscape.AllTests;
@@ -56,7 +50,6 @@ import cytoscape.data.servers.BioDataServer;
 
 import giny.model.RootGraph;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
@@ -66,7 +59,6 @@ import java.util.HashMap;
 import java.util.Vector;
 
 
-//-----------------------------------------------------------------------------------------
 /**
  *
  */
@@ -75,7 +67,6 @@ public class InteractionsReaderTest extends TestCase {
 	private BioDataServer nullServer = null;
 	private String species = "unknown";
 
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new InteractionsReaderTest object.
 	 *
@@ -86,7 +77,6 @@ public class InteractionsReaderTest extends TestCase {
 		runAllTests = AllTests.runAllTests();
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -95,7 +85,6 @@ public class InteractionsReaderTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -104,13 +93,13 @@ public class InteractionsReaderTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public void testReadFromTypicalFile() throws Exception// 'typical' means that all lines have the form "node1 pd node2 [node3 node4 ...]
+	public void testReadFromTypicalFile()
+	    throws Exception // 'typical' means that all lines have the form "node1 pd node2 [node3 node4 ...]
 	 {
 		AllTests.standardOut("testFromTypicalFile");
 
@@ -126,16 +115,16 @@ public class InteractionsReaderTest extends TestCase {
 
 		assertTrue(interactions[11].numberOfTargets() == 3);
 	} // testReadFromTypicalFile
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public void testReadFileWithNoInteractions() throws Exception// all lines have the degenerate form 
-	//   "node1"
-	// that is, with no interaction type and no target
+	public void testReadFileWithNoInteractions()
+	    throws Exception // all lines have the degenerate form 
+	                     //   "node1"
+	                     // that is, with no interaction type and no target
 	 {
 		AllTests.standardOut("testReadFileWithNoInteractions");
 
@@ -151,7 +140,6 @@ public class InteractionsReaderTest extends TestCase {
 			assertTrue(interactions[i].numberOfTargets() == 0);
 		}
 	} // testReadFileWithNoInteractions
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -171,18 +159,18 @@ public class InteractionsReaderTest extends TestCase {
 		assertTrue("node count: expect 31, got " + nodes.length, nodes.length == 31);
 		assertTrue("edge count: expect 27, got " + edges.length, edges.length == 27);
 	} // testGetGraph
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public void testGetGraphAndEdgeAttributes() throws Exception// when an interactions file is read, and a graph created, an
-	// GraphObjAttrib*tes hash is created, and all of the edge types are added
-	// to it.  make sure that works:  make sure the reader returns an
-	// GraphObjAttrib*tes object; that it has the right size; that the keys
-	// look like "node1::node2", and that the values are simple strings
+	public void testGetGraphAndEdgeAttributes()
+	    throws Exception // when an interactions file is read, and a graph created, an
+	                     // GraphObjAttrib*tes hash is created, and all of the edge types are added
+	                     // to it.  make sure that works:  make sure the reader returns an
+	                     // GraphObjAttrib*tes object; that it has the right size; that the keys
+	                     // look like "node1::node2", and that the values are simple strings
 	 {
 		AllTests.standardOut("testGetGraphAndEdgeAttributes");
 
@@ -210,7 +198,6 @@ public class InteractionsReaderTest extends TestCase {
 		//     assertTrue (interactionType.equals ("pd"));
 		//     }
 	} // testGetGraphAndEdgeAttributes
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -243,7 +230,6 @@ public class InteractionsReaderTest extends TestCase {
 		assertTrue(interactions[28].getTargets()[1].equals("ABCDE oopah"));
 		assertTrue(interactions[28].getTargets()[2].equals("HJKOL coltrane"));
 	} // testReadMultiWordProteinsFile
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -287,7 +273,6 @@ public class InteractionsReaderTest extends TestCase {
 		return reader;
 	}
 
-	//-------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -296,6 +281,4 @@ public class InteractionsReaderTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(InteractionsReaderTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // InteractionsReaderTest

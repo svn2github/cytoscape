@@ -49,47 +49,47 @@ import java.util.regex.Pattern;
  */
 public class LabelPosition {
 	/**
-	 * 
+	 *
 	 */
 	public static final String northWestName = "Northwest";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String northName = "North";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String northEastName = "Northeast";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String westName = "West";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String centerName = "Center";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String eastName = "East";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String southWestName = "Southwest";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String southName = "South";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String southEastName = "Southeast";
 	protected static final String nwName = "NW";
@@ -103,22 +103,22 @@ public class LabelPosition {
 	protected static final String seName = "SE";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String noName = "none";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String justifyCenterName = "Center Justified";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String justifyLeftName = "Left Justified";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String justifyRightName = "Right Justified";
 	protected static final String justifyCName = "c";
@@ -534,7 +534,7 @@ public class LabelPosition {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LabelPosition DEFAULT = new LabelPosition();
 }

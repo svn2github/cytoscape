@@ -37,10 +37,11 @@
 package cytoscape;
 
 import cytoscape.giny.CytoscapeFingRootGraph;
-import java.util.List;
-import java.util.ArrayList;
 
 import giny.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 // Package visible class.
@@ -155,7 +156,9 @@ public class CyNode implements giny.model.Node {
 		// hits on CyNodes!
 		if (groupList == null)
 			groupList = new ArrayList();
+
 		groupList.add(group);
+
 		if (!group.contains(this))
 			group.addNode(this);
 	}
@@ -168,6 +171,7 @@ public class CyNode implements giny.model.Node {
 	public void removeFromGroup(CyGroup group) {
 		groupList.remove(group);
 		groupList.trimToSize();
+
 		if (group.contains(this))
 			group.removeNode(this);
 	}
@@ -180,7 +184,7 @@ public class CyNode implements giny.model.Node {
 	public List<CyGroup> getGroups() {
 		return groupList;
 	}
-	
+
 	/**
 	 * Check to see if this node is a member of the requested group
 	 *
@@ -190,6 +194,7 @@ public class CyNode implements giny.model.Node {
 	public boolean inGroup(CyGroup group) {
 		if (groupList == null)
 			return false;
+
 		return groupList.contains(group);
 	}
 

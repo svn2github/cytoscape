@@ -36,29 +36,20 @@
 */
 
 // Misc.java:  miscellaneous static utilities
-
-//--------------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.util;
 
 import java.awt.Color;
 import java.awt.Polygon;
 
-//--------------------------------------------------------------------------------------
 import java.io.*;
 
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *
  */
 public class Misc {
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -89,7 +80,6 @@ public class Misc {
 			return Color.black;
 		}
 	} // parseRGBText
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -106,7 +96,6 @@ public class Misc {
 		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
 	} //getRGBText
 
-	//----------------------------------------------------------------------------------------
 	/**
 	 * return the (possibly multiple) value of the specified property as a vector.
 	 * property values (which typically come from cytoscape.prop files)
@@ -139,7 +128,6 @@ public class Misc {
 
 		return result;
 	} // getPropertyValues
-	  //----------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -162,7 +150,6 @@ public class Misc {
 
 			return false;
 	} // isList
-	  //----------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -201,5 +188,4 @@ public class Misc {
 		return (String []) list.toArray (new String [0]);
 		**********************/
 	} // parseList
-	  //----------------------------------------------------------------------------------------
 } // class Misc

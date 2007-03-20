@@ -61,7 +61,7 @@ import javax.swing.JMenuItem;
  */
 public class CytoscapeMenuBar extends JMenuBar {
 	/**
-	 * 
+	 *
 	 */
 	public static final String DEFAULT_MENU_SPECIFIER = "Tools";
 	protected static final int NO_INDEX = -2;

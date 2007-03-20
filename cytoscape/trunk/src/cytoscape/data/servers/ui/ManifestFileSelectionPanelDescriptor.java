@@ -50,7 +50,7 @@ import java.io.File;
 public class ManifestFileSelectionPanelDescriptor extends WizardPanelDescriptor
     implements ActionListener {
 	/**
-	 * 
+	 *
 	 */
 	public static final String IDENTIFIER = "SELECT_OLDFILE_PANEL";
 	ManifestfileSelectionPanel manifestPanel;

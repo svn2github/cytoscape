@@ -63,6 +63,7 @@ import javax.swing.border.EmptyBorder;
  * Final Step for the new file format. This panel creates the manifest file and
  * load the biodataserver.
  */
+
 /**
  *
  */

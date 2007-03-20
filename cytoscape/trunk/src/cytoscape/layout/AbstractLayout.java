@@ -190,7 +190,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 
 	/**
 	 * This returns the list of "attributes" that are provided
-	 * by an algorithm for internal purposes.  For example, 
+	 * by an algorithm for internal purposes.  For example,
 	 * an edge-weighted algorithmn might seed the list of
 	 * attributes with "unweighted".  This should be overloaded
 	 * by algorithms that intend to return custom attributes.
@@ -399,7 +399,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * Unlock this node 
+	 * Unlock this node
 	 *
 	 * @param v A NodeView to unlock
 	 */

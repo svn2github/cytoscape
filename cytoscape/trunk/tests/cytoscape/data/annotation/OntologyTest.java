@@ -36,19 +36,12 @@
 */
 
 // OntologyTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.annotation.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
@@ -56,12 +49,10 @@ import java.io.*;
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  * test the Ontology class
  */
 public class OntologyTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new OntologyTest object.
 	 *
@@ -71,7 +62,6 @@ public class OntologyTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -80,7 +70,6 @@ public class OntologyTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -89,7 +78,6 @@ public class OntologyTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * make sure that the ctor properly initializes all relevant data structures
 	 * as seen through the standard getter methods
@@ -109,7 +97,6 @@ public class OntologyTest extends TestCase {
 		assertTrue(description.getCurator().equals(expectedCurator));
 		assertTrue(description.getType().equals(expectedOntologyType));
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -142,7 +129,6 @@ public class OntologyTest extends TestCase {
 
 		assertTrue(ontology.getTerms().size() == 2);
 	} // testAdd
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -185,7 +171,6 @@ public class OntologyTest extends TestCase {
 		assertTrue(h[1][2] == 530);
 		assertTrue(h[1][3] == 666);
 	} // testGetHierarchyInts
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -233,7 +218,6 @@ public class OntologyTest extends TestCase {
 		assertTrue(h[1][2].equals("Starch and sucrose metabolism"));
 		assertTrue(h[1][3].equals("Two Parents"));
 	} // testGetHierarchy
-	  //-------------------------------------------------------------------------
 
 	private void printHierarchy(int[][] hierarchy) {
 		for (int i = 0; i < hierarchy.length; i++) {
@@ -245,7 +229,6 @@ public class OntologyTest extends TestCase {
 			AllTests.standardOut("\n");
 		} // for i
 	} // printHierarchy
-	  //-------------------------------------------------------------------------
 
 	private void printHierarchy(String[][] hierarchy) {
 		for (int i = 0; i < hierarchy.length; i++) {
@@ -261,7 +244,6 @@ public class OntologyTest extends TestCase {
 			AllTests.standardOut("\n");
 		} // for i
 	} // printHierarchy
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -271,6 +253,4 @@ public class OntologyTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(OntologyTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // OntologyTest

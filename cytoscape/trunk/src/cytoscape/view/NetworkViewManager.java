@@ -412,15 +412,13 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			} catch (Exception e) {
 				// possible error
 			}
-		}
-		else if (VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW) {
+		} else if (VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW) {
 			try {
 				((JInternalFrame) networkViewMap.get(view.getNetwork().getIdentifier())).dispose();
 			} catch (Exception e) {
 				System.err.println("Network View unable to be killed");
 			}
-		}
-		else if (VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW) {
+		} else if (VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW) {
 			try {
 				((JFrame) networkViewMap.get(view.getNetwork().getIdentifier())).dispose();
 			} catch (Exception e) {
@@ -446,8 +444,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 			networkViewMap.put(view.getNetwork().getIdentifier(), view.getComponent());
 			componentMap.put(view.getComponent(), view.getNetwork().getIdentifier());
-		}
-		else if (VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW) {
+		} else if (VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW) {
 			// create a new InternalFrame and put the CyNetworkViews Component into it
 			JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true, true, true);
 			iframe.addInternalFrameListener(new InternalFrameAdapter() {
@@ -460,7 +457,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			// code added to support layered canvas for each CyNetworkView
 			if (view instanceof DGraphView) {
 				InternalFrameComponent internalFrameComp = new InternalFrameComponent(iframe
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getLayeredPane(),
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getLayeredPane(),
 				                                                                      (DGraphView) view);
 				iframe.setContentPane(internalFrameComp);
 				internalFrameComponentMap.put(view.getNetwork().getIdentifier(), internalFrameComp);
@@ -487,8 +484,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 			networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
 			componentMap.put(iframe, view.getNetwork().getIdentifier());
-		}
-		else if (VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW) {
+		} else if (VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW) {
 			// create a new JFrame and put the CyNetworkViews Component into it
 			JFrame frame = new JFrame(view.getNetwork().getTitle());
 			frame.getContentPane().add(view.getComponent());

@@ -77,8 +77,9 @@ public class MetadataParser {
 	/*
 	 * Actual CyAttribute name for the network metadata
 	 */
+
 	/**
-	 * 
+	 *
 	 */
 	public static final String DEFAULT_NETWORK_METADATA_LABEL = "Network Metadata";
 

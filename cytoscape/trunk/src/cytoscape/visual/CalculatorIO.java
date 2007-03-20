@@ -62,17 +62,17 @@ import java.util.*;
 public class CalculatorIO {
 	// old labels no longer used, but that we need to account for
 	/**
-	 * 
+	 *
 	 */
 	public static final String nodeColorBaseKey = "nodeColorCalculator";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String nodeSizeBaseKey = "nodeSizeCalculator";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String edgeArrowBaseKey = "edgeArrowCalculator";
 

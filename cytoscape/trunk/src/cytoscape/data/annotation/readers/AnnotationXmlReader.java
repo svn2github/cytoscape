@@ -36,10 +36,6 @@
 */
 
 // AnnotationXmlReader.java
-
-//------------------------------------------------------------------------------
-// $Revision$  $Date$
-//------------------------------------------------------------------------------
 package cytoscape.data.annotation.readers;
 
 import cytoscape.data.annotation.*;
@@ -50,7 +46,6 @@ import org.jdom.input.*;
 
 import org.jdom.output.*;
 
-//------------------------------------------------------------------------------
 import java.io.*;
 
 import java.util.List;
@@ -58,7 +53,6 @@ import java.util.ListIterator;
 import java.util.Vector;
 
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -67,7 +61,6 @@ public class AnnotationXmlReader {
 	Annotation annotation;
 	File directoryAbsolute;
 
-	//-------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationXmlReader object.
 	 *
@@ -87,7 +80,6 @@ public class AnnotationXmlReader {
 		read();
 	}
 
-	//-------------------------------------------------------------------------
 	private void read() throws Exception {
 		SAXBuilder builder = new SAXBuilder();
 		Document doc = builder.build(xmlFile);
@@ -124,7 +116,6 @@ public class AnnotationXmlReader {
 			annotation.add(entityName, id);
 		}
 	} // read
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -134,6 +125,4 @@ public class AnnotationXmlReader {
 	public Annotation getAnnotation() {
 		return annotation;
 	}
-
-	//-------------------------------------------------------------------------
 } // class AnnotationXmlReader

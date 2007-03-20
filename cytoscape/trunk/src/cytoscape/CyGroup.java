@@ -1,52 +1,52 @@
 /* vim :set ts=2: */
 /*
-  File: CyGroup.java 
-  
+  File: CyGroup.java
+
   Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-  
-  The Cytoscape Consortium is: 
+
+  The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies
-  
+
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
   any later version.
-  
+
   This library is distributed in the hope that it will be useful, but
   WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
   documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have no obligations to provide maintenance, support,
   updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   be liable to any party for direct, indirect, special,
   incidental or consequential damages, including lost profits, arising
   out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute 
+  Institute for Systems Biology and the Whitehead Institute
   have been advised of the possibility of such damage.  See
   the GNU Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape;
-
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collection;
 
 import cytoscape.data.CyAttributes;
 
 import giny.model.RootGraph;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * The CyGroup class provides the implementation for a group model that
@@ -56,8 +56,7 @@ import giny.model.RootGraph;
  * with the network, nodes, and edges involved.  These attributes provide a natural
  * mechanism for the saving and restoration of groups.  There are also opaque flags
  */
-public class CyGroup 
-{
+public class CyGroup {
 	// Static data
 
 	/**
@@ -74,34 +73,34 @@ public class CyGroup
 	 * The list of groups, indexed by the CyNode that represents the group.  The values
 	 * are the CyGroup itself.
 	 */
-	private static HashMap<CyNode,CyGroup> groupMap = new HashMap();
+	private static HashMap<CyNode, CyGroup> groupMap = new HashMap();
 
 	/**
 	 * The list of group viewers currently registered.
 	 */
-	private static HashMap<String,CyGroupViewer> viewerMap = new HashMap();
+	private static HashMap<String, CyGroupViewer> viewerMap = new HashMap();
 
 	/**
 	 * The list of groups, indexed by the managing viewer
 	 */
-	private static HashMap<CyGroupViewer,List<CyGroup>> groupViewerMap = new HashMap();
+	private static HashMap<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap();
 
 	// Instance data
 
 	/**
 	 * The members of this group, indexed by the Node.
 	 */
-	private HashMap<CyNode,CyNode> nodeMap;
+	private HashMap<CyNode, CyNode> nodeMap;
 
 	/**
 	 * The edges in this group that only involve members of this group
 	 */
-	private HashMap<CyEdge,CyEdge> innerEdgeMap;
+	private HashMap<CyEdge, CyEdge> innerEdgeMap;
 
 	/**
 	 * The edges in this group that involve members outside of this group
 	 */
-	private HashMap<CyEdge,CyEdge> outerEdgeMap;
+	private HashMap<CyEdge, CyEdge> outerEdgeMap;
 
 	/**
 	 * A map storing the list of edges for a node at the time it was
@@ -145,9 +144,10 @@ public class CyGroup
 	 * @return the associated CyGroup structure
 	 */
 	public static CyGroup getCyGroup(CyNode groupNode) {
-		if (groupMap == null || !groupMap.containsKey(groupNode))
+		if ((groupMap == null) || !groupMap.containsKey(groupNode))
 			return null;
-		return (CyGroup)groupMap.get(groupNode);
+
+		return (CyGroup) groupMap.get(groupNode);
 	}
 
 	/**
@@ -158,14 +158,19 @@ public class CyGroup
 	 * @return a list of CyGroups this node is a member of
 	 */
 	public static List getGroup(CyNode memberNode) {
-		ArrayList<CyGroup>groupList = new ArrayList();
+		ArrayList<CyGroup> groupList = new ArrayList();
 		Iterator groupIter = groupMap.values().iterator();
+
 		while (groupIter.hasNext()) {
-			CyGroup group = (CyGroup)groupIter.next();
+			CyGroup group = (CyGroup) groupIter.next();
+
 			if (group.contains(memberNode))
 				groupList.add(group);
 		}
-		if (groupList.size() == 0) return null;
+
+		if (groupList.size() == 0)
+			return null;
+
 		return groupList;
 	}
 
@@ -176,6 +181,7 @@ public class CyGroup
 	 */
 	public static List getGroupList() {
 		Collection<CyGroup> c = groupMap.values();
+
 		return new ArrayList(c);
 	}
 
@@ -186,12 +192,13 @@ public class CyGroup
 	 */
 	public static List getGroupList(CyGroupViewer viewer) {
 		List<CyGroup> groupList = groupViewerMap.get(viewer);
+
 		return groupList;
 	}
 
 	/**
 	 * Create a new, empty group.  Use this to get a new group.  In particular,
-	 * this form should be used by internal routines (as opposed to view 
+	 * this form should be used by internal routines (as opposed to view
 	 * implementations) as this form will cause the viewer to be notified of
 	 * the group creation.  Viewers should use
 	 *
@@ -204,6 +211,7 @@ public class CyGroup
 		CyGroup group = new CyGroup(groupName);
 		groupMap.put(group.getGroupNode(), group);
 		setGroupViewer(group, viewer, true);
+
 		return group;
 	}
 
@@ -222,6 +230,7 @@ public class CyGroup
 		CyGroup group = new CyGroup(groupName, nodeList);
 		groupMap.put(group.getGroupNode(), group);
 		setGroupViewer(group, viewer, false);
+
 		return group;
 	}
 
@@ -240,11 +249,12 @@ public class CyGroup
 		// Create the group
 		CyGroup group = new CyGroup(groupNode, nodeList);
 		groupMap.put(group.getGroupNode(), group);
+
 		if (viewer != null)
 			setGroupViewer(group, viewer, true);
+
 		return group;
 	}
-
 
 	/**
 	 * Remove (delete) a group
@@ -263,12 +273,13 @@ public class CyGroup
 	 */
 	public static void removeGroup(CyNode groupNode) {
 		if (groupMap.containsKey(groupNode)) {
-			notifyRemoveGroup((CyGroup)groupMap.get(groupNode));
+			notifyRemoveGroup((CyGroup) groupMap.get(groupNode));
 
 			// Remove this from the viewer's list
 			CyGroup group = groupMap.get(groupNode);
 			String viewer = group.getViewer();
-			if (viewer != null && viewerMap.containsKey(viewer)) {
+
+			if ((viewer != null) && viewerMap.containsKey(viewer)) {
 				CyGroupViewer groupViewer = viewerMap.get(viewer);
 				List<CyGroup> gList = groupViewerMap.get(groupViewer);
 				gList.remove(group);
@@ -276,6 +287,7 @@ public class CyGroup
 
 			// Remove it from the groupMap
 			groupMap.remove(groupNode);
+
 			// Get the rootGraph for this node
 			RootGraph rg = groupNode.getRootGraph();
 			// Remove it from the root graph
@@ -289,7 +301,7 @@ public class CyGroup
 	 * @param groupNode the node we want to test
 	 * @return 'true' if groupNode is a group
 	 */
-	public static boolean isaGroup (CyNode groupNode) {
+	public static boolean isaGroup(CyNode groupNode) {
 		return groupMap.containsKey(groupNode);
 	}
 
@@ -300,7 +312,7 @@ public class CyGroup
 	 * @param viewer the viewer we're registering
 	 */
 	public static void registerGroupViewer(CyGroupViewer viewer) {
-		viewerMap.put(viewer.getViewerName(),viewer);
+		viewerMap.put(viewer.getViewerName(), viewer);
 	}
 
 	/**
@@ -310,19 +322,22 @@ public class CyGroup
 	 * @param viewer the viewer
 	 * @param notify if 'true' the viewer will be notified of the creation
 	 */
-	public static void setGroupViewer(CyGroup group, String viewer, 
-	                                  boolean notify) {
-		if (viewer != null && viewerMap.containsKey(viewer)) {
+	public static void setGroupViewer(CyGroup group, String viewer, boolean notify) {
+		if ((viewer != null) && viewerMap.containsKey(viewer)) {
 			// get the viewer
-			CyGroupViewer v = (CyGroupViewer)viewerMap.get(viewer);
+			CyGroupViewer v = (CyGroupViewer) viewerMap.get(viewer);
+
 			// create the list if necessary
 			if (!groupViewerMap.containsKey(v))
-				groupViewerMap.put(v,new ArrayList());
+				groupViewerMap.put(v, new ArrayList());
+
 			// Add this group to the list
 			groupViewerMap.get(v).add(group);
+
 			if (notify)
 				v.groupCreated(group);
 		}
+
 		group.setViewer(viewer);
 	}
 
@@ -333,7 +348,8 @@ public class CyGroup
 	 */
 	public static void notifyCreateGroup(CyGroup group) {
 		String viewer = group.getViewer();
-		if (viewer != null && viewerMap.containsKey(viewer)) {
+
+		if ((viewer != null) && viewerMap.containsKey(viewer)) {
 			CyGroupViewer v = viewerMap.get(viewer);
 			v.groupCreated(group);
 		}
@@ -346,7 +362,8 @@ public class CyGroup
 	 */
 	public static void notifyRemoveGroup(CyGroup group) {
 		String viewer = group.getViewer();
-		if (viewer != null && viewerMap.containsKey(viewer)) {
+
+		if ((viewer != null) && viewerMap.containsKey(viewer)) {
 			CyGroupViewer v = viewerMap.get(viewer);
 			v.groupWillBeRemoved(group);
 		}
@@ -357,7 +374,7 @@ public class CyGroup
 	/**
 	 * Empty constructor
 	 */
-	protected CyGroup () {
+	protected CyGroup() {
 		this.nodeMap = new HashMap();
 		this.nodeToEdgeMap = new HashMap();
 		this.innerEdgeMap = new HashMap();
@@ -369,7 +386,7 @@ public class CyGroup
 	 *
 	 * @param groupName the identifier to use for this group -- should be unique!
 	 */
-	protected CyGroup (String groupName) {
+	protected CyGroup(String groupName) {
 		this();
 		this.groupNode = Cytoscape.getCyNode(groupName, true);
 		this.groupName = groupName;
@@ -380,7 +397,7 @@ public class CyGroup
 	 *
 	 * @param groupNode the CyNode to use for this group
 	 */
-	protected CyGroup (CyNode groupNode) {
+	protected CyGroup(CyNode groupNode) {
 		this();
 		this.groupNode = groupNode;
 		this.groupName = this.groupNode.getIdentifier();
@@ -393,11 +410,13 @@ public class CyGroup
 	 * @param groupNode the group node to use for this group
 	 * @param nodeList the initial set of nodes for this group
 	 */
-	protected CyGroup (CyNode groupNode, List nodeList) {
+	protected CyGroup(CyNode groupNode, List nodeList) {
 		this(groupNode); // Create all of the necessary structures
+
 		Iterator iter = nodeList.iterator();
+
 		while (iter.hasNext()) {
-			this.addNode ( (CyNode)iter.next() );
+			this.addNode((CyNode) iter.next());
 		}
 	}
 
@@ -407,11 +426,13 @@ public class CyGroup
 	 * @param groupName the identifier to use for this group -- should be unique!
 	 * @param nodeList the initial set of nodes for this group
 	 */
-	protected CyGroup (String groupName, List nodeList) {
+	protected CyGroup(String groupName, List nodeList) {
 		this(groupName); // Create all of the necessary structures
+
 		Iterator iter = nodeList.iterator();
+
 		while (iter.hasNext()) {
-			this.addNode ( (CyNode)iter.next() );
+			this.addNode((CyNode) iter.next());
 		}
 	}
 
@@ -420,26 +441,29 @@ public class CyGroup
 	 *
 	 * @param node the node to add
 	 */
-	public void addNode ( CyNode node ) {
+	public void addNode(CyNode node) {
 		// Put this node in our map
 		nodeMap.put(node, node);
+
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 
 		// Add all of the edges
-		int [] edgeArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),true,true,true);
+		int[] edgeArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), true, true,
+		                                                      true);
 		nodeToEdgeMap.put(node, edgeArray);
+
 		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
-			CyNode target = (CyNode)edge.getTarget();
-			CyNode source = (CyNode)edge.getSource();
+			CyEdge edge = (CyEdge) network.getEdge(edgeArray[edgeIndex]);
+			CyNode target = (CyNode) edge.getTarget();
+			CyNode source = (CyNode) edge.getSource();
 
 			if (outerEdgeMap.containsKey(edge)) {
 				outerEdgeMap.remove(edge);
-				innerEdgeMap.put(edge,edge);
+				innerEdgeMap.put(edge, edge);
 			} else if (nodeMap.containsKey(target) && nodeMap.containsKey(source)) {
-				innerEdgeMap.put(edge,edge);
+				innerEdgeMap.put(edge, edge);
 			} else if (nodeMap.containsKey(target) || nodeMap.containsKey(source)) {
-				outerEdgeMap.put(edge,edge);
+				outerEdgeMap.put(edge, edge);
 			}
 		}
 
@@ -453,23 +477,26 @@ public class CyGroup
 	 *
 	 * @param node the node to remove
 	 */
-	public void removeNode ( CyNode node ) {
+	public void removeNode(CyNode node) {
 		// Remove the node from our map
 		nodeMap.remove(node);
 
 		RootGraph rg = node.getRootGraph();
 
 		// Get the list of edges
-		int[] edgeArray = (int [])nodeToEdgeMap.get(node);
+		int[] edgeArray = (int[]) nodeToEdgeMap.get(node);
+
 		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)rg.getEdge(edgeArray[edgeIndex]);
+			CyEdge edge = (CyEdge) rg.getEdge(edgeArray[edgeIndex]);
+
 			if (innerEdgeMap.containsKey(edge)) {
 				innerEdgeMap.remove(edge);
-				outerEdgeMap.put(edge,edge);
+				outerEdgeMap.put(edge, edge);
 			} else if (outerEdgeMap.containsKey(edge)) {
 				outerEdgeMap.remove(edge);
 			}
 		}
+
 		nodeToEdgeMap.remove(node);
 
 		// Tell the node about it (if necessary)
@@ -489,8 +516,9 @@ public class CyGroup
 	 *
 	 * @return list of nodes in the group
 	 */
-	public List getNodes( ) {
-		Collection<CyNode>v = nodeMap.values();
+	public List getNodes() {
+		Collection<CyNode> v = nodeMap.values();
+
 		return new ArrayList(v);
 	}
 
@@ -499,7 +527,7 @@ public class CyGroup
 	 *
 	 * @return CyNode representing the group
 	 */
-	public CyNode getGroupNode( ) {
+	public CyNode getGroupNode() {
 		return this.groupNode;
 	}
 
@@ -509,7 +537,8 @@ public class CyGroup
 	 * @return node iterator
 	 */
 	public Iterator<CyNode> getNodeIterator() {
-		Collection<CyNode>v = nodeMap.values();
+		Collection<CyNode> v = nodeMap.values();
+
 		return v.iterator();
 	}
 
@@ -519,7 +548,8 @@ public class CyGroup
 	 * @return list of edges in the group
 	 */
 	public List<CyEdge> getInnerEdges() {
-		Collection<CyEdge>v = innerEdgeMap.values();
+		Collection<CyEdge> v = innerEdgeMap.values();
+
 		return new ArrayList(v);
 	}
 
@@ -529,7 +559,8 @@ public class CyGroup
 	 * @return list of edges in the group
 	 */
 	public List<CyEdge> getOuterEdges() {
-		Collection<CyEdge>v = outerEdgeMap.values();
+		Collection<CyEdge> v = outerEdgeMap.values();
+
 		return new ArrayList(v);
 	}
 
@@ -540,7 +571,7 @@ public class CyGroup
 	 * @param edge the CyEdge to add to the outer edge map
 	 */
 	public void addOuterEdge(CyEdge edge) {
-		outerEdgeMap.put(edge,edge);
+		outerEdgeMap.put(edge, edge);
 	}
 
 	/**
@@ -550,7 +581,7 @@ public class CyGroup
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
 	public void addInnterEdge(CyEdge edge) {
-		innerEdgeMap.put(edge,edge);
+		innerEdgeMap.put(edge, edge);
 	}
 
 	/**
@@ -562,6 +593,7 @@ public class CyGroup
 	public boolean contains(CyNode node) {
 		if (nodeMap.containsKey(node))
 			return true;
+
 		return false;
 	}
 
@@ -588,7 +620,7 @@ public class CyGroup
 	 *
 	 * @param viewValue the view value to set
 	 */
-	public void setViewValue( Object viewValue ) {
+	public void setViewValue(Object viewValue) {
 		this.viewValue = viewValue;
 	}
 
@@ -597,7 +629,7 @@ public class CyGroup
 	 *
 	 * @return the view value
 	 */
-	public Object getViewValue( ) {
+	public Object getViewValue() {
 		return this.viewValue;
 	}
 
@@ -606,7 +638,9 @@ public class CyGroup
 	 *
 	 * @returns group name
 	 */
-	public String toString() { return this.groupName; }
+	public String toString() {
+		return this.groupName;
+	}
 
 	/**
 	 * Set the viewer for this group.  In order to maintain the
@@ -619,10 +653,12 @@ public class CyGroup
 	protected void setViewer(String viewerName) {
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		this.viewer = viewerName;
+
 		if (this.viewer != null) {
-			attributes.setAttribute ( this.groupName, GROUP_VIEWER_ATTR, this.viewer );
+			attributes.setAttribute(this.groupName, GROUP_VIEWER_ATTR, this.viewer);
 		}
-		attributes.setUserVisible( GROUP_VIEWER_ATTR, false );
+
+		attributes.setUserVisible(GROUP_VIEWER_ATTR, false);
 	}
 
 	/**

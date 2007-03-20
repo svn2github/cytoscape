@@ -36,15 +36,9 @@
 */
 
 // MinMaxDouble
-
-//--------------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.util;
 
-//--------------------------------------------------------------------------------------
+
 /**
  *  find the min and max of a 1- or 2-d aarray of doubles.
  */
@@ -52,7 +46,6 @@ public class MinMaxDouble {
 	double min = new Double(Double.MAX_VALUE).doubleValue();
 	double max = new Double(Double.MIN_VALUE).doubleValue();
 
-	//--------------------------------------------------------------------------------------
 	/**
 	 * Creates a new MinMaxDouble object.
 	 *
@@ -69,7 +62,6 @@ public class MinMaxDouble {
 				min = val;
 		} // for i
 	} // ctor
-	  //--------------------------------------------------------------------------------------
 
 	/**
 	 * Creates a new MinMaxDouble object.
@@ -88,7 +80,6 @@ public class MinMaxDouble {
 					min = val;
 			} // for j
 	} // ctor
-	  //--------------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -116,6 +107,4 @@ public class MinMaxDouble {
 	public String toString() {
 		return min + " -> " + max;
 	}
-
-	//--------------------------------------------------------------------------------------
 } // class MinMaxDouble

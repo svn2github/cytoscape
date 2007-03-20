@@ -36,30 +36,21 @@
 */
 
 // ThesaurusTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.synonyms;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.synonyms.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  * test the Thesaurus class
  */
 public class ThesaurusTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new ThesaurusTest object.
 	 *
@@ -69,7 +60,6 @@ public class ThesaurusTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -78,7 +68,6 @@ public class ThesaurusTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -87,7 +76,6 @@ public class ThesaurusTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * make sure that the ctor properly initializes all relevant data structures
 	 * as seen through the standard getter methods
@@ -100,7 +88,6 @@ public class ThesaurusTest extends TestCase {
 		assertTrue(thesaurus.nodeLabelCount() == 0);
 		assertTrue(thesaurus.getSpecies().equals(species));
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -134,7 +121,6 @@ public class ThesaurusTest extends TestCase {
 			assertTrue(allCommonNames[0].equals(common[i]));
 		}
 	} // testAddSimplePairs
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -178,7 +164,6 @@ public class ThesaurusTest extends TestCase {
 			;
 		}
 	} // testAddDuplicatePairs
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -220,7 +205,6 @@ public class ThesaurusTest extends TestCase {
 			assertTrue(allCommonNames[0].equals(common[i]));
 		}
 	} // testAddRemoveAddAgain
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -267,7 +251,6 @@ public class ThesaurusTest extends TestCase {
 			} // for j
 		} // for i
 	} // testAddAlternateCommonNames
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -277,6 +260,4 @@ public class ThesaurusTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(ThesaurusTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // ThesaurusTest

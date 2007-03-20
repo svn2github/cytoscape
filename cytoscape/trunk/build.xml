@@ -1031,4 +1031,44 @@
 	</target>
 
 
+
+
+
+  <property name="dir.jalopy" value="/mystuff/jalopy/bin" />
+  <property name="dir.lib" value="${basedir}/ext/lib" />
+  <property name="dir.compile" value="${basedir}/tmp~/build/classes" />
+  <property name="dir.src.java" value="${basedir}/src/java" />
+
+  <!-- ==================================================================== -->
+  <!-- Defines the Jalopy task                                              -->
+  <!-- ==================================================================== -->
+  <taskdef name="jalopy"
+           classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
+    <classpath>
+      <fileset dir="${buildlib.dir}/jalopy">
+        <include name="*.jar" />
+      </fileset>
+    </classpath>
+  </taskdef>
+
+
+  <!-- ==================================================================== -->
+  <!-- Formats all source files                                             -->
+  <!-- ==================================================================== -->
+  <target name="format">
+    <jalopy convention="${resources.dir}/cytoscape_jalopy_code_convention.xml"
+            classpathref="classpath">
+      <fileset dir="${src.dir}">
+        <include name="**/*.java" />
+		<exclude name="generated/" />
+		<exclude name="generated2/" />
+		<exclude name="bookmarks/" />
+      </fileset>
+      <fileset dir="${tests.dir}">
+        <include name="**/*.java" />
+      </fileset>
+    </jalopy>
+  </target>
+
+
 </project>

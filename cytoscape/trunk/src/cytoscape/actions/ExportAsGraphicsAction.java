@@ -74,7 +74,7 @@ import javax.swing.JOptionPane;
  */
 public class ExportAsGraphicsAction extends CytoscapeAction {
 	/**
-	 * 
+	 *
 	 */
 	public final static String MENU_LABEL = "Network As Graphics";
 

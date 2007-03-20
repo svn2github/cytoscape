@@ -36,16 +36,8 @@
 */
 
 // BioDataServerTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.servers;
 
-
-//--------------------------------------------------------------------------------------
 import cytoscape.data.annotation.AnnotationDescription;
 
 import cytoscape.data.servers.BioDataServer;
@@ -54,13 +46,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
-//------------------------------------------------------------------------------
-
 /**
  * test the DataServer class, running it in process (not via RMI)
  */
 public class BioDataServerTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new BioDataServerTest object.
 	 *
@@ -70,7 +59,6 @@ public class BioDataServerTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -79,7 +67,6 @@ public class BioDataServerTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -88,7 +75,6 @@ public class BioDataServerTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -116,7 +102,6 @@ public class BioDataServerTest extends TestCase {
 		String[] allCommonNames = server.getAllCommonNames(species, canonicalName);
 		assertTrue(allCommonNames.length == 4);
 	} // testThesaurusFromFlatFile
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -140,7 +125,6 @@ public class BioDataServerTest extends TestCase {
 		String[] allCommonNames = server.getAllCommonNames("duck", "grebase");
 		assertTrue(allCommonNames.length == 1);
 	} //  testThesaurusWithAbsentEntries
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -197,7 +181,6 @@ public class BioDataServerTest extends TestCase {
 		int[] expected2 = { 6633, 6998 };
 		assertTrue(containedIn(ids, expected2));
 	} // testReadGoYeastAnnotation
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -274,7 +257,6 @@ public class BioDataServerTest extends TestCase {
 		assertTrue(server.getCanonicalName(species, synonym3).equals(canonicalName));
 		assertTrue(server.getCanonicalName(species, canonicalName).equals(canonicalName));
 	} // testReadViaHttp
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -305,7 +287,6 @@ public class BioDataServerTest extends TestCase {
 		int[] expected = { 20, 720, 480 };
 		assertTrue(containedIn(ids, expected));
 	} // testReadKeggHaloAnnotation
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -365,7 +346,6 @@ public class BioDataServerTest extends TestCase {
 		int[] expected3 = { 6899, 7268, 8099, 8283, 30154, 45786 };
 		assertTrue(containedIn(ids, expected3));
 	} // testReadAnnotationsWithTwoOntologies
-	  //------------------------------------------------------------------------------
 
 	private boolean containedIn(int[] a, int[] b) {
 		for (int i = 0; i < a.length; i++) {
@@ -384,7 +364,6 @@ public class BioDataServerTest extends TestCase {
 
 		return true;
 	} // containedIn
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -395,6 +374,4 @@ public class BioDataServerTest extends TestCase {
 		junit.textui.TestRunner.run(new TestSuite(BioDataServerTest.class));
 		System.exit(0); // needed because otherwise UnicastRemoteObject runs forever
 	}
-
-	//------------------------------------------------------------------------------
 } // BioDataServerTest

@@ -47,33 +47,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 /**
  * A CytoscapePlugin is the new "Global" plugin. A CytoscapePlugin constructor
  * does not have any arguments, since it is Network agnostic. Instead all access
  * to the Cytoscape Data Structures is handled throught the static methods
  * provided by cytoscape.Cytoscape.
- * 
+ *
  * It is encouraged, but not mandatory, for plugins to override the
  * {@link #describe describe} method to state what the plugin does and how it
  * should be used.
  */
-public abstract class CytoscapePlugin implements PropertyChangeListener
-	{
+public abstract class CytoscapePlugin implements PropertyChangeListener {
 	/**
-   * There are no arguments required or allowed in a CytoscapePlugin
-   * constructor.
-   */
-	public CytoscapePlugin()
-		{
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
-				Cytoscape.SAVE_PLUGIN_STATE, this);
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
-				Cytoscape.RESTORE_PLUGIN_STATE, this);
-		}
+	* There are no arguments required or allowed in a CytoscapePlugin
+	* constructor.
+	*/
+	public CytoscapePlugin() {
+		Cytoscape.getPropertyChangeSupport()
+		         .addPropertyChangeListener(Cytoscape.SAVE_PLUGIN_STATE, this);
+		Cytoscape.getPropertyChangeSupport()
+		         .addPropertyChangeListener(Cytoscape.RESTORE_PLUGIN_STATE, this);
+	}
 
-	
 	/**
-	 * 
+	 *
 	 * @return a PluginInfo object with the following methods set:
 	 *    setName()
 	 *    setDescription()
@@ -81,101 +79,88 @@ public abstract class CytoscapePlugin implements PropertyChangeListener
 	 *    setCytoscapeVersion()
 	 *    setCategory()
 	 *    setUrl()
-	 *    
+	 *
 	 *    All other methods that PluginInfo sets are optional.
-	 *    
+	 *
 	 * Use this to control what is displayed about your plugin in the Plugin Manage screens.
 	 */
-	public PluginInfo getPluginInfoObject()
-		{
+	public PluginInfo getPluginInfoObject() {
 		return null;
-		}
-	
+	}
+
 	/**
 	 * @return description of plugin
 	 */
-	public String describe()
-		{
+	public String describe() {
 		return new String("No description.");
-		}
+	}
 
 	/**
-   * If true, this plugin is capable if accepting scripts, and we will find out
-   * what its script name is
-   */
-	public boolean isScriptable()
-		{
+	* If true, this plugin is capable if accepting scripts, and we will find out
+	* what its script name is
+	*/
+	public boolean isScriptable() {
 		return false;
-		}
+	}
 
 	/**
-   * If this plugin is scriptable, then this will return a unique script name,
-   * that will come after the colon like: :name
-   */
-	public String getScriptName()
-		{
+	* If this plugin is scriptable, then this will return a unique script name,
+	* that will come after the colon like: :name
+	*/
+	public String getScriptName() {
 		return "default";
-		}
+	}
 
 	/**
-   * Take a CyNetwork as input along with some arguments, and return a
-   * CyNetwork, which can be the same, or different, it doesn't really matter,
-   * and is up to the individual plugin.
-   */
-	public CyNetwork interpretScript(String[] args, CyNetwork network)
-		{
+	* Take a CyNetwork as input along with some arguments, and return a
+	* CyNetwork, which can be the same, or different, it doesn't really matter,
+	* and is up to the individual plugin.
+	*/
+	public CyNetwork interpretScript(String[] args, CyNetwork network) {
 		return null;
-		}
+	}
 
 	/**
-   * If implemented, then this plugin will be activated after being initialized
-   */
-	public void activate()
-		{
-		}
+	* If implemented, then this plugin will be activated after being initialized
+	*/
+	public void activate() {
+	}
 
 	/**
-   * If implemented then this plugin can remove itself from the Menu system, and
-   * anything else, when the user decides to deactivate it.
-   */
-	public void deactivate()
-		{
-		}
+	* If implemented then this plugin can remove itself from the Menu system, and
+	* anything else, when the user decides to deactivate it.
+	*/
+	public void deactivate() {
+	}
 
 	/**
-   * Attempts to instantiate a plugin of the class argument.
-   * 
-   * @return true if the plugin was successfulyl constructed, false otherwise
-   */
-	public static boolean loadPlugin(Class pluginClass, String JarFileName)
-		{
+	* Attempts to instantiate a plugin of the class argument.
+	*
+	* @return true if the plugin was successfulyl constructed, false otherwise
+	*/
+	public static boolean loadPlugin(Class pluginClass, String JarFileName) {
 		System.out.println("Loading: " + pluginClass + " from " + JarFileName);
 
-		if (pluginClass == null) { return false; }
+		if (pluginClass == null) {
+			return false;
+		}
 
 		PluginManager Mgr = CytoscapeInit.getPluginManager();
 
 		Object object = null;
 
-		try
-			{
+		try {
 			object = pluginClass.newInstance();
-			Mgr.register( (CytoscapePlugin)object, JarFileName );
-			}
-		catch (InstantiationException e)
-			{
+			Mgr.register((CytoscapePlugin) object, JarFileName);
+		} catch (InstantiationException e) {
 			System.out.println("InstantiationException");
 			System.out.println(e);
 			e.printStackTrace();
-			}
-		catch (IllegalAccessException e)
-			{
+		} catch (IllegalAccessException e) {
 			System.out.println("IllegalAccessException");
 			System.out.println(e);
 			e.printStackTrace();
-			}
-		catch (Exception e)
-			{
+		} catch (Exception e) {
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any exception
 			// that occurs during the creation of that new instance. Here,
@@ -185,88 +170,75 @@ public abstract class CytoscapePlugin implements PropertyChangeListener
 			// propagates a ClassNotFoundException (which, if we don't
 			// catch causes the application to crash).
 			System.err.println("Unchecked '" + e.getClass().getName()
-					+ "'exception while attempting to load plugin.");
-			System.err
-					.println("This may happen when loading a plugin written for a different "
-							+ "version of Cytoscape than this one, or if the plugin is dependent "
-							+ "on another plugin that isn't available. Consult the documentation "
-							+ "for the plugin or contact the plugin author for more information.");
+			                   + "'exception while attempting to load plugin.");
+			System.err.println("This may happen when loading a plugin written for a different "
+			                   + "version of Cytoscape than this one, or if the plugin is dependent "
+			                   + "on another plugin that isn't available. Consult the documentation "
+			                   + "for the plugin or contact the plugin author for more information.");
 			System.err.println(e);
 			e.printStackTrace();
-			}
+		}
 
-		if (object == null)
-			{
+		if (object == null) {
 			System.out.println("Instantiation seems to have failed");
-			}
+		}
 
 		System.out.println("Successfully loaded: " + pluginClass);
 
 		return true;
-		}
-	
+	}
 
 	private HashMap<String, List<File>> pluginFileListMap;
 
 	/**
-   * DOCUMENT ME!
-   * 
-   * @param e
-   *          DOCUMENT ME!
-   */
-	public void propertyChange(PropertyChangeEvent e)
-		{
+	* DOCUMENT ME!
+	*
+	* @param e
+	*          DOCUMENT ME!
+	*/
+	public void propertyChange(PropertyChangeEvent e) {
 		String pluginName = this.getClass().getName();
 		int index = pluginName.lastIndexOf(".");
 		pluginName = pluginName.substring(index + 1);
 
-		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.SAVE_PLUGIN_STATE))
-			{
+		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.SAVE_PLUGIN_STATE)) {
 			pluginFileListMap = (HashMap<String, List<File>>) e.getOldValue();
 
 			List<File> newfiles = new ArrayList<File>();
 			saveSessionStateFiles(newfiles);
 
-			if (newfiles.size() > 0)
-				{
+			if (newfiles.size() > 0) {
 				pluginFileListMap.put(pluginName, newfiles);
-				}
 			}
-		else if (e.getPropertyName().equalsIgnoreCase(
-				Cytoscape.RESTORE_PLUGIN_STATE))
-			{
+		} else if (e.getPropertyName().equalsIgnoreCase(Cytoscape.RESTORE_PLUGIN_STATE)) {
 			pluginFileListMap = (HashMap<String, List<File>>) e.getOldValue();
 
-			if (pluginFileListMap.containsKey(pluginName))
-				{
+			if (pluginFileListMap.containsKey(pluginName)) {
 				List<File> theFileList = pluginFileListMap.get(pluginName);
 
-				if ((theFileList != null) && (theFileList.size() > 0))
-					{
+				if ((theFileList != null) && (theFileList.size() > 0)) {
 					restoreSessionState(theFileList);
-					}
 				}
 			}
 		}
+	}
 
 	// override the following two methods to save state.
 	/**
-   * DOCUMENT ME!
-   * 
-   * @param pStateFileList
-   *          DOCUMENT ME!
-   */
-	public void restoreSessionState(List<File> pStateFileList)
-		{
-		}
+	* DOCUMENT ME!
+	*
+	* @param pStateFileList
+	*          DOCUMENT ME!
+	*/
+	public void restoreSessionState(List<File> pStateFileList) {
+	}
 
 	/**
-   * DOCUMENT ME!
-   * 
-   * @param pFileList
-   *          DOCUMENT ME!
-   */
-	public void saveSessionStateFiles(List<File> pFileList)
-		{
-		}
+	* DOCUMENT ME!
+	*
+	* @param pFileList
+	*          DOCUMENT ME!
+	*/
+	public void saveSessionStateFiles(List<File> pFileList) {
 	}
+}

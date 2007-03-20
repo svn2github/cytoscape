@@ -40,7 +40,7 @@ package cytoscape.view;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.actions.PluginManagerAction;
+
 import cytoscape.actions.AlphabeticalSelectionAction;
 import cytoscape.actions.BendSelectedEdgesAction;
 import cytoscape.actions.BirdsEyeViewAction;
@@ -78,6 +78,7 @@ import cytoscape.actions.NewSessionAction;
 import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
+import cytoscape.actions.PluginManagerAction;
 import cytoscape.actions.PreferenceAction;
 import cytoscape.actions.PrintAction;
 import cytoscape.actions.ProxyServerAction;
@@ -449,6 +450,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * so it can be called from CytoscapeInit.Init(), because we need the
 	 * CytoscapeDesktop to be instantiated first.
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 */

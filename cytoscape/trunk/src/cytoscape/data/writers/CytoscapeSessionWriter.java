@@ -147,12 +147,12 @@ public class CytoscapeSessionWriter {
 
 	// Enumerate types (node & edge)
 	/**
-	 * 
+	 *
 	 */
 	public static final int NODE = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int EDGE = 2;
 	private static final String DEFAULT_VS_NAME = "default";

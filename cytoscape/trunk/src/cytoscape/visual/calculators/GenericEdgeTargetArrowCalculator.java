@@ -93,13 +93,12 @@ public class GenericEdgeTargetArrowCalculator extends GenericEdgeArrowCalculator
 		return "Edge Target Arrow";
 	}
 
-    /**
-     * Used to set the various properties throughout the hierarchy.
-     */
-    private void set() {
-        set( VizMapUI.EDGE_TGTARROW, "edgeTargetArrowCalculator", "Edge Target Arrow" );
-    }
-
+	/**
+	 * Used to set the various properties throughout the hierarchy.
+	 */
+	private void set() {
+		set(VizMapUI.EDGE_TGTARROW, "edgeTargetArrowCalculator", "Edge Target Arrow");
+	}
 
 	GenericEdgeTargetArrowCalculator() {
 		super();

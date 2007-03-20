@@ -51,7 +51,7 @@ import java.awt.Dimension;
  */
 public class SelectFormatPanelDescriptor extends WizardPanelDescriptor {
 	/**
-	 * 
+	 *
 	 */
 	public static final String IDENTIFIER = "INTRODUCTION_PANEL";
 	SelectFormatPanel startPanel;

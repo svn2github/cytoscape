@@ -36,17 +36,11 @@
 */
 
 // TextFileReader.java
-
-//---------------------------------------------------------------------------
-//  $Revision$ $Date$
-//---------------------------------------------------------------------------
 package cytoscape.data.readers;
 
-//------------------------------------------------------------------------------
 import java.io.*;
 
 
-//---------------------------------------------------------------------------
 /**
  *
  */
@@ -55,7 +49,6 @@ public class TextFileReader {
 	BufferedReader bufferedReader;
 	StringBuffer strbuf;
 
-	//---------------------------------------------------------------------------
 	/**
 	 * Creates a new TextFileReader object.
 	 *
@@ -76,7 +69,6 @@ public class TextFileReader {
 
 		strbuf = new StringBuffer();
 	} // ctor
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -98,7 +90,6 @@ public class TextFileReader {
 
 		return (strbuf.length());
 	} // read
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -108,7 +99,6 @@ public class TextFileReader {
 	public String getText() {
 		return (new String(strbuf));
 	} // read
-	  //---------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -130,5 +120,4 @@ public class TextFileReader {
 		System.out.println("size of text block: " + size);
 		System.out.println(reader.getText());
 	} // main
-	  //---------------------------------------------------------------------------
 }

@@ -70,7 +70,7 @@ import java.io.File;
 public class SaveSessionAction extends CytoscapeAction {
 	// Extension for the new cytoscape session file
 	/**
-	 * 
+	 *
 	 */
 	public final static String SESSION_EXT = ".cys";
 

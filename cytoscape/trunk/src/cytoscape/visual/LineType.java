@@ -55,62 +55,62 @@ import java.io.Serializable;
  */
 public class LineType implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_1 = new LineType("LINE_1");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_2 = new LineType("LINE_2");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_3 = new LineType("LINE_3");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_4 = new LineType("LINE_4");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_5 = new LineType("LINE_5");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_6 = new LineType("LINE_6");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType LINE_7 = new LineType("LINE_7");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType DASHED_1 = new LineType("DASHED_1");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType DASHED_2 = new LineType("DASHED_2");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType DASHED_3 = new LineType("DASHED_3");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType DASHED_4 = new LineType("DASHED_4");
 
 	/**
-	 * 
+	 *
 	 */
 	public static final LineType DASHED_5 = new LineType("DASHED_5");
 	String name;

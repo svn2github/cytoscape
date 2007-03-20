@@ -82,7 +82,7 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	public static final int MODE_SHOW_SPLIT = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int MODE_HIDE_SPLIT = 2;
 

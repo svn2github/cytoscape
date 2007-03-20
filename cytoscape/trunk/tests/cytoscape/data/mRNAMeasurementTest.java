@@ -36,30 +36,21 @@
 */
 
 // mRNAMeasurementTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.mRNAMeasurement;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *
  */
 public class mRNAMeasurementTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new mRNAMeasurementTest object.
 	 *
@@ -69,7 +60,6 @@ public class mRNAMeasurementTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -78,7 +68,6 @@ public class mRNAMeasurementTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -87,7 +76,6 @@ public class mRNAMeasurementTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -100,7 +88,6 @@ public class mRNAMeasurementTest extends TestCase {
 		assertTrue(measurement.getRatio() == -0.315);
 		assertTrue(measurement.getSignificance() == 10.495);
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -110,6 +97,4 @@ public class mRNAMeasurementTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(mRNAMeasurementTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // mRNAMeasurementTest

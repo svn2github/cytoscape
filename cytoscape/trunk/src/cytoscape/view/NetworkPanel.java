@@ -589,17 +589,17 @@ class PopupActionListener implements ActionListener {
 	public static final String DESTROY_VIEW = "Destroy View";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String CREATE_VIEW = "Create View";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String DESTROY_NETWORK = "Destroy Network";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String EDIT_TITLE = "Edit Network Title";
 

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data.annotation;
 
 import cytoscape.CyNetwork;
@@ -91,22 +89,23 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author kono
  */
+
 /**
  *
  */
 public class OntologyMapperDialog extends JDialog {
 	/**
-	 * 
+	 *
 	 */
 	public static final String GO_MOLECULAR_FUNCTION = "GO Molecular Function";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String GO_BIOLOGICAL_PROCESS = "GO Biological Process";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String GO_CELLULAR_COMPONENT = "GO Cellular Component";
 
@@ -381,7 +380,7 @@ public class OntologyMapperDialog extends JDialog {
 
 	private String getURL() {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) goAttributeTree
-		                                                                                                                                                                                                                                                                                                                                                                                        .getLastSelectedPathComponent();
+		                                                                                                                                                                                                                                                                                                                                                                                       .getLastSelectedPathComponent();
 		String nodeLabel = node.getUserObject().toString();
 		String[] parts = nodeLabel.split("=");
 
@@ -401,7 +400,7 @@ public class OntologyMapperDialog extends JDialog {
 			String annotationLevelName = selectedPaths[idx].getPathComponent(1).toString();
 
 			DefaultMutableTreeNode lastPath = (DefaultMutableTreeNode) selectedPaths[idx]
-			                                                                                                                                                                                                                                                                                                                                                                                                        .getPathComponent(1);
+			                                                                                                                                                                                                                                                                                                                                                                                                       .getPathComponent(1);
 			lastPath.removeFromParent();
 			model.reload();
 
@@ -706,12 +705,12 @@ public class OntologyMapperDialog extends JDialog {
 	/*
 	 * Create nodes for the GO Server Tree.
 	 */
-	protected void createTreeNodes(DefaultMutableTreeNode root, AnnotationDescription[] descriptions)// for each of the descriptions, and only if the description is of a
-	// species in the
-	// current graph: create a 'topLevelName' which will be the branch of
-	// the JTree,
-	// and a set of leaves for each logical level in that description's
-	// ontology
+	protected void createTreeNodes(DefaultMutableTreeNode root, AnnotationDescription[] descriptions) // for each of the descriptions, and only if the description is of a
+	                                                                                                  // species in the
+	                                                                                                  // current graph: create a 'topLevelName' which will be the branch of
+	                                                                                                  // the JTree,
+	                                                                                                  // and a set of leaves for each logical level in that description's
+	                                                                                                  // ontology
 	 {
 		if ((descriptions == null) || (descriptions.length == 0))
 			return;
@@ -808,6 +807,7 @@ public class OntologyMapperDialog extends JDialog {
 	 * Methods called by actions
 	 *
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1111,7 +1111,6 @@ public class OntologyMapperDialog extends JDialog {
 			networkView.redrawGraph(false, false);
 		} // valueChanged
 
-		// -----------------------------------------------------------------------------
 		/**
 		 * create a hashmap, <String, String []>:
 		 *
@@ -1147,7 +1146,5 @@ public class OntologyMapperDialog extends JDialog {
 
 			return hash;
 		} // extractAnnotationsFromSelection
-
-		// ----------------------------------------------------------------------------------------
 	} // inner class SelectNodesTreeSelectionListener
 }

@@ -93,13 +93,12 @@ public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator
 		return "Edge Source Arrow";
 	}
 
-    /**
+	/**
 	 * Used to set the various properties throughout the hierarchy.
 	 */
 	private void set() {
-		set( VizMapUI.EDGE_SRCARROW, "edgeSourceArrowCalculator", "Edge Source Arrow" );
+		set(VizMapUI.EDGE_SRCARROW, "edgeSourceArrowCalculator", "Edge Source Arrow");
 	}
-
 
 	GenericEdgeSourceArrowCalculator() {
 		super();

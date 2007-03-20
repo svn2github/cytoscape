@@ -247,7 +247,7 @@ public class CyAttributesUtilsTest extends TestCase {
 
 		if (mmapDef.getAttributeValueType("p-valuesTest") < 0) {
 			mmapDef.defineAttribute("p-valuesTest", // most specific values:
-			MultiHashMapDefinition.TYPE_FLOATING_POINT,
+			                        MultiHashMapDefinition.TYPE_FLOATING_POINT,
 			                        new byte[] {
 			                            MultiHashMapDefinition.TYPE_STRING,
 			                            MultiHashMapDefinition.TYPE_INTEGER
@@ -256,7 +256,7 @@ public class CyAttributesUtilsTest extends TestCase {
 
 		if (mmapDef.getAttributeValueType("TextSourceInfo") < 0) {
 			mmapDef.defineAttribute("TextSourceInfo", // most specific values:
-			MultiHashMapDefinition.TYPE_STRING,
+			                        MultiHashMapDefinition.TYPE_STRING,
 			                        new byte[] {
 			                            MultiHashMapDefinition.TYPE_STRING,
 			                            MultiHashMapDefinition.TYPE_INTEGER,

@@ -36,12 +36,6 @@
 */
 
 // MinMaxTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.util;
 
 import cytoscape.AllTests;
@@ -49,18 +43,15 @@ import cytoscape.AllTests;
 import cytoscape.util.MinMaxDouble;
 import cytoscape.util.MinMaxInt;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *
  */
 public class MinMaxTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new MinMaxTest object.
 	 *
@@ -70,7 +61,6 @@ public class MinMaxTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -86,7 +76,6 @@ public class MinMaxTest extends TestCase {
 		assertTrue(minMax.getMin() == min);
 		assertTrue(minMax.getMax() == max);
 	} // testMinMaxDoubleVector
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -107,7 +96,6 @@ public class MinMaxTest extends TestCase {
 		assertTrue(minMax.getMin() == min);
 		assertTrue(minMax.getMax() == max);
 	} // testMinMaxDoubleMatrix
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -125,7 +113,6 @@ public class MinMaxTest extends TestCase {
 		assertTrue(minMax.getMin() == min);
 		assertTrue(minMax.getMax() == max);
 	} // testMinMaxIntVector
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -147,7 +134,6 @@ public class MinMaxTest extends TestCase {
 		assertTrue(minMax.getMin() == min);
 		assertTrue(minMax.getMax() == max);
 	} // testMinMaxIntMatrix
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -157,6 +143,4 @@ public class MinMaxTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(MinMaxTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // MinMaxTest

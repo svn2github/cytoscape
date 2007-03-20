@@ -84,7 +84,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		// save the vizmapper catalog
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
 
-		if (current_network == null || current_network == Cytoscape.getNullNetwork() )
+		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
 
 		CyNetworkView current_network_view = null;

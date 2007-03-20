@@ -36,12 +36,6 @@
 */
 
 // AnnotationAndOntologyFullTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import cytoscape.AllTests;
@@ -49,18 +43,15 @@ import cytoscape.AllTests;
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  * test the Annotation class
  */
 public class AnnotationAndOntologyFullTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationAndOntologyFullTest object.
 	 *
@@ -70,7 +61,6 @@ public class AnnotationAndOntologyFullTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -79,7 +69,6 @@ public class AnnotationAndOntologyFullTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -88,7 +77,6 @@ public class AnnotationAndOntologyFullTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * an ad hoc test which pinpointed a bug in the following term in my xml version
 	 * of kegg pathway ontology.  i had reversed the 'id' and 'isa' values.
@@ -149,7 +137,6 @@ public class AnnotationAndOntologyFullTest extends TestCase {
 			AllTests.standardOut("\n");
 		} // for i
 	} // testHaloKegg
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -159,6 +146,4 @@ public class AnnotationAndOntologyFullTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(AnnotationAndOntologyFullTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // AnnotationAndOntologyFullTest

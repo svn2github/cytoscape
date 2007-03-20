@@ -1366,8 +1366,7 @@ public class GMLReader extends AbstractGraphReader {
 				edgeView.setStrokeWidth(((Number) keyVal.value).floatValue());
 			} else if (keyVal.key.equals(FILL)) {
 				edgeView.setUnselectedPaint(getColor((String) keyVal.value));
-			}
-			else if (keyVal.key.equals(TYPE)) {
+			} else if (keyVal.key.equals(TYPE)) {
 				value = (String) keyVal.value;
 
 				if (value.equals(STRAIGHT_LINES)) {
@@ -1375,8 +1374,7 @@ public class GMLReader extends AbstractGraphReader {
 				} else if (value.equals(CURVED_LINES)) {
 					edgeView.setLineType(EdgeView.CURVED_LINES);
 				}
-			}
-			else if (keyVal.key.equals(ARROW)) {
+			} else if (keyVal.key.equals(ARROW)) {
 				// The position of the arrow.
 				// There are 4 states: no arrows, both ends have arrows, source,
 				// or target.
@@ -1474,7 +1472,7 @@ public class GMLReader extends AbstractGraphReader {
 		    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 			VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(net.getTitle(),
 			                                                            (GraphReader) net
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .getClientData(Cytoscape.READER_CLIENT_KEY),
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .getClientData(Cytoscape.READER_CLIENT_KEY),
 			                                                            Cytoscape.getDesktop(), true);
 			vsd.setVisible(true);
 		}

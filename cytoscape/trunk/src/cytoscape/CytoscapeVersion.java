@@ -40,7 +40,7 @@ package cytoscape;
 /** CytoscapeVersion: identify (and describe) successive versions of cytoscape. */
 public class CytoscapeVersion {
 	/**
-	 * 
+	 *
 	 */
 	public static String version = CytoscapeInit.getProperties()
 	                                            .getProperty("cytoscape.version.number");
@@ -55,7 +55,8 @@ public class CytoscapeVersion {
 	                                    "0.8   (2002/01/07) active paths dialog bounds checking fixed",
 	                                    "0.9   (2002/01/07) IPBiodataServer.getGoTermName exception fixed",
 	                                    "0.10  (2002/01/22) selected nodes make new window; active paths bug fixed",
-	                                    "0.11  (2002/02/04) automatic running of active paths from command line\n"
+	                                    
+	"0.11  (2002/02/04) automatic running of active paths from command line\n"
 	                                    + "                 data passed to ActivePathsFinder via arrays",
 	                                    "0.12  (2002/02/19) reorganized directories; gene common names supported",
 	                                    "0.20  (2002/03/28) now uses plugin architecture; redesign of VizMapping underway",

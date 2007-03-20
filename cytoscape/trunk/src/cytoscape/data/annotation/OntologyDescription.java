@@ -36,21 +36,13 @@
 */
 
 // OntologyDescription.java
-
-//------------------------------------------------------------------------------
-// $Revision$   
-// $Date$ 
-// $Author$
-//-----------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import java.io.*;
 
-//-----------------------------------------------------------------------------------
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *  Distinguish among different ontologies, by curator and type.
  *  For example, KEGG maintains two ontologies:  metabolic pathways,
@@ -65,7 +57,6 @@ public class OntologyDescription implements Serializable {
 	protected String curator; // KEGG, GO, ...
 	protected String ontologyType; // biological process, metabolic pathway, ...
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  @param curator        The institute or group which maintains this ontology
 	 *  @param ontolotyType   The nature of this ontology, eg, "metabolic pathway",
@@ -75,7 +66,6 @@ public class OntologyDescription implements Serializable {
 		this.curator = curator;
 		this.ontologyType = ontologyType;
 	} // ctor
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -86,7 +76,6 @@ public class OntologyDescription implements Serializable {
 		return curator;
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -96,7 +85,6 @@ public class OntologyDescription implements Serializable {
 		return ontologyType;
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -108,5 +96,4 @@ public class OntologyDescription implements Serializable {
 
 		return sb.toString();
 	} // toString
-	  //------------------------------------------------------------------------------
 } // class OntologyDescription

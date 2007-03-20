@@ -96,7 +96,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 
-//----------------------------------------------------------------------------------------
 /**
  */
 public class AnnotationGui extends CytoscapeAction {
@@ -118,7 +117,6 @@ public class AnnotationGui extends CytoscapeAction {
 	CyNetworkView networkView;
 	CyNetwork network;
 
-	// ----------------------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationGui object.
 	 */
@@ -148,7 +146,6 @@ public class AnnotationGui extends CytoscapeAction {
 		setPreferredMenu("File.Import.Ontology");
 	}
 
-	// ----------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -184,7 +181,6 @@ public class AnnotationGui extends CytoscapeAction {
 		// }
 		mainDialog.setVisible(true);
 	} // actionPerformed
-	  // ----------------------------------------------------------------------------------------
 
 	protected class Gui extends JDialog {
 		Gui(String title) {
@@ -194,7 +190,6 @@ public class AnnotationGui extends CytoscapeAction {
 			setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		}
 
-		// ------------------------------------------------------------------------------
 		private JPanel createWidgets() {
 			JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
@@ -216,12 +211,12 @@ public class AnnotationGui extends CytoscapeAction {
 			annotateNodesButton.setEnabled(false);
 			chooserPanel.add(annotateNodesButton, BorderLayout.SOUTH);
 			chooserPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory
-			                                                                                                                                                                                                               .createTitledBorder("Available Ontology Data"),
+			                                                                                                                                                                                                          .createTitledBorder("Available Ontology Data"),
 			                                                          BorderFactory
-			                                                                                                                                                                                                                 .createEmptyBorder(10,
-			                                                                                                                                                                                                                                    10,
-			                                                                                                                                                                                                                                    10,
-			                                                                                                                                                                                                                                    10)));
+			                                                                                                                                                                                                            .createEmptyBorder(10,
+			                                                                                                                                                                                                                               10,
+			                                                                                                                                                                                                                               10,
+			                                                                                                                                                                                                                               10)));
 
 			annotateNodesButton.addActionListener(new ApplyAnnotationAction());
 			topPanel.add(chooserPanel);
@@ -267,7 +262,6 @@ public class AnnotationGui extends CytoscapeAction {
 			return mainPanel;
 		} // createWidgets
 
-		// ------------------------------------------------------------------------------
 		private void expandAll(JTree tree, TreePath parent, boolean expand) {
 			TreeNode node = (TreeNode) parent.getLastPathComponent();
 
@@ -285,7 +279,6 @@ public class AnnotationGui extends CytoscapeAction {
 				tree.collapsePath(parent);
 		} // expandAll
 
-		// ------------------------------------------------------------------------------
 		protected JTree createAvailableAnnotationsTree() {
 			DefaultMutableTreeNode root = new DefaultMutableTreeNode("Available Annotations");
 			createTreeNodes(root, annotationDescriptions);
@@ -299,7 +292,6 @@ public class AnnotationGui extends CytoscapeAction {
 			return tree;
 		}
 
-		// ------------------------------------------------------------------------------
 		protected JTree createNodeSelectionTree() {
 			DefaultMutableTreeNode root = new DefaultMutableTreeNode("Annotations Categories");
 			JTree tree = new JTree(root);
@@ -311,12 +303,11 @@ public class AnnotationGui extends CytoscapeAction {
 
 			return tree;
 		} // createNodeSelectionTree
-		  // ------------------------------------------------------------------------------
 
 		class AddAnnotationTreeSelectionListener implements TreeSelectionListener {
 			public void valueChanged(TreeSelectionEvent e) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) availableAnnotationsTree
-				                                                                                                                                                                                                                                                                                                               .getLastSelectedPathComponent();
+				                                                                                                                                                                                                                                                                                                      .getLastSelectedPathComponent();
 
 				if (node == null)
 					return;
@@ -328,12 +319,11 @@ public class AnnotationGui extends CytoscapeAction {
 				annotateNodesButton.setEnabled(true);
 			}
 		} // inner class AddAnnotationTreeSelectionListener
-		  // -----------------------------------------------------------------------------------
 
 		class SelectNodesTreeSelectionListener implements TreeSelectionListener {
 			public void valueChanged(TreeSelectionEvent e) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) currentAnnotationsTree
-				                                                                                                                                                                                                                                                                                                                                .getLastSelectedPathComponent();
+				                                                                                                                                                                                                                                                                                                                      .getLastSelectedPathComponent();
 
 				if (node == null)
 					return;
@@ -406,7 +396,6 @@ public class AnnotationGui extends CytoscapeAction {
 				networkView.redrawGraph(false, false);
 			} // valueChanged
 
-			// -----------------------------------------------------------------------------
 			/**
 			 * create a hashmap, <String, String []>:
 			 *
@@ -438,17 +427,15 @@ public class AnnotationGui extends CytoscapeAction {
 
 				return hash;
 			} // extractAnnotationsFromSelection
-			  // ----------------------------------------------------------------------------------------
 		} // inner class SelectNodesTreeSelectionListener
 
-		// -----------------------------------------------------------------------------------
 		protected void createTreeNodes(DefaultMutableTreeNode root,
-		                               AnnotationDescription[] descriptions)// for each of the descriptions, and only if the description is of a
-		// species in the
-		// current graph: create a 'topLevelName' which will be the branch of
-		// the JTree,
-		// and a set of leaves for each logical level in that description's
-		// ontology
+		                               AnnotationDescription[] descriptions) // for each of the descriptions, and only if the description is of a
+		                                                                     // species in the
+		                                                                     // current graph: create a 'topLevelName' which will be the branch of
+		                                                                     // the JTree,
+		                                                                     // and a set of leaves for each logical level in that description's
+		                                                                     // ontology
 		 {
 			if ((descriptions == null) || (descriptions.length == 0))
 				return;
@@ -484,7 +471,6 @@ public class AnnotationGui extends CytoscapeAction {
 				root.add(branch);
 			}
 		} // createTreeNodes
-		  // -----------------------------------------------------------------------------------
 
 		public class OKAction extends AbstractAction {
 			OKAction() {
@@ -495,7 +481,6 @@ public class AnnotationGui extends CytoscapeAction {
 				Gui.this.setVisible(false);
 			}
 		} // OKAction
-		  // -----------------------------------------------------------------------------
 
 		public class LayoutByAnnotationAction extends AbstractAction {
 			LayoutByAnnotationAction() {
@@ -512,7 +497,6 @@ public class AnnotationGui extends CytoscapeAction {
 				deleteCreatedObjectsButton.setEnabled(true);
 			}
 		} // LayoutByAnnotationAction
-		  // -----------------------------------------------------------------------------
 
 		public class DrawSharedEdgesAnnotationAction extends AbstractAction {
 			DrawSharedEdgesAnnotationAction() {
@@ -529,7 +513,6 @@ public class AnnotationGui extends CytoscapeAction {
 				deleteCreatedObjectsButton.setEnabled(true);
 			}
 		} // DrawSharedEdgesAnnotationAction
-		  // -----------------------------------------------------------------------------
 
 		public class DeleteCreatedObjectsAction extends AbstractAction {
 			DeleteCreatedObjectsAction() {
@@ -540,11 +523,8 @@ public class AnnotationGui extends CytoscapeAction {
 				deleteCreatedObjectsButton.setEnabled(false);
 			}
 		}
-
-		// -----------------------------------------------------------------------------
 	} // inner class Gui
 
-	// -----------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -650,7 +630,6 @@ public class AnnotationGui extends CytoscapeAction {
 		return annotationNameAtLevel;
 	} // addAnnotationToNodes
 
-	// ----------------------------------------------------------------------------------------
 	/**
 	 * return only the unique categories (typically representing gene
 	 * annotations) which exist at the specified level. genes (for example) may
@@ -692,7 +671,6 @@ public class AnnotationGui extends CytoscapeAction {
 
 		return (String[]) collector.toArray(new String[0]);
 	} // collapseToUniqueAnnotationsAtLevel
-	  // ----------------------------------------------------------------------------------------
 
 	class ApplyAnnotationAction extends AbstractAction {
 		ApplyAnnotationAction() {
@@ -704,7 +682,7 @@ public class AnnotationGui extends CytoscapeAction {
 
 			for (int i = 0; i < max; i++) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) annotationPath
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .getPathComponent(i);
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getPathComponent(i);
 				Object userObj = node.getUserObject();
 			}
 
@@ -780,7 +758,6 @@ public class AnnotationGui extends CytoscapeAction {
 			}
 		}
 
-		// --------------------------------------------------------------------------------------
 		protected void appendToSelectionTree(String currentAnnotationCategory,
 		                                     Object[] uniqueAnnotationValues) {
 			DefaultMutableTreeNode branch = new DefaultMutableTreeNode(currentAnnotationCategory);
@@ -795,7 +772,6 @@ public class AnnotationGui extends CytoscapeAction {
 			currentAnnotationsTree.scrollPathToVisible(new TreePath(branch.getPath()));
 			model.reload();
 		} // appendToSelectionTree
-		  // -----------------------------------------------------------------------------
 	} // inner class ApplyAnnotationAction
 
 	class ActionListBoxSelectionListener implements ListSelectionListener {
@@ -818,5 +794,4 @@ public class AnnotationGui extends CytoscapeAction {
 			} // if !empty
 		} // valueChanged
 	} // inner class AttributeListSelectionListener
-	  // -----------------------------------------------------------------------------
 } // class AnnotationGui

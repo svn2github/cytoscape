@@ -124,7 +124,7 @@ public class ExpressionData implements Serializable {
 	private TaskMonitor taskMonitor;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int MAX_LINE_SIZE = 8192;
 

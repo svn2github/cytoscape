@@ -363,6 +363,7 @@ public class PluginsTableModel extends AbstractTableModel {
 	/*
 	 * check for presence of name/value pair in table/table model
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

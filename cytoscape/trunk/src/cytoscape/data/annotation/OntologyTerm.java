@@ -36,22 +36,13 @@
  */
 
 // OntologyTerm.java
-
-//-----------------------------------------------------------------------------
-// $Revision$  
-// $Date$
-// $Author$
-//------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
-
-//-----------------------------------------------------------------------------
 import java.io.*;
 
 import java.util.Vector;
 
 
-//-----------------------------------------------------------------------------
 /**
  * Represents one node in an ontology, which is a hierarchical classification of
  * entities using a controlled vocabulary. Each term has a name, a unique
@@ -68,7 +59,6 @@ public class OntologyTerm implements Serializable {
 	Vector parents;
 	Vector containers;
 
-	// -----------------------------------------------------------------------------
 	/**
 	 * Creates a new OntologyTerm object.
 	 *
@@ -81,7 +71,6 @@ public class OntologyTerm implements Serializable {
 		parents = new Vector();
 		containers = new Vector();
 	} // ctor
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -92,7 +81,6 @@ public class OntologyTerm implements Serializable {
 		return name;
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -102,7 +90,6 @@ public class OntologyTerm implements Serializable {
 		return id;
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -112,7 +99,6 @@ public class OntologyTerm implements Serializable {
 		parents.addElement(new Integer(newParent));
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -122,7 +108,6 @@ public class OntologyTerm implements Serializable {
 		containers.addElement(new Integer(newContainer));
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -132,7 +117,6 @@ public class OntologyTerm implements Serializable {
 		return numberOfParents() + numberOfContainers();
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -142,7 +126,6 @@ public class OntologyTerm implements Serializable {
 		return parents.size();
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -152,7 +135,6 @@ public class OntologyTerm implements Serializable {
 		return containers.size();
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -169,7 +151,6 @@ public class OntologyTerm implements Serializable {
 
 		return result;
 	} // getParents
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -187,7 +168,6 @@ public class OntologyTerm implements Serializable {
 
 		return result;
 	} // getContainers
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -209,7 +189,6 @@ public class OntologyTerm implements Serializable {
 
 		return result;
 	} // getParentsAndContainers
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -230,7 +209,6 @@ public class OntologyTerm implements Serializable {
 		return false;
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 * @param ontology
 	 *            the Ontology that contains the terms
@@ -255,7 +233,6 @@ public class OntologyTerm implements Serializable {
 		return false;
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -276,7 +253,6 @@ public class OntologyTerm implements Serializable {
 		return false;
 	}
 
-	// -----------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -295,7 +271,6 @@ public class OntologyTerm implements Serializable {
 
 		return false;
 	} // isContainerOf
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -316,7 +291,6 @@ public class OntologyTerm implements Serializable {
 
 		return false;
 	} // isContainedIn
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -337,7 +311,6 @@ public class OntologyTerm implements Serializable {
 
 		return false;
 	} // isChildOfOrContainedIn
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -357,7 +330,6 @@ public class OntologyTerm implements Serializable {
 
 		return false;
 	} // isParentOrContainerOf
-	  // -----------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -398,5 +370,4 @@ public class OntologyTerm implements Serializable {
 
 		return sb.toString();
 	} // toString
-	  // -----------------------------------------------------------------------------
 } // OntologyTerm

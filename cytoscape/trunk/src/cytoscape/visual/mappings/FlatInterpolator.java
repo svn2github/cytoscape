@@ -44,6 +44,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
+
 //----------------------------------------------------------------------------
 /**
  * This simple Interpolator returns the value at either the lower or upper
@@ -52,12 +53,12 @@ package cytoscape.visual.mappings;
  */
 public class FlatInterpolator implements Interpolator {
 	/**
-	 * 
+	 *
 	 */
 	public static final Integer LOWER = new Integer(0);
 
 	/**
-	 * 
+	 *
 	 */
 	public static final Integer UPPER = new Integer(1);
 	private boolean useLower;

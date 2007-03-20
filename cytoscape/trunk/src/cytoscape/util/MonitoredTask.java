@@ -44,12 +44,13 @@
 //----------------------------------------------------------------------------------------
 package cytoscape.util;
 
+
 //----------------------------------------------------------------------------------------
 import java.lang.String;
 
 
 /**
- * 
+ *
   */
 public interface MonitoredTask {
 	// ------ Classes that implement this interface must have the following members:

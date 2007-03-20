@@ -36,30 +36,21 @@
 */
 
 // OntologyTermTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.annotation;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.annotation.*;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
 
 
-//------------------------------------------------------------------------------
 /**
  * test the OntologyTerm class
  */
 public class OntologyTermTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new OntologyTermTest object.
 	 *
@@ -69,7 +60,6 @@ public class OntologyTermTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -78,7 +68,6 @@ public class OntologyTermTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -87,7 +76,6 @@ public class OntologyTermTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 * make sure that the ctor properly initializes all relevant data structures
 	 * as seen through the standard getter methods
@@ -110,7 +98,6 @@ public class OntologyTermTest extends TestCase {
 		assertTrue(term.getContainers().length == 0);
 		assertTrue(term.getParentsAndContainers().length == 0);
 	} // testCtor
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -155,7 +142,6 @@ public class OntologyTermTest extends TestCase {
 		assertTrue(retrievedContainers[2] == containers[2]);
 		assertTrue(retrievedContainers[3] == containers[3]);
 	} // testAddParentsAndContainers
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -165,6 +151,4 @@ public class OntologyTermTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(OntologyTermTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // OntologyTermTest

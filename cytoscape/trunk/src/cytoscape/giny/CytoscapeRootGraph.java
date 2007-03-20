@@ -47,7 +47,7 @@ import java.util.Collection;
 
 
 /**
- * 
+ *
   */
 public interface CytoscapeRootGraph extends RootGraph {
 	//public int createNode ( CyNetwork network ) ;

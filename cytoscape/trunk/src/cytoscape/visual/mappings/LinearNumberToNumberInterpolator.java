@@ -44,6 +44,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
+
 //----------------------------------------------------------------------------
 /**
  * The class assumes that the supplied range objects are Numbers, and returns a

@@ -83,17 +83,17 @@ import javax.swing.event.*;
  */
 public class OldStyleCalculatorIO {
 	/**
-	 * 
+	 *
 	 */
 	public static String packageHeader = "cytoscape.visual.calculators.";
 
 	/**
-	 * 
+	 *
 	 */
 	public static String calcName = "oldFormat";
 
 	/**
-	 * 
+	 *
 	 */
 	public static boolean loaded = false;
 

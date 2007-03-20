@@ -42,6 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape;
 
+
 //-------------------------------------------------------------------------
 /**
  * Events of this class are fired from a CyNetwork object when something

@@ -48,12 +48,13 @@ import java.io.File;
  * This panel is for new Gene Ontology data formats. Ask user a OBO file and
  * multiple Gene Association Files.
  */
+
 /**
  *
  */
 public class OboPanelDescriptor extends WizardPanelDescriptor implements ActionListener {
 	/**
-	 * 
+	 *
 	 */
 	public static final String IDENTIFIER = "OBO_PANEL";
 	OboPanel oboPanel;
@@ -113,6 +114,7 @@ public class OboPanelDescriptor extends WizardPanelDescriptor implements ActionL
 	 *
 	 * Handle actions
 	 */
+
 	/**
 	 *  DOCUMENT ME!
 	 *

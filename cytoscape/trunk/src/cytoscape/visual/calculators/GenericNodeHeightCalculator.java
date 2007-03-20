@@ -94,11 +94,11 @@ public class GenericNodeHeightCalculator extends GenericNodeSizeCalculator
 		return "Node Height";
 	}
 
-    /**
-     * Used to set the various properties throughout the hierarchy.
-     */
+	/**
+	 * Used to set the various properties throughout the hierarchy.
+	 */
 	private void set() {
-		set( VizMapUI.NODE_HEIGHT, "nodeHeightCalculator", "Node Height" );
+		set(VizMapUI.NODE_HEIGHT, "nodeHeightCalculator", "Node Height");
 	}
 
 	GenericNodeHeightCalculator() {

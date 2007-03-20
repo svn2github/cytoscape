@@ -93,33 +93,33 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	// --------------------//
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
 
 	// state variables
 	/**
-	 * 
+	 *
 	 */
 	public static final String VISUAL_STYLE = "VISUAL_STYLE";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
@@ -678,22 +678,18 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 			networkPanel.focusNetworkNode(((CyNetworkView) e.getNewValue()).getIdentifier());
 			networkPanel.fireFocus(((CyNetworkView) e.getNewValue()).getIdentifier());
-		}
-		else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
+		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
-		}
-		else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
+		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
-		}
-		else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
-		}
-		else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 

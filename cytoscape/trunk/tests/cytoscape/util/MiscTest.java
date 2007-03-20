@@ -36,19 +36,12 @@
 */
 
 // MiscTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.util;
 
 import cytoscape.AllTests;
 
 import cytoscape.util.Misc;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.awt.Color;
@@ -58,14 +51,12 @@ import java.io.*;
 import java.util.*;
 
 
-//------------------------------------------------------------------------------
 /**
  *
  */
 public class MiscTest extends TestCase {
 	private boolean runAll = false;
 
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new MiscTest object.
 	 *
@@ -75,7 +66,6 @@ public class MiscTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -84,7 +74,6 @@ public class MiscTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -93,7 +82,6 @@ public class MiscTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -118,7 +106,6 @@ public class MiscTest extends TestCase {
 		result = Misc.parseRGBText("255,255,255");
 		assertTrue(result.equals(Color.white));
 	} // testParseRGBTest
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -132,9 +119,9 @@ public class MiscTest extends TestCase {
 		String startToken = "(";
 		String endToken = ")";
 
-		// --------------------------------------------------------------------
+		// 
 		// 1) four tokens, separated by ::, surrounded with parens and whitespace
-		// --------------------------------------------------------------------
+		//
 		String a = "abcd";
 		String b = "efgh";
 		String c = "dog";
@@ -158,9 +145,7 @@ public class MiscTest extends TestCase {
 		assertTrue(tokens[2].equals(c));
 		assertTrue(tokens[3].equals(d));
 
-		// --------------------------------------------------------------------------
 		// 2) add some embedded parens to the tokens.  they should survive the parsing
-		// --------------------------------------------------------------------------
 		a = "((abcd))";
 		b = "ef()gh";
 		c = "do))((g";
@@ -183,9 +168,7 @@ public class MiscTest extends TestCase {
 		assertTrue(tokens[2].equals(c));
 		assertTrue(tokens[3].equals(d));
 
-		// --------------------------------------------------------------------------
 		// 3) leave off the startToken.  
-		// --------------------------------------------------------------------------
 		a = "abcd))";
 		b = "ef()gh";
 		c = "do))((g";
@@ -202,9 +185,7 @@ public class MiscTest extends TestCase {
 		tokens = Misc.parseList(sb.toString(), startToken, endToken, delimiter);
 		assertTrue(tokens.length == 1);
 
-		// --------------------------------------------------------------------------
 		// 4) leave off the endToken.  
-		// --------------------------------------------------------------------------
 		a = "abcd))";
 		b = "ef()gh";
 		c = "do))((g";
@@ -221,9 +202,7 @@ public class MiscTest extends TestCase {
 		tokens = Misc.parseList(sb.toString(), startToken, endToken, delimiter);
 		assertTrue(tokens.length == 1);
 
-		// --------------------------------------------------------------------------
 		// 5) test some url's, which have embedded ":"
-		// --------------------------------------------------------------------------
 		a = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00600";
 		b = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00562";
 		c = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00500";
@@ -249,7 +228,6 @@ public class MiscTest extends TestCase {
 		assertTrue(tokens[3].equals(d));
 		assertTrue(tokens[4].equals(e));
 	} // testParseList
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -274,7 +252,6 @@ public class MiscTest extends TestCase {
 		assertTrue(catNames[0].equals("ernie"));
 		assertTrue(catNames[1].equals("louie"));
 	} // testGetPropertyValues
-	  //------------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -284,6 +261,4 @@ public class MiscTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(MiscTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // MiscTest

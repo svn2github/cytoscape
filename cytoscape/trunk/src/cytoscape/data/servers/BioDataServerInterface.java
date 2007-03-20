@@ -55,7 +55,7 @@ import java.rmi.Remote;
 
 //----------------------------------------------------------------------------------------
 /**
- * 
+ *
   */
 public interface BioDataServerInterface extends Remote {
 	// annotations (typically of genes, but possibly of any entity whatsoever

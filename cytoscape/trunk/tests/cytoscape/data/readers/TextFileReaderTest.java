@@ -36,19 +36,12 @@
 */
 
 // TextFileReaderTest.java
-
-//------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.data.readers;
 
 import cytoscape.AllTests;
 
 import cytoscape.data.readers.TextFileReader;
 
-//--------------------------------------------------------------------------------------
 import junit.framework.*;
 
 import java.io.*;
@@ -56,12 +49,10 @@ import java.io.*;
 import java.util.*;
 
 
-//-----------------------------------------------------------------------------------------
 /**
  *
  */
 public class TextFileReaderTest extends TestCase {
-	//------------------------------------------------------------------------------
 	/**
 	 * Creates a new TextFileReaderTest object.
 	 *
@@ -71,7 +62,6 @@ public class TextFileReaderTest extends TestCase {
 		super(name);
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -80,7 +70,6 @@ public class TextFileReaderTest extends TestCase {
 	public void setUp() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -89,7 +78,6 @@ public class TextFileReaderTest extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
-	//------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -112,7 +100,6 @@ public class TextFileReaderTest extends TestCase {
 		String signature = "nonsense";
 		assertTrue(text.indexOf(signature) > 0);
 	} // testSimple
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -122,6 +109,4 @@ public class TextFileReaderTest extends TestCase {
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(new TestSuite(TextFileReaderTest.class));
 	}
-
-	//------------------------------------------------------------------------------
 } // TextFileReaderTest

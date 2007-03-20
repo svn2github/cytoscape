@@ -36,17 +36,18 @@
 */
 package cytoscape.data.readers;
 
+
 /**
  *
  */
 public class KeyValue {
 	/**
-	 * 
+	 *
 	 */
 	public String key;
 
 	/**
-	 * 
+	 *
 	 */
 	public Object value;
 

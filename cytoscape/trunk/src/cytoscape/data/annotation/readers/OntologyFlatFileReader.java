@@ -36,10 +36,6 @@
  */
 
 // OntologyFlatFileReader.java
-
-// ------------------------------------------------------------------------------
-// $Revision$ $Date$
-// ------------------------------------------------------------------------------
 package cytoscape.data.annotation.readers;
 
 import cytoscape.data.annotation.Ontology;
@@ -49,14 +45,12 @@ import cytoscape.data.readers.TextFileReader;
 import cytoscape.data.readers.TextHttpReader;
 import cytoscape.data.readers.TextJarReader;
 
-// ------------------------------------------------------------------------------
 import java.io.BufferedReader;
 import java.io.File;
 
 import java.util.Vector;
 
 
-// -------------------------------------------------------------------------
 /**
  *
  */
@@ -69,7 +63,6 @@ public class OntologyFlatFileReader {
 	String[] lines;
 	Vector extractedLines;
 
-	// -------------------------------------------------------------------------
 	/**
 	 * Creates a new OntologyFlatFileReader object.
 	 *
@@ -117,7 +110,6 @@ public class OntologyFlatFileReader {
 		parse();
 	}
 
-	// -------------------------------------------------------------------------
 	/**
 	 * Creates a new OntologyFlatFileReader object.
 	 *
@@ -154,7 +146,6 @@ public class OntologyFlatFileReader {
 		parse();
 	} // ctor
 
-	// -------------------------------------------------------------------------
 	private int stringToInt(String s) {
 		try {
 			return Integer.parseInt(s);
@@ -163,7 +154,6 @@ public class OntologyFlatFileReader {
 		}
 	}
 
-	// -------------------------------------------------------------------------
 	private void parseHeader() throws Exception {
 		String firstLine = lines[0].trim();
 		String[] tokens = firstLine.split("\\)");
@@ -192,7 +182,6 @@ public class OntologyFlatFileReader {
 		ontologyType = typeRaw[1].trim();
 	} // parseHeader
 
-	// -------------------------------------------------------------------------
 	private void parse() throws Exception {
 		ontology = new Ontology(curator, ontologyType);
 
@@ -238,7 +227,6 @@ public class OntologyFlatFileReader {
 		} // for i
 	} // read
 
-	// -------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -247,6 +235,4 @@ public class OntologyFlatFileReader {
 	public Ontology getOntology() {
 		return ontology;
 	}
-
-	// -------------------------------------------------------------------------
 } // class OntologyFlatFileReader

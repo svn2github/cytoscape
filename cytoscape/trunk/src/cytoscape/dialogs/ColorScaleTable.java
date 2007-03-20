@@ -44,6 +44,7 @@
 //---------------------------------------------------------------------------------------
 package cytoscape.dialogs;
 
+
 //---------------------------------------------------------------------------------------
 import java.awt.*;
 import java.awt.event.*;
@@ -103,7 +104,7 @@ public class ColorScaleTable extends JPanel {
 					if (selectedBorder == null) {
 						selectedBorder = BorderFactory.createMatteBorder(2, 5, 2, 5,
 						                                                 table
-						                                                                                  .getSelectionBackground());
+						                                                                                   .getSelectionBackground());
 					}
 
 					setBorder(selectedBorder);

@@ -131,22 +131,22 @@ public class XGMMLWriter {
 	protected static final int NETWORK = 3;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String BACKGROUND = "backgroundColor";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String GRAPH_VIEW_ZOOM = "GRAPH_VIEW_ZOOM";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String GRAPH_VIEW_CENTER_X = "GRAPH_VIEW_CENTER_X";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
@@ -1120,7 +1120,7 @@ public class XGMMLWriter {
 
 			int[] grandChildrenIndices = Cytoscape.getRootGraph()
 			                                      .getNodeMetaChildIndicesArray(childNode
-			                                                       .getRootGraphIndex());
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .getRootGraphIndex());
 
 			if ((grandChildrenIndices == null) || (grandChildrenIndices.length == 0)) {
 				attributeWriter(NODE, childNode.getIdentifier(), jxbChildNode);
@@ -1253,10 +1253,13 @@ public class XGMMLWriter {
 		GraphicNode jxbNode = null;
 		CyGroup group = CyGroup.getCyGroup(node);
 
-		List <CyNode> nodeList = group.getNodes();
-		if (nodeList == null || nodeList.size() == 0)
+		List<CyNode> nodeList = group.getNodes();
+
+		if ((nodeList == null) || (nodeList.size() == 0))
 			return;
+
 		Iterator nIter = nodeList.iterator();
+
 		while (nIter.hasNext()) {
 			childNode = (CyNode) nIter.next();
 
@@ -1296,13 +1299,14 @@ public class XGMMLWriter {
 		HashMap embeddedGroupList = new HashMap();
 
 		while (it.hasNext()) {
-			CyGroup group = (CyGroup)it.next();
-			List <CyNode> nodeList = group.getNodes();
+			CyGroup group = (CyGroup) it.next();
+			List<CyNode> nodeList = group.getNodes();
 
-			if (nodeList == null || nodeList.size() == 0)
+			if ((nodeList == null) || (nodeList.size() == 0))
 				continue;
 
 			Iterator nIter = nodeList.iterator();
+
 			while (nIter.hasNext()) {
 				CyNode childNode = (CyNode) nIter.next();
 
@@ -1342,9 +1346,10 @@ public class XGMMLWriter {
 		Att children = objFactory.createAtt();
 		GraphicGraph subGraph = objFactory.createGraphicGraph();
 
-		List <CyNode> nodeList = group.getNodes();
-		for (Iterator nodeIter = nodeList.iterator(); nodeIter.hasNext(); ) {
-			CyNode childNode = (CyNode)nodeIter.next();
+		List<CyNode> nodeList = group.getNodes();
+
+		for (Iterator nodeIter = nodeList.iterator(); nodeIter.hasNext();) {
+			CyNode childNode = (CyNode) nodeIter.next();
 			GraphicNode childJxbNode = null;
 
 			childMap.put(childNode.getIdentifier(), childNode);

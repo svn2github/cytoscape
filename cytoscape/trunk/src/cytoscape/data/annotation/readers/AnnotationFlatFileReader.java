@@ -36,9 +36,6 @@
  */
 
 // AnnotationFlatFileReader.java
-//------------------------------------------------------------------------------
-// $Revision$  $Date$
-//------------------------------------------------------------------------------
 package cytoscape.data.annotation.readers;
 
 import cytoscape.data.annotation.Annotation;
@@ -49,14 +46,12 @@ import cytoscape.data.readers.TextJarReader;
 
 import cytoscape.data.synonyms.Thesaurus;
 
-//------------------------------------------------------------------------------
 import java.io.BufferedReader;
 import java.io.File;
 
 import java.util.Vector;
 
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -73,7 +68,6 @@ public class AnnotationFlatFileReader {
 	boolean flip;
 	Thesaurus thr;
 
-	// -------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationFlatFileReader object.
 	 *
@@ -89,6 +83,7 @@ public class AnnotationFlatFileReader {
 	 * New const. written by Kei Ono (kono@uscd.edu) This accept new readers
 	 * written by Nerius.
 	 */
+
 	/**
 	 * Creates a new AnnotationFlatFileReader object.
 	 *
@@ -127,7 +122,6 @@ public class AnnotationFlatFileReader {
 		parse();
 	}
 
-	// -------------------------------------------------------------------------
 	/**
 	 * Creates a new AnnotationFlatFileReader object.
 	 *
@@ -174,7 +168,6 @@ public class AnnotationFlatFileReader {
 		parse();
 	}
 
-	// -------------------------------------------------------------------------
 	private int stringToInt(String s) {
 		try {
 			return Integer.parseInt(s);
@@ -183,7 +176,6 @@ public class AnnotationFlatFileReader {
 		}
 	}
 
-	// -------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -222,7 +214,6 @@ public class AnnotationFlatFileReader {
 		}
 	} // parseHeader
 
-	// -------------------------------------------------------------------------
 	private void parse() throws Exception {
 		annotation = new Annotation(species, annotationType, curator);
 
@@ -264,7 +255,6 @@ public class AnnotationFlatFileReader {
 		}
 	} // parse
 
-	// -------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -273,6 +263,4 @@ public class AnnotationFlatFileReader {
 	public Annotation getAnnotation() {
 		return annotation;
 	}
-
-	// -------------------------------------------------------------------------
 } // class AnnotationFlatFileReader

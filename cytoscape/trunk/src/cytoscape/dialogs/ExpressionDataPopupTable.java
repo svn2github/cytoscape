@@ -36,12 +36,6 @@
 */
 
 // ExpressionDataPopupTable
-
-//---------------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//---------------------------------------------------------------------------------------
 package cytoscape.dialogs;
 
 import cytoscape.data.ExpressionData;
@@ -60,8 +54,6 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-//---------------------------------------------------------------------------------------
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -74,7 +66,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 
-//---------------------------------------------------------------------------------------
 /**
  *
  */
@@ -84,7 +75,6 @@ public class ExpressionDataPopupTable extends JDialog {
 	private JTable table;
 	ExpressionData geneExpressionInfo = null;
 
-	//---------------------------------------------------------------------------------------
 	/**
 	 * Creates a new ExpressionDataPopupTable object.
 	 *
@@ -124,10 +114,7 @@ public class ExpressionDataPopupTable extends JDialog {
 
 		setContentPane(panel);
 	} // ExpressionDataPopupTable ctor
-	  //------------------------------------------------------------------------------------
-	  /*
-	 *  a ctor for single gene, multiple conditions
-	**/
+
 	/**
 	 * Creates a new ExpressionDataPopupTable object.
 	 *
@@ -163,7 +150,6 @@ public class ExpressionDataPopupTable extends JDialog {
 
 		setContentPane(panel);
 	} // ExpressionDataPopupTable ctor
-	  //------------------------------------------------------------------------------------
 
 	public class OKAction extends AbstractAction {
 		private JDialog dialog;
@@ -177,7 +163,6 @@ public class ExpressionDataPopupTable extends JDialog {
 			dialog.dispose();
 		}
 	} // QuitAction
-	  //-----------------------------------------------------------------------------------
 
 	class MultipleGenesTableModel extends AbstractTableModel {
 		String[] columnNames;
@@ -247,7 +232,6 @@ public class ExpressionDataPopupTable extends JDialog {
 			return getValueAt(0, column).getClass();
 		}
 	} // inner class MultipleGenesTableModel
-	  //--------------------------------------------------------------------------------------
 
 	class MultipleConditionsTableModel extends AbstractTableModel {
 		String[] columnNames;
@@ -310,7 +294,6 @@ public class ExpressionDataPopupTable extends JDialog {
 			return getValueAt(0, column).getClass();
 		}
 	} // inner class MultipleConditionsTableModel
-	  //--------------------------------------------------------------------------------------
 
 	class ButtonCellRenderer implements TableCellRenderer {
 		private TableCellRenderer defaultRenderer;
@@ -330,7 +313,6 @@ public class ExpressionDataPopupTable extends JDialog {
 				                                                     hasFocus, row, column);
 		}
 	} // inner class ButtonCellRenderer
-	  //-------------------------------------------------------------------------------
 
 	class MyMouseListener implements MouseListener {
 		private JTable table;
@@ -381,5 +363,4 @@ public class ExpressionDataPopupTable extends JDialog {
 		public void mouseReleased(MouseEvent e) {
 		}
 	} // inner class MyMouseListener
-	  //-------------------------------------------------------------------------------
 } // class ExpressionDataPopupTable

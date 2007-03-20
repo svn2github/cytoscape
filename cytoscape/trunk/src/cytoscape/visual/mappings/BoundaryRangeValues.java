@@ -44,6 +44,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
+
 //----------------------------------------------------------------------------
 /**
  * This class defines a data object representing the range values associated
@@ -61,17 +62,17 @@ package cytoscape.visual.mappings;
  */
 public class BoundaryRangeValues {
 	/**
-	 * 
+	 *
 	 */
 	public Object lesserValue = null;
 
 	/**
-	 * 
+	 *
 	 */
 	public Object equalValue = null;
 
 	/**
-	 * 
+	 *
 	 */
 	public Object greaterValue = null;
 

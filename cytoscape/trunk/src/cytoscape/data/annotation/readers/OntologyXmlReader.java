@@ -36,10 +36,6 @@
 */
 
 // OntologyXmlReader.java
-
-//------------------------------------------------------------------------------
-// $Revision$  $Date$
-//------------------------------------------------------------------------------
 package cytoscape.data.annotation.readers;
 
 import cytoscape.data.annotation.Ontology;
@@ -51,7 +47,6 @@ import org.jdom.input.*;
 
 import org.jdom.output.*;
 
-//------------------------------------------------------------------------------
 import java.io.*;
 
 import java.util.List;
@@ -59,7 +54,6 @@ import java.util.ListIterator;
 import java.util.Vector;
 
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -67,7 +61,6 @@ public class OntologyXmlReader {
 	File xmlFile;
 	Ontology ontology;
 
-	//-------------------------------------------------------------------------
 	/**
 	 * Creates a new OntologyXmlReader object.
 	 *
@@ -80,7 +73,6 @@ public class OntologyXmlReader {
 		read();
 	}
 
-	//-------------------------------------------------------------------------
 	private void read() throws Exception {
 		SAXBuilder builder = new SAXBuilder();
 		Document doc = builder.build(xmlFile);
@@ -125,7 +117,6 @@ public class OntologyXmlReader {
 			ontology.add(term);
 		}
 	} // read
-	  //-------------------------------------------------------------------------
 
 	/**
 	 *  DOCUMENT ME!
@@ -135,6 +126,4 @@ public class OntologyXmlReader {
 	public Ontology getOntology() {
 		return ontology;
 	}
-
-	//-------------------------------------------------------------------------
 } // class OntologyXmlReader
