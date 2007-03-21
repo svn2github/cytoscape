@@ -170,6 +170,19 @@ public class NamedSelection extends CytoscapePlugin
 		groupPanel.groupRemoved(group);
 	}
 
+	/**
+	 * This is called when a group we care about is changed.
+	 *
+	 * @param group the CyGroup that has changed
+	 * @param node the CyNode that caused the change
+	 * @param change the change that occured
+	 */
+	public void groupChanged(CyGroup group, CyNode node, int change) { 
+		// At some point, this should be a little more granular.  Do we really
+		// need to rebuild the tree when we have a simple node addition/removal?
+		groupPanel.groupChanged(group);
+	}
+
 	// PropertyChange support
 
 	/**
@@ -378,8 +391,7 @@ public class NamedSelection extends CytoscapePlugin
 		}
 
 		/**
-		 * Create a new group.  Eventually, this should be replaced by a more
-		 * pleasing dialog that allows the user to choose their own name.
+		 * Create a new group.
 		 */
 		private void newGroup() {
 			CyNetwork network = Cytoscape.getCurrentNetwork();
