@@ -34,6 +34,7 @@ package metaNodePlugin2.model;
 
 // System imports
 import java.util.List;
+import java.util.ListIterator;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -126,7 +127,7 @@ public class MetaNode {
 		update();
 		// See if we need to "fix up" the CyGroup.  We might need to
 		// add external edges to the CyGroup if we have nodes that used
-		// be the connected to nodes which are now part of a collapsed
+		// to be connected to nodes which are now part of a collapsed
 		// group.  If this is the case, some of *our* external edges
 		// will be meta-edges
 		List<CyEdge>externalEdges = group.getOuterEdges();
@@ -167,6 +168,153 @@ public class MetaNode {
 	}
 
 	/**
+	 * Add a node to this metaNode.  It will already have been added to the 
+	 * group, but we need to update our internal data structures and (possibly)
+	 * hide/restore some nodes and/or edges.
+	 *
+	 * @param node the CyNode that was added
+	 */
+	public void nodeAdded(CyNode node) {
+		// Adding a node could result in a couple of changes to our
+		// internal data structures.  First, we might have to add new
+		// metaedges to reflect the connection between this node and other
+		// nodes not a member of the group.  Second, we might have to
+		// remove metaedges if this node is the destination of any of our
+		// existing metaedges.
+		update();
+
+		// Check to see if we can remove any metaEdges
+		if (newEdgeMap != null) {
+			if (metaEdgeMap.containsKey(node)) {
+				// Get the metaEdge
+				CyEdge metaEdge = metaEdgeMap.get(node);
+				// Remove it from the network
+				network.removeEdge(metaEdge.getRootGraphIndex(), true);
+				// Remove it from our data structures
+				metaEdgeMap.remove(node);
+				newEdgeMap.remove(metaEdge);
+			}
+			// Now check to see if we need to add any metaEdges
+			// Get the list of external edges
+			List<CyEdge> edges = metaGroup.getOuterEdges();
+	
+			// Attach them to the group node
+			Iterator<CyEdge> iter = edges.iterator();
+			while (iter.hasNext()) {
+				CyEdge edge = iter.next();
+				// Did we "cause" this edge?
+				if (edge.getTarget() == node || edge.getSource() == node) {
+					// Yes, we need to create a new metaEdge, then
+					CyEdge newEdge = createMetaEdge(edge, false);
+				}
+			}
+		}
+
+		// Finally, if we're collapsed, hide this node (possibly recursively) and
+		// update the display
+		if (!isCollapsed)
+			return;
+
+		// Get the X and Y coordinates of the metaNode
+		NodeView nv = (NodeView)networkView.getNodeView(groupNode);
+		double metaX = nv.getXPosition();
+		double metaY = nv.getYPosition();
+		// Get our X and Y coordinates
+		nv = (NodeView)networkView.getNodeView(node);
+		double X = nv.getXPosition();
+		double Y = nv.getYPosition();
+		// Update our attributes
+		String nodeName = node.getIdentifier();
+		nodeAttributes.setAttribute(nodeName,"__metanodeHintX",metaX-X);
+		nodeAttributes.setAttribute(nodeName,"__metanodeHintY",metaY-Y);
+		// Hide the attributes
+
+		// Collapse ourselves (if we are a group and we aren't already collapsed)
+		if (metaMap.containsKey(node)) {
+			// Yes, recurse down
+			MetaNode child = (MetaNode)metaMap.get(node);
+			// If we're already collapsed, this will just return
+			child.collapse(recursive, multipleEdges, false);
+		}
+		// Hide our edges
+		// Hide the node
+		network.hideNode(node);
+
+		// Update the display
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		vizmapper.applyAppearances();
+		networkView.updateView();
+	}
+
+	/**
+	 * Remove a node from this metaNode.  It will already have been removed from the 
+	 * group, but we need to update our internal data structures and (possibly)
+	 * hide/restore some nodes and/or edges.
+	 *
+	 * @param node the CyNode that was removed
+	 */
+	public void nodeRemoved(CyNode node) {
+		update();
+		// If we're collapsed, unhide the node
+		if (isCollapsed) {
+			network.restoreNode(node);
+		}
+
+		List <CyEdge>removeEdges = new ArrayList();
+
+		// For each metaEdge, see if we're the cause for the metaNode.  If so, remove it.
+		Iterator <CyEdge>mEdge = newEdgeMap.keySet().iterator();
+		while (mEdge.hasNext()) {
+			CyEdge metaEdge = mEdge.next();
+			// Get the list of edges represented by this metaEdge
+			List<CyEdge> edgeList = newEdgeMap.get(metaEdge);
+			// For each edge, see if this node is on one side
+			ListIterator <CyEdge> edgeIter = edgeList.listIterator();
+			while (edgeIter.hasNext()) {
+				CyEdge edge = edgeIter.next();
+				if (edge.getTarget() == node || edge.getSource() == node) {
+					// Remove it from this metaEdge
+					edgeIter.remove();
+					if (isCollapsed) {
+						// Restore it
+						network.restoreEdge(edge);
+					}
+				}
+			}
+			// Did we delete the entire list?
+			if (edgeList.size() == 0) {
+				removeEdges.add(metaEdge);
+			}
+		}
+		// OK, now remove all of the metaEdges
+		mEdge = removeEdges.iterator();
+		while (mEdge.hasNext()) {
+			newEdgeMap.remove(mEdge.next());
+		}
+
+		// Now, we need to see if we need to add any metaEdges since we've moved this
+		// node out.  We'll find that out by walking the outerEdgeMap and see if we
+		// are now a partner
+		mEdge = metaGroup.getOuterEdges().iterator();
+		while (mEdge.hasNext()) {
+			CyEdge edge = mEdge.next();
+			if (edge.getTarget() == node || edge.getSource() == node) {
+				// Rats, looks like we need to create metaEdges for this node
+				CyEdge metaEdge = createMetaEdge(edge, false);
+				// If we're expanded, hide it
+				if (!isCollapsed) {
+					network.hideEdge(metaEdge);
+				}
+			}
+		}
+
+		// Update the display
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		vizmapper.applyAppearances();
+		networkView.updateView();
+	}
+
+	/**
 	 * Collapse this MetaNode
 	 *
 	 * @param recursive if 'true', this operation is recursive
@@ -200,7 +348,7 @@ public class MetaNode {
 		// Do we already have a list of edges
 		if (newEdgeMap == null) {
 			// No, create them
-			createMetaEdges(multipleEdges);
+			createMetaEdges();
 		} else {
 			// Yes, show them
 			Iterator <CyEdge>edgeIter = newEdgeMap.keySet().iterator();
@@ -222,7 +370,7 @@ public class MetaNode {
 	}
 
 	/**
-	 * Expend this MetaNode.
+	 * Expand this MetaNode.
 	 *
 	 * @param recursive if 'true', this operation is recursive
 	 */
@@ -305,7 +453,7 @@ public class MetaNode {
 		List<CyEdge>eL = new ArrayList();
 		eL.add(edge);
 		newEdgeMap.put(newEdge,eL);
-		metaEdgeMap.put(source,newEdge);
+		metaEdgeMap.put(partner,newEdge);
 		network.addEdge(newEdge);
 		return newEdge;
 	}
@@ -317,9 +465,8 @@ public class MetaNode {
 	/**
 	 * Create all of the necessary metaEdges
 	 *
-	 * @param multipleEdges if 'true' create one metaEdge for each replaced edge
 	 */
-	private void createMetaEdges(boolean multipleEdges) {
+	private void createMetaEdges() {
 		newEdgeMap = new HashMap();
 		metaEdgeMap = new HashMap();
 		List<CyNode> nodes = metaGroup.getNodes();

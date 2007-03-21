@@ -146,6 +146,24 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	public void groupWillBeRemoved(CyGroup group) { 
 	}
 
+	/**
+	 * This is called when a group we care about has been
+	 * changed (usually node added or deleted).
+	 *
+	 * @param group the CyGroup that has changed
+	 * @param node the CyNode that caused the change
+	 * @param change the change that occured
+	 */
+	public void groupChanged(CyGroup group, CyNode node, int change) { 
+		MetaNode mn = MetaNode.getMetaNode(group);
+		if (mn == null) return;
+
+		if (change == CyGroup.NODE_ADDED)
+			mn.nodeAdded(node);
+		else if (change == CyGroup.NODE_REMOVED)
+			mn.nodeRemoved(node);
+	}
+
 	// PropertyChange support
 
 	/**
@@ -415,6 +433,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
 			List<CyGroup> groupList = CyGroup.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this metanode");
+			if (groupName == null) return;
 			CyGroup group = CyGroup.createGroup(groupName, currentNodes, viewerName);
 			MetaNode newNode = new MetaNode(group);
 			groupCreated(group);
@@ -436,12 +455,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 * @param node the node to add to this group
 		 */
 		private void addToGroup(CyNode node) {
-			node.addToGroup(group);
-			// Get the state of the group
-			if (group.getState() == COLLAPSED) {
-				// Its collapsed, remove the node and add its external
-				// edges to the group node.
-			}
+			node.addToGroup(group);  // NOTE: this will trigger a groupChanged callback
 		}
 
 		/**
@@ -450,13 +464,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 * @param node the node to remove from this group
 		 */
 		private void removeFromGroup(CyNode node) {
-			node.removeFromGroup(group);
-			// Get the state of the group
-			if (group.getState() == COLLAPSED) {
-				// Its collapsed, add the node back to the network and
-				// remove its edges from the group node.
-			}
-
+			node.removeFromGroup(group);  // NOTE: this will trigger a groupChanged callback
 		}
 
 		/**
