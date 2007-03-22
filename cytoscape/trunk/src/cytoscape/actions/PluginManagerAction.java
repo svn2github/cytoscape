@@ -6,8 +6,9 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.dialogs.PluginInstallDialog;
-import cytoscape.dialogs.PluginListDialog;
+import cytoscape.dialogs.*;
+
+import cytoscape.dialogs.PluginManageDialog.PluginStatus;
 
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
@@ -50,11 +51,22 @@ public class PluginManagerAction extends CytoscapeAction {
 		 * have a button to "install plugins" poping up the PluginInstallDialog
 		 */
 		PluginManager Mgr = PluginManager.getPluginManager();
-		PluginInfo[] Info = Mgr.getInstalledPlugins();
 
-		PluginListDialog dialog = new PluginListDialog();
-		dialog.createTable(Info);
-		dialog.pack();
+		Map<String, List<PluginInfo>> InstalledInfo = Mgr.getPluginsByCategory(Mgr
+		                                                .getInstalledPlugins());
+		Map<String, List<PluginInfo>> DownloadInfo = Mgr.getPluginsByCategory(Mgr.inquire());
+
+		PluginManageDialog dialog = new PluginManageDialog(Cytoscape.getDesktop());
+		dialog.setSiteName("Cytoscape");
+
+		for (String Category : InstalledInfo.keySet()) {
+			dialog.addCategory(Category, InstalledInfo.get(Category), PluginStatus.INSTALLED);
+		}
+
+		for (String Category : DownloadInfo.keySet()) {
+			dialog.addCategory(Category, DownloadInfo.get(Category), PluginStatus.AVAILABLE);
+		}
+
 		dialog.setVisible(true);
 	}
 }
