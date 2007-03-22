@@ -879,7 +879,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	// KH: 03/14/07
 	class GetBubbleHelpListener implements ActionListener {
-		private String helpURL = "http://www.genmapp.org/InteractiveLayout/index.htm";
+		private String helpURL = "http://www.genmapp.org/InteractiveLayout/manual.htm";
 
 		public void actionPerformed(ActionEvent ae) {
 			cytoscape.util.OpenBrowser.openURL(helpURL);
