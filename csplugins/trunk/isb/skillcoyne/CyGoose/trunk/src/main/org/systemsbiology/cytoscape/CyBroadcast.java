@@ -65,6 +65,12 @@ public class CyBroadcast
 	public void broadcastNameList()
 		{
 		print("broadcastNameList");
+		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+			{
+			GagglePlugin.showDialogBox("No nodes were selected for list broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+			}
+
 
     Set<CyNode> SelectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
     Iterator<CyNode> NodesIter = SelectedNodes.iterator();
@@ -89,7 +95,11 @@ public class CyBroadcast
 
 		try 
 			{ GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), Species, NodeIds); }
-		catch(Exception E) { E.printStackTrace(); }
+		catch(Exception E) 
+			{ 
+			GagglePlugin.showDialogBox("Failed to broadcast list of names to " + this.getTargetGoose(), "Error", JOptionPane.ERROR_MESSAGE);
+			E.printStackTrace(); 
+			}
 		}
 
 	// broadcasts hash of selected attributes	
@@ -128,6 +138,12 @@ public class CyBroadcast
 
   private void broadcastHashMap(String[] attrNames)
     {
+		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+			{
+			GagglePlugin.showDialogBox("No nodes were selected for map broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+			}
+
     Set selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
     Iterator nodeIter = selectedNodes.iterator();
 
@@ -194,12 +210,22 @@ public class CyBroadcast
 
 		try
 	    { this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), species, dataTitle, map); }
-		catch (Exception E) { E.printStackTrace(); }
+		catch (Exception E) 
+			{ 
+			GagglePlugin.showDialogBox("Failed to broadcast map to " + this.getTargetGoose(), "Error", JOptionPane.ERROR_MESSAGE);
+			E.printStackTrace(); 
+			}
 		}
 
 	public void broadcastDataMatrix()
 		{
 		print("broadcastDataMatrix"); 
+
+		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+			{
+			GagglePlugin.showDialogBox("No nodes were selected for Data Matrix broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+			}
 
     Set SelectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 
@@ -249,6 +275,12 @@ public class CyBroadcast
 	
   private void broadcastDataMatrix(String[] condNames)
     {
+		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+			{
+			GagglePlugin.showDialogBox("No nodes were selected for Data Matrix broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+			}
+
     Set selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
     Iterator selectedNodesIter = selectedNodes.iterator();
 
@@ -293,13 +325,23 @@ public class CyBroadcast
 
 		try 
 			{ this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), matrix); }
-		catch (Exception E) { E.printStackTrace(); }
+		catch (Exception E) 
+			{ 
+			GagglePlugin.showDialogBox("Failed to broadcast matrix to " + this.getTargetGoose(), "Error", JOptionPane.ERROR_MESSAGE);
+			E.printStackTrace(); 
+			}
 		}
 
 	public void broadcastNetwork()
 		{
 		print("broadcastNetwork");
 
+		if (Cytoscape.getCurrentNetwork().getSelectedEdges().size() <= 0)
+			{
+			GagglePlugin.showDialogBox("Please make a selection that includes edges for a network broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+			}
+		
     Iterator<CyNode> NodesIter = Cytoscape.getCurrentNetwork().getSelectedNodes().iterator();
   	Iterator<CyEdge> EdgesIter = Cytoscape.getCurrentNetwork().getSelectedEdges().iterator();
 		CyAttributes EdgeAtts = Cytoscape.getEdgeAttributes();
@@ -322,16 +364,9 @@ public class CyBroadcast
       // again if there's more than one species we'll only get the last one!!!
       Species = this.getSpecies(SourceNodeId);
       }
-    if (GaggleNetwork.edgeCount() <= 0)
-    	{
-    	GagglePlugin.showDialogBox("This network contains no interactions and will not be broadcast", "Warning", JOptionPane.WARNING_MESSAGE);
-    	}
-    else
-    	{
 			try 
 				{ this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), Species, GaggleNetwork); }
 			catch (Exception E) { E.printStackTrace(); }
-    	}
 		}
 
 	private String getSpecies(String NodeId)
