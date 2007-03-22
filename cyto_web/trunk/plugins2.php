@@ -518,7 +518,7 @@ Toronto, Canada
 		<td width="32%" valign="top">
 			Run a Gibbs sampling motif detector on sequences corresponding to the selected nodes in the current network. This currently implements the most basic of the motif detection algorithms available from the <a href="http://sf.net/projects/netmotsa">Gibbs sampling motif detection library</a> described in <a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Bioinformatics</a>.
 			<br>
-			This plugin requires that the "sequence fetcher" (part of the HTTP Data plugin) be run first, to fetch the sequences, or they may be pre-loaded as node attributes. It may be used on protein or DNA sequences (detected automatically). Various types of information such as motif logos, alignment tables, and motif positions are displayed at the end of the detection run (<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/software.jpg">screenshot</a>).
+			This plugin requires that the "sequence fetcher" (part of the HTTP Data plugin) be run first, to fetch the sequences, or they may be pre-loaded as node attributes. It may be used on protein or DNA sequences (detected automatically). Various types of information such as motif logos, alignment tables, and motif positions are displayed at the end of the detection run (<a href="http://db.systemsbiology.net/cytoscape/old/projects/static/dreiss/motifFinder/software.jpg">screenshot</a>).
 			<br>
 			<br>
 			At some point, I hope to implement the fully network-informed version of the motif finder as described in the article.
@@ -529,7 +529,7 @@ Toronto, Canada
 		<td width="24%" valign="top">
 				 Verified to work in 2.0, 2.1.		</td>
 		<td width="18%" valign="top">
-			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download Plugin .jar</a>]
+			[<a href="http://db.systemsbiology.net/cytoscape/old/projects/static/dreiss/motifFinder/motifFinder.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
 	</tr>
