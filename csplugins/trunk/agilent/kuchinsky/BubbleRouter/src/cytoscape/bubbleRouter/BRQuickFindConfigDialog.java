@@ -209,7 +209,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		helpButton = new JButton(HELP_BUTTON_TEXT);
 		
 		helpButton.addActionListener(new ActionListener() {
-			private String helpURL = "http://www.genmapp.org/InteractiveLayout/index.htm";
+			private String helpURL = "http://www.genmapp.org/InteractiveLayout/manual.htm";
 			public void actionPerformed(ActionEvent e) {
 			cytoscape.util.OpenBrowser.openURL(helpURL);
 			}});
