@@ -77,4 +77,16 @@ public interface CyGroupViewer {
 	 * @param group the CyGroup that will be deleted.
 	 */
 	public void groupWillBeRemoved(CyGroup group);
+
+	/**
+	 * Provide viewer-specific hooks to the change of a group.  At this point,
+	 * group change will be either the addition or deletion of a node, but
+	 * it could be imagined in a future implementation where we might want to 
+	 * notify viewers of changes in group edges, state, or viewObject information.
+	 *
+	 * @param group the CyGroup that will be deleted.
+	 * @param CyNode the node that triggered the change
+	 * @param change the change that was made (see CyGroup defines)
+	 */
+	public void groupChanged(CyGroup group, CyNode changedNode, int change);
 }

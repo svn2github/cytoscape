@@ -206,4 +206,13 @@ public class CyNode implements giny.model.Node {
 	public boolean isaGroup() {
 		return CyGroup.isaGroup(this);
 	}
+
+	/**
+	 * Return the "name" of a node
+	 *
+	 * @return string representation of the node
+	 */
+	public String toString() {
+		return getIdentifier();
+	}
 }
