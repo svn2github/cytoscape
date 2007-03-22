@@ -85,7 +85,9 @@ public class CyLayouts {
 		layoutMap = new HashMap();
 		menuNameMap = new HashMap();
 		menuMap = new HashMap();
-		mode = CytoscapeInit.getCyInitParams().getMode();
+		if (CytoscapeInit.getCyInitParams() != null) {
+			mode = CytoscapeInit.getCyInitParams().getMode();
+		}
 		if ((mode == CyInitParams.EMBEDDED_WINDOW) || (mode == CyInitParams.GUI)) {
 			layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout");
 		}
