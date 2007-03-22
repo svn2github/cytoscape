@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.plugin;
 
 import cytoscape.Cytoscape;
@@ -149,9 +147,12 @@ public class PluginManager {
 	 * @return A hashmap of plugins for the current version of Cytoscape listed
 	 *         by their category from the default url
 	 */
-	public Map<String, List<PluginInfo>> getPluginsByCategory() {
-		return getPluginsByCategory(defaultUrl);
-	}
+
+	//	public Map<String, List<PluginInfo>> getPluginsByCategory(PluginInfo[] Plugins) {
+	//		ArrayList<PluginInfo> piList = new ArrayList<PluginInfo>();
+	//		piList.
+	//	return getPluginsByCategory(defaultUrl);
+	//	}
 
 	/**
 	 *
@@ -159,17 +160,10 @@ public class PluginManager {
 	 * @return A hashmap of plugins for the current version of Cytoscape listed
 	 *         by their category
 	 */
-	public Map<String, List<PluginInfo>> getPluginsByCategory(String Url) {
+	public Map<String, List<PluginInfo>> getPluginsByCategory(List<PluginInfo> Plugins) {
 		HashMap<String, List<PluginInfo>> Categories = new HashMap<String, List<PluginInfo>>();
 
-		Iterator<PluginInfo> pI = inquire(Url).iterator();
-
-		while (pI.hasNext()) {
-			PluginInfo Info = pI.next();
-
-			System.out.println("cyVersion: " + cyVersion);
-			System.out.println("PluginCyVersion: " + Info.getCytoscapeVersion());
-
+		for (PluginInfo Info : Plugins) {
 			// don't list anything not implemented to the current version
 			if (!Info.getCytoscapeVersion().equals(this.cyVersion))
 				continue;
@@ -181,8 +175,8 @@ public class PluginManager {
 
 			if (Categories.containsKey(CategoryName)) // add to existing list
 				Categories.get(CategoryName).add(Info);
-			else// create new list
-			 {
+			else { // create new list
+
 				List<PluginInfo> pList = new ArrayList<PluginInfo>();
 				pList.add(Info);
 				Categories.put(CategoryName, pList);
@@ -193,15 +187,15 @@ public class PluginManager {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 *  DOCUMENT ME!
 	 *
-	 * @return DOCUMENT ME!
+	 * @return  DOCUMENT ME!
 	 */
-	public PluginInfo[] getInstalledPlugins() {
-		Collection<PluginInfo> Installed = pluginTracker.getInstalledPlugins();
-		PluginInfo[] AllInstalled = new PluginInfo[Installed.size()];
+	public List<PluginInfo> getInstalledPlugins() {
+		List<PluginInfo> Installed = new ArrayList<PluginInfo>();
+		Installed.addAll(pluginTracker.getInstalledPlugins());
 
-		return Installed.toArray(AllInstalled);
+		return Installed;
 	}
 
 	/**
@@ -266,7 +260,7 @@ public class PluginManager {
 					                          "plugins" + System.getProperty("file.separator")
 					                          + "\\w+\\.jar")) {
 						List<String> InstalledFiles = UnzipUtil.unzip(HttpUtils.getInputStream(obj
-						                                                                                                                                                                                                                                                     .getUrl()));
+						                                                                                                                                                                                                                                               .getUrl()));
 						obj.setFileList(InstalledFiles);
 
 						String ClassName = getPluginClass(InstalledFiles);
@@ -357,8 +351,7 @@ public class PluginManager {
 		if ((Current.getID().equals(New.getID())
 		    && Current.getProjectUrl().equals(New.getProjectUrl())) && isVersionNew(Current, New)) {
 			return true;
-		}
-		else
+		} else
 
 			return false;
 	}
@@ -414,7 +407,7 @@ public class PluginManager {
 
 		// needs the list of all files installed
 		// Iterator<String> fileI = obj.getFileList().iterator();
-		for (String FileName : obj.getFileList())// while (fileI.hasNext())
+		for (String FileName : obj.getFileList()) // while (fileI.hasNext())
 		 {
 			// String FileName = fileI.next();
 			if (!(new java.io.File(FileName)).delete())
@@ -471,7 +464,7 @@ public class PluginManager {
 	 */
 	private String getPluginClass(List<String> Files) {
 		// Iterator<String> fileI = Files.iterator();
-		for (String FileName : Files)// while (fileI.hasNext())
+		for (String FileName : Files) // while (fileI.hasNext())
 		 {
 			// String FileName = fileI.next();
 			if (!FileName.endsWith(".jar"))
