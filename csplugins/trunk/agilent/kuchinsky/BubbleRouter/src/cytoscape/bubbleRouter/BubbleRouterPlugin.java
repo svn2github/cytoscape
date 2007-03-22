@@ -809,16 +809,16 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
 
 					public String getPresentationName() {
-						return "ReRoute Region";
+						return "Layout Region";
 					}
 
 					public String getRedoPresentationName() {
 
-						return "Redo: Reroute region";
+						return "Redo: Layout region";
 					}
 
 					public String getUndoPresentationName() {
-						return "Undo: Reroute region";
+						return "Undo: Layout region";
 					}
 
 					public void redo() {
