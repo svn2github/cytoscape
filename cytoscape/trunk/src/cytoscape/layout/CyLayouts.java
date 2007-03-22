@@ -38,6 +38,7 @@ package cytoscape.layout;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.init.CyInitParams;
 
 import cytoscape.layout.LayoutAlgorithm;
 
@@ -70,10 +71,11 @@ public class CyLayouts {
 	private static HashMap<String, LayoutAlgorithm> layoutMap;
 	private static HashMap<String, List> menuNameMap;
 	private static HashMap<String, LayoutMenu> menuMap;
-	private static JMenu layoutMenu;
+	private static JMenu layoutMenu = null;;
 	private static JMenuItem settingsMenu;
 	private static LayoutSettingsDialog settingsDialog;
 	private static final String layoutProperty = "layout.";
+	private static int mode = CyInitParams.GUI;
 
 	static {
 		new CyLayouts();
@@ -83,7 +85,10 @@ public class CyLayouts {
 		layoutMap = new HashMap();
 		menuNameMap = new HashMap();
 		menuMap = new HashMap();
-		layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout");
+		mode = CytoscapeInit.getCyInitParams().getMode();
+		if ((mode == CyInitParams.EMBEDDED_WINDOW) || (mode == CyInitParams.GUI)) {
+			layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout");
+		}
 
 		// Add the Settings menu
 		addSettingsMenu(layoutMenu);
@@ -106,6 +111,10 @@ public class CyLayouts {
 	public static void addLayout(LayoutAlgorithm layout, String menu) {
 		ArrayList<LayoutAlgorithm> menuList;
 		layoutMap.put(layout.getName(), layout);
+
+		// Don't mess with menus in headless mode
+		if (layoutMenu == null) 
+			return;
 
 		if (menu == null) {
 			menu = "none";
@@ -132,6 +141,10 @@ public class CyLayouts {
 	public static void removeLayout(LayoutAlgorithm layout) {
 		// Remove it from the layout map
 		layoutMap.remove(layout.getName());
+
+		// Don't mess with menus in headless mode
+		if (layoutMenu == null) 
+			return;
 
 		// Remove it from the menuNameMap
 		Iterator iter = menuNameMap.keySet().iterator();
@@ -223,7 +236,7 @@ public class CyLayouts {
 	 * Menu interfaces
 	 */
 	private static void addLayoutToMenu(String menuName, LayoutAlgorithm layout) {
-		if (menuName.equals("none"))
+		if (menuName.equals("none") || layoutMenu == null)
 			return;
 
 		if (!menuMap.containsKey(menuName)) {
@@ -236,7 +249,7 @@ public class CyLayouts {
 	}
 
 	private static void createMenu(String menuName) {
-		if (menuName.equals("none"))
+		if (menuName.equals("none") || layoutMenu == null)
 			return;
 
 		// Create an empty JMenu
@@ -247,7 +260,7 @@ public class CyLayouts {
 	}
 
 	private static void removeLayoutFromMenu(String menuName, LayoutAlgorithm layout) {
-		if (menuName.equals("none"))
+		if (menuName.equals("none") || layoutMenu == null)
 			return;
 
 		if (!menuMap.containsKey(menuName))
@@ -266,6 +279,7 @@ public class CyLayouts {
 	}
 
 	private static void addSettingsMenu(JMenu topMenu) {
+		if (topMenu == null) return;
 		settingsMenu = new JMenuItem("Settings...");
 		settingsMenu.setEnabled(false);
 		settingsMenu.setArmed(false);

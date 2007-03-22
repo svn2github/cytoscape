@@ -43,6 +43,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.init.CyInitParams;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -305,6 +306,8 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	private void setupUndo() {
+		if (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.TEXT)
+			return;
 		Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
 				public String getPresentationName() {
 					return "Layout";
