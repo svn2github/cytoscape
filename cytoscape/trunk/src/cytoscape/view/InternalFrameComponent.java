@@ -170,9 +170,9 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 */
 	public void print(Graphics g) {
 
-		backgroundCanvas.paint(g);
+		backgroundCanvas.print(g);
 		networkCanvas.print(g);
-		foregroundCanvas.paint(g);
+		foregroundCanvas.print(g);
 	}
 
 	/**
