@@ -131,6 +131,7 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 * @param height int
 	 */
 	public void setBounds(int x, int y, int width, int height) {
+		super.setBounds(x, y, width, height);
 		// call reshape on each innercanvas
 		backgroundCanvas.setBounds(x, y, width, height);
 		networkCanvas.setBounds(x, y, width, height);
@@ -163,28 +164,16 @@ public class InternalFrameComponent extends JComponent implements Printable {
 			return NO_SUCH_PAGE;
 	}
 
-    /**
-     * This method is invoked by at least ExportDialog.showExportDialog() when exporting
-	 * a network as some type of graphics (ie, svg).
-	 *
-	 * The rub is what exactly do we export ?  As we know, the InternalFrameComponent
-	 * comprises multiple components - one for each layer.  For now, get the background
-	 * layer and network layer working, later we can address the other layers.
-     *
-     * @return Component
-     */
-    public Component getComponent() {
-		Rectangle bounds = backgroundCanvas.getBounds();
-		BufferedImage image = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = image.createGraphics();
-		backgroundCanvas.paint(graphics);
-		networkCanvas.paint(graphics);
-		foregroundCanvas.paint(graphics);
-		JLabel toReturn = new JLabel(new ImageIcon(image));
-		// the following line must be there to work
-		toReturn.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-		return toReturn;
-    }
+
+	/**
+	 * This method is used by freehep lib to export network as graphics.
+	 */
+	public void print(Graphics g) {
+
+		backgroundCanvas.paint(g);
+		networkCanvas.print(g);
+		foregroundCanvas.paint(g);
+	}
 
 	/**
 	 * Places the canvas on the layeredPane in the following manner:
