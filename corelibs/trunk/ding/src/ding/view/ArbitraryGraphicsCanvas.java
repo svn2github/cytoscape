@@ -197,7 +197,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 				paintChildren(image2D);
 
 			// render image
-			((Graphics2D) graphics).drawImage(((BufferedImage) m_img), null, 0, 0);
+			graphics.drawImage(m_img, 0, 0, null);
 		}
 	}
 
@@ -209,7 +209,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 	public void print(Graphics graphics) {
 		//if we have an image to print, lets print it.
 		if (m_img != null) {
-			((Graphics2D) graphics).drawImage(((BufferedImage) m_img), null, 0, 0);
+			graphics.drawImage(m_img, 0, 0, null);
 		}
 	}
 
