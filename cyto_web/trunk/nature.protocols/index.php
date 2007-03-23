@@ -33,6 +33,9 @@
 			<p>
 			For more information on Java Webstart, click <A HREF="http://java.sun.com/products/javawebstart/">here</A>.	
 			</p>
+			
+			<p>To get the required data and configuation files for the Agilent Literature Search software
+			click <A HREF="../../download_agilent_literature_search_v2.4_data.php">here</A>
 	</div>
 </div>
 
