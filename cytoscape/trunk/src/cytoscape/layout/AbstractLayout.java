@@ -306,7 +306,8 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	private void setupUndo() {
-		if (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.TEXT)
+		if ((CytoscapeInit.getCyInitParams() != null) &&
+		    (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.TEXT))
 			return;
 		Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
 				public String getPresentationName() {
