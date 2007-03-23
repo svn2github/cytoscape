@@ -52,8 +52,9 @@ import cytoscape.util.CytoscapeAction;
 import ding.view.DGraphView;
 
 import org.freehep.util.export.ExportDialog;
-import java.awt.event.ActionEvent;
+
 import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -84,19 +85,21 @@ public class ExportAsGraphicsAction extends CytoscapeAction {
 		System.out.println("netwok as graphics");
 
 		CyNetworkView curr = Cytoscape.getCurrentNetworkView();
-	    InternalFrameComponent ifc =
+		InternalFrameComponent ifc =
 			Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curr);
 
 		if (curr != Cytoscape.getNullNetworkView()) {
+
 			// Export text as shape/font based on user's setting
 			DGraphView theViewToPrint = (DingNetworkView) Cytoscape.getCurrentNetworkView();
-			boolean exportTextAsShape = new Boolean(CytoscapeInit.getProperties()
-			                                                     .getProperty("exportTextAsShape"))
-			                            .booleanValue();
+
+			boolean exportTextAsShape =
+				new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue();
 			theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
 
 			ExportDialog export = new ExportDialog();
-			export.showExportDialog(ifc.getComponent(), "Export view as ...", ifc.getComponent(),
+			export.showExportDialog(ifc,
+									"Export view as ...", ifc,
 			                        "export");
 		} else {
 			JOptionPane.showMessageDialog(null,
