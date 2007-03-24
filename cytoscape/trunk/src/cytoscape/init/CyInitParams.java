@@ -40,101 +40,126 @@ import java.util.Properties;
 
 /**
  * An interface that describes the initialization parameters needed
- * by cytoscape.
+ * by cytoscape.  Anything initialing Cytoscape should implement this
+ * interface and pass that object into CytoscapeInit.  By setting the
+ * mode you can control how Cytoscape is initialized.
  */
 public interface CyInitParams {
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns the properties that were defined at initialization. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A Properties object containing whatever property values
+	 * that were defined at initialization.
 	 */
 	public Properties getProps();
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns properties specific to the VizMapper.  These properties
+	 * aren't necessarily intended for human consumption.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A Properties object containing VizMapper specific properties. 
 	 */
 	public Properties getVizProps();
 
 	/**
-	 *  DOCUMENT ME!
+	 * A list of Strings that describe graph file locations. The strings may
+	 * represent URLs.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A list of Strings representing graph file locations.
 	 */
 	public List getGraphFiles();
 
 	/**
-	 *  DOCUMENT ME!
+	 * A list of Strings that describe edge attribute file locations. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A list of Strings representing edge attribute file locations.
 	 */
 	public List getEdgeAttributeFiles();
 
 	/**
-	 *  DOCUMENT ME!
+	 * A list of Strings that describe node attribute file locations. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A list of Strings representing node attribute file locations.
 	 */
 	public List getNodeAttributeFiles();
 
 	/**
-	 *  DOCUMENT ME!
+	 * A list of Strings that describe expression matrix file locations. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A list of Strings representing expression matrixfile locations.
 	 */
 	public List getExpressionFiles();
 
 	/**
-	 *  DOCUMENT ME!
+	 * A list of Strings that describe plugins.  The descriptions can be any of the following: 
+	 * <ul>
+	 * <li>A jar file location, file or URL </li>
+	 * <li>A directory name </li>
+	 * <li>A plugin class name </li>
+	 * <li>A local file location where the file lists one plugin jar per line</li>
+	 * </ul>
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A list of strings describing the plugin locations. 
 	 */
 	public List getPlugins();
 
 	/**
-	 *  DOCUMENT ME!
+	 * A single string describing the session file location. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return A string describing the session file locaton. 
 	 */
 	public String getSessionFile();
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns and int representing the mode cytoscape runs in.  The possible
+	 * modes are:
+	 * <ul>
+	 * <li>ERROR </li>
+	 * <li>GUI - normal operation as a gui </li>
+	 * <li>TEXT - headless mode where cytoscape acts as a command line app </li>
+	 * <li>LIBRARY - headless mode wehre cytoscape acts as a server or daemon</li>
+	 * <li>EMBEDDED_WINDOW - gui mode where cytoscape is embedded in another app</li>
+	 * </ul>
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return the int representing the mode
 	 */
 	public int getMode();
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns the arguments used to trigger the initialization. While args are 
+	 * appropriate for the command line, they're not really appropriate for other modes.
+	 * Therefore, to pass initialization information to cytoscape, it's better to
+	 * use getProperties().
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return An array of strings representing arguments used to intialize cytoscape. 
 	 */
 	public String[] getArgs();
 
 	/**
-	 *
+	 * Error.  Something is wrong.
 	 */
 	public static final int ERROR = 0;
 
 	/**
-	 *
+	 * Normal gui mode.
 	 */
 	public static final int GUI = 1;
 
 	/**
-	 *
+	 * Headless mode (no gui) were cytoscape acts like a normal command line app and exits
+	 * once finished processing.
 	 */
 	public static final int TEXT = 2;
 
 	/**
-	 *
+	 * Another headless mode (no gui), but meant for a server or daemon that runs in the 
+	 * background without exiting.
 	 */
 	public static final int LIBRARY = 3;
 
 	/**
-	 *
+	 * A gui mode, but where cytoscape is embedded within a different application
+	 * meaning the usual menus and/or toolbars may not be present.
 	 */
 	public static final int EMBEDDED_WINDOW = 4;
 }
