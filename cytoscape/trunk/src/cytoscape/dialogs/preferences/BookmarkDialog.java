@@ -79,7 +79,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	private Bookmarks theBookmarks = null;
 
 	// private Category theCategory = new Category();;
-	private String[] bookmarkCategories = { "network", "annotation" };
+	private String[] bookmarkCategories = { "network", "annotation", "plugins" };
 
 	// private URL bookmarkURL;
 
@@ -98,7 +98,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		theBookmarks = Cytoscape.getBookmarks();
 		loadBookmarks();
 
-		setSize(new Dimension(350, 250));
+		setSize(new Dimension(500, 250));
 		this.setLocationRelativeTo(pParent);
 	}
 
