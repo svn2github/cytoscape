@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.ManagerError;
 
 import cytoscape.util.IndeterminateProgressBar;
 import cytoscape.util.SwingWorker;
@@ -146,7 +147,7 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 
 	// change site url
 	private void changeSiteHandler(java.awt.event.ActionEvent evt) {
-		PluginUrlDialog dialog = new PluginUrlDialog(Cytoscape.getDesktop());
+		PluginUrlDialog dialog = new PluginUrlDialog(this);
 		dialog.setVisible(true);
 	}
 
@@ -351,16 +352,21 @@ public class PluginInstallDialog extends JDialog implements TreeSelectionListene
 				InstallBar.setLocationRelativeTo(Dialog);
 				InstallBar.setVisible(true);
 
-				boolean installOk = Mgr.install(info);
-				InstallBar.dispose();
-
-				if (installOk) {
-					JOptionPane.showMessageDialog(Dialog,
-					                              "Plugin '" + info.getName()
-					                              + "' installed.  You will need to restart Cytoscape to use this plugin.",
-					                              "Installation Complete", JOptionPane.PLAIN_MESSAGE);
+				try {
+						boolean installOk = Mgr.install(info);
+						InstallBar.dispose();
+		
+						if (installOk) {
+							JOptionPane.showMessageDialog(Dialog,
+							                              "Plugin '" + info.getName()
+							                              + "' installed.  You will need to restart Cytoscape to use this plugin.",
+							                              "Installation Complete", JOptionPane.PLAIN_MESSAGE);
+						}
+				} catch (ManagerError E) {
+					InstallBar.dispose();
+					JOptionPane.showMessageDialog(Dialog, E.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					E.printStackTrace();
 				}
-
 				return null;
 			}
 		};

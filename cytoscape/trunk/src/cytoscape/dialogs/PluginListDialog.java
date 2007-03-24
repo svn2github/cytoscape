@@ -7,6 +7,7 @@ import cytoscape.*;
 
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.ManagerError;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -99,24 +100,29 @@ public class PluginListDialog extends JDialog implements TreeSelectionListener {
 		PluginManager Mgr = PluginManager.getPluginManager();
 		PluginInstallDialog Install = new PluginInstallDialog(Cytoscape.getDesktop());
 
-		Map<String, List<PluginInfo>> Plugins = Mgr.getPluginsByCategory(Mgr.inquire());
-		Iterator<String> pI = Plugins.keySet().iterator();
-		int index = 0;
-
-		while (pI.hasNext()) {
-			String Category = pI.next();
-			Install.addCategory(Category, Plugins.get(Category), index);
-
-			if (index <= 0)
-				index++; // apparenlty just need 0/1
+		try {
+			Map<String, List<PluginInfo>> Plugins = Mgr.getPluginsByCategory(Mgr.inquire());
+			Iterator<String> pI = Plugins.keySet().iterator();
+			int index = 0;
+	
+			while (pI.hasNext()) {
+				String Category = pI.next();
+				Install.addCategory(Category, Plugins.get(Category), index);
+	
+				if (index <= 0)
+					index++; // apparenlty just need 0/1
+			}
+	
+			Install.pack();
+			Install.setProjectName("cytoscape.org"); // !!!!!
+			Install.setLocationRelativeTo(PluginListDialog.this.getContentPane());
+			Install.setVisible(true);
+	
+			PluginListDialog.this.dispose();
+		}	catch (ManagerError E) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), E.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			E.printStackTrace();
 		}
-
-		Install.pack();
-		Install.setProjectName("cytoscape.org"); // !!!!!
-		Install.setLocationRelativeTo(PluginListDialog.this.getContentPane());
-		Install.setVisible(true);
-
-		PluginListDialog.this.dispose();
 	}
 
 	// delete event
@@ -147,21 +153,17 @@ public class PluginListDialog extends JDialog implements TreeSelectionListener {
 			                                                            JOptionPane.YES_NO_OPTION,
 			                                                            JOptionPane.QUESTION_MESSAGE))
 				delete = true;
-		} else
+		} else {
 			delete = true;
+		}
 
 		if (delete) {
-			if (PluginManager.getPluginManager().delete(NodeInfo)) {
+				PluginManager.getPluginManager().delete(NodeInfo);
 				removeNode(Node);
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 				                              "Plugin " + NodeInfo.getName()
 				                              + " successfully deleted.", "Plugin Deletion",
 				                              JOptionPane.PLAIN_MESSAGE);
-				repaint();
-			} else
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-				                              "Failed to delete plugin " + NodeInfo.getName()
-				                              + ".  You may need to manually delete it.");
 		}
 	}
 
