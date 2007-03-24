@@ -67,7 +67,7 @@ import java.io.IOException;
  * update the Mac OS X application as part of our regular build process.
  *
  * Full documentation on the Mac OS X Jar Bundler is available at:
- * http://developer.apple.com/documentation/Java/Conceptual/Jar_Bundler/
+ * http://developer.apple.com/documentation/Java/Conceptual/Jar_Bundler
  *
  * @author Ethan Cerami
  */
@@ -99,7 +99,11 @@ public class MacAppConfig {
 		addJars(files, array);
 
 		//  Overwrite existing Info.plist file.
-		XMLOutputter outputter = new XMLOutputter("     ", false);
+		// jdom 0.9
+		//XMLOutputter outputter = new XMLOutputter("     ", false);
+		// jdom 1.0
+		XMLOutputter outputter = new XMLOutputter(org.jdom.output.Format.getPrettyFormat());
+
 		FileWriter writer = new FileWriter(configFile);
 		outputter.output(doc, writer);
 		writer.close();

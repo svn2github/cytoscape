@@ -67,32 +67,32 @@ public class JnlpWriterUtil {
 	/**
 	 *
 	 */
-	public Document Doc;
+	public Document document;
 
 	/**
 	 *
 	 */
-	public Element Root;
+	public Element rootTag;
 
 	/**
 	 *
 	 */
-	public XMLOutputter Out;
-	protected String Filename;
-	protected String CytoDir;
-	protected String Url = "http://your.jnlp.location";
-	protected String SaveDir;
+	public XMLOutputter out;
+	protected String fileName;
+	protected String cytoDir;
+	protected String url = "http://your.jnlp.location";
+	protected String saveDir;
 
 	/**
 	 *
 	 */
-	public String LibDir;
+	public String libDir;
 
 	/**
 	 *
 	 */
-	public String PluginDir;
-	protected HashMap<String, String> Options;
+	public String pluginDir;
+	protected HashMap<String, String> options;
 
 	/**
 	 * Creates a new JnlpWriterUtil object.
@@ -100,34 +100,34 @@ public class JnlpWriterUtil {
 	 * @param args  DOCUMENT ME!
 	 */
 	public JnlpWriterUtil(String[] args) {
-		this.Options = this.getOptions(args);
-		this.Filename = Options.get("filename");
-		this.CytoDir = Options.get("cyto_dir");
-		this.SaveDir = Options.get("save_dir");
+		options = getOptions(args);
+		fileName = options.get("filename");
+		cytoDir = options.get("cyto_dir");
+		saveDir = options.get("save_dir");
 
-		if (Options.containsKey("url"))
-			this.Url = Options.get("url");
+		if (options.containsKey("url"))
+			url = options.get("url");
 
-		this.LibDir = this.CytoDir + "/lib";
-		this.PluginDir = this.CytoDir + "/plugins";
+		libDir = cytoDir + "/lib";
+		pluginDir = cytoDir + "/plugins";
 
 		setupDoc();
 	}
 
 	private void setupDoc() {
-		this.Doc = new Document();
-		this.Root = new Element("jnlp");
-		this.Doc.setRootElement(this.Root);
+		document = new Document();
+		rootTag = new Element("jnlp");
+		document.setRootElement(rootTag);
 
-		if (!this.Options.containsKey("url")) {
+		if (!options.containsKey("url")) {
 			Comment Codebase = new Comment("Replace the codebase URL with your own");
-			Root.addContent(Codebase);
+			rootTag.addContent(Codebase);
 		}
 
-		Root.setAttribute("codebase", Url);
-		Root.setAttribute("href", Filename);
+		rootTag.setAttribute("codebase", url);
+		rootTag.setAttribute("href", fileName);
 
-		this.Out = new XMLOutputter("  ", true);
+		out = new XMLOutputter(org.jdom.output.Format.getPrettyFormat());
 	}
 
 	private static void print(String s) {
@@ -153,7 +153,7 @@ public class JnlpWriterUtil {
 		print("Adding " + MainLibs.size() + " total main jars");
 
 		ArrayList<String> PluginLibs = jutil.getPluginJars();
-		ArrayList<String> PluginClasses = jutil.getMainClass(PluginLibs, jutil.PluginDir);
+		ArrayList<String> PluginClasses = jutil.getMainClass(PluginLibs, jutil.pluginDir);
 		print("Adding " + PluginLibs.size() + " total plugin jars");
 
 		jutil.createInfoTag();
@@ -171,7 +171,7 @@ public class JnlpWriterUtil {
 	 * @return jdom.Document as a string
 	 */
 	public String getString() {
-		return Out.outputString(this.Doc);
+		return out.outputString(document);
 	}
 
 	/**
@@ -180,13 +180,13 @@ public class JnlpWriterUtil {
 	 * @throws java.io.IOException
 	 */
 	public void writeToFile() throws java.io.IOException {
-		File SaveDirCheck = new File(this.SaveDir);
+		File SaveDirCheck = new File(saveDir);
 
 		if (!SaveDirCheck.exists())
 			SaveDirCheck.mkdir();
 
-		FileWriter writer = new FileWriter(this.SaveDir + "/" + Filename);
-		Out.output(this.Doc, writer);
+		FileWriter writer = new FileWriter(saveDir + "/" + fileName);
+		out.output(document, writer);
 	}
 
 	/*
@@ -203,9 +203,9 @@ public class JnlpWriterUtil {
 		Info.addContent(new Element("homepage").setAttribute("href", "http://cytoscape.org"));
 		Info.addContent(new Element("offline-allowed"));
 
-		this.Root.addContent(new Element("security").addContent(new Element("all-permissions")));
+		rootTag.addContent(new Element("security").addContent(new Element("all-permissions")));
 
-		this.Root.addContent(Info);
+		rootTag.addContent(Info);
 	}
 
 	/*
@@ -224,7 +224,7 @@ public class JnlpWriterUtil {
 		Resources.addContent(new Comment("All lib jars that cytoscape requires to run should be in this list"));
 		Resources.addContent(new Element("jar").setAttribute("href", "cytoscape.jar"));
 
-		this.Root.addContent(Resources);
+		rootTag.addContent(Resources);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class JnlpWriterUtil {
 	 * @param Comment
 	 */
 	public void addJars(String Prefix, ArrayList<String> Jars, String Comment) {
-		Element Resources = this.Root.getChild("resources");
+		Element Resources = rootTag.getChild("resources");
 
 		if (Comment != null)
 			Resources.addContent(new Comment(Comment));
@@ -250,7 +250,7 @@ public class JnlpWriterUtil {
 	 * @return  DOCUMENT ME!
 	 */
 	public ArrayList<String> getLibJars() {
-		return this.getJarList(this.LibDir);
+		return getJarList(libDir);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class JnlpWriterUtil {
 	 * @return  DOCUMENT ME!
 	 */
 	public ArrayList<String> getPluginJars() {
-		return this.getJarList(this.PluginDir);
+		return getJarList(pluginDir);
 	}
 
 	/**
@@ -365,14 +365,14 @@ public class JnlpWriterUtil {
 	 * These are all plugin arguments at the moment, only specifies the -p tag between each.
 	 */
 	public void addArguments(ArrayList<String> Args) {
-		Element Application = this.Root.getChild("application-desc");
+		Element Application = rootTag.getChild("application-desc");
 
 		if (Application == null) {
-			this.Root.addContent(new Comment("This starts-up Cytoscape, specify your plugins to load, and other command line arguments.  Plugins not specified here will not be loaded."));
+			rootTag.addContent(new Comment("This starts-up Cytoscape, specify your plugins to load, and other command line arguments.  Plugins not specified here will not be loaded."));
 
 			Application = new Element("application-desc").setAttribute("main-class",
 			                                                           "cytoscape.CyMain");
-			this.Root.addContent(Application);
+			rootTag.addContent(Application);
 		}
 
 		for (int i = 0; i < Args.size(); i++) {
