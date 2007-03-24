@@ -1,37 +1,26 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
-
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ * Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org) The
+ * Cytoscape Consortium is: - Institute for Systems Biology - University of
+ * California San Diego - Memorial Sloan-Kettering Cancer Center - Institut
+ * Pasteur - Agilent Technologies This library is free software; you can
+ * redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version
+ * 2.1 of the License, or any later version. This library is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY, WITHOUT EVEN THE
+ * IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. The
+ * software and documentation provided hereunder is on an "as is" basis, and the
+ * Institute for Systems Biology and the Whitehead Institute have no obligations
+ * to provide maintenance, support, updates, enhancements or modifications. In
+ * no event shall the Institute for Systems Biology and the Whitehead Institute
+ * be liable to any party for direct, indirect, special, incidental or
+ * consequential damages, including lost profits, arising out of the use of this
+ * software and its documentation, even if the Institute for Systems Biology and
+ * the Whitehead Institute have been advised of the possibility of such damage.
+ * See the GNU Lesser General Public License for more details. You should have
+ * received a copy of the GNU Lesser General Public License along with this
+ * library; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 package cytoscape.plugin;
 
 import cytoscape.Cytoscape;
@@ -70,16 +59,16 @@ public class PluginManager {
 	private PluginTracker pluginTracker;
 	private String defaultUrl;
 	private String cyVersion;
-	private String DEFAULT_VALUE = "http://cytoscape.org/whatever-the-plugin-url-is";
+	private String DEFAULT_VALUE = "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
 
 	static {
 		new PluginManager();
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public static PluginManager getPluginManager() {
 		if (pluginMgr == null) {
@@ -90,8 +79,10 @@ public class PluginManager {
 	}
 
 	private PluginManager() {
-		defaultUrl = CytoscapeInit.getProperties().getProperty("defaultPluginUrl", DEFAULT_VALUE);
+		defaultUrl = DEFAULT_VALUE;
 
+		//		defaultUrl = CytoscapeInit.getProperties().getProperty("defaultPluginUrl",
+		//				DEFAULT_VALUE);
 		try {
 			pluginTracker = new PluginTracker();
 			cyVersion = CytoscapeVersion.version;
@@ -118,7 +109,7 @@ public class PluginManager {
 	/**
 	 * @return List of PluginInfo objects from the default url
 	 */
-	public List<PluginInfo> inquire() {
+	public List<PluginInfo> inquire() throws ManagerError {
 		return inquire(defaultUrl);
 	}
 
@@ -129,36 +120,25 @@ public class PluginManager {
 	 * @param Url
 	 * @return List of PluginInfo objects
 	 */
-	public List<PluginInfo> inquire(String Url) {
+	public List<PluginInfo> inquire(String Url) throws ManagerError {
 		List<PluginInfo> Plugins = null;
 
 		try {
 			PluginFileReader Reader = new PluginFileReader(Url);
 			Plugins = Reader.getPlugins();
 		} catch (java.io.IOException E) {
-			showError("Failed to get plugin information from the url '" + Url + "'");
-			E.printStackTrace();
+			throw new ManagerError("Failed to read xml file at " + Url, E);
+		} catch (org.jdom.JDOMException E) {
+			throw new ManagerError(Url + " did not return correctly formatted xml", E);
 		}
 
 		return Plugins;
 	}
 
 	/**
-	 * @return A hashmap of plugins for the current version of Cytoscape listed
-	 *         by their category from the default url
-	 */
-
-	//	public Map<String, List<PluginInfo>> getPluginsByCategory(PluginInfo[] Plugins) {
-	//		ArrayList<PluginInfo> piList = new ArrayList<PluginInfo>();
-	//		piList.
-	//	return getPluginsByCategory(defaultUrl);
-	//	}
-
-	/**
-	 *
 	 * @param Url
-	 * @return A hashmap of plugins for the current version of Cytoscape listed
-	 *         by their category
+	 * @return A hashmap of plugins for the current version of Cytoscape listed by
+	 *         their category
 	 */
 	public Map<String, List<PluginInfo>> getPluginsByCategory(List<PluginInfo> Plugins) {
 		HashMap<String, List<PluginInfo>> Categories = new HashMap<String, List<PluginInfo>>();
@@ -187,15 +167,47 @@ public class PluginManager {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public List<PluginInfo> getInstalledPlugins() {
 		List<PluginInfo> Installed = new ArrayList<PluginInfo>();
 		Installed.addAll(pluginTracker.getInstalledPlugins());
 
 		return Installed;
+	}
+
+	/**
+	 * DOCUMENT ME
+	 * @return List of PluginInfo objects for deleted plugins
+	 */
+	public List<PluginInfo> getDeletedPlugins() {
+		List<PluginInfo> Deleted = new ArrayList<PluginInfo>();
+		Deleted.addAll(pluginTracker.getDeletedPlugins());
+
+		return Deleted;
+	}
+
+	// TEMPORARY
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<String, PluginInfo> getDeletedByFileName() {
+		HashMap<String, PluginInfo> Del = new HashMap<String, PluginInfo>();
+
+		for (PluginInfo Info : pluginTracker.getDeletedPlugins()) {
+			System.out.println(Info.getName());
+
+			for (String File : Info.getFileList()) {
+				System.out.println("    " + File);
+				Del.put(File, Info);
+			}
+		}
+
+		return Del;
 	}
 
 	/**
@@ -213,13 +225,11 @@ public class PluginManager {
 	 * @param PluginInfo
 	 * @return True if plugin installed
 	 */
-	public boolean install(PluginInfo obj) {
+	public boolean install(PluginInfo obj) throws ManagerError {
 		/*
-		 * currently installs jar and zip files only If jar file just drop it in
-		 * the plugin dir If zip file check to see that it's set up with
-		 * directories: plugins/jarfile.jar plugins/jarfile2.jar
-		 * someDir/propsfile.props etc...
-		 *
+		 * currently installs jar and zip files only If jar file just drop it in the
+		 * plugin dir If zip file check to see that it's set up with directories:
+		 * plugins/jarfile.jar plugins/jarfile2.jar someDir/propsfile.props etc...
 		 * TODO This method has gotten somewhat more complicated than originally
 		 * planned. Maybe good to think about breaking it up.
 		 */
@@ -234,6 +244,7 @@ public class PluginManager {
 					                                                obj.getName() + ".jar",
 					                                                "plugins"
 					                                                + System.getProperty("file.separator"));
+					System.out.println("Installed: " + Installed.getAbsolutePath());
 					obj.addFileName(Installed.getAbsolutePath());
 
 					String ClassName = getPluginClass(Installed.getAbsolutePath());
@@ -242,9 +253,8 @@ public class PluginManager {
 					if (!HttpUtils.STOP)
 						installOk = true;
 				} catch (java.io.IOException E) {
-					showError("Error installing plugin '" + obj.getName() + "' from "
-					          + obj.getUrl());
-					E.printStackTrace();
+					throw new ManagerError("Error installing plugin " + obj.getName() + " from "
+					                       + obj.getUrl(), E);
 				}
 
 				break;
@@ -260,7 +270,7 @@ public class PluginManager {
 					                          "plugins" + System.getProperty("file.separator")
 					                          + "\\w+\\.jar")) {
 						List<String> InstalledFiles = UnzipUtil.unzip(HttpUtils.getInputStream(obj
-						                                                                                                                                                                                                                                               .getUrl()));
+						                                                                                                                                                                                                                                                         .getUrl()));
 						obj.setFileList(InstalledFiles);
 
 						String ClassName = getPluginClass(InstalledFiles);
@@ -274,11 +284,10 @@ public class PluginManager {
 						// at least one jar file is required to be in the plugin
 						// directory in
 						// order to unzip correctly
-						showError("Zip file " + obj.getName()
-						          + " did not contain a plugin directory with a jar file.");
+						//showError("Zip file " + obj.getName() + " did not contain a plugin directory with a jar file.");
+						System.out.println("Zip file did not contain plugin directory with jar file");
 				} catch (java.io.IOException E) {
-					showError("Error unzipping " + obj.getUrl());
-					E.printStackTrace();
+					throw new ManagerError("Failed to unzip file at " + obj.getUrl(), E);
 				}
 
 				break;
@@ -291,10 +300,10 @@ public class PluginManager {
 	}
 
 	/**
-	 * @return List contains the PluginInfo objects for all plugins with
-	 *         available updates.
+	 * @return List contains the PluginInfo objects for all plugins with available
+	 *         updates.
 	 */
-	public List<PluginInfo> getUpdatablePlugins() {
+	public List<PluginInfo> getUpdatablePlugins() throws ManagerError {
 		ArrayList<PluginInfo> Updatable = new ArrayList<PluginInfo>();
 
 		for (PluginInfo CurrentPlugin : getInstalledPlugins()) {
@@ -316,13 +325,12 @@ public class PluginManager {
 	 * Updates a given plugin if it defines a project url to use in updating
 	 * TODO!!!!
 	 */
-	public boolean update(PluginInfo obj) {
+	public boolean update(PluginInfo obj) throws ManagerError {
 		boolean updated = false;
 
 		if (obj.getProjectUrl() == null) {
-			// TODO error
-			showError("Cytoscape doesn't have a project url for the plugin " + obj.getName()
-			          + ".  You may need to manually updated.");
+			throw new ManagerError(obj.getName()
+			                       + " does not have a project url. Cannot auto-update this plugin.");
 		}
 
 		List<PluginInfo> CurrentPlugins = inquire(obj.getProjectUrl());
@@ -357,13 +365,13 @@ public class PluginManager {
 	}
 
 	/**
-	 * compares the version numbers. Be sure the plugin info objects are passed
-	 * in order
+	 * compares the version numbers. Be sure the plugin info objects are passed in
+	 * order
 	 *
 	 * @param Current
-	 *            The currently installed PluginInfo object
+	 *          The currently installed PluginInfo object
 	 * @param New
-	 *            The new PluginInfo object to compare to
+	 *          The new PluginInfo object to compare to
 	 */
 	private boolean isVersionNew(PluginInfo Current, PluginInfo New) {
 		boolean isNew = false;
@@ -380,8 +388,7 @@ public class PluginManager {
 			}
 
 			// this means that if at any point the new version number is greater
-			// then it's "new"
-			// ie. 1.2.1 > 1.1
+			// then it's "new" ie. 1.2.1 > 1.1
 			if (Integer.valueOf(NewVersion[i]) > Integer.valueOf(CurrentVersion[i]))
 				isNew = true;
 		}
@@ -390,13 +397,21 @@ public class PluginManager {
 	}
 
 	/**
+	 * Notes the given PluginInfo object for deletion at next startup
+	 * @param obj
+	 */
+	public void delete(PluginInfo obj) {
+		System.out.println("Mgr marking for deletion " + obj.getName());
+		this.pluginTracker.removePlugin(obj);
+	}
+
+	/**
 	 * Deletes installed plugin and all known associated files
 	 *
 	 * @param obj
-	 * @return If any file from the plugin failed to delete method returns
-	 *         false.
+	 * @return If any file from the plugin failed to delete method returns false.
 	 */
-	public boolean delete(PluginInfo obj) {
+	public boolean removePlugin(PluginInfo obj) {
 		boolean deleteOk = false;
 
 		if (obj.getFileList().size() <= 0) {
@@ -406,18 +421,12 @@ public class PluginManager {
 		}
 
 		// needs the list of all files installed
-		// Iterator<String> fileI = obj.getFileList().iterator();
-		for (String FileName : obj.getFileList()) // while (fileI.hasNext())
-		 {
-			// String FileName = fileI.next();
-			if (!(new java.io.File(FileName)).delete())
-				deleteOk = false;
-			else
-				deleteOk = true;
+		for (String FileName : obj.getFileList()) {
+			java.io.File ToDelete = new java.io.File(FileName);
+			deleteOk = ToDelete.delete();
 		}
 
-		if (deleteOk)
-			this.pluginTracker.removePlugin(obj);
+		pluginTracker.removePlugin(obj);
 
 		return deleteOk;
 	}
@@ -432,7 +441,6 @@ public class PluginManager {
 		PluginInfo InfoObj;
 
 		if (Plugin.getPluginInfoObject() == null) {
-			System.out.println(Plugin.getClass().getName() + " no plugin info object");
 			InfoObj = new PluginInfo();
 			InfoObj.setName(Plugin.getClass().getName());
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
@@ -451,22 +459,18 @@ public class PluginManager {
 	}
 
 	/*
-	 * The following methods are for the purposes of getting the class name of
-	 * the class that extends CytoscapePlugin If CytoscapePlugin should take
-	 * over loading classes these methods maybe be accessed from elsewhere.
-	 * Currently they are mostly replicated from CytoscapeInit (ick). SK
-	 * 2007/03/19
+	 * The following methods are for the purposes of getting the class name of the
+	 * class that extends CytoscapePlugin If CytoscapePlugin should take over
+	 * loading classes these methods maybe be accessed from elsewhere. Currently
+	 * they are mostly replicated from CytoscapeInit (ick). SK 2007/03/19
 	 */
 
 	/*
-	 * Iterate through all the jar files in a zip, return the one that
-	 * subclasses CytoscapePlugin
+	 * Iterate through all the jar files in a zip, return the one that subclasses
+	 * CytoscapePlugin
 	 */
 	private String getPluginClass(List<String> Files) {
-		// Iterator<String> fileI = Files.iterator();
-		for (String FileName : Files) // while (fileI.hasNext())
-		 {
-			// String FileName = fileI.next();
+		for (String FileName : Files) {
 			if (!FileName.endsWith(".jar"))
 				continue;
 
@@ -491,7 +495,6 @@ public class PluginManager {
 		try {
 			JarURLConnection jc = (JarURLConnection) urls[0].openConnection();
 			JarFile Jar = jc.getJarFile();
-
 			Manifest m = Jar.getManifest();
 
 			if (m != null) {
@@ -535,9 +538,9 @@ public class PluginManager {
 	}
 
 	/*
-	 * This loads a class, returns the class if it's a subclass of
-	 * CytoscapePlugin copied from CytoscapeInit mostly, not sure if it's really
-	 * ok to load a class while cytoscape is running?
+	 * This loads a class, returns the class if it's a subclass of CytoscapePlugin
+	 * copied from CytoscapeInit mostly, not sure if it's really ok to load a
+	 * class while cytoscape is running?
 	 */
 	private Class getPluginClassFromJar(String name) {
 		Class c = null;
@@ -546,19 +549,17 @@ public class PluginManager {
 			this.classLoader.toString();
 			c = this.classLoader.loadClass(name);
 		} catch (ClassNotFoundException e) {
-			// e.printStackTrace();
-			System.err.println("Class not found " + e.getMessage());
+			System.err.println("Class not found " + e.getMessage() + " skipping");
 
 			return null;
 		} catch (NoClassDefFoundError e) {
-			e.printStackTrace();
+			System.err.println("No class definition found " + e.getMessage() + " skipping");
 
 			return null;
 		}
 
 		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;
-
 		else
 
 			return null;
