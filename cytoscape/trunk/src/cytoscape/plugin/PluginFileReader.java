@@ -26,16 +26,10 @@ public class PluginFileReader {
 	 *            DOCUMENT ME!
 	 *
 	 */
-	public PluginFileReader(String Url) throws java.io.IOException {
-		try {
-			SAXBuilder Builder = new SAXBuilder(false); // would be nice to
-			                                            // validate
-			                                            // later
-
-			Doc = Builder.build(new java.net.URL(Url));
-		} catch (JDOMException E) {
-			E.printStackTrace();
-		}
+	public PluginFileReader(String Url) throws java.io.IOException, JDOMException {
+		//would be nice to validate later		
+		SAXBuilder Builder = new SAXBuilder(false);
+		Doc = Builder.build(new java.net.URL(Url));
 	}
 
 	/**
@@ -98,8 +92,7 @@ public class PluginFileReader {
 				Info.setFiletype(PluginInfo.FileType.JAR);
 			} else if (Type.equalsIgnoreCase(PluginInfo.FileType.ZIP.toString())) {
 				Info.setFiletype(PluginInfo.FileType.ZIP);
-			}
-			else {
+			} else {
 				// unknown type error and move on
 				System.err.println("Unknown plugin file type '" + Type + " skipping");
 
