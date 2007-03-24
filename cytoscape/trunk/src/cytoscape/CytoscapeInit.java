@@ -460,28 +460,37 @@ public class CytoscapeInit {
 		return properties.getProperty("defaultVisualStyle");
 	}
 
+	
 	/**
 	 * Parses the plugin input strings and transforms them into the appropriate
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	private void loadPlugins() {
+		/* This use of the PluginManager is a hack to allow for deleting plugins.
+		 * Maybe plugin loading should occur in the manager or CytoscapePlugin instead? */
+		cytoscape.plugin.PluginManager Mgr = cytoscape.plugin.PluginManager.getPluginManager();
+		Map<String, cytoscape.plugin.PluginInfo> Deleted = Mgr.getDeletedByFileName();
+
 		try {
 			Set plugins = new HashSet();
 			List p = initParams.getPlugins();
-
+			
 			if (p != null)
 				plugins.addAll(p);
 
 			// Parse the plugin strings and determine whether they're urls,
-			// files,
-			// directories, class names, or manifest file names.
+			// files, directories, class names, or manifest file names.
 			for (Iterator iter = plugins.iterator(); iter.hasNext();) {
 				String plugin = (String) iter.next();
-
+				
 				File f = new File(plugin);
 
 				// If the file name ends with .jar add it to the list as a url.
 				if (plugin.endsWith(".jar")) {
+					if (Deleted.containsKey(plugin)) {
+						Mgr.removePlugin(Deleted.get(plugin));
+						continue;
+					}
 					// If the name doesn't match a url, turn it into one.
 					if (!plugin.matches(FileUtil.urlPattern)) {
 						System.out.println(" - file: " + f.getAbsolutePath());
@@ -495,6 +504,10 @@ public class CytoscapeInit {
 					// resource plugin.
 				} else if (!f.exists()) {
 					System.out.println(" - classpath: " + f.getAbsolutePath());
+					if (Deleted.containsKey(plugin)) {
+						Mgr.removePlugin(Deleted.get(plugin));
+						continue;
+					}
 					resourcePlugins.add(plugin);
 
 					// If the file is a directory, load all of the jars
@@ -505,6 +518,11 @@ public class CytoscapeInit {
 					String[] fileList = f.list();
 
 					for (int j = 0; j < fileList.length; j++) {
+						String FileName = f.getAbsolutePath() + File.separator + fileList[j];
+						if (Deleted.containsKey(FileName)) {
+							Mgr.removePlugin(Deleted.get(FileName));
+							continue;
+						}
 						if (!fileList[j].endsWith(".jar"))
 							continue;
 
@@ -516,6 +534,10 @@ public class CytoscapeInit {
 					// and make urls out of them.
 				} else {
 					System.out.println(" - file manifest: " + f.getAbsolutePath());
+					if (Deleted.containsKey(f.getAbsolutePath())) {
+						Mgr.removePlugin(Deleted.get(f.getAbsolutePath()));
+						continue;
+						}
 
 					try {
 						TextHttpReader reader = new TextHttpReader(plugin);
