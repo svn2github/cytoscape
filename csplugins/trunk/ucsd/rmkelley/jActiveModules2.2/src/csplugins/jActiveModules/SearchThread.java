@@ -48,7 +48,6 @@ public abstract class SearchThread extends Thread{
     //update_remove or update_add. These methods contain specific
     //optimizations to speed the update in their respective cases
     //(mostly the optimization are in update_add()
-    //if(!graph.containsNode(current,false)){
     if(!nodeSet.contains(current)){
       return update_remove(current);
     }
@@ -75,23 +74,12 @@ public abstract class SearchThread extends Thread{
     //for the neighboring nodes
     //first get the list of neighboring nodes
 
-    //now doing this in updatePaths
-    //newPaths = (TreeSet)((TreeSet)oldPaths).clone();
-	
-    //Vector neighbors = new Vector();
-    //List nodeList = graph.neighborsList(current);
-    //while(nc.ok()){
-    //    neighbors.add(nc.current());
-    //    if(!graph.contains(nc.current())){
-    //	System.out.println("not a neighbor");
-    //    }
-    //    nc.next();
-    //}
-	
     //now build the list of neighbor components
     Set nComponents = new HashSet();
-    Iterator it = graph.nodesIterator();
-    while(it.hasNext()){
+    //Iterator it = graph.nodesIterator();
+				//CHANGE HERE
+				Iterator it = graph.neighborsList(current).iterator();
+				while(it.hasNext()){
       //check for self loops
       Node myNode = (Node)it.next();
       if(current != myNode && nodeSet.contains(myNode)){
@@ -151,9 +139,6 @@ public abstract class SearchThread extends Thread{
     //look up the nodes in the hash, and read
     //of the list of nodes
 	
-    //now doing this in update paths
-    //newPaths = (TreeSet)((TreeSet)oldPaths).clone();
-	
     HashSet oldComponents = new HashSet();
     Iterator it = removed.iterator();
     while(it.hasNext()){
@@ -183,7 +168,6 @@ public abstract class SearchThread extends Thread{
     //case that this could be empty
 	
     ComponentFinder cf = new ComponentFinder(graph,nodeSet);
-	
     Vector newComponents = cf.getComponents(oldNodes);
 	
 	
@@ -240,27 +224,20 @@ public abstract class SearchThread extends Thread{
   protected void toggleNodeWithHiding(Node toggle){
     //If the graph contains the node, we dont' have to do
     //anything special
-    //if(graph.containsNode(toggle,false)){
-    //  graph.hideNode(toggle);
-    //}
     if(nodeSet.contains(toggle)){
       nodeSet.remove(toggle);
     }
     else{
-      //graph.restoreNode(toggle);
       nodeSet.add(toggle);
-      //Edge [] e_array = (Edge[])node2edges.get(toggle);
       List neighborList = graph.neighborsList(toggle);
-
       //check if it is a hub according ot the user's 
       //parameters
-      //if(e_array.length >= apfParams.getMinHubSize()){
       if(neighborList.size() >= apfParams.getMinHubSize()){
-	//calculate the minimum score of the components
-	//being tracked, this is a pretty inefficient way
-	//to do it, but hubs are usually rare and the number
-	//of paths is small, so I don't think it really 
-	//matters.
+						//calculate the minimum score of the components
+	     //being tracked, this is a pretty inefficient way
+	     //to do it, but hubs are usually rare and the number
+	     //of paths is small, so I don't think it really 
+	     //matters.
 	Iterator it = oldPaths.iterator();
 	int i = 0;
 	while(i<apfParams.getNumberOfPaths()-1){
@@ -272,47 +249,25 @@ public abstract class SearchThread extends Thread{
 	//for each neighboring node get its component, if the components
 	//score is low, then that node gets that axe.
 	double min_score = ((Component)it.next()).getScore();
-	//for(int j=0;j<e_array.length;j++){
-	//  Edge e = e_array[j];
-	//  Node neighbor;
-	//  if(e.getSource().equals(toggle)){
-	//    neighbor = e.getTarget();
-	//  }
-	//  else{
-	//    neighbor = e.getSource();
-	//  }
 	for(Iterator neighborIt = neighborList.iterator();neighborIt.hasNext();){
 	  Node neighbor = (Node)neighborIt.next();
 	  //make sure to include a check for self edges here
-	  //if(!neighbor.equals(toggle) && graph.containsNode(neighbor,false)){
 	  if(!neighbor.equals(toggle) && nodeSet.contains(neighbor)){
 	    //get the component that this node belongs to
 	    Component nComponent = (Component)node2component.get(neighbor);
 	    if(nComponent.getScore() < min_score){
 	      hiddenNodes.add(neighbor);
-	      //graph.hideNode(neighbor);
 	      nodeSet.remove(neighbor);
 	    }
-	    //else{
-	    //  graph.restoreEdge(e);
-	    //}
 	  }
 	}
-      }
-      else{
-	//not a hub, do the regular schtick
-	//for(int j=0;j<e_array.length;j++){
-	//  Edge e = e_array[j];
-	//  if(graph.containsNode(e.getSource(),false) && graph.containsNode(e.getTarget(),false)){
-	//    graph.restoreEdge(e);
-	//  }
-	//}
-	//I'm a little paranoid about forgetting to clear the hidden nodes.
+}
+else{
 	hiddenNodes.clear();
-      }
+}
 	    
-    }
-  }
+}
+}
 
 
 

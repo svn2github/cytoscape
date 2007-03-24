@@ -222,7 +222,7 @@ public class ParamStatistics implements Serializable{
    * @param size the size of the network
    */
   public double getMean(int size){
-    return means[size-1];
+					return means[size-1];
   }
   /**
    * Get the standard deviation for network of size size

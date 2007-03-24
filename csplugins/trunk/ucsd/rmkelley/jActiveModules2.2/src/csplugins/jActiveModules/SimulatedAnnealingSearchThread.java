@@ -91,7 +91,7 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 	    Node current_node = nodes[rand.nextInt(nodes.length)];
 	    //toggle the state of that node, it we are doing hubfinding, this may
 	    //also involve toggling the state of the surrrounding nodes
-	    if(hubFinding){
+					if(hubFinding){
 		toggleNodeWithHiding(current_node);
 	    }
 	    else{

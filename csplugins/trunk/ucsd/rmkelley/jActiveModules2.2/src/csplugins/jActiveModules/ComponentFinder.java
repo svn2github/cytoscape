@@ -71,8 +71,10 @@ public class ComponentFinder{
       //call back to postVisit after it is done searching any node. This is
       //where we will update the status of that node
       if(!valid.contains(nodes.get(start))){
-	throw new RuntimeException("Starting node for a component search was not present in the graph, this is an ActiveModules bug.");
-      }
+	throw new RuntimeException("Starting node for a component search was not present in the graph, this is an ActiveModules bug."+((Node)nodes.get(start)).getIdentifier());
+ 				//System.err.println("Starting node for a component search was not present in the grpah, this is an ActiveModules bug."+((Node)nodes.get(start)).getIdentifier());
+	}
+						
       search((Node)nodes.get(start));
       result.add(new Component(current));
       finalSize += current.size();
