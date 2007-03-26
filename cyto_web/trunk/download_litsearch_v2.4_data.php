@@ -32,7 +32,7 @@
                       <td valign="bottom"></td>
                       <td valign="bottom"></td>
                       <td valign="bottom"><center>
-                          <a href="http://www.cytoscape.org/plugins/AgilentLiteratureSearch_v2.4_data/Windows/NoVM/install.exe">Download (4.9M)</a>
+                          <a href="http://www.cytoscape.org/plugins/AgilentLiteratureSearch_data_v2.4/Windows/NoVM/install.exe">Download (4.9M)</a>
                       </center></td>
                       <td valign="bottom"></td>
                       <td valign="bottom"><center>
@@ -46,7 +46,7 @@
                       <td valign="bottom"></td>
                       <td valign="bottom"></td>
                       <td valign="bottom"><center>
-                          <a href="http://www.cytoscape.org/plugins/AgilentLiteratureSearch_v2.4­_data/MacOSX/install.zip">Download (4.5M) </a>
+                          <a href="http://www.cytoscape.org/plugins/AgilentLiteratureSearch_data_v2.4/MacOSX/install.zip">Download (4.5M) </a>
                       </center></td>
                       <td valign="bottom"></td>
                       <td valign="bottom"><center>
@@ -60,7 +60,7 @@
                       <td valign="bottom"></td>
                       <td valign="bottom"></td>
                       <td valign="bottom"><center>
-                          <a href="http://www.cytoscape.org/plugins/AgilentLiteratureSearch_v2.4_data/Linux/NoVM/install.bin">Download (4.9M)</a>
+                          <a href="http://www.cytoscape.org/plugins/AgilentLiteratureSearch_data_v2.4/Linux/NoVM/install.bin">Download (4.9M)</a>
                       </center></td>
                       <td valign="bottom"></td>
                       <td valign="bottom"><center>
