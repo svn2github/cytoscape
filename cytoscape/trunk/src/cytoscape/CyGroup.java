@@ -194,12 +194,28 @@ public class CyGroup {
 	/**
 	 * Return the list of all groups managed by a particular viewer
 	 *
+	 * @param viewer the CyGroupViewer
 	 * @return the list of groups
 	 */
 	public static List getGroupList(CyGroupViewer viewer) {
+		if (!groupViewerMap.containsKey(viewer))
+			return null;
 		List<CyGroup> groupList = groupViewerMap.get(viewer);
 
 		return groupList;
+	}
+
+	/**
+	 * Return the list of all groups managed by a particular viewer
+	 *
+	 * @param viewer the name of the CyGroupViewer
+	 * @return the list of groups
+	 */
+	public static List getGroupList(String viewer) {
+		if (viewerMap.containsKey(viewer))
+			return getGroupList(viewerMap.get(viewer));
+
+		return null;
 	}
 
 	/**
@@ -276,7 +292,7 @@ public class CyGroup {
 	/**
 	 * Remove (delete) a group
 	 *
-	 * @param group the group to remove
+	 * @param groupNode the group node of the group to remove
 	 */
 	public static void removeGroup(CyNode groupNode) {
 		if (groupMap.containsKey(groupNode)) {
@@ -626,7 +642,7 @@ public class CyGroup {
 	/**
 	 * Provide the default toString method
 	 *
-	 * @returns group name
+	 * @return group name
 	 */
 	public String toString() {
 		return this.groupName;
