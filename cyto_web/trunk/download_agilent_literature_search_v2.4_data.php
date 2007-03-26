@@ -126,7 +126,7 @@ Entire Agreement. This Agreement constitutes the entire agreement between you an
 representative of each party. 
 				</textarea>
 			</form>
-			<form action="download_litsearch_data_v2.4.php" method="POST">
+			<form action="download_litsearch_v2.4_data.php" method="POST">
 				<input type="hidden" name="file" value="<?= $file ?>">
 				<br>
 				<table border="0">
