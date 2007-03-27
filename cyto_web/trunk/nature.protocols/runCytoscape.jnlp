@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp codebase="http://cytoscape.org/nature.protocols" href="runCytoscape.jnlp">
+<jnlp codebase="http://chianti.ucsd.edu/~cline/webstart" href="runCytoscape.jnlp">
   <security>
     <all-permissions />
   </security>
