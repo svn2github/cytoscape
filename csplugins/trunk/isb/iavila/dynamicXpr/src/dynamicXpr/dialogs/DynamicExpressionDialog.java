@@ -211,7 +211,7 @@ public class DynamicExpressionDialog extends JFrame {
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		buttonPanel.setBorder(BorderFactory.createTitledBorder("Play"));
-		ImageIcon playIcon = createImageIcon("images/play.jpg");
+		ImageIcon playIcon = createImageIcon("/dynamicXpr/dialogs/images/play.jpg");
 		if (playIcon == null) {
 			playButton = new JButton("Play");
 		} else {
@@ -220,7 +220,7 @@ public class DynamicExpressionDialog extends JFrame {
 		playButton.addActionListener(new PlayActionListener());
 		buttonPanel.add(playButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(16, 0)));
-		ImageIcon pauseIcon = createImageIcon("images/pause.jpg");
+		ImageIcon pauseIcon = createImageIcon("/dynamicXpr/dialogs/images/pause.jpg");
 		if (pauseIcon == null) {
 			pauseButton = new JButton("Pause");
 		} else {
@@ -229,7 +229,7 @@ public class DynamicExpressionDialog extends JFrame {
 		pauseButton.addActionListener(new PauseActionListener());
 		buttonPanel.add(pauseButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(16, 0)));
-		ImageIcon stopIcon = createImageIcon("images/stop.jpg");
+		ImageIcon stopIcon = createImageIcon("/dynamicXpr/dialogs/images/stop.jpg");
 		if (stopIcon == null) {
 			stopButton = new JButton("Stop");
 		} else {
@@ -364,7 +364,7 @@ public class DynamicExpressionDialog extends JFrame {
 			nodeColorChanged = true;
 			if (listener.isPaused() == 1) {
 				// Was paused, change back the pause icon to black
-				ImageIcon pauseIcon = createImageIcon("images/pause.jpg");
+				ImageIcon pauseIcon = createImageIcon("/dynamicXpr/dialogs/images/pause.jpg");
 				if (pauseIcon != null) {
 					pauseButton.setIcon(pauseIcon);
 				}
@@ -388,14 +388,14 @@ public class DynamicExpressionDialog extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (listener.isPaused() == 0) {
 				// not paused, but about to become paused
-				ImageIcon pauseIcon = createImageIcon("images/redPause.jpg");
+				ImageIcon pauseIcon = createImageIcon("/dynamicXpr/dialogs/images/redPause.jpg");
 				if (pauseIcon != null) {
 					pauseButton.setIcon(pauseIcon);
 				}
 				listener.pause();
 			} else if (listener.isPaused() == 1) {
 				// paused, about to play again
-				ImageIcon pauseIcon = createImageIcon("images/pause.jpg");
+				ImageIcon pauseIcon = createImageIcon("/dynamicXpr/dialogs/images/pause.jpg");
 				if (pauseIcon != null) {
 					pauseButton.setIcon(pauseIcon);
 				}

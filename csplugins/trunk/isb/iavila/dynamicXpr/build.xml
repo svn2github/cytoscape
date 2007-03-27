@@ -32,7 +32,7 @@
 
    <target name="compile" depends = "prepare" description="Compile">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.4" srcdir = "${src}" destdir="${build}">
+   <javac source = "1.5" srcdir = "${src}" destdir="${build}">
       <classpath refid = "classpath"/>
    </javac>
    <!-- Copy icon images -->

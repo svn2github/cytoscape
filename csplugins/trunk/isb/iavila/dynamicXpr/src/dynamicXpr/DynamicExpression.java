@@ -38,7 +38,7 @@ package dynamicXpr;
 
 import java.util.*;
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import javax.swing.Timer;
 import java.awt.event.*;
 import java.io.*;
@@ -49,9 +49,9 @@ import cytoscape.visual.*;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.data.*;
+import cytoscape.CyGroup;
 
 import dynamicXpr.dialogs.*;
-import org.isb.metanodes.*;
 import giny.model.*;
 
 public class DynamicExpression extends AbstractAction {
@@ -187,7 +187,7 @@ public class DynamicExpression extends AbstractAction {
 	protected void prepareMetaNodes() {
 
 		System.err.println("Preparing  meta-nodes for dynamic expression...");
-		java.util.List metaNodes = MetaNodeUtils.getAllMetaNodes(Cytoscape.getCurrentNetwork());
+		List<CyGroup> metaNodes = CyGroup.getGroupList("metaNode");
 		
 		if (metaNodes == null || metaNodes.size() == 0) {
 			// No recorded meta-nodes for the current network
@@ -209,7 +209,7 @@ public class DynamicExpression extends AbstractAction {
 	 * 
 	 * @param meta_node_list a List of CyNodes that are meta-nodes
 	 */
-	protected void assignAverageExpressionToMetaNodes(java.util.List meta_node_list) {
+	protected void assignAverageExpressionToMetaNodes(List<CyGroup> meta_node_list) {
 		
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 		RootGraph rootGraph = currentNetwork.getRootGraph();
@@ -223,10 +223,11 @@ public class DynamicExpression extends AbstractAction {
 
 		// Get the children of each meta-node and average their expression ratio
 		// for each condition
-		Iterator it = meta_node_list.iterator();
+		Iterator<CyGroup> it = meta_node_list.iterator();
 		while (it.hasNext()) {
-			CyNode metaNode = (CyNode) it.next();
-			int[] children = rootGraph.getNodeMetaChildIndicesArray(metaNode.getRootGraphIndex());
+			CyGroup metaGroup = it.next();
+			CyNode metaNode = metaGroup.getGroupNode();
+			List <CyNode> children = metaGroup.getNodes();
 			if (children == null) {
 				System.err.println("Meta-node [" + metaNode + "] has no children!");
 				continue;
@@ -238,12 +239,9 @@ public class DynamicExpression extends AbstractAction {
 			
 			int numChildrenWithRatios = 0;
 
-			for (int j = 0; j < children.length; j++) {
-				CyNode node = (CyNode) rootGraph.getNode(children[j]);
-				if (node == null) {
-					System.err.println("Meta-node child with index ["
-							+ children[j] + "] does not have a CyNode.");
-				}
+			Iterator <CyNode> nodeIter = children.iterator();
+			while (nodeIter.hasNext()) {
+				CyNode node = nodeIter.next();
 				String uid = node.getIdentifier();
 				if (uid == null) {
 					System.err
