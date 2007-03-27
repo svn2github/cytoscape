@@ -121,6 +121,15 @@ public class LegendTable extends JPanel {
 				j = new JLabel(IconSupport.getNodeWidthIcon((Double) value));
 			else if (type == VizMapUI.NODE_HEIGHT)
 				j = new JLabel(IconSupport.getNodeHeightIcon((Double) value));
+			else if (type == VizMapUI.NODE_FONT_SIZE)
+				// use height icon for font size
+				j = new JLabel(IconSupport.getNodeHeightIcon((Double) value));
+			else if (type == VizMapUI.EDGE_FONT_SIZE)
+				// use height icon for font size
+				j = new JLabel(IconSupport.getNodeHeightIcon((Double) value));
+			else
+				// use height icon as default 
+				j = new JLabel(IconSupport.getNodeHeightIcon((Double) value));
 		} else if (value instanceof LabelPosition) {
 			j = new JLabel(IconSupport.getLabelPositionIcon((LabelPosition) value));
 		} else {
