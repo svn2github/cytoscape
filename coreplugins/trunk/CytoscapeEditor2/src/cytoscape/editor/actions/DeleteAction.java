@@ -50,6 +50,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.event.MenuEvent;
 
 
 /**
@@ -422,4 +423,19 @@ public class DeleteAction extends CytoscapeAction {
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
 		                             CytoscapeEditorManager.CYTOSCAPE_EDITOR, cyNet);
 	}
+
+    public void menuSelected(MenuEvent me) {
+        CyNetworkView currView = Cytoscape.getCurrentNetworkView();
+        if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+            setEnabled(false);
+
+        java.util.List n = currView.getSelectedNodes();
+        java.util.List e = currView.getSelectedEdges();
+
+        if ( (n != null && n.size() > 0 ) ||
+             (e != null && e.size() > 0 ) )
+            setEnabled(true);
+        else
+            setEnabled(false);
+    }
 }
