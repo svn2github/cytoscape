@@ -5,7 +5,7 @@
 	<title>Submit Plugin to Cytoscape</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="/css/cytoscape.css">
 	<link rel="shortcut icon" href="images/cyto.ico">
-    <style type="text/css">
+	<style type="text/css">
 <!--
 .style3 {color: #FF0066}
 .style4 {color: #FF0000}
@@ -408,7 +408,7 @@ if (!($tried && $validated)) {
   </tr>
   <tr>
     <td><div align="right">Author(s)</div></td>
-    <td><table width="660" border="1">
+    <td><table width="660" border="0">
       <tr>
         <td width="444"><div align="center"> Name(s)</div></td>
         <td width="206"><div align="center">contact e-mail (not made public) </div></td>
@@ -429,18 +429,37 @@ if (!($tried && $validated)) {
       </tr>
     </table></td>
   </tr>
-  <tr>
-    <td><div align="right"></div></td>
-    <td>
-    <input name="authorCount" type="hidden" id="authorCount" value="1" />
-	<a href="javascript:;" onclick = "addElement();">Add more authors</a>
-	<div id = "myDiv"> </div></td>
 
- </tr>
   <tr>
     <td>&nbsp;</td>
-    <td>&nbsp;</td>
+    <td><table width="660" border="0">
+      <tr>
+        <td width="444"><div align="center"> Name(s)</div></td>
+        <td width="206"><div align="center"></div></td>
+      </tr>
+      <tr>
+        <td><label>
+          <input name="tfNames02" type="text" id="tfNames02" size="70" value ="<?php echo $names[0] ?>" />
+        </label></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><div align="center">Affiliation</div></td>
+        <td><div align="center">Affiliation URL</div></td>
+      </tr>
+      <tr>
+        <td><input name="tfAffiliation02" type="text" id="tfAffiliation02" size="70" value ="<?php echo $affiliations[0] ?>" /></td>
+        <td><input name="tfAffiliationURL02" type="text" id="tfAffiliationURL02" size="30" value ="<?php echo $affiliationURLs[0] ?>" /></td>
+      </tr>
+    </table></td>
   </tr>
+  
+  <tr>  
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+  </tr>
+
+  
   <tr>
     <td><div align="right">Project URL</div></td>
     <td><input name="tfProjectURL" type="text" id="tfProjectURL" value ="<?php echo $projectURL ?>" size="80" /></td>
