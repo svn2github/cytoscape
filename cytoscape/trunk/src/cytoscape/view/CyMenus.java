@@ -97,6 +97,9 @@ import cytoscape.actions.UnHideSelectedNodesAction;
 import cytoscape.actions.ZoomAction;
 import cytoscape.actions.ZoomSelectedAction;
 
+import cytoscape.util.undo.UndoAction;
+import cytoscape.util.undo.RedoAction;
+
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
@@ -107,6 +110,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -150,17 +154,7 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu newSubMenu;
 	JMenu newSubMenu2;
 	JMenu editMenu;
-
-	// JMenuItem undoMenuItem, redoMenuItem;
-	// AJK 06/07/06: BEGIN
-	// more deletion functionality to the editor
-	// JMenuItem deleteSelectionMenuItem;
 	JMenu viewMenu;
-
-	// JMenuItem undoMenuItem, redoMenuItem;
-	// AJK 06/07/06: BEGIN
-	// more deletion functionality to the editor
-	// JMenuItem deleteSelectionMenuItem;
 	JMenu viewSubMenu;
 	JMenu selectMenu;
 	JMenu displayNWSubMenu;
@@ -556,98 +550,9 @@ public class CyMenus implements GraphViewChangeListener {
 
 		editMenu = menuBar.getMenu("Edit");
 
-		final JMenu f_editMenu = editMenu;
-		editMenu.addMenuListener(new MenuListener() {
-				public void menuCanceled(MenuEvent e) {
-				}
-
-				public void menuDeselected(MenuEvent e) {
-				}
-
-				public void menuSelected(MenuEvent e) {
-					CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-					boolean inactive = false;
-
-					//				System.out.println("GraphView = " + graphView);
-					//				System.out.println("graphView.nodeCount() == "
-					//						+ graphView.nodeCount());
-					if ((graphView == null) || (graphView.nodeCount() == 0))
-						inactive = true;
-
-					//				System.out.println(" inactive = " + inactive);
-					MenuElement[] popup = f_editMenu.getSubElements();
-
-					if (popup[0] instanceof JPopupMenu) {
-						MenuElement[] submenus = ((JPopupMenu) popup[0]).getSubElements();
-
-						for (int i = 0; i < submenus.length; i++) {
-							if (submenus[i] instanceof JMenuItem) {
-								JMenuItem item = (JMenuItem) submenus[i];
-
-								if (inactive
-								    && ((item.getText().equals("Delete Selected Nodes and Edges"))
-								       || (item.getText().equals("Undo"))
-								       || (item.getText().equals("Redo"))
-								       || (item.getText().equals("Destroy Network"))
-								       || (item.getText().equals("Destroy View")))) {
-									item.setEnabled(false);
-								} else {
-									item.setEnabled(true);
-								}
-
-								if (item.getText().equals("Connect Selected Nodes")) {
-									if ((graphView.getSelectedNodes() != null)
-									    && (graphView.getSelectedNodes().size() > 1)) {
-										item.setEnabled(true);
-									} else {
-										item.setEnabled(false);
-									}
-								}
-							}
-						}
-					}
-				}
-			});
-
-		// 
-		// Data menu. disabled by default.
-		//
 		viewMenu = menuBar.getMenu("View");
-
-		// final JMenu f_dataMenu = viewMenu;
 		viewMenu.setEnabled(true);
 
-		viewMenu.addMenuListener(new MenuListener() {
-				public void menuCanceled(MenuEvent e) {
-				}
-
-				public void menuDeselected(MenuEvent e) {
-				}
-
-				public void menuSelected(MenuEvent e) {
-					// CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-					// boolean inactive = false;
-					// if (graphView == null || graphView.nodeCount() == 0) inactive
-					// = true;
-					// CyNetwork graph = Cytoscape.getCurrentNetwork();
-					// boolean inactive = false;
-					// if (graph == null || graph.getNodeCount() == 0)
-					// inactive = true;
-					// MenuElement[] popup = f_dataMenu.getSubElements();
-					// if (popup[0] instanceof JPopupMenu) {
-					// MenuElement[] submenus = ((JPopupMenu) popup[0])
-					// .getSubElements();
-					// for (int i = 0; i < submenus.length; i++) {
-					// if (submenus[i] instanceof JMenuItem) {
-					// if (inactive)
-					// ((JMenuItem) submenus[i]).setEnabled(false);
-					// else
-					// ((JMenuItem) submenus[i]).setEnabled(true);
-					// }
-					// }
-					// }
-				}
-			});
 		selectMenu = menuBar.getMenu("Select");
 
 		final JMenu f_selectMenu = selectMenu;
@@ -801,8 +706,10 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExitAction());
 
 		// fill the Edit menu
-		// TODO: make the Squiggle Stuff be better
-		// editMenu.add(new SquiggleAction());
+		addAction(new UndoAction());
+		addAction(new RedoAction());
+		editMenu.add(new JSeparator());
+
 		addAction(new CreateNetworkViewAction());
 		addAction(new DestroyNetworkViewAction());
 		addAction(new DestroyNetworkAction());

@@ -69,8 +69,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.event.UndoableEditListener;
-
 
 // AJK: 05/19/06 END
 /**
@@ -105,12 +103,6 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 
 		new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getFlagger(), this);
 
-		// this check is necessary because everything crashes 
-		// if we try and get the Desktop too soon.  
-		// TODO  move undo out of CytoscapeDesktop!
-		if (network != Cytoscape.getNullNetwork()) {
-			addUndoableEditListener(Cytoscape.getDesktop().undo);
-		}
 	}
 
 	/**

@@ -62,6 +62,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.undo.AbstractUndoableEdit;
 
+import cytoscape.util.undo.CyUndo; 
 
 //-------------------------------------------------------------------------
 /**
@@ -132,9 +133,10 @@ public class DeleteSelectedAction extends AbstractAction {
 
 		// AJK: 06/10/06 BEGIN
 		//     make this action undo-able
-		System.out.println("adding undoableEdit to undoManager: " + Cytoscape.getDesktop().undo);
+		//System.out.println("adding undoableEdit to undoManager: " + Cytoscape.getDesktop().undo);
 
-		Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
+		//Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
+		CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
 				final String network_id = networkView.getNetwork().getIdentifier();
 
 				public String getPresentationName() {

@@ -42,12 +42,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.event.MenuListener;
+import javax.swing.event.MenuEvent;
 
 
 /**
  *
  */
-public abstract class CytoscapeAction extends AbstractAction {
+public abstract class CytoscapeAction extends AbstractAction implements MenuListener {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
 	protected Integer menuIndex = new Integer(-1);
@@ -306,4 +308,27 @@ public abstract class CytoscapeAction extends AbstractAction {
 		preferredButtonGroup = new_preferred;
 		firePropertyChange("preferredButtonGroup", old_preferred, new_preferred);
 	} // setPreferredButtonGroup( String )
+
+	/**
+	 * This method can be used at your discretion, but otherwise does nothing.  It exists
+	 * primarily to have access to menuSelected().
+	 * @param e The triggering event.
+	 */
+    public void menuCanceled(MenuEvent e) {}
+
+	/**
+	 * This method can be used at your discretion, but otherwise does nothing.  It exists
+	 * primarily to have access to menuSelected().
+	 * @param e The triggering event.
+	 */
+    public void menuDeselected(MenuEvent e) {}
+
+	/**
+	 * This method can be overridden by individual actions to set the state of menu items
+	 * based on whatever unique circumstances that menu option cares about. If not overridden,
+	 * this method does nothing.
+	 * @param e The triggering event.
+	 */
+    public void menuSelected(MenuEvent e) {}
+
 } // class CytoscapeAction

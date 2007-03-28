@@ -57,6 +57,7 @@ import cytoscape.util.*;
 import cytoscape.view.CyNetworkView;
 
 import ding.view.DGraphView;
+import ding.view.ViewChangeEdit;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;
@@ -76,7 +77,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JPanel;
-import javax.swing.undo.*;
 
 
 /**
@@ -95,12 +95,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	protected Dimension currentSize = new Dimension(20, 20);
 	protected HashMap propertyMap = null;
 	protected HashMap savedPropertyMap = null;
-
-	// for undo/redo
-	private Map<NodeView, Point2D.Double> origPoints = new HashMap<NodeView, Point2D.Double>();
-	private Map<NodeView, Point2D.Double> newPoints = new HashMap<NodeView, Point2D.Double>();
-	private double origZoom;
-	private Point2D origCenter;
+	private ViewChangeEdit undoableEdit;
 
 	// Should definitely be overridden!
 	protected String propertyPrefix = "abstract";
@@ -274,94 +269,14 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 			return false;
 		}
 
-		saveOldPositions();
-		setupUndo();
+		undoableEdit = new ViewChangeEdit((DGraphView)networkView,"Layout");
 
 		return true;
 	}
 
-	private void saveOldPositions() {
-		origPoints.clear();
-
-		Iterator it = networkView.getNodeViewsIterator();
-
-		while (it.hasNext()) {
-			NodeView nv = (NodeView) it.next();
-			origPoints.put(nv, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
-		}
-
-		origCenter = ((DGraphView) networkView).getCenter();
-		origZoom = networkView.getZoom();
-	}
-
-	private void saveNewPositions() {
-		newPoints.clear();
-
-		Iterator it = networkView.getNodeViewsIterator();
-
-		while (it.hasNext()) {
-			NodeView nv = (NodeView) it.next();
-			newPoints.put(nv, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
-		}
-	}
-
-	private void setupUndo() {
-		if ((CytoscapeInit.getCyInitParams() != null) &&
-		    (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.TEXT))
-			return;
-		Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
-				public String getPresentationName() {
-					return "Layout";
-				}
-
-				public String getRedoPresentationName() {
-					return "Redo: Layout";
-				}
-
-				public String getUndoPresentationName() {
-					return "Undo: Layout";
-				}
-
-				public void redo() {
-					super.redo();
-
-					Iterator it = networkView.getNodeViewsIterator();
-
-					while (it.hasNext()) {
-						NodeView nv = (NodeView) it.next();
-						Point2D.Double p = newPoints.get(nv);
-						nv.setXPosition(p.getX());
-						nv.setYPosition(p.getY());
-					}
-
-					if (!selectedOnly)
-						networkView.fitContent();
-
-					networkView.updateView();
-				}
-
-				public void undo() {
-					super.undo();
-
-					Iterator it = networkView.getNodeViewsIterator();
-
-					while (it.hasNext()) {
-						NodeView nv = (NodeView) it.next();
-						Point2D.Double p = origPoints.get(nv);
-						nv.setXPosition(p.getX());
-						nv.setYPosition(p.getY());
-					}
-
-					networkView.setZoom(origZoom);
-					((DGraphView) networkView).setCenter(origCenter.getX(), origCenter.getY());
-					networkView.updateView();
-				}
-			});
-	}
-
 	/**
 	 * Initializer, calls <tt>intialize_local</tt> to
-	* start construction process.
+	 * start construction process.
 	 */
 	public void initialize() {
 		double node_count = (double) network.getNodeCount();
@@ -434,12 +349,14 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	 */
 	public void run() {
 		construct();
-		saveNewPositions();
+		//saveNewPositions();
 
 		if (!selectedOnly)
 			networkView.fitContent();
 
 		networkView.updateView();
+
+		undoableEdit.post();
 	}
 
 	/**

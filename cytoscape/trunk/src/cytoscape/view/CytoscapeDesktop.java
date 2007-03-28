@@ -40,6 +40,8 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
 
+import cytoscape.util.undo.CyUndo;
+
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
@@ -84,6 +86,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 
+
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
@@ -122,11 +125,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
-
-	/**
-	 * Cytoscape UndoManager
-	 */
-	public static cytoscape.util.UndoManager undo;
 
 	/**
 	 * Displays all network views in TabbedPanes ( like Mozilla )
@@ -334,9 +332,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		Cytoscape.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
 
-		// initialize undo manager
-		undo = new cytoscape.util.UndoManager(cyMenus);
-
 		// initialize Menus
 		cyMenus.initializeMenus();
 
@@ -474,14 +469,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	// ----------------------------------------//
 	/**
-	 *  DOCUMENT ME!
+	 * Don't use this!  
 	 *
-	 * @param edit DOCUMENT ME!
+	 * @param edit An undoable edit. 
+	 * @deprecated Use CyUndo.getUndoableEditSupport().postEdit(edit) instead. Will be removed March 2008.
 	 */
 	public void addEdit(javax.swing.undo.UndoableEdit edit) {
-		// if ( undo == null )
-		// undo = new cytoscape.util.UndoManager();
-		undo.addEdit(edit);
+		CyUndo.getUndoableEditSupport().postEdit(edit);	
 	}
 
 	/**

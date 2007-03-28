@@ -62,6 +62,8 @@ import java.awt.geom.Point2D;
 
 import javax.swing.undo.AbstractUndoableEdit;
 
+import cytoscape.util.undo.CyUndo;
+
 
 //-------------------------------------------------------------------------
 /**
@@ -181,9 +183,10 @@ public class DestroySelectedAction extends CytoscapeAction {
 
 		// AJK: 06/10/06 BEGIN
 		//     make this action undo-able
-		System.out.println("adding undoableEdit to undoManager: " + Cytoscape.getDesktop().undo);
+		//System.out.println("adding undoableEdit to undoManager: " + Cytoscape.getDesktop().undo);
 
-		Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
+		//Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
+		CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
 				final String network_id = cyNet.getIdentifier();
 
 				public String getPresentationName() {
