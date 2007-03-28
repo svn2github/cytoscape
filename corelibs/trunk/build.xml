@@ -52,6 +52,9 @@
     <ant dir="util.intr"/>
     <copy todir="${build.dir}" file="util.intr/cytoscape-util-intr.jar"/>
 
+    <ant dir="undo.support"/>
+    <copy todir="${build.dir}" file="undo.support/undo.support.jar"/>
+
   </target>
 
   <!-- clean all corelib projects  -->
@@ -70,6 +73,7 @@
     <ant dir="render.stateful" target="clean"/>
     <ant dir="task" target="clean"/>
     <ant dir="util.intr" target="clean"/>
+    <ant dir="undo.support" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
