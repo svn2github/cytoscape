@@ -2,7 +2,7 @@
 
 
 // These are the DBMS credentials and the database name
-$dbServer = "localhost";
+$dbServer = "chianti.ucsd.edu";
 $dbName = "CyPluginDB";
 $dbUser = "cytouser";
 $dbPass = "cytouser";
