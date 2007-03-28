@@ -106,9 +106,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JToolTip;
 import javax.swing.TransferHandler;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.undo.UndoableEdit;
 
 
 // AJK: 04/26/06 END
@@ -137,8 +134,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	double m_scaleFactor;
 	private int m_lastRenderDetail = 0;
 	private Rectangle m_selectionRect = null;
-	private DingUndoableEdit m_undoable_edit;
-	private List<UndoableEditListener> m_edit_listeners;
+	private ViewChangeEdit m_undoable_edit;
 
 	//final boolean[] m_printingTextAsShape = new boolean[1];
 
@@ -217,41 +213,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		                            this); // DropTargetListener
 
 		// AJK: 04/02/06 END
-		m_edit_listeners = new ArrayList<UndoableEditListener>();
-	}
-
-	private void saveOldPositions() {
-		m_undoable_edit = new DingUndoableEdit(m_view);
-		m_undoable_edit.saveOldPositions(m_xCenter, m_yCenter, m_scaleFactor,
-		                                 m_view.getNodeViewsIterator());
-	}
-
-	private void saveNewPositions() {
-		m_undoable_edit.saveNewPositions(m_xCenter, m_yCenter, m_scaleFactor,
-		                                 m_view.getNodeViewsIterator());
-
-		UndoableEditEvent editEvent = new UndoableEditEvent(this, m_undoable_edit);
-
-		for (UndoableEditListener eul : m_edit_listeners)
-			eul.undoableEditHappened(editEvent);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param eul DOCUMENT ME!
-	 */
-	public void addUndoableEditListener(UndoableEditListener eul) {
-		m_edit_listeners.add(eul);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param eul DOCUMENT ME!
-	 */
-	public void removeUndoableEditListener(UndoableEditListener eul) {
-		m_edit_listeners.remove(eul);
 	}
 
 	/**
@@ -425,7 +386,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (e.isShiftDown() && isAnchorKeyDown(e))
 				return;
 
-			saveOldPositions();
+			m_undoable_edit = new ViewChangeEdit(m_view, "Move");
 
 			m_currMouseButton = 1;
 			m_lastXMousePos = e.getX();
@@ -640,12 +601,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			// something in the graph view.
 			repaint();
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
-			saveOldPositions();
+			m_undoable_edit = new ViewChangeEdit(m_view,"Move");
 			m_currMouseButton = 2;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
 		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
-			saveOldPositions();
+			m_undoable_edit = new ViewChangeEdit(m_view,"Move");
 			m_currMouseButton = 3;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
@@ -804,17 +765,17 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				}
 			}
 
-			saveNewPositions();
+			m_undoable_edit.post();
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
 			if (m_currMouseButton == 2)
 				m_currMouseButton = 0;
 
-			saveNewPositions();
+			m_undoable_edit.post();
 		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			if (m_currMouseButton == 3)
 				m_currMouseButton = 0;
 
-			saveNewPositions();
+			m_undoable_edit.post();
 		}
 	}
 

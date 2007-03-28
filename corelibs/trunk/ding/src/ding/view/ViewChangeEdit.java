@@ -47,75 +47,115 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.UndoableEditSupport;
+
+import undo.Undo;
 
 
 /**
  * A Ding specific undoable edit.
  */
-class DingUndoableEdit extends AbstractUndoableEdit {
-	private double m_orig_xCenter;
-	private double m_orig_yCenter;
+public class ViewChangeEdit extends AbstractUndoableEdit {
+
 	private double m_orig_scaleFactor;
+	private Point2D m_orig_center;
 	private Map<NodeView, Point2D.Double> m_orig_points;
-	private double m_new_xCenter;
-	private double m_new_yCenter;
+
 	private double m_new_scaleFactor;
+	private Point2D m_new_center;
 	private Map<NodeView, Point2D.Double> m_new_points;
+
 	private DGraphView m_view;
 
-	DingUndoableEdit(DGraphView view) {
+	private String m_label;
+
+	public ViewChangeEdit(DGraphView view,String label) {
 		super();
 		m_view = view;
+		m_label = label;
 
 		m_orig_points = new HashMap<NodeView, Point2D.Double>();
 		m_new_points = new HashMap<NodeView, Point2D.Double>();
+
+		saveOldPositions();
 	}
 
-	void saveOldPositions(double x, double y, double scale, Iterator nvi) {
-		//System.out.println("save old positions");
-		m_orig_xCenter = x;
-		m_orig_yCenter = y;
-		m_orig_scaleFactor = scale;
+	protected void saveOldPositions() {
+		m_orig_center = m_view.getCenter();
+		m_orig_scaleFactor = m_view.getZoom();
+		//System.out.println("~~~~~~~~~~ set old center: " + m_orig_center);
+		//System.out.println("~~~~~~~~~~ set old zoom: " + m_orig_scaleFactor);
 		m_orig_points.clear();
 
+		Iterator nvi = m_view.getNodeViewsIterator(); 
 		while (nvi.hasNext()) {
 			NodeView nv = (NodeView) nvi.next();
 			m_orig_points.put(nv, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 		}
 	}
 
-	void saveNewPositions(double x, double y, double scale, Iterator nvi) {
-		//System.out.println("save new positions");
-		m_new_xCenter = x;
-		m_new_yCenter = y;
-		m_new_scaleFactor = scale;
+	protected void saveNewPositions() {
+		m_new_center = m_view.getCenter(); 
+		m_new_scaleFactor = m_view.getZoom(); 
+		//System.out.println("~~~~~~~~~~ set NEW center: " + m_new_center);
+		//System.out.println("~~~~~~~~~~ set NEW zoom: " + m_new_scaleFactor);
 		m_new_points.clear();
 
+		Iterator nvi = m_view.getNodeViewsIterator(); 
 		while (nvi.hasNext()) {
 			NodeView nv = (NodeView) nvi.next();
 			m_new_points.put(nv, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 		}
 	}
 
+	public void post() {
+		saveNewPositions();
+		if ( changedSinceInit() )
+			Undo.getUndoableEditSupport().postEdit( this );
+	}
+
+	private boolean changedSinceInit() {
+		if ( !m_new_center.equals(m_orig_center) ) {
+			//System.out.println("xxxxxxx center differs " + m_new_center + "  " + m_orig_center);
+			return true;
+		}
+
+		if ( java.lang.Double.compare(m_new_scaleFactor, m_orig_scaleFactor) != 0 ) {
+			//System.out.println("xxxxxxx scale differs " + m_new_scaleFactor + "  " + m_orig_scaleFactor);
+			return true;
+		}
+
+		Iterator nvi = m_view.getNodeViewsIterator(); 
+		while (nvi.hasNext()) {
+			NodeView nv = (NodeView) nvi.next();
+			if ( !m_new_points.get(nv).equals( m_orig_points.get(nv) ) ) {
+				//System.out.println("xxxxxxx pos differs " + m_new_points.get(nv) + " " + m_orig_points.get(nv));
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * @return Not sure where this is used.
 	 */
 	public String getPresentationName() {
-		return "Move";
+		return m_label;
 	}
 
 	/**
 	 * @return Used in the edit menu.
 	 */
 	public String getRedoPresentationName() {
-		return "Redo: Move";
+		return "Redo: " + m_label;
 	}
 
 	/**
 	 * @return Used in the edit menu.
 	 */
 	public String getUndoPresentationName() {
-		return "Undo: Move";
+		return "Undo: " + m_label;
 	}
 
 	/**
@@ -123,9 +163,10 @@ class DingUndoableEdit extends AbstractUndoableEdit {
 	 */
 	public void redo() {
 		super.redo();
+		//System.out.println("~~~~~~~ redo NEW center: " + m_new_center);
+		//System.out.println("~~~~~~~ redo NEW zoom: " + m_new_scaleFactor);
 
 		Iterator it = m_view.getNodeViewsIterator();
-
 		while (it.hasNext()) {
 			NodeView nv = (NodeView) it.next();
 			Point2D.Double p = m_new_points.get(nv);
@@ -134,8 +175,8 @@ class DingUndoableEdit extends AbstractUndoableEdit {
 		}
 
 		m_view.setZoom(m_new_scaleFactor);
-		m_view.setCenter(m_new_xCenter, m_new_yCenter);
-		m_view.getCanvas().repaint();
+		m_view.setCenter(m_new_center.getX(), m_new_center.getY());
+		m_view.updateView();
 	}
 
 	/**
@@ -143,9 +184,10 @@ class DingUndoableEdit extends AbstractUndoableEdit {
 	 */
 	public void undo() {
 		super.undo();
+		//System.out.println("~~~~~~~ redo old center: " + m_orig_center);
+		//System.out.println("~~~~~~~ redo old zoom: " + m_orig_scaleFactor);
 
 		Iterator it = m_view.getNodeViewsIterator();
-
 		while (it.hasNext()) {
 			NodeView nv = (NodeView) it.next();
 			Point2D.Double p = m_orig_points.get(nv);
@@ -154,7 +196,7 @@ class DingUndoableEdit extends AbstractUndoableEdit {
 		}
 
 		m_view.setZoom(m_orig_scaleFactor);
-		m_view.setCenter(m_orig_xCenter, m_orig_yCenter);
-		m_view.getCanvas().repaint();
+		m_view.setCenter(m_orig_center.getX(), m_orig_center.getY());
+		m_view.updateView();
 	}
 }

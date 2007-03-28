@@ -79,8 +79,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.event.UndoableEditListener;
-
 
 /**
  * DOCUMENT ME!
@@ -170,10 +168,6 @@ public class DGraphView implements GraphView, Printable {
         m_selectedNodes = new IntBTree();
         m_selectedEdges = new IntBTree();
         m_selectedAnchors = new IntBTree();
-    }
-
-    public void addUndoableEditListener(UndoableEditListener uel) {
-        m_networkCanvas.addUndoableEditListener(uel);
     }
 
     /**
@@ -2088,7 +2082,7 @@ public class DGraphView implements GraphView, Printable {
      * This is inefficient, but there is no way to sync. giny type and renderer
      * type.
      *
-     * @return
+     * @return map of shape ids to shapes
      */
     public static Map<Byte, Shape> getNodeShapes() {
         final Map<Byte, Shape> nodeShapes = GraphGraphics.getNodeShapes();
