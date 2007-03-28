@@ -293,11 +293,6 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 			// VisualStyle vs = view.getVisualStyle();           
 			CytoscapeEditor cyEditor = CytoscapeEditorManager.getEditorForView(view);
 
-			cytoscape.util.UndoManager undo = CytoscapeDesktop.undo;
-
-			// AJK: 06/07/06 clear UndoManager when the view changes
-			undo.discardAllEdits();
-
 			if (cyEditor == null) {
 				try {
 					CytoscapeEditorManager.log("looking for default editor");

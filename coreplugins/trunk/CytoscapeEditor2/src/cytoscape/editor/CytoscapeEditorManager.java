@@ -49,6 +49,8 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
 
+import cytoscape.util.undo.CyUndo; 
+
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -844,7 +846,7 @@ public abstract class CytoscapeEditorManager {
 	 *            the edit method to be added to the UndoManager.
 	 */
 	public static void addEdit(UndoableEdit edit) {
-		CytoscapeDesktop.undo.addEdit(edit);
+		CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
 
 	/**
