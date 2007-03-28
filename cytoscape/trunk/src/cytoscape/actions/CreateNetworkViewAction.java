@@ -43,22 +43,22 @@ import cytoscape.CytoscapeInit;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyNetworkView;
 
 import java.awt.event.ActionEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
 
+import javax.swing.event.MenuEvent;
+
 
 /**
  *
  */
-public class CreateNetworkViewAction extends CytoscapeAction implements PropertyChangeListener {
+public class CreateNetworkViewAction extends CytoscapeAction {
 	/**
 	 * Creates a new CreateNetworkViewAction object.
 	 */
@@ -66,10 +66,6 @@ public class CreateNetworkViewAction extends CytoscapeAction implements Property
 		super("Create View");
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
-
-		super.setEnabled(false);
-
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	/**
@@ -124,13 +120,19 @@ public class CreateNetworkViewAction extends CytoscapeAction implements Property
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Sets the state of the action before rendering the menu. 
 	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		if ((e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED))) {
-			super.setEnabled(true);
+	public void menuSelected(MenuEvent e) {
+		CyNetwork currNet = Cytoscape.getCurrentNetwork();
+		if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
+			setEnabled(false);
+			return;
 		}
+		CyNetworkView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
+		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+			setEnabled(true);
+		else
+			setEnabled(false);
 	}
+
 }

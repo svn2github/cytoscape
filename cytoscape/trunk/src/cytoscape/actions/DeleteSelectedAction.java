@@ -60,6 +60,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.event.MenuEvent;
 import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.util.undo.CyUndo; 
@@ -95,12 +96,10 @@ public class DeleteSelectedAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		String callerID = "DeleteSelectedAction.actionPerformed";
 
-		// AJK: 06/10/06 BEGIN
 		//   make this action undo-able
 		final List nodes = networkView.getSelectedNodes();
 		final List edges = networkView.getSelectedEdges();
 
-		// AJK: 06/10/06 END
 		GraphView view = networkView.getView();
 		GraphPerspective perspective = view.getGraphPerspective();
 
@@ -112,17 +111,6 @@ public class DeleteSelectedAction extends AbstractAction {
 		final List selected_nodeViews = view.getSelectedNodes();
 		final List selected_edgeViews = view.getSelectedEdges();
 
-		// AJK: 06/11/06 BEGIN
-		//   grab offsets for un-doing
-		//        List offsets = new ArrayList();
-		//        for (Iterator i = selected_nodeViews.iterator(); i.hasNext();)
-		//        {
-		//        	offsets.add(((NodeView) i.next()).getOffset());
-		//        }
-		//        final List offsetsList = offsets;
-		//        
-		// AJK: 06/11/06 END
-
 		// Hide the viewable things and the perspective refs
 		view.hideGraphObjects(selected_nodeViews);
 		view.hideGraphObjects(selected_edgeViews);
@@ -131,11 +119,6 @@ public class DeleteSelectedAction extends AbstractAction {
 
 		networkView.redrawGraph(false, false);
 
-		// AJK: 06/10/06 BEGIN
-		//     make this action undo-able
-		//System.out.println("adding undoableEdit to undoManager: " + Cytoscape.getDesktop().undo);
-
-		//Cytoscape.getDesktop().undo.addEdit(new AbstractUndoableEdit() {
 		CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
 				final String network_id = networkView.getNetwork().getIdentifier();
 
@@ -178,11 +161,6 @@ public class DeleteSelectedAction extends AbstractAction {
 				public void redo() {
 					super.redo();
 
-					// removes the removed nodes and edges from the network
-					//				CyNetwork network = Cytoscape.getNetwork(network_id);
-					//
-					//					network.hideEdges(edges);
-					//					network.hideNodes(nodes);
 					GraphView view = networkView.getView();
 					GraphPerspective perspective = view.getGraphPerspective();
 					view.hideGraphObjects(selected_nodeViews);
@@ -194,10 +172,6 @@ public class DeleteSelectedAction extends AbstractAction {
 				public void undo() {
 					super.undo();
 
-					//				CyNetwork network = Cytoscape.getNetwork(network_id);
-					//				if (network != null) {
-					//					network.restoreNodes(nodes);
-					//					network.restoreEdges(edges);
 					GraphView view = networkView.getView();
 					GraphPerspective perspective = view.getGraphPerspective();
 					view.showGraphObjects(selected_nodeViews);
@@ -205,16 +179,23 @@ public class DeleteSelectedAction extends AbstractAction {
 					perspective.restoreEdges(edge_indicies);
 					perspective.restoreNodes(node_indicies);
 
-					//				for (int i = 0; i < selected_nodeViews.size(); i++)
-					//				{
-					//					((NodeView) selected_nodeViews.get(i)).setOffset(
-					//							((Point2D) offsetsList.get(i)).getX(),
-					//							((Point2D) offsetsList.get(i)).getY());
-					//				}					
 				}
 			});
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, networkView.getNetwork());
+	} 
 
-		// AJK: 06/10/06
-	} // actionPerformed
-} // inner class DeleteSelectedAction
+	public void menuSelected(MenuEvent me) {
+		CyNetworkView currView = Cytoscape.getCurrentNetworkView();
+		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+			setEnabled(false);
+
+		List n = currView.getSelectedNodes(); 
+		List e = currView.getSelectedEdges();
+
+		if ( (n != null && n.size() > 0 ) ||
+		     (e != null && e.size() > 0 ) )
+			setEnabled(true);
+		else
+			setEnabled(false);
+	}
+} 

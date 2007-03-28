@@ -37,10 +37,13 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 
 import cytoscape.util.*;
 
 import java.awt.event.*;
+
+import javax.swing.event.MenuEvent;
 
 
 /**
@@ -80,5 +83,16 @@ public class DestroyNetworkAction extends CytoscapeAction {
 	 */
 	public static void destroyCurrentNetwork() {
 		Cytoscape.destroyNetwork(Cytoscape.getCurrentNetwork());
+	}
+
+	/**
+	 * Sets the action state based on whether a current network exists. 
+	 */
+	public void menuSelected(MenuEvent e) {
+		CyNetwork net = Cytoscape.getCurrentNetwork();
+		if ( net != null && net != Cytoscape.getNullNetwork() )
+			setEnabled(true);
+		else
+			setEnabled(false);
 	}
 }

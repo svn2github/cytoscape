@@ -37,10 +37,15 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 
 import cytoscape.util.CytoscapeAction;
 
+import cytoscape.view.CyNetworkView;
+
 import java.awt.event.ActionEvent;
+
+import javax.swing.event.MenuEvent;
 
 
 /**
@@ -79,5 +84,19 @@ public class DestroyNetworkViewAction extends CytoscapeAction {
 	 */
 	public static void destroyViewFromCurrentNetwork() {
 		Cytoscape.destroyNetworkView(Cytoscape.getCurrentNetwork());
+	}
+
+	public void menuSelected(MenuEvent e) {
+		CyNetwork currNet = Cytoscape.getCurrentNetwork();
+        if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
+            setEnabled(false);
+            return;
+        }
+
+		CyNetworkView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
+		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+			setEnabled(false);
+		else
+			setEnabled(true);
 	}
 }
