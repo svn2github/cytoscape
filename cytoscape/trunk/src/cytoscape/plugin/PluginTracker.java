@@ -3,7 +3,7 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.*;
+import cytoscape.CytoscapeInit;
 
 import cytoscape.plugin.PluginInfo.AuthorInfo;
 
@@ -13,63 +13,45 @@ import org.jdom.JDOMException;
 
 import org.jdom.input.SAXBuilder;
 
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import java.io.File;
 import java.io.FileWriter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-
-/*
- * TODO The xml reading that occurs in the tracker is nearly identical to what
- * PluginFileReader is doing. Would be nice to merge them.
- */
 
 /**
- * @author skillcoy Tracks all installed plugins and the files required for
- *         each. Writes out a file when cytoscape is closed describing installed
- *         plugins, reads in at load time (check that plugins are still there?)
- *         Tracker is meant to only be used by the PluginManager
+ * @author skillcoy
+ *
  */
 public class PluginTracker {
 	private Document trackerDoc;
 	private File installFile;
-	private HashMap<String, PluginInfo> installedPlugins;
-	private HashMap<String, PluginInfo> deletedPlugins;
-	private final String INSTALL_FILE_NAME = "plugins_installed.xml";
+	private final String INSTALL_FILE_NAME = "track_plugins.xml";
+	public enum PluginStatus { // xml tags describing status of plugin
+		CURRENT("CurrentPlugins"),
+		DELETE("DeletePlugins"),
+		INSTALL("InstallPlugins");
 
-	// XML Tags to prevent misspelling issues, PluginFileReader uses the same
-	// tags, the xml needs to stay consistent
-	private String nameTag = PluginFileReader.nameTag;
-	private String descTag = PluginFileReader.descTag;
-	private String classTag = PluginFileReader.classTag;
-	private String pluginVersTag = PluginFileReader.pluginVersTag;
-	private String cytoVersTag = PluginFileReader.cytoVersTag;
-	private String urlTag = PluginFileReader.urlTag;
-	private String projUrlTag = PluginFileReader.projUrlTag;
-	private String categoryTag = PluginFileReader.categoryTag;
-	private String fileListTag = PluginFileReader.fileListTag;
-	private String fileTag = PluginFileReader.fileTag;
-	private String pluginListTag = PluginFileReader.pluginListTag;
-	private String pluginTag = PluginFileReader.pluginTag;
-	private String authorListTag = PluginFileReader.authorListTag;
-	private String authorTag = PluginFileReader.authorTag;
-	private String instTag = PluginFileReader.instTag;
-	private String uniqueIdTag = PluginFileReader.uniqueID;
+		private String statusText;
 
-	// lists plugins that have been registered, if any have been deleted they
-	// will not be in this list and will be removed from the hash
-	private List<String> CurrentPlugins;
+		private PluginStatus(String status) {
+			statusText = status;
+		}
 
+		public String getTagName() {
+			return statusText;
+		}
+	}
+
+	/**
+	* DOCUMENT ME!
+	*
+	* @throws java.io.IOException
+	*/
 	protected PluginTracker() throws java.io.IOException {
-		CurrentPlugins = new ArrayList<String>();
-		installedPlugins = new HashMap<String, PluginInfo>();
-		deletedPlugins = new HashMap<String, PluginInfo>();
-
 		installFile = new File(CytoscapeInit.getConfigDirectory(), this.INSTALL_FILE_NAME);
 
 		if (installFile.exists()) {
@@ -78,133 +60,87 @@ public class PluginTracker {
 			try {
 				trackerDoc = Builder.build(new File(CytoscapeInit.getConfigDirectory(),
 				                                    this.INSTALL_FILE_NAME));
-				readDoc();
 			} catch (JDOMException E) { // TODO do something with this error
 				E.printStackTrace();
 			}
 		} else {
 			trackerDoc = new Document();
 			trackerDoc.setRootElement(new Element("CytoscapePlugin"));
-			trackerDoc.getRootElement().addContent(new Element(this.pluginListTag));
+			trackerDoc.getRootElement().addContent(new Element(PluginStatus.CURRENT.getTagName()));
+			trackerDoc.getRootElement().addContent(new Element(PluginStatus.INSTALL.getTagName()));
+			trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
 		}
 	}
 
-	/*
-	 * Read xml document in, create info objects from entries, add to hash Should
-	 * only get read it once.
-	 */
-	private void readDoc() {
-		List<Element> AllPlugins = trackerDoc.getRootElement().getChild(this.pluginListTag)
-		                                     .getChildren(this.pluginTag);
-
-		for (Element Plugin : AllPlugins) {
-			PluginInfo Info = new PluginInfo(Plugin.getChildText(this.uniqueIdTag));
-			Info.setName(Plugin.getChildTextTrim(this.nameTag));
-			Info.setDescription(Plugin.getChildTextTrim(this.descTag));
-			Info.setPluginClassName(Plugin.getChildTextTrim(this.classTag));
-			Info.setPluginVersion(Plugin.getChildTextTrim(this.pluginVersTag));
-			Info.setCytoscapeVersion(Plugin.getChildTextTrim(this.cytoVersTag));
-			Info.setCategory(Plugin.getChildTextTrim(this.categoryTag));
-			Info.setUrl(Plugin.getChildTextTrim(this.urlTag));
-			Info.setProjectUrl(Plugin.getChildTextTrim(this.projUrlTag));
-
-			List<Element> Files = Plugin.getChild(this.fileListTag).getChildren(this.fileTag);
-
-			for (Element File : Files) {
-				Info.addFileName(File.getTextTrim());
-			}
-
-			List<Element> Authors = Plugin.getChild(this.authorListTag).getChildren(this.authorTag);
-
-			for (Element Author : Authors) {
-				Info.addAuthor(Author.getChildTextTrim(this.nameTag),
-				               Author.getChildTextTrim(this.instTag));
-			}
-
-			if (Plugin.getChild("deleted") != null)
-				deletedPlugins.put(Info.getPluginClassName(), Info);
-			else
-				installedPlugins.put(Info.getPluginClassName(), Info);
-		}
+	/**
+	* Gets a list of plugins by their status. CURRENT: currently installed
+	* DELETED: to be deleted INSTALL: to be installed
+	*
+	* @param Status
+	* @return List of PluginInfo objects
+	*/
+	protected List<PluginInfo> getListByStatus(PluginStatus Status) {
+		return getPluginContent(trackerDoc.getRootElement().getChild(Status.getTagName()));
 	}
 
-	/*
-	 * 1. Object has already been added to the set then it will also be in the xml
-	 * file
-	 * 2. Object is not in the set, add to set and the xml file
-	 * 3. Object was
-	 * previously added but needs to be changed, remove from set and xml file,
-	 * reinsert (as in an update has occurred)
-	 *
-	 * TODO the 3 steps above are not actually implemented
-	 */
-	protected void addInstalledPlugin(PluginInfo obj, boolean Overwrite) {
-		if (!Overwrite && installedPlugins.containsKey(obj.getPluginClassName()))
+	/**
+	* Adds the given PluginInfo object to the list of plugins sharing the given
+	* status.
+	*
+	* @param obj
+	* @param Status
+	*/
+	protected void addPlugin(PluginInfo obj, PluginStatus Status) {
+		List<PluginInfo> CheckList = getListByStatus(Status);
+
+		if (CheckList.contains(obj)) { // don't add it if it already exists
+
 			return;
+		}
 
-		//		Element Plugin = new Element(this.pluginTag);
-
-		//		if (Overwrite && installedPlugins.containsKey(obj.getPluginClassName()))
-		//			{ // replace
-		//			installedPlugins.remove(obj.getPluginClassName());
-		//			// shouldn't be in here but could be
-		//			CurrentPlugins.remove(obj.getPluginClassName());
-		//			Plugin = this.getMatchingPlugin(obj);
-		//			Plugin.removeContent(); // jdom 1.0
-		//			}
-		CurrentPlugins.add(obj.getPluginClassName());
-		installedPlugins.put(obj.getPluginClassName(), obj);
-
-		Element Plugin = createPluginContent(obj);
-		trackerDoc.getRootElement().getChild(pluginListTag).addContent(Plugin);
+		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
+		PluginParent.addContent(createPluginContent(obj));
+		System.out.println("Adding plugin status " + Status.getTagName());
 		write();
 	}
 
 	/**
-	 * Removes a plugin from the list/xml of installed plugins
-	 * @param obj
-	 */
-	protected void removePlugin(PluginInfo obj) {
-		System.out.println("------- Deleting " + obj.getName());
-		installedPlugins.remove(obj.getPluginClassName());
+	* Removes the given PluginInfo object from the list of plugins sharing the
+	* given status.
+	*
+	* @param obj
+	* @param Status
+	*/
+	protected void removePlugin(PluginInfo obj, PluginStatus Status) {
+		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
+		Element Plugin = getMatchingPlugin(obj, Status.getTagName());
+		PluginParent.removeContent(Plugin);
+		write();
+	}
 
-		List<Element> Plugins = trackerDoc.getRootElement().getChild(this.pluginListTag)
-		                                  .getChildren(this.pluginTag);
+	private Element getMatchingPlugin(PluginInfo Obj, String Tag) {
+		List<Element> Plugins = trackerDoc.getRootElement().getChild(Tag).getChildren(pluginTag);
 
-		for (Element Plugin : Plugins) {
-			if (Plugin.getChild(this.classTag).getTextTrim().equals(obj.getPluginClassName())) {
-				Plugin.addContent(new Element("deleted"));
+		for (Element Current : Plugins) {
+			if ((Current.getChildTextTrim(this.uniqueIdTag).equals(Obj.getID())
+			    && Current.getChildTextTrim(this.projUrlTag).equals(Obj.getProjectUrl()))
+			    || Current.getChildTextTrim(this.urlTag).equals(Obj.getUrl())) {
+				return Current;
 			}
 		}
 
-		write();
+		return null;
 	}
 
 	/**
-	 * @return Collection of PluginInfo objects for installed plugins
-	 */
-	protected Collection<PluginInfo> getInstalledPlugins() {
-		return installedPlugins.values();
-	}
-
-	/**
-	 * @return Collection of PluginInfo objects for deleted plugins
-	 */
-	protected Collection<PluginInfo> getDeletedPlugins() {
-		return deletedPlugins.values();
-	}
-
-	/**
-	 * Writes doc to file
-	 */
+	* Writes doc to file
+	*/
 	protected void write() {
 		try {
-			XMLOutputter out = new XMLOutputter(org.jdom.output.Format.getPrettyFormat());
-
-			// XMLOutputter out = new XMLOutputter(" ", true);
-			// out.setTrimAllWhite(true);
-			FileWriter Writer = new FileWriter(this.installFile);
+			XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+			FileWriter Writer = new FileWriter(installFile);
 			out.output(trackerDoc, Writer);
+			out.outputString(trackerDoc);
 			Writer.close();
 		} catch (java.io.IOException E) {
 			E.printStackTrace();
@@ -212,23 +148,57 @@ public class PluginTracker {
 	}
 
 	/*
-	 * Exactly what it shoulds like
-	 */
-	private Element getMatchingPlugin(PluginInfo obj) {
-		List<Element> Plugins = trackerDoc.getRootElement().getChild(this.pluginListTag)
-		                                  .getChildren(this.pluginTag);
+	* Takes a list of elemnts, creates the PluginInfo object for each and returns
+	* list of objects
+	*/
+	private List<PluginInfo> getPluginContent(Element PluginParentTag) {
+		List<PluginInfo> Content = new ArrayList<PluginInfo>();
 
-		for (Element Plugin : Plugins) {
-			if (Plugin.getChildTextTrim(this.classTag).equals(obj.getPluginClassName()))
-				return Plugin;
+		List<Element> Plugins = PluginParentTag.getChildren(pluginTag);
+
+		for (Element CurrentPlugin : Plugins) {
+			PluginInfo Info = new PluginInfo(CurrentPlugin.getChildTextTrim(this.uniqueIdTag));
+			Info.setName(CurrentPlugin.getChildTextTrim(this.nameTag));
+			Info.setDescription(CurrentPlugin.getChildTextTrim(this.descTag));
+			Info.setPluginClassName(CurrentPlugin.getChildTextTrim(this.classTag));
+			Info.setPluginVersion(CurrentPlugin.getChildTextTrim(this.pluginVersTag));
+			Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(this.cytoVersTag));
+			Info.setCategory(CurrentPlugin.getChildTextTrim(this.categoryTag));
+			Info.setUrl(CurrentPlugin.getChildTextTrim(this.urlTag));
+			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(this.projUrlTag));
+
+			String FileType = CurrentPlugin.getChildTextTrim(this.fileTypeTag);
+
+			if (FileType.equalsIgnoreCase(PluginInfo.FileType.JAR.toString())) {
+				Info.setFiletype(PluginInfo.FileType.JAR);
+			} else if (FileType.equalsIgnoreCase(PluginInfo.FileType.ZIP.toString())) {
+				Info.setFiletype(PluginInfo.FileType.ZIP);
+			}
+
+			List<Element> Files = CurrentPlugin.getChild(this.fileListTag).getChildren(this.fileTag);
+
+			for (Element File : Files) {
+				Info.addFileName(File.getTextTrim());
+			}
+
+			List<Element> Authors = CurrentPlugin.getChild(this.authorListTag)
+			                                     .getChildren(this.authorTag);
+
+			for (Element Author : Authors) {
+				Info.addAuthor(Author.getChildTextTrim(this.nameTag),
+				               Author.getChildTextTrim(this.instTag));
+			}
+
+			Content.add(Info);
 		}
 
-		return null;
+		return Content;
 	}
 
 	/*
-	 * Create the plugin tag with all the appropriate tags for the PluginInfo object
-	 */
+	* Create the plugin tag with all the appropriate tags for the PluginInfo
+	* object
+	*/
 	private Element createPluginContent(PluginInfo obj) {
 		Element Plugin = new Element(pluginTag);
 
@@ -241,6 +211,7 @@ public class PluginTracker {
 		Plugin.addContent(new Element(urlTag).setText(obj.getUrl()));
 		Plugin.addContent(new Element(projUrlTag).setText(obj.getProjectUrl()));
 		Plugin.addContent(new Element(categoryTag).setText(obj.getCategory()));
+		Plugin.addContent(new Element(fileTypeTag).setText(obj.getFileType().toString()));
 
 		Element AuthorList = new Element(authorListTag);
 
@@ -265,4 +236,24 @@ public class PluginTracker {
 
 		return Plugin;
 	}
+
+	// XML Tags to prevent misspelling issues, PluginFileReader uses the same
+	// tags, the xml needs to stay consistent
+	private String nameTag = PluginFileReader.nameTag;
+	private String descTag = PluginFileReader.descTag;
+	private String classTag = PluginFileReader.classTag;
+	private String pluginVersTag = PluginFileReader.pluginVersTag;
+	private String cytoVersTag = PluginFileReader.cytoVersTag;
+	private String urlTag = PluginFileReader.urlTag;
+	private String projUrlTag = PluginFileReader.projUrlTag;
+	private String categoryTag = PluginFileReader.categoryTag;
+	private String fileListTag = PluginFileReader.fileListTag;
+	private String fileTag = PluginFileReader.fileTag;
+	private String pluginListTag = PluginFileReader.pluginListTag;
+	private String pluginTag = PluginFileReader.pluginTag;
+	private String authorListTag = PluginFileReader.authorListTag;
+	private String authorTag = PluginFileReader.authorTag;
+	private String instTag = PluginFileReader.instTag;
+	private String uniqueIdTag = PluginFileReader.uniqueID;
+	private String fileTypeTag = PluginFileReader.fileType;
 }
