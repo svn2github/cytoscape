@@ -91,8 +91,7 @@ public class HttpUtils {
 	 * @return  DOCUMENT ME!
 	 *
 	 */
-	public static File downloadFile(String url, String fileName, String Dir)
-	    throws java.io.IOException {
+	public static File downloadFile(String url, File Download) throws java.io.IOException {
 		InputStream is = getInputStream(url);
 
 		// er..not sure how to do this
@@ -106,7 +105,7 @@ public class HttpUtils {
 
 		System.out.println("total bytes: " + FileBytes.size());
 
-		File Download = new File(Dir + fileName);
+		//File Download = new File(downloadFile);
 		FileOutputStream os = new FileOutputStream(Download);
 
 		for (int i = 0; i < FileBytes.size(); i++) {
