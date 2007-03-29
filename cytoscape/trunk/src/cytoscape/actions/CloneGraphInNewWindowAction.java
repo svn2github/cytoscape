@@ -44,10 +44,14 @@ package cytoscape.actions;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-
+import cytoscape.CytoscapeInit;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
 
 import java.awt.event.ActionEvent;
+
+import javax.swing.event.MenuEvent;
 
 
 /**
@@ -69,14 +73,23 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
+		VisualStyle vs = Cytoscape.getCurrentNetworkView().getVisualStyle();
+		String viewName = CytoscapeInit.getProperties().getProperty("defaultVisualStyle"); 
+		if ( vs != null )
+			viewName = vs.getName();
+
 		CyNetwork new_network = Cytoscape.createNetwork(current_network.getNodeIndicesArray(),
 		                                                current_network.getEdgeIndicesArray(),
-		                                                current_network.getTitle() + " copy");
+		                                                current_network.getTitle() + " copy", 
+														null,
+														true);
 
-		String title = " selection";
-		Cytoscape.createNetworkView(new_network, title);
-		// Set visual style
-		Cytoscape.getNetworkView(new_network.getIdentifier())
-		         .setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
+		CyNetworkView view = Cytoscape.getNetworkView(new_network.getIdentifier());
+		if ( view != null || view != Cytoscape.getNullNetworkView() )
+			view.setVisualStyle(viewName);
+	}
+
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
 	}
 }

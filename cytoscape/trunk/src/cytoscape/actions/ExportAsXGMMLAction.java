@@ -66,6 +66,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import javax.swing.event.MenuEvent;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -162,7 +164,11 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 	}
-} // SaveAsGMLAction
+
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();	
+	}
+} 
 
 
 /**

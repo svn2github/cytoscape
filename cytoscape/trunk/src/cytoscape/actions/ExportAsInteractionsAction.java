@@ -68,6 +68,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.event.MenuEvent;
+
 
 /**
  * write out the current graph to the specified file, using the standard
@@ -128,6 +130,10 @@ public class ExportAsInteractionsAction extends CytoscapeAction {
 			//  Execute Task in New Thread;  pop open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
 		}
+	}
+
+	public void menuSelected(MenuEvent e) {
+		enableForNetwork();
 	}
 }
 

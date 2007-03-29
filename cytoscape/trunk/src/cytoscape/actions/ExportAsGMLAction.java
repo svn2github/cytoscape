@@ -73,6 +73,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.event.MenuEvent;
 
 /**
  *
@@ -95,7 +96,6 @@ public class ExportAsGMLAction extends CytoscapeAction {
 		super();
 	}
 
-	// MLC: 09/19/05 BEGIN:
 	/**
 	 * User-initiated action to save the current network in GML format to a
 	 * user-specified file. If successfully saved, fires a PropertyChange event
@@ -111,8 +111,6 @@ public class ExportAsGMLAction extends CytoscapeAction {
 	 * @param e
 	 *            ActionEvent Object.
 	 */
-
-	// MLC: 09/19/05 END.
 	public void actionPerformed(ActionEvent e) {
 		String name;
 
@@ -131,8 +129,6 @@ public class ExportAsGMLAction extends CytoscapeAction {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
-		//CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
-
 		// Create Task
 		ExportAsGMLTask task = new ExportAsGMLTask(name, network, view);
 
@@ -146,7 +142,12 @@ public class ExportAsGMLAction extends CytoscapeAction {
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 	}
-} // SaveAsGMLAction
+
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
+	}
+
+} 
 
 
 /**
@@ -244,16 +245,11 @@ class ExportAsGMLTask implements Task {
 		GMLParser.printList(list, fileWriter);
 		fileWriter.close();
 
-		// MLC: 09/19/05 BEGIN:
-		// // AJK: 09/14/05 BEGIN
-		// Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, network);
-		// // AJK: 09/14/05 END
 		Object[] ret_val = new Object[3];
 		ret_val[0] = network;
 		ret_val[1] = new File(fileName).toURI();
 		ret_val[2] = new Integer(Cytoscape.FILE_GML);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
-
-		// MLC: 09/19/05 END.
 	}
+
 }

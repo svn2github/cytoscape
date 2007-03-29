@@ -67,6 +67,8 @@ import java.awt.print.PrinterJob;
 
 import javax.swing.AbstractAction;
 
+import javax.swing.event.MenuEvent;
+
 
 /**
  *
@@ -114,4 +116,8 @@ public class PrintAction extends CytoscapeAction {
 			}
 		}
 	} // actionPerformed
+
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
+	}
 }

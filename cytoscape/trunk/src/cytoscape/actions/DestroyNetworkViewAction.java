@@ -87,16 +87,6 @@ public class DestroyNetworkViewAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		CyNetwork currNet = Cytoscape.getCurrentNetwork();
-        if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
-            setEnabled(false);
-            return;
-        }
-
-		CyNetworkView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
-		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
-			setEnabled(false);
-		else
-			setEnabled(true);
+		enableForNetworkAndView();
 	}
 }

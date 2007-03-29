@@ -45,6 +45,9 @@ import javax.swing.AbstractAction;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 
+import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 
 /**
  *
@@ -331,4 +334,114 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 */
     public void menuSelected(MenuEvent e) {}
 
-} // class CytoscapeAction
+	//
+	// The following methods are utility methods that that enable or disable 
+	// the action based on the state of Cytoscape.  These methods are meant to
+	// reduce duplicate code since many actions demand the same state to be
+	// functional (e.g. a network and network view must exist). These methods
+	// are generally called from within implementations of {@link #menuSelected}, 
+	// but can be called from anywhere.
+	//
+
+	/**
+	 * Enable the action if the current network exists and is not null.
+	 */
+	protected void enableForNetwork() {
+		CyNetwork n = Cytoscape.getCurrentNetwork();
+		if ( n == null || n == Cytoscape.getNullNetwork() ) 
+			setEnabled(false);
+		else
+			setEnabled(true);
+	}
+
+	/**
+	 * Enable the action if the current network and view exist and are not null.
+	 */
+	protected void enableForNetworkAndView() {
+		CyNetwork n = Cytoscape.getCurrentNetwork();
+		if ( n == null || n == Cytoscape.getNullNetwork() ) {
+			setEnabled(false);
+			return;
+		}
+		
+		CyNetworkView v = Cytoscape.getCurrentNetworkView();
+		if ( v == null || v == Cytoscape.getNullNetworkView() )
+			setEnabled(false);
+		else
+			setEnabled(true);
+	}
+
+	/**
+	 * Enable the action if nodes are selected and that network and view exist. 
+	 */
+	protected void enabledForSelectedNodes() {
+		if ( !selectReady() ) {
+			setEnabled(false);
+			return;
+		}
+			
+        CyNetworkView v = Cytoscape.getCurrentNetworkView();
+
+        java.util.List nodes = v.getSelectedNodes();
+
+        if ( nodes != null && nodes.size() > 0 ) 
+            setEnabled(true);
+        else
+            setEnabled(false);
+	}
+
+	/**
+	 * Enable the action if edges are selected and that network and view exist. 
+	 */
+	protected void enabledForSelectedEdges() {
+		if ( !selectReady() ) {
+			setEnabled(false);
+			return;
+		}
+			
+        CyNetworkView v = Cytoscape.getCurrentNetworkView();
+
+        java.util.List edges = v.getSelectedEdges();
+
+        if ( edges != null && edges.size() > 0 ) 
+            setEnabled(true);
+        else
+            setEnabled(false);
+	}
+
+	/**
+	 * Enable the action if nodes and edges are selected and that network and view exist. 
+	 */
+	protected void enabledForSelectedNodesAndEdges() {
+		if ( !selectReady() ) {
+			setEnabled(false);
+			return;
+		}
+			
+        CyNetworkView v = Cytoscape.getCurrentNetworkView();
+
+        java.util.List edges = v.getSelectedEdges();
+        java.util.List nodes = v.getSelectedNodes();
+
+        if ( ( nodes != null && nodes.size() > 0 ) &&
+             ( edges != null && edges.size() > 0 ) ) 
+            setEnabled(true);
+        else
+            setEnabled(false);
+	}
+
+	/**
+	 * Utility method the determines if the select state is ready to be checked.
+	 */
+	private boolean selectReady() {
+		CyNetwork n = Cytoscape.getCurrentNetwork();
+		if ( n == null || n == Cytoscape.getNullNetwork() ) 
+			return false;
+		
+        CyNetworkView v = Cytoscape.getCurrentNetworkView();
+        if ( v == null || v == Cytoscape.getNullNetworkView() ) 
+			return false;
+
+		return true;
+	}
+} 

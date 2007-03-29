@@ -344,35 +344,6 @@ public class CyMenus implements GraphViewChangeListener {
 		}
 	}
 
-	// AJK: 06/07/06 BEGIN
-	// move delete functionality to the editor
-	// /**
-	// * Called when the window switches to edit mode, enabling the menu option
-	// * for deleting selected objects.
-	// *
-	// * Again, the keeper of the edit modes should probably get a reference to
-	// * the menu item and manage its state.
-	// */
-	// public void enableDeleteSelectionMenuItem() {
-	// if (deleteSelectionMenuItem != null) {
-	// deleteSelectionMenuItem.setEnabled(true);
-	// }
-	// }
-	//
-	// /**
-	// * Called when the window switches to read-only mode, disabling the menu
-	// * option for deleting selected objects.
-	// *
-	// * Again, the keeper of the edit modes should probably get a reference to
-	// * the menu item and manage its state.
-	// */
-	// public void disableDeleteSelectionMenuItem() {
-	// if (deleteSelectionMenuItem != null) {
-	// deleteSelectionMenuItem.setEnabled(false);
-	// }
-	// }
-	// AJK: 06/07/06 END
-
 	/**
 	 * Enables the menu items related to the visual mapper if the argument is
 	 * true, else disables them. This method should only be called from the
@@ -410,8 +381,6 @@ public class CyMenus implements GraphViewChangeListener {
 		saveButton.setEnabled(newState);
 		saveSubMenu.setEnabled(newState);
 		menuPrintAction.setEnabled(newState);
-		// menuExportAction.setEnabled(newState);
-		// displayNWSubMenu.setEnabled(newState);
 		nodesRequiredItemsEnabled = newState;
 	}
 
@@ -444,10 +413,6 @@ public class CyMenus implements GraphViewChangeListener {
 	 * so it can be called from CytoscapeInit.Init(), because we need the
 	 * CytoscapeDesktop to be instantiated first.
 	 */
-
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void initCytoPanelMenus() {
 		CytoPanel cytoPanel;
 
@@ -475,7 +440,6 @@ public class CyMenus implements GraphViewChangeListener {
 		menuBar.getMenu("View.Desktop").add(cytoPanelSouthItem);
 		menuBar.getMenu("View.Desktop").add(cytoPanelEastItem);
 
-		// menuBar.getMenu( "View" ).add(new JSeparator());
 	}
 
 	private void initCytoPanelMenuItem(CytoPanel cytoPanel, JCheckBoxMenuItem menuItem,
@@ -513,6 +477,7 @@ public class CyMenus implements GraphViewChangeListener {
 				}
 
 				public void menuSelected(MenuEvent e) {
+				/*
 					CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
 					CyNetwork graph = Cytoscape.getCurrentNetwork();
 					boolean inactive = false;
@@ -539,6 +504,7 @@ public class CyMenus implements GraphViewChangeListener {
 							}
 						}
 					}
+					*/
 				}
 			});
 
@@ -643,12 +609,7 @@ public class CyMenus implements GraphViewChangeListener {
 			saveButton.setEnabled(false);
 			saveSubMenu.setEnabled(false);
 			menuPrintAction.setEnabled(false);
-			// menuExportAction.setEnabled(false);
-			// displayNWSubMenu.setEnabled(false);
 			setNodesRequiredItemsEnabled();
-
-			// menuSaveSessionAction.setEnabled(false);
-			// menuOpenSessionAction.setEnabled(true);
 		}
 	}
 
@@ -658,8 +619,6 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	private void fillMenuBar() {
 		// fill the New submenu
-		// newSubMenu2.add("Empty Network"); // This should be added by the
-		// Editor
 		addAction(new PluginManagerAction());
 		addAction(new NewSessionAction());
 		addAction(new NewWindowSelectedNodesOnlyAction());
@@ -698,9 +657,7 @@ public class CyMenus implements GraphViewChangeListener {
 		fileMenu.add(new JSeparator(), 4);
 		// Print Actions
 		menuPrintAction = new PrintAction();
-		// menuExportAction = new ExportAsGraphicsAction();
 		addAction(menuPrintAction);
-		// addAction(menuExportAction);
 
 		// Exit
 		addAction(new ExitAction());
@@ -719,15 +676,9 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new BookmarkAction());
 		addAction(new ProxyServerAction());
 
-		// fill the Data menu --> moved to the browser plugin.
-		// addAction(new DisplayBrowserAction());
-
-		// addAction( new GraphObjectSelectionAction() );
-
 		// fill the Select menu
 		selectMenu.add(new SelectionModeAction());
 
-		// displayNWSubMenu = menuBar.getMenu("Select.To New Network");
 		addAction(new InvertSelectedNodesAction());
 		addAction(new HideSelectedNodesAction());
 		addAction(new UnHideSelectedNodesAction());
@@ -754,7 +705,6 @@ public class CyMenus implements GraphViewChangeListener {
 
 		selectMenu.addSeparator();
 
-		// addAction(new RotationScaleLayoutAction());
 		layoutMenu.addSeparator();
 
 		// fill the Visualization menu
@@ -764,17 +714,15 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill View Menu
 		ImageIcon vizmapperIcon = new ImageIcon(getClass()
-		                                            .getResource("images/ximian/stock_file-with-objects-16.png"));
+		                                  .getResource("images/ximian/stock_file-with-objects-16.png"));
 		vizMenuItem = new JMenuItem(new SetVisualPropertiesAction(vizmapperIcon));
 		vizMapperItem = new JMenuItem(new ToggleVisualMapperAction());
 		menuBar.getMenu("View").add(new JSeparator());
 		menuBar.getMenu("View").add(vizMenuItem);
 		menuBar.getMenu("View").add(vizMapperItem);
-		// addAction(new BackgroundColorAction());
 
 		// Help menu
-		// use the usual *Action class for menu entries which have static
-		// actions
+		// use the usual *Action class for menu entries which have static actions
 		helpAboutMenuItem = new JMenuItem(new HelpAboutAction());
 
 		// for Contents and Context Sensitive help, don't use *Action class
@@ -783,19 +731,8 @@ public class CyMenus implements GraphViewChangeListener {
 		helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 
 		helpContactHelpDeskMenuItem = new JMenuItem(new HelpContactHelpDeskAction());
-
-		/*
-		 * ImageIcon contextSensitiveHelpIcon = new ImageIcon(getClass()
-		 * .getResource("images/contextSensitiveHelp.gif")); // ImageIcon
-		 * contextSensitiveHelpIcon = new ImageIcon( // "images/c16.gif");
-		 * helpContextSensitiveMenuItem = new JMenuItem("Context Sensitive...",
-		 * contextSensitiveHelpIcon);
-		 * helpContextSensitiveMenuItem.setAccelerator(KeyStroke
-		 * .getKeyStroke("shift F1"));
-		 */
 		helpMenu.add(helpContentsMenuItem);
 		helpMenu.add(helpContactHelpDeskMenuItem);
-		// helpMenu.add(helpContextSensitiveMenuItem);
 		helpMenu.addSeparator();
 		helpMenu.add(helpAboutMenuItem);
 	}
@@ -804,7 +741,6 @@ public class CyMenus implements GraphViewChangeListener {
 	 * Fills the toolbar for easy access to commonly used actions.
 	 */
 	private void fillToolBar() {
-		// loadButton = toolBar.add(new ImportGraphFileAction(this, false));
 		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
 		openSessionButton.setToolTipText("Open Session File...");
 		openSessionButton.setIcon(new ImageIcon(getClass()
@@ -812,7 +748,6 @@ public class CyMenus implements GraphViewChangeListener {
 		openSessionButton.setBorderPainted(false);
 		openSessionButton.setRolloverEnabled(true);
 
-		// saveButton = toolBar.add(new ExportAsGMLAction(false));
 		saveButton = toolBar.add(new SaveSessionAction());
 		saveButton.setToolTipText("Save Current Session As...");
 		saveButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_save.png")));
@@ -912,23 +847,6 @@ public class CyMenus implements GraphViewChangeListener {
 
 		toolBar.addSeparator();
 
-		// Removing showAllButton via comments, just in case we decide to revert
-		// back
-		// showAllButton = toolBar.add(new ShowAllAction());
-		// showAllButton.setIcon(new ImageIcon(getClass().getResource(
-		// "images/new/add36.gif")));
-		// showAllButton
-		// .setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
-		// showAllButton.setBorderPainted(false);
-
-		// Removing hideSelectedButton via comments, just in case we decide to
-		// revert back
-		// hideSelectedButton = toolBar.add(new HideSelectedAction(false));
-		// hideSelectedButton.setIcon(new ImageIcon(getClass().getResource(
-		// "images/new/delete36.gif")));
-		// hideSelectedButton.setToolTipText("Hide Selected Region");
-		// hideSelectedButton.setBorderPainted(false);
-		// toolBar.addSeparator();
 		toolBar.addSeparator();
 
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
@@ -936,7 +854,7 @@ public class CyMenus implements GraphViewChangeListener {
 		                                    .getResource("images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Set Visual Style");
 		vizButton.setBorderPainted(false);
-	} // createToolBar
+	} 
 
 	/**
 	 * Register the help set and help broker with the various components
@@ -956,21 +874,5 @@ public class CyMenus implements GraphViewChangeListener {
 		int numComponents = toolBar.getComponentCount();
 		toolBar.add(helpButton, numComponents - 1);
 
-		/*
-		 * helpContextSensitiveMenuItem .addActionListener(new
-		 * CSH.DisplayHelpAfterTracking(hb)); // add Help support for toolbar
-		 * hb.enableHelp(toolBar, "toolbar", null); // add Help support for
-		 * toolbar buttons hb.enableHelp(openSessionButton, "toolbar-load",
-		 * null); hb.enableHelp(saveButton, "toolbar-load", null);
-		 * hb.enableHelp(zoomInButton, "toolbar-zoom", null);
-		 * hb.enableHelp(zoomOutButton, "toolbar-zoom", null);
-		 * hb.enableHelp(zoomSelectedButton, "toolbar-zoom", null);
-		 * hb.enableHelp(zoomDisplayAllButton, "toolbar-zoom", null); // AJK:
-		 * 06/07/06 BEGIN // move HIDE functionality to editor //
-		 * hb.enableHelp(showAllButton, "toolbar-hide", null); //
-		 * hb.enableHelp(hideSelectedButton, "toolbar-hide", null); // AJK:
-		 * 06/07/06 END // hb.enableHelp(annotationButton, "toolbar-annotate",
-		 * null); hb.enableHelp(vizButton, "toolbar-setVisProps", null);
-		 */
 	}
 }

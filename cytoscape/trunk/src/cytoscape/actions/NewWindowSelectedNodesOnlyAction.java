@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.swing.event.MenuEvent;
 
 /**
  *
@@ -129,5 +130,9 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		} else {
 			new_view.setVisualStyle("default");
 		}
+	}
+
+	public void menuSelected(MenuEvent e) {
+		enabledForSelectedNodes();			
 	}
 }

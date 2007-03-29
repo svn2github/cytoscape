@@ -89,10 +89,6 @@ public class DestroyNetworkAction extends CytoscapeAction {
 	 * Sets the action state based on whether a current network exists. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-		if ( net != null && net != Cytoscape.getNullNetwork() )
-			setEnabled(true);
-		else
-			setEnabled(false);
+		enableForNetwork();
 	}
 }

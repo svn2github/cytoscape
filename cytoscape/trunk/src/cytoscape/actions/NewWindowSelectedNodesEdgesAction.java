@@ -53,6 +53,8 @@ import java.awt.event.ActionEvent;
 
 import java.util.Set;
 
+import javax.swing.event.MenuEvent;
+
 
 //-------------------------------------------------------------------------
 /**
@@ -94,5 +96,9 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		// Set visual style
 		Cytoscape.getNetworkView(new_network.getIdentifier())
 		         .setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
+	}
+
+	public void menuSelected(MenuEvent e) {
+		enabledForSelectedNodesAndEdges();
 	}
 }

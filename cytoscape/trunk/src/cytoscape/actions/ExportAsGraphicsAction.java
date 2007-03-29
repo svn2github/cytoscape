@@ -54,6 +54,7 @@ import ding.view.DGraphView;
 import org.freehep.util.export.ExportDialog;
 
 import javax.swing.JOptionPane;
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
 //-------------------------------------------------------------------------
@@ -107,4 +108,8 @@ public class ExportAsGraphicsAction extends CytoscapeAction {
 			                              "No network view selected!", JOptionPane.ERROR_MESSAGE);
 		}
 	} // actionPerformed
+
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
+	}
 }
