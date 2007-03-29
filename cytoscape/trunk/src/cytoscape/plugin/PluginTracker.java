@@ -94,13 +94,12 @@ public class PluginTracker {
 		List<PluginInfo> CheckList = getListByStatus(Status);
 
 		if (CheckList.contains(obj)) { // don't add it if it already exists
-
 			return;
 		}
 
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		PluginParent.addContent(createPluginContent(obj));
-		System.out.println("Adding plugin status " + Status.getTagName());
+		System.out.println("Adding plugin " + obj.getName() + " status " + Status.getTagName());
 		write();
 	}
 
@@ -115,6 +114,7 @@ public class PluginTracker {
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		Element Plugin = getMatchingPlugin(obj, Status.getTagName());
 		PluginParent.removeContent(Plugin);
+		System.out.println("Removing plugin " + obj.getName() + " status " + Status.getTagName());
 		write();
 	}
 
