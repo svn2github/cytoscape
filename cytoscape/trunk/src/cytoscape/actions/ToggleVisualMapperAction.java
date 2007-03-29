@@ -43,11 +43,14 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 import cytoscape.util.CytoscapeAction;
 
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
+import javax.swing.event.MenuEvent;
+import javax.swing.Action;
 
 
 /**
@@ -55,11 +58,15 @@ import java.awt.event.ActionEvent;
  * visual mapper.
  */
 public class ToggleVisualMapperAction extends CytoscapeAction {
+
+	private static String LOCK = "Lock VizMapper\u2122";
+	private static String UNLOCK = "Unlock VizMapper\u2122";
+
 	/**
 	 * Creates a new ToggleVisualMapperAction object.
 	 */
 	public ToggleVisualMapperAction() {
-		super("Lock VizMapper\u2122");
+		super(LOCK);
 		setPreferredMenu("View");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_M, ActionEvent.ALT_MASK);
 	}
@@ -70,12 +77,21 @@ public class ToggleVisualMapperAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// TODO: this is state information that should saved
-		if (Cytoscape.getCurrentNetworkView() != null) {
-			Cytoscape.getCurrentNetworkView().toggleVisualMapperEnabled();
-			Cytoscape.getDesktop().getCyMenus()
-			         .setVisualMapperItemsEnabled(Cytoscape.getCurrentNetworkView()
-			                                               .getVisualMapperEnabled());
+		CyNetworkView cv = Cytoscape.getCurrentNetworkView(); 
+		if (cv != null && cv != Cytoscape.getNullNetworkView()) 
+			cv.toggleVisualMapperEnabled();
+	}
+
+	public void menuSelected(MenuEvent e) {
+		CyNetworkView cv = Cytoscape.getCurrentNetworkView(); 
+		if (cv != null && cv != Cytoscape.getNullNetworkView()) {
+			setEnabled(true);
+			if ( cv.getVisualMapperEnabled() )
+				putValue(Action.NAME, LOCK);
+			else
+				putValue(Action.NAME, UNLOCK);
+		} else {
+			setEnabled(false);
 		}
 	}
 }

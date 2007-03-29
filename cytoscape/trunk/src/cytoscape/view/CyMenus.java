@@ -350,9 +350,9 @@ public class CyMenus implements GraphViewChangeListener {
 	 * window that holds this menu.
 	 */
 	public void setVisualMapperItemsEnabled(boolean newState) {
-		vizMenuItem.setEnabled(newState);
-		vizButton.setEnabled(newState);
-		vizMapperItem.setText(newState ? "Lock VizMapper\u2122" : "Unlock VizMapper\u2122");
+	//	vizMenuItem.setEnabled(newState);
+	//	vizButton.setEnabled(newState);
+	//	vizMapperItem.setText(newState ? "Lock VizMapper\u2122" : "Unlock VizMapper\u2122");
 	}
 
 	/**
@@ -380,7 +380,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		saveButton.setEnabled(newState);
 		saveSubMenu.setEnabled(newState);
-		menuPrintAction.setEnabled(newState);
+		//menuPrintAction.setEnabled(newState);
 		nodesRequiredItemsEnabled = newState;
 	}
 
@@ -467,46 +467,6 @@ public class CyMenus implements GraphViewChangeListener {
 	private void createMenuBar() {
 		menuBar = new CytoscapeMenuBar();
 		fileMenu = menuBar.getMenu("File");
-
-		final JMenu f_fileMenu = fileMenu;
-		fileMenu.addMenuListener(new MenuListener() {
-				public void menuCanceled(MenuEvent e) {
-				}
-
-				public void menuDeselected(MenuEvent e) {
-				}
-
-				public void menuSelected(MenuEvent e) {
-				/*
-					CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-					CyNetwork graph = Cytoscape.getCurrentNetwork();
-					boolean inactive = false;
-
-					if ((graphView == null) || (graphView.nodeCount() == 0))
-						inactive = true;
-
-					boolean networkExists = (graph != null);
-					MenuElement[] popup = f_fileMenu.getSubElements();
-
-					if (popup[0] instanceof JPopupMenu) {
-						MenuElement[] submenus = ((JPopupMenu) popup[0]).getSubElements();
-
-						for (int i = 0; i < submenus.length; i++) {
-							if (submenus[i] instanceof JMenuItem) {
-								JMenuItem item = (JMenuItem) submenus[i];
-
-								if (item.getText().equals(ExportAsGraphicsAction.MENU_LABEL)
-								    || item.getText().equals(PrintAction.MENU_LABEL)) {
-									item.setEnabled(!inactive);
-								} else if (item.getText().equals("Save")) {
-									item.setEnabled(networkExists);
-								}
-							}
-						}
-					}
-					*/
-				}
-			});
 
 		// Create submenues for "File" menu item
 		newSubMenu = menuBar.getMenu("File.New", 0);
@@ -608,7 +568,7 @@ public class CyMenus implements GraphViewChangeListener {
 			nodesRequiredItemsEnabled = false;
 			saveButton.setEnabled(false);
 			saveSubMenu.setEnabled(false);
-			menuPrintAction.setEnabled(false);
+			//menuPrintAction.setEnabled(false);
 			setNodesRequiredItemsEnabled();
 		}
 	}
@@ -618,11 +578,22 @@ public class CyMenus implements GraphViewChangeListener {
 	 * attached action listener objects.
 	 */
 	private void fillMenuBar() {
+
+		//
+		// File menu
+		// 
+
 		// fill the New submenu
 		addAction(new PluginManagerAction());
 		addAction(new NewSessionAction());
 		addAction(new NewWindowSelectedNodesOnlyAction());
 		addAction(new NewWindowSelectedNodesEdgesAction());
+
+		// Session Save/Open
+		addAction(new OpenSessionAction(),1);
+		addAction(new SaveSessionAction("Save"),2);
+		addAction(new SaveSessionAsAction("Save As..."),3);
+		fileMenu.add(new JSeparator(), 4);
 
 		// fill the Import submenu
 		addAction(new ImportGraphFileAction(this));
@@ -642,25 +613,17 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExportVizmapAction());
 		addAction(new ExportAsGraphicsAction());
 
-		// Session Save/Open
 		fileMenu.add(new JSeparator());
-		menuSaveSessionAction = new SaveSessionAction("Save");
-		menuOpenSessionAction = new OpenSessionAction();
-		menuSaveSessionAsAction = new SaveSessionAsAction("Save As...");
-		menuOpenSessionAction.setPreferredIndex(1);
-		menuSaveSessionAction.setPreferredIndex(2);
-		menuSaveSessionAsAction.setPreferredIndex(3);
-		addAction(menuOpenSessionAction);
-		addAction(menuSaveSessionAction);
-		addAction(menuSaveSessionAsAction);
 
-		fileMenu.add(new JSeparator(), 4);
 		// Print Actions
-		menuPrintAction = new PrintAction();
-		addAction(menuPrintAction);
+		addAction(new PrintAction());
 
 		// Exit
 		addAction(new ExitAction());
+
+		//
+		// Edit menu
+		//
 
 		// fill the Edit menu
 		addAction(new UndoAction());
@@ -675,6 +638,10 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new PreferenceAction());
 		addAction(new BookmarkAction());
 		addAction(new ProxyServerAction());
+
+		//
+		// Select menu
+		//
 
 		// fill the Select menu
 		selectMenu.add(new SelectionModeAction());
@@ -705,24 +672,32 @@ public class CyMenus implements GraphViewChangeListener {
 
 		selectMenu.addSeparator();
 
+		//
+		// Layout menu
+		//
+
 		layoutMenu.addSeparator();
 
-		// fill the Visualization menu
+		//
+		// View menu
+		// 
+
+		// fill View Menu
 		networkOverviewAction = new BirdsEyeViewAction();
 		networkOverviewItem = new JCheckBoxMenuItem(networkOverviewAction);
 		menuBar.getMenu("View").add(networkOverviewItem);
+		//addAction(new BirdsEyeViewAction());
 
-		// fill View Menu
+		menuBar.getMenu("View").add(new JSeparator());
+
 		ImageIcon vizmapperIcon = new ImageIcon(getClass()
 		                                  .getResource("images/ximian/stock_file-with-objects-16.png"));
-		vizMenuItem = new JMenuItem(new SetVisualPropertiesAction(vizmapperIcon));
-		vizMapperItem = new JMenuItem(new ToggleVisualMapperAction());
-		menuBar.getMenu("View").add(new JSeparator());
-		menuBar.getMenu("View").add(vizMenuItem);
-		menuBar.getMenu("View").add(vizMapperItem);
+		addAction(new SetVisualPropertiesAction(vizmapperIcon));
+		addAction(new ToggleVisualMapperAction());
 
+		// 
 		// Help menu
-		// use the usual *Action class for menu entries which have static actions
+		//
 		helpAboutMenuItem = new JMenuItem(new HelpAboutAction());
 
 		// for Contents and Context Sensitive help, don't use *Action class

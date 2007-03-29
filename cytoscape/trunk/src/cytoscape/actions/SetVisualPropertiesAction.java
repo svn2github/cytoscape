@@ -43,6 +43,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 import cytoscape.util.CytoscapeAction;
 
@@ -51,6 +52,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ImageIcon;
 
+import javax.swing.event.MenuEvent;
 
 //------------------------------------------------------------------------------
 /**
@@ -85,5 +87,17 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 		// TODO: ack! this should be using the global VizMapper
 		Cytoscape.getDesktop().getVizMapUI().refreshUI();
 		Cytoscape.getDesktop().getVizMapUI().getStyleSelector().setVisible(true);
+	}
+
+	public void menuSelected(MenuEvent e) {
+        CyNetworkView cv = Cytoscape.getCurrentNetworkView();
+        if (cv != null && cv != Cytoscape.getNullNetworkView()) {
+            if ( cv.getVisualMapperEnabled() )
+            	setEnabled(true);
+            else
+            	setEnabled(false);
+        } else {
+            setEnabled(false);
+        }
 	}
 }
