@@ -64,7 +64,25 @@ public class ManagerUtil {
 				Categories.put(Current.getCategory(), List);
 			}
 		}
-
 		return Categories;
 	}
+
+	// cheap and hacky I know....
+	public static Map<String, List<PluginInfo>> sortByClass(List<PluginInfo> Plugins)
+		{
+		Map<String, List<PluginInfo>> Classes = new java.util.HashMap<String, List<PluginInfo>>();
+
+		for (PluginInfo Current : Plugins) {
+			if (Classes.containsKey(Current.getPluginClassName())) {
+				Classes.get(Current.getPluginClassName()).add(Current);
+			} else {
+				List<PluginInfo> List = new java.util.ArrayList<PluginInfo>();
+				List.add(Current);
+				Classes.put(Current.getPluginClassName(), List);
+			}
+		}
+		return Classes;
+	}
+
+
 }
