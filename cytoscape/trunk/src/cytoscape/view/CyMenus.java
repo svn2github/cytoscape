@@ -79,6 +79,7 @@ import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
 import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
 import cytoscape.actions.OpenSessionAction;
 import cytoscape.actions.PluginManagerAction;
+import cytoscape.actions.PluginUpdateAction;
 import cytoscape.actions.PreferenceAction;
 import cytoscape.actions.PrintAction;
 import cytoscape.actions.ProxyServerAction;
@@ -585,6 +586,9 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// fill the New submenu
 		addAction(new PluginManagerAction());
+		addAction(new PluginUpdateAction());
+		opsMenu.add(new JSeparator());
+		
 		addAction(new NewSessionAction());
 		addAction(new NewWindowSelectedNodesOnlyAction());
 		addAction(new NewWindowSelectedNodesEdgesAction());
