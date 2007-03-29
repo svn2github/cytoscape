@@ -17,8 +17,8 @@ import java.util.List;
  *
  */
 public class PluginFileReader {
-	private Document Doc;
-
+	private Document document;
+	private String downloadUrl;
 	/**
 	 * Creates a new PluginFileReader object.
 	 *
@@ -27,9 +27,10 @@ public class PluginFileReader {
 	 *
 	 */
 	public PluginFileReader(String Url) throws java.io.IOException, JDOMException {
+		downloadUrl = Url;
 		//would be nice to validate later		
 		SAXBuilder Builder = new SAXBuilder(false);
-		Doc = Builder.build(new java.net.URL(Url));
+		document = Builder.build(new java.net.URL(Url));
 	}
 
 	/**
@@ -38,7 +39,7 @@ public class PluginFileReader {
 	 * @return DOCUMENT ME!
 	 */
 	public String getProjectName() {
-		return Doc.getRootElement().getChild(this.nameTag).getTextTrim();
+		return document.getRootElement().getChild(this.nameTag).getTextTrim();
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class PluginFileReader {
 	 * @return DOCUMENT ME!
 	 */
 	public String getProjectDescription() {
-		return Doc.getRootElement().getChild(this.descTag).getTextTrim();
+		return document.getRootElement().getChild(this.descTag).getTextTrim();
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class PluginFileReader {
 	 * @return DOCUMENT ME!
 	 */
 	public String getProjectUrl() {
-		return Doc.getRootElement().getChild(this.urlTag).getTextTrim();
+		return document.getRootElement().getChild(this.urlTag).getTextTrim();
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class PluginFileReader {
 	public List<PluginInfo> getPlugins() {
 		List<PluginInfo> Plugins = new ArrayList<PluginInfo>();
 
-		Iterator<Element> pluginI = Doc.getRootElement().getChild(this.pluginListTag)
+		Iterator<Element> pluginI = document.getRootElement().getChild(this.pluginListTag)
 		                               .getChildren(this.pluginTag).iterator();
 
 		while (pluginI.hasNext()) {
@@ -79,7 +80,7 @@ public class PluginFileReader {
 			Info.setPluginVersion(CurrentPlugin.getChild(this.pluginVersTag).getTextTrim());
 			Info.setCytoscapeVersion(CurrentPlugin.getChild(this.cytoVersTag).getTextTrim());
 			Info.setUrl(CurrentPlugin.getChild(this.urlTag).getTextTrim());
-			Info.setProjectUrl(getProjectUrl());
+			Info.setProjectUrl(downloadUrl);
 
 			if (CurrentPlugin.getChild(this.categoryTag) != null)
 				Info.setCategory(CurrentPlugin.getChild(this.categoryTag).getTextTrim());
