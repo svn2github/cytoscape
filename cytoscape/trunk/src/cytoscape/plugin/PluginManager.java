@@ -1,62 +1,35 @@
-/*
- * Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org) The
- * Cytoscape Consortium is: - Institute for Systems Biology - University of
- * California San Diego - Memorial Sloan-Kettering Cancer Center - Institut
- * Pasteur - Agilent Technologies This library is free software; you can
- * redistribute it and/or modify it under the terms of the GNU Lesser General
- * Public License as published by the Free Software Foundation; either version
- * 2.1 of the License, or any later version. This library is distributed in the
- * hope that it will be useful, but WITHOUT ANY WARRANTY, WITHOUT EVEN THE
- * IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. The
- * software and documentation provided hereunder is on an "as is" basis, and the
- * Institute for Systems Biology and the Whitehead Institute have no obligations
- * to provide maintenance, support, updates, enhancements or modifications. In
- * no event shall the Institute for Systems Biology and the Whitehead Institute
- * be liable to any party for direct, indirect, special, incidental or
- * consequential damages, including lost profits, arising out of the use of this
- * software and its documentation, even if the Institute for Systems Biology and
- * the Whitehead Institute have been advised of the possibility of such damage.
- * See the GNU Lesser General Public License for more details. You should have
- * received a copy of the GNU Lesser General Public License along with this
- * library; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA 02111-1307 USA.
+/**
+ *
  */
 package cytoscape.plugin;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.CytoscapeVersion;
+import cytoscape.*;
 
 import cytoscape.plugin.util.*;
 
 import cytoscape.util.FileUtil;
+
+import java.io.*;
 
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import javax.swing.JOptionPane;
-
 
 /**
- * @author skillcoy This class deals with finding, downloading, installing and
- *         tracking plugins.
+ * @author skillcoy
+ *
  */
 public class PluginManager {
 	private static PluginManager pluginMgr = null;
-	private ClassLoader classLoader;
 	private PluginTracker pluginTracker;
+	private static File tempDir;
+	private ClassLoader classLoader;
 	private String defaultUrl;
 	private String cyVersion;
 	private String DEFAULT_VALUE = "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
@@ -66,10 +39,10 @@ public class PluginManager {
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
+	* DOCUMENT ME!
+	*
+	* @return DOCUMENT ME!
+	*/
 	public static PluginManager getPluginManager() {
 		if (pluginMgr == null) {
 			pluginMgr = new PluginManager();
@@ -81,45 +54,57 @@ public class PluginManager {
 	private PluginManager() {
 		defaultUrl = DEFAULT_VALUE;
 
-		//		defaultUrl = CytoscapeInit.getProperties().getProperty("defaultPluginUrl",
-		//				DEFAULT_VALUE);
+		// defaultUrl =
+		// CytoscapeInit.getProperties().getProperty("defaultPluginUrl",
+		// DEFAULT_VALUE);
 		try {
 			pluginTracker = new PluginTracker();
 			cyVersion = CytoscapeVersion.version;
+			tempDir = new File(CytoscapeInit.getConfigDirectory(), "plugins");
+
+			if (!tempDir.exists()) {
+				tempDir.mkdir();
+			}
 		} catch (java.io.IOException E) {
 			E.printStackTrace(); // TODO do something useful with error
 		}
 	}
 
-	/*
-	 * JOptionPane with an error msg
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
-	private static void showError(String Msg) {
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), Msg, "Plugin Installation Error",
-		                              JOptionPane.ERROR_MESSAGE);
+	public File getTempDownloadDirecotry() {
+		return tempDir;
 	}
 
 	/**
-	 * @return Url to the url set up in the cytoscape.props file for plugins
+	 * Get a list of plugins by status.
+	 * CURRENT: currently installed
+	 * INSTALL: plugins to be installed
+	 * DELETE: plugins to be deleted
+	 * @param Status
+	 * @return
 	 */
-	public String getDefaultUrl() {
-		return defaultUrl;
+	public List<PluginInfo> getPlugins(PluginTracker.PluginStatus Status) {
+		return pluginTracker.getListByStatus(Status);
 	}
 
 	/**
-	 * @return List of PluginInfo objects from the default url
-	 */
+	* @return List of PluginInfo objects from the default url
+	*/
 	public List<PluginInfo> inquire() throws ManagerError {
 		return inquire(defaultUrl);
 	}
 
 	/**
-	 * Calls the given url, expects document describing plugins available for
-	 * download
-	 *
-	 * @param Url
-	 * @return List of PluginInfo objects
-	 */
+	* Calls the given url, expects document describing plugins available for
+	* download
+	*
+	* @param Url
+	* @return List of PluginInfo objects
+	*/
 	public List<PluginInfo> inquire(String Url) throws ManagerError {
 		List<PluginInfo> Plugins = null;
 
@@ -136,307 +121,12 @@ public class PluginManager {
 	}
 
 	/**
-	 * @param Url
-	 * @return A hashmap of plugins for the current version of Cytoscape listed by
-	 *         their category
-	 */
-	public Map<String, List<PluginInfo>> getPluginsByCategory(List<PluginInfo> Plugins) {
-		HashMap<String, List<PluginInfo>> Categories = new HashMap<String, List<PluginInfo>>();
-
-		for (PluginInfo Info : Plugins) {
-			// don't list anything not implemented to the current version
-			if (!Info.getCytoscapeVersion().equals(this.cyVersion))
-				continue;
-
-			String CategoryName = Info.getCategory();
-
-			if ((CategoryName == null) || (CategoryName.length() <= 0))
-				CategoryName = "Uncategorized";
-
-			if (Categories.containsKey(CategoryName)) // add to existing list
-				Categories.get(CategoryName).add(Info);
-			else { // create new list
-
-				List<PluginInfo> pList = new ArrayList<PluginInfo>();
-				pList.add(Info);
-				Categories.put(CategoryName, pList);
-			}
-		}
-
-		return Categories;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public List<PluginInfo> getInstalledPlugins() {
-		List<PluginInfo> Installed = new ArrayList<PluginInfo>();
-		Installed.addAll(pluginTracker.getInstalledPlugins());
-
-		return Installed;
-	}
-
-	/**
-	 * DOCUMENT ME
-	 * @return List of PluginInfo objects for deleted plugins
-	 */
-	public List<PluginInfo> getDeletedPlugins() {
-		List<PluginInfo> Deleted = new ArrayList<PluginInfo>();
-		Deleted.addAll(pluginTracker.getDeletedPlugins());
-
-		return Deleted;
-	}
-
-	// TEMPORARY
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Map<String, PluginInfo> getDeletedByFileName() {
-		HashMap<String, PluginInfo> Del = new HashMap<String, PluginInfo>();
-
-		for (PluginInfo Info : pluginTracker.getDeletedPlugins()) {
-			System.out.println(Info.getName());
-
-			for (String File : Info.getFileList()) {
-				System.out.println("    " + File);
-				Del.put(File, Info);
-			}
-		}
-
-		return Del;
-	}
-
-	/**
-	 * Aborts install of jar/zip files
-	 */
-	public void abortInstall() {
-		HttpUtils.STOP = true;
-		UnzipUtil.STOP = true;
-	}
-
-	/**
-	 * Gets plugin from the url within the PluginInfo object. Installs zip/jar
-	 * files
-	 *
-	 * @param PluginInfo
-	 * @return True if plugin installed
-	 */
-	public boolean install(PluginInfo obj) throws ManagerError {
-		/*
-		 * currently installs jar and zip files only If jar file just drop it in the
-		 * plugin dir If zip file check to see that it's set up with directories:
-		 * plugins/jarfile.jar plugins/jarfile2.jar someDir/propsfile.props etc...
-		 * TODO This method has gotten somewhat more complicated than originally
-		 * planned. Maybe good to think about breaking it up.
-		 */
-		boolean installOk = false;
-
-		switch (obj.getFileType()) {
-			// write jar directly to the plugins dir
-			case JAR:
-
-				try {
-					java.io.File Installed = HttpUtils.downloadFile(obj.getUrl(),
-					                                                obj.getName() + ".jar",
-					                                                "plugins"
-					                                                + System.getProperty("file.separator"));
-					System.out.println("Installed: " + Installed.getAbsolutePath());
-					obj.addFileName(Installed.getAbsolutePath());
-
-					String ClassName = getPluginClass(Installed.getAbsolutePath());
-					obj.setPluginClassName(ClassName);
-
-					if (!HttpUtils.STOP)
-						installOk = true;
-				} catch (java.io.IOException E) {
-					throw new ManagerError("Error installing plugin " + obj.getName() + " from "
-					                       + obj.getUrl(), E);
-				}
-
-				break;
-
-			/*
-			 * unzip, this will put things in the directories set up within the zip
-			 * file
-			 */
-			case ZIP:
-
-				try {
-					if (UnzipUtil.zipContains(HttpUtils.getInputStream(obj.getUrl()),
-					                          "plugins" + System.getProperty("file.separator")
-					                          + "\\w+\\.jar")) {
-						List<String> InstalledFiles = UnzipUtil.unzip(HttpUtils.getInputStream(obj
-						                                                                                                                                                                                                                                                         .getUrl()));
-						obj.setFileList(InstalledFiles);
-
-						String ClassName = getPluginClass(InstalledFiles);
-						obj.setPluginClassName(ClassName);
-
-						if (!UnzipUtil.STOP)
-							installOk = true;
-						else
-							this.delete(obj);
-					} else
-						// at least one jar file is required to be in the plugin
-						// directory in
-						// order to unzip correctly
-						//showError("Zip file " + obj.getName() + " did not contain a plugin directory with a jar file.");
-						System.out.println("Zip file did not contain plugin directory with jar file");
-				} catch (java.io.IOException E) {
-					throw new ManagerError("Failed to unzip file at " + obj.getUrl(), E);
-				}
-
-				break;
-		}
-
-		if (installOk)
-			pluginTracker.addInstalledPlugin(obj, true);
-
-		return installOk;
-	}
-
-	/**
-	 * @return List contains the PluginInfo objects for all plugins with available
-	 *         updates.
-	 */
-	public List<PluginInfo> getUpdatablePlugins() throws ManagerError {
-		ArrayList<PluginInfo> Updatable = new ArrayList<PluginInfo>();
-
-		for (PluginInfo CurrentPlugin : getInstalledPlugins()) {
-			if (CurrentPlugin.getProjectUrl() == null)
-				continue;
-
-			List<PluginInfo> ProjectPlugins = inquire(CurrentPlugin.getProjectUrl());
-
-			for (PluginInfo NewPlugin : ProjectPlugins) {
-				if (isUpdatable(CurrentPlugin, NewPlugin))
-					Updatable.add(CurrentPlugin);
-			}
-		}
-
-		return Updatable;
-	}
-
-	/**
-	 * Updates a given plugin if it defines a project url to use in updating
-	 * TODO!!!!
-	 */
-	public boolean update(PluginInfo obj) throws ManagerError {
-		boolean updated = false;
-
-		if (obj.getProjectUrl() == null) {
-			throw new ManagerError(obj.getName()
-			                       + " does not have a project url. Cannot auto-update this plugin.");
-		}
-
-		List<PluginInfo> CurrentPlugins = inquire(obj.getProjectUrl());
-
-		for (PluginInfo Plugin : CurrentPlugins) {
-			// unique id + projecturl is the same and the version is new
-			if (isUpdatable(obj, Plugin)) {
-				// then update!!
-				delete(obj);
-				updated = install(obj);
-			} else {
-				// no message since we don't necessarily expect a plugin to have
-				// an update
-				updated = false;
-			}
-		}
-
-		return updated;
-	}
-
-	/*
-	 * Checks to see new plugin matches the original plugin and has a newer
-	 * version
-	 */
-	private boolean isUpdatable(PluginInfo Current, PluginInfo New) {
-		if ((Current.getID().equals(New.getID())
-		    && Current.getProjectUrl().equals(New.getProjectUrl())) && isVersionNew(Current, New)) {
-			return true;
-		} else
-
-			return false;
-	}
-
-	/**
-	 * compares the version numbers. Be sure the plugin info objects are passed in
-	 * order
-	 *
-	 * @param Current
-	 *          The currently installed PluginInfo object
-	 * @param New
-	 *          The new PluginInfo object to compare to
-	 */
-	private boolean isVersionNew(PluginInfo Current, PluginInfo New) {
-		boolean isNew = false;
-		String[] CurrentVersion = Current.getPluginVersion().split("\\.");
-		String[] NewVersion = Current.getPluginVersion().split("\\.");
-
-		for (int i = 0; i < NewVersion.length; i++) {
-			// if we're beyond the end of the current version array then it's a
-			// new version
-			if (CurrentVersion.length < i) {
-				isNew = true;
-
-				break;
-			}
-
-			// this means that if at any point the new version number is greater
-			// then it's "new" ie. 1.2.1 > 1.1
-			if (Integer.valueOf(NewVersion[i]) > Integer.valueOf(CurrentVersion[i]))
-				isNew = true;
-		}
-
-		return isNew;
-	}
-
-	/**
-	 * Notes the given PluginInfo object for deletion at next startup
-	 * @param obj
-	 */
-	public void delete(PluginInfo obj) {
-		System.out.println("Mgr marking for deletion " + obj.getName());
-		this.pluginTracker.removePlugin(obj);
-	}
-
-	/**
-	 * Deletes installed plugin and all known associated files
-	 *
-	 * @param obj
-	 * @return If any file from the plugin failed to delete method returns false.
-	 */
-	public boolean removePlugin(PluginInfo obj) {
-		boolean deleteOk = false;
-
-		if (obj.getFileList().size() <= 0) {
-			// for now I'll just output an error to stderr
-			System.err.println(obj.getName()
-			                   + " does not have a list of files.  Deletion needs to be manual");
-		}
-
-		// needs the list of all files installed
-		for (String FileName : obj.getFileList()) {
-			java.io.File ToDelete = new java.io.File(FileName);
-			deleteOk = ToDelete.delete();
-		}
-
-		pluginTracker.removePlugin(obj);
-
-		return deleteOk;
-	}
-
-	/**
-	 * Registers the plugin with tracking object.
-	 *
-	 * @param Plugin
-	 * @param JarFileName
-	 */
+	* Registers a currently installed plugin with tracking object. Only useful if
+	* the plugin was not installed via the install process.
+	*
+	* @param Plugin
+	* @param JarFileName
+	*/
 	public void register(CytoscapePlugin Plugin, String JarFileName) {
 		PluginInfo InfoObj;
 
@@ -444,6 +134,8 @@ public class PluginManager {
 			InfoObj = new PluginInfo();
 			InfoObj.setName(Plugin.getClass().getName());
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
+			// I think we can safely assume it's a jar file if it's registering with no info object
+			InfoObj.setFiletype(PluginInfo.FileType.JAR);
 
 			if (JarFileName != null)
 				InfoObj.addFileName(JarFileName);
@@ -455,40 +147,239 @@ public class PluginManager {
 				InfoObj.addFileName(JarFileName);
 		}
 
-		pluginTracker.addInstalledPlugin(InfoObj, false);
+		pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
 	}
 
-	/*
-	 * The following methods are for the purposes of getting the class name of the
-	 * class that extends CytoscapePlugin If CytoscapePlugin should take over
-	 * loading classes these methods maybe be accessed from elsewhere. Currently
-	 * they are mostly replicated from CytoscapeInit (ick). SK 2007/03/19
+	/**
+	* Takes all objects on the "to-install" list and installs them from them
+	* temporary download directory.
+	*/
+	public void install() throws ManagerError {
+		List<PluginInfo> Plugins = pluginTracker.getListByStatus(PluginTracker.PluginStatus.INSTALL);
+
+		for (PluginInfo CurrentPlugin : Plugins) {
+			List<String> FileList = CurrentPlugin.getFileList();
+
+			// TESTING
+			if (FileList.size() > 1) {
+				throw new ManagerError("Unexpected files in file list for plugin "
+				                       + CurrentPlugin.getName());
+			}
+
+			try {
+				switch (CurrentPlugin.getFileType()) {
+					case JAR:
+
+						String InstallFileName = "plugins" + System.getProperty("file.separator")
+						                         + createFileName(CurrentPlugin);
+						FileInputStream fis = new FileInputStream(FileList.get(0));
+						FileOutputStream fos = new FileOutputStream(InstallFileName);
+
+						byte[] buffer = new byte[1];
+
+						while (((fis.read(buffer)) != -1)) {
+							fos.write(buffer);
+						}
+
+						fis.close();
+						fos.close();
+
+						break;
+
+					case ZIP:
+
+						InputStream is = HttpUtils.getInputStream(FileList.get(0));
+
+						if (UnzipUtil.zipContains(is,
+						                          "plugins" + System.getProperty("file.separator")
+						                          + "\\w+\\.jar")) {
+							UnzipUtil.unzip(is);
+						} else {
+							throw new ManagerError("Zip file " + CurrentPlugin.getUrl()
+							                       + " did not contain a plugin directory with a jar file.\nThis plugin will need to be installed manually.");
+						}
+
+						is.close();
+
+						break;
+				}
+
+				;
+			} catch (IOException E) {
+				throw new ManagerError("Failed to install file " + FileList.get(0), E);
+			}
+
+			pluginTracker.removePlugin(CurrentPlugin, PluginTracker.PluginStatus.INSTALL);
+			pluginTracker.addPlugin(CurrentPlugin, PluginTracker.PluginStatus.CURRENT);
+		}
+	}
+
+	/**
+	 * Marks the given object for deletion the next time Cytoscape
+	 * is restarted.
+	 * @param Obj
 	 */
+	public void delete(PluginInfo Obj) {
+		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.DELETE);
+	}
 
-	/*
-	 * Iterate through all the jar files in a zip, return the one that subclasses
-	 * CytoscapePlugin
-	 */
-	private String getPluginClass(List<String> Files) {
-		for (String FileName : Files) {
-			if (!FileName.endsWith(".jar"))
-				continue;
+	/**
+	* Takes all objects on the "to-delete" list and deletes them
+	*/
+	public void delete() throws ManagerError {
+		String ErrorMsg = "Failed to delete all files for the following plugins:\n";
+		List<String> DeleteFailed = new ArrayList<String>();
 
-			String ClassName = getPluginClass(FileName);
+		List<PluginInfo> Plugins = pluginTracker.getListByStatus(PluginTracker.PluginStatus.DELETE);
 
-			if (ClassName != null)
-				return ClassName;
+		for (PluginInfo CurrentPlugin : Plugins) {
+			boolean deleteOk = false;
+
+			// shouldn't happen...
+			if (CurrentPlugin.getFileList().size() <= 0) {
+				throw new ManagerError(CurrentPlugin.getName()
+				                       + " does not have a list of files.  Please delete this plugin manually.");
+			}
+
+			// needs the list of all files installed
+			for (String FileName : CurrentPlugin.getFileList()) {
+				File ToDelete = new java.io.File(FileName);
+				deleteOk = ToDelete.delete();
+			}
+
+			pluginTracker.removePlugin(CurrentPlugin, PluginTracker.PluginStatus.DELETE);
+
+			if (!deleteOk) {
+				DeleteFailed.add(CurrentPlugin.getName());
+			}
 		}
 
-		return null;
+		// any files that failed to delete should get noted
+		if (DeleteFailed.size() > 0) {
+			for (String Msg : DeleteFailed) {
+				ErrorMsg += ("-" + Msg + "\n");
+			}
+
+			throw new ManagerError(ErrorMsg);
+		}
+	}
+
+	/**
+	* Finds the given version of the new object, sets the old object for deletion
+	* and downloads new object to temporary directory
+	*
+	* @param Obj
+	*/
+	public void update(PluginInfo Obj, String Version) throws ManagerError {
+		// find new plugin, download, add to install list
+		if (Obj.getProjectUrl() == null) {
+			throw new ManagerError(Obj.getName()
+			                       + " does not have a project url.\nCannot auto-update this plugin.");
+		}
+
+		// go through all the matching plugins on the given url
+		for (PluginInfo NewPlugin : inquire(Obj.getProjectUrl())) {
+			// unique id is the same and the version is what was requested
+			if (NewPlugin.getID().equals(Obj.getID())
+			    && NewPlugin.getPluginVersion().equals(Version.trim())) {
+				download(NewPlugin);
+				pluginTracker.addPlugin(NewPlugin, PluginTracker.PluginStatus.INSTALL);
+				pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.DELETE);
+			}
+		}
+	}
+
+	/**
+	* Downloads given object to the temporary directory.
+	*
+	* @param Obj
+	* @return File downloaded
+	*/
+	public File download(PluginInfo Obj) throws ManagerError {
+		File Download = null;
+
+		try {
+			Download = HttpUtils.downloadFile(Obj.getUrl(), new File(tempDir, createFileName(Obj)));
+		} catch (IOException E) {
+			throw new ManagerError("Failed to download file from " + Obj.getUrl() + " to "
+			                       + tempDir.getAbsolutePath(), E);
+		}
+
+		Obj.addFileName(Download.getAbsolutePath());
+		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.INSTALL);
+
+		return Download;
+	}
+
+	private String createFileName(PluginInfo Obj) {
+		return Obj.getName() + "-" + Obj.getPluginVersion() + "." + Obj.getFileType().toString();
+	}
+
+	/**
+	* Checks to see new plugin matches the original plugin and has a newer
+	* version
+	*/
+	private boolean isUpdatable(PluginInfo Current, PluginInfo New) {
+		boolean hasUpdate = false;
+
+		if ((Current.getID() != null) && (New.getID() != null)) {
+			boolean newVersion = isVersionNew(Current, New);
+
+			if ((Current.getID().trim().equals(New.getID().trim())
+			    && Current.getProjectUrl().equals(New.getProjectUrl())) && newVersion) {
+				hasUpdate = true;
+			}
+		}
+
+		return hasUpdate;
+	}
+
+	/**
+	* compares the version numbers. Be sure the plugin info objects are passed in
+	* order
+	*
+	* @param Current
+	*          The currently installed PluginInfo object
+	* @param New
+	*          The new PluginInfo object to compare to
+	*/
+	private boolean isVersionNew(PluginInfo Current, PluginInfo New) {
+		boolean isNew = false;
+		String[] CurrentVersion = Current.getPluginVersion().split("\\.");
+		String[] NewVersion = New.getPluginVersion().split("\\.");
+
+		System.out.println("Current size: " + CurrentVersion.length);
+		System.out.println("New size: " + NewVersion.length);
+
+		for (int i = 0; i < NewVersion.length; i++) {
+			System.out.println("i=" + i);
+
+			// if we're beyond the end of the current version array then it's a
+			// new version
+			if (CurrentVersion.length <= i) {
+				isNew = true;
+
+				break;
+			}
+
+			// if at any point the new version number is greater
+			// then it's "new" ie. 1.2.1 > 1.1
+			// whoops...what if they add a character in here?? TODO !!!!
+			if (Integer.valueOf(NewVersion[i]) > Integer.valueOf(CurrentVersion[i]))
+				isNew = true;
+		}
+
+		return isNew;
 	}
 
 	/*
-	 * Iterate through all class files, return the subclass of CytoscapePlugin.
-	 * Similar to CytoscapeInit
-	 */
+	* Iterate through all class files, return the subclass of CytoscapePlugin.
+	* Similar to CytoscapeInit, however only plugins with manifest files that
+	* describe the class of the CytoscapePlugin are valid.
+	*/
 	private String getPluginClass(String FileName) {
 		String PluginClassName = null;
+
 		java.net.URL[] urls = new java.net.URL[] { jarURL(FileName) };
 		this.classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
 
@@ -498,71 +389,13 @@ public class PluginManager {
 			Manifest m = Jar.getManifest();
 
 			if (m != null) {
-				String className = m.getMainAttributes().getValue("Cytoscape-Plugin");
-
-				if (className != null) {
-					Class pc = getPluginClassFromJar(className);
-
-					if (pc != null)
-						PluginClassName = className;
-				}
-			}
-
-			// no manifest file, go through all the classes
-			Enumeration entries = Jar.entries();
-
-			if (entries == null)
-				return null;
-
-			while (entries.hasMoreElements()) {
-				// get the entry
-				String entry = entries.nextElement().toString();
-
-				if (entry.endsWith("class")) {
-					// convert the entry to an assignable class name
-					entry = entry.replaceAll("\\.class$", "");
-					// A regex to match the two known types of file
-					entry = entry.replaceAll("/|\\\\", ".");
-
-					Class pc = getPluginClassFromJar(entry);
-
-					if (pc != null)
-						PluginClassName = entry;
-				}
+				PluginClassName = m.getMainAttributes().getValue("Cytoscape-Plugin");
 			}
 		} catch (java.io.IOException E) {
 			E.printStackTrace();
 		}
 
 		return PluginClassName;
-	}
-
-	/*
-	 * This loads a class, returns the class if it's a subclass of CytoscapePlugin
-	 * copied from CytoscapeInit mostly, not sure if it's really ok to load a
-	 * class while cytoscape is running?
-	 */
-	private Class getPluginClassFromJar(String name) {
-		Class c = null;
-
-		try {
-			this.classLoader.toString();
-			c = this.classLoader.loadClass(name);
-		} catch (ClassNotFoundException e) {
-			System.err.println("Class not found " + e.getMessage() + " skipping");
-
-			return null;
-		} catch (NoClassDefFoundError e) {
-			System.err.println("No class definition found " + e.getMessage() + " skipping");
-
-			return null;
-		}
-
-		if (CytoscapePlugin.class.isAssignableFrom(c))
-			return c;
-		else
-
-			return null;
 	}
 
 	private static URL jarURL(String urlString) {
