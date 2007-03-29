@@ -46,7 +46,7 @@ public class PluginFileReader {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public String getProjectDescriptoin() {
+	public String getProjectDescription() {
 		return Doc.getRootElement().getChild(this.descTag).getTextTrim();
 	}
 
@@ -73,7 +73,7 @@ public class PluginFileReader {
 		while (pluginI.hasNext()) {
 			Element CurrentPlugin = pluginI.next();
 
-			PluginInfo Info = new PluginInfo();
+			PluginInfo Info = new PluginInfo(CurrentPlugin.getChildTextTrim(this.uniqueID));
 			Info.setName(CurrentPlugin.getChild(this.nameTag).getTextTrim());
 			Info.setDescription(CurrentPlugin.getChild(this.descTag).getTextTrim());
 			Info.setPluginVersion(CurrentPlugin.getChild(this.pluginVersTag).getTextTrim());
@@ -84,7 +84,7 @@ public class PluginFileReader {
 			if (CurrentPlugin.getChild(this.categoryTag) != null)
 				Info.setCategory(CurrentPlugin.getChild(this.categoryTag).getTextTrim());
 			else
-				Info.setCategory("");
+				Info.setCategory("Uncategorized");
 
 			String Type = CurrentPlugin.getChild(this.fileType).getTextTrim();
 
