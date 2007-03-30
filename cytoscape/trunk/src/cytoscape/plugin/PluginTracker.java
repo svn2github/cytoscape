@@ -47,19 +47,33 @@ public class PluginTracker {
 	}
 
 	/**
-	* DOCUMENT ME!
+	 * Used for testing
+	 * @param FileName Xml file name
+	 * @param Dir directory to to write xml file
+	 * @throws java.io.IOException
+	 */
+	protected PluginTracker(File Dir, String FileName) throws java.io.IOException {
+		installFile = new File(Dir, FileName);
+		init();
+	}
+	
+	/**
+	* Sets up the plugin tracker.  This should only be called by the PluginManager
 	*
 	* @throws java.io.IOException
 	*/
 	protected PluginTracker() throws java.io.IOException {
 		installFile = new File(CytoscapeInit.getConfigDirectory(), this.INSTALL_FILE_NAME);
+		init();
 
+	}
+
+	private void init() throws java.io.IOException {
 		if (installFile.exists()) {
 			SAXBuilder Builder = new SAXBuilder(false);
 
 			try {
-				trackerDoc = Builder.build(new File(CytoscapeInit.getConfigDirectory(),
-				                                    this.INSTALL_FILE_NAME));
+				trackerDoc = Builder.build(installFile);
 			} catch (JDOMException E) { // TODO do something with this error
 				E.printStackTrace();
 			}
@@ -69,9 +83,11 @@ public class PluginTracker {
 			trackerDoc.getRootElement().addContent(new Element(PluginStatus.CURRENT.getTagName()));
 			trackerDoc.getRootElement().addContent(new Element(PluginStatus.INSTALL.getTagName()));
 			trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
+			write();
 		}
 	}
 
+	
 	/**
 	* Gets a list of plugins by their status. CURRENT: currently installed
 	* DELETED: to be deleted INSTALL: to be installed
@@ -113,22 +129,24 @@ public class PluginTracker {
 	protected void removePlugin(PluginInfo obj, PluginStatus Status) {
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		Element Plugin = getMatchingPlugin(obj, Status.getTagName());
-		PluginParent.removeContent(Plugin);
-		System.out.println("Removing plugin " + obj.getName() + " status " + Status.getTagName());
-		write();
+		if (Plugin != null) {
+			PluginParent.removeContent(Plugin);
+			System.out.println("Removing plugin " + obj.getName() + " status " + Status.getTagName());
+			write();
+		}
 	}
 
 	private Element getMatchingPlugin(PluginInfo Obj, String Tag) {
 		List<Element> Plugins = trackerDoc.getRootElement().getChild(Tag).getChildren(pluginTag);
 
 		for (Element Current : Plugins) {
-			if ((Current.getChildTextTrim(this.uniqueIdTag).equals(Obj.getID())
-			    && Current.getChildTextTrim(this.projUrlTag).equals(Obj.getProjectUrl()))
-			    || Current.getChildTextTrim(this.urlTag).equals(Obj.getUrl())) {
-				return Current;
+			if ( (Current.getChildTextTrim(this.uniqueIdTag).equals(Obj.getID()) &&
+				 Current.getChildTextTrim(this.projUrlTag).equals(Obj.getProjectUrl())) ||
+				 ((Current.getChildTextTrim(urlTag).length() > 0 && Obj.getUrl() != null) &&
+					Current.getChildTextTrim(urlTag).equals(Obj.getUrl())) ) {
+				  return Current;
 			}
 		}
-
 		return null;
 	}
 
@@ -146,6 +164,21 @@ public class PluginTracker {
 			E.printStackTrace();
 		}
 	}
+
+	
+	public String toString() {
+		XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+		return out.outputString(trackerDoc);
+	}
+	
+	
+	/**
+	 * Deletes the tracker file.  This is currently never used outside of tests.
+	 */
+	protected void delete() {
+		installFile.delete();
+	}
+	
 
 	/*
 	* Takes a list of elemnts, creates the PluginInfo object for each and returns

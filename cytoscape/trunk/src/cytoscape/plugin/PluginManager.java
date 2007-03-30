@@ -40,7 +40,7 @@ public class PluginManager {
 	private String DEFAULT_VALUE = "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
 
 	static {
-		new PluginManager();
+		new PluginManager(null);
 	}
 
 	/**
@@ -50,20 +50,37 @@ public class PluginManager {
 	 */
 	public static PluginManager getPluginManager() {
 		if (pluginMgr == null) {
-			pluginMgr = new PluginManager();
+			pluginMgr = new PluginManager(null);
 		}
 
 		return pluginMgr;
 	}
-
-	private PluginManager() {
+	/**
+	 * This should ONLY be used by tests!!
+	 * @param Tracker
+	 * @return
+	 */
+	protected static PluginManager getPluginManager(PluginTracker Tracker) {
+		if (pluginMgr == null) {
+			pluginMgr = new PluginManager(Tracker);
+		}
+		return pluginMgr;
+	}
+	
+	private PluginManager(PluginTracker Tracker) {
 		defaultUrl = DEFAULT_VALUE;
 
 		// defaultUrl =
 		// CytoscapeInit.getProperties().getProperty("defaultPluginUrl",
 		// DEFAULT_VALUE);
 		try {
-			pluginTracker = new PluginTracker();
+			if (Tracker != null) {
+				System.out.println("Setting tracker");
+				pluginTracker = Tracker;
+			} else {
+				System.out.println("Creating tracker");
+				pluginTracker = new PluginTracker(CytoscapeInit.getConfigDirectory(), "track_plugins.xml");
+			}
 			cyVersion = CytoscapeVersion.version;
 			tempDir = new File(CytoscapeInit.getConfigDirectory(), "plugins");
 
@@ -80,7 +97,7 @@ public class PluginManager {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public File getTempDownloadDirecotry() {
+	public File getTempDownloadDirectory() {
 		return tempDir;
 	}
 
