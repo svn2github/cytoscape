@@ -488,7 +488,12 @@ Toronto, Canada
 				Release Date: Feb. 22, 2007</font>
 		</td>
 		<td width="32%" valign="top">
-			Metabolica plugin find network motifs of arbitrary length in the current network.
+			The Metabolica plugin finds network motifs of arbitrary length in any
+Cytoscape network, which may not be easily seen in complex networks. For
+example, it can automatically find every Feed Forward Loop structure in
+a network, which helps determine relationships between two proteins by
+an activation protein chain. Results are available for further study in
+Cytoscape.
 			<p>
 			Released by: Michele Petterlini, Giovanni Scardoni.
 		</td>
