@@ -659,24 +659,32 @@ Cytoscape.
 				<td width="26%" valign="top">
 					<b>PeSca (Path Extraction by Smallest Cost Algorithm) Project</b><font size="-1">
 						<br>
-						Version: 1.0
+						Version: 2.0
 						<br>
-						Release Date: March, 2005</font>
+						Release Date: April, 2007</font>
 			  </td>
 				<td width="32%" valign="top">
 					<p>
-					PeSca is a Cytoscape's plugin able to find the shortest interaction
-					path between two proteins in a Cytoscape's network. It is tested under
-					Cytoscape 2.1.
+					The Pesca 2.0 plug-in is able to find ALL shortest paths between two
+					nodes in a network.  In complex, highly connected, biological networks, such as
+					intracellular signaling networks, it is possible that two proteins are
+					connected by multiple paths. Likely, not all these paths are the
+					shortest but it also possible that multiple shortest paths are present
+					between two proteins. Identification of all these shortest paths may
+					help to detect and score highly communicating nodes.
 					<p>
-						Released by: Michele Petterlini, Giovanni
-Scardoni.
+					Released by: Giovanni Scardoni and Michele Petterlini
 					</p>
 			  </td>
 				<td width="24%" valign="top">
-				Verified to work in 2.1, 2.2.				</td>
+				Verified to work in 2.1, 2.2, 2.4		</td>
 				<td width="18%" valign="top">
-					[<a href="http://www.petterlini.it/pesca/">PeSca Web Site and Download</a>]				</td>
+					Download and web site:
+					<br/>
+					[<a href="http://profs.sci.univr.it/~scardoni/">PeSca 2.0</a>]				
+					<br/>
+					[<a href="http://www.petterlini.it/pesca/">PeSca 1.0</a>]				
+					</td>
 			</tr>
 			<tr>
 				<td colspan="4">
