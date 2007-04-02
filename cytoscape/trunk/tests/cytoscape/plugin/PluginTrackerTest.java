@@ -89,9 +89,18 @@ public class PluginTrackerTest extends TestCase {
 		
 		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
 		
+		// changing the name of the object will not change the object if
+		// the id/projurl stay the same
 		obj.setName("mySecondInstallTest");
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
+		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
 		
+		// whole new object will get added though
+		PluginInfo newObj = new PluginInfo("this is my unique key for my new plugin");
+		newObj.setName("mySecondInstallTest");
+		newObj.setProjectUrl("http://foobar.com/booya.xml");
+		newObj.setFiletype(PluginInfo.FileType.JAR);
+		tracker.addPlugin(newObj, PluginStatus.INSTALL);
 		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 2);
 		
 		// lets just check with the xml doc itself to be sure
