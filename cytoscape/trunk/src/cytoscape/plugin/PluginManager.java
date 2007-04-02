@@ -18,7 +18,10 @@ import java.net.URLClassLoader;
 
 import java.util.*;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * @author skillcoy
@@ -31,8 +34,6 @@ public class PluginManager {
 
 	private static File tempDir;
 
-	private ClassLoader classLoader;
-
 	private String defaultUrl;
 
 	private String cyVersion;
@@ -43,6 +44,15 @@ public class PluginManager {
 		new PluginManager(null);
 	}
 
+	/**
+	 * This is used in testing to isolate each test case.
+	 * DO NOT USE THIS IN CYTOSCAPE RUNTIME CODE
+	 */
+	protected void resetManager() {
+		pluginMgr = null;
+	}
+	
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -61,7 +71,9 @@ public class PluginManager {
 	 * @return
 	 */
 	protected static PluginManager getPluginManager(PluginTracker Tracker) {
+		System.out.println("Plugin manager NOT NULL");
 		if (pluginMgr == null) {
+			System.out.println("Plugin manager NULL");
 			pluginMgr = new PluginManager(Tracker);
 		}
 		return pluginMgr;
@@ -153,10 +165,11 @@ public class PluginManager {
 		PluginInfo InfoObj;
 		Map<String, List<PluginInfo>> CurrentInstalled = ManagerUtil
 				.sortByClass(getPlugins(PluginTracker.PluginStatus.CURRENT));
-		if (CurrentInstalled.containsKey(Plugin.getClass())) {
+		
+		if (CurrentInstalled.containsKey(Plugin.getClass().getName())) {
 			return;
 		}
-
+		
 		if (Plugin.getPluginInfoObject() == null) {
 			InfoObj = new PluginInfo();
 			InfoObj.setName(Plugin.getClass().getName());
@@ -201,11 +214,11 @@ public class PluginManager {
 				switch (CurrentPlugin.getFileType()) {
 				case JAR:
 
-					String InstallFileName = "plugins"
+					File InstallFile = new File("plugins"
 							+ System.getProperty("file.separator")
-							+ createFileName(CurrentPlugin);
+							+ createFileName(CurrentPlugin));
 					FileInputStream fis = new FileInputStream(FileList.get(0));
-					FileOutputStream fos = new FileOutputStream(InstallFileName);
+					FileOutputStream fos = new FileOutputStream(InstallFile);
 
 					byte[] buffer = new byte[1];
 
@@ -215,9 +228,7 @@ public class PluginManager {
 					fis.close();
 					fos.close();
 					
-					CurrentPlugin.addFileName(InstallFileName);
-					ClassName = getPluginClass(InstallFileName);
-					System.out.println("*****" + CurrentPlugin.getName() + " class name: " + ClassName);
+					CurrentPlugin.addFileName(InstallFile.getAbsolutePath());
 					break;
 
 				case ZIP:
@@ -228,10 +239,6 @@ public class PluginManager {
 							+ "\\w+\\.jar")) {
 						List<String> UnzippedFiles = UnzipUtil.unzip(is);
 						CurrentPlugin.setFileList(UnzippedFiles);
-						// find the plugin class name
-						for (String FileName : UnzippedFiles) {
-							ClassName = getPluginClass(FileName);
-						}
 					} else {
 						throw new ManagerError(
 								"Zip file "
@@ -242,18 +249,8 @@ public class PluginManager {
 					break;
 				}
 				;
-				if (ClassName != null) {
-					CurrentPlugin.setPluginClassName(ClassName);
-					pluginTracker.addPlugin(CurrentPlugin,
-							PluginTracker.PluginStatus.CURRENT);
 
-				} else {
-					deleteFiles(CurrentPlugin.getFileList());
-					throw new ManagerError(
-							CurrentPlugin.getName()
-									+ " does not define the attribute 'Cytoscape-Plugin' in the jar manifest file.\n"
-									+ "This plugin cannot be auto-installed.  Please install manually or contact the plugin author.");
-				}
+				pluginTracker.addPlugin(CurrentPlugin, PluginTracker.PluginStatus.CURRENT);
 
 			} catch (IOException E) {
 				throw new ManagerError("Failed to install file "
@@ -300,6 +297,10 @@ public class PluginManager {
 			pluginTracker.removePlugin(CurrentPlugin,
 					PluginTracker.PluginStatus.DELETE);
 
+			pluginTracker.removePlugin(CurrentPlugin,
+					PluginTracker.PluginStatus.CURRENT);
+
+			
 			if (!deleteOk) {
 				DeleteFailed.add(CurrentPlugin.getName());
 			}
@@ -321,6 +322,7 @@ public class PluginManager {
 		for (String FileName : Files) {
 			File ToDelete = new java.io.File(FileName);
 			deleteOk = ToDelete.delete();
+			System.err.println("Deleting " + FileName + " " + deleteOk);
 		}
 		return deleteOk;
 	}
@@ -334,6 +336,11 @@ public class PluginManager {
 	 */
 	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws ManagerError {
 		List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
+		
+		if (Plugin.getProjectUrl() == null || Plugin.getProjectUrl().length() <= 0) {
+			return UpdatablePlugins;
+		}
+		
 		for (PluginInfo New : inquire(Plugin.getProjectUrl())) {
 			if (New.getID().equals(Plugin.getID()) && isUpdatable(Plugin, New)) {
 				UpdatablePlugins.add(New);
@@ -408,15 +415,28 @@ public class PluginManager {
 	 */
 	public File download(PluginInfo Obj) throws ManagerError {
 		File Download = null;
-
+		String ClassName = null;
 		try {
 			Download = HttpUtils.downloadFile(Obj.getUrl(), new File(tempDir,
 					createFileName(Obj)));
+			ClassName = getPluginClass(Download.getAbsolutePath(), Obj.getFileType());
 		} catch (IOException E) {
 			throw new ManagerError("Failed to download file from "
 					+ Obj.getUrl() + " to " + tempDir.getAbsolutePath(), E);
 		}
 
+		if (ClassName != null) {
+			Obj.setPluginClassName(ClassName);
+		} else {
+			Download.delete();
+			ManagerError E =  new ManagerError(
+				Obj.getName()
+						+ " does not define the attribute 'Cytoscape-Plugin' in the jar manifest file.\n"
+						+ "This plugin cannot be auto-installed.  Please install manually or contact the plugin author.");
+			E.printStackTrace();
+			throw E;
+		}
+		
 		Obj.addFileName(Download.getAbsolutePath());
 		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.INSTALL);
 
@@ -492,47 +512,42 @@ public class PluginManager {
 	 * Similar to CytoscapeInit, however only plugins with manifest files that
 	 * describe the class of the CytoscapePlugin are valid.
 	 */
-	private String getPluginClass(String FileName) {
+	private String getPluginClass(String FileName, PluginInfo.FileType Type) throws IOException {
 		String PluginClassName = null;
 
-		java.net.URL[] urls = new java.net.URL[] { jarURL(FileName) };
-		this.classLoader = new URLClassLoader(urls, Cytoscape.class
-				.getClassLoader());
-
-		try {
-			JarURLConnection jc = (JarURLConnection) urls[0].openConnection();
-			JarFile Jar = jc.getJarFile();
-			Manifest m = Jar.getManifest();
-
-			if (m != null) {
-				PluginClassName = m.getMainAttributes().getValue(
-						"Cytoscape-Plugin");
+		switch(Type) {
+			case JAR:
+				JarFile Jar = new JarFile(FileName);
+				PluginClassName = getManifestAttribute(Jar.getManifest());
+				Jar.close();
+				break;
+				
+			case ZIP:
+				ZipFile Zip = new ZipFile(FileName);
+				Enumeration entries = Zip.entries();
+			
+			while(entries.hasMoreElements()) {
+				ZipEntry Entry = (ZipEntry)entries.nextElement();
+				String EntryName = Entry.getName();
+				
+				if (EntryName.endsWith(".jar")) {
+					JarInputStream jis = new JarInputStream(Zip.getInputStream(Entry));
+					PluginClassName = getManifestAttribute(jis.getManifest());
+					jis.close();
+				}
 			}
-		} catch (java.io.IOException E) {
-			E.printStackTrace();
-		}
-
+			Zip.close();
+		};
 		return PluginClassName;
 	}
 
-	private static URL jarURL(String urlString) {
-		URL url = null;
-
-		try {
-			String uString;
-
-			if (urlString.matches(FileUtil.urlPattern))
-				uString = "jar:" + urlString + "!/";
-			else
-				uString = "jar:file:" + urlString + "!/";
-
-			url = new URL(uString);
-		} catch (MalformedURLException mue) {
-			mue.printStackTrace();
-			System.out.println("couldn't create jar url from '" + urlString
-					+ "'");
+	private String getManifestAttribute(Manifest m) {
+		String Value = null;
+		if (m!=null) {
+			Value = m.getMainAttributes().getValue("Cytoscape-Plugin"); 
 		}
-
-		return url;
+		return Value;
 	}
+		
+		
 }

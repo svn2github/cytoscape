@@ -107,11 +107,15 @@ public class PluginTracker {
 	* @param Status
 	*/
 	protected void addPlugin(PluginInfo obj, PluginStatus Status) {
-		List<PluginInfo> CheckList = getListByStatus(Status);
+//		List<PluginInfo> CheckList = getListByStatus(Status);
 
-		if (CheckList.contains(obj)) { // don't add it if it already exists
+		if (getMatchingPlugin(obj, Status.getTagName()) != null) {
 			return;
 		}
+		
+//		if (CheckList.contains(obj)) { // don't add it if it already exists
+//			return;
+//		}
 
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		PluginParent.addContent(createPluginContent(obj));
