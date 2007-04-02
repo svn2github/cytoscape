@@ -83,6 +83,13 @@ public class CyMain implements CyInitParams {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
+		if (System.getProperty("os.name").startsWith("Mac")) {
+			/*
+			 * By kono 4/2/2007
+			 * Fix Application name for Mac.
+			 */
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Cytoscape 2.5 Beta");
+		}
 		CyMain app = new CyMain(args);
 	}
 
@@ -232,7 +239,9 @@ public class CyMain implements CyInitParams {
 				// use XP L&F
 				UIManager.setLookAndFeel(Options.getSystemLookAndFeelClassName());
 			} else if (System.getProperty("os.name").startsWith("Mac")) {
-				// do nothing, I like the OS X L&F
+				// By kono 4/2/2007
+				// Use menubar
+				System.setProperty("apple.laf.useScreenMenuBar", "true");
 			} else {
 				// this is for for *nix
 				// I happen to like this color combo, there are others
