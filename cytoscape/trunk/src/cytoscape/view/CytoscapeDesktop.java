@@ -386,31 +386,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		setVisible(true);
 		toFront();
 
-		/*
-		 * Enable the bird's eye view.
-		 *
-		 * kono: no longer necessary.  called after CYTOSCAPE_INITIALIZED signal.
-		 */
-
-		//		final CyMenus fCyMenus = cyMenus;
-		//		Runnable birdViewEnabler = new Runnable() {
-		//			public void run() {
-		//				try {
-		//					Thread.sleep(5000);
-		//				} catch (InterruptedException e) {
-		//					return;
-		//				}
-		//				SwingUtilities.invokeLater(new Runnable() {
-		//					public void run() {
-		//						cyMenus.networkOverviewAction
-		//								.actionPerformed(new ActionEvent(
-		//										cyMenus.networkOverviewItem, 1001,
-		//										"Show Network Overview"));
-		//					}
-		//				});
-		//			}
-		//		};
-		//		(new Thread(birdViewEnabler)).start();
 	}
 
 	private void initStatusBar(JPanel panel) {
@@ -705,14 +680,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			getGraphViewController().removeGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED) {
-			/*
-			 * Create bird's eye view
-			 */
-			cyMenus.networkOverviewAction.actionPerformed(new ActionEvent(cyMenus.networkOverviewItem,
-			                                                              1001,
-			                                                              "Show Network Overview"));
-		}
+		} 
 	}
 
 	// ---------------------------------------------------------------------------//

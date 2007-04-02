@@ -351,9 +351,9 @@ public class CyMenus implements GraphViewChangeListener {
 	 * window that holds this menu.
 	 */
 	public void setVisualMapperItemsEnabled(boolean newState) {
-	//	vizMenuItem.setEnabled(newState);
-	//	vizButton.setEnabled(newState);
-	//	vizMapperItem.setText(newState ? "Lock VizMapper\u2122" : "Unlock VizMapper\u2122");
+//		vizMenuItem.setEnabled(newState);
+//		vizButton.setEnabled(newState);
+//		vizMapperItem.setText(newState ? "Lock VizMapper\u2122" : "Unlock VizMapper\u2122");
 	}
 
 	/**
@@ -362,7 +362,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * @param newState DOCUMENT ME!
 	 */
 	public void setOverviewEnabled(boolean newState) {
-		networkOverviewItem.setSelected(newState);
+//		networkOverviewItem.setSelected(newState);
 	}
 
 	/**
@@ -687,10 +687,7 @@ public class CyMenus implements GraphViewChangeListener {
 		// 
 
 		// fill View Menu
-		networkOverviewAction = new BirdsEyeViewAction();
-		networkOverviewItem = new JCheckBoxMenuItem(networkOverviewAction);
-		menuBar.getMenu("View").add(networkOverviewItem);
-		//addAction(new BirdsEyeViewAction());
+		addAction(new BirdsEyeViewAction());
 
 		menuBar.getMenu("View").add(new JSeparator());
 

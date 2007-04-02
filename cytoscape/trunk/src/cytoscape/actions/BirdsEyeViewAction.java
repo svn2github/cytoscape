@@ -51,6 +51,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.Action;
 
 /**
  *
@@ -65,6 +66,7 @@ public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChang
 	public BirdsEyeViewAction() {
 		super("Show/Hide Network Overview");
 		setPreferredMenu("View");
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED,this);
 	}
 
 	/**
@@ -77,6 +79,8 @@ public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChang
 		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
 			bev.changeView((DGraphView) Cytoscape.getCurrentNetworkView());
+		} else if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED ) { 
+			actionPerformed(null);	
 		}
 	}
 
@@ -95,7 +99,7 @@ public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChang
 			Cytoscape.getDesktop().getNetworkPanel().setNavigator(bev);
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 			on = true;
-			Cytoscape.getDesktop().getCyMenus().setOverviewEnabled(on);
+			putValue(Action.NAME, "Hide Network Overview");	
 		} else {
 			if (bev != null) {
 				bev.destroy();
@@ -106,7 +110,7 @@ public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChang
 			         .setNavigator(Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel());
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport().removePropertyChangeListener(this);
 			on = false;
-			Cytoscape.getDesktop().getCyMenus().setOverviewEnabled(on);
+			putValue(Action.NAME, "Show Network Overview");	
 		}
 	}
 }
