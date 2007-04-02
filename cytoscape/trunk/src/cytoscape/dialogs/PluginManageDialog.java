@@ -49,6 +49,10 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 			return typeText;
 		}
 	}
+
+	private int totalAvailable = 0;
+	private int totalCurrent = 0;
+	
 	public PluginManageDialog(javax.swing.JDialog owner) {
 		super(owner, "Manage Plugins");
 		setLocationRelativeTo(owner);
@@ -139,15 +143,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		switch (Status) {
 			case INSTALLED:
 				addInstalled(CategoryName, Plugins);
-
+				installedNode.setUserObject(PluginInstallStatus.INSTALLED.toString() + 
+						": " + totalCurrent);
 				break;
 
 			case AVAILABLE:
 				addAvailable(CategoryName, Plugins);
-
+				availableNode.setUserObject(PluginInstallStatus.AVAILABLE.toString() + 
+						": " + totalAvailable);
 				break;
 		}
-
+		
+		
 		treeModel = new DefaultTreeModel(rootTreeNode);
 		pluginsTree.setModel(treeModel);
 	}
@@ -155,7 +162,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 	// add category to set of plugins availalbe for download
 	private void addAvailable(String CategoryName, List<PluginInfo> Plugins) {
 		DefaultMutableTreeNode Category = new DefaultMutableTreeNode(CategoryName);
-		this.availableNode.insert(Category, 0);
+		availableNode.insert(Category, 0);
 
 		Iterator<PluginInfo> pI = Plugins.iterator();
 		int i = 0;
@@ -164,13 +171,15 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 			PluginInfo CurrentPlugin = pI.next();
 			Category.insert(new DefaultMutableTreeNode(CurrentPlugin), i);
 			i++;
+			totalAvailable++;
 		}
+		Category.setUserObject(CategoryName + ": " + i);
 	}
 
 	// add category to the set of installed plugins
 	private void addInstalled(String CategoryName, List<PluginInfo> Plugins) {
 		DefaultMutableTreeNode Category = new DefaultMutableTreeNode(CategoryName);
-		this.installedNode.insert(Category, 0);
+		installedNode.insert(Category, 0);
 
 		Iterator<PluginInfo> pI = Plugins.iterator();
 		int i = 0;
@@ -179,7 +188,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 			PluginInfo CurrentPlugin = pI.next();
 			Category.insert(new DefaultMutableTreeNode(CurrentPlugin), i);
 			i++;
+			totalCurrent++;
 		}
+		Category.setUserObject(CategoryName + ": " + i);
 	}
 
 	// change site url

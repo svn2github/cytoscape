@@ -94,6 +94,8 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 			CurrentPluginNode.insert(new DefaultMutableTreeNode(New), i);
 			i++;
 		}
+		Category.setUserObject(CategoryName + ": " + i);
+
 		treeModel = new DefaultTreeModel(rootTreeNode);
 		pluginsTree.setModel(treeModel);
 	}
