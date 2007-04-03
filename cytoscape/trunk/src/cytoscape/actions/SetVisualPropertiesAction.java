@@ -59,13 +59,19 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class SetVisualPropertiesAction extends CytoscapeAction {
+	private static String title = "Open VizMapper\u2122";
+
+	public SetVisualPropertiesAction() {
+		super(title, new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_file-with-objects-16.png")));
+		setPreferredMenu("View");
+	}
 	/**
 	 * Creates a new SetVisualPropertiesAction object.
 	 *
 	 * @param icon  DOCUMENT ME!
 	 */
 	public SetVisualPropertiesAction(ImageIcon icon) {
-		super("Open VizMapper\u2122", icon);
+		super(title, icon);
 		setPreferredMenu("View");
 	}
 
@@ -75,7 +81,8 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	 * but inappropriate for the pulldown menu system.
 	 */
 	public SetVisualPropertiesAction(boolean showLabel) {
-		super();
+		super(); // no title here - this is for the toolbar
+		setPreferredMenu("View");
 	}
 
 	/**

@@ -47,12 +47,14 @@ import cytoscape.actions.BirdsEyeViewAction;
 import cytoscape.actions.BookmarkAction;
 import cytoscape.actions.CloneGraphInNewWindowAction;
 import cytoscape.actions.CreateNetworkViewAction;
-import cytoscape.actions.CytoPanelAction;
 import cytoscape.actions.DeSelectAllEdgesAction;
 import cytoscape.actions.DeSelectAllNodesAction;
 import cytoscape.actions.DeselectAllAction;
 import cytoscape.actions.DestroyNetworkAction;
 import cytoscape.actions.DestroyNetworkViewAction;
+import cytoscape.actions.DisplayAttributeBrowserAction;
+import cytoscape.actions.DisplayAdvancedWindowAction;
+import cytoscape.actions.DisplayNetworkPanelAction;
 import cytoscape.actions.ExitAction;
 import cytoscape.actions.ExportAsGMLAction;
 import cytoscape.actions.ExportAsGraphicsAction;
@@ -104,8 +106,6 @@ import cytoscape.util.undo.RedoAction;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
-
-import cytoscape.view.cytopanels.CytoPanel;
 
 //------------------------------------------------------------------------------
 import giny.view.GraphViewChangeEvent;
@@ -162,7 +162,6 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu layoutMenu;
 	JMenu vizMenu;
 	JMenu helpMenu;
-	JMenu cytoPanelMenu;
 	CytoscapeAction menuPrintAction;
 	CytoscapeAction menuExportAction;
 	CytoscapeAction menuSaveSessionAction;
@@ -171,9 +170,6 @@ public class CyMenus implements GraphViewChangeListener {
 	CytoscapeAction networkOverviewAction;
 	JMenuItem vizMenuItem;
 	JMenuItem vizMapperItem;
-	JCheckBoxMenuItem cytoPanelWestItem;
-	JCheckBoxMenuItem cytoPanelEastItem;
-	JCheckBoxMenuItem cytoPanelSouthItem;
 	JCheckBoxMenuItem networkOverviewItem;
 	JMenuItem helpContentsMenuItem;
 	JMenuItem helpAboutMenuItem;
@@ -403,63 +399,18 @@ public class CyMenus implements GraphViewChangeListener {
 	}
 
 	/**
-	 * Returns the cytopanels menu.
+	 * Used to return the cytopanels menu.
+	 * @deprecated Will be removed April 2008. Cytopanels no longer have a separate menu (they're in View). 
 	 */
 	public JMenu getCytoPanelMenu() {
-		return cytoPanelMenu;
+		return null;
 	}
 
-	/*
-	 * Sets up the CytoPanelMenu items. This is put into its own public method
-	 * so it can be called from CytoscapeInit.Init(), because we need the
-	 * CytoscapeDesktop to be instantiated first.
+	/**
+	 * Used to set up the CytoPanelMenu items. 
+	 * @deprecated Will be removed April 2008. Cytopanels are initialized in the Display* actions. Do not use.
 	 */
-	public void initCytoPanelMenus() {
-		CytoPanel cytoPanel;
-
-		// setup cytopanel west (enabled/shown by default)
-		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-		cytoPanelWestItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
-		initCytoPanelMenuItem(cytoPanel, cytoPanelWestItem, true, true, "cytoPanelWest",
-		                      KeyEvent.VK_1);
-
-		// setup cytopanel east (disabled/hidden by default)
-		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-		cytoPanelEastItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
-		initCytoPanelMenuItem(cytoPanel, cytoPanelEastItem, false, false, "cytoPanelEast",
-		                      KeyEvent.VK_3);
-
-		// setup cytopanel south (disabled/hidden by default)
-		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
-		cytoPanelSouthItem = new JCheckBoxMenuItem(cytoPanel.getTitle());
-		initCytoPanelMenuItem(cytoPanel, cytoPanelSouthItem, false, false, "cytoPanelSouth",
-		                      KeyEvent.VK_2);
-
-		// add cytopanel menu items to CytoPanels Menu
-		menuBar.getMenu("View").add(new JSeparator());
-		menuBar.getMenu("View.Desktop").add(cytoPanelWestItem);
-		menuBar.getMenu("View.Desktop").add(cytoPanelSouthItem);
-		menuBar.getMenu("View.Desktop").add(cytoPanelEastItem);
-
-	}
-
-	private void initCytoPanelMenuItem(CytoPanel cytoPanel, JCheckBoxMenuItem menuItem,
-	                                   boolean selected, boolean enabled, String mapObject,
-	                                   int keyCode) {
-		// setup action
-		CytoPanelAction cytoPanelAction = new CytoPanelAction(menuItem, cytoPanel);
-		menuItem.addActionListener(cytoPanelAction);
-		// enabled/disabled - shown/hidden
-		menuItem.setSelected(selected);
-		menuItem.setEnabled(enabled);
-
-		// setup menu item key accel
-		KeyStroke accel = KeyStroke.getKeyStroke(keyCode, java.awt.event.InputEvent.CTRL_MASK);
-		menuItem.setAccelerator(accel);
-		// setup global key accel
-		menuItem.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(accel, mapObject);
-		menuItem.getActionMap().put(mapObject, cytoPanelAction);
-	}
+	public void initCytoPanelMenus() { }
 
 	/**
 	 * Creates the menu bar and the various menus and submenus, but defers
@@ -548,7 +499,6 @@ public class CyMenus implements GraphViewChangeListener {
 			});
 		// vizMenu = menuBar.getMenu("Visualization");
 		opsMenu = menuBar.getMenu("Plugins");
-		// cytoPanelMenu = menuBar.getMenu("CytoPanels");
 		helpMenu = menuBar.getMenu("Help");
 	}
 
@@ -569,7 +519,6 @@ public class CyMenus implements GraphViewChangeListener {
 			nodesRequiredItemsEnabled = false;
 			saveButton.setEnabled(false);
 			saveSubMenu.setEnabled(false);
-			//menuPrintAction.setEnabled(false);
 			setNodesRequiredItemsEnabled();
 		}
 	}
@@ -619,10 +568,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		fileMenu.add(new JSeparator());
 
-		// Print Actions
 		addAction(new PrintAction());
-
-		// Exit
 		addAction(new ExitAction());
 
 		//
@@ -646,8 +592,6 @@ public class CyMenus implements GraphViewChangeListener {
 		//
 		// Select menu
 		//
-
-		// fill the Select menu
 		selectMenu.add(new SelectionModeAction());
 
 		addAction(new InvertSelectedNodesAction());
@@ -677,24 +621,21 @@ public class CyMenus implements GraphViewChangeListener {
 		selectMenu.addSeparator();
 
 		//
-		// Layout menu
-		//
-
-		layoutMenu.addSeparator();
-
-		//
 		// View menu
 		// 
-
-		// fill View Menu
-		addAction(new BirdsEyeViewAction());
+		addAction(new DisplayNetworkPanelAction());
+		addAction(new DisplayAttributeBrowserAction());
+		addAction(new BirdsEyeViewAction()); // network overview
 
 		menuBar.getMenu("View").add(new JSeparator());
 
-		ImageIcon vizmapperIcon = new ImageIcon(getClass()
-		                                  .getResource("images/ximian/stock_file-with-objects-16.png"));
-		addAction(new SetVisualPropertiesAction(vizmapperIcon));
+		addAction(new SetVisualPropertiesAction());
 		addAction(new ToggleVisualMapperAction());
+
+		//
+		// Layout menu
+		//
+		layoutMenu.addSeparator();
 
 		// 
 		// Help menu

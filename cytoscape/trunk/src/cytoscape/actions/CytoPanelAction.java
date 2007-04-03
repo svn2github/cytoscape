@@ -60,6 +60,8 @@ import javax.swing.SwingConstants;
 
 /**
  * Menu item handler for CytoPanels
+ * @deprecated Will be removed April 2008.  CytoPanel actions are now handled by 
+ * AbstractCytoPanelAction and children.
  */
 public class CytoPanelAction extends CytoscapeAction implements CytoPanelListener {
 	/**
@@ -79,6 +81,8 @@ public class CytoPanelAction extends CytoscapeAction implements CytoPanelListene
 
 	/**
 	 * Constructor.
+     * @deprecated Will be removed April 2008.  CytoPanel actions are now handled by 
+     * AbstractCytoPanelAction and children.
 	 */
 	public CytoPanelAction(JCheckBoxMenuItem menuItem, CytoPanel cytoPanel) {
 		// call our parent constructor
