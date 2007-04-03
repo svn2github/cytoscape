@@ -672,7 +672,7 @@ public class LayoutRegion extends JComponent
 			CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
 
 				public String getPresentationName() {
-					return "Bubble";
+					return "Interactive Layout";
 				}
 
 				public String getRedoPresentationName() {
