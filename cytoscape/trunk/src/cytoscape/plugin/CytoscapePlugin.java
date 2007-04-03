@@ -73,8 +73,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	/**
 	 *
 	 * @return a PluginInfo object with the following methods set: setName()
-	 *         setDescription() setPluginVersion() setCytoscapeVersion()
-	 *         setCategory() setUrl()
+	 *         setDescription() setPluginVersion() 
+	 *         setCategory() setProjectUrl()
 	 *
 	 * All other methods that PluginInfo sets are optional.
 	 *
