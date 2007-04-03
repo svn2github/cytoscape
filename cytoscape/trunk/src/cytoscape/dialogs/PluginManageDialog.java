@@ -74,12 +74,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 	 * Enables the delete/install buttons when the correct leaf node is selected
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		DefaultMutableTreeNode Node = (DefaultMutableTreeNode) pluginsTree
-		                                                                  .getLastSelectedPathComponent();
+		DefaultMutableTreeNode Node = (DefaultMutableTreeNode) 
+			pluginsTree.getLastSelectedPathComponent();
 
 		if (Node == null)
 			return;
 
+//		javax.swing.tree.TreePath[] Paths = pluginsTree.getSelectionPaths();
+//		for (int i = 0; i < Paths.length; i++) {
+//			DefaultMutableTreeNode Node = (DefaultMutableTreeNode) Paths[i]
+//					.getLastPathComponent();
+//		}
+		
 		if (Node.isLeaf()) {
 			// display any object selected
 			pluginInfoPane.setText(((PluginInfo) Node.getUserObject()).prettyOutput());
@@ -298,6 +304,10 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		splitPane.setMinimumSize(new java.awt.Dimension(50, 100));
 		pluginsTree.setRootVisible(false);
 		pluginsTree.addTreeSelectionListener(this);
+		// might be nice to allow multiple selections with the two different nodes
+		// but I'm just not sure how to manage that right now
+		pluginsTree.getSelectionModel().setSelectionMode(
+				javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
 		rootTreeNode = new DefaultMutableTreeNode("Plugins");
 		installedNode = new DefaultMutableTreeNode(PluginInstallStatus.INSTALLED.toString());
 		availableNode = new DefaultMutableTreeNode(PluginInstallStatus.AVAILABLE.toString());
