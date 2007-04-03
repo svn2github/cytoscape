@@ -351,7 +351,7 @@
 	<!-- ======================================================= -->
 
 	<!--  Target to Run Cytoscape -->
-	<target name="run" depends="jar" description="Runs Cytoscape.">
+	<target name="run" depends="test" description="Runs Cytoscape.">
 		<java jar="${basedir}/cytoscape.jar" fork="true">
 			<arg value="-p" />
 			<arg value="plugins/core" />
