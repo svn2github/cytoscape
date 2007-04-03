@@ -165,6 +165,6 @@ public class ScaleAction extends AbstractAction {
 				}
 			});
 
-		jDialog.show();
+		jDialog.setVisible(true);
 	}
 }

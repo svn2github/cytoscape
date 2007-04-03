@@ -150,6 +150,6 @@ public class RotateAction extends AbstractAction {
 				}
 			});
 
-		jDialog.show();
+		jDialog.setVisible(true);
 	}
 }
