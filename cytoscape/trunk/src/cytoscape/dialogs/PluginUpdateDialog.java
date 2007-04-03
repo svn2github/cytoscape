@@ -5,8 +5,10 @@ package cytoscape.dialogs;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Enumeration;
 
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
@@ -138,13 +140,103 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 	}
 
 	private void updateAllHandler(java.awt.event.ActionEvent evt) {
-		String Msg = "The following plugins will be updated the next time you restart Cytoscape:<br>";
+		if (
+		JOptionPane.showConfirmDialog(
+				this, "All plugins will be updated to the newest available version.\n" +
+				"If you wish to choose a different version please press \"No\" then\n" +
+				"choose each version and \"Update Selected Plugins\"",
+				"Warning",
+				JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+				return;
+				}
+	
+		String Msg = "The following plugins will be updated the next time you restart Cytoscape:\n";
+		String ErrorMsg = "Failed to update the following plugins:\n";
+		boolean Error = false;
+		boolean Ok = false;
 		PluginManager Mgr = PluginManager.getPluginManager();
 
-		// TODO get all path endpoints...how?
-		// javax.swing.tree.TreePath[] AllPaths = pluginsTree.ge
-		JOptionPane.showMessageDialog(this, "Not yet implemented",
-				"Plugins Updated", JOptionPane.INFORMATION_MESSAGE);
+		Enumeration Children = rootTreeNode.children();
+		while(Children.hasMoreElements()) {
+			TreeNode Child = (TreeNode) Children.nextElement();
+			List<TreeNode> LeafNodes = recursiveReadTree(Child);
+
+			// this assumes there is more than 1...TODO deal with the single case
+			PluginInfo LastObj = null;
+			for(TreeNode Node: LeafNodes) {
+				PluginInfo Obj = (PluginInfo) ((DefaultMutableTreeNode) Node).getUserObject();
+				if (LastObj != null) {
+					PluginInfo NewObj = getNewerVersion(Obj, LastObj);
+					try {
+					// TODO add a swing worker around this
+					// BUG: the plugin info object gotten from the tree node does not contain
+					// file list info so user is not able to update the file
+					Mgr.update( ((PluginInfo)((DefaultMutableTreeNode) Node).getUserObject()), 
+							NewObj);
+					Msg += NewObj.getName() + NewObj.getPluginVersion() + "\n";
+					Ok = true;
+					} catch (ManagerError E) {
+						Error = true;
+						ErrorMsg += NewObj.getName() + "\n";
+						E.printStackTrace();
+					}
+				}
+			LastObj = Obj;
+			}
+		}
+
+		if (Ok) {
+			JOptionPane.showMessageDialog(this, Msg, "Plugin Updates", JOptionPane.INFORMATION_MESSAGE);
+		}
+		
+		if (Error) {
+			JOptionPane.showMessageDialog(this, ErrorMsg, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+	}
+	
+	private PluginInfo getNewerVersion(PluginInfo New, PluginInfo Old) {
+		PluginInfo NewerObj = Old;
+
+		String[] CurrentVersion = Old.getPluginVersion().split("\\.");
+		String[] NewVersion = New.getPluginVersion().split("\\.");
+	
+		System.out.println(New.getPluginVersion().toString() + ":" +Old.getPluginVersion().toString());
+		
+		for (int i = 0; i < NewVersion.length; i++) {
+			// if we're beyond the end of the current version array then it's a
+			// new version
+			if (CurrentVersion.length <= i) {
+				NewerObj = New;
+				break;
+			}
+	
+			// if at any point the new version number is greater
+			// then it's "new" ie. 1.2.1 > 1.1
+			// whoops...what if they add a character in here?? TODO !!!!
+			System.out.println(NewVersion[i] + ":" + CurrentVersion[i]);
+			if (Integer.valueOf(NewVersion[i]) > Integer
+					.valueOf(CurrentVersion[i]))
+				NewerObj = New;
+		}
+		return NewerObj;
+	}
+	
+	private List<TreeNode> recursiveReadTree(TreeNode Node) {
+		List<TreeNode> LeafNodes = new java.util.ArrayList<TreeNode>();
+		
+		Enumeration Children = Node.children();
+		while(Children.hasMoreElements()) {
+			TreeNode Child = (TreeNode) Children.nextElement();
+			System.out.println(Child.toString());
+			if (!Child.isLeaf()) {
+				List<TreeNode> DeeperNodes = recursiveReadTree(Child);
+				LeafNodes.addAll(DeeperNodes);
+			} else {
+				LeafNodes.add(Child);
+			}
+		}
+		return LeafNodes;
 	}
 
 	// sets up the swing stuff
@@ -157,7 +249,7 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 		labelPane = new javax.swing.JPanel();
 		jLabel1 = new javax.swing.JLabel();
 		buttonPanel = new javax.swing.JPanel();
-		cancelButton = new javax.swing.JButton();
+		closeButton = new javax.swing.JButton();
 		updateAllButton = new javax.swing.JButton();
 		updatedSelectedButton = new javax.swing.JButton();
 
@@ -199,8 +291,8 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						Short.MAX_VALUE).add(jLabel1)));
 
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+		closeButton.setText("Close");
+		closeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				dispose();
 			}
@@ -233,7 +325,7 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 								.addContainerGap(107, Short.MAX_VALUE).add(
 										updateAllButton).add(42, 42, 42).add(
 										updatedSelectedButton).add(29, 29, 29)
-								.add(cancelButton).add(34, 34, 34)));
+								.add(closeButton).add(34, 34, 34)));
 		buttonPanelLayout
 				.setVerticalGroup(buttonPanelLayout
 						.createParallelGroup(
@@ -246,7 +338,7 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
 														.add(
-																cancelButton,
+																closeButton,
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																29,
 																Short.MAX_VALUE)
@@ -324,7 +416,7 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 
 	private javax.swing.JPanel buttonPanel;
 
-	private javax.swing.JButton cancelButton;
+	private javax.swing.JButton closeButton;
 
 	private javax.swing.JScrollPane infoScrollPane;
 
