@@ -287,7 +287,7 @@ public class PluginManager {
 			// shouldn't happen...
 			if (CurrentPlugin.getFileList().size() <= 0) {
 				throw new ManagerError(
-						CurrentPlugin.getName()
+						CurrentPlugin.getName() + " " + CurrentPlugin.getPluginVersion() 
 								+ " does not have a list of files.  Please delete this plugin manually.");
 			}
 
@@ -349,32 +349,6 @@ public class PluginManager {
 		return UpdatablePlugins;
 	}
 
-	/**
-	 * Gets the list of new plugins that have a newer version than the current
-	 * plugins.
-	 * 
-	 * @param Plugins
-	 * @return List<PluginInfo>
-	 * @throws ManagerError
-	 */
-	// not sure if this is necessary or useful to support
-	// public List<PluginInfo> findUpdates(List<PluginInfo> Plugins) throws
-	// ManagerError
-	// {
-	// List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
-	// for(PluginInfo Current: Plugins)
-	// {
-	// for(PluginInfo NewPlugin : inquire(Current.getProjectUrl()))
-	// {
-	// if (NewPlugin.getID().equals(Current.getID()) &&
-	// isUpdatable(Current, NewPlugin))
-	// {
-	// UpdatablePlugins.add(NewPlugin);
-	// }
-	// }
-	// }
-	// return UpdatablePlugins;
-	// }
 	/**
 	 * Finds the given version of the new object, sets the old object for
 	 * deletion and downloads new object to temporary directory
@@ -482,17 +456,11 @@ public class PluginManager {
 		String[] CurrentVersion = Current.getPluginVersion().split("\\.");
 		String[] NewVersion = New.getPluginVersion().split("\\.");
 
-		System.out.println("Current size: " + CurrentVersion.length);
-		System.out.println("New size: " + NewVersion.length);
-
 		for (int i = 0; i < NewVersion.length; i++) {
-			System.out.println("i=" + i);
-
 			// if we're beyond the end of the current version array then it's a
 			// new version
 			if (CurrentVersion.length <= i) {
 				isNew = true;
-
 				break;
 			}
 
@@ -503,7 +471,6 @@ public class PluginManager {
 					.valueOf(CurrentVersion[i]))
 				isNew = true;
 		}
-
 		return isNew;
 	}
 
