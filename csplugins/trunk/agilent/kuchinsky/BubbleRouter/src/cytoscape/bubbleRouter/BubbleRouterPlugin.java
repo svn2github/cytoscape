@@ -2,32 +2,19 @@ package cytoscape.bubbleRouter;
 
 import giny.view.NodeView;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
+import javax.swing.undo.AbstractUndoableEdit;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
@@ -116,11 +103,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	/**
 	 * for popup menu
 	 */
-	public static String REGION_INFO = "Region Info";
-	
+	// public static String REGION_INFO = "Region Info";
 	public static String DELETE_REGION = "Delete Region";
 
-//	public static String REROUTE_REGION = "Reroute Region";
+	// public static String REROUTE_REGION = "Reroute Region";
 	public static String LAYOUT_REGION = "Layout Region";
 
 	// AJK: 02/20/07 delete all regions
@@ -129,11 +115,23 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	// KH: 03/14/07
 	public static String BUBBLE_HELP = "Interactive Layout Help";
 
+	public static String ITEM_HELP = "Online Help";
+
 	public static String UNCROSS_EDGES = "Uncross Edges";
 
-	JPopupMenu menu = new JPopupMenu("Layout Region");
-	
-	JMenu regionInfoSubmenu = new JMenu(REGION_INFO);
+	private JPopupMenu menu = new JPopupMenu("Layout Region");
+
+	private JWindow toolTip = new JWindow(new Frame());
+
+	private JLabel labelRegionInfo = new JLabel(" ");
+
+	private static final int NOT_IN_AREA = -1;
+
+	private static final int IN_AREA = 1;
+
+	private boolean displayInfo = false;
+
+	// JMenuItem regionInfoItem = new JMenuItem(REGION_INFO);
 
 	LayoutRegion pickedRegion = null;
 
@@ -161,15 +159,23 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		JMenuItem uncrossEdgesItem = new JMenuItem(UNCROSS_EDGES);
 		JMenuItem deleteRegionItem = new JMenuItem(DELETE_REGION);
 		JMenuItem layoutRegionItem = new JMenuItem(LAYOUT_REGION);
+		JMenuItem helpItem = new JMenuItem(ITEM_HELP);
+		uncrossEdgesItem
+				.setToolTipText("Run edge minimization algorithm to reduce edge crossings");
+		deleteRegionItem.setToolTipText("Delete region from canvas");
+		layoutRegionItem
+				.setToolTipText("Run layout algorithm on all nodes associated with region");
+		helpItem.setToolTipText("Open online help");
 		RegionPopupActionListener popupActionListener = new RegionPopupActionListener();
 		deleteRegionItem.addActionListener(popupActionListener);
 		layoutRegionItem.addActionListener(popupActionListener);
 		uncrossEdgesItem.addActionListener(popupActionListener);
-		menu.add(regionInfoSubmenu);
-		menu.addSeparator();
+		// menu.add(regionInfoItem);
+		// menu.addSeparator();
 		menu.add(uncrossEdgesItem);
 		menu.add(layoutRegionItem);
 		menu.add(deleteRegionItem);
+		menu.add(helpItem);
 		menu.setVisible(false);
 		// AJK: 12/01/06 END
 
@@ -191,6 +197,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		getBubbleHelp.addActionListener(getBubbleHelpListener);
 		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(new JSeparator());
 		Cytoscape.getDesktop().getCyMenus().getHelpMenu().add(getBubbleHelp);
+		helpItem.addActionListener(getBubbleHelpListener);
 
 		// KH: 03/14/07 END
 
@@ -205,7 +212,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		// mpa.initializeBubbleRouter();
 
 	}
-	
+
 	public void mouseDragged(MouseEvent e) {
 		// If a dragging operation is in progress, get the new
 		// values for mousex and mousey, and repaint.
@@ -235,17 +242,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			starty = e.getY();
 			startPoint = e.getPoint();
 
-//			System.out.println("setting cursor from: "
-//					+ Cytoscape.getDesktop().getCursor());
-//			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
-//					.getPredefinedCursor(Cursor.HAND_CURSOR));
+			// System.out.println("setting cursor from: "
+			// + Cytoscape.getDesktop().getCursor());
+			// recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+			// .getPredefinedCursor(Cursor.HAND_CURSOR));
 			// Cytoscape.getDesktop().setCursor(
 			// Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 			// Cytoscape.getCurrentNetworkView().getComponent().setCursor(
 			// Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//			System.out.println("setting cursor to: "
-//					+ Cytoscape.getDesktop().getCursor());
+			// System.out.println("setting cursor to: "
+			// + Cytoscape.getDesktop().getCursor());
 			// System.out.println("Region start point = " + pickedRegion.getX1()
 			// + "," + pickedRegion.getY1());
 			e.consume(); // don't have canvas draw drag rect
@@ -349,10 +356,29 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 
+	private void initToolTip() {
+		labelRegionInfo.setOpaque(true);
+		labelRegionInfo.setBackground(UIManager.getColor("ToolTip.background"));
+		labelRegionInfo.setText(boundedNodeViews.size() + " of "
+				+ pickedRegion.getNodeViews().size() + " nodes in "
+				+ pickedRegion.getRegionAttributeValue().toString());
+		toolTip.add(labelRegionInfo);
+	}
+
 	public void mouseMoved(MouseEvent e) {
 		LayoutRegion overRegion = LayoutRegionManager.getPickedLayoutRegion(e
 				.getPoint());
 		int hoveringOnEdge = calculateOnEdge(e.getPoint(), overRegion);
+		int hoveringInArea = calculateInArea(e.getPoint(), overRegion);
+		if (hoveringInArea == IN_AREA) {
+			toolTip.pack();
+			toolTip.setLocation(e.getX() + 300, e.getY() + 100);
+			toolTip.setVisible(true);
+			toolTip.repaint();
+		} else {
+			toolTip.setVisible(false);
+		}
+
 		if (hoveringOnEdge == NOT_ON_EDGE) {
 			if (changedCursorRegion != null) {
 				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
@@ -360,8 +386,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				changedCursorRegion = null;
 			}
 		} else {
-			if ((changedCursorRegion != null)
-					&& (changedCursorRegion != overRegion)) {
+			if ((overRegion != null) && (changedCursorRegion != overRegion)) {
 				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
 						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				// changedCursorRegion.setCursor(changedCursorRegion.getSavedCursor());
@@ -376,7 +401,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	public void mouseClicked(MouseEvent e) {
 		setRegionSelection(e);
-
 	}
 
 	public void setRegionSelection(MouseEvent e) {
@@ -391,10 +415,14 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		if (pickedRegion != null) {
 			pickedRegion.setSelected(true);
 			pickedRegion.repaint();
-			
+
 			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
 					.getNodeViews(), pickedRegion.getBounds());
-		}		
+
+			// Initialize Region Info Tool Tip
+			initToolTip();
+		}
+
 	}
 
 	// AJK: 02/20/07 END
@@ -413,34 +441,28 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	protected void processRegionContextMenu(MouseEvent event) {
 
-		// pickedRegion = LayoutRegionManager.getPickedLayoutRegion(event
-		// .getPoint());
 		if (pickedRegion == null) {
 			menu.setVisible(false);
 			return;
 		}
 
 		if (pickedRegion.getRegionAttributeValue() != null) {
-			// System.out.println("clicked on region: "
-			// + pickedRegion.getRegionAttributeValue());
 
 			menu.setLabel(pickedRegion.getRegionAttributeValue().toString());
-			
-			//AP 03.18.07: Region Info in Context Menu
-			regionInfoSubmenu.removeAll();
-			JMenuItem infoNodeCount = new JMenuItem(boundedNodeViews.size() + 
-					" of " + pickedRegion.getNodeViews().size() + " nodes contained");
-			JMenuItem infoRegionName = new JMenuItem("by " + 
-					pickedRegion.getRegionAttributeValue().toString());
-			regionInfoSubmenu.add(infoNodeCount);
-			regionInfoSubmenu.add(infoRegionName);
-			infoNodeCount.setEnabled(false);
-			infoRegionName.setEnabled(false);
 
-			
-
-
-
+			// AP 03.18.07: Region Info in Context Menu
+			// regionInfoItem.setToolTipText(boundedNodeViews.size() +
+			// " of " + pickedRegion.getNodeViews().size() + " nodes in " +
+			// pickedRegion.getRegionAttributeValue().toString());
+			//			
+			// JMenuItem infoNodeCount = new JMenuItem(boundedNodeViews.size() +
+			// " of " + pickedRegion.getNodeViews().size() + " nodes");
+			// JMenuItem infoRegionName = new JMenuItem("in " +
+			// pickedRegion.getRegionAttributeValue().toString());
+			// regionInfoSubmenu.add(infoNodeCount);
+			// regionInfoSubmenu.add(infoRegionName);
+			// infoNodeCount.setEnabled(false);
+			// infoRegionName.setEnabled(false);
 		}
 
 		menu.setLocation(event.getX()
@@ -452,11 +474,24 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		// ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas().getY());
 		// Display PopupMenu
 		menu.show(((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(),
-				event.getX()-60, event.getY()-20);
+				event.getX() - 3, event.getY() + 1);
 		// menu.setVisible(true);
 	}
 
 	// AJK: 12/01/06 END
+	private int calculateInArea(Point2D pt, LayoutRegion region) {
+		if (pickedRegion == null || region == null || region != pickedRegion) {
+			return NOT_IN_AREA;
+		}
+		if ((pt.getX() >= region.getX1()+5)
+				&& (pt.getX() <= region.getX1() + 15 + (region.getRegionAttributeValue().toString().length() * 8))
+				&& (pt.getY() >= region.getY1()+5)
+				&& (pt.getY() <= region.getY1() + 20)) {
+			return IN_AREA;
+		} else {
+			return NOT_IN_AREA;
+		}
+	}
 
 	// AJK: 12/24/06 BEGIN
 	// for stretching
@@ -702,7 +737,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		 * The constructor sets the text that should appear on the menu item.
 		 */
 		public MainPluginAction() {
-			super("Bubble Router");
+			super("Interactive Layout");
 		}
 
 		/**
@@ -748,7 +783,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 					LayoutRegionManager.removeRegion(Cytoscape
 							.getCurrentNetworkView(), pickedRegion);
-					System.out.println("Region \"" + pickedRegion.getRegionAttributeValue().toString() + "\" deleted");
+					System.out.println("Region \""
+							+ pickedRegion.getRegionAttributeValue().toString()
+							+ "\" deleted");
 				}
 
 			} // end of if ()
@@ -770,15 +807,16 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				_undoOffsets = new Point2D[myNodeViews.size()];
 				_redoOffsets = new Point2D[myNodeViews.size()];
 
-//				System.out.println("_nodeViews = " + _nodeViews + ", length = "
-//						+ _nodeViews.length);
+				// System.out.println("_nodeViews = " + _nodeViews + ", length =
+				// "
+				// + _nodeViews.length);
 				for (int j = 0; j < _nodeViews.length; j++) {
 					_nodeViews[j] = (NodeView) myNodeViews.get(j);
-//					System.out.println("Getting offset for _nodeviews[" + j
-//							+ "], " + _nodeViews[j]);
-//					System.out.println("Got offset "
-//							+ _nodeViews[j].getOffset());
-//					_undoOffsets[j] = _nodeViews[j].getOffset();
+					// System.out.println("Getting offset for _nodeviews[" + j
+					// + "], " + _nodeViews[j]);
+					// System.out.println("Got offset "
+					// + _nodeViews[j].getOffset());
+					// _undoOffsets[j] = _nodeViews[j].getOffset();
 				}
 
 				/**
@@ -886,7 +924,48 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 
 	}
-	// AJK: 02/20/07 END
 
-	// AJK: 12/01/06 END
+	public PluginInfo getPluginInfoObj() {
+
+		PluginInfo Info = new PluginInfo(); // can be created with a unique id,
+		// but for updating this has to
+		// match what the document contains
+		// as an id
+
+		Info.setName("Interactive Layout"); // name can be anything
+
+		Info
+				.setDescription("Attribute-based layout using interactively created regions");
+
+		Info.setCategory("GenMAPP-CS"); // currently no categories preset, but
+		// this is an option
+
+		Info.setPluginVersion("1.0-beta");
+
+		Info
+				.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Interactive_Layout_Plugin"); // this
+		// will
+		// point
+		// to
+		// whatever
+		// page
+		// returns
+		// the
+		// plugin
+		// xml
+		// document.
+		// Used
+		// for
+		// finding
+		// updates
+
+		Info.addAuthor("Allan Kuchinsky", "Agilent");
+
+		Info.addAuthor("Alex Pico", "UCSF");
+		Info.addAuthor("Kristina Hanspers", "UCSF");
+
+		return Info;
+
+	}
+
 }
