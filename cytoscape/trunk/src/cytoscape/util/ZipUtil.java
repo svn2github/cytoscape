@@ -43,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 
@@ -272,7 +274,86 @@ public class ZipUtil {
 				return sessionZipFile.getInputStream(zent);
 			}
 		}
-
+		sessionZipFile.close();
 		return null;
 	}
+	
+	/**
+	 * Reads zip file, returns a list of all entries that match the given 
+	 * regular expression
+	 * @param zipName
+	 * @param fileNameRegEx
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<ZipEntry> getAllFiles(String zipName, String fileNameRegEx) throws IOException {
+		List<ZipEntry> Matching = new ArrayList<ZipEntry>();
+		
+		ZipFile Zip = new ZipFile(zipName);
+		Enumeration Entries = Zip.entries();
+		
+		while (Entries.hasMoreElements()) {
+			ZipEntry CurrentEntry = (ZipEntry) Entries.nextElement();
+			System.out.println(CurrentEntry.getName() + " " + fileNameRegEx);
+			if (CurrentEntry.getName().matches(fileNameRegEx)) {
+				Matching.add(CurrentEntry);
+			}
+		}
+	Zip.close();
+	return Matching;
+	}
+
+
+	/**
+	* Unzips the given zip file and returns a list of all files unzipped
+	* @param is
+	*   InputStream for a zip file
+	*/
+	public static List<String> unzip(String zipName) throws java.io.IOException {
+		ArrayList<String> UnzippedFiles = new ArrayList<String>();
+
+		ZipFile Zip = new ZipFile(zipName);
+		Enumeration Entries = Zip.entries();
+		int BUFFER = 2048;
+		
+		while(Entries.hasMoreElements()) {
+			ZipEntry CurrentEntry = (ZipEntry )Entries.nextElement();
+			File ZipFile = new File(CurrentEntry.getName());
+			if (!CurrentEntry.isDirectory()) {
+				File ParentDirs = new File(ZipFile.getParent());
+				if (!ParentDirs.exists()) {
+					ParentDirs.mkdirs();
+				}
+			} else { // entry is directory, create and move on
+				if (!ZipFile.exists()) {
+					ZipFile.mkdirs();
+				}
+				continue;
+			}
+
+			InputStream zis = Zip.getInputStream(CurrentEntry);
+			
+			FileOutputStream fos = new FileOutputStream(ZipFile);
+			BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
+
+			// write the files to the disk
+			int count;
+			byte[] data = new byte[BUFFER];
+
+			while ((count = zis.read(data, 0, BUFFER)) != -1) {
+				dest.write(data, 0, count);
+			}
+
+			dest.flush();
+			dest.close();
+			zis.close();
+			
+			UnzippedFiles.add(ZipFile.getAbsolutePath());
+		}
+
+		return UnzippedFiles;
+	}
+
+
+
 }

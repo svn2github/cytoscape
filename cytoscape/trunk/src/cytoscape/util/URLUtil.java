@@ -34,8 +34,10 @@
 */
 package cytoscape.util;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 
 import java.net.URL;
 
@@ -51,6 +53,8 @@ public class URLUtil {
 	private static final String GZIP = ".gz";
 	private static final String ZIP = ".zip";
 	private static final String JAR = ".jar";
+	
+	public static boolean STOP = false;
 
 	/**
 	 *  DOCUMENT ME!
@@ -67,6 +71,7 @@ public class URLUtil {
 		if (source.toString().endsWith(GZIP)) {
 			newIs = new GZIPInputStream(source.openStream());
 		} else if (source.toString().endsWith(ZIP)) {
+			System.err.println(source.toString() + " ZIP ");
 			newIs = new ZipInputStream(source.openStream());
 		} else if (source.toString().endsWith(JAR)) {
 			newIs = new JarInputStream(source.openStream());
@@ -76,4 +81,47 @@ public class URLUtil {
 
 		return newIs;
 	}
+	
+	
+	/**
+	 * Download the file specified by the url string to the given File object
+	 * @param urlString
+	 * @param downloadFile
+	 * @return
+	 * @throws IOException
+	 */
+	public static void download(String urlString, File downloadFile) throws IOException {
+		URL url = new URL(urlString);
+		// using getInputStream method above never returned an input stream that I could read from why??
+		InputStream is = url.openStream();
+		
+		java.util.List<Byte> FileBytes = new java.util.ArrayList<Byte>();
+
+		byte[] buffer = new byte[1];
+		while (((is.read(buffer)) != -1) && !STOP) {
+			FileBytes.add(buffer[0]);
+		}
+
+		System.out.println("total bytes: " + FileBytes.size());
+		FileOutputStream os = new FileOutputStream(downloadFile);
+
+		for (int i = 0; i < FileBytes.size(); i++) {
+			if (!STOP) {
+				os.write(new byte[] { FileBytes.get(i) });
+			} else {
+				break;
+			}
+		}
+
+		os.flush();
+		os.close();
+
+		if (STOP) {
+			downloadFile.delete();
+		}
+
+//		return downloadFile;
+	}
+	
+	
 }
