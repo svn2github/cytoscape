@@ -174,9 +174,6 @@ public class PluginManager {
 			InfoObj = new PluginInfo();
 			InfoObj.setName(Plugin.getClass().getName());
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
-			// I think we can safely assume it's a jar file if it's registering
-			// with no info object
-			InfoObj.setFiletype(PluginInfo.FileType.JAR);
 
 			if (JarFileName != null)
 				InfoObj.addFileName(JarFileName);
@@ -187,7 +184,8 @@ public class PluginManager {
 			if (JarFileName != null)
 				InfoObj.addFileName(JarFileName);
 		}
-
+		// I think we can safely assume it's a jar file if it's registering
+		InfoObj.setFiletype(PluginInfo.FileType.JAR);
 		pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
 	}
 
