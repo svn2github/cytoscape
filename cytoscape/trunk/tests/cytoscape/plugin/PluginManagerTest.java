@@ -19,7 +19,7 @@ public class PluginManagerTest extends TestCase
 	{ 
 	private PluginManager mgr;
 	private PluginTracker tracker;
-	private String testUrl = "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
+	private String testUrl;//"http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
 	private File tmpDir;
 	private String fileName;
 
@@ -28,6 +28,12 @@ public class PluginManagerTest extends TestCase
 		System.out.println(s);
 		}
 
+	private String getFileUrl()
+		{
+		String FS = System.getProperty("file.separator");
+		return "file://" + System.getProperty("user.dir") + FS + "testData" + FS + "plugins" + FS;
+		}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -35,6 +41,8 @@ public class PluginManagerTest extends TestCase
 	 */
 	protected void setUp() throws Exception
 		{
+		testUrl = getFileUrl() + "test_plugin.xml";
+		System.out.println(testUrl);
 		fileName = "test_tracker.xml";
 		tmpDir = new File(System.getProperty("java.io.tmpdir"));
 		tracker = new PluginTracker(tmpDir, fileName);
@@ -117,16 +125,13 @@ public class PluginManagerTest extends TestCase
 		catch (ManagerError error)
 			{
 			assertNotNull(error);
-// bad test....there are several other errors it could be
-//			assertEquals(error.getCause().getClass(),
-//					java.io.FileNotFoundException.class);
 			}
 		// this should be a test url at cytoscape perhaps
 		Url = testUrl;
 		try
 			{
 			assertNotNull(mgr.inquire(Url));
-			assertEquals(mgr.inquire(Url).size(), 6);
+			assertEquals(mgr.inquire(Url).size(), 5);
 			}
 		catch (ManagerError error)
 			{
@@ -151,7 +156,12 @@ public class PluginManagerTest extends TestCase
 	public void testInstall() throws Exception
 		{
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-		File Downloaded = mgr.download(Plugins.get(0));
+
+		PluginInfo TestObj = Plugins.get(0);
+		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
+		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
+		
+		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		mgr.install();
@@ -173,7 +183,12 @@ public class PluginManagerTest extends TestCase
 	public void testDeletePluginInfo() throws Exception
 		{
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-		File Downloaded = mgr.download(Plugins.get(0));
+		
+		PluginInfo TestObj = Plugins.get(0);
+		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
+		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
+		
+		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		mgr.install();
@@ -184,7 +199,7 @@ public class PluginManagerTest extends TestCase
 		assertEquals(Current.size(), 1);
 		File InstalledPlugin = new File(Current.get(0).getFileList().get(0));
 		assertTrue(InstalledPlugin.exists());
-		mgr.delete(Plugins.get(0));
+		mgr.delete(TestObj);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
 		mgr.delete();
 		assertFalse(InstalledPlugin.exists());
@@ -196,7 +211,12 @@ public class PluginManagerTest extends TestCase
 	public void testDelete() throws Exception
 		{
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-		File Downloaded = mgr.download(Plugins.get(0));
+		
+		PluginInfo TestObj = Plugins.get(0);
+		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
+		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
+		
+		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
@@ -209,7 +229,7 @@ public class PluginManagerTest extends TestCase
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
 		// set for deletion
-		mgr.delete(Plugins.get(0));
+		mgr.delete(TestObj);
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
@@ -251,7 +271,12 @@ public class PluginManagerTest extends TestCase
 	public void testDownload() throws Exception
 		{
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-		File Downloaded = mgr.download(Plugins.get(0));
+
+		PluginInfo TestObj = Plugins.get(0);
+		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
+		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
+		
+		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
