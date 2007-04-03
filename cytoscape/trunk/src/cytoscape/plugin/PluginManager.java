@@ -1,20 +1,48 @@
-/**
- *
- */
+/*
+ File: PluginManager.java 
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.plugin;
 
 import cytoscape.*;
 
-import cytoscape.plugin.util.*;
 
-import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
+import cytoscape.util.ZipUtil;
 
 import java.io.*;
-
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import java.util.*;
 import java.util.jar.JarFile;
@@ -71,9 +99,7 @@ public class PluginManager {
 	 * @return
 	 */
 	protected static PluginManager getPluginManager(PluginTracker Tracker) {
-		System.out.println("Plugin manager NOT NULL");
 		if (pluginMgr == null) {
-			System.out.println("Plugin manager NULL");
 			pluginMgr = new PluginManager(Tracker);
 		}
 		return pluginMgr;
@@ -230,23 +256,22 @@ public class PluginManager {
 					break;
 
 				case ZIP:
-					InputStream is = HttpUtils.getInputStream(FileList.get(0));
-
-					if (UnzipUtil.zipContains(is, "plugins"
+					InputStream is = ZipUtil.readFile(FileList.get(0), "plugins"
 							+ System.getProperty("file.separator")
-							+ "\\w+\\.jar")) {
-						List<String> UnzippedFiles = UnzipUtil.unzip(is);
+							+ "\\w+\\.jar");
+					if (is != null ) {
+						
+						List<String> UnzippedFiles = ZipUtil.unzip(FileList.get(0));
 						CurrentPlugin.setFileList(UnzippedFiles);
+						is.close();
 					} else {
 						throw new ManagerError(
 								"Zip file "
 										+ CurrentPlugin.getUrl()
 										+ " did not contain a plugin directory with a jar file.\nThis plugin will need to be installed manually.");
 					}
-					is.close();
 					break;
-				}
-				;
+				};
 
 				pluginTracker.addPlugin(CurrentPlugin, PluginTracker.PluginStatus.CURRENT);
 
@@ -389,8 +414,9 @@ public class PluginManager {
 		File Download = null;
 		String ClassName = null;
 		try {
-			Download = HttpUtils.downloadFile(Obj.getUrl(), new File(tempDir,
-					createFileName(Obj)));
+			Download = new File(tempDir, createFileName(Obj));
+			URLUtil.download(Obj.getUrl(), Download);
+
 			ClassName = getPluginClass(Download.getAbsolutePath(), Obj.getFileType());
 		} catch (IOException E) {
 			throw new ManagerError("Failed to download file from "
@@ -488,21 +514,19 @@ public class PluginManager {
 				break;
 				
 			case ZIP:
-				ZipFile Zip = new ZipFile(FileName);
-				Enumeration entries = Zip.entries();
+				List<ZipEntry> Entries = ZipUtil.getAllFiles(FileName, ".*plugins/.*\\.jar");
 			
-			while(entries.hasMoreElements()) {
-				ZipEntry Entry = (ZipEntry)entries.nextElement();
-				String EntryName = Entry.getName();
+				for (ZipEntry Entry: Entries) {
+					String EntryName = Entry.getName();
 				
-				if (EntryName.endsWith(".jar")) {
-					JarInputStream jis = new JarInputStream(Zip.getInputStream(Entry));
-					PluginClassName = getManifestAttribute(jis.getManifest());
-					jis.close();
+					if (EntryName.endsWith(".jar")) {
+						InputStream is = ZipUtil.readFile(FileName, EntryName);
+						JarInputStream jis = new JarInputStream(is);
+						PluginClassName = getManifestAttribute(jis.getManifest());
+						jis.close();
+					}
 				}
-			}
-			Zip.close();
-		};
+			};
 		return PluginClassName;
 	}
 

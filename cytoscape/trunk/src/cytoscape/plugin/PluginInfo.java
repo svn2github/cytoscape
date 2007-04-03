@@ -1,4 +1,5 @@
 /*
+ File: PluginInfo.java 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -44,6 +45,32 @@ import java.util.List;
  * @author skillcoy Object describes a plugin
  */
 public class PluginInfo {
+	/**
+	 * Preset categories for use by plugin developers.  Feel free to use your own
+	 */
+	public enum Category {
+		CORE("Core"),
+		ANALYSIS("Analysis"),
+		NETWORK_ATTRIBUTE_IO("Network and Attribute I/O"),
+		NETWORK_INFERENCE("Network Inference"),
+		FUNCTIONAL_ENRICHMENT("Functional Enrichment"),
+		COMMUNICATION_SCRIPTING("Communication/Scripting");
+		
+		private String catText;
+		private Category(String type) {
+			catText = type;
+		}
+		
+		public String toString() {
+			return catText;
+		}
+		
+		public String getCategoryText() {
+			return toString();
+		}
+	}
+	
+	
 	/**
 	 * Jar and Zip files currently supported
 	 *
@@ -213,6 +240,10 @@ public class PluginInfo {
 		this.pluginCategory = category;
 	}
 
+	public void setCategory(Category catName) {
+		this.pluginCategory = catName.getCategoryText();
+	}
+	
 	/**
 	 * Adds a file to the list of installed files.
 	 *
