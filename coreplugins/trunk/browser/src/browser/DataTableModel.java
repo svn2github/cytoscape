@@ -514,9 +514,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		else if (type == CyAttributes.TYPE_STRING)
 			return data.getStringAttribute(id, att);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return data.getAttributeList(id, att);
+			return data.getListAttribute(id, att);
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return data.getAttributeMap(id, att);
+			return data.getMapAttribute(id, att);
 
 		return null;
 	}
@@ -675,6 +675,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
 		}
 
-		cytoscape.Cytoscape.getDesktop().addEdit(edit);
+		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
 }

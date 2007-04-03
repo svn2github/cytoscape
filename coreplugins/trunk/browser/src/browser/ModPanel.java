@@ -293,6 +293,6 @@ public class ModPanel extends JPanel implements ActionListener {
 			                               null, graphObjectType, tableModel, null);
 		}
 
-		Cytoscape.getDesktop().addEdit(edit);
+		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
 }

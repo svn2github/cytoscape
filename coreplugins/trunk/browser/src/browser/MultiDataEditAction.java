@@ -142,9 +142,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		else if (object instanceof String)
 			data.setAttribute(id, att, (String) object);
 		else if (object instanceof List)
-			data.setAttributeList(id, att, (List) object);
+			data.setListAttribute(id, att, (List) object);
 		else if (object instanceof Map)
-			data.setAttributeMap(id, att, (Map) object);
+			data.setMapAttribute(id, att, (Map) object);
 	}
 
 	// Extract attribute value
@@ -160,9 +160,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		else if (attType == CyAttributes.TYPE_STRING)
 			return data.getStringAttribute(id, att);
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST)
-			return data.getAttributeList(id, att);
+			return data.getListAttribute(id, att);
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP)
-			return data.getAttributeMap(id, att);
+			return data.getMapAttribute(id, att);
 
 		return null;
 	}
