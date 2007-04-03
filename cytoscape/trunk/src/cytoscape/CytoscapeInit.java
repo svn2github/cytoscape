@@ -44,12 +44,17 @@ import cytoscape.init.CyInitParams;
 import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.util.FileUtil;
+import cytoscape.util.IndeterminateProgressBar;
 
 import cytoscape.util.shadegrown.WindowUtilities;
 
 import cytoscape.view.CytoscapeDesktop;
 
+import cytoscape.plugin.PluginManager;
+
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -74,6 +79,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 
 /**
@@ -478,9 +484,30 @@ public class CytoscapeInit {
 		 * 1. Delete all plugins marked for deletion from last session.
 		 * 2. Install all plugins marked for installation from last session.
 		 */
-		cytoscape.plugin.PluginManager Mgr = cytoscape.plugin.PluginManager.getPluginManager();
+		PluginManager Mgr = PluginManager.getPluginManager();
+
+		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+		final IndeterminateProgressBar InstallBar = new IndeterminateProgressBar(Cytoscape.getDesktop(),
+        "Updating Cytoscape Plugins",
+        "Update in progress...");
+		InstallBar.setLayout(new java.awt.GridBagLayout());
+
+		JButton CancelInstall = new JButton("Cancel");
+		CancelInstall.setSize(new java.awt.Dimension(81, 23));
+		CancelInstall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent E) {
+				InstallBar.dispose();
+			}
+			} );
+
+		gridBagConstraints.gridy = 2;
+		InstallBar.add(CancelInstall, gridBagConstraints);
 
 		try {
+			InstallBar.pack();
+			InstallBar.setLocationRelativeTo(Cytoscape.getDesktop());
+			InstallBar.setVisible(true);
+		
 			Mgr.delete();
 			Mgr.install();
 		} catch (cytoscape.plugin.ManagerError E) {
@@ -490,7 +517,8 @@ public class CytoscapeInit {
 
 			ErrorMsg += (E.getMessage() + "\n");
 		}
-
+		InstallBar.dispose();
+		
 		try {
 			Set plugins = new HashSet();
 			List p = initParams.getPlugins();
