@@ -1459,7 +1459,7 @@ processing technique with supercomputing center resources.
 				<td width="25%" valign="top">
 					<b>CyGoose Plugin</b>
 					<br><font size="-1">
-					Version: 2.4.1
+					Version: 2.4.2
 					<br>
 					Release Date: February 13, 2007</font>
 				</td>
@@ -1484,10 +1484,10 @@ working on this and will release a fix as soon as we can.
 				</p>
 		</td>
 		<td width="15%" valign="top">
-				 Verified to work in 2.3.2, 2.4
+				 Verified to work in 2.4
 			  </td>
 		<td width="15%" valign="top">
-			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.1.jar">Download Jar</a>]
+			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.2.jar">Download Jar</a>]
 			<br>
 		</td>
 	</tr>
