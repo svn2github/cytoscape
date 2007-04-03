@@ -502,7 +502,7 @@ public class CytoscapeInit {
 
 		gridBagConstraints.gridy = 2;
 		InstallBar.add(CancelInstall, gridBagConstraints);
-
+		// TODO add a progress bar to ppl know what's going on since this can slow down loading
 		try {
 			InstallBar.pack();
 			InstallBar.setLocationRelativeTo(Cytoscape.getDesktop());
@@ -514,7 +514,6 @@ public class CytoscapeInit {
 			if (ErrorMsg == null) {
 				ErrorMsg = new String();
 			}
-
 			ErrorMsg += (E.getMessage() + "\n");
 		}
 		InstallBar.dispose();
@@ -560,7 +559,6 @@ public class CytoscapeInit {
 
 					for (int j = 0; j < fileList.length; j++) {
 						String FileName = f.getAbsolutePath() + File.separator + fileList[j];
-						System.err.println(FileName);
 
 						if (!fileList[j].endsWith(".jar"))
 							continue;
