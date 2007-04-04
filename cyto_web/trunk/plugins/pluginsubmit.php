@@ -193,10 +193,6 @@ if (isset ($_POST['taComment'])) {
 }
 
 //Authors
-$authorCount = NULL;
-if (isset ($_POST['authorCount'])) {
-	$authorCount = $_POST['authorCount'];
-}
 $names = NULL;
 if (isset ($_POST['tfNames0'])) {
 	$names[0] = $_POST['tfNames0'];
@@ -213,6 +209,21 @@ $affiliationURLs = NULL;
 if (isset ($_POST['tfAffiliationURL0'])) {
 	$affiliationURLs[0] = $_POST['tfAffiliationURL0'];
 }
+
+if (isset ($_POST['tfNames1'])) {
+	$names[1] = $_POST['tfNames1'];
+}
+if (isset ($_POST['tfEmail1'])) {
+	$emails[1] = $_POST['tfEmail1'];
+}
+if (isset ($_POST['tfAffiliation1'])) {
+	$affiliations[1] = $_POST['tfAffiliation1'];
+}
+if (isset ($_POST['tfAffiliationURL1'])) {
+	$affiliationURLs[1] = $_POST['tfAffiliationURL1'];
+}
+
+
 
 $tried = NULL;
 if (isset ($_POST['tried'])) {
@@ -435,21 +446,21 @@ if (!($tried && $validated)) {
     <td><table width="660" border="0">
       <tr>
         <td width="444"><div align="center"> Name(s)</div></td>
-        <td width="206"><div align="center"></div></td>
+        <td width="206"><div align="left">contact e-mail </div></td>
       </tr>
       <tr>
         <td><label>
-          <input name="tfNames02" type="text" id="tfNames02" size="70" value ="<?php echo $names[0] ?>" />
+        <input name="tfNames1" type="text" id="tfNames1" size="70" value ="<?php echo $names[1] ?>" />
         </label></td>
-        <td>&nbsp;</td>
+        <td><input name="tfEmail1" type="text" id="tfEmail02" size="30" value ="<?php echo $emails[1] ?>" /></td>
       </tr>
       <tr>
         <td><div align="center">Affiliation</div></td>
         <td><div align="center">Affiliation URL</div></td>
       </tr>
       <tr>
-        <td><input name="tfAffiliation02" type="text" id="tfAffiliation02" size="70" value ="<?php echo $affiliations[0] ?>" /></td>
-        <td><input name="tfAffiliationURL02" type="text" id="tfAffiliationURL02" size="30" value ="<?php echo $affiliationURLs[0] ?>" /></td>
+        <td><input name="tfAffiliation1" type="text" id="tfAffiliation1" size="70" value ="<?php echo $affiliations[1] ?>" /></td>
+        <td><input name="tfAffiliationURL1" type="text" id="tfAffiliationURL1" size="30" value ="<?php echo $affiliationURLs[1] ?>" /></td>
       </tr>
     </table></td>
   </tr>
@@ -520,7 +531,7 @@ if (!($tried && $validated)) {
 	// Takes the details of the plugin from user and 
 	// adds them to the tables of our CyPluginDB_RAW.
 	{
-	echo '<p>process the data and Save the data into DB.</p>';
+	//echo '<p>process the data and Save the data into DB.</p>';
 
 	/*
 		echo "name = ", $name, "<br>";
@@ -549,11 +560,18 @@ if (!($tried && $validated)) {
 		echo "<br>reference = ",$reference, "<br>";
 		echo "comment = ",$comment, "<br>";
 		echo 'authorCount = ', $authorCount, '<br>';
-		echo 'names = ', $names[0], '<br>';
-		echo 'emails = ', $emails[0], '<br>';
-		echo 'affilications = ', $affiliations[0], '<br>';
-		echo 'affiliationURLs = ', $affiliationURLs[0], '<br>';	
-	*/
+		
+		echo 'names0 = ', $names[0], '<br>';
+		echo 'emails0 = ', $emails[0], '<br>';
+		echo 'affilications0 = ', $affiliations[0], '<br>';
+		echo 'affiliationURLs0 = ', $affiliationURLs[0], '<br>';
+					
+		echo 'names1 = ', $names[1], '<br>';
+		echo 'emails1 = ', $emails[1], '<br>';	
+		echo 'affilications1 = ', $affiliations[1], '<br>';
+		echo 'affiliationURLs1 = ', $affiliationURLs[1], '<br>';	
+*/
+
 
 	//Load the Jar file to DB if any
 	$plugin_file_auto_id = NULL;
@@ -618,6 +636,7 @@ if (!($tried && $validated)) {
 	}
 
 	// Insert a row into table plugin_version
+	$status = 'new';
 	$dbQuery = 'INSERT INTO plugin_version VALUES (0, ' . $plugin_auto_id . ', ';
 	if ($plugin_file_auto_id == NULL) {
 		$dbQuery .= 'NULL';
@@ -626,7 +645,7 @@ if (!($tried && $validated)) {
 	}
 	$dbQuery .= ',"' . $version . '",\'' .
 	$releaseDate . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
-	$sourceURL . '","' . $cyVersion . '","' . $reference . '", now())';
+	$sourceURL . '","' . $cyVersion . '","'.$status.'","' . $reference . '", now())';
 
 	//echo "<br>dbQuery = " . $dbQuery . "<br>";
 
@@ -664,8 +683,7 @@ if (!($tried && $validated)) {
 	}
 	
 	?>
-	Thank you for submitting your plugin to Cytoscape.Cytoscape staff will review the data you 
-	submitted and publish it on the cytoscape website. If there are any questions, you will be contacted throught e-mail.
+	Thank you for submitting your plugin to Cytoscape.Cytoscape staff will review the data  and publish it on the cytoscape website. If there are any questions, you will be contacted via e-mail.
 	<?php
 	
 
