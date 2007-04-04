@@ -74,7 +74,6 @@ import cytoscape.visual.calculators.GenericNodeWidthCalculator;
  *
  */
 public enum VisualPropertyType {
-<<<<<<< .mine
     NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
         "defaultNodeFillColor", GenericNodeFillColorCalculator.class), 
     NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator",
@@ -124,55 +123,7 @@ public enum VisualPropertyType {
         GenericEdgeLabelColorCalculator.class), 
     EDGE_TOOLTIP("Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip",
         "defaultEdgeToolTip", GenericEdgeToolTipCalculator.class), 
-=======
 
-	NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
-	                "defaultNodeFillColor", GenericNodeFillColorCalculator.class),
-	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
-	                  "defaultNodeBorderColor", GenericNodeBorderColorCalculator.class), 
-	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class), 
-	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
-	           GenericNodeShapeCalculator.class), 
-	NODE_SIZE("Node Size", "nodeUniformSizeCalculator", "node.size", "defaultNodeSize",
-	          GenericNodeUniformSizeCalculator.class), 
-	NODE_WIDTH("Node Width", "nodeWidthCalculator", "node.width", "defaultNodeWidth",
-	           GenericNodeWidthCalculator.class), 
-	NODE_HEIGHT("Node Height", "nodeHeightCalculator", "node.height", "defaultNodeHight",
-	            GenericNodeHeightCalculator.class), 
-	NODE_LABEL("Node Label", "nodeLabelCalculator", "node.label", "defaultNodeLabel",
-	           GenericNodeLabelCalculator.class), 
-	NODE_FONT_FACE("Node Font Face", "nodeFontFaceCalculator", "node.font", "defaultNodeFont",
-	               GenericNodeFontFaceCalculator.class), 
-	NODE_FONT_SIZE("Node Font Size", "nodeFontSizeCalculator", "node.fontSize",
-	               "defaultNodeFontSize", GenericNodeFontSizeCalculator.class), 
-	NODE_LABEL_COLOR("Node Label Color", "nodeLabelColor", "node.labelColor",
-	                 "defaultNodeLabelColor", GenericNodeLabelColorCalculator.class), 
-	NODE_TOOLTIP("Node Tooltip", "nodeTooltipCalculator", "node.toolTip", "defaultNodeToolTip",
-	             GenericNodeToolTipCalculator.class), 
-	NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator", "node.labelPosition",
-	                    "defaultNodeLabelPosition", GenericNodeLabelPositionCalculator.class), 
-	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
-	           GenericEdgeColorCalculator.class), 
-	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class), 
-	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
-	              "defaultEdgeSourceArrow", GenericEdgeSourceArrowCalculator.class), 
-	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
-	              "defaultEdgeTargetArrow", GenericEdgeTargetArrowCalculator.class), 
-	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
-	           GenericEdgeLabelCalculator.class), 
-	EDGE_FONT_FACE("Edge Font Face", "edgeFontFaceCalculator", "edge.font", "defaultEdgeFont",
-	               GenericEdgeFontFaceCalculator.class), 
-	EDGE_FONT_SIZE("Edge Font Size", "edgeFontSizeCalculator", "edge.fontSize",
-	               "defaultEdgeFontSize", GenericEdgeFontSizeCalculator.class), 
-	EDGE_LABEL_COLOR("Edge Label Color", "edgeLabelColorCalculator", "edge.labelColor",
-	                 "defaultEdgeLabelColor", GenericEdgeLabelColorCalculator.class), 
-	EDGE_TOOLTIP("Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip", "defaultEdgeToolTip",
-	             GenericEdgeToolTipCalculator.class), 
->>>>>>> .r9736
-
-<<<<<<< .mine
     // New from 2.5: line can have arbitrary width.
     NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator",
         "node.lineWidth", "defaultNodeLineWidth",
@@ -180,15 +131,7 @@ public enum VisualPropertyType {
     EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator",
         "edge.lineWidth", "defaultEdgeLineWidth",
         GenericEdgeLineWidthCalculator.class), 
-=======
-	//New from 2.5: line can have arbitrary width.
-	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator", "node.lineWidth",
-	                "defaultNodeLineWidth", GenericNodeLineWidthCalculator.class), 
-	EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
-	                "defaultEdgeLineWidth", GenericEdgeLineWidthCalculator.class), 
->>>>>>> .r9736
 
-<<<<<<< .mine
     // New from 2.5: arrows have its own color, shape, and size.
     EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape",
         "edgeSourceArrowShapeCalculator", "edge.sourceArrowShape",
@@ -207,25 +150,6 @@ public enum VisualPropertyType {
         "defaultEdgeTargetArrowColor",
         GenericEdgeTargetArrowColorCalculator.class), 
 
-=======
-	// New from 2.5: arrows have its own color, shape, and size.
-	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape", "edgeSourceArrowShapeCalculator",
-	                    "edge.sourceArrowShape", "defaultEdgeSourceArrowShape",
-	                    GenericEdgeSourceArrowShapeCalculator.class), 
-	EDGE_TGTARROW_SHAPE("Edge Target Arrow Shape", "edgeTargetArrowShapeCalculator",
-	                    "edge.targetArrowShape", "defaultEdgeTargetArrowShape",
-	                    GenericEdgeTargetArrowShapeCalculator.class), 
-	EDGE_SRCARROW_COLOR("Edge Source Arrow Color", "edgeSourceArrowColorCalculator",
-	                    "edge.sourceArrowColor", "defaultEdgeSourceArrowColor",
-	                    GenericEdgeSourceArrowColorCalculator.class), 
-	EDGE_TGTARROW_COLOR("Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
-	                    "edge.targetArrowColor", "defaultEdgeTargetArrowColor",
-	                    GenericEdgeTargetArrowColorCalculator.class), 
-
-	// Will be used in future.
-	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
-	                    "defaultEdgeLabelPosition", null);
->>>>>>> .r9736
     // Will be used in future.
     EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator",
         "edge.labelPosition", "defaultEdgeLabelPosition", null);
@@ -246,7 +170,6 @@ public enum VisualPropertyType {
     private String defaultPropertyLabel;
     private Class calculatorClass;
 
-<<<<<<< .mine
     /*
      * private constructor to put name into this enum.
      */
@@ -259,20 +182,6 @@ public enum VisualPropertyType {
         this.defaultPropertyLabel = defaultPropertyLabel;
         this.calculatorClass = calculatorClass;
     }
-=======
-	/*
-	 * private constructor to put name into this enum.
-	 */
-	private VisualPropertyType(final String calcName, final String propertyLabel,
-	                           final String bypassAttrName, final String defaultPropertyLabel,
-	                           final Class calculatorClass) {
-		this.calcName = calcName;
-		this.propertyLabel = propertyLabel;
-		this.bypassAttrName = bypassAttrName;
-		this.defaultPropertyLabel = defaultPropertyLabel;
-		this.calculatorClass = calculatorClass;
-	}
->>>>>>> .r9736
 
     /**
      * Returns name of calculator.
@@ -282,7 +191,6 @@ public enum VisualPropertyType {
         return calcName;
     }
 
-<<<<<<< .mine
     /**
      * DOCUMENT ME!
      *
@@ -291,18 +199,7 @@ public enum VisualPropertyType {
     public String getName() {
         return calcName;
     }
-=======
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String getName() {
-		return calcName;
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * Returns string used as property label in VS prop file.
      *
@@ -311,18 +208,7 @@ public enum VisualPropertyType {
     public String getPropertyLabel() {
         return propertyLabel;
     }
-=======
-	/**
-	 * Returns string used as property label in VS prop file.
-	 *
-	 * @return
-	 */
-	public String getPropertyLabel() {
-		return propertyLabel;
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * DOCUMENT ME!
      *
@@ -331,18 +217,7 @@ public enum VisualPropertyType {
     public String getBypassAttrName() {
         return bypassAttrName;
     }
-=======
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String getBypassAttrName() {
-		return bypassAttrName;
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * DOCUMENT ME!
      *
@@ -351,18 +226,7 @@ public enum VisualPropertyType {
     public String getDefaultPropertyLabel() {
         return defaultPropertyLabel;
     }
-=======
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String getDefaultPropertyLabel() {
-		return defaultPropertyLabel;
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * DOCUMENT ME!
      *
@@ -374,21 +238,7 @@ public enum VisualPropertyType {
     public String getDefaultPropertyKey(final String baseKey) {
         return baseKey + "." + defaultPropertyLabel;
     }
-=======
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param baseKey
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String getDefaultPropertyKey(final String baseKey) {
-		return baseKey + "." + defaultPropertyLabel;
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * DOCUMENT ME!
      *
@@ -397,18 +247,7 @@ public enum VisualPropertyType {
     public Class getCalculatorClass() {
         return calculatorClass;
     }
-=======
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Class getCalculatorClass() {
-		return calculatorClass;
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * Return position in thie enum as byte.<br>
      * Will be used as type.
@@ -421,22 +260,7 @@ public enum VisualPropertyType {
     public byte getType() {
         return (byte) ordinal();
     }
-=======
-	/**
-	 * Return position in thie enum as byte.<br>
-	 * Will be used as type.
-	 *
-	 * DO NOT USE THIS. This is only for backward compatibility.
-	 *
-	 * @return byte type
-	 */
-	@Deprecated
-	public byte getType() {
-		return (byte) ordinal();
-	}
->>>>>>> .r9736
 
-<<<<<<< .mine
     /**
      * DO NOT USE THIS. This is only for backward compatibility.
      *
@@ -450,16 +274,7 @@ public enum VisualPropertyType {
          */
         return values()[type];
     }
-=======
-	/**
-	 * DO NOT USE THIS. This is only for backward compatibility.
-	 *
-	 * @param type
-	 * @return
-	 */
-	@Deprecated
-	public static VisualPropertyType getVisualPorpertyType(byte type) {
->>>>>>> .r9736
+
     /**
      * DOCUMENT ME!
      *
@@ -470,10 +285,7 @@ public enum VisualPropertyType {
                     .startsWith("Node"))
             return true;
         else
-<<<<<<< .mine
+
             return false;
     }
-=======
-	}
->>>>>>> .r9736
 }
