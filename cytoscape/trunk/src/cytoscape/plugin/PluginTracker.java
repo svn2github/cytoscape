@@ -140,19 +140,37 @@ public class PluginTracker {
 	* @param Status
 	*/
 	protected void addPlugin(PluginInfo obj, PluginStatus Status) {
-//		List<PluginInfo> CheckList = getListByStatus(Status);
-
-		if (getMatchingPlugin(obj, Status.getTagName()) != null) {
-			return;
-		}
-		
-//		if (CheckList.contains(obj)) { // don't add it if it already exists
-//			return;
-//		}
-
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
-		PluginParent.addContent(createPluginContent(obj));
-		System.out.println("Adding plugin " + obj.getName() + " status " + Status.getTagName());
+		
+		Element Plugin = getMatchingPlugin(obj, Status.getTagName());
+		if (Plugin != null) {
+			// update the element
+			if (!obj.getName().equals(obj.getPluginClassName())) {
+				Plugin.getChild(this.nameTag).setText(obj.getName());
+			}
+			if (!obj.getCategory().equals(PluginInfo.Category.NONE.getCategoryText())) {
+				Plugin.getChild(this.categoryTag).setText(obj.getCategory());
+			}
+			Plugin.getChild(this.descTag).setText(obj.getDescription());
+			Plugin.getChild(this.pluginVersTag).setText(obj.getPluginVersion());
+			Plugin.getChild(this.cytoVersTag).setText(obj.getCytoscapeVersion());
+			if (obj.getPluginClassName() != null) {
+				Plugin.getChild(this.classTag).setText(obj.getPluginClassName());
+			}
+			Plugin.removeChild(this.authorListTag);
+			Element Authors = new Element(this.authorListTag);
+			for(AuthorInfo ai: obj.getAuthors()) {
+				Element Author = new Element(this.authorTag);
+				Author.addContent( new Element(this.nameTag).setText(ai.getAuthor()) );
+				Author.addContent( new Element(this.instTag).setText(ai.getInstitution()) );
+				Authors.addContent(Author);
+			}
+			Plugin.addContent(Authors);
+			PluginParent.addContent(Plugin);
+		} else {
+			PluginParent.addContent(createPluginContent(obj));
+			System.out.println("Adding plugin " + obj.getName() + " status " + Status.getTagName());
+		}
 		write();
 	}
 
@@ -165,6 +183,7 @@ public class PluginTracker {
 	*/
 	protected void removePlugin(PluginInfo obj, PluginStatus Status) {
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
+		
 		Element Plugin = getMatchingPlugin(obj, Status.getTagName());
 		if (Plugin != null) {
 			PluginParent.removeContent(Plugin);
@@ -173,11 +192,21 @@ public class PluginTracker {
 		}
 	}
 
+	/**
+	 * Matches one of the following rule: 
+	 * 1. Plugin class name
+	 * 2. uniqueID && projUrl
+	 * 3. Plugin specific Url (on the assumption that no two plugins can be downloaded from the same url)
+	 * @param Obj
+	 * @param Tag
+	 * @return
+	 */
 	private Element getMatchingPlugin(PluginInfo Obj, String Tag) {
 		List<Element> Plugins = trackerDoc.getRootElement().getChild(Tag).getChildren(pluginTag);
 
 		for (Element Current : Plugins) {
-			if ( (Current.getChildTextTrim(this.uniqueIdTag).equals(Obj.getID()) &&
+			if ((Obj.getPluginClassName() != null && Current.getChildTextTrim(this.classTag).equals(Obj.getPluginClassName())) ||  
+				(Current.getChildTextTrim(this.uniqueIdTag).equals(Obj.getID()) &&
 				 Current.getChildTextTrim(this.projUrlTag).equals(Obj.getProjectUrl())) ||
 				 ((Current.getChildTextTrim(urlTag).length() > 0 && Obj.getUrl() != null) &&
 					Current.getChildTextTrim(urlTag).equals(Obj.getUrl())) ) {
