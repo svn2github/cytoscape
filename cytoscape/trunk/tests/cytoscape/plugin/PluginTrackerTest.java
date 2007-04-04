@@ -111,6 +111,27 @@ public class PluginTrackerTest extends TestCase {
 		assertEquals(Doc.getRootElement().getChild("DeletePlugins").getChildren().size(), 0);
 	}
 
+	public void testAddSamePlugin() throws Exception {
+		PluginInfo InfoObject = getInfoObj();
+		
+		tracker.addPlugin(InfoObject, PluginStatus.CURRENT);
+		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		
+		String NewName = "DuplicatePluginTest";
+		InfoObject.setName(NewName);
+		tracker.addPlugin(InfoObject, PluginStatus.CURRENT);
+		
+		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		
+		PluginInfo info = tracker.getListByStatus(PluginStatus.CURRENT).get(0);
+		
+		assertTrue(info.getName().equals(InfoObject.getName()));
+		
+		Document Doc = getDoc();
+		assertEquals(Doc.getRootElement().getChild("CurrentPlugins").getChild("plugin").getChildTextTrim("name"), NewName);
+	}
+	
+	
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginTracker#removePlugin(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 */
@@ -118,9 +139,11 @@ public class PluginTrackerTest extends TestCase {
 		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
 		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
 		
-		PluginInfo obj = getInfoObj();
+		PluginInfo obj = new PluginInfo("999");
 		obj.setName("myInstallTest");
 		obj.setProjectUrl("http://foobar.org/y.xml");
+		obj.setCategory("Test");
+		obj.setFiletype(PluginInfo.FileType.JAR);
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
 		
 		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
@@ -154,7 +177,7 @@ public class PluginTrackerTest extends TestCase {
 		infoObj.setName("myTest");
 		infoObj.setCategory("Test");
 		infoObj.setCytoscapeVersion("2.5");
-		infoObj.setPluginClassName("0.2");
+		infoObj.setPluginClassName("some.class");
 		infoObj.setProjectUrl("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);
 		return infoObj;

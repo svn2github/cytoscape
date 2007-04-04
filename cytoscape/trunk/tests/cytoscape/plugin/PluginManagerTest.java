@@ -9,38 +9,40 @@ import java.util.*;
 import cytoscape.CytoscapeInit;
 import junit.framework.TestCase;
 
-// TODO to make this a really useful test I need to have an actual test site with
+// TODO to make this a really useful test I need to have an actual test site
+// with
 // an xml file and plugins...is this really feasible?
 
 /**
  * @author skillcoy
  */
-public class PluginManagerTest extends TestCase
-	{ 
+public class PluginManagerTest extends TestCase {
 	private PluginManager mgr;
+
 	private PluginTracker tracker;
-	private String testUrl;//"http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
+
+	private String testUrl;// "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
+
 	private File tmpDir;
+
 	private String fileName;
 
-	private static void print(String s)
-		{
+	private static void print(String s) {
 		System.out.println(s);
-		}
+	}
 
-	private String getFileUrl()
-		{
+	private String getFileUrl() {
 		String FS = System.getProperty("file.separator");
-		return "file://" + System.getProperty("user.dir") + FS + "testData" + FS + "plugins" + FS;
-		}
-	
+		return "file://" + System.getProperty("user.dir") + FS + "testData"
+				+ FS + "plugins" + FS;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	protected void setUp() throws Exception
-		{
+	protected void setUp() throws Exception {
 		testUrl = getFileUrl() + "test_plugin.xml";
 		System.out.println(testUrl);
 		fileName = "test_tracker.xml";
@@ -48,119 +50,107 @@ public class PluginManagerTest extends TestCase
 		tracker = new PluginTracker(tmpDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
 		assertTrue((new File(tmpDir, fileName)).exists());
-		}
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception
-		{
+	protected void tearDown() throws Exception {
 		File TrackerFile = new File(tmpDir, fileName);
 		tracker.delete();
 		assertFalse(TrackerFile.exists());
 		mgr.resetManager();
-		}
+	}
 
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#getPluginManager()}.
 	 */
-	public void testGetPluginManager()
-		{
+	public void testGetPluginManager() {
 		assertNotNull(mgr);
 		assertNotNull(PluginManager.getPluginManager(tracker));
 		assertEquals(mgr, PluginManager.getPluginManager(tracker));
-		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#getTempDownloadDirecotry()}.
 	 */
-	public void testGetTempDownloadDirecotry()
-		{
+	public void testGetTempDownloadDirecotry() {
 		assertNotNull(mgr.getTempDownloadDirectory());
 		assertEquals(mgr.getTempDownloadDirectory().getAbsolutePath(),
-				CytoscapeInit.getConfigDirectory().getAbsolutePath() + File.separator
-						+ "plugins");
-		}
+				CytoscapeInit.getConfigDirectory().getAbsolutePath()
+						+ File.separator + "plugins");
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#getPlugins(cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 * TODO
 	 */
-	public void testGetPlugins()
-		{
+	public void testGetPlugins() {
 		// Not sure how to test this since I can't register anything
 		// w/o a full Cytoscape startup
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
-		}
+	}
 
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#inquire()}.
 	 */
-	public void testInquire() throws Exception
-		{
-		// this tests against the default url, the number of plugins could change
+	public void testInquire() throws Exception {
+		// this tests against the default url, the number of plugins could
+		// change
 		// from
 		// one test to another but there should always be more than 1
 		assertNotNull(mgr.inquire());
 		assertTrue(mgr.inquire().size() > 1);
-		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#inquire(java.lang.String)}.
 	 */
-	public void testInquireString()
-		{
+	public void testInquireString() {
 		String Url = "http://google.com/x.xml";
-		try
-			{
+		try {
 			mgr.inquire(Url);
-			}
-		catch (ManagerError error)
-			{
+		} catch (ManagerError error) {
 			assertNotNull(error);
-			}
+		}
 		// this should be a test url at cytoscape perhaps
 		Url = testUrl;
-		try
-			{
+		try {
 			assertNotNull(mgr.inquire(Url));
 			assertEquals(mgr.inquire(Url).size(), 5);
-			}
-		catch (ManagerError error)
-			{
+		} catch (ManagerError error) {
 			error.printStackTrace();
-			}
 		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#register(cytoscape.plugin.CytoscapePlugin, java.lang.String)}.
 	 */
-	public void testRegister()
-		{
+	public void testRegister() {
 		// can't test this without a real plugin but can't create a plugin w/o
 		// cytoscape being started up?
-		// fail("Not yet implemented, can't create a plugin w/o full Cytoscape");
-		}
+		// fail("Not yet implemented, can't create a plugin w/o full
+		// Cytoscape");
+	}
 
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#install()}.
 	 */
-	public void testInstall() throws Exception
-		{
+	public void testInstall() throws Exception {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
-		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
-		
+		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+
 		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
@@ -170,24 +160,23 @@ public class PluginManagerTest extends TestCase
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(Current.size(), 1);
-		
+
 		assertTrue((new File(Current.get(0).getFileList().get(0)).exists()));
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
-		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDeletePluginInfo() throws Exception
-		{
+	public void testDeletePluginInfo() throws Exception {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-		
+
 		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
-		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
-		
+		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+
 		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
@@ -203,19 +192,18 @@ public class PluginManagerTest extends TestCase
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
 		mgr.delete();
 		assertFalse(InstalledPlugin.exists());
-		}
+	}
 
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#delete()}.
 	 */
-	public void testDelete() throws Exception
-		{
+	public void testDelete() throws Exception {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-		
+
 		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
-		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
-		
+		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+
 		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 
@@ -233,61 +221,56 @@ public class PluginManagerTest extends TestCase
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
-		
+
 		// delete
 		mgr.delete();
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
-		for(String FileName: Plugins.get(0).getFileList())
-			{
-			assertFalse( (new File(FileName)).exists() );
-			}
+		for (String FileName : Plugins.get(0).getFileList()) {
+			assertFalse((new File(FileName)).exists());
 		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#findUpdates(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testFindUpdates()
-		{
+	public void testFindUpdates() {
 		// in order to test this I need a test site set up...
-		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#update(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testUpdate()
-		{
+	public void testUpdate() {
 		// see testFindUpdates()
-		}
+	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDownload() throws Exception
-		{
+	public void testDownload() throws Exception {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl( getFileUrl() + TestObj.getProjectUrl() );
-		TestObj.setUrl( getFileUrl() + TestObj.getUrl() );
-		
+		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+
 		File Downloaded = mgr.download(TestObj);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
-		
+
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
-		}
+	}
 
-	private PluginInfo getInfoObj()
-		{
+	private PluginInfo getInfoObj() {
 		PluginInfo infoObj = new PluginInfo("123");
 		infoObj.setName("myTest");
 		infoObj.setCategory("Test");
@@ -296,17 +279,15 @@ public class PluginManagerTest extends TestCase
 		infoObj.setProjectUrl("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);
 		return infoObj;
-		}
-	// this won't work causes ExceptionInitializerError in the CytoscapePlugin
-	private class MyPlugin extends CytoscapePlugin
-		{
-		public MyPlugin()
-			{
-			System.out.println("MyPlugin instantiated");
-			}
+	}
 
-		public PluginInfo getPluginInfoObj()
-			{
+	// this won't work causes ExceptionInitializerError in the CytoscapePlugin
+	private class MyPlugin extends CytoscapePlugin {
+		public MyPlugin() {
+			System.out.println("MyPlugin instantiated");
+		}
+
+		public PluginInfo getPluginInfoObj() {
 			PluginInfo Info = new PluginInfo();
 			Info.setName("myPlugin");
 			Info.setDescription("None");
@@ -314,6 +295,6 @@ public class PluginManagerTest extends TestCase
 			Info.setCytoscapeVersion("2.5");
 			Info.setCategory("Test");
 			return Info;
-			}
 		}
 	}
+}
