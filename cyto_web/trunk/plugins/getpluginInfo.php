@@ -110,7 +110,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 		if ($versionSpecific_row["jar_url"] != null) {
 			$pluginInfoPage .= "\n<b>Download Jar:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
 		} else {
-			$pluginInfoPage .= "\n<b>Download Jar:</b> click <a href=\"" . 'downloadpluginjar.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a><br>";
+			$pluginInfoPage .= "\n<b>Download Jar:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a><br>";
 		}
 
 		if ($versionSpecific_row["source_url"] != null) {
