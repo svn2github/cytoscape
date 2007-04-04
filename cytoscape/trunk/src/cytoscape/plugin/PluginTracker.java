@@ -166,7 +166,6 @@ public class PluginTracker {
 				Authors.addContent(Author);
 			}
 			Plugin.addContent(Authors);
-			PluginParent.addContent(Plugin);
 		} else {
 			PluginParent.addContent(createPluginContent(obj));
 			System.out.println("Adding plugin " + obj.getName() + " status " + Status.getTagName());
