@@ -94,6 +94,7 @@ public class Arrow
     /*
      * Following arrow types will not be used after 2.5.
      */
+
     /**
      * DOCUMENT ME!
      */
@@ -223,6 +224,7 @@ public class Arrow
     public Arrow(String name) {
         this.name = name;
         this.arrowColor = DEFAULT_ARROW_COLOR;
+        this.shape = ArrowShape.parseArrowText(name);
     }
 
     /**
@@ -232,6 +234,9 @@ public class Arrow
      */
     @Deprecated
     public int getGinyArrow() {
+        if (name == null)
+            return shape.getGinyArrow();
+
         if (name.equals("WHITE_DIAMOND"))
             return EdgeView.WHITE_DIAMOND;
         else if (name.equals("BLACK_DIAMOND"))
@@ -268,6 +273,7 @@ public class Arrow
             return EdgeView.EDGE_COLOR_CIRCLE;
 
         else
+
             return EdgeView.NO_END;
     }
 
@@ -372,6 +378,7 @@ public class Arrow
             return CIRCLE;
 
         else
+
             return Arrow.NONE;
     } // parseArrowText
 }
