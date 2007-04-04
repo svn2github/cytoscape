@@ -2,22 +2,41 @@ package cytoscape.bubbleRouter;
 
 import giny.view.NodeView;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.JWindow;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.undo.AbstractUndoableEdit;
+
 import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.*;
+import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
+
 
 public class BubbleRouterPlugin extends CytoscapePlugin implements
 		MouseListener, MouseMotionListener, PropertyChangeListener {
@@ -121,7 +140,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private JPopupMenu menu = new JPopupMenu("Layout Region");
 
-	private JWindow toolTip = new JWindow(new Frame());
+	private JWindow toolTip = new JWindow(new JFrame());
 
 	private JLabel labelRegionInfo = new JLabel(" ");
 
@@ -372,7 +391,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		int hoveringInArea = calculateInArea(e.getPoint(), overRegion);
 		if (hoveringInArea == IN_AREA) {
 			toolTip.pack();
-			toolTip.setLocation(e.getX() + 300, e.getY() + 100);
+			Point pt = new Point(e.getX(), e.getY());
+			SwingUtilities.convertPointToScreen(pt, ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas());
+			toolTip.setLocation((int) pt.getX(), (int) pt.getY()-toolTip.getHeight());
 			toolTip.setVisible(true);
 			toolTip.repaint();
 		} else {
@@ -844,7 +865,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					_redoOffsets[m] = _nodeViews[m].getOffset();
 				}
 
-				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
+				CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
+//				CytoscapeDesktop.addEdit(new AbstractUndoableEdit() {
 
 					public String getPresentationName() {
 						return "Layout Region";
@@ -877,6 +899,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 						}
 					}
 				});
+				
 			} else if ((label == UNCROSS_EDGES) && (pickedRegion != null)) {
 				// AP: 2/25/07 uncross edges of nodes selected only WITHIN a
 				// region
@@ -925,7 +948,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	}
 
-	public PluginInfo getPluginInfoObj() {
+	public PluginInfo getPluginInfoObject() {
 
 		PluginInfo Info = new PluginInfo(); // can be created with a unique id,
 		// but for updating this has to
@@ -934,30 +957,14 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 		Info.setName("Interactive Layout"); // name can be anything
 
-		Info
-				.setDescription("Attribute-based layout using interactively created regions");
+		Info.setDescription("Attribute-based layout using interactive regions");
 
-		Info.setCategory("GenMAPP-CS"); // currently no categories preset, but
+		Info.setCategory("Functional Enrichment"); // currently no categories preset, but
 		// this is an option
 
 		Info.setPluginVersion("1.0-beta");
 
-		Info
-				.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Interactive_Layout_Plugin"); // this
-		// will
-		// point
-		// to
-		// whatever
-		// page
-		// returns
-		// the
-		// plugin
-		// xml
-		// document.
-		// Used
-		// for
-		// finding
-		// updates
+		Info.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Interactive_Layout_Plugin"); 
 
 		Info.addAuthor("Allan Kuchinsky", "Agilent");
 
