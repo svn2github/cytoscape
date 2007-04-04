@@ -116,7 +116,8 @@ public class PluginUrlDialog extends JDialog {
 			PluginManager Mgr = PluginManager.getPluginManager();
 			Map<String, List<PluginInfo>> NewPlugins = ManagerUtil.sortByCategory(Mgr.inquire(SelectedSite
 			                                                                                  .getHref()));
-
+			parentDialog.setSiteName(SelectedSite.getName());
+			
 			for (String Category : NewPlugins.keySet()) {
 				parentDialog.addCategory(Category, NewPlugins.get(Category),
 				                         PluginManageDialog.PluginInstallStatus.AVAILABLE);
