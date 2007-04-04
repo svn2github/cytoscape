@@ -44,6 +44,7 @@ create table plugin_version (
 	jar_url			varchar(100),
 	source_url		varchar(100),	
 	cy_version		set('2.0','2.1','2.2','2.3','2.4','2.5'),
+	status			varchar(20),
 	reference		text,
     sysdat          Date
 );
@@ -77,7 +78,7 @@ create table usagelog (
 );
 
 grant select, insert on cyplugindb.* to cytouser identified by 'cytouser';
-grant all on cyplugindb.* to cytoastaff identified by 'cytostaff';
+grant all on cyplugindb.* to cytostaff identified by 'cytostaff';
 
 insert into categories (category_id, name, description) 
             values (1, 'Analysis Plugins', 'Used for analyzing existing networks');
