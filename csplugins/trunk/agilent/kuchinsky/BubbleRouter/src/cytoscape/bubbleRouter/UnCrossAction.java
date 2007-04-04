@@ -22,6 +22,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -295,7 +296,8 @@ class UnCrossAction extends CytoscapeAction {
 			// rather than by
 			// another class
 			if (_calledByEndUser) {
-				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
+				CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
+//				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
 
 					public String getPresentationName() {
 						return "UnCross";
