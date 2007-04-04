@@ -43,6 +43,7 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 	 * Enables the delete/install buttons when the correct leaf node is selected
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
+		pluginInfoPane.setContentType("text/html");
 		String PluginText = "";
 		javax.swing.tree.TreePath[] Paths = pluginsTree.getSelectionPaths();
 		for (int i = 0; i < Paths.length; i++) {
@@ -52,25 +53,28 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 			if (Node.isLeaf()) {
 				DefaultMutableTreeNode Parent = (DefaultMutableTreeNode) Node
 						.getParent();
-				PluginInfo Current = (PluginInfo) Parent.getUserObject();
+				//PluginInfo Current = (PluginInfo) Parent.getUserObject();
 
 				PluginInfo New = (PluginInfo) Node.getUserObject();
-				PluginText += New.prettyOutput();
-				PluginText += "\nUpdates " + Current.getName() + " "
-						+ Current.getPluginVersion();
-				if (!(i == Paths.length - 1))
-					PluginText += "\n ------------------- \n\n";
+				
+//				//PluginText += New.prettyOutput();
+				pluginInfoPane.setText(New.htmlOutput());
+				updatedSelectedButton.setEnabled(true);
+//				PluginText += "\nUpdates " + Current.getName() + " "
+//						+ Current.getPluginVersion();
+//				if (!(i == Paths.length - 1))
+//					PluginText += "\n ------------------- \n\n";
 			} else if (Node.getUserObject() != null
 					&& Node.getUserObject().getClass().equals(PluginInfo.class)) {
 				PluginInfo NodeInfo = (PluginInfo) Node.getUserObject();
-				pluginInfoPane.setText("CURRENTLY INSTALLED\n\n"
-						+ NodeInfo.prettyOutput());
+				pluginInfoPane.setText(NodeInfo.htmlOutput());
+						//+ NodeInfo.prettyOutput());
 			}
 		}
-		if (PluginText.length() > 0) {
-			pluginInfoPane.setText(PluginText);
-			updatedSelectedButton.setEnabled(true);
-		}
+//		if (PluginText.length() > 0) {
+//			pluginInfoPane.setText(PluginText);
+//			updatedSelectedButton.setEnabled(true);
+//		}
 	}
 
 	/**
@@ -278,18 +282,33 @@ public class PluginUpdateDialog extends javax.swing.JDialog implements
 		org.jdesktop.layout.GroupLayout labelPaneLayout = new org.jdesktop.layout.GroupLayout(
 				labelPane);
 		labelPane.setLayout(labelPaneLayout);
-		labelPaneLayout.setHorizontalGroup(labelPaneLayout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				org.jdesktop.layout.GroupLayout.TRAILING,
-				labelPaneLayout.createSequentialGroup().add(jLabel1,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 447,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(254, Short.MAX_VALUE)));
-		labelPaneLayout.setVerticalGroup(labelPaneLayout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				labelPaneLayout.createSequentialGroup().addContainerGap(
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						Short.MAX_VALUE).add(jLabel1)));
+
+        labelPaneLayout.setHorizontalGroup(
+                labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, labelPaneLayout.createSequentialGroup()
+                    .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 600, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(234, Short.MAX_VALUE))
+            );
+            labelPaneLayout.setVerticalGroup(
+                labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(labelPaneLayout.createSequentialGroup()
+                    .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabel1))
+            );
+		
+		
+//		labelPaneLayout.setHorizontalGroup(labelPaneLayout.createParallelGroup(
+//				org.jdesktop.layout.GroupLayout.LEADING).add(
+//				org.jdesktop.layout.GroupLayout.TRAILING,
+//				labelPaneLayout.createSequentialGroup().add(jLabel1,
+//						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 447,
+//						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+//						.addContainerGap(254, Short.MAX_VALUE)));
+//		labelPaneLayout.setVerticalGroup(labelPaneLayout.createParallelGroup(
+//				org.jdesktop.layout.GroupLayout.LEADING).add(
+//				labelPaneLayout.createSequentialGroup().addContainerGap(
+//						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+//						Short.MAX_VALUE).add(jLabel1)));
 
 		closeButton.setText("Close");
 		closeButton.addActionListener(new java.awt.event.ActionListener() {
