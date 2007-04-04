@@ -2,10 +2,12 @@
 
 
 // These are the DBMS credentials and the database name
-$dbServer = "chianti.ucsd.edu";
-$dbName = "CyPluginDB";
+$dbServer = "localhost";
+$dbName = "cyplugindb";
 $dbUser = "cytouser";
 $dbPass = "cytouser";
+$cytostaff = "cytostaff";
+$cytostaffPass = "cytostaff";
 
 // Show an error and stop the script
 function showerror() {
