@@ -22,6 +22,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
@@ -669,7 +670,8 @@ public class LayoutRegion extends JComponent
 				_redoOffsets[k] = _selectedNodeViews[k].getOffset();
 			}
 
-			CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
+			CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
+//			CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
 
 				public String getPresentationName() {
 					return "Interactive Layout";
