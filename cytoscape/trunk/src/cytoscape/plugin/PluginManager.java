@@ -38,18 +38,23 @@ package cytoscape.plugin;
 
 import cytoscape.*;
 
-
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * @author skillcoy
@@ -192,7 +197,8 @@ public class PluginManager {
 		Map<String, List<PluginInfo>> CurrentInstalled = ManagerUtil
 				.sortByClass(getPlugins(PluginTracker.PluginStatus.CURRENT));
 		
-		if (CurrentInstalled.containsKey(Plugin.getClass().getName())) {
+		if (CurrentInstalled.containsKey(Plugin.getClass().getName()) &&
+				Plugin.getPluginInfoObject() == null) {
 			return;
 		}
 		
@@ -207,10 +213,13 @@ public class PluginManager {
 			InfoObj = Plugin.getPluginInfoObject();
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
 
-			if (JarFileName != null)
+			if (JarFileName != null) {
 				InfoObj.addFileName(JarFileName);
+			}
 		}
 		// I think we can safely assume it's a jar file if it's registering
+		// since only CytoscapePlugin registers and at that point all we know is 
+		// it's a jar
 		InfoObj.setFiletype(PluginInfo.FileType.JAR);
 		pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
 	}
