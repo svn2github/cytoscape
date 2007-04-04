@@ -8,8 +8,6 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 
-import cytoscape.plugin.PluginTracker.PluginStatus;
-
 import cytoscape.util.IndeterminateProgressBar;
 import cytoscape.util.SwingWorker;
 
@@ -52,7 +50,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 
 	private int totalAvailable = 0;
 	private int totalCurrent = 0;
-	
+	private String baseSiteLabel = "Available plugins from: ";
+
 	public PluginManageDialog(javax.swing.JDialog owner) {
 		super(owner, "Manage Plugins");
 		setLocationRelativeTo(owner);
@@ -79,17 +78,13 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 
 		if (Node == null)
 			return;
-
-//		javax.swing.tree.TreePath[] Paths = pluginsTree.getSelectionPaths();
-//		for (int i = 0; i < Paths.length; i++) {
-//			DefaultMutableTreeNode Node = (DefaultMutableTreeNode) Paths[i]
-//					.getLastPathComponent();
-//		}
 		
 		if (Node.isLeaf()) {
 			// display any object selected
-			pluginInfoPane.setText(((PluginInfo) Node.getUserObject()).prettyOutput());
-
+			pluginInfoPane.setContentType("text/html");
+			//pluginInfoPane.setText(((PluginInfo) Node.getUserObject()).prettyOutput());
+			pluginInfoPane.setText(((PluginInfo) Node.getUserObject()).htmlOutput());
+			
 			if (Node.isNodeAncestor(this.installedNode)) {
 				deleteButton.setEnabled(true);
 				installButton.setEnabled(false);
@@ -109,7 +104,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 	 * @param SiteName
 	 */
 	public void setSiteName(String SiteName) {
-		siteLabel.setText(siteLabel.getText() + " " + SiteName);
+		siteLabel.setText(baseSiteLabel + " " + SiteName);
 	}
 
 	/**
@@ -122,6 +117,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		// not sure why I had to do it like this, always missed the second node if I
 		// tried to
 		// remove them while I looped over the children
+		totalAvailable = 0;
 		int i = 0;
 
 		for (java.util.Enumeration<javax.swing.tree.TreeNode> E = availableNode.children();
@@ -283,7 +279,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 	}
 
 	// initialize the dialog box & components
-	private void initComponents() {
+        // <editor-fold defaultstate="collapsed" desc=" Generated Code ">                          
+        private void initComponents() {
 		splitPane = new javax.swing.JSplitPane();
 		treeScrollPane = new javax.swing.JScrollPane();
 		pluginsTree = new javax.swing.JTree();
@@ -318,30 +315,44 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		infoScrollPane.setViewportView(pluginInfoPane);
 		splitPane.setRightComponent(infoScrollPane);
 		dialogLabel.setText("Manage Cytoscape Plugins");
-		siteLabel.setText("Available plugins from: ");
 
 		org.jdesktop.layout.GroupLayout labelPaneLayout = new org.jdesktop.layout.GroupLayout(labelPane);
 		labelPane.setLayout(labelPaneLayout);
-		labelPaneLayout.setHorizontalGroup(labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                  .add(labelPaneLayout.createSequentialGroup()
-		                                                                      .addContainerGap()
-		                                                                      .add(dialogLabel,
-		                                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                           191,
-		                                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                      .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-		                                                                                       63,
-		                                                                                       Short.MAX_VALUE)
-		                                                                      .add(siteLabel)
-		                                                                      .add(126, 126, 126)));
-		labelPaneLayout.setVerticalGroup(labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(dialogLabel,
-		                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                     50, Short.MAX_VALUE)
-		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                     siteLabel,
-		                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                     50, Short.MAX_VALUE));
+		
+        labelPaneLayout.setHorizontalGroup(
+            labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, labelPaneLayout.createSequentialGroup()
+                .add(siteLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 447, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(234, Short.MAX_VALUE))
+        );
+        labelPaneLayout.setVerticalGroup(
+            labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(labelPaneLayout.createSequentialGroup()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(siteLabel))
+        );
+
+		
+//		labelPaneLayout.setHorizontalGroup(labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+//		                                                  .add(labelPaneLayout.createSequentialGroup()
+//		                                                                      .addContainerGap()
+//		                                                                      .add(dialogLabel,
+//		                                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+//		                                                                           191,
+//		                                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+//		                                                                      .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+//		                                                                                       63,
+//		                                                                                       Short.MAX_VALUE)
+//		                                                                      .add(siteLabel)
+//		                                                                      .add(126, 126, 126)));
+//		labelPaneLayout.setVerticalGroup(labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+//		                                                .add(dialogLabel,
+//		                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+//		                                                     50, Short.MAX_VALUE)
+//		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
+//		                                                     siteLabel,
+//		                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+//		                                                     50, Short.MAX_VALUE));
 		deleteButton.setText("Delete");
 		deleteButton.setEnabled(false);
 		deleteButton.addActionListener(new ActionListener() {
@@ -431,7 +442,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                         .addContainerGap()));
 		pack();
-	}
+	} // </editor-fold>                        
 
 	/*
 	 * Creates the swing worker that displays progress bar during install
