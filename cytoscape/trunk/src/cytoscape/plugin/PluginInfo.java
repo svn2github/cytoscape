@@ -54,7 +54,8 @@ public class PluginInfo {
 		NETWORK_ATTRIBUTE_IO("Network and Attribute I/O"),
 		NETWORK_INFERENCE("Network Inference"),
 		FUNCTIONAL_ENRICHMENT("Functional Enrichment"),
-		COMMUNICATION_SCRIPTING("Communication/Scripting");
+		COMMUNICATION_SCRIPTING("Communication/Scripting"),
+		NONE("Uncategorized");
 		
 		private String catText;
 		private Category(String type) {
@@ -137,10 +138,10 @@ public class PluginInfo {
 		pluginFiles = new ArrayList<String>();
 		authors = new ArrayList<AuthorInfo>();
 		setName("Unknown");
-		setDescription("No pluginDescription");
+		setDescription("No description");
 		setPluginVersion("0.1");
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		setCategory("Uncategorized");
+		setCategory(Category.NONE);
 		setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
 	}
 
@@ -232,7 +233,7 @@ public class PluginInfo {
 	}
 
 	/**
-	 * category for the plugin. Defaults to "Uncategorized"
+	 * Sets a category for the plugin. Defaults to "Uncategorized"
 	 *
 	 * @param category
 	 */
@@ -240,6 +241,10 @@ public class PluginInfo {
 		this.pluginCategory = category;
 	}
 
+	/**
+	 * Sets the category for the plugin using the enum PluginInfo.Category
+	 * @param catName
+	 */
 	public void setCategory(Category catName) {
 		this.pluginCategory = catName.getCategoryText();
 	}
@@ -366,7 +371,7 @@ public class PluginInfo {
 	public String prettyOutput() {
 		String Text = getName() + "\n\n";
 		Text += ("Version: " + getPluginVersion() + "\n\n");
-		Text += ("category: " + getCategory() + "\n\n");
+		Text += ("Category: " + getCategory() + "\n\n");
 
 		// don't current have a release date, might be nice
 		Text += (getDescription() + "\n\n");
@@ -386,6 +391,29 @@ public class PluginInfo {
 		return Text;
 	}
 
+	// yea, it's ugly...styles taken from cytoscape website
+	public String htmlOutput() {
+		String Html = "<html><style type='text/css'>";
+		Html += "body,th,td,div,p,h1,h2,li,dt,dd ";
+		Html += "{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }";
+		Html += "body { margin: 0px; color: #333333; background-color: #ffffff; }";
+		Html += "#indent { padding-left: 30px; }";
+		Html += "ul {list-style-type: none}";
+		Html += "</style><body>";
+		
+		Html += "<strong>" + getName() + "</strong><p>";
+		Html += "<strong>Version:</strong>&nbsp;" + getPluginVersion() + "<p>"; 
+		Html += "<strong>Category:</strong>&nbsp;" + getCategory() + "<p>";
+		Html += "<strong>Description:</strong><br>" + getDescription() + "<p>";
+		Html += "<strong>Released By:</strong><br><ul>";
+		for (AuthorInfo ai: getAuthors()) {
+			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution() + "<br>";
+		}
+		Html += "</ul>";
+		Html += "</font></body></html>";
+		return Html;
+	}
+	
 	/**
 	 * Describes an author for a given plugin.
 	 *
