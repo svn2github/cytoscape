@@ -1,4 +1,5 @@
 
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,78 +35,9 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package ManualLayout.control;
+package ManualLayout.common;
 
-import ManualLayout.control.view.*;
-
-import cytoscape.*;
-
-import cytoscape.data.*;
-
-import cytoscape.util.*;
-
-import cytoscape.view.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-
-
-/**
- *
- */
-public class ControlAction extends AbstractAction {
-	JFrame frame;
-
-	/**
-	 * Creates a new ControlAction object.
-	 */
-	public ControlAction() {
-		super("Align and Distribute");
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		if (frame == null) {
-			frame = new JFrame("Align and Distribute");
-
-			JPanel panel = new JPanel();
-			panel.setLayout(new BorderLayout());
-			panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-			AlignPanel ap = new AlignPanel();
-			DistPanel dp = new DistPanel();
-
-			panel.add(ap, BorderLayout.NORTH);
-			panel.add(dp, BorderLayout.SOUTH);
-
-			frame.getContentPane().add(panel);
-			frame.pack();
-		}
-
-		frame.setVisible(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean isInToolBar() {
-		return false;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean isInMenuBar() {
-		return true;
-	}
+public interface PolymorphicSlider {
+	public void updateSlider(int x);
+	public int getSliderValue();
 }

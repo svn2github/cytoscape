@@ -48,6 +48,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
+import ManualLayout.common.*;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
 /**
  *
@@ -56,16 +62,11 @@ import javax.swing.JSlider;
  *      Rewrite based on the class RotateAction       9/13/2006        Peng-Liang Wang
  *
  */
-public class RotatePanel extends JPanel {
-	/**
-	 * 
-	 */
-	public JCheckBox jCheckBox;
+public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSlider {
 
-	/**
-	 * 
-	 */
-	public JSlider jSlider;
+	JCheckBox jCheckBox;
+	JSlider jSlider;
+	int prevValue; 
 
 	/**
 	 * Creates a new RotatePanel object.
@@ -83,15 +84,18 @@ public class RotatePanel extends JPanel {
 		jSlider.setPaintTicks(true);
 		jSlider.setMinorTickSpacing(15);
 		jSlider.setValue(0);
-
 		jSlider.setPreferredSize(new Dimension(120, 50));
+		jSlider.addChangeListener(this);
+
+		prevValue = jSlider.getValue();
+
 		jCheckBox = new JCheckBox();
 		jCheckBox.setText("Rotate Selected Nodes Only");
 
+		new CheckBoxTracker( jCheckBox );
+
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		//setBorder(javax.swing.BorderFactory
-		//                           .createEmptyBorder(0,10,0,10));
 		setLayout(new GridBagLayout());
 
 		gbc.gridy = 0;
@@ -109,18 +113,31 @@ public class RotatePanel extends JPanel {
 		gbc.fill = GridBagConstraints.NONE;
 		add(jCheckBox, gbc);
 
-		/*
-		// Disable the checkBox if nothing is selected
-		if (Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length == 0)
-		{
-		  jCheckBox.setEnabled(false);
-		  jCheckBox.setEnabled(false);
-		}
-		else
-		{
-		    jCheckBox.setEnabled(true);
-		    jCheckBox.setEnabled(true);
-		}
-		*/
-	} // constructor
-} // End of class RotatePanel
+		new SliderStateTracker(this);
+	} 
+
+	public void updateSlider(int x) {
+		// this will prevent the state change from producing a change
+		prevValue = x;
+		jSlider.setValue(x);
+	}
+
+	public int getSliderValue() {
+		return jSlider.getValue();
+	}
+
+	public void stateChanged(ChangeEvent e) {
+		if (jSlider.getValue() == prevValue)
+			return;
+
+		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
+		                                                   jCheckBox.isSelected());
+		RotationLayouter rotation = new RotationLayouter(nativeGraph);
+
+		double radians = (((double) (jSlider.getValue() - prevValue)) * 2.0d * Math.PI) / 360.0d;
+		rotation.rotateGraph(radians);
+		Cytoscape.getCurrentNetworkView().updateView();
+
+		prevValue = jSlider.getValue();
+	}
+} 

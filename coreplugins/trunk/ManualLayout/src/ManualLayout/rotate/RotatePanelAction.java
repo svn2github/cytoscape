@@ -34,53 +34,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package ManualLayout;
+package ManualLayout.rotate; 
 
-import ManualLayout.control.ControlPanel;
-import ManualLayout.control.ControlPanelAction;
-
-import ManualLayout.rotate.RotatePanel;
-import ManualLayout.rotate.RotatePanelAction;
-
-import ManualLayout.scale.ScalePanel;
-import ManualLayout.scale.ScalePanelAction;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.plugin.CytoscapePlugin;
-
-import java.awt.Dimension;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.SwingConstants;
-
+import ManualLayout.common.AbstractManualLayoutAction;
 
 /**
- *
+ * Rotate network action.
  */
-public class ManualLayoutPlugin extends CytoscapePlugin {
+public class RotatePanelAction extends AbstractManualLayoutAction {
 
 	/**
-	 * Creates a new ManualLayoutPlugin object.
+ 	 * Rotate network action. Should be in menu slot 0.
 	 */
-	public ManualLayoutPlugin() {
-
-		// create the panels 
-		RotatePanel rotatePanel = new RotatePanel();
-		ScalePanel scalePanel = new ScalePanel();
-		ControlPanel controlPanel = new ControlPanel();
-
-		// add them to the cytopanel
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add("Rotate", rotatePanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add("Scale", scalePanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
-		         .add("Align and Distribute", controlPanel);
-
-		// create the actions
-		Cytoscape.getDesktop().getCyMenus().addAction( new RotatePanelAction(), 0);
-		Cytoscape.getDesktop().getCyMenus().addAction( new ScalePanelAction(), 1);
-		Cytoscape.getDesktop().getCyMenus().addAction( new ControlPanelAction(), 2);
-
+	public RotatePanelAction() {
+		super("Rotate",0);
 	}
 }

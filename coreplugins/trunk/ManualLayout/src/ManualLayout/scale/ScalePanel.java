@@ -36,7 +36,7 @@
 
 package ManualLayout.scale;
 
-import ManualLayout.common.GraphConverter2;
+import ManualLayout.common.*;
 
 import cytoscape.Cytoscape;
 
@@ -74,16 +74,11 @@ import javax.swing.event.ChangeListener;
  *      Rewrite based on the class ScaleAction       9/13/2006        Peng-Liang Wang
  *
  */
-public class ScalePanel extends JPanel {
-	/**
-	 * 
-	 */
-	public JCheckBox jCheckBox;
+public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSlider {
 
-	/**
-	 * 
-	 */
-	public JSlider jSlider;
+	JCheckBox jCheckBox;
+	JSlider jSlider;
+	int prevValue; 
 
 	/**
 	 * Creates a new ScalePanel object.
@@ -100,6 +95,10 @@ public class ScalePanel extends JPanel {
 		jSlider.setPaintLabels(true);
 		jSlider.setValue(0);
 		jSlider.setMinimum(-300);
+		jSlider.addChangeListener(this);
+
+
+		prevValue = jSlider.getValue();
 
 		Hashtable labels = new Hashtable();
 		labels.put(new Integer(-300), new JLabel("1/8"));
@@ -115,8 +114,8 @@ public class ScalePanel extends JPanel {
 		jCheckBox = new JCheckBox();
 		jCheckBox.setText("Scale Selected Nodes Only");
 
-		//setBorder(javax.swing.BorderFactory
-		//                           .createEmptyBorder(0,10,0,10));
+		new CheckBoxTracker( jCheckBox );
+
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -138,18 +137,34 @@ public class ScalePanel extends JPanel {
 		gbc.insets = new Insets(0, 15, 0, 15);
 		add(jCheckBox, gbc);
 
-		/*
-		// Disable the checkBox if nothing is selected
-		if (Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length == 0)
-		{
-		  jCheckBox.setEnabled(false);
-		  jCheckBox.setEnabled(false);
-		}
-		else
-		{
-		    jCheckBox.setEnabled(true);
-		    jCheckBox.setEnabled(true);
-		}
-		*/
-	} // constructor
-} // End of class ScalePanel
+		new SliderStateTracker(this);
+	} 
+
+	public void updateSlider(int x) {
+		prevValue = x;
+		jSlider.setValue(x);
+	}
+
+	public int getSliderValue() {
+		return jSlider.getValue();
+	}
+
+	public void stateChanged(ChangeEvent e) {
+		if (prevValue == jSlider.getValue())
+			return;
+
+		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
+			                                                   jCheckBox.isSelected());
+		ScaleLayouter scale = new ScaleLayouter(nativeGraph);
+
+		double prevAbsoluteScaleFactor = Math.pow(2, ((double) prevValue) / 100.0d);
+
+		double currentAbsoluteScaleFactor = Math.pow(2, ((double) jSlider.getValue()) / 100.0d);
+
+		double neededIncrementalScaleFactor = currentAbsoluteScaleFactor / prevAbsoluteScaleFactor;
+
+		scale.scaleGraph(neededIncrementalScaleFactor);
+		Cytoscape.getCurrentNetworkView().updateView();
+		prevValue = jSlider.getValue();
+	}
+}
