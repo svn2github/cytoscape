@@ -157,7 +157,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 		
 		
 		assertTrue("src arrow " + ea.getSourceArrow(),
-				ea.getSourceArrow().getShape() == ArrowShape.NONE);
+				ea.getSourceArrow().getShape() == ArrowShape.DIAMOND);
 		
 		assertTrue("trg arrow " + ea.getTargetArrow(),
 				ea.getTargetArrow() == Arrow.NONE);
