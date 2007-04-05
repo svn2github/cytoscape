@@ -53,193 +53,191 @@ import java.io.Serializable;
 /**
  * This class is a replacement for the yFiles LineType class.
  */
-public class LineType implements Serializable {
-	/**
-	 *
-	 */
-	public static final LineType LINE_1 = new LineType("LINE_1");
+@Deprecated
+public class LineType
+    implements Serializable {
+    /**
+     *
+     */
+    public static final LineType LINE_1 = new LineType("LINE_1");
 
-	/**
-	 *
-	 */
-	public static final LineType LINE_2 = new LineType("LINE_2");
+    /**
+     *
+     */
+    public static final LineType LINE_2 = new LineType("LINE_2");
 
-	/**
-	 *
-	 */
-	public static final LineType LINE_3 = new LineType("LINE_3");
+    /**
+     *
+     */
+    public static final LineType LINE_3 = new LineType("LINE_3");
 
-	/**
-	 *
-	 */
-	public static final LineType LINE_4 = new LineType("LINE_4");
+    /**
+     *
+     */
+    public static final LineType LINE_4 = new LineType("LINE_4");
 
-	/**
-	 *
-	 */
-	public static final LineType LINE_5 = new LineType("LINE_5");
+    /**
+     *
+     */
+    public static final LineType LINE_5 = new LineType("LINE_5");
 
-	/**
-	 *
-	 */
-	public static final LineType LINE_6 = new LineType("LINE_6");
+    /**
+     *
+     */
+    public static final LineType LINE_6 = new LineType("LINE_6");
 
-	/**
-	 *
-	 */
-	public static final LineType LINE_7 = new LineType("LINE_7");
+    /**
+     *
+     */
+    public static final LineType LINE_7 = new LineType("LINE_7");
 
-	/**
-	 *
-	 */
-	public static final LineType DASHED_1 = new LineType("DASHED_1");
+    /**
+     *
+     */
+    public static final LineType DASHED_1 = new LineType("DASHED_1");
 
-	/**
-	 *
-	 */
-	public static final LineType DASHED_2 = new LineType("DASHED_2");
+    /**
+     *
+     */
+    public static final LineType DASHED_2 = new LineType("DASHED_2");
 
-	/**
-	 *
-	 */
-	public static final LineType DASHED_3 = new LineType("DASHED_3");
+    /**
+     *
+     */
+    public static final LineType DASHED_3 = new LineType("DASHED_3");
 
-	/**
-	 *
-	 */
-	public static final LineType DASHED_4 = new LineType("DASHED_4");
+    /**
+     *
+     */
+    public static final LineType DASHED_4 = new LineType("DASHED_4");
 
-	/**
-	 *
-	 */
-	public static final LineType DASHED_5 = new LineType("DASHED_5");
-	String name;
-	Stroke stroke;
+    /**
+     *
+     */
+    public static final LineType DASHED_5 = new LineType("DASHED_5");
+    String name;
+    Stroke stroke;
 
-	/**
-	 * Creates a new LineType object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 */
-	public LineType(String name) {
-		this.name = name;
+    /**
+     * Creates a new LineType object.
+     *
+     * @param name  DOCUMENT ME!
+     */
+    public LineType(String name) {
+        this.name = name;
 
-		if (name.equals("LINE_2")) {
-			stroke = new BasicStroke(2.0f);
-		} else if (name.equals("LINE_3")) {
-			stroke = new BasicStroke(3.0f);
-		} else if (name.equals("LINE_4")) {
-			stroke = new BasicStroke(4.0f);
-		} else if (name.equals("LINE_5")) {
-			stroke = new BasicStroke(5.0f);
-		} else if (name.equals("LINE_6")) {
-			stroke = new BasicStroke(6.0f);
-		} else if (name.equals("LINE_7")) {
-			stroke = new BasicStroke(7.0f);
-		} else if (name.equals("DASHED_1")) {
-			stroke = makeDashedStroke(1.0f);
-		} else if (name.equals("DASHED_2")) {
-			stroke = makeDashedStroke(2.0f);
-		} else if (name.equals("DASHED_3")) {
-			stroke = makeDashedStroke(3.0f);
-		} else if (name.equals("DASHED_4")) {
-			stroke = makeDashedStroke(4.0f);
-		} else if (name.equals("DASHED_5")) {
-			stroke = makeDashedStroke(5.0f);
-		} else { //default
-			stroke = new BasicStroke();
-		}
-	}
+        if (name.equals("LINE_2"))
+            stroke = new BasicStroke(2.0f);
+        else if (name.equals("LINE_3"))
+            stroke = new BasicStroke(3.0f);
+        else if (name.equals("LINE_4"))
+            stroke = new BasicStroke(4.0f);
+        else if (name.equals("LINE_5"))
+            stroke = new BasicStroke(5.0f);
+        else if (name.equals("LINE_6"))
+            stroke = new BasicStroke(6.0f);
+        else if (name.equals("LINE_7"))
+            stroke = new BasicStroke(7.0f);
+        else if (name.equals("DASHED_1"))
+            stroke = makeDashedStroke(1.0f);
+        else if (name.equals("DASHED_2"))
+            stroke = makeDashedStroke(2.0f);
+        else if (name.equals("DASHED_3"))
+            stroke = makeDashedStroke(3.0f);
+        else if (name.equals("DASHED_4"))
+            stroke = makeDashedStroke(4.0f);
+        else if (name.equals("DASHED_5"))
+            stroke = makeDashedStroke(5.0f);
+        else
+            stroke = new BasicStroke();
+    }
 
-	/**
-	 * This method converts the names of linetypes, such as from a
-	 * visual mappings properties file, to a LineType object.
-	 */
-	public static LineType parseLineTypeText(String text) {
-		String lttext = text.trim();
-		lttext = lttext.replaceAll("_", ""); // ditch all underscores
+    /**
+     * This method converts the names of linetypes, such as from a
+     * visual mappings properties file, to a LineType object.
+     */
+    public static LineType parseLineTypeText(String text) {
+        String lttext = text.trim();
+        lttext = lttext.replaceAll("_", ""); // ditch all underscores
 
-		if (lttext.equalsIgnoreCase("dashed1")) {
-			return LineType.DASHED_1;
-		} else if (lttext.equalsIgnoreCase("dashed2")) {
-			return LineType.DASHED_2;
-		} else if (lttext.equalsIgnoreCase("dashed3")) {
-			return LineType.DASHED_3;
-		} else if (lttext.equalsIgnoreCase("dashed4")) {
-			return LineType.DASHED_4;
-		} else if (lttext.equalsIgnoreCase("dashed5")) {
-			return LineType.DASHED_5;
-		} else if (lttext.equalsIgnoreCase("line1")) {
-			return LineType.LINE_1;
-		} else if (lttext.equalsIgnoreCase("line2")) {
-			return LineType.LINE_2;
-		} else if (lttext.equalsIgnoreCase("line3")) {
-			return LineType.LINE_3;
-		} else if (lttext.equalsIgnoreCase("line4")) {
-			return LineType.LINE_4;
-		} else if (lttext.equalsIgnoreCase("line5")) {
-			return LineType.LINE_5;
-		} else if (lttext.equalsIgnoreCase("line6")) {
-			return LineType.LINE_6;
-		} else if (lttext.equalsIgnoreCase("line7")) {
-			return LineType.LINE_7;
-		} else {
-			return LineType.LINE_1;
-		}
-	}
+        if (lttext.equalsIgnoreCase("dashed1"))
+            return LineType.DASHED_1;
+        else if (lttext.equalsIgnoreCase("dashed2"))
+            return LineType.DASHED_2;
+        else if (lttext.equalsIgnoreCase("dashed3"))
+            return LineType.DASHED_3;
+        else if (lttext.equalsIgnoreCase("dashed4"))
+            return LineType.DASHED_4;
+        else if (lttext.equalsIgnoreCase("dashed5"))
+            return LineType.DASHED_5;
+        else if (lttext.equalsIgnoreCase("line1"))
+            return LineType.LINE_1;
+        else if (lttext.equalsIgnoreCase("line2"))
+            return LineType.LINE_2;
+        else if (lttext.equalsIgnoreCase("line3"))
+            return LineType.LINE_3;
+        else if (lttext.equalsIgnoreCase("line4"))
+            return LineType.LINE_4;
+        else if (lttext.equalsIgnoreCase("line5"))
+            return LineType.LINE_5;
+        else if (lttext.equalsIgnoreCase("line6"))
+            return LineType.LINE_6;
+        else if (lttext.equalsIgnoreCase("line7"))
+            return LineType.LINE_7;
+        else
+            return LineType.LINE_1;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Stroke getStroke() {
-		return stroke;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Stroke getStroke() {
+        return stroke;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return getName();
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String toString() {
+        return getName();
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param o DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean equals(Object o) {
-		if (o instanceof LineType) {
-			LineType other = (LineType) o;
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param o DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean equals(Object o) {
+        if (o instanceof LineType) {
+            LineType other = (LineType) o;
 
-			if (this.name.equals(other.getName())) {
-				return true;
-			} else {
-				return false;
-			}
-		} else { //other object isn't a LineType
+            if (this.name.equals(other.getName()))
+                return true;
+            else
+                return false;
+        } else
+            return false;
+    }
 
-			return false;
-		}
-	}
+    private Stroke makeDashedStroke(float width) {
+        float[] dash = { 5.0f, 3.0f };
 
-	private Stroke makeDashedStroke(float width) {
-		float[] dash = { 5.0f, 3.0f };
-
-		return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f);
-	}
+        return new BasicStroke(width, BasicStroke.CAP_BUTT,
+            BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f);
+    }
 }
