@@ -1,109 +1,132 @@
-/*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
-
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
 package cytoscape.visual;
 
 import java.awt.Stroke;
 
 
 /**
- * Define a line.  This will be used as edge or node border.
+ * Define a line. This will be used as edge or node border.
  *
  * @since Cytoscape 2.5
  * @author kono
  *
  */
 public class Line {
-	// Define line type (stroke).
-	private LineTypeDef type;
+    /**
+     * DOCUMENT ME!
+     */
+    public static final Line DEFAULT_LINE = new Line(LineTypeDef.SOLID, 1.0f);
 
-	// Width of this line.
-	private float width;
+    // Define line type (stroke).
+    private LineTypeDef type;
 
-	/**
-	 * Creates a new Line object.
-	 *
-	 * @param type  DOCUMENT ME!
-	 * @param width  DOCUMENT ME!
-	 */
-	public Line(LineTypeDef type, float width) {
-		this.type = type;
-		this.width = width;
-	}
+    // Width of this line.
+    private Float width;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 */
-	public void setWidth(final float width) {
-		this.width = width;
-	}
+    /**
+     * Creates a new Line object.
+     *
+     * @param type DOCUMENT ME!
+     * @param width DOCUMENT ME!
+     */
+    public Line(LineTypeDef type, Float width) {
+        this.type = type;
+        this.width = width;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 */
-	public void setType(final LineTypeDef type) {
-		this.type = type;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param width DOCUMENT ME!
+     */
+    public void setWidth(final float width) {
+        this.width = width;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public float getWidth() {
-		return width;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param type DOCUMENT ME!
+     */
+    public void setType(final LineTypeDef type) {
+        this.type = type;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public LineTypeDef getType() {
-		return type;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public float getWidth() {
+        return width;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Stroke getStroke() {
-		return type.getStroke(width);
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public LineTypeDef getType() {
+        return type;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Stroke getStroke() {
+        return type.getStroke(width);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public String toString() {
+        return type.name();
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param text DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public static Line parseLineText(String text) {
+        String lttext = text.trim();
+        lttext = lttext.replaceAll("_", "");
+
+        if (lttext.equalsIgnoreCase("dashed1"))
+            return new Line(LineTypeDef.LONG_DASH, 1.0f);
+        else if (lttext.equalsIgnoreCase("dashed2"))
+            return new Line(LineTypeDef.LONG_DASH, 2.0f);
+        else if (lttext.equalsIgnoreCase("dashed3"))
+            return new Line(LineTypeDef.LONG_DASH, 3.0f);
+        else if (lttext.equalsIgnoreCase("dashed4"))
+            return new Line(LineTypeDef.LONG_DASH, 4.0f);
+        else if (lttext.equalsIgnoreCase("dashed5"))
+            return new Line(LineTypeDef.LONG_DASH, 5.0f);
+        else if (lttext.equalsIgnoreCase("line1"))
+            return Line.DEFAULT_LINE;
+        else if (lttext.equalsIgnoreCase("line2"))
+            return new Line(LineTypeDef.SOLID, 2.0f);
+        else if (lttext.equalsIgnoreCase("line3"))
+            return new Line(LineTypeDef.SOLID, 3.0f);
+        else if (lttext.equalsIgnoreCase("line4"))
+            return new Line(LineTypeDef.SOLID, 4.0f);
+        else if (lttext.equalsIgnoreCase("line5"))
+            return new Line(LineTypeDef.SOLID, 5.0f);
+        else if (lttext.equalsIgnoreCase("line6"))
+            return new Line(LineTypeDef.SOLID, 6.0f);
+        else if (lttext.equalsIgnoreCase("line7"))
+            return new Line(LineTypeDef.SOLID, 7.0f);
+        else if (lttext.equalsIgnoreCase(LineTypeDef.LONG_DASH.name()))
+            return new Line(LineTypeDef.LONG_DASH, 1.0f);
+        else if (lttext.equalsIgnoreCase(LineTypeDef.SOLID.name()))
+            return new Line(LineTypeDef.SOLID, 1.0f);
+        else
+            return Line.DEFAULT_LINE;
+    }
 }
