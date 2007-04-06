@@ -37,14 +37,6 @@
 package cytoscape.util;
 
 
-//import shadegrown.Reidentifiable;
-//import shadegrown.CollectionListener;
-//import shadegrown.CollectionEventSource;
-//import shadegrown.CollectionEvent;
-//import shadegrown.DataTypeUtilities;
-//import shadegrown.PropertyMap;
-
-//import shadegrown.filters.TypeFilter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -70,6 +62,12 @@ public class CytoscapeMenuBar extends JMenuBar {
 	protected Set actionMembersSet = null;
 	protected Map actionMenuItemMap = null;
 	protected Map menuMap = null;
+
+
+	/**
+	 * The Menu-&gt;Integer "effective last index"
+	 * Map for Menus with menu items that want to be at the end.
+	 */
 	protected Map menuEffectiveLastIndexMap = null;
 
 	/**
@@ -78,18 +76,18 @@ public class CytoscapeMenuBar extends JMenuBar {
 	private String identifier;
 
 	/**
-	 * Default constructor. Calls {@link #initialize initializeCytoscapeMenuBar}.
+	 * Default constructor. 
 	 */
 	public CytoscapeMenuBar() {
-		initializeCytoscapeMenuBar();
-	}
+		menuEffectiveLastIndexMap = new HashMap();
+		menuMap = new HashMap();
+		actionMenuItemMap = new HashMap();
 
-	protected void initializeCytoscapeMenuBar() {
 		// Load the first menu, just to please the layouter. Also make sure the
 		// menu bar doesn't get too small.
 		// "File" is always first
 		setMinimumSize(getMenu("File").getPreferredSize());
-	} // initializeCytoscapeMenuBar()
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -117,7 +115,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 */
 	public boolean addAction(Action action) {
 		return addAction(action, NO_INDEX);
-	} // addAction( action )
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -137,13 +135,6 @@ public class CytoscapeMenuBar extends JMenuBar {
 				return false;
 			}
 		} else {
-			// PropertyMap map = DataTypeUtilities.getPropertyMap( action );
-			// Boolean in_menu_bar = ( Boolean )map.get( "inMenuBar" );
-			// if( ( in_menu_bar != null ) && ( in_menu_bar.booleanValue() ==
-			// false ) ) {
-			// return false;
-			// }
-			// menu_name = ( String )map.get( "preferredMenu" );
 			menu_name = DEFAULT_MENU_SPECIFIER;
 		}
 
@@ -204,15 +195,15 @@ public class CytoscapeMenuBar extends JMenuBar {
 				try {
 					index = Integer.parseInt((String) index_object);
 				} catch (NumberFormatException e) {
-					// TODO: Error handling
 					System.err.println("WARNING: The action " + action
-					                   + " has an \"index\" property but its String value cannot be converted to an int.  Ignoring.");
+					                   + " has an \"index\" property but its String value" 
+									   + " cannot be converted to an int.  Ignoring.");
 					index_object = null;
 				}
 			} else {
-				// TODO: Error handling
 				System.err.println("WARNING: The action " + action
-				                   + " has an \"index\" property but its value is neither an Integer nor a String.  Ignoring.");
+				                   + " has an \"index\" property but its value is neither" 
+								   + " an Integer nor a String.  Ignoring.");
 				index_object = null;
 			}
 
@@ -223,15 +214,9 @@ public class CytoscapeMenuBar extends JMenuBar {
 					if (index < 0) {
 						index = 0;
 					} else {
-						if (menuEffectiveLastIndexMap == null) {
-							menuEffectiveLastIndexMap = createMenuEffectiveLastIndexMap();
-						}
-
 						Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
 
 						if (effective_last_index == null) {
-							// Add a separator.
-							// menu.insertSeparator( index );
 							menuEffectiveLastIndexMap.put(menu, new Integer(index));
 							index += 1;
 						} else if (effective_last_index.intValue() >= index) {
@@ -247,24 +232,17 @@ public class CytoscapeMenuBar extends JMenuBar {
 		if (index_object == null) {
 			boolean added_it = false;
 
-			if (menuEffectiveLastIndexMap != null) {
-				Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
+			Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
 
-				if (effective_last_index != null) {
-					menu.insert(menu_item, effective_last_index.intValue());
-					menuEffectiveLastIndexMap.put(menu,
-					                              new Integer(effective_last_index.intValue() + 1));
-					added_it = true;
-				}
+			if (effective_last_index != null) {
+				menu.insert(menu_item, effective_last_index.intValue());
+				menuEffectiveLastIndexMap.put(menu, new Integer(effective_last_index.intValue() + 1));
+				added_it = true;
 			}
 
 			if (!added_it) {
 				menu.add(menu_item);
 			}
-		}
-
-		if (actionMenuItemMap == null) {
-			actionMenuItemMap = createActionMenuItemMap();
 		}
 
 		actionMenuItemMap.put(action, menu_item);
@@ -298,13 +276,6 @@ public class CytoscapeMenuBar extends JMenuBar {
 				return false;
 			}
 		} else {
-			// PropertyMap map = DataTypeUtilities.getPropertyMap( action );
-			// Boolean in_menu_bar = ( Boolean )map.get( "inMenuBar" );
-			// if( ( in_menu_bar != null ) && ( in_menu_bar.booleanValue() ==
-			// false ) ) {
-			// return false;
-			// }
-			// menu_name = ( String )map.get( "preferredMenu" );
 			menu_name = DEFAULT_MENU_SPECIFIER;
 		}
 
@@ -315,7 +286,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		getMenu(menu_name).remove(menu_item);
 
 		return true;
-	} // removeAction( action )
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -345,10 +316,6 @@ public class CytoscapeMenuBar extends JMenuBar {
 		JMenu parent_menu = null;
 		JMenu menu = null;
 
-		if (menuMap == null) {
-			menuMap = createMenuMap();
-		}
-
 		while (st.hasMoreTokens()) {
 			menu_token = (String) st.nextToken();
 
@@ -374,7 +341,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		}
 
 		return menu;
-	} // getMenu(..)
+	}
 
 	/**
 	 * CytoscapeMenuBars are unique -- this equals() method returns true iff the
@@ -382,23 +349,21 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 */
 	public boolean equals(Object other_object) {
 		return (this == other_object);
-	} // equals( Object )
+	}
 
-	// implements CommunityMember
 	/**
-	 *  DOCUMENT ME!
+	 * implements CommunityMember
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  identifier 
 	 */
 	public String getIdentifier() {
 		return identifier;
-	} // getIdentifier()
+	}
 
 	/**
+	 * imlements Reidentifiable
 	 * @beaninfo (rwb)
 	 */
-
-	// imlements Reidentifiable
 	public void setIdentifier(String new_identifier) {
 		if (identifier == null) {
 			if (new_identifier == null) {
@@ -413,13 +378,12 @@ public class CytoscapeMenuBar extends JMenuBar {
 		String old_identifier = identifier;
 		identifier = new_identifier;
 		firePropertyChange("identifier", old_identifier, new_identifier);
-	} // setIdentifier(..)
+	}
 
 	/**
+	 * imlements Reidentifiable
 	 * @return true (always)
 	 */
-
-	// imlements Reidentifiable
 	public boolean isReidentificationEnabled() {
 		return true;
 	}
@@ -429,7 +393,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 */
 	public String toString() {
 		return getIdentifier();
-	} // toString()
+	}
 
 	/**
 	 * Factory method for instantiating objects of type JMenu
@@ -443,7 +407,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	}
 
 	/**
-	 * Factory method for instantiating the buttons in the toolbar.
+	 * Factory method for instantiating the menuItems in the menu. 
 	 */
 	protected JMenuItem createJMenuItem(Action action) {
 		if ( action instanceof CytoscapeAction ) 
@@ -452,26 +416,4 @@ public class CytoscapeMenuBar extends JMenuBar {
 
 		return new JMenuItem(action);
 	}
-
-	/**
-	 * Factory method for instantiating the action->MenuItem map.
-	 */
-	protected Map createActionMenuItemMap() {
-		return new HashMap();
-	}
-
-	/**
-	 * Factory method for instantiating the String->Menu Map
-	 */
-	protected Map createMenuMap() {
-		return new HashMap();
-	}
-
-	/**
-	 * Factory method for instantiating the Menu->Integer "effective last index"
-	 * Map for Menus with menu items that want to be at the end.
-	 */
-	protected Map createMenuEffectiveLastIndexMap() {
-		return new HashMap();
-	}
-} // class CytoscapeMenuBar
+}

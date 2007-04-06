@@ -92,12 +92,10 @@ public class CyLayouts {
 			layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout");
 		}
 
-		// Add the Settings menu
-		addSettingsMenu(layoutMenu);
-		// Add Cytoscape layouts by default
-		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
+		Cytoscape.getDesktop().getCyMenus().addAction( new SettingsAction() );
+		layoutMenu.addSeparator();
 
-		//addLayout(new xxyy, "Cytoscape layouts");
+		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
 	}
 
 	/**
@@ -278,16 +276,5 @@ public class CyLayouts {
 			menuMap.remove(menuName);
 			layoutMenu.remove(topMenu);
 		}
-	}
-
-	private static void addSettingsMenu(JMenu topMenu) {
-		if (topMenu == null) return;
-		settingsMenu = new JMenuItem("Settings...");
-		settingsMenu.setEnabled(false);
-		settingsMenu.setArmed(false);
-		settingsDialog = new LayoutSettingsDialog();
-		settingsMenu.addActionListener(settingsDialog);
-		topMenu.add(settingsMenu);
-		topMenu.addSeparator();
 	}
 }

@@ -530,7 +530,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new PluginManagerAction());
 		addAction(new PluginUpdateAction());
 
-		opsMenu.add(new JSeparator());
+		opsMenu.addSeparator();
 
 		// 
 		// Help menu
