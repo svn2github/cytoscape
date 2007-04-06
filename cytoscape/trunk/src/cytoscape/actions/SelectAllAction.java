@@ -51,6 +51,7 @@ import cytoscape.view.CytoscapeDesktop;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 
+import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -82,4 +83,8 @@ public class SelectAllAction extends CytoscapeAction {
 			Cytoscape.getCurrentNetworkView().updateView();
 		}
 	} // action performed
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

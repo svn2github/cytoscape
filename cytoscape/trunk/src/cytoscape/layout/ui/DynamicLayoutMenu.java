@@ -78,11 +78,12 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public DynamicLayoutMenu(LayoutAlgorithm layout) {
+	public DynamicLayoutMenu(LayoutAlgorithm layout, boolean enabled) {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;
 		selectedNodes = new HashSet();
+		setEnabled(enabled);
 	}
 
 	/**
@@ -92,7 +93,6 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	 */
 	public void menuCanceled(MenuEvent e) {
 	}
-	;
 
 	/**
 	 *  DOCUMENT ME!
@@ -101,7 +101,6 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	 */
 	public void menuDeselected(MenuEvent e) {
 	}
-	;
 
 	/**
 	 *  DOCUMENT ME!

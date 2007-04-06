@@ -55,6 +55,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.event.MenuEvent;
+
 
 //-------------------------------------------------------------------------
 /**
@@ -82,4 +84,8 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 		cyNetwork.setSelectedNodeState(selectedNodes, false);
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

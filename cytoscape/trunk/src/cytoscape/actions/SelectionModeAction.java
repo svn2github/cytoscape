@@ -37,6 +37,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 
 import cytoscape.view.CyNetworkView;
 
@@ -45,20 +46,26 @@ import giny.view.GraphView;
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 
 /**
  *
  */
-public class SelectionModeAction extends JMenu {
+public class SelectionModeAction extends JMenu implements MenuListener {
 	/**
 	 * Creates a new SelectionModeAction object.
 	 */
+	JCheckBoxMenuItem nodes; 
+	JCheckBoxMenuItem edges; 
+	JCheckBoxMenuItem nodesAndEdges; 
+
 	public SelectionModeAction() {
 		super("Mouse Drag Selects");
 
 		ButtonGroup modeGroup = new ButtonGroup();
-		JCheckBoxMenuItem nodes = new JCheckBoxMenuItem(new AbstractAction("Nodes Only") {
+		nodes = new JCheckBoxMenuItem(new AbstractAction("Nodes Only") {
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
@@ -72,7 +79,7 @@ public class SelectionModeAction extends JMenu {
 		                                                        ActionEvent.CTRL_MASK
 		                                                        | ActionEvent.SHIFT_MASK));
 
-		JCheckBoxMenuItem edges = new JCheckBoxMenuItem(new AbstractAction("Edges Only") {
+		edges = new JCheckBoxMenuItem(new AbstractAction("Edges Only") {
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
@@ -86,7 +93,7 @@ public class SelectionModeAction extends JMenu {
 		                                                        ActionEvent.CTRL_MASK
 		                                                        | ActionEvent.SHIFT_MASK));
 
-		JCheckBoxMenuItem nodesAndEdges = new JCheckBoxMenuItem(new AbstractAction("Nodes and Edges") {
+		nodesAndEdges = new JCheckBoxMenuItem(new AbstractAction("Nodes and Edges") {
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
@@ -116,4 +123,21 @@ public class SelectionModeAction extends JMenu {
 		view.enableEdgeSelection();
 		Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_AND_EDGES);
 	}
+
+    public void menuCanceled(MenuEvent e) {}
+
+    public void menuDeselected(MenuEvent e) {}
+
+    public void menuSelected(MenuEvent e) {
+       	CyNetwork n = Cytoscape.getCurrentNetwork();
+		if ( n == null || n == Cytoscape.getNullNetwork() ) {
+			nodes.setEnabled(false);	
+			edges.setEnabled(false);	
+			nodesAndEdges.setEnabled(false);	
+		} else {
+			nodes.setEnabled(true);	
+			edges.setEnabled(true);	
+			nodesAndEdges.setEnabled(true);	
+		}
+    }
 }

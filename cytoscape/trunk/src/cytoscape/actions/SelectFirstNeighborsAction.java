@@ -59,6 +59,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -90,4 +91,8 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 
 		Cytoscape.getCurrentNetworkView().updateView();
 	} // actionPerformed
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

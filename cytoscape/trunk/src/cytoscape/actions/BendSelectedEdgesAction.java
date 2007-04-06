@@ -55,6 +55,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -87,4 +88,8 @@ public class BendSelectedEdgesAction extends CytoscapeAction {
 			view.updateView();
 		}
 	}
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

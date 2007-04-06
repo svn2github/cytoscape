@@ -61,6 +61,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	protected int keyCode;
 	protected String consoleName;
 	private static List actionList = new LinkedList();
+	protected boolean useCheckBoxMenuItem = false;
 
 	/**
 	 * @beaninfo (rwb)
@@ -311,6 +312,13 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 		preferredButtonGroup = new_preferred;
 		firePropertyChange("preferredButtonGroup", old_preferred, new_preferred);
 	} // setPreferredButtonGroup( String )
+
+	/**
+	 * Indicates whether a check box menu item should be used instead of a normal one.
+	 */
+	boolean useCheckBoxMenuItem() {
+		return useCheckBoxMenuItem;
+	}
 
 	/**
 	 * This method can be used at your discretion, but otherwise does nothing.  It exists

@@ -54,6 +54,7 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JCheckBoxMenuItem;
 
 
 /**
@@ -445,6 +446,10 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * Factory method for instantiating the buttons in the toolbar.
 	 */
 	protected JMenuItem createJMenuItem(Action action) {
+		if ( action instanceof CytoscapeAction ) 
+			if ( ((CytoscapeAction)action).useCheckBoxMenuItem() )
+				return new JCheckBoxMenuItem(action);
+
 		return new JMenuItem(action);
 	}
 

@@ -43,6 +43,8 @@ import cytoscape.data.CyAttributes;
 
 import cytoscape.layout.LayoutAlgorithm;
 
+import cytoscape.view.CyNetworkView;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -130,6 +132,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		// Figure out if we have anything selected
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		Set selectedNodes = network.getSelectedNodes();
+		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
 		Iterator iter = subMenuList.iterator();
@@ -141,12 +144,24 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 			if ((layout.supportsNodeAttributes() != null)
 			    || (layout.supportsEdgeAttributes() != null)) {
-				super.add(new DynamicLayoutMenu(layout));
+				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
 			} else if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
-				super.add(new DynamicLayoutMenu(layout));
+				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
 			} else {
-				super.add(new StaticLayoutMenu(layout));
+				super.add(new StaticLayoutMenu(layout,enableMenuItem));
 			}
 		}
+	}
+
+	private boolean checkEnabled() {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		if ( network == null || network == Cytoscape.getNullNetwork() )
+			return false;
+
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		if ( view == null || view == Cytoscape.getNullNetworkView() )
+			return false;
+		else
+			return true;
 	}
 }

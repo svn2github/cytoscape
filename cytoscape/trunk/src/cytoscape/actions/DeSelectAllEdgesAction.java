@@ -49,6 +49,7 @@ import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 
+import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -78,4 +79,8 @@ public class DeSelectAllEdgesAction extends CytoscapeAction {
 			Cytoscape.getCurrentNetworkView().updateView();
 		}
 	} // action performed
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

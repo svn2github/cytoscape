@@ -1649,8 +1649,6 @@ public abstract class Cytoscape {
 
 		setSelectionMode(currentSelectionMode, view);
 
-		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
-
 		if (network.getClientData(READER_CLIENT_KEY) != null) {
 			((GraphReader) network.getClientData(READER_CLIENT_KEY)).layout(Cytoscape.getNetworkView(network
 			                                                                                         .getIdentifier()));
@@ -1658,6 +1656,8 @@ public abstract class Cytoscape {
 			LayoutAlgorithm defautLayout = CyLayouts.getDefaultLayout();
 			defautLayout.doLayout(view);
 		}
+
+		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 
 		getCurrentNetworkView().fitContent();
 

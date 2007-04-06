@@ -53,6 +53,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import javax.swing.event.MenuEvent;
+
 
 //-------------------------------------------------------------------------
 /**
@@ -85,4 +87,8 @@ public class HideSelectedNodesAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		GinyUtils.hideSelectedNodes(Cytoscape.getCurrentNetworkView());
 	}
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

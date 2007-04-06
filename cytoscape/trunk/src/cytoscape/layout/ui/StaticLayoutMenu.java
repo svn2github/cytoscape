@@ -58,10 +58,11 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public StaticLayoutMenu(LayoutAlgorithm layout) {
+	public StaticLayoutMenu(LayoutAlgorithm layout,boolean enabled) {
 		super(layout.toString());
 		addActionListener(this);
 		this.layout = layout;
+		setEnabled(enabled);
 	}
 
 	/**

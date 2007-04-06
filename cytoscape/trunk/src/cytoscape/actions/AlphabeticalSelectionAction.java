@@ -59,6 +59,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import javax.swing.event.MenuEvent;
 
 /**
  *
@@ -135,4 +136,8 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 
 		return dialog;
 	}
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

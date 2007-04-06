@@ -51,6 +51,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -76,4 +77,8 @@ public class UnHideSelectedEdgesAction extends CytoscapeAction {
 		//GinyUtils.unHideSelectedEdges( Cytoscape.getCurrentNetworkView() );
 		GinyUtils.unHideAll(cytoscape.Cytoscape.getCurrentNetworkView());
 	} //action performed
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }

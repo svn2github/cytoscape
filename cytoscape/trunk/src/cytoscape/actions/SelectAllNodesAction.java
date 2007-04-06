@@ -49,6 +49,7 @@ import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 
+import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -76,4 +77,8 @@ public class SelectAllNodesAction extends CytoscapeAction {
 			Cytoscape.getCurrentNetworkView().updateView();
 		}
 	}
+
+    public void menuSelected(MenuEvent e) {
+        enableForNetworkAndView();
+    }
 }
