@@ -904,7 +904,7 @@
 			</fileset>
 				<manifest>
 					<attribute name="Main-Class" value="cytoscape.util.JnlpWriterUtil"/>
-					<attribute name="Class-Path" value="../lib/jdom.jar"/>
+					<attribute name="Class-Path" value="../lib/jdom-1.0.jar"/>
 			</manifest>
 		</jar>
 	</target>
@@ -1055,7 +1055,7 @@
   <!-- ==================================================================== -->
   <!-- Formats all source files                                             -->
   <!-- ==================================================================== -->
-  <target name="format">
+  <target name="format" description="jalopy formatting">
     <jalopy convention="${resources.dir}/cytoscape_jalopy_code_convention.xml"
             classpathref="classpath">
       <fileset dir="${src.dir}">
