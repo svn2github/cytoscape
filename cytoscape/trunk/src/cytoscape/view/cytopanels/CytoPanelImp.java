@@ -741,7 +741,10 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		if (!isFloating()) {
 			// new frame to place this CytoPanel
 			externalFrame = new JFrame();
-
+			
+			// When floating, Cytopanel is always on top.
+			externalFrame.setAlwaysOnTop(true);
+			
 			// add listener to handle when window is closed
 			addWindowListener();
 
