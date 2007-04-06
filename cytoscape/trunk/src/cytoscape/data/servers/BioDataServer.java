@@ -79,7 +79,9 @@ import java.net.URL;
 
 import java.rmi.Naming;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -135,7 +137,7 @@ public class BioDataServer {
 		// Flip the names or not. Will be given from the Wizard.
 		flip = false;
 
-		thesaurus = new Thesaurus(CytoscapeInit.getProperty("defaultSpeciesName"));
+		thesaurus = new Thesaurus(CytoscapeInit.getProperties().getProperty("defaultSpeciesName"));
 
 		taxonName = null;
 		taxonNumber = null;
@@ -297,7 +299,7 @@ public class BioDataServer {
 
 		String[] lines = rawText.split("\n");
 
-		Vector list = new Vector();
+		List<String> list = new ArrayList<String>();
 
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i].trim();
