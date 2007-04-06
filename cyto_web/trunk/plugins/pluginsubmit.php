@@ -1,8 +1,39 @@
+<?php
+
+// mode = 'new', Data is submited by user
+// mode = 'edit', Cytostaff edit the data in CyPluginDB
+$mode = 'new'; // 'new' or 'edit', by default it is 'new'
+
+// For edit mode only
+$versionID = NULL; // used for edit mode only
+
+if (isset ($_GET['versionid'])) {
+	$versionID = $_GET['versionid'];
+}
+if (isset ($_POST['versionID'])) { // hidden field
+	$versionID = $_POST['versionID'];
+}
+
+if ($versionID != NULL) {
+	$mode = 'edit';
+}
+
+if ($mode == 'new') {
+	$pageTitle = 'Submit plugin to Cytoscape';
+} else
+	if ($mode == 'edit') {
+		$pageTitle = 'Edit plugin in CyPluginDB';
+	} else {
+		exit('Unknown page mode, mode must be either new or edit');
+	}
+
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Submit Plugin to Cytoscape</title>
+	<title><?php echo $pageTitle;?></title>
 	<link rel="stylesheet" type="text/css" media="screen" href="/css/cytoscape.css">
 	<link rel="shortcut icon" href="images/cyto.ico">
 	<style type="text/css">
@@ -19,7 +50,7 @@
 			<td width="10">&nbsp;
 			</td>
 			<td valign="bottom">
-				<h1>Submit Plugin to Cytoscape</h1>
+				<h1><?php echo $pageTitle; ?></h1>
 			</td>
 		</tr>
 	</tbody>
@@ -29,110 +60,43 @@
   
 <?php
 
+$tried = NULL;
+if (isset ($_POST['tried'])) {
+	$tried = 'yes';
+}
 
 // Include the DBMS credentials
 include 'db.inc';
 
 // Connect to the MySQL DBMS
-if (!($connection = @ mysql_pconnect($dbServer, $dbUser, $dbPass)))
-	showerror();
+if ($mode == 'edit') {
+	if (!($connection = @ mysql_pconnect($dbServer, $cytostaff, $cytostaffPass)))
+		showerror();
+}
+else // $mode == 'new'
+{
+	if (!($connection = @ mysql_pconnect($dbServer, $dbUser, $dbPass)))
+		showerror();
+}
 // Use the CyPluginDB database
 if (!mysql_select_db($dbName, $connection))
 	showerror();
 
-/** 
-* function bigboxotext 
-* 
-* bigboxotext is a conversion script that allows you to retain your formatting and
-* text characters without being penalised by standards on output (xhtml 1.1 validation) and
-* allows you to store your textareas content in a mysql database without the fear of loosing formatting.
-* 
-* <code>
-* <?php  // using type 1
-*    $textarea = $_POST['textareasfieldname'];
-* 	$textarea = $bigboxotext($output;
-* ?> 
-* </code> 
-* 
-* @author Chris McKee <pcdevils@gmail.com>  
-* 
-* @param  string $output - Text Area to be formatted
-*/
-function bigboxotext($output) {
-	$output = str_replace(chr(10), "<br />", $output);
-	$output = str_replace(chr(146), "&#8217;", $output);
-	$output = str_replace(chr(130), "&#8218;", $output);
-	$output = str_replace(chr(133), "&#8230;", $output);
-	$output = str_replace(chr(150), "&ndash;", $output);
-	$output = str_replace(chr(151), "&ndash;", $output);
-	$output = str_replace(chr(152), "&ndash;", $output);
-
-	$output = str_replace(chr(146), "&#39;", $output); // error 146
-	$output = str_replace("'", "&#39;", $output); // error 146
-	$output = str_replace(chr(145), "&#39;;", $output); // error 145 
-	$output = str_replace(chr(147), '"', $output);
-	$output = str_replace(chr(148), '"', $output);
-	$output = str_replace(chr(151), "&#8212", $output);
-
-	return $output;
-}
-
-$name = NULL;
-if (isset ($_POST['tfName'])) {
-	$name = $_POST['tfName'];
-}
+// initialize the variables
+$name = NULL; // plugin name
 $version = NULL;
-if (isset ($_POST['tfVersion'])) {
-	$version = $_POST['tfVersion'];
-}
 $description = NULL;
-if (isset ($_POST['taDescription'])) {
-	$description = $_POST['taDescription'];
-	//$description = bigboxotext($description); //preserving the format in a TextArea 
-}
 $projectURL = NULL;
-if (isset ($_POST['tfProjectURL'])) {
-	$projectURL = $_POST['tfProjectURL'];
-}
 $category = NULL;
-if (isset ($_POST['optCategory'])) {
-	$category = $_POST['optCategory'];
-}
 $releaseDate = NULL;
 $month = NULL;
-if (isset ($_POST['tfMonth'])) {
-	$month = $_POST['tfMonth'];
-}
 $day = NULL;
-if (isset ($_POST['tfDay'])) {
-	$day = $_POST['tfDay'];
-}
 $year = NULL;
-if (isset ($_POST['tfYear'])) {
-	$year = $_POST['tfYear'];
-	$releaseDate = $year . '-' . $month . '-' . $day;
-}
-
 $releaseNote = NULL;
-if (isset ($_POST['taReleaseNote'])) {
-	$releaseNote = $_POST['taReleaseNote'];
-}
 $releaseNoteURL = NULL;
-if (isset ($_POST['tfReleaseNoteURL'])) {
-	$releaseNoteURL = $_POST['tfReleaseNoteURL'];
-}
 $fileUpload = NULL;
-if (isset ($_FILES['filePlugin'])) {
-	$fileUpload = $_FILES['filePlugin'];
-}
 $jarURL = NULL;
-if (isset ($_POST['tfJarURL'])) {
-	$jarURL = $_POST['tfJarURL'];
-}
 $sourceURL = NULL;
-if (isset ($_POST['tfSourceURL'])) {
-	$sourceURL = $_POST['tfSourceURL'];
-}
 $Cy2p0_checked = NULL;
 $Cy2p1_checked = NULL;
 $Cy2p2_checked = NULL;
@@ -140,6 +104,156 @@ $Cy2p3_checked = NULL;
 $Cy2p4_checked = NULL;
 $Cy2p5_checked = NULL;
 $cyVersion = NULL;
+$reference = NULL;
+$comment = NULL;
+$names = NULL; // author names
+$emails = NULL;
+$affiliations = NULL;
+$affiliationURLs = NULL;
+
+// Case for 'edit', pull data out of DB for the given versionID
+if (($tried == NULL) && ($mode == 'edit')) {
+
+	// Pull the data out of DB for this versionID
+	$query = 'SELECT categories.name as catName,' .
+	' categories.category_id as catID, ' .
+	' plugin_list.name as pluginName, ' .
+	' plugin_list.description as pluginDescription, ' .
+	' plugin_list.license_brief as pluginLicenseBrief, ' .
+	' plugin_list.license_detail as pluginLicenseDetail, ' .
+	' plugin_list.project_url as projectURL, ' .
+	' plugin_version.plugin_file_id as pluginFileID, ' .
+	' plugin_version.version as pluginVersion, ' .
+	' plugin_version.release_date as releaseDate, ' .
+	' plugin_version.release_note as releaseNote, ' .
+	' plugin_version.release_note_url as releaseNoteURL, ' .
+	' plugin_version.comment as comment, ' .
+	' plugin_version.jar_url as jarURL, ' .
+	' plugin_version.source_url as sourceURL, ' .
+	' plugin_version.cy_version as cyVersion, ' .
+	' plugin_version.reference as reference' .
+	' FROM categories, plugin_list, plugin_version' .
+	' WHERE  categories.category_id     = plugin_list.category_id and ' .
+	'    plugin_list.plugin_auto_id = plugin_version.plugin_id and ' .
+	'    plugin_version.version_auto_id = ' . $versionID;
+
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+
+	$first_row = @ mysql_fetch_array($result);
+	$category = $first_row['catName'];
+	$categoryID = $first_row['catID'];
+	$name = $first_row['pluginName'];
+	$description = $first_row['pluginDescription'];
+	$version = $first_row['pluginVersion'];
+	$releaseDate = $first_row['releaseDate'];
+	list ($year, $month, $day) = split('[-]', $releaseDate);
+	$projectURL = $first_row['projectURL'];
+	$releaseNote = $first_row['releaseNote'];
+	$releaseNoteURL = $first_row['releaseNoteURL'];
+
+	//fileUpload
+
+	$jarURL = $first_row['jarURL'];
+	$sourceURL = $first_row['sourceURL'];
+
+	$cyVersion = $first_row['cyVersion'];
+	$theVersions = preg_split("{,}", $cyVersion); // Split into an array
+
+	foreach ($theVersions as $theVersion) {
+		if ($theVersion == '2.0') {
+			$Cy2p0_checked = "checked";
+		}
+		if ($theVersion == '2.1') {
+			$Cy2p1_checked = "checked";
+		}
+		if ($theVersion == '2.2') {
+			$Cy2p2_checked = "checked";
+		}
+		if ($theVersion == '2.3') {
+			$Cy2p3_checked = "checked";
+		}
+		if ($theVersion == '2.4') {
+			$Cy2p4_checked = "checked";
+		}
+		if ($theVersion == '2.5') {
+			$Cy2p5_checked = "checked";
+		}
+	}
+
+	$reference = $first_row['reference'];
+
+	// get the author info for this versionID
+	$query = 'select * from authors, plugin_author ' .
+	' where authors.author_auto_id = plugin_author.author_id and plugin_version_id =' . $versionID .
+	' order by plugin_author.authorship_seq';
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+	//$authorCount = mysql_num_rows($result);	
+	while ($author_row = @ mysql_fetch_array($result)) {
+		$names[] = $author_row['names'];
+		$emails[] = $author_row['email'];
+		$affiliations[] = $author_row['affiliation'];
+		$affiliationURLs[] = $author_row['affiliationURL'];
+	}
+}
+
+// if form validation failed
+if (isset ($_POST['tfName'])) {
+	$name = $_POST['tfName'];
+}
+
+if (isset ($_POST['tfVersion'])) {
+	$version = $_POST['tfVersion'];
+}
+
+if (isset ($_POST['taDescription'])) {
+	$description = $_POST['taDescription'];
+}
+
+if (isset ($_POST['tfProjectURL'])) {
+	$projectURL = $_POST['tfProjectURL'];
+}
+
+if (isset ($_POST['optCategory'])) {
+	$category = $_POST['optCategory'];
+}
+
+if (isset ($_POST['tfMonth'])) {
+	$month = $_POST['tfMonth'];
+}
+
+if (isset ($_POST['tfDay'])) {
+	$day = $_POST['tfDay'];
+}
+
+if (isset ($_POST['tfYear'])) {
+	$year = $_POST['tfYear'];
+	$releaseDate = $year . '-' . $month . '-' . $day;
+}
+
+if (isset ($_POST['taReleaseNote'])) {
+	$releaseNote = $_POST['taReleaseNote'];
+}
+
+if (isset ($_POST['tfReleaseNoteURL'])) {
+	$releaseNoteURL = $_POST['tfReleaseNoteURL'];
+}
+
+if (isset ($_FILES['filePlugin'])) {
+	$fileUpload = $_FILES['filePlugin'];
+}
+
+if (isset ($_POST['tfJarURL'])) {
+	$jarURL = $_POST['tfJarURL'];
+}
+
+if (isset ($_POST['tfSourceURL'])) {
+	$sourceURL = $_POST['tfSourceURL'];
+}
+
 if (isset ($_POST['chk2p0'])) {
 	$Cy2p0_checked = "checked";
 	$cyVersion = '2.0';
@@ -187,25 +301,21 @@ if (isset ($_POST['chk2p5'])) {
 if (isset ($_POST['taReference'])) {
 	$reference = $_POST['taReference'];
 }
-$comment = NULL;
+
 if (isset ($_POST['taComment'])) {
 	$comment = $_POST['taComment'];
 }
 
 //Authors
-$names = NULL;
 if (isset ($_POST['tfNames0'])) {
 	$names[0] = $_POST['tfNames0'];
 }
-$emails = NULL;
 if (isset ($_POST['tfEmail0'])) {
 	$emails[0] = $_POST['tfEmail0'];
 }
-$affiliations = NULL;
 if (isset ($_POST['tfAffiliation0'])) {
 	$affiliations[0] = $_POST['tfAffiliation0'];
 }
-$affiliationURLs = NULL;
 if (isset ($_POST['tfAffiliationURL0'])) {
 	$affiliationURLs[0] = $_POST['tfAffiliationURL0'];
 }
@@ -223,11 +333,10 @@ if (isset ($_POST['tfAffiliationURL1'])) {
 	$affiliationURLs[1] = $_POST['tfAffiliationURL1'];
 }
 
-
-
-$tried = NULL;
-if (isset ($_POST['tried'])) {
-	$tried = 'yes';
+// Detect the action button clicked
+$submitAction = NULL;
+if (isset ($_POST['btnSubmit'])) {
+	$submitAction = $_POST['btnSubmit'];
 }
 
 //////////////////////// Form validation ////////////////////////
@@ -240,24 +349,32 @@ if ($tried != NULL && $tried == 'yes') {
 ?>
 		Error: Plugin_name is a required field.<br>
 		<?php
+
+
 	}
 	if (empty ($_POST['tfVersion'])) {
 		$validated = false;
 ?>
 		Error: Version is a required field.<br>
 		<?php
+
+
 	}
 	if (empty ($_POST['taDescription'])) {
 		$validated = false;
 ?>
 		Error: Description is a required field.<br>
 		<?php
+
+
 	}
 	if ($category == "Please choose one") {
 		$validated = false;
 ?>
 		Error: Category is a required field.<br>
 		<?php
+
+
 	}
 
 	// validate the release date
@@ -267,18 +384,24 @@ if ($tried != NULL && $tried == 'yes') {
 ?>
 			Invalid release month <br>
 			<?php
+
+
 		}
 		if (!((strspn($day, "0123456789") == strlen($day)) && (strlen($day) > 0) && (strlen($day) < 3))) {
 			$validated = false;
 ?>
 			Invalid release day <br>
 			<?php
+
+
 		}
 		if (!((strspn($year, "0123456789") == strlen($year)) && (strlen($year) > 0) && (strlen($year) == 4))) {
 			$validated = false;
 ?>
 			Invalid release year <br>
 			<?php
+
+
 		}
 	}
 
@@ -288,12 +411,14 @@ if ($tried != NULL && $tried == 'yes') {
 ?>
 		Error: Either a jarURL or a jar file should be supplied.<br>
 		<?php
+
+
 	}
 
 } // End of form validation
 
-// Check if the plugin already existed
-if ($tried != NULL && $tried == 'yes' && $validated) {
+// Check if the plugin already existed, if the mode is 'new' (i.e. bubmit from user)
+if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 	$query = 'SELECT version_auto_id FROM categories, plugin_list, plugin_version' .
 	' WHERE categories.category_id = plugin_list.category_id ' .
 	'       and plugin_list.plugin_auto_id = plugin_version.plugin_id ' .
@@ -310,6 +435,7 @@ if ($tried != NULL && $tried == 'yes' && $validated) {
 ?>
 			Error: The version of this plugin already existed.<br>
 			<?php
+
 
 	}
 }
@@ -513,155 +639,152 @@ if (!($tried && $validated)) {
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td><input name="tried" type="hidden" id="tried" value="yes"></td>
+    <td><input name="tried" type="hidden" id="tried" value="yes">
+      <input name="versionID" type="hidden" id="versionID" value="<?php echo $versionID; ?>"></td>
   </tr>
 </table>
-
-
 <p align="center">
-  <input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
+<?php
+
+	if ($mode == 'new') {
+?>
+<input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
+<?php
+
+	} else
+		if ($mode == 'edit') {
+?>	
+	<p align="center">
+	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save" />
+	  &nbsp;&nbsp;
+	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and publish" />
+	  &nbsp;&nbsp;
+	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and unpublish" />
+  </p>
+</form>
+	<p align="center">&nbsp;</p>
+	<?php
+
+		}
+?>
 </p>
 </form>
-<p align="center">&nbsp;</p>
+
 <?php
 
 
 } else
 	////////////////////////// form processing /////////////////////////
-	// Takes the details of the plugin from user and 
-	// adds them to the tables of our CyPluginDB_RAW.
+	// if mode = 'new', takes the details of the plugin from user and adds them to the tables of our CyPluginDB, with status = 'new'.
+	// if mode = 'Edit', update the plugin info in CyPluginDB, change status based on button pressed.
+
 	{
-	//echo '<p>process the data and Save the data into DB.</p>';
 
-	/*
-		echo "name = ", $name, "<br>";
-		echo "version = ", $version, "<br>";
-		echo "description =", $description, "<br>";
-		echo "projectURL = ", $projectURL, "<br>";
-		echo "category = ", $category, "<br>";
-		echo "month = ", $month, "<br>";
-		echo "day = ", $day, "<br>";
-		echo "year = ", $year, "<br>";
-		echo "releaseNote = ", $releaseNote, "<br>";
-		echo "releaseNoteURL = ", $releaseNoteURL, "<br>";
-		echo "filePlugin.name=", $fileUpload['name'], "<br>";
-		echo "filePlugin.type=", $fileUpload['type'], "<br>";
-		echo "filePlugin.size=", $fileUpload['size'], "<br>";
-		echo "filePlugin.tmp_name=", $fileUpload['tmp_name'], "<br>";
-		echo "jarURL = ", $jarURL, "<br>";
-		echo "sourceURL = ", $sourceURL, "<br>";
-		//echo "Cy2p0_checked = ", $Cy2p0_checked, "<br>";
-		//echo "Cy2p1_checked = ", $Cy2p1_checked, "<br>";
-		//echo "Cy2p2_checked = ", $Cy2p2_checked, "<br>";
-		//echo "Cy2p3_checked = ", $Cy2p3_checked, "<br>";
-		//echo "Cy2p4_checked = ", $Cy2p4_checked, "<br>";
-		//echo "Cy2p5_checked = ", $Cy2p5_checked, "<br>";
-		echo "cyVersion = ", $cyVersion, "<br>";
-		echo "<br>reference = ",$reference, "<br>";
-		echo "comment = ",$comment, "<br>";
-		echo 'authorCount = ', $authorCount, '<br>';
+	//echo 'submitAction = ', $submitAction, '<br>';
+	// In case of edit, do updating
+	if ($mode == 'edit') {
+		$status = NULL;
+		if ($submitAction == 'Save') { // Edit, for save only, do not change status
+			$status = 'Do not change';
+		}
+		else if ($submitAction == 'Save and publish') { // Edit, for save only, do not change status
+			$status = 'published';
+		}
+		if ($submitAction == 'Save and unpublish') { // Edit, for save only, do not change status
+			$status = 'new';
+		}
+		if ($status != 'Do not change') {
+			$query = 'update plugin_version set status = "'.$status.'" where version_auto_id = '.$versionID;
+			//echo 'query =',$query,'<br>';
+			if (!(@ mysql_query($query, $connection)))
+				showerror();		
+		}
 		
-		echo 'names0 = ', $names[0], '<br>';
-		echo 'emails0 = ', $emails[0], '<br>';
-		echo 'affilications0 = ', $affiliations[0], '<br>';
-		echo 'affiliationURLs0 = ', $affiliationURLs[0], '<br>';
-					
-		echo 'names1 = ', $names[1], '<br>';
-		echo 'emails1 = ', $emails[1], '<br>';	
-		echo 'affilications1 = ', $affiliations[1], '<br>';
-		echo 'affiliationURLs1 = ', $affiliationURLs[1], '<br>';	
-*/
+		echo '<br>The plugin status has been updated.<br>';
 
 
-	//Load the Jar file to DB if any
-	$plugin_file_auto_id = NULL;
 
-	if ($fileUpload['name'] != NULL) {
-		//echo "A file is selected";
-		$fileUpload_type = $fileUpload['type'];
-		$fileUpload_name = $fileUpload['name'];
+	} // case for mode = 'edit'
 
-		$fileHandle = fopen($fileUpload['tmp_name'], "r");
-		$fileContent = fread($fileHandle, $fileUpload['size']);
-		$fileContent = addslashes($fileContent);
+	//exit ("Exit before data processing <br>");
 
-		$dbQuery = "INSERT INTO plugin_files VALUES ";
-		$dbQuery .= "(0, '$fileContent', '$fileUpload_type', '$fileUpload_name')";
-		//echo "<br>dbQuery = " . $dbQuery . "<br>";
-		// Run the query
-		if (!(@ mysql_query($dbQuery, $connection)))
-			showerror();
+	if ($mode == 'new') {
+		//$submitAction == 'Submit', accept data submited from user
+		//process the data and Save the data into DB.
 
-		echo "<br><b>File uploaded successfully</b><br>";
-		$plugin_file_auto_id = mysql_insert_id($connection);
-	}
-	
-	// Get the category_id
-	$dbQuery = 'SELECT category_id FROM categories WHERE name = "' . $category . '"';
-	// Run the query
-	if (!($result = @ mysql_query($dbQuery, $connection)))
-		showerror();
+		//Load the Jar file to DB if any
+		$plugin_file_auto_id = NULL;
 
-	$the_row = @ mysql_fetch_array($result);
-	$category_id = $the_row['category_id'];
+		if ($fileUpload['name'] != NULL) {
+			//echo "A file is selected";
+			$fileUpload_type = $fileUpload['type'];
+			$fileUpload_name = $fileUpload['name'];
 
-	$plugin_auto_id = NULL;
-	//Check if there is an old version of this plugin in DB
-	$dbQuery = 'SELECT plugin_auto_id FROM plugin_list ' .
-	'         WHERE plugin_list.name = "' . $name . '" and category_id =' . $category_id;
+			$fileHandle = fopen($fileUpload['tmp_name'], "r");
+			$fileContent = fread($fileHandle, $fileUpload['size']);
+			$fileContent = addslashes($fileContent);
 
-	// Run the query
-	if (!($result = @ mysql_query($dbQuery, $connection)))
-		showerror();
+			$dbQuery = "INSERT INTO plugin_files VALUES ";
+			$dbQuery .= "(0, '$fileContent', '$fileUpload_type', '$fileUpload_name')";
+			//echo "<br>dbQuery = " . $dbQuery . "<br>";
+			// Run the query
+			if (!(@ mysql_query($dbQuery, $connection)))
+				showerror();
 
-	if (@ mysql_num_rows($result) != 0) {
-		//There is an old version in the DB, update the row in the table plugin_list
-		$the_row = @ mysql_fetch_array($result);
-		$plugin_auto_id = $the_row['plugin_auto_id'];
-		echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
-	} else {
-		//This is a new plugin, add a row in the table plugin_list
-		//echo "This is a new plugin<br>";
+			echo "<br><b>File uploaded successfully</b><br>";
+			$plugin_file_auto_id = mysql_insert_id($connection);
+		}
 
-		$dbQuery = 'INSERT INTO plugin_list VALUES ' .
-		'(0, "' . $name . '", "' . $description . '",NULL,NULL,"' . $projectURL . '",' .
-		$category_id . ',now())';
-		//echo "<br>dbQuery = " . $dbQuery . "<br>";
+		// Get the category_id
+		$dbQuery = 'SELECT category_id FROM categories WHERE name = "' . $category . '"';
 		// Run the query
 		if (!($result = @ mysql_query($dbQuery, $connection)))
 			showerror();
 
-		$plugin_auto_id = mysql_insert_id($connection);
-		//echo "new plugin_auto_id = " . $plugin_auto_id . "<br>";
-	}
+		$the_row = @ mysql_fetch_array($result);
+		$category_id = $the_row['category_id'];
 
-	// Insert a row into table plugin_version
-	$status = 'new';
-	$dbQuery = 'INSERT INTO plugin_version VALUES (0, ' . $plugin_auto_id . ', ';
-	if ($plugin_file_auto_id == NULL) {
-		$dbQuery .= 'NULL';
-	} else {
-		$dbQuery .= $plugin_file_auto_id;
-	}
-	$dbQuery .= ',"' . $version . '",\'' .
-	$releaseDate . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
-	$sourceURL . '","' . $cyVersion . '","'.$status.'","' . $reference . '", now())';
+		$plugin_auto_id = NULL;
+		//Check if there is an old version of this plugin in DB
+		$dbQuery = 'SELECT plugin_auto_id FROM plugin_list ' .
+		'         WHERE plugin_list.name = "' . $name . '" and category_id =' . $category_id;
 
-	//echo "<br>dbQuery = " . $dbQuery . "<br>";
+		// Run the query
+		if (!($result = @ mysql_query($dbQuery, $connection)))
+			showerror();
 
-	// Run the query
-	if (!(@ mysql_query($dbQuery, $connection)))
-		showerror();
+		if (@ mysql_num_rows($result) != 0) {
+			//There is an old version in the DB, update the row in the table plugin_list
+			$the_row = @ mysql_fetch_array($result);
+			$plugin_auto_id = $the_row['plugin_auto_id'];
+			echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
+		} else {
+			//This is a new plugin, add a row in the table plugin_list
+			//echo "This is a new plugin<br>";
 
-	$version_auto_id = mysql_insert_id($connection);
-	//echo "new version_auto_id = " . $version_auto_id . "<br>";
+			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
+			'(0, "' . $name . '", "' . $description . '",NULL,NULL,"' . $projectURL . '",' .
+			$category_id . ',now())';
+			//echo "<br>dbQuery = " . $dbQuery . "<br>";
+			// Run the query
+			if (!($result = @ mysql_query($dbQuery, $connection)))
+				showerror();
 
-	// insert rows into author tables (authors and plugin_author)
+			$plugin_auto_id = mysql_insert_id($connection);
+			//echo "new plugin_auto_id = " . $plugin_auto_id . "<br>";
+		}
 
-	$authorCount = count($names);
-
-	for ($i = 0; $i < $authorCount; $i++) {
-		$dbQuery = 'INSERT INTO authors VALUES (0, "' . $names[$i] . '", "' . $emails[$i] . '","' . $affiliations[$i] . '","' . $affiliationURLs[$i] . '")';
+		// Insert a row into table plugin_version
+		$status = 'new';
+		$dbQuery = 'INSERT INTO plugin_version VALUES (0, ' . $plugin_auto_id . ', ';
+		if ($plugin_file_auto_id == NULL) {
+			$dbQuery .= 'NULL';
+		} else {
+			$dbQuery .= $plugin_file_auto_id;
+		}
+		$dbQuery .= ',"' . $version . '",\'' .
+		$releaseDate . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
+		$sourceURL . '","' . $cyVersion . '","' . $status . '","' . $reference . '", now())';
 
 		//echo "<br>dbQuery = " . $dbQuery . "<br>";
 
@@ -669,25 +792,39 @@ if (!($tried && $validated)) {
 		if (!(@ mysql_query($dbQuery, $connection)))
 			showerror();
 
-		$author_auto_id = mysql_insert_id($connection);
-		//echo "new author_auto_id = " . $author_auto_id . "<br>";
+		$version_auto_id = mysql_insert_id($connection);
+		//echo "new version_auto_id = " . $version_auto_id . "<br>";
 
-		$authorship_seq = $i;
-		$dbQuery = 'INSERT INTO plugin_author VALUES (' . $version_auto_id . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
+		// insert rows into author tables (authors and plugin_author)
 
-		//echo "<br>dbQuery = " . $dbQuery . "<br>";
+		$authorCount = count($names);
 
-		// Run the query
-		if (!(@ mysql_query($dbQuery, $connection)))
-			showerror();
-	}
-	
-	?>
+		for ($i = 0; $i < $authorCount; $i++) {
+			$dbQuery = 'INSERT INTO authors VALUES (0, "' . $names[$i] . '", "' . $emails[$i] . '","' . $affiliations[$i] . '","' . $affiliationURLs[$i] . '")';
+
+			//echo "<br>dbQuery = " . $dbQuery . "<br>";
+
+			// Run the query
+			if (!(@ mysql_query($dbQuery, $connection)))
+				showerror();
+
+			$author_auto_id = mysql_insert_id($connection);
+			//echo "new author_auto_id = " . $author_auto_id . "<br>";
+
+			$authorship_seq = $i;
+			$dbQuery = 'INSERT INTO plugin_author VALUES (' . $version_auto_id . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
+
+			//echo "<br>dbQuery = " . $dbQuery . "<br>";
+
+			// Run the query
+			if (!(@ mysql_query($dbQuery, $connection)))
+				showerror();
+		}
+?>
 	Thank you for submitting your plugin to Cytoscape.Cytoscape staff will review the data  and publish it on the cytoscape website. If there are any questions, you will be contacted via e-mail.
 	<?php
-	
-
-} // end of form processing
+	} // end of form processing
+}// case for mode == 'new'
 ?>
 
 <?php include "../footer.php"; ?>
