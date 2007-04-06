@@ -99,7 +99,7 @@
 					    <td><?php echo $pluginName;?></td>
 					    <td><?php echo $pluginVersion;?></td>
 					    <td><?php echo $pluginStatus;?></td>
-					    <td><a href="pluginedit.php?versionid=<?php echo $versionID;?>">Edit</a></td>
+					    <td><a href="pluginsubmit.php?versionid=<?php echo $versionID;?>">Edit</a></td>
 					    <td><a href="pluginversiondelete.php?versionid=<?php echo $versionID;?>">Delete</a></td>
 					    <td><?php echo $lastModified;?></td>
 					  </tr>
