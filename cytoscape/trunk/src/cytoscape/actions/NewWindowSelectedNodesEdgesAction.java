@@ -48,6 +48,8 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 
+import cytoscape.view.CyNetworkView;
+
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 
@@ -99,6 +101,26 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		enabledForSelectedNodesAndEdges();
+        CyNetwork n = Cytoscape.getCurrentNetwork();
+        if ( n == null || n == Cytoscape.getNullNetwork() ) {
+           	setEnabled(false); 
+			return;
+		}
+
+        CyNetworkView v = Cytoscape.getCurrentNetworkView();
+        if ( v == null || v == Cytoscape.getNullNetworkView() ) {
+           	setEnabled(false); 
+			return;	
+		}
+
+        java.util.List edges = v.getSelectedEdges();
+        java.util.List nodes = v.getSelectedNodes();
+
+        if ( ( nodes != null && nodes.size() > 0 ) &&
+             ( edges != null && edges.size() > 0 ) )
+            setEnabled(true);
+        else
+            setEnabled(false);
+
 	}
 }

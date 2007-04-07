@@ -133,6 +133,23 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		enabledForSelectedNodes();			
+        CyNetwork n = Cytoscape.getCurrentNetwork();
+        if ( n == null || n == Cytoscape.getNullNetwork() ) {
+           	setEnabled(false); 
+			return;
+		}
+
+        CyNetworkView v = Cytoscape.getCurrentNetworkView();
+        if ( v == null || v == Cytoscape.getNullNetworkView() ) {
+           	setEnabled(false); 
+			return;	
+		}
+
+        java.util.List nodes = v.getSelectedNodes();
+
+        if ( nodes != null && nodes.size() > 0 )
+            setEnabled(true);
+        else
+            setEnabled(false);
 	}
 }

@@ -170,11 +170,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	protected NetworkViewManager networkViewManager;
 
-	/**
-	 * The HelpBroker provides access to JavaHelp
-	 */
-	protected CyHelpBroker cyHelpBroker;
-
 	// --------------------//
 	// Event Support
 
@@ -266,29 +261,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/c16.png")));
 
-		// initialize Help system with Cytoscape help set - define
-		// context-sensitive
-		// help as we create components
-		cyHelpBroker = new CyHelpBroker();
-
 		main_panel = new JPanel();
 
 		main_panel.setLayout(new BorderLayout());
-		// enable context-sensitive help generally
-		// getHelpBroker().enableHelpKey(getRootPane(), "intro", null);
-
-		// enable context-sensitive help for main panel
-		// getHelpBroker().enableHelp(main_panel, "intro", null);
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
 		networkPanel = new NetworkPanel(this);
-		// enable context-sensitive help for networkPanel
-		// getHelpBroker().enableHelp(networkPanel, "network-view-manager",
-		// null);
 		cyMenus = new CyMenus();
-		// enable context-sensitive help for menus/menubar
-		// getHelpBroker().enableHelp(cyMenus.getMenuBar(), "menus", null);
 		networkViewManager = new NetworkViewManager(this);
 
 		// Listener Setup
@@ -334,9 +314,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// initialize Menus
 		cyMenus.initializeMenus();
-
-		// initialize Help Menu
-		cyMenus.initializeHelp(cyHelpBroker.getHelpBroker());
 
 		// create the CytoscapeDesktop
 		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
@@ -425,24 +402,19 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @deprecated Will be removed April 2008. Use CyHelpBroker.getHelpBroker() instead.
 	 */
 	public HelpBroker getHelpBroker() {
-		return cyHelpBroker.getHelpBroker();
+		return CyHelpBroker.getHelpBroker();
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @deprecated Will be removed April 2008. Use CyHelpBroker.getHelpSet() instead.
 	 */
 	public HelpSet getHelpSet() {
-		return cyHelpBroker.getHelpSet();
+		return CyHelpBroker.getHelpSet();
 	}
 
-	// ----------------------------------------//
 	/**
 	 * Don't use this!  
 	 *

@@ -47,14 +47,18 @@ import javax.help.HelpSet;
  * and help set access
  */
 public class CyHelpBroker {
-	private HelpBroker hb;
-	private HelpSet hs;
+	private static HelpBroker hb;
+	private static HelpSet hs;
 	private static final String HELP_RESOURCE = "/cytoscape/help/jhelpset.hs";
+
+	static {
+		new CyHelpBroker();
+	}
 
 	/**
 	 * Creates a new CyHelpBroker object.
 	 */
-	public CyHelpBroker() {
+	private CyHelpBroker() {
 		hb = null;
 		hs = null;
 
@@ -70,20 +74,20 @@ public class CyHelpBroker {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns the HelpBroker. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return the HelpBroker. 
 	 */
-	public HelpBroker getHelpBroker() {
+	public static HelpBroker getHelpBroker() {
 		return hb;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns the HelpSet. 
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return the HelpSet. 
 	 */
-	public HelpSet getHelpSet() {
+	public static HelpSet getHelpSet() {
 		return hs;
 	}
 }

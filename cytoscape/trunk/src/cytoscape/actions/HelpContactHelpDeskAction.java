@@ -36,6 +36,9 @@
  */
 package cytoscape.actions;
 
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyHelpBroker;
+
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
@@ -44,7 +47,7 @@ import javax.swing.*;
 /**
  *
  */
-public class HelpContactHelpDeskAction extends AbstractAction {
+public class HelpContactHelpDeskAction extends CytoscapeAction {
 	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
 
 	/**
@@ -52,6 +55,7 @@ public class HelpContactHelpDeskAction extends AbstractAction {
 	 */
 	public HelpContactHelpDeskAction() {
 		super("Contact Help Desk");
+		setPreferredMenu("Help");
 	}
 
 	/**

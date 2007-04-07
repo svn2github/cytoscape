@@ -39,6 +39,8 @@ package cytoscape.actions;
 import cytoscape.CytoscapeVersion;
 
 import cytoscape.util.CreditScreen;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyHelpBroker;
 
 import java.awt.event.ActionEvent;
 
@@ -50,12 +52,13 @@ import javax.swing.*;
 /**
  *
  */
-public class HelpAboutAction extends AbstractAction {
+public class HelpAboutAction extends CytoscapeAction {
 	/**
 	 * Creates a new HelpAboutAction object.
 	 */
 	public HelpAboutAction() {
 		super("About");
+		setPreferredMenu("Help");
 	}
 
 	/**

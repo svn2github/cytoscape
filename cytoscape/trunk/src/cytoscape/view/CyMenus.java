@@ -35,70 +35,12 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//------------------------------------------------------------------------------
 package cytoscape.view;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.actions.AlphabeticalSelectionAction;
-import cytoscape.actions.BendSelectedEdgesAction;
-import cytoscape.actions.BirdsEyeViewAction;
-import cytoscape.actions.BookmarkAction;
-import cytoscape.actions.CloneGraphInNewWindowAction;
-import cytoscape.actions.CreateNetworkViewAction;
-import cytoscape.actions.DeSelectAllEdgesAction;
-import cytoscape.actions.DeSelectAllNodesAction;
-import cytoscape.actions.DeselectAllAction;
-import cytoscape.actions.DestroyNetworkAction;
-import cytoscape.actions.DestroyNetworkViewAction;
-import cytoscape.actions.DisplayAttributeBrowserAction;
-import cytoscape.actions.DisplayAdvancedWindowAction;
-import cytoscape.actions.DisplayNetworkPanelAction;
-import cytoscape.actions.ExitAction;
-import cytoscape.actions.ExportAsGMLAction;
-import cytoscape.actions.ExportAsGraphicsAction;
-import cytoscape.actions.ExportAsInteractionsAction;
-import cytoscape.actions.ExportAsXGMMLAction;
-import cytoscape.actions.ExportEdgeAttributesAction;
-import cytoscape.actions.ExportNodeAttributesAction;
-import cytoscape.actions.ExportVizmapAction;
-import cytoscape.actions.FitContentAction;
-import cytoscape.actions.HelpAboutAction;
-import cytoscape.actions.HelpContactHelpDeskAction;
-import cytoscape.actions.HideSelectedEdgesAction;
-import cytoscape.actions.HideSelectedNodesAction;
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportGraphFileAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-import cytoscape.actions.ImportVizmapAction;
-import cytoscape.actions.InvertSelectedEdgesAction;
-import cytoscape.actions.InvertSelectedNodesAction;
-import cytoscape.actions.ListFromFileSelectionAction;
-import cytoscape.actions.NewSessionAction;
-import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
-import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
-import cytoscape.actions.OpenSessionAction;
-import cytoscape.actions.PluginManagerAction;
-import cytoscape.actions.PluginUpdateAction;
-import cytoscape.actions.PreferenceAction;
-import cytoscape.actions.PrintAction;
-import cytoscape.actions.ProxyServerAction;
-import cytoscape.actions.SaveSessionAction;
-import cytoscape.actions.SaveSessionAsAction;
-import cytoscape.actions.SelectAllAction;
-import cytoscape.actions.SelectAllEdgesAction;
-import cytoscape.actions.SelectAllNodesAction;
-import cytoscape.actions.SelectFirstNeighborsAction;
-import cytoscape.actions.SelectionModeAction;
-import cytoscape.actions.SetVisualPropertiesAction;
-import cytoscape.actions.StraightenSelectedEdgesAction;
-import cytoscape.actions.ToggleVisualMapperAction;
-import cytoscape.actions.UnHideSelectedEdgesAction;
-import cytoscape.actions.UnHideSelectedNodesAction;
-import cytoscape.actions.ZoomAction;
-import cytoscape.actions.ZoomSelectedAction;
+import cytoscape.actions.*; // * because we need access to all actions!
 
 import cytoscape.util.undo.UndoAction;
 import cytoscape.util.undo.RedoAction;
@@ -107,7 +49,6 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 
-//------------------------------------------------------------------------------
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
@@ -133,11 +74,8 @@ import javax.swing.KeyStroke;
 import javax.swing.MenuElement;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 
-//------------------------------------------------------------------------------
 /**
  * Creates the menu and tool bars for a Cytoscape window object. It
  * also provides access to individual menus and items.<BR>
@@ -147,8 +85,12 @@ import javax.swing.event.MenuListener;
  * </p>
  */
 public class CyMenus implements GraphViewChangeListener {
+
 	boolean menusInitialized = false;
+
 	CytoscapeMenuBar menuBar;
+	CytoscapeToolBar toolBar;
+
 	JMenu fileMenu;
 	JMenu loadSubMenu;
 	JMenu saveSubMenu;
@@ -158,22 +100,11 @@ public class CyMenus implements GraphViewChangeListener {
 	JMenu viewMenu;
 	JMenu viewSubMenu;
 	JMenu selectMenu;
-	JMenu displayNWSubMenu;
 	JMenu layoutMenu;
 	JMenu vizMenu;
 	JMenu helpMenu;
-	CytoscapeAction menuPrintAction;
-	CytoscapeAction menuExportAction;
-	CytoscapeAction menuSaveSessionAction;
-	CytoscapeAction menuSaveSessionAsAction;
-	CytoscapeAction menuOpenSessionAction;
-	CytoscapeAction networkOverviewAction;
-	JMenuItem vizMenuItem;
-	JMenuItem vizMapperItem;
-	JCheckBoxMenuItem networkOverviewItem;
-	JMenuItem helpContentsMenuItem;
-	JMenuItem helpAboutMenuItem;
-	JMenuItem helpContactHelpDeskMenuItem;
+	JMenu opsMenu;
+
 	JButton openSessionButton;
 	JButton saveButton;
 	JButton zoomInButton;
@@ -183,9 +114,8 @@ public class CyMenus implements GraphViewChangeListener {
 	JButton showAllButton;
 	JButton hideSelectedButton;
 	JButton annotationButton;
+	JButton helpButton;
 	JButton vizButton;
-	JMenu opsMenu;
-	CytoscapeToolBar toolBar;
 
 	/**
 	 * Creates a new CyMenus object. This will construct the basic bar objects, 
@@ -368,10 +298,9 @@ public class CyMenus implements GraphViewChangeListener {
 	public void setNodesRequiredItemsEnabled() { }
 
 	/**
-	 * Update the UI menus and buttons. When the graph view is changed, this
-	 * method is the listener which will update the UI items, enabling or
-	 * disabling items which are only available when the graph view is
-	 * non-empty.
+	 * We are not listening for any GraphViewChangeEvents.  MenuItems are responsible for
+	 * updating their own state, which is generally accomplished by implementing the menuSelected() 
+	 * method.
 	 *
 	 * @param e
 	 */
@@ -535,18 +464,12 @@ public class CyMenus implements GraphViewChangeListener {
 		// 
 		// Help menu
 		//
-		helpAboutMenuItem = new JMenuItem(new HelpAboutAction());
+		addAction(new HelpContentsAction());
+		addAction(new HelpContactHelpDeskAction());
 
-		// for Contents and Context Sensitive help, don't use *Action class
-		// since actions encapsulated by HelpBroker and need run-time data
-		helpContentsMenuItem = new JMenuItem("Contents...", KeyEvent.VK_C);
-		helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
-
-		helpContactHelpDeskMenuItem = new JMenuItem(new HelpContactHelpDeskAction());
-		helpMenu.add(helpContentsMenuItem);
-		helpMenu.add(helpContactHelpDeskMenuItem);
 		helpMenu.addSeparator();
-		helpMenu.add(helpAboutMenuItem);
+
+		addAction(new HelpAboutAction());
 	}
 
 	/**
@@ -658,6 +581,14 @@ public class CyMenus implements GraphViewChangeListener {
 
 		toolBar.addSeparator();
 
+		helpButton = new JButton();
+		helpButton.addActionListener(new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker()));
+		helpButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_help.png")));
+		helpButton.setToolTipText("Help");
+		helpButton.setBorderPainted(false);
+
+		toolBar.add(helpButton);
+
 		toolBar.addSeparator();
 
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
@@ -666,24 +597,4 @@ public class CyMenus implements GraphViewChangeListener {
 		vizButton.setToolTipText("Set Visual Style");
 		vizButton.setBorderPainted(false);
 	} 
-
-	/**
-	 * Register the help set and help broker with the various components
-	 */
-	void initializeHelp(HelpBroker hb) {
-		hb.enableHelp(helpContentsMenuItem, "d0e1", null); // comes from jhelptoc.xml
-		helpContentsMenuItem.addActionListener(new CSH.DisplayHelpFromSource(hb));
-
-		// Add Help Button to main tool bar
-		JButton helpButton = new JButton();
-		helpButton.addActionListener(new CSH.DisplayHelpFromSource(hb));
-		helpButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_help.png")));
-		helpButton.setToolTipText("Help");
-		helpButton.setBorderPainted(false);
-
-		// Add Help Button before VizMapper button
-		int numComponents = toolBar.getComponentCount();
-		toolBar.add(helpButton, numComponents - 1);
-
-	}
 }
