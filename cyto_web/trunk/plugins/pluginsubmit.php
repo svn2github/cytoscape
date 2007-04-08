@@ -4,7 +4,7 @@
 // mode = 'edit', Cytostaff edit the data in CyPluginDB
 $mode = 'new'; // 'new' or 'edit', by default it is 'new'
 
-// For edit mode only
+// If versionid is provided through URL, it is in edit mode
 $versionID = NULL; // used for edit mode only
 
 if (isset ($_GET['versionid'])) {
@@ -18,6 +18,7 @@ if ($versionID != NULL) {
 	$mode = 'edit';
 }
 
+// Set the page title based on the mode
 if ($mode == 'new') {
 	$pageTitle = 'Submit plugin to Cytoscape';
 } else
@@ -106,6 +107,8 @@ $Cy2p5_checked = NULL;
 $cyVersion = NULL;
 $reference = NULL;
 $comment = NULL;
+$license_brief = NULL;
+$license_detail = NULL;
 $names = NULL; // author names
 $emails = NULL;
 $affiliations = NULL;
@@ -113,54 +116,41 @@ $affiliationURLs = NULL;
 
 // Case for 'edit', pull data out of DB for the given versionID
 if (($tried == NULL) && ($mode == 'edit')) {
+	
+	include 'getplugindatafromdb.inc';
 
-	// Pull the data out of DB for this versionID
-	$query = 'SELECT categories.name as catName,' .
-	' categories.category_id as catID, ' .
-	' plugin_list.name as pluginName, ' .
-	' plugin_list.description as pluginDescription, ' .
-	' plugin_list.license_brief as pluginLicenseBrief, ' .
-	' plugin_list.license_detail as pluginLicenseDetail, ' .
-	' plugin_list.project_url as projectURL, ' .
-	' plugin_version.plugin_file_id as pluginFileID, ' .
-	' plugin_version.version as pluginVersion, ' .
-	' plugin_version.release_date as releaseDate, ' .
-	' plugin_version.release_note as releaseNote, ' .
-	' plugin_version.release_note_url as releaseNoteURL, ' .
-	' plugin_version.comment as comment, ' .
-	' plugin_version.jar_url as jarURL, ' .
-	' plugin_version.source_url as sourceURL, ' .
-	' plugin_version.cy_version as cyVersion, ' .
-	' plugin_version.reference as reference' .
-	' FROM categories, plugin_list, plugin_version' .
-	' WHERE  categories.category_id     = plugin_list.category_id and ' .
-	'    plugin_list.plugin_auto_id = plugin_version.plugin_id and ' .
-	'    plugin_version.version_auto_id = ' . $versionID;
+	$category = $db_category;
+	$categoryID = $db_categoryID;
+	$name = $db_name; // plugin name
+	$plugin_id = $db_plugin_id;	
+	$description = $db_description;
+	$version = $db_version;
+	$releaseDate = $db_releaseDate;
+	$year = $db_year;
+	$month = $db_month;
+	$day = $db_day;
+	$projectURL = $db_projectURL;
+	$releaseNote = $db_releaseNote;
+	$releaseNoteURL = $db_releaseNoteURL;
 
-	// Run the query
-	if (!($result = @ mysql_query($query, $connection)))
-		showerror();
-
-	$first_row = @ mysql_fetch_array($result);
-	$category = $first_row['catName'];
-	$categoryID = $first_row['catID'];
-	$name = $first_row['pluginName'];
-	$description = $first_row['pluginDescription'];
-	$version = $first_row['pluginVersion'];
-	$releaseDate = $first_row['releaseDate'];
-	list ($year, $month, $day) = split('[-]', $releaseDate);
-	$projectURL = $first_row['projectURL'];
-	$releaseNote = $first_row['releaseNote'];
-	$releaseNoteURL = $first_row['releaseNoteURL'];
+	$names = $db_names;
+	$emails = $db_emails;
+	$affiliations = $db_affiliations;
+	$affiliationURLs = $db_affiliationURLs;
 
 	//fileUpload
 
-	$jarURL = $first_row['jarURL'];
-	$sourceURL = $first_row['sourceURL'];
+	$jarURL = $db_jarURL;
+	$sourceURL = $db_sourceURL;
+	$cyVersion = $db_cyVersion;
+	$reference = $db_reference;
+	$license_brief = $db_license_brief;
+	$license_detail = $db_license_detail;
+	$comment = $db_comment;
 
-	$cyVersion = $first_row['cyVersion'];
-	$theVersions = preg_split("{,}", $cyVersion); // Split into an array
+//echo '<br>license_brief = ', $license_brief,'<br>';
 
+	$theVersions = preg_split("{,}", $db_cyVersion); // Split into an array
 	foreach ($theVersions as $theVersion) {
 		if ($theVersion == '2.0') {
 			$Cy2p0_checked = "checked";
@@ -181,26 +171,10 @@ if (($tried == NULL) && ($mode == 'edit')) {
 			$Cy2p5_checked = "checked";
 		}
 	}
-
-	$reference = $first_row['reference'];
-
-	// get the author info for this versionID
-	$query = 'select * from authors, plugin_author ' .
-	' where authors.author_auto_id = plugin_author.author_id and plugin_version_id =' . $versionID .
-	' order by plugin_author.authorship_seq';
-	// Run the query
-	if (!($result = @ mysql_query($query, $connection)))
-		showerror();
-	//$authorCount = mysql_num_rows($result);	
-	while ($author_row = @ mysql_fetch_array($result)) {
-		$names[] = $author_row['names'];
-		$emails[] = $author_row['email'];
-		$affiliations[] = $author_row['affiliation'];
-		$affiliationURLs[] = $author_row['affiliationURL'];
-	}
 }
 
-// if form validation failed
+// If form validation failed, remember the form data, 
+// which will be used to fill the refreshed form
 if (isset ($_POST['tfName'])) {
 	$name = $_POST['tfName'];
 }
@@ -304,6 +278,12 @@ if (isset ($_POST['taReference'])) {
 
 if (isset ($_POST['taComment'])) {
 	$comment = $_POST['taComment'];
+}
+if (isset ($_POST['tfLicenseBrief'])) {
+	$license_brief = $_POST['tfLicenseBrief'];
+}
+if (isset ($_POST['taLicenseDetail'])) {
+	$license_detail = $_POST['taLicenseDetail'];
 }
 
 //Authors
@@ -417,7 +397,7 @@ if ($tried != NULL && $tried == 'yes') {
 
 } // End of form validation
 
-// Check if the plugin already existed, if the mode is 'new' (i.e. bubmit from user)
+// if the mode is 'new' (i.e. submit from user), check if the plugin already existed
 if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 	$query = 'SELECT version_auto_id FROM categories, plugin_list, plugin_version' .
 	' WHERE categories.category_id = plugin_list.category_id ' .
@@ -439,8 +419,6 @@ if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 
 	}
 }
-
-//echo "tried = ", $tried, "  validated = ",$validated,"<br>"; 
 
 /////////////////////////////////  Form definition //////////////////////////
 
@@ -468,12 +446,12 @@ if (!($tried && $validated)) {
     <td><div align="right"><span class="style4">*</span>Category</div></td>
     <td><label>
       <select name="optCategory" id="optCategory" >
-        <option "<?php if ($category && $category == 'Please choose one') echo 'selected' ?>">Please choose one</option>
-        <option "<?php if ($category && $category == 'Analysis Plugins') echo 'selected' ?>">Analysis Plugins</option>
-        <option "<?php if ($category && $category == 'Network and Attribute I/O Plugins') echo 'selected' ?>">Network and Attribute I/O Plugins</option>
-        <option "<?php if ($category && $category == 'Network Inference Plugins') echo 'selected' ?>">Network Inference Plugins</option>
-        <option "<?php if ($category && $category == 'Functional Enrichment Plugins') echo 'selected' ?>">Functional Enrichment Plugins</option>
-        <option "<?php if ($category && $category == 'Communication/Scripting Plugins') echo 'selected' ?>">Communication/Scripting Plugins</option>
+        <option <?php if ($category && $category == 'Please choose one') echo 'selected' ?>>Please choose one</option>
+        <option <?php if ($category && $category == 'Analysis Plugins') echo 'selected' ?>>Analysis Plugins</option>
+        <option <?php if ($category && $category == 'Network and Attribute I/O Plugins') echo 'selected' ?>>Network and Attribute I/O Plugins</option>
+        <option <?php if ($category && $category == 'Network Inference Plugins') echo 'selected' ?>>Network Inference Plugins</option>
+        <option <?php if ($category && $category == 'Functional Enrichment Plugins') echo 'selected' ?>>Functional Enrichment Plugins</option>
+        <option <?php if ($category && $category == 'Communication/Scripting Plugins') echo 'selected' ?>>Communication/Scripting Plugins</option>
       </select>
     </label></td>
   </tr>
@@ -604,7 +582,7 @@ if (!($tried && $validated)) {
   <tr>
     <td><div align="right">Release note</div></td>
     <td><label>
-      <textarea name="taReleaseNote" cols="80" rows="3" id="taReleaseNote"></textarea>
+      <textarea name="taReleaseNote" cols="80" rows="3" id="taReleaseNote" > <?php echo $releaseNote ?></textarea>
     </label></td>
   </tr>
   <tr>
@@ -617,24 +595,24 @@ if (!($tried && $validated)) {
   </tr>
   <tr>
     <td><div align="right">Reference</div></td>
-    <td><textarea name="taReference" cols="80" rows="3" id="taReference"></textarea></td>
+    <td><textarea name="taReference" cols="80" rows="3" id="taReference"><?php echo $reference; ?></textarea></td>
   </tr>
   <tr>
     <td><div align="right">License (brief) </div></td>
     <td><label>
-    <input name="tfLicenseBrief" type="text" id="tfLicenseBrief" size="80">
+    <input name="tfLicenseBrief" type="text" id="tfLicenseBrief" value="<?php echo $license_brief ?>" size="80">
     </label></td>
   </tr>
   <tr>
     <td><div align="right">License (detail)</div></td>
     <td><label>
-      <textarea name="taLicenseDetail" cols="80" rows="3" id="taLicenseDetail"></textarea>
+      <textarea name="taLicenseDetail" cols="80" rows="3" id="taLicenseDetail"><?php echo $license_detail ?></textarea>
     </label></td>
   </tr>
   <tr>
     <td><div align="right">Comment</div></td>
     <td><label>
-      <textarea name="taComment" cols="80" rows="2" id="taComment"></textarea>
+      <textarea name="taComment" cols="80" rows="2" id="taComment"><?php echo $comment; ?></textarea>
     </label></td>
   </tr>
   <tr>
@@ -654,7 +632,7 @@ if (!($tried && $validated)) {
 	} else
 		if ($mode == 'edit') {
 ?>	
-	<p align="center">
+  <p align="center">
 	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save" />
 	  &nbsp;&nbsp;
 	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and publish" />
@@ -679,10 +657,83 @@ if (!($tried && $validated)) {
 	// if mode = 'Edit', update the plugin info in CyPluginDB, change status based on button pressed.
 
 	{
+		// Get the category_id
+		$query = 'SELECT category_id FROM categories WHERE name = "' . $category . '"';
+		// Run the query
+		if (!($result = @ mysql_query($query, $connection)))
+			showerror();
 
-	//echo 'submitAction = ', $submitAction, '<br>';
+		$the_row = @ mysql_fetch_array($result);
+		$category_id = $the_row['category_id'];
+
 	// In case of edit, do updating
 	if ($mode == 'edit') {
+		
+		// pull data out of DB for the given versionID	
+		include 'getplugindatafromdb.inc';
+		
+		// update those need update
+		
+		// For table plugin_list
+		$query1_prefix = 'update plugin_list set ';
+		$query1_suffix = ' where plugin_auto_id = '.$db_plugin_id;
+
+		$query1 = $query1_prefix;
+		if ($name != $db_name) { // plugin name
+			$query1 .='name ="'.$name.'",';
+		} 
+		if ($description != $db_description) {
+			$query1 .='description ="'.$description.'",';
+		}
+		if ($license_brief != $db_license_brief) {
+			$query1 .='license_brief ="'.$license_brief.'",';
+		}
+		if ($license_detail != $db_license_detail) {
+			$query1 .='license_detail ="'.$license_detail.'",';
+		}
+		if ($projectURL != $db_projectURL) {
+			$query1 .='project_url ="'.$projectURL.'",';
+		}
+		if ($category_id != $db_categoryID) {
+			$query1 .='category_id ='.$category_id.',';
+		}
+		if ($query1 != $query1_prefix) {
+			$query1 .='sysdat ='.'now()';		
+		}
+		
+		// query to update table plugin_version
+		$query2_prefix = 'update plugin_version set ';
+		$query2_suffix = ' where version_auto_id = '.$versionID;
+
+		$query2 = $query2_prefix;
+
+		// Check plugin_file_id???
+		if ($version != $db_version) { // plugin version
+			$query2 .='version ="'.$version.'",';
+		}
+		if ($releaseDate != $db_releaseDate) {
+			$query2 .='release_date ="'.$releaseDate.'",';
+		}
+		if ($releaseNote != $db_releaseNote) {
+			$query2 .='release_note ="'.$releaseNote.'",';
+		}
+		if ($releaseNoteURL != $db_releaseNoteURL) {
+			$query2 .='release_note_url ="'.$releaseNoteURL.'",';
+		}
+		if ($comment != $db_comment) {
+			$query2 .='comment ="'.$comment.'",';
+		}
+		if ($jarURL != $db_jarURL) {
+			$query2 .='jar_url ="'.$jarURL.'",';
+		}
+		if ($sourceURL != $db_sourceURL) {
+			$query2 .='source_url ="'.$sourceURL.'",';
+		}
+		if ($cyVersion != $db_cyVersion) {
+			$query2 .='cy_version ="'.$cyVersion.'",';
+		}
+		
+		//Determine the status based on what button is clicked
 		$status = NULL;
 		if ($submitAction == 'Save') { // Edit, for save only, do not change status
 			$status = 'Do not change';
@@ -693,20 +744,51 @@ if (!($tried && $validated)) {
 		if ($submitAction == 'Save and unpublish') { // Edit, for save only, do not change status
 			$status = 'new';
 		}
-		if ($status != 'Do not change') {
-			$query = 'update plugin_version set status = "'.$status.'" where version_auto_id = '.$versionID;
-			//echo 'query =',$query,'<br>';
-			if (!(@ mysql_query($query, $connection)))
-				showerror();		
+		if (($status != 'Do not change') && ($status != $db_status)) {
+			$query2 .='status ="'.$status.'",';
 		}
 		
-		echo '<br>The plugin status has been updated.<br>';
+		if ($reference != $db_reference) {
+			$query2 .='reference ="'.$reference.'",';
+		}
+		
+		if ($query2 != $query2_prefix) {
+			$query2 .='sysdat ='.'now()';		
+		}
+		echo '<br>query2 = ',$query2,'<br>';
+		
+		// query to update table authors
+	//$names = $db_names;
+	//$emails = $db_emails;
+	//$affiliations = $db_affiliations;
+	//$affiliationURLs = $db_affiliationURLs;
 
+		// query to update table plugin_files, if the plugin file is not provided, how to update the exosting one???
+
+
+		// query to update table plugin_author
+
+	
+	
+	// Run the querys to update all the tables	
+	if ($query1 != $query1_prefix) { // update table plugin_list
+		if (!(@ mysql_query($query1.$query1_suffix, $connection)))
+			showerror();
+	}
+	if ($query2 != $query2_prefix) {// update table plugin_version
+		if (!(@ mysql_query($query2.$query2_suffix, $connection)))
+			showerror();
+	}
+
+//	if (!(@ mysql_query($query3, $connection)))
+//		showerror();
+//	if (!(@ mysql_query($query4, $connection)))
+//		showerror();
+	//echo '<br>query3 = ',$query3,'<br>';
+	//echo '<br>query3_prefix = ',$query3_prefix,'<br>';
 
 
 	} // case for mode = 'edit'
-
-	//exit ("Exit before data processing <br>");
 
 	if ($mode == 'new') {
 		//$submitAction == 'Submit', accept data submited from user
@@ -735,14 +817,6 @@ if (!($tried && $validated)) {
 			$plugin_file_auto_id = mysql_insert_id($connection);
 		}
 
-		// Get the category_id
-		$dbQuery = 'SELECT category_id FROM categories WHERE name = "' . $category . '"';
-		// Run the query
-		if (!($result = @ mysql_query($dbQuery, $connection)))
-			showerror();
-
-		$the_row = @ mysql_fetch_array($result);
-		$category_id = $the_row['category_id'];
 
 		$plugin_auto_id = NULL;
 		//Check if there is an old version of this plugin in DB
@@ -760,18 +834,15 @@ if (!($tried && $validated)) {
 			echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
 		} else {
 			//This is a new plugin, add a row in the table plugin_list
-			//echo "This is a new plugin<br>";
 
 			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
 			'(0, "' . $name . '", "' . $description . '",NULL,NULL,"' . $projectURL . '",' .
 			$category_id . ',now())';
-			//echo "<br>dbQuery = " . $dbQuery . "<br>";
 			// Run the query
 			if (!($result = @ mysql_query($dbQuery, $connection)))
 				showerror();
 
 			$plugin_auto_id = mysql_insert_id($connection);
-			//echo "new plugin_auto_id = " . $plugin_auto_id . "<br>";
 		}
 
 		// Insert a row into table plugin_version
@@ -786,15 +857,11 @@ if (!($tried && $validated)) {
 		$releaseDate . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
 		$sourceURL . '","' . $cyVersion . '","' . $status . '","' . $reference . '", now())';
 
-		//echo "<br>dbQuery = " . $dbQuery . "<br>";
-
 		// Run the query
 		if (!(@ mysql_query($dbQuery, $connection)))
 			showerror();
 
 		$version_auto_id = mysql_insert_id($connection);
-		//echo "new version_auto_id = " . $version_auto_id . "<br>";
-
 		// insert rows into author tables (authors and plugin_author)
 
 		$authorCount = count($names);
@@ -802,19 +869,14 @@ if (!($tried && $validated)) {
 		for ($i = 0; $i < $authorCount; $i++) {
 			$dbQuery = 'INSERT INTO authors VALUES (0, "' . $names[$i] . '", "' . $emails[$i] . '","' . $affiliations[$i] . '","' . $affiliationURLs[$i] . '")';
 
-			//echo "<br>dbQuery = " . $dbQuery . "<br>";
-
 			// Run the query
 			if (!(@ mysql_query($dbQuery, $connection)))
 				showerror();
 
 			$author_auto_id = mysql_insert_id($connection);
-			//echo "new author_auto_id = " . $author_auto_id . "<br>";
 
 			$authorship_seq = $i;
 			$dbQuery = 'INSERT INTO plugin_author VALUES (' . $version_auto_id . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
-
-			//echo "<br>dbQuery = " . $dbQuery . "<br>";
 
 			// Run the query
 			if (!(@ mysql_query($dbQuery, $connection)))
