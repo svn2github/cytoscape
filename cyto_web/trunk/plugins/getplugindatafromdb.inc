@@ -42,6 +42,7 @@
 	$db_releaseNoteURL = $first_row['releaseNoteURL'];
 
 	//fileUpload
+	$db_pluginFileID = $first_row['pluginFileID'];
 
 	$db_jarURL = $first_row['jarURL'];
 	$db_sourceURL = $first_row['sourceURL'];
@@ -62,7 +63,14 @@
 	if (!($result = @ mysql_query($query, $connection)))
 		showerror();
 	//$authorCount = mysql_num_rows($result);	
+	$db_author_ids = NULL;
+	$db_names = NULL;
+	$db_emails = NULL;
+	$db_affiliations = NULL;
+	$db_affiliationURLs = NULL;
+
 	while ($author_row = @ mysql_fetch_array($result)) {
+		$db_author_ids[] = $author_row['author_id'];
 		$db_names[] = $author_row['names'];
 		$db_emails[] = $author_row['email'];
 		$db_affiliations[] = $author_row['affiliation'];
