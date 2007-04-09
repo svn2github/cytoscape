@@ -39,8 +39,8 @@ package cytoscape.data;
 import cytoscape.AllTests;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagFilter;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectFilter;
 
 import giny.model.*;
 
@@ -54,13 +54,13 @@ import java.util.*;
 /**
  *
  */
-public class FlagEventTest extends TestCase {
+public class SelectEventTest extends TestCase {
 	/**
-	 * Creates a new FlagEventTest object.
+	 * Creates a new SelectEventTest object.
 	 *
 	 * @param name  DOCUMENT ME!
 	 */
-	public FlagEventTest(String name) {
+	public SelectEventTest(String name) {
 		super(name);
 	}
 
@@ -85,12 +85,12 @@ public class FlagEventTest extends TestCase {
 	 * have different values.
 	 */
 	public void testConstants() throws Exception {
-		assertTrue(FlagEvent.SINGLE_NODE != FlagEvent.SINGLE_EDGE);
-		assertTrue(FlagEvent.SINGLE_NODE != FlagEvent.NODE_SET);
-		assertTrue(FlagEvent.SINGLE_NODE != FlagEvent.EDGE_SET);
-		assertTrue(FlagEvent.SINGLE_EDGE != FlagEvent.NODE_SET);
-		assertTrue(FlagEvent.SINGLE_EDGE != FlagEvent.EDGE_SET);
-		assertTrue(FlagEvent.NODE_SET != FlagEvent.EDGE_SET);
+		assertTrue(SelectEvent.SINGLE_NODE != SelectEvent.SINGLE_EDGE);
+		assertTrue(SelectEvent.SINGLE_NODE != SelectEvent.NODE_SET);
+		assertTrue(SelectEvent.SINGLE_NODE != SelectEvent.EDGE_SET);
+		assertTrue(SelectEvent.SINGLE_EDGE != SelectEvent.NODE_SET);
+		assertTrue(SelectEvent.SINGLE_EDGE != SelectEvent.EDGE_SET);
+		assertTrue(SelectEvent.NODE_SET != SelectEvent.EDGE_SET);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class FlagEventTest extends TestCase {
 		Node[] nodeArray = { node1, node2 };
 		Edge[] edgeArray = { edge1, edge2 };
 		GraphPerspective gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
-		FlagFilter source = new FlagFilter(gp);
+		SelectFilter source = new SelectFilter(gp);
 		Set nodeSet = new HashSet();
 		nodeSet.add(node1);
 		nodeSet.add(node2);
@@ -116,29 +116,29 @@ public class FlagEventTest extends TestCase {
 		edgeSet.add(edge1);
 		edgeSet.add(edge2);
 
-		FlagEvent singleNodeOn = new FlagEvent(source, node1, true);
-		checkEvent(singleNodeOn, source, node1, FlagEvent.SINGLE_NODE, true);
+		SelectEvent singleNodeOn = new SelectEvent(source, node1, true);
+		checkEvent(singleNodeOn, source, node1, SelectEvent.SINGLE_NODE, true);
 
-		FlagEvent singleNodeOff = new FlagEvent(source, node2, false);
-		checkEvent(singleNodeOff, source, node2, FlagEvent.SINGLE_NODE, false);
+		SelectEvent singleNodeOff = new SelectEvent(source, node2, false);
+		checkEvent(singleNodeOff, source, node2, SelectEvent.SINGLE_NODE, false);
 
-		FlagEvent singleEdgeOn = new FlagEvent(source, edge1, true);
-		checkEvent(singleEdgeOn, source, edge1, FlagEvent.SINGLE_EDGE, true);
+		SelectEvent singleEdgeOn = new SelectEvent(source, edge1, true);
+		checkEvent(singleEdgeOn, source, edge1, SelectEvent.SINGLE_EDGE, true);
 
-		FlagEvent singleEdgeOff = new FlagEvent(source, edge2, false);
-		checkEvent(singleEdgeOff, source, edge2, FlagEvent.SINGLE_EDGE, false);
+		SelectEvent singleEdgeOff = new SelectEvent(source, edge2, false);
+		checkEvent(singleEdgeOff, source, edge2, SelectEvent.SINGLE_EDGE, false);
 
-		FlagEvent nodeSetOn = new FlagEvent(source, nodeSet, true);
-		checkEvent(nodeSetOn, source, nodeSet, FlagEvent.NODE_SET, true);
+		SelectEvent nodeSetOn = new SelectEvent(source, nodeSet, true);
+		checkEvent(nodeSetOn, source, nodeSet, SelectEvent.NODE_SET, true);
 
-		FlagEvent nodeSetOff = new FlagEvent(source, nodeSet, false);
-		checkEvent(nodeSetOff, source, nodeSet, FlagEvent.NODE_SET, false);
+		SelectEvent nodeSetOff = new SelectEvent(source, nodeSet, false);
+		checkEvent(nodeSetOff, source, nodeSet, SelectEvent.NODE_SET, false);
 
-		FlagEvent edgeSetOn = new FlagEvent(source, edgeSet, true);
-		checkEvent(edgeSetOn, source, edgeSet, FlagEvent.EDGE_SET, true);
+		SelectEvent edgeSetOn = new SelectEvent(source, edgeSet, true);
+		checkEvent(edgeSetOn, source, edgeSet, SelectEvent.EDGE_SET, true);
 
-		FlagEvent edgeSetOff = new FlagEvent(source, edgeSet, false);
-		checkEvent(edgeSetOff, source, edgeSet, FlagEvent.EDGE_SET, false);
+		SelectEvent edgeSetOff = new SelectEvent(source, edgeSet, false);
+		checkEvent(edgeSetOff, source, edgeSet, SelectEvent.EDGE_SET, false);
 	} // testCtor
 
 	/**
@@ -150,7 +150,7 @@ public class FlagEventTest extends TestCase {
 	 * @param targetType DOCUMENT ME!
 	 * @param selectOn DOCUMENT ME!
 	 */
-	public void checkEvent(FlagEvent event, FlagFilter source, Object target, int targetType,
+	public void checkEvent(SelectEvent event, SelectFilter source, Object target, int targetType,
 	                       boolean selectOn) {
 		assertTrue(event.getSource() == source);
 		assertTrue(event.getTarget() == target);
@@ -164,6 +164,6 @@ public class FlagEventTest extends TestCase {
 	 * @param args DOCUMENT ME!
 	 */
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(new TestSuite(FlagEventTest.class));
+		junit.textui.TestRunner.run(new TestSuite(SelectEventTest.class));
 	}
 }

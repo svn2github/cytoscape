@@ -42,9 +42,9 @@
 //---------------------------------------------------------------------------
 package cytoscape.view;
 
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagEventListener;
-import cytoscape.data.FlagFilter;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
+import cytoscape.data.SelectFilter;
 
 //---------------------------------------------------------------------------
 import giny.model.Edge;
@@ -66,13 +66,13 @@ import java.util.Set;
 //---------------------------------------------------------------------------
 /**
  * This class synchronizes the flagged status of nodes and edges as held by a
- * FlagFilter object of a network with the selection status of the corresponding
+ * SelectFilter object of a network with the selection status of the corresponding
  * node and edge views in a GraphView. An object will be selected in the view
- * iff the matching object is flagged in the FlagFilter. This class is only used
+ * iff the matching object is flagged in the SelectFilter. This class is only used
  * by PhoebeNetworkView, which no longer used anywhere.
  */
-public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChangeListener {
-	private FlagFilter flagFilter;
+public class FlagAndSelectionHandler implements SelectEventListener, GraphViewChangeListener {
+	private SelectFilter selectFilter;
 	private GraphView view;
 
 	/**
@@ -81,11 +81,11 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 	 * and view by turning on flags or selections that are currently on in one
 	 * of the two objects.
 	 */
-	public FlagAndSelectionHandler(FlagFilter flagFilter, GraphView view) {
-		this.flagFilter = flagFilter;
+	public FlagAndSelectionHandler(SelectFilter selectFilter, GraphView view) {
+		this.selectFilter = selectFilter;
 		this.view = view;
 		syncFilterAndView();
-		flagFilter.addFlagEventListener(this);
+		selectFilter.addSelectEventListener(this);
 		view.addGraphViewChangeListener(this);
 	}
 
@@ -94,8 +94,8 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 	 * that is currently flagged and vice versa.
 	 */
 	private void syncFilterAndView() {
-		final Set<Node> flaggedNodes = flagFilter.getFlaggedNodes();
-		final Set<Edge> flaggedEdges = flagFilter.getFlaggedEdges();
+		final Set<Node> flaggedNodes = selectFilter.getSelectedNodes();
+		final Set<Edge> flaggedEdges = selectFilter.getSelectedEdges();
 
 		final List<Node> selectedNodes = view.getSelectedNodes();
 		final List<Edge> selectedEdges = view.getSelectedEdges();
@@ -128,7 +128,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 		for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
 			NodeView nv = (NodeView) iter.next();
 			Node node = nv.getNode();
-			flagFilter.setFlagged(node, true); // does nothing if already
+			selectFilter.setSelected(node, true); // does nothing if already
 			                                   // flagged
 		}
 
@@ -136,14 +136,14 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 		for (Iterator iter = selectedEdges.iterator(); iter.hasNext();) {
 			EdgeView ev = (EdgeView) iter.next();
 			Edge edge = ev.getEdge();
-			flagFilter.setFlagged(edge, true); // does nothing if already
+			selectFilter.setSelected(edge, true); // does nothing if already
 			                                   // flagged
 		}
 	}
 
 	/**
 	 * Responds to selection events from the view by setting the matching
-	 * flagged state in the FlagFilter object.
+	 * flagged state in the SelectFilter object.
 	 */
 	public void graphViewChanged(GraphViewChangeEvent event) {
 		// GINY bug: the event we get frequently has the correct indices
@@ -163,7 +163,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 				selList.add(rootGraph.getNode(objIndecies[index]));
 			}
 
-			flagFilter.setFlaggedNodes(selList, true);
+			selectFilter.setSelectedNodes(selList, true);
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
 			if (event.isNodesUnselectedType()) {
 				objIndecies = event.getUnselectedNodeIndices();
@@ -177,7 +177,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 				unselList.add(rootGraph.getNode(objIndecies[index]));
 			}
 
-			flagFilter.setFlaggedNodes(unselList, false);
+			selectFilter.setSelectedNodes(unselList, false);
 		} else if (event.isEdgesSelectedType()) {
 			objIndecies = event.getSelectedEdgeIndices();
 
@@ -187,7 +187,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 				selList.add(rootGraph.getEdge(objIndecies[index]));
 			}
 
-			flagFilter.setFlaggedEdges(selList, true);
+			selectFilter.setSelectedEdges(selList, true);
 		} else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
 			if (event.isEdgesUnselectedType()) {
 				objIndecies = event.getUnselectedEdgeIndices();
@@ -201,7 +201,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 				unselList.add(rootGraph.getEdge(objIndecies[index]));
 			}
 
-			flagFilter.setFlaggedEdges(unselList, false);
+			selectFilter.setSelectedEdges(unselList, false);
 		}
 	}
 
@@ -210,13 +210,13 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 	 * more nodes or edges. Sets the corresponding selection state for views of
 	 * those objects in the graph view.
 	 */
-	public void onFlagEvent(FlagEvent event) {
-		if (event.getTargetType() == FlagEvent.SINGLE_NODE) { // single node
+	public void onSelectEvent(SelectEvent event) {
+		if (event.getTargetType() == SelectEvent.SINGLE_NODE) { // single node
 			setNodeSelected((Node) event.getTarget(), event.getEventType());
-		} else if (event.getTargetType() == FlagEvent.SINGLE_EDGE) { // single
+		} else if (event.getTargetType() == SelectEvent.SINGLE_EDGE) { // single
 			                                                         // edge
 			setEdgeSelected((Edge) event.getTarget(), event.getEventType());
-		} else if (event.getTargetType() == FlagEvent.NODE_SET) { // multiple
+		} else if (event.getTargetType() == SelectEvent.NODE_SET) { // multiple
 			                                                      // nodes
 
 			Set nodeSet = (Set) event.getTarget();
@@ -225,7 +225,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
 				Node node = (Node) iter.next();
 				setNodeSelected(node, event.getEventType());
 			}
-		} else if (event.getTargetType() == FlagEvent.EDGE_SET) { // multiple
+		} else if (event.getTargetType() == SelectEvent.EDGE_SET) { // multiple
 			                                                      // edges
 
 			Set edgeSet = (Set) event.getTarget();

@@ -35,18 +35,10 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-// MiscGB.java:  miscellaneous static GridBagLayout utilities
 
-//--------------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------------------
 package cytoscape.dialogs;
 
-import cytoscape.util.MutableColor;
 
-//--------------------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -60,9 +52,8 @@ import javax.swing.JPanel;
 
 
 /**
- *
  * We DO need to replace this with swing-layout!
- *
+ * Miscellaneous static GridBagLayout utilities
  */
 public class MiscGB {
 	// sets GridBagConstraints.
@@ -250,15 +241,5 @@ public class MiscGB {
 		label.setBackground(c);
 
 		return label;
-	}
-
-	/**
-	 * @deprecated No one uses this so don't start.  Will be removed 12/2006.
-	 */
-	public static JButton buttonAndColor(JDialog parent, MutableColor mc, JLabel l, String bTitle) {
-		JButton jb = new JButton(bTitle);
-		jb.addActionListener(new GeneralColorDialogListener(parent, mc, l, "Choose a " + bTitle));
-
-		return jb;
 	}
 }

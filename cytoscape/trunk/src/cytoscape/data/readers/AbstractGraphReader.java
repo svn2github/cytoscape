@@ -82,34 +82,6 @@ public abstract class AbstractGraphReader implements GraphReader {
 	public abstract void read() throws IOException;
 
 	/**
-	 * @deprecated Use read() instead.  Will be removed Dec 2006.
-	 */
-	public void read(boolean canonicalizeNodeNames) throws IOException {
-		read();
-	}
-
-	/**
-	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-	 */
-	public RootGraph getRootGraph() {
-		return Cytoscape.getRootGraph();
-	}
-
-	/**
-	 * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
-	 */
-	public CyAttributes getNodeAttributes() {
-		return Cytoscape.getNodeAttributes();
-	}
-
-	/**
-	 * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
-	 */
-	public CyAttributes getEdgeAttributes() {
-		return Cytoscape.getEdgeAttributes();
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param view DOCUMENT ME!

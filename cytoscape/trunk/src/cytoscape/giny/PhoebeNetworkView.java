@@ -139,7 +139,7 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 		enableEdgeSelection();
 
 		GraphView[] graphViews = { this };
-		flagAndSelectionHandler = new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getFlagger(),
+		flagAndSelectionHandler = new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getSelectFilter(),
 		                                                      this);
 		//TODO:
 		//     Add NetworkView specific ToolBars

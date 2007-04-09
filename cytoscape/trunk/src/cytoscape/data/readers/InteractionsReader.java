@@ -102,29 +102,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	OpenIntIntHashMap edges;
 
 	/**
-	 * @deprecated Will be removed 12/2006. BioDataServer and species are no longer needed or used.
-	 */
-	public InteractionsReader(BioDataServer dataServer, String species, String filename) {
-		this(filename, null);
-	}
-
-	/**
-	 * @deprecated Will be removed 12/2006. BioDataServer and species are no longer needed or used.
-	 */
-	public InteractionsReader(BioDataServer dataServer, String species, String filename,
-	                          TaskMonitor taskMonitor) {
-		this(filename, taskMonitor);
-	}
-
-	/**
-	 * @deprecated Will be removed 12/2006. BioDataServer and species are no longer needed or used.
-	 */
-	public InteractionsReader(BioDataServer dataServer, String species, String zip_entry,
-	                          boolean is_zip) {
-		this(zip_entry, null, is_zip);
-	}
-
-	/**
 	 * Creates an interaction reader based on a string consisting of data that has
 	 * been read from a zip file.
 	 * @param zip_entry The zip entry data.

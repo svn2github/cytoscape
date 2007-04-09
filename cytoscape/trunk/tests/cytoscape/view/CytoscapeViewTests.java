@@ -110,30 +110,30 @@ public class CytoscapeViewTests extends TestCase {
 	}
 
 	/**
-	 * Tests that the view is properly modified when the flagger is changed.
+	 * Tests that the view is properly modified when the selectfilter is changed.
 	 */
 	public void testFilterToView() throws Exception {
 		checkState(false, false, false, false);
-		network.setFlagged(node1, true);
+		network.setSelectedNodeState(node1, true);
 		checkState(true, false, false, false);
-		network.setFlagged(edge2, true);
+		network.setSelectedEdgeState(edge2, true);
 		checkState(true, false, false, true);
-		network.flagAllNodes();
+		network.selectAllNodes();
 		checkState(true, true, false, true);
-		network.flagAllEdges();
+		network.selectAllEdges();
 		checkState(true, true, true, true);
-		network.setFlagged(node2, false);
+		network.setSelectedNodeState(node2, false);
 		checkState(true, false, true, true);
-		network.setFlagged(edge1, false);
+		network.setSelectedEdgeState(edge1, false);
 		checkState(true, false, false, true);
-		network.unFlagAllEdges();
+		network.unselectAllEdges();
 		checkState(true, false, false, false);
-		network.unFlagAllNodes();
+		network.unselectAllEdges();
 		checkState(false, false, false, false);
 	}
 
 	/**
-	 * Tests that the flagger is properly modified when the view is changed.
+	 * Tests that the selectfilter is properly modified when the view is changed.
 	 */
 	public void testViewToFilter() throws Exception {
 		checkState(false, false, false, false);
@@ -160,11 +160,11 @@ public class CytoscapeViewTests extends TestCase {
 	 * defined by the arguments.
 	 */
 	public void checkState(boolean n1, boolean n2, boolean e1, boolean e2) {
-		assertTrue(network.isFlagged(node1) == n1);
-		assertTrue(network.isFlagged(node2) == n2);
+		assertTrue(network.isSelected(node1) == n1);
+		assertTrue(network.isSelected(node2) == n2);
 
-		//assertTrue( network.isFlagged(edge1) == e1 );
-		//assertTrue( network.isFlagged(edge2) == e2 );
+		//assertTrue( network.isSelected(edge1) == e1 );
+		//assertTrue( network.isSelected(edge2) == e2 );
 		//assertTrue( nodeView1.isSelected() == n1 );
 		// assertTrue( nodeView2.isSelected() == n2 );
 		//assertTrue( edgeView1.isSelected() == e1 );

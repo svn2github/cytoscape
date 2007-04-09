@@ -101,7 +101,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 			addEdgeView(edges[i]);
 		}
 
-		new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getFlagger(), this);
+		new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getSelectFilter(), this);
 
 	}
 

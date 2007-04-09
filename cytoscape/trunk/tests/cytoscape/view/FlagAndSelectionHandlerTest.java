@@ -45,7 +45,7 @@ package cytoscape.view;
 import cytoscape.AllTests;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.FlagFilter;
+import cytoscape.data.SelectFilter;
 
 import cytoscape.view.FlagAndSelectionHandler;
 
@@ -66,7 +66,7 @@ import java.util.*;
  *
  */
 public class FlagAndSelectionHandlerTest extends TestCase {
-	FlagFilter filter;
+	SelectFilter filter;
 	Node node1;
 	Node node2;
 	Edge edge1;
@@ -105,7 +105,7 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 		Node[] nodeArray = { node1, node2 };
 		Edge[] edgeArray = { edge1, edge2 };
 		gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
-		filter = new FlagFilter(gp);
+		filter = new SelectFilter(gp);
 		view = new ding.view.DGraphView(gp);
 
 		for (int i = 0; i < nodeArray.length; i++) {
@@ -121,13 +121,13 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 		edgeView1 = view.getEdgeView(edge1);
 		edgeView2 = view.getEdgeView(edge2);
 		//set an initial state to make sure the handler synchronizes properly
-		filter.setFlagged(node1, true);
+		filter.setSelected(node1, true);
 		edgeView2.setSelected(true);
 		handler = new FlagAndSelectionHandler(filter, view);
-		assertTrue(filter.isFlagged(edge2));
+		assertTrue(filter.isSelected(edge2));
 		assertTrue(nodeView1.isSelected());
-		filter.unflagAllNodes();
-		filter.unflagAllEdges();
+		filter.unselectAllNodes();
+		filter.unselectAllEdges();
 	}
 
 	//------------------------------------------------------------------------------
@@ -145,21 +145,21 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 	 */
 	public void testFilterToView() throws Exception {
 		checkState(false, false, false, false);
-		filter.setFlagged(node1, true);
+		filter.setSelected(node1, true);
 		checkState(true, false, false, false);
-		filter.setFlagged(edge2, true);
+		filter.setSelected(edge2, true);
 		checkState(true, false, false, true);
-		filter.flagAllNodes();
+		filter.selectAllNodes();
 		checkState(true, true, false, true);
-		filter.flagAllEdges();
+		filter.selectAllEdges();
 		checkState(true, true, true, true);
-		filter.setFlagged(node2, false);
+		filter.setSelected(node2, false);
 		checkState(true, false, true, true);
-		filter.setFlagged(edge1, false);
+		filter.setSelected(edge1, false);
 		checkState(true, false, false, true);
-		filter.unflagAllEdges();
+		filter.unselectAllEdges();
 		checkState(true, false, false, false);
-		filter.unflagAllNodes();
+		filter.unselectAllNodes();
 		checkState(false, false, false, false);
 	}
 
@@ -193,10 +193,10 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 	 * defined by the arguments.
 	 */
 	public void checkState(boolean n1, boolean n2, boolean e1, boolean e2) {
-		assertTrue(filter.isFlagged(node1) == n1);
-		assertTrue(filter.isFlagged(node2) == n2);
-		assertTrue(filter.isFlagged(edge1) == e1);
-		assertTrue(filter.isFlagged(edge2) == e2);
+		assertTrue(filter.isSelected(node1) == n1);
+		assertTrue(filter.isSelected(node2) == n2);
+		assertTrue(filter.isSelected(edge1) == e1);
+		assertTrue(filter.isSelected(edge2) == e2);
 		assertTrue(nodeView1.isSelected() == n1);
 		assertTrue(nodeView2.isSelected() == n2);
 		assertTrue(edgeView1.isSelected() == e1);

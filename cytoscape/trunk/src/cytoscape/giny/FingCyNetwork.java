@@ -82,12 +82,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	protected Map clientData;
 
 	/**
-	 * The default object for flagging graph objects
-	 * This will be removed for 2.4
-	 */
-	protected FlagFilter flagger;
-
-	/**
 	 * The default object to set the selected state of nodes and edges
 	 */
 	protected SelectFilter selectFilter;
@@ -121,7 +115,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 
 		clientData = new HashMap();
 		selectFilter = new SelectFilter(this);
-		flagger = new FlagFilter(selectFilter);
 	}
 
 	/**
@@ -205,25 +198,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 		int[] edges = network.getEdgeIndicesArray();
 		restoreNodes(nodes);
 		restoreEdges(edges);
-	}
-
-	/**
-	 * @deprecated @see{getNetworkData}
-	 * Returns the expression data object associated with this network.
-	 * Will be removed Feb 2007.
-	 */
-	public ExpressionData getExpressionData() {
-		return Cytoscape.getExpressionData();
-	}
-
-	/**
-	 * @deprecated
-	 * Sets the expression data object associated with this network.
-	 * Will be removed Feb 2007.
-	 */
-	public void setExpressionData(ExpressionData newData) {
-		//null?
-		// use Cytoscape.loadExpressionData instead
 	}
 
 	/**
@@ -355,170 +329,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 */
 	public SelectFilter getSelectFilter() {
 		return this.selectFilter;
-	}
-
-	//--------------------//
-	// Flagging DEPRECATED METHODS
-
-	/**
-	  * Returns the default object for flagging graph objects.
-	  *
-	  * @deprecated As of 2.3, replaced by {@link #getSelectFilter()}
-	  */
-	public FlagFilter getFlagger() {
-		return flagger;
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #selectAllNodes()}
-	 */
-	public void flagAllNodes() {
-		flagger.flagAllNodes();
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #selectAllEdges()}
-	 */
-	public void flagAllEdges() {
-		flagger.flagAllEdges();
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #unselectAllNodes()}
-	 */
-	public void unFlagAllNodes() {
-		flagger.unflagAllNodes();
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #unselectAllEdges()}
-	 */
-	public void unFlagAllEdges() {
-		flagger.unflagAllEdges();
-	}
-
-	/**
-	 * Flags a node
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
-	 */
-	public void setFlagged(Node node, boolean state) {
-		flagger.setFlagged(node, state);
-	}
-
-	/**
-	 * Flag a group of node
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
-	 */
-	public void setFlaggedNodes(Collection nodes, boolean state) {
-		flagger.setFlaggedNodes(nodes, state);
-	}
-
-	/**
-	 * Flag a group of nodes using their indices
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedNodeState(Collection,boolean)}
-	 */
-	public void setFlaggedNodes(int[] nodes, boolean state) {
-		for (int i = 0; i < nodes.length; ++i) {
-			flagger.setFlagged(getNode(nodes[i]), state);
-		}
-	}
-
-	/**
-	 * Flags a edge
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
-	 */
-	public void setFlagged(Edge edge, boolean state) {
-		flagger.setFlagged(edge, state);
-	}
-
-	/**
-	 * Flag a group of edge
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
-	 */
-	public void setFlaggedEdges(Collection edges, boolean state) {
-		flagger.setFlaggedEdges(edges, state);
-	}
-
-	/**
-	 * Flag a group of edges using their indices
-	 * @deprecated As of 2.3, replaced by {@link #setSelectedEdgeState(Collection,boolean)}
-	 */
-	public void setFlaggedEdges(int[] edges, boolean state) {
-		for (int i = 0; i < edges.length; ++i) {
-			flagger.setFlagged(getEdge(edges[i]), state);
-		}
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #isSelected(Node)}
-	 */
-	public boolean isFlagged(Node node) {
-		return flagger.isFlagged(node);
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #isSelected(Edge)}
-	 */
-	public boolean isFlagged(Edge edge) {
-		return flagger.isFlagged(edge);
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #getSelectedNodes()}
-	 */
-	public Set getFlaggedNodes() {
-		return flagger.getFlaggedNodes();
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #getSelectedEdges()}
-	 */
-	public Set getFlaggedEdges() {
-		return flagger.getFlaggedEdges();
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #getSelectedNodes()}
-	 */
-	public int[] getFlaggedNodeIndicesArray() {
-		Set set = flagger.getFlaggedNodes();
-		int[] nodes = new int[set.size()];
-		int count = 0;
-
-		for (Iterator i = set.iterator(); i.hasNext(); count++) {
-			nodes[count] = ((Node) i.next()).getRootGraphIndex();
-		}
-
-		return nodes;
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #getSelectedEdges()}
-	 */
-	public int[] getFlaggedEdgeIndicesArray() {
-		Set set = flagger.getFlaggedEdges();
-		int[] edges = new int[set.size()];
-		int count = 0;
-
-		for (Iterator i = set.iterator(); i.hasNext(); count++) {
-			edges[count] = ((Edge) i.next()).getRootGraphIndex();
-		}
-
-		return edges;
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #addSelectEventListener(SelectEventListener)}
-	 */
-	public void addFlagEventListener(FlagEventListener listener) {
-		flagger.addFlagEventListener(listener);
-	}
-
-	/**
-	 * @deprecated As of 2.3, replaced by {@link #removeSelectEventListener(SelectEventListener)}
-	 */
-	public void removeFlagEventListener(FlagEventListener listener) {
-		flagger.removeFlagEventListener(listener);
 	}
 
 	//----------------------------------------//

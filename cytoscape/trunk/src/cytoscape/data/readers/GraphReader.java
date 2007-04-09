@@ -87,26 +87,6 @@ public interface GraphReader {
 	public void doPostProcessing(CyNetwork network);
 
 	/**
-	 * @deprecated Use read() instead.  Will be removed Dec 2006.
-	 */
-	public void read(boolean canonicalizeNodeNames) throws IOException;
-
-	/**
-	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-	 */
-	public RootGraph getRootGraph();
-
-	/**
-	 * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
-	 */
-	public CyAttributes getNodeAttributes();
-
-	/**
-	 * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
-	 */
-	public CyAttributes getEdgeAttributes();
-
-	/**
 	 * Gets the name of the network.
 	 * @return network name.
 	 */
