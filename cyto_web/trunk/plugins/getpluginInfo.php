@@ -59,7 +59,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 	$versionCount = @ mysql_num_rows($allVersionInfo);
 
 	if ($versionCount == 0)
-		return "Not available yet";
+		return "Pending to Cytoscape staff review";
 
 	//List info for all available versions
 	while ($versionCount > 0) {
@@ -95,8 +95,10 @@ function getPluginInfoPage($connection, $pluginList_row) {
 			"  <a href=\"" . $versionSpecific_row["release_note_url"] . "\">" . $versionSpecific_row["release_note_url"] . "</a><br>";
 		} else
 			if ($versionSpecific_row["release_note"] != null) {
-				$pluginInfoPage .= "\n<b>Release notes:</b>" .
-				" click <a href=\"displayreleasenote.php?id=" . $versionSpecific_row["id"] . "\">here</a><br>";
+				echo "TODO: Fix displayreleasenote.php";
+			
+				//$pluginInfoPage .= "\n<b>Release notes:</b>" .
+				//" click <a href=\"displayreleasenote.php?id=" . $versionSpecific_row["id"] . "\">here</a><br>";
 			}
 
 		if ($versionSpecific_row["cy_version"]) {
