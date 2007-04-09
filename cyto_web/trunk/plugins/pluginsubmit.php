@@ -554,17 +554,17 @@ if (!($tried && $validated)) {
       </tr>
       <tr>
         <td><label>
-        <input name="tfNames1" type="text" id="tfNames1" size="70" value ="<?php echo $names[1] ?>" />
+        <input name="tfNames1" type="text" id="tfNames1" size="70" value ="<?php if (isset($names[1])){ echo $names[1];} ?>" />
         </label></td>
-        <td><input name="tfEmail1" type="text" id="tfEmail02" size="30" value ="<?php echo $emails[1] ?>" /></td>
+        <td><input name="tfEmail1" type="text" id="tfEmail02" size="30" value ="<?php if (isset($emails[1])){ echo $emails[1];} ?>" /></td>
       </tr>
       <tr>
         <td><div align="center">Affiliation</div></td>
         <td><div align="center">Affiliation URL</div></td>
       </tr>
       <tr>
-        <td><input name="tfAffiliation1" type="text" id="tfAffiliation1" size="70" value ="<?php echo $affiliations[1] ?>" /></td>
-        <td><input name="tfAffiliationURL1" type="text" id="tfAffiliationURL1" size="30" value ="<?php echo $affiliationURLs[1] ?>" /></td>
+        <td><input name="tfAffiliation1" type="text" id="tfAffiliation1" size="70" value ="<?php if (isset($affiliations[1])){echo $affiliations[1];} ?>" /></td>
+        <td><input name="tfAffiliationURL1" type="text" id="tfAffiliationURL1" size="30" value ="<?php if (isset($affiliationURLs[1])){ echo $affiliationURLs[1];} ?>" /></td>
       </tr>
     </table></td>
   </tr>
@@ -701,6 +701,12 @@ if (!($tried && $validated)) {
 			$query1 .='sysdat ='.'now()';		
 		}
 		
+		// Run the query to update table plugin_list
+		if ($query1 != $query1_prefix) { // 
+			if (!(@ mysql_query($query1.$query1_suffix, $connection)))
+				showerror();
+		}
+
 		// query to update table plugin_version
 		$query2_prefix = 'update plugin_version set ';
 		$query2_suffix = ' where version_auto_id = '.$versionID;
@@ -755,38 +761,88 @@ if (!($tried && $validated)) {
 		if ($query2 != $query2_prefix) {
 			$query2 .='sysdat ='.'now()';		
 		}
-		echo '<br>query2 = ',$query2,'<br>';
+		//echo '<br>query2 = ',$query2,'<br>';
 		
-		// query to update table authors
-	//$names = $db_names;
-	//$emails = $db_emails;
-	//$affiliations = $db_affiliations;
-	//$affiliationURLs = $db_affiliationURLs;
+		// Run the querys to update table plugin_version
+		if ($query2 != $query2_prefix) {
+			if (!(@ mysql_query($query2.$query2_suffix, $connection)))
+				showerror();
+		}
 
-		// query to update table plugin_files, if the plugin file is not provided, how to update the exosting one???
+		// If a jar file is not specified, keep the old one, do nothing
+		// If a jar file is specified, replace the old one with the new one
+		$plugin_file_auto_id = $db_pluginFileID;
+		if ($fileUpload['name'] != NULL) { // A file is selected
+			
+			$fileUpload_type = $fileUpload['type'];
+			$fileUpload_name = $fileUpload['name'];
 
+			$fileHandle = fopen($fileUpload['tmp_name'], "r");
+			$fileContent = fread($fileHandle, $fileUpload['size']);
+			$fileContent = addslashes($fileContent);
 
-		// query to update table plugin_author
+			if ($plugin_file_auto_id == NULL) { //  a file does not exist previously
+				// insert the file
+				$query_f1 = "INSERT INTO plugin_files VALUES ".
+						"(0, '$fileContent', '$fileUpload_type', '$fileUpload_name')";
+				//echo "<br>dbQuery = " . $dbQuery . "<br>";
+				// Run the query
+				if (!(@ mysql_query($query_f1, $connection)))
+					showerror();
 
-	
-	
-	// Run the querys to update all the tables	
-	if ($query1 != $query1_prefix) { // update table plugin_list
-		if (!(@ mysql_query($query1.$query1_suffix, $connection)))
-			showerror();
-	}
-	if ($query2 != $query2_prefix) {// update table plugin_version
-		if (!(@ mysql_query($query2.$query2_suffix, $connection)))
-			showerror();
-	}
+				//echo "<br><b>File uploaded successfully</b><br>";
+				$plugin_file_auto_id = mysql_insert_id($connection);
+				
+				// update the plugin_file_id in plugin_version
+				$query_f2 = "update plugin_version set plugin_file_id =".$plugin_file_auto_id.' where version_auto_id ='.$versionID;
+				// Run the query
+				if (!(@ mysql_query($query_f2, $connection)))
+					showerror();
+			}
+			else { // a file already existed, replace it
+				$query_f3 = "update plugin_files set ".
+						" file_data = '$fileContent', file_type = '$fileUpload_type', file_name = '$fileUpload_name'"; 
+						"where plugin_file_auto_id =".$plugin_file_auto_id;
+						
+				// Run the query
+				if (!(@ mysql_query($query_f3, $connection)))
+					showerror();
+			}
+		}
+		
+		// For the author and plugin_author tables, first delete the old ones, then add new ones
 
-//	if (!(@ mysql_query($query3, $connection)))
-//		showerror();
-//	if (!(@ mysql_query($query4, $connection)))
-//		showerror();
-	//echo '<br>query3 = ',$query3,'<br>';
-	//echo '<br>query3_prefix = ',$query3_prefix,'<br>';
+		// delete the existing authors
+		for ($i = 0; $i < count($db_author_ids); $i++) {
+			$query = 'delete from plugin_author where author_id ='.$db_author_ids[$i];
+			// Run the query
+			if (!(@ mysql_query($query, $connection)))
+				showerror();
+			$query = 'delete from authors where author_auto_id ='.$db_author_ids[$i];
+			// Run the query
+			if (!(@ mysql_query($query, $connection)))
+				showerror();
+		}
+		
+		// Add new authors into tables
+		for ($i = 0; $i < count($names); $i++) {
+			if (!(empty($names[$i]) && empty($emails[$i]) && empty($affiliations[$i]) && empty($affiliationURLs[$i]))) {
+				$query = 'INSERT INTO authors VALUES (0, "' . $names[$i] . '", "' . $emails[$i] . '","' . $affiliations[$i] . '","' . $affiliationURLs[$i] . '")';
 
+				// Run the query
+				if (!(@ mysql_query($query, $connection)))
+					showerror();			
+
+				$author_auto_id = mysql_insert_id($connection);
+				$authorship_seq = $i;
+			
+				$query = 'INSERT INTO plugin_author VALUES (' . $versionID . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
+
+				// Run the query
+				if (!(@ mysql_query($query, $connection)))
+					showerror();
+			}
+		}
 
 	} // case for mode = 'edit'
 
