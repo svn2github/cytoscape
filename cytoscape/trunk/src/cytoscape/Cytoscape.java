@@ -791,12 +791,12 @@ public abstract class Cytoscape {
 		return canonicalName;
 	}
 
-	/**
-	 * @deprecated This will be removed Feb 2007.
-	 */
-	public static void setSpecies() {
-		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-	}
+//	/**
+//	 * @deprecated This will be removed Feb 2007.
+//	 */
+//	public static void setSpecies() {
+//		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+//	}
 
 	// --------------------//
 	// Network Methods
