@@ -325,11 +325,11 @@ public abstract class FileUtil {
 	}
 
 	/**
-	 *  DOCUMENT ME!
 	 *
-	 * @param filename DOCUMENT ME!
+	 * @param filename 
+	 *		File to read in
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  The contents of the given file as a string.
 	 */
 	public static String getInputString(String filename) {
 		try {
