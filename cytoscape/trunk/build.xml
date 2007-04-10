@@ -278,7 +278,7 @@
 		       source="1.5" 
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="yes">
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />
@@ -999,22 +999,22 @@
 			<fileset dir="${webstart.dir}/plugins" includes="*.jar" />
 		</signjar>
 	</target>
+	
 	<target name="webstart-extras" 
-	        depends="webstart" 
 		description="add extra plugins into webstart">
 		<echo>
             ---------------------------------------
             Copying over extra PlugIns.
             ---------------------------------------
-        	</echo>
+   	</echo>
 		<copy todir="${webstart.dir}/plugins">
 			<fileset dir="plugins/extras">
 				<include name="*.jar" />
 			</fileset>
-		<signjar alias="cytoscape" storepass="secret">
-			<fileset dir="${webstart.dir}/plugins/extras"/>
-		</signjar>
 		</copy>
+
+		<antcall target="webstart" />
+		
 	</target>
 
   <!-- ======================================================= -->
