@@ -48,7 +48,7 @@ import cytoscape.util.IndeterminateProgressBar;
 
 import cytoscape.util.shadegrown.WindowUtilities;
 
-import cytoscape.view.CytoscapeDesktop;
+//import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.plugin.PluginManager;
 
@@ -72,7 +72,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -137,12 +137,12 @@ public class CytoscapeInit {
 	private static File mruf;
 
 	// Configuration variables
-	private static boolean useView = true;
-	private static boolean suppressView = false;
-	private static int secondaryViewThreshold;
+//	private static boolean useView = true;
+//	private static boolean suppressView = false;
+//	private static int secondaryViewThreshold;
 
 	// View Only Variables
-	private static String vizmapPropertiesLocation;
+//	private static String vizmapPropertiesLocation;
 
 	// Error message
 	private static String ErrorMsg;
@@ -252,22 +252,6 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 * @deprecated Use getProperties().setProperty( ) instead. Since this method
-	 *             never made it into a release, it will be removed Summer 2006.
-	 */
-	public static void setProperty(String key, String value) {
-		properties.setProperty(key, value);
-	}
-
-	/**
-	 * @deprecated Use getProperties().getProperty( ) instead. Since this method
-	 *             never made it into a release, it will be removed Summer 2006.
-	 */
-	public static String getProperty(String key) {
-		return properties.getProperty(key);
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -294,186 +278,186 @@ public class CytoscapeInit {
 		return resourcePlugins;
 	}
 
-	/**
-	 * @deprecated This method will be removed April 2007. No one appears to use
-	 *             this method, so don't start.
-	 */
-	public String getHelp() {
-		return "Help! - you shouldn't be using this method";
-	}
-
-	/**
-	 * @deprecated This method will be removed April 2007. Use getMode()
-	 *             instead.
-	 */
-	public static boolean isHeadless() {
-		return !useView;
-	}
-
-	/**
-	 * @deprecated This method will be removed April 2007. Use getMode()
-	 *             instead.
-	 */
-	public static boolean useView() {
-		return useView;
-	}
-
-	/**
-	 * @deprecated This method will be removed April 2007. No one appears to use
-	 *             this method, so don't start.
-	 */
-	public static boolean suppressView() {
-		return suppressView;
-	}
-
-	/**
-	 * @deprecated Use Properties (getProperties()) instead of args for
-	 *             accessing initialization information. This method will be
-	 *             removed April 2007.
-	 */
-	public static String[] getArgs() {
-		return initParams.getArgs();
-	}
-
-	/**
-	 * @deprecated This method will be removed April 2007.
-	 */
-	public static String getPropertiesLocation() {
-		return "";
-	}
-
-	/**
-	 * @deprecated This method will be removed April 2007. Use
-	 *             getProperty("bioDataServer") instead.
-	 */
-	public static String getBioDataServer() {
-		return properties.getProperty("bioDataServer");
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. Use getProperty(
-	 *             "canonicalizeNames" ) instead.
-	 */
-	public static boolean noCanonicalization() {
-		return properties.getProperty("canonicalizeNames").equals("true");
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. No one appears to be using this
-	 *             method, so don't start.
-	 */
-	public static Set getExpressionFiles() {
-		return new HashSet(initParams.getExpressionFiles());
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. No one appears to be using this
-	 *             method, so don't start.
-	 */
-	public static Set getGraphFiles() {
-		return new HashSet(initParams.getGraphFiles());
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. No one appears to be using this
-	 *             method, so don't start.
-	 */
-	public static Set getEdgeAttributes() {
-		return new HashSet(initParams.getEdgeAttributeFiles());
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. No one appears to be using this
-	 *             method, so don't start.
-	 */
-	public static Set getNodeAttributes() {
-		return new HashSet(initParams.getNodeAttributeFiles());
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. Use getProperty(
-	 *             "defaultSpeciesName" ) instead.
-	 */
-	public static String getDefaultSpeciesName() {
-		return properties.getProperty("defaultSpeciesName", "unknown");
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. Use
-	 *             CytoscapeDesktop.parseViewType(CytoscapeInit.getProperties().getProperty("viewType"));
-	 */
-	public static int getViewType() {
-		return CytoscapeDesktop.parseViewType(properties.getProperty("viewType"));
-	}
-
-	/**
-	 * Gets the ViewThreshold. Networks with number of nodes below this
-	 * threshold will automatically have network views created.
-	 *
-	 * @return view threshold.
-	 * @deprecated Will be removed April 2007. Use getProperty( "viewThreshold" )
-	 *             instead.
-	 */
-	public static int getViewThreshold() {
-		return Integer.parseInt(properties.getProperty("viewThreshold"));
-	}
-
-	/**
-	 * Sets the ViewThreshold. Networks with number of nodes below this
-	 * threshold will automatically have network views created.
-	 *
-	 * @param threshold
-	 *            view threshold.
-	 * @deprecated Will be removed April 2007. Use setProperty( "viewThreshold",
-	 *             thresh ) instead.
-	 */
-	public static void setViewThreshold(int threshold) {
-		properties.setProperty("viewThreshold", Integer.toString(threshold));
-	}
-
-	/**
-	 * Gets the Secondary View Threshold. This value is a secondary check on
-	 * rendering very large networks. It is primarily checked when a user wishes
-	 * to create a view for a large network.
-	 *
-	 * @return threshold value, indicating number of nodes.
-	 * @deprecated Will be removed April 2007. Use getProperty(
-	 *             "secondaryViewThreshold" ) instead.
-	 */
-	public static int getSecondaryViewThreshold() {
-		return secondaryViewThreshold;
-	}
-
-	/**
-	 * Sets the Secondary View Threshold. This value is a secondary check on
-	 * rendering very large networks. It is primarily checked when a user wishes
-	 * to create a view for a large network.
-	 *
-	 * @param threshold
-	 *            value, indicating number of nodes.
-	 * @deprecated Will be removed April 2007. Use getProperties().setProperty(
-	 *             "secondaryViewThreshold", thresh ) instead.
-	 */
-	public static void setSecondaryViewThreshold(int threshold) {
-		secondaryViewThreshold = threshold;
-	}
-
-	// View Only Variables
-	/**
-	 * @deprecated Will be removed April 2007. Use getProperties().getProperty(
-	 *             "TODO" ) instead.
-	 */
-	public static String getVizmapPropertiesLocation() {
-		return vizmapPropertiesLocation;
-	}
-
-	/**
-	 * @deprecated Will be removed April 2007. Use getProperties().getProperty(
-	 *             "defaultVisualStyle" ) instead.
-	 */
-	public static String getDefaultVisualStyle() {
-		return properties.getProperty("defaultVisualStyle");
-	}
+//	/**
+//	 * @deprecated This method will be removed April 2007. No one appears to use
+//	 *             this method, so don't start.
+//	 */
+//	public String getHelp() {
+//		return "Help! - you shouldn't be using this method";
+//	}
+//
+//	/**
+//	 * @deprecated This method will be removed April 2007. Use getMode()
+//	 *             instead.
+//	 */
+//	public static boolean isHeadless() {
+//		return !useView;
+//	}
+//
+//	/**
+//	 * @deprecated This method will be removed April 2007. Use getMode()
+//	 *             instead.
+//	 */
+//	public static boolean useView() {
+//		return useView;
+//	}
+//
+//	/**
+//	 * @deprecated This method will be removed April 2007. No one appears to use
+//	 *             this method, so don't start.
+//	 */
+//	public static boolean suppressView() {
+//		return suppressView;
+//	}
+//
+//	/**
+//	 * @deprecated Use Properties (getProperties()) instead of args for
+//	 *             accessing initialization information. This method will be
+//	 *             removed April 2007.
+//	 */
+//	public static String[] getArgs() {
+//		return initParams.getArgs();
+//	}
+//
+//	/**
+//	 * @deprecated This method will be removed April 2007.
+//	 */
+//	public static String getPropertiesLocation() {
+//		return "";
+//	}
+//
+//	/**
+//	 * @deprecated This method will be removed April 2007. Use
+//	 *             getProperty("bioDataServer") instead.
+//	 */
+//	public static String getBioDataServer() {
+//		return properties.getProperty("bioDataServer");
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. Use getProperty(
+//	 *             "canonicalizeNames" ) instead.
+//	 */
+//	public static boolean noCanonicalization() {
+//		return properties.getProperty("canonicalizeNames").equals("true");
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. No one appears to be using this
+//	 *             method, so don't start.
+//	 */
+//	public static Set getExpressionFiles() {
+//		return new HashSet(initParams.getExpressionFiles());
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. No one appears to be using this
+//	 *             method, so don't start.
+//	 */
+//	public static Set getGraphFiles() {
+//		return new HashSet(initParams.getGraphFiles());
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. No one appears to be using this
+//	 *             method, so don't start.
+//	 */
+//	public static Set getEdgeAttributes() {
+//		return new HashSet(initParams.getEdgeAttributeFiles());
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. No one appears to be using this
+//	 *             method, so don't start.
+//	 */
+//	public static Set getNodeAttributes() {
+//		return new HashSet(initParams.getNodeAttributeFiles());
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. Use getProperty(
+//	 *             "defaultSpeciesName" ) instead.
+//	 */
+//	public static String getDefaultSpeciesName() {
+//		return properties.getProperty("defaultSpeciesName", "unknown");
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. Use
+//	 *             CytoscapeDesktop.parseViewType(CytoscapeInit.getProperties().getProperty("viewType"));
+//	 */
+//	public static int getViewType() {
+//		return CytoscapeDesktop.parseViewType(properties.getProperty("viewType"));
+//	}
+//
+//	/**
+//	 * Gets the ViewThreshold. Networks with number of nodes below this
+//	 * threshold will automatically have network views created.
+//	 *
+//	 * @return view threshold.
+//	 * @deprecated Will be removed April 2007. Use getProperty( "viewThreshold" )
+//	 *             instead.
+//	 */
+//	public static int getViewThreshold() {
+//		return Integer.parseInt(properties.getProperty("viewThreshold"));
+//	}
+//
+//	/**
+//	 * Sets the ViewThreshold. Networks with number of nodes below this
+//	 * threshold will automatically have network views created.
+//	 *
+//	 * @param threshold
+//	 *            view threshold.
+//	 * @deprecated Will be removed April 2007. Use setProperty( "viewThreshold",
+//	 *             thresh ) instead.
+//	 */
+//	public static void setViewThreshold(int threshold) {
+//		properties.setProperty("viewThreshold", Integer.toString(threshold));
+//	}
+//
+//	/**
+//	 * Gets the Secondary View Threshold. This value is a secondary check on
+//	 * rendering very large networks. It is primarily checked when a user wishes
+//	 * to create a view for a large network.
+//	 *
+//	 * @return threshold value, indicating number of nodes.
+//	 * @deprecated Will be removed April 2007. Use getProperty(
+//	 *             "secondaryViewThreshold" ) instead.
+//	 */
+//	public static int getSecondaryViewThreshold() {
+//		return secondaryViewThreshold;
+//	}
+//
+//	/**
+//	 * Sets the Secondary View Threshold. This value is a secondary check on
+//	 * rendering very large networks. It is primarily checked when a user wishes
+//	 * to create a view for a large network.
+//	 *
+//	 * @param threshold
+//	 *            value, indicating number of nodes.
+//	 * @deprecated Will be removed April 2007. Use getProperties().setProperty(
+//	 *             "secondaryViewThreshold", thresh ) instead.
+//	 */
+//	public static void setSecondaryViewThreshold(int threshold) {
+//		secondaryViewThreshold = threshold;
+//	}
+//
+//	// View Only Variables
+//	/**
+//	 * @deprecated Will be removed April 2007. Use getProperties().getProperty(
+//	 *             "TODO" ) instead.
+//	 */
+//	public static String getVizmapPropertiesLocation() {
+//		return vizmapPropertiesLocation;
+//	}
+//
+//	/**
+//	 * @deprecated Will be removed April 2007. Use getProperties().getProperty(
+//	 *             "defaultVisualStyle" ) instead.
+//	 */
+//	public static String getDefaultVisualStyle() {
+//		return properties.getProperty("defaultVisualStyle");
+//	}
 
 	/**
 	 * Parses the plugin input strings and transforms them into the appropriate
@@ -726,14 +710,12 @@ public class CytoscapeInit {
 		System.out.println("");
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param plugin DOCUMENT ME!
-	 */
-
 	/* TODO add warning to user that another plugin with the same namespace as a previously loaded plugin has been found and will not be
 	 * loaded
+	 */
+	/**
+	 *  DOCUMENT ME!
+	 * @param plugin DOCUMENT ME!
 	 */
 	public void loadPlugin(Class plugin, String PluginJarFile) {
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
@@ -811,26 +793,26 @@ public class CytoscapeInit {
 		mruf = mruf_new;
 	}
 
-	/**
-	 * @deprecated Will be removed April 2007. This doesn't do anything. To set
-	 *             the default species name use
-	 *             getProperties().setProperty("defaultSpeciesName", newName),
-	 *             which you were presumably doing already.
-	 */
-	public static void setDefaultSpeciesName() {
-		// Update defaultSpeciesName using current properties.
-		// This is necessary to reflect changes in the Preference Editor
-		// immediately
-	}
+//	/**
+//	 * @deprecated Will be removed April 2007. This doesn't do anything. To set
+//	 *             the default species name use
+//	 *             getProperties().setProperty("defaultSpeciesName", newName),
+//	 *             which you were presumably doing already.
+//	 */
+//	public static void setDefaultSpeciesName() {
+//		// Update defaultSpeciesName using current properties.
+//		// This is necessary to reflect changes in the Preference Editor
+//		// immediately
+//	}
 
-	/**
-	 * @deprecated This method is only deprecated because it is misspelled. Just
-	 *             use the correctly spelled method: getConfigDirectory(). This
-	 *             method will be removed 12/2006.
-	 */
-	public static File getConfigDirectoy() {
-		return getConfigDirectory();
-	}
+//	/**
+//	 * @deprecated This method is only deprecated because it is misspelled. Just
+//	 *             use the correctly spelled method: getConfigDirectory(). This
+//	 *             method will be removed 12/2006.
+//	 */
+//	public static File getConfigDirectoy() {
+//		return getConfigDirectory();
+//	}
 
 	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
