@@ -455,6 +455,7 @@
 	<!-- if a test fails.                                                    -->
 	<!-- =================================================================== -->
 	<target name="test" depends="jar">
+
 		<echo>
             ***********************************************
             Running all unit tests (quickly). 
@@ -462,6 +463,7 @@
 	      </echo>
 		<mkdir dir="${junit.report.dir}" />
 		<mkdir dir="${junit.report.dir}/fast" />
+		
 		<junit printsummary="yes" 
 		       haltonfailure="no" 
 		       maxmemory="512m">
@@ -633,7 +635,7 @@
 	<!--                                                         -->
 	<!-- ======================================================= -->
 	<target name="release" 
-	        depends="jar, test" 
+	        depends="jar" 
 		description="Creates Cytoscape Release">
 
 		<echo>
@@ -922,7 +924,7 @@
 			<arg value="-cyto_dir" />
 			<arg value="${release.dir}" />
 			<arg value="-url" />
-			<arg value="${webstartURL}" />
+			<arg value="${webstartURL}/webstart" />
 			<arg value="-save_dir" /> 
 			<arg value="${basedir}/resources/webstart" />
 		</java>
@@ -998,31 +1000,34 @@
 			<fileset dir="${webstart.dir}/plugins" includes="*.jar" />
 		</signjar>
 	</target>
+	
+	
 	<target name="webstart-extras" 
-	        depends="webstart" 
 		description="add extra plugins into webstart">
 		<echo>
             ---------------------------------------
             Copying over extra PlugIns.
             ---------------------------------------
-        	</echo>
+   	</echo>
 		<copy todir="${webstart.dir}/plugins">
 			<fileset dir="plugins/extras">
 				<include name="*.jar" />
 			</fileset>
-		<signjar alias="cytoscape" storepass="secret">
-			<fileset dir="${webstart.dir}/plugins/extras"/>
-		</signjar>
 		</copy>
+
+		<antcall target="webstart" />
+		
 	</target>
 
   <!-- ======================================================= -->
   <!-- Create Cytoscape WebStart WAR file Distribution         -->
   <!-- ======================================================= -->
 	<target name="war" depends="webstart" description="Create war package for webstart distribution">
-		<!-- Using jar rather that war task because we don't have a webxml file and not sure we need one -->
- 		<jar destfile="Cytoscape.war">
-			<fileset dir="${webstart.dir}"/>
+		<!-- Using jar rather that war task because we don't have a webxml file -->
+ 		<jar destfile="${build.dir}/Cytoscape.war">
+			<fileset dir="${build.dir}">
+				<include name="webstart/**"/>
+			</fileset>
 			<fileset dir="${basedir}/resources/webstart"/>
 		</jar>
 	</target>
