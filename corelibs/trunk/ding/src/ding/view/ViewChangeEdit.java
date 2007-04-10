@@ -36,6 +36,7 @@
 
 package ding.view;
 
+import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.geom.Point2D;
@@ -59,11 +60,11 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 
 	private double m_orig_scaleFactor;
 	private Point2D m_orig_center;
-	private Map<NodeView, Point2D.Double> m_orig_points;
+	private Map<Node, Point2D.Double> m_orig_points;
 
 	private double m_new_scaleFactor;
 	private Point2D m_new_center;
-	private Map<NodeView, Point2D.Double> m_new_points;
+	private Map<Node, Point2D.Double> m_new_points;
 
 	private DGraphView m_view;
 
@@ -74,8 +75,8 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 		m_view = view;
 		m_label = label;
 
-		m_orig_points = new HashMap<NodeView, Point2D.Double>();
-		m_new_points = new HashMap<NodeView, Point2D.Double>();
+		m_orig_points = new HashMap<Node, Point2D.Double>();
+		m_new_points = new HashMap<Node, Point2D.Double>();
 
 		saveOldPositions();
 	}
@@ -83,28 +84,32 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 	protected void saveOldPositions() {
 		m_orig_center = m_view.getCenter();
 		m_orig_scaleFactor = m_view.getZoom();
-		//System.out.println("~~~~~~~~~~ set old center: " + m_orig_center);
-		//System.out.println("~~~~~~~~~~ set old zoom: " + m_orig_scaleFactor);
 		m_orig_points.clear();
 
-		Iterator nvi = m_view.getNodeViewsIterator(); 
-		while (nvi.hasNext()) {
-			NodeView nv = (NodeView) nvi.next();
-			m_orig_points.put(nv, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
+		// Use nodes as keys because they are less volatile than
+		// node views, which can disappear between when this edit
+		// is created and when it is used.
+		Iterator ni = m_view.getGraphPerspective().nodesIterator(); 
+		while (ni.hasNext()) {
+			Node n = (Node) ni.next();
+			NodeView nv = m_view.getNodeView(n);
+			m_orig_points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 		}
 	}
 
 	protected void saveNewPositions() {
 		m_new_center = m_view.getCenter(); 
 		m_new_scaleFactor = m_view.getZoom(); 
-		//System.out.println("~~~~~~~~~~ set NEW center: " + m_new_center);
-		//System.out.println("~~~~~~~~~~ set NEW zoom: " + m_new_scaleFactor);
 		m_new_points.clear();
 
-		Iterator nvi = m_view.getNodeViewsIterator(); 
-		while (nvi.hasNext()) {
-			NodeView nv = (NodeView) nvi.next();
-			m_new_points.put(nv, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
+		// Use nodes as keys because they are less volatile than
+		// node views, which can disappear between when this edit
+		// is created and when it is used.
+		Iterator ni = m_view.getGraphPerspective().nodesIterator(); 
+		while (ni.hasNext()) {
+			Node n = (Node) ni.next();
+			NodeView nv = m_view.getNodeView(n);
+			m_new_points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 		}
 	}
 
@@ -116,20 +121,19 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 
 	private boolean changedSinceInit() {
 		if ( !m_new_center.equals(m_orig_center) ) {
-			//System.out.println("xxxxxxx center differs " + m_new_center + "  " + m_orig_center);
 			return true;
 		}
 
 		if ( java.lang.Double.compare(m_new_scaleFactor, m_orig_scaleFactor) != 0 ) {
-			//System.out.println("xxxxxxx scale differs " + m_new_scaleFactor + "  " + m_orig_scaleFactor);
 			return true;
 		}
 
-		Iterator nvi = m_view.getNodeViewsIterator(); 
-		while (nvi.hasNext()) {
-			NodeView nv = (NodeView) nvi.next();
-			if ( !m_new_points.get(nv).equals( m_orig_points.get(nv) ) ) {
-				//System.out.println("xxxxxxx pos differs " + m_new_points.get(nv) + " " + m_orig_points.get(nv));
+		// Use nodes as keys because they are less volatile than views...
+		Iterator ni = m_view.getGraphPerspective().nodesIterator(); 
+		while (ni.hasNext()) {
+			Node n = (Node) ni.next();
+			NodeView nv = m_view.getNodeView(n);
+			if ( !m_new_points.get(n).equals( m_orig_points.get(n) ) ) {
 				return true;
 			}
 		}
@@ -163,13 +167,13 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 	 */
 	public void redo() {
 		super.redo();
-		//System.out.println("~~~~~~~ redo NEW center: " + m_new_center);
-		//System.out.println("~~~~~~~ redo NEW zoom: " + m_new_scaleFactor);
 
-		Iterator it = m_view.getNodeViewsIterator();
-		while (it.hasNext()) {
-			NodeView nv = (NodeView) it.next();
-			Point2D.Double p = m_new_points.get(nv);
+		// Use nodes as keys because they are less volatile than views...
+		Iterator ni = m_view.getGraphPerspective().nodesIterator(); 
+		while (ni.hasNext()) {
+			Node n = (Node) ni.next();
+			NodeView nv = m_view.getNodeView(n);
+			Point2D.Double p = m_new_points.get(n);
 			nv.setXPosition(p.getX());
 			nv.setYPosition(p.getY());
 		}
@@ -184,13 +188,13 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 	 */
 	public void undo() {
 		super.undo();
-		//System.out.println("~~~~~~~ redo old center: " + m_orig_center);
-		//System.out.println("~~~~~~~ redo old zoom: " + m_orig_scaleFactor);
 
-		Iterator it = m_view.getNodeViewsIterator();
-		while (it.hasNext()) {
-			NodeView nv = (NodeView) it.next();
-			Point2D.Double p = m_orig_points.get(nv);
+		// Use nodes as keys because they are less volatile than views...
+		Iterator ni = m_view.getGraphPerspective().nodesIterator(); 
+		while (ni.hasNext()) {
+			Node n = (Node) ni.next();
+			NodeView nv = m_view.getNodeView(n);
+			Point2D.Double p = m_orig_points.get(n);
 			nv.setXPosition(p.getX());
 			nv.setYPosition(p.getY());
 		}
