@@ -81,6 +81,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
@@ -181,6 +184,11 @@ public class InteractionsReader extends AbstractGraphReader {
 			}
 
 			String newLine = lines[i];
+			
+			if (newLine.length() <= 0) {
+				continue;
+			}
+			
 			Interaction newInteraction = new Interaction(newLine, delimiter);
 			allInteractions.addElement(newInteraction);
 		}
