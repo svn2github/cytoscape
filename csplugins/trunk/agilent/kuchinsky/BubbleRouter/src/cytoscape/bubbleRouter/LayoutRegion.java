@@ -14,8 +14,12 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.JComponent;
 import javax.swing.undo.AbstractUndoableEdit;
@@ -23,15 +27,12 @@ import javax.swing.undo.AbstractUndoableEdit;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.undo.CyUndo;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 import ding.view.ViewportChangeListener;
-
-import csplugins.brquickfind.util.*;
 
 public class LayoutRegion extends JComponent
 // AJK: 01/4/07 ViewportListener for accommodating pan/zoom
@@ -102,7 +103,7 @@ public class LayoutRegion extends JComponent
 	/**
 	 * particular value associated with a layout region
 	 */
-	public Object regionAttributeValue = null;
+	public ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
 
 	// AJK: 11/15/06 END
 
@@ -159,9 +160,9 @@ public class LayoutRegion extends JComponent
 		// init member vars
 		selectRegionAttributeValue();
 
-		if (this.getRegionAttributeValue() == null) {
+		//if no selection is made, or if 'cancel' is clicked
+		if (this.getRegionAttributeValue().toString().contentEquals("[]")) {
 			return;
-
 		}
 
 		// AJK: 12/25/06 for stretching
@@ -364,7 +365,7 @@ public class LayoutRegion extends JComponent
 	 * @return Returns the regionAttributeValue.
 	 */
 	public Object getRegionAttributeValue() {
-		return regionAttributeValue;
+		return regionAttributeValues;
 	}
 
 	/**
@@ -375,8 +376,14 @@ public class LayoutRegion extends JComponent
 	 */
 	// AJK: 11/15/06 make non-static
 	// public static void setRegionAttributeValue(Object object) {
-	public void setRegionAttributeValue(Object object) {
-		regionAttributeValue = object;
+	public void setRegionAttributeValue(ArrayList selected) {
+		for (Object o: selected){
+			regionAttributeValues.add(o);
+		}
+//		Iterator itx = selected.iterator();
+//		while (itx.hasNext()){
+//			regionAttributeValues.add(itx.next());
+//		}
 		// System.out.println("Attribute value selected: " +
 		// regionAttributeValue);
 
@@ -577,9 +584,14 @@ public class LayoutRegion extends JComponent
 
 	// select all nodeViews with specified attribute value for attribute
 	public List populateNodeViews() {
+	    Comparator<Object> comparator = new Comparator<Object>() {
+	         public int compare (Object o1, Object o2) {
+	        	 return o1.toString().compareToIgnoreCase(o2.toString());
+	            }
+	        };
+	    SortedSet<Object> selectedNodes = new TreeSet<Object>(comparator);
 		CyAttributes attribs = Cytoscape.getNodeAttributes();
 		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
-		List selectedNodes = new ArrayList();
 		while (it.hasNext()) {
 			Cytoscape.getCurrentNetwork().unselectAllNodes();
 			Node node = (Node) it.next();
@@ -611,16 +623,24 @@ public class LayoutRegion extends JComponent
 				// if
 				// (val.equalsIgnoreCase(this.regionAttributeValue.toString()))
 				// {
-				if (val.indexOf(this.regionAttributeValue.toString()) >= 0) {
-					selectedNodes.add(node);
-				}
-			} else if (regionAttributeValue.equals("unassigned")) {
+				for (Object o: regionAttributeValues){
+					if (val.indexOf(o.toString()) >= 0) {
+						selectedNodes.add(node);
+					}
+				}				
+//				Iterator itx = regionAttributeValues.iterator();
+//				while (itx.hasNext()){
+//				if (val.indexOf(itx.next().toString()) >= 0) {
+//					selectedNodes.add(node);
+//				}
+//				}
+			} else if (regionAttributeValues.get(0).equals("unassigned")) {
 				selectedNodes.add(node);
 			}
 		}
 		Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
 		System.out.println("\n\rSelected " + selectedNodes.size()
-				+ " nodes for layout in " + this.regionAttributeValue.toString());
+				+ " nodes for layout in " + this.regionAttributeValues.toString());
 
 		// If some nodes were select, then it's safe to run the hierarchical
 		// layout
@@ -632,15 +652,23 @@ public class LayoutRegion extends JComponent
 			_undoOffsets = new Point2D[selectedNodes.size()];
 			_redoOffsets = new Point2D[selectedNodes.size()];
 			_thisRegion = this;
-			Iterator itx = selectedNodes.iterator();
 			int j = 0;
-			while (itx.hasNext()) {
-				Node n = (Node) itx.next();
-				_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
-						.getNodeView(n);
-				_undoOffsets[j] = _selectedNodeViews[j].getOffset();
-				j++;
-			}
+			for (Object o: selectedNodes){
+					Node n = (Node) o;
+					_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
+							.getNodeView(n);
+					_undoOffsets[j] = _selectedNodeViews[j].getOffset();
+					j++;
+				}
+//			Iterator itx = selectedNodes.iterator();
+//			int j = 0;
+//			while (itx.hasNext()) {
+//				Node n = (Node) itx.next();
+//				_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
+//						.getNodeView(n);
+//				_undoOffsets[j] = _selectedNodeViews[j].getOffset();
+//				j++;
+//			}
 			// AJK: 11/15/96 END
 
 			HierarchicalLayoutListener hierarchicalListener = new HierarchicalLayoutListener();
@@ -854,8 +882,8 @@ public class LayoutRegion extends JComponent
 					- HANDLE_SIZE, image.getHeight(null) - HANDLE_SIZE);
 
 			image2D.setColor(new Color(0, 0, 0, 255));
-			if (regionAttributeValue != null) {
-				image2D.drawString(regionAttributeValue.toString(), 20, 20);
+			if (regionAttributeValues != null) {
+				image2D.drawString(regionAttributeValues.toString(), 20, 20);
 			}
 			// AJK: 01/01/06 END
 
