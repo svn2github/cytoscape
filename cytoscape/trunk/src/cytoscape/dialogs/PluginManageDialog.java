@@ -82,7 +82,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		if (Node.isLeaf()) {
 			// display any object selected
 			pluginInfoPane.setContentType("text/html");
-			//pluginInfoPane.setText(((PluginInfo) Node.getUserObject()).prettyOutput());
 			pluginInfoPane.setText(((PluginInfo) Node.getUserObject()).htmlOutput());
 			
 			if (Node.isNodeAncestor(this.installedNode)) {
@@ -115,8 +114,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		MutableTreeNode[] DeletableNodes = new MutableTreeNode[availableNode.getChildCount()];
 
 		// not sure why I had to do it like this, always missed the second node if I
-		// tried to
-		// remove them while I looped over the children
+		// tried to remove them while I looped over the children
 		totalAvailable = 0;
 		int i = 0;
 
@@ -280,7 +278,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 
 	// initialize the dialog box & components
         // <editor-fold defaultstate="collapsed" desc=" Generated Code ">                          
-        private void initComponents() {
+    private void initComponents() {
 		splitPane = new javax.swing.JSplitPane();
 		treeScrollPane = new javax.swing.JScrollPane();
 		pluginsTree = new javax.swing.JTree();
@@ -332,27 +330,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
                 .add(siteLabel))
         );
 
-		
-//		labelPaneLayout.setHorizontalGroup(labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-//		                                                  .add(labelPaneLayout.createSequentialGroup()
-//		                                                                      .addContainerGap()
-//		                                                                      .add(dialogLabel,
-//		                                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-//		                                                                           191,
-//		                                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-//		                                                                      .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-//		                                                                                       63,
-//		                                                                                       Short.MAX_VALUE)
-//		                                                                      .add(siteLabel)
-//		                                                                      .add(126, 126, 126)));
-//		labelPaneLayout.setVerticalGroup(labelPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-//		                                                .add(dialogLabel,
-//		                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-//		                                                     50, Short.MAX_VALUE)
-//		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
-//		                                                     siteLabel,
-//		                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-//		                                                     50, Short.MAX_VALUE));
 		deleteButton.setText("Delete");
 		deleteButton.setEnabled(false);
 		deleteButton.addActionListener(new ActionListener() {
