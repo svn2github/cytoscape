@@ -21,7 +21,7 @@ public class PluginManagerTest extends TestCase {
 
 	private PluginTracker tracker;
 
-	private String testUrl;// "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
+	private String testUrl;
 
 	private File tmpDir;
 
@@ -32,8 +32,10 @@ public class PluginManagerTest extends TestCase {
 	}
 
 	private String getFileUrl() {
-		String FS = System.getProperty("file.separator");
-		return "file://" + System.getProperty("user.dir") + FS + "testData"
+		String FS = "/";
+		String UserDir = System.getProperty("user.dir");
+		UserDir = UserDir.replaceFirst("/", "");
+		return "file:///" + UserDir + FS + "testData"
 				+ FS + "plugins" + FS;
 	}
 
@@ -44,11 +46,14 @@ public class PluginManagerTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		testUrl = getFileUrl() + "test_plugin.xml";
-		System.out.println(testUrl);
 		fileName = "test_tracker.xml";
+
+		CytoscapeInit.getProperties().setProperty("defaultPluginUrl", testUrl);
+
 		tmpDir = new File(System.getProperty("java.io.tmpdir"));
 		tracker = new PluginTracker(tmpDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
+
 		assertTrue((new File(tmpDir, fileName)).exists());
 	}
 
@@ -95,18 +100,6 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
-	}
-
-	/**
-	 * Test method for {@link cytoscape.plugin.PluginManager#inquire()}.
-	 */
-	public void testInquire() throws Exception {
-		// this tests against the default url, the number of plugins could
-		// change
-		// from
-		// one test to another but there should always be more than 1
-		assertNotNull(mgr.inquire());
-		assertTrue(mgr.inquire().size() > 1);
 	}
 
 	/**
