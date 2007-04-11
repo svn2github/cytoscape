@@ -4,14 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
-import java.awt.event.MouseAdapter;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -59,7 +60,9 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private JComboBox attributeComboBox;
 
 	// APico 10.7.06
-	private static Object selectedValue;
+	//private static Object[] selectedValues;
+	private static ArrayList<Object> selectedValues = new ArrayList<Object>();
+
 	private static String currentAttribute;
 
 	/**
@@ -98,7 +101,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private static final String BUTTON_TEXT = "Select";
 
 	private static final String FILE_SELECT_BUTTON_TEXT = "Load attributes from file";
-	
+
 	private static final String HELP_BUTTON_TEXT = "Help";
 
 	/**
@@ -107,7 +110,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private JButton applyButton;
 
 	private JButton fileBrowserButton;
-	
+
 	private JButton helpButton;
 
 	// AJK: 11/15/06 BEGIN
@@ -200,20 +203,21 @@ public class BRQuickFindConfigDialog extends JDialog {
 	 * @return JPanel Object.
 	 */
 	private JPanel createButtonPanel() {
-		JPanel buttonPanel = new JPanel (); 
+		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-		
-        
+
 		// Help Button 03/14/07
-		
+
 		helpButton = new JButton(HELP_BUTTON_TEXT);
-		
+
 		helpButton.addActionListener(new ActionListener() {
 			private String helpURL = "http://www.genmapp.org/InteractiveLayout/manual.htm";
+
 			public void actionPerformed(ActionEvent e) {
-			cytoscape.util.OpenBrowser.openURL(helpURL);
-			}});
-		
+				cytoscape.util.OpenBrowser.openURL(helpURL);
+			}
+		});
+
 		// Cancel Button
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
@@ -227,15 +231,15 @@ public class BRQuickFindConfigDialog extends JDialog {
 		applyButton = new JButton(BUTTON_TEXT);
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				applyAction(selectedValue);
+				applyAction(selectedValues);
 			}
 		});
 		buttonPanel.add(Box.createHorizontalGlue());
-		buttonPanel.add(helpButton); 
+		buttonPanel.add(helpButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(15, 0)));
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(applyButton);
-		
+
 		return buttonPanel;
 	}
 
@@ -345,52 +349,55 @@ public class BRQuickFindConfigDialog extends JDialog {
 		// INSERT PATTERN split here (12/5/06 meeting)
 
 		// Kristina Hanspers and others 12/11/06
-		// Parsing of attributes that are separated by the pipe character 
+		// Parsing of attributes that are separated by the pipe character
 
-		// AP: 2.26.07  BRCyAttributesUtil already handles LIST type nodeAttributes
-		Vector valueList = new Vector();
-//		for (int i = 0; i < (valueSet.length); i++) {
-//			valueList.add(valueSet[i]);
-//		}
+		// AP: 2.26.07 BRCyAttributesUtil already handles LIST type
+		// nodeAttributes
+		ArrayList<String> finalValues = new ArrayList<String>();
+		finalValues.add("unassigned");
+		// for (int i = 0; i < (valueSet.length); i++) {
+		// valueList.add(valueSet[i]);
+		// }
 
 		String splitValueSet[] = null;
 
 		for (int i = 0; i < (valueSet.length); i++) {
 			splitValueSet = valueSet[i].split(", ");
 			for (int j = 0; j < (splitValueSet.length); j++) {
-				if (!valueList.contains(splitValueSet[j])) {
-					valueList.add(splitValueSet[j]);
+				if (!finalValues.contains(splitValueSet[j])) {
+					finalValues.add(splitValueSet[j]);
 				}
 			}
 		}
-		
-
-		String[] finalValues = new String[valueList.size() + 1];
-		Iterator it = valueList.iterator();
-		finalValues[0] = "unassigned";
-		int index = 1;
-		while (it.hasNext()) {
-			finalValues[index] = (String) it.next();
-			index++;
-		}
+//		String[] finalValues = new String[valueList.size() +1];
+//		finalValues.equals(valueList.toArray());
+		//valueList.toString();
+//
+//		String[] finalValues = new String[valueList.size() + 1];
+//		Iterator it = valueList.iterator();
+//		finalValues[0] = "unassigned";
+//		int index = 1;
+//		while (it.hasNext()) {
+//			finalValues[index] = (String) it.next();
+//			index++;
+//		}
 
 		// AP 10.8.06
 		TableModel model = new DefaultTableModel(columnNames,
-				finalValues.length);
+				finalValues.toArray().length);
 
 		// DetermineDistinctValuesTask task = new DetermineDistinctValuesTask(
 		// model, attributeKey, this);
 
-		if (finalValues != null && finalValues.length > 0) {
+		if (finalValues != null && finalValues.toArray().length > 0) {
 			// APico 9.17.06 / 10.7.06
 			// Insert "unassigned" value at top of list for bubble router
 			// model.setValueAt("unassigned", 0, 0);
-			for (int i = 0; i < ((finalValues.length >= 50) ? 50
-					: finalValues.length); i++) {
-				model.setValueAt(finalValues[i], i, 0);
+			for (int i = 0; i < ((finalValues.toArray().length >= 50) ? 50
+					: finalValues.toArray().length); i++) {
+				model.setValueAt(finalValues.toArray()[i], i, 0);
 			}
 		}
-
 		// Execute Task via TaskManager
 		// This automatically pops-open a JTask Dialog Box.
 		// This method will block until the JTask Dialog Box
@@ -401,27 +408,42 @@ public class BRQuickFindConfigDialog extends JDialog {
 		table.setAutoscrolls(true);
 
 		// APico 10.7.06
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		ListSelectionModel rowSM = table.getSelectionModel();
 		rowSM.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				int selectedRow = 0;
-				ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-				if (lsm.isSelectionEmpty()) {
-					selectedRow = 0;
-				} else {
-					selectedRow = lsm.getMinSelectionIndex();
+				if (e.getValueIsAdjusting() == false) {
+					selectedValues.clear();
+					ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+					if (lsm.isSelectionEmpty()) {
+//						applyButton.setEnabled(false);
+						selectedValues.add(sampleAttributeValuesTable
+								.getModel().getValueAt(0, 0));
+					} else {
+//						applyButton.setEnabled(true);
+						int minIndex = lsm.getMinSelectionIndex();
+						int maxIndex = lsm.getMaxSelectionIndex();
+						for (int i = minIndex; i <= maxIndex; i++) {
+							if (lsm.isSelectedIndex(i)) {
+								selectedValues.add(sampleAttributeValuesTable
+								.getModel().getValueAt(i, 0));
+							}
+						}
+					}
+//
+//					for (int i = 0; i <= selectedRows.length; i++) {
+//						selectedValues[i] = sampleAttributeValuesTable
+//								.getModel().getValueAt(selectedRows[i], 0);
+//					}
 				}
-				selectedValue = sampleAttributeValuesTable.getModel()
-						.getValueAt(selectedRow, 0);
 			}
 
 		});
-		
+
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					applyAction(selectedValue);
+					applyAction(selectedValues);
 				}
 			}
 		});
@@ -437,98 +459,102 @@ public class BRQuickFindConfigDialog extends JDialog {
 		attributePanel
 				.setLayout(new BoxLayout(attributePanel, BoxLayout.X_AXIS));
 
-		// 12/20/06 KH: Add shortcut button in Bubblerouter window for loading 
+		// 12/20/06 KH: Add shortcut button in Bubblerouter window for loading
 		// node attribute file
-		
+
 		fileBrowserButton = new JButton(FILE_SELECT_BUTTON_TEXT);
 
 		// Code copied from ImportNodeAttributesAction
-		
+
 		fileBrowserButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-//			  Use a Default CyFileFilter:  enables user to select any file type.
-		        CyFileFilter nf = new CyFileFilter();
+				// Use a Default CyFileFilter: enables user to select any file
+				// type.
+				CyFileFilter nf = new CyFileFilter();
 
-		        // get the file name
-		        File[] files = FileUtil.getFiles("Import Node Attributes",
-		                    FileUtil.LOAD, new CyFileFilter[]{nf});
+				// get the file name
+				File[] files = FileUtil.getFiles("Import Node Attributes",
+						FileUtil.LOAD, new CyFileFilter[] { nf });
 
-		        if (files != null) {
-		            //  Create Load Attributes Task
-		            ImportAttributesTask task = 
-		            	new ImportAttributesTask (files, ImportAttributesTask.NODE_ATTRIBUTES);
+				if (files != null) {
+					// Create Load Attributes Task
+					ImportAttributesTask task = new ImportAttributesTask(files,
+							ImportAttributesTask.NODE_ATTRIBUTES);
 
-		            //  Configure JTask Dialog Pop-Up Box
-		            JTaskConfig jTaskConfig = new JTaskConfig();
-		            jTaskConfig.setOwner(Cytoscape.getDesktop());
-		            jTaskConfig.displayCloseButton(true);
-		            jTaskConfig.displayStatus(true);
-		            jTaskConfig.setAutoDispose(false);
+					// Configure JTask Dialog Pop-Up Box
+					JTaskConfig jTaskConfig = new JTaskConfig();
+					jTaskConfig.setOwner(Cytoscape.getDesktop());
+					jTaskConfig.displayCloseButton(true);
+					jTaskConfig.displayStatus(true);
+					jTaskConfig.setAutoDispose(false);
 
-		            //  Execute Task in New Thread;  pop open JTask Dialog Box.
-		            TaskManager.executeTask(task, jTaskConfig);
-		            
-		            // Get the list of attribute names and transform from vector to array
-		            String [] forms = new String[getBubbleAttributes().size()];
-		            getBubbleAttributes().toArray(forms);
+					// Execute Task in New Thread; pop open JTask Dialog Box.
+					TaskManager.executeTask(task, jTaskConfig);
 
-		            // Add latest attribute to already existing attributecombobox
-		            String newItem = forms[forms.length-1];
-		            attributeComboBox.addItem(newItem);
-		            
-		        }
+					// Get the list of attribute names and transform from vector
+					// to array
+					String[] forms = new String[getBubbleAttributes().size()];
+					getBubbleAttributes().toArray(forms);
+
+					// Add latest attribute to already existing
+					// attributecombobox
+					String newItem = forms[forms.length - 1];
+					attributeComboBox.addItem(newItem);
+
+				}
 
 			}
 
 		});
-		
+
 		// Obtain Node Attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		//String attributeNames[] = nodeAttributes.getAttributeNames();
+		// String attributeNames[] = nodeAttributes.getAttributeNames();
 
 		if (nodeAttributes.getAttributeNames() != null) {
 			JLabel label = new JLabel("Layout by Attribute:  ");
 			label.setBorder(new EmptyBorder(5, 5, 5, 5));
 			attributePanel.add(label);
-			
-			// 12/20/06 KH: The following code has been separated out as a method, getBubbleAttributes
-			
-			//Vector attributeList = new Vector();
+
+			// 12/20/06 KH: The following code has been separated out as a
+			// method, getBubbleAttributes
+
+			// Vector attributeList = new Vector();
 
 			// Show all attributes, except those of TYPE_COMPLEX
-//			for (int i = 0; i < attributeNames.length; i++) {
-//				int type = nodeAttributes.getType(attributeNames[i]);
-//				// only show user visible attributes
-//				if (nodeAttributes.getUserVisible(attributeNames[i])) {
-//					if (type != CyAttributes.TYPE_COMPLEX) {
-//						// Explicitly filter out CANONICAL_NAME, as it is
-//						// now deprecated.
-//						if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
-//							attributeList.add(attributeNames[i]);
-//						}
-//					}
-//				}
-//			}
-//
-//			// Alphabetical sort
-//			Collections.sort(attributeList);
-//
-//			// Add default: Unique Identifier
-//			attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
-//
-//			// Add option to index by all attributes
-//			// Not yet sure if I want to add this yet. Keep code below.
-//			// if (attributeList.size() > 1) {
-//			// attributeList.add(QuickFind.INDEX_ALL_ATTRIBUTES);
-//			// }
+			// for (int i = 0; i < attributeNames.length; i++) {
+			// int type = nodeAttributes.getType(attributeNames[i]);
+			// // only show user visible attributes
+			// if (nodeAttributes.getUserVisible(attributeNames[i])) {
+			// if (type != CyAttributes.TYPE_COMPLEX) {
+			// // Explicitly filter out CANONICAL_NAME, as it is
+			// // now deprecated.
+			// if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
+			// attributeList.add(attributeNames[i]);
+			// }
+			// }
+			// }
+			// }
+			//
+			// // Alphabetical sort
+			// Collections.sort(attributeList);
+			//
+			// // Add default: Unique Identifier
+			// attributeList.insertElementAt(QuickFind.UNIQUE_IDENTIFIER, 0);
+			//
+			// // Add option to index by all attributes
+			// // Not yet sure if I want to add this yet. Keep code below.
+			// // if (attributeList.size() > 1) {
+			// // attributeList.add(QuickFind.INDEX_ALL_ATTRIBUTES);
+			// // }
 
 			// Create ComboBox
 			attributeComboBox = new JComboBox(getBubbleAttributes());
 			// APico 10.7.06 simply set to first in list for now; later set to
 			// current attribute for regions that have been previously assigned.
 			if (currentAttribute == null) {
-				currentAttribute = nodeAttributes.getAttributeNames()[0];				
+				currentAttribute = nodeAttributes.getAttributeNames()[0];
 			}
 			attributeComboBox.setSelectedItem(currentAttribute);
 
@@ -555,7 +581,8 @@ public class BRQuickFindConfigDialog extends JDialog {
 
 					addTableModel(sampleAttributeValuesTable);
 					setAttributeDescription();
-					currentAttribute = attributeComboBox.getSelectedItem().toString();
+					currentAttribute = attributeComboBox.getSelectedItem()
+							.toString();
 				}
 			});
 		}
@@ -570,17 +597,16 @@ public class BRQuickFindConfigDialog extends JDialog {
 	 * @param rows
 	 *            Number of Visible Rows.
 	 */
-	
+
 	// 12/20/06 KH: Following code previously under creatAttributeSelectionPanel
 	// Gets list of currnetly loaded attribute names
-	
-	private Vector getBubbleAttributes(){
-//		 Obtain Node Attributes
+	private Vector getBubbleAttributes() {
+		// Obtain Node Attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String attributeNames[] = nodeAttributes.getAttributeNames();
 		Vector attributeList = new Vector();
-		
-//		 Show all attributes, except those of TYPE_COMPLEX
+
+		// Show all attributes, except those of TYPE_COMPLEX
 		for (int i = 0; i < attributeNames.length; i++) {
 			int type = nodeAttributes.getType(attributeNames[i]);
 			// only show user visible attributes
@@ -600,14 +626,13 @@ public class BRQuickFindConfigDialog extends JDialog {
 		attributeList.insertElementAt(BRQuickFind.UNIQUE_IDENTIFIER, 0);
 		return attributeList;
 	}
-	private void applyAction (Object selectedValue){
+
+	private void applyAction(ArrayList selectedValues) {
 		BRQuickFindConfigDialog.this.setVisible(false);
 		BRQuickFindConfigDialog.this.dispose();
-		String newAttribute = (String) attributeComboBox
-				.getSelectedItem();
-		ReindexQuickFind task = new ReindexQuickFind(
-				currentNetwork,
-				// AJK: 11/15/06 make non-static
+		String newAttribute = (String) attributeComboBox.getSelectedItem();
+		ReindexQuickFind task = new ReindexQuickFind(currentNetwork,
+		// AJK: 11/15/06 make non-static
 				// newAttribute);
 				newAttribute, _region);
 		JTaskConfig config = new JTaskConfig();
@@ -623,8 +648,9 @@ public class BRQuickFindConfigDialog extends JDialog {
 		// This method will block until the JTask Dialog Box
 		// is disposed.
 		TaskManager.executeTask(task, config);
-		_region.setRegionAttributeValue(selectedValue);
+		_region.setRegionAttributeValue(selectedValues);
 	}
+
 	private void setVisibleRowCount(JTable table, int rows) {
 		int height = 0;
 		for (int row = 0; row < rows; row++) {
