@@ -181,7 +181,7 @@ public class QueryCPathTask implements Task {
         String title = searchRequest.toString();
 
         if (title.length() > 25) {
-            title = new String(title + "...");
+           	title = title.substring(0,24) + "..."; 
         }
 
         //  Create Network w/o view
