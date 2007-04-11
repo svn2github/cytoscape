@@ -66,12 +66,7 @@ public class PluginManager {
 	private PluginTracker pluginTracker;
 
 	private static File tempDir;
-
-	private String defaultUrl;
-
 	private String cyVersion;
-
-	private String DEFAULT_VALUE = "http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml";
 
 	static {
 		new PluginManager(null);
@@ -87,15 +82,13 @@ public class PluginManager {
 	
 	
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * Get the PluginManager object.  
+	 * @return PluginManager
 	 */
 	public static PluginManager getPluginManager() {
 		if (pluginMgr == null) {
 			pluginMgr = new PluginManager(null);
 		}
-
 		return pluginMgr;
 	}
 	/**
@@ -110,12 +103,9 @@ public class PluginManager {
 		return pluginMgr;
 	}
 	
+	// create plugin manager
 	private PluginManager(PluginTracker Tracker) {
-		defaultUrl = DEFAULT_VALUE;
 
-		// defaultUrl =
-		// CytoscapeInit.getProperties().getProperty("defaultPluginUrl",
-		// DEFAULT_VALUE);
 		try {
 			if (Tracker != null) {
 				System.out.println("Setting tracker");
@@ -155,12 +145,6 @@ public class PluginManager {
 		return pluginTracker.getListByStatus(Status);
 	}
 
-	/**
-	 * @return List of PluginInfo objects from the default url
-	 */
-	public List<PluginInfo> inquire() throws ManagerError {
-		return inquire(defaultUrl);
-	}
 
 	/**
 	 * Calls the given url, expects document describing plugins available for
