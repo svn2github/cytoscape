@@ -7,17 +7,13 @@ import java.awt.Color;
 import java.awt.BorderLayout;
 
 import javax.swing.Box;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
 import javax.swing.JTextArea;
-import javax.swing.JSeparator;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeToolBar;
 
 /**
  * @author skillcoy
@@ -109,6 +105,8 @@ public class GooseDialog extends JPanel
 		return messageLabel;
 		}
 
+	
+	
 	private Box getDisplayControlPanel()
 		{
 		Box DisplayControl = Box.createVerticalBox();
@@ -239,4 +237,10 @@ public class GooseDialog extends JPanel
 
 		add(GaggleToolBar);
 		}
+
+
+	
 	}
+
+
+

@@ -1,5 +1,7 @@
 package org.systemsbiology.cytoscape.dialog;
 
+import org.systemsbiology.cytoscape.AttrSelectAction;
+
 import java.util.ArrayList;
 
 import javax.swing.AbstractButton;
@@ -13,8 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
-
-import org.systemsbiology.cytoscape.AttrSelectAction;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
