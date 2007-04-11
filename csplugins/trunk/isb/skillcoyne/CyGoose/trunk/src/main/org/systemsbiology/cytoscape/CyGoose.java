@@ -1,7 +1,7 @@
 package org.systemsbiology.cytoscape;
 
-import org.systemsbiology.cytoscape.GagglePlugin;
-import org.systemsbiology.cytoscape.CyBroadcast;
+//import org.systemsbiology.cytoscape.GagglePlugin;
+//import org.systemsbiology.cytoscape.CyBroadcast;
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
 import org.systemsbiology.cytoscape.visual.SeedMappings;
 
@@ -13,7 +13,7 @@ import java.rmi.UnmarshalException;
 import java.util.*;
 
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 
 import org.systemsbiology.gaggle.experiment.datamatrix.DataMatrix;
 import org.systemsbiology.gaggle.network.*;
@@ -23,15 +23,15 @@ import org.systemsbiology.gaggle.geese.Goose;
 import cytoscape.*;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
-import cytoscape.visual.mappings.*;
-import cytoscape.visual.ui.VizMapUI;
+//import cytoscape.visual.calculators.Calculator;
+//import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
+//import cytoscape.visual.mappings.*;
+//import cytoscape.visual.ui.VizMapUI;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 
 import giny.view.NodeView;
-import giny.view.EdgeView;
+//import giny.view.EdgeView;
 import giny.view.GraphView;
 
 import giny.model.Node;
@@ -74,7 +74,7 @@ public class CyGoose implements Goose
 		// deals with evertying but the broadcast actions
 		this.addButtonActions();
 		// creates broadcast actions
-		CyBroadcast Broadcast = new CyBroadcast(GDialog, GaggleBoss, this);
+		//CyBroadcast Broadcast = new CyBroadcast(GDialog, GaggleBoss, this);
 		
 		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
 		NAC = CurrentStyle.getNodeAppearanceCalculator();
@@ -340,39 +340,49 @@ public class CyGoose implements Goose
 
 
 
-	// if broadcast the the generic Cytoscape goose a new network is created, if broadcast
+	// if broadcast to the generic Cytoscape goose a new network is created, if broadcast
 	// to a network goose the interactions are added to the network and selected
 	public void handleNetwork(String species, Network network) throws RemoteException
 		{
+    print("handleNetwork(String, Network, CyNetwork)");
     // create a network if none exists
     // network with ID=0 is the nullNetwork
-		if (network.getInteractions().length > 0)
-			{
-	    if ( this.getNetworkId() == null || this.getNetworkId().equals("0") ) 
-	    	{ handleNetwork(species, network, Cytoscape.createNetwork("Gaggle "+species), false); }
-			else 
-				{ handleNetwork(species, network, Cytoscape.getNetwork(this.getNetworkId()), true); }
+    String NetworkId = null;
+    if ( this.getNetworkId() == null || this.getNetworkId().equals("0") ) 
+    	{ 
+    	System.out.println("  --Null network");
+    	CyNetwork NewNet = Cytoscape.createNetwork("Gaggle "+species);
+    	handleNetwork(species, network, NewNet, false); 
+    	// basic layout
+    	layout( (GraphView)Cytoscape.getNetworkView(NewNet.getIdentifier()) );
+    	NetworkId = NewNet.getIdentifier();
+    	}
+		else 
+			{ 
+			System.out.println("  --Network " + this.getNetworkId());
+			handleNetwork(species, network, Cytoscape.getNetwork(this.getNetworkId()), true); 
+			NetworkId = getNetworkId();
 			}
-		else
-			{
-			GagglePlugin.showDialogBox("No interactions were broadcast to "+this.getName()+" please select some interactions.", 
-																 "No Interactions", 
-																	JOptionPane.INFORMATION_MESSAGE);
-			}
+    // refresh network to flag selected nodes
+		Cytoscape.getDesktop().setFocus(NetworkId);
 		}
 
 
 	public void handleNetwork(String species, Network GaggleNet, CyNetwork CyNet, boolean SelectNodes) 
 		throws RemoteException
 		{
-    print("handleNetwork(String, Network, CyNetwork)");
-    Interaction[] GaggleInteractions = GaggleNet.getInteractions();
-			
     Collection<Node> srcCollection = new ArrayList<Node>();
     Collection<Node> targetCollection = new ArrayList<Node>();
     Collection<Edge> edgeCollection = new ArrayList<Edge>();
-
-    for(Interaction CurrentInteraction: GaggleInteractions)
+    
+    for (String NodeName: GaggleNet.getNodes())
+    	{
+    	Node NewNode = (Node) Cytoscape.getCyNode(NodeName, true);
+    	CyNet.addNode(NewNode);
+    	CyNet.setSelectedNodeState(NewNode, SelectNodes);
+    	}
+    
+    for (Interaction CurrentInteraction: GaggleNet.getInteractions())
       {
       //Interaction CurrentInteraction = GaggleInteractions[i];
       String srcNodeName = CurrentInteraction.getSource();
@@ -404,11 +414,6 @@ public class CyGoose implements Goose
 			CyNet.setSelectedEdgeState(edgeCollection, true);
 			}
 
-		//basic layout 
-		this.layout( (GraphView)Cytoscape.getNetworkView(CyNet.getIdentifier()) );
-
-    // refresh network to flag selected nodes
-		Cytoscape.getDesktop().setFocus(CyNet.getIdentifier());
 		}
 
 		// provides a basic layout so nodes do not appear all on top of each other, this is the same as the layout
@@ -444,7 +449,7 @@ public class CyGoose implements Goose
 	// Used to set the goose network id to the cynetwork id
 	public void setNetworkId(String Id) 
 		{ this.GooseNetId = Id; }
-
+	
 	// sets the name goose is identified by in the boos
 	public void setName(String newName) //throws RemoteException
 		{ this.GooseName = newName; }

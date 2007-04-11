@@ -3,34 +3,38 @@
  */
 package org.systemsbiology.cytoscape;
 
-import org.systemsbiology.cytoscape.dialog.CyAttrDialog;
-import org.systemsbiology.cytoscape.dialog.GooseDialog;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import org.systemsbiology.cytoscape.dialog.CyAttrDialog;
+import org.systemsbiology.cytoscape.dialog.GooseDialog;
+import org.systemsbiology.cytoscape.CyGoose;
+
 import org.systemsbiology.gaggle.boss.Boss;
 import org.systemsbiology.gaggle.experiment.datamatrix.DataMatrix;
-import org.systemsbiology.gaggle.network.*;
-import org.systemsbiology.gaggle.geese.Goose;
+//import org.systemsbiology.gaggle.geese.Goose;
+import org.systemsbiology.gaggle.network.Network;
 
-import cytoscape.*;
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
 /**
  * @author skillcoy
- * 
+ *
  */
 public class CyBroadcast
 	{
-	private GooseDialog GDialog;
-	private Boss GaggleBoss;
-	private Goose CyGoose;
+	private GooseDialog gDialog;
+	private Boss gaggleBoss;
 
 	private String broadcastID = "ID";
 
@@ -41,38 +45,28 @@ public class CyBroadcast
 	
 	private static void print(String S)
 		{ System.out.println(S); }
-	
-	public CyBroadcast(GooseDialog Dialog, Boss boss, Goose goose)
+
+	/**
+	 * 
+	 */
+	public CyBroadcast(GooseDialog Dialog, Boss boss)
 		{
-		this.GDialog = Dialog;
-		this.CyGoose = goose;
-		this.GaggleBoss = boss;
-
-		this.addButtonActions();
+		this.gDialog = Dialog;
+		this.gaggleBoss = boss;
 		}
-
-
-	private String getTargetGoose()
-		{
-    int targetGooseIndex = this.GDialog.getGooseBox().getSelectedIndex();
-		String targetGooseName = (String)this.GDialog.getGooseBox().getSelectedItem();
-		print("Target index: "+targetGooseIndex+"  Target item: "+targetGooseName);
-		return targetGooseName;
-		}
-
 
 	// very basically for the moment we will only broadcast by ID	
-	public void broadcastNameList()
+	public void broadcastNameList(CyGoose Goose, String TargetGoose)
 		{
 		print("broadcastNameList");
-		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
 			{
 			GagglePlugin.showDialogBox("No nodes were selected for list broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 			}
 
 
-    Set<CyNode> SelectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+    Set<CyNode> SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes();
     Iterator<CyNode> NodesIter = SelectedNodes.iterator();
 
     // warning: no nodes are selected for broadcast
@@ -94,20 +88,20 @@ public class CyBroadcast
 			}
 
 		try 
-			{ GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), Species, NodeIds); }
+			{ gaggleBoss.broadcast(Goose.getName(), TargetGoose, Species, NodeIds); }
 		catch(Exception E) 
 			{ 
-			GagglePlugin.showDialogBox("Failed to broadcast list of names to " + this.getTargetGoose(), "Error", JOptionPane.ERROR_MESSAGE);
+			GagglePlugin.showDialogBox("Failed to broadcast list of names to " + TargetGoose, "Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace(); 
 			}
 		}
 
 	// broadcasts hash of selected attributes	
-	public void broadcastHashMap()
+	public void broadcastHashMap(CyGoose Goose, String TargetGoose)
 		{
 		print("broadcastHashMap");
 
-    Set<CyNode> SelectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+    Set<CyNode> SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes();
 
     // warning: no nodes are selected for broadcast
     if (SelectedNodes.size() == 0)
@@ -120,12 +114,15 @@ public class CyBroadcast
     // pass string of attribute names
     String[] AllAttrNames = Cytoscape.getNodeAttributes().getAttributeNames();
     
+    final CyGoose goose = Goose;
+    final String target = TargetGoose;
+    
     // confirmAttrSelection(AllAttrNames, "HashMap");
     AttrSelectAction okAction = new AttrSelectAction()
       {
         public void takeAction(String[] selectAttr)
           {
-          broadcastHashMap(selectAttr);
+          broadcastHashMap(selectAttr, goose, target);
           }
       };
 
@@ -136,15 +133,15 @@ public class CyBroadcast
 		}
 
 
-  private void broadcastHashMap(String[] attrNames)
+  private void broadcastHashMap(String[] attrNames, CyGoose Goose, String TargetGoose)
     {
-		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
 			{
 			GagglePlugin.showDialogBox("No nodes were selected for map broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 			}
 
-    Set selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+    Set selectedNodes = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes();
     Iterator nodeIter = selectedNodes.iterator();
 
     // create a string of node names
@@ -209,25 +206,25 @@ public class CyBroadcast
 
 
 		try
-	    { this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), species, dataTitle, map); }
+	    { this.gaggleBoss.broadcast(Goose.getName(), TargetGoose, species, dataTitle, map); }
 		catch (Exception E) 
 			{ 
-			GagglePlugin.showDialogBox("Failed to broadcast map to " + this.getTargetGoose(), "Error", JOptionPane.ERROR_MESSAGE);
+			GagglePlugin.showDialogBox("Failed to broadcast map to " + TargetGoose, "Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace(); 
 			}
 		}
 
-	public void broadcastDataMatrix()
+	public void broadcastDataMatrix(CyGoose Goose, String TargetGoose)
 		{
 		print("broadcastDataMatrix"); 
 
-		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
 			{
 			GagglePlugin.showDialogBox("No nodes were selected for Data Matrix broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 			}
 
-    Set SelectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+    Set SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes();
 
     // warning: no nodes are selected for broadcast
     if (SelectedNodes.size() == 0)
@@ -251,12 +248,15 @@ public class CyBroadcast
     String[] condNames = new String[condNamesArrList.size()];
     condNamesArrList.toArray(condNames);
 
+    final CyGoose goose = Goose;
+    final String target = TargetGoose;
+    
     // dialog for user to select attributes for broadcast
     AttrSelectAction okAction = new AttrSelectAction()
       {
         public void takeAction(String[] selectAttr)
           {
-          broadcastDataMatrix(selectAttr);
+          broadcastDataMatrix(selectAttr, goose, target);
           }
       };
 
@@ -273,15 +273,15 @@ public class CyBroadcast
     	}
 		}
 	
-  private void broadcastDataMatrix(String[] condNames)
+  private void broadcastDataMatrix(String[] condNames, CyGoose Goose, String TargetGoose)
     {
-		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() <= 0)
+		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
 			{
 			GagglePlugin.showDialogBox("No nodes were selected for Data Matrix broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 			}
 
-    Set selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+    Set selectedNodes = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes();
     Iterator selectedNodesIter = selectedNodes.iterator();
 
     DataMatrix matrix = new DataMatrix();
@@ -324,138 +324,119 @@ public class CyBroadcast
       }
 
 		try 
-			{ this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), matrix); }
+			{ this.gaggleBoss.broadcast(Goose.getName(), TargetGoose, matrix); }
 		catch (Exception E) 
 			{ 
-			GagglePlugin.showDialogBox("Failed to broadcast matrix to " + this.getTargetGoose(), "Error", JOptionPane.ERROR_MESSAGE);
+			GagglePlugin.showDialogBox("Failed to broadcast matrix to " + TargetGoose, "Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace(); 
 			}
 		}
 
-	public void broadcastNetwork()
+	public void broadcastNetwork(CyGoose Goose, String TargetGoose)
 		{
-		print("broadcastNetwork");
+		print("broadcastNetwork " + Cytoscape.getNetwork(Goose.getNetworkId()).getIdentifier());
 
-		if (Cytoscape.getCurrentNetwork().getSelectedEdges().size() <= 0)
+		Network GaggleNetwork = new Network();
+    String Species = "";
+		
+    Iterator<CyNode> NodesIter = Cytoscape.getNetwork( Goose.getNetworkId() ).getSelectedNodes().iterator();
+		CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
+		while (NodesIter.hasNext())
 			{
-			GagglePlugin.showDialogBox("Please make a selection that includes edges for a network broadcast.", "Warning", JOptionPane.WARNING_MESSAGE);
-			return;
+			CyNode CurrentSelectedNode = NodesIter.next();
+      GaggleNetwork = addNodeAttributes(CurrentSelectedNode, NodeAtts, GaggleNetwork);
+			GaggleNetwork.add(CurrentSelectedNode.getIdentifier());
 			}
 		
-    Iterator<CyNode> NodesIter = Cytoscape.getCurrentNetwork().getSelectedNodes().iterator();
-  	Iterator<CyEdge> EdgesIter = Cytoscape.getCurrentNetwork().getSelectedEdges().iterator();
+  	Iterator<CyEdge> EdgesIter = Cytoscape.getNetwork( Goose.getNetworkId() ).getSelectedEdges().iterator();
 		CyAttributes EdgeAtts = Cytoscape.getEdgeAttributes();
-
-    Network GaggleNetwork = new Network();
-    String Species = "";
     while (EdgesIter.hasNext())
       {
       CyEdge CurrentSelectedEdge = EdgesIter.next();
-      String SourceNodeId = CurrentSelectedEdge.getSource().getIdentifier();
-      String TargetNodeId = CurrentSelectedEdge.getTarget().getIdentifier();
+      GaggleNetwork = addEdgeAttributes(CurrentSelectedEdge, EdgeAtts, GaggleNetwork);
 
-      String InteractionType = EdgeAtts.getStringAttribute(CurrentSelectedEdge.getIdentifier(), Semantics.INTERACTION);
-
+      CyNode SourceNode = (CyNode) CurrentSelectedEdge.getSource();
+      CyNode TargetNode = (CyNode) CurrentSelectedEdge.getTarget();
+      
       // create a new GaggleInteraction for broadcast
+      String InteractionType = EdgeAtts.getStringAttribute(CurrentSelectedEdge.getIdentifier(), Semantics.INTERACTION);
       org.systemsbiology.gaggle.network.Interaction GaggleInteraction = 
-				new Interaction(SourceNodeId, TargetNodeId, InteractionType, CurrentSelectedEdge.isDirected());
+				new org.systemsbiology.gaggle.network.Interaction(SourceNode.getIdentifier(), TargetNode.getIdentifier(), 
+						InteractionType, CurrentSelectedEdge.isDirected());
       GaggleNetwork.add(GaggleInteraction);
 
       // again if there's more than one species we'll only get the last one!!!
-      Species = this.getSpecies(SourceNodeId);
+      Species = this.getSpecies(SourceNode.getIdentifier());
       }
 			try 
-				{ this.GaggleBoss.broadcast(this.CyGoose.getName(), this.getTargetGoose(), Species, GaggleNetwork); }
+				{ this.gaggleBoss.broadcast(Goose.getName(), TargetGoose, Species, GaggleNetwork); }
 			catch (Exception E) { E.printStackTrace(); }
 		}
 
+  // try the "species" attribute first; if not found, use DefaultSpeciesName
 	private String getSpecies(String NodeId)
 		{
-    // try the "species" attribute first; if not found, use DefaultSpeciesName
     String Species = "";
 
-//    try
-      {
-      Species = Cytoscape.getNodeAttributes().getStringAttribute(NodeId, Semantics.SPECIES);
-
-      if (Species == null) Species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-      }
-/*
-    catch (Exception ex)
-      {
-      System.out.println("Exception encountered while fetching species name for node: " + nodeID);
-      }
-*/
+    Species = Cytoscape.getNodeAttributes().getStringAttribute(NodeId, Semantics.SPECIES);
+    if (Species == null) Species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+    
     return Species;
-
 		}	
+
 	
-
-	private void addButtonActions()
+	private Network addNodeAttributes(CyNode Node, CyAttributes NodeAtts, Network GaggleNet)
 		{
-    /* broadcast name list to other goose (geese) */
-    GDialog.getListButton().addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-          {
-          try
-            {
-            broadcastNameList();
-            }
-          catch (Exception ex)
-            {
-            ex.printStackTrace();
-            }
-          }
-      });
-
-    /* broadcast a network to other goose (geese) */
-    GDialog.getNetButton().addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-          {
-          try
-            {
-            broadcastNetwork();
-            }
-          catch (Exception ex)
-            {
-            ex.printStackTrace();
-            }
-          }
-      });
-
-    /* broadcast data matrix to other goose (geese) */
-    GDialog.getMatrixButton().addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-          {
-          try
-            {
-            broadcastDataMatrix();
-            }
-          catch (Exception ex)
-            {
-            ex.printStackTrace();
-            }
-          }
-      });
-
-    /* broadcast HashMap to other goose (geese) */
-    GDialog.getMapButton().addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-          {
-          try
-            {
-            broadcastHashMap();
-            }
-          catch (Exception ex)
-            {
-            ex.printStackTrace();
-            }
-					}
-			});
+		for (String AttributeName: NodeAtts.getAttributeNames())
+			{
+			Object Value = "";
+			switch (NodeAtts.getType(AttributeName))
+				{
+				case CyAttributes.TYPE_BOOLEAN:
+					Value = NodeAtts.getBooleanAttribute(Node.getIdentifier(), AttributeName);
+					break;
+				case CyAttributes.TYPE_INTEGER:
+					Value = NodeAtts.getIntegerAttribute(Node.getIdentifier(), AttributeName);
+					break;
+				case CyAttributes.TYPE_STRING:
+					Value = NodeAtts.getStringAttribute(Node.getIdentifier(), AttributeName);
+					break;
+				case CyAttributes.TYPE_FLOATING:
+					Value = NodeAtts.getDoubleAttribute(Node.getIdentifier(), AttributeName);
+					break;
+				};
+			if (Value == null) Value = "";
+			GaggleNet.addNodeAttribute(Node.getIdentifier(), AttributeName, Value);
+			}
+		return GaggleNet;
+		}
+	
+	private Network addEdgeAttributes(CyEdge Edge, CyAttributes EdgeAtts, Network GaggleNet)
+		{
+		for (String AttributeName: EdgeAtts.getAttributeNames())
+			{
+			String Value = "";
+			switch (EdgeAtts.getType(AttributeName))
+				{
+				case CyAttributes.TYPE_BOOLEAN:
+					Value = Boolean.toString(EdgeAtts.getBooleanAttribute(Edge.getIdentifier(), AttributeName));
+					break;
+				case CyAttributes.TYPE_INTEGER:
+					Value = Integer.toString(EdgeAtts.getIntegerAttribute(Edge.getIdentifier(), AttributeName));
+					break;
+				case CyAttributes.TYPE_STRING:
+					Value = EdgeAtts.getStringAttribute(Edge.getIdentifier(), AttributeName);
+					break;
+				case CyAttributes.TYPE_FLOATING:
+					Value = Double.toString(EdgeAtts.getDoubleAttribute(Edge.getIdentifier(), AttributeName));
+					break;
+				};
+			if (Value == null) Value = ""; 
+			GaggleNet.addEdgeAttribute(Edge.getIdentifier(), AttributeName, Value);
+			}
+		return GaggleNet;
 		}
 
+	
+	
 	}
