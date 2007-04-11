@@ -90,17 +90,6 @@ public class PluginUrlDialog extends JDialog {
 			Cytoscape.setBookmarks(theBookmarks);
 		}
 
-		// if bookmarkCategory does not exist, create a with empty DataSource
-		//		Category theCategory = BookmarksUtil.getCategory(bookmarkCategory,
-		//				theBookmarks.getCategory());
-		//		// add the category if it doesn't exist
-		//		if (theCategory == null)
-		//			{
-		//			theCategory = new Category();
-		//			theCategory.setName(bookmarkCategory);
-		//			List<Category> theCategoryList = theBookmarks.getCategory();
-		//			theCategoryList.add(theCategory);
-		//			}
 	}
 
 	// ok - chooses a site. Needs to reopen the InstallDialog using new url for
@@ -132,6 +121,7 @@ public class PluginUrlDialog extends JDialog {
 	}
 
 	// add - opens the bookmarks dialog to add a new download site
+	// TODO find out this has closed so I can refresh the bookmarks
 	private void addSiteHandler(java.awt.event.ActionEvent evt) {
 		try {
 			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop());
@@ -151,8 +141,7 @@ public class PluginUrlDialog extends JDialog {
 
 		// Extract the URL entries
 		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory,
-		                                                                     theBookmarks
-		                                                                                                                                                  .getCategory());
+		                                                                     theBookmarks.getCategory());
 
 		if (theDataSourceList != null) {
 			for (DataSource Current : theDataSourceList) {
