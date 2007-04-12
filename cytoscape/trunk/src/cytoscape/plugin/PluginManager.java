@@ -108,10 +108,8 @@ public class PluginManager {
 
 		try {
 			if (Tracker != null) {
-				System.out.println("Setting tracker");
 				pluginTracker = Tracker;
 			} else {
-				System.out.println("Creating tracker");
 				pluginTracker = new PluginTracker(CytoscapeInit.getConfigDirectory(), "track_plugins.xml");
 			}
 			cyVersion = CytoscapeVersion.version;
@@ -248,7 +246,6 @@ public class PluginManager {
 					List<String> NewFileList = new ArrayList<String>();
 					NewFileList.add(InstallFile.getAbsolutePath());
 					CurrentPlugin.setFileList(NewFileList);
-					CurrentPlugin.addFileName(InstallFile.getAbsolutePath());
 					break;
 
 				case ZIP:
@@ -342,7 +339,6 @@ public class PluginManager {
 		for (String FileName : Files) {
 			File ToDelete = new java.io.File(FileName);
 			deleteOk = ToDelete.delete();
-			System.err.println("Deleting " + FileName + " " + deleteOk);
 		}
 		return deleteOk;
 	}

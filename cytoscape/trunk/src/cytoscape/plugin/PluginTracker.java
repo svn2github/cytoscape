@@ -168,7 +168,7 @@ public class PluginTracker {
 			Plugin.addContent(Authors);
 		} else {
 			PluginParent.addContent(createPluginContent(obj));
-			System.out.println("Adding plugin " + obj.getName() + " status " + Status.getTagName());
+			System.out.println("Adding plugin " + obj.getName() + " status " + Status.name());
 		}
 		write();
 	}
@@ -186,7 +186,7 @@ public class PluginTracker {
 		Element Plugin = getMatchingPlugin(obj, Status.getTagName());
 		if (Plugin != null) {
 			PluginParent.removeContent(Plugin);
-			System.out.println("Removing plugin " + obj.getName() + " status " + Status.getTagName());
+			System.out.println("Removing plugin " + obj.getName() + " status " + Status.name());
 			write();
 		}
 	}
