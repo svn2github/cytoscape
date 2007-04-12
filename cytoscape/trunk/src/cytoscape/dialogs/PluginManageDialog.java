@@ -86,14 +86,14 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 			
 			if (Node.isNodeAncestor(this.installedNode)) {
 				deleteButton.setEnabled(true);
-				installButton.setEnabled(false);
+				downloadButton.setEnabled(false);
 			} else if (Node.isNodeAncestor(this.availableNode)) {
 				deleteButton.setEnabled(false);
-				installButton.setEnabled(true);
+				downloadButton.setEnabled(true);
 			}
 		} else {
 			deleteButton.setEnabled(false);
-			installButton.setEnabled(false);
+			downloadButton.setEnabled(false);
 		}
 	}
 
@@ -291,7 +291,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		deleteButton = new javax.swing.JButton();
 		closeButton = new javax.swing.JButton();
 		changeSiteButton = new javax.swing.JButton();
-		installButton = new javax.swing.JButton();
+		downloadButton = new javax.swing.JButton();
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setLocationByPlatform(true);
 		splitPane.setDividerLocation(265);
@@ -349,9 +349,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 					changeSiteHandler(evt);
 				}
 			});
-		installButton.setText("Install");
-		installButton.setEnabled(false);
-		installButton.addActionListener(new java.awt.event.ActionListener() {
+		downloadButton.setText("Download");
+		downloadButton.setEnabled(false);
+		downloadButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					installHandler(evt);
 				}
@@ -366,7 +366,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		                                                                                             Short.MAX_VALUE)
 		                                                                            .add(changeSiteButton)
 		                                                                            .add(28, 28, 28)
-		                                                                            .add(installButton)
+		                                                                            .add(downloadButton)
 		                                                                            .add(18, 18, 18)
 		                                                                            .add(deleteButton)
 		                                                                            .add(30, 30, 30)
@@ -376,7 +376,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 		                                                    .add(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                                          .add(closeButton)
 		                                                                          .add(deleteButton)
-		                                                                          .add(installButton)
+		                                                                          .add(downloadButton)
 		                                                                          .add(changeSiteButton)));
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -479,7 +479,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements TreeSelec
 	private javax.swing.JPanel buttonPanel;
 	private javax.swing.JButton closeButton;
 	private javax.swing.JButton deleteButton;
-	private javax.swing.JButton installButton;
+	private javax.swing.JButton downloadButton;
 	private javax.swing.JButton changeSiteButton;
 	private javax.swing.JLabel dialogLabel;
 	private javax.swing.JScrollPane infoScrollPane;
