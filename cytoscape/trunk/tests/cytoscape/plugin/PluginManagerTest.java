@@ -154,6 +154,10 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(Current.size(), 1);
 
+		assertEquals( Current.get(0).getFileList().size(), 1 );
+		// shouldn't contain the temp directory path
+		assertFalse( Current.get(0).getFileList().get(0).contains(".cytoscape") );
+		
 		assertTrue((new File(Current.get(0).getFileList().get(0)).exists()));
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
@@ -179,9 +183,12 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(Current.size(), 1);
+		assertEquals(Current.get(0).getFileList().size(), 1);
+		
 		File InstalledPlugin = new File(Current.get(0).getFileList().get(0));
 		assertTrue(InstalledPlugin.exists());
-		mgr.delete(TestObj);
+
+		mgr.delete(Current.get(0));
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
 		mgr.delete();
 		assertFalse(InstalledPlugin.exists());
@@ -210,7 +217,7 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
 		// set for deletion
-		mgr.delete(TestObj);
+		mgr.delete(mgr.getPlugins(PluginStatus.CURRENT).get(0));
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
@@ -259,6 +266,9 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
+		PluginInfo CurrentInstall = mgr.getPlugins(PluginStatus.INSTALL).get(0);
+		assertEquals(CurrentInstall.getFileList().size(), 1);
+		
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
 	}
