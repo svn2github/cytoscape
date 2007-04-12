@@ -245,6 +245,9 @@ public class PluginManager {
 					fis.close();
 					fos.close();
 					
+					List<String> NewFileList = new ArrayList<String>();
+					NewFileList.add(InstallFile.getAbsolutePath());
+					CurrentPlugin.setFileList(NewFileList);
 					CurrentPlugin.addFileName(InstallFile.getAbsolutePath());
 					break;
 
@@ -274,6 +277,7 @@ public class PluginManager {
 			} finally { // always remove it.  If it errored in installation we don't want to try it again
 				pluginTracker.removePlugin(CurrentPlugin,
 						PluginTracker.PluginStatus.INSTALL);
+				(new File(FileList.get(0))).delete();
 			}
 		}
 	}
