@@ -566,9 +566,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(new_style);
 			}
 
-			cyMenus.setNodesRequiredItemsEnabled();
-			cyMenus.setVisualMapperItemsEnabled(vizmap_enabled.booleanValue());
-
 			if (vizmap_enabled.booleanValue()) {
 				new_view.redrawGraph(false, false);
 			}
