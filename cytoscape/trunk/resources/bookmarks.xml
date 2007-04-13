@@ -356,10 +356,13 @@
 			xlink:href="http://cytoscape.org/datasets/ptacek.sif"
 			format="sif" />
 	</category>
+
 	<category name="plugins">
 		<dataSource name="Cytoscape"
 			xlink:href="http://cytoscape.org/plugins/plugins.xml"/>
-		<dataSource name="skillcoyne"
+
+		<dataSource name="Test"
 			xlink:href="http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml"/>
 	</category>
+
 </bookmarks>
