@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
 
+import java.net.Proxy;
 import java.net.URL;
 
 import java.util.jar.JarInputStream;
@@ -67,16 +68,24 @@ public class URLUtil {
 	 */
 	public static InputStream getInputStream(URL source) throws IOException {
 		final InputStream newIs;
-
+		final InputStream proxyIs;
+		Proxy CytoProxy = ProxyHandler.getProxyServer();
+		
+		if (CytoProxy == null) {
+			proxyIs = source.openStream();
+		} else {
+			proxyIs = source.openConnection(CytoProxy).getInputStream();
+		}
+		
 		if (source.toString().endsWith(GZIP)) {
-			newIs = new GZIPInputStream(source.openStream());
+			newIs = new GZIPInputStream(proxyIs);
 		} else if (source.toString().endsWith(ZIP)) {
 			System.err.println(source.toString() + " ZIP ");
-			newIs = new ZipInputStream(source.openStream());
+			newIs = new ZipInputStream(proxyIs);
 		} else if (source.toString().endsWith(JAR)) {
-			newIs = new JarInputStream(source.openStream());
+			newIs = new JarInputStream(proxyIs);
 		} else {
-			newIs = source.openStream();
+			newIs = proxyIs;
 		}
 
 		return newIs;
@@ -93,7 +102,16 @@ public class URLUtil {
 	public static void download(String urlString, File downloadFile) throws IOException {
 		URL url = new URL(urlString);
 		// using getInputStream method above never returned an input stream that I could read from why??
-		InputStream is = url.openStream();
+		InputStream is = null;
+		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
+		
+		if (CytoProxyHandler == null) {
+			is = url.openStream();
+		} else {
+			is = url.openConnection(CytoProxyHandler).getInputStream();
+		}
+		
+		//InputStream is = url.openStream();
 		
 		java.util.List<Byte> FileBytes = new java.util.ArrayList<Byte>();
 
@@ -115,13 +133,39 @@ public class URLUtil {
 
 		os.flush();
 		os.close();
-
+		is.close(); 
+		
 		if (STOP) {
 			downloadFile.delete();
 		}
-
-//		return downloadFile;
 	}
+
+	
+	/**
+	 * Get the the contents of the given URL as a string.
+	 * @param source
+	 * @return String
+	 * @throws IOException
+	 */
+	public static String download(URL source) throws IOException {
+		InputStream is = getInputStream(source);
+//		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
+//		
+//		if (CytoProxyHandler == null) {
+//			is = getInputStream(source);
+//		} else {
+//			source.openConnection(CytoProxyHandler);
+//		}
+		
+		StringBuffer buffer = new StringBuffer();
+		int c;
+		while( (c = is.read() ) != -1) {
+			buffer.append( (char)c );
+		}
+		is.close();
+		return buffer.toString();
+	}
+	
 	
 	
 }
