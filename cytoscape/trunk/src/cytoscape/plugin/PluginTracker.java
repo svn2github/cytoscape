@@ -244,7 +244,7 @@ public class PluginTracker {
 		installFile.delete();
 	}
 	
-
+	// TODO PluginFileReader does much the same stuff, need to merge the two
 	/*
 	* Takes a list of elemnts, creates the PluginInfo object for each and returns
 	* list of objects
@@ -255,6 +255,7 @@ public class PluginTracker {
 		List<Element> Plugins = PluginParentTag.getChildren(pluginTag);
 
 		for (Element CurrentPlugin : Plugins) {
+			
 			PluginInfo Info = new PluginInfo(CurrentPlugin.getChildTextTrim(this.uniqueIdTag));
 			Info.setName(CurrentPlugin.getChildTextTrim(this.nameTag));
 			Info.setDescription(CurrentPlugin.getChildTextTrim(this.descTag));
@@ -265,28 +266,30 @@ public class PluginTracker {
 			Info.setUrl(CurrentPlugin.getChildTextTrim(this.urlTag));
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(this.projUrlTag));
 
+			// set file type
 			String FileType = CurrentPlugin.getChildTextTrim(this.fileTypeTag);
-
 			if (FileType.equalsIgnoreCase(PluginInfo.FileType.JAR.toString())) {
 				Info.setFiletype(PluginInfo.FileType.JAR);
 			} else if (FileType.equalsIgnoreCase(PluginInfo.FileType.ZIP.toString())) {
 				Info.setFiletype(PluginInfo.FileType.ZIP);
 			}
-
+			
+			// add plugin files
 			List<Element> Files = CurrentPlugin.getChild(this.fileListTag).getChildren(this.fileTag);
-
 			for (Element File : Files) {
 				Info.addFileName(File.getTextTrim());
 			}
 
+			// add plugin authors
 			List<Element> Authors = CurrentPlugin.getChild(this.authorListTag)
 			                                     .getChildren(this.authorTag);
-
 			for (Element Author : Authors) {
 				Info.addAuthor(Author.getChildTextTrim(this.nameTag),
 				               Author.getChildTextTrim(this.instTag));
 			}
 
+			Info = PluginFileReader.addLicense(Info, CurrentPlugin);
+			
 			Content.add(Info);
 		}
 
@@ -311,27 +314,30 @@ public class PluginTracker {
 		Plugin.addContent(new Element(categoryTag).setText(obj.getCategory()));
 		Plugin.addContent(new Element(fileTypeTag).setText(obj.getFileType().toString()));
 
+		// license
+		Element License = new Element(licenseTag);
+		License.addContent( new Element("text").setText(obj.getLicenseText()) );
+		Plugin.addContent(License);
+		
+		// authors
 		Element AuthorList = new Element(authorListTag);
-
-		List<AuthorInfo> AllAuthors = obj.getAuthors();
-
-		for (AuthorInfo CurrentAuthor : AllAuthors) {
+		for (AuthorInfo CurrentAuthor : obj.getAuthors()) {
 			Element Author = new Element(authorTag);
 			Author.addContent(new Element(nameTag).setText(CurrentAuthor.getAuthor()));
 			Author.addContent(new Element(instTag).setText(CurrentAuthor.getInstitution()));
 			AuthorList.addContent(Author);
 		}
-
 		Plugin.addContent(AuthorList);
 
+		// files
 		Element FileList = new Element(fileListTag);
-
 		for (String FileName : obj.getFileList()) {
 			FileList.addContent(new Element(fileTag).setText(FileName));
 		}
-
 		Plugin.addContent(FileList);
 
+		
+		
 		return Plugin;
 	}
 
@@ -354,4 +360,5 @@ public class PluginTracker {
 	private String instTag = PluginFileReader.instTag;
 	private String uniqueIdTag = PluginFileReader.uniqueID;
 	private String fileTypeTag = PluginFileReader.fileType;
+	private String licenseTag = PluginFileReader.licenseTag;
 }

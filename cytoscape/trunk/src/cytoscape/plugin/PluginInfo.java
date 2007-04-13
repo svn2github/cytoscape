@@ -36,9 +36,12 @@
 package cytoscape.plugin;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.util.URLUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.net.URL;
 
 
 /**
@@ -98,6 +101,7 @@ public class PluginInfo {
 	private String pluginClassName;
 	private String pluginName;
 	private List<AuthorInfo> authors;
+	private License license;
 	private String pluginDescription;
 	private String pluginVersion;
 	private String cytoscapeVersion;
@@ -268,8 +272,33 @@ public class PluginInfo {
 		authors.add(new AuthorInfo(authorName, institution));
 	}
 
+	/**
+	 * Sets the license information for the plugin.  Not required.
+	 * @param java.net.URL object where license can be downloaded from.
+	 */
+	public void setLicense(URL url) {
+		license = new License(url);
+	}
+	
+	/**
+	 * Sets the license information for the plugin.  Not required.
+	 * @param Text string of license.
+	 */
+	public void setLicense(String licenseText) {
+		license = new License(licenseText);
+	}
+	
 	/* GET */
 
+	/**
+	 * @return The text of the license for this plugin if available.
+	 */
+	public String getLicenseText() {
+		if (license != null)
+			return license.getLicense();
+		else return null;
+	}
+	
 	/**
 	 * @return The unique id for this object.
 	 */
@@ -436,4 +465,38 @@ public class PluginInfo {
 			return this.institutionName;
 		}
 	}
+	
+	/**
+	 * Fetches and keeps a plugin license if one is available.
+	 */
+	public class License {
+		private java.net.URL url;
+		private String text;
+		
+		public License(java.net.URL Url) {
+			url = Url;
+		}
+		
+		public License(String LicenseText) {
+			text = LicenseText;
+		}
+		
+		/**
+		 * Get the license text as a string.  Will download from url if
+		 * License was not initialized with text string.
+		 * @return String
+		 */
+		public String getLicense() {
+			if (text == null) {
+				try {
+					text = URLUtil.download(url);
+				} catch (java.io.IOException E) {
+					E.printStackTrace();
+				}
+			}
+			return text;
+		}
+		
+	}
+	
 }
