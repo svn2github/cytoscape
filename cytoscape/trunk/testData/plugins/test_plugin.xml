@@ -23,6 +23,11 @@
 			<filetype> jar </filetype>
 			<category> Test </category>
 			<url> GoodPlugin.jar </url>
+			<license>
+				<text>
+					This is some license text a user would see and have to ok in order to install a plugin.
+				</text>
+			</license>
 			<authorlist>
 				<author>
 					<name> Ann Smith </name>
@@ -43,9 +48,15 @@
 			<filetype> jar </filetype>
 			<category> Test </category>
 			<url> GoodPlugin.jar </url>
+
+<!-- Not sure how to deal with testing this at the moment.  I need to turn it into file:/// structure...
+			<license>
+				<url> license.txt </url>
+			</license>
+-->
 			<authorlist>
 				<author>
-					<name> Ann Smith </name>
+					<name> Ann Smith and George James</name>
 					<institution> UW </institution>
 				</author>
 				<author>
