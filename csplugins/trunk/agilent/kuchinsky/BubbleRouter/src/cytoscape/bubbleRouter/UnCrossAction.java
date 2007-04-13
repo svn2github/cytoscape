@@ -24,19 +24,21 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
 
 /**
  * Rearranges the set of selected nodes in a way that minimizes edge crossings.
- * Uses a very simple method. 1. randomly order the list of nodes 2. select the
- * first node in the list. 3. for each subsequent node in the list, calculate
+ * Uses a very simple method. 
+ * 1. randomly order the list of nodes 
+ * 2. select the first node in the list. 
+ * 3. for each subsequent node in the list, calculate
  * number of edge crossings before and after a possible permutation, as follows
- * as follows: a. for each edge incident to each node, (1) for each edge in the
- * network, see if the two edges intersect b. total the intersections for all
- * incident edges, before and after permutation 4. permute the node with the
- * node in the list that has resulted in largest drop between before and after
- * calculation of edge crossings. 5. increment iterations counter. 6. if
- * iterations counter > threshold, then done. repeat at 3 using the node that
+ *    a. for each edge incident to each node, 
+ *        (1) for each edge in the network, see if the two edges intersect 
+ *    b. total the intersections for all incident edges, before and after permutation 
+ * 4. permute the node with the node in the list that has resulted in largest drop between before and 
+ * after calculation of edge crossings. 
+ * 5. increment iterations counter. 
+ * 6. if iterations counter > threshold, then done. repeat at 3 using the node that
  * has just been switched into first position
  * 
  * @author Allan Kuchinsky, Agilent Technologies
@@ -81,7 +83,6 @@ class UnCrossAction extends CytoscapeAction {
 	 * for undo/redo of uncrossing
 	 */
 	private static Point2D[] _undoOffsets;
-
 	private static Point2D[] _redoOffsets;
 
 	/**
@@ -98,53 +99,45 @@ class UnCrossAction extends CytoscapeAction {
 	 * Nodes for candidate and other node, for swapping
 	 */
 	private static Node _candidate_node = null;
-
 	private static Node _other_node = null;
 
 	/**
 	 * number of edge crossings for best fit so far
 	 */
 	private static int _nbr_crossings_for_best_fit;
-
 	private static int _index_for_best_fit;
 
 	/**
 	 * before and after positions for candidate and other node
 	 */
 	static Point2D _candidate_before_locn = null;
-
 	static Point2D _candidate_after_locn = null;
-
 	static Point2D _other_before_locn = null;
-
 	static Point2D _other_after_locn = null;
-
 	static Point2D _tmpPoint;
 
-	/**
-	 * 
-	 */
 
 	/**
 	 * Cytoscape working objects
 	 */
 	private static CyNetwork _net;
-
 	private static CyNetworkView _view;
 
 	/**
 	 * number of iterations before quitting
 	 */
 	// for debugging set to 1
-	private static final int ITERATION_LIMIT = 10; // play with this via
+	private static final int ITERATION_LIMIT = 10; 
 	
 	/**
 	 * for performance reasons, set threshold so that this doesn't execute with large networks
 	 */
 	public static final int UNCROSS_THRESHOLD = 50;
 
-	// heuristics on performance
 
+	/**
+	 * iterations counter
+	 */
 	private static int iteration = 0;
 
 	public UnCrossAction() {
@@ -171,16 +164,33 @@ class UnCrossAction extends CytoscapeAction {
 		_selectedNodes = nodes;
 	}
 
-	// AJK: 03/15/07 BEGIN
-	// don't do undo/redo logic if called by a higher-level action, such as
-	// reroute region
 
-	public static void unCross(List nodes) {
+	public static void unCross(List<Node> nodes) {
 		unCross(nodes, true);
 	}
 
 	// AP: 2.25.07 now takes list of nodes WITHIN bounds of a region
-	public static void unCross(List nodes, boolean calledByEndUser) {
+	/**
+ * Rearranges the set of selected nodes in a way that minimizes edge crossings.
+ * Uses a very simple method. 
+ * 1. randomly order the list of nodes 
+ * 2. select the first node in the list. 
+ * 3. for each subsequent node in the list, calculate
+ * number of edge crossings before and after a possible permutation, as follows
+ *    a. for each edge incident to each node, 
+ *        (1) for each edge in the network, see if the two edges intersect 
+ *    b. total the intersections for all incident edges, before and after permutation 
+ * 4. permute the node with the node in the list that has resulted in largest drop between before and 
+ * after calculation of edge crossings. 
+ * 5. increment iterations counter. 
+ * 6. if iterations counter > threshold, then done. repeat at 3 using the node that
+ * has just been switched into first position
+ * 	 * 
+	 * 
+	 * @param nodes
+	 * @param calledByEndUser  was this called from the UI or by another part of BubbleRouter (avoids undo/redo logic if called by another component)
+	 */
+	public static void unCross(List<Node> nodes, boolean calledByEndUser) {
 
 		// AP: 2/25/07 warn if no nodes are selected
 		if (nodes.size() <= 0) {
@@ -223,8 +233,6 @@ class UnCrossAction extends CytoscapeAction {
 	}
 
 	public class UnCrossTask implements Task {
-		// // MLC 12/05/05:
-		// static private final int NODE_THRESHOLD = 200;
 		boolean interrupted = false;
 
 		private TaskMonitor taskMonitor = null;
@@ -232,13 +240,15 @@ class UnCrossAction extends CytoscapeAction {
 
 		private List nodes;
 
-		// AJK: 03/15/07 BEGIN
-		// only implement undo/redo logic if we are called by the end user,
-		// rather than by
-		// another class
+		// only implement undo/redo logic if we are called by the end user, rather than by another class
 		private boolean _calledByEndUser = true;
 
-		public UnCrossTask(List nodeList, boolean needUndo) {
+		/**
+		 * 
+		 * @param nodeList
+		 * @param needUndo
+		 */
+		public UnCrossTask(List<Node> nodeList, boolean needUndo) {
 			_calledByEndUser = needUndo;
 			// AJK: 03/15/07 END
 			nodes = nodeList;
@@ -277,24 +287,18 @@ class UnCrossAction extends CytoscapeAction {
 					permuteToBestFit(i);
 				}
 				
-				// AJK: 03/17/2007 BEGIN
 				//    performance tuning
 				if (nodes.size() <= UNCROSS_THRESHOLD)
 				{
 					_view.redrawGraph(true, true);
 				}
-				// AJK: 03/17/2007
-				
-				// _view.updateView();
+	
 			}
 			for (int m = 0; m < _nodeViews.length; m++) {
 				_redoOffsets[m] = _nodeViews[m].getOffset();
 			}
 
-			// AJK: 03/15/07 BEGIN
-			// only implement undo/redo logic if we are called by the end user,
-			// rather than by
-			// another class
+			// only implement undo/redo logic if we are called by the end user, rather than by another class
 			if (_calledByEndUser) {
 				CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
 //				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
@@ -332,7 +336,11 @@ class UnCrossAction extends CytoscapeAction {
 			 _view.redrawGraph(true, true);
 		}
 
-		private void initialize(List nodes) {
+		/**
+		 * initialize internal data structures for algorithm and first iteration
+		 * @param nodes
+		 */
+		private void initialize(List<Node> nodes) {
 
 			// initialize the data arrays
 			_beforeEdgeCrossings = new int[nodes.size()];
@@ -347,9 +355,7 @@ class UnCrossAction extends CytoscapeAction {
 			_net = Cytoscape.getCurrentNetwork();
 			_view = Cytoscape.getCurrentNetworkView();
 
-			// first initialize array of NodeViews, starting from randomly
-			// generated
-			// position
+			// first initialize array of NodeViews, starting from randomly generated position
 			int len = nodes.size();
 			int startPosn = (int) (len * Math.random());
 			_nodeViews = new NodeView[len];
@@ -367,27 +373,22 @@ class UnCrossAction extends CytoscapeAction {
 
 			// now calculate base set of edge crossing values
 
-			// for debugging
-			// System.out.println(" ");
-			// System.out.println("Node\tEdge Crossings");
-
 			for (int j = 0; j < _nodeViews.length; j++) {
 				NodeView nv = _nodeViews[j];
 				Point2D locn = nv.getOffset();
 				_beforeEdgeCrossings[j] = calculateEdgeCrossings(nv, locn,
 						null, null);
-				// for debugging
-				// System.out.println (nv.getNode().getIdentifier()
-				// + "\t" + _beforeEdgeCrossings[j]);
 			}
-			// for debugging
-			// System.out.println(" ");
 
 			int totalCrossings = calculateTotalCrossings(_beforeEdgeCrossings);
-			_totalEdgeCrossings[0] = totalCrossings; // we start at first
-			// index
+			_totalEdgeCrossings[0] = totalCrossings; // we start at first index
 		}
 
+		/**
+		 * 
+		 * @param edgeCrossings
+		 * @return
+		 */
 		private int calculateTotalCrossings(int[] edgeCrossings) {
 			int total = 0;
 			for (int i = 0; i < edgeCrossings.length; i++) {
@@ -399,16 +400,17 @@ class UnCrossAction extends CytoscapeAction {
 		/**
 		 * permute node at index with one of the other nodes such that edge
 		 * crossings are minimized
+		 * @param index  integer index of node to be permuted
 		 * 
 		 */
 		private void permuteToBestFit(int index) {
 			/**
-			 * loop through _nodeViews and for each _nodeView a. calculate edge
-			 * crossings for the node at index if moved to position of _nodeView
+			 * loop through _nodeViews and for each _nodeView 
+			 * a. calculate edge crossings for the node at index if moved to position of _nodeView
 			 * b. calculate edge crossings for the node at current position if
-			 * moved to position of _nodeView at index c. sum a and b and store
-			 * in total edge crossings for counter position d. permute _nodeView
-			 * at index with _nodeView at position
+			 * moved to position of _nodeView at index 
+			 * c. sum a and b and store in total edge crossings for counter position 
+			 * d. permute _nodeView at index with _nodeView at position
 			 * 
 			 */
 
@@ -440,12 +442,7 @@ class UnCrossAction extends CytoscapeAction {
 							_afterEdgeCrossings[j] = _beforeEdgeCrossings[j];
 						}
 
-						// for debugging
-						// System.out.println (newNv.getNode().getIdentifier()
-						// + "\t" + _afterEdgeCrossings[j]);
 					}
-					// for debugging
-					// System.out.println(" ");
 					int totalCrossings = calculateTotalCrossings(_afterEdgeCrossings);
 					_totalEdgeCrossings[i] = totalCrossings;
 
@@ -457,8 +454,7 @@ class UnCrossAction extends CytoscapeAction {
 
 				}
 			}
-			// now go through the totals and find index with minimum edge
-			// crossings
+			// now go through the totals and find index with minimum edge crossings
 			_index_for_best_fit = index;
 			_nbr_crossings_for_best_fit = _totalEdgeCrossings[index];
 			for (int k = 0; k < _nodeViews.length; k++) {
@@ -469,20 +465,12 @@ class UnCrossAction extends CytoscapeAction {
 			}
 			if (_index_for_best_fit != index) // swap for lower edge crossings
 			{
-				// shift X position by a small random amount so as to indicate
-				// movement
+				// shift X position by a small random amount so as to indicate movement
 				NodeView swapNv = _nodeViews[_index_for_best_fit];
 				_tmpPoint = swapNv.getOffset();
 				swapNv.setOffset(_nodeViews[index].getXPosition(),
-				// - (0.1 * swapNv.getWidth())
-						// + (0.2* Math.random() * swapNv.getWidth()),
-
 						_nodeViews[index].getYPosition());
 				_nodeViews[index].setOffset(_tmpPoint.getX(),
-
-				// - (0.1 * _nodeViews[index].getWidth())
-						// + (0.2 * Math.random() *
-						// _nodeViews[index].getWidth()),
 						_tmpPoint.getY());
 				_totalEdgeCrossings[_index_for_best_fit] = _totalEdgeCrossings[index];
 				_totalEdgeCrossings[index] = _nbr_crossings_for_best_fit;
@@ -494,9 +482,6 @@ class UnCrossAction extends CytoscapeAction {
 				Point2D locn = nv.getOffset();
 				_beforeEdgeCrossings[j] = calculateEdgeCrossings(nv, locn,
 						null, null);
-				// for debugging
-				// System.out.println (nv.getNode().getIdentifier()
-				// + "\t" + _beforeEdgeCrossings[j]);
 			}
 		}
 
@@ -580,16 +565,6 @@ class UnCrossAction extends CytoscapeAction {
 		 */
 		private int edgeCrossings(Edge thisEdge, Edge otherEdge, NodeView nv,
 				Point2D nvLocn, NodeView swapNv, Point2D swapLocn) {
-			// System.out.println(" Comparing edge: " + thisEdge + " to "
-			// + otherEdge);
-			// System.out.println (" Comparing "
-			// + nv.getNode().getIdentifier() + " at " +
-			// nv.getXPosition() + "," + nv.getYPosition());
-			if (swapNv != null) {
-				// System.out.println(" + with "
-				// + swapNv.getNode().getIdentifier()+ " at " +
-				// swapNv.getXPosition() + "," + swapNv.getYPosition());
-			}
 
 			NodeView thisEdgeSourceView = _view.getNodeView(thisEdge
 					.getSource());
@@ -608,44 +583,31 @@ class UnCrossAction extends CytoscapeAction {
 			// find the intersection point between the two lines
 			Point2D intersectionPt = getIntersectionPoint(thisLine, otherLine);
 
-			// debug
-			// System.out.println (" Got intersection point" +
-			// intersectionPt.getX() + "," + intersectionPt.getY());
-
 			if (intersectionPt == null) {
 				return 0; // no intersection
 			}
-			// eliminate the case where lines intersect at their end points,
-			// i.e.
+
+			// eliminate the case where lines intersect at their end points, i.e.
 			// it's a junction at a node, not an edge crossing
 			else if ((((int) (intersectionPt.getX()) == ((int) thisLine.getX1())) && ((int) (intersectionPt
 					.getY()) == ((int) thisLine.getY1())))
 					|| (((int) (intersectionPt.getX()) == ((int) thisLine
 							.getX2())) && ((int) (intersectionPt.getY()) == ((int) thisLine
 							.getY2()))))
-			// we are at the endpoint of one line. Are we at endPoint of the
-			// other?
+			// we are at the endpoint of one line. Are we at endPoint of the other?
 			{
 				if ((((int) (intersectionPt.getX()) == ((int) otherLine.getX1())) && ((int) (intersectionPt
 						.getY()) == ((int) otherLine.getY1())))
 						|| (((int) (intersectionPt.getX()) == ((int) otherLine
 								.getX2())) && ((int) (intersectionPt.getY()) == ((int) otherLine
 								.getY2())))) {
-					// System.out.println ("intersection point is an
-					// endpoint.");
 					return 0;
 				}
 			}
 
-			// make sure that point is actually on both lines, not their
-			// extensions
-			// to infinity
+			// make sure that point is actually on both lines, not their extensions to infinity
 			else if (thisLine.intersectsLine(otherLine))
-			// ((thisLine.contains(intersectionPt)) &&
-			// (otherLine.contains(intersectionPt)))
 			{
-				// System.out.println("Lines intersect internally");
-
 				return 1;
 
 			}
@@ -655,6 +617,12 @@ class UnCrossAction extends CytoscapeAction {
 
 		}
 
+		/**
+		 * 
+		 * @param thisLine
+		 * @param otherLine
+		 * @return point where the two lines intersect
+		 */
 		private Point2D getIntersectionPoint(Line2D thisLine, Line2D otherLine) {
 			double e1x1 = thisLine.getX1();
 			double e1x2 = thisLine.getX2();
@@ -666,19 +634,12 @@ class UnCrossAction extends CytoscapeAction {
 			double e2y1 = otherLine.getY1();
 			double e2y2 = otherLine.getY2();
 
-			// debug
-			// System.out.println(" Comparing lines "
-			// + e1x1 + "," + e1y1 + " ==> " + e1x2 + "," + e1y2);
-			// System.out.println(" and "
-			// + e2x1 + "," + e2y1 + " ==> " + e2x2 + "," + e2y2);
 
 			double dx1 = e1x2 - e1x1;
 			double dx2 = e2x2 - e2x1;
 
 			if ((dx1 == 0.0d) && (dx2 == 0.0d)) {
-				return null; // both lines are vertical and parallel (unless
-				// the
-				// same)
+				return null; // both lines are vertical and parallel (unless the same)
 			}
 
 			double m1 = Double.NaN;
@@ -729,40 +690,5 @@ class UnCrossAction extends CytoscapeAction {
 			this.interrupted = true;
 		}
 	}
-
-	/**
-	 * calculates actual line segment for the edge, taking into count
-	 * potentially swapped positions of endpoints
-	 * 
-	 * @param thisEdge
-	 *            first edge
-	 * @param nv
-	 *            the NodeView for which we are calculating edge crossings
-	 * @param nvLocn
-	 *            the position for NodeView (may be actual or tentative)
-	 * @param swapNV
-	 *            the NodeView that we are tentatively swapping locations with
-	 *            (may be null)
-	 * @param swapLocn
-	 *            position for NodeView that we are tentatively swapping
-	 *            locations with (may be null)
-	 * @return line segment for edge
-	 */
-	/*
-	 * do not need this private static Line2D calculateLineSegment (Edge
-	 * thisEdge, NodeView nv, Point2D nvLocn, NodeView swapNv, Point2D swapLocn) {
-	 * Node source = thisEdge.getSource(); Node target = thisEdge.getTarget();
-	 * 
-	 * Point2D sourceLocn, targetLocn; // first determine source position if
-	 * (source == nv.getNode()) { sourceLocn = nvLocn; } else if ((swapNv !=
-	 * null) && (swapNv == nv.getNode())) { sourceLocn = swapLocn; } else {
-	 * sourceLocn = _view.getNodeView(source).getOffset(); } // next determine
-	 * target position if (target == nv.getNode()) { targetLocn = nvLocn; } else
-	 * if ((swapNv != null) && (swapNv == nv.getNode())) { targetLocn =
-	 * swapLocn; } else { targetLocn = _view.getNodeView(target).getOffset(); }
-	 * 
-	 * return new Line2D.Double (sourceLocn.getX(), sourceLocn.getY(),
-	 * targetLocn.getX(), targetLocn.getY()); }
-	 */
 
 }
