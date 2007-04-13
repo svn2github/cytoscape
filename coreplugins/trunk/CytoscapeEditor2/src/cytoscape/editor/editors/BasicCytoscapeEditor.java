@@ -39,6 +39,8 @@ import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
 
+import cytoscape.editor.AddEdgeEdit;
+import cytoscape.editor.AddNodeEdit;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 
@@ -49,6 +51,8 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeToolBar;
+
+import cytoscape.util.undo.CyUndo;
 
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
@@ -106,7 +110,6 @@ import javax.swing.MenuElement;
  *
  */
 
-// MLC 07/27/06:
 public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListener,
                                              NodeContextMenuListener, EdgeContextMenuListener {
 	/**
@@ -129,12 +132,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 */
 	CytoscapeToolBar _toolBar;
 
-	// MLC 12/13/06 BEGIN:
-	//	/**
-	//	 * current network view being edited
-	//	 */
-	// CyNetworkView view;
-	//	 MLC 12/13/06 END.
 	boolean DEBUG = false;
 
 	/**
@@ -168,20 +165,11 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 */
 	NetworkEditEventAdapter _networkEditEventAdapter;
 
-	// MLC 07/27/06 BEGIN:
-	// /**
-	// * Cytoscape Attribute: BioPAX Name.
-	// */
-	// public static final String BIOPAX_NAME_ATTRIBUTE = "BIOPAX_NAME";
-	// MLC 07/27/06 END.
-
 	/**
 	 *
 	 */
 	public BasicCytoscapeEditor() {
 		super();
-
-		// AJK: 04/27/06 for context menus
 	}
 
 	/**
@@ -254,55 +242,22 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 
 		if (attribute != null) {
-			// MLC 08/06/06:
-			// CytoscapeEditorManager.nodeAttribs.setAttribute(cn.getIdentifier(),
-			// MLC 08/06/06:
 			Cytoscape.getNodeAttributes().setAttribute(cn.getIdentifier(), attribute, value);
 
 			if (attribute != CytoscapeEditorManager.NODE_TYPE) {
-				// MLC 08/06/06:
-				// CytoscapeEditorManager.nodeAttribs.setAttribute(cn.getIdentifier(),
-				// MLC 08/06/06:
 				Cytoscape.getNodeAttributes()
 				         .setAttribute(cn.getIdentifier(), CytoscapeEditorManager.NODE_TYPE, value);
 			}
 
-			// String canonicalName =
-			// nodeAttribs.getStringAttribute(cn.getIdentifier(),
-			// Semantics.CANONICAL_NAME);
-			// CytoscapeEditorManager.log ("Got canonical name: " +
-			// canonicalName);
-			// MLC 07/27/06 BEGIN:
-			// hack for BioPAX visual style
-			// CytoscapeEditorManager.nodeAttribs.setAttribute(cn.getIdentifier(),
-			// CytoscapeEditorManager.BIOPAX_NODE_TYPE, value);
-			// CytoscapeEditorManager.nodeAttribs.setAttribute(cn.getIdentifier(),
-			// BIOPAX_NAME_ATTRIBUTE,
-			// // canonicalName);
-			// cn.getIdentifier());
-			// MLC 07/27/06 END.
 			net.restoreNode(cn);
 		}
 
-		// hack for BioPAX
-		// TODO: move this hack for BIOPAX into the
-		// PaletteNetworkEditEventHandler code
-		/*
-		 * if (attribute.equals("BIOPAX_NODE_TYPE")) {
-		 * net.setNodeAttributeValue(cn, "BIOPAX_NAME", nodeName); }
-		 */
-
-		// AJK: 01/24/06 select the added node
-		// MLC 07/27/06 BEGIN:
-		// net.unFlagAllNodes();
-		// net.setFlagged(cn, true);
 		net.unselectAllNodes();
 
 		List<CyNode> l = new ArrayList<CyNode>(1);
 		l.add(cn);
 		net.setSelectedNodeState(l, true);
 
-		// MLC 07/27/06 END.
 		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(cn);
 		nv.setToolTip(cn.getIdentifier());
 
@@ -315,36 +270,15 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 			CytoscapeEditorManager.log("Offset for node " + cn + "set to " + nv.getOffset());
 		}
 
-		CytoscapeEditorManager.manager.setupUndoableAdditionEdit(net, cn, null);
+		CyUndo.getUndoableEditSupport().postEdit( new AddNodeEdit(net,cn) );
 
-		// AJK: 05/15/06 BEGIN
 		// set tooltip on the node's view
 		Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
 		                             CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
 
-		// AJK: 05/15/06 END
 		return cn;
 	}
-
-	// MLC 07/27/06 BEGIN:
-	// /**
-	// * respond to flagging of a Node. Does nothing right now.
-	// */
-	// public void onFlagEvent(FlagEvent e) {
-	// Object obj = e.getTarget();
-	//
-	// if (obj instanceof NodeView) {
-	// NodeView nv = (NodeView) obj;
-	// CyNode myNode = (CyNode) nv.getNode();
-	// CyAttributes attribs = Cytoscape.getNodeAttributes();
-	//
-	// // String canonicalName =
-	// // attribs.getStringAttribute(myNode.getIdentifier(),
-	// // Semantics.CANONICAL_NAME);
-	// // CytoscapeEditorManager.log("Got target: " + canonicalName);
-	// }
-	// }
 
 	/**
 	 * respond to selection of a Node. Does nothing right now. Implements
@@ -365,22 +299,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		menu.add(new DeleteAction(nodeView.getNode()));
 	}
 
-	//    public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-	//        if (nodeView instanceof NodeView) {
-	//            // AJK: 12/09/06 fix for multiple entries
-	//            // if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
-	//            removeExistingDeleteMenuItemIfNecessary(menu);
-	//            menu.add(new DeleteAction(nodeView.getNode(),
-	//                                      "Delete Selected Nodes and Edges"));
-	//        }
-	//    }
-	// MLC 12/27/06 END.
-
-	// MLC 12/27/06 BEGIN:
-	// public void removeExistingDeleteMenuItemIfNecessary(JPopupMenu menu) {
 	protected void removeExistingDeleteMenuItemIfNecessary(JPopupMenu menu) {
-		// String        label    = "Delete Selected Nodes and Edges";
-		// MLC 12/27/06 END.
 		MenuElement[] elements = menu.getSubElements();
 
 		for (int i = 0; i < elements.length; i++) {
@@ -389,10 +308,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 			if (elem instanceof JMenuItem) {
 				JMenuItem item = (JMenuItem) elem;
 
-				// MLC 12/27/06 BEGIN:
-				// if (item.getText().equals(label)) {
 				if (item.getText().equals(DeleteAction.ACTION_TITLE)) {
-					// MLC 12/27/06 END.
 					menu.remove(item);
 				}
 			}
@@ -429,7 +345,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		return itemExists;
 	}
 
-	// MLC 12/27/06 BEGIN:
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -440,23 +355,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		removeExistingDeleteMenuItemIfNecessary(menu);
 		menu.add(new DeleteAction(edgeView.getEdge()));
 	}
-
-	//    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-	//        if (edgeView instanceof EdgeView) {
-	//            // MLC 07/27/06:
-	//            // final EdgeView ev = (EdgeView) edgeView;
-	//            // AJK: 12/09/06 fix for multiple entries
-	//            // if (!menuItemExists(menu, "Delete Selected Nodes and Edges")) {
-	//            removeExistingDeleteMenuItemIfNecessary(menu);
-	//            menu.add(new DeleteAction(edgeView.getEdge(),
-	//                                      "Delete Selected Nodes and Edges"));
-	//        }
-	//    }
-	// MLC 12/27/06 END.
-
-	// AJK: 12/09/06 END
-
-	// AJK: 04/27/08 END
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -577,33 +475,26 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 
 			if (uniqueEdge) {
 				if (edgeType != null) {
-					// MLC 08/06/06:
-					// CytoscapeEditorManager.edgeAttribs.setAttribute(edge.getIdentifier(),
-					// MLC 08/06/06:
 					Cytoscape.getEdgeAttributes()
 					         .setAttribute(edge.getIdentifier(), CytoscapeEditorManager.EDGE_TYPE,
 					                       edgeType);
 				}
 
-				CytoscapeEditorManager.manager.setupUndoableAdditionEdit(net, null, edge);
+				CyUndo.getUndoableEditSupport().postEdit( new AddEdgeEdit(net,edge) );
+
 				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
 				                             CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
 
-				// AJK: 05/16/06
-				// ((DGraphView)
-				// Cytoscape.getCurrentNetworkView()).addEdgeContextMenuListener(this);
 				Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(this);
 			}
 		}
 
-		// AJK: 12/09/06 BEGIN
 		// set tooltip
 		if (edge != null) {
 			EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(edge);
 			ev.setToolTip(edge.getIdentifier());
 		}
 
-		// AJK: 12/09/06 END
 		return edge;
 	}
 
@@ -737,8 +628,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		// should be such a utility
 		JMenu editMenu = Cytoscape.getDesktop().getCyMenus().getEditMenu();
 		boolean foundConnectSelected = false;
-		// CytoscapeEditorManager.log("checking against edit menu: " +
-		// editMenu);
 		CytoscapeEditorManager.log("item count = " + editMenu.getItemCount());
 
 		for (int i = 0; i < editMenu.getItemCount(); i++) {
@@ -747,8 +636,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 			if (jIt != null) {
 				String name = jIt.getText();
 
-				// System.out
-				// .println("Checking for get selected against: " + name);
 				if (name.equals(_connectedTitle)) {
 					foundConnectSelected = true;
 
@@ -874,7 +761,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 *
 	 */
 	class ConnectSelectedNodesAction extends CytoscapeAction {
-		// MLC 07/27/06:
 		private static final long serialVersionUID = 3131183861434497429L;
 
 		public ConnectSelectedNodesAction() {
@@ -895,12 +781,9 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
 			java.util.List nodes = view.getSelectedNodes();
 
-			// AJK: 06/16/06 BEGIN
-			// set EDGE_TYPE
 			String edgeTypeValue = "default";
 			String edgeTypeName = "DefaultEdge";
-			List edgeTypesList = CytoscapeEditorManager.getEdgeTypesForVisualStyle(view
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getVisualStyle());
+			List edgeTypesList = CytoscapeEditorManager.getEdgeTypesForVisualStyle(view.getVisualStyle());
 
 			if (edgeTypesList != null) {
 				if (edgeTypesList.size() == 1) // just use only edge type
@@ -929,7 +812,6 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 				}
 			}
 
-			// AJK: 06/16/06 END
 			for (int i = 0; i < (nodes.size() - 1); i++) {
 				NodeView nv = (NodeView) nodes.get(i);
 				CyNode firstCyNode = (CyNode) nv.getNode();

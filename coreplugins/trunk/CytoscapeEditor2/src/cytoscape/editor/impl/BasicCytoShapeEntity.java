@@ -207,11 +207,18 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 		if (this.attributeName != null) {
 			if (this.attributeName.equals("NODE_TYPE")) {
 				_cytoShape.setToolTipText("<html>To add a node to a network,<br>"
-				                          + "drag and drop a shape<br>from the palette onto the canvas.</html>");
+				                              + "drag and drop a shape<br>"
+										      + "from the palette onto the canvas<br>"
+											  + "OR<br>"
+										      + "simply CTRL-click on the canvas.</html>");
 			} else if (this.attributeName.equals("EDGE_TYPE")) {
 				_cytoShape.setToolTipText("<html>To connect two nodes with an edge<br>"
-				                          + "drag and drop the arrow onto a node<br>on the canvas, "
-				                          + "then move the cursor<br>over a second node and click the mouse.</html>");
+				                          + "drag and drop the arrow onto a node<br>"
+										  + "on the canvas, then move the cursor<br>"
+										  + "over a second node and click the mouse.<br>"
+										  + "OR<br>"
+										  + "CTRL-click on the first node and then<br>"
+										  + "click on the second node. </html>");
 			}
 		}
 
