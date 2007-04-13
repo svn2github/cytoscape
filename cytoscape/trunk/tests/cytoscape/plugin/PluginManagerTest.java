@@ -134,14 +134,12 @@ public class PluginManagerTest extends TestCase {
 		// Cytoscape");
 	}
 
+	
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#install()}.
 	 */
 	public void testInstall() throws Exception {
-		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-
-		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
+		PluginInfo TestObj = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
 		File Downloaded = mgr.download(TestObj);
@@ -162,7 +160,8 @@ public class PluginManagerTest extends TestCase {
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
 	}
-
+	
+	
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.
@@ -171,7 +170,6 @@ public class PluginManagerTest extends TestCase {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
 		File Downloaded = mgr.download(TestObj);
@@ -201,7 +199,6 @@ public class PluginManagerTest extends TestCase {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
 		File Downloaded = mgr.download(TestObj);
@@ -237,53 +234,103 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#findUpdates(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testFindUpdates() {
-		// in order to test this I need a test site set up...
+	public void testFindUpdates() throws Exception {
+		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+		
+		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
+		assertNotNull(mgr.download(GoodJar));
+		mgr.install();
+		
+		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
+		List<PluginInfo> Updatable = mgr.findUpdates( mgr.getPlugins(PluginStatus.CURRENT).get(0) );
+		assertEquals(Updatable.size(), 1);
 	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#update(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testUpdate() {
-		// see testFindUpdates()
+	public void testUpdate() throws Exception {
+		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
+		assertNotNull(mgr.download(GoodJar));
+		mgr.install();
+		
+		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
+		List<PluginInfo> Updatable = mgr.findUpdates( mgr.getPlugins(PluginStatus.CURRENT).get(0) );
+		assertEquals(Updatable.size(), 1);
+		
+		PluginInfo New = Updatable.get(0);
+		New.setUrl(getFileUrl() + New.getUrl());
+		
+		PluginInfo Current = mgr.getPlugins(PluginStatus.CURRENT).get(0);
+		mgr.update(Current, New); // update sets the old for deletion, new for installation
+		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
+		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
+		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
+		
+		mgr.delete();
+		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
+		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
+		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
+		
+		mgr.install();
+		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
+		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
+		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
+
 	}
 
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDownload() throws Exception {
-		List<PluginInfo> Plugins = mgr.inquire(testUrl);
-
-		PluginInfo TestObj = Plugins.get(0);
-		TestObj.setProjectUrl(getFileUrl() + TestObj.getProjectUrl());
-		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
-
-		File Downloaded = mgr.download(TestObj);
+	public void testDownloadGoodJar() throws Exception {
+		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
+		
+		File Downloaded = mgr.download(GoodJar);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
 		PluginInfo CurrentInstall = mgr.getPlugins(PluginStatus.INSTALL).get(0);
+		assertNotNull(CurrentInstall.getLicenseText());  // at this point the dialog can show the text
 		assertEquals(CurrentInstall.getFileList().size(), 1);
 		
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
 	}
-
-	private PluginInfo getInfoObj() {
-		PluginInfo infoObj = new PluginInfo("123");
-		infoObj.setName("myTest");
-		infoObj.setCategory("Test");
-		infoObj.setCytoscapeVersion("2.5");
-		infoObj.setPluginClassName("0.2");
-		infoObj.setProjectUrl("http://test.com/x.xml");
-		infoObj.setFiletype(PluginInfo.FileType.JAR);
-		return infoObj;
+	
+	/**
+	 * Test method for
+	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
+	 * files are only bad if they fail to have an attribute Cytoscape-Plugin in the manifest
+	 */
+	public void testDownloadBadJar() throws Exception {
+		PluginInfo BadJar = getSpecificObj(mgr.inquire(testUrl), "badJarPlugin123", "0.3");
+		BadJar.setUrl(getFileUrl() + BadJar.getUrl());
+		
+		try {
+			mgr.download(BadJar);
+		} catch (ManagerError E) {
+			assertNotNull(E);
+			assertTrue(E.getMessage().contains("Cytoscape-Plugin"));
+		}
+	}
+	
+	
+	private PluginInfo getSpecificObj(List<PluginInfo> AllInfo, String Id, String Version) {
+		for (PluginInfo Current: AllInfo) {
+			if (Current.getID().equals(Id) && Current.getPluginVersion().equals(Version)) {
+				return Current;
+			}
+		}
+		return null;
 	}
 
+	
 	// this won't work causes ExceptionInitializerError in the CytoscapePlugin
 	private class MyPlugin extends CytoscapePlugin {
 		public MyPlugin() {
