@@ -349,6 +349,16 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	private String parseModelName(String inputLine) {
 		int start = inputLine.indexOf("name ");
 		if (start < 0) return null;
-		return inputLine.substring(start+5);
+		// Might get a quoted string (don't understand why, but there you have it)
+		if (inputLine.startsWith("\"", start+5)) {
+			start += 6; // Skip over the first quote
+			int end = inputLine.lastIndexOf('"');
+			if (end >= 1) {
+							return inputLine.substring(start,end);
+			} else
+							return inputLine.substring(start);
+		} else {
+			return inputLine.substring(start+5);
+		}
 	}
 }
