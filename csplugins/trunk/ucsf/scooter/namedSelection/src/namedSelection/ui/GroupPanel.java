@@ -58,8 +58,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	CyGroupViewer viewer = null;
 	JTree navTree = null;
 	GroupTreeModel treeModel = null;
+	TreeSelectionModel treeSelectionModel = null;
 	HashMap nodeMap = null;
 	boolean updateSelection = true;
+	boolean updateTreeSelection = true;
 
 	/**
 	 * Construct a group panel
@@ -80,7 +82,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		DefaultTreeCellRenderer renderer = new ObjectRenderer();
 		renderer.setBackgroundNonSelectionColor(Cytoscape.getDesktop().getBackground());
 		navTree.setCellRenderer(renderer);
-		navTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+		treeSelectionModel = navTree.getSelectionModel();
+		treeSelectionModel.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
 		navTree.addTreeSelectionListener(this);
 		navTree.setShowsRootHandles(false);
@@ -134,6 +137,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	public void valueChanged(TreeSelectionEvent e) {
 		TreePath[] cPaths = e.getPaths();
 		if (cPaths == null) return;
+
+		if (!updateTreeSelection) {
+			return;
+		}
 
 		// Close our "ears" to selection updates from Cytoscape
 		updateSelection = false;
@@ -203,27 +210,26 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 /*
 		if (select)
-			System.out.println("graphViewChanged selecting "+nodeList.length+" nodes");
+			System.out.print("graphViewChanged selecting "+nodeList.length+" nodes: ");
 		else
-			System.out.println("graphViewChanged unselecting "+nodeList.length+" nodes");
+			System.out.print("graphViewChanged unselecting "+nodeList.length+" nodes: ");
 */
 		
-		TreePath[] paths = new TreePath[nodeList.length];
-		TreeSelectionModel model = navTree.getSelectionModel();
-
 		// Build a path list corresponding to the selection
 		int j = 0;
 		for (int i = 0; i < nodeList.length; i++) {
 			CyNode node = (CyNode)nodeList[i];
+			System.out.print(node.getIdentifier()+", ");
 			if (nodeMap.containsKey(node)) {
-				paths[i++] = (TreePath)nodeMap.get(node);
+				TreePath path = (TreePath)nodeMap.get(node);
+				if (select) {
+					treeSelectionModel.addSelectionPath(path);
+				} else {
+					treeSelectionModel.removeSelectionPath(path);
+				}
 			}
 		}
-		if (select) {
-			model.setSelectionPaths(paths);
-		} else {
-			model.removeSelectionPaths(paths);
-		}
+		// System.out.println(" ");
 	}
 
 	/**
@@ -240,18 +246,22 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		public GroupTreeModel (JTree tree) {
 			super(new DefaultMutableTreeNode());
 			this.navTree = tree;
+			updateTreeSelection = false;
 			DefaultMutableTreeNode rootNode = buildTree();
 			this.setRoot(rootNode);
+			updateTreeSelection = true;
 		}
 
 		/**
 		 * Reload the tree model
 		 */
 		public void reload() {
+			updateTreeSelection = false;
 			DefaultMutableTreeNode rootNode = buildTree();
 			this.setRoot(rootNode);
 
 			super.reload();
+			updateTreeSelection = true;
 		}
 
 		/**
@@ -309,6 +319,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			// Add it to our path
 			TreePath path = parentPath.pathByAddingChild(treeNode);
 			nodeMap.put(groupNode, path);
+			// Is the group node selected?
+			if (group.getState() == NamedSelection.SELECTED)
+					treeSelectionModel.addSelectionPath(path);
+
 			// Now, add all of our children
 			Iterator<CyNode> nodeIter = group.getNodeIterator();
 			while (nodeIter.hasNext()) {
@@ -323,6 +337,9 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					TreePath childPath = path.pathByAddingChild(childNode);
 					nodeMap.put(node, childPath);
 					treeNode.add(childNode);
+					if (Cytoscape.getCurrentNetwork().isSelected(node)) {
+						treeSelectionModel.addSelectionPath(childPath);
+					}
 				}
 			}
 			return treeNode;

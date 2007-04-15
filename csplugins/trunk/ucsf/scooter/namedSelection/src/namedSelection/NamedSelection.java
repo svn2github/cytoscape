@@ -434,8 +434,8 @@ public class NamedSelection extends CytoscapePlugin
 			List<CyNode> nodeList = group.getNodes();
 			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, true);
 			Cytoscape.getCurrentNetworkView().updateView();
-			groupPanel.groupChanged(group);
 			group.setState(SELECTED);
+			groupPanel.groupChanged(group);
 		}
 
 		/**
@@ -445,8 +445,8 @@ public class NamedSelection extends CytoscapePlugin
 			List<CyNode> nodeList = group.getNodes();
 			Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, false);
 			Cytoscape.getCurrentNetworkView().updateView();
-			groupPanel.groupChanged(group);
 			group.setState(UNSELECTED);
+			groupPanel.groupChanged(group);
 		}
 	}
 }
