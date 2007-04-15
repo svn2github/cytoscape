@@ -311,10 +311,20 @@ public class CyGroup {
 			// Remove it from the groupMap
 			groupMap.remove(groupNode);
 
-			// Get the rootGraph for this node
-			RootGraph rg = groupNode.getRootGraph();
+			// Remove this group from all the nodes
+			List<CyNode> nodeList = group.getNodes();
+			Iterator <CyNode> nIter = nodeList.iterator();
+			while (nIter.hasNext()) {
+				CyNode node = nIter.next();
+				node.removeFromGroup(group);
+			}
+
+			CyNetwork network = Cytoscape.getCurrentNetwork();
+			network.removeNode(groupNode.getRootGraphIndex(), false);
+			// Remove the group node form the network
+			// RootGraph rg = groupNode.getRootGraph();
 			// Remove it from the root graph
-			rg.removeNode(groupNode);
+			// rg.removeNode(groupNode);
 		}
 	}
 
