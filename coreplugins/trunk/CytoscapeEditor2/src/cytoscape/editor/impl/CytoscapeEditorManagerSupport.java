@@ -158,6 +158,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 		if (componentIndex == idx) {
 			updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
+
+			// If no networks exist, create an empty network.
+			if ( Cytoscape.getNetworkSet().size() == 0 ) {
+				CyNetwork newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
+				CyNetworkView newView = Cytoscape.createNetworkView(newNet);
+				CytoscapeEditorManager.setEditorForView(newView, CytoscapeEditorManager.getCurrentEditor());
+			}
 		}
 	}
 
