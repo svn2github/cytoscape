@@ -408,6 +408,8 @@ public class ModelNavigatorDialog
 
 		// Select menu
 		JMenu selectMenu = new JMenu("Select");
+		addMenuItem(selectMenu, "Protein", COMMAND, "select protein");
+		addMenuItem(selectMenu, "Nucleic Acid", COMMAND, "select nucleic acid");
 		addMenuItem(selectMenu, "Ligand", COMMAND, "select ligand");
 		addMenuItem(selectMenu, "Ions", COMMAND, "select ions");
 		addMenuItem(selectMenu, "Solvent", COMMAND, "select solvent");

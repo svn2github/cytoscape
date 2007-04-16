@@ -487,7 +487,7 @@ public class Chimera {
 	 */
 	private List getModelList() {
 		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
-		Iterator modelIter = this.commandReply ("listm");
+		Iterator modelIter = this.commandReply ("listm type molecule");
 		while (modelIter.hasNext()) {
 			String modelLine = (String)modelIter.next();
 			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
@@ -506,7 +506,7 @@ public class Chimera {
 	private ChimeraModel getModelInfo(Structure structure) {
 		String name = structure.name();
 
-		Iterator modelIter = this.commandReply ("listm");
+		Iterator modelIter = this.commandReply ("listm type molecule");
 		while (modelIter.hasNext()) {
 			String modelLine = (String)modelIter.next();
 			if (modelLine.contains(name)) {
@@ -527,7 +527,7 @@ public class Chimera {
 	 */
 	private Color getModelColor(ChimeraModel model) {
 		replyLog.clear();
-		this.command ("listm attr color spec "+model.toSpec());
+		this.command ("listm type molecule attr color spec "+model.toSpec());
 		String inputLine = (String)replyLog.get(0);
 		int colorStart = inputLine.indexOf("color ");
 		String colorString = inputLine.substring(colorStart+6);
