@@ -317,7 +317,7 @@ public class AttributeLineParser {
 				}
 
 				List curList = mapping.getAttributes()
-				                      .getAttributeList(key, mapping.getAttributeNames()[index]);
+				                      .getListAttribute(key, mapping.getAttributeNames()[index]);
 
 				if (curList == null) {
 					curList = new ArrayList();
@@ -325,7 +325,7 @@ public class AttributeLineParser {
 
 				curList.addAll(buildList(entry, listType));
 				mapping.getAttributes()
-				       .setAttributeList(key, mapping.getAttributeNames()[index], curList);
+				       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
 
 				break;
 

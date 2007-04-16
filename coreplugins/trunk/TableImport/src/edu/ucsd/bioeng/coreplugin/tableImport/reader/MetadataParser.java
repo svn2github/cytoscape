@@ -118,7 +118,7 @@ public class MetadataParser {
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		// Extract Network Metadata from CyAttributes
-		rdfAsMap = networkAttributes.getAttributeMap(network.getIdentifier(), metadataLabel);
+		rdfAsMap = networkAttributes.getMapAttribute(network.getIdentifier(), metadataLabel);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class MetadataParser {
 		metadata.getDescription().add(dc);
 
 		// Put the data in CyAttributes
-		networkAttributes.setAttributeMap(network.getIdentifier(), metadataLabel, rdfAsMap);
+		networkAttributes.setMapAttribute(network.getIdentifier(), metadataLabel, rdfAsMap);
 
 		return metadata;
 	}
@@ -337,7 +337,7 @@ public class MetadataParser {
 	 * @param value DOCUMENT ME!
 	 */
 	public void setMetadata(MetadataEntries entryName, String value) {
-		Map<String, String> metadata = networkAttributes.getAttributeMap(network.getIdentifier(),
+		Map<String, String> metadata = networkAttributes.getMapAttribute(network.getIdentifier(),
 		                                                                 metadataLabel);
 
 		if (metadata == null) {
@@ -345,7 +345,7 @@ public class MetadataParser {
 		}
 
 		metadata.put(entryName.toString(), value);
-		networkAttributes.setAttributeMap(network.getIdentifier(), metadataLabel, metadata);
+		networkAttributes.setMapAttribute(network.getIdentifier(), metadataLabel, metadata);
 		rdfAsMap = metadata;
 	}
 

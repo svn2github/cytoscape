@@ -2606,7 +2606,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						break;
 
 					case CyAttributes.TYPE_SIMPLE_LIST:
-						listValue = selectedAttributes.getAttributeList((String) value,
+						listValue = selectedAttributes.getListAttribute((String) value,
 						                                                selectedKeyAttribute);
 						valueSet.addAll(listValue);
 
