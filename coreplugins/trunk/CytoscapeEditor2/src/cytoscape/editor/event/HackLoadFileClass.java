@@ -108,10 +108,8 @@ class LoadNetworkTask implements Task {
 	/**
 	 * Constructor.
 	 *
-	 * @param file
-	 *            File.
-	 * @param fileType
-	 *            FileType, e.g. Cytoscape.FILE_SIF or Cytoscape.FILE_GML.
+	 * @param file File to load.
+	 * @param vsSwitch Whether to create a visual style or not.
 	 */
 	public LoadNetworkTask(File file, boolean vsSwitch) {
 		this.file = file;
@@ -157,7 +155,7 @@ class LoadNetworkTask implements Task {
 				                                                            .getClientData(Cytoscape.READER_CLIENT_KEY),
 				                                                            Cytoscape.getDesktop(),
 				                                                            true);
-				vsd.show();
+				vsd.setVisible(true);
 			}
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Unable to load network file.");

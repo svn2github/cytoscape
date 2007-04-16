@@ -58,8 +58,6 @@ import javax.swing.TransferHandler;
  *
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
- * @see SimpleBioMoleculeEditor
- *
  *
  */
 public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler {

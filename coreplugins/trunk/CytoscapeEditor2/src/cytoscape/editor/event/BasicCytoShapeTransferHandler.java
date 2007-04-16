@@ -24,7 +24,8 @@ import javax.swing.TransferHandler;
  *
  * @author Allan Kuchinsky
  * @version 1.0
- * @see GraphicalEntity, BasicCytoShapeEntity
+ * @see cytoscape.editor.GraphicalEntity 
+ * @see cytoscape.editor.impl.BasicCytoShapeEntity
  *
  */
 public class BasicCytoShapeTransferHandler extends TransferHandler {

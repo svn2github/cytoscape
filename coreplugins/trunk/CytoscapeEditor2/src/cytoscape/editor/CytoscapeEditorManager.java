@@ -82,7 +82,8 @@ import javax.swing.undo.UndoableEdit;
  *
  * @author Allan Kuchinsky, Agilent Technologies
  * @version 1.0
- * @see CytoscapeEditorFactory, CytoscapeEditorManagerSupport
+ * @see cytoscape.editor.CytoscapeEditorFactory 
+ * @see cytoscape.editor.impl.CytoscapeEditorManagerSupport
  *
  */
 public abstract class CytoscapeEditorManager {
@@ -392,7 +393,7 @@ public abstract class CytoscapeEditorManager {
 	 * builds the named event handler and associates it with the input editor
 	 * @param editor
 	 * @param adapterName
-	 * @return
+	 * @return A NetworkEditEventAdapter object.
 	 */
 	public static NetworkEditEventAdapter initializeEditEventAdapter(CytoscapeEditor editor,
 	                                                                 String adapterName) {
@@ -693,8 +694,8 @@ public abstract class CytoscapeEditorManager {
 	 * get the ShapePalette that is associated with a CyNetworkView. needed when
 	 * a view changes
 	 *
-	 * @param view
-	 * @return
+	 * @param view The view we're getting the pallete for.
+	 * @return The ShapePalette object for the view.
 	 */
 	public static ShapePalette getShapePaletteForView(CyNetworkView view) {
 		return (ShapePalette) viewShapePaletteMap.get(view);
@@ -713,8 +714,8 @@ public abstract class CytoscapeEditorManager {
 	/**
 	 * returns nodes hidden from network
 	 *
-	 * @param net
-	 * @return
+	 * @param net The network to look for hidden nodes in.
+	 * @return An array of hidden node indices.
 	 */
 	public static int[] getHiddenNodesForNetwork(CyNetwork net) {
 		List hiddenNodesList = (List) networkHiddenNodesMap.get(net);
@@ -735,8 +736,8 @@ public abstract class CytoscapeEditorManager {
 	/**
 	 * returns edges hidden from network
 	 *
-	 * @param net
-	 * @return
+	 * @param net The network we're looking for hidden edges in.
+	 * @return An array of hidden edge indices in the network.
 	 */
 	public static int[] getHiddenEdgesForNetwork(CyNetwork net) {
 		List hiddenEdgesList = (List) networkHiddenEdgesMap.get(net);
@@ -757,9 +758,8 @@ public abstract class CytoscapeEditorManager {
 	/**
 	 * adds a node to the list of nodes hidden from network
 	 *
-	 * @param net
-	 * @param nodeIdx
-	 *            index of the node to be added
+	 * @param net The network to add the node to.
+	 * @param nodeIdx index of the node to be added
 	 */
 	public static void addHiddenNodeForNetwork(CyNetwork net, int nodeIdx) {
 		List<Integer> hiddenNodesList = networkHiddenNodesMap.get(net);
@@ -777,9 +777,8 @@ public abstract class CytoscapeEditorManager {
 	/**
 	 * adds an edge to the list of edges hidden from network
 	 *
-	 * @param net
-	 * @param edgeIdx
-	 *            index of the edge to be added
+	 * @param net The network to add the node to.
+	 * @param edgeIdx index of the edge to be added
 	 */
 	public static void addHiddenEdgeForNetwork(CyNetwork net, int edgeIdx) {
 		List<Integer> hiddenEdgesList = networkHiddenEdgesMap.get(net);
@@ -907,8 +906,7 @@ public abstract class CytoscapeEditorManager {
 	 * sets the default node border width. This is used in highlighting a node,
 	 * by thickening its border, upon mouseEntry.
 	 *
-	 * @param The
-	 *            defaultBorderWidth to set.
+	 * @param defaultBorderWidth defaultBorderWidth to set.
 	 */
 	public static void setDefaultBorderWidth(float defaultBorderWidth) {
 		CytoscapeEditorManager.defaultBorderWidth = defaultBorderWidth;
@@ -927,8 +925,7 @@ public abstract class CytoscapeEditorManager {
 	 * set the flag that indicates whether or not the editor framework is
 	 * running. Currently this is done via command line argument to Cytoscape
 	 *
-	 * @param true
-	 *            if the editor framework is running, false otherwise
+	 * @param runningEditorFramework true if the editor framework is running, false otherwise
 	 */
 	public static void setRunningEditorFramework(boolean runningEditorFramework) {
 		CytoscapeEditorManager.runningEditorFramework = runningEditorFramework;
@@ -994,7 +991,7 @@ public abstract class CytoscapeEditorManager {
 	 * generate a unique name (title) for the network under construction
 	 * "Network 0", "Network 1","Network 2", ...
 	 *
-	 * @return
+	 * @return A unique network name string.
 	 */
 	public static String createUniqueNetworkName() {
 		int iteration_limit = 100;
@@ -1050,16 +1047,16 @@ public abstract class CytoscapeEditorManager {
 
 			if (attrs.hasAttribute(oldId, attrNames[i])) {
 				if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-					List l = attrs.getAttributeList(oldId, attrNames[i]);
+					List l = attrs.getListAttribute(oldId, attrNames[i]);
 
 					if ((l != null) && (l.size() > 0)) {
-						attrs.setAttributeList(newId, attrNames[i], l);
+						attrs.setListAttribute(newId, attrNames[i], l);
 					}
 				} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
-					Map m = attrs.getAttributeMap(oldId, attrNames[i]);
+					Map m = attrs.getMapAttribute(oldId, attrNames[i]);
 
 					if (m != null) {
-						attrs.setAttributeMap(newId, attrNames[i], m);
+						attrs.setMapAttribute(newId, attrNames[i], m);
 					}
 				} else if (type == CyAttributes.TYPE_BOOLEAN) {
 					attrs.setAttribute(newId, attrNames[i],

@@ -52,7 +52,7 @@ public interface ShapePaletteInfoGenerator {
 	 * @param calcsToUse an Array of bytes that represent what
 	 *                   specific calculators of appearanceCalc to consider
 	 *                   in computing shape palette information entries.
-	 * @param controllingAttibute the attribute name for which we are
+	 * @param controllingAttribute the attribute name for which we are
 	 *                            gathering Calculator information.
 	 * @param listener the ChangeListener to call when each given calculator
 	 *                 specified by calcsToUse changes state. If null,

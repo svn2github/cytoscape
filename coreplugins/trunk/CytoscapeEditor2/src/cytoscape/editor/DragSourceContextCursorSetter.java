@@ -38,7 +38,7 @@ public interface DragSourceContextCursorSetter {
 	 * CyNetworkView of interest. For example, we might want to show that
 	 * it is illegal to drop on certain objects, such as Edges.
 	 * @param netView the CyNetworkView that is being dragged over.
-	 * @param newViewLoc the location within netView of the cursor, in netView coordinates.
+	 * @param netViewLoc the location within netView of the cursor, in netView coordinates.
 	 * @param dsde the DragSourceDragEvent that describes this particular
 	 *        drag operation.
 	 * @return the Cursor to display during this drag (e.g, DragSource.DefaultCopyNoDrop).

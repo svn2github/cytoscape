@@ -173,9 +173,9 @@ public class CytoShapeIcon implements Icon {
 		}
 
 		if (_arrowType != null) {
-			g.setColor(Color.BLACK);
+			g.setColor(_arrowType.getColor());
 
-			if (_arrowType == Arrow.BLACK_DELTA) {
+			if (_arrowType == Arrow.DELTA) {
 				g.fillPolygon(new int[] {
 				                  x, x + ((3 * width) / 4), x + ((3 * width) / 4), x + width,
 				                  x + ((3 * width) / 4), x + ((3 * width) / 4), x
@@ -186,23 +186,11 @@ public class CytoShapeIcon implements Icon {
 				                  y + ((11 * height) / 16), y + ((9 * height) / 16),
 				                  y + ((9 * height) / 16)
 				              }, 7);
-			} else if (_arrowType == Arrow.COLOR_DELTA) {
-				g.setColor(Color.BLUE);
-				g.fillPolygon(new int[] {
-				                  x, x + ((3 * width) / 4), x + ((3 * width) / 4), x + width,
-				                  x + ((3 * width) / 4), x + ((3 * width) / 4), x
-				              },
-				              new int[] {
-				                  y + ((7 * height) / 16), y + ((7 * height) / 16),
-				                  y + ((5 * height) / 16), y + (height / 2),
-				                  y + ((11 * height) / 16), y + ((9 * height) / 16),
-				                  y + ((9 * height) / 16)
-				              }, 7);
-			} else if (_arrowType == Arrow.BLACK_CIRCLE) {
+			} else if (_arrowType == Arrow.CIRCLE) {
 				g.fillRect(x, y + ((7 * height) / 16), (13 * (width / 16)), height / 8);
 				g.fillOval(x + ((5 * width) / 8), y + ((5 * height) / 16), (6 * width) / 16,
 				           (6 * height) / 16);
-			} else if (_arrowType == Arrow.BLACK_T) {
+			} else if (_arrowType == Arrow.T) {
 				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
 				g.fillRect(x + (15 * (width / 16)), y + ((5 * height) / 16), width / 16,
 				           (height * 6) / 16);
