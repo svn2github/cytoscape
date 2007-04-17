@@ -310,15 +310,6 @@ public class PluginManager {
 		for (PluginInfo CurrentPlugin : Plugins) {
 			boolean deleteOk = false;
 
-			// shouldn't happen...
-			if (CurrentPlugin.getFileList().size() <= 0) {
-				throw new ManagerError(
-						CurrentPlugin.getName()
-								+ " "
-								+ CurrentPlugin.getPluginVersion()
-								+ " does not have a list of files.  Please delete this plugin manually.");
-			}
-
 			// needs the list of all files installed
 			deleteOk = deleteFiles(CurrentPlugin.getFileList());
 
@@ -329,7 +320,7 @@ public class PluginManager {
 					PluginTracker.PluginStatus.CURRENT);
 
 			if (!deleteOk) {
-				DeleteFailed.add(CurrentPlugin.getName());
+				DeleteFailed.add(CurrentPlugin.getName() + " " + CurrentPlugin.getPluginVersion());
 			}
 		}
 
