@@ -148,7 +148,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	}
 
 	private CyNetwork createNetwork(String name, MapBioPaxToCytoscape mapper) {
-		CyNetwork cyNetwork = Cytoscape.createNetwork(name);
+		CyNetwork cyNetwork = Cytoscape.createNetwork(name,false);
 		int[] nodeIndices = mapper.getNodeIndices();
 		int[] edgeIndices = mapper.getEdgeIndices();
 
