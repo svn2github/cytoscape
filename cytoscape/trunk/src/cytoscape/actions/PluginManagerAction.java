@@ -50,8 +50,8 @@ import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 
-import cytoscape.dialogs.PluginManageDialog;
-import cytoscape.dialogs.PluginManageDialog.PluginInstallStatus;
+import cytoscape.dialogs.plugins.PluginManageDialog;
+import cytoscape.dialogs.plugins.PluginManageDialog.PluginInstallStatus;
 
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInfo;

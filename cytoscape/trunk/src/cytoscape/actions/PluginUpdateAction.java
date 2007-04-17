@@ -9,7 +9,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.dialogs.PluginUpdateDialog;
+import cytoscape.dialogs.plugins.PluginUpdateDialog;
 
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
