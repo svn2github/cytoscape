@@ -8,8 +8,6 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.NodeFullDetailView;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
-import org.apache.batik.ext.awt.LinearGradientPaint;
-
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.decorator.HighlighterPipeline;
 import org.jdesktop.swingx.decorator.RolloverHighlighter;
@@ -185,15 +183,15 @@ public abstract class DefaultAppearenceEditorDialog extends JDialog {
         float[] dist = { 0.0f, 0.8f, 1.0f };
         Color c1 = new Color(180, 180, 180, 90);
 
-        Color[] colors = { Color.white, c1, Color.white };
-        LinearGradientPaint p = new LinearGradientPaint(start, end, dist, colors);
-
-        // LinearGradientPaint backgroundGradient = new LinearGradientPaint();
-        LinearGradientPaint test = LinearGradientPainter.BLACK_PERSPECTIVE;
-        float[] frac = test.getFractions();
-
-        org.jdesktop.swingx.painter.gradient.LinearGradientPainter painter2 = new LinearGradientPainter(p);
-        jXPanel1.setBackgroundPainter(painter2);
+//        Color[] colors = { Color.white, c1, Color.white };
+//        LinearGradientPaint p = new LinearGradientPaint(start, end, dist, colors);
+//
+//        // LinearGradientPaint backgroundGradient = new LinearGradientPaint();
+//        LinearGradientPaint test = LinearGradientPainter.BLACK_PERSPECTIVE;
+//        float[] frac = test.getFractions();
+//
+//        org.jdesktop.swingx.painter.gradient.LinearGradientPainter painter2 = new LinearGradientPainter(p);
+//        jXPanel1.setBackgroundPainter(painter2);
 
         jXPanel2.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
         jXTitledPanel1.setBorder(
