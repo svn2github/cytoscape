@@ -542,9 +542,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	protected void updateFocus(String network_id) {
-		// System.out.println( "CD: setting focus to: "+network_id );
 
 		// deal with the old Network
+		
+		// temp hack
+		if(vizMapUI == null || vizMapUI.getStyleSelector() == null || vizMapUI.getStyleSelector().getToolbarComboBox() == null ||vizMapUI.getStyleSelector().getToolbarComboBox().getSelectedItem()== null  ) {
+			return;
+		}
+		
 		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
 		                                              .getSelectedItem();
 
