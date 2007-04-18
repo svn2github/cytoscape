@@ -42,14 +42,11 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 
-import cytoscape.util.Misc;
-
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
-import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.NodeShape;
 
-//----------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Font;
 
@@ -58,46 +55,48 @@ import java.awt.Font;
  *
  */
 public class ParserFactory {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param o DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ValueParser getParser(Object o) {
-		return getParser(o.getClass());
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param o DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static ValueParser getParser(Object o) {
+        return getParser(o.getClass());
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param c DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ValueParser getParser(Class c) {
-		ValueParser parser = null;
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param c DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static ValueParser getParser(Class c) {
+        ValueParser parser = null;
 
-		if (c.isAssignableFrom(String.class))
-			parser = new StringParser();
-		else if (c.isAssignableFrom(Font.class))
-			parser = new FontParser();
-		else if (c.isAssignableFrom(Double.class))
-			parser = new DoubleParser();
-		else if (c.isAssignableFrom(Arrow.class))
-			parser = new ArrowParser();
-		else if (c.isAssignableFrom(LineType.class))
-			parser = new LineTypeParser();
-		else if (c.isAssignableFrom(Byte.class))
-			parser = new NodeShapeParser();
-		else if (c.isAssignableFrom(LabelPosition.class))
-			parser = new LabelPositionParser();
-		else if (c.isAssignableFrom(Color.class))
-			parser = new ColorParser();
-		else
-			System.err.println("couldn't construct parser for class: " + c.toString());
+        if (c.isAssignableFrom(String.class))
+            parser = new StringParser();
+        else if (c.isAssignableFrom(Font.class))
+            parser = new FontParser();
+        else if (c.isAssignableFrom(Double.class))
+            parser = new DoubleParser();
+        else if (c.isAssignableFrom(Arrow.class))
+            parser = new ArrowParser();
+        else if (c.isAssignableFrom(LineType.class))
+            parser = new LineTypeParser();
+        else if (c.isAssignableFrom(Byte.class) ||
+                c.isAssignableFrom(NodeShape.class))
+            parser = new NodeShapeParser();
+        else if (c.isAssignableFrom(LabelPosition.class))
+            parser = new LabelPositionParser();
+        else if (c.isAssignableFrom(Color.class))
+            parser = new ColorParser();
+        else
+            System.err.println("couldn't construct parser for class: " +
+                c.toString());
 
-		return parser;
-	}
+        return parser;
+    }
 }

@@ -44,6 +44,7 @@ package cytoscape.visual.parsers;
 
 
 //----------------------------------------------------------------------------
+import cytoscape.visual.NodeShape;
 import cytoscape.visual.ShapeNodeRealizer;
 
 
@@ -53,81 +54,64 @@ import cytoscape.visual.ShapeNodeRealizer;
  * identifier. The return value here is a Byte object wrapping the
  * primitive byte identifier.
  */
-public class NodeShapeParser implements ValueParser {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseStringValue(String value) {
-		return parseNodeShape(value);
-	}
+public class NodeShapeParser
+    implements ValueParser {
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object parseStringValue(String value) {
+        return parseNodeShapeEnum(value);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Byte parseNodeShape(String value) {
-		return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    @Deprecated
+    public Byte parseNodeShape(String value) {
+        return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param shape DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static boolean isValidShape(byte shape) {
-		if (shape == ShapeNodeRealizer.RECT) {
-			return true;
-		}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public NodeShape parseNodeShapeEnum(String value) {
+        return NodeShape.parseNodeShapeText(value);
+    }
 
-		if (shape == ShapeNodeRealizer.ROUND_RECT) {
-			return true;
-		}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param shape DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public static boolean isValidShape(NodeShape shape) {
+        return NodeShape.isValidShape(shape);
+    }
 
-		if (shape == ShapeNodeRealizer.RECT_3D) {
-			return true;
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param shape DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    @Deprecated
+    public static boolean isValidShape(byte shape) {
+        final NodeShape nShape = ShapeNodeRealizer.getNodeShape(shape);
 
-		if (shape == ShapeNodeRealizer.TRAPEZOID) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.TRAPEZOID_2) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.TRIANGLE) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.PARALLELOGRAM) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.DIAMOND) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.ELLIPSE) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.HEXAGON) {
-			return true;
-		}
-
-		if (shape == ShapeNodeRealizer.OCTAGON) {
-			return true;
-		}
-
-		return false;
-	}
+        return NodeShape.isValidShape(nShape);
+    }
 }

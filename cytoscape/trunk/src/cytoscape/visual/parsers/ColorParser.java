@@ -52,26 +52,27 @@ import java.awt.Color;
 /**
  * Parses a String into a Color object.
  */
-public class ColorParser implements ValueParser {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseStringValue(String value) {
-		return parseColor(value);
-	}
+public class ColorParser
+    implements ValueParser {
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object parseStringValue(String value) {
+        return parseColor(value);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Color parseColor(String value) {
-		return Misc.parseRGBText(value);
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Color parseColor(String value) {
+        return Misc.parseRGBText(value);
+    }
 }

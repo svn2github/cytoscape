@@ -49,9 +49,9 @@ package cytoscape.visual.parsers;
  * of object.
  */
 public interface ValueParser {
-	/**
-	 * Parse the argument into an onject. Returns null if the String is
-	 * not parsable.
-	 */
-	Object parseStringValue(String value);
+    /**
+     * Parse the argument into an onject. Returns null if the String is
+     * not parsable.
+     */
+    Object parseStringValue(String value);
 }

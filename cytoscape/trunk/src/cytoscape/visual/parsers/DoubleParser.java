@@ -47,34 +47,35 @@ package cytoscape.visual.parsers;
 /**
  * Parses a String into a Double object.
  */
-public class DoubleParser implements ValueParser {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseStringValue(String value) {
-		return parseDouble(value);
-	}
+public class DoubleParser
+    implements ValueParser {
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object parseStringValue(String value) {
+        return parseDouble(value);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Double parseDouble(String value) {
-		double d = Double.NaN;
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Double parseDouble(String value) {
+        double d = Double.NaN;
 
-		try {
-			d = Double.parseDouble(value);
+        try {
+            d = Double.parseDouble(value);
 
-			return new Double(d);
-		} catch (NumberFormatException e) {
-			return null;
-		}
-	}
+            return new Double(d);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

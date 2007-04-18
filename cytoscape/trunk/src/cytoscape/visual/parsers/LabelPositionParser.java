@@ -42,26 +42,27 @@ import cytoscape.visual.LabelPosition;
 /**
  * Parses a String into a LabelPosition object.
  */
-public class LabelPositionParser implements ValueParser {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object parseStringValue(String value) {
-		return parseLabelPosition(value);
-	}
+public class LabelPositionParser
+    implements ValueParser {
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object parseStringValue(String value) {
+        return parseLabelPosition(value);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public LabelPosition parseLabelPosition(String value) {
-		return LabelPosition.parse(value);
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public LabelPosition parseLabelPosition(String value) {
+        return LabelPosition.parse(value);
+    }
 }
