@@ -1,19 +1,17 @@
 package cytoscape.visual.ui.icon;
 
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LineTypeDef;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-
-import ding.view.DGraphView;
-
 import java.awt.BasicStroke;
 import java.awt.Shape;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Icon;
+
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import ding.view.DGraphView;
 
 
 /**
@@ -24,25 +22,32 @@ import javax.swing.Icon;
  * @author kono
  */
 public class VisualPropertyIconFactory {
-	/*
-	 * Maps for storing default size icons
-	 */
+    /*
+     * Maps for storing default size icons
+     */
     private static Map<NodeShape, Icon> nodeShapeIcons;
     private static Map<ArrowShape, Icon> arrowShapeIcons;
     private static Map<LineTypeDef, Icon> lineTypeIcons;
-    
-    private static Map<NodeShape, Icon> nodeColorIcons;
-    
+
+    /*
+     * Shapes from rendering engine.
+     */
+    final static Map<Byte, Shape> nodeShapes;
+    final static Map<Byte, Shape> arrowShapes;
+
     /*
      * Default icon size.
      */
     private static final int DEF_ICON_HEIGHT = 32;
 
     static {
+        nodeShapes = DGraphView.getNodeShapes();
+        arrowShapes = DGraphView.getArrowShapes();
+
         nodeShapeIcons = new HashMap<NodeShape, Icon>();
         arrowShapeIcons = new HashMap<ArrowShape, Icon>();
         lineTypeIcons = new HashMap<LineTypeDef, Icon>();
-        buildIcons();
+        buildAllIcons(DEF_ICON_HEIGHT);
     }
 
     /**
@@ -54,26 +59,11 @@ public class VisualPropertyIconFactory {
      * @return DOCUMENT ME!
      */
     public static Map getIconSet(final VisualPropertyType type) {
-        switch (type) {
-        case NODE_SHAPE:
-            return nodeShapeIcons;
-
-        case EDGE_SRCARROW_SHAPE:
-        case EDGE_TGTARROW_SHAPE:
-            return arrowShapeIcons;
-
-        case NODE_LINETYPE:
-        case EDGE_LINETYPE:
-            return lineTypeIcons;
-
-        default:
-        }
-
-        return null;
+        return getIconSet(type, DEF_ICON_HEIGHT);
     }
 
     /**
-     * DOCUMENT ME!
+     * Return Map of icons for the specified visual property type.
      *
      * @param type DOCUMENT ME!
      * @param size DOCUMENT ME!
@@ -81,9 +71,29 @@ public class VisualPropertyIconFactory {
      * @return DOCUMENT ME!
      */
     public static Map getIconSet(final VisualPropertyType type, final int size) {
-        buildIcons(size);
+        switch (type) {
+        case NODE_SHAPE:
+            buildNodeIcons(size);
 
-        return getIconSet(type);
+            return nodeShapeIcons;
+
+        case EDGE_SRCARROW_SHAPE:
+        case EDGE_TGTARROW_SHAPE:
+            buildArrowIcons(size);
+
+            return arrowShapeIcons;
+
+        case NODE_LINETYPE:
+        case EDGE_LINETYPE:
+            buildLineIcons(size);
+
+            return lineTypeIcons;
+
+        default:
+            break;
+        }
+
+        return null;
     }
 
     /**
@@ -113,20 +123,26 @@ public class VisualPropertyIconFactory {
         return dynIcons;
     }
 
-    private static void buildIcons() {
-        buildIcons(DEF_ICON_HEIGHT);
-    }
-
-    private static void buildIcons(final int size) {
-        final Map<Byte, Shape> nodeShapes = DGraphView.getNodeShapes();
-        final Map<Byte, Shape> arrowShapes = DGraphView.getArrowShapes();
-
-        String name;
-        VisualPropertyIcon icon;
-
+    private static void buildAllIcons(final int size) {
         /*
          * Build node shape icons
          */
+        buildNodeIcons(size);
+
+        /*
+         * Build arrow shape icons
+         */
+        buildArrowIcons(size);
+
+        /*
+         * Line icons
+         */
+        buildLineIcons(size);
+    }
+
+    private static void buildNodeIcons(final int size) {
+        String name;
+        VisualPropertyIcon icon;
         NodeShape shapeType;
 
         for (Byte key : nodeShapes.keySet()) {
@@ -139,12 +155,13 @@ public class VisualPropertyIconFactory {
                     name);
             nodeShapeIcons.put(shapeType, icon);
         }
+    }
 
-        /*
-         * Build arrow shape icons
-         */
+    private static void buildArrowIcons(final int size) {
+        String name;
+        VisualPropertyIcon icon;
 
-        // First, need to create icon for no arrow head
+        //	 First, need to create icon for no arrow head
         icon = new ArrowIcon(
                 null,
                 size * 3,
@@ -164,10 +181,12 @@ public class VisualPropertyIconFactory {
                     name);
             arrowShapeIcons.put(arrowShapeType, icon);
         }
+    }
 
-        /*
-         * Line icons
-         */
+    private static void buildLineIcons(final int size) {
+        String name;
+        VisualPropertyIcon icon;
+
         for (LineTypeDef def : LineTypeDef.values()) {
             final BasicStroke lineStroke = (BasicStroke) def.getStroke(5.0f);
             name = def.name();

@@ -6,12 +6,10 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
 import cytoscape.visual.VisualPropertyType;
 
@@ -28,7 +26,6 @@ public class NodeIcon extends VisualPropertyIcon {
 	
     private VisualPropertyType type = VisualPropertyType.NODE_SHAPE;
     private Object value;
-    private int pad = 0;
     private static final Color FILL_COLOR = new Color(0, 0, 240, 50);
 
     /**
@@ -121,15 +118,6 @@ public class NodeIcon extends VisualPropertyIcon {
      */
     public Object getValue() {
         return this.value;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param pad DOCUMENT ME!
-     */
-    public void setLeftPadding(int pad) {
-        this.pad = pad;
     }
 
     private void adjustShape() {
@@ -355,15 +343,15 @@ public class NodeIcon extends VisualPropertyIcon {
      *
      * @return DOCUMENT ME!
      */
-    public Image getImage() {
-        image = new BufferedImage(width + 1, height + 1,
-                BufferedImage.TYPE_INT_RGB);
-
-        Graphics g2 = ((BufferedImage) image).createGraphics();
-        paintShape(g2, width + 1, width + 1);
-
-        return image;
-    }
+//    public Image getImage() {
+//        image = new BufferedImage(width + 1, height + 1,
+//                BufferedImage.TYPE_INT_RGB);
+//
+//        Graphics g2 = ((BufferedImage) image).createGraphics();
+//        paintShape(g2, width + 1, width + 1);
+//
+//        return image;
+//    }
 
     /**
      * DOCUMENT ME!
