@@ -17,17 +17,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
@@ -157,6 +158,18 @@ public class LayoutRegion extends JComponent
 	public LayoutRegion(double x, double y, double width, double height) {
 		super();
 
+		// AJK: 04/18/07 BEGIN
+		//   enforce minimum size on region of 110% default node width and height
+		VisualStyle vizStyle = Cytoscape.getCurrentNetworkView().getVisualStyle();
+		NodeAppearance na = vizStyle.getNodeAppearanceCalculator().getDefaultAppearance();
+		if ((width < 1.1 * na.getWidth()) || (height < 1.1 * na.getHeight()))
+		{
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"This region is too small to fit anything.  Please draw a larger region.");
+			return;
+		}
+		// AJK: 04/18/07 END
+	
 		// init member vars
 		selectRegionAttributeValue();
 
@@ -164,6 +177,8 @@ public class LayoutRegion extends JComponent
 		if (this.getRegionAttributeValue().toString().contentEquals("[]")) {
 			return;
 		}
+		
+	
 
 		// AJK: 12/25/06 for stretching
 		savedCursor = this.getCursor();
