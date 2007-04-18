@@ -54,6 +54,6 @@ import javax.swing.JPanel;
 
 /** @deprecated Use Calculator instead. Will be removed 10/2007 */
 public interface EdgeLabelCalculator extends Calculator {
-	/** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
-	public String calculateEdgeLabel(Edge edge, CyNetwork network);
+    /** @deprecated Use Calculator.apply() instead. Will be removed 10/2007 */
+    public String calculateEdgeLabel(Edge edge, CyNetwork network);
 }

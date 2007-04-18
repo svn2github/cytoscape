@@ -46,114 +46,155 @@ import cytoscape.CyNetwork;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
 import cytoscape.visual.parsers.ArrowParser;
 
-import cytoscape.visual.ui.VizMapUI;
-
 //----------------------------------------------------------------------------
 import giny.model.Edge;
 
-import java.util.Map;
 import java.util.Properties;
 
 
 //----------------------------------------------------------------------------
+@Deprecated
 abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
-	/** @deprecated This only exists to support deprecated code. DO NOT USE!!!
-	    will be removed 10/2007 */
-	protected byte arrowType;
+    /**
+     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
+     *             will be removed 10/2007
+     */
+    protected byte arrowType;
 
-	/** @deprecated This only exists to support deprecated code. DO NOT USE!!!
-	    will be removed 10/2007 */
-	protected String propertyLabel;
+    /**
+     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
+     *             will be removed 10/2007
+     */
+    protected String propertyLabel;
 
-	/** @deprecated This only exists to support deprecated code. DO NOT USE!!!
-	    will be removed 10/2007 */
-	protected String typename;
+    /**
+     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
+     *             will be removed 10/2007
+     */
+    protected String typename;
 
-	/** @deprecated This only exists to support deprecated code. DO NOT USE!!!
-	    will be removed 10/2007 */
-	public void set(byte b, String p, String n) {
-		arrowType = b;
-		propertyLabel = p;
-		typename = n;
-	}
+    /**
+     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
+     *             will be removed 10/2007
+     */
+    public void set(byte b, String p, String n) {
+        arrowType = b;
+        propertyLabel = p;
+        typename = n;
+    }
 
-	protected static final byte SOURCE = 0;
+    /*
+     * No longer neccesary. We can get this info from VisualProperty Type enums.
+     */
+    @Deprecated
+    protected static final byte SOURCE = 0;
+    @Deprecated
+    protected static final byte TARGET = 1;
 
-	// AJK: 11/27/2006 BEGIN
-	//   fix this bug;  Target should NOT be the same as source, right?
-	//	protected static final byte TARGET=0;
-	protected static final byte TARGET = 1;
+    /**
+     * Creates a new AbstractEdgeArrowCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param m DOCUMENT ME!
+     */
+    @Deprecated
+    public AbstractEdgeArrowCalculator(String name, ObjectMapping m) {
+        this(name, m, null);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public abstract byte getType();
+    /**
+     * Creates a new AbstractEdgeArrowCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param m DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     */
+    public AbstractEdgeArrowCalculator(String name, ObjectMapping m,
+        VisualPropertyType type) {
+        super(name, m, Arrow.class, type);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public abstract String getPropertyLabel();
+    /**
+     * Creates a new AbstractEdgeArrowCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param props DOCUMENT ME!
+     * @param baseKey DOCUMENT ME!
+     */
+    @Deprecated
+    public AbstractEdgeArrowCalculator(String name, Properties props,
+        String baseKey) {
+        this(name, props, baseKey, null);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public abstract String getTypeName();
+    /**
+     * Creates a new AbstractEdgeArrowCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param props DOCUMENT ME!
+     * @param baseKey DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     */
+    public AbstractEdgeArrowCalculator(String name, Properties props,
+        String baseKey, VisualPropertyType type) {
+        super(name, props, baseKey, new ArrowParser(), Arrow.NONE, type);
+    }
 
-	AbstractEdgeArrowCalculator() {
-		super();
-	}
+    /**
+     * Use apply(EdgeAppearance appr, Edge edge, CyNetwork network) instead.
+     *
+     * @param appr
+     * @param edge
+     * @param network
+     * @param end
+     */
+    @Deprecated
+    protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network,
+        byte end) {
+        apply(appr, edge, network);
+    }
 
-	/**
-	 * Creates a new AbstractEdgeArrowCalculator object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 * @param m  DOCUMENT ME!
-	 */
-	public AbstractEdgeArrowCalculator(String name, ObjectMapping m) {
-		super(name, m, Arrow.class);
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param appr DOCUMENT ME!
+     * @param edge DOCUMENT ME!
+     * @param network DOCUMENT ME!
+     */
+    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
+        Arrow a = (Arrow) getRangeValue(edge);
 
-	/**
-	 * Creates a new AbstractEdgeArrowCalculator object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 * @param baseKey  DOCUMENT ME!
-	 */
-	public AbstractEdgeArrowCalculator(String name, Properties props, String baseKey) {
-		super(name, props, baseKey, new ArrowParser(), Arrow.NONE);
-	}
+        // default has already been set - no need to do anything
+        if (a == null)
+            return;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param appr DOCUMENT ME!
-	 * @param edge DOCUMENT ME!
-	 * @param network DOCUMENT ME!
-	 */
-	abstract public void apply(EdgeAppearance appr, Edge edge, CyNetwork network);
+        if (type == VisualPropertyType.EDGE_SRCARROW)
+            appr.setSourceArrow(a);
+        else if (type == VisualPropertyType.EDGE_TGTARROW)
+            appr.setTargetArrow(a);
+    }
 
-	protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network, byte end) {
-		Arrow a = (Arrow) getRangeValue(edge);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param e DOCUMENT ME!
+     * @param n DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
+        final EdgeAppearance ea = new EdgeAppearance();
+        apply(ea, e, n);
 
-		// default has already been set - no need to do anything
-		if (a == null)
-			return;
-
-		if (end == SOURCE)
-			appr.setSourceArrow(a);
-		else if (end == TARGET)
-			appr.setTargetArrow(a);
-	}
+        if (type == VisualPropertyType.EDGE_SRCARROW)
+            return ea.getSourceArrow();
+        else
+            return ea.getTargetArrow();
+    }
 }
