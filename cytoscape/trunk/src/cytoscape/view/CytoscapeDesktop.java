@@ -36,40 +36,19 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
-
-import cytoscape.util.undo.CyUndo;
-
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapUI;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -80,10 +59,23 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+import cytoscape.util.undo.CyUndo;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.VizMapUI;
+//import cytoscape.visual.ui.VizMapperMainPanel;
 
 
 
@@ -94,7 +86,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
 
-	// --------------------//
+	/*
+	 * Default Desktop Size
+	 */
+	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(900, 700);
+	
 	/**
 	 *
 	 */
@@ -197,6 +193,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * {@link #vizMapper vizMapper}.
 	 */
 	protected VizMapUI vizMapUI;
+	
+	/**
+	 * New VizMapper UI
+	 */
+	//protected VizMapperMainPanel vizmapperUI;
+	
+	
 	protected String currentNetworkID;
 	protected String currentNetworkViewID;
 
@@ -323,7 +326,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		if ((VIEW_TYPE == TABBED_VIEW) || (VIEW_TYPE == INTERNAL_VIEW)) {
 			main_panel.add(masterPane, BorderLayout.CENTER);
 			main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
-			initStatusBar(main_panel);
+			// Remove status bar.
+			//initStatusBar(main_panel);
 			setJMenuBar(cyMenus.getMenuBar());
 		}
 		// not sure if this is correct
@@ -336,6 +340,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// Set up the VizMapper
 		setupVizMapper();
+		//setupVizMapperUI();
 
 		final CytoscapeDesktop thisWindow = this;
 
@@ -358,7 +363,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		pack();
 
 		if (VIEW_TYPE != EXTERNAL_VIEW)
-			setSize(800, 700);
+			setSize(DEF_DESKTOP_SIZE);
 
 		setVisible(true);
 		toFront();
@@ -466,6 +471,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public VizMapUI getVizMapUI() {
 		return vizMapUI;
 	}
+	
+	private void setupVizMapperUI() {
+//        vizmapperUI = VizMapperMainPanel.getVizMapperUI();
+//        getCytoPanel(SwingConstants.WEST)
+//            .add("VizMapper\u2122", vizmapperUI);
+    }
 
 	/**
 	 * Create the VizMapper and the UI for it.
