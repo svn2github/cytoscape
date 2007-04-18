@@ -6,7 +6,7 @@ import giny.view.NodeView;
  * This is a replacement for ShapeNodeRealizer.java
  *
  * @since Cytoscape 2.5
- * @version 0.7 
+ * @version 0.7
  * @author kono
  *
  */
@@ -17,11 +17,8 @@ public enum NodeShape {RECT(NodeView.RECTANGLE, "Rectangle"),
     TRAPEZOID_2(NodeView.RECTANGLE, "Trapezoid 2"), 
     TRIANGLE(NodeView.TRIANGLE, "Traiangle"), 
     PARALLELOGRAM(NodeView.PARALELLOGRAM, "Parallelogram"), 
-    DIAMOND(NodeView.DIAMOND, "Diamond"), 
-    ELLIPSE(NodeView.ELLIPSE, "Ellipse"), 
-    HEXAGON(NodeView.HEXAGON, "Hexagon"), 
-    OCTAGON(NodeView.OCTAGON, "Octagon");
-
+    DIAMOND(NodeView.DIAMOND, "Diamond"), ELLIPSE(NodeView.ELLIPSE, "Ellipse"), 
+    HEXAGON(NodeView.HEXAGON, "Hexagon"), OCTAGON(NodeView.OCTAGON, "Octagon");
     private int ginyShape;
     private String name;
 
@@ -41,7 +38,8 @@ public enum NodeShape {RECT(NodeView.RECTANGLE, "Rectangle"),
         String trimed = text.trim();
 
         for (NodeShape shape : values()) {
-            if (getNodeShapeText(shape).equalsIgnoreCase(trimed))
+            if (getNodeShapeText(shape)
+                        .equalsIgnoreCase(trimed))
                 return shape;
         }
 
@@ -113,21 +111,20 @@ public enum NodeShape {RECT(NodeView.RECTANGLE, "Rectangle"),
     public int getGinyShape() {
         return ginyShape;
     }
-    
+
     /**
      * Convert from Giny shape to Cytoscape NodeShape enum.
-     * 
+     *
      * @param ginyShape
      * @return
      */
     public static NodeShape getNodeShape(Byte ginyShape) {
-    	for(NodeShape shape: values()) {
-    		if(shape.ginyShape == ginyShape) {
-    			return shape;
-    		}
-    	}
-    	
-    	// Unknown. Return rectangle as the def val.
-    	return NodeShape.RECT;
+        for (NodeShape shape : values()) {
+            if (shape.ginyShape == ginyShape)
+                return shape;
+        }
+
+        // Unknown. Return rectangle as the def val.
+        return NodeShape.RECT;
     }
 }

@@ -43,233 +43,178 @@
 package cytoscape.visual;
 
 
-//----------------------------------------------------------------------------
-import giny.view.NodeView;
-
-
-//----------------------------------------------------------------------------
 /**
  * This class is a replacement for the yFiles ShapeNodeRealizer class.
- * It defines byte constants specifying shape types.
+ * It defines byte constants specifying shape types.<br>
+ *
+ * <p>
+ * kono(4/12/2007)
+ * This class is deplicated.
+ * Use enum NodeShape instead.
+ * </p>
+ *
  */
+@Deprecated
 public class ShapeNodeRealizer {
-	/**
-	 *
-	 */
-	public static final byte RECT = (byte) 0;
+    /**
+     *
+     */
+    public static final byte RECT = (byte) 0;
 
-	/**
-	 *
-	 */
-	public static final byte ROUND_RECT = (byte) 1;
+    /**
+     *
+     */
+    public static final byte ROUND_RECT = (byte) 1;
 
-	/**
-	 *
-	 */
-	public static final byte RECT_3D = (byte) 2;
+    /**
+     *
+     */
+    public static final byte RECT_3D = (byte) 2;
 
-	/**
-	 *
-	 */
-	public static final byte TRAPEZOID = (byte) 3;
+    /**
+     *
+     */
+    public static final byte TRAPEZOID = (byte) 3;
 
-	/**
-	 *
-	 */
-	public static final byte TRAPEZOID_2 = (byte) 4;
+    /**
+     *
+     */
+    public static final byte TRAPEZOID_2 = (byte) 4;
 
-	/**
-	 *
-	 */
-	public static final byte TRIANGLE = (byte) 5;
+    /**
+     *
+     */
+    public static final byte TRIANGLE = (byte) 5;
 
-	/**
-	 *
-	 */
-	public static final byte PARALLELOGRAM = (byte) 6;
+    /**
+     *
+     */
+    public static final byte PARALLELOGRAM = (byte) 6;
 
-	/**
-	 *
-	 */
-	public static final byte DIAMOND = (byte) 7;
+    /**
+     *
+     */
+    public static final byte DIAMOND = (byte) 7;
 
-	/**
-	 *
-	 */
-	public static final byte ELLIPSE = (byte) 8;
+    /**
+     *
+     */
+    public static final byte ELLIPSE = (byte) 8;
 
-	/**
-	 *
-	 */
-	public static final byte HEXAGON = (byte) 9;
+    /**
+     *
+     */
+    public static final byte HEXAGON = (byte) 9;
 
-	/**
-	 *
-	 */
-	public static final byte OCTAGON = (byte) 10;
+    /**
+     *
+     */
+    public static final byte OCTAGON = (byte) 10;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Byte parseNodeShapeTextIntoByte(String text) {
-		return new Byte(parseNodeShapeText(text));
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param text DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static Byte parseNodeShapeTextIntoByte(String text) {
+        return new Byte(parseNodeShapeText(text));
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static byte parseNodeShapeText(String text) {
-		String nstext = text.trim();
-		nstext = nstext.replaceAll("_", ""); // ditch all underscores
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param text DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static byte parseNodeShapeText(String text) {
+        final NodeShape shape = NodeShape.parseNodeShapeText(text);
 
-		if (nstext.equalsIgnoreCase("rect")) {
-			return ShapeNodeRealizer.RECT;
-		} else if (nstext.equalsIgnoreCase("roundrect")) {
-			return ShapeNodeRealizer.ROUND_RECT;
-		} else if (nstext.equalsIgnoreCase("rect3d")) {
-			return ShapeNodeRealizer.RECT_3D;
-		} else if (nstext.equalsIgnoreCase("trapezoid")) {
-			return ShapeNodeRealizer.TRAPEZOID;
-		} else if (nstext.equalsIgnoreCase("trapezoid2")) {
-			return ShapeNodeRealizer.TRAPEZOID_2;
-		} else if (nstext.equalsIgnoreCase("triangle")) {
-			return ShapeNodeRealizer.TRIANGLE;
-		} else if (nstext.equalsIgnoreCase("parallelogram")) {
-			return ShapeNodeRealizer.PARALLELOGRAM;
-		} else if (nstext.equalsIgnoreCase("diamond")) {
-			return ShapeNodeRealizer.DIAMOND;
-		} else if (nstext.equalsIgnoreCase("ellipse") || nstext.equalsIgnoreCase("circle")) {
-			return ShapeNodeRealizer.ELLIPSE;
-		} else if (nstext.equalsIgnoreCase("hexagon")) {
-			return ShapeNodeRealizer.HEXAGON;
-		} else if (nstext.equalsIgnoreCase("octagon")) {
-			return ShapeNodeRealizer.OCTAGON;
-		} else {
-			return ShapeNodeRealizer.RECT;
-		}
-	}
+        if (shape == null)
+            return ShapeNodeRealizer.RECT;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param shape DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static String getNodeShapeText(byte shape) {
-		if (shape == RECT)
-			return "rect";
+        return (byte) shape.ordinal();
+    }
 
-		if (shape == ROUND_RECT)
-			return "roundrect";
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param shape DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static String getNodeShapeText(byte shape) {
+        if (shape == RECT)
+            return "rect";
 
-		if (shape == RECT_3D)
-			return "rect3d";
+        if (shape == ROUND_RECT)
+            return "roundrect";
 
-		if (shape == TRAPEZOID)
-			return "trapezoid";
+        if (shape == RECT_3D)
+            return "rect3d";
 
-		if (shape == TRAPEZOID_2)
-			return "trapezoid2";
+        if (shape == TRAPEZOID)
+            return "trapezoid";
 
-		if (shape == TRIANGLE)
-			return "triangle";
+        if (shape == TRAPEZOID_2)
+            return "trapezoid2";
 
-		if (shape == PARALLELOGRAM)
-			return "parallelogram";
+        if (shape == TRIANGLE)
+            return "triangle";
 
-		if (shape == DIAMOND)
-			return "diamond";
+        if (shape == PARALLELOGRAM)
+            return "parallelogram";
 
-		if (shape == ELLIPSE)
-			return "ellipse";
+        if (shape == DIAMOND)
+            return "diamond";
 
-		if (shape == HEXAGON)
-			return "hexagon";
+        if (shape == ELLIPSE)
+            return "ellipse";
 
-		if (shape == OCTAGON)
-			return "octagon";
+        if (shape == HEXAGON)
+            return "hexagon";
 
-		return "rect";
-	}
+        if (shape == OCTAGON)
+            return "octagon";
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param byteShape DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static int getGinyShape(byte byteShape) {
-		if (byteShape == TRIANGLE) {
-			return NodeView.TRIANGLE;
-		} else if (byteShape == PARALLELOGRAM) {
-			return NodeView.PARALELLOGRAM;
-		} else if (byteShape == DIAMOND) {
-			return NodeView.DIAMOND;
-		} else if (byteShape == ELLIPSE) {
-			return NodeView.ELLIPSE;
-		} else if (byteShape == HEXAGON) {
-			return NodeView.HEXAGON;
-		} else if (byteShape == OCTAGON) {
-			return NodeView.OCTAGON;
-		} else if (byteShape == ROUND_RECT) {
-			return NodeView.ROUNDED_RECTANGLE;
-		} else { //rectangle, or unknown shape
+        return "rect";
+    }
 
-			return NodeView.RECTANGLE;
-		}
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param byteShape DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static int getGinyShape(byte byteShape) {
+        final NodeShape shape = getNodeShape(byteShape);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param shape DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean isValidShape(byte shape) {
-		if (shape == RECT)
-			return true;
+        return shape.getGinyShape();
+    }
 
-		if (shape == ROUND_RECT)
-			return true;
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param shape DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean isValidShape(byte shape) {
+        return NodeShape.isValidShape(getNodeShape(shape));
+    }
 
-		if (shape == RECT_3D)
-			return true;
+    /**
+     * This method is for backward compatibility.
+     *
+     * @param oldShape
+     * @return
+     */
+    public static NodeShape getNodeShape(byte oldShape) {
+        String shapeString = getNodeShapeText(oldShape);
 
-		if (shape == TRAPEZOID)
-			return true;
-
-		if (shape == TRAPEZOID_2)
-			return true;
-
-		if (shape == TRIANGLE)
-			return true;
-
-		if (shape == PARALLELOGRAM)
-			return true;
-
-		if (shape == DIAMOND)
-			return true;
-
-		if (shape == ELLIPSE)
-			return true;
-
-		if (shape == HEXAGON)
-			return true;
-
-		if (shape == OCTAGON)
-			return true;
-
-		return false;
-	}
+        return NodeShape.parseNodeShapeText(shapeString);
+    }
 }
