@@ -1,6 +1,5 @@
 package cytoscape.visual.ui;
 
-import org.apache.batik.ext.awt.LinearGradientPaint;
 
 import org.jdesktop.swingx.JXGlassBox;
 import org.jdesktop.swingx.JXPanel;
@@ -54,21 +53,21 @@ public class DefaultEditorDialog extends javax.swing.JDialog {
         float[] dist = { 0.0f, 0.9f, 1.0f };
         Color c1 = new Color(10, 10, 10, 150);
 
-        Color[] colors = { c1, Color.white, c1 };
-        LinearGradientPaint p = new LinearGradientPaint(start, end, dist, colors);
-
-        //LinearGradientPaint backgroundGradient = new LinearGradientPaint();
-        LinearGradientPaint test = LinearGradientPainter.BLACK_PERSPECTIVE;
-        float[] frac = test.getFractions();
-
-        for (Float number : frac)
-            System.out.println("------------- " + number);
-
-        System.out.println("-------------1 " + test.getEndPoint());
-        System.out.println("-------------2 " + test.getStartPoint());
-
-        org.jdesktop.swingx.painter.gradient.LinearGradientPainter painter2 = new LinearGradientPainter(p);
-        jXPanel1.setBackgroundPainter(painter2);
+//        Color[] colors = { c1, Color.white, c1 };
+//        LinearGradientPaint p = new LinearGradientPaint(start, end, dist, colors);
+//
+//        //LinearGradientPaint backgroundGradient = new LinearGradientPaint();
+//        LinearGradientPaint test = LinearGradientPainter.BLACK_PERSPECTIVE;
+//        float[] frac = test.getFractions();
+//
+//        for (Float number : frac)
+//            System.out.println("------------- " + number);
+//
+//        System.out.println("-------------1 " + test.getEndPoint());
+//        System.out.println("-------------2 " + test.getStartPoint());
+//
+//        org.jdesktop.swingx.painter.gradient.LinearGradientPainter painter2 = new LinearGradientPainter(p);
+//        jXPanel1.setBackgroundPainter(painter2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         jXPanel2.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
