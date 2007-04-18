@@ -60,7 +60,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.net.JarURLConnection;
 import java.net.URL;
 
 import java.util.Iterator;
@@ -76,146 +75,184 @@ import java.util.Set;
  * if one does not already exist.
  */
 public abstract class CalculatorCatalogFactory {
-	// static File propertiesFile;
-	static Properties vizmapProps;
-	static CalculatorCatalog calculatorCatalog = new CalculatorCatalog();
+    private enum MapperNames {DISCRETE("Discrete Mapper"), 
+        CONTINUOUS("Continuous Mapper"), PASSTHROUGH("Passthrough Mapper");
+        private String name;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static CalculatorCatalog loadCalculatorCatalog() {
-		return loadCalculatorCatalog(null);
-	}
+        private MapperNames(String name) {
+            this.name = name;
+        }
 
-	/**
-	 * Loads a CalculatorCatalog object from the various properties files
-	 * specified by the options in the supplied CytoscapeConfig object. The
-	 * catalog will be properly initialized with known mapping types and a
-	 * default visual style (named "default").
-	 *
-	 * @deprecated The vmName parameter is no longer used - just use
-	 *             loadCalculatorCatalog(). Will be removed 10/06.
-	 */
-	public static CalculatorCatalog loadCalculatorCatalog(String vmName) {
-		vizmapProps = CytoscapeInit.getVisualProperties();
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
-		initCatalog();
+    private static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";
 
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapListener());
+    // static File propertiesFile;
+    static Properties vizmapProps;
+    static CalculatorCatalog calculatorCatalog = new CalculatorCatalog();
 
-		return calculatorCatalog;
-	}
+    public static CalculatorCatalog loadCalculatorCatalog() {
+        return loadCalculatorCatalog(null);
+    }
 
-	private static void initCatalog() {
-		calculatorCatalog.clear();
+    /**
+     * Loads a CalculatorCatalog object from the various properties files
+     * specified by the options in the supplied CytoscapeConfig object. The
+     * catalog will be properly initialized with known mapping types and a
+     * default visual style (named "default").
+     *
+     * @deprecated The vmName parameter is no longer used - just use
+     *             loadCalculatorCatalog(). Will be removed 10/06.
+     */
+    public static CalculatorCatalog loadCalculatorCatalog(String vmName) {
+        vizmapProps = CytoscapeInit.getVisualProperties();
 
-		calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
-		calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
-		calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
+        initCatalog();
 
-		CalculatorIO.loadCalculators(vizmapProps, calculatorCatalog);
-	}
+        Cytoscape.getSwingPropertyChangeSupport()
+                 .addPropertyChangeListener(new VizMapListener());
 
-	/**
-	 * Catch the signal and save/load VS.
-	 *
-	 */
-	private static class VizMapListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent e) {
-			if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
-				/*
-				 * This section is for saving VS in a vizmap.props file.
-				 *
-				 * If signal contains no new value, Cytoscape consider it as
-				 * a default file.  Otherwise, save it as a user file.
-				 */
-				File propertiesFile = null;
+        return calculatorCatalog;
+    }
 
-				if (e.getNewValue() == null) {
-					propertiesFile = CytoscapeInit.getConfigFile("vizmap.props");
-				} else {
-					propertiesFile = new File((String) e.getNewValue());
-				}
+    private static void initCatalog() {
+        calculatorCatalog.clear();
 
-				if (propertiesFile != null) {
-					Set test = calculatorCatalog.getVisualStyleNames();
-					Iterator it = test.iterator();
-					System.out.println("Saving the following Visual Styles: ");
+        calculatorCatalog.addMapping(
+            MapperNames.DISCRETE.toString(),
+            DiscreteMapping.class);
+        calculatorCatalog.addMapping(
+            MapperNames.CONTINUOUS.toString(),
+            ContinuousMapping.class);
+        calculatorCatalog.addMapping(
+            MapperNames.PASSTHROUGH.toString(),
+            PassThroughMapping.class);
 
-					while (it.hasNext()) {
-						System.out.println("    - " + it.next().toString());
-					}
+        CalculatorIO.loadCalculators(vizmapProps, calculatorCatalog);
+    }
 
-					CalculatorIO.storeCatalog(calculatorCatalog, propertiesFile);
-					System.out.println("Vizmap saved to: " + propertiesFile);
-				}
-			} else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED)
-			           || (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {
-				/*
-				 * This section is for restoring VS from a file.
-				 */
+    /**
+     * Catch the signal and save/load VS.
+     *
+     */
+    private static class VizMapListener
+        implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent e) {
+            if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
+                /*
+                 * This section is for saving VS in a vizmap.props file.
+                 *
+                 * If signal contains no new value, Cytoscape consider it as a
+                 * default file. Otherwise, save it as a user file.
+                 */
+                File propertiesFile = null;
 
-				// only clear the existing vizmap.props if we're restoring
-				// from a session file
-				if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED)
-					vizmapProps.clear();
+                if (e.getNewValue() == null)
+                    propertiesFile = CytoscapeInit.getConfigFile(VIZMAP_PROPS_FILE_NAME);
+                else
+                    propertiesFile = new File((String) e.getNewValue());
 
-				// get the new vizmap.props and apply it the existing properties
-				Object vizmapSource = e.getNewValue();
-				System.out.println("vizmapSource: '" + vizmapSource.toString() + "'");
+                if (propertiesFile != null) {
+                    Set test = calculatorCatalog.getVisualStyleNames();
+                    Iterator it = test.iterator();
+                    System.out.println("Saving the following Visual Styles: ");
 
-				try {
-					InputStream is = null;
+                    while (it.hasNext())
+                        System.out.println("    - " + it.next().toString());
 
-					if (vizmapSource.getClass() == URL.class) {
-						is = ((URL) vizmapSource).openStream();
-					} else if (vizmapSource.getClass() == String.class) {
-						// if its a RESTORED event the vizmap 
-						// file will be in a zip file.
-						if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
-							is = ZipUtil.readFile((String) vizmapSource, ".*vizmap.props");
+                    CalculatorIO.storeCatalog(calculatorCatalog, propertiesFile);
+                    System.out.println("Vizmap saved to: " + propertiesFile);
+                }
+            } else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) ||
+                    (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {
+                /*
+                 * This section is for restoring VS from a file.
+                 */
 
-							// if its a LOADED event the vizmap file 
-							// will be a normal file.
-						} else {
-							is = FileUtil.getInputStream((String) vizmapSource);
-						}
-					}
+                // only clear the existing vizmap.props if we're restoring
+                // from a session file
+                if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED)
+                    vizmapProps.clear();
 
-					if (is != null) {
-						vizmapProps.load(is);
-						is.close();
-					}
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+                // get the new vizmap.props and apply it the existing properties
+                Object vizmapSource = e.getNewValue();
+                System.out.println("vizmapSource: '" + vizmapSource.toString() +
+                    "'");
 
-				initCatalog();
+                try {
+                    InputStream is = null;
 
-				System.out.println("Applying visual styles from: " + vizmapSource.toString());
-				// Always re-create the vizmapper, otherwise things won't
-				// initialize correctly...  or figure out how to reinitialize
-				// things, in particular the various VizMapAttrTabs.
-				Cytoscape.getDesktop().setupVizMapper();
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().resetStyles();
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().repaint();
-				Cytoscape.getDesktop().getVizMapUI().refreshUI();
+                    if (vizmapSource.getClass() == URL.class)
+                        is = ((URL) vizmapSource).openStream();
+                    else if (vizmapSource.getClass() == String.class) {
+                        // if its a RESTORED event the vizmap
+                        // file will be in a zip file.
+                        if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
+                            is = ZipUtil.readFile((String) vizmapSource,
+                                    ".*vizmap.props");
 
-				// In the situation where the old visual style has been overwritten
-				// with a new visual style of the same name, then make sure it is 
-				// reapplied.
-				VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-				vmm.setVisualStyle(vmm.getVisualStyle().getName());
-				Cytoscape.getCurrentNetworkView().setVisualStyle(vmm.getVisualStyle().getName());
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+                            // if its a LOADED event the vizmap file
+                            // will be a normal file.
+                        } else
+                            is = FileUtil.getInputStream((String) vizmapSource);
+                    }
 
-				// Since the toolbar tends to get messed up, repaint it.
-				Cytoscape.getDesktop().repaint();
-			}
-		}
-	}
+                    if (is != null) {
+                        vizmapProps.load(is);
+                        is.close();
+                    }
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+                initCatalog();
+
+                /*
+                 * TODO: Mechanism to apply VS is too complicated. Should be
+                 * something like
+                 * Cytoscape.getDesktop.getVisualMappingManger.apply(VS_NAME);
+                 */
+                System.out.println("Applying visual styles from: " +
+                    vizmapSource.toString());
+                // Always re-create the vizmapper, otherwise things won't
+                // initialize correctly... or figure out how to reinitialize
+                // things, in particular the various VizMapAttrTabs.
+                Cytoscape.getDesktop()
+                         .setupVizMapper();
+                Cytoscape.getDesktop()
+                         .getVizMapUI()
+                         .getStyleSelector()
+                         .resetStyles();
+                Cytoscape.getDesktop()
+                         .getVizMapUI()
+                         .getStyleSelector()
+                         .repaint();
+                Cytoscape.getDesktop()
+                         .getVizMapUI()
+                         .refreshUI();
+
+                // In the situation where the old visual style has been
+                // overwritten
+                // with a new visual style of the same name, then make sure it
+                // is
+                // reapplied.
+                final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+                vmm.setVisualStyle(vmm.getVisualStyle().getName());
+                Cytoscape.getCurrentNetworkView()
+                         .setVisualStyle(vmm.getVisualStyle().getName());
+                Cytoscape.getCurrentNetworkView()
+                         .redrawGraph(false, true);
+
+                // Since the toolbar tends to get messed up, repaint it.
+                Cytoscape.getDesktop()
+                         .repaint();
+            }
+        }
+    }
 }

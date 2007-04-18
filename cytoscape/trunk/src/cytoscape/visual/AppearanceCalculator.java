@@ -1,234 +1,247 @@
 /*
-  File: AppearanceCalculator.java
+ File: AppearanceCalculator.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
 
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
 
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 package cytoscape.visual;
 
-import cytoscape.*;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LineType;
-import cytoscape.visual.ShapeNodeRealizer;
-
-import cytoscape.visual.calculators.*;
-
-import cytoscape.visual.parsers.*;
-
-import giny.model.Node;
-
-import java.awt.Color;
-import java.awt.Font;
+import cytoscape.visual.calculators.Calculator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 
 /**
- * This class calculates the appearance of a Node. It holds a default value
- * and a (possibly null) calculator for each visual attribute.
+ * This class calculates the appearance of a Node. It holds a default value and
+ * a (possibly null) calculator for each visual attribute.
  */
-abstract class AppearanceCalculator implements Cloneable {
-	List<Calculator> calcs = new ArrayList<Calculator>();
-	protected Appearance tmpDefaultAppearance;
+abstract class AppearanceCalculator
+    implements Cloneable {
+    protected List<Calculator> calcs = new ArrayList<Calculator>();
+    protected Appearance tmpDefaultAppearance;
 
-	/**
-	 * Make shallow copy of this object
-	 */
-	public Object clone() {
-		Object copy = null;
+    /**
+     * Make shallow copy of this object
+     */
+    public Object clone() {
+        Object copy = null;
 
-		try {
-			copy = super.clone();
-		} catch (CloneNotSupportedException e) {
-			System.err.println("Error cloning!");
-		}
+        try {
+            copy = super.clone();
+        } catch (CloneNotSupportedException e) {
+            System.err.println("Error cloning!");
+        }
 
-		return copy;
-	}
+        return copy;
+    }
 
-	/**
-	 * Creates a new AppearanceCalculator object.
-	 */
-	public AppearanceCalculator() {
-	}
+    /**
+     * Creates a new AppearanceCalculator object.
+     */
+    public AppearanceCalculator() {
+    }
 
-	/**
-	 * Creates a new AppearanceCalculator and immediately customizes it
-	 * by calling applyProperties with the supplied arguments.
-	 */
-	public AppearanceCalculator(String name, Properties nacProps, String baseKey,
-	                            CalculatorCatalog catalog, Appearance appr) {
-		tmpDefaultAppearance = appr;
-		applyProperties(appr, name, nacProps, baseKey, catalog);
-	}
+    /**
+     * Creates a new AppearanceCalculator and immediately customizes it by
+     * calling applyProperties with the supplied arguments.
+     */
+    public AppearanceCalculator(String name, Properties nacProps,
+        String baseKey, CalculatorCatalog catalog, Appearance appr) {
+        tmpDefaultAppearance = appr;
+        applyProperties(appr, name, nacProps, baseKey, catalog);
+    }
 
-	/**
-	 * Creates a new AppearanceCalculator object.
-	 *
-	 * @param toCopy  DOCUMENT ME!
-	 */
-	public AppearanceCalculator(AppearanceCalculator toCopy) {
-		if (toCopy == null) {
-			return;
-		}
+    /**
+     * Creates a new AppearanceCalculator object.
+     *
+     * @param toCopy DOCUMENT ME!
+     */
+    public AppearanceCalculator(AppearanceCalculator toCopy) {
+        if (toCopy == null)
+            return;
 
-		for (Calculator c : toCopy.getCalculators()) {
-			setCalculator(c);
-		}
+        for (Calculator c : toCopy.getCalculators())
+            setCalculator(c);
 
-		copyDefaultAppearance(toCopy);
-	}
+        copyDefaultAppearance(toCopy);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Calculator getCalculator(byte type) {
-		for (Calculator nc : calcs)
-			if (nc.getType() == type)
-				return nc;
+    /**
+     * Use Calculator getCalculator(final VisualPropertyType type) instead.
+     *
+     * @param type
+     * @return
+     */
+    @Deprecated
+    public Calculator getCalculator(byte type) {
+        return getCalculator(VisualPropertyType.getVisualPorpertyType(type));
+    }
 
-		return null;
-	}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param type DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public Calculator getCalculator(final VisualPropertyType type) {
+        for (Calculator nc : calcs) {
+            if (nc.getVisualPropertyType() == type)
+                return nc;
+        }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<Calculator> getCalculators() {
-		return calcs;
-	}
+        return null;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 */
-	public void removeCalculator(byte type) {
-		Calculator toRemove = null;
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public List<Calculator> getCalculators() {
+        return calcs;
+    }
 
-		for (Calculator c : calcs) {
-			if (c.getType() == type) {
-				toRemove = c;
+    /**
+     * Use removeCalculator(final VisualPropertyType type) instead.
+     *
+     * @param type
+     */
+    @Deprecated
+    public void removeCalculator(byte type) {
+        removeCalculator(VisualPropertyType.getVisualPorpertyType(type));
+    }
 
-				break;
-			}
-		}
+    /**
+     * DOCUMENT ME!
+     *
+     * @param type DOCUMENT ME!
+     */
+    public void removeCalculator(final VisualPropertyType type) {
+        Calculator toBeRemoved = null;
 
-		calcs.remove(toRemove);
-	}
+        for (Calculator c : calcs) {
+            if (c.getVisualPropertyType() == type) {
+                toBeRemoved = c;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param c DOCUMENT ME!
-	 */
-	public void setCalculator(Calculator c) {
-		if (c == null)
-			return;
+                break;
+            }
+        }
 
-		if (!isValidCalculator(c))
-			return;
+        calcs.remove(toBeRemoved);
+    }
 
-		Calculator toReplace = null;
+    /**
+     * DOCUMENT ME!
+     *
+     * @param c DOCUMENT ME!
+     */
+    public void setCalculator(Calculator c) {
+        if (c == null)
+            return;
 
-		for (Calculator nc : calcs)
-			if (nc.getType() == c.getType()) {
-				toReplace = nc;
+        if (!isValidCalculator(c))
+            return;
 
-				break;
-			}
+        Calculator toReplace = null;
 
-		if (toReplace != null)
-			calcs.remove(toReplace);
+        for (Calculator nc : calcs)
+            if (nc.getVisualPropertyType() == c.getVisualPropertyType()) {
+                toReplace = nc;
 
-		calcs.add(c);
-	}
+                break;
+            }
 
-	protected String getDescription(String name, Appearance defaultAppr) {
-		String lineSep = System.getProperty("line.separator");
-		StringBuffer sb = new StringBuffer();
-		sb.append(name + ":" + lineSep);
-		sb.append(defaultAppr.getDescription("default")).append(lineSep);
+        if (toReplace != null)
+            calcs.remove(toReplace);
 
-		for (Calculator c : calcs)
-			sb.append(c.toString()).append(lineSep);
+        calcs.add(c);
+    }
 
-		return sb.toString();
-	}
+    protected String getDescription(String name, Appearance defaultAppr) {
+        final String lineSep = System.getProperty("line.separator");
+        final StringBuffer sb = new StringBuffer();
 
-	protected void applyProperties(Appearance appr, String name, Properties nacProps,
-	                               String baseKey, CalculatorCatalog catalog) {
-		String value = null;
+        sb.append(name + ":" + lineSep);
+        sb.append(defaultAppr.getDescription("default"))
+          .append(lineSep);
 
-		appr.applyDefaultProperties(nacProps, baseKey);
+        for (Calculator c : calcs)
+            sb.append(c.toString())
+              .append(lineSep);
 
-		for (Byte b : catalog.getCalculatorTypes()) {
-			for (Calculator c : catalog.getCalculators(b.byteValue())) {
-				value = nacProps.getProperty(baseKey + "." + c.getPropertyLabel());
+        return sb.toString();
+    }
 
-				Calculator newCalc = catalog.getCalculator(c.getType(), value);
-				setCalculator(newCalc);
-			}
-		}
-	}
+    protected void applyProperties(Appearance appr, String name,
+        Properties nacProps, String baseKey, CalculatorCatalog catalog) {
+        String value = null;
 
-	protected Properties getProperties(Appearance appr, String baseKey) {
-		String key = null;
-		String value = null;
-		Properties newProps = appr.getDefaultProperties(baseKey);
+        appr.applyDefaultProperties(nacProps, baseKey);
 
-		for (Calculator c : calcs) {
-			// do actual
-			key = baseKey + "." + c.getPropertyLabel();
-			value = c.toString();
-			newProps.setProperty(key, value);
-		}
+        Calculator newCalc;
 
-		return newProps;
-	}
+        for (VisualPropertyType type : catalog.getCalculatorTypes()) {
+            for (Calculator c : catalog.getCalculators(type)) {
+                value = nacProps.getProperty(baseKey + "." +
+                        c.getVisualPropertyType().getPropertyLabel());
+                newCalc = catalog.getCalculator(
+                        c.getVisualPropertyType(),
+                        value);
+                setCalculator(newCalc);
+            }
+        }
+    }
 
-	protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
+    protected Properties getProperties(Appearance appr, String baseKey) {
+        String key = null;
+        String value = null;
+        Properties newProps = appr.getDefaultProperties(baseKey);
 
-	protected abstract boolean isValidCalculator(Calculator c);
+        for (Calculator c : calcs) {
+            // do actual
+            key = baseKey + "." + c.getVisualPropertyType()
+                                   .getPropertyLabel();
+            value = c.toString();
+            newProps.setProperty(key, value);
+        }
+
+        return newProps;
+    }
+
+    protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
+
+    protected abstract boolean isValidCalculator(Calculator c);
 }
