@@ -43,46 +43,46 @@ import java.util.Properties;
  * Objects of this class hold data describing the appearance of a Node.
  */
 interface Appearance {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 * @param base DOCUMENT ME!
-	 */
-	public void applyDefaultProperties(Properties props, String base);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param props DOCUMENT ME!
+     * @param base DOCUMENT ME!
+     */
+    public void applyDefaultProperties(Properties props, String base);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param baseKey DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Properties getDefaultProperties(String baseKey);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param baseKey DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Properties getDefaultProperties(String baseKey);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param prefix DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getDescription(String prefix);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param prefix DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getDescription(String prefix);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object get(byte type);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param type DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object get(byte type);
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 * @param o DOCUMENT ME!
-	 */
-	public void set(byte type, Object o);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param type DOCUMENT ME!
+     * @param o DOCUMENT ME!
+     */
+    public void set(byte type, Object o);
 }
