@@ -42,115 +42,44 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.EdgeAppearance;
+//----------------------------------------------------------------------------
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
-import cytoscape.visual.parsers.ArrowParser;
-
-import cytoscape.visual.ui.VizMapUI;
-
-//----------------------------------------------------------------------------
-import giny.model.Edge;
-
-import java.util.Map;
 import java.util.Properties;
 
 
 //----------------------------------------------------------------------------
 /**
+ * DOCUMENT ME!
  *
- */
-public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator
+ * @author $author$
+  */
+@Deprecated
+public class GenericEdgeSourceArrowCalculator
+    extends AbstractEdgeArrowCalculator
     implements EdgeArrowCalculator {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public byte getType() {
-		return VizMapUI.EDGE_SRCARROW;
-	}
+    /**
+     * Creates a new GenericEdgeSourceArrowCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param m DOCUMENT ME!
+     */
+    public GenericEdgeSourceArrowCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_SRCARROW);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getPropertyLabel() {
-		return "edgeSourceArrowCalculator";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getTypeName() {
-		return "Edge Source Arrow";
-	}
-
-	/**
-	 * Used to set the various properties throughout the hierarchy.
-	 */
-	private void set() {
-		set(VizMapUI.EDGE_SRCARROW, "edgeSourceArrowCalculator", "Edge Source Arrow");
-	}
-
-	GenericEdgeSourceArrowCalculator() {
-		super();
-		set();
-	}
-
-	/**
-	 * Creates a new GenericEdgeSourceArrowCalculator object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 * @param m  DOCUMENT ME!
-	 */
-	public GenericEdgeSourceArrowCalculator(String name, ObjectMapping m) {
-		super(name, m);
-		set();
-	}
-
-	/**
-	 * Creates a new GenericEdgeSourceArrowCalculator object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 * @param baseKey  DOCUMENT ME!
-	 */
-	public GenericEdgeSourceArrowCalculator(String name, Properties props, String baseKey) {
-		super(name, props, baseKey);
-		set();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param appr DOCUMENT ME!
-	 * @param edge DOCUMENT ME!
-	 * @param network DOCUMENT ME!
-	 */
-	public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-		apply(appr, edge, network, SOURCE);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 * @param n DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
-		EdgeAppearance ea = new EdgeAppearance();
-		apply(ea, e, n);
-
-		return ea.getSourceArrow();
-	}
+    /**
+     * Creates a new GenericEdgeSourceArrowCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param props DOCUMENT ME!
+     * @param baseKey DOCUMENT ME!
+     */
+    public GenericEdgeSourceArrowCalculator(String name, Properties props,
+        String baseKey) {
+        super(name, props, baseKey, EDGE_SRCARROW);
+    }
 }
