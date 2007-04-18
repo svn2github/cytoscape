@@ -12,8 +12,10 @@ import java.awt.Stroke;
  * @author kono
  *
  */
-public enum LineTypeDef {SOLID(null), DASH("4.0f,4.0f"), LONG_DASH("8.0f,3.0f"), 
-    DASH_DOT("12.0f,3.0f,3.0f,3.0f");
+public enum LineTypeDef {SOLID(null), 
+    //	DASH("4.0f,4.0f"),
+    // DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
+    LONG_DASH("8.0f,3.0f");
     private float[] strokeDef;
 
     private LineTypeDef(String def) {
@@ -36,12 +38,10 @@ public enum LineTypeDef {SOLID(null), DASH("4.0f,4.0f"), LONG_DASH("8.0f,3.0f"),
      * @return DOCUMENT ME!
      */
     public Stroke getStroke(float width) {
-        if (strokeDef != null) {
-            System.out.println("Def found: " + strokeDef.length);
-
+        if (strokeDef != null)
             return new BasicStroke(width, BasicStroke.CAP_ROUND,
                 BasicStroke.JOIN_MITER, 10.0f, strokeDef, 0.0f);
-        } else
+        else
             return new BasicStroke(width);
     }
 }
