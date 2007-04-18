@@ -75,7 +75,7 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.VizMapUI;
-//import cytoscape.visual.ui.VizMapperMainPanel;
+import cytoscape.visual.ui.VizMapperMainPanel;
 
 
 
@@ -87,7 +87,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected int returnVal;
 
 	/*
-	 * Default Desktop Size
+	 * Default Desktop Size (slitly wider than before for new UI)
 	 */
 	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(900, 700);
 	
@@ -197,7 +197,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/**
 	 * New VizMapper UI
 	 */
-	//protected VizMapperMainPanel vizmapperUI;
+	protected VizMapperMainPanel vizmapperUI;
 	
 	
 	protected String currentNetworkID;
@@ -473,9 +473,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 	
 	private void setupVizMapperUI() {
-//        vizmapperUI = VizMapperMainPanel.getVizMapperUI();
-//        getCytoPanel(SwingConstants.WEST)
-//            .add("VizMapper\u2122", vizmapperUI);
+		
+        vizmapperUI = VizMapperMainPanel.getVizMapperUI();
+        getCytoPanel(SwingConstants.WEST)
+            .add("VizMapper\u2122", vizmapperUI);
     }
 
 	/**

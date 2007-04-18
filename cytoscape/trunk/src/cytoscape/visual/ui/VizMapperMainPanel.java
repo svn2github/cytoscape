@@ -1,6 +1,5 @@
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.beans.editor.ComboBoxPropertyEditor;
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -25,7 +24,6 @@ import cytoscape.util.SwingWorker;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
@@ -173,6 +171,11 @@ public class VizMapperMainPanel extends JPanel
             Cytoscape.class.getResource(
                 "/cytoscape/images/ximian/stock_edit-16.png"));
 
+    /*
+     * This is a singleton.
+     */
+    private static VizMapperMainPanel panel;
+
     static {
         /*
          * Make dummy network nodes & edges
@@ -193,11 +196,6 @@ public class VizMapperMainPanel extends JPanel
     private JButton addButton;
     private JButton deleteButton;
     private JPanel bottomPanel;
-
-    /*
-     * This is a singleton.
-     */
-    private static VizMapperMainPanel panel = new VizMapperMainPanel();
 
     /** Creates new form AttributeOrientedPanel */
     private VizMapperMainPanel() {
@@ -236,6 +234,9 @@ public class VizMapperMainPanel extends JPanel
      * @return
      */
     public static VizMapperMainPanel getVizMapperUI() {
+        if (panel == null)
+            panel = new VizMapperMainPanel();
+
         return panel;
     }
 
