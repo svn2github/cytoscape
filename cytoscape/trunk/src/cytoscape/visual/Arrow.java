@@ -199,7 +199,7 @@ public class Arrow
     private Color arrowColor;
     private ArrowShape shape;
 
-    // Maybe supported
+    // Maybe supported in future.
     private int size;
     @Deprecated
     private String name;
