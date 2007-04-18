@@ -36,95 +36,72 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
-import cytoscape.visual.ShapeNodeRealizer;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 
-import java.text.DecimalFormat;
-
-import java.util.HashMap;
-
-import javax.swing.AbstractAction;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.plaf.metal.MetalButtonUI;
 
 
 /** An input dialog for strings, ints, and doubles. */
 public class PopupStringChooser {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param parent DOCUMENT ME!
-	 * @param title DOCUMENT ME!
-	 * @param prompt DOCUMENT ME!
-	 * @param input DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Object showDialog(Component parent, String title, String prompt, Object input,
-	                                byte type) {
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param parent DOCUMENT ME!
+     * @param title DOCUMENT ME!
+     * @param prompt DOCUMENT ME!
+     * @param input DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static Object showDialog(Component parent, String title,
+        String prompt, Object input, byte type) {
 // keep prompting for input until a valid input is received
 inputLoop: 
-		while (true) {
-			String ret = (String) JOptionPane.showInputDialog(parent, prompt, title,
-			                                                  JOptionPane.QUESTION_MESSAGE, null,
-			                                                  null, input);
+        while (true) {
+            String ret = (String) JOptionPane.showInputDialog(parent, prompt,
+                    title, JOptionPane.QUESTION_MESSAGE, null, null, input);
 
-			if (ret == null) {
-				return null;
-			} else {
-				switch (type) {
-					case ValueDisplayer.DOUBLE:
+            if (ret == null)
+                return null;
+            else {
+                switch (type) {
+                case ValueDisplayer.DOUBLE:
 
-						try {
-							input = new Double(Double.parseDouble(ret));
+                    try {
+                        input = new Double(Double.parseDouble(ret));
 
-							break inputLoop;
-						} catch (NumberFormatException exc) {
-							JOptionPane.showMessageDialog(parent, "That is not a valid double",
-							                              "Bad Input", JOptionPane.ERROR_MESSAGE);
+                        break inputLoop;
+                    } catch (NumberFormatException exc) {
+                        JOptionPane.showMessageDialog(parent,
+                            "That is not a valid double", "Bad Input",
+                            JOptionPane.ERROR_MESSAGE);
 
-							continue inputLoop;
-						}
+                        continue inputLoop;
+                    }
 
-					case ValueDisplayer.INT:
+                case ValueDisplayer.INT:
 
-						try {
-							input = new Integer(Integer.parseInt(ret));
+                    try {
+                        input = new Integer(Integer.parseInt(ret));
 
-							break inputLoop;
-						} catch (NumberFormatException exc) {
-							JOptionPane.showMessageDialog(parent, "That is not a valid integer",
-							                              "Bad Input", JOptionPane.ERROR_MESSAGE);
+                        break inputLoop;
+                    } catch (NumberFormatException exc) {
+                        JOptionPane.showMessageDialog(parent,
+                            "That is not a valid integer", "Bad Input",
+                            JOptionPane.ERROR_MESSAGE);
 
-							continue inputLoop;
-						}
+                        continue inputLoop;
+                    }
 
-					default: // simple string assignment
-						input = ret;
+                default: // simple string assignment
+                    input = ret;
 
-						break inputLoop;
-				}
-			}
-		}
+                    break inputLoop;
+                }
+            }
+        }
 
-		return input;
-	}
+        return input;
+    }
 }

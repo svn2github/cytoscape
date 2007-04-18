@@ -44,10 +44,12 @@ package cytoscape.visual.ui;
 
 
 //--------------------------------------------------------------------------
-import java.awt.*;
-import java.awt.font.*;
+import java.awt.Component;
+import java.awt.Font;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.UIManager;
 
 
 //--------------------------------------------------------------------------
@@ -57,45 +59,45 @@ import javax.swing.*;
  * JList or JComboBox in the face specified.
  */
 public class FontRenderer extends DefaultListCellRenderer {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param list DOCUMENT ME!
-	 * @param value DOCUMENT ME!
-	 * @param index DOCUMENT ME!
-	 * @param isSelected DOCUMENT ME!
-	 * @param cellHasFocus DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Component getListCellRendererComponent(JList list, Object value, int index,
-	                                              boolean isSelected, boolean cellHasFocus) {
-		setComponentOrientation(list.getComponentOrientation());
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param list DOCUMENT ME!
+     * @param value DOCUMENT ME!
+     * @param index DOCUMENT ME!
+     * @param isSelected DOCUMENT ME!
+     * @param cellHasFocus DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Component getListCellRendererComponent(JList list, Object value,
+        int index, boolean isSelected, boolean cellHasFocus) {
+        setComponentOrientation(list.getComponentOrientation());
 
-		if (isSelected) {
-			setBackground(list.getSelectionBackground());
-			setForeground(list.getSelectionForeground());
-		} else {
-			setBackground(list.getBackground());
-			setForeground(list.getForeground());
-		}
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        } else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
 
-		setEnabled(list.isEnabled());
+        setEnabled(list.isEnabled());
 
-		// just allow a ClassCastException to be thrown if the renderer is not
-		// called correctly. Always display in 12 pt.
-		if (value instanceof Font) {
-			//Font fontValue = ((Font) value).deriveFont(12F);
-			setFont((Font) value);
-			setText(((Font) value).getFontName());
-		} else {
-			setFont(list.getFont());
-			setText((value == null) ? "" : value.toString());
-		}
+        // just allow a ClassCastException to be thrown if the renderer is not
+        // called correctly. Always display in 12 pt.
+        if (value instanceof Font) {
+            //Font fontValue = ((Font) value).deriveFont(12F);
+            setFont((Font) value);
+            setText(((Font) value).getFontName());
+        } else {
+            setFont(list.getFont());
+            setText((value == null) ? "" : value.toString());
+        }
 
-		setBorder((cellHasFocus) ? UIManager.getBorder("List.focusCellHighlightBorder")
-		                         : noFocusBorder);
+        setBorder((cellHasFocus)
+            ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
 
-		return this;
-	}
+        return this;
+    }
 }

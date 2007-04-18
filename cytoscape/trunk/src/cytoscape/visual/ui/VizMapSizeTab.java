@@ -65,216 +65,225 @@ import javax.swing.event.*;
  * one for node height, one for node width, and one for locked node height/width.
  */
 public class VizMapSizeTab extends VizMapTab {
-	private JPanel hwPanel;
-	private JPanel lockPanel;
-	private JPanel mainPanel;
-	private VizMapAttrTab height;
-	private VizMapAttrTab width;
-	private VizMapAttrTab size;
-	private VisualMappingManager VMM;
-	private NodeAppearanceCalculator nodeCalc;
-	private VizMapUI mainUIDialog;
-	private boolean locked;
-	JCheckBox lockBox;
+    private JPanel hwPanel;
+    private JPanel lockPanel;
+    private JPanel mainPanel;
+    private VizMapAttrTab height;
+    private VizMapAttrTab width;
+    private VizMapAttrTab size;
+    private VisualMappingManager VMM;
+    private NodeAppearanceCalculator nodeCalc;
+    private VizMapUI mainUIDialog;
+    private boolean locked;
+    JCheckBox lockBox;
 
-	/**
-	 *    create a new tab representing the node size. Retrieve current
-	 *    calculator and default settings from the VMM. Start with node height/width
-	 *  locked to the same calculator.
-	 *
-	 *    @param    VMM    VisualMappingManager for the window
-	 *  @param    tabContainer    The containing JTabbedPane
-	 *  @param    tabIndex    index of this tab in tabContainer
-	 *    @param    n    Underlying network
-	 *    @param    type    Must be {@link VizMapUI#NODE_SIZE}
-	 *
-	 *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
-	 */
-	public VizMapSizeTab(VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex,
-	                     VisualMappingManager VMM, byte type) throws IllegalArgumentException {
-		//this(mainUI, tabContainer, tabIndex, VMM, type, true);
-		//the above is a bug; instead of always setting the locked field to true,
-		//we should get it from the node appearance calculator
-		this(mainUI, tabContainer, tabIndex, VMM, type,
-		     VMM.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
-	}
+    /**
+     *    create a new tab representing the node size. Retrieve current
+     *    calculator and default settings from the VMM. Start with node height/width
+     *  locked to the same calculator.
+     *
+     *    @param    VMM    VisualMappingManager for the window
+     *  @param    tabContainer    The containing JTabbedPane
+     *  @param    tabIndex    index of this tab in tabContainer
+     *    @param    n    Underlying network
+     *    @param    type    Must be {@link VizMapUI#NODE_SIZE}
+     *
+     *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
+     */
+    public VizMapSizeTab(VizMapUI mainUI, JTabbedPane tabContainer,
+        int tabIndex, VisualMappingManager VMM, byte type)
+        throws IllegalArgumentException {
+        //this(mainUI, tabContainer, tabIndex, VMM, type, true);
+        //the above is a bug; instead of always setting the locked field to true,
+        //we should get it from the node appearance calculator
+        this(mainUI, tabContainer, tabIndex, VMM, type,
+            VMM.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
+    }
 
-	/**
-	 *    create a new tab representing the node size. Retrieve current
-	 *    calculator and default settings from the VMM.
-	 *
-	 *    @param    VMM    VisualMappingManager for the window
-	 *  @param    tabContainer    The containing JTabbedPane
-	 *  @param    tabIndex    index of this tab in tabContainer
-	 *    @param    n    Underlying network
-	 *    @param    type    Must be {@link VizMapUI#NODE_SIZE}
-	 *  @param    locked    true to lock node height/width to the same calculator,
-	 *            false otherwise.
-	 *
-	 *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
-	 */
-	public VizMapSizeTab(VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex,
-	                     VisualMappingManager VMM, byte type, boolean locked)
-	    throws IllegalArgumentException {
-		super(new BorderLayout(), false);
+    /**
+     *    create a new tab representing the node size. Retrieve current
+     *    calculator and default settings from the VMM.
+     *
+     *    @param    VMM    VisualMappingManager for the window
+     *  @param    tabContainer    The containing JTabbedPane
+     *  @param    tabIndex    index of this tab in tabContainer
+     *    @param    n    Underlying network
+     *    @param    type    Must be {@link VizMapUI#NODE_SIZE}
+     *  @param    locked    true to lock node height/width to the same calculator,
+     *            false otherwise.
+     *
+     *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
+     */
+    public VizMapSizeTab(VizMapUI mainUI, JTabbedPane tabContainer,
+        int tabIndex, VisualMappingManager VMM, byte type, boolean locked)
+        throws IllegalArgumentException {
+        super(new BorderLayout(), false);
 
-		if (type != VizMapUI.NODE_SIZE)
-			throw new IllegalArgumentException("You can only create a VizMapSizeTab for the Node Size attribute");
+        if (type != VizMapUI.NODE_SIZE)
+            throw new IllegalArgumentException(
+                "You can only create a VizMapSizeTab for the Node Size attribute");
 
-		// set the name of this component appropriately
-		setName("Node Size");
+        // set the name of this component appropriately
+        setName("Node Size");
 
-		this.VMM = VMM;
-		this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
-		this.mainUIDialog = mainUI;
-		this.locked = locked;
+        this.VMM = VMM;
+        this.nodeCalc = VMM.getVisualStyle()
+                           .getNodeAppearanceCalculator();
+        this.mainUIDialog = mainUI;
+        this.locked = locked;
 
-		JPanel lockBoxPanel = new JPanel(false);
-		this.lockBox = new JCheckBox("Lock height/width calculators");
-		//lockBox.setSelected(true);
-		//the above is also a bug; should set to value of locked
-		lockBox.setSelected(locked);
-		lockBox.addItemListener(new LockCalcListener());
-		lockBoxPanel.add(lockBox);
+        JPanel lockBoxPanel = new JPanel(false);
+        this.lockBox = new JCheckBox("Lock height/width calculators");
+        //lockBox.setSelected(true);
+        //the above is also a bug; should set to value of locked
+        lockBox.setSelected(locked);
+        lockBox.addItemListener(new LockCalcListener());
+        lockBoxPanel.add(lockBox);
 
-		this.hwPanel = new JPanel(false);
-		this.hwPanel.setLayout(new BoxLayout(hwPanel, BoxLayout.Y_AXIS));
-		this.lockPanel = new JPanel(new GridLayout(), false);
-		// generate panel for height and width
-		height = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_HEIGHT);
-		width = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_WIDTH);
+        this.hwPanel = new JPanel(false);
+        this.hwPanel.setLayout(new BoxLayout(hwPanel, BoxLayout.Y_AXIS));
+        this.lockPanel = new JPanel(
+                new GridLayout(),
+                false);
+        // generate panel for height and width
+        height = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
+                VizMapUI.NODE_HEIGHT);
+        width = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
+                VizMapUI.NODE_WIDTH);
 
-		// Lock at the nodeAppearanceCalculator level, since can't have duplicate
-		// calculators. We have to be careful to keep size and height in sync.
-		size = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_SIZE);
+        // Lock at the nodeAppearanceCalculator level, since can't have duplicate
+        // calculators. We have to be careful to keep size and height in sync.
+        size = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
+                VizMapUI.NODE_SIZE);
 
-		width.setBorder(BorderFactory.createTitledBorder(width.getName()));
-		height.setBorder(BorderFactory.createTitledBorder(height.getName()));
+        width.setBorder(BorderFactory.createTitledBorder(width.getName()));
+        height.setBorder(BorderFactory.createTitledBorder(height.getName()));
 
-		hwPanel.add(height);
-		hwPanel.add(width);
+        hwPanel.add(height);
+        hwPanel.add(width);
 
-		lockPanel.add(size);
+        lockPanel.add(size);
 
-		mainPanel = new JPanel(new GridLayout(), false);
+        mainPanel = new JPanel(
+                new GridLayout(),
+                false);
 
-		if (this.locked) {
-			// initially set to locked width/height display
-			mainPanel.add(lockPanel);
-		} else {
-			// initially set to separate width/height calculators
-			mainPanel.add(hwPanel);
-		}
+        if (this.locked)
+            // initially set to locked width/height display
+            mainPanel.add(lockPanel);
+        else
+            // initially set to separate width/height calculators
+            mainPanel.add(hwPanel);
 
-		nodeCalc.setNodeSizeLocked(this.locked);
+        nodeCalc.setNodeSizeLocked(this.locked);
 
-		add(lockBoxPanel, BorderLayout.NORTH);
-		add(mainPanel, BorderLayout.CENTER);
-	}
+        add(lockBoxPanel, BorderLayout.NORTH);
+        add(mainPanel, BorderLayout.CENTER);
+    }
 
-	/**
-	 * LockCalcListener toggles locking on the calculators
-	 */
-	private class LockCalcListener implements ItemListener {
-		// initialize to initial state as defined in cytoscape.props
-		private Calculator widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
-		private Calculator heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
+    /**
+     * LockCalcListener toggles locking on the calculators
+     */
+    private class LockCalcListener
+        implements ItemListener {
+        // initialize to initial state as defined in cytoscape.props
+        private Calculator widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
+        private Calculator heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
 
-		// maintain separate memoization for the locked calculator
-		private Calculator lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
+        // maintain separate memoization for the locked calculator
+        private Calculator lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
 
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-				System.out.println("node size selected");
-				mainPanel.removeAll();
-				mainPanel.add(lockPanel);
-				locked = true;
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                System.out.println("node size selected");
+                mainPanel.removeAll();
+                mainPanel.add(lockPanel);
+                locked = true;
 
-				// set nodeSizeLocked in the NodeAppearanceCalculator
-				nodeCalc.setNodeSizeLocked(true);
+                // set nodeSizeLocked in the NodeAppearanceCalculator
+                nodeCalc.setNodeSizeLocked(true);
 
-				// memoize currently selected calculators
-				// have to clear the current calculators to prevent
-				// conflicts in panels - calculators can only be selected in one
-				// VizMapAttrTab
-				this.widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
-				width.setComboBox(null);
+                // memoize currently selected calculators
+                // have to clear the current calculators to prevent
+                // conflicts in panels - calculators can only be selected in one
+                // VizMapAttrTab
+                this.widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
+                width.setComboBox(null);
 
-				this.heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
-				height.setComboBox(null);
+                this.heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
+                height.setComboBox(null);
 
-				// set the locked calculator as memoized
-				size.setComboBox(this.lockCalc);
-			} else {
-				System.out.println("node size UNselected");
-				mainPanel.removeAll();
-				mainPanel.add(hwPanel);
-				locked = false;
+                // set the locked calculator as memoized
+                size.setComboBox(this.lockCalc);
+            } else {
+                System.out.println("node size UNselected");
+                mainPanel.removeAll();
+                mainPanel.add(hwPanel);
+                locked = false;
 
-				// set nodeSizeLocked in the NodeAppearanceCalculator
-				nodeCalc.setNodeSizeLocked(false);
+                // set nodeSizeLocked in the NodeAppearanceCalculator
+                nodeCalc.setNodeSizeLocked(false);
 
-				// memoize currently selected calculator
-				this.lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
-				size.setComboBox(null);
+                // memoize currently selected calculator
+                this.lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
+                size.setComboBox(null);
 
-				// reset back to old calculators
-				height.setComboBox(this.heightCalc);
-				width.setComboBox(this.widthCalc);
-			}
+                // reset back to old calculators
+                height.setComboBox(this.heightCalc);
+                width.setComboBox(this.widthCalc);
+            }
 
-			// redraw the panel
-			validate();
-			repaint();
+            // redraw the panel
+            validate();
+            repaint();
 
-			// resize the window is required
-			mainUIDialog.pack();
-			mainUIDialog.repaint();
-		}
-	}
+            // resize the window is required
+            mainUIDialog.pack();
+            mainUIDialog.repaint();
+        }
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void refreshUI() {
-		this.height.refreshUI();
-		this.width.refreshUI();
-		this.size.refreshUI();
-	}
+    /**
+     *  DOCUMENT ME!
+     */
+    public void refreshUI() {
+        this.height.refreshUI();
+        this.width.refreshUI();
+        this.size.refreshUI();
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void visualStyleChanged() {
-		//must grab the new node appearance calculator
-		this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
-		this.height.visualStyleChanged();
-		this.width.visualStyleChanged();
-		this.size.visualStyleChanged();
-		//must update the locked status and the lock box selection
-		this.locked = nodeCalc.getNodeSizeLocked();
+    /**
+     *  DOCUMENT ME!
+     */
+    public void visualStyleChanged() {
+        //must grab the new node appearance calculator
+        this.nodeCalc = VMM.getVisualStyle()
+                           .getNodeAppearanceCalculator();
+        this.height.visualStyleChanged();
+        this.width.visualStyleChanged();
+        this.size.visualStyleChanged();
+        //must update the locked status and the lock box selection
+        this.locked = nodeCalc.getNodeSizeLocked();
 
-		if (this.lockBox.isSelected() != this.locked) {
-			lockBox.setSelected(locked);
-		}
-	}
+        if (this.lockBox.isSelected() != this.locked)
+            lockBox.setSelected(locked);
+    }
 
-	VizMapTab checkCalcSelected(Calculator c) {
-		if (this.locked) { // pass on to size
+    VizMapTab checkCalcSelected(Calculator c) {
+        if (this.locked)
+            return size.checkCalcSelected(c);
+        else { // pass on to height and width
+               /* Either height or width has the calculator. Return the first non-null
+            response.
+            */
 
-			return size.checkCalcSelected(c);
-		} else { // pass on to height and width
-			     /* Either height or width has the calculator. Return the first non-null
-			response.
-			*/
+            VizMapTab ret = height.checkCalcSelected(c);
 
-			VizMapTab ret = height.checkCalcSelected(c);
+            if (ret == null)
+                return width.checkCalcSelected(c);
+            else
 
-			if (ret == null)
-				return width.checkCalcSelected(c);
-			else
-
-				return ret;
-		}
-	}
+                return ret;
+        }
+    }
 }

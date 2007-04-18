@@ -47,21 +47,21 @@ import javax.swing.JPopupMenu;
  * EdgeBypassMenuListener implements EdgeContextMenuListener
  * When a node is selected it calls bypass andd add
  */
-class EdgeBypassMenuListener implements EdgeContextMenuListener {
-	EdgeBypassMenuListener() {
-	}
+class EdgeBypassMenuListener
+    implements EdgeContextMenuListener {
+    EdgeBypassMenuListener() {
+    }
 
-	/**
-	 * @param nodeView The clicked EdgeView
-	 * @param menu popup menu to add the Bypass menu
-	 */
-	public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-		EdgeBypass eb = new EdgeBypass();
+    /**
+     * @param nodeView The clicked EdgeView
+     * @param menu popup menu to add the Bypass menu
+     */
+    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+        EdgeBypass eb = new EdgeBypass();
 
-		if (menu == null) {
-			menu = new JPopupMenu();
-		}
+        if (menu == null)
+            menu = new JPopupMenu();
 
-		menu.add(eb.addMenu(edgeView.getEdge()));
-	}
+        menu.add(eb.addMenu(edgeView.getEdge()));
+    }
 }

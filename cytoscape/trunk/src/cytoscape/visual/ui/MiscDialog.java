@@ -44,68 +44,56 @@
 //package cytoscape.dialogs;
 package cytoscape.visual.ui;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LineType;
-import cytoscape.visual.ShapeNodeRealizer;
+import java.util.HashMap;
 
-import java.awt.Color;
-import java.awt.Polygon;
-
-//--------------------------------------------------------------------------------------
-import java.io.*;
-
-import java.net.URL;
-
-import java.util.*;
-
-import javax.swing.*;
+import javax.swing.ImageIcon;
 
 
 /** @deprecated This class has been enhanced and renamed to IconSupport.
     This will be removed 10/2007. */
 public class MiscDialog {
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static HashMap getStringToArrowHashMap(int nodeSize) {
-		return IconSupport.getStringToArrowHashMap(nodeSize);
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static HashMap getStringToArrowHashMap(int nodeSize) {
+        return IconSupport.getStringToArrowHashMap(nodeSize);
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static HashMap getArrowToStringHashMap(int nodeSize) {
-		return IconSupport.getArrowToStringHashMap(nodeSize);
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static HashMap getArrowToStringHashMap(int nodeSize) {
+        return IconSupport.getArrowToStringHashMap(nodeSize);
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public ImageIcon[] getArrowIcons() {
-		return IconSupport.getArrowIcons();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public ImageIcon[] getArrowIcons() {
+        return IconSupport.getArrowIcons();
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static HashMap getStringToShapeByteHashMap() {
-		return IconSupport.getStringToShapeByteHashMap();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static HashMap getStringToShapeByteHashMap() {
+        return IconSupport.getStringToShapeByteHashMap();
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static HashMap getShapeByteToStringHashMap() {
-		return IconSupport.getShapeByteToStringHashMap();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static HashMap getShapeByteToStringHashMap() {
+        return IconSupport.getShapeByteToStringHashMap();
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static ImageIcon[] getShapeIcons() {
-		return IconSupport.getShapeIcons();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static ImageIcon[] getShapeIcons() {
+        return IconSupport.getShapeIcons();
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static HashMap getStringToLineTypeHashMap() {
-		return IconSupport.getStringToLineTypeHashMap();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static HashMap getStringToLineTypeHashMap() {
+        return IconSupport.getStringToLineTypeHashMap();
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static HashMap getLineTypeToStringHashMap() {
-		return IconSupport.getLineTypeToStringHashMap();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static HashMap getLineTypeToStringHashMap() {
+        return IconSupport.getLineTypeToStringHashMap();
+    }
 
-	/** @deprecated Use IconSupport instead. This will be removed 10/2007. */
-	public static ImageIcon[] getLineTypeIcons() {
-		return IconSupport.getLineTypeIcons();
-	}
+    /** @deprecated Use IconSupport instead. This will be removed 10/2007. */
+    public static ImageIcon[] getLineTypeIcons() {
+        return IconSupport.getLineTypeIcons();
+    }
 }

@@ -53,113 +53,120 @@ import javax.swing.border.*;
 /**
  *
  */
-public class PopupLabelPositionChooser extends JDialog implements PropertyChangeListener {
-	protected LabelPosition lp;
-	protected LabelPosition newlp;
+public class PopupLabelPositionChooser extends JDialog
+    implements PropertyChangeListener {
+    protected LabelPosition lp;
+    protected LabelPosition newlp;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param f DOCUMENT ME!
-	 * @param pos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static LabelPosition showDialog(Dialog f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f, true, pos);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param f DOCUMENT ME!
+     * @param pos DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static LabelPosition showDialog(Dialog f, LabelPosition pos) {
+        PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,
+                true, pos);
 
-		return placer.getLabelPosition();
-	}
+        return placer.getLabelPosition();
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param f DOCUMENT ME!
-	 * @param pos DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static LabelPosition showDialog(Frame f, LabelPosition pos) {
-		PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f, true, pos);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param f DOCUMENT ME!
+     * @param pos DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static LabelPosition showDialog(Frame f, LabelPosition pos) {
+        PopupLabelPositionChooser placer = new PopupLabelPositionChooser(f,
+                true, pos);
 
-		return placer.getLabelPosition();
-	}
+        return placer.getLabelPosition();
+    }
 
-	private PopupLabelPositionChooser(Frame f, boolean modal, LabelPosition pos) {
-		super(f, modal);
-		init(pos);
-	}
+    private PopupLabelPositionChooser(Frame f, boolean modal, LabelPosition pos) {
+        super(f, modal);
+        init(pos);
+    }
 
-	private PopupLabelPositionChooser(Dialog f, boolean modal, LabelPosition pos) {
-		super(f, modal);
-		init(pos);
-	}
+    private PopupLabelPositionChooser(Dialog f, boolean modal, LabelPosition pos) {
+        super(f, modal);
+        init(pos);
+    }
 
-	private void init(LabelPosition pos) {
-		if (pos == null)
-			lp = new LabelPosition(Label.NONE, Label.NONE, Label.JUSTIFY_CENTER, 0.0, 0.0);
-		else
-			lp = pos;
+    private void init(LabelPosition pos) {
+        if (pos == null)
+            lp = new LabelPosition(Label.NONE, Label.NONE,
+                    Label.JUSTIFY_CENTER, 0.0, 0.0);
+        else
+            lp = pos;
 
-		newlp = new LabelPosition(lp);
+        newlp = new LabelPosition(lp);
 
-		setTitle("Select Label Placement");
+        setTitle("Select Label Placement");
 
-		JPanel placer = new JPanel();
-		placer.setLayout(new BoxLayout(placer, BoxLayout.Y_AXIS));
-		placer.setOpaque(true); //content panes must be opaque
+        JPanel placer = new JPanel();
+        placer.setLayout(new BoxLayout(placer, BoxLayout.Y_AXIS));
+        placer.setOpaque(true); //content panes must be opaque
 
-		//Set up and connect the gui components.
-		LabelPlacerGraphic graphic = new LabelPlacerGraphic(new LabelPosition(lp));
-		LabelPlacerControl control = new LabelPlacerControl(new LabelPosition(lp));
+        //Set up and connect the gui components.
+        LabelPlacerGraphic graphic = new LabelPlacerGraphic(new LabelPosition(
+                    lp));
+        LabelPlacerControl control = new LabelPlacerControl(new LabelPosition(
+                    lp));
 
-		control.addPropertyChangeListener(graphic);
-		control.addPropertyChangeListener(this);
+        control.addPropertyChangeListener(graphic);
+        control.addPropertyChangeListener(this);
 
-		graphic.addPropertyChangeListener(control);
-		graphic.addPropertyChangeListener(this);
+        graphic.addPropertyChangeListener(control);
+        graphic.addPropertyChangeListener(this);
 
-		placer.add(graphic);
-		placer.add(control);
+        placer.add(graphic);
+        placer.add(control);
 
-		JPanel buttonPanel = new JPanel();
-		final JButton ok = new JButton("OK");
-		ok.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					lp = newlp;
-					dispose();
-				}
-			});
-		ok.addActionListener(control);
+        JPanel buttonPanel = new JPanel();
+        final JButton ok = new JButton("OK");
+        ok.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    lp = newlp;
+                    dispose();
+                }
+            });
+        ok.addActionListener(control);
 
-		final JButton cancel = new JButton("Cancel");
-		cancel.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-				}
-			});
+        final JButton cancel = new JButton("Cancel");
+        cancel.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
+            });
 
-		buttonPanel.add(ok);
-		buttonPanel.add(cancel);
-		placer.add(buttonPanel);
-		add(placer);
+        buttonPanel.add(ok);
+        buttonPanel.add(cancel);
+        placer.add(buttonPanel);
+        add(placer);
 
-		pack();
-		setVisible(true);
-	}
+        pack();
+        setVisible(true);
+    }
 
-	private LabelPosition getLabelPosition() {
-		return lp;
-	}
+    private LabelPosition getLabelPosition() {
+        return lp;
+    }
 
-	/**
-	 * Handles all property changes that the panel listens for.
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		String type = e.getPropertyName();
+    /**
+     * Handles all property changes that the panel listens for.
+     */
+    public void propertyChange(PropertyChangeEvent e) {
+        String type = e.getPropertyName();
 
-		if (type.equals("LABEL_POSITION_CHANGED")) {
-			newlp = (LabelPosition) e.getNewValue();
-		}
-	}
+        if (type.equals("LABEL_POSITION_CHANGED"))
+            newlp = (LabelPosition) e.getNewValue();
+    }
 }

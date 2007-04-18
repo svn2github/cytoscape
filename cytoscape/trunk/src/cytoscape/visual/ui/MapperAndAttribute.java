@@ -53,23 +53,23 @@ import cytoscape.util.MutableString;
  *
  */
 public class MapperAndAttribute {
-	Object mapper;
-	MutableString attribute;
+    Object mapper;
+    MutableString attribute;
 
-	/**
-	 * Creates a new MapperAndAttribute object.
-	 */
-	public MapperAndAttribute() {
-	}
+    /**
+     * Creates a new MapperAndAttribute object.
+     */
+    public MapperAndAttribute() {
+    }
 
-	/**
-	 * Creates a new MapperAndAttribute object.
-	 *
-	 * @param newMapper  DOCUMENT ME!
-	 * @param newAttribute  DOCUMENT ME!
-	 */
-	public MapperAndAttribute(Object newMapper, MutableString newAttribute) {
-		this.mapper = newMapper;
-		this.attribute = newAttribute;
-	}
+    /**
+     * Creates a new MapperAndAttribute object.
+     *
+     * @param newMapper  DOCUMENT ME!
+     * @param newAttribute  DOCUMENT ME!
+     */
+    public MapperAndAttribute(Object newMapper, MutableString newAttribute) {
+        this.mapper = newMapper;
+        this.attribute = newAttribute;
+    }
 }

@@ -64,78 +64,80 @@ import javax.swing.event.*;
  * these closely related attributes.
  */
 public class VizMapFontTab extends VizMapTab {
-	private VizMapAttrTab faceTab;
-	private VizMapAttrTab sizeTab;
+    private VizMapAttrTab faceTab;
+    private VizMapAttrTab sizeTab;
 
-	/**
-	 *    create a new tab for font face and size. Retrieve current
-	 *    calculator and default settings from the VMM.
-	 *
-	 *    @param    VMM    VisualMappingManager for the window
-	 *  @param    tabContainer    The containing JTabbedPane
-	 *  @param    tabIndex    index of this tab in tabContainer
-	 *    @param    n    Underlying network
-	 *    @param    type    Must be {@link VizMapUI#NODE_LABEL_FONT} or
-	 *                  {@link VizMapUI#EDGE_LABEL_FONT}
-	 *
-	 *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_LABEL_FONT} or {@link VizMapUI#EDGE_LABEL_FONT}
-	 */
-	public VizMapFontTab(VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex,
-	                     VisualMappingManager VMM, byte type) throws IllegalArgumentException {
-		super(false);
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    /**
+     *    create a new tab for font face and size. Retrieve current
+     *    calculator and default settings from the VMM.
+     *
+     *    @param    VMM    VisualMappingManager for the window
+     *  @param    tabContainer    The containing JTabbedPane
+     *  @param    tabIndex    index of this tab in tabContainer
+     *    @param    n    Underlying network
+     *    @param    type    Must be {@link VizMapUI#NODE_LABEL_FONT} or
+     *                  {@link VizMapUI#EDGE_LABEL_FONT}
+     *
+     *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_LABEL_FONT} or {@link VizMapUI#EDGE_LABEL_FONT}
+     */
+    public VizMapFontTab(VizMapUI mainUI, JTabbedPane tabContainer,
+        int tabIndex, VisualMappingManager VMM, byte type)
+        throws IllegalArgumentException {
+        super(false);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		//set the name of this component appropriately
-		switch (type) {
-			case VizMapUI.NODE_LABEL_FONT:
-				setName("Node Font");
-				this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-				                                 VizMapUI.NODE_FONT_FACE);
-				this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-				                                 VizMapUI.NODE_FONT_SIZE);
+        //set the name of this component appropriately
+        switch (type) {
+        case VizMapUI.NODE_LABEL_FONT:
+            setName("Node Font");
+            this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
+                    VMM, VizMapUI.NODE_FONT_FACE);
+            this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
+                    VMM, VizMapUI.NODE_FONT_SIZE);
 
-				break;
+            break;
 
-			case VizMapUI.EDGE_LABEL_FONT:
-				setName("Edge Font");
-				this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-				                                 VizMapUI.EDGE_FONT_FACE);
-				this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-				                                 VizMapUI.EDGE_FONT_SIZE);
+        case VizMapUI.EDGE_LABEL_FONT:
+            setName("Edge Font");
+            this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
+                    VMM, VizMapUI.EDGE_FONT_FACE);
+            this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
+                    VMM, VizMapUI.EDGE_FONT_SIZE);
 
-				break;
+            break;
 
-			default:
-				throw new IllegalArgumentException("You can only create a VizMapFontTab for the Node/Edge Font attribute, called with "
-				                                   + type);
-		}
+        default:
+            throw new IllegalArgumentException(
+                "You can only create a VizMapFontTab for the Node/Edge Font attribute, called with " +
+                type);
+        }
 
-		this.faceTab.setBorder(BorderFactory.createTitledBorder("Font Face"));
-		this.sizeTab.setBorder(BorderFactory.createTitledBorder("Font Size"));
+        this.faceTab.setBorder(BorderFactory.createTitledBorder("Font Face"));
+        this.sizeTab.setBorder(BorderFactory.createTitledBorder("Font Size"));
 
-		this.add(this.faceTab);
-		this.add(this.sizeTab);
-	}
+        this.add(this.faceTab);
+        this.add(this.sizeTab);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void refreshUI() {
-		this.faceTab.refreshUI();
-		this.sizeTab.refreshUI();
-		validate();
-	}
+    /**
+     *  DOCUMENT ME!
+     */
+    public void refreshUI() {
+        this.faceTab.refreshUI();
+        this.sizeTab.refreshUI();
+        validate();
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void visualStyleChanged() {
-		this.faceTab.visualStyleChanged();
-		this.sizeTab.visualStyleChanged();
-	}
+    /**
+     *  DOCUMENT ME!
+     */
+    public void visualStyleChanged() {
+        this.faceTab.visualStyleChanged();
+        this.sizeTab.visualStyleChanged();
+    }
 
-	VizMapTab checkCalcSelected(Calculator c) {
-		// calculators not shared, just return null
-		return null;
-	}
+    VizMapTab checkCalcSelected(Calculator c) {
+        // calculators not shared, just return null
+        return null;
+    }
 }

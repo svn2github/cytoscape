@@ -47,21 +47,21 @@ import javax.swing.JPopupMenu;
  * NodeBypassMenuListener implements NodeContextMenuListener
  * When a node is selected it calls bypass andd add
  */
-class NodeBypassMenuListener implements NodeContextMenuListener {
-	NodeBypassMenuListener() {
-	}
+class NodeBypassMenuListener
+    implements NodeContextMenuListener {
+    NodeBypassMenuListener() {
+    }
 
-	/**
-	 * @param nodeView The clicked NodeView
-	 * @param menu popup menu to add the Bypass menu
-	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		NodeBypass nb = new NodeBypass();
+    /**
+     * @param nodeView The clicked NodeView
+     * @param menu popup menu to add the Bypass menu
+     */
+    public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+        NodeBypass nb = new NodeBypass();
 
-		if (menu == null) {
-			menu = new JPopupMenu();
-		}
+        if (menu == null)
+            menu = new JPopupMenu();
 
-		menu.add(nb.addMenu(nodeView.getNode()));
-	}
+        menu.add(nb.addMenu(nodeView.getNode()));
+    }
 }
