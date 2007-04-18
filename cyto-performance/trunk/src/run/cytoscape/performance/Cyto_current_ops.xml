@@ -38,7 +38,7 @@
 				windowFinder="CLASS_IS_ACCESSIBLE"
 				windowClass="cytoscape.task.ui.JTask" />
 	</scenario>
-	
+
 	<!-- For Test Slow -->
 	<scenario name="IMPORT_REMOTE_NETWORK_FILE">
 		<Click componentClass="JMenu" label="File" />
@@ -77,7 +77,6 @@
 			</if>
 		</retriever>
 	</scenario>
-
 
 	<scenario name="EXPORT_AS_XGMML_FILE">
 		<Click componentClass="JMenu" label="File" />
@@ -156,7 +155,7 @@
 	<scenario name="SHOW_HIDE_ATTRIBUTE_BROWSER">
 		<Click componentClass="JMenu" label="View" />
 		<Click componentClass="JMenuItem"
-			label="Show/Hide attribute browser" />
+			label="Hide attribute browser" />
 	</scenario>
 
 

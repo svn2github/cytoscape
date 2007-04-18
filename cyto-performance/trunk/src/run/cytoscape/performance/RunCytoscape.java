@@ -104,6 +104,7 @@ public class RunCytoscape extends TestCase {
 
 		robot = new Robot();
 		TestUtility.waitForCalm();
+        System.out.println("Starting RunCytoscape for version: " + CytoscapeVersion.version + " and perf.version = " + System.getProperty("perf.version"));
 
 		// To make sure to load the scenario file.
 		// CytoscapeTestSwing.xml is placed on the same package directory.
@@ -156,6 +157,8 @@ public class RunCytoscape extends TestCase {
 		restoreSessionFromFile();
 		//selectCheck();
 		layoutCheck();
+        filterCheck();
+        zoomInAndOutCheck();
 	}
 
 	/**
@@ -190,6 +193,18 @@ public class RunCytoscape extends TestCase {
 		// LARGE SIF
 		scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", "BINDyeast.sif");
 		player.run(robot, "IMPORT_NETWORK_FILE");
+        
+        // CHECK LOADING OVER NETWORK FOR VERSIONS NEWER THAN 2.3
+        String version = CytoscapeVersion.version;
+        String perfVersion = System.getProperty("perf.version");
+
+        if(!(perfVersion.equalsIgnoreCase("2.3.2") || version.matches("[2.3*]")))
+        {
+            // Remote SBML file
+            scenario.setTestSetting("IMPORT_REMOTE_NETWORK_FILE", "REMOTE_NETWORK_FILE",
+                                    "http://www.reactome.org/cgi-bin/sbml_export?DB=gk_current&ID=73894");
+            player.run(robot, "IMPORT_REMOTE_NETWORK_FILE");            
+        }
 
 		System.out.println("loadNetworks stop");
 	}
@@ -302,6 +317,80 @@ public class RunCytoscape extends TestCase {
 */
 		System.out.println("export network and attributes stop");
 	}
+    
+    /**
+     * Tests filter plugin facilities
+     *
+     * @param player
+     * @throws ExecuteException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalStateException 
+     */
+    private void filterCheck() throws IllegalStateException, IllegalArgumentException, ExecuteException {
+        System.out.println("filterNetworks start");
+        String fileName = "RUAL.subset.sif";        
+        // load network
+        scenario.setTestSetting("IMPORT_NETWORK_FILE", "IMPORT_DIR", "testData");
+        scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", fileName);
+        player.run(robot, "IMPORT_NETWORK_FILE");
+        // test first filter
+        scenario.setTestSetting("TEST_FILTER_1", "FILE_NAME", fileName);
+        scenario.setTestSetting("TEST_FILTER_1", "FILTER_ATT_NAME", fileName);
+        scenario.setTestSetting("TEST_FILTER_1", "FILTER_ATT_VAL", fileName);
+        player.run(robot, "TEST_FILTER_1");        
+        System.out.println("filterNetworks stop");
+    }
+
+    /**
+     * Tests zooming, panning, fit to screen
+     *
+     * @param player
+     * @throws ExecuteException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
+    private void zoomInAndOutCheck()
+        throws IllegalStateException, IllegalArgumentException, ExecuteException {
+        System.out.println("zoomInAndOut start");
+        String fileName = "RUAL.subset.sif";        
+        // load network
+        scenario.setTestSetting("IMPORT_NETWORK_FILE", "IMPORT_DIR", "testData");
+        scenario.setTestSetting("IMPORT_NETWORK_FILE", "FILE_TO_IMPORT", fileName);
+        player.run(robot, "IMPORT_NETWORK_FILE");
+                
+        // zoomout=2 zoomin=3 focusselected=4 showall=5
+        // click showall
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "FILE_NAME", fileName);
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "BUTTON_NUMBER", "5");
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "NR_OF_CLICKS", "1");
+        player.run(robot, "ZOOM_IN_AND_OUT");        
+        // click zoom in 5 times
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "FILE_NAME", fileName);
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "BUTTON_NUMBER", "3");
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "NR_OF_CLICKS", "5");
+        player.run(robot, "ZOOM_IN_AND_OUT");
+        // TODO: check # of visible nodes smaller (getZoom doesnt really test this....)
+        // click zoom out 5 times
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "FILE_NAME", fileName);
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "BUTTON_NUMBER", "2");
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "NR_OF_CLICKS", "5");
+        player.run(robot, "ZOOM_IN_AND_OUT");        
+        // select nodes and click show selected
+        scenario.setTestSetting("SELECT_NODE_BY_NAME","NODE_NAME", "573"); player.run(robot, "SELECT_NODE_BY_NAME");
+        // select first neighbors 
+        player.run(robot, "SELECT_FIRST_NEIGHBORS");        
+        // click focusselected
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "FILE_NAME", fileName);
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "BUTTON_NUMBER", "4");
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "NR_OF_CLICKS", "1");
+        player.run(robot, "ZOOM_IN_AND_OUT");                
+        // click show all
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "FILE_NAME", fileName);
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "BUTTON_NUMBER", "5");
+        scenario.setTestSetting("ZOOM_IN_AND_OUT", "NR_OF_CLICKS", "1");
+        player.run(robot, "ZOOM_IN_AND_OUT");        
+        System.out.println("zoomInAndOut stop");
+    }
 
 	/**
 	 * This test exercises the functionality of the Select menu.
@@ -486,20 +575,27 @@ public class RunCytoscape extends TestCase {
 
 	private URL getOps() {
 		String version = CytoscapeVersion.version;
+        String perfVersion = System.getProperty("perf.version");
 
 		URL ret;
 
-		if ( version.matches( "2.3" ) ) {
+        // temp workaround; version in trunk is 2.4.0....
+        if ("current".equalsIgnoreCase(perfVersion))
+        {
+            ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_current_ops.xml");
+            System.out.println("got:  " + version + "; current from svn will be run" );            
+        }
+        else if ("2.3.2".equalsIgnoreCase(perfVersion) || version.matches( "2.3" ) ) {
 			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.3_ops.xml");
 			System.out.println("got 2.3:  " + version);
 
-		} else if ( version.matches( "2.4" ) ) {
-			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.4_ops.xml");
-			System.out.println("got 2.4:  " + version);
+        } else if ("2.4.0".equalsIgnoreCase(perfVersion) || version.matches( "2.4" ) ) {
+            ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.4_ops.xml");
+            System.out.println("got 2.4:  " + version);
 
-		} else {
-			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_2.4_ops.xml");
-			System.out.println("got nothing:  " + version);
+		} else {// current from svn
+			ret = ClassLoader.getSystemResource("cytoscape/performance/Cyto_current_ops.xml");
+			System.out.println("got:  " + version + "; current from svn will be run" );
 		}
 		return ret;
 	}
