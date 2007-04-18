@@ -50,64 +50,66 @@ import cytoscape.visual.mappings.BoundaryRangeValues;
  * and associated BoundaryRangeValues.
  *
  */
-public class ContinuousMappingPoint implements Cloneable {
-	private double value;
-	private BoundaryRangeValues range;
+public class ContinuousMappingPoint
+    implements Cloneable {
+    private double value;
+    private BoundaryRangeValues range;
 
-	/**
-	 * Constructor.
-	 * @param value double.
-	 * @param range BoundaryRangeValues object.
-	 */
-	public ContinuousMappingPoint(double value, BoundaryRangeValues range) {
-		this.value = value;
-		this.range = range;
-	}
+    /**
+     * Constructor.
+     * @param value double.
+     * @param range BoundaryRangeValues object.
+     */
+    public ContinuousMappingPoint(double value, BoundaryRangeValues range) {
+        this.value = value;
+        this.range = range;
+    }
 
-	/**
-	 * Gets Point Value.
-	 * @return double value.
-	 */
-	public double getValue() {
-		return value;
-	}
+    /**
+     * Gets Point Value.
+     * @return double value.
+     */
+    public double getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets Point Value.
-	 * @param value double value.
-	 */
-	public void setValue(double value) {
-		this.value = value;
-	}
+    /**
+     * Sets Point Value.
+     * @param value double value.
+     */
+    public void setValue(double value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets BoundaryRangeValues.
-	 * @return BoundaryRangeValues Object.
-	 */
-	public BoundaryRangeValues getRange() {
-		return range;
-	}
+    /**
+     * Gets BoundaryRangeValues.
+     * @return BoundaryRangeValues Object.
+     */
+    public BoundaryRangeValues getRange() {
+        return range;
+    }
 
-	/**
-	 * Sets BoundaryRangeValues.
-	 * @param range BoundaryRangeValues Object.
-	 */
-	public void setRange(BoundaryRangeValues range) {
-		this.range = range;
-	}
+    /**
+     * Sets BoundaryRangeValues.
+     * @param range BoundaryRangeValues Object.
+     */
+    public void setRange(BoundaryRangeValues range) {
+        this.range = range;
+    }
 
-	/**
-	 * Clones the object.
-	 * @return Cloned Object.
-	 */
-	public Object clone() {
-		BoundaryRangeValues newRange = new BoundaryRangeValues();
-		newRange.lesserValue = range.lesserValue;
-		newRange.equalValue = range.equalValue;
-		newRange.greaterValue = range.greaterValue;
+    /**
+     * Clones the object.
+     * @return Cloned Object.
+     */
+    public Object clone() {
+        BoundaryRangeValues newRange = new BoundaryRangeValues();
+        newRange.lesserValue = range.lesserValue;
+        newRange.equalValue = range.equalValue;
+        newRange.greaterValue = range.greaterValue;
 
-		ContinuousMappingPoint newPoint = new ContinuousMappingPoint(value, newRange);
+        ContinuousMappingPoint newPoint = new ContinuousMappingPoint(value,
+                newRange);
 
-		return newPoint;
-	}
+        return newPoint;
+    }
 }

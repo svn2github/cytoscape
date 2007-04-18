@@ -63,35 +63,40 @@ import javax.swing.table.TableColumn;
  *
  */
 public class DiscreteLegend extends JPanel {
-	/**
-	 * Creates a new DiscreteLegend object.
-	 *
-	 * @param legendMap  DOCUMENT ME!
-	 * @param visualAttr  DOCUMENT ME!
-	 * @param dataAttr  DOCUMENT ME!
-	 * @param b  DOCUMENT ME!
-	 */
-	public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
-		super();
+    /**
+     * Creates a new DiscreteLegend object.
+     *
+     * @param legendMap  DOCUMENT ME!
+     * @param visualAttr  DOCUMENT ME!
+     * @param dataAttr  DOCUMENT ME!
+     * @param b  DOCUMENT ME!
+     */
+    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr,
+        byte b) {
+        super();
 
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBackground(Color.white);
-		setAlignmentX(0);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(Color.white);
+        setAlignmentX(0);
 
-		JLabel title = new JLabel(visualAttr + " is discretely mapped to " + dataAttr);
-		add(title);
+        JLabel title = new JLabel(visualAttr + " is discretely mapped to " +
+                dataAttr);
+        add(title);
 
-		Object[][] data = new Object[legendMap.keySet().size()][2];
+        Object[][] data = new Object[legendMap.keySet()
+                                              .size()][2];
 
-		Iterator it = legendMap.keySet().iterator();
+        Iterator it = legendMap.keySet()
+                               .iterator();
 
-		for (int i = 0; i < legendMap.keySet().size(); i++) {
-			Object key = it.next();
-			data[i][0] = legendMap.get(key);
-			data[i][1] = key;
-		}
+        for (int i = 0; i < legendMap.keySet()
+                                         .size(); i++) {
+            Object key = it.next();
+            data[i][0] = legendMap.get(key);
+            data[i][1] = key;
+        }
 
-		add(LegendTable.getHeader());
-		add(new LegendTable(data, b));
-	}
+        add(LegendTable.getHeader());
+        add(new LegendTable(data, b));
+    }
 }

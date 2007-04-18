@@ -51,50 +51,50 @@ package cytoscape.visual.mappings;
  * boundary of the domain. Note that no check is made whether the supplied
  * domainValue is actually within the boundaries.
  */
-public class FlatInterpolator implements Interpolator {
-	/**
-	 *
-	 */
-	public static final Integer LOWER = new Integer(0);
+public class FlatInterpolator
+    implements Interpolator {
+    /**
+     *
+     */
+    public static final Integer LOWER = new Integer(0);
 
-	/**
-	 *
-	 */
-	public static final Integer UPPER = new Integer(1);
-	private boolean useLower;
+    /**
+     *
+     */
+    public static final Integer UPPER = new Integer(1);
+    private boolean useLower;
 
-	/**
-	 * The default FlatInterpolator returns the range value at the lower boundary.
-	 */
-	public FlatInterpolator() {
-		useLower = true;
-	}
+    /**
+     * The default FlatInterpolator returns the range value at the lower boundary.
+     */
+    public FlatInterpolator() {
+        useLower = true;
+    }
 
-	/**
-	 * Constructs a FlatInterpolator which returns the range value at the lower
-	 * boundary unless the argument 'mode' is equal to FlatInterpolator.UPPER.
-	 */
-	public FlatInterpolator(Integer mode) {
-		if (mode.equals(this.UPPER)) {
-			useLower = false;
-		} else {
-			useLower = true;
-		}
-	}
+    /**
+     * Constructs a FlatInterpolator which returns the range value at the lower
+     * boundary unless the argument 'mode' is equal to FlatInterpolator.UPPER.
+     */
+    public FlatInterpolator(Integer mode) {
+        if (mode.equals(this.UPPER))
+            useLower = false;
+        else
+            useLower = true;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param lowerDomain DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperDomain DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 * @param domainValue DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
-	                            Object upperRange, Object domainValue) {
-		return ((useLower) ? lowerRange : upperRange);
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param lowerDomain DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperDomain DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     * @param domainValue DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object getRangeValue(Object lowerDomain, Object lowerRange,
+        Object upperDomain, Object upperRange, Object domainValue) {
+        return ((useLower) ? lowerRange : upperRange);
+    }
 }

@@ -48,20 +48,28 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 
 import cytoscape.visual.ui.ValueDisplayer;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -69,251 +77,261 @@ import javax.swing.event.ChangeListener;
 /**
  * Provides User Interface Controls for Discrete Mappers.
  */
-public class DiscreteUI extends JPanel implements ChangeListener {
-	private final static String USER_MSG = "Define Discrete Mapping";
-	private JDialog parentDialog;
-	private CyNetwork network;
-	private String attrName;
-	private TreeSet mappedKeys;
-	private DiscreteMapping dm;
-	private Object defaultObject;
-	private byte mapType;
-	private JPanel buttonPanel;
-	private JScrollPane listScrollPane;
-	private HashMap buttonPositions;
+public class DiscreteUI extends JPanel
+    implements ChangeListener {
+    private final static String USER_MSG = "Define Discrete Mapping";
+    private JDialog parentDialog;
+    private CyNetwork network;
+    private String attrName;
+    private TreeSet mappedKeys;
+    private DiscreteMapping dm;
+    private Object defaultObject;
+    private byte mapType;
+    private JPanel buttonPanel;
+    private JScrollPane listScrollPane;
+    private HashMap buttonPositions;
 
-	/**
-	 * Constructor.
-	 * @param parentDialog Parent Dialog Object.
-	 * @param network CyNetwork Object.
-	 * @param attrName Controlling Attribute Name.
-	 * @param defaultObject Default Value Object.
-	 * @param mapType Map Type byte.
-	 * @param dm DiscreteMapping object.
-	 */
-	public DiscreteUI(JDialog parentDialog, CyNetwork network, String attrName,
-	                  Object defaultObject, byte mapType, DiscreteMapping dm) {
-		this.parentDialog = parentDialog;
-		this.network = network;
-		this.mappedKeys = new TreeSet();
-		this.attrName = attrName;
-		this.defaultObject = defaultObject;
-		this.mapType = mapType;
-		this.dm = dm;
-		this.buttonPositions = new HashMap();
-		dm.addChangeListener(this);
-		loadKeys(network);
-		initUI();
-	}
+    /**
+     * Constructor.
+     * @param parentDialog Parent Dialog Object.
+     * @param network CyNetwork Object.
+     * @param attrName Controlling Attribute Name.
+     * @param defaultObject Default Value Object.
+     * @param mapType Map Type byte.
+     * @param dm DiscreteMapping object.
+     */
+    public DiscreteUI(JDialog parentDialog, CyNetwork network, String attrName,
+        Object defaultObject, byte mapType, DiscreteMapping dm) {
+        this.parentDialog = parentDialog;
+        this.network = network;
+        this.mappedKeys = new TreeSet();
+        this.attrName = attrName;
+        this.defaultObject = defaultObject;
+        this.mapType = mapType;
+        this.dm = dm;
+        this.buttonPositions = new HashMap();
+        dm.addChangeListener(this);
+        loadKeys(network);
+        initUI();
+    }
 
-	/**
-	 * Initializes the DiscreteMapping UI.
-	 */
-	private void initUI() {
-		this.setLayout(new BorderLayout());
+    /**
+     * Initializes the DiscreteMapping UI.
+     */
+    private void initUI() {
+        this.setLayout(new BorderLayout());
 
-		// check that there is a valid attribute set
-		if (this.attrName == null) {
-			JLabel label = new JLabel("Attribute is not set.");
-			label.setHorizontalAlignment(JLabel.CENTER);
-			this.add(label, BorderLayout.CENTER);
+        // check that there is a valid attribute set
+        if (this.attrName == null) {
+            JLabel label = new JLabel("Attribute is not set.");
+            label.setHorizontalAlignment(JLabel.CENTER);
+            this.add(label, BorderLayout.CENTER);
 
-			return;
-		}
+            return;
+        }
 
-		if ((this.mappedKeys == null) || (this.mappedKeys.size() == 0)) {
-			JLabel label = new JLabel("Mapping for this attribute is not supported.");
-			label.setHorizontalAlignment(JLabel.CENTER);
-			this.add(label, BorderLayout.CENTER);
+        if ((this.mappedKeys == null) || (this.mappedKeys.size() == 0)) {
+            JLabel label = new JLabel(
+                    "Mapping for this attribute is not supported.");
+            label.setHorizontalAlignment(JLabel.CENTER);
+            this.add(label, BorderLayout.CENTER);
 
-			return;
-		}
+            return;
+        }
 
-		int numKeys = this.mappedKeys.size();
-		buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(numKeys, 2));
+        int numKeys = this.mappedKeys.size();
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(numKeys, 2));
 
-		Iterator iterator = mappedKeys.iterator();
-		int index = 0;
+        Iterator iterator = mappedKeys.iterator();
+        int index = 0;
 
-		while (iterator.hasNext()) {
-			Object keyObject = iterator.next();
-			Object currentMapping = dm.getMapValue(keyObject);
-			JButton mapButton = new JButton(keyObject.toString());
-			ValueDisplayer valueDisplayer = getMapValue(currentMapping);
-			buttonPanel.add(mapButton, index);
-			buttonPanel.add(valueDisplayer, ++index);
-			valueDisplayer.addItemListener(new ValueChangeListener(dm, keyObject));
-			buttonPositions.put(keyObject, new Integer(index++));
-			mapButton.addActionListener(valueDisplayer.getInputListener());
-		}
+        while (iterator.hasNext()) {
+            Object keyObject = iterator.next();
+            Object currentMapping = dm.getMapValue(keyObject);
+            JButton mapButton = new JButton(keyObject.toString());
+            ValueDisplayer valueDisplayer = getMapValue(currentMapping);
+            buttonPanel.add(mapButton, index);
+            buttonPanel.add(valueDisplayer, ++index);
+            valueDisplayer.addItemListener(
+                new ValueChangeListener(dm, keyObject));
+            buttonPositions.put(
+                keyObject,
+                new Integer(index++));
+            mapButton.addActionListener(valueDisplayer.getInputListener());
+        }
 
-		//  New feature added, at request of Trey Ideker (3/26/2004).
-		if (dm.getRangeClass().getName().equals("java.awt.Color")) {
-			JButton button = new JButton("Seed Mapping with Random Colors");
-			button.addActionListener(new RandomColorListener(dm, mappedKeys));
-			this.add(button, BorderLayout.SOUTH);
-		}
+        //  New feature added, at request of Trey Ideker (3/26/2004).
+        if (dm.getRangeClass()
+                  .getName()
+                  .equals("java.awt.Color")) {
+            JButton button = new JButton("Seed Mapping with Random Colors");
+            button.addActionListener(new RandomColorListener(dm, mappedKeys));
+            this.add(button, BorderLayout.SOUTH);
+        }
 
-		resetScrollPane(buttonPanel);
-	}
+        resetScrollPane(buttonPanel);
+    }
 
-	/**
-	 * Underlying DiscreteMapping State has changed.
-	 * Need to automatically update the UI to reflect this change.
-	 * @param e
-	 */
-	public void stateChanged(ChangeEvent e) {
-		//  Find out what key was modified, and only update this key
-		//  All others remain constant. This is much more efficient than
-		//  modifying all keys.
-		Object lastKey = dm.getLastKeyModified();
+    /**
+     * Underlying DiscreteMapping State has changed.
+     * Need to automatically update the UI to reflect this change.
+     * @param e
+     */
+    public void stateChanged(ChangeEvent e) {
+        //  Find out what key was modified, and only update this key
+        //  All others remain constant. This is much more efficient than
+        //  modifying all keys.
+        Object lastKey = dm.getLastKeyModified();
 
-		if (lastKey != null) {
-			Object value = dm.getMapValue(lastKey);
-			ValueDisplayer newValueDisplayer = ValueDisplayer.getDisplayFor(parentDialog, USER_MSG,
-			                                                                value);
-			Integer pos = (Integer) buttonPositions.get(lastKey);
+        if (lastKey != null) {
+            Object value = dm.getMapValue(lastKey);
+            ValueDisplayer newValueDisplayer = ValueDisplayer.getDisplayFor(parentDialog,
+                    USER_MSG, value);
+            Integer pos = (Integer) buttonPositions.get(lastKey);
 
-			if (pos != null) {
-				swapValueDisplayer(newValueDisplayer, pos.intValue(), lastKey);
-			}
-		}
-	}
+            if (pos != null)
+                swapValueDisplayer(
+                    newValueDisplayer,
+                    pos.intValue(),
+                    lastKey);
+        }
+    }
 
-	/**
-	 * Swaps in a New Value Displayer.
-	 * @param valueDisplayer Value Displayer.
-	 * @param position Position in Panel.
-	 */
-	void swapValueDisplayer(ValueDisplayer valueDisplayer, int position, Object keyObject) {
-		buttonPanel.remove(position);
-		buttonPanel.add(valueDisplayer, position);
+    /**
+     * Swaps in a New Value Displayer.
+     * @param valueDisplayer Value Displayer.
+     * @param position Position in Panel.
+     */
+    void swapValueDisplayer(ValueDisplayer valueDisplayer, int position,
+        Object keyObject) {
+        buttonPanel.remove(position);
 
-		//  Listen for Changes to this new Value Displayer.
-		//  Fixes Bug #270
-		valueDisplayer.addItemListener(new ValueChangeListener(dm, keyObject));
-		this.remove(this.listScrollPane);
-		this.resetScrollPane(buttonPanel);
-	}
+        if (valueDisplayer == null)
+            return;
 
-	/**
-	 * Gets the Map Value.
-	 */
-	private ValueDisplayer getMapValue(Object currentMapping) {
-		ValueDisplayer mapValue;
+        buttonPanel.add(valueDisplayer, position);
 
-		if (currentMapping == null) {
-			// display default selection
-			mapValue = ValueDisplayer.getBlankDisplayFor(parentDialog, USER_MSG, defaultObject);
-		} else { // display current mapping
-			mapValue = ValueDisplayer.getDisplayFor(parentDialog, USER_MSG, currentMapping);
-		}
+        //  Listen for Changes to this new Value Displayer.
+        //  Fixes Bug #270
+        valueDisplayer.addItemListener(new ValueChangeListener(dm, keyObject));
+        this.remove(this.listScrollPane);
+        this.resetScrollPane(buttonPanel);
+    }
 
-		return mapValue;
-	}
+    /**
+     * Gets the Map Value.
+     */
+    private ValueDisplayer getMapValue(Object currentMapping) {
+        ValueDisplayer mapValue;
 
-	/**
-	 * This method grabs all the data values for the current controlling
-	 * attribute from the appropriate CyAttributes member of the
-	 * Cytoscape object. Any data value that is not already a key in this
-	 * mapping is added with a null visual attribute value.
-	 */
-	private void loadKeys(CyNetwork network) {
-		if (network == null) {
-			return;
-		}
+        if (currentMapping == null)
+            // display default selection
+            mapValue = ValueDisplayer.getBlankDisplayFor(parentDialog,
+                    USER_MSG, defaultObject);
+        else
+            mapValue = ValueDisplayer.getDisplayFor(parentDialog, USER_MSG,
+                    currentMapping);
 
-		CyAttributes attrs;
+        return mapValue;
+    }
 
-		if (mapType == ObjectMapping.EDGE_MAPPING) {
-			attrs = Cytoscape.getEdgeAttributes();
-		} else {
-			attrs = Cytoscape.getNodeAttributes();
-		}
+    /**
+     * This method grabs all the data values for the current controlling
+     * attribute from the appropriate CyAttributes member of the
+     * Cytoscape object. Any data value that is not already a key in this
+     * mapping is added with a null visual attribute value.
+     */
+    private void loadKeys(CyNetwork network) {
+        if (network == null)
+            return;
 
-		//HashMap mapAttrs = attrs.getAttribute(attrName);
-		Map mapAttrs;
+        CyAttributes attrs;
 
-		if (attrName == null) {
-			mapAttrs = null;
-		} else {
-			mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
-		}
+        if (mapType == ObjectMapping.EDGE_MAPPING)
+            attrs = Cytoscape.getEdgeAttributes();
+        else
+            attrs = Cytoscape.getNodeAttributes();
 
-		if ((mapAttrs == null) || (mapAttrs.size() == 0)) { // no attribute found <sob>
+        //HashMap mapAttrs = attrs.getAttribute(attrName);
+        Map mapAttrs;
 
-			return;
-		}
+        if (attrName == null)
+            mapAttrs = null;
+        else
+            mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
 
-		List acceptedClasses = Arrays.asList(dm.getAcceptedDataClasses());
+        if ((mapAttrs == null) || (mapAttrs.size() == 0))
+            return;
 
-		//Class mapAttrClass = attrs.getClass(attrName);
-		Class mapAttrClass = CyAttributesUtils.getClass(attrName, attrs);
+        List acceptedClasses = Arrays.asList(dm.getAcceptedDataClasses());
 
-		if ((mapAttrClass == null) || !(acceptedClasses.contains(mapAttrClass))) {
-			return;
-		}
+        //Class mapAttrClass = attrs.getClass(attrName);
+        Class mapAttrClass = CyAttributesUtils.getClass(attrName, attrs);
 
-		loadKeySet(mapAttrs);
-	}
+        if ((mapAttrClass == null) ||
+                !(acceptedClasses.contains(mapAttrClass)))
+            return;
 
-	/**
-	 * Loads the Key Set.
-	 */
-	private void loadKeySet(Map mapAttrs) {
-		// get the set of keys being mapped from
-		Iterator keyIter = mapAttrs.values().iterator();
+        loadKeySet(mapAttrs);
+    }
 
-		// add keys to the map, with null mappings
-		while (keyIter.hasNext()) {
-			Object o = keyIter.next();
+    /**
+     * Loads the Key Set.
+     */
+    private void loadKeySet(Map mapAttrs) {
+        // get the set of keys being mapped from
+        Iterator keyIter = mapAttrs.values()
+                                   .iterator();
 
-			// handle vector data (from GO)
-			// add all values from the vector
-			if (o instanceof List) {
-				List list = (List) o;
+        // add keys to the map, with null mappings
+        while (keyIter.hasNext()) {
+            Object o = keyIter.next();
 
-				for (int i = 0; i < list.size(); i++) {
-					Object vo = list.get(i);
+            // handle vector data (from GO)
+            // add all values from the vector
+            if (o instanceof List) {
+                List list = (List) o;
 
-					if (!mappedKeys.contains(vo))
-						mappedKeys.add(vo);
-				}
-			} else {
-				if (!mappedKeys.contains(o)) {
-					mappedKeys.add(o);
-				}
-			}
-		}
-	}
+                for (int i = 0; i < list.size(); i++) {
+                    Object vo = list.get(i);
 
-	/**
-	 * Sets up the Scrollable Pane.
-	 * @param internalPanel Internal Panel.
-	 */
-	private void resetScrollPane(JPanel internalPanel) {
-		listScrollPane = new JScrollPane(internalPanel,
-		                                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		                                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		add(listScrollPane, BorderLayout.CENTER);
+                    if (!mappedKeys.contains(vo))
+                        mappedKeys.add(vo);
+                }
+            } else {
+                if (!mappedKeys.contains(o))
+                    mappedKeys.add(o);
+            }
+        }
+    }
 
-		// set limits on size
-		Dimension d = listScrollPane.getPreferredSize();
-		int prefHeight = (int) d.getHeight();
+    /**
+     * Sets up the Scrollable Pane.
+     * @param internalPanel Internal Panel.
+     */
+    private void resetScrollPane(JPanel internalPanel) {
+        listScrollPane = new JScrollPane(internalPanel,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        add(listScrollPane, BorderLayout.CENTER);
 
-		if (prefHeight > 200) {
-			prefHeight = 200;
-		}
+        // set limits on size
+        Dimension d = listScrollPane.getPreferredSize();
+        int prefHeight = (int) d.getHeight();
 
-		listScrollPane.setPreferredSize(new Dimension((int) d.getWidth() + 10, prefHeight));
+        if (prefHeight > 200)
+            prefHeight = 200;
 
-		// because parentDialog is only passed in at getUI and not
-		// construction time
-		if (parentDialog != null) {
-			parentDialog.pack();
-			parentDialog.validate();
-			parentDialog.repaint();
-		}
-	}
+        listScrollPane.setPreferredSize(
+            new Dimension((int) d.getWidth() + 10, prefHeight));
+
+        // because parentDialog is only passed in at getUI and not
+        // construction time
+        if (parentDialog != null) {
+            parentDialog.pack();
+            parentDialog.validate();
+            parentDialog.repaint();
+        }
+    }
 }

@@ -53,35 +53,34 @@ package cytoscape.visual.mappings;
  * If either object argument is not a Number, null is returned.
  */
 public class LinearNumberToNumberInterpolator extends LinearNumberInterpolator {
-	/**
-	 * Creates a new LinearNumberToNumberInterpolator object.
-	 */
-	public LinearNumberToNumberInterpolator() {
-	}
+    /**
+     * Creates a new LinearNumberToNumberInterpolator object.
+     */
+    public LinearNumberToNumberInterpolator() {
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param frac DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getRangeValue(double frac, Object lowerRange, Object upperRange) {
-		if (!(lowerRange instanceof Number)) {
-			return null;
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param frac DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object getRangeValue(double frac, Object lowerRange,
+        Object upperRange) {
+        if (!(lowerRange instanceof Number))
+            return null;
 
-		if (!(upperRange instanceof Number)) {
-			return null;
-		}
+        if (!(upperRange instanceof Number))
+            return null;
 
-		double lowerVal = ((Number) lowerRange).doubleValue();
-		double upperVal = ((Number) upperRange).doubleValue();
+        double lowerVal = ((Number) lowerRange).doubleValue();
+        double upperVal = ((Number) upperRange).doubleValue();
 
-		double returnVal = (frac * upperVal) + ((1.0 - frac) * lowerVal);
+        double returnVal = (frac * upperVal) + ((1.0 - frac) * lowerVal);
 
-		return new Double(returnVal);
-	}
+        return new Double(returnVal);
+    }
 }

@@ -55,25 +55,28 @@ import javax.swing.*;
 /**
  * Listens to a ValueDisplayer and updates the underlying DiscreteMapping class.
  */
-public class ValueChangeListener implements ItemListener {
-	private Object key;
-	private DiscreteMapping dm;
+public class ValueChangeListener
+    implements ItemListener {
+    private Object key;
+    private DiscreteMapping dm;
 
-	/**
-	 * Constructs a ValueChangeListener.
-	 */
-	public ValueChangeListener(DiscreteMapping dm, Object key) {
-		this.dm = dm;
-		this.key = key;
-	}
+    /**
+     * Constructs a ValueChangeListener.
+     */
+    public ValueChangeListener(DiscreteMapping dm, Object key) {
+        this.dm = dm;
+        this.key = key;
+    }
 
-	/**
-	 *  The ValueDisplayer being reflected by this listener was changed.
-	 *  Make the appropriate changes to the underlying data in the mapper.
-	 */
-	public void itemStateChanged(ItemEvent e) {
-		//  Update Discrete Mapper with new Value
-		ValueDisplayer v = (ValueDisplayer) e.getItemSelectable();
-		dm.putMapValue(key, v.getValue());
-	}
+    /**
+     *  The ValueDisplayer being reflected by this listener was changed.
+     *  Make the appropriate changes to the underlying data in the mapper.
+     */
+    public void itemStateChanged(ItemEvent e) {
+        //  Update Discrete Mapper with new Value
+        ValueDisplayer v = (ValueDisplayer) e.getItemSelectable();
+        dm.putMapValue(
+            key,
+            v.getValue());
+    }
 }

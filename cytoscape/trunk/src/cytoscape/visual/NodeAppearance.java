@@ -1094,14 +1094,14 @@ public class NodeAppearance
                 NODE_LINETYPE.getBypassAttrName(),
                 Line.class));
 
-        final Byte b = (Byte) BypassHelper.getBypass(
+        final NodeShape tempShape = (NodeShape) BypassHelper.getBypass(
                 attrs,
                 id,
                 NODE_SHAPE.getBypassAttrName(),
-                Byte.class);
+                NodeShape.class);
 
-        if (b != null)
-            setNodeShape(ShapeNodeRealizer.getNodeShape(b));
+        if (tempShape != null)
+            setNodeShape(tempShape);
 
         final Double w = (Double) BypassHelper.getBypass(
                 attrs,

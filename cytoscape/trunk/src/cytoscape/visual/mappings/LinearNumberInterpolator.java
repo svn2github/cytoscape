@@ -52,36 +52,36 @@ package cytoscape.visual.mappings;
  * the lower boundary value for the convenience of subclasses.
  */
 abstract public class LinearNumberInterpolator extends NumberInterpolator {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param lowerDomain DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperDomain DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 * @param domainValue DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getRangeValue(double lowerDomain, Object lowerRange, double upperDomain,
-	                            Object upperRange, double domainValue) {
-		if (lowerDomain == upperDomain) {
-			return lowerRange;
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param lowerDomain DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperDomain DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     * @param domainValue DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object getRangeValue(double lowerDomain, Object lowerRange,
+        double upperDomain, Object upperRange, double domainValue) {
+        if (lowerDomain == upperDomain)
+            return lowerRange;
 
-		double frac = (domainValue - lowerDomain) / (upperDomain - lowerDomain);
+        double frac = (domainValue - lowerDomain) / (upperDomain - lowerDomain);
 
-		return getRangeValue(frac, lowerRange, upperRange);
-	}
+        return getRangeValue(frac, lowerRange, upperRange);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param frac DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	abstract public Object getRangeValue(double frac, Object lowerRange, Object upperRange);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param frac DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    abstract public Object getRangeValue(double frac, Object lowerRange,
+        Object upperRange);
 }

@@ -70,77 +70,78 @@ import javax.swing.event.ChangeListener;
  * {@link #NODE_MAPPING}.
  */
 public interface ObjectMapping extends Cloneable {
-	/**
-	 *
-	 */
-	public static final byte EDGE_MAPPING = 0;
+    /**
+     *
+     */
+    public static final byte EDGE_MAPPING = 0;
 
-	/**
-	 *
-	 */
-	public static final byte NODE_MAPPING = 1;
+    /**
+     *
+     */
+    public static final byte NODE_MAPPING = 1;
 
-	Class getRangeClass();
+    Class getRangeClass();
 
-	/**
-	 * Return the classes that the ObjectMapping can map from, eg. the contents
-	 * of the data of the controlling attribute.
-	 * <p>
-	 * For example, DiscreteMapping {@link DiscreteMapping} can only accept
-	 * String types in the mapped attribute data. Likewise, ContinuousMapping
-	 * {@link ContinuousMapping} can only accept numeric types in the mapped
-	 * attribute data since it must interpolate.
-	 * <p>
-	 * Return null if this mapping has no restrictions on the domain type.
-	 *
-	 * @return Array of accepted attribute data class types
-	 */
-	Class[] getAcceptedDataClasses();
+    /**
+     * Return the classes that the ObjectMapping can map from, eg. the contents
+     * of the data of the controlling attribute.
+     * <p>
+     * For example, DiscreteMapping {@link DiscreteMapping} can only accept
+     * String types in the mapped attribute data. Likewise, ContinuousMapping
+     * {@link ContinuousMapping} can only accept numeric types in the mapped
+     * attribute data since it must interpolate.
+     * <p>
+     * Return null if this mapping has no restrictions on the domain type.
+     *
+     * @return Array of accepted attribute data class types
+     */
+    Class[] getAcceptedDataClasses();
 
-	/**
-	 * Set the controlling attribute name. The current mappings will be unchanged
-	 * if preserveMapping is true and cleared otherwise. The network argument is
-	 * provided so that the current values for the given attribute name can
-	 * be loaded for UI purposes. Null values for the network argument are allowed.
-	 */
-	void setControllingAttributeName(String attrName, CyNetwork network, boolean preserveMapping);
+    /**
+     * Set the controlling attribute name. The current mappings will be unchanged
+     * if preserveMapping is true and cleared otherwise. The network argument is
+     * provided so that the current values for the given attribute name can
+     * be loaded for UI purposes. Null values for the network argument are allowed.
+     */
+    void setControllingAttributeName(String attrName, CyNetwork network,
+        boolean preserveMapping);
 
-	/**
-	 * Get the controlling attribute name
-	 */
-	String getControllingAttributeName();
+    /**
+     * Get the controlling attribute name
+     */
+    String getControllingAttributeName();
 
-	/**
-	 * Add a ChangeListener to the mapping. When the state underlying the
-	 * mapping changes, all ChangeListeners will be notified.
-	 *
-	 * This is used in the UI classes to ensure that the UI panes stay consistent
-	 * with the data held in the mappings.
-	 *
-	 * @param    l    ChangeListener to add
-	 */
-	public void addChangeListener(ChangeListener l);
+    /**
+     * Add a ChangeListener to the mapping. When the state underlying the
+     * mapping changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param    l    ChangeListener to add
+     */
+    public void addChangeListener(ChangeListener l);
 
-	/**
-	 * Remove a ChangeListener from the mapping. When the state underlying the
-	 * mapping changes, all ChangeListeners will be notified.
-	 *
-	 * This is used in the UI classes to ensure that the UI panes stay consistent
-	 * with the data held in the mappings.
-	 *
-	 * @param    l    ChangeListener to add
-	 */
-	public void removeChangeListener(ChangeListener l);
+    /**
+     * Remove a ChangeListener from the mapping. When the state underlying the
+     * mapping changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param    l    ChangeListener to add
+     */
+    public void removeChangeListener(ChangeListener l);
 
-	Object calculateRangeValue(Map attrBundle);
+    Object calculateRangeValue(Map attrBundle);
 
-	JPanel getUI(JDialog parent, CyNetwork network);
+    JPanel getUI(JDialog parent, CyNetwork network);
 
-	JPanel getLegend(String s, byte type);
+    JPanel getLegend(String s, byte type);
 
-	Object clone();
+    Object clone();
 
-	void applyProperties(Properties props, String baseKey, ValueParser parser);
+    void applyProperties(Properties props, String baseKey, ValueParser parser);
 
-	Properties getProperties(String baseKey);
+    Properties getProperties(String baseKey);
 }

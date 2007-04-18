@@ -50,41 +50,42 @@ import java.awt.Color;
  * If either object argument is not a Color, null is returned.
  */
 public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
-	/**
-	 * Creates a new LinearNumberToColorInterpolator object.
-	 */
-	public LinearNumberToColorInterpolator() {
-	}
+    /**
+     * Creates a new LinearNumberToColorInterpolator object.
+     */
+    public LinearNumberToColorInterpolator() {
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param frac DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getRangeValue(double frac, Object lowerRange, Object upperRange) {
-		if (!(lowerRange instanceof Color)) {
-			return null;
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param frac DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object getRangeValue(double frac, Object lowerRange,
+        Object upperRange) {
+        if (!(lowerRange instanceof Color))
+            return null;
 
-		if (!(upperRange instanceof Color)) {
-			return null;
-		}
+        if (!(upperRange instanceof Color))
+            return null;
 
-		Color lowerColor = (Color) lowerRange;
-		Color upperColor = (Color) upperRange;
+        Color lowerColor = (Color) lowerRange;
+        Color upperColor = (Color) upperRange;
 
-		double red = lowerColor.getRed() + (frac * (upperColor.getRed() - lowerColor.getRed()));
-		double green = lowerColor.getGreen()
-		               + (frac * (upperColor.getGreen() - lowerColor.getGreen()));
-		double blue = lowerColor.getBlue() + (frac * (upperColor.getBlue() - lowerColor.getBlue()));
-		double alpha = lowerColor.getAlpha()
-		               + (frac * (upperColor.getAlpha() - lowerColor.getAlpha()));
+        double red = lowerColor.getRed() +
+            (frac * (upperColor.getRed() - lowerColor.getRed()));
+        double green = lowerColor.getGreen() +
+            (frac * (upperColor.getGreen() - lowerColor.getGreen()));
+        double blue = lowerColor.getBlue() +
+            (frac * (upperColor.getBlue() - lowerColor.getBlue()));
+        double alpha = lowerColor.getAlpha() +
+            (frac * (upperColor.getAlpha() - lowerColor.getAlpha()));
 
-		return new Color((int) Math.round(red), (int) Math.round(green), (int) Math.round(blue),
-		                 (int) Math.round(alpha));
-	}
+        return new Color((int) Math.round(red), (int) Math.round(green),
+            (int) Math.round(blue), (int) Math.round(alpha));
+    }
 }

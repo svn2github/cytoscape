@@ -56,124 +56,128 @@ import java.util.Properties;
  * Reads in ContinuousMapping Properties.
  */
 public class ContinuousMappingReader {
-	private String controllingAttributeName;
-	private Interpolator interpolator;
-	private ArrayList points;
-	private ValueParser parser;
+    private String controllingAttributeName;
+    private Interpolator interpolator;
+    private ArrayList points;
+    private ValueParser parser;
 
-	/**
-	 * Constructor.
-	 * @param props Properties Object.
-	 * @param baseKey Base Key.
-	 * @param parser Value Parser.
-	 */
-	public ContinuousMappingReader(Properties props, String baseKey, ValueParser parser) {
-		this.parser = parser;
-		points = new ArrayList();
-		parseProperties(props, baseKey);
-	}
+    /**
+     * Constructor.
+     * @param props Properties Object.
+     * @param baseKey Base Key.
+     * @param parser Value Parser.
+     */
+    public ContinuousMappingReader(Properties props, String baseKey,
+        ValueParser parser) {
+        this.parser = parser;
+        points = new ArrayList();
+        parseProperties(props, baseKey);
+    }
 
-	/**
-	 * Gets Controlling Attribute Name.
-	 * @return Controlling Attribute Name.
-	 */
-	public String getControllingAttributeName() {
-		return controllingAttributeName;
-	}
+    /**
+     * Gets Controlling Attribute Name.
+     * @return Controlling Attribute Name.
+     */
+    public String getControllingAttributeName() {
+        return controllingAttributeName;
+    }
 
-	/**
-	 * Gets Interpolator Object.
-	 * @return Interpolator Object.
-	 */
-	public Interpolator getInterpolator() {
-		return interpolator;
-	}
+    /**
+     * Gets Interpolator Object.
+     * @return Interpolator Object.
+     */
+    public Interpolator getInterpolator() {
+        return interpolator;
+    }
 
-	/**
-	 * Gets ArrayList of all Data Points.
-	 * @return ArrayList of ContinuousMappingPoint objects.
-	 */
-	public ArrayList getPoints() {
-		return points;
-	}
+    /**
+     * Gets ArrayList of all Data Points.
+     * @return ArrayList of ContinuousMappingPoint objects.
+     */
+    public ArrayList getPoints() {
+        return points;
+    }
 
-	/**
-	 * Parses all Properties into internal data structures.
-	 */
-	private void parseProperties(Properties props, String baseKey) {
-		//  Get Controller Property
-		String contKey = baseKey + ".controller";
-		String contValue = props.getProperty(contKey);
+    /**
+     * Parses all Properties into internal data structures.
+     */
+    private void parseProperties(Properties props, String baseKey) {
+        //  Get Controller Property
+        String contKey = baseKey + ".controller";
+        String contValue = props.getProperty(contKey);
 
-		if (contValue != null) {
-			this.controllingAttributeName = contValue;
-		}
+        if (contValue != null)
+            this.controllingAttributeName = contValue;
 
-		//  Get Interpolator Property
-		String intKey = baseKey + ".interpolator";
-		String intValue = props.getProperty(intKey);
+        //  Get Interpolator Property
+        String intKey = baseKey + ".interpolator";
+        String intValue = props.getProperty(intKey);
 
-		if (intValue != null) {
-			this.interpolator = InterpolatorFactory.newInterpolator(intValue);
-		}
+        if (intValue != null)
+            this.interpolator = InterpolatorFactory.newInterpolator(intValue);
 
-		//  Get Boundary Value Properties
-		String bvNumKey = baseKey + ".boundaryvalues";
-		String bvNumString = props.getProperty(bvNumKey);
+        //  Get Boundary Value Properties
+        String bvNumKey = baseKey + ".boundaryvalues";
+        String bvNumString = props.getProperty(bvNumKey);
 
-		if (bvNumString != null) {
-			try {
-				int numBV = Integer.parseInt(bvNumString);
-				getBoundaryValues(numBV, baseKey, props);
-			} catch (NumberFormatException e) {
-				System.err.println("Error parsing attributeMap properties:");
-				System.err.println("    Expected number value for key: " + bvNumString);
-			}
-		}
-	}
+        if (bvNumString != null) {
+            try {
+                int numBV = Integer.parseInt(bvNumString);
+                getBoundaryValues(numBV, baseKey, props);
+            } catch (NumberFormatException e) {
+                System.err.println("Error parsing attributeMap properties:");
+                System.err.println("    Expected number value for key: " +
+                    bvNumString);
+            }
+        }
+    }
 
-	/**
-	 * Gets all BoundaryValue Properties.
-	 */
-	private void getBoundaryValues(int numBV, String baseKey, Properties props) {
-		for (int i = 0; i < numBV; i++) {
-			String bvBase = baseKey + ".bv" + Integer.toString(i);
-			String dvKey = bvBase + ".domainvalue";
-			String dvString = props.getProperty(dvKey);
+    /**
+     * Gets all BoundaryValue Properties.
+     */
+    private void getBoundaryValues(int numBV, String baseKey, Properties props) {
+        for (int i = 0; i < numBV; i++) {
+            String bvBase = baseKey + ".bv" + Integer.toString(i);
+            String dvKey = bvBase + ".domainvalue";
+            String dvString = props.getProperty(dvKey);
 
-			if (dvString != null) {
-				try {
-					Double dVal = Double.valueOf(dvString);
-					getLesserEqualGreater(bvBase, props, dVal);
-				} catch (NumberFormatException e) {
-					System.err.println("Error parsing attributeMap properties:");
-					System.err.println("    expected number value for key: " + dvKey);
-				}
-			}
-		}
-	}
+            if (dvString != null) {
+                try {
+                    Double dVal = Double.valueOf(dvString);
+                    getLesserEqualGreater(bvBase, props, dVal);
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing attributeMap properties:");
+                    System.err.println("    expected number value for key: " +
+                        dvKey);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Gets Less/Equals/Greater than BoundaryValues.
-	 */
-	private void getLesserEqualGreater(String bvBase, Properties props, Double dVal) {
-		BoundaryRangeValues bv = new BoundaryRangeValues();
-		String lKey = bvBase + ".lesser";
-		String lString = props.getProperty(lKey);
-		Object lValue = parser.parseStringValue(lString);
-		bv.lesserValue = lValue;
+    /**
+     * Gets Less/Equals/Greater than BoundaryValues.
+     */
+    private void getLesserEqualGreater(String bvBase, Properties props,
+        Double dVal) {
+        BoundaryRangeValues bv = new BoundaryRangeValues();
+        String lKey = bvBase + ".lesser";
+        String lString = props.getProperty(lKey);
+        Object lValue = parser.parseStringValue(lString);
+        bv.lesserValue = lValue;
 
-		String eKey = bvBase + ".equal";
-		String eString = props.getProperty(eKey);
-		Object eValue = parser.parseStringValue(eString);
-		bv.equalValue = eValue;
+        String eKey = bvBase + ".equal";
+        String eString = props.getProperty(eKey);
+        Object eValue = parser.parseStringValue(eString);
+        bv.equalValue = eValue;
 
-		String gKey = bvBase + ".greater";
-		String gString = props.getProperty(gKey);
-		Object gValue = parser.parseStringValue(gString);
-		bv.greaterValue = gValue;
+        String gKey = bvBase + ".greater";
+        String gString = props.getProperty(gKey);
+        Object gValue = parser.parseStringValue(gString);
+        bv.greaterValue = gValue;
 
-		ContinuousMappingPoint cmp = new ContinuousMappingPoint(dVal.doubleValue(), bv);
-		points.add(cmp);
-	}
+        ContinuousMappingPoint cmp = new ContinuousMappingPoint(
+                dVal.doubleValue(),
+                bv);
+        points.add(cmp);
+    }
 }

@@ -58,62 +58,65 @@ import java.util.TreeMap;
  * cytoscape.visual.mappings.discrete.unitTests.TestDiscreteMappingReader.
  */
 public class DiscreteMappingReader {
-	private String controllingAttribute;
-	private TreeMap map = new TreeMap();
+    private String controllingAttribute;
+    private TreeMap map = new TreeMap();
 
-	/**
-	 * Constructor.
-	 * @param props Properties Object.
-	 * @param baseKey Base Property Key.
-	 * @param parser ValueParser Object.
-	 */
-	public DiscreteMappingReader(Properties props, String baseKey, ValueParser parser) {
-		readProperties(props, baseKey, parser);
-	}
+    /**
+     * Constructor.
+     * @param props Properties Object.
+     * @param baseKey Base Property Key.
+     * @param parser ValueParser Object.
+     */
+    public DiscreteMappingReader(Properties props, String baseKey,
+        ValueParser parser) {
+        readProperties(props, baseKey, parser);
+    }
 
-	/**
-	 * Gets Controlling Attribute Name.
-	 * @return Controlling Attribute Name.
-	 */
-	public String getControllingAttributeName() {
-		return controllingAttribute;
-	}
+    /**
+     * Gets Controlling Attribute Name.
+     * @return Controlling Attribute Name.
+     */
+    public String getControllingAttributeName() {
+        return controllingAttribute;
+    }
 
-	/**
-	 * Gets the Discrete Map.
-	 * @return TreeMap Object.
-	 */
-	public TreeMap getMap() {
-		return map;
-	}
+    /**
+     * Gets the Discrete Map.
+     * @return TreeMap Object.
+     */
+    public TreeMap getMap() {
+        return map;
+    }
 
-	/**
-	 * Read in Settings from the Properties Object.
-	 */
-	private void readProperties(Properties props, String baseKey, ValueParser parser) {
-		String contKey = baseKey + ".controller";
-		controllingAttribute = props.getProperty(contKey);
+    /**
+     * Read in Settings from the Properties Object.
+     */
+    private void readProperties(Properties props, String baseKey,
+        ValueParser parser) {
+        String contKey = baseKey + ".controller";
+        controllingAttribute = props.getProperty(contKey);
 
-		String contTypeKey = baseKey + ".controllerType";
-		String attrTypeString = props.getProperty(contTypeKey);
-		byte attrType = -1; // UNDEFINED defaults to string
+        String contTypeKey = baseKey + ".controllerType";
+        String attrTypeString = props.getProperty(contTypeKey);
+        byte attrType = -1; // UNDEFINED defaults to string
 
-		if (attrTypeString != null)
-			attrType = new Byte(attrTypeString).byteValue();
+        if (attrTypeString != null)
+            attrType = new Byte(attrTypeString).byteValue();
 
-		String mapKey = baseKey + ".map.";
-		Enumeration eProps = props.propertyNames();
+        String mapKey = baseKey + ".map.";
+        Enumeration eProps = props.propertyNames();
 
-		while (eProps.hasMoreElements()) {
-			String key = (String) eProps.nextElement();
+        while (eProps.hasMoreElements()) {
+            String key = (String) eProps.nextElement();
 
-			if (key.startsWith(mapKey)) {
-				String value = props.getProperty(key);
-				Object domainVal = MappingUtil.parseObjectType(key.substring(mapKey.length()),
-				                                               attrType);
-				Object parsedVal = parser.parseStringValue(value);
-				map.put(domainVal, parsedVal);
-			}
-		}
-	}
+            if (key.startsWith(mapKey)) {
+                String value = props.getProperty(key);
+                Object domainVal = MappingUtil.parseObjectType(
+                        key.substring(mapKey.length()),
+                        attrType);
+                Object parsedVal = parser.parseStringValue(value);
+                map.put(domainVal, parsedVal);
+            }
+        }
+    }
 }

@@ -47,47 +47,49 @@ import java.lang.*;
  * Provides simple utility methods for the Mapping classes.
  */
 public class MappingUtil {
-	/**
-	 * This method determines the type of the attr used and
-	 * returns a string representation of it.
-	 */
-	public static String getAttributeTypeString(String base, String attr) {
-		Byte B = new Byte(getAttributeType(base, attr));
+    /**
+     * This method determines the type of the attr used and
+     * returns a string representation of it.
+     */
+    public static String getAttributeTypeString(String base, String attr) {
+        Byte B = new Byte(getAttributeType(base, attr));
 
-		return B.toString();
-	}
+        return B.toString();
+    }
 
-	/**
-	 * This method determines the type of the attribute used
-	 * for the mapping. The purpose is to support discrete attrs
-	 * aside from strings.
-	 */
-	public static byte getAttributeType(String base, String attr) {
-		byte b = CyAttributes.TYPE_UNDEFINED;
+    /**
+     * This method determines the type of the attribute used
+     * for the mapping. The purpose is to support discrete attrs
+     * aside from strings.
+     */
+    public static byte getAttributeType(String base, String attr) {
+        byte b = CyAttributes.TYPE_UNDEFINED;
 
-		if (base.startsWith("node"))
-			b = Cytoscape.getNodeAttributes().getType(attr);
-		else if (base.startsWith("edge"))
-			b = Cytoscape.getEdgeAttributes().getType(attr);
+        if (base.startsWith("node"))
+            b = Cytoscape.getNodeAttributes()
+                         .getType(attr);
+        else if (base.startsWith("edge"))
+            b = Cytoscape.getEdgeAttributes()
+                         .getType(attr);
 
-		return b;
-	}
+        return b;
+    }
 
-	/**
-	 * This method returns an object of the specified type
-	 * based on the string read from the props file.
-	 */
-	public static Object parseObjectType(String key, byte attrType) {
-		if (attrType == CyAttributes.TYPE_INTEGER)
-			return new Integer(key);
-		else if (attrType == CyAttributes.TYPE_FLOATING)
-			return new Double(key);
-		else if (attrType == CyAttributes.TYPE_BOOLEAN)
-			return new Boolean(key);
+    /**
+     * This method returns an object of the specified type
+     * based on the string read from the props file.
+     */
+    public static Object parseObjectType(String key, byte attrType) {
+        if (attrType == CyAttributes.TYPE_INTEGER)
+            return new Integer(key);
+        else if (attrType == CyAttributes.TYPE_FLOATING)
+            return new Double(key);
+        else if (attrType == CyAttributes.TYPE_BOOLEAN)
+            return new Boolean(key);
 
-		// assume string
-		else
+        // assume string
+        else
 
-			return key;
-	}
+            return key;
+    }
 }

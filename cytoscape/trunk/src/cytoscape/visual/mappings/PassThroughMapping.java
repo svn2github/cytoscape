@@ -65,237 +65,234 @@ import javax.swing.event.ChangeListener;
  * against the expected range class; null is returned instead if the
  * data value is of the wrong type.
  */
-public class PassThroughMapping implements ObjectMapping {
-	Class rangeClass; //the class of values held by this mapping
-	String attrName; //the name of the controlling data attribute
+public class PassThroughMapping
+    implements ObjectMapping {
+    Class rangeClass; //the class of values held by this mapping
+    String attrName; //the name of the controlling data attribute
 
-	/** Standard constructor for compatibility with new calculator creation in
-	 *    the UI.
-	 *
-	 *    @param    defaultObj    Default object - provided only to establish
-	 *                mapping's range class.
-	 *    @param    mapType        unused.
-	 */
-	public PassThroughMapping(Object defaultObj, byte mapType) {
-		this(defaultObj);
-	}
+    /** Standard constructor for compatibility with new calculator creation in
+     *    the UI.
+     *
+     *    @param    defaultObj    Default object - provided only to establish
+     *                mapping's range class.
+     *    @param    mapType        unused.
+     */
+    public PassThroughMapping(Object defaultObj, byte mapType) {
+        this(defaultObj);
+    }
 
-	/**
-	 * Creates a new PassThroughMapping object.
-	 *
-	 * @param defaultObj  DOCUMENT ME!
-	 */
-	public PassThroughMapping(Object defaultObj) {
-		this.rangeClass = defaultObj.getClass();
-	}
+    /**
+     * Creates a new PassThroughMapping object.
+     *
+     * @param defaultObj  DOCUMENT ME!
+     */
+    public PassThroughMapping(Object defaultObj) {
+        this.rangeClass = defaultObj.getClass();
+    }
 
-	/**
-	 * Creates a new PassThroughMapping object.
-	 *
-	 * @param defaultObj  DOCUMENT ME!
-	 * @param attrName  DOCUMENT ME!
-	 */
-	public PassThroughMapping(Object defaultObj, String attrName) {
-		this.rangeClass = defaultObj.getClass();
-		setControllingAttributeName(attrName, null, false);
-	}
+    /**
+     * Creates a new PassThroughMapping object.
+     *
+     * @param defaultObj  DOCUMENT ME!
+     * @param attrName  DOCUMENT ME!
+     */
+    public PassThroughMapping(Object defaultObj, String attrName) {
+        this.rangeClass = defaultObj.getClass();
+        setControllingAttributeName(attrName, null, false);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object clone() {
-		PassThroughMapping miniMe;
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object clone() {
+        PassThroughMapping miniMe;
 
-		try {
-			miniMe = (PassThroughMapping) super.clone();
-		} catch (CloneNotSupportedException e) {
-			System.err.println("Critical error in PassThroughMapping - was not cloneable");
-			e.printStackTrace();
+        try {
+            miniMe = (PassThroughMapping) super.clone();
+        } catch (CloneNotSupportedException e) {
+            System.err.println(
+                "Critical error in PassThroughMapping - was not cloneable");
+            e.printStackTrace();
 
-			return null;
-		}
+            return null;
+        }
 
-		miniMe.attrName = new String(attrName);
+        miniMe.attrName = new String(attrName);
 
-		// don't need to explicitly clone rangeClass since cloned calculator
-		//has same type as original.
-		return miniMe;
-	}
+        // don't need to explicitly clone rangeClass since cloned calculator
+        //has same type as original.
+        return miniMe;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Class getRangeClass() {
-		return rangeClass;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Class getRangeClass() {
+        return rangeClass;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Class[] getAcceptedDataClasses() {
-		Class[] ret = { Object.class };
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Class[] getAcceptedDataClasses() {
+        Class[] ret = { Object.class };
 
-		return ret;
-	}
+        return ret;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getControllingAttributeName() {
-		return attrName;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getControllingAttributeName() {
+        return attrName;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attrName DOCUMENT ME!
-	 * @param network DOCUMENT ME!
-	 * @param preserveMapping DOCUMENT ME!
-	 */
-	public void setControllingAttributeName(String attrName, CyNetwork network,
-	                                        boolean preserveMapping) {
-		this.attrName = attrName;
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param attrName DOCUMENT ME!
+     * @param network DOCUMENT ME!
+     * @param preserveMapping DOCUMENT ME!
+     */
+    public void setControllingAttributeName(String attrName, CyNetwork network,
+        boolean preserveMapping) {
+        this.attrName = attrName;
+    }
 
-	/**
-	 * Empty implementation because PassThroughMapping has no UI.
-	 */
-	public void addChangeListener(ChangeListener l) {
-	}
+    /**
+     * Empty implementation because PassThroughMapping has no UI.
+     */
+    public void addChangeListener(ChangeListener l) {
+    }
 
-	/**
-	 * Empty implementation because PassThroughMapping has no UI.
-	 */
-	public void removeChangeListener(ChangeListener l) {
-	}
+    /**
+     * Empty implementation because PassThroughMapping has no UI.
+     */
+    public void removeChangeListener(ChangeListener l) {
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param parent DOCUMENT ME!
-	 * @param network DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JPanel getUI(JDialog parent, CyNetwork network) {
-		//construct a UI to view/edit this mapping; only needs to view/set
-		//the controlling attribute name
-		JPanel p = new JPanel();
-		JLabel l1 = new JLabel("This is a passthrough mapping;");
-		JLabel l2 = new JLabel("it has no user-editable parameters.");
-		p.setLayout(new GridLayout(2, 1));
-		p.add(l1);
-		p.add(l2);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param parent DOCUMENT ME!
+     * @param network DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public JPanel getUI(JDialog parent, CyNetwork network) {
+        //construct a UI to view/edit this mapping; only needs to view/set
+        //the controlling attribute name
+        JPanel p = new JPanel();
+        JLabel l1 = new JLabel("This is a passthrough mapping;");
+        JLabel l2 = new JLabel("it has no user-editable parameters.");
+        p.setLayout(new GridLayout(2, 1));
+        p.add(l1);
+        p.add(l2);
 
-		return p;
-	}
+        return p;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attrBundle DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object calculateRangeValue(Map attrBundle) {
-		if ((attrBundle == null) || (attrName == null)) {
-			return null;
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param attrBundle DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object calculateRangeValue(Map attrBundle) {
+        if ((attrBundle == null) || (attrName == null))
+            return null;
 
-		//extract the data value for our controlling attribute
-		Object attrValue = attrBundle.get(attrName);
+        //extract the data value for our controlling attribute
+        Object attrValue = attrBundle.get(attrName);
 
-		if (attrValue == null) {
-			return null;
-		}
+        if (attrValue == null)
+            return null;
 
-		//if the attrValue is a List, search for an object in the List
-		//of a type matching our return type, and return it
-		if (attrValue instanceof List) {
-			Iterator attrValueIt = ((List) attrValue).iterator();
+        //if the attrValue is a List, search for an object in the List
+        //of a type matching our return type, and return it
+        if (attrValue instanceof List) {
+            Iterator attrValueIt = ((List) attrValue).iterator();
 
-			while (attrValueIt.hasNext()) {
-				Object attrSubValue = attrValueIt.next();
+            while (attrValueIt.hasNext()) {
+                Object attrSubValue = attrValueIt.next();
 
-				if (rangeClass.isInstance(attrSubValue)) {
-					return attrSubValue;
-				}
-			}
-		}
+                if (rangeClass.isInstance(attrSubValue))
+                    return attrSubValue;
+            }
+        }
 
-		//OK, try returning the attrValue itself
-		if (rangeClass.isInstance(attrValue)) {
-			return attrValue;
-		}
+        //OK, try returning the attrValue itself
+        if (rangeClass.isInstance(attrValue))
+            return attrValue;
 
-		//if range class is String, try converting value to String
-		if (rangeClass.equals(String.class)) {
-			String stringConvert = attrValue.toString();
+        //if range class is String, try converting value to String
+        if (rangeClass.equals(String.class)) {
+            String stringConvert = attrValue.toString();
 
-			//sanity check to prevent ridiculously long labels
-			if (stringConvert.length() > 20) {
-				stringConvert = stringConvert.substring(0, 20) + "...";
-			}
+            //sanity check to prevent ridiculously long labels
+            if (stringConvert.length() > 20)
+                stringConvert = stringConvert.substring(0, 20) + "...";
 
-			return stringConvert;
-		}
+            return stringConvert;
+        }
 
-		//attribute value is just no good; return null
-		return null;
-	}
+        //attribute value is just no good; return null
+        return null;
+    }
 
-	/**
-	 * Customize this object by applying mapping defintions described by the
-	 * supplied Properties argument.
-	 */
-	public void applyProperties(Properties props, String baseKey, ValueParser parser) {
-		String contKey = baseKey + ".controller";
-		String contValue = props.getProperty(contKey);
+    /**
+     * Customize this object by applying mapping defintions described by the
+     * supplied Properties argument.
+     */
+    public void applyProperties(Properties props, String baseKey,
+        ValueParser parser) {
+        String contKey = baseKey + ".controller";
+        String contValue = props.getProperty(contKey);
 
-		if (contValue != null) {
-			setControllingAttributeName(contValue, null, false);
-		}
-	}
+        if (contValue != null)
+            setControllingAttributeName(contValue, null, false);
+    }
 
-	/**
-	 * Return a Properties object with entries suitable for customizing this
-	 * object via the applyProperties method.
-	 */
-	public Properties getProperties(String baseKey) {
-		Properties newProps = new Properties();
-		String contKey = baseKey + ".controller";
-		String contValue = getControllingAttributeName();
+    /**
+     * Return a Properties object with entries suitable for customizing this
+     * object via the applyProperties method.
+     */
+    public Properties getProperties(String baseKey) {
+        Properties newProps = new Properties();
+        String contKey = baseKey + ".controller";
+        String contValue = getControllingAttributeName();
 
-		if ((contKey != null) && (contValue != null))
-			newProps.setProperty(contKey, contValue);
+        if ((contKey != null) && (contValue != null))
+            newProps.setProperty(contKey, contValue);
 
-		return newProps;
-	}
+        return newProps;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param visualAttr DOCUMENT ME!
-	 * @param b DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JPanel getLegend(String visualAttr, byte b) {
-		JPanel p = new JPanel();
-		p.setBackground(Color.white);
-		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param visualAttr DOCUMENT ME!
+     * @param b DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public JPanel getLegend(String visualAttr, byte b) {
+        JPanel p = new JPanel();
+        p.setBackground(Color.white);
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-		JLabel l = new JLabel(visualAttr + " is displayed as " + attrName);
-		p.add(l);
+        JLabel l = new JLabel(visualAttr + " is displayed as " + attrName);
+        p.add(l);
 
-		return p;
-	}
+        return p;
+    }
 }
