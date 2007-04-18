@@ -3,11 +3,7 @@ package cytoscape.visual.ui;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
-import org.apache.batik.ext.awt.LinearGradientPaint;
-import org.apache.batik.ext.awt.MultipleGradientPaint;
-
 import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.color.ColorUtil;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import java.awt.BasicStroke;
@@ -16,8 +12,6 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;

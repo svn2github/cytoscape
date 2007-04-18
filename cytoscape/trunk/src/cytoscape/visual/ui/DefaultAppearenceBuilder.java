@@ -1,12 +1,8 @@
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.ShapeNodeRealizer;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.*;
+import static cytoscape.visual.VisualPropertyType.EDGE_COLOR;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
 import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
@@ -21,17 +17,6 @@ import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
-import cytoscape.visual.ui.icon.NodeFullDetailView;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
-
-import org.apache.batik.ext.awt.LinearGradientPaint;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-import org.jdesktop.swingx.painter.gradient.LinearGradientPainter;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -43,7 +28,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +40,17 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.NodeFullDetailView;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 
 /**
