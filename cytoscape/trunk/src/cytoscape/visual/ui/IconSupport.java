@@ -36,12 +36,6 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.Line;
-import cytoscape.visual.LineType;
-import cytoscape.visual.LineTypeDef;
-import cytoscape.visual.NodeShape;
 import static cytoscape.visual.NodeShape.DIAMOND;
 import static cytoscape.visual.NodeShape.ELLIPSE;
 import static cytoscape.visual.NodeShape.HEXAGON;
@@ -53,18 +47,26 @@ import static cytoscape.visual.NodeShape.TRIANGLE;
 import static cytoscape.visual.ui.ValueDisplayer.ARROW;
 import static cytoscape.visual.ui.ValueDisplayer.LINETYPE;
 import static cytoscape.visual.ui.ValueDisplayer.NODESHAPE;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-
 import java.net.URL;
-
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
+
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.Line;
+import cytoscape.visual.LineType;
+import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 
 /**
@@ -357,43 +359,16 @@ public class IconSupport {
      *
      */
     public static HashMap getStringToLineTypeHashMap() {
-        HashMap h = new HashMap();
-        h.put(
-            "DASHED_1",
-            new Line(LineTypeDef.LONG_DASH, 1.0f));
-        h.put(
-            "DASHED_2",
-            new Line(LineTypeDef.LONG_DASH, 2.0f));
+    	
+        final HashMap<String, Line> h = new HashMap<String, Line>();
+        
         h.put(
             "DASHED_3",
             new Line(LineTypeDef.LONG_DASH, 3.0f));
-        h.put(
-            "DASHED_4",
-            new Line(LineTypeDef.LONG_DASH, 4.0f));
-        h.put(
-            "DASHED_5",
-            new Line(LineTypeDef.LONG_DASH, 5.0f));
-        h.put(
-            "LINE_1",
-            new Line(LineTypeDef.SOLID, 1.0f));
-        h.put(
-            "LINE_2",
-            new Line(LineTypeDef.SOLID, 2.0f));
+
         h.put(
             "LINE_3",
             new Line(LineTypeDef.SOLID, 3.0f));
-        h.put(
-            "LINE_4",
-            new Line(LineTypeDef.SOLID, 4.0f));
-        h.put(
-            "LINE_5",
-            new Line(LineTypeDef.SOLID, 5.0f));
-        h.put(
-            "LINE_6",
-            new Line(LineTypeDef.SOLID, 6.0f));
-        h.put(
-            "LINE_7",
-            new Line(LineTypeDef.SOLID, 7.0f));
 
         return h;
     }
@@ -404,43 +379,15 @@ public class IconSupport {
      * @return  DOCUMENT ME!
      */
     public static HashMap getLineTypeToStringHashMap() {
-        HashMap h = new HashMap();
-        h.put(
-            new Line(LineTypeDef.LONG_DASH, 1.0f),
-            "DASHED_1");
-        h.put(
-            new Line(LineTypeDef.LONG_DASH, 2.0f),
-            "DASHED_2");
+        final HashMap<Line, String> h = new HashMap<Line, String>();
+
         h.put(
             new Line(LineTypeDef.LONG_DASH, 3.0f),
             "DASHED_3");
-        h.put(
-            new Line(LineTypeDef.LONG_DASH, 4.0f),
-            "DASHED_4");
-        h.put(
-            new Line(LineTypeDef.LONG_DASH, 5.0f),
-            "DASHED_5");
-        h.put(
-            new Line(LineTypeDef.SOLID, 1.0f),
-            "LINE_1");
-        h.put(
-            new Line(LineTypeDef.SOLID, 2.0f),
-            "LINE_2");
+
         h.put(
             new Line(LineTypeDef.SOLID, 3.0f),
             "LINE_3");
-        h.put(
-            new Line(LineTypeDef.SOLID, 4.0f),
-            "LINE_4");
-        h.put(
-            new Line(LineTypeDef.SOLID, 5.0f),
-            "LINE_5");
-        h.put(
-            new Line(LineTypeDef.SOLID, 6.0f),
-            "LINE_6");
-        h.put(
-            new Line(LineTypeDef.SOLID, 7.0f),
-            "LINE_7");
 
         return h;
     }
@@ -451,44 +398,17 @@ public class IconSupport {
      * @return  DOCUMENT ME!
      */
     public static ImageIcon[] getLineTypeIcons() {
-        ImageIcon[] lineTypeIcons = new ImageIcon[12]; // Array of icons for the list
+    	 // Array of icons for the list
+        final ImageIcon[] lineTypeIcons = new ImageIcon[2];
+
         lineTypeIcons[0] = new ImageIcon(
-                locateImage("images/line_1.jpg"),
-                "LINE_1");
-        lineTypeIcons[1] = new ImageIcon(
-                locateImage("images/line_2.jpg"),
-                "LINE_2");
-        lineTypeIcons[2] = new ImageIcon(
                 locateImage("images/line_3.jpg"),
                 "LINE_3");
-        lineTypeIcons[3] = new ImageIcon(
-                locateImage("images/line_4.jpg"),
-                "LINE_4");
-        lineTypeIcons[4] = new ImageIcon(
-                locateImage("images/line_5.jpg"),
-                "LINE_5");
-        lineTypeIcons[5] = new ImageIcon(
-                locateImage("images/line_6.jpg"),
-                "LINE_6");
-        lineTypeIcons[6] = new ImageIcon(
-                locateImage("images/line_7.jpg"),
-                "LINE_7");
-        lineTypeIcons[7] = new ImageIcon(
-                locateImage("images/dashed_1.jpg"),
-                "DASHED_1");
-        lineTypeIcons[8] = new ImageIcon(
-                locateImage("images/dashed_2.jpg"),
-                "DASHED_2");
-        lineTypeIcons[9] = new ImageIcon(
+
+        lineTypeIcons[1] = new ImageIcon(
                 locateImage("images/dashed_3.jpg"),
                 "DASHED_3");
-        lineTypeIcons[10] = new ImageIcon(
-                locateImage("images/dashed_4.jpg"),
-                "DASHED_4");
-        lineTypeIcons[11] = new ImageIcon(
-                locateImage("images/dashed_5.jpg"),
-                "DASHED_5");
-
+        
         return lineTypeIcons;
     }
 
