@@ -399,8 +399,8 @@ public class NamedSelection extends CytoscapePlugin
 			List<CyGroup> groupList = CyGroup.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
 			CyGroup group = CyGroup.createGroup(groupName, currentNodes, viewerName);
-			groupPanel.groupCreated(group);
 			group.setState(SELECTED);
+			groupPanel.groupCreated(group);
 		}
 
 		/**
