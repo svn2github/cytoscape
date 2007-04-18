@@ -1,16 +1,11 @@
 package cytoscape.visual.ui;
 
 
-import org.jdesktop.swingx.JXGlassBox;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.gradient.LinearGradientPainter;
-
 import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
-import javax.swing.JComponent;
+import org.jdesktop.swingx.JXGlassBox;
+import org.jdesktop.swingx.JXPanel;
 
 
 /**
