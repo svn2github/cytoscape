@@ -55,7 +55,8 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.event.MenuEvent;
 
 import java.util.List;
-import java.util.LinkedList;
+import java.util.Set;
+import java.util.HashSet;
 
 
 /**
@@ -130,8 +131,8 @@ public class DeleteAction extends CytoscapeAction {
 			}
 		}
 
-		List<Integer> edgeIndices = new LinkedList<Integer>();
-		List<Integer> nodeIndices = new LinkedList<Integer>();
+		Set<Integer> edgeIndices = new HashSet<Integer>();
+		Set<Integer> nodeIndices = new HashSet<Integer>();
 
 		// add all node indices
 		for (int i = 0; i < nodeViews.size(); i++) {
@@ -153,13 +154,15 @@ public class DeleteAction extends CytoscapeAction {
 		}
 
 		// convert
+		int i = 0;
 		int[] edgeInd = new int[edgeIndices.size()];
-		for (int i = 0; i < edgeInd.length; i++) 
-			edgeInd[i] = edgeIndices.get(i).intValue();
+		for (Integer ei : edgeIndices) 
+			edgeInd[i++] = ei.intValue();
 
+		i = 0;
 		int[] nodeInd = new int[nodeIndices.size()];
-		for (int i = 0; i < nodeInd.length; i++) 
-			nodeInd[i] = nodeIndices.get(i).intValue();
+		for (Integer ni : nodeIndices) 
+			nodeInd[i++] = ni.intValue();
 
 		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd) );
 
