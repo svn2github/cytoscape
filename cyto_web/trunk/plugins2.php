@@ -1459,7 +1459,7 @@ processing technique with supercomputing center resources.
 				<td width="25%" valign="top">
 					<b>CyGoose Plugin</b>
 					<br><font size="-1">
-					Version: 2.4.2
+					Version: 2.4.3
 					<br>
 					Release Date: February 13, 2007</font>
 				</td>
@@ -1478,7 +1478,7 @@ processing technique with supercomputing center resources.
 					<li> Automatic creation of a Visual Style when handling movies to give users a starting point to visualize network change 
 				</ul>
 				<b>Known issue:</b> This goose does not work with a local install of Cytoscape on a Windows machine.  It will work with Mac or Linux and as a webstart on Mac/Linux/Windows.  We are 
-working on this and will release a fix as soon as we can.				
+working on this and will release a fix as soon as we can.  				
 <p>
 				Released by: Sarah Killcoyne, <a href="http://systemsbiology.org">Institute for Systems Biology</a>, John Lin, Kevin Drew and Richard Bonneau, <a href="http://homepages.nyu.edu/%7erb133/">NYU Bonneau Lab</a>.
 				</p>
@@ -1487,7 +1487,7 @@ working on this and will release a fix as soon as we can.
 				 Verified to work in 2.4
 			  </td>
 		<td width="15%" valign="top">
-			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.2.jar">Download Jar</a>]
+			[<a href="http://db.systemsbiology.net/cytoscape/versions/2.x/2.4/plugins/CyGoose_2.4.3.jar">Download Jar</a>]
 			<br>
 		</td>
 	</tr>
