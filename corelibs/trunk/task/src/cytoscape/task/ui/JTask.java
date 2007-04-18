@@ -164,7 +164,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 	 * @param config JTaskConfig Object.
 	 */
 	public JTask(Task task, JTaskConfig config) {
-		super((Frame) config.getOwner(), task.getTitle(), true);
+		super((Frame) config.getOwner(), task.getTitle(), config.getModal());
 		this.task = task;
 		this.taskTitle = task.getTitle();
 		this.config = config;
