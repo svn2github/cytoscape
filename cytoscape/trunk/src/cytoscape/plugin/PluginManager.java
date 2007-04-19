@@ -154,17 +154,17 @@ public class PluginManager {
 	 * @param Url
 	 * @return List of PluginInfo objects
 	 */
-	public List<PluginInfo> inquire(String Url) throws ManagerError {
+	public List<PluginInfo> inquire(String Url) throws IOException, org.jdom.JDOMException {
 		List<PluginInfo> Plugins = null;
-		try {
+//		try {
 			PluginFileReader Reader = new PluginFileReader(Url);
 			Plugins = Reader.getPlugins();
-		} catch (java.io.IOException E) {
-			throw new ManagerError("Failed to read xml file at " + Url, E);
-		} catch (org.jdom.JDOMException E) {
-			throw new ManagerError(Url
-					+ " did not return correctly formatted xml", E);
-		}
+//		} catch (java.io.IOException E) {
+//			throw new ManagerError("Failed to read xml file at " + Url, E);
+//		} catch (org.jdom.JDOMException E) {
+//			throw new ManagerError(Url
+//					+ " did not return correctly formatted xml", E);
+//		}
 
 		return Plugins;
 	}
@@ -218,7 +218,7 @@ public class PluginManager {
 				.getListByStatus(PluginTracker.PluginStatus.INSTALL);
 
 		for (PluginInfo CurrentPlugin : Plugins) {
-			String ClassName = null;
+			//String ClassName = null;
 			List<String> FileList = CurrentPlugin.getFileList();
 
 			// TESTING
@@ -352,7 +352,7 @@ public class PluginManager {
 	 * @return List<PluginInfo>
 	 * @throws ManagerError
 	 */
-	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws ManagerError {
+	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException, org.jdom.JDOMException {
 		List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
 
 		if (Plugin.getProjectUrl() == null
@@ -368,6 +368,7 @@ public class PluginManager {
 		return UpdatablePlugins;
 	}
 
+	
 	/**
 	 * Finds the given version of the new object, sets the old object for
 	 * deletion and downloads new object to temporary directory
@@ -376,8 +377,31 @@ public class PluginManager {
 	 *            PluginInfo object currently installed
 	 * @param New
 	 *            PluginInfo object to install
+	 * @throws IOException
+	 * 		Fails to download the file.
+	 * @throws ManagerError
+	 * 		If the plugins don't match or the new one is not a newer version.
 	 */
-	public void update(PluginInfo Current, PluginInfo New) throws ManagerError {
+	public void update(PluginInfo Current, PluginInfo New) throws IOException, ManagerError {
+		update(Current, New, null);
+	}
+	
+	/**
+	 * Finds the given version of the new object, sets the old object for
+	 * deletion and downloads new object to temporary directory
+	 * 
+	 * @param Current
+	 *            PluginInfo object currently installed
+	 * @param New
+	 *            PluginInfo object to install
+	 * @param taskMonitor
+	 * 			TaskMonitor for downloads
+	 * @throws IOException
+	 * 		Fails to download the file.
+	 * @throws ManagerError
+	 * 		If the plugins don't match or the new one is not a newer version.
+	 */
+	public void update(PluginInfo Current, PluginInfo New, cytoscape.task.TaskMonitor taskMonitor) throws IOException, ManagerError {
 		// find new plugin, download, add to install list
 		if (Current.getProjectUrl() == null) {
 			throw new ManagerError(
@@ -388,7 +412,7 @@ public class PluginManager {
 		if (Current.getID().equals(New.getID())
 				&& Current.getProjectUrl().equals(New.getProjectUrl())
 				&& isVersionNew(Current, New)) {
-			download(New);
+			download(New, taskMonitor);
 			pluginTracker.addPlugin(New, PluginTracker.PluginStatus.INSTALL);
 			pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
 		} else {
@@ -403,22 +427,28 @@ public class PluginManager {
 	/**
 	 * Downloads given object to the temporary directory.
 	 * 
-	 * @param Obj
+	 * @param Obj PluginInfo object to be downloaded
 	 * @return File downloaded
 	 */
-	public File download(PluginInfo Obj) throws ManagerError {
+	public File download(PluginInfo Obj) throws IOException, ManagerError {
+		return download(Obj, null);
+	}
+	
+	/**
+	 * Downloads given object to the temporary directory.  Uses a task monitor if available.
+	 * 
+	 * @param Obj PluginInfo object to be downloaded
+	 * @param task TaskMonitor
+	 * @return File downloaded
+	 */
+	public File download(PluginInfo Obj, cytoscape.task.TaskMonitor taskMonitor) throws IOException, ManagerError {
 		File Download = null;
 		String ClassName = null;
-		try {
 			Download = new File(tempDir, createFileName(Obj));
-			URLUtil.download(Obj.getUrl(), Download);
+			URLUtil.download(Obj.getUrl(), Download, taskMonitor);
 
 			ClassName = getPluginClass(Download.getAbsolutePath(), Obj
 					.getFileType());
-		} catch (IOException E) {
-			throw new ManagerError("Failed to download file from "
-					+ Obj.getUrl() + " to " + tempDir.getAbsolutePath(), E);
-		}
 
 		if (ClassName != null) {
 			Obj.setPluginClassName(ClassName);

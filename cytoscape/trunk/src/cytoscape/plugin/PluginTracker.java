@@ -146,23 +146,23 @@ public class PluginTracker {
 		if (Plugin != null) {
 			// update the element
 			if (!obj.getName().equals(obj.getPluginClassName())) {
-				Plugin.getChild(this.nameTag).setText(obj.getName());
+				Plugin.getChild(nameTag).setText(obj.getName());
 			}
 			if (!obj.getCategory().equals(PluginInfo.Category.NONE.getCategoryText())) {
-				Plugin.getChild(this.categoryTag).setText(obj.getCategory());
+				Plugin.getChild(categoryTag).setText(obj.getCategory());
 			}
-			Plugin.getChild(this.descTag).setText(obj.getDescription());
-			Plugin.getChild(this.pluginVersTag).setText(obj.getPluginVersion());
-			Plugin.getChild(this.cytoVersTag).setText(obj.getCytoscapeVersion());
+			Plugin.getChild(descTag).setText(obj.getDescription());
+			Plugin.getChild(pluginVersTag).setText(obj.getPluginVersion());
+			Plugin.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
 			if (obj.getPluginClassName() != null) {
-				Plugin.getChild(this.classTag).setText(obj.getPluginClassName());
+				Plugin.getChild(classTag).setText(obj.getPluginClassName());
 			}
-			Plugin.removeChild(this.authorListTag);
-			Element Authors = new Element(this.authorListTag);
+			Plugin.removeChild(authorListTag);
+			Element Authors = new Element(authorListTag);
 			for(AuthorInfo ai: obj.getAuthors()) {
-				Element Author = new Element(this.authorTag);
-				Author.addContent( new Element(this.nameTag).setText(ai.getAuthor()) );
-				Author.addContent( new Element(this.instTag).setText(ai.getInstitution()) );
+				Element Author = new Element(authorTag);
+				Author.addContent( new Element(nameTag).setText(ai.getAuthor()) );
+				Author.addContent( new Element(instTag).setText(ai.getInstitution()) );
 				Authors.addContent(Author);
 			}
 			Plugin.addContent(Authors);
