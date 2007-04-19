@@ -84,9 +84,10 @@ public class ConsolePanel extends JPanel implements Console {
      * Sets the Main Status Message in Bold.
      *
      * @param msg Status Message.
+     * @param style Style.
      */
-    public void logMessageBold (String msg) {
-        logMessage(msg, "bold");
+    public void logMessage (String msg, String style) {
+        logMessageWithStyle(msg, style);
     }
 
     /**
@@ -102,7 +103,7 @@ public class ConsolePanel extends JPanel implements Console {
      * @param msg   Status Message.
      * @param style Style, e.g. "regular", "bold".
      */
-    private void logMessage (String msg, String style) {
+    private void logMessageWithStyle (String msg, String style) {
         StyledDocument doc = ta.getStyledDocument();
         try {
             doc.insertString(doc.getLength(), msg + "\n", doc.getStyle(style));
@@ -139,6 +140,9 @@ public class ConsolePanel extends JPanel implements Console {
 
         s = doc.addStyle("large", regular);
         StyleConstants.setFontSize(s, 16);
+
+        s = doc.addStyle("red", regular);
+        StyleConstants.setForeground(s, Color.RED);
     }
 
     /**
