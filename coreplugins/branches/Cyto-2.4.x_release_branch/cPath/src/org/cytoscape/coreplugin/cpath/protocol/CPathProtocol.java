@@ -42,13 +42,11 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.net.URLEncoder;
 
 /**
  * Utility Class for Connecting to the cPath Web Service API.
@@ -281,10 +279,13 @@ public class CPathProtocol {
             //  Check for errors
             String content = buf.toString();
             if (content.toLowerCase().indexOf(XML_TAG) >= 0) {
-                StringReader reader = new StringReader(content);
-                SAXBuilder builder = new SAXBuilder();
-                Document document = builder.build(reader);
-                checkForErrors(document);
+                //  Check for protocol errors.
+                if (content.indexOf("<error>") >=0) {
+                    StringReader reader = new StringReader(content);
+                    SAXBuilder builder = new SAXBuilder();
+                    Document document = builder.build(reader);
+                    checkForErrors(document);
+                }
                 return content;
             } else {
                 return content.trim();
@@ -400,8 +401,13 @@ class NameValuePair {
      */
     public NameValuePair (String name, String value) {
         this.name = name;
-        this.value = value;
-    }
+		try {
+			this.value = URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			this.value = value;
+		}
+	}
 
     /**
      * Gets name.
