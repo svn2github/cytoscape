@@ -96,27 +96,24 @@ public class PluginUrlDialog extends JDialog {
 	// the manager inquiry
 	private void okHandler(java.awt.event.ActionEvent evt) {
 		DataSource SelectedSite = (DataSource) urlComboBox.getSelectedItem();
-		System.out.println(SelectedSite.getName() + " selected");
-		System.out.println(SelectedSite.getHref() + " selected");
-
 		parentDialog.switchDownloadSites();
-
+		dispose();
+		
 		try {
 			PluginManager Mgr = PluginManager.getPluginManager();
 			Map<String, List<PluginInfo>> NewPlugins = ManagerUtil.sortByCategory(Mgr.inquire(SelectedSite
 			                                                                                  .getHref()));
 			parentDialog.setSiteName(SelectedSite.getName());
+			parentDialog.setMessage("");
 			
 			for (String Category : NewPlugins.keySet()) {
 				parentDialog.addCategory(Category, NewPlugins.get(Category),
 				                         PluginManageDialog.PluginInstallStatus.AVAILABLE);
 			}
-
-			PluginUrlDialog.this.dispose();
-		} catch (cytoscape.plugin.ManagerError E) {
-			JOptionPane.showMessageDialog(parentDialog, E.getMessage(), "Error",
-			                              JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
+		} catch (java.io.IOException ioe) {
+			parentDialog.setMessage(PluginManageDialog.CommonError.NOXML + SelectedSite.getHref());
+		} catch (org.jdom.JDOMException jde) {
+			parentDialog.setMessage(PluginManageDialog.CommonError.BADXML + SelectedSite.getHref());
 		}
 	}
 
