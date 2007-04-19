@@ -1,4 +1,4 @@
-package cytoscape.visual.ui;
+package cytoscape.util.swing;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,13 +12,14 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 
 
 /**
- * DOCUMENT ME!
+ * Button with drop down menu.
  *
- * @author $author$
+ * @version 0.7
+ * @since Cytoscape 2.5
+ * @author kono
   */
 public class DropDownMenuButton extends JButton {
     private final Icon buttonIcon = new MenuArrowIcon();
