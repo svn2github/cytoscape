@@ -1,24 +1,13 @@
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.render.immed.GraphGraphics;
-
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
-import ding.view.DGraphView;
-
-import ding.view.DGraphView.ShapeType;
-
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
-import org.jdesktop.swingx.multislider.TrackRenderer;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,28 +17,18 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import java.io.File;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.imageio.ImageIO;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -704,8 +683,8 @@ public class ContinuousTrackRenderer extends JComponent
         int trackHeight = iconHeight - 15;
         int trackWidth = iconWidth - leftSpace - 5;
 
-        double min = Double.POSITIVE_INFINITY;
-        double max = Double.NEGATIVE_INFINITY;
+        float min = Float.POSITIVE_INFINITY;
+        float max = Float.NEGATIVE_INFINITY;
 
         g2.setBackground(Color.white);
 
@@ -756,11 +735,11 @@ public class ContinuousTrackRenderer extends JComponent
         }
 
         for (int i = 0; i < objValues.length; i++) {
-            if ((Double) objValues[i] < min)
-                min = (Double) objValues[i];
+            if ((Float)objValues[i] < min)
+                min = (Float) objValues[i];
 
-            if ((Double) objValues[i] > max)
-                max = (Double) objValues[i];
+            if ((Float) objValues[i] > max)
+                max = (Float) objValues[i];
         }
 
         final Point2D start = new Point2D.Float(10, 0);
