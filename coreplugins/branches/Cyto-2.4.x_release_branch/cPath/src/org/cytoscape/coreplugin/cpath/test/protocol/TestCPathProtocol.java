@@ -36,6 +36,7 @@ package org.cytoscape.coreplugin.cpath.test.protocol;
 
 import junit.framework.TestCase;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
+import org.cytoscape.coreplugin.cpath.model.CPathException;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 
 /**
@@ -74,6 +75,27 @@ public class TestCPathProtocol extends TestCase {
             cpath.connect();
             fail("Empty Set Exception should have been thrown");
         } catch (EmptySetException e) {
+        }
+
+        //  Test that the query is URL Encoded.
+        //  When not encoded, users cannot enter more than one search term.
+        //  Bug was discovered by Melissa, during creation of the Nature Cytoscape
+        //  Protocol paper
+        cpath.setQuery("p53 rad51");
+        String uri = cpath.getURI();
+        int index = uri.indexOf("p53+rad51");
+        assertTrue ("cPath URL is not URL Encoded", index > 0);
+
+        //  Try sending an invalid format, and verify that we trigger a cPath Exception
+        cpath.setFormat("SMBL");
+        try {
+            String content = cpath.connect();
+            System.out.println(content);
+        } catch (CPathException e) {
+            String msg = e.getMessage();
+            assertEquals ("Error Connecting to cPath Web Service "
+                + "(Error Code:  451, Error Message:  Bad Data Format "
+                + "(data format not recognized))", msg);
         }
     }
 }
