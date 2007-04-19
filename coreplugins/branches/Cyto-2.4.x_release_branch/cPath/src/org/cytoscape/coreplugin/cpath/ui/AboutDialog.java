@@ -51,12 +51,12 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
     /**
      * Current Version Number.
      */
-    public static final String VERSION = "Beta 3";
+    public static final String VERSION = "Beta 4";
 
     /**
      * Current Release Date.
      */
-    public static final String RELEASE_DATE = "June, 2006";
+    public static final String RELEASE_DATE = "April, 2007";
 
     private JFrame parent;
     private JDialog dialog;
@@ -122,7 +122,7 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
         html.append("the Sander group at the Computational Biology Center ");
         html.append("of Memorial Sloan-Kettering Cancer Center.");
         html.append("<P>");
-        html.append("cPath is available at:  "
+        html.append("The cPath demo site is available at:  "
                 + "http://cbio.mskcc.org/cpath.");
         html.append("<P>");
         html.append("For scientific questions regarding cPath or the cPath"
@@ -134,7 +134,7 @@ public class AboutDialog extends MouseAdapter implements ActionListener {
                 + " &lt;cerami@cbio.mskcc.org&gt;");
         html.append("</FONT>");
         html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
-        html.append("Copyright © 2004 Memorial Sloan-Kettering Cancer Center.");
+        html.append("Copyright © 2004-2007 Memorial Sloan-Kettering Cancer Center.");
         html.append("</FONT>");
         return html.toString();
     }
