@@ -35,8 +35,7 @@ public class PluginManagerTest extends TestCase {
 		String FS = "/";
 		String UserDir = System.getProperty("user.dir");
 		UserDir = UserDir.replaceFirst("/", "");
-		return "file:///" + UserDir + FS + "testData"
-				+ FS + "plugins" + FS;
+		return "file:///" + UserDir + FS + "testData" + FS + "plugins" + FS;
 	}
 
 	/*
@@ -44,11 +43,12 @@ public class PluginManagerTest extends TestCase {
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	protected void setUp() throws java.io.IOException {
 		testUrl = getFileUrl() + "test_plugin.xml";
 		fileName = "test_tracker.xml";
 
-		CytoscapeInit.getProperties().setProperty("defaultPluginUrl", testUrl);
+		// CytoscapeInit.getProperties().setProperty("defaultPluginUrl",
+		// testUrl);
 
 		tmpDir = new File(System.getProperty("java.io.tmpdir"));
 		tracker = new PluginTracker(tmpDir, fileName);
@@ -62,7 +62,7 @@ public class PluginManagerTest extends TestCase {
 	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception {
+	protected void tearDown() {
 		File TrackerFile = new File(tmpDir, fileName);
 		tracker.delete();
 		assertFalse(TrackerFile.exists());
@@ -106,21 +106,18 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#inquire(java.lang.String)}.
 	 */
-	public void testInquireString() {
+	public void testInquireString() throws java.io.IOException,
+			org.jdom.JDOMException {
 		String Url = "http://google.com/x.xml";
 		try {
 			mgr.inquire(Url);
-		} catch (ManagerError error) {
-			assertNotNull(error);
+		} catch (java.io.IOException e) {
+			assertNotNull(e);
 		}
-		// this should be a test url at cytoscape perhaps
+
 		Url = testUrl;
-		try {
-			assertNotNull(mgr.inquire(Url));
-			assertEquals(mgr.inquire(Url).size(), 5);
-		} catch (ManagerError error) {
-			error.printStackTrace();
-		}
+		assertNotNull(mgr.inquire(Url));
+		assertEquals(mgr.inquire(Url).size(), 5);
 	}
 
 	/**
@@ -134,12 +131,13 @@ public class PluginManagerTest extends TestCase {
 		// Cytoscape");
 	}
 
-	
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#install()}.
 	 */
-	public void testInstall() throws Exception {
-		PluginInfo TestObj = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+	public void testInstall() throws java.io.IOException,
+			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+		PluginInfo TestObj = getSpecificObj(mgr.inquire(testUrl),
+				"goodJarPlugin123", "1.0");
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
 		File Downloaded = mgr.download(TestObj);
@@ -152,21 +150,21 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(Current.size(), 1);
 
-		assertEquals( Current.get(0).getFileList().size(), 1 );
+		assertEquals(Current.get(0).getFileList().size(), 1);
 		// shouldn't contain the temp directory path
-		assertFalse( Current.get(0).getFileList().get(0).contains(".cytoscape") );
-		
+		assertFalse(Current.get(0).getFileList().get(0).contains(".cytoscape"));
+
 		assertTrue((new File(Current.get(0).getFileList().get(0)).exists()));
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
 	}
-	
-	
+
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDeletePluginInfo() throws Exception {
+	public void testDeletePluginInfo() throws java.io.IOException,
+			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
@@ -182,7 +180,7 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(Current.size(), 1);
 		assertEquals(Current.get(0).getFileList().size(), 1);
-		
+
 		File InstalledPlugin = new File(Current.get(0).getFileList().get(0));
 		assertTrue(InstalledPlugin.exists());
 
@@ -195,7 +193,8 @@ public class PluginManagerTest extends TestCase {
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#delete()}.
 	 */
-	public void testDelete() throws Exception {
+	public void testDelete() throws java.io.IOException,
+			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
@@ -234,15 +233,18 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#findUpdates(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testFindUpdates() throws Exception {
-		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
-		
+	public void testFindUpdates() throws java.io.IOException,
+			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl),
+				"goodJarPlugin123", "1.0");
+
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
 		assertNotNull(mgr.download(GoodJar));
 		mgr.install();
-		
+
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
-		List<PluginInfo> Updatable = mgr.findUpdates( mgr.getPlugins(PluginStatus.CURRENT).get(0) );
+		List<PluginInfo> Updatable = mgr.findUpdates(mgr.getPlugins(
+				PluginStatus.CURRENT).get(0));
 		assertEquals(Updatable.size(), 1);
 	}
 
@@ -251,29 +253,32 @@ public class PluginManagerTest extends TestCase {
 	 * {@link cytoscape.plugin.PluginManager#update(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginInfo)}.
 	 */
 	public void testUpdate() throws Exception {
-		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl),
+				"goodJarPlugin123", "1.0");
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
 		assertNotNull(mgr.download(GoodJar));
 		mgr.install();
-		
+
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
-		List<PluginInfo> Updatable = mgr.findUpdates( mgr.getPlugins(PluginStatus.CURRENT).get(0) );
+		List<PluginInfo> Updatable = mgr.findUpdates(mgr.getPlugins(
+				PluginStatus.CURRENT).get(0));
 		assertEquals(Updatable.size(), 1);
-		
+
 		PluginInfo New = Updatable.get(0);
 		New.setUrl(getFileUrl() + New.getUrl());
-		
+
 		PluginInfo Current = mgr.getPlugins(PluginStatus.CURRENT).get(0);
-		mgr.update(Current, New); // update sets the old for deletion, new for installation
+		mgr.update(Current, New); // update sets the old for deletion, new for
+									// installation
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
-		
+
 		mgr.delete();
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
-		
+
 		mgr.install();
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
@@ -285,10 +290,12 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDownloadGoodJar() throws Exception {
-		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+	public void testDownloadGoodJar() throws java.io.IOException,
+			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl),
+				"goodJarPlugin123", "1.0");
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
-		
+
 		File Downloaded = mgr.download(GoodJar);
 		assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
@@ -296,22 +303,27 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
 		PluginInfo CurrentInstall = mgr.getPlugins(PluginStatus.INSTALL).get(0);
-		assertNotNull(CurrentInstall.getLicenseText());  // at this point the dialog can show the text
+		assertNotNull(CurrentInstall.getLicenseText()); // at this point the
+														// dialog can show the
+														// text
 		assertEquals(CurrentInstall.getFileList().size(), 1);
-		
+
 		Downloaded.delete();
 		assertFalse(Downloaded.exists());
 	}
-	
+
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
-	 * files are only bad if they fail to have an attribute Cytoscape-Plugin in the manifest
+	 * files are only bad if they fail to have an attribute Cytoscape-Plugin in
+	 * the manifest
 	 */
-	public void testDownloadBadJar() throws Exception {
-		PluginInfo BadJar = getSpecificObj(mgr.inquire(testUrl), "badJarPlugin123", "0.3");
+	public void testDownloadBadJar() throws java.io.IOException,
+			org.jdom.JDOMException {
+		PluginInfo BadJar = getSpecificObj(mgr.inquire(testUrl),
+				"badJarPlugin123", "0.3");
 		BadJar.setUrl(getFileUrl() + BadJar.getUrl());
-		
+
 		try {
 			mgr.download(BadJar);
 		} catch (ManagerError E) {
@@ -319,18 +331,18 @@ public class PluginManagerTest extends TestCase {
 			assertTrue(E.getMessage().contains("Cytoscape-Plugin"));
 		}
 	}
-	
-	
-	private PluginInfo getSpecificObj(List<PluginInfo> AllInfo, String Id, String Version) {
-		for (PluginInfo Current: AllInfo) {
-			if (Current.getID().equals(Id) && Current.getPluginVersion().equals(Version)) {
+
+	private PluginInfo getSpecificObj(List<PluginInfo> AllInfo, String Id,
+			String Version) {
+		for (PluginInfo Current : AllInfo) {
+			if (Current.getID().equals(Id)
+					&& Current.getPluginVersion().equals(Version)) {
 				return Current;
 			}
 		}
 		return null;
 	}
 
-	
 	// this won't work causes ExceptionInitializerError in the CytoscapePlugin
 	private class MyPlugin extends CytoscapePlugin {
 		public MyPlugin() {
