@@ -42,6 +42,7 @@ import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Observable;
@@ -156,7 +157,7 @@ public class CPathDesktop extends JFrame implements Observer {
         buttonBar.add(Box.createRigidArea(new Dimension(hspace, 0)));
 
         //  Create Search Text Field
-        JTextField textField = new JTextField("", 8);
+        JTextField textField = new JTextField("", 20);
         Font font = textField.getFont();
         textField.setFont(new Font(font.getName(), Font.PLAIN, 11));
         textField.setToolTipText("Enter Search Term(s)");
@@ -263,11 +264,7 @@ public class CPathDesktop extends JFrame implements Observer {
         SearchResponse searchResponse = bundle.getResponse();
         Throwable exception = searchResponse.getException();
         if (exception != null) {
-            if (exception instanceof EmptySetException) {
-                String msg = "No Matching Results Found.  Please Try Again.";
-                JOptionPane.showMessageDialog(this, msg, "cPath PlugIn",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else if (exception instanceof InterruptedException) {
+            if (exception instanceof InterruptedException) {
                 //  Do Nothing
             } else {
                 showError(exception);
