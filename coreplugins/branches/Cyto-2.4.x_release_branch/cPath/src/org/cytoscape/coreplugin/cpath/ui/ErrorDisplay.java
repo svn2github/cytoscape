@@ -125,19 +125,23 @@ public class ErrorDisplay {
      */
     public String wrapText (String msg) {
         StringBuffer newMessage = new StringBuffer();
-        String strs[] = msg.split("\\s+");
-        int lineIndex = 0;
-        for (int i = 0; i < strs.length; i++) {
-            newMessage.append(strs[i] + SPACE);
-            lineIndex += strs[i].length();
-            if (lineIndex > WIDTH) {
-                newMessage.append(NEW_LINE);
-                lineIndex = 0;
+        if (msg != null) {
+            String strs[] = msg.split("\\s+");
+            int lineIndex = 0;
+            for (int i = 0; i < strs.length; i++) {
+                newMessage.append(strs[i] + SPACE);
+                lineIndex += strs[i].length();
+                if (lineIndex > WIDTH) {
+                    newMessage.append(NEW_LINE);
+                    lineIndex = 0;
+                }
             }
+            if (newMessage.length() > 500) {
+                return newMessage.substring(0, 500) + "...";
+            }
+            return newMessage.toString();
+        } else {
+            return msg;
         }
-        if (newMessage.length() > 500) {
-            return newMessage.substring(0, 500) + "...";
-        }
-        return newMessage.toString();
     }
 }
