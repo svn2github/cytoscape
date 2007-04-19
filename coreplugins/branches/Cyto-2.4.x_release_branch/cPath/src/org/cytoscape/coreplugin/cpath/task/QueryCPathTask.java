@@ -64,7 +64,7 @@ public class QueryCPathTask implements Task {
     private SearchBundleList searchList;
     private Console console;
     private static final int DEFAULT_INCREMENT = 10;
-    private static final int LARGER_INCREMENT = 50;
+    private static final int LARGER_INCREMENT = 10;
     private TaskMonitor taskMonitor;
     private boolean isInterrupted;
 
@@ -78,8 +78,8 @@ public class QueryCPathTask implements Task {
      */
     public QueryCPathTask (HashMap cyMap, SearchRequest searchRequest,
             SearchBundleList searchList, Console console) {
-        this.logToConsoleBold("Retrieving Data from cPath:  "
-                + searchRequest.toString() + "...");
+        this.logToConsole("Retrieving Data from cPath:  "
+                + searchRequest.toString() + "...", "bold");
 
         String url = CPathProperties.getCPathUrl();
         logToConsole("Connecting to cPath:  " + url);
@@ -134,8 +134,9 @@ public class QueryCPathTask implements Task {
             getAllInteractions(taxonomyId, maxHits);
             taskMonitor.setPercentCompleted(100);
         } catch (EmptySetException e) {
-            console.logMessage("No Matching Results Found.  Please Try Again.");
-            searchResponse.setException(e);
+            this.logToConsole ("No Matching Results Found for:  "
+                    + searchRequest.getQuery() + ".  Please Try Again.", "red");
+            taskMonitor.setPercentCompleted(100);
         } catch (RuntimeException e) {
             searchResponse.setException(e);
         } catch (Exception e) {
@@ -217,21 +218,13 @@ public class QueryCPathTask implements Task {
                 + " - " + endIndex + " of "
                 + totalNumInteractions);
 
-        Date start = new Date();
         GraphReader graphReader = reader.getInteractionsByKeyword
                 (searchRequest.getQuery(), taxonomyId,
                         startIndex, increment);
-        Date stop = new Date();
-        long interval = stop.getTime() - start.getTime();
 
-        //  Estimate Remaining Time
-        long totalTimeInRemaining =
-                CPathTimeEstimator.calculateEsimatedTimeRemaining(interval,
-                        startIndex, increment, totalNumInteractions);
-
-        logToConsole("Getting Interactions:  " + startIndex
-                + " - " + endIndex + " of "
-                + totalNumInteractions + " [OK]");
+        //logToConsole("Getting Interactions:  " + startIndex
+        //        + " - " + endIndex + " of "
+        //        + totalNumInteractions + " [OK]");
 
         double percentCompleted = (startIndex + increment) / (double) totalNumInteractions;
         int percent = (int) (percentCompleted * 100.0);
@@ -239,7 +232,6 @@ public class QueryCPathTask implements Task {
             percent = 100;
         }
         taskMonitor.setPercentCompleted(percent);
-        taskMonitor.setEstimatedTimeRemaining(totalTimeInRemaining);
         return graphReader;
     }
 
@@ -302,10 +294,10 @@ public class QueryCPathTask implements Task {
      *
      * @param msg Message to Log.
      */
-    private void logToConsoleBold (final String msg) {
+    private void logToConsole (final String msg, final String style) {
         Runnable runnable = new Runnable() {
             public void run () {
-                console.logMessageBold(msg);
+                console.logMessage(msg, style);
             }
         };
         SwingUtilities.invokeLater(runnable);
