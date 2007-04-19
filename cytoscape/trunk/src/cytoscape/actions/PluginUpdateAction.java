@@ -50,12 +50,18 @@ public class PluginUpdateAction extends CytoscapeAction {
 						"No updates avaialbe for currently installed plugins.",
 						"Plugin Updates", JOptionPane.INFORMATION_MESSAGE);
 			}
-		} catch (ManagerError E) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), E
-					.getMessage(), "Plugin Update Error",
-					JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
+		} catch (org.jdom.JDOMException jde) {
+			jde.printStackTrace();
+		} catch (java.io.IOException ioe) {
+			ioe.printStackTrace();
+			
 		}
+//		} catch (ManagerError E) {
+//			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), E
+//					.getMessage(), "Plugin Update Error",
+//					JOptionPane.ERROR_MESSAGE);
+//			E.printStackTrace();
+//		}
 	}
 
 }

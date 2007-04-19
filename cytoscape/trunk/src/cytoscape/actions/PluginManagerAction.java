@@ -111,12 +111,15 @@ public class PluginManagerAction extends CytoscapeAction {
 			}
 		} catch (Exception E) {
 			E.printStackTrace();
-			// TODO something useful with this 
 		}
 		
 		
 		List<PluginInfo> Current = Mgr.getPlugins(PluginStatus.CURRENT);
 		Map<String, List<PluginInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);
+
+		for (String Category : InstalledInfo.keySet()) {
+			dialog.addCategory(Category, InstalledInfo.get(Category), PluginInstallStatus.INSTALLED);
+		}
 
 		try {
 			Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil.sortByCategory(Mgr.inquire(DefaultUrl));
@@ -125,18 +128,15 @@ public class PluginManagerAction extends CytoscapeAction {
 				dialog.addCategory(Category, DownloadInfo.get(Category),
 				                   PluginInstallStatus.AVAILABLE);
 			}
-
 			dialog.setSiteName(DefaultTitle);
-		} catch (ManagerError E) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), E.getMessage(), "Error",
-			                              JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
+		} catch (java.io.IOException ioe) {
+			// failed to read the given url
+			dialog.setMessage(PluginManageDialog.CommonError.NOXML + DefaultUrl);
+		} catch (org.jdom.JDOMException jde) {
+			// failed to parse the xml file at the url
+			dialog.setMessage(PluginManageDialog.CommonError.BADXML + DefaultUrl);
+		} finally {
+			dialog.setVisible(true);
 		}
-
-		for (String Category : InstalledInfo.keySet()) {
-			dialog.addCategory(Category, InstalledInfo.get(Category), PluginInstallStatus.INSTALLED);
-		}
-
-		dialog.setVisible(true);
 	}
 }
