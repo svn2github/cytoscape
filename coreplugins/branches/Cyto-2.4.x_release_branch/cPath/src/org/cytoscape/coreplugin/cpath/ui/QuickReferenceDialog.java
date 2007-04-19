@@ -110,23 +110,16 @@ public class QuickReferenceDialog implements ActionListener {
         html.append("<FONT FACE=ARIAL>");
 
         html.append("<P><U>About cPath</U>");
-        html.append("<P>cPath aims to be a freely available cancer pathway "
-                + "database. Currently, only information about "
-                + "protein-protein interactions collected from major "
-                + "interaction databases that support the PSI-MI format is "
-                + "available. cPath is open-source and is easy to locally "
-                + "install for private management of protein-protein "
-                + "interactions. Future directions include support for the "
-                + "BioPAX format so that entire pathways can be stored, "
-                + "queried and presented."
-                + "<P>cPath is currently being developed by the "
-                + "Computational Biology Center of Memorial Sloan-Kettering "
-                + "Cancer Center."
-                + "<P>cPath is available at http://www.cbio.mskcc.org/cpath/");
+        html.append("<P>cPath is a database and software suite for storing, visualizing, and "
+                + "analyzing biological pathways."
+                + "<P>A demo version of cPath is currently available at "
+                + "http://www.cbio.mskcc.org/cpath/."
+                + "<P>The demo site contains all public data from IntACT "
+                + "and MINT.");
 
         html.append("<P><U>About the cPath PlugIn</U>");
         html.append("<P>The cPath PlugIn provides interactive access to the "
-                + "cPath database. Cytoscape users can query cPath, download "
+                + "the cPath demo site. Cytoscape users can query cPath, download "
                 + "matching interactions and view them within Cytoscape.");
 
         html.append("<P><U>Search Examples:</U>");
@@ -150,26 +143,10 @@ public class QuickReferenceDialog implements ActionListener {
                 + "\"regulat\". This will match against records, such as "
                 + "regulate, regulatory, etc.");
 
-        html.append("<P><U>Advanced Search:  Field Specific Options</U>\n"
-                + "<P>It is possible to restrict your search terms within a "
-                + "query to the following fields:<P>"
-                + "-- interactor: interactor name or external reference.<BR>"
-                + "-- organism: organism name or NCBI taxonomy identifier.<BR>"
-                + "-- pmid: Pub Med Identifier<BR>"
-                + "-- experiment_type: Experiment type<BR>"
-                + "-- database: database source<BR>");
-        html.append("<BR>For example:");
-
-        html.append("<P> pmid:9421503");
-        html.append("<BR>-- Finds all records associated with pmid:  9421503.");
-
-        html.append("<P> database:DIP");
-        html.append("<BR>-- Finds all records from DIP (Database"
-                + " of Interacting Proteins).");
         html.append("</FONT>");
 
         html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
-        html.append("Copyright © 2004 Memorial Sloan-Kettering Cancer Center.");
+        html.append("Copyright © 2004-2007 Memorial Sloan-Kettering Cancer Center.");
         html.append("</FONT>");
         return html.toString();
     }
