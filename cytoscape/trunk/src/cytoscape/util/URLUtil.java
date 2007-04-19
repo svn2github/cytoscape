@@ -46,6 +46,9 @@ import java.util.jar.JarInputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
 
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTask;
+
 
 /**
  *
@@ -96,40 +99,58 @@ public class URLUtil {
 	 * Download the file specified by the url string to the given File object
 	 * @param urlString
 	 * @param downloadFile
+	 * @param taskMonitor
 	 * @return
 	 * @throws IOException
 	 */
-	public static void download(String urlString, File downloadFile) throws IOException {
+	public static void download(String urlString, File downloadFile, TaskMonitor taskMonitor) throws IOException {
 		URL url = new URL(urlString);
-		// using getInputStream method above never returned an input stream that I could read from why??
+
 		InputStream is = null;
 		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
 		
+		int maxCount = 0; // -1 if unknown
+		int progressCount = 0;
+		
 		if (CytoProxyHandler == null) {
-			is = url.openStream();
+			java.net.URLConnection conn = url.openConnection();
+			maxCount = conn.getContentLength();
+			is = conn.getInputStream();
 		} else {
-			is = url.openConnection(CytoProxyHandler).getInputStream();
+			java.net.URLConnection conn = url.openConnection(CytoProxyHandler);
+			maxCount = conn.getContentLength();
+			is = conn.getInputStream();
 		}
 		
-		//InputStream is = url.openStream();
-		
-		java.util.List<Byte> FileBytes = new java.util.ArrayList<Byte>();
-
-		byte[] buffer = new byte[1];
-		while (((is.read(buffer)) != -1) && !STOP) {
-			FileBytes.add(buffer[0]);
-		}
-
-		System.out.println("total bytes: " + FileBytes.size());
 		FileOutputStream os = new FileOutputStream(downloadFile);
 
-		for (int i = 0; i < FileBytes.size(); i++) {
-			if (!STOP) {
-				os.write(new byte[] { FileBytes.get(i) });
-			} else {
-				break;
+		double percent = 0.0d;
+		byte[] buffer = new byte[1];
+		while (((is.read(buffer)) != -1) && !STOP) {
+			progressCount += buffer.length;
+
+			//  Report on Progress
+			if (taskMonitor != null) {
+				percent = ((double) progressCount / maxCount) * 100.0;
+
+				if (maxCount == -1) { // file size unknown
+					percent = -1;
+				}
+
+				JTask jTask = (JTask) taskMonitor;
+
+				if (jTask.haltRequested()) { //abort
+					downloadFile = null;
+					taskMonitor.setStatus("Canceling the download task ...");
+					taskMonitor.setPercentCompleted(100);
+					break;
+				}
+
+				taskMonitor.setPercentCompleted((int) percent);
 			}
+			os.write(buffer);
 		}
+
 
 		os.flush();
 		os.close();
