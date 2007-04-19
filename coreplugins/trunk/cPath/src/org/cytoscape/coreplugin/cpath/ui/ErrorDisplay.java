@@ -34,10 +34,8 @@
 */
 package org.cytoscape.coreplugin.cpath.ui;
 
-import java.awt.*;
-
 import javax.swing.*;
-
+import java.awt.*;
 
 /**
  * Error Display Widget.
@@ -45,105 +43,105 @@ import javax.swing.*;
  * @author Ethan Cerami
  */
 public class ErrorDisplay {
-	private Frame parent;
-	private static final int WIDTH = 50;
-	private static final char SPACE = ' ';
-	private static final String NEW_LINE = "\n";
+    private Frame parent;
+    private static final int WIDTH = 50;
+    private static final char SPACE = ' ';
+    private static final String NEW_LINE = "\n";
 
-	/**
-	 * Constructor.
-	 *
-	 * @param frame Frame object.
-	 */
-	public ErrorDisplay(Frame frame) {
-		this.parent = frame;
-	}
+    /**
+     * Constructor.
+     *
+     * @param frame Frame object.
+     */
+    public ErrorDisplay (Frame frame) {
+        this.parent = frame;
+    }
 
-	/**
-	 * Displays the Error Dialog Box.
-	 *
-	 * @param e Exception.
-	 */
-	public void displayError(Throwable e) {
-		showError(e);
-	}
+    /**
+     * Displays the Error Dialog Box.
+     *
+     * @param e Exception.
+     */
+    public void displayError (Throwable e) {
+        showError(e);
+    }
 
-	/**
-	 * Displays the Error Dialog Box.
-	 *
-	 * @param e      Exception.
-	 * @param cPanel ConsolePanel Object.
-	 */
-	public void displayError(Throwable e, ConsolePanel cPanel) {
-		String msg = showError(e);
-		cPanel.logMessage(msg);
-	}
+    /**
+     * Displays the Error Dialog Box.
+     *
+     * @param e      Exception.
+     * @param cPanel ConsolePanel Object.
+     */
+    public void displayError (Throwable e, ConsolePanel cPanel) {
+        String msg = showError(e);
+        cPanel.logMessage(msg);
+    }
 
-	/**
-	 * Displays the Error Dialog Box.
-	 *
-	 * @param errorMsg Error Message String.
-	 */
-	public void displayError(String errorMsg) {
-		String msg = wrapText(errorMsg);
-		JOptionPane.showMessageDialog(parent, msg, "Error", JOptionPane.ERROR_MESSAGE);
-	}
+    /**
+     * Displays the Error Dialog Box.
+     *
+     * @param errorMsg Error Message String.
+     */
+    public void displayError (String errorMsg) {
+        String msg = wrapText(errorMsg);
+        JOptionPane.showMessageDialog(parent, msg,
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
-	/**
-	 * Displays the Error Dialog Box.
-	 *
-	 * @param e Exception.
-	 */
-	private String showError(Throwable e) {
-		e.printStackTrace();
+    /**
+     * Displays the Error Dialog Box.
+     *
+     * @param e Exception.
+     */
+    private String showError (Throwable e) {
+        e.printStackTrace();
+        String msg = null;
+//        if (e instanceof DataServiceException) {
+//            DataServiceException dse = (DataServiceException) e;
+//            msg = new String("An Error Has Occurred:  "
+//                    + dse.getHumanReadableErrorMessage());
+//        } else if (e instanceof MapperException) {
+//            MapperException me = (MapperException) e;
+//            msg = new String("An Error Has Occurred:  "
+//                    + me.getHumanReadableErrorMessage());
+//        } else {
+//            Throwable t = e.getCause();
+//            if (t == null) {
+//                t = e;
+//            }
+//            msg = new String("An Error Has Occurred:  " + e.toString());
+//        }
+        msg = wrapText(msg);
+        JOptionPane.showMessageDialog(parent, msg,
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return msg;
+    }
 
-		String msg = null;
-		//        if (e instanceof DataServiceException) {
-		//            DataServiceException dse = (DataServiceException) e;
-		//            msg = new String("An Error Has Occurred:  "
-		//                    + dse.getHumanReadableErrorMessage());
-		//        } else if (e instanceof MapperException) {
-		//            MapperException me = (MapperException) e;
-		//            msg = new String("An Error Has Occurred:  "
-		//                    + me.getHumanReadableErrorMessage());
-		//        } else {
-		//            Throwable t = e.getCause();
-		//            if (t == null) {
-		//                t = e;
-		//            }
-		//            msg = new String("An Error Has Occurred:  " + e.toString());
-		//        }
-		msg = wrapText(msg);
-		JOptionPane.showMessageDialog(parent, msg, "Error", JOptionPane.ERROR_MESSAGE);
-
-		return msg;
-	}
-
-	/**
-	 * Wraps text to WIDTH characters long.
-	 *
-	 * @param msg Message.
-	 * @return Wrapped Text message.
-	 */
-	public String wrapText(String msg) {
-		StringBuffer newMessage = new StringBuffer();
-		String[] strs = msg.split("\\s+");
-		int lineIndex = 0;
-
-		for (int i = 0; i < strs.length; i++) {
-			newMessage.append(strs[i] + SPACE);
-			lineIndex += strs[i].length();
-
-			if (lineIndex > WIDTH) {
-				newMessage.append(NEW_LINE);
-				lineIndex = 0;
-			}
-		}
-
-		if (newMessage.length() > 500) {
-			return newMessage.substring(0, 500) + "...";
-		}
-
-		return newMessage.toString();
-	}
+    /**
+     * Wraps text to WIDTH characters long.
+     *
+     * @param msg Message.
+     * @return Wrapped Text message.
+     */
+    public String wrapText (String msg) {
+        StringBuffer newMessage = new StringBuffer();
+        if (msg != null) {
+            String strs[] = msg.split("\\s+");
+            int lineIndex = 0;
+            for (int i = 0; i < strs.length; i++) {
+                newMessage.append(strs[i] + SPACE);
+                lineIndex += strs[i].length();
+                if (lineIndex > WIDTH) {
+                    newMessage.append(NEW_LINE);
+                    lineIndex = 0;
+                }
+            }
+            if (newMessage.length() > 500) {
+                return newMessage.substring(0, 500) + "...";
+            }
+            return newMessage.toString();
+        } else {
+            return msg;
+        }
+    }
 }

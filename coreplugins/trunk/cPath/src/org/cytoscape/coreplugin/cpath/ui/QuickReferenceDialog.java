@@ -34,13 +34,11 @@
 */
 package org.cytoscape.coreplugin.cpath.ui;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
 
 /**
  * Displays a Quick Reference Search Help Page.
@@ -48,137 +46,117 @@ import javax.swing.border.EmptyBorder;
  * @author Ethan Cerami.
  */
 public class QuickReferenceDialog implements ActionListener {
-	private static final int WIDTH = 400;
-	private static final int HEIGHT = 450;
-	private JFrame parent;
-	private JFrame helpFrame;
+    private static final int WIDTH = 400;
+    private static final int HEIGHT = 450;
+    private JFrame parent;
+    private JFrame helpFrame;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param parent Parent Frame.
-	 */
-	public QuickReferenceDialog(JFrame parent) {
-		this.parent = parent;
-		init();
-	}
+    /**
+     * Constructor.
+     *
+     * @param parent Parent Frame.
+     */
+    public QuickReferenceDialog (JFrame parent) {
+        this.parent = parent;
+        init();
+    }
 
-	/**
-	 * Users has requested that we show the Quick Reference Dialog.
-	 *
-	 * @param e ActionEvent Object.
-	 */
-	public void actionPerformed(ActionEvent e) {
-		if (parent != null) {
-			Point point = parent.getLocation();
-			Dimension size = parent.getSize();
-			int x = (int) ((point.getX() + (size.getWidth() / 2)) - (WIDTH / 2));
-			int y = (int) ((point.getY() + (size.getHeight() / 2)) - (HEIGHT / 2));
-			helpFrame.setLocation(x, y);
-		}
+    /**
+     * Users has requested that we show the Quick Reference Dialog.
+     *
+     * @param e ActionEvent Object.
+     */
+    public void actionPerformed (ActionEvent e) {
+        if (parent != null) {
+            Point point = parent.getLocation();
+            Dimension size = parent.getSize();
+            int x = (int) (point.getX() + size.getWidth() / 2 - WIDTH / 2);
+            int y = (int) (point.getY() + size.getHeight() / 2 - HEIGHT / 2);
+            helpFrame.setLocation(x, y);
+        }
+        helpFrame.setVisible(true);
+    }
 
-		helpFrame.setVisible(true);
-	}
+    private void init () {
+        helpFrame = new JFrame("Quick Reference Manual");
+        Container contentPane = helpFrame.getContentPane();
+        contentPane.setLayout(new BorderLayout());
 
-	private void init() {
-		helpFrame = new JFrame("Quick Reference Manual");
+        JEditorPane htmlPane = new JEditorPane();
+        EmptyBorder border = new EmptyBorder(5, 5, 5, 5);
+        htmlPane.setBorder(border);
+        htmlPane.setContentType("text/html");
+        htmlPane.setEditable(false);
+        htmlPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		Container contentPane = helpFrame.getContentPane();
-		contentPane.setLayout(new BorderLayout());
+        String html = this.getAboutHtml();
+        htmlPane.setText(html);
+        htmlPane.setCaretPosition(0);
 
-		JEditorPane htmlPane = new JEditorPane();
-		EmptyBorder border = new EmptyBorder(5, 5, 5, 5);
-		htmlPane.setBorder(border);
-		htmlPane.setContentType("text/html");
-		htmlPane.setEditable(false);
-		htmlPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        JScrollPane scrollPane = new JScrollPane(htmlPane);
+        contentPane.add(scrollPane, BorderLayout.CENTER);
 
-		String html = this.getAboutHtml();
-		htmlPane.setText(html);
-		htmlPane.setCaretPosition(0);
+        //  Pack it, but don't show it yet.
+        helpFrame.pack();
+    }
 
-		JScrollPane scrollPane = new JScrollPane(htmlPane);
-		contentPane.add(scrollPane, BorderLayout.CENTER);
+    private String getAboutHtml () {
+        StringBuffer html = new StringBuffer();
+        html.append("<TABLE WIDTH=100%><TR BGCOLOR=#DDDDDD><TD>");
+        html.append("<FONT FACE=ARIAL SIZE=+1>");
+        html.append("Quick Reference Manual");
+        html.append("</FONT>");
+        html.append("</TD></TR></TABLE>");
+        html.append("<FONT FACE=ARIAL>");
 
-		//  Pack it, but don't show it yet.
-		helpFrame.pack();
-	}
+        html.append("<P><U>About cPath</U>");
+        html.append("<P>cPath is a database and software suite for storing, visualizing, and "
+                + "analyzing biological pathways."
+                + "<P>A demo version of cPath is currently available at "
+                + "http://www.cbio.mskcc.org/cpath/."
+                + "<P>The demo site contains all public data from IntACT "
+                + "and MINT.");
 
-	private String getAboutHtml() {
-		StringBuffer html = new StringBuffer();
-		html.append("<TABLE WIDTH=100%><TR BGCOLOR=#DDDDDD><TD>");
-		html.append("<FONT FACE=ARIAL SIZE=+1>");
-		html.append("Quick Reference Manual");
-		html.append("</FONT>");
-		html.append("</TD></TR></TABLE>");
-		html.append("<FONT FACE=ARIAL>");
+        html.append("<P><U>About the cPath PlugIn</U>");
+        html.append("<P>The cPath PlugIn provides interactive access to the "
+                + "the cPath demo site. Cytoscape users can query cPath, download "
+                + "matching interactions and view them within Cytoscape.");
 
-		html.append("<P><U>About cPath</U>");
-		html.append("<P>cPath aims to be a freely available cancer pathway "
-		            + "database. Currently, only information about "
-		            + "protein-protein interactions collected from major "
-		            + "interaction databases that support the PSI-MI format is "
-		            + "available. cPath is open-source and is easy to locally "
-		            + "install for private management of protein-protein "
-		            + "interactions. Future directions include support for the "
-		            + "BioPAX format so that entire pathways can be stored, "
-		            + "queried and presented." + "<P>cPath is currently being developed by the "
-		            + "Computational Biology Center of Memorial Sloan-Kettering "
-		            + "Cancer Center."
-		            + "<P>cPath is available at http://www.cbio.mskcc.org/cpath/");
+        html.append("<P><U>Search Examples:</U>");
+        html.append("<P>dna repair");
+        html.append("<BR>-- Finds all records that contains the words "
+                + " dna or repair.");
+        html.append("<P>dna AND repair");
+        html.append("<BR>-- Finds all records the contain the words "
+                + " dna AND repair.");
 
-		html.append("<P><U>About the cPath PlugIn</U>");
-		html.append("<P>The cPath PlugIn provides interactive access to the "
-		            + "cPath database. Cytoscape users can query cPath, download "
-		            + "matching interactions and view them within Cytoscape.");
+        html.append("<P>dna NOT repair");
+        html.append("<BR>-- Finds all records that contain the word "
+                + "dna, but do not contain the word repair.");
 
-		html.append("<P><U>Search Examples:</U>");
-		html.append("<P>dna repair");
-		html.append("<BR>-- Finds all records that contains the words " + " dna or repair.");
-		html.append("<P>dna AND repair");
-		html.append("<BR>-- Finds all records the contain the words " + " dna AND repair.");
+        html.append("<P>\"dna repair\"");
+        html.append("<BR>-- Finds all records containing the exact "
+                + " text:  \"dna repair\".");
 
-		html.append("<P>dna NOT repair");
-		html.append("<BR>-- Finds all records that contain the word "
-		            + "dna, but do not contain the word repair.");
+        html.append("<P>regulat*");
+        html.append("<BR>-- Finds all records begin with the wildcard:   "
+                + "\"regulat\". This will match against records, such as "
+                + "regulate, regulatory, etc.");
 
-		html.append("<P>\"dna repair\"");
-		html.append("<BR>-- Finds all records containing the exact " + " text:  \"dna repair\".");
+        html.append("</FONT>");
 
-		html.append("<P>regulat*");
-		html.append("<BR>-- Finds all records begin with the wildcard:   "
-		            + "\"regulat\". This will match against records, such as "
-		            + "regulate, regulatory, etc.");
+        html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
+        html.append("Copyright © 2004-2007 Memorial Sloan-Kettering Cancer Center.");
+        html.append("</FONT>");
+        return html.toString();
+    }
 
-		html.append("<P><U>Advanced Search:  Field Specific Options</U>\n"
-		            + "<P>It is possible to restrict your search terms within a "
-		            + "query to the following fields:<P>"
-		            + "-- interactor: interactor name or external reference.<BR>"
-		            + "-- organism: organism name or NCBI taxonomy identifier.<BR>"
-		            + "-- pmid: Pub Med Identifier<BR>" + "-- experiment_type: Experiment type<BR>"
-		            + "-- database: database source<BR>");
-		html.append("<BR>For example:");
-
-		html.append("<P> pmid:9421503");
-		html.append("<BR>-- Finds all records associated with pmid:  9421503.");
-
-		html.append("<P> database:DIP");
-		html.append("<BR>-- Finds all records from DIP (Database" + " of Interacting Proteins).");
-		html.append("</FONT>");
-
-		html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
-		html.append("Copyright ï¿½ 2004 Memorial Sloan-Kettering Cancer Center.");
-		html.append("</FONT>");
-
-		return html.toString();
-	}
-
-	/**
-	 * Main Method (used to testing purposes).
-	 *
-	 * @param args Command Line Arguments.
-	 */
-	public static void main(String[] args) {
-		QuickReferenceDialog frame = new QuickReferenceDialog(null);
-	}
+    /**
+     * Main Method (used to testing purposes).
+     *
+     * @param args Command Line Arguments.
+     */
+    public static void main (String args[]) {
+        QuickReferenceDialog frame = new QuickReferenceDialog(null);
+    }
 }
