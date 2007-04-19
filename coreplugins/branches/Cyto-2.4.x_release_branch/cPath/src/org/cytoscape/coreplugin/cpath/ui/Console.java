@@ -53,7 +53,7 @@ public interface Console {
      *
      * @param msg Message
      */
-    void logMessageBold (String msg);
+    void logMessage (String msg, String style);
 
     /**
      * Clears the Console.
