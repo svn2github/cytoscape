@@ -64,7 +64,7 @@ public class QueryCPathTask implements Task {
     private SearchBundleList searchList;
     private Console console;
     private static final int DEFAULT_INCREMENT = 10;
-    private static final int LARGER_INCREMENT = 10;
+    private static final int LARGER_INCREMENT = 100;
     private TaskMonitor taskMonitor;
     private boolean isInterrupted;
 
