@@ -387,71 +387,21 @@
 
 	</scenario>
 
-	<scenario name="IMPORT_REMOTE_SIF_FILE">
-		<Click componentClass="JMenu" label="File" />
-		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem"
-			label="Network (multiple file types)..." />
-
-		<Click componentClass="JRadioButton" label="Remote"
-			windowFinder="CLASS_IS_ACCESSIBLE"
-			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-
-		<Delay ms="500" />
-		<Click componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
-			componentClass="JComboBox" name="networkFileComboBox"
-			windowFinder="CLASS_IS_ACCESSIBLE"
-			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-
-		<SelectAll />
-
-		<TypeText
-			text="http://www.cytoscape.org/tut/getting.started/RUAL.subset.sif"
-			waitTime="20" />
-
-		<retriever retryTime="10000">
-			<Click componentClass="JButton" dialogTitle="Import Network"
-				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-		</retriever>
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
-	</scenario>
-
-
 	<!-- Test zoom in/out functions -->
 	<scenario name="ZOOM_IN_AND_OUT">
+
+		<Delay ms="500" />
+	
 		<WindowStatus status="MAXIMIZED_BOTH"
 			windowFinder="ROOT_CONTAINER" />
 
 		<WindowStatus status="MAXIMIZED_BOTH"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
-			windowTitle="RUAL.subset.sif--child" windowClass="JInternalFrame" />
+			windowTitle="$(FILE_NAME)" windowClass="JInternalFrame" />
 
-		<!-- Fit to Window -->
-
-		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-			componentNumber="5" componentClass="JButton"
-			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
-
-		<Delay ms="500" />
-
-		<repeat from="0" shortOf="10" propertyKey="FOO">
+		<repeat from="0" shortOf="$(NR_OF_CLICKS)" propertyKey="FOO">
 			<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-				componentNumber="3" componentClass="JButton"
-				containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
-		</repeat>
-
-		<repeat from="0" shortOf="10" propertyKey="FOO">
-			<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-				componentNumber="2" componentClass="JButton"
+				componentNumber="$(BUTTON_NUMBER)" componentClass="JButton"
 				containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
 		</repeat>
 
@@ -463,14 +413,14 @@
 
 		<WindowStatus status="MAXIMIZED_BOTH"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
-			windowTitle="RUAL.subset.sif" windowClass="JInternalFrame" />
+			windowTitle="$(FILE_NAME)" windowClass="JInternalFrame" />
 
 		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
 			componentNumber="5" componentClass="JButton"
 			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
 
 		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-			componentNumber="8" componentClass="JButton"
+			componentNumber="9" componentClass="JButton"
 			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
 
 		<Click componentClass="JButton" label="Create new filter"
@@ -484,19 +434,26 @@
 		<Click componentClass="JButton" label="OK"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
 			windowTitle="Filter Creation Dialog" windowClass="JDialog" />
+			
+			<!-- Apparently in 2.3 the item in list is not selected upon creation: select last in list-->
 
+		<List componentFinder="CLASS_IS_ACCESSIBLE" reverseOrder="true" targetIndex="0"
+			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
+			windowTitle="Use Filters" windowClass="JFrame" />
+		
+			<!-- Setting inverse is not reset??-->
 		<ComboBox componentFinder="COMPONENT_NUMBER" from="RIGHT"
-			componentNumber="0" targetIndex="1" containerClass="JPanel"
+			componentNumber="1" targetIndex="1" containerClass="JPanel"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
 			windowTitle="Use Filters" windowClass="JFrame" />
 
 		<ComboBox componentFinder="COMPONENT_NUMBER" from="RIGHT"
-			componentNumber="1" targetIndex="0" containerClass="JPanel"
+			componentNumber="0" targetIndex="0" containerClass="JPanel"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
 			windowTitle="Use Filters" windowClass="JFrame" />
 
 		<Click componentFinder="COMPONENT_NUMBER" from="RIGHT"
-			componentNumber="1" componentClass="JTextField"
+			componentNumber="0" componentClass="JTextField"
 			containerClass="JPanel"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
 			windowTitle="Use Filters" windowClass="JFrame" />
@@ -576,76 +533,6 @@
 		<Click componentClass="JMenuItem"
 			label="Delete Selected Nodes and Edges" />
 	<!-- <Delay ms="2500" /> -->
-	</scenario>
-
-
-	<!-- For Test Slow -->
-	<scenario name="IMPORT_REMOTE_NETWORK_FILE">
-		<Click componentClass="JMenu" label="File" />
-		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem"
-			label="Network (multiple file types)..." />
-
-		<Click componentClass="JRadioButton" label="Remote"
-			windowFinder="CLASS_IS_ACCESSIBLE"
-			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-
-		<Delay ms="500" />
-		<Click componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
-			componentClass="JComboBox" name="networkFileComboBox"
-			windowFinder="CLASS_IS_ACCESSIBLE"
-			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-
-		<SelectAll />
-
-		<TypeText text="$(REMORE_NETWORK_FILE)" waitTime="10" />
-
-		<retriever retryTime="10000">
-			<Click componentClass="JButton" dialogTitle="Import Network"
-				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-		</retriever>
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
-	</scenario>
-
-	<scenario name="IMPORT_REMOTE_NETWORK_FILE_FROM_BOOKMARK">
-		<Click componentClass="JMenu" label="File" />
-		<Click componentClass="JMenuItem" label="Import" />
-		<Click componentClass="JMenuItem"
-			label="Network (multiple file types)..." />
-
-		<Click componentClass="JRadioButton" label="Remote"
-			windowFinder="CLASS_IS_ACCESSIBLE"
-			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-
-		<Delay ms="500" />
-		<ComboBox componentFinder="A_COUPLE_OF_CLASS_AND_NAME_IS_EQUAL"
-			componentClass="JComboBox" name="networkFileComboBox"
-			targetIndex="$(BOOKMARK_INDEX)" windowFinder="CLASS_IS_ACCESSIBLE"
-			windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-
-		<retriever retryTime="10000">
-			<Click componentClass="JButton" dialogTitle="Import Network"
-				label="Import" windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.dialogs.ImportNetworkDialog" />
-		</retriever>
-		<retriever retryTime="300000" intervalTime="1000">
-			<Verify property="enabled" expected="true" 
-			        componentClass="JButton" label="    Close    " 
-				    windowFinder="CLASS_IS_ACCESSIBLE"
-				    windowClass="cytoscape.task.ui.JTask" />
-		</retriever>
-		<Click label="    Close    " componentClass="JButton"
-				windowFinder="CLASS_IS_ACCESSIBLE"
-				windowClass="cytoscape.task.ui.JTask" />
 	</scenario>
 
 	<scenario name="IMPORT_GML_FILE">

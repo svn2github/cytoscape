@@ -466,30 +466,19 @@
 
 	<!-- Test zoom in/out functions -->
 	<scenario name="ZOOM_IN_AND_OUT">
+
+		<Delay ms="500" />
+	
 		<WindowStatus status="MAXIMIZED_BOTH"
 			windowFinder="ROOT_CONTAINER" />
 
 		<WindowStatus status="MAXIMIZED_BOTH"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
-			windowTitle="RUAL.subset.sif--child" windowClass="JInternalFrame" />
+			windowTitle="$(FILE_NAME)" windowClass="JInternalFrame" />
 
-		<!-- Fit to Window -->
-
-		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-			componentNumber="5" componentClass="JButton"
-			containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
-
-		<Delay ms="500" />
-
-		<repeat from="0" shortOf="10" propertyKey="FOO">
+		<repeat from="0" shortOf="$(NR_OF_CLICKS)" propertyKey="FOO">
 			<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-				componentNumber="3" componentClass="JButton"
-				containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
-		</repeat>
-
-		<repeat from="0" shortOf="10" propertyKey="FOO">
-			<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
-				componentNumber="2" componentClass="JButton"
+				componentNumber="$(BUTTON_NUMBER)" componentClass="JButton"
 				containerClass="JToolBar" windowFinder="ROOT_CONTAINER" />
 		</repeat>
 
@@ -501,7 +490,7 @@
 
 		<WindowStatus status="MAXIMIZED_BOTH"
 			windowFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL"
-			windowTitle="RUAL.subset.sif" windowClass="JInternalFrame" />
+			windowTitle="$(FILE_NAME)" windowClass="JInternalFrame" />
 
 		<Click componentFinder="COMPONENT_NUMBER" from="LEFT"
 			componentNumber="5" componentClass="JButton"
@@ -636,7 +625,7 @@
 
 		<SelectAll />
 
-		<TypeText text="$(REMORE_NETWORK_FILE)" waitTime="10" />
+		<TypeText text="$(REMOTE_NETWORK_FILE)" waitTime="10" />
 
 		<retriever retryTime="10000">
 			<Click componentClass="JButton" dialogTitle="Import Network"
