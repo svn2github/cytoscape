@@ -139,14 +139,18 @@ public class PluginFileReader {
 	// get license text, add to info object
 	protected static PluginInfo addLicense(PluginInfo obj, Element Plugin) {
 		Element License = Plugin.getChild(licenseTag);
-
+		
 		if (License != null) {
+			boolean RequireAlways = false;
+			if (License.getChild("license_required") != null) {
+				RequireAlways = true;
+			}
 			if (License.getChild(licenseText) != null) {
-				obj.setLicense( License.getChildTextTrim(licenseText) );
+				obj.setLicense( License.getChildTextTrim(licenseText), RequireAlways );
 			} else if (License.getChild(urlTag) != null) {
 				try {
 					String LicenseText = URLUtil.download( new URL(License.getChildTextTrim(urlTag)) );
-					obj.setLicense(LicenseText);
+					obj.setLicense(LicenseText, RequireAlways);
 				} catch (Exception E) {
 					E.printStackTrace();
 				}

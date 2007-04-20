@@ -109,7 +109,9 @@ public class PluginInfo {
 	private String projectUrl;
 	private String pluginCategory;
 	private List<String> pluginFiles;
+	private boolean licenseRequired = false;
 	protected String enclosingJar;
+	
 
 	/**
 	 * Initializes a PluginInfo object with the following defaults:
@@ -283,9 +285,12 @@ public class PluginInfo {
 	/**
 	 * Sets the license information for the plugin.  Not required.
 	 * @param Text string of license.
+	 * @param alwaysRequired If the user expects the license to be required for both install
+	 * and update at all times (true) or only at install (false)
 	 */
-	public void setLicense(String licenseText) {
+	public void setLicense(String licenseText, boolean alwaysRequired) {
 		license = new License(licenseText);
+		licenseRequired = alwaysRequired;
 	}
 	
 	/* GET */
@@ -297,6 +302,14 @@ public class PluginInfo {
 		if (license != null)
 			return license.getLicense();
 		else return null;
+	}
+	
+	/**
+	 * @return If the license is always required to be accepted for installs and updates this returns
+	 * true.  If it only is required at install time (never at update) returns false.
+	 */
+	public boolean isLicenseRequired() {
+		return licenseRequired;
 	}
 	
 	/**
@@ -393,33 +406,54 @@ public class PluginInfo {
 		return getName() + " " + getPluginVersion();
 	}
 
-	/**
-	 * @return String of nice output for the information contained by the
-	 *         PluginInfo object.
-	 */
-	public String prettyOutput() {
-		String Text = getName() + "\n\n";
-		Text += ("Version: " + getPluginVersion() + "\n\n");
-		Text += ("Category: " + getCategory() + "\n\n");
 
-		// don't current have a release date, might be nice
-		Text += (getDescription() + "\n\n");
-		Text += "Released By: ";
-
-		java.util.Iterator<AuthorInfo> aI = getAuthors().iterator();
-
-		while (aI.hasNext()) {
-			AuthorInfo Info = aI.next();
-
-			if (Info.getAuthor() != null)
-				Text += (Info.getAuthor() + ", ");
-
-			Text += (Info.getInstitution() + "\n");
+	public static boolean isNewVersion(PluginInfo Current, PluginInfo New) {
+		boolean isNew = false;
+		
+		PluginInfo NewestVersion = getNewerVersion(Current, New);
+		if ( NewestVersion.equals(New) ) {
+			isNew = true;
 		}
+		return isNew;
+	}
+	
+	public static PluginInfo getNewerVersion(PluginInfo Current, PluginInfo New) {
+		String SplitRegex = "\\.|_|-";
+		
+		PluginInfo NewerObj = Current;
+		String[] CurrentVersion = Current.getPluginVersion().split(SplitRegex);
+		String[] NewVersion = New.getPluginVersion().split(SplitRegex);
 
-		return Text;
+		System.out.println("VERSIONS: " + New.getPluginVersion().toString() + ":"
+				+ Current.getPluginVersion().toString());
+
+		for (int i = 0; i < NewVersion.length; i++) {
+			// if we're beyond the end of the current version array then it's a
+			// new version NOT TRUE  1.0-beta < 1.0
+//			if (CurrentVersion.length <= i) {
+//				NewerObj = New;
+//				break;
+//			}
+
+			// if at any point the new version number is greater
+			// then it's "new" ie. 1.2.1 > 1.1
+			// whoops...what if they add a character in here?? TODO !!!!
+			System.out.println("v" + NewVersion[i] + " : v" + CurrentVersion[i]);
+		
+			// if both are digits we can compare
+			if ( (NewVersion[i].matches("\\d+") && CurrentVersion[i].matches("\\d+")) &&
+				 (Integer.valueOf(NewVersion[i]) > Integer.valueOf(CurrentVersion[i]))) {
+				NewerObj = New;
+			} // else....
+			
+			
+			
+		}
+		return NewerObj;
 	}
 
+	
+	
 	// yea, it's ugly...styles taken from cytoscape website
 	public String htmlOutput() {
 		String Html = "<html><style type='text/css'>";

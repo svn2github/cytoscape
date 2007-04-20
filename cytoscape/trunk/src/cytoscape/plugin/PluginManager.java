@@ -181,12 +181,14 @@ public class PluginManager {
 		Map<String, List<PluginInfo>> CurrentInstalled = ManagerUtil
 				.sortByClass(getPlugins(PluginTracker.PluginStatus.CURRENT));
 
+		// already registered
 		if (CurrentInstalled.containsKey(Plugin.getClass().getName())
 				&& Plugin.getPluginInfoObject() == null) {
 			return;
 		}
 
 		if (Plugin.getPluginInfoObject() == null) {
+			System.out.println(Plugin.toString() + " INFO OBJ NULL");
 			InfoObj = new PluginInfo();
 			InfoObj.setName(Plugin.getClass().getName());
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
@@ -195,6 +197,7 @@ public class PluginManager {
 				InfoObj.addFileName(JarFileName);
 		} else {
 			InfoObj = Plugin.getPluginInfoObject();
+			System.out.println("GOT INFO OBJ " + InfoObj.getName() + " VERS: " + InfoObj.getPluginVersion());
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
 
 			if (JarFileName != null) {
@@ -411,7 +414,9 @@ public class PluginManager {
 
 		if (Current.getID().equals(New.getID())
 				&& Current.getProjectUrl().equals(New.getProjectUrl())
-				&& isVersionNew(Current, New)) {
+				&& PluginInfo.isNewVersion(Current, New)) {
+				//isVersionNew(Current, New)) {
+			
 			download(New, taskMonitor);
 			pluginTracker.addPlugin(New, PluginTracker.PluginStatus.INSTALL);
 			pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
@@ -481,8 +486,9 @@ public class PluginManager {
 		boolean hasUpdate = false;
 
 		if ((Current.getID() != null) && (New.getID() != null)) {
-			boolean newVersion = isVersionNew(Current, New);
-
+			boolean newVersion = PluginInfo.isNewVersion(Current, New); 
+				//isVersionNew(Current, New);
+			
 			if ((Current.getID().trim().equals(New.getID().trim()) && Current
 					.getProjectUrl().equals(New.getProjectUrl()))
 					&& newVersion) {
