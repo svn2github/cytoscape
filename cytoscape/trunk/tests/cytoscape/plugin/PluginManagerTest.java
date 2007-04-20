@@ -218,13 +218,15 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
 
+		List<PluginInfo> DeleteList = mgr.getPlugins(PluginStatus.DELETE);
+		
 		// delete
 		mgr.delete();
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 
-		for (String FileName : Plugins.get(0).getFileList()) {
+		for (String FileName : DeleteList.get(0).getFileList()) {
 			assertFalse((new File(FileName)).exists());
 		}
 	}
@@ -283,6 +285,9 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
+		
+		mgr.delete( mgr.getPlugins(PluginStatus.CURRENT).get(0) );
+		mgr.delete();
 
 	}
 
