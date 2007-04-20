@@ -294,7 +294,6 @@ public class ZipUtil {
 		
 		while (Entries.hasMoreElements()) {
 			ZipEntry CurrentEntry = (ZipEntry) Entries.nextElement();
-			System.out.println(CurrentEntry.getName() + " " + fileNameRegEx);
 			if (CurrentEntry.getName().matches(fileNameRegEx)) {
 				Matching.add(CurrentEntry);
 			}
