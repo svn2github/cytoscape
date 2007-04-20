@@ -62,7 +62,7 @@ package cytoscape.visual.mappings;
  */
 public class BoundaryRangeValues {
     /**
-     * 
+     *
      */
     public Object lesserValue = null;
 
@@ -85,7 +85,7 @@ public class BoundaryRangeValues {
     /**
      * Creates a new BoundaryRangeValues object.
      *
-     * @param lesser Object used for values less than this point. 
+     * @param lesser Object used for values less than this point.
      * @param equal Object used for value equal to this point.
      * @param greater Object used for values greater than this point.
      */
@@ -93,6 +93,18 @@ public class BoundaryRangeValues {
         lesserValue = lesser;
         equalValue = equal;
         greaterValue = greater;
+    }
+
+    /**
+     * Creates a new BoundaryRangeValues object.
+     * This is a copy constructor.
+     *
+     * @param original DOCUMENT ME!
+     */
+    public BoundaryRangeValues(final BoundaryRangeValues original) {
+    	this.equalValue = original.equalValue;
+    	this.lesserValue = original.lesserValue;
+    	this.greaterValue = original.greaterValue;
     }
 
     /**
