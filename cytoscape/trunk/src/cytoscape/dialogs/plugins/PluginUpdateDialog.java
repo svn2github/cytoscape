@@ -156,6 +156,7 @@ public class PluginUpdateDialog extends JDialog implements
 
 	// updates all plugins to the newest version available
 	private void updateAllButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
 		if (JOptionPane
 				.showConfirmDialog(
 						this,
@@ -174,18 +175,19 @@ public class PluginUpdateDialog extends JDialog implements
 
 			PluginInfo LastObj = null;
 			for (TreeNode Node : LeafNodes) {
-				PluginInfo Obj = (PluginInfo) ((DefaultMutableTreeNode) Node)
-						.getUserObject();
-				if (LastObj != null) {
-					PluginInfo NewObj = getNewerVersion(Obj, LastObj);
-					PluginInfo ParentObj = (PluginInfo) ((DefaultMutableTreeNode) Node
-							.getParent()).getUserObject();
+				PluginInfo ParentObj = (PluginInfo) ((DefaultMutableTreeNode) Node.getParent()).getUserObject();
+				PluginInfo Obj = (PluginInfo) ((DefaultMutableTreeNode) Node).getUserObject();
+				
+				// node is a sib of itself so it always has one
+				if ( ((DefaultMutableTreeNode)Node).getSiblingCount() <= 1) {
+					UpdateableObjs.put(ParentObj, Obj);
+				} else if (LastObj != null) {
+					PluginInfo NewObj = PluginInfo.getNewerVersion(LastObj, Obj);
 
 					// this should deal with an object having multiple available
 					// updates
 					if (UpdateableObjs.containsKey(ParentObj)) {
-						NewObj = getNewerVersion(NewObj, UpdateableObjs
-								.get(ParentObj));
+						NewObj = PluginInfo.getNewerVersion(UpdateableObjs.get(ParentObj), NewObj);
 						UpdateableObjs.remove(ParentObj);
 						UpdateableObjs.put(ParentObj, NewObj);
 					} else {
@@ -195,7 +197,6 @@ public class PluginUpdateDialog extends JDialog implements
 				LastObj = Obj;
 			}
 		}
-
 		List<PluginInfo[]> ObjToUpdate = getUpdateList(UpdateableObjs);
 		createUpdateTask(ObjToUpdate);
 	}
@@ -215,8 +216,11 @@ public class PluginUpdateDialog extends JDialog implements
 		for (PluginInfo Original : PotentialUpdates.keySet()) {
 			final PluginInfo Old = Original;
 			final PluginInfo New = PotentialUpdates.get(Old);
-			if (New.getLicenseText() != null) {
+			
+			// display only if always required at update	
+			if ( New.isLicenseRequired() && New.getLicenseText() != null) {
 				final LicenseDialog ld = new LicenseDialog();
+				ld.setPluginName(New.getName() + " v" + New.getPluginVersion());
 				ld.addLicenseText(New.getLicenseText());
 				ld.addListenerToFinish(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -232,36 +236,12 @@ public class PluginUpdateDialog extends JDialog implements
 		return Updates;
 	}
 
-	private PluginInfo getNewerVersion(PluginInfo New, PluginInfo Old) {
-		PluginInfo NewerObj = Old;
-		String[] CurrentVersion = Old.getPluginVersion().split("\\.");
-		String[] NewVersion = New.getPluginVersion().split("\\.");
-		System.out.println(New.getPluginVersion().toString() + ":"
-				+ Old.getPluginVersion().toString());
-		for (int i = 0; i < NewVersion.length; i++) {
-			// if we're beyond the end of the current version array then it's a
-			// new version
-			if (CurrentVersion.length <= i) {
-				NewerObj = New;
-				break;
-			}
-			// if at any point the new version number is greater
-			// then it's "new" ie. 1.2.1 > 1.1
-			// whoops...what if they add a character in here?? TODO !!!!
-			System.out.println(NewVersion[i] + ":" + CurrentVersion[i]);
-			if (Integer.valueOf(NewVersion[i]) > Integer
-					.valueOf(CurrentVersion[i]))
-				NewerObj = New;
-		}
-		return NewerObj;
-	}
-
 	private List<TreeNode> recursiveReadTree(TreeNode Node) {
 		List<TreeNode> LeafNodes = new java.util.ArrayList<TreeNode>();
 		Enumeration Children = Node.children();
 		while (Children.hasMoreElements()) {
 			TreeNode Child = (TreeNode) Children.nextElement();
-			System.out.println(Child.toString());
+			//System.out.println(Child.toString());
 			if (!Child.isLeaf()) {
 				List<TreeNode> DeeperNodes = recursiveReadTree(Child);
 				LeafNodes.addAll(DeeperNodes);

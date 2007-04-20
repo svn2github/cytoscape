@@ -5,7 +5,8 @@ import javax.swing.JDialog;
 
 public class LicenseDialog extends javax.swing.JDialog {
 	private static String title = "Plugin License Agreement";
-
+	
+	
 	/** Creates new form LicenseDialog */
 	public LicenseDialog() {
 		setModal(true);
@@ -40,6 +41,10 @@ public class LicenseDialog extends javax.swing.JDialog {
 		licenseEditorPane.setEditable(false);
 	}
 
+	public void setPluginName(String Name) {
+		pluginLicenseLabel.setText(Name + " " + title);
+	}
+	
 	public void addListenerToFinish(java.awt.event.ActionListener listener) {
 		finishButton.addActionListener(listener);
 	}

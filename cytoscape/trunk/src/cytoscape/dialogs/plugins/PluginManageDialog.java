@@ -215,18 +215,16 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	/** Does this actually need to be public?  FIXIT
-	 * Removes the given node from the tree model, updates the tree for the user
-	 * @param Node
-	 */
-	public void removeNode(DefaultMutableTreeNode Node) {
+	private void removeNode(DefaultMutableTreeNode Node) {
 		MutableTreeNode parent = (MutableTreeNode) (Node.getParent());
-		if (parent != null)
+		if (parent != null) {
 			treeModel.removeNodeFromParent(Node);
+		}
 		if (!parent.children().hasMoreElements()
 				&& !parent.equals(availableNode)
-				&& !parent.equals(installedNode))
+				&& !parent.equals(installedNode)) {
 			treeModel.removeNodeFromParent(parent);
+		}
 	}
 
 	// install new plugin
@@ -243,6 +241,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 			if (info.getLicenseText() != null) {
 				final LicenseDialog License = new LicenseDialog(this);
+				License.setPluginName(info.getName() + " v" + info.getPluginVersion());
 				License.addLicenseText(info.getLicenseText());
 				License.addListenerToFinish(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -551,24 +550,27 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			return pluginInfo.getName() + " plugin downloading";
 		}
 	
+
+		 // get rid of any sibling nodes that are duplicate (different versions) of the just downloaded one
 		private void cleanTree(DefaultMutableTreeNode node) {
 			PluginInfo info = (PluginInfo) node.getUserObject();  
-			java.util.Enumeration<TreeNode> Siblings = node.getParent().children();
+			List<DefaultMutableTreeNode> RemovableNodes = new java.util.ArrayList<DefaultMutableTreeNode>();
+
+			for(int i=0; i<node.getParent().getChildCount(); i++) {
+				DefaultMutableTreeNode Child = (DefaultMutableTreeNode) node.getParent().getChildAt(i);
+				PluginInfo childInfo = (PluginInfo) Child.getUserObject();
+				
+				if (childInfo.getID().equals(info.getID()) && childInfo.getName().equals(info.getName())) {
+					RemovableNodes.add( Child );
+				}
+			}
 			
-			 // get rid of any sibling nodes that are duplicate (different versions) of the just downloaded one
-			 while (Siblings.hasMoreElements()) {
-	    		 DefaultMutableTreeNode SibNode = (DefaultMutableTreeNode) Siblings.nextElement();
-	    		 PluginInfo SibNodeInfo = (PluginInfo) SibNode.getUserObject();
-	    		 if (SibNodeInfo.getName().equals(info.getName()) &&
-	    			 SibNodeInfo.getID().equals(info.getID())) {
-	    			 removeNode(SibNode);
-	    		 }
-			 }
-			 removeNode( node );
+			for (DefaultMutableTreeNode treeNode: RemovableNodes) {
+				removeNode(treeNode);
+			}
+			
 		}
 
-	
-	
 	}
 
 	// Variables declaration - do not modify
