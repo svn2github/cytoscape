@@ -23,7 +23,7 @@
 		</table>
 <? include "../nav.php"; ?>
 <div id="contents">
-	<div id="content">
+    <div id="content">
             <P>This page contains a link to the webstart that contains all of the plugins
             necessary to properly run the protocol described in this paper: (ref here).</p>
 
@@ -31,27 +31,35 @@
             Click <A HREF="runCytoscape.jnlp">here</A> for the WebStart.
             </p>
             <p>
-            For more information on Java Webstart, click <A HREF="http://java.sun.com/products/javawebstart/">here</A>.
+            For more information on Java Webstart, click <A HREF="http://java.sun.com/products/javawebstart/">
+here</A>.
             </p>
 
             <p>To get the required data and configuation files for the Agilent Literature Search software
             click <A HREF="../../download_agilent_literature_search_v2.4_data.php">here</A>
 
-            <p>Two supplemental data files are provided for the convenience of any readers who have no
+            <p>The following supplemental data files are provided for the convenience of any readers who have
+no
             data available, or do not wish to execute the complete protocol:
             <ol>
-            <li> <A HREF="galExpData.pvals">galExpData.pvals</A> is a sample expression data file
-            <li> <A HREF="gal1rg.top50.cpath.xgmml">gal1rg.top50.cpath.xgmml</A> contains a network obtained by
-            searching cPath with the top 50 genes, sorted by p-value, from the gal1RG experiment in the expression data file.
-            Users can import this network into Cytoscape instead of searching cPath.
+                        <li> <A HREF="gene.input.list.txt">gene.input.list.txt</A> provides sample input for t
+he cPath and
+            Agilent Literature Search network queries.
+                        <li> <A HREF="sample.session.cys">sample.session.cys</A> is a session file containing
+the network
+            data obtained with the sample query
+                        <li> <A HREF="translate.tab">translate.tab</A> is an ID translation file built with th
+e sample data
+            according to the protocol.
+                <li> <A HREF="galExpData.pvals">galExpData.pvals</A> is a sample expression data file
             <p>
-            Note that the number of interactions in cPath increases over time.  Users who attempt to re-generate this
+            Note that the number of interactions in cPath increases over time.  Users who attempt to re-genera
+te this
             network at a later date might not get exactly the same network, but a larger one.
             </ol>
             All the figures shown in the paper were generated with these data files.
             <p>
-
-	</div>
+    </div>
 </div>
 
 <? include "../footer.php"; ?>
