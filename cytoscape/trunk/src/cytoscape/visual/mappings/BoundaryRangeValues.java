@@ -61,49 +61,49 @@ package cytoscape.visual.mappings;
  * domain value, plus allow a distinctly different value for exact matches.
  */
 public class BoundaryRangeValues {
-	/**
-	 *
-	 */
-	public Object lesserValue = null;
+    /**
+     * 
+     */
+    public Object lesserValue = null;
 
-	/**
-	 *
-	 */
-	public Object equalValue = null;
+    /**
+     *
+     */
+    public Object equalValue = null;
 
-	/**
-	 *
-	 */
-	public Object greaterValue = null;
+    /**
+     *
+     */
+    public Object greaterValue = null;
 
-	/**
-	 * Creates a new BoundaryRangeValues object.
-	 */
-	public BoundaryRangeValues() {
-	}
+    /**
+     * Creates a new BoundaryRangeValues object.
+     */
+    public BoundaryRangeValues() {
+    }
 
-	/**
-	 * Creates a new BoundaryRangeValues object.
-	 *
-	 * @param o1  DOCUMENT ME!
-	 * @param o2  DOCUMENT ME!
-	 * @param o3  DOCUMENT ME!
-	 */
-	public BoundaryRangeValues(Object o1, Object o2, Object o3) {
-		lesserValue = o1;
-		equalValue = o2;
-		greaterValue = o3;
-	}
+    /**
+     * Creates a new BoundaryRangeValues object.
+     *
+     * @param lesser Object used for values less than this point. 
+     * @param equal Object used for value equal to this point.
+     * @param greater Object used for values greater than this point.
+     */
+    public BoundaryRangeValues(Object lesser, Object equal, Object greater) {
+        lesserValue = lesser;
+        equalValue = equal;
+        greaterValue = greater;
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		String returnVal = "{" + lesserValue.toString() + "," + equalValue.toString() + ","
-		                   + greaterValue.toString() + "}";
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String toString() {
+        String returnVal = "{" + lesserValue.toString() + "," +
+            equalValue.toString() + "," + greaterValue.toString() + "}";
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 }
