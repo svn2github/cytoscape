@@ -297,6 +297,10 @@ public class ValueDisplayer extends JButton {
      * internal structure of the ValueDisplayer
      */
     protected void fireItemSelected() {
+    	
+    	System.out.println("----------Firing!: ");
+    	
+    	
         this.fireItemStateChanged(
             new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, inputObj,
                 ItemEvent.SELECTED));

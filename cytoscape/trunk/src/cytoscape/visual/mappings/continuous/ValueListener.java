@@ -42,13 +42,12 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.continuous;
 
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-
-import cytoscape.visual.ui.ValueDisplayer;
-
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.ui.ValueDisplayer;
 
 
 /**
@@ -73,12 +72,14 @@ public class ValueListener
         this.index = index;
         this.offset = offset;
     }
-
+    
     /**
      * Item State Change.
      * @param e ItemEvent.
      */
     public void itemStateChanged(ItemEvent e) {
+        System.out.println("SIGNAL______________________" + ((ValueDisplayer) e.getItemSelectable()).getValue());
+
         Object o = ((ValueDisplayer) e.getItemSelectable()).getValue();
         ContinuousMappingPoint point = cm.getPoint(index);
         BoundaryRangeValues range = point.getRange();

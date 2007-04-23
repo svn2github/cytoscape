@@ -1,55 +1,6 @@
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetworkEvent;
-import cytoscape.CyNetworkListener;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.Semantics;
-
-import cytoscape.util.SwingWorker;
-import cytoscape.util.swing.DropDownMenuButton;
-
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.CalculatorFactory;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
-import cytoscape.visual.ui.editors.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.CyStringPropertyEditor;
-import cytoscape.visual.ui.icon.NodeFullDetailView;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
-
-import ding.view.DGraphView;
-
 import giny.model.GraphObject;
-
 import giny.view.GraphView;
 
 import java.awt.Color;
@@ -71,15 +22,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-
 import java.io.IOException;
-
 import java.lang.reflect.Constructor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -111,6 +58,48 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+
+import com.l2fprod.common.propertysheet.DefaultProperty;
+import com.l2fprod.common.propertysheet.Property;
+import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
+import com.l2fprod.common.propertysheet.PropertySheetPanel;
+import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetworkEvent;
+import cytoscape.CyNetworkListener;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.Semantics;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.CalculatorFactory;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.ui.editors.CyColorPropertyEditor;
+import cytoscape.visual.ui.editors.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.CyDoublePropertyEditor;
+import cytoscape.visual.ui.editors.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.CyStringPropertyEditor;
+import cytoscape.visual.ui.icon.NodeFullDetailView;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
+import ding.view.DGraphView;
 
 /**
  * New VizMapper UI main panel.
@@ -440,8 +429,6 @@ public class VizMapperMainPanel extends JPanel implements
 		gridbag.setConstraints(deleteButton, constraints);
 		buttonPanel.add(deleteButton);
 
-		mainSplitPane.addMouseListener(new DefaultMouseListener());
-
 		defaultAppearencePanel.addMouseListener(new DefaultMouseListener());
 
 		mainSplitPane.setDividerLocation(120);
@@ -673,7 +660,8 @@ public class VizMapperMainPanel extends JPanel implements
 		System.out.println("---Got VS Change: " + vsName);
 		// visualPropertySheetPanel = new PropertySheetPanel();
 		setPropertyTable();
-		setDefaultPanel(VS_ORIENTED);
+		//setDefaultPanel(VS_ORIENTED);
+		
 
 		// visualPropertySheetPanel.repaint();
 	}
@@ -759,28 +747,28 @@ public class VizMapperMainPanel extends JPanel implements
 		visualPropertySheetPanel.setToolBarVisible(true);
 	}
 
-	private void setDefaultPanel(int viewType) {
-		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-
-		NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager()
-				.getVisualStyle().getNodeAppearanceCalculator();
-
-		List<Calculator> calc = nac.getCalculators();
-		System.out.println("NAC number = " + calc.size());
-
-		for (int i = 0; i < VisualPropertyType.values().length; i++) {
-			String name = CalculatorFactory.getTypeName(VisualPropertyType
-					.values()[i].getType());
-
-			VizMapperProperty calcProp = new VizMapperProperty();
-
-			calcProp.setCategory("Node Defaults");
-			calcProp.setDisplayName(name);
-			calcProp.setValue(nac.getDefaultAppearance().getLabel());
-
-			// propertySheetPanel2.addProperty(calcProp);
-		}
-	}
+//	private void setDefaultPanel(int viewType) {
+//		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+//
+//		NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager()
+//				.getVisualStyle().getNodeAppearanceCalculator();
+//
+//		List<Calculator> calc = nac.getCalculators();
+//		System.out.println("NAC number = " + calc.size());
+//
+//		for (int i = 0; i < VisualPropertyType.values().length; i++) {
+//			String name = CalculatorFactory.getTypeName(VisualPropertyType
+//					.values()[i].getType());
+//
+//			VizMapperProperty calcProp = new VizMapperProperty();
+//
+//			calcProp.setCategory("Node Defaults");
+//			calcProp.setDisplayName(name);
+//			calcProp.setValue(nac.getDefaultAppearance().getLabel());
+//
+//			// propertySheetPanel2.addProperty(calcProp);
+//		}
+//	}
 
 	private void setPropertySheetAppearence() {
 		/*
@@ -992,45 +980,50 @@ public class VizMapperMainPanel extends JPanel implements
 							 * Left click.
 							 */
 							if (0 <= selected) {
-								Item item = (Item) visualPropertySheetPanel
+								final Item item = (Item) visualPropertySheetPanel
 										.getTable().getValueAt(selected, 0);
 
-								VizMapperProperty prop = null;
-								Property curProp = item.getProperty();
-
-								/*
-								 * Create new mapping
-								 */
-								if ((e.getClickCount() == 2)
-										&& (curProp.isEditable() == false)) {
-									((VizMapperProperty) curProp)
-											.setEditable(true);
-
-									VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-											.getHiddenObject();
-
-									createNewMapping(type);
-
-									visualPropertySheetPanel
-											.removeProperty(curProp);
-
-									// vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type).;
+								final Property curProp = item.getProperty();
+								if (curProp == null) {
 									return;
 								}
 
 								/*
-								 * Single left-click
+								 * Create new mapping if double-click on unused
+								 * val.
 								 */
-								if ((curProp != null)
-										&& curProp instanceof VizMapperProperty)
-									prop = (VizMapperProperty) curProp;
-								else if (curProp != null)
-									prop = (VizMapperProperty) curProp
-											.getParentProperty();
-
-								if (prop != null) {
-									final VisualPropertyType type = (VisualPropertyType) prop
+								String category = curProp.getCategory();
+								if ((e.getClickCount() == 2)
+										&& category != null && category.equalsIgnoreCase("Unused Properties")) {
+									((VizMapperProperty) curProp)
+											.setEditable(true);
+									VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
 											.getHiddenObject();
+									createNewMapping(type);
+									visualPropertySheetPanel
+											.removeProperty(curProp);
+									return;
+								} else if (e.getClickCount() == 1 && category == null) {
+
+									/*
+									 * Single left-click
+									 */
+									System.out
+											.println("---------got Single click");
+
+									VisualPropertyType type = null;
+									if (curProp.getParentProperty() == null
+											&& ((VizMapperProperty) curProp)
+													.getHiddenObject() instanceof VisualPropertyType)
+										type = (VisualPropertyType) ((VizMapperProperty) curProp)
+												.getHiddenObject();
+									else if (curProp.getParentProperty() != null)
+										type = (VisualPropertyType) ((VizMapperProperty) curProp
+												.getParentProperty())
+												.getHiddenObject();
+									else {
+										return;
+									}
 
 									/*
 									 * Root category clicked. Need to check
@@ -1083,6 +1076,7 @@ public class VizMapperMainPanel extends JPanel implements
 
 										dialog.setVisible(true);
 									}
+
 								}
 							}
 						}
@@ -1722,9 +1716,6 @@ public class VizMapperMainPanel extends JPanel implements
 		}
 
 		return mappedKeys;
-	}
-
-	private void map2property() {
 	}
 
 	public void setDefaultPanel(JPanel panel) {

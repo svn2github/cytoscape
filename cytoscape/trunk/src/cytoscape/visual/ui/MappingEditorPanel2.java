@@ -1,31 +1,30 @@
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.calculators.Calculator;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**
@@ -34,10 +33,19 @@ import javax.swing.JPanel;
  * @author $author$
   */
 public abstract class MappingEditorPanel2 extends JPanel {
-    protected VisualPropertyType type;
+	
+	protected VisualPropertyType type;
+    protected Calculator calculator;
+    protected ContinuousMapping mapping;
     protected double maxValue;
     protected double minValue;
+    protected double valRange;
     protected ArrayList<ContinuousMappingPoint> allPoints;
+	private SpinnerNumberModel spinnerModel;
+	
+	protected Object below;
+	protected Object above;
+	
 
     /** Creates new form ContinuousMapperEditorPanel */
     public MappingEditorPanel2(VisualPropertyType type) {
@@ -46,6 +54,13 @@ public abstract class MappingEditorPanel2 extends JPanel {
         setVisualPropLabel();
 
         setAttrComboBox();
+        setSpinner();
+    }
+    
+    protected void setSpinner() {
+    	spinnerModel = new SpinnerNumberModel(0.0d, minValue, maxValue, 0.001d);
+    	spinnerModel.addChangeListener(new SpinnerChangeListener());
+    	valueSpinner.setModel(spinnerModel);
     }
 
     protected void setVisualPropLabel() {
@@ -64,17 +79,21 @@ public abstract class MappingEditorPanel2 extends JPanel {
         pivotLabel = new javax.swing.JLabel();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        valueSpinner = new javax.swing.JSpinner();
+        
         colorButton = new javax.swing.JButton();
         rangeEditorPanel = new javax.swing.JPanel();
         slider = new org.jdesktop.swingx.JXMultiThumbSlider();
         attrNameLabel = new javax.swing.JLabel();
-        attributeComboBox = new javax.swing.JComboBox();
         iconPanel = new IconPanel(type);
         visualPropertyLabel = new javax.swing.JLabel();
 
-        valueSpinner.setEnabled(false);
+        
+        
+        valueSpinner = new JSpinner();
 
+        valueSpinner.setEnabled(false);
+        
+        
         rotaryEncoder = new JXMultiThumbSlider();
 
         iconPanel.setPreferredSize(new Dimension(60, 1));
@@ -226,24 +245,24 @@ public abstract class MappingEditorPanel2 extends JPanel {
         java.awt.event.ActionEvent evt);
 
     private void setAttrComboBox() {
-        // Reset
-        attributeComboBox.removeAllItems();
-
         final CyAttributes attr;
-        final Calculator calc;
 
         if (type.isNodeProp()) {
             attr = Cytoscape.getNodeAttributes();
-            calc = Cytoscape.getVisualMappingManager()
+            calculator = Cytoscape.getVisualMappingManager()
                             .getVisualStyle()
                             .getNodeAppearanceCalculator()
                             .getCalculator(type);
         } else {
             attr = Cytoscape.getEdgeAttributes();
-            calc = Cytoscape.getVisualMappingManager()
+            calculator = Cytoscape.getVisualMappingManager()
                             .getVisualStyle()
                             .getEdgeAppearanceCalculator()
                             .getCalculator(type);
+        }
+        
+        if(calculator == null) {
+        	return;
         }
 
         final String[] names = attr.getAttributeNames();
@@ -253,18 +272,16 @@ public abstract class MappingEditorPanel2 extends JPanel {
         for (String name : names) {
             attrType = attr.getType(name);
 
-            if ((attrType == CyAttributes.TYPE_FLOATING) ||
-                    (attrType == CyAttributes.TYPE_INTEGER))
-                attributeComboBox.addItem(name);
+//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
+//                    (attrType == CyAttributes.TYPE_INTEGER))
+//               
         }
 
         // Assume this calc only returns cont. mapping.
-        if (calc.getMapping(0)
+        if (calculator.getMapping(0)
                     .getClass() == ContinuousMapping.class) {
-            ContinuousMapping mapping = (ContinuousMapping) calc.getMapping(0);
+            mapping = (ContinuousMapping) calculator.getMapping(0);
             final String controllingAttrName = mapping.getControllingAttributeName();
-
-            attributeComboBox.setSelectedItem(controllingAttrName);
 
             final MultiHashMap mhm = attr.getMultiHashMap();
 
@@ -290,17 +307,17 @@ public abstract class MappingEditorPanel2 extends JPanel {
 
             System.out.println("----------- min max = " + minValue + ", " +
                 maxValue);
-
+            valRange = Math.abs(minValue-maxValue);
             allPoints = mapping.getAllPoints();
         }
     }
 
     // Variables declaration - do not modify
-    private javax.swing.JButton addButton;
+    protected javax.swing.JButton addButton;
     private javax.swing.JLabel attrNameLabel;
-    private javax.swing.JComboBox attributeComboBox;
+//    private javax.swing.JComboBox attributeComboBox;
     protected javax.swing.JButton colorButton;
-    private javax.swing.JButton deleteButton;
+    protected javax.swing.JButton deleteButton;
     protected javax.swing.JPanel iconPanel;
     private javax.swing.JLabel pivotLabel;
     private javax.swing.JPanel rangeEditorPanel;
@@ -309,12 +326,28 @@ public abstract class MappingEditorPanel2 extends JPanel {
     protected javax.swing.JSpinner valueSpinner;
     private javax.swing.JLabel visualPropertyLabel;
     protected JXMultiThumbSlider rotaryEncoder;
+    
+    
+    
+    protected int getSelectedPoint(int selectedIndex) {
+    	final List<Thumb> thumbs = slider.getModel().getSortedThumbs();
+        Thumb selected = slider.getModel().getThumbAt(selectedIndex);
+        int i;
+        for(i=0; i<thumbs.size(); i++) {
+        		if(thumbs.get(i) == selected) {
+        			System.out.println("=====Selected Color = " + i + ", " + thumbs.get(i).getObject());
+        			return i;
+        		}
+        	}
+        
+        return -1;
+    }
 
     // End of variables declaration
     protected class ThumbMouseListener
         implements MouseListener {
         public void mouseClicked(MouseEvent e) {
-            System.out.println("------------Thumb: ");
+            
         }
 
         public void mouseEntered(MouseEvent e) {
@@ -326,6 +359,7 @@ public abstract class MappingEditorPanel2 extends JPanel {
         }
 
         public void mousePressed(MouseEvent e) {
+        	
             int selectedIndex = slider.getSelectedIndex();
 
             if ((0 <= selectedIndex) &&
@@ -334,25 +368,100 @@ public abstract class MappingEditorPanel2 extends JPanel {
                 valueSpinner.setEnabled(true);
                 valueSpinner.setValue(
                     ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue());
+                
             } else {
                 valueSpinner.setEnabled(false);
                 valueSpinner.setValue(0);
             }
         }
 
+        
+        
+        
         public void mouseReleased(MouseEvent e) {
             int selectedIndex = slider.getSelectedIndex();
-
+            
             if ((0 <= selectedIndex) &&
                     (slider.getModel()
                                .getThumbCount() > 1)) {
                 valueSpinner.setEnabled(true);
-                valueSpinner.setValue(
-                    ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue());
+                Double newVal = ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue();
+                valueSpinner.setValue(newVal);
+                
+                /*
+                 * Re-order map entries.
+                 */
+                List<Thumb> thumbs = slider.getModel().getSortedThumbs();
+                //List<ContinuousMappingPoint> points = mapping.getAllPoints();
+                	
+                	Thumb t;
+                	ContinuousMappingPoint p;
+                	
+                	System.out.println("Range = " + valRange + ", minVal = " + minValue);
+                	
+                for(int i=0; i<thumbs.size(); i++) {
+                		t = thumbs.get(i);
+                		if(i == 0) {
+                			mapping.getPoint(i).getRange().lesserValue = below;
+                			mapping.getPoint(i).getRange().greaterValue = t.getObject();
+                			
+                		} else if(i == thumbs.size()-1) {
+                			mapping.getPoint(i).getRange().greaterValue = above;
+                			mapping.getPoint(i).getRange().lesserValue = t.getObject();
+                		} else {
+                			mapping.getPoint(i).getRange().lesserValue = t.getObject();
+                			mapping.getPoint(i).getRange().greaterValue = t.getObject();
+                		}
+                	
+                		newVal = (t.getPosition()/100)*valRange + minValue;
+                		mapping.getPoint(i).setValue(newVal);
+                		
+                		mapping.getPoint(i).getRange().equalValue = t.getObject();
+                		System.out.println("Selected idx = " + selectedIndex +", new val = " + newVal + ", New obj = " + t.getObject() + ", Pos = " + t.getPosition());
+                	}
+                System.out.println("\n\n");
+                //mapping.getPoint(getSelectedPoint(selectedIndex)).setValue(newVal);
+                Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+               
             } else {
                 valueSpinner.setEnabled(false);
                 valueSpinner.setValue(0);
             }
         }
+    }
+    
+    /**
+     * Watching spinner
+     * 
+     * @author kono
+     *
+     */
+    class SpinnerChangeListener implements ChangeListener {
+    	 	
+		public void stateChanged(ChangeEvent e) {
+			
+			Number newVal = spinnerModel.getNumber();
+			int selectedIndex = slider.getSelectedIndex();
+			
+			if ((0 <= selectedIndex) &&
+                    (slider.getModel()
+                               .getThumbCount() > 1)) {
+				Double newPosition = ((newVal.floatValue() - minValue)/valRange);
+				
+				slider.getModel().getThumbAt(selectedIndex).setPosition(newPosition.floatValue()*100);
+				slider.getSelectedThumb().setLocation((int) ((slider.getSize().width-12)*newPosition), 0);
+				slider.getSelectedThumb().repaint();
+				slider.getParent().repaint();
+				slider.repaint();
+				
+				/*
+				 * Set continuous mapper value
+				 */
+				
+				
+			}
+		}
+
+		
     }
 }

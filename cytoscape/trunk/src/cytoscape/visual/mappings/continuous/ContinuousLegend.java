@@ -36,29 +36,22 @@
 */
 package cytoscape.visual.mappings.continuous;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
-
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.LegendTable;
-import cytoscape.visual.mappings.continuous.*;
 
-import cytoscape.visual.ui.ValueDisplayer;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import java.text.NumberFormat;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 
 /**

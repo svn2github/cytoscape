@@ -42,30 +42,32 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.continuous;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
-
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-
-import cytoscape.visual.ui.ValueDisplayer;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.text.NumberFormat;
-
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import cytoscape.CyNetwork;
+import cytoscape.dialogs.GridBagGroup;
+import cytoscape.dialogs.MiscGB;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.ui.ValueDisplayer;
 
 
 /**
  * Provides User Interface Controls for Continuous Mappers.
  */
+@Deprecated
 public class ContinuousUI extends JPanel
     implements ActionListener {
     //  Public Constants
@@ -90,7 +92,6 @@ public class ContinuousUI extends JPanel
     //  Parent Dialog, Mappers, Layout Managers, and Internal Data
     private Object defaultObject;
     private JDialog parentDialog;
-    private CyNetwork network;
     private ContinuousMapping cm;
 
     /**
@@ -100,7 +101,6 @@ public class ContinuousUI extends JPanel
         ContinuousMapping cMap) {
         this.parentDialog = jd;
         this.defaultObject = defaultObject;
-        this.network = network;
         this.cm = cMap;
         init();
         createPointPanel();

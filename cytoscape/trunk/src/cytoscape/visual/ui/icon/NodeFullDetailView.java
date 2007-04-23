@@ -33,22 +33,22 @@ import javax.swing.JPanel;
 public class NodeFullDetailView extends JPanel {
     private static final int PADDING = 20;
     private Shape objectShape;
-    private DingCanvas dc;
-    private VolatileImage image;
     DGraphView newView;
     private CyNetworkView view;
     private CyNetwork net;
-    private String originalId = Cytoscape.getCurrentNetwork()
-                                         .getIdentifier();
     private Map<VisualPropertyType, Object> appearenceMap;
 
+    
+    
+    private static NodeFullDetailView currentView = null;
+    
     /*
      * Dummy graph component
      */
     private static final CyNode source;
     private static final CyNode target;
     private static final CyEdge edge;
-    private Component canvas;
+    private Component canvas = null;
 
     static {
         source = Cytoscape.getCyNode("Source");
@@ -65,6 +65,11 @@ public class NodeFullDetailView extends JPanel {
      * Creates a new NodeFullDetailView object.
      */
     public NodeFullDetailView() {
+    }
+    
+    public static NodeFullDetailView getCurrentView() {
+    	
+    	return currentView;
     }
 
     /**
@@ -195,71 +200,4 @@ public class NodeFullDetailView extends JPanel {
         this.objectShape = shape;
     }
 
-    //	public void paintComponent(Graphics g) {
-    //		final Graphics2D g2d = (Graphics2D) g;
-    //		// AA on
-    //		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-    //				RenderingHints.VALUE_ANTIALIAS_ON);
-    //	}
-
-    // public void paintComponent(Graphics g) {
-    //
-    // if (objectShape == null || appearenceMap == null) {
-    // return;
-    // }
-    //
-    // final Graphics2D g2d = (Graphics2D) g;
-    //
-    // final double w = (Double) appearenceMap.get(NODE_WIDTH);
-    // final double h = (Double) appearenceMap.get(NODE_HEIGHT);
-    //
-    // Shape transShape = objectShape;
-    //
-    // final AffineTransform af = new AffineTransform();
-    //
-    // // AA on
-    // g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-    // RenderingHints.VALUE_ANTIALIAS_ON);
-    //
-    // g2d.setColor((Color) appearenceMap.get(NODE_FILL_COLOR));
-    //
-    // // Bound of this panel.
-    // Rectangle2D bound = this.getBounds().getBounds2D();
-    // Rectangle2D shapeBound = transShape.getBounds2D();
-    //
-    // System.out.println("Given Size (w, h): " + w + ", " + h);
-    // af.setToScale(w / transShape.getBounds2D().getWidth(), h
-    // / transShape.getBounds2D().getHeight());
-    // transShape = af.createTransformedShape(transShape);
-    // System.out.println("==== TransShape : "
-    // + transShape.getBounds().getBounds2D());
-    //
-    // af.setToTranslation(
-    // bound.getMaxX()/2 - shapeBound.getWidth() / 2,
-    // bound.getMaxY()/2 - shapeBound.getHeight() / 2 - 5);
-    //		
-    // transShape = af.createTransformedShape(transShape);
-    //
-    // g2d.fill(transShape);
-    //
-    // // Draw border line
-    // g2d.setColor((Color) appearenceMap.get(NODE_BORDER_COLOR));
-    // g2d.setStroke(new BasicStroke((Float) appearenceMap
-    // .get(NODE_LINE_WIDTH)));
-    // g2d.draw(transShape);
-    //
-    // g2d.setColor((Color) appearenceMap.get(NODE_LABEL_COLOR));
-    // g2d.setFont((Font)appearenceMap.get(NODE_FONT_FACE));
-    //		
-    //		
-    // /*
-    // * Draw label
-    // */
-    // String label = "<Label>";
-    // int labelWidth = SwingUtilities.computeStringWidth(
-    // g2d.getFontMetrics(), label);
-    // g2d.drawString(label, (int) transShape.getBounds2D().getMinX()
-    // - labelWidth / 2, (int) transShape.getBounds2D().getMinY() - 6);
-    //
-    // }
 }

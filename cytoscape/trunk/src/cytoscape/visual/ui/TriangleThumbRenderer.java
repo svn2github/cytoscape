@@ -112,4 +112,6 @@ public class TriangleThumbRenderer extends JComponent
 
         return this;
     }
+    
+    
 }

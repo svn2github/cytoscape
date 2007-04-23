@@ -71,14 +71,15 @@ import javax.swing.event.ChangeListener;
  */
 public class ContinuousMapping extends SubjectBase
     implements ObjectMapping {
-    Object defaultObj; //  the default value held by this mapping
+    
+	Object defaultObj; //  the default value held by this mapping
     Class rangeClass; //  the class of values held by this mapping
     String attrName; //  the name of the controlling data attribute
     Interpolator interpolator; //  used to interpolate between boundaries
     private byte mapType; //  mapping type value
 
     //  Contains List of Data Points
-    private ArrayList points = new ArrayList();
+    private ArrayList<ContinuousMappingPoint> points = new ArrayList<ContinuousMappingPoint>();
 
     /**
      *  Constructor.
@@ -119,7 +120,7 @@ public class ContinuousMapping extends SubjectBase
             clone.addChangeListener((ChangeListener) observers.get(i));
 
         for (int i = 0; i < points.size(); i++) {
-            ContinuousMappingPoint cmp = (ContinuousMappingPoint) points.get(i);
+            ContinuousMappingPoint cmp = points.get(i);
             ContinuousMappingPoint cmpClone = (ContinuousMappingPoint) cmp.clone();
             clone.addPoint(
                 cmpClone.getValue(),
@@ -133,7 +134,7 @@ public class ContinuousMapping extends SubjectBase
      * Gets all Data Points.
      * @return ArrayList of ContinuousMappingPoint objects.
      */
-    public ArrayList getAllPoints() {
+    public ArrayList<ContinuousMappingPoint> getAllPoints() {
         return points;
     }
 
@@ -142,9 +143,9 @@ public class ContinuousMapping extends SubjectBase
      */
     public void addPoint(double value, BoundaryRangeValues brv) {
         ContinuousMappingPoint cmp = new ContinuousMappingPoint(value, brv);
-        points.add(cmp);
+        points.add(0, cmp);
     }
-
+    
     /**
      * Removes a Point from the List.
      */

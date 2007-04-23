@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cytoscape.visual.ui;
+package cytoscape.visual.ui.editors;
 
 import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 

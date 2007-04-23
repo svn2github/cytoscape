@@ -548,7 +548,7 @@ public abstract class AbstractCalculator
 
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    JComboBox c = (JComboBox) e.getItemSelectable();
+                	   JComboBox c = (JComboBox) e.getItemSelectable();
                     String attrName = (String) c.getSelectedItem();
                     updateAttribute(attrName, network, this.mapIndex);
                     // change the panel referenced to get a new panel from the
