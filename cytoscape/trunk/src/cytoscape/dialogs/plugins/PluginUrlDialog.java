@@ -118,10 +118,35 @@ public class PluginUrlDialog extends JDialog {
 	}
 
 	// add - opens the bookmarks dialog to add a new download site
-	// TODO find out this has closed so I can refresh the bookmarks
 	private void addSiteHandler(java.awt.event.ActionEvent evt) {
 		try {
 			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop());
+
+			// for some reason the windowStateListener wasn't getting the event so I have to use this one
+			// this allows me to update the combo box when the user is done adding
+			bDialog.addWindowListener( new java.awt.event.WindowListener() {
+				public void windowClosed(java.awt.event.WindowEvent evt) {
+					loadBookmarkCMBox();
+				}
+
+				public void windowOpened(java.awt.event.WindowEvent evt) {
+				}
+
+				public void windowDeiconified(java.awt.event.WindowEvent evt) {
+				}
+
+				public void windowIconified(java.awt.event.WindowEvent evt) {
+				}
+
+				public void windowClosing(java.awt.event.WindowEvent evt) {
+				}
+
+				public void windowDeactivated(java.awt.event.WindowEvent evt) {
+				}
+
+				public void windowActivated(java.awt.event.WindowEvent evt) {
+				}
+			});
 			bDialog.pack();
 			bDialog.setVisible(true);
 		} catch (Exception E) {
@@ -149,6 +174,9 @@ public class PluginUrlDialog extends JDialog {
 		urlComboBox.setModel(theModel);
 	}
 
+	 
+	
+	
 	private void initComponents() {
 		labelPanel = new JPanel();
 		label = new JLabel();
@@ -275,6 +303,8 @@ public class PluginUrlDialog extends JDialog {
 		}
 	}
 
+	
+	
 	private JButton addSiteButton;
 	private JButton cancelButton;
 	private JPanel jPanel1;
