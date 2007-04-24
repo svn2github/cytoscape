@@ -90,11 +90,20 @@ import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
-import cytoscape.visual.ui.editors.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.CyStringPropertyEditor;
+import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
+import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
+import cytoscape.visual.ui.editors.continuous.ContinuousTrackRenderer;
+import cytoscape.visual.ui.editors.continuous.CyGradientTrackRenderer;
+import cytoscape.visual.ui.editors.continuous.DiscreteTrackRenderer;
+import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
+import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 import cytoscape.visual.ui.icon.NodeFullDetailView;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
@@ -385,7 +394,7 @@ public class VizMapperMainPanel extends JPanel implements
 
 		defaultAppearencePanel = new javax.swing.JPanel();
 		visualPropertySheetPanel = new PropertySheetPanel();
-		visualPropertySheetPanel.setTable(new CyPropertySheetTable());
+		visualPropertySheetPanel.setTable(new PropertySheetTable());
 
 		vsSelectPanel = new javax.swing.JPanel();
 		vsNameComboBox = new javax.swing.JComboBox();
