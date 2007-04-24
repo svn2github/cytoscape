@@ -314,6 +314,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		});
 
 		downloadButton.setText("Download");
+		downloadButton.setEnabled(false);
 		downloadButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				downloadButtonActionPerformed(evt);
@@ -321,6 +322,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		});
 
 		deleteButton.setText("Delete");
+		deleteButton.setEnabled(false);
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				deleteButtonActionPerformed(evt);
