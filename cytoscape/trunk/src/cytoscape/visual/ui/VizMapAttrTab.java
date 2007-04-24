@@ -589,28 +589,13 @@ public class VizMapAttrTab extends VizMapTab {
             }
 
             // create the mapper
-            byte mapType; // node or edge calculator
             VisualPropertyType vizType = VisualPropertyType.getVisualPorpertyType(type);
 
-            switch (vizType) {
-            case EDGE_COLOR:
-            case EDGE_LINETYPE:
-            case EDGE_SRCARROW_SHAPE:
-            case EDGE_TGTARROW_SHAPE:
-            case EDGE_SRCARROW_COLOR:
-            case EDGE_TGTARROW_COLOR:
-            case EDGE_LABEL:
-            case EDGE_FONT_FACE:
-            case EDGE_FONT_SIZE:
-            case EDGE_TOOLTIP:
-            case EDGE_LINE_WIDTH:
-                mapType = ObjectMapping.EDGE_MAPPING;
-
-                break;
-
-            default:
-                mapType = ObjectMapping.NODE_MAPPING;
-            }
+            byte mapType; // node or edge calculator
+			if ( vizType.isNodeProp() )
+				mapType = ObjectMapping.NODE_MAPPING;
+			else
+				mapType = ObjectMapping.EDGE_MAPPING;
 
             Object defaultObj = VizUIUtilities.getDefault(
                     VMM.getVisualStyle(),
