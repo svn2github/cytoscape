@@ -86,6 +86,10 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	}
 
 	/**
+	 * DEPRECATED This method will be removed in Dec 2007 
+	 * please use the getPluginInfoObject() method and
+	 * call setDescription on the PluginInfo object returned.
+	 * @deprecated
 	 * @return description of plugin
 	 */
 	public String describe() {
