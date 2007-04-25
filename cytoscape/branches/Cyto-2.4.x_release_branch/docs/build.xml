@@ -5,7 +5,7 @@
 	<property name="docbook-xsl" value="docbook-xsl-1.70.1"/>
 	<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
 	<property name="xep.home" value="/cellar/users/mes/XEP"/>
-	<property name="version" value="2.4.0"/>
+	<property name="version" value="2.4.1"/>
 
         <!-- ick -->
 	<available file="images/cyto-logo-smaller.gif" type="file" property="images-exist"/>
@@ -197,6 +197,7 @@
 		unless="pdf-up-to-date">
 
 		<!-- so that images scale correctly 
+		-->
 		<copy file="manual.xml" 
 		      tofile="manual_pdf.xml" 
 		      overwrite="yes">
@@ -207,7 +208,6 @@
 				</tokenfilter>
        		 	</filterchain>
 		</copy>
-		-->
 
 		<!-- transform the manual to fo -->
 		<xslt classpathref="classpath"
