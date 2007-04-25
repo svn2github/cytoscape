@@ -76,6 +76,7 @@ public class MetaNode {
 	private CyNode groupNode = null;
 	protected HashMap<CyEdge,List<CyEdge>> newEdgeMap = null;
 	private	HashMap<CyNode,CyEdge> metaEdgeMap = null;
+	private List<MetaNode> childMetaNodes = null;
 	private boolean multipleEdges = false;
 	private boolean recursive = false;
 
@@ -131,6 +132,11 @@ public class MetaNode {
 		metaGroup = group;
 		groupNode = group.getGroupNode();
 		metaMap.put(groupNode, this);
+		// TODO: handle special case where all of the nodes in this group are
+		// members of an existing metanode.  Implicitly, we treat this as a
+		// hierarchy, which means that we first remove all of the nodes from the
+		// parent metanode, then add the new metanode to the parent metanode
+
 		update();
 		// See if we need to "fix up" the CyGroup.  We might need to
 		// add external edges to the CyGroup if we have nodes that used
@@ -385,6 +391,8 @@ public class MetaNode {
 		if (!isCollapsed) 
 			return;
 
+		System.out.println("Expanding "+groupNode);
+
 		// Initialize
 		update();
 
@@ -416,13 +424,19 @@ public class MetaNode {
 		restoreEdges();
 		// Remove the metaNode
 		network.hideNode(groupNode);
+
 		// update
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		vizmapper.applyAppearances();
 
 		networkView.updateView();
+
 		metaGroup.setState(MetaNodePlugin2.EXPANDED);
 		isCollapsed = false;
+
+		// Now, for any of our nodes that are metaNodes and were expanded when we
+		// collapsed, expand them to get them back into their original state
+		restoreMetaNodes();
 	}
 
 	/**
@@ -541,9 +555,7 @@ public class MetaNode {
 		Iterator<CyNode> nodeIter = nodes.iterator();
 		while (nodeIter.hasNext()) {
 			CyNode node = nodeIter.next();
-			// Is this a metaNode that has since been expanded?
-			if (metaMap.containsKey(node) && !metaMap.get(node).isCollapsed) 
-				continue;
+
 			network.restoreNode(node);
 			NodeView nodeView = (NodeView)networkView.getNodeView(node);
 			if (nodeView != null) {
@@ -553,6 +565,19 @@ public class MetaNode {
 				nodeView.setYPosition(yCenter-yOffset);
 			}
 		}
+	}
+
+	/**
+	 * Restore any metaNodes that we have that were expanded when we collapsed
+	 */
+	private void restoreMetaNodes () {
+		if (childMetaNodes == null) return;
+
+		for (int i = childMetaNodes.size()-1; i >= 0; i--) {
+			MetaNode child = childMetaNodes.get(i);
+			child.expand(true);
+		}
+		childMetaNodes = null;
 	}
 
 	/**
@@ -572,6 +597,18 @@ public class MetaNode {
 		double yLocations[] = new double[nodes.size()];
 		for (int i = 0; i < nodes.size(); i++) {
 			CyNode node = nodes.get(i);
+			// Check and see if this is a group
+			if (metaMap.containsKey(node)) {
+				// Yes, recurse down
+				MetaNode child = (MetaNode)metaMap.get(node);
+				if (!child.isCollapsed) {
+					if (childMetaNodes == null) {
+						childMetaNodes = new ArrayList<MetaNode>();
+					}
+					childMetaNodes.add(child);
+					child.collapse(recursive, multipleEdges, false);
+				}
+			}
 			NodeView nodeView = (NodeView)networkView.getNodeView(node);
 			if (nodeView != null) {
 				xLocations[i] = nodeView.getXPosition();
@@ -579,12 +616,6 @@ public class MetaNode {
 				
 				xCenter += xLocations[i];
 				yCenter += yLocations[i];
-			}
-			// Check and see if this is a group
-			if (metaMap.containsKey(node)) {
-				// Yes, recurse down
-				MetaNode child = (MetaNode)metaMap.get(node);
-				child.collapse(recursive, multipleEdges, false);
 			}
 		}
 		xCenter = xCenter / nodes.size();
