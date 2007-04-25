@@ -54,14 +54,14 @@ public enum EditorDisplayer {
         new Class[] { Frame.class, LabelPosition.class },
         new Object[] { null, null }, LabelPosition.class), 
     CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
-        new Class[] { Component.class, String.class, Color.class },
-        new Object[] { null, "Select Color...", null }, Color.class), 
+        new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
+        new Object[] { 450, 200, "Gradient Editor", null }, Color.class), 
     CONTINUOUS_CONTINUOUS(JColorChooser.class, "showDialog",
-        new Class[] { Component.class, String.class, Color.class },
+        new Class[] { Component.class, String.class, Number.class },
         new Object[] { null, "Select Color...", null }, Color.class), 
     CONTINUOUS_DISCRETE(JColorChooser.class, "showDialog",
         new Class[] { Component.class, String.class, Color.class },
-        new Object[] { null, "Select Color...", null }, Color.class);
+        new Object[] { null, "Select Color...", null }, null);
     
     private Class chooserClass;
     private String command;
@@ -127,6 +127,10 @@ public enum EditorDisplayer {
      */
     public Class getCompatibleClass() {
         return this.compatibleClass;
+    }
+    
+    public void setParameters(Object[] param) {
+    	this.parameters = param;
     }
 
     /**

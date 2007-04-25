@@ -353,13 +353,17 @@ public enum VisualPropertyType {
      * Display continuous value editor.
      *
      * <p>
-     * 	Continuous editor always update mapping automatically, so there is no return value.
+     *         Continuous editor always update mapping automatically, so there is no return value.
      * </p>
      * @throws Exception DOCUMENT ME!
      */
     public void showContinuousEditor()
         throws Exception {
-        showEditor(
-            EditorDisplayer.getEditor(this, EditorType.CONTINUOUS));
+        final EditorDisplayer editor = EditorDisplayer.getEditor(this,
+                EditorType.CONTINUOUS);
+        editor.setParameters(
+            new Object[] { 450, 200, "Gradient Editor for " + this.calcName, this });
+        
+        showEditor(editor);
     }
 }
