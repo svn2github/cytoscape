@@ -32,6 +32,17 @@
  */
 package namedSelection.ui;
 
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
+
+import namedSelection.NamedSelection;
+
 // System imports
 import javax.swing.JPanel;
 import java.util.List;
@@ -42,12 +53,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
-import namedSelection.*;
 
 import giny.view.*;
 import giny.model.Node;
-
-import cytoscape.*;
 
 /**
  * The GroupPanel is the implementation for the Cytopanel that presents
@@ -167,10 +175,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 			CyNode node = (CyNode)treeNode.getUserObject();
 			if (e.isAddedPath(cPaths[i])) {
-				if (CyGroup.isaGroup(node)) {
+				if (CyGroupManager.isaGroup(node)) {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, true);
 					// It's a group -- get the members
-					CyGroup group = CyGroup.getCyGroup(node);
+					CyGroup group = CyGroupManager.getCyGroup(node);
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), true);
 					group.setState(NamedSelection.SELECTED);
 					if (navTree.isExpanded(cPaths[i])) {
@@ -182,8 +190,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					checkUpdateGroups(node);
 				}
 			} else {
-				if (CyGroup.isaGroup(node)) {
-					CyGroup group = CyGroup.getCyGroup(node);
+				if (CyGroupManager.isaGroup(node)) {
+					CyGroup group = CyGroupManager.getCyGroup(node);
 					group.setState(NamedSelection.UNSELECTED);
 				} else {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, false);
@@ -194,7 +202,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					treeSelectionModel.removeSelectionPath(path);
 					// Get the group and mark it as unselected
 					CyNode parent = (CyNode)((DefaultMutableTreeNode)path.getLastPathComponent()).getUserObject();
-					CyGroup parentGroup = CyGroup.getCyGroup(parent);
+					CyGroup parentGroup = CyGroupManager.getCyGroup(parent);
 					parentGroup.setState(NamedSelection.UNSELECTED);
 				}
 			}
@@ -276,7 +284,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		DefaultMutableTreeNode treeNode = 
 			     (DefaultMutableTreeNode) path.getLastPathComponent();
 		CyNode groupNode = (CyNode)treeNode.getUserObject();
-		CyGroup group = CyGroup.getCyGroup(groupNode);
+		CyGroup group = CyGroupManager.getCyGroup(groupNode);
 		// select them if they are selected in the graph
 		Iterator<CyNode> nodeIter = group.getNodeIterator();
 		CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -453,7 +461,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			super.reload();
 
 			// Update our selection based on the currently selection nodes, etc.
-			List<CyGroup> groupList = CyGroup.getGroupList(viewer);
+			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
 			if (groupList == null || groupList.size() == 0)
 				return;
 			Iterator<CyGroup> iter = groupList.iterator();
@@ -479,7 +487,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Named Selections (Groups)");
 			TreePath rootPath = new TreePath(rootNode);
 			rootNode.add(addClearToTree("Clear Selections", rootNode, rootPath));
-			List<CyGroup> groupList = CyGroup.getGroupList(viewer);
+			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
 			if (groupList == null || groupList.size() == 0)
 				return rootNode;
 
@@ -534,9 +542,9 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			Iterator<CyNode> nodeIter = group.getNodeIterator();
 			while (nodeIter.hasNext()) {
 				CyNode node = nodeIter.next();
-				if (CyGroup.isaGroup(node)) {
+				if (CyGroupManager.isaGroup(node)) {
 					// Get the group
-					CyGroup childGroup = CyGroup.getCyGroup(node);
+					CyGroup childGroup = CyGroupManager.getCyGroup(node);
 					treeNode.add(addGroupToTree(childGroup, treeNode, path));
 				} else {
 					// Add the node to the tree

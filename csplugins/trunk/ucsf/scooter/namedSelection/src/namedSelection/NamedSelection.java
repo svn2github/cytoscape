@@ -48,12 +48,19 @@ import giny.view.NodeView;
 import ding.view.*;
 
 // Cytoscape imports
-import cytoscape.*;
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
+
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import namedSelection.ui.GroupPanel;
@@ -88,24 +95,6 @@ public class NamedSelection extends CytoscapePlugin
   /**
    * Create our action and add it to the plugins menu
    */
-	/*
-  public NamedSelection() {
-		JMenu menu = new JMenu("Named Selection Tool");
-		menu.addMenuListener(new NamedSelectionMenuListener(null));
-
-		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
-																.getMenu("Plugins");
-		pluginMenu.add(menu);
-		// Register with CyGroup
-		CyGroup.registerGroupViewer(this);
-		this.groupViewer = this; // this makes it easier to get at from inner classes
-		System.out.println("namedSelectionPlugin "+VERSION+" initialized");
-  }
-	*/
-
-	/**
-	 * Future version....
-	 */
 	public NamedSelection() {
 		// Listen for network changes (so we can add our context menu)
 		try {
@@ -132,7 +121,7 @@ public class NamedSelection extends CytoscapePlugin
 		Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel);
 
 		// Register with CyGroup
-		CyGroup.registerGroupViewer(this);
+		CyGroupManager.registerGroupViewer(this);
 		this.groupViewer = this; // this makes it easier to get at from inner classes
 		System.out.println("namedSelectionPlugin "+VERSION+" initialized");
 	}
@@ -177,7 +166,7 @@ public class NamedSelection extends CytoscapePlugin
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, CyNode node, int change) { 
+	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
 		// At some point, this should be a little more granular.  Do we really
 		// need to rebuild the tree when we have a simple node addition/removal?
 		groupPanel.groupChanged(group);
@@ -258,7 +247,7 @@ public class NamedSelection extends CytoscapePlugin
 
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			Set currentNodes = network.getSelectedNodes();
-			List<CyGroup>groupList = CyGroup.getGroupList(groupViewer);
+			List<CyGroup>groupList = CyGroupManager.getGroupList(groupViewer);
 
 			// Add our menu items
 			{
@@ -396,9 +385,9 @@ public class NamedSelection extends CytoscapePlugin
 		private void newGroup() {
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
-			List<CyGroup> groupList = CyGroup.getGroupList();
+			List<CyGroup> groupList = CyGroupManager.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
-			CyGroup group = CyGroup.createGroup(groupName, currentNodes, viewerName);
+			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, viewerName);
 			group.setState(SELECTED);
 			groupPanel.groupCreated(group);
 		}
@@ -407,7 +396,7 @@ public class NamedSelection extends CytoscapePlugin
 		 * Remove a group.
 		 */
 		private void removeGroup() {
-			CyGroup.removeGroup(group);
+			CyGroupManager.removeGroup(group);
 			groupPanel.groupRemoved(group);
 		}
 
