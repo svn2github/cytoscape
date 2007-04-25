@@ -63,8 +63,14 @@ import cytoscape.visual.calculators.GenericNodeToolTipCalculator;
 import cytoscape.visual.calculators.GenericNodeUniformSizeCalculator;
 import cytoscape.visual.calculators.GenericNodeWidthCalculator;
 
+import cytoscape.visual.ui.EditorDisplayer;
+import cytoscape.visual.ui.EditorDisplayer.EditorType;
+
 import java.awt.Color;
 import java.awt.Font;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Enum for calculator types.<br>
@@ -307,5 +313,53 @@ public enum VisualPropertyType {
         else
 
             return false;
+    }
+
+    private Object showEditor(EditorDisplayer action)
+        throws IllegalArgumentException, IllegalAccessException,
+            InvocationTargetException, SecurityException, NoSuchMethodException {
+        Method method = null;
+
+        method = action.getActionClass()
+                       .getMethod(
+                action.getCommand(),
+                action.getParamTypes());
+
+        Object ret = null;
+
+        ret = method.invoke(
+                null,
+                action.getParameters());
+
+        if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
+            ret = Double.parseDouble(ret.toString());
+
+        return ret;
+    }
+
+    /**
+     * Display discrete value editor for this visual property.
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws Exception DOCUMENT ME!
+     */
+    public Object showDiscreteEditor()
+        throws Exception {
+        return showEditor(EditorDisplayer.getEditor(this, EditorType.DISCRETE));
+    }
+
+    /**
+     * Display continuous value editor.
+     *
+     * <p>
+     * 	Continuous editor always update mapping automatically, so there is no return value.
+     * </p>
+     * @throws Exception DOCUMENT ME!
+     */
+    public void showContinuousEditor()
+        throws Exception {
+        showEditor(
+            EditorDisplayer.getEditor(this, EditorType.CONTINUOUS));
     }
 }

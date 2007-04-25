@@ -308,7 +308,13 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         if (e.getClickCount() == 1) {
             int selected = jXList1.getSelectedIndex();
 
-            VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
+            try {
+				Object newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
+				VizMapperMainPanel.apply(newValue, orderedList[selected]);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             buildList();
             Cytoscape.getVisualMappingManager()
                      .getNetworkView()

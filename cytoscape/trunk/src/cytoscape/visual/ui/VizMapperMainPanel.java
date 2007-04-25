@@ -27,8 +27,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +82,7 @@ import cytoscape.util.SwingWorker;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.ActionHandler;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
@@ -120,6 +123,7 @@ import ding.view.DGraphView;
  * <li>Visual Mapping Browser
  * </ul>
  * 
+ * @version 0.5
  * @since Cytoscape 2.5
  * @author kono
  * @param <syncronized>
@@ -129,7 +133,7 @@ public class VizMapperMainPanel extends JPanel implements
 	public enum DefaultEditor {
 		NODE, EDGE, GLOBAL;
 	}
-
+	
 	private static JPopupMenu menu;
 	private static JMenuItem add;
 	private static JMenuItem delete;
@@ -169,6 +173,8 @@ public class VizMapperMainPanel extends JPanel implements
 	 * This is a singleton.
 	 */
 	private static VizMapperMainPanel panel;
+	
+	private static Map<VisualPropertyType, EditorDisplayer> handlers;
 
 	static {
 		/*
@@ -205,6 +211,7 @@ public class VizMapperMainPanel extends JPanel implements
 		initializePropertySheetPanel();
 
 		registerCellEditorListeners();
+		
 	}
 
 	/*
@@ -312,71 +319,17 @@ public class VizMapperMainPanel extends JPanel implements
 		menu.add(randomize);
 		menu.add(editAll);
 	}
+	
+	public static void apply(Object newValue, VisualPropertyType type) {
+		if (newValue != null)
+			 VizUIUtilities.setDefault(Cytoscape.getVisualMappingManager()
+			 .getVisualStyle(), type, newValue);
+	}
 
 	public static Object showValueSelectDialog(VisualPropertyType type,
-			Component caller) {
-		Object newValue = null;
-
-		switch (type) {
-		case NODE_SHAPE:
-			newValue = ValueSelectDialog.showDialog(
-					VisualPropertyType.NODE_SHAPE, null);
-
-			break;
-
-		case EDGE_SRCARROW_SHAPE:
-		case EDGE_TGTARROW_SHAPE:
-			newValue = ValueSelectDialog.showDialog(
-					VisualPropertyType.EDGE_SRCARROW_SHAPE, (JDialog) caller);
-
-			break;
-
-		case EDGE_LINETYPE:
-		case NODE_LINETYPE:
-			newValue = ValueSelectDialog.showDialog(
-					VisualPropertyType.EDGE_LINETYPE, (JDialog) caller);
-
-			break;
-
-		case NODE_FILL_COLOR:
-		case NODE_BORDER_COLOR:
-		case EDGE_COLOR:
-		case NODE_LABEL_COLOR:
-		case EDGE_LABEL_COLOR:
-			// colorChooser.setLocation(location);
-			newValue = JColorChooser.showDialog(caller, "Select "
-					+ type.getName(), null);
-
-			break;
-
-		case NODE_SIZE:
-		case NODE_WIDTH:
-		case NODE_HEIGHT:
-		case NODE_LINE_WIDTH:
-		case EDGE_LINE_WIDTH:
-			newValue = Double.valueOf(JOptionPane.showInputDialog(caller,
-					"Please enter new value"));
-
-			break;
-
-		case NODE_LABEL_POSITION:
-			newValue = PopupLabelPositionChooser.showDialog((JDialog) caller,
-					null);
-
-			break;
-
-		default:
-			break;
-		}
-
-		return newValue;
-
-		// /*
-		// * Apply the change
-		// */
-		// if (newValue != null)
-		// VizUIUtilities.setDefault(Cytoscape.getVisualMappingManager()
-		// .getVisualStyle(), type, newValue);
+			Component caller) throws Exception {
+		
+		return type.showDiscreteEditor();
 	}
 
 	/**
@@ -533,14 +486,6 @@ public class VizMapperMainPanel extends JPanel implements
 		optionButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		optionButton.setComponentPopupMenu(optionMenu);
 
-		// optionButton.addActionListener(new ActionListener() {
-		//
-		// public void actionPerformed(ActionEvent arg0) {
-		// optionMenu.setVisible(true);
-		//				
-		// }
-		//			
-		// });
 		org.jdesktop.layout.GroupLayout vsSelectPanelLayout = new org.jdesktop.layout.GroupLayout(
 				vsSelectPanel);
 		vsSelectPanel.setLayout(vsSelectPanelLayout);
@@ -2453,56 +2398,11 @@ public class VizMapperMainPanel extends JPanel implements
 			return;
 
 		Object newValue = null;
-
-		switch (type) {
-		case NODE_FILL_COLOR:
-		case NODE_BORDER_COLOR:
-		case EDGE_COLOR:
-		case EDGE_SRCARROW_COLOR:
-		case EDGE_TGTARROW_COLOR:
-		case NODE_LABEL_COLOR:
-		case EDGE_LABEL_COLOR:
-			newValue = JColorChooser.showDialog(this, "Choose new color",
-					(Color) prop.getValue());
-
-			break;
-
-		case NODE_LINE_WIDTH:
-		case NODE_SIZE:
-		case NODE_WIDTH:
-		case NODE_FONT_SIZE:
-		case NODE_HEIGHT:
-		case EDGE_LINE_WIDTH:
-		case EDGE_FONT_SIZE:
-
-			final String strVal = JOptionPane.showInputDialog(this,
-					"Please enter new " + type.getName() + " value.");
-			newValue = Double.parseDouble(strVal);
-
-			break;
-
-		case NODE_LABEL:
-		case EDGE_LABEL:
-		case NODE_TOOLTIP:
-		case EDGE_TOOLTIP:
-			newValue = JOptionPane.showInputDialog(this, "Please enter new "
-					+ type.getName() + " text.");
-
-			break;
-
-		case NODE_LABEL_POSITION:
-			newValue = PopupLabelPositionChooser.showDialog(Cytoscape
-					.getDesktop(), null);
-
-			break;
-
-		case NODE_SHAPE:
-			newValue = showValueSelectDialog(type, Cytoscape.getDesktop());
-
-			break;
-
-		default:
-			break;
+		try {
+			newValue = type.showDiscreteEditor();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		String key = null;
