@@ -42,11 +42,15 @@ import cern.colt.map.OpenIntIntHashMap;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+
+import cytoscape.layout.LayoutAdapter;
+import cytoscape.layout.LayoutAlgorithm;
 
 import cytoscape.dialogs.VisualStyleBuilderDialog;
 
@@ -951,11 +955,27 @@ public class GMLReader extends AbstractGraphReader {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * getLayoutAlgorithm is called to get the Layout Algorithm that will be used
+	 * to layout the resulting graph.  In our case, we just return a stub that will
+	 * call our internal layout routine, which will just use the default layout, but
+	 * with our task monitor
 	 *
-	 * @param myView DOCUMENT ME!
+	 * @return the LayoutAlgorithm to use
 	 */
-	public void layout(GraphView myView) {
+	public LayoutAlgorithm getLayoutAlgorithm() {
+		return new LayoutAdapter() {
+			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+				layout(networkView);
+			}
+		};
+	}
+
+	/**
+	 * layout the graph based on the GML values we read
+	 *
+	 * @param myView the view of the network we want to layout
+	 */
+	public void layout(CyNetworkView myView) {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}

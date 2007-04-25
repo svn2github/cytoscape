@@ -39,11 +39,16 @@ package cytoscape.data.readers;
 import cern.colt.list.IntArrayList;
 
 import cytoscape.CyEdge;
-import cytoscape.CyGroup;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
+import cytoscape.layout.LayoutAdapter;
+import cytoscape.layout.LayoutAlgorithm;
+
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -585,7 +590,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 		// Create the group
-		return CyGroup.createGroup(groupNode, nodeList, null);
+		return CyGroupManager.createGroup(groupNode, nodeList, null);
 	}
 
 	/**
@@ -620,13 +625,27 @@ public class XGMMLReader extends AbstractGraphReader {
 	}
 
 	/**
-	 * Based on the graphic attributes, layout the graph.
+	 * getLayoutAlgorithm is called to get the Layout Algorithm that will be used
+	 * to layout the resulting graph.  In our case, we just return a stub that will
+	 * call our internal layout routine, which will just use the default layout, but
+	 * with our task monitor
 	 *
-	 * @param myView
-	 *            GINY's graph view object.
-	 *
+	 * @return the LayoutAlgorithm to use
 	 */
-	public void layout(final GraphView myView) {
+	public LayoutAlgorithm getLayoutAlgorithm() {
+		return new LayoutAdapter() {
+			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+				layout(networkView);
+			}
+		};
+	}
+
+	/**
+	 * layout the graph based on the graphic attributes
+	 *
+	 * @param myView the view of the network we want to layout
+	 */
+	public void layout(CyNetworkView myView) {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
@@ -681,7 +700,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 
 			// Set and notify the viewer
-			CyGroup.setGroupViewer(group, viewer, true);
+			CyGroupManager.setGroupViewer(group, viewer, true);
 		}
 	}
 

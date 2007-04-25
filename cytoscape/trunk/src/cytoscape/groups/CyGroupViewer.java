@@ -35,10 +35,9 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape;
+package cytoscape.groups;
 
-import cytoscape.CyGroup;
-
+import cytoscape.CyNode;
 
 /**
  * The CyGroupViewer interface provides a mechanism for group view implementations
@@ -48,6 +47,11 @@ import cytoscape.CyGroup;
  * mechanism across session save and restore.
  */
 public interface CyGroupViewer {
+	/**
+	 * The change values
+	 */
+	public static enum ChangeType { NODE_ADDED, NODE_REMOVED }
+
 	/**
 	 * Provide the string name of this viewer.  This will be used to reassociate
 	 * this viewer with its groups upon session restoration.
@@ -88,5 +92,5 @@ public interface CyGroupViewer {
 	 * @param CyNode the node that triggered the change
 	 * @param change the change that was made (see CyGroup defines)
 	 */
-	public void groupChanged(CyGroup group, CyNode changedNode, int change);
+	public void groupChanged(CyGroup group, CyNode changedNode, ChangeType change);
 }

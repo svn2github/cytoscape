@@ -38,6 +38,9 @@ package cytoscape;
 
 import cytoscape.giny.CytoscapeFingRootGraph;
 
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+
 import giny.model.*;
 
 import java.util.ArrayList;
@@ -204,7 +207,7 @@ public class CyNode implements giny.model.Node {
 	 * @return 'true' if this node is a group
 	 */
 	public boolean isaGroup() {
-		return CyGroup.isaGroup(this);
+		return CyGroupManager.isaGroup(this);
 	}
 
 	/**

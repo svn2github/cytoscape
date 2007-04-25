@@ -39,10 +39,12 @@ package cytoscape.data.writers;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import cytoscape.CyEdge;
-import cytoscape.CyGroup;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 
 import cytoscape.data.CyAttributes;
 
@@ -1206,7 +1208,7 @@ public class XGMMLWriter {
 			curNode = (CyNode) it.next();
 			jxbNode = buildJAXBNode(curNode);
 
-			if (CyGroup.isaGroup(curNode)) {
+			if (CyGroupManager.isaGroup(curNode)) {
 				nodeList.add(curNode);
 				expandChildren(curNode);
 			} else {
@@ -1255,7 +1257,7 @@ public class XGMMLWriter {
 	private void expandChildren(final CyNode node) throws JAXBException {
 		CyNode childNode = null;
 		GraphicNode jxbNode = null;
-		CyGroup group = CyGroup.getCyGroup(node);
+		CyGroup group = CyGroupManager.getCyGroup(node);
 
 		List<CyNode> nodeList = group.getNodes();
 
@@ -1267,7 +1269,7 @@ public class XGMMLWriter {
 		while (nIter.hasNext()) {
 			childNode = (CyNode) nIter.next();
 
-			if (CyGroup.isaGroup(childNode)) {
+			if (CyGroupManager.isaGroup(childNode)) {
 				nodeList.add(childNode);
 				expandChildren(childNode);
 			} else {
@@ -1293,7 +1295,7 @@ public class XGMMLWriter {
 		// and see if any of the children of a group are
 		// themselves a group. If so, remove them from
 		// the list & will pick them up on recursion
-		groupList = (ArrayList) CyGroup.getGroupList();
+		groupList = (ArrayList) CyGroupManager.getGroupList();
 
 		if ((groupList == null) || groupList.isEmpty())
 			return;
@@ -1314,9 +1316,9 @@ public class XGMMLWriter {
 			while (nIter.hasNext()) {
 				CyNode childNode = (CyNode) nIter.next();
 
-				if (CyGroup.isaGroup(childNode)) {
+				if (CyGroupManager.isaGroup(childNode)) {
 					// Get the actual group
-					CyGroup embGroup = CyGroup.getCyGroup(childNode);
+					CyGroup embGroup = CyGroupManager.getCyGroup(childNode);
 					embeddedGroupList.put(embGroup, embGroup);
 				}
 			}
@@ -1360,12 +1362,12 @@ public class XGMMLWriter {
 
 			String targetnodeID = Integer.toString(childNode.getRootGraphIndex());
 
-			if (!CyGroup.isaGroup(childNode)) {
+			if (!CyGroupManager.isaGroup(childNode)) {
 				childJxbNode = objFactory.createGraphicNode();
 				childJxbNode.setHref("#" + targetnodeID);
 			} else {
 				// We have an embedded group -- recurse
-				CyGroup childGroup = CyGroup.getCyGroup(childNode);
+				CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
 				childJxbNode = writeGroup(childGroup);
 			}
 

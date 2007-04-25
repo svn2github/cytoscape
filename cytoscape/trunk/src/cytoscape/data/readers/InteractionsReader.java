@@ -58,6 +58,7 @@ import cytoscape.data.servers.BioDataServer;
 
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.LayoutAdapter;
 
 import cytoscape.task.TaskMonitor;
 
@@ -140,13 +141,30 @@ public class InteractionsReader extends AbstractGraphReader {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * getLayoutAlgorithm is called to get the Layout Algorithm that will be used
+	 * to layout the resulting graph.  In our case, we just return a stub that will
+	 * call our internal layout routine, which will just use the default layout, but
+	 * with our task monitor
 	 *
-	 * @param view DOCUMENT ME!
+	 * @return the LayoutAlgorithm to use
 	 */
-	public void layout(GraphView view) {
-		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
-		layout.doLayout((CyNetworkView) view, taskMonitor);
+	public LayoutAlgorithm getLayoutAlgorithm() {
+		return new LayoutAdapter() {
+			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+				layout(networkView);
+			}
+		};
+	}
+
+	/**
+	 * layout calls the default LayoutAlgorithm but forces it to use our
+	 * own taskMonitor.
+	 *
+	 * @param networkView the view of the network we want to layout
+	 */
+	public void layout(CyNetworkView networkView) {
+		LayoutAlgorithm defAlgorithm = CyLayouts.getDefaultLayout();
+		defAlgorithm.doLayout(networkView, taskMonitor);
 	}
 
 	// ----------------------------------------------------------------------------------------

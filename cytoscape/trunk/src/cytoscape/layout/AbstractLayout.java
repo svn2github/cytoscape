@@ -87,7 +87,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	protected Set<NodeView> staticNodes;
 	protected CyNetworkView networkView;
 	protected CyNetwork network;
-	protected TaskMonitor taskMonitor;
+	protected TaskMonitor taskMonitor = null;
 	protected boolean selectedOnly = false;
 	protected String edgeAttribute = null;
 	protected String nodeAttribute = null;
@@ -105,6 +105,17 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	 */
 	public AbstractLayout() {
 		this.staticNodes = new HashSet();
+	}
+
+	/**
+	 * This constructor is used to create a LayoutAlgorithm which will run on
+	 * an already existing thread.
+	 *
+	 * @param monitor the TaskMonitor for the currently running Thread
+	 */
+	public AbstractLayout(TaskMonitor monitor) {
+		this.staticNodes = new HashSet();
+		taskMonitor = monitor;
 	}
 
 	/**
@@ -235,10 +246,16 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 			return;
 		}
 
-		// Call the layout
-		// executeTask eventually calls the run() method in
-		// this class.
-		TaskManager.executeTask(this, getNewDefaultTaskConfig());
+		// Make sure our taskMonitor wasn't externally set
+		if (taskMonitor == null) {
+			// Call the layout
+			// executeTask eventually calls the run() method in
+			// this class.
+			TaskManager.executeTask(this, getNewDefaultTaskConfig());
+		} else {
+			// Call the layout
+			run();
+		}
 	}
 
 	/**
@@ -373,6 +390,28 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	 */
 	public String getTitle() {
 		return "Performing " + toString();
+	}
+
+	/**
+	 * Set the status message for our task monitor (if their is one)
+	 *
+	 * @param message Message to set
+	 */
+	public void setStatus(String message) {
+		if (taskMonitor != null) {
+			taskMonitor.setStatus(message);
+		}
+	}
+
+	/**
+	 * Set the percent complete for our task monitor (if their is one)
+	 *
+	 * @param pc the percent of the layout process completed
+	 */
+	public void setPercentCompleted(int pc) {
+		if (taskMonitor != null) {
+			taskMonitor.setPercentCompleted(pc);
+		}
 	}
 
 	/**

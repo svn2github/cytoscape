@@ -41,12 +41,14 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutAlgorithm;
-
 import cytoscape.util.CyNetworkNaming;
 
 import cytoscape.view.CyNetworkView;
+
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.LayoutAlgorithm;
 
 import giny.model.RootGraph;
 
@@ -57,6 +59,9 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JPanel;
 
 
 /**
@@ -80,24 +85,6 @@ public abstract class AbstractGraphReader implements GraphReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public abstract void read() throws IOException;
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param view DOCUMENT ME!
-	 */
-	public void layout(GraphView view) {
-		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
-		layout.doLayout((CyNetworkView) view);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void layout() {
-		LayoutAlgorithm layout = CyLayouts.getDefaultLayout();
-		layout.doLayout();
-	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -138,5 +125,11 @@ public abstract class AbstractGraphReader implements GraphReader {
 	*/
 	public void doPostProcessing(CyNetwork network) {
 	}
-	;
+
+	/**
+	 * Return the LayoutAlgorithm used to layout the graph
+	 */
+	public LayoutAlgorithm getLayoutAlgorithm() {
+		return CyLayouts.getDefaultLayout();
+	}
 }

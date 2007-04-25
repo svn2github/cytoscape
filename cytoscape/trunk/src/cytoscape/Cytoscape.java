@@ -1396,8 +1396,12 @@ public abstract class Cytoscape {
 		}
 
 		final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
-		network.putClientData(READER_CLIENT_KEY, reader);
-		addNetwork(network, title, parent, create_view);
+		// network.putClientData(READER_CLIENT_KEY, reader);
+		addNetwork(network, title, parent, false);
+
+		if (create_view) {
+			createNetworkView(network,title,reader.getLayoutAlgorithm());
+		}
 
 		// Execute any necessary post-processing.
 		reader.doPostProcessing(network);
@@ -1620,7 +1624,8 @@ public abstract class Cytoscape {
 	 *            the network to create a view of
 	 */
 	public static CyNetworkView createNetworkView(CyNetwork network) {
-		return createNetworkView(network, network.getTitle());
+		System.out.println("createNetworkView(CyNetwork network)");
+		return createNetworkView(network, network.getTitle(), null);
 	}
 
 	/**
@@ -1630,8 +1635,28 @@ public abstract class Cytoscape {
 	 * @link {CytoscapeDesktop}
 	 * @param network
 	 *            the network to create a view of
+	 * @param title
+	 *            the title to use for the view
 	 */
 	public static CyNetworkView createNetworkView(CyNetwork network, String title) {
+		System.out.println("createNetworkView(CyNetwork network, String title)");
+		return createNetworkView(network, title, null);
+	}
+
+	/**
+	 * Creates a CyNetworkView, but doesn't do anything with it. Ifnn's you want
+	 * to use it
+	 *
+	 * @link {CytoscapeDesktop}
+	 * @param network
+	 *            the network to create a view of
+	 * @param title
+	 *            the title to use for the view
+	 * @param layout
+	 *            the LayoutAlgorithm to use to lay this out by default
+	 */
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, LayoutAlgorithm layout) {
+		System.out.println("createNetworkView(CyNetwork network, String title, LayoutAlgorithm layout)");
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
@@ -1649,16 +1674,19 @@ public abstract class Cytoscape {
 
 		setSelectionMode(currentSelectionMode, view);
 
-		if (network.getClientData(READER_CLIENT_KEY) != null) {
-			((GraphReader) network.getClientData(READER_CLIENT_KEY)).layout(Cytoscape.getNetworkView(network
-			                                                                                         .getIdentifier()));
+		if (layout != null) {
+			// We were provided a layout by the caller -- use it
+			layout.doLayout(view);
 		} else {
+			System.out.println("layout is null -- using the default");
+			// Use the default layout, but don't use launch a task
 			LayoutAlgorithm defautLayout = CyLayouts.getDefaultLayout();
-			defautLayout.doLayout(view);
+			defautLayout.doLayout(view, null);
 		}
 
 		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 
+		System.out.println("Calling fitContent()");
 		getCurrentNetworkView().fitContent();
 
 		return view;

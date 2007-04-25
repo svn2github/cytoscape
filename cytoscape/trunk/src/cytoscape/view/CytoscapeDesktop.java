@@ -358,7 +358,7 @@ public class CytoscapeDesktop extends JFrame
 
         // Set up the VizMapper
         setupVizMapper();
-        //setupVizMapperUI();
+        setupVizMapperUI();
 
         final CytoscapeDesktop thisWindow = this;
 

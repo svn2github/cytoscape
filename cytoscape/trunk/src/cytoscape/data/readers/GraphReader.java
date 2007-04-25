@@ -40,6 +40,8 @@ import cytoscape.CyNetwork;
 
 import cytoscape.data.CyAttributes;
 
+import cytoscape.layout.LayoutAlgorithm;
+
 import giny.model.RootGraph;
 
 import giny.view.GraphView;
@@ -61,11 +63,11 @@ public interface GraphReader {
 	public void read() throws IOException;
 
 	/**
-	 * Lays out the graph.
+	 * Returns the LayoutAlgorithm used to layout the graph
 	 *
 	 * @param myView
 	 */
-	public void layout(GraphView myView);
+	public LayoutAlgorithm getLayoutAlgorithm();
 
 	/**
 	 * Gets an array of node indices that participate in the newly created graph.
