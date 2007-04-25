@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -22,16 +24,16 @@ import cytoscape.visual.mappings.continuous.AddPointListener;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 /**
- * DOCUMENT ME!
+ * Gradient editor.
  * 
- * @author $author$
+ * @version 0.7
+ * @since Cytoscpae 2.5
+ * @author kono
  */
-public class GradientEditorPanel extends ContinuousMappingEditorPanel {
+public class GradientEditorPanel extends ContinuousMappingEditorPanel implements PropertyChangeListener {
 	private static JPopupMenu menu;
 	private static JMenuItem deleteThumb;
 	private static JMenuItem newThumb;
-	
-	
 
 	static {
 		menu = new JPopupMenu();
@@ -52,9 +54,22 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel {
 		super(type);
 		iconPanel.setVisible(false);
 		setSlider();
-		//initButtons();
+		
+		belowPanel.addPropertyChangeListener(this);
+		abovePanel.addPropertyChangeListener(this);
 	}
 
+	
+	public static void showDialog(final int width, final int height, final String title, VisualPropertyType type) {
+		editor = new GradientEditorPanel(type);
+		editor.setSize(new Dimension(width, height));
+		editor.setTitle(title);
+		editor.setAlwaysOnTop(true);
+		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setVisible(true);
+		editor.repaint();
+	}
+	
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		// Add a new white thumb in the min.
@@ -109,28 +124,20 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel {
 
 		slider.setComponentPopupMenu(menu);
 
-		slider.addMouseMotionListener(new MouseMotionListener() {
-			public void mouseDragged(MouseEvent arg0) {
-			}
-
-			public void mouseMoved(MouseEvent arg0) {
-				// slider.setToolTipText((((VizMapperTrackRenderer) slider
-				// .getTrackRenderer())).getToolTipForCurrentLocation(arg0
-				// .getX(), arg0.getY()));
-			}
-		});
-
-		slider.addMouseListener(new MouseListener() {
+		slider.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				
 				if (SwingUtilities.isRightMouseButton(e)) {
 				} else {
+
+					System.out.println("Thumb Click------------------------> " + e.getSource());
 					final JComponent selectedThumb = slider.getSelectedThumb();
 
 					if (selectedThumb != null) {
 						final Point location = selectedThumb.getLocation();
 						double diff = Math.abs(location.getX() - e.getX());
 
-						if ((diff < 8) && (e.getClickCount() == 2)) {
+						if (e.getClickCount() == 2) {
 							final Color newColor = JColorChooser.showDialog(
 									slider, "Choose new color...", Color.white);
 
@@ -150,16 +157,6 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel {
 												.getRange().greaterValue);
 
 								cMapping.getPoint(selected).setRange(brv);
-
-								for (Object obj : ((ContinuousMapping) Cytoscape
-										.getVisualMappingManager()
-										.getVisualStyle()
-										.getNodeAppearanceCalculator()
-										.getCalculator(type).getMapping(0))
-										.getAllPoints())
-									System.out
-											.println(((ContinuousMappingPoint) obj)
-													.getRange().equalValue);
 
 								int numPoints = cMapping.getAllPoints().size();
 
@@ -187,22 +184,6 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel {
 					}
 				}
 			}
-
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
 		});
 
 		double actualRange = Math.abs(minValue - maxValue);
@@ -223,6 +204,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel {
 
 			below = (Color) allPoints.get(0).getRange().lesserValue;
 			above = (Color) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
+			
+			setSidePanelIconColor((Color)below, (Color)above);
 		}
 
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
@@ -239,15 +222,27 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel {
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(gRend);
 		slider.addMouseListener(new ThumbMouseListener());
+		
+		/*
+		 * Set tooltip for the slider.
+		 */
+		slider.setToolTipText("Double-click handles to edit boundary colors.");
 	}
 	
-	private void updateBelowAndAbove() {
-		ContinuousMappingPoint point;
-		
-		for(int i=0; i<mapping.getPointCount(); i++) {
-			point = mapping.getPoint(i);
-			point.getRange().greaterValue = above;
-			point.getRange().lesserValue = below;
+	public void propertyChange(PropertyChangeEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getPropertyName().equals(BelowAndAbovePanel.COLOR_CHANGED)) {
+			String sourceName = ((BelowAndAbovePanel)e.getSource()).getName();
+			if(sourceName.equals("abovePanel")) {
+				this.above = e.getNewValue();
+			} else {
+				this.below = e.getNewValue();
+			}
+			final CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue,
+					maxValue, (Color)below, (Color)above);
+			slider.setTrackRenderer(gRend);
+			
+			repaint();
 		}
 	}
 }

@@ -1,19 +1,14 @@
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.multislider.Thumb;
-
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**
@@ -34,6 +29,15 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
         // TODO Auto-generated constructor stub
     }
 
+    public static void showDialog(final int width, final int height, final String title, VisualPropertyType type) {
+		editor = new C2CMappingEditor(type);
+		editor.setSize(new Dimension(width, height));
+		editor.setTitle(title);
+		editor.setAlwaysOnTop(true);
+		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setVisible(true);
+	}
+    
     @Override
     protected void addButtonActionPerformed(ActionEvent evt) {
         slider.getModel()

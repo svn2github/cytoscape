@@ -1,30 +1,38 @@
 package cytoscape.visual.ui.editors.continuous;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
+
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.calculators.Calculator;
+
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**
@@ -32,20 +40,18 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
  *
  * @author $author$
   */
-public abstract class ContinuousMappingEditorPanel extends JPanel {
-	
-	protected VisualPropertyType type;
+public abstract class ContinuousMappingEditorPanel extends JDialog {
+    protected VisualPropertyType type;
     protected Calculator calculator;
     protected ContinuousMapping mapping;
     protected double maxValue;
     protected double minValue;
     protected double valRange;
     protected ArrayList<ContinuousMappingPoint> allPoints;
-	private SpinnerNumberModel spinnerModel;
-	
-	protected Object below;
-	protected Object above;
-	
+    private SpinnerNumberModel spinnerModel;
+    protected Object below;
+    protected Object above;
+    protected static ContinuousMappingEditorPanel editor;
 
     /** Creates new form ContinuousMapperEditorPanel */
     public ContinuousMappingEditorPanel(VisualPropertyType type) {
@@ -56,11 +62,12 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
         setAttrComboBox();
         setSpinner();
     }
-    
+
     protected void setSpinner() {
-    	spinnerModel = new SpinnerNumberModel(0.0d, minValue, maxValue, 0.001d);
-    	spinnerModel.addChangeListener(new SpinnerChangeListener());
-    	valueSpinner.setModel(spinnerModel);
+        spinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,
+                Float.POSITIVE_INFINITY, 0.001d);
+        spinnerModel.addChangeListener(new SpinnerChangeListener());
+        valueSpinner.setModel(spinnerModel);
     }
 
     protected void setVisualPropLabel() {
@@ -75,11 +82,18 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
+        JPanel mainPanel = new JPanel();
+
+        abovePanel = new BelowAndAbovePanel(type, Color.yellow, false);
+        abovePanel.setName("abovePanel");
+        belowPanel = new BelowAndAbovePanel(type, Color.white, true);
+        belowPanel.setName("belowPanel");
+
         rangeSettingPanel = new javax.swing.JPanel();
         pivotLabel = new javax.swing.JLabel();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        
+
         colorButton = new javax.swing.JButton();
         rangeEditorPanel = new javax.swing.JPanel();
         slider = new org.jdesktop.swingx.JXMultiThumbSlider();
@@ -87,18 +101,15 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
         iconPanel = new YValueLegendPanel(type);
         visualPropertyLabel = new javax.swing.JLabel();
 
-        
-        
         valueSpinner = new JSpinner();
 
         valueSpinner.setEnabled(false);
-        
-        
+
         rotaryEncoder = new JXMultiThumbSlider();
 
         iconPanel.setPreferredSize(new Dimension(60, 1));
 
-        this.setBorder(
+        mainPanel.setBorder(
             javax.swing.BorderFactory.createTitledBorder(
                 null,
                 "Continuous Mapping for " + type.getName(),
@@ -211,31 +222,76 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(mainPanel);
+        mainPanel.setLayout(layout);
+
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(rangeSettingPanel,
+                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).add(
                 layout.createSequentialGroup().add(iconPanel,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(slider,
-                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 269,
-                    Short.MAX_VALUE).addContainerGap()).add(rangeSettingPanel,
-                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(belowPanel,
+                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).add(slider,
+                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 243,
+                    Short.MAX_VALUE).add(abovePanel,
+                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(
                 layout.createSequentialGroup().add(
                     layout.createParallelGroup(
-                        org.jdesktop.layout.GroupLayout.TRAILING).add(slider,
-                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145,
-                        Short.MAX_VALUE).add(iconPanel,
+                        org.jdesktop.layout.GroupLayout.LEADING).add(org.jdesktop.layout.GroupLayout.TRAILING,
+                        slider, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                        145, Short.MAX_VALUE).add(org.jdesktop.layout.GroupLayout.TRAILING,
+                        iconPanel,
+                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE).add(org.jdesktop.layout.GroupLayout.TRAILING,
+                        belowPanel,
+                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE).add(org.jdesktop.layout.GroupLayout.TRAILING,
+                        abovePanel,
                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                         Short.MAX_VALUE)).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(rangeSettingPanel,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
+        //        layout.setHorizontalGroup(
+        //            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(
+        //                layout.createSequentialGroup().add(iconPanel,
+        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+        //                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(slider,
+        //                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 269,
+        //                    Short.MAX_VALUE).addContainerGap()).add(rangeSettingPanel,
+        //                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+        //                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        //        layout.setVerticalGroup(
+        //            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(
+        //                layout.createSequentialGroup().add(
+        //                    layout.createParallelGroup(
+        //                        org.jdesktop.layout.GroupLayout.TRAILING).add(slider,
+        //                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145,
+        //                        Short.MAX_VALUE).add(iconPanel,
+        //                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+        //                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+        //                        Short.MAX_VALUE)).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(rangeSettingPanel,
+        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+        //                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
+        // add the main panel to the dialog.
+        this.getContentPane()
+            .add(mainPanel);
+        this.pack();
     } // </editor-fold>               
 
     abstract protected void deleteButtonActionPerformed(
@@ -250,20 +306,19 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
         if (type.isNodeProp()) {
             attr = Cytoscape.getNodeAttributes();
             calculator = Cytoscape.getVisualMappingManager()
-                            .getVisualStyle()
-                            .getNodeAppearanceCalculator()
-                            .getCalculator(type);
+                                  .getVisualStyle()
+                                  .getNodeAppearanceCalculator()
+                                  .getCalculator(type);
         } else {
             attr = Cytoscape.getEdgeAttributes();
             calculator = Cytoscape.getVisualMappingManager()
-                            .getVisualStyle()
-                            .getEdgeAppearanceCalculator()
-                            .getCalculator(type);
+                                  .getVisualStyle()
+                                  .getEdgeAppearanceCalculator()
+                                  .getCalculator(type);
         }
-        
-        if(calculator == null) {
-        	return;
-        }
+
+        if (calculator == null)
+            return;
 
         final String[] names = attr.getAttributeNames();
 
@@ -272,15 +327,16 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
         for (String name : names) {
             attrType = attr.getType(name);
 
-//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
-//                    (attrType == CyAttributes.TYPE_INTEGER))
-//               
+            //            if ((attrType == CyAttributes.TYPE_FLOATING) ||
+            //                    (attrType == CyAttributes.TYPE_INTEGER))
+            //               
         }
 
         // Assume this calc only returns cont. mapping.
         if (calculator.getMapping(0)
-                    .getClass() == ContinuousMapping.class) {
+                          .getClass() == ContinuousMapping.class) {
             mapping = (ContinuousMapping) calculator.getMapping(0);
+
             final String controllingAttrName = mapping.getControllingAttributeName();
 
             final MultiHashMap mhm = attr.getMultiHashMap();
@@ -293,8 +349,9 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
             while (it.hasNext()) {
                 key = it.next();
 
-                Double val = (Double) mhm.getAttributeValue((String) key,
-                        controllingAttrName, null);
+                Double val = Double.parseDouble(
+                        mhm.getAttributeValue((String) key,
+                            controllingAttrName, null).toString());
 
                 if (val > maxValue)
                     maxValue = val;
@@ -307,15 +364,22 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
 
             System.out.println("----------- min max = " + minValue + ", " +
                 maxValue);
-            valRange = Math.abs(minValue-maxValue);
+            valRange = Math.abs(minValue - maxValue);
             allPoints = mapping.getAllPoints();
         }
+    }
+
+    protected void setSidePanelIconColor(Color below, Color above) {
+        this.abovePanel.setColor(above);
+        this.belowPanel.setColor(below);
+        repaint();
     }
 
     // Variables declaration - do not modify
     protected javax.swing.JButton addButton;
     private javax.swing.JLabel attrNameLabel;
-//    private javax.swing.JComboBox attributeComboBox;
+
+    //    private javax.swing.JComboBox attributeComboBox;
     protected javax.swing.JButton colorButton;
     protected javax.swing.JButton deleteButton;
     protected javax.swing.JPanel iconPanel;
@@ -326,142 +390,163 @@ public abstract class ContinuousMappingEditorPanel extends JPanel {
     protected javax.swing.JSpinner valueSpinner;
     private javax.swing.JLabel visualPropertyLabel;
     protected JXMultiThumbSlider rotaryEncoder;
-    
-    
-    
+
+    /*
+     * For Gradient panel only.
+     */
+    protected BelowAndAbovePanel abovePanel;
+    protected BelowAndAbovePanel belowPanel;
+
     protected int getSelectedPoint(int selectedIndex) {
-    	final List<Thumb> thumbs = slider.getModel().getSortedThumbs();
-        Thumb selected = slider.getModel().getThumbAt(selectedIndex);
+        final List<Thumb> thumbs = slider.getModel()
+                                         .getSortedThumbs();
+        Thumb selected = slider.getModel()
+                               .getThumbAt(selectedIndex);
         int i;
-        for(i=0; i<thumbs.size(); i++) {
-        		if(thumbs.get(i) == selected) {
-        			System.out.println("=====Selected Color = " + i + ", " + thumbs.get(i).getObject());
-        			return i;
-        		}
-        	}
-        
+
+        for (i = 0; i < thumbs.size(); i++) {
+            if (thumbs.get(i) == selected) {
+                System.out.println("=====Selected Color = " + i + ", " +
+                    thumbs.get(i).getObject());
+
+                return i;
+            }
+        }
+
         return -1;
     }
 
     // End of variables declaration
-    protected class ThumbMouseListener
-        implements MouseListener {
+    protected class ThumbMouseListener extends MouseAdapter {
+        //        public void mousePressed(MouseEvent e) {
+        //            int selectedIndex = slider.getSelectedIndex();
+        //
+        //            if ((0 <= selectedIndex) &&
+        //                    (slider.getModel()
+        //                               .getThumbCount() > 1)) {
+        //            	
+        //            	Thumb t = slider.getModel().getThumbAt(selectedIndex);
+        //                valueSpinner.setEnabled(true);
+        //                valueSpinner.setValue(
+        //                    ((t.getPosition() / 100) * valRange) + minValue);
+        //            } else {
+        //                valueSpinner.setEnabled(false);
+        //                valueSpinner.setValue(0);
+        //            }
+        //        }
         public void mouseClicked(MouseEvent e) {
-            
-        }
-
-        public void mouseEntered(MouseEvent e) {
-            // TODO Auto-generated method stub
-        }
-
-        public void mouseExited(MouseEvent e) {
-            // TODO Auto-generated method stub
-        }
-
-        public void mousePressed(MouseEvent e) {
-        	
             int selectedIndex = slider.getSelectedIndex();
 
             if ((0 <= selectedIndex) &&
                     (slider.getModel()
                                .getThumbCount() > 1)) {
+                Point location = slider.getSelectedThumb()
+                                       .getLocation();
                 valueSpinner.setEnabled(true);
-                valueSpinner.setValue(
-                    ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue());
-                
-            } else {
-                valueSpinner.setEnabled(false);
-                valueSpinner.setValue(0);
-            }
-        }
 
-        
-        
-        
-        public void mouseReleased(MouseEvent e) {
-            int selectedIndex = slider.getSelectedIndex();
-            
-            if ((0 <= selectedIndex) &&
-                    (slider.getModel()
-                               .getThumbCount() > 1)) {
-                valueSpinner.setEnabled(true);
-                Double newVal = ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue();
+                //                Double newVal = ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue();
+                Double newVal = ((slider.getModel()
+                                        .getThumbAt(selectedIndex)
+                                        .getPosition() / 100) * valRange) +
+                    minValue;
                 valueSpinner.setValue(newVal);
-                
+
                 /*
                  * Re-order map entries.
                  */
-                List<Thumb> thumbs = slider.getModel().getSortedThumbs();
+                List<Thumb> thumbs = slider.getModel()
+                                           .getSortedThumbs();
+
                 //List<ContinuousMappingPoint> points = mapping.getAllPoints();
-                	
-                	Thumb t;
-                	ContinuousMappingPoint p;
-                	
-                	System.out.println("Range = " + valRange + ", minVal = " + minValue);
-                	
-                for(int i=0; i<thumbs.size(); i++) {
-                		t = thumbs.get(i);
-                		if(i == 0) {
-                			mapping.getPoint(i).getRange().lesserValue = below;
-                			mapping.getPoint(i).getRange().greaterValue = t.getObject();
-                			
-                		} else if(i == thumbs.size()-1) {
-                			mapping.getPoint(i).getRange().greaterValue = above;
-                			mapping.getPoint(i).getRange().lesserValue = t.getObject();
-                		} else {
-                			mapping.getPoint(i).getRange().lesserValue = t.getObject();
-                			mapping.getPoint(i).getRange().greaterValue = t.getObject();
-                		}
-                	
-                		newVal = (t.getPosition()/100)*valRange + minValue;
-                		mapping.getPoint(i).setValue(newVal);
-                		
-                		mapping.getPoint(i).getRange().equalValue = t.getObject();
-                		System.out.println("Selected idx = " + selectedIndex +", new val = " + newVal + ", New obj = " + t.getObject() + ", Pos = " + t.getPosition());
-                	}
+                Thumb t;
+                ContinuousMappingPoint p;
+
+                System.out.println("Range = " + valRange + ", minVal = " +
+                    minValue);
+
+                for (int i = 0; i < thumbs.size(); i++) {
+                    t = thumbs.get(i);
+
+                    if (i == 0) {
+                        mapping.getPoint(i)
+                               .getRange().lesserValue = below;
+
+                        mapping.getPoint(i)
+                               .getRange().greaterValue = t.getObject();
+                    } else if (i == (thumbs.size() - 1)) {
+                        mapping.getPoint(i)
+                               .getRange().greaterValue = above;
+
+                        mapping.getPoint(i)
+                               .getRange().lesserValue = t.getObject();
+                    } else {
+                        mapping.getPoint(i)
+                               .getRange().lesserValue = t.getObject();
+
+                        mapping.getPoint(i)
+                               .getRange().greaterValue = t.getObject();
+                    }
+
+                    newVal = ((t.getPosition() / 100) * valRange) + minValue;
+                    mapping.getPoint(i)
+                           .setValue(newVal);
+
+                    mapping.getPoint(i)
+                           .getRange().equalValue = t.getObject();
+                    System.out.println("Selected idx = " + selectedIndex +
+                        ", new val = " + newVal + ", New obj = " +
+                        t.getObject() + ", Pos = " + t.getPosition());
+                }
+
+                //                slider.getSelectedThumb().setLocation(location);
+                slider.repaint();
+                repaint();
+
                 System.out.println("\n\n");
                 //mapping.getPoint(getSelectedPoint(selectedIndex)).setValue(newVal);
-                Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
-               
+                Cytoscape.getVisualMappingManager()
+                         .getNetworkView()
+                         .redrawGraph(false, true);
             } else {
                 valueSpinner.setEnabled(false);
                 valueSpinner.setValue(0);
             }
         }
     }
-    
+
     /**
      * Watching spinner
-     * 
+     *
      * @author kono
      *
      */
-    class SpinnerChangeListener implements ChangeListener {
-    	 	
-		public void stateChanged(ChangeEvent e) {
-			
-			Number newVal = spinnerModel.getNumber();
-			int selectedIndex = slider.getSelectedIndex();
-			
-			if ((0 <= selectedIndex) &&
+    class SpinnerChangeListener
+        implements ChangeListener {
+        public void stateChanged(ChangeEvent e) {
+            Number newVal = spinnerModel.getNumber();
+            int selectedIndex = slider.getSelectedIndex();
+
+            if ((0 <= selectedIndex) &&
                     (slider.getModel()
                                .getThumbCount() > 1)) {
-				Double newPosition = ((newVal.floatValue() - minValue)/valRange);
-				
-				slider.getModel().getThumbAt(selectedIndex).setPosition(newPosition.floatValue()*100);
-				slider.getSelectedThumb().setLocation((int) ((slider.getSize().width-12)*newPosition), 0);
-				slider.getSelectedThumb().repaint();
-				slider.getParent().repaint();
-				slider.repaint();
-				
-				/*
-				 * Set continuous mapper value
-				 */
-				
-				
-			}
-		}
+                Double newPosition = ((newVal.floatValue() - minValue) / valRange);
 
-		
+                slider.getModel()
+                      .getThumbAt(selectedIndex)
+                      .setPosition(newPosition.floatValue() * 100);
+                slider.getSelectedThumb()
+                      .setLocation((int) ((slider.getSize().width - 12) * newPosition),
+                    0);
+                slider.getSelectedThumb()
+                      .repaint();
+                slider.getParent()
+                      .repaint();
+                slider.repaint();
+
+                /*
+                 * Set continuous mapper value
+                 */
+            }
+        }
     }
 }

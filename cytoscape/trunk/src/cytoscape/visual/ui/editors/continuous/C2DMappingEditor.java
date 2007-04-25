@@ -1,11 +1,5 @@
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -13,9 +7,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import java.io.File;
-
 import javax.imageio.ImageIO;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**
@@ -34,6 +29,15 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
         this.iconPanel.setVisible(false);
         setSlider();
     }
+    
+    public static void showDialog(final int width, final int height, final String title, VisualPropertyType type) {
+		editor = new C2DMappingEditor(type);
+		editor.setSize(new Dimension(width, height));
+		editor.setTitle(title);
+		editor.setAlwaysOnTop(true);
+		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setVisible(true);
+	}
 
     @Override
     protected void addButtonActionPerformed(ActionEvent evt) {
