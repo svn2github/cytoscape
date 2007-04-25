@@ -50,13 +50,20 @@ import giny.view.NodeView;
 import ding.view.*;
 
 // Cytoscape imports
-import cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
+
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import metaNodePlugin2.model.MetaNode;
@@ -107,7 +114,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		}
 
 		// Register with CyGroup
-		CyGroup.registerGroupViewer(this);
+		CyGroupManager.registerGroupViewer(this);
 		this.groupViewer = this; // this makes it easier to get at from inner classes
 		System.out.println("metaNodePlugin2 "+VERSION+" initialized");
 	}
@@ -154,13 +161,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, CyNode node, int change) { 
+	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
 		MetaNode mn = MetaNode.getMetaNode(group);
 		if (mn == null) return;
 
-		if (change == CyGroup.NODE_ADDED)
+		if (change == ChangeType.NODE_ADDED)
 			mn.nodeAdded(node);
-		else if (change == CyGroup.NODE_REMOVED)
+		else if (change == ChangeType.NODE_REMOVED)
 			mn.nodeRemoved(node);
 	}
 
@@ -238,7 +245,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			Set currentNodes = network.getSelectedNodes();
-			List<CyGroup>groupList = CyGroup.getGroupList(groupViewer);
+			List<CyGroup>groupList = CyGroupManager.getGroupList(groupViewer);
 
 			// Add our menu items
 			{
@@ -431,10 +438,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		private void newGroup() {
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
-			List<CyGroup> groupList = CyGroup.getGroupList();
+			List<CyGroup> groupList = CyGroupManager.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this metanode");
 			if (groupName == null) return;
-			CyGroup group = CyGroup.createGroup(groupName, currentNodes, viewerName);
+			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, viewerName);
 			MetaNode newNode = new MetaNode(group);
 			groupCreated(group);
 			newNode.collapse(recursive, multipleEdges, true);
@@ -446,7 +453,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		private void removeGroup() {
 			// We need to make sure the group is expanded, first
 			expand();
-			CyGroup.removeGroup(group);
+			CyGroupManager.removeGroup(group);
 		}
 
 		/**

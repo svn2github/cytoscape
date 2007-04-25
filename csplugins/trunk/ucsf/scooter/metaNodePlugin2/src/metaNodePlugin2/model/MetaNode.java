@@ -45,7 +45,10 @@ import giny.view.NodeView;
 import ding.view.*;
 
 // Cytoscape imports
-import cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
@@ -53,6 +56,10 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.visual.VisualMappingManager;
+
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import metaNodePlugin2.MetaNodePlugin2;
