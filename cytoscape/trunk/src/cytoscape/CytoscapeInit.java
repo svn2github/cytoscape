@@ -117,20 +117,20 @@ import javax.swing.JButton;
 public class CytoscapeInit {
 	private static Properties properties;
 	private static Properties visualProperties;
-	private static Set pluginURLs;
-	private static Set loadedPlugins;
-	private static Set resourcePlugins;
+//	private static Set pluginURLs;
+//	private static Set loadedPlugins;
+//	private static Set resourcePlugins;
 
 	static {
 		System.out.println("CytoscapeInit static initialization");
-		pluginURLs = new HashSet();
-		resourcePlugins = new HashSet();
-		loadedPlugins = new HashSet();
+//		pluginURLs = new HashSet();
+//		resourcePlugins = new HashSet();
+//		loadedPlugins = new HashSet();
 		initProperties();
 	}
 
 	private static CyInitParams initParams;
-	private static URLClassLoader classLoader;
+	//private static URLClassLoader classLoader;
 
 	// Most-Recently-Used directories and files
 	private static File mrud;
@@ -153,6 +153,7 @@ public class CytoscapeInit {
 	 * @return false, if we fail to initialize for some reason
 	 */
 	public boolean init(CyInitParams params) {
+		
 		long begintime = System.currentTimeMillis();
 
 		try {
@@ -185,7 +186,26 @@ public class CytoscapeInit {
 				setUpAttributesChangedListener();
 			}
 
-			loadPlugins();
+			//what to do with the exceptions?
+			PluginManager mgr = PluginManager.getPluginManager();
+			try {
+				System.out.println("updating plugins...");
+				mgr.delete();
+				mgr.install();
+			} catch (cytoscape.plugin.ManagerError me) {
+				me.printStackTrace();
+			}
+			
+			try {
+				System.out.println("loading plugins....");
+				mgr.loadPlugins( initParams.getPlugins() );
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} catch (ClassNotFoundException cne) {
+				cne.printStackTrace();
+			}
+			
+			//loadPlugins();
 
 			System.out.println("loading session...");
 
@@ -242,334 +262,58 @@ public class CytoscapeInit {
 	public static Properties getProperties() {
 		return properties;
 	}
+	
 
 	/**
-	 *  DOCUMENT ME!
-	 *
+	 *  DEPRECATED
+	 * @deprecated Will be removed December 2007.  Use PluginManager.getClassLoader()
 	 * @return  DOCUMENT ME!
 	 */
 	public static URLClassLoader getClassLoader() {
-		return classLoader;
+		return PluginManager.getClassLoader();
+		//return classLoader;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
+	 * DEPRECATED
+	 * @deprecated Will be removed December 2007.  Use PluginManager.getPluginURLs()
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getPluginURLs() {
-		return pluginURLs;
+		return PluginManager.getPluginURLs();
+		//return pluginURLs;
 	}
+	
 
 	/**
-	 *  DOCUMENT ME!
-	 *
+	 * DEPRECATED
+	 * @deprecated Will be removed December 2007.  Use PluginManager.getResourcePlugins()
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getResourcePlugins() {
-		return resourcePlugins;
-	}
-
-
-	/**
-	 * Parses the plugin input strings and transforms them into the appropriate
-	 * URLs or resource names. The method first checks to see if the
-	 */
-	private void loadPlugins() {
-		/*
-		 * 1. Delete all plugins marked for deletion from last session.
-		 * 2. Install all plugins marked for installation from last session.
-		 */
-		PluginManager Mgr = PluginManager.getPluginManager();
-
-		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-		final IndeterminateProgressBar InstallBar = new IndeterminateProgressBar(Cytoscape.getDesktop(),
-        "Updating Cytoscape Plugins",
-        "Update in progress...");
-		InstallBar.setLayout(new java.awt.GridBagLayout());
-
-		JButton CancelInstall = new JButton("Cancel");
-		CancelInstall.setSize(new java.awt.Dimension(81, 23));
-		CancelInstall.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent E) {
-				InstallBar.dispose();
-			}
-			} );
-
-		gridBagConstraints.gridy = 2;
-		InstallBar.add(CancelInstall, gridBagConstraints);
-		// TODO add a progress bar to ppl know what's going on since this can slow down loading
-		try {
-			InstallBar.pack();
-			InstallBar.setLocationRelativeTo(Cytoscape.getDesktop());
-			InstallBar.setVisible(true);
-		
-			Mgr.delete();
-			Mgr.install();
-		} catch (cytoscape.plugin.ManagerError E) {
-			if (ErrorMsg == null) {
-				ErrorMsg = new String();
-			}
-			ErrorMsg += (E.getMessage() + "\n");
-		}
-		InstallBar.dispose();
-		
-		try {
-			Set plugins = new HashSet();
-			List p = initParams.getPlugins();
-
-			if (p != null)
-				plugins.addAll(p);
-
-			// Parse the plugin strings and determine whether they're urls,
-			// files, directories, class names, or manifest file names.
-			for (Iterator iter = plugins.iterator(); iter.hasNext();) {
-				String plugin = (String) iter.next();
-
-				File f = new File(plugin);
-
-				// If the file name ends with .jar add it to the list as a url.
-				if (plugin.endsWith(".jar")) {
-					// If the name doesn't match a url, turn it into one.
-					if (!plugin.matches(FileUtil.urlPattern)) {
-						System.out.println(" - file: " + f.getAbsolutePath());
-						pluginURLs.add(jarURL(f.getAbsolutePath()));
-					} else {
-						System.out.println(" - url: " + f.getAbsolutePath());
-						pluginURLs.add(jarURL(plugin));
-					}
-
-					// If the file doesn't exists, assume that it's a
-					// resource plugin.
-				} else if (!f.exists()) {
-					System.out.println(" - classpath: " + f.getAbsolutePath());
-
-					resourcePlugins.add(plugin);
-
-					// If the file is a directory, load all of the jars
-					// in the directory.
-				} else if (f.isDirectory()) {
-					System.out.println(" - directory: " + f.getAbsolutePath());
-
-					String[] fileList = f.list();
-
-					for (int j = 0; j < fileList.length; j++) {
-						String FileName = f.getAbsolutePath() + File.separator + fileList[j];
-
-						if (!fileList[j].endsWith(".jar"))
-							continue;
-
-						pluginURLs.add(jarURL(f.getAbsolutePath()
-						                      + System.getProperty("file.separator") + fileList[j]));
-					}
-
-					// Assume the file is a manifest (i.e. list of jar names)
-					// and make urls out of them.
-				} else {
-					System.out.println(" - file manifest: " + f.getAbsolutePath());
-
-					try {
-						TextHttpReader reader = new TextHttpReader(plugin);
-						reader.read();
-
-						String text = reader.getText();
-						String lineSep = System.getProperty("line.separator");
-						String[] allLines = text.split(lineSep);
-
-						for (int j = 0; j < allLines.length; j++) {
-							String pluginLoc = allLines[j];
-
-							if (pluginLoc.endsWith(".jar")) {
-								if (pluginLoc.matches(FileUtil.urlPattern))
-									pluginURLs.add(pluginLoc);
-								else
-									System.err.println("Plugin location specified in " + plugin
-									                   + " is not a valid url: " + pluginLoc
-									                   + " -- NOT adding it.");
-							}
-						}
-					} catch (Exception exp) {
-						exp.printStackTrace();
-						System.err.println("error reading plugin manifest file " + plugin);
-					}
-				}
-			}
-
-			// now load the plugins in the appropriate manner
-			loadURLPlugins(pluginURLs);
-			loadResourcePlugins(resourcePlugins);
-		} catch (Exception e) {
-			System.out.println("failed loading plugin!");
-			e.printStackTrace();
-		}
+			return PluginManager.getResourcePlugins();
+			//return resourcePlugins;
 	}
 
 	/**
-	 * Load all plugins by using the given URLs loading them all on one
-	 * URLClassLoader, then interating through each Jar file looking for classes
-	 * that are CytoscapePlugins
-	 */
-	protected void loadURLPlugins(Set plugin_urls) {
-		URL[] urls = new URL[plugin_urls.size()];
-		int count = 0;
-
-		plugin_urls.toArray(urls);
-
-		// the creation of the class loader automatically loads the plugins
-		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
-
-		// iterate through the given jar files and find classes that are
-		// assignable from CytoscapePlugin
-		for (int i = 0; i < urls.length; ++i) {
-			System.out.println("");
-			System.out.println("attempting to load plugin url: ");
-			System.out.println(urls[i]);
-
-			try {
-				JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
-				JarFile jar = jc.getJarFile();
-
-				// if the jar file is null, do nothing
-				if (jar == null) {
-					continue;
-				}
-
-				// try the new school way of loading plugins
-				Manifest m = jar.getManifest();
-
-				if (m != null) {
-					String className = m.getMainAttributes().getValue("Cytoscape-Plugin");
-
-					if (className != null) {
-						Class pc = getPluginClass(className);
-
-						if (pc != null) {
-							System.out.println("Loading from manifest");
-							loadPlugin(pc, jar.getName());
-
-							continue;
-						}
-					}
-				}
-
-				// new-school failed, so revert to old school 
-				Enumeration entries = jar.entries();
-
-				if (entries == null) {
-					continue;
-				}
-
-				int totalPlugins = 0;
-
-				while (entries.hasMoreElements()) {
-					// get the entry
-					String entry = entries.nextElement().toString();
-
-					if (entry.endsWith("class")) {
-						// convert the entry to an assignable class name
-						entry = entry.replaceAll("\\.class$", "");
-						// A regex to match the two known types of file
-						// separators. We can't use File.separator because
-						// the system the jar was created on is not
-						// necessarily the same is the one it is running on.
-						entry = entry.replaceAll("/|\\\\", ".");
-
-						Class pc = getPluginClass(entry);
-
-						if (pc == null)
-							continue;
-
-						totalPlugins++;
-						loadPlugin(pc, jar.getName());
-
-						break;
-					}
-				}
-
-				if (totalPlugins == 0)
-					System.out.println("No plugin found in specified jar - assuming it's a library.");
-			} catch (Exception e) {
-				System.out.println("Couldn't load plugin url!");
-				System.err.println("Error: " + e.getMessage());
-			}
-		}
-
-		System.out.println("");
-	}
-
-	private void loadResourcePlugins(Set rp) {
-		// attempt to load resource plugins
-		for (Iterator rpi = rp.iterator(); rpi.hasNext();) {
-			String resource = (String) rpi.next();
-			System.out.println("");
-			System.out.println("attempting to load plugin resourse: " + resource);
-
-			// try to get the class
-			Class rclass = null;
-
-			try {
-				rclass = Class.forName(resource);
-			} catch (Exception exc) {
-				System.out.println("Getting class: " + resource + " failed");
-				exc.printStackTrace();
-
-				return;
-			}
-
-			loadPlugin(rclass, null);
-		}
-
-		System.out.println("");
-	}
-
-	/* TODO add warning to user that another plugin with the same namespace as a previously loaded plugin has been found and will not be
-	 * loaded
-	 */
-	/**
-	 *  DOCUMENT ME!
+	 *  DEPRECATED
+	 * @deprecated PluginManager handles all plugin loading now.  PluginManager.loadPlugin(Class, String) is private.
+	 * 		This method doesn't do anything, but it doesn't appear to be used in csplugins or core plugins
 	 * @param plugin DOCUMENT ME!
 	 */
 	public void loadPlugin(Class plugin, String PluginJarFile) {
-		if (CytoscapePlugin.class.isAssignableFrom(plugin)
-		    && !loadedPlugins.contains(plugin.getName())) {
-			try {
-				CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
-				loadedPlugins.add(plugin.getName());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (loadedPlugins.contains(plugin.getName())) {
-			// TODO warn user class of this name has already been loaded and can't be loaded again
-		}
-	}
-
-	/**
-	 * Determines whether the class with a particular name extends
-	 * CytoscapePlugin.
-	 *
-	 * @param name
-	 *            the name of the putative plugin class
-	 */
-	protected Class getPluginClass(String name) {
-		Class c = null;
-
-		try {
-			c = classLoader.loadClass(name);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-
-			return null;
-		} catch (NoClassDefFoundError e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		if (CytoscapePlugin.class.isAssignableFrom(c))
-			return c;
-		else
-
-			return null;
+			System.err.println("This method will not load plugins and should never be called, see PluginManager loadPlugins()");
+//		if (CytoscapePlugin.class.isAssignableFrom(plugin)
+//		    && !loadedPlugins.contains(plugin.getName())) {
+//			try {
+//				CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
+//				loadedPlugins.add(plugin.getName());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		} else if (loadedPlugins.contains(plugin.getName())) {
+//			// TODO warn user class of this name has already been loaded and can't be loaded again
+//		}
 	}
 
 	/**
@@ -724,25 +468,6 @@ public class CytoscapeInit {
 		}
 	}
 
-	private static URL jarURL(String urlString) {
-		URL url = null;
-
-		try {
-			String uString;
-
-			if (urlString.matches(FileUtil.urlPattern))
-				uString = "jar:" + urlString + "!/";
-			else
-				uString = "jar:file:" + urlString + "!/";
-
-			url = new URL(uString);
-		} catch (MalformedURLException mue) {
-			mue.printStackTrace();
-			System.out.println("couldn't create jar url from '" + urlString + "'");
-		}
-
-		return url;
-	}
 
 	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
