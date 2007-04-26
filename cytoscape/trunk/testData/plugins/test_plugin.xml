@@ -43,7 +43,7 @@
 				This plugin demonstrates the use of a jar file with the PluginInfo object created and a correct manifest file. 
 				This one is an "update" to the previous one for the purposes of testing.
 			</description>
-			<pluginVersion> 2.0 </pluginVersion>
+			<pluginVersion> 2.1 </pluginVersion>
 			<cytoscapeVersion> 2.5 </cytoscapeVersion>
 			<filetype> jar </filetype>
 			<category> Test </category>
@@ -74,7 +74,7 @@
 				This plugin demonstrates the use of a zip file with the correct directories (at least one plugins/*.jar file required) and
 				a correct manifest file.
 			</description>
-			<pluginVersion> 0.4.5 </pluginVersion>
+			<pluginVersion> 0.45 </pluginVersion>
 			<cytoscapeVersion> 2.5 </cytoscapeVersion>
 			<filetype> zip </filetype>
 			<category> Test </category>
