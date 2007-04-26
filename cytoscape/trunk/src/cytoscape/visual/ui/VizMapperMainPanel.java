@@ -614,7 +614,7 @@ public class VizMapperMainPanel extends JPanel
         // visualPropertySheetPanel = new PropertySheetPanel();
         setPropertyTable();
 
-        setDefaultPanel(DefaultAppearenceBuilder.getDefaultView());
+        //setDefaultPanel(DefaultAppearenceBuilder.getDefaultView());
 
         // visualPropertySheetPanel.repaint();
     }
