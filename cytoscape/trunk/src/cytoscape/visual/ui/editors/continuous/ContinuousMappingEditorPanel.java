@@ -416,6 +416,62 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
         return -1;
     }
 
+    protected void updateMap() {
+        List<Thumb> thumbs = slider.getModel()
+                                   .getSortedThumbs();
+
+        //List<ContinuousMappingPoint> points = mapping.getAllPoints();
+        Thumb t;
+        Double newVal;
+
+        System.out.println("Range = " + valRange + ", minVal = " + minValue);
+
+        if(thumbs.size() == 1) {
+        	System.out.println("Enter update code: " + mapping.getPointCount());
+        	mapping.getPoint(0).getRange().equalValue = thumbs.get(0).getObject();
+        	mapping.getPoint(0).getRange().lesserValue = below;
+        	mapping.getPoint(0).getRange().greaterValue = above;
+        	newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
+        	mapping.getPoint(0)
+            .setValue(newVal);
+        	return;
+        }
+        
+        for (int i = 0; i < thumbs.size(); i++) {
+            t = thumbs.get(i);
+
+            if (i == 0) {
+                mapping.getPoint(i)
+                       .getRange().lesserValue = below;
+
+                mapping.getPoint(i)
+                       .getRange().greaterValue = t.getObject();
+            } else if (i == (thumbs.size() - 1)) {
+                mapping.getPoint(i)
+                       .getRange().greaterValue = above;
+
+                mapping.getPoint(i)
+                       .getRange().lesserValue = t.getObject();
+            } else {
+                mapping.getPoint(i)
+                       .getRange().lesserValue = t.getObject();
+
+                mapping.getPoint(i)
+                       .getRange().greaterValue = t.getObject();
+            }
+
+            newVal = ((t.getPosition() / 100) * valRange) + minValue;
+            mapping.getPoint(i)
+                   .setValue(newVal);
+
+            mapping.getPoint(i)
+                   .getRange().equalValue = t.getObject();
+//            System.out.println("Selected idx = " + selectedIndex +
+//                ", new val = " + newVal + ", New obj = " + t.getObject() +
+//                ", Pos = " + t.getPosition());
+        }
+    }
+
     // End of variables declaration
     protected class ThumbMouseListener extends MouseAdapter {
         //        public void mousePressed(MouseEvent e) {
@@ -434,12 +490,14 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
         //                valueSpinner.setValue(0);
         //            }
         //        }
-        public void mouseClicked(MouseEvent e) {
+        public void mouseReleased(MouseEvent e) {
             int selectedIndex = slider.getSelectedIndex();
 
+            System.out.println("T Count = " + slider.getModel().getThumbCount());
+            
             if ((0 <= selectedIndex) &&
                     (slider.getModel()
-                               .getThumbCount() > 1)) {
+                               .getThumbCount() > 0)) {
                 Point location = slider.getSelectedThumb()
                                        .getLocation();
                 valueSpinner.setEnabled(true);
@@ -451,54 +509,9 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
                     minValue;
                 valueSpinner.setValue(newVal);
 
-                /*
-                 * Re-order map entries.
-                 */
-                List<Thumb> thumbs = slider.getModel()
-                                           .getSortedThumbs();
+                
+                updateMap();
 
-                //List<ContinuousMappingPoint> points = mapping.getAllPoints();
-                Thumb t;
-                ContinuousMappingPoint p;
-
-                System.out.println("Range = " + valRange + ", minVal = " +
-                    minValue);
-
-                for (int i = 0; i < thumbs.size(); i++) {
-                    t = thumbs.get(i);
-
-                    if (i == 0) {
-                        mapping.getPoint(i)
-                               .getRange().lesserValue = below;
-
-                        mapping.getPoint(i)
-                               .getRange().greaterValue = t.getObject();
-                    } else if (i == (thumbs.size() - 1)) {
-                        mapping.getPoint(i)
-                               .getRange().greaterValue = above;
-
-                        mapping.getPoint(i)
-                               .getRange().lesserValue = t.getObject();
-                    } else {
-                        mapping.getPoint(i)
-                               .getRange().lesserValue = t.getObject();
-
-                        mapping.getPoint(i)
-                               .getRange().greaterValue = t.getObject();
-                    }
-
-                    newVal = ((t.getPosition() / 100) * valRange) + minValue;
-                    mapping.getPoint(i)
-                           .setValue(newVal);
-
-                    mapping.getPoint(i)
-                           .getRange().equalValue = t.getObject();
-                    System.out.println("Selected idx = " + selectedIndex +
-                        ", new val = " + newVal + ", New obj = " +
-                        t.getObject() + ", Pos = " + t.getPosition());
-                }
-
-                //                slider.getSelectedThumb().setLocation(location);
                 slider.repaint();
                 repaint();
 
@@ -537,6 +550,13 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
                 slider.getSelectedThumb()
                       .setLocation((int) ((slider.getSize().width - 12) * newPosition),
                     0);
+                
+                
+                updateMap();
+                Cytoscape.getVisualMappingManager()
+                .getNetworkView()
+                .redrawGraph(false, true);
+                
                 slider.getSelectedThumb()
                       .repaint();
                 slider.getParent()

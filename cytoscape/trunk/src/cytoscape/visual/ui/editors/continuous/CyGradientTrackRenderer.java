@@ -34,7 +34,7 @@ public class CyGradientTrackRenderer extends JComponent
     implements VizMapperTrackRenderer {
     private int trackHeight = 40;
     private final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 10);
-    private final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 18);
+    private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 
     //private Paint checker_paint;
     private JXMultiThumbSlider<Color> slider;
@@ -43,6 +43,7 @@ public class CyGradientTrackRenderer extends JComponent
     private double range;
     private Color below;
     private Color above;
+    private String attrName;
 
     /**
      * Creates a new GradientTrackRenderer object.
@@ -51,12 +52,13 @@ public class CyGradientTrackRenderer extends JComponent
      *            DOCUMENT ME!
      */
     public CyGradientTrackRenderer(double minValue, double maxValue,
-        Color below, Color above) {
+        Color below, Color above, String title) {
         //checker_paint = ColorUtil.getCheckerPaint();
         this.below = below;
         this.above = above;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.attrName = title;
 
         this.range = Math.abs(maxValue - minValue);
     }
@@ -89,81 +91,70 @@ public class CyGradientTrackRenderer extends JComponent
                                          .getSortedThumbs();
         int len = stops.size();
 
-        // set up the data for the gradient
-        float[] fractions = new float[len + 2];
-        Color[] colors = new Color[len + 2];
-        int i = 1;
+        if (len != 0) {
+            // set up the data for the gradient
+            float[] fractions = new float[len + 2];
+            Color[] colors = new Color[len + 2];
+            int i = 1;
 
-        colors[0] = below;
-        fractions[0] = stops.get(0)
-                            .getPosition() / 100;
+            colors[0] = below;
+            fractions[0] = stops.get(0)
+                                .getPosition() / 100;
 
-        for (Thumb<Color> thumb : stops) {
-            colors[i] = (Color) thumb.getObject();
+            for (Thumb<Color> thumb : stops) {
+                colors[i] = (Color) thumb.getObject();
 
-            fractions[i] = thumb.getPosition() / 100;
+                fractions[i] = thumb.getPosition() / 100;
 
-            g.setColor(colors[i]);
-            g.setFont(SMALL_FONT);
+                g.setColor(colors[i]);
+                g.setFont(SMALL_FONT);
 
-            String valueString;
-            Double value = minValue + (fractions[i] * range);
+                String valueString;
+                Double value = minValue + (fractions[i] * range);
 
-            if ((Math.abs(minValue) < 3) || (Math.abs(maxValue) < 3))
-                valueString = String.format("%1.5f", value);
-            else
-                valueString = String.format("%3.2f", value);
+                if ((Math.abs(minValue) < 3) || (Math.abs(maxValue) < 3))
+                    valueString = String.format("%1.5f", value);
+                else
+                    valueString = String.format("%3.2f", value);
 
-            final int stringWidth = SwingUtilities.computeStringWidth(
-                    g.getFontMetrics(),
-                    valueString);
-            final int curPosition = (int) (track_width * fractions[i]);
+                final int stringWidth = SwingUtilities.computeStringWidth(
+                        g.getFontMetrics(),
+                        valueString);
+                final int curPosition = (int) (track_width * fractions[i]);
 
-            if (curPosition < (stringWidth / 2))
-                g.drawString(valueString, curPosition, trackHeight + 15);
-            else if ((track_width - curPosition) < (stringWidth / 2))
-                g.drawString(valueString, curPosition - stringWidth,
-                    trackHeight + 15);
-            else
-                g.drawString(valueString, curPosition - (stringWidth / 2),
-                    trackHeight + 15);
+                if (curPosition < (stringWidth / 2))
+                    g.drawString(valueString, curPosition, trackHeight + 15);
+                else if ((track_width - curPosition) < (stringWidth / 2))
+                    g.drawString(valueString, curPosition - stringWidth,
+                        trackHeight + 15);
+                else
+                    g.drawString(valueString, curPosition - (stringWidth / 2),
+                        trackHeight + 15);
 
-            i++;
+                i++;
+            }
+
+            colors[colors.length - 1] = above;
+            fractions[fractions.length - 1] = stops.get(stops.size() - 1)
+                                                   .getPosition() / 100;
+
+            g.setStroke(new BasicStroke(1.0f));
+
+            // fill in the gradient
+            Point2D start = new Point2D.Float(0, 0);
+            Point2D end = new Point2D.Float(track_width, trackHeight);
+
+            //		MultipleGradientPaint paint = new LinearGradientPaint((float) start
+            //				.getX(), (float) start.getY(), (float) end.getX(), (float) end
+            //				.getY(), fractions, colors);
+            //		g.setPaint(paint);
+            drawGradient(g, start, end, fractions, colors);
+
+            //		g.fill(rect);
         }
-
-        colors[colors.length - 1] = above;
-        fractions[fractions.length - 1] = stops.get(stops.size() - 1)
-                                               .getPosition() / 100;
-
-        g.setStroke(new BasicStroke(1.0f));
 
         // Define rectangle
         Rectangle2D rect = new Rectangle(0, 0, track_width, trackHeight);
-
-        // fill in the checker
-        //		g.setPaint(checker_paint);
-        //		g.fill(rect);
-
-        // fill in the gradient
-        Point2D start = new Point2D.Float(0, 0);
-        Point2D end = new Point2D.Float(track_width, trackHeight);
-
-        //		MultipleGradientPaint paint = new LinearGradientPaint((float) start
-        //				.getX(), (float) start.getY(), (float) end.getX(), (float) end
-        //				.getY(), fractions, colors);
-        //		g.setPaint(paint);
-        drawGradient(g, start, end, fractions, colors);
-        //		g.fill(rect);
-
-        // Draw arrow bar
-        // g.setColor(Color.black);
-        // g.drawLine(0, ARROW_BAR_Y_POSITION, track_width,
-        // ARROW_BAR_Y_POSITION);
-        // Polygon arrow = new Polygon();
-        // arrow.addPoint(track_width, ARROW_BAR_Y_POSITION);
-        // arrow.addPoint(track_width - 20, ARROW_BAR_Y_POSITION - 8);
-        // arrow.addPoint(track_width - 20, ARROW_BAR_Y_POSITION);
-        // g.fill(arrow);
         g.setColor(Color.gray);
         g.drawLine((int) rect.getBounds2D().getMinX(),
             (int) rect.getBounds2D().getMaxY(), 8,
@@ -186,8 +177,27 @@ public class CyGradientTrackRenderer extends JComponent
                 g.getFontMetrics(),
                 maxString), (int) rect.getBounds2D().getMaxY() + 38);
 
-        // draw a border
+        g.setFont(TITLE_FONT);
+
+        final int titleWidth = SwingUtilities.computeStringWidth(
+                g.getFontMetrics(),
+                attrName);
         g.setColor(Color.black);
+        g.drawString(attrName,
+            ((int) rect.getBounds2D()
+                       .getWidth() / 2) - (titleWidth / 2),
+            (int) rect.getBounds2D().getMaxY() + 33);
+        // Draw arrow bar
+        //        g.setColor(Color.black);
+        //        g.drawLine(0, , track_width,
+        //        ARROW_BAR_Y_POSITION);
+        //        Polygon arrow = new Polygon();
+        //        arrow.addPoint(track_width, ARROW_BAR_Y_POSITION);
+        //        arrow.addPoint(track_width - 20, ARROW_BAR_Y_POSITION - 8);
+        //        arrow.addPoint(track_width - 20, ARROW_BAR_Y_POSITION);
+        //        g.fill(arrow);
+
+        // draw a border
         g.draw(rect);
         g.translate(-thumb_width / 2, -12);
     }
@@ -201,13 +211,11 @@ public class CyGradientTrackRenderer extends JComponent
         final int height = (int) (end.getY() - start.getY());
 
         if (colors.length == 3) {
-            System.out.println("=========== In gradient" + fractions[1]);
-
             final int pivot = (int) (fractions[1] * width);
             g.setColor(colors[0]);
             g.fillRect((int) start.getX(), (int) start.getY(), pivot, height);
             g.setColor(colors[2]);
-            g.fillRect(pivot, (int) end.getY(), width - pivot, height);
+            g.fillRect(pivot, (int) start.getY(), width - pivot, height);
 
             g.setColor(colors[1]);
             g.drawLine(pivot, (int) start.getY(), pivot, height);
