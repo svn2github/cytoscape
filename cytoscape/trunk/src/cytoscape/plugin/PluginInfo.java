@@ -32,7 +32,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.plugin;
 
 import cytoscape.CytoscapeInit;
@@ -43,47 +43,43 @@ import java.util.List;
 
 import java.net.URL;
 
-
 /**
  * @author skillcoy Object describes a plugin
  */
 public class PluginInfo {
 	/**
-	 * Preset categories for use by plugin developers.  Feel free to use your own
+	 * Preset categories for use by plugin developers. Feel free to use your own
 	 */
 	public enum Category {
-		CORE("Core"),
-		ANALYSIS("Analysis"),
-		NETWORK_ATTRIBUTE_IO("Network and Attribute I/O"),
-		NETWORK_INFERENCE("Network Inference"),
-		FUNCTIONAL_ENRICHMENT("Functional Enrichment"),
-		COMMUNICATION_SCRIPTING("Communication/Scripting"),
-		NONE("Uncategorized");
-		
+		CORE("Core"), ANALYSIS("Analysis"), NETWORK_ATTRIBUTE_IO(
+				"Network and Attribute I/O"), NETWORK_INFERENCE(
+				"Network Inference"), FUNCTIONAL_ENRICHMENT(
+				"Functional Enrichment"), COMMUNICATION_SCRIPTING(
+				"Communication/Scripting"), NONE("Uncategorized");
+
 		private String catText;
+
 		private Category(String type) {
 			catText = type;
 		}
-		
+
 		public String toString() {
 			return catText;
 		}
-		
+
 		public String getCategoryText() {
 			return toString();
 		}
 	}
-	
-	
+
 	/**
 	 * Jar and Zip files currently supported
-	 *
+	 * 
 	 * @author skillcoy
-	 *
+	 * 
 	 */
 	public enum FileType {
-		JAR("jar"),
-		ZIP("zip");
+		JAR("jar"), ZIP("zip");
 
 		private String typeText;
 
@@ -97,21 +93,38 @@ public class PluginInfo {
 	}
 
 	private FileType fileType;
+
 	private String uniqueID;
+
 	private String pluginClassName;
+
 	private String pluginName;
+
 	private List<AuthorInfo> authors;
+
 	private License license;
+
 	private String pluginDescription;
+
 	private String pluginVersion;
+
 	private String cytoscapeVersion;
+
 	private String pluginUrl;
+
 	private String projectUrl;
+
 	private String pluginCategory;
+
+	private String versionMatch = "^\\d+\\.\\d+";
+
+	private String versionSplit = "\\.";
+
 	private List<String> pluginFiles;
+
 	private boolean licenseRequired = false;
+
 	protected String enclosingJar;
-	
 
 	/**
 	 * Initializes a PluginInfo object with the following defaults:
@@ -126,7 +139,7 @@ public class PluginInfo {
 
 	/**
 	 * See PluginInfo()
-	 *
+	 * 
 	 * @param UniqueID
 	 *            Additionally this sets the unique identifier that will be used
 	 *            to find a new version of the plugin at the given project url.
@@ -145,10 +158,16 @@ public class PluginInfo {
 		authors = new ArrayList<AuthorInfo>();
 		setName("Unknown");
 		setDescription("No description");
-		setPluginVersion("0.1");
+		try {
+			setPluginVersion("0.1");
+		} catch (NumberFormatException ie) {
+			ie.printStackTrace();
+		}
+
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
-		setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
+		setProjectUrl(CytoscapeInit.getProperties().getProperty(
+				"defaultPluginUrl"));
 	}
 
 	// TODO These maybe should check to be sure nothing is being set to null
@@ -156,7 +175,7 @@ public class PluginInfo {
 
 	/**
 	 * Sets name of plugin. This will be displayed to users.
-	 *
+	 * 
 	 * @param name
 	 */
 	public void setName(String name) {
@@ -165,7 +184,7 @@ public class PluginInfo {
 
 	/**
 	 * Sets the plugin class name. Used for tracking plugins.
-	 *
+	 * 
 	 * @param className
 	 */
 	public void setPluginClassName(String className) {
@@ -174,7 +193,7 @@ public class PluginInfo {
 
 	/**
 	 * Sets a description of the plugin. This will be displayed to users.
-	 *
+	 * 
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -183,26 +202,37 @@ public class PluginInfo {
 
 	/**
 	 * Sets the version of the plugin. Defaults to 0.1
-	 *
+	 * 
 	 * @param version
 	 */
-	public void setPluginVersion(String version) {
-		this.pluginVersion = version;
+	public void setPluginVersion(String version) throws NumberFormatException {
+		if (versionOk(version, true)) {
+			pluginVersion = version;
+		} else {
+			throw new NumberFormatException(
+					"Plugin version numbers must be in the format: \\d+.\\d+");
+		}
 	}
 
 	/**
 	 * Sets the Cytoscape version this plugin is compatible with.
-	 *
+	 * 
 	 * @param version
 	 */
-	public void setCytoscapeVersion(String version) {
-		this.cytoscapeVersion = version;
+	public void setCytoscapeVersion(String version)
+			throws NumberFormatException {
+		if (versionOk(version, false)) {
+			cytoscapeVersion = version;
+		} else {
+			throw new NumberFormatException(
+					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
+		}
 	}
 
 	/**
 	 * pluginUrl this plugin was downloaded from. It is presumed this can be
 	 * used for update later.
-	 *
+	 * 
 	 * @param url
 	 */
 	public void setUrl(String url) {
@@ -212,7 +242,7 @@ public class PluginInfo {
 	/**
 	 * pluginUrl for the xml file describing all plugins from any given project
 	 * (ex. http://cytoscape.org/plugins/plugin.xml)
-	 *
+	 * 
 	 * @param url
 	 */
 	public void setProjectUrl(String url) {
@@ -221,7 +251,7 @@ public class PluginInfo {
 
 	/**
 	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
-	 *
+	 * 
 	 * @param type
 	 */
 	public void setFiletype(FileType type) {
@@ -231,7 +261,7 @@ public class PluginInfo {
 	/**
 	 * Sets a list of files (prefer full paths) installed with this plugin.
 	 * Includes the jar file.
-	 *
+	 * 
 	 * @param list
 	 */
 	public void setFileList(List<String> list) {
@@ -240,7 +270,7 @@ public class PluginInfo {
 
 	/**
 	 * Sets a category for the plugin. Defaults to "Uncategorized"
-	 *
+	 * 
 	 * @param category
 	 */
 	public void setCategory(String category) {
@@ -249,15 +279,16 @@ public class PluginInfo {
 
 	/**
 	 * Sets the category for the plugin using the enum PluginInfo.Category
+	 * 
 	 * @param catName
 	 */
 	public void setCategory(Category catName) {
 		this.pluginCategory = catName.getCategoryText();
 	}
-	
+
 	/**
 	 * Adds a file to the list of installed files.
-	 *
+	 * 
 	 * @param fileName
 	 */
 	public void addFileName(String fileName) {
@@ -266,7 +297,7 @@ public class PluginInfo {
 
 	/**
 	 * Adds an author to the list of authors.
-	 *
+	 * 
 	 * @param authorName
 	 * @param institution
 	 */
@@ -275,24 +306,75 @@ public class PluginInfo {
 	}
 
 	/**
-	 * Sets the license information for the plugin.  Not required.
-	 * @param java.net.URL object where license can be downloaded from.
+	 * Sets the license information for the plugin. Not required.
+	 * 
+	 * @param java.net.URL
+	 *            object where license can be downloaded from.
 	 */
 	public void setLicense(URL url) {
 		license = new License(url);
 	}
-	
+
 	/**
-	 * Sets the license information for the plugin.  Not required.
-	 * @param Text string of license.
-	 * @param alwaysRequired If the user expects the license to be required for both install
-	 * and update at all times (true) or only at install (false)
+	 * Sets the license information for the plugin. Not required.
+	 * 
+	 * @param Text
+	 *            string of license.
+	 * @param alwaysRequired
+	 *            If the user expects the license to be required for both
+	 *            install and update at all times (true) or only at install
+	 *            (false)
 	 */
 	public void setLicense(String licenseText, boolean alwaysRequired) {
 		license = new License(licenseText);
 		licenseRequired = alwaysRequired;
 	}
-	
+
+	// this just checks the plugin version and the cytoscape version
+	private boolean versionOk(String version, boolean plugin) {
+		// \d+.\+d ok
+		String Match = versionMatch;
+		String Split = versionSplit;
+
+		if (plugin) {
+			Match = Match + "$";
+		} else { // cytoscape version
+			Match = Match + "(\\.\\d+)?$";
+			Split = "\\.|-";
+		}
+
+		if (!version.matches(Match)) {
+			return false;
+		}
+
+		String[] SplitVersion = version.split(Split);
+
+		int max = 2;
+		if (!plugin) {
+			max = 3; // cytoscape version numbers
+			// if there's a fourth is must be alpha
+			if (SplitVersion.length == 4) {
+				if (!SplitVersion[3].matches("[a-z]+")) {
+					return false;
+				}
+			}
+		}
+
+		// can't be longer than the accepted version types
+		if (SplitVersion.length > max) {
+			return false;
+		}
+
+		// must be digets
+		for (int i = 0; i < max && i < SplitVersion.length; i++) {
+			if (!SplitVersion[i].matches("\\d+")) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	/* GET */
 
 	/**
@@ -301,17 +383,19 @@ public class PluginInfo {
 	public String getLicenseText() {
 		if (license != null)
 			return license.getLicense();
-		else return null;
+		else
+			return null;
 	}
-	
+
 	/**
-	 * @return If the license is always required to be accepted for installs and updates this returns
-	 * true.  If it only is required at install time (never at update) returns false.
+	 * @return If the license is always required to be accepted for installs and
+	 *         updates this returns true. If it only is required at install time
+	 *         (never at update) returns false.
 	 */
 	public boolean isLicenseRequired() {
 		return licenseRequired;
 	}
-	
+
 	/**
 	 * @return The unique id for this object.
 	 */
@@ -406,54 +490,47 @@ public class PluginInfo {
 		return getName() + " " + getPluginVersion();
 	}
 
+	/**
+	 * Compare the version of the object to the given object.
+	 * 
+	 * @param New
+	 *            Potentially newer PluginInfo object
+	 * @return true if given version is newer
+	 */
+	public boolean isNewerPluginVersion(PluginInfo New) {
+		String[] CurrentVersion = this.getPluginVersion().split(versionSplit);
+		String[] NewVersion = New.getPluginVersion().split(versionSplit);
 
-	public static boolean isNewVersion(PluginInfo Current, PluginInfo New) {
-		boolean isNew = false;
-		
-		PluginInfo NewestVersion = getNewerVersion(Current, New);
-		if ( NewestVersion.equals(New) ) {
-			isNew = true;
+		if ((Integer.valueOf(CurrentVersion[0]).intValue() > Integer.valueOf(
+				NewVersion[0]).intValue())
+				|| (Integer.valueOf(CurrentVersion[1]).intValue() > Integer
+						.valueOf(NewVersion[1]).intValue())) {
+			return false;
 		}
-		return isNew;
-	}
-	
-	public static PluginInfo getNewerVersion(PluginInfo Current, PluginInfo New) {
-		String SplitRegex = "\\.|_|-";
-		
-		PluginInfo NewerObj = Current;
-		String[] CurrentVersion = Current.getPluginVersion().split(SplitRegex);
-		String[] NewVersion = New.getPluginVersion().split(SplitRegex);
 
-		System.out.println("VERSIONS: " + New.getPluginVersion().toString() + ":"
-				+ Current.getPluginVersion().toString());
-
-		for (int i = 0; i < NewVersion.length; i++) {
-			// if we're beyond the end of the current version array then it's a
-			// new version NOT TRUE  1.0-beta < 1.0
-//			if (CurrentVersion.length <= i) {
-//				NewerObj = New;
-//				break;
-//			}
-
-			// if at any point the new version number is greater
-			// then it's "new" ie. 1.2.1 > 1.1
-			// whoops...what if they add a character in here?? TODO !!!!
-			System.out.println("v" + NewVersion[i] + " : v" + CurrentVersion[i]);
-		
-			// if both are digits we can compare
-			if ( (NewVersion[i].matches("\\d+") && CurrentVersion[i].matches("\\d+")) &&
-				 (Integer.valueOf(NewVersion[i]) > Integer.valueOf(CurrentVersion[i]))) {
-				NewerObj = New;
-			} // else....
-			
-			
-			
-		}
-		return NewerObj;
+		return true;
 	}
 
-	
-	
+	/**
+	 * 
+	 * @return true if the plugin is compatible with the current Cytoscape
+	 *         version major.minor (bugfix is only checked if the plugin
+	 *         specifies a bugfix version)
+	 */
+	public boolean isCytoscapeVersionCurrent() {
+		String[] CyVersion = cytoscape.CytoscapeVersion.version
+				.split(versionSplit);
+		String[] PlVersion = this.getCytoscapeVersion().split(versionSplit);
+
+		for (int i = 0; i < PlVersion.length; i++) {
+			if (Integer.valueOf(CyVersion[i]).intValue() != Integer.valueOf(
+					PlVersion[i]).intValue())
+				return false;
+		}
+
+		return true;
+	}
+
 	// yea, it's ugly...styles taken from cytoscape website
 	public String htmlOutput() {
 		String Html = "<html><style type='text/css'>";
@@ -463,27 +540,29 @@ public class PluginInfo {
 		Html += "#indent { padding-left: 30px; }";
 		Html += "ul {list-style-type: none}";
 		Html += "</style><body>";
-		
+
 		Html += "<strong>" + getName() + "</strong><p>";
-		Html += "<strong>Version:</strong>&nbsp;" + getPluginVersion() + "<p>"; 
+		Html += "<strong>Version:</strong>&nbsp;" + getPluginVersion() + "<p>";
 		Html += "<strong>Category:</strong>&nbsp;" + getCategory() + "<p>";
 		Html += "<strong>Description:</strong><br>" + getDescription() + "<p>";
 		Html += "<strong>Released By:</strong><br><ul>";
-		for (AuthorInfo ai: getAuthors()) {
-			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution() + "<br>";
+		for (AuthorInfo ai : getAuthors()) {
+			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution()
+					+ "<br>";
 		}
 		Html += "</ul>";
 		Html += "</font></body></html>";
 		return Html;
 	}
-	
+
 	/**
 	 * Describes an author for a given plugin.
-	 *
+	 * 
 	 * @author skillcoy
 	 */
 	public class AuthorInfo {
 		private String authorName;
+
 		private String institutionName;
 
 		public AuthorInfo(String Name, String Institution) {
@@ -499,25 +578,27 @@ public class PluginInfo {
 			return this.institutionName;
 		}
 	}
-	
+
 	/**
 	 * Fetches and keeps a plugin license if one is available.
 	 */
 	public class License {
 		private java.net.URL url;
+
 		private String text;
-		
+
 		public License(java.net.URL Url) {
 			url = Url;
 		}
-		
+
 		public License(String LicenseText) {
 			text = LicenseText;
 		}
-		
+
 		/**
-		 * Get the license text as a string.  Will download from url if
-		 * License was not initialized with text string.
+		 * Get the license text as a string. Will download from url if License
+		 * was not initialized with text string.
+		 * 
 		 * @return String
 		 */
 		public String getLicense() {
@@ -530,7 +611,7 @@ public class PluginInfo {
 			}
 			return text;
 		}
-		
+
 	}
-	
+
 }

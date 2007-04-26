@@ -105,12 +105,10 @@ public class PluginFileReader {
 		Info.setName(CurrentPlugin.getChild(nameTag).getTextTrim());
 		Info.setDescription(CurrentPlugin.getChild(descTag)
 				.getTextTrim());
-		Info.setPluginVersion(CurrentPlugin.getChild(pluginVersTag)
-				.getTextTrim());
-		Info.setCytoscapeVersion(CurrentPlugin.getChild(cytoVersTag)
-				.getTextTrim());
 		Info.setUrl(CurrentPlugin.getChild(urlTag).getTextTrim());
 		Info.setProjectUrl(downloadUrl);
+		Info.setCytoscapeVersion(CurrentPlugin.getChild(cytoVersTag)
+				.getTextTrim());
 
 		// category
 		if (CurrentPlugin.getChild(categoryTag) != null) {
@@ -133,7 +131,30 @@ public class PluginFileReader {
 		// license
 		Info = addLicense(Info, CurrentPlugin);
 
+		// plugin version
+		Info = addVersion(Info, CurrentPlugin);
+
+		// Cytoscape version
+		if (!Info.isCytoscapeVersionCurrent()) {
+			Info = null;
+		}
+		
+		
 		return Info;
+	}
+	
+	protected PluginInfo addVersion(PluginInfo obj, Element Plugin) {
+		String Version = Plugin.getChildTextTrim(pluginVersTag);
+		try 
+			{
+			obj.setPluginVersion(Version);
+			return obj;
+			}
+		catch (NumberFormatException ie)
+			{ // is there a better way to let people know it's a bad version?  This will just skip past bad version numbers
+			ie.printStackTrace();
+			return null;
+			}
 	}
 	
 	// get license text, add to info object
