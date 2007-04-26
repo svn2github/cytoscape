@@ -500,14 +500,19 @@ public class PluginInfo {
 	public boolean isNewerPluginVersion(PluginInfo New) {
 		String[] CurrentVersion = this.getPluginVersion().split(versionSplit);
 		String[] NewVersion = New.getPluginVersion().split(versionSplit);
-
-		if ((Integer.valueOf(CurrentVersion[0]).intValue() > Integer.valueOf(
-				NewVersion[0]).intValue())
-				|| (Integer.valueOf(CurrentVersion[1]).intValue() > Integer
-						.valueOf(NewVersion[1]).intValue())) {
+		
+		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
+		int NewMajor = Integer.valueOf(NewVersion[0]).intValue();
+		
+		int CurrentMinor = Integer.valueOf(CurrentVersion[1]).intValue();
+		int NewMinor = Integer.valueOf(NewVersion[1]).intValue();
+		
+		
+		if ( (CurrentMajor > NewMajor ||
+			 (CurrentMajor == NewMajor && CurrentMinor >= NewMinor)) ) {
 			return false;
 		}
-
+			
 		return true;
 	}
 

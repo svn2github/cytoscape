@@ -135,7 +135,7 @@ public class PluginFileReader {
 		Info = addVersion(Info, CurrentPlugin);
 
 		// Cytoscape version
-		if (!Info.isCytoscapeVersionCurrent()) {
+		if (Info != null && !Info.isCytoscapeVersionCurrent()) {
 			Info = null;
 		}
 		

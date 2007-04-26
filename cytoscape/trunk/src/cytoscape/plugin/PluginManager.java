@@ -399,15 +399,21 @@ public class PluginManager {
 	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException,
 			org.jdom.JDOMException {
 		List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
-
+		Set<PluginInfo> Seen = new HashSet<PluginInfo>();
+		Seen.add(Plugin);
+		
 		if (Plugin.getProjectUrl() == null
 				|| Plugin.getProjectUrl().length() <= 0) {
 			return UpdatablePlugins;
 		}
 
 		for (PluginInfo New : inquire(Plugin.getProjectUrl())) {
-			if (New.getID().equals(Plugin.getID()) && isUpdatable(Plugin, New)) {
-				UpdatablePlugins.add(New);
+			if (New.getID().equals(Plugin.getID()) && Plugin.isNewerPluginVersion(New)) {
+				if (!Seen.contains(New)) {
+					UpdatablePlugins.add(New);
+				} else {
+					Seen.add(New);
+				}
 			}
 		}
 		return UpdatablePlugins;
@@ -775,7 +781,6 @@ public class PluginManager {
 
 		if ((Current.getID() != null) && (New.getID() != null)) {
 			boolean newVersion = Current.isNewerPluginVersion(New);
-			// isVersionNew(Current, New);
 
 			if ((Current.getID().trim().equals(New.getID().trim()) && Current
 					.getProjectUrl().equals(New.getProjectUrl()))
