@@ -182,12 +182,23 @@ public class PluginUpdateDialog extends JDialog implements
 				if ( ((DefaultMutableTreeNode)Node).getSiblingCount() <= 1) {
 					UpdateableObjs.put(ParentObj, Obj);
 				} else if (LastObj != null) {
-					PluginInfo NewObj = PluginInfo.getNewerVersion(LastObj, Obj);
-
-					// this should deal with an object having multiple available
+					PluginInfo NewObj = null; //PluginInfo.getNewerVersion(LastObj, Obj);
+					if (LastObj.isNewerPluginVersion(Obj)) {
+						NewObj = Obj;
+					} else {
+						NewObj = LastObj;
+					}
+					
+					// this deals with an object having multiple available
 					// updates
 					if (UpdateableObjs.containsKey(ParentObj)) {
-						NewObj = PluginInfo.getNewerVersion(UpdateableObjs.get(ParentObj), NewObj);
+						if ( UpdateableObjs.get(ParentObj).isNewerPluginVersion(NewObj) ) {
+							NewObj = NewObj;
+						} else {
+							NewObj = UpdateableObjs.get(ParentObj);
+						}
+							
+						//NewObj = PluginInfo.getNewerVersion(UpdateableObjs.get(ParentObj), NewObj);
 						UpdateableObjs.remove(ParentObj);
 						UpdateableObjs.put(ParentObj, NewObj);
 					} else {

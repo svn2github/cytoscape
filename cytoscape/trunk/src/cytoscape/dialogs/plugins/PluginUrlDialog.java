@@ -104,8 +104,12 @@ public class PluginUrlDialog extends JDialog {
 			Map<String, List<PluginInfo>> NewPlugins = ManagerUtil.sortByCategory(Mgr.inquire(SelectedSite
 			                                                                                  .getHref()));
 			parentDialog.setSiteName(SelectedSite.getName());
-			parentDialog.setMessage("");
-			
+			if (NewPlugins.size() <= 0) {
+				parentDialog.setMessage("No plugins compatible with " + CytoscapeVersion.version + " available from this site.");
+			} else {
+				parentDialog.setMessage("");
+			}
+
 			for (String Category : NewPlugins.keySet()) {
 				parentDialog.addCategory(Category, NewPlugins.get(Category),
 				                         PluginManageDialog.PluginInstallStatus.AVAILABLE);
