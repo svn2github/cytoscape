@@ -66,9 +66,13 @@ import javax.swing.event.ChangeListener;
  * <p>
  * Note: New defaults are added for 2.3.
  *
+ * <p>
+ * 	Do not use this.  Use DefaultAppearenceEditor instead.
+ * </p>
  * @see cytoscape.visual.ui.VizMapUI
  *
  */
+@Deprecated
 public class DefaultPanel extends JPanel
     implements ChangeListener {
     // private DefaultBackgroundRenderer bgRender;

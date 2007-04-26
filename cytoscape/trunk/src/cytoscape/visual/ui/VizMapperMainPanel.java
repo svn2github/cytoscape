@@ -38,8 +38,7 @@ import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
-import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
-import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 import cytoscape.visual.ui.editors.continuous.ContinuousTrackRenderer;
 import cytoscape.visual.ui.editors.continuous.CyGradientTrackRenderer;
 import cytoscape.visual.ui.editors.continuous.DiscreteTrackRenderer;
@@ -80,8 +79,11 @@ import java.awt.dnd.DragGestureRecognizer;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -93,6 +95,7 @@ import java.lang.reflect.Constructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -209,6 +212,7 @@ public class VizMapperMainPanel extends JPanel
     private JButton addButton;
     private JButton deleteButton;
     private JPanel bottomPanel;
+    private Map<VisualPropertyType, JDialog> editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
 
     /** Creates new form AttributeOrientedPanel */
     private VizMapperMainPanel() {
@@ -224,6 +228,10 @@ public class VizMapperMainPanel extends JPanel
         initializePropertySheetPanel();
 
         registerCellEditorListeners();
+
+        /*
+         * Listener for sub Windows
+         */
     }
 
     /*
@@ -606,7 +614,7 @@ public class VizMapperMainPanel extends JPanel
         // visualPropertySheetPanel = new PropertySheetPanel();
         setPropertyTable();
 
-        //setDefaultPanel(VS_ORIENTED);
+        setDefaultPanel(DefaultAppearenceBuilder.getDefaultView());
 
         // visualPropertySheetPanel.repaint();
     }
@@ -881,122 +889,9 @@ public class VizMapperMainPanel extends JPanel
 
         visualPropertySheetPanel.getTable()
                                 .addMouseListener(
-            new MouseListener() {
+            new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    final PropertySheetTable table = visualPropertySheetPanel.getTable();
-
-                    int selected = visualPropertySheetPanel.getTable()
-                                                           .getSelectedRow();
-
-                    Property shownProp = null;
-
-                    /*
-                     * Adjust height if it's an legend icon.
-                     */
-                    for (int i = 0; i < table.getModel()
-                                                 .getRowCount(); i++) {
-                        shownProp = ((Item) visualPropertySheetPanel.getTable()
-                                                                    .getValueAt(i,
-                                0)).getProperty();
-
-                        if ((shownProp != null) &&
-                                shownProp.getDisplayName()
-                                             .equals(GRAPHICAL_MAP_VIEW))
-                            table.setRowHeight(i, 80);
-                    }
-
-                    visualPropertySheetPanel.repaint();
-
-                    if (SwingUtilities.isRightMouseButton(e)) {
-                        /*
-                         * Popup menu
-                         */
-                        final int col = visualPropertySheetPanel.getTable()
-                                                                .columnAtPoint(
-                                e.getPoint());
-                        final int row = visualPropertySheetPanel.getTable()
-                                                                .rowAtPoint(
-                                e.getPoint());
-
-                        if (row >= 0) {
-                            final Property prop = ((Item) visualPropertySheetPanel.getTable()
-                                                                                  .getValueAt(selected,
-                                    0)).getProperty();
-                            String controllerName = (String) prop.getValue();
-                            CyAttributes selectedAttr = Cytoscape.getNodeAttributes();
-                        }
-                    } else {
-                        /*
-                         * Left click.
-                         */
-                        if (0 <= selected) {
-                            final Item item = (Item) visualPropertySheetPanel.getTable()
-                                                                             .getValueAt(selected,
-                                    0);
-
-                            final Property curProp = item.getProperty();
-
-                            if (curProp == null)
-                                return;
-
-                            /*
-                             * Create new mapping if double-click on unused
-                             * val.
-                             */
-                            String category = curProp.getCategory();
-
-                            if ((e.getClickCount() == 2) && (category != null) &&
-                                    category.equalsIgnoreCase(
-                                        "Unused Properties")) {
-                                ((VizMapperProperty) curProp).setEditable(true);
-
-                                VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
-                                createNewMapping(type);
-                                visualPropertySheetPanel.removeProperty(curProp);
-
-                                return;
-                            } else if ((e.getClickCount() == 1) &&
-                                    (category == null)) {
-                                /*
-                                 * Single left-click
-                                 */
-                                System.out.println("---------got Single click");
-
-                                VisualPropertyType type = null;
-
-                                if ((curProp.getParentProperty() == null) &&
-                                        ((VizMapperProperty) curProp).getHiddenObject() instanceof VisualPropertyType)
-                                    type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
-                                else if (curProp.getParentProperty() != null)
-                                    type = (VisualPropertyType) ((VizMapperProperty) curProp.getParentProperty()).getHiddenObject();
-                                else
-                                    return;
-
-                                try {
-                                    type.showContinuousEditor();
-                                } catch (Exception e1) {
-                                    // TODO Auto-generated catch block
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                public void mouseEntered(MouseEvent arg0) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseExited(MouseEvent arg0) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mousePressed(MouseEvent arg0) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseReleased(MouseEvent e) {
-                    // TODO Auto-generated method stub
+                    processMouseClick(e);
                 }
             });
 
@@ -1103,6 +998,130 @@ public class VizMapperMainPanel extends JPanel
 
         lineCellEditor.setAvailableValues(lineTypes.toArray());
         lineCellEditor.setAvailableIcons(iconArray);
+    }
+
+    private void processMouseClick(MouseEvent e) {
+        final PropertySheetTable table = visualPropertySheetPanel.getTable();
+
+        int selected = visualPropertySheetPanel.getTable()
+                                               .getSelectedRow();
+
+        Property shownProp = null;
+
+        /*
+         * Adjust height if it's an legend icon.
+         */
+        for (int i = 0; i < table.getModel()
+                                     .getRowCount(); i++) {
+            shownProp = ((Item) visualPropertySheetPanel.getTable()
+                                                        .getValueAt(i, 0)).getProperty();
+
+            if ((shownProp != null) &&
+                    shownProp.getDisplayName()
+                                 .equals(GRAPHICAL_MAP_VIEW))
+                table.setRowHeight(i, 80);
+        }
+
+        visualPropertySheetPanel.repaint();
+
+        if (SwingUtilities.isRightMouseButton(e)) {
+            /*
+             * Popup menu
+             */
+            final int col = visualPropertySheetPanel.getTable()
+                                                    .columnAtPoint(
+                    e.getPoint());
+            final int row = visualPropertySheetPanel.getTable()
+                                                    .rowAtPoint(e.getPoint());
+
+            if (row >= 0) {
+                final Property prop = ((Item) visualPropertySheetPanel.getTable()
+                                                                      .getValueAt(selected,
+                        0)).getProperty();
+                String controllerName = (String) prop.getValue();
+                CyAttributes selectedAttr = Cytoscape.getNodeAttributes();
+            }
+        } else {
+            /*
+             * Left click.
+             */
+            if (0 <= selected) {
+                final Item item = (Item) visualPropertySheetPanel.getTable()
+                                                                 .getValueAt(selected,
+                        0);
+
+                final Property curProp = item.getProperty();
+
+                if (curProp == null)
+                    return;
+
+                /*
+                 * Create new mapping if double-click on unused
+                 * val.
+                 */
+                String category = curProp.getCategory();
+
+                if ((e.getClickCount() == 2) && (category != null) &&
+                        category.equalsIgnoreCase("Unused Properties")) {
+                    ((VizMapperProperty) curProp).setEditable(true);
+
+                    VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
+                    createNewMapping(type);
+                    visualPropertySheetPanel.removeProperty(curProp);
+
+                    return;
+                } else if ((e.getClickCount() == 1) && (category == null)) {
+                    /*
+                     * Single left-click
+                     */
+                    System.out.println("---------got Single click");
+
+                    VisualPropertyType type = null;
+
+                    if ((curProp.getParentProperty() == null) &&
+                            ((VizMapperProperty) curProp).getHiddenObject() instanceof VisualPropertyType)
+                        type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
+                    else if (curProp.getParentProperty() != null)
+                        type = (VisualPropertyType) ((VizMapperProperty) curProp.getParentProperty()).getHiddenObject();
+                    else
+
+                        return;
+
+                    final ObjectMapping selectedMapping;
+
+                    if (type.isNodeProp())
+                        selectedMapping = vmm.getVisualStyle()
+                                             .getNodeAppearanceCalculator()
+                                             .getCalculator(type)
+                                             .getMapping(0);
+                    else
+                        selectedMapping = vmm.getVisualStyle()
+                                             .getEdgeAppearanceCalculator()
+                                             .getCalculator(type)
+                                             .getMapping(0);
+
+                    if (selectedMapping instanceof ContinuousMapping) {
+                        /*
+                             * Need to check other windows.
+                             */
+                        if (editorWindowManager.containsKey(type)) {
+                            // This means editor is already on display.
+                            editorWindowManager.get(type)
+                                               .requestFocus();
+
+                            return;
+                        } else {
+                            try {
+                                ((JDialog) type.showContinuousEditor()).addPropertyChangeListener(this);
+                            } catch (Exception e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -1658,29 +1677,12 @@ public class VizMapperMainPanel extends JPanel
         }
     }
 
-    class DefaultMouseListener
-        implements MouseListener {
+    class DefaultMouseListener extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
             if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
                 final JPanel panel = DefaultAppearenceBuilder.showDialog(null);
                 setDefaultPanel(panel);
             }
-        }
-
-        public void mouseEntered(MouseEvent arg0) {
-            // TODO Auto-generated method stub
-        }
-
-        public void mouseExited(MouseEvent arg0) {
-            // TODO Auto-generated method stub
-        }
-
-        public void mousePressed(MouseEvent arg0) {
-            // TODO Auto-generated method stub
-        }
-
-        public void mouseReleased(MouseEvent arg0) {
-            // TODO Auto-generated method stub
         }
     }
 
@@ -1699,8 +1701,22 @@ public class VizMapperMainPanel extends JPanel
      *            DOCUMENT ME!
      */
     public void propertyChange(PropertyChangeEvent e) {
-        System.out.println("Got Signal: " + e.getOldValue() + ", " +
-            e.getNewValue());
+//        System.out.println("Got Signal: " + e.getOldValue() + ", " +
+//            e.getNewValue() + ", SOURCE = " + e.getSource());
+
+        /*
+         * Managing editor windows.
+         */
+        if (e.getPropertyName() == ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED) {
+            this.editorWindowManager.put((VisualPropertyType) e.getNewValue(),
+                (JDialog) e.getSource());
+
+            return;
+        } else if (e.getPropertyName() == ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED) {
+            this.editorWindowManager.remove((VisualPropertyType) e.getNewValue());
+
+            return;
+        }
 
         /*
          * Get global siginal
@@ -1738,7 +1754,8 @@ public class VizMapperMainPanel extends JPanel
         final VisualPropertyType type;
         String ctrAttrName = null;
 
-        if (prop.getParentProperty() == null && e.getNewValue() instanceof String) {
+        if ((prop.getParentProperty() == null) &&
+                e.getNewValue() instanceof String) {
             /*
              * This is a controlling attr name.
              */

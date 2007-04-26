@@ -23,6 +23,8 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,17 @@ import javax.swing.event.ChangeListener;
  * @author $author$
   */
 public abstract class ContinuousMappingEditorPanel extends JDialog {
+    // Tell vizMapper main whic editor is disabled/enabled.
+    /**
+     * DOCUMENT ME!
+     */
+    public static final String EDITOR_WINDOW_CLOSED = "EDITOR_WINDOW_CLOSED";
+
+    /**
+     * DOCUMENT ME!
+     */
+    public static final String EDITOR_WINDOW_OPENED = "EDITOR_WINDOW_OPENED";
+    
     protected VisualPropertyType type;
     protected Calculator calculator;
     protected ContinuousMapping mapping;
@@ -54,13 +67,29 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
     protected static ContinuousMappingEditorPanel editor;
 
     /** Creates new form ContinuousMapperEditorPanel */
-    public ContinuousMappingEditorPanel(VisualPropertyType type) {
+    public ContinuousMappingEditorPanel(final VisualPropertyType type) {
         this.type = type;
         initComponents();
         setVisualPropLabel();
 
         setAttrComboBox();
         setSpinner();
+        this.addWindowListener(
+            new WindowAdapter() {
+                public void windowOpened(WindowEvent e) { // 開かれた
+                    System.out.println("windowOpened");
+                    firePropertyChange(EDITOR_WINDOW_OPENED, null, type);
+                }
+
+                public void windowClosing(WindowEvent e) { // 閉じられている
+                    System.out.println("windowClosing!!!!!!!!!!!!!");
+                    firePropertyChange(EDITOR_WINDOW_CLOSED, null, type);
+                }
+            });
+    }
+    
+    private void fireStateChange() {
+    	
     }
 
     protected void setSpinner() {
@@ -264,30 +293,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
-        //        layout.setHorizontalGroup(
-        //            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(
-        //                layout.createSequentialGroup().add(iconPanel,
-        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-        //                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(slider,
-        //                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 269,
-        //                    Short.MAX_VALUE).addContainerGap()).add(rangeSettingPanel,
-        //                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-        //                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-        //        layout.setVerticalGroup(
-        //            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING).add(
-        //                layout.createSequentialGroup().add(
-        //                    layout.createParallelGroup(
-        //                        org.jdesktop.layout.GroupLayout.TRAILING).add(slider,
-        //                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145,
-        //                        Short.MAX_VALUE).add(iconPanel,
-        //                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-        //                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-        //                        Short.MAX_VALUE)).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(rangeSettingPanel,
-        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-        //                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-        //                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
-
         // add the main panel to the dialog.
         this.getContentPane()
             .add(mainPanel);
@@ -358,12 +363,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 
                 if (val < minValue)
                     minValue = val;
-
-                //System.out.println("************ MHM OBJ= " + val);
             }
 
-            System.out.println("----------- min max = " + minValue + ", " +
-                maxValue);
             valRange = Math.abs(minValue - maxValue);
             allPoints = mapping.getAllPoints();
         }
@@ -426,17 +427,23 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 
         System.out.println("Range = " + valRange + ", minVal = " + minValue);
 
-        if(thumbs.size() == 1) {
-        	System.out.println("Enter update code: " + mapping.getPointCount());
-        	mapping.getPoint(0).getRange().equalValue = thumbs.get(0).getObject();
-        	mapping.getPoint(0).getRange().lesserValue = below;
-        	mapping.getPoint(0).getRange().greaterValue = above;
-        	newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
-        	mapping.getPoint(0)
-            .setValue(newVal);
-        	return;
+        if (thumbs.size() == 1) {
+            System.out.println("Enter update code: " + mapping.getPointCount());
+            mapping.getPoint(0)
+                   .getRange().equalValue = thumbs.get(0)
+                                                  .getObject();
+            mapping.getPoint(0)
+                   .getRange().lesserValue = below;
+            mapping.getPoint(0)
+                   .getRange().greaterValue = above;
+            newVal = ((thumbs.get(0)
+                             .getPosition() / 100) * valRange) + minValue;
+            mapping.getPoint(0)
+                   .setValue(newVal);
+
+            return;
         }
-        
+
         for (int i = 0; i < thumbs.size(); i++) {
             t = thumbs.get(i);
 
@@ -466,9 +473,10 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 
             mapping.getPoint(i)
                    .getRange().equalValue = t.getObject();
-//            System.out.println("Selected idx = " + selectedIndex +
-//                ", new val = " + newVal + ", New obj = " + t.getObject() +
-//                ", Pos = " + t.getPosition());
+
+            //            System.out.println("Selected idx = " + selectedIndex +
+            //                ", new val = " + newVal + ", New obj = " + t.getObject() +
+            //                ", Pos = " + t.getPosition());
         }
     }
 
@@ -493,8 +501,9 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
         public void mouseReleased(MouseEvent e) {
             int selectedIndex = slider.getSelectedIndex();
 
-            System.out.println("T Count = " + slider.getModel().getThumbCount());
-            
+            System.out.println("T Count = " +
+                slider.getModel().getThumbCount());
+
             if ((0 <= selectedIndex) &&
                     (slider.getModel()
                                .getThumbCount() > 0)) {
@@ -509,7 +518,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
                     minValue;
                 valueSpinner.setValue(newVal);
 
-                
                 updateMap();
 
                 slider.repaint();
@@ -550,13 +558,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
                 slider.getSelectedThumb()
                       .setLocation((int) ((slider.getSize().width - 12) * newPosition),
                     0);
-                
-                
+
                 updateMap();
                 Cytoscape.getVisualMappingManager()
-                .getNetworkView()
-                .redrawGraph(false, true);
-                
+                         .getNetworkView()
+                         .redrawGraph(false, true);
+
                 slider.getSelectedThumb()
                       .repaint();
                 slider.getParent()

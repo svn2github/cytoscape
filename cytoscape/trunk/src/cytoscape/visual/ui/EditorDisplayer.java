@@ -73,7 +73,7 @@ public enum EditorDisplayer {
      * Defines editor type.
      */
     public enum EditorType {
-    	CONTINUOUS, DISCRETE;
+    	CONTINUOUS, DISCRETE, PASSTHROUGH;
     }
     private EditorDisplayer(Class chooserClass, String command,
         Class[] paramTypes, Object[] parameters, Class compatibleClass) {

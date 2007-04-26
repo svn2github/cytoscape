@@ -71,7 +71,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
      * @param title DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public static void showDialog(final int width, final int height,
+    public static Object showDialog(final int width, final int height,
         final String title, VisualPropertyType type) {
         editor = new GradientEditorPanel(type);
         editor.setSize(new Dimension(width, height));
@@ -80,6 +80,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
         editor.setLocationRelativeTo(Cytoscape.getDesktop());
         editor.setVisible(true);
         editor.repaint();
+        
+        return editor;
     }
 
     @Override

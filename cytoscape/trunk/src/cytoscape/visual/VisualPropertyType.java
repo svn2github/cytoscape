@@ -65,6 +65,7 @@ import cytoscape.visual.calculators.GenericNodeWidthCalculator;
 
 import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -331,7 +332,10 @@ public enum VisualPropertyType {
                 null,
                 action.getParameters());
 
-        if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
+        // This is an editor.
+        if(ret != null && ret instanceof ContinuousMappingEditorPanel) {
+        	return ret;
+        } else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
             ret = Double.parseDouble(ret.toString());
 
         return ret;
@@ -357,13 +361,13 @@ public enum VisualPropertyType {
      * </p>
      * @throws Exception DOCUMENT ME!
      */
-    public void showContinuousEditor()
+    public Object showContinuousEditor()
         throws Exception {
         final EditorDisplayer editor = EditorDisplayer.getEditor(this,
                 EditorType.CONTINUOUS);
         editor.setParameters(
             new Object[] { 450, 200, "Gradient Editor for " + this.calcName, this });
         
-        showEditor(editor);
+        return showEditor(editor);
     }
 }

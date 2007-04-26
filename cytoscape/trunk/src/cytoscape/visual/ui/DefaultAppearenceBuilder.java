@@ -1,5 +1,9 @@
 package cytoscape.visual.ui;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_COLOR;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
@@ -17,17 +21,27 @@ import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
+import cytoscape.visual.ui.icon.NodeFullDetailView;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Shape;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,20 +55,13 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-
-import cytoscape.Cytoscape;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.NodeFullDetailView;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
-
 
 /**
+ * Dialog for editing default visual property values.<br>
+ * This is a modal dialog.
  *
+ * @version 0.5
+ * @since Cytoscape 2.5
  * @author kono
  */
 public class DefaultAppearenceBuilder extends javax.swing.JDialog {
@@ -70,33 +77,25 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     private Shape objectShape;
     private Map<VisualPropertyType, Object> appearenceMap;
 
-    //protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-
-    /** Creates new form DefaultAppearenceDialog */
-    public DefaultAppearenceBuilder(java.awt.Frame parent, boolean modal) {
+    /**
+     * Creates a new DefaultAppearenceBuilder object.
+     *
+     * @param parent DOCUMENT ME!
+     * @param modal DOCUMENT ME!
+     */
+    public DefaultAppearenceBuilder(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         buildList();
+
         this.setAlwaysOnTop(true);
 
         this.addComponentListener(
-            new ComponentListener() {
-                public void componentHidden(ComponentEvent arg0) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void componentMoved(ComponentEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
+            new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
                     // TODO Auto-generated method stub
                     jXPanel2.createView();
                     System.out.println("+++++++++++++ Resized!");
-                }
-
-                public void componentShown(ComponentEvent e) {
-                    // TODO Auto-generated method stub
                 }
             });
     }
@@ -111,14 +110,28 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     public static JPanel showDialog(Frame parent) {
         final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(parent,
                 true);
-        String id = Cytoscape.getCurrentNetwork()
-                             .getIdentifier();
+
         dialog.jXPanel2.createTempNetwork();
 
         dialog.setSize(700, 300);
         //Cytoscape.getDesktop().setFocus(id);
         dialog.setVisible(true);
         //Cytoscape.getDesktop().setFocus(id);
+        dialog.jXPanel2.clean();
+
+        return dialog.getPanel();
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public static JPanel getDefaultView() {
+        final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null,
+                true);
+        dialog.jXPanel2.createTempNetwork();
+
         dialog.jXPanel2.clean();
 
         return dialog.getPanel();
@@ -309,12 +322,14 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
             int selected = jXList1.getSelectedIndex();
 
             try {
-				Object newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
-				VizMapperMainPanel.apply(newValue, orderedList[selected]);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+                Object newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected],
+                        this);
+                VizMapperMainPanel.apply(newValue, orderedList[selected]);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
             buildList();
             Cytoscape.getVisualMappingManager()
                      .getNetworkView()
