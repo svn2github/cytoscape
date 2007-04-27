@@ -1,6 +1,6 @@
 package cytoscape.visual.calculators;
 
-import cytoscape.visual.VisualPropertyType;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
@@ -21,9 +21,8 @@ public class GenericEdgeTargetArrowShapeCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericEdgeTargetArrowShapeCalculator(String name, ObjectMapping m,
-        VisualPropertyType type) {
-        super(name, m, type);
+    public GenericEdgeTargetArrowShapeCalculator(String name, ObjectMapping m) {
+        super(name, m, EDGE_TGTARROW_SHAPE);
     }
 
     /**
@@ -34,8 +33,7 @@ public class GenericEdgeTargetArrowShapeCalculator
      * @param baseKey DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericEdgeTargetArrowShapeCalculator(String name, Properties props,
-        String baseKey, VisualPropertyType type) {
-        super(name, props, baseKey, type);
+    public GenericEdgeTargetArrowShapeCalculator(String name, Properties props, String baseKey ) {
+        super(name, props, baseKey, EDGE_TGTARROW_SHAPE);
     }
 }
