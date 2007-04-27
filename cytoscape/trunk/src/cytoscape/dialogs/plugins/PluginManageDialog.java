@@ -7,16 +7,19 @@ import cytoscape.Cytoscape;
 
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.JOptionPane;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -67,6 +70,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		setLocationRelativeTo(owner);
 		initComponents();
 		initTree();
+		if (PluginManager.usingWebstartManager()) {
+			changeSiteButton.setEnabled(false);
+		}
 	}
 
 	public PluginManageDialog(javax.swing.JFrame owner) {
@@ -74,6 +80,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		setLocationRelativeTo(owner);
 		initComponents();
 		initTree();
+		if (PluginManager.usingWebstartManager()) {
+			changeSiteButton.setEnabled(false);
+		}
 	}
 
 	// trying to listen to events in the Url dialog
@@ -87,8 +96,10 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode Node = (DefaultMutableTreeNode) pluginTree
 				.getLastSelectedPathComponent();
-		if (Node == null)
+		if (Node == null) {
 			return;
+		}
+		
 		if (Node.isLeaf()) {
 			// display any object selected
 			infoTextPane.setContentType("text/html");
@@ -105,8 +116,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			deleteButton.setEnabled(false);
 			downloadButton.setEnabled(false);
 		}
+		if (PluginManager.usingWebstartManager()) {
+			deleteButton.setEnabled(false);
+			downloadButton.setEnabled(false);
+		}		
+
 	}
 
+	/**
+	 * Sets a message to be shown to the user regarding the plugin management actions.
+	 * @param Msg
+	 */
 	public void setMessage(String Msg) {
 		msgLabel.setText(Msg);
 
@@ -210,8 +230,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 		if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, VerifyMsg, "Verify Delete Plugin",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-			PluginManager.getPluginManager().delete(NodeInfo);
-			removeNode(Node);
+			try {
+				PluginManager.getPluginManager().delete(NodeInfo);
+				removeNode(Node);
+			} catch (cytoscape.plugin.WebstartException we) {
+				we.printStackTrace();
+			}
 		}
 	}
 
@@ -535,6 +559,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 						pluginInfo.getUrl()); 
 			} catch (cytoscape.plugin.ManagerError me) {
 				JOptionPane.showMessageDialog(PluginManageDialog.this, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (cytoscape.plugin.WebstartException we) { // not sure this is the right way to do this
+				JOptionPane.showMessageDialog(PluginManageDialog.this, we.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			 taskMonitor.setPercentCompleted(100);
 		}

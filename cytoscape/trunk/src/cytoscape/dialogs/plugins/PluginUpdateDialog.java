@@ -2,12 +2,17 @@ package cytoscape.dialogs.plugins;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Enumeration;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -18,13 +23,13 @@ import javax.swing.event.TreeSelectionListener;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.ManagerError;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.IndeterminateProgressBar;
+
+// TODO clean out the tree for each updated plugin
 
 /**
  * @author skillcoy
@@ -50,7 +55,7 @@ public class PluginUpdateDialog extends JDialog implements
 		initComponents();
 		initTree();
 	}
-
+	
 	/**
 	 * Enables the delete/install buttons when the correct leaf node is selected
 	 */
@@ -65,7 +70,6 @@ public class PluginUpdateDialog extends JDialog implements
 			if (LastSelectedNode.isLeaf()) {
 				PluginInfo New = (PluginInfo) LastSelectedNode.getUserObject();
 				infoTextPane.setText(New.htmlOutput());
-				updateSelectedButton.setEnabled(true);
 			} else if (LastSelectedNode.getUserObject() != null
 					&& LastSelectedNode.getUserObject().getClass().equals(
 							PluginInfo.class)) {
@@ -167,7 +171,8 @@ public class PluginUpdateDialog extends JDialog implements
 			return;
 		}
 
-		java.util.Map<PluginInfo, PluginInfo> UpdateableObjs = new java.util.HashMap<PluginInfo, PluginInfo>();
+		Map<PluginInfo, PluginInfo> UpdateableObjs = new HashMap<PluginInfo, PluginInfo>();
+		
 		Enumeration Children = rootTreeNode.children();
 		while (Children.hasMoreElements()) {
 			TreeNode Child = (TreeNode) Children.nextElement();
@@ -181,8 +186,9 @@ public class PluginUpdateDialog extends JDialog implements
 				// node is a sib of itself so it always has one
 				if ( ((DefaultMutableTreeNode)Node).getSiblingCount() <= 1) {
 					UpdateableObjs.put(ParentObj, Obj);
+					removeNode( (DefaultMutableTreeNode)Node );
 				} else if (LastObj != null) {
-					PluginInfo NewObj = null; //PluginInfo.getNewerVersion(LastObj, Obj);
+					PluginInfo NewObj = null; 
 					if (LastObj.isNewerPluginVersion(Obj)) {
 						NewObj = Obj;
 					} else {
@@ -198,9 +204,9 @@ public class PluginUpdateDialog extends JDialog implements
 							NewObj = UpdateableObjs.get(ParentObj);
 						}
 							
-						//NewObj = PluginInfo.getNewerVersion(UpdateableObjs.get(ParentObj), NewObj);
 						UpdateableObjs.remove(ParentObj);
 						UpdateableObjs.put(ParentObj, NewObj);
+						removeNode( (DefaultMutableTreeNode)Node );
 					} else {
 						UpdateableObjs.put(ParentObj, NewObj);
 					}
@@ -263,8 +269,18 @@ public class PluginUpdateDialog extends JDialog implements
 		return LeafNodes;
 	}
 
-	// sets up the swing stuff
+	private void removeNode(DefaultMutableTreeNode Node) {
+		System.out.println("Removing node " + Node.toString());
+		MutableTreeNode parent = (MutableTreeNode) (Node.getParent());
+		System.out.println("Removing parent " + parent.toString());
+		if (parent != null) {
+			treeModel.removeNodeFromParent(Node);
+			treeModel.removeNodeFromParent(parent);
+		}
+	}
 
+	
+	// sets up the swing stuff
 	private void initTree() {
 		pluginTree.setRootVisible(false);
 		rootTreeNode = new DefaultMutableTreeNode("Plugins");
@@ -325,7 +341,6 @@ public class PluginUpdateDialog extends JDialog implements
 		});
 
 		msgLabel.setForeground(new java.awt.Color(204, 0, 51));
-		msgLabel.setText("Messages/errors here....");
 		msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
@@ -454,6 +469,8 @@ public class PluginUpdateDialog extends JDialog implements
 				} catch (cytoscape.plugin.ManagerError me) {
 					JOptionPane.showMessageDialog(PluginUpdateDialog.this, me
 							.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				} catch (cytoscape.plugin.WebstartException we) {
+					we.printStackTrace();
 				}
 			}
 			taskMonitor.setPercentCompleted(100);
@@ -471,82 +488,9 @@ public class PluginUpdateDialog extends JDialog implements
 		public String getTitle() {
 			return "Updating Plugins";
 		}
-
+		
 	}
 
-	private IndeterminateProgressBar getProgressBar() {
-		final IndeterminateProgressBar InstallBar = new IndeterminateProgressBar(
-				this, "Updating Plugins", "Download in progress...");
-
-		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-		InstallBar.setLayout(new java.awt.GridBagLayout());
-		JButton CancelInstall = new JButton("Cancel Download");
-		CancelInstall.setSize(new java.awt.Dimension(81, 23));
-		CancelInstall.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent E) {
-				// TODO actually cancel the installation
-				InstallBar.dispose();
-			}
-		});
-		gridBagConstraints.gridy = 2;
-		InstallBar.add(CancelInstall, gridBagConstraints);
-		InstallBar.pack();
-		InstallBar.setLocationRelativeTo(this);
-
-		return InstallBar;
-	}
-
-	// runnable object for running the update
-	private class UpdateRunnable implements Runnable {
-		private boolean done = false;
-
-		private boolean error = false;
-
-		private boolean update = false;
-
-		private List<PluginInfo[]> updateObjs;
-
-		public UpdateRunnable(List<PluginInfo[]> UpdateObjs) {
-			updateObjs = UpdateObjs;
-		}
-
-		public void run() {
-			try {
-				PluginManager Mgr = PluginManager.getPluginManager();
-				for (PluginInfo[] ToUpdate : updateObjs) {
-					try {
-						Mgr.update(ToUpdate[0], ToUpdate[1]);
-						PluginUpdateDialog.this.updateMsg += ToUpdate[1] + "\n";
-						update = true;
-
-					} catch (java.io.IOException ioe) {
-						PluginUpdateDialog.this.errorMsg += "Failed to download update to "
-								+ ToUpdate[0].getName() + "\n";
-						error = true;
-					} catch (ManagerError E) {
-						PluginUpdateDialog.this.errorMsg += E.getMessage()
-								+ "\n";
-						error = true;
-					}
-				}
-			} finally {
-				done = true;
-			}
-		}
-
-		public boolean hasError() {
-			return error;
-		}
-
-		public boolean updateOk() {
-			return update;
-		}
-
-		public boolean isDone() {
-			return done;
-		}
-
-	}
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton closeButton;
