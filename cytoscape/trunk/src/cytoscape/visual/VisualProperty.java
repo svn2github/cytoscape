@@ -1,7 +1,6 @@
-/*
- File: Appearance.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -36,57 +35,15 @@
  */
 package cytoscape.visual;
 
-import java.util.Properties;
+import java.util.Map;
+import javax.swing.Icon;
+import java.awt.Graphics2D;
 
-
-/**
- * Objects of this class hold data describing the appearance of a Node.
- */
-interface Appearance {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param props DOCUMENT ME!
-     * @param base DOCUMENT ME!
-     */
-    public void applyDefaultProperties(Properties props, String base);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param baseKey DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Properties getDefaultProperties(String baseKey);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param prefix DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public String getDescription(String prefix);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-	 * @deprecated Use with VisualPropertyType instead. Leaving 4/08.
-     */
-    public Object get(byte type);
-    public Object get(VisualPropertyType type);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     * @param o DOCUMENT ME!
-	 * @deprecated Use with VisualPropertyType instead. Leaving 4/08.
-     */
-    public void set(byte type, Object o);
-    public void set(VisualPropertyType type, Object o);
+public interface VisualProperty {
+	public VisualPropertyType getType();
+	public void showDiscreteEditor();
+	public void showContinousEditor();
+	public Map<Object,Icon> getIconSet();
+	public void paintIcon(Graphics2D g2);
+	public Icon getDefaultIcon();
 }

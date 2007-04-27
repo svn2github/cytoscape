@@ -1,7 +1,6 @@
-/*
- File: Appearance.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -34,59 +33,33 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.visual;
+package cytoscape.visual.properties;
 
-import java.util.Properties;
+import cytoscape.visual.*;
+import cytoscape.visual.ui.icon.*;
+import javax.swing.Icon;
+import java.util.Map;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.BasicStroke;
 
+public class NodeShapeProp extends AbstractVisualProperty {
+	public VisualPropertyType getType() { return VisualPropertyType.NODE_SHAPE; }
+	public Map<Object,Icon> getIconSet() {
+		return NodeShape.getIconSet();
+	}
 
-/**
- * Objects of this class hold data describing the appearance of a Node.
- */
-interface Appearance {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param props DOCUMENT ME!
-     * @param base DOCUMENT ME!
-     */
-    public void applyDefaultProperties(Properties props, String base);
+    public Icon getDefaultIcon() {
+        return new NodeIcon() {
+            public void paintIcon(Component c, Graphics g, int x, int y) {
+                super.paintIcon(c,g,x,y);
+				g2d.setStroke(new BasicStroke(2.0f));
+				g2d.draw(newShape);
+            }
+        };
+    }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param baseKey DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Properties getDefaultProperties(String baseKey);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param prefix DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public String getDescription(String prefix);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-	 * @deprecated Use with VisualPropertyType instead. Leaving 4/08.
-     */
-    public Object get(byte type);
-    public Object get(VisualPropertyType type);
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     * @param o DOCUMENT ME!
-	 * @deprecated Use with VisualPropertyType instead. Leaving 4/08.
-     */
-    public void set(byte type, Object o);
-    public void set(VisualPropertyType type, Object o);
 }

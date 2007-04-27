@@ -21,7 +21,8 @@ import javax.swing.ImageIcon;
  */
 public abstract class VisualPropertyIcon extends ImageIcon {
     // Default icon color.
-    protected static final Color DEF_COLOR = Color.DARK_GRAY;
+    public static final Color DEFAULT_ICON_COLOR = Color.DARK_GRAY;
+    public static final int DEFAULT_ICON_SIZE = 32; 
     protected int height;
     protected int width;
     protected Color color;
@@ -38,7 +39,7 @@ public abstract class VisualPropertyIcon extends ImageIcon {
      * @param name
      */
     public VisualPropertyIcon(Shape shape, int width, int height, String name) {
-        this(shape, width, height, name, DEF_COLOR);
+        this(shape, width, height, name, DEFAULT_ICON_COLOR);
     }
 
     /**
@@ -50,8 +51,7 @@ public abstract class VisualPropertyIcon extends ImageIcon {
      * @param name
      * @param color
      */
-    public VisualPropertyIcon(Shape shape, int width, int height, String name,
-        Color color) {
+    public VisualPropertyIcon(Shape shape, int width, int height, String name, Color color) {
         this.shape = shape;
         this.width = width;
         this.height = height;
@@ -60,8 +60,12 @@ public abstract class VisualPropertyIcon extends ImageIcon {
         if (color != null)
             this.color = color;
         else
-            this.color = DEF_COLOR;
+            this.color = DEFAULT_ICON_COLOR;
     }
+
+	public Shape getShape() {
+		return shape;
+	}
 
     /**
      * Get height of icon. This implements Icon interface.

@@ -28,7 +28,11 @@ import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.LineTypeDef;
 
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.CalculatorFactory;
@@ -54,7 +58,6 @@ import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 import cytoscape.visual.ui.icon.NodeFullDetailView;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 import ding.view.DGraphView;
 
@@ -255,9 +258,9 @@ public class VizMapperMainPanel extends JPanel
      * @return
      */
     public static VizMapperMainPanel getVizMapperUI() {
-        if (panel == null)
+        if (panel == null) 
             panel = new VizMapperMainPanel();
-
+		
         return panel;
     }
 
@@ -347,10 +350,7 @@ public class VizMapperMainPanel extends JPanel
 
     public static void apply(Object newValue, VisualPropertyType type) {
         if (newValue != null)
-            VizUIUtilities.setDefault(
-                Cytoscape.getVisualMappingManager().getVisualStyle(),
-                type,
-                newValue);
+            type.setDefault( Cytoscape.getVisualMappingManager().getVisualStyle(), newValue);
     }
 
     public static Object showValueSelectDialog(VisualPropertyType type,
@@ -600,9 +600,9 @@ public class VizMapperMainPanel extends JPanel
     private CyComboBoxPropertyEditor nodeAttrEditor = new CyComboBoxPropertyEditor();
     private CyComboBoxPropertyEditor edgeAttrEditor = new CyComboBoxPropertyEditor();
     private CyComboBoxPropertyEditor mappingTypeEditor = new CyComboBoxPropertyEditor();
-    private static final Map<Object, Icon> nodeShapeIcons = VisualPropertyIconFactory.getIconSet(VisualPropertyType.NODE_SHAPE);
-    private static final Map<Object, Icon> arrowShapeIcons = VisualPropertyIconFactory.getIconSet(VisualPropertyType.EDGE_SRCARROW_SHAPE);
-    private static final Map<Object, Icon> lineTypeIcons = VisualPropertyIconFactory.getIconSet(VisualPropertyType.EDGE_LINETYPE);
+    private static final Map<Object, Icon> nodeShapeIcons = NodeShape.getIconSet();
+    private static final Map<Object, Icon> arrowShapeIcons = ArrowShape.getIconSet();
+    private static final Map<Object, Icon> lineTypeIcons = LineTypeDef.getIconSet();
     private PropertyRendererRegistry pr = new PropertyRendererRegistry();
     private PropertyEditorRegistry regr = new PropertyEditorRegistry();
 
@@ -1686,14 +1686,6 @@ public class VizMapperMainPanel extends JPanel
         }
     }
 
-    /*
-     * Update Visual Style Name Combobox when Session is loaded.
-     *
-     * (non-Javadoc)
-     *
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-
     /**
      * Handle propeaty change events.
      *
@@ -1701,8 +1693,6 @@ public class VizMapperMainPanel extends JPanel
      *            DOCUMENT ME!
      */
     public void propertyChange(PropertyChangeEvent e) {
-//        System.out.println("Got Signal: " + e.getOldValue() + ", " +
-//            e.getNewValue() + ", SOURCE = " + e.getSource());
 
         /*
          * Managing editor windows.
@@ -1721,8 +1711,7 @@ public class VizMapperMainPanel extends JPanel
         /*
          * Get global siginal
          */
-        if (e.getPropertyName()
-                 .equals(Cytoscape.SESSION_LOADED)) {
+        if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)) {
             setVSSelector();
             vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
             System.out.println("Visual Style Switched: " +
@@ -1737,6 +1726,7 @@ public class VizMapperMainPanel extends JPanel
         if (e.getNewValue() == e.getOldValue())
             return;
 
+
         final PropertySheetTable table = visualPropertySheetPanel.getTable();
         final int selected = table.getSelectedRow();
 
@@ -1746,9 +1736,7 @@ public class VizMapperMainPanel extends JPanel
         if (selected < 0)
             return;
 
-        Item selectedItem = (Item) visualPropertySheetPanel.getTable()
-                                                           .getValueAt(selected,
-                0);
+        Item selectedItem = (Item) visualPropertySheetPanel.getTable() .getValueAt(selected, 0);
         VizMapperProperty prop = (VizMapperProperty) selectedItem.getProperty();
 
         final VisualPropertyType type;
@@ -1774,9 +1762,7 @@ public class VizMapperMainPanel extends JPanel
             if (e.getNewValue() == null)
                 return;
 
-            switchMapping(
-                prop,
-                e.getNewValue().toString());
+            switchMapping( prop, e.getNewValue().toString());
 
             /*
              * restore expanded props.
@@ -1968,9 +1954,7 @@ public class VizMapperMainPanel extends JPanel
         else
             mapType = ObjectMapping.EDGE_MAPPING;
 
-        final Object defaultObj = VizUIUtilities.getDefault(
-                vmm.getVisualStyle(),
-                type);
+        final Object defaultObj = type.getDefault(vmm.getVisualStyle());
         final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
         ObjectMapping mapper = null;
 
@@ -2265,9 +2249,7 @@ public class VizMapperMainPanel extends JPanel
         else
             mapType = ObjectMapping.EDGE_MAPPING;
 
-        final Object defaultObj = VizUIUtilities.getDefault(
-                vmm.getVisualStyle(),
-                type);
+        final Object defaultObj = type.getDefault( vmm.getVisualStyle());
         final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
         ObjectMapping mapper = null;
 
@@ -2279,8 +2261,7 @@ public class VizMapperMainPanel extends JPanel
             return;
         }
 
-        Calculator calc = vmm.getCalculatorCatalog()
-                             .getCalculator(type, calcName);
+        Calculator calc = vmm.getCalculatorCatalog().getCalculator(type, calcName);
 
         if (calc == null) {
             calc = CalculatorFactory.newDefaultCalculator(type, calcName, mapper);
@@ -2458,8 +2439,7 @@ public class VizMapperMainPanel extends JPanel
 
         // tell the respective appearance calculators
         // this method doesn't fire an event to come back to us
-        // VizUIUtilities.setCurrentCalculator(vmm.getVisualStyle(), type,
-        // calc);
+        // type.setCurrentCalculator(vmm.getVisualStyle(), calc);
         //
         // // get the view of the new calculator
         // refreshUI();

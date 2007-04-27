@@ -24,7 +24,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 import cytoscape.visual.ui.icon.NodeFullDetailView;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
+//import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
@@ -376,34 +376,19 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         DefaultListModel model = new DefaultListModel();
         jXList1.setModel(model);
 
-        NodeShape shape = (NodeShape) VizUIUtilities.getDefault(
-                Cytoscape.getVisualMappingManager().getVisualStyle(),
-                VisualPropertyType.NODE_SHAPE);
-
-        //NodeShape defShape = ShapeNodeRealizer.getNodeShape(realizerShape);
-        Map<VisualPropertyType, Icon> dynIcon = VisualPropertyIconFactory.getDynamicNodeIcons(shape);
-
         for (VisualPropertyType type : orderedList) {
-            final NodeIcon nodeIcon = (NodeIcon) dynIcon.get(type);
+            final VisualPropertyIcon nodeIcon = (VisualPropertyIcon)(type.getVisualProperty().getDefaultIcon()); 
             nodeIcon.setLeftPadding(15);
-            nodeIcon.setPropertyType(type);
-            nodeIcon.setValue(
-                VizUIUtilities.getDefault(
-                    Cytoscape.getVisualMappingManager().getVisualStyle(),
-                    type));
             model.addElement(type.getName());
             icons.add(nodeIcon);
-            //
-            appearenceMap.put(
-                type,
-                VizUIUtilities.getDefault(
-                    Cytoscape.getVisualMappingManager().getVisualStyle(),
-                    type));
+            appearenceMap.put( type, 
+			                   type.getDefault(  
+			                           Cytoscape.getVisualMappingManager().getVisualStyle()) );
         }
 
         jXList1.setCellRenderer(new VisualPropCellRenderer(icons));
 
-        objectShape = ((NodeIcon) dynIcon.get(VisualPropertyType.NODE_SHAPE)).getShape();
+        objectShape = ((VisualPropertyIcon)(VisualPropertyType.NODE_SHAPE.getVisualProperty().getDefaultIcon())).getShape();
 
         jXPanel2.setShape(objectShape);
         jXPanel2.setAppearence(appearenceMap);
@@ -420,9 +405,8 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
      */
     public static JPanel getDefaultPanel() {
         //final JPanel defPanel = new NodeFullDetailView();
-        //        final byte realizerShape = (Byte) VizUIUtilities.getDefault(
-        //                Cytoscape.getVisualMappingManager().getVisualStyle(),
-        //                VisualPropertyType.NODE_SHAPE);
+        //        final byte realizerShape = (Byte) VisualPropertyType.NODE_SHAPE.getDefault(
+        //                Cytoscape.getVisualMappingManager().getVisualStyle());
         //        final NodeShape defShape = NodeShape.getFromRealizer(realizerShape);
         //        final Map<VisualPropertyType, Icon> dynIcon = VisualPropertyIconFactory.getDynamicNodeIcons(defShape);
         //        final Map<VisualPropertyType, Object> defAppearenceMap = new HashMap<VisualPropertyType, Object>();
@@ -431,9 +415,7 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         //        for (VisualPropertyType type : orderedList)
         //            defAppearenceMap.put(
         //                type,
-        //                VizUIUtilities.getDefault(
-        //                    Cytoscape.getVisualMappingManager().getVisualStyle(),
-        //                    type));
+        //                type.getDefault( Cytoscape.getVisualMappingManager().getVisualStyle());
         //
         //        shape = ((NodeIcon) dynIcon.get(VisualPropertyType.NODE_SHAPE)).getShape();
         final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null,

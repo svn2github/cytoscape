@@ -68,95 +68,37 @@ public class VizUIUtilities {
      * Gets the current default value for the visual attribute specified by the
      * second argument in the visual style specified by the first argument.
      * Returns null if the first argument is null.
+	 * @deprecated Use VisualPropertyType.getDefault(style) instead. Going away 4/2008.
      */
-
-    // TODOOOO this is stupid and should exist somewhere else
     @Deprecated
     static Object getDefault(VisualStyle style, byte type) {
-        return getDefault(
-            style,
-            VisualPropertyType.getVisualPorpertyType(type));
+        return VisualPropertyType.getVisualPorpertyType(type).getDefault(style);
     }
 
-    static Object getDefault(VisualStyle style, VisualPropertyType type) {
-        if (style == null)
-            return null;
-
-        Object defaultObj = null;
-        NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
-        EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
-
-        NodeAppearance na = nodeCalc.getDefaultAppearance();
-        EdgeAppearance ea = edgeCalc.getDefaultAppearance();
-
-        defaultObj = na.get(type);
-
-        if (defaultObj == null)
-            defaultObj = ea.get(type);
-
-        return defaultObj;
-    }
 
     /**
      * Sets the default value for the visual attribute specified by the second
      * argument in the visual style specified by the first argument. The third
      * argument is the new default value. Returns null if the first or third
      * argument is null.
+	 * @deprecated Use VisualPropertyType.setDefault(style,obj) instead. Going away 4/2008.
      */
     @Deprecated
     static void setDefault(VisualStyle style, byte type, Object c) {
-        setDefault(
-            style,
-            VisualPropertyType.getVisualPorpertyType(type),
-            c);
+		VisualPropertyType.getVisualPorpertyType(type).setDefault(style,c);
     }
 
-    static void setDefault(VisualStyle style, VisualPropertyType type, Object c) {
-        if ((style == null) || (c == null))
-            return;
-
-        NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
-        EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
-
-        NodeAppearance na = nodeCalc.getDefaultAppearance();
-        EdgeAppearance ea = edgeCalc.getDefaultAppearance();
-
-        // types aren't redundant, so this is ok.
-        na.set(type, c);
-        ea.set(type, c);
-
-        nodeCalc.setDefaultAppearance(na);
-        edgeCalc.setDefaultAppearance(ea);
-    }
 
     /**
      * Gets the current calculator for the visual attribute specified by the
      * second argument in the visual style specified by the first argument. This
      * may be null if no calculator is currently specified. Returns null if the
      * first argument is null.
+	 * @deprecated Use VisualPropertyType.getCurrentCalculator(style) instead. Going away 4/2008.
      */
     @Deprecated
     static Calculator getCurrentCalculator(VisualStyle style, byte type) {
-        return getCurrentCalculator(
-            style,
-            VisualPropertyType.getVisualPorpertyType(type));
-    }
-
-    static Calculator getCurrentCalculator(VisualStyle style,
-        VisualPropertyType type) {
-        if (style == null)
-            return null;
-
-        Calculator currentCalculator = null;
-        NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
-        EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
-
-        currentCalculator = nodeCalc.getCalculator(type);
-
-        if (currentCalculator == null)
-            currentCalculator = edgeCalc.getCalculator(type);
-
-        return currentCalculator;
+        return VisualPropertyType.getVisualPorpertyType(type).getCurrentCalculator(style);
     }
 
     /**
@@ -164,20 +106,10 @@ public class VizUIUtilities {
      * second argument in the visual style specified by the first argument. The
      * third argument is the new calculator and may be null. This method does
      * nothing if the first argument specifying the visual style is null.
+	 * @deprecated Use VisualPropertyType.setCurrentCalculator(style,calc) instead. Going away 4/2008.
      */
+    @Deprecated
     static void setCurrentCalculator(VisualStyle style, byte type, Calculator c) {
-        if (style == null)
-            return;
-
-        NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
-        EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
-
-        if (c == null) {
-            nodeCalc.removeCalculator(type);
-            edgeCalc.removeCalculator(type);
-        } else {
-            nodeCalc.setCalculator(c);
-            edgeCalc.setCalculator(c);
-        }
-    }
+		VisualPropertyType.getVisualPorpertyType(type).setCurrentCalculator(style,c);
+	}
 }

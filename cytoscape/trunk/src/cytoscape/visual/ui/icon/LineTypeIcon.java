@@ -8,6 +8,17 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.Icon;
+
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import ding.view.DGraphView;
+
 
 /**
  * DOCUMENT ME!
@@ -77,4 +88,5 @@ public class LineTypeIcon extends VisualPropertyIcon {
         g2d.draw(
             new Line2D.Double(20, (height + 20) / 2, width, (height + 20) / 2));
     }
+
 }

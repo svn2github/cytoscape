@@ -199,13 +199,8 @@ public class VizMapAttrTab extends VizMapTab {
      */
     public void visualStyleChanged() {
         // get current defaults
-        Object defaultObj = VizUIUtilities.getDefault(
-                VMM.getVisualStyle(),
-                this.type);
-        setCurrentCalculator(
-            VizUIUtilities.getCurrentCalculator(
-                VMM.getVisualStyle(),
-                this.type));
+        Object defaultObj = VisualPropertyType.getVisualPorpertyType(this.type).getDefault( VMM.getVisualStyle() );
+        setCurrentCalculator( VisualPropertyType.getVisualPorpertyType(this.type).getCurrentCalculator( VMM.getVisualStyle()) );
 
         if (defaultValueDisplayer == null) { // haven't initialized yet
             drawDefault(defaultObj);
@@ -362,10 +357,7 @@ public class VizMapAttrTab extends VizMapTab {
             if ((e.getItemSelectable() == defaultValueDisplayer) &&
                     (e.getStateChange() == ItemEvent.SELECTED)) {
                 Object newDefault = defaultValueDisplayer.getValue();
-                VizUIUtilities.setDefault(
-                    VMM.getVisualStyle(),
-                    type,
-                    newDefault);
+                VisualPropertyType.getVisualPorpertyType(type).setDefault( VMM.getVisualStyle(), newDefault);
             }
         }
     }
@@ -459,10 +451,7 @@ public class VizMapAttrTab extends VizMapTab {
 
         // tell the respective appearance calculators
         // this method doesn't fire an event to come back to us
-        VizUIUtilities.setCurrentCalculator(
-            VMM.getVisualStyle(),
-            this.type,
-            calc);
+        VisualPropertyType.getVisualPorpertyType(this.type).setCurrentCalculator( VMM.getVisualStyle(), calc);
 
         // get the view of the new calculator
         refreshUI();
@@ -597,9 +586,7 @@ public class VizMapAttrTab extends VizMapTab {
 			else
 				mapType = ObjectMapping.EDGE_MAPPING;
 
-            Object defaultObj = VizUIUtilities.getDefault(
-                    VMM.getVisualStyle(),
-                    vizType);
+            Object defaultObj = vizType.getDefault( VMM.getVisualStyle() );
             Object[] invokeArgs = { defaultObj, new Byte(mapType) };
             ObjectMapping mapper = null;
 

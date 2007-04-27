@@ -140,18 +140,18 @@ public enum EditorDisplayer {
      *
      * @return DOCUMENT ME!
      */
-    public static EditorDisplayer getEditor(final VisualPropertyType type,
-        final EditorType editor) {
+    public static EditorDisplayer getEditor(final VisualPropertyType type, final EditorType editor) {
         final Class dataType = type.getDataType();
 
+		System.out.println("type: " + type + "   editor: " + editor + "  class: " + dataType.toString());
+
         for (EditorDisplayer command : values()) {
-            if ((dataType == command.getCompatibleClass()) &&
-                    (((editor == EditorType.CONTINUOUS) &&
-                    command.toString()
-                               .startsWith(EditorType.CONTINUOUS.name())) ||
-                    ((editor == EditorType.DISCRETE) &&
-                    command.toString()
-                               .startsWith(EditorType.DISCRETE.name()))))
+			System.out.println("command class: " + command.getCompatibleClass().toString() ); 
+            if ((dataType == command.getCompatibleClass()) && 
+			    (((editor == EditorType.CONTINUOUS) &&
+                 command.toString().startsWith(EditorType.CONTINUOUS.name())) ||
+                 ((editor == EditorType.DISCRETE) && 
+				  command.toString().startsWith(EditorType.DISCRETE.name()))))
                 return command;
         }
 

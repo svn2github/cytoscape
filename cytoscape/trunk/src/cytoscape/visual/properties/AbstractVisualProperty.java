@@ -1,7 +1,6 @@
-/*
- File: Appearance.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -34,59 +33,29 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.visual;
+package cytoscape.visual.properties;
 
-import java.util.Properties;
+import cytoscape.*;
+import cytoscape.visual.*;
+import java.util.Map;
+import javax.swing.Icon;
+import java.awt.Graphics2D;
 
+public abstract class AbstractVisualProperty implements VisualProperty {
 
-/**
- * Objects of this class hold data describing the appearance of a Node.
- */
-interface Appearance {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param props DOCUMENT ME!
-     * @param base DOCUMENT ME!
-     */
-    public void applyDefaultProperties(Properties props, String base);
+	abstract public VisualPropertyType getType(); 
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param baseKey DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Properties getDefaultProperties(String baseKey);
+	public void showDiscreteEditor() { }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param prefix DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public String getDescription(String prefix);
+	public void showContinousEditor() { }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-	 * @deprecated Use with VisualPropertyType instead. Leaving 4/08.
-     */
-    public Object get(byte type);
-    public Object get(VisualPropertyType type);
+	public Map<Object,Icon> getIconSet() { return null; }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     * @param o DOCUMENT ME!
-	 * @deprecated Use with VisualPropertyType instead. Leaving 4/08.
-     */
-    public void set(byte type, Object o);
-    public void set(VisualPropertyType type, Object o);
+	public void paintIcon(Graphics2D g2) { }
+
+	public Icon getDefaultIcon() { return null; }
+
+	protected Object getDefault() {
+		return getType().getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
+	}
 }

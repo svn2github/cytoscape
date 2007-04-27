@@ -3,9 +3,9 @@ package cytoscape.visual.ui.editors.discrete;
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualProperty;
 
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 import java.awt.Component;
 
@@ -31,7 +31,7 @@ public class ShapeCellRenderer extends DefaultCellRenderer {
      */
     public ShapeCellRenderer(VisualPropertyType type) {
         this.type = type;
-        icons = VisualPropertyIconFactory.getIconSet(type);
+        icons = type.getVisualProperty().getIconSet();
     }
 
     /**

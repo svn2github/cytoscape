@@ -66,7 +66,6 @@ import cytoscape.visual.LineType;
 import cytoscape.visual.LineTypeDef;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 
 /**

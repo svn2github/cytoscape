@@ -1,11 +1,10 @@
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import cytoscape.visual.NodeShape;
 
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
@@ -42,7 +41,7 @@ public class DiscreteTrackRenderer extends JComponent
     /*
      * Constants for diagram.
      */
-    private static final int ICON_SIZE = 32;
+    private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
     private static int TRACK_HEIGHT = 70;
     private static final int THUMB_WIDTH = 12;
     private final Font defFont = new Font("SansSerif", Font.BOLD, 12);
@@ -553,8 +552,7 @@ public class DiscreteTrackRenderer extends JComponent
     private static List buildIconArray(int size) {
         List<ImageIcon> icons = new ArrayList<ImageIcon>();
 
-        Map iconMap = VisualPropertyIconFactory.getIconSet(VisualPropertyType.NODE_SHAPE,
-                ICON_SIZE);
+        Map iconMap = NodeShape.getIconSet();
 
         Object[] keys = iconMap.keySet()
                                .toArray();

@@ -3,9 +3,9 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualProperty;
 
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
@@ -66,7 +66,7 @@ public class ValueSelectDialog extends javax.swing.JDialog {
             Cytoscape.getDesktop(),
             modal);
         this.type = type;
-        shapeMap = VisualPropertyIconFactory.getIconSet(this.type);
+        shapeMap = this.type.getVisualProperty().getIconSet();
         initComponents();
 
         setList();
