@@ -2317,9 +2317,9 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return map of shape ids to shapes
 	 */
-	public static Map<Byte, Shape> getNodeShapes() {
+	public static Map<Integer, Shape> getNodeShapes() {
 		final Map<Byte, Shape> nodeShapes = GraphGraphics.getNodeShapes();
-		final Map<Byte, Shape> ginyKeyShapes = new HashMap<Byte, Shape>();
+		final Map<Integer, Shape> ginyKeyShapes = new HashMap<Integer, Shape>();
 
 		Shape shape;
 
@@ -2336,9 +2336,9 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static Map<Byte, Shape> getArrowShapes() {
+	public static Map<Integer, Shape> getArrowShapes() {
 		final Map<Byte, Shape> arrowShapes = GraphGraphics.getArrowShapes();
-		final Map<Byte, Shape> ginyKeyShapes = new HashMap<Byte, Shape>();
+		final Map<Integer, Shape> ginyKeyShapes = new HashMap<Integer, Shape>();
 
 		Shape shape;
 

@@ -37,8 +37,8 @@ import static giny.view.NodeView.TRIANGLE;
  * @author kono
  *
  */
-public class GinyUtil {
-    public static byte getGinyNodeType(final byte type) {
+class GinyUtil {
+    static int getGinyNodeType(final byte type) {
         switch (type) {
         case SHAPE_RECTANGLE:
             return RECTANGLE;
@@ -70,11 +70,42 @@ public class GinyUtil {
             return RECTANGLE;
 
         default:
-            return RECTANGLE;
+            return TRIANGLE;
         }
     }
 
-    public static byte getGinyArrowType(final byte type) {
+    static byte getNativeNodeType(final int ginyType) {
+        switch (ginyType) {
+        case RECTANGLE:
+        	return SHAPE_RECTANGLE;
+
+        case DIAMOND:
+        	return SHAPE_DIAMOND;
+
+        case ELLIPSE:
+        	return SHAPE_ELLIPSE;
+
+        case HEXAGON:
+        	return SHAPE_HEXAGON;
+
+        case OCTAGON:
+        	return SHAPE_OCTAGON;
+
+        case PARALELLOGRAM:
+        	return SHAPE_PARALLELOGRAM;
+
+        case ROUNDED_RECTANGLE:
+        	return SHAPE_ROUNDED_RECTANGLE;
+
+        case TRIANGLE:
+        	return SHAPE_TRIANGLE;
+
+        default:
+        	return -1;
+        }
+    }
+
+    static int getGinyArrowType(final byte type) {
         switch (type) {
         case ARROW_NONE:
             return NO_END;
@@ -93,6 +124,28 @@ public class GinyUtil {
 
         default:
             return NO_END;
+        }
+    }
+
+    static byte getNativeArrowType(final int ginyType) {
+        switch (ginyType) {
+        case NO_END:
+        	return ARROW_NONE;
+
+        case EDGE_COLOR_DELTA:
+        	return ARROW_DELTA;
+
+        case EDGE_COLOR_DIAMOND:
+        	return ARROW_DIAMOND;
+
+        case EDGE_COLOR_CIRCLE:
+        	return ARROW_DISC;
+
+        case EDGE_COLOR_T:
+        	return ARROW_TEE;
+
+        default:
+            return ARROW_NONE;
         }
     }
 }
