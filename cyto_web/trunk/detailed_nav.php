@@ -2,13 +2,13 @@
 		<tr>
 			<td width="120" id="first">
 				<h1>
-					<a href="download.php?file=cyto2_4_0">
+					<a href="download.php?file=cyto2_4_1">
 						Download Cytoscape
 					</a>
 				</h1>
 				<p>
-					<a href="download.php?file=cyto2_4_0">
-						Download Version 2.4.0
+					<a href="download.php?file=cyto2_4_1">
+						Download Version 2.4.1
 					</a>
 				</p>
 				<p>
@@ -56,7 +56,7 @@
 					<a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Future_Cytoscape_Features">
 						Roadmap
 					</a> |
-    				<a href="http://chianti.ucsd.edu/Cyto-2_4_0/javadoc/">
+    				<a href="http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/">
 						Javadoc API
 					</a> |
     			    <a href="cgi-bin/moin.cgi/">

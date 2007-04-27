@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<title>
-			Cytoscape: Analyzing and Visualizing Biological Network Data
+			Cytoscape: Analyzing and Visualizing Network Data
 		</title>
 		<link href="css/cytoscape.css" media="screen" type="text/css" rel="stylesheet">
 		<link href="images/cyto.ico" rel="shortcut icon">
@@ -90,7 +90,26 @@
 								<br>
 								<p>
 								<big><b>
-									<i>New!</i>&nbsp;&nbsp;Cytoscape 2.4.0
+									<i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.4.1
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 4/27/2006)
+											<br>
+										No new features, but several bugs have been fixed.	
+											<br>
+										</td>
+									</tr>
+								</table>
+							</div>
+								<p>
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
+									Cytoscape 2.4.0
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
