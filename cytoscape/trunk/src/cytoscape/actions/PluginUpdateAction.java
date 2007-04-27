@@ -32,36 +32,41 @@ public class PluginUpdateAction extends CytoscapeAction {
 		PluginUpdateDialog Dialog = new PluginUpdateDialog(Cytoscape
 				.getDesktop());
 
-		try {
-			boolean updateFound = false;
-			PluginManager Mgr = PluginManager.getPluginManager();
-			// Find updates
-			for (PluginInfo Current : Mgr.getPlugins(PluginStatus.CURRENT)) {
-				List<PluginInfo> Updates = Mgr.findUpdates(Current);
-				if (Updates.size() > 0) {
-					Dialog.addCategory(Current.getCategory(), Current, Updates);
-					updateFound = true;
+		if (!PluginManager.usingWebstartManager()) {
+			try {
+				boolean updateFound = false;
+				PluginManager Mgr = PluginManager.getPluginManager();
+				// Find updates
+				for (PluginInfo Current : Mgr.getPlugins(PluginStatus.CURRENT)) {
+					List<PluginInfo> Updates = Mgr.findUpdates(Current);
+					if (Updates.size() > 0) {
+						Dialog.addCategory(Current.getCategory(), Current,
+								Updates);
+						updateFound = true;
+					}
 				}
+				if (updateFound) {
+					Dialog.setVisible(true);
+				} else {
+					JOptionPane
+							.showMessageDialog(
+									Cytoscape.getDesktop(),
+									"No updates avaialbe for currently installed plugins.",
+									"Plugin Updates",
+									JOptionPane.INFORMATION_MESSAGE);
+				}
+			} catch (org.jdom.JDOMException jde) {
+				jde.printStackTrace();
+			} catch (java.io.IOException ioe) {
+				ioe.printStackTrace();
 			}
-			if (updateFound) {
-				Dialog.setVisible(true);
-			} else {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-						"No updates avaialbe for currently installed plugins.",
-						"Plugin Updates", JOptionPane.INFORMATION_MESSAGE);
-			}
-		} catch (org.jdom.JDOMException jde) {
-			jde.printStackTrace();
-		} catch (java.io.IOException ioe) {
-			ioe.printStackTrace();
-			
+		} else {
+			JOptionPane
+					.showMessageDialog(
+							Cytoscape.getDesktop(),
+							"Plugin updates are not available when using Cytoscape through webstart",
+							"Plugin Update", JOptionPane.INFORMATION_MESSAGE);
 		}
-//		} catch (ManagerError E) {
-//			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), E
-//					.getMessage(), "Plugin Update Error",
-//					JOptionPane.ERROR_MESSAGE);
-//			E.printStackTrace();
-//		}
 	}
 
 }

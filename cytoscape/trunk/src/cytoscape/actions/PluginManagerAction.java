@@ -90,19 +90,20 @@ public class PluginManagerAction extends CytoscapeAction {
 		 * will have a button to "install plugins" poping up the
 		 * PluginInstallDialog
 		 */
-		PluginManageDialog dialog = new PluginManageDialog(Cytoscape.getDesktop());
+		PluginManageDialog dialog = new PluginManageDialog(Cytoscape
+				.getDesktop());
 		PluginManager Mgr = PluginManager.getPluginManager();
 
 		String DefaultUrl = "";
 		String DefaultTitle = "";
-		
+
 		try {
 			Bookmarks theBookmarks = Cytoscape.getBookmarks();
 			// Extract the URL entries
-			List<DataSource> DataSourceList = BookmarksUtil.getDataSourceList
-					(bookmarkCategory, theBookmarks.getCategory());
-			
-			for (DataSource ds: DataSourceList) {
+			List<DataSource> DataSourceList = BookmarksUtil.getDataSourceList(
+					bookmarkCategory, theBookmarks.getCategory());
+
+			for (DataSource ds : DataSourceList) {
 				if (ds.getName().equals("Cytoscape")) {
 					DefaultUrl = ds.getHref();
 					DefaultTitle = ds.getName();
@@ -112,31 +113,38 @@ public class PluginManagerAction extends CytoscapeAction {
 		} catch (Exception E) {
 			E.printStackTrace();
 		}
-		
-		
+
 		List<PluginInfo> Current = Mgr.getPlugins(PluginStatus.CURRENT);
-		Map<String, List<PluginInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);
+		Map<String, List<PluginInfo>> InstalledInfo = ManagerUtil
+				.sortByCategory(Current);
 
 		for (String Category : InstalledInfo.keySet()) {
-			dialog.addCategory(Category, InstalledInfo.get(Category), PluginInstallStatus.INSTALLED);
+			dialog.addCategory(Category, InstalledInfo.get(Category),
+					PluginInstallStatus.INSTALLED);
 		}
 
-		try {
-			Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil.sortByCategory(Mgr.inquire(DefaultUrl));
+		if (!PluginManager.usingWebstartManager()) {
+			try {
+				Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil
+						.sortByCategory(Mgr.inquire(DefaultUrl));
 
-			for (String Category : DownloadInfo.keySet()) {
-				dialog.addCategory(Category, DownloadInfo.get(Category),
-				                   PluginInstallStatus.AVAILABLE);
+				for (String Category : DownloadInfo.keySet()) {
+					dialog.addCategory(Category, DownloadInfo.get(Category),
+							PluginInstallStatus.AVAILABLE);
+				}
+				dialog.setSiteName(DefaultTitle);
+			} catch (java.io.IOException ioe) {
+				// failed to read the given url
+				dialog.setMessage(PluginManageDialog.CommonError.NOXML
+						+ DefaultUrl);
+			} catch (org.jdom.JDOMException jde) {
+				// failed to parse the xml file at the url
+				dialog.setMessage(PluginManageDialog.CommonError.BADXML
+						+ DefaultUrl);
 			}
-			dialog.setSiteName(DefaultTitle);
-		} catch (java.io.IOException ioe) {
-			// failed to read the given url
-			dialog.setMessage(PluginManageDialog.CommonError.NOXML + DefaultUrl);
-		} catch (org.jdom.JDOMException jde) {
-			// failed to parse the xml file at the url
-			dialog.setMessage(PluginManageDialog.CommonError.BADXML + DefaultUrl);
-		} finally {
-			dialog.setVisible(true);
+		} else {
+			dialog.setMessage("Download/Delete are not available when using Cytoscape through web start");
 		}
+		dialog.setVisible(true);
 	}
 }
