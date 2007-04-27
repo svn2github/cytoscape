@@ -12,35 +12,68 @@ use DepthLimitedPath;
 use TemporalPath;
 
 use TimeData;
+use QpcrCopyNumberTimeData;
 
 use PathFinder;
 
-die "?0: <sif> <timeseries lrpv> <output name>\n" if(scalar(@ARGV != 3));
+# Parse command line args
+my @newArg;
 
-my $DEBUG = 0;
+my $EXPR_FORMAT = 0;
+my $THRESH = "";
+
+{local $arg;
+ while (@ARGV)
+ {
+     $arg = shift;
+     if($arg =~ /^-thresh$/) { $THRESH = shift @ARGV }
+     elsif($arg =~ /^-e$/) { $EXPR_FORMAT = shift @ARGV }
+     else { push @newArg, $arg }
+ }
+}
+
+printf "### ARGS: \n   %s\n", join("\n   ", map {sprintf "[%s]", $_} @newArg);
+
+if(scalar(@newArg != 3))
+{
+    die "$0: [-thresh <threshold>] -e [lrpv|qpcr] <sif> <timeseries lrpv> <output name>\n";
+}
+
+my $DEBUG = 1;
     
-my ($network, $lrpv, $outName) = @ARGV;
+my ($network, $exprFile, $outName) = @newArg;
 
-my $graph = DirectedGraph->new($network);
+my $graph = PPAwareGraph->new($network);
 $graph->print() if $DEBUG;
 
-
-my $exprData = TimeData->new($lrpv);
+my $exprData;
+if($EXPR_FORMAT eq "lrpv")
+{
+    $exprData = TimeData->new($exprFile);
+}
+elsif($EXPR_FORMAT eq "qpcr")
+{
+    $exprData = QpcrCopyNumberTimeData->new($exprFile);
+}
+else
+{
+    die "Unknown expression format: $EXPR_FORMAT. Use \"lrpv\" or \"qpcr\"\n";
+}
 
 printf("Read %d cols for %d genes\n", 
        scalar(@{$exprData->columnNames()}), 
        scalar(@{$exprData->ids()}) );
 
 
-my $tme = $exprData->getAllTME(0.05, 
+my $tme = $exprData->getAllTME($THRESH, 
 			       $outName . "-tme.na",
 			       $outName . "-ratio.na");
 
 if($DEBUG)
 {
-    while( ($g, $t)  = each %{$tme})
+    foreach my $g (sort keys %{$tme})
     {
-	print("$g $t\n");
+	print("$g $tme->{$g}\n");
     }
 }
 

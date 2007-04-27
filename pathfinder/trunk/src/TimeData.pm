@@ -7,7 +7,7 @@ use PVLR;
 sub new
 {
     my ($caller, $file, $idHash) = @_;
-    my $self = $caller->SUPER::new($file, $isHash);
+    my $self = $caller->SUPER::new($file, $idHash);
     return $self;
 }
 
