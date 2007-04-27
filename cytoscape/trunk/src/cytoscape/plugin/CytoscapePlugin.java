@@ -147,12 +147,12 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			return false;
 		}
 
-		PluginManager Mgr = PluginManager.getPluginManager();
 
 		Object object = null;
 
 		try {
 			object = pluginClass.newInstance();
+			PluginManager Mgr = PluginManager.getPluginManager();
 			Mgr.register((CytoscapePlugin) object, JarFileName);
 		} catch (InstantiationException e) {
 			System.out.println("InstantiationException");

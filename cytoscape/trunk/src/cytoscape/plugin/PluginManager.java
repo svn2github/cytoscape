@@ -70,7 +70,7 @@ import java.util.zip.ZipEntry;
  * 
  */
 public class PluginManager {
-	private PluginTracker pluginTracker;
+	protected PluginTracker pluginTracker;
 
 	private static PluginManager pluginMgr = null;
 
@@ -83,10 +83,8 @@ public class PluginManager {
 	private static Set<String> resourcePlugins;
 
 	private static URLClassLoader classLoader;
-
-	static {
-		new PluginManager(null);
-	}
+	
+	private static boolean usingWebstart;
 
 	/**
 	 * Replaces CytoscapeInit.getClassLoader()
@@ -115,6 +113,19 @@ public class PluginManager {
 		return pluginURLs;
 	}
 
+	
+	/**
+	 * Returns true/false based on the System property.  
+	 * This is what is checked to find out if install/delete/download
+	 * methods are permitted.
+	 * 
+	 * @return true 
+	 * 			if Cytoscape is in webstart
+	 */
+	public static boolean usingWebstartManager() {
+		return usingWebstart;
+	}
+	
 	/**
 	 * Get the PluginManager object.
 	 * 
@@ -122,11 +133,26 @@ public class PluginManager {
 	 */
 	public static PluginManager getPluginManager() {
 		if (pluginMgr == null) {
-			pluginMgr = new PluginManager(null);
+				pluginMgr = new PluginManager(null);
 		}
 		return pluginMgr;
 	}
 
+
+	/*
+	 * Just checks the system property 'javawebstart.version' which is only set when running as a webstart.
+	 */
+	private static void setWebstart() {
+		System.out.println("set webstart");
+		if (System.getProperty("javawebstart.version") != null &&
+			System.getProperty("javawebstart.version").length() > 0)  {
+				System.out.println("USING WEBSTART: " + System.getProperty("javawebstart.version"));
+				usingWebstart = true;
+			} else {
+				usingWebstart = false;
+			}
+	}
+	
 	/**
 	 * This should ONLY be used by tests!!
 	 * 
@@ -150,13 +176,21 @@ public class PluginManager {
 
 	// create plugin manager
 	private PluginManager(PluginTracker Tracker) {
-
+		setWebstart();
 		try {
 			if (Tracker != null) {
+				System.out.println("Tracker NOT NULL");
 				pluginTracker = Tracker;
 			} else {
-				pluginTracker = new PluginTracker(CytoscapeInit
+				System.out.println("Tracker null");
+				if (usingWebstart) {
+					System.err.println("*** webstart tracking file ***");
+					//pluginTracker = new PluginTracker( new File(System.getProperty("java.io.tmpdir")), "track_webstart_plugins.xml");
+					pluginTracker = new PluginTracker( File.createTempFile("track_webstart_plugins_", ".xml"));
+				} else {				
+					pluginTracker = new PluginTracker(CytoscapeInit
 						.getConfigDirectory(), "track_plugins.xml");
+				}
 			}
 			// cyVersion = CytoscapeVersion.version;
 			tempDir = new File(CytoscapeInit.getConfigDirectory(), "plugins");
@@ -216,6 +250,8 @@ public class PluginManager {
 	 * @param JarFileName
 	 */
 	protected void register(CytoscapePlugin Plugin, String JarFileName) {
+		System.out.println("Registering plugin " + Plugin.getClass().getName());
+		
 		PluginInfo InfoObj;
 		Map<String, List<PluginInfo>> CurrentInstalled = ManagerUtil
 				.sortByClass(getPlugins(PluginTracker.PluginStatus.CURRENT));
@@ -256,7 +292,9 @@ public class PluginManager {
 	 * temporary download directory. This can only occur at start up,
 	 * CytoscapeInit should be the only class to call this.
 	 */
-	public void install() throws ManagerError {
+	public void install() throws ManagerError, WebstartException {
+		checkWebstart();
+
 		List<PluginInfo> Plugins = pluginTracker
 				.getListByStatus(PluginTracker.PluginStatus.INSTALL);
 
@@ -334,7 +372,8 @@ public class PluginManager {
 	 * 
 	 * @param Obj
 	 */
-	public void delete(PluginInfo Obj) {
+	public void delete(PluginInfo Obj) throws WebstartException {
+		checkWebstart();
 		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.DELETE);
 	}
 
@@ -342,7 +381,9 @@ public class PluginManager {
 	 * Takes all objects on the "to-delete" list and deletes them. This can only
 	 * occur at start up, CytoscapeInit should be the only class to call this.
 	 */
-	public void delete() throws ManagerError {
+	public void delete() throws ManagerError, WebstartException {
+		checkWebstart();
+		
 		String ErrorMsg = "Failed to delete all files for the following plugins:\n";
 		List<String> DeleteFailed = new ArrayList<String>();
 
@@ -377,6 +418,12 @@ public class PluginManager {
 		}
 	}
 
+	private void checkWebstart() throws WebstartException {
+		if (usingWebstart) {
+			throw new WebstartException();
+		}
+	}
+	
 	// Need access to this in install too if installation fails
 	private boolean deleteFiles(List<String> Files) {
 		boolean deleteOk = false;
@@ -434,7 +481,7 @@ public class PluginManager {
 	 *             version.
 	 */
 	public void update(PluginInfo Current, PluginInfo New) throws IOException,
-			ManagerError {
+			ManagerError, WebstartException {
 		update(Current, New, null);
 	}
 
@@ -456,7 +503,7 @@ public class PluginManager {
 	 */
 	public void update(PluginInfo Current, PluginInfo New,
 			cytoscape.task.TaskMonitor taskMonitor) throws IOException,
-			ManagerError {
+			ManagerError, WebstartException {
 		// find new plugin, download, add to install list
 		if (Current.getProjectUrl() == null) {
 			throw new ManagerError(
@@ -490,7 +537,8 @@ public class PluginManager {
 	 *            PluginInfo object to be downloaded
 	 * @return File downloaded
 	 */
-	public File download(PluginInfo Obj) throws IOException, ManagerError {
+	public File download(PluginInfo Obj) throws IOException, ManagerError, WebstartException {
+		checkWebstart();
 		return download(Obj, null);
 	}
 
@@ -505,7 +553,9 @@ public class PluginManager {
 	 * @return File downloaded
 	 */
 	public File download(PluginInfo Obj, TaskMonitor taskMonitor)
-			throws IOException, ManagerError {
+			throws IOException, ManagerError, WebstartException {
+		checkWebstart();
+
 		File Download = null;
 		String ClassName = null;
 		Download = new File(tempDir, createFileName(Obj));

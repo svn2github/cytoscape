@@ -507,7 +507,6 @@ public class PluginInfo {
 		int CurrentMinor = Integer.valueOf(CurrentVersion[1]).intValue();
 		int NewMinor = Integer.valueOf(NewVersion[1]).intValue();
 		
-		
 		if ( (CurrentMajor > NewMajor ||
 			 (CurrentMajor == NewMajor && CurrentMinor >= NewMinor)) ) {
 			return false;

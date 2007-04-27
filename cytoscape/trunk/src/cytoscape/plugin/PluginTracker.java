@@ -62,7 +62,6 @@ import java.util.*;
 public class PluginTracker {
 	private Document trackerDoc;
 	private File installFile;
-	private final String INSTALL_FILE_NAME = "track_plugins.xml";
 	public enum PluginStatus { // xml tags describing status of plugin
 		CURRENT("CurrentPlugins"),
 		DELETE("DeletePlugins"),
@@ -90,19 +89,23 @@ public class PluginTracker {
 		init();
 	}
 	
-	/**
-	* Sets up the plugin tracker.  This should only be called by the PluginManager
-	*
-	* @throws java.io.IOException
-	*/
-	protected PluginTracker() throws java.io.IOException {
-		installFile = new File(CytoscapeInit.getConfigDirectory(), this.INSTALL_FILE_NAME);
+	protected PluginTracker(File file) throws java.io.IOException {
+		installFile = file;
 		init();
-
 	}
-
+	
+	/*
+	 * Used for tests.
+	 */
+	protected File getTrackerFile() {
+		return installFile;
+	}
+	
+	/* 
+	 * Sets up the xml doc for tracking.
+	 */
 	private void init() throws java.io.IOException {
-		if (installFile.exists()) {
+		if (installFile.exists() && installFile.length() > 0) {
 			SAXBuilder Builder = new SAXBuilder(false);
 
 			try {
@@ -118,6 +121,7 @@ public class PluginTracker {
 			trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
 			write();
 		}
+		System.out.println("Creating tracking file " + installFile.getAbsolutePath());
 	}
 
 	
