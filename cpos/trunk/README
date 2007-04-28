@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#allProbes.txt.withSize
+RUN_HARBISON=1
+RUN_BOYER=1
+RUN_SIMON=1
+RUN_WORKMAN=1
+RUN_YEAST_ANNOTATION=1
+
+# Harbison
+test $RUN_HARBISON  && {
+./cpos.pl  -html -bkgdFile ~/data/all-SGD-ORFs.loc -featureType sgd -org sc  output/harbison_YPD Harbison2004_9.2_forpaper_YPD.1e-3.ORFlists 
+}
+
+# Boyer
+test $RUN_BOYER && {
+./cpos.pl  -html -featureType boyer -featureFile Oct4-TableS1.txt -org hs  output/boyer_EShuman  \
+     Oct4-TableS1.txt \
+     Nanog-TableS4.txt \
+     Sox2-TableS3.txt \
+     E2F4-TableS6.txt
+}
+
+# Simon
+test $RUN_SIMON && {
+SIMON=/Users/cmak/Desktop/ChIP-papers/Simon-2001
+./cpos.pl  -html -bkgdFile ~/data/all-SGD-ORFs.loc -featureType sgd -org sc  output/simon  $SIMON/Simon.p001.ORFlists
+}
+
+# Workman
+test $RUN_WORKMAN  && {
+WORKMAN=/Users/cmak/Desktop/ChIP-papers/Workman
+mkdir output/workman_BLA
+mkdir output/workman_BUF
+mkdir output/workman_EXP_KOs
+mkdir output/workman_BLA_MMSonly_overlaps
+
+PARAMS="  -html -bkgdFile ~/data/all-SGD-ORFs.loc -featureType sgd -org sc"
+
+./cpos.pl $PARAMS  output/workman_BLA $WORKMAN/YPD_0.001_MMS_0.001_t_0.1436_t_sq_0.000144.ORFlists
+./cpos.pl $PARAMS output/workman_BUF $WORKMAN/BUF_KOs.005.ORFlists
+#./cpos.pl $PARAMS output/workman_EXP_KOs $WORKMAN/EXP_KOs.const_betas.logratios.pvalues
+./cpos.pl $PARAMS output/workman_BLA_MMSonly_overlaps $WORKMAN/BLA_MMS_only.1e-3.TPM.ORFlists
+}
+
+test $RUN_YEAST_ANNOTATION && {
+YA=/Users/cmak/Desktop/ChIP-papers/YeastAnnotation
+mkdir output/MIPS_complexes
+mkdir output/KEGG_metabolic
+mkdir output/GO_process
+
+PARAMS=" -html -bkgdFile ~/data/all-SGD-ORFs.loc -featureType sgd -org sc"
+./cpos.pl $PARAMS output/MIPS_complexes $YA/MIPS_complexes.ORFlists
+./cpos.pl $PARAMS output/KEGG_metabolic $YA/KEGGmetabolic.ORFlists
+./cpos.pl $PARAMS output/GO_process $YA/GOprocess.ORFlists
+}
+
+
+./buildIndex.pl output > output/index.html
