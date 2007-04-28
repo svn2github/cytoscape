@@ -31,28 +31,23 @@
 	
 	#  Determine the Download File and Page Title
 	$file = $_REQUEST["file"];
-	if ($file == "cyto2_4_1") {
-		$title = "Download Cytoscape 2.4.1";
-	} else if ($file == "cyto2_4_0") {
-		$title = "Download Cytoscape 2.4.0";
-	} else if ($file == "cyto2_3_2") {
-		$title = "Download Cytoscape 2.3.2";
-	} else if ($file == "cyto2_3_1") {
-		$title = "Download Cytoscape 2.3.1";
-	} else if ($file == "cyto2_3") {
-		$title = "Download Cytoscape 2.3";
-	} else if ($file == "cyto2_2") {
-		$title = "Download Cytoscape 2.2";
-	} else if ($file == "cyto2_1") {
-		$title = "Download Cytoscape 2.1";
-	} else if ($file == "cyto2") {
-		$title = "Download Cytoscape 2.0";
-	} else if ($file == "cyto1") {
-		$title = "Download Cytoscape 1.1";
-	} else  {
-		$file = "cyto2_4_1"; 
-		$title = "Download Cytoscape 2.4.1";
+	$found = false;
+	foreach ($release_array as $fileId => $num) {
+		if ($file == $fileId) {
+			$title = "Download Cytoscape $release_array[$file]";
+			$found = true;
+			break;
+		}
+	}
+
+	# if the user navigates directly to download.php file won't be set,
+	# so set it to the latest version
+	$rra = array_flip($release_array);
+	if ( !$found ) {
+		$file = $rra[$latest_version]; 
+		$title = "Download Cytoscape $latest_version";
 	} 
+
 	if (isset($submit) && $error_flag == false) {
 		$title = "Thank you!";
 	}

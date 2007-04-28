@@ -37,6 +37,18 @@ $chianti_base = "http://chianti.ucsd.edu/";
 $latest_version = "2.4.1";
 $latest_release_notes_link = "cyto_2_4_features.php";
 $latest_download_link = "download.php?file=cyto2_4_1";
+$latest_manual_pdf = "manual/Cytoscape2_4Manual.pdf";
+$latest_manual_html = "manual/Cytoscape2_4Manual.html";
+$release_array = array( 
+                      'cyto2_4_1' => '2.4.1',
+                      'cyto2_4_0' => '2.4.0',
+                      'cyto2_3_2' => '2.3.2',
+                      'cyto2_3_1' => '2.3.1',
+                      'cyto2_3'   => '2.3',
+                      'cyto2_2'   => '2.2',
+                      'cyto2_1'   => '2.1',
+                      'cyto2'     => '2.0',
+                      'cyto1'     => '1.1');
 
 #################################################
 # Cytoscape 1.1 Release File Names

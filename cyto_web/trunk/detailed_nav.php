@@ -1,14 +1,16 @@
+<? include "config.php"; ?>
 <table cellspacing="0" cellpadding="2" border="0" summary="" id="links">
+
 		<tr>
 			<td width="120" id="first">
 				<h1>
-					<a href="download.php?file=cyto2_4_1">
+					<a href="<?= $latest_download_link?>">
 						Download Cytoscape
 					</a>
 				</h1>
 				<p>
-					<a href="download.php?file=cyto2_4_1">
-						Download Version 2.4.1
+					<a href="<?= $latest_download_link?>">
+						Download Version <?= $latest_version?>
 					</a>
 				</p>
 				<p>
@@ -31,15 +33,15 @@
 			</td>
 			<td width="120">
 				<h1>
-					<a href="manual/Cytoscape2_4Manual.html">
+					<a href="<?= $latest_manual_html?>">
 						Manual
 					</a>
 				</h1>
 				<p>
-					<a href="manual/Cytoscape2_4Manual.html">
+					<a href="<?= $latest_manual_html?>">
 						HTML format
 					</a> or
-					<a href="manual/Cytoscape2_4Manual.pdf">
+					<a href="<?= $latest_manual_pdf?>">
 						PDF format</a>, explains all basic features of Cytoscape.
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
 						Get Acrobat reader

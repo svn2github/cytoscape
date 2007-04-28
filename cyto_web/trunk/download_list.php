@@ -22,6 +22,7 @@
 			</tr>
 		</table>
 <? include "nav.php"; ?>
+<?include "config.php";?>
 <div  id="indent">
 			<P>
 			<big><b>For Users:  Download Cytoscape Releases</b></big>
@@ -33,34 +34,14 @@
 
 
 			<UL>
-		    <LI>
-					<A HREF="download.php?file=cyto2_4_0">Download Cytoscape 2.4.0</A>
-					[Binaries and/or Source Files]
-		    <LI>
-		    <LI>
-					<A HREF="download.php?file=cyto2_3_2">Download Cytoscape 2.3.2</A>
-					[Binaries and/or Source Files]
-		    <LI>
-		    <LI>
-					<A HREF="download.php?file=cyto2_3_1">Download Cytoscape 2.3.1</A>
-					[Binaries and/or Source Files]
-		    <LI>
-		    <LI>
-					<A HREF="download.php?file=cyto2_3">Download Cytoscape 2.3</A>
-					[Binaries and/or Source Files]
-		    <LI>
-					<A HREF="download.php?file=cyto2_2">Download Cytoscape 2.2</A>
-					[Binaries and/or Source Files]
-			</LI>
-				<LI>
-					<A HREF="download.php?file=cyto2_1">Download Cytoscape 2.1</A>
-					[Binaries and/or Source Files]
-				</LI>
-			<LI><A HREF="download.php?file=cyto2">Download Cytoscape 2.0</A>
-				[Binaries and/or Source Files]
-			<LI><A HREF="download.php?file=cyto1">Download Cytoscape 1.1</A>
-				[Binaries and/or Source Files]
-			</UL>
+
+			<?
+			foreach ($release_array as $dir => $num) {
+				print "<li><a href=\"download.php?file=$dir\">Download Cytoscape $num</a></li>\n";
+			}
+			?>
+
+			</ul>
 
 			<P>
 			<big><A NAME="cvs"><b>For Developers:  Download Latest Source Code from our Subversion Server</A></b></big>
