@@ -64,6 +64,50 @@ Cytoscape LGPL.
 	<table style="margin-left: 30;margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="95%" bgcolor="#ebebff">
 
 		<tbody>		
+
+
+			<tr>
+				<td width="25%" valign="top">
+					<b>CABIN Plugin</b><font size="-1">
+						<br>
+						Version: 1.0
+						<br>
+						Release Date: April 30, 2007</font>
+			  </td>
+				<td width="45%" valign="top">
+					<P>
+					CABIN is an exploratory data analysis tool that enables integration and
+					analysis of interactions evidence obtained from multiple sources,
+					thereby increasing the confidence of computational predictions as well
+					as validating experimental observations. CABIN has been written in
+					JavaTM.
+					</P>
+					<P>
+						<A HREF="http://www.sysbio.org/capabilities/compbio/cabin.stm">Project web site</A>.
+					</P>
+					<P>
+						Released by: Mudita Singhal, Pacific Northwest National Laboratory
+					</P>
+			  </td>
+				<TD WIDTH=15%>
+					<P>
+						Verified to work in 2.4
+					</P>
+			  </TD>
+				<TD WIDTH=15%>
+					<P>
+						[<A HREF="http://www.sysbio.org/dataresources/cabin.stm">Download from Project Web Site</A>]
+					</P>
+			  </TD>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>		
+
+
+
 			<tr>
 				<td width="25%" valign="top">
 					<b>Cerebral Plugin</b><font size="-1">
@@ -118,6 +162,10 @@ Cytoscape LGPL.
 					<hr>
 				</td>
 			</tr>		
+
+
+
+
 		
 			<tr>
 				<td width="26%" valign="top">
