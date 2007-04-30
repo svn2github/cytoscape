@@ -68,90 +68,138 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 	}
 
 	// Variables declaration - do not modify
-	private javax.swing.JComboBox cmbType;
-	private javax.swing.JButton btnUpdate;
-	private javax.swing.JButton btnCancel;
-	private javax.swing.JPanel jPanel1;
-	private javax.swing.JLabel lbHost;
-	private javax.swing.JLabel lbPort;
-	private javax.swing.JLabel lbType;
-	private javax.swing.JTextField tfHost;
-	private javax.swing.JTextField tfPort;
-
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JCheckBox chbUseProxy;
+    private javax.swing.JComboBox cmbType;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel lbHost;
+    private javax.swing.JLabel lbPort;
+    private javax.swing.JLabel lbType;
+    private javax.swing.JLabel lbUseProxy;
+    private javax.swing.JTextField tfHost;
+    private javax.swing.JTextField tfPort;
 	// End of variables declaration
+    
 	private void initComponents() {
-		java.awt.GridBagConstraints gridBagConstraints;
+		
+        java.awt.GridBagConstraints gridBagConstraints;
 
-		lbType = new javax.swing.JLabel();
-		lbHost = new javax.swing.JLabel();
-		lbPort = new javax.swing.JLabel();
-		cmbType = new javax.swing.JComboBox();
-		tfHost = new javax.swing.JTextField();
-		tfPort = new javax.swing.JTextField();
-		jPanel1 = new javax.swing.JPanel();
-		btnUpdate = new javax.swing.JButton();
-		btnCancel = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        lbUseProxy = new javax.swing.JLabel();
+        chbUseProxy = new javax.swing.JCheckBox();
+        jPanel1 = new javax.swing.JPanel();
+        btnUpdate = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        lbType = new javax.swing.JLabel();
+        lbHost = new javax.swing.JLabel();
+        lbPort = new javax.swing.JLabel();
+        cmbType = new javax.swing.JComboBox();
+        tfHost = new javax.swing.JTextField();
+        tfPort = new javax.swing.JTextField();
 
-		getContentPane().setLayout(new java.awt.GridBagLayout());
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		lbType.setText("Type");
-		getContentPane().add(lbType, new java.awt.GridBagConstraints());
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        lbUseProxy.setText("Use Proxy");
+        jPanel3.add(lbUseProxy);
 
-		lbHost.setText("Host name");
-		getContentPane().add(lbHost, new java.awt.GridBagConstraints());
+        chbUseProxy.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        chbUseProxy.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jPanel3.add(chbUseProxy);
 
-		lbPort.setText("Port");
-		getContentPane().add(lbPort, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        getContentPane().add(jPanel3, gridBagConstraints);
 
-		cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DIRECT", "HTTP", "SOCKS" }));
-		cmbType.setMinimumSize(new java.awt.Dimension(61, 18));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.insets = new java.awt.Insets(5, 10, 10, 5);
-		getContentPane().add(cmbType, gridBagConstraints);
+        btnUpdate.setText("Update");
+        jPanel1.add(btnUpdate);
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 5);
-		getContentPane().add(tfHost, gridBagConstraints);
+        btnCancel.setText("Cancel");
+        jPanel1.add(btnCancel);
 
-		tfPort.setMinimumSize(new java.awt.Dimension(43, 19));
-		tfPort.setPreferredSize(new java.awt.Dimension(43, 19));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 10);
-		getContentPane().add(tfPort, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        getContentPane().add(jPanel1, gridBagConstraints);
 
-		btnUpdate.setText("Update");
-		jPanel1.add(btnUpdate);
+        jPanel2.setLayout(new java.awt.GridBagLayout());
 
-		btnCancel.setText("Cancel");
-		jPanel1.add(btnCancel);
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Proxy Settings"));
+        lbType.setText("Type");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        jPanel2.add(lbType, gridBagConstraints);
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
-		getContentPane().add(jPanel1, gridBagConstraints);
+        lbHost.setText("Host name");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        jPanel2.add(lbHost, gridBagConstraints);
 
-		btnUpdate.setEnabled(false);
+        lbPort.setText("Port");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        jPanel2.add(lbPort, gridBagConstraints);
+
+        cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "HTTP", "SOCKS" }));
+        cmbType.setMinimumSize(new java.awt.Dimension(61, 18));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 10, 5);
+        jPanel2.add(cmbType, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 5);
+        jPanel2.add(tfHost, gridBagConstraints);
+
+        tfPort.setMinimumSize(new java.awt.Dimension(43, 19));
+        tfPort.setPreferredSize(new java.awt.Dimension(43, 19));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 10);
+        jPanel2.add(tfPort, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        getContentPane().add(jPanel2, gridBagConstraints);
 
 		// add event listeners
 		btnUpdate.addActionListener(this);
 		btnCancel.addActionListener(this);
-		cmbType.addItemListener(this);
+		//cmbType.addItemListener(this);
+		chbUseProxy.addItemListener(this);
 
 		pack();
-		setSize(new Dimension(350, 150));
+		setSize(new Dimension(400, 200));
 	} // </editor-fold>
 
 	private void initValues() {
 		Proxy p = ProxyHandler.getProxyServer();
 
-		if ((p == null) || (p.type() == Proxy.Type.DIRECT)) {
+		chbUseProxy.setSelected(true);
+		cmbType.setEnabled(true);
+		tfHost.setEnabled(true);
+		tfPort.setEnabled(true);
+
+		if (p == null) {
+			tfHost.setText("");
+			tfPort.setText("");
+			chbUseProxy.setSelected(false);
+    		cmbType.setEnabled(false);
+    		tfHost.setEnabled(false);
+    		tfPort.setEnabled(false);
 			return;
 		} else if (p.type() == Proxy.Type.HTTP) {
 			cmbType.setSelectedItem("HTTP");
@@ -170,13 +218,25 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 	 * @param e DOCUMENT ME!
 	 */
 	public void itemStateChanged(ItemEvent e) {
-		String selectedItem = cmbType.getSelectedItem().toString();
+		
+        Object _actionObject = e.getSource();
 
-		if (selectedItem.equalsIgnoreCase("DIRECT")) {
-			btnUpdate.setEnabled(false);
-		} else {
-			btnUpdate.setEnabled(true);
-		}
+        if (_actionObject instanceof javax.swing.JCheckBox)
+        {
+        	if (chbUseProxy.isSelected()) { // UseProxy is checked
+            	// enable the setting panel
+        		cmbType.setEnabled(true);
+        		tfHost.setEnabled(true);
+        		tfPort.setEnabled(true);
+        	}
+        	else
+        	{// UseProxy is unchecked
+        		// disable the setting panel
+        		cmbType.setEnabled(false);
+        		tfHost.setEnabled(false);
+        		tfPort.setEnabled(false);
+        	}
+        }
 	}
 
 	/**
@@ -205,46 +265,44 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 	private boolean updateProxyServer() {
 		Proxy.Type proxyType = Proxy.Type.valueOf(cmbType.getSelectedItem().toString());
 
-		// If proxyType is DIRECT, do nothing
-		if (proxyType == java.net.Proxy.Type.DIRECT) {
+		// If UseProxy is unchecked, that means NULL proxy sever
+		if (!chbUseProxy.isSelected()) {
 			tfHost.setText("");
 			tfPort.setText("");
-
-			return false;
+			// If Host or Port is empty, ProxyServer will be set to NULL
 		}
-
-		// Try if we can create a proxyServer, if not, report error
-		if (tfHost.getText().trim().equals("")) {
-			JOptionPane.showMessageDialog(this, "Host name is empty!", "Warning",
-			                              JOptionPane.INFORMATION_MESSAGE);
-
-			return false;
+		else { //UseProxy is checked
+			// Try if we can create a proxyServer, if not, report error
+			if (tfHost.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(this, "Host name is empty!", "Warning",
+				                              JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+	
+			int thePort;
+	
+			try {
+				Integer tmpInteger = new Integer(tfPort.getText().trim());
+				thePort = tmpInteger.intValue();
+			} catch (Exception exp) {
+				JOptionPane.showMessageDialog(this, "Port error!", "Warning",
+				                              JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+	
+			InetSocketAddress theAddress = new InetSocketAddress(tfHost.getText().trim(), thePort);
+	
+			try {
+				new Proxy(proxyType, theAddress);
+			} catch (Exception expProxy) {
+				JOptionPane.showMessageDialog(this, "Proxy server error!", "Warning",
+				                              JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+			//Yes, got valid input for a proxy server
 		}
-
-		int thePort;
-
-		try {
-			Integer tmpInteger = new Integer(tfPort.getText().trim());
-			thePort = tmpInteger.intValue();
-		} catch (Exception exp) {
-			JOptionPane.showMessageDialog(this, "Port error!", "Warning",
-			                              JOptionPane.INFORMATION_MESSAGE);
-
-			return false;
-		}
-
-		InetSocketAddress theAddress = new InetSocketAddress(tfHost.getText().trim(), thePort);
-
-		try {
-			new Proxy(proxyType, theAddress);
-		} catch (Exception expProxy) {
-			JOptionPane.showMessageDialog(this, "Proxy server error!", "Warning",
-			                              JOptionPane.INFORMATION_MESSAGE);
-
-			return false;
-		}
-
-		// Yes, we create a proxy server successfully, Update the proxy server info 
+		
+		// Update the proxy server info 
 		CytoscapeInit.getProperties().setProperty("proxy.server", tfHost.getText().trim());
 		CytoscapeInit.getProperties().setProperty("proxy.server.port", tfPort.getText());
 		CytoscapeInit.getProperties()
