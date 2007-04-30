@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 # imports
+import sys
 import os.path
 
 # setup some globals
@@ -9,7 +10,10 @@ if PATHWAY_TOOLS_ROOT:
 	HAS_YFILES_LIBRARY = os.path.exists(PATHWAY_TOOLS_ROOT + "/lib/y.jar")
 else:
     HAS_YFILES_LIBRARY = 0
-LAYOUT_UTIL_FILE = "../src/org/mskcc/biopax_plugin/util/cytoscape/LayoutUtil.java"
+if len(sys.argv) < 2:
+    sys.exit("usage: ./genLayoutUtil <layout file to generate>")
+else:
+    LAYOUT_UTIL_FILE = sys.argv[1]
 
 # open layout file
 layoutUtilFile = open(LAYOUT_UTIL_FILE, 'w')
