@@ -82,10 +82,16 @@ public class DNodeView implements NodeView, Label {
 	Paint m_unselectedPaint;
 	Paint m_selectedPaint;
 	Paint m_borderPaint;
+
+	/**
+	 * Stores the position of a nodeView when it's hidden so that when the 
+	 * nodeView is retored we can restore the view into the same position.
+	 */
 	float m_hiddenXMin;
 	float m_hiddenYMin;
 	float m_hiddenXMax;
 	float m_hiddenYMax;
+
 	ArrayList m_graphicShapes;
 	ArrayList m_graphicPaints;
 
