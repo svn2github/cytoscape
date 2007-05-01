@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cytoscape.plugin;
 
 import cytoscape.plugin.PluginTracker.PluginStatus;
@@ -8,10 +5,6 @@ import java.io.File;
 import java.util.*;
 import cytoscape.CytoscapeInit;
 import junit.framework.TestCase;
-
-// TODO to make this a really useful test I need to have an actual test site
-// with
-// an xml file and plugins...is this really feasible?
 
 /**
  * @author skillcoy
@@ -44,13 +37,11 @@ public class PluginManagerTest extends TestCase {
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws java.io.IOException {
+
 		testUrl = getFileUrl() + "test_plugin.xml";
 		fileName = "test_tracker.xml";
-
-		// CytoscapeInit.getProperties().setProperty("defaultPluginUrl",
-		// testUrl);
-
 		tmpDir = new File(System.getProperty("java.io.tmpdir"));
+
 		tracker = new PluginTracker(tmpDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
 
@@ -68,16 +59,38 @@ public class PluginManagerTest extends TestCase {
 		assertFalse(TrackerFile.exists());
 		mgr.resetManager();
 	}
-
+	
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#getPluginManager()}.
 	 */
 	public void testGetPluginManager() {
+		System.out.println("testGetPluginManager");
 		assertNotNull(mgr);
 		assertNotNull(PluginManager.getPluginManager(tracker));
 		assertEquals(mgr, PluginManager.getPluginManager(tracker));
 	}
 
+	public void testGetWebstartPluginManager() throws java.io.IOException {
+		mgr.resetManager();
+		// the manager checks this property to find out if it's webstarted
+		System.setProperty("javawebstart.version", "booya");
+
+		File tempDir = new File( System.getProperty("java.io.tmpdir") );
+		PluginManager wsMgr = PluginManager.getPluginManager();
+		assertNotNull(wsMgr);
+
+		File TempTrackingFile = wsMgr.pluginTracker.getTrackerFile();
+		System.out.println(TempTrackingFile.getAbsolutePath());
+		assertNotNull(TempTrackingFile);
+		assertTrue(TempTrackingFile.exists());
+		assertTrue(TempTrackingFile.canRead());
+	
+		// reset
+		System.setProperty("javawebstart.version", "");
+		TempTrackingFile.delete();
+	}
+	
+	
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#getTempDownloadDirecotry()}.
@@ -135,7 +148,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.PluginManager#install()}.
 	 */
 	public void testInstall() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+			org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException {
 		PluginInfo TestObj = getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
@@ -164,7 +177,7 @@ public class PluginManagerTest extends TestCase {
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.
 	 */
 	public void testDeletePluginInfo() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
@@ -194,7 +207,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.PluginManager#delete()}.
 	 */
 	public void testDelete() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);
@@ -236,7 +249,7 @@ public class PluginManagerTest extends TestCase {
 	 * {@link cytoscape.plugin.PluginManager#findUpdates(cytoscape.plugin.PluginInfo)}.
 	 */
 	public void testFindUpdates() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 
@@ -296,7 +309,7 @@ public class PluginManagerTest extends TestCase {
 	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
 	 */
 	public void testDownloadGoodJar() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerError {
+			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
@@ -324,14 +337,14 @@ public class PluginManagerTest extends TestCase {
 	 * the manifest
 	 */
 	public void testDownloadBadJar() throws java.io.IOException,
-			org.jdom.JDOMException {
+			org.jdom.JDOMException,  cytoscape.plugin.WebstartException  {
 		PluginInfo BadJar = getSpecificObj(mgr.inquire(testUrl),
 				"badJarPlugin123", "0.3");
 		BadJar.setUrl(getFileUrl() + BadJar.getUrl());
 
 		try {
 			mgr.download(BadJar);
-		} catch (ManagerError E) {
+		} catch (ManagerException E) {
 			assertNotNull(E);
 			assertTrue(E.getMessage().contains("Cytoscape-Plugin"));
 		}
