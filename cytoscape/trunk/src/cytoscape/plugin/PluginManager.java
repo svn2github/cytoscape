@@ -292,7 +292,7 @@ public class PluginManager {
 	 * temporary download directory. This can only occur at start up,
 	 * CytoscapeInit should be the only class to call this.
 	 */
-	public void install() throws ManagerError, WebstartException {
+	public void install() throws ManagerException, WebstartException {
 		checkWebstart();
 
 		List<PluginInfo> Plugins = pluginTracker
@@ -304,7 +304,7 @@ public class PluginManager {
 
 			// TESTING
 			if (FileList.size() > 1) {
-				throw new ManagerError(
+				throw new ManagerException(
 						"Unexpected files in file list for plugin "
 								+ CurrentPlugin.getName());
 			}
@@ -343,7 +343,7 @@ public class PluginManager {
 						CurrentPlugin.setFileList(UnzippedFiles);
 						is.close();
 					} else {
-						throw new ManagerError(
+						throw new ManagerException(
 								"Zip file "
 										+ CurrentPlugin.getUrl()
 										+ " did not contain a plugin directory with a jar file.\nThis plugin will need to be installed manually.");
@@ -356,7 +356,7 @@ public class PluginManager {
 						PluginTracker.PluginStatus.CURRENT);
 
 			} catch (IOException E) {
-				throw new ManagerError("Failed to install file "
+				throw new ManagerException("Failed to install file "
 						+ FileList.get(0), E);
 			} finally { // always remove it. If it errored in installation we
 				// don't want to try it again
@@ -381,7 +381,7 @@ public class PluginManager {
 	 * Takes all objects on the "to-delete" list and deletes them. This can only
 	 * occur at start up, CytoscapeInit should be the only class to call this.
 	 */
-	public void delete() throws ManagerError, WebstartException {
+	public void delete() throws ManagerException, WebstartException {
 		checkWebstart();
 		
 		String ErrorMsg = "Failed to delete all files for the following plugins:\n";
@@ -414,7 +414,7 @@ public class PluginManager {
 				ErrorMsg += ("-" + Msg + "\n");
 			}
 
-			throw new ManagerError(ErrorMsg);
+			throw new ManagerException(ErrorMsg);
 		}
 	}
 
@@ -441,7 +441,7 @@ public class PluginManager {
 	 * 
 	 * @param Plugin
 	 * @return List<PluginInfo>
-	 * @throws ManagerError
+	 * @throws ManagerException
 	 */
 	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException,
 			org.jdom.JDOMException {
@@ -476,12 +476,12 @@ public class PluginManager {
 	 *            PluginInfo object to install
 	 * @throws IOException
 	 *             Fails to download the file.
-	 * @throws ManagerError
+	 * @throws ManagerException
 	 *             If the plugins don't match or the new one is not a newer
 	 *             version.
 	 */
 	public void update(PluginInfo Current, PluginInfo New) throws IOException,
-			ManagerError, WebstartException {
+			ManagerException, WebstartException {
 		update(Current, New, null);
 	}
 
@@ -497,16 +497,16 @@ public class PluginManager {
 	 *            TaskMonitor for downloads
 	 * @throws IOException
 	 *             Fails to download the file.
-	 * @throws ManagerError
+	 * @throws ManagerException
 	 *             If the plugins don't match or the new one is not a newer
 	 *             version.
 	 */
 	public void update(PluginInfo Current, PluginInfo New,
 			cytoscape.task.TaskMonitor taskMonitor) throws IOException,
-			ManagerError, WebstartException {
+			ManagerException, WebstartException {
 		// find new plugin, download, add to install list
 		if (Current.getProjectUrl() == null) {
-			throw new ManagerError(
+			throw new ManagerException(
 					Current.getName()
 							+ " does not have a project url.\nCannot auto-update this plugin.");
 		}
@@ -522,7 +522,7 @@ public class PluginManager {
 			pluginTracker.addPlugin(New, PluginTracker.PluginStatus.INSTALL);
 			pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
 		} else {
-			throw new ManagerError(
+			throw new ManagerException(
 					"Failed to update '"
 							+ Current.getName()
 							+ "', the new plugin did not match what is currently installed\n"
@@ -537,7 +537,7 @@ public class PluginManager {
 	 *            PluginInfo object to be downloaded
 	 * @return File downloaded
 	 */
-	public File download(PluginInfo Obj) throws IOException, ManagerError, WebstartException {
+	public File download(PluginInfo Obj) throws IOException, ManagerException, WebstartException {
 		checkWebstart();
 		return download(Obj, null);
 	}
@@ -553,7 +553,7 @@ public class PluginManager {
 	 * @return File downloaded
 	 */
 	public File download(PluginInfo Obj, TaskMonitor taskMonitor)
-			throws IOException, ManagerError, WebstartException {
+			throws IOException, ManagerException, WebstartException {
 		checkWebstart();
 
 		File Download = null;
@@ -568,7 +568,7 @@ public class PluginManager {
 			Obj.setPluginClassName(ClassName);
 		} else {
 			Download.delete();
-			ManagerError E = new ManagerError(
+			ManagerException E = new ManagerException(
 					Obj.getName()
 							+ " does not define the attribute 'Cytoscape-Plugin' in the jar manifest file.\n"
 							+ "This plugin cannot be auto-installed.  Please install manually or contact the plugin author.");

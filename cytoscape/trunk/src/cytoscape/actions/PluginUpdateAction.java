@@ -13,7 +13,7 @@ import cytoscape.dialogs.plugins.PluginUpdateDialog;
 
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.ManagerError;
+import cytoscape.plugin.ManagerException;
 // import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginTracker.PluginStatus;
 

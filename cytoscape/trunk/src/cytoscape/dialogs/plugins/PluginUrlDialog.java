@@ -11,7 +11,7 @@ import cytoscape.bookmarks.DataSource;
 
 import cytoscape.dialogs.preferences.BookmarkDialog;
 
-import cytoscape.plugin.ManagerError;
+import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;

@@ -466,7 +466,7 @@ public class PluginUpdateDialog extends JDialog implements
 				} catch (java.io.IOException ioe) {
 					taskMonitor.setException(ioe, "Failed to download "
 							+ UpdatePair[1].getName());
-				} catch (cytoscape.plugin.ManagerError me) {
+				} catch (cytoscape.plugin.ManagerException me) {
 					JOptionPane.showMessageDialog(PluginUpdateDialog.this, me
 							.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				} catch (cytoscape.plugin.WebstartException we) {

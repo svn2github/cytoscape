@@ -557,7 +557,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			} catch (java.io.IOException ioe) { 
 				taskMonitor.setException(ioe, "Failed to download " + pluginInfo.getName() + " from " +
 						pluginInfo.getUrl()); 
-			} catch (cytoscape.plugin.ManagerError me) {
+			} catch (cytoscape.plugin.ManagerException me) {
 				JOptionPane.showMessageDialog(PluginManageDialog.this, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} catch (cytoscape.plugin.WebstartException we) { // not sure this is the right way to do this
 				JOptionPane.showMessageDialog(PluginManageDialog.this, we.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

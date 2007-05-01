@@ -56,7 +56,7 @@ import cytoscape.dialogs.plugins.PluginManageDialog.PluginInstallStatus;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.ManagerError;
+import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.PluginTracker.PluginStatus;
 
 import cytoscape.util.BookmarksUtil;

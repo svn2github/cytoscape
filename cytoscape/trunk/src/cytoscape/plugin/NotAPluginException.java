@@ -41,7 +41,7 @@ package cytoscape.plugin;
  * Thrown to indicate that a class cannot be used as a plugin
  * becuase it does not extend CytoscapePlugin.
  */
-public class NotAPluginException extends Exception {
+public class NotAPluginException extends PluginException {
 	/**
 	 * constructor.
 	 * @param msg
