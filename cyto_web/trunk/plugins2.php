@@ -480,6 +480,9 @@ Toronto, Canada
  		<td width="24%" valign="top">
 				 Verified to work in 2.2 and 2.4			  </td>
 		<td width="18%" valign="top">
+			<p>
+				[<a href="plugins/jActiveModules_2.4/license.txt">License Agreement</a>]
+			</p>
 			<b>2.2</b> compatible version:
 			<br>
 			[<a href="plugins/jActiveModules_2.2/jActiveModules.jar">Download Jar</a>]
