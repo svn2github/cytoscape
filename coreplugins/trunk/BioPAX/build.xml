@@ -221,6 +221,6 @@
     </target>
 
     <!--  builds and tests everything -->
-    <target depends="obfuscate,jar,test" description="Builds and tests everything" name="all"/>
+    <target depends="jar,obfuscate,test" description="Builds and tests everything" name="all"/>
 
 </project>
