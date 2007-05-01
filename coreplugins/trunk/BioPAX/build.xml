@@ -124,7 +124,7 @@
 	</target>
 
     <!--  target to compile all code -->
-    <target depends="prepare,gen.layout.file,set.classpath,unzip.yfiles"
+    <target depends="check.yfiles,prepare,gen.layout.file,set.classpath,unzip.yfiles"
 			description="Compiles all source code." name="compile">
         <javac debug="true" debuglevel="source,lines,var"
             destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true"
@@ -140,7 +140,7 @@
     </target>
 
     <!--  target to run cytoscape with biopax plugin -->
-    <target depends="jar,set.classpath" description="Runs Cytoscape with BioPAX Data."
+    <target depends="check.yfiles,set.classpath,jar" description="Runs Cytoscape with BioPAX Data."
         name="run">
         <copy todir="${plugins.dir}">
             <fileset dir="${jars.dir}"/>
