@@ -45,6 +45,7 @@ package cytoscape.visual.mappings;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.ShapeNodeRealizer;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -87,6 +88,12 @@ public class PassThroughMapping
      * @param defaultObj  DOCUMENT ME!
      */
     public PassThroughMapping(Object defaultObj) {
+		// TODO
+		// Converts shape bytes to NodeShape enum values.
+		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
+		if ( defaultObj instanceof Byte )
+			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte)defaultObj).byteValue());
+
         this.rangeClass = defaultObj.getClass();
     }
 
@@ -97,6 +104,13 @@ public class PassThroughMapping
      * @param attrName  DOCUMENT ME!
      */
     public PassThroughMapping(Object defaultObj, String attrName) {
+		// TODO
+		// Converts shape bytes to NodeShape enum values.
+		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
+		if ( defaultObj instanceof Byte )
+			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte)defaultObj).byteValue());
+
+
         this.rangeClass = defaultObj.getClass();
         setControllingAttributeName(attrName, null, false);
     }

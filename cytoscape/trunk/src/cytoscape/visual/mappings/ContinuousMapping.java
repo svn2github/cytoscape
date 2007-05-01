@@ -45,6 +45,7 @@ package cytoscape.visual.mappings;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.SubjectBase;
+import cytoscape.visual.ShapeNodeRealizer;
 
 import cytoscape.visual.mappings.continuous.*;
 
@@ -89,6 +90,14 @@ public class ContinuousMapping extends SubjectBase
      */
     public ContinuousMapping(Object defaultObj, byte mapType)
         throws IllegalArgumentException {
+
+		// TODO
+		// Converts shape bytes to NodeShape enum values.
+		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
+		if ( defaultObj instanceof Byte ) {
+			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte)defaultObj).byteValue());
+		}
+
         this.rangeClass = defaultObj.getClass();
         this.defaultObj = defaultObj;
         this.mapType = mapType;

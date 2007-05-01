@@ -45,6 +45,8 @@ package cytoscape.visual.mappings;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.SubjectBase;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.ShapeNodeRealizer;
 
 import cytoscape.visual.mappings.discrete.DiscreteLegend;
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
@@ -99,6 +101,14 @@ public class DiscreteMapping extends SubjectBase
     */
     public DiscreteMapping(Object defObj, String attrName, byte mapType) {
         treeMap = new TreeMap<Object, Object>();
+
+		// TODO 
+		// Converts shape bytes to NodeShape enum values.
+		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
+		if ( defObj instanceof Byte ) {
+			defObj = ShapeNodeRealizer.getNodeShape(((Byte)defObj).byteValue());
+		} 
+
         this.defaultObj = defObj;
         this.rangeClass = defObj.getClass();
 
@@ -146,6 +156,14 @@ public class DiscreteMapping extends SubjectBase
      */
     public void putMapValue(Object key, Object value) {
         lastKey = key;
+
+		// TODO 
+		// Converts shape bytes to NodeShape enum values.
+		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
+		if ( value instanceof Byte ) {
+			value = ShapeNodeRealizer.getNodeShape(((Byte)value).byteValue());
+		} 
+
         treeMap.put(key, value);
         fireStateChanged();
     }
@@ -192,10 +210,9 @@ public class DiscreteMapping extends SubjectBase
      * @return ArrayList of Class objects.
      */
     public Class[] getAcceptedDataClasses() {
-        // only strings supported
         Class[] ret = {
                 String.class, Integer.class, Double.class, Float.class,
-                Long.class, Short.class, Byte.class, List.class
+                Long.class, Short.class, NodeShape.class, List.class
             };
 
         return ret;
