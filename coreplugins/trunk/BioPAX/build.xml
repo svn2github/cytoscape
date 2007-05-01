@@ -202,7 +202,7 @@
                      value="pedantic"/>
            <inoutpair in="${jars.dir}/${jar_file}" out="${jars.dir}/${jar_file}"/>
            <expose>
-              <class>
+              <class classes="protected" methods="protected" fields="protected">
                     <patternset>
                         <include name="org.mskcc.biopax_plugin.action.*"/>
                         <include name="org.mskcc.biopax_plugin.mapping.*"/>
