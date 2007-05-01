@@ -42,7 +42,6 @@ import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import giny.model.RootGraph;
-import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -51,6 +50,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.layout.LayoutAlgorithm;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -67,6 +67,7 @@ public class BioPaxGraphReader implements GraphReader {
 	private int[] edgeIndices;
 	private String fileName;
 	private String networkName;
+	private LayoutAlgorithm layoutUtil;
 
 	/**
 	 * Constructor
@@ -75,6 +76,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 */
 	public BioPaxGraphReader(String fileName) {
 		this.fileName = fileName;
+		this.layoutUtil = new LayoutUtil();
 	}
 
 	/**
@@ -104,13 +106,21 @@ public class BioPaxGraphReader implements GraphReader {
 	}
 
 	/**
+	 * Our implementation of GraphReader.getLayoutAlgorithm().
+	 */
+	public LayoutAlgorithm getLayoutAlgorithm() {
+		return layoutUtil;
+	}
+
+	/**
 	 * If yFiles available, perform organic layout,
 	 * else matrix layout;  same as that provided by the SIF reader.
+	 * Keep this for pre-2.5 support
 	 *
-	 * @param view GraphView Object.
+	 * @param view CyNetworkView Object.
 	 */
-	public void layout(GraphView view) {
-		LayoutUtil.layout(view);
+	public void layout(CyNetworkView view) {
+		layoutUtil.doLayout(view);
 	}
 
 	/**
