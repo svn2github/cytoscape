@@ -2,18 +2,14 @@
 
 # imports
 import sys
-import os.path
+import string
 
 # setup some globals
-PATHWAY_TOOLS_ROOT = os.environ.get("PATHWAY_TOOLS_ROOT")
-if PATHWAY_TOOLS_ROOT:
-	HAS_YFILES_LIBRARY = os.path.exists(PATHWAY_TOOLS_ROOT + "/lib/y.jar")
+if len(sys.argv) < 3:
+    sys.exit("usage: ./genLayoutUtil <gen yfiles> <layout file to generate>")
 else:
-    HAS_YFILES_LIBRARY = 0
-if len(sys.argv) < 2:
-    sys.exit("usage: ./genLayoutUtil <layout file to generate>")
-else:
-    LAYOUT_UTIL_FILE = sys.argv[1]
+    HAS_YFILES_LIBRARY = string.atoi(sys.argv[1])
+    LAYOUT_UTIL_FILE = sys.argv[2]
 
 # open layout file
 layoutUtilFile = open(LAYOUT_UTIL_FILE, 'w')
@@ -62,7 +58,7 @@ import giny.view.GraphView;
 import java.util.Iterator;"""
 
 # include needed jars for yFiles use - if necessary
-if HAS_YFILES_LIBRARY:
+if HAS_YFILES_LIBRARY == 1:
     print >> layoutUtilFile, """import giny.view.EdgeView;
 import giny.model.GraphPerspective;
 import cern.colt.map.PrimeFinder;
@@ -97,7 +93,7 @@ public class LayoutUtil {
 """
 
 # if yfiles, method body is organic layout, else grid layout
-if HAS_YFILES_LIBRARY:
+if HAS_YFILES_LIBRARY == 1:
     print >> layoutUtilFile, """		GraphPerspective perspective = view.getGraphPerspective();
 		Map y_giny_node_map = new HashMap(PrimeFinder.nextPrime(perspective.getNodeCount()));
 		Map giny_y_node_map = new HashMap(PrimeFinder.nextPrime(perspective.getNodeCount()));
