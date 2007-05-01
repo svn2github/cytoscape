@@ -93,6 +93,7 @@
 		    <arg value="-c" />
 		    <arg value="python ${bin.dir}/genLayoutUtil.py ${gen.yfiles} ${layout.util.file}"/>
 	    </exec>
+        <echo message="using gen.yfiles = ${gen.yfiles}, layout.util.file = ${layout.util.file}"/>
 	</target>
 
     <!-- target to create the build directories prior to compilation -->
