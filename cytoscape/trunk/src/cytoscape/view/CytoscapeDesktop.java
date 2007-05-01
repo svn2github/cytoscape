@@ -342,7 +342,7 @@ public class CytoscapeDesktop extends JFrame
                 cyMenus.getToolBar(),
                 BorderLayout.NORTH);
             // Remove status bar.
-            //initStatusBar(main_panel);
+            initStatusBar(main_panel);
             setJMenuBar(cyMenus.getMenuBar());
         }
         // not sure if this is correct
