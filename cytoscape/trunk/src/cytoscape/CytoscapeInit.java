@@ -192,7 +192,7 @@ public class CytoscapeInit {
 				System.out.println("updating plugins...");
 				mgr.delete();
 				mgr.install();
-			} catch (cytoscape.plugin.ManagerError me) {
+			} catch (cytoscape.plugin.ManagerException me) {
 				me.printStackTrace();
 			} catch (cytoscape.plugin.WebstartException we) {
 				// nothing really to do here
