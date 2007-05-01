@@ -200,6 +200,8 @@
                    replaceclassnamestrings="true">
            <property name="error-checking" 
                      value="pedantic"/>
+		   <property name="obfuscation-prefix"
+					 value="y.obf"/>
            <inoutpair in="${jars.dir}/${jar_file}" out="${jars.dir}/${jar_file}"/>
            <expose>
               <class classes="protected" methods="protected" fields="protected">
