@@ -1,49 +1,101 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
 <project  default="all" name="Cytoscape BioPAX PlugIn">
-    <!-- Version Numbers -->
+    <!-- project name -->
+    <property name="project_name" value="biopax"/>
+	<!-- environment -->
+	<property environment="env"/>
+	<!-- tools dir -->
+	<property name="pathway.tools.root" value="${env.PATHWAY_TOOLS_ROOT}"/>
+    <!-- version numbers -->
     <property name="biopax_version" value="0_5"/>
-    <!--  Define Check Style Task -->
+    <!--  define check style task -->
     <taskdef resource="checkstyletask.properties"/>
-    <!-- The directory containing source code -->
+    <!-- source code dir -->
     <property name="src.dir" value="src"/>
-    <!-- The directory containing the configuration files -->
+    <!-- scripts/bin dir -->
+    <property name="bin.dir" value="bin"/>
+    <!-- config dir -->
     <property name="config.dir" value="config"/>
-    <!-- Temporary build directories -->
+    <!-- build dir -->
     <property name="build.dir" value="build"/>
     <property name="build.classes" value="${build.dir}/classes"/>
-    <!-- Jars directory -->
+    <!-- jars dir -->
     <property name="jars.dir" value="${build.dir}/jars"/>
-    <!-- PlugIns directory -->
+    <!-- plugins dir -->
     <property name="plugins.dir" value="plugins"/>
-    <!-- Styles Directory -->
+    <!-- styles dir -->
     <property name="style.dir" value="style"/>
-    <!-- Release directories -->
+    <!-- release dir -->
     <property name="release.dir" value="${build.dir}/release"/>
-    <!-- Versioned Release Directory -->
+    <!-- versioned release dir -->
     <property name="version_release.dir"
         value="${release.dir}/biopax_${biopax_version}"/>
-    <!-- Zip Release directories -->
+    <!-- zip release dir -->
     <property name="zip.dir" value="${build.dir}/zip_release"/>
-    <!-- Global "magic" property for <javac> -->
+    <!-- global "magic" property for <javac> -->
     <property name="build.compiler" value="modern"/>
-    <!-- Junit Directory -->
+    <!-- junit dir -->
     <property name="junit.dir" value="${build.dir}/junit"/>
-    <!-- Temp Directory -->
+    <!-- temp dir -->
     <property name="temp.dir" value="temp"/>
+    <!-- LayoutUtil.java file -->
+    <property name="layout.util.file"
+			  value="${src.dir}/org/mskcc/biopax_plugin/util/cytoscape/LayoutUtil.java"/>
+	<!-- jar file -->
+    <property name="jar_file" value="${project_name}.jar"/>
+	<!-- obfuscation file -->
+    <property name="obfuscationlog" value="${project_name}_obflog.xml.gz"/>
 
-    <!-- Classpath with all lib JAR Files -->
-    <path id="classpath">
+    <!-- classpath without reference to yfiles -->
+    <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
         <fileset dir="../../cytoscape/lib">
                 <include name="*.jar"/>
         </fileset>
-         <fileset dir="../../cytoscape/">
-                     <include name="cytoscape.jar"/>
-         </fileset>
+        <fileset dir="../../cytoscape/">
+                 <include name="cytoscape.jar"/>
+        </fileset>
     </path>
 
-    <!-- Target to create the build directories prior to compilation -->
+	<!-- classpath with reference to yfiles -->
+    <path id="classpath.with.yfiles">
+        <path refid="classpath.without.yfiles"/>
+		<fileset dir="${pathway.tools.root}/lib/">
+			<include name="*.jar"/>
+		</fileset>
+    </path>
+
+	<!-- target that sets has.yfiles property -->
+	<target name="check.yfiles">
+		<condition property="has.yfiles">
+		  <and>
+		    <available file="${pathway.tools.root}/lib/y.jar"/>	
+		    <available file="${pathway.tools.root}/lib/yguard.jar"/>	
+		  </and>
+		</condition>
+	</target>
+
+	<!-- target that sets the classpath based on value of check.yfiles property -->
+	<target depends="check.yfiles" name="set.classpath">
+		<condition property="classpath" value="classpath.with.yfiles" else="classpath.without.yfiles">
+		  <istrue value="${has.yfiles}"/>
+		</condition>
+        <echo message="classpath = ${classpath}"/>
+	</target>
+
+	<!-- target to generate LayoutUtil.java -->
+	<target description="Generates custom layout file" name="gen.layout.file">
+	    <condition property="gen.yfiles" value="1" else="0">
+	        <available file="${pathway.tools.root}/lib/y.jar"/>	
+	    </condition>
+	    <exec executable="/bin/sh">
+		    <arg value="-c" />
+		    <arg value="python ${bin.dir}/genLayoutUtil.py ${gen.yfiles} ${layout.util.file}"/>
+	    </exec>
+	</target>
+
+    <!-- target to create the build directories prior to compilation -->
     <target name="prepare">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.dir}/docs"/>
@@ -52,7 +104,7 @@
 	<echo>"basedir ${basedir}"</echo>
     </target>
 
-    <!--  Target to clean out all directories -->
+    <!--  target to clean out all directories -->
     <target description="Removes all generated files." name="clean">
         <delete dir="${build.dir}"/>
         <delete dir="${jars.dir}"/>
@@ -62,17 +114,24 @@
         <delete>
             <fileset dir="." includes="*.log"/>
         </delete>
+		<delete file="${layout.util.file}"/>
+		<delete file="${obfuscationlog}"/>
     </target>
 
-    <!--  Target to compile all code -->
-    <target depends="prepare" description="Compiles all source code."
-        name="compile">
+	<!-- target to unzip yFiles library into build - required for obfuscation -->
+	<target depends="check.yfiles" if="has.yfiles" name="unzip.yfiles">
+	  <unzip src="${pathway.tools.root}/lib/y.jar" dest="${build.classes}"/>
+	</target>
+
+    <!--  target to compile all code -->
+    <target depends="prepare,gen.layout.file,set.classpath,unzip.yfiles"
+			description="Compiles all source code." name="compile">
         <javac debug="true" debuglevel="source,lines,var"
-            destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true">
-            <classpath refid="classpath"/>
+            destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true"
+			classpathref="${classpath}">
         </javac>
 
-        <!-- Copy all resources -->
+        <!-- copy all resources -->
         <copy todir="${build.classes}">
             <fileset dir="${src.dir}">
                 <exclude name="**/*.java"/>
@@ -80,28 +139,27 @@
         </copy>
     </target>
 
-    <!--  Target to Run Cytoscape with BioPAX PlugIn -->
-    <target depends="jar" description="Runs Cytoscape with BioPAX Data."
+    <!--  target to run cytoscape with biopax plugin -->
+    <target depends="jar,set.classpath" description="Runs Cytoscape with BioPAX Data."
         name="run">
         <copy todir="${plugins.dir}">
             <fileset dir="${jars.dir}"/>
         </copy>
-        <java classname="cytoscape.CyMain" classpathref="classpath"
+        <java classname="cytoscape.CyMain" classpathref="${classpath}"
             fork="true" maxmemory="1000M">
             <arg line="-p plugins"/>
         </java>
     </target>
 
-    <!--  Target to Create PlugIn JAR -->
+    <!--  target to create plugin jar -->
     <target depends="compile" description="Creates PlugIn JAR" name="jar">
 
-        <!-- Start clean -->
+        <!-- start clean -->
         <delete dir="${jars.dir}"/>
         <mkdir dir="${jars.dir}"/>
 
-        <!--  Create BioPAX Jar -->
-        <!--<jar destfile="${jars.dir}/biopax_${biopax_version}.jar">-->
-        <jar destfile="${jars.dir}/biopax.jar">
+        <!--  create jar -->
+        <jar destfile="${jars.dir}/${jar_file}">
             <fileset dir="${build.classes}"/>
 	    <manifest>
 	    	<attribute name="Cytoscape-Plugin" value="org.mskcc.biopax_plugin.plugin.BioPaxPlugIn"/>
@@ -109,8 +167,8 @@
         </jar>
     </target>
 
-    <!--  Target to Run CheckStyle on all Source Code -->
-    <!--  Uses the Sun Coding Conventions Configuration -->
+    <!--  target to run checkstyle on all source code -->
+    <!--  uses the sun coding conventions configuration -->
     <target description="Checks Sun Coding Conventions" name="check">
         <checkstyle config="${config.dir}/sun_checks.xml">
             <fileset dir="${src.dir}/org">
@@ -119,7 +177,7 @@
         </checkstyle>
     </target>
 
-    <!--  Target to Run All JUnit Tests -->
+    <!--  target to run all junit tests -->
     <target depends="compile" description="Runs all JUnit Tests" name="test">
         <delete dir="${junit.dir}"/>
         <mkdir dir="${junit.dir}"/>
@@ -127,12 +185,42 @@
         <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
             <formatter type="plain" usefile="false"/>
             <test name="org.mskcc.test.AllTest"/>
-            <classpath refid="classpath"/>
+            <classpath refid="${classpath}"/>
         </junit>
     </target>
 
+    <!-- obfuscate -->
+    <target depends="check.yfiles,jar" name="obfuscate" if="has.yfiles">
+      <taskdef name="obfuscate" 
+               classname="com.yworks.yguard.ObfuscatorTask" 
+               classpathref="${classpath}"/>
+        <!-- the following can be adjusted to your needs -->
+        <obfuscate logfile="${obfuscationlog}"
+                   replaceclassnamestrings="true">
+           <property name="error-checking" 
+                     value="pedantic"/>
+           <inoutpair in="${jars.dir}/${jar_file}" out="${jars.dir}/${jar_file}"/>
+           <expose>
+              <class>
+                    <patternset>
+                        <include name="org.mskcc.biopax_plugin.action.*"/>
+                        <include name="org.mskcc.biopax_plugin.mapping.*"/>
+                        <include name="org.mskcc.biopax_plugin.plugin.*"/>
+                        <include name="org.mskcc.biopax_plugin.style.*"/>
+                        <include name="org.mskcc.biopax_plugin.task.*"/>
+                        <include name="org.mskcc.biopax_plugin.util.biopax.*"/>
+                        <include name="org.mskcc.biopax_plugin.util.cytoscape.*"/>
+                        <include name="org.mskcc.biopax_plugin.util.links.*"/>
+                        <include name="org.mskcc.biopax_plugin.util.net.*"/>
+                        <include name="org.mskcc.biopax_plugin.util.rdf.*"/>
+                        <include name="org.mskcc.biopax_plugin.view.*"/>
+                    </patternset>
+                </class>
+            </expose>
+        </obfuscate>
+    </target>
 
-    <!--  Builds and tests everything -->
-    <target depends="jar,test" description="Builds and tests everything" name="all"/>
+    <!--  builds and tests everything -->
+    <target depends="obfuscate,jar,test" description="Builds and tests everything" name="all"/>
 
 </project>
