@@ -31,42 +31,31 @@
  **/
 package org.mskcc.biopax_plugin.plugin;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.readers.GraphReader;
-
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
-import giny.model.RootGraph;
-
-import giny.view.GraphView;
-import giny.view.NodeView;
-
-import org.jdom.Element;
-import org.jdom.JDOMException;
-
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
-import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
+import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
+import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
+import giny.model.RootGraph;
+import giny.view.GraphView;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import java.io.FileReader;
 import java.io.IOException;
-
-import java.util.Iterator;
-
-import javax.swing.*;
-
 
 /**
  * GraphReader Implementation for BioPAX Files.
@@ -115,31 +104,13 @@ public class BioPaxGraphReader implements GraphReader {
 	}
 
 	/**
-	 * Perform matrix layout;  same as that provided by the SIF reader.
+	 * If yFiles available, perform organic layout,
+	 * else matrix layout;  same as that provided by the SIF reader.
 	 *
 	 * @param view GraphView Object.
 	 */
 	public void layout(GraphView view) {
-		double distanceBetweenNodes = 50.0d;
-		int columns = (int) Math.sqrt(view.nodeCount());
-		Iterator nodeViews = view.getNodeViewsIterator();
-		double currX = 0.0d;
-		double currY = 0.0d;
-		int count = 0;
-
-		while (nodeViews.hasNext()) {
-			NodeView nView = (NodeView) nodeViews.next();
-			nView.setOffset(currX, currY);
-			count++;
-
-			if (count == columns) {
-				count = 0;
-				currX = 0.0d;
-				currY += distanceBetweenNodes;
-			} else {
-				currX += distanceBetweenNodes;
-			}
-		}
+		LayoutUtil.layout(view);
 	}
 
 	/**
