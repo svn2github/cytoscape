@@ -194,6 +194,9 @@ public class CytoscapeInit {
 				mgr.install();
 			} catch (cytoscape.plugin.ManagerError me) {
 				me.printStackTrace();
+			} catch (cytoscape.plugin.WebstartException we) {
+				// nothing really to do here
+				System.out.println("can't update plugins in a webstart");
 			}
 			
 			try {
@@ -205,8 +208,6 @@ public class CytoscapeInit {
 				cne.printStackTrace();
 			}
 			
-			//loadPlugins();
-
 			System.out.println("loading session...");
 
 			if ((initParams.getMode() == CyInitParams.GUI)
@@ -266,7 +267,8 @@ public class CytoscapeInit {
 
 	/**
 	 *  DEPRECATED
-	 * @deprecated Will be removed December 2007.  Use PluginManager.getClassLoader()
+	 * @deprecated Will be removed December 2007.  
+	 * Use {@link PluginManager#getClassLoader()} instead.
 	 * @return  DOCUMENT ME!
 	 */
 	public static URLClassLoader getClassLoader() {
@@ -276,7 +278,8 @@ public class CytoscapeInit {
 
 	/**
 	 * DEPRECATED
-	 * @deprecated Will be removed December 2007.  Use PluginManager.getPluginURLs()
+	 * @deprecated Will be removed December 2007.  
+	 * Use {@link PluginManager#getPluginURLs()} instead.
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getPluginURLs() {
@@ -287,7 +290,8 @@ public class CytoscapeInit {
 
 	/**
 	 * DEPRECATED
-	 * @deprecated Will be removed December 2007.  Use PluginManager.getResourcePlugins()
+	 * @deprecated Will be removed December 2007.  
+	 * Use {@link PluginManager#getResourcePlugins()} instead.
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getResourcePlugins() {
@@ -297,7 +301,7 @@ public class CytoscapeInit {
 
 	/**
 	 *  DEPRECATED
-	 * @deprecated PluginManager handles all plugin loading now.  PluginManager.loadPlugin(Class, String) is private.
+	 * @deprecated PluginManager handles all plugin loading now.  
 	 * 		This method doesn't do anything, but it doesn't appear to be used in csplugins or core plugins
 	 * @param plugin DOCUMENT ME!
 	 */
