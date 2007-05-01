@@ -201,7 +201,7 @@ public class LoadNetworkTask implements Task {
 		StringBuffer sb = new StringBuffer();
 
 		// Give the user some confirmation
-		sb.append("Succesfully loaded network from:  ");
+		sb.append("Successfully loaded network from:  ");
 		sb.append(name);
 		sb.append("\n\nNetwork contains " + formatter.format(newNetwork.getNodeCount()));
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));

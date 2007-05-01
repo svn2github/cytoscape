@@ -85,7 +85,7 @@ public class ImportBioDataServerAction extends CytoscapeAction {
 		wizardResult = wiz.show();
 
 		if (wizardResult == SUCCESS) {
-			System.out.println("Succesfully loaded Data Server.");
+			System.out.println("Successfully loaded Data Server.");
 		}
 	}
 }
