@@ -43,6 +43,7 @@
 package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.Arrow;
 
@@ -61,5 +62,5 @@ public interface EdgeArrowCalculator extends Calculator {
 
     /** @deprecated DON'T USE. Only exists to support deprecated code.
          Will be removed 10/2007 */
-    public void set(byte b, String p, String n);
+    public void set(VisualPropertyType t);
 }

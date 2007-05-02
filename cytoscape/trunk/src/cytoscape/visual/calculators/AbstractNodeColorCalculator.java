@@ -61,59 +61,14 @@ import java.util.Properties;
 
 //----------------------------------------------------------------------------
 abstract class AbstractNodeColorCalculator extends NodeCalculator {
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    protected byte colType;
+
 
     /**
      * @deprecated This only exists to support deprecated code. DO NOT USE!!!
      *             will be removed 10/2007
      */
-    protected String propertyLabel;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    protected String typename;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    public void set(byte b, String p, String n) {
-        colType = b;
-        propertyLabel = p;
-        typename = n;
-    }
-
-    /**
-     * No longer necessary since enum VisualPropertyType contains sorce/target
-     * informaiton.
-     */
-    @Deprecated
-    protected static final byte FILL = 1;
-
-    /**
-     * No longer necessary since enum VisualPropertyType contains sorce/target
-     * informaiton.
-     */
-    @Deprecated
-    protected static final byte BORDER = 2;
-
-    /**
-     *
-     * Use public AbstractNodeColorCalculator(String name, ObjectMapping m,
-     * VisualPropertyType type) instead.
-     *
-     * @param name
-     * @param m
-     */
-    @Deprecated
-    public AbstractNodeColorCalculator(String name, ObjectMapping m) {
-        super(name, m, Color.class, null);
+    public void set(VisualPropertyType t) {
+		type = t;
     }
 
     /**
@@ -129,20 +84,6 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
     }
 
     /**
-     * Use public AbstractNodeColorCalculator(String name, Properties props,
-     * String baseKey, VisualPropertyType type) instead.
-     *
-     * @param name
-     * @param props
-     * @param baseKey
-     */
-    @Deprecated
-    public AbstractNodeColorCalculator(String name, Properties props,
-        String baseKey) {
-        this(name, props, baseKey, null);
-    }
-
-    /**
      * Creates a new AbstractNodeColorCalculator object.
      *
      * @param name DOCUMENT ME!
@@ -153,22 +94,6 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
     public AbstractNodeColorCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, new ColorParser(), Color.WHITE, type);
-    }
-
-    /**
-     * Use public void apply(NodeAppearance appr, Node node, CyNetwork network)
-     * instead.<br>
-     * byte type is no longer necessary.
-     *
-     * @param appr
-     * @param node
-     * @param network
-     * @param type
-     */
-    @Deprecated
-    protected void apply(NodeAppearance appr, Node node, CyNetwork network,
-        byte type) {
-        apply(appr, node, network);
     }
 
     /**

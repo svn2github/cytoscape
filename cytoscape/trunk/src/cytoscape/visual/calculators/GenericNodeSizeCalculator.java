@@ -63,18 +63,18 @@ import java.util.Properties;
  */
 public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
     implements NodeSizeCalculator {
+
     protected String getClassName() {
-        if (sizeType == VizMapUI.NODE_SIZE)
+        if (type == VisualPropertyType.NODE_SIZE)
             return "cytoscape.visual.calculators.GenericNodeUniformSizeCalculator";
 
-        if (sizeType == VizMapUI.NODE_WIDTH)
+        if (type == VisualPropertyType.NODE_WIDTH)
             return "cytoscape.visual.calculators.GenericNodeWidthCalculator";
 
-        if (sizeType == VizMapUI.NODE_HEIGHT)
+        if (type == VisualPropertyType.NODE_HEIGHT)
             return "cytoscape.visual.calculators.GenericNodeHeightCalculator";
 
-        return getClass()
-                   .getName();
+        return getClass().getName();
     }
 
     /**
@@ -85,7 +85,7 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      */
     @Deprecated
     public GenericNodeSizeCalculator(String name, ObjectMapping m) {
-        this(name, m, null);
+        this(name, m, VisualPropertyType.NODE_SIZE);
     }
 
     /**
@@ -95,11 +95,8 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericNodeSizeCalculator(String name, ObjectMapping m,
-        VisualPropertyType type) {
+    public GenericNodeSizeCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
-        // do this as a better default than 0,null,null - still not good though
-        set(VizMapUI.NODE_SIZE, "nodeUniformSizeCalculator", "Node Size");
     }
 
     /**
@@ -110,9 +107,8 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      * @param baseKey DOCUMENT ME!
      */
     @Deprecated
-    public GenericNodeSizeCalculator(String name, Properties props,
-        String baseKey) {
-        this(name, props, baseKey, null);
+    public GenericNodeSizeCalculator(String name, Properties props, String baseKey) {
+        this(name, props, baseKey, VisualPropertyType.NODE_SIZE);
     }
 
     /**
@@ -126,48 +122,5 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
     public GenericNodeSizeCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, type);
-        // do this as a better default than 0,null,null - still not good though
-        set(VizMapUI.NODE_SIZE, "nodeUniformSizeCalculator", "Node Size");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        if (sizeType == VizMapUI.NODE_WIDTH)
-            apply(appr, node, network, WIDTH);
-        else if (sizeType == VizMapUI.NODE_HEIGHT)
-            apply(appr, node, network, HEIGHT);
-        else if (sizeType == VizMapUI.NODE_SIZE)
-            apply(appr, node, network, SIZE);
-        else
-            System.err.println("don't know what kind of calculator this is!");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public double calculateNodeSize(Node e, CyNetwork n) {
-        NodeAppearance ea = new NodeAppearance();
-        apply(ea, e, n);
-
-        if (sizeType == VizMapUI.NODE_WIDTH)
-            return ea.getWidth();
-        else if (sizeType == VizMapUI.NODE_HEIGHT)
-            return ea.getHeight();
-        else if (sizeType == VizMapUI.NODE_SIZE)
-            return ea.getSize();
-        else
-
-            return -1;
     }
 }

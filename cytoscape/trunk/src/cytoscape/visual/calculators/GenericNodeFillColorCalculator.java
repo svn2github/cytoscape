@@ -57,7 +57,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public class GenericNodeFillColorCalculator extends AbstractNodeColorCalculator
+public class GenericNodeFillColorCalculator extends GenericNodeColorCalculator
     implements NodeColorCalculator {
     /**
      * Creates a new GenericNodeFillColorCalculator object.

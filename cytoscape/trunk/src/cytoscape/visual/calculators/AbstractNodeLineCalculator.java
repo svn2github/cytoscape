@@ -20,7 +20,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public abstract class AbstractNodeLineCalculator extends NodeCalculator {
+abstract class AbstractNodeLineCalculator extends NodeCalculator {
     /**
      * Creates a new AbstractNodeLineCalculator object.
      *

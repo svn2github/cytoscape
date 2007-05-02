@@ -507,8 +507,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public void setEdgeSourceArrowCalculator(EdgeArrowCalculator c) {
-        c.set(VizMapUI.EDGE_SRCARROW, "edgeSourceArrowCalculator",
-            "Edge Source Arrow");
+        c.set(VisualPropertyType.EDGE_SRCARROW);
         setCalculator(c);
     }
 
@@ -517,8 +516,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public void setEdgeTargetArrowCalculator(EdgeArrowCalculator c) {
-        c.set(VizMapUI.EDGE_TGTARROW, "edgeSourceTargetCalculator",
-            "Edge Target Arrow");
+        c.set(VisualPropertyType.EDGE_TGTARROW);
         setCalculator(c);
     }
 

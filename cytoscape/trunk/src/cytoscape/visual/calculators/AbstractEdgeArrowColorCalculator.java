@@ -21,7 +21,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public abstract class AbstractEdgeArrowColorCalculator extends EdgeCalculator {
+abstract class AbstractEdgeArrowColorCalculator extends EdgeCalculator {
     /**
      * Creates a new AbstractEdgeArrowColorCalculator object.
      *

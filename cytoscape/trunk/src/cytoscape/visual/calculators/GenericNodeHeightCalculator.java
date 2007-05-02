@@ -57,7 +57,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public class GenericNodeHeightCalculator extends AbstractNodeSizeCalculator
+public class GenericNodeHeightCalculator extends GenericNodeSizeCalculator
     implements NodeSizeCalculator {
     /**
      * Creates a new GenericNodeHeightCalculator object.

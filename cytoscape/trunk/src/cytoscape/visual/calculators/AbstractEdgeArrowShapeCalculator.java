@@ -20,7 +20,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public abstract class AbstractEdgeArrowShapeCalculator extends EdgeCalculator {
+abstract class AbstractEdgeArrowShapeCalculator extends EdgeCalculator {
     /**
      * Creates a new AbstractEdgeArrowShapeCalculator object.
      *

@@ -58,15 +58,15 @@ import java.util.Properties;
  */
 public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
     implements NodeColorCalculator {
+
     protected String getClassName() {
-        if (colType == VizMapUI.NODE_COLOR)
+        if (type == VisualPropertyType.NODE_FILL_COLOR)
             return "cytoscape.visual.calculators.GenericNodeFillColorCalculator";
 
-        if (colType == VizMapUI.NODE_BORDER_COLOR)
+        if (type == VisualPropertyType.NODE_BORDER_COLOR)
             return "cytoscape.visual.calculators.GenericNodeBorderColorCalculator";
 
-        return getClass()
-                   .getName();
+        return getClass().getName();
     }
 
     /**
@@ -77,7 +77,7 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      */
     @Deprecated
     public GenericNodeColorCalculator(String name, ObjectMapping m) {
-        this(name, m, null);
+        this(name, m, VisualPropertyType.NODE_FILL_COLOR);
     }
 
     /**
@@ -87,11 +87,8 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericNodeColorCalculator(String name, ObjectMapping m,
-        VisualPropertyType type) {
+    public GenericNodeColorCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
-        // do this as a better default than 0,null,null - still not good though
-        set(VizMapUI.NODE_COLOR, "nodeFillColorCalculator", "Node Color");
     }
 
     /**
@@ -102,9 +99,8 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param baseKey DOCUMENT ME!
      */
     @Deprecated
-    public GenericNodeColorCalculator(String name, Properties props,
-        String baseKey) {
-        this(name, props, baseKey, null);
+    public GenericNodeColorCalculator(String name, Properties props, String baseKey) {
+        this(name, props, baseKey, VisualPropertyType.NODE_FILL_COLOR);
     }
 
     /**
@@ -118,44 +114,5 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
     public GenericNodeColorCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, type);
-        // do this as a better default than 0,null,null - still not good though
-        set(VizMapUI.NODE_COLOR, "nodeFillColorCalculator", "Node Color");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        if (colType == VizMapUI.NODE_COLOR)
-            apply(appr, node, network, FILL);
-        else if (colType == VizMapUI.NODE_BORDER_COLOR)
-            apply(appr, node, network, BORDER);
-        else
-            System.err.println("don't know what kind of calculator this is!");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Color calculateNodeColor(Node e, CyNetwork n) {
-        NodeAppearance ea = new NodeAppearance();
-        apply(ea, e, n);
-
-        if (colType == VizMapUI.NODE_COLOR)
-            return ea.getFillColor();
-        else if (colType == VizMapUI.NODE_BORDER_COLOR)
-            return ea.getBorderColor();
-        else
-
-            return Color.white;
     }
 }

@@ -61,51 +61,13 @@ import java.util.Properties;
 //----------------------------------------------------------------------------
 @Deprecated
 abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    protected byte arrowType;
 
     /**
      * @deprecated This only exists to support deprecated code. DO NOT USE!!!
      *             will be removed 10/2007
      */
-    protected String propertyLabel;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    protected String typename;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    public void set(byte b, String p, String n) {
-        arrowType = b;
-        propertyLabel = p;
-        typename = n;
-    }
-
-    /*
-     * No longer neccesary. We can get this info from VisualProperty Type enums.
-     */
-    @Deprecated
-    protected static final byte SOURCE = 0;
-    @Deprecated
-    protected static final byte TARGET = 1;
-
-    /**
-     * Creates a new AbstractEdgeArrowCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param m DOCUMENT ME!
-     */
-    @Deprecated
-    public AbstractEdgeArrowCalculator(String name, ObjectMapping m) {
-        this(name, m, null);
+    public void set(VisualPropertyType t) {
+		type = t;
     }
 
     /**
@@ -115,22 +77,8 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public AbstractEdgeArrowCalculator(String name, ObjectMapping m,
-        VisualPropertyType type) {
+    public AbstractEdgeArrowCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, Arrow.class, type);
-    }
-
-    /**
-     * Creates a new AbstractEdgeArrowCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param props DOCUMENT ME!
-     * @param baseKey DOCUMENT ME!
-     */
-    @Deprecated
-    public AbstractEdgeArrowCalculator(String name, Properties props,
-        String baseKey) {
-        this(name, props, baseKey, null);
     }
 
     /**
@@ -144,20 +92,6 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
     public AbstractEdgeArrowCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, new ArrowParser(), Arrow.NONE, type);
-    }
-
-    /**
-     * Use apply(EdgeAppearance appr, Edge edge, CyNetwork network) instead.
-     *
-     * @param appr
-     * @param edge
-     * @param network
-     * @param end
-     */
-    @Deprecated
-    protected void apply(EdgeAppearance appr, Edge edge, CyNetwork network,
-        byte end) {
-        apply(appr, edge, network);
     }
 
     /**

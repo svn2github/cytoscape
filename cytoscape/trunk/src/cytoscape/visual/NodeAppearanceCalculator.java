@@ -626,7 +626,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      */
     public void setNodeFillColorCalculator(NodeColorCalculator c) {
         // special handling for deprecated code
-        c.set(VizMapUI.NODE_COLOR, "nodeFillColorCalculator", "Node Color");
+        c.set(VisualPropertyType.NODE_FILL_COLOR);
         setCalculator(c);
     }
 
@@ -636,8 +636,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      */
     public void setNodeBorderColorCalculator(NodeColorCalculator c) {
         // special handling for deprecated code
-        c.set(VizMapUI.NODE_BORDER_COLOR, "nodeBorderColorCalculator",
-            "Node Border Color");
+        c.set(VisualPropertyType.NODE_BORDER_COLOR);
         setCalculator(c);
     }
 
@@ -664,9 +663,9 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     public void setNodeWidthCalculator(NodeSizeCalculator c) {
         // special handling for deprecated code
         if (getNodeSizeLocked())
-            c.set(VizMapUI.NODE_SIZE, "nodeUniformSizeCalculator", "Node Size");
+            c.set(VisualPropertyType.NODE_SIZE);
         else
-            c.set(VizMapUI.NODE_WIDTH, "nodeWidthCalculator", "Node Width");
+            c.set(VisualPropertyType.NODE_WIDTH);
 
         setCalculator(c);
     }
@@ -678,9 +677,9 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     public void setNodeHeightCalculator(NodeSizeCalculator c) {
         // special handling for deprecated code
         if (getNodeSizeLocked())
-            c.set(VizMapUI.NODE_SIZE, "nodeUniformSizeCalculator", "Node Size");
+            c.set(VisualPropertyType.NODE_SIZE);
         else
-            c.set(VizMapUI.NODE_HEIGHT, "nodeHeightCalculator", "Node Height");
+            c.set(VisualPropertyType.NODE_HEIGHT);
 
         setCalculator(c);
     }

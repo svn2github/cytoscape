@@ -57,8 +57,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public class GenericEdgeTargetArrowCalculator
-    extends AbstractEdgeArrowCalculator
+public class GenericEdgeTargetArrowCalculator extends GenericEdgeArrowCalculator
     implements EdgeArrowCalculator {
     /**
      * Creates a new GenericEdgeTargetArrowCalculator object.

@@ -58,8 +58,7 @@ import java.util.Properties;
  * @author $author$
   */
 @Deprecated
-public class GenericEdgeSourceArrowCalculator
-    extends AbstractEdgeArrowCalculator
+public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator
     implements EdgeArrowCalculator {
     /**
      * Creates a new GenericEdgeSourceArrowCalculator object.

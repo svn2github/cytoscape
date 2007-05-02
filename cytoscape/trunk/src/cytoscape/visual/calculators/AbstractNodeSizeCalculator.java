@@ -59,48 +59,15 @@ import java.util.Properties;
 
 //----------------------------------------------------------------------------
 abstract class AbstractNodeSizeCalculator extends NodeCalculator {
-    /**
+
+	/**
+	 * DO NOT USE THIS METHOD (unless you're an appearance calculator)!!!
      * @deprecated This only exists to support deprecated code. DO NOT USE!!!
      *             will be removed 10/2007
-     */
-    protected byte sizeType;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    protected String propertyLabel;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    protected String typename;
-
-    /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    public void set(byte b, String p, String n) {
-        sizeType = b;
-        propertyLabel = p;
-        typename = n;
-    }
-
-    protected static final int WIDTH = 1;
-    protected static final int HEIGHT = 2;
-    protected static final int SIZE = 4;
-
-    /**
-     * Creates a new AbstractNodeSizeCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param m DOCUMENT ME!
-     */
-    @Deprecated
-    public AbstractNodeSizeCalculator(String name, ObjectMapping m) {
-        this(name, m, null);
-    }
+	 */
+	public void set(VisualPropertyType t) {
+		type = t;
+	}
 
     /**
      * Creates a new AbstractNodeSizeCalculator object.
@@ -120,40 +87,11 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
      * @param name DOCUMENT ME!
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
-     */
-    @Deprecated
-    public AbstractNodeSizeCalculator(String name, Properties props,
-        String baseKey) {
-        this(name, props, baseKey, null);
-    }
-
-    /**
-     * Creates a new AbstractNodeSizeCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param props DOCUMENT ME!
-     * @param baseKey DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
     public AbstractNodeSizeCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, new DoubleParser(), new Double(0), type);
-    }
-
-    /**
-     * Use public void apply(NodeAppearance appr, Node node, CyNetwork network)
-     * instead.
-     *
-     * @param appr
-     * @param node
-     * @param network
-     * @param type -
-     *            not in use.
-     */
-    @Deprecated
-    protected void apply(NodeAppearance appr, Node node, CyNetwork network,
-        int type) {
-        apply(appr, node, network);
     }
 
     /**

@@ -43,6 +43,7 @@
 package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
+import cytoscape.visual.VisualPropertyType;
 
 import giny.model.Node;
 
@@ -59,5 +60,5 @@ public interface NodeSizeCalculator extends Calculator {
 
 	/** @deprecated DON'T USE. Only exists to support deprecated code.
 	    Will be removed 10/2007 */
-	public void set(byte b, String p, String n);
+	public void set(VisualPropertyType t);
 }

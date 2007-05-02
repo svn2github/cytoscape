@@ -66,14 +66,13 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
     implements EdgeArrowCalculator {
     
     protected String getClassName() {
-        if (arrowType == VizMapUI.EDGE_SRCARROW)
+        if (type == VisualPropertyType.EDGE_SRCARROW)
             return "cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator";
 
-        if (arrowType == VizMapUI.EDGE_TGTARROW)
+        if (type == VisualPropertyType.EDGE_TGTARROW)
             return "cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator";
 
-        return getClass()
-                   .getName();
+        return getClass().getName();
     }
 
     /**
@@ -84,7 +83,7 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
      */
     @Deprecated
     public GenericEdgeArrowCalculator(String name, ObjectMapping m) {
-        this(name, m, null);
+        this(name, m, VisualPropertyType.EDGE_TGTARROW);
     }
 
     /**
@@ -94,12 +93,8 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public GenericEdgeArrowCalculator(String name, ObjectMapping m,
-        VisualPropertyType type) {
+    public GenericEdgeArrowCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
-        // do this as a better default than 0,null,null - still not good though
-        set(VizMapUI.EDGE_TGTARROW, "edgeSourceTargetCalculator",
-            "Edge Target Arrow");
     }
 
     /**
@@ -110,9 +105,8 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
      * @param baseKey DOCUMENT ME!
      */
     @Deprecated
-    public GenericEdgeArrowCalculator(String name, Properties props,
-        String baseKey) {
-        this(name, props, baseKey, null);
+    public GenericEdgeArrowCalculator(String name, Properties props, String baseKey) {
+        this(name, props, baseKey, VisualPropertyType.EDGE_TGTARROW);
     }
 
     /**
@@ -126,45 +120,6 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
     public GenericEdgeArrowCalculator(String name, Properties props,
         String baseKey, VisualPropertyType type) {
         super(name, props, baseKey, type);
-        // do this as a better default than 0,null,null - still not good though
-        set(VizMapUI.EDGE_TGTARROW, "edgeSourceTargetCalculator",
-            "Edge Target Arrow");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        if (arrowType == VizMapUI.EDGE_SRCARROW)
-            apply(appr, edge, network, SOURCE);
-        else if (arrowType == VizMapUI.EDGE_TGTARROW)
-            apply(appr, edge, network, TARGET);
-        else
-            System.err.println("don't know what kind of calculator this is!");
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
-        EdgeAppearance ea = new EdgeAppearance();
-        apply(ea, e, n);
-
-        if (arrowType == VizMapUI.EDGE_SRCARROW)
-            return ea.getSourceArrow();
-        else if (arrowType == VizMapUI.EDGE_TGTARROW)
-            return ea.getTargetArrow();
-        else
-
-            return null;
-    }
 }
