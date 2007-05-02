@@ -69,8 +69,6 @@ import cytoscape.visual.calculators.NodeToolTipCalculator;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
-import cytoscape.visual.ui.VizMapUI;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -335,8 +333,7 @@ public class CalculatorCatalog {
      *
      * @return DOCUMENT ME!
      */
-    public String checkCalculatorName(String calcName,
-        VisualPropertyType calcType) {
+    public String checkCalculatorName(String calcName, VisualPropertyType calcType) {
         Map<String, Calculator> theMap = getCalculatorMap(calcType);
 
         return checkName(calcName, theMap);
@@ -764,8 +761,8 @@ public class CalculatorCatalog {
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeColorCalculators() {
         ArrayList<Calculator> a = new ArrayList<Calculator>();
-        a.addAll(getCalculators(VizMapUI.NODE_COLOR));
-        a.addAll(getCalculators(VizMapUI.NODE_BORDER_COLOR));
+        a.addAll(getCalculators(VisualPropertyType.NODE_FILL_COLOR));
+        a.addAll(getCalculators(VisualPropertyType.NODE_BORDER_COLOR));
 
         return a;
     }
@@ -780,11 +777,11 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeColorCalculator removeNodeColorCalculator(String name) {
-        NodeColorCalculator c = (NodeColorCalculator) removeCalculator(VizMapUI.NODE_COLOR,
+        NodeColorCalculator c = (NodeColorCalculator) removeCalculator(VisualPropertyType.NODE_FILL_COLOR,
                 name);
 
         if (c == null)
-            c = (NodeColorCalculator) removeCalculator(VizMapUI.NODE_BORDER_COLOR,
+            c = (NodeColorCalculator) removeCalculator(VisualPropertyType.NODE_BORDER_COLOR,
                     name);
 
         return c;
@@ -795,11 +792,11 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeColorCalculator getNodeColorCalculator(String name) {
-        NodeColorCalculator c = (NodeColorCalculator) getCalculator(VizMapUI.NODE_COLOR,
+        NodeColorCalculator c = (NodeColorCalculator) getCalculator(VisualPropertyType.NODE_FILL_COLOR,
                 name);
 
         if (c == null)
-            c = (NodeColorCalculator) getCalculator(VizMapUI.NODE_BORDER_COLOR,
+            c = (NodeColorCalculator) getCalculator(VisualPropertyType.NODE_BORDER_COLOR,
                     name);
 
         return c;
@@ -810,17 +807,17 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeColorCalculatorName(String name) {
-        String s = checkCalculatorName(VizMapUI.NODE_COLOR, name);
+        String s = checkCalculatorName(VisualPropertyType.NODE_FILL_COLOR, name);
 
         if (s == null)
-            s = checkCalculatorName(VizMapUI.NODE_BORDER_COLOR, name);
+            s = checkCalculatorName(VisualPropertyType.NODE_BORDER_COLOR, name);
 
         return s;
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeLineTypeCalculators() {
-        return getCalculators(VizMapUI.NODE_LINETYPE);
+        return getCalculators(VisualPropertyType.NODE_LINETYPE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -833,7 +830,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeLineTypeCalculator removeNodeLineTypeCalculator(String name) {
-        return (NodeLineTypeCalculator) removeCalculator(VizMapUI.NODE_LINETYPE,
+        return (NodeLineTypeCalculator) removeCalculator(VisualPropertyType.NODE_LINETYPE,
             name);
     }
 
@@ -842,7 +839,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeLineTypeCalculator getNodeLineTypeCalculator(String name) {
-        return (NodeLineTypeCalculator) getCalculator(VizMapUI.NODE_LINETYPE,
+        return (NodeLineTypeCalculator) getCalculator(VisualPropertyType.NODE_LINETYPE,
             name);
     }
 
@@ -851,12 +848,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeLineTypeCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_LINETYPE, name);
+        return checkCalculatorName(VisualPropertyType.NODE_LINETYPE, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeShapeCalculators() {
-        return getCalculators(VizMapUI.NODE_SHAPE);
+        return getCalculators(VisualPropertyType.NODE_SHAPE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -869,7 +866,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeShapeCalculator removeNodeShapeCalculator(String name) {
-        return (NodeShapeCalculator) removeCalculator(VizMapUI.NODE_SHAPE, name);
+        return (NodeShapeCalculator) removeCalculator(VisualPropertyType.NODE_SHAPE, name);
     }
 
     /**
@@ -877,7 +874,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeShapeCalculator getNodeShapeCalculator(String name) {
-        return (NodeShapeCalculator) getCalculator(VizMapUI.NODE_SHAPE, name);
+        return (NodeShapeCalculator) getCalculator(VisualPropertyType.NODE_SHAPE, name);
     }
 
     /**
@@ -885,15 +882,15 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeShapeCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_SHAPE, name);
+        return checkCalculatorName(VisualPropertyType.NODE_SHAPE, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeSizeCalculators() {
         ArrayList<Calculator> a = new ArrayList<Calculator>();
-        a.addAll(getCalculators(VizMapUI.NODE_SIZE));
-        a.addAll(getCalculators(VizMapUI.NODE_WIDTH));
-        a.addAll(getCalculators(VizMapUI.NODE_HEIGHT));
+        a.addAll(getCalculators(VisualPropertyType.NODE_SIZE));
+        a.addAll(getCalculators(VisualPropertyType.NODE_WIDTH));
+        a.addAll(getCalculators(VisualPropertyType.NODE_HEIGHT));
 
         return a;
     }
@@ -908,14 +905,14 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeSizeCalculator removeNodeSizeCalculator(String name) {
-        NodeSizeCalculator c = (NodeSizeCalculator) removeCalculator(VizMapUI.NODE_SIZE,
+        NodeSizeCalculator c = (NodeSizeCalculator) removeCalculator(VisualPropertyType.NODE_SIZE,
                 name);
 
         if (c == null)
-            c = (NodeSizeCalculator) removeCalculator(VizMapUI.NODE_WIDTH, name);
+            c = (NodeSizeCalculator) removeCalculator(VisualPropertyType.NODE_WIDTH, name);
 
         if (c == null)
-            c = (NodeSizeCalculator) removeCalculator(VizMapUI.NODE_HEIGHT, name);
+            c = (NodeSizeCalculator) removeCalculator(VisualPropertyType.NODE_HEIGHT, name);
 
         return c;
     }
@@ -925,14 +922,14 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeSizeCalculator getNodeSizeCalculator(String name) {
-        NodeSizeCalculator c = (NodeSizeCalculator) getCalculator(VizMapUI.NODE_SIZE,
+        NodeSizeCalculator c = (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_SIZE,
                 name);
 
         if (c == null)
-            c = (NodeSizeCalculator) getCalculator(VizMapUI.NODE_WIDTH, name);
+            c = (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_WIDTH, name);
 
         if (c == null)
-            c = (NodeSizeCalculator) getCalculator(VizMapUI.NODE_HEIGHT, name);
+            c = (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_HEIGHT, name);
 
         return c;
     }
@@ -942,20 +939,20 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeSizeCalculatorName(String name) {
-        String s = checkCalculatorName(VizMapUI.NODE_SIZE, name);
+        String s = checkCalculatorName(VisualPropertyType.NODE_SIZE, name);
 
         if (s == null)
-            s = checkCalculatorName(VizMapUI.NODE_WIDTH, name);
+            s = checkCalculatorName(VisualPropertyType.NODE_WIDTH, name);
 
         if (s == null)
-            s = checkCalculatorName(VizMapUI.NODE_HEIGHT, name);
+            s = checkCalculatorName(VisualPropertyType.NODE_HEIGHT, name);
 
         return s;
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeLabelCalculators() {
-        return getCalculators(VizMapUI.NODE_LABEL);
+        return getCalculators(VisualPropertyType.NODE_LABEL);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -968,7 +965,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeLabelCalculator removeNodeLabelCalculator(String name) {
-        return (NodeLabelCalculator) removeCalculator(VizMapUI.NODE_LABEL, name);
+        return (NodeLabelCalculator) removeCalculator(VisualPropertyType.NODE_LABEL, name);
     }
 
     /**
@@ -976,7 +973,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeLabelCalculator getNodeLabelCalculator(String name) {
-        return (NodeLabelCalculator) getCalculator(VizMapUI.NODE_LABEL, name);
+        return (NodeLabelCalculator) getCalculator(VisualPropertyType.NODE_LABEL, name);
     }
 
     /**
@@ -984,12 +981,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeLabelCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_LABEL, name);
+        return checkCalculatorName(VisualPropertyType.NODE_LABEL, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeLabelColorCalculators() {
-        return getCalculators(VizMapUI.NODE_LABEL_COLOR);
+        return getCalculators(VisualPropertyType.NODE_LABEL_COLOR);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1002,7 +999,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeLabelColorCalculator removeNodeLabelColorCalculator(String name) {
-        return (NodeLabelColorCalculator) removeCalculator(VizMapUI.NODE_LABEL_COLOR,
+        return (NodeLabelColorCalculator) removeCalculator(VisualPropertyType.NODE_LABEL_COLOR,
             name);
     }
 
@@ -1011,7 +1008,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeLabelColorCalculator getNodeLabelColorCalculator(String name) {
-        return (NodeLabelColorCalculator) getCalculator(VizMapUI.NODE_LABEL_COLOR,
+        return (NodeLabelColorCalculator) getCalculator(VisualPropertyType.NODE_LABEL_COLOR,
             name);
     }
 
@@ -1020,12 +1017,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeLabelColorCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_LABEL_COLOR, name);
+        return checkCalculatorName(VisualPropertyType.NODE_LABEL_COLOR, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeToolTipCalculators() {
-        return getCalculators(VizMapUI.NODE_TOOLTIP);
+        return getCalculators(VisualPropertyType.NODE_TOOLTIP);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1038,7 +1035,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeToolTipCalculator removeNodeToolTipCalculator(String name) {
-        return (NodeToolTipCalculator) removeCalculator(VizMapUI.NODE_TOOLTIP,
+        return (NodeToolTipCalculator) removeCalculator(VisualPropertyType.NODE_TOOLTIP,
             name);
     }
 
@@ -1047,7 +1044,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeToolTipCalculator getNodeToolTipCalculator(String name) {
-        return (NodeToolTipCalculator) getCalculator(VizMapUI.NODE_TOOLTIP, name);
+        return (NodeToolTipCalculator) getCalculator(VisualPropertyType.NODE_TOOLTIP, name);
     }
 
     /**
@@ -1055,12 +1052,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeToolTipCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_TOOLTIP, name);
+        return checkCalculatorName(VisualPropertyType.NODE_TOOLTIP, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeFontFaceCalculators() {
-        return getCalculators(VizMapUI.NODE_FONT_FACE);
+        return getCalculators(VisualPropertyType.NODE_FONT_FACE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1073,7 +1070,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeFontFaceCalculator removeNodeFontFaceCalculator(String name) {
-        return (NodeFontFaceCalculator) removeCalculator(VizMapUI.NODE_FONT_FACE,
+        return (NodeFontFaceCalculator) removeCalculator(VisualPropertyType.NODE_FONT_FACE,
             name);
     }
 
@@ -1082,7 +1079,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeFontFaceCalculator getNodeFontFaceCalculator(String name) {
-        return (NodeFontFaceCalculator) getCalculator(VizMapUI.NODE_FONT_FACE,
+        return (NodeFontFaceCalculator) getCalculator(VisualPropertyType.NODE_FONT_FACE,
             name);
     }
 
@@ -1091,12 +1088,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeFontFaceCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_FONT_FACE, name);
+        return checkCalculatorName(VisualPropertyType.NODE_FONT_FACE, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getNodeFontSizeCalculators() {
-        return getCalculators(VizMapUI.NODE_FONT_SIZE);
+        return getCalculators(VisualPropertyType.NODE_FONT_SIZE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1109,7 +1106,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeFontSizeCalculator removeNodeFontSizeCalculator(String name) {
-        return (NodeFontSizeCalculator) removeCalculator(VizMapUI.NODE_FONT_SIZE,
+        return (NodeFontSizeCalculator) removeCalculator(VisualPropertyType.NODE_FONT_SIZE,
             name);
     }
 
@@ -1118,7 +1115,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public NodeFontSizeCalculator getNodeFontSizeCalculator(String name) {
-        return (NodeFontSizeCalculator) getCalculator(VizMapUI.NODE_FONT_SIZE,
+        return (NodeFontSizeCalculator) getCalculator(VisualPropertyType.NODE_FONT_SIZE,
             name);
     }
 
@@ -1127,12 +1124,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkNodeFontSizeCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.NODE_FONT_SIZE, name);
+        return checkCalculatorName(VisualPropertyType.NODE_FONT_SIZE, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeColorCalculators() {
-        return getCalculators(VizMapUI.EDGE_COLOR);
+        return getCalculators(VisualPropertyType.EDGE_COLOR);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1145,7 +1142,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeColorCalculator removeEdgeColorCalculator(String name) {
-        return (EdgeColorCalculator) removeCalculator(VizMapUI.EDGE_COLOR, name);
+        return (EdgeColorCalculator) removeCalculator(VisualPropertyType.EDGE_COLOR, name);
     }
 
     /**
@@ -1153,7 +1150,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeColorCalculator getEdgeColorCalculator(String name) {
-        return (EdgeColorCalculator) getCalculator(VizMapUI.EDGE_COLOR, name);
+        return (EdgeColorCalculator) getCalculator(VisualPropertyType.EDGE_COLOR, name);
     }
 
     /**
@@ -1161,12 +1158,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeColorCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.EDGE_COLOR, name);
+        return checkCalculatorName(VisualPropertyType.EDGE_COLOR, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeLineTypeCalculators() {
-        return getCalculators(VizMapUI.EDGE_LINETYPE);
+        return getCalculators(VisualPropertyType.EDGE_LINETYPE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1179,7 +1176,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeLineTypeCalculator removeEdgeLineTypeCalculator(String name) {
-        return (EdgeLineTypeCalculator) removeCalculator(VizMapUI.EDGE_LINETYPE,
+        return (EdgeLineTypeCalculator) removeCalculator(VisualPropertyType.EDGE_LINETYPE,
             name);
     }
 
@@ -1188,7 +1185,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeLineTypeCalculator getEdgeLineTypeCalculator(String name) {
-        return (EdgeLineTypeCalculator) getCalculator(VizMapUI.EDGE_LINETYPE,
+        return (EdgeLineTypeCalculator) getCalculator(VisualPropertyType.EDGE_LINETYPE,
             name);
     }
 
@@ -1197,14 +1194,14 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeLineTypeCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.EDGE_LINETYPE, name);
+        return checkCalculatorName(VisualPropertyType.EDGE_LINETYPE, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeArrowCalculators() {
         ArrayList<Calculator> a = new ArrayList<Calculator>();
-        a.addAll(getCalculators(VizMapUI.EDGE_SRCARROW));
-        a.addAll(getCalculators(VizMapUI.EDGE_TGTARROW));
+        a.addAll(getCalculators(VisualPropertyType.EDGE_SRCARROW));
+        a.addAll(getCalculators(VisualPropertyType.EDGE_TGTARROW));
 
         return a;
     }
@@ -1219,11 +1216,11 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeArrowCalculator removeEdgeArrowCalculator(String name) {
-        EdgeArrowCalculator c = (EdgeArrowCalculator) removeCalculator(VizMapUI.EDGE_SRCARROW,
+        EdgeArrowCalculator c = (EdgeArrowCalculator) removeCalculator(VisualPropertyType.EDGE_SRCARROW,
                 name);
 
         if (c == null)
-            c = (EdgeArrowCalculator) removeCalculator(VizMapUI.EDGE_TGTARROW,
+            c = (EdgeArrowCalculator) removeCalculator(VisualPropertyType.EDGE_TGTARROW,
                     name);
 
         return c;
@@ -1234,11 +1231,11 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeArrowCalculator getEdgeArrowCalculator(String name) {
-        EdgeArrowCalculator c = (EdgeArrowCalculator) getCalculator(VizMapUI.EDGE_SRCARROW,
+        EdgeArrowCalculator c = (EdgeArrowCalculator) getCalculator(VisualPropertyType.EDGE_SRCARROW,
                 name);
 
         if (c == null)
-            c = (EdgeArrowCalculator) getCalculator(VizMapUI.EDGE_TGTARROW, name);
+            c = (EdgeArrowCalculator) getCalculator(VisualPropertyType.EDGE_TGTARROW, name);
 
         return c;
     }
@@ -1248,17 +1245,17 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeArrowCalculatorName(String name) {
-        String s = checkCalculatorName(VizMapUI.EDGE_SRCARROW, name);
+        String s = checkCalculatorName(VisualPropertyType.EDGE_SRCARROW, name);
 
         if (s == null)
-            s = checkCalculatorName(VizMapUI.EDGE_TGTARROW, name);
+            s = checkCalculatorName(VisualPropertyType.EDGE_TGTARROW, name);
 
         return s;
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeLabelCalculators() {
-        return getCalculators(VizMapUI.EDGE_LABEL);
+        return getCalculators(VisualPropertyType.EDGE_LABEL);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1271,7 +1268,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeLabelCalculator removeEdgeLabelCalculator(String name) {
-        return (EdgeLabelCalculator) removeCalculator(VizMapUI.EDGE_LABEL, name);
+        return (EdgeLabelCalculator) removeCalculator(VisualPropertyType.EDGE_LABEL, name);
     }
 
     /**
@@ -1279,7 +1276,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeLabelCalculator getEdgeLabelCalculator(String name) {
-        return (EdgeLabelCalculator) getCalculator(VizMapUI.EDGE_LABEL, name);
+        return (EdgeLabelCalculator) getCalculator(VisualPropertyType.EDGE_LABEL, name);
     }
 
     /**
@@ -1287,12 +1284,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeLabelCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.EDGE_LABEL, name);
+        return checkCalculatorName(VisualPropertyType.EDGE_LABEL, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeToolTipCalculators() {
-        return getCalculators(VizMapUI.EDGE_TOOLTIP);
+        return getCalculators(VisualPropertyType.EDGE_TOOLTIP);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1305,7 +1302,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeToolTipCalculator removeEdgeToolTipCalculator(String name) {
-        return (EdgeToolTipCalculator) removeCalculator(VizMapUI.EDGE_TOOLTIP,
+        return (EdgeToolTipCalculator) removeCalculator(VisualPropertyType.EDGE_TOOLTIP,
             name);
     }
 
@@ -1314,7 +1311,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeToolTipCalculator getEdgeToolTipCalculator(String name) {
-        return (EdgeToolTipCalculator) getCalculator(VizMapUI.EDGE_TOOLTIP, name);
+        return (EdgeToolTipCalculator) getCalculator(VisualPropertyType.EDGE_TOOLTIP, name);
     }
 
     /**
@@ -1322,12 +1319,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeToolTipCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.EDGE_TOOLTIP, name);
+        return checkCalculatorName(VisualPropertyType.EDGE_TOOLTIP, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeFontFaceCalculators() {
-        return getCalculators(VizMapUI.EDGE_FONT_FACE);
+        return getCalculators(VisualPropertyType.EDGE_FONT_FACE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1340,7 +1337,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeFontFaceCalculator removeEdgeFontFaceCalculator(String name) {
-        return (EdgeFontFaceCalculator) removeCalculator(VizMapUI.EDGE_FONT_FACE,
+        return (EdgeFontFaceCalculator) removeCalculator(VisualPropertyType.EDGE_FONT_FACE,
             name);
     }
 
@@ -1349,7 +1346,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeFontFaceCalculator getEdgeFontFaceCalculator(String name) {
-        return (EdgeFontFaceCalculator) getCalculator(VizMapUI.EDGE_FONT_FACE,
+        return (EdgeFontFaceCalculator) getCalculator(VisualPropertyType.EDGE_FONT_FACE,
             name);
     }
 
@@ -1358,12 +1355,12 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeFontFaceCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.EDGE_FONT_FACE, name);
+        return checkCalculatorName(VisualPropertyType.EDGE_FONT_FACE, name);
     }
 
     /** @deprecated Use getCalculators(type) instead. Will be removed 10/2007. */
     public Collection getEdgeFontSizeCalculators() {
-        return getCalculators(VizMapUI.EDGE_FONT_SIZE);
+        return getCalculators(VisualPropertyType.EDGE_FONT_SIZE);
     }
 
     /** @deprecated Use addCalculator(calc) instead. Will be removed 10/2007. */
@@ -1376,7 +1373,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeFontSizeCalculator removeEdgeFontSizeCalculator(String name) {
-        return (EdgeFontSizeCalculator) removeCalculator(VizMapUI.EDGE_FONT_SIZE,
+        return (EdgeFontSizeCalculator) removeCalculator(VisualPropertyType.EDGE_FONT_SIZE,
             name);
     }
 
@@ -1385,7 +1382,7 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public EdgeFontSizeCalculator getEdgeFontSizeCalculator(String name) {
-        return (EdgeFontSizeCalculator) getCalculator(VizMapUI.EDGE_FONT_SIZE,
+        return (EdgeFontSizeCalculator) getCalculator(VisualPropertyType.EDGE_FONT_SIZE,
             name);
     }
 
@@ -1394,6 +1391,6 @@ public class CalculatorCatalog {
      *             10/2007.
      */
     public String checkEdgeFontSizeCalculatorName(String name) {
-        return checkCalculatorName(VizMapUI.EDGE_FONT_SIZE, name);
+        return checkCalculatorName(VisualPropertyType.EDGE_FONT_SIZE, name);
     }
 }

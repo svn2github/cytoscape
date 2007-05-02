@@ -50,6 +50,7 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.Calculator;
@@ -71,8 +72,6 @@ import cytoscape.visual.calculators.GenericNodeWidthCalculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
-
-import cytoscape.visual.ui.VizMapUI;
 
 import giny.view.EdgeView;
 
@@ -218,7 +217,7 @@ public class VisualStyleBuilder {
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
 		String cName = "XGMML Labels";
-		Calculator nlc = catalog.getCalculator(VizMapUI.NODE_LABEL, cName);
+		Calculator nlc = catalog.getCalculator(VisualPropertyType.NODE_LABEL, cName);
 
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
@@ -390,7 +389,7 @@ public class VisualStyleBuilder {
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
 		String cName = "XGMML Labels";
-		Calculator elc = catalog.getCalculator(VizMapUI.EDGE_LABEL, cName);
+		Calculator elc = catalog.getCalculator(VisualPropertyType.EDGE_LABEL, cName);
 
 		if (elc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);

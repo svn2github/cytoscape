@@ -50,8 +50,6 @@ import cytoscape.visual.calculators.NodeShapeCalculator;
 import cytoscape.visual.calculators.NodeSizeCalculator;
 import cytoscape.visual.calculators.NodeToolTipCalculator;
 
-import cytoscape.visual.ui.VizMapUI;
-
 import giny.model.Node;
 
 import java.awt.Color;
@@ -529,7 +527,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeColorCalculator getNodeFillColorCalculator() {
-        return (NodeColorCalculator) getCalculator(VizMapUI.NODE_COLOR);
+        return (NodeColorCalculator) getCalculator(VisualPropertyType.NODE_FILL_COLOR);
     }
 
     /**
@@ -537,7 +535,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeColorCalculator getNodeBorderColorCalculator() {
-        return (NodeColorCalculator) getCalculator(VizMapUI.NODE_BORDER_COLOR);
+        return (NodeColorCalculator) getCalculator(VisualPropertyType.NODE_BORDER_COLOR);
     }
 
     /**
@@ -545,7 +543,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeLineTypeCalculator getNodeLineTypeCalculator() {
-        return (NodeLineTypeCalculator) getCalculator(VizMapUI.NODE_LINETYPE);
+        return (NodeLineTypeCalculator) getCalculator(VisualPropertyType.NODE_LINETYPE);
     }
 
     /**
@@ -553,7 +551,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeShapeCalculator getNodeShapeCalculator() {
-        return (NodeShapeCalculator) getCalculator(VizMapUI.NODE_SHAPE);
+        return (NodeShapeCalculator) getCalculator(VisualPropertyType.NODE_SHAPE);
     }
 
     /**
@@ -562,10 +560,10 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      */
     public NodeSizeCalculator getNodeWidthCalculator() {
         if (getNodeSizeLocked())
-            return (NodeSizeCalculator) getCalculator(VizMapUI.NODE_SIZE);
+            return (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_SIZE);
         else
 
-            return (NodeSizeCalculator) getCalculator(VizMapUI.NODE_WIDTH);
+            return (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_WIDTH);
     }
 
     /**
@@ -574,10 +572,10 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      */
     public NodeSizeCalculator getNodeHeightCalculator() {
         if (getNodeSizeLocked())
-            return (NodeSizeCalculator) getCalculator(VizMapUI.NODE_SIZE);
+            return (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_SIZE);
         else
 
-            return (NodeSizeCalculator) getCalculator(VizMapUI.NODE_HEIGHT);
+            return (NodeSizeCalculator) getCalculator(VisualPropertyType.NODE_HEIGHT);
     }
 
     /**
@@ -585,7 +583,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeLabelCalculator getNodeLabelCalculator() {
-        return (NodeLabelCalculator) getCalculator(VizMapUI.NODE_LABEL);
+        return (NodeLabelCalculator) getCalculator(VisualPropertyType.NODE_LABEL);
     }
 
     /**
@@ -593,7 +591,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeToolTipCalculator getNodeToolTipCalculator() {
-        return (NodeToolTipCalculator) getCalculator(VizMapUI.NODE_TOOLTIP);
+        return (NodeToolTipCalculator) getCalculator(VisualPropertyType.NODE_TOOLTIP);
     }
 
     /**
@@ -601,7 +599,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeFontFaceCalculator getNodeFontFaceCalculator() {
-        return (NodeFontFaceCalculator) getCalculator(VizMapUI.NODE_FONT_FACE);
+        return (NodeFontFaceCalculator) getCalculator(VisualPropertyType.NODE_FONT_FACE);
     }
 
     /**
@@ -609,7 +607,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeFontSizeCalculator getNodeFontSizeCalculator() {
-        return (NodeFontSizeCalculator) getCalculator(VizMapUI.NODE_FONT_SIZE);
+        return (NodeFontSizeCalculator) getCalculator(VisualPropertyType.NODE_FONT_SIZE);
     }
 
     /**
@@ -617,7 +615,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      *             Sept 2007.
      */
     public NodeLabelColorCalculator getNodeLabelColorCalculator() {
-        return (NodeLabelColorCalculator) getCalculator(VizMapUI.NODE_LABEL_COLOR);
+        return (NodeLabelColorCalculator) getCalculator(VisualPropertyType.NODE_LABEL_COLOR);
     }
 
     /**

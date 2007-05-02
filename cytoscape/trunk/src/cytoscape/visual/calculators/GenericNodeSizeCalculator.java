@@ -49,8 +49,6 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
-import cytoscape.visual.ui.VizMapUI;
-
 //----------------------------------------------------------------------------
 import giny.model.Node;
 

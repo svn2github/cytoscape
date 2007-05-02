@@ -54,8 +54,6 @@ import cytoscape.visual.calculators.EdgeLabelCalculator;
 import cytoscape.visual.calculators.EdgeLineTypeCalculator;
 import cytoscape.visual.calculators.EdgeToolTipCalculator;
 
-import cytoscape.visual.ui.VizMapUI;
-
 import giny.model.Edge;
 
 import java.awt.Color;
@@ -208,7 +206,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeColorCalculator getEdgeColorCalculator() {
-        return (EdgeColorCalculator) getCalculator(VizMapUI.EDGE_COLOR);
+        return (EdgeColorCalculator) getCalculator(VisualPropertyType.EDGE_COLOR);
     }
 
     /**
@@ -216,7 +214,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeLineTypeCalculator getEdgeLineTypeCalculator() {
-        return (EdgeLineTypeCalculator) getCalculator(VizMapUI.EDGE_LINETYPE);
+        return (EdgeLineTypeCalculator) getCalculator(VisualPropertyType.EDGE_LINETYPE);
     }
 
     /**
@@ -224,7 +222,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeArrowCalculator getEdgeSourceArrowCalculator() {
-        return (EdgeArrowCalculator) getCalculator(VizMapUI.EDGE_SRCARROW);
+        return (EdgeArrowCalculator) getCalculator(VisualPropertyType.EDGE_SRCARROW);
     }
 
     /**
@@ -232,7 +230,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeArrowCalculator getEdgeTargetArrowCalculator() {
-        return (EdgeArrowCalculator) getCalculator(VizMapUI.EDGE_TGTARROW);
+        return (EdgeArrowCalculator) getCalculator(VisualPropertyType.EDGE_TGTARROW);
     }
 
     /**
@@ -240,7 +238,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeLabelCalculator getEdgeLabelCalculator() {
-        return (EdgeLabelCalculator) getCalculator(VizMapUI.EDGE_LABEL);
+        return (EdgeLabelCalculator) getCalculator(VisualPropertyType.EDGE_LABEL);
     }
 
     /**
@@ -248,7 +246,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeFontFaceCalculator getEdgeFontFaceCalculator() {
-        return (EdgeFontFaceCalculator) getCalculator(VizMapUI.EDGE_FONT_FACE);
+        return (EdgeFontFaceCalculator) getCalculator(VisualPropertyType.EDGE_FONT_FACE);
     }
 
     /**
@@ -256,7 +254,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeFontSizeCalculator getEdgeFontSizeCalculator() {
-        return (EdgeFontSizeCalculator) getCalculator(VizMapUI.EDGE_FONT_SIZE);
+        return (EdgeFontSizeCalculator) getCalculator(VisualPropertyType.EDGE_FONT_SIZE);
     }
 
     /**
@@ -264,7 +262,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
      *             Sept. 2007.
      */
     public EdgeToolTipCalculator getEdgeToolTipCalculator() {
-        return (EdgeToolTipCalculator) getCalculator(VizMapUI.EDGE_TOOLTIP);
+        return (EdgeToolTipCalculator) getCalculator(VisualPropertyType.EDGE_TOOLTIP);
     }
 
     /**

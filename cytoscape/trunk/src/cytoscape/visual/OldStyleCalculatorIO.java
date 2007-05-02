@@ -49,8 +49,6 @@ import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.ArrowParser;
 import cytoscape.visual.parsers.LineTypeParser;
 
-import cytoscape.visual.ui.VizMapUI;
-
 //----------------------------------------------------------------------------
 import java.awt.*;
 import java.awt.event.*;
@@ -566,7 +564,7 @@ public class OldStyleCalculatorIO {
         LineTypeParser ltParser = new LineTypeParser();
 
         //set the node label calculator
-        nac.setCalculator(defNAC.getCalculator(VizMapUI.NODE_LABEL));
+        nac.setCalculator(defNAC.getCalculator(VisualPropertyType.NODE_LABEL));
 
         NodeAppearance defAppr = nac.getDefaultAppearance();
         NodeAppearance defNACAppr = defNAC.getDefaultAppearance();
@@ -630,14 +628,14 @@ public class OldStyleCalculatorIO {
 
         //note that null values from the catalog are acceptable for the new nac,
         //but we don't want to trample existing values in the default nac
-        Calculator nfc = catalog.getCalculator(VizMapUI.NODE_COLOR, calcName);
+        Calculator nfc = catalog.getCalculator(VisualPropertyType.NODE_FILL_COLOR, calcName);
 
         if (nfc != null) {
             nac.setCalculator(nfc);
             defNAC.setCalculator(nfc);
         }
 
-        Calculator nbc = catalog.getCalculator(VizMapUI.NODE_BORDER_COLOR,
+        Calculator nbc = catalog.getCalculator(VisualPropertyType.NODE_BORDER_COLOR,
                 calcName + "2");
 
         if (nbc != null) {
@@ -645,21 +643,21 @@ public class OldStyleCalculatorIO {
             defNAC.setCalculator(nbc);
         }
 
-        Calculator nlt = catalog.getCalculator(VizMapUI.NODE_LINETYPE, calcName);
+        Calculator nlt = catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, calcName);
 
         if (nlt != null) {
             nac.setCalculator(nlt);
             defNAC.setCalculator(nlt);
         }
 
-        Calculator nw = catalog.getCalculator(VizMapUI.NODE_WIDTH, calcName);
+        Calculator nw = catalog.getCalculator(VisualPropertyType.NODE_WIDTH, calcName);
 
         if (nw != null) {
             nac.setCalculator(nw);
             defNAC.setCalculator(nw);
         }
 
-        Calculator nh = catalog.getCalculator(VizMapUI.NODE_HEIGHT,
+        Calculator nh = catalog.getCalculator(VisualPropertyType.NODE_HEIGHT,
                 calcName + "2");
 
         if (nh != null) {
@@ -667,7 +665,7 @@ public class OldStyleCalculatorIO {
             defNAC.setCalculator(nh);
         }
 
-        Calculator nsh = catalog.getCalculator(VizMapUI.NODE_SHAPE, calcName);
+        Calculator nsh = catalog.getCalculator(VisualPropertyType.NODE_SHAPE, calcName);
 
         if (nsh != null) {
             nac.setCalculator(nsh);
@@ -728,28 +726,28 @@ public class OldStyleCalculatorIO {
                 arrowParser.parseArrow(defaultTargetString));
         }
 
-        Calculator ecc = catalog.getCalculator(VizMapUI.EDGE_COLOR, calcName);
+        Calculator ecc = catalog.getCalculator(VisualPropertyType.EDGE_COLOR, calcName);
 
         if (ecc != null) {
             eac.setCalculator(ecc);
             defEAC.setCalculator(ecc);
         }
 
-        Calculator elt = catalog.getCalculator(VizMapUI.EDGE_LINETYPE, calcName);
+        Calculator elt = catalog.getCalculator(VisualPropertyType.EDGE_LINETYPE, calcName);
 
         if (elt != null) {
             eac.setCalculator(elt);
             defEAC.setCalculator(elt);
         }
 
-        Calculator esa = catalog.getCalculator(VizMapUI.EDGE_SRCARROW, calcName);
+        Calculator esa = catalog.getCalculator(VisualPropertyType.EDGE_SRCARROW, calcName);
 
         if (esa != null) {
             eac.setCalculator(esa);
             defEAC.setCalculator(esa);
         }
 
-        Calculator eta = catalog.getCalculator(VizMapUI.EDGE_TGTARROW,
+        Calculator eta = catalog.getCalculator(VisualPropertyType.EDGE_TGTARROW,
                 calcName + "2");
 
         if (eta != null) {
