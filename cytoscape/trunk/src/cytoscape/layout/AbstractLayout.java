@@ -45,12 +45,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.init.CyInitParams;
 
-import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
 
 import cytoscape.util.*;
 
@@ -83,11 +78,11 @@ import javax.swing.JPanel;
  * The AbstractLayout provides nice starting point for Layouts
  * written for Cytoscape.
  */
-abstract public class AbstractLayout implements LayoutAlgorithm, Task {
+abstract public class AbstractLayout implements LayoutAlgorithm {
 	protected Set<NodeView> staticNodes;
 	protected CyNetworkView networkView;
 	protected CyNetwork network;
-	protected TaskMonitor taskMonitor = null;
+	protected TaskMonitor taskMonitor; 
 	protected boolean selectedOnly = false;
 	protected String edgeAttribute = null;
 	protected String nodeAttribute = null;
@@ -97,6 +92,13 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	protected HashMap savedPropertyMap = null;
 	private ViewChangeEdit undoableEdit;
 
+	protected static TaskMonitor nullTaskMonitor = new TaskMonitor() {
+		public void setPercentCompleted(int percent) {}
+		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException {}
+		public void setException(Throwable t, String userErrorMessage) {}
+		public void setStatus(String message) throws IllegalThreadStateException, NullPointerException {}
+	};
+
 	// Should definitely be overridden!
 	protected String propertyPrefix = "abstract";
 
@@ -105,17 +107,6 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	 */
 	public AbstractLayout() {
 		this.staticNodes = new HashSet();
-	}
-
-	/**
-	 * This constructor is used to create a LayoutAlgorithm which will run on
-	 * an already existing thread.
-	 *
-	 * @param monitor the TaskMonitor for the currently running Thread
-	 */
-	public AbstractLayout(TaskMonitor monitor) {
-		this.staticNodes = new HashSet();
-		taskMonitor = monitor;
 	}
 
 	/**
@@ -235,60 +226,56 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	 * doLayout on current network view.
 	 */
 	public void doLayout() {
-		doLayout(Cytoscape.getCurrentNetworkView());
+		doLayout(Cytoscape.getCurrentNetworkView(),nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view.
 	 */
-	public void doLayout(CyNetworkView networkView) {
-		if (!prepDoLayout(networkView)) {
-			return;
-		}
-
-		// Make sure our taskMonitor wasn't externally set
-		if (taskMonitor == null) {
-			// Call the layout
-			// executeTask eventually calls the run() method in
-			// this class.
-			TaskManager.executeTask(this, getNewDefaultTaskConfig());
-		} else {
-			// Call the layout
-			run();
-		}
+	public void doLayout(CyNetworkView nview) {
+		doLayout(nview,nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view with specified monitor.
 	 */
-	public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
-		this.taskMonitor = monitor;
+	public void doLayout(CyNetworkView nview, TaskMonitor monitor) {
 
-		if (!prepDoLayout(networkView)) {
+		canceled = false;
+
+		networkView = nview;
+
+		// do some sanity checking
+		if (networkView == null || networkView == Cytoscape.getNullNetworkView())
 			return;
-		}
 
-		// Call the layout
-		run();
-	}
-
-	private boolean prepDoLayout(CyNetworkView networkView) {
-		this.canceled = false;
-		this.networkView = networkView;
 		this.network = networkView.getNetwork();
 
-		// Do some sanity checking
-		if ((networkView == null) || (network == null)) {
-			return false; // nothing to layout
-		}
+		if (network == null || network == Cytoscape.getNullNetwork()) 
+			return;
 
-		if (network.getNodeCount() <= 0) {
-			return false;
-		}
+		if (network.getNodeCount() <= 0) 
+			return;
 
+		if ( monitor == null )
+			monitor = nullTaskMonitor;
+
+		taskMonitor = monitor;
+
+		// set up the edit
 		undoableEdit = new ViewChangeEdit((DGraphView)networkView,"Layout");
 
-		return true;
+		// this is overridden by children and does the actual layout
+		construct();
+
+		// update the view 
+		if (!selectedOnly)
+			networkView.fitContent();
+
+		networkView.updateView();
+
+		// post the edit 
+		undoableEdit.post();
 	}
 
 	/**
@@ -355,79 +342,9 @@ abstract public class AbstractLayout implements LayoutAlgorithm, Task {
 	}
 
 	/**
-	 * Implements Task
-	 */
-	public void setTaskMonitor(TaskMonitor monitor) {
-		taskMonitor = monitor;
-	}
-
-	/**
-	 * Run the algorithm.  This is required for Task.
-	 */
-	public void run() {
-		construct();
-		//saveNewPositions();
-
-		if (!selectedOnly)
-			networkView.fitContent();
-
-		networkView.updateView();
-
-		undoableEdit.post();
-	}
-
-	/**
-	 * Halt the algorithm.  This is required for Task.
+	 * Halt the algorithm.  
 	 */
 	public void halt() {
 		canceled = true;
-	}
-
-	/**
-	 * Get the "nice" title of this algorithm
-	 *
-	 * @return algorithm title
-	 */
-	public String getTitle() {
-		return "Performing " + toString();
-	}
-
-	/**
-	 * Set the status message for our task monitor (if their is one)
-	 *
-	 * @param message Message to set
-	 */
-	public void setStatus(String message) {
-		if (taskMonitor != null) {
-			taskMonitor.setStatus(message);
-		}
-	}
-
-	/**
-	 * Set the percent complete for our task monitor (if their is one)
-	 *
-	 * @param pc the percent of the layout process completed
-	 */
-	public void setPercentCompleted(int pc) {
-		if (taskMonitor != null) {
-			taskMonitor.setPercentCompleted(pc);
-		}
-	}
-
-	/**
-	 * This method returns a default TaskConfig object
-	 */
-	protected JTaskConfig getNewDefaultTaskConfig() {
-		JTaskConfig result = new JTaskConfig();
-
-		result.displayCancelButton(true);
-		result.displayCloseButton(false);
-		result.displayStatus(true);
-		result.displayTimeElapsed(false);
-		result.setAutoDispose(true);
-		result.setModal(true);
-		result.setOwner(Cytoscape.getDesktop());
-
-		return result;
 	}
 }

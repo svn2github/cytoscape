@@ -42,6 +42,9 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.LayoutTask;
+
+import cytoscape.task.util.TaskManager;
 
 import giny.model.Node;
 
@@ -128,7 +131,9 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			// Execute!
 			layout.setSelectedOnly(false);
 			layout.setLayoutAttribute(null);
-			layout.doLayout(Cytoscape.getCurrentNetworkView());
+			
+			TaskManager.executeTask( new LayoutTask(layout, Cytoscape.getCurrentNetworkView()), 
+			                         LayoutTask.getDefaultTaskConfig() );
 		}
 	}
 

@@ -190,4 +190,9 @@ public interface LayoutAlgorithm {
 	 *  DOCUMENT ME!
 	 */
 	public void unlockAllNodes();
+
+	/**
+	 * Can be used to stop the layout from running. 
+	 */
+	public void halt();
 }

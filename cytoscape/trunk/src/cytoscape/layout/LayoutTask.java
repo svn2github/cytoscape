@@ -1,5 +1,5 @@
-/*
-  File: LayoutAlgorithm.java
+/* 
+  File: LayoutTask.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -7,7 +7,7 @@
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
+  - Pasteur Institute
   - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
@@ -34,49 +34,85 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout.ui;
+package cytoscape.layout;
 
 import cytoscape.Cytoscape;
-
+import cytoscape.view.CyNetworkView;
 import cytoscape.layout.LayoutAlgorithm;
-import cytoscape.layout.LayoutTask;
 
-import cytoscape.task.util.TaskManager;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
-
+import cytoscape.task.ui.JTaskConfig;
 
 /**
- * StaticLayoutMenu provides a simple menu item to be added to a layout
- * menu.
+ * A wrapper for applying a layout in a task. Use it something like
+ * this:
+ * <p>TaskManager.executeTask( new LayoutTask(layout, view), LayoutTask.getDefaultTaskConfig() );
+
  */
-public class StaticLayoutMenu extends JMenuItem implements ActionListener {
-	private LayoutAlgorithm layout;
+public class LayoutTask implements Task {
+
+	LayoutAlgorithm layout;
+	CyNetworkView view;
+	TaskMonitor monitor;
 
 	/**
-	 * Creates a new StaticLayoutMenu object.
-	 *
-	 * @param layout  DOCUMENT ME!
+	 * Creates the task.
+	 * 
+	 * @param layout The LayoutAlgorithm to apply.
+	 * @param view The view the algorithm should be applied to.
 	 */
-	public StaticLayoutMenu(LayoutAlgorithm layout,boolean enabled) {
-		super(layout.toString());
-		addActionListener(this);
-		this.layout = layout;
-		setEnabled(enabled);
+	public LayoutTask(LayoutAlgorithm layout,CyNetworkView view) {
+		this.layout = layout; 
+		this.view = view; 
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Sets the task monitor to be used for the layout. 
 	 */
-	public void actionPerformed(ActionEvent e) {
-		layout.setSelectedOnly(false);
+	public void setTaskMonitor(TaskMonitor monitor) {
+		this.monitor = monitor;
+	}
 
-		TaskManager.executeTask( new LayoutTask(layout,Cytoscape.getCurrentNetworkView()),
-		                         LayoutTask.getDefaultTaskConfig() );
+	/**
+	 * Run the algorithm.  
+	 */
+	public void run() {
+		layout.doLayout(view,monitor);
+	}
+
+	/**
+	 * Halt the algorithm if the LayoutAlgorithm supports it.
+	 */
+	public void halt() {
+		layout.halt();
+	}
+
+	/**
+	 * Get the "nice" title of this algorithm
+	 *
+	 * @return algorithm title
+	 */
+	public String getTitle() {
+		return "Performing " + layout.toString();
+	}
+
+	/**
+	 * This method returns a default TaskConfig object.
+	 * @return a default JTaskConfig object.
+	 */
+	public static JTaskConfig getDefaultTaskConfig() {
+		JTaskConfig result = new JTaskConfig();
+
+		result.displayCancelButton(true);
+		result.displayCloseButton(false);
+		result.displayStatus(true);
+		result.displayTimeElapsed(false);
+		result.setAutoDispose(true);
+		result.setModal(true);
+		result.setOwner(Cytoscape.getDesktop());
+
+		return result;
 	}
 }

@@ -198,4 +198,9 @@ abstract public class LayoutAdapter implements LayoutAlgorithm {
 	 *  DOCUMENT ME!
 	 */
 	public void unlockAllNodes() {}
+
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void halt() {}
 }
