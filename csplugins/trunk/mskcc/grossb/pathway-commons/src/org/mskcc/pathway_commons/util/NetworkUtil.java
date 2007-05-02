@@ -137,7 +137,8 @@ public class NetworkUtil extends Thread {
 		// so we don't layout here
 		if (doLayout) {
 			CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-			LayoutUtil.layout(view);
+			LayoutUtil layoutUtil = new LayoutUtil();
+			layoutUtil.doLayout(view);
 			view.fitContent();
 		}
 
