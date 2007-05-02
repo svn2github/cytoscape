@@ -30,6 +30,8 @@ import data.gpml.GpmlFormat;
 import data.gpml.ObjectType;
 import data.gpml.GmmlDataObject.MPoint;
 import data.gpml.GraphLink.GraphRefContainer;
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
 
 public class GpmlImporter extends CytoscapePlugin {
 	static PrintStream out = System.out;
@@ -126,12 +128,19 @@ public class GpmlImporter extends CytoscapePlugin {
 		}
 		
 		public void layout(GraphView view) {
-			double fac = 1.0/15;
 			for(GmmlDataObject o : nodes.keySet()) {
 				NodeView nv = view.getNodeView(nodes.get(o));
-				nv.setXPosition(o.getMCenterX() * fac, false);
-				nv.setYPosition(o.getMCenterY() * fac, false);
-			}
+				nv.setXPosition(mToV(o.getMCenterX()), false);
+				nv.setYPosition(mToV(o.getMCenterY()), false);
+				switch(o.getObjectType()) {
+				case ObjectType.SHAPE:
+					DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+					DingCanvas backgroundLayer = dview.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+					backgroundLayer.add(new Shape(o));
+					//Cytoscape.getCurrentNetwork().removeNode(nodes.get(o).getRootGraphIndex(), true);
+					break;
+				}
+			}			
 			view.updateView();
 		}
     }
@@ -173,5 +182,9 @@ public class GpmlImporter extends CytoscapePlugin {
     	public GraphReader getReader(String fileName) {
     		return new GpmlReader(fileName);
     	}
+    }
+    
+    static double mToV(double m) {
+    	return m * 1.0/15;
     }
 }
