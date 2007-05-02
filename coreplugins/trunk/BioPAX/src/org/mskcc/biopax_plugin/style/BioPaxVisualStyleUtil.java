@@ -264,12 +264,14 @@ public class BioPaxVisualStyleUtil {
 		// create and set node height calculator in node appearance calculator
 		NodeSizeCalculator nodeWidthCalculator = new GenericNodeSizeCalculator("BioPAX Node Width"
 		                                                                       + VERSION_POST_FIX,
-		                                                                       discreteMappingWidth);
+		                                                                       discreteMappingWidth,
+																			   VisualPropertyType.NODE_WIDTH);
 		nac.setNodeWidthCalculator(nodeWidthCalculator);
 
 		NodeSizeCalculator nodeHeightCalculator = new GenericNodeSizeCalculator("BioPAX Node Height"
 		                                                                        + VERSION_POST_FIX,
-		                                                                        discreteMappingHeight);
+		                                                                        discreteMappingHeight,
+																				VisualPropertyType.NODE_HEIGHT);
 		nac.setNodeHeightCalculator(nodeHeightCalculator);
 	}
 
@@ -310,7 +312,8 @@ public class BioPaxVisualStyleUtil {
 		// create and set node label calculator in node appearance calculator
 		GenericNodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator("BioPAX Node Color"
 		                                                                                + VERSION_POST_FIX,
-		                                                                                discreteMapping);
+		                                                                                discreteMapping,
+																						VisualPropertyType.NODE_FILL_COLOR);
 		nac.setNodeFillColorCalculator(nodeColorCalculator);
 		// i think this is a hack, but its the only way to make it work
 		nac.setDefaultNodeFillColor(DEFAULT_NODE_COLOR);
@@ -340,7 +343,8 @@ public class BioPaxVisualStyleUtil {
 		// create and set node label calculator in node appearance calculator
 		GenericNodeColorCalculator nodeBorderColorCalculator = new GenericNodeColorCalculator("BioPAX Node Border Color"
 		                                                                                      + VERSION_POST_FIX,
-		                                                                                      discreteMapping);
+		                                                                                      discreteMapping,
+																							  VisualPropertyType.NODE_BORDER_COLOR);
 		nac.setNodeBorderColorCalculator(nodeBorderColorCalculator);
 		// i think this is a hack, but its the only way to make it work
 		nac.setDefaultNodeBorderColor(DEFAULT_NODE_BORDER_COLOR);
@@ -376,7 +380,8 @@ public class BioPaxVisualStyleUtil {
 
 		GenericEdgeArrowCalculator edgeTargetArrowCalculator = new GenericEdgeArrowCalculator("BioPAX Target Arrows"
 		                                                                                      + VERSION_POST_FIX,
-		                                                                                      discreteMapping);
+		                                                                                      discreteMapping,
+																							  VisualPropertyType.EDGE_TGTARROW);
 		eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
 	}
 }
