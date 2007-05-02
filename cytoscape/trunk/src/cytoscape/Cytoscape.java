@@ -77,17 +77,12 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import giny.view.GraphView;
-import giny.view.NodeView;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -96,7 +91,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -231,6 +225,12 @@ public abstract class Cytoscape {
 	 */
 	public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
 
+       /**
+        * Specifies that the Proxy settings Cytoscape uses to connect to the
+        * internet have been changed.
+        */
+       public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
+
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
 	 * parsed correctly<BR>
@@ -327,7 +327,7 @@ public abstract class Cytoscape {
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
 	// global flag to indicate if Squiggle is turned on
-	private static boolean squiggleEnabled = false;
+//	private static boolean squiggleEnabled = false;
 
 	/**
 	 * The shared RootGraph between all Networks
