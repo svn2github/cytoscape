@@ -32,7 +32,7 @@
 package org.mskcc.pathway_commons.plugin;
 
 // imports
-//import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.CytoscapePlugin;
 
 import org.mskcc.pathway_commons.http.HTTPServer;
@@ -66,19 +66,18 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 	 *
 	 * @return PluginInfo
 	 */
-	//public PluginInfo getPluginInfoObject() {
-	//	PluginInfo info = new PluginInfo();
-	//	info.setName(PLUGIN_NAME);
-	//	info.setDescription("Provides connectivity to Pathway Commons Repository (www.pathwaycommons.org).");
-	//	info.setCategory("Connectivity");
-	//	info.setPluginVersion(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM);
-        // this will point to whatever page returns the plugin xml document.
-		// ...used for updates
-		//info.setProjectUrl(“http://cytoscape.org/plugins_page/plugin_document.xml”);
-		//info.addAuthor(“Sarah”, “ISB”);
+	public PluginInfo getPluginInfoObject() {
+		PluginInfo info = new PluginInfo();
+		info.setName(PLUGIN_NAME);
+		info.setDescription("Provides connectivity to Pathway Commons Repository (www.pathwaycommons.org).");
+		info.setCategory("Connectivity");
+		info.setPluginVersion(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM);
+		info.setProjectUrl("http://www.pathwaycommons.org");
+		info.addAuthor("Benjamin Gross", "Computational Biology Center, Memorial Sloan-Kettering Cancer Center");
+
 		// outta here
-	//	return info;
-	//}
+		return info;
+	}
 
     /**
      * Constructor.
