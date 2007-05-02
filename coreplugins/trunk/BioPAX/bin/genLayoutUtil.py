@@ -299,6 +299,12 @@ print >> layoutUtilFile, """	/**
 	 */
 	public void unlockAllNodes() {
     }
+
+	/**
+	 * Our implementation of LayoutAlgorithm.halt().
+	 */
+	public void halt() {
+    }
 }
 """
 
