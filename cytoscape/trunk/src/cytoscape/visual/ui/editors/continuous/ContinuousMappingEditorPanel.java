@@ -38,9 +38,11 @@ import javax.swing.event.ChangeListener;
 
 
 /**
- * DOCUMENT ME!
+ * Abstract class for all Continuous Mapping Editors.
  *
- * @author $author$
+ * @version 0.5
+ * @since Cytoscape 2.5
+ * @author kono
   */
 public abstract class ContinuousMappingEditorPanel extends JDialog {
     // Tell vizMapper main whic editor is disabled/enabled.
@@ -76,12 +78,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
         setSpinner();
         this.addWindowListener(
             new WindowAdapter() {
-                public void windowOpened(WindowEvent e) { // 開かれた
+                public void windowOpened(WindowEvent e) {
                     System.out.println("windowOpened");
                     firePropertyChange(EDITOR_WINDOW_OPENED, null, type);
                 }
 
-                public void windowClosing(WindowEvent e) { // 閉じられている
+                public void windowClosing(WindowEvent e) {
                     System.out.println("windowClosing!!!!!!!!!!!!!");
                     firePropertyChange(EDITOR_WINDOW_CLOSED, null, type);
                 }
@@ -117,6 +119,9 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
         abovePanel.setName("abovePanel");
         belowPanel = new BelowAndAbovePanel(type, Color.white, true);
         belowPanel.setName("belowPanel");
+        
+        abovePanel.setPreferredSize(new Dimension(16, 1));
+        belowPanel.setPreferredSize(new Dimension(16, 1));
 
         rangeSettingPanel = new javax.swing.JPanel();
         pivotLabel = new javax.swing.JLabel();
@@ -136,7 +141,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 
         rotaryEncoder = new JXMultiThumbSlider();
 
-        iconPanel.setPreferredSize(new Dimension(60, 1));
+        iconPanel.setPreferredSize(new Dimension(25, 1));
 
         mainPanel.setBorder(
             javax.swing.BorderFactory.createTitledBorder(
@@ -261,7 +266,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
                 layout.createSequentialGroup().add(iconPanel,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(belowPanel,
+                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).add(belowPanel,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).add(slider,

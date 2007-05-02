@@ -1,14 +1,21 @@
 package cytoscape.visual.ui.editors.continuous;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,25 +31,82 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
      */
     public C2CMappingEditor(VisualPropertyType type) {
         super(type);
+        abovePanel.setVisible(false);
+        belowPanel.setVisible(false);
+        pack();
         setSlider();
-
-        // TODO Auto-generated constructor stub
     }
 
-    public static void showDialog(final int width, final int height, final String title, VisualPropertyType type) {
-		editor = new C2CMappingEditor(type);
-		editor.setSize(new Dimension(width, height));
-		editor.setTitle(title);
-		editor.setAlwaysOnTop(true);
-		editor.setLocationRelativeTo(Cytoscape.getDesktop());
-		editor.setVisible(true);
-	}
-    
+    /**
+     * DOCUMENT ME!
+     *
+     * @param width DOCUMENT ME!
+     * @param height DOCUMENT ME!
+     * @param title DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     */
+    public static void showDialog(final int width, final int height,
+        final String title, VisualPropertyType type) {
+        editor = new C2CMappingEditor(type);
+        editor.setSize(new Dimension(width, height));
+        editor.setTitle(title);
+        editor.setAlwaysOnTop(true);
+        editor.setLocationRelativeTo(Cytoscape.getDesktop());
+        editor.setVisible(true);
+    }
+
     @Override
     protected void addButtonActionPerformed(ActionEvent evt) {
+        BoundaryRangeValues newRange;
+
+        if (mapping.getPointCount() == 0) {
+            slider.getModel()
+                  .addThumb(50f, 5f);
+
+            newRange = new BoundaryRangeValues(below, 5f, above);
+            mapping.addPoint(maxValue / 2, newRange);
+            Cytoscape.getVisualMappingManager()
+                     .getNetworkView()
+                     .redrawGraph(false, true);
+
+            slider.repaint();
+            repaint();
+
+            return;
+        }
+
+        // Add a new white thumb in the min.
         slider.getModel()
-              .addThumb(0.5f, 0f);
+              .addThumb(100f, 5f);
+
+        // Update continuous mapping
+        final Double newVal = maxValue;
+
+        // Pick Up first point.
+        final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() -
+                1);
+
+        final BoundaryRangeValues previousRange = previousPoint.getRange();
+        newRange = new BoundaryRangeValues(previousRange);
+
+        newRange.lesserValue = slider.getModel()
+                                     .getSortedThumbs()
+                                     .get(slider.getModel().getThumbCount() -
+                1);
+        System.out.println("EQ color = " + newRange.lesserValue);
+        newRange.equalValue = 5f;
+        newRange.greaterValue = previousRange.greaterValue;
+        mapping.addPoint(maxValue, newRange);
+
+        updateMap();
+
+        Cytoscape.getVisualMappingManager()
+                 .getNetworkView()
+                 .redrawGraph(false, true);
+
         slider.repaint();
+        repaint();
+
     }
 
     @Override
@@ -105,39 +169,45 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
                 }
             });
 
-        double actualRange;
+        double actualRange = Math.abs(minValue - maxValue);
+
+        BoundaryRangeValues bound;
+        Float fraction;
+
+        List<Float> values = new ArrayList<Float>();
 
         for (ContinuousMappingPoint point : allPoints) {
-            //slider.getModel().addThumb(point.getValue(), arg1)
+            bound = point.getRange();
+
+            fraction = ((Number) ((point.getValue() - minValue) / actualRange)).floatValue() * 100;
+            slider.getModel()
+                  .addThumb(
+                fraction,
+                ((Number) bound.equalValue).floatValue());
         }
 
-        slider.getModel()
-              .addThumb(10.0f, 10f);
-        slider.getModel()
-              .addThumb(40.0f, 30f);
-        slider.getModel()
-              .addThumb(80.0f, 100f);
-        slider.getModel()
-              .addThumb(30.0f, 50f);
+        if (allPoints.size() != 0) {
+            below = (Number) allPoints.get(0)
+                                      .getRange().lesserValue;
+            above = (Number) allPoints.get(allPoints.size() - 1)
+                                      .getRange().greaterValue;
+        } else {
+            below = 5f;
+            above = 10f;
+        }
 
+        System.out.println("Below = " + below + ", Above = " + above);
+
+        /*
+         * get min and max for the value object
+         */
         TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
-        System.out.println("--------- VS = " +
-            Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getCalculator(VisualPropertyType.NODE_SHAPE) +
-            " ----");
-
-        ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(minValue,
-                maxValue);
+        ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type,
+                minValue, maxValue, (Number) below, (Number) above);
 
         slider.setThumbRenderer(thumbRend);
         slider.setTrackRenderer(cRend);
         slider.addMouseListener(new ThumbMouseListener());
-
-//        rotaryEncoder.updateUI();
-//        rotaryEncoder.getModel()
-//                     .addThumb(10f, 10f);
-//        rotaryEncoder.setThumbRenderer(
-//            new TriangleThumbRenderer(rotaryEncoder));
-        //rotaryEncoder.setTrackRenderer(new RotaryEncoder());
     }
 }

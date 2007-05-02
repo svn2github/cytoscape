@@ -1,13 +1,5 @@
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -15,16 +7,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +22,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**
@@ -48,10 +45,10 @@ public class ContinuousTrackRenderer extends JComponent
      */
     private int TRACK_HEIGHT = 120;
     private static final int THUMB_WIDTH = 12;
-    private final Font smallFont = new Font("SansSerif", Font.BOLD, 9);
+    private final Font smallFont = new Font("SansSerif", Font.BOLD, 10);
     private final Font defFont = new Font("SansSerif", Font.BOLD, 12);
-    private final Font largeFont = new Font("SansSerif", Font.BOLD, 18);
-    private static final Color VALUE_AREA_COLOR = new Color(0, 80, 255, 80);
+    private final Font largeFont = new Font("SansSerif", Font.BOLD, 14);
+    private static final Color VALUE_AREA_COLOR = new Color(0, 180, 255, 40);
     private static final int V_PADDING = 20;
     private int ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
     private static final String TITLE1 = "Mapping: ";
@@ -60,7 +57,7 @@ public class ContinuousTrackRenderer extends JComponent
     /*
      * Define Colors used in this diagram.
      */
-    private static final Color BORDER_COLOR = Color.DARK_GRAY;
+    private static final Color BORDER_COLOR = Color.black;
     private double valueRange;
     private double minValue;
     private double maxValue;
@@ -73,6 +70,14 @@ public class ContinuousTrackRenderer extends JComponent
     private Map<Integer, Point> verticesList;
     private int selectedIdx;
     private Point dragOrigin;
+    private VisualPropertyType type;
+    private ContinuousMapping cMapping;
+    private String title;
+    private Number below;
+    private Number above;
+    private List<Float> values = new ArrayList<Float>();
+    
+    private Polygon valueArea = new Polygon();
 
     /**
      * Creates a new ContinuousTrackRenderer object.
@@ -80,13 +85,31 @@ public class ContinuousTrackRenderer extends JComponent
      * @param minValue DOCUMENT ME!
      * @param maxValue DOCUMENT ME!
      */
-    public ContinuousTrackRenderer(double minValue, double maxValue) {
+    public ContinuousTrackRenderer(VisualPropertyType type, double minValue,
+        double maxValue, Number below, Number above) {
+
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.below = below;
+        this.above = above;
 
+        this.type = type;
+
+        if (type.isNodeProp())
+            cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager()
+                                                    .getVisualStyle()
+                                                    .getNodeAppearanceCalculator()
+                                                    .getCalculator(type)
+                                                    .getMapping(0);
+        else
+            cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager()
+                                                    .getVisualStyle()
+                                                    .getEdgeAppearanceCalculator()
+                                                    .getCalculator(type)
+                                                    .getMapping(0);
+
+        title = cMapping.getControllingAttributeName();
         valueRange = Math.abs(maxValue - minValue);
-
-        // verticesList = new ArrayList<Point>();
     }
 
     /**
@@ -108,49 +131,42 @@ public class ContinuousTrackRenderer extends JComponent
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
 
+        int thumb_width = 12;
+        int track_width = slider.getWidth() - thumb_width;
+        g.translate(thumb_width / 2, 12);
+
         // get the list of tumbs
         List<Thumb> stops = slider.getModel()
                                   .getSortedThumbs();
 
-        // verticesList.clear();
-        Point listP = new Point();
-
         int numPoints = stops.size();
-
-        System.out.println("###List len start = " + verticesList.size() +
-            ", Stops = " + numPoints);
 
         // set up the data for the gradient
         float[] fractions = new float[numPoints];
         Float[] floatProperty = new Float[numPoints];
         int i = 0;
 
+        values.clear();
+        values.add(below.floatValue());
+        values.add(above.floatValue());
+
         for (Thumb thumb : stops) {
             floatProperty[i] = (Float) thumb.getObject();
             fractions[i] = thumb.getPosition();
-
-            if (min >= floatProperty[i])
-                min = floatProperty[i];
-
-            if (max <= floatProperty[i])
-                max = floatProperty[i];
-
+            values.add((Float) thumb.getObject());
             i++;
         }
 
-        int track_width = slider.getWidth() - (THUMB_WIDTH / 2);
+        for (Float val : values) {
+            if (min >= val)
+                min = val;
 
-        g.translate(THUMB_WIDTH / 2, 12);
-
-        int newX = 0;
-
-        // Line2D segment = new Line2D.Float();
-        Rectangle2D rect1 = new Rectangle(0, 0, track_width, 5);
-        int lastY = 0;
-
-        g.setStroke(new BasicStroke(1.0f));
+            if (max <= val)
+                max = val;
+        }
 
         // Draw arrow bar
+        g.setStroke(new BasicStroke(1.0f));
         g.setColor(Color.black);
         g.drawLine(0, ARROW_BAR_Y_POSITION, track_width, ARROW_BAR_Y_POSITION);
 
@@ -165,64 +181,78 @@ public class ContinuousTrackRenderer extends JComponent
         g.drawLine(15, ARROW_BAR_Y_POSITION - 30, 25, ARROW_BAR_Y_POSITION -
             30);
 
-        g.setFont(defFont);
+        g.setFont(smallFont);
         g.drawString("Min=" + minValue, 28, ARROW_BAR_Y_POSITION - 25);
 
         g.drawLine(track_width, ARROW_BAR_Y_POSITION, track_width - 15,
             ARROW_BAR_Y_POSITION + 30);
         g.drawLine(track_width - 15, ARROW_BAR_Y_POSITION + 30,
             track_width - 25, ARROW_BAR_Y_POSITION + 30);
-        g.drawString("Max=" + maxValue, track_width - 85,
+
+        final String maxStr = "Max=" + maxValue;
+        int strWidth = SwingUtilities.computeStringWidth(
+                g.getFontMetrics(),
+                maxStr);
+        g.drawString(maxStr, track_width - strWidth - 26,
             ARROW_BAR_Y_POSITION + 35);
 
-        Rectangle2D rect2;
-        Polygon valueArea;
+        g.setFont(defFont);
+        g.setColor(Color.black);
+        strWidth = SwingUtilities.computeStringWidth(
+                g.getFontMetrics(),
+                title);
+        g.drawString(title, (track_width / 2) - (strWidth / 2),
+            ARROW_BAR_Y_POSITION + 35);
+        /*
+         * If no points, just draw empty box.
+         */
 
-        Point2D p1 = new Point2D.Float(0, 5);
-        Point2D p2 = new Point2D.Float(0, 5);
+        if (numPoints == 0) {
+        	g.setColor(BORDER_COLOR);
+            g.setStroke(new BasicStroke(1.5f));
+            g.drawRect(0, 5, track_width, TRACK_HEIGHT);
+        	return;
+        }
+
+        
         g.setStroke(new BasicStroke(1.0f));
 
         /*
-         * Draw background
+         * Fill background
          */
         g.setColor(Color.white);
-        // g.setStroke(new BasicStroke(4.0f));
-        g.fillRect(0, 5, track_width - 2, TRACK_HEIGHT);
+        g.fillRect(0, 5, track_width, TRACK_HEIGHT);
+
+        
+        
+        /*
+         * Special case: only one thumb
+         */
+        int newX = 0;
+        int lastY = 0;
+
+        Point2D p1 = new Point2D.Float(0, 5);
+        Point2D p2 = new Point2D.Float(0, 5);
 
         for (i = 0; i < floatProperty.length; i++) {
-            newX = (int) (track_width * (fractions[i] / 100)) - (i / 2) - 2;
+            newX = (int) (track_width * (fractions[i] / 100));
 
             p2.setLocation(newX, 5);
-            // g.setColor(Color.black);
-            // g.setStroke(new BasicStroke(1.0f));
-            // rect1 = new Rectangle((int) p1.getX(), 5, newX, TRACK_HEIGHT);
-            //
-            // g.draw(rect1);
-
-            // g.setColor(new Color(255, 255, 255, 100));
-            g.setColor(Color.white);
-            rect2 = new Rectangle((int) p1.getX() + 1, 6, newX - 1,
-                    TRACK_HEIGHT - 1);
-            g.fill(rect2);
-
-            g.setColor(Color.blue);
 
             int newY = (5 + TRACK_HEIGHT) -
-                (int) ((floatProperty[i].intValue() / max) * TRACK_HEIGHT);
+                (int) ((floatProperty[i] / max) * TRACK_HEIGHT);
 
-            valueArea = new Polygon();
+            valueArea.reset();
+
+            g.setColor(VALUE_AREA_COLOR);
 
             if (i == 0) {
-                // g.drawLine((int) p1.getX(), newY, newX, newY);
-                g.setColor(VALUE_AREA_COLOR);
-                valueArea.addPoint((int) p1.getX(), newY);
-                valueArea.addPoint(newX, newY);
-                valueArea.addPoint(newX, TRACK_HEIGHT + 5);
-                valueArea.addPoint((int) p1.getX(), TRACK_HEIGHT + 5);
-                g.fill(valueArea);
+            	int h = (5 + TRACK_HEIGHT) -
+                (int) ((below.floatValue() / max) * TRACK_HEIGHT);
+                g.fillRect(0, h, newX, (int) ((below.floatValue() / max) * TRACK_HEIGHT));
+            	g.setColor(Color.red);
+            	g.fillRect(-5, h-5, 10, 10);
             } else {
-                // g.drawLine((int) p1.getX(), lastY, newX, newY);
-                g.setColor(VALUE_AREA_COLOR);
                 valueArea.addPoint((int) p1.getX(), lastY);
                 valueArea.addPoint(newX, newY);
                 valueArea.addPoint(newX, TRACK_HEIGHT + 5);
@@ -234,18 +264,6 @@ public class ContinuousTrackRenderer extends JComponent
                 if (slider.getModel()
                               .getThumbAt(j)
                               .getObject() == floatProperty[i]) {
-                    //					boolean flag = false;
-                    //					for(Integer key: verticesList.keySet()) {
-                    //						
-                    //						if(verticesList.get(key).x == newX && verticesList.get(key).y == newY ) {
-                    //							flag = true;
-                    //							System.out.println("FOUND!");
-                    //							break;
-                    //						}
-                    //					}
-                    //					if(flag == false) {
-                    //						verticesList.put(j, new Point(newX, newY));
-                    //					}
                     Point newPoint = new Point(newX, newY);
 
                     if (verticesList.containsValue(newPoint) == false)
@@ -260,7 +278,7 @@ public class ContinuousTrackRenderer extends JComponent
             lastY = newY;
 
             g.setColor(Color.black);
-            g.setStroke(new BasicStroke(1.0f));
+            g.setStroke(new BasicStroke(1.5f));
             g.setFont(smallFont);
 
             int numberWidth = SwingUtilities.computeStringWidth(
@@ -326,53 +344,28 @@ public class ContinuousTrackRenderer extends JComponent
             g.setColor(Color.black);
             g.fillOval(newX - 3, ARROW_BAR_Y_POSITION - 3, 6, 6);
 
-            // g.setColor(Color.red);
-            // g.fillOval(newX - 5, TRACK_HEIGHT + 60 - 5, 10, 10);
-            // g.setFont(new Font("SansSerif", Font.BOLD, 12));
-            //
-            // g
-            // .drawString(
-            // Float
-            // .toString(((Double) (((fractions[i] / 100) * valueRange) - Math
-            // .abs(minValue))).floatValue()),
-            // newX - 10, TRACK_HEIGHT + 78);
             p1.setLocation(p2);
         }
 
         p2.setLocation(track_width, 5);
 
-        // rect1 = new Rectangle((int) p1.getX(), 5, track_width
-        // - (THUMB_WIDTH / 2), TRACK_HEIGHT);
-        // // segment.setLine(p1, p2);
-        // g.setStroke(new BasicStroke(1.0f));
-        // g.setColor(Color.black);
-        // g.draw(rect1);
-        g.setColor(Color.white);
-        rect2 = new Rectangle((int) p1.getX() + 1, 6,
-                (track_width - (THUMB_WIDTH / 2)) - 5, TRACK_HEIGHT - 1);
-        g.fill(rect2);
-
         g.setColor(VALUE_AREA_COLOR);
-        valueArea = new Polygon();
-        valueArea.addPoint((int) p1.getX(), lastY);
-        valueArea.addPoint(track_width, lastY);
-        valueArea.addPoint(track_width, TRACK_HEIGHT + 5);
-        valueArea.addPoint((int) p1.getX(), TRACK_HEIGHT + 5);
-        // g.drawLine((int) p1.getX(), lastY, track_width, lastY);
-        // g.setColor(Color.black);
-        g.fill(valueArea);
-
+        
+        int h = (5 + TRACK_HEIGHT) -
+        (int) ((above.floatValue() / max) * TRACK_HEIGHT);
+        g.fillRect((int)p1.getX(), h, track_width-(int)p1.getX(), (int) ((above.floatValue() / max) * TRACK_HEIGHT));
+        g.setColor(Color.red);
+    	g.fillRect(track_width-5, h-5, 10, 10);
+        
         /*
          * Finally, draw border line (rectangle)
          */
         g.setColor(BORDER_COLOR);
-        g.setStroke(new BasicStroke(4.0f));
-        g.drawRect(0, 5, track_width - 2, TRACK_HEIGHT);
+        g.setStroke(new BasicStroke(1.5f));
+        g.drawRect(0, 5, track_width, TRACK_HEIGHT);
 
         g.setColor(Color.red);
         g.setStroke(new BasicStroke(1.5f));
-
-        System.out.println("Check new len: " + verticesList.size());
 
         for (Integer key : verticesList.keySet()) {
             Point p = verticesList.get(key);
@@ -389,58 +382,23 @@ public class ContinuousTrackRenderer extends JComponent
                     g.setStroke(new BasicStroke(1.5f));
                 }
             }
-
-            System.out.println("---Drawing = " + key + ", " + p.x + "---" +
-                p.y);
             g.drawRect(p.x - 5, p.y - 5, 10, 10);
         }
+        
+        /*
+         * Draw below & above
+         */
+        
 
-        System.out.println("====================================\n");
-
-        // if (clickFlag) {
-        // g.setColor(Color.black);
-        // g.setStroke(new BasicStroke(2.5f));
-        // g.fillRect(curPoint.x - 6 - 5, curPoint.y - 12 - 5, 10, 10);
-        // }
-
-        // for(Object t : slider.getModel().getSortedThumbs()) {
-        // Float fval = (Float) slider.getModel().getThumbAt(count).getObject();
-        // int yposition = (5 + TRACK_HEIGHT)
-        // - (int) ((fval.intValue() / max) * TRACK_HEIGHT);
-        // g.drawLine(0, yposition, track_width, yposition);
-        // count++;
-        // System.out.println("Ypos = " + yposition);
-        //		
-        // }
-
-        // if(slider.getSelectedThumb() != null) {
-        //			
-        // Float fval = (Float)
-        // slider.getModel().getThumbAt(slider.getSelectedIndex()).getObject();
-        //			
-        // int yposition = (5 + TRACK_HEIGHT)
-        // - (int) ((fval.intValue() / max) * TRACK_HEIGHT);
-        // g.fillRect(slider.getSelectedThumb().getX()-5,
-        // yposition-5, 10, 10);
-        // }
-        AffineTransform af = new AffineTransform();
-        af.setToTranslation(40.0d, 30.0d);
-
-        // final Map<Byte, Shape> shapeMap = GraphGraphics.getNodeShapes();
-        // int test = 1;
-        //
-        // System.out.println("********** Shape Size = " + shapeMap.size());
-        //
-        // for (Byte key : shapeMap.keySet()) {
-        // System.out.println("********** Shape " + shapeMap.get(key));
-        // g.draw(shapeMap.get(key));
-        // test++;
-        // }
         g.translate(-THUMB_WIDTH / 2, -12);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param i DOCUMENT ME!
+     */
     public void removePoint(int i) {
-        
         verticesList.remove(i);
         System.out.println("---List len = " + verticesList.size());
         slider.repaint();
@@ -474,7 +432,7 @@ public class ContinuousTrackRenderer extends JComponent
         //
         // public void mouseWheelMoved(MouseWheelEvent e) {
         // // TODO Auto-generated method stub
-        System.out.println("rc called!: " + slider.getModel().getThumbCount());
+//        System.out.println("rc called!: " + slider.getModel().getThumbCount());
 
         //			
         // });
@@ -568,9 +526,11 @@ public class ContinuousTrackRenderer extends JComponent
         }
     }
 
-    class CMouseListener
-        implements MouseListener {
+    class CMouseListener extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
+            /*
+             * Show popup dialog to enter new numerical value.
+             */
             if (isPointerInSquare(e) && (e.getClickCount() == 2)) {
                 final String val = JOptionPane.showInputDialog(slider,
                         "Please type new value for this pivot.");
@@ -580,18 +540,47 @@ public class ContinuousTrackRenderer extends JComponent
                       .setObject(newVal);
 
                 updateMax();
+
+                cMapping.getPoint(selectedIdx)
+                        .getRange().equalValue = newVal;
+
+                final BoundaryRangeValues brv = new BoundaryRangeValues(cMapping.getPoint(
+                            selectedIdx)
+                                                                                .getRange().lesserValue,
+                        newVal,
+                        cMapping.getPoint(selectedIdx)
+                                .getRange().greaterValue);
+
+                cMapping.getPoint(selectedIdx)
+                        .setRange(brv);
+
+                int numPoints = cMapping.getAllPoints()
+                                        .size();
+
+                // Update Values which are not accessible from
+                // UI
+                if (numPoints > 1) {
+                    if (selectedIdx == 0)
+                        brv.greaterValue = newVal;
+                    else if (selectedIdx == (numPoints - 1))
+                        brv.lesserValue = newVal;
+                    else {
+                        brv.lesserValue = newVal;
+                        brv.greaterValue = newVal;
+                    }
+
+                    cMapping.fireStateChanged();
+
+                    Cytoscape.getVisualMappingManager()
+                             .getNetworkView()
+                             .redrawGraph(false, true);
+                    slider.repaint();
+                }
+
                 repaint();
                 slider.repaint();
                 repaint();
             }
-        }
-
-        public void mouseEntered(MouseEvent arg0) {
-            // TODO Auto-generated method stub
-        }
-
-        public void mouseExited(MouseEvent arg0) {
-            // TODO Auto-generated method stub
         }
 
         public void mousePressed(MouseEvent e) {
@@ -716,26 +705,27 @@ public class ContinuousTrackRenderer extends JComponent
 
         Object[] objValues = new Object[pointCount + 2];
 
-        objValues[0] = points.get(0)
-                             .getRange().lesserValue;
+        objValues[0] = ((Number) points.get(0)
+                                       .getRange().lesserValue).floatValue();
 
         if (pointCount == 1) {
-            objValues[1] = points.get(0)
-                                 .getRange().equalValue;
-            objValues[2] = points.get(0)
-                                 .getRange().greaterValue;
+            objValues[1] = ((Number) points.get(0)
+                                           .getRange().equalValue).floatValue();
+            objValues[2] = ((Number) points.get(0)
+                                           .getRange().greaterValue).floatValue();
         } else {
             // "Above" value
-            objValues[objValues.length - 1] = points.get(points.size() - 1)
-                                                    .getRange().greaterValue;
+            objValues[objValues.length - 1] = ((Number) points.get(points.size() -
+                    1)
+                                                              .getRange().greaterValue).floatValue();
 
             for (int i = 0; i < pointCount; i++)
-                objValues[i + 1] = points.get(i)
-                                         .getRange().equalValue;
+                objValues[i + 1] = ((Number) points.get(i)
+                                                   .getRange().equalValue).floatValue();
         }
 
         for (int i = 0; i < objValues.length; i++) {
-            if ((Float)objValues[i] < min)
+            if ((Float) objValues[i] < min)
                 min = (Float) objValues[i];
 
             if ((Float) objValues[i] > max)

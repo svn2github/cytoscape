@@ -17,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JColorChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
@@ -29,6 +30,7 @@ public class BelowAndAbovePanel extends JPanel {
     private VisualPropertyType type;
     private Color boxColor;
     private boolean below;
+    private Object value;
 
     /**
      * DOCUMENT ME!
@@ -65,7 +67,7 @@ public class BelowAndAbovePanel extends JPanel {
      * @param below DOCUMENT ME!
      */
     public BelowAndAbovePanel(VisualPropertyType type, boolean below) {
-        this(type, Color.white, below);
+        this(type, Color.DARK_GRAY, below);
     }
 
     /**
@@ -81,6 +83,15 @@ public class BelowAndAbovePanel extends JPanel {
             .repaint();
 
         this.firePropertyChange(COLOR_CHANGED, oldColor, newColor);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     */
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     /**
@@ -125,9 +136,21 @@ public class BelowAndAbovePanel extends JPanel {
 
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                caller.setColor(
-                    JColorChooser.showDialog(caller, "Select new color",
-                        boxColor));
+            	
+            	Object newValue = null;
+                if (type.getDataType() == Color.class) {
+                	newValue = JColorChooser.showDialog(caller, "Select new color",
+                            boxColor);
+                	caller.setColor((Color)newValue);
+                }
+                else if (type.getDataType() == Number.class) {
+                	newValue = Double.parseDouble(JOptionPane.showInputDialog(caller, "Please enter new value."));
+                	caller.setValue(newValue);
+                }
+                
+                if(newValue == null) {
+                	return;
+                }
 
                 final ContinuousMapping cMapping;
 
@@ -150,7 +173,7 @@ public class BelowAndAbovePanel extends JPanel {
                 if (below) {
                     original = cMapping.getPoint(0)
                                        .getRange();
-                    brv = new BoundaryRangeValues(boxColor,
+                    brv = new BoundaryRangeValues(newValue,
                             original.equalValue, original.greaterValue);
                     cMapping.getPoint(0)
                             .setRange(brv);
@@ -159,7 +182,7 @@ public class BelowAndAbovePanel extends JPanel {
                                        .getRange();
 
                     brv = new BoundaryRangeValues(original.lesserValue,
-                            original.equalValue, boxColor);
+                            original.equalValue, newValue);
                     cMapping.getPoint(cMapping.getPointCount() - 1)
                             .setRange(brv);
                 }

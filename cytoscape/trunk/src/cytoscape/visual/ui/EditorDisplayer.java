@@ -5,6 +5,7 @@ import cytoscape.visual.LabelPosition;
 import cytoscape.visual.Line;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
 
 import java.awt.Color;
@@ -55,10 +56,10 @@ public enum EditorDisplayer {
         new Object[] { null, null }, LabelPosition.class), 
     CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
         new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
-        new Object[] { 450, 200, "Gradient Editor", null }, Color.class), 
-    CONTINUOUS_CONTINUOUS(JColorChooser.class, "showDialog",
-        new Class[] { Component.class, String.class, Number.class },
-        new Object[] { null, "Select Color...", null }, Color.class), 
+        new Object[] { 450, 180, "Gradient Editor", null }, Color.class), 
+    CONTINUOUS_CONTINUOUS(C2CMappingEditor.class, "showDialog",
+        new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
+        new Object[] { 450, 250, "Continuous-Continuous Editor", null }, Number.class), 
     CONTINUOUS_DISCRETE(JColorChooser.class, "showDialog",
         new Class[] { Component.class, String.class, Color.class },
         new Object[] { null, "Select Color...", null }, null);

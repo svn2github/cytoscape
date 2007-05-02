@@ -35,6 +35,7 @@
 package cytoscape.visual;
 
 import cytoscape.visual.calculators.*;
+
 import cytoscape.visual.properties.*;
 
 import cytoscape.visual.ui.EditorDisplayer;
@@ -61,85 +62,112 @@ import java.lang.reflect.Method;
 public enum VisualPropertyType {
     NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
         "defaultNodeFillColor", GenericNodeFillColorCalculator.class,
-        Color.class,new NodeFillColorProp()), 
+        Color.class, new NodeFillColorProp()), 
     NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator",
         "node.borderColor", "defaultNodeBorderColor",
-        GenericNodeBorderColorCalculator.class, Color.class, new NodeBorderColorProp()), 
+        GenericNodeBorderColorCalculator.class, Color.class,
+        new NodeBorderColorProp()), 
     NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-        "defaultNodeLineType", GenericNodeLineTypeCalculator.class, Line.class,new NodeLineTypeProp()), 
+        "defaultNodeLineType", GenericNodeLineTypeCalculator.class, Line.class,
+        new NodeLineTypeProp()), 
     NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape",
-        "defaultNodeShape", GenericNodeShapeCalculator.class, NodeShape.class, new NodeShapeProp()), 
+        "defaultNodeShape", GenericNodeShapeCalculator.class, NodeShape.class,
+        new NodeShapeProp()), 
     NODE_SIZE("Node Size", "nodeUniformSizeCalculator", "node.size",
-        "defaultNodeSize", GenericNodeUniformSizeCalculator.class, Number.class, new NodeSizeProp()), 
+        "defaultNodeSize", GenericNodeUniformSizeCalculator.class,
+        Number.class, new NodeSizeProp()), 
     NODE_WIDTH("Node Width", "nodeWidthCalculator", "node.width",
-        "defaultNodeWidth", GenericNodeWidthCalculator.class, Number.class, new NodeWidthProp()), 
+        "defaultNodeWidth", GenericNodeWidthCalculator.class, Number.class,
+        new NodeWidthProp()), 
     NODE_HEIGHT("Node Height", "nodeHeightCalculator", "node.height",
-        "defaultNodeHight", GenericNodeHeightCalculator.class, Number.class,new NodeHeightProp()), 
+        "defaultNodeHight", GenericNodeHeightCalculator.class, Number.class,
+        new NodeHeightProp()), 
     NODE_LABEL("Node Label", "nodeLabelCalculator", "node.label",
-        "defaultNodeLabel", GenericNodeLabelCalculator.class, String.class,new NodeLabelProp()), 
+        "defaultNodeLabel", GenericNodeLabelCalculator.class, String.class,
+        new NodeLabelProp()), 
     NODE_FONT_FACE("Node Font Face", "nodeFontFaceCalculator", "node.font",
-        "defaultNodeFont", GenericNodeFontFaceCalculator.class, Font.class, new NodeFontFaceProp()), 
+        "defaultNodeFont", GenericNodeFontFaceCalculator.class, Font.class,
+        new NodeFontFaceProp()), 
     NODE_FONT_SIZE("Node Font Size", "nodeFontSizeCalculator", "node.fontSize",
-        "defaultNodeFontSize", GenericNodeFontSizeCalculator.class, Number.class,new NodeFontSizeProp()), 
+        "defaultNodeFontSize", GenericNodeFontSizeCalculator.class,
+        Number.class, new NodeFontSizeProp()), 
     NODE_LABEL_COLOR("Node Label Color", "nodeLabelColor", "node.labelColor",
         "defaultNodeLabelColor", GenericNodeLabelColorCalculator.class,
-        Color.class,new NodeLabelColorProp()), 
+        Color.class, new NodeLabelColorProp()), 
     NODE_TOOLTIP("Node Tooltip", "nodeTooltipCalculator", "node.toolTip",
-        "defaultNodeToolTip", GenericNodeToolTipCalculator.class, String.class,new NodeToolTipProp()), 
+        "defaultNodeToolTip", GenericNodeToolTipCalculator.class, String.class,
+        new NodeToolTipProp()), 
     NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator",
         "node.labelPosition", "defaultNodeLabelPosition",
-        GenericNodeLabelPositionCalculator.class, LabelPosition.class,new NodeLabelPositionProp()), 
+        GenericNodeLabelPositionCalculator.class, LabelPosition.class,
+        new NodeLabelPositionProp()), 
     EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color",
-        "defaultEdgeColor", GenericEdgeColorCalculator.class, Color.class,new EdgeColorProp()), 
+        "defaultEdgeColor", GenericEdgeColorCalculator.class, Color.class,
+        new EdgeColorProp()), 
     EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-        "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, Line.class,new EdgeLineTypeProp()), 
+        "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, Line.class,
+        new EdgeLineTypeProp()), 
     EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator",
         "edge.sourceArrow", "defaultEdgeSourceArrow",
-        GenericEdgeSourceArrowCalculator.class, Arrow.class,new EdgeSourceArrowProp()), 
+        GenericEdgeSourceArrowCalculator.class, Arrow.class,
+        new EdgeSourceArrowProp()), 
     EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator",
         "edge.targetArrow", "defaultEdgeTargetArrow",
-        GenericEdgeTargetArrowCalculator.class, Arrow.class,new EdgeTargetArrowProp()), 
+        GenericEdgeTargetArrowCalculator.class, Arrow.class,
+        new EdgeTargetArrowProp()), 
     EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label",
-        "defaultEdgeLabel", GenericEdgeLabelCalculator.class, String.class, new EdgeLabelProp()), 
+        "defaultEdgeLabel", GenericEdgeLabelCalculator.class, String.class,
+        new EdgeLabelProp()), 
     EDGE_FONT_FACE("Edge Font Face", "edgeFontFaceCalculator", "edge.font",
-        "defaultEdgeFont", GenericEdgeFontFaceCalculator.class, Font.class, new EdgeFontFaceProp()), 
+        "defaultEdgeFont", GenericEdgeFontFaceCalculator.class, Font.class,
+        new EdgeFontFaceProp()), 
     EDGE_FONT_SIZE("Edge Font Size", "edgeFontSizeCalculator", "edge.fontSize",
-        "defaultEdgeFontSize", GenericEdgeFontSizeCalculator.class, Number.class, new EdgeFontSizeProp()), 
+        "defaultEdgeFontSize", GenericEdgeFontSizeCalculator.class,
+        Number.class, new EdgeFontSizeProp()), 
     EDGE_LABEL_COLOR("Edge Label Color", "edgeLabelColorCalculator",
         "edge.labelColor", "defaultEdgeLabelColor",
-        GenericEdgeLabelColorCalculator.class, Color.class, new EdgeLabelColorProp()), 
+        GenericEdgeLabelColorCalculator.class, Color.class,
+        new EdgeLabelColorProp()), 
     EDGE_TOOLTIP("Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip",
-        "defaultEdgeToolTip", GenericEdgeToolTipCalculator.class, String.class, new EdgeToolTipProp()), 
+        "defaultEdgeToolTip", GenericEdgeToolTipCalculator.class, String.class,
+        new EdgeToolTipProp()), 
 
     // New from 2.5: line can have arbitrary width.
     NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator",
         "node.lineWidth", "defaultNodeLineWidth",
-        GenericNodeLineWidthCalculator.class, Number.class, new NodeLineWidthProp()), 
+        GenericNodeLineWidthCalculator.class, Number.class,
+        new NodeLineWidthProp()), 
     EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator",
         "edge.lineWidth", "defaultEdgeLineWidth",
-        GenericEdgeLineWidthCalculator.class, Number.class, new EdgeLineWidthProp()), 
+        GenericEdgeLineWidthCalculator.class, Number.class,
+        new EdgeLineWidthProp()), 
 
     // New from 2.5: arrows have its own color, shape, and size.
     EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape",
         "edgeSourceArrowShapeCalculator", "edge.sourceArrowShape",
         "defaultEdgeSourceArrowShape",
-        GenericEdgeSourceArrowShapeCalculator.class, Arrow.class,new EdgeSourceArrowShapeProp()), 
+        GenericEdgeSourceArrowShapeCalculator.class, Arrow.class,
+        new EdgeSourceArrowShapeProp()), 
     EDGE_TGTARROW_SHAPE("Edge Target Arrow Shape",
         "edgeTargetArrowShapeCalculator", "edge.targetArrowShape",
         "defaultEdgeTargetArrowShape",
-        GenericEdgeTargetArrowShapeCalculator.class, Arrow.class,new EdgeTargetArrowShapeProp()), 
+        GenericEdgeTargetArrowShapeCalculator.class, Arrow.class,
+        new EdgeTargetArrowShapeProp()), 
     EDGE_SRCARROW_COLOR("Edge Source Arrow Color",
         "edgeSourceArrowColorCalculator", "edge.sourceArrowColor",
         "defaultEdgeSourceArrowColor",
-        GenericEdgeSourceArrowColorCalculator.class, Color.class,new EdgeSourceArrowColorProp()), 
+        GenericEdgeSourceArrowColorCalculator.class, Color.class,
+        new EdgeSourceArrowColorProp()), 
     EDGE_TGTARROW_COLOR("Edge Target Arrow Color",
         "edgeTargetArrowColorCalculator", "edge.targetArrowColor",
         "defaultEdgeTargetArrowColor",
-        GenericEdgeTargetArrowColorCalculator.class, Color.class,new EdgeTargetArrowColorProp()), 
+        GenericEdgeTargetArrowColorCalculator.class, Color.class,
+        new EdgeTargetArrowColorProp()), 
 
     // Not yet implemented in version 2.5
     EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator",
-        "edge.labelPosition", "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp());
+        "edge.labelPosition", "defaultEdgeLabelPosition", null, null,
+        new EdgeLabelPositionProp());
     /*
      * String returned by toString() method.
      */
@@ -159,8 +187,8 @@ public enum VisualPropertyType {
 
     // Data type for the actual visual property.
     private Class dataType;
-
     private VisualProperty vizProp;
+
     /*
      * private constructor to put name into this enum.
      */
@@ -174,7 +202,7 @@ public enum VisualPropertyType {
         this.defaultPropertyLabel = defaultPropertyLabel;
         this.calculatorClass = calculatorClass;
         this.dataType = dataType;
-		this.vizProp = vizProp;
+        this.vizProp = vizProp;
     }
 
     /**
@@ -295,14 +323,20 @@ public enum VisualPropertyType {
     private Object showEditor(EditorDisplayer action)
         throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException, SecurityException, NoSuchMethodException {
-        Method method = action.getActionClass() .getMethod( action.getCommand(), action.getParamTypes());
+        Method method = action.getActionClass()
+                              .getMethod(
+                action.getCommand(),
+                action.getParamTypes());
 
-        Object ret = method.invoke( null, action.getParameters());
+        Object ret = method.invoke(
+                null,
+                action.getParameters());
 
         // This is an editor.
-        if(ret != null && ret instanceof ContinuousMappingEditorPanel) {
-        	return ret;
-        } else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
+        if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
+            return ret;
+        else if ((ret != null) &&
+                (action.getCompatibleClass() != ret.getClass()))
             ret = Double.parseDouble(ret.toString());
 
         return ret;
@@ -330,105 +364,126 @@ public enum VisualPropertyType {
      */
     public Object showContinuousEditor()
         throws Exception {
-        final EditorDisplayer editor = EditorDisplayer.getEditor(this, EditorType.CONTINUOUS);
-        editor.setParameters( new Object[] { 450, 200, "Gradient Editor for " + this.calcName, this });
-        
+        final EditorDisplayer editor = EditorDisplayer.getEditor(this,
+                EditorType.CONTINUOUS);
+
+        if (editor == EditorDisplayer.CONTINUOUS_COLOR)
+            editor.setParameters(
+                new Object[] {
+                    450, 180, "Gradient Editor for " + this.calcName, this
+                });
+        else if (editor == EditorDisplayer.CONTINUOUS_CONTINUOUS)
+            editor.setParameters(
+                new Object[] {
+                    450, 350, "Continuous Editor for " + this.calcName, this
+                });
+        else
+            editor.setParameters(
+                new Object[] {
+                    450, 200, "Continuous Editor for " + this.calcName, this
+                });
+
         return showEditor(editor);
     }
 
-	/**
-	 * Returns the VisualProperty object associated with this enum.
-	 */
-	public VisualProperty getVisualProperty() {
-		return vizProp;
-	}
+    /**
+     * Returns the VisualProperty object associated with this enum.
+     */
+    public VisualProperty getVisualProperty() {
+        return vizProp;
+    }
 
     /**
      * Gets the current default value for this type in the specified
-	 * visual style. Returns null if the style is null. 
-	 * @param style The visual style we want to get the default for. 
-	 * @return the default object for this type and the specified style.
+         * visual style. Returns null if the style is null.
+         * @param style The visual style we want to get the default for.
+         * @return the default object for this type and the specified style.
      */
     public Object getDefault(VisualStyle style) {
-		if ( style == null )
-			return null;
+        if (style == null)
+            return null;
 
-		Appearance a = null;
-		if ( isNodeProp() ) 
-			a = style.getNodeAppearanceCalculator().getDefaultAppearance();
-		else
-			a = style.getEdgeAppearanceCalculator().getDefaultAppearance();
+        Appearance a = null;
 
-		return a.get(this);
+        if (isNodeProp())
+            a = style.getNodeAppearanceCalculator()
+                     .getDefaultAppearance();
+        else
+            a = style.getEdgeAppearanceCalculator()
+                     .getDefaultAppearance();
+
+        return a.get(this);
     }
-
 
     /**
-     * Sets the default value for the visual attribute for this type  
+     * Sets the default value for the visual attribute for this type
      * in the specified visual style. No-op if either arg is null.
-	 * @param style The visual style to be set. 
-	 * @param c The new default value.
+         * @param style The visual style to be set.
+         * @param c The new default value.
      */
     public void setDefault(VisualStyle style, Object c) {
-		if ( style == null || c == null )
-			return;
+        if ((style == null) || (c == null))
+            return;
 
-		if ( isNodeProp() ) {
-			NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
-			NodeAppearance na = nodeCalc.getDefaultAppearance();
-			na.set(this, c);
-			nodeCalc.setDefaultAppearance(na);
-		} else {
-			EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
-			EdgeAppearance ea = edgeCalc.getDefaultAppearance();
-			ea.set(this, c);
-			edgeCalc.setDefaultAppearance(ea);
-		}
+        if (isNodeProp()) {
+            NodeAppearanceCalculator nodeCalc = style.getNodeAppearanceCalculator();
+            NodeAppearance na = nodeCalc.getDefaultAppearance();
+            na.set(this, c);
+            nodeCalc.setDefaultAppearance(na);
+        } else {
+            EdgeAppearanceCalculator edgeCalc = style.getEdgeAppearanceCalculator();
+            EdgeAppearance ea = edgeCalc.getDefaultAppearance();
+            ea.set(this, c);
+            edgeCalc.setDefaultAppearance(ea);
+        }
     }
-
 
     /**
      * Gets the current calculator for the visual attribute for this type
-	 * and the specified visual style.  This may be null if no calculator 
-	 * is currently specified. Returns null if the style is null.
-	 * @param style The style we're getting the calculator for.
-	 * @return the current calculator for this style and type
+         * and the specified visual style.  This may be null if no calculator
+         * is currently specified. Returns null if the style is null.
+         * @param style The style we're getting the calculator for.
+         * @return the current calculator for this style and type
      */
     public Calculator getCurrentCalculator(VisualStyle style) {
         if (style == null)
-			return null;
+            return null;
 
-		if ( isNodeProp() ) 
-			return style.getNodeAppearanceCalculator().getCalculator(this);
-		else
-			return style.getEdgeAppearanceCalculator().getCalculator(this);
+        if (isNodeProp())
+            return style.getNodeAppearanceCalculator()
+                        .getCalculator(this);
+        else
+
+            return style.getEdgeAppearanceCalculator()
+                        .getCalculator(this);
     }
 
     /**
      * Sets the current calculator for the visual attribute for this type
      * and the specified visual style. If the new calculator is null, then
-	 * the calculator for this type will be removed. This method does
+         * the calculator for this type will be removed. This method does
      * nothing if the first argument specifying the visual style is null.
-	 * @param style The style to set the calculator for.
-	 * @param c The calculator to set.
+         * @param style The style to set the calculator for.
+         * @param c The calculator to set.
      */
     public void setCurrentCalculator(VisualStyle style, Calculator c) {
         if (style == null)
             return;
 
-		if ( isNodeProp() ) {
-        	if (c == null) {
-            	style.getNodeAppearanceCalculator().removeCalculator(this);
-        	} else {
-            	style.getNodeAppearanceCalculator().setCalculator(c);
-        	}
-		} else {
-
-        	if (c == null) {
-            	style.getEdgeAppearanceCalculator().removeCalculator(this);
-        	} else {
-            	style.getEdgeAppearanceCalculator().setCalculator(c);
-        	}
-       	}
+        if (isNodeProp()) {
+            if (c == null)
+                style.getNodeAppearanceCalculator()
+                     .removeCalculator(this);
+            else
+                style.getNodeAppearanceCalculator()
+                     .setCalculator(c);
+        } else {
+            if (c == null)
+                style.getEdgeAppearanceCalculator()
+                     .removeCalculator(this);
+            else
+                style.getEdgeAppearanceCalculator()
+                     .setCalculator(c);
+        }
     }
 }
