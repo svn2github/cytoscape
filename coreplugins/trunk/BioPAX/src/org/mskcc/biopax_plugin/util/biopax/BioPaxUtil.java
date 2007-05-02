@@ -346,7 +346,7 @@ public class BioPaxUtil {
 			// referenced via the XML hierarchy.  Therefore, add it to the
 			// referenceSet
 			
-			Element parent = e.getParentElement();
+			Element parent = e.getParent();
 
 			if (!parent.getName().equals(RdfConstants.RDF_ROOT_NAME)) {
 				referenceSet.add(idAttribute.getValue());
