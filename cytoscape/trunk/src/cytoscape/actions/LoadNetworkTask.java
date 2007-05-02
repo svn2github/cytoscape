@@ -51,7 +51,6 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.BioDataServer;
 
 import cytoscape.dialogs.ImportNetworkDialog;
-import cytoscape.dialogs.VisualStyleBuilderDialog;
 
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;

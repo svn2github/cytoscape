@@ -1490,8 +1490,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		if ((init.getMode() == CyInitParams.GUI)
 		    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-			VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(net.getTitle(),
-			                                                            (GraphReader) net.getClientData(Cytoscape.READER_CLIENT_KEY),
+			VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(net.getTitle(), this,
 			                                                            Cytoscape.getDesktop(), true);
 			vsd.setVisible(true);
 		}

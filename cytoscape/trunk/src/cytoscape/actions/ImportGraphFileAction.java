@@ -55,7 +55,6 @@ import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.servers.BioDataServer;
 
 import cytoscape.dialogs.ImportNetworkDialog;
-import cytoscape.dialogs.VisualStyleBuilderDialog;
 
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
