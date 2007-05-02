@@ -84,13 +84,24 @@
         <echo message="classpath = ${classpath}"/>
 	</target>
 
+	<!-- target to determine os -->
+	<target name="check.os">
+	  <condition property="exe.file" value="cmd" else="/bin/sh">
+		<os family="windows"/>
+	  </condition>
+	  <condition property="exe.file.arg" value="/c" else="-c">
+		<os family="windows"/>
+	  </condition>
+	  <echo message="exec = ${exe.file} ${exe.file.arg}"/>
+	</target>
+
 	<!-- target to generate LayoutUtil.java -->
-	<target description="Generates custom layout file" name="gen.layout.file">
+	<target depends="check.os" description="Generates custom layout file" name="gen.layout.file">
 	    <condition property="gen.yfiles" value="1" else="0">
 	        <available file="${pathway.tools.root}/lib/y.jar"/>	
 	    </condition>
-	    <exec executable="/bin/sh">
-		    <arg value="-c" />
+	    <exec executable="${exe.file}">
+		    <arg value="${exe.file.arg}" />
 		    <arg value="python ${bin.dir}/genLayoutUtil.py ${gen.yfiles} ${layout.util.file}"/>
 	    </exec>
         <echo message="using gen.yfiles = ${gen.yfiles}, layout.util.file = ${layout.util.file}"/>
