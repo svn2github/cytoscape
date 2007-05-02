@@ -31,16 +31,14 @@
  **/
 package org.mskcc.biopax_plugin.plugin;
 
-import cytoscape.CytoscapeInit;
-
-import cytoscape.data.ImportHandler;
-
-import cytoscape.plugin.CytoscapePlugin;
-
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
-import java.util.Properties;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.ImportHandler;
+import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.CytoscapePlugin;
 
+import java.util.Properties;
 
 /**
  * BioPAX Import PlugIn.
@@ -57,6 +55,11 @@ public class BioPaxPlugIn extends CytoscapePlugin {
 	 * Version Minor Number.
 	 */
 	public static final int VERSION_MINOR_NUM = 5;
+
+    /**
+     * Name of Plugin.
+     */
+    public static final String PLUGIN_NAME = "BioPAX Plugin";
 
 	/**
 	 * Attribute Name for BioPAX Utility Class.
@@ -97,5 +100,23 @@ public class BioPaxPlugIn extends CytoscapePlugin {
 		// to start listening to network events, we grab an instance of
 		// a BioPaxContainerClass - this contains the network listener
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+	}
+
+	/**
+	 * Our implementation of CytoscapePlugin.getPluginInfoObject()
+	 *
+	 * @return PluginInfo
+	 */
+	public PluginInfo getPluginInfoObject() {
+		PluginInfo info = new PluginInfo();
+		info.setName(PLUGIN_NAME);
+		info.setDescription("Provides reading and rendering support for Biological Pathways in BioPAX format.");
+		info.setPluginVersion(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM);
+		info.setCategory("Data Integration");
+		info.setProjectUrl("http://www.biopax.org");
+		info.addAuthor("Ethan Cerami, Benjamin Gross", "Computational Biology Lab, Memorial Sloan-Kettering Cancer Center");
+
+		// outta here
+		return info;
 	}
 }
