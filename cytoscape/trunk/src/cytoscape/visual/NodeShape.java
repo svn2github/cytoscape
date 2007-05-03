@@ -58,7 +58,7 @@ public enum NodeShape {
 	RECT_3D(NodeView.RECTANGLE, "3D Rectabgle"),
 	TRAPEZOID(NodeView.RECTANGLE, "Trapezoid"),
 	TRAPEZOID_2(NodeView.RECTANGLE, "Trapezoid 2"),
-	TRIANGLE(NodeView.TRIANGLE, "Traiangle"),
+	TRIANGLE(NodeView.TRIANGLE, "Triangle"),
 	PARALLELOGRAM(NodeView.PARALELLOGRAM, "Parallelogram"),
 	DIAMOND(NodeView.DIAMOND, "Diamond"),
 	ELLIPSE(NodeView.ELLIPSE, "Ellipse"),
