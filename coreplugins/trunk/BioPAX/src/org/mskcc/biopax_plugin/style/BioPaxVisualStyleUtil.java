@@ -168,7 +168,7 @@ public class BioPaxVisualStyleUtil {
 
 	private static void createNodeShape(NodeAppearanceCalculator nac) {
 		//  create a discrete mapper, for mapping a biopax type to a shape
-		DiscreteMapping discreteMapping = new DiscreteMapping(new Byte(ShapeNodeRealizer.RECT),
+		DiscreteMapping discreteMapping = new DiscreteMapping(NodeShape.RECT,
 		                                                      MapNodeAttributes.BIOPAX_ENTITY_TYPE,
 		                                                      ObjectMapping.NODE_MAPPING);
 
@@ -180,12 +180,12 @@ public class BioPaxVisualStyleUtil {
 		while (iterator.hasNext()) {
 			String entityName = (String) iterator.next();
 			discreteMapping.putMapValue(BioPaxPlainEnglish.getTypeInPlainEnglish(entityName),
-			                            new Byte(ShapeNodeRealizer.ELLIPSE));
+			                            NodeShape.ELLIPSE);
 		}
 
 		// hack for phosphorylated proteins
 		discreteMapping.putMapValue(BioPaxConstants.PROTEIN_PHOSPHORYLATED,
-		                            new Byte(ShapeNodeRealizer.ELLIPSE));
+		                            NodeShape.ELLIPSE);
 
 		// map all interactions
 		// - control to triangles
@@ -200,18 +200,18 @@ public class BioPaxVisualStyleUtil {
 
 			if (bpConstants.isControlInteraction(entityName)) {
 				discreteMapping.putMapValue(BioPaxPlainEnglish.getTypeInPlainEnglish(entityName),
-				                            new Byte(ShapeNodeRealizer.TRIANGLE));
+				                            NodeShape.TRIANGLE);
 			} else {
 				discreteMapping.putMapValue(BioPaxPlainEnglish.getTypeInPlainEnglish(entityName),
-				                            new Byte(ShapeNodeRealizer.RECT));
+				                            NodeShape.RECT);
 			}
 		}
 
 		// create and set node shape calculator in node appearance calculator
-		NodeShapeCalculator nodeShapeCalculator = new GenericNodeShapeCalculator("BioPAX Node Shape"
-		                                                                         + VERSION_POST_FIX,
-		                                                                         discreteMapping);
-		nac.setNodeShapeCalculator(nodeShapeCalculator);
+		Calculator nodeShapeCalculator = new GenericNodeShapeCalculator("BioPAX Node Shape"
+																		+ VERSION_POST_FIX,
+																		discreteMapping);
+		nac.setCalculator(nodeShapeCalculator);
 	}
 
 	private static void createNodeSize(NodeAppearanceCalculator nac) {
@@ -283,7 +283,7 @@ public class BioPaxVisualStyleUtil {
 		GenericNodeLabelCalculator nodeLabelCalculator = new GenericNodeLabelCalculator("BioPAX Node Label"
 		                                                                                + VERSION_POST_FIX,
 		                                                                                passThroughMapping);
-		nac.setNodeLabelCalculator(nodeLabelCalculator);
+		nac.setCalculator(nodeLabelCalculator);
 	}
 
 	private static void createNodeColor(NodeAppearanceCalculator nac) {
@@ -311,7 +311,8 @@ public class BioPaxVisualStyleUtil {
 		GenericNodeFillColorCalculator nodeColorCalculator = new GenericNodeFillColorCalculator("BioPAX Node Color"
 																								+ VERSION_POST_FIX,
 																								discreteMapping);
-		nac.setNodeFillColorCalculator(nodeColorCalculator);
+		nac.setCalculator(nodeColorCalculator);
+
 		// i think this is a hack, but its the only way to make it work
 		nac.setDefaultNodeFillColor(DEFAULT_NODE_COLOR);
 	}
@@ -341,7 +342,8 @@ public class BioPaxVisualStyleUtil {
 		GenericNodeBorderColorCalculator nodeBorderColorCalculator = new GenericNodeBorderColorCalculator("BioPAX Node Border Color"
 																										  + VERSION_POST_FIX,
 																										  discreteMapping);
-		nac.setNodeBorderColorCalculator(nodeBorderColorCalculator);
+		nac.setCalculator(nodeBorderColorCalculator);
+
 		// i think this is a hack, but its the only way to make it work
 		nac.setDefaultNodeBorderColor(DEFAULT_NODE_BORDER_COLOR);
 	}
@@ -351,10 +353,10 @@ public class BioPaxVisualStyleUtil {
 		                                                      MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,
 		                                                      ObjectMapping.EDGE_MAPPING);
 
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.RIGHT, Arrow.BLACK_DELTA);
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTROLLED, Arrow.BLACK_DELTA);
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.COFACTOR, Arrow.BLACK_DELTA);
-		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTAINS, Arrow.BLACK_CIRCLE);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.RIGHT, Arrow.DELTA);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTROLLED, Arrow.DELTA);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.COFACTOR, Arrow.DELTA);
+		discreteMapping.putMapValue(MapBioPaxToCytoscape.CONTAINS, Arrow.CIRCLE);
 
 		//  Inhibition Edges
 		Set inhibitionSet = ControlTypeConstants.getInhibitionSet();
@@ -362,7 +364,7 @@ public class BioPaxVisualStyleUtil {
 
 		while (iterator.hasNext()) {
 			String controlType = (String) iterator.next();
-			discreteMapping.putMapValue(controlType, Arrow.BLACK_T);
+			discreteMapping.putMapValue(controlType, Arrow.T);
 		}
 
 		//  Activation Edges
@@ -371,12 +373,12 @@ public class BioPaxVisualStyleUtil {
 
 		while (iterator.hasNext()) {
 			String controlType = (String) iterator.next();
-			discreteMapping.putMapValue(controlType, Arrow.BLACK_DELTA);
+			discreteMapping.putMapValue(controlType, Arrow.DELTA);
 		}
 
 		GenericEdgeTargetArrowCalculator edgeTargetArrowCalculator = new GenericEdgeTargetArrowCalculator("BioPAX Target Arrows"
 																										  + VERSION_POST_FIX,
 																										  discreteMapping);
-		eac.setEdgeTargetArrowCalculator(edgeTargetArrowCalculator);
+		eac.setCalculator(edgeTargetArrowCalculator);
 	}
 }
