@@ -145,6 +145,12 @@ public abstract class Cytoscape {
 	// Signals that CytoscapeInit properties have been updated.
 	public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
 
+       /**
+        * Specifies that the Proxy settings Cytoscape uses to connect to the
+        * internet have been changed.
+        */
+       public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
+
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
 	 * parsed correctly<BR>
