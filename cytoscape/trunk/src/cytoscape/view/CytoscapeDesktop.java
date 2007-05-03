@@ -495,6 +495,7 @@ public class CytoscapeDesktop extends JFrame
         vizmapperUI = VizMapperMainPanel.getVizMapperUI();
         getCytoPanel(SwingConstants.WEST)
             .add("VizMapper\u2122", vizmapperUI);
+        this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
     }
 
     /**
