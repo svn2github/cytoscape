@@ -10,6 +10,9 @@ import cytoscape.Cytoscape;
 
 public class ProxyHandler implements PropertyChangeListener {
 
+        public static final String PROXY_HOST_PROPERTY_NAME = "proxy.server";
+        public static final String PROXY_TYPE_PROPERTY_NAME = "proxy.server.type";
+        public static final String PROXY_PORT_PROPERTY_NAME = "proxy.server.port";
         private static Proxy proxyServer = null;
 
 	static {
@@ -55,7 +58,15 @@ public class ProxyHandler implements PropertyChangeListener {
         }
 
 	public void propertyChange(PropertyChangeEvent e) {
-		if ( e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED ) 
+		if ( e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED ) {
+            Proxy savedProxy = proxyServer;
 			loadProxyServer();
+	    // Only fire event if the proxy changed:
+            if (((proxyServer == null) && (savedProxy != null)) ||
+                ((proxyServer != null) && (!proxyServer.equals(savedProxy)))) {
+                Cytoscape.firePropertyChange(Cytoscape.PROXY_MODIFIED,
+                                             savedProxy, proxyServer);
+            }
+		}
 	}
 }
