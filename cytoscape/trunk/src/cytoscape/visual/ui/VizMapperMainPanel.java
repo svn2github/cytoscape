@@ -1,67 +1,6 @@
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetworkEvent;
-import cytoscape.CyNetworkListener;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.Semantics;
-
-import cytoscape.util.SwingWorker;
-
-import cytoscape.util.swing.DropDownMenuButton;
-
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LineTypeDef;
-
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.CalculatorFactory;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.continuous.ContinuousTrackRenderer;
-import cytoscape.visual.ui.editors.continuous.CyGradientTrackRenderer;
-import cytoscape.visual.ui.editors.continuous.DiscreteTrackRenderer;
-import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import cytoscape.visual.ui.icon.NodeFullDetailView;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import ding.view.DGraphView;
-
 import giny.model.GraphObject;
-
 import giny.view.GraphView;
 
 import java.awt.Color;
@@ -71,27 +10,14 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
-import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-
-import java.io.IOException;
-
 import java.lang.reflect.Constructor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -107,7 +33,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -124,6 +49,58 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+
+import com.l2fprod.common.propertysheet.DefaultProperty;
+import com.l2fprod.common.propertysheet.Property;
+import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
+import com.l2fprod.common.propertysheet.PropertySheetPanel;
+import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetworkEvent;
+import cytoscape.CyNetworkListener;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.Semantics;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.CalculatorFactory;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
+import cytoscape.visual.ui.editors.continuous.ContinuousTrackRenderer;
+import cytoscape.visual.ui.editors.continuous.CyGradientTrackRenderer;
+import cytoscape.visual.ui.editors.continuous.DiscreteTrackRenderer;
+import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
+import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.visual.ui.icon.NodeFullDetailView;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import ding.view.DGraphView;
 
 
 /**
@@ -207,7 +184,9 @@ public class VizMapperMainPanel extends JPanel
      */
     private VisualMappingManager vmm;
 
-    // Key is Visual Style Name.
+    /*
+     * Keeps 0properties in the browser.
+     */
     private Map<String, List<Property>> propertyMap;
     private JScrollPane noMapListScrollPane;
     private List<VisualPropertyType> noMapping;
@@ -614,7 +593,9 @@ public class VizMapperMainPanel extends JPanel
     private void vsNameComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
         final String vsName = (String) vsNameComboBox.getSelectedItem();
 
-        System.out.println("---Got VS Change: " + vsName);
+        vmm.setVisualStyle(vsName);
+        vmm.getNetworkView()
+           .redrawGraph(false, true);
 
         // visualPropertySheetPanel = new PropertySheetPanel();
         if (propertyMap.containsKey(vsName)) {
@@ -629,10 +610,6 @@ public class VizMapperMainPanel extends JPanel
                 visualPropertySheetPanel.addProperty(prop);
         } else
             setPropertyTable();
-
-        //setDefaultPanel(DefaultAppearenceBuilder.getDefaultView());
-
-        // visualPropertySheetPanel.repaint();
     }
 
     private static final String CATEGORY_NODE = "Node Attributes";
@@ -2199,11 +2176,27 @@ public class VizMapperMainPanel extends JPanel
                 newRootProp,
                 EDGE_VISUAL_MAPPING);
 
-        parent = null;
-
         expandLastSelectedItem(type.getName());
 
-        //setPropertyTable();
+        List<Property> proplist = propertyMap.get(
+                vmm.getVisualStyle().getName());
+
+        for (Property p : proplist) {
+            if (p.getDisplayName()
+                     .equals(parent.getDisplayName())) {
+                propertyMap.get(vmm.getVisualStyle().getName())
+                           .remove(p);
+
+                break;
+            }
+        }
+
+        propertyMap.get(vmm.getVisualStyle().getName())
+                   .add(newRootProp);
+
+        vmm.getNetworkView()
+           .redrawGraph(false, true);
+        parent = null;
     }
 
     private void expandLastSelectedItem(String name) {
@@ -2553,7 +2546,7 @@ public class VizMapperMainPanel extends JPanel
         else
             mapType = ObjectMapping.EDGE_MAPPING;
 
-        final Object defaultObj = type.getDefault( vmm.getVisualStyle());
+        final Object defaultObj = type.getDefault(vmm.getVisualStyle());
         final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
         ObjectMapping mapper = null;
 
@@ -2587,7 +2580,7 @@ public class VizMapperMainPanel extends JPanel
         /*
          * Move the property in the list.
          */
-        Property prop;
+        Property prop = null;
 
         for (int i = 0;
                 i < visualPropertySheetPanel.getTable()
@@ -2610,9 +2603,21 @@ public class VizMapperMainPanel extends JPanel
         else
             buildProperty(calc, newRootProp, EDGE_VISUAL_MAPPING);
 
+        /*
+         * Update memory
+         */
+        propertyMap.get(vmm.getVisualStyle().getName())
+                   .remove(prop);
+        propertyMap.get(vmm.getVisualStyle().getName())
+                   .add(newRootProp);
+
+        this.noMapping.remove(newRootProp.getHiddenObject());
         prop = null;
 
         expandLastSelectedItem(type.getName());
+
+        vmm.getNetworkView()
+           .redrawGraph(false, true);
     }
 
     /**
@@ -2680,7 +2685,9 @@ public class VizMapperMainPanel extends JPanel
                     visualPropertySheetPanel.removeProperty(curProp);
                     propertyMap.get(vmm.getVisualStyle().getName())
                                .remove(curProp);
-                    this.visualPropertySheetPanel.repaint();
+                    propertyMap.get(vmm.getVisualStyle().getName())
+                               .add(prop);
+                    visualPropertySheetPanel.repaint();
                 }
             }
         }
@@ -2785,41 +2792,5 @@ public class VizMapperMainPanel extends JPanel
 
         // Commented out to prevent auto-updates
         // VMM.getNetworkView().redrawGraph(false, true);
-    }
-
-    class DSourceList extends JList
-        implements Transferable, DragGestureListener {
-        public DSourceList(Object[] list) {
-            super(list);
-
-            DragSource dragSource = new DragSource();
-            DragGestureRecognizer dgr = dragSource.createDefaultDragGestureRecognizer(this,
-                    DnDConstants.ACTION_COPY, this);
-        }
-
-        public Object getTransferData(DataFlavor arg0)
-            throws UnsupportedFlavorException, IOException {
-            // TODO Auto-generated method stub
-            return "AAA";
-        }
-
-        public DataFlavor[] getTransferDataFlavors() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void dragGestureRecognized(DragGestureEvent e) {
-            // TODO Auto-generated method stub
-            System.out.println("From.dragGestureRecognized()\n " + e);
-
-            // Copy/Moveのアクションならドラッグを開始する
-            if ((e.getDragAction() | DnDConstants.ACTION_COPY_OR_MOVE) != 0)
-                e.startDrag(DragSource.DefaultCopyDrop, this, null);
-        }
     }
 }
