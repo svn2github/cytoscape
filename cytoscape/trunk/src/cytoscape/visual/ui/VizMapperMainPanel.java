@@ -1913,9 +1913,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 
-		/*
+		/*******************************************************************
 		 * Below this line, accept only cell editor events.
-		 */
+		 ******************************************************************/
+		 
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)
 			return;
 
@@ -1986,7 +1987,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			             .getMapping(0);
 
 		/*
-		 * This is a attribute name change.
+		 * Controlling Attribute has been changed.
 		 */
 		if (ctrAttrName != null) {
 			mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
@@ -2009,7 +2010,18 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			else
 				buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type),
 				              newRootProp, EDGE_VISUAL_MAPPING);
+			
+			
+			
+			removeProperty(typeRootProp);
 
+			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+
+			
+			
+			
+			
+			
 			typeRootProp = null;
 
 			expandLastSelectedItem(type.getName());
