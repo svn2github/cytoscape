@@ -36,16 +36,8 @@
 */
 package cytoscape.layout;
 
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.init.CyInitParams;
-
-import cytoscape.layout.LayoutAlgorithm;
-
 import cytoscape.layout.algorithms.GridNodeLayout;
-
-import cytoscape.layout.ui.LayoutMenu;
-import cytoscape.layout.ui.LayoutSettingsDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,45 +47,22 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.swing.JDialog;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
 
 /**
  * CyLayouts is a singleton class that is used to register all available
- * layout algorithms.  The contents of this list are used to build the Layout
- * menu, display the advanced settings dialog, and interface with the current
- * cytoscape properties.
- *
+ * layout algorithms.  
  */
 public class CyLayouts {
 	private static HashMap<String, LayoutAlgorithm> layoutMap;
-	private static HashMap<String, List> menuNameMap;
-	private static HashMap<String, LayoutMenu> menuMap;
-	private static JMenu layoutMenu = null;;
-	private static JMenuItem settingsMenu;
-	private static LayoutSettingsDialog settingsDialog;
-	private static final String layoutProperty = "layout.";
-	private static int mode = CyInitParams.GUI;
+	private static HashMap<LayoutAlgorithm, String> menuNameMap;
 
 	static {
 		new CyLayouts();
 	}
 
 	private CyLayouts() {
-		layoutMap = new HashMap();
-		menuNameMap = new HashMap();
-		menuMap = new HashMap();
-		if (CytoscapeInit.getCyInitParams() != null) {
-			mode = CytoscapeInit.getCyInitParams().getMode();
-		}
-		if ((mode == CyInitParams.EMBEDDED_WINDOW) || (mode == CyInitParams.GUI)) {
-			layoutMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout");
-		}
-
-		Cytoscape.getDesktop().getCyMenus().addAction( new SettingsAction() );
-		layoutMenu.addSeparator();
+		layoutMap = new HashMap<String,LayoutAlgorithm>();
+		menuNameMap = new HashMap<LayoutAlgorithm,String>();
 
 		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
 	}
@@ -109,28 +78,8 @@ public class CyLayouts {
 	 * @param menu The menu that this should appear under
 	 */
 	public static void addLayout(LayoutAlgorithm layout, String menu) {
-		ArrayList<LayoutAlgorithm> menuList;
-		layoutMap.put(layout.getName(), layout);
-
-		// Don't mess with menus in headless mode
-		if (layoutMenu == null) 
-			return;
-
-		if (menu == null) {
-			menu = "none";
-		}
-
-		if (menuNameMap.containsKey(menu)) {
-			menuList = (ArrayList) menuNameMap.get(menu);
-		} else {
-			menuList = new ArrayList();
-			menuNameMap.put(menu, menuList);
-			// New menu!  Create it
-			createMenu(menu);
-		}
-
-		menuList.add(layout);
-		addLayoutToMenu(menu, layout);
+		layoutMap.put(layout.getName(),layout);
+		menuNameMap.put(layout,menu);
 	}
 
 	/**
@@ -139,30 +88,8 @@ public class CyLayouts {
 	 * @param layout The layout to remove
 	 */
 	public static void removeLayout(LayoutAlgorithm layout) {
-		// Remove it from the layout map
 		layoutMap.remove(layout.getName());
-
-		// Don't mess with menus in headless mode
-		if (layoutMenu == null) 
-			return;
-
-		// Remove it from the menuNameMap
-		Iterator iter = menuNameMap.keySet().iterator();
-
-		while (iter.hasNext()) {
-			// Get the key
-			String menu = (String) iter.next();
-
-			// OK, now get the list
-			List menuList = (List) menuNameMap.get(menu);
-
-			if (menuList.indexOf(layout) >= 0) {
-				removeLayoutFromMenu(menu, layout);
-				menuList.remove(layout);
-
-				return;
-			}
-		}
+		menuNameMap.remove(layout);
 	}
 
 	/**
@@ -173,10 +100,7 @@ public class CyLayouts {
 	 * @return the layout of that name or null if it is not reigstered
 	 */
 	public static LayoutAlgorithm getLayout(String name) {
-		if (layoutMap.containsKey(name))
-			return (LayoutAlgorithm) layoutMap.get(name);
-
-		return null;
+		return layoutMap.get(name);
 	}
 
 	/**
@@ -189,29 +113,6 @@ public class CyLayouts {
 	}
 
 	/**
-	 * Get all of the layouts associated with a specific
-	 * menu.
-	 *
-	 * @param menu The name of the menu
-	 * @return a List of all layouts associated with this menu (could be null)
-	 */
-	public static List<LayoutAlgorithm> getLayoutMenuList(String menu) {
-		if (menuNameMap.containsKey(menu))
-			return (List<LayoutAlgorithm>) menuNameMap.get(menu);
-
-		return null;
-	}
-
-	/**
-	 * Get all of the menus (categories of layouts) currently defined.
-	 *
-	 * @return a Collection of Strings representing each of the menus
-	 */
-	public static Set<String> getLayoutMenus() {
-		return menuNameMap.keySet();
-	}
-
-	/**
 	 * Get the default layout.  This is either the grid layout or a layout
 	 * chosen by the user via the setting of the "layout.default" property.
 	 *
@@ -219,62 +120,21 @@ public class CyLayouts {
 	 */
 	public static LayoutAlgorithm getDefaultLayout() {
 		// See if the user has set the layout.default property
-		String defaultLayout = CytoscapeInit.getProperties().getProperty(layoutProperty + "default");
+		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
 
 		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
 			defaultLayout = "grid";
 		}
 
-		LayoutAlgorithm l = (LayoutAlgorithm) layoutMap.get(defaultLayout);
+		LayoutAlgorithm l = layoutMap.get(defaultLayout);
 		System.out.println("getDefaultLayout returning " + l);
 
 		// Nope, so return the grid layout 
 		return l;
 	}
 
-	/**
-	 * Menu interfaces
-	 */
-	private static void addLayoutToMenu(String menuName, LayoutAlgorithm layout) {
-		if (menuName.equals("none") || layoutMenu == null)
-			return;
-
-		if (!menuMap.containsKey(menuName)) {
-			createMenu(menuName);
-		}
-
-		// Get the LayoutMenu associated with this menuName
-		LayoutMenu topMenu = (LayoutMenu) menuMap.get(menuName);
-		topMenu.add(layout);
-	}
-
-	private static void createMenu(String menuName) {
-		if (menuName.equals("none") || layoutMenu == null)
-			return;
-
-		// Create an empty JMenu
-		LayoutMenu menu = new LayoutMenu(menuName);
-		// Add it to our list
-		menuMap.put(menuName, menu);
-		layoutMenu.add(menu);
-	}
-
-	private static void removeLayoutFromMenu(String menuName, LayoutAlgorithm layout) {
-		if (menuName.equals("none") || layoutMenu == null)
-			return;
-
-		if (!menuMap.containsKey(menuName))
-			return;
-
-		// Get the menu
-		LayoutMenu topMenu = (LayoutMenu) menuMap.get(menuName);
-		topMenu.remove(layout);
-
-		// Check and see if this was the last item on this menu
-		if (topMenu.getItemCount() == 0) {
-			// Remove it from our map
-			menuMap.remove(menuName);
-			layoutMenu.remove(topMenu);
-		}
+	// Ack.
+	public static String getMenuName(LayoutAlgorithm layout) {
+		return menuNameMap.get(layout); 
 	}
 }

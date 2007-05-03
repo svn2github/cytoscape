@@ -182,20 +182,15 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		algorithmSelector.addItem("Select algorithm to view settings");
 
 		// Get the list of known layout menus
-		Set<String> menus = CyLayouts.getLayoutMenus();
-		Iterator menuIter = menus.iterator();
+		Set<String> menus = LayoutMenuManager.getLayoutMenuNames();
+	
+		for (String menu : menus) {
 
-		while (menuIter.hasNext()) {
-			String menu = (String) menuIter.next();
-
-			if (menus.size() > 1)
+			if (menus.size() > 1) {
 				algorithmSelector.addItem(menu);
+			}
 
-			List<LayoutAlgorithm> layouts = CyLayouts.getLayoutMenuList(menu);
-
-			for (Iterator iter = layouts.iterator(); iter.hasNext();) {
-				LayoutAlgorithm algo = (LayoutAlgorithm) iter.next();
-
+			for (LayoutAlgorithm algo : LayoutMenuManager.getLayoutsInMenu(menu)) {
 				if (algo.getSettingsPanel() != null) {
 					algorithmSelector.addItem(algo);
 				}
@@ -204,19 +199,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private void updateAllSettings() {
-		Collection<LayoutAlgorithm> layouts = CyLayouts.getAllLayouts();
-
-		for (Iterator iter = layouts.iterator(); iter.hasNext();) {
-			LayoutAlgorithm algo = (LayoutAlgorithm) iter.next();
+		for ( LayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
 			algo.updateSettings();
 		}
 	}
 
 	private void revertAllSettings() {
-		Collection<LayoutAlgorithm> layouts = CyLayouts.getAllLayouts();
-
-		for (Iterator iter = layouts.iterator(); iter.hasNext();) {
-			LayoutAlgorithm algo = (LayoutAlgorithm) iter.next();
+		for ( LayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
 			algo.revertSettings();
 		}
 	}

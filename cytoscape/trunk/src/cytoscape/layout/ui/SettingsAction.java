@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout;
+package cytoscape.layout.ui;
 
 import cytoscape.util.CytoscapeAction;
 import cytoscape.layout.ui.LayoutSettingsDialog;
@@ -45,15 +45,14 @@ import javax.swing.event.MenuEvent;
  */
 public class SettingsAction extends CytoscapeAction {
 
-	private static LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog();
 
 	public SettingsAction() {
 		super("Settings...");
 		setPreferredMenu("Layout");
-		settingsDialog = new LayoutSettingsDialog();
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog();
 		settingsDialog.actionPerformed(e);
 	}
 

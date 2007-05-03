@@ -42,6 +42,9 @@ import cytoscape.Cytoscape;
 
 import cytoscape.actions.*; // * because we need access to all actions!
 
+import cytoscape.layout.ui.SettingsAction;
+import cytoscape.layout.ui.LayoutMenuManager;
+
 import cytoscape.util.undo.UndoAction;
 import cytoscape.util.undo.RedoAction;
 
@@ -452,6 +455,9 @@ public class CyMenus implements GraphViewChangeListener {
 		// Layout menu
 		//
 		layoutMenu.addSeparator();
+		addAction(new SettingsAction() );
+		layoutMenu.addSeparator();
+		layoutMenu.addMenuListener( new LayoutMenuManager() );
 
 		//
 		// Plugin menu

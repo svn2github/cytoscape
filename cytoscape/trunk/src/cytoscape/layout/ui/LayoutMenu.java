@@ -48,6 +48,7 @@ import cytoscape.view.CyNetworkView;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.event.MenuEvent;
@@ -62,7 +63,7 @@ import javax.swing.event.MenuListener;
  * attributes, etc.
  */
 public class LayoutMenu extends JMenu implements MenuListener {
-	ArrayList<LayoutAlgorithm> subMenuList;
+	List<LayoutAlgorithm> subMenuList;
 
 	/**
 	 * Creates a new LayoutMenu object.
@@ -72,7 +73,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	public LayoutMenu(String menuName) {
 		super(menuName);
 		addMenuListener(this);
-		subMenuList = new ArrayList();
+		subMenuList = new ArrayList<LayoutAlgorithm>();
 	}
 
 	/**
@@ -107,18 +108,14 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void menuCanceled(MenuEvent e) {
-	}
-	;
+	public void menuCanceled(MenuEvent e) { } ;
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void menuDeselected(MenuEvent e) {
-	}
-	;
+	public void menuDeselected(MenuEvent e) { } ;
 
 	/**
 	 *  DOCUMENT ME!
@@ -135,10 +132,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
-		Iterator iter = subMenuList.iterator();
-
-		while (iter.hasNext()) {
-			LayoutAlgorithm layout = (LayoutAlgorithm) iter.next();
+		for (LayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getLabel())) {
 			// Make sure we don't have any lingering locked nodes
 			layout.unlockAllNodes();
 
