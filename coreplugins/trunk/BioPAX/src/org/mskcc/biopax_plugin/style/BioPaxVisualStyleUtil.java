@@ -146,6 +146,7 @@ public class BioPaxVisualStyleUtil {
 			bioPaxVisualStyle = new VisualStyle(BIO_PAX_VISUAL_STYLE);
 
 			NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+			nac.setNodeSizeLocked(false);
 			EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
 
 			createNodeShape(nac);
@@ -265,12 +266,14 @@ public class BioPaxVisualStyleUtil {
 		GenericNodeWidthCalculator nodeWidthCalculator = new GenericNodeWidthCalculator("BioPAX Node Width"
 																						+ VERSION_POST_FIX,
 																						discreteMappingWidth);
-		nac.setNodeWidthCalculator(nodeWidthCalculator);
+		nac.setCalculator(nodeWidthCalculator);
+		nac.getDefaultAppearance().setWidth(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH);
 
 		GenericNodeHeightCalculator nodeHeightCalculator = new GenericNodeHeightCalculator("BioPAX Node Height"
 																						   + VERSION_POST_FIX,
 																						   discreteMappingHeight);
-		nac.setNodeHeightCalculator(nodeHeightCalculator);
+		nac.setCalculator(nodeHeightCalculator);
+		nac.getDefaultAppearance().setHeight(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT);
 	}
 
 	private static void createNodeLabel(NodeAppearanceCalculator nac) {
@@ -313,8 +316,8 @@ public class BioPaxVisualStyleUtil {
 																								discreteMapping);
 		nac.setCalculator(nodeColorCalculator);
 
-		// i think this is a hack, but its the only way to make it work
-		nac.setDefaultNodeFillColor(DEFAULT_NODE_COLOR);
+		// set default color
+		nac.getDefaultAppearance().setFillColor(DEFAULT_NODE_COLOR);
 	}
 
 	private static void createNodeBorderColor(NodeAppearanceCalculator nac) {
@@ -344,8 +347,8 @@ public class BioPaxVisualStyleUtil {
 																										  discreteMapping);
 		nac.setCalculator(nodeBorderColorCalculator);
 
-		// i think this is a hack, but its the only way to make it work
-		nac.setDefaultNodeBorderColor(DEFAULT_NODE_BORDER_COLOR);
+		// set default color
+		nac.getDefaultAppearance().setBorderColor(DEFAULT_NODE_BORDER_COLOR);
 	}
 
 	private static void createTargetArrows(EdgeAppearanceCalculator eac) {
