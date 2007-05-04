@@ -285,7 +285,7 @@ public class BioPaxDetailsPanel extends JPanel {
 
 	private void addAttributeList(String nodeID, String attribute, String label, StringBuffer buf) {
 		String displayString = null;
-		List list = nodeAttributes.getAttributeList(nodeID, attribute);
+		List list = nodeAttributes.getListAttribute(nodeID, attribute);
 
 		if (list != null) {
 			for (int lc = 0; lc < list.size(); lc++) {
