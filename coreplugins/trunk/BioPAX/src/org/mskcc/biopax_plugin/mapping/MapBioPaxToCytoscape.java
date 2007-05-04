@@ -812,7 +812,7 @@ public class MapBioPaxToCytoscape {
 			Set keySet = modificationsMap.keySet();
 			List list = new ArrayList();
 			list.addAll(keySet);
-			attributes.setAttributeList(cyNodeId,
+			attributes.setListAttribute(cyNodeId,
 			                            MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, list);
 
 			//  Store Complete Map of Chemical Modifications --> # of Modifications
@@ -829,7 +829,7 @@ public class MapBioPaxToCytoscape {
 		                             ? cellularLocationsWrapper.getList() : null;
 
 		if (cellularLocationsList != null) {
-			attributes.setAttributeList(cyNodeId, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
+			attributes.setListAttribute(cyNodeId, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
 			                            cellularLocationsList);
 		}
 
