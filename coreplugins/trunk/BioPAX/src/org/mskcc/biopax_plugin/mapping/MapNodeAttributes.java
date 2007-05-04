@@ -250,7 +250,7 @@ public class MapNodeAttributes {
 				ArrayList synList = bpParser.getSynonymList();
 
 				if (synList != null) {
-					nodeAttributes.setAttributeList(nodeID, BIOPAX_SYNONYMS, synList);
+					nodeAttributes.setListAttribute(nodeID, BIOPAX_SYNONYMS, synList);
 				}
 
 				// organism
@@ -279,7 +279,7 @@ public class MapNodeAttributes {
 				List xrefList = getXRefList(bpParser, BIOPAX_AFFYMETRIX_REFERENCES_LIST);
 
 				if ((xrefList != null) && (xrefList.size() > 0)) {
-					nodeAttributes.setAttributeList(nodeID, BIOPAX_AFFYMETRIX_REFERENCES_LIST,
+					nodeAttributes.setListAttribute(nodeID, BIOPAX_AFFYMETRIX_REFERENCES_LIST,
 					                                xrefList);
 				}
 
@@ -329,7 +329,7 @@ public class MapNodeAttributes {
 				List idList = addXRefIds(bpParser.getAllXRefs());
 
 				if (idList != null) {
-					nodeAttributes.setAttributeList(nodeID, BIOPAX_XREF_IDS, idList);
+					nodeAttributes.setListAttribute(nodeID, BIOPAX_XREF_IDS, idList);
 				}
 			}
 		}
