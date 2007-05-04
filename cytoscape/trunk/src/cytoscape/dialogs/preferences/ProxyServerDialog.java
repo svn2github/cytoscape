@@ -57,6 +57,9 @@ import javax.swing.JOptionPane;
  *
  */
 public class ProxyServerDialog extends JDialog implements ActionListener, ItemListener {
+
+	private static final long serialVersionUID = -2693844068486336199L;
+
 	/** Creates new form URLimportAdvancedDialog */
 	public ProxyServerDialog(javax.swing.JFrame pParent) {
 		super(pParent, true);
@@ -303,10 +306,10 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 		}
 		
 		// Update the proxy server info 
-		CytoscapeInit.getProperties().setProperty("proxy.server", tfHost.getText().trim());
-		CytoscapeInit.getProperties().setProperty("proxy.server.port", tfPort.getText());
+		CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_HOST_PROPERTY_NAME, tfHost.getText().trim());
+		CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_PORT_PROPERTY_NAME, tfPort.getText());
 		CytoscapeInit.getProperties()
-		             .setProperty("proxy.server.type", cmbType.getSelectedItem().toString());
+		             .setProperty(ProxyHandler.PROXY_TYPE_PROPERTY_NAME, cmbType.getSelectedItem().toString());
 
 		Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null);
 
