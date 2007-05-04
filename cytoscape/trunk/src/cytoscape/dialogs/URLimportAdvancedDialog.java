@@ -51,10 +51,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import java.io.File;
 import java.io.IOException;
 
-import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 
@@ -435,9 +433,9 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 					return;
 				}
 
-				CytoscapeInit.getProperties().setProperty("proxy.server", tfHost.getText().trim());
-				CytoscapeInit.getProperties().setProperty("proxy.server.port", tmpInteger.toString());
-				CytoscapeInit.getProperties().setProperty("proxy.server.type", proxyType.toString());
+				CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_HOST_PROPERTY_NAME, tfHost.getText().trim());
+				CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_PORT_PROPERTY_NAME, tmpInteger.toString());
+				CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_TYPE_PROPERTY_NAME, proxyType.toString());
 
 				Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null);
 
