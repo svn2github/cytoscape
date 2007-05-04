@@ -23,16 +23,10 @@ import org.systemsbiology.gaggle.geese.Goose;
 import cytoscape.*;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
-//import cytoscape.visual.calculators.Calculator;
-//import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
-//import cytoscape.visual.mappings.*;
-//import cytoscape.visual.ui.VizMapUI;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
-
-import giny.view.NodeView;
-//import giny.view.EdgeView;
-import giny.view.GraphView;
+import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 
 import giny.model.Node;
 import giny.model.Edge;
@@ -48,37 +42,32 @@ import giny.model.Edge;
  */
 public class CyGoose implements Goose
 	{
-	private String GooseName;
-	private String GooseNetId;	
+	private String gooseName;
+	private String gooseNetId;	
 
-	private Boss GaggleBoss;
-	private GooseDialog GDialog;
+	private Boss gaggleBoss;
+	private GooseDialog gDialog;
 	
-	private NodeAppearanceCalculator NAC; 
-	private SeedMappings VisualMap;
+	private NodeAppearanceCalculator nac; 
+	private SeedMappings visualMap;
 	
-	private String BroadcastId;
+	private String broadcastId;
 	private String targetGoose = "Boss";
 	
-	private boolean IsMovieAttributeMapped;
-	private boolean AttributeChecked = false;
-
 	private static void print(String S)
 		{ System.out.println(S); }
 
 	public CyGoose(GooseDialog GD, Boss boss)
 		{
-		GaggleBoss = boss;
-		this.GDialog = GD;
+		gaggleBoss = boss;
+		gDialog = GD;
 		
 		// deals with evertying but the broadcast actions
-		this.addButtonActions();
-		// creates broadcast actions
-		//CyBroadcast Broadcast = new CyBroadcast(GDialog, GaggleBoss, this);
+		addButtonActions();
 		
 		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
-		NAC = CurrentStyle.getNodeAppearanceCalculator();
-		VisualMap = new SeedMappings(NAC);
+		nac = CurrentStyle.getNodeAppearanceCalculator();
+		visualMap = new SeedMappings(nac);
 		}
 
 	// Deselect all nodes/edges.  
@@ -98,36 +87,58 @@ public class CyGoose implements Goose
 	public void doBroadcastList() throws RemoteException
 		{ print("doBroadcastList() not implemented"); }
 
-	// exactly what it says
+	/**
+	 * Destroy the network that is represented by this Goose or shut down Cytoscape
+	 * if null network is chosen.
+	 */
 	public void doExit() throws RemoteException, UnmarshalException
 		{
-		print("Exiting...");
-		System.exit(0);
+		if (Integer.valueOf(getNetworkId()).intValue() > 0)
+			{
+			print("Destroying network " + gooseName);
+			Cytoscape.destroyNetwork(Cytoscape.getNetwork(gooseNetId), false);
+			}
+		else
+			{
+			print("Exiting Cytoscape...");
+			Cytoscape.exit(0);
+			}
 		}
 
-	// hides goose
+	/**
+	 * Hide Cytoscape
+	 */
 	public void doHide() throws RemoteException
-		{ Cytoscape.getDesktop().setVisible(false); }
+		{ 
+		Cytoscape.getDesktop().setVisible(false); 
+		}
 
 	// shows goose
 	public void doShow() throws RemoteException
 		{
 		Cytoscape.getDesktop().setVisible(true);
 		Cytoscape.getDesktop().toFront();
-		if (!this.getNetworkId().equals("0")) Cytoscape.getDesktop().setFocus(this.getNetworkId());
+		if (!this.getNetworkId().equals("0")) 
+			{
+			Cytoscape.getDesktop().setFocus(getNetworkId());
+			}
 		}
 
 	/**
 	 * @return Name of the goose
 	 */
-	public String getName() //throws RemoteException
-		{ return this.GooseName; }
+	public String getName() 
+		{ 
+		return gooseName; 
+		}
 
 	/**
 	 * @return Network id of goose
 	 */
 	public String getNetworkId()
-		{ return this.GooseNetId; }
+		{ 
+		return gooseNetId; 
+		}
 
 	/**
 	 * @return Array of selected node ids
@@ -166,10 +177,18 @@ public class CyGoose implements Goose
 	// TODO: check that the attribute being used is part of a NodeAppearanceCalculator
 	// TODO: setup some default calculators for color/shape/size in cases where an attribute is not matched so a movie
 	// will do something regardless
+	/**
+	 * @param species
+	 * @param dataTitle
+	 * @param hashMap
+	 * 
+	 * Takes the attributes from the hashMap and adds them to the network goose
+	 * and displayes the dataTitle in the message area on the CyGoose tab.
+	 */
 	public void handleMap(String species, String dataTitle, HashMap hashMap)
 			throws RemoteException
 		{
-		GDialog.getMessageArea().setText(dataTitle);
+		gDialog.getMessageArea().setText(dataTitle);
 
 		HashMap<String,ArrayList> AttrMap = hashMap;
 		print("********handleMap(String, String, HashMap) \"dataTitle\"***********");
@@ -269,11 +288,15 @@ public class CyGoose implements Goose
       UpperValue = UpperValue + (UpperValue * 0.2);
       LowerValue = LowerValue - (LowerValue * 0.2);
       
-      this.VisualMap.seedMappings(attrName, UpperValue, LowerValue);
+      visualMap.seedMappings(attrName, UpperValue, LowerValue);
       }
     Cytoscape.getNetworkView(Net.getIdentifier()).redrawGraph(true, true);
 		}
 
+	/**
+	 * @param matrix
+	 * Adds all attributes given in the matix to all matching nodes.
+	 */
 	public void handleMatrix(DataMatrix matrix) throws RemoteException
 		{
     print("***** handleMatrix(DataMatrix) ****** ");
@@ -313,8 +336,13 @@ public class CyGoose implements Goose
 
 
 
-	// If this is sent to the default boss (Cytoscape, no network) nothing will happen
-	// If this is sent to a network boss it will select the appropriate nodes
+	/**
+	 * @param species
+	 * @param names
+	 * 
+	 * If sent to a network goose (not the default 'null' goose) all matching nodes
+	 * will be selected.  Species is ignored.
+	 */
 	public void handleNameList(String species, String[] names) throws RemoteException
 		{
 		print("**** handleNameList(String, String[]) *****");
@@ -340,8 +368,14 @@ public class CyGoose implements Goose
 
 
 
-	// if broadcast to the generic Cytoscape goose a new network is created, if broadcast
-	// to a network goose the interactions are added to the network and selected
+	/**
+	 * @param species
+	 * @param network
+	 * 
+	 * If this is broadcast to the 'null' goose a network is created in Cytoscape.
+	 * If this is broadcast to a network goose interactions are added to the network
+	 * and all added interactions and matching interactions are selected.
+	 */
 	public void handleNetwork(String species, Network network) throws RemoteException
 		{
     print("handleNetwork(String, Network, CyNetwork)");
@@ -351,10 +385,17 @@ public class CyGoose implements Goose
     if ( this.getNetworkId() == null || this.getNetworkId().equals("0") ) 
     	{ 
     	System.out.println("  --Null network");
-    	CyNetwork NewNet = Cytoscape.createNetwork("Gaggle "+species);
+    	CyNetwork NewNet = Cytoscape.createNetwork("Gaggle "+species, false);
     	handleNetwork(species, network, NewNet, false); 
     	// basic layout
-    	layout( (GraphView)Cytoscape.getNetworkView(NewNet.getIdentifier()) );
+    	for (LayoutAlgorithm la: CyLayouts.getAllLayouts())
+    		{
+    		System.out.println("Layout: " + la.getName());
+    		}
+    	
+    	LayoutAlgorithm Layout = CyLayouts.getDefaultLayout();
+    	Cytoscape.createNetworkView(NewNet, NewNet.getTitle(), Layout);
+    	
     	NetworkId = NewNet.getIdentifier();
     	}
 		else 
@@ -368,6 +409,17 @@ public class CyGoose implements Goose
 		}
 
 
+	/**
+	 * 
+	 * @param species
+	 * @param GaggleNet
+	 * @param CyNet
+	 * @param SelectNodes
+	 * @throws RemoteException
+	 * 
+	 * Create a network from the gaggle network either de novo (if null network is handling)
+	 * or add to the network goose and select added nodes.
+	 */
 	public void handleNetwork(String species, Network GaggleNet, CyNetwork CyNet, boolean SelectNodes) 
 		throws RemoteException
 		{
@@ -416,53 +468,27 @@ public class CyGoose implements Goose
 
 		}
 
-		// provides a basic layout so nodes do not appear all on top of each other, this is the same as the layout
-		// for an imported sif file (no layout info given)
-		private void layout(GraphView view) 
-			{
-			double distanceBetweenNodes = 50.0d;
-			int columns = (int) Math.sqrt(view.nodeCount());
-			Iterator nodeViews = view.getNodeViewsIterator();
-			double currX = 0.0d;
-			double currY = 0.0d;
-			int count = 0;
-			while (nodeViews.hasNext()) 
-				{
-				NodeView nView = (NodeView) nodeViews.next();
-				nView.setOffset(currX, currY);
-				count++;
-				if (count == columns) 
-					{
-					count = 0;
-					currX = 0.0d;
-					currY += distanceBetweenNodes;
-					} 
-				else  currX += distanceBetweenNodes; 
-				}
-			}
-		
-
 	// no point in this one
 	public void setGeometry(int x, int y, int width, int height) throws RemoteException
 		{ print("setGeometry() not implemented"); }
 
 	// Used to set the goose network id to the cynetwork id
 	public void setNetworkId(String Id) 
-		{ this.GooseNetId = Id; }
+		{ gooseNetId = Id; }
 	
 	// sets the name goose is identified by in the boos
 	public void setName(String newName) //throws RemoteException
-		{ this.GooseName = newName; }
+		{ gooseName = newName; }
 
 	// I think this is used to choose the identifier to broadcast/handle nodes by, currently not used
 	public void setBroadcastId()
-		{ this.BroadcastId = "ID"; }
+		{ broadcastId = "ID"; }
 
 	private void addButtonActions()
 		{ 
 		// set attribute to broadcast to other geese as the ID 
 		/*
-		GDialog.getIdButton().addActionListener(new ActionListener()
+		gDialog.getIdButton().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{ setBroadcastId(); }
@@ -470,7 +496,7 @@ public class CyGoose implements Goose
 		*/
 
 		// listen in on the getGooseBox() 
-		GDialog.getGooseBox().addActionListener(new ActionListener()
+		gDialog.getGooseBox().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{
@@ -480,12 +506,12 @@ public class CyGoose implements Goose
 			});
 
     // show selected goose 
-    GDialog.getShowButton().addActionListener(new ActionListener()
+    gDialog.getShowButton().addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
           try
-            { GaggleBoss.show(targetGoose); }
+            { gaggleBoss.show(targetGoose); }
           catch (Exception ex)
             { ex.printStackTrace(); }
           }
@@ -493,12 +519,12 @@ public class CyGoose implements Goose
 
 
 		// hide selected goose 
-		GDialog.getHideButton().addActionListener(new ActionListener()
+		gDialog.getHideButton().addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{
 					try
-						{ GaggleBoss.hide(targetGoose); }
+						{ gaggleBoss.hide(targetGoose); }
 					catch (Exception ex)
 						{ ex.printStackTrace(); }
 					}
