@@ -41,6 +41,9 @@ import cytoscape.Cytoscape;
 
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.LayoutTask;
+
+import cytoscape.task.util.TaskManager;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -108,7 +111,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		} else if (command.equals("execute")) {
 			// Layout using the current layout
 			updateAllSettings();
-			currentLayout.doLayout();
+			TaskManager.executeTask( new LayoutTask(currentLayout,Cytoscape.getCurrentNetworkView()),
+			                         LayoutTask.getDefaultTaskConfig() );
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout
 			revertAllSettings();
