@@ -204,7 +204,6 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
  * {@link csplugins.hierarchicallayout.Graph}
 */
 public class HierarchicalLayoutAlgorithm extends AbstractLayout {
-	private TaskMonitor taskMonitor = null;
 	private int nodeHorizontalSpacing = 64;
 	private int nodeVerticalSpacing = 32;
 	private int componentSpacing = 64;
