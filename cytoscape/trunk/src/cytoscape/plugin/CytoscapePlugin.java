@@ -158,11 +158,16 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			System.out.println("InstantiationException");
 			System.out.println(e);
 			e.printStackTrace();
+			object = null;
 		} catch (IllegalAccessException e) {
 			System.out.println("IllegalAccessException");
 			System.out.println(e);
 			e.printStackTrace();
-		} catch (Exception e) {
+			object = null;
+
+		// We want to catch everything possible.  Errors will cause the entire
+		// cytoscape app to crash, which a plugin should not do.
+		} catch (Throwable e) {
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any
 			// exception
@@ -180,15 +185,16 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			                   + "for the plugin or contact the plugin author for more information.");
 			System.err.println(e);
 			e.printStackTrace();
+			object = null;
 		}
 
 		if (object == null) {
-			System.out.println("Instantiation seems to have failed");
+			System.out.println("Instantiation has failed for: " + pluginClass);
+			return false;
+		} else {
+			System.out.println("Successfully loaded: " + pluginClass);
+			return true;
 		}
-
-		System.out.println("Successfully loaded: " + pluginClass);
-
-		return true;
 	}
 
 	private HashMap<String, List<File>> pluginFileListMap;
