@@ -162,7 +162,7 @@ public interface GraphPerspective {
   /**
    * @deprecated Use restoreNode(Node) restoreNodes(int[]) instead.
    * @see #restoreNode(Node)
-   * @see #removeNodes(int[])
+   * @see #restoreNodes(int[])
    */
   public List restoreNodes ( List nodes ) ;
   
@@ -172,7 +172,7 @@ public interface GraphPerspective {
    *   RootGraph.getConnectingEdgeIndicesArray(int[]).
    * @see #restoreNodes(int[])
    * @see #restoreEdges(int[])
-   * @see RootGraph.getConnectingEdgeIndicesArray(int[])
+   * @see RootGraph#getConnectingEdgeIndicesArray(int[])
    */
   public List restoreNodes (List nodes, boolean restore_incident_edges);
   
@@ -192,7 +192,7 @@ public interface GraphPerspective {
    *   RootGraph.getConnectingEdgeIndicesArray(int[]).
    * @see #restoreNodes(int[])
    * @see #restoreEdges(int[])
-   * @see RootGraph.getConnectingEdgeIndicesArray(int[])
+   * @see RootGraph#getConnectingEdgeIndicesArray(int[])
    */
   public int [] restoreNodes (int [] node_indices, boolean restore_incident_edges);
   
@@ -277,7 +277,7 @@ public interface GraphPerspective {
  
   /**
    * @deprecated Use restoreEdges(int[]) instead.
-   * @see restoreEdges(int[])
+   * @see #restoreEdges(int[])
    */
    public List restoreEdges ( List edges ) ;
  
@@ -713,7 +713,7 @@ public interface GraphPerspective {
   /**
    * @deprecated Use getRootGraphNodeIndex(int), whose functionality is
    *   identical.
-   * @see getRootGraphNodeIndex(int)
+   * @see #getRootGraphNodeIndex(int)
    */
    public int getNodeIndex ( int root_graph_node_index ) ;
  
@@ -747,7 +747,7 @@ public interface GraphPerspective {
   /**
    * @deprecated Use getRootGraphEdgeIndex(int), whose functionality is
    *   identical.
-   * @see getRootGraphEdgeIndex(int)
+   * @see #getRootGraphEdgeIndex(int)
    */
    public int getEdgeIndex ( int root_graph_edge_index ) ;
  
@@ -938,7 +938,7 @@ public interface GraphPerspective {
    * index.  If there are no MetaChildren then the result will be the empty List;
    * null is returned if no Node at specified [RootGraph] index exists in this
    * GraphPerspective.
-   * @param node_index the index in the underlying RootGraph of the Node that is
+   * @param parent_index the index in the underlying RootGraph of the Node that is
    * the parent (the contain<i>er</i>) in the contains-a relationship that we
    * are querying.
    * @return a new List of the Nodes in this GraphPerspective that are

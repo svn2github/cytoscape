@@ -884,7 +884,7 @@ public interface RootGraph {
    * @param parent_index the index in this RootGraph of the Node that is to be
    * the parent (the contain<i>er</i>) in the contains-a relationship that we
    * are creating.
-   * @param child_index the index in this RootGraph of the Node that is to be
+   * @param child_node_index the index in this RootGraph of the Node that is to be
    * the child (the contain<i>ee</i>) in the contains-a relationship that we
    * are creating.
    * @return true unless they were already meta-parent, meta-child to each
@@ -1043,7 +1043,7 @@ public interface RootGraph {
    * with the given index.  If there are no MetaChildren then the result will be
    * the empty list; null is returned if no Node exists in this RootGraph at
    * specified node index.
-   * @param node_index the index of the Node that is the parent (the
+   * @param parent_index the index of the Node that is the parent (the
    * contain<i>er</i>) in the contains-a relationship that we are querying.
    * @return a new List of the Nodes that are contained by the Node with the
    * given index, or null if no Node exists at index parent_index.
@@ -1129,7 +1129,7 @@ public interface RootGraph {
    * @param parent_index the index in this RootGraph of the Node that is to be
    * the parent (the contain<i>er</i>) in the contains-a relationship that we
    * are creating.
-   * @param child_index the index in this RootGraph of the Edge that is to be
+   * @param child_edge_index the index in this RootGraph of the Edge that is to be
    * the child (the contain<i>ee</i>) in the contains-a relationship that we
    * are creating.
    * @return true unless they were already meta-parent, meta-child to each

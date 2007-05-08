@@ -104,7 +104,7 @@ public static int NODE_X_POSITION = 0;
   public void removeGraphViewChangeListener(GraphViewChangeListener listener);
    
   /**
-   * @param the new Paint for the background
+   * @param paint the new Paint for the background
    */
   public void setBackgroundPaint(Paint paint);
       
@@ -162,7 +162,7 @@ public static int NODE_X_POSITION = 0;
 
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
-   * @see{hideGraphObject} as that method simply stops showing the node/edge.  This method 
+   * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
@@ -171,7 +171,7 @@ public static int NODE_X_POSITION = 0;
 
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
-   * @see{hideGraphObject} as that method simply stops showing the node/edge.  This method 
+   * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
@@ -179,7 +179,7 @@ public static int NODE_X_POSITION = 0;
 
    /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
-   * @see{hideGraphObject} as that method simply stops showing the node/edge.  This method 
+   * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
@@ -187,7 +187,7 @@ public static int NODE_X_POSITION = 0;
 
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
-   * @see{hideGraphObject} as that method simply stops showing the node/edge.  This method 
+   * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
@@ -195,7 +195,7 @@ public static int NODE_X_POSITION = 0;
 
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
-   * @see{hideGraphObject} as that method simply stops showing the node/edge.  This method 
+   * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
@@ -203,7 +203,7 @@ public static int NODE_X_POSITION = 0;
 
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
-   * @see{hideGraphObject} as that method simply stops showing the node/edge.  This method 
+   * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
@@ -409,14 +409,11 @@ public static int NODE_X_POSITION = 0;
   public  Object getNodeObjectProperty(int node_index, int property);
 
   /**
-   * @param edge_index The Node Index to be queried
+   * @param node_index The Node Index to be queried
    * @param property the property to be accessed
    * @param value the new value for this property
    */
-  public  boolean setNodeObjectProperty(
-    int node_index,
-    int property,
-    Object value);
+  public  boolean setNodeObjectProperty( int node_index, int property, Object value);
 
   /**
    * Return the stored value for the edge for the given property

@@ -19,7 +19,7 @@ public abstract class GraphPerspectiveUtil {
    * node from the root graph and replace it with another.
    * @param gp the GraphPerspective
    * @param node the index of the node to be worked with
-   * @param hide_connected_edges boolean to hide the connected edges
+   * @param hide_adjacent_edges boolean to hide the connected edges
    */
   public static int[] hideNode ( GraphPerspective gp, 
                                  int node, 
@@ -46,7 +46,6 @@ public abstract class GraphPerspectiveUtil {
    * @param gp the GraphPerspective
    * @param node the index of the node to be worked with
    * @param unhide_all_edges boolean to do unhide all or not
-   * @param exclude_edges array of edges to be excluded, should be rootGraph indices, i.e. negative numbers
    */
   public void unhideNode ( GraphPerspective gp, 
                            int node, 

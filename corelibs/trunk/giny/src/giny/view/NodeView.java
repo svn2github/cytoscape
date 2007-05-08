@@ -164,7 +164,7 @@ public interface NodeView  {
   public Point2D getOffset ();
 
   /**
-   * @param the new_x_position for this node
+   * @param new_x_position the new X position for this node
    */
   public void setXPosition(double new_x_position) ;
 
@@ -177,15 +177,15 @@ public interface NodeView  {
   public void setXPosition ( double new_x_position, boolean update ) ;
   
   /**
-   * @return the current x position of this node
-   * @see setXPosition
    * note that unless updateNode() has been called, this may not be 
    * the "real" location of this node
+   * @return the current x position of this node
+   * @see #setXPosition
    */
   public double getXPosition() ;
   
   /**
-   * @param the new_y_position for this node
+   * @param new_y_position the new Y position for this node
    */
   public void setYPosition(double new_y_position) ;
   
@@ -198,10 +198,10 @@ public interface NodeView  {
   public void setYPosition ( double new_y_position, boolean update ) ;
   
   /**
-   * @return the current y position of this node
-   * @see setYPosition
    * note that unless updateNode() has been called, this may not be 
    * the "real" location of this node
+   * @return the current y position of this node
+   * @see #setYPosition
    */
   public double getYPosition() ;
   

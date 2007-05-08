@@ -340,7 +340,7 @@ public class IntNodeDistances implements MonitorableTask {
   }//calculate
 
   /**
-   * @returns the <code>int[][]</code> array of calculated distances, 
+   * @return the <code>int[][]</code> array of calculated distances, 
    * or null if not calculated yet
    */
   public int[][] getDistances () {

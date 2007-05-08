@@ -103,7 +103,6 @@ abstract public class Abstract3DLayout  {
     }
   
   /**
-	 * {@inheritDoc}
 	 * By default, an <tt>AbstractLayout</tt> returns
 	 * null for its status.
 	 */
@@ -131,7 +130,6 @@ abstract public class Abstract3DLayout  {
 	 * 			}
 	 * 		}
 	 * </pre>
-	 * @see Layout#advancePositions()
 	 */
   public abstract void advancePositions();
   
