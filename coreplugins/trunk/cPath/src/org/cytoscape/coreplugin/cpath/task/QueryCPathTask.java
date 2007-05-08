@@ -202,7 +202,7 @@ public class QueryCPathTask implements Task {
 
         CyNetworkView networkView = createNetworkView(cyNetwork);
         if (networkView != null) {
-            graphReader.layout(networkView);
+            graphReader.getLayoutAlgorithm().doLayout(networkView);
         }
     }
 
