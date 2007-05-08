@@ -895,7 +895,7 @@ public class VizMapUI extends JDialog
             public void itemStateChanged(ItemEvent e) {
                 if (rebuilding)
                     return;
-
+                
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     VisualStyle newStyle = (VisualStyle) ((JComboBox) e.getSource()).getSelectedItem();
 

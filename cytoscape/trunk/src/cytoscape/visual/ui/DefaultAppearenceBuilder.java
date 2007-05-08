@@ -1,9 +1,5 @@
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_COLOR;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
@@ -21,50 +17,59 @@ import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
-import cytoscape.visual.ui.icon.NodeFullDetailView;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-//import cytoscape.visual.ui.icon.VisualPropertyIconFactory;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Shape;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
+
+
 
 /**
  * Dialog for editing default visual property values.<br>
  * This is a modal dialog.
+ * 
+ * <p>
+ * 	Basic idea is the following:
+ *  <ul>
+ *  	<li>Build dummy network with 2 nodes and 1 edge.</li>
+ *  	<li>Edit the default appearence of the dummy network</li>
+ *  	<li>Create a image from the dummy.</li>
+ *  </ul>
+ * </p>
  *
  * @version 0.5
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultAppearenceBuilder extends javax.swing.JDialog {
+public class DefaultAppearenceBuilder extends JDialog {
     private static final VisualPropertyType[] orderedList = {
             NODE_SHAPE, NODE_FILL_COLOR, NODE_WIDTH, NODE_HEIGHT,
             NODE_BORDER_COLOR, NODE_LINE_WIDTH, NODE_LINETYPE, NODE_LABEL_COLOR,
@@ -74,9 +79,11 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     private static final VisualPropertyType[] EDGE_PROP_LIST = {
             EDGE_COLOR, EDGE_LINETYPE, EDGE_LINE_WIDTH
         };
-    private Shape objectShape;
-    private Map<VisualPropertyType, Object> appearenceMap;
-
+    
+    private enum Globals {
+    	
+    }
+    
     /**
      * Creates a new DefaultAppearenceBuilder object.
      *
@@ -88,14 +95,10 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         initComponents();
         buildList();
 
-        this.setAlwaysOnTop(true);
-
         this.addComponentListener(
             new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
-                    // TODO Auto-generated method stub
-                    jXPanel2.createView();
-                    System.out.println("+++++++++++++ Resized!");
+                    mainView.createView();
                 }
             });
     }
@@ -110,15 +113,20 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     public static JPanel showDialog(Frame parent) {
         final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(parent,
                 true);
-
-        dialog.jXPanel2.createTempNetwork();
-
+        
+        dialog.mainView.createDummyNetwork();
+        
+        dialog.setLocationRelativeTo(parent);
         dialog.setSize(700, 300);
-        //Cytoscape.getDesktop().setFocus(id);
+        dialog.mainView.repaint();
+        dialog.repaint();
+        dialog.repaint(); 
+        dialog.mainView.repaint();
+       
         dialog.setVisible(true);
-        //Cytoscape.getDesktop().setFocus(id);
-        dialog.jXPanel2.clean();
-
+        //dialog.mainView.createView();
+        dialog.mainView.clean();
+        
         return dialog.getPanel();
     }
 
@@ -130,11 +138,21 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     public static JPanel getDefaultView() {
         final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null,
                 true);
-        dialog.jXPanel2.createTempNetwork();
-
-        dialog.jXPanel2.clean();
-
+        dialog.mainView.createDummyNetwork();
+        dialog.mainView.createView();
+        dialog.setSize(700, 300);
+//        dialog.setVisible(true);
+//        dialog.setVisible(false);
+        dialog.mainView.clean();
         return dialog.getPanel();
+    }
+    
+    public static Image getDefaultViewAsImage() {
+        final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null,
+                true);
+        dialog.mainView.createView();
+        dialog.mainView.clean();
+        return dialog.mainView.createImage(dialog.mainView.getWidth(), dialog.mainView.getHeight());
     }
 
     /**
@@ -146,7 +164,7 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
         jXPanel1 = new org.jdesktop.swingx.JXPanel();
-        jXPanel2 = new NodeFullDetailView();
+        mainView = new DefaultViewPanel();
         jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -154,9 +172,11 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-
+        applyButton = new javax.swing.JButton();
+        
+        cancelButton = new javax.swing.JButton();
+        cancelButton.setVisible(false);
+        
         jCheckBox1.setOpaque(false);
 
         //        Point2D start = new Point2D.Float(0, 0);
@@ -193,11 +213,11 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Default Appearence for " +
             Cytoscape.getVisualMappingManager().getVisualStyle().getName());
-        jXPanel2.setBorder(
+        mainView.setBorder(
             new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
 
-        org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(jXPanel2);
-        jXPanel2.setLayout(jXPanel2Layout);
+        org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
+        mainView.setLayout(jXPanel2Layout);
         jXPanel2Layout.setHorizontalGroup(
             jXPanel2Layout.createParallelGroup(
                 org.jdesktop.layout.GroupLayout.LEADING).add(0, 300,
@@ -260,9 +280,25 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
             javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        jButton1.setText("Apply");
+        applyButton.setText("Apply");
+        applyButton.addActionListener(new ActionListener() {
 
-        jButton2.setText("Cancel");
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				dispose();
+			}
+        	
+        });
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				dispose();
+			}
+        	
+        });
 
         org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
         jXPanel1.setLayout(jXPanel1Layout);
@@ -274,7 +310,7 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
                         org.jdesktop.layout.GroupLayout.LEADING).add(
                         jXPanel1Layout.createSequentialGroup().add(jCheckBox1,
                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 138,
-                            Short.MAX_VALUE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(jButton2).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(jButton1)).add(jXPanel2,
+                            Short.MAX_VALUE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(cancelButton).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(applyButton)).add(mainView,
                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                         Short.MAX_VALUE)).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(jXTitledPanel1,
@@ -290,12 +326,12 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
                         jXTitledPanel1,
                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 270,
                         Short.MAX_VALUE).add(
-                        jXPanel1Layout.createSequentialGroup().add(jXPanel2,
+                        jXPanel1Layout.createSequentialGroup().add(mainView,
                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
                             Short.MAX_VALUE).addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED).add(
                             jXPanel1Layout.createParallelGroup(
-                                org.jdesktop.layout.GroupLayout.BASELINE).add(jCheckBox1).add(jButton2).add(jButton1)))).addContainerGap()));
+                                org.jdesktop.layout.GroupLayout.BASELINE).add(jCheckBox1).add(cancelButton).add(applyButton)))).addContainerGap()));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
                 getContentPane());
@@ -335,15 +371,15 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
                      .getNetworkView()
                      .redrawGraph(false, true);
             // Cytoscape.getDesktop().setFocus(Cytoscape.getVisualMappingManager().getNetworkView().getIdentifier());
-            jXPanel2.createView();
+            mainView.createView();
 
-            jXPanel2.repaint();
+            mainView.repaint();
         }
     }
 
     // Variables declaration - do not modify
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton applyButton;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -356,11 +392,11 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
     private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
 
     // End of variables declaration
-    protected NodeFullDetailView jXPanel2;
+    protected DefaultViewPanel mainView;
 
     //	 End of variables declaration
     private JPanel getPanel() {
-        return jXPanel2;
+        return mainView;
     }
 
     /**
@@ -370,7 +406,7 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
         /*
          * Get current default node appearence
          */
-        appearenceMap = new HashMap<VisualPropertyType, Object>();
+//        appearenceMap = new HashMap<VisualPropertyType, Object>();
 
         List<Icon> icons = new ArrayList<Icon>();
         DefaultListModel model = new DefaultListModel();
@@ -381,21 +417,18 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
             nodeIcon.setLeftPadding(15);
             model.addElement(type.getName());
             icons.add(nodeIcon);
-            appearenceMap.put( type, 
-			                   type.getDefault(  
-			                           Cytoscape.getVisualMappingManager().getVisualStyle()) );
+//            appearenceMap.put( type, 
+//			                   type.getDefault(  
+//			                           Cytoscape.getVisualMappingManager().getVisualStyle()) );
         }
 
         jXList1.setCellRenderer(new VisualPropCellRenderer(icons));
 
-        objectShape = ((VisualPropertyIcon)(VisualPropertyType.NODE_SHAPE.getVisualProperty().getDefaultIcon())).getShape();
+//        objectShape = ((VisualPropertyIcon)(VisualPropertyType.NODE_SHAPE.getVisualProperty().getDefaultIcon())).getShape();
 
-        jXPanel2.setShape(objectShape);
-        jXPanel2.setAppearence(appearenceMap);
+        mainView.createView();
 
-        jXPanel2.createView();
-
-        jXPanel2.repaint();
+        mainView.repaint();
     }
 
     /**
@@ -404,28 +437,12 @@ public class DefaultAppearenceBuilder extends javax.swing.JDialog {
      * @return DOCUMENT ME!
      */
     public static JPanel getDefaultPanel() {
-        //final JPanel defPanel = new NodeFullDetailView();
-        //        final byte realizerShape = (Byte) VisualPropertyType.NODE_SHAPE.getDefault(
-        //                Cytoscape.getVisualMappingManager().getVisualStyle());
-        //        final NodeShape defShape = NodeShape.getFromRealizer(realizerShape);
-        //        final Map<VisualPropertyType, Icon> dynIcon = VisualPropertyIconFactory.getDynamicNodeIcons(defShape);
-        //        final Map<VisualPropertyType, Object> defAppearenceMap = new HashMap<VisualPropertyType, Object>();
-        //        final Shape shape;
-        //
-        //        for (VisualPropertyType type : orderedList)
-        //            defAppearenceMap.put(
-        //                type,
-        //                type.getDefault( Cytoscape.getVisualMappingManager().getVisualStyle());
-        //
-        //        shape = ((NodeIcon) dynIcon.get(VisualPropertyType.NODE_SHAPE)).getShape();
         final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null,
                 true);
-        dialog.jXPanel2.createTempNetwork();
-        dialog.jXPanel2.clean();
+        dialog.mainView.createDummyNetwork();
+        dialog.mainView.clean();
 
         return dialog.getPanel();
-
-        //return new NodeFullDetailView(defAppearenceMap, shape);
     }
 
     class VisualPropCellRenderer extends JLabel
