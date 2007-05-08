@@ -621,7 +621,7 @@ public class CytoscapeDesktop extends JFrame
     }
 
     /**
-     *  DOCUMENT ME!
+     *  TODO: We should remove one of this event!
      *
      * @param network_id DOCUMENT ME!
      */
