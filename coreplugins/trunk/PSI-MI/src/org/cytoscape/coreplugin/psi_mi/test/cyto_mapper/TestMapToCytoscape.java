@@ -144,16 +144,16 @@ public class TestMapToCytoscape extends TestCase {
 
 		//  Verify that DB Names were mapped over correctly.
 		//  There are multiple DB Names in an array of Strings.
-		List dbNameList = nodeAttributes.getAttributeList(sourceNode.getIdentifier(),
+		List dbNameList = nodeAttributes.getListAttribute(sourceNode.getIdentifier(),
 		                                                  CommonVocab.XREF_DB_NAME);
 		assertEquals(15, dbNameList.size());
 		assertEquals("RefSeq GI", dbNameList.get(0));
 
 		//  Verify that Interaction Xrefs were mapped over correctly.
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		dbNameList = edgeAttributes.getAttributeList(edge1.getIdentifier(), CommonVocab.XREF_DB_NAME);
+		dbNameList = edgeAttributes.getListAttribute(edge1.getIdentifier(), CommonVocab.XREF_DB_NAME);
 
-		List dbIdList = edgeAttributes.getAttributeList(edge1.getIdentifier(),
+		List dbIdList = edgeAttributes.getListAttribute(edge1.getIdentifier(),
 		                                                CommonVocab.XREF_DB_ID);
 		assertEquals(2, dbNameList.size());
 		assertEquals(2, dbIdList.size());

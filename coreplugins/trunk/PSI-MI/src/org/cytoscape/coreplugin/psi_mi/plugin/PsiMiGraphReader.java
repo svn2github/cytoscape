@@ -38,7 +38,7 @@ import cytoscape.CyNetwork;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.data.readers.GraphReader;
+import cytoscape.data.readers.AbstractGraphReader;
 
 import giny.model.RootGraph;
 
@@ -61,10 +61,9 @@ import java.util.Iterator;
  *
  * @author Ethan Cerami.
  */
-public class PsiMiGraphReader implements GraphReader {
+public class PsiMiGraphReader extends AbstractGraphReader {
 	private int[] nodeIndices;
 	private int[] edgeIndices;
-	private String fileName;
 	private String networkName;
 
 	/**
@@ -73,7 +72,7 @@ public class PsiMiGraphReader implements GraphReader {
 	 * @param fileName File Name.
 	 */
 	public PsiMiGraphReader(String fileName) {
-		this.fileName = fileName;
+		super(fileName);
 	}
 
 	/**
@@ -115,34 +114,6 @@ public class PsiMiGraphReader implements GraphReader {
 	}
 
 	/**
-	 * Perform matrix layout;  same as that provided by the SIF reader.
-	 *
-	 * @param view GraphView Object.
-	 */
-	public void layout(GraphView view) {
-		double distanceBetweenNodes = 50.0d;
-		int columns = (int) Math.sqrt(view.nodeCount());
-		Iterator nodeViews = view.getNodeViewsIterator();
-		double currX = 0.0d;
-		double currY = 0.0d;
-		int count = 0;
-
-		while (nodeViews.hasNext()) {
-			NodeView nView = (NodeView) nodeViews.next();
-			nView.setOffset(currX, currY);
-			count++;
-
-			if (count == columns) {
-				count = 0;
-				currX = 0.0d;
-				currY += distanceBetweenNodes;
-			} else {
-				currX += distanceBetweenNodes;
-			}
-		}
-	}
-
-	/**
 	 * Get Node Indices.
 	 *
 	 * @return array of root graph node indices.
@@ -167,54 +138,5 @@ public class PsiMiGraphReader implements GraphReader {
 	 */
 	public String getNetworkName() {
 		return networkName;
-	}
-
-	/**
-	 * Executes Post-Processing on newly created network.
-	 *
-	 * @param cyNetwork CyNetwork object.
-	 */
-	public void doPostProcessing(CyNetwork cyNetwork) {
-		//  Currently no-op
-	}
-
-	/**
-	 * Read in graph;  canonicalize all names.
-	 *
-	 * @param canonicalizeNodeNames flag for canonicalization.
-	 * @throws IOException IO Error.
-	 * @deprecated Use read() instead.  Will be removed Dec 2006.
-	 */
-	public void read(boolean canonicalizeNodeNames) throws IOException {
-	}
-
-	/**
-	 * Get root graph.
-	 *
-	 * @return RootGraph Object.
-	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-	 */
-	public RootGraph getRootGraph() {
-		return null;
-	}
-
-	/**
-	 * Get node attributes.
-	 *
-	 * @return CyAttributes object.
-	 * @deprecated Use Cytoscape.getNodeAttributes() instead. Will be removed Dec 2006.
-	 */
-	public CyAttributes getNodeAttributes() {
-		return null;
-	}
-
-	/**
-	 * Get edge attributes.
-	 *
-	 * @return CyAttributes object.
-	 * @deprecated Use Cytoscape.getEdgeAttributes() instead. Will be removed Dec 2006.
-	 */
-	public CyAttributes getEdgeAttributes() {
-		return null;
 	}
 }

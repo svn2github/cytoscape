@@ -156,9 +156,9 @@ public class MapFromCytoscape implements Mapper {
 			String attributeName = attributeNames[i];
 
 			if (attributeName.equals(CommonVocab.XREF_DB_NAME)) {
-				dbNames = attributes.getAttributeList(nodeName, attributeName);
+				dbNames = attributes.getListAttribute(nodeName, attributeName);
 			} else if (attributeName.equals(CommonVocab.XREF_DB_ID)) {
-				dbIds = attributes.getAttributeList(nodeName, attributeName);
+				dbIds = attributes.getListAttribute(nodeName, attributeName);
 			} else {
 				String value = attributes.getStringAttribute(nodeName, attributeName);
 				bag.addAttribute(attributeName, value);

@@ -587,12 +587,12 @@ public class MapToCytoscape implements Mapper {
 
 			if ((dbsList != null) && (dbsList.size() != 0)) {
 				Cytoscape.getNodeAttributes()
-				         .setAttributeList(cyNode.getIdentifier(), CommonVocab.XREF_DB_NAME, dbsList);
+				         .setListAttribute(cyNode.getIdentifier(), CommonVocab.XREF_DB_NAME, dbsList);
 			}
 
 			if ((idsList != null) && (idsList.size() != 0)) {
 				Cytoscape.getNodeAttributes()
-				         .setAttributeList(cyNode.getIdentifier(), CommonVocab.XREF_DB_ID, idsList);
+				         .setListAttribute(cyNode.getIdentifier(), CommonVocab.XREF_DB_ID, idsList);
 			}
 		}
 	}
@@ -647,12 +647,12 @@ public class MapToCytoscape implements Mapper {
 
 			if ((dbsList != null) && (dbsList.size() != 0)) {
 				Cytoscape.getEdgeAttributes()
-				         .setAttributeList(cyEdge.getIdentifier(), CommonVocab.XREF_DB_NAME, dbsList);
+				         .setListAttribute(cyEdge.getIdentifier(), CommonVocab.XREF_DB_NAME, dbsList);
 			}
 
 			if ((idsList != null) && (idsList.size() != 0)) {
 				Cytoscape.getEdgeAttributes()
-				         .setAttributeList(cyEdge.getIdentifier(), CommonVocab.XREF_DB_ID, idsList);
+				         .setListAttribute(cyEdge.getIdentifier(), CommonVocab.XREF_DB_ID, idsList);
 			}
 		}
 	}
