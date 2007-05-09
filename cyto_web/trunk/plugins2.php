@@ -1562,11 +1562,9 @@ working on this and will release a fix as soon as we can.
 					This plugin runs a simple internal XML-RPC server from within Cytoscape that allows the current network and its various attributes to be manipulated from an external process that is XML-RPC capable. Examples include external <a href="http://perl.org">Perl</a>, <a href="http://python.org">Python</a>, <a href="http://www.r-project.org">the R statistical language</a>, UNIX shell scripts, C or C++ programs, or external Java processes. It even allows for other "plugins" to be written in these languages. The external process may be run on the same machine as Cytoscape, or anywhere else on the network.
 					<ul>
 						<li>
-							<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkHandler.html"> JavaDoc documentation of the client functions are available.</a></li>
+							<a href="http://galitski.systemsbiology.net//hepc/downloads/examples/CytoTalkHandler.html"> JavaDoc documentation of the client functions are available.</a></li>
 							<li>
-								<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.R">R</a> and <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.pm">Perl</a> client classes are also available. </li>
-							<li>
-								Some simple <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/examples"> example Perl, Python, and R scripts</a> have been written. </li>
+								Some simple <a href="http://galitski.systemsbiology.net//hepc/downloads/examples/"> example Perl, Python, and R scripts</a> have been written. </li>
 			</ul>
 			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 			Used by <a href="http://labs.systemsbiology.net/galitski/hepc/">the Hepatitis C Virus infection project.</a>
@@ -1575,7 +1573,7 @@ working on this and will release a fix as soon as we can.
 				 Verified to work in 2.0, 2.1.
 			  </td>
 		<td width="20%" valign="top">
-			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/cytoTalk.jar">Download Plugin .jar</a>]
+			[<a href="http://galitski.systemsbiology.net//hepc/downloads/cytoTalk-v2.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
 	</tr>
