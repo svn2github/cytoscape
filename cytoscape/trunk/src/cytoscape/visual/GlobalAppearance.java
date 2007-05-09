@@ -42,19 +42,50 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-
-//----------------------------------------------------------------------------
 import java.awt.Color;
 
 
-//----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing global appearance attributes of
  * the graph window.
  */
 public class GlobalAppearance {
-	Color backgroundColor;
-	Color sloppySelectionColor;
+	
+	private enum GlobalAppearenceName {
+		BACKGROUND_COLOR("Background Color"),
+		NODE_SELECTION_COLOR("Node Selection Color"),
+		NODE_REVERSE_SELECTION_COLOR("Node Reverse Selection Color"),
+		EDGE_SELECTION_COLOR("Edge Selection Color"),
+		EDGE_REVERSE_SELECTION_COLOR("Edge Reverse Selection Color");
+
+		private String name;
+		private static String[] names;
+
+		static {
+			names = new String[GlobalAppearenceName.values().length];
+			int i = 0;
+			for(GlobalAppearenceName ganame: GlobalAppearenceName.values()) {
+				names[i] = ganame.getName();
+				i++;
+			}
+		}
+		
+		private GlobalAppearenceName(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+		
+		public static String[] getAllNames() {
+			return names;
+		}
+	}
+
+	private Color backgroundColor;
+	@Deprecated
+	private Color sloppySelectionColor;
 	private Color nodeSelectionColor;
 	private Color nodeReverseSelectionColor;
 	private Color edgeSelectionColor;
@@ -64,6 +95,10 @@ public class GlobalAppearance {
 	 * Creates a new GlobalAppearance object.
 	 */
 	public GlobalAppearance() {
+	}
+	
+	protected static String[] getCalculatorNames() {
+		return GlobalAppearenceName.getAllNames();
 	}
 
 	/**
@@ -85,19 +120,21 @@ public class GlobalAppearance {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Do not use this.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
+	@Deprecated
 	public Color getSloppySelectionColor() {
 		return sloppySelectionColor;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Do not use this.
 	 *
 	 * @param c DOCUMENT ME!
 	 */
+	@Deprecated
 	public void setSloppySelectionColor(Color c) {
 		sloppySelectionColor = c;
 	}

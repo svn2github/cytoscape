@@ -50,6 +50,8 @@ import cytoscape.visual.parsers.ObjectToString;
 //----------------------------------------------------------------------------
 import java.awt.Color;
 
+import java.lang.reflect.Method;
+
 import java.util.Properties;
 
 
@@ -63,8 +65,9 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	/*
 	 * Set default colors
 	 */
-	Color defaultBackgroundColor = Color.WHITE;
-	Color defaultSloppySelectionColor = Color.GRAY;
+	private Color defaultBackgroundColor = Color.WHITE;
+	@Deprecated
+	private Color defaultSloppySelectionColor = Color.GRAY;
 	private Color defaultNodeSelectionColor = Color.YELLOW;
 	private Color defaultNodeReverseSelectionColor = Color.GREEN;
 	private Color defaultEdgeSelectionColor = Color.RED;
@@ -84,6 +87,53 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 * Creates a new GlobalAppearanceCalculator object.
 	 */
 	public GlobalAppearanceCalculator() {
+	}
+
+	/**
+	 *  Get default color for the given parameter name.
+	 * Should be used names in GlobalAppearenceNames enum.
+	 *
+	 * @param name DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public Color getDefaultColor(final String name) throws Exception {
+		final Class cls = this.getClass();
+		final String newName = name.replace(" ", "");
+		final Method method = cls.getMethod("getDefault" + newName, null);
+		final Object obj = method.invoke(this, null);
+
+		if ((obj != null) && obj instanceof Color) {
+			return (Color) obj;
+		} else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param name DOCUMENT ME!
+	 * @param newColor DOCUMENT ME!
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public void setDefaultColor(final String name, final Color newColor) throws Exception {
+		final Class cls = this.getClass();
+		final String newName = name.replace(" ", "");
+		final Method method = cls.getMethod("setDefault" + newName, new Class[] { Color.class });
+		method.invoke(this, new Object[] { newColor });
+	}
+
+	/**
+	 *  Get name of global appearances.
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static String[] getGlobalAppearanceNames() {
+		return GlobalAppearance.getCalculatorNames();
 	}
 
 	/**
@@ -169,6 +219,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
+	@Deprecated
 	public Color getDefaultSloppySelectionColor() {
 		return defaultSloppySelectionColor;
 	}
@@ -178,6 +229,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *
 	 * @param c DOCUMENT ME!
 	 */
+	@Deprecated
 	public void setDefaultSloppySelectionColor(Color c) {
 		if (c != null) {
 			this.fireStateChanged();
@@ -273,6 +325,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 * Currently no calculators are supported for global visual attributes, so
 	 * this method simply returns the default sloppy selection color.
 	 */
+	@Deprecated
 	public Color calculateSloppySelectionColor(CyNetwork network) {
 		return defaultSloppySelectionColor;
 	}
