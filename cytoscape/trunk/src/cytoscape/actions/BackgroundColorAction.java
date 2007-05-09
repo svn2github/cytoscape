@@ -47,23 +47,23 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 import cytoscape.util.CytoscapeAction;
 
-//-------------------------------------------------------------------------
-import cytoscape.view.CyNetworkView;
-
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 
 //-------------------------------------------------------------------------
 /**
  * Prompts User for New Background Color.
+ * 
+ * @deprecated Use vizmapper gui to edit background color.
  */
+@Deprecated
 public class BackgroundColorAction extends CytoscapeAction {
 	/**
 	 * Constructor.
