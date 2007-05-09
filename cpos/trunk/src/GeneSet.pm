@@ -3,6 +3,7 @@ package GeneSet;
 use Object;
 use POSIX;
 use SGD;
+use Util qw(which);
 
 our @ISA = qw(Object);
 
@@ -78,6 +79,19 @@ sub analyze
 	$self->minTelomereDist()->[$i] = min($mid, $chrSize - $mid);
 	$self->centromereDist()->[$i] = abs($cen - $mid);
     }
+}
+
+sub getGenesByMTD
+{
+    my ($self, $maxDistance) = @_;
+    
+    my @inds = which($self->minTelomereDist(), 
+		     sub { $_[0] < $maxDistance});
+
+#    printf STDERR "all: [%s]\n", join(",", @{$self->minTelomereDist()});
+#    printf STDERR "inds < $maxDistance: [%s]\n", join(",", @inds);
+
+    return @{$self->orfs()}[@inds]; 
 }
 
 sub printData

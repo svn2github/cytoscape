@@ -1,6 +1,93 @@
+plot.yeast <- function(dat, mtd.thresh, ...)
+  {
+    par(mfrow=c(2,1))
+    L <- plot.hist.modular(dat, mtd.thresh=mtd.thresh, ...)
+    plot.chr(dat, mtd.thresh=mtd.thresh)
+    return(L)
+  }
+
+read.chr.data <- function(file)
+  {
+    dat <- read.table(file, header=T, fill=T, comment.char="$")
+  }
+
+viz.chr <- function(dat, mtd.thresh, allchr=1:16,
+                    chr.data)
+  {
+    if(nrow(dat) == 0) { return (NA) }
+    breaks <- seq(min(allchr)-0.5, max(allchr)+0.5, 1)
+    plot(x=allchr, y=rep(1, length(allchr)),
+         ylim=c(0, 1), xlim=c(min(allchr)-0.5, max(allchr)+0.5),
+         type="n", bty="n",
+         xaxt="n", yaxt="n", ylab="", xlab="Chromosome")
+    axis(1, at=allchr, tick=F, line=-1)
+    ##    chr.data <- sc.chr
+    M <- max(chr.data$Length)
+    lens <- chr.data$Length/M
+    subt <- dat$mtd <= mtd.thresh
+    
+    segments(x0=allchr, y0=0, x1=allchr, y1=lens, lwd=0.5)
+    for(i in allchr)
+      {
+        genes.on.i <- dat$chr == i
+        points(x=i,
+               y=mean(chr.data$CenStart[i], chr.data$CenEnd[i])/M,
+               pch=1)
+        if(length(genes.on.i) == 0) { next }
+
+        y.subt <- dat$mid[genes.on.i & subt]
+        y.other <- dat$mid[genes.on.i & !subt]
+        points(x=rep(i + 0.1, times=length(y.subt)),
+               y=y.subt/M, pch=23, cex=1, col="red")
+        points(x=rep(i + 0.1, times=length(y.other)),
+               y=y.other/M, pch="-", cex=2, col="blue")
+
+      }
+  }
+
+plot.chr <- function(dat, mtd.thresh, allchr=1:16, main="mtd thresh")
+{
+  if(nrow(dat) == 0) { return (NA) }
+  subt <- dat$mtd <= mtd.thresh
+  cen <- (dat$cd <= mtd.thresh) & !subt
+  breaks <- seq(min(allchr)-0.5, max(allchr)+0.5, 1)
+
+  h <- hist(dat$chr, breaks=breaks, plot=F)
+
+  if(sum(subt) == 0) {
+    subt.counts <- rep(0, times=length(h$counts))
+  }
+  else {
+    h.subt <- hist(dat$chr[subt], breaks=breaks, plot=F)
+    subt.counts <- h.subt$counts
+  }
+  
+  if(sum(cen) == 0) {
+    cen.counts <- rep(0, times=length(h$counts))
+  } else {
+    h.cen <- hist(dat$chr[cen], breaks=breaks, plot=F)
+    cen.counts <- h.cen$counts
+  }
+  
+  barplot(rbind(subt.counts,
+                cen.counts,                
+                h$counts - cen.counts - subt.counts),
+          beside=F,
+          names.arg=allchr,
+          yaxt="n",
+          xlab="Chromosome",
+          col=c("black", "grey", "white"),
+          main=paste(main, ":", sprintf("%.2e", mtd.thresh)),
+          sub="black:telomere, gray:cen, white:other")
+  axis(2, at=c(axTicks(2)), las=2, col="grey", col.axis="grey")
+  axis(2, at=c(range(h$counts)), las=2, lwd=2)
+}
+
 plot.hist.modular <- function(dat, main="", ylim=c(0,20),
                               xlim=c(log10(100),log10(1e6)),
-                              bkgd.max=NA, all.results=NA, show.ks.pvalue=F)
+                              bkgd.max=NA, all.results=NA,
+                              show.ks.pvalue=F,
+                              mtd.thresh=NA)
   {
     if(nrow(dat) == 0) { return (1) }
 
@@ -12,7 +99,7 @@ plot.hist.modular <- function(dat, main="", ylim=c(0,20),
     h <- hist(D,
 ##              xlim=xlim,
 ##              ylim=ylim,
-              breaks=25,
+              breaks=20,
               xlab="Distance from closest Cen/Tel (bp)",
               ylab="",
               main=main,
@@ -40,8 +127,58 @@ plot.hist.modular <- function(dat, main="", ylim=c(0,20),
                ks.wrapper(all.results$D, D)))
         }
       }
-    
+
+    if(!is.na(mtd.thresh))
+      {
+        abline(v=log10(mtd.thresh), col="blue", lty=2)
+      }
     return(list(h=h, D=D))
+  }
+
+
+plot.pvalues <- function(outfile, D.list, all.results)
+  {
+    cats <- c()
+    pvals <- c()
+    
+    for(i in 1:length(D.list))
+      {
+        cats <- c(cats, D.list[[i]]$cat)
+        pvals <- c(pvals, ks.wrapper(all.results$D, D.list[[i]]$D, format=F))
+      }
+    
+    res <- data.frame(cats, pvals)
+    o.p <- order(pvals)
+    
+##    res[o.p,]
+
+    write.table(file=outfile,
+                res[o.p,], quote=F, row.names=F)
+
+    barplot(sort(log10(pvals)), las=2, ylab="Log10 P-value")
+    abline(h=log10(1e-3), lty=2, col="red")
+  }
+
+ks.wrapper <- function(v1, v2, format=T)
+  {
+    if((length(v1) > 0) & (length(v2) > 0))
+      {
+        pval <- ks.test(v1, v2, alternative="less")$p.value 
+
+        if(format)
+          {
+            if(pval < 1e-6)
+              {
+                return(sprintf("%.2e", pval))
+              }
+            return(sprintf("%.6f", pval))
+          }
+        return(pval)
+      }
+    else
+      {
+        return(1)
+      }
   }
 
 plot.hist2 <- function(dat, main, ylim=c(0,20),
@@ -77,30 +214,6 @@ plot.hist2 <- function(dat, main, ylim=c(0,20),
     return(list(h=h, D=D))
   }
 
-plot.pvalues <- function(outfile, D.list, all.results)
-  {
-    cats <- c()
-    pvals <- c()
-    
-    for(i in 1:length(D.list))
-      {
-        cats <- c(cats, D.list[[i]]$cat)
-        pvals <- c(pvals, ks.wrapper(all.results$D, D.list[[i]]$D, format=F))
-      }
-    
-    res <- data.frame(cats, pvals)
-    o.p <- order(pvals)
-    
-##    res[o.p,]
-
-    write.table(file=outfile,
-                res[o.p,], quote=F, row.names=F)
-
-    barplot(sort(log10(pvals)), las=2, ylab="Log10 P-value")
-    abline(h=log10(1e-3), lty=2, col="red")
-  }
-                     
-
 plot.hist1 <- function(dat, main)
 {
   xlab="Chromosome position (percent)"
@@ -108,28 +221,6 @@ plot.hist1 <- function(dat, main)
        main=main, col="grey")
 
 }
-
-ks.wrapper <- function(v1, v2, format=T)
-  {
-    if((length(v1) > 0) & (length(v2) > 0))
-      {
-        pval <- ks.test(v1, v2, alternative="less")$p.value 
-
-        if(format)
-          {
-            if(pval < 1e-6)
-              {
-                return(sprintf("%.2e", pval))
-              }
-            return(sprintf("%.6f", pval))
-          }
-        return(pval)
-      }
-    else
-      {
-        return(1)
-      }
-  }
 
 plot.chromosome.dist <- function(dat, main)
   {

@@ -1,0 +1,40 @@
+a {
+    color: blue;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: white;
+    background-color: grey;
+    text-decoration: none;
+}
+
+div#histograms {
+    position: fixed; 
+    right: 0; top: 0;
+    z-index: 0;
+}
+
+.center {
+    text-align: center;
+}
+
+td {
+    vertical-align: top;   
+}
+
+table.wide {
+    margin-right: 300px;
+}
+
+table.narrow {
+    margin-right: 600px;
+}
+
+div#genes {
+    position: static;
+    z-index: 2;
+}
+table#subt {
+    border: 1px solid black;
+}

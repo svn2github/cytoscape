@@ -10,8 +10,10 @@ use POSIX;
 use SGD;
 use Funspec;
 use GeneSet;
+use GeneSetTasks;
 use FeatureData;
 use ChromosomeData;
+use Util qw(which keysSortedByValueArraySize);
 
 use File::Basename;
 
@@ -24,11 +26,13 @@ $0: <outputDir> <orflist|featurefiles>+
  -featureFile             Gene feature file
  -org [sc|hs]             Organism
  -bkgdFile                Location of all probes
+ -mtd                     Min Telomere Distance cutoff
 USAGE
 
 # Parse command line args
 my @newArg;
 
+my $MTD_CUTOFF = 30000;
 my $USE_AGILENT = 0;
 my $WRITE_HTML = 0;
 my $RUN_R = 0;
@@ -51,6 +55,7 @@ my %CHROMOSOME_FILES = ( sc => $ENV{"HOME"} . "/data/sc-chromosome-data.txt",
      elsif($arg =~ /^-featureFile$/) { $FEATURE_FILE = shift @ARGV }
      elsif($arg =~ /^-bkgdFile$/) { $BKGD_FILE = shift @ARGV }
      elsif($arg =~ /^-org$/) { $ORGANISM = lc(shift @ARGV) }
+     elsif($arg =~ /^-mtd$/) { $MTD_CUTOFF = shift @ARGV }
      elsif($arg =~ /^-run$/) { $RUN_R = 1 }
      else { push @newArg, $arg }
  }
@@ -115,7 +120,7 @@ if($RUN_R)
 if($WRITE_HTML)
 {
     print "### Writing HTML To $HTML_FILE\n";
-    writeHTML(\@geneSets);
+    writeHTML(\@geneSets, $MTD_CUTOFF);
 }
 
 
@@ -129,9 +134,7 @@ sub processORFlist
     {
 	next if (scalar(@{$cat2orf->{$cat}}) == 0);
 	
-	my $name = $cat;
-	$name =~ s/[-\s\/\(\)\'\"]/\./g; # R does not like "-" characters in strings.  Replace with periods
-
+	my $name = sanitizeName($cat);
 	
 	my $gs = GeneSet->new($name, $cat2orf->{$cat});
 	$gs->analyze($features, $chrData);
@@ -151,7 +154,13 @@ sub processORFlist
     return @geneSets;
 }
 
-
+sub sanitizeName
+{
+    my ($name) = @_;
+     # R does not like "-" characters in strings.  Replace with periods
+    $name =~ s/[-\s\/\(\)\'\":\[\]\\]/\./g;
+    return $name;
+}
 sub processFeatureFile
 {
     my ($file) = @_;
@@ -168,7 +177,7 @@ sub processFeatureFile
 
     $features = FeatureData::create($FEATURE_TYPE, $file);
 
-    my $name = fileparse($file); $name =~ s/-/\./g;
+    my $name = sanitizeName(fileparse($file));
     my $gs = GeneSet->new($name, \@genes);
 
     $gs->analyze($features, $chrData);
@@ -209,7 +218,7 @@ sub readKSData
 #
 sub writeHTML
 {
-    my ($geneSets) = @_;
+    my ($geneSets, $mtdCutoff) = @_;
 
     my %ks = %{readKSData($OUTDIR . "/" . $KS_TAB_FILE)};
 
@@ -225,8 +234,30 @@ sub writeHTML
 function change_image(image) {
      if(document.images)
      {
-                document["locPlot"].src = image
+                document["histPlot"].src = image
      }
+}
+function change_image3(histImage, chrImage, vizImage) {
+     if(document.images)
+     {
+                document["histPlot"].src = histImage
+                document["chrPlot"].src = chrImage
+                document["vizPlot"].src = vizImage
+     }
+}
+
+function toggle_element(id) {
+     if(document[id].style.display == "")
+         document[id].style.display = "none";
+     else
+         document[id].style.display = "";
+}
+
+function hide_images() {
+     toggle_element("histPlot")
+     toggle_element("chrPlot")
+     toggle_element("vizPlot")
+     toggle_element("bkPlot")
 }
 //-->
 </SCRIPT> 
@@ -239,28 +270,59 @@ EOF
 
     my @sortedGS = sort { $ks{$a->name()} <=> $ks{$b->name()}} @{$geneSets};
 
-    my $topImg = (scalar(@sortedGS) > 0 ? pngForGS($sortedGS[0]) : "");
+    my $topImg = (scalar(@sortedGS) > 0 ? pngForGS($sortedGS[0], "hist") : "");
+
+    my ($plotHTML, $tableClass);
+    if($ORGANISM eq "sc")
+    {
+	$tableClass = qt("narrow");
+	my $topImg2 = (scalar(@sortedGS) > 0 ? pngForGS($sortedGS[0], "chr") : "");
+	my $topImg3 = (scalar(@sortedGS) > 0 ? pngForGS($sortedGS[0], "viz") : "");
+	$plotHTML = tag("img", "", {src=>$topImg2, 
+				    alt=>"plots by chromosome", 
+				    name=>"chrPlot"})
+		    . 
+	            tag("img", "", {src=>$topImg, 
+				    alt=>"chromosome binding locations", 
+				    name=>"histPlot"})
+	            . "<br>" .
+		    tag("img", "", {src=>$topImg3, 
+				    alt=>"chromosome visualization", 
+				    name=>"vizPlot"});
+    }
+    else
+    {
+	$tableClass = qt("wide");
+	$plotHTML = tag("img", "", {src=>$topImg, 
+				    alt=>"chromosome binding locations", 
+				    name=>"histPlot"}) . "<br>";
+    }
 
     # Print the ORFlist file name, the TF-specific plot, 
     # and the background distribution plot
     print H join("\n", (tag("h3", $basename), 
 			tag("img", "", {src=>$KS_PLOT_FILE, alt=>"all KS pvalues"}),
 			tag("div",
-			    tag("img", "", {src=>$topImg, 
-					    height=>300, width=>300, 
-					    alt=>"chromosome binding locations", 
-					    name=>"locPlot"}) 
-			    . "<br>" .
-			    tag("img", "", {src=>$BKGD_PLOT_FILE, alt=>"no background distribution"}),
-			    {id=>"histograms"}),
-			"<table id=\"mainTable\">")) . "\n";
-
+			    tag("a", "Show/Hide Images", {onClick=>"hide_images()"}) .
+			    "<br>" . 
+			    $plotHTML . 
+			    tag("img", "", {src=>$BKGD_PLOT_FILE, 
+					    alt=>"no background distribution", 
+					    name=>"bkPlot"}),
+			    {id=>"histograms"})));
+    
+    print H "<br>Min Telomere Distance cutoff = $mtdCutoff\n";
+    print H "<table id=\"main\" class=$tableClass>\n";
     # Print the table header row
     print H tag("tr", 
 		join("\n", tag("th", "Name"), tag("th", "KS Pval"), 
-		     tag("th", "# Genes"),
+		     tag("th", "#Genes"),
+		     tag("th", "#Subt"),
 		     tag("th", "Hist"))
 	       ) . "\n";
+    
+    # subt maps gene sets names to an array of genes with mtd <= mtdCutoff
+    my $subt = filterSetsByMTD(\@sortedGS, $mtdCutoff);
 
     # Print one table row per GeneSet
     foreach my $gs (@sortedGS)
@@ -268,21 +330,68 @@ EOF
 	next unless(defined($gs->dataFile()));
 
 	my $name = $gs->name();
+	my $Nsubt = scalar(@{$subt->{$name}});
 	my $pval = (exists($ks{$name}) ?  formatPval($ks{$name}) : "NA");
+	my $mouseOver;
+	if($ORGANISM eq "sc")
+	{
+	    $mouseOver = sprintf("change_image3( '%s', '%s', '%s')", 
+				 pngForGS($gs, "hist"),
+				 pngForGS($gs, "chr"),
+				 pngForGS($gs, "viz"));
+	}
+	else
+	{
+	    $mouseOver = sprintf("change_image( '%s')", pngForGS($gs, "hist"));
+	}
 	print H tag("tr",
 		    tag("td", addBreaks($name)) . 
 		    tag("td", $pval) . 
 		    tag("td", scalar(@{$gs->orfs()}), {class=>"center"}) . 
+		    tag("td", $Nsubt, {class=>"center"}) . 
 		    tag("td", 
 			tag("a", "show plot", 
-			    { onMouseOver=>sprintf("change_image( '%s')", pngForGS($gs)) }))
+			    { onMouseOver=>$mouseOver }))
 		   ) . "\n";
     }
 
-    print H "</table></body></html>";
+    print H "</table><br>\n";
+    
+    my $subtTotal = 0;
+    map { $subtTotal += scalar(@{$subt->{$_}}) } keys %{$subt};
+
+    my $subtByGene = invertORFlist($subt);
+    printf H "Total Subtelomeric genes: %d<br>\n", $subtTotal;
+    printf H "Unique Subtelomeric genes: %d<br>\n", scalar(keys %{$subtByGene});
+
+    print H tag("h3", "Subtelomeric genes") . "\n";
+    print H "<table id=\"subt\" class=\"wide\">\n";
+    my @subtSorted = keysSortedByValueArraySize($subtByGene);
+
+    my @gt1 = which(\@subtSorted, sub {$subtByGene->{$_[0]} > 1});
+    my $nameIndex = $features->indexOfField("geneName");
+    my $descIndex = $features->indexOfField("description");
+    #print STDERR "### nI=$nameIndex, dI=$descIndex\n";
+    foreach my $gene (@subtSorted[@gt1])
+    {
+	my $name = $features->getByIndex($gene, $nameIndex);
+	my $desc = $features->getByIndex($gene, $descIndex);
+
+	#printf STDERR "n=$name, d=$desc\n";
+	print H tag("tr",
+		    tag("td", $gene) .
+		    tag("td", $name) .
+		    tag("td", scalar(@{$subtByGene->{$gene}})) .
+		    tag("td", $desc) .
+		    tag("td", join("<br>\n", @{$subtByGene->{$gene}}))
+		   ), "\n";
+    }
+    print H "</table>\n";
+
+    print H "</body></html>\n";
 }
 
-# Add <br> tags inside of long elements
+# replace _ and . with spaces
 sub addBreaks
 {
     my ($word) = @_;
@@ -290,23 +399,6 @@ sub addBreaks
     $word =~ s/[_\.]/ /g;
 
     return $word;
-
-#    return $word if(length($word) < 40);
-
-#    my @parts = split(/\W/, $word);
-#    my $x = 0;
-#    my $withBreaks = "";
-#    foreach (@parts)
-#    {
-#	$withBreaks .= $_;
-#	$x += length($_);
-#	if($x > 35)
-#	{
-#	    $x = 0;
-#	    $withBreaks .= "<br>";
-#	}
- #   }
-  #  return join("", @parts);
 }
 
 ##
@@ -381,16 +473,38 @@ dev.off()
 
     print OUT $header;
 
+    if($ORGANISM eq "sc")
+    {
+	printf OUT "sc.chr <- read.chr.data(%s)\n", qt( $CHROMOSOME_FILES{$ORGANISM} );
+    }
+
     foreach my $gs (@{$geneSets})
     {
 	next unless(defined($gs->dataFile()));
 
 	my $name = $gs->name();
 	
-	print OUT sprintf("png(filename=%s, width=300, height=300)\n", qt($OUTDIR . "/" . pngForGS($gs)));
 	print OUT sprintf("dat <- read.table(file=%s, header=T)\n", qt($OUTDIR . "/" . $gs->dataFile()));
-	print OUT sprintf("results <- plot.hist.modular(dat, main=%s, ylim=%s, bkgd.max=bkgd.max, all.results=all.results)\n", qt($name), $ylim);
-	
+	if($ORGANISM eq "sc")
+	{
+	    #print OUT sprintf("png(filename=%s, width=300, height=500)\n", qt($OUTDIR . "/" . pngForGS($gs)));
+	    #print OUT sprintf("results <- plot.yeast(dat, mtd.thresh=3e4, main=%s, ylim=%s, bkgd.max=bkgd.max, all.results=all.results)\n", qt($name), $ylim);
+	    print OUT sprintf("png(filename=%s, width=300, height=300)\n", qt($OUTDIR . "/" . pngForGS($gs, "hist")));
+	    print OUT sprintf("results <- plot.hist.modular(dat, mtd.thresh=%s, main=%s, ylim=%s, bkgd.max=bkgd.max, all.results=all.results)\n", 
+			      $MTD_CUTOFF, qt($name), $ylim);
+	    print OUT "dev.off()\n";
+	    print OUT sprintf("png(filename=%s, width=300, height=300)\n", qt($OUTDIR . "/" . pngForGS($gs, "chr")));
+	    print OUT sprintf("plot.chr(dat, mtd.thresh=%s)\n", $MTD_CUTOFF);
+	    print OUT "dev.off()\n";
+	    print OUT sprintf("png(filename=%s, width=300, height=300)\n", qt($OUTDIR . "/" . pngForGS($gs, "viz")));
+	    print OUT sprintf("viz.chr(dat, mtd.thresh=%s, chr.data=sc.chr)\n", $MTD_CUTOFF);
+	}
+	else
+	{
+	    print OUT sprintf("png(filename=%s, width=300, height=300)\n", qt($OUTDIR . "/" . pngForGS($gs, "hist")));
+	    print OUT sprintf("results <- plot.hist.modular(dat, main=%s, ylim=%s, bkgd.max=bkgd.max, all.results=all.results)\n", qt($name), $ylim);
+	}
+
 	print OUT sprintf("D.list <- c(D.list, list(list(cat=%s, D=results\$D)))\n", qt($name));
 	print OUT sprintf("dev.off()\n\n");
     }
@@ -406,8 +520,12 @@ dev.off()
 
 sub pngForGS
 {
-    my ($gs) = @_;
+    my ($gs, $type) = @_;
 
+    if(defined($type))
+    {
+	return $gs->dataFile() . ".$type.png";
+    }
     return $gs->dataFile() . ".png";
 }
 
