@@ -34,6 +34,15 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+
+import cytoscape.view.CyNetworkView;
+
+import ding.view.DGraphView;
+
 import giny.view.GraphView;
 
 import java.awt.Color;
@@ -42,13 +51,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
 
 
 /**
@@ -60,10 +62,8 @@ import ding.view.DGraphView;
   */
 public class DefaultViewPanel extends JPanel {
 	private static final int PADDING = 20;
-
 	private CyNetworkView view;
 	private CyNetwork dummyNet;
-	
 	private Color background;
 
 	/*
@@ -85,10 +85,17 @@ public class DefaultViewPanel extends JPanel {
 	 * Creates a new NodeFullDetailView object.
 	 */
 	public DefaultViewPanel() {
-		background = Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
+		background = Cytoscape.getVisualMappingManager().getVisualStyle()
+		                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
 	}
-	
+
+	protected void updateBackgroungColor(final Color newColor) {
+		background = newColor;
+		this.setBackground(background);
+		repaint();
+	}
+
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -98,14 +105,10 @@ public class DefaultViewPanel extends JPanel {
 		return canvas;
 	}
 
-	
 	/**
 	 * Create dummy network
 	 */
 	protected void createDummyNetwork() {
-		String title = Cytoscape.getCurrentNetwork().getTitle();
-		String id = Cytoscape.getCurrentNetwork().getIdentifier();
-		System.out.println("Current id: " + title);
 		dummyNet = Cytoscape.createNetwork("Default Appearence");
 		dummyNet.addNode(source);
 		dummyNet.addNode(target);
