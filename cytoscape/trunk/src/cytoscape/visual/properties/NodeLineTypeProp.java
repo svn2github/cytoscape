@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,32 +35,57 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
+
 import cytoscape.visual.ui.icon.*;
 
-import javax.swing.Icon;
-import java.util.Map;
-import java.awt.Font;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics2D;
+import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.BasicStroke;
+import java.awt.Graphics2D;
 
+import java.util.Map;
+
+import javax.swing.Icon;
+
+
+/**
+ *
+ */
 public class NodeLineTypeProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.NODE_LINETYPE; }
-	public Map<Object,Icon> getIconSet() {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.NODE_LINETYPE;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<Object, Icon> getIconSet() {
 		return LineTypeDef.getIconSet();
 	}
-    public Icon getDefaultIcon() {
-        return new NodeIcon() {
-            public void paintIcon(Component c, Graphics g, int x, int y) {
-                super.paintIcon(c,g,x,y);
-	            g2d.setStroke(new BasicStroke(5.0f));
-            	g2d.drawLine(c.getX() + 10, (int) (shape.getBounds().getCenterY() + 5),
-                (int) shape.getBounds2D().getMaxX() * 2,
-                (int) (shape.getBounds().getCenterY()) + 5);
-            }
-        };
-    }
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon() {
+		return new NodeIcon() {
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					super.paintIcon(c, g, x, y);
+					g2d.setStroke(new BasicStroke(5.0f));
+					g2d.drawLine(c.getX() + 10, (int) (shape.getBounds().getCenterY() + 5),
+					             (int) shape.getBounds2D().getMaxX() * 2,
+					             (int) (shape.getBounds().getCenterY()) + 5);
+				}
+			};
+	}
 }

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,9 +35,22 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
+
 import cytoscape.visual.ui.icon.*;
+
 import javax.swing.Icon;
 
+
+/**
+ *
+ */
 public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.EDGE_SRCARROW_COLOR; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.EDGE_SRCARROW_COLOR;
+	}
 }

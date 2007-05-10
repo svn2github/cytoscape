@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,28 +35,45 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
+
 import cytoscape.visual.ui.icon.*;
-import javax.swing.Icon;
-import java.awt.Font;
+
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics2D;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
+import javax.swing.Icon;
+
+
+/**
+ *
+ */
 public class NodeLabelProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.NODE_LABEL; }
-    public Icon getDefaultIcon() {
-        return new NodeIcon() {
-            public void paintIcon(Component c, Graphics g, int x, int y) {
-                super.paintIcon(c,g,x,y);
-	            g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
-   	         	g2d.drawString(
-               	 getDefault().toString(),
-               	 c.getX() + 10,
-               	 (int) (shape.getBounds2D().getCenterY()) + 5);
-            	g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-            }
-        };
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.NODE_LABEL;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon() {
+		return new NodeIcon() {
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					super.paintIcon(c, g, x, y);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+					g2d.drawString(getDefault().toString(), c.getX() + 10,
+					               (int) (shape.getBounds2D().getCenterY()) + 5);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
+				}
+			};
+	}
 }

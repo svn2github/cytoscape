@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,25 +34,64 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.*;
-import cytoscape.visual.*;
-import java.util.Map;
-import javax.swing.Icon;
 import java.awt.Graphics2D;
+import java.util.Map;
 
+import javax.swing.Icon;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualProperty;
+import cytoscape.visual.VisualPropertyType;
+
+
+/**
+ *
+ */
 public abstract class AbstractVisualProperty implements VisualProperty {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	abstract public VisualPropertyType getType();
 
-	abstract public VisualPropertyType getType(); 
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void showDiscreteEditor() {
+	}
 
-	public void showDiscreteEditor() { }
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void showContinousEditor() {
+	}
 
-	public void showContinousEditor() { }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<Object, Icon> getIconSet() {
+		return null;
+	}
 
-	public Map<Object,Icon> getIconSet() { return null; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param g2 DOCUMENT ME!
+	 */
+	public void paintIcon(Graphics2D g2) {
+	}
 
-	public void paintIcon(Graphics2D g2) { }
-
-	public Icon getDefaultIcon() { return null; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon() {
+		return null;
+	}
 
 	protected Object getDefault() {
 		return getType().getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,10 +34,51 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.ui.icon.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+
 import javax.swing.Icon;
 
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.LineTypeIcon;
+
+
+/**
+ *
+ */
 public class EdgeFontSizeProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.EDGE_FONT_SIZE; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.EDGE_FONT_SIZE;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon() {
+		return new LineTypeIcon() {
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					super.setColor(new Color(10, 10, 10, 20));
+					super.paintIcon(c, g, x, y);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+					
+					g2d.setColor(Color.DARK_GRAY);
+					String sizeString = getDefault().toString();
+					g2d.drawString(sizeString, c.getX() + DEFAULT_ICON_SIZE,
+					               c.getY()-15);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
+					g2d.setColor(new Color(10, 10, 10, 40));
+					g2d.drawString("A", c.getX() + 10 + DEFAULT_ICON_SIZE, c.getY()-10);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
+				}
+			};
+	}
 }

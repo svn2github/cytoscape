@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,10 +34,26 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.ui.icon.*;
 import javax.swing.Icon;
 
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.LineTypeIcon;
+
+
+/**
+ *
+ */
 public class EdgeColorProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.EDGE_COLOR; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.EDGE_COLOR;
+	}
+	
+	public Icon getDefaultIcon() {
+		return new LineTypeIcon();
+	}
 }

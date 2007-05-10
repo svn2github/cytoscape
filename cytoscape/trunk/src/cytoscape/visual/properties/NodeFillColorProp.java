@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,26 +34,41 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.ui.icon.*;
-import javax.swing.Icon;
-import java.awt.Font;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics2D;
 import java.awt.Graphics;
 
+import javax.swing.Icon;
+
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.NodeIcon;
+
+
+/**
+ *
+ */
 public class NodeFillColorProp extends AbstractVisualProperty {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.NODE_FILL_COLOR;
+	}
 
-	public VisualPropertyType getType() { return VisualPropertyType.NODE_FILL_COLOR; }
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getDefaultIcon() {
 		return new NodeIcon() {
-			public void paintIcon(Component c, Graphics g, int x, int y) {
-				super.paintIcon(c,g,x,y);
-				g2d.setColor((Color)getDefault());
-	            g2d.fill(super.newShape);
-			}
-		};
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					super.paintIcon(c, g, x, y);
+					g2d.setColor((Color) getDefault());
+					g2d.fill(super.newShape);
+				}
+			};
 	}
 }

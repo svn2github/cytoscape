@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,10 +34,44 @@
  */
 package cytoscape.visual.properties;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+
 import cytoscape.visual.*;
+
 import cytoscape.visual.ui.icon.*;
+
 import javax.swing.Icon;
 
+
+/**
+ *
+ */
 public class EdgeLineWidthProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.EDGE_LINE_WIDTH; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.EDGE_LINE_WIDTH;
+	}
+	
+	public Icon getDefaultIcon() {
+		return new LineTypeIcon() {
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					super.setColor(new Color(10, 10, 10, 20));
+					super.paintIcon(c, g, x, y);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+					
+					g2d.setColor(Color.DARK_GRAY);
+					String sizeString = getDefault().toString();
+					g2d.drawString(sizeString, c.getX() + DEFAULT_ICON_SIZE,
+					               c.getY()-15);
+					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
+				}
+			};
+	}
 }

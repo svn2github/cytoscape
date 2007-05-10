@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,15 +35,34 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
-import cytoscape.visual.ui.icon.*;
 import cytoscape.visual.ArrowShape;
-import javax.swing.Icon;
+
+import cytoscape.visual.ui.icon.*;
+
 import java.util.Map;
 
+import javax.swing.Icon;
 
+
+/**
+ *
+ */
 public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
-	public VisualPropertyType getType() { return VisualPropertyType.EDGE_TGTARROW_SHAPE; }
-	public Map<Object,Icon> getIconSet() {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualPropertyType getType() {
+		return VisualPropertyType.EDGE_TGTARROW_SHAPE;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<Object, Icon> getIconSet() {
 		return ArrowShape.getIconSet();
 	}
 }
