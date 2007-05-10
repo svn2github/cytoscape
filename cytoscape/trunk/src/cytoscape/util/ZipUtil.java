@@ -54,6 +54,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.Task;
+import cytoscape.task.ui.JTask;
 
 /**
  * Compression-related methods mainly for Session Writer.<br>
@@ -246,7 +249,8 @@ public class ZipUtil {
 	}
 
 	/**
-	 * Reads a file contained within a zip file and returns an InputStream.
+	 * Reads a file contained within a zip file and returns an InputStream for the
+	 * specific file you want from within the zip file.
 	 *
 	 * @param zipName
 	 *            The name of the zip file to read.
@@ -303,25 +307,39 @@ public class ZipUtil {
 	}
 
 
+	
 	/**
 	* Unzips the given zip file and returns a list of all files unzipped
 	* @param is
 	*   InputStream for a zip file
 	*/
-	public static List<String> unzip(String zipName) throws java.io.IOException {
+	public static List<String> unzip(String zipName, String unzipDir, TaskMonitor taskMonitor) throws java.io.IOException {
 		ArrayList<String> UnzippedFiles = new ArrayList<String>();
-
+		
+		if (unzipDir != null) {
+			unzipDir = unzipDir + File.separator;
+		} else {
+			unzipDir = "";
+		}
+		
+		int maxCount = 0; // -1 if unknown
+		int progressCount = 0;
+		double percent = 0.0d;
+		
 		ZipFile Zip = new ZipFile(zipName);
 		Enumeration Entries = Zip.entries();
 		int BUFFER = 2048;
 		
 		while(Entries.hasMoreElements()) {
-			ZipEntry CurrentEntry = (ZipEntry )Entries.nextElement();
-			File ZipFile = new File(CurrentEntry.getName());
+			ZipEntry CurrentEntry = (ZipEntry)Entries.nextElement();
+			File ZipFile = new File(unzipDir + CurrentEntry.getName());
 			if (!CurrentEntry.isDirectory()) {
-				File ParentDirs = new File(ZipFile.getParent());
-				if (!ParentDirs.exists()) {
-					ParentDirs.mkdirs();
+				if (ZipFile.getParent() != null) {
+					File ParentDirs = new File(ZipFile.getParent());
+					
+					if (!ParentDirs.exists()) {
+						ParentDirs.mkdirs();
+					}
 				}
 			} else { // entry is directory, create and move on
 				if (!ZipFile.exists()) {
@@ -331,6 +349,7 @@ public class ZipUtil {
 			}
 
 			InputStream zis = Zip.getInputStream(CurrentEntry);
+			maxCount = zis.available();
 			
 			FileOutputStream fos = new FileOutputStream(ZipFile);
 			BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
@@ -341,6 +360,22 @@ public class ZipUtil {
 
 			while ((count = zis.read(data, 0, BUFFER)) != -1) {
 				dest.write(data, 0, count);
+				//  Report on Progress
+				if (taskMonitor != null) {
+					percent = ((double) progressCount / maxCount) * 100.0;
+					if (maxCount == -1) { // file size unknown
+						percent = -1;
+					}
+
+					JTask jTask = (JTask) taskMonitor;
+					// TODO erm...how?
+					if (jTask.haltRequested()) { //abort
+						taskMonitor.setStatus("Canceling the unzip ...");
+						taskMonitor.setPercentCompleted(100);
+						break;
+					}
+					taskMonitor.setPercentCompleted((int) percent);
+				}
 			}
 
 			dest.flush();
