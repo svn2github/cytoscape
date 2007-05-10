@@ -34,6 +34,7 @@
  */
 package cytoscape.visual;
 
+import cytoscape.Cytoscape;
 import cytoscape.visual.calculators.*;
 
 import cytoscape.visual.properties.*;
@@ -43,10 +44,13 @@ import cytoscape.visual.ui.EditorDisplayer.EditorType;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Enum for calculator types.<br>
@@ -294,8 +298,29 @@ public enum VisualPropertyType {
 		if (calcName.startsWith("Node"))
 			return true;
 		else
-
 			return false;
+	}
+	
+	public static List<VisualPropertyType> getNodeVisualPropertyList() {
+		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
+		
+		for(VisualPropertyType type: values()) {
+			if(type.getName().startsWith("Node")) {
+				list.add(type);
+			}
+		}
+		return list;
+	}
+	
+	public static List<VisualPropertyType> getEdgeVisualPropertyList() {
+		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
+		
+		for(VisualPropertyType type: values()) {
+			if(type.getName().startsWith("Edge")) {
+				list.add(type);
+			}
+		}
+		return list;
 	}
 
 	private Object showEditor(EditorDisplayer action)
@@ -309,6 +334,11 @@ public enum VisualPropertyType {
 		// This is an editor.
 		if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
 			return ret;
+		else if(ret != null && ret instanceof ArrowShape) {
+			System.out.println("Arrow!!!!!!");
+			ret = new Arrow((ArrowShape) ret, Color.white);
+			
+		}
 		else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
 			ret = Double.parseDouble(ret.toString());
 

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,15 +34,53 @@
  */
 package cytoscape.visual;
 
-import java.util.Map;
-import javax.swing.Icon;
 import java.awt.Graphics2D;
 
+import java.util.Map;
+
+import javax.swing.Icon;
+
+
+/**
+ * Represents a visual property.  All vp should implement this interface.
+ * 
+  */
 public interface VisualProperty {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public VisualPropertyType getType();
+
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void showDiscreteEditor();
+
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void showContinousEditor();
-	public Map<Object,Icon> getIconSet();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<Object, Icon> getIconSet();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param g2 DOCUMENT ME!
+	 */
 	public void paintIcon(Graphics2D g2);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getDefaultIcon();
 }

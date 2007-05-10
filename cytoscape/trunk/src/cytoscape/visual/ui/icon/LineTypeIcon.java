@@ -8,16 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.Icon;
-
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LineTypeDef;
-import cytoscape.visual.NodeShape;
+import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
-import ding.view.DGraphView;
 
 
 /**
@@ -27,6 +19,17 @@ import ding.view.DGraphView;
   */
 public class LineTypeIcon extends VisualPropertyIcon {
     private BasicStroke stroke;
+    protected Graphics2D g2d;
+    
+    protected int bottomPadding = 0;
+    
+    
+    public LineTypeIcon() {
+        this(null, DEFAULT_ICON_SIZE*3, DEFAULT_ICON_SIZE, "SOLID", (Color)VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
+                .getVisualStyle()));
+        this.stroke = new BasicStroke((Float) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager()
+                .getVisualStyle()));
+    }
 
     /**
      * Creates a new LineTypeIcon object.
@@ -65,7 +68,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
      * @param y DOCUMENT ME!
      */
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        final Graphics2D g2d = (Graphics2D) g;
+        g2d = (Graphics2D) g;
         g2d.setColor(color);
         // AA on
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

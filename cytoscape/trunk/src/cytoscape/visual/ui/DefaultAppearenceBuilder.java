@@ -119,11 +119,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 	                                                            NODE_LABEL, NODE_LABEL_POSITION,
 	                                                            NODE_TOOLTIP
 	                                                        };
-	private static final VisualPropertyType[] EDGE_PROP_LIST = {
-	                                                               EDGE_COLOR, EDGE_LINETYPE,
-	                                                               EDGE_LINE_WIDTH
-	                                                           };
-
+	private static final List<VisualPropertyType> EDGE_PROPS = VisualPropertyType.getEdgeVisualPropertyList();
+	private static final List<VisualPropertyType> NODE_PROPS = VisualPropertyType.getNodeVisualPropertyList();
+	
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 *
@@ -211,7 +209,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
 		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
 		nodeScrollPane = new javax.swing.JScrollPane();
-		nodeList = new org.jdesktop.swingx.JXList();
+		nodeList = new JXList();
+		edgeList = new JXList();
 		edgeScrollPane = new javax.swing.JScrollPane();
 		globalScrollPane = new javax.swing.JScrollPane();
 		jCheckBox1 = new javax.swing.JCheckBox();
@@ -229,6 +228,12 @@ public class DefaultAppearenceBuilder extends JDialog {
 					listActionPerformed(e);
 				}
 			});
+		
+		edgeList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				listActionPerformed(e);
+			}
+		});
 
 		globalList.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -248,7 +253,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                              .add(0, 237, Short.MAX_VALUE));
 
-		jXTitledPanel1.setTitle("Default Node Appearence");
+		jXTitledPanel1.setTitle("Default Visual Properties");
 		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
 		                                                        new Color(Color.gray.getRed(),
 		                                                                  Color.gray.getGreen(),
@@ -260,13 +265,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
 		defaultObjectTabbedPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
 
-		nodeList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-				public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-					nodeListValueChanged(evt);
-				}
-			});
-
 		nodeScrollPane.setViewportView(nodeList);
+		edgeScrollPane.setViewportView(edgeList);
 		globalScrollPane.setViewportView(globalList);
 
 		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
@@ -366,29 +366,30 @@ public class DefaultAppearenceBuilder extends JDialog {
 		pack();
 	} // </editor-fold>
 
-	private void nodeListValueChanged(javax.swing.event.ListSelectionEvent evt) {
-		// TODO add your handling code here:
-	}
-
 	private void listActionPerformed(MouseEvent e) {
-		// TODO add your handling code here:
 		if (e.getClickCount() == 1) {
-			int selected = nodeList.getSelectedIndex();
+			
 
+			Object newValue = null;
 			try {
-				Object newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected],
-				                                                           this);
-				VizMapperMainPanel.apply(newValue, orderedList[selected]);
+				if(e.getSource() == nodeList) {
+					int selected = nodeList.getSelectedIndex();
+					newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
+					VizMapperMainPanel.apply(newValue, orderedList[selected]);
+				} else {
+					int selected = edgeList.getSelectedIndex();
+					newValue = VizMapperMainPanel.showValueSelectDialog(EDGE_PROPS.get(selected), this);
+					System.out.println("GOT New!!!!!!    ---> " + newValue.getClass());
+					VizMapperMainPanel.apply(newValue, EDGE_PROPS.get(selected));
+				}
+				
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
 			buildList();
 			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
-			// Cytoscape.getDesktop().setFocus(Cytoscape.getVisualMappingManager().getNetworkView().getIdentifier());
 			mainView.createView();
-
 			mainView.repaint();
 		}
 	}
@@ -408,10 +409,11 @@ public class DefaultAppearenceBuilder extends JDialog {
 			buildList();
 			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 
-			if(selected.equals("Background Color")) {
+			if (selected.equals("Background Color")) {
 				Cytoscape.getVisualMappingManager().applyGlobalAppearances();
 				mainView.updateBackgroungColor(newColor);
 			}
+
 			mainView.createView();
 			mainView.repaint();
 		}
@@ -444,7 +446,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void buildList() {
+	private void buildList() {
 		List<Icon> nodeIcons = new ArrayList<Icon>();
 		List<Icon> edgeIcons = new ArrayList<Icon>();
 		List<Icon> globalIcons = new ArrayList<Icon>();
@@ -460,27 +462,40 @@ public class DefaultAppearenceBuilder extends JDialog {
 			nodeIcons.add(nodeIcon);
 		}
 
+		DefaultListModel eModel = new DefaultListModel();
+		edgeList.setModel(eModel);
+
+		for (VisualPropertyType type : VisualPropertyType.values()) {
+			if (type.isNodeProp() == false) {
+				final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
+				                                                              .getDefaultIcon());
+				if(edgeIcon != null) {
+					
+					edgeIcon.setLeftPadding(15);
+					eModel.addElement(type.getName());
+					edgeIcons.add(edgeIcon);
+				}
+			}
+		}
+
 		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                          .getGlobalAppearanceCalculator();
 		DefaultListModel gModel = new DefaultListModel();
-
 		globalList.setModel(gModel);
 
 		for (String name : gac.getGlobalAppearanceNames()) {
 			try {
-				final Color c = gac.getDefaultColor(name);
-
-				globalIcons.add(new GlobalIcon(name, c));
+				globalIcons.add(new GlobalIcon(name, gac.getDefaultColor(name)));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 			gModel.addElement(name);
 		}
 
-		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
 		nodeList.setCellRenderer(new VisualPropCellRenderer(nodeIcons));
-
+		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
+		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
+		
 		mainView.createView();
 		mainView.repaint();
 	}
@@ -511,23 +526,27 @@ public class DefaultAppearenceBuilder extends JDialog {
 		}
 
 		public Component getListCellRendererComponent(JList list, Object value, int index,
-		                                              boolean isSelected, boolean cellHasFocus) {
-			final VisualPropertyIcon icon = (VisualPropertyIcon) icons.get(index);
-
+		      boolean isSelected, boolean cellHasFocus) {
+			final VisualPropertyIcon icon;
+			
+			if(icons.size()>index) {
+				icon = (VisualPropertyIcon) icons.get(index);
+			} else 
+				icon = null;
+			
 			setText(value.toString());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
-			// this.setHorizontalTextPosition(SwingConstants.LEFT);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			// this.setHorizontalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(45);
 			//this.setAlignmentX(150.0f);
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
+			if(icon != null) {
 			setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
-			// this.setBorder(new LineBorder(Color.black));
+			}
 			this.setBorder(new DropShadowBorder());
 
 			return this;
@@ -535,7 +554,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	/*
-	 * Draw color icon
+	 * Draw global color icon
 	 */
 	class GlobalIcon extends VisualPropertyIcon {
 		public GlobalIcon(String name, Color color) {

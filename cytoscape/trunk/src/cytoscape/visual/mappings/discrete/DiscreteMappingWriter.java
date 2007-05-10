@@ -58,63 +58,57 @@ import java.util.TreeMap;
  * cytoscape.visual.mappings.discrete.unitTests.TestDiscreteMappingWriter.
  */
 public class DiscreteMappingWriter {
-    private String attrName;
-    private String baseKey;
-    private TreeMap map;
+	private String attrName;
+	private String baseKey;
+	private TreeMap map;
 
-    /**
-     * Constructor.
-     * @param attrName Controlling Attribute Name.
-     * @param map Discrete Map.
-     */
-    public DiscreteMappingWriter(String attrName, String baseKey, TreeMap map) {
-        this.attrName = attrName;
-        this.baseKey = baseKey;
-        this.map = map;
-    }
+	/**
+	 * Constructor.
+	 * @param attrName Controlling Attribute Name.
+	 * @param map Discrete Map.
+	 */
+	public DiscreteMappingWriter(String attrName, String baseKey, TreeMap map) {
+		this.attrName = attrName;
+		this.baseKey = baseKey;
+		this.map = map;
+	}
 
-    /**
-     * Return a Properties object with entries suitable for customizing this
-     * object via the applyProperties method.
-     */
-    public Properties getProperties() {
-        Properties newProps = new Properties();
+	/**
+	 * Return a Properties object with entries suitable for customizing this
+	 * object via the applyProperties method.
+	 */
+	public Properties getProperties() {
+		Properties newProps = new Properties();
 
-        /*
-         * if null, return empty prop.
-         */
-        if (attrName == null)
-            return newProps;
+		/*
+		 * if null, return empty prop.
+		 */
+		if (attrName == null)
+			return newProps;
 
-        String contKey = baseKey + ".controller";
-        System.out.println("==================== cKey = " + contKey +
-            ", attrName= " + attrName);
+		String contKey = baseKey + ".controller";
+		newProps.setProperty(contKey, attrName);
 
-        newProps.setProperty(contKey, attrName);
+		String contTypeKey = baseKey + ".controllerType";
+		newProps.setProperty(contTypeKey, MappingUtil.getAttributeTypeString(baseKey, attrName));
 
-        String contTypeKey = baseKey + ".controllerType";
-        newProps.setProperty(
-            contTypeKey,
-            MappingUtil.getAttributeTypeString(baseKey, attrName));
+		String mapKey = baseKey + ".map.";
+		Iterator iterator = map.keySet().iterator();
 
-        String mapKey = baseKey + ".map.";
-        Iterator iterator = map.keySet()
-                               .iterator();
+		Object key;
+		Object value;
+		String stringValue;
 
-        Object key;
-        Object value;
-        String stringValue;
+		while (iterator.hasNext()) {
+			key = iterator.next();
+			value = map.get(key);
 
-        while (iterator.hasNext()) {
-            key = iterator.next();
-            value = map.get(key);
+			if (value != null) {
+				stringValue = ObjectToString.getStringValue(value);
+				newProps.setProperty(mapKey + key.toString(), stringValue);
+			}
+		}
 
-            if (value != null) {
-                stringValue = ObjectToString.getStringValue(value);
-                newProps.setProperty(mapKey + key.toString(), stringValue);
-            }
-        }
-
-        return newProps;
-    }
+		return newProps;
+	}
 }

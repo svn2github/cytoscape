@@ -34,6 +34,9 @@
 */
 package cytoscape.visual.ui.icon;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.LineTypeDef;
 import cytoscape.visual.NodeShape;
@@ -71,6 +74,16 @@ public class ArrowIcon extends VisualPropertyIcon {
 
 	/**
 	 * Creates a new ArrowIcon object.
+	 */
+	public ArrowIcon(Shape shape) {
+		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
+		     ((Arrow) (VisualPropertyType.EDGE_SRCARROW.getDefault(Cytoscape.getVisualMappingManager()
+		                                                                         .getVisualStyle())))
+		     .getShape().getName(), DEFAULT_ICON_COLOR);
+	}
+
+	/**
+	 * Creates a new ArrowIcon object.
 	 *
 	 * @param shape DOCUMENT ME!
 	 * @param width DOCUMENT ME!
@@ -103,12 +116,10 @@ public class ArrowIcon extends VisualPropertyIcon {
 	 * @param y DOCUMENT ME!
 	 */
 	public void paintIcon(Component c, Graphics g, int x, int y) {
-
 		final Graphics2D g2d = (Graphics2D) g;
 
 		// Turn AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 		g2d.setColor(color);
 
 		/*
