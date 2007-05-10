@@ -5,8 +5,10 @@ package cytoscape.dialogs.plugins;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginTracker.PluginStatus;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -18,6 +20,7 @@ import java.awt.event.ActionListener;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
@@ -70,9 +73,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		setLocationRelativeTo(owner);
 		initComponents();
 		initTree();
-		if (PluginManager.usingWebstartManager()) {
-			changeSiteButton.setEnabled(false);
-		}
+		TrackTotals.zero();
 	}
 
 	public PluginManageDialog(javax.swing.JFrame owner) {
@@ -80,9 +81,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		setLocationRelativeTo(owner);
 		initComponents();
 		initTree();
-		if (PluginManager.usingWebstartManager()) {
-			changeSiteButton.setEnabled(false);
-		}
+		TrackTotals.zero();
 	}
 
 	// trying to listen to events in the Url dialog
@@ -107,18 +106,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 					.htmlOutput());
 			if (Node.isNodeAncestor(installedNode)) {
 				deleteButton.setEnabled(true);
-				downloadButton.setEnabled(false);
+				installButton.setEnabled(false);
 			} else if (Node.isNodeAncestor(availableNode)) {
 				deleteButton.setEnabled(false);
-				downloadButton.setEnabled(true);
+				installButton.setEnabled(true);
 			}
 		} else {
 			deleteButton.setEnabled(false);
-			downloadButton.setEnabled(false);
+			installButton.setEnabled(false);
 		}
 		if (PluginManager.usingWebstartManager()) {
 			deleteButton.setEnabled(false);
-			downloadButton.setEnabled(false);
 		}		
 
 	}
@@ -151,7 +149,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		// not sure why I had to do it like this, always missed the second node
 		// if I tried to remove them while I looped over the children
 		TrackTotals.zero(TrackTotals.Totals.AVAIL);
-		availableNode.setUserObject( PluginInstallStatus.AVAILABLE.toString() + " : " + TrackTotals.getAvailable() );
+		//availableNode.setUserObject( PluginInstallStatus.AVAILABLE.toString() + " : " + TrackTotals.getAvailable() );
+		availableNode.setUserObject( new CategoryObject(PluginInstallStatus.AVAILABLE.toString(), TrackTotals.getAvailable()));
 		int i = 0;
 		for (java.util.Enumeration<javax.swing.tree.TreeNode> E = availableNode.children(); E.hasMoreElements();) {
 			MutableTreeNode Node = (MutableTreeNode) E.nextElement();
@@ -165,27 +164,30 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	/**
-	 * DOCUMENT ME
+	 * Adds a category and it's list of plugins to the appropriate tree
+	 * (based on Status) in the dialog.
 	 * 
 	 * @param CategoryName
+	 * 		String category for this list of plugins
 	 * @param Plugins
+	 * 		List of PluginInfo objects to be shown in the given category
 	 * @param Status
+	 * 		PluginInstallStatus (currently installed or available for install)
 	 */
 	public void addCategory(String CategoryName, List<PluginInfo> Plugins,
 			PluginInstallStatus Status) {
 		switch (Status) {
 		case INSTALLED:
 			addCategory(CategoryName, Plugins, installedNode, TrackTotals.Totals.CUR);
-			installedNode.setUserObject(PluginInstallStatus.INSTALLED
-					.toString()
-					+ ": " + TrackTotals.getCurrent());
+			//installedNode.setUserObject(PluginInstallStatus.INSTALLED.toString()					+ ": " + TrackTotals.getCurrent());
+			installedNode.setUserObject( new CategoryObject(PluginInstallStatus.INSTALLED.toString(), TrackTotals.getCurrent()));
+			
 			break;
 		case AVAILABLE:
 			System.out.println("Adding new available category: " + CategoryName);
 			addCategory(CategoryName, Plugins, availableNode, TrackTotals.Totals.AVAIL);
-			availableNode.setUserObject(PluginInstallStatus.AVAILABLE
-					.toString()
-					+ ": " + TrackTotals.getAvailable());
+			//availableNode.setUserObject(PluginInstallStatus.AVAILABLE.toString() + ": " + TrackTotals.getAvailable());
+			availableNode.setUserObject( new CategoryObject(PluginInstallStatus.AVAILABLE.toString(), TrackTotals.getAvailable()));
 			break;
 		}
 		treeModel = new DefaultTreeModel(rootTreeNode);
@@ -202,7 +204,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			i++;
 			TrackTotals.add(type);
 		}
-		Category.setUserObject(CategoryName + ": " + i);
+		//Category.setUserObject(CategoryName + ": " + i);
+		Category.setUserObject( new CategoryObject(CategoryName, i) );
 	}
 	
 	// change site url
@@ -271,15 +274,57 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						License.dispose();
 						createDownloadTask(info, node);
+						loadPlugin(info);
+
 					}
 				});
 				License.setVisible(true);
 			} else {
 				createDownloadTask(info, node);
+				loadPlugin(info);
 			}
 		}
 	}
 
+	private void updateCurrent(PluginInfo info) {
+		boolean categoryMatched = false;
+		java.util.Enumeration Current = installedNode.children();
+		
+		while (Current.hasMoreElements()) {
+			DefaultMutableTreeNode Child = (DefaultMutableTreeNode)Current.nextElement();
+			CategoryObject CatObj = (CategoryObject) Child.getUserObject();
+
+			if (CatObj.getTitle().equals(info.getCategory())) {
+				Child.insert(new DefaultMutableTreeNode(info), Child.getChildCount()+1);
+				Child.setUserObject( new CategoryObject(CatObj.getTitle(), CatObj.getTotal()+1));
+				categoryMatched = true;
+			}
+		}
+		
+		if (!categoryMatched) {
+			List<PluginInfo> NewPlugin = new java.util.ArrayList<PluginInfo>();
+			NewPlugin.add(info);
+			addCategory(info.getCategory(), NewPlugin, PluginInstallStatus.INSTALLED);
+		}
+		
+		treeModel = new DefaultTreeModel(rootTreeNode);
+		pluginTree.setModel(treeModel);
+	}
+	
+	
+	private void loadPlugin(PluginInfo info) {
+		PluginManager Mgr = PluginManager.getPluginManager();
+		try {
+			Mgr.install(info); 
+			Mgr.loadPlugin(info);
+			updateCurrent(info);
+		} catch (ClassNotFoundException cne) {
+			cne.printStackTrace();
+		} catch (java.io.IOException ioe) {
+			ioe.printStackTrace();				
+		}
+
+	}
 	
 	// close button
 	private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,7 +356,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		pluginTree = new javax.swing.JTree();
 		availablePluginsLabel = new javax.swing.JLabel();
 		changeSiteButton = new javax.swing.JButton();
-		downloadButton = new javax.swing.JButton();
+		installButton = new javax.swing.JButton();
 		deleteButton = new javax.swing.JButton();
 		closeButton = new javax.swing.JButton();
 		msgLabel = new javax.swing.JLabel();
@@ -337,9 +382,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			}
 		});
 
-		downloadButton.setText("Download");
-		downloadButton.setEnabled(false);
-		downloadButton.addActionListener(new java.awt.event.ActionListener() {
+		installButton.setText("Install");
+		installButton.setEnabled(false);
+		installButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				downloadButtonActionPerformed(evt);
 			}
@@ -398,7 +443,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 																				18,
 																				18)
 																		.add(
-																				downloadButton)
+																				installButton)
 																		.add(
 																				18,
 																				18,
@@ -451,20 +496,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
 														.add(changeSiteButton)
-														.add(downloadButton)
+														.add(installButton)
 														.add(deleteButton).add(
 																closeButton))
 										.addContainerGap()));
 		pack();
 	}// </editor-fold>
-
 	
-	
-	
+	// to count/show the totals for installed and available plugins on the JTree
 	private static class TrackTotals {
 		private static int totalCurrent = 0;
 		private static int totalAvailable = 0;
-		
+
 		private enum Totals {
 			AVAIL("available"), CUR("current");
 			
@@ -485,6 +528,11 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				totalCurrent++;
 				break;
 			};
+		}
+		
+		public static void zero() {
+			zero(Totals.AVAIL);
+			zero(Totals.CUR);
 		}
 		
 		public static void zero(Totals t) {
@@ -509,9 +557,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	
 	}
 	
-	
-	
-	
+	/* --- create the tasks and task monitors to show the user what's going on during download/install --- */
 
 	private void createDownloadTask(PluginInfo obj, DefaultMutableTreeNode node) {
 		// Create Task
@@ -527,8 +573,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 	}
-
-	
 	
 	private class PluginDownloadTask implements cytoscape.task.Task {
 		private cytoscape.task.TaskMonitor taskMonitor;
@@ -545,24 +589,24 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			if (taskMonitor == null) {
 				throw new IllegalStateException("Task Monitor is not set.");
 			}
-			taskMonitor.setStatus("Downloading " + pluginInfo.getName() + " v" + pluginInfo.getPluginVersion());
+			taskMonitor.setStatus("Installing " + pluginInfo.getName() + " v" + pluginInfo.getPluginVersion());
 			taskMonitor.setPercentCompleted(-1);
-			
-			 PluginManager Mgr = PluginManager.getPluginManager(); 
-			 try {
+
+			PluginManager Mgr = PluginManager.getPluginManager(); 
+			try {
 				 Mgr.download(pluginInfo, taskMonitor);
 				 taskMonitor.setStatus(pluginInfo.getName() + " v" + pluginInfo.getPluginVersion() + " complete.");
 				 PluginManageDialog.this.setMessage(pluginInfo.getName() + " download complete. Please restart Cytoscape in order to use new plugins.");
 				 cleanTree(node);
+				 taskMonitor.setStatus(pluginInfo.getName() + " v" + pluginInfo.getPluginVersion() + " loading...");
 			} catch (java.io.IOException ioe) { 
 				taskMonitor.setException(ioe, "Failed to download " + pluginInfo.getName() + " from " +
 						pluginInfo.getUrl()); 
 			} catch (cytoscape.plugin.ManagerException me) {
-				JOptionPane.showMessageDialog(PluginManageDialog.this, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			} catch (cytoscape.plugin.WebstartException we) { // not sure this is the right way to do this
-				JOptionPane.showMessageDialog(PluginManageDialog.this, we.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				taskMonitor.setException(me, me.getMessage());
+			} finally {
+				taskMonitor.setPercentCompleted(100);
 			}
-			 taskMonitor.setPercentCompleted(100);
 		}
 
 		public void halt() {
@@ -575,7 +619,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 
 		public String getTitle() {
-			return pluginInfo.getName() + " plugin downloading";
+			return "Installing Cytoscape Plugin '" + pluginInfo.getName() + "'";
 		}
 	
 
@@ -598,15 +642,35 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			}
 			
 		}
-
 	}
 
+	private class CategoryObject {
+		private String title;
+		private int total;
+		public CategoryObject(String Title, int Total) {
+			title = Title;
+			total = Total;
+		}
+		
+		public String getTitle() {
+			return title;
+		}
+		
+		public int getTotal() {
+			return total;
+		}
+		
+		public String toString() {
+			return title + ": " + total;  
+		}
+	}
+	
 	// Variables declaration - do not modify
 	private javax.swing.JLabel availablePluginsLabel;
 	private javax.swing.JButton changeSiteButton;
 	private javax.swing.JButton closeButton;
 	private javax.swing.JButton deleteButton;
-	private javax.swing.JButton downloadButton;
+	private javax.swing.JButton installButton;
 	private javax.swing.JScrollPane infoScrollPane;
 	private javax.swing.JEditorPane infoTextPane;
 	private javax.swing.JSplitPane jSplitPane1;
