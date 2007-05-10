@@ -141,7 +141,7 @@ public class URLUtil {
 
 				if (jTask.haltRequested()) { //abort
 					downloadFile = null;
-					taskMonitor.setStatus("Canceling the download task ...");
+					taskMonitor.setStatus("Canceling the download ...");
 					taskMonitor.setPercentCompleted(100);
 					break;
 				}
