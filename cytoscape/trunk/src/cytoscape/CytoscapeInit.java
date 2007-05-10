@@ -51,6 +51,8 @@ import cytoscape.util.shadegrown.WindowUtilities;
 //import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.PluginTracker.PluginStatus;
 
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -201,7 +203,14 @@ public class CytoscapeInit {
 			
 			try {
 				System.out.println("loading plugins....");
-				mgr.loadPlugins( initParams.getPlugins() );
+				List<String> InstalledPlugins = new java.util.ArrayList<String>();
+				// load from those listed on the command line
+				InstalledPlugins.addAll( initParams.getPlugins() );
+				// this is the directory where user-installed plugins should live
+				for (String f: mgr.getPluginManageDirectory().list() ) {
+					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath() + File.separator + f);
+				}
+				mgr.loadPlugins( InstalledPlugins );
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
