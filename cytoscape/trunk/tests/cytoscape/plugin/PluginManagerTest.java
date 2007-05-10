@@ -17,7 +17,7 @@ public class PluginManagerTest extends TestCase {
 	private String testUrl;
 
 	private File tmpDir;
-
+	private File tmpDownloadDir;
 	private String fileName;
 
 	private static void print(String s) {
@@ -42,9 +42,11 @@ public class PluginManagerTest extends TestCase {
 		fileName = "test_tracker.xml";
 		tmpDir = new File(System.getProperty("java.io.tmpdir"));
 
+		tmpDownloadDir = new File(tmpDir, "test_cytoscape" + File.separator + cytoscape.CytoscapeVersion.version);
+		
 		tracker = new PluginTracker(tmpDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
-
+		mgr.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
 		assertTrue((new File(tmpDir, fileName)).exists());
 	}
 
@@ -75,7 +77,6 @@ public class PluginManagerTest extends TestCase {
 		// the manager checks this property to find out if it's webstarted
 		System.setProperty("javawebstart.version", "booya");
 
-		File tempDir = new File( System.getProperty("java.io.tmpdir") );
 		PluginManager wsMgr = PluginManager.getPluginManager();
 		assertNotNull(wsMgr);
 
@@ -91,17 +92,6 @@ public class PluginManagerTest extends TestCase {
 	}
 	
 	
-	/**
-	 * Test method for
-	 * {@link cytoscape.plugin.PluginManager#getTempDownloadDirecotry()}.
-	 */
-	public void testGetTempDownloadDirecotry() {
-		assertNotNull(mgr.getTempDownloadDirectory());
-		assertEquals(mgr.getTempDownloadDirectory().getAbsolutePath(),
-				CytoscapeInit.getConfigDirectory().getAbsolutePath()
-						+ File.separator + "plugins");
-	}
-
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#getPlugins(cytoscape.plugin.PluginTracker.PluginStatus)}.
@@ -153,10 +143,11 @@ public class PluginManagerTest extends TestCase {
 				"goodJarPlugin123", "1.0");
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
-		File Downloaded = mgr.download(TestObj);
-		assertTrue(Downloaded.exists());
+		//File Downloaded = mgr.download(TestObj, null);
+		TestObj = mgr.download(TestObj, null);
+		//assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
-		mgr.install();
+		mgr.install(TestObj);
 
 		List<PluginInfo> Current = mgr.getPlugins(PluginStatus.CURRENT);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
@@ -167,11 +158,49 @@ public class PluginManagerTest extends TestCase {
 		// shouldn't contain the temp directory path
 		assertFalse(Current.get(0).getFileList().get(0).contains(".cytoscape"));
 
-		assertTrue((new File(Current.get(0).getFileList().get(0)).exists()));
-		Downloaded.delete();
-		assertFalse(Downloaded.exists());
+		for (String f: Current.get(0).getFileList()) {
+			assertTrue( (new File(f)).exists() );
+		}
+
+		mgr.delete(TestObj);
+		mgr.delete();
+//		Downloaded.delete();
+//		assertFalse(Downloaded.exists());
 	}
 
+	
+	public void testInstallZip() throws Exception {
+		PluginInfo TestObj = getSpecificObj(mgr.inquire(testUrl), "goodZIPPlugin777", "0.45");
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+		//File Downloaded = mgr.download(TestObj, null);
+		TestObj = mgr.download(TestObj, null);
+		//assertTrue(Downloaded.exists());
+		for (String f: TestObj.getFileList()) {
+			assertTrue( (new File(f)).exists() );
+		}
+		
+		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
+		
+		//TestObj = mgr.install(mgr.getPlugins(PluginStatus.INSTALL).get(0));
+		mgr.install(mgr.getPlugins(PluginStatus.INSTALL).get(0));
+		
+		String ParentDir = (new File(TestObj.getFileList().get(0)).getParent());
+		List<String> TestFileList = TestObj.getFileList();
+		
+		for(String f: TestFileList) {
+			assertTrue( f.matches(ParentDir + File.separator + ".*"));
+		}
+		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
+		
+		mgr.delete(TestObj);
+		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
+		mgr.delete();
+
+		for (String f: TestFileList) {
+			assertFalse( (new File(f)).exists() );
+		}
+	}
+	
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.
@@ -183,10 +212,11 @@ public class PluginManagerTest extends TestCase {
 		PluginInfo TestObj = Plugins.get(0);
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
-		File Downloaded = mgr.download(TestObj);
-		assertTrue(Downloaded.exists());
+		//File Downloaded = mgr.download(TestObj, null);
+		TestObj = mgr.download(TestObj, null);
+		//assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
-		mgr.install();
+		mgr.install(TestObj);
 		List<PluginInfo> Current = mgr.getPlugins(PluginStatus.CURRENT);
 
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
@@ -213,13 +243,14 @@ public class PluginManagerTest extends TestCase {
 		PluginInfo TestObj = Plugins.get(0);
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
 
-		File Downloaded = mgr.download(TestObj);
-		assertTrue(Downloaded.exists());
+		//File Downloaded = mgr.download(TestObj, null);
+		TestObj = mgr.download(TestObj, null);
+		//assertTrue(Downloaded.exists());
 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
-		mgr.install();
+		mgr.install(TestObj);
 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
@@ -254,8 +285,8 @@ public class PluginManagerTest extends TestCase {
 				"goodJarPlugin123", "1.0");
 
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
-		assertNotNull(mgr.download(GoodJar));
-		mgr.install();
+		assertNotNull(mgr.download(GoodJar, null));
+		mgr.install(GoodJar);
 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		List<PluginInfo> Updatable = mgr.findUpdates(mgr.getPlugins(
@@ -271,8 +302,8 @@ public class PluginManagerTest extends TestCase {
 		PluginInfo GoodJar = getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
-		assertNotNull(mgr.download(GoodJar));
-		mgr.install();
+		assertNotNull(mgr.download(GoodJar, null));
+		mgr.install(GoodJar);
 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		List<PluginInfo> Updatable = mgr.findUpdates(mgr.getPlugins(
@@ -283,8 +314,8 @@ public class PluginManagerTest extends TestCase {
 		New.setUrl(getFileUrl() + New.getUrl());
 
 		PluginInfo Current = mgr.getPlugins(PluginStatus.CURRENT).get(0);
-		mgr.update(Current, New); // update sets the old for deletion, new for
-									// installation
+		//	 update sets the old for deletion, new for installation
+		mgr.update(Current, New); 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
@@ -294,14 +325,19 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 
-		mgr.install();
+		mgr.install(New);
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 0);
+
+		PluginInfo Installed = mgr.getPlugins(PluginStatus.CURRENT).get(0);
+		for (String f: Installed.getFileList()) {
+			print("Installed file: " + f);
+			assertTrue( (new File(f)).exists() );
+		}
 		
 		mgr.delete( mgr.getPlugins(PluginStatus.CURRENT).get(0) );
 		mgr.delete();
-
 	}
 
 	/**
@@ -314,8 +350,9 @@ public class PluginManagerTest extends TestCase {
 				"goodJarPlugin123", "1.0");
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
 
-		File Downloaded = mgr.download(GoodJar);
-		assertTrue(Downloaded.exists());
+		//File Downloaded = mgr.download(GoodJar, null);
+		GoodJar = mgr.download(GoodJar, null);
+		//assertTrue(Downloaded.exists());
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getPlugins(PluginStatus.DELETE).size(), 0);
@@ -326,8 +363,13 @@ public class PluginManagerTest extends TestCase {
 														// text
 		assertEquals(CurrentInstall.getFileList().size(), 1);
 
-		Downloaded.delete();
-		assertFalse(Downloaded.exists());
+		mgr.delete(GoodJar);
+		mgr.delete();
+		
+//		assertTrue(Downloaded.delete());
+//		assertFalse(Downloaded.exists());
+//		assertTrue(Downloaded.getParentFile().delete());
+		
 	}
 
 	/**
@@ -343,13 +385,16 @@ public class PluginManagerTest extends TestCase {
 		BadJar.setUrl(getFileUrl() + BadJar.getUrl());
 
 		try {
-			mgr.download(BadJar);
+			mgr.download(BadJar, null);
 		} catch (ManagerException E) {
 			assertNotNull(E);
 			assertTrue(E.getMessage().contains("Cytoscape-Plugin"));
 		}
 	}
 
+	
+	
+	
 	private PluginInfo getSpecificObj(List<PluginInfo> AllInfo, String Id,
 			String Version) {
 		for (PluginInfo Current : AllInfo) {
