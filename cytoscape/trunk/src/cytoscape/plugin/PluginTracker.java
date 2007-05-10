@@ -107,9 +107,9 @@ public class PluginTracker {
 	private void init() throws java.io.IOException {
 		if (installFile.exists() && installFile.length() > 0) {
 			SAXBuilder Builder = new SAXBuilder(false);
-
 			try {
 				trackerDoc = Builder.build(installFile);
+				write();
 			} catch (JDOMException E) { // TODO do something with this error
 				E.printStackTrace();
 			}
@@ -121,7 +121,6 @@ public class PluginTracker {
 			trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
 			write();
 		}
-		System.out.println("Creating tracking file " + installFile.getAbsolutePath());
 	}
 
 	
@@ -155,6 +154,7 @@ public class PluginTracker {
 			if (!obj.getCategory().equals(PluginInfo.Category.NONE.getCategoryText())) {
 				Plugin.getChild(categoryTag).setText(obj.getCategory());
 			}
+			Plugin.getChild(installLocTag).setText(obj.getInstallLocation());
 			Plugin.getChild(descTag).setText(obj.getDescription());
 			Plugin.getChild(pluginVersTag).setText(obj.getPluginVersion());
 			Plugin.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
@@ -208,9 +208,9 @@ public class PluginTracker {
 		List<Element> Plugins = trackerDoc.getRootElement().getChild(Tag).getChildren(pluginTag);
 
 		for (Element Current : Plugins) {
-			if ((Obj.getPluginClassName() != null && Current.getChildTextTrim(this.classTag).equals(Obj.getPluginClassName())) ||  
-				(Current.getChildTextTrim(this.uniqueIdTag).equals(Obj.getID()) &&
-				 Current.getChildTextTrim(this.projUrlTag).equals(Obj.getProjectUrl())) ||
+			if ((Obj.getPluginClassName() != null && Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName())) ||  
+				(Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) &&
+				 Current.getChildTextTrim(projUrlTag).equals(Obj.getProjectUrl())) ||
 				 ((Current.getChildTextTrim(urlTag).length() > 0 && Obj.getUrl() != null) &&
 					Current.getChildTextTrim(urlTag).equals(Obj.getUrl())) ) {
 				  return Current;
@@ -260,18 +260,19 @@ public class PluginTracker {
 
 		for (Element CurrentPlugin : Plugins) {
 			
-			PluginInfo Info = new PluginInfo(CurrentPlugin.getChildTextTrim(this.uniqueIdTag));
-			Info.setName(CurrentPlugin.getChildTextTrim(this.nameTag));
-			Info.setDescription(CurrentPlugin.getChildTextTrim(this.descTag));
-			Info.setPluginClassName(CurrentPlugin.getChildTextTrim(this.classTag));
-			Info.setPluginVersion(CurrentPlugin.getChildTextTrim(this.pluginVersTag));
-			Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(this.cytoVersTag));
-			Info.setCategory(CurrentPlugin.getChildTextTrim(this.categoryTag));
-			Info.setUrl(CurrentPlugin.getChildTextTrim(this.urlTag));
-			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(this.projUrlTag));
-
+			PluginInfo Info = new PluginInfo(CurrentPlugin.getChildTextTrim(uniqueIdTag));
+			Info.setName(CurrentPlugin.getChildTextTrim(nameTag));
+			Info.setDescription(CurrentPlugin.getChildTextTrim(descTag));
+			Info.setPluginClassName(CurrentPlugin.getChildTextTrim(classTag));
+			Info.setPluginVersion(CurrentPlugin.getChildTextTrim(pluginVersTag));
+			Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(cytoVersTag));
+			Info.setCategory(CurrentPlugin.getChildTextTrim(categoryTag));
+			Info.setUrl(CurrentPlugin.getChildTextTrim(urlTag));
+			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
+			Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
+			
 			// set file type
-			String FileType = CurrentPlugin.getChildTextTrim(this.fileTypeTag);
+			String FileType = CurrentPlugin.getChildTextTrim(fileTypeTag);
 			if (FileType.equalsIgnoreCase(PluginInfo.FileType.JAR.toString())) {
 				Info.setFiletype(PluginInfo.FileType.JAR);
 			} else if (FileType.equalsIgnoreCase(PluginInfo.FileType.ZIP.toString())) {
@@ -279,17 +280,17 @@ public class PluginTracker {
 			}
 			
 			// add plugin files
-			List<Element> Files = CurrentPlugin.getChild(this.fileListTag).getChildren(this.fileTag);
+			List<Element> Files = CurrentPlugin.getChild(fileListTag).getChildren(fileTag);
 			for (Element File : Files) {
 				Info.addFileName(File.getTextTrim());
 			}
 
 			// add plugin authors
-			List<Element> Authors = CurrentPlugin.getChild(this.authorListTag)
-			                                     .getChildren(this.authorTag);
+			List<Element> Authors = CurrentPlugin.getChild(authorListTag)
+			                                     .getChildren(authorTag);
 			for (Element Author : Authors) {
-				Info.addAuthor(Author.getChildTextTrim(this.nameTag),
-				               Author.getChildTextTrim(this.instTag));
+				Info.addAuthor(Author.getChildTextTrim(nameTag),
+				               Author.getChildTextTrim(instTag));
 			}
 
 			Info = PluginFileReader.addLicense(Info, CurrentPlugin);
@@ -317,7 +318,8 @@ public class PluginTracker {
 		Plugin.addContent(new Element(projUrlTag).setText(obj.getProjectUrl()));
 		Plugin.addContent(new Element(categoryTag).setText(obj.getCategory()));
 		Plugin.addContent(new Element(fileTypeTag).setText(obj.getFileType().toString()));
-
+		Plugin.addContent(new Element(installLocTag).setText(obj.getInstallLocation()));
+		
 		// license
 		Element License = new Element(licenseTag);
 		License.addContent( new Element("text").setText(obj.getLicenseText()) );
@@ -345,7 +347,7 @@ public class PluginTracker {
 		return Plugin;
 	}
 
-	// XML Tags to prevent misspelling issues, PluginFileReader uses the same
+	// XML Tags to prevent misspelling issues, PluginFileReader uses most of the same
 	// tags, the xml needs to stay consistent
 	private String nameTag = PluginFileReader.nameTag;
 	private String descTag = PluginFileReader.descTag;
@@ -365,4 +367,5 @@ public class PluginTracker {
 	private String uniqueIdTag = PluginFileReader.uniqueID;
 	private String fileTypeTag = PluginFileReader.fileType;
 	private String licenseTag = PluginFileReader.licenseTag;
+	private String installLocTag = "installLocation";
 }

@@ -137,34 +137,33 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	/**
 	 * Attempts to instantiate a plugin of the class argument.
-	 *
+	 * @return The object, if it was not successfully constructed object will be null
 	 * @return true if the plugin was successfulyl constructed, false otherwise
 	 */
-	public static boolean loadPlugin(Class pluginClass, String JarFileName) {
+	public static Object loadPlugin(Class pluginClass, String JarFileName) throws InstantiationException,
+		IllegalAccessException {
 		System.out.println("Loading: " + pluginClass + " from " + JarFileName);
 
 		if (pluginClass == null) {
 			return false;
 		}
 
-
 		Object object = null;
 
 		try {
 			object = pluginClass.newInstance();
-			PluginManager Mgr = PluginManager.getPluginManager();
-			Mgr.register((CytoscapePlugin) object, JarFileName);
-		} catch (InstantiationException e) {
-			System.out.println("InstantiationException");
-			System.out.println(e);
-			e.printStackTrace();
-			object = null;
-		} catch (IllegalAccessException e) {
-			System.out.println("IllegalAccessException");
-			System.out.println(e);
-			e.printStackTrace();
-			object = null;
-
+//			PluginManager Mgr = PluginManager.getPluginManager();
+//			Mgr.register((CytoscapePlugin) object, JarFileName);
+//		} catch (InstantiationException e) {
+//			System.out.println("InstantiationException");
+//			System.out.println(e);
+//			e.printStackTrace();
+//			object = null;
+//		} catch (IllegalAccessException e) {
+//			System.out.println("IllegalAccessException");
+//			System.out.println(e);
+//			e.printStackTrace();
+//			object = null;
 		// We want to catch everything possible.  Errors will cause the entire
 		// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
@@ -190,11 +189,14 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 		if (object == null) {
 			System.out.println("Instantiation has failed for: " + pluginClass);
-			return false;
+//			return false;
 		} else {
 			System.out.println("Successfully loaded: " + pluginClass);
-			return true;
+//			return true;
 		}
+
+		return object;
+//		return true;
 	}
 
 	private HashMap<String, List<File>> pluginFileListMap;

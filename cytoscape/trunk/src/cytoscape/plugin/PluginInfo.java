@@ -48,7 +48,10 @@ import java.net.URL;
  */
 public class PluginInfo {
 	/**
-	 * Preset categories for use by plugin developers. Feel free to use your own
+	 * Preset categories for use by plugin developers. 
+	 * Core plugins should use CORE.  If none fit please create your own,
+	 * NONE should be reserved for plugins that don't know about the PluginInfo
+	 * object.
 	 */
 	public enum Category {
 		CORE("Core"), ANALYSIS("Analysis"), NETWORK_ATTRIBUTE_IO(
@@ -125,6 +128,8 @@ public class PluginInfo {
 	private boolean licenseRequired = false;
 
 	protected String enclosingJar;
+	
+	protected String installLocation;
 
 	/**
 	 * Initializes a PluginInfo object with the following defaults:
@@ -210,7 +215,7 @@ public class PluginInfo {
 			pluginVersion = version;
 		} else {
 			throw new NumberFormatException(
-					"Plugin version numbers must be in the format: \\d+.\\d+");
+					"Bad plugin version '" + version + "'. Plugin version numbers must be in the format: \\d+.\\d+");
 		}
 	}
 
@@ -375,8 +380,23 @@ public class PluginInfo {
 		return true;
 	}
 
+	/**
+	 * This is meant to only get set by the PluginManager
+	 * @param Loc
+	 */
+	protected void setInstallLocation(String Loc) {
+		installLocation = Loc;
+	}
+	
 	/* GET */
-
+	/**
+	 * @return String of the installation location for the plugin and all of it's files.
+	 * 		Generally this is .cytoscape/[cytoscape version]/plugins/PluginName-version
+	 */
+	public String getInstallLocation() {
+		return installLocation;
+	}
+	
 	/**
 	 * @return The text of the license for this plugin if available.
 	 */
