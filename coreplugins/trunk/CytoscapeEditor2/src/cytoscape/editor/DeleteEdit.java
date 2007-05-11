@@ -3,10 +3,8 @@ package cytoscape.editor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.actions.GinyUtils;
 import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
-import java.util.List;
 import cytoscape.util.undo.CyAbstractEdit;
 
 
@@ -15,6 +13,8 @@ import cytoscape.util.undo.CyAbstractEdit;
  */ 
 public class DeleteEdit extends CyAbstractEdit {
 
+	// MLC 05/09/07:
+	private static final long serialVersionUID = -1164181258019250610L;
 	int[] nodes;
 	int[] edges;
 	double[] xPos;
