@@ -426,7 +426,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		{
 		PluginInfo Info = new PluginInfo(this.getClass().getName());
 		Info.setName("CyGoose");
-		Info.setPluginVersion("2.43");
+		Info.setPluginVersion("2.4.2");
 		Info.setCategory(Category.COMMUNICATION_SCRIPTING.getCategoryText());
 		Info.setDescription(getDesc());
 		Info.addAuthor("Sarah Killcoyne", "Institute for Systems Biology");
