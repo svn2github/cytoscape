@@ -207,7 +207,7 @@ public class PluginManager {
 							+ File.separator);
 
 			if (!tempDir.exists()) {
-				tempDir.mkdir();
+				tempDir.mkdirs();
 			}
 		} catch (java.io.IOException E) {
 			E.printStackTrace(); // TODO do something useful with error
