@@ -47,6 +47,9 @@ import javax.swing.JLabel;
  *
  */
 public class BackgroundImage extends JLabel {
+	
+	 // MLC 05/10/07:
+	private static final long serialVersionUID = -8785860158854559085L;
 	private BufferedImage img;
 
 	/**
