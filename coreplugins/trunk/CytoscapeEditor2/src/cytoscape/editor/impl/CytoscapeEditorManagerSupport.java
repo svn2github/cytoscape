@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sat Jul 30 17:00:27 2005
-* Modified:     Wed Dec 27 09:43:05 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed May 09 13:59:52 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed May 09 13:59:45 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed several unneeded imports.
 * Wed Dec 27 09:04:18 2006 (Michael L. Creech) creech@w235krbza760
 *  Added getDeleteAction() and parameter to constructor.
 * Sun Aug 06 11:14:28 2006 (Michael L. Creech) creech@w235krbza760
@@ -28,12 +30,8 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
 
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
@@ -53,11 +51,6 @@ import cytoscape.visual.VisualStyle;
 
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
-import giny.model.Node;
-
-import giny.view.NodeView;
-
-import java.awt.geom.Point2D;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -65,7 +58,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.undo.AbstractUndoableEdit;
 
 
 /**
