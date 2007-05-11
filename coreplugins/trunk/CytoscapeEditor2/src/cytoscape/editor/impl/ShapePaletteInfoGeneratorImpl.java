@@ -6,13 +6,19 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Sun Dec 03 19:19:49 2006
-* Modified:     Tue Dec 05 08:54:46 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri May 11 16:56:57 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
 *
 * (c) Copyright 2006, Agilent Technologies, all rights reserved.
 *
+********************************************************************************
+*
+* Revisions:
+*
+* Fri May 11 16:56:45 2007 (Michael L. Creech) creech@w235krbza760
+*  Updated to Cytoscape 2.5 VizMap API.
 ********************************************************************************
 */
 package cytoscape.editor.impl;
@@ -24,6 +30,7 @@ import cytoscape.editor.ShapePaletteInfoGenerator;
 
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.calculators.Calculator;
 
@@ -60,13 +67,19 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 	 * @return  DOCUMENT ME!
 	 */
 	public Iterator<ShapePaletteInfo> buildShapePaletteInfo(Object appearanceCalc,
-	                                                        byte[] calcsToUse,
+								// MLC 05/09/07:
+	                                                        // byte[] calcsToUse,
+								// MLC 05/09/07:
+	                                                        VisualPropertyType [] calcsToUse,
 	                                                        String controllingAttribute,
 	                                                        ChangeListener listener,
 	                                                        ShapePaletteInfoFilter filter) {
 		// setup listening for changes when needed:
 		if (listener != null) {
-			for (byte calcType : calcsToUse) {
+		    // MLC 05/09/07:
+		    // for (byte calcType : calcsToUse) {
+		    // MLC 05/09/07:
+		    for (VisualPropertyType calcType : calcsToUse) {
 				// Calculator calc = getCalculator(appearanceCalc, calcType);
 				// if ((calc != null) && (listener != null)) {
 				DiscreteMapping dm = getDiscreteMapping(getCalculator(appearanceCalc, calcType),
@@ -90,7 +103,10 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 			ShapePaletteInfo pi = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfo(controllingAttribute,
 			                                                                             key);
 
-			for (byte calcType : calcsToUse) {
+			// MLC 05/09/07:
+			// for (byte calcType : calcsToUse) {
+			// MLC 05/09/07:
+			for (VisualPropertyType calcType : calcsToUse) {
 				Object value = null;
 				DiscreteMapping dm = getDiscreteMapping(getCalculator(appearanceCalc, calcType),
 				                                        controllingAttribute);
@@ -114,6 +130,52 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 		return spInfos.iterator();
 	}
 
+    // MLC 05/09/07 BEGIN:
+    //	/**
+    //	 * Across a set of given calculators types, create the set
+    //	 * of all the unique discrete mapping keys from
+    //	 * calculators with the given type from the given Node or Edge
+    //	 * AppearanceCalculator.
+    //	 * @return a non-null Set of the String mapping keys
+    //	 */
+    //	private Set<String> computeAllMappingKeys(Object appearanceCalc, byte[] calculatorTypes,
+    //	                                          String controllingAttribute) {
+    //		Set<String> mappingKeys = new HashSet<String>();
+    //
+    //		for (byte calcType : calculatorTypes) {
+    //			mappingKeys.addAll(getMappingKeys(getCalculator(appearanceCalc, calcType),
+    //			                                  controllingAttribute));
+    //		}
+    //
+    //		return mappingKeys;
+    //	}
+    //
+    //	private Calculator getCalculator(Object appearanceCalc, byte calcType) {
+    //		// The Cytoscape API should be changed to have an AppearanceCalculator that
+    //		// underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
+    //		// check type:
+    //		if (appearanceCalc instanceof NodeAppearanceCalculator) {
+    //			return ((NodeAppearanceCalculator) appearanceCalc).getCalculator(calcType);
+    //		} else if (appearanceCalc instanceof EdgeAppearanceCalculator) {
+    //			return ((EdgeAppearanceCalculator) appearanceCalc).getCalculator(calcType);
+    //		}
+    //
+    //		return null;
+    //	}
+    //
+    //	private Object getDefaultAppearanceValue(Object appearanceCalc, byte calcType) {
+    //		// The Cytoscape API should be changed to have an AppearanceCalculator that
+    //		// underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
+    //		// check type:
+    //		if (appearanceCalc instanceof NodeAppearanceCalculator) {
+    //			return ((NodeAppearanceCalculator) appearanceCalc).getDefaultAppearance().get(calcType);
+    //		} else if (appearanceCalc instanceof EdgeAppearanceCalculator) {
+    //			return ((EdgeAppearanceCalculator) appearanceCalc).getDefaultAppearance().get(calcType);
+    //		}
+    //
+    //		return null;
+    //	}
+
 	/**
 	 * Across a set of given calculators types, create the set
 	 * of all the unique discrete mapping keys from
@@ -121,11 +183,11 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 	 * AppearanceCalculator.
 	 * @return a non-null Set of the String mapping keys
 	 */
-	private Set<String> computeAllMappingKeys(Object appearanceCalc, byte[] calculatorTypes,
+	private Set<String> computeAllMappingKeys(Object appearanceCalc, VisualPropertyType[] calculatorTypes,
 	                                          String controllingAttribute) {
 		Set<String> mappingKeys = new HashSet<String>();
 
-		for (byte calcType : calculatorTypes) {
+		for (VisualPropertyType calcType : calculatorTypes) {
 			mappingKeys.addAll(getMappingKeys(getCalculator(appearanceCalc, calcType),
 			                                  controllingAttribute));
 		}
@@ -133,7 +195,7 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 		return mappingKeys;
 	}
 
-	private Calculator getCalculator(Object appearanceCalc, byte calcType) {
+	private Calculator getCalculator(Object appearanceCalc, VisualPropertyType calcType) {
 		// The Cytoscape API should be changed to have an AppearanceCalculator that
 		// underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
 		// check type:
@@ -146,7 +208,7 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 		return null;
 	}
 
-	private Object getDefaultAppearanceValue(Object appearanceCalc, byte calcType) {
+	private Object getDefaultAppearanceValue(Object appearanceCalc, VisualPropertyType calcType) {
 		// The Cytoscape API should be changed to have an AppearanceCalculator that
 		// underlies NodeAppearanceCalculator and EdgeAppearanceCalculator. For now,
 		// check type:
@@ -158,6 +220,7 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 
 		return null;
 	}
+    // MLC 05/09/07 END.
 
 	private Set<String> getMappingKeys(Calculator calc, String controllingAttribute) {
 		DiscreteMapping dm = getDiscreteMapping(calc, controllingAttribute);
