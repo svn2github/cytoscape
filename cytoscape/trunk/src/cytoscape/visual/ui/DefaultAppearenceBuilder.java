@@ -38,22 +38,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.EDGE_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
-import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
-import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
-import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
-import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;
-import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
-import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
-import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
@@ -110,19 +94,10 @@ import javax.swing.SwingConstants;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
-	private static final VisualPropertyType[] orderedList = {
-	                                                            NODE_SHAPE, NODE_FILL_COLOR,
-	                                                            NODE_WIDTH, NODE_HEIGHT,
-	                                                            NODE_BORDER_COLOR, NODE_LINE_WIDTH,
-	                                                            NODE_LINETYPE, NODE_LABEL_COLOR,
-	                                                            NODE_FONT_FACE, NODE_FONT_SIZE,
-	                                                            NODE_LABEL, NODE_LABEL_POSITION,
-	                                                            NODE_TOOLTIP
-	                                                        };
 	private static final List<VisualPropertyType> EDGE_PROPS = VisualPropertyType
-	                                                                                                                       .getEdgeVisualPropertyList();
+	                                                                                              .getEdgeVisualPropertyList();
 	private static final List<VisualPropertyType> NODE_PROPS = VisualPropertyType
-	                                                                                                                         .getNodeVisualPropertyList();
+	                                                                                                .getNodeVisualPropertyList();
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -178,8 +153,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 		dialog.mainView.createDummyNetwork();
 		dialog.mainView.createView();
 		dialog.setSize(700, 300);
-		//        dialog.setVisible(true);
-		//        dialog.setVisible(false);
 		dialog.mainView.clean();
 
 		return dialog.getPanel();
@@ -371,38 +344,43 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			Object newValue = null;
+			List<VisualPropertyType> vps = null;
+			final JList list;
 
 			try {
 				if (e.getSource() == nodeList) {
-					int selected = nodeList.getSelectedIndex();
-					newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
-					VizMapperMainPanel.apply(newValue, orderedList[selected]);
+					vps = NODE_PROPS;
+					list = nodeList;
+
+					//					
+					//					
+					//					int selected = nodeList.getSelectedIndex();
+					//					newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
+					//					VizMapperMainPanel.apply(newValue, orderedList[selected]);
 				} else {
-					int selected = edgeList.getSelectedIndex();
-					
-					System.out.print("Selected item ---> " + edgeList.getSelectedValue());
-					
-					
-					/*
-					 * Pick target VisualPropertyType
-					 */
-					VisualPropertyType targetType = null;
-					for(VisualPropertyType type: EDGE_PROPS) {
-						if(type.getName().equals(edgeList.getSelectedValue())) {
-							targetType = type;
-							break;
-						}
-					}
-					System.out.println("  Item in list ---> " + targetType.getName());
-					
-					if(targetType == null) {
-						return;
-					}
-					
-					newValue = VizMapperMainPanel.showValueSelectDialog(targetType,
-					                                                    this);
-					VizMapperMainPanel.apply(newValue, targetType);
+					vps = EDGE_PROPS;
+					list = edgeList;
 				}
+
+				/*
+				 * Pick target VisualPropertyType
+				 */
+				VisualPropertyType targetType = null;
+
+				for (VisualPropertyType type : vps) {
+					if (type.getName().equals(list.getSelectedValue())) {
+						targetType = type;
+
+						break;
+					}
+				}
+
+				if (targetType == null) {
+					return;
+				}
+
+				newValue = VizMapperMainPanel.showValueSelectDialog(targetType, this);
+				VizMapperMainPanel.apply(newValue, targetType);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -474,7 +452,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualPropertyType type : orderedList) {
+		for (VisualPropertyType type : NODE_PROPS) {
 			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getVisualProperty()
 			                                                              .getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
@@ -488,6 +466,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		for (VisualPropertyType type : EDGE_PROPS) {
 			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
 			                                                              .getDefaultIcon());
+
 			if (edgeIcon != null) {
 				edgeIcon.setLeftPadding(15);
 				eModel.addElement(type.getName());
