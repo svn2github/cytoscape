@@ -169,7 +169,7 @@ public class NodeIcon extends VisualPropertyIcon {
 
 		newShape = shape;
 
-		af.setToTranslation(pad, (c.getHeight() - newShape.getBounds2D().getHeight()) / 2);
+		af.setToTranslation(leftPad, (c.getHeight() - newShape.getBounds2D().getHeight()) / 2);
 		newShape = af.createTransformedShape(newShape);
 
 		g2d.setColor(color);

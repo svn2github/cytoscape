@@ -54,6 +54,8 @@ public class EdgeColorProp extends AbstractVisualProperty {
 	}
 	
 	public Icon getDefaultIcon() {
-		return new LineTypeIcon();
+		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setBottomPadding(-7);
+		return icon;
 	}
 }

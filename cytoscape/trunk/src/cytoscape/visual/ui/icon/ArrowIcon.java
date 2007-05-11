@@ -34,16 +34,6 @@
 */
 package cytoscape.visual.ui.icon;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LineTypeDef;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-
-import ding.view.DGraphView;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -55,10 +45,9 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.Icon;
+import cytoscape.Cytoscape;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**
@@ -71,7 +60,11 @@ import javax.swing.Icon;
 public class ArrowIcon extends VisualPropertyIcon {
 	private static final Stroke EDGE_STROKE = new BasicStroke(9.0f, BasicStroke.CAP_SQUARE,
 	                                                          BasicStroke.JOIN_MITER);
+	
+	protected Graphics2D g2d;
 
+	private static final int DEF_L_PAD = 15;
+	
 	/**
 	 * Creates a new ArrowIcon object.
 	 */
@@ -116,19 +109,21 @@ public class ArrowIcon extends VisualPropertyIcon {
 	 * @param y DOCUMENT ME!
 	 */
 	public void paintIcon(Component c, Graphics g, int x, int y) {
-		final Graphics2D g2d = (Graphics2D) g;
+		g2d = (Graphics2D) g;
 
 		// Turn AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(color);
+		
+		g2d.translate(leftPad, bottomPad);
 
 		/*
 		 * If shape is not defined, treat as no-head.
 		 */
 		if (shape == null) {
 			g2d.setStroke(EDGE_STROKE);
-			g2d.drawLine(10, (height + 20) / 2, (int) (width * 0.95), (height + 20) / 2);
-
+			g2d.drawLine(c.getX()+ DEF_L_PAD, (height + 20) / 2, (int) (width * 0.95), (height + 20) / 2);
+			g2d.translate(-leftPad, -bottomPad);
 			return;
 		}
 
@@ -177,10 +172,12 @@ public class ArrowIcon extends VisualPropertyIcon {
 		g2d.setStroke(EDGE_STROKE);
 
 		if (newShape.getBounds2D().getWidth() > 5)
-			g2d.drawLine(10, (height + 20) / 2, (int) (newShape.getBounds2D().getCenterX()),
+			g2d.drawLine(c.getX()+DEF_L_PAD, (height + 20) / 2, (int) (newShape.getBounds2D().getCenterX()),
 			             (height + 20) / 2);
 		else
-			g2d.drawLine(10, (height + 20) / 2, (int) (newShape.getBounds2D().getMinX()),
+			g2d.drawLine(c.getX()+DEF_L_PAD, (height + 20) / 2, (int) (newShape.getBounds2D().getMinX()),
 			             (height + 20) / 2);
+		
+		g2d.translate(-leftPad, -bottomPad);
 	}
 }

@@ -34,9 +34,10 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
+import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.ui.icon.LineTypeIcon;
 
 import java.util.Map;
 
@@ -54,6 +55,18 @@ public class EdgeLineTypeProp extends AbstractVisualProperty {
 	 */
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_LINETYPE;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon() {
+		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setBottomPadding(-7);
+
+		return icon;
 	}
 
 	/**

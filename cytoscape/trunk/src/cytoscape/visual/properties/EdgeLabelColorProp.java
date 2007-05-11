@@ -34,17 +34,14 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.icon.LineTypeIcon;
-
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.Icon;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.LineTypeIcon;
 
 
 /**
@@ -66,19 +63,15 @@ public class EdgeLabelColorProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new LineTypeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.setColor(new Color(10, 10, 10, 0));
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-					g2d.setColor(Color.black);
-					
-					//final Font font = (Font) VisualPropertyType.EDGE_FONT_FACE.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
-					Font font = new Font("SansSerif", Font.BOLD, 14);
-					g2d.setFont(new Font(font.getFontName(), font.getStyle(), 40));
-					g2d.drawString("Font", c.getX() + 15, c.getY() - 10);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setColor(new Color(10, 10, 10, 0));
+		icon.setText("Font");
+		final Color fontColor = (Color)getDefault();
+		final Font defFont = (Font) VisualPropertyType.EDGE_FONT_FACE.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
+		icon.setTextFont(new Font(defFont.getFontName(), defFont.getStyle(), 24));
+		icon.setBottomPadding(-7);
+		icon.setTextColor(fontColor);
+		return icon;
+		
 	}
 }

@@ -119,9 +119,11 @@ public class DefaultAppearenceBuilder extends JDialog {
 	                                                            NODE_LABEL, NODE_LABEL_POSITION,
 	                                                            NODE_TOOLTIP
 	                                                        };
-	private static final List<VisualPropertyType> EDGE_PROPS = VisualPropertyType.getEdgeVisualPropertyList();
-	private static final List<VisualPropertyType> NODE_PROPS = VisualPropertyType.getNodeVisualPropertyList();
-	
+	private static final List<VisualPropertyType> EDGE_PROPS = VisualPropertyType
+	                                                                                                                       .getEdgeVisualPropertyList();
+	private static final List<VisualPropertyType> NODE_PROPS = VisualPropertyType
+	                                                                                                                         .getNodeVisualPropertyList();
+
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 *
@@ -228,12 +230,12 @@ public class DefaultAppearenceBuilder extends JDialog {
 					listActionPerformed(e);
 				}
 			});
-		
+
 		edgeList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				listActionPerformed(e);
-			}
-		});
+				public void mouseClicked(MouseEvent e) {
+					listActionPerformed(e);
+				}
+			});
 
 		globalList.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -368,21 +370,39 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 	private void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
-			
-
 			Object newValue = null;
+
 			try {
-				if(e.getSource() == nodeList) {
+				if (e.getSource() == nodeList) {
 					int selected = nodeList.getSelectedIndex();
 					newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
 					VizMapperMainPanel.apply(newValue, orderedList[selected]);
 				} else {
 					int selected = edgeList.getSelectedIndex();
-					newValue = VizMapperMainPanel.showValueSelectDialog(EDGE_PROPS.get(selected), this);
-					System.out.println("GOT New!!!!!!    ---> " + newValue.getClass());
-					VizMapperMainPanel.apply(newValue, EDGE_PROPS.get(selected));
+					
+					System.out.print("Selected item ---> " + edgeList.getSelectedValue());
+					
+					
+					/*
+					 * Pick target VisualPropertyType
+					 */
+					VisualPropertyType targetType = null;
+					for(VisualPropertyType type: EDGE_PROPS) {
+						if(type.getName().equals(edgeList.getSelectedValue())) {
+							targetType = type;
+							break;
+						}
+					}
+					System.out.println("  Item in list ---> " + targetType.getName());
+					
+					if(targetType == null) {
+						return;
+					}
+					
+					newValue = VizMapperMainPanel.showValueSelectDialog(targetType,
+					                                                    this);
+					VizMapperMainPanel.apply(newValue, targetType);
 				}
-				
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -465,16 +485,13 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualPropertyType type : VisualPropertyType.values()) {
-			if (type.isNodeProp() == false) {
-				final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
-				                                                              .getDefaultIcon());
-				if(edgeIcon != null) {
-					
-					edgeIcon.setLeftPadding(15);
-					eModel.addElement(type.getName());
-					edgeIcons.add(edgeIcon);
-				}
+		for (VisualPropertyType type : EDGE_PROPS) {
+			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
+			                                                              .getDefaultIcon());
+			if (edgeIcon != null) {
+				edgeIcon.setLeftPadding(15);
+				eModel.addElement(type.getName());
+				edgeIcons.add(edgeIcon);
 			}
 		}
 
@@ -489,13 +506,14 @@ public class DefaultAppearenceBuilder extends JDialog {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			gModel.addElement(name);
 		}
 
 		nodeList.setCellRenderer(new VisualPropCellRenderer(nodeIcons));
 		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
 		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
-		
+
 		mainView.createView();
 		mainView.repaint();
 	}
@@ -514,8 +532,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
-		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 18);
-		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
+		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
+		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
 		private final Color SELECTED_COLOR = new Color(0, 5, 80, 30);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
 		private final List<Icon> icons;
@@ -526,27 +544,29 @@ public class DefaultAppearenceBuilder extends JDialog {
 		}
 
 		public Component getListCellRendererComponent(JList list, Object value, int index,
-		      boolean isSelected, boolean cellHasFocus) {
+		                                              boolean isSelected, boolean cellHasFocus) {
 			final VisualPropertyIcon icon;
-			
-			if(icons.size()>index) {
+
+			if (icons.size() > index) {
 				icon = (VisualPropertyIcon) icons.get(index);
-			} else 
+			} else
 				icon = null;
-			
+
 			setText(value.toString());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(45);
+			this.setIconTextGap(35);
 			//this.setAlignmentX(150.0f);
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
-			if(icon != null) {
-			setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
+
+			if (icon != null) {
+				setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
 			}
+
 			this.setBorder(new DropShadowBorder());
 
 			return this;

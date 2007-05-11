@@ -34,9 +34,14 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
+import cytoscape.Cytoscape;
 
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.ui.icon.ArrowIcon;
+
+import java.awt.Color;
 
 import javax.swing.Icon;
 
@@ -52,5 +57,21 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 	 */
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_TGTARROW_COLOR;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon() {
+		final Arrow arrow = (Arrow) VisualPropertyType.EDGE_TGTARROW_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
+		                                                                                       .getVisualStyle());
+		final ArrowIcon icon = new ArrowIcon(arrow.getShape().getShape());
+		icon.setColor((Color) getDefault());
+		icon.setLeftPadding(20);
+		icon.setBottomPadding(-6);
+
+		return icon;
 	}
 }

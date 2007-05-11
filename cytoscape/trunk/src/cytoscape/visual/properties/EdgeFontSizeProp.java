@@ -64,21 +64,10 @@ public class EdgeFontSizeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new LineTypeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.setColor(new Color(10, 10, 10, 20));
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
-					
-					g2d.setColor(Color.DARK_GRAY);
-					String sizeString = getDefault().toString();
-					g2d.drawString(sizeString, c.getX() + DEFAULT_ICON_SIZE,
-					               c.getY()-15);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
-					g2d.setColor(new Color(10, 10, 10, 40));
-					g2d.drawString("A", c.getX() + 10 + DEFAULT_ICON_SIZE, c.getY()-10);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setColor(new Color(10, 10, 10, 20));
+		icon.setText(getDefault().toString());
+		icon.setBottomPadding(-7);
+		return icon;
 	}
 }

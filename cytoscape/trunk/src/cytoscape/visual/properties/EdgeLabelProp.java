@@ -34,11 +34,7 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-
-import cytoscape.visual.ui.icon.*;
-
-import javax.swing.Icon;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.icon;
 
 import java.awt.Color;
@@ -62,7 +60,7 @@ public abstract class VisualPropertyIcon extends ImageIcon {
 	public static final Color DEFAULT_ICON_COLOR = Color.DARK_GRAY;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int DEFAULT_ICON_SIZE = 32;
 	protected int height;
@@ -70,7 +68,8 @@ public abstract class VisualPropertyIcon extends ImageIcon {
 	protected Color color;
 	protected Shape shape;
 	protected String name;
-	protected int pad = 0;
+	protected int leftPad = 0;
+	protected int bottomPad = 0;
 
 	/**
 	 * Creates a new VisualPropertyIcon object.
@@ -201,6 +200,15 @@ public abstract class VisualPropertyIcon extends ImageIcon {
 	* @param pad DOCUMENT ME!
 	*/
 	public void setLeftPadding(int pad) {
-		this.pad = pad;
+		this.leftPad = pad;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param pad DOCUMENT ME!
+	 */
+	public void setBottomPadding(int pad) {
+		this.bottomPad = pad;
 	}
 }

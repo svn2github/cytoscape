@@ -34,14 +34,12 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.*;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.ui.icon.ArrowIcon;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.util.Map;
 
 import javax.swing.Icon;
@@ -68,9 +66,17 @@ public class EdgeSourceArrowShapeProp extends AbstractVisualProperty {
 	public Map<Object, Icon> getIconSet() {
 		return ArrowShape.getIconSet();
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getDefaultIcon() {
-		return new ArrowIcon((((Arrow) (VisualPropertyType.EDGE_SRCARROW.getDefault(Cytoscape.getVisualMappingManager()
-                .getVisualStyle()))).getShape()).getShape());
+		final ArrowIcon icon = new ArrowIcon((((Arrow) getDefault()).getShape()).getShape());
+		icon.setLeftPadding(20);
+		icon.setBottomPadding(-6);
+
+		return icon;
 	}
 }

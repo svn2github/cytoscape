@@ -34,6 +34,7 @@
  */
 package cytoscape.visual.properties;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -60,18 +61,10 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 	}
 	
 	public Icon getDefaultIcon() {
-		return new LineTypeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.setColor(new Color(10, 10, 10, 20));
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
-					
-					g2d.setColor(Color.DARK_GRAY);
-					String sizeString = getDefault().toString();
-					g2d.drawString(sizeString, c.getX() + DEFAULT_ICON_SIZE,
-					               c.getY()-15);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setColor(new Color(10, 10, 10, 20));
+		icon.setText(getDefault().toString());
+		icon.setBottomPadding(-7);
+		return icon;
 	}
 }
