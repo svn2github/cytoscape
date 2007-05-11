@@ -53,6 +53,8 @@ import javax.swing.JLabel;
  *
  */
 public class TextAnnotation extends JComponent {
+	// MLC 05/09/07:
+	private static final long serialVersionUID = -2388758275776657147L;
 	private BufferedImage img; // image for figure we are drawing
 	private int x1;
 	private int y1;
@@ -76,7 +78,8 @@ public class TextAnnotation extends JComponent {
 		//		this.img = new BufferedImage(44, 33, BufferedImage.TYPE_INT_ARGB);
 		//		Graphics2D grafx = img.createGraphics();
 		this.text = text;
-		this.img = img;
+		// MLC 05/09/07:
+		// this.img = img;
 		this.x1 = x1;
 		this.y1 = y1;
 		this.w1 = w1;
