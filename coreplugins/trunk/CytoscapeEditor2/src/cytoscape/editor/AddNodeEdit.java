@@ -13,6 +13,8 @@ import cytoscape.util.undo.CyAbstractEdit;
  */
 public class AddNodeEdit extends CyAbstractEdit {
 
+	// MLC 05/09/07:
+	private static final long serialVersionUID = 4869581496913388294L;
 	protected CyNetwork net;
 	protected CyNode node;
 	protected double xPos = 0.0;

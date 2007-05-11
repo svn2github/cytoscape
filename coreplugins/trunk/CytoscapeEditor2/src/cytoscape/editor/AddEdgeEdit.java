@@ -4,7 +4,6 @@ package cytoscape.editor;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
-import cytoscape.view.CyNetworkView;
 import cytoscape.util.undo.CyAbstractEdit;
 
 /**
@@ -12,6 +11,8 @@ import cytoscape.util.undo.CyAbstractEdit;
  */
 public class AddEdgeEdit extends CyAbstractEdit {
 
+	// MLC 05/09/07:
+	private static final long serialVersionUID = 2403924055921657412L;
 	protected CyNetwork net;
 	protected CyEdge edge; 
 
