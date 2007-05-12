@@ -113,6 +113,7 @@ public class HTMLSessionExporter implements SessionExporter
 					PrintWriter htmlWriter = new PrintWriter(htmlFile);
 					htmlWriter.println("<html>");
 					htmlWriter.println("<body>");
+					htmlWriter.println("<a href=\"" + FILE_SESSION_NAME + "\">Cytoscape Session File</a><br/>");
 					htmlWriter.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
 					int i = 0;
 					for (String networkID : networkIDs)
@@ -126,7 +127,8 @@ public class HTMLSessionExporter implements SessionExporter
 						
 						String imageLink = "<a href=\"" + networkID + FILE_IMAGE_SUFFIX + "\">image</a>";
 						String sifLink = "<a href=\"" + networkID + FILE_SIF_SUFFIX + "\">sif</a>";
-						htmlWriter.print("<font size=-1><br>" + title + " (" + imageLink + " | " + sifLink + ")</font>");
+						String legendLink = "<a href=\"" + networkID + FILE_LEGEND_SUFFIX + "\">legend</a>";
+						htmlWriter.print("<font size=-1><br>" + title + " <br/>(" + imageLink + " | " + sifLink + " | " + legendLink + ")</font>");
 						htmlWriter.println("</td>");
 						if ((i + 1) % MAX_COLUMNS == 0)
 							htmlWriter.println("</tr>");
