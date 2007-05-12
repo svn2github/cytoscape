@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:14:41 2005
-* Modified:     Fri Dec 08 05:45:55 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri May 11 17:04:45 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Fri May 11 17:04:38 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed uneeded imports.
 * Fri Dec 08 05:15:16 2006 (Michael L. Creech) creech@w235krbza760
 *  Refactored itemDropped() and handleDroppedEdge() and broke into
 *  smaller methods.  Removed findEdgeDropTarget().
@@ -45,8 +47,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
 import java.io.IOException;
-
-import javax.swing.TransferHandler;
 
 
 /**
