@@ -17,6 +17,8 @@
  *
  * Revisions:
  *
+* Fri May 11 16:58:47 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed unneeded imports and update some generics.
  * Tue Jan 09 05:15:18 2007 (Michael L. Creech) creech@w235krbza760
  *  Added setup of Delete keyboard accelerator to constructors.
  * Wed Dec 27 06:54:56 2006 (Michael L. Creech) creech@w235krbza760
@@ -30,8 +32,6 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-
-import cytoscape.actions.GinyUtils;
 
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.DeleteEdit;
@@ -51,7 +51,6 @@ import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyEvent;
 
-import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.event.MenuEvent;
 
 import java.util.List;
@@ -108,9 +107,12 @@ public class DeleteAction extends CytoscapeAction {
 
 		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
 		CyNetwork cyNet = myView.getNetwork();
-		List edgeViews = myView.getSelectedEdges();
-		List nodeViews = myView.getSelectedNodes();
-
+		// MLC 05/11/07 BEGIN:
+		// List edgeViews = myView.getSelectedEdges();
+		// List nodeViews = myView.getSelectedNodes();
+		List<EdgeView> edgeViews = myView.getSelectedEdges();
+		List<NodeView> nodeViews = myView.getSelectedNodes();
+		// MLC 05/11/07 END.
 		CyNode cyNode;
 		CyEdge cyEdge;
 		NodeView nv;
