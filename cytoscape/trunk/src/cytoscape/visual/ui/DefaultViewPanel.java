@@ -147,7 +147,9 @@ public class DefaultViewPanel extends JPanel {
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
 			Cytoscape.getVisualMappingManager().applyAppearances();
-			canvas.setBackground(background);
+			if(background != null && canvas != null) {
+				canvas.setBackground(background);
+			}
 		}
 	}
 
