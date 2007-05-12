@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:36:07 2005
-* Modified:     Fri Dec 08 05:39:10 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu May 10 10:03:07 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Thu May 10 10:02:48 2007 (Michael L. Creech) creech@w235krbza760
+*  Commented out various unused variables and removed unused imports.
 * Fri Dec 08 05:37:12 2006 (Michael L. Creech) creech@w235krbza760
 *  Broke finishEdge() into smaller pieces for subclass usage. Cleaned
 *  up mousePressed() and a few protected instance variables that
@@ -40,15 +42,12 @@ import ding.view.DGraphView;
 import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 
-import edu.umd.cs.piccolo.nodes.PPath;
-
 import giny.model.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -128,7 +127,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	// FIX: Should really change the name--this can easily be shadowed by other
 	//      local variables:
 	//	protected PPath edge;
-	private PPath edge;
+	// MLC 05/10/07:
+	// private PPath edge;
 
 	// MLC 12/07/06 END.
 
@@ -215,11 +215,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * node or edge which has been highlighted for drop or edge connection
 	 * during mouseDrag
 	 */
-	private NodeView _highlightedNodeView = null;
-	private EdgeView _highlightedEdgeView = null;
+	// MLC 05/10/07:
+	// private NodeView _highlightedNodeView = null;
+	// MLC 05/10/07:
+	// private EdgeView _highlightedEdgeView = null;
 
 	// private float _savedStrokeWidth = Float.NaN;
-	private Cursor _savedCursor = null;
+	// MLC 05/10/07:
+	// private Cursor _savedCursor = null;
 
 	/**
 	 * Creates a new BasicNetworkEditEventHandler object.
@@ -453,8 +456,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		saveX2 = Double.MIN_VALUE;
 		saveY1 = Double.MIN_VALUE;
 		saveY2 = Double.MIN_VALUE;
-
-		edge = null;
+        // MLC 05/10/07:
+		// edge = null;
 		node = null;
 
 		if (isHandlingEdgeDrop()) {
@@ -563,7 +566,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		boolean onNode = false;
 		Point2D location = e.getPoint();
 		NodeView nv = view.getPickedNodeView(location);
-		EdgeView ev = view.getPickedEdgeView(location);
+		// MLC 05/10/07:
+		// EdgeView ev = view.getPickedEdgeView(location);
 
 		// if over NodeView or EdgeView, then highlight
 		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
