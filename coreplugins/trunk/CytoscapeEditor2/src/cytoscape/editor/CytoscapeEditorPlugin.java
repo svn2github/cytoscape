@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Fri Dec 15 10:09:08 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri May 11 16:37:58 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Fri May 11 16:37:23 2007 (Michael L. Creech) creech@w235krbza760
+*  Updated VERSION to 2.50 and added getPluginInfoObject() for Cytoscape 2.5.
 * Fri Dec 15 10:08:07 2006 (Michael L. Creech) creech@w235krbza760
 *  Hacked a fix for not reinitializing the plugin if it is loaded
 *  first by another plugin.
@@ -35,6 +37,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 
 
 /**
@@ -45,8 +48,10 @@ import cytoscape.plugin.CytoscapePlugin;
  *
  */
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
-	// MLC 12/11/06:
-	private static boolean _initialized = false;
+    // MLC 12/11/06:
+    private static boolean _initialized = false;
+    // MLC 05/11/07:
+    private static final String VERSION = "2.50";
 
 	/**
 	 * Creates a new CytoscapeEditorPlugin object.
@@ -62,6 +67,22 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 
 		// MLC 07/24/06 END.
 	}
+
+    // MLC 05/10/07 BEGIN:
+    // overrides CytoscapePlugin.getPluginInfoObject():
+    public PluginInfo getPluginInfoObject() {
+        PluginInfo info = new PluginInfo();
+        info.setName("CytoscapeEditor");
+        info.setDescription("Add nodes and edges to a Cytoscape Network.");
+        info.setCategory(PluginInfo.Category.CORE);
+        info.setPluginVersion(VERSION);
+        info.setCytoscapeVersion("2.5");
+        // info.setProjectUrl("http://www.cytoscape.org/download_agilent_literature_search_v2.5.php?file=litsearch_v2.4");
+        info.addAuthor("Allan Kuchinsky", "Agilent Labs");
+        info.addAuthor("Michael Creech", "Blue Oak Software");
+        return info;
+    }
+    // MLC 05/10/07 END.
 
 	// MLC 07/24/06 BEGIN:
 	/**
