@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun Oct 04 05:35:56 2005
-* Modified:     Sun Dec 17 05:37:53 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu May 10 09:37:30 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Thu May 10 09:37:06 2007 (Michael L. Creech) creech@w235krbza760
+*  Updated to use VisualPropertyType versus VizMapUI for Cytoscape 2.5.
 * Sun Dec 17 05:36:01 2006 (Michael L. Creech) creech@w235krbza760
 *  Added creation of EdgePaletteItemDragCursorSetter and passing it into
 *  ShapePalette.addShape() calls.
@@ -47,8 +49,8 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
-
-import cytoscape.visual.ui.VizMapUI;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
 
 import ding.view.DGraphView;
 
@@ -159,7 +161,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		                                                                                                                                                       .createShapePaletteInfoGenerator();
 
 		// CytoscapeEditorManager.log("Got edge target arrow calculator: " + edgeCalc);
-		byte[] calcsToUse = new byte[] { VizMapUI.EDGE_TGTARROW };
+		// MLC 05/09/07:
+		// byte[] calcsToUse = new byte[] { VizMapUI.EDGE_TGTARROW };
+		// MLC 05/09/07:
+		VisualPropertyType[] calcsToUse = new VisualPropertyType [] { VisualPropertyType.EDGE_TGTARROW };
 
 		Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac, calcsToUse,
 		                                                                    controllingAttribute,
@@ -175,7 +180,9 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 				ShapePaletteInfo spi = spEntries.next();
 				// CytoscapeEditorManager.log("   edge palette info = " + spi);
 				shapePalette.addShape(spi.getControllingAttributeName(), spi.getKey(),
-				                      new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
+						      // MLC 05/09/07:
+				                      // new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
+				                      new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW)),
 				                      spi.getKey(), // MLC 12/16/06:
 				_edgeCursorSetter);
 			}
@@ -192,14 +199,20 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 
 		ShapePaletteInfoGenerator palGen = CytoscapeEditorFactory.INSTANCE
 		                                                                                                                                                                                          .createShapePaletteInfoGenerator();
-		byte[] calcsToUse = new byte[] { VizMapUI.NODE_COLOR, VizMapUI.NODE_SHAPE, VizMapUI.NODE_SIZE };
+		// MLC 05/09/07:
+		// byte[] calcsToUse = new byte[] { VizMapUI.NODE_COLOR, VizMapUI.NODE_SHAPE, VizMapUI.NODE_SIZE };
+		// MLC 05/09/07:
+		VisualPropertyType[] calcsToUse = new VisualPropertyType[] { VisualPropertyType.NODE_FILL_COLOR, VisualPropertyType.NODE_SHAPE, VisualPropertyType.NODE_SIZE };
 		Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(nac, calcsToUse,
 		                                                                    controllingAttribute,
 		                                                                    this, null);
 
 		if (!spEntries.hasNext()) {
 			shapePalette.addShape(controllingAttribute, "DefaultNode",
-			                      new CytoShapeIcon(nac.getDefaultAppearance().getShape(),
+					      // MLC 05/09/07:
+			                      // new CytoShapeIcon(nac.getDefaultAppearance().getShape(),
+					      // MLC 05/09/07:
+			                      new CytoShapeIcon(nac.getDefaultAppearance().getNodeShape(),
 			                                        nac.getDefaultAppearance().getFillColor()),
 			                      "Add a Node", // MLC 12/16/06:
 			null);
@@ -208,9 +221,14 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 				ShapePaletteInfo spi = spEntries.next();
 
 				// CytoscapeEditorManager.log("   node palette entry = " + spi);
-				Color nodeColor = (Color) spi.getValue(VizMapUI.NODE_COLOR);
-				byte nodeShape = (Byte) spi.getValue(VizMapUI.NODE_SHAPE);
-				int nodeSize = (int) ((Double) spi.getValue(VizMapUI.NODE_SIZE)).longValue();
+				// MLC 05/09/07 BEGIN:
+				// Color nodeColor = (Color) spi.getValue(VizMapUI.NODE_COLOR);
+				// byte nodeShape = (Byte) spi.getValue(VizMapUI.NODE_SHAPE);
+				// int nodeSize = (int) ((Double) spi.getValue(VizMapUI.NODE_SIZE)).longValue();
+				Color nodeColor = (Color) spi.getValue(VisualPropertyType.NODE_FILL_COLOR);
+				NodeShape nodeShape = (NodeShape) spi.getValue(VisualPropertyType.NODE_SHAPE);
+				int nodeSize = (int) ((Double) spi.getValue(VisualPropertyType.NODE_SIZE)).longValue();
+				// MLC 05/09/07 END.
 				shapePalette.addShape(spi.getControllingAttributeName(), spi.getKey(),
 				                      new CytoShapeIcon(nodeShape, nodeColor,
 				                                        new Dimension(nodeSize, nodeSize)),
