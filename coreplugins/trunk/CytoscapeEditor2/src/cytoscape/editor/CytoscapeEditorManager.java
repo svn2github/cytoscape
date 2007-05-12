@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue Jul 05 11:44:41 2005
-* Modified:     Wed Dec 27 09:04:09 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri May 11 16:58:53 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Fri May 11 16:58:47 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed unneeded imports.
 * Wed Dec 27 09:03:24 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed initialize() to send CytoscapeEditorManagerSupport the
 *  DeleteAction created for use by subclasses.
@@ -52,8 +54,6 @@ import cytoscape.editor.impl.ShapePalette;
 import cytoscape.util.undo.CyUndo; 
 
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
