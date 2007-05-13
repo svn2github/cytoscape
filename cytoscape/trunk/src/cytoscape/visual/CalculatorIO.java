@@ -46,6 +46,10 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
 import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW;
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_COLOR;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
@@ -81,33 +85,27 @@ import java.util.Set;
  * CalculatorCatalog.
  */
 public class CalculatorIO {
-    // old labels no longer used, but that we need to account for
+    
     /**
-     * DOCUMENT ME!
+     * @deprecated Will become private 10/2007.  
+	 * Use VisualPropertyType.getPropertyLabel() instead. 
      */
     @Deprecated
     public static final String nodeColorBaseKey = "nodeColorCalculator";
 
     /**
-     * DOCUMENT ME!
+     * @deprecated Will become private 10/2007.  
+	 * Use VisualPropertyType.getPropertyLabel() instead. 
      */
     @Deprecated
     public static final String nodeSizeBaseKey = "nodeSizeCalculator";
 
     /**
-     * DOCUMENT ME!
+     * @deprecated Will become private 10/2007.  
+	 * Use VisualPropertyType.getPropertyLabel() instead. 
      */
     @Deprecated
     public static final String edgeArrowBaseKey = "edgeArrowCalculator";
-
-    // new labels to replace old labels
-    private static final String nodeFillColorBaseKey = CalculatorFactory.getPropertyLabel(NODE_FILL_COLOR);
-    private static final String nodeBorderColorBaseKey = CalculatorFactory.getPropertyLabel(NODE_BORDER_COLOR);
-    private static final String nodeWidthBaseKey = CalculatorFactory.getPropertyLabel(NODE_WIDTH);
-    private static final String nodeHeightBaseKey = CalculatorFactory.getPropertyLabel(NODE_HEIGHT);
-    private static final String nodeUniformSizeBaseKey = CalculatorFactory.getPropertyLabel(NODE_SIZE);
-    private static final String edgeSourceArrowBaseKey = CalculatorFactory.getPropertyLabel(EDGE_SRCARROW);
-    private static final String edgeTargetArrowBaseKey = CalculatorFactory.getPropertyLabel(EDGE_TGTARROW);
 
     // appearance labels
     private static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
@@ -183,18 +181,12 @@ public class CalculatorIO {
 
             // and write to fileNODE_COLOR
             for (String theLine : headerLines) {
-                writer.write(
-                    theLine,
-                    0,
-                    theLine.length());
+                writer.write( theLine, 0, theLine.length());
                 writer.newLine();
             }
 
             for (String theLine : lines) {
-                writer.write(
-                    theLine,
-                    0,
-                    theLine.length());
+                writer.write( theLine, 0, theLine.length());
                 writer.newLine();
             }
 
@@ -239,11 +231,9 @@ public class CalculatorIO {
                     vs.getGlobalAppearanceCalculator().getProperties(globalAppearanceBaseKey +
                         "." + name));
 
-                /*
-                 * now that we've constructed all the properties for this visual
-                 * style without Exceptions, store in the global properties
-                 * object
-                 */
+                // now that we've constructed all the properties for this visual
+                // style without Exceptions, store in the global properties
+                // object
                 newProps.putAll(styleProps);
             } catch (Exception e) {
                 String s = "Exception while saving visual style " + name;
@@ -279,24 +269,23 @@ public class CalculatorIO {
      */
     public static void loadCalculators(Properties props,
         CalculatorCatalog catalog, boolean overWrite) {
-        /*
-         * The supplied Properties object may contain any kinds of properties.
-         * We look for keys that start with a name we recognize, identifying a
-         * particular type of calculator. The second field of the key should
-         * then be an identifying name. For example,
-         * nodeFillColorCalculator.mySpecialCalculator.{anything else}
-         *
-         * We begin by creating a map of calculator types
-         * (nodeFillColorCalculator) to a map of names (mySpecialCalculator) to
-         * properties. Note that this will create maps for _any_ "calculator"
-         * that appears, even if it isn't a Calculator. This is OK, because the
-         * CalculatorFactory won't create anything that isn't actually a
-         * Calculator.
-         *
-         * Note that we need separate constructs for each type of calculator,
-         * because calculators of different types are allowed to share the same
-         * name.
-         */
+
+        // The supplied Properties object may contain any kinds of properties.
+        // We look for keys that start with a name we recognize, identifying a
+        // particular type of calculator. The second field of the key should
+        // then be an identifying name. For example,
+        // nodeFillColorCalculator.mySpecialCalculator.{anything else}
+        //
+        // We begin by creating a map of calculator types
+        // (nodeFillColorCalculator) to a map of names (mySpecialCalculator) to
+        // properties. Note that this will create maps for _any_ "calculator"
+        // that appears, even if it isn't a Calculator. This is OK, because the
+        // CalculatorFactory won't create anything that isn't actually a
+        // Calculator.
+        //
+        // Note that we need separate constructs for each type of calculator,
+        // because calculators of different types are allowed to share the same
+        // name.
         final Map<String, Map<String, Properties>> calcNames = new HashMap<String, Map<String, Properties>>();
 
         // use the propertyNames() method instead of the generic Map iterator,
@@ -305,73 +294,128 @@ public class CalculatorIO {
         for (Enumeration eI = props.propertyNames(); eI.hasMoreElements();) {
             String key = (String) eI.nextElement();
 
-            /*
-             * handle legacy names In these cases the old calculator base key
-             * was applicable to more than one calculator. In the new system
-             * it's one key to one calculator, so we simply apply the old
-             * calculator to all of the new types of calculators that the old
-             * calculator mapped to.
-             */
+            // handle legacy names In these cases the old calculator base key
+            // was applicable to more than one calculator. In the new system
+            // it's one key to one calculator, so we simply apply the old
+            // calculator to all of the new types of calculators that the old
+            // calculator mapped to.
+
+			// separate color into fill color and border color
             if (key.startsWith(nodeColorBaseKey + ".")) {
                 key = updateLegacyKey(key, props, nodeColorBaseKey,
-                        nodeFillColorBaseKey,
+                        NODE_FILL_COLOR.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericNodeFillColorCalculator");
                 storeKey(key, props, calcNames);
-                key = updateLegacyKey(key, props, nodeFillColorBaseKey,
-                        nodeBorderColorBaseKey,
+
+                key = updateLegacyKey(key, props, NODE_FILL_COLOR.getPropertyLabel(),
+                        NODE_BORDER_COLOR.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericNodeBorderColorCalculator");
                 storeKey(key, props, calcNames);
+
+			// separate size into uniform, width, and height 
             } else if (key.startsWith(nodeSizeBaseKey + ".")) {
                 key = updateLegacyKey(key, props, nodeSizeBaseKey,
-                        nodeUniformSizeBaseKey,
+                        NODE_SIZE.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericNodeUniformSizeCalculator");
                 storeKey(key, props, calcNames);
-                key = updateLegacyKey(key, props, nodeUniformSizeBaseKey,
-                        nodeWidthBaseKey,
+
+                key = updateLegacyKey(key, props, NODE_SIZE.getPropertyLabel(),
+                        NODE_WIDTH.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericNodeWidthCalculator");
                 storeKey(key, props, calcNames);
-                key = updateLegacyKey(key, props, nodeWidthBaseKey,
-                        nodeHeightBaseKey,
+
+                key = updateLegacyKey(key, props, NODE_WIDTH.getPropertyLabel(),
+                        NODE_HEIGHT.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericNodeHeightCalculator");
                 storeKey(key, props, calcNames);
+
+			// separate arrow into source shape, source color, target shape, target color
             } else if (key.startsWith(edgeArrowBaseKey + ".")) {
+				// the first two separations are to support the 
+				// deprecated EDGE_SRCARROW and EDGE_TGTARROW
                 key = updateLegacyKey(key, props, edgeArrowBaseKey,
-                        edgeSourceArrowBaseKey,
+                        EDGE_SRCARROW.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator");
                 storeKey(key, props, calcNames);
-                key = updateLegacyKey(key, props, edgeSourceArrowBaseKey,
-                        edgeTargetArrowBaseKey,
+
+                key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(),
+                        EDGE_TGTARROW.getPropertyLabel(),
                         "cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator");
                 storeKey(key, props, calcNames);
 
-                // handle normal names
-                // This is how all "modern" properties files should work.
+				// eventually (4/2008), these should be the only separations
+                key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
+                        EDGE_SRCARROW_COLOR.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator");
+                storeKey(key, props, calcNames);
+
+                key = updateLegacyKey(key, props, EDGE_SRCARROW_COLOR.getPropertyLabel(),
+                        EDGE_SRCARROW_SHAPE.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
+                storeKey(key, props, calcNames);
+
+                key = updateLegacyKey(key, props, EDGE_SRCARROW_SHAPE.getPropertyLabel(),
+                        EDGE_TGTARROW_COLOR.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeTargetArrowColorCalculator");
+                storeKey(key, props, calcNames);
+
+                key = updateLegacyKey(key, props, EDGE_TGTARROW_COLOR.getPropertyLabel(),
+                        EDGE_TGTARROW_SHAPE.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
+                storeKey(key, props, calcNames);
+
+			// separated source arrow into source color and source shape
+            } else if (key.startsWith(EDGE_SRCARROW.getPropertyLabel() + ".")) {
+				// this first store is to support deprecated EDGE_SRCARROW
+                storeKey(key, props, calcNames);
+
+				// eventually, these should be the only separations
+                key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(), 
+				                      EDGE_SRCARROW_COLOR.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator");
+                storeKey(key, props, calcNames);
+
+                key = updateLegacyKey(key, props, EDGE_SRCARROW_COLOR.getPropertyLabel(), 
+				                      EDGE_SRCARROW_SHAPE.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
+                storeKey(key, props, calcNames);
+
+			// separated target arrow into target color and target shape
+            } else if (key.startsWith(EDGE_TGTARROW.getPropertyLabel() + ".")) {
+				// this first store is to support deprecated EDGE_TGTARROW
+                storeKey(key, props, calcNames);
+
+				// eventually, these should be the only separations
+                key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(), 
+				                      EDGE_TGTARROW_COLOR.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeTargetArrowColorCalculator");
+                storeKey(key, props, calcNames);
+
+                key = updateLegacyKey(key, props, EDGE_TGTARROW_COLOR.getPropertyLabel(), 
+				                      EDGE_TGTARROW_SHAPE.getPropertyLabel(),
+                        "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
+                storeKey(key, props, calcNames);
+
+            // handle normal names
+            // This is how all "modern" properties files should work.
             } else
                 storeKey(key, props, calcNames);
         }
 
-        /*
-         * Now that we have all the properties in groups, we pass each Map of
-         * names and Properties objects to a helper function that creates a
-         * calculator for each entry and stores the calculators in the catalog.
-         * Before storing the calculator, we either remove any existing
-         * calculator with the same name, or get a unique name from the
-         * calculator, depending on the value of the overWrite argument.
-         */
+        // Now that we have all the properties in groups, we pass each Map of
+        // names and Properties objects to a helper function that creates a
+        // calculator for each entry and stores the calculators in the catalog.
+        // Before storing the calculator, we either remove any existing
+        // calculator with the same name, or get a unique name from the
+        // calculator, depending on the value of the overWrite argument.
         for (String calcTypeKey : calcNames.keySet())
-            handleCalculators(
-                calcNames.get(calcTypeKey),
-                catalog,
-                overWrite,
-                calcTypeKey);
+            handleCalculators( calcNames.get(calcTypeKey), catalog, overWrite, calcTypeKey);
 
         // Map structure to hold visual styles that we build here
         final Map<String, VisualStyle> visualStyles = new HashMap<String, VisualStyle>();
 
-        /*
-         * now that all the individual calculators are loaded, load the
-         * Node/Edge/Global appearance calculators
-         */
+        // now that all the individual calculators are loaded, load the
+        // Node/Edge/Global appearance calculators
         final Map<String, Properties> nacNames = calcNames.get(nodeAppearanceBaseKey);
 
         VisualStyle vs;

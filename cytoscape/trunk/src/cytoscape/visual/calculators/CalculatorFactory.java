@@ -186,6 +186,7 @@ public class CalculatorFactory {
 
     /**
      * Returns the property label for calculators of a given type.
+	 * @deprecated Use VisualPropertyType.getPropertyLabel(). Will be removed 4/2008
      */
     @Deprecated
     public static String getPropertyLabel(byte type) {
