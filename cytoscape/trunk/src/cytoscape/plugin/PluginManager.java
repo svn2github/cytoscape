@@ -198,13 +198,15 @@ public class PluginManager {
 					pluginTracker = new PluginTracker(File.createTempFile(
 							"track_webstart_plugins_", ".xml"));
 				} else {
-					pluginTracker = new PluginTracker(CytoscapeInit
-							.getConfigDirectory(), "track_plugins.xml");
+//					pluginTracker = new PluginTracker(CytoscapeInit
+//							.getConfigDirectory(), "track_plugins.xml");
+						pluginTracker = new PluginTracker(CytoscapeInit.getConfigVersionDirectory(), "track_plugins.xml");
 				}
 			}
-			tempDir = new File(CytoscapeInit.getConfigDirectory(),
-					CytoscapeVersion.version + File.separator + "plugins"
-							+ File.separator);
+			tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
+//			tempDir = new File(CytoscapeInit.getConfigDirectory(),
+//					CytoscapeVersion.version + File.separator + "plugins"
+//							+ File.separator);
 
 			if (!tempDir.exists()) {
 				tempDir.mkdirs();
@@ -260,7 +262,7 @@ public class PluginManager {
 				InfoObj = new PluginInfo();
 				InfoObj.setName(Plugin.getClass().getName());
 				InfoObj.setPluginClassName(Plugin.getClass().getName());
-
+				
 				if (JarFileName != null)
 					InfoObj.addFileName(JarFileName);
 			} else {
@@ -278,9 +280,10 @@ public class PluginManager {
    			// I think we can safely assume it's a jar file if it's registering
    			// since only CytoscapePlugin registers and at that point all we
    			// know is it's a jar
-   			if (InfoObj.getFileType() == null)
+   			if (InfoObj.getFileType() == null) {
    				InfoObj.setFiletype(PluginInfo.FileType.JAR);
-   			pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
+   			}
+ 				pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
 		}
 	}
 
@@ -366,8 +369,16 @@ public class PluginManager {
 
 	// removes the plugin, all files in it's install location will be removed
 	private boolean deletePlugin(PluginInfo info) {
-		File InstalledDir = new File(info.getInstallLocation());
-		return recursiveDeleteFiles(InstalledDir);
+		boolean Deleted = false;
+		if (info.getInstallLocation() != null && info.getInstallLocation().length() > 0) {
+			File Installed = new File(info.getInstallLocation());
+			Deleted = recursiveDeleteFiles(Installed);
+		} else {
+			for (String f: info.getFileList()) {
+				Deleted = (new File(f)).delete();
+			}
+		}
+		return Deleted;
 	}
 
 	private boolean recursiveDeleteFiles(File directory) {
@@ -469,7 +480,8 @@ public class PluginManager {
 		if (Current.getID().equals(New.getID())
 				&& Current.getProjectUrl().equals(New.getProjectUrl())
 				&& Current.isNewerPluginVersion(New)) {
-			pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
+			//pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
+			delete(Current);
 			download(New, taskMonitor);
 		} else {
 			throw new ManagerException(
@@ -513,15 +525,14 @@ public class PluginManager {
 		if (!PluginDir.exists()) {
 			PluginDir.mkdirs();
 		}
-		Obj.setInstallLocation(PluginDir.getAbsolutePath());
 
 		File Download = null;
 		String ClassName = null;
 		Download = new File(PluginDir, createFileName(Obj));
 		URLUtil.download(Obj.getUrl(), Download, taskMonitor);
 
-		ClassName = getPluginClass(Download.getAbsolutePath(), Obj
-				.getFileType());
+		ClassName = getPluginClass(Download.getAbsolutePath(), 
+				Obj.getFileType());
 
 		if (ClassName != null) {
 			Obj.setPluginClassName(ClassName);
@@ -545,6 +556,7 @@ public class PluginManager {
 			break;
 		}
 
+		Obj.setInstallLocation(PluginDir.getAbsolutePath());
 		Obj.addFileName(Download.getAbsolutePath());
 		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.INSTALL);
 
