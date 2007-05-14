@@ -87,7 +87,7 @@ public class PluginInfo {
 		private String typeText;
 
 		private FileType(String type) {
-			this.typeText = type;
+			typeText = type;
 		}
 
 		public String toString() {
@@ -150,7 +150,7 @@ public class PluginInfo {
 	 *            to find a new version of the plugin at the given project url.
 	 */
 	public PluginInfo(String UniqueID) {
-		this.uniqueID = UniqueID;
+		uniqueID = UniqueID;
 		init();
 	}
 
@@ -184,16 +184,17 @@ public class PluginInfo {
 	 * @param name
 	 */
 	public void setName(String name) {
-		this.pluginName = name;
+		pluginName = name;
 	}
 
 	/**
 	 * Sets the plugin class name. Used for tracking plugins.
+	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * 
 	 * @param className
 	 */
-	public void setPluginClassName(String className) {
-		this.pluginClassName = className;
+	protected void setPluginClassName(String className) {
+		pluginClassName = className;
 	}
 
 	/**
@@ -202,13 +203,16 @@ public class PluginInfo {
 	 * @param description
 	 */
 	public void setDescription(String description) {
-		this.pluginDescription = description;
+		pluginDescription = description;
 	}
 
 	/**
 	 * Sets the version of the plugin. Defaults to 0.1
 	 * 
 	 * @param version
+	 * 				String version with format \d+.\d+	
+	 * @throws NumberFormatException
+	 * 				If the string version is of a format other than \d+.\d+
 	 */
 	public void setPluginVersion(String version) throws NumberFormatException {
 		if (versionOk(version, true)) {
@@ -237,11 +241,11 @@ public class PluginInfo {
 	/**
 	 * pluginUrl this plugin was downloaded from. It is presumed this can be
 	 * used for update later.
-	 * 
+	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * @param url
 	 */
-	public void setUrl(String url) {
-		this.pluginUrl = url;
+	protected void setUrl(String url) {
+		pluginUrl = url;
 	}
 
 	/**
@@ -251,26 +255,26 @@ public class PluginInfo {
 	 * @param url
 	 */
 	public void setProjectUrl(String url) {
-		this.projectUrl = url;
+		projectUrl = url;
 	}
 
 	/**
 	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
-	 * 
+	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}	 
 	 * @param type
 	 */
-	public void setFiletype(FileType type) {
-		this.fileType = type;
+	protected void setFiletype(FileType type) {
+		fileType = type;
 	}
 
 	/**
 	 * Sets a list of files (prefer full paths) installed with this plugin.
 	 * Includes the jar file.
-	 * 
+	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * @param list
 	 */
-	public void setFileList(List<String> list) {
-		this.pluginFiles = list;
+	protected void setFileList(List<String> list) {
+		pluginFiles = list;
 	}
 
 	/**
@@ -279,7 +283,7 @@ public class PluginInfo {
 	 * @param category
 	 */
 	public void setCategory(String category) {
-		this.pluginCategory = category;
+		pluginCategory = category;
 	}
 
 	/**
@@ -288,16 +292,17 @@ public class PluginInfo {
 	 * @param catName
 	 */
 	public void setCategory(Category catName) {
-		this.pluginCategory = catName.getCategoryText();
+		pluginCategory = catName.getCategoryText();
 	}
 
 	/**
 	 * Adds a file to the list of installed files.
+	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * 
 	 * @param fileName
 	 */
-	public void addFileName(String fileName) {
-		this.pluginFiles.add(fileName);
+	protected void addFileName(String fileName) {
+		pluginFiles.add(fileName);
 	}
 
 	/**
@@ -382,6 +387,8 @@ public class PluginInfo {
 
 	/**
 	 * This is meant to only get set by the PluginManager
+	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
+	 * 
 	 * @param Loc
 	 */
 	protected void setInstallLocation(String Loc) {
@@ -420,7 +427,7 @@ public class PluginInfo {
 	 * @return The unique id for this object.
 	 */
 	public String getID() {
-		return this.uniqueID;
+		return uniqueID;
 	}
 
 	/**
@@ -428,71 +435,71 @@ public class PluginInfo {
 	 *         PluginInfo.ZIP
 	 */
 	public FileType getFileType() {
-		return this.fileType;
+		return fileType;
 	}
 
 	/**
 	 * @return pluginName of plugin
 	 */
 	public String getName() {
-		return this.pluginName;
+		return pluginName;
 	}
 
 	/**
 	 * @return Java class name
 	 */
 	public String getPluginClassName() {
-		return this.pluginClassName;
+		return pluginClassName;
 	}
 
 	/**
 	 * @return List of authors.
 	 */
 	public List<AuthorInfo> getAuthors() {
-		return this.authors;
+		return authors;
 	}
 
 	/**
 	 * @return Plugin pluginDescription.
 	 */
 	public String getDescription() {
-		return this.pluginDescription;
+		return pluginDescription;
 	}
 
 	/**
 	 * @return Plugin version.
 	 */
 	public String getPluginVersion() {
-		return this.pluginVersion;
+		return pluginVersion;
 	}
 
 	/**
 	 * @return Compatible Cytoscape version
 	 */
 	public String getCytoscapeVersion() {
-		return this.cytoscapeVersion;
+		return cytoscapeVersion;
 	}
 
 	/**
 	 * @return Url to download plugin from
 	 */
 	public String getUrl() {
-		return this.pluginUrl;
+		return pluginUrl;
 	}
 
 	/**
 	 * @return Url that returns the document of available plugins this plugin
-	 *         came from
+	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
 	 */
 	public String getProjectUrl() {
-		return this.projectUrl;
+		return projectUrl;
 	}
 
 	/**
 	 * @return Plugin category.
 	 */
 	public String getCategory() {
-		return this.pluginCategory;
+		return pluginCategory;
 	}
 
 	/**
@@ -500,7 +507,7 @@ public class PluginInfo {
 	 *         file).
 	 */
 	public List<String> getFileList() {
-		return this.pluginFiles;
+		return pluginFiles;
 	}
 
 	/**
@@ -518,7 +525,7 @@ public class PluginInfo {
 	 * @return true if given version is newer
 	 */
 	public boolean isNewerPluginVersion(PluginInfo New) {
-		String[] CurrentVersion = this.getPluginVersion().split(versionSplit);
+		String[] CurrentVersion = getPluginVersion().split(versionSplit);
 		String[] NewVersion = New.getPluginVersion().split(versionSplit);
 		
 		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
@@ -544,7 +551,7 @@ public class PluginInfo {
 	public boolean isCytoscapeVersionCurrent() {
 		String[] CyVersion = cytoscape.CytoscapeVersion.version
 				.split(versionSplit);
-		String[] PlVersion = this.getCytoscapeVersion().split(versionSplit);
+		String[] PlVersion = getCytoscapeVersion().split(versionSplit);
 
 		for (int i = 0; i < PlVersion.length; i++) {
 			if (Integer.valueOf(CyVersion[i]).intValue() != Integer.valueOf(
@@ -590,16 +597,16 @@ public class PluginInfo {
 		private String institutionName;
 
 		public AuthorInfo(String Name, String Institution) {
-			this.authorName = Name;
-			this.institutionName = Institution;
+			authorName = Name;
+			institutionName = Institution;
 		}
 
 		public String getAuthor() {
-			return this.authorName;
+			return authorName;
 		}
 
 		public String getInstitution() {
-			return this.institutionName;
+			return institutionName;
 		}
 	}
 
