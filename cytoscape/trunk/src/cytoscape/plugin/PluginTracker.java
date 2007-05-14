@@ -264,7 +264,7 @@ public class PluginTracker {
 			Info.setName(CurrentPlugin.getChildTextTrim(nameTag));
 			Info.setDescription(CurrentPlugin.getChildTextTrim(descTag));
 			Info.setPluginClassName(CurrentPlugin.getChildTextTrim(classTag));
-			Info.setPluginVersion(CurrentPlugin.getChildTextTrim(pluginVersTag));
+			Info.setPluginVersion(Double.valueOf(CurrentPlugin.getChildTextTrim(pluginVersTag)));
 			Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(cytoVersTag));
 			Info.setCategory(CurrentPlugin.getChildTextTrim(categoryTag));
 			Info.setUrl(CurrentPlugin.getChildTextTrim(urlTag));

@@ -276,14 +276,16 @@ public class PluginManager {
 		} catch (NumberFormatException nfe) {
 			nfe.printStackTrace();
 		} finally {
-   			initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
-   			// I think we can safely assume it's a jar file if it's registering
-   			// since only CytoscapePlugin registers and at that point all we
-   			// know is it's a jar
-   			if (InfoObj.getFileType() == null) {
-   				InfoObj.setFiletype(PluginInfo.FileType.JAR);
-   			}
- 				pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
+			if (InfoObj != null) {
+	   			initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
+	   			// I think we can safely assume it's a jar file if it's registering
+	   			// since only CytoscapePlugin registers and at that point all we
+	   			// know is it's a jar
+	   			if (InfoObj.getFileType() == null) {
+	   				InfoObj.setFiletype(PluginInfo.FileType.JAR);
+	   			}
+	 				pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
+			}
 		}
 	}
 

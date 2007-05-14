@@ -164,7 +164,7 @@ public class PluginInfo {
 		setName("Unknown");
 		setDescription("No description");
 		try {
-			setPluginVersion("0.1");
+			setPluginVersion(0.1);
 		} catch (NumberFormatException ie) {
 			ie.printStackTrace();
 		}
@@ -214,7 +214,8 @@ public class PluginInfo {
 	 * @throws NumberFormatException
 	 * 				If the string version is of a format other than \d+.\d+
 	 */
-	public void setPluginVersion(String version) throws NumberFormatException {
+	public void setPluginVersion(double Version) throws NumberFormatException {
+		String version = Double.toString(Version);
 		if (versionOk(version, true)) {
 			pluginVersion = version;
 		} else {

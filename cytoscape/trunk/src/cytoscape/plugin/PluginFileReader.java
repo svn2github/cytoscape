@@ -146,7 +146,7 @@ public class PluginFileReader {
 		String Version = Plugin.getChildTextTrim(pluginVersTag);
 		try 
 			{
-			obj.setPluginVersion(Version);
+			obj.setPluginVersion(Double.valueOf(Version));
 			return obj;
 			}
 		catch (NumberFormatException ie)
