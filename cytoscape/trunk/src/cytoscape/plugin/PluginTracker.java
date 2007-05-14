@@ -367,5 +367,5 @@ public class PluginTracker {
 	private String uniqueIdTag = PluginFileReader.uniqueID;
 	private String fileTypeTag = PluginFileReader.fileType;
 	private String licenseTag = PluginFileReader.licenseTag;
-	private String installLocTag = "installLocation";
+	private String installLocTag = PluginFileReader.installLocTag;
 }
