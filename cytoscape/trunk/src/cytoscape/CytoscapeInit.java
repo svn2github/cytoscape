@@ -119,20 +119,13 @@ import javax.swing.JButton;
 public class CytoscapeInit {
 	private static Properties properties;
 	private static Properties visualProperties;
-//	private static Set pluginURLs;
-//	private static Set loadedPlugins;
-//	private static Set resourcePlugins;
 
 	static {
 		System.out.println("CytoscapeInit static initialization");
-//		pluginURLs = new HashSet();
-//		resourcePlugins = new HashSet();
-//		loadedPlugins = new HashSet();
 		initProperties();
 	}
 
 	private static CyInitParams initParams;
-	//private static URLClassLoader classLoader;
 
 	// Most-Recently-Used directories and files
 	private static File mrud;
@@ -362,6 +355,17 @@ public class CytoscapeInit {
 		mruf = mruf_new;
 	}
 
+	/**
+	 * Within the .cytoscape directory create a version-specific directory
+	 * @return the directory ".cytoscape/[cytoscape version]
+	 */
+	public static File getConfigVersionDirectory() {
+		File Parent = getConfigDirectory();
+		File VersionDir = new File(Parent, CytoscapeVersion.version);
+		VersionDir.mkdir();
+		return VersionDir;
+	}
+	
 	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
 	 *
