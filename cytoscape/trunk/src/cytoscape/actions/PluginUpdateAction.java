@@ -33,17 +33,28 @@ public class PluginUpdateAction extends CytoscapeAction {
 				.getDesktop());
 
 		if (!PluginManager.usingWebstartManager()) {
-			try {
+//			try {
 				boolean updateFound = false;
 				PluginManager Mgr = PluginManager.getPluginManager();
 				// Find updates
 				for (PluginInfo Current : Mgr.getPlugins(PluginStatus.CURRENT)) {
-					List<PluginInfo> Updates = Mgr.findUpdates(Current);
-					if (Updates.size() > 0) {
-						Dialog.addCategory(Current.getCategory(), Current,
-								Updates);
-						updateFound = true;
+					
+					try {
+						List<PluginInfo> Updates = Mgr.findUpdates(Current);
+						if (Updates.size() > 0) {
+							Dialog.addCategory(Current.getCategory(), Current,
+									Updates);
+							updateFound = true;
+						}
+					} catch (org.jdom.JDOMException jde) {
+						System.err.println("Failed to retrieve updates for " + Current.getName() + ", XML incorrect at " + Current.getProjectUrl());
+						System.err.println(jde.getMessage());
+						//jde.printStackTrace();
+					} catch (java.io.IOException ioe) {
+						System.err.println("Failed to read XML file for " + Current.getName() + " at " + Current.getProjectUrl());
+						ioe.printStackTrace();
 					}
+					
 				}
 				if (updateFound) {
 					Dialog.setVisible(true);
@@ -55,11 +66,13 @@ public class PluginUpdateAction extends CytoscapeAction {
 									"Plugin Updates",
 									JOptionPane.INFORMATION_MESSAGE);
 				}
-			} catch (org.jdom.JDOMException jde) {
-				jde.printStackTrace();
-			} catch (java.io.IOException ioe) {
-				ioe.printStackTrace();
-			}
+//			} catch (org.jdom.JDOMException jde) {
+//				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "XML file incorrectly formatted", "Error", JOptionPane.ERROR_MESSAGE);
+//				jde.printStackTrace();
+//			} catch (java.io.IOException ioe) {
+//				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Error reading XML file", "Error", JOptionPane.ERROR_MESSAGE);
+//				ioe.printStackTrace();
+//			}
 		} else {
 			JOptionPane
 					.showMessageDialog(
