@@ -102,17 +102,16 @@ public class PluginFileReader {
 	protected PluginInfo createInfoObject(Element CurrentPlugin) {
 		PluginInfo Info = new PluginInfo(CurrentPlugin
 				.getChildTextTrim(uniqueID));
-		Info.setName(CurrentPlugin.getChild(nameTag).getTextTrim());
-		Info.setDescription(CurrentPlugin.getChild(descTag)
-				.getTextTrim());
-		Info.setUrl(CurrentPlugin.getChild(urlTag).getTextTrim());
+		Info.setName(CurrentPlugin.getChildTextTrim(nameTag));
+		Info.setDescription(CurrentPlugin.getChildTextTrim(descTag));
+		Info.setUrl(CurrentPlugin.getChildTextTrim(urlTag));
 		Info.setProjectUrl(downloadUrl);
-		Info.setCytoscapeVersion(CurrentPlugin.getChild(cytoVersTag)
-				.getTextTrim());
-
+		Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(cytoVersTag));
+		Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
+		
 		// category
 		if (CurrentPlugin.getChild(categoryTag) != null) {
-			Info.setCategory(CurrentPlugin.getChild(categoryTag).getTextTrim());
+			Info.setCategory(CurrentPlugin.getChildTextTrim(categoryTag));
 		} else {
 			Info.setCategory(PluginInfo.Category.NONE);
 		}
@@ -185,8 +184,8 @@ public class PluginFileReader {
 		Iterator<Element> authI = Plugin.getChild(authorListTag).getChildren(authorTag).iterator();
 		while (authI.hasNext()) {
 			Element CurrentAuthor = authI.next();
-			obj.addAuthor(CurrentAuthor.getChild(nameTag).getTextTrim(),
-					CurrentAuthor.getChild(instTag).getTextTrim());
+			obj.addAuthor(CurrentAuthor.getChildTextTrim(nameTag),
+					CurrentAuthor.getChildTextTrim(instTag));
 		}
 		return obj;
 	}
@@ -244,4 +243,6 @@ public class PluginFileReader {
 	protected static final String licenseTag = "license";
 
 	protected static final String licenseText = "text";
+	
+	protected static final String installLocTag = "installLocation";
 }
