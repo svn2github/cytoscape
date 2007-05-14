@@ -416,7 +416,7 @@ public class PluginManagerTest extends TestCase {
 			PluginInfo Info = new PluginInfo();
 			Info.setName("myPlugin");
 			Info.setDescription("None");
-			Info.setPluginVersion("1.2.3");
+			Info.setPluginVersion(1.23);
 			Info.setCytoscapeVersion("2.5");
 			Info.setCategory("Test");
 			return Info;
