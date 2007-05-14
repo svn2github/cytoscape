@@ -632,10 +632,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private void switchVS(String vsName) {
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName) {
+			
 			return;
 		}
-
-		if (propertyMap.containsKey(vsName) && (vsName != lastVSName) ) {
+		
+		vmm.setVisualStyle(vsName);
+		
+		if (propertyMap.containsKey(vsName) && (vsName.equals(lastVSName) == false) ) {
+			
 			List<Property> props = propertyMap.get(vsName);
 
 			for (Property item : visualPropertySheetPanel.getProperties())
@@ -648,11 +652,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		lastVSName = vsName;
-
-		vmm.setVisualStyle(vsName);
 		vmm.getNetworkView().setVisualStyle(vsName);
 		vmm.getNetworkView().redrawGraph(false, true);
 
+		/*
+		 * Draw default view
+		 */
 		setDefaultPanel(this.defaultImageManager.get(vsName));
 	}
 
@@ -1138,6 +1143,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private void setPropertyTable() {
 		setPropertySheetAppearence();
 
+		System.out.println("VS name = " + Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+		
 		/*
 		 * Clean up sheet
 		 */
@@ -2053,7 +2060,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Extract calculator
 		 */
 		final ObjectMapping mapping;
-
+		
+		System.out.println("New calc = " + vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type));
+		
 		if (type.isNodeProp())
 			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 			             .getMapping(0);
