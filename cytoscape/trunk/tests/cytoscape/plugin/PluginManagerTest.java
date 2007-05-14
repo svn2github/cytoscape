@@ -188,7 +188,7 @@ public class PluginManagerTest extends TestCase {
 		List<String> TestFileList = TestObj.getFileList();
 		
 		for(String f: TestFileList) {
-			assertTrue( f.matches(ParentDir + File.separator + ".*"));
+			assertTrue( f.startsWith(ParentDir));		
 		}
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		
