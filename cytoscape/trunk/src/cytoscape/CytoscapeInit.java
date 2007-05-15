@@ -37,26 +37,16 @@
 package cytoscape;
 
 import cytoscape.data.readers.CytoscapeSessionReader;
-import cytoscape.data.readers.TextHttpReader;
 
 import cytoscape.init.CyInitParams;
 
-import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginManager;
 
 import cytoscape.util.FileUtil;
-import cytoscape.util.IndeterminateProgressBar;
 
 import cytoscape.util.shadegrown.WindowUtilities;
 
-//import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.PluginTracker.PluginStatus;
-
 import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -65,23 +55,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-//import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 
 /**
@@ -117,6 +101,8 @@ import javax.swing.JButton;
  * @author Cytoscape Core Team
  */
 public class CytoscapeInit {
+	private static final String SPLASH_SCREEN_LOCATION = "/cytoscape/images/CytoscapeSplashScreen.png";
+	
 	private static Properties properties;
 	private static Properties visualProperties;
 
@@ -148,7 +134,6 @@ public class CytoscapeInit {
 	 * @return false, if we fail to initialize for some reason
 	 */
 	public boolean init(CyInitParams params) {
-		
 		long begintime = System.currentTimeMillis();
 
 		try {
@@ -166,13 +151,19 @@ public class CytoscapeInit {
 			// show splash screen, if appropriate
 			System.out.println("init mode: " + initParams.getMode());
 
+			/*
+			 * Initialize as GUI mode
+			 */
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				final ImageIcon image = new ImageIcon(this.getClass()
-				                                          .getResource("/cytoscape/images/CytoscapeSplashScreen.png"));
+				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
 
-				// creates the desktop
+				/*
+				 * Create Desktop.  
+				 * This includes Vizmapper GUI initialization.
+				 */
 				Cytoscape.getDesktop();
 
 				// set the wait cursor
@@ -183,6 +174,7 @@ public class CytoscapeInit {
 
 			//what to do with the exceptions?
 			PluginManager mgr = PluginManager.getPluginManager();
+
 			try {
 				System.out.println("updating plugins...");
 				mgr.delete();
@@ -193,23 +185,27 @@ public class CytoscapeInit {
 				// nothing really to do here
 				System.out.println("can't update plugins in a webstart");
 			}
-			
+
 			try {
 				System.out.println("loading plugins....");
-				List<String> InstalledPlugins = new java.util.ArrayList<String>();
+
+				List<String> InstalledPlugins = new ArrayList<String>();
 				// load from those listed on the command line
-				InstalledPlugins.addAll( initParams.getPlugins() );
+				InstalledPlugins.addAll(initParams.getPlugins());
+
 				// this is the directory where user-installed plugins should live
-				for (String f: mgr.getPluginManageDirectory().list() ) {
-					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath() + File.separator + f);
+				for (String f : mgr.getPluginManageDirectory().list()) {
+					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath()
+					                     + File.separator + f);
 				}
-				mgr.loadPlugins( InstalledPlugins );
+
+				mgr.loadPlugins(InstalledPlugins);
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
 				cne.printStackTrace();
 			}
-			
+
 			System.out.println("loading session...");
 
 			if ((initParams.getMode() == CyInitParams.GUI)
@@ -238,8 +234,7 @@ public class CytoscapeInit {
 		}
 
 		long endtime = System.currentTimeMillis() - begintime;
-		System.out.println("");
-		System.out.println("Cytoscape initialized successfully in: " + endtime + " ms");
+		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
 		if ((ErrorMsg != null) && (ErrorMsg.length() > 0)) {
@@ -265,61 +260,63 @@ public class CytoscapeInit {
 	public static Properties getProperties() {
 		return properties;
 	}
-	
 
 	/**
 	 *  DEPRECATED
-	 * @deprecated Will be removed December 2007.  
+	 * @deprecated Will be removed December 2007.
 	 * Use {@link PluginManager#getClassLoader()} instead.
 	 * @return  DOCUMENT ME!
 	 */
 	public static URLClassLoader getClassLoader() {
 		return PluginManager.getClassLoader();
+
 		//return classLoader;
 	}
 
 	/**
 	 * DEPRECATED
-	 * @deprecated Will be removed December 2007.  
+	 * @deprecated Will be removed December 2007.
 	 * Use {@link PluginManager#getPluginURLs()} instead.
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getPluginURLs() {
 		return PluginManager.getPluginURLs();
+
 		//return pluginURLs;
 	}
-	
 
 	/**
 	 * DEPRECATED
-	 * @deprecated Will be removed December 2007.  
+	 * @deprecated Will be removed December 2007.
 	 * Use {@link PluginManager#getResourcePlugins()} instead.
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getResourcePlugins() {
-			return PluginManager.getResourcePlugins();
-			//return resourcePlugins;
+		return PluginManager.getResourcePlugins();
+
+		//return resourcePlugins;
 	}
 
 	/**
 	 *  DEPRECATED
-	 * @deprecated PluginManager handles all plugin loading now.  
-	 * 		This method doesn't do anything, but it doesn't appear to be used in csplugins or core plugins
+	 * @deprecated PluginManager handles all plugin loading now.
+	 *         This method doesn't do anything, but it doesn't appear to be used in csplugins or core plugins
 	 * @param plugin DOCUMENT ME!
 	 */
 	public void loadPlugin(Class plugin, String PluginJarFile) {
-			System.err.println("This method will not load plugins and should never be called, see PluginManager loadPlugins()");
-//		if (CytoscapePlugin.class.isAssignableFrom(plugin)
-//		    && !loadedPlugins.contains(plugin.getName())) {
-//			try {
-//				CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
-//				loadedPlugins.add(plugin.getName());
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		} else if (loadedPlugins.contains(plugin.getName())) {
-//			// TODO warn user class of this name has already been loaded and can't be loaded again
-//		}
+		System.err.println("This method will not load plugins and should never be called, see PluginManager loadPlugins()");
+
+		//		if (CytoscapePlugin.class.isAssignableFrom(plugin)
+		//		    && !loadedPlugins.contains(plugin.getName())) {
+		//			try {
+		//				CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
+		//				loadedPlugins.add(plugin.getName());
+		//			} catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//		} else if (loadedPlugins.contains(plugin.getName())) {
+		//			// TODO warn user class of this name has already been loaded and can't be loaded again
+		//		}
 	}
 
 	/**
@@ -363,9 +360,10 @@ public class CytoscapeInit {
 		File Parent = getConfigDirectory();
 		File VersionDir = new File(Parent, CytoscapeVersion.version);
 		VersionDir.mkdir();
+
 		return VersionDir;
 	}
-	
+
 	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
 	 *
@@ -484,7 +482,6 @@ public class CytoscapeInit {
 			}
 		}
 	}
-
 
 	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
