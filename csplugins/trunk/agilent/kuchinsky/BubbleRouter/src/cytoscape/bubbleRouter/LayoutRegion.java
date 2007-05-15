@@ -789,28 +789,28 @@ public class LayoutRegion extends JComponent
 		}
 	}
 
-	public void setBounds(int x, int y, int width, int height) {
-		// AJK: 1/1/06 BEGIN
-		// make room for handles
-		// super.setBounds(x, y, width, height);
-		super.setBounds(x - (HANDLE_SIZE / 2), y - (HANDLE_SIZE / 2), width
-				+ HANDLE_SIZE, height + HANDLE_SIZE);
-
-		// set member vars
-		this.x1 = x;
-		this.y1 = y;
-		this.w1 = width;
-		this.h1 = height;
-
-		// our bounds have changed, create a new image with new size
-		if ((width > 0) && (height > 0)) {
-			// AJK: 1/1/06 make room for handles
-			// image = new BufferedImage(width, height,
-			image = new BufferedImage(width + HANDLE_SIZE,
-					height + HANDLE_SIZE, BufferedImage.TYPE_INT_ARGB);
-		}
-	}
-
+//	public void setBounds(int x, int y, int width, int height) {
+//		// AJK: 1/1/06 BEGIN
+//		// make room for handles
+//		// super.setBounds(x, y, width, height);
+//		super.setBounds(x - (HANDLE_SIZE / 2), y - (HANDLE_SIZE / 2), width
+//				+ HANDLE_SIZE, height + HANDLE_SIZE);
+//
+//		// set member vars
+//		this.x1 = x;
+//		this.y1 = y;
+//		this.w1 = width;
+//		this.h1 = height;
+//
+//		// our bounds have changed, create a new image with new size
+//		if ((width > 0) && (height > 0)) {
+//			// AJK: 1/1/06 make room for handles
+//			// image = new BufferedImage(width, height,
+//			image = new BufferedImage(width + HANDLE_SIZE,
+//					height + HANDLE_SIZE, BufferedImage.TYPE_INT_ARGB);
+//		}
+//	}
+//
 	// AJK: 01/09/07 BEGIN
 	// make a version of setBounds that takes double coordinates, to fix
 	// roundoff problems
