@@ -375,7 +375,7 @@ public enum VisualPropertyType {
 			                     });
 		else
 			editor.setParameters(new Object[] {
-			                         450, 200, "Continuous Editor for " + this.calcName, this
+			                         450, 300, "Continuous Editor for " + this.calcName, this
 			                     });
 
 		return showEditor(editor);

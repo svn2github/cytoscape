@@ -1199,10 +1199,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		VizMapperProperty valProp;
 		String strVal;
 
-		for (Object mapkey : discMapping.keySet()) {
-			System.out.println("@@@@@ MPKEY = " + mapkey + ", mapkey class = " + mapkey.getClass());
-		}
-
 		for (Object key : attrKeys) {
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
@@ -2845,25 +2841,5 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			System.out.println("Removed: " + p.getDisplayName());
 			propertyMap.get(vmm.getVisualStyle().getName()).remove(p);
 		}
-	}
-
-	private void switchCalculator(Calculator calc, VisualPropertyType type) {
-		// do nothing if the new calculator is the same as the current one
-		// if ((calc != null) && calc.equals(this.currentCalculator)) {
-		// return;
-		// }
-
-		// setCurrentCalculator(calc); // handles listeners
-
-		// tell the respective appearance calculators
-		// this method doesn't fire an event to come back to us
-		// VizUIUtilities.setCurrentCalculator(vmm.getVisualStyle(), type,
-		// calc);
-		//
-		// // get the view of the new calculator
-		// refreshUI();
-
-		// Commented out to prevent auto-updates
-		// VMM.getNetworkView().redrawGraph(false, true);
 	}
 }

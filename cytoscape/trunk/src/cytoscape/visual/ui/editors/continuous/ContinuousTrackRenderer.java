@@ -223,11 +223,6 @@ public class ContinuousTrackRenderer extends JComponent
         g.setColor(Color.white);
         g.fillRect(0, 5, track_width, TRACK_HEIGHT);
 
-        
-        
-        /*
-         * Special case: only one thumb
-         */
         int newX = 0;
         int lastY = 0;
 
