@@ -155,14 +155,19 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 			nodeAttributes.setAttribute(species.getId(), "sbml name", species.getName());
 			nodeAttributes.setAttribute(species.getId(), "sbml type", "species");
 			nodeAttributes.setAttribute(species.getId(), "sbml id", species.getId());
+
+			// optional attrs, but they'll never be null
 			nodeAttributes.setAttribute(species.getId(), "sbml initial concentration",
 			                            new Double(species.getInitialConcentration()));
 			nodeAttributes.setAttribute(species.getId(), "sbml initial amount",
 			                            new Double(species.getInitialAmount()));
-			nodeAttributes.setAttribute(species.getId(), "sbml compartment",
-			                            species.getCompartment());
 			nodeAttributes.setAttribute(species.getId(), "sbml charge",
 			                            new Integer(species.getCharge()));
+
+			String comp = species.getCompartment();
+			if ( comp != null )
+				nodeAttributes.setAttribute(species.getId(), "sbml compartment", comp);
+
 			nodeIds.add(node.getRootGraphIndex());
 		}
 
@@ -174,7 +179,11 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 			CyNode node = Cytoscape.getCyNode(reaction.getId(), true);
 			nodeAttributes.setAttribute(reaction.getId(), "sbml type", "reaction");
 			nodeAttributes.setAttribute(reaction.getId(), "sbml id", reaction.getId());
-			nodeAttributes.setAttribute(reaction.getId(), "sbml name", reaction.getName());
+
+			String rname = reaction.getName();
+			if ( rname != null )
+				nodeAttributes.setAttribute(reaction.getId(), "sbml name", rname);
+
 			nodeIds.add(node.getRootGraphIndex());
 
 			//Get all products and link them to the reaction node
