@@ -57,6 +57,7 @@ import javax.swing.JPanel;
  * {@link VizMapAttrTab}, {@link VizMapFontTab}, and {@link VizMapSizeTab}
  * provide UI functionality for all mappable attributes in Cytoscape.
  */
+@Deprecated
 public abstract class VizMapTab extends JPanel {
     protected VizMapTab(LayoutManager layout, boolean isDoubleBuffered) {
         super(layout, isDoubleBuffered);
