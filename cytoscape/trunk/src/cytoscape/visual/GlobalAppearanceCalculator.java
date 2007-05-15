@@ -102,8 +102,8 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	public Color getDefaultColor(final String name) throws Exception {
 		final Class cls = this.getClass();
 		final String newName = name.replace(" ", "");
-		final Method method = cls.getMethod("getDefault" + newName, null);
-		final Object obj = method.invoke(this, null);
+		final Method method = cls.getMethod("getDefault" + newName, new Class[] {});
+		final Object obj = method.invoke(this, new Object[] {});
 
 		if ((obj != null) && obj instanceof Color) {
 			return (Color) obj;
