@@ -34,15 +34,6 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.view.CyNetworkView;
-
-import ding.view.DGraphView;
-
 import giny.view.GraphView;
 
 import java.awt.Color;
@@ -51,6 +42,13 @@ import java.awt.Dimension;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 
 
 /**
@@ -61,7 +59,9 @@ import javax.swing.JPanel;
  * @author kono
   */
 public class DefaultViewPanel extends JPanel {
+	
 	private static final int PADDING = 20;
+	
 	private CyNetworkView view;
 	private CyNetwork dummyNet;
 	private Color background;

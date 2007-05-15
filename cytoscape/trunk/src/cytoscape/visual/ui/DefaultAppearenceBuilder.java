@@ -98,6 +98,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	                                                                                              .getEdgeVisualPropertyList();
 	private static final List<VisualPropertyType> NODE_PROPS = VisualPropertyType
 	                                                                                                .getNodeVisualPropertyList();
+	private static DefaultAppearenceBuilder dab = null;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -148,27 +149,20 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static JPanel getDefaultView() {
-		final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null, true);
-		dialog.mainView.createDummyNetwork();
-		dialog.mainView.createView();
-		dialog.setSize(700, 300);
-		dialog.mainView.clean();
+	public static JPanel getDefaultView(String vsName) {
+		if (dab == null) {
+			dab = new DefaultAppearenceBuilder(null, true);
+		}
 
-		return dialog.getPanel();
-	}
+		dab.mainView.createDummyNetwork();
+		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
+		                                            .getGlobalAppearanceCalculator()
+		                                            .getDefaultBackgroundColor());
+		dab.mainView.createView();
+		dab.mainView.clean();
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Image getDefaultViewAsImage() {
-		final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null, true);
-		dialog.mainView.createView();
-		dialog.mainView.clean();
-
-		return dialog.mainView.createImage(dialog.mainView.getWidth(), dialog.mainView.getHeight());
+		return dab.getPanel();
 	}
 
 	/**
@@ -495,19 +489,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 		mainView.createView();
 		mainView.repaint();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public static JPanel getDefaultPanel() {
-		final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(null, true);
-		dialog.mainView.createDummyNetwork();
-		dialog.mainView.clean();
-
-		return dialog.getPanel();
 	}
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {

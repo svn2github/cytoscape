@@ -242,12 +242,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// add and remove the stylebox from the same place.
 	protected int styleBoxIndex = -1;
 
-	// ----------------------------------------//
-	// Constructors
-	// ----------------------------------------//
-
 	/**
-	 * The Default constructor uses a TabbedView
+	 * Creates a new CytoscapeDesktop object.
 	 */
 	public CytoscapeDesktop() {
 		this(TABBED_VIEW);
@@ -346,7 +342,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		}
 
 		// Set up the VizMapper
-		setupVizMapper();
+		//setupVizMapper();
 		setupVizMapperUI();
 
 		// don't automatically close window. Let Cytoscape.exit(returnVal)
@@ -489,6 +485,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * Initialize Vizmapper GUI.
 	 */
 	private void setupVizMapperUI() {
+		this.vizMapper = Cytoscape.getVisualMappingManager();
 		vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 		getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
@@ -551,29 +548,23 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *            the NEW VisualStyle
 	 * @return the OLD VisualStyle
 	 */
+	@Deprecated
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
-		                                              .getSelectedItem();
+		return null;
 
-		vizMapper.setVisualStyle(style);
-		vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
-
-		return old_style;
+		//		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
+		//		                                              .getSelectedItem();
+		//
+		//		vizMapper.setVisualStyle(style);
+		//		vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
+		//
+		//		return old_style;
 	}
 
 	protected void updateFocus(String network_id) {
-		// deal with the old Network
 
-		// temp hack
-		if ((vizMapUI == null) || (vizMapUI.getStyleSelector() == null)
-		    || (vizMapUI.getStyleSelector().getToolbarComboBox() == null)
-		    || (vizMapUI.getStyleSelector().getToolbarComboBox().getSelectedItem() == null))
-			return;
-
-		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
-		                                              .getSelectedItem();
-
-		CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
+		final VisualStyle old_style = Cytoscape.getVisualMappingManager().getVisualStyle();
+		final CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
 
 		if (old_view != null) {
 			old_view.putClientData(VISUAL_STYLE, old_style);
@@ -585,7 +576,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		if (Cytoscape.setCurrentNetworkView(network_id)) {
 			// deal with the new Network
-			CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
+			final CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
 			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
 			Boolean vizmap_enabled = ((Boolean) new_view.getClientData(VIZMAP_ENABLED));
 
@@ -599,11 +590,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 			if (new_style != null) {
 				vizMapper.setVisualStyle(new_style);
-				vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(new_style);
+				//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(new_style);
 			}
-
-			if (vizmap_enabled.booleanValue())
-				new_view.redrawGraph(false, false);
+			
+			vizMapper.getNetworkView().redrawGraph(false, true);
 		}
 	}
 
@@ -653,7 +643,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			networkPanel.fireFocus(((CyNetworkView) e.getNewValue()).getIdentifier());
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
-			updateFocus(e.getNewValue().toString());
+			//updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
@@ -843,6 +833,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public NetworkViewManager getNetworkViewManager() {
 		return this.networkViewManager;
 	}
+	
 
 	/**
 	 *  DOCUMENT ME!

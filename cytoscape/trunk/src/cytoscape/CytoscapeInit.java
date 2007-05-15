@@ -488,6 +488,7 @@ public class CytoscapeInit {
 
 		// Turn off the network panel (for loading speed)
 		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
+		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 
 		try {
 			String sessionName = "";
@@ -525,6 +526,7 @@ public class CytoscapeInit {
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
 			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
+			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
 		}
 
 		return false;
