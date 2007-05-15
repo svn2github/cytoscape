@@ -962,7 +962,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Info.setCategory("Functional Enrichment"); // currently no categories preset, but
 		// this is an option
 
-		Info.setPluginVersion("1.0-beta");
+		Info.setPluginVersion(1.0);
 
 		Info.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Interactive_Layout_Plugin"); 
 
