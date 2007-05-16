@@ -34,6 +34,19 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -45,6 +58,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,16 +68,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
-import cytoscape.Cytoscape;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -324,16 +328,15 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 			//			if (ICON_SIZE < (newX - p1.getX()))
 			//				g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
-			
 			if (i == 0) {
 				drawIcon(below, g, iconLocX, iconLocY);
-//				g.drawString(below.toString(), iconLocX, iconLocY);
+
+				//				g.drawString(below.toString(), iconLocX, iconLocY);
 			} else {
 				drawIcon(objectValues[i], g, iconLocX, iconLocY);
-				
-//				g.drawString(objectValues[i].toString(), iconLocX, iconLocY);
+
+				//				g.drawString(objectValues[i].toString(), iconLocX, iconLocY);
 			}
-			
 
 			p1.setLocation(p2);
 		}
@@ -346,7 +349,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
 		iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
 		//		g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
-//		g.drawString(above.toString(), iconLocX, iconLocY);
+		//		g.drawString(above.toString(), iconLocX, iconLocY);
 		drawIcon(above, g, iconLocX, iconLocY);
 		/*
 		 * Finally, draw border line (rectangle)
@@ -356,9 +359,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.drawRect(0, 5, track_width, TRACK_HEIGHT);
 
 		g.translate(-THUMB_WIDTH / 2, -12);
-	}
-
-	private void drawIcon(Graphics g) {
 	}
 
 	/**
@@ -563,37 +563,73 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		return icons;
 	}
-	
+
 	private Shape getIcon(Object key) {
-		
-		final BufferedImage image = new BufferedImage(40, 40,
-                BufferedImage.TYPE_INT_RGB);
-		
+		final BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_RGB);
+
 		final Graphics2D gfx = image.createGraphics();
 		Map icons = type.getVisualProperty().getIconSet();
 		JLabel label = new JLabel();
-		label.setIcon((Icon)icons.get(key));
+		label.setIcon((Icon) icons.get(key));
 		label.setText("test1");
 		gfx.setBackground(Color.white);
 		gfx.setColor(Color.red);
 		gfx.drawString("Test1", 0, 0);
-//		label.paint(gfx);
-		return ((VisualPropertyIcon)icons.get(key)).getShape();
+
+		//		label.paint(gfx);
+		return ((VisualPropertyIcon) icons.get(key)).getShape();
 	}
-	
+
+	/*
+	 * Draw icon object based on the given data type.
+	 */
 	private void drawIcon(Object key, Graphics2D g, int x, int y) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.translate(x, y);
-		
-		if(type == VisualPropertyType.NODE_SHAPE || type == VisualPropertyType.EDGE_SRCARROW_SHAPE || type == VisualPropertyType.EDGE_TGTARROW_SHAPE ) {
-			VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty().getIconSet().get(key);
-			
-			g.draw(icon.getShape());
-			
-		} else if(type.getDataType() == Font.class) {
-			g.setFont((Font)key);
-			g.drawString(((Font)key).getFontName(), 0, 0);
+
+		switch (type) {
+			case NODE_SHAPE:
+			case EDGE_SRCARROW_SHAPE:
+			case EDGE_TGTARROW_SHAPE:
+
+				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty()
+				                                                         .getIconSet().get(key);
+				g.draw(icon.getShape());
+
+				break;
+
+			case NODE_FONT_FACE:
+			case EDGE_FONT_FACE:
+
+				final Font font = (Font) key;
+				final String fontName = font.getFontName();
+				g.setFont(new Font(fontName, font.getStyle(), 40));
+				g.drawString("A", 0, 35);
+
+				g.setFont(new Font(fontName, font.getStyle(), 10));
+
+				int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fontName);
+				g.drawString(fontName, 20 - (stringWidth / 2), 43);
+
+				break;
+
+			case NODE_LINETYPE:
+			case EDGE_LINETYPE:
+				break;
+
+			case NODE_LABEL_POSITION:
+				break;
+
+			case NODE_LABEL:
+			case NODE_TOOLTIP:
+			case EDGE_LABEL:
+			case EDGE_TOOLTIP:
+				break;
+
+			default:
+				break;
 		}
-		
+
 		g.translate(-x, -y);
 	}
 
