@@ -34,6 +34,18 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+
+import cytoscape.ding.CyGraphLOD;
+import cytoscape.ding.DingNetworkView;
+
+import cytoscape.view.CyNetworkView;
+
+import ding.view.DGraphView;
+
 import giny.view.GraphView;
 
 import java.awt.Color;
@@ -41,14 +53,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
 
-import javax.swing.JPanel;
+import java.util.ArrayList;
+import java.util.List;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
+import javax.swing.JPanel;
 
 
 /**
@@ -59,11 +67,10 @@ import ding.view.DGraphView;
  * @author kono
   */
 public class DefaultViewPanel extends JPanel {
-	
 	private static final int PADDING = 20;
-	
 	private CyNetworkView view;
-	private CyNetwork dummyNet;
+	private CyNetworkView oldView;
+	private static CyNetwork dummyNet;
 	private Color background;
 
 	/*
@@ -79,12 +86,23 @@ public class DefaultViewPanel extends JPanel {
 		target = Cytoscape.getCyNode("Target");
 		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
 		                           "interaction");
+
+		List nodes = new ArrayList();
+		List edges = new ArrayList();
+		nodes.add(source);
+		nodes.add(target);
+		edges.add(edge);
+
+		dummyNet = Cytoscape.getRootGraph().createNetwork(nodes, edges);
+		dummyNet.setTitle("Default Appearence");
 	}
 
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
 	public DefaultViewPanel() {
+		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
+
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()
 		                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
@@ -108,14 +126,16 @@ public class DefaultViewPanel extends JPanel {
 	/**
 	 * Create dummy network
 	 */
-	protected void createDummyNetwork() {
-		dummyNet = Cytoscape.createNetwork("Default Appearence");
-		dummyNet.addNode(source);
-		dummyNet.addNode(target);
-		dummyNet.addEdge(edge);
-		view = Cytoscape.createNetworkView(dummyNet);
+	protected void createDummyNetworkView() {
+		view = new DingNetworkView(dummyNet, "Default Appearence");
+
+		view.setIdentifier(dummyNet.getIdentifier());
+		view.setTitle(dummyNet.getTitle());
+
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
+		Cytoscape.getVisualMappingManager().setNetworkView(view);
+		
 	}
 
 	/**
@@ -123,6 +143,7 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	public void clean() {
 		Cytoscape.destroyNetwork(dummyNet);
+		Cytoscape.getVisualMappingManager().setNetworkView(oldView);
 		dummyNet = null;
 		canvas = null;
 	}
@@ -130,8 +151,11 @@ public class DefaultViewPanel extends JPanel {
 	/**
 	 * DOCUMENT ME!
 	 */
-	protected void createView() {
+	protected void updateView() {
 		if (view != null) {
+			Cytoscape.getVisualMappingManager().setNetworkView(view);
+			view.setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+			
 			final Dimension panelSize = this.getSize();
 			((DGraphView) view).getCanvas()
 			 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,
@@ -147,7 +171,8 @@ public class DefaultViewPanel extends JPanel {
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
 			Cytoscape.getVisualMappingManager().applyAppearances();
-			if(background != null && canvas != null) {
+
+			if ((background != null) && (canvas != null)) {
 				canvas.setBackground(background);
 			}
 		}

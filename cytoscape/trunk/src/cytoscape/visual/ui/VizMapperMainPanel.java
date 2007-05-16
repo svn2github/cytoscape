@@ -669,10 +669,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final Dimension panelSize = defaultAppearencePanel.getSize();
 		DGraphView view;
 
-		final CyNetwork dummyNet = Cytoscape.createNetwork("");
-		final CyNetworkView dummyView = Cytoscape.createNetworkView(dummyNet);
-		Cytoscape.getDesktop().setFocus(dummyView.getIdentifier());
+//		final CyNetwork dummyNet = Cytoscape.createNetwork("");
+//		final CyNetworkView dummyView = Cytoscape.createNetworkView(dummyNet);
+//		Cytoscape.getDesktop().setFocus(dummyView.getIdentifier());
 
+		
+		CyNetworkView oldView = vmm.getNetworkView();
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
 
@@ -685,7 +687,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 
-		Cytoscape.destroyNetwork(dummyNet);
+		vmm.setNetworkView(oldView);
+
+//		Cytoscape.destroyNetwork(dummyNet);
 	}
 
 	/**
@@ -1890,6 +1894,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
 				final String targetName = vmm.getVisualStyle().getName();
+				final CyNetworkView oldView = vmm.getNetworkView();
 				final String focus = vmm.getNetwork().getIdentifier();
 
 				//				System.out.println("\n\n=========Before=============: " + targetName);
@@ -1906,7 +1911,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				createDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
-
+				vmm.setNetworkView(oldView);
 				vmm.setVisualStyle(targetName);
 				Cytoscape.getDesktop().setFocus(focus);
 

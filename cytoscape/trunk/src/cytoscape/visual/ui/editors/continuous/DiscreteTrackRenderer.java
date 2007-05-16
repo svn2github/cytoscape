@@ -604,7 +604,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				final Font font = (Font) key;
 				final String fontName = font.getFontName();
 				g.setFont(new Font(fontName, font.getStyle(), 40));
-				g.drawString("A", 0, 35);
+				g.drawString("A", 0, 30);
 
 				g.setFont(new Font(fontName, font.getStyle(), 10));
 

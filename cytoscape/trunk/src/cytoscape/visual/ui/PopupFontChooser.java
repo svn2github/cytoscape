@@ -66,7 +66,8 @@ public class PopupFontChooser extends JDialog {
      */
     public static Font showDialog(Frame f, Font begin) {
         final PopupFontChooser fpc = new PopupFontChooser(f, begin);
-
+        fpc.setModal(true);
+        fpc.setAlwaysOnTop(true);
         return fpc.getThisFont();
     }
 
@@ -82,7 +83,8 @@ public class PopupFontChooser extends JDialog {
      */
     public static Font showDialog(Dialog f, Font begin) {
         PopupFontChooser fpc = new PopupFontChooser(f, begin);
-
+        fpc.setModal(true);
+        fpc.setAlwaysOnTop(true);
         return fpc.getThisFont();
     }
 

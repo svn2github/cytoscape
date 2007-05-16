@@ -113,7 +113,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 		this.addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent e) {
-					mainView.createView();
+					mainView.updateView();
 				}
 			});
 	}
@@ -126,22 +126,13 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel showDialog(Frame parent) {
-		final DefaultAppearenceBuilder dialog = new DefaultAppearenceBuilder(parent, true);
+		buildDefaultViewDialog(parent);
+		dab.setLocationRelativeTo(parent);
+		dab.setSize(750, 350);
+		dab.mainView.updateView();
+		dab.setVisible(true);
 
-		dialog.mainView.createDummyNetwork();
-
-		dialog.setLocationRelativeTo(parent);
-		dialog.setSize(700, 300);
-		dialog.mainView.repaint();
-		dialog.repaint();
-		dialog.repaint();
-		dialog.mainView.repaint();
-
-		dialog.setVisible(true);
-		//dialog.mainView.createView();
-		dialog.mainView.clean();
-
-		return dialog.getPanel();
+		return dab.getPanel();
 	}
 
 	/**
@@ -150,19 +141,19 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel getDefaultView(String vsName) {
-		if (dab == null) {
-			dab = new DefaultAppearenceBuilder(null, true);
-		}
-
-		dab.mainView.createDummyNetwork();
+		buildDefaultViewDialog(null);
 		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
 		                                            .getDefaultBackgroundColor());
-		dab.mainView.createView();
-		dab.mainView.clean();
+		dab.mainView.updateView();
 
 		return dab.getPanel();
+	}
+
+	private static void buildDefaultViewDialog(Frame component) {
+		dab = new DefaultAppearenceBuilder(component, true);
+		dab.mainView.createDummyNetworkView();
 	}
 
 	/**
@@ -381,7 +372,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			buildList();
 			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
-			mainView.createView();
+			mainView.updateView();
 			mainView.repaint();
 		}
 	}
@@ -406,7 +397,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 				mainView.updateBackgroungColor(newColor);
 			}
 
-			mainView.createView();
+			mainView.updateView();
 			mainView.repaint();
 		}
 	}
@@ -487,7 +478,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
 		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
 
-		mainView.createView();
+		mainView.updateView();
 		mainView.repaint();
 	}
 

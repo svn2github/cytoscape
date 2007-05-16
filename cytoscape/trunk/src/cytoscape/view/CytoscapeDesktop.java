@@ -548,17 +548,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *            the NEW VisualStyle
 	 * @return the OLD VisualStyle
 	 */
-	@Deprecated
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		return null;
-
-		//		VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
-		//		                                              .getSelectedItem();
-		//
-		//		vizMapper.setVisualStyle(style);
-		//		vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
-		//
-		//		return old_style;
+		
+//
+//				VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
+//				                                              .getSelectedItem();
+//		
+				vizMapper.setVisualStyle(style);
+				//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
+		
+				return null;
 	}
 
 	protected void updateFocus(String network_id) {

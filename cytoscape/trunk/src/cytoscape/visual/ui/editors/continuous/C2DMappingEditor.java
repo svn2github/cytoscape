@@ -169,10 +169,12 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 					Object newValue = null;
 					if (e.getClickCount() == 2) {	
 						try {
+							setAlwaysOnTop(false);
 							newValue = type.showDiscreteEditor();
 						} catch (Exception e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
+						} finally {
+							setAlwaysOnTop(true);
 						}
 						
 						if(newValue == null)
@@ -238,54 +240,5 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);
 		slider.addMouseListener(new ThumbMouseListener());
-
-		//        Image icon1;
-		//        Image icon2;
-		//        Image icon3;
-		//        Image icon4;
-		//        Image icon5;
-		//
-		//        try {
-		//            icon1 = ImageIO.read(
-		//                    Cytoscape.class.getResource(
-		//                        "visual/ui/images/round_rect.jpg"));
-		//            icon2 = ImageIO.read(
-		//                    Cytoscape.class.getResource("visual/ui/images/triangle.jpg"));
-		//            icon3 = ImageIO.read(
-		//                    Cytoscape.class.getResource("visual/ui/images/ellipse.jpg"));
-		//            icon4 = ImageIO.read(
-		//                    Cytoscape.class.getResource("visual/ui/images/octagon.jpg"));
-		//            icon5 = ImageIO.read(
-		//                    Cytoscape.class.getResource("visual/ui/images/diamond.jpg"));
-		//        } catch (Exception e) {
-		//            e.printStackTrace();
-		//            icon1 = null;
-		//            icon2 = null;
-		//            icon3 = null;
-		//            icon4 = null;
-		//            icon5 = null;
-		//        }
-		//
-		//        slider.getModel()
-		//              .addThumb(10.0f, icon1);
-		//        slider.getModel()
-		//              .addThumb(20.0f, icon2);
-		//        slider.getModel()
-		//              .addThumb(40.0f, icon3);
-		//        slider.getModel()
-		//              .addThumb(80.0f, icon4);
-		//
-		//        TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-		//
-		//        System.out.println("--------- VS = " +
-		//            Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getCalculator(VisualPropertyType.NODE_SHAPE) +
-		//            " ----");
-		//
-		//        DiscreteTrackRenderer dRend = new DiscreteTrackRenderer(minValue,
-		//                maxValue, icon5, null);
-		//
-		//        slider.setThumbRenderer(thumbRend);
-		//        slider.setTrackRenderer(dRend);
-		//        slider.addMouseListener(new ThumbMouseListener());
 	}
 }
