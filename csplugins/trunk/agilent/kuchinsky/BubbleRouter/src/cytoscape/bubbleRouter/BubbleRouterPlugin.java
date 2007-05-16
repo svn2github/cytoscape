@@ -1,5 +1,6 @@
 package cytoscape.bubbleRouter;
 
+import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.Component;
@@ -15,6 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -26,20 +28,29 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.undo.AbstractUndoableEdit;
 
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.plugin.*;
+import cytoscape.data.CyAttributes;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 
 
+
 public class BubbleRouterPlugin extends CytoscapePlugin implements
-		MouseListener, MouseMotionListener, PropertyChangeListener {
+		MouseListener, MouseMotionListener, PropertyChangeListener, CyGroupViewer {
 
 	protected InnerCanvas canvas;
 
@@ -155,6 +166,16 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	LayoutRegion pickedRegion = null;
 
 	private List boundedNodeViews;
+	
+	public static final String viewerName = "bubbleRouter";
+//	private static CyGroupViewer groupViewer = null;
+	private static GroupPanel groupPanel = null;
+	public static final double VERSION = 1.0;
+	// State values
+	public static final int SELECTED = 1;
+	public static final int UNSELECTED = 2;
+
+
 
 	/**
 	 * 
@@ -229,6 +250,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 		// MainPluginAction mpa = new MainPluginAction();
 		// mpa.initializeBubbleRouter();
+
+		// Add our interface to CytoPanel 1
+		groupPanel = new GroupPanel(this);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Regions", groupPanel);
+		// We want to listen for graph perspective changes (primarily SELECT/UNSELECT)
+		Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel);
+
+		// Register with CyGroup
+		CyGroupManager.registerGroupViewer(this);
+//		this.groupViewer = this; // this makes it easier to get at from inner classes
+		System.out.println("BubbleRouter "+VERSION+" initialized");
 
 	}
 
@@ -432,10 +464,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		if ((oldPickedRegion != null) && (oldPickedRegion != pickedRegion)) {
 			oldPickedRegion.setSelected(false);
 			oldPickedRegion.repaint();
+			unselect(oldPickedRegion);
 		}
 		if (pickedRegion != null) {
 			pickedRegion.setSelected(true);
 			pickedRegion.repaint();
+			select(pickedRegion);
 
 			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
 					.getNodeViews(), pickedRegion.getBounds());
@@ -447,6 +481,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 
 	// AJK: 02/20/07 END
+	// PropertyChange support
 
 	public void propertyChange(PropertyChangeEvent e) {
 
@@ -455,6 +490,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					.addMouseListener(this);
 			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 					.addMouseMotionListener(this);
+			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel);
 		}
 	}
 
@@ -724,7 +760,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			LayoutRegion region = new LayoutRegion(x, y, w, h);
 
 			// if value is selected by user, i.e., not cancelled
-			if (region.getRegionAttributeValue() != null) {
+			if (region.getRegionAttributeValue() != null && !region.getRegionAttributeValue().toString().contentEquals("[]")) {
 
 				// AJK: 12/02/06 BEGIN
 				// consolidate adding to region list and adding to canvas
@@ -744,11 +780,154 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				// backgroundLayer.add(region);
 				//				
 				// AJK 12/02/06 END
-
+								
+//				Cytoscape.getCurrentNetworkView().updateView();
 			}
 		}
 
 	}
+	
+	private static final String REGION_X_ATT = "__Region_x";
+	private static final String REGION_Y_ATT = "__Region_y";
+	private static final String REGION_W_ATT = "__Region_w";
+	private static final String REGION_H_ATT = "__Region_h";
+	private static final String REGION_NAME_ATT = "__Region_name";
+	private static final String REGION_NODEVIEWS_ATT = "__Region_nodeViews";
+	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
+	/**
+	 * Create a new group.  
+	 */
+	public static void newGroup(LayoutRegion region) {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
+//		List<CyGroup> groupList = CyGroupManager.getGroupList();
+		String groupName = region.getRegionAttributeValue().toString();
+		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, viewerName);
+//		CyGroupManager.notifyCreateGroup(group);
+		group.setState(SELECTED);
+		groupPanel.groupCreated(group);
+		
+		CyNode groupNode = group.getGroupNode();
+		CyAttributes attributes = Cytoscape.getNodeAttributes();
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_X_ATT, region.getX1());
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_Y_ATT, region.getY1());
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_W_ATT, region.getW1());
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_H_ATT, region.getH1());
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_NAME_ATT, groupName);
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_NODEVIEWS_ATT, region.getNodeViews().toString());
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT, region.getColorIndex());
+	}
+
+//	public String trimString(String s){
+//		String result = "";
+//		for(int i = 1; i<s.length()-1; i++){
+//			result += s.charAt(i);
+//		}
+//		return result;
+//	}
+	
+	/**
+	 * Return the name of our viewer
+	 *
+	 * @return viewer name
+	 */
+	public String getViewerName() { return viewerName; }
+
+	/**
+	 * This is called when a new group has been created that
+	 * we care about.  If we weren't building our menu each
+	 * time, this would be used to update the list of groups
+	 * we present to the user.
+	 *
+	 * @param group the CyGroup that was just created
+	 */
+	public void groupCreated(CyGroup group) { 
+		System.out.println("Building Layout Regions from xGMML");
+		CyNode groupNode = group.getGroupNode();
+		CyAttributes attributes = Cytoscape.getNodeAttributes();
+		Double x = attributes.getDoubleAttribute(groupNode.getIdentifier(), REGION_X_ATT);
+		Double y = attributes.getDoubleAttribute(groupNode.getIdentifier(), REGION_Y_ATT);
+		Double w = attributes.getDoubleAttribute(groupNode.getIdentifier(), REGION_W_ATT);
+		Double h = attributes.getDoubleAttribute(groupNode.getIdentifier(), REGION_H_ATT);
+		String nameString = attributes.getStringAttribute(groupNode.getIdentifier(), REGION_NAME_ATT);
+		nameString.replace("[", "");
+		nameString.replace("]", "");
+		String[] nameArray = nameString.split(",");
+		ArrayList name = new ArrayList();
+		for (int j=0; j<nameArray.length; j++){
+			name.add(nameArray[j]);
+		}
+		String nvString = attributes.getStringAttribute(groupNode.getIdentifier(), REGION_NODEVIEWS_ATT);
+		nvString.replace("[", "");
+		nvString.replace("]", "");
+		String[] nvArray = nvString.split(",");
+		List nv = new ArrayList();
+		for (int i=0; i<nvArray.length; i++){
+			nv.add(nvArray[i]); 
+		}
+		int color = attributes.getIntegerAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT);
+		
+		LayoutRegion region = new LayoutRegion(x, y, w, h, name, nv, color);
+		LayoutRegionManager.addRegion(
+				Cytoscape.getCurrentNetworkView(), region);
+
+		groupPanel.groupCreated(group);
+	}
+
+	/**
+	 * This is called when a group we care about is about to 
+	 * be deleted.  If we weren't building our menu each
+	 * time, this would be used to update the list of groups
+	 * we present to the user.
+	 *
+	 * @param group the CyGroup that will be deleted
+	 */
+	public void groupWillBeRemoved(CyGroup group){
+		groupPanel.groupRemoved(group);		
+	}
+	public static void groupWillBeRemoved(LayoutRegion region) { 
+		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region.getRegionAttributeValue().toString()));
+		groupPanel.groupRemoved(group);
+	}
+
+	/**
+	 * This is called when a group we care about is changed.
+	 *
+	 * @param group the CyGroup that has changed
+	 * @param node the CyNode that caused the change
+	 * @param change the change that occured
+	 */
+	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
+		// At some point, this should be a little more granular.  Do we really
+		// need to rebuild the tree when we have a simple node addition/removal?
+		groupPanel.groupChanged(group);
+	}
+	
+	
+	/**
+	 * Perform the action associated with a select menu selection
+	 */
+	private void select(LayoutRegion region) {
+		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region.getRegionAttributeValue().toString()));
+//		List<CyNode> nodeList = group.getNodes();
+//		Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, true);
+//		Cytoscape.getCurrentNetworkView().updateView();
+		group.setState(SELECTED);
+//		groupPanel.groupChanged(group);
+	}
+
+	/**
+	 * Perform the action associated with an unselect menu selection
+	 */
+	private void unselect(LayoutRegion region) {
+		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region.getRegionAttributeValue().toString()));
+//		List<CyNode> nodeList = group.getNodes();
+//		Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, false);
+//		Cytoscape.getCurrentNetworkView().updateView();
+		group.setState(UNSELECTED);
+//		groupPanel.groupChanged(group);
+	}
+
 
 	/**
 	 * This class gets attached to the menu item.
@@ -955,7 +1134,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		// match what the document contains
 		// as an id
 
-		Info.setName("Interactive Layout"); // name can be anything
+		Info.setName("BubbleRouter"); // name can be anything
 
 		Info.setDescription("Attribute-based layout using interactive regions");
 
