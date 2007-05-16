@@ -141,6 +141,8 @@ public class LayoutRegionManager {
 		//    forces a viewport changed event, 
 		//    which enables us to get original viewport centerpoint and scale factor
 		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
+		
+		BubbleRouterPlugin.newGroup(region);
 	}
 	
 	
@@ -155,6 +157,8 @@ public class LayoutRegionManager {
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
 		backgroundLayer.remove(region);
 		backgroundLayer.repaint();
+		
+		BubbleRouterPlugin.groupWillBeRemoved(region);
 	}
 	
 
