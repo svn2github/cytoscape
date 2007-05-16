@@ -174,7 +174,7 @@ public class LayoutRegion extends JComponent
 		selectRegionAttributeValue();
 
 		//if no selection is made, or if 'cancel' is clicked
-		if (this.getRegionAttributeValue().toString().contentEquals("[]")) {
+		if (this.getRegionAttributeValue() == null || this.getRegionAttributeValue().toString().contentEquals("[]")) {
 			return;
 		}
 		
@@ -195,6 +195,7 @@ public class LayoutRegion extends JComponent
 		// determine color of layout region
 		colorIndex = (++colorIndex % colors.length == 0) ? 0 : colorIndex;
 		this.paint = colors[colorIndex];
+		this.setColorIndex(colorIndex);
 
 		// AJK: 01/04/07 add ViewportChangeListener for accommodating pan/zoom
 		// currentZoom = ((DGraphView) Cytoscape.getCurrentNetworkView())
@@ -209,7 +210,22 @@ public class LayoutRegion extends JComponent
 				.addViewportChangeListener(this);
 
 	}
-
+	
+	/**
+	 * Constructor for xGMML read-in using group node attributes
+	 * 
+	 */
+	public LayoutRegion(double x, double y, double width, double height, ArrayList name, List nv, int color) {
+		super();
+		this.setRegionAttributeValue(name);
+		savedCursor = this.getCursor();
+		setBounds(x, y, width, height);
+		nodeViews = nv;
+		this.paint = colors[color];
+		((DGraphView) Cytoscape.getCurrentNetworkView())
+		.addViewportChangeListener(this);		
+	}
+	
 	/**
 	 * Empty Constructor
 	 * 
@@ -219,6 +235,20 @@ public class LayoutRegion extends JComponent
 
 		nodeViews = new ArrayList();
 
+	}
+	
+	/**
+	 * @return colorIndex
+	 */
+	public int getColorIndex() {
+		return colorIndex;
+	}
+
+	/**
+	 * @param colorIndex
+	 */
+	public void setColorIndex(int colorIndex) {
+		LayoutRegion.colorIndex = colorIndex;
 	}
 
 	/**
@@ -1045,4 +1075,5 @@ public class LayoutRegion extends JComponent
 	        }
 	        return buf.toString();
 	    }
+
 }
