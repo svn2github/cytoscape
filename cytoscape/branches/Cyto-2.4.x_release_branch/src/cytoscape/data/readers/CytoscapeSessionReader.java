@@ -153,6 +153,12 @@ public class CytoscapeSessionReader {
 	 */
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
 		this.sourceURL = sourceName;
+		
+		if (sourceName.getProtocol().equals("file"))
+			this.sourceURL = sourceName;
+		else
+			this.sourceURL = temporaryLocalFileURL(sourceName);
+
 		networkList = new ArrayList();
 		vsMap = new HashMap();
 		vsMapByName = new HashMap();
@@ -844,5 +850,59 @@ public class CytoscapeSessionReader {
 		}
 		// Not found
 		return null;
+	}
+	
+	/**
+	 * The CytoscapeSessionReader class reopens the session file each time it accesses or reads one of
+	 * the files contained within the session file (which is just a zip container). This is fine for
+	 * local files, but if you refer to a remote URL, it means that the session file is downloaded once
+	 * for each file accessed -- that's 4-5 times on average, and performance suffers immensely.
+	 * 
+	 * This method will attempt to create a local temporary file and copy the contents of the remote URL
+	 * into the temporary file. It returns the URL for the local temporary file. Note that the file is
+	 * marked "deleteOnExit", which means that if the JVM exits normally, it will be cleaned up automatically.
+	 * 
+	 * The method returns either the local file URL, or the original remote URL if there was a problem in
+	 * creating the local file.
+	 * 
+	 * @param remoteURL
+	 * @return
+	 */
+	private URL temporaryLocalFileURL(final URL remoteURL) {
+		try {
+			// We need a unique local filename for the temporary file - which seems like a
+			// logical job for Java's UUID class...
+			File tempFile = File.createTempFile(java.util.UUID.randomUUID().toString(), ".cys");
+			     tempFile.deleteOnExit();
+			     
+			byte                  buffer[]       = new byte[100000];
+			java.io.OutputStream  localContent   = new java.io.FileOutputStream(tempFile);
+			java.io.InputStream   remoteContent  = remoteURL.openStream();
+			
+			for (int nBytes = remoteContent.read(buffer); nBytes>0; nBytes = remoteContent.read(buffer)) {
+				localContent.write(buffer, 0, nBytes);
+			}
+			
+			remoteContent.close();
+			localContent.close();
+			remoteContent = null;
+			localContent  = null;
+			buffer        = null;
+			
+			return tempFile.toURL();
+		} catch (FileNotFoundException e) {
+			// This could happen if the OS' temp directory doesn't exist
+			System.err.println("Can't create a temporary file.");
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// If the provided URL is bad, this will happen
+			System.err.println("Bad URL provided: " + remoteURL.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			// Any problem read or writing from either the remoteURL or the tempFile
+			e.printStackTrace();
+		}
+		
+		return remoteURL; // if we can't make a local copy for some reason, work with the remote.
 	}
 }
