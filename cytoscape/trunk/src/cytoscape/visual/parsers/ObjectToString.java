@@ -66,7 +66,9 @@ public class ObjectToString {
      * Constructs and returns a String representation of the given Object.
      */
     public static String getStringValue(Object o) {
-        if (o instanceof Color)
+		if (  o == null )
+			return "";
+        else if (o instanceof Color)
             return Misc.getRGBText((Color) o);
         else if (o instanceof Line)
             return o.toString();

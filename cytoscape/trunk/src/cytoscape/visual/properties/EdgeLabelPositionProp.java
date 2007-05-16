@@ -97,6 +97,5 @@ public class EdgeLabelPositionProp extends AbstractVisualProperty {
             return null;
     }
 
-    //public Object getDefaultAppearanceObject() { return new LabelPosition(); }
-    public Object getDefaultAppearanceObject() { return null; }
+    public Object getDefaultAppearanceObject() { return new LabelPosition(); }
 }

@@ -147,9 +147,12 @@ public class Appearance {
 	public Properties getDefaultProperties(String baseKey) {
 		Properties props = new Properties();
 
-		for (VisualPropertyType type : VisualPropertyType.values())
-			props.setProperty(type.getDefaultPropertyKey(baseKey),
-			                  ObjectToString.getStringValue(vizProps[type.ordinal()]));
+		for (VisualPropertyType type : VisualPropertyType.values()) {
+			String key = type.getDefaultPropertyKey(baseKey);
+			String value = ObjectToString.getStringValue(vizProps[type.ordinal()]);
+			if ( key != null && value != null )
+				props.setProperty(key,value);
+		}
 
 		return props;
 	}

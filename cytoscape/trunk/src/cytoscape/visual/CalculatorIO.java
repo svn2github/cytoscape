@@ -236,9 +236,8 @@ public class CalculatorIO {
                 // object
                 newProps.putAll(styleProps);
             } catch (Exception e) {
-                String s = "Exception while saving visual style " + name;
-                System.err.println(s);
-                System.err.println(e.getMessage());
+				System.out.println("Exception while saving visual style " + name);
+				e.printStackTrace();
             }
         }
 
