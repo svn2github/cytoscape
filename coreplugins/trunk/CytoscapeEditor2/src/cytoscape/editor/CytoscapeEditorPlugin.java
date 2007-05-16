@@ -51,7 +51,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
     // MLC 12/11/06:
     private static boolean _initialized = false;
     // MLC 05/11/07:
-    private static final String VERSION = "2.50";
+    private static final double VERSION = 2.501;
 
 	/**
 	 * Creates a new CytoscapeEditorPlugin object.
