@@ -30,12 +30,7 @@ public class HTMLSessionExporter implements SessionExporter
 {
 	private static final int MAX_COLUMNS = 3;
 
-	private static final String IMAGE_TYPE			= "png";
-	private static final String FILE_IMAGE_SUFFIX		= "." + IMAGE_TYPE;
-	private static final String FILE_THUMBNAIL_SUFFIX	= "_thumbnail." + IMAGE_TYPE;
-	private static final String FILE_LEGEND_SUFFIX		= "_legend." + IMAGE_TYPE;
-	private static final String FILE_SIF_SUFFIX		= ".sif";
-	private static final String FILE_SESSION_NAME		= "session.cys";
+	private static final String IMAGE_TYPE = "png";
 	
 	public void export(final File directory)
 	{
@@ -43,10 +38,11 @@ public class HTMLSessionExporter implements SessionExporter
 		{
 			TaskMonitor monitor = null;
 			boolean needToHalt = false;
+			Files files = new Files();
 
 			public String getTitle()
 			{
-				return "HTML Session Exporter: Exporting session...";
+				return "Session for Web";
 			}
 
 			public void setTaskMonitor(TaskMonitor monitor)
@@ -57,6 +53,18 @@ public class HTMLSessionExporter implements SessionExporter
 			public void halt()
 			{
 				needToHalt = true;
+			}
+
+			private void setStatus(String status)
+			{
+				if (monitor != null)
+					monitor.setStatus(status);
+			}
+
+			private void setPercentCompleted(int percent)
+			{
+				if (monitor != null)
+					monitor.setPercentCompleted(percent);
 			}
 
 			public void run()
@@ -70,11 +78,149 @@ public class HTMLSessionExporter implements SessionExporter
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e.getMessage(),
-									"HTML Session Exporter",
-									JOptionPane.ERROR_MESSAGE);
+					if (monitor != null)
+						monitor.setException(e, "Could not complete session export");
+					else
+						e.printStackTrace();
 				}
+			}
+
+			private List<String> networkIDs()
+			{
+				List<String> networkIDs = new ArrayList<String>();
+				Iterator iterator = Cytoscape.getNetworkSet().iterator();
+				while (iterator.hasNext())
+				{
+					CyNetwork network = (CyNetwork) iterator.next();
+					String networkID = network.getIdentifier();
+					networkIDs.add(networkID);
+				}
+				return networkIDs;
+			}
+
+			private void writeSession(File directory) throws Exception
+			{
+				if (needToHalt)
+					return;
+
+				setStatus("Writing Cytoscape session file...");
+				setPercentCompleted(1);
+				File sessionFile = files.sessionFile(directory);
+				CytoscapeSessionWriter sessionWriter = new CytoscapeSessionWriter(sessionFile.toString());
+				sessionWriter.writeSessionToDisk();
+			}
+
+			private void generateImages(File directory, List<String> networkIDs) throws Exception
+			{
+				GraphViewToImage graphViewToImage = new GraphViewToImage(1.0, true, true);
+				Map viewMap = Cytoscape.getNetworkViewMap();
+				int currentNetwork = 0;
+				int networkCount = networkIDs.size();
+				for (String networkID : networkIDs)
+				{
+					String networkTitle = Cytoscape.getNetwork(networkID).getTitle();
+
+					if (needToHalt)
+						return;
+
+					setStatus("Exporting SIF for: " + networkTitle);
+					setPercentCompleted(10 + 80 * currentNetwork / networkCount);
+					File sifFile = files.sifFile(directory, networkTitle);
+					FileWriter sifWriter = new FileWriter(sifFile);
+					CyNetwork network = Cytoscape.getNetwork(networkID);
+					InteractionWriter.writeInteractions(network, sifWriter, null);
+					sifWriter.close();
+
+					if (needToHalt)
+						return;
+
+					DGraphView view = (DGraphView) viewMap.get(networkID);
+					setStatus("Rendering image for: " + networkTitle);
+					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 20 / networkCount);
+					File imageFile = files.imageFile(directory, networkTitle, IMAGE_TYPE);
+					BufferedImage image = graphViewToImage.convert(view);
+					if (image != null)
+						ImageIO.write(image, IMAGE_TYPE, imageFile);
+
+					if (needToHalt)
+						return;
+
+					setStatus("Generating thumbnail for: " + networkTitle);
+					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 40 / networkCount);
+					File thumbnailFile = files.thumbnailFile(directory, networkTitle, IMAGE_TYPE);
+					BufferedImage thumbnail = Thumbnails.createThumbnail(image);
+					ImageIO.write(thumbnail, IMAGE_TYPE, thumbnailFile);
+					
+					if (needToHalt)
+						return;
+
+					setStatus("Rendering legend for: " + networkTitle);
+					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 60 / networkCount);
+					File legendFile = files.legendFile(directory, networkTitle, IMAGE_TYPE);
+					VisualStyle visualStyle = Cytoscape.getNetworkView(networkID).getVisualStyle();
+					BufferedImage legend = VisualStyleToImage.convert(visualStyle);
+					if (legend != null)
+						ImageIO.write(legend, IMAGE_TYPE, legendFile);
+
+					currentNetwork++;
+				}
+			}
+
+			private void generateHTML(File directory, List<String> networkIDs) throws Exception
+			{
+				if (needToHalt)
+					return;
+
+				setStatus("Writing HTML page");
+				setPercentCompleted(90);
+				File htmlFile = files.htmlFile(directory);
+				PrintWriter htmlWriter = new PrintWriter(htmlFile);
+				htmlWriter.println("<html>");
+				htmlWriter.println("<body>");
+				htmlWriter.println("<a href=\"" + files.sessionFile() + "\">Cytoscape Session File</a><br/>");
+				htmlWriter.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+				int i = 0;
+				for (String networkID : networkIDs)
+				{
+					if (needToHalt)
+						return;
+
+					String networkTitle = Cytoscape.getNetwork(networkID).getTitle();
+
+					if ((i % MAX_COLUMNS) == 0)
+						htmlWriter.println("<tr valign=bottom>");
+					htmlWriter.println("<td align=center valign=bottom>");
+
+					File imageFile = files.imageFile(directory, networkTitle, IMAGE_TYPE);
+					File legendFile = files.legendFile(directory, networkTitle, IMAGE_TYPE);
+
+					if (imageFile.exists())
+						htmlWriter.print("<a href=\"" + imageFile.getName() + "\">");
+					htmlWriter.print("<img border=0 src=\"" + files.thumbnailFile(networkTitle, IMAGE_TYPE) + "\">");
+					if (imageFile.exists())
+						htmlWriter.print("</a>");
+
+					htmlWriter.print("<font size=-1>");
+					htmlWriter.print("<br>" + networkTitle + " <br/>(");
+					htmlWriter.print("<a href=\"" + files.sifFile(networkTitle) + "\">sif</a>");
+					
+					if (imageFile.exists())
+						htmlWriter.print(" | <a href=\"" + imageFile.getName() + "\">image</a>");
+					if (legendFile.exists())
+						htmlWriter.print(" | <a href=\"" + legendFile.getName() + "\">legend</a>");
+					
+					htmlWriter.print(")</font>");
+					htmlWriter.println("</td>");
+					if ((i + 1) % MAX_COLUMNS == 0)
+						htmlWriter.println("</tr>");
+					i++;
+				}
+				if ((i + 1) % MAX_COLUMNS != 0)
+					htmlWriter.println("</tr>");
+				htmlWriter.println("</table>");
+				htmlWriter.println("</body>");
+				htmlWriter.println("</html>");
+				htmlWriter.close();
 			}
 		};
 
@@ -90,88 +236,67 @@ public class HTMLSessionExporter implements SessionExporter
 		TaskManager.executeTask(task, jTaskConfig);
 	}
 	
-	private static List<String> networkIDs()
+
+	private class Files
 	{
-		List<String> networkIDs = new ArrayList<String>();
-		Iterator iterator = Cytoscape.getNetworkSet().iterator();
-		while (iterator.hasNext())
+		public String sessionFile()
 		{
-			CyNetwork network = (CyNetwork) iterator.next();
-			String networkID = network.getIdentifier();
-			networkIDs.add(networkID);
+			return "session.cys";
 		}
-		return networkIDs;
-	}
 
-	private static void writeSession(File directory) throws Exception
-	{
-		File sessionFile = new File(directory, FILE_SESSION_NAME);
-		CytoscapeSessionWriter sessionWriter = new CytoscapeSessionWriter(sessionFile.toString());
-		sessionWriter.writeSessionToDisk();
-	}
-
-	private static void generateImages(File directory, List<String> networkIDs) throws Exception
-	{
-		GraphViewToImage graphViewToImage = new GraphViewToImage(1.0, true, true);
-		Map viewMap = Cytoscape.getNetworkViewMap();
-		for (String networkID : networkIDs)
+		public File sessionFile(File directory)
 		{
-			DGraphView view = (DGraphView) viewMap.get(networkID);
-
-			File imageFile = new File(directory, networkID + FILE_IMAGE_SUFFIX);
-			BufferedImage image = graphViewToImage.convert(view);
-			ImageIO.write(image, IMAGE_TYPE, imageFile);
-
-			File thumbnailFile = new File(directory, networkID + FILE_THUMBNAIL_SUFFIX);
-			BufferedImage thumbnail = Thumbnails.createThumbnail(image);
-			ImageIO.write(thumbnail, IMAGE_TYPE, thumbnailFile);
-			
-			File legendFile = new File(directory, networkID + FILE_LEGEND_SUFFIX);
-			VisualStyle visualStyle = Cytoscape.getNetworkView(networkID).getVisualStyle();
-			BufferedImage legend = VisualStyleToImage.convert(visualStyle);
-			if (legend != null)
-				ImageIO.write(legend, IMAGE_TYPE, legendFile);
-
-			File sifFile = new File(directory, networkID + FILE_SIF_SUFFIX);
-			FileWriter sifWriter = new FileWriter(sifFile);
-			CyNetwork network = Cytoscape.getNetwork(networkID);
-			InteractionWriter.writeInteractions(network, sifWriter, null);
-			sifWriter.close();
+			return new File(directory, sessionFile());
 		}
-	}
 
-	private static void generateHTML(File directory, List<String> networkIDs) throws Exception
-	{
-		File htmlFile = new File(directory, "index.html");
-		PrintWriter htmlWriter = new PrintWriter(htmlFile);
-		htmlWriter.println("<html>");
-		htmlWriter.println("<body>");
-		htmlWriter.println("<a href=\"" + FILE_SESSION_NAME + "\">Cytoscape Session File</a><br/>");
-		htmlWriter.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-		int i = 0;
-		for (String networkID : networkIDs)
+		public String htmlFile()
 		{
-			String title = Cytoscape.getNetwork(networkID).getTitle();
-
-			if ((i % MAX_COLUMNS) == 0)
-				htmlWriter.println("<tr>");
-			htmlWriter.println("<td align=center valign=bottom>");
-			htmlWriter.println("<img src=\"" + networkID + FILE_THUMBNAIL_SUFFIX + "\">");
-			
-			String imageLink = "<a href=\"" + networkID + FILE_IMAGE_SUFFIX + "\">image</a>";
-			String sifLink = "<a href=\"" + networkID + FILE_SIF_SUFFIX + "\">sif</a>";
-			String legendLink = "<a href=\"" + networkID + FILE_LEGEND_SUFFIX + "\">legend</a>";
-			htmlWriter.print("<font size=-1><br>" + title + " <br/>(" + imageLink + " | " + sifLink + " | " + legendLink + ")</font>");
-			htmlWriter.println("</td>");
-			if ((i + 1) % MAX_COLUMNS == 0)
-				htmlWriter.println("</tr>");
-			i++;
+			return "index.html";
 		}
-		if ((i + 1) % MAX_COLUMNS != 0)
-			htmlWriter.println("</tr>");
-		htmlWriter.println("</table>");
-		htmlWriter.println("</body>");
-		htmlWriter.println("</html>");
-		htmlWriter.close();
+
+		public File htmlFile(File directory)
+		{
+			return new File(directory, htmlFile());
+		}
+
+		public String sifFile(String network)
+		{
+			return network + ".sif";
+		}
+
+		public File sifFile(File directory, String network)
+		{
+			return new File(directory, sifFile(network));
+		}
+
+		public String imageFile(String network, String format)
+		{
+			return network + "_image." + format;
+		}
+
+		public File imageFile(File directory, String network, String format)
+		{
+			return new File(directory, imageFile(network, format));
+		}
+
+		public String thumbnailFile(String network, String format)
+		{
+			return network + "_thumbnail." + format;
+		}
+
+		public File thumbnailFile(File directory, String network, String format)
+		{
+			return new File(directory, thumbnailFile(network, format));
+		}
+
+		public String legendFile(String network, String format)
+		{
+			return network + "_legend." + format;
+		}
+
+		public File legendFile(File directory, String network, String format)
+		{
+			return new File(directory, legendFile(network, format));
+		}
 	}
 }

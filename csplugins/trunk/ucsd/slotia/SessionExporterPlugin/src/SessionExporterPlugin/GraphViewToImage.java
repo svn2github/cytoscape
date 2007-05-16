@@ -26,6 +26,9 @@ public class GraphViewToImage
 
 	public BufferedImage convert(DGraphView view)
 	{
+		if (view == null)
+			return null;
+
 		Rectangle2D.Double graphBounds = graphBounds(view);
 		BufferedImage image = new BufferedImage((int) (graphBounds.width * zoom),
 							(int) (graphBounds.height * zoom),
@@ -35,7 +38,7 @@ public class GraphViewToImage
 		double centerY = graphBounds.y + graphBounds.height / 2.0d;
 		Paint background = view.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS).getBackground();
 		imageLOD.setParentLOD(view.getGraphLOD());
-		view.drawSnapshot(image, imageLOD, background, centerX, centerY, zoom);
+		view.drawSnapshot(image, imageLOD, background, centerX, centerY, zoom - zoom / 10.0);
 
 		return image;
 	}
@@ -88,7 +91,6 @@ public class GraphViewToImage
 
 		public boolean nodeLabels(final int renderNodeCount, final int renderEdgeCount)
 		{
-			System.out.println("ImageLOD.nodeLabels() = " + renderNodeLabels);
 			return renderNodeLabels;
 		}
 
