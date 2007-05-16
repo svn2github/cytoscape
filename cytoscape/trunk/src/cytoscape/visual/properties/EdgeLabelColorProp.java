@@ -38,10 +38,16 @@ import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.Icon;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.LineTypeIcon;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import giny.view.Label;
+
 
 
 /**
@@ -74,4 +80,27 @@ public class EdgeLabelColorProp extends AbstractVisualProperty {
 		return icon;
 		
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        Label edgelabel = ev.getLabel();
+
+        if ( !((Color)o).equals(edgelabel.getTextPaint()) )
+            edgelabel.setTextPaint((Color)o);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_LABEL_COLOR.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new ColorParser()).parseColor(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return Color.black; }
+
+
 }

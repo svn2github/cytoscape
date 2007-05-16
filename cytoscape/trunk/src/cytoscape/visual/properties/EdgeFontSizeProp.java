@@ -40,9 +40,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.Icon;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.LineTypeIcon;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import giny.view.Label;
+
 
 
 /**
@@ -70,4 +76,29 @@ public class EdgeFontSizeProp extends AbstractVisualProperty {
 		icon.setBottomPadding(-7);
 		return icon;
 	}
+
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        Label edgelabel = ev.getLabel();
+        Font f = edgelabel.getFont();
+        float newFontSize = ((Float)o).floatValue();
+
+        if ( newFontSize != f.getSize2D() )
+            edgelabel.setFont(f.deriveFont(newFontSize));
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_FONT_SIZE.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new FloatParser()).parseFloat(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return new Float(10.0f); }
+
 }

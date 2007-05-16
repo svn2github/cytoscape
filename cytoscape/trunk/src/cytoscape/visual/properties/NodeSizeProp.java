@@ -35,7 +35,7 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
-
+import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.icon.*;
 
 import java.awt.Color;
@@ -43,6 +43,8 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import giny.view.NodeView;
+import java.util.Properties;
 
 import javax.swing.Icon;
 
@@ -78,4 +80,32 @@ public class NodeSizeProp extends AbstractVisualProperty {
 				}
 			};
 	}
+
+    public void applyToNodeView(NodeView nv, Object o) {
+        if ( o == null || nv == null )
+            return;
+
+			double size = ((Double)o).doubleValue();
+            double difference = size - nv.getHeight();
+
+            if (Math.abs(difference) > 0.1) 
+                nv.setHeight(size);
+
+            difference = size - nv.getWidth();
+
+            if (Math.abs(difference) > 0.1) 
+                nv.setWidth(size);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.NODE_SIZE.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new DoubleParser()).parseDouble(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return new Double(35.0); }
+
 }

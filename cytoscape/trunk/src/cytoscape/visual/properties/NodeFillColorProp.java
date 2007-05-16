@@ -34,14 +34,20 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import cytoscape.visual.ui.icon.*;
+import javax.swing.Icon;
+import java.awt.Font;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-
+import java.util.Properties;
+import giny.view.NodeView; 
+import cytoscape.visual.parsers.*;
+import java.util.Properties;
 import javax.swing.Icon;
 
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.NodeIcon;
 
 
 /**
@@ -71,4 +77,23 @@ public class NodeFillColorProp extends AbstractVisualProperty {
 				}
 			};
 	}
+
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ( o == null || nv == null )
+			return;
+
+		if ( !((Color)o).equals(nv.getUnselectedPaint()) ) 
+			nv.setUnselectedPaint((Color)o);	
+	}
+
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty( 
+			VisualPropertyType.NODE_FILL_COLOR.getDefaultPropertyKey(baseKey) );
+		if ( s != null ) 
+			return (new ColorParser()).parseColor(s);
+		else
+			return null;
+	}
+
+	public Object getDefaultAppearanceObject() { return Color.white; }
 }

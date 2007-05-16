@@ -114,8 +114,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void testDefaultAppearance() {
-		System.out
-				.println("begin NodeAppearanceCalculatorTest.testDefaultAppearance()");
+		System.out.println("begin NodeAppearanceCalculatorTest.testDefaultAppearance()");
 
 		NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
 

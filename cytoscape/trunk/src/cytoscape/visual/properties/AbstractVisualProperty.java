@@ -38,6 +38,9 @@ import java.awt.Graphics2D;
 import java.util.Map;
 
 import javax.swing.Icon;
+import java.util.Properties;
+import giny.view.NodeView;
+import giny.view.EdgeView;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.VisualProperty;
@@ -96,4 +99,9 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	protected Object getDefault() {
 		return getType().getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
 	}
+
+	public void applyToNodeView(NodeView nv, Object o) {}
+	public void applyToEdgeView(EdgeView ev, Object o) {}
+	public Object parseProperty(Properties props, String baseKey) { return null; }
+	public Object getDefaultAppearanceObject() { return null; } 
 }

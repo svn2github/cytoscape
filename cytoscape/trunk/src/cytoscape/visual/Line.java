@@ -129,4 +129,33 @@ public class Line {
         else
             return Line.DEFAULT_LINE;
     }
+
+	public LineType getLineType() {
+		if ( type == LineTypeDef.SOLID && width == 1.0f )
+			return LineType.LINE_1;
+		else if ( type == LineTypeDef.SOLID && width == 2.0f )
+			return LineType.LINE_2;
+		else if ( type == LineTypeDef.SOLID && width == 3.0f )
+			return LineType.LINE_3;
+		else if ( type == LineTypeDef.SOLID && width == 4.0f )
+			return LineType.LINE_4;
+		else if ( type == LineTypeDef.SOLID && width == 5.0f )
+			return LineType.LINE_5;
+		else if ( type == LineTypeDef.SOLID && width == 6.0f )
+			return LineType.LINE_6;
+		else if ( type == LineTypeDef.SOLID && width == 7.0f )
+			return LineType.LINE_7;
+		else if ( type == LineTypeDef.LONG_DASH && width == 1.0f )
+			return LineType.DASHED_1;
+		else if ( type == LineTypeDef.LONG_DASH && width == 2.0f )
+			return LineType.DASHED_2;
+		else if ( type == LineTypeDef.LONG_DASH && width == 3.0f )
+			return LineType.DASHED_3;
+		else if ( type == LineTypeDef.LONG_DASH && width == 4.0f )
+			return LineType.DASHED_4;
+		else if ( type == LineTypeDef.LONG_DASH && width == 5.0f )
+			return LineType.DASHED_5;
+		else
+			return LineType.LINE_1;
+	}
 }

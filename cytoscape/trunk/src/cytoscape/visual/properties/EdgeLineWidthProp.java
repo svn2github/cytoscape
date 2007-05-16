@@ -43,8 +43,12 @@ import java.awt.Graphics;
 import cytoscape.visual.*;
 
 import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
 
 import javax.swing.Icon;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -67,4 +71,22 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 		icon.setBottomPadding(-7);
 		return icon;
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        // TODO
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_LINE_WIDTH.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new DoubleParser()).parseDouble(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return new Double(1.0); }
 }

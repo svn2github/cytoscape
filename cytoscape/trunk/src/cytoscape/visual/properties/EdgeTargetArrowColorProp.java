@@ -40,10 +40,15 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.ArrowIcon;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
 
 import java.awt.Color;
+import java.awt.Paint;
 
 import javax.swing.Icon;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -74,4 +79,27 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 
 		return icon;
 	}
+
+   public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        final Paint newTargetArrowColor = ((Color)o);
+
+        if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
+            ev.setTargetEdgeEndPaint(newTargetArrowColor);
+
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_TGTARROW_COLOR.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new ColorParser()).parseColor(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return Color.black; }
+
 }

@@ -39,6 +39,9 @@ import java.awt.Graphics2D;
 import java.util.Map;
 
 import javax.swing.Icon;
+import java.util.Properties;
+import giny.view.EdgeView;
+import giny.view.NodeView;
 
 
 /**
@@ -83,4 +86,9 @@ public interface VisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon();
+
+	public void applyToNodeView(NodeView nv, Object o);
+	public void applyToEdgeView(EdgeView nv, Object o);
+	public Object parseProperty(Properties props, String baseKey);
+	public Object getDefaultAppearanceObject();
 }

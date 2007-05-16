@@ -103,8 +103,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	public LineTypeIcon(BasicStroke stroke, int width, int height, String name, Color color) {
 		super(null, width, height, name, color);
 
-		final float lineWidth = (Float) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                       .getVisualStyle());
+		final float lineWidth = ((Double) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).floatValue();
 
 		/*
 		 * Define a stroke for the line segment icon

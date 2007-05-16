@@ -35,7 +35,7 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
-
+import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.icon.*;
 
 import java.awt.Color;
@@ -43,6 +43,9 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import giny.view.Label;
+import giny.view.NodeView;
+import java.util.Properties;
 
 import javax.swing.Icon;
 
@@ -76,4 +79,49 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 				}
 			};
 	}
+
+    public void applyToNodeView(NodeView nv, Object o) {
+        if ( o == null || nv == null )
+            return;
+
+		Label nodelabel = nv.getLabel();
+		LabelPosition labelPosition = (LabelPosition)o;
+
+        int newTextAnchor = labelPosition.getLabelAnchor();
+
+        if (nodelabel.getTextAnchor() != newTextAnchor) 
+            nodelabel.setTextAnchor(newTextAnchor);
+
+        int newJustify = labelPosition.getJustify();
+
+        if (nodelabel.getJustify() != newJustify) 
+            nodelabel.setJustify(newJustify);
+
+        int newNodeAnchor = labelPosition.getTargetAnchor();
+
+        if (nv.getNodeLabelAnchor() != newNodeAnchor) 
+            nv.setNodeLabelAnchor(newNodeAnchor);
+
+        double newOffsetX = labelPosition.getOffsetX();
+
+        if (nv.getLabelOffsetX() != newOffsetX) 
+            nv.setLabelOffsetX(newOffsetX);
+
+        double newOffsetY = labelPosition.getOffsetY();
+
+        if (nv.getLabelOffsetY() != newOffsetY) 
+            nv.setLabelOffsetY(newOffsetY);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.NODE_LABEL_POSITION.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new LabelPositionParser()).parseLabelPosition(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return new LabelPosition(); }
+
 }

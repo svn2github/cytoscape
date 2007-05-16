@@ -35,6 +35,10 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -49,4 +53,50 @@ public class EdgeLabelPositionProp extends AbstractVisualProperty {
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_LABEL_POSITION;
 	}
+/*
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        Label label = ev.getLabel();
+        LabelPosition labelPosition = (LabelPosition)o;
+
+        int newTextAnchor = labelPosition.getLabelAnchor();
+
+        if (label.getTextAnchor() != newTextAnchor)
+            label.setTextAnchor(newTextAnchor);
+
+        int newJustify = labelPosition.getJustify();
+
+        if (label.getJustify() != newJustify)
+            label.setJustify(newJustify);
+
+        int newNodeAnchor = labelPosition.getTargetAnchor();
+
+        if (ev.getNodeLabelAnchor() != newNodeAnchor)
+            ev.setNodeLabelAnchor(newNodeAnchor);
+
+        double newOffsetX = labelPosition.getOffsetX();
+
+        if (ev.getLabelOffsetX() != newOffsetX)
+            ev.setLabelOffsetX(newOffsetX);
+
+        double newOffsetY = labelPosition.getOffsetY();
+
+        if (ev.getLabelOffsetY() != newOffsetY)
+            ev.setLabelOffsetY(newOffsetY);
+    }
+*/
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_LABEL_POSITION.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new LabelPositionParser()).parseLabelPosition(s);
+        else
+            return null;
+    }
+
+    //public Object getDefaultAppearanceObject() { return new LabelPosition(); }
+    public Object getDefaultAppearanceObject() { return null; }
 }

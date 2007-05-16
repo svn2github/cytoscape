@@ -35,6 +35,11 @@
 package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import giny.view.Label;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -49,4 +54,26 @@ public class EdgeLabelProp extends AbstractVisualProperty {
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_LABEL;
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        Label label = ev.getLabel();
+
+        if (!((String)o).equals(label.getText()))
+            label.setText((String)o);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_LABEL.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return s;
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return ""; }
+
 }

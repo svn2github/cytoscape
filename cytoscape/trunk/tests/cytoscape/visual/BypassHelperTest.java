@@ -34,44 +34,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-/*
-  File: BypassHelper.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
-// BypassHelper.java
 package cytoscape.visual;
 
 import giny.view.Label;
@@ -87,6 +50,11 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
+/** 
+ * While this used to test a ByPassHelper class, that functionality
+ * has now been subsumed by Appearance.  These tests should eventually
+ * more into the Appearance unit test.
+ */
 public class BypassHelperTest extends TestCase {
 	
 	CyNode homer;
@@ -126,16 +94,15 @@ public class BypassHelperTest extends TestCase {
 
 		Object o = null;
 
-		o = BypassHelper
-				.getBypass(nodeAttrs, id, "node.fillColor", Color.class);
+		o = Appearance.getBypass(nodeAttrs, id, "node.fillColor", Color.class);
 		System.out.println("id " + id);
 		System.out.println("o " + o.toString());
 		assertTrue("color equals", ((Color) o).equals(new Color(25, 31, 244)));
 
-		o = BypassHelper.getBypass(nodeAttrs, id, "node.size", Double.class);
+		o = Appearance.getBypass(nodeAttrs, id, "node.size", Double.class);
 		assertEquals("size equals", 22.0, ((Double) o).doubleValue(), 0.0001);
 
-		o = BypassHelper.getBypass(nodeAttrs, id, "node.labelPosition",
+		o = Appearance.getBypass(nodeAttrs, id, "node.labelPosition",
 				LabelPosition.class);
 		System.out.println("lab pos " + o.toString());
 		LabelPosition nlp = new LabelPosition(Label.NORTHEAST, Label.WEST,
@@ -143,34 +110,34 @@ public class BypassHelperTest extends TestCase {
 		System.out.println("new lab pos " + nlp.toString());
 		assertTrue("label position equals", nlp.equals((LabelPosition) o));
 
-		o = BypassHelper.getBypass(nodeAttrs, id, "node.font", Font.class);
+		o = Appearance.getBypass(nodeAttrs, id, "node.font", Font.class);
 		assertTrue("font equals", (new Font("SansSerif", Font.ITALIC, 10))
 				.equals((Font) o));
 
-		o = BypassHelper.getBypass(nodeAttrs, id, "node.lineType",
+		o = Appearance.getBypass(nodeAttrs, id, "node.lineType",
 				LineType.class);
 		assertTrue("linetype equals", LineType.DASHED_2.equals((LineType) o));
 
 		// need new test!
 		
-//		o = BypassHelper.getBypass(nodeAttrs, id, "node.shape", Byte.class);
+//		o = Appearance.getBypass(nodeAttrs, id, "node.shape", Byte.class);
 //		assertEquals("shape equals", (byte) 7, ((Byte) o).byteValue());
 
 		// o =
-		// BypassHelper.getBypass(edgeAttrs,lisa.getIdentifier(),"edge.sourceArrow",Arrow.class);
+		// Appearance.getBypass(edgeAttrs,lisa.getIdentifier(),"edge.sourceArrow",Arrow.class);
 		// assertTrue("arrow equals",Arrow.WHITE_DELTA == (Arrow)o);
 
-		o = BypassHelper.getBypass(edgeAttrs, lisa.getIdentifier(),
+		o = Appearance.getBypass(edgeAttrs, lisa.getIdentifier(),
 				"edge.sourceArrow", Arrow.class);
 		assertTrue("arrow equals", ArrowShape.DELTA == ((Arrow) o).getShape());
 
 	}
 
 	public void testGetColorBypass() {
-		Color c = BypassHelper.getColorBypass(nodeAttrs, id, "node.fillColor");
+		Color c = (Color)Appearance.getBypass(nodeAttrs, id, "node.fillColor", Color.class);
 		assertTrue("color equals", c.equals(new Color(25, 31, 244)));
 
-		c = BypassHelper.getColorBypass(nodeAttrs, id, "node.borderColor");
+		c = (Color)Appearance.getBypass(nodeAttrs, id, "node.borderColor", Color.class);
 		System.out.print("should be null: ");
 		System.out.println(c);
 		assertNull("border color null ", c);

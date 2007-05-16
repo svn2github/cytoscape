@@ -40,8 +40,13 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.icon.LineTypeIcon;
 
 import java.util.Map;
+import java.awt.Stroke;
 
 import javax.swing.Icon;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -77,4 +82,26 @@ public class EdgeLineTypeProp extends AbstractVisualProperty {
 	public Map<Object, Icon> getIconSet() {
 		return LineTypeDef.getIconSet();
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        final Stroke newLine = ((Line)o).getStroke();
+
+        if (!newLine.equals(ev.getStroke()))
+            ev.setStroke(newLine);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_LINETYPE.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new LineParser()).parseLine(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return Line.DEFAULT_LINE; }
+
 }

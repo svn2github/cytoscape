@@ -37,6 +37,12 @@ package cytoscape.visual.properties;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.LineTypeIcon;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
+import giny.view.Label;
+import giny.view.EdgeView;
+import java.util.Properties;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -80,4 +86,26 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 				}
 			};
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        Label nodelabel = ev.getLabel();
+
+        if ( !((Font)o).equals(nodelabel.getFont()) )
+            nodelabel.setFont((Font)o);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_FONT_FACE.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new FontParser()).parseFont(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return new Font("SanSerif", Font.PLAIN, 10); }
+
 }

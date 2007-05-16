@@ -39,10 +39,14 @@ import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.ArrowIcon;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
 
 import java.util.Map;
 
 import javax.swing.Icon;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -79,4 +83,26 @@ public class EdgeSourceArrowShapeProp extends AbstractVisualProperty {
 
 		return icon;
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        final int newSourceEnd = ((Arrow)o).getShape().getGinyArrow();
+
+        if (newSourceEnd != ev.getSourceEdgeEnd())
+            ev.setSourceEdgeEnd(newSourceEnd);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_SRCARROW_SHAPE.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new ArrowParser()).parseArrow(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return Arrow.NONE; }
+
 }

@@ -46,6 +46,7 @@ public class VisualStyleBuilderDialog extends javax.swing.JDialog {
 		mapperSuffix = " for " + modName;
 		VSName = "GML style for " + modName;
 		initComponents();
+		setAlwaysOnTop(true);
 	}
 
 	/**

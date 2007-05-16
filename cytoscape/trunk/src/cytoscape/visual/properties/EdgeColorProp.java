@@ -36,8 +36,14 @@ package cytoscape.visual.properties;
 
 import javax.swing.Icon;
 
-import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
 import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import java.awt.Color;
+
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
@@ -58,4 +64,24 @@ public class EdgeColorProp extends AbstractVisualProperty {
 		icon.setBottomPadding(-7);
 		return icon;
 	}
+
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
+            return;
+
+        if ( !((Color)o).equals(ev.getUnselectedPaint()) )
+            ev.setUnselectedPaint((Color)o);
+    }
+
+    public Object parseProperty(Properties props, String baseKey) {
+        String s = props.getProperty(
+            VisualPropertyType.EDGE_COLOR.getDefaultPropertyKey(baseKey) );
+        if ( s != null )
+            return (new ColorParser()).parseColor(s);
+        else
+            return null;
+    }
+
+    public Object getDefaultAppearanceObject() { return Color.black; }
+
 }
