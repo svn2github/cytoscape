@@ -97,6 +97,7 @@ import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 import ding.view.DGraphView;
+import ding.view.InnerCanvas;
 
 import giny.model.GraphObject;
 
@@ -115,6 +116,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -137,6 +139,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -235,7 +238,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private JPanel bottomPanel;
 	private Map<VisualPropertyType, JDialog> editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
-	private String lastID = null;
 
 	/** Creates new form AttributeOrientedPanel */
 	private VizMapperMainPanel() {
@@ -669,11 +671,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final Dimension panelSize = defaultAppearencePanel.getSize();
 		DGraphView view;
 
-//		final CyNetwork dummyNet = Cytoscape.createNetwork("");
-//		final CyNetworkView dummyView = Cytoscape.createNetworkView(dummyNet);
-//		Cytoscape.getDesktop().setFocus(dummyView.getIdentifier());
-
-		
 		CyNetworkView oldView = vmm.getNetworkView();
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
@@ -700,20 +697,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param size
 	 */
 	private void createDefaultImage(String vsName, DGraphView view, Dimension size) {
-		view.getCanvas().setSize((int) size.getWidth() - 40, (int) size.getHeight() - 40);
+		/*
+		 * Adjust image size
+		 */
+		view.getCanvas().setSize((int) size.getWidth() - 10, (int) size.getHeight() - 10);
 		view.fitContent();
-
+		view.setZoom(view.getZoom() * 0.9);
+		
 		defaultAppearencePanel.setLayout(new BorderLayout());
-
-		Component canvas = view.getComponent();
-		canvas.setLocation(20, 20);
-
+		final InnerCanvas canvas = view.getCanvas();
+		canvas.setLocation(5, 5);
+		
 		final Dimension imageSize = canvas.getSize();
-		final BufferedImage image = new BufferedImage(imageSize.width, imageSize.height,
+		final Image image = new BufferedImage(imageSize.width, imageSize.height,
 		                                              BufferedImage.TYPE_INT_RGB);
-		final Graphics2D gfx = image.createGraphics();
-		canvas.print(gfx);
-
+		
+		final Graphics2D g = (Graphics2D)image.getGraphics();
+		g.setColor((Color)view.getBackgroundPaint());
+		g.fillRect(0, 0, imageSize.width, imageSize.height);
+		canvas.paint( g );
 		defaultImageManager.put(vsName, image);
 	}
 
@@ -1884,8 +1886,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultAppearencePanel.removeAll();
 
 		final JButton defaultImageButton = new JButton();
+		defaultImageButton.setUI(new BlueishButtonUI());
+		
 		defaultImageButton.setIcon(new ImageIcon(defImage));
-		defaultImageButton.setBackground(bgColor);
+		//defaultImageButton.setBackground(bgColor);
 		defaultAppearencePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(new DefaultMouseListener());
 	}
@@ -1984,7 +1988,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (vs != null) {
 				switchVS(vs.getName());
 				vsNameComboBox.setSelectedItem(vs.getName());
-				lastID = (String) e.getNewValue();
 				setDefaultPanel(this.defaultImageManager.get(vs.getName()));
 			}
 
@@ -2717,7 +2720,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				String[] message = {
 				                       "The Mapping for " + type.getName() + " will be removed.",
-				                       "Proceed？"
+				                       "Proceed�ｼ�"
 				                   };
 				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
 				                                          "Remove Mapping",
