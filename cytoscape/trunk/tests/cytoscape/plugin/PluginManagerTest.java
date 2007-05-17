@@ -11,12 +11,8 @@ import junit.framework.TestCase;
  */
 public class PluginManagerTest extends TestCase {
 	private PluginManager mgr;
-
 	private PluginTracker tracker;
-
 	private String testUrl;
-
-	private File tmpDir;
 	private File tmpDownloadDir;
 	private String fileName;
 
@@ -40,14 +36,16 @@ public class PluginManagerTest extends TestCase {
 
 		testUrl = getFileUrl() + "test_plugin.xml";
 		fileName = "test_tracker.xml";
-		tmpDir = new File(System.getProperty("java.io.tmpdir"));
-
-		tmpDownloadDir = new File(tmpDir, "test_cytoscape" + File.separator + cytoscape.CytoscapeVersion.version);
+		//tmpDir = new File(System.getProperty("java.io.tmpdir"));
+		File tmpDir = new File(CytoscapeInit.getConfigDirectory(), "test"); 
 		
-		tracker = new PluginTracker(tmpDir, fileName);
+		tmpDownloadDir = new File(tmpDir, cytoscape.CytoscapeVersion.version);
+		tmpDownloadDir.mkdirs();
+		
+		tracker = new PluginTracker(tmpDownloadDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
 		mgr.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
-		assertTrue((new File(tmpDir, fileName)).exists());
+		assertTrue((new File(tmpDownloadDir, fileName)).exists());
 	}
 
 	/*
@@ -56,10 +54,13 @@ public class PluginManagerTest extends TestCase {
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() {
-		File TrackerFile = new File(tmpDir, fileName);
+		File TrackerFile = new File(tmpDownloadDir, fileName);
 		tracker.delete();
 		assertFalse(TrackerFile.exists());
 		mgr.resetManager();
+		
+		assertTrue(tmpDownloadDir.delete());
+		assertTrue(tmpDownloadDir.getParentFile().delete());
 	}
 	
 	/**
@@ -124,6 +125,7 @@ public class PluginManagerTest extends TestCase {
 	}
 
 	/**
+	 * NOT IMPLEMENTED
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#register(cytoscape.plugin.CytoscapePlugin, java.lang.String)}.
 	 */
@@ -155,8 +157,6 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(Current.size(), 1);
 
 		assertEquals(Current.get(0).getFileList().size(), 1);
-		// shouldn't contain the temp directory path
-		assertFalse(Current.get(0).getFileList().get(0).contains(".cytoscape"));
 
 		for (String f: Current.get(0).getFileList()) {
 			assertTrue( (new File(f)).exists() );
@@ -164,29 +164,26 @@ public class PluginManagerTest extends TestCase {
 
 		mgr.delete(TestObj);
 		mgr.delete();
-//		Downloaded.delete();
-//		assertFalse(Downloaded.exists());
+
+		for (String f: TestObj.getFileList()) {
+			assertFalse( (new File(f)).exists() );
+		}
 	}
 
 	
 	public void testInstallZip() throws Exception {
 		PluginInfo TestObj = getSpecificObj(mgr.inquire(testUrl), "goodZIPPlugin777", "0.45");
 		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
-		//File Downloaded = mgr.download(TestObj, null);
 		TestObj = mgr.download(TestObj, null);
-		//assertTrue(Downloaded.exists());
 		for (String f: TestObj.getFileList()) {
 			assertTrue( (new File(f)).exists() );
 		}
-		
 		assertEquals(mgr.getPlugins(PluginStatus.INSTALL).size(), 1);
 		
-		//TestObj = mgr.install(mgr.getPlugins(PluginStatus.INSTALL).get(0));
 		mgr.install(mgr.getPlugins(PluginStatus.INSTALL).get(0));
 		
 		String ParentDir = (new File(TestObj.getFileList().get(0)).getParent());
 		List<String> TestFileList = TestObj.getFileList();
-		
 		for(String f: TestFileList) {
 			assertTrue( f.startsWith(ParentDir));		
 		}
@@ -285,13 +282,17 @@ public class PluginManagerTest extends TestCase {
 				"goodJarPlugin123", "1.0");
 
 		GoodJar.setUrl(getFileUrl() + GoodJar.getUrl());
-		assertNotNull(mgr.download(GoodJar, null));
+		GoodJar = mgr.download(GoodJar, null);
+		assertNotNull(GoodJar);
 		mgr.install(GoodJar);
 
 		assertEquals(mgr.getPlugins(PluginStatus.CURRENT).size(), 1);
 		List<PluginInfo> Updatable = mgr.findUpdates(mgr.getPlugins(
 				PluginStatus.CURRENT).get(0));
 		assertEquals(Updatable.size(), 1);
+		
+		mgr.delete(GoodJar);
+		mgr.delete();
 	}
 
 	/**
@@ -365,11 +366,6 @@ public class PluginManagerTest extends TestCase {
 
 		mgr.delete(GoodJar);
 		mgr.delete();
-		
-//		assertTrue(Downloaded.delete());
-//		assertFalse(Downloaded.exists());
-//		assertTrue(Downloaded.getParentFile().delete());
-		
 	}
 
 	/**
