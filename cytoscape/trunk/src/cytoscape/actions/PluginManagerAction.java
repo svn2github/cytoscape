@@ -85,11 +85,6 @@ public class PluginManagerAction extends CytoscapeAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*
-		 * This will actually pop up the "currently installed" dialog box which
-		 * will have a button to "install plugins" poping up the
-		 * PluginInstallDialog
-		 */
 		PluginManageDialog dialog = new PluginManageDialog(Cytoscape
 				.getDesktop());
 		PluginManager Mgr = PluginManager.getPluginManager();
@@ -125,12 +120,16 @@ public class PluginManagerAction extends CytoscapeAction {
 
 		if (!PluginManager.usingWebstartManager()) {
 			try {
+				List<PluginInfo> AvailablePlugins = ManagerUtil.getUnique(Current, Mgr.inquire(DefaultUrl));
+				
 				Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil
-						.sortByCategory(Mgr.inquire(DefaultUrl));
+						.sortByCategory(AvailablePlugins);
 
 				for (String Category : DownloadInfo.keySet()) {
+					// get only the unique ones
 					dialog.addCategory(Category, DownloadInfo.get(Category),
 							PluginInstallStatus.AVAILABLE);
+					
 				}
 				dialog.setSiteName(DefaultTitle);
 			} catch (java.io.IOException ioe) {
