@@ -44,7 +44,8 @@ import java.util.Map;
  *
  */
 public class ManagerUtil {
-	// get the list sorted the way we want to display it
+	// get the list sorted the way we want to display it, I'd like to do these in one method somehow
+	// where you just give it the PluginInfo method to sort by.  I'm sure there's a way, I just don't know it yet
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -84,5 +85,43 @@ public class ManagerUtil {
 		return Classes;
 	}
 
+	public static Map<String, List<PluginInfo>> sortByID(List<PluginInfo> Plugins) {
+		Map<String, List<PluginInfo>> Ids = new java.util.HashMap<String, List<PluginInfo>>();
 
+		for (PluginInfo Current : Plugins) {
+			if (Ids.containsKey(Current.getID())) {
+				Ids.get(Current.getID()).add(Current);
+			} else {
+				List<PluginInfo> List = new java.util.ArrayList<PluginInfo>();
+				List.add(Current);
+				Ids.put(Current.getID(), List);
+			}
+		}
+		return Ids;
+	}
+	
+	/**
+	 * Returns a list of available plugins minus any currently installed
+	 * @param Current
+	 * @param Available
+	 */
+	public static List<PluginInfo> getUnique(List<PluginInfo> Current, List<PluginInfo> Available) {
+		List<PluginInfo> UniqueAvail = new java.util.ArrayList<PluginInfo>(Available);
+
+		if (Current == null) {
+			return Available;
+		}
+		
+		for (PluginInfo infoAvail: Available) {
+			for (PluginInfo infoCur: Current) {
+				if ( infoCur.getID().equals(infoAvail.getID()) && 
+					infoCur.getProjectUrl().equals(infoAvail.getProjectUrl())) {
+					UniqueAvail.remove(infoAvail);
+				}
+					
+			}
+		}
+		return UniqueAvail;
+	}
+	
 }
