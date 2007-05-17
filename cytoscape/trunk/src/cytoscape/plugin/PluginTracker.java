@@ -154,6 +154,7 @@ public class PluginTracker {
 			if (!obj.getCategory().equals(PluginInfo.Category.NONE.getCategoryText())) {
 				Plugin.getChild(categoryTag).setText(obj.getCategory());
 			}
+			
 			Plugin.getChild(installLocTag).setText(obj.getInstallLocation());
 			Plugin.getChild(descTag).setText(obj.getDescription());
 			Plugin.getChild(pluginVersTag).setText(obj.getPluginVersion());

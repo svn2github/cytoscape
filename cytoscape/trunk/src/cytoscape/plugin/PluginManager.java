@@ -198,15 +198,10 @@ public class PluginManager {
 					pluginTracker = new PluginTracker(File.createTempFile(
 							"track_webstart_plugins_", ".xml"));
 				} else {
-//					pluginTracker = new PluginTracker(CytoscapeInit
-//							.getConfigDirectory(), "track_plugins.xml");
 						pluginTracker = new PluginTracker(CytoscapeInit.getConfigVersionDirectory(), "track_plugins.xml");
 				}
 			}
 			tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
-//			tempDir = new File(CytoscapeInit.getConfigDirectory(),
-//					CytoscapeVersion.version + File.separator + "plugins"
-//							+ File.separator);
 
 			if (!tempDir.exists()) {
 				tempDir.mkdirs();
@@ -246,8 +241,6 @@ public class PluginManager {
 		return Plugins;
 	}
 
-	// TODO need to remove any plugin from the list that doesn't register this
-	// round...
 	/**
 	 * Registers a currently installed plugin with tracking object. Only useful
 	 * if the plugin was not installed via the install process.
@@ -262,6 +255,7 @@ public class PluginManager {
 				InfoObj = new PluginInfo();
 				InfoObj.setName(Plugin.getClass().getName());
 				InfoObj.setPluginClassName(Plugin.getClass().getName());
+				InfoObj.setInstallLocation(JarFileName);
 				
 				if (JarFileName != null)
 					InfoObj.addFileName(JarFileName);
@@ -284,7 +278,7 @@ public class PluginManager {
 	   			if (InfoObj.getFileType() == null) {
 	   				InfoObj.setFiletype(PluginInfo.FileType.JAR);
 	   			}
-	 				pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
+	   			pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
 			}
 		}
 	}
@@ -383,17 +377,21 @@ public class PluginManager {
 		return Deleted;
 	}
 
-	private boolean recursiveDeleteFiles(File directory) {
+	private boolean recursiveDeleteFiles(File file) {
 		boolean delete = false;
-		for (File f : directory.listFiles()) {
-			if (f.isFile()) {
-				delete = f.delete();
+		if (file.isFile()) {
+			delete = file.delete();
+		} else if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				if (f.isFile()) {
+					delete = f.delete();
+				}
+				if (f.isDirectory()) {
+					delete = recursiveDeleteFiles(f);
+				}
 			}
-			if (f.isDirectory()) {
-				delete = recursiveDeleteFiles(f);
-			}
+			delete = file.delete(); // delete the directory now that it's empty
 		}
-		delete = directory.delete();
 		return delete;
 	}
 
@@ -570,6 +568,12 @@ public class PluginManager {
 	 * moved from CytoscapeInit
 	 */
 
+	/**
+	 * Load a single plugin based on the PluginInfo object given
+	 * @param PluginInfo
+	 * 			The plugin to load
+	 * @throws MalformedURLException
+	 */
 	public void loadPlugin(PluginInfo p) throws MalformedURLException,
 			IOException, ClassNotFoundException {
 		Set<URL> ToLoad = new HashSet<URL>();
@@ -579,7 +583,8 @@ public class PluginManager {
 				ToLoad.add(jarURL(FileName));
 			}
 		}
-		loadURLPlugins(ToLoad);
+		// don't need to register if we have the info object
+		loadURLPlugins(ToLoad, false);
 	}
 
 	/**
@@ -651,17 +656,18 @@ public class PluginManager {
 			}
 		}
 		// now load the plugins in the appropriate manner
-		loadURLPlugins(pluginURLs);
+		loadURLPlugins(pluginURLs, true);
 		loadResourcePlugins(resourcePlugins);
 		cleanCurrentList();
 	}
 
+	
 	/**
 	 * Load all plugins by using the given URLs loading them all on one
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
 	 */
-	private void loadURLPlugins(Set<URL> pluginUrls) throws IOException {
+	private void loadURLPlugins(Set<URL> pluginUrls, boolean register) throws IOException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
@@ -692,7 +698,7 @@ public class PluginManager {
 
 				if (pc != null) {
 					System.out.println("Loading from manifest");
-					loadPlugin(pc, jar.getName());
+					loadPlugin(pc, jar.getName(), register);
 					continue;
 				}
 			}
@@ -728,7 +734,7 @@ public class PluginManager {
 					}
 
 					totalPlugins++;
-					loadPlugin(pc, jar.getName());
+					loadPlugin(pc, jar.getName(), register);
 					break;
 				}
 			}
@@ -753,7 +759,7 @@ public class PluginManager {
 			// try to get the class
 			Class rclass = null;
 			rclass = Class.forName(resource);
-			loadPlugin(rclass, null);
+			loadPlugin(rclass, null, false);
 		}
 		System.out.println("");
 	}
@@ -761,13 +767,15 @@ public class PluginManager {
 	/*
 	 * Actually load the plugin
 	 */
-	private void loadPlugin(Class plugin, String PluginJarFile) {
+	private void loadPlugin(Class plugin, String PluginJarFile, boolean register) {
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 				&& !loadedPlugins.contains(plugin.getName())) {
 			try {
 				Object obj = CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
 				loadedPlugins.add(plugin.getName());
-				register((CytoscapePlugin) obj, PluginJarFile);
+				if (register) {
+					register((CytoscapePlugin) obj, PluginJarFile);
+				}
 			} catch (InstantiationException inse) {
 				inse.printStackTrace();
 			} catch (IllegalAccessException ille) {
