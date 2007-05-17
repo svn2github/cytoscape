@@ -1918,6 +1918,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				vmm.setNetworkView(oldView);
 				vmm.setVisualStyle(targetName);
 				Cytoscape.getDesktop().setFocus(focus);
+				Cytoscape.getDesktop().repaint();
 
 				//				System.out.println("=========After============= " + targetName + ", CurVS = " + vmm.getVisualStyle().getName());
 				//				views = Cytoscape.getNetworkViewMap();
