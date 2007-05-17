@@ -15,6 +15,7 @@ import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginTracker.PluginStatus;
 
 import cytoscape.util.BookmarksUtil;
 
@@ -101,8 +102,10 @@ public class PluginUrlDialog extends JDialog {
 		
 		try {
 			PluginManager Mgr = PluginManager.getPluginManager();
-			Map<String, List<PluginInfo>> NewPlugins = ManagerUtil.sortByCategory(Mgr.inquire(SelectedSite
-			                                                                                  .getHref()));
+			List<PluginInfo> UniqueAvailable = ManagerUtil.getUnique(Mgr.getPlugins(PluginStatus.CURRENT),Mgr.inquire(SelectedSite.getHref()));
+
+			Map<String, List<PluginInfo>> NewPlugins = ManagerUtil.sortByCategory(UniqueAvailable);
+
 			parentDialog.setSiteName(SelectedSite.getName());
 			if (NewPlugins.size() <= 0) {
 				parentDialog.setMessage("No plugins compatible with " + CytoscapeVersion.version + " available from this site.");
@@ -110,9 +113,12 @@ public class PluginUrlDialog extends JDialog {
 				parentDialog.setMessage("");
 			}
 
+
 			for (String Category : NewPlugins.keySet()) {
+				
 				parentDialog.addCategory(Category, NewPlugins.get(Category),
-				                         PluginManageDialog.PluginInstallStatus.AVAILABLE);
+                        PluginManageDialog.PluginInstallStatus.AVAILABLE);
+				
 			}
 		} catch (java.io.IOException ioe) {
 			parentDialog.setMessage(PluginManageDialog.CommonError.NOXML + SelectedSite.getHref());
