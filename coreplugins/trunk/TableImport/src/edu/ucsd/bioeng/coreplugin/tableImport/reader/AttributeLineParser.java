@@ -254,13 +254,20 @@ public class AttributeLineParser {
 		}
 
 		/*
-		 * Finally, add aliases
+		 * Finally, add aliases and primary key.
 		 */
 		if (altKey == null) {
 			mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
+			mapping.getAttributes().setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()], primaryKey);
 		} else {
 			mapping.getAlias().add(altKey, new ArrayList<String>(aliasSet));
+			mapping.getAttributes().setAttribute(altKey, mapping.getAttributeNames()[mapping.getKeyIndex()], primaryKey);
 		}
+		
+		/*
+		 * Add primary key as an attribute
+		 */
+		
 	}
 
 	/**
