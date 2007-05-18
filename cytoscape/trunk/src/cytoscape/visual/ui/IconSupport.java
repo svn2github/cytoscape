@@ -63,7 +63,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.Line;
 import cytoscape.visual.LineType;
-import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
 
@@ -363,11 +363,11 @@ public class IconSupport {
         
         h.put(
             "DASHED_3",
-            new Line(LineTypeDef.LONG_DASH, 3.0f));
+            new Line(LineStyle.LONG_DASH, 3.0f));
 
         h.put(
             "LINE_3",
-            new Line(LineTypeDef.SOLID, 3.0f));
+            new Line(LineStyle.SOLID, 3.0f));
 
         return h;
     }
@@ -381,11 +381,11 @@ public class IconSupport {
         final HashMap<Line, String> h = new HashMap<Line, String>();
 
         h.put(
-            new Line(LineTypeDef.LONG_DASH, 3.0f),
+            new Line(LineStyle.LONG_DASH, 3.0f),
             "DASHED_3");
 
         h.put(
-            new Line(LineTypeDef.SOLID, 3.0f),
+            new Line(LineStyle.SOLID, 3.0f),
             "LINE_3");
 
         return h;

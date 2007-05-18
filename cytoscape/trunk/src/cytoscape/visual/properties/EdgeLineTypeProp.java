@@ -34,7 +34,7 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.LineStyle;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.ui.icon.LineTypeIcon;
@@ -80,7 +80,7 @@ public class EdgeLineTypeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Map<Object, Icon> getIconSet() {
-		return LineTypeDef.getIconSet();
+		return LineStyle.getIconSet();
 	}
 
     public void applyToEdgeView(EdgeView ev, Object o) {

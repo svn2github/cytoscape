@@ -65,7 +65,7 @@ import cytoscape.view.NetworkPanel;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.LineTypeDef;
+import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
@@ -604,7 +604,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private CyComboBoxPropertyEditor mappingTypeEditor = new CyComboBoxPropertyEditor();
 	private static final Map<Object, Icon> nodeShapeIcons = NodeShape.getIconSet();
 	private static final Map<Object, Icon> arrowShapeIcons = ArrowShape.getIconSet();
-	private static final Map<Object, Icon> lineTypeIcons = LineTypeDef.getIconSet();
+	private static final Map<Object, Icon> lineTypeIcons = LineStyle.getIconSet();
 	private PropertyRendererRegistry pr = new PropertyRendererRegistry();
 	private PropertyEditorRegistry regr = new PropertyEditorRegistry();
 

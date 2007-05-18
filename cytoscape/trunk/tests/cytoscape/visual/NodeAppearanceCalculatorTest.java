@@ -261,7 +261,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 				+ Color.BLACK, nb.getBorderColor().equals(Color.BLACK));
 		//assertEquals("b lineType  ", LineType.LINE_5, nb.getBorderLineType());
 		assertEquals("b line width  ", 5.0f, nb.getBorderLine().getWidth());
-		assertEquals("b line type  ", LineTypeDef.SOLID, nb.getBorderLine().getType());
+		assertEquals("b line type  ", LineStyle.SOLID, nb.getBorderLine().getType());
 		
 		assertEquals("b shape  ", ShapeNodeRealizer.RECT, nb.getShape());
 		assertEquals("b width  ", 70.0, nb.getWidth());
@@ -286,7 +286,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 				nc.getFillColor().equals(cc));
 		assertTrue("c border color  " + nc.getBorderColor() + " expect "
 				+ Color.BLACK, nc.getBorderColor().equals(Color.BLACK));
-		assertEquals("c line Type  ", LineTypeDef.LONG_DASH, nc.getBorderLine().getType());
+		assertEquals("c line Type  ", LineStyle.LONG_DASH, nc.getBorderLine().getType());
 		assertEquals("c line width  ", 1.0f, nc.getBorderLine().getWidth());
 		
 		assertEquals("c shape  ", ShapeNodeRealizer.RECT, nc.getShape());
@@ -412,7 +412,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		/*
 		 * Need to figure out why this fails.
 		 */
-		//assertEquals(secondApp.getBorderLine().getType(), LineTypeDef.DASH);
+		//assertEquals(secondApp.getBorderLine().getType(), LineStyle.DASH);
 		//assertEquals(secondApp.getBorderLine().getWidth(), 3.0f);
 		
 		assertTrue(secondApp.getShape() == shape);

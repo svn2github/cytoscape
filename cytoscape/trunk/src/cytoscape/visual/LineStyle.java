@@ -52,7 +52,7 @@ import cytoscape.visual.ui.icon.*;
  * @author kono
  *
  */
-public enum LineTypeDef {
+public enum LineStyle {
 	SOLID(null),
 	LONG_DASH("8.0f,3.0f");
 
@@ -61,7 +61,7 @@ public enum LineTypeDef {
 
 	private float[] strokeDef;
 
-	private LineTypeDef(String def) {
+	private LineStyle(String def) {
 		if (def == null)
 			strokeDef = null;
 		else {
@@ -71,6 +71,11 @@ public enum LineTypeDef {
 			for (int i = 0; i < strokeDef.length; i++)
 				strokeDef[i] = Float.parseFloat(parts[i]);
 		}
+	}
+
+	// TODO!!!
+	public static LineStyle parse(String val) {
+		return SOLID; 
 	}
 
 	/**
@@ -92,7 +97,7 @@ public enum LineTypeDef {
     public static Map<Object,Icon> getIconSet() {
         Map<Object,Icon> icons = new HashMap<Object,Icon>();
 
-        for (LineTypeDef def : values()) {
+        for (LineStyle def : values()) {
             LineTypeIcon icon = new LineTypeIcon((BasicStroke) def.getStroke(5.0f), 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE, 

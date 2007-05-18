@@ -34,83 +34,59 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import giny.view.NodeView;
-import java.util.Properties;
 
-import java.util.Map;
+import cytoscape.visual.*;
+
+import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.*;
+import cytoscape.visual.parsers.*;
 
 import javax.swing.Icon;
+import giny.view.EdgeView;
+import java.util.Properties;
 
 
 /**
  *
  */
-public class NodeLineTypeProp extends AbstractVisualProperty {
+public class EdgeLineStyleProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualPropertyType getType() {
-		return VisualPropertyType.NODE_LINETYPE;
+		return VisualPropertyType.EDGE_LINE_STYLE;
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Map<Object, Icon> getIconSet() {
-		return LineStyle.getIconSet();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setStroke(new BasicStroke(5.0f));
-					g2d.drawLine(c.getX() + 10, (int) (shape.getBounds().getCenterY() + 5),
-					             (int) shape.getBounds2D().getMaxX() * 2,
-					             (int) (shape.getBounds().getCenterY()) + 5);
-				}
-			};
+		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setColor(new Color(10, 10, 10, 20));
+		icon.setText(getDefault().toString());
+		icon.setBottomPadding(-7);
+		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
+    public void applyToEdgeView(EdgeView ev, Object o) {
+        if ( o == null || ev == null )
             return;
 
-        final Stroke newBorderLine = ((Line)o).getStroke();
-
-        if (!newBorderLine.equals(nv.getBorder())) 
-            nv.setBorder(newBorderLine);
+        // TODO
     }
 
     public Object parseProperty(Properties props, String baseKey) {
         String s = props.getProperty(
-            VisualPropertyType.NODE_LINETYPE.getDefaultPropertyKey(baseKey) );
+            VisualPropertyType.EDGE_LINE_STYLE.getDefaultPropertyKey(baseKey) );
         if ( s != null )
-            return (new LineParser()).parseLine(s);
+            return (new LineStyleParser()).parseLineStyle(s); 
         else
             return null;
     }
 
-    public Object getDefaultAppearanceObject() { return Line.DEFAULT_LINE; }
-
+    public Object getDefaultAppearanceObject() { return LineStyle.SOLID; }
 }

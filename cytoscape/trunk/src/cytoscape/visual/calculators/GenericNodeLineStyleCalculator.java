@@ -1,32 +1,29 @@
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-import cytoscape.visual.Line;
-import cytoscape.visual.NodeAppearance;
-import cytoscape.visual.parsers.FloatParser;
-import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;
-
-import cytoscape.visual.mappings.ObjectMapping;
-
 import giny.model.Node;
 
 import java.util.Properties;
 
 
-/**
- * DOCUMENT ME!
- *
- * @author $author$
-  */
-public class GenericNodeLineWidthCalculator extends NodeCalculator {
+import cytoscape.CyNetwork;
+import cytoscape.visual.Line;
+import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.LineStyle;
+import static cytoscape.visual.VisualPropertyType.NODE_LINE_STYLE;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.parsers.LineStyleParser;
+
+public class GenericNodeLineStyleCalculator extends NodeCalculator {
+
+	
     /**
      * Creates a new GenericNodeLineWidthCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    public GenericNodeLineWidthCalculator(String name, ObjectMapping m) {
-        super(name, m, Float.class, NODE_LINE_WIDTH);
+    public GenericNodeLineStyleCalculator(String name, ObjectMapping m) {
+        super(name, m, LineStyle.class, NODE_LINE_STYLE);
     }
 
     /**
@@ -36,11 +33,11 @@ public class GenericNodeLineWidthCalculator extends NodeCalculator {
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      */
-    public GenericNodeLineWidthCalculator(String name, Properties props,
+    public GenericNodeLineStyleCalculator(String name, Properties props,
         String baseKey) {
-        super(name, props, baseKey, new FloatParser(), Float.class, NODE_LINE_WIDTH);
+        super(name, props, baseKey, new LineStyleParser(), LineStyle.SOLID, NODE_LINE_STYLE);
     }
-    
+	
     /**
      * DOCUMENT ME!
      *
@@ -49,7 +46,7 @@ public class GenericNodeLineWidthCalculator extends NodeCalculator {
      * @param network DOCUMENT ME!
      */
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final Float line = (Float) getRangeValue(node);
+        final LineStyle line = (LineStyle) getRangeValue(node);
 
         // default has already been set - no need to do anything
         if (line == null)

@@ -70,23 +70,9 @@ public class GenericEdgeLineWidthCalculator extends EdgeCalculator {
             return;
 
         if (lineWidth instanceof Double)
-            appr.setLineWidth(((Double) lineWidth).floatValue());
+            appr.set(type,((Double) lineWidth).floatValue());
         else
-            appr.setLineWidth((Float) lineWidth);
+            appr.set(type,(Float) lineWidth);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Line calculateEdgeLineWidth(Edge e, CyNetwork n) {
-        final EdgeAppearance ea = new EdgeAppearance();
-        apply(ea, e, n);
-
-        return ea.getLine();
-    }
 }

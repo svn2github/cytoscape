@@ -71,6 +71,8 @@ public enum VisualPropertyType {
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", GenericNodeBorderColorCalculator.class,
 	                  Color.class, new NodeBorderColorProp()), 
+	/** @deprecated Use NODE_LINE_WIDTH and NODE_LINE_STYLE instead. Gone 5/2008. */
+	@Deprecated
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
 	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class, Line.class,
 	              new NodeLineTypeProp()), 
@@ -99,6 +101,8 @@ public enum VisualPropertyType {
 	                    LabelPosition.class, new NodeLabelPositionProp()), 
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           GenericEdgeColorCalculator.class, Color.class, new EdgeColorProp()), 
+	/** @deprecated Use EDGE_LINE_WIDTH and EDGE_LINE_STYLE instead. Gone 5/2008. */
+	@Deprecated
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
 	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, Line.class,
 	              new EdgeLineTypeProp()), 
@@ -129,6 +133,13 @@ public enum VisualPropertyType {
 	                "defaultEdgeLineWidth", GenericEdgeLineWidthCalculator.class, Number.class,
 	                new EdgeLineWidthProp()), 
 
+	NODE_LINE_STYLE("Node Line Style", "nodeLineStyleCalculator", "node.lineStyle",
+	                "defaultNodeLineStyle", GenericNodeLineStyleCalculator.class, LineStyle.class,
+	                new NodeLineStyleProp()), 
+	EDGE_LINE_STYLE("Edge Line Style", "edgeLineStyleCalculator", "edge.lineStyle",
+	                "defaultEdgeLineStyle", GenericEdgeLineStyleCalculator.class, LineStyle.class,
+	                new EdgeLineStyleProp()), 
+
 	// New from 2.5: arrows have its own color, shape, and size.
 	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape", "edgeSourceArrowShapeCalculator",
 	                    "edge.sourceArrowShape", "defaultEdgeSourceArrowShape",
@@ -149,7 +160,9 @@ public enum VisualPropertyType {
 
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
-	                    "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp());
+	                    "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp()),
+
+	;
 	/*
 	 * String returned by toString() method.
 	 */

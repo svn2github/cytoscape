@@ -14,10 +14,10 @@ public class Line {
     /**
      * DOCUMENT ME!
      */
-    public static final Line DEFAULT_LINE = new Line(LineTypeDef.SOLID, 1.0f);
+    public static final Line DEFAULT_LINE = new Line(LineStyle.SOLID, 1.0f);
 
     // Define line type (stroke).
-    private LineTypeDef type;
+    private LineStyle type;
 
     // Width of this line.
     private Float width;
@@ -28,7 +28,7 @@ public class Line {
      * @param type DOCUMENT ME!
      * @param width DOCUMENT ME!
      */
-    public Line(LineTypeDef type, Float width) {
+    public Line(LineStyle type, Float width) {
         this.type = type;
         this.width = width;
     }
@@ -47,7 +47,7 @@ public class Line {
      *
      * @param type DOCUMENT ME!
      */
-    public void setType(final LineTypeDef type) {
+    public void setType(final LineStyle type) {
         this.type = type;
     }
 
@@ -65,7 +65,7 @@ public class Line {
      *
      * @return DOCUMENT ME!
      */
-    public LineTypeDef getType() {
+    public LineStyle getType() {
         return type;
     }
 
@@ -99,61 +99,61 @@ public class Line {
         lttext = lttext.replaceAll("_", "");
 
         if (lttext.equalsIgnoreCase("dashed1"))
-            return new Line(LineTypeDef.LONG_DASH, 1.0f);
+            return new Line(LineStyle.LONG_DASH, 1.0f);
         else if (lttext.equalsIgnoreCase("dashed2"))
-            return new Line(LineTypeDef.LONG_DASH, 2.0f);
+            return new Line(LineStyle.LONG_DASH, 2.0f);
         else if (lttext.equalsIgnoreCase("dashed3"))
-            return new Line(LineTypeDef.LONG_DASH, 3.0f);
+            return new Line(LineStyle.LONG_DASH, 3.0f);
         else if (lttext.equalsIgnoreCase("dashed4"))
-            return new Line(LineTypeDef.LONG_DASH, 4.0f);
+            return new Line(LineStyle.LONG_DASH, 4.0f);
         else if (lttext.equalsIgnoreCase("dashed5"))
-            return new Line(LineTypeDef.LONG_DASH, 5.0f);
+            return new Line(LineStyle.LONG_DASH, 5.0f);
         else if (lttext.equalsIgnoreCase("line1"))
             return Line.DEFAULT_LINE;
         else if (lttext.equalsIgnoreCase("line2"))
-            return new Line(LineTypeDef.SOLID, 2.0f);
+            return new Line(LineStyle.SOLID, 2.0f);
         else if (lttext.equalsIgnoreCase("line3"))
-            return new Line(LineTypeDef.SOLID, 3.0f);
+            return new Line(LineStyle.SOLID, 3.0f);
         else if (lttext.equalsIgnoreCase("line4"))
-            return new Line(LineTypeDef.SOLID, 4.0f);
+            return new Line(LineStyle.SOLID, 4.0f);
         else if (lttext.equalsIgnoreCase("line5"))
-            return new Line(LineTypeDef.SOLID, 5.0f);
+            return new Line(LineStyle.SOLID, 5.0f);
         else if (lttext.equalsIgnoreCase("line6"))
-            return new Line(LineTypeDef.SOLID, 6.0f);
+            return new Line(LineStyle.SOLID, 6.0f);
         else if (lttext.equalsIgnoreCase("line7"))
-            return new Line(LineTypeDef.SOLID, 7.0f);
-        else if (lttext.equalsIgnoreCase(LineTypeDef.LONG_DASH.name()))
-            return new Line(LineTypeDef.LONG_DASH, 1.0f);
-        else if (lttext.equalsIgnoreCase(LineTypeDef.SOLID.name()))
-            return new Line(LineTypeDef.SOLID, 1.0f);
+            return new Line(LineStyle.SOLID, 7.0f);
+        else if (lttext.equalsIgnoreCase(LineStyle.LONG_DASH.name()))
+            return new Line(LineStyle.LONG_DASH, 1.0f);
+        else if (lttext.equalsIgnoreCase(LineStyle.SOLID.name()))
+            return new Line(LineStyle.SOLID, 1.0f);
         else
             return Line.DEFAULT_LINE;
     }
 
 	public LineType getLineType() {
-		if ( type == LineTypeDef.SOLID && width == 1.0f )
+		if ( type == LineStyle.SOLID && width == 1.0f )
 			return LineType.LINE_1;
-		else if ( type == LineTypeDef.SOLID && width == 2.0f )
+		else if ( type == LineStyle.SOLID && width == 2.0f )
 			return LineType.LINE_2;
-		else if ( type == LineTypeDef.SOLID && width == 3.0f )
+		else if ( type == LineStyle.SOLID && width == 3.0f )
 			return LineType.LINE_3;
-		else if ( type == LineTypeDef.SOLID && width == 4.0f )
+		else if ( type == LineStyle.SOLID && width == 4.0f )
 			return LineType.LINE_4;
-		else if ( type == LineTypeDef.SOLID && width == 5.0f )
+		else if ( type == LineStyle.SOLID && width == 5.0f )
 			return LineType.LINE_5;
-		else if ( type == LineTypeDef.SOLID && width == 6.0f )
+		else if ( type == LineStyle.SOLID && width == 6.0f )
 			return LineType.LINE_6;
-		else if ( type == LineTypeDef.SOLID && width == 7.0f )
+		else if ( type == LineStyle.SOLID && width == 7.0f )
 			return LineType.LINE_7;
-		else if ( type == LineTypeDef.LONG_DASH && width == 1.0f )
+		else if ( type == LineStyle.LONG_DASH && width == 1.0f )
 			return LineType.DASHED_1;
-		else if ( type == LineTypeDef.LONG_DASH && width == 2.0f )
+		else if ( type == LineStyle.LONG_DASH && width == 2.0f )
 			return LineType.DASHED_2;
-		else if ( type == LineTypeDef.LONG_DASH && width == 3.0f )
+		else if ( type == LineStyle.LONG_DASH && width == 3.0f )
 			return LineType.DASHED_3;
-		else if ( type == LineTypeDef.LONG_DASH && width == 4.0f )
+		else if ( type == LineStyle.LONG_DASH && width == 4.0f )
 			return LineType.DASHED_4;
-		else if ( type == LineTypeDef.LONG_DASH && width == 5.0f )
+		else if ( type == LineStyle.LONG_DASH && width == 5.0f )
 			return LineType.DASHED_5;
 		else
 			return LineType.LINE_1;

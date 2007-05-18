@@ -52,6 +52,7 @@ import cytoscape.visual.NodeAppearance;
 import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
 
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.parsers.LineParser;
 
 import giny.model.Node;
 
@@ -64,7 +65,7 @@ import java.util.Properties;
  *
  * @author $author$
   */
-public class GenericNodeLineTypeCalculator extends AbstractNodeLineCalculator
+public class GenericNodeLineTypeCalculator extends NodeCalculator
     implements NodeLineTypeCalculator {
     /**
      * Creates a new GenericNodeLineTypeCalculator object.
@@ -85,9 +86,26 @@ public class GenericNodeLineTypeCalculator extends AbstractNodeLineCalculator
      */
     public GenericNodeLineTypeCalculator(String name, Properties props,
         String baseKey) {
-        super(name, props, baseKey, NODE_LINETYPE);
+        super(name, props, baseKey, new LineParser(), Line.DEFAULT_LINE, NODE_LINETYPE);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param appr DOCUMENT ME!
+     * @param node DOCUMENT ME!
+     * @param network DOCUMENT ME!
+     */
+    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
+        final Line line = (Line) getRangeValue(node);
+
+        // default has already been set - no need to do anything
+        if (line == null)
+            return;
+
+        appr.setBorderLine(line);
+    }
+    
     /**
      * DOCUMENT ME!
      *
