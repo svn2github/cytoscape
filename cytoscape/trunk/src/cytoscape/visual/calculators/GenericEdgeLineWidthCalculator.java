@@ -3,7 +3,6 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.EdgeAppearance;
-import cytoscape.visual.Line;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -51,8 +50,7 @@ public class GenericEdgeLineWidthCalculator extends EdgeCalculator {
      */
     public GenericEdgeLineWidthCalculator(String name, Properties props,
         String baseKey) {
-        super(name, props, baseKey, new FloatParser(), new Float(0),
-            EDGE_LINE_WIDTH);
+        super(name, props, baseKey, new FloatParser(), new Float(0), EDGE_LINE_WIDTH);
     }
 
     /**

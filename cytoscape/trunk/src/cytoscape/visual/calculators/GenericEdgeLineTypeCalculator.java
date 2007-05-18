@@ -45,9 +45,8 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.EdgeAppearance;
-import cytoscape.visual.Line;
 import cytoscape.visual.LineType;
-import cytoscape.visual.parsers.LineParser;
+import cytoscape.visual.parsers.LineTypeParser;
 
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
@@ -74,7 +73,7 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
      * @param m DOCUMENT ME!
      */
     public GenericEdgeLineTypeCalculator(String name, ObjectMapping m) {
-        super(name, m, Line.class, EDGE_LINETYPE);
+        super(name, m, LineType.class, EDGE_LINETYPE);
     }
 
     /**
@@ -86,7 +85,7 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
      */
     public GenericEdgeLineTypeCalculator(String name, Properties props,
         String baseKey) {
-        super(name, props, baseKey, new LineParser(), Line.DEFAULT_LINE, EDGE_LINETYPE);
+        super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1, EDGE_LINETYPE);
     }
 
     /**
@@ -97,13 +96,13 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
      * @param network DOCUMENT ME!
      */
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final Line line = (Line) getRangeValue(edge);
+        final LineType line = (LineType) getRangeValue(edge);
 
         // default has already been set - no need to do anything
         if (line == null)
             return;
 
-        appr.setLine(line);
+        appr.setLineType(line);
     }
 
 

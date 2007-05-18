@@ -66,7 +66,6 @@ import cytoscape.visual.parsers.ArrowParser;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.parsers.FontParser;
-import cytoscape.visual.parsers.LineParser;
 import cytoscape.visual.parsers.ObjectToString;
 
 import giny.model.Edge;
@@ -117,15 +116,7 @@ public class EdgeAppearance extends Appearance {
 	 *
 	 */
 	public LineType getLineType() {
-		return ((Line)(get(EDGE_LINETYPE))).getLineType();
-	}
-
-	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
-	 */
-	public Line getLine() {
-		return (Line)(get(EDGE_LINETYPE));
+		return (LineType)(get(EDGE_LINETYPE));
 	}
 
 	/**
@@ -143,15 +134,6 @@ public class EdgeAppearance extends Appearance {
 	public void setLineType(LineType lt) {
 		if (lt != null)
 			set(EDGE_LINETYPE,lt);
-	}
-
-	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
-	 */
-	public void setLine(Line newLine) {
-		if (newLine != null)
-			set(EDGE_LINETYPE,newLine);
 	}
 
 	/**

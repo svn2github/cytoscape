@@ -41,7 +41,7 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.Line;
+import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
 
@@ -91,7 +91,7 @@ public enum EditorDisplayer {
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, Arrow.class), 
 	DISCRETE_LINE_TYPE(ValueSelectDialog.class, "showDialog",
 	                   new Class[] { VisualPropertyType.class, JDialog.class },
-	                   new Object[] { VisualPropertyType.EDGE_LINETYPE, null }, Line.class), 
+	                   new Object[] { VisualPropertyType.EDGE_LINETYPE, null }, LineType.class), 
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 

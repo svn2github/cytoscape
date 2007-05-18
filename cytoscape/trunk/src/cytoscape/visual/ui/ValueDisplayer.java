@@ -40,7 +40,7 @@ import cytoscape.util.CyColorChooser;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.Line;
+import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
 
 import java.awt.Color;
@@ -606,7 +606,7 @@ public class ValueDisplayer extends JButton {
         String title, Object sampleObj) {
         if (sampleObj instanceof Color)
             return getDisplayForColor(parent, title, null);
-        else if (sampleObj instanceof Line)
+        else if (sampleObj instanceof LineType)
             return getDisplayForIcons(parent, title, null, LINETYPE);
         else if (sampleObj instanceof Byte || sampleObj instanceof NodeShape)
             return getDisplayForIcons(parent, title, null, NODESHAPE);
@@ -654,7 +654,7 @@ public class ValueDisplayer extends JButton {
         throws ClassCastException {
         if (o instanceof Color)
             return getDisplayForColor(parent, title, (Color) o);
-        else if (o instanceof Line)
+        else if (o instanceof LineType)
             return getDisplayForIcons(parent, title, o, LINETYPE);
         else if (o instanceof Byte || o instanceof NodeShape)
             return getDisplayForIcons(parent, title, o, NODESHAPE);

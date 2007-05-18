@@ -61,7 +61,6 @@ import javax.swing.ImageIcon;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.Line;
 import cytoscape.visual.LineType;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
@@ -359,15 +358,15 @@ public class IconSupport {
      */
     public static HashMap getStringToLineTypeHashMap() {
     	
-        final HashMap<String, Line> h = new HashMap<String, Line>();
+        final HashMap<String, LineType> h = new HashMap<String, LineType>();
         
         h.put(
             "DASHED_3",
-            new Line(LineStyle.LONG_DASH, 3.0f));
+            new LineType(LineStyle.LONG_DASH, 3.0f));
 
         h.put(
             "LINE_3",
-            new Line(LineStyle.SOLID, 3.0f));
+            new LineType(LineStyle.SOLID, 3.0f));
 
         return h;
     }
@@ -378,15 +377,13 @@ public class IconSupport {
      * @return  DOCUMENT ME!
      */
     public static HashMap getLineTypeToStringHashMap() {
-        final HashMap<Line, String> h = new HashMap<Line, String>();
+        final HashMap<LineType, String> h = new HashMap<LineType, String>();
 
         h.put(
-            new Line(LineStyle.LONG_DASH, 3.0f),
-            "DASHED_3");
+            new LineType(LineStyle.LONG_DASH, 3.0f), "DASHED_3");
 
         h.put(
-            new Line(LineStyle.SOLID, 3.0f),
-            "LINE_3");
+            new LineType(LineStyle.SOLID, 3.0f), "LINE_3");
 
         return h;
     }
@@ -400,13 +397,9 @@ public class IconSupport {
     	 // Array of icons for the list
         final ImageIcon[] lineTypeIcons = new ImageIcon[2];
 
-        lineTypeIcons[0] = new ImageIcon(
-                locateImage("images/line_3.jpg"),
-                "LINE_3");
+        lineTypeIcons[0] = new ImageIcon( locateImage("images/line_3.jpg"), "LINE_3");
 
-        lineTypeIcons[1] = new ImageIcon(
-                locateImage("images/dashed_3.jpg"),
-                "DASHED_3");
+        lineTypeIcons[1] = new ImageIcon( locateImage("images/dashed_3.jpg"), "DASHED_3");
         
         return lineTypeIcons;
     }

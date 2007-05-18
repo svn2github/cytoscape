@@ -96,7 +96,7 @@ public class NodeLineTypeProp extends AbstractVisualProperty {
         if ( o == null || nv == null )
             return;
 
-        final Stroke newBorderLine = ((Line)o).getStroke();
+        final Stroke newBorderLine = ((LineType)o).getStroke();
 
         if (!newBorderLine.equals(nv.getBorder())) 
             nv.setBorder(newBorderLine);
@@ -106,11 +106,11 @@ public class NodeLineTypeProp extends AbstractVisualProperty {
         String s = props.getProperty(
             VisualPropertyType.NODE_LINETYPE.getDefaultPropertyKey(baseKey) );
         if ( s != null )
-            return (new LineParser()).parseLine(s);
+            return (new LineTypeParser()).parseLineType(s);
         else
             return null;
     }
 
-    public Object getDefaultAppearanceObject() { return Line.DEFAULT_LINE; }
+    public Object getDefaultAppearanceObject() { return LineType.LINE_1; }
 
 }

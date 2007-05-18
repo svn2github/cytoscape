@@ -118,6 +118,12 @@ public class LineType
     String name;
     Stroke stroke;
 
+    // Define line type (stroke).
+    private LineStyle type;
+
+    // Width of this line.
+    private Float width;
+
     /**
      * Creates a new LineType object.
      *
@@ -125,31 +131,39 @@ public class LineType
      */
     public LineType(String name) {
         this.name = name;
+		this.type = LineStyle.SOLID;
 
         if (name.equals("LINE_2"))
-            stroke = new BasicStroke(2.0f);
+            width = 2.0f;
         else if (name.equals("LINE_3"))
-            stroke = new BasicStroke(3.0f);
+            width = 3.0f;
         else if (name.equals("LINE_4"))
-            stroke = new BasicStroke(4.0f);
+            width = 4.0f;
         else if (name.equals("LINE_5"))
-            stroke = new BasicStroke(5.0f);
+            width = 5.0f;
         else if (name.equals("LINE_6"))
-            stroke = new BasicStroke(6.0f);
+            width = 6.0f;
         else if (name.equals("LINE_7"))
-            stroke = new BasicStroke(7.0f);
-        else if (name.equals("DASHED_1"))
-            stroke = makeDashedStroke(1.0f);
-        else if (name.equals("DASHED_2"))
-            stroke = makeDashedStroke(2.0f);
-        else if (name.equals("DASHED_3"))
-            stroke = makeDashedStroke(3.0f);
-        else if (name.equals("DASHED_4"))
-            stroke = makeDashedStroke(4.0f);
-        else if (name.equals("DASHED_5"))
-            stroke = makeDashedStroke(5.0f);
-        else
-            stroke = new BasicStroke();
+            width = 7.0f;
+        else if (name.equals("DASHED_1")) {
+            width = 1.0f;
+			type = LineStyle.LONG_DASH;
+        } else if (name.equals("DASHED_2")) {
+            width = 2.0f;
+			type = LineStyle.LONG_DASH;
+        } else if (name.equals("DASHED_3")) {
+            width = 3.0f;
+			type = LineStyle.LONG_DASH;
+        } else if (name.equals("DASHED_4")) {
+            width = 4.0f;
+			type = LineStyle.LONG_DASH;
+        } else if (name.equals("DASHED_5")) {
+            width = 5.0f;
+			type = LineStyle.LONG_DASH;
+        } else
+            width = 1.0f;
+
+		stroke = makeStroke();
     }
 
     /**
@@ -234,10 +248,39 @@ public class LineType
             return false;
     }
 
-    private Stroke makeDashedStroke(float width) {
-        float[] dash = { 5.0f, 3.0f };
-
-        return new BasicStroke(width, BasicStroke.CAP_BUTT,
-            BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f);
+    private Stroke makeStroke() {
+		if ( type == LineStyle.LONG_DASH ) { 
+        	float[] dash = { 5.0f, 3.0f };
+        	return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f);
+		} else {
+			return new BasicStroke(width);
+		}
     }
+
+
+    public LineType(LineStyle type, Float width) {
+        this.type = type;
+        this.width = width;
+		this.name = type.toString();
+		this.stroke = type.getStroke(width);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public float getWidth() {
+        return width;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public LineStyle getType() {
+        return type;
+    }
+
 }

@@ -63,7 +63,6 @@ import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.DoubleParser;
 import cytoscape.visual.parsers.FontParser;
 import cytoscape.visual.parsers.LabelPositionParser;
-import cytoscape.visual.parsers.LineParser;
 import cytoscape.visual.parsers.NodeShapeParser;
 import cytoscape.visual.parsers.ObjectToString;
 
@@ -146,15 +145,7 @@ public class NodeAppearance extends Appearance {
      *
      */
     public LineType getBorderLineType() {
-       	return ((Line)(get(NODE_LINETYPE))).getLineType(); 
-    }
-
-    /**
-     * Use Appearance.get(VisualPropertyType) instead.
-     *
-     */
-    public Line getBorderLine() {
-       	return (Line)(get(NODE_LINETYPE)); 
+       	return (LineType)(get(NODE_LINETYPE));
     }
 
     /**
@@ -163,14 +154,6 @@ public class NodeAppearance extends Appearance {
      */
     public void setBorderLineType(LineType lt) {
 		set(NODE_LINETYPE,lt);
-    }
-
-    /**
-     * Use Appearance.set(VisualPropertyType,Object) instead.
-     *
-     */
-    public void setBorderLine(Line newLine) {
-		set(NODE_LINETYPE,newLine);
     }
 
     /**

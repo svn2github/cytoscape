@@ -36,7 +36,7 @@ package cytoscape.visual.ui.icon;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.Line;
+import cytoscape.visual.LineType;
 import cytoscape.visual.VisualPropertyType;
 
 import java.awt.BasicStroke;
@@ -69,10 +69,10 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * Creates a new LineTypeIcon object.
 	 */
 	public LineTypeIcon() {
-		this((BasicStroke) ((Line) VisualPropertyType.EDGE_LINETYPE.getDefault(Cytoscape.getVisualMappingManager()
+		this((BasicStroke) ((LineType) VisualPropertyType.EDGE_LINETYPE.getDefault(Cytoscape.getVisualMappingManager()
 		                                                                                .getVisualStyle()))
 		     .getStroke(), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((Line) VisualPropertyType.EDGE_LINETYPE
+		     ((LineType) VisualPropertyType.EDGE_LINETYPE
 		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).getType().toString(),
 		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
 		                                                               .getVisualStyle()));

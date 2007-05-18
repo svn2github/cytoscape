@@ -74,7 +74,7 @@ public enum VisualPropertyType {
 	/** @deprecated Use NODE_LINE_WIDTH and NODE_LINE_STYLE instead. Gone 5/2008. */
 	@Deprecated
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class, Line.class,
+	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class, LineType.class,
 	              new NodeLineTypeProp()), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           GenericNodeShapeCalculator.class, NodeShape.class, new NodeShapeProp()), 
@@ -104,7 +104,7 @@ public enum VisualPropertyType {
 	/** @deprecated Use EDGE_LINE_WIDTH and EDGE_LINE_STYLE instead. Gone 5/2008. */
 	@Deprecated
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, Line.class,
+	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, LineType.class,
 	              new EdgeLineTypeProp()), 
 	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
 	              "defaultEdgeSourceArrow", GenericEdgeSourceArrowCalculator.class, Arrow.class,

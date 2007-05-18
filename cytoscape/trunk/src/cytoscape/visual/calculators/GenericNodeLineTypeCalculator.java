@@ -44,7 +44,6 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.Line;
 import cytoscape.visual.LineType;
 import cytoscape.visual.NodeAppearance;
 
@@ -52,7 +51,7 @@ import cytoscape.visual.NodeAppearance;
 import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
 
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.LineParser;
+import cytoscape.visual.parsers.LineTypeParser;
 
 import giny.model.Node;
 
@@ -74,7 +73,7 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
      * @param m DOCUMENT ME!
      */
     public GenericNodeLineTypeCalculator(String name, ObjectMapping m) {
-        super(name, m, Line.class, NODE_LINETYPE);
+        super(name, m, LineType.class, NODE_LINETYPE);
     }
 
     /**
@@ -86,7 +85,7 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
      */
     public GenericNodeLineTypeCalculator(String name, Properties props,
         String baseKey) {
-        super(name, props, baseKey, new LineParser(), Line.DEFAULT_LINE, NODE_LINETYPE);
+        super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1, NODE_LINETYPE);
     }
 
     /**
@@ -97,13 +96,13 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
      * @param network DOCUMENT ME!
      */
     public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final Line line = (Line) getRangeValue(node);
+        final LineType line = (LineType) getRangeValue(node);
 
         // default has already been set - no need to do anything
         if (line == null)
             return;
 
-        appr.setBorderLine(line);
+        appr.setBorderLineType(line);
     }
     
     /**

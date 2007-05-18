@@ -1,7 +1,6 @@
 package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
-import cytoscape.visual.Line;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.parsers.FloatParser;
 import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;

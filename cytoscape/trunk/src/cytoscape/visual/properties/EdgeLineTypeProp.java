@@ -87,7 +87,7 @@ public class EdgeLineTypeProp extends AbstractVisualProperty {
         if ( o == null || ev == null )
             return;
 
-        final Stroke newLine = ((Line)o).getStroke();
+        final Stroke newLine = ((LineType)o).getStroke();
 
         if (!newLine.equals(ev.getStroke()))
             ev.setStroke(newLine);
@@ -97,11 +97,11 @@ public class EdgeLineTypeProp extends AbstractVisualProperty {
         String s = props.getProperty(
             VisualPropertyType.EDGE_LINETYPE.getDefaultPropertyKey(baseKey) );
         if ( s != null )
-            return (new LineParser()).parseLine(s);
+            return (new LineTypeParser()).parseLineType(s);
         else
             return null;
     }
 
-    public Object getDefaultAppearanceObject() { return Line.DEFAULT_LINE; }
+    public Object getDefaultAppearanceObject() { return LineType.LINE_1; }
 
 }

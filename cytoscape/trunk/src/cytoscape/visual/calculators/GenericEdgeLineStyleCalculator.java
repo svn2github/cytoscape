@@ -6,7 +6,6 @@ import java.util.Properties;
 
 
 import cytoscape.CyNetwork;
-import cytoscape.visual.Line;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.LineStyle;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
