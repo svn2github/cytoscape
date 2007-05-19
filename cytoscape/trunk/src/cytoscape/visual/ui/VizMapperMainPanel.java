@@ -34,6 +34,8 @@
 */
 package cytoscape.visual.ui;
 
+import static cytoscape.visual.VisualPropertyType.*;
+
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -95,6 +97,7 @@ import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.visual.ui.icon.ArrowIcon;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
@@ -102,6 +105,7 @@ import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 
 import giny.model.GraphObject;
+import giny.model.Node;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -590,6 +594,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// For Lines
 	private ShapeCellRenderer lineCellRenderer = new ShapeCellRenderer(VisualPropertyType.EDGE_LINETYPE);
 	private CyComboBoxPropertyEditor lineCellEditor = new CyComboBoxPropertyEditor();
+	private CyComboBoxPropertyEditor arrowCellEditor = new CyComboBoxPropertyEditor();
 
 	// For sizes
 	private CyDoublePropertyEditor numberCellEditor = new CyDoublePropertyEditor();
@@ -841,7 +846,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 					for (int i = 0; i < rowCount; i++) {
 						shownProp = ((Item) visualPropertySheetPanel.getTable().getValueAt(i, 0))
-						                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .getProperty();
+						                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .getProperty();
 
 						if ((shownProp != null)
 						    && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
@@ -872,19 +877,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 											final GradientEditorPanel gre = new GradientEditorPanel(((VisualPropertyType) type));
 											gradientRenderer.setIcon(CyGradientTrackRenderer
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              .getTrackGraphicIcon(wi,
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   70,
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   (ContinuousMapping) mapping));
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getTrackGraphicIcon(wi,
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       70,
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       (ContinuousMapping) mapping));
 											pr.registerRenderer(shownProp, gradientRenderer);
 
 											break;
 
 										case NODE_SIZE:
 											continuousRenderer.setIcon(ContinuousTrackRenderer
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .getTrackGraphicIcon(wi,
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70,
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            (ContinuousMapping) mapping,
-											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            (VisualPropertyType) type));
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getTrackGraphicIcon(wi,
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                70,
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                (ContinuousMapping) mapping,
+											                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                (VisualPropertyType) type));
 											pr.registerRenderer(shownProp, continuousRenderer);
 
 											break;
@@ -931,7 +936,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		//
 		// table.setDefaultRenderer(Object.class, mainCat);
-		table.setRowHeight(20);
+		table.setRowHeight(25);
 		// table.getRendererFactory().createTableCellRenderer(String.class);
 		// com.l2fprod.common.swing.renderer.DefaultCellRenderer rend3 = new
 		// DefaultCellRenderer();
@@ -1011,6 +1016,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		shapeCellEditor.setAvailableValues(nodeShapes.toArray());
 		shapeCellEditor.setAvailableIcons(iconArray);
 
+		iconList.clear();
+		iconList.addAll(arrowShapeIcons.values());
+
+		iconArray = new Icon[iconList.size()];
+
+		String[] arrowNames = new String[iconList.size()];
+		Set arrowShapes = arrowShapeIcons.keySet();
+
+		for (int i = 0; i < iconArray.length; i++) {
+			newIcon = ((ArrowIcon) iconList.get(i));
+			newIcon.setIconHeight(16);
+			newIcon.setIconWidth(16);
+			iconArray[i] = newIcon;
+			arrowNames[i] = newIcon.getName();
+		}
+
+		arrowCellEditor.setAvailableValues(arrowShapes.toArray());
+		arrowCellEditor.setAvailableIcons(iconArray);
+
 		iconList = new ArrayList();
 		iconList.addAll(lineTypeIcons.values());
 		iconArray = new Icon[iconList.size()];
@@ -1087,7 +1111,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					((VizMapperProperty) curProp).setEditable(true);
 
 					VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getHiddenObject();
+					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getHiddenObject();
 					createNewMapping(type);
 					visualPropertySheetPanel.removeProperty(curProp);
 
@@ -1290,9 +1314,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					attr = Cytoscape.getEdgeAttributes();
 				}
 
-				calculatorTypeProp.setShortDescription("Attribute Data Type = "
-				                                       + CyAttributesUtils.getClass(attrName, attr)
-				                                                          .toString());
+				//				calculatorTypeProp.setShortDescription("Attribute Data Type = "
+				//				                                       + CyAttributesUtils.getClass(attrName, attr)
+				//				                                                          .toString());
 				pr.registerRenderer(calculatorTypeProp, filledBoxRenderer);
 			}
 
@@ -1369,6 +1393,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					 */
 					case EDGE_SRCARROW_SHAPE:
 					case EDGE_TGTARROW_SHAPE:
+						setDiscreteProps(type, discMapping, attrSet, arrowCellEditor,
+						                 defCellRenderer, calculatorTypeProp);
+
 						break;
 
 					case NODE_LABEL:
@@ -1542,293 +1569,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private void setPropertyFromCalculator(List<Calculator> calcList, String rootCategory,
 	                                       List<Property> propRecord) {
-		VisualPropertyType type;
 
 		for (Calculator calc : calcList) {
 			final VizMapperProperty calculatorTypeProp = new VizMapperProperty();
-			type = calc.getVisualPropertyType();
-
-			/*
-			 * Set one calculator
-			 */
-			calculatorTypeProp.setCategory(rootCategory);
-			calculatorTypeProp.setName(type.getName());
-			calculatorTypeProp.setType(String.class);
-			calculatorTypeProp.setDisplayName(type.getName());
-			calculatorTypeProp.setHiddenObject(type);
-
-			// calculatorTypeProp.setEditable(false);
-			// calculatorTypeProp.setValue(calcType);
-
-			/*
-			 * Mapping 0 is always currently used mapping.
-			 */
-			final ObjectMapping firstMap = calc.getMapping(0);
-
-			String attrName;
-
-			if (firstMap != null) {
-				final VizMapperProperty mappingHeader = new VizMapperProperty();
-
-				attrName = firstMap.getControllingAttributeName();
-
-				if (attrName == null) {
-					calculatorTypeProp.setValue("Please select a value!");
-					pr.registerRenderer(calculatorTypeProp, emptyBoxRenderer);
-				} else {
-					calculatorTypeProp.setValue(attrName);
-					pr.registerRenderer(calculatorTypeProp, filledBoxRenderer);
-				}
-
-				mappingHeader.setDisplayName("Mapping Type");
-				mappingHeader.setHiddenObject(firstMap.getClass());
-
-				if (firstMap.getClass() == DiscreteMapping.class)
-					mappingHeader.setValue("Discrete Mapping");
-				else if (firstMap.getClass() == ContinuousMapping.class)
-					mappingHeader.setValue("Continuous Mapping");
-				else
-					mappingHeader.setValue("Passthrough Mapping");
-
-				mappingHeader.setHiddenObject(firstMap);
-
-				mappingHeader.setParentProperty(calculatorTypeProp);
-				calculatorTypeProp.addSubProperty(mappingHeader);
-				regr.registerEditor(mappingHeader, mappingTypeEditor);
-
-				final CyAttributes attr;
-				final Iterator it;
-
-				if (calc.getVisualPropertyType().isNodeProp()) {
-					attr = Cytoscape.getNodeAttributes();
-					it = Cytoscape.getCurrentNetwork().nodesIterator();
-					regr.registerEditor(calculatorTypeProp, nodeAttrEditor);
-				} else {
-					attr = Cytoscape.getEdgeAttributes();
-					it = Cytoscape.getCurrentNetwork().edgesIterator();
-					regr.registerEditor(calculatorTypeProp, edgeAttrEditor);
-				}
-
-				/*
-				 * Discrete Mapping
-				 */
-				if ((firstMap.getClass() == DiscreteMapping.class) && (attrName != null)) {
-					final Map discMapping = ((DiscreteMapping) firstMap).getAll();
-					final Set<String> keyset = discMapping.keySet();
-
-					Set<Object> attrSet = loadKeys(attrName, attr, firstMap);
-
-					switch (type) {
-						/*
-						 * Color calculators
-						 */
-						case NODE_FILL_COLOR:
-						case NODE_BORDER_COLOR:
-						case EDGE_COLOR:
-						case EDGE_SRCARROW_COLOR:
-						case EDGE_TGTARROW_COLOR:
-						case NODE_LABEL_COLOR:
-						case EDGE_LABEL_COLOR:
-							setDiscreteProps(type, discMapping, attrSet, colorCellEditor,
-							                 collorCellRenderer, calculatorTypeProp);
-
-							break;
-
-						case NODE_LINETYPE:
-						case EDGE_LINETYPE:
-							setDiscreteProps(type, discMapping, attrSet, lineCellEditor,
-							                 lineCellRenderer, calculatorTypeProp);
-
-							break;
-
-						/*
-						 * Shape property
-						 */
-						case NODE_SHAPE:
-							setDiscreteProps(type, discMapping, attrSet, shapeCellEditor,
-							                 defCellRenderer, calculatorTypeProp);
-
-							break;
-
-						/*
-						 * Arrow Head Shapes
-						 */
-						case EDGE_SRCARROW_SHAPE:
-						case EDGE_TGTARROW_SHAPE:
-							break;
-
-						case NODE_LABEL:
-						case EDGE_LABEL:
-						case NODE_TOOLTIP:
-						case EDGE_TOOLTIP:
-							setDiscreteProps(type, discMapping, attrSet, stringCellEditor,
-							                 defCellRenderer, calculatorTypeProp);
-
-							// for (String key : keyset) {
-							// final VizMapperProperty valProp = new
-							// VizMapperProperty();
-							// valProp.setDisplayName(key);
-							// valProp.setValue(discMapping.get(key));
-							// valProp.setParentProperty(calculatorTypeProp);
-							// calculatorTypeProp.addSubProperty(valProp);
-							// regr.registerEditor(valProp, stringCellEditor);
-							// }
-							break;
-
-						/*
-						 * Font props
-						 */
-						case NODE_FONT_FACE:
-						case EDGE_FONT_FACE:
-							setDiscreteProps(type, discMapping, attrSet, fontCellEditor,
-							                 fontCellRenderer, calculatorTypeProp);
-
-							break;
-
-						/*
-						 * Size-related props
-						 */
-						case NODE_FONT_SIZE:
-						case EDGE_FONT_SIZE:
-						case NODE_SIZE:
-						case NODE_WIDTH:
-						case NODE_HEIGHT:
-						case NODE_LINE_WIDTH:
-						case EDGE_LINE_WIDTH:
-							setDiscreteProps(type, discMapping, attrSet, numberCellEditor,
-							                 defCellRenderer, calculatorTypeProp);
-
-							break;
-
-						/*
-						 * Node Label Position. Needs special editor
-						 */
-						case NODE_LABEL_POSITION:
-							setDiscreteProps(type, discMapping, attrSet, stringCellEditor,
-							                 defCellRenderer, calculatorTypeProp);
-
-							break;
-
-						default:
-							break;
-					}
-				} else if ((firstMap.getClass() == ContinuousMapping.class) && (attrName != null)) {
-					gradientRenderer.setForeground(Color.white);
-					gradientRenderer.setBackground(Color.white);
-
-					int wi = this.visualPropertySheetPanel.getTable().getCellRect(0, 1, true).width;
-
-					// int h = this.visualPropertySheetPanel.getTable()
-					// .getCellRect(0, 1, true).height;
-					int h = 80;
-
-					VizMapperProperty graphicalView = new VizMapperProperty();
-					graphicalView.setDisplayName(GRAPHICAL_MAP_VIEW);
-					graphicalView.setParentProperty(calculatorTypeProp);
-					calculatorTypeProp.addSubProperty(graphicalView);
-
-					switch (type) {
-						/*
-						 * Color-related calcs.
-						 */
-						case NODE_FILL_COLOR:
-						case NODE_BORDER_COLOR:
-						case EDGE_COLOR:
-						case EDGE_SRCARROW_COLOR:
-						case EDGE_TGTARROW_COLOR:
-							graphicalView.setName("Color Mapping");
-							gradientRenderer.setIcon(CyGradientTrackRenderer.getTrackGraphicIcon(wi,
-							                                                                     70,
-							                                                                     (ContinuousMapping) firstMap));
-							pr.registerRenderer(graphicalView, gradientRenderer);
-
-							// for (VizMapperProperty curProp : propList) {
-							// pr.registerRenderer(curProp, cr);
-							// regr.registerEditor(curProp, ce);
-							// }
-							break;
-
-						/*
-						 * Size/Width related calcs.
-						 */
-						case NODE_LINE_WIDTH:
-						case NODE_SIZE:
-						case NODE_WIDTH:
-						case NODE_FONT_SIZE:
-						case NODE_HEIGHT:
-						case EDGE_LINE_WIDTH:
-						case EDGE_FONT_SIZE:
-							graphicalView.setName("CC Mapping");
-							continuousRenderer.setIcon(ContinuousTrackRenderer.getTrackGraphicIcon(wi,
-							                                                                       70,
-							                                                                       (ContinuousMapping) firstMap,
-							                                                                       type));
-							pr.registerRenderer(graphicalView, continuousRenderer);
-
-							break;
-
-						/*
-						 * Fixed value calcs
-						 */
-						case NODE_FONT_FACE:
-						case EDGE_FONT_FACE:
-
-							// for (VizMapperProperty curProp : propList)
-							// curProp.setType(Font.class);
-							break;
-
-						case NODE_SHAPE:
-						case NODE_LINETYPE:
-						case NODE_LABEL:
-						case NODE_LABEL_POSITION:
-						case EDGE_LINETYPE:
-						case EDGE_SRCARROW_SHAPE:
-						case EDGE_TGTARROW_SHAPE:
-						case EDGE_LABEL:
-							discreteRenderer.setIcon(DiscreteTrackRenderer.getTrackGraphicIcon(wi,
-							                                                                   70,
-							                                                                   (ContinuousMapping) firstMap));
-							pr.registerRenderer(graphicalView, discreteRenderer);
-
-							break;
-
-						default:
-							break;
-					}
-				} else if ((firstMap.getClass() == PassThroughMapping.class) && (attrName != null)) {
-					/*
-					 * Passthrough
-					 */
-					String id;
-					String value;
-					VizMapperProperty oneProperty;
-
-					while (it.hasNext()) {
-						id = ((GraphObject) it.next()).getIdentifier();
-						value = attr.getStringAttribute(id, attrName);
-
-						oneProperty = new VizMapperProperty();
-
-						if (attrName.equals("ID"))
-							oneProperty.setValue(id);
-						else
-							oneProperty.setValue(value);
-
-						// This prop. should not be editable!
-						oneProperty.setEditable(false);
-
-						oneProperty.setParentProperty(calculatorTypeProp);
-						oneProperty.setDisplayName(id);
-						oneProperty.setType(String.class);
-
-						calculatorTypeProp.addSubProperty(oneProperty);
-					}
-				}
-			}
-
-			visualPropertySheetPanel.addProperty(calculatorTypeProp);
-			visualPropertySheetPanel.setRendererFactory(pr);
-			visualPropertySheetPanel.setEditorFactory(regr);
+			buildProperty(calc, calculatorTypeProp, rootCategory);
 			propRecord.add(calculatorTypeProp);
 		}
 	}
@@ -1913,8 +1657,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				//					System.out.println("Key Name: " + key );
 				//				}
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .showDialog(Cytoscape
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .getDesktop());
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .showDialog(Cytoscape
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .getDesktop());
 				createDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
@@ -2050,7 +1794,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		} else {
 			typeRootProp = (VizMapperProperty) prop.getParentProperty();
 			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getHiddenObject();
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getHiddenObject();
 		}
 
 		/*
@@ -2181,7 +1925,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		System.out.println("==========Switching map================= " + newMapName);
 
 		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getParentProperty())
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getParentProperty())
 		                                .getHiddenObject();
 		final String newCalcName = vmm.getVisualStyle().getName() + "-" + type.getName() + "-"
 		                           + newMapName;
@@ -2358,7 +2102,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			} else
 				mapping = calc.getMapping(0);
 
-			if (mapping == null)
+			if (mapping == null && type != EDGE_SRCARROW && type != EDGE_TGTARROW && type != NODE_LINETYPE && type != EDGE_LINETYPE)
 				noMapping.add(type);
 
 			mapping = null;
@@ -2719,7 +2463,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (curProp instanceof VizMapperProperty) {
 				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 .getHiddenObject();
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 .getHiddenObject();
 
 				String[] message = {
 				                       "The Mapping for " + type.getName() + " will be removed.",
@@ -2789,7 +2533,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getParentProperty())
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getParentProperty())
 		                                .getHiddenObject();
 
 		/*
@@ -2879,7 +2623,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private class RandomColorListener extends AbstractAction {
 		private final int MAX_COLOR = ((Double) Math.pow(2, 8)).intValue();
 		private final int MAX_ALPHA = ((Double) Math.pow(2, 8)).intValue();
-		
 		private DiscreteMapping dm;
 		private Set mappedKeys;
 
@@ -2910,44 +2653,54 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final long seed = System.currentTimeMillis();
 				final Random rand = new Random(seed);
 
-				final CountedIterator it;
 				final ObjectMapping oMap;
+				
+				final CyAttributes attr;
 
 				if (type.isNodeProp()) {
+					attr = Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
-					it = Cytoscape.getNodeAttributes().getMultiHashMap()
-					              .getObjectKeys(oMap.getControllingAttributeName());
+
 				} else {
+					attr = Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
-					it = Cytoscape.getEdgeAttributes().getMultiHashMap()
-					              .getObjectKeys(oMap.getControllingAttributeName());
+					
+					              
 				}
 
 				if ((oMap instanceof DiscreteMapping) == false)
 					return;
 
 				dm = (DiscreteMapping) oMap;
+				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap);
 
 				if (type.getDataType() == Color.class) {
 					final String range = CytoscapeInit.getProperties().getProperty("opacityRange");
-					if(range == null) {
-						while (it.hasNext())
-							valueMap.put(it.next(), new Color(rand.nextInt(MAX_COLOR), 
-									rand.nextInt(MAX_COLOR), rand.nextInt(MAX_COLOR)));
+
+					if (range == null) {
+						for(Object key: attrSet) {
+						
+							valueMap.put(key,
+							             new Color(rand.nextInt(MAX_COLOR),
+							                       rand.nextInt(MAX_COLOR), rand.nextInt(MAX_COLOR)));
+						}
 					} else {
-					final String[] rangeVals = range.split("-");
-					Integer min = Integer.valueOf(rangeVals[0]);
-					Integer max = Integer.valueOf(rangeVals[1]);
-					
-					if(max>MAX_ALPHA)
-						max = MAX_ALPHA;
-					
-					max = max-min;
-					while (it.hasNext())
-						valueMap.put(it.next(), new Color(rand.nextInt(MAX_COLOR), 
-								rand.nextInt(MAX_COLOR), rand.nextInt(MAX_COLOR), rand.nextInt(max)+min));
+						final String[] rangeVals = range.split("-");
+						Integer min = Integer.valueOf(rangeVals[0]);
+						Integer max = Integer.valueOf(rangeVals[1]);
+
+						if (max > MAX_ALPHA)
+							max = MAX_ALPHA;
+
+						max = max - min;
+
+						for(Object key: attrSet)
+							valueMap.put(key,
+							             new Color(rand.nextInt(MAX_COLOR),
+							                       rand.nextInt(MAX_COLOR),
+							                       rand.nextInt(MAX_COLOR), rand.nextInt(max) + min));
 					}
 				} else if (type.getDataType() == Number.class) {
 					final String range = JOptionPane.showInputDialog(visualPropertySheetPanel,
@@ -2964,8 +2717,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					Float max = Float.valueOf(rangeVals[1]);
 					Float valueRange = max - min;
 
-					while (it.hasNext())
-						valueMap.put(it.next(), rand.nextFloat()*valueRange + min);
+					for(Object key: attrSet)
+						valueMap.put(key, (rand.nextFloat() * valueRange) + min);
 				}
 
 				dm.putAll(valueMap);
