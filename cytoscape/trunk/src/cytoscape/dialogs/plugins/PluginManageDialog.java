@@ -82,7 +82,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
 		TreeNode Node = (TreeNode) pluginTree.getLastSelectedPathComponent();
-
 		if (Node == null) {
 			return;
 		}

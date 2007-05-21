@@ -73,7 +73,7 @@ public class TreeNode {
 	 * @return
 	 */
 	public boolean isLeaf() {
-		if (childAllowed || getChildCount() <= 0)
+		if (childAllowed)
 			return false;
 		else
 			return true;
