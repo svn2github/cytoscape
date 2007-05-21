@@ -384,7 +384,7 @@ public class ZipUtil {
 			
 			UnzippedFiles.add(ZipFile.getAbsolutePath());
 		}
-
+		Zip.close();
 		return UnzippedFiles;
 	}
 
