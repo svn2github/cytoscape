@@ -105,6 +105,10 @@ public class PluginTracker {
 	 * Sets up the xml doc for tracking.
 	 */
 	private void init() throws java.io.IOException {
+		if (PluginManager.usingWebstartManager()) { // we don't want the old webstart file
+			installFile.delete();
+		}
+	
 		if (installFile.exists() && installFile.length() > 0) {
 			SAXBuilder Builder = new SAXBuilder(false);
 			try {

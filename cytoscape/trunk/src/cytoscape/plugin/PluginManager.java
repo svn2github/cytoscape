@@ -130,7 +130,7 @@ public class PluginManager {
 	 * 
 	 * @return True if all files deleted successfully
 	 */
-	public boolean removeWebstartInstalls() { 
+	protected boolean removeWebstartInstalls() { 
 		return recursiveDeleteFiles(tempDir.getParentFile());
 	}
 
@@ -205,9 +205,10 @@ public class PluginManager {
 		setWebstart();
 		try {
 			String trackerFileName = "track_plugins.xml";
+			
 			if (tempDir == null) {
 				if (usingWebstartManager()) {
-					tempDir = new File(CytoscapeInit.getConfigDirectory(), "webstart" + File.separator + CytoscapeVersion.version + File.separator + "plugins");
+					tempDir = new File(CytoscapeInit.getConfigDirectory(), "webstart" + File.separator + CytoscapeVersion.version + File.separator + "plugins");; 
 					trackerFileName = "track_webstart_plugins.xml";
 				} else {				
 					tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
@@ -215,7 +216,10 @@ public class PluginManager {
 			}
 
 			if (!tempDir.exists()) {
-				tempDir.mkdirs();
+				System.err.println("Creating directories for " + tempDir.getAbsolutePath());
+				if (!tempDir.mkdirs()) {
+					Cytoscape.exit(-1);
+				}
 			}
 
 			if (Tracker != null) {
@@ -266,6 +270,7 @@ public class PluginManager {
 	 * @param JarFileName
 	 */
 	protected void register(CytoscapePlugin Plugin, String JarFileName) {
+		System.out.println("Registering " + Plugin.toString());
 		PluginInfo InfoObj = null;
 		try {
 			if (Plugin.getPluginInfoObject() == null) {
@@ -327,6 +332,10 @@ public class PluginManager {
 	public void install(PluginInfo obj) {
 		pluginTracker.removePlugin(obj, PluginTracker.PluginStatus.INSTALL);
 		pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.CURRENT);
+		
+		if (usingWebstartManager()) { // mark all webstart-installed plugins for deletion 
+			pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.DELETE);
+		}
 	}
 
 	/**
@@ -342,11 +351,13 @@ public class PluginManager {
 	/**
 	 * Takes all objects on the "to-delete" list and deletes them. This can only
 	 * occur at start up, CytoscapeInit should be the only class to call this.
+	 * 
+	 * @throws ManagerException
+	 * 				If all files fail to delete
+	 * @throws WebstartException
+	 * 				If this method is called from a webstart instance 
 	 */
-	public void delete() throws ManagerException, WebstartException {
-		System.out.println("Deleting plugins!");
-		checkWebstart();
-
+	public void delete() throws ManagerException {
 		String ErrorMsg = "Failed to delete all files for the following plugins:\n";
 		List<String> DeleteFailed = new ArrayList<String>();
 
@@ -354,7 +365,7 @@ public class PluginManager {
 				.getListByStatus(PluginTracker.PluginStatus.DELETE);
 
 		for (PluginInfo CurrentPlugin : Plugins) {
-			System.out.println("  deleting " + CurrentPlugin.getName());
+			System.out.println("  deleting plugin " + CurrentPlugin.getName());
 			boolean deleteOk = false;
 
 			// needs the list of all files installed
@@ -397,6 +408,7 @@ public class PluginManager {
 	}
 
 	private boolean recursiveDeleteFiles(File file) {
+		System.out.println(" recursive deleting file "+ file.getAbsolutePath());
 		boolean delete = false;
 		if (file.isFile()) {
 			delete = file.delete();
@@ -767,7 +779,7 @@ public class PluginManager {
 		System.out.println("");
 	}
 
-	// these are jars that do not extend CytoscapePlugin but may be used by jars
+	// these are jars that *may or may not* extend CytoscapePlugin but may be used by jars
 	// that do
 	private void loadResourcePlugins(Set<String> resourcePlugins)
 			throws ClassNotFoundException {
@@ -780,7 +792,7 @@ public class PluginManager {
 			// try to get the class
 			Class rclass = null;
 			rclass = Class.forName(resource);
-			loadPlugin(rclass, null, false);
+			loadPlugin(rclass, null, true);
 		}
 		System.out.println("");
 	}

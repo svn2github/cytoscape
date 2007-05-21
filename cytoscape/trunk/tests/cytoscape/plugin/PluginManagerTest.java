@@ -268,7 +268,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.PluginManager#delete()}.
 	 */
 	public void testDelete() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
+			org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException  {
 		List<PluginInfo> Plugins = mgr.inquire(testUrl);
 
 		PluginInfo TestObj = Plugins.get(0);

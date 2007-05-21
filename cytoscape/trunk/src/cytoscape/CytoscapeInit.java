@@ -172,23 +172,24 @@ public class CytoscapeInit {
 				setUpAttributesChangedListener();
 			}
 
-			//what to do with the exceptions?
+			//TODO what to do with the exception?
 			PluginManager mgr = PluginManager.getPluginManager();
-
 			try {
 				System.out.println("updating plugins...");
 				mgr.delete();
-				mgr.install();
 			} catch (cytoscape.plugin.ManagerException me) {
-				me.printStackTrace();
-			} catch (cytoscape.plugin.WebstartException we) {
-				// nothing really to do here
-				System.out.println("can't update plugins in a webstart");
+				System.err.println(me.getMessage());
+				//me.printStackTrace();
 			}
+			mgr.install();
+			
 
 			try {
 				System.out.println("loading plugins....");
-
+				/* TODO smart plugin loading.  If there are multiple of the same plugin (this will only work
+				 * in the .cytoscape directory) load the newest version first.  Should be able to examine the 
+				 * directories for this information.  All installed plugins are named like  'MyPlugin-1.0' 
+				 */ 
 				List<String> InstalledPlugins = new ArrayList<String>();
 				// load from those listed on the command line
 				InstalledPlugins.addAll(initParams.getPlugins());
