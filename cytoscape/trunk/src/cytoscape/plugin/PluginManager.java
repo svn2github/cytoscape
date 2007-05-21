@@ -123,6 +123,16 @@ public class PluginManager {
 	public static boolean usingWebstartManager() {
 		return usingWebstart;
 	}
+	
+	/**
+	 * Deletes everything under the webstart install directory.  Nothing in here
+	 * should stick around.
+	 * 
+	 * @return True if all files deleted successfully
+	 */
+	public boolean removeWebstartInstalls() { 
+		return recursiveDeleteFiles(tempDir.getParentFile());
+	}
 
 	/**
 	 * Get the PluginManager object.
@@ -142,8 +152,11 @@ public class PluginManager {
 	 *            is not called the default is .cytoscape/[cytoscape
 	 *            version]/plugins
 	 */
-	public void setPluginManageDirectory(String loc) {
+	public static void setPluginManageDirectory(String loc) {
 		tempDir = new File(loc);
+		if (!tempDir.getAbsolutePath().contains(CytoscapeVersion.version)) {
+			tempDir = new File(tempDir, CytoscapeVersion.version);
+		}
 	}
 
 	public File getPluginManageDirectory() {
@@ -191,20 +204,24 @@ public class PluginManager {
 	private PluginManager(PluginTracker Tracker) {
 		setWebstart();
 		try {
-			if (Tracker != null) {
-				pluginTracker = Tracker;
-			} else {
-				if (usingWebstart) {
-					pluginTracker = new PluginTracker(File.createTempFile(
-							"track_webstart_plugins_", ".xml"));
-				} else {
-						pluginTracker = new PluginTracker(CytoscapeInit.getConfigVersionDirectory(), "track_plugins.xml");
+			String trackerFileName = "track_plugins.xml";
+			if (tempDir == null) {
+				if (usingWebstartManager()) {
+					tempDir = new File(CytoscapeInit.getConfigDirectory(), "webstart" + File.separator + CytoscapeVersion.version + File.separator + "plugins");
+					trackerFileName = "track_webstart_plugins.xml";
+				} else {				
+					tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
 				}
 			}
-			tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
 
 			if (!tempDir.exists()) {
 				tempDir.mkdirs();
+			}
+
+			if (Tracker != null) {
+				pluginTracker = Tracker;
+			} else {
+				pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
 			}
 		} catch (java.io.IOException E) {
 			E.printStackTrace(); // TODO do something useful with error
@@ -327,6 +344,7 @@ public class PluginManager {
 	 * occur at start up, CytoscapeInit should be the only class to call this.
 	 */
 	public void delete() throws ManagerException, WebstartException {
+		System.out.println("Deleting plugins!");
 		checkWebstart();
 
 		String ErrorMsg = "Failed to delete all files for the following plugins:\n";
@@ -336,6 +354,7 @@ public class PluginManager {
 				.getListByStatus(PluginTracker.PluginStatus.DELETE);
 
 		for (PluginInfo CurrentPlugin : Plugins) {
+			System.out.println("  deleting " + CurrentPlugin.getName());
 			boolean deleteOk = false;
 
 			// needs the list of all files installed
@@ -522,6 +541,7 @@ public class PluginManager {
 
 		File PluginDir = new File(tempDir, Obj.getName() + "-"
 				+ Obj.getPluginVersion());
+		
 		if (!PluginDir.exists()) {
 			PluginDir.mkdirs();
 		}
@@ -742,6 +762,7 @@ public class PluginManager {
 				System.out
 						.println("No plugin found in specified jar - assuming it's a library.");
 			}
+			jar.close();
 		}
 		System.out.println("");
 	}
