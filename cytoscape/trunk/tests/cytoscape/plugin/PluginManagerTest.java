@@ -1,9 +1,10 @@
 package cytoscape.plugin;
 
+import cytoscape.*;
+
 import cytoscape.plugin.PluginTracker.PluginStatus;
 import java.io.File;
 import java.util.*;
-import cytoscape.CytoscapeInit;
 import junit.framework.TestCase;
 
 /**
@@ -36,16 +37,14 @@ public class PluginManagerTest extends TestCase {
 
 		testUrl = getFileUrl() + "test_plugin.xml";
 		fileName = "test_tracker.xml";
-		//tmpDir = new File(System.getProperty("java.io.tmpdir"));
 		File tmpDir = new File(CytoscapeInit.getConfigDirectory(), "test"); 
 		
-		tmpDownloadDir = new File(tmpDir, cytoscape.CytoscapeVersion.version);
+		tmpDownloadDir = new File(tmpDir, CytoscapeVersion.version);
 		tmpDownloadDir.mkdirs();
-		
+
+		PluginManager.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
 		tracker = new PluginTracker(tmpDownloadDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
-		mgr.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
-		assertTrue((new File(tmpDownloadDir, fileName)).exists());
 	}
 
 	/*
@@ -54,15 +53,13 @@ public class PluginManagerTest extends TestCase {
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() {
-		File TrackerFile = new File(tmpDownloadDir, fileName);
 		tracker.delete();
-//		assertFalse(TrackerFile.exists());
 		mgr.resetManager();
 		
 		tmpDownloadDir.delete();
 		tmpDownloadDir.getParentFile().delete();
-//		assertTrue(tmpDownloadDir.delete());
-//		assertTrue(tmpDownloadDir.getParentFile().delete());
+		// make sure this isn't set, the webstart tests can set it themselves
+		System.setProperty("javawebstart.version", "");
 	}
 	
 	/**
@@ -79,19 +76,54 @@ public class PluginManagerTest extends TestCase {
 		mgr.resetManager();
 		// the manager checks this property to find out if it's webstarted
 		System.setProperty("javawebstart.version", "booya");
+		File wsTmpDir = new File(CytoscapeInit.getConfigDirectory(), "webstart_test"); 
 
+		PluginManager.setPluginManageDirectory(wsTmpDir.getAbsolutePath());
 		PluginManager wsMgr = PluginManager.getPluginManager();
 		assertNotNull(wsMgr);
 
 		File TempTrackingFile = wsMgr.pluginTracker.getTrackerFile();
-		System.out.println(TempTrackingFile.getAbsolutePath());
 		assertNotNull(TempTrackingFile);
 		assertTrue(TempTrackingFile.exists());
 		assertTrue(TempTrackingFile.canRead());
 	
 		// reset
-		System.setProperty("javawebstart.version", "");
-		TempTrackingFile.delete();
+		assertTrue(wsMgr.removeWebstartInstalls());
+		assertFalse(TempTrackingFile.exists());
+		assertFalse(wsTmpDir.exists());
+	}
+	
+	public void testDownloadPluginWebstart() throws java.io.IOException, org.jdom.JDOMException, cytoscape.plugin.ManagerException {
+		mgr.resetManager();
+		System.setProperty("javawebstart.version", "booya");
+
+		File wsTmpDir = new File(CytoscapeInit.getConfigDirectory(), "webstart_test"); 
+		
+		PluginManager.setPluginManageDirectory(wsTmpDir.getAbsolutePath());
+		PluginManager wsMgr = PluginManager.getPluginManager();
+
+		assertNotNull(wsMgr);
+
+		PluginInfo TestObj = getSpecificObj(wsMgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+		
+		PluginInfo DLTestObj = wsMgr.download(TestObj);
+		assertNotNull(DLTestObj);
+		
+		for (String f: DLTestObj.getFileList()) {
+			assertTrue(f.startsWith(wsTmpDir.getAbsolutePath()));
+		}
+		
+		// can't delete when in webstart
+		try { 
+			wsMgr.delete(DLTestObj);
+		} catch (cytoscape.plugin.WebstartException wse) {
+			assertNotNull(wse);
+		}
+		
+		// reset
+		assertTrue(wsMgr.removeWebstartInstalls());
+		assertFalse(wsTmpDir.exists());
 	}
 	
 	
