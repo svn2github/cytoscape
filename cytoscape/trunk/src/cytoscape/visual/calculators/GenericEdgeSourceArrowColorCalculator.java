@@ -1,17 +1,15 @@
 package cytoscape.visual.calculators;
 
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_COLOR;
-
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.parsers.ColorParser;
-import cytoscape.visual.EdgeAppearance;
-import cytoscape.CyNetwork;
-
 import giny.model.Edge;
 
 import java.awt.Color;
-
 import java.util.Properties;
+
+import cytoscape.CyNetwork;
+import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.parsers.ColorParser;
 
 
 /**

@@ -34,21 +34,19 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.icon.ArrowIcon;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
+import giny.view.EdgeView;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.util.Properties;
 
 import javax.swing.Icon;
-import giny.view.EdgeView;
-import java.util.Properties;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.ColorParser;
+import cytoscape.visual.ui.icon.ArrowIcon;
 
 
 /**
@@ -70,9 +68,10 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		final Arrow arrow = (Arrow) VisualPropertyType.EDGE_TGTARROW_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                       .getVisualStyle());
-		final ArrowIcon icon = new ArrowIcon(arrow.getShape().getShape());
+		final ArrowShape arrowShape = (ArrowShape) VisualPropertyType.EDGE_TGTARROW_SHAPE
+		                                                                     .getDefault(Cytoscape.getVisualMappingManager()
+		                                                                                          .getVisualStyle());
+		final ArrowIcon icon = new ArrowIcon(arrowShape.getShape());
 		icon.setColor((Color) getDefault());
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
@@ -80,26 +79,46 @@ public class EdgeTargetArrowColorProp extends AbstractVisualProperty {
 		return icon;
 	}
 
-   public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        final Paint newTargetArrowColor = ((Color)o);
+		final Paint newTargetArrowColor = ((Color) o);
 
-        if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
-            ev.setTargetEdgeEndPaint(newTargetArrowColor);
+		if (newTargetArrowColor != ev.getTargetEdgeEndPaint())
+			ev.setTargetEdgeEndPaint(newTargetArrowColor);
+	}
 
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_TGTARROW_COLOR.getDefaultPropertyKey(baseKey));
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_TGTARROW_COLOR.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ColorParser()).parseColor(s);
-        else
-            return null;
-    }
+		if (s != null)
+			return (new ColorParser()).parseColor(s);
+		else
 
-    public Object getDefaultAppearanceObject() { return Color.black; }
+			return null;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.black;
+	}
 }

@@ -34,20 +34,19 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
+import cytoscape.visual.parsers.ArrowShapeParser;
+
 import cytoscape.visual.ui.icon.ArrowIcon;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-
-import java.util.Map;
-
-import javax.swing.Icon;
 
 import giny.view.EdgeView;
+
+import java.util.Map;
 import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -78,33 +77,54 @@ public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		final ArrowIcon icon = new ArrowIcon((((Arrow) getDefault()).getShape()).getShape());
+		final ArrowIcon icon = new ArrowIcon(((ArrowShape) getDefault()).getShape());
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
 
 		return icon;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        final int newTargetEnd = ((Arrow)o).getShape().getGinyArrow();
+		final int newTargetEnd = ((ArrowShape) o).getGinyArrow();
 
-        if (newTargetEnd != ev.getTargetEdgeEnd())
-            ev.setTargetEdgeEnd(newTargetEnd);
-    }
+		if (newTargetEnd != ev.getTargetEdgeEnd()) {
+			ev.setTargetEdgeEnd(newTargetEnd);
+		}
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_TGTARROW_SHAPE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ArrowParser()).parseArrow(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_TGTARROW_SHAPE.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return Arrow.NONE; }
+		if (s != null)
+			return (new ArrowShapeParser()).parseArrowShape(s);
+		else
 
+			return null;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return ArrowShape.NONE;
+	}
 }

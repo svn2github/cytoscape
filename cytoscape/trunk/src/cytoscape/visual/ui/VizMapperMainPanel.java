@@ -264,6 +264,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		shapeCellEditor.addPropertyChangeListener(this);
 		stringCellEditor.addPropertyChangeListener(this);
 		lineCellEditor.addPropertyChangeListener(this);
+		arrowCellEditor.addPropertyChangeListener(this);
 	}
 
 	/**
@@ -588,6 +589,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// For Lines
 	private ShapeCellRenderer lineCellRenderer = new ShapeCellRenderer(VisualPropertyType.EDGE_LINE_STYLE);
 	private CyComboBoxPropertyEditor lineCellEditor = new CyComboBoxPropertyEditor();
+	
+	// For Arrow shapes
 	private CyComboBoxPropertyEditor arrowCellEditor = new CyComboBoxPropertyEditor();
 
 	// For sizes
