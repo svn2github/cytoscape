@@ -46,10 +46,9 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.Arrow;
+import cytoscape.visual.ArrowShape;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
-import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
@@ -86,7 +85,7 @@ public enum EditorDisplayer {
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualPropertyType.class, JDialog.class },
-	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, Arrow.class), 
+	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
 	                   new Class[] { VisualPropertyType.class, JDialog.class },
 	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class), 

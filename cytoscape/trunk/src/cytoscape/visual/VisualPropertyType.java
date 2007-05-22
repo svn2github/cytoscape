@@ -195,11 +195,11 @@ public enum VisualPropertyType {
 	// New from 2.5: arrows have its own color, shape, and size.
 	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape", "edgeSourceArrowShapeCalculator",
 	                    "edge.sourceArrowShape", "defaultEdgeSourceArrowShape",
-	                    GenericEdgeSourceArrowShapeCalculator.class, Arrow.class,
+	                    GenericEdgeSourceArrowShapeCalculator.class, ArrowShape.class,
 	                    new EdgeSourceArrowShapeProp()), 
 	EDGE_TGTARROW_SHAPE("Edge Target Arrow Shape", "edgeTargetArrowShapeCalculator",
 	                    "edge.targetArrowShape", "defaultEdgeTargetArrowShape",
-	                    GenericEdgeTargetArrowShapeCalculator.class, Arrow.class,
+	                    GenericEdgeTargetArrowShapeCalculator.class, ArrowShape.class,
 	                    new EdgeTargetArrowShapeProp()), 
 	EDGE_SRCARROW_COLOR("Edge Source Arrow Color", "edgeSourceArrowColorCalculator",
 	                    "edge.sourceArrowColor", "defaultEdgeSourceArrowColor",
@@ -415,10 +415,8 @@ public enum VisualPropertyType {
 		// This is an editor.
 		if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
 			return ret;
-		else if ((ret != null) && ret instanceof ArrowShape) {
-			System.out.println("Arrow!!!!!!");
-			ret = new Arrow((ArrowShape) ret, Color.white);
-		} else if ((ret != null) && this == EDGE_LINE_WIDTH) {
+		
+		else if ((ret != null) && this == EDGE_LINE_WIDTH) {
 				System.out.println("L W!!!!!!");
 				ret = Float.valueOf(((String)ret));
 		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
