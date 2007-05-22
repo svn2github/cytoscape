@@ -34,21 +34,21 @@
  */
 package cytoscape.visual.properties;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-
-import javax.swing.Icon;
-import giny.view.EdgeView;
-import java.util.Properties;
-
 import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.FloatParser;
+
 import cytoscape.visual.ui.icon.LineTypeIcon;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
+
+import giny.view.EdgeView;
 import giny.view.Label;
 
+import java.awt.Color;
+import java.awt.Font;
+
+import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -74,31 +74,52 @@ public class EdgeFontSizeProp extends AbstractVisualProperty {
 		icon.setColor(new Color(10, 10, 10, 20));
 		icon.setText(getDefault().toString());
 		icon.setBottomPadding(-7);
+
 		return icon;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+		Label edgelabel = ev.getLabel();
+		Font f = edgelabel.getFont();
+		float newFontSize = ((Number) o).floatValue();
 
-        Label edgelabel = ev.getLabel();
-        Font f = edgelabel.getFont();
-        float newFontSize = ((Float)o).floatValue();
+		if (newFontSize != f.getSize2D())
+			edgelabel.setFont(f.deriveFont(newFontSize));
+	}
 
-        if ( newFontSize != f.getSize2D() )
-            edgelabel.setFont(f.deriveFont(newFontSize));
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_FONT_SIZE.getDefaultPropertyKey(baseKey));
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_FONT_SIZE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new FloatParser()).parseFloat(s);
-        else
-            return null;
-    }
+		if (s != null)
+			return (new FloatParser()).parseFloat(s);
+		else
 
-    public Object getDefaultAppearanceObject() { return new Float(10.0f); }
+			return null;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Float(10.0f);
+	}
 }

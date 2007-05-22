@@ -34,17 +34,20 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.FloatParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.Label;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.Label;
-import giny.view.NodeView;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -83,27 +86,48 @@ public class NodeFontSizeProp extends AbstractVisualProperty {
 			};
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
 		Label nodelabel = nv.getLabel();
 		Font f = nodelabel.getFont();
-		float newFontSize = ((Float)o).floatValue();
+		float newFontSize = ((Number) o).floatValue();
 
-        if ( newFontSize != f.getSize2D() )
-            nodelabel.setFont(f.deriveFont(newFontSize));
-    }
+		if (newFontSize != f.getSize2D())
+			nodelabel.setFont(f.deriveFont(newFontSize));
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_FONT_SIZE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new FloatParser()).parseFloat(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_FONT_SIZE.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new Float(12.0f); }
+		if (s != null)
+			return (new FloatParser()).parseFloat(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Float(12.0f);
+	}
 }
