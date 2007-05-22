@@ -92,23 +92,6 @@ public class GenericNodeToolTipCalculator extends NodeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final String tt = (String) getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (tt == null)
-            return;
-
-        appr.setToolTip(tt);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

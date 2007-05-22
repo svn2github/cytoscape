@@ -87,36 +87,4 @@ public class GenericNodeOpacityCalculator extends NodeCalculator {
         super(name, props, baseKey, new DoubleParser(), new Integer(255),
             NODE_OPACITY);
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final Object rangeValue = getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (rangeValue == null)
-            return;
-
-        appr.setFillOpacity(((Number) rangeValue).intValue());
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public float calculateNodeOpacity(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
-        apply(ea, e, n);
-
-        return ea.getFillOpacity();
-    }
 }

@@ -91,23 +91,6 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final LineType line = (LineType) getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (line == null)
-            return;
-
-        appr.setBorderLineType(line);
-    }
-    
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

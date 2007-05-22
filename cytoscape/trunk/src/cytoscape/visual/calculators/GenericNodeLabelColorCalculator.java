@@ -85,23 +85,6 @@ public class GenericNodeLabelColorCalculator extends NodeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final Color nodeLabelColor = (Color) getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (nodeLabelColor == null)
-            return;
-
-        appr.setLabelColor(nodeLabelColor);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

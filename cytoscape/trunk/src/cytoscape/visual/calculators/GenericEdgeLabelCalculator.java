@@ -88,22 +88,6 @@ public class GenericEdgeLabelCalculator extends EdgeCalculator
         super(name, props, baseKey, new StringParser(), new String(), EDGE_LABEL);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final String l = (String) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (l == null)
-            return;
-
-        appr.setLabel(l);
-    }
 
     /**
      * DOCUMENT ME!

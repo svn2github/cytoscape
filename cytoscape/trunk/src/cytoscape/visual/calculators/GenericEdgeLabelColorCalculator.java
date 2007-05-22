@@ -81,20 +81,4 @@ public class GenericEdgeLabelColorCalculator extends EdgeCalculator {
             EDGE_LABEL_COLOR);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final Color c = (Color) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (c == null)
-            return;
-
-        appr.setLabelColor(c);
-    }
 }

@@ -92,23 +92,6 @@ public class GenericEdgeToolTipCalculator extends EdgeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final String tooltip = (String) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (tooltip == null)
-            return;
-
-        appr.setToolTip(tooltip);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

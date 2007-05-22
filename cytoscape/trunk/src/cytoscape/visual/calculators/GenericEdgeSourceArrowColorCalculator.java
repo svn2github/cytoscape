@@ -40,20 +40,4 @@ public class GenericEdgeSourceArrowColorCalculator extends EdgeCalculator {
 		super(name, props, baseKey, new ColorParser(), Color.black, EDGE_SRCARROW_COLOR);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        Color c = (Color) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (c == null)
-            return;
-
-		appr.setSourceArrowColor(c);
-    }
 }

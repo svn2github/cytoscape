@@ -94,23 +94,6 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final Font f = (Font) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (f == null)
-            return;
-
-        appr.setFont(f);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

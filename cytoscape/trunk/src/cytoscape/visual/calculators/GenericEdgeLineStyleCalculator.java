@@ -37,20 +37,4 @@ public class GenericEdgeLineStyleCalculator extends EdgeCalculator {
         super(name, props, baseKey, new LineStyleParser(), LineStyle.SOLID, EDGE_LINE_STYLE);
     }
 	
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final LineStyle line = (LineStyle) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (line == null)
-            return;
-
-        appr.set(type,line);
-    }
 }

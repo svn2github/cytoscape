@@ -154,13 +154,4 @@ public abstract class NodeCalculator extends AbstractCalculator {
             name,
             Cytoscape.getNodeAttributes());
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    abstract public void apply(NodeAppearance appr, Node node, CyNetwork network);
 }

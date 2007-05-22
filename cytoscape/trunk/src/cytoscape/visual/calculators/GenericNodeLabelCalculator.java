@@ -91,23 +91,6 @@ public class GenericNodeLabelCalculator extends NodeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final String label = (String) getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (label == null)
-            return;
-
-        appr.setLabel(label);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

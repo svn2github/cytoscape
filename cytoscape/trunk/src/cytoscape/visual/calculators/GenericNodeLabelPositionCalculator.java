@@ -89,20 +89,4 @@ public class GenericNodeLabelPositionCalculator extends NodeCalculator {
             LabelPosition.DEFAULT, NODE_LABEL_POSITION);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final LabelPosition lp = (LabelPosition) getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (lp == null)
-            return;
-
-        appr.setLabelPosition(lp);
-    }
 }

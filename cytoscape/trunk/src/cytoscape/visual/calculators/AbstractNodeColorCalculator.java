@@ -99,29 +99,6 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        if (node == null)
-            return;
-
-        final Color c = (Color) getRangeValue(node);
-
-        // default has already been set - no need to do anything
-        if (c == null)
-            return;
-
-        if (type == VisualPropertyType.NODE_FILL_COLOR)
-            appr.setFillColor(c);
-        else if (type == VisualPropertyType.NODE_BORDER_COLOR)
-            appr.setBorderColor(c);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

@@ -100,7 +100,6 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
      * @param appr DOCUMENT ME!
      * @param edge DOCUMENT ME!
      * @param network DOCUMENT ME!
-     */
     public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
         Arrow a = (Arrow) getRangeValue(edge);
 
@@ -113,6 +112,7 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
         else if (type == VisualPropertyType.EDGE_TGTARROW)
             appr.setTargetArrow(a);
     }
+     */
 
     /**
      * DOCUMENT ME!
@@ -126,9 +126,6 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
         final EdgeAppearance ea = new EdgeAppearance();
         apply(ea, e, n);
 
-        if (type == VisualPropertyType.EDGE_SRCARROW)
-            return ea.getSourceArrow();
-        else
-            return ea.getTargetArrow();
+		return (Arrow)(ea.get(type));
     }
 }

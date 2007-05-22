@@ -637,8 +637,15 @@ public abstract class AbstractCalculator
      * @param net DOCUMENT ME!
      */
     public void apply(EdgeAppearance appr, Edge e, CyNetwork net) {
+		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
+		Object o = getRangeValue(e);
+
+		// default has already been set - no need to do anything
+		if (o == null)
+			return;
+
+		appr.set(type,o);
     }
-    ;
 
     /**
      * DOCUMENT ME!
@@ -648,17 +655,23 @@ public abstract class AbstractCalculator
      * @param net DOCUMENT ME!
      */
     public void apply(NodeAppearance appr, Node n, CyNetwork net) {
+		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
+		Object o = getRangeValue(n);
+
+		// default has already been set - no need to do anything
+		if (o == null)
+			return;
+
+		appr.set(type,o);
     }
-    ;
+    
     protected Object getRangeValue(GraphObject obj) {
         if (obj == null)
             return null;
 
         final String nodeID = obj.getIdentifier();
         final Map attrBundle = getAttrBundle(nodeID);
-        attrBundle.put(
-            AbstractCalculator.ID,
-            obj.getIdentifier());
+        attrBundle.put( AbstractCalculator.ID, obj.getIdentifier());
 
         return getMapping(0)
                    .calculateRangeValue(attrBundle);

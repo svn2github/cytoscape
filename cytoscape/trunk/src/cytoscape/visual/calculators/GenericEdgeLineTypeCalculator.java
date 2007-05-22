@@ -91,24 +91,6 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final LineType line = (LineType) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (line == null)
-            return;
-
-        appr.setLineType(line);
-    }
-
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

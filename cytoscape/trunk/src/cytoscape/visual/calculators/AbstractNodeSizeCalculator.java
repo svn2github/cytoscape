@@ -97,33 +97,6 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param node DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(NodeAppearance appr, Node node, CyNetwork network) {
-        final Object rangeValue = getRangeValue(node);
-
-        // If null, don't set anything - the existing value in appr is already
-        // the default.
-        if (rangeValue == null)
-            return;
-
-        double ret = ((Number) rangeValue).doubleValue();
-
-        if (type == VisualPropertyType.NODE_WIDTH)
-            appr.setJustWidth(ret);
-
-        if (type == VisualPropertyType.NODE_HEIGHT)
-            appr.setJustHeight(ret);
-
-        if (type == VisualPropertyType.NODE_SIZE)
-            appr.setSize(ret);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *

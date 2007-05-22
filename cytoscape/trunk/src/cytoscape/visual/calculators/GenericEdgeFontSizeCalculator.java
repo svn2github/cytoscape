@@ -92,23 +92,6 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-     */
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        final Object rangeValue = getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (rangeValue == null)
-            return;
-
-        appr.setFontSize(((Number) rangeValue).floatValue());
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *
