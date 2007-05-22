@@ -98,7 +98,7 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o) {
 		if ((o == null) || (nv == null))
 			return;
-		if (nv.getBorderWidth() != (Float)o) {
+		if (nv.getBorderWidth() != ((Number)o).floatValue()) {
 			final BasicStroke oldValue = (BasicStroke) nv.getBorder();
 			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
 					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
