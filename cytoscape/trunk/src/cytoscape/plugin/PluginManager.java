@@ -407,24 +407,14 @@ public class PluginManager {
 		return Deleted;
 	}
 
-	private boolean recursiveDeleteFiles(File file) {
+    private boolean recursiveDeleteFiles(File file) {
+        if (file.isDirectory())
+            for (File f : file.listFiles())
+                recursiveDeleteFiles(f);
+
 		System.out.println(" recursive deleting file "+ file.getAbsolutePath());
-		boolean delete = false;
-		if (file.isFile()) {
-			delete = file.delete();
-		} else if (file.isDirectory()) {
-			for (File f : file.listFiles()) {
-				if (f.isFile()) {
-					delete = f.delete();
-				}
-				if (f.isDirectory()) {
-					delete = recursiveDeleteFiles(f);
-				}
-			}
-			delete = file.delete(); // delete the directory now that it's empty
-		}
-		return delete;
-	}
+        return file.delete();
+    }
 
 	private void checkWebstart() throws WebstartException {
 		if (usingWebstart) {
