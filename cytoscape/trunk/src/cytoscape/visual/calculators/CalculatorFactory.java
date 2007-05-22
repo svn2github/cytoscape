@@ -239,6 +239,9 @@ public class CalculatorFactory {
             calculator = (Calculator) (constructor.newInstance(params));
         } catch (Exception e) {
             String s = "unable to construct an instance of class " + className;
+            for(Object p: params) {
+            	System.out.println("-- Parameter = " + p);
+            }
             System.err.println(s);
             e.printStackTrace();
 

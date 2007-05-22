@@ -34,21 +34,26 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.LineType;
+import cytoscape.visual.VisualPropertyType;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
+
+import cytoscape.visual.parsers.FloatParser;
+
+import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import giny.view.EdgeView;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Stroke;
 
-import cytoscape.visual.*;
-
-import cytoscape.visual.ui.icon.*;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
+import java.util.Properties;
 
 import javax.swing.Icon;
-import giny.view.EdgeView;
-import java.util.Properties;
 
 
 /**
@@ -63,30 +68,67 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_LINE_WIDTH;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getDefaultIcon() {
 		final LineTypeIcon icon = new LineTypeIcon();
 		icon.setColor(new Color(10, 10, 10, 20));
 		icon.setText(getDefault().toString());
 		icon.setBottomPadding(-7);
+
 		return icon;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        // TODO
-    }
+		if (ev.getStrokeWidth() != (Float)o) {
+			final BasicStroke oldValue = (BasicStroke) ev.getStroke();
+			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
+					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
+		
+			//System.out.println("*** o = " + o + ", new w = " + ev.getStrokeWidth());
+			
+			ev.setStroke(newLine);
+			//System.out.println("Changed w = " + ev.getStrokeWidth());
+		}
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_LINE_WIDTH.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new DoubleParser()).parseDouble(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_LINE_WIDTH.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new Double(1.0); }
+		if (s != null)
+			return (new FloatParser()).parseFloat(s);
+		else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Float(1.0f);
+	}
 }

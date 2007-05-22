@@ -62,18 +62,15 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
+import static cytoscape.visual.VisualPropertyType.*;
 
-/*
- * ValueSelectDialog.java
- *
- * Created on 2007/02/27, 10:51
- */
 
 /**
  *
  * @author kono
  */
 public class ValueSelectDialog extends javax.swing.JDialog {
+	
 	private final VisualPropertyType type;
 	private Map shapeMap;
 	private List orderedKeyList;
@@ -214,6 +211,7 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 		if ((0 <= selectedIndex) && (selectedIndex < orderedKeyList.size()))
 			return orderedKeyList.get(selectedIndex);
 		else
+
 			return orderedKeyList.get(0);
 	}
 
@@ -232,10 +230,10 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 		for (Object key : shapeMap.keySet()) {
 			icon = (VisualPropertyIcon) shapeMap.get(key);
 
-			if (type.isNodeProp() == false) {
-				icon.setIconWidth(icon.getIconWidth() * 3);
+			if(type == EDGE_SRCARROW_SHAPE || type == EDGE_TGTARROW_SHAPE) {
+				icon.setIconWidth(icon.getIconWidth()*3);
 			}
-
+			
 			icons.add(icon);
 			orderedKeyList.add(key);
 			model.addElement(icon.getName());

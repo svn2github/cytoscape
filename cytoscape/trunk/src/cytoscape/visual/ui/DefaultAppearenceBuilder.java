@@ -34,16 +34,7 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+import static cytoscape.visual.VisualPropertyType.*;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -53,7 +44,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -61,7 +51,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +63,15 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -94,11 +92,22 @@ import javax.swing.SwingConstants;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
-	private static final List<VisualPropertyType> EDGE_PROPS = VisualPropertyType
-	                                                                                              .getEdgeVisualPropertyList();
-	private static final List<VisualPropertyType> NODE_PROPS = VisualPropertyType
-	                                                                                                .getNodeVisualPropertyList();
+	
+	private static final List<VisualPropertyType> EDGE_PROPS;
+	private static final List<VisualPropertyType> NODE_PROPS;
+	
 	private static DefaultAppearenceBuilder dab = null;
+	
+	static {
+		EDGE_PROPS = VisualPropertyType.getEdgeVisualPropertyList();
+		NODE_PROPS = VisualPropertyType.getNodeVisualPropertyList();
+	
+		NODE_PROPS.remove(NODE_LINETYPE);
+		EDGE_PROPS.remove(EDGE_LINETYPE);
+		EDGE_PROPS.remove(EDGE_SRCARROW);
+		EDGE_PROPS.remove(EDGE_TGTARROW);
+	}
+	
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -337,11 +346,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 					vps = NODE_PROPS;
 					list = nodeList;
 
-					//					
-					//					
-					//					int selected = nodeList.getSelectedIndex();
-					//					newValue = VizMapperMainPanel.showValueSelectDialog(orderedList[selected], this);
-					//					VizMapperMainPanel.apply(newValue, orderedList[selected]);
 				} else {
 					vps = EDGE_PROPS;
 					list = edgeList;
@@ -371,7 +375,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			}
 
 			buildList();
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			mainView.updateView();
 			mainView.repaint();
 		}

@@ -100,7 +100,7 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
         final Object rangeValue = getRangeValue(edge);
 
         // default has already been set - no need to do anything
-        if (rangeValue != null)
+        if (rangeValue == null)
             return;
 
         appr.setFontSize(((Number) rangeValue).floatValue());

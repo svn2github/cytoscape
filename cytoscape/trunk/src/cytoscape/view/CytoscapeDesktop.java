@@ -343,7 +343,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// Set up the VizMapper
 		//setupVizMapper();
-		setupVizMapperUI();
+		
+		getVizMapperUI();
 
 		// don't automatically close window. Let Cytoscape.exit(returnVal)
 		// handle this,
@@ -478,18 +479,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return  DOCUMENT ME!
 	 */
 	public VizMapperMainPanel getVizMapperUI() {
+		if(vizmapperUI == null) {
+			this.vizMapper = Cytoscape.getVisualMappingManager();
+			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
+			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
+			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
+		}
 		return vizmapperUI;
 	}
 
-	/*
-	 * Initialize Vizmapper GUI.
-	 */
-	private void setupVizMapperUI() {
-		this.vizMapper = Cytoscape.getVisualMappingManager();
-		vizmapperUI = VizMapperMainPanel.getVizMapperUI();
-		getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
-		this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
-	}
 
 	/**
 	 * Create the VizMapper and the UI for it.

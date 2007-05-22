@@ -274,21 +274,22 @@ public class VisualMappingManager extends SubjectBase {
      * attributes are calculated by delegating to the EdgeAppearanceCalculator
      * member of the current visual style.
      */
-    public void applyEdgeAppearances(CyNetwork network,
-        CyNetworkView network_view) {
-        EdgeAppearanceCalculator edgeAppearanceCalculator = visualStyle.getEdgeAppearanceCalculator();
+    public void applyEdgeAppearances(final CyNetwork network,
+        final CyNetworkView network_view) {
+    	
+        final EdgeAppearanceCalculator edgeAppearanceCalculator = visualStyle.getEdgeAppearanceCalculator();
 
+        EdgeView edgeView;
         for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
-            EdgeView edgeView = (EdgeView) i.next();
+             edgeView = (EdgeView) i.next();
 
             if (edgeView == null)
 
                 // WARNING: This is a hack, edgeView should not be null, but
                 // for now do this! (iliana)
                 continue;
-
-            Edge edge = edgeView.getEdge();
-            edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge,
+            
+            edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edgeView.getEdge(),
                 network);
             myEdgeApp.applyAppearance(edgeView);
         }
@@ -353,7 +354,7 @@ public class VisualMappingManager extends SubjectBase {
      * applyEdgeAppearances, and applyGlobalAppearances.
      */
     public void applyAppearances() {
-        Date start = new Date();
+        final long start = System.currentTimeMillis();
         /** first apply the node appearance to all nodes */
         applyNodeAppearances();
         /** then apply the edge appearance to all edges */
@@ -361,11 +362,8 @@ public class VisualMappingManager extends SubjectBase {
         /** now apply global appearances */
         applyGlobalAppearances();
 
-        /** we rely on the caller to redraw the graph as needed */
-        Date stop = new Date();
-
-        // System.out.println("Time to apply node styles: " + (stop.getTime() -
-        // start.getTime()));
+//         System.out.println("APPLY APPEARENCE called! Time to apply styles: " + (System.currentTimeMillis() -
+//         start));
     }
 
     // ------------------------------//

@@ -34,21 +34,26 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.VisualPropertyType;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
+
+import cytoscape.visual.parsers.LineStyleParser;
+
+import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import giny.view.EdgeView;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Stroke;
 
-import cytoscape.visual.*;
-
-import cytoscape.visual.ui.icon.*;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.Icon;
-import giny.view.EdgeView;
-import java.util.Properties;
 
 
 /**
@@ -63,30 +68,71 @@ public class EdgeLineStyleProp extends AbstractVisualProperty {
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_LINE_STYLE;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getDefaultIcon() {
 		final LineTypeIcon icon = new LineTypeIcon();
 		icon.setColor(new Color(10, 10, 10, 20));
 		icon.setText(getDefault().toString());
 		icon.setBottomPadding(-7);
+
 		return icon;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<Object, Icon> getIconSet() {
+		return LineStyle.getIconSet();
+	}
 
-        // TODO
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_LINE_STYLE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new LineStyleParser()).parseLineStyle(s); 
-        else
-            return null;
-    }
 
-    public Object getDefaultAppearanceObject() { return LineStyle.SOLID; }
+		if (((LineStyle)o).getDashDef() != (((BasicStroke)ev.getStroke()).getDashArray())) {
+			ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
+			//System.out.println("===Setting stroke: " + (ev.getStroke()));
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_LINE_STYLE.getDefaultPropertyKey(baseKey));
+
+		if (s != null)
+			return (new LineStyleParser()).parseLineStyle(s);
+		else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return LineStyle.SOLID;
+	}
 }

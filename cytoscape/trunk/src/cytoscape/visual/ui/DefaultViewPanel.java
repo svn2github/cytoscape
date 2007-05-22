@@ -135,7 +135,6 @@ public class DefaultViewPanel extends JPanel {
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		Cytoscape.getVisualMappingManager().setNetworkView(view);
-		
 	}
 
 	/**
@@ -155,7 +154,7 @@ public class DefaultViewPanel extends JPanel {
 		if (view != null) {
 			Cytoscape.getVisualMappingManager().setNetworkView(view);
 			view.setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
-			
+
 			final Dimension panelSize = this.getSize();
 			((DGraphView) view).getCanvas()
 			 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,

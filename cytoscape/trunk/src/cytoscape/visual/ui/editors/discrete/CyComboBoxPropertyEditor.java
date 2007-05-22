@@ -71,7 +71,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
                 }
 
                 public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-                    System.out.println("Old = " + oldValue + ", New = " +
+                    System.out.println("Old Value = " + oldValue + ", New Value = " +
                         combo.getSelectedItem());
 
                     CyComboBoxPropertyEditor.this.firePropertyChange(

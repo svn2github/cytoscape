@@ -70,7 +70,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 */
 	public LineTypeIcon() {
 		this((BasicStroke) ((LineType) VisualPropertyType.EDGE_LINETYPE.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                .getVisualStyle()))
+		                                                                                    .getVisualStyle()))
 		     .getStroke(), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
 		     ((LineType) VisualPropertyType.EDGE_LINETYPE
 		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).getType().toString(),
@@ -103,7 +103,9 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	public LineTypeIcon(BasicStroke stroke, int width, int height, String name, Color color) {
 		super(null, width, height, name, color);
 
-		final float lineWidth = ((Double) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).floatValue();
+		final float lineWidth = ((Number) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager()
+		                                                                                         .getVisualStyle()))
+		                        .floatValue();
 
 		/*
 		 * Define a stroke for the line segment icon

@@ -58,6 +58,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
+import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
 
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.DoubleParser;
@@ -122,6 +123,22 @@ public class NodeAppearance extends Appearance {
      */
     public void setFillColor(Color c) {
 		set(NODE_FILL_COLOR,c);
+    }
+    
+    /**
+     * Use Appearance.get(VisualPropertyType) instead.
+     *
+     */
+    public Integer getFillOpacity() {
+        return (Integer)(super.get(NODE_OPACITY));
+    }
+
+    /**
+     * Use Appearance.set(VisualPropertyType,Object) instead.
+     *
+     */
+    public void setFillOpacity(Integer i) {
+		set(NODE_OPACITY,i);
     }
 
     /**

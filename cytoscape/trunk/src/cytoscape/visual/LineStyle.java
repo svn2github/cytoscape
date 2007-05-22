@@ -59,7 +59,7 @@ public enum LineStyle {
 	// DASH("4.0f,4.0f"),
 	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
 
-	private float[] strokeDef;
+	private final float[] strokeDef;
 
 	private LineStyle(String def) {
 		if (def == null)
@@ -73,8 +73,12 @@ public enum LineStyle {
 		}
 	}
 
-	// TODO!!!
 	public static LineStyle parse(String val) {
+		for(LineStyle style: values()) {
+			if(style.toString().equals(val)) {
+				return style;
+			}
+		}
 		return SOLID; 
 	}
 
@@ -90,8 +94,11 @@ public enum LineStyle {
 			return new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f,
 			                       strokeDef, 0.0f);
 		else
-
 			return new BasicStroke(width);
+	}
+	
+	public float[] getDashDef() {
+		return strokeDef;
 	}
 
     public static Map<Object,Icon> getIconSet() {

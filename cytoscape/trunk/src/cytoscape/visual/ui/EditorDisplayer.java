@@ -36,19 +36,6 @@
 
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
-import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
-import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -57,6 +44,17 @@ import java.awt.Frame;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.LineType;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
+import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
+import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
 
 /**
  * Managing value editors in for each data types.<br>
@@ -89,9 +87,9 @@ public enum EditorDisplayer {
 	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualPropertyType.class, JDialog.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, Arrow.class), 
-	DISCRETE_LINE_TYPE(ValueSelectDialog.class, "showDialog",
+	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
 	                   new Class[] { VisualPropertyType.class, JDialog.class },
-	                   new Object[] { VisualPropertyType.EDGE_LINETYPE, null }, LineType.class), 
+	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class), 
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
