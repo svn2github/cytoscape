@@ -409,11 +409,22 @@ public class PluginManager {
 
     private boolean recursiveDeleteFiles(File file) {
         if (file.isDirectory())
-            for (File f : file.listFiles())
+            for (File f : file.listFiles()) 
                 recursiveDeleteFiles(f);
 
 		System.out.println(" recursive deleting file "+ file.getAbsolutePath());
-        return file.delete();
+		boolean del = file.delete();
+
+		// Utterly f*#king retarded, but apparently necessary since sometimes
+		// directories don't realize they're empty...
+		if ( !del ) {
+			for ( int i = 0; i < 1000 && file.exists(); i++ ) {
+				System.gc();
+				del = file.delete();
+			}
+		}
+
+		return del;
     }
 
 	private void checkWebstart() throws WebstartException {
