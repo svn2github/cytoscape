@@ -34,23 +34,80 @@
  */
 package cytoscape.visual;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.calculators.*;
-
-import cytoscape.visual.properties.*;
-
-import cytoscape.visual.ui.EditorDisplayer;
-import cytoscape.visual.ui.EditorDisplayer.EditorType;
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.GenericEdgeColorCalculator;
+import cytoscape.visual.calculators.GenericEdgeFontFaceCalculator;
+import cytoscape.visual.calculators.GenericEdgeFontSizeCalculator;
+import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
+import cytoscape.visual.calculators.GenericEdgeLabelColorCalculator;
+import cytoscape.visual.calculators.GenericEdgeLineStyleCalculator;
+import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
+import cytoscape.visual.calculators.GenericEdgeLineWidthCalculator;
+import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
+import cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator;
+import cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator;
+import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
+import cytoscape.visual.calculators.GenericEdgeTargetArrowColorCalculator;
+import cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator;
+import cytoscape.visual.calculators.GenericEdgeToolTipCalculator;
+import cytoscape.visual.calculators.GenericNodeBorderColorCalculator;
+import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
+import cytoscape.visual.calculators.GenericNodeFontFaceCalculator;
+import cytoscape.visual.calculators.GenericNodeFontSizeCalculator;
+import cytoscape.visual.calculators.GenericNodeHeightCalculator;
+import cytoscape.visual.calculators.GenericNodeLabelCalculator;
+import cytoscape.visual.calculators.GenericNodeLabelColorCalculator;
+import cytoscape.visual.calculators.GenericNodeLabelPositionCalculator;
+import cytoscape.visual.calculators.GenericNodeLineStyleCalculator;
+import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
+import cytoscape.visual.calculators.GenericNodeLineWidthCalculator;
+import cytoscape.visual.calculators.GenericNodeOpacityCalculator;
+import cytoscape.visual.calculators.GenericNodeShapeCalculator;
+import cytoscape.visual.calculators.GenericNodeToolTipCalculator;
+import cytoscape.visual.calculators.GenericNodeUniformSizeCalculator;
+import cytoscape.visual.calculators.GenericNodeWidthCalculator;
+import cytoscape.visual.properties.EdgeColorProp;
+import cytoscape.visual.properties.EdgeFontFaceProp;
+import cytoscape.visual.properties.EdgeFontSizeProp;
+import cytoscape.visual.properties.EdgeLabelColorProp;
+import cytoscape.visual.properties.EdgeLabelPositionProp;
+import cytoscape.visual.properties.EdgeLabelProp;
+import cytoscape.visual.properties.EdgeLineStyleProp;
+import cytoscape.visual.properties.EdgeLineTypeProp;
+import cytoscape.visual.properties.EdgeLineWidthProp;
+import cytoscape.visual.properties.EdgeSourceArrowColorProp;
+import cytoscape.visual.properties.EdgeSourceArrowProp;
+import cytoscape.visual.properties.EdgeSourceArrowShapeProp;
+import cytoscape.visual.properties.EdgeTargetArrowColorProp;
+import cytoscape.visual.properties.EdgeTargetArrowProp;
+import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
+import cytoscape.visual.properties.EdgeToolTipProp;
+import cytoscape.visual.properties.NodeBorderColorProp;
+import cytoscape.visual.properties.NodeFillColorProp;
+import cytoscape.visual.properties.NodeFontFaceProp;
+import cytoscape.visual.properties.NodeFontSizeProp;
+import cytoscape.visual.properties.NodeHeightProp;
+import cytoscape.visual.properties.NodeLabelColorProp;
+import cytoscape.visual.properties.NodeLabelPositionProp;
+import cytoscape.visual.properties.NodeLabelProp;
+import cytoscape.visual.properties.NodeLineStyleProp;
+import cytoscape.visual.properties.NodeLineTypeProp;
+import cytoscape.visual.properties.NodeLineWidthProp;
+import cytoscape.visual.properties.NodeOpacityProp;
+import cytoscape.visual.properties.NodeShapeProp;
+import cytoscape.visual.properties.NodeSizeProp;
+import cytoscape.visual.properties.NodeToolTipProp;
+import cytoscape.visual.properties.NodeWidthProp;
+import cytoscape.visual.ui.EditorDisplayer;
+import cytoscape.visual.ui.EditorDisplayer.EditorType;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 
 /**
  * Enum for calculator types.<br>
@@ -71,8 +128,6 @@ public enum VisualPropertyType {
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", GenericNodeBorderColorCalculator.class,
 	                  Color.class, new NodeBorderColorProp()), 
-	/** @deprecated Use NODE_LINE_WIDTH and NODE_LINE_STYLE instead. Gone 5/2008. */
-	@Deprecated
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
 	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class, LineType.class,
 	              new NodeLineTypeProp()), 
@@ -101,8 +156,6 @@ public enum VisualPropertyType {
 	                    LabelPosition.class, new NodeLabelPositionProp()), 
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           GenericEdgeColorCalculator.class, Color.class, new EdgeColorProp()), 
-	/** @deprecated Use EDGE_LINE_WIDTH and EDGE_LINE_STYLE instead. Gone 5/2008. */
-	@Deprecated
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
 	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, LineType.class,
 	              new EdgeLineTypeProp()), 
@@ -132,7 +185,6 @@ public enum VisualPropertyType {
 	EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
 	                "defaultEdgeLineWidth", GenericEdgeLineWidthCalculator.class, Number.class,
 	                new EdgeLineWidthProp()), 
-
 	NODE_LINE_STYLE("Node Line Style", "nodeLineStyleCalculator", "node.lineStyle",
 	                "defaultNodeLineStyle", GenericNodeLineStyleCalculator.class, LineStyle.class,
 	                new NodeLineStyleProp()), 
@@ -156,13 +208,13 @@ public enum VisualPropertyType {
 	EDGE_TGTARROW_COLOR("Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
 	                    "edge.targetArrowColor", "defaultEdgeTargetArrowColor",
 	                    GenericEdgeTargetArrowColorCalculator.class, Color.class,
-	                    new EdgeTargetArrowColorProp()), 
+	                    new EdgeTargetArrowColorProp()),
+	NODE_OPACITY("Node Opacity", "nodeOpacityCalculator", "node.opacity", "defaultNodeOpacity",
+	             GenericNodeOpacityCalculator.class, Number.class, new NodeOpacityProp()), 
 
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
-	                    "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp()),
-
-	;
+	                    "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp());
 	/*
 	 * String returned by toString() method.
 	 */
@@ -311,28 +363,41 @@ public enum VisualPropertyType {
 		if (calcName.startsWith("Node"))
 			return true;
 		else
+
 			return false;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static List<VisualPropertyType> getNodeVisualPropertyList() {
 		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
-		
-		for(VisualPropertyType type: values()) {
-			if(type.getName().startsWith("Node")) {
+
+		for (VisualPropertyType type : values()) {
+			if (type.getName().startsWith("Node")) {
 				list.add(type);
 			}
 		}
+
 		return list;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static List<VisualPropertyType> getEdgeVisualPropertyList() {
 		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
-		
-		for(VisualPropertyType type: values()) {
-			if(type.getName().startsWith("Edge")) {
+
+		for (VisualPropertyType type : values()) {
+			if (type.getName().startsWith("Edge")) {
 				list.add(type);
 			}
 		}
+
 		return list;
 	}
 
@@ -342,17 +407,21 @@ public enum VisualPropertyType {
 		Method method = action.getActionClass()
 		                      .getMethod(action.getCommand(), action.getParamTypes());
 
+		System.out.println("Action = " + action.getCommand());
+		
+		
 		Object ret = method.invoke(null, action.getParameters());
 
 		// This is an editor.
 		if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
 			return ret;
-		else if(ret != null && ret instanceof ArrowShape) {
+		else if ((ret != null) && ret instanceof ArrowShape) {
 			System.out.println("Arrow!!!!!!");
 			ret = new Arrow((ArrowShape) ret, Color.white);
-			
-		}
-		else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
+		} else if ((ret != null) && this == EDGE_LINE_WIDTH) {
+				System.out.println("L W!!!!!!");
+				ret = Float.valueOf(((String)ret));
+		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
 			ret = Double.parseDouble(ret.toString());
 
 		return ret;
