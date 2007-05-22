@@ -34,10 +34,7 @@
 */
 package cytoscape.visual.ui;
 
-import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW;
-import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
+import static cytoscape.visual.VisualPropertyType.*;
 import giny.model.GraphObject;
 
 import java.awt.BorderLayout;
@@ -166,6 +163,10 @@ import ding.view.InnerCanvas;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, CyNetworkListener {
+	
+	// VPT in this list will not be shown in this GUI.
+	private static final Set<VisualPropertyType> IGNORE = new TreeSet<VisualPropertyType>();
+	
 	public enum DefaultEditor {
 		NODE,
 		EDGE,
@@ -203,6 +204,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static VizMapperMainPanel panel;
 
 	static {
+		IGNORE.add(NODE_LINETYPE);
+		IGNORE.add(EDGE_LINETYPE);
+		IGNORE.add(EDGE_SRCARROW);
+		IGNORE.add(EDGE_TGTARROW);
+		IGNORE.add(EDGE_LABEL_POSITION);
 		/*
 		 * Make dummy network nodes & edges
 		 */
@@ -2095,8 +2101,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			} else
 				mapping = calc.getMapping(0);
 
-			if ((mapping == null) && (type != EDGE_SRCARROW) && (type != EDGE_TGTARROW)
-			    && (type != NODE_LINETYPE) && (type != EDGE_LINETYPE))
+			if ((mapping == null) && IGNORE.contains(type) == false)
 				noMapping.add(type);
 
 			mapping = null;

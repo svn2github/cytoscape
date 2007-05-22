@@ -34,17 +34,21 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.FloatParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.NodeView;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.NodeView;
+import java.awt.Stroke;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -85,22 +89,46 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 			};
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
-	
-		// TODO	
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
+		if (nv.getBorderWidth() != (Float)o) {
+			final BasicStroke oldValue = (BasicStroke) nv.getBorder();
+			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
+					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
+			nv.setBorder(newLine);
+		}
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_LINE_WIDTH.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new DoubleParser()).parseDouble(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_LINE_WIDTH.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new Double(1.0); }
+		if (s != null)
+			return (new FloatParser()).parseFloat(s);
+		else
+			return null;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Float(1.0);
+	}
 }
