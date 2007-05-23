@@ -46,6 +46,7 @@ import cytoscape.CyNetwork;
 
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.continuous.*;
 
@@ -283,16 +284,19 @@ public class ContinuousMapping extends SubjectBase
     }
 
     /**
-     *  DOCUMENT ME!
-     *
-     * @param visualAttr DOCUMENT ME!
-     * @param b DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
+	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
      */
+	@Deprecated
     public JPanel getLegend(String visualAttr, byte b) {
-        return new ContinuousLegend(visualAttr, attrName, points, defaultObj, b);
+        return getLegend(VisualPropertyType.getVisualPorpertyType(b)); 
     }
+
+	/**
+	 *
+	 */
+    public JPanel getLegend(VisualPropertyType vpt) {
+        return new ContinuousLegend(attrName, points, defaultObj, vpt);
+	}
 
     /**
      * Calculates the Range Value.

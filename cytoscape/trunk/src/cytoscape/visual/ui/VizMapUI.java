@@ -107,170 +107,63 @@ public class VizMapUI extends JDialog
     /*
      * The constants value below will be replaced by Enum CaluculatorTypes.
      */
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_COLOR = 0;
-
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_BORDER_COLOR = 1;
-
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_LINETYPE = 2;
-
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_SHAPE = 3;
-
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_SIZE = 4;
-
-    /**
-     * DOCUMENT ME!
-     */
+    @Deprecated
+    public static final byte NODE_WIDTH = 5;
+    @Deprecated
+    public static final byte NODE_HEIGHT = 6;
     @Deprecated
     public static final byte NODE_LABEL = 7;
-
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
-    public static final byte NODE_LABEL_FONT = 100;
-
-    /**
-     * DOCUMENT ME!
-     */
+    public static final byte NODE_FONT_FACE = 8;
+    @Deprecated
+    public static final byte NODE_FONT_SIZE = 9;
     @Deprecated
     public static final byte NODE_LABEL_COLOR = 10;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_COLOR = 13;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_LINETYPE = 14;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_SRCARROW = 15;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_TGTARROW = 16;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_SRCARROW_COLOR = 50;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_TGTARROW_COLOR = 51;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_LABEL = 17;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_LABEL_FONT = 101;
-
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_TOOLTIP = 11;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_TOOLTIP = 21;
-
-    // for node and edge label position... if you hadn't already guessed
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
     public static final byte NODE_LABEL_POSITION = 12;
-
-    /**
-     * DOCUMENT ME!
-     */
+    @Deprecated
+    public static final byte EDGE_COLOR = 13;
+    @Deprecated
+    public static final byte EDGE_LINETYPE = 14;
+    @Deprecated
+    public static final byte EDGE_SRCARROW = 15;
+    @Deprecated
+    public static final byte EDGE_TGTARROW = 16;
+    @Deprecated
+    public static final byte EDGE_LABEL = 17;
+    @Deprecated
+    public static final byte EDGE_FONT_FACE = 18;
+    @Deprecated
+    public static final byte EDGE_FONT_SIZE = 19;
+    @Deprecated
+    public static final byte EDGE_LABEL_COLOR = 20;
+    @Deprecated
+    public static final byte EDGE_TOOLTIP = 21;
     @Deprecated
     public static final byte EDGE_LABEL_POSITION = 22;
 
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
-    public static final byte EDGE_LABEL_COLOR = 20;
+    public static final byte EDGE_SRCARROW_COLOR = 50;
+    @Deprecated
+    public static final byte EDGE_TGTARROW_COLOR = 51;
 
-    // for creating VizMapTabs with font face/size on one page
-    /**
-     * DOCUMENT ME!
-     */
     @Deprecated
-    public static final byte NODE_FONT_FACE = 8;
+    public static final byte NODE_LABEL_FONT = 100;
+    @Deprecated
+    public static final byte EDGE_LABEL_FONT = 101;
 
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte NODE_FONT_SIZE = 9;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_FONT_FACE = 18;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte EDGE_FONT_SIZE = 19;
-
-    // for creating VizMapTabs with locked node height/width
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte NODE_HEIGHT = 6;
-
-    /**
-     * DOCUMENT ME!
-     */
-    @Deprecated
-    public static final byte NODE_WIDTH = 5;
 
     // VisualMappingManager for the graph.
     protected VisualMappingManager VMM;
@@ -340,27 +233,27 @@ public class VizMapUI extends JDialog
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 0, VMM, NODE_COLOR));
+            new VizMapAttrTab(this, nodePane, 0, VMM, (byte)VisualPropertyType.NODE_FILL_COLOR.ordinal()));
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 1, VMM, NODE_BORDER_COLOR));
+            new VizMapAttrTab(this, nodePane, 1, VMM, (byte)VisualPropertyType.NODE_BORDER_COLOR.ordinal()));
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 2, VMM, NODE_LINETYPE));
+            new VizMapAttrTab(this, nodePane, 2, VMM, (byte)VisualPropertyType.NODE_LINETYPE.ordinal()));
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 3, VMM, NODE_SHAPE));
+            new VizMapAttrTab(this, nodePane, 3, VMM, (byte)VisualPropertyType.NODE_SHAPE.ordinal()));
         addTab(
             tabs,
             nodePane,
-            new VizMapSizeTab(this, nodePane, 4, VMM, NODE_SIZE));
+            new VizMapSizeTab(this, nodePane, 4, VMM, (byte)VisualPropertyType.NODE_SIZE.ordinal()));
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 5, VMM, NODE_LABEL));
+            new VizMapAttrTab(this, nodePane, 5, VMM, (byte)VisualPropertyType.NODE_LABEL.ordinal()));
         addTab(
             tabs,
             nodePane,
@@ -368,11 +261,11 @@ public class VizMapUI extends JDialog
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 7, VMM, NODE_LABEL_COLOR));
+            new VizMapAttrTab(this, nodePane, 7, VMM, (byte)VisualPropertyType.NODE_LABEL_COLOR.ordinal()));
         addTab(
             tabs,
             nodePane,
-            new VizMapAttrTab(this, nodePane, 8, VMM, NODE_LABEL_POSITION));
+            new VizMapAttrTab(this, nodePane, 8, VMM, (byte)VisualPropertyType.NODE_LABEL_POSITION.ordinal()));
         addTab(
             tabs,
             nodePane,
@@ -381,28 +274,28 @@ public class VizMapUI extends JDialog
                 nodePane,
                 9,
                 VMM,
-                VisualPropertyType.NODE_LINE_WIDTH.getType()));
+                (byte)VisualPropertyType.NODE_LINE_WIDTH.ordinal()));
 
         addTab(
             tabs,
             edgePane,
-            new VizMapAttrTab(this, edgePane, 0, VMM, EDGE_COLOR));
+            new VizMapAttrTab(this, edgePane, 0, VMM, (byte)VisualPropertyType.EDGE_COLOR.ordinal()));
         addTab(
             tabs,
             edgePane,
-            new VizMapAttrTab(this, edgePane, 1, VMM, EDGE_LINETYPE));
+            new VizMapAttrTab(this, edgePane, 1, VMM, (byte)VisualPropertyType.EDGE_LINETYPE.ordinal()));
         addTab(
             tabs,
             edgePane,
-            new VizMapAttrTab(this, edgePane, 2, VMM, EDGE_SRCARROW));
+            new VizMapAttrTab(this, edgePane, 2, VMM, (byte)VisualPropertyType.EDGE_SRCARROW.ordinal()));
         addTab(
             tabs,
             edgePane,
-            new VizMapAttrTab(this, edgePane, 3, VMM, EDGE_TGTARROW));
+            new VizMapAttrTab(this, edgePane, 3, VMM, (byte)VisualPropertyType.EDGE_TGTARROW.ordinal()));
         addTab(
             tabs,
             edgePane,
-            new VizMapAttrTab(this, edgePane, 4, VMM, EDGE_LABEL));
+            new VizMapAttrTab(this, edgePane, 4, VMM, (byte)VisualPropertyType.EDGE_LABEL.ordinal()));
         addTab(
             tabs,
             edgePane,
@@ -410,7 +303,7 @@ public class VizMapUI extends JDialog
         addTab(
             tabs,
             edgePane,
-            new VizMapAttrTab(this, edgePane, 6, VMM, EDGE_LABEL_COLOR));
+            new VizMapAttrTab(this, edgePane, 6, VMM, (byte)VisualPropertyType.EDGE_LABEL_COLOR.ordinal()));
         addTab(
             tabs,
             edgePane,
@@ -419,7 +312,7 @@ public class VizMapUI extends JDialog
                 edgePane,
                 7,
                 VMM,
-                VisualPropertyType.EDGE_LINE_WIDTH.getType()));
+                (byte)VisualPropertyType.EDGE_LINE_WIDTH.ordinal()));
         addTab(
             tabs,
             edgePane,
@@ -428,7 +321,7 @@ public class VizMapUI extends JDialog
                 edgePane,
                 8,
                 VMM,
-                VisualPropertyType.EDGE_SRCARROW_COLOR.getType()));
+                (byte)VisualPropertyType.EDGE_SRCARROW_COLOR.ordinal()));
         addTab(
             tabs,
             edgePane,
@@ -437,7 +330,7 @@ public class VizMapUI extends JDialog
                 edgePane,
                 9,
                 VMM,
-                VisualPropertyType.EDGE_TGTARROW_COLOR.getType()));
+                (byte)VisualPropertyType.EDGE_TGTARROW_COLOR.ordinal()));
 
         // global default pane
         JPanel defaultPane = new DefaultPanel(this, VMM);

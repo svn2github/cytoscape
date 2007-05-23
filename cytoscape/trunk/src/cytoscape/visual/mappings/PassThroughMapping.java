@@ -46,6 +46,7 @@ import cytoscape.CyNetwork;
 
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.ShapeNodeRealizer;
+import cytoscape.visual.VisualPropertyType;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -298,13 +299,19 @@ public class PassThroughMapping
      * @param b DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
      */
+	@Deprecated
     public JPanel getLegend(String visualAttr, byte b) {
+		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
+	}
+
+    public JPanel getLegend(VisualPropertyType vpt) {
         JPanel p = new JPanel();
         p.setBackground(Color.white);
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-        JLabel l = new JLabel(visualAttr + " is displayed as " + attrName);
+        JLabel l = new JLabel(vpt.getName() + " is displayed as " + attrName);
         p.add(l);
 
         return p;

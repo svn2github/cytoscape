@@ -119,7 +119,7 @@ public class VizMapSizeTab extends VizMapTab {
         throws IllegalArgumentException {
         super(new BorderLayout(), false);
 
-        if (type != VizMapUI.NODE_SIZE)
+        if (type != (byte)VisualPropertyType.NODE_SIZE.ordinal())
             throw new IllegalArgumentException(
                 "You can only create a VizMapSizeTab for the Node Size attribute");
 
@@ -147,14 +147,14 @@ public class VizMapSizeTab extends VizMapTab {
                 false);
         // generate panel for height and width
         height = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-                VizMapUI.NODE_HEIGHT);
+                (byte)VisualPropertyType.NODE_HEIGHT.ordinal());
         width = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-                VizMapUI.NODE_WIDTH);
+                (byte)VisualPropertyType.NODE_WIDTH.ordinal());
 
         // Lock at the nodeAppearanceCalculator level, since can't have duplicate
         // calculators. We have to be careful to keep size and height in sync.
         size = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM,
-                VizMapUI.NODE_SIZE);
+                (byte)VisualPropertyType.NODE_SIZE.ordinal());
 
         width.setBorder(BorderFactory.createTitledBorder(width.getName()));
         height.setBorder(BorderFactory.createTitledBorder(height.getName()));
@@ -187,11 +187,11 @@ public class VizMapSizeTab extends VizMapTab {
     private class LockCalcListener
         implements ItemListener {
         // initialize to initial state as defined in cytoscape.props
-        private Calculator widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
-        private Calculator heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
+        private Calculator widthCalc = nodeCalc.getCalculator((byte)VisualPropertyType.NODE_WIDTH.ordinal());
+        private Calculator heightCalc = nodeCalc.getCalculator((byte)VisualPropertyType.NODE_HEIGHT.ordinal());
 
         // maintain separate memoization for the locked calculator
-        private Calculator lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
+        private Calculator lockCalc = nodeCalc.getCalculator((byte)VisualPropertyType.NODE_SIZE.ordinal());
 
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -207,10 +207,10 @@ public class VizMapSizeTab extends VizMapTab {
                 // have to clear the current calculators to prevent
                 // conflicts in panels - calculators can only be selected in one
                 // VizMapAttrTab
-                this.widthCalc = nodeCalc.getCalculator(VizMapUI.NODE_WIDTH);
+                this.widthCalc = nodeCalc.getCalculator((byte)VisualPropertyType.NODE_WIDTH.ordinal());
                 width.setComboBox(null);
 
-                this.heightCalc = nodeCalc.getCalculator(VizMapUI.NODE_HEIGHT);
+                this.heightCalc = nodeCalc.getCalculator((byte)VisualPropertyType.NODE_HEIGHT.ordinal());
                 height.setComboBox(null);
 
                 // set the locked calculator as memoized
@@ -225,7 +225,7 @@ public class VizMapSizeTab extends VizMapTab {
                 nodeCalc.setNodeSizeLocked(false);
 
                 // memoize currently selected calculator
-                this.lockCalc = nodeCalc.getCalculator(VizMapUI.NODE_SIZE);
+                this.lockCalc = nodeCalc.getCalculator((byte)VisualPropertyType.NODE_SIZE.ordinal());
                 size.setComboBox(null);
 
                 // reset back to old calculators

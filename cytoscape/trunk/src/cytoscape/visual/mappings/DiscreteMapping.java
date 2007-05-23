@@ -55,6 +55,7 @@ import cytoscape.CyNetwork;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.SubjectBase;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.discrete.DiscreteLegend;
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
 import cytoscape.visual.mappings.discrete.DiscreteMappingWriter;
@@ -299,8 +300,14 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * Returns a JPanel containing a legend for this mapping.
 	 * @param visualAttr The name of the visual attribute using this mapping.
 	 * @return JPanel Object.
+	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
 	 */
+	@Deprecated
 	public JPanel getLegend(String visualAttr, byte b) {
-		return new DiscreteLegend(treeMap, visualAttr, attrName, b);
+		return getLegend(VisualPropertyType.getVisualPorpertyType(b)); 
+	}
+
+	public JPanel getLegend(VisualPropertyType vpt) {
+		return new DiscreteLegend(treeMap, attrName, vpt);
 	}
 }

@@ -345,10 +345,10 @@ public class VizMapAttrTab extends VizMapTab {
 	protected ImageIcon getImageIcon() {
 		ImageIcon icon = null;
 
-		if (this.type == VizMapUI.NODE_COLOR) {
+		if (this.type == (byte)VisualPropertyType.NODE_FILL_COLOR.ordinal()) {
 			String imageFile = "images/nodeColorWheel.jpg";
 			icon = new ImageIcon(this.getClass().getResource(imageFile), "Node Color");
-		} else if (this.type == VizMapUI.NODE_BORDER_COLOR) {
+		} else if (this.type == (byte)VisualPropertyType.NODE_BORDER_COLOR.ordinal()) {
 			String imageFile = "images/nodeBorderColorWheel.jpg";
 			icon = new ImageIcon(this.getClass().getResource(imageFile), "Node Border Color");
 		}

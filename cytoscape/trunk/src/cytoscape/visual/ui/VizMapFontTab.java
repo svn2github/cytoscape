@@ -91,18 +91,18 @@ public class VizMapFontTab extends VizMapTab {
         case VizMapUI.NODE_LABEL_FONT:
             setName("Node Font");
             this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
-                    VMM, VizMapUI.NODE_FONT_FACE);
+                    VMM, (byte)VisualPropertyType.NODE_FONT_FACE.ordinal());
             this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
-                    VMM, VizMapUI.NODE_FONT_SIZE);
+                    VMM, (byte)VisualPropertyType.NODE_FONT_SIZE.ordinal());
 
             break;
 
         case VizMapUI.EDGE_LABEL_FONT:
             setName("Edge Font");
             this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
-                    VMM, VizMapUI.EDGE_FONT_FACE);
+                    VMM, (byte)VisualPropertyType.EDGE_FONT_FACE.ordinal());
             this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex,
-                    VMM, VizMapUI.EDGE_FONT_SIZE);
+                    VMM, (byte)VisualPropertyType.EDGE_FONT_SIZE.ordinal());
 
             break;
 

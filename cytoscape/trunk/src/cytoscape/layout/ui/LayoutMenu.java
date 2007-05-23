@@ -132,7 +132,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
-		for (LayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getLabel())) {
+		for (LayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getText())) {
 			// Make sure we don't have any lingering locked nodes
 			layout.unlockAllNodes();
 

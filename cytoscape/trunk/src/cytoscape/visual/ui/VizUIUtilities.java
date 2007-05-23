@@ -42,10 +42,6 @@
 //--------------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
-import cytoscape.visual.EdgeAppearance;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearance;
-import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;

@@ -37,6 +37,7 @@
 package cytoscape.visual.mappings.continuous;
 
 import cytoscape.visual.mappings.LegendTable;
+import cytoscape.visual.VisualPropertyType;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -69,9 +70,14 @@ public class ContinuousLegend extends JPanel {
      * @param points  DOCUMENT ME!
      * @param obj  DOCUMENT ME!
      * @param b  DOCUMENT ME!
+	 * @deprecated Use constructor with VisualPropertyType instead. Gone 5/2008.
      */
-    public ContinuousLegend(String visualAttr, String dataAttr, List points,
-        Object obj, byte b) {
+	@Deprecated 
+    public ContinuousLegend(String visualAttr, String dataAttr, List points, Object obj, byte b) {
+		this(dataAttr,points,obj,VisualPropertyType.getVisualPorpertyType(b));
+	}
+
+    public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
         super();
         this.points = points;
         this.obj = obj;
@@ -79,14 +85,14 @@ public class ContinuousLegend extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setAlignmentX(0);
 
-        add(new JLabel(visualAttr + " is continuously mapped to " + dataAttr));
+        add(new JLabel(vpt.getName() + " is continuously mapped to " + dataAttr));
 
         if (obj instanceof Color) {
             add(LegendTable.getHeader());
             add(getGradientPanel());
         } else {
             add(LegendTable.getHeader());
-            add(getObjectPanel(b));
+            add(getObjectPanel(vpt));
         }
     }
 
@@ -185,7 +191,7 @@ public class ContinuousLegend extends JPanel {
         return new ImageIcon(bi);
     }
 
-    private JPanel getObjectPanel(byte b) {
+    private JPanel getObjectPanel(VisualPropertyType vpt) {
         Object[][] data = new Object[points.size() + 2][2];
 
         ContinuousMappingPoint curr = null;
@@ -207,7 +213,7 @@ public class ContinuousLegend extends JPanel {
             }
         }
 
-        LegendTable lt = new LegendTable(data, b);
+        LegendTable lt = new LegendTable(data, vpt);
 
         return lt;
     }

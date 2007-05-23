@@ -39,6 +39,8 @@ package cytoscape.visual.mappings;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
+import cytoscape.visual.VisualPropertyType;
+
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
@@ -61,17 +63,23 @@ import javax.swing.JPanel;
  * @author $author$
   */
 public class LegendTable extends JPanel {
-    private byte type;
+    private VisualPropertyType type;
 
     /**
      * Creates a new LegendTable object.
      *
      * @param data DOCUMENT ME!
      * @param b DOCUMENT ME!
+	 * @deprecated Use VisualPropertyType constructor instead. Gone 5/2008.
      */
+	@Deprecated 
     public LegendTable(Object[][] data, byte b) {
+		this(data,VisualPropertyType.getVisualPorpertyType(b));
+	}
+
+    public LegendTable(Object[][] data, VisualPropertyType vpt) {
         super();
-        type = b;
+        type = vpt;
 
         setLayout(new GridLayout(data.length, data[0].length, 4, 4));
         setBackground(Color.white);
@@ -103,13 +111,13 @@ public class LegendTable extends JPanel {
             lab.setFont(f);
             component = lab;
         } else if (value instanceof Double) {
-            if (type == NODE_SIZE.getType())
+            if (type == NODE_SIZE)
                 component = new JLabel(
                         IconSupport.getNodeSizeIcon((Double) value));
-            else if (type == NODE_WIDTH.getType())
+            else if (type == NODE_WIDTH)
                 component = new JLabel(
                         IconSupport.getNodeWidthIcon((Double) value));
-            else if (type == NODE_HEIGHT.getType())
+            else if (type == NODE_HEIGHT)
                 component = new JLabel(
                         IconSupport.getNodeHeightIcon((Double) value));
         } else if (value instanceof LabelPosition)

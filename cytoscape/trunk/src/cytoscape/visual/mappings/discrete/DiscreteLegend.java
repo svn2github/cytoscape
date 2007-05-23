@@ -38,6 +38,7 @@ package cytoscape.visual.mappings.discrete;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.LegendTable;
 
@@ -70,16 +71,21 @@ public class DiscreteLegend extends JPanel {
      * @param visualAttr  DOCUMENT ME!
      * @param dataAttr  DOCUMENT ME!
      * @param b  DOCUMENT ME!
+	 * @deprecated Use VisualPropertyType constructor instead. Gone 5/2008.
      */
-    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr,
-        byte b) {
+	@Deprecated 
+    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
+		this(legendMap,dataAttr,VisualPropertyType.getVisualPorpertyType(b));
+	}
+
+    public DiscreteLegend(Map legendMap, String dataAttr, VisualPropertyType vpt) {
         super();
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.white);
         setAlignmentX(0);
 
-        JLabel title = new JLabel(visualAttr + " is discretely mapped to " +
+        JLabel title = new JLabel(vpt.getName() + " is discretely mapped to " +
                 dataAttr);
         add(title);
 
@@ -97,6 +103,6 @@ public class DiscreteLegend extends JPanel {
         }
 
         add(LegendTable.getHeader());
-        add(new LegendTable(data, b));
+        add(new LegendTable(data, vpt));
     }
 }
