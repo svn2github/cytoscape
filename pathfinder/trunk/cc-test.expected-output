@@ -1,0 +1,17 @@
+### ARGS: 
+   [cc-test.sif]
+### e [start DFS]
+    e [done]
+### a [start DFS]
+    a [done]
+### j [start DFS]
+    j [done]
+### l [start DFS]
+    l [done]
+### i [start DFS]
+    i [done]
+Component 1 = (e,g,f,h,d)
+Component 2 = (a,c,b)
+Component 3 = (j)
+Component 4 = (l,k)
+Component 5 = (i)

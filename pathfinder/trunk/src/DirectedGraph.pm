@@ -101,6 +101,7 @@ sub print
 
     my %alist = %{$self->alist()};
 
+    my %nodesPrinted;
     foreach $n1 (keys %alist)
     {
 	foreach $n2 (keys %{$alist{$n1}})
@@ -108,7 +109,17 @@ sub print
 	    foreach $edgeType (@{$alist{$n1}{$n2}})
 	    {
 		printf ("%s %s %s\n", $n1, $edgeType, $n2);
+		$nodesPrinted{$n1}++;
+		$nodesPrinted{$n2}++;
 	    }
+	}
+    }
+
+    foreach my $n ($self->nodes())
+    {
+	if(!exists($nodesPrinted{$n}))
+	{
+	    print "$n\n";
 	}
     }
 }

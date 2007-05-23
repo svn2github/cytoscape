@@ -15,6 +15,7 @@ foreach $event (qw(DISC FINI STAR ENDP INSP PUSH POP TPAT TSEA))
 }
 
 $DEBUG = $DISC | $FINI | $STAR | $ENDP | $INSP | $PUSH | $POP | $TPAT | $TSEA;
+$NONE = 0;
 
 sub DEBUG
 {

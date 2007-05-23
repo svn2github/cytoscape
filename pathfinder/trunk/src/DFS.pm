@@ -4,10 +4,6 @@ use SearchAlgorithm;
 
 @ISA = qw(SearchAlgorithm);
 
-my $WHITE = 0;
-my $GREY = 1;
-my $BLACK = 2;
-
 ## 
 ## Constructor
 ##
@@ -15,7 +11,11 @@ my $BLACK = 2;
 sub new
 {
     my ($caller, $graph) = @_;
-    return $caller->SUPER::new($graph);
+    my $self = $caller->SUPER::new($graph);
+    $self->{'WHITE'} = 0;
+    $self->{'GREY'} = 1;
+    $self->{'BLACK'} = 2;
+    return $self;
 }
 
 ## 
@@ -41,7 +41,7 @@ sub search
 	my (%color, %ft, %dt);
 	foreach $n ($self->graph()->nodes())
 	{
-	    $color{$n} = $WHITE;
+	    $color{$n} = $self->{'WHITE'};
 	    $ft{$n} = 0;
 	    $dt{$n} = 0;
 	}
@@ -67,18 +67,19 @@ sub dfsVisit
 
     $visitor->("discovery", $node, $depth, $$time);
 
-    $color->{$node} = $GREY;
+    $color->{$node} = $self->{'GREY'};
     $dt->{$node} = $$time; # store the discovery time
     $$time += 1;
 
     my @neighbors = $self->graph()->getNeighbors($node);
     foreach $n (@neighbors)
     {
-        if($color->{$n} != $GREY)
+        if($color->{$n} != $self->{'GREY'})
         {
             $self->dfsVisit($n, $depth + 1, $time, $color, $dt, $ft, $visitor);
         }
     }
+    
     $visitor->("finish", $node, $depth, $$time);
     $ft->{$node} = $$time; # store the finish time
 }
