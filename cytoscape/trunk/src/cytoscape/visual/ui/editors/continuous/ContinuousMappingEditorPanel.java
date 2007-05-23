@@ -29,6 +29,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -85,14 +86,22 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 
                 public void windowClosing(WindowEvent e) {
                     System.out.println("windowClosing!!!!!!!!!!!!!");
-                    firePropertyChange(EDITOR_WINDOW_CLOSED, null, type);
+                    firePropertyChange(EDITOR_WINDOW_CLOSED, this, type);
                 }
             });
     }
     
-    private void fireStateChange() {
+    public static ImageIcon getIcon(final int width, final int height, VisualPropertyType type) {
+    	final Class dataType = type.getDataType(); 
+    	if(dataType == Color.class) {
+    		return GradientEditorPanel.getIcon(width, height, type);
+    	} else if(dataType == Number.class) {
+    		return null;
+    	}
+    	return null;
     	
     }
+    
 
     protected void setSpinner() {
         spinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,

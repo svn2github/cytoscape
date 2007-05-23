@@ -1,3 +1,39 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
@@ -19,6 +55,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -35,284 +72,273 @@ import javax.swing.SwingUtilities;
  */
 public class GradientEditorPanel extends ContinuousMappingEditorPanel
     implements PropertyChangeListener {
-    private static JPopupMenu menu;
-    private static JMenuItem deleteThumb;
-    private static JMenuItem newThumb;
+	private static JPopupMenu menu;
+	private static JMenuItem deleteThumb;
+	private static JMenuItem newThumb;
 
-    static {
-        menu = new JPopupMenu();
-        deleteThumb = new JMenuItem("Delete Selected Knob");
-        newThumb = new JMenuItem("Add New Knob Here...");
+	static {
+		menu = new JPopupMenu();
+		deleteThumb = new JMenuItem("Delete Selected Knob");
+		newThumb = new JMenuItem("Add New Knob Here...");
 
-        menu.add(newThumb);
-        menu.add(deleteThumb);
-    }
+		menu.add(newThumb);
+		menu.add(deleteThumb);
+	}
 
-    /**
-     * Creates a new GradientEditorPanel object.
-     *
-     * @param type
-     *            DOCUMENT ME!
-     */
-    public GradientEditorPanel(VisualPropertyType type) {
-        super(type);
-        iconPanel.setVisible(false);
-        setSlider();
+	/**
+	 * Creates a new GradientEditorPanel object.
+	 *
+	 * @param type
+	 *            DOCUMENT ME!
+	 */
+	public GradientEditorPanel(VisualPropertyType type) {
+		super(type);
+		iconPanel.setVisible(false);
+		setSlider();
 
-        belowPanel.addPropertyChangeListener(this);
-        abovePanel.addPropertyChangeListener(this);
-    }
+		belowPanel.addPropertyChangeListener(this);
+		abovePanel.addPropertyChangeListener(this);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param width DOCUMENT ME!
-     * @param height DOCUMENT ME!
-     * @param title DOCUMENT ME!
-     * @param type DOCUMENT ME!
-     */
-    public static Object showDialog(final int width, final int height,
-        final String title, VisualPropertyType type) {
-        editor = new GradientEditorPanel(type);
-        editor.setSize(new Dimension(width, height));
-        editor.setTitle(title);
-        editor.setAlwaysOnTop(true);
-        editor.setLocationRelativeTo(Cytoscape.getDesktop());
-        editor.setVisible(true);
-        editor.repaint();
-        
-        return editor;
-    }
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param width DOCUMENT ME!
+	 * @param height DOCUMENT ME!
+	 * @param title DOCUMENT ME!
+	 * @param type DOCUMENT ME!
+	 */
+	public static Object showDialog(final int width, final int height, final String title,
+	                                VisualPropertyType type) {
+		editor = new GradientEditorPanel(type);
+		editor.setSize(new Dimension(width, height));
+		editor.setTitle(title);
+		editor.setAlwaysOnTop(true);
+		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setVisible(true);
+		editor.repaint();
 
-    @Override
-    protected void addButtonActionPerformed(ActionEvent evt) {
-        BoundaryRangeValues newRange;
+		return editor;
+	}
 
-        if (mapping.getPointCount() == 0) {
-            slider.getModel()
-                  .addThumb(50f, Color.white);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
+            VisualPropertyType type) {
+		editor = new GradientEditorPanel(type);
+		CyGradientTrackRenderer rend = (CyGradientTrackRenderer)editor.slider.getTrackRenderer();
+		rend.getRendererComponent(editor.slider);
+		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 
-            newRange = new BoundaryRangeValues(below, Color.white, above);
-            mapping.addPoint(maxValue / 2, newRange);
-            Cytoscape.getVisualMappingManager()
-                     .getNetworkView()
-                     .redrawGraph(false, true);
+	}
 
-            slider.repaint();
-            repaint();
+	@Override
+	protected void addButtonActionPerformed(ActionEvent evt) {
+		BoundaryRangeValues newRange;
 
-            return;
-        }
+		if (mapping.getPointCount() == 0) {
+			slider.getModel().addThumb(50f, Color.white);
 
-        // Add a new white thumb in the min.
-        slider.getModel()
-              .addThumb(100f, Color.white);
+			newRange = new BoundaryRangeValues(below, Color.white, above);
+			mapping.addPoint(maxValue / 2, newRange);
+			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 
-        // Update continuous mapping
-        final Double newVal = maxValue;
+			slider.repaint();
+			repaint();
 
-        // Pick Up first point.
-        final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() -
-                1);
+			return;
+		}
 
-        final BoundaryRangeValues previousRange = previousPoint.getRange();
-        newRange = new BoundaryRangeValues(previousRange);
+		// Add a new white thumb in the min.
+		slider.getModel().addThumb(100f, Color.white);
 
-        newRange.lesserValue = slider.getModel()
-                                     .getSortedThumbs()
-                                     .get(slider.getModel().getThumbCount() -
-                1);
-        System.out.println("EQ color = " + newRange.lesserValue);
-        newRange.equalValue = Color.white;
-        newRange.greaterValue = previousRange.greaterValue;
-        mapping.addPoint(maxValue, newRange);
+		// Update continuous mapping
+		final Double newVal = maxValue;
 
-        updateMap();
+		// Pick Up first point.
+		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
 
-        Cytoscape.getVisualMappingManager()
-                 .getNetworkView()
-                 .redrawGraph(false, true);
+		final BoundaryRangeValues previousRange = previousPoint.getRange();
+		newRange = new BoundaryRangeValues(previousRange);
 
-        slider.repaint();
-        repaint();
-    }
+		newRange.lesserValue = slider.getModel().getSortedThumbs()
+		                             .get(slider.getModel().getThumbCount() - 1);
+		System.out.println("EQ color = " + newRange.lesserValue);
+		newRange.equalValue = Color.white;
+		newRange.greaterValue = previousRange.greaterValue;
+		mapping.addPoint(maxValue, newRange);
 
-    @Override
-    protected void deleteButtonActionPerformed(ActionEvent evt) {
-        final int selectedIndex = slider.getSelectedIndex();
-        System.out.println("========== Selected = " + selectedIndex);
+		updateMap();
 
-        if (0 <= selectedIndex) {
-            slider.getModel()
-                  .removeThumb(selectedIndex);
-            mapping.removePoint(selectedIndex);
-            updateMap();
-            mapping.fireStateChanged();
+		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 
-            Cytoscape.getVisualMappingManager()
-                     .getNetworkView()
-                     .redrawGraph(false, true);
-            repaint();
-        }
-    }
+		slider.repaint();
+		repaint();
+	}
 
-    private void initButtons() {
-        addButton.addActionListener(new AddPointListener(mapping, Color.white));
-    }
+	@Override
+	protected void deleteButtonActionPerformed(ActionEvent evt) {
+		final int selectedIndex = slider.getSelectedIndex();
+		System.out.println("========== Selected = " + selectedIndex);
 
-    /**
-     * DOCUMENT ME!
-     */
-    public void setSlider() {
-        Dimension dim = new Dimension(600, 100);
-        setPreferredSize(dim);
-        setSize(dim);
-        setMinimumSize(new Dimension(300, 80));
-        slider.updateUI();
+		if (0 <= selectedIndex) {
+			slider.getModel().removeThumb(selectedIndex);
+			mapping.removePoint(selectedIndex);
+			updateMap();
+			mapping.fireStateChanged();
 
-        slider.setComponentPopupMenu(menu);
+			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			repaint();
+		}
+	}
 
-        slider.addMouseListener(
-            new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    if (SwingUtilities.isRightMouseButton(e)) {
-                    } else {
-                        System.out.println(
-                            "Thumb Click------------------------> " +
-                            e.getSource());
+	private void initButtons() {
+		addButton.addActionListener(new AddPointListener(mapping, Color.white));
+	}
 
-                        final JComponent selectedThumb = slider.getSelectedThumb();
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void setSlider() {
+		Dimension dim = new Dimension(600, 100);
+		setPreferredSize(dim);
+		setSize(dim);
+		setMinimumSize(new Dimension(300, 80));
+		slider.updateUI();
 
-                        if (selectedThumb != null) {
-                            final Point location = selectedThumb.getLocation();
-                            double diff = Math.abs(location.getX() - e.getX());
+		slider.setComponentPopupMenu(menu);
 
-                            if (e.getClickCount() == 2) {
-                                final Color newColor = JColorChooser.showDialog(slider,
-                                        "Choose new color...", Color.white);
+		slider.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					if (SwingUtilities.isRightMouseButton(e)) {
+					} else {
+						System.out.println("Thumb Click------------------------> " + e.getSource());
 
-                                if (newColor != null) {
-                                    slider.getModel()
-                                          .getThumbAt(
-                                        slider.getSelectedIndex())
-                                          .setObject(newColor);
+						final JComponent selectedThumb = slider.getSelectedThumb();
 
-                                    final ContinuousMapping cMapping = mapping;
-                                    int selected = getSelectedPoint(
-                                            slider.getSelectedIndex());
+						if (selectedThumb != null) {
+							final Point location = selectedThumb.getLocation();
+							double diff = Math.abs(location.getX() - e.getX());
 
-                                    cMapping.getPoint(selected)
-                                            .getRange().equalValue = newColor;
+							if (e.getClickCount() == 2) {
+								final Color newColor = JColorChooser.showDialog(slider,
+								                                                "Choose new color...",
+								                                                Color.white);
 
-                                    final BoundaryRangeValues brv = new BoundaryRangeValues(cMapping.getPoint(
-                                                selected)
-                                                                                                    .getRange().lesserValue,
-                                            newColor,
-                                            cMapping.getPoint(selected)
-                                                    .getRange().greaterValue);
+								if (newColor != null) {
+									slider.getModel().getThumbAt(slider.getSelectedIndex())
+									      .setObject(newColor);
 
-                                    cMapping.getPoint(selected)
-                                            .setRange(brv);
+									final ContinuousMapping cMapping = mapping;
+									int selected = getSelectedPoint(slider.getSelectedIndex());
 
-                                    int numPoints = cMapping.getAllPoints()
-                                                            .size();
+									cMapping.getPoint(selected).getRange().equalValue = newColor;
 
-                                    // Update Values which are not accessible from
-                                    // UI
-                                    if (numPoints > 1) {
-                                        if (selected == 0)
-                                            brv.greaterValue = newColor;
-                                        else if (selected == (numPoints - 1))
-                                            brv.lesserValue = newColor;
-                                        else {
-                                            brv.lesserValue = newColor;
-                                            brv.greaterValue = newColor;
-                                        }
+									final BoundaryRangeValues brv = new BoundaryRangeValues(cMapping.getPoint(selected)
+									                                                                .getRange().lesserValue,
+									                                                        newColor,
+									                                                        cMapping.getPoint(selected)
+									                                                                .getRange().greaterValue);
 
-                                        cMapping.fireStateChanged();
+									cMapping.getPoint(selected).setRange(brv);
 
-                                        Cytoscape.getVisualMappingManager()
-                                                 .getNetworkView()
-                                                 .redrawGraph(false, true);
-                                        slider.repaint();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+									int numPoints = cMapping.getAllPoints().size();
 
-        double actualRange = Math.abs(minValue - maxValue);
+									// Update Values which are not accessible from
+									// UI
+									if (numPoints > 1) {
+										if (selected == 0)
+											brv.greaterValue = newColor;
+										else if (selected == (numPoints - 1))
+											brv.lesserValue = newColor;
+										else {
+											brv.lesserValue = newColor;
+											brv.greaterValue = newColor;
+										}
 
-        if (allPoints != null) {
-            for (ContinuousMappingPoint point : allPoints) {
-                BoundaryRangeValues bound = point.getRange();
-                System.out.println("--------------- GOT point:  " +
-                    point.getValue());
+										cMapping.fireStateChanged();
 
-                slider.getModel()
-                      .addThumb(((Double) ((point.getValue() - minValue) / actualRange)).floatValue() * 100,
-                    (Color) bound.equalValue);
-            }
+										Cytoscape.getVisualMappingManager().getNetworkView()
+										         .redrawGraph(false, true);
+										slider.repaint();
+									}
+								}
+							}
+						}
+					}
+				}
+			});
 
-            if (allPoints.size() != 0) {
-                below = (Color) allPoints.get(0)
-                                         .getRange().lesserValue;
-                above = (Color) allPoints.get(allPoints.size() - 1)
-                                         .getRange().greaterValue;
-            } else {
-                below = Color.black;
-                above = Color.white;
-            }
+		double actualRange = Math.abs(minValue - maxValue);
 
-            setSidePanelIconColor((Color) below, (Color) above);
-        }
+		if (allPoints != null) {
+			for (ContinuousMappingPoint point : allPoints) {
+				BoundaryRangeValues bound = point.getRange();
+				
+				slider.getModel()
+				      .addThumb(((Double) ((point.getValue() - minValue) / actualRange)).floatValue() * 100,
+				                (Color) bound.equalValue);
+			}
 
-        TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
+			if (allPoints.size() != 0) {
+				below = (Color) allPoints.get(0).getRange().lesserValue;
+				above = (Color) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
+			} else {
+				below = Color.black;
+				above = Color.white;
+			}
 
-        System.out.println("--------- VS = " +
-            Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getCalculator(VisualPropertyType.NODE_SHAPE) +
-            " ----");
+			setSidePanelIconColor((Color) below, (Color) above);
+		}
 
-        CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue,
-                maxValue, (Color) below, (Color) above,
-                mapping.getControllingAttributeName());
-        //updateBelowAndAbove();
-        slider.setThumbRenderer(thumbRend);
-        slider.setTrackRenderer(gRend);
-        slider.addMouseListener(new ThumbMouseListener());
+		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
-        /*
-         * Set tooltip for the slider.
-         */
-        slider.setToolTipText("Double-click handles to edit boundary colors.");
-    }
+//		System.out.println("--------- VS = "
+//		                   + Cytoscape.getVisualMappingManager().getVisualStyle()
+//		                              .getNodeAppearanceCalculator()
+//		                              .getCalculator(VisualPropertyType.NODE_SHAPE) + " ----");
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     */
-    public void propertyChange(PropertyChangeEvent e) {
-        // TODO Auto-generated method stub
-        if (e.getPropertyName()
-                 .equals(BelowAndAbovePanel.COLOR_CHANGED)) {
-            String sourceName = ((BelowAndAbovePanel) e.getSource()).getName();
+		CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue, maxValue,
+		                                                            (Color) below, (Color) above,
+		                                                            mapping
+		                                                                                                                                                                                                                                                                                                       .getControllingAttributeName());
+		//updateBelowAndAbove();
+		slider.setThumbRenderer(thumbRend);
+		slider.setTrackRenderer(gRend);
+		slider.addMouseListener(new ThumbMouseListener());
 
-            if (sourceName.equals("abovePanel"))
-                this.above = e.getNewValue();
-            else
-                this.below = e.getNewValue();
+		/*
+		 * Set tooltip for the slider.
+		 */
+		slider.setToolTipText("Double-click handles to edit boundary colors.");
+	}
 
-            final CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue,
-                    maxValue,
-                    (Color) below,
-                    (Color) above,
-                    mapping.getControllingAttributeName());
-            slider.setTrackRenderer(gRend);
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getPropertyName().equals(BelowAndAbovePanel.COLOR_CHANGED)) {
+			String sourceName = ((BelowAndAbovePanel) e.getSource()).getName();
 
-            repaint();
-        }
-    }
+			if (sourceName.equals("abovePanel"))
+				this.above = e.getNewValue();
+			else
+				this.below = e.getNewValue();
+
+			final CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue, maxValue,
+			                                                                  (Color) below,
+			                                                                  (Color) above,
+			                                                                  mapping
+			                                                                                                                                                                                                                                                                                                                                  .getControllingAttributeName());
+			slider.setTrackRenderer(gRend);
+
+			repaint();
+		}
+	}
 }
