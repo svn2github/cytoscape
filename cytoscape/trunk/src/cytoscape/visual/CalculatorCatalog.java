@@ -527,25 +527,19 @@ public class CalculatorCatalog {
 
     private void addNodeAppearanceCalculator(NodeAppearanceCalculator c) {
         for (Calculator cc : c.getCalculators()) {
-            Map m = calculators.get(cc.getVisualPropertyType());
+            Map m = getCalculatorMap(cc.getVisualPropertyType());
 
-            if (!m.values()
-                      .contains(cc))
-                m.put(
-                    cc.toString(),
-                    cc);
+            if (!m.values().contains(cc))
+                m.put( cc.toString(), cc);
         }
     }
 
     private void addEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
         for (Calculator cc : c.getCalculators()) {
-            Map m = calculators.get(cc.getVisualPropertyType());
+            Map m = getCalculatorMap(cc.getVisualPropertyType());
 
-            if (!m.values()
-                      .contains(cc))
-                m.put(
-                    cc.toString(),
-                    cc);
+            if (!m.values().contains(cc))
+                m.put( cc.toString(), cc);
         }
     }
 
