@@ -44,8 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.EdgeAppearance;
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -172,7 +171,7 @@ public interface Calculator extends Cloneable {
      * @param e DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(EdgeAppearance appr, Edge e, CyNetwork net);
+    public void apply(Appearance appr, Edge e, CyNetwork net);
 
     /**
      * DOCUMENT ME!
@@ -181,7 +180,7 @@ public interface Calculator extends Cloneable {
      * @param n DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(NodeAppearance appr, Node n, CyNetwork net);
+    public void apply(Appearance appr, Node n, CyNetwork net);
 
     /**
      * DOCUMENT ME!

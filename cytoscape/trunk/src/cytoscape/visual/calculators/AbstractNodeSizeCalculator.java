@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -103,14 +103,9 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
      * @return DOCUMENT ME!
      */
     public double calculateNodeSize(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        if (type == VisualPropertyType.NODE_WIDTH)
-            return ea.getWidth();
-        else if (type == VisualPropertyType.NODE_HEIGHT)
-            return ea.getHeight();
-        else
-            return ea.getSize();
+		return ((Double)ea.get(type)).doubleValue();
     }
 }

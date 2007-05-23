@@ -45,7 +45,7 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;

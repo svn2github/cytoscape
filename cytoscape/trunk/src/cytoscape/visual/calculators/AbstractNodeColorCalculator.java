@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -105,12 +105,9 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
      * @return DOCUMENT ME!
      */
     public Color calculateNodeColor(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        if (type == VisualPropertyType.NODE_FILL_COLOR)
-            return ea.getFillColor();
-        else
-            return ea.getBorderColor();
+		return (Color)ea.get(type);
     }
 }

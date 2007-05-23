@@ -45,7 +45,6 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.Arrow;
-import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;

@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 
 //--------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_FONT_FACE;
@@ -100,9 +100,9 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
      * @return DOCUMENT ME!
      */
     public Font calculateEdgeFontFace(Edge e, CyNetwork n) {
-        final EdgeAppearance ea = new EdgeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getFont();
+        return (Font)ea.get(type);
     }
 }

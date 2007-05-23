@@ -45,7 +45,6 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.MappingFactory;

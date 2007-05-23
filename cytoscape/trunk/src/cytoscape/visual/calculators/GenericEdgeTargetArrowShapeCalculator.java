@@ -3,7 +3,7 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.ArrowShape;
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
 

@@ -45,7 +45,7 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.LineType;
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
@@ -98,9 +98,9 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
      */
     @Deprecated
     public LineType calculateNodeLineType(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getBorderLineType();
+        return (LineType)ea.get(type);
     }
 }

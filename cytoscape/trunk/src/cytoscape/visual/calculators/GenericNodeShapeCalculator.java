@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.NodeShape;
 
 //----------------------------------------------------------------------------
@@ -99,9 +99,9 @@ public class GenericNodeShapeCalculator extends NodeCalculator
      * @return DOCUMENT ME!
      */
     public byte calculateNodeShape(Node e, CyNetwork n) {
-        final NodeAppearance na = new NodeAppearance();
+        final Appearance na = new Appearance();
         apply(na, e, n);
 
-        return na.getShape();
+        return (byte)(((NodeShape)na.get(type)).ordinal());
     }
 }

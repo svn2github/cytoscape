@@ -46,25 +46,7 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
-import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.CalculatorFactory;
-import cytoscape.visual.calculators.EdgeArrowCalculator;
-import cytoscape.visual.calculators.EdgeColorCalculator;
-import cytoscape.visual.calculators.EdgeFontFaceCalculator;
-import cytoscape.visual.calculators.EdgeFontSizeCalculator;
-import cytoscape.visual.calculators.EdgeLabelCalculator;
-import cytoscape.visual.calculators.EdgeLineTypeCalculator;
-import cytoscape.visual.calculators.EdgeToolTipCalculator;
-import cytoscape.visual.calculators.NodeColorCalculator;
-import cytoscape.visual.calculators.NodeFontFaceCalculator;
-import cytoscape.visual.calculators.NodeFontSizeCalculator;
-import cytoscape.visual.calculators.NodeLabelCalculator;
-import cytoscape.visual.calculators.NodeLabelColorCalculator;
-import cytoscape.visual.calculators.NodeLineTypeCalculator;
-import cytoscape.visual.calculators.NodeShapeCalculator;
-import cytoscape.visual.calculators.NodeSizeCalculator;
-import cytoscape.visual.calculators.NodeToolTipCalculator;
+import cytoscape.visual.calculators.*;
 
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;

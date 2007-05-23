@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 
 //--------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
@@ -98,9 +98,9 @@ public class GenericNodeFontSizeCalculator extends NodeCalculator
      * @return DOCUMENT ME!
      */
     public float calculateNodeFontSize(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getFontSize();
+        return ((Double)ea.get(type)).floatValue();
     }
 }

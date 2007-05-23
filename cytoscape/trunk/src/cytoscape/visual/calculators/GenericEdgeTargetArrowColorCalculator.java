@@ -6,7 +6,7 @@ import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
 
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.CyNetwork;
 
 import giny.model.Edge;

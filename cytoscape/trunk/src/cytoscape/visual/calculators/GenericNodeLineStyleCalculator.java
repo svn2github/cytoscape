@@ -6,7 +6,7 @@ import java.util.Properties;
 
 
 import cytoscape.CyNetwork;
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.LineStyle;
 import static cytoscape.visual.VisualPropertyType.NODE_LINE_STYLE;
 import cytoscape.visual.mappings.ObjectMapping;

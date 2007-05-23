@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.LineType;
 import cytoscape.visual.parsers.LineTypeParser;
 
@@ -98,9 +98,9 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
      */
     @Deprecated
     public LineType calculateEdgeLineType(Edge e, CyNetwork n) {
-        final EdgeAppearance ea = new EdgeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getLineType();
+        return (LineType)ea.get(type);
     }
 }

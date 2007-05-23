@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 
 //--------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_FONT_SIZE;
@@ -98,9 +98,9 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
      * @return DOCUMENT ME!
      */
     public float calculateEdgeFontSize(Edge e, CyNetwork n) {
-        final EdgeAppearance ea = new EdgeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getFontSize();
+        return ((Float)ea.get(type)).floatValue();
     }
 }

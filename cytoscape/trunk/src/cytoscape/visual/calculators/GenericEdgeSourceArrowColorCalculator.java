@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.Properties;
 
 import cytoscape.CyNetwork;
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
 

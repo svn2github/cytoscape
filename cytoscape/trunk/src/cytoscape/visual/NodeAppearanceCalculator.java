@@ -38,17 +38,7 @@ package cytoscape.visual;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.NodeCalculator;
-import cytoscape.visual.calculators.NodeColorCalculator;
-import cytoscape.visual.calculators.NodeFontFaceCalculator;
-import cytoscape.visual.calculators.NodeFontSizeCalculator;
-import cytoscape.visual.calculators.NodeLabelCalculator;
-import cytoscape.visual.calculators.NodeLabelColorCalculator;
-import cytoscape.visual.calculators.NodeLineTypeCalculator;
-import cytoscape.visual.calculators.NodeShapeCalculator;
-import cytoscape.visual.calculators.NodeSizeCalculator;
-import cytoscape.visual.calculators.NodeToolTipCalculator;
+import cytoscape.visual.calculators.*;
 
 import giny.model.Node;
 

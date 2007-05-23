@@ -38,7 +38,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL_COLOR;
 
 import cytoscape.visual.mappings.ObjectMapping;

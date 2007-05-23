@@ -45,7 +45,7 @@ package cytoscape.visual.calculators;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.Arrow;
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -97,33 +97,13 @@ abstract class AbstractEdgeArrowCalculator extends EdgeCalculator {
     /**
      * DOCUMENT ME!
      *
-     * @param appr DOCUMENT ME!
-     * @param edge DOCUMENT ME!
-     * @param network DOCUMENT ME!
-    public void apply(EdgeAppearance appr, Edge edge, CyNetwork network) {
-        Arrow a = (Arrow) getRangeValue(edge);
-
-        // default has already been set - no need to do anything
-        if (a == null)
-            return;
-
-        if (type == VisualPropertyType.EDGE_SRCARROW)
-            appr.setSourceArrow(a);
-        else if (type == VisualPropertyType.EDGE_TGTARROW)
-            appr.setTargetArrow(a);
-    }
-     */
-
-    /**
-     * DOCUMENT ME!
-     *
      * @param e DOCUMENT ME!
      * @param n DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
     public Arrow calculateEdgeArrow(Edge e, CyNetwork n) {
-        final EdgeAppearance ea = new EdgeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
 		return (Arrow)(ea.get(type));

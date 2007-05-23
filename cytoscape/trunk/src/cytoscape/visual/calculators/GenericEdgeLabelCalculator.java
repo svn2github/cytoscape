@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.EdgeAppearance;
+import cytoscape.visual.Appearance;
 
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
@@ -98,9 +98,9 @@ public class GenericEdgeLabelCalculator extends EdgeCalculator
      * @return DOCUMENT ME!
      */
     public String calculateEdgeLabel(Edge e, CyNetwork n) {
-        final EdgeAppearance ea = new EdgeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getLabel();
+        return (String)ea.get(type);
     }
 }

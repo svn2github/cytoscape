@@ -44,15 +44,7 @@ package cytoscape.visual;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.EdgeArrowCalculator;
-import cytoscape.visual.calculators.EdgeCalculator;
-import cytoscape.visual.calculators.EdgeColorCalculator;
-import cytoscape.visual.calculators.EdgeFontFaceCalculator;
-import cytoscape.visual.calculators.EdgeFontSizeCalculator;
-import cytoscape.visual.calculators.EdgeLabelCalculator;
-import cytoscape.visual.calculators.EdgeLineTypeCalculator;
-import cytoscape.visual.calculators.EdgeToolTipCalculator;
+import cytoscape.visual.calculators.*;
 
 import giny.model.Edge;
 

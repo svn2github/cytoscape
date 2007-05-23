@@ -38,7 +38,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_COLOR;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -91,9 +91,9 @@ public class GenericNodeLabelColorCalculator extends NodeCalculator
      * @return DOCUMENT ME!
      */
     public Color calculateNodeLabelColor(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getLabelColor();
+        return (Color)ea.get(type);
     }
 }

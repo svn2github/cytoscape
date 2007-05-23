@@ -50,8 +50,7 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 
-import cytoscape.visual.EdgeAppearance;
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.MappingFactory;
@@ -636,7 +635,7 @@ public abstract class AbstractCalculator
      * @param e DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(EdgeAppearance appr, Edge e, CyNetwork net) {
+    public void apply(Appearance appr, Edge e, CyNetwork net) {
 		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
 		Object o = getRangeValue(e);
 
@@ -654,7 +653,7 @@ public abstract class AbstractCalculator
      * @param n DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(NodeAppearance appr, Node n, CyNetwork net) {
+    public void apply(Appearance appr, Node n, CyNetwork net) {
 		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
 		Object o = getRangeValue(n);
 

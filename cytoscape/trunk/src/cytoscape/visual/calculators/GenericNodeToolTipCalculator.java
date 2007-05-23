@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
@@ -98,9 +98,9 @@ public class GenericNodeToolTipCalculator extends NodeCalculator
      * @return DOCUMENT ME!
      */
     public String calculateNodeToolTip(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getToolTip();
+        return (String)ea.get(type);
     }
 }

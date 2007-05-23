@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.NodeAppearance;
+import cytoscape.visual.Appearance;
 
 //--------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
@@ -100,9 +100,9 @@ public class GenericNodeFontFaceCalculator extends NodeCalculator
      * @return DOCUMENT ME!
      */
     public Font calculateNodeFontFace(Node e, CyNetwork n) {
-        final NodeAppearance ea = new NodeAppearance();
+        final Appearance ea = new Appearance();
         apply(ea, e, n);
 
-        return ea.getFont();
+        return (Font)ea.get(type);
     }
 }
