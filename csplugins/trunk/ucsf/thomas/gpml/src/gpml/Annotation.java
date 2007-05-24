@@ -56,8 +56,7 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 		}
 		
 		protected java.awt.Shape viewportTransform(java.awt.Shape s) {
-			InnerCanvas canvas = ((DGraphView)
-			Cytoscape.getCurrentNetworkView()).getCanvas();
+			InnerCanvas canvas = view.getCanvas();
 					
 			AffineTransform f = canvas.getAffineTransform();
 			if(f != null) 	return f.createTransformedShape(s);
@@ -65,8 +64,7 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 		}
 		
 		public void viewportChanged(int w, int h, double newXCenter, double newYCenter, double newScaleFactor) {
-			InnerCanvas canvas = ((DGraphView)
-			Cytoscape.getCurrentNetworkView()).getCanvas();
+			InnerCanvas canvas = view.getCanvas();
 			
 			AffineTransform f = canvas.getAffineTransform();
 						
