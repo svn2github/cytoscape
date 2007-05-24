@@ -83,15 +83,13 @@ public enum LineStyle {
 	}
 
 	public static LineStyle parse(String val) {
-		for(LineStyle style: values()) {
-			if(style.toString().equals(val)) {
-				return style;
-			}
+		// first check the style names
+		for ( LineStyle ls : values() ) {
+			if ( ls.toString().equals(val) )
+				return ls;
 		}
-		return SOLID; 
-	}
 
-	public static LineStyle guessStyle(String val) {
+		// then try regex matching instead 
 		for ( LineStyle ls : values() ) {
 			Pattern p = Pattern.compile(ls.getRegex(),Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(val);
@@ -99,6 +97,44 @@ public enum LineStyle {
 				return ls;
 			}
 		}
+
+		// default
+		return SOLID;
+	}
+
+	private static Pattern numPattern = Pattern.compile("(\\d+)");
+
+	/** 
+	 * This method attempts to extract a width from a string that has
+	 * a number in it like "dashed1" or "line2". This exists to support
+	 * old-style line type definitions.
+	 * @return The parsed value or if something doesn't match, 1.0
+	 */
+	public static float parseWidth(String s) {
+		Matcher m = numPattern.matcher(s);
+		if ( m.matches() ) {
+			try {
+				return (new Float(m.group(1))).floatValue();
+			} catch (Exception e) { }
+		}
+		return 1.0f;
+	}
+
+	/**
+	 * A method that attempts to figure out if a stroke is dashed
+	 * or not.  If the Stroke object is not a BasicStroke, it will
+	 * return SOLID by default.
+	 * @return the LineStyle guessed based on the BasicStroke dash array.
+	 */
+	public static LineStyle extractLineStyle(Stroke stroke) {
+		if ( stroke instanceof BasicStroke ) {
+        	final float[] dash = ((BasicStroke)stroke).getDashArray();
+			if ( dash == null )
+				return SOLID;
+			else
+				return LONG_DASH;
+		} 
+
 		return SOLID;
 	}
 

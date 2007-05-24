@@ -65,7 +65,7 @@ import cytoscape.generated2.TypeGraphicsType;
 
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.visual.LineType;
+import cytoscape.visual.LineStyle;
 
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
@@ -1042,7 +1042,7 @@ public class XGMMLWriter {
 
 				edgeLabelFont.setValue(encodeFont(curEdgeView.getLabel().getFont()));
 
-				edgeLineType.setValue(lineTypeBuilder(curEdgeView).toString());
+				edgeLineType.setValue(LineStyle.extractLineStyle(curEdgeView.getStroke()).toString());
 
 				// Extract bend information
 				final Bend bendData = curEdgeView.getBend();
@@ -1452,59 +1452,6 @@ public class XGMMLWriter {
 
 		// houston we have a problem
 		return null;
-	}
-
-	/**
-	 * Get line type of the given edge.<br>
-	 * NOTE: This is not a GINY's line type!<br>
-	 *
-	 * @param view
-	 *            EdgeView
-	 * @return LineType of the edge
-	 *
-	 */
-	private LineType lineTypeBuilder(final EdgeView view) {
-		LineType lineType = LineType.LINE_1;
-		final BasicStroke stroke = (BasicStroke) view.getStroke();
-		final float[] dash = stroke.getDashArray();
-		final float width = stroke.getLineWidth();
-
-		if (dash == null) {
-			// Normal line. check width
-			if (width == 1.0) {
-				lineType = LineType.LINE_1;
-			} else if (width == 2.0) {
-				lineType = LineType.LINE_2;
-			} else if (width == 3.0) {
-				lineType = LineType.LINE_3;
-			} else if (width == 4.0) {
-				lineType = LineType.LINE_4;
-			} else if (width == 5.0) {
-				lineType = LineType.LINE_5;
-			} else if (width == 6.0) {
-				lineType = LineType.LINE_6;
-			} else if (width == 7.0) {
-				lineType = LineType.LINE_7;
-			}
-
-			// System.out.println("SOLID: " + width);
-		} else {
-			if (width == 1.0) {
-				lineType = LineType.DASHED_1;
-			} else if (width == 2.0) {
-				lineType = LineType.DASHED_2;
-			} else if (width == 3.0) {
-				lineType = LineType.DASHED_3;
-			} else if (width == 4.0) {
-				lineType = LineType.DASHED_4;
-			} else if (width == 5.0) {
-				lineType = LineType.DASHED_5;
-			}
-
-			// System.out.println("DASH: " + width);
-		}
-
-		return lineType;
 	}
 
 	/**

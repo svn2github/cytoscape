@@ -74,7 +74,7 @@ import cytoscape.util.PercentUtil;
 
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.visual.LineType;
+import cytoscape.visual.LineStyle;
 
 import ding.view.DGraphView;
 
@@ -930,7 +930,9 @@ public class XGMMLReader extends AbstractGraphReader {
 					} else if (attName.equals("targetArrowColor")) {
 						edgeView.setTargetEdgeEndPaint(getColor(value));
 					} else if (attName.equals("edgeLineType")) {
-						edgeView.setStroke(LineType.parseLineTypeText(value).getStroke());
+						LineStyle ls = LineStyle.parse(value);
+						float width = LineStyle.parseWidth(value);
+						edgeView.setStroke(ls.getStroke(width));
 					} else if (attName.equals("curved")) {
 						if (value.equals("STRAIGHT_LINES")) {
 							edgeView.setLineType(EdgeView.STRAIGHT_LINES);

@@ -490,8 +490,8 @@ public class VisualStyleBuilder {
 								edgeFont = new Font(fontString[0], Integer.parseInt(fontString[1]),
 								                    Integer.parseInt(fontString[2]));
 							} else if (edgeAttr.getName().equals("edgeLineType")) {
-								edgeLineWidth = extractWidth(edgeAttr.getValue());
-								edgeLineStyle = LineStyle.guessStyle(edgeAttr.getValue());
+								edgeLineWidth = LineStyle.parseWidth(edgeAttr.getValue());
+								edgeLineStyle = LineStyle.parse(edgeAttr.getValue());
 							} else if (edgeAttr.getName().equals("sourceArrow")) {
 								srcGinyType = Integer.parseInt(edgeAttr.getValue());
 							} else if (edgeAttr.getName().equals("targetArrow")) {
@@ -580,19 +580,5 @@ public class VisualStyleBuilder {
 		// int green = Integer.parseInt(colorString.substring(3,5),16);
 		// int blue = Integer.parseInt(colorString.substring(5,7),16);
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
-	}
-
-	private static Pattern numPattern = Pattern.compile("(\\d+)");
-
-	// This method attempts to extract a width from a string that has
-	// a number in it like "dashed1" or "solid_2"
-	private static float extractWidth(String s) {
-		Matcher m = numPattern.matcher(s);
-		if ( m.matches() ) {
-			try {
-				return (new Float(m.group(1))).floatValue();
-			} catch (Exception e) { }
-		}
-		return DEFAULT_LINE_WIDTH;
 	}
 }
