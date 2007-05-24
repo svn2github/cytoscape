@@ -51,15 +51,23 @@ import cytoscape.visual.ui.icon.*;
  *
  */
 public enum ArrowShape {
-	NONE("No Arrow", "NONE", EdgeView.NO_END),
-	DIAMOND("Diamond", "COLOR_DIAMOND", EdgeView.EDGE_COLOR_DIAMOND),
-	DELTA("Delta", "COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA),
-	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_ARROW),
-	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T),
-	CIRCLE("Circle", "COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE),
+	NONE("No Arrow", "NONE", EdgeView.NO_END, 
+	     new int[]{EdgeView.NO_END}),
+	DIAMOND("Diamond", "COLOR_DIAMOND", EdgeView.EDGE_COLOR_DIAMOND,
+	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND}),
+	DELTA("Delta", "COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA,
+	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA}),
+	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_ARROW,
+	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW}),
+	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T,
+	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T}),
+	CIRCLE("Circle", "COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE,
+	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE}),
 
 	// Not yet implemented
-	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1);
+	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1,
+	     new int[]{-1}),
+	;
 
 
 	private static Map<Integer,Shape> arrowShapes = DGraphView.getArrowShapes();
@@ -67,11 +75,13 @@ public enum ArrowShape {
 	private String shapeName;
 	private String ginyShapeName;
 	private int ginyType;
+	private int[] possibleGinyTypes;
 
-	private ArrowShape(String shapeName, String ginyShapeName, int ginyType) {
+	private ArrowShape(String shapeName, String ginyShapeName, int ginyType, int[] possibleGinyTypes) {
 		this.shapeName = shapeName;
 		this.ginyShapeName = ginyShapeName;
 		this.ginyType = ginyType;
+		this.possibleGinyTypes = possibleGinyTypes;
 	}
 
 	/**
@@ -110,6 +120,10 @@ public enum ArrowShape {
 		return valueOf(text);
 	}
 
+	public int[] getPossibleGinyTypes() {
+		return possibleGinyTypes;
+	}
+
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -119,12 +133,21 @@ public enum ArrowShape {
 	 * @return DOCUMENT ME!
 	 */
 	public static ArrowShape getArrowShape(int ginyType) {
+		// first try for an exact match
 		for (ArrowShape shape : values()) {
 			if (shape.getGinyArrow() == ginyType)
 				return shape;
 		}
 
-		// if not found, just return rectangle.
+		// if no exact match is found, then try the possible ginyTypes 
+		for (ArrowShape shape : values()) {
+			for ( int possible : shape.getPossibleGinyTypes() ) {
+				if ( possible == ginyType ) 
+					return shape;
+			}
+		}
+
+		// if we can't match anything, just return rectangle.
 		return NONE;
 	}
 

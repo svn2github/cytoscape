@@ -41,6 +41,8 @@ import java.awt.Stroke;
 import javax.swing.Icon;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import cytoscape.visual.ui.icon.*;
 
 /**
@@ -53,15 +55,16 @@ import cytoscape.visual.ui.icon.*;
  *
  */
 public enum LineStyle {
-	SOLID(null),
-	LONG_DASH("8.0f,3.0f");
+	SOLID(null,"line"),
+	LONG_DASH("8.0f,3.0f","dash");
 
 	// DASH("4.0f,4.0f"),
 	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
 
 	private final float[] strokeDef;
+	private String regex;
 
-	private LineStyle(String def) {
+	private LineStyle(String def, String regex) {
 		if (def == null)
 			strokeDef = null;
 		else {
@@ -71,6 +74,12 @@ public enum LineStyle {
 			for (int i = 0; i < strokeDef.length; i++)
 				strokeDef[i] = Float.parseFloat(parts[i]);
 		}
+
+		this.regex = regex;
+	}
+
+	private String getRegex() {
+		return regex;
 	}
 
 	public static LineStyle parse(String val) {
@@ -80,6 +89,17 @@ public enum LineStyle {
 			}
 		}
 		return SOLID; 
+	}
+
+	public static LineStyle guessStyle(String val) {
+		for ( LineStyle ls : values() ) {
+			Pattern p = Pattern.compile(ls.getRegex(),Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(val);
+			if ( m.matches() ) {
+				return ls;
+			}
+		}
+		return SOLID;
 	}
 
 	/**
