@@ -182,7 +182,6 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	@Override
 	protected void deleteButtonActionPerformed(ActionEvent evt) {
 		final int selectedIndex = slider.getSelectedIndex();
-		System.out.println("========== Selected = " + selectedIndex);
 
 		if (0 <= selectedIndex) {
 			slider.getModel().removeThumb(selectedIndex);

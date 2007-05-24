@@ -34,20 +34,30 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.LabelPositionParser;
+
+import cytoscape.visual.ui.LabelPlacerGraphic;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
+import giny.view.Label;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import giny.view.Label;
-import giny.view.NodeView;
+import java.awt.image.BufferedImage;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -69,59 +79,98 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
-					g2d.drawString("<C,C,c,0,0>", c.getX() + 10,
-					               (int) (shape.getBounds2D().getCenterY()) + 5);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		return getIcon((LabelPosition) getDefault());
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param labelPos DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getIcon(LabelPosition labelPos) {
+		int size = 55;
+
+		final BufferedImage bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bi.createGraphics();
+
+		LabelPlacerGraphic lp = new LabelPlacerGraphic(labelPos, size, false);
+		lp.paint(g2);
+
+		NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 0));
+				super.paintIcon(c, g, x, y);
+				g2d.drawImage(bi, 10, -5, null);
+			}
+		};
+		return icon;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
 		Label nodelabel = nv.getLabel();
-		LabelPosition labelPosition = (LabelPosition)o;
+		LabelPosition labelPosition = (LabelPosition) o;
 
-        int newTextAnchor = labelPosition.getLabelAnchor();
+		int newTextAnchor = labelPosition.getLabelAnchor();
 
-        if (nodelabel.getTextAnchor() != newTextAnchor) 
-            nodelabel.setTextAnchor(newTextAnchor);
+		if (nodelabel.getTextAnchor() != newTextAnchor)
+			nodelabel.setTextAnchor(newTextAnchor);
 
-        int newJustify = labelPosition.getJustify();
+		int newJustify = labelPosition.getJustify();
 
-        if (nodelabel.getJustify() != newJustify) 
-            nodelabel.setJustify(newJustify);
+		if (nodelabel.getJustify() != newJustify)
+			nodelabel.setJustify(newJustify);
 
-        int newNodeAnchor = labelPosition.getTargetAnchor();
+		int newNodeAnchor = labelPosition.getTargetAnchor();
 
-        if (nv.getNodeLabelAnchor() != newNodeAnchor) 
-            nv.setNodeLabelAnchor(newNodeAnchor);
+		if (nv.getNodeLabelAnchor() != newNodeAnchor)
+			nv.setNodeLabelAnchor(newNodeAnchor);
 
-        double newOffsetX = labelPosition.getOffsetX();
+		double newOffsetX = labelPosition.getOffsetX();
 
-        if (nv.getLabelOffsetX() != newOffsetX) 
-            nv.setLabelOffsetX(newOffsetX);
+		if (nv.getLabelOffsetX() != newOffsetX)
+			nv.setLabelOffsetX(newOffsetX);
 
-        double newOffsetY = labelPosition.getOffsetY();
+		double newOffsetY = labelPosition.getOffsetY();
 
-        if (nv.getLabelOffsetY() != newOffsetY) 
-            nv.setLabelOffsetY(newOffsetY);
-    }
+		if (nv.getLabelOffsetY() != newOffsetY)
+			nv.setLabelOffsetY(newOffsetY);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_LABEL_POSITION.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new LabelPositionParser()).parseLabelPosition(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_LABEL_POSITION.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new LabelPosition(); }
+		if (s != null)
+			return (new LabelPositionParser()).parseLabelPosition(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new LabelPosition();
+	}
 }

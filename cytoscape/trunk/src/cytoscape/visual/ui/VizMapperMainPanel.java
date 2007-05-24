@@ -94,6 +94,7 @@ import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 import cytoscape.visual.ui.icon.ArrowIcon;
 import cytoscape.visual.ui.icon.NodeIcon;
@@ -611,6 +612,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// For font faces
 	private CyFontPropertyEditor fontCellEditor = new CyFontPropertyEditor();
 	private FontCellRenderer fontCellRenderer = new FontCellRenderer();
+	
+	// For label positions
+	private  LabelPositionCellRenderer labelPositionRenderer = new LabelPositionCellRenderer();
+	
+	
+	// Others 
 	private DefaultTableCellRenderer emptyBoxRenderer = new DefaultTableCellRenderer();
 	private DefaultTableCellRenderer filledBoxRenderer = new DefaultTableCellRenderer();
 	private DefaultTableCellRenderer continuousRenderer = new DefaultTableCellRenderer();
@@ -1423,7 +1430,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					 */
 					case NODE_LABEL_POSITION:
 						setDiscreteProps(type, discMapping, attrSet, stringCellEditor,
-						                 defCellRenderer, calculatorTypeProp);
+								labelPositionRenderer, calculatorTypeProp);
 
 						break;
 
