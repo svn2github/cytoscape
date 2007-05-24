@@ -63,6 +63,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -390,26 +391,32 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 		if (calculator == null)
 			return;
 
-		final String[] names = attr.getAttributeNames();
+//		final String[] names = attr.getAttributeNames();
 
-		byte attrType;
-
-		for (String name : names) {
-			attrType = attr.getType(name);
-
-			//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
-			//                    (attrType == CyAttributes.TYPE_INTEGER))
-			//               
-		}
+//		byte attrType;
+//
+//		for (String name : names) {
+//			attrType = attr.getType(name);
+//
+//			//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
+//			//                    (attrType == CyAttributes.TYPE_INTEGER))
+//			//               
+//		}
 
 		// Assume this calc only returns cont. mapping.
 		if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
 			mapping = (ContinuousMapping) calculator.getMapping(0);
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
-
+			
 			final MultiHashMap mhm = attr.getMultiHashMap();
 
+			List<String> attrNames = new ArrayList<String>();
+			Collections.addAll(attrNames, attr.getAttributeNames());
+			if(attrNames.contains(controllingAttrName) == false) {
+				return;
+			}
+			
 			final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
 			Object key;
 			maxValue = Double.NEGATIVE_INFINITY;
