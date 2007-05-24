@@ -83,6 +83,7 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 	 * @return
 	 */
 	public static Object showDialog(VisualPropertyType type, JDialog parent) {
+	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
 		dialog.setVisible(true);
 
@@ -246,7 +247,7 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 	public class IconCellRenderer extends JLabel implements ListCellRenderer {
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 18);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
-		private final Color SELECTED_COLOR = new Color(0, 5, 80, 30);
+		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
 		private final List<Icon> icons;
 
@@ -260,18 +261,17 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 			final VisualPropertyIcon icon = (VisualPropertyIcon) icons.get(index);
 
 			setText(value.toString());
+			icon.setLeftPadding(15);
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setHorizontalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(25);
+			this.setIconTextGap(35);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
 			setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 20));
-			// this.setBorder(new LineBorder(Color.black));
 			this.setBorder(new DropShadowBorder());
 
 			return this;

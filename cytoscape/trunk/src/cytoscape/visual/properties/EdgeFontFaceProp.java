@@ -36,18 +36,19 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.ui.icon.LineTypeIcon;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import giny.view.Label;
-import giny.view.EdgeView;
-import java.util.Properties;
+import cytoscape.visual.parsers.FontParser;
 
+import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import giny.view.EdgeView;
+import giny.view.Label;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+
+import java.util.Properties;
 
 import javax.swing.Icon;
 
@@ -87,25 +88,46 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 			};
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        Label nodelabel = ev.getLabel();
+		Label nodelabel = ev.getLabel();
 
-        if ( !((Font)o).equals(nodelabel.getFont()) )
-            nodelabel.setFont((Font)o);
-    }
+		if (!((Font) o).equals(nodelabel.getFont()))
+			nodelabel.setFont((Font) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_FONT_FACE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new FontParser()).parseFont(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_FONT_FACE.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new Font("SanSerif", Font.PLAIN, 10); }
+		if (s != null)
+			return (new FontParser()).parseFont(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Font("SanSerif", Font.PLAIN, 10);
+	}
 }

@@ -34,17 +34,22 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.ColorParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.Label;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.Label;
-import giny.view.NodeView;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -69,36 +74,65 @@ public class NodeLabelColorProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
-					g2d.setColor(Color.BLACK);
-					g2d.drawString("A", c.getX() + 10, (int) (shape.getBounds2D().getMaxY()) + 5);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 0));
+				super.paintIcon(c, g, x, y);
+
+				g2d.setColor((Color) getDefault());
+
+				final Font font = (Font) VisualPropertyType.NODE_FONT_FACE
+				                                                                     .getDefault(Cytoscape.getVisualMappingManager()
+				                                                                                          .getVisualStyle());
+				g2d.setFont(new Font(font.getFontName(), font.getStyle(), 28));
+				g2d.drawString("Label", 8, (c.getHeight() / 2) + 10);
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
-		
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
+
 		Label nodelabel = nv.getLabel();
 
-        if ( !((Color)o).equals(nodelabel.getTextPaint()) )
-            nodelabel.setTextPaint((Color)o);
-    }
+		if (!((Color) o).equals(nodelabel.getTextPaint()))
+			nodelabel.setTextPaint((Color) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_LABEL_COLOR.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ColorParser()).parseColor(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_LABEL_COLOR.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return Color.black; }
+		if (s != null)
+			return (new ColorParser()).parseColor(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.black;
+	}
 }

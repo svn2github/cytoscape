@@ -34,6 +34,8 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.Cytoscape;
+
 import cytoscape.visual.*;
 
 import cytoscape.visual.parsers.*;
@@ -73,10 +75,28 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		final LineTypeIcon icon = new LineTypeIcon();
-		icon.setColor(new Color(10, 10, 10, 20));
-		icon.setText(getDefault().toString());
-		icon.setBottomPadding(-7);
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 0));
+				super.paintIcon(c, g, x, y);
+
+				final BasicStroke stroke = (BasicStroke) ((LineStyle) getDefault())
+				                                                                    .getStroke(((Number) VisualPropertyType.NODE_LINE_WIDTH
+				                                                                                .getDefault(Cytoscape.getVisualMappingManager()
+				                                                                                                     .getVisualStyle()))
+				                                                                               .floatValue());
+				g2d.setStroke(stroke);
+				g2d.setColor(Color.DARK_GRAY);
+				g2d.translate(15, 4);
+				g2d.draw(super.shape);
+				g2d.translate(-15, -4);
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+				g2d.setColor(new Color(10, 10, 10, 45));
+				g2d.drawString(getDefault().toString(), c.getX() + 12,
+				               (int) ((c.getHeight() / 2) + 3));
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
 
 		return icon;
 	}

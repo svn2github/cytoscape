@@ -34,20 +34,24 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.FloatParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
 import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
-
-import cytoscape.Cytoscape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.FloatParser;
-import cytoscape.visual.ui.icon.NodeIcon;
 
 
 /**
@@ -69,41 +73,77 @@ public class NodeOpacityProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 0));
+				super.paintIcon(c, g, x, y);
+				g2d.translate(0, -2);
 
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
-					g2d.setColor(new Color(10, 10, 10, 40));
-					g2d.drawString(getDefault().toString(), c.getX() + 10, (int) (shape.getBounds2D().getMaxY()));
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+				final Color color = ((Color) VisualPropertyType.NODE_FILL_COLOR
+				                                                                   .getDefault(Cytoscape.getVisualMappingManager()
+				                                                                                        .getVisualStyle()));
+				g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(),
+				                       ((Number) getDefault()).intValue()));
+				g2d.fill(super.newShape);
+				g2d.translate(0, 2);
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+				g2d.setColor(Color.DARK_GRAY);
+				g2d.drawString(getDefault().toString(), c.getX() + 7,
+				               (int) ((c.getHeight() / 2) + 7));
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
-        
-        Integer tp = ((Color)nv.getUnselectedPaint()).getAlpha();
-        
-        Integer newTp = ((Number)o).intValue();
-        
-        if ( tp != newTp ) {
-        	final Color oldPaint = (Color)nv.getUnselectedPaint();
-            nv.setUnselectedPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(), oldPaint.getBlue(), newTp));
-        }
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_OPACITY.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new FloatParser()).parseFloat(s).intValue();
-        else
-            return null;
-    }
+		Integer tp = ((Color) nv.getUnselectedPaint()).getAlpha();
 
-    public Object getDefaultAppearanceObject() { return new Integer(255); }
+		Integer newTp = ((Number) o).intValue();
 
+		if (tp != newTp) {
+			final Color oldPaint = (Color) nv.getUnselectedPaint();
+			nv.setUnselectedPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
+			                                oldPaint.getBlue(), newTp));
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_OPACITY.getDefaultPropertyKey(baseKey));
+
+		if (s != null)
+			return (new FloatParser()).parseFloat(s).intValue();
+		else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Integer(255);
+	}
 }

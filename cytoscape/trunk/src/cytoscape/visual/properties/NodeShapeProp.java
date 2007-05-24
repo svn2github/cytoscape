@@ -34,20 +34,17 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import cytoscape.visual.parsers.NodeShapeParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
 import giny.view.NodeView;
-import java.util.Properties;
 
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.Icon;
 
@@ -80,33 +77,52 @@ public class NodeShapeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setStroke(new BasicStroke(2.0f));
-					g2d.draw(newShape);
-				}
-			};
+		final NodeIcon icon = new NodeIcon();
+		icon.setBottomPadding(-2);
+
+		return icon;
 	}
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
 
-        final int newShape = ((NodeShape)o).getGinyShape();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
-        if (nv.getShape() != newShape) 
-            nv.setShape(newShape);
-    }
+		final int newShape = ((NodeShape) o).getGinyShape();
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_SHAPE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new NodeShapeParser()).parseNodeShapeEnum(s);
-        else
-            return null;
-    }
+		if (nv.getShape() != newShape)
+			nv.setShape(newShape);
+	}
 
-    public Object getDefaultAppearanceObject() { return NodeShape.RECT; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_SHAPE.getDefaultPropertyKey(baseKey));
 
+		if (s != null)
+			return (new NodeShapeParser()).parseNodeShapeEnum(s);
+		else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return NodeShape.RECT;
+	}
 }

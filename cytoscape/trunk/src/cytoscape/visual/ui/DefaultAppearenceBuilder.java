@@ -34,7 +34,17 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.*;
+
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -51,6 +61,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,15 +74,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-
-import cytoscape.Cytoscape;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -92,22 +94,19 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
-	
 	private static final List<VisualPropertyType> EDGE_PROPS;
 	private static final List<VisualPropertyType> NODE_PROPS;
-	
 	private static DefaultAppearenceBuilder dab = null;
-	
+
 	static {
 		EDGE_PROPS = VisualPropertyType.getEdgeVisualPropertyList();
 		NODE_PROPS = VisualPropertyType.getNodeVisualPropertyList();
-	
+
 		NODE_PROPS.remove(NODE_LINETYPE);
 		EDGE_PROPS.remove(EDGE_LINETYPE);
 		EDGE_PROPS.remove(EDGE_SRCARROW);
 		EDGE_PROPS.remove(EDGE_TGTARROW);
 	}
-	
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -345,31 +344,15 @@ public class DefaultAppearenceBuilder extends JDialog {
 				if (e.getSource() == nodeList) {
 					vps = NODE_PROPS;
 					list = nodeList;
-
 				} else {
 					vps = EDGE_PROPS;
 					list = edgeList;
 				}
 
-				/*
-				 * Pick target VisualPropertyType
-				 */
-				VisualPropertyType targetType = null;
-
-				for (VisualPropertyType type : vps) {
-					if (type.getName().equals(list.getSelectedValue())) {
-						targetType = type;
-
-						break;
-					}
-				}
-
-				if (targetType == null) {
-					return;
-				}
-
-				newValue = VizMapperMainPanel.showValueSelectDialog(targetType, this);
-				VizMapperMainPanel.apply(newValue, targetType);
+				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list
+				                                                                                                                                                                                                                                                                                                                                                 .getSelectedValue(),
+				                                                    this);
+				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -445,7 +428,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getVisualProperty()
 			                                                              .getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
-			model.addElement(type.getName());
+			model.addElement(type);
 			nodeIcons.add(nodeIcon);
 		}
 
@@ -458,7 +441,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			if (edgeIcon != null) {
 				edgeIcon.setLeftPadding(15);
-				eModel.addElement(type.getName());
+				eModel.addElement(type);
 				edgeIcons.add(edgeIcon);
 			}
 		}
@@ -489,8 +472,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
-		private final Color SELECTED_COLOR = new Color(0, 5, 80, 30);
-		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 120);
+		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
+		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 150);
 		private final List<Icon> icons;
 
 		public VisualPropCellRenderer(List<Icon> icons) {
@@ -513,8 +496,18 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(35);
-			//this.setAlignmentX(150.0f);
+			this.setIconTextGap(65);
+
+			if (value instanceof VisualPropertyType
+			    && (((VisualPropertyType) value).getDataType() == String.class)) {
+				final Object defVal = ((VisualPropertyType) value).getDefault(Cytoscape.getVisualMappingManager()
+				                                                                       .getVisualStyle());
+
+				if (defVal != null) {
+					this.setToolTipText((String) defVal);
+				}
+			}
+
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
 

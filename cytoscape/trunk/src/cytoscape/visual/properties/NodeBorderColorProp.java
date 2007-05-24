@@ -34,16 +34,16 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.ColorParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.NodeView;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.NodeView;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -68,32 +68,51 @@ public class NodeBorderColorProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setColor((Color) getDefault());
-					g2d.fill(super.newShape);
-				}
-			};
+		final NodeIcon icon = new NodeIcon();
+		icon.setColor((Color) getDefault());
+		icon.setBottomPadding(-2);
+
+		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
-        if ( !((Color)o).equals(nv.getBorderPaint()) )
-            nv.setBorderPaint((Color)o);
-    }
+		if (!((Color) o).equals(nv.getBorderPaint()))
+			nv.setBorderPaint((Color) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_BORDER_COLOR.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ColorParser()).parseColor(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_BORDER_COLOR.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return Color.black; }
+		if (s != null)
+			return (new ColorParser()).parseColor(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.black;
+	}
 }

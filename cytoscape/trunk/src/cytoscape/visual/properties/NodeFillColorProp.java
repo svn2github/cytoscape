@@ -34,20 +34,21 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
-import javax.swing.Icon;
-import java.awt.Font;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.ColorParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.NodeView;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.util.Properties;
-import giny.view.NodeView; 
-import cytoscape.visual.parsers.*;
-import java.util.Properties;
-import javax.swing.Icon;
 
+import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -69,31 +70,58 @@ public class NodeFillColorProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setColor((Color) getDefault());
-					g2d.fill(super.newShape);
-				}
-			};
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 0));
+				super.paintIcon(c, g, x, y);
+				g2d.translate(0, -2);
+				g2d.setColor((Color) getDefault());
+				g2d.fill(super.newShape);
+				g2d.translate(0, 2);
+			}
+		};
+
+		return icon;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
 	public void applyToNodeView(NodeView nv, Object o) {
-		if ( o == null || nv == null )
+		if ((o == null) || (nv == null))
 			return;
 
-		if ( !((Color)o).equals(nv.getUnselectedPaint()) ) 
-			nv.setUnselectedPaint((Color)o);	
+		if (!((Color) o).equals(nv.getUnselectedPaint()))
+			nv.setUnselectedPaint((Color) o);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Object parseProperty(Properties props, String baseKey) {
-		String s = props.getProperty( 
-			VisualPropertyType.NODE_FILL_COLOR.getDefaultPropertyKey(baseKey) );
-		if ( s != null ) 
+		String s = props.getProperty(VisualPropertyType.NODE_FILL_COLOR.getDefaultPropertyKey(baseKey));
+
+		if (s != null)
 			return (new ColorParser()).parseColor(s);
 		else
+
 			return null;
 	}
 
-	public Object getDefaultAppearanceObject() { return Color.white; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.white;
+	}
 }

@@ -73,20 +73,21 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
-					g2d.drawString("8", c.getX() + 10 + ((int) shape.getBounds2D().getWidth() / 2),
-					               (int) (shape.getBounds2D().getMaxY()));
-					g2d.setColor(new Color(10, 10, 10, 50));
-					g2d.setStroke(new BasicStroke(8.0f));
-					g2d.drawLine(c.getX() + 10, (int) (shape.getBounds().getCenterY() + 10),
-					             (int) shape.getBounds2D().getMaxX() * 2,
-					             (int) (shape.getBounds().getCenterY()) + 10);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 25));
+				super.paintIcon(c, g, x, y);
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+				g2d.setColor(Color.DARK_GRAY);
+				g2d.drawString(getDefault().toString(), c.getX() + 7,
+				               (int) ((c.getHeight() / 2) + 7));
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		return icon;
 	}
 
 	/**
@@ -98,10 +99,13 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o) {
 		if ((o == null) || (nv == null))
 			return;
-		if (nv.getBorderWidth() != ((Number)o).floatValue()) {
+
+		if (nv.getBorderWidth() != ((Number) o).floatValue()) {
 			final BasicStroke oldValue = (BasicStroke) nv.getBorder();
-			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
-					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
+			final Stroke newLine = new BasicStroke(((Number) o).floatValue(), oldValue.getEndCap(),
+			                                       oldValue.getLineJoin(),
+			                                       oldValue.getMiterLimit(),
+			                                       oldValue.getDashArray(), oldValue.getDashPhase());
 			nv.setBorder(newLine);
 		}
 	}
@@ -120,6 +124,7 @@ public class NodeLineWidthProp extends AbstractVisualProperty {
 		if (s != null)
 			return (new FloatParser()).parseFloat(s);
 		else
+
 			return null;
 	}
 

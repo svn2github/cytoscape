@@ -34,16 +34,17 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.NodeView;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -68,35 +69,68 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
-					g2d.drawString(getDefault().toString(), c.getX() + 10,
-					               (int) (shape.getBounds2D().getCenterY()) + 5);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 25));
+				super.paintIcon(c, g, x, y);
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 8));
+				g2d.setColor(Color.DARK_GRAY);
+
+				String defLabel = getDefault().toString();
+
+				if (defLabel.length() > 15) {
+					defLabel = defLabel.substring(0, 14) + "...";
 				}
-			};
+
+				g2d.drawString(defLabel, c.getX() + 7, (int) ((c.getHeight() / 2)));
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		icon.setBottomPadding(-2);
+
+		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
 		// TODO - add getToolTip to NodeView
-        //if ( !((String)o).equals(nv.getToolTip()) )
-            nv.setToolTip((String)o);
-    }
+		//if ( !((String)o).equals(nv.getToolTip()) )
+		nv.setToolTip((String) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_TOOLTIP.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return s;
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_TOOLTIP.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return ""; }
+		if (s != null)
+			return s;
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return "";
+	}
 }

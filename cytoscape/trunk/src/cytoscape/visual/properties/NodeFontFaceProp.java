@@ -34,19 +34,20 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import giny.view.Label;
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.Label;
-import giny.view.NodeView;
 import java.util.Properties;
+
 import javax.swing.Icon;
+
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.FontParser;
+import cytoscape.visual.ui.icon.NodeIcon;
 
 
 /**
@@ -68,17 +69,20 @@ public class NodeFontFaceProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.drawString(((Font) getDefault()).getFontName(), c.getX() + 10,
-					               (int) (shape.getBounds2D().getCenterY()) + 5);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
-					g2d.setColor(new Color(10, 10, 10, 30));
-					g2d.drawString("A", c.getX() + 10, (int) (shape.getBounds2D().getMaxY()) + 5);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 0));
+				super.paintIcon(c, g, x, y);
+
+				g2d.setColor(Color.DARK_GRAY);
+				final Font font = (Font) getDefault();
+				g2d.setFont(new Font(font.getFontName(), font.getStyle(), 28));
+				g2d.drawString("Font", 8,c.getHeight()/2 + 10);
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		return icon;
 	}
 
     public void applyToNodeView(NodeView nv, Object o) {

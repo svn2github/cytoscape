@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
@@ -391,32 +389,33 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 		if (calculator == null)
 			return;
 
-//		final String[] names = attr.getAttributeNames();
+		//		final String[] names = attr.getAttributeNames();
 
-//		byte attrType;
-//
-//		for (String name : names) {
-//			attrType = attr.getType(name);
-//
-//			//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
-//			//                    (attrType == CyAttributes.TYPE_INTEGER))
-//			//               
-//		}
+		//		byte attrType;
+		//
+		//		for (String name : names) {
+		//			attrType = attr.getType(name);
+		//
+		//			//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
+		//			//                    (attrType == CyAttributes.TYPE_INTEGER))
+		//			//               
+		//		}
 
 		// Assume this calc only returns cont. mapping.
 		if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
 			mapping = (ContinuousMapping) calculator.getMapping(0);
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
-			
+
 			final MultiHashMap mhm = attr.getMultiHashMap();
 
 			List<String> attrNames = new ArrayList<String>();
 			Collections.addAll(attrNames, attr.getAttributeNames());
-			if(attrNames.contains(controllingAttrName) == false) {
+
+			if (attrNames.contains(controllingAttrName) == false) {
 				return;
 			}
-			
+
 			final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
 			Object key;
 			maxValue = Double.NEGATIVE_INFINITY;

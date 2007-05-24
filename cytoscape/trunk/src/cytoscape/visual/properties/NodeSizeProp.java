@@ -34,16 +34,19 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import cytoscape.visual.ui.icon.*;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.DoubleParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
+import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import giny.view.NodeView;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -68,44 +71,69 @@ public class NodeSizeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
-					g2d.drawString(getDefault().toString(), c.getX() + 10,
-					               (int) (shape.getBounds2D().getMaxY()));
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-					g2d.setColor(new Color(10, 10, 10, 30));
-					g2d.draw(newShape);
-				}
-			};
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 25));
+				super.paintIcon(c, g, x, y);
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+				g2d.setColor(Color.DARK_GRAY);
+				g2d.drawString(getDefault().toString(), c.getX() + 7,
+				               (int) ((c.getHeight() / 2) + 7));
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		icon.setBottomPadding(-2);
+
+		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
-			double size = ((Double)o).doubleValue();
-            double difference = size - nv.getHeight();
+		double size = ((Double) o).doubleValue();
+		double difference = size - nv.getHeight();
 
-            if (Math.abs(difference) > 0.1) 
-                nv.setHeight(size);
+		if (Math.abs(difference) > 0.1)
+			nv.setHeight(size);
 
-            difference = size - nv.getWidth();
+		difference = size - nv.getWidth();
 
-            if (Math.abs(difference) > 0.1) 
-                nv.setWidth(size);
-    }
+		if (Math.abs(difference) > 0.1)
+			nv.setWidth(size);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_SIZE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new DoubleParser()).parseDouble(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_SIZE.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new Double(35.0); }
+		if (s != null)
+			return (new DoubleParser()).parseDouble(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Double(35.0);
+	}
 }

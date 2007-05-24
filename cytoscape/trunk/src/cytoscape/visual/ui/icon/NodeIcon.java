@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.icon;
 
 import cytoscape.Cytoscape;
@@ -70,11 +68,11 @@ public class NodeIcon extends VisualPropertyIcon {
 	public NodeIcon() {
 		this(((NodeShape) (VisualPropertyType.NODE_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
 		                                                                     .getVisualStyle())))
-		                                                                 .getShape(),
+		                                                               .getShape(),
 		     DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE,
 		     ((NodeShape) (VisualPropertyType.NODE_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
 		                                                                     .getVisualStyle())))
-		                                                                     .getShapeName(),
+		                                                                   .getShapeName(),
 		     DEFAULT_ICON_COLOR);
 	}
 
@@ -165,7 +163,10 @@ public class NodeIcon extends VisualPropertyIcon {
 
 		final AffineTransform af = new AffineTransform();
 
+		// AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g2d.translate(0, bottomPad);
 
 		newShape = shape;
 
@@ -175,6 +176,8 @@ public class NodeIcon extends VisualPropertyIcon {
 		g2d.setColor(color);
 		g2d.setStroke(new BasicStroke(2.0f));
 		g2d.draw(newShape);
+
+		g2d.translate(0, -bottomPad);
 	}
 
 	/**

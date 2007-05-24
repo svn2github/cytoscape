@@ -34,17 +34,20 @@
  */
 package cytoscape.visual.properties;
 
-import java.awt.Graphics2D;
-import java.util.Map;
-
-import javax.swing.Icon;
-import java.util.Properties;
-import giny.view.NodeView;
-import giny.view.EdgeView;
-
 import cytoscape.Cytoscape;
+
 import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualPropertyType;
+
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import java.awt.Graphics2D;
+
+import java.util.Map;
+import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -100,8 +103,42 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 		return getType().getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
 	}
 
-	public void applyToNodeView(NodeView nv, Object o) {}
-	public void applyToEdgeView(EdgeView ev, Object o) {}
-	public Object parseProperty(Properties props, String baseKey) { return null; }
-	public Object getDefaultAppearanceObject() { return null; } 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return null;
+	}
 }

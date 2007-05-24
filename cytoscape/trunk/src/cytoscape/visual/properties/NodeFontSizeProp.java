@@ -72,18 +72,21 @@ public class NodeFontSizeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return new NodeIcon() {
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					super.paintIcon(c, g, x, y);
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
-					g2d.drawString(getDefault().toString(), c.getX() + 10,
-					               (int) (shape.getBounds2D().getMaxY()));
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
-					g2d.setColor(new Color(10, 10, 10, 40));
-					g2d.drawString("A", c.getX() + 10, (int) (shape.getBounds2D().getMaxY()));
-					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
-				}
-			};
+		final NodeIcon icon = new NodeIcon() {
+			public void paintIcon(Component c, Graphics g, int x, int y) {
+				super.setColor(new Color(10, 10, 10, 25));
+				super.paintIcon(c, g, x, y);
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+				g2d.setColor(Color.DARK_GRAY);
+				g2d.drawString(getDefault().toString(), c.getX() + 7,
+				               (int) ((c.getHeight() / 2) + 7));
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
+		};
+
+		return icon;
 	}
 
 	/**
