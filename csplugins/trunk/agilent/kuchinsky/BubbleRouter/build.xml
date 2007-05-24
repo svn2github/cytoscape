@@ -11,9 +11,9 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-<!--        <property name="cytoroot.dir" value="/cellar/users/trey/cytodir"/>
+<!--        <property name="cytoroot.dir" value="../../../../Cytoscape"/>
 -->
-	<property name="cytoroot.dir" value=".."/>
+	<property name="cytoroot.dir" value="../../../../Cytoscape"/>
 	
 	
 <!-- 	<property name="lib.dir" value="${cytoroot.dir}/cytoscape-2.1/lib"/>  -->
@@ -26,11 +26,11 @@
 	<property name="release.dir" value="../cytoscape_2.3_beta"/>
 -->
 	
-	<property name="release.dir" value="../cytoscape-2.4_alpha"/>
+	<property name="release.dir" value="../../../../Cytoscape"/>
 	
 <!--		<property name="lib.dir" value = "../cytoscape/lib"/> 
-	<property name="lib.dir" value = "../cytoscape_2.3_beta/lib"/>  -->
-	<property name="lib.dir" value = "../cytoscape-2.4_alpha/lib"/>
+	<property name="lib.dir" value = "../../../../Cytoscape/lib"/>  -->
+	<property name="lib.dir" value = "../../../../Cytoscape/lib"/>
 	
 <!---	<property name="images.dir" value = "src/cytoscape/editor/editors/images"/>  -->
 	
@@ -131,11 +131,11 @@
 <copy file="${build.dir}/${plugin.name}.jar" todir="${cytoroot.dir}/cytoscape-2.1/plugins"/>
    		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.1/release/plugins"/>
    		
-  		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/core"/>  
+  		<copy file="${build.dir}/${plugin.name}.jar" todir="../../../../Cytoscape/plugins/core"/>  
   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins"/>
   		-->
    		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.4_alpha/plugins/core/"/>
-  		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-trunk/plugins/core"/>
+  		<copy file="${build.dir}/${plugin.name}.jar" todir="../../../../Cytoscape/plugins/core"/>
 	</target>
 
 </project>

@@ -13,6 +13,12 @@ import java.util.List;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.pathvisio.model.GpmlFormat;
+import org.pathvisio.model.ObjectType;
+import org.pathvisio.model.Pathway;
+import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.GraphLink.GraphRefContainer;
+import org.pathvisio.model.PathwayElement.MPoint;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -22,14 +28,12 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.data.readers.GraphReader;
+import cytoscape.layout.LayoutAdapter;
+import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyFileFilter;
-import data.gpml.GmmlData;
-import data.gpml.GmmlDataObject;
-import data.gpml.GpmlFormat;
-import data.gpml.ObjectType;
-import data.gpml.GmmlDataObject.MPoint;
-import data.gpml.GraphLink.GraphRefContainer;
+import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
@@ -40,8 +44,8 @@ public class GpmlImporter extends CytoscapePlugin {
         Cytoscape.getImportHandler().addFilter(new GpmlFilter());
     }
         
-    void mapGpmlData(CyNetwork cyn, GmmlData data) {
-    	for(GmmlDataObject o : data.getDataObjects()) {
+    void mapGpmlData(CyNetwork cyn, Pathway data) {
+    	for(PathwayElement o : data.getDataObjects()) {
     		if(o.getObjectType() == ObjectType.DATANODE) {
     			Cytoscape.getCyNode(o.getTextLabel());
     		}
@@ -51,19 +55,19 @@ public class GpmlImporter extends CytoscapePlugin {
     class GpmlReader extends AbstractGraphReader {
     	CyAttributes nAttributes = Cytoscape.getNodeAttributes();
     	CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
-        GmmlData gmmlData;
+        Pathway pathway;
         
-    	HashMap<GmmlDataObject, CyNode> nodes = new HashMap<GmmlDataObject, CyNode>();
-    	HashMap<GmmlDataObject, String[]> edges = new HashMap<GmmlDataObject, String[]>();
+    	HashMap<PathwayElement, CyNode> nodes = new HashMap<PathwayElement, CyNode>();
+    	HashMap<PathwayElement, String[]> edges = new HashMap<PathwayElement, String[]>();
     	
 		public GpmlReader(String fileName) {
 			super(fileName);
-			gmmlData = new GmmlData();
+			pathway = new Pathway();
 		}
 
 		public void read() throws IOException {
 			try {
-				gmmlData.readFromXml(new File(fileName), true);				
+				pathway.readFromXml(new File(fileName), true);				
 			} catch(Exception ex) {
 				throw new IOException(ex.getMessage());
 			}
@@ -72,10 +76,10 @@ public class GpmlImporter extends CytoscapePlugin {
 		}
 		
 		private void findNodes() {
-			for(GmmlDataObject o : gmmlData.getDataObjects()) {
+			for(PathwayElement o : pathway.getDataObjects()) {
 				String id = o.getGraphId();
 				if(id == null) {
-					id = gmmlData.getUniqueId();
+					id = pathway.getUniqueId();
 					o.setGraphId(id);
 				}
 				out.println("Creating node: " + id);
@@ -86,11 +90,11 @@ public class GpmlImporter extends CytoscapePlugin {
 		}
 		
 		private void findEdges() {
-			for(GmmlDataObject o : gmmlData.getDataObjects()) {
+			for(PathwayElement o : pathway.getDataObjects()) {
 				for(GraphRefContainer r : o.getReferences()) {
 					if(r instanceof MPoint) {
 						int i = 0;
-						GmmlDataObject l = ((MPoint)r).getParent();
+						PathwayElement l = ((MPoint)r).getParent();
 						if(r == l.getMEnd()) i = 1;
 						String[] str = edges.get(l);
 						if(str == null) edges.put(l, str = new String[3]);
@@ -105,13 +109,15 @@ public class GpmlImporter extends CytoscapePlugin {
 		public int[] getNodeIndicesArray() {
 			int[] inodes = new int[nodes.size()];
 			int i = 0;
-			for(CyNode n : nodes.values()) inodes[i++] = n.getRootGraphIndex();
+			for(CyNode n : nodes.values()) {
+					inodes[i++] = n.getRootGraphIndex();
+			}
 			return inodes;
 		}
 		
 		public int[] getEdgeIndicesArray() {
 			ArrayList<CyEdge> realedges = new ArrayList<CyEdge>();
-			for(GmmlDataObject o : edges.keySet()) {
+			for(PathwayElement o : edges.keySet()) {
 				String[] einfo = edges.get(o);
 				if(einfo[0] == null || einfo[1] == null) {
 					out.println("Incomplete edge found " + einfo[0] + ", " + einfo[1] + "; skipping");
@@ -128,24 +134,37 @@ public class GpmlImporter extends CytoscapePlugin {
 		}
 		
 		public void layout(GraphView view) {
-			for(GmmlDataObject o : nodes.keySet()) {
+			for(PathwayElement o : nodes.keySet()) {
 				NodeView nv = view.getNodeView(nodes.get(o));
 				nv.setXPosition(mToV(o.getMCenterX()), false);
 				nv.setYPosition(mToV(o.getMCenterY()), false);
+			}
+			for(PathwayElement o : pathway.getDataObjects()) {
+				DGraphView dview = (DGraphView) view;
+				DingCanvas backgroundLayer = dview.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 				switch(o.getObjectType()) {
 				case ObjectType.SHAPE:
-					DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-					DingCanvas backgroundLayer = dview.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-					backgroundLayer.add(new Shape(o));
-					//Cytoscape.getCurrentNetwork().removeNode(nodes.get(o).getRootGraphIndex(), true);
+					backgroundLayer.add(new Shape(o, dview));
+					view.hideGraphObject(view.getNodeView(nodes.get(o)));
+					break;
+				case ObjectType.LINE:
+					backgroundLayer.add(new Line(o, dview));
 					break;
 				}
-			}			
+			}
 			view.updateView();
+		}
+
+		public LayoutAlgorithm getLayoutAlgorithm() {
+			return new LayoutAdapter() {
+				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+					layout(networkView);
+				}
+			};
 		}
     }
     
-    static void transferAttributes(String id, GmmlDataObject o, CyAttributes attr) {
+    static void transferAttributes(String id, PathwayElement o, CyAttributes attr) {
     	try {
 			Element e = GpmlFormat.createJdomElement(o, Namespace.getNamespace(""));
 			attr.setAttribute(id, "GpmlElement", e.getName());
