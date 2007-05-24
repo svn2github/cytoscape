@@ -39,6 +39,9 @@
 		</fileset>
 		<pathelement location="${classes.dir}" />
 		<pathelement location="${cytoscape.dir}/cytoscape.jar" />
+		<fileset dir="${cytoscape.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
 		<!-- It appears best to put the gaggle.jar file in the lib dir, otherwise compile fails -->
 		<!--		<pathelement location="${gaggle.dir}/gaggle.jar" /> -->
 	</path>
@@ -66,7 +69,6 @@
 			</manifest>
 
 			<fileset dir="${classes.dir}" />
-			<fileset dir="${build.dir}" />
 		</jar>
 	</target>
 
@@ -85,5 +87,12 @@
 		</fail>
 	</target>
 
+	<target name="addToWebstart" depends="checkWebstart, signJar" description="Copy plugin to cytoscape webstart">
+		<copy file="${build.dir}/${jar.file}" toDir="${webstartDir}/plugins"/>
+	</target>
+	
+	<target name="localCopy" depends="jar" description="Copy to local Cytoscape">
+		<copy file="${build.dir}/${jar.file}" toDir="${cytoscape.dir}/plugins"/>
+	</target>
 	
 </project>
