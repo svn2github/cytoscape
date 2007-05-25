@@ -37,6 +37,7 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.*;
 
@@ -64,6 +65,8 @@ import java.awt.geom.Point2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -94,18 +97,24 @@ import javax.swing.SwingConstants;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
-	private static final List<VisualPropertyType> EDGE_PROPS;
-	private static final List<VisualPropertyType> NODE_PROPS;
+	private static final Set<VisualPropertyType> EDGE_PROPS;
+	private static final Set<VisualPropertyType> NODE_PROPS;
 	private static DefaultAppearenceBuilder dab = null;
+	private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
+	                                                      .getNodeAppearanceCalculator();
 
 	static {
-		EDGE_PROPS = VisualPropertyType.getEdgeVisualPropertyList();
-		NODE_PROPS = VisualPropertyType.getNodeVisualPropertyList();
+		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
+		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
 
 		NODE_PROPS.remove(NODE_LINETYPE);
 		EDGE_PROPS.remove(EDGE_LINETYPE);
+
 		EDGE_PROPS.remove(EDGE_SRCARROW);
 		EDGE_PROPS.remove(EDGE_TGTARROW);
+
+		NODE_PROPS.remove(NODE_WIDTH);
+		NODE_PROPS.remove(NODE_HEIGHT);
 	}
 
 	/**
@@ -181,7 +190,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		edgeList = new JXList();
 		edgeScrollPane = new javax.swing.JScrollPane();
 		globalScrollPane = new javax.swing.JScrollPane();
-		jCheckBox1 = new javax.swing.JCheckBox();
+		lockNodeSizeCheckBox = new javax.swing.JCheckBox();
 		applyButton = new javax.swing.JButton();
 
 		globalList = new JXList();
@@ -189,7 +198,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		cancelButton = new javax.swing.JButton();
 		cancelButton.setVisible(false);
 
-		jCheckBox1.setOpaque(false);
+		lockNodeSizeCheckBox.setOpaque(false);
 
 		nodeList.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -253,10 +262,16 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                               243, Short.MAX_VALUE));
 
-		jCheckBox1.setFont(new java.awt.Font("SansSerif", 1, 12));
-		jCheckBox1.setText("Keep Aspect Ratio");
-		jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		lockNodeSizeCheckBox.setFont(new java.awt.Font("SansSerif", 1, 12));
+		lockNodeSizeCheckBox.setText("Lock Node With/Height");
+		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					lockSize();
+				}
+			});
 
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
@@ -281,7 +296,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                   .addContainerGap()
 		                                                                   .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                                      .add(jXPanel1Layout.createSequentialGroup()
-		                                                                                                         .add(jCheckBox1,
+		                                                                                                         .add(lockNodeSizeCheckBox,
 		                                                                                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                                                              138,
 		                                                                                                              Short.MAX_VALUE)
@@ -315,7 +330,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                                                                            Short.MAX_VALUE)
 		                                                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                                       .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                                          .add(jCheckBox1)
+		                                                                                                                          .add(lockNodeSizeCheckBox)
 		                                                                                                                          .add(cancelButton)
 		                                                                                                                          .add(applyButton))))
 		                                                                 .addContainerGap()));
@@ -337,20 +352,18 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			Object newValue = null;
-			List<VisualPropertyType> vps = null;
+
 			final JList list;
 
 			try {
 				if (e.getSource() == nodeList) {
-					vps = NODE_PROPS;
 					list = nodeList;
 				} else {
-					vps = EDGE_PROPS;
 					list = edgeList;
 				}
 
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list
-				                                                                                                                                                                                                                                                                                                                                                 .getSelectedValue(),
+				                                                                                                                                                                                                                                                                                                                                                              .getSelectedValue(),
 				                                                    this);
 				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
 			} catch (Exception e1) {
@@ -392,7 +405,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	// Variables declaration - do not modify
 	private javax.swing.JButton applyButton;
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JCheckBox jCheckBox1;
+	private javax.swing.JCheckBox lockNodeSizeCheckBox;
 	private javax.swing.JScrollPane nodeScrollPane;
 	private javax.swing.JScrollPane edgeScrollPane;
 	private javax.swing.JScrollPane globalScrollPane;
@@ -467,6 +480,24 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 		mainView.updateView();
 		mainView.repaint();
+	}
+
+	private void lockSize() {
+		if (lockNodeSizeCheckBox.isSelected()) {
+			NODE_PROPS.remove(NODE_WIDTH);
+			NODE_PROPS.remove(NODE_HEIGHT);
+			NODE_PROPS.add(NODE_SIZE);
+			nac.setNodeSizeLocked(true);
+		} else {
+			NODE_PROPS.add(NODE_WIDTH);
+			NODE_PROPS.add(NODE_HEIGHT);
+			NODE_PROPS.remove(NODE_SIZE);
+			nac.setNodeSizeLocked(false);
+		}
+
+		buildList();
+		mainView.updateView();
+		repaint();
 	}
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
