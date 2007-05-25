@@ -25,8 +25,8 @@ create table plugin_list (
 	plugin_auto_id	int not null primary key auto_increment,
     name     		varchar(100) not null,
 	description		text,
-	license_brief	varchar(200),
-	license_detail	text,
+	license			text,
+	license_required	varchar(3),	
 	project_url		varchar(100),
 	category_id		int,
     sysdat          Date
@@ -78,15 +78,20 @@ create table usagelog (
 );
 
 grant select, insert on cyplugindb.* to cytouser identified by 'cytouser';
-grant all on cyplugindb.* to cytostaff identified by 'cytostaff';
+grant select, insert, delete on cyplugindb.* to cytostaff identified by 'cytostaff';
 
 insert into categories (category_id, name, description) 
-            values (1, 'Analysis Plugins', 'Used for analyzing existing networks');
+            values (1, 'Core Plugins', 'Cytoscape core');
+insert into categories (category_id, name, description) 
+            values (2, 'Analysis Plugins', 'Used for analyzing existing networks');
 insert into categories (category_id,name, description)
-            values (2, 'Network and Attribute I/O Plugins', 'Used for importing networks and attributes in different file formats');
+            values (3, 'Network and Attribute I/O Plugins', 'Used for importing networks and attributes in different file formats');
 insert into categories (category_id,name, description) 
-            values (3, 'Network Inference Plugins', 'Used for inferring new networks');
+            values (4, 'Network Inference Plugins', 'Used for inferring new networks');
 insert into categories (category_id,name, description) 
-            values (4, 'Functional Enrichment Plugins', 'Used for functional enrichment of networks');
+            values (5, 'Functional Enrichment Plugins', 'Used for functional enrichment of networks');
 insert into categories (category_id,name, description) 
-            values (5, 'Communication/Scripting Plugins', 'Used for communicating with or scripting Cytoscape');
+            values (6, 'Communication/Scripting Plugins', 'Used for communicating with or scripting Cytoscape');
+insert into categories (category_id,name, description) 
+            values (7, 'Other Plugins', 'None of the above');
+            
