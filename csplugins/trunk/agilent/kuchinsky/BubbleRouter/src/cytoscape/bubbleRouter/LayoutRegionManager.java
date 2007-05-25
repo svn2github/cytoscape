@@ -132,7 +132,7 @@ public class LayoutRegionManager {
 
 		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
 		// layout region
-		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+		DGraphView dview = (DGraphView) view;
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
 		backgroundLayer.add(region);
 	
@@ -153,7 +153,7 @@ public class LayoutRegionManager {
 	 */
 	public static void removeRegion(CyNetworkView view, LayoutRegion region) {
 		removeRegionFromView(view, region);
-		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+		DGraphView dview = (DGraphView) view;
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
 		backgroundLayer.remove(region);
 		backgroundLayer.repaint();
