@@ -3,7 +3,10 @@ package SessionExporterPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.OutputStream;
@@ -70,6 +73,7 @@ public class HTMLSessionExporter
 				try
 				{
 					List<String> networkIDs = networkIDs();
+					//crap(networkIDs);
 					writeSession();
 					generateNetworkFiles(networkIDs);
 					generateIndexHTML(networkIDs);
@@ -84,15 +88,147 @@ public class HTMLSessionExporter
 				}
 			}
 
-			private List<String> networkIDs()
+			/*
+			private void crap(List<String> networkIDs)
 			{
-				List<String> networkIDs = new ArrayList<String>();
+				System.out.println("Networks:");
+				for (String networkID : networkIDs)
+				{
+					String title = Cytoscape.getNetwork(networkID).getTitle();
+					System.out.println('\t' + title);
+				}
+
+				System.out.println("Pages:");
+				List<List<String>> pages = breakIntoPages(networkIDs);
+				for (List<String> page : pages)
+				{
+					System.out.println("\tGroups:");
+					List<List<String>> groups = breakPageIntoGroups(page);
+					for (List<String> group : groups)
+					{
+						System.out.println("\t\tRows:");
+						List<List<String>> rows = breakGroupIntoRows(group);
+						for (List<String> row : rows)
+						{
+							for (String networkID : row)
+							{
+								String title = Cytoscape.getNetwork(networkID).getTitle();
+								System.out.println("\t\t" + title);
+							}
+							System.out.println("\t\t-- end row");
+						}
+						System.out.println("\t-- end group");
+					}
+					System.out.println("-- end page");
+				}
+			}
+			*/
+
+			private List<List<String>> breakIntoPages(List<String> networkIDs)
+			{
+				List<List<String>> pages = new ArrayList<List<String>>();
+				if (!settings.doSeparateIntoPages)
+					pages.add(networkIDs);
+				else
+				{
+					List<String> page = new ArrayList<String>();
+					for (String networkID : networkIDs)
+					{
+						page.add(networkID);
+						if (page.size() == settings.numNetworksPerPage)
+						{
+							pages.add(page);
+							page = new ArrayList<String>();
+						}
+					}
+					if (page.size() != 0)
+						pages.add(page);
+				}
+
+				return pages;
+			}
+
+			private List<List<String>> breakPageIntoGroups(List<String> page)
+			{
+				List<List<String>> groups = new ArrayList<List<String>>();
+				if (settings.sortImages != SessionExporterSettings.SORT_IMAGES_BY_VISUAL_STYLE)
+					groups.add(page);
+				else
+				{
+					Map<VisualStyle,List<String>> vizStyleToIDsMap = vizStyleToIDs(page);
+					groups.addAll(vizStyleToIDsMap.values());
+				}
+				return groups;
+			}
+
+			private List<List<String>> breakGroupIntoRows(List<String> group)
+			{
+				List<List<String>> rows = new ArrayList<List<String>>();
+				List<String> currentRow = new ArrayList<String>();
+				for (String networkID : group)
+				{
+					currentRow.add(networkID);
+					if (currentRow.size() == settings.numNetworksPerRow)
+					{
+						rows.add(currentRow);
+						currentRow = new ArrayList<String>();
+					}
+				}
+				if (currentRow.size() != 0)
+					rows.add(currentRow);
+
+				return rows;
+			}
+
+			private Map<String,String> networkTitleToIDMap()
+			{
+				Map<String,String> map = new HashMap<String,String>();
 				Iterator iterator = Cytoscape.getNetworkSet().iterator();
 				while (iterator.hasNext())
 				{
 					CyNetwork network = (CyNetwork) iterator.next();
 					String networkID = network.getIdentifier();
-					networkIDs.add(networkID);
+					String networkTitle = network.getTitle();
+					map.put(networkTitle, networkID);
+				}
+				return map;
+			}
+
+			private Map<VisualStyle,List<String>> vizStyleToIDs(List<String> networkIDs)
+			{
+				Map<VisualStyle,List<String>> vizStyleToIDsMap = new HashMap<VisualStyle,List<String>>();
+				for (String networkID : networkIDs)
+				{
+					CyNetworkView view = Cytoscape.getNetworkView(networkID);
+					VisualStyle vizStyle = view.getVisualStyle();
+					if (!vizStyleToIDsMap.containsKey(vizStyle))
+						vizStyleToIDsMap.put(vizStyle, new ArrayList<String>());
+					vizStyleToIDsMap.get(vizStyle).add(networkID);
+				}
+				return vizStyleToIDsMap;
+			}
+
+			private List<String> networkIDs()
+			{
+				Map<String,String> networkTitleToIDMap = networkTitleToIDMap();
+				List<String> networkIDs = new ArrayList<String>();
+
+				if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_AS_IS)
+					networkIDs.addAll(networkTitleToIDMap.values());
+				else if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_ALPHABETICALLY)
+				{
+					Set<String> networkTitles = new TreeSet<String>(networkTitleToIDMap.keySet());
+					for (String networkTitle : networkTitles)
+						networkIDs.add(networkTitleToIDMap.get(networkTitle));
+				}
+				else if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_BY_VISUAL_STYLE)
+				{
+					networkIDs.addAll(networkTitleToIDMap.values());
+					Map<VisualStyle,List<String>> vizStyleToIDsMap = vizStyleToIDs(networkIDs);
+					networkIDs.clear();
+					for (VisualStyle vizStyle : vizStyleToIDsMap.keySet())
+						for (String networkID : vizStyleToIDsMap.get(vizStyle))
+							networkIDs.add(networkID);
 				}
 				return networkIDs;
 			}
@@ -200,56 +336,90 @@ public class HTMLSessionExporter
 				if (needToHalt)
 					return;
 
-				setStatus("Writing HTML page");
+				setStatus("Writing HTML pages");
 				setPercentCompleted(90);
-				bundle.openEntry(Bundle.indexHTMLFile());
-				PrintWriter htmlWriter = new PrintWriter(bundle.entryWriter());
-				htmlWriter.println("<html>");
-				htmlWriter.println("<body>");
-				htmlWriter.println("<a href=\"" + Bundle.sessionFile() + "\">Cytoscape Session File</a><br/>");
-				htmlWriter.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-				int i = 0;
-				for (String networkID : networkIDs)
+				
+				int pageCount = 0;
+				List<List<String>> pages = breakIntoPages(networkIDs);
+				for (List<String> page : pages)
 				{
-					if (needToHalt)
-						return;
+					bundle.openEntry(Bundle.indexHTMLFile(pageCount));
+					PrintWriter writer = new PrintWriter(bundle.entryWriter());
+					writer.println("<html>");
+					writer.println("<body>");
 
-					String networkTitle = Cytoscape.getNetwork(networkID).getTitle();
+					StringBuffer navLinks = new StringBuffer();
+					if (pages.size() != 1)
+					{
+						boolean isFirstPage = (pageCount == 0);
+						boolean isLastPage = (pageCount == pages.size() - 1);
 
-					if ((i % settings.numNetworksPerRow) == 0)
-						htmlWriter.println("<tr valign=bottom>");
-					htmlWriter.println("<td align=center valign=bottom>");
+						navLinks.append("<font size=-1 align=right>");
+						if (!isFirstPage)
+							navLinks.append("<a href=\"" + Bundle.indexHTMLFile(pageCount - 1) + "\">");
+						navLinks.append("&lt; Previous Page");
+						if (!isFirstPage)
+							navLinks.append("</a>");
+						navLinks.append(" | ");
+						if (!isLastPage)
+							navLinks.append("<a href=\"" + Bundle.indexHTMLFile(pageCount + 1) + "\">");
+						navLinks.append("&gt; Next Page");
+						if (!isLastPage)
+							navLinks.append("</a>");
+						navLinks.append("</font>");
+					}
+					writer.println(navLinks.toString());
 
-					boolean hasImageFile = bundle.hasEntry(Bundle.imageFile(networkTitle, settings.imageFormat));
-					boolean hasLegendFile = bundle.hasEntry(Bundle.legendFile(networkTitle, settings.imageFormat));
+					List<List<String>> groups = breakPageIntoGroups(page);
+					for (List<String> group : groups)
+					{
+						writer.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
 
-					if (hasImageFile)
-						htmlWriter.print("<a href=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\">");
-					htmlWriter.print("<img border=0 src=\"" + Bundle.thumbnailFile(networkTitle, settings.imageFormat) + "\">");
-					if (hasImageFile)
-						htmlWriter.print("</a>");
+						List<List<String>> rows = breakGroupIntoRows(group);
+						for (List<String> row : rows)
+						{
+							writer.println("<tr valign=bottom>");
 
-					htmlWriter.print("<font size=-1>");
-					htmlWriter.print("<br>" + networkTitle + " <br/>(");
-					htmlWriter.print("<a href=\"" + Bundle.sifFile(networkTitle) + "\">sif</a>");
+							for (String networkID : row)
+							{
+								String networkTitle = Cytoscape.getNetwork(networkID).getTitle();
+								boolean hasImageFile = bundle.hasEntry(Bundle.imageFile(networkTitle, settings.imageFormat));
+								boolean hasLegendFile = bundle.hasEntry(Bundle.legendFile(networkTitle, settings.imageFormat));
+								writer.println("<td align=center valign=bottom>");
+								if (hasImageFile)
+									writer.print("<a href=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\">");
+								writer.print("<img border=0 src=\"" + Bundle.thumbnailFile(networkTitle, settings.imageFormat) + "\">");
+								if (hasImageFile)
+									writer.print("</a>");
+
+								writer.print("<font size=-1>");
+								writer.print("<br>" + networkTitle + " <br/>(");
+								writer.print("<a href=\"" + Bundle.sifFile(networkTitle) + "\">sif</a>");
+								
+								if (hasImageFile)
+									writer.print(" | <a href=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\">image</a>");
+								if (hasLegendFile)
+									writer.print(" | <a href=\"" + Bundle.legendFile(networkTitle, settings.imageFormat) + "\">legend</a>");
 					
-					if (hasImageFile)
-						htmlWriter.print(" | <a href=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\">image</a>");
-					if (hasLegendFile)
-						htmlWriter.print(" | <a href=\"" + Bundle.legendFile(networkTitle, settings.imageFormat) + "\">legend</a>");
+								writer.print(")</font>");
+								writer.println("</td>");
+							}
+							
+							writer.println("</tr>");
+						}
+						writer.println("</table>");
+						if (groups.size() != 1)
+							writer.println("<ul>");
+					}
 					
-					htmlWriter.print(")</font>");
-					htmlWriter.println("</td>");
-					if ((i + 1) % settings.numNetworksPerRow == 0)
-						htmlWriter.println("</tr>");
-					i++;
+					writer.println("<br>");
+					writer.println(navLinks.toString());
+					writer.println("</body>");
+					writer.println("</html>");
+					bundle.closeEntry();
+					pageCount++;
+					
 				}
-				if ((i + 1) % settings.numNetworksPerRow != 0)
-					htmlWriter.println("</tr>");
-				htmlWriter.println("</table>");
-				htmlWriter.println("</body>");
-				htmlWriter.println("</html>");
-				bundle.closeEntry();
 			} // end generateHTML
 		}; // end new JTask
 
