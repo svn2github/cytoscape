@@ -28,12 +28,9 @@ public class SessionExporterPlugin extends CytoscapePlugin
 					return;
 				}
 				
-				java.io.File file = FileChooser.chooseFile();
-				if (file != null)
-				{
-					SessionExporter sessionExporter = new HTMLSessionExporter();
-					sessionExporter.export(file);
-				}
+				SessionExporterSettings settings = new SessionExporterSettings();
+				HTMLSessionExporter sessionExporter = new HTMLSessionExporter();
+				sessionExporter.export(settings);
 			}
 		};
 		webMenuItem.addActionListener(webActionListener);

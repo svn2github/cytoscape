@@ -9,15 +9,12 @@ import java.awt.Rectangle;
 
 public class Thumbnails
 {
-	private static int MAX_THUMBNAIL_WIDTH = 200;
-	private static int MAX_THUMBNAIL_HEIGHT = 200;
-
-	public static BufferedImage createThumbnail(BufferedImage original)
+	public static BufferedImage createThumbnail(BufferedImage original, SessionExporterSettings settings)
 	{
 		if (original == null)
 		{
-			int imageWidth = MAX_THUMBNAIL_WIDTH;
-			int imageHeight = MAX_THUMBNAIL_HEIGHT;
+			int imageWidth = settings.maxThumbnailWidth;
+			int imageHeight = settings.maxThumbnailHeight;
 			BufferedImage thumbnail = new BufferedImage(imageWidth, imageHeight,
 								    BufferedImage.TYPE_INT_RGB);
 			Graphics graphics = thumbnail.getGraphics();
@@ -36,12 +33,12 @@ public class Thumbnails
 		int width, height;
 		if (original.getWidth() > original.getHeight())
 		{
-			width = MAX_THUMBNAIL_WIDTH;
+			width = settings.maxThumbnailWidth;
 			height = original.getHeight() * width / original.getWidth();
 		}
 		else
 		{
-			height = MAX_THUMBNAIL_HEIGHT;
+			height = settings.maxThumbnailHeight;
 			width = original.getWidth() * height / original.getHeight();
 		}
 
