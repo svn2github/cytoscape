@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -35,7 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.undo.AbstractUndoableEdit;
 
-import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -261,8 +259,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				groupPanel);
 		// We want to listen for graph perspective changes (primarily
 		// SELECT/UNSELECT)
-//		Cytoscape.getCurrentNetworkView()
-//				.addGraphViewChangeListener(groupPanel);
+		// Cytoscape.getCurrentNetworkView()
+		// .addGraphViewChangeListener(groupPanel);
 
 		// Register with CyGroup
 		CyGroupManager.registerGroupViewer(this);
@@ -812,7 +810,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private static final String REGION_NAME_ATT = "__Region_name";
 
-//	private static final String REGION_NODEVIEWS_ATT = "__Region_nodeViews";
+	// private static final String REGION_NODEVIEWS_ATT = "__Region_nodeViews";
 
 	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
 
@@ -822,11 +820,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	public static void newGroup(LayoutRegion region) {
 		List<NodeView> currentNodeViews = region.getNodeViews();
 		List<CyNode> currentNodes = new ArrayList<CyNode>();
-		for (NodeView cnv: currentNodeViews){
+		for (NodeView cnv : currentNodeViews) {
 			currentNodes.add((CyNode) cnv.getNode());
 		}
-//		CyNetwork network = Cytoscape.getCurrentNetwork();
-//		List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
+		// CyNetwork network = Cytoscape.getCurrentNetwork();
+		// List<CyNode> currentNodes = new
+		// ArrayList(network.getSelectedNodes());
 		String groupName = region.getRegionAttributeValue().toString();
 		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes,
 				viewerName);
@@ -838,8 +837,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_NAME_ATT,
 				groupName);
-//		attributes.setAttribute(groupNode.getIdentifier(),
-//				REGION_NODEVIEWS_ATT, region.getNodeViews().toString());
+		// attributes.setAttribute(groupNode.getIdentifier(),
+		// REGION_NODEVIEWS_ATT, region.getNodeViews().toString());
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT,
 				region.getColorIndex());
 	}
@@ -861,6 +860,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 * @param group
 	 *            the CyGroup that was just created
 	 */
+	public void groupCreated(CyGroup group){
+		this.groupCreated(group, null);
+	}
 	public void groupCreated(CyGroup group, CyNetworkView myView) {
 		System.out.println("Building Layout Region from xGMML");
 		CyNode groupNode = group.getGroupNode();
