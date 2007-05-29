@@ -138,10 +138,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 		if (dataType == Color.class) {
 			return GradientEditorPanel.getIcon(width, height, type);
 		} else if (dataType == Number.class) {
-			return null;
+			return C2CMappingEditor.getIcon(width, height, type);
+		} else {
+			return C2DMappingEditor.getIcon(width, height, type);
 		}
 
-		return null;
 	}
 
 	protected void setSpinner() {

@@ -1,27 +1,28 @@
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+
 
 /**
- * DOCUMENT ME!
+ * Continuous-Continuous mapping editor.
  *
- * @author $author$
+ * @version 0.7
+ * @since Cytoscape 2.5
+ * @author Keiichiro Ono
+ * 
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
     /**
@@ -56,6 +57,20 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
         
         return editor;
     }
+    
+    /**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
+            VisualPropertyType type) {
+		editor = new C2CMappingEditor(type);
+		ContinuousTrackRenderer rend = (ContinuousTrackRenderer)editor.slider.getTrackRenderer();
+		rend.getRendererComponent(editor.slider);
+		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
+
+	}
 
     @Override
     protected void addButtonActionPerformed(ActionEvent evt) {
@@ -114,7 +129,6 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
     @Override
     protected void deleteButtonActionPerformed(ActionEvent evt) {
         final int selectedIndex = slider.getSelectedIndex();
-        System.out.println("========== Selected = " + selectedIndex);
 
         if ((0 <= selectedIndex) && (slider.getModel()
                                                .getThumbCount() > 1)) {

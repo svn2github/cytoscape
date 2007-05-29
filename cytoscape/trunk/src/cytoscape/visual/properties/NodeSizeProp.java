@@ -98,7 +98,7 @@ public class NodeSizeProp extends AbstractVisualProperty {
 		if ((o == null) || (nv == null))
 			return;
 
-		double size = ((Double) o).doubleValue();
+		double size = ((Number) o).doubleValue();
 		double difference = size - nv.getHeight();
 
 		if (Math.abs(difference) > 0.1)
