@@ -2,7 +2,7 @@
 
 // mode = 'new', Data is submited by user
 // mode = 'edit', Cytostaff edit the data in CyPluginDB
-$mode = 'new'; // 'new' or 'edit', by default it is 'new'
+$mode = 'new'; // by default it is 'new'
 
 // If versionid is provided through URL, it is in edit mode
 $versionID = NULL; // used for edit mode only
@@ -104,11 +104,12 @@ $Cy2p2_checked = NULL;
 $Cy2p3_checked = NULL;
 $Cy2p4_checked = NULL;
 $Cy2p5_checked = NULL;
+$license_required_checked = NULL;
 $cyVersion = NULL;
 $reference = NULL;
 $comment = NULL;
-$license_brief = NULL;
-$license_detail = NULL;
+$license = NULL;
+$license_required = NULL;
 $names = NULL; // author names
 $emails = NULL;
 $affiliations = NULL;
@@ -144,11 +145,9 @@ if (($tried == NULL) && ($mode == 'edit')) {
 	$sourceURL = $db_sourceURL;
 	$cyVersion = $db_cyVersion;
 	$reference = $db_reference;
-	$license_brief = $db_license_brief;
-	$license_detail = $db_license_detail;
+	$license = $db_license;
+	$license_required = $db_license_required;
 	$comment = $db_comment;
-
-//echo '<br>license_brief = ', $license_brief,'<br>';
 
 	$theVersions = preg_split("{,}", $db_cyVersion); // Split into an array
 	foreach ($theVersions as $theVersion) {
@@ -171,10 +170,15 @@ if (($tried == NULL) && ($mode == 'edit')) {
 			$Cy2p5_checked = "checked";
 		}
 	}
+	
+	if ($license_required == "yes") {
+		$license_required_checked = "checked";
+	}
 }
 
-// If form validation failed, remember the form data, 
-// which will be used to fill the refreshed form
+// Remember the form data. If form validation failed, these data will
+// be used to fill the refreshed form. If pass, they will be saved into
+// database
 if (isset ($_POST['tfName'])) {
 	$name = $_POST['tfName'];
 }
@@ -184,7 +188,8 @@ if (isset ($_POST['tfVersion'])) {
 }
 
 if (isset ($_POST['taDescription'])) {
-	$description = $_POST['taDescription'];
+	//Enclding the string for SQL
+	$description = addslashes($_POST['taDescription']);	
 }
 
 if (isset ($_POST['tfProjectURL'])) {
@@ -209,7 +214,7 @@ if (isset ($_POST['tfYear'])) {
 }
 
 if (isset ($_POST['taReleaseNote'])) {
-	$releaseNote = $_POST['taReleaseNote'];
+	$releaseNote = addslashes($_POST['taReleaseNote']);
 }
 
 if (isset ($_POST['tfReleaseNoteURL'])) {
@@ -273,17 +278,21 @@ if (isset ($_POST['chk2p5'])) {
 	}
 }
 if (isset ($_POST['taReference'])) {
-	$reference = $_POST['taReference'];
+	$reference = addslashes($_POST['taReference']);
 }
 
 if (isset ($_POST['taComment'])) {
-	$comment = $_POST['taComment'];
+	$comment = addslashes($_POST['taComment']);
 }
-if (isset ($_POST['tfLicenseBrief'])) {
-	$license_brief = $_POST['tfLicenseBrief'];
+if (isset ($_POST['taLicense'])) {
+	$license = addslashes($_POST['taLicense']);
 }
-if (isset ($_POST['taLicenseDetail'])) {
-	$license_detail = $_POST['taLicenseDetail'];
+if (isset ($_POST['chkLicense_required'])) {
+	$license_required_checked = "checked";
+	$license_required = "yes";
+}
+else {
+	$license_required = "no";
 }
 
 //Authors
@@ -446,12 +455,13 @@ if (!($tried && $validated)) {
     <td><div align="right"><span class="style4">*</span>Category</div></td>
     <td><label>
       <select name="optCategory" id="optCategory" >
-        <option <?php if ($category && $category == 'Please choose one') echo 'selected' ?>>Please choose one</option>
+        <option <?php if ($category && $category == 'Please choose one') echo 'selected' ?>>Please choose one</option>	
         <option <?php if ($category && $category == 'Analysis Plugins') echo 'selected' ?>>Analysis Plugins</option>
         <option <?php if ($category && $category == 'Network and Attribute I/O Plugins') echo 'selected' ?>>Network and Attribute I/O Plugins</option>
         <option <?php if ($category && $category == 'Network Inference Plugins') echo 'selected' ?>>Network Inference Plugins</option>
         <option <?php if ($category && $category == 'Functional Enrichment Plugins') echo 'selected' ?>>Functional Enrichment Plugins</option>
         <option <?php if ($category && $category == 'Communication/Scripting Plugins') echo 'selected' ?>>Communication/Scripting Plugins</option>
+		<option <?php if ($category && $category == 'Other Plugins') echo 'selected' ?>>Other Plugins</option>
       </select>
     </label></td>
   </tr>
@@ -475,7 +485,7 @@ if (!($tried && $validated)) {
     <td><label></label></td>
   </tr>
   <tr>
-    <td><div align="right">Jar File </div></td>
+    <td><div align="right">Jar/Zip File </div></td>
     <td><input name="filePlugin" type="file" id="filePlugin" size="80" /></td>
   </tr>
   <tr>
@@ -483,7 +493,7 @@ if (!($tried && $validated)) {
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td><div align="right">Jar URL </div></td>
+    <td><div align="right">Jar/Zip URL </div></td>
     <td><input name="tfJarURL" type="text" id="jarURL" value ="<?php echo $jarURL ?>" size="80" /></td>
   </tr>
   <tr>
@@ -598,16 +608,16 @@ if (!($tried && $validated)) {
     <td><textarea name="taReference" cols="80" rows="3" id="taReference"><?php echo $reference; ?></textarea></td>
   </tr>
   <tr>
-    <td><div align="right">License (brief) </div></td>
+    <td><div align="right">License</div></td>
     <td><label>
-    <input name="tfLicenseBrief" type="text" id="tfLicenseBrief" value="<?php echo $license_brief ?>" size="80">
+      <textarea name="taLicense" cols="80" rows="3" id="taLicense"><?php echo $license ?></textarea>
     </label></td>
   </tr>
   <tr>
-    <td><div align="right">License (detail)</div></td>
+    <td><div align="right">License required</div></td>
     <td><label>
-      <textarea name="taLicenseDetail" cols="80" rows="3" id="taLicenseDetail"><?php echo $license_detail ?></textarea>
-    </label></td>
+      <input type="checkbox" name="chkLicense_required" id="chkLicense_required" value="checkbox" <?php echo $license_required_checked ?> />
+    </label>	</td>
   </tr>
   <tr>
     <td><div align="right">Comment</div></td>
@@ -685,11 +695,8 @@ if (!($tried && $validated)) {
 		if ($description != $db_description) {
 			$query1 .='description ="'.$description.'",';
 		}
-		if ($license_brief != $db_license_brief) {
-			$query1 .='license_brief ="'.$license_brief.'",';
-		}
-		if ($license_detail != $db_license_detail) {
-			$query1 .='license_detail ="'.$license_detail.'",';
+		if ($license != $db_license) {
+			$query1 .='license ="'.$license.'",';
 		}
 		if ($projectURL != $db_projectURL) {
 			$query1 .='project_url ="'.$projectURL.'",';
@@ -843,6 +850,9 @@ if (!($tried && $validated)) {
 					showerror();
 			}
 		}
+?>
+	Database is updated successfully!
+	<?php
 
 	} // case for mode = 'edit'
 
@@ -892,7 +902,7 @@ if (!($tried && $validated)) {
 			//This is a new plugin, add a row in the table plugin_list
 
 			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
-			'(0, "' . $name . '", "' . $description . '",NULL,NULL,"' . $projectURL . '",' .
+			'(0, "' . $name . '", "' . $description . '", "'.$license.'", "'.$license_required.'", "'. $projectURL . '",' .
 			$category_id . ',now())';
 			// Run the query
 			if (!($result = @ mysql_query($dbQuery, $connection)))
