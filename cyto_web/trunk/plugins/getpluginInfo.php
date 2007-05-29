@@ -78,18 +78,18 @@ function getPluginInfoPage($connection, $pluginList_row) {
 
 		$versionSpecific_row = @ mysql_fetch_array($allVersionInfo);
 
+		if ($versionSpecific_row["version"] != null) {
+			$pluginInfoPage .= "\n<br><b>Version:</b> " . $versionSpecific_row["version"];
+		} else {
+			$pluginInfoPage .= "\n<br><b>Version:</b>Unknown";
+		}
+
 		if ($versionSpecific_row["reference"] != null) {
 			$pluginInfoPage .= "\n<br><b>Reference:</b> " . $versionSpecific_row["reference"];
 		}
 
-		if ($versionSpecific_row["version"] != null) {
-			$pluginInfoPage .= "\n<br><b>Version:</b> " . $versionSpecific_row["version"] . "<br>";
-		} else {
-			$pluginInfoPage .= "\n<br><b>Version:</b>Unknown<br>";
-		}
-
 		if ($versionSpecific_row["release_date"] != null) {
-			$pluginInfoPage .= "\n<b>Release Date:</b> " . $versionSpecific_row["release_date"] . "<br>";
+			$pluginInfoPage .= "\n<br><b>Release Date:</b> " . $versionSpecific_row["release_date"] . "<br>";
 		} else {
 			$pluginInfoPage .= "\n<b>Release Date:</b>Unknown<br>";
 		}
