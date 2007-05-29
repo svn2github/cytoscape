@@ -5,8 +5,8 @@
 	' plugin_list.plugin_auto_id as plugin_id, ' .
 	' plugin_list.name as pluginName, ' .
 	' plugin_list.description as pluginDescription, ' .
-	' plugin_list.license_brief as pluginLicenseBrief, ' .
-	' plugin_list.license_detail as pluginLicenseDetail, ' .
+	' plugin_list.license as pluginLicense, ' .
+	' plugin_list.license_required as licenseRequired, ' .
 	' plugin_list.project_url as projectURL, ' .
 	' plugin_version.plugin_file_id as pluginFileID, ' .
 	' plugin_version.version as pluginVersion, ' .
@@ -49,8 +49,8 @@
 	$db_cyVersion = $first_row['cyVersion'];
 	$db_reference = $first_row['reference'];
 
-	$db_license_brief = $first_row['pluginLicenseBrief'];
-	$db_license_detail = $first_row['pluginLicenseDetail'];
+	$db_license = $first_row['pluginLicense'];
+	$db_license_required = $first_row['licenseRequired'];
 	$db_comment = $first_row['comment'];
 	$db_status =  $first_row['status'];
 
