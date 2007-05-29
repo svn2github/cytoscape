@@ -17,7 +17,7 @@ function getAuthorInfo($connection, $plugin_version_id) {
 	while ($author_row = @ mysql_fetch_array($authorsInfo)) {
 
 		if ($author_row["names"] != NULL) {
-			$authorInfoPage .= $author_row["names"];
+			$authorInfoPage .= $author_row["names"].' ';
 		}
 
 		if ($author_row["affiliation"] != NULL) {
@@ -26,8 +26,8 @@ function getAuthorInfo($connection, $plugin_version_id) {
 			} else {
 				$authorInfoPage .= $author_row["affiliation"];
 			}
-			$authorInfoPage .= '<br>';
 		}
+		$authorInfoPage .= '<br>';
 	}
 
 	if (empty ($authorInfoPage)) {
@@ -46,6 +46,13 @@ function getPluginInfoPage($connection, $pluginList_row) {
 	$projectURL = $pluginList_row["project_url"];
 	if ($projectURL != null) {
 		$pluginInfoPage .= "\n<br><b>Project website:</b> <a href=\"$projectURL\">" . $projectURL . "</a>";
+	}
+	$license = $pluginList_row["license"];
+	if ($license != null) {
+		$data = array($pluginList_row["name"],$license);				
+		$data = base64_encode(serialize($data));
+		$pluginInfoPage .= "\n<br><b>License:</b>" .
+				" click <a href=\"displaylicense.php?data=$data\">here</a><br>";		
 	}
 
 	//Get info for all versions of the given plugin (one plugin may have more than one version)
@@ -93,12 +100,11 @@ function getPluginInfoPage($connection, $pluginList_row) {
 		if ($versionSpecific_row["release_note_url"] != null) {
 			$pluginInfoPage .= "\n<b>Release notes:</b>" .
 			"  <a href=\"" . $versionSpecific_row["release_note_url"] . "\">" . $versionSpecific_row["release_note_url"] . "</a><br>";
-		} else
-			if ($versionSpecific_row["release_note"] != null) {
-				echo "TODO: Fix displayreleasenote.php";
-			
-				//$pluginInfoPage .= "\n<b>Release notes:</b>" .
-				//" click <a href=\"displayreleasenote.php?id=" . $versionSpecific_row["id"] . "\">here</a><br>";
+		} else if (($versionSpecific_row["release_note"] != null)&&(strlen(trim($versionSpecific_row["release_note"]))!=0)) {
+				$data = array($pluginList_row["name"],$versionSpecific_row["version"], $versionSpecific_row["release_note"]);				
+				$data = base64_encode(serialize($data));
+				$pluginInfoPage .= "\n<b>Release notes:</b>" .
+				" click <a href=\"displayreleasenote.php?data=$data\">here</a><br>";
 			}
 
 		if ($versionSpecific_row["cy_version"]) {
@@ -110,9 +116,9 @@ function getPluginInfoPage($connection, $pluginList_row) {
 		}
 
 		if ($versionSpecific_row["jar_url"] != null) {
-			$pluginInfoPage .= "\n<b>Download Jar:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
+			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
 		} else {
-			$pluginInfoPage .= "\n<b>Download Jar:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a><br>";
+			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a><br>";
 		}
 
 		if ($versionSpecific_row["source_url"] != null) {
@@ -120,7 +126,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 		}
 
 		$versionCount = $versionCount -1;
-	}
+	} // end of while loop
 
 	$pluginInfoPage .= "<br><br>";
 
