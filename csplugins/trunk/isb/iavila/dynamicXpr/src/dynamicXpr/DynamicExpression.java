@@ -49,7 +49,8 @@ import cytoscape.visual.*;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.data.*;
-import cytoscape.CyGroup;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 
 import dynamicXpr.dialogs.*;
 import giny.model.*;
@@ -187,7 +188,8 @@ public class DynamicExpression extends AbstractAction {
 	protected void prepareMetaNodes() {
 
 		System.err.println("Preparing  meta-nodes for dynamic expression...");
-		List<CyGroup> metaNodes = CyGroup.getGroupList("metaNode");
+		List<CyGroup> metaNodes = 
+			CyGroupManager.getGroupList(CyGroupManager.getGroupViewer("metaNode"));
 		
 		if (metaNodes == null || metaNodes.size() == 0) {
 			// No recorded meta-nodes for the current network
