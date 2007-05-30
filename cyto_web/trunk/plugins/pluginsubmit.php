@@ -897,7 +897,20 @@ if (!($tried && $validated)) {
 			//There is an old version in the DB, update the row in the table plugin_list
 			$the_row = @ mysql_fetch_array($result);
 			$plugin_auto_id = $the_row['plugin_auto_id'];
-			echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
+			//echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
+			
+			// Update the table "plugin_list"  
+			$dbQuery = 'UPDATE plugin_list '.
+					 	'SET description = "'.$description.'",'.
+						'project_url ="'.$projectURL.'",'.
+						'license ="'.$license.'",'.
+						'license_required ="'.$license_required.'" '.
+						'WHERE plugin_auto_id = '.$plugin_auto_id;						
+			
+			// Run the query
+			if (!($result = @ mysql_query($dbQuery, $connection)))
+				showerror();
+						
 		} else {
 			//This is a new plugin, add a row in the table plugin_list
 
@@ -949,7 +962,7 @@ if (!($tried && $validated)) {
 				showerror();
 		}
 ?>
-	Thank you for submitting your plugin to Cytoscape.Cytoscape staff will review the data  and publish it on the cytoscape website. If there are any questions, you will be contacted via e-mail.
+	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If there are any questions and your-mail address is provided, you will be contacted via e-mail.
 	<?php
 	} // end of form processing
 }// case for mode == 'new'
