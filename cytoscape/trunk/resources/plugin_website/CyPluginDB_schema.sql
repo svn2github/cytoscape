@@ -77,8 +77,8 @@ create table usagelog (
     sysdat          Date
 );
 
-grant select, insert on cyplugindb.* to cytouser identified by 'cytouser';
-grant select, insert, delete on cyplugindb.* to cytostaff identified by 'cytostaff';
+grant select, insert, update on cyplugindb.* to cytouser identified by 'cytouser';
+grant select, insert, update, delete on cyplugindb.* to cytostaff identified by 'cytostaff';
 
 insert into categories (category_id, name, description) 
             values (1, 'Core Plugins', 'Cytoscape core');
