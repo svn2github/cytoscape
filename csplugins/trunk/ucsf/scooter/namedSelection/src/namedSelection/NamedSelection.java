@@ -53,6 +53,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
@@ -387,6 +388,7 @@ public class NamedSelection extends CytoscapePlugin
 			List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
 			List<CyGroup> groupList = CyGroupManager.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
+			if (groupName == null) return;
 			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, viewerName);
 			group.setState(SELECTED);
 			groupPanel.groupCreated(group);
@@ -437,5 +439,21 @@ public class NamedSelection extends CytoscapePlugin
 			group.setState(UNSELECTED);
 			groupPanel.groupChanged(group);
 		}
+	}
+
+	/**
+	 * Return our PluginInfo object
+	 * @return the PluginInfo object for named selections
+	 */
+	public PluginInfo getPluginInfoObject() {
+		PluginInfo info = new PluginInfo();
+		info.setName("Named Selection Plugin");
+		info.setDescription("This plugin provides a GroupViewer mechanism that allows users to group nodes together for the purposes of remembering the selection");
+		info.setCategory("Analysis");
+		info.setPluginVersion(1.0);
+		info.setCytoscapeVersion("2.5");
+		info.setProjectUrl("http://www.rbvi.ucsf.edu/Research/cytoscape/groups.html");
+		info.addAuthor("Scooter Morris", "UCSF");
+		return info;
 	}
 }
