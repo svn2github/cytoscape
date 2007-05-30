@@ -34,6 +34,11 @@
 */
 package cytoscape.visual.ui.icon;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.Arrow;
+import cytoscape.visual.VisualPropertyType;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -45,10 +50,6 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.Arrow;
-import cytoscape.visual.VisualPropertyType;
-
 
 /**
  * Icon for arrow shape.
@@ -58,21 +59,21 @@ import cytoscape.visual.VisualPropertyType;
  * @author kono
  */
 public class ArrowIcon extends VisualPropertyIcon {
-	private static final Stroke EDGE_STROKE = new BasicStroke(9.0f, BasicStroke.CAP_SQUARE,
+	private static final Stroke EDGE_STROKE = new BasicStroke(6.0f, BasicStroke.CAP_SQUARE,
 	                                                          BasicStroke.JOIN_MITER);
-	
+	private static final Stroke EDGE_STROKE_SMALL = new BasicStroke(4.0f, BasicStroke.CAP_SQUARE,
+	                                                                BasicStroke.JOIN_MITER);
 	protected Graphics2D g2d;
-
 	private static final int DEF_L_PAD = 15;
-	
+
 	/**
 	 * Creates a new ArrowIcon object.
 	 */
 	public ArrowIcon(Shape shape) {
 		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((Arrow) (VisualPropertyType.EDGE_SRCARROW.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                         .getVisualStyle())))
-		     .getShape().getName(), DEFAULT_ICON_COLOR);
+		     ((Arrow) (VisualPropertyType.EDGE_SRCARROW
+		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle()))).getShape()
+		      .getName(), DEFAULT_ICON_COLOR);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class ArrowIcon extends VisualPropertyIcon {
 		// Turn AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(color);
-		
+
 		g2d.translate(leftPad, bottomPad);
 
 		/*
@@ -122,8 +123,10 @@ public class ArrowIcon extends VisualPropertyIcon {
 		 */
 		if (shape == null) {
 			g2d.setStroke(EDGE_STROKE);
-			g2d.drawLine(c.getX()+ DEF_L_PAD, (height + 20) / 2, (int) (width * 0.95), (height + 20) / 2);
+			g2d.drawLine(c.getX() + DEF_L_PAD, (height + 20) / 2, (int) (width * 0.95),
+			             (height + 20) / 2);
 			g2d.translate(-leftPad, -bottomPad);
+
 			return;
 		}
 
@@ -169,15 +172,19 @@ public class ArrowIcon extends VisualPropertyIcon {
 		/*
 		 * Finally, draw an edge (line) to the arrow head.
 		 */
-		g2d.setStroke(EDGE_STROKE);
+		if ((width < 30) || (height < 30)) {
+			g2d.setStroke(EDGE_STROKE_SMALL);
+		} else {
+			g2d.setStroke(EDGE_STROKE);
+		}
 
 		if (newShape.getBounds2D().getWidth() > 5)
-			g2d.drawLine(c.getX()+DEF_L_PAD, (height + 20) / 2, (int) (newShape.getBounds2D().getCenterX()),
-			             (height + 20) / 2);
+			g2d.drawLine(c.getX() + DEF_L_PAD, (height + 20) / 2,
+			             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
 		else
-			g2d.drawLine(c.getX()+DEF_L_PAD, (height + 20) / 2, (int) (newShape.getBounds2D().getMinX()),
-			             (height + 20) / 2);
-		
+			g2d.drawLine(c.getX() + DEF_L_PAD, (height + 20) / 2,
+			             (int) (newShape.getBounds2D().getMinX()) - 2, (height + 20) / 2);
+
 		g2d.translate(-leftPad, -bottomPad);
 	}
 }

@@ -492,8 +492,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 		Thumb t;
 		Double newVal;
 
-		System.out.println("Range = " + valRange + ", minVal = " + minValue);
-
 		if (thumbs.size() == 1) {
 			System.out.println("Enter update code: " + mapping.getPointCount());
 

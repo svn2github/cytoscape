@@ -43,18 +43,13 @@
 //--------------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
-import cytoscape.visual.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JTabbedPane;
 
-import cytoscape.visual.calculators.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.calculators.Calculator;
 
 
 /**
@@ -63,6 +58,7 @@ import javax.swing.event.*;
  * UI of the font size and font face calculators to present a unified UI for
  * these closely related attributes.
  */
+@Deprecated
 public class VizMapFontTab extends VizMapTab {
     private VizMapAttrTab faceTab;
     private VizMapAttrTab sizeTab;

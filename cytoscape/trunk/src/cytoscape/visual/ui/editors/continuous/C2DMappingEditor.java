@@ -40,7 +40,10 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+
 import cytoscape.visual.ui.EditorDisplayer;
+
+import org.jdesktop.swingx.multislider.Thumb;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -48,9 +51,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-
-import org.jdesktop.swingx.multislider.Thumb;
 
 
 /**
@@ -92,6 +94,21 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		editor.setVisible(true);
 
 		return editor;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
+	                                VisualPropertyType type) {
+		editor = new C2DMappingEditor(type);
+
+		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
+		rend.getRendererComponent(editor.slider);
+
+		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
 
 	@Override
@@ -142,7 +159,17 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 	@Override
 	protected void deleteButtonActionPerformed(ActionEvent evt) {
-		// TODO Auto-generated method stub
+		final int selectedIndex = slider.getSelectedIndex();
+
+		if (0 <= selectedIndex) {
+			slider.getModel().removeThumb(selectedIndex);
+			mapping.removePoint(selectedIndex);
+			updateMap();
+			mapping.fireStateChanged();
+
+			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			repaint();
+		}
 	}
 
 	private void setSlider() {
@@ -165,9 +192,13 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e.getX(), e.getY());
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
+					                                                                                                                                                                                .getX(),
+					                                                                           e
+					                                                                                                                                                                                  .getY());
 					Object newValue = null;
-					if (e.getClickCount() == 2) {	
+
+					if (e.getClickCount() == 2) {
 						try {
 							setAlwaysOnTop(false);
 							newValue = type.showDiscreteEditor();
@@ -176,31 +207,29 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 						} finally {
 							setAlwaysOnTop(true);
 						}
-						
-						if(newValue == null)
+
+						if (newValue == null)
 							return;
-						
-						if(range == 0) {
+
+						if (range == 0) {
 							below = newValue;
-						} else if(range == slider.getModel().getThumbCount()) {
+						} else if (range == slider.getModel().getThumbCount()) {
 							above = newValue;
 						} else {
-							((Thumb)slider.getModel().getSortedThumbs().get(range)).setObject(newValue);
+							((Thumb) slider.getModel().getSortedThumbs().get(range)).setObject(newValue);
 						}
-						
-						updateMap();
-						
-						slider.setTrackRenderer(new DiscreteTrackRenderer(type, minValue, maxValue, below,
-                                above));
-						slider.repaint();
-						
-						Cytoscape.getVisualMappingManager()
-		                 .getNetworkView()
-		                 .redrawGraph(false, true);
 
-//						JOptionPane.showMessageDialog(slider,
-//						                              "Icon selection dialog will be displayed here.  Range = " + range,
-//						                              "Select icon", JOptionPane.INFORMATION_MESSAGE);
+						updateMap();
+
+						slider.setTrackRenderer(new DiscreteTrackRenderer(type, minValue, maxValue,
+						                                                  below, above));
+						slider.repaint();
+
+						Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+
+						//						JOptionPane.showMessageDialog(slider,
+						//						                              "Icon selection dialog will be displayed here.  Range = " + range,
+						//						                              "Select icon", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			});
@@ -227,8 +256,6 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			below = defaultVal;
 			above = defaultVal;
 		}
-
-		System.out.println("Below = " + below + ", Above = " + above);
 
 		/*
 		 * get min and max for the value object

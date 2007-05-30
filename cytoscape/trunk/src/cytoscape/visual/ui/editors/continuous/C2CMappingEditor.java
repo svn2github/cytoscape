@@ -212,8 +212,6 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
             above = 10f;
         }
 
-        System.out.println("Below = " + below + ", Above = " + above);
-
         /*
          * get min and max for the value object
          */
