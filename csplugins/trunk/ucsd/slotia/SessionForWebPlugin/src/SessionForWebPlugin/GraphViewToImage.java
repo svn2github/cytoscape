@@ -1,4 +1,4 @@
-package SessionExporterPlugin;
+package SessionForWebPlugin;
 
 import java.io.File;
 import java.io.IOException;

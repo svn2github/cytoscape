@@ -1,4 +1,4 @@
-package SessionExporterPlugin;
+package SessionForWebPlugin;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -90,5 +90,10 @@ public abstract class Bundle
 	public static String legendFile(String network, String format)
 	{
 		return network + "_legend." + format;
+	}
+
+	public static String networkHTMLFile(String network)
+	{
+		return network + ".html";
 	}
 }

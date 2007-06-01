@@ -1,4 +1,4 @@
-package SessionExporterPlugin;
+package SessionForWebPlugin;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -9,9 +9,9 @@ import javax.swing.JOptionPane;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 
-public class SessionExporterPlugin extends CytoscapePlugin
+public class SessionForWebPlugin extends CytoscapePlugin
 {
-	public SessionExporterPlugin()
+	public SessionForWebPlugin()
 	{
 		JMenuItem webMenuItem = new JMenuItem("Session for Web");
 		ActionListener webActionListener = new ActionListener()

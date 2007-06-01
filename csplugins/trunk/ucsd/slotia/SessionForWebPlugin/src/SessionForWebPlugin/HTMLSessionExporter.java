@@ -1,4 +1,4 @@
-package SessionExporterPlugin;
+package SessionForWebPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,7 @@ import java.io.PrintWriter;
 import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.awt.image.BufferedImage;
-import java.awt.geom.Rectangle2D;
-import javax.swing.JOptionPane;
+import javax.swing.tree.TreeModel;
 import javax.imageio.ImageIO;
 
 import cytoscape.Cytoscape;
@@ -30,12 +29,8 @@ import cytoscape.data.writers.CytoscapeSessionWriter;
 
 public class HTMLSessionExporter
 {
-	public void export(final SessionExporterSettings settings)
+	public void export(final SessionExporterSettings settings, final Bundle bundle)
 	{
-		final Bundle bundle = BundleChooser.chooseBundle(settings);
-		if (bundle == null)
-			return;
-		
 		Task task = new Task()
 		{
 			TaskMonitor monitor = null;
@@ -124,6 +119,12 @@ public class HTMLSessionExporter
 			}
 			*/
 
+			/**
+			 * Takes a list of network IDs and breaks them up into pages,
+			 * where a page is a list of network IDs.
+			 * If the settings say not to break up into pages,
+			 * this will return a single page with all the network IDs.
+			 */
 			private List<List<String>> breakIntoPages(List<String> networkIDs)
 			{
 				List<List<String>> pages = new ArrayList<List<String>>();
@@ -148,6 +149,12 @@ public class HTMLSessionExporter
 				return pages;
 			}
 
+			/**
+			 * Takes a page and breaks it into groups.
+			 * One group has one visual style. If the settings say
+			 * not to sort by visual style, this will return
+			 * a single group with the network IDs from the page
+			 */
 			private List<List<String>> breakPageIntoGroups(List<String> page)
 			{
 				List<List<String>> groups = new ArrayList<List<String>>();
@@ -161,6 +168,9 @@ public class HTMLSessionExporter
 				return groups;
 			}
 
+			/**
+			 * Takes a group and breaks it into rows.
+			 */
 			private List<List<String>> breakGroupIntoRows(List<String> group)
 			{
 				List<List<String>> rows = new ArrayList<List<String>>();
@@ -180,6 +190,9 @@ public class HTMLSessionExporter
 				return rows;
 			}
 
+			/**
+			 * Creates a map where network titles map to network IDs.
+			 */
 			private Map<String,String> networkTitleToIDMap()
 			{
 				Map<String,String> map = new HashMap<String,String>();
@@ -194,6 +207,10 @@ public class HTMLSessionExporter
 				return map;
 			}
 
+			/**
+			 * Groups a list of network IDs together based on visual style.
+			 * @return A map where visual styles map to network IDs
+			 */
 			private Map<VisualStyle,List<String>> vizStyleToIDs(List<String> networkIDs)
 			{
 				Map<VisualStyle,List<String>> vizStyleToIDsMap = new HashMap<VisualStyle,List<String>>();
@@ -208,13 +225,20 @@ public class HTMLSessionExporter
 				return vizStyleToIDsMap;
 			}
 
+			/**
+			 * @return a list of network IDs that can be unsorted, sorted by
+			 * visual style, or sorted alphabetically, depending on the settings.
+			 */
 			private List<String> networkIDs()
 			{
 				Map<String,String> networkTitleToIDMap = networkTitleToIDMap();
 				List<String> networkIDs = new ArrayList<String>();
 
 				if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_AS_IS)
-					networkIDs.addAll(networkTitleToIDMap.values());
+				{
+					TreeModel model = Cytoscape.getDesktop().getNetworkPanel().getTreeTable().getTree().getModel();
+					searchTreeModel(networkIDs, networkTitleToIDMap, model, model.getRoot());
+				}
 				else if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_ALPHABETICALLY)
 				{
 					Set<String> networkTitles = new TreeSet<String>(networkTitleToIDMap.keySet());
@@ -233,6 +257,23 @@ public class HTMLSessionExporter
 				return networkIDs;
 			}
 
+			private void searchTreeModel(List<String> networkIDs, Map<String,String> networkTitleToIDMap, TreeModel model, Object node)
+			{
+				if (node != model.getRoot())
+					networkIDs.add(networkTitleToIDMap.get(node.toString()));
+				for (int i = 0; i < model.getChildCount(node); i++)
+					searchTreeModel(networkIDs, networkTitleToIDMap, model, model.getChild(node, i));
+			}
+
+			/**
+			 * Writes a Cytoscape session file to the bundle.
+			 * <i>This is currently a hack:</i> CytoscapeSessionWriter
+			 * cannot take an arbitrary InputStream or Writer and write
+			 * the contents of the session file to it. Therefore, this method
+			 * creates a temporary file that CytoscapeSessionWriter can write to.
+			 * It then reads the temporary file byte by byte, and writes it
+			 * to the bundle.
+			 */
 			private void writeSession() throws Exception
 			{
 				if (needToHalt)
@@ -297,6 +338,7 @@ public class HTMLSessionExporter
 						bundle.openEntry(Bundle.imageFile(networkTitle, settings.imageFormat));
 						ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
 						bundle.closeEntry();
+
 					}
 
 					if (needToHalt)
@@ -325,6 +367,24 @@ public class HTMLSessionExporter
 						bundle.closeEntry();
 					}
 
+					if (bundle.hasEntry(Bundle.imageFile(networkTitle, settings.imageFormat)))
+					{
+						bundle.openEntry(Bundle.networkHTMLFile(networkTitle));
+						PrintWriter writer = new PrintWriter(bundle.entryWriter());
+						writer.println("<html>");
+						writer.println("<body>");
+						writer.println("<p><img src=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\"></p>");
+						if (bundle.hasEntry(Bundle.legendFile(networkTitle, settings.imageFormat)))
+						{
+							writer.println("<hr>");
+							writer.println("<p align=center>Legend:</p>");
+							writer.println("<p align=center><img src=\"" + Bundle.legendFile(networkTitle, settings.imageFormat) + "\"></p>");
+						}
+						writer.println("</body>");
+						writer.println("</html>");
+						bundle.closeEntry();
+					}
+
 					currentNetwork++;
 
 				} // end for
@@ -339,11 +399,11 @@ public class HTMLSessionExporter
 				setStatus("Writing HTML pages");
 				setPercentCompleted(90);
 				
-				int pageCount = 0;
 				List<List<String>> pages = breakIntoPages(networkIDs);
 				for (List<String> page : pages)
 				{
-					bundle.openEntry(Bundle.indexHTMLFile(pageCount));
+					int pageIndex = pages.indexOf(page);
+					bundle.openEntry(Bundle.indexHTMLFile(pageIndex));
 					PrintWriter writer = new PrintWriter(bundle.entryWriter());
 					writer.println("<html>");
 					writer.println("<body>");
@@ -351,28 +411,44 @@ public class HTMLSessionExporter
 					StringBuffer navLinks = new StringBuffer();
 					if (pages.size() != 1)
 					{
-						boolean isFirstPage = (pageCount == 0);
-						boolean isLastPage = (pageCount == pages.size() - 1);
+						boolean isFirstPage = (pageIndex == 0);
+						boolean isLastPage = (pageIndex == pages.size() - 1);
 
-						navLinks.append("<font size=-1 align=right>");
+						navLinks.append("<p align=right>");
 						if (!isFirstPage)
-							navLinks.append("<a href=\"" + Bundle.indexHTMLFile(pageCount - 1) + "\">");
+							navLinks.append("<a href=\"" + Bundle.indexHTMLFile(pageIndex - 1) + "\">");
 						navLinks.append("&lt; Previous Page");
 						if (!isFirstPage)
 							navLinks.append("</a>");
 						navLinks.append(" | ");
 						if (!isLastPage)
-							navLinks.append("<a href=\"" + Bundle.indexHTMLFile(pageCount + 1) + "\">");
-						navLinks.append("&gt; Next Page");
+							navLinks.append("<a href=\"" + Bundle.indexHTMLFile(pageIndex + 1) + "\">");
+						navLinks.append("Next Page &gt;");
 						if (!isLastPage)
 							navLinks.append("</a>");
-						navLinks.append("</font>");
+						navLinks.append("</p>");
 					}
-					writer.println(navLinks.toString());
+					writer.println("<table width=\"100%\"><tr>");
+					writer.println("<td><a href=\"" + Bundle.sessionFile() + "\">Cytoscape Session File</a></td>");
+					if (pages.size() != 1)
+						writer.println("<td align=center>Page " + (pageIndex + 1) + " of " + pages.size() + "</td>");
+					writer.println("<td>" + navLinks.toString() + "</td>");
+					writer.println("</tr></table><hr>");
 
 					List<List<String>> groups = breakPageIntoGroups(page);
 					for (List<String> group : groups)
 					{
+						if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_BY_VISUAL_STYLE)
+						{
+							if (group.size() != 0)
+							{
+								if (groups.indexOf(group) != 0)
+									writer.println("<hr>");
+								VisualStyle vizStyle = Cytoscape.getNetworkView(group.get(0)).getVisualStyle();
+								writer.println("<p align=center>Visual style: " + vizStyle.getName() + "</p>");
+							}
+						}
+
 						writer.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
 
 						List<List<String>> rows = breakGroupIntoRows(group);
@@ -385,9 +461,10 @@ public class HTMLSessionExporter
 								String networkTitle = Cytoscape.getNetwork(networkID).getTitle();
 								boolean hasImageFile = bundle.hasEntry(Bundle.imageFile(networkTitle, settings.imageFormat));
 								boolean hasLegendFile = bundle.hasEntry(Bundle.legendFile(networkTitle, settings.imageFormat));
+
 								writer.println("<td align=center valign=bottom>");
 								if (hasImageFile)
-									writer.print("<a href=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\">");
+									writer.print("<a href=\"" + Bundle.networkHTMLFile(networkTitle) + "\">");
 								writer.print("<img border=0 src=\"" + Bundle.thumbnailFile(networkTitle, settings.imageFormat) + "\">");
 								if (hasImageFile)
 									writer.print("</a>");
@@ -397,28 +474,23 @@ public class HTMLSessionExporter
 								writer.print("<a href=\"" + Bundle.sifFile(networkTitle) + "\">sif</a>");
 								
 								if (hasImageFile)
-									writer.print(" | <a href=\"" + Bundle.imageFile(networkTitle, settings.imageFormat) + "\">image</a>");
+									writer.print(" | <a href=\"" + Bundle.networkHTMLFile(networkTitle) + "\">image</a>");
 								if (hasLegendFile)
 									writer.print(" | <a href=\"" + Bundle.legendFile(networkTitle, settings.imageFormat) + "\">legend</a>");
 					
 								writer.print(")</font>");
 								writer.println("</td>");
-							}
-							
+							} // end for (String networkID : row)
 							writer.println("</tr>");
-						}
+						} // end for (List<String> row : rows)
 						writer.println("</table>");
-						if (groups.size() != 1)
-							writer.println("<ul>");
-					}
+					} // for (List<String> group : groups)
 					
-					writer.println("<br>");
+					writer.println("<hr>");
 					writer.println(navLinks.toString());
 					writer.println("</body>");
 					writer.println("</html>");
 					bundle.closeEntry();
-					pageCount++;
-					
 				}
 			} // end generateHTML
 		}; // end new JTask

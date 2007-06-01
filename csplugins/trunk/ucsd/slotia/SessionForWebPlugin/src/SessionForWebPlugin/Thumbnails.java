@@ -1,4 +1,4 @@
-package SessionExporterPlugin;
+package SessionForWebPlugin;
 
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
