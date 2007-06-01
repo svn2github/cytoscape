@@ -84,7 +84,7 @@ public class PluginTrackerTest extends TestCase {
 		
 		PluginInfo obj = getInfoObj();
 		obj.setName("myInstallTest");
-		obj.setProjectUrl("http://booya.com/foo.xml");
+		obj.setDownloadUrl("http://booya.com/foo.xml");
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
 		
 		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
@@ -141,7 +141,7 @@ public class PluginTrackerTest extends TestCase {
 		
 		PluginInfo obj = new PluginInfo("999");
 		obj.setName("myInstallTest");
-		obj.setProjectUrl("http://foobar.org/y.xml");
+		obj.setDownloadUrl("http://foobar.org/y.xml");
 		obj.setCategory("Test");
 		obj.setFiletype(PluginInfo.FileType.JAR);
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
@@ -178,7 +178,7 @@ public class PluginTrackerTest extends TestCase {
 		infoObj.setCategory("Test");
 		infoObj.setCytoscapeVersion("2.5");
 		infoObj.setPluginClassName("some.class");
-		infoObj.setProjectUrl("http://test.com/x.xml");
+		infoObj.setDownloadUrl("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);
 		return infoObj;
 	}
