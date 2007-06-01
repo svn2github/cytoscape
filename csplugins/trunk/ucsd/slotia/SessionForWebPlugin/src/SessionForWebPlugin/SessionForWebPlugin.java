@@ -13,7 +13,7 @@ public class SessionForWebPlugin extends CytoscapePlugin
 {
 	public SessionForWebPlugin()
 	{
-		JMenuItem webMenuItem = new JMenuItem("Session for Web");
+		JMenuItem webMenuItem = new JMenuItem("Session for Web...");
 		ActionListener webActionListener = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -29,8 +29,8 @@ public class SessionForWebPlugin extends CytoscapePlugin
 				}
 				
 				SessionExporterSettings settings = new SessionExporterSettings();
-				HTMLSessionExporter sessionExporter = new HTMLSessionExporter();
-				sessionExporter.export(settings);
+				SessionExporterDialog dialog = new SessionExporterDialog(settings);
+				dialog.setVisible(true);
 			}
 		};
 		webMenuItem.addActionListener(webActionListener);

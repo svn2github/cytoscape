@@ -1,6 +1,16 @@
 <!--
   ** build.xml - ant build file
   ** Written by Samad Lotia
+  **
+  ** ################################
+  **
+  **          COMPILING ISSUES
+  **
+  ** If you're having trouble with compiling,
+  ** make sure to update the cytoscape.root.dir
+  ** and cytoscape.distro.dir properties.
+  **
+  ** ################################
   -->
 
 <project name="SessionForWebPlugin" default="all" basedir=".">
@@ -19,7 +29,7 @@
   <property name="project.jar.manifest"		location="${manifest.dir}/project.manifest"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../../../../cytoscape"/>
+  <property name="cytoscape.root.dir"		location="../../cytoscape-2.4.1"/>
   <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
   <!-- Cytoscape directories and files needed for installing -->
   <property name="cytoscape.distro.dir"		location="${cytoscape.root.dir}/build/cytoscape-v2.4.1"/>
