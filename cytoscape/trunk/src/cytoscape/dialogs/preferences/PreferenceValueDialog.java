@@ -47,7 +47,6 @@ import java.io.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.filechooser.*;
 import javax.swing.table.*;
 
 
@@ -60,11 +59,9 @@ public class PreferenceValueDialog extends JDialog {
 	String title = null;
 	JLabel preferenceNameL = null;
 	JTextField value = null;
-	JButton browseButton = null;
 	JButton okButton = null;
 	JButton cancelButton = null;
 	TableModel tableModel = null;
-	boolean includeBrowseBtn = false;
 	PreferencesDialog callerRef = null;
 
 	/**
@@ -77,14 +74,32 @@ public class PreferenceValueDialog extends JDialog {
 	 * @param tm  DOCUMENT ME!
 	 * @param title  DOCUMENT ME!
 	 * @param includeBrowse  DOCUMENT ME!
+	 *
+	 * @deprecated includeBrowse is not longer supported.  Use the other constructor instead.
+	 * Will be removed 5/2008.
 	 */
+	@Deprecated
 	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialog caller,
 	                             TableModel tm, String title, boolean includeBrowse) {
+		this(owner,name,value,caller,tm,title);
+	}
+
+	/**
+	 * Creates a new PreferenceValueDialog object.
+	 *
+	 * @param owner  DOCUMENT ME!
+	 * @param name  DOCUMENT ME!
+	 * @param value  DOCUMENT ME!
+	 * @param caller  DOCUMENT ME!
+	 * @param tm  DOCUMENT ME!
+	 * @param title  DOCUMENT ME!
+	 */
+	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialog caller,
+	                             TableModel tm, String title) {
 		super(owner, true);
 		callerRef = caller;
 		tableModel = tm;
 		this.title = title;
-		includeBrowseBtn = includeBrowse;
 
 		preferenceName = new String(name);
 		preferenceValue = new String(value);
@@ -95,11 +110,9 @@ public class PreferenceValueDialog extends JDialog {
 	protected void showDialog(Dialog owner) {
 		preferenceNameL = new JLabel(preferenceName);
 		value = new JTextField(preferenceValue, 32);
-		browseButton = new JButton("Browse..");
 		okButton = new JButton("OK");
 		cancelButton = new JButton("Cancel");
 
-		browseButton.addActionListener(new BrowseButtonListener(this, callerRef));
 		okButton.addActionListener(new OkButtonListener(this, callerRef));
 		cancelButton.addActionListener(new CancelButtonListener(this, callerRef));
 
@@ -108,13 +121,6 @@ public class PreferenceValueDialog extends JDialog {
 		JPanel buttonPanel = new JPanel(new FlowLayout());
 		valuePanel.add(preferenceNameL);
 		valuePanel.add(value);
-
-		// take a guess and look for names with directory or file in them
-		// and include the browse button if found
-		if (includeBrowseBtn || (preferenceName.toUpperCase().indexOf("DIRECTORY") >= 0)
-		    || (preferenceName.toUpperCase().indexOf("FILE") >= 0)) {
-			valuePanel.add(browseButton);
-		}
 
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
@@ -130,60 +136,6 @@ public class PreferenceValueDialog extends JDialog {
 		this.setVisible(true);
 	}
 
-	class BrowseButtonListener implements ActionListener {
-		PreferenceValueDialog motherRef = null;
-		PreferencesDialog grandmotherRef = null;
-		JFileChooser fc = null;
-
-		public BrowseButtonListener(PreferenceValueDialog mother, PreferencesDialog grandmother) {
-			super();
-			motherRef = mother;
-			grandmotherRef = grandmother;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			// use relative paths (since command line args do by default)
-			// or absolute paths if explicitly specifed (by not using
-			// the file chooser)
-			String startingDir = grandmotherRef.prefsTM.getProperty("mrud");
-
-			if (startingDir == null)
-				startingDir = System.getProperty("user.dir");
-
-			fc = new JFileChooser(startingDir);
-
-			CyFileFilter filter = new CyFileFilter();
-			filter.addExtension("jar");
-			filter.setDescription("Plugins");
-
-			if (motherRef.preferenceName.equals("Local")) {
-				fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				fc.setFileFilter(filter);
-			} else if (motherRef.preferenceName.equals("mrud")) {
-				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			}
-
-			int returnVal = fc.showOpenDialog(motherRef);
-
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
-				String selection = file.getAbsolutePath();
-
-				if (motherRef.preferenceName.equals("Local")) {
-					String plugins = validatedPluginData(motherRef, selection);
-					motherRef.value.setText(plugins);
-				} else if (motherRef.preferenceName.equals("bioDataServer")) {
-					motherRef.preferenceValue = selection;
-					motherRef.value.setText(motherRef.preferenceValue);
-				} else if (motherRef.preferenceName.equals("mrud")) {
-					motherRef.preferenceValue = selection;
-					motherRef.value.setText(motherRef.preferenceValue);
-				}
-			} else {
-				motherRef.dispose();
-			}
-		}
-	}
 
 	/** @deprecated no longer used by anyting.  Will leave this world Dec 2007. */
 	public String validatedPluginData(Component comp, String selection) {

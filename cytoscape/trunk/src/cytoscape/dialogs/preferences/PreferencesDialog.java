@@ -358,7 +358,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 				PreferenceValueDialog pd = new PreferenceValueDialog(PreferencesDialog.this, name,
 				                                                     value, callerRef, prefsTM,
-				                                                     "Modify value...", false);
+				                                                     "Modify value...");
 			}
 		}
 	}
