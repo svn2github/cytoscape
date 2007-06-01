@@ -3,7 +3,7 @@
   ** Written by Samad Lotia
   -->
 
-<project name="SessionExporterPlugin" default="all" basedir=".">
+<project name="SessionForWebPlugin" default="all" basedir=".">
 
   <!-- ===================================================================	-->
   <!-- Properties								-->
@@ -15,7 +15,7 @@
 
   <!-- Project directories and files -->
   <property name="project.src.dir"		location="${root.dir}/src"/>
-  <property name="project.jar"			location="${root.dir}/SessionExporterPlugin.jar"/>
+  <property name="project.jar"			location="${root.dir}/SessionForWebPlugin.jar"/>
   <property name="project.jar.manifest"		location="${manifest.dir}/project.manifest"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
@@ -26,7 +26,7 @@
   <property name="cytoscape.distro.plugins.dir"	location="${cytoscape.distro.dir}/plugins"/>
 
   <!-- Project jar properties -->
-  <property name="project.jar.main.class"	value="SessionExporterPlugin.SessionExporterPlugin"/>
+  <property name="project.jar.main.class"	value="SessionForWebPlugin.SessionForWebPlugin"/>
   <path id="project.jar.class.path">
     <pathelement location="${cytoscape.root.dir}/cytoscape.jar"/>
     <pathelement location="${cytoscape.lib.dir}/cytoscape-render-stateful.jar"/>
