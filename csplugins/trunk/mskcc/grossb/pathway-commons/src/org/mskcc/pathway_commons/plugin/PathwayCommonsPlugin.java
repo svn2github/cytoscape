@@ -71,7 +71,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 		info.setName(PLUGIN_NAME);
 		info.setDescription("Provides connectivity to Pathway Commons Repository (www.pathwaycommons.org).");
 		info.setCategory("Connectivity");
-		info.setPluginVersion(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM);
+		info.setPluginVersion(Double.valueOf(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM));
 		info.setProjectUrl("http://www.pathwaycommons.org");
 		info.addAuthor("Benjamin Gross", "Computational Biology Center, Memorial Sloan-Kettering Cancer Center");
 
