@@ -214,8 +214,8 @@ public class PluginTracker {
 
 		for (Element Current : Plugins) {
 			if ((Obj.getPluginClassName() != null && Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName())) ||  
-				(Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) &&
-				 Current.getChildTextTrim(projUrlTag).equals(Obj.getProjectUrl())) ||
+					(Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) &&
+					 Current.getChildTextTrim(downloadUrlTag).equals(Obj.getDownloadUrl())) ||
 				 ((Current.getChildTextTrim(urlTag).length() > 0 && Obj.getUrl() != null) &&
 					Current.getChildTextTrim(urlTag).equals(Obj.getUrl())) ) {
 				  return Current;
@@ -274,6 +274,7 @@ public class PluginTracker {
 			Info.setCategory(CurrentPlugin.getChildTextTrim(categoryTag));
 			Info.setUrl(CurrentPlugin.getChildTextTrim(urlTag));
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
+			Info.setDownloadUrl(CurrentPlugin.getChildTextTrim(downloadUrlTag));
 			Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
 			
 			// set file type
@@ -321,6 +322,7 @@ public class PluginTracker {
 		Plugin.addContent(new Element(cytoVersTag).setText(obj.getCytoscapeVersion()));
 		Plugin.addContent(new Element(urlTag).setText(obj.getUrl()));
 		Plugin.addContent(new Element(projUrlTag).setText(obj.getProjectUrl()));
+		Plugin.addContent(new Element(downloadUrlTag).setText(obj.getDownloadUrl()));
 		Plugin.addContent(new Element(categoryTag).setText(obj.getCategory()));
 		Plugin.addContent(new Element(fileTypeTag).setText(obj.getFileType().toString()));
 		Plugin.addContent(new Element(installLocTag).setText(obj.getInstallLocation()));
@@ -355,22 +357,42 @@ public class PluginTracker {
 	// XML Tags to prevent misspelling issues, PluginFileReader uses most of the same
 	// tags, the xml needs to stay consistent
 	private String nameTag = PluginFileReader.nameTag;
+
 	private String descTag = PluginFileReader.descTag;
+	
 	private String classTag = PluginFileReader.classTag;
+	
 	private String pluginVersTag = PluginFileReader.pluginVersTag;
+	
 	private String cytoVersTag = PluginFileReader.cytoVersTag;
+	
 	private String urlTag = PluginFileReader.urlTag;
+	
 	private String projUrlTag = PluginFileReader.projUrlTag;
+	
+	private String downloadUrlTag = PluginFileReader.downloadUrlTag;
+	
 	private String categoryTag = PluginFileReader.categoryTag;
+	
 	private String fileListTag = PluginFileReader.fileListTag;
+	
 	private String fileTag = PluginFileReader.fileTag;
+	
 	private String pluginListTag = PluginFileReader.pluginListTag;
+	
 	private String pluginTag = PluginFileReader.pluginTag;
+	
 	private String authorListTag = PluginFileReader.authorListTag;
+	
 	private String authorTag = PluginFileReader.authorTag;
+	
 	private String instTag = PluginFileReader.instTag;
+	
 	private String uniqueIdTag = PluginFileReader.uniqueID;
+	
 	private String fileTypeTag = PluginFileReader.fileType;
+	
 	private String licenseTag = PluginFileReader.licenseTag;
+	
 	private String installLocTag = PluginFileReader.installLocTag;
 }

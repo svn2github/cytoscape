@@ -105,7 +105,8 @@ public class PluginFileReader {
 		Info.setName(CurrentPlugin.getChildTextTrim(nameTag));
 		Info.setDescription(CurrentPlugin.getChildTextTrim(descTag));
 		Info.setUrl(CurrentPlugin.getChildTextTrim(urlTag));
-		Info.setProjectUrl(downloadUrl);
+		Info.setDownloadUrl(downloadUrl);
+		Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
 		Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(cytoVersTag));
 		Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
 		
@@ -220,6 +221,8 @@ public class PluginFileReader {
 
 	protected static final String projUrlTag = "projectUrl";
 
+	protected static final String downloadUrlTag = "downloadUrl";
+	
 	protected static final String categoryTag = "category";
 
 	protected static final String fileListTag = "filelist";

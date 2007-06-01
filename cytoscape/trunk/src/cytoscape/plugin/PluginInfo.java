@@ -117,6 +117,8 @@ public class PluginInfo {
 
 	private String projectUrl;
 
+	private String downloadUrl;
+	
 	private String pluginCategory;
 
 	private String versionMatch = "^\\d+\\.\\d+";
@@ -250,15 +252,24 @@ public class PluginInfo {
 	}
 
 	/**
-	 * pluginUrl for the xml file describing all plugins from any given project
-	 * (ex. http://cytoscape.org/plugins/plugin.xml)
-	 * 
+	 * Sets the url of a site describing this plugin project
 	 * @param url
 	 */
 	public void setProjectUrl(String url) {
 		projectUrl = url;
 	}
 
+	/**
+	 * PLUGIN DEVELOPER It is best to let the manager set this
+	 * pluginUrl for the xml file describing all plugins from any given project
+	 * (ex. http://cytoscape.org/plugins/plugin.xml)
+	 * 
+	 * @param url
+	 */
+	protected void setDownloadUrl(String url) {
+		downloadUrl = url;
+	}
+	
 	/**
 	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
 	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}	 
@@ -489,13 +500,21 @@ public class PluginInfo {
 	}
 
 	/**
-	 * @return Url that returns the document of available plugins this plugin
-	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
+	 * 
+	 * @return Url that points to a site describing this plugin project
 	 */
 	public String getProjectUrl() {
 		return projectUrl;
 	}
 
+	/**
+	 * @return Url that returns the document of available plugins this plugin
+	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
+	 */
+	public String getDownloadUrl()  {
+		return downloadUrl;
+	}
+	
 	/**
 	 * @return Plugin category.
 	 */

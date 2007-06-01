@@ -115,7 +115,7 @@ public class ManagerUtil {
 		for (PluginInfo infoAvail: Available) {
 			for (PluginInfo infoCur: Current) {
 				if ( infoCur.getID().equals(infoAvail.getID()) && 
-					infoCur.getProjectUrl().equals(infoAvail.getProjectUrl())) {
+					infoCur.getDownloadUrl().equals(infoAvail.getDownloadUrl())) {
 					UniqueAvail.remove(infoAvail);
 				}
 					

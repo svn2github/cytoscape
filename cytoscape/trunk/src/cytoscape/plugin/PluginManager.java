@@ -446,12 +446,12 @@ public class PluginManager {
 		Set<PluginInfo> Seen = new HashSet<PluginInfo>();
 		Seen.add(Plugin);
 
-		if (Plugin.getProjectUrl() == null
-				|| Plugin.getProjectUrl().length() <= 0) {
+		if (Plugin.getDownloadUrl() == null
+				|| Plugin.getDownloadUrl().length() <= 0) {
 			return UpdatablePlugins;
 		}
 
-		for (PluginInfo New : inquire(Plugin.getProjectUrl())) {
+		for (PluginInfo New : inquire(Plugin.getDownloadUrl())) {
 			if (New.getID().equals(Plugin.getID())
 					&& Plugin.isNewerPluginVersion(New)) {
 				if (!Seen.contains(New)) {
@@ -503,14 +503,14 @@ public class PluginManager {
 			cytoscape.task.TaskMonitor taskMonitor) throws IOException,
 			ManagerException, WebstartException {
 		// find new plugin, download, add to install list
-		if (Current.getProjectUrl() == null) {
+		if (Current.getDownloadUrl() == null) {
 			throw new ManagerException(
 					Current.getName()
 							+ " does not have a project url.\nCannot auto-update this plugin.");
 		}
 
 		if (Current.getID().equals(New.getID())
-				&& Current.getProjectUrl().equals(New.getProjectUrl())
+				&& Current.getDownloadUrl().equals(New.getDownloadUrl())
 				&& Current.isNewerPluginVersion(New)) {
 			//pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
 			delete(Current);
@@ -775,7 +775,7 @@ public class PluginManager {
 				System.out
 						.println("No plugin found in specified jar - assuming it's a library.");
 			}
-			jar.close();
+			//jar.close();
 		}
 		System.out.println("");
 	}
