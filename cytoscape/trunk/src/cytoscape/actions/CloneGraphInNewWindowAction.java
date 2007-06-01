@@ -49,10 +49,22 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
 
+import giny.model.Node;
+import giny.view.NodeView;
+import giny.model.Edge;
+import giny.view.EdgeView;
+import giny.view.Bend;
+
+import ding.view.DGraphView;
+
 import java.awt.event.ActionEvent;
 
 import javax.swing.event.MenuEvent;
 
+import java.util.Iterator;
+
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
 /**
  *
@@ -72,21 +84,53 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetwork current_network = Cytoscape.getCurrentNetwork();
-		VisualStyle vs = Cytoscape.getCurrentNetworkView().getVisualStyle();
+		CyNetwork origNet = Cytoscape.getCurrentNetwork();
+		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
+		VisualStyle vs = origView.getVisualStyle();
 		String viewName = CytoscapeInit.getProperties().getProperty("defaultVisualStyle"); 
 		if ( vs != null )
 			viewName = vs.getName();
 
-		CyNetwork new_network = Cytoscape.createNetwork(current_network.getNodeIndicesArray(),
-		                                                current_network.getEdgeIndicesArray(),
-		                                                current_network.getTitle() + " copy", 
+		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
+		                                                origNet.getEdgeIndicesArray(),
+		                                                origNet.getTitle() + " copy", 
 														null,
 														true);
 
-		CyNetworkView view = Cytoscape.getNetworkView(new_network.getIdentifier());
-		if ( view != null || view != Cytoscape.getNullNetworkView() )
-			view.setVisualStyle(viewName);
+		CyNetworkView newView = Cytoscape.getNetworkView(new_network.getIdentifier());
+		if ( newView != null || newView != Cytoscape.getNullNetworkView() ) {
+			newView.setVisualStyle(viewName);
+
+        	// Use nodes as keys because they are less volatile than views...
+	        Iterator ni = origView.getGraphPerspective().nodesIterator();
+			while (ni.hasNext()) {
+				Node n = (Node) ni.next();
+
+				NodeView onv = origView.getNodeView(n);
+				NodeView nnv = newView.getNodeView(n);
+
+				nnv.setXPosition(onv.getXPosition());
+				nnv.setYPosition(onv.getYPosition());
+			}
+
+			newView.setZoom(origView.getZoom());
+			Point2D origCenter = ((DGraphView)origView).getCenter();
+			((DGraphView)newView).setCenter(origCenter.getX(), origCenter.getY());
+
+			// set edge anchors and bends
+	        Iterator ei = origView.getGraphPerspective().edgesIterator();
+			while (ei.hasNext()) {
+				Edge ee = (Edge) ei.next();
+
+				EdgeView oev = origView.getEdgeView(ee);
+				EdgeView nev = newView.getEdgeView(ee);
+
+				nev.getBend().setHandles(oev.getBend().getHandles());
+				nev.getBend().setHandles(oev.getBend().getHandles());
+
+				nev.setLineType( oev.getLineType() );
+			}
+		}
 	}
 
 	public void menuSelected(MenuEvent e) {
