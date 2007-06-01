@@ -257,8 +257,12 @@ public class HTMLSessionExporter
 				return networkIDs;
 			}
 
+			/**
+			 * Goes through a TreeModel and adds network IDs it finds to the networkIDs list.
+			 */
 			private void searchTreeModel(List<String> networkIDs, Map<String,String> networkTitleToIDMap, TreeModel model, Object node)
 			{
+				// Breadth first search
 				if (node != model.getRoot())
 					networkIDs.add(networkTitleToIDMap.get(node.toString()));
 				for (int i = 0; i < model.getChildCount(node); i++)
@@ -444,8 +448,13 @@ public class HTMLSessionExporter
 							{
 								if (groups.indexOf(group) != 0)
 									writer.println("<hr>");
+								writer.print("<p align=center><b>Visual style:</b> ");
 								VisualStyle vizStyle = Cytoscape.getNetworkView(group.get(0)).getVisualStyle();
-								writer.println("<p align=center>Visual style: " + vizStyle.getName() + "</p>");
+								if (vizStyle == null)
+									writer.print("none");
+								else
+									writer.print(vizStyle.getName());
+								writer.println("</p>");
 							}
 						}
 
