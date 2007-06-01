@@ -61,7 +61,10 @@ import javax.swing.filechooser.FileSystemView;
  *   getWhetherToCopyExpToAttribs().
  *
  *   @see #getWhetherToCopyExpToAttribs
+ * @deprecated Not apparently used anywhere. Shout if you are. Will be
+ * removed 5/2008.
  */
+@Deprecated
 public class ExpFileChooser extends JFileChooser {
 	JCheckBox jcb;
 	boolean copyToAttribs = true;

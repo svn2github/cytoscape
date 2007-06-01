@@ -35,17 +35,11 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//-------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//-------------------------------------------------------------------------
 package cytoscape.actions;
 
 import java.awt.*;
 import java.awt.event.*;
 
-//-------------------------------------------------------------------------
 import java.io.File;
 
 import javax.swing.*;
@@ -53,9 +47,13 @@ import javax.swing.event.*;
 import javax.swing.filechooser.FileSystemView;
 
 
-//-------------------------------------------------------------------------
-/** extends JFileChooser by adding a JCheckBox at the bottom of the chooser
+/** 
+ * extends JFileChooser by adding a JCheckBox at the bottom of the chooser
+ * @deprecated This isn't apparently used anywhere. If you are using it,
+ * let us know! If you need a file use FileUtil.getFile().  Will be
+ * removed 5/2008.
  */
+@Deprecated
 public class CheckBoxFileChooser extends JFileChooser {
 	JCheckBox jcb;
 	boolean jcbFlag = false;

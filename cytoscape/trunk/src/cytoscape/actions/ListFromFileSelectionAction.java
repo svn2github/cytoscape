@@ -58,7 +58,6 @@ import java.io.*;
 import java.util.*;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import javax.swing.event.MenuEvent;
