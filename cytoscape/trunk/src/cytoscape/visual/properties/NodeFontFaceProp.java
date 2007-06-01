@@ -34,6 +34,12 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.FontParser;
+
+import cytoscape.visual.ui.icon.NodeIcon;
+
 import giny.view.Label;
 import giny.view.NodeView;
 
@@ -41,13 +47,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
-
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.FontParser;
-import cytoscape.visual.ui.icon.NodeIcon;
 
 
 /**
@@ -68,16 +71,17 @@ public class NodeFontFaceProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);
 
 				g2d.setColor(Color.DARK_GRAY);
-				final Font font = (Font) getDefault();
+
+				final Font font = (Font) value;
 				g2d.setFont(new Font(font.getFontName(), font.getStyle(), 28));
-				g2d.drawString("Font", 8,c.getHeight()/2 + 10);
+				g2d.drawString("Font", 8, (c.getHeight() / 2) + 10);
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
 			}
 		};
@@ -85,25 +89,46 @@ public class NodeFontFaceProp extends AbstractVisualProperty {
 		return icon;
 	}
 
-    public void applyToNodeView(NodeView nv, Object o) {
-        if ( o == null || nv == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToNodeView(NodeView nv, Object o) {
+		if ((o == null) || (nv == null))
+			return;
 
 		Label nodelabel = nv.getLabel();
 
-        if ( !((Font)o).equals(nodelabel.getFont()) )
-            nodelabel.setFont((Font)o);
-    }
+		if (!((Font) o).equals(nodelabel.getFont()))
+			nodelabel.setFont((Font) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.NODE_FONT_FACE.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new FontParser()).parseFont(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.NODE_FONT_FACE.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return new Font(null, Font.PLAIN, 12); }
+		if (s != null)
+			return (new FontParser()).parseFont(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return new Font(null, Font.PLAIN, 12);
+	}
 }

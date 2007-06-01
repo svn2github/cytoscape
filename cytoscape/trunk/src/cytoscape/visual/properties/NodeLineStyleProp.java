@@ -74,13 +74,13 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);
 
-				final BasicStroke stroke = (BasicStroke) ((LineStyle) getDefault())
+				final BasicStroke stroke = (BasicStroke) ((LineStyle) value)
 				                                                                    .getStroke(((Number) VisualPropertyType.NODE_LINE_WIDTH
 				                                                                                .getDefault(Cytoscape.getVisualMappingManager()
 				                                                                                                     .getVisualStyle()))
@@ -92,7 +92,7 @@ public class NodeLineStyleProp extends AbstractVisualProperty {
 				g2d.translate(-15, -4);
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
 				g2d.setColor(new Color(10, 10, 10, 45));
-				g2d.drawString(getDefault().toString(), c.getX() + 12,
+				g2d.drawString(value.toString(), c.getX() + 12,
 				               (int) ((c.getHeight() / 2) + 3));
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
 			}

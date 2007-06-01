@@ -96,8 +96,10 @@ public abstract class AbstractVisualProperty implements VisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon() {
-		return null;
+		return getIcon(getDefault());
 	}
+	
+	abstract public Icon getIcon(final Object value); 
 
 	protected Object getDefault() {
 		return getType().getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());

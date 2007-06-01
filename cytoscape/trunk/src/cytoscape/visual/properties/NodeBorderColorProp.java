@@ -67,9 +67,9 @@ public class NodeBorderColorProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon();
-		icon.setColor((Color) getDefault());
+		icon.setColor((Color) value);
 		icon.setBottomPadding(-2);
 
 		return icon;

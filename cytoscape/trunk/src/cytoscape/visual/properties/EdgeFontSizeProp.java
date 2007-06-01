@@ -69,10 +69,10 @@ public class EdgeFontSizeProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final LineTypeIcon icon = new LineTypeIcon();
 		icon.setColor(new Color(10, 10, 10, 20));
-		icon.setText(getDefault().toString());
+		icon.setText(value.toString());
 		icon.setBottomPadding(-7);
 
 		return icon;

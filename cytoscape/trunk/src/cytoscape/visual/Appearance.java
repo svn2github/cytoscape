@@ -73,7 +73,7 @@ public class Appearance {
 		vizProps = new Object[VisualPropertyType.values().length];
 
 		for (VisualPropertyType type : VisualPropertyType.values())
-			vizProps[type.ordinal()] = type.getVisualProperty().getDefaultAppearanceObject();
+					vizProps[type.ordinal()] = type.getVisualProperty().getDefaultAppearanceObject();
 	}
 
 	/**

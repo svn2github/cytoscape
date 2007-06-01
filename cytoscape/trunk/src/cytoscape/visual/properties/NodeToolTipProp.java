@@ -68,7 +68,7 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 25));
@@ -76,7 +76,7 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 8));
 				g2d.setColor(Color.DARK_GRAY);
 
-				String defLabel = getDefault().toString();
+				String defLabel = value.toString();
 
 				if (defLabel.length() > 15) {
 					defLabel = defLabel.substring(0, 14) + "...";

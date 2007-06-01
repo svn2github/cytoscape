@@ -81,6 +81,19 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	/**
 	 * Creates a new LineTypeIcon object.
 	 *
+	 * @param lineType  DOCUMENT ME!
+	 */
+	public LineTypeIcon(Object lineType) {
+		this((BasicStroke) ((LineType) lineType).getStroke(), DEFAULT_ICON_SIZE * 3,
+		     DEFAULT_ICON_SIZE,
+		     ((LineType) lineType).getType().toString(),
+		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
+		                                                               .getVisualStyle()));
+	}
+
+	/**
+	 * Creates a new LineTypeIcon object.
+	 *
 	 * @param stroke DOCUMENT ME!
 	 * @param width DOCUMENT ME!
 	 * @param height DOCUMENT ME!

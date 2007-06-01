@@ -80,7 +80,7 @@ public class NodeLineTypeProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		return new NodeIcon() {
 				public void paintIcon(Component c, Graphics g, int x, int y) {
 					super.paintIcon(c, g, x, y);

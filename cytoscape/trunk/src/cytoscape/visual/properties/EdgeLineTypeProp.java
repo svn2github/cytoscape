@@ -67,8 +67,8 @@ public class EdgeLineTypeProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
-		final LineTypeIcon icon = new LineTypeIcon();
+	public Icon getIcon(final Object value) {
+		final LineTypeIcon icon = new LineTypeIcon((LineType)value);
 		icon.setBottomPadding(-7);
 
 		return icon;

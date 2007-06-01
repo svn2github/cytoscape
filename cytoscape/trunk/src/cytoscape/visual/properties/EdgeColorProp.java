@@ -34,16 +34,19 @@
  */
 package cytoscape.visual.properties;
 
-import javax.swing.Icon;
-
 import cytoscape.visual.*;
+
 import cytoscape.visual.parsers.*;
+
 import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import giny.view.EdgeView;
 
 import java.awt.Color;
 
-import giny.view.EdgeView;
 import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -58,30 +61,60 @@ public class EdgeColorProp extends AbstractVisualProperty {
 	public VisualPropertyType getType() {
 		return VisualPropertyType.EDGE_COLOR;
 	}
-	
-	public Icon getDefaultIcon() {
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getIcon(final Object value) {
 		final LineTypeIcon icon = new LineTypeIcon();
+		icon.setColor((Color) value);
 		icon.setBottomPadding(-7);
+
 		return icon;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        if ( !((Color)o).equals(ev.getUnselectedPaint()) )
-            ev.setUnselectedPaint((Color)o);
-    }
+		if (!((Color) o).equals(ev.getUnselectedPaint()))
+			ev.setUnselectedPaint((Color) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_COLOR.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ColorParser()).parseColor(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_COLOR.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return Color.black; }
+		if (s != null)
+			return (new ColorParser()).parseColor(s);
+		else
 
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.black;
+	}
 }

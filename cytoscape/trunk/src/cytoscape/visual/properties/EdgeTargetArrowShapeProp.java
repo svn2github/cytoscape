@@ -76,8 +76,8 @@ public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
-		final ArrowIcon icon = new ArrowIcon(((ArrowShape) getDefault()).getShape());
+	public Icon getIcon(final Object value) {
+		final ArrowIcon icon = new ArrowIcon(((ArrowShape) value).getShape());
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
 

@@ -36,13 +36,15 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
 
-import cytoscape.visual.ui.icon.*;
-import cytoscape.visual.*;
 import cytoscape.visual.parsers.*;
 
-import javax.swing.Icon;
+import cytoscape.visual.ui.icon.*;
+
 import giny.view.EdgeView;
+
 import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -58,25 +60,57 @@ public class EdgeSourceArrowProp extends AbstractVisualProperty {
 		return VisualPropertyType.EDGE_SRCARROW;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getIcon(final Object value) {
+		return null;
+	}
 
-        final int newSourceEnd = ((Arrow)o).getShape().getGinyArrow();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        if (newSourceEnd != ev.getSourceEdgeEnd())
-            ev.setSourceEdgeEnd(newSourceEnd);
-    }
+		final int newSourceEnd = ((Arrow) o).getShape().getGinyArrow();
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_SRCARROW.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ArrowParser()).parseArrow(s);
-        else
-            return null;
-    }
+		if (newSourceEnd != ev.getSourceEdgeEnd())
+			ev.setSourceEdgeEnd(newSourceEnd);
+	}
 
-    public Object getDefaultAppearanceObject() { return Arrow.NONE; }
-	
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_SRCARROW.getDefaultPropertyKey(baseKey));
+
+		if (s != null)
+			return (new ArrowParser()).parseArrow(s);
+		else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Arrow.NONE;
+	}
 }

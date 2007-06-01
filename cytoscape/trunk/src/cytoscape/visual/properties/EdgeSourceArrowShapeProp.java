@@ -41,6 +41,7 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
+import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ArrowShapeParser;
@@ -74,8 +75,8 @@ public class EdgeSourceArrowShapeProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
-		final ArrowIcon icon = new ArrowIcon(((ArrowShape) getDefault()).getShape());
+	public Icon getIcon(final Object value) {
+		final ArrowIcon icon = new ArrowIcon(((ArrowShape) value).getShape());
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
 
@@ -91,8 +92,9 @@ public class EdgeSourceArrowShapeProp extends AbstractVisualProperty {
 	public void applyToEdgeView(EdgeView ev, Object o) {
 		if ((o == null) || (ev == null))
 			return;
-
-		final int newSourceEnd = ((ArrowShape) o).getGinyArrow();
+		final int newSourceEnd;
+		
+		newSourceEnd = ((ArrowShape) o).getGinyArrow();
 
 		if (newSourceEnd != ev.getSourceEdgeEnd())
 			ev.setSourceEdgeEnd(newSourceEnd);

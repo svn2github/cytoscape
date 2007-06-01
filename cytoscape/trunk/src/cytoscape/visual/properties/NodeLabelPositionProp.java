@@ -76,26 +76,17 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Icon getDefaultIcon() {
-		return getIcon((LabelPosition) getDefault());
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @param labelPos DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getIcon(LabelPosition labelPos) {
+	public Icon getIcon(Object value) {
 		int size = 55;
 
 		final BufferedImage bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
 
-		LabelPlacerGraphic lp = new LabelPlacerGraphic(labelPos, size, false);
+		LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) value, size, false);
 		lp.paint(g2);
 
 		NodeIcon icon = new NodeIcon() {
@@ -105,6 +96,7 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 				g2d.drawImage(bi, 10, -5, null);
 			}
 		};
+
 		return icon;
 	}
 

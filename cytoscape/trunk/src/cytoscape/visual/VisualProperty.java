@@ -86,6 +86,7 @@ public interface VisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getDefaultIcon();
+	public Icon getIcon(final Object value);
 
 	public void applyToNodeView(NodeView nv, Object o);
 	public void applyToEdgeView(EdgeView nv, Object o);

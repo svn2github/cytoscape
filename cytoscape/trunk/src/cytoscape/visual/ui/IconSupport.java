@@ -47,7 +47,6 @@ import static cytoscape.visual.NodeShape.TRIANGLE;
 import static cytoscape.visual.ui.ValueDisplayer.ARROW;
 import static cytoscape.visual.ui.ValueDisplayer.LINETYPE;
 import static cytoscape.visual.ui.ValueDisplayer.NODESHAPE;
-import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -61,10 +60,9 @@ import javax.swing.ImageIcon;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
 import cytoscape.visual.LineStyle;
+import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
 
 
 /**
@@ -72,6 +70,7 @@ import cytoscape.visual.VisualPropertyType;
  * change it.  This class also contains support for getting an icon based on an
  * object or type (as defined in ValueDisplayer).
  */
+@Deprecated
 public class IconSupport {
     private ImageIcon currentIcon;
     private ImageIcon[] icons;

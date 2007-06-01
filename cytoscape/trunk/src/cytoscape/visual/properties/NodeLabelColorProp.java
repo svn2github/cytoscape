@@ -73,13 +73,13 @@ public class NodeLabelColorProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);
 
-				g2d.setColor((Color) getDefault());
+				g2d.setColor((Color) value);
 
 				final Font font = (Font) VisualPropertyType.NODE_FONT_FACE
 				                                                                     .getDefault(Cytoscape.getVisualMappingManager()

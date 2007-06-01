@@ -71,7 +71,7 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		return new LineTypeIcon() {
 				public void paintIcon(Component c, Graphics g, int x, int y) {
 					super.setColor(new Color(10, 10, 10, 0));
@@ -79,7 +79,7 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 					g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
 					g2d.setColor(Color.DARK_GRAY);
 
-					final Font font = (Font) getDefault();
+					final Font font = (Font) value;
 					g2d.setFont(new Font(font.getFontName(), font.getStyle(), 40));
 					g2d.setColor(new Color(10, 10, 10, 40));
 					g2d.drawString("Font", c.getX() + 15, c.getY() - 10);

@@ -67,15 +67,17 @@ public class NodeFillColorProp extends AbstractVisualProperty {
 	/**
 	 *  DOCUMENT ME!
 	 *
+	 * @param value DOCUMENT ME!
+	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);
 				g2d.translate(0, -2);
-				g2d.setColor((Color) getDefault());
+				g2d.setColor((Color) value);
 				g2d.fill(super.newShape);
 				g2d.translate(0, 2);
 			}

@@ -34,20 +34,24 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.*;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.*;
+
+import cytoscape.visual.ui.icon.LineTypeIcon;
+
+import giny.view.EdgeView;
+import giny.view.Label;
+
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.Icon;
-import giny.view.EdgeView;
 import java.util.Properties;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.LineTypeIcon;
-import cytoscape.visual.*;
-import cytoscape.visual.parsers.*;
-import giny.view.Label;
-
+import javax.swing.Icon;
 
 
 /**
@@ -68,39 +72,61 @@ public class EdgeLabelColorProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final LineTypeIcon icon = new LineTypeIcon();
 		icon.setColor(new Color(10, 10, 10, 0));
 		icon.setText("Font");
-		final Color fontColor = (Color)getDefault();
-		final Font defFont = (Font) VisualPropertyType.EDGE_FONT_FACE.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
+
+		final Color fontColor = (Color) value;
+		final Font defFont = (Font) VisualPropertyType.EDGE_FONT_FACE.getDefault(Cytoscape.getVisualMappingManager()
+		                                                                                  .getVisualStyle());
 		icon.setTextFont(new Font(defFont.getFontName(), defFont.getStyle(), 24));
 		icon.setBottomPadding(-7);
 		icon.setTextColor(fontColor);
+
 		return icon;
-		
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        Label edgelabel = ev.getLabel();
+		Label edgelabel = ev.getLabel();
 
-        if ( !((Color)o).equals(edgelabel.getTextPaint()) )
-            edgelabel.setTextPaint((Color)o);
-    }
+		if (!((Color) o).equals(edgelabel.getTextPaint()))
+			edgelabel.setTextPaint((Color) o);
+	}
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_LABEL_COLOR.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ColorParser()).parseColor(s);
-        else
-            return null;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_LABEL_COLOR.getDefaultPropertyKey(baseKey));
 
-    public Object getDefaultAppearanceObject() { return Color.black; }
+		if (s != null)
+			return (new ColorParser()).parseColor(s);
+		else
 
+			return null;
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.black;
+	}
 }

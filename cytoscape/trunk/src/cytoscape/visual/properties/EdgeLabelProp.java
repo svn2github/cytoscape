@@ -34,12 +34,16 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.*;
+
 import cytoscape.visual.parsers.*;
-import giny.view.Label;
+
 import giny.view.EdgeView;
+import giny.view.Label;
+
 import java.util.Properties;
+
+import javax.swing.Icon;
 
 
 /**
@@ -55,25 +59,57 @@ public class EdgeLabelProp extends AbstractVisualProperty {
 		return VisualPropertyType.EDGE_LABEL;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getIcon(final Object value) {
+		return null;
+	}
 
-        Label label = ev.getLabel();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-        if (!((String)o).equals(label.getText()))
-            label.setText((String)o);
-    }
+		Label label = ev.getLabel();
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_LABEL.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return s;
-        else
-            return null;
-    }
+		if (!((String) o).equals(label.getText()))
+			label.setText((String) o);
+	}
 
-    public Object getDefaultAppearanceObject() { return ""; }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_LABEL.getDefaultPropertyKey(baseKey));
 
+		if (s != null)
+			return s;
+		else
+
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return "";
+	}
 }

@@ -34,19 +34,23 @@
  */
 package cytoscape.visual.properties;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.parsers.ColorParser;
+
+import cytoscape.visual.ui.icon.ArrowIcon;
+
 import giny.view.EdgeView;
 
 import java.awt.Color;
 import java.awt.Paint;
+
 import java.util.Properties;
 
 import javax.swing.Icon;
-
-import cytoscape.Cytoscape;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.ColorParser;
-import cytoscape.visual.ui.icon.ArrowIcon;
 
 
 /**
@@ -67,36 +71,58 @@ public class EdgeSourceArrowColorProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
-		final ArrowShape arrow = (ArrowShape) VisualPropertyType.EDGE_SRCARROW_SHAPE.getDefault(Cytoscape.getVisualMappingManager()
-		                                                                                       .getVisualStyle());
+	public Icon getIcon(final Object value) {
+		final ArrowShape arrow = (ArrowShape) VisualPropertyType.EDGE_SRCARROW_SHAPE
+		                                                                    .getDefault(Cytoscape.getVisualMappingManager()
+		                                                                                         .getVisualStyle());
 		final ArrowIcon icon = new ArrowIcon(arrow.getShape());
-		icon.setColor((Color) getDefault());
+		icon.setColor((Color) value);
 		icon.setLeftPadding(20);
 		icon.setBottomPadding(-6);
 
 		return icon;
 	}
 
-    public void applyToEdgeView(EdgeView ev, Object o) {
-        if ( o == null || ev == null )
-            return;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param ev DOCUMENT ME!
+	 * @param o DOCUMENT ME!
+	 */
+	public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
 
-		final Paint newSourceArrowColor = ((Color)o);
+		final Paint newSourceArrowColor = ((Color) o);
 
 		if (newSourceArrowColor != ev.getSourceEdgeEndPaint())
 			ev.setSourceEdgeEndPaint(newSourceArrowColor);
+	}
 
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param props DOCUMENT ME!
+	 * @param baseKey DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object parseProperty(Properties props, String baseKey) {
+		String s = props.getProperty(VisualPropertyType.EDGE_SRCARROW_COLOR.getDefaultPropertyKey(baseKey));
 
-    public Object parseProperty(Properties props, String baseKey) {
-        String s = props.getProperty(
-            VisualPropertyType.EDGE_SRCARROW_COLOR.getDefaultPropertyKey(baseKey) );
-        if ( s != null )
-            return (new ColorParser()).parseColor(s);
-        else
-            return null;
-    }
+		if (s != null)
+			return (new ColorParser()).parseColor(s);
+		else
 
-    public Object getDefaultAppearanceObject() { return Color.black; }
+			return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getDefaultAppearanceObject() {
+		return Color.black;
+	}
 }

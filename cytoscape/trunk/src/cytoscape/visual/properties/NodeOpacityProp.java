@@ -72,7 +72,7 @@ public class NodeOpacityProp extends AbstractVisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon() {
+	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
@@ -83,13 +83,13 @@ public class NodeOpacityProp extends AbstractVisualProperty {
 				                                                                   .getDefault(Cytoscape.getVisualMappingManager()
 				                                                                                        .getVisualStyle()));
 				g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(),
-				                       ((Number) getDefault()).intValue()));
+				                       ((Number) value).intValue()));
 				g2d.fill(super.newShape);
 				g2d.translate(0, 2);
 
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
 				g2d.setColor(Color.DARK_GRAY);
-				g2d.drawString(getDefault().toString(), c.getX() + 7,
+				g2d.drawString(value.toString(), c.getX() + 7,
 				               (int) ((c.getHeight() / 2) + 7));
 
 				g2d.setFont(new Font("SansSerif", Font.BOLD, 12));

@@ -59,6 +59,10 @@ public class EdgeToolTipProp extends AbstractVisualProperty {
 		return VisualPropertyType.EDGE_TOOLTIP;
 	}
 
+	public Icon getIcon(final Object value) {
+		return null;
+	}
+	
     public void applyToEdgeView(EdgeView nv, Object o) {
         if ( o == null || nv == null )
             return;
