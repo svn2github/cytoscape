@@ -263,7 +263,7 @@ abstract public class AbstractLayout implements LayoutAlgorithm {
 		taskMonitor = monitor;
 
 		// set up the edit
-		undoableEdit = new ViewChangeEdit((DGraphView)networkView,"Layout");
+		undoableEdit = new ViewChangeEdit((DGraphView)networkView, toString() + " Layout");
 
 		// this is overridden by children and does the actual layout
 		construct();
