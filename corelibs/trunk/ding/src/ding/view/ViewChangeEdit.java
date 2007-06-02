@@ -37,7 +37,9 @@
 package ding.view;
 
 import giny.model.Node;
+import giny.model.Edge;
 import giny.view.NodeView;
+import giny.view.EdgeView;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
@@ -61,10 +63,14 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 	private double m_orig_scaleFactor;
 	private Point2D m_orig_center;
 	private Map<Node, Point2D.Double> m_orig_points;
+	private Map<Edge, List> m_orig_anchors;
+	private Map<Edge, Integer> m_orig_linetype;
 
 	private double m_new_scaleFactor;
 	private Point2D m_new_center;
 	private Map<Node, Point2D.Double> m_new_points;
+	private Map<Edge, List> m_new_anchors;
+	private Map<Edge, Integer> m_new_linetype;
 
 	private DGraphView m_view;
 
@@ -77,6 +83,12 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 
 		m_orig_points = new HashMap<Node, Point2D.Double>();
 		m_new_points = new HashMap<Node, Point2D.Double>();
+
+		m_orig_anchors = new HashMap<Edge, List>();
+		m_new_anchors = new HashMap<Edge, List>();
+
+		m_orig_linetype = new HashMap<Edge, Integer>();
+		m_new_linetype = new HashMap<Edge, Integer>();
 
 		saveOldPositions();
 	}
@@ -95,6 +107,14 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 			NodeView nv = m_view.getNodeView(n);
 			m_orig_points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 		}
+
+		Iterator ei = m_view.getGraphPerspective().edgesIterator(); 
+		while (ei.hasNext()) {
+			Edge e = (Edge) ei.next();
+			EdgeView ev = m_view.getEdgeView(e);
+			m_orig_anchors.put(e, ev.getBend().getHandles());
+			m_orig_linetype.put(e, ev.getLineType());
+		}
 	}
 
 	protected void saveNewPositions() {
@@ -110,6 +130,14 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 			Node n = (Node) ni.next();
 			NodeView nv = m_view.getNodeView(n);
 			m_new_points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
+		}
+
+		Iterator ei = m_view.getGraphPerspective().edgesIterator(); 
+		while (ei.hasNext()) {
+			Edge e = (Edge) ei.next();
+			EdgeView ev = m_view.getEdgeView(e);
+			m_new_anchors.put(e, ev.getBend().getHandles());
+			m_new_linetype.put(e, ev.getLineType());
 		}
 	}
 
@@ -181,6 +209,14 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 		m_view.setZoom(m_new_scaleFactor);
 		m_view.setCenter(m_new_center.getX(), m_new_center.getY());
 		m_view.updateView();
+
+		Iterator ei = m_view.getGraphPerspective().edgesIterator(); 
+		while (ei.hasNext()) {
+			Edge e = (Edge) ei.next();
+			EdgeView ev = m_view.getEdgeView(e);
+			ev.getBend().setHandles( m_new_anchors.get(e) );
+			ev.setLineType( m_new_linetype.get(e).intValue() );
+		}
 	}
 
 	/**
@@ -202,5 +238,13 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 		m_view.setZoom(m_orig_scaleFactor);
 		m_view.setCenter(m_orig_center.getX(), m_orig_center.getY());
 		m_view.updateView();
+
+		Iterator ei = m_view.getGraphPerspective().edgesIterator(); 
+		while (ei.hasNext()) {
+			Edge e = (Edge) ei.next();
+			EdgeView ev = m_view.getEdgeView(e);
+			ev.getBend().setHandles( m_orig_anchors.get(e) );
+			ev.setLineType( m_orig_linetype.get(e).intValue() );
+		}
 	}
 }
