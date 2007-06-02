@@ -43,6 +43,7 @@ import csplugins.layout.algorithms.graphPartition.AttributeCircleLayout;
 import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
 import csplugins.layout.algorithms.graphPartition.ISOMLayout;
 import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutAlgorithm;
+import csplugins.layout.algorithms.force.ForceDirectedLayout;
 
 import cytoscape.*;
 
@@ -73,6 +74,7 @@ public class LayoutPlugin extends CytoscapePlugin {
 	 */
 	public LayoutPlugin() {
 		// Add the Cytoscape layouts
+		CyLayouts.addLayout(new ForceDirectedLayout(), "Cytoscape Layouts");
 		CyLayouts.addLayout(new HierarchicalLayoutAlgorithm(), "Cytoscape Layouts");
 		CyLayouts.addLayout(new AttributeCircleLayout(), "Cytoscape Layouts");
 		CyLayouts.addLayout(new DegreeSortedCircleLayout(), "Cytoscape Layouts");
