@@ -108,7 +108,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
 			// Add our context menu
-			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
 			System.out.println(e.getMessage());
 		}
@@ -180,7 +180,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 */
 	public void propertyChange (PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
 		}
 	}
 
