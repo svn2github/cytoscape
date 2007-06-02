@@ -182,8 +182,9 @@ public class NamedSelection extends CytoscapePlugin
 	 */
 	public void propertyChange (PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
-			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel);
+			CyNetworkView newView = (CyNetworkView)e.getNewValue();
+      newView.addNodeContextMenuListener(this);
+			newView.addGraphViewChangeListener(groupPanel);
 		}
 	}
 
