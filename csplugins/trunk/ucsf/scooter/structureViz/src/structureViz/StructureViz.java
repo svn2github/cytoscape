@@ -438,8 +438,7 @@ public class StructureViz extends CytoscapePlugin
   public void propertyChange(PropertyChangeEvent evt) {
     if ( evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED ){
       // Add menu to the context dialog
-			((DGraphView)Cytoscape.getCurrentNetworkView())
-				.addNodeContextMenuListener(this);
+      ((CyNetworkView)evt.getNewValue()).addNodeContextMenuListener(this);
     }
   }
 
