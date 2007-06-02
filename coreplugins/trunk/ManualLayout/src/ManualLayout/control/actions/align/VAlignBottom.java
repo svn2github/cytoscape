@@ -67,7 +67,7 @@ public class VAlignBottom extends AbstractControlAction {
 	 * @param i  DOCUMENT ME!
 	 */
 	public VAlignBottom(ImageIcon i) {
-		super(i);
+		super("Vertical Align Bottom", i);
 	}
 
 	protected void control(List nodes) {

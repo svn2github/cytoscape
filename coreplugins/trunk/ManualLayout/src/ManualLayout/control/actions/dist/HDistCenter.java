@@ -67,7 +67,7 @@ public class HDistCenter extends AbstractControlAction {
 	 * @param icon  DOCUMENT ME!
 	 */
 	public HDistCenter(ImageIcon icon) {
-		super(icon);
+		super("Horizontal Distritbute Center", icon);
 	}
 
 	protected void control(List nodes) {

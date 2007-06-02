@@ -44,6 +44,9 @@ import cytoscape.Cytoscape;
 //import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
+import ding.view.DGraphView;
+import ding.view.ViewChangeEdit;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -153,6 +156,9 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		if (prevValue == jSlider.getValue())
 			return;
 
+		ViewChangeEdit undoableEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()),
+		                                                 "Scale");
+
 		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
 			                                                   jCheckBox.isSelected());
 		ScaleLayouter scale = new ScaleLayouter(nativeGraph);
@@ -166,5 +172,7 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		scale.scaleGraph(neededIncrementalScaleFactor);
 		Cytoscape.getCurrentNetworkView().updateView();
 		prevValue = jSlider.getValue();
+
+		undoableEdit.post();
 	}
 }

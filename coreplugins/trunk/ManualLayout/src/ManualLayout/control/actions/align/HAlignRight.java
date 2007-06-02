@@ -67,7 +67,7 @@ public class HAlignRight extends AbstractControlAction {
 	 * @param i  DOCUMENT ME!
 	 */
 	public HAlignRight(ImageIcon i) {
-		super(i);
+		super("Horizontal Align Right", i);
 	}
 
 	protected void control(List nodes) {

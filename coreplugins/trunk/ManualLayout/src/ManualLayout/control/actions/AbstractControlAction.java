@@ -48,8 +48,10 @@ import cytoscape.view.*;
 import cytoscape.view.CyNetworkView;
 
 import giny.model.*;
-
 import giny.view.*;
+
+import ding.view.DGraphView;
+import ding.view.ViewChangeEdit;
 
 import java.awt.event.*;
 
@@ -68,14 +70,16 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 	protected double Y_max;
 	protected NodeView node_view;
 	protected Iterator sel_nodes;
+	protected String title;
 
 	/**
 	 * Creates a new AbstractControlAction object.
 	 *
 	 * @param icon  DOCUMENT ME!
 	 */
-	public AbstractControlAction(ImageIcon icon) {
-		super("", icon);
+	public AbstractControlAction(String title, ImageIcon icon) {
+		super(title, icon);
+		this.title = title;
 	}
 
 	/**
@@ -85,9 +89,11 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		GraphView view = Cytoscape.getCurrentNetworkView();
+		ViewChangeEdit vce = new ViewChangeEdit((DGraphView)view, title);
 		computeDimensions(view);
 		control(view.getSelectedNodes());
 		view.updateView();
+		vce.post();
 	}
 
 	protected abstract void control(List l);

@@ -67,7 +67,7 @@ public class VDistTop extends AbstractControlAction {
 	 * @param icon  DOCUMENT ME!
 	 */
 	public VDistTop(ImageIcon icon) {
-		super(icon);
+		super("Vertical Districute Top", icon);
 	}
 
 	protected void control(List nodes) {

@@ -67,7 +67,7 @@ public class HAlignCenter extends AbstractControlAction {
 	 * @param i  DOCUMENT ME!
 	 */
 	public HAlignCenter(ImageIcon i) {
-		super(i);
+		super("Horizontal Align Center",i);
 	}
 
 	protected void control(List nodes) {

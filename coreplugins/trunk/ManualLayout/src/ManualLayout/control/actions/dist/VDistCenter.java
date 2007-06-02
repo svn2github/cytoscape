@@ -67,7 +67,7 @@ public class VDistCenter extends AbstractControlAction {
 	 * @param icon  DOCUMENT ME!
 	 */
 	public VDistCenter(ImageIcon icon) {
-		super(icon);
+		super("Veritcal Distribute Center", icon);
 	}
 
 	protected void control(List nodes) {

@@ -67,7 +67,7 @@ public class VDistBottom extends AbstractControlAction {
 	 * @param icon  DOCUMENT ME!
 	 */
 	public VDistBottom(ImageIcon icon) {
-		super(icon);
+		super("Vertical Distribute Bottom", icon);
 	}
 
 	protected void control(List nodes) {

@@ -67,7 +67,7 @@ public class VAlignCenter extends AbstractControlAction {
 	 * @param i  DOCUMENT ME!
 	 */
 	public VAlignCenter(ImageIcon i) {
-		super(i);
+		super("Vertical Align Center", i);
 	}
 
 	protected void control(List nodes) {

@@ -67,7 +67,7 @@ public class HDistLeft extends AbstractControlAction {
 	 * @param icon  DOCUMENT ME!
 	 */
 	public HDistLeft(ImageIcon icon) {
-		super(icon);
+		super("Horizontal Distribute Left", icon);
 	}
 
 	protected void control(List nodes) {

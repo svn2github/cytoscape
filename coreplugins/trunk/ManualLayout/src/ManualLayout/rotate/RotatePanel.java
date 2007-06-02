@@ -38,6 +38,9 @@ package ManualLayout.rotate;
 
 import cytoscape.Cytoscape;
 
+import ding.view.ViewChangeEdit;
+import ding.view.DGraphView;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -130,6 +133,9 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 		if (jSlider.getValue() == prevValue)
 			return;
 
+		ViewChangeEdit undoableEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()), 
+		                                                 "Rotate");
+
 		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
 		                                                   jCheckBox.isSelected());
 		RotationLayouter rotation = new RotationLayouter(nativeGraph);
@@ -139,5 +145,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 		Cytoscape.getCurrentNetworkView().updateView();
 
 		prevValue = jSlider.getValue();
+
+		undoableEdit.post();
 	}
 } 
