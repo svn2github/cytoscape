@@ -77,7 +77,7 @@ public class NodeShapeProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getIcon(final Object value) {
-		final NodeIcon icon = new NodeIcon();
+		final NodeIcon icon = new NodeIcon((NodeShape)value);
 		icon.setBottomPadding(-2);
 
 		return icon;

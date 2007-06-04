@@ -48,15 +48,21 @@ import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualPropertyType;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 
 //----------------------------------------------------------------------------
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
 
 
 //----------------------------------------------------------------------------
@@ -69,6 +75,10 @@ import javax.swing.event.ChangeListener;
  */
 public class PassThroughMapping
     implements ObjectMapping {
+	
+	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
+	private static final Color TITLE_COLOR = new Color(10, 200, 255);
+	
     Class rangeClass; //the class of values held by this mapping
     String attrName; //the name of the controlling data attribute
 
@@ -308,11 +318,20 @@ public class PassThroughMapping
 
     public JPanel getLegend(VisualPropertyType vpt) {
         JPanel p = new JPanel();
-        p.setBackground(Color.white);
-        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        
+        p.setLayout(new BorderLayout());
 
-        JLabel l = new JLabel(vpt.getName() + " is displayed as " + attrName);
-        p.add(l);
+        JLabel title = new JLabel(vpt.getName() + " is displayed as " + attrName);
+        title.setFont(TITLE_FONT);
+		title.setForeground(TITLE_COLOR);
+		title.setHorizontalAlignment(SwingConstants.CENTER);
+		title.setVerticalAlignment(SwingConstants.CENTER);
+		title.setHorizontalTextPosition(SwingConstants.CENTER);
+		title.setVerticalTextPosition(SwingConstants.CENTER);
+        title.setPreferredSize(new Dimension(200, 50));
+        title.setBorder(new DropShadowBorder());
+        p.setBackground(Color.white);
+		p.add(title, SwingConstants.CENTER);
 
         return p;
     }

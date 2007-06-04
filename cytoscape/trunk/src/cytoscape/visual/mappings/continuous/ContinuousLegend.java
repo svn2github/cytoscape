@@ -61,6 +61,7 @@ import javax.swing.JPanel;
 public class ContinuousLegend extends JPanel {
     List points;
     Object obj;
+    private String attrName;
 
     /**
      * Creates a new ContinuousLegend object.
@@ -79,6 +80,7 @@ public class ContinuousLegend extends JPanel {
 
     public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
         super();
+        this.attrName = dataAttr;
         this.points = points;
         this.obj = obj;
         setBackground(Color.white);

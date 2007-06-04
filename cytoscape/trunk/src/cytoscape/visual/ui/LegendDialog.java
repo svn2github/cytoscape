@@ -5,8 +5,8 @@ package cytoscape.visual.ui;
 
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
 
 import cytoscape.visual.calculators.Calculator;
 
@@ -18,7 +18,7 @@ import org.freehep.util.export.ExportDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -30,6 +30,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 
 /**
@@ -55,7 +58,13 @@ public class LegendDialog extends JDialog {
 		this.parent = parent;
 		initComponents();
 	}
-	
+
+	/**
+	 * Creates a new LegendDialog object.
+	 *
+	 * @param parent  DOCUMENT ME!
+	 * @param vs  DOCUMENT ME!
+	 */
 	public LegendDialog(JFrame parent, VisualStyle vs) {
 		super(parent, true);
 		visualStyle = vs;
@@ -71,14 +80,27 @@ public class LegendDialog extends JDialog {
 	 * @return  DOCUMENT ME!
 	 */
 	public static JPanel generateLegendPanel(VisualStyle visualStyle) {
-		JPanel legend = new JPanel();
+		final JPanel legend = new JPanel();
+
+		final NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
+		final List<Calculator> nodeCalcs = nac.getCalculators();
+		final EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
+		final List<Calculator> edgeCalcs = eac.getCalculators();
+
+		ObjectMapping om;
+
+		/*
+		 * Set layout
+		 */
 		legend.setLayout(new BoxLayout(legend, BoxLayout.Y_AXIS));
 		legend.setBackground(Color.white);
 
-		NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
-		List<Calculator> calcs = nac.getCalculators();
+		legend.setBorder(new TitledBorder(new LineBorder(Color.DARK_GRAY, 2),
+		                                  "Visual Legend for " + visualStyle.getName(),
+		                                  TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER,
+		                                  new Font("SansSerif", Font.BOLD, 16), Color.DARK_GRAY));
 
-		for (Calculator calc : calcs) {
+		for (Calculator calc : nodeCalcs) {
 			// AAARGH
 			if (nac.getNodeSizeLocked()) {
 				if (calc.getVisualPropertyType() == VisualPropertyType.NODE_WIDTH)
@@ -90,7 +112,8 @@ public class LegendDialog extends JDialog {
 					continue;
 			}
 
-			ObjectMapping om = calc.getMapping(0);
+			om = calc.getMapping(0);
+
 			JPanel mleg = om.getLegend(calc.getVisualPropertyType());
 
 			// Add passthrough mappings to the top since they don't
@@ -99,32 +122,35 @@ public class LegendDialog extends JDialog {
 				legend.add(mleg, 0);
 			else
 				legend.add(mleg);
-		}
 
-		EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
-		calcs = eac.getCalculators();
+			// Set padding
+			mleg.setBorder(new EmptyBorder(15, 30, 15, 30));
+		}
 
 		int top = legend.getComponentCount();
 
-		for (Calculator calc : calcs) {
-			ObjectMapping om = calc.getMapping(0);
+		for (Calculator calc : edgeCalcs) {
+			om = calc.getMapping(0);
+
 			JPanel mleg = om.getLegend(calc.getVisualPropertyType());
 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.
 			if (om instanceof PassThroughMapping)
-				legend.add(mleg, top);
+				legend.add(mleg, 0);
 			else
 				legend.add(mleg);
+
+			//			 Set padding
+			mleg.setBorder(new EmptyBorder(15, 30, 15, 30));
 		}
 
 		return legend;
 	}
 
 	private void initComponents() {
-		
 		this.setTitle("Visual Legend for " + visualStyle.getName());
-		
+
 		jPanel1 = generateLegendPanel(visualStyle);
 
 		jScrollPane1 = new JScrollPane();
@@ -156,8 +182,7 @@ public class LegendDialog extends JDialog {
 		containerPanel.add(buttonPanel);
 
 		setContentPane(containerPanel);
-		setPreferredSize(new Dimension(400, 400));
-
+		//setPreferredSize(new Dimension(200, 500));
 		pack();
 	}
 

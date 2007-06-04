@@ -56,7 +56,7 @@ import cytoscape.visual.ui.icon.*;
  */
 public enum LineStyle {
 	SOLID(null,"line"),
-	LONG_DASH("8.0f,3.0f","dash");
+	LONG_DASH("10.0f,4.0f","dash");
 
 	// DASH("4.0f,4.0f"),
 	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),

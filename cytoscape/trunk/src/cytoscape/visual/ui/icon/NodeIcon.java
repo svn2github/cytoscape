@@ -75,6 +75,10 @@ public class NodeIcon extends VisualPropertyIcon {
 		                                                                   .getShapeName(),
 		     DEFAULT_ICON_COLOR);
 	}
+	
+	public NodeIcon(NodeShape ns) {
+		this(ns.getShape(), DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, ns.getShapeName(), DEFAULT_ICON_COLOR);
+	}
 
 	/**
 	 * Creates a new NodeShapeIcon object.

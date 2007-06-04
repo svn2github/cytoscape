@@ -46,10 +46,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
 
 import javax.swing.SwingUtilities;
-
 
 /**
  * DOCUMENT ME!
@@ -90,6 +90,11 @@ public class LineTypeIcon extends VisualPropertyIcon {
 		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(Cytoscape.getVisualMappingManager()
 		                                                               .getVisualStyle()));
 	}
+	
+	public LineTypeIcon(cytoscape.visual.LineStyle style) {
+		this(style.getStroke(2f), DEFAULT_ICON_SIZE * 3,
+			     DEFAULT_ICON_SIZE, style.name());
+	}
 
 	/**
 	 * Creates a new LineTypeIcon object.
@@ -99,9 +104,9 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * @param height DOCUMENT ME!
 	 * @param name DOCUMENT ME!
 	 */
-	public LineTypeIcon(BasicStroke stroke, int width, int height, String name) {
+	public LineTypeIcon(Stroke stroke, int width, int height, String name) {
 		super(null, width, height, name);
-		this.stroke = stroke;
+		this.stroke = (BasicStroke) stroke;
 	}
 
 	/**
@@ -113,21 +118,22 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * @param name DOCUMENT ME!
 	 * @param color DOCUMENT ME!
 	 */
-	public LineTypeIcon(BasicStroke stroke, int width, int height, String name, Color color) {
+	public LineTypeIcon(Stroke stroke, int width, int height, String name, Color color) {
 		super(null, width, height, name, color);
 
 		final float lineWidth = ((Number) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(Cytoscape.getVisualMappingManager()
 		                                                                                         .getVisualStyle()))
 		                        .floatValue();
 
+		final BasicStroke st = (BasicStroke) stroke;
 		/*
 		 * Define a stroke for the line segment icon
 		 */
-		if ((stroke != null) && (stroke.getDashArray() != null)) {
+		if ((st != null) && (st.getDashArray() != null)) {
 			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER,
-			                              stroke.getMiterLimit(), stroke.getDashArray(),
-			                              stroke.getDashPhase());
-		} else if (stroke != null) {
+			                              st.getMiterLimit(), st.getDashArray(),
+			                              st.getDashPhase());
+		} else if (st != null) {
 			// This is a solid line.
 			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
 		} else {

@@ -34,26 +34,18 @@
  */
 package cytoscape.visual.properties;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
-
-import cytoscape.visual.parsers.LineStyleParser;
-
-import cytoscape.visual.ui.icon.LineTypeIcon;
-
 import giny.view.EdgeView;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Stroke;
-
 import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.Icon;
+
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.LineStyleParser;
+import cytoscape.visual.ui.icon.LineTypeIcon;
 
 
 /**
@@ -75,10 +67,10 @@ public class EdgeLineStyleProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getIcon(final Object value) {
-		final LineTypeIcon icon = new LineTypeIcon();
-		icon.setColor(new Color(10, 10, 10, 20));
-		icon.setText(value.toString());
-		icon.setBottomPadding(-7);
+		final LineTypeIcon icon = new LineTypeIcon((LineStyle)value);
+		//icon.setColor(new Color(10, 10, 10, 20));
+		//icon.setText(value.toString());
+		icon.setBottomPadding(-6);
 
 		return icon;
 	}
@@ -104,8 +96,6 @@ public class EdgeLineStyleProp extends AbstractVisualProperty {
 
 		if (((LineStyle) o).getDashDef() != (((BasicStroke) ev.getStroke()).getDashArray())) {
 			ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
-
-			//System.out.println("===Setting stroke: " + (ev.getStroke()));
 		}
 	}
 

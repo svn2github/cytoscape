@@ -36,73 +36,90 @@
 */
 package cytoscape.visual.mappings.discrete;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LineType;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.LegendTable;
-
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
+
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.LegendTable;
 
 
 /**
  *
  */
 public class DiscreteLegend extends JPanel {
-    /**
-     * Creates a new DiscreteLegend object.
-     *
-     * @param legendMap  DOCUMENT ME!
-     * @param visualAttr  DOCUMENT ME!
-     * @param dataAttr  DOCUMENT ME!
-     * @param b  DOCUMENT ME!
+	
+	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
+	private static final Font TITLE_FONT2 = new Font("SansSerif", Font.BOLD, 18);
+	private static final Color TITLE_COLOR = new Color(10, 200, 255);
+	private static final Border BORDER = new MatteBorder(0, 6, 3, 0, Color.DARK_GRAY);
+	
+	/**
+	 * Creates a new DiscreteLegend object.
+	 *
+	 * @param legendMap  DOCUMENT ME!
+	 * @param visualAttr  DOCUMENT ME!
+	 * @param dataAttr  DOCUMENT ME!
+	 * @param b  DOCUMENT ME!
 	 * @deprecated Use VisualPropertyType constructor instead. Gone 5/2008.
-     */
-	@Deprecated 
-    public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
-		this(legendMap,dataAttr,VisualPropertyType.getVisualPorpertyType(b));
+	 */
+	@Deprecated
+	public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
+		this(legendMap, dataAttr, VisualPropertyType.getVisualPorpertyType(b));
 	}
 
-    public DiscreteLegend(Map legendMap, String dataAttr, VisualPropertyType vpt) {
-        super();
+	/**
+	 * Creates a new DiscreteLegend object.
+	 *
+	 * @param legendMap  DOCUMENT ME!
+	 * @param dataAttr  DOCUMENT ME!
+	 * @param vpt  DOCUMENT ME!
+	 */
+	public DiscreteLegend(Map legendMap, String dataAttr, VisualPropertyType vpt) {
+		super();
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(Color.white);
-        setAlignmentX(0);
+		setLayout(new BorderLayout());
+		setBackground(Color.white);
+		setBorder(BORDER);
 
-        JLabel title = new JLabel(vpt.getName() + " is discretely mapped to " +
-                dataAttr);
-        add(title);
+		final JLabel title = new JLabel(" " + vpt.getName() + " Mapping");
+		title.setFont(TITLE_FONT2);
+		title.setForeground(TITLE_COLOR);
+		title.setBorder(new MatteBorder(0, 10, 1, 0, TITLE_COLOR));
+//		title.setHorizontalAlignment(SwingConstants.CENTER);
+//		title.setVerticalAlignment(SwingConstants.CENTER);
+		title.setHorizontalTextPosition(SwingConstants.LEADING);
+//		title.setVerticalTextPosition(SwingConstants.CENTER);
+		
+		title.setPreferredSize(new Dimension(1, 50));
+		add(title, BorderLayout.NORTH);
 
-        Object[][] data = new Object[legendMap.keySet()
-                                              .size()][2];
+		/*
+		 * Build Key array.
+		 */
+		final Object[][] data = new Object[legendMap.keySet().size()][2];
+		final Iterator it = legendMap.keySet().iterator();
 
-        Iterator it = legendMap.keySet()
-                               .iterator();
+		for (int i = 0; i < legendMap.keySet().size(); i++) {
+			Object key = it.next();
+			data[i][0] = legendMap.get(key);
+			data[i][1] = key;
+		}
 
-        for (int i = 0; i < legendMap.keySet()
-                                         .size(); i++) {
-            Object key = it.next();
-            data[i][0] = legendMap.get(key);
-            data[i][1] = key;
-        }
-
-        add(LegendTable.getHeader());
-        add(new LegendTable(data, vpt));
-    }
+		add(LegendTable.getHeader(dataAttr, vpt), BorderLayout.CENTER);
+		add(new LegendTable(data, vpt), BorderLayout.SOUTH);
+	}
 }
