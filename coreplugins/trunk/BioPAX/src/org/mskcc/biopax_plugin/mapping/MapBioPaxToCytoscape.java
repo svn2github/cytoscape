@@ -126,7 +126,7 @@ public class MapBioPaxToCytoscape {
 	private BioPaxChemicalModificationMap chemicalModificationAbbr = new BioPaxChemicalModificationMap();
 
 	// created cynodes
-	private Map createdCyNodes;
+	private Map<String,Set<String>> createdCyNodes; // cpath id is key, list of cynodes is value
 
 	/**
 	 * Inner class to store a given nodes'
@@ -185,7 +185,7 @@ public class MapBioPaxToCytoscape {
 		this.bpConstants = new BioPaxConstants();
 		this.rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
 		this.warningList = new ArrayList();
-		this.createdCyNodes = new HashMap();
+		this.createdCyNodes = new HashMap<String, Set<String>>();
 	}
 
 	/**
@@ -203,8 +203,7 @@ public class MapBioPaxToCytoscape {
 		mapInteractionEdges();
 
 		// map complex
-		mapComplexNodes();
-		mapComplexEdges();
+		mapComplexes();
 
 		// map attributes
 		MapNodeAttributes.doMapping(bpUtil, nodeList);
@@ -319,7 +318,7 @@ public class MapBioPaxToCytoscape {
 			String id = BioPaxUtil.extractRdfId(interactionElement);
 
 			// have we already created this interaction ?
-			if (createdCyNodes.containsKey(id)) {
+			if (createdCyNodesContainsValue(id)) {
 				continue;
 			}
 
@@ -334,13 +333,13 @@ public class MapBioPaxToCytoscape {
 
 			//  Extract Name
 			String name = interactionElement.getName();
-			name = getNodeName(name, interactionElement);
+			name = getNodeName(interactionElement);
 
 			//  set node attributes
 			setNodeAttributes(interactionNode, name, interactionElement.getName(), id, null);
 
-			// update our map - we are not interested in value
-			createdCyNodes.put(id, id);
+			// update our map
+			putCreatedCyNodes(id, id);
 
 			if (taskMonitor != null) {
 				double perc = (double) i / interactionList.size();
@@ -381,62 +380,7 @@ public class MapBioPaxToCytoscape {
 		}
 	}
 
-	/**
-	 * Maps complex nodes to Cytoscape nodes.
-	 */
-	private void mapComplexNodes() throws JDOMException {
-		//  Extract the List of all Physical Entities
-		List physicalEntityList = bpUtil.getPhysicalEntityList();
-
-		if (taskMonitor != null) {
-			taskMonitor.setStatus("Adding Complexes");
-			taskMonitor.setPercentCompleted(0);
-		}
-
-		//  Iterate through all Physical Entities
-		for (int i = 0; i < physicalEntityList.size(); i++) {
-			Element e = (Element) physicalEntityList.get(i);
-
-			// we only map complexes
-			if (!e.getName().equals(BioPaxConstants.COMPLEX)) {
-				continue;
-			}
-
-			//  Extract ID
-			String id = BioPaxUtil.extractRdfId(e);
-
-			// have we already created this complex ?
-			if (createdCyNodes.containsKey(id)) {
-				continue;
-			}
-
-			//  Extract Name
-			String name = id;
-			name = getNodeName(name, e);
-
-			//  Create New Node via getCyNode Method
-			CyNode node = Cytoscape.getCyNode(id, true);
-
-			//  Add New Node to Network
-			nodeList.add(node);
-
-			//  Set Node Identifier
-			node.setIdentifier(id);
-
-			//  Set BioPAX Name, Type, ID
-			setNodeAttributes(node, name, e.getName(), id, null);
-
-			// update our map - we are not interested in value
-			createdCyNodes.put(id, id);
-
-			if (taskMonitor != null) {
-				double perc = (double) i / physicalEntityList.size();
-				taskMonitor.setPercentCompleted((int) (100.0 * perc));
-			}
-		}
-	}
-
-	private String getNodeName(String id, Element e) {
+	private String getNodeName(Element e) {
 		String nodeName = null;
 		List nameList = null;
 		Element nameElement = null;
@@ -500,42 +444,133 @@ public class MapBioPaxToCytoscape {
 		return str;
 	}
 
-	private void mapComplexEdges() {
-		//  Extract List of all Physical Entities
-		List peList = bpUtil.getPhysicalEntityList();
+	private void mapComplexes() {
+
+		// maintain list to keep track of complexes (id) processed
+		// we do not want to create a free standing complex if
+		// it is a member of an interaction or a complex
+		List<Element> alreadyProcessedList = new ArrayList<Element>();
+
+		// list contains all complexes and members
+		// in which the complex is a participant of an interaction
+		List<Element> interactionParticipantMembers = new ArrayList<Element>();
+
+		//  extract list of physical entities
+		List<Element> physicalEntityList = bpUtil.getPhysicalEntityList();
 
 		// edge attributes
 		CyAttributes attributes = Cytoscape.getEdgeAttributes();
 
-		for (int i = 0; i < peList.size(); i++) {
-			Element peElement = (Element) peList.get(i);
+		for (Element physicalEntity : physicalEntityList) {
 
-			if (peElement.getName().equals(BioPaxConstants.COMPLEX)) {
-				String sourceId = BioPaxUtil.extractRdfId(peElement);
-				CyNode sourceNode = Cytoscape.getCyNode(sourceId);
+			// only processing complexes
+			if (!physicalEntity.getName().equals(BioPaxConstants.COMPLEX)) continue;
 
-				//  Get all Components.  There can be 0 or more
-				List componentList = rdfQuery.getNodes(peElement, "COMPONENTS/*/PHYSICAL-ENTITY/*");
+			// get id
+			String complexID = BioPaxUtil.extractRdfId(physicalEntity);
 
-				for (int j = 0; j < componentList.size(); j++) {
-					Element partipantElement = (Element) componentList.get(j);
-					String targetId = BioPaxUtil.extractRdfId(partipantElement);
-					CyNode targetNode = getCyNode(peElement, partipantElement,
-					                              BioPaxConstants.COMPLEX);
+			// get all components of complex
+			List<Element> flatComplexMemberList = new ArrayList<Element>();
+			List complexMembersList = getComplexMemberList(flatComplexMemberList, physicalEntity);
 
-					if (targetNode == null) {
-						return;
-					}
+			// if this complex is in cyNodesCreated map, it is part of interaction
+			boolean isInteractionParticipant = createdCyNodes.containsKey(complexID);
 
-					Edge edge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION,
-					                                CONTAINS, true);
-					// Cytoscape.setEdgeAttributeValue
-					// (edge, BIOPAX_EDGE_TYPE, CONTAINS);
-					attributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, CONTAINS);
-					edgeList.add(edge);
+			if (isInteractionParticipant) {
+				for (String sourceID : createdCyNodes.get(complexID)) {
+					CyNode sourceNode = Cytoscape.getCyNode(sourceID);
+					mapComplex(sourceNode, sourceID, physicalEntity, complexMembersList);
 				}
 			}
+			else {
+				// complex does not appear in an interaction
+				if (!alreadyProcessedList.contains(physicalEntity)) {
+					mapComplex(null, null, physicalEntity, complexMembersList);
+				}
+			}
+			// prevent "free standing" complexes from being constructed
+			alreadyProcessedList.addAll(flatComplexMemberList);
 		}
+	}
+
+	/**
+	 * Method which returns a List of members for the given complex.  If a member
+	 * is a complex, the list entry is a map whose key is the complex element and whose
+	 * value is another list.
+	 *
+	 * @param flatlist List<String> - list past by reference to store complex member id's in flat structure
+	 * @param physicalEntity element - a complex whose member list we construct
+	 * @return List - element or map objects
+	 */
+	private List getComplexMemberList(List<Element> flatList, Element physicalEntity) {
+
+		List toReturn = new ArrayList();
+
+		flatList.add(physicalEntity);
+		List<Element> complexMembersList = rdfQuery.getNodes(physicalEntity, "COMPONENTS/*/PHYSICAL-ENTITY/*");
+		for (Element pe : complexMembersList) {
+			if (pe.getName().equals(BioPaxConstants.COMPLEX)) {
+				List memberComplexMemberList = getComplexMemberList(flatList, pe);
+				Map memberMap = new HashMap();
+				memberMap.put(pe, memberComplexMemberList);
+				toReturn.add(memberMap);
+			}
+			else {
+				toReturn.add(pe);
+				flatList.add(pe);
+			}
+		}
+
+		// outta here
+		return toReturn;
+	}
+
+	private CyNode mapComplex(CyNode parentNode, String idSuffix, Element bindingElement, List complexMembersList) {
+
+		// edge attributes
+		CyAttributes attributes = Cytoscape.getEdgeAttributes();
+
+		// source node
+		CyNode sourceNode;
+		String sourceID = BioPaxUtil.extractRdfId(bindingElement);
+		if (parentNode != null) {
+			sourceNode = parentNode;
+		}
+		else {
+			String preCookedSourceID = sourceID;
+			sourceID = (idSuffix != null) ? sourceID + "-" + idSuffix : sourceID;
+			String name = sourceID;
+			name = getNodeName(bindingElement);
+			sourceNode = Cytoscape.getCyNode(sourceID, true);
+			nodeList.add(sourceNode);
+			sourceNode.setIdentifier(sourceID);
+			setNodeAttributes(sourceNode, name, bindingElement.getName(), preCookedSourceID, null);
+			putCreatedCyNodes(sourceID, sourceID);
+		}
+		
+		for (Object member : complexMembersList) {
+
+			CyNode targetNode = null;
+			if (member instanceof Element) {
+				String targetId = BioPaxUtil.extractRdfId((Element)member);
+				targetNode = getCyNode(bindingElement, (Element)member,
+									   BioPaxConstants.COMPLEX, sourceNode.getIdentifier());
+			}
+			else if (member instanceof Map) {
+				// key is binding element
+				for (Object key : ((Map)member).keySet()) {
+					targetNode = mapComplex(null, sourceNode.getIdentifier(), (Element)key, (List)(((Map)member).get(key)));
+				}
+			}
+
+			// create the edge
+			Edge edge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION, CONTAINS, true);
+			attributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, CONTAINS);
+			edgeList.add(edge);
+		}
+
+		// outta here
+		return sourceNode;
 	}
 
 	/**
@@ -589,7 +624,7 @@ public class MapBioPaxToCytoscape {
 
 		for (int i = 0; i < physicalEntityList.size(); i++) {
 			Element physicalEntity = (Element) physicalEntityList.get(i);
-			CyNode nodeB = getCyNode(interactionElement, physicalEntity, type);
+			CyNode nodeB = getCyNode(interactionElement, physicalEntity, type, null);
 
 			if (nodeB == null) {
 				return;
@@ -684,7 +719,7 @@ public class MapBioPaxToCytoscape {
 
 				if (coFactorNode == null) {
 					coFactorNode = getCyNode(interactionElement, physicalEntity,
-					                         BioPaxConstants.CONTROL);
+					                         BioPaxConstants.CONTROL, null);
 				}
 
 				//  Create Edges from the CoFactors to the Controllers
@@ -713,15 +748,15 @@ public class MapBioPaxToCytoscape {
 	 * @param bindingElement Element
 	 * @param physicalEntity Element
 	 * @param type           String
+	 * @param suffix         String - added to arg list to support duplication of complexes within interactions
 	 * @return CyNode
 	 */
-	private CyNode getCyNode(Element bindingElement, Element physicalEntity, String type) {
+	private CyNode getCyNode(Element bindingElement, Element physicalEntity, String type, String suffix) {
 		// we handle complexes & interactions differently than proteins
 		BioPaxConstants bpConstants = new BioPaxConstants();
-		boolean isComplexOrInteraction = (physicalEntity.getName().equals(BioPaxConstants.COMPLEX)
-		                                 || physicalEntity.getName()
-		                                                  .equals(BioPaxConstants.COMPLEX_ASSEMBLY)
-		                                 || bpConstants.isInteraction(physicalEntity.getName()));
+		boolean isComplex = (physicalEntity.getName().equals(BioPaxConstants.COMPLEX) ||
+							 physicalEntity.getName().equals(BioPaxConstants.COMPLEX_ASSEMBLY));
+		boolean isInteraction = bpConstants.isInteraction(physicalEntity.getName());
 
 		// extract id
 		String id = BioPaxUtil.extractRdfId(physicalEntity);
@@ -730,17 +765,16 @@ public class MapBioPaxToCytoscape {
 			return null;
 		}
 
-		// if we have an interaction or complex,
-		// check and see if this was created via one of the map routines
-		if (isComplexOrInteraction) {
-			if (createdCyNodes.containsKey(id)) {
+		// if we have an interaction, we can short circuit
+		if (isInteraction) {
+			if (createdCyNodesContainsValue(id)) {
 				return Cytoscape.getCyNode(id);
 			}
 		}
 
 		//  get node name
 		String nodeName = id;
-		nodeName = getNodeName(nodeName, physicalEntity);
+		nodeName = getNodeName(physicalEntity);
 
 		// create a node label & cynode id
 		String nodeLabel = new String(truncateLongStr(nodeName));
@@ -748,7 +782,7 @@ public class MapBioPaxToCytoscape {
 		NodeAttributesWrapper chemicalModificationsWrapper = null;
 		NodeAttributesWrapper cellularLocationsWrapper = null;
 
-		if (!isComplexOrInteraction) {
+		if (!isComplex && !isInteraction) {
 			// add chemical modification & cellular location to label
 			chemicalModificationsWrapper = getInteractionChemicalModifications(bindingElement,
 			                                                                   physicalEntity, type);
@@ -774,13 +808,14 @@ public class MapBioPaxToCytoscape {
 		}
 
 		// if binding element is complex, lets also tack on complex id
-		if (type == BioPaxConstants.COMPLEX) {
-			String complexId = BioPaxUtil.extractRdfId(bindingElement);
-			cyNodeId += ("-" + complexId);
+		if (type == BioPaxConstants.COMPLEX ||
+			(isComplex && (type == RIGHT || type == LEFT))) {
+			String bindingId = (suffix != null) ? suffix : BioPaxUtil.extractRdfId(bindingElement);
+			cyNodeId += ("-" + bindingId);
 		}
 
 		// have we seen this node before
-		if (createdCyNodes.containsKey(cyNodeId)) {
+		if (createdCyNodesContainsValue(cyNodeId)) {
 			return Cytoscape.getCyNode(cyNodeId);
 		}
 
@@ -791,7 +826,7 @@ public class MapBioPaxToCytoscape {
 
 		//  set node attributes
 		setNodeAttributes(node, nodeName, physicalEntity.getName(), id,
-		                  (isComplexOrInteraction) ? null : nodeLabel);
+		                  (isComplex || isInteraction) ? null : nodeLabel);
 
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		Map modificationsMap = (chemicalModificationsWrapper != null)
@@ -833,8 +868,8 @@ public class MapBioPaxToCytoscape {
 			                            cellularLocationsList);
 		}
 
-		// update our map - we are not interested in value
-		createdCyNodes.put(cyNodeId, cyNodeId);
+		// update our map -
+		putCreatedCyNodes(id, cyNodeId);
 
 		// outta here
 		return node;
@@ -1106,5 +1141,41 @@ public class MapBioPaxToCytoscape {
 			Integer value = (Integer) me.getValue();
 			mhmap.setAttributeValue(cyNodeId, attributeName, value.toString(), key);
 		}
+	}
+
+	/**
+	 * Convenience function to add values to createdCyNodes map.
+	 *
+	 * @param key String
+	 * @param value String
+	 */
+	private void putCreatedCyNodes(String key, String value) {
+
+		// get ref to value set or create new set
+		Set<String> values = (createdCyNodes.containsKey(key)) ?
+			createdCyNodes.get(key) : new HashSet<String>();
+
+		// add new value to set
+		values.add(value);
+
+		// put set back into map
+		createdCyNodes.put(key, values);
+	}
+
+	/**
+	 * Convenience function to check for value existence
+	 *
+	 * @param value String
+	 */
+	private boolean createdCyNodesContainsValue(String value) {
+		
+		for (String key : createdCyNodes.keySet()) {
+			Set<String> values = createdCyNodes.get(key);
+			if (values == null) return false;
+			if (values.contains(value)) return true;
+		}
+
+		// outta here
+		return false;
 	}
 }
