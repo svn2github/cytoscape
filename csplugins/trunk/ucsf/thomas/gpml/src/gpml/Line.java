@@ -13,7 +13,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -164,6 +163,7 @@ public class Line extends Annotation {
 	private void paintReceptor(Graphics2D g2d, double xs, double ys, double xe, double ye, double w, double h) {			
 		double angle = getAngle(xs, ys, xe, ye);
 		
+		/* Path2D Only in Java 1.6....
 		Path2D rec = new Path2D.Double();
 		rec.moveTo(xe + w, ye + h/2);
 		rec.lineTo(xe, ye + h/2);
@@ -173,6 +173,20 @@ public class Line extends Annotation {
 		f.rotate(-angle, xe, ye);
 		Shape rotRec = f.createTransformedShape(rec);
 		g2d.draw(rotRec);
+		*/
+		
+		AffineTransform f = new AffineTransform();
+		f.rotate(-angle, xe, ye);
+		
+		Shape l = new Line2D.Double(xe + w, ye + h/2, xe, ye + h/2);
+		Shape r = f.createTransformedShape(l);
+		g2d.draw(r);
+		l = new Line2D.Double(xe, ye + h/2, xe, ye - h/2);
+		r = f.createTransformedShape(l);
+		g2d.draw(r);
+		l = new Line2D.Double(xe, ye - h/2, xe + w, ye - h/2);
+		r = f.createTransformedShape(l);
+		g2d.draw(r);
 	}
 	
 	private void paintLigand(Graphics2D g2d, double xs, double ys, double xe, double ye, double w, double h) {

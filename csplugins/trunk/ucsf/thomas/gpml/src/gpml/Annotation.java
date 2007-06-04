@@ -10,7 +10,6 @@ import javax.swing.JComponent;
 
 import org.pathvisio.model.PathwayElement;
 
-import cytoscape.Cytoscape;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 import ding.view.ViewportChangeListener;
@@ -27,6 +26,25 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 			setBounds(getVOutline().getBounds());
 			
 			view.addViewportChangeListener(this);
+		}
+		
+		protected int getVLeft() {
+			return (int)GpmlImporter.mToV(pwElm.getMLeft());
+		}
+		protected int getVTop() {
+			return (int)GpmlImporter.mToV(pwElm.getMTop());
+		}
+		protected int getVWidth() {
+			return (int)GpmlImporter.mToV(pwElm.getMWidth());
+		}
+		protected int getVHeight() {
+			return (int)GpmlImporter.mToV(pwElm.getMHeight());
+		}
+		protected double getVCenterX() {
+			return GpmlImporter.mToV(pwElm.getMCenterX());
+		}
+		protected double getVCenterY() {
+			return GpmlImporter.mToV(pwElm.getMCenterY());
 		}
 		
 		public abstract java.awt.Shape getVOutline();

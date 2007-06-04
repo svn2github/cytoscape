@@ -41,26 +41,7 @@ public class Shape extends Annotation implements ViewportChangeListener {
 		f.rotate(-pwElm.getRotation(), b.getCenterX(), b.getCenterY());
 		return f.createTransformedShape(outline).getBounds();
 	}
-	
-	int getVLeft() {
-		return (int)GpmlImporter.mToV(pwElm.getMLeft());
-	}
-	int getVTop() {
-		return (int)GpmlImporter.mToV(pwElm.getMTop());
-	}
-	int getVWidth() {
-		return (int)GpmlImporter.mToV(pwElm.getMWidth());
-	}
-	int getVHeight() {
-		return (int)GpmlImporter.mToV(pwElm.getMHeight());
-	}
-	double getVCenterX() {
-		return GpmlImporter.mToV(pwElm.getMCenterX());
-	}
-	double getVCenterY() {
-		return GpmlImporter.mToV(pwElm.getMCenterY());
-	}
-	
+		
 	public void paint(Graphics g) {
 		//Relative to yourself
 		if(image == null) return;
@@ -72,8 +53,8 @@ public class Shape extends Annotation implements ViewportChangeListener {
 		//Rectangle b = relativeToBounds(getUnrotatedBounds()).getBounds();
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle())).getBounds();
 		
-		Color fillcolor = color(pwElm.getColor());
-		Color linecolor = color(pwElm.getFillColor());
+		Color fillcolor = color(pwElm.getFillColor());
+		Color linecolor = color(pwElm.getColor());
 		
 		int sw = (int)getStrokeWidth();
 		int x = b.x;

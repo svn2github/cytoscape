@@ -91,10 +91,16 @@ public class GpmlImporter extends CytoscapePlugin {
 		
 		private void findEdges() {
 			for(PathwayElement o : pathway.getDataObjects()) {
+				//no edges between annotations
+				int type = o.getObjectType();
+				if(type != ObjectType.DATANODE && type != ObjectType.GROUP) {
+					continue;
+				}
 				for(GraphRefContainer r : o.getReferences()) {
 					if(r instanceof MPoint) {
 						int i = 0;
 						PathwayElement l = ((MPoint)r).getParent();
+												
 						if(r == l.getMEnd()) i = 1;
 						String[] str = edges.get(l);
 						if(str == null) edges.put(l, str = new String[3]);
@@ -103,7 +109,6 @@ public class GpmlImporter extends CytoscapePlugin {
 					}
 				}
 			}
-			
 		}
 		
 		public int[] getNodeIndicesArray() {
@@ -116,18 +121,25 @@ public class GpmlImporter extends CytoscapePlugin {
 		}
 		
 		public int[] getEdgeIndicesArray() {
-			ArrayList<CyEdge> realedges = new ArrayList<CyEdge>();
+			List<CyEdge> realedges = new ArrayList<CyEdge>();
+			List<PathwayElement> remove = new ArrayList<PathwayElement>();
 			for(PathwayElement o : edges.keySet()) {
 				String[] einfo = edges.get(o);
 				if(einfo[0] == null || einfo[1] == null) {
 					out.println("Incomplete edge found " + einfo[0] + ", " + einfo[1] + "; skipping");
+					//Invalid edge, remove
+					remove.add(o);
 					continue;
 				}
+				
 				out.println("Creating edge: " + einfo[0] + " , " + einfo[1]);
 				CyEdge e = Cytoscape.getCyEdge(einfo[0], o.getGraphId(), einfo[1], einfo[2]);
 				realedges.add(e);
 				transferAttributes(e.getIdentifier(), o, eAttributes);
 			}
+			//Remove invalid edges
+			for(PathwayElement r : remove) edges.remove(r);
+			
 			int[] iedges = new int[realedges.size()];
 			for(int i = 0; i<realedges.size(); i++) iedges[i] = realedges.get(i).getRootGraphIndex();
 			return iedges;
@@ -141,15 +153,36 @@ public class GpmlImporter extends CytoscapePlugin {
 			}
 			for(PathwayElement o : pathway.getDataObjects()) {
 				DGraphView dview = (DGraphView) view;
-				DingCanvas backgroundLayer = dview.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+				NodeView nv = view.getNodeView(nodes.get(o));
+				
+				DingCanvas aLayer = dview.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+				
+				boolean annotationAdded = false;
+				
 				switch(o.getObjectType()) {
 				case ObjectType.SHAPE:
-					backgroundLayer.add(new Shape(o, dview));
-					view.hideGraphObject(view.getNodeView(nodes.get(o)));
+					aLayer.add(new Shape(o, dview));
+					annotationAdded = true;
 					break;
+//				case ObjectType.LABEL:
+//					aLayer.add(new Label(o, dview));
+//					annotationAdded = true;
+//					break;
 				case ObjectType.LINE:
-					backgroundLayer.add(new Line(o, dview));
+					if(!edges.containsKey(o)) { //Don't draw background line if it is an edge
+						aLayer.add(new Line(o, dview));
+					}
+					annotationAdded = true;
 					break;
+				case ObjectType.LEGEND:
+				case ObjectType.MAPPINFO:
+				case ObjectType.INFOBOX:
+					//No annotation, but only hide the node
+					annotationAdded = true;
+					break;
+				}
+				if(annotationAdded) {
+					view.hideGraphObject(nv);
 				}
 			}
 			view.updateView();
@@ -204,6 +237,6 @@ public class GpmlImporter extends CytoscapePlugin {
     }
     
     static double mToV(double m) {
-    	return m * 1.0/15;
+    	return m * 1.0/15; //Should be stored in the model somewhere (pathvisio)
     }
 }
