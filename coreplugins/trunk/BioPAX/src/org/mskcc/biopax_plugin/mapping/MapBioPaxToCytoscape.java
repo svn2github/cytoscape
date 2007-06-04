@@ -451,16 +451,13 @@ public class MapBioPaxToCytoscape {
 		// it is a member of an interaction or a complex
 		List<Element> alreadyProcessedList = new ArrayList<Element>();
 
-		// list contains all complexes and members
-		// in which the complex is a participant of an interaction
-		List<Element> interactionParticipantMembers = new ArrayList<Element>();
-
-		//  extract list of physical entities
-		List<Element> physicalEntityList = bpUtil.getPhysicalEntityList();
-
 		// edge attributes
 		CyAttributes attributes = Cytoscape.getEdgeAttributes();
 
+		// extract list of physical entities
+		List<Element> physicalEntityList = bpUtil.getPhysicalEntityList();
+
+		// interate throught physicalEntityList
 		for (Element physicalEntity : physicalEntityList) {
 
 			// only processing complexes
@@ -476,6 +473,7 @@ public class MapBioPaxToCytoscape {
 			// if this complex is in cyNodesCreated map, it is part of interaction
 			boolean isInteractionParticipant = createdCyNodes.containsKey(complexID);
 
+			// complex is participant of interaction, 
 			if (isInteractionParticipant) {
 				for (String sourceID : createdCyNodes.get(complexID)) {
 					CyNode sourceNode = Cytoscape.getCyNode(sourceID);
@@ -498,7 +496,7 @@ public class MapBioPaxToCytoscape {
 	 * is a complex, the list entry is a map whose key is the complex element and whose
 	 * value is another list.
 	 *
-	 * @param flatlist List<String> - list past by reference to store complex member id's in flat structure
+	 * @param flatList List<String> - list past by reference to store complex member id's in flat structure
 	 * @param physicalEntity element - a complex whose member list we construct
 	 * @return List - element or map objects
 	 */
@@ -525,6 +523,15 @@ public class MapBioPaxToCytoscape {
 		return toReturn;
 	}
 
+	/**
+	 * Method which maps a complex/nested complex into cytoscape nodes.
+	 *
+	 * @param parentNode CyNode
+	 * @param idSuffix String
+	 * @param bindingElement Element
+	 * @param complexMembersList List
+	 * @return CyNode
+	 */
 	private CyNode mapComplex(CyNode parentNode, String idSuffix, Element bindingElement, List complexMembersList) {
 
 		// edge attributes
@@ -548,6 +555,7 @@ public class MapBioPaxToCytoscape {
 			putCreatedCyNodes(sourceID, sourceID);
 		}
 		
+		// targets nodes
 		for (Object member : complexMembersList) {
 
 			CyNode targetNode = null;
@@ -559,6 +567,7 @@ public class MapBioPaxToCytoscape {
 			else if (member instanceof Map) {
 				// key is binding element
 				for (Object key : ((Map)member).keySet()) {
+					// should never have more than one key
 					targetNode = mapComplex(null, sourceNode.getIdentifier(), (Element)key, (List)(((Map)member).get(key)));
 				}
 			}
