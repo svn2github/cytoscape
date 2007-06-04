@@ -202,7 +202,7 @@ public class MapBioPaxToCytoscape {
 		mapInteractionNodes();
 		mapInteractionEdges();
 
-		// map complex
+		// map complex - must be called after mapInteractionNodes/Edges
 		mapComplexes();
 
 		// map attributes
@@ -444,6 +444,10 @@ public class MapBioPaxToCytoscape {
 		return str;
 	}
 
+	/**
+	 * Method which maps complexs into BioPax.  Should
+	 * be called after interaction nodes and edges have been performed.
+	 */
 	private void mapComplexes() {
 
 		// maintain list to keep track of complexes (id) processed
