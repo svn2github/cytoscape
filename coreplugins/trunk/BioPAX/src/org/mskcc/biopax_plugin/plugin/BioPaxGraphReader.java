@@ -168,6 +168,10 @@ public class BioPaxGraphReader implements GraphReader {
 		// set biopax network attribute
 		networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
+		//  Repair Canonical Name and Network Name
+		MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
+		MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
+
 		//  Set default Quick Find Index
 		networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
 		                               MapNodeAttributes.BIOPAX_SHORT_NAME);
