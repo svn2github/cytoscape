@@ -144,16 +144,6 @@ public class NetworkListener implements PropertyChangeListener {
 			String networkID = (String) newValue;
 			cyNetwork = Cytoscape.getNetwork(networkID);
 		}
-
-		// if we have a network, and its ours, then do something
-		if ((cyNetwork != null) && isBioPaxNetwork(cyNetwork)) {
-			// register to listen for network events
-			registerNetwork(cyNetwork);
-
-			//  Repair Canonical Name and Network Name
-			MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
-			MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
-		}
 	}
 
 	/**
