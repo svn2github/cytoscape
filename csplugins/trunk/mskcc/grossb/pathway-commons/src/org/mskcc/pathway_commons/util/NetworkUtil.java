@@ -45,7 +45,10 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
 
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.MalformedURLException;
+import javax.swing.SwingUtilities;
+import java.io.UnsupportedEncodingException;
 
 /**
  * This is a network utilities class.
@@ -65,9 +68,19 @@ public class NetworkUtil extends Thread {
 	private CyNetwork cyNetwork;
 
 	/**
+	 * ref to cyNetworkTitle
+	 */
+	private String networkTitle;
+
+	/**
 	 * boolean indicated if we are merging
 	 */
 	private boolean merging;
+
+    /**
+     * Neighborhood title parameter.
+     */
+    private static final String NEIGHBORHOOD_TITLE_ARG = "&neighborhood_title=";
 
 	/**
 	 * Constructor.
@@ -79,7 +92,7 @@ public class NetworkUtil extends Thread {
 	public NetworkUtil(String pathwayCommonsRequest, CyNetwork cyNetwork, boolean merging) {
 
 		// init member vars
-		this.pathwayCommonsRequest = pathwayCommonsRequest;
+		parseRequest(pathwayCommonsRequest);
 		this.cyNetwork = cyNetwork;
 		this.merging = merging;
 	}
@@ -111,6 +124,65 @@ public class NetworkUtil extends Thread {
 	}
 
 	/**
+	 * Method to process/parse the pathway commons request and
+	 * set proper member variables.
+	 *
+	 * @param pathwayCommonsRequest String
+	 */
+	private void parseRequest(String pathwayCommonsRequest) {
+
+		// extract title
+		this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
+											  pathwayCommonsRequest);
+
+		// set request member
+		this.pathwayCommonsRequest = pathwayCommonsRequest;
+	}
+
+	/**
+	 * Extracts argument from pathway commons request (url).
+	 * Method removes argument from pathwayCommonsRequest arg,
+	 * and returns it as String.
+	 *
+	 * @param arg String - the argument to extract
+	 * @param pathwayCommonsRequest String
+	 * @return String
+	 */
+	private String extractRequestArg(String arg, String pathwayCommonsRequest) {
+
+		// get index of argument
+		int indexOfArg = pathwayCommonsRequest.indexOf(arg);
+
+		// if arg is not in list, bail
+		if (indexOfArg == -1) return null;
+
+		int startIndexOfValue = indexOfArg+arg.length();
+		int endIndexOfValue = pathwayCommonsRequest.indexOf("&", startIndexOfValue);
+		String value = (endIndexOfValue == -1 ) ?
+			pathwayCommonsRequest.substring(startIndexOfValue) :
+			pathwayCommonsRequest.substring(startIndexOfValue, endIndexOfValue);
+
+		// do url decoding
+		if (value != null) {
+			try {
+				value = URLDecoder.decode(value, "UTF-8");
+			}
+			catch (UnsupportedEncodingException e) {
+				// if exception occurs leave encoded string
+			}
+		}
+
+		// remove arg from request
+		pathwayCommonsRequest = (endIndexOfValue == -1) ?
+			pathwayCommonsRequest.substring(0, indexOfArg) :
+			pathwayCommonsRequest.substring(0, indexOfArg) +
+			pathwayCommonsRequest.substring(endIndexOfValue);
+
+		// outta here
+		return value;
+	}
+
+	/**
 	 * Method to setup cytoscape task
 	 */
 	private JTaskConfig setupTask() {
@@ -131,7 +203,19 @@ public class NetworkUtil extends Thread {
 	 * @param cyNetwork CyNetwork
 	 * @param doLayout boolean
 	 */
-	private void postProcess(CyNetwork cyNetwork, boolean doLayout) {
+	private void postProcess(final CyNetwork cyNetwork, boolean doLayout) {
+
+		if (networkTitle != null) {
+			cyNetwork.setTitle(networkTitle);
+			
+			//  Update UI.  Must be done via SwingUtilities,
+			// or it won't work.
+			SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+					}
+				});
+		}
 
 		// we like the BioPax plugin default layout
 		// so we don't layout here
