@@ -34,47 +34,36 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import cytoscape.visual.ui.LabelPlacerGraphic;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.LabelPosition;
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+import cytoscape.visual.ui.LabelPlacerGraphic;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -86,8 +75,10 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	/*
 	 * Constants for diagram.
 	 */
+	
+	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
-	private static final int SMALL_ICON_SIZE = 24;
+	private int SMALL_ICON_SIZE = 24;
 	private static final Color ICON_COLOR = new Color(10, 100, 255, 200);
 	private static int TRACK_HEIGHT = 70;
 	private static final int THUMB_WIDTH = 12;
@@ -567,21 +558,21 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		return icons;
 	}
 
-	private Shape getIcon(Object key) {
-		final BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_RGB);
-
-		final Graphics2D gfx = image.createGraphics();
-		Map icons = type.getVisualProperty().getIconSet();
-		JLabel label = new JLabel();
-		label.setIcon((Icon) icons.get(key));
-		label.setText("test1");
-		gfx.setBackground(Color.white);
-		gfx.setColor(Color.red);
-		gfx.drawString("Test1", 0, 0);
-
-		//		label.paint(gfx);
-		return ((VisualPropertyIcon) icons.get(key)).getShape();
-	}
+//	private Shape getIcon(Object key) {
+//		final BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_RGB);
+//
+//		final Graphics2D gfx = image.createGraphics();
+//		Map icons = type.getVisualProperty().getIconSet();
+//		JLabel label = new JLabel();
+//		label.setIcon((Icon) icons.get(key));
+//		label.setText("test1");
+//		gfx.setBackground(Color.white);
+//		gfx.setColor(Color.red);
+//		gfx.drawString("Test1", 0, 0);
+//
+//		//		label.paint(gfx);
+//		return ((VisualPropertyIcon) icons.get(key)).getShape();
+//	}
 
 	/*
 	 * Draw icon object based on the given data type.
@@ -599,7 +590,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				                                                         .getIconSet().get(key);
 				icon.setIconHeight(size);
 				icon.setIconWidth(size);
-				g.draw(icon.getShape());
+				g.fill(icon.getShape());
 
 				break;
 
@@ -682,6 +673,14 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @return  DOCUMENT ME!
 	 */
 	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
+		return drawIcon(iconWidth, iconHeight, false);
+	}
+	
+	public ImageIcon getLegend(int iconWidth, int iconHeight) {
+		return drawIcon(iconWidth, iconHeight, true);
+	}
+	
+	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
 		if (slider == null) {
 			return null;
 		}
@@ -698,6 +697,12 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		int track_width = iconWidth;
 		int trackHeight = iconHeight - 8;
+		if(detail) {
+			trackHeight = iconHeight - 30;
+			SMALL_ICON_SIZE = (int) (trackHeight * 0.5);
+		} else {
+			trackHeight = iconHeight - 8;
+		}
 
 		//		 get the list of tumbs
 		List<Thumb> stops = slider.getModel().getSortedThumbs();
@@ -719,16 +724,16 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			i++;
 		}
 
-		g.setFont(ICON_FONT);
-
-		String numbers = String.format("%.2f", minValue);
-		int strWidth;
-		g.setColor(Color.DARK_GRAY);
-		g.drawString(numbers, 0, iconHeight);
-
-		numbers = String.format("%.2f", maxValue);
-		strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), numbers);
-		g.drawString(numbers, iconWidth - strWidth - 2, iconHeight);
+//		g.setFont(ICON_FONT);
+//
+//		String numbers = String.format("%.2f", minValue);
+//		int strWidth;
+//		g.setColor(Color.DARK_GRAY);
+//		g.drawString(numbers, 0, iconHeight);
+//
+//		numbers = String.format("%.2f", maxValue);
+//		strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), numbers);
+//		g.drawString(numbers, iconWidth - strWidth - 2, iconHeight);
 
 		/*
 		 * If no points, just draw empty box.
@@ -789,9 +794,52 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setColor(BORDER_COLOR);
 		g.setStroke(new BasicStroke(1.0f));
 		g.drawRect(0, 0, track_width - 3, trackHeight);
+		
+		
+		g.setFont(new Font("SansSerif", Font.BOLD, 9));
+
+		final String minStr = String.format("%.2f", minValue);
+		final String maxStr = String.format("%.2f", maxValue);
+		int strWidth;
+		g.setColor(Color.black);
+		if(detail) {
+			String fNum = null;
+			for(int j=0; j<fractions.length; j++) {
+				fNum = String.format("%.2f", (fractions[j]/100)*maxValue - minValue);
+				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
+				g.drawString(fNum, (fractions[j]/100)*iconWidth-strWidth/2, iconHeight-20);
+			}
+			
+			g.drawString(minStr, 0, iconHeight);
+			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+			
+			g.setFont(TITLE_FONT);
+
+			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
+			g.setColor(Color.black);
+			g.drawString(title, (iconWidth / 2) - (titleWidth / 2),
+			             iconHeight-5);
+			Polygon p = new Polygon();
+			p.addPoint(iconWidth,iconHeight-9);
+			p.addPoint(iconWidth-15,iconHeight-15 );
+			p.addPoint(iconWidth-15,iconHeight-9 );
+			g.fillPolygon(p);
+			g.drawLine(0, iconHeight-9, (iconWidth / 2) - (titleWidth / 2)-3, iconHeight-9);
+			g.drawLine((iconWidth / 2) + (titleWidth / 2)+3, iconHeight-9, iconWidth, iconHeight-9);
+			
+		} else {
+			g.drawString(minStr, 0, iconHeight);
+			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+		}
+		
+		
+		
 
 		return new ImageIcon(bi);
 	}
+	
 
 	/**
 	 * DOCUMENT ME!

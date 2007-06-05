@@ -110,6 +110,13 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
+	
+	public static ImageIcon getLegend(final int width, final int height, final VisualPropertyType type) {
+		editor = new C2DMappingEditor(type);
+		DiscreteTrackRenderer rend = (DiscreteTrackRenderer)editor.slider.getTrackRenderer();
+		rend.getRendererComponent(editor.slider);
+		return rend.getLegend(width, height);
+	}
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {

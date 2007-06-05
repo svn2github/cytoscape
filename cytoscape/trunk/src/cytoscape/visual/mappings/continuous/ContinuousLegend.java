@@ -36,32 +36,48 @@
 */
 package cytoscape.visual.mappings.continuous;
 
-import cytoscape.visual.mappings.LegendTable;
-import cytoscape.visual.VisualPropertyType;
-
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.LegendTable;
+import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
+import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
 
 
 /**
  *
  */
 public class ContinuousLegend extends JPanel {
-    List points;
-    Object obj;
-    private String attrName;
+	
+	private static final Font TITLE_FONT2 = new Font("SansSerif", Font.BOLD, 18);
+	private static final Color TITLE_COLOR = new Color(10, 200, 255);
+	private static final Border BORDER = new MatteBorder(0, 6, 3, 0, Color.DARK_GRAY);
+	
+    private List points;
+    
+    private VisualPropertyType type;
+    
+    private JLabel legend = null;
 
     /**
      * Creates a new ContinuousLegend object.
@@ -80,23 +96,66 @@ public class ContinuousLegend extends JPanel {
 
     public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
         super();
-        this.attrName = dataAttr;
         this.points = points;
-        this.obj = obj;
-        setBackground(Color.white);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setAlignmentX(0);
+        this.type = vpt;
+        
+        setLayout(new BorderLayout());
+		setBackground(Color.white);
+		setBorder(BORDER);
 
-        add(new JLabel(vpt.getName() + " is continuously mapped to " + dataAttr));
+		final JLabel title = new JLabel(" " + vpt.getName() + " Mapping");
+		title.setFont(TITLE_FONT2);
+		title.setForeground(TITLE_COLOR);
+		title.setBorder(new MatteBorder(0, 10, 1, 0, TITLE_COLOR));
+//		title.setHorizontalAlignment(SwingConstants.CENTER);
+//		title.setVerticalAlignment(SwingConstants.CENTER);
+		title.setHorizontalTextPosition(SwingConstants.LEADING);
+//		title.setVerticalTextPosition(SwingConstants.CENTER);
+		
+		title.setPreferredSize(new Dimension(1, 50));
+		add(title, BorderLayout.NORTH);
+        
+        
+//        
+//        setBackground(Color.white);
+//        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+//        setAlignmentX(0);
+//
+//        add(new JLabel(vpt.getName() + " is continuously mapped to " + dataAttr));
 
-        if (obj instanceof Color) {
-            add(LegendTable.getHeader());
-            add(getGradientPanel());
-        } else {
-            add(LegendTable.getHeader());
-            add(getObjectPanel(vpt));
-        }
+		setLegend();
+    	
+    	this.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				setLegend();
+				repaint();
+			}
+		});
     }
+    
+    private void setLegend() {
+    	if(legend != null) {
+    		remove(legend);
+    	}
+    	
+		Integer trackW = null;
+		if(getParent() == null) {
+			trackW = 600;
+		} else {
+
+			trackW = ((Number) (this.getParent().getParent().getParent().getWidth()*0.82)).intValue();
+		}
+        if (type.getDataType() == Color.class) {
+        	legend = new JLabel(GradientEditorPanel.getLegend(trackW, 100, type));
+        	
+        } else {
+        	legend = new JLabel(C2DMappingEditor.getLegend(trackW, 150, type));
+        }
+        legend.setBorder(new EmptyBorder(10, 10, 10, 10));
+        add(legend, BorderLayout.CENTER);
+    }
+    
+    
 
     private JPanel getGradientPanel() {
         JPanel holder = new JPanel();

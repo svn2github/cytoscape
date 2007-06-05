@@ -47,10 +47,12 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -58,7 +60,9 @@ import java.beans.PropertyChangeListener;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
@@ -119,6 +123,13 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 		editor.repaint();
 
 		return editor;
+	}
+	
+	public static ImageIcon getLegend(final int width, final int height, final VisualPropertyType type) {
+		editor = new GradientEditorPanel(type);
+		CyGradientTrackRenderer rend = (CyGradientTrackRenderer)editor.slider.getTrackRenderer();
+		rend.getRendererComponent(editor.slider);
+		return rend.getLegend(width, height);
 	}
 
 	/**

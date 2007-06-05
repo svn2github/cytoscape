@@ -40,6 +40,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
@@ -295,6 +296,14 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 * @return DOCUMENT ME!
 	 */
 	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
+		return drawIcon(iconWidth, iconHeight, false);
+	}
+	
+	public ImageIcon getLegend(int iconWidth, int iconHeight) {
+		return drawIcon(iconWidth, iconHeight, true);
+	}
+	
+	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
 		if (slider == null) {
 			return null;
 		}
@@ -313,10 +322,14 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 
 		List<Thumb<Color>> stops = slider.getModel().getSortedThumbs();
 		int len = stops.size();
-
+		int strWidth;
+		float[] fractions = null;
+		Point2D start = new Point2D.Float(0, 0);
+		Point2D end = null;
+		
 		if (len != 0) {
 			// set up the data for the gradient
-			float[] fractions = new float[len + 2];
+			fractions = new float[len + 2];
 			Color[] colors = new Color[len + 2];
 			int i = 1;
 
@@ -333,8 +346,12 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 			fractions[fractions.length - 1] = stops.get(stops.size() - 1).getPosition() / 100;
 
 			// fill in the gradient
-			Point2D start = new Point2D.Float(0, 0);
-			Point2D end = new Point2D.Float(iconWidth - 3, iconHeight - 9);
+			
+			if(detail) {
+				end = new Point2D.Float(iconWidth - 3, iconHeight - 30);
+			} else {
+				end = new Point2D.Float(iconWidth - 3, iconHeight - 9);
+			}
 
 			drawGradient(g2, start, end, fractions, colors);
 			
@@ -344,21 +361,53 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		// Draw border line
 		g2.setStroke(new BasicStroke(1.0f));
 		g2.setColor(Color.DARK_GRAY);
-		g2.drawRect(0, 0, iconWidth - 3, iconHeight - 9);
+		g2.drawRect(0, 0, ((Number)end.getX()).intValue(), ((Number)end.getY()).intValue());
+		
+		/*
+		 * draw numbers
+		 */
 		
 		g2.setFont(new Font("SansSerif", Font.BOLD, 9));
 
-		String numbers = String.format("%.2f", minValue);
-		int strWidth;
+		final String minStr = String.format("%.2f", minValue);
+		final String maxStr = String.format("%.2f", maxValue);
+		
 		g2.setColor(Color.black);
-		g2.drawString(numbers, 0, iconHeight);
+		
+		if(detail) {
+			String fNum = null;
+			for(int i=0; i<fractions.length; i++) {
+				fNum = String.format("%.2f", fractions[i]*maxValue - minValue);
+				strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), fNum);
+				g2.drawString(fNum, fractions[i]*iconWidth-strWidth/2, iconHeight-20);
+			}
+			
+			g2.drawString(minStr, 0, iconHeight);
+			strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), maxStr);
+			g2.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+			
+			g2.setFont(TITLE_FONT);
 
-		numbers = String.format("%.2f", maxValue);
-		strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), numbers);
-		g2.drawString(numbers, iconWidth - strWidth - 2, iconHeight);
-
+			final int titleWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), attrName);
+			g2.setColor(Color.black);
+			g2.drawString(attrName, (iconWidth / 2) - (titleWidth / 2),
+			             iconHeight-5);
+			Polygon p = new Polygon();
+			p.addPoint(iconWidth,iconHeight-9);
+			p.addPoint(iconWidth-15,iconHeight-15 );
+			p.addPoint(iconWidth-15,iconHeight-9 );
+			g2.fillPolygon(p);
+			g2.drawLine(0, iconHeight-9, (iconWidth / 2) - (titleWidth / 2)-3, iconHeight-9);
+			g2.drawLine((iconWidth / 2) + (titleWidth / 2)+3, iconHeight-9, iconWidth, iconHeight-9);
+			
+		} else {
+			g2.drawString(minStr, 0, iconHeight);
+			strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), maxStr);
+			g2.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+		}
 		return new ImageIcon(bi);
 	}
+	
 
 	/**
 	 * DOCUMENT ME!
