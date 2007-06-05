@@ -1,208 +1,110 @@
+
 /*
-  File: CytoPanelAction.java
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
 
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
 
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//     
-// $Id$
-//------------------------------------------------------------------------------
-
-// our package
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.view.cytopanels.CytoPanelName;
+import cytoscape.view.cytopanels.CytoPanel;
 
-// imports
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
+import javax.swing.Action;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBoxMenuItem;
 
 
 /**
- * Menu item handler for CytoPanels
- * @deprecated Will be removed April 2008.  CytoPanel actions are now handled by 
- * AbstractCytoPanelAction and children.
+ *
  */
-public class CytoPanelAction extends CytoscapeAction implements CytoPanelListener {
-	/**
-	 * Reference to our CytoPanel.
-	 */
-	CytoPanel cytoPanel;
+public class CytoPanelAction extends CytoscapeAction {
+
+	protected static String SHOW = "Show";
+	protected static String HIDE = "Hide";
+
+	protected String title;
+	protected int position;
 
 	/**
-	 * Maintains state of CytoPanel just prior to being hidden
-	 */
-	private CytoPanelState cytoPanelPrevState = CytoPanelState.DOCK;
-
-	/**
-	 * Reference to our parent menu.
-	 */
-	JCheckBoxMenuItem menuItem;
-
-	/**
-	 * Constructor.
-     * @deprecated Will be removed April 2008.  CytoPanel actions are now handled by 
-     * AbstractCytoPanelAction and children.
+	 * @deprecated Use other constructor instead. Will be removed 4/2008.
 	 */
 	public CytoPanelAction(JCheckBoxMenuItem menuItem, CytoPanel cytoPanel) {
-		// call our parent constructor
-		super(cytoPanel.getTitle());
-		setPreferredMenu("View.Desktop");
+		this(cytoPanel.getTitle(), cytoPanel.getCompassDirection(), menuItem.isSelected());
+	}
 
-		// save reference to CytoPanel
-		this.cytoPanel = cytoPanel;
-
-		// save reference to menu
-		this.menuItem = menuItem;
-
-		// register as a CytoPanel listener
-		cytoPanel.addCytoPanelListener(this);
+	public CytoPanelAction(CytoPanelName cp, boolean show) {
+		this(cp.getTitle(), cp.getCompassDirection(), show);
 	}
 
 	/**
-	 * Menu item select/deselect handler.
+	 * Base class for displaying cytopanel menu items. 
+	 *
+	 * @param title The title that will be coupled with "show" and "hide" in the menu. 
+	 * @param position The SwingConstants.SOUTH,EAST,WEST,etc. position of the cyto panel.
+	 * @param show Whether the cytopanel is initially shown at startup or not. Only used
+	 * to define the initial title.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		// dock or float or hide based on cytopanel and menu item state
-		if (menuItem.isSelected()) {
-			if (cytoPanelPrevState == CytoPanelState.DOCK) {
-				cytoPanel.setState(CytoPanelState.DOCK);
-			} else {
-				cytoPanel.setState(CytoPanelState.FLOAT);
-			}
+	private CytoPanelAction(String title,int position, boolean show) {
+		super(show ? HIDE + " " + title : SHOW + " " + title);
+		this.title = title;
+		this.position = position;
+		setPreferredMenu("View");
+	}
 
-			syncCheckbox(true);
+	/**
+	 * Toggles the cytopanel state.  
+	 *
+	 * @param ev Triggering event - not used. 
+	 */
+	public void actionPerformed(ActionEvent ev) {
+	
+		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(position).getState();
+
+		if (curState == CytoPanelState.HIDE) {
+			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.DOCK);
+			putValue(Action.NAME, HIDE + " " + title);
+
 		} else {
-			cytoPanelPrevState = cytoPanel.getState();
-			cytoPanel.setState(CytoPanelState.HIDE);
-			syncCheckbox(false);
+			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.HIDE);
+			putValue(Action.NAME, SHOW + " " + title);
 		}
-	}
-
-	/**
-	 * Notifies the listener when a component is added to the CytoPanel.
-	 *
-	 * @param count The number of components on the CytoPanel.
-	 */
-	public void onComponentAdded(int count) {
-		// no way to check if item is already enabled, so lets just enable it
-		menuItem.setEnabled(true);
-	}
-
-	/**
-	 * Notifies the listener when a component is removed from the CytoPanel.
-	 *
-	 * @param count The number of components on the CytoPanel.
-	 */
-	public void onComponentRemoved(int count) {
-		// if no more components on cytopanel, disable menu item
-		if (count == 0) {
-			menuItem.setEnabled(false);
-			menuItem.setSelected(false);
-		}
-	}
-
-	/**
-	 * Notifies the listener on a change in the CytoPanel state.
-	 *
-	 * @param newState The new CytoPanel state - see CytoPanelState class.
-	 */
-	public void onStateChange(CytoPanelState newState) {
-		if ((newState == CytoPanelState.DOCK) || (newState == CytoPanelState.FLOAT)) {
-			menuItem.setSelected(true);
-		}
-	}
-
-	/**
-	 * Notifies the listener when a new component on the CytoPanel is selected.
-	 *
-	 * @param componentIndex The index of the component selected.
-	 */
-	public void onComponentSelected(int componentIndex) {
-	}
-
-	/**
-	 * Find menu item, and sync check box.
-	 * This is a hack, but currently, this is the only way
-	 * to sync. menuitem created by plugins and core.
-	 *
-	 * @param on
-	 *             ON/OFF the checkbox created by browser plugin.
-	 */
-	private void syncCheckbox(boolean on) {
-		JCheckBoxMenuItem targetCheckbox = null;
-		JMenu targetMenu = Cytoscape.getDesktop().getCyMenus().getViewMenu();
-		int menuCount = targetMenu.getMenuComponentCount();
-
-		// Find the location of menu item
-		for (int i = 0; i < menuCount; i++) {
-			Object component = targetMenu.getMenuComponent(i);
-
-			if (component.getClass().equals(JCheckBoxMenuItem.class)) {
-				if (cytoPanel.equals(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST))
-				    && ((JCheckBoxMenuItem) component).getText()
-				        .equals("Show/Hide network tree viewer")) {
-					targetCheckbox = ((JCheckBoxMenuItem) component);
-				} else if (cytoPanel.equals(Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH))
-				           && ((JCheckBoxMenuItem) component).getText()
-				               .equals("Show/Hide attribute browser")) {
-					targetCheckbox = ((JCheckBoxMenuItem) component);
-				} else if (cytoPanel.equals(Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST))
-				           && ((JCheckBoxMenuItem) component).getText()
-				               .equals("Show/Hide advanced window")) {
-					targetCheckbox = ((JCheckBoxMenuItem) component);
-				}
-			}
-		}
-
-		if (targetCheckbox == null) {
-			return;
-		}
-
-		if (on == true) {
-			targetCheckbox.setSelected(true);
-		} else {
-			targetCheckbox.setSelected(false);
-		}
-	}
+	} 
 }

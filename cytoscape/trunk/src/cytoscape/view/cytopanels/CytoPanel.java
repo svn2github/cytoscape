@@ -204,4 +204,11 @@ public interface CytoPanel {
 	 * @param cytoPanelListener Reference to a CytoPanelListener.
 	 */
 	public void removeCytoPanelListener(CytoPanelListener cytoPanelListener);
+
+	/**
+	 * Returns the int indicating the position in the layout.
+	 *
+	 * @return The int indicating the position in the layout.
+	 */
+	public int getCompassDirection();
 }

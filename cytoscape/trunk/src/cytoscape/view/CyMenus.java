@@ -52,6 +52,8 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 
+import cytoscape.view.cytopanels.CytoPanelName;
+
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
@@ -442,9 +444,9 @@ public class CyMenus implements GraphViewChangeListener {
 		//
 		// View menu
 		// 
-		addAction(new DisplayNetworkPanelAction());
-		addAction(new DisplayAttributeBrowserAction());
-		addAction(new BirdsEyeViewAction()); // network overview
+		addAction(new CytoPanelAction(CytoPanelName.WEST,true));
+		addAction(new CytoPanelAction(CytoPanelName.SOUTH,true));
+		addAction(new CytoPanelAction(CytoPanelName.EAST,false));
 
 		menuBar.getMenu("View").add(new JSeparator());
 

@@ -164,7 +164,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * The float/dock button.
 	 */
-	private final int FLOAT_PANEL_SCALE_FACTOR = 3;
+	private final int FLOAT_PANEL_SCALE_FACTOR = 2;
 
 	/**
 	 * Color of the dock/float button panel.
@@ -202,31 +202,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * The file separator character.
 	 */
 	private static final String FILE_SEPARATOR = "/";
-
-	/**
-	 * CytoPanelWest title.
-	 */
-	private static final String CYTOPANEL_TITLE_WEST = "CytoPanel 1";
-
-	/**
-	 * CytoPanelEast title.
-	 */
-	private static final String CYTOPANEL_TITLE_EAST = "CytoPanel 3";
-
-	/**
-	 * CytoPanelSouth title.
-	 */
-	private static final String CYTOPANEL_TITLE_SOUTH = "CytoPanel 2";
-
-	/**
-	 * CytoPanelNorth title.
-	 */
-	private static final String CYTOPANEL_TITLE_NORTH = "CytoPanel 4";
-
-	/**
-	 * CytoPanelSouthWest title.
-	 */
-	private static final String CYTOPANEL_TITLE_SOUTH_WEST = "CytoPanel 5";
 
 	/**
 	 * Constructor.
@@ -281,24 +256,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @return A title string
 	 */
 	public String getTitle() {
-		switch (compassDirection) {
-			case SwingConstants.NORTH:
-				return CYTOPANEL_TITLE_NORTH;
-
-			case SwingConstants.SOUTH:
-				return CYTOPANEL_TITLE_SOUTH;
-
-			case SwingConstants.EAST:
-				return CYTOPANEL_TITLE_EAST;
-
-			case SwingConstants.WEST:
-				return CYTOPANEL_TITLE_WEST;
-
-			case SwingConstants.SOUTH_WEST:
-				return CYTOPANEL_TITLE_SOUTH_WEST;
-		}
-
-		return null;
+		return CytoPanelName.getTitle(compassDirection);
 	}
 
 	/**
@@ -921,5 +879,14 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 					break;
 			}
 		}
+	}
+
+	/**
+	 * Returns the int indicating the location within the layout.
+	 *
+	 * @return The int indicating the location within the layout.
+	 */
+	public int getCompassDirection() {
+		return compassDirection;
 	}
 }
