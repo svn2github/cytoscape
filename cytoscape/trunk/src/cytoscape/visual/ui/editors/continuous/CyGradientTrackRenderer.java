@@ -327,6 +327,13 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		Point2D start = new Point2D.Float(0, 0);
 		Point2D end = null;
 		
+		
+		if(detail) {
+			end = new Point2D.Float(iconWidth - 3, iconHeight - 30);
+		} else {
+			end = new Point2D.Float(iconWidth - 3, iconHeight - 9);
+		}
+		
 		if (len != 0) {
 			// set up the data for the gradient
 			fractions = new float[len + 2];
@@ -347,11 +354,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 
 			// fill in the gradient
 			
-			if(detail) {
-				end = new Point2D.Float(iconWidth - 3, iconHeight - 30);
-			} else {
-				end = new Point2D.Float(iconWidth - 3, iconHeight - 9);
-			}
+			
 
 			drawGradient(g2, start, end, fractions, colors);
 			
@@ -374,7 +377,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		
 		g2.setColor(Color.black);
 		
-		if(detail) {
+		if(detail && fractions != null) {
 			String fNum = null;
 			for(int i=0; i<fractions.length; i++) {
 				fNum = String.format("%.2f", fractions[i]*maxValue - minValue);
