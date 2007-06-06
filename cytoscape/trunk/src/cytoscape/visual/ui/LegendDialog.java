@@ -18,6 +18,7 @@ import org.freehep.util.export.ExportDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -182,7 +183,7 @@ public class LegendDialog extends JDialog {
 		containerPanel.add(buttonPanel);
 
 		setContentPane(containerPanel);
-		//setPreferredSize(new Dimension(200, 500));
+		setPreferredSize(new Dimension(400, 500));
 		pack();
 	}
 

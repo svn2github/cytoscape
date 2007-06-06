@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
@@ -57,6 +55,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
@@ -80,6 +79,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	/*
 	 * Constants for diagram.
 	 */
+	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private int TRACK_HEIGHT = 120;
 	private static final int THUMB_WIDTH = 12;
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
@@ -91,6 +91,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	private int ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
 	private static final String TITLE1 = "Mapping: ";
 	private Map<Integer, Double> valueMap;
+	private static final int LEFT_SPACE = 50;
 
 	/*
 	 * Define Colors used in this diagram.
@@ -634,16 +635,30 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 *  DOCUMENT ME!
 	 *
 	 * @param iconWidth DOCUMENT ME!
 	 * @param iconHeight DOCUMENT ME!
-	 * @param mapping DOCUMENT ME!
-	 * @param type DOCUMENT ME!
 	 *
-	 * @return DOCUMENT ME!
+	 * @return  DOCUMENT ME!
 	 */
 	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
+		return drawIcon(iconWidth, iconHeight, false);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param iconWidth DOCUMENT ME!
+	 * @param iconHeight DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public ImageIcon getLegend(int iconWidth, int iconHeight) {
+		return drawIcon(iconWidth, iconHeight, true);
+	}
+
+	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
 		if (slider == null) {
 			return null;
 		}
@@ -662,7 +677,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		int leftSpace = 10;
 		int trackHeight = iconHeight - 9;
-		int track_width = iconWidth - leftSpace;
+		int trackWidth = iconWidth - leftSpace;
 
 		/*
 		 * Compute fractions from mapping
@@ -703,17 +718,17 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		int maxWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
 		                                                 String.format("%.1f", max));
 
+		if (detail) {
+			leftSpace = LEFT_SPACE;
+			trackHeight = iconHeight - 30;
+		} else {
+			leftSpace = Math.max(minWidth, maxWidth) + 1;
+		}
+
+		trackWidth = iconWidth - leftSpace;
+
 		g.drawString(String.format("%.1f", min), 0, trackHeight);
 		g.drawString(String.format("%.1f", max), 0, 8);
-
-		leftSpace = Math.max(minWidth, maxWidth) + 1;
-		track_width = iconWidth - leftSpace;
-
-		g.drawString(String.format("%.2f", minValue), 0, iconHeight);
-
-		final String maxStr = String.format("%.2f", maxValue);
-		int strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
-		g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
 
 		/*
 		 * If no points, just return empty rectangle.
@@ -721,7 +736,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		if (numPoints == 0) {
 			g.setStroke(new BasicStroke(1.0f));
 			g.setColor(Color.DARK_GRAY);
-			g.drawRect(leftSpace, 0, track_width - 3, trackHeight);
+			g.drawRect(leftSpace, 0, trackWidth - 3, trackHeight);
 
 			return new ImageIcon(bi);
 		}
@@ -736,7 +751,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		Point2D p2 = new Point2D.Float(0, 0);
 
 		for (i = 0; i < floatProperty.length; i++) {
-			newX = (int) (track_width * (fractions[i] / 100));
+			newX = (int) (trackWidth * (fractions[i] / 100));
 
 			p2.setLocation(newX, 0);
 
@@ -772,22 +787,98 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			p1.setLocation(p2);
 		}
 
-		p2.setLocation(track_width, 0);
+		p2.setLocation(trackWidth, 0);
 
 		g.setColor(VALUE_AREA_COLOR);
 
 		int h = trackHeight - (int) ((above.floatValue() / max) * trackHeight);
-		g.fillRect((int) p1.getX(), h, track_width - (int) p1.getX(),
+		g.fillRect((int) p1.getX(), h, trackWidth - (int) p1.getX(),
 		           (int) ((above.floatValue() / max) * trackHeight));
 
 		g.translate(-leftSpace, 0);
 
 		/*
-		 * Finally, draw border line (rectangle)
+		 * Draw border line (rectangle)
 		 */
 		g.setColor(BORDER_COLOR);
 		g.setStroke(new BasicStroke(1.0f));
-		g.drawRect(leftSpace, 0, track_width - 3, trackHeight);
+		g.drawRect(leftSpace, 0, trackWidth - 1, trackHeight);
+		
+		/*
+		 * Draw numbers and arrows
+		 */
+		g.setFont(new Font("SansSerif", Font.BOLD, 9));
+
+		final String minStr = String.format("%.2f", minValue);
+		final String maxStr = String.format("%.2f", maxValue);
+		int strWidth;
+		g.setColor(Color.black);
+
+		if (detail) {
+			String fNum = null;
+
+			for (int j = 0; j < fractions.length; j++) {
+				fNum = String.format("%.2f",
+				                     ((fractions[j] / 100) * valueRange) - Math.abs(minValue));
+				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
+				g.drawString(fNum, ((fractions[j] / 100) * trackWidth) - (strWidth / 2) + leftSpace,
+				             iconHeight - 20);
+			}
+
+			g.drawString(minStr, leftSpace, iconHeight);
+			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+
+			g.setFont(TITLE_FONT);
+
+			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
+			g.setColor(Color.black);
+			g.drawString(title, (iconWidth / 2) - (titleWidth / 2), iconHeight - 5);
+
+			Polygon p = new Polygon();
+			p.addPoint(iconWidth, iconHeight - 9);
+			p.addPoint(iconWidth - 15, iconHeight - 15);
+			p.addPoint(iconWidth - 15, iconHeight - 9);
+			g.fillPolygon(p);
+			g.drawLine(leftSpace, iconHeight - 9,
+			           ((iconWidth - leftSpace) / 2) - (titleWidth / 2) - 3, iconHeight - 9);
+			g.drawLine((iconWidth / 2) + (titleWidth / 2) + 3, iconHeight - 9, iconWidth,
+			           iconHeight - 9);
+
+			/*
+			 * Draw vertical arrow
+			 */
+			int panelHeight = iconHeight - 30;
+
+			final Polygon poly = new Polygon();
+			int top = 0;
+
+			g.setStroke(new BasicStroke(1.0f));
+
+			int center = (leftSpace / 2) + 6;
+
+			poly.addPoint(center, top);
+			poly.addPoint(center - 6, top + 15);
+			poly.addPoint(center, top + 15);
+			g.fillPolygon(poly);
+
+			g.drawLine(center, top, center, panelHeight);
+			g.setColor(Color.DARK_GRAY);
+			g.setFont(new Font("SansSerif", Font.BOLD, 10));
+
+			final String label = type.getName();
+			final int width = SwingUtilities.computeStringWidth(g.getFontMetrics(), label);
+			AffineTransform af = new AffineTransform();
+			af.rotate(Math.PI + (Math.PI / 2));
+			g.setTransform(af);
+
+			g.setColor(Color.black);
+			g.drawString(type.getName(), (-panelHeight / 2) - (width / 2), (leftSpace / 2) + 5);
+		} else {
+			g.drawString(minStr, 0, iconHeight);
+			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+		}
 
 		return new ImageIcon(bi);
 	}

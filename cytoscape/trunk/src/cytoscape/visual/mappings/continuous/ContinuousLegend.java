@@ -60,6 +60,7 @@ import javax.swing.border.MatteBorder;
 
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.LegendTable;
+import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
 
@@ -115,15 +116,7 @@ public class ContinuousLegend extends JPanel {
 		title.setPreferredSize(new Dimension(1, 50));
 		add(title, BorderLayout.NORTH);
         
-        
-//        
-//        setBackground(Color.white);
-//        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-//        setAlignmentX(0);
-//
-//        add(new JLabel(vpt.getName() + " is continuously mapped to " + dataAttr));
-
-		setLegend();
+    	setLegend();
     	
     	this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
@@ -148,6 +141,8 @@ public class ContinuousLegend extends JPanel {
         if (type.getDataType() == Color.class) {
         	legend = new JLabel(GradientEditorPanel.getLegend(trackW, 100, type));
         	
+        } else if(type.getDataType() == Number.class) {
+        	legend = new JLabel(C2CMappingEditor.getLegend(trackW, 150, type));
         } else {
         	legend = new JLabel(C2DMappingEditor.getLegend(trackW, 150, type));
         }
