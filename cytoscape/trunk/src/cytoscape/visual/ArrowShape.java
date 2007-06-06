@@ -52,21 +52,28 @@ import cytoscape.visual.ui.icon.*;
  */
 public enum ArrowShape {
 	NONE("No Arrow", "NONE", EdgeView.NO_END, 
-	     new int[]{EdgeView.NO_END}),
+	     new int[]{EdgeView.NO_END},
+		 new String[]{"NO_END"}),
 	DIAMOND("Diamond", "COLOR_DIAMOND", EdgeView.EDGE_COLOR_DIAMOND,
-	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND}),
+	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND},
+	     new String[]{"EDGE_COLOR_DIAMOND", "WHITE_DIAMOND","BLACK_DIAMOND"}),
 	DELTA("Delta", "COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA,
-	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA}),
+	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
+	     new String[]{"EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
 	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_ARROW,
-	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW}),
+	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW},
+	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW"}),
 	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T,
-	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T}),
+	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T},
+	     new String[]{"EDGE_COLOR_T", "WHITE_T","BLACK_T"}),
 	CIRCLE("Circle", "COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE,
-	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE}),
+	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE},
+	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}),
 
 	// Not yet implemented
 	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1,
-	     new int[]{-1}),
+	     new int[]{-1},
+		 new String[]{""}),
 	;
 
 
@@ -76,12 +83,15 @@ public enum ArrowShape {
 	private String ginyShapeName;
 	private int ginyType;
 	private int[] possibleGinyTypes;
+	private String[] possibleGinyNames;
 
-	private ArrowShape(String shapeName, String ginyShapeName, int ginyType, int[] possibleGinyTypes) {
+	private ArrowShape(String shapeName, String ginyShapeName, int ginyType, int[] possibleGinyTypes,
+	                   String[] possibleGinyNames) {
 		this.shapeName = shapeName;
 		this.ginyShapeName = ginyShapeName;
 		this.ginyType = ginyType;
 		this.possibleGinyTypes = possibleGinyTypes;
+		this.possibleGinyNames = possibleGinyNames;
 	}
 
 	/**
@@ -117,7 +127,24 @@ public enum ArrowShape {
 	 * @return
 	 */
 	public static ArrowShape parseArrowText(String text) {
-		return valueOf(text);
+		try {
+			ArrowShape val = valueOf(text);
+			return val;
+		// brilliant flow control
+		// this isn't a problem, we just don't match
+		} catch (IllegalArgumentException e) { }
+		
+		// if string doesn't match, then try other possible GINY names 
+		for (ArrowShape shape : values()) 
+			for (String possibleName : shape.getPossibleGinyNames()) 
+				if ( possibleName.equals(text) ) 
+					return shape;
+
+		return NONE;
+	}
+
+	public String[] getPossibleGinyNames() {
+		return possibleGinyNames;
 	}
 
 	public int[] getPossibleGinyTypes() {
@@ -147,7 +174,7 @@ public enum ArrowShape {
 			}
 		}
 
-		// if we can't match anything, just return rectangle.
+		// if we can't match anything, just return NONE.
 		return NONE;
 	}
 
