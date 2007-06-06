@@ -47,7 +47,7 @@
     <td><img src="people_photos/chris_s.jpg"></img></td>
     <td><img src="people_photos/hood.jpg"></img></td>
     <td><img src="people_photos/benno.jpg"></img></td>
-    <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
+    <td><img src="people_photos/guy.jpg"></img></td>
   </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
