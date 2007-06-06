@@ -33,29 +33,46 @@ package org.mskcc.pathway_commons.util;
 
 // imports
 import org.mskcc.pathway_commons.task.MergeNetworkTask;
-
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.actions.LoadNetworkTask;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
 
+import giny.view.NodeView;
+import ding.view.NodeContextMenuListener;
+
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.MalformedURLException;
 import javax.swing.SwingUtilities;
 import java.io.UnsupportedEncodingException;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+
 
 /**
  * This is a network utilities class.
  *
  * @author Benjamin Gross.
  */
-public class NetworkUtil extends Thread {
+public class NetworkUtil extends Thread implements NodeContextMenuListener {
+
+	/**
+	 * Stores web services url
+	 */
+	private String webServicesURL;
 
 	/**
 	 * ref to pathwayCommonsURL
@@ -81,6 +98,11 @@ public class NetworkUtil extends Thread {
      * Neighborhood title parameter.
      */
     private static final String NEIGHBORHOOD_TITLE_ARG = "&neighborhood_title=";
+
+	/**
+	 * Context menu item command.
+	 */
+	private static final String CONTEXT_MENU_COMMAND = "/pc/webservice.do?version=2.0&cmd=get_neighbors&format=biopax&q=";
 
 	/**
 	 * Constructor.
@@ -130,6 +152,10 @@ public class NetworkUtil extends Thread {
 	 * @param pathwayCommonsRequest String
 	 */
 	private void parseRequest(String pathwayCommonsRequest) {
+
+		// web services url
+		int indexToStartOfPC = pathwayCommonsRequest.indexOf("/pc");
+		this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC);
 
 		// extract title
 		this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
@@ -205,7 +231,11 @@ public class NetworkUtil extends Thread {
 	 */
 	private void postProcess(final CyNetwork cyNetwork, boolean doLayout) {
 
-		if (networkTitle != null) {
+		// ref to view used below
+		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+
+		// do we have a title to set ? - use it if we are not merging
+		if (!merging && networkTitle != null) {
 			cyNetwork.setTitle(networkTitle);
 			
 			//  Update UI.  Must be done via SwingUtilities,
@@ -217,17 +247,52 @@ public class NetworkUtil extends Thread {
 				});
 		}
 
-		// we like the BioPax plugin default layout
-		// so we don't layout here
+		// if do layout, do it
 		if (doLayout) {
-			CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 			LayoutUtil layoutUtil = new LayoutUtil();
 			layoutUtil.doLayout(view);
 			view.fitContent();
 		}
 
+		// setup the context menu
+		view.addNodeContextMenuListener(this);
+
 		// set focus current
 		Cytoscape.firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 									 null, cyNetwork.getIdentifier());
+	}
+
+	/**
+	 * Our implementation of NodeContextMenuListener.addNodeContextMenuItems(..).
+	 */
+	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+
+		// generate menu url
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		CyNode cyNode = (CyNode)nodeView.getNode();
+		String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapNodeAttributes.BIOPAX_RDF_ID);
+		String biopaxNodeLabel = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+		final String urlString = "http://127.0.0.1:27182/" + webServicesURL + CONTEXT_MENU_COMMAND + biopaxID +
+			"&neighborhood_title=Neighborhood: " + biopaxNodeLabel;
+		System.out.println("urlString: " + urlString);
+
+		// add new menu item
+		JMenuItem item = new JMenuItem( new AbstractAction("View network neighborhood map") {
+                public void actionPerformed (ActionEvent e){
+                    SwingUtilities.invokeLater( new Runnable ()  {
+                        public void run() {
+							//OpenBrowser.openURL(url);
+							try {
+								URL url = new URL(urlString);
+								url.getContent();
+							}
+							catch (Exception e) {
+								e.printStackTrace();
+							}
+                        }
+                    });
+                }
+            }	);
+		menu.add(item);
 	}
 }
