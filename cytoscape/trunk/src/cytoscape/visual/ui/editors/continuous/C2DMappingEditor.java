@@ -41,8 +41,6 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
-import cytoscape.visual.ui.EditorDisplayer;
-
 import org.jdesktop.swingx.multislider.Thumb;
 
 import java.awt.Dimension;
@@ -52,13 +50,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 
 /**
- * DOCUMENT ME!
+ * Continuous Mapping editor for discrete values,
+ * such as Font, Shape, Label Position, etc.
  *
- * @author $author$
+ * @author kono
   */
 public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	/**
@@ -110,11 +108,23 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
-	
-	public static ImageIcon getLegend(final int width, final int height, final VisualPropertyType type) {
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param width DOCUMENT ME!
+	 * @param height DOCUMENT ME!
+	 * @param type DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static ImageIcon getLegend(final int width, final int height,
+	                                  final VisualPropertyType type) {
 		editor = new C2DMappingEditor(type);
-		DiscreteTrackRenderer rend = (DiscreteTrackRenderer)editor.slider.getTrackRenderer();
+
+		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
+
 		return rend.getLegend(width, height);
 	}
 
@@ -186,23 +196,12 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
-		slider.addMouseMotionListener(new MouseMotionListener() {
-				public void mouseDragged(MouseEvent arg0) {
-				}
-
-				public void mouseMoved(MouseEvent arg0) {
-					// slider.setToolTipText((((VizMapperTrackRenderer) slider
-					// .getTrackRenderer())).getToolTipForCurrentLocation(arg0
-					// .getX(), arg0.getY()));
-				}
-			});
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
-					                                                                                                                                                                                .getX(),
-					                                                                           e
-					                                                                                                                                                                                  .getY());
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).
+						getRangeID(e.getX(),e.getY());
+					
 					Object newValue = null;
 
 					if (e.getClickCount() == 2) {
@@ -233,10 +232,6 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 						slider.repaint();
 
 						Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
-
-						//						JOptionPane.showMessageDialog(slider,
-						//						                              "Icon selection dialog will be displayed here.  Range = " + range,
-						//						                              "Select icon", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			});
