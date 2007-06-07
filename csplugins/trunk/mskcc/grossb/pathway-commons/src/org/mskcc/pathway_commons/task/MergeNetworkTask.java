@@ -147,7 +147,6 @@ public class MergeNetworkTask implements Task {
 			// select nodes
 			cyNetwork.setSelectedNodeState(newNodes, true);
 
-
 			// update the task monitor
 			taskMonitor.setStatus(getMergeStatus(cyNetwork, nodes.length, edges.length));
 			taskMonitor.setPercentCompleted(100);
