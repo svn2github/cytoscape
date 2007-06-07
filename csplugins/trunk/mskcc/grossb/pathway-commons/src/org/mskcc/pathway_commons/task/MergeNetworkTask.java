@@ -32,6 +32,7 @@
 package org.mskcc.pathway_commons.task;
 
 // imports
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
@@ -41,6 +42,8 @@ import cytoscape.data.readers.GraphReader;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Task to merge a network.
@@ -76,7 +79,7 @@ public class MergeNetworkTask implements Task {
 	 * @param cyNetwork CyNetwork
 	 */
 	public MergeNetworkTask(URL pathwayCommonsURL, CyNetwork cyNetwork) {
-		
+
 		// init member vars
 		this.pathwayCommonsURL = pathwayCommonsURL;
 		this.cyNetwork = cyNetwork;
@@ -120,12 +123,18 @@ public class MergeNetworkTask implements Task {
 			taskMonitor.setStatus("Reading in Network Data for pathwaycommons.org...");
 			reader.read();
 
+			// unselect all nodes
+			cyNetwork.unselectAllNodes();
+			Set<CyNode> newNodes = new HashSet<CyNode>();
+
 			// add new nodes and edges to existing network
 			// tbd: worry about networks that exceed # node/edge threshold
 			final int[] nodes = reader.getNodeIndicesArray();
 			final int[] edges = reader.getEdgeIndicesArray();
 			for (int node : nodes) {
 				cyNetwork.addNode(node);
+				CyNode newNode = (CyNode)Cytoscape.getRootGraph().getNode(node);
+				newNodes.add(newNode);
 			}
 			for (int edge : edges) {
 				cyNetwork.addEdge(edge);
@@ -134,6 +143,10 @@ public class MergeNetworkTask implements Task {
 			// execute any post processing -
 			// in this case, biopax style is applied, network attributes set, etc
 			reader.doPostProcessing(cyNetwork);
+
+			// select nodes
+			cyNetwork.setSelectedNodeState(newNodes, true);
+
 
 			// update the task monitor
 			taskMonitor.setStatus(getMergeStatus(cyNetwork, nodes.length, edges.length));
