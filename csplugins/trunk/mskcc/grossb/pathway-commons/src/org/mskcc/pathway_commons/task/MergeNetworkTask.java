@@ -133,8 +133,7 @@ public class MergeNetworkTask implements Task {
 			final int[] edges = reader.getEdgeIndicesArray();
 			for (int node : nodes) {
 				cyNetwork.addNode(node);
-				CyNode newNode = (CyNode)Cytoscape.getRootGraph().getNode(node);
-				newNodes.add(newNode);
+				newNodes.add((CyNode)Cytoscape.getRootGraph().getNode(node));
 			}
 			for (int edge : edges) {
 				cyNetwork.addEdge(edge);
