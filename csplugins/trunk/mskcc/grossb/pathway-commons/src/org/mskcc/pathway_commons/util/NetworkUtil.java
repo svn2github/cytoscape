@@ -53,14 +53,16 @@ import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.net.MalformedURLException;
 import javax.swing.SwingUtilities;
-import java.io.UnsupportedEncodingException;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.MenuElement;
 import javax.swing.AbstractAction;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
-
+import java.io.UnsupportedEncodingException;
 
 /**
  * This is a network utilities class.
@@ -100,9 +102,14 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
     private static final String NEIGHBORHOOD_TITLE_ARG = "&neighborhood_title=";
 
 	/**
+	 * Context menu title.
+	 */
+	private static final String CONTEXT_MENU_TITLE = "View network neighborhood map";
+
+	/**
 	 * Context menu item command.
 	 */
-	private static final String CONTEXT_MENU_COMMAND = "/pc/webservice.do?version=2.0&cmd=get_neighbors&format=biopax&q=";
+	private static final String PC_WEB_SERVICE_URL = "/pc/webservice.do?version=2.0&cmd=get_neighbors&format=biopax&q=";
 
 	/**
 	 * Constructor.
@@ -194,7 +201,7 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 				value = URLDecoder.decode(value, "UTF-8");
 			}
 			catch (UnsupportedEncodingException e) {
-				// if exception occurs leave encoded string
+				// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
 			}
 		}
 
@@ -237,7 +244,7 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 		// do we have a title to set ? - use it if we are not merging
 		if (!merging && networkTitle != null) {
 			cyNetwork.setTitle(networkTitle);
-			
+
 			//  Update UI.  Must be done via SwingUtilities,
 			// or it won't work.
 			SwingUtilities.invokeLater(new Runnable() {
@@ -267,21 +274,32 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 	 */
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
 
+		// check if we have already added menu item
+		if (contextMenuExists(menu)) return;
+
 		// generate menu url
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyNode cyNode = (CyNode)nodeView.getNode();
 		String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapNodeAttributes.BIOPAX_RDF_ID);
-		String biopaxNodeLabel = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-		final String urlString = "http://127.0.0.1:27182/" + webServicesURL + CONTEXT_MENU_COMMAND + biopaxID +
-			"&neighborhood_title=Neighborhood: " + biopaxNodeLabel;
-		System.out.println("urlString: " + urlString);
+		biopaxID = biopaxID.replace("CPATH-", "");
+		String neighborhoodParam = "Neighborhood: " + nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+		try {
+			neighborhoodParam = URLEncoder.encode(neighborhoodParam, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
+			// anyway, at least encode spaces
+			neighborhoodParam = neighborhoodParam.replaceAll(" ", "%20");
+		}
+
+		final String urlString = "http://127.0.0.1:27182/" + webServicesURL +
+			PC_WEB_SERVICE_URL + biopaxID + "&neighborhood_title=" + neighborhoodParam;
 
 		// add new menu item
-		JMenuItem item = new JMenuItem( new AbstractAction("View network neighborhood map") {
+		JMenuItem item = new JMenuItem( new AbstractAction(CONTEXT_MENU_TITLE) {
                 public void actionPerformed (ActionEvent e){
                     SwingUtilities.invokeLater( new Runnable ()  {
                         public void run() {
-							//OpenBrowser.openURL(url);
 							try {
 								URL url = new URL(urlString);
 								url.getContent();
@@ -294,5 +312,26 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
                 }
             }	);
 		menu.add(item);
+	}
+
+	/**
+	 * Method checks if we have already added a neighborhood map context menu
+	 * to given menu.
+	 *
+	 * @param menu JPopupMenu
+	 * @return boolean
+	 */
+	private boolean contextMenuExists(JPopupMenu menu) {
+
+		for (MenuElement element : menu.getSubElements()) {
+			Component component = element.getComponent();
+			if (component instanceof JMenuItem) {
+				String text = ((JMenuItem)component).getText();
+				if (text != null && text.equals(CONTEXT_MENU_TITLE)) return true;
+			}
+		}
+
+		// outta here
+		return false;
 	}
 }
