@@ -34,29 +34,24 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
-
-import cytoscape.view.CyNetworkView;
-
-import ding.view.DGraphView;
-
 import giny.view.GraphView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 
 
 /**

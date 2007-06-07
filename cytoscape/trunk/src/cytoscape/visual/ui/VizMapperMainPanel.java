@@ -632,8 +632,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		}
 
+		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		vmm.setVisualStyle(vsName);
-
+		
 		if (propertyMap.containsKey(vsName) && (vsName.equals(lastVSName) == false)) {
 			List<Property> props = propertyMap.get(vsName);
 
@@ -647,6 +648,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		lastVSName = vsName;
+	
 		vmm.getNetworkView().setVisualStyle(vsName);
 		vmm.getNetworkView().redrawGraph(false, true);
 
@@ -655,6 +657,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		setDefaultPanel(defaultImageManager.get(vsName));
 		Cytoscape.getDesktop().repaint();
+		vsNameComboBox.setSelectedItem(vsName);
 	}
 
 	private static final String CATEGORY_NODE = "Node Attributes";
@@ -2081,10 +2084,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		public void actionPerformed(ActionEvent e) {
 			final String name = getStyleName(null);
 
+			/*
+			 * If name is null, do not create style.
+			 */
 			if (name == null)
 				return;
 
-			// create the new style
+			// Create the new style
 			final VisualStyle newStyle = new VisualStyle(name);
 
 			// add it to the catalog
@@ -2099,6 +2105,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			/*
 			 * Rebuild the visual mapping browser.
 			 */
+			final String selectedID = Cytoscape.getCurrentNetworkView().getIdentifier();
 			vsNameComboBox.addItem(name);
 			switchVS(name);
 
@@ -2111,6 +2118,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				createDefaultImage(name, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(name));
 			}
+			
+			// Move thge current focus
+			Cytoscape.getDesktop().setFocus(selectedID);
+			vmm.setNetworkView(Cytoscape.getNetworkView(selectedID));
 		}
 	}
 
