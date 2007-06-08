@@ -98,7 +98,7 @@ public class NodeHeightProp extends AbstractVisualProperty {
 		if ((o == null) || (nv == null))
 			return;
 
-		double height = ((Double) o).doubleValue();
+		double height = ((Number) o).doubleValue();
 		double difference = height - nv.getHeight();
 
 		if (Math.abs(difference) > 0.1)

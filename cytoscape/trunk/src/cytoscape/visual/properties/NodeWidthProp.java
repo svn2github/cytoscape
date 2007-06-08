@@ -98,7 +98,7 @@ public class NodeWidthProp extends AbstractVisualProperty {
 		if ((o == null) || (nv == null))
 			return;
 
-		double width = ((Double) o).doubleValue();
+		double width = ((Number) o).doubleValue();
 		double difference = width - nv.getWidth();
 
 		if (Math.abs(difference) > 0.1)
