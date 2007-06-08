@@ -924,7 +924,7 @@ public class DGraphView implements GraphView, Printable {
 	 */
 	public void setZoom(double zoom) {
 		synchronized (m_lock) {
-			m_networkCanvas.m_scaleFactor = zoom;
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 
@@ -944,12 +944,13 @@ public class DGraphView implements GraphView, Printable {
 
 			m_networkCanvas.m_xCenter = (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
-			m_networkCanvas.m_scaleFactor = Math.min(((double) m_networkCanvas.getWidth()) / 
-			                                          (((double) m_extentsBuff[2]) - 
-			                                           ((double) m_extentsBuff[0])), 
-			                                         ((double) m_networkCanvas.getHeight()) / 
-			                                          (((double) m_extentsBuff[3]) - 
-			                                           ((double) m_extentsBuff[1])));
+			final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / 
+			                             (((double) m_extentsBuff[2]) - 
+			                              ((double) m_extentsBuff[0])), 
+			                              ((double) m_networkCanvas.getHeight()) / 
+			                             (((double) m_extentsBuff[3]) - 
+			                              ((double) m_extentsBuff[1])));
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 
@@ -1878,10 +1879,11 @@ public class DGraphView implements GraphView, Printable {
 
 			m_networkCanvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
-			m_networkCanvas.m_scaleFactor = Math.min(((double) m_networkCanvas.getWidth()) / (((double) xMax)
-			                                                                                 - ((double) xMin)),
-			                                         ((double) m_networkCanvas.getHeight()) / (((double) yMax)
-			                                                                                  - ((double) yMin)));
+			final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / (((double) xMax)
+			                             - ((double) xMin)),
+			                             ((double) m_networkCanvas.getHeight()) / (((double) yMax)
+			                             - ((double) yMin)));
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 	}
@@ -2358,5 +2360,13 @@ public class DGraphView implements GraphView, Printable {
 		NODE_SHAPE,
 		LINE_TYPE,
 		ARROW_SHAPE;
+	}
+
+	private double checkZoom(double zoom, double orig) {
+		if ( zoom > 0 ) 
+			return zoom;
+	
+		System.out.println("invalid zoom: " + zoom + "   using orig: " + orig);
+		return orig;
 	}
 }
