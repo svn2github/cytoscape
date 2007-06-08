@@ -83,6 +83,9 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 	JSlider jSlider;
 	int prevValue; 
 
+	boolean startAdjusting = true;
+	ViewChangeEdit currentEdit = null;
+
 	/**
 	 * Creates a new ScalePanel object.
 	 */
@@ -92,18 +95,21 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		jLabel.setText("Scale:");
 
 		jSlider = new JSlider();
-		jSlider.setMaximum(300);
+
 		jSlider.setMajorTickSpacing(100);
 		jSlider.setPaintTicks(true);
 		jSlider.setPaintLabels(true);
+
+		jSlider.setMaximum(300);
 		jSlider.setValue(0);
 		jSlider.setMinimum(-300);
+
 		jSlider.addChangeListener(this);
 
 
 		prevValue = jSlider.getValue();
 
-		Hashtable labels = new Hashtable();
+		Hashtable<Integer,JLabel> labels = new Hashtable<Integer,JLabel>();
 		labels.put(new Integer(-300), new JLabel("1/8"));
 		labels.put(new Integer(-200), new JLabel("1/4"));
 		labels.put(new Integer(-100), new JLabel("1/2"));
@@ -153,12 +159,16 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 	}
 
 	public void stateChanged(ChangeEvent e) {
-		if (prevValue == jSlider.getValue())
+		if ( e.getSource() != jSlider )
 			return;
 
-		ViewChangeEdit undoableEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()),
-		                                                 "Scale");
+		// only create the edit when we're beginning to adjust
+		if ( startAdjusting ) { 
+			currentEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()), "Scale");
+			startAdjusting = false;
+		}
 
+		// do the scaling
 		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
 			                                                   jCheckBox.isSelected());
 		ScaleLayouter scale = new ScaleLayouter(nativeGraph);
@@ -173,6 +183,10 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		Cytoscape.getCurrentNetworkView().updateView();
 		prevValue = jSlider.getValue();
 
-		undoableEdit.post();
+		// only post the edit when we're finished adjusting 
+		if ( !jSlider.getValueIsAdjusting() ) { 
+			currentEdit.post();
+			startAdjusting = true;
+		} 
 	}
 }

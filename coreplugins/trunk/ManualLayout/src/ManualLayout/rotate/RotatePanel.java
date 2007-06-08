@@ -71,6 +71,9 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 	JSlider jSlider;
 	int prevValue; 
 
+	boolean startAdjusting = true;
+	ViewChangeEdit currentEdit = null;
+
 	/**
 	 * Creates a new RotatePanel object.
 	 */
@@ -130,11 +133,14 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 	}
 
 	public void stateChanged(ChangeEvent e) {
-		if (jSlider.getValue() == prevValue)
+		if (e.getSource() != jSlider)
 			return;
 
-		ViewChangeEdit undoableEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()), 
-		                                                 "Rotate");
+		// only create the edit at the beginning of the adjustment
+		if ( startAdjusting ) {
+			currentEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()), "Rotate");
+			startAdjusting = false;
+		}
 
 		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
 		                                                   jCheckBox.isSelected());
@@ -146,6 +152,10 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 
 		prevValue = jSlider.getValue();
 
-		undoableEdit.post();
+		// only post edit when adjustment is complete
+		if ( !jSlider.getValueIsAdjusting() ) {
+			currentEdit.post();
+			startAdjusting = true;
+		}
 	}
 } 

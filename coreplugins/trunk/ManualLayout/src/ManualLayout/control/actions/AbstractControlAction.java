@@ -160,11 +160,8 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 		return false;
 	}
 
-	public class XComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			NodeView n1 = (NodeView) o1;
-			NodeView n2 = (NodeView) o2;
-
+	public class XComparator implements Comparator<NodeView> {
+		public int compare(NodeView n1, NodeView n2) {
 			if (getX(n1) == getX(n2))
 				return 0;
 			else if (getX(n1) < getX(n2))
@@ -174,10 +171,7 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 				return 1;
 		}
 
-		public boolean equals(Object o1, Object o2) {
-			NodeView n1 = (NodeView) o1;
-			NodeView n2 = (NodeView) o2;
-
+		public boolean equals(NodeView n1, NodeView n2) {
 			if (getX(n1) == getX(n2))
 				return true;
 			else
@@ -186,11 +180,8 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 		}
 	}
 
-	public class YComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			NodeView n1 = (NodeView) o1;
-			NodeView n2 = (NodeView) o2;
-
+	public class YComparator implements Comparator<NodeView> {
+		public int compare(NodeView n1, NodeView n2) {
 			if (getY(n1) == getY(n2))
 				return 0;
 			else if (getY(n1) < getY(n2))
@@ -200,10 +191,7 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 				return 1;
 		}
 
-		public boolean equals(Object o1, Object o2) {
-			NodeView n1 = (NodeView) o1;
-			NodeView n2 = (NodeView) o2;
-
+		public boolean equals(NodeView n1, NodeView n2) {
 			if (getY(n1) == getY(n2))
 				return true;
 			else
