@@ -68,9 +68,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	JTree navTree = null;
 	GroupTreeModel treeModel = null;
 	TreeSelectionModel treeSelectionModel = null;
-	HashMap nodeMap = null;
+	HashMap<CyNode,List<TreePath>>nodeMap = null;
 	boolean updateSelection = true;
 	boolean updateTreeSelection = true;
+	TreePath[] ta = new TreePath[1];
 
 	/**
 	 * Construct a group panel
@@ -148,6 +149,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	public void valueChanged(TreeSelectionEvent e) {
 		TreePath[] cPaths = e.getPaths();
 		if (cPaths == null) return;
+		// System.out.println("valueChanged");
 
 		if (!updateTreeSelection) {
 			return;
@@ -175,6 +177,12 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 			CyNode node = (CyNode)treeNode.getUserObject();
 			if (e.isAddedPath(cPaths[i])) {
+				// See if this node has multiple paths
+				if (nodeMap.containsKey(node) && nodeMap.get(node).size() > 1) {
+					updateTreeSelection = false;
+					treeSelectionModel.addSelectionPaths(nodeMap.get(node).toArray(ta));
+					updateTreeSelection = true;
+				}
 				if (CyGroupManager.isaGroup(node)) {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, true);
 					// It's a group -- get the members
@@ -193,18 +201,38 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				if (CyGroupManager.isaGroup(node)) {
 					CyGroup group = CyGroupManager.getCyGroup(node);
 					group.setState(NamedSelection.UNSELECTED);
+					Iterator<CyNode> nodeIter = group.getNodeIterator();
+					updateTreeSelection = false;
+					while (nodeIter.hasNext()) {
+						CyNode childNode = nodeIter.next();
+						if (nodeMap.containsKey(childNode)) {
+							treeSelectionModel.removeSelectionPaths(nodeMap.get(childNode).toArray(ta));
+						}
+						Cytoscape.getCurrentNetwork().setSelectedNodeState(childNode, false);
+					}
+					updateTreeSelection = true;
 				} else {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, false);
 				}
-				// Get the parent of this selection
-				TreePath path = cPaths[i].getParentPath();
-				if (path.getPathCount() > 1) {
-					treeSelectionModel.removeSelectionPath(path);
-					// Get the group and mark it as unselected
-					CyNode parent = (CyNode)((DefaultMutableTreeNode)path.getLastPathComponent()).getUserObject();
-					CyGroup parentGroup = CyGroupManager.getCyGroup(parent);
-					parentGroup.setState(NamedSelection.UNSELECTED);
+				updateTreeSelection = false;
+				Iterator<TreePath>pathIter = nodeMap.get(node).iterator();
+				while (pathIter.hasNext()) {
+					// Get the parent of this selection
+					TreePath path = pathIter.next();
+					if (path.getPathCount() > 1) {
+						if (path != cPaths[i])
+							treeSelectionModel.removeSelectionPath(path);
+						TreePath parentPath = path.getParentPath();
+						treeSelectionModel.removeSelectionPath(parentPath);
+						// Get the group and mark it as unselected
+						Object userObject = ((DefaultMutableTreeNode)parentPath.getLastPathComponent()).getUserObject();
+						if (CyNode.class.isInstance(userObject)) {
+							CyGroup parentGroup = CyGroupManager.getCyGroup((CyNode)userObject);
+							parentGroup.setState(NamedSelection.UNSELECTED);
+						}
+					}
 				}
+				updateTreeSelection = true;
 			}
 		}
 		Cytoscape.getCurrentNetworkView().updateView();
@@ -228,7 +256,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			while (nodeIter.hasNext()) {
 				CyNode nodeMember = nodeIter.next();
 				if (nodeMap.containsKey(nodeMember)) {
-					TreePath path = (TreePath)nodeMap.get(nodeMember);
+					// For our purposes, if one is selected, both are selected
+					TreePath path = (TreePath)(nodeMap.get(nodeMember).get(0));
 					if (!navTree.isPathSelected(path)) {
 						allSelected = false;
 						break;
@@ -239,8 +268,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				}
 			}
 			if (allSelected) {
-				TreePath path = (TreePath)nodeMap.get(group.getGroupNode());
-				treeSelectionModel.addSelectionPath(path);
+				treeSelectionModel.addSelectionPaths(nodeMap.get(group.getGroupNode()).toArray(ta));
 				group.setState(NamedSelection.SELECTED);
 			}
 		}
@@ -256,11 +284,14 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		while (nodeIter.hasNext()) {
 			CyNode node = nodeIter.next();
 			if (nodeMap.containsKey(node)) {
-				TreePath path = (TreePath)nodeMap.get(node);
-				if (select) {
-					treeSelectionModel.addSelectionPath(path);
-				} else {
-					treeSelectionModel.removeSelectionPath(path);
+				Iterator<TreePath> pathIter = nodeMap.get(node).iterator();
+				while (pathIter.hasNext()) {
+					TreePath path = pathIter.next();
+					if (select) {
+						treeSelectionModel.addSelectionPath(path);
+					} else {
+						treeSelectionModel.removeSelectionPath(path);
+					}
 				}
 			}
 		}
@@ -292,8 +323,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			CyNode node = nodeIter.next();
 			if (nodeMap.containsKey(node) && network.isSelected(node)) {
 				// System.out.println ("Node "+node+" is selected");
-				TreePath nodePath = (TreePath)nodeMap.get(node);
-				treeSelectionModel.addSelectionPath(nodePath);
+				// System.out.println ("Path[0] = "+nodeMap.get(node).get(0));
+				treeSelectionModel.addSelectionPaths(nodeMap.get(node).toArray(ta));
 			}
 		}
 	}
@@ -322,9 +353,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				DefaultMutableTreeNode tn = (DefaultMutableTreeNode)childEnum.nextElement();
 				CyNode node = (CyNode)tn.getUserObject();
 				// Create a path
-				TreePath nodePath = (TreePath)nodeMap.get(node);
-				// Deselect the path
-				treeSelectionModel.removeSelectionPath(nodePath);
+				treeSelectionModel.removeSelectionPaths(nodeMap.get(node).toArray(ta));
 			}
 			updateTreeSelection = true;
 		}
@@ -365,11 +394,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 			// System.out.print(node.getIdentifier()+", ");
 			if (nodeMap.containsKey(node)) {
-				TreePath path = (TreePath)nodeMap.get(node);
 				if (select) {
-					treeSelectionModel.addSelectionPath(path);
+					treeSelectionModel.addSelectionPaths(nodeMap.get(node).toArray(ta));
 				} else {
-					treeSelectionModel.removeSelectionPath(path);
+					treeSelectionModel.removeSelectionPaths(nodeMap.get(node).toArray(ta));
 				}
 			}
 		}
@@ -417,13 +445,11 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					}
 				}
 				if (allSelected) {
-					TreePath path = (TreePath)nodeMap.get(groupNode);
-					treeSelectionModel.addSelectionPath(path);
+					treeSelectionModel.addSelectionPaths(nodeMap.get(groupNode).toArray(ta));
 				}
 			} else {
-				TreePath path = (TreePath)nodeMap.get(groupNode);
 				updateTreeSelection = false;
-				treeSelectionModel.removeSelectionPath(path);
+				treeSelectionModel.removeSelectionPaths(nodeMap.get(groupNode).toArray(ta));
 				group.setState(NamedSelection.UNSELECTED);
 				updateTreeSelection = true;
 			}
@@ -469,8 +495,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				CyGroup group = iter.next();
 				CyNode groupNode = group.getGroupNode();
 				if (group.getState() == NamedSelection.SELECTED && nodeMap.containsKey(groupNode)) {
-					TreePath path = (TreePath)nodeMap.get(groupNode);
-					treeSelectionModel.addSelectionPath(path);
+					treeSelectionModel.addSelectionPaths(nodeMap.get(groupNode).toArray(ta));
 				}
 			}
 			
@@ -483,7 +508,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		 * @return a DefaultMutableTreeNode that represents the root of the tree
 		 */
 		DefaultMutableTreeNode buildTree() {
-			nodeMap = new HashMap();
+			nodeMap = new HashMap<CyNode,List<TreePath>>();
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Named Selections (Groups)");
 			TreePath rootPath = new TreePath(rootNode);
 			rootNode.add(addClearToTree("Clear Selections", rootNode, rootPath));
@@ -531,7 +556,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(groupNode);
 			// Add it to our path
 			TreePath path = parentPath.pathByAddingChild(treeNode);
-			nodeMap.put(groupNode, path);
+			if (!nodeMap.containsKey(groupNode)) {
+				nodeMap.put(groupNode, new ArrayList<TreePath>());
+			}
+			nodeMap.get(groupNode).add(path);
 			// Is the group node selected?
 			if (group.getState() == NamedSelection.SELECTED) {
 				// System.out.println("Group "+group+" is selected");
@@ -550,7 +578,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					// Add the node to the tree
 					DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
 					TreePath childPath = path.pathByAddingChild(childNode);
-					nodeMap.put(node, childPath);
+					if (!nodeMap.containsKey(node)) {
+						nodeMap.put(node, new ArrayList<TreePath>());
+					}
+					nodeMap.get(node).add(childPath);
 					treeNode.add(childNode);
 					if (Cytoscape.getCurrentNetwork().isSelected(node)) {
 						treeSelectionModel.addSelectionPath(childPath);
