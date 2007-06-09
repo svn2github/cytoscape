@@ -36,6 +36,9 @@ sub _newSGD
 {
     my ($file) = @_;
 
+    #geneName eg CIT2
+    #featureName eg YCR005C
+
     my $sgd = FeatureData->new(qw(primarySGDID 
 				  featureType
 				  featureQualifier
@@ -95,6 +98,13 @@ sub featureExists
     return exists($self->data()->{$id});
 }
 
+sub getAllIDs
+{
+    my ($self) = @_;
+
+    return keys(%{$self->data()});
+}
+
 sub get
 {
     my ($self, $id, $field) = @_;
@@ -107,10 +117,12 @@ sub get
 
 sub getByIndex
 {
-    my ($self, $id, $fieldIndex) = @_;
+    my ($self, $id, @inds) = @_;
+
+    #printf STDERR "###getting %s for %s\n", join(",", @inds), $id;
 
 #    return "" if (!exists($self->data()->{$id}) || $fieldIndex < 0);
-    return $self->data()->{$id}->[$fieldIndex];
+    return @{$self->data()->{$id}}[@inds];
 }
 
 

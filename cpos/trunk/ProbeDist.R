@@ -1,3 +1,16 @@
+
+filterGreyTicks <- function(greyTicks, blackTicks)
+  {
+    ok <- rep(T, length=length(greyTicks))
+    for(i in blackTicks)
+      {
+        x <- which.min(abs(greyTicks - i))
+        ok[x] <- F
+        ##print(paste(x, greyTicks[x], "is closest to", i))
+      }
+    return(ok)
+  }
+
 plot.yeast <- function(dat, mtd.thresh, ...)
   {
     par(mfrow=c(2,1))
@@ -20,7 +33,7 @@ viz.chr <- function(dat, mtd.thresh, allchr=1:16,
          ylim=c(0, 1), xlim=c(min(allchr)-0.5, max(allchr)+0.5),
          type="n", bty="n",
          xaxt="n", yaxt="n", ylab="", xlab="Chromosome")
-    axis(1, at=allchr, tick=F, line=-1)
+    axis(1, at=allchr[c(1, which(allchr %% 4 == 0))], tick=F, line=-1)
     ##    chr.data <- sc.chr
     M <- max(chr.data$Length)
     lens <- chr.data$Length/M
@@ -38,9 +51,9 @@ viz.chr <- function(dat, mtd.thresh, allchr=1:16,
         y.subt <- dat$mid[genes.on.i & subt]
         y.other <- dat$mid[genes.on.i & !subt]
         points(x=rep(i + 0.1, times=length(y.subt)),
-               y=y.subt/M, pch=23, cex=1, col="red")
+               y=y.subt/M, pch=18, cex=1, col="red")
         points(x=rep(i + 0.1, times=length(y.other)),
-               y=y.other/M, pch="-", cex=2, col="blue")
+               y=y.other/M, pch="-", cex=1.5, col="black")
 
       }
   }
@@ -79,8 +92,9 @@ plot.chr <- function(dat, mtd.thresh, allchr=1:16, main="mtd thresh")
           col=c("black", "grey", "white"),
           main=paste(main, ":", sprintf("%.2e", mtd.thresh)),
           sub="black:telomere, gray:cen, white:other")
-  axis(2, at=c(axTicks(2)), las=2, col="grey", col.axis="grey")
-  axis(2, at=c(range(h$counts)), las=2, lwd=2)
+  filter <- filterGreyTicks(axTicks(2), range(h$counts))
+  axis(2, at=axTicks(2)[filter], las=2, col="grey", col.axis="grey")
+  axis(2, at=range(h$counts), las=2, lwd=2)
 }
 
 plot.hist.modular <- function(dat, main="", ylim=c(0,20),
@@ -95,31 +109,41 @@ plot.hist.modular <- function(dat, main="", ylim=c(0,20),
     ## cd = centromere distance
     agg <- cbind(dat$mtd, dat$cd)
 
-    D <- log10(apply(agg, 1, min))
+    ##D <- log10(apply(agg, 1, min))
+    D <- log10(dat$mtd)
     h <- hist(D,
-##              xlim=xlim,
+              xlim=xlim,
 ##              ylim=ylim,
               breaks=20,
-              xlab="Distance from closest Cen/Tel (bp)",
+              xlab="Distance from closest tel. (bp)",
               ylab="",
               main=main,
-              col="grey",
+              col="black",
               las=1,
               xaxt="n",
               yaxt="n")
+
     x.ticks <- axTicks(1)
-    axis(side=1, at=x.ticks, labels=sprintf("%.0e", 10^x.ticks), col="grey", col.axis="grey")
-    axis(side=1, at=range(h$breaks), labels=sprintf("%.0e", 10^range(h$breaks)), lwd=2)
-    axis(2, at=c(axTicks(2)), las=2, col="grey", col.axis="grey")
-    axis(2, at=c(range(h$counts)), las=2, lwd=2)
-    
+    x.black <- range(h$breaks)
+    x.filter <- filterGreyTicks(x.ticks, x.black)
+    x.grey <- x.ticks[x.filter]
+    axis(side=1, at=x.grey, labels=sprintf("%.0e", 10^x.grey),
+         col="grey", col.axis="grey")
+    axis(side=1, at=x.black, labels=sprintf("%.0e", 10^x.black), lwd=2)
+
     ## this prints a tick at every minor interval
     rug(x=as.vector(sapply(x.ticks, function(x) { x + log10(c(1:10))})),
         ticksize=-0.02)
     
+    y.ticks <- axTicks(2)
+    y.black <- range(h$counts)
+    y.filter <- filterGreyTicks(y.ticks, y.black)
+    axis(2, at=y.ticks[y.filter], las=2, col="grey", col.axis="grey")
+    axis(2, at=y.black, las=2, lwd=2)
+    
     if(!is.na(bkgd.max))
       {
-        abline(v=bkgd.max, col="red", lty=2)
+        abline(v=bkgd.max, col="blue", lty=2)
         if(show.ks.pvalue)
         {
           text(x=log10(200), y=mean(ylim), adj=0,
@@ -130,13 +154,13 @@ plot.hist.modular <- function(dat, main="", ylim=c(0,20),
 
     if(!is.na(mtd.thresh))
       {
-        abline(v=log10(mtd.thresh), col="blue", lty=2)
+        abline(v=log10(mtd.thresh), col="red", lty=2)
       }
     return(list(h=h, D=D))
   }
 
 
-plot.pvalues <- function(outfile, D.list, all.results)
+plot.pvalues <- function(outfile, D.list, all.results, highlight=c("SWI4", "GAT3", "MSN4"))
   {
     cats <- c()
     pvals <- c()
@@ -155,7 +179,15 @@ plot.pvalues <- function(outfile, D.list, all.results)
     write.table(file=outfile,
                 res[o.p,], quote=F, row.names=F)
 
-    barplot(sort(log10(pvals)), las=2, ylab="Log10 P-value")
+    cols = rep("black", times=length(pvals))
+    hh <- match(highlight, cats)
+    if(length(hh) > 0)
+      {
+        print (paste("plot.pvalues: Highlighting [",
+                     paste(cats[hh], collapse=", "), "]"))
+        cols[hh] <- "red"
+      }
+    barplot(log10(pvals[o.p]), las=2, ylab="KS P-value (log10)", col=cols[o.p])
     abline(h=log10(1e-3), lty=2, col="red")
   }
 

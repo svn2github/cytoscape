@@ -3,7 +3,7 @@ package GeneSet;
 use Object;
 use POSIX;
 use SGD;
-use Util qw(which);
+use Util qw(min which);
 
 our @ISA = qw(Object);
 
@@ -48,13 +48,15 @@ sub analyze
     my $stopIndex = $geneData->indexOfField("stopCoordinate");
 
     my @orfs = @{$self->orfs()};
+    my @missing;
+
     foreach my $i (0..$#orfs)
     {
 	my $orf = $orfs[$i];
 
 	if(!$geneData->featureExists($orf))
 	{
-	    printf STDERR "   $orf does not exist in feature table\n";
+	    push @missing, $orf;
 	    next;
 	}
 	$chr = $geneData->getByIndex($orf, $chrIndex);
@@ -62,7 +64,12 @@ sub analyze
 
 	push @{$self->analyzedOrfs()}, $orf;
     }
-
+    
+    if(scalar(@missing) > 0) {
+	printf STDERR ("   Missing from feature table: [%s]\n",
+		       join(", ", @missing));
+    }
+							    
     @orfs = @{$self->analyzedOrfs()};
     foreach my $i (0..$#orfs)
     {
@@ -119,20 +126,6 @@ sub printData
 			    $self->centromereDist()->[$i]));
 
     }
-}
-
-sub min
-{
-    return undef if (scalar(@_) == 0);
-    my $x = shift @_;
-    foreach (@_)
-    {
-	if($_ < $x)
-	{
-	    $x = $_;
-	}
-    }
-    return $x;
 }
 
 return 1;

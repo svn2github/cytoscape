@@ -5,6 +5,7 @@ our @ISA = qw(Exporter);
 
 #symbols to export by default
 our @EXPORT = qw(
+		 min
 		 which
 		 keysSortedByValueArraySize
 		 );
@@ -24,6 +25,20 @@ sub which
     return @inds;
 }
 
+
+sub min
+{
+    return undef if (scalar(@_) == 0);
+    my $x = shift @_;
+    foreach (@_)
+    {
+	if($_ < $x)
+	{
+	    $x = $_;
+	}
+    }
+    return $x;
+}
 
 
 sub keysSortedByValueArraySize
