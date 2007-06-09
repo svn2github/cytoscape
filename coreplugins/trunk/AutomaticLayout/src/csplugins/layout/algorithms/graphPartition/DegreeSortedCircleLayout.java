@@ -25,6 +25,8 @@ import java.util.*;
  *
  */
 public class DegreeSortedCircleLayout extends AbstractGraphPartition {
+	private final static String DEGREE = "Degree";
+	
 	/**
 	 * Creates a new DegreeSortedCircleLayout object.
 	 */
@@ -71,14 +73,17 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 			return;
 
 		// sort the Nodes based on the degree
+		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		Arrays.sort(sortedNodes,
 		            new Comparator() {
 				public int compare(Object o1, Object o2) {
-					Node node1 = ((LayoutNode) o1).getNode();
-					Node node2 = ((LayoutNode) o2).getNode();
-
-					return (Cytoscape.getCurrentNetwork().getDegree(node2.getRootGraphIndex())
-					       - Cytoscape.getCurrentNetwork().getDegree(node1.getRootGraphIndex()));
+					final Node node1 = ((LayoutNode) o1).getNode();
+					final Node node2 = ((LayoutNode) o2).getNode();
+					final int d1 = Cytoscape.getCurrentNetwork().getDegree(node1.getRootGraphIndex());
+					final int d2 = Cytoscape.getCurrentNetwork().getDegree(node2.getRootGraphIndex());
+					nodeAttr.setAttribute(node1.getIdentifier(), DEGREE, d1);
+					nodeAttr.setAttribute(node2.getIdentifier(), DEGREE, d2);
+					return (d2 - d1);
 				}
 
 				public boolean equals(Object o) {
@@ -100,5 +105,10 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 			node.setY(r + (r * Math.cos(i * phi)));
 			partition.moveNodeToLocation(node);
 		}
+	}
+	
+	public void construct() {
+		super.construct();
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 }
