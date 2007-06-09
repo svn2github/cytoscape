@@ -144,6 +144,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -205,7 +206,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static JMenuItem deleteVS;
 	private static JMenuItem duplicateVS;
 	private static JMenuItem createLegend;
+	
 	private static JMenu generateValues;
+	private static JMenu modifyValues;
+	
+	private static JMenuItem brighter;
+	private static JMenuItem darker;
+	
+	private static JCheckBoxMenuItem lockSize;
+	
 
 	/*
 	 * Icons used in this panel.
@@ -339,10 +348,24 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Build right-click menu
 		 */
-		generateValues = new JMenu("Generate Values");
+		generateValues = new JMenu("Generate Discrete Values");
 		generateValues.setIcon(rndIcon);
+		modifyValues = new JMenu("Modify Discrete Values");
+		
+		lockSize = new JCheckBoxMenuItem("Lock Node Width/Height");
+		lockSize.setSelected(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
+		lockSize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(lockSize.isSelected()) {
+					vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
+				} else {
+					vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
+				}
+				Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
+			}
+		});
 
-		add = new JMenuItem("Add new mapping");
+		
 		delete = new JMenuItem("Delete mapping");
 
 		final Font italicMenu = new Font("SansSerif", Font.ITALIC, 14);
@@ -353,11 +376,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		rainbow2.setFont(italicMenu);
 
 		series = new JMenuItem("Series (Number Only)");
-		fit = new JMenuItem("Fit label");
+		fit = new JMenuItem("Fit Node Width to Label");
+		
+		brighter = new JMenuItem("Brighter");
+		darker = new JMenuItem("Darker");
 
 		editAll = new JMenuItem("Edit selected values at once...");
 
-		add.setIcon(addIcon);
+		
 		delete.setIcon(delIcon);
 		editAll.setIcon(editIcon);
 
@@ -367,7 +393,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		series.addActionListener(new GenerateSeriesListener());
 		fit.addActionListener(new FitLabelListener());
-
+		
+		brighter.addActionListener(new BrightnessListener(BrightnessListener.BRIGHTER));
+		darker.addActionListener(new BrightnessListener(BrightnessListener.DARKER));
+		
 		delete.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					removeMapping();
@@ -386,18 +415,27 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		generateValues.add(randomize);
 		generateValues.add(series);
 		generateValues.add(fit);
-
+		
+		modifyValues.add(brighter);
+		modifyValues.add(darker);
+		
 		rainbow1.setEnabled(false);
 		rainbow2.setEnabled(false);
 		randomize.setEnabled(false);
 		series.setEnabled(false);
 		fit.setEnabled(false);
-
-		menu.add(add);
+		
+		brighter.setEnabled(false);
+		darker.setEnabled(false);
+		
+		
 		menu.add(delete);
 		menu.add(new JSeparator());
 		menu.add(generateValues);
+		menu.add(modifyValues);
 		menu.add(editAll);
+		menu.add(new JSeparator());
+		menu.add(lockSize);
 
 		menu.addPopupMenuListener(this);
 	}
@@ -1121,8 +1159,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				return;
 			}
 
-			System.out.println("Right Click Found2*******************************");
-
 			final Item item = (Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0);
 			final Property curProp = item.getProperty();
 
@@ -1135,19 +1171,18 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				VisualPropertyType type = ((VisualPropertyType) prop.getHiddenObject());
 				Class dataType = type.getDataType();
 
-				System.out.println("============== Type = " + type.toString());
-
 				if (dataType == Color.class) {
 					rainbow1.setEnabled(true);
 					rainbow2.setEnabled(true);
 					randomize.setEnabled(true);
+					brighter.setEnabled(true);
+					darker.setEnabled(true);
 				} else if (dataType == Number.class) {
 					randomize.setEnabled(true);
 					series.setEnabled(true);
 				}
 
-				if ((type == VisualPropertyType.NODE_WIDTH)
-				    || (type == VisualPropertyType.NODE_HEIGHT)) {
+				if ((type == VisualPropertyType.NODE_WIDTH)) {
 					fit.setEnabled(true);
 				}
 			}
@@ -2736,13 +2771,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				 * Create random colors
 				 */
 				final float increment = 1f / ((Number) attrSet.size()).floatValue();
-				System.out.println("---Num vals = " + attrSet.size());
 
 				float hue = 0;
 				float sat = 0;
 				float br = 0;
-
-				System.out.println("---Color inc = " + increment);
 
 				if (type.getDataType() == Color.class) {
 					int i = 0;
@@ -2761,9 +2793,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 							      + 0.3f;
 							br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2)))
 							               .floatValue()) * 0.7f) + 0.3f;
-							System.out.println("---Hue = " + hue + ", sat = " + sat + ", br = "
-							                   + br);
-
 							valueMap.put(key, new Color(Color.HSBtoRGB(hue, sat, br)));
 							i++;
 						}
@@ -2794,9 +2823,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm.putAll(valueMap);
 				vmm.getNetworkView().redrawGraph(false, true);
-
-				System.out.println("======== Randomization Done in: "
-				                   + (System.currentTimeMillis() - seed) + " msec.");
 
 				visualPropertySheetPanel.removeProperty(prop);
 
@@ -3036,6 +3062,110 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 	}
 
+	private class BrightnessListener extends AbstractAction {
+		
+		private DiscreteMapping dm;
+		protected static final int DARKER = 1;
+		protected static final int BRIGHTER = 2;
+		
+		private final int functionType;
+
+		public BrightnessListener(final int type) {
+			this.functionType = type;
+		}
+
+		/**
+		 *  User wants to Seed the Discrete Mapper with Random Color Values.
+		 */
+		public void actionPerformed(ActionEvent e) {
+			/*
+			 * Check Selected poperty
+			 */
+			final int selectedRow = visualPropertySheetPanel.getTable().getSelectedRow();
+
+			if (selectedRow < 0) {
+				return;
+			}
+
+			final Item item = (Item) visualPropertySheetPanel.getTable().getValueAt(selectedRow, 0);
+			final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
+			final Object hidden = prop.getHiddenObject();
+
+			if (hidden instanceof VisualPropertyType) {
+				final VisualPropertyType type = (VisualPropertyType) hidden;
+
+				final Map valueMap = new HashMap();
+				final ObjectMapping oMap;
+
+				final CyAttributes attr;
+
+				if (type.isNodeProp()) {
+					attr = Cytoscape.getNodeAttributes();
+					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
+					          .getMapping(0);
+				} else {
+					attr = Cytoscape.getEdgeAttributes();
+					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
+					          .getMapping(0);
+				}
+
+				if ((oMap instanceof DiscreteMapping) == false) {
+					return;
+				}
+
+				dm = (DiscreteMapping) oMap;
+
+				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap);
+
+				/*
+				 * Create random colors
+				 */
+				
+
+				if (type.getDataType() == Color.class) {
+					Object c;
+
+					if (functionType == BRIGHTER) {
+						for (Object key : attrSet) {
+							c = dm.getMapValue(key);
+							if(c != null && c instanceof Color) {
+								valueMap.put(key, ((Color)c).brighter());
+							}
+						}
+					} else if (functionType == DARKER) {
+						for (Object key : attrSet) {
+							c = dm.getMapValue(key);
+							if(c != null && c instanceof Color) {
+								valueMap.put(key, ((Color)c).darker());
+							}
+						}
+					} 
+				}
+				dm.putAll(valueMap);
+				vmm.getNetworkView().redrawGraph(false, true);
+				visualPropertySheetPanel.removeProperty(prop);
+
+				final VizMapperProperty newRootProp = new VizMapperProperty();
+
+				if (type.isNodeProp())
+					buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
+					                 .getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
+				else
+					buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
+					                 .getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
+
+				removeProperty(prop);
+				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+
+				expandLastSelectedItem(type.getName());
+			} else {
+				System.out.println("Invalid.");
+			}
+
+			return;
+		}
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -3047,6 +3177,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		randomize.setEnabled(false);
 		series.setEnabled(false);
 		fit.setEnabled(false);
+		brighter.setEnabled(false);
+		darker.setEnabled(false);
 	}
 
 	/**
