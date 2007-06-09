@@ -6,8 +6,10 @@ use DFS;
 
 sub new
 {
-    my ($caller, $graph) = @_;
-    return $caller->SUPER::new($graph);
+    my ($caller, $graph, $debug) = @_;
+    my $self = $caller->SUPER::new($graph);
+    $self->{'DEBUG'} = $debug;
+    return $self;
 }
 
 #
@@ -49,12 +51,12 @@ sub search
     foreach my $n ($self->graph()->nodes())
     {
 	next if($color{$n} != $self->{'WHITE'});
-	print "### $n [start DFS]\n";
+	print "### $n [start DFS]\n" if ($self->{'DEBUG'});
 	
 	my $time = 0;
 	$self->dfsVisit($n, 0, \$time, \%color, \%dt, \%ft, $visitor);
 
-	print "    $n [done]\n";
+	print "    $n [done]\n"  if ($self->{'DEBUG'});
     }
     return \%components;
 }

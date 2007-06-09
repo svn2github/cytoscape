@@ -25,18 +25,16 @@ if(scalar(@newArg != 1))
 {
     die "$0: <sif>\n";
 }
-
-
     
 my ($network, $outName) = @newArg;
 
 my $graph = PPAwareGraph->new($network);
 $graph->print() if $DEBUG;
 
-my $cc = ConnectedComponents->new($graph);
+my $cc = ConnectedComponents->new($graph, $DEBUG);
 my $components = $cc->search();
 
 foreach my $id (sort {$a <=> $b} keys %{$components})
 {
-    printf "Component $id = (%s)\n", join(",", @{$components->{$id}});
+    printf "Component $id = (%s)\n", join(",", sort @{$components->{$id}});
 }

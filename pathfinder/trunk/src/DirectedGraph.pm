@@ -4,7 +4,7 @@ use Object;
 
 @ISA = qw(Object);
 
-DirectedGraph->_generateAccessors(qw(alist _nodeHash));
+DirectedGraph->_generateAccessors(qw(alist incidentList _nodeHash));
 
 my $DEBUG = 1;
 
@@ -18,6 +18,7 @@ sub new
 
     $self->_nodeHash({});
     $self->alist({});
+    $self->incidentList({});
 
     if($sif) {$self->populateFromSIF($sif)};
     
@@ -49,14 +50,31 @@ sub getEdgeTypesBetween
     return ( $self->alist()->{$n1}{$n2} );
 }
 
+sub edgeExists
+{
+    my ($self, $source, $target) = @_;
+
+    return exists($self->alist()->{$source}{$target});
+}
+
 #
-# 
+# Get neighbors that can be reach from $node
 #
 sub getNeighbors
 {
     my ($self, $node) = @_;
     
     return(keys %{$self->alist()->{$node}} );
+}
+
+#
+# Get sources of incident edges on $node
+#
+sub getIncidentNeighbors
+{
+    my ($self, $node) = @_;
+    
+    return(keys %{$self->incidentList()->{$node}} );
 }
 
 sub populateFromSIF
@@ -81,6 +99,7 @@ sub populateFromSIF
 	    $self->_nodeHash()->{$n2}++;
 
             push @{$self->alist()->{$n1}{$n2}}, $edge;
+            push @{$self->incidentList()->{$n2}{$n1}}, $edge;
 	    $Ne++;
         }
         elsif(/^(\S+)/)
@@ -98,8 +117,29 @@ sub populateFromSIF
 sub print
 {
     my ($self) = @_;
+    my $nodesPrinted = _printList($self->alist());
+    
+    foreach my $n ($self->nodes())
+    {
+	if(!exists($nodesPrinted->{$n}))
+	{
+	    print "$n\n";
+	}
+    }
+}
 
-    my %alist = %{$self->alist()};
+sub printIncomingEdges
+{
+    my ($self) = @_;
+    my $nodesPrinted = _printList($self->incidentList());
+}
+
+
+sub _printList
+{
+    my ($adjacencyList) = @_;
+
+    my %alist = %{$adjacencyList};
 
     my %nodesPrinted;
     foreach $n1 (keys %alist)
@@ -114,14 +154,7 @@ sub print
 	    }
 	}
     }
-
-    foreach my $n ($self->nodes())
-    {
-	if(!exists($nodesPrinted{$n}))
-	{
-	    print "$n\n";
-	}
-    }
+    return \%nodesPrinted;
 }
 
 1;
