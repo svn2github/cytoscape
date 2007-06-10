@@ -11,7 +11,6 @@
 		<ant dir="browser" />
 		<ant dir="ManualLayout" />
 		<ant dir="RFilters" />
-		<ant dir="yfiles" />
 		<ant dir="CytoscapeEditor2" />
 		<ant dir="AutomaticLayout" />
 		<ant dir="GraphMerge" />
@@ -27,7 +26,6 @@
 		<copy todir="${build.dir}" file="browser/browser.jar" />
 		<copy todir="${build.dir}" file="ManualLayout/ManualLayout.jar" />
 		<copy todir="${build.dir}" file="RFilters/filter.jar" />
-		<copy todir="${build.dir}" file="yfiles/yLayouts.jar" />
 		<copy todir="${build.dir}" file="CytoscapeEditor2/CytoscapeEditor.jar" />
 		<copy todir="${build.dir}" file="AutomaticLayout/AutomaticLayout.jar" />
 		<copy todir="${build.dir}" file="GraphMerge/GraphMerge.jar" />
@@ -45,7 +43,6 @@
 		<ant dir="browser" target="clean" />
 		<ant dir="ManualLayout" target="clean" />
 		<ant dir="RFilters" target="clean" />
-		<ant dir="yfiles" target="clean" />
 		<ant dir="CytoscapeEditor2" target="clean" />
 		<ant dir="AutomaticLayout" target="clean" />
 		<ant dir="GraphMerge" target="clean" />
