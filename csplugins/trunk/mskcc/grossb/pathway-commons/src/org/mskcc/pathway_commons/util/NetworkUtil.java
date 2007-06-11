@@ -35,33 +35,20 @@ package org.mskcc.pathway_commons.util;
 import org.mskcc.pathway_commons.task.MergeNetworkTask;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.actions.LoadNetworkTask;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
+import cytoscape.data.CyAttributes;
 
-import giny.view.NodeView;
 import ding.view.NodeContextMenuListener;
-
-import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.net.MalformedURLException;
-import javax.swing.SwingUtilities;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.MenuElement;
-import javax.swing.AbstractAction;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -69,7 +56,12 @@ import java.io.UnsupportedEncodingException;
  *
  * @author Benjamin Gross.
  */
-public class NetworkUtil extends Thread implements NodeContextMenuListener {
+public class NetworkUtil extends Thread {
+
+	/**
+	 * ref to NodeContextMenuListener
+	 */
+	NodeContextMenuListener nodeContextMenuListener;
 
 	/**
 	 * Stores web services url
@@ -101,15 +93,6 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
      */
     private static final String NEIGHBORHOOD_TITLE_ARG = "&neighborhood_title=";
 
-	/**
-	 * Context menu title.
-	 */
-	private static final String CONTEXT_MENU_TITLE = "View network neighborhood map";
-
-	/**
-	 * Context menu item command.
-	 */
-	private static final String PC_WEB_SERVICE_URL = "/pc/webservice.do?version=2.0&cmd=get_neighbors&format=biopax&q=";
 
 	/**
 	 * Constructor.
@@ -117,13 +100,16 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 	 * @param pathwayCommonsRequest String
 	 * @param cyNetwork CyNetwork
 	 * @param merging boolean
+	 * @param nodeContextMenuListener NodeContextMenuListener
 	 */
-	public NetworkUtil(String pathwayCommonsRequest, CyNetwork cyNetwork, boolean merging) {
+	public NetworkUtil(String pathwayCommonsRequest, CyNetwork cyNetwork,
+					   boolean merging, NodeContextMenuListener nodeContextMenuListener) {
 
 		// init member vars
 		parseRequest(pathwayCommonsRequest);
 		this.cyNetwork = cyNetwork;
 		this.merging = merging;
+		this.nodeContextMenuListener = nodeContextMenuListener;
 	}
 
 	/**
@@ -142,7 +128,12 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 				postProcess(cyNetwork, true);
 			}
 			else {
-				// use cytoscape's canned load network task
+				// the biopax graph reader is going to be called
+				// it will look for the network view title
+				// via system properties, so lets set them now
+				if (networkTitle != null) {
+					System.setProperty("biopax.network_view_title", networkTitle);
+				}
 				LoadNetworkTask.loadURL(pathwayCommonsURL, true);
 				postProcess(Cytoscape.getCurrentNetwork(), false);
 			}
@@ -241,19 +232,6 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 		// ref to view used below
 		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 
-		// do we have a title to set ? - use it if we are not merging
-		if (!merging && networkTitle != null) {
-			cyNetwork.setTitle(networkTitle);
-
-			//  Update UI.  Must be done via SwingUtilities,
-			// or it won't work.
-			SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-					}
-				});
-		}
-
 		// if do layout, do it
 		if (doLayout) {
 			LayoutUtil layoutUtil = new LayoutUtil();
@@ -261,77 +239,17 @@ public class NetworkUtil extends Thread implements NodeContextMenuListener {
 			view.fitContent();
 		}
 
+		// setup web services url to pc - used by nodeContextMenuListener
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+									   "biopax.web_services_url",
+									   webServicesURL);
+
 		// setup the context menu
-		view.addNodeContextMenuListener(this);
+		view.addNodeContextMenuListener(nodeContextMenuListener);
 
 		// set focus current
 		Cytoscape.firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 									 null, cyNetwork.getIdentifier());
-	}
-
-	/**
-	 * Our implementation of NodeContextMenuListener.addNodeContextMenuItems(..).
-	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-
-		// check if we have already added menu item
-		if (contextMenuExists(menu)) return;
-
-		// generate menu url
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		CyNode cyNode = (CyNode)nodeView.getNode();
-		String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapNodeAttributes.BIOPAX_RDF_ID);
-		biopaxID = biopaxID.replace("CPATH-", "");
-		String neighborhoodParam = "Neighborhood: " + nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-		try {
-			neighborhoodParam = URLEncoder.encode(neighborhoodParam, "UTF-8");
-		}
-		catch (UnsupportedEncodingException e) {
-			// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
-			// anyway, at least encode spaces
-			neighborhoodParam = neighborhoodParam.replaceAll(" ", "%20");
-		}
-
-		final String urlString = "http://127.0.0.1:27182/" + webServicesURL +
-			PC_WEB_SERVICE_URL + biopaxID + "&neighborhood_title=" + neighborhoodParam;
-
-		// add new menu item
-		JMenuItem item = new JMenuItem( new AbstractAction(CONTEXT_MENU_TITLE) {
-                public void actionPerformed (ActionEvent e){
-                    SwingUtilities.invokeLater( new Runnable ()  {
-                        public void run() {
-							try {
-								URL url = new URL(urlString);
-								url.getContent();
-							}
-							catch (Exception e) {
-								e.printStackTrace();
-							}
-                        }
-                    });
-                }
-            }	);
-		menu.add(item);
-	}
-
-	/**
-	 * Method checks if we have already added a neighborhood map context menu
-	 * to given menu.
-	 *
-	 * @param menu JPopupMenu
-	 * @return boolean
-	 */
-	private boolean contextMenuExists(JPopupMenu menu) {
-
-		for (MenuElement element : menu.getSubElements()) {
-			Component component = element.getComponent();
-			if (component instanceof JMenuItem) {
-				String text = ((JMenuItem)component).getText();
-				if (text != null && text.equals(CONTEXT_MENU_TITLE)) return true;
-			}
-		}
-
-		// outta here
-		return false;
 	}
 }
