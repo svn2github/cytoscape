@@ -84,6 +84,11 @@ public class NetworkUtil extends Thread {
 	private String networkTitle;
 
 	/**
+	 * ref to data source set
+	 */
+	private String dataSources;
+
+	/**
 	 * boolean indicated if we are merging
 	 */
 	private boolean merging;
@@ -93,6 +98,10 @@ public class NetworkUtil extends Thread {
      */
     private static final String NEIGHBORHOOD_TITLE_ARG = "&neighborhood_title=";
 
+    /**
+     * Data Source Arg
+     */
+    private static final String DATA_SOURCE_ARG = "&data_source=";
 
 	/**
 	 * Constructor.
@@ -158,6 +167,10 @@ public class NetworkUtil extends Thread {
 		// extract title
 		this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
 											  pathwayCommonsRequest);
+
+		// extract data sources
+		dataSources = extractRequestArg(DATA_SOURCE_ARG,
+										pathwayCommonsRequest);
 
 		// set request member
 		this.pathwayCommonsRequest = pathwayCommonsRequest;
@@ -239,11 +252,16 @@ public class NetworkUtil extends Thread {
 			view.fitContent();
 		}
 
-		// setup web services url to pc - used by nodeContextMenuListener
+		// setup web services url to pc attribute  - used by nodeContextMenuListener
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		networkAttributes.setAttribute(cyNetwork.getIdentifier(),
 									   "biopax.web_services_url",
 									   webServicesURL);
+
+		// setup data sources attribute - used by nodeContextMenuListener
+		networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+									   "biopax.data_sources",
+									   dataSources);
 
 		// setup the context menu
 		view.addNodeContextMenuListener(nodeContextMenuListener);
