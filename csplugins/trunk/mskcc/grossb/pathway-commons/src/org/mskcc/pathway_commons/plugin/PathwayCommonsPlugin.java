@@ -32,11 +32,13 @@
 package org.mskcc.pathway_commons.plugin;
 
 // imports
+import org.mskcc.pathway_commons.http.HTTPServer;
+import org.mskcc.pathway_commons.util.NetworkListener;
+import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
+
+import cytoscape.Cytoscape;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.CytoscapePlugin;
-
-import org.mskcc.pathway_commons.http.HTTPServer;
-import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
 
 /**
  * The pathway commons plugin class.  It gets called by Cytoscape's plugin manager
@@ -72,7 +74,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 		info.setDescription("Provides connectivity to Pathway Commons Repository (www.pathwaycommons.org).");
 		info.setCategory("Connectivity");
 		info.setPluginVersion(Double.valueOf(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM));
-		info.setProjectUrl("http://www.pathwaycommons.org");
+		//info.setProjectUrl("http://www.pathwaycommons.org");
 		info.addAuthor("Benjamin Gross", "Computational Biology Center, Memorial Sloan-Kettering Cancer Center");
 
 		// outta here
@@ -88,8 +90,12 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 		Boolean debug  = (debugProperty != null && debugProperty.length() > 0) &&
 			new Boolean(debugProperty.toLowerCase());
 
+		// to catch network creation events - to setup context menu
+		NetworkListener networkListener = new NetworkListener();
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(networkListener);
+
 		// create our http server and start its thread
 		new HTTPServer(HTTPServer.DEFAULT_PORT,
-					   new MapPathwayCommonsToCytoscape(), debug).start();
+					   new MapPathwayCommonsToCytoscape(networkListener), debug).start();
     }
 }
