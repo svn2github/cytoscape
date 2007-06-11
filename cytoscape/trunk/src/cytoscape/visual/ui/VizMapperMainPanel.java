@@ -1477,6 +1477,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					case NODE_LINE_WIDTH:
 					case EDGE_LINE_WIDTH:
 					case NODE_OPACITY:
+					case EDGE_OPACITY:
+					case NODE_LABEL_OPACITY:
+					case EDGE_LABEL_OPACITY:
+					case NODE_BORDER_OPACITY:
 						setDiscreteProps(type, discMapping, attrSet, numberCellEditor,
 						                 defCellRenderer, calculatorTypeProp);
 

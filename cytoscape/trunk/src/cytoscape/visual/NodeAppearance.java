@@ -42,9 +42,6 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
 import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
@@ -54,30 +51,15 @@ import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
+import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
 import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
-
-import cytoscape.visual.parsers.ColorParser;
-import cytoscape.visual.parsers.DoubleParser;
-import cytoscape.visual.parsers.FontParser;
-import cytoscape.visual.parsers.LabelPositionParser;
-import cytoscape.visual.parsers.NodeShapeParser;
-import cytoscape.visual.parsers.ObjectToString;
-
-import giny.model.Node;
-
-import giny.view.Label;
 import giny.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Stroke;
-
-import java.util.Properties;
 
 
 /**
@@ -125,21 +107,21 @@ public class NodeAppearance extends Appearance {
 		set(NODE_FILL_COLOR,c);
     }
     
-    /**
-     * Use Appearance.get(VisualPropertyType) instead.
-     *
-     */
-    public Integer getFillOpacity() {
-        return (Integer)(super.get(NODE_OPACITY));
-    }
-
-    /**
-     * Use Appearance.set(VisualPropertyType,Object) instead.
-     *
-     */
-    public void setFillOpacity(Integer i) {
-		set(NODE_OPACITY,i);
-    }
+//    /**
+//     * Use Appearance.get(VisualPropertyType) instead.
+//     *
+//     */
+//    public Integer getFillOpacity() {
+//        return (Integer)(super.get(NODE_OPACITY));
+//    }
+//
+//    /**
+//     * Use Appearance.set(VisualPropertyType,Object) instead.
+//     *
+//     */
+//    public void setFillOpacity(Integer i) {
+//		set(NODE_OPACITY,i);
+//    }
 
     /**
      * Use Appearance.get(VisualPropertyType) instead.

@@ -145,8 +145,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 	public static JPanel showDialog(Frame parent) {
 		buildDefaultViewDialog(parent);
 		dab.setLocationRelativeTo(parent);
-		dab.setSize(750, 350);
+		dab.setSize(900, 400);
 		dab.mainView.updateView();
+		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
 
 		return dab.getPanel();
@@ -527,7 +528,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(65);
+			this.setIconTextGap(55);
 
 			if (value instanceof VisualPropertyType
 			    && (((VisualPropertyType) value).getDataType() == String.class)) {

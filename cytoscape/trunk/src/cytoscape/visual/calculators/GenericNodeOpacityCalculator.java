@@ -42,20 +42,12 @@
 //--------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.visual.Appearance;
-
-//--------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
 
-import cytoscape.visual.mappings.ObjectMapping;
-
-import cytoscape.visual.parsers.DoubleParser;
-
-import giny.model.Node;
-
 import java.util.Properties;
+
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.parsers.FloatParser;
 
 
 //--------------------------------------------------------------------------
@@ -84,7 +76,7 @@ public class GenericNodeOpacityCalculator extends NodeCalculator {
      */
     public GenericNodeOpacityCalculator(String name, Properties props,
         String baseKey) {
-        super(name, props, baseKey, new DoubleParser(), new Integer(255),
+        super(name, props, baseKey, new FloatParser(), new Integer(255),
             NODE_OPACITY);
     }
 }

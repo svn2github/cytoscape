@@ -47,9 +47,11 @@ import cytoscape.visual.calculators.GenericEdgeFontFaceCalculator;
 import cytoscape.visual.calculators.GenericEdgeFontSizeCalculator;
 import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
 import cytoscape.visual.calculators.GenericEdgeLabelColorCalculator;
+import cytoscape.visual.calculators.GenericEdgeLabelOpacityCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineStyleCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
 import cytoscape.visual.calculators.GenericEdgeLineWidthCalculator;
+import cytoscape.visual.calculators.GenericEdgeOpacityCalculator;
 import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
 import cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator;
@@ -58,12 +60,14 @@ import cytoscape.visual.calculators.GenericEdgeTargetArrowColorCalculator;
 import cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator;
 import cytoscape.visual.calculators.GenericEdgeToolTipCalculator;
 import cytoscape.visual.calculators.GenericNodeBorderColorCalculator;
+import cytoscape.visual.calculators.GenericNodeBorderOpacityCalculator;
 import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
 import cytoscape.visual.calculators.GenericNodeFontFaceCalculator;
 import cytoscape.visual.calculators.GenericNodeFontSizeCalculator;
 import cytoscape.visual.calculators.GenericNodeHeightCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelColorCalculator;
+import cytoscape.visual.calculators.GenericNodeLabelOpacityCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelPositionCalculator;
 import cytoscape.visual.calculators.GenericNodeLineStyleCalculator;
 import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
@@ -77,11 +81,13 @@ import cytoscape.visual.properties.EdgeColorProp;
 import cytoscape.visual.properties.EdgeFontFaceProp;
 import cytoscape.visual.properties.EdgeFontSizeProp;
 import cytoscape.visual.properties.EdgeLabelColorProp;
+import cytoscape.visual.properties.EdgeLabelOpacityProp;
 import cytoscape.visual.properties.EdgeLabelPositionProp;
 import cytoscape.visual.properties.EdgeLabelProp;
 import cytoscape.visual.properties.EdgeLineStyleProp;
 import cytoscape.visual.properties.EdgeLineTypeProp;
 import cytoscape.visual.properties.EdgeLineWidthProp;
+import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
 import cytoscape.visual.properties.EdgeSourceArrowProp;
 import cytoscape.visual.properties.EdgeSourceArrowShapeProp;
@@ -90,11 +96,13 @@ import cytoscape.visual.properties.EdgeTargetArrowProp;
 import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
 import cytoscape.visual.properties.NodeBorderColorProp;
+import cytoscape.visual.properties.NodeBorderOpacityProp;
 import cytoscape.visual.properties.NodeFillColorProp;
 import cytoscape.visual.properties.NodeFontFaceProp;
 import cytoscape.visual.properties.NodeFontSizeProp;
 import cytoscape.visual.properties.NodeHeightProp;
 import cytoscape.visual.properties.NodeLabelColorProp;
+import cytoscape.visual.properties.NodeLabelOpacityProp;
 import cytoscape.visual.properties.NodeLabelPositionProp;
 import cytoscape.visual.properties.NodeLabelProp;
 import cytoscape.visual.properties.NodeLineStyleProp;
@@ -209,9 +217,19 @@ public enum VisualPropertyType {
 	                    "edge.targetArrowColor", "defaultEdgeTargetArrowColor",
 	                    GenericEdgeTargetArrowColorCalculator.class, Color.class,
 	                    new EdgeTargetArrowColorProp()),
+	/*
+	 * New in 2.5: Opacity support
+	 */
 	NODE_OPACITY("Node Opacity", "nodeOpacityCalculator", "node.opacity", "defaultNodeOpacity",
 	             GenericNodeOpacityCalculator.class, Number.class, new NodeOpacityProp()), 
-
+	EDGE_OPACITY("Edge Opacity", "edgeOpacityCalculator", "edge.opacity", "defaultEdgeOpacity",
+	    	     GenericEdgeOpacityCalculator.class, Number.class, new EdgeOpacityProp()), 
+	NODE_LABEL_OPACITY("Node Label Opacity", "nodeLabelOpacityCalculator", "node.LabelOpacity", "defaultNodeLabelOpacity",
+	    	             GenericNodeLabelOpacityCalculator.class, Number.class, new NodeLabelOpacityProp()), 
+	EDGE_LABEL_OPACITY("Edge Label Opacity", "edgeLabelOpacityCalculator", "edge.labelOpacity", "defaultEdgeLabelOpacity",
+	    	    	     GenericEdgeLabelOpacityCalculator.class, Number.class, new EdgeLabelOpacityProp()), 
+    NODE_BORDER_OPACITY("Node Border Opacity", "nodeBorderOpacityCalculator", "node.borderOpacity", "defaultNodeBorderOpacity",
+	    	    	             GenericNodeBorderOpacityCalculator.class, Number.class, new NodeBorderOpacityProp()), 
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
 	                    "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp());
