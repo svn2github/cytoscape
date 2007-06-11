@@ -101,14 +101,21 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 		// check if we have already added menu item
 		if (contextMenuExists(menu)) return;
 
-		// grab web services url from network attributes
+		// setup refs to get network attributes
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+
+		// grab web services url from network attributes
 		String webServicesURL = networkAttributes.getStringAttribute(view.getNetwork().getIdentifier(),
 																	 "biopax.web_services_url");
 		if (webServicesURL.startsWith("http://")) {
 			webServicesURL = webServicesURL.substring(7);
 		}
+
+		// grab data sources from network attributes
+		String dataSources = networkAttributes.getStringAttribute(view.getNetwork().getIdentifier(),
+																  "biopax.data_sources");
+		
 
 		// generate menu url
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -116,17 +123,23 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 		String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapNodeAttributes.BIOPAX_RDF_ID);
 		biopaxID = biopaxID.replace("CPATH-", "");
 		String neighborhoodParam = "Neighborhood: " + nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+
+		// encode some parts of the url
 		try {
 			neighborhoodParam = URLEncoder.encode(neighborhoodParam, "UTF-8");
+			dataSources = URLEncoder.encode(dataSources, "UTF-8");
 		}
 		catch (UnsupportedEncodingException e) {
 			// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
-			// anyway, at least encode spaces
+			// anyway, at least encode spaces, and commas (data sources)
 			neighborhoodParam = neighborhoodParam.replaceAll(" ", "%20");
+			dataSources = dataSources.replaceAll(" ", "%20");
+			dataSources = dataSources.replaceAll(",", "%2C");
 		}
 
 		final String urlString = "http://127.0.0.1:27182/" + webServicesURL +
-			PC_WEB_SERVICE_URL + biopaxID + "&neighborhood_title=" + neighborhoodParam;
+			PC_WEB_SERVICE_URL + biopaxID + "&neighborhood_title=" + neighborhoodParam +
+			"&data_sourc=" + dataSources;
 
 		// add new menu item
 		JMenuItem item = new JMenuItem( new AbstractAction(CONTEXT_MENU_TITLE) {
