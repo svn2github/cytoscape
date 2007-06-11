@@ -36,6 +36,8 @@ import org.mskcc.pathway_commons.util.NetworkUtil;
 
 import cytoscape.CyNetwork;
 
+import ding.view.NodeContextMenuListener;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Frame;
@@ -107,6 +109,11 @@ public class MergeDialog extends JDialog {
 	 */
 	private CyNetwork currentlySelectedNetwork;
 
+	/*
+	 * ref to network listener - for context menus
+	 */
+	NodeContextMenuListener nodeContextMenuListener;
+
 	/**
 	 * Merge network button - global so we can enable/disable as needed
 	 */
@@ -120,12 +127,14 @@ public class MergeDialog extends JDialog {
 	 * @param modal Is dialog modal or not.
 	 * @param pathwayCommonsRequest String
      * @param bpNetworkSet Set<CyNetwork>.
+	 * @param nodeContextMenuListener NodeContextMenuListener
      */
 	public MergeDialog(Frame owner,
 					   String title,
 					   boolean modal,
 					   String pathwayCommonsRequest,
-					   Set<CyNetwork> bpNetworkSet) {
+					   Set<CyNetwork> bpNetworkSet,
+					   NodeContextMenuListener nodeContextMenuListener) {
 
 		// set our super class
 		super(owner, title, modal);
@@ -143,6 +152,7 @@ public class MergeDialog extends JDialog {
 			bpNetworkTitles[lc++] = netTitle;
 			bpNetworkMap.put(netTitle, net);
 		}
+		this.nodeContextMenuListener = nodeContextMenuListener;
 
 		// setup the gui
 		initUI();
@@ -308,7 +318,8 @@ public class MergeDialog extends JDialog {
 		JButton createButton = new JButton("Create New Network");
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-				new NetworkUtil(pathwayCommonsRequest, null, false).start();
+				new NetworkUtil(pathwayCommonsRequest, null,
+								false,  nodeContextMenuListener).start();
 				setVisible(false);
 				dispose();
             }
@@ -319,7 +330,8 @@ public class MergeDialog extends JDialog {
 		mergeButton.setEnabled((bpNetworkTitles.length == 1));
 		mergeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-				new NetworkUtil(pathwayCommonsRequest, currentlySelectedNetwork, true).start();
+				new NetworkUtil(pathwayCommonsRequest, currentlySelectedNetwork,
+								true, nodeContextMenuListener).start();
                 setVisible(false);
 				dispose();
             }
