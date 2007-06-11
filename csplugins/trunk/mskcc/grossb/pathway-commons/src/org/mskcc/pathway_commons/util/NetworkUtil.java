@@ -131,7 +131,7 @@ public class NetworkUtil extends Thread {
 				// the biopax graph reader is going to be called
 				// it will look for the network view title
 				// via system properties, so lets set them now
-				if (networkTitle != null) {
+				if (networkTitle != null && networkTitle.length() > 0) {
 					System.setProperty("biopax.network_view_title", networkTitle);
 				}
 				LoadNetworkTask.loadURL(pathwayCommonsURL, true);
