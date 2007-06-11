@@ -312,7 +312,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	/**
-	 * Setup menu items.
+	 * Setup menu items.<br>
+	 * 
+	 * This includes both icon menu and right-click menu.
 	 *
 	 */
 	private void setMenu() {
@@ -1150,45 +1152,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		visualPropertySheetPanel.repaint();
 
-		//		if (SwingUtilities.isLeftMouseButton(e)){
-		/*
-		 * Left click.
-		 */
-		if (SwingUtilities.isRightMouseButton(e)) {
-			if (0 > selected) {
-				return;
-			}
 
-			final Item item = (Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0);
-			final Property curProp = item.getProperty();
-
-			if (curProp == null)
-				return;
-
-			VizMapperProperty prop = ((VizMapperProperty) curProp);
-
-			if (prop.getHiddenObject() instanceof VisualPropertyType) {
-				VisualPropertyType type = ((VisualPropertyType) prop.getHiddenObject());
-				Class dataType = type.getDataType();
-
-				if (dataType == Color.class) {
-					rainbow1.setEnabled(true);
-					rainbow2.setEnabled(true);
-					randomize.setEnabled(true);
-					brighter.setEnabled(true);
-					darker.setEnabled(true);
-				} else if (dataType == Number.class) {
-					randomize.setEnabled(true);
-					series.setEnabled(true);
-				}
-
-				if ((type == VisualPropertyType.NODE_WIDTH)) {
-					fit.setEnabled(true);
-				}
-			}
-
-			return;
-		}
 
 		if (SwingUtilities.isLeftMouseButton(e) && (0 <= selected)) {
 			final Item item = (Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0);
@@ -3190,11 +3154,46 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Check the selected VPT and enable/disable menu items.
 	 *
 	 * @param e DOCUMENT ME!
 	 */
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
+		
+		final int selected = visualPropertySheetPanel.getTable().getSelectedRow();
+		if (0 > selected) {
+			return;
+		}
+
+		final Item item = (Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0);
+		final Property curProp = item.getProperty();
+
+		if (curProp == null)
+			return;
+
+		VizMapperProperty prop = ((VizMapperProperty) curProp);
+
+		if (prop.getHiddenObject() instanceof VisualPropertyType) {
+			VisualPropertyType type = ((VisualPropertyType) prop.getHiddenObject());
+			Class dataType = type.getDataType();
+
+			if (dataType == Color.class) {
+				rainbow1.setEnabled(true);
+				rainbow2.setEnabled(true);
+				randomize.setEnabled(true);
+				brighter.setEnabled(true);
+				darker.setEnabled(true);
+			} else if (dataType == Number.class) {
+				randomize.setEnabled(true);
+				series.setEnabled(true);
+			}
+
+			if ((type == VisualPropertyType.NODE_WIDTH)) {
+				fit.setEnabled(true);
+			}
+		}
+
+		return;
+		
 	}
 }
