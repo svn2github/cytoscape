@@ -67,6 +67,7 @@ public class BioPaxGraphReader implements GraphReader {
 	private int[] edgeIndices;
 	private String fileName;
 	private String networkName;
+	private boolean validNetworkName;
 	private LayoutAlgorithm layoutUtil;
 
 	/**
@@ -168,13 +169,27 @@ public class BioPaxGraphReader implements GraphReader {
 		// set biopax network attribute
 		networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
-		//  Repair Canonical Name and Network Name
+		//  Repair Canonical Name 
 		MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
-		MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
+
+		// repair network name
+		if (!validNetworkName) {
+			MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
+		}
 
 		//  Set default Quick Find Index
 		networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
 		                               MapNodeAttributes.BIOPAX_SHORT_NAME);
+
+		// set url to pathway commons -
+		// used for pathway commons context menus
+		String urlToBioPAXWebServices = System.getProperty("biopax.web_services_url");
+		if (urlToBioPAXWebServices != null && urlToBioPAXWebServices.length() > 0) {
+			networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+										   "biopax.web_services_url",
+										   urlToBioPAXWebServices);
+			System.setProperty("biopax.web_services_url", "");
+		}
 
 		//  Set-up the BioPax Visual Style
 		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
@@ -235,6 +250,14 @@ public class BioPaxGraphReader implements GraphReader {
 	 * @return - String
 	 */
 	private String getPathwayName(BioPaxUtil bpUtil) {
+
+		String networkViewTitle = System.getProperty("biopax.network_view_title");
+		if (networkViewTitle != null && networkViewTitle.length() > 0) {
+			validNetworkName = true;
+			System.setProperty("biopax.network_view_title", "");
+			return networkViewTitle;
+		}
+
 		RdfQuery rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
 
 		// grab all complex components
