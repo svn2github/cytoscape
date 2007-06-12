@@ -191,6 +191,16 @@ public class BioPaxGraphReader implements GraphReader {
 			System.setProperty("biopax.web_services_url", "");
 		}
 
+		// set data source attribute
+		// used for pathway commons context menus
+		String dataSources = System.getProperty("biopax.data_sources");
+		if (dataSources != null && dataSources.length() > 0) {
+			networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+										   "biopax.data_sources",
+										   dataSources);
+			System.setProperty("biopax.data_sources", "");
+		}
+
 		//  Set-up the BioPax Visual Style
 		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
 		final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
