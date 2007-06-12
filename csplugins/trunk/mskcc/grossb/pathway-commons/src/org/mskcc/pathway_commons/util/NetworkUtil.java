@@ -47,9 +47,7 @@ import cytoscape.data.CyAttributes;
 import ding.view.NodeContextMenuListener;
 
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.MalformedURLException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * This is a network utilities class.
@@ -139,7 +137,7 @@ public class NetworkUtil extends Thread {
 			else {
 				// the biopax graph reader is going to be called
 				// it will look for the network view title
-				// via system properties, so lets set them now
+				// via system properties, so lets set it now
 				if (networkTitle != null && networkTitle.length() > 0) {
 					System.setProperty("biopax.network_view_title", networkTitle);
 				}
@@ -199,16 +197,6 @@ public class NetworkUtil extends Thread {
 			pathwayCommonsRequest.substring(startIndexOfValue) :
 			pathwayCommonsRequest.substring(startIndexOfValue, endIndexOfValue);
 
-		// do url decoding
-		if (value != null) {
-			try {
-				value = URLDecoder.decode(value, "UTF-8");
-			}
-			catch (UnsupportedEncodingException e) {
-				// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
-			}
-		}
-
 		// remove arg from request
 		pathwayCommonsRequest = (endIndexOfValue == -1) ?
 			pathwayCommonsRequest.substring(0, indexOfArg) :
@@ -258,7 +246,7 @@ public class NetworkUtil extends Thread {
 									   "biopax.web_services_url",
 									   webServicesURL);
 
-		// setup data sources attribute - used by nodeContextMenuListener
+		// setup data sources attribute - used by nodeContextMenuListener - remains encoded
 		networkAttributes.setAttribute(cyNetwork.getIdentifier(),
 									   "biopax.data_sources",
 									   dataSources);
