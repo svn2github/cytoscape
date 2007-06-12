@@ -110,7 +110,7 @@ public class GeneAssociationReader implements TextTableReader {
 	 * Default key columns
 	 */
 	private static final int DB_OBJ_ID = 1;
-	private static final int KEY = 2;
+	private static int key = 2;
 	private static final int OBJ_NAME = 9;
 	private static final int SYNONYM = 10;
 	private static final int GOID = 4;
@@ -142,7 +142,7 @@ public class GeneAssociationReader implements TextTableReader {
 	 */
 	public GeneAssociationReader(final String ontologyName, final URL url,
 	                             final String keyAttributeName) throws IOException {
-		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName, false);
+		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName, false, key);
 	}
 
 	/**
@@ -158,7 +158,14 @@ public class GeneAssociationReader implements TextTableReader {
 	public GeneAssociationReader(final String ontologyName, final URL url,
 	                             final String keyAttributeName, final boolean importAll)
 	    throws IOException {
-		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName, importAll);
+		this(ontologyName, URLUtil.getInputStream(url), keyAttributeName, importAll, key);
+	}
+	
+	
+	
+	public GeneAssociationReader(final String ontologyName, final InputStream is,
+            final String keyAttributeName, final boolean importAll) throws IOException {
+		this(ontologyName, is, keyAttributeName, importAll, key);
 	}
 
 	/**
@@ -172,11 +179,14 @@ public class GeneAssociationReader implements TextTableReader {
 	 * @throws IOException  DOCUMENT ME!
 	 */
 	public GeneAssociationReader(final String ontologyName, final InputStream is,
-	                             final String keyAttributeName, final boolean importAll)
+	                             final String keyAttributeName, final boolean importAll, final int mappingKey)
 	    throws IOException {
 		this.importAll = importAll;
 		this.is = is;
 		this.keyAttributeName = keyAttributeName;
+		key = mappingKey;
+		
+		System.out.println("Primary Key column is " + key);
 
 		// GA file is only for nodes!
 		this.nodeAliases = Cytoscape.getOntologyServer().getNodeAliases();
@@ -365,16 +375,16 @@ public class GeneAssociationReader implements TextTableReader {
 			// Add all aliases
 			if ((entries[SYNONYM] != null) && (entries[SYNONYM].length() != 0)) {
 				final String[] alias = entries[SYNONYM].split(PIPE.toString());
-				nodeAliases.add(entries[KEY], Arrays.asList(alias));
+				nodeAliases.add(entries[key], Arrays.asList(alias));
 			}
 
-			mapEntry(entries, entries[KEY], attributeName);
+			mapEntry(entries, entries[key], attributeName);
 		} else {
 			/*
 			 * Case 1: use node ID as the key
 			 */
 			if (keyAttributeName.equals(ID)) {
-				String newKey = setAlias(entries[KEY], entries[OBJ_NAME], entries[SYNONYM],
+				String newKey = setAlias(entries[key], entries[OBJ_NAME], entries[SYNONYM],
 				                         entries[DB_OBJ_ID]);
 
 				if (newKey != null) {
@@ -384,7 +394,7 @@ public class GeneAssociationReader implements TextTableReader {
 				/*
 				 * Case 2: use an attribute as the key.
 				 */
-				List<String> keys = setMultipleAliases(entries[KEY], entries[SYNONYM]);
+				List<String> keys = setMultipleAliases(entries[key], entries[SYNONYM]);
 
 				if (keys != null) {
 					for (String key : keys) {

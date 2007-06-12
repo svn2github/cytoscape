@@ -54,6 +54,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
 
 import cytoscape.util.swing.JStatusBar;
 
@@ -1781,19 +1782,21 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getSelectedItem());
 
 				if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+					
 					/*
 					 * This is a Gene Association file.
 					 */
 					final GeneAssociationReader gaReader;
+					keyInFile = this.primaryKeyComboBox.getSelectedIndex();
 
 					if (importAllCheckBox.isSelected()) {
 						gaReader = new GeneAssociationReader(selectedOntologyName,
-						                                     new URL(annotationSource),
-						                                     mappingAttribute, true);
+								URLUtil.getInputStream(new URL(annotationSource)),
+						                                     mappingAttribute, true, keyInFile);
 					} else {
 						gaReader = new GeneAssociationReader(selectedOntologyName,
-						                                     new URL(annotationSource),
-						                                     mappingAttribute);
+								URLUtil.getInputStream(new URL(annotationSource)),
+						                                     mappingAttribute, false, keyInFile);
 					}
 
 					loadGeneAssociation(gaReader, selectedOntologyName, annotationSource);
