@@ -2439,8 +2439,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void disableComponentsForGA() {
-		primaryKeyComboBox.setEnabled(false);
-		aliasTableMap.get(previewPanel.getSelectedSheetName()).setEnabled(false);
+		primaryKeyComboBox.setEnabled(true);
+		aliasTableMap.get(previewPanel.getSelectedSheetName()).setEnabled(true);
 		ontologyInAnnotationComboBox.setEnabled(false);
 
 		nodeRadioButton.setSelected(true);
