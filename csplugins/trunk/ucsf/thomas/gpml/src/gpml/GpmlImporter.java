@@ -164,10 +164,10 @@ public class GpmlImporter extends CytoscapePlugin {
 					aLayer.add(new Shape(o, dview));
 					annotationAdded = true;
 					break;
-//				case ObjectType.LABEL:
-//					aLayer.add(new Label(o, dview));
-//					annotationAdded = true;
-//					break;
+				case ObjectType.LABEL:
+					aLayer.add(new Label(o, dview));
+					annotationAdded = true;
+					break;
 				case ObjectType.LINE:
 					if(!edges.containsKey(o)) { //Don't draw background line if it is an edge
 						aLayer.add(new Line(o, dview));
