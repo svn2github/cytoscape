@@ -112,11 +112,10 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 			webServicesURL = webServicesURL.substring(7);
 		}
 
-		// grab data sources from network attributes
+		// grab data sources from network attributes - already encoded
 		String dataSources = networkAttributes.getStringAttribute(view.getNetwork().getIdentifier(),
 																  "biopax.data_sources");
 		
-
 		// generate menu url
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyNode cyNode = (CyNode)nodeView.getNode();
@@ -127,19 +126,16 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 		// encode some parts of the url
 		try {
 			neighborhoodParam = URLEncoder.encode(neighborhoodParam, "UTF-8");
-			dataSources = URLEncoder.encode(dataSources, "UTF-8");
 		}
 		catch (UnsupportedEncodingException e) {
 			// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
 			// anyway, at least encode spaces, and commas (data sources)
 			neighborhoodParam = neighborhoodParam.replaceAll(" ", "%20");
-			dataSources = dataSources.replaceAll(" ", "%20");
-			dataSources = dataSources.replaceAll(",", "%2C");
 		}
 
 		final String urlString = "http://127.0.0.1:27182/" + webServicesURL +
 			PC_WEB_SERVICE_URL + biopaxID + "&neighborhood_title=" + neighborhoodParam +
-			"&data_sourc=" + dataSources;
+			"&data_source=" + dataSources;
 
 		// add new menu item
 		JMenuItem item = new JMenuItem( new AbstractAction(CONTEXT_MENU_TITLE) {
