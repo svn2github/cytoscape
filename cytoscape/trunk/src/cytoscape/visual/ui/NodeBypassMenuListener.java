@@ -40,28 +40,46 @@ import ding.view.NodeContextMenuListener;
 
 import giny.view.NodeView;
 
+import java.awt.Color;
+import java.awt.Font;
+
+import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
+import javax.swing.border.EmptyBorder;
 
 
 /**
  * NodeBypassMenuListener implements NodeContextMenuListener
  * When a node is selected it calls bypass andd add
  */
-class NodeBypassMenuListener
-    implements NodeContextMenuListener {
-    NodeBypassMenuListener() {
-    }
+class NodeBypassMenuListener implements NodeContextMenuListener {
+	NodeBypassMenuListener() {
+	}
 
-    /**
-     * @param nodeView The clicked NodeView
-     * @param menu popup menu to add the Bypass menu
-     */
-    public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-        NodeBypass nb = new NodeBypass();
+	/**
+	 * @param nodeView The clicked NodeView
+	 * @param menu popup menu to add the Bypass menu
+	 */
+	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+		NodeBypass nb = new NodeBypass();
 
-        if (menu == null)
-            menu = new JPopupMenu();
+		if (menu == null)
+			menu = new JPopupMenu();
 
-        menu.add(nb.addMenu(nodeView.getNode()));
-    }
+		/*
+		 * Add Node ID as label.
+		 */
+		final String nodeID = nodeView.getNode().getIdentifier();
+		final JLabel nodeLabel = new JLabel(nodeID);
+
+		if (menu == null)
+			menu = new JPopupMenu();
+
+		nodeLabel.setForeground(new Color(10, 50, 250, 150));
+		nodeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		nodeLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
+		menu.add(nodeLabel);
+
+		menu.add(nb.addMenu(nodeView.getNode()));
+	}
 }

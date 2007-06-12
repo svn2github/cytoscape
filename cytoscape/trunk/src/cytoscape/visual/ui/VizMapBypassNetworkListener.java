@@ -38,7 +38,6 @@ package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
 import java.beans.PropertyChangeEvent;
@@ -49,22 +48,19 @@ import java.beans.PropertyChangeListener;
  * Adds NodeView and EdgeView vizmap bypass listeners to network views as
  * the views are created.
  */
-public class VizMapBypassNetworkListener
-    implements PropertyChangeListener {
-    /**
-     * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-     * node and edge context menu listeners to the view.
-     * @param evnt The event we're hearing.
-     */
-    public void propertyChange(PropertyChangeEvent evnt) {
-        if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-            NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener();
-            Cytoscape.getCurrentNetworkView()
-                     .addNodeContextMenuListener(node_menu_listener);
+public class VizMapBypassNetworkListener implements PropertyChangeListener {
+	/**
+	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
+	 * node and edge context menu listeners to the view.
+	 * @param evnt The event we're hearing.
+	 */
+	public void propertyChange(PropertyChangeEvent evnt) {
+		if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener();
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
 
-            EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener();
-            Cytoscape.getCurrentNetworkView()
-                     .addEdgeContextMenuListener(edge_menu_listener);
-        }
-    }
+			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener();
+			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
+		}
+	}
 }
