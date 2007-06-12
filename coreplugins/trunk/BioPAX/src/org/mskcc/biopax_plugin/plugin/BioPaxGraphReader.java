@@ -265,6 +265,12 @@ public class BioPaxGraphReader implements GraphReader {
 		if (networkViewTitle != null && networkViewTitle.length() > 0) {
 			validNetworkName = true;
 			System.setProperty("biopax.network_view_title", "");
+			try {
+				networkViewTitle = URLDecoder.decode(networkViewTitle, "UTF-8");
+			}
+			catch (UnsupportedEncodingException e) {
+				// if exception occurs leave encoded string, but cmon, utf-8 not supported ??
+			}
 			return networkViewTitle;
 		}
 
