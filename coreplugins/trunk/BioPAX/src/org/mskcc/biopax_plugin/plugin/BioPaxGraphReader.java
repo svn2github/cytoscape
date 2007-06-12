@@ -52,10 +52,12 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.layout.LayoutAlgorithm;
 
+import java.net.URLDecoder;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * GraphReader Implementation for BioPAX Files.
