@@ -26,30 +26,5 @@ public interface VizMapperTrackRenderer extends TrackRenderer {
 	static final BasicStroke STROKE1 = new BasicStroke(1.0f);
 	static final BasicStroke STROKE2 = new BasicStroke(2.0f);
 	
-	/**
-     * DOCUMENT ME!
-     *
-     * @param x DOCUMENT ME!
-     * @param y DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getToolTipForCurrentLocation(int x, int y);
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param x DOCUMENT ME!
-     * @param y DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Object getObjectInRange(int x, int y);
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Double getSelectedThumbValue();
+	
 }

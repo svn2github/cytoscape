@@ -2536,11 +2536,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					/*
 					 * Then, remove from calculator & redraw
 					 */
-					if (type.isNodeProp())
+					if (type.isNodeProp()) {
 						vmm.getVisualStyle().getNodeAppearanceCalculator().removeCalculator(type);
-					else
+						
+					} else {
 						vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
-
+					}
 					vmm.getNetworkView().redrawGraph(false, true);
 
 					/*

@@ -47,7 +47,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+
+import java.beans.PropertyChangeEvent;
 
 import javax.swing.ImageIcon;
 
@@ -196,12 +197,13 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
-
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).
-						getRangeID(e.getX(),e.getY());
-					
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
+					                                                                                                                                                                                       .getX(),
+					                                                                           e
+					                                                                                                                                                                                         .getY());
+
 					Object newValue = null;
 
 					if (e.getClickCount() == 2) {
@@ -241,6 +243,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		BoundaryRangeValues bound;
 		Float fraction;
 
+		/*
+		 * NPE?
+		 */
 		for (ContinuousMappingPoint point : allPoints) {
 			bound = point.getRange();
 
@@ -269,5 +274,14 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);
 		slider.addMouseListener(new ThumbMouseListener());
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param evt DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
 	}
 }

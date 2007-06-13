@@ -43,6 +43,8 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -63,7 +65,7 @@ import org.jdesktop.swingx.multislider.Thumb;
  */
 public class CyGradientTrackRenderer extends JComponent implements VizMapperTrackRenderer {
 	private int trackHeight = 40;
-	private final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 10);
+	private final Font SMALL_FONT = new Font("SansSerif", Font.PLAIN, 14);
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 
 	//private Paint checker_paint;
@@ -148,12 +150,44 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 				                                                          valueString);
 				final int curPosition = (int) (track_width * fractions[i]);
 
-				if (curPosition < (stringWidth / 2))
-					g.drawString(valueString, curPosition, trackHeight + 15);
-				else if ((track_width - curPosition) < (stringWidth / 2))
-					g.drawString(valueString, curPosition - stringWidth, trackHeight + 15);
-				else
-					g.drawString(valueString, curPosition - (stringWidth / 2), trackHeight + 15);
+				FontRenderContext frc = g.getFontRenderContext();
+		        TextLayout tl = new TextLayout(valueString, g.getFont(), frc);
+		       
+			
+				g.setStroke(new BasicStroke(1f));
+				g.setColor(Color.BLACK);
+				final float[] hsb = colors[i].RGBtoHSB(colors[i].getRed(), colors[i].getGreen(), colors[i].getBlue(), null);
+				
+				int x;
+				int y;
+				if (curPosition < (stringWidth / 2)) {
+
+					x = curPosition;
+					y = trackHeight + 15;
+				} else if ((track_width - curPosition) < (stringWidth / 2)) {
+					
+					x = curPosition - stringWidth;
+					y = trackHeight + 15;
+				
+				} else {
+					
+					x = curPosition - (stringWidth / 2);
+					y = trackHeight + 15;
+					
+				}
+				
+				if(hsb[1]< 0.5) {
+					g.translate(x, y);
+					
+					g.draw(tl.getOutline(null));
+					g.translate(-x, -y);
+					g.setColor(colors[i]);
+					g.drawString(valueString, x, y);
+				} else {
+					g.setColor(colors[i]);
+					g.setFont(new Font("SansSerif", Font.BOLD, 14));
+					g.drawString(valueString, x, y);
+				}
 
 				i++;
 			}
@@ -381,7 +415,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 			String fNum = null;
 			for(int i=0; i<fractions.length; i++) {
 				fNum = String.format("%.2f", fractions[i]*maxValue - minValue);
+				
 				strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), fNum);
+				
 				g2.drawString(fNum, fractions[i]*iconWidth-strWidth/2, iconHeight-20);
 			}
 			

@@ -36,35 +36,28 @@
 
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.AddPointListener;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.AddPointListener;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**

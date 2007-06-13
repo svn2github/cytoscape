@@ -54,11 +54,12 @@ import org.jdesktop.swingx.multislider.Thumb;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +81,7 @@ import javax.swing.event.ChangeListener;
  * @since Cytoscape 2.5
  * @author kono
   */
-public abstract class ContinuousMappingEditorPanel extends JDialog {
+public abstract class ContinuousMappingEditorPanel extends JDialog implements PropertyChangeListener {
 	// Tell vizMapper main whic editor is disabled/enabled.
 	/**
 	 * DOCUMENT ME!
@@ -91,6 +92,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 	 * DOCUMENT ME!
 	 */
 	public static final String EDITOR_WINDOW_OPENED = "EDITOR_WINDOW_OPENED";
+
+	/*
+	 * Used by trackrenderers.
+	 */
+	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
+	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
 	protected VisualPropertyType type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
@@ -142,7 +149,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 		} else {
 			return C2DMappingEditor.getIcon(width, height, type);
 		}
-
 	}
 
 	protected void setSpinner() {
@@ -536,32 +542,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 
 	// End of variables declaration
 	protected class ThumbMouseListener extends MouseAdapter {
-		//        public void mousePressed(MouseEvent e) {
-		//            int selectedIndex = slider.getSelectedIndex();
-		//
-		//            if ((0 <= selectedIndex) &&
-		//                    (slider.getModel()
-		//                               .getThumbCount() > 1)) {
-		//            	
-		//            	Thumb t = slider.getModel().getThumbAt(selectedIndex);
-		//                valueSpinner.setEnabled(true);
-		//                valueSpinner.setValue(
-		//                    ((t.getPosition() / 100) * valRange) + minValue);
-		//            } else {
-		//                valueSpinner.setEnabled(false);
-		//                valueSpinner.setValue(0);
-		//            }
-		//        }
 		public void mouseReleased(MouseEvent e) {
 			int selectedIndex = slider.getSelectedIndex();
 
-			System.out.println("T Count = " + slider.getModel().getThumbCount());
-
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 0)) {
-				Point location = slider.getSelectedThumb().getLocation();
 				valueSpinner.setEnabled(true);
 
-				//                Double newVal = ((VizMapperTrackRenderer) slider.getTrackRenderer()).getSelectedThumbValue();
 				Double newVal = ((slider.getModel().getThumbAt(selectedIndex).getPosition() / 100) * valRange)
 				                + minValue;
 				valueSpinner.setValue(newVal);
@@ -571,8 +557,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog {
 				slider.repaint();
 				repaint();
 
-				System.out.println("\n\n");
-				//mapping.getPoint(getSelectedPoint(selectedIndex)).setValue(newVal);
 				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 			} else {
 				valueSpinner.setEnabled(false);
