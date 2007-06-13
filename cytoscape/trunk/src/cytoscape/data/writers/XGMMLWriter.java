@@ -174,7 +174,7 @@ public class XGMMLWriter {
 	private String[] networkAttNames = null;
 	private CyNetwork network;
 	private CyNetworkView networkView;
-	private ArrayList nodeList;
+	private ArrayList <CyNode>nodeList;
 	private ArrayList groupList;
 	private HashMap edgeMap;
 	private ObjectFactory objFactory;
@@ -202,7 +202,7 @@ public class XGMMLWriter {
 		edgeAttributes = Cytoscape.getEdgeAttributes();
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
-		nodeList = new ArrayList();
+		nodeList = new ArrayList<CyNode>();
 		groupList = new ArrayList();
 		edgeMap = new HashMap();
 
@@ -1202,7 +1202,7 @@ public class XGMMLWriter {
 		GraphicNode jxbNode = null;
 		CyNode curNode = null;
 
-		final Iterator it = network.nodesIterator();
+		final Iterator <CyNode>it = network.nodesIterator();
 
 		while (it.hasNext()) {
 			curNode = (CyNode) it.next();
@@ -1259,12 +1259,12 @@ public class XGMMLWriter {
 		GraphicNode jxbNode = null;
 		CyGroup group = CyGroupManager.getCyGroup(node);
 
-		List<CyNode> nodeList = group.getNodes();
+		List<CyNode> childList = group.getNodes();
 
-		if ((nodeList == null) || (nodeList.size() == 0))
+		if ((childList == null) || (childList.size() == 0))
 			return;
 
-		Iterator nIter = nodeList.iterator();
+		Iterator <CyNode>nIter = childList.iterator();
 
 		while (nIter.hasNext()) {
 			childNode = (CyNode) nIter.next();
@@ -1306,12 +1306,12 @@ public class XGMMLWriter {
 
 		while (it.hasNext()) {
 			CyGroup group = (CyGroup) it.next();
-			List<CyNode> nodeList = group.getNodes();
+			List<CyNode> childList = group.getNodes();
 
-			if ((nodeList == null) || (nodeList.size() == 0))
+			if ((childList == null) || (childList.size() == 0))
 				continue;
 
-			Iterator nIter = nodeList.iterator();
+			Iterator <CyNode>nIter = childList.iterator();
 
 			while (nIter.hasNext()) {
 				CyNode childNode = (CyNode) nIter.next();
@@ -1352,10 +1352,10 @@ public class XGMMLWriter {
 		Att children = objFactory.createAtt();
 		GraphicGraph subGraph = objFactory.createGraphicGraph();
 
-		List<CyNode> nodeList = group.getNodes();
+		List<CyNode> childList = group.getNodes();
 
-		for (Iterator nodeIter = nodeList.iterator(); nodeIter.hasNext();) {
-			CyNode childNode = (CyNode) nodeIter.next();
+		for (Iterator <CyNode>nodeIter = childList.iterator(); nodeIter.hasNext();) {
+			CyNode childNode = nodeIter.next();
 			GraphicNode childJxbNode = null;
 
 			childMap.put(childNode.getIdentifier(), childNode);
