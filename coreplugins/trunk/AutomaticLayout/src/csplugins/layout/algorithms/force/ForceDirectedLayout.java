@@ -97,7 +97,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	public void layoutPartion(LayoutPartition part) {
 
         m_fsim.clear();
-       
+
 	   	// initialize nodes
 		Iterator iter = part.nodeIterator();
         while ( iter.hasNext() ) {
@@ -130,6 +130,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 			timestep *= (1.0 - i/(double)numIterations);
 			long step = timestep+50;
 			m_fsim.runSimulator(step);
+			subClassSetTaskStatus(i/(double)numIterations);
 		}
 		
         // update positions

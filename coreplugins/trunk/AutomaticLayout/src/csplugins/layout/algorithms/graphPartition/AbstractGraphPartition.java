@@ -32,6 +32,9 @@ import javax.swing.JOptionPane;
  */
 public abstract class AbstractGraphPartition extends AbstractLayout {
 	double incr = 100;
+	int numComplete;
+	int numCurrent;
+	int numNodes;
 
 	/**
 	 * Creates a new AbstractGraphPartition object.
@@ -78,6 +81,12 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		}
 	}
 
+	protected void subClassSetTaskStatus( double percent ) {
+		if ( percent <= 0 || percent > 1 )
+			return;
+		setTaskStatus( (int)(Math.rint(100*(numComplete + (numCurrent*percent))/(double)numNodes)));
+	}
+
 
 	/**
 	 * AbstractGraphPartitionLayout implements the constuct method
@@ -88,8 +97,9 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 		List partitions = LayoutPartition.partition(network, networkView, selectedOnly, null);
 
-		int numNodes = network.getNodeCount();
-		int numComplete = 0;
+		numNodes = network.getNodeCount();
+		numComplete = 0;
+		numCurrent = 0;
 
 		// Set up offsets -- we start with the overall min and max
 		double xStart = ((LayoutPartition) partitions.get(0)).getMinX();
@@ -117,8 +127,11 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		Iterator p = partitions.iterator();
 
 		while (p.hasNext() && !canceled) {
+
 			// get the partition
 			LayoutPartition partition = (LayoutPartition) p.next();
+
+			numCurrent = partition.size();
 
 			// Partitions Requiring Layout
 			if (partition.nodeCount() > 1) {
@@ -160,9 +173,10 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 				next_x_start = last_max_x;
 				next_x_start += incr;
 			}
-		
+
 			numComplete += partition.size();
-			setTaskStatus( (int)(Math.rint(100*numComplete/(double)numNodes)));
 		} 
+		setTaskStatus( 100 );
 	}
+
 }
