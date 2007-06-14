@@ -94,6 +94,7 @@ import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
@@ -192,7 +193,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private static JPopupMenu menu;
-	private static JMenuItem add;
 	private static JMenuItem delete;
 	private static JMenuItem rainbow1;
 	private static JMenuItem rainbow2;
@@ -696,14 +696,24 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	// For label positions
 	private LabelPositionCellRenderer labelPositionRenderer = new LabelPositionCellRenderer();
-
+	private CyLabelPositionPropertyEditor labelPositionEditor = new CyLabelPositionPropertyEditor();
+	
 	// Others 
 	private DefaultTableCellRenderer emptyBoxRenderer = new DefaultTableCellRenderer();
 	private DefaultTableCellRenderer filledBoxRenderer = new DefaultTableCellRenderer();
 	private DefaultTableCellRenderer continuousRenderer = new DefaultTableCellRenderer();
 	private DefaultTableCellRenderer discreteRenderer = new DefaultTableCellRenderer();
+	
+	/*
+	 * Controlling attr selector
+	 */
 	private CyComboBoxPropertyEditor nodeAttrEditor = new CyComboBoxPropertyEditor();
 	private CyComboBoxPropertyEditor edgeAttrEditor = new CyComboBoxPropertyEditor();
+	
+	private CyComboBoxPropertyEditor nodeNumericalAttrEditor = new CyComboBoxPropertyEditor();
+	private CyComboBoxPropertyEditor edgeNumericalAttrEditor = new CyComboBoxPropertyEditor();
+	
+	// For mapping types.
 	private CyComboBoxPropertyEditor mappingTypeEditor = new CyComboBoxPropertyEditor();
 	private static final Map<Object, Icon> nodeShapeIcons = NodeShape.getIconSet();
 	private static final Map<Object, Icon> arrowShapeIcons = ArrowShape.getIconSet();
@@ -938,59 +948,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				public void columnMarginChanged(ChangeEvent e) {
-					final PropertySheetTable table = visualPropertySheetPanel.getTable();
-					Property shownProp = null;
-					int rowCount = table.getRowCount();
-
-					for (int i = 0; i < rowCount; i++) {
-						shownProp = ((Item) visualPropertySheetPanel.getTable().getValueAt(i, 0))
-						                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getProperty();
-
-						if ((shownProp != null)
-						    && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
-							final Property parent = shownProp.getParentProperty();
-
-							final Object type = ((VizMapperProperty) parent).getHiddenObject();
-
-							if (type instanceof VisualPropertyType) {
-								ObjectMapping mapping;
-
-								if (((VisualPropertyType) type).isNodeProp())
-									mapping = vmm.getVisualStyle().getNodeAppearanceCalculator()
-									             .getCalculator(((VisualPropertyType) type))
-									             .getMapping(0);
-								else
-									mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator()
-									             .getCalculator(((VisualPropertyType) type))
-									             .getMapping(0);
-
-								if (mapping instanceof ContinuousMapping) {
-									table.setRowHeight(i, 80);
-
-									int wi = table.getCellRect(0, 1, true).width;
-									final ImageIcon icon = ContinuousMappingEditorPanel.getIcon(wi,
-									                                                            70,
-									                                                            (VisualPropertyType) type);
-									final Class dataType = ((VisualPropertyType) type).getDataType();
-
-									if (dataType == Color.class) {
-										final DefaultTableCellRenderer gradientRenderer = new DefaultTableCellRenderer();
-										gradientRenderer.setIcon(icon);
-										pr.registerRenderer(shownProp, gradientRenderer);
-									} else if (dataType == Number.class) {
-										continuousRenderer.setIcon(icon);
-										pr.registerRenderer(shownProp, continuousRenderer);
-									} else {
-										discreteRenderer.setIcon(icon);
-										pr.registerRenderer(shownProp, discreteRenderer);
-									}
-								}
-							}
-						}
-					}
-
-					repaint();
-					visualPropertySheetPanel.repaint();
+					updateTableView();
 				}
 
 				public void columnMoved(TableColumnModelEvent e) {
@@ -1109,9 +1067,77 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		lineCellEditor.setAvailableIcons(iconArray);
 	}
 
+	
+	private void updateTableView() {
+		final PropertySheetTable table = visualPropertySheetPanel.getTable();
+		Property shownProp = null;
+		int rowCount = table.getRowCount();
+
+		for (int i = 0; i < rowCount; i++) {
+			shownProp = ((Item) visualPropertySheetPanel.getTable().getValueAt(i, 0))
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getProperty();
+
+			if ((shownProp != null)
+				    && shownProp.getParentProperty() != null && shownProp.getParentProperty().getDisplayName().equals(NODE_LABEL_POSITION.getName())) {
+				
+				table.setRowHeight(i, 50);
+				
+			} else if ((shownProp != null)
+			    && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW)) {
+				final Property parent = shownProp.getParentProperty();
+
+				final Object type = ((VizMapperProperty) parent).getHiddenObject();
+
+				if (type instanceof VisualPropertyType) {
+					ObjectMapping mapping;
+
+					if (((VisualPropertyType) type).isNodeProp())
+						mapping = vmm.getVisualStyle().getNodeAppearanceCalculator()
+						             .getCalculator(((VisualPropertyType) type))
+						             .getMapping(0);
+					else
+						mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator()
+						             .getCalculator(((VisualPropertyType) type))
+						             .getMapping(0);
+
+					if (mapping instanceof ContinuousMapping) {
+						table.setRowHeight(i, 80);
+
+						int wi = table.getCellRect(0, 1, true).width;
+						final ImageIcon icon = ContinuousMappingEditorPanel.getIcon(wi,
+						                                                            70,
+						                                                            (VisualPropertyType) type);
+						final Class dataType = ((VisualPropertyType) type).getDataType();
+
+						if (dataType == Color.class) {
+							final DefaultTableCellRenderer gradientRenderer = new DefaultTableCellRenderer();
+							gradientRenderer.setIcon(icon);
+							pr.registerRenderer(shownProp, gradientRenderer);
+						} else if (dataType == Number.class) {
+							continuousRenderer.setIcon(icon);
+							pr.registerRenderer(shownProp, continuousRenderer);
+						} else {
+							discreteRenderer.setIcon(icon);
+							pr.registerRenderer(shownProp, discreteRenderer);
+						}
+					}
+				}
+			}
+		}
+
+		repaint();
+		visualPropertySheetPanel.repaint();
+		
+		
+	}
+	
+	
+	
+	
 	private void setAttrComboBox() {
-		List<String> names = new ArrayList<String>();
-		String[] nameArray = Cytoscape.getNodeAttributes().getAttributeNames();
+		final List<String> names = new ArrayList<String>();
+		CyAttributes attr = Cytoscape.getNodeAttributes();
+		String[] nameArray = attr.getAttributeNames();
 		Arrays.sort(nameArray);
 		names.add("ID");
 
@@ -1120,9 +1146,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		nodeAttrEditor.setAvailableValues(names.toArray());
+		
+		names.clear();
+		Class dataClass;
+		for (String name : nameArray) {
+			dataClass = CyAttributesUtils.getClass(name, attr);
+			if( dataClass == Integer.class || dataClass == Double.class || dataClass == Float.class)
+				names.add(name);
+		}
+		nodeNumericalAttrEditor.setAvailableValues(names.toArray());
 
 		names.clear();
-		nameArray = Cytoscape.getEdgeAttributes().getAttributeNames();
+		attr = Cytoscape.getEdgeAttributes();
+		nameArray = attr.getAttributeNames();
 		Arrays.sort(nameArray);
 		names.add("ID");
 
@@ -1131,27 +1167,24 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		edgeAttrEditor.setAvailableValues(names.toArray());
+		
+		names.clear();
+
+		for (String name : nameArray) {
+			dataClass = CyAttributesUtils.getClass(name, attr);
+			if( dataClass == Integer.class || dataClass == Double.class || dataClass == Float.class)
+				names.add(name);
+		}
+		edgeNumericalAttrEditor.setAvailableValues(names.toArray());
 	}
 
 	private void processMouseClick(MouseEvent e) {
-		final PropertySheetTable table = visualPropertySheetPanel.getTable();
-
 		int selected = visualPropertySheetPanel.getTable().getSelectedRow();
-
-		Property shownProp = null;
-
 		/*
 		 * Adjust height if it's an legend icon.
 		 */
-		for (int i = 0; i < table.getModel().getRowCount(); i++) {
-			shownProp = ((Item) visualPropertySheetPanel.getTable().getValueAt(i, 0)).getProperty();
-
-			if ((shownProp != null) && shownProp.getDisplayName().equals(GRAPHICAL_MAP_VIEW))
-				table.setRowHeight(i, 80);
-		}
-
-		visualPropertySheetPanel.repaint();
-
+		updateTableView();
+		
 
 
 		if (SwingUtilities.isLeftMouseButton(e) && (0 <= selected)) {
@@ -1490,7 +1523,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					 * Node Label Position. Needs special editor
 					 */
 					case NODE_LABEL_POSITION:
-						setDiscreteProps(type, discMapping, attrSet, stringCellEditor,
+						setDiscreteProps(type, discMapping, attrSet, labelPositionEditor,
 						                 labelPositionRenderer, calculatorTypeProp);
 
 						break;
@@ -1851,7 +1884,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			 * restore expanded props.
 			 */
 			expandLastSelectedItem(type.getName());
-
+			updateTableView();
 			return;
 		}
 
@@ -1874,6 +1907,29 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Controlling Attribute has been changed.
 		 */
 		if (ctrAttrName != null) {
+			
+			/*
+			 * Ignore if not compatible.
+			 */
+			final CyAttributes attrForTest;
+			if(type.isNodeProp()) {
+				attrForTest = Cytoscape.getNodeAttributes();
+			} else {
+				attrForTest = Cytoscape.getEdgeAttributes();
+			}
+			
+			final Byte dataType = attrForTest.getType(ctrAttrName);
+			
+			
+			if(mapping instanceof ContinuousMapping) {
+				if(dataType == CyAttributes.TYPE_FLOATING || dataType == CyAttributes.TYPE_INTEGER ) {
+					//Do nothing
+				} else {
+					return;
+				}
+			}
+			
+			
 			mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
 			vmm.getNetworkView().redrawGraph(false, true);
 
@@ -1899,7 +1955,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			typeRootProp = null;
 
 			expandLastSelectedItem(type.getName());
-
+			updateTableView();
 			return;
 		}
 
@@ -1952,8 +2008,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Update table and current network view.
 		 */
-		table.repaint();
 		vmm.getNetworkView().redrawGraph(false, true);
+		visualPropertySheetPanel.repaint();
 	}
 
 	/**

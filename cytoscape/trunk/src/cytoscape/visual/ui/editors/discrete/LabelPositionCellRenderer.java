@@ -45,7 +45,9 @@ import cytoscape.visual.properties.NodeLabelPositionProp;
 
 import java.awt.Component;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 
 /**
@@ -66,22 +68,25 @@ public class LabelPositionCellRenderer extends DefaultCellRenderer {
 	 */
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 	                                               boolean hasFocus, int row, int column) {
+		
+		final JLabel label = new JLabel();
 		if (isSelected) {
-			setBackground(table.getSelectionBackground());
-			setForeground(table.getSelectionForeground());
+			label.setBackground(table.getSelectionBackground());
+			label.setForeground(table.getSelectionForeground());
 		} else {
-			setBackground(table.getBackground());
-			setForeground(table.getForeground());
+			label.setBackground(table.getBackground());
+			label.setForeground(table.getForeground());
 		}
 
 		if ((value != null) && value instanceof LabelPosition) {
 			final LabelPosition lp = (LabelPosition) value;
 			final NodeLabelPositionProp prop = (NodeLabelPositionProp) VisualPropertyType.NODE_LABEL_POSITION
 			                                   .getVisualProperty();
-			this.setIcon(prop.getIcon(lp));
-		} else
-			this.setValue(null);
+			label.setIcon(prop.getIcon(lp));
+			label.setVerticalAlignment(SwingConstants.CENTER);
+			label.setHorizontalAlignment(SwingConstants.CENTER);
+		} 
 
-		return this;
+		return label;
 	}
 }

@@ -3,7 +3,6 @@ package cytoscape.visual.ui.editors.discrete;
 import java.awt.Font;
 
 import com.l2fprod.common.beans.editor.FontPropertyEditor;
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 import com.l2fprod.common.util.ResourceManager;
 
 import cytoscape.Cytoscape;
