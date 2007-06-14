@@ -43,6 +43,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 
+import ding.view.NodeContextMenuListener;
+
 import java.util.Set;
 import java.util.HashSet;
 
@@ -53,6 +55,22 @@ import java.util.HashSet;
  * @author Benjamin Gross.
  */
 public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
+
+	/*
+	 * ref to network listener - for context menus
+	 */
+	NodeContextMenuListener nodeContextMenuListener;
+
+	/**
+	 * Constructor
+	 *
+	 * @param nodeContextMenuListener NodeContextMenuListener
+	 */
+	public MapPathwayCommonsToCytoscape(NodeContextMenuListener nodeContextMenuListener) {
+
+		// init member vars
+		this.nodeContextMenuListener = nodeContextMenuListener;
+	}
 
 	/**
 	 * Our implementation of HTTPServerListener.
@@ -67,7 +85,7 @@ public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
 
 		// if no other networks are loaded, we can just load it up
 		if (bpNetworkSet.size() == 0) {
-			new NetworkUtil(pathwayCommonsRequest, null, false).start();
+			new NetworkUtil(pathwayCommonsRequest, null, false, nodeContextMenuListener).start();
 		}
 		// other networks list, give user option to merge
 		else {
@@ -117,7 +135,8 @@ public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
 											 "Pathway Commons Network Merge",
 											 true,
 											 pathwayCommonsRequest,
-											 bpNetworkSet);
+											 bpNetworkSet,
+											 nodeContextMenuListener);
 		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
 		dialog.setVisible(true);
 	}
