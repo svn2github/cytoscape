@@ -38,6 +38,7 @@
 package cytoscape.groups;
 
 import cytoscape.CyNode;
+import cytoscape.view.CyNetworkView;
 
 /**
  * The CyGroupViewer interface provides a mechanism for group view implementations
@@ -71,6 +72,7 @@ public interface CyGroupViewer {
 	 * @param group the CyGroup that was just created.
 	 */
 	public void groupCreated(CyGroup group);
+	public void groupCreated(CyGroup group, CyNetworkView myView);
 
 	/**
 	 * Provide viewer-specific hooks to deletion of a group.  Most of the time
