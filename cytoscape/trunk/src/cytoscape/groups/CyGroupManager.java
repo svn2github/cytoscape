@@ -37,20 +37,16 @@
 */
 package cytoscape.groups;
 
-import cytoscape.data.CyAttributes;
-
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
-
-import giny.model.RootGraph;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -159,7 +155,7 @@ public class CyGroupManager {
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName);
 		groupMap.put(group.getGroupNode(), group);
-		setGroupViewer(group, viewer, true);
+		setGroupViewer(group, viewer, null, true);
 
 		return group;
 	}
@@ -178,7 +174,7 @@ public class CyGroupManager {
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName, nodeList);
 		groupMap.put(group.getGroupNode(), group);
-		setGroupViewer(group, viewer, false);
+		setGroupViewer(group, viewer, null, false);
 
 		return group;
 	}
@@ -200,7 +196,7 @@ public class CyGroupManager {
 		groupMap.put(group.getGroupNode(), group);
 
 		if (viewer != null)
-			setGroupViewer(group, viewer, true);
+			setGroupViewer(group, viewer, null, true);
 
 		return group;
 	}
@@ -281,7 +277,7 @@ public class CyGroupManager {
 	 * @param viewer the viewer
 	 * @param notify if 'true' the viewer will be notified of the creation
 	 */
-	public static void setGroupViewer(CyGroup group, String viewer, boolean notify) {
+	public static void setGroupViewer(CyGroup group, String viewer, CyNetworkView myView, boolean notify) {
 		if ((viewer != null) && viewerMap.containsKey(viewer)) {
 			// get the viewer
 			CyGroupViewer v = (CyGroupViewer) viewerMap.get(viewer);
@@ -294,7 +290,7 @@ public class CyGroupManager {
 			groupViewerMap.get(v).add(group);
 
 			if (notify)
-				v.groupCreated(group);
+				v.groupCreated(group, myView);
 		}
 
 		((CyGroupImpl)group).setViewer(viewer);
