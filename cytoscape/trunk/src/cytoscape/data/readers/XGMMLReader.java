@@ -700,7 +700,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 
 			// Set and notify the viewer
-			CyGroupManager.setGroupViewer(group, viewer, true);
+			CyGroupManager.setGroupViewer(group, viewer, myView, true);
 		}
 	}
 
