@@ -65,7 +65,7 @@ import org.jdesktop.swingx.multislider.Thumb;
  */
 public class CyGradientTrackRenderer extends JComponent implements VizMapperTrackRenderer {
 	private int trackHeight = 40;
-	private final Font SMALL_FONT = new Font("SansSerif", Font.PLAIN, 14);
+	private final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 16);
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 
 	//private Paint checker_paint;
@@ -151,10 +151,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 				final int curPosition = (int) (track_width * fractions[i]);
 
 				FontRenderContext frc = g.getFontRenderContext();
-		        TextLayout tl = new TextLayout(valueString, g.getFont(), frc);
+				TextLayout tl = new TextLayout(valueString, g.getFont(), frc);
 		       
-			
-				g.setStroke(new BasicStroke(1f));
+				g.setStroke(new BasicStroke(0.1f));
 				g.setColor(Color.BLACK);
 				final float[] hsb = colors[i].RGBtoHSB(colors[i].getRed(), colors[i].getGreen(), colors[i].getBlue(), null);
 				
@@ -177,15 +176,17 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 				}
 				
 				if(hsb[1]< 0.5) {
-					g.translate(x, y);
 					
-					g.draw(tl.getOutline(null));
-					g.translate(-x, -y);
 					g.setColor(colors[i]);
 					g.drawString(valueString, x, y);
+					
+					g.translate(x, y);
+					g.setColor(Color.BLACK);
+					g.draw(tl.getOutline(null));
+					g.translate(-x, -y);
+					
 				} else {
 					g.setColor(colors[i]);
-					g.setFont(new Font("SansSerif", Font.BOLD, 14));
 					g.drawString(valueString, x, y);
 				}
 
