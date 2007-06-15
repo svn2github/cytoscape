@@ -39,7 +39,7 @@ The retreat is generously supported by partners from both government and industr
    <a href="http://www.unilever.com" target="_blank"><img border="0" align="middle" alt="Unilever" height="108" width="100" src="images/unilever_logo_100_108.jpg"></a>
   </td>
   <td>
-  <p>Unilever is supporting development of Cytoscape.</p>
+  <p>Unilever is member of the Cytoscape Consortium.</p>
   </td>
  </tr>
  <tr>
@@ -65,7 +65,7 @@ The retreat is generously supported by partners from both government and industr
    <a href="http://www.agilent.com" target="_blank"><img border="0" align="middle" alt="Agilent" height="60" width="313" src="images/agilent_logo_313_60.png"></a>
   </td>
   <td>
-  <p>&nbsp;&nbsp;Agilent is one of the partners in the Cytoscape consortium</p>
+  <p>&nbsp;&nbsp;Agilent is member of the Cytoscape Consortium</p>
   </td>
  </tr>
  <tr>
