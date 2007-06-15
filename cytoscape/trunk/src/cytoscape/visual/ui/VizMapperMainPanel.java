@@ -139,6 +139,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -182,7 +183,7 @@ import javax.swing.table.TableCellRenderer;
  * @author kono
  * @param <syncronized>
  */
-public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, CyNetworkListener,
+public class VizMapperMainPanel extends JPanel implements PropertyChangeListener,
                                                           PopupMenuListener {
 	// VPT in this list will not be shown in this GUI.
 	private static final Set<VisualPropertyType> IGNORE = new TreeSet<VisualPropertyType>();
@@ -486,11 +487,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		addButton = new javax.swing.JButton();
 		deleteButton = new javax.swing.JButton();
 
-		addButton.setIcon(new javax.swing.ImageIcon("/cellar/users/kono/docs/cytoscape25Mock/images/ximian/stock_up-16.png"));
-		addButton.setText("Add");
-		addButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-
-		addButton.setPreferredSize(new java.awt.Dimension(70, 20));
 
 		deleteButton.setIcon(new javax.swing.ImageIcon("/cellar/users/kono/docs/cytoscape25Mock/images/ximian/stock_down-16.png"));
 		deleteButton.setText("Delete");
@@ -740,13 +736,34 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vmm.setVisualStyle(vsName);
 
 		if (propertyMap.containsKey(vsName) && (vsName.equals(lastVSName) == false)) {
-			List<Property> props = propertyMap.get(vsName);
+			final List<Property> props = propertyMap.get(vsName);
+			final Map<String, Property> unused = new TreeMap<String, Property>();
 
+			/*
+			 * Remove currently shown property
+			 */
 			for (Property item : visualPropertySheetPanel.getProperties())
 				visualPropertySheetPanel.removeProperty(item);
 
-			for (Property prop : props)
-				visualPropertySheetPanel.addProperty(prop);
+			for (Property prop : props) {
+				
+				if(prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
+					if(prop.getCategory().equals(NODE_VISUAL_MAPPING)) {
+						visualPropertySheetPanel.addProperty(0, prop);
+					} else {
+						
+						visualPropertySheetPanel.addProperty(prop);
+					} 
+				} else {
+					unused.put(prop.getDisplayName(), prop);
+				}
+				
+			}
+			final List<String> keys = new ArrayList<String>(unused.keySet());
+			Collections.sort(keys);
+			for (Object key : keys) {
+					visualPropertySheetPanel.addProperty(unused.get(key));
+			}
 		} else {
 			setPropertyTable();
 		}
@@ -1207,8 +1224,34 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
 				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getHiddenObject();
-				createNewMapping(type);
+//				createNewMapping(type);
 				visualPropertySheetPanel.removeProperty(curProp);
+				
+				final VizMapperProperty newProp = new VizMapperProperty();
+				final VizMapperProperty mapProp = new VizMapperProperty();
+				
+				newProp.setDisplayName(type.getName());
+				newProp.setHiddenObject(type);
+				newProp.setValue("Please select a value!");
+				pr.registerRenderer(newProp, emptyBoxRenderer);
+				
+				if(type.isNodeProp()) {
+					newProp.setCategory(NODE_VISUAL_MAPPING);
+					regr.registerEditor(newProp, nodeAttrEditor);
+				} else {
+					newProp.setCategory(EDGE_VISUAL_MAPPING);
+					regr.registerEditor(newProp, edgeAttrEditor);
+				}
+				
+				mapProp.setDisplayName("Mapping Type");
+				regr.registerEditor(mapProp, mappingTypeEditor);
+
+				
+				newProp.addSubProperty(mapProp);
+				mapProp.setParentProperty(newProp);
+				visualPropertySheetPanel.addProperty(newProp);
+				
+				expandLastSelectedItem(type.getName());
 
 				return;
 			} else if ((e.getClickCount() == 1) && (category == null)) {
@@ -1598,7 +1641,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 
-		visualPropertySheetPanel.addProperty(calculatorTypeProp);
+		visualPropertySheetPanel.addProperty(0,calculatorTypeProp);
 		visualPropertySheetPanel.setRendererFactory(pr);
 		visualPropertySheetPanel.setEditorFactory(regr);
 	}
@@ -1832,8 +1875,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (e.getNewValue() == e.getOldValue())
 			return;
 
-		System.out.println("GOT value change event!!!");
-
 		final PropertySheetTable table = visualPropertySheetPanel.getTable();
 		final int selected = table.getSelectedRow();
 
@@ -1872,13 +1913,33 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Mapping type changed
 		 */
-		if (prop.getHiddenObject() instanceof ObjectMapping) {
-			System.out.println("Mapping type changed: " + prop.getHiddenObject().toString());
+		if (prop.getHiddenObject() instanceof ObjectMapping || prop.getDisplayName().equals("Mapping Type")) {
+			System.out.println("Mapping type changed: " + prop.getHiddenObject());
 
 			if (e.getNewValue() == null)
 				return;
 
-			switchMapping(prop, e.getNewValue().toString());
+			/*
+			 * If invalid data type, ignore.
+			 */
+			final Object parentValue = prop.getParentProperty().getValue();
+			if(parentValue != null) {
+				ctrAttrName = parentValue.toString();			
+				final Class dataClass = CyAttributesUtils.getClass(ctrAttrName, Cytoscape.getNodeAttributes());
+				
+				if(e.getNewValue().equals("Continuous Mapper") && (dataClass != Integer.class && dataClass != Double.class)) {
+					JOptionPane.showMessageDialog(
+							this , "Continuous Mapper can be used with Numbers only." , "Incompatible Mapping Type!" ,
+							JOptionPane.INFORMATION_MESSAGE
+						);
+					return;
+				}
+				
+			} else {
+				return;
+			}
+			
+			switchMapping(prop, e.getNewValue().toString(), prop.getParentProperty().getValue());
 
 			/*
 			 * restore expanded props.
@@ -1896,13 +1957,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		System.out.println("New calc = "
 		                   + vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type));
 
-		if (type.isNodeProp())
-			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-			             .getMapping(0);
-		else
-			mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-			             .getMapping(0);
-
+		Calculator curCalc = null;
+		if (type.isNodeProp()) {
+			curCalc = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type);
+			
+		} else {
+			curCalc = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type);
+		}
+		if(curCalc == null) {
+			return;
+		}
+		mapping = curCalc.getMapping(0);
+		
+		
 		/*
 		 * Controlling Attribute has been changed.
 		 */
@@ -1925,6 +1992,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				if(dataType == CyAttributes.TYPE_FLOATING || dataType == CyAttributes.TYPE_INTEGER ) {
 					//Do nothing
 				} else {
+					JOptionPane.showMessageDialog(
+							this , "Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes." , "Incompatible Mapping Type!" ,
+							JOptionPane.INFORMATION_MESSAGE
+						);
 					return;
 				}
 			}
@@ -1956,6 +2027,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			expandLastSelectedItem(type.getName());
 			updateTableView();
+		
 			return;
 		}
 
@@ -2011,14 +2083,27 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vmm.getNetworkView().redrawGraph(false, true);
 		visualPropertySheetPanel.repaint();
 	}
+	
+	private void filterMappingEditor(final Class dataType) {
+		if(dataType != Integer.class && dataType != Double.class) {
+			
+		}
+	}
+	
+	
+	
+	
 
 	/**
 	 * Switching between mapppings. Each calcs has 3 mappings. The first one
 	 * (getMapping(0)) is the current mapping used by calculator.
 	 *
 	 */
-	private void switchMapping(VizMapperProperty prop, String newMapName) {
-		System.out.println("==========Switching map================= " + newMapName);
+	private void switchMapping(VizMapperProperty prop, String newMapName, Object attrName) {
+		
+		if(attrName == null) {
+			return;
+		}
 
 		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
 		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getParentProperty())
@@ -2039,18 +2124,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * If not exist, create new one.
 		 */
+		
 		if (newCalc == null) {
-			System.out.println("====== Need to create: " + newCalcName);
-			vmm.getCalculatorCatalog().addCalculator(getNewCalculator(type, newMapName, newCalcName));
+			newCalc = getNewCalculator(type, newMapName, newCalcName);
+			newCalc.getMapping(0).setControllingAttributeName((String) attrName, null, true);
+			vmm.getCalculatorCatalog().addCalculator(newCalc);
 		}
 
-		newCalc = vmm.getCalculatorCatalog().getCalculator(type, newCalcName);
-
-		if (type.isNodeProp())
+		
+		newCalc.getMapping(0).setControllingAttributeName((String) attrName, null, true);
+		if (type.isNodeProp()) {
+			
+			
 			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(newCalc);
-		else
+		} else
 			vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(newCalc);
-
+		
+		
 		/*
 		 * If old calc is not standard name, rename it.
 		 */
@@ -2067,12 +2157,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				oldMappingTypeName = null;
 
 			final String oldCalcName = type.getName() + "-" + oldMappingTypeName;
-
-			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null)
+			
+			
+			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null) {
+				final Calculator newC = getNewCalculator(type, oldMappingTypeName, oldCalcName);
+				newC.getMapping(0).setControllingAttributeName((String) attrName, null, false);
 				vmm.getCalculatorCatalog()
-				   .addCalculator(getNewCalculator(type, oldMappingTypeName, oldCalcName));
+				   .addCalculator(newC);
+				
+			}
 		}
-
 		Property parent = prop.getParentProperty();
 		visualPropertySheetPanel.removeProperty(parent);
 
@@ -2096,22 +2190,24 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void expandLastSelectedItem(String name) {
+
 		final PropertySheetTable table = visualPropertySheetPanel.getTable();
 		Item item = null;
-
+		Property curProp;
+		
 		for (int i = 0; i < table.getRowCount(); i++) {
 			item = (Item) table.getValueAt(i, 0);
-
-			Property curProp = item.getProperty();
-
-			if ((curProp != null) && (curProp.getDisplayName() == name)) {
-				visualPropertySheetPanel.getTable().setRowSelectionInterval(i, i);
-
-				break;
+			
+			curProp = item.getProperty();
+			
+			if ((curProp != null) && (curProp.getDisplayName().equals(name))) {
+				table.setRowSelectionInterval(i, i);
+				if(item.isVisible() == false) {
+					item.toggle();
+				}
+				return;
 			}
 		}
-
-		visualPropertySheetPanel.getTable().getActionMap().get("toggle").actionPerformed(null);
 	}
 
 	private Calculator getNewCalculator(final VisualPropertyType type, final String newMappingName,
@@ -2169,16 +2265,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	public void setCurrentVS(String vsName) {
 		vsNameComboBox.setSelectedItem(vsName);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param event
-	 *            DOCUMENT ME!
-	 */
-	public void onCyNetworkEvent(CyNetworkEvent event) {
-		System.out.println("||||||||||||||| CNEVENT  !");
 	}
 
 	private void buildList() {
@@ -2453,111 +2539,106 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 	}
 
-	/*
-	 * Create new calculator (mapping)
-	 */
-	private void createNewMapping(VisualPropertyType type) {
-		// get available mappings
-		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		final Set mapperNames = catalog.getMappingNames();
-
-		// convert to array for JOptionPane
-		// Object[] mapperArray = mapperNames.toArray();
-
-		// get a name for the new calculator
-		final String defaultMapperName = "Discrete Mapper";
-		String calcName = vmm.getVisualStyle().getName() + "-" + type.getName() + "-"
-		                  + defaultMapperName;
-
-		// create the new calculator
-		// get the selected mapper
-		Class mapperClass = catalog.getMapping(defaultMapperName);
-
-		// create the selected mapper
-		Class[] conTypes = { Object.class, byte.class };
-		Constructor mapperCon;
-
-		try {
-			mapperCon = mapperClass.getConstructor(conTypes);
-		} catch (NoSuchMethodException exc) {
-			// Should not happen...
-			System.err.println("Invalid mapper " + mapperClass.getName());
-
-			return;
-		}
-
-		// create the mapper
-		final byte mapType; // node or edge calculator
-
-		if (type.isNodeProp())
-			mapType = ObjectMapping.NODE_MAPPING;
-		else
-			mapType = ObjectMapping.EDGE_MAPPING;
-
-		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
-		System.out.println("====== def OBJ = " + defaultObj.getClass() + ", TYPE = "
-		                   + type.getName());
-
-		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
-		ObjectMapping mapper = null;
-
-		try {
-			mapper = (ObjectMapping) mapperCon.newInstance(invokeArgs);
-		} catch (Exception exc) {
-			System.err.println("Error creating mapping");
-
-			return;
-		}
-
-		Calculator calc = vmm.getCalculatorCatalog().getCalculator(type, calcName);
-
-		if (calc == null) {
-			calc = CalculatorFactory.newDefaultCalculator(type, calcName, mapper);
-
-			vmm.getCalculatorCatalog().addCalculator(calc);
-		}
-
-		if (type.isNodeProp())
-			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(calc);
-		else
-			vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(calc);
-
-		/*
-		 * Move the property in the list.
-		 */
-		Property prop = null;
-
-		for (int i = 0; i < visualPropertySheetPanel.getTable().getModel().getRowCount(); i++) {
-			Item item = (Item) visualPropertySheetPanel.getTable().getModel().getValueAt(i, 0);
-			prop = item.getProperty();
-
-			if ((prop != null) && prop.getDisplayName().equals(type.getName()))
-				visualPropertySheetPanel.removeProperty(prop);
-		}
-
-		final VizMapperProperty newRootProp = new VizMapperProperty();
-
-		if (type.isNodeProp())
-			buildProperty(calc, newRootProp, NODE_VISUAL_MAPPING);
-		else
-			buildProperty(calc, newRootProp, EDGE_VISUAL_MAPPING);
-
-		/*
-		 * Update memory
-		 */
-
-		// need to remove 2.
-		removeProperty(prop);
-
-		propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-
-		noMapping.remove(newRootProp.getHiddenObject());
-		prop = null;
-
-		expandLastSelectedItem(type.getName());
-
-		vmm.getNetworkView().redrawGraph(false, true);
-	}
+//	/*
+//	 * Create new calculator (mapping)
+//	 */
+//	private void createNewMapping(VisualPropertyType type, String mappingType, String ctrAttrName) {
+//		// get available mappings
+//		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+//
+//		// get a name for the new calculator
+//		final String defaultMapperName = "Discrete Mapper";
+//		String calcName = vmm.getVisualStyle().getName() + "-" + type.getName() + "-"
+//		                  + defaultMapperName;
+//
+//		// create the new calculator
+//		// get the selected mapper
+//		Class mapperClass = catalog.getMapping(defaultMapperName);
+//
+//		// create the selected mapper
+//		Class[] conTypes = { Object.class, byte.class };
+//		Constructor mapperCon;
+//
+//		try {
+//			mapperCon = mapperClass.getConstructor(conTypes);
+//		} catch (NoSuchMethodException exc) {
+//			// Should not happen...
+//			System.err.println("Invalid mapper " + mapperClass.getName());
+//
+//			return;
+//		}
+//
+//		// create the mapper
+//		final byte mapType; // node or edge calculator
+//
+//		if (type.isNodeProp())
+//			mapType = ObjectMapping.NODE_MAPPING;
+//		else
+//			mapType = ObjectMapping.EDGE_MAPPING;
+//
+//		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
+//		
+//
+//		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
+//		ObjectMapping mapper = null;
+//
+//		try {
+//			mapper = (ObjectMapping) mapperCon.newInstance(invokeArgs);
+//		} catch (Exception exc) {
+//			System.err.println("Error creating mapping");
+//
+//			return;
+//		}
+//
+//		Calculator calc = vmm.getCalculatorCatalog().getCalculator(type, calcName);
+//
+//		if (calc == null) {
+//			calc = CalculatorFactory.newDefaultCalculator(type, calcName, mapper);
+//
+//			vmm.getCalculatorCatalog().addCalculator(calc);
+//		}
+//
+//		if (type.isNodeProp())
+//			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(calc);
+//		else
+//			vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(calc);
+//
+//		/*
+//		 * Move the property in the list.
+//		 */
+//		Property prop = null;
+//
+//		for (int i = 0; i < visualPropertySheetPanel.getTable().getModel().getRowCount(); i++) {
+//			Item item = (Item) visualPropertySheetPanel.getTable().getModel().getValueAt(i, 0);
+//			prop = item.getProperty();
+//
+//			if ((prop != null) && prop.getDisplayName().equals(type.getName()))
+//				visualPropertySheetPanel.removeProperty(prop);
+//		}
+//
+//		final VizMapperProperty newRootProp = new VizMapperProperty();
+//
+//		if (type.isNodeProp())
+//			buildProperty(calc, newRootProp, NODE_VISUAL_MAPPING);
+//		else
+//			buildProperty(calc, newRootProp, EDGE_VISUAL_MAPPING);
+//
+//		/*
+//		 * Update memory
+//		 */
+//
+//		// need to remove 2.
+//		removeProperty(prop);
+//
+//		propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+//
+//		noMapping.remove(newRootProp.getHiddenObject());
+//		prop = null;
+//
+//		expandLastSelectedItem(type.getName());
+//
+//		vmm.getNetworkView().redrawGraph(false, true);
+//	}
 
 	/**
 	 * Remove a mapping from current visual style.
