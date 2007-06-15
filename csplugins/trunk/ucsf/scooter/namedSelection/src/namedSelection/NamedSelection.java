@@ -149,6 +149,20 @@ public class NamedSelection extends CytoscapePlugin
 	}
 
 	/**
+	 * This is called when a new group has been created that
+	 * we care about, but the network view may not be the
+	 * current network view (e.g. during XGMML creation).
+	 *
+	 * @param group the CyGroup that was just created
+	 * @param view the CyNetworkView that this group is being
+	 * created under
+	 */
+	public void groupCreated(CyGroup group, CyNetworkView view) { 
+		// In our case, we don't really care about the network view
+		groupPanel.groupCreated(group);
+	}
+
+	/**
 	 * This is called when a group we care about is about to 
 	 * be deleted.  If we weren't building our menu each
 	 * time, this would be used to update the list of groups
@@ -323,7 +337,8 @@ public class NamedSelection extends CytoscapePlugin
 			Iterator iter = groupList.iterator();
 			while (iter.hasNext()) {
 				CyGroup group = (CyGroup)iter.next();
-				if (group.getViewer().equals(groupViewer.getViewerName())) {
+				String viewer = group.getViewer();
+				if (viewer != null && viewer.equals(viewerName)) {
 					addSubMenu(menu, group.getGroupName(), command, group, node);
 					foundItem = true;
 				}

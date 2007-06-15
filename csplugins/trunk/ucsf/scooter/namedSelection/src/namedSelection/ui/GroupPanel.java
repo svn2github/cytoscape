@@ -251,6 +251,9 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		Iterator<CyGroup> iter = groupList.iterator();
 		while (iter.hasNext()) {
 			CyGroup group = iter.next();
+			String groupViewer = group.getViewer();
+			if (groupViewer == null || !groupViewer.equals(viewer.getViewerName())) 
+				continue;
 			Iterator<CyNode> nodeIter = group.getNodeIterator();
 			boolean allSelected = true;
 			while (nodeIter.hasNext()) {
