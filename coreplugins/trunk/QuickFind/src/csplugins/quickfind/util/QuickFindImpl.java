@@ -42,6 +42,7 @@ import csplugins.widgets.autocomplete.index.IndexFactory;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 
 import cytoscape.data.CyAttributes;
 
@@ -99,8 +100,17 @@ class QuickFindImpl implements QuickFind {
 		}
 
 		if (controllingAttribute == null) {
-			controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
-		}
+            //  Small hack to index BioPAX Networks by default with node_label.
+            Iterator nodesIterator = network.nodesIterator();
+            CyNode node = (CyNode) nodesIterator.next();
+            String bioPaxFlag = Cytoscape.getNodeAttributes().getStringAttribute
+                    (node.getIdentifier(), "biopax.node_label");
+            if (bioPaxFlag != null) {
+                controllingAttribute = "biopax.node_label";
+            } else {
+                controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
+            }
+        }
 
 		//  Determine maxProgress
 		currentProgress = 0;
