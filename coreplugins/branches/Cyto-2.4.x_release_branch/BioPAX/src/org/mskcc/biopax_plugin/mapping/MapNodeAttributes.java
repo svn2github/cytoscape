@@ -452,11 +452,13 @@ public class MapNodeAttributes {
                         + "a protein record may be annotated with UNIPROT or "
                         + "REFSeq accession numbers.");
 
+	nodeAttributes.setUserVisible(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, true);
+	        nodeAttributes.setAttributeDescription(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
+	         "BioPax Node Label.  Short label used to identify each node in the network.");
+
         //  Hide these attributes from the user, as they currently
         //  contain HTML, and don't make much sense within the default
         //  attribute browser.
-        nodeAttributes.setUserVisible(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
-                false);
         nodeAttributes.setUserVisible(BIOPAX_IHOP_LINKS, false);
         nodeAttributes.setUserVisible(BIOPAX_PATHWAY_NAME, false);
         nodeAttributes.setUserVisible(BIOPAX_PUBLICATION_REFERENCES, false);
