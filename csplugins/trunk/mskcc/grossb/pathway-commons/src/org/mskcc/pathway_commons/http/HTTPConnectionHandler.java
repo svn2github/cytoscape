@@ -43,6 +43,11 @@ import java.io.IOException;
 public class HTTPConnectionHandler extends Thread {
 
 	/**
+	 * web service url string constant
+	 */
+	public static final String WEB_SERVICE_URL = "/pc/webservice.do";
+
+	/**
 	 * ref to socket
 	 */
 	private Socket sock;
@@ -56,9 +61,6 @@ public class HTTPConnectionHandler extends Thread {
 	 * debug flag
 	 */
 	private boolean debug;
-
-	// some string constants
-	private static final String WEB_SERVICE_URL = "webservice.do";
 
     /**
      * Constructor.
