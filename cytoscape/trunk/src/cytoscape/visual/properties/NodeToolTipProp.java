@@ -54,6 +54,9 @@ import javax.swing.Icon;
  *
  */
 public class NodeToolTipProp extends AbstractVisualProperty {
+	
+	private StringBuffer buf = new StringBuffer();
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -101,10 +104,16 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o) {
 		if ((o == null) || (nv == null))
 			return;
-
-		// TODO - add getToolTip to NodeView
-		//if ( !((String)o).equals(nv.getToolTip()) )
-		nv.setToolTip((String) o);
+		if(((String)o).startsWith("<html>")) {
+			nv.setToolTip((String) o);
+			return;
+		}
+		
+		buf = new StringBuffer();
+		buf.append("<html><body bgcolor=\"white\"><Div Align=\"center\"><Font Size=\"4\">");
+		buf.append(((String)o).replaceAll("\\n", "<br>"));
+		buf.append("</Font></div></body></html>");
+		nv.setToolTip(buf.toString());
 	}
 
 	/**
@@ -121,7 +130,6 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 		if (s != null)
 			return s;
 		else
-
 			return null;
 	}
 
