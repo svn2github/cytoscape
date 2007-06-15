@@ -81,7 +81,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
 import cytoscape.visual.VisualStyle;
 
 import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.CalculatorFactory;
+import cytoscape.visual.calculators.BasicCalculator;
 
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
@@ -2254,7 +2254,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return null;
 		}
 
-		return CalculatorFactory.newDefaultCalculator(type, newCalcName, mapper);
+		return new BasicCalculator(newCalcName, mapper, type);
 	}
 
 	/**
@@ -2653,8 +2653,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			Property curProp = item.getProperty();
 
 			if (curProp instanceof VizMapperProperty) {
-				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getHiddenObject();
+				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
 
 				String[] message = {
 				                       "The Mapping for " + type.getName() + " will be removed.",

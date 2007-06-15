@@ -46,7 +46,6 @@ import cytoscape.CyNetwork;
 
 import cytoscape.visual.Appearance;
 
-//--------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -57,13 +56,11 @@ import giny.model.Node;
 
 import java.util.Properties;
 
-
-//--------------------------------------------------------------------------
 /**
- * DOCUMENT ME!
- *
- * @author $author$
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
   */
+@Deprecated
 public class GenericNodeFontSizeCalculator extends NodeCalculator
     implements NodeFontSizeCalculator {
     /**

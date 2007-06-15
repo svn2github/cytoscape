@@ -90,11 +90,6 @@ import javax.swing.event.ChangeListener;
  * public
  */
 public abstract class AbstractCalculator implements Calculator {
-	/**
-	 * String literal used to refer to the generic "ID" attribute.
-	 */
-
-	//public static final String ID = "ID";
 
 	/**
 	 * Vector of all mappings contained by this calculator. Usually small.
@@ -175,15 +170,6 @@ public abstract class AbstractCalculator implements Calculator {
 	public void addMapping(ObjectMapping m) {
 		this.mappings.add(m);
 		this.acceptedDataClasses.add(m.getAcceptedDataClasses());
-	}
-
-	/**
-	 * Listens to changes in the mapping and forwards them on to whatever
-	 * listeners are attached to the calculator.
-	 */
-	protected class MappingListener implements ChangeListener {
-		public void stateChanged(ChangeEvent e) {
-		}
 	}
 
 	/**

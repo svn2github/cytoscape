@@ -42,41 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.GenericEdgeColorCalculator;
-import cytoscape.visual.calculators.GenericEdgeFontFaceCalculator;
-import cytoscape.visual.calculators.GenericEdgeFontSizeCalculator;
-import cytoscape.visual.calculators.GenericEdgeLabelCalculator;
-import cytoscape.visual.calculators.GenericEdgeLabelColorCalculator;
-import cytoscape.visual.calculators.GenericEdgeLabelOpacityCalculator;
-import cytoscape.visual.calculators.GenericEdgeLineStyleCalculator;
-import cytoscape.visual.calculators.GenericEdgeLineTypeCalculator;
-import cytoscape.visual.calculators.GenericEdgeLineWidthCalculator;
-import cytoscape.visual.calculators.GenericEdgeOpacityCalculator;
-import cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator;
-import cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator;
-import cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator;
-import cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator;
-import cytoscape.visual.calculators.GenericEdgeTargetArrowColorCalculator;
-import cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator;
-import cytoscape.visual.calculators.GenericEdgeToolTipCalculator;
-import cytoscape.visual.calculators.GenericNodeBorderColorCalculator;
-import cytoscape.visual.calculators.GenericNodeBorderOpacityCalculator;
-import cytoscape.visual.calculators.GenericNodeFillColorCalculator;
-import cytoscape.visual.calculators.GenericNodeFontFaceCalculator;
-import cytoscape.visual.calculators.GenericNodeFontSizeCalculator;
-import cytoscape.visual.calculators.GenericNodeHeightCalculator;
-import cytoscape.visual.calculators.GenericNodeLabelCalculator;
-import cytoscape.visual.calculators.GenericNodeLabelColorCalculator;
-import cytoscape.visual.calculators.GenericNodeLabelOpacityCalculator;
-import cytoscape.visual.calculators.GenericNodeLabelPositionCalculator;
-import cytoscape.visual.calculators.GenericNodeLineStyleCalculator;
-import cytoscape.visual.calculators.GenericNodeLineTypeCalculator;
-import cytoscape.visual.calculators.GenericNodeLineWidthCalculator;
-import cytoscape.visual.calculators.GenericNodeOpacityCalculator;
-import cytoscape.visual.calculators.GenericNodeShapeCalculator;
-import cytoscape.visual.calculators.GenericNodeToolTipCalculator;
-import cytoscape.visual.calculators.GenericNodeUniformSizeCalculator;
-import cytoscape.visual.calculators.GenericNodeWidthCalculator;
 import cytoscape.visual.properties.EdgeColorProp;
 import cytoscape.visual.properties.EdgeFontFaceProp;
 import cytoscape.visual.properties.EdgeFontSizeProp;
@@ -132,124 +97,124 @@ import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 public enum VisualPropertyType {
 
 	NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
-	                "defaultNodeFillColor", GenericNodeFillColorCalculator.class, Color.class,
+	                "defaultNodeFillColor", Color.class,
 	                new NodeFillColorProp(), new ColorParser() ),
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
-	                  "defaultNodeBorderColor", GenericNodeBorderColorCalculator.class,
+	                  "defaultNodeBorderColor", 
 	                  Color.class, new NodeBorderColorProp(), new ColorParser() ), 
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-	              "defaultNodeLineType", GenericNodeLineTypeCalculator.class, LineType.class,
+	              "defaultNodeLineType", LineType.class,
 	              new NodeLineTypeProp(), new LineTypeParser() ), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
-	           GenericNodeShapeCalculator.class, NodeShape.class, new NodeShapeProp(),
+	           NodeShape.class, new NodeShapeProp(),
 			   new NodeShapeParser()), 
 	NODE_SIZE("Node Size", "nodeUniformSizeCalculator", "node.size", "defaultNodeSize",
-	          GenericNodeUniformSizeCalculator.class, Number.class, new NodeSizeProp(),
+	          Number.class, new NodeSizeProp(),
 			  new DoubleParser()), 
 	NODE_WIDTH("Node Width", "nodeWidthCalculator", "node.width", "defaultNodeWidth",
-	           GenericNodeWidthCalculator.class, Number.class, new NodeWidthProp(),
+	           Number.class, new NodeWidthProp(),
 			   new DoubleParser()), 
 	NODE_HEIGHT("Node Height", "nodeHeightCalculator", "node.height", "defaultNodeHight",
-	            GenericNodeHeightCalculator.class, Number.class, new NodeHeightProp(),
+	            Number.class, new NodeHeightProp(),
 				new DoubleParser()), 
 	NODE_LABEL("Node Label", "nodeLabelCalculator", "node.label", "defaultNodeLabel",
-	           GenericNodeLabelCalculator.class, String.class, new NodeLabelProp(),
+	           String.class, new NodeLabelProp(),
 			   new StringParser()), 
 	NODE_FONT_FACE("Node Font Face", "nodeFontFaceCalculator", "node.font", "defaultNodeFont",
-	               GenericNodeFontFaceCalculator.class, Font.class, new NodeFontFaceProp(),
+	               Font.class, new NodeFontFaceProp(),
 				   new FontParser()), 
 	NODE_FONT_SIZE("Node Font Size", "nodeFontSizeCalculator", "node.fontSize",
-	               "defaultNodeFontSize", GenericNodeFontSizeCalculator.class, Number.class,
+	               "defaultNodeFontSize", Number.class,
 	               new NodeFontSizeProp(), new DoubleParser()), 
 	NODE_LABEL_COLOR("Node Label Color", "nodeLabelColor", "node.labelColor",
-	                 "defaultNodeLabelColor", GenericNodeLabelColorCalculator.class, Color.class,
+	                 "defaultNodeLabelColor", Color.class,
 	                 new NodeLabelColorProp(), new ColorParser()), 
 	NODE_TOOLTIP("Node Tooltip", "nodeTooltipCalculator", "node.toolTip", "defaultNodeToolTip",
-	             GenericNodeToolTipCalculator.class, String.class, new NodeToolTipProp(),
+	             String.class, new NodeToolTipProp(),
 				 new StringParser()), 
 	NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator", "node.labelPosition",
-	                    "defaultNodeLabelPosition", GenericNodeLabelPositionCalculator.class,
+	                    "defaultNodeLabelPosition", 
 	                    LabelPosition.class, new NodeLabelPositionProp(), new LabelPositionParser()), 
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
-	           GenericEdgeColorCalculator.class, Color.class, new EdgeColorProp(),
+	           Color.class, new EdgeColorProp(),
 			   new ColorParser()), 
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-	              "defaultEdgeLineType", GenericEdgeLineTypeCalculator.class, LineType.class,
+	              "defaultEdgeLineType", LineType.class,
 	              new EdgeLineTypeProp(), new LineTypeParser()), 
 	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
-	              "defaultEdgeSourceArrow", GenericEdgeSourceArrowCalculator.class, Arrow.class,
+	              "defaultEdgeSourceArrow", Arrow.class,
 	              new EdgeSourceArrowProp(), new ArrowParser()), 
 	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
-	              "defaultEdgeTargetArrow", GenericEdgeTargetArrowCalculator.class, Arrow.class,
+	              "defaultEdgeTargetArrow", Arrow.class,
 	              new EdgeTargetArrowProp(), new ArrowParser()), 
 	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
-	           GenericEdgeLabelCalculator.class, String.class, new EdgeLabelProp(),
+	           String.class, new EdgeLabelProp(),
 			   new StringParser()), 
 	EDGE_FONT_FACE("Edge Font Face", "edgeFontFaceCalculator", "edge.font", "defaultEdgeFont",
-	               GenericEdgeFontFaceCalculator.class, Font.class, new EdgeFontFaceProp(),
+	               Font.class, new EdgeFontFaceProp(),
 				   new FontParser()), 
 	EDGE_FONT_SIZE("Edge Font Size", "edgeFontSizeCalculator", "edge.fontSize",
-	               "defaultEdgeFontSize", GenericEdgeFontSizeCalculator.class, Number.class,
+	               "defaultEdgeFontSize", Number.class,
 	               new EdgeFontSizeProp(), new DoubleParser()), 
 	EDGE_LABEL_COLOR("Edge Label Color", "edgeLabelColorCalculator", "edge.labelColor",
-	                 "defaultEdgeLabelColor", GenericEdgeLabelColorCalculator.class, Color.class,
+	                 "defaultEdgeLabelColor", Color.class,
 	                 new EdgeLabelColorProp(), new ColorParser()), 
 	EDGE_TOOLTIP("Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip", "defaultEdgeToolTip",
-	             GenericEdgeToolTipCalculator.class, String.class, new EdgeToolTipProp(),
+	             String.class, new EdgeToolTipProp(),
 				 new StringParser()), 
 
 	// New from 2.5: line can have arbitrary width.
 	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator", "node.lineWidth",
-	                "defaultNodeLineWidth", GenericNodeLineWidthCalculator.class, Number.class,
+	                "defaultNodeLineWidth", Number.class,
 	                new NodeLineWidthProp(), new FloatParser()), 
 	EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
-	                "defaultEdgeLineWidth", GenericEdgeLineWidthCalculator.class, Number.class,
+	                "defaultEdgeLineWidth", Number.class,
 	                new EdgeLineWidthProp(), new FloatParser()), 
 	NODE_LINE_STYLE("Node Line Style", "nodeLineStyleCalculator", "node.lineStyle",
-	                "defaultNodeLineStyle", GenericNodeLineStyleCalculator.class, LineStyle.class,
+	                "defaultNodeLineStyle", LineStyle.class,
 	                new NodeLineStyleProp(), new LineStyleParser()), 
 	EDGE_LINE_STYLE("Edge Line Style", "edgeLineStyleCalculator", "edge.lineStyle",
-	                "defaultEdgeLineStyle", GenericEdgeLineStyleCalculator.class, LineStyle.class,
+	                "defaultEdgeLineStyle", LineStyle.class,
 	                new EdgeLineStyleProp(), new LineStyleParser()), 
 
 	// New from 2.5: arrows have its own color, shape, and size.
 	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape", "edgeSourceArrowShapeCalculator",
 	                    "edge.sourceArrowShape", "defaultEdgeSourceArrowShape",
-	                    GenericEdgeSourceArrowShapeCalculator.class, ArrowShape.class,
+	                    ArrowShape.class,
 	                    new EdgeSourceArrowShapeProp(), new ArrowShapeParser()), 
 	EDGE_TGTARROW_SHAPE("Edge Target Arrow Shape", "edgeTargetArrowShapeCalculator",
 	                    "edge.targetArrowShape", "defaultEdgeTargetArrowShape",
-	                    GenericEdgeTargetArrowShapeCalculator.class, ArrowShape.class,
+	                    ArrowShape.class,
 	                    new EdgeTargetArrowShapeProp(), new ArrowShapeParser()), 
 	EDGE_SRCARROW_COLOR("Edge Source Arrow Color", "edgeSourceArrowColorCalculator",
 	                    "edge.sourceArrowColor", "defaultEdgeSourceArrowColor",
-	                    GenericEdgeSourceArrowColorCalculator.class, Color.class,
+	                    Color.class,
 	                    new EdgeSourceArrowColorProp(), new ColorParser()), 
 	EDGE_TGTARROW_COLOR("Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
 	                    "edge.targetArrowColor", "defaultEdgeTargetArrowColor",
-	                    GenericEdgeTargetArrowColorCalculator.class, Color.class,
+	                    Color.class,
 	                    new EdgeTargetArrowColorProp(), new ColorParser()),
 	/*
 	 * New in 2.5: Opacity support
 	 */
 	NODE_OPACITY("Node Opacity", "nodeOpacityCalculator", "node.opacity", "defaultNodeOpacity",
-	             GenericNodeOpacityCalculator.class, Number.class, new NodeOpacityProp(),
+	             Number.class, new NodeOpacityProp(),
 				 new FloatParser()), 
 	EDGE_OPACITY("Edge Opacity", "edgeOpacityCalculator", "edge.opacity", "defaultEdgeOpacity",
-	    	     GenericEdgeOpacityCalculator.class, Number.class, new EdgeOpacityProp(),
+	    	     Number.class, new EdgeOpacityProp(),
 				 new FloatParser()), 
 	NODE_LABEL_OPACITY("Node Label Opacity", "nodeLabelOpacityCalculator", "node.LabelOpacity", "defaultNodeLabelOpacity",
-	    	             GenericNodeLabelOpacityCalculator.class, Number.class, new NodeLabelOpacityProp(),
+	    	             Number.class, new NodeLabelOpacityProp(),
 						 new FloatParser()), 
 	EDGE_LABEL_OPACITY("Edge Label Opacity", "edgeLabelOpacityCalculator", "edge.labelOpacity", "defaultEdgeLabelOpacity",
-	    	    	     GenericEdgeLabelOpacityCalculator.class, Number.class, new EdgeLabelOpacityProp(),
+	    	    	     Number.class, new EdgeLabelOpacityProp(),
 						 new FloatParser()), 
     NODE_BORDER_OPACITY("Node Border Opacity", "nodeBorderOpacityCalculator", "node.borderOpacity", "defaultNodeBorderOpacity",
-	    	    	             GenericNodeBorderOpacityCalculator.class, Number.class, new NodeBorderOpacityProp(),
+	    	    	             Number.class, new NodeBorderOpacityProp(),
 								 new FloatParser()), 
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
-	                    "defaultEdgeLabelPosition", null, null, new EdgeLabelPositionProp(),
+	                    "defaultEdgeLabelPosition", null, new EdgeLabelPositionProp(),
 						new LabelPositionParser()),
 						
 	;
@@ -268,7 +233,6 @@ public enum VisualPropertyType {
 	 */
 	private String bypassAttrName;
 	private String defaultPropertyLabel;
-	private Class calculatorClass;
 
 	// Data type for the actual visual property.
 	private Class dataType;
@@ -280,25 +244,16 @@ public enum VisualPropertyType {
 	 */
 	private VisualPropertyType(final String calcName, final String propertyLabel,
 	                           final String bypassAttrName, final String defaultPropertyLabel,
-	                           final Class calculatorClass, final Class dataType,
-	                           final VisualProperty vizProp, final ValueParser valueParser) {
+	                           final Class dataType, final VisualProperty vizProp, 
+							   final ValueParser valueParser) {
 		this.calcName = calcName;
 		this.propertyLabel = propertyLabel;
 		this.bypassAttrName = bypassAttrName;
 		this.defaultPropertyLabel = defaultPropertyLabel;
-		this.calculatorClass = calculatorClass;
 		this.dataType = dataType;
 		this.vizProp = vizProp;
 		this.valueParser = valueParser;
 	}
-
-	/**
-	 * Returns name of calculator.
-	@Override
-	public String toString() {
-		return calcName;
-	}
-	 */
 
 	/**
 	 * DOCUMENT ME!
@@ -346,15 +301,6 @@ public enum VisualPropertyType {
 	 */
 	public String getDefaultPropertyKey(final String baseKey) {
 		return baseKey + "." + defaultPropertyLabel;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Class getCalculatorClass() {
-		return calculatorClass;
 	}
 
 	/**

@@ -35,28 +35,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 8192 $
-// $Date: 2006-09-13 17:50:21 -0700 (Wed, 13 Sep 2006) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-
-//----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
 import java.util.Properties;
 
-
-//----------------------------------------------------------------------------
 /**
- * DOCUMENT ME!
- *
- * @author $author$
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
   */
+@Deprecated
 public class GenericNodeBorderColorCalculator extends GenericNodeColorCalculator
     implements NodeColorCalculator {
     /**

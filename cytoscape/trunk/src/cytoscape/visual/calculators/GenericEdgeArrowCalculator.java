@@ -56,9 +56,10 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use EdgeSourceArrow or EdgeTargetArrow instead. will be removed
- *             10/2007
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
  */
+@Deprecated
 public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
     implements EdgeArrowCalculator {
     

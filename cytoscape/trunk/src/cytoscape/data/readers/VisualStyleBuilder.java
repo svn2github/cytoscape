@@ -209,7 +209,7 @@ public class VisualStyleBuilder {
 
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
-			nlc = new GenericNodeLabelCalculator(cName, m);
+			nlc = new BasicCalculator(cName, m,VisualPropertyType.NODE_LABEL);
 		}
 
 		nac.setCalculator(nlc);
@@ -339,32 +339,39 @@ public class VisualStyleBuilder {
 			nodeLabelFontMapping.putMapValue(key, nodeFont);
 		}
 
-		Calculator shapeCalculator = new GenericNodeShapeCalculator("XGMML Node Shape",
-		                                                            nodeShapeMapping);
+		Calculator shapeCalculator = new BasicCalculator("XGMML Node Shape",
+		                                                            nodeShapeMapping,
+																	VisualPropertyType.NODE_SHAPE);
 		nac.setCalculator(shapeCalculator);
 
-		Calculator nodeColorCalculator = new GenericNodeFillColorCalculator("XGMML Node Color",
-		                                                                    nodeColorMapping);
+		Calculator nodeColorCalculator = new BasicCalculator("XGMML Node Color",
+		                                                                    nodeColorMapping,
+																			VisualPropertyType.NODE_FILL_COLOR);
 		nac.setCalculator(nodeColorCalculator);
 
-		Calculator nodeBorderColorCalculator = new GenericNodeBorderColorCalculator("XGMML Node Border Color",
-		                                                                            nodeBorderColorMapping);
+		Calculator nodeBorderColorCalculator = new BasicCalculator("XGMML Node Border Color",
+		                                                                            nodeBorderColorMapping,
+																					VisualPropertyType.NODE_BORDER_COLOR);
 		nac.setCalculator(nodeBorderColorCalculator);
 
-		Calculator nodeSizeCalculatorW = new GenericNodeWidthCalculator("XGMML Node Width",
-		                                                                nodeWMapping);
+		Calculator nodeSizeCalculatorW = new BasicCalculator("XGMML Node Width",
+		                                                                nodeWMapping,
+																		VisualPropertyType.NODE_WIDTH);
 		nac.setCalculator(nodeSizeCalculatorW);
 
-		Calculator nodeSizeCalculatorH = new GenericNodeHeightCalculator("XGMML Node Height",
-		                                                                 nodeHMapping);
+		Calculator nodeSizeCalculatorH = new BasicCalculator("XGMML Node Height",
+		                                                                 nodeHMapping,
+																		 VisualPropertyType.NODE_HEIGHT);
 		nac.setCalculator(nodeSizeCalculatorH);
 
-		Calculator nodeBoderWidthCalculator = new GenericNodeLineWidthCalculator("XGMML Node Border",
-		                                                                       nodeBorderWidthMapping);
+		Calculator nodeBoderWidthCalculator = new BasicCalculator("XGMML Node Border",
+		                                                                       nodeBorderWidthMapping,
+																			   VisualPropertyType.NODE_LINE_WIDTH);
 		nac.setCalculator(nodeBoderWidthCalculator);
 
-		Calculator nodeFontCalculator = new GenericNodeFontFaceCalculator("XGMML Node Label Font",
-		                                                                  nodeLabelFontMapping);
+		Calculator nodeFontCalculator = new BasicCalculator("XGMML Node Label Font",
+		                                                                  nodeLabelFontMapping,
+																		  VisualPropertyType.NODE_FONT_FACE);
 		nac.setCalculator(nodeFontCalculator);
 	}
 
@@ -377,7 +384,7 @@ public class VisualStyleBuilder {
 
 		if (elc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
-			elc = new GenericEdgeLabelCalculator(cName, m);
+			elc = new BasicCalculator(cName, m, VisualPropertyType.EDGE_LABEL);
 		}
 
 		eac.setCalculator(elc);
@@ -539,36 +546,44 @@ public class VisualStyleBuilder {
 			edgeTargetArrowColorMapping.putMapValue(key, targetColor);
 		}
 
-		Calculator edgeColorCalculator = new GenericEdgeColorCalculator("XGMML Edge Color",
-		                                                                edgeColorMapping);
+		Calculator edgeColorCalculator = new BasicCalculator("XGMML Edge Color",
+		                                                                edgeColorMapping,
+																		VisualPropertyType.EDGE_COLOR);
 		eac.setCalculator(edgeColorCalculator);
 
-		Calculator edgeLineWidthCalculator = new GenericEdgeLineWidthCalculator("XGMML Edge Line Width",
-		                                                                      edgeLineWidthMapping);
+		Calculator edgeLineWidthCalculator = new BasicCalculator("XGMML Edge Line Width",
+                                                                      edgeLineWidthMapping,
+																	  VisualPropertyType.EDGE_LINE_WIDTH);
 		eac.setCalculator(edgeLineWidthCalculator);
 
-		Calculator edgeLineStyleCalculator = new GenericEdgeLineWidthCalculator("XGMML Edge Line Style",
-		                                                                      edgeLineStyleMapping);
+		Calculator edgeLineStyleCalculator = new BasicCalculator("XGMML Edge Line Style",
+                                                                      edgeLineStyleMapping,
+																	  VisualPropertyType.EDGE_LINE_STYLE);
 		eac.setCalculator(edgeLineStyleCalculator);
 
-		Calculator edgeFontCalculator = new GenericEdgeFontFaceCalculator("XGMML Edge Label Font",
-		                                                                  edgeLabelFontMapping);
+		Calculator edgeFontCalculator = new BasicCalculator("XGMML Edge Label Font",
+		                                                                  edgeLabelFontMapping,
+																		  VisualPropertyType.EDGE_FONT_FACE);
 		eac.setCalculator(edgeFontCalculator);
 
-		Calculator edgeSourceArrowShapeCalculator = new GenericEdgeSourceArrowShapeCalculator("XGMML Source Edge Arrow Shape",
-		                                                                            edgeSourceArrowShapeMapping);
+		Calculator edgeSourceArrowShapeCalculator = new BasicCalculator("XGMML Source Edge Arrow Shape",
+                                                                            edgeSourceArrowShapeMapping,
+																			VisualPropertyType.EDGE_SRCARROW_SHAPE);
 		eac.setCalculator(edgeSourceArrowShapeCalculator);
 
-		Calculator edgeTargetArrowShapeCalculator = new GenericEdgeTargetArrowShapeCalculator("XGMML Target Edge Arrow Shape",
-		                                                                            edgeTargetArrowShapeMapping);
+		Calculator edgeTargetArrowShapeCalculator = new BasicCalculator("XGMML Target Edge Arrow Shape",
+		                                                                            edgeTargetArrowShapeMapping,
+																					VisualPropertyType.EDGE_TGTARROW_SHAPE);
 		eac.setCalculator(edgeTargetArrowShapeCalculator);
 
-		Calculator edgeSourceArrowColorCalculator = new GenericEdgeSourceArrowColorCalculator("XGMML Source Edge Arrow Color",
-		                                                                            edgeSourceArrowColorMapping);
+		Calculator edgeSourceArrowColorCalculator = new BasicCalculator("XGMML Source Edge Arrow Color",
+		                                                                            edgeSourceArrowColorMapping,
+																					VisualPropertyType.EDGE_SRCARROW_COLOR);
 		eac.setCalculator(edgeSourceArrowColorCalculator);
 
-		Calculator edgeTargetArrowColorCalculator = new GenericEdgeTargetArrowColorCalculator("XGMML Target Edge Arrow Color",
-		                                                                            edgeTargetArrowColorMapping);
+		Calculator edgeTargetArrowColorCalculator = new BasicCalculator("XGMML Target Edge Arrow Color",
+		                                                                            edgeTargetArrowColorMapping,
+																					VisualPropertyType.EDGE_TGTARROW_COLOR);
 		eac.setCalculator(edgeTargetArrowColorCalculator);
 	}
 

@@ -35,15 +35,8 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//----------------------------------------------------------------------------
-// $Revision: 7760 $
-// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
-// $Author: mes $
-//----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-
-//----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -51,11 +44,9 @@ import cytoscape.visual.mappings.ObjectMapping;
 import java.util.Properties;
 
 
-//----------------------------------------------------------------------------
 /**
- * DOCUMENT ME!
- *
- * @author $author$
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
   */
 @Deprecated
 public class GenericEdgeSourceArrowCalculator extends GenericEdgeArrowCalculator

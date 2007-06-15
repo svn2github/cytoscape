@@ -720,7 +720,7 @@ public class CalculatorCatalog {
         if (nlc == null) {
             PassThroughMapping m = new PassThroughMapping("",
                     AbstractCalculator.ID);
-            nlc = CalculatorFactory.newDefaultCalculator(NODE_LABEL, label, m);
+            nlc = new BasicCalculator( label, m, NODE_LABEL);
         }
 
         defaultVS.getNodeAppearanceCalculator()

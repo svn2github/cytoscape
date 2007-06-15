@@ -45,6 +45,7 @@ import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.CalculatorFactory;
+import cytoscape.visual.calculators.BasicCalculator;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
@@ -604,7 +605,7 @@ public class VizMapAttrTab extends VizMapTab {
 				                              "Error", JOptionPane.ERROR_MESSAGE);
 			}
 
-			Calculator calc = CalculatorFactory.newDefaultCalculator(vizType, calcName, mapper);
+			Calculator calc = new BasicCalculator(calcName, mapper, vizType);
 
 			System.out.println("*** Calc type = " + calc.getVisualPropertyType().getPropertyLabel());
 

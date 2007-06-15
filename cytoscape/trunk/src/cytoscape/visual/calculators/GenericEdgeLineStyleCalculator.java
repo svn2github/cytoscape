@@ -12,6 +12,7 @@ import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineStyleParser;
 
+@Deprecated
 public class GenericEdgeLineStyleCalculator extends EdgeCalculator {
 
 	

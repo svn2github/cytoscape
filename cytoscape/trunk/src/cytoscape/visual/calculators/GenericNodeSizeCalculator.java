@@ -48,17 +48,17 @@ import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
-
-//----------------------------------------------------------------------------
 import giny.model.Node;
 
 import java.util.Properties;
 
 
 /**
- * @deprecated Use NodeWidth,NodeHeight, or NodeUniformSize instead. will be
- *             removed 10/2007
+ * Double deprecated! Use NodeWidth,NodeHeight, or NodeUniformSize instead. 
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
  */
+@Deprecated
 public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
     implements NodeSizeCalculator {
 

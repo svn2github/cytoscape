@@ -55,11 +55,18 @@ public class CalculatorFactory {
      * @deprecated Use othe newCalculator - we don't need the base interface
      *             class name any more. Will be removed 10/2007.
      */
+	@Deprecated
     public static Calculator newCalculator(String name, Properties calcProps,
         String baseKey, String intClassName) {
         return newCalculator(name, calcProps, baseKey);
     }
 
+	/**
+	 * Creates a caclculator defined by the type identified by the ".visualPropertyType" 
+	 * property in the calcProps argument.  If that isn't found, it looks for a
+	 * ".class" property and then tries the old-school approach using reflection to create
+	 * a calculator.
+	 */
     public static Calculator newCalculator(String name, Properties calcProps, String baseKey) {
         final String typeName = calcProps.getProperty(baseKey + ".visualPropertyType");
 
@@ -142,47 +149,17 @@ public class CalculatorFactory {
 
     /**
      * Creates a new default Calculator based on type.
+	 * @deprecated Use new BasicCalculator(name,mapper,type) instead. Gone 5/2008.
      */
     @Deprecated
-    public static Calculator newDefaultCalculator(byte type, String calcName,
-        ObjectMapping mapper) {
-        return newDefaultCalculator(
-            VisualPropertyType.getVisualPorpertyType(type),
-            calcName,
-            mapper);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     * @param calcName DOCUMENT ME!
-     * @param mapper DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static Calculator newDefaultCalculator(VisualPropertyType type,
-        String calcName, ObjectMapping mapper) {
-        final Class realClass = type.getCalculatorClass();
-        final Class[] paramTypes = { String.class, ObjectMapping.class };
-        final Constructor constructor = getConstructor(
-                realClass,
-                paramTypes,
-                type.getPropertyLabel());
-
-        if (constructor == null)
-            return null;
-
-        final Object[] params = { calcName, mapper };
-
-        return getCalculator(
-            constructor,
-            params,
-            type.getPropertyLabel());
+    public static Calculator newDefaultCalculator(byte t, String calcName, ObjectMapping mapper) {
+		VisualPropertyType type = VisualPropertyType.getVisualPorpertyType(t);
+		return new BasicCalculator(calcName,mapper,type);
     }
 
     /**
      * Returns the type name for calculators of a given type.
+	 * @deprecated Use VisualPropertyType.getName() instead. Gone 5/2008.
      */
     @Deprecated
     public static String getTypeName(byte type) {

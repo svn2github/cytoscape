@@ -48,7 +48,6 @@ import cytoscape.visual.Appearance;
 import cytoscape.visual.LineType;
 import cytoscape.visual.parsers.LineTypeParser;
 
-//----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -58,12 +57,11 @@ import giny.model.Edge;
 import java.util.Properties;
 
 
-//----------------------------------------------------------------------------
 /**
- * DOCUMENT ME!
- *
- * @author $author$
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
   */
+@Deprecated
 public class GenericEdgeLineTypeCalculator extends EdgeCalculator
     implements EdgeLineTypeCalculator {
     /**

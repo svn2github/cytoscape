@@ -51,9 +51,11 @@ import java.util.Properties;
 
 
 /**
- * @deprecated Use NodeFillColor or NodeBorderColor instead. will be removed
- *             10/2007
+ * Doubly Deprecated! Use NodeFillColor or NodeBorderColor instead. 
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. Will be removed 5/2008.
+ * Will be hidden, although probably not removed, in 5/2008.
  */
+@Deprecated
 public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
     implements NodeColorCalculator {
 

@@ -46,7 +46,6 @@ import cytoscape.CyNetwork;
 
 import cytoscape.visual.Appearance;
 
-//----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_TOOLTIP;
 
 import cytoscape.visual.mappings.ObjectMapping;
@@ -58,12 +57,11 @@ import giny.model.Edge;
 import java.util.Properties;
 
 
-//----------------------------------------------------------------------------
 /**
- * DOCUMENT ME!
- *
- * @author $author$
+ * @deprecated Use BasicCalculator(VisualPropertyType,...) instead. 
+ * Will be hidden, although probably not removed, in 5/2008.
   */
+@Deprecated
 public class GenericEdgeToolTipCalculator extends EdgeCalculator
     implements EdgeToolTipCalculator {
     /**
