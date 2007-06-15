@@ -71,6 +71,9 @@
 							</p>
 							<p>
 								<br>
+								<h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
+								<p><a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a></p>
+								<p><b>November 6<sup>th</sup>-9<sup>th</sup> 2007</b></p>
 								<br>
 							</p>
 						</div>
@@ -86,6 +89,42 @@
 				<div id="contents">
 					<div id="content">
 						<div id="indent">
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
+									<i>NEW!</i> &nbsp;&nbsp;<a href="retreat2007/index.php">Cytoscape Retreat 2007!</a>
+								</b></big>
+
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+										 	Now in Europe! November 6<sup>th</sup> - 9<sup>th</sup> 
+											<br>
+											Including a public symposium on November 8<sup>th</sup>: <b> </b>
+											with a formidable list of confirmed speakers: among them
+											<ul>
+											<li>Leroy Hood
+											<li>Peter Sorger
+											<li>Ewan Birney
+											<li>Chris Sander
+											</ul>	
+											<br>
+											Hosted by the <a href="http://www.humangenetics-amc.nl" target="_blank">Human Genetics Department of the Academic Medical Center</a> 
+											in the vibrant historic city of <a href="/retreat2007/venue.php">Amsterdam</a>
+										</td>
+										<td valign="top">
+											<a href="retreat2007/venue.php">
+												<img src="retreat2007/images/magere-brug-small.jpg" border="0" align="right" alt="Amsterdam by night" />
+											</a>
+										</td>
+
+									</tr>
+
+								</table>
+							</div>
+							<p>
 							<div class="item">
 								<br>
 								<p>
