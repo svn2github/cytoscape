@@ -35,6 +35,7 @@ package org.mskcc.pathway_commons.mapping;
 import org.mskcc.pathway_commons.util.NetworkUtil;
 import org.mskcc.pathway_commons.http.HTTPEvent;
 import org.mskcc.pathway_commons.http.HTTPServerListener;
+import org.mskcc.pathway_commons.http.HTTPConnectionHandler;
 import org.mskcc.pathway_commons.view.MergeDialog;
 
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
@@ -42,6 +43,7 @@ import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
+import cytoscape.util.ProxyHandler;
 
 import ding.view.NodeContextMenuListener;
 
@@ -81,6 +83,23 @@ public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
 
 		// get the request/url
 		String pathwayCommonsRequest = event.getRequest();
+
+		// swap in proxy server if necessary
+		String proxyAddress = ProxyHandler.getProxyServer().toString();
+		if (proxyAddress != null) {
+			// parse protocol from ip/port address
+			String[] addressComponents = proxyAddress.split("@");
+			// do we have valid components ?
+			if (addressComponents[0] != null && addressComponents[0].length() > 0 &&
+				addressComponents[1] != null && addressComponents[1].length() > 0) {
+				String newURL = addressComponents[0].trim() + ":/" + addressComponents[1].trim();
+				int indexOfWebService = pathwayCommonsRequest.indexOf(HTTPConnectionHandler.WEB_SERVICE_URL);
+				if (indexOfWebService > -1) {
+					pathwayCommonsRequest = newURL + pathwayCommonsRequest.substring(indexOfWebService);
+				}
+			}
+		}
+
 		Set<CyNetwork> bpNetworkSet = getBiopaxNetworkSet();
 
 		// if no other networks are loaded, we can just load it up
