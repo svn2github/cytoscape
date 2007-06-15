@@ -60,14 +60,4 @@ public class SBMLReaderPlugin extends CytoscapePlugin {
 		ImportHandler ih = Cytoscape.getImportHandler();
 		ih.addFilter(new SBMLFilter());
 	}
-
-	/**
-	 * Gives a description of this plugin.
-	 */
-	public String describe() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("Loads an SBML Level 2 file");
-
-		return sb.toString();
-	}
 }

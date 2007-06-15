@@ -91,24 +91,25 @@ public class SBMLVisualStyleFactory {
 		CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
 
 		// ------------------------------ Set node shapes ---------------------------//
-		DiscreteMapping disMapping = new DiscreteMapping(new Byte(ShapeNodeRealizer.RECT),
+		DiscreteMapping disMapping = new DiscreteMapping(NodeShape.RECT,
 		                                                 ObjectMapping.NODE_MAPPING);
 		disMapping.setControllingAttributeName(NODE_TYPE_ATT, network, false);
-		disMapping.putMapValue("species", new Byte(ShapeNodeRealizer.DIAMOND));
-		disMapping.putMapValue("reaction", new Byte(ShapeNodeRealizer.ELLIPSE));
+		disMapping.putMapValue("species", NodeShape.DIAMOND);
+		disMapping.putMapValue("reaction", NodeShape.ELLIPSE);
 
-		Calculator shapeCalculator = new GenericNodeShapeCalculator("SBMLReader Shape Calculator",
-		                                                            disMapping);
+		Calculator shapeCalculator = new BasicCalculator("SBMLReader Shape Calculator",
+		                                                            disMapping,
+																	VisualPropertyType.NODE_SHAPE);
 		nodeAppCalc.setCalculator(shapeCalculator);
 
 		// ------------------------------ Set the label ------------------------------//
 		// Display the value for geneName as a label
 		String cName = "sbml name";
-		Calculator nlc = calculatorCatalog.getCalculator(VizMapUI.NODE_LABEL, cName);
+		Calculator nlc = calculatorCatalog.getCalculator(VisualPropertyType.NODE_LABEL, cName);
 
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping(new String(), cName);
-			nlc = new GenericNodeLabelCalculator(cName, m);
+			nlc = new BasicCalculator(cName, m, VisualPropertyType.NODE_LABEL);
 		}
 
 		nodeAppCalc.setCalculator(nlc);
@@ -123,21 +124,23 @@ public class SBMLVisualStyleFactory {
 		sizeMapping.putMapValue("species", speciesNodeSize);
 		sizeMapping.putMapValue("reaction", reactionNodeSize);
 
-		Calculator sizeCalculator = new GenericNodeUniformSizeCalculator("SBMLReader Size Calculator",
-		                                                                 sizeMapping);
+		Calculator sizeCalculator = new BasicCalculator("SBMLReader Size Calculator",
+		                                                                 sizeMapping,
+																		 VisualPropertyType.NODE_SIZE);
 		nodeAppCalc.setCalculator(sizeCalculator);
 		nodeAppCalc.setNodeSizeLocked(true);
 
 		// ------------------------------ Set edge arrow shape ---------------------------//
-		DiscreteMapping arrowMapping = new DiscreteMapping(Arrow.BLACK_DELTA,
+		DiscreteMapping arrowMapping = new DiscreteMapping(ArrowShape.DELTA,
 		                                                   ObjectMapping.NODE_MAPPING);
 		arrowMapping.setControllingAttributeName(EDGE_TYPE_ATT, network, false);
-		arrowMapping.putMapValue("reaction-product", Arrow.COLOR_ARROW);
-		arrowMapping.putMapValue("reaction-reactant", Arrow.NONE);
-		arrowMapping.putMapValue("reaction-modifier", Arrow.COLOR_CIRCLE);
+		arrowMapping.putMapValue("reaction-product", ArrowShape.ARROW);
+		arrowMapping.putMapValue("reaction-reactant", ArrowShape.NONE);
+		arrowMapping.putMapValue("reaction-modifier", ArrowShape.CIRCLE);
 
-		Calculator edgeArrowCalculator = new GenericEdgeTargetArrowCalculator("SBMLReader Edge Arrow Calculator",
-		                                                                      arrowMapping);
+		Calculator edgeArrowCalculator = new BasicCalculator("SBMLReader Edge Arrow Calculator",
+                                                             arrowMapping,
+															  VisualPropertyType.EDGE_SRCARROW_SHAPE);
 		edgeAppCalc.setCalculator(edgeArrowCalculator);
 
 		// ------------------------------ Set edge colour ---------------------------//
@@ -148,8 +151,9 @@ public class SBMLVisualStyleFactory {
 		edgeColorMapping.putMapValue("reaction-reactant", Color.RED);
 		edgeColorMapping.putMapValue("reaction-modifier", Color.BLACK);
 
-		Calculator edgeColorCalculator = new GenericEdgeColorCalculator("SBMLReader Edge Color Calculator",
-		                                                                edgeColorMapping);
+		Calculator edgeColorCalculator = new BasicCalculator("SBMLReader Edge Color Calculator",
+		                                                                edgeColorMapping,
+																		VisualPropertyType.EDGE_COLOR);
 		edgeAppCalc.setCalculator(edgeColorCalculator);
 
 		//------------------------- Create a visual style -------------------------------//
