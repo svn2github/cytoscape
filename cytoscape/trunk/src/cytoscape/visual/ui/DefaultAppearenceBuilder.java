@@ -36,6 +36,7 @@ package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.util.CyColorChooser;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualPropertyType;
@@ -381,7 +382,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private void globalListActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			final String selected = (String) globalList.getSelectedValue();
-			Color newColor = JColorChooser.showDialog(this, "Choose new color.", Color.white);
+			Color newColor = CyColorChooser.showDialog(this, "Choose new color.", Color.white);
 
 			try {
 				Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalAppearanceCalculator()

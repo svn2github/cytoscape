@@ -53,6 +53,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import cytoscape.Cytoscape;
+import cytoscape.util.CyColorChooser;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
@@ -218,7 +219,6 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 				public void mouseClicked(MouseEvent e) {
 					if (SwingUtilities.isRightMouseButton(e)) {
 					} else {
-						System.out.println("Thumb Click------------------------> " + e.getSource());
 
 						final JComponent selectedThumb = slider.getSelectedThumb();
 
@@ -227,7 +227,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 							double diff = Math.abs(location.getX() - e.getX());
 
 							if (e.getClickCount() == 2) {
-								final Color newColor = JColorChooser.showDialog(slider,
+								final Color newColor = CyColorChooser.showDialog(slider,
 								                                                "Choose new color...",
 								                                                Color.white);
 

@@ -2,6 +2,7 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.util.CyColorChooser;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.BoundaryRangeValues;
@@ -139,7 +140,7 @@ public class BelowAndAbovePanel extends JPanel {
             	
             	Object newValue = null;
                 if (type.getDataType() == Color.class) {
-                	newValue = JColorChooser.showDialog(caller, "Select new color",
+                	newValue = CyColorChooser.showDialog(caller, "Select new color",
                             boxColor);
                 	caller.setColor((Color)newValue);
                 }

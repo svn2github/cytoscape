@@ -24,6 +24,8 @@ import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 import com.l2fprod.common.util.ResourceManager;
 
+import cytoscape.util.CyColorChooser;
+
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -90,7 +92,7 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
     protected void selectColor() {
         ResourceManager rm = ResourceManager.all(FilePropertyEditor.class);
         String title = rm.getString("ColorPropertyEditor.title");
-        Color selectedColor = JColorChooser.showDialog(editor, title, color);
+        Color selectedColor = CyColorChooser.showDialog(editor, title, color);
 
         if (selectedColor != null) {
             Color oldColor = color;

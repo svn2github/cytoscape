@@ -46,6 +46,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
+import cytoscape.util.CyColorChooser;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
@@ -66,7 +67,7 @@ import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
  */
 public enum EditorDisplayer {
 
-	DISCRETE_COLOR(JColorChooser.class, "showDialog",
+	DISCRETE_COLOR(CyColorChooser.class, "showDialog",
 	               new Class[] { Component.class, String.class, Color.class },
 	               new Object[] { Cytoscape.getDesktop(), "Select Color...", null }, Color.class),
 	DISCRETE_FONT(PopupFontChooser.class, "showDialog",
