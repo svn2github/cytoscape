@@ -49,6 +49,7 @@ import ding.view.NodeContextMenuListener;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.net.Proxy;
 
 /**
  * This class listens for requests from patwaycommons.org
@@ -85,17 +86,20 @@ public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
 		String pathwayCommonsRequest = event.getRequest();
 
 		// swap in proxy server if necessary
-		String proxyAddress = ProxyHandler.getProxyServer().toString();
-		if (proxyAddress != null) {
-			// parse protocol from ip/port address
-			String[] addressComponents = proxyAddress.split("@");
-			// do we have valid components ?
-			if (addressComponents[0] != null && addressComponents[0].length() > 0 &&
-				addressComponents[1] != null && addressComponents[1].length() > 0) {
-				String newURL = addressComponents[0].trim() + ":/" + addressComponents[1].trim();
-				int indexOfWebService = pathwayCommonsRequest.indexOf(HTTPConnectionHandler.WEB_SERVICE_URL);
-				if (indexOfWebService > -1) {
-					pathwayCommonsRequest = newURL + pathwayCommonsRequest.substring(indexOfWebService);
+		Proxy proxyServer = ProxyHandler.getProxyServer();
+		if (proxyServer != null) {
+			String proxyAddress = proxyServer.toString();
+			if (proxyAddress != null) {
+				// parse protocol from ip/port address
+				String[] addressComponents = proxyAddress.split("@");
+				// do we have valid components ?
+				if (addressComponents[0] != null && addressComponents[0].length() > 0 &&
+					addressComponents[1] != null && addressComponents[1].length() > 0) {
+					String newURL = addressComponents[0].trim() + ":/" + addressComponents[1].trim();
+					int indexOfWebService = pathwayCommonsRequest.indexOf(HTTPConnectionHandler.WEB_SERVICE_URL);
+					if (indexOfWebService > -1) {
+						pathwayCommonsRequest = newURL + pathwayCommonsRequest.substring(indexOfWebService);
+					}
 				}
 			}
 		}
