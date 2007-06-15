@@ -1,5 +1,5 @@
 /*
- File: EdgeCalculator.java
+ File: BasicCalculator.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,9 +36,9 @@
  */
 
 //------------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
+// $Revision: 9996 $
+// $Date: 2007-04-17 18:47:27 -0700 (Tue, 17 Apr 2007) $
+// $Author: kono $
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
@@ -52,65 +52,44 @@ import cytoscape.visual.mappings.ObjectMapping;
 
 import cytoscape.visual.parsers.ValueParser;
 
-//------------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
 
 
-//------------------------------------------------------------------------------
 /**
- * EdgeCalculator implements some UI features for calculators lower in the
+ * BasicCalculator implements some UI features for calculators lower in the
  * object tree.
  */
-public class EdgeCalculator extends BasicCalculator {
-    /**
-     * Creates a new EdgeCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param m DOCUMENT ME!
-     * @param c DOCUMENT ME!
-     */
-    @Deprecated
-    public EdgeCalculator(String name, ObjectMapping m, Class c) {
-        this(name, m, c, null);
-    }
+public class BasicCalculator extends AbstractCalculator {
 
     /**
-     * Creates a new EdgeCalculator object.
+     * Creates a new BasicCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
-     * @param c DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public EdgeCalculator(String name, ObjectMapping m, Class c, VisualPropertyType type) {
+    public BasicCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
     }
 
     /**
-     * Constructor that calls {@link MappingFactory} to construct a new
-     * ObjectMapping based on the supplied arguments.
-     */
-    @Deprecated
-    public EdgeCalculator(String name, Properties props, String baseKey,
-        ValueParser parser, Object defObj) {
-        this(name, props, baseKey, parser, defObj, null);
-    }
-
-    /**
-     * Creates a new EdgeCalculator object.
+     * Creates a new BasicCalculator object.
      *
      * @param name DOCUMENT ME!
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
      * @param parser DOCUMENT ME!
-     * @param defObj DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public EdgeCalculator(String name, Properties props, String baseKey, ValueParser parser, Object defObj, VisualPropertyType type) {
-        super(name,props,baseKey,type);
+    public BasicCalculator(String name, Properties props, String baseKey, VisualPropertyType type) {
+        super(name,
+              MappingFactory.newMapping(props, baseKey + ".mapping", type.getValueParser(),
+                                        type.getVisualProperty().getDefaultAppearanceObject(), 
+				                        type.isNodeProp()?
+										    ObjectMapping.NODE_MAPPING:
+											ObjectMapping.EDGE_MAPPING),
+               type);
     }
 }

@@ -60,6 +60,22 @@ public class CalculatorFactory {
         return newCalculator(name, calcProps, baseKey);
     }
 
+    public static Calculator newCalculator(String name, Properties calcProps, String baseKey) {
+        final String typeName = calcProps.getProperty(baseKey + ".visualPropertyType");
+
+		if ( typeName == null )
+			return oldSchoolNewCalculator(name, calcProps, baseKey);
+
+		try { 
+			VisualPropertyType t = VisualPropertyType.valueOf(typeName);
+			return new BasicCalculator(name,calcProps,baseKey,t);
+		} catch (IllegalArgumentException e) { 
+			System.out.println("Couldn't parse visual property type: " + typeName);
+			return null;	
+		}
+	}
+
+
     /**
      * Attempt to construct an instance of Calculator as defined by the supplied
      * arguments. It searches for a key-value pair identifying the name of the
@@ -67,7 +83,7 @@ public class CalculatorFactory {
      * interface, and has an appropriate constructor, and calls that constructor
      * with the appropriate arguments.
      */
-    public static Calculator newCalculator(String name, Properties calcProps,
+    private static Calculator oldSchoolNewCalculator(String name, Properties calcProps,
         String baseKey) {
         /*
          * Get the class object for the real implementation object specified by
@@ -170,18 +186,7 @@ public class CalculatorFactory {
      */
     @Deprecated
     public static String getTypeName(byte type) {
-        return getTypeName(VisualPropertyType.getVisualPorpertyType(type));
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static String getTypeName(final VisualPropertyType type) {
-        return type.toString();
+        return VisualPropertyType.getVisualPorpertyType(type).getName();
     }
 
     /**
@@ -190,18 +195,7 @@ public class CalculatorFactory {
      */
     @Deprecated
     public static String getPropertyLabel(byte type) {
-        return getPropertyLabel(VisualPropertyType.getVisualPorpertyType(type));
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param type DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static String getPropertyLabel(VisualPropertyType type) {
-        return type.getPropertyLabel();
+        return VisualPropertyType.getVisualPorpertyType(type).getPropertyLabel();
     }
 
     // utility method to create a constructor based on the params

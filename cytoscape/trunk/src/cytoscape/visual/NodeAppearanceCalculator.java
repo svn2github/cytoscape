@@ -197,14 +197,6 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
         defaultAppearance.setNodeSizeLocked(b);
     }
 
-    protected boolean isValidCalculator(Calculator c) {
-        if (c instanceof NodeCalculator)
-            return true;
-        else
-
-            return false;
-    }
-
     // ===================================================================================
     //
     // Beyond this point all code is deprecated or exists solely to support

@@ -67,7 +67,7 @@ import javax.swing.JPanel;
  * NodeCalculator implements some UI features for calculators lower in the
  * object tree.
  */
-public abstract class NodeCalculator extends AbstractCalculator {
+public class NodeCalculator extends BasicCalculator {
     /**
      * Creates a new NodeCalculator object.
      *
@@ -88,9 +88,8 @@ public abstract class NodeCalculator extends AbstractCalculator {
      * @param c DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public NodeCalculator(String name, ObjectMapping m, Class c,
-        VisualPropertyType type) {
-        super(name, m, c, type);
+    public NodeCalculator(String name, ObjectMapping m, Class c, VisualPropertyType type) {
+        super(name, m, type);
     }
 
     /**
@@ -100,10 +99,7 @@ public abstract class NodeCalculator extends AbstractCalculator {
     @Deprecated
     public NodeCalculator(String name, Properties props, String baseKey,
         ValueParser parser, Object defObj) {
-        this(name,
-            MappingFactory.newMapping(props, baseKey + ".mapping", parser,
-                defObj, ObjectMapping.NODE_MAPPING),
-            defObj.getClass(), null);
+        this(name,props,baseKey,parser, defObj, null);
     }
 
     /**
@@ -116,41 +112,7 @@ public abstract class NodeCalculator extends AbstractCalculator {
      * @param defObj DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public NodeCalculator(String name, Properties props, String baseKey,
-        ValueParser parser, Object defObj, VisualPropertyType type) {
-        super(name,
-            MappingFactory.newMapping(props, baseKey + ".mapping", parser,
-                defObj, ObjectMapping.NODE_MAPPING),
-            defObj.getClass(), type);
-    }
-
-    /**
-     * Get the UI for node calculators. Display a JPanel with a JPanel from
-     * AbstractCalculator {@link AbstractCalculator#getUI} and the underlying
-     * mapper's UI JPanel in a FlowLayout.
-     *
-     * @param parent
-     *            Parent dialog for the child UI
-     * @param n
-     *            CyNetwork representing the graph
-     *
-     * @return JPanel containing JComboBox
-     */
-    public JPanel getUI(JDialog parent, CyNetwork n) {
-        // everything comes straight from the superclass
-        return super.getUI(
-            Cytoscape.getNodeAttributes(),
-            parent,
-            n);
-    }
-
-    /**
-     * Simple passthrough method that is specific to nodes. See
-     * AbstractCalculator.getAttrBundle() for more details.
-     */
-    protected Map getAttrBundle(String name) {
-        return super.getAttrBundle(
-            name,
-            Cytoscape.getNodeAttributes());
+    public NodeCalculator(String name, Properties props, String baseKey, ValueParser parser, Object defObj, VisualPropertyType type) {
+        super(name,props,baseKey,type);
     }
 }

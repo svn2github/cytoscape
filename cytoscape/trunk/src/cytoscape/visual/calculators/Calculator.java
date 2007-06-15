@@ -70,6 +70,9 @@ import javax.swing.event.ChangeListener;
  * interfaces.
  */
 public interface Calculator extends Cloneable {
+
+	public static final String ID = "ID";
+
     /**
      * Get the UI for a calculator.
      *

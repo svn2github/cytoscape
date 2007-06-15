@@ -185,14 +185,6 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
         defaultAppearance = (EdgeAppearance) (((EdgeAppearanceCalculator) toCopy).getDefaultAppearance().clone());
     }
 
-    protected boolean isValidCalculator(Calculator c) {
-        if (c instanceof EdgeCalculator)
-            return true;
-        else
-
-            return false;
-    }
-
     /**
      * @deprecated Use getCalculator(type) instead. This method will be removed
      *             Sept. 2007.

@@ -169,10 +169,7 @@ abstract class AppearanceCalculator
      * @param c DOCUMENT ME!
      */
     public void setCalculator(Calculator c) {
-        if (c == null)
-            return;
-
-        if (!isValidCalculator(c))
+        if (c == null) 
             return;
 
         Calculator toReplace = null;
@@ -213,6 +210,7 @@ abstract class AppearanceCalculator
 
         Calculator newCalc;
 
+
         for (VisualPropertyType type : catalog.getCalculatorTypes()) {
             for (Calculator c : catalog.getCalculators(type)) {
                 value = nacProps.getProperty(baseKey + "." +
@@ -243,5 +241,4 @@ abstract class AppearanceCalculator
 
     protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
 
-    protected abstract boolean isValidCalculator(Calculator c);
 }
