@@ -50,7 +50,7 @@ public interface GraphPerspective {
    
  
   /**
-   * @deprecated Use nodesIterator() instead.
+   * Returns a list of Node objects.
    * @see #nodesIterator()
    */
    public List nodesList () ;
@@ -59,7 +59,6 @@ public interface GraphPerspective {
    * Returns an array of length getNodeCount(); the array contains
    * RootGraph indices of Node objects in this GraphPerspective, in some
    * undefined order.
-   * @deprecated Use nodesIterator() together with Node.getRootGraphIndex().
    * @see #nodesIterator()
    * @see Node#getRootGraphIndex()
    */
@@ -71,7 +70,7 @@ public interface GraphPerspective {
    public Iterator edgesIterator () ;
    
   /**
-   * @deprecated Use edgesIterator() instead.
+   * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
    public List edgesList () ;
@@ -80,7 +79,6 @@ public interface GraphPerspective {
    * Returns an array of length getEdgeCount(); the array contains
    * RootGraph indices of Edge objects in this GraphPerspective, in some
    * undefined order.
-   * @deprecated Use edgesIterator() together with Edge.getRootGraphIndex().
    * @see #edgesIterator()
    * @see Edge#getRootGraphIndex()
    */

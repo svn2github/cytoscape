@@ -111,13 +111,13 @@ public interface RootGraph {
   public Iterator nodesIterator ();
 
   /**
-   * @deprecated Use nodesIterator() instead.
+   * Returns a list of Node objects.
    * @see #nodesIterator()
    */
   public List nodesList ();
 
   /**
-   * @deprecated Use nodesIterator() together with Node.getRootGraphIndex().
+   * Returns an array of node indices.
    * @see #nodesIterator()
    * @see Node#getRootGraphIndex()
    */
@@ -134,13 +134,13 @@ public interface RootGraph {
   public Iterator edgesIterator ();
 
   /**
-   * @deprecated Use edgesIterator() instead.
+   * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
   public List edgesList ();
 
   /**
-   * @deprecated Use edgesIterator() together with Edge.getRootGraphIndex().
+   * Returns an array of edge indices.
    * @see #edgesIterator()
    * @see Edge#getRootGraphIndex()
    */
