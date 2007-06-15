@@ -67,33 +67,6 @@ import java.util.TreeSet;
  * a network, given the objects that serve as the source for this information.
  */
 public class Semantics {
-	/**
-	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
-	 *
-	 * This attribute will be removed in April, 2007.
-	 */
-	public static final String IDENTIFIER = "identifier";
-
-	/**
-	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
-	 *
-	 * This attribute will be removed in April, 2007.
-	 */
-	public static final String CANONICAL_NAME = "canonicalName";
-
-	/**
-	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
-	 *
-	 * This attribute will be removed in April, 2007.
-	 */
-	public static final String COMMON_NAME = "commonName";
-
-	/**
-	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
-	 *
-	 * This attribute will be removed in April, 2007.
-	 */
-	public static final String ALIASES = "aliases";
 
 	/*
 	 * KONO:04/19/2006 From v2.3, the following two terms will be used only by

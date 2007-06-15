@@ -599,20 +599,6 @@ public abstract class Cytoscape {
 		node = (CyNode) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(nodeID);
 
-		/*
-		 * We do not need canonicalName anymore. If necessary, user should
-		 * create one from Attribute Browser.
-		 *
-		 * NOTE:
-		 *
-		 * The following statement referencing CANONICAL_NAME should not be
-		 * deleted until its removed from the core (Semantics.java) on April,
-		 * 2007 _DO NOT DELETE UNTIL THEN_
-		 */
-		if (getNodeAttributes().getStringAttribute(nodeID, Semantics.CANONICAL_NAME) == null) {
-			getNodeAttributes().setAttribute(nodeID, Semantics.CANONICAL_NAME, nodeID);
-		}
-
 		return node;
 	}
 
@@ -715,7 +701,7 @@ public abstract class Cytoscape {
 			                                           target.getIdentifier());
 			edge.setIdentifier(edge_name);
 
-			// store edge id as INTERACTION / CANONICAL_NAME Attributes
+			// store edge id as INTERACTION 
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);
 
 			return edge;

@@ -1021,13 +1021,6 @@ public class ExpressionData implements Serializable {
 			for (int i = 0; i < geneNames.size(); i++) {
 				String canName = (String) geneNames.get(i);
 
-				/*
-				GaryBader - Nov.25.2005 - common name information should only come from annotation files
-				Doing it this way is not modular and is hard to maintain
-				// Set common name into geneDescripts
-				nodeAttribs.setAttribute(canName, Semantics.COMMON_NAME,
-				        geneDescripts.get(i).toString());
-				*/
 				mRNAMeasurement mm = getMeasurement(canName, condName);
 
 				if (mm != null) {

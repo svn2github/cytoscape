@@ -348,9 +348,6 @@ public class AnnotationGui extends CytoscapeAction {
 					// get the particular node view
 					NodeView nv = (NodeView) nvi.next();
 
-					//					String nodeLabel = nodeAttributes.getStringAttribute(nv
-					//							.getNode().getIdentifier(),
-					//							Semantics.CANONICAL_NAME);
 					String nodeLabel = nv.getNode().getIdentifier();
 
 					if (nodeLabel == null) {
@@ -553,8 +550,6 @@ public class AnnotationGui extends CytoscapeAction {
 		while (it.hasNext()) {
 			CyNode node = (CyNode) it.next();
 
-			//			String nodeLabel = nodeAttributes.getStringAttribute(node
-			//					.getIdentifier(), Semantics.CANONICAL_NAME);
 			String nodeLabel = node.getIdentifier();
 
 			if (nodeLabel != null)
