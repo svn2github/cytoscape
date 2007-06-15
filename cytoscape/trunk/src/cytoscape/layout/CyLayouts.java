@@ -127,7 +127,7 @@ public class CyLayouts {
 		}
 
 		LayoutAlgorithm l = layoutMap.get(defaultLayout);
-		System.out.println("getDefaultLayout returning " + l);
+		// System.out.println("getDefaultLayout returning " + l);
 
 		// Nope, so return the grid layout 
 		return l;

@@ -691,11 +691,13 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		for (int i = 0; i < groupList.size(); i++) {
 			CyGroup group = groupList.get(i);
+			if (group == null) continue;
 			CyNode groupNode = group.getGroupNode();
 
 			// Get the viewer
 			String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
 			                                                  CyGroup.GROUP_VIEWER_ATTR);
+
 			// Remove the group node from the network (but not from the rootGraph)
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 

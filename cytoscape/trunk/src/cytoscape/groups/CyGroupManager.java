@@ -47,6 +47,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
+import cytoscape.data.CyAttributes;;
 
 
 /**
@@ -141,6 +142,23 @@ public class CyGroupManager {
 	}
 
 	/**
+	 * Search all groups for the group named 'groupName'
+	 *
+	 * @param groupName the name of the group to find
+	 * @return the group, or null if no such group exists
+	 */
+	public static CyGroup findGroup(String groupName) {
+		Iterator <CyGroup>groupIter = getGroupList().iterator();
+		while (groupIter.hasNext()) {
+			CyGroup group = groupIter.next();
+			if (group.getGroupName().equals(groupName)) {
+				return group;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Create a new, empty group.  Use this to get a new group.  In particular,
 	 * this form should be used by internal routines (as opposed to view
 	 * implementations) as this form will cause the viewer to be notified of
@@ -152,6 +170,8 @@ public class CyGroupManager {
 	 * @return the newly created group
 	 */
 	public static CyGroup createGroup(String groupName, String viewer) {
+		// Do we already have a group by this name?
+		if (findGroup(groupName) != null) return null;
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName);
 		groupMap.put(group.getGroupNode(), group);
@@ -171,6 +191,8 @@ public class CyGroupManager {
 	 * @param viewer the name of the viewer to manage this group
 	 */
 	public static CyGroup createGroup(String groupName, List nodeList, String viewer) {
+		// Do we already have a group by this name?
+		if (findGroup(groupName) != null) return null;
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName, nodeList);
 		groupMap.put(group.getGroupNode(), group);
@@ -191,9 +213,18 @@ public class CyGroupManager {
 	 * @param viewer the name of the viewer to manage this group
 	 */
 	public static CyGroup createGroup(CyNode groupNode, List nodeList, String viewer) {
+		// Do we already have a group by this name?
+		if (findGroup(groupNode.getIdentifier()) != null) return null;
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupNode, nodeList);
 		groupMap.put(group.getGroupNode(), group);
+
+		// See if this groupNode has a state attribute
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		try {
+			int state = nodeAttributes.getIntegerAttribute(groupNode.getIdentifier(), CyGroup.GROUP_STATE_ATTR);
+			group.setState(state);
+		} catch (Exception e) {}
 
 		if (viewer != null)
 			setGroupViewer(group, viewer, null, true);
@@ -275,6 +306,7 @@ public class CyGroupManager {
 	 *
 	 * @param group the group we're associating with a viewer
 	 * @param viewer the viewer
+	 * @param myView the network view that this is being operated on
 	 * @param notify if 'true' the viewer will be notified of the creation
 	 */
 	public static void setGroupViewer(CyGroup group, String viewer, CyNetworkView myView, boolean notify) {
@@ -289,8 +321,9 @@ public class CyGroupManager {
 			// Add this group to the list
 			groupViewerMap.get(v).add(group);
 
-			if (notify)
+			if (notify) {
 				v.groupCreated(group, myView);
+			}
 		}
 
 		((CyGroupImpl)group).setViewer(viewer);

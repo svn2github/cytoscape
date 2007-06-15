@@ -71,6 +71,11 @@ public interface CyGroup {
 	 */
 	public static final String GROUP_VIEWER_ATTR = "__groupViewer";
 
+	/**
+	 * The attribute key to use for group state
+	 */
+	public static final String GROUP_STATE_ATTR = "__groupState";
+
 	// Public methods
 
 	/**
