@@ -698,9 +698,10 @@ public class XGMMLReader extends AbstractGraphReader {
 			String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
 			                                                  CyGroup.GROUP_VIEWER_ATTR);
 
-			// Remove the group node from the network (but not from the rootGraph)
-			network.removeNode(groupNode.getRootGraphIndex(), false);
-
+			// Note that we need to leave the group node in the network so that the saved
+			// location information (if there is any) can be utilized by the group viewer.
+			// This means that it will be the responsibility of the group viewer to remove
+			// the node if they don't want it to be visible
 			// Set and notify the viewer
 			CyGroupManager.setGroupViewer(group, viewer, myView, true);
 		}
