@@ -267,7 +267,7 @@ public class MapBioPaxToCytoscape {
 			                                                 BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 
 			if (label != null) {
-				nodeAttributes.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME, label);
+				nodeAttributes.setAttribute(node.getIdentifier(), "ID", label);
 			}
 		}
 	}
@@ -1105,7 +1105,7 @@ public class MapBioPaxToCytoscape {
 		//  Must set the Canonical Name;  otherwise the select node by
 		// name feature will not work.
 		if ((name != null) && (name.length() > 0)) {
-			attributes.setAttribute(nodeID, Semantics.CANONICAL_NAME, name);
+			attributes.setAttribute(nodeID, "ID", name);
 		}
 
 		if ((name != null) && (name.length() > 0)) {

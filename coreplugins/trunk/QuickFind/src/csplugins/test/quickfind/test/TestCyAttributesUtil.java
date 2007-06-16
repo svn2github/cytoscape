@@ -94,7 +94,7 @@ public class TestCyAttributesUtil extends TestCase {
 		ArrayList list = new ArrayList();
 		list.add("apple");
 		list.add("banana");
-		cyAttributes.setAttributeList(ID, LIST_TYPE, list);
+		cyAttributes.setListAttribute(ID, LIST_TYPE, list);
 		values = CyAttributesUtil.getAttributeValues(cyAttributes, ID, LIST_TYPE);
 		assertEquals(2, values.length);
 		assertEquals("apple", values[0]);
@@ -104,7 +104,7 @@ public class TestCyAttributesUtil extends TestCase {
 		HashMap map = new HashMap();
 		map.put("first_name", "Ethan");
 		map.put("last_name", "Cerami");
-		cyAttributes.setAttributeMap(ID, MAP_TYPE, map);
+		cyAttributes.setMapAttribute(ID, MAP_TYPE, map);
 		values = CyAttributesUtil.getAttributeValues(cyAttributes, ID, MAP_TYPE);
 		assertEquals(2, values.length);
 
@@ -182,7 +182,7 @@ public class TestCyAttributesUtil extends TestCase {
 		list.add("apple");
 		list.add("banana");
 
-		cyAttributes.setAttributeList("ID1", LIST_TYPE, list);
+		cyAttributes.setListAttribute("ID1", LIST_TYPE, list);
 
 		CyNetwork network = Cytoscape.createNetwork("csplugins.test");
 		createNode("ID1", network);

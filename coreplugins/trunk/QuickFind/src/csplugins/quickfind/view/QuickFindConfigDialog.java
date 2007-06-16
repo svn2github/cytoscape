@@ -502,11 +502,7 @@ public class QuickFindConfigDialog extends JDialog {
 				//  only show user visible attributes
 				if (attributes.getUserVisible(attributeNames[i])) {
 					if (type != CyAttributes.TYPE_COMPLEX) {
-						//  Explicitly filter out CANONICAL_NAME, as it is
-						//  now deprecated.
-						if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
-							attributeList.add(attributeNames[i]);
-						}
+						attributeList.add(attributeNames[i]);
 					}
 				}
 			}
