@@ -71,6 +71,7 @@ import metaNodePlugin2.MetaNodePlugin2;
  * more efficiently
  */
 public class MetaNode {
+	private static boolean initialized = false;
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private CyGroup metaGroup = null;
 	private CyNode groupNode = null;
@@ -86,6 +87,9 @@ public class MetaNode {
 	private CyAttributes nodeAttributes = null;
 	private CyNetworkView networkView = null;
 	private CyNetwork network = null;
+
+	public static final String X_HINT_ATTR = "__metanodeHintX";
+	public static final String Y_HINT_ATTR = "__metanodeHintY";
 
 	/*****************************************************************
 	 *                    Static methods                             *
@@ -129,15 +133,24 @@ public class MetaNode {
 	 * @param group the group to wrap the MetaNode around
 	 */
 	public MetaNode(CyGroup group) {
+		if (!initialized) {
+			// This only has to be done once
+			CyAttributes attributes = Cytoscape.getNodeAttributes();
+			attributes.setUserVisible(X_HINT_ATTR, false);
+			attributes.setUserVisible(Y_HINT_ATTR, false);
+			initialized = true;
+		}
 		metaGroup = group;
 		groupNode = group.getGroupNode();
 		metaMap.put(groupNode, this);
+
 		// TODO: handle special case where all of the nodes in this group are
 		// members of an existing metanode.  Implicitly, we treat this as a
 		// hierarchy, which means that we first remove all of the nodes from the
 		// parent metanode, then add the new metanode to the parent metanode
 
 		update();
+
 		// See if we need to "fix up" the CyGroup.  We might need to
 		// add external edges to the CyGroup if we have nodes that used
 		// to be connected to nodes which are now part of a collapsed
@@ -176,6 +189,8 @@ public class MetaNode {
 		// Initialize
 		edgeAttributes = Cytoscape.getEdgeAttributes();
 		nodeAttributes = Cytoscape.getNodeAttributes();
+		// Initialize our network-related information.  This might
+		// be overwritten by calls to setGroupViewer
 		networkView = Cytoscape.getCurrentNetworkView();
 		network = Cytoscape.getCurrentNetwork();
 	}
@@ -238,8 +253,8 @@ public class MetaNode {
 		double Y = nv.getYPosition();
 		// Update our attributes
 		String nodeName = node.getIdentifier();
-		nodeAttributes.setAttribute(nodeName,"__metanodeHintX",metaX-X);
-		nodeAttributes.setAttribute(nodeName,"__metanodeHintY",metaY-Y);
+		nodeAttributes.setAttribute(nodeName,X_HINT_ATTR,metaX-X);
+		nodeAttributes.setAttribute(nodeName,Y_HINT_ATTR,metaY-Y);
 		// Hide the attributes
 
 		// Collapse ourselves (if we are a group and we aren't already collapsed)
@@ -247,7 +262,7 @@ public class MetaNode {
 			// Yes, recurse down
 			MetaNode child = (MetaNode)metaMap.get(node);
 			// If we're already collapsed, this will just return
-			child.collapse(recursive, multipleEdges, false);
+			child.collapse(recursive, multipleEdges, false, networkView);
 		}
 		// Hide our edges
 		// Hide the node
@@ -328,15 +343,51 @@ public class MetaNode {
 	}
 
 	/**
+	 * Recollapse a MetaNode.  This is only used when we're restoring a metaNode
+	 * from XGMML.  The problem is that we need to remember the hints of the
+	 * nodes before we collapse, then update those hints so that we expand
+	 * properly.
+	 *
+	 * @param recursive if 'true', this operation is recursive
+	 * @param multipleEdges if 'true', use multiple edges to represent the meta-edges
+	 * @param view the view to use
+	 */
+	public void recollapse(boolean recursive, boolean multipleEdges, CyNetworkView view) {
+		// Override the defaults for networkView and network
+		this.networkView = view;
+		this.network = view.getNetwork();
+		network.restoreNode(groupNode); // In case it was hidden by network loader
+		if (newEdgeMap == null)
+			createMetaEdges();
+
+		isCollapsed = true;
+		expand(recursive, view);
+		collapse(recursive, multipleEdges, false, view);
+	}
+	
+
+	/**
 	 * Collapse this MetaNode
 	 *
 	 * @param recursive if 'true', this operation is recursive
 	 * @param multipleEdges if 'true', use multiple edges to represent the meta-edges
-	 * @param update if 'true', actually update the network
+	 * @param updateNetwork if 'true', actually update the network
+	 * @param view the CyNetworkView
 	 */
-	public void collapse(boolean recursive, boolean multipleEdges, boolean update) {
+	public void collapse(boolean recursive, boolean multipleEdges, boolean updateNetwork,
+	                     CyNetworkView view) {
 		if (isCollapsed) 
 			return;
+
+		System.out.println("collapsing "+groupNode);
+		// Initialize
+		update();
+
+		if (view != null) {
+			// Override the defaults for networkView and network
+			this.networkView = view;
+			this.network = view.getNetwork();
+		}
 
 		// Carefull -- if the user has changed what (s)he wants for multipleEdges
 		// we need to reset
@@ -347,9 +398,6 @@ public class MetaNode {
 		this.multipleEdges = multipleEdges;
 		this.recursive = recursive;
 
-		// Initialize
-		update();
-
 		Dimension center = hideNodes(recursive, multipleEdges);
 		// Add the group node in the center of where the member nodes were
 		network.restoreNode(groupNode);
@@ -358,6 +406,7 @@ public class MetaNode {
 
 		nv.setXPosition(center.getWidth());
 		nv.setYPosition(center.getHeight());
+
 		// Do we already have a list of edges
 		if (newEdgeMap == null) {
 			// No, create them
@@ -375,7 +424,7 @@ public class MetaNode {
 		isCollapsed = true;
 
 		// If we're supposed to, update the display
-		if (update) {
+		if (updateNetwork) {
 			VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 			vizmapper.applyAppearances();
 			networkView.updateView();
@@ -386,8 +435,9 @@ public class MetaNode {
 	 * Expand this MetaNode.
 	 *
 	 * @param recursive if 'true', this operation is recursive
+	 * @param view the CyNetworkView
 	 */
-	public void expand(boolean recursive) {
+	public void expand(boolean recursive, CyNetworkView view) {
 		if (!isCollapsed) 
 			return;
 
@@ -396,9 +446,17 @@ public class MetaNode {
 		// Initialize
 		update();
 
+		if (view != null) {
+			// Override the defaults for networkView and network
+			this.networkView = view;
+			this.network = view.getNetwork();
+		}
+
 		// First, find all of our edges.  This will include any metaEdges as well
 		// as any edges that were created by external applications
 		int [] edgeArray = network.getAdjacentEdgeIndicesArray(groupNode.getRootGraphIndex(),true,true,true);
+
+		System.out.println(groupNode.getIdentifier()+" has "+edgeArray.length+" edges");
 
 		// Now, go through a (hopefully) quick loop to add any edges we don't already have into
 		// our edge map
@@ -407,6 +465,7 @@ public class MetaNode {
 			if (!newEdgeMap.containsKey(edge)) {
 				newEdgeMap.put(edge, new ArrayList());
 			}
+			System.out.println("Hiding edge "+edge.getIdentifier());
 			network.hideEdge(edge);
 		}
 
@@ -416,6 +475,7 @@ public class MetaNode {
 			while (edgeIter.hasNext()) { 
 				CyEdge edge = edgeIter.next();
 				network.hideEdge(edge); 
+				System.out.println("Hiding edge "+edge.getIdentifier());
 			}
 		}
 		// Add the nodes back in
@@ -449,6 +509,7 @@ public class MetaNode {
 	 * @return the created metaEdge
 	 */
 	public CyEdge createMetaEdge(CyEdge edge, boolean ignoreCollapsed) {
+		System.out.println("Examining edge "+edge.getIdentifier());
 		CyNode source = (CyNode)edge.getSource();
 		CyNode target = (CyNode)edge.getTarget();
 		CyNode partner = getPartner(edge);
@@ -471,11 +532,15 @@ public class MetaNode {
 			source = groupNode;
 		CyEdge newEdge = Cytoscape.getCyEdge(source.getIdentifier(),identifier,
 		                                     target.getIdentifier(),"meta-"+interaction);
+		System.out.println("Created edge "+newEdge.getIdentifier());
 		List<CyEdge>eL = new ArrayList();
 		eL.add(edge);
 		newEdgeMap.put(newEdge,eL);
 		metaEdgeMap.put(partner,newEdge);
 		network.addEdge(newEdge);
+		// We may need to explicitly add a view
+		if (networkView.getEdgeView(newEdge.getRootGraphIndex()) == null)
+			networkView.addEdgeView(newEdge.getRootGraphIndex());
 		return newEdge;
 	}
 
@@ -531,12 +596,19 @@ public class MetaNode {
 				continue;
 			} else {
 				network.restoreEdge(edge);
+				if (networkView.getEdgeView(edge) == null) {
+					networkView.addEdgeView(edge.getRootGraphIndex());
+				}
 			}
 		}
 		edges = metaGroup.getInnerEdges();
 		iter = edges.iterator();
 		while (iter.hasNext()) {
-			network.restoreEdge(iter.next());
+			CyEdge edge = iter.next();
+			network.restoreEdge(edge);
+			if (networkView.getEdgeView(edge) == null) {
+				networkView.addEdgeView(edge.getRootGraphIndex());
+			}
 		}
 	}
 
@@ -558,6 +630,10 @@ public class MetaNode {
 
 			network.restoreNode(node);
 			NodeView nodeView = (NodeView)networkView.getNodeView(node);
+			if (nodeView == null) {
+				nodeView = networkView.addNodeView(node.getRootGraphIndex());
+			}
+
 			if (nodeView != null) {
 				xOffset = nodeAttributes.getDoubleAttribute(node.getIdentifier(),"__metanodeHintX");
 				yOffset = nodeAttributes.getDoubleAttribute(node.getIdentifier(),"__metanodeHintY");
@@ -575,7 +651,7 @@ public class MetaNode {
 
 		for (int i = childMetaNodes.size()-1; i >= 0; i--) {
 			MetaNode child = childMetaNodes.get(i);
-			child.expand(true);
+			child.expand(true, networkView);
 		}
 		childMetaNodes = null;
 	}
@@ -606,7 +682,7 @@ public class MetaNode {
 						childMetaNodes = new ArrayList<MetaNode>();
 					}
 					childMetaNodes.add(child);
-					child.collapse(recursive, multipleEdges, false);
+					child.collapse(recursive, multipleEdges, false, networkView);
 				}
 			}
 			NodeView nodeView = (NodeView)networkView.getNodeView(node);
@@ -624,9 +700,9 @@ public class MetaNode {
 		for (int i = 0; i < nodes.size(); i++) {
 			CyNode node = nodes.get(i);
 			String nodeName = node.getIdentifier();
-			nodeAttributes.setAttribute(nodeName,"__metanodeHintX",xCenter-xLocations[i]);
-			nodeAttributes.setAttribute(nodeName,"__metanodeHintY",yCenter-yLocations[i]);
-			// Hide the attributes
+			nodeAttributes.setAttribute(nodeName,X_HINT_ATTR,xCenter-xLocations[i]);
+			nodeAttributes.setAttribute(nodeName,Y_HINT_ATTR,yCenter-yLocations[i]);
+			// Hide the node
 			network.hideNode(node);
 		}
 		Dimension dim = new Dimension();
