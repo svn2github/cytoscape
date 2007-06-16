@@ -158,6 +158,9 @@ public class NamedSelection extends CytoscapePlugin
 	 * created under
 	 */
 	public void groupCreated(CyGroup group, CyNetworkView view) { 
+		// Make sure we get rid of the group node
+		CyNode node = group.getGroupNode();
+		view.getNetwork().removeNode(node.getRootGraphIndex(), false);
 		// In our case, we don't really care about the network view
 		groupPanel.groupCreated(group);
 	}
