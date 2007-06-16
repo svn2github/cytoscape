@@ -1661,11 +1661,13 @@ public abstract class Cytoscape {
 			layout = CyLayouts.getDefaultLayout();
 		}
 
-		layout.doLayout(view);
-
+		// This needs to be fired before we call doLayout so that the network
+		// and view are properly linked
 		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 
-		getCurrentNetworkView().fitContent();
+		layout.doLayout(view);
+
+		view.fitContent();
 
 		return view;
 	}
