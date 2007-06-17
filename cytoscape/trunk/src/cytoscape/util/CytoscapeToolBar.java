@@ -36,17 +36,13 @@
 */
 package cytoscape.util;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 
 /**
@@ -61,7 +57,7 @@ public class CytoscapeToolBar extends JToolBar {
 	 * calls {@link #initializeCytoscapeToolBar()}.
 	 */
 	public CytoscapeToolBar() {
-		super();
+		super("Cytoscape Tools");
 		initializeCytoscapeToolBar();
 	}
 
@@ -69,7 +65,6 @@ public class CytoscapeToolBar extends JToolBar {
 	 * Envelop if you wish.  Presently does nothing.
 	 */
 	protected void initializeCytoscapeToolBar() {
-		// Do nothing.
 	}
 
 	/**

@@ -36,31 +36,40 @@
 */
 package cytoscape;
 
-import com.jgoodies.plaf.FontSizeHints;
-import com.jgoodies.plaf.LookUtils;
-import com.jgoodies.plaf.Options;
-import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
+import java.awt.Dimension;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.UIManager;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+
+import com.jgoodies.looks.LookUtils;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.Options;
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 import cytoscape.init.CyInitParams;
-
 import cytoscape.util.FileUtil;
-
-import org.apache.commons.cli.*;
-
-import java.awt.Dimension;
-
-import java.io.*;
-
-import java.util.*;
-import java.util.regex.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
 
 
 /**
  * This is the main startup class for Cytoscape. This parses the command line
  * and implements CyInitParams so that it can be used to initialize cytoscape.
+ * 
+ * <p>
+ * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono 
+ * </p>
  */
 public class CyMain implements CyInitParams {
 	protected String[] args;
@@ -231,26 +240,27 @@ public class CyMain implements CyInitParams {
 	protected void setupLookAndFeel() {
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-		Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
-		Options.setDefaultIconSize(new Dimension(18, 18));
 
 		try {
-			if (LookUtils.isWindowsXP()) {
-				// use XP L&F
-				UIManager.setLookAndFeel(Options.getSystemLookAndFeelClassName());
-			} else if (System.getProperty("os.name").startsWith("Mac")) {
+			if (LookUtils.IS_OS_WINDOWS) {
+				// use Windows Default.
+				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			} else if (LookUtils.IS_OS_MAC) {
 				// By kono 4/2/2007
 				// Use menubar
 				System.setProperty("apple.laf.useScreenMenuBar", "true");
 			} else {
 				// this is for for *nix
-				// I happen to like this color combo, there are others
-				// jgoodies
-				Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
-				laf.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
-				laf.setHighContrastFocusColorsEnabled(true);
-				laf.setMyCurrentTheme(new com.jgoodies.plaf.plastic.theme.ExperienceBlue());
-				UIManager.setLookAndFeel(laf);
+				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+				Plastic3DLookAndFeel.set3DEnabled(true);
+				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
+				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
+				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
+				
+				Options.setDefaultIconSize(new Dimension(18, 18));
+				Options.setHiResGrayFilterEnabled(true);
+				Options.setPopupDropShadowEnabled(true);
+				Options.setUseSystemFonts(true);
 			}
 		} catch (Exception e) {
 			System.err.println("Can't set look & feel:" + e);
