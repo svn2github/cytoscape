@@ -48,15 +48,11 @@ import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 
 import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
 import cytoscape.data.Interaction;
 
 import cytoscape.data.servers.BioDataServer;
-
-import cytoscape.layout.LayoutAlgorithm;
 
 import cytoscape.task.TaskMonitor;
 
@@ -65,23 +61,15 @@ import cytoscape.util.PercentUtil;
 
 import cytoscape.view.CyNetworkView;
 
-//------------------------------
 import giny.model.Edge;
 import giny.model.Node;
-import giny.model.RootGraph;
-
-import giny.view.GraphView;
-import giny.view.NodeView;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.Vector;
-
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 
 /**
@@ -95,13 +83,16 @@ public class InteractionsReader extends AbstractGraphReader {
 	/**
 	 * A Vector that holds all of the Interactions
 	 */
-	protected Vector allInteractions = new Vector();
-	BioDataServer dataServer;
-	String species;
-	String zip_entry;
-	boolean is_zip = false;
-	IntArrayList node_indices;
-	OpenIntIntHashMap edges;
+	protected List<Interaction> allInteractions = new ArrayList<Interaction>();
+	@Deprecated
+	private BioDataServer dataServer;
+	@Deprecated
+	private String species;
+	
+	private String zip_entry;
+	private boolean is_zip = false;
+	private IntArrayList node_indices;
+	private OpenIntIntHashMap edges;
 
 	/**
 	 * Creates an interaction reader based on a string consisting of data that has
@@ -146,18 +137,27 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @deprecated Use getLayoutAlgorithm() instead. Gone 5/2008.
 	 */
 	public void layout(CyNetworkView networkView) {
-		getLayoutAlgorithm().doLayout(networkView,taskMonitor);
+		getLayoutAlgorithm().doLayout(networkView, taskMonitor);
 	}
 
 	// ----------------------------------------------------------------------------------------
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param canonicalize DOCUMENT ME!
+	 * @param canonicalize This parameter does not in use from 2.5.
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
+	@Deprecated
 	public void read(boolean canonicalize) throws IOException {
+		read();
+	}
+
+	// -----------------------------------------------------------------------------------------
+	/**
+	 * Calls read(false)
+	 */
+	public void read() throws IOException {
 		String rawText;
 
 		if (!is_zip) {
@@ -171,37 +171,33 @@ public class InteractionsReader extends AbstractGraphReader {
 		if (rawText.indexOf("\t") >= 0)
 			delimiter = "\t";
 
-		String[] lines = rawText.split(System.getProperty("line.separator"));
+		final String[] lines = rawText.split(System.getProperty("line.separator"));
 
 		// There are a total of 6 steps to read in a complete SIF File
 		if (taskMonitor != null) {
 			percentUtil = new PercentUtil(6);
 		}
 
-		for (int i = 0; i < lines.length; i++) {
+		final int linesLength = lines.length;
+		String newLine;
+		Interaction newInteraction;
+
+		for (int i = 0; i < linesLength; i++) {
 			if (taskMonitor != null) {
 				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(1, i, lines.length));
 			}
 
-			String newLine = lines[i];
-			
+			newLine = lines[i];
+
 			if (newLine.length() <= 0) {
 				continue;
 			}
-			
-			Interaction newInteraction = new Interaction(newLine, delimiter);
-			allInteractions.addElement(newInteraction);
+
+			newInteraction = new Interaction(newLine, delimiter);
+			allInteractions.add(newInteraction);
 		}
 
-		createRootGraphFromInteractionData(canonicalize);
-	}
-
-	// -----------------------------------------------------------------------------------------
-	/**
-	 * Calls read(false)
-	 */
-	public void read() throws IOException {
-		read(false);
+		createRootGraphFromInteractionData();
 	} // readFromFile
 
 	// -------------------------------------------------------------------------------------------
@@ -221,20 +217,20 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public Interaction[] getAllInteractions() {
-		Interaction[] result = new Interaction[allInteractions.size()];
-
-		for (int i = 0; i < allInteractions.size(); i++) {
-			Interaction inter = (Interaction) allInteractions.elementAt(i);
-			result[i] = inter;
-		}
-
-		return result;
+		//		Interaction[] result = new Interaction[allInteractions.size()];
+		//
+		//		for (int i = 0; i < allInteractions.size(); i++) {
+		//			Interaction inter = (Interaction) allInteractions.elementAt(i);
+		//			result[i] = inter;
+		//		}
+		return allInteractions.toArray(new Interaction[0]);
 	}
 
 	/*
 	 * KONO: 5/4/2006 "Canonical Name" is no longer used in Cytoscape. Use ID
 	 * instead.
 	 */
+	@Deprecated
 	protected String canonicalizeName(String name) {
 		String canonicalName = name;
 
@@ -250,35 +246,32 @@ public class InteractionsReader extends AbstractGraphReader {
 	} // canonicalizeName
 
 	// -------------------------------------------------------------------------------------------
-	protected void createRootGraphFromInteractionData(boolean canonicalize) {
-		Interaction[] interactions = getAllInteractions();
+	protected void createRootGraphFromInteractionData() {
+		final Interaction[] interactions = getAllInteractions();
 
 		// figure out how many nodes and edges we need before we create the
 		// graph;
 		// this improves performance for large graphs
-		Set nodeNameSet = new HashSet();
+		final Set<String> nodeNameSet = new HashSet<String>();
 		int edgeCount = 0;
+		final int intSize = interactions.length;
 
-		for (int i = 0; i < interactions.length; i++) {
-			Interaction interaction = interactions[i];
-			String sourceName = interaction.getSource();
+		Interaction interaction;
+		String sourceName;
+		String[] targets;
+		int targetLength;
 
-			if (canonicalize)
-				sourceName = canonicalizeName(sourceName);
+		for (int i = 0; i < intSize; i++) {
+			interaction = interactions[i];
+			sourceName = interaction.getSource();
 
 			nodeNameSet.add(sourceName); // does nothing if already there
 
-			String[] targets = interaction.getTargets();
+			targets = interaction.getTargets();
+			targetLength = targets.length;
 
-			for (int t = 0; t < targets.length; t++) {
-				String targetNodeName = targets[t];
-
-				if (canonicalize)
-					targetNodeName = canonicalizeName(targetNodeName);
-
-				nodeNameSet.add(targetNodeName); // does nothing if already
-				                                 // there
-
+			for (int t = 0; t < targetLength; t++) {
+				nodeNameSet.add(targets[t]);
 				edgeCount++;
 			}
 
@@ -295,10 +288,9 @@ public class InteractionsReader extends AbstractGraphReader {
 		// now create all of the nodes, storing a hash from name to node
 		// Map nodes = new HashMap();
 		int counter = 0;
+		Node node;
 
-		for (Iterator si = nodeNameSet.iterator(); si.hasNext();) {
-			String nodeName = (String) si.next();
-
+		for (String nodeName : nodeNameSet) {
 			if (taskMonitor != null) {
 				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(3, counter,
 				                                                             nodeNameSet.size()));
@@ -306,7 +298,7 @@ public class InteractionsReader extends AbstractGraphReader {
 			}
 
 			// use the static method
-			Node node = (Node) Cytoscape.getCyNode(nodeName, true);
+			node = Cytoscape.getCyNode(nodeName, true);
 			node_indices.add(node.getRootGraphIndex());
 		}
 
@@ -322,6 +314,10 @@ public class InteractionsReader extends AbstractGraphReader {
 		// interactionHash [sourceNode::targetNode] = "pd"
 		// ---------------------------------------------------------------------------
 		String targetNodeName;
+		String nodeName;
+		String interactionType;
+		String edgeName;
+		Edge edge;
 
 		for (int i = 0; i < interactions.length; i++) {
 			if (taskMonitor != null) {
@@ -329,25 +325,17 @@ public class InteractionsReader extends AbstractGraphReader {
 				                                                             interactions.length));
 			}
 
-			Interaction interaction = interactions[i];
-			String nodeName = interaction.getSource();
+			interaction = interactions[i];
+			nodeName = interaction.getSource();
+			interactionType = interaction.getType();
+			targets = interaction.getTargets();
+			targetLength = targets.length;
 
-			if (canonicalize)
-				nodeName = canonicalizeName(interaction.getSource());
+			for (int t = 0; t < targetLength; t++) {
+				targetNodeName = targets[t];
 
-			String interactionType = interaction.getType();
-
-			String[] targets = interaction.getTargets();
-
-			for (int t = 0; t < targets.length; t++) {
-				if (canonicalize)
-					targetNodeName = canonicalizeName(targets[t]);
-				else
-					targetNodeName = targets[t];
-
-				String edgeName = CyEdge.createIdentifier(nodeName, interactionType, targetNodeName);
-				Edge edge = (Edge) Cytoscape.getCyEdge(nodeName, edgeName, targetNodeName,
-				                                       interactionType);
+				edgeName = CyEdge.createIdentifier(nodeName, interactionType, targetNodeName);
+				edge = Cytoscape.getCyEdge(nodeName, edgeName, targetNodeName, interactionType);
 				edges.put(edge.getRootGraphIndex(), 0);
 			} // for t
 		} // for i
@@ -370,9 +358,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public int[] getEdgeIndicesArray() {
-		// edges.trimToSize();
-		// return edges.elements();
-		IntArrayList edge_indices = new IntArrayList(edges.size());
+		final IntArrayList edge_indices = new IntArrayList(edges.size());
 		edges.keys(edge_indices);
 		edge_indices.trimToSize();
 

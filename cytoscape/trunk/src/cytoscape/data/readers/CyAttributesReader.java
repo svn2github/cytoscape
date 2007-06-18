@@ -36,16 +36,14 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.attr.MultiHashMapDefinition;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinition;
 
 
 // I hate writing parsing code.  Grumble grumble grumble.
@@ -157,7 +155,7 @@ public class CyAttributesReader {
 					final ArrayList elmsBuff = new ArrayList();
 
 					while (val.length() > 0) {
-						final StringBuffer elmBuff = new StringBuffer();
+						final StringBuilder elmBuff = new StringBuilder();
 						int inx2;
 
 						for (inx2 = 0; inx2 < val.length(); inx2++) {
@@ -247,7 +245,7 @@ public class CyAttributesReader {
 				} else { // Not a list.
 					     // Do the escaping thing.
 
-					final StringBuffer elmBuff = new StringBuffer();
+					final StringBuilder elmBuff = new StringBuilder();
 					int inx2;
 
 					for (inx2 = 0; inx2 < val.length(); inx2++) {

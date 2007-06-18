@@ -36,10 +36,9 @@
 */
 package cytoscape.data;
 
-import java.io.*;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 
 /**
@@ -47,9 +46,8 @@ import java.util.Vector;
  */
 public class Interaction {
 	private String source;
-	private Vector targets = new Vector();
+	private List<String> targets = new ArrayList<String>();
 	private String interactionType;
-	private Vector allInteractions = new Vector();
 
 	/**
 	 * Creates a new Interaction object.
@@ -58,10 +56,10 @@ public class Interaction {
 	 * @param target  DOCUMENT ME!
 	 * @param interactionType  DOCUMENT ME!
 	 */
-	public Interaction(String source, String target, String interactionType) {
+	public Interaction(final String source, final String target, final String interactionType) {
 		this.source = source;
 		this.interactionType = interactionType;
-		this.targets.addElement(target);
+		this.targets.add(target);
 	} // ctor (3 args)
 
 	/**
@@ -80,17 +78,16 @@ public class Interaction {
 	 * @param delimiter  DOCUMENT ME!
 	 */
 	public Interaction(String rawText, String delimiter) {
-		StringTokenizer strtok = new StringTokenizer(rawText, delimiter);
+		final StringTokenizer strtok = new StringTokenizer(rawText, delimiter);
 		int counter = 0;
 
 		while (strtok.hasMoreTokens()) {
 			if (counter == 0)
-				source = ((String) strtok.nextToken()).trim();
+				source = strtok.nextToken().trim();
 			else if (counter == 1)
-				interactionType = ((String) strtok.nextToken()).trim();
+				interactionType = strtok.nextToken().trim();
 			else {
-				String newTarget = ((String) strtok.nextToken()).trim();
-				targets.addElement(newTarget);
+				targets.add(strtok.nextToken().trim());
 			}
 
 			counter++;
@@ -130,12 +127,7 @@ public class Interaction {
 	 * @return  DOCUMENT ME!
 	 */
 	public String[] getTargets() {
-		String[] result = new String[targets.size()];
-
-		for (int i = 0; i < result.length; i++)
-			result[i] = (String) targets.elementAt(i);
-
-		return result;
+		return targets.toArray(new String[0]);
 	} // getTargets
 
 	/**
@@ -144,16 +136,17 @@ public class Interaction {
 	 * @return  DOCUMENT ME!
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(interactionType);
 		sb.append("::");
 		sb.append(source);
 		sb.append("::");
 
-		for (int i = 0; i < targets.size(); i++) {
-			sb.append((String) targets.elementAt(i));
+		final int targetSize = targets.size();
+		for (int i = 0; i < targetSize; i++) {
+			sb.append(targets.get(i));
 
-			if (i < (targets.size() - 1))
+			if (i < (targetSize - 1))
 				sb.append(",");
 		}
 
