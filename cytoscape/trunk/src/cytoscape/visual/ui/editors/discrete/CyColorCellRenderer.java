@@ -71,8 +71,8 @@ public class CyColorCellRenderer extends DefaultCellRenderer {
         if (value == null)
             return null;
 
-        if (value instanceof Integer)
-            value = new Color(((Integer) value).intValue());
+        if (value instanceof Number)
+            value = new Color(((Number) value).intValue());
 
         return new PaintIcon((Paint) value);
     }
