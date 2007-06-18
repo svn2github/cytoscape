@@ -36,16 +36,13 @@
 */
 package cytoscape;
 
-import java.awt.Dimension;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.jgoodies.looks.LookUtils;
+import com.jgoodies.looks.Options;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 
-import javax.swing.UIManager;
+import cytoscape.init.CyInitParams;
+
+import cytoscape.util.FileUtil;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -54,21 +51,26 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
-import com.jgoodies.looks.LookUtils;
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-import com.jgoodies.looks.Options;
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+import java.awt.Dimension;
 
-import cytoscape.init.CyInitParams;
-import cytoscape.util.FileUtil;
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.UIManager;
 
 
 /**
  * This is the main startup class for Cytoscape. This parses the command line
  * and implements CyInitParams so that it can be used to initialize cytoscape.
- * 
+ *
  * <p>
- * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono 
+ * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono
  * </p>
  */
 public class CyMain implements CyInitParams {
@@ -97,8 +99,10 @@ public class CyMain implements CyInitParams {
 			 * By kono 4/2/2007
 			 * Fix Application name for Mac.
 			 */
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Cytoscape 2.5 Beta");
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name",
+			                   "Cytoscape 2.5 Beta");
 		}
+
 		CyMain app = new CyMain(args);
 	}
 
@@ -238,29 +242,34 @@ public class CyMain implements CyInitParams {
 	}
 
 	protected void setupLookAndFeel() {
-		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-
 		try {
 			if (LookUtils.IS_OS_WINDOWS) {
-				// use Windows Default.
+				/*
+				 * For Windows: just use platform default look & feel.
+				 */
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			} else if (LookUtils.IS_OS_MAC) {
-				// By kono 4/2/2007
-				// Use menubar
+				/*
+				 * For Mac: move menue bar to OS X default bar (next to Apple icon)
+				 */
 				System.setProperty("apple.laf.useScreenMenuBar", "true");
 			} else {
-				// this is for for *nix
+				/*
+				 * For Unix platforms, use JGoodies Looks
+				 */
 				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
 				Plastic3DLookAndFeel.set3DEnabled(true);
 				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
 				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
 				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
-				
+
 				Options.setDefaultIconSize(new Dimension(18, 18));
 				Options.setHiResGrayFilterEnabled(true);
 				Options.setPopupDropShadowEnabled(true);
 				Options.setUseSystemFonts(true);
+
+				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
 			}
 		} catch (Exception e) {
 			System.err.println("Can't set look & feel:" + e);
