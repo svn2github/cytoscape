@@ -189,7 +189,7 @@ abstract class AppearanceCalculator
 
     protected String getDescription(String name, Appearance defaultAppr) {
         final String lineSep = System.getProperty("line.separator");
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append(name + ":" + lineSep);
         sb.append(defaultAppr.getDescription("default"))

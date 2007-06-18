@@ -36,66 +36,18 @@
  */
 package cytoscape.data.readers;
 
-import cern.colt.list.IntArrayList;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.LayoutAlgorithm;
-
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-
-import cytoscape.data.writers.XGMMLWriter;
-
-import cytoscape.generated2.Att;
-import cytoscape.generated2.GraphicEdge;
-import cytoscape.generated2.GraphicGraph;
-import cytoscape.generated2.GraphicNode;
-import cytoscape.generated2.Graphics;
-import cytoscape.generated2.ObjectType;
-import cytoscape.generated2.RdfRDF;
-import cytoscape.generated2.TypeGraphicsType;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.PercentUtil;
-
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.visual.LineStyle;
-
-import ding.view.DGraphView;
-
 import giny.model.Edge;
 import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
 
-import org.xml.sax.SAXException;
-
 import java.awt.Color;
 import java.awt.geom.Point2D;
-
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,13 +61,40 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.EventFilter;
 import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.XMLEvent;
+
+import org.xml.sax.SAXException;
+
+import cern.colt.list.IntArrayList;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.writers.XGMMLWriter;
+import cytoscape.generated2.Att;
+import cytoscape.generated2.GraphicEdge;
+import cytoscape.generated2.GraphicGraph;
+import cytoscape.generated2.GraphicNode;
+import cytoscape.generated2.Graphics;
+import cytoscape.generated2.ObjectType;
+import cytoscape.generated2.RdfRDF;
+import cytoscape.generated2.TypeGraphicsType;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.layout.LayoutAdapter;
+import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.FileUtil;
+import cytoscape.util.PercentUtil;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.LineStyle;
+import ding.view.DGraphView;
 
 
 /**

@@ -44,6 +44,8 @@ import cytoscape.data.Semantics;
 
 import cytoscape.task.TaskMonitor;
 
+import giny.model.Node;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -98,23 +100,24 @@ public class InteractionWriter {
 			return "";
 		}
 
-		StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 
-		String lineSep = System.getProperty("line.separator");
-		List nodeList = network.nodesList();
+		final String lineSep = System.getProperty("line.separator");
+		final List<Node> nodeList = network.nodesList();
 
-		CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-		CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
-		giny.model.Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
-
-		for (int i = 0; i < nodes.length; i++) {
+		final CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
+		final Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
+		
+		final int nodeCount = nodes.length;
+		
+		for (int i = 0; i < nodeCount; i++) {
 			if (taskMonitor != null) {
 				//  Report on Progress
 				double percent = ((double) i / nodes.length) * 100.0;
 				taskMonitor.setPercentCompleted((int) percent);
 			}
 
-			giny.model.Node node = nodes[i];
+			Node node = nodes[i];
 			String canonicalName = node.getIdentifier();
 			List edges = network.getAdjacentEdgesList(node, true, true, true);
 

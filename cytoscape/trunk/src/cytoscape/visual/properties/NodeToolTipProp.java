@@ -55,7 +55,7 @@ import javax.swing.Icon;
  */
 public class NodeToolTipProp extends AbstractVisualProperty {
 	
-	private StringBuffer buf = new StringBuffer();
+	private StringBuilder buf = new StringBuilder();
 	
 	/**
 	 *  DOCUMENT ME!
@@ -109,7 +109,7 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 			return;
 		}
 		
-		buf = new StringBuffer();
+		buf = new StringBuilder();
 		buf.append("<html><body bgcolor=\"white\"><Div Align=\"center\"><Font Size=\"4\">");
 		buf.append(((String)o).replaceAll("\\n", "<br>"));
 		buf.append("</Font></div></body></html>");

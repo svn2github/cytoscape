@@ -965,7 +965,7 @@ public class XGMMLWriter {
 				} else {
 					// System.out.println("##Border is DASHED LINE");
 					String dashArray = null;
-					final StringBuffer dashBuf = new StringBuffer();
+					final StringBuilder dashBuf = new StringBuilder();
 
 					for (int i = 0; i < dash.length; i++) {
 						dashBuf.append(Double.toString(dash[i]));

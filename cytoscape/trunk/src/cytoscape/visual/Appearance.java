@@ -169,7 +169,7 @@ public class Appearance {
 			prefix = "";
 
 		final String lineSep = System.getProperty("line.separator");
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 
 		for (VisualPropertyType type : VisualPropertyType.values()) {
 			if (vizProps[type.ordinal()] != null) {

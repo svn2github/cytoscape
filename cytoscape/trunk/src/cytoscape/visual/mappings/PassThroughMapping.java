@@ -231,16 +231,16 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @return  DOCUMENT ME!
 	 */
 	public Object calculateRangeValue(Map attrBundle) {
-		if ((attrBundle == null) || (attrName == null))
+		if (attrBundle == null || attrName == null)
 			return null;
 
 		//extract the data value for our controlling attribute
-		Object attrValue = attrBundle.get(attrName);
+		final Object attrValue = attrBundle.get(attrName);
 
 		if (attrValue == null)
 			return null;
 
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 
 		if (attrValue instanceof List) {
 			int idx = 1;
