@@ -71,8 +71,10 @@ import java.util.Iterator;
  */
 
 /**
- *
+ * Old GO import Wizard.
+ * @deprecated will be removed in May 2008
  */
+@Deprecated
 public class GeneOntologyWizard {
 	// The wizard object
 	Wizard wizard;
