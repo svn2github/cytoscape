@@ -1,6 +1,10 @@
 package cytoscape.filters.view;
 
 //import javax.swing.AbstractAction;
+import giny.model.Edge;
+import giny.model.GraphObject;
+import giny.model.Node;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -13,12 +17,15 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
+import ViolinStrings.Strings;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.quickfind.util.QuickFind;
 import cytoscape.util.swing.DropDownMenuButton;
@@ -33,7 +40,9 @@ import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -151,20 +160,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		String[] attributeNames = attributes.getAttributeNames();
 
 		if (attributeNames != null) {
-			//  Show all attributes, except those of TYPE_COMPLEX
+			//  Show all attributes, with type of String of Number
 			for (int i = 0; i < attributeNames.length; i++) {
 				int type = attributes.getType(attributeNames[i]);
 
 				//  only show user visible attributes
-				if (attributes.getUserVisible(attributeNames[i])) {
-					if (type != CyAttributes.TYPE_COMPLEX) {
-						//  Explicitly filter out CANONICAL_NAME, as it is
-						//  now deprecated.
-						//if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
-							attributeList.add(pType+"."+attributeNames[i]);
-						//}
-					}
-				}
+				//if (attributes.getUserVisible(attributeNames[i])) {
+					
+					//if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_STRING)) {
+						attributeList.add(pType+"."+attributeNames[i]);
+					//}
+					//if (type != CyAttributes.TYPE_COMPLEX) {
+					//}
+				//}
 			} //for loop
 		
 			//  Alphabetical sort
@@ -299,22 +307,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		//else {
 		//	System.out.println("Neither Node nore edge is checked");
 		//}
-
-		// Exclude those attribute whose type is neither String nor Number 
-		/*
-		int attributeType = Cytoscape.getNodeAttributes().getType(pAttributeName.substring(5));
-		
-		if ((attributeType == CyAttributes.TYPE_INTEGER)
-			||(attributeType == CyAttributes.TYPE_FLOATING)) {
-			addFilterWidget(new NumericFilter(pAttributeName));				
-		}
-		else if (attributeType == CyAttributes.TYPE_STRING) {
-			addFilterWidget(new StringFilter(pAttributeName));
-		}
-		else {
-			System.out.println("AttributeType is neither numeric nor string!");
-		}
-		 */
 		
 		cmbAttributes.setModel(new DefaultComboBoxModel(attributeList));		
 	}
@@ -510,6 +502,148 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}		
 	}
 
+
+	private boolean passesFilter(Node pNode, CompositeFilter pFilter){
+		
+		Vector<AtomicFilter> atomicFilterVect = pFilter.getAtomicFilterVect();
+				
+		for (int i=0; i<atomicFilterVect.size(); i++ ) {
+
+			CyAttributes data = Cytoscape.getNodeAttributes();
+
+			String name = pNode.getIdentifier();
+
+			if (name == null) {
+				return false;
+			}
+			
+			if (atomicFilterVect.elementAt(i) instanceof StringFilter) {
+				StringFilter theStringFilter = (StringFilter) atomicFilterVect.elementAt(i); 
+
+				String value = data.getStringAttribute(name, theStringFilter.getAttributeName().substring(5));
+				
+				if (value == null) {
+					return false;
+				}
+
+				// I think that * and ? are better for now....
+				String[] pattern = theStringFilter.getSearchStr().split("\\s");
+
+				for (int p = 0; p < pattern.length; ++p) {
+					if (!Strings.isLike((String) value, pattern[p], 0, true)) {
+						// this is an OR function
+						return false;
+					}
+				}				
+			}
+			else if (atomicFilterVect.elementAt(i) instanceof NumericFilter) {
+				NumericFilter theNumericFilter = (NumericFilter) atomicFilterVect.elementAt(i); 
+				
+				Number value;
+
+				if (data.getType(theNumericFilter.getAttributeName().substring(5)) == CyAttributes.TYPE_FLOATING)
+					value = (Number) data.getDoubleAttribute(name, theNumericFilter.getAttributeName().substring(5));
+				else
+					value = (Number) data.getIntegerAttribute(name, theNumericFilter.getAttributeName().substring(5));
+
+				if (value == null) {
+					return false;
+				}
+
+				Double lowValue =theNumericFilter.getLowValue();
+				Double highValue =theNumericFilter.getHighValue();
+				
+				if (!(value.doubleValue() > lowValue.doubleValue() && value.doubleValue()< highValue.doubleValue())) {
+					return false;
+				}				
+			}
+		}
+				
+		return true;
+	}
+
+	private boolean passesFilter(Edge pEdge, CompositeFilter pFilter){
+		
+		return false;
+	}
+	
+	protected void testObjects(CompositeFilter pCompositeFilter) {
+		
+		final CyNetwork network = Cytoscape.getCurrentNetwork();
+
+		final List<Node> nodes_list = network.nodesList();
+		final List<Edge> edges_list = network.edgesList();
+
+		if (pCompositeFilter == null) return;
+
+		if (pCompositeFilter.getAdvancedSetting().isNodeChecked())
+		{
+				final List<Node> passedNodes = new ArrayList<Node>();
+
+				for (Node node : nodes_list) {
+
+					try {
+						if (passesFilter(node, pCompositeFilter)) {
+							passedNodes.add(node);
+						}
+					} catch (StackOverflowError soe) {
+						soe.printStackTrace();
+						return;
+					}
+				}
+				System.out.println("\tpassedNodes.size() ="+passedNodes.size());
+				
+				/*
+				CyAttributes data = Cytoscape.getNodeAttributes();
+
+				for (int i=0; i<passedNodes.size(); i++) {
+					Number value;
+					String name = passedNodes.get(i).getIdentifier();
+
+					if (data.getType("gal1RGsig") == CyAttributes.TYPE_FLOATING)
+						value = (Number) data.getDoubleAttribute(name, "gal1RGsig");
+					else
+						value = (Number) data.getIntegerAttribute(name,"gal1RGsig");
+
+					System.out.println("\t"+passedNodes.get(i).getIdentifier()+ "--" + value);					
+				}
+				*/
+
+				Cytoscape.getCurrentNetwork().setSelectedNodeState(passedNodes, true);
+		} 
+
+		if (pCompositeFilter.getAdvancedSetting().isEdgeChecked())
+		{
+				final List<Edge> passedEdges = new ArrayList<Edge>();
+
+				for (Edge edge : edges_list) {
+					try {
+						if (passesFilter(edge, pCompositeFilter)) {
+							passedEdges.add(edge);
+						}
+
+					} catch (StackOverflowError soe) {
+						soe.printStackTrace();
+						return;
+					}
+				}
+				Cytoscape.getCurrentNetwork().setSelectedEdgeState(passedEdges, true);
+		}
+	}//testObjects
+
+	
+	private class ApplyFilterThread extends Thread {
+		CompositeFilter theFilter= null;
+		public ApplyFilterThread(CompositeFilter pFilter) {
+			theFilter = pFilter;
+		}
+		public void run() {
+			testObjects(theFilter);
+			Cytoscape.getCurrentNetworkView().updateView();
+		}
+	}
+	
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -534,6 +668,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				//quickFind.selectRange(cyNetwork, lowValue, highValue);
 				//QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 				//quickFind.selectHit(currentNetwork, hit);
+				
+				 // We have to run "Apply filter" in a seperate thread, becasue
+				 //we want to monitor the progress
+				
+				ApplyFilterThread applyFilterThread = new ApplyFilterThread(theFilter);
+				applyFilterThread.start();
+
 
 			}
 			if (_btn == btnAddFilterWidget) {
