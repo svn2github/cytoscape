@@ -1,6 +1,5 @@
 package cytoscape.filters.view;
 
-//import javax.swing.AbstractAction;
 import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
@@ -57,12 +56,14 @@ import cytoscape.filters.NumericFilter;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.view.cytopanels.CytoPanelListener;
-//import cytoscape.filters.AttributeInfo;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 /**
  * 
  */
 public class FilterMainPanel extends JPanel implements ActionListener,
-		ItemListener {
+		ItemListener, PropertyChangeListener {
 
 	private static JPopupMenu optionMenu;
 
@@ -113,7 +114,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	public void setAllFilterVect(Vector<CompositeFilter> pAllFilterVect) {
 		allFilterVect = pAllFilterVect;
 	}
-
+	
+	// Listene to ATTRIBUTES_CHNAGED event
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
+		{
+			refreshAttributeCMB();
+		}
+	}
+	
 	private void init() {
 
 		//Initialize the option menu with menuItems
@@ -137,6 +146,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		addEventListeners();
 	}
 
+	public void refreshFilterSelectCMB() {
+		this.cmbSelectFilter.repaint();
+	}
+	
+	public void refreshAttributeCMB() {
+		updateCMBAttributes();
+		cmbAttributes.repaint();
+	}
 	
 	/*
 	 * Get the list of attribute names for either "node" or "edge". The attribute names will be
@@ -147,7 +164,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		Vector<String> attributeList = new Vector<String>();
 		CyAttributes attributes = null;
 		
-		System.out.println("getCyAttributesList(): pType ="+pType);
+		//System.out.println("getCyAttributesList(): pType ="+pType);
 		
 		if (pType.equalsIgnoreCase("node")) {
 			attributes = Cytoscape.getNodeAttributes();
@@ -240,6 +257,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		CytoPanelListener l = new MyCytoPanelListener();
 		cytoPanelWest.addCytoPanelListener(l);
+		
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
+
 	}
 
 	public void initCMBSelectFilter(){
@@ -503,19 +523,35 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 
-	private boolean passesFilter(Node pNode, CompositeFilter pFilter){
+	private boolean passesFilter(String objectType, Object pObject, CompositeFilter pFilter){
 		
 		Vector<AtomicFilter> atomicFilterVect = pFilter.getAtomicFilterVect();
 				
 		for (int i=0; i<atomicFilterVect.size(); i++ ) {
 
-			CyAttributes data = Cytoscape.getNodeAttributes();
+			CyAttributes data = null;
+			if (objectType.equalsIgnoreCase("node")) {
+				data = Cytoscape.getNodeAttributes();				
+			}
+			else if (objectType.equalsIgnoreCase("edge")) {
+				data = Cytoscape.getEdgeAttributes();								
+			}
+			else {
+				return false;
+			}
 
-			String name = pNode.getIdentifier();
+			String name = "";
+			
+			if (pObject instanceof Node) {
+				name = ((Node) pObject).getIdentifier();
+			}
+			else {
+				name = ((Edge) pObject).getIdentifier();
+			}
 
 			if (name == null) {
 				return false;
-			}
+			}			
 			
 			if (atomicFilterVect.elementAt(i) instanceof StringFilter) {
 				StringFilter theStringFilter = (StringFilter) atomicFilterVect.elementAt(i); 
@@ -525,6 +561,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				if (value == null) {
 					return false;
 				}
+				System.out.println("objectType = " + objectType);
+				System.out.println("value = " + value);
+				System.out.println("theStringFilter.toString() = " + theStringFilter.toString());
 
 				// I think that * and ? are better for now....
 				String[] pattern = theStringFilter.getSearchStr().split("\\s");
@@ -562,10 +601,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		return true;
 	}
 
-	private boolean passesFilter(Edge pEdge, CompositeFilter pFilter){
-		
-		return false;
-	}
 	
 	protected void testObjects(CompositeFilter pCompositeFilter) {
 		
@@ -583,7 +618,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				for (Node node : nodes_list) {
 
 					try {
-						if (passesFilter(node, pCompositeFilter)) {
+						if (passesFilter("node",node, pCompositeFilter)) {
 							passedNodes.add(node);
 						}
 					} catch (StackOverflowError soe) {
@@ -592,7 +627,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 				}
 				System.out.println("\tpassedNodes.size() ="+passedNodes.size());
-				
 				/*
 				CyAttributes data = Cytoscape.getNodeAttributes();
 
@@ -618,15 +652,30 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 				for (Edge edge : edges_list) {
 					try {
-						if (passesFilter(edge, pCompositeFilter)) {
+						if (passesFilter("edge",edge, pCompositeFilter)) {
 							passedEdges.add(edge);
 						}
-
 					} catch (StackOverflowError soe) {
 						soe.printStackTrace();
 						return;
 					}
 				}
+				System.out.println("\tpassedNodes.size() ="+passedEdges.size());
+				
+				CyAttributes data = Cytoscape.getNodeAttributes();
+
+				for (int i=0; i<passedEdges.size(); i++) {
+					Number value;
+					String name = passedEdges.get(i).getIdentifier();
+
+					if (data.getType("gal1RGsig") == CyAttributes.TYPE_FLOATING)
+						value = (Number) data.getDoubleAttribute(name, "gal1RGsig");
+					else
+						value = (Number) data.getIntegerAttribute(name,"gal1RGsig");
+
+					System.out.println("\t"+passedEdges.get(i).getIdentifier()+ "--" + value);					
+				}
+				
 				Cytoscape.getCurrentNetwork().setSelectedEdgeState(passedEdges, true);
 		}
 	}//testObjects
@@ -663,7 +712,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				System.out.println("ApplyButton is clicked!");
 				CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
 				
-				//System.out.println("The Filter to apply: " + theFilter.getName());
 				System.out.println("The Filter to apply:\n" + theFilter.toString()+"\n");
 				//quickFind.selectRange(cyNetwork, lowValue, highValue);
 				//QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
@@ -674,8 +722,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				ApplyFilterThread applyFilterThread = new ApplyFilterThread(theFilter);
 				applyFilterThread.start();
-
-
 			}
 			if (_btn == btnAddFilterWidget) {
 
@@ -760,7 +806,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	private void duplicateFilter(){
-		System.out.println("duplicateFilterMenuItem is clicked");
 		CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
 	
 		String tmpName = "Copy of " + theFilter.getName();
@@ -876,7 +921,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 						.getAdvancedSetting();
 				String prefix = "";
 				if (advancedSetting.isGlobalChecked()) {
-					prefix = "glabal: ";
+					prefix = "global: ";
 				}
 				if (advancedSetting.isSessionChecked()) {
 					prefix += "session: ";
