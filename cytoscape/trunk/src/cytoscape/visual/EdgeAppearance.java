@@ -83,9 +83,7 @@ import java.util.Properties;
 
 /**
  * Objects of this class hold data describing the appearance of an Edge.
- * @deprecated Use Appearance instead. Will be removed 4/2008
  */
- @Deprecated
 public class EdgeAppearance extends Appearance {
 
 	/**
@@ -96,15 +94,23 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
+	 * Clone.
+	 */
+    public Object clone() {
+        EdgeAppearance ga = new EdgeAppearance();
+        ga.copy(this);
+        return ga;
+	}
+
+	/**
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Color getColor() {
 		return (Color)(get(EDGE_COLOR));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setColor(Color c) {
 		if (c != null)
@@ -112,24 +118,21 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public LineType getLineType() {
 		return (LineType)(get(EDGE_LINETYPE));
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Float getLineWidth() {
 		return (Float)(get(EDGE_LINE_WIDTH));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setLineType(LineType lt) {
 		if (lt != null)
@@ -137,8 +140,7 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setLineWidth(Float w) {
 		if (w != null)
@@ -146,16 +148,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Arrow getSourceArrow() {
 		return (Arrow)(get(EDGE_SRCARROW));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setSourceArrow(Arrow a) {
 		if (a != null)
@@ -163,16 +163,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Color getSourceArrowColor() {
 		return (Color)(get(EDGE_SRCARROW_COLOR));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setSourceArrowColor(Color c) {
 		if (c != null)
@@ -180,16 +178,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Arrow getTargetArrow() {
 		return (Arrow)(get(EDGE_TGTARROW));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setTargetArrow(Arrow a) {
 		if (a != null)
@@ -197,16 +193,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Color getTargetArrowColor() {
 		return (Color)(get(EDGE_TGTARROW_COLOR));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setTargetArrowColor(Color c) {
 		if (c != null)
@@ -214,16 +208,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public String getLabel() {
 		return (String)(get(EDGE_LABEL));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setLabel(String s) {
 		if (s != null)
@@ -231,16 +223,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public String getToolTip() {
 		return (String)(get(EDGE_TOOLTIP));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setToolTip(String s) {
 		if (s != null)
@@ -248,16 +238,14 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Font getFont() {
 		return (Font)(get(EDGE_FONT_FACE));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setFont(Font f) {
 		if (f != null)
@@ -265,32 +253,28 @@ public class EdgeAppearance extends Appearance {
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public float getFontSize() {
 		return ((Number)(get(EDGE_FONT_SIZE))).floatValue();
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setFontSize(float f) {
 		set(EDGE_FONT_SIZE,new Float(f));
 	}
 
 	/**
-	 * Use Appearance.get(VisualPropertyType) instead.
-	 *
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
 	 */
 	public Color getLabelColor() {
 		return (Color)(get(EDGE_LABEL_COLOR));
 	}
 
 	/**
-	 * Use Appearance.set(VisualPropertyType,Object) instead.
-	 *
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setLabelColor(Color c) {
 		if (c != null)
@@ -305,20 +289,16 @@ public class EdgeAppearance extends Appearance {
 		super.applyAppearance(edgeView);
 	}
 
-	public void copy(EdgeAppearance na) {
-		super.copy((Appearance)na);
-	}
-
-    public Object clone() {
-        EdgeAppearance ga = new EdgeAppearance();
-        ga.copy(this);
-        return ga;
-	}
-
+	/**
+	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
+	 */
 	public Object get(byte b) {
 		return get(VisualPropertyType.getVisualPorpertyType(b));
 	}
 	
+	/**
+	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
+	 */
 	public void set(byte b, Object o) {
 		set(VisualPropertyType.getVisualPorpertyType(b),o);
 	}

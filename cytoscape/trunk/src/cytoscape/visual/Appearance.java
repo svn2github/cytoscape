@@ -65,6 +65,7 @@ import java.awt.Color;
 public class Appearance {
 
 	protected Object[] vizProps;
+	protected boolean nodeSizeLocked = true;
 
 	/**
 	 * Creates a new Appearance object.
@@ -107,8 +108,19 @@ public class Appearance {
 	 * @param nodeView The NodeView that this appearance will be applied to. 
 	 */
 	public void applyAppearance(final NodeView nodeView) {
-		for (VisualPropertyType type : VisualPropertyType.values())
-			type.getVisualProperty().applyToNodeView(nodeView, vizProps[type.ordinal()]);
+        for ( VisualPropertyType type : VisualPropertyType.values() )
+            if ( type == VisualPropertyType.NODE_SIZE ) {
+                if ( nodeSizeLocked )
+                    type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);
+                else
+                    continue;
+            } else if ( type == VisualPropertyType.NODE_WIDTH || type == VisualPropertyType.NODE_HEIGHT ) {
+                if ( nodeSizeLocked )
+                    continue;
+                else
+                    type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);
+            } else
+                type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);	
 	}
 
 	/**
@@ -199,8 +211,19 @@ public class Appearance {
 	 * @param na The Appearance object that will be copied into <i>this</i> Appearance object. 
 	 */
 	public void copy(final Appearance na) {
+
+		final boolean actualLockState = na.getNodeSizeLocked();
+
+        // set everything to false so that it copies correctly
+        setNodeSizeLocked(false);
+        na.setNodeSizeLocked(false);
+
 		for (VisualPropertyType type : VisualPropertyType.values())
 			this.vizProps[type.ordinal()] = na.get(type);
+
+        // now set the lock state correctly
+        setNodeSizeLocked(actualLockState);
+        na.setNodeSizeLocked(actualLockState);
 	}
 
 	/**
@@ -291,4 +314,20 @@ public class Appearance {
         else
             return null;
     }
+
+	/**
+	 * Returns whether or not the node height and width are locked.
+	 * @return Whether or not the node height and width are locked.
+	 */
+    public boolean getNodeSizeLocked() {
+        return nodeSizeLocked;
+    }
+
+	/**
+	 * Sets whether or not the node height and width are locked.
+	 */
+    public void setNodeSizeLocked(boolean b) {
+        nodeSizeLocked = b;
+    }
+
 }
