@@ -68,6 +68,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 		         .addPropertyChangeListener(Cytoscape.SAVE_PLUGIN_STATE, this);
 		Cytoscape.getPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.RESTORE_PLUGIN_STATE, this);
+		Cytoscape.getPropertyChangeSupport()
+        .addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
 	/**
@@ -232,8 +234,16 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 				}
 			}
 		}
+		else if (e.getPropertyName().equalsIgnoreCase(Cytoscape.CYTOSCAPE_EXIT)) {
+			onCytoscapeExit();
+		}
 	}
 
+	
+	public void onCytoscapeExit(){
+		
+	}
+	
 	// override the following two methods to save state.
 	/**
 	 * DOCUMENT ME!
