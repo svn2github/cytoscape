@@ -160,7 +160,7 @@ public class NetworkUtil extends Thread {
 
 		// web services url
 		int indexToStartOfPC = pathwayCommonsRequest.indexOf("/pc");
-		this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC);
+		this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC + 3);
 
 		// extract title
 		this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
