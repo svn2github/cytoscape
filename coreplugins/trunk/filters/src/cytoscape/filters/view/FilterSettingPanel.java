@@ -122,12 +122,13 @@ public class FilterSettingPanel extends JPanel {
 						theNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
 
 				GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
-				NumberIndex numberIndex = (NumberIndex) currentIndex;
-				
-					try {
 
+
+					try {
+						NumberIndex numberIndex = (NumberIndex) currentIndex;
 						rangeModel.setMinValue(numberIndex.getMinimumValue());
 						rangeModel.setMaxValue(numberIndex.getMaximumValue());
+
 						rangeModel.setLowValue(theNumericFilter.getLowValue());
 						rangeModel.setHighValue(theNumericFilter.getHighValue());			
 					}
@@ -187,7 +188,11 @@ public class FilterSettingPanel extends JPanel {
 		}
 
 		comboBox.setName(pAtomicFilter.getAttributeName());
-		comboBox.setSelectedItem(pAtomicFilter.getSearchValues()[0]);
+		try {
+			comboBox.setSelectedItem(pAtomicFilter.getSearchValues()[0]);			
+		}
+		catch (Exception e) {
+		}
 
 		ActionListener listener = new UserSelectionListener(comboBox);
 		comboBox.addFinalSelectionListener(listener);
@@ -198,7 +203,6 @@ public class FilterSettingPanel extends JPanel {
 	
 	private JRangeSliderExtended getRangerSlider(NumericFilter pNumericFilter) {
 
-		//NumberRangeModel rangeModel = new NumberRangeModel(1.5, 2.0, 1.0, 3.0);
 		NumberRangeModel rangeModel = new NumberRangeModel(0.0, 0.0, 0.0, 0.0);
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
                 JRangeSlider.LEFTRIGHT_TOPBOTTOM);
@@ -289,8 +293,18 @@ public class FilterSettingPanel extends JPanel {
 		}
 		if (pAttributeName.startsWith("edge.")) {
 
-			//?????????????????????????
-			//?????????????????????????
+			int attributeType = Cytoscape.getEdgeAttributes().getType(pAttributeName.substring(5));
+			
+			if ((attributeType == CyAttributes.TYPE_INTEGER)
+				||(attributeType == CyAttributes.TYPE_FLOATING)) {
+				addFilterWidget(new NumericFilter(pAttributeName));				
+			}
+			else if (attributeType == CyAttributes.TYPE_STRING) {
+				addFilterWidget(new StringFilter(pAttributeName));
+			}
+			else {
+				System.out.println("AttributeType is neither numeric nor string!");
+			}
 		}		
 	}
 
@@ -409,9 +423,31 @@ public class FilterSettingPanel extends JPanel {
 			
 			try {
 				NumberRangeModel model = (NumberRangeModel) slider.getModel();
-				
 				NumericFilter theNumericFilter = (NumericFilter) theAtomicFilterVect.
-								elementAt(getWidgetRowIndex(slider));
+				elementAt(getWidgetRowIndex(slider));
+				
+				// If the model is not initialized, add an index to it				
+				int minVal = model.getMinimum();
+				int maxVal = model.getMaximum();
+				if (minVal == maxVal) {
+					final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();					
+					currentNetwork = Cytoscape.getCurrentNetwork();
+
+
+					int indexType = getIndexTypeForAttribute(theNumericFilter.getAttributeName());
+					quickFind.reindexNetwork(currentNetwork, indexType, 
+							theNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
+
+					GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
+					NumberIndex numberIndex = (NumberIndex) currentIndex;
+					
+							model.setMinValue(numberIndex.getMinimumValue());
+							model.setMaxValue(numberIndex.getMaximumValue());
+
+							model.setLowValue(theNumericFilter.getLowValue());
+							model.setHighValue(theNumericFilter.getHighValue());								
+				}
+								
 				String[] theSearchValues = new String[2];
 				theSearchValues[0] = model.getLowValue().toString();
 				theSearchValues[1] = model.getHighValue().toString();
@@ -419,6 +455,7 @@ public class FilterSettingPanel extends JPanel {
 			}
 			catch (Exception ex) {
 				//NullPointerException caught -- the slider is not initialized yet								
+				System.out.println("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
 			}	
 		}
 	}
