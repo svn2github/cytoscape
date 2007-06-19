@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package csplugins.test.quickfind.test;
+package cytoscape.quickfind.test.quickfind.test;
 
 import cytoscape.task.TaskMonitor;
 
