@@ -74,7 +74,7 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 	/**
 	 * Context menu item command.
 	 */
-	private static final String PC_WEB_SERVICE_URL = "/pc/webservice.do?version=2.0&cmd=get_neighbors&format=biopax&q=";
+	private static final String PC_WEB_SERVICE_URL = "/pc/webservice.do?version=2.0&cmd=get_neighbors&q=";
 
 	/**
 	 * Property change listener - to get network/network view destroy events.
