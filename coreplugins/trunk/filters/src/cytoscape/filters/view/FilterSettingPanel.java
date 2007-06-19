@@ -123,7 +123,6 @@ public class FilterSettingPanel extends JPanel {
 
 				GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
 
-
 					try {
 						NumberIndex numberIndex = (NumberIndex) currentIndex;
 						rangeModel.setMinValue(numberIndex.getMinimumValue());
@@ -146,11 +145,11 @@ public class FilterSettingPanel extends JPanel {
 		int indexType = -1;
 		if (pAttributeName.startsWith("node.")){
 			indexType = QuickFind.INDEX_NODES;
-			System.out.println("indexType = QuickFind.INDEX_NODES");
+			//System.out.println("indexType = QuickFind.INDEX_NODES");
 		}
 		else if (pAttributeName.startsWith("edge.")){
 			indexType = QuickFind.INDEX_EDGES;	
-			System.out.println("indexType = QuickFind.INDEX_EDGES");
+			//System.out.println("indexType = QuickFind.INDEX_EDGES");
 		}
 
 		return indexType;
@@ -201,7 +200,7 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	
-	private JRangeSliderExtended getRangerSlider(NumericFilter pNumericFilter) {
+	private JRangeSliderExtended createRangerSlider(NumericFilter pNumericFilter) {
 
 		NumberRangeModel rangeModel = new NumberRangeModel(0.0, 0.0, 0.0, 0.0);
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
@@ -250,7 +249,7 @@ public class FilterSettingPanel extends JPanel {
 	        pnlCustomSettings.add(getTextIndexComboBox(pAtomicFilter), gridBagConstraints);		
 		}
 		else if (pAtomicFilter instanceof NumericFilter) {
-			pnlCustomSettings.add(getRangerSlider((NumericFilter) pAtomicFilter), gridBagConstraints);		
+			pnlCustomSettings.add(createRangerSlider((NumericFilter) pAtomicFilter), gridBagConstraints);		
 		}
 		
 		//Col 3 ---> label (a trash can) for delete of the row
@@ -525,19 +524,24 @@ public class FilterSettingPanel extends JPanel {
 				JCheckBox theCheckBox = (JCheckBox) soureObj;
 				
 				if (theCheckBox == chkSession) {
-					theFilter.getAdvancedSetting().setSession(chkSession.isSelected());					
+					theFilter.getAdvancedSetting().setSession(chkSession.isSelected());	
+					// filter name has a prefix "global." or "session.", refresh CMB to update
+					parentPanel.refreshFilterSelectCMB();
 				}
 				else if (theCheckBox == chkGlobal)
 				{
 					theFilter.getAdvancedSetting().setGlobal(chkGlobal.isSelected());										
+					parentPanel.refreshFilterSelectCMB();
 				}
 				else if (theCheckBox == chkNode)
 				{
-					theFilter.getAdvancedSetting().setNode(chkNode.isSelected());										
+					theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
+					parentPanel.refreshAttributeCMB();
 				}
 				else if (theCheckBox == chkEdge)
 				{
 					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());										
+					parentPanel.refreshAttributeCMB();
 				}
 				else if (theCheckBox == chkSource)
 				{
