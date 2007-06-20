@@ -129,6 +129,13 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 	}
 
 	private void checkChange() {
-		firePropertyChange(selected, super.getValue());
+		Number newValue = (Number) super.getValue();
+		if(newValue.doubleValue()<=0) {
+			newValue = 0;
+			currentValue = 0;
+			((JTextField) editor).setText("0");
+			editor.repaint();
+		}
+		firePropertyChange(selected, newValue);
 	}
 }
