@@ -107,15 +107,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 	static {
 		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
 		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
-
-		NODE_PROPS.remove(NODE_LINETYPE);
-		EDGE_PROPS.remove(EDGE_LINETYPE);
-
-		EDGE_PROPS.remove(EDGE_SRCARROW);
-		EDGE_PROPS.remove(EDGE_TGTARROW);
-
-		NODE_PROPS.remove(NODE_WIDTH);
-		NODE_PROPS.remove(NODE_HEIGHT);
 	}
 
 	/**
