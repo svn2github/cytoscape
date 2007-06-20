@@ -108,6 +108,7 @@ import ding.view.InnerCanvas;
 
 import giny.model.GraphObject;
 import giny.model.Node;
+import giny.view.EdgeView;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -266,6 +267,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private JPanel bottomPanel;
 	private Map<VisualPropertyType, JDialog> editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
+	
+	private Object lastSelectedItem = null;
+	
 
 	/** Creates new form AttributeOrientedPanel */
 	private VizMapperMainPanel() {
@@ -1203,6 +1207,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			 * val.
 			 */
 			String category = curProp.getCategory();
+			
+			lastSelectedItem = curProp.getDisplayName();
+			
+			System.out.println("*************First Selection: " + lastSelectedItem);
+			
+			
 
 			if ((e.getClickCount() == 2) && (category != null)
 			    && category.equalsIgnoreCase("Unused Properties")) {
@@ -1641,6 +1651,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private Set<Object> loadKeys(final String attrName, final CyAttributes attrs,
 	                             final ObjectMapping mapping) {
+		
+		
+		if(attrName.equals("ID")) {
+			return loadID();
+		}
+		
 		Map mapAttrs;
 		mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
 
@@ -2060,7 +2076,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 
-		System.out.println("Data Types: key = " + key.getClass() + ", val = " + e.getNewValue());
+		System.out.println("Data Types: key = " + key.getClass() + ", newval = " + e.getNewValue() + ", oldVal = " + e.getOldValue());
 		System.out.println("Mapping Cattr = " + mapping.getControllingAttributeName());
 		((DiscreteMapping) mapping).putMapValue(key, e.getNewValue());
 
@@ -2071,10 +2087,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		visualPropertySheetPanel.repaint();
 	}
 
-	private void filterMappingEditor(final Class dataType) {
-		if ((dataType != Integer.class) && (dataType != Double.class)) {
-		}
-	}
 
 	/**
 	 * Switching between mapppings. Each calcs has 3 mappings. The first one
@@ -2824,6 +2836,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				System.out.println("Invalid.");
 			}
 
+			
 			return;
 		}
 	}
@@ -3343,4 +3356,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		return;
 	}
+	
+	private Set<Object> loadID() {
+		Set<Object> ids = new TreeSet<Object>(); 
+		List<Node> nodes = Cytoscape.getCurrentNetworkView().getNetwork().nodesList();
+		for(Node node:nodes) {
+			ids.add(node.getIdentifier());
+		}
+		return ids;
+	}
+	
+	
+	
 }
