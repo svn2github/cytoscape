@@ -46,6 +46,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.parsers.ObjectToString;
 
@@ -55,6 +56,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -68,135 +71,72 @@ import javax.swing.JMenuItem;
  * Node and Edge bypass classes.
  */
 abstract class VizMapBypass {
-    protected Frame parent = Cytoscape.getDesktop();
-    protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-    protected CyAttributes attrs = null;
-    protected GraphObject graphObj = null;
+	protected Frame parent = Cytoscape.getDesktop();
+	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+	protected CyAttributes attrs = null;
+	protected GraphObject graphObj = null;
 
-    abstract protected String[] getBypassNames();
+	abstract protected List<String> getBypassNames();
 
-    protected void addResetAllMenuItem(JMenu menu) {
-        JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
-                    public void actionPerformed(ActionEvent e) {
-                        String[] names = getBypassNames();
-                        String id = graphObj.getIdentifier();
+	protected void addResetAllMenuItem(JMenu menu) {
+		JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
+				public void actionPerformed(ActionEvent e) {
+					List<String> names = getBypassNames();
+					String id = graphObj.getIdentifier();
 
-                        for (String attrName : names)
-                            if (attrs.hasAttribute(id, attrName))
-                                attrs.deleteAttribute(id, attrName);
+					for (String attrName : names)
+						if (attrs.hasAttribute(id, attrName))
+							attrs.deleteAttribute(id, attrName);
 
-                        vmm.getNetworkView()
-                           .redrawGraph(false, true);
-                    }
-                });
-        menu.add(jmi);
-    }
+					vmm.getNetworkView().redrawGraph(false, true);
+				}
+			});
+		menu.add(jmi);
+	}
 
-    protected void addResetMenuItem(JMenu menu, final String title,
-        final String attrName) {
-        JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + title +
-                    " ]") {
-                    public void actionPerformed(ActionEvent e) {
-                        String id = graphObj.getIdentifier();
+	protected void addResetMenuItem(JMenu menu, final VisualPropertyType type) {
+		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
+				public void actionPerformed(ActionEvent e) {
+					String id = graphObj.getIdentifier();
 
-                        if (attrs.hasAttribute(id, attrName))
-                            attrs.deleteAttribute(id, attrName);
+					if (attrs.hasAttribute(id, type.getBypassAttrName()))
+						attrs.deleteAttribute(id, type.getBypassAttrName());
 
-                        vmm.getNetworkView()
-                           .redrawGraph(false, true);
-                    }
-                });
-        menu.add(jmi);
-    }
+					vmm.getNetworkView().redrawGraph(false, true);
+				}
+			});
+		menu.add(jmi);
+	}
 
-    protected void addMenuItem(JMenu menu, final String title,
-        final String attrName, final Class c) {
-        JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(title) {
-                    public void actionPerformed(ActionEvent e) {
-                        Object obj = getBypassValue(title, c);
+	protected void addMenuItem(JMenu menu, final VisualPropertyType type) {
+		JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
+				public void actionPerformed(ActionEvent e) {
+					Object obj = null; 
+					try {
+						obj = type.showDiscreteEditor();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						obj = null;
+					}
 
-                        if (obj == null)
-                            return;
+					if (obj == null)
+						return;
 
-                        String val = ObjectToString.getStringValue(obj);
-                        attrs.setAttribute(
-                            graphObj.getIdentifier(),
-                            attrName,
-                            val);
-                        vmm.getNetworkView()
-                           .redrawGraph(false, true);
-                    }
+					String val = ObjectToString.getStringValue(obj);
+					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
+					vmm.getNetworkView().redrawGraph(false, true);
+				}
+			});
 
-                    private Object getBypassValue(String title, Class c) {
-                        if (c == Color.class)
-                            return CyColorChooser.showDialog(parent,
-                                "Choose " + title, null);
-                        else if (c == Double.class)
-                            return PopupStringChooser.showDialog(parent,
-                                "Choose " + title, "Input a double:", null,
-                                ValueDisplayer.DOUBLE);
-                        else if (c == Integer.class)
-                            return PopupStringChooser.showDialog(parent,
-                                "Choose " + title, "Input an integer:", null,
-                                ValueDisplayer.INT);
-                        else if (c == Byte.class) {
-                            IconSupport is = new IconSupport(null,
-                                    ValueDisplayer.NODESHAPE);
-                            PopupIconChooser chooser = new PopupIconChooser(
-                                    "Choose " + title,
-                                    null,
-                                    is.getIcons(),
-                                    null,
-                                    parent);
+		menu.add(jmi);
 
-                            return chooser.showDialog();
-                        } else if (c == Arrow.class) {
-                            IconSupport is = new IconSupport(null,
-                                    ValueDisplayer.ARROW);
-                            PopupIconChooser chooser = new PopupIconChooser(
-                                    "Choose " + title,
-                                    null,
-                                    is.getIcons(),
-                                    null,
-                                    parent);
+		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(), type.getBypassAttrName());
 
-                            return chooser.showDialog();
-                        } else if (c == LineType.class) {
-                            IconSupport is = new IconSupport(null,
-                                    ValueDisplayer.LINETYPE);
-                            PopupIconChooser chooser = new PopupIconChooser(
-                                    "Choose " + title,
-                                    null,
-                                    is.getIcons(),
-                                    null,
-                                    parent);
-
-                            return chooser.showDialog();
-                        } else if (c == String.class)
-                            return PopupStringChooser.showDialog(parent,
-                                "Choose " + title, "Input a String:", null,
-                                ValueDisplayer.STRING);
-                        else if (c == LabelPosition.class)
-                            return PopupLabelPositionChooser.showDialog(parent,
-                                null);
-                        else if (c == Font.class)
-                            return PopupFontChooser.showDialog(parent, null);
-
-                        return null;
-                    }
-                });
-
-        menu.add(jmi);
-
-        String attrString = attrs.getStringAttribute(
-                graphObj.getIdentifier(),
-                attrName);
-
-        if ((attrString == null) || (attrString.length() == 0))
-            jmi.setSelected(false);
-        else {
-            jmi.setSelected(true);
-            addResetMenuItem(menu, title, attrName);
-        }
-    }
+		if ((attrString == null) || (attrString.length() == 0))
+			jmi.setSelected(false);
+		else {
+			jmi.setSelected(true);
+			addResetMenuItem(menu, type);
+		}
+	}
 }

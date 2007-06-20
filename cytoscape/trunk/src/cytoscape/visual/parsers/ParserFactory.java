@@ -52,7 +52,7 @@ import java.awt.Font;
 
 
 /**
- *
+ * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
  */
 public class ParserFactory {
     /**
@@ -61,6 +61,7 @@ public class ParserFactory {
      * @param o DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+ 	 * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
      */
     public static ValueParser getParser(Object o) {
         return getParser(o.getClass());
@@ -72,6 +73,7 @@ public class ParserFactory {
      * @param c DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+ 	 * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
      */
     public static ValueParser getParser(Class c) {
         ValueParser parser = null;

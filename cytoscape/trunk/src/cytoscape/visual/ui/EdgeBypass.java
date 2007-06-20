@@ -44,6 +44,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
 
 import giny.model.Edge;
 
@@ -54,6 +55,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import java.util.List;
+import java.util.ArrayList;
 
 class EdgeBypass extends VizMapBypass {
     JMenuItem addMenu(Edge e) {
@@ -64,28 +67,22 @@ class EdgeBypass extends VizMapBypass {
         menu.add(new JLabel("Change Edge Visualization"));
         menu.addSeparator();
 
-        addMenuItem(menu, "Color", "edge.color", Color.class);
-        addMenuItem(menu, "Line Type", "edge.lineType", LineType.class);
-        addMenuItem(menu, "Source Arrow", "edge.sourceArrow", Arrow.class);
-        addMenuItem(menu, "Target Arrow", "edge.targetArrow", Arrow.class);
-        addMenuItem(menu, "Label", "edge.label", String.class);
-        addMenuItem(menu, "Label Color", "edge.labelColor", Color.class);
-        addMenuItem(menu, "Font", "edge.font", Font.class);
-        addMenuItem(menu, "Font Size", "edge.fontSize", Font.class);
-        menu.addSeparator();
+		for ( VisualPropertyType type : VisualPropertyType.values() ) 
+			if ( !type.isNodeProp() )
+				addMenuItem(menu, type);
 
         addResetAllMenuItem(menu);
 
         return menu;
     }
 
-    protected String[] getBypassNames() {
-        String[] names = {
-                "edge.color", "edge.lineType", "edge.sourceArrow",
-                "edge.targetArrow", "edge.label", "edge.labelColor", "edge.font",
-                "edge.fontSize"
-            };
+    protected List<String> getBypassNames() {
+		List<String> l = new ArrayList<String>();
 
-        return names;
+		for ( VisualPropertyType type : VisualPropertyType.values() )
+			if ( !type.isNodeProp() )
+				l.add( type.getBypassAttrName() );
+		
+		return l;
     }
 }

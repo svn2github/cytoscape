@@ -44,6 +44,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
 
 import giny.model.Node;
 
@@ -53,6 +54,10 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import java.util.List;
+import java.util.ArrayList;
+
 
 
 class NodeBypass extends VizMapBypass {
@@ -64,26 +69,10 @@ class NodeBypass extends VizMapBypass {
         menu.add(new JLabel("Change Node Visualization"));
         menu.addSeparator();
 
-        addMenuItem(menu, "Fill Color", "node.fillColor", Color.class);
-        addMenuItem(menu, "Border Color", "node.borderColor", Color.class);
-        addMenuItem(menu, "Border Line Type", "node.lineType", LineType.class);
-
-        if (vmm.getVisualStyle()
-                   .getNodeAppearanceCalculator()
-                   .getNodeSizeLocked())
-            addMenuItem(menu, "Size", "node.size", Double.class);
-        else {
-            addMenuItem(menu, "Width", "node.width", Double.class);
-            addMenuItem(menu, "Height", "node.height", Double.class);
-        }
-
-        addMenuItem(menu, "Shape", "node.shape", Byte.class);
-        addMenuItem(menu, "Label", "node.label", String.class);
-        addMenuItem(menu, "Label Color", "node.labelColor", Color.class);
-        addMenuItem(menu, "Label Position", "node.labelPosition",
-            LabelPosition.class);
-        addMenuItem(menu, "Font", "node.font", Font.class);
-        addMenuItem(menu, "Font Size", "node.fontSize", Double.class);
+		for ( VisualPropertyType type : VisualPropertyType.values() ) {
+			if ( type.isNodeProp() ) 
+        		addMenuItem(menu, type);
+		}
 
         menu.addSeparator();
 
@@ -92,14 +81,13 @@ class NodeBypass extends VizMapBypass {
         return menu;
     }
 
-    protected String[] getBypassNames() {
-        String[] names = {
-                "node.fillColor", "node.borderColor", "node.lineType",
-                "node.size", "node.width", "node.height", "node.shape",
-                "node.label", "node.labelColor", "node.labelPosition",
-                "node.font", "node.fontSize"
-            };
+    protected List<String> getBypassNames() {
+		List<String> l = new ArrayList<String>();
 
-        return names;
+		for ( VisualPropertyType type : VisualPropertyType.values() ) 
+			if ( type.isNodeProp() ) 
+				l.add( type.getBypassAttrName() );
+			
+        return l;
     }
 }

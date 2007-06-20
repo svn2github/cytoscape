@@ -40,7 +40,8 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.visual.parsers.*;
+import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.parsers.ObjectToString;
 
 import giny.model.Edge;
 import giny.model.GraphObject;
@@ -261,14 +262,12 @@ public class Appearance {
 			return;
 
 		for (VisualPropertyType type : VisualPropertyType.values()) {
-			Object bypass = getBypass(attrs, id, type.getBypassAttrName(), type.getDataType());
+			Object bypass = getBypass(attrs, id, type);
 
 			if (bypass != null)
 				vizProps[type.ordinal()] = bypass;
 		}
 	}
-
-	private static Map<Class,ValueParser> parsers = new HashMap<Class,ValueParser>();
 
 	/**
 	 * A helper method that returns the specified bypass object if one happens to exist for
@@ -278,19 +277,15 @@ public class Appearance {
 	 *
 	 * You really shouldn't have any reason to use this method!
 	 */
-    static Object getBypass(CyAttributes attrs, String id, String attrName, Class type) {
+    static Object getBypass( CyAttributes attrs, String id, VisualPropertyType type ) {
+		String attrName = type.getBypassAttrName();
 
         final String value = attrs.getStringAttribute(id, attrName);
 
         if (value == null)
             return null;
 
-        ValueParser p = parsers.get(type);
-
-        if (p == null) {
-            p = ParserFactory.getParser(type);
-            parsers.put(type, p);
-        }
+        ValueParser p = type.getValueParser(); 
 
         Object ret = null;
         if (p != null)
