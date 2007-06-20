@@ -273,7 +273,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
+
+		BirdsEyeViewHandler bevh = new BirdsEyeViewHandler();
+		getSwingPropertyChangeSupport().addPropertyChangeListener(bevh);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(bevh);
+
 		networkPanel = new NetworkPanel(this);
+		networkPanel.setNavigator( bevh.getBirdsEyeView() );
+
+
 		cyMenus = new CyMenus();
 		networkViewManager = new NetworkViewManager(this);
 

@@ -1,5 +1,5 @@
 /*
- File: BirdsEyeViewAction.java
+ File: BirdsEyeViewHandler.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,86 +34,58 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.actions;
+package cytoscape.view;
 
 import cytoscape.Cytoscape;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CytoscapeDesktop;
 
 import ding.view.BirdsEyeView;
 import ding.view.DGraphView;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.Action;
-
 /**
- * @deprecated This class is no longer used since the BirdsEyeView is now always part of
- * the NetworkPanel.  BirdsEyeView creation and event handling is done by the 
- * {@link cytoscape.view.BirdsEyeViewHandler} and initialized in {@line cytoscape.view.CytoscapeDesktop}
- * This class will be removed 5/2008.
+ * This class handles the creation of the BirdsEyeView navigation object 
+ * and handles the events which change view seen. 
  */
-public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChangeListener {
+class BirdsEyeViewHandler implements PropertyChangeListener {
 	BirdsEyeView bev;
-	boolean on = false;
 
 	/**
-	 * Creates a new BirdsEyeViewAction object.
+	 * Creates a new BirdsEyeViewHandler object.
 	 */
-	public BirdsEyeViewAction() {
-		super("Show/Hide Network Overview");
-		setPreferredMenu("View");
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED,this);
+	BirdsEyeViewHandler() {
+		bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView()) {
+				public Dimension getMinimumSize() {
+					return new Dimension(180, 180);
+				}
+			};
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Listens for NETWORK_VIEW_FOCUSED, NETWORK_VIEW_FOCUS, NETWORK_VIEW_DESTROYED,
+	 * and CYTOSCAPE_INITIALIZED events and changes the network view accordingly.
 	 *
-	 * @param e DOCUMENT ME!
+	 * @param e The event triggering this method. 
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if ((e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
 		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
-		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
+		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
+		    || (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			bev.changeView((DGraphView) Cytoscape.getCurrentNetworkView());
-		} else if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED ) { 
-			actionPerformed(null);	
 		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Returns a birds eye view component.
+	 * @return The component that contains the birds eye view.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		if (!on) {
-			bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView()) {
-					public Dimension getMinimumSize() {
-						return new Dimension(180, 180);
-					}
-				};
-			Cytoscape.getDesktop().getNetworkPanel().setNavigator(bev);
-			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-			on = true;
-			putValue(Action.NAME, "Hide Network Overview");	
-		} else {
-			if (bev != null) {
-				bev.destroy();
-				bev = null;
-			}
-
-			Cytoscape.getDesktop().getNetworkPanel()
-			         .setNavigator(Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel());
-			Cytoscape.getDesktop().getSwingPropertyChangeSupport().removePropertyChangeListener(this);
-			on = false;
-			putValue(Action.NAME, "Show Network Overview");	
-		}
+	Component getBirdsEyeView() {
+		return bev;
 	}
 }
