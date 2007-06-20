@@ -3,7 +3,7 @@
 
 	<name> Cytoscape Plugins </name>
 	<description> Test </description>
-	<url> http://cytoscape.org/plugin-inquiry-url </url>
+	<url> http://cytoscape.org </url>
 
 	<pluginlist>				
 		<!-- 
