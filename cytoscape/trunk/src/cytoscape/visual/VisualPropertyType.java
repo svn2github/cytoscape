@@ -54,9 +54,11 @@ import cytoscape.visual.properties.EdgeLineTypeProp;
 import cytoscape.visual.properties.EdgeLineWidthProp;
 import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
+import cytoscape.visual.properties.EdgeSourceArrowOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowProp;
 import cytoscape.visual.properties.EdgeSourceArrowShapeProp;
 import cytoscape.visual.properties.EdgeTargetArrowColorProp;
+import cytoscape.visual.properties.EdgeTargetArrowOpacityProp;
 import cytoscape.visual.properties.EdgeTargetArrowProp;
 import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
@@ -98,124 +100,128 @@ public enum VisualPropertyType {
 
 	NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
 	                "defaultNodeFillColor", Color.class,
-	                new NodeFillColorProp(), new ColorParser() ),
+	                new NodeFillColorProp(), new ColorParser(), true, true),
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", 
-	                  Color.class, new NodeBorderColorProp(), new ColorParser() ), 
+	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ), 
 	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
 	              "defaultNodeLineType", LineType.class,
-	              new NodeLineTypeProp(), new LineTypeParser() ), 
+	              new NodeLineTypeProp(), new LineTypeParser(), true, false ), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           NodeShape.class, new NodeShapeProp(),
-			   new NodeShapeParser()), 
+			   new NodeShapeParser(), true, true), 
 	NODE_SIZE("Node Size", "nodeUniformSizeCalculator", "node.size", "defaultNodeSize",
 	          Number.class, new NodeSizeProp(),
-			  new DoubleParser()), 
+			  new DoubleParser(), true, true), 
 	NODE_WIDTH("Node Width", "nodeWidthCalculator", "node.width", "defaultNodeWidth",
 	           Number.class, new NodeWidthProp(),
-			   new DoubleParser()), 
+			   new DoubleParser(), true, true), 
 	NODE_HEIGHT("Node Height", "nodeHeightCalculator", "node.height", "defaultNodeHight",
 	            Number.class, new NodeHeightProp(),
-				new DoubleParser()), 
+				new DoubleParser(), true, true), 
 	NODE_LABEL("Node Label", "nodeLabelCalculator", "node.label", "defaultNodeLabel",
 	           String.class, new NodeLabelProp(),
-			   new StringParser()), 
+			   new StringParser(), true, true), 
 	NODE_FONT_FACE("Node Font Face", "nodeFontFaceCalculator", "node.font", "defaultNodeFont",
 	               Font.class, new NodeFontFaceProp(),
-				   new FontParser()), 
+				   new FontParser(), true, true), 
 	NODE_FONT_SIZE("Node Font Size", "nodeFontSizeCalculator", "node.fontSize",
 	               "defaultNodeFontSize", Number.class,
-	               new NodeFontSizeProp(), new DoubleParser()), 
+	               new NodeFontSizeProp(), new DoubleParser(), true, true), 
 	NODE_LABEL_COLOR("Node Label Color", "nodeLabelColor", "node.labelColor",
 	                 "defaultNodeLabelColor", Color.class,
-	                 new NodeLabelColorProp(), new ColorParser()), 
+	                 new NodeLabelColorProp(), new ColorParser(), true, true), 
 	NODE_TOOLTIP("Node Tooltip", "nodeTooltipCalculator", "node.toolTip", "defaultNodeToolTip",
 	             String.class, new NodeToolTipProp(),
-				 new StringParser()), 
+				 new StringParser(), true, true), 
 	NODE_LABEL_POSITION("Node Label Position", "nodeLabelPositionCalculator", "node.labelPosition",
 	                    "defaultNodeLabelPosition", 
-	                    LabelPosition.class, new NodeLabelPositionProp(), new LabelPositionParser()), 
+	                    LabelPosition.class, new NodeLabelPositionProp(), new LabelPositionParser(), true, true), 
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           Color.class, new EdgeColorProp(),
-			   new ColorParser()), 
+			   new ColorParser(), false, true), 
 	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
 	              "defaultEdgeLineType", LineType.class,
-	              new EdgeLineTypeProp(), new LineTypeParser()), 
+	              new EdgeLineTypeProp(), new LineTypeParser(), false, false), 
 	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
 	              "defaultEdgeSourceArrow", Arrow.class,
-	              new EdgeSourceArrowProp(), new ArrowParser()), 
+	              new EdgeSourceArrowProp(), new ArrowParser(), false, false), 
 	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
 	              "defaultEdgeTargetArrow", Arrow.class,
-	              new EdgeTargetArrowProp(), new ArrowParser()), 
+	              new EdgeTargetArrowProp(), new ArrowParser(), false, false), 
 	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
 	           String.class, new EdgeLabelProp(),
-			   new StringParser()), 
+			   new StringParser(), false, true), 
 	EDGE_FONT_FACE("Edge Font Face", "edgeFontFaceCalculator", "edge.font", "defaultEdgeFont",
 	               Font.class, new EdgeFontFaceProp(),
-				   new FontParser()), 
+				   new FontParser(), false, true), 
 	EDGE_FONT_SIZE("Edge Font Size", "edgeFontSizeCalculator", "edge.fontSize",
 	               "defaultEdgeFontSize", Number.class,
-	               new EdgeFontSizeProp(), new DoubleParser()), 
+	               new EdgeFontSizeProp(), new DoubleParser(), false, true), 
 	EDGE_LABEL_COLOR("Edge Label Color", "edgeLabelColorCalculator", "edge.labelColor",
 	                 "defaultEdgeLabelColor", Color.class,
-	                 new EdgeLabelColorProp(), new ColorParser()), 
+	                 new EdgeLabelColorProp(), new ColorParser(), false, true), 
 	EDGE_TOOLTIP("Edge Tooltip", "edgeTooltipCalculator", "edge.toolTip", "defaultEdgeToolTip",
 	             String.class, new EdgeToolTipProp(),
-				 new StringParser()), 
+				 new StringParser(), false, true), 
 
 	// New from 2.5: line can have arbitrary width.
 	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator", "node.lineWidth",
 	                "defaultNodeLineWidth", Number.class,
-	                new NodeLineWidthProp(), new FloatParser()), 
+	                new NodeLineWidthProp(), new FloatParser(), true, true), 
 	EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
 	                "defaultEdgeLineWidth", Number.class,
-	                new EdgeLineWidthProp(), new FloatParser()), 
+	                new EdgeLineWidthProp(), new FloatParser(), false, true), 
 	NODE_LINE_STYLE("Node Line Style", "nodeLineStyleCalculator", "node.lineStyle",
 	                "defaultNodeLineStyle", LineStyle.class,
-	                new NodeLineStyleProp(), new LineStyleParser()), 
+	                new NodeLineStyleProp(), new LineStyleParser(), true, true), 
 	EDGE_LINE_STYLE("Edge Line Style", "edgeLineStyleCalculator", "edge.lineStyle",
 	                "defaultEdgeLineStyle", LineStyle.class,
-	                new EdgeLineStyleProp(), new LineStyleParser()), 
+	                new EdgeLineStyleProp(), new LineStyleParser(), false, true), 
 
 	// New from 2.5: arrows have its own color, shape, and size.
 	EDGE_SRCARROW_SHAPE("Edge Source Arrow Shape", "edgeSourceArrowShapeCalculator",
 	                    "edge.sourceArrowShape", "defaultEdgeSourceArrowShape",
 	                    ArrowShape.class,
-	                    new EdgeSourceArrowShapeProp(), new ArrowShapeParser()), 
+	                    new EdgeSourceArrowShapeProp(), new ArrowShapeParser(), false, true), 
 	EDGE_TGTARROW_SHAPE("Edge Target Arrow Shape", "edgeTargetArrowShapeCalculator",
 	                    "edge.targetArrowShape", "defaultEdgeTargetArrowShape",
 	                    ArrowShape.class,
-	                    new EdgeTargetArrowShapeProp(), new ArrowShapeParser()), 
+	                    new EdgeTargetArrowShapeProp(), new ArrowShapeParser(), false, true), 
 	EDGE_SRCARROW_COLOR("Edge Source Arrow Color", "edgeSourceArrowColorCalculator",
 	                    "edge.sourceArrowColor", "defaultEdgeSourceArrowColor",
 	                    Color.class,
-	                    new EdgeSourceArrowColorProp(), new ColorParser()), 
+	                    new EdgeSourceArrowColorProp(), new ColorParser(), false, true), 
 	EDGE_TGTARROW_COLOR("Edge Target Arrow Color", "edgeTargetArrowColorCalculator",
 	                    "edge.targetArrowColor", "defaultEdgeTargetArrowColor",
 	                    Color.class,
-	                    new EdgeTargetArrowColorProp(), new ColorParser()),
+	                    new EdgeTargetArrowColorProp(), new ColorParser(), false, true),
 	/*
 	 * New in 2.5: Opacity support
 	 */
 	NODE_OPACITY("Node Opacity", "nodeOpacityCalculator", "node.opacity", "defaultNodeOpacity",
 	             Number.class, new NodeOpacityProp(),
-				 new FloatParser()), 
+				 new FloatParser(), true, true), 
 	EDGE_OPACITY("Edge Opacity", "edgeOpacityCalculator", "edge.opacity", "defaultEdgeOpacity",
 	    	     Number.class, new EdgeOpacityProp(),
-				 new FloatParser()), 
+				 new FloatParser(), false, true), 
 	NODE_LABEL_OPACITY("Node Label Opacity", "nodeLabelOpacityCalculator", "node.LabelOpacity", "defaultNodeLabelOpacity",
 	    	             Number.class, new NodeLabelOpacityProp(),
-						 new FloatParser()), 
+						 new FloatParser(), true, true), 
 	EDGE_LABEL_OPACITY("Edge Label Opacity", "edgeLabelOpacityCalculator", "edge.labelOpacity", "defaultEdgeLabelOpacity",
 	    	    	     Number.class, new EdgeLabelOpacityProp(),
-						 new FloatParser()), 
+						 new FloatParser(), false, true), 
     NODE_BORDER_OPACITY("Node Border Opacity", "nodeBorderOpacityCalculator", "node.borderOpacity", "defaultNodeBorderOpacity",
 	    	    	             Number.class, new NodeBorderOpacityProp(),
-								 new FloatParser()), 
+								 new FloatParser(), true, true), 
+	EDGE_SRCARROW_OPACITY("Edge Source Arrow Opacity", "edgeSourceArrowOpacityCalculator", "edge.sourceArrowOpacity", "defaultEdgeSourceArrowOpacity", Number.class, new EdgeSourceArrowOpacityProp(),
+						 new FloatParser(), false, true), 
+	EDGE_TGTARROW_OPACITY("Edge Target Arrow Opacity", "edgeTargetArrowOpacityCalculator", "edge.targetArrowOpacity", "defaultEdgeTargetArrowOpacity", Number.class, new EdgeTargetArrowOpacityProp(),
+						 new FloatParser(), false, true), 
 	// Not yet implemented in version 2.5
 	EDGE_LABEL_POSITION("Edge Label Position", "edgeLabelPositionCalculator", "edge.labelPosition",
 	                    "defaultEdgeLabelPosition", null, new EdgeLabelPositionProp(),
-						new LabelPositionParser()),
+						new LabelPositionParser(), false, false),
 						
 	;
 	/*
@@ -239,13 +245,24 @@ public enum VisualPropertyType {
 	private VisualProperty vizProp;
 	private ValueParser valueParser;
 
+	// indicates whether or not property is for a node or edge
+	private boolean isNodeProp;
+
+	// Indicates whether or not we should be using this property for 
+	// normal operations. If this is false, that means the property
+	// either hasn't been implemented or has been deprecated.  This
+	// is primarily used to build lists of properties that we can
+	// display to users.
+	private boolean isAllowed;
+
 	/*
 	 * private constructor to put name into this enum.
 	 */
 	private VisualPropertyType(final String calcName, final String propertyLabel,
 	                           final String bypassAttrName, final String defaultPropertyLabel,
 	                           final Class dataType, final VisualProperty vizProp, 
-							   final ValueParser valueParser) {
+							   final ValueParser valueParser, final boolean isNodeProp,
+							   final boolean isAllowed) {
 		this.calcName = calcName;
 		this.propertyLabel = propertyLabel;
 		this.bypassAttrName = bypassAttrName;
@@ -253,6 +270,8 @@ public enum VisualPropertyType {
 		this.dataType = dataType;
 		this.vizProp = vizProp;
 		this.valueParser = valueParser;
+		this.isNodeProp = isNodeProp;
+		this.isAllowed = isAllowed;
 	}
 
 	/**
@@ -346,11 +365,7 @@ public enum VisualPropertyType {
 	 * @return true if vp is for node.
 	 */
 	public boolean isNodeProp() {
-		if (calcName.startsWith("Node"))
-			return true;
-		else
-
-			return false;
+		return isNodeProp;
 	}
 
 	/**
@@ -362,7 +377,7 @@ public enum VisualPropertyType {
 		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
 
 		for (VisualPropertyType type : values()) {
-			if (type.getName().startsWith("Node")) {
+			if ( type.isNodeProp() && type.isAllowed ) {
 				list.add(type);
 			}
 		}
@@ -379,7 +394,7 @@ public enum VisualPropertyType {
 		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
 
 		for (VisualPropertyType type : values()) {
-			if (type.getName().startsWith("Edge")) {
+			if ( !type.isNodeProp() && type.isAllowed ) {
 				list.add(type);
 			}
 		}

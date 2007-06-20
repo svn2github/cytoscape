@@ -67,9 +67,8 @@ class EdgeBypass extends VizMapBypass {
         menu.add(new JLabel("Change Edge Visualization"));
         menu.addSeparator();
 
-		for ( VisualPropertyType type : VisualPropertyType.values() ) 
-			if ( !type.isNodeProp() )
-				addMenuItem(menu, type);
+		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() ) 
+			addMenuItem(menu, type);
 
         addResetAllMenuItem(menu);
 
@@ -79,9 +78,8 @@ class EdgeBypass extends VizMapBypass {
     protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for ( VisualPropertyType type : VisualPropertyType.values() )
-			if ( !type.isNodeProp() )
-				l.add( type.getBypassAttrName() );
+		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() )
+			l.add( type.getBypassAttrName() );
 		
 		return l;
     }

@@ -69,10 +69,8 @@ class NodeBypass extends VizMapBypass {
         menu.add(new JLabel("Change Node Visualization"));
         menu.addSeparator();
 
-		for ( VisualPropertyType type : VisualPropertyType.values() ) {
-			if ( type.isNodeProp() ) 
-        		addMenuItem(menu, type);
-		}
+		for ( VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList() ) 
+       		addMenuItem(menu, type);
 
         menu.addSeparator();
 
@@ -84,9 +82,8 @@ class NodeBypass extends VizMapBypass {
     protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for ( VisualPropertyType type : VisualPropertyType.values() ) 
-			if ( type.isNodeProp() ) 
-				l.add( type.getBypassAttrName() );
+		for ( VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList() ) 
+			l.add( type.getBypassAttrName() );
 			
         return l;
     }
