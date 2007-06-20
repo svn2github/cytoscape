@@ -713,6 +713,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static final Map<Object, Icon> lineTypeIcons = LineStyle.getIconSet();
 	private PropertyRendererRegistry pr = new PropertyRendererRegistry();
 	private PropertyEditorRegistry regr = new PropertyEditorRegistry();
+	
+	
+	public PropertySheetPanel getPropertySheetPanel() {
+		return visualPropertySheetPanel;
+	}
+	
 
 	// End of variables declaration
 	private void vsNameComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1207,10 +1213,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			 * val.
 			 */
 			String category = curProp.getCategory();
-			
 			lastSelectedItem = curProp.getDisplayName();
-			
-			System.out.println("*************First Selection: " + lastSelectedItem);
+			System.out.println("*************Last Selection: " + lastSelectedItem);
 			
 			
 
@@ -1652,7 +1656,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private Set<Object> loadKeys(final String attrName, final CyAttributes attrs,
 	                             final ObjectMapping mapping) {
 		
-		
 		if(attrName.equals("ID")) {
 			return loadID();
 		}
@@ -2034,12 +2037,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		}
 
+		// Return if not a Discrete Mapping.
 		if (mapping instanceof ContinuousMapping || mapping instanceof PassThroughMapping)
 			return;
 
-		Object key = ((Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0)).getProperty()
-		              .getDisplayName();
+		// Get attribute name to be changed.
+//		Object key = ((Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0)).getProperty().getDisplayName();
+		Object key = null;
+		if(type.getDataType() == Number.class || type.getDataType() == String.class) {
+			key = e.getOldValue();
+		}else {
+			key = ((Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0)).getProperty().getDisplayName();
+		}
+		
 
+		
 		/*
 		 * Need to convert this string to proper data types.
 		 */
@@ -2076,7 +2088,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 
-		System.out.println("Data Types: key = " + key.getClass() + ", newval = " + e.getNewValue() + ", oldVal = " + e.getOldValue());
+		System.out.println("Data Types: key = " + key.toString() + ", newval = " + e.getNewValue() + ", oldVal = " + e.getOldValue());
 		System.out.println("Mapping Cattr = " + mapping.getControllingAttributeName());
 		((DiscreteMapping) mapping).putMapValue(key, e.getNewValue());
 
@@ -3357,6 +3369,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return;
 	}
 	
+	/**
+	 * <p>
+	 * If user selects ID as controlling attributes name,
+	 * cretate list of IDs from actual list of nodes/edges.
+	 * </p>
+	 * @return
+	 */
 	private Set<Object> loadID() {
 		Set<Object> ids = new TreeSet<Object>(); 
 		List<Node> nodes = Cytoscape.getCurrentNetworkView().getNetwork().nodesList();
