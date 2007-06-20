@@ -3,14 +3,14 @@
 	<!-- global info regarding the project these plugins come from -->
 	<name> Cytoscape Plugins </name>
 	<description> Test </description>
-	<url> http://cytoscape.org/plugin-inquiry-url </url>
+	<url> http://cytoscape.org </url>
 
 	<pluginlist>				
-
+		<!-- Info specific to a plugin -->
 		<plugin>
 			<uniqueID> A string that will not change from one version to another</uniqueID>
 			<name> foobar </name>
-			<description> blah </description>
+			<description> Whatever you want to say about a plugin </description>
 			<pluginVersion> 1.0 </pluginVersion>
 			<cytoscapeVersion> 2.5 </cytoscapeVersion>
 			<filetype> jar </filetype>
@@ -18,12 +18,16 @@
 			<url> http://url/to/download/jar-or-zip-file.xxx </url>
 			<authorlist>
 				<author>
-					<name> </name>
-					<institution> </institution>
+					<name>Jane Doe</name>
+					<institution>UC</institution>
 				</author>
 			</authorlist>
+			<license>
+				<text>
+					This is some license text a user would see and have to ok in order to install a plugin.
+				</text>
+			</license>
 		</plugin>
-
 	</pluginlist>
 
 </project>
