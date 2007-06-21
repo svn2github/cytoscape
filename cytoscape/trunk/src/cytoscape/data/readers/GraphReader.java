@@ -63,6 +63,14 @@ public interface GraphReader {
 	public void read() throws IOException;
 
 	/**
+	 * Lays out the graph.
+	 *
+	 * @param myView
+	 * @deprecated Use getLayoutAlgorithm().doLayout(view) instead. Will be removed 5/2008.
+	 */
+	public void layout(GraphView myView);
+
+	/**
 	 * Returns the LayoutAlgorithm used to layout the graph
 	 *
 	 * @param myView
