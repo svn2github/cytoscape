@@ -216,7 +216,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		exprAttrsList = new JList(allNames);
 		exprAttrsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		exprAttrsList.setLayoutOrientation(JList.VERTICAL);
-		exprAttrsList.setVisibleRowCount(5);
+		exprAttrsList.setVisibleRowCount(3);
 		exprAttrsList.addMouseListener(new ExprAttrsListListener(exprAttrsList, apfParams));
 		for ( String name : selectedNames ) { 
 			int index = allNames.indexOf(name);
