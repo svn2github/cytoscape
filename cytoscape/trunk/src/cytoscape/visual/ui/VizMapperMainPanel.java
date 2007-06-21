@@ -732,7 +732,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			 * Add properties to current property sheet.
 			 */
 			for (Property prop : props) {
-//				System.out.println("======== renderer: " + editorReg.getEditor(prop));
+				//System.out.println("======== renderer: " + editorReg.getEditor(prop));
 				if (prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
 					if (prop.getCategory().equals(NODE_VISUAL_MAPPING)) {
 						visualPropertySheetPanel.addProperty(0, prop);
@@ -1622,10 +1622,20 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private void setPropertyFromCalculator(List<Calculator> calcList, String rootCategory,
 	                                       List<Property> propRecord) {
+		VisualPropertyType type = null;
 		for (Calculator calc : calcList) {
 			final VizMapperProperty calculatorTypeProp = new VizMapperProperty();
 			buildProperty(calc, calculatorTypeProp, rootCategory);
-//			System.out.println("@@@@Editor = " + calculatorTypeProp.getDisplayName() + ",  " + editorReg.getEditor(calculatorTypeProp));
+			PropertyEditor editor = editorReg.getEditor(calculatorTypeProp);
+			if(editor == null && calculatorTypeProp.getCategory().equals("Unused Properties") == false) {
+				type = (VisualPropertyType) calculatorTypeProp.getHiddenObject();
+				if (type.isNodeProp()) {
+					editorReg.registerEditor(calculatorTypeProp, nodeAttrEditor);
+				} else {
+					editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
+				}
+			}
+			//System.out.println("@@@@Editor = " + calculatorTypeProp.getDisplayName() + ",  " + editorReg.getEditor(calculatorTypeProp));
 			propRecord.add(calculatorTypeProp);
 		}
 		
