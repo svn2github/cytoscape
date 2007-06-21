@@ -289,10 +289,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
 				//System.out.println("Filter Panel is selected");
-				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
+				
+				if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 					// CMBSelectFilter will not be initialize until the Filer Panel is selected
 					initCMBSelectFilter();					
-				//}
+				}
 
 				updateCMBAttributes();
 			}
@@ -733,6 +734,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 			if (_btn == btnApplyFilter) {
 
+				Cytoscape.getCurrentNetwork().unselectAllNodes();
+				Cytoscape.getCurrentNetwork().unselectAllEdges();
+
 				//System.out.println("ApplyButton is clicked!");
 				CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
 				
@@ -740,7 +744,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					return;
 				}
 				
-				System.out.println("\nThe Filter to apply:\n" + theFilter.toString()+"\n");
+				//System.out.println("\nThe Filter to apply:\n" + theFilter.toString()+"\n");
 				//quickFind.selectRange(cyNetwork, lowValue, highValue);
 				//QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 				//quickFind.selectHit(currentNetwork, hit);
