@@ -48,8 +48,8 @@ public enum CytoPanelName {
 	NORTH("Top Panel",SwingConstants.NORTH),
 	SOUTH("Data Panel",SwingConstants.SOUTH),
 	EAST("Results Panel",SwingConstants.EAST),
-	WEST("Management Panel",SwingConstants.WEST),
-	SOUTH_WEST("Control Panel",SwingConstants.SOUTH_WEST),
+	WEST("Control Panel",SwingConstants.WEST),
+	SOUTH_WEST("Tool Panel",SwingConstants.SOUTH_WEST),
 	;
 
 	private String title;
