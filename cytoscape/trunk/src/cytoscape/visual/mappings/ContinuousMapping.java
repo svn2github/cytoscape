@@ -153,7 +153,7 @@ public class ContinuousMapping extends SubjectBase
      */
     public void addPoint(double value, BoundaryRangeValues brv) {
         ContinuousMappingPoint cmp = new ContinuousMappingPoint(value, brv);
-        points.add(0, cmp);
+        points.add(cmp);
     }
     
     /**
