@@ -83,8 +83,11 @@ public class FilterPlugin extends CytoscapePlugin {
 	public FilterPlugin() {
 		
 		init();
-		
+				
 		// for debug only
+		//System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&");
+		//System.out.println("New filters plugin");
+		//System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&");
 		//int indexInCytoPanel = cytoPanelWest.indexOfComponent("Filters");
 		//cytoPanelWest.setSelectedIndex(indexInCytoPanel);						
 	}
@@ -225,6 +228,7 @@ public class FilterPlugin extends CytoscapePlugin {
 		System.out.println("FilterPlugin.restoreSessionState()");		
 		
 		if (pStateFileList == null || pStateFileList.size() == 0) {
+			System.out.println("\tNo previous filter state to restore.");
 			return;
 		}
 		
