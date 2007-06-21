@@ -101,6 +101,13 @@ public class CyMain implements CyInitParams {
 			 */
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name",
 			                   "Cytoscape 2.5 Beta");
+			System.setProperty("apple.awt.brushMetalRounded",
+            "true");
+			System.setProperty("apple.awt.antialiasing",
+            "on");
+			
+			System.setProperty("apple.awt.rendering",
+            "VALUE_RENDER_SPEED");
 		}
 
 		CyMain app = new CyMain(args);
