@@ -77,9 +77,35 @@ public class NumericFilter extends AtomicFilter {
 		return new Double(searchValues[1]);
 	}
 
+	public void setLowValue(Double pLowValue){
+		if (searchValues == null){
+			searchValues = new String[2];
+		}
+		searchValues[0] = pLowValue.toString();
+	}
+
+	public void setHighValue(Double pHighValue){
+		if (searchValues == null){
+			searchValues = new String[2];
+		}
+		searchValues[1] = pHighValue.toString();
+	}
+	public void setLowValue(String pLowValue){
+		if (searchValues == null){
+			searchValues = new String[2];
+		}
+		searchValues[0] = pLowValue;
+	}
+
+	public void setHighValue(String pHighValue){
+		if (searchValues == null){
+			searchValues = new String[2];
+		}
+		searchValues[1] = pHighValue;
+	}
 	
 	/**
-	 * @return the name of this Filter.
+	 * 
 	 */
 	public String toString() {
 		return attributeName + ","+searchValues[0]+"," + searchValues[1];
