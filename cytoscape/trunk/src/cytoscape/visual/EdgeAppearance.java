@@ -158,23 +158,11 @@ public class EdgeAppearance extends Appearance {
 	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setSourceArrow(Arrow a) {
-		if (a != null)
+		if (a != null) {
 			set(EDGE_SRCARROW,a);
-	}
-
-	/**
-	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-	 */
-	public Color getSourceArrowColor() {
-		return (Color)(get(EDGE_SRCARROW_COLOR));
-	}
-
-	/**
-	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-	 */
-	public void setSourceArrowColor(Color c) {
-		if (c != null)
-			set(EDGE_SRCARROW_COLOR,c);
+			set(EDGE_SRCARROW_SHAPE,a.getShape());
+			set(EDGE_SRCARROW_COLOR,a.getColor());
+		}
 	}
 
 	/**
@@ -188,23 +176,11 @@ public class EdgeAppearance extends Appearance {
 	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
 	 */
 	public void setTargetArrow(Arrow a) {
-		if (a != null)
+		if (a != null) {
 			set(EDGE_TGTARROW,a);
-	}
-
-	/**
-	 * @deprecated Use Appearance.get(VisualPropertyType) instead. Will be removed 5/2008.
-	 */
-	public Color getTargetArrowColor() {
-		return (Color)(get(EDGE_TGTARROW_COLOR));
-	}
-
-	/**
-	 * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
-	 */
-	public void setTargetArrowColor(Color c) {
-		if (c != null)
-			set(EDGE_TGTARROW_COLOR,c);
+			set(EDGE_TGTARROW_SHAPE,a.getShape());
+			set(EDGE_TGTARROW_COLOR,a.getColor());
+		}
 	}
 
 	/**
