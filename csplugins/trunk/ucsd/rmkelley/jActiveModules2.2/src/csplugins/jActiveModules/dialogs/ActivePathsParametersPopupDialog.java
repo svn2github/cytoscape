@@ -145,6 +145,9 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 
 		if ( apfParams == null )
 			System.out.println("WTF");
+
+		JPanel childPanel = new JPanel(new GridBagLayout());
+		
 		readout = new JTextField(new String("seed: "
 				+ apfParams.getRandomSeed()));
 		RandomSeedTextListener readoutListener = new RandomSeedTextListener();
@@ -155,14 +158,13 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		createSearchContentPanel();
 		createAnnealSearchController();
 
-		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
 		createAttrSelectionPanel();
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;		c.gridy = 0;
 		c.weightx = 1.0;	c.weighty = 1.0;
-		add(attrSelectPanel,c);
+		childPanel.add(attrSelectPanel,c);
 
 		JPanel subOptionsPanel = new JPanel(new GridBagLayout());
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -176,7 +178,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		optionsPanel = new JPanel(new CardLayout());
 		optionsPanel.add(new JPanel(), "INACTIVE");
 		optionsPanel.add(subOptionsPanel, "ACTIVE");
-		add(optionsPanel,c);
+		childPanel.add(optionsPanel,c);
 
 		// /////////////////////////////////////////
 		JPanel buttonPanel = new JPanel();
@@ -188,9 +190,13 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		buttonPanel.add(findModulesButton, BorderLayout.WEST);
 
 		c.gridx = 0;		c.gridy = 2;
-		add(buttonPanel,c);
+		childPanel.add(buttonPanel,c);
 
 		updateOptionsPanel();
+
+		JScrollPane scrollPane = new JScrollPane(childPanel);
+		setLayout(new GridLayout(1,1));
+		add(scrollPane);
 
 	} // PopupDialog ctor
 
