@@ -9,6 +9,8 @@ package csplugins.jActiveModules.dialogs;
 import giny.model.Node;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -20,66 +22,68 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.HashSet;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import csplugins.jActiveModules.ActivePathViewer;
 import csplugins.jActiveModules.Component;
+import csplugins.jActiveModules.ActiveModulesUI;
 import cytoscape.CyNetwork;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
+import cytoscape.view.cytopanels.CytoPanel;
+
+
 
 //---------------------------------------------------------------------------------------
-public class ConditionsVsPathwaysTable extends JDialog {
+public class ConditionsVsPathwaysTable extends JPanel {
 	JTable table;
 	//JPanel topTable, bottomTable;
 	ActivePathViewer pathViewer;
 	csplugins.jActiveModules.Component[] activePaths;
 	String[] conditionNames;
 	CyNetwork cyNetwork;
+	ActiveModulesUI parentUI;
 
 	// -----------------------------------------------------------------------------------------
 	public ConditionsVsPathwaysTable(Frame parentFrame, CyNetwork cyNetwork,
 			String[] conditionNames,
 			csplugins.jActiveModules.Component[] activePaths,
-			ActivePathViewer pathViewer) {
-		super(parentFrame, false);
+			ActivePathViewer pathViewer,
+			ActiveModulesUI parentUI) {
 		this.cyNetwork = cyNetwork;
 		this.activePaths = activePaths;
 		this.conditionNames = conditionNames;
 		this.pathViewer = pathViewer;
+		this.parentUI = parentUI;
 		init(parentFrame, pathViewer);
 	} // ConditionsVsPathwaysTable ctor
 
 	private void init(Frame parentFrame, ActivePathViewer pathViewer) {
 
-		setTitle("Conditions vs. Pathways");
-
-		JPanel mainPanel = new JPanel();
-		 table = new JTable(new ActivePathsTableModel(activePaths,
+		table = new JTable(new ActivePathsTableModel(activePaths,
 				conditionNames));
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setDefaultRenderer(Boolean.class, new ColorRenderer());
 		JScrollPane scrollpane = new JScrollPane(table);
-		//mainPanel.add(scrollpane);
 
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent me) {
-				//System.err.println("Mouse pressed");
-				ConditionsVsPathwaysTable.this.pathViewer.displayPath(
-						activePaths[table.getSelectedRow()], "");
-			}
-		});
-		mainPanel.setLayout(new BorderLayout());
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 //		JPanel tablePanel = new JPanel();
 //		tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
 //
@@ -89,24 +93,76 @@ public class ConditionsVsPathwaysTable extends JDialog {
 //				activePaths, pathViewer);
 //		tablePanel.add(bottomTable);
 //		JScrollPane scrollPane = new JScrollPane(tablePanel);
-		mainPanel.add(scrollpane, BorderLayout.CENTER);
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;		c.gridy = 0;
+		c.weightx = 1.0;	c.weighty = 1.0;
+		add(scrollpane, c);
+
 		JPanel buttonPanel = new JPanel();
-		JButton saveButton = new JButton("Save");
+		/*
+		final JButton saveButton = new JButton("Save");
+		saveButton.setEnabled(false);
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				ConditionsVsPathwaysTable.this.saveState();
 			}
 		});
-		JButton dismissButton = new JButton("Dismiss");
-		dismissButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				ConditionsVsPathwaysTable.this.hide();
+		*/
+
+		final CyNetwork parentNetwork = Cytoscape.getCurrentNetwork();
+
+		final JButton createNetworkButton = new JButton(new AbstractAction("Create Network")
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Set nodes = parentNetwork.getSelectedNodes();
+				Set edges = new HashSet();
+				Iterator iterator = parentNetwork.edgesIterator();
+				while (iterator.hasNext())
+				{
+					CyEdge edge = (CyEdge) iterator.next();
+					if (nodes.contains(edge.getSource()) && nodes.contains(edge.getTarget()))
+						edges.add(edge);
+				}
+				CyNetwork newNetwork = Cytoscape.createNetwork(nodes, edges,
+					CyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork),
+					parentNetwork);
+				Cytoscape.createNetworkView(newNetwork, " results");
+				Cytoscape.getNetworkView(newNetwork.getIdentifier())
+					.setVisualStyle(Cytoscape.getNetworkView(parentNetwork.getIdentifier()).getVisualStyle().getName());
 			}
 		});
-		buttonPanel.add(saveButton, BorderLayout.CENTER);
+		createNetworkButton.setEnabled(false);
+		table.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent me) {
+				//System.err.println("Mouse pressed");
+				ConditionsVsPathwaysTable.this.pathViewer.displayPath(
+						activePaths[table.getSelectedRow()], "");
+				createNetworkButton.setEnabled(table.getSelectedRow() != -1);
+			}
+		});
+		JButton dismissButton = new JButton("Close");
+		dismissButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+				cytoPanel.remove(ConditionsVsPathwaysTable.this);
+			}
+		});
+		JButton saveScoreDistributions = new JButton(new AbstractAction("Save Score Distributions")
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				parentUI.startRandomizeAndRun(cyNetwork);
+			}
+		});
 		buttonPanel.add(dismissButton, BorderLayout.CENTER);
-		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-		setContentPane(mainPanel);
+		buttonPanel.add(createNetworkButton, BorderLayout.CENTER);
+		buttonPanel.add(saveScoreDistributions, BorderLayout.CENTER);
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;		c.gridy = 1;
+		c.weightx = 1.0;	c.weighty = 0.0;
+		add(buttonPanel, c);
 		//mainPanel.setPreferredSize(new Dimension(500, 500));
 		//setSize(800, 600);
 
@@ -116,6 +172,7 @@ public class ConditionsVsPathwaysTable extends JDialog {
 		return activePaths;
 	}
 
+	/*
 	public void saveState(String filename) {
 		try {
 			FileWriter fileWriter = new FileWriter(filename);
@@ -153,6 +210,7 @@ public class ConditionsVsPathwaysTable extends JDialog {
 			saveState(name);
 		}
 	}
+	*/
 
 } // class ConditionsVsPathwaysTable
 

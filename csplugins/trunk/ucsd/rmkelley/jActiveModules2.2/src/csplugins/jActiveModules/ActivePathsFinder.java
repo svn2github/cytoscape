@@ -63,6 +63,7 @@ public class ActivePathsFinder {
 	// HashSet bestNeighborhood;
 	HashMap expressionMap;
 	JFrame parentFrame;
+	ActiveModulesUI parentUI;
 	protected static int DISPLAY_STEP = 50;
 
 	/**
@@ -82,11 +83,12 @@ public class ActivePathsFinder {
 	 */
 	public ActivePathsFinder(HashMap expressionMap, String[] attrNames,
 			CyNetwork cyNetwork, ActivePathFinderParameters apfp,
-			JFrame parentFrame) {
+			JFrame parentFrame, ActiveModulesUI parentUI) {
 		this.expressionMap = expressionMap;
 		this.parentFrame = parentFrame;
 		this.attrNames = attrNames;
 		this.cyNetwork = cyNetwork;
+		this.parentUI = parentUI;
 		apfParams = apfp;
 
 	}
@@ -391,7 +393,7 @@ public class ActivePathsFinder {
 	 */
 	private void runGreedySearch() {
 		if (apfParams.getSearchFromNodes()) {
-			runGreedySearch(cyNetwork.getFlaggedNodes());
+			runGreedySearch(cyNetwork.getSelectedNodes());
 		} else {
 			runGreedySearch(cyNetwork.nodesList());
 		}

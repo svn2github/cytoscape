@@ -318,6 +318,7 @@ public class ActivePathFinderParameters {
 					possibleExpressionAttrs.add(name);
 			}
 		}
+		Collections.sort(possibleExpressionAttrs);
 	}
 
 	public List<String> getPossibleExpressionAttributes() {

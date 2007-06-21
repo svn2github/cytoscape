@@ -627,6 +627,15 @@ public class Component implements Comparable{
   public List getDisplayNodes(){
 	  return displayNodes;
   }
+
+  public List<Node> getDisplayNodesGeneric()
+  {
+  	List<Node> list = new java.util.ArrayList(displayNodes.size());
+	Iterator iterator = displayNodes.iterator();
+	while (iterator.hasNext())
+		list.add((Node) iterator.next());
+	return list;
+  }
   
   public double [] getDisplayScores(){
 	  return displayScores;

@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.dialogs.ConditionsVsPathwaysTable;
@@ -33,8 +34,10 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ExpressionData;
-import cytoscape.data.FlagFilter;
+import cytoscape.data.SelectFilter;
 import cytoscape.data.mRNAMeasurement;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 //import cytoscape.data.CyNetworkFactory;
 
 //-----------------------------------------------------------------------------------
@@ -60,8 +63,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected static double MIN_SIG = 0.0000000000001;
 	protected static double MAX_SIG = 1 - MIN_SIG;
 
+	protected static int resultsCount = 1;
+	protected ActiveModulesUI parentUI;
+
 	// ----------------------------------------------------------------
-	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams) {
+	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
 		this.apfParams = apfParams;
 		if (cyNetwork == null || cyNetwork.getNodeCount() == 0) {
 			throw new IllegalArgumentException("Please select a network");
@@ -77,6 +83,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		menubar = Cytoscape.getDesktop().getCyMenus().getMenuBar();
 		mainFrame = Cytoscape.getDesktop();
 		this.cyNetwork = cyNetwork;
+		this.parentUI = parentUI;
 	} // ctor
 
 	// --------------------------------------------------------------
@@ -95,10 +102,10 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	 ActivePathsFinder apf = null;
   if(randomize){
     apf = new ActivePathsFinder(expressionMap, attrNames,
-				  cyNetwork, apfParams, null);
+				  cyNetwork, apfParams, null, parentUI);
   }else{
     apf = new ActivePathsFinder(expressionMap, attrNames,
-				  cyNetwork, apfParams, mainFrame);
+				  cyNetwork, apfParams, mainFrame, parentUI);
 		}
   activePaths = apf.findActivePaths();
 
@@ -192,11 +199,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 
 	protected void showConditionsVsPathwaysTable() {
+		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
 		tableDialog = new ConditionsVsPathwaysTable(mainFrame, cyNetwork,
-				attrNames, activePaths, this);
+				attrNames, activePaths, this, parentUI);
 
-		tableDialog.pack();
-		tableDialog.setLocationRelativeTo(mainFrame);
+		cytoPanel.add("Results " + (resultsCount++), tableDialog);
+		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(tableDialog));
+		cytoPanel.setState(CytoPanelState.DOCK);
 		tableDialog.setVisible(true);
 		addActivePathToolbarButton();
 	}
@@ -212,11 +221,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected void scoreActivePath() {
 		String callerID = "jActiveModules";
 		ActivePathsFinder apf = new ActivePathsFinder(generateExpressionMap(),
-				attrNames, cyNetwork, apfParams, mainFrame);
+				attrNames, cyNetwork, apfParams, mainFrame, parentUI);
 
 		long start = System.currentTimeMillis();
 		Vector result = new Vector();
-		Iterator it = cyNetwork.getFlaggedNodes().iterator();
+		Iterator it = cyNetwork.getSelectedNodes().iterator();
 		while (it.hasNext()) {
 			result.add(it.next());
 		}
@@ -266,16 +275,16 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	public void displayPath(csplugins.jActiveModules.Component activePath,
 			boolean clearOthersFirst, String pathTitle) {
 		titleForCurrentSelection = pathTitle;
-		FlagFilter flagger = cyNetwork.getFlagger();
+		SelectFilter filter = cyNetwork.getSelectFilter();
 		// cytoscapeWindow.selectNodesByName (activePath.getNodes (),
 		// clearOthersFirst);
 		if (clearOthersFirst) {
 			// cyNetwork.unFlagAllNodes();
-			flagger.unflagAllNodes();
+			filter.unselectAllNodes();
 		}
-		flagger.setFlaggedNodes(activePath.getDisplayNodes(), true);
+		filter.setSelectedNodes(activePath.getDisplayNodesGeneric(), true);
 		// cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
-  Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		  Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 	// ------------------------------------------------------------------------------
 	public void displayPath(csplugins.jActiveModules.Component activePath,
