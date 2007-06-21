@@ -104,6 +104,9 @@ public class FilterSettingPanel extends JPanel {
 		for (int i=0; i<theAtomicVect.size(); i++ ) {
 			
 			if (theAtomicVect.elementAt(i) instanceof NumericFilter) {
+				if (theAtomicVect.elementAt(i) == null) {
+					return;
+				}
 				System.out.println("theAtomicVect.elementAt(" + i + ") is instance of NumericFilter");
 				System.out.println("theAtomicVect.elementAt(i) = "+theAtomicVect.elementAt(i).toString());
 				
@@ -201,8 +204,16 @@ public class FilterSettingPanel extends JPanel {
 	
 	
 	private JRangeSliderExtended createRangerSlider(NumericFilter pNumericFilter) {
-
-		NumberRangeModel rangeModel = new NumberRangeModel(0.0, 0.0, 0.0, 0.0);
+		
+		NumberIndex theIndex = createNumberIndex(pNumericFilter);
+		
+		//Initialize the search values, lowValue and highValue
+		pNumericFilter.setLowValue(theIndex.getMinimumValue().toString());
+		pNumericFilter.setHighValue(theIndex.getMinimumValue().toString());
+		
+		NumberRangeModel rangeModel = new NumberRangeModel
+				(theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMaximumValue());
+		
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
                 JRangeSlider.LEFTRIGHT_TOPBOTTOM);
 				
@@ -372,7 +383,7 @@ public class FilterSettingPanel extends JPanel {
 		 */
 		public void actionPerformed(ActionEvent e) {
 			//Update the StringFilter after user made a selection in the TextIndexCombobox
-			
+						
 			//  Get Current User Selection
 			Object o = comboBox.getSelectedItem();
 
@@ -429,16 +440,8 @@ public class FilterSettingPanel extends JPanel {
 				int minVal = model.getMinimum();
 				int maxVal = model.getMaximum();
 				if (minVal == maxVal) {
-					final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();					
-					currentNetwork = Cytoscape.getCurrentNetwork();
-
-
-					int indexType = getIndexTypeForAttribute(theNumericFilter.getAttributeName());
-					quickFind.reindexNetwork(currentNetwork, indexType, 
-							theNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
-
-					GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
-					NumberIndex numberIndex = (NumberIndex) currentIndex;
+					
+					NumberIndex numberIndex = createNumberIndex(theNumericFilter);
 					
 							model.setMinValue(numberIndex.getMinimumValue());
 							model.setMaxValue(numberIndex.getMaximumValue());
@@ -459,6 +462,17 @@ public class FilterSettingPanel extends JPanel {
 		}
 	}
 		
+	private NumberIndex createNumberIndex(NumericFilter pNumericFilter) {
+		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();					
+		currentNetwork = Cytoscape.getCurrentNetwork();
+
+		int indexType = getIndexTypeForAttribute(pNumericFilter.getAttributeName());
+		quickFind.reindexNetwork(currentNetwork, indexType, 
+				pNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
+
+		GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
+		return (NumberIndex) currentIndex;
+	}
 		
 	// Add a label to take up the extra space at the custom setting panel
 	private void addBlankLabelToCustomPanel(){
