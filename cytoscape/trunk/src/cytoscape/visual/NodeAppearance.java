@@ -143,7 +143,7 @@ public class NodeAppearance extends Appearance {
      * @deprecated Use Appearance.set(VisualPropertyType,Object) instead. Will be removed 5/2008.
      */
     public void setShape(byte s) {
-		set(NODE_SHAPE,VisualPropertyType.getVisualPorpertyType(s));
+		set(NODE_SHAPE,NodeShape.getNodeShape(ShapeNodeRealizer.getGinyShape(s)));
     }
 
     /**
