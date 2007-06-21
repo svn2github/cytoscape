@@ -45,7 +45,7 @@ public abstract class  AtomicFilter {
 	 * 
 	 */
 	protected String attributeName = null;
-	protected String[] searchValues = null;
+	protected String[] searchValues = new String[2];
 
 	public String getAttributeName() {
 		return attributeName;
