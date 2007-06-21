@@ -108,18 +108,14 @@ sub addVersions
 
 	# get all possible versions
 	my $Versions = $dbh->selectall_hashref
-		("SELECT cytoscape_version, version, plugin_file_id, version_auto_id  
+		("SELECT cy_version, version, plugin_file_id, version_auto_id  
 			FROM plugin_version 
-				INNER JOIN cytoscape_version
-					ON cytoscape_version_id = cytoscape_version_auto_id
 			WHERE plugin_id = $PluginId", 'version_auto_id');
-
-print Dumper $Versions;
 
 	foreach my $vid (keys %$Versions)
 		{
 		my $CytoVersion = $Doc->createElement("cytoscapeVersion");
-		$CytoVersion->appendChild($Doc->createTextNode($Versions->{$vid}->{'cytoscape_version'}));
+		$CytoVersion->appendChild($Doc->createTextNode($Versions->{$vid}->{'cy_version'}));
 		$VersionPlugin->appendChild($CytoVersion);
 		
 		my $PluginVersionNum = $Doc->createElement("pluginVersion");
