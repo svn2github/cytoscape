@@ -104,7 +104,8 @@ public class PluginManagerAction extends CytoscapeAction {
 				}
 			}
 		} catch (Exception E) {
-			E.printStackTrace();
+			//E.printStackTrace();
+			System.err.println("There was an error while reading the bookmarks file.");
 		}
 
 		List<PluginInfo> Current = Mgr.getPlugins(PluginStatus.CURRENT);
@@ -151,6 +152,8 @@ public class PluginManagerAction extends CytoscapeAction {
 					// failed to parse the xml file at the url
 					dialog.setMessage(PluginManageDialog.CommonError.BADXML
 							+ url);
+				} else {
+					dialog.setMessage(getException().getMessage());
 				}
 			} else {
 				Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil
