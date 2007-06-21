@@ -428,6 +428,9 @@ public class FilterSettingPanel extends JPanel {
 		public void stateChanged(ChangeEvent e) {
 
 			//Update theFilter object if the slider is adjusted
+			System.out.println("FilterSettingPanel.stateChanged() ...");
+			
+			System.out.println("Before: theFilter.toString() = \n" + theFilter.toString());
 			
 			Vector<AtomicFilter> theAtomicFilterVect = theFilter.getAtomicFilterVect();
 			
@@ -435,30 +438,24 @@ public class FilterSettingPanel extends JPanel {
 				NumberRangeModel model = (NumberRangeModel) slider.getModel();
 				NumericFilter theNumericFilter = (NumericFilter) theAtomicFilterVect.
 				elementAt(getWidgetRowIndex(slider));
-				
-				// If the model is not initialized, add an index to it				
-				int minVal = model.getMinimum();
-				int maxVal = model.getMaximum();
-				if (minVal == maxVal) {
 					
-					NumberIndex numberIndex = createNumberIndex(theNumericFilter);
-					
-							model.setMinValue(numberIndex.getMinimumValue());
-							model.setMaxValue(numberIndex.getMaximumValue());
-
-							model.setLowValue(theNumericFilter.getLowValue());
-							model.setHighValue(theNumericFilter.getHighValue());								
-				}
+				//model.setMinValue(numberIndex.getMinimumValue());
+				//model.setMaxValue(numberIndex.getMaximumValue());
 								
 				String[] theSearchValues = new String[2];
 				theSearchValues[0] = model.getLowValue().toString();
 				theSearchValues[1] = model.getHighValue().toString();
-				theNumericFilter.setSearchValues(theSearchValues);				
+				theNumericFilter.setSearchValues(theSearchValues);
+				
+				model.setLowValue(theNumericFilter.getLowValue());
+				model.setHighValue(theNumericFilter.getHighValue());								
 			}
 			catch (Exception ex) {
 				//NullPointerException caught -- the slider is not initialized yet								
 				System.out.println("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
 			}	
+			System.out.println("After: theFilter.toString() = \n" + theFilter.toString());
+
 		}
 	}
 		
