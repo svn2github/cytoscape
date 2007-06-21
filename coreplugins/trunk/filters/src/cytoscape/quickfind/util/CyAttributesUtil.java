@@ -87,7 +87,7 @@ public class CyAttributesUtil {
 				} else if (type == CyAttributes.TYPE_STRING) {
 					terms[0] = attributes.getStringAttribute(graphObjectId, attributeKey);
 				} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-					List list = attributes.getAttributeList(graphObjectId, attributeKey);
+					List list = attributes.getListAttribute(graphObjectId, attributeKey);
 
 					//  Iterate through all elements in the list
 					if ((list != null) && (list.size() > 0)) {
@@ -99,7 +99,7 @@ public class CyAttributesUtil {
 						}
 					}
 				} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
-					Map map = attributes.getAttributeMap(graphObjectId, attributeKey);
+					Map map = attributes.getMapAttribute(graphObjectId, attributeKey);
 
 					//  Iterate through all values in the map
 					if ((map != null) && (map.size() > 0)) {
