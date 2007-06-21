@@ -41,6 +41,8 @@ import cytoscape.*;
 import cytoscape.util.FileUtil;
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
+import cytoscape.util.IndeterminateProgressBar;
+import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.task.TaskMonitor;
 
 import java.io.File;
@@ -263,6 +265,20 @@ public class PluginManager {
 	}
 
 	/**
+	 * Runs the {@link PluginManager#inquire(String)} method in a seperate thread.
+	 * The given Action object defines what is done with the results.
+	 * @param Url
+	 * @param Action
+	 * @throws IOException
+	 * @throws org.jdom.JDOMException
+	 */
+	public void runThreadedInquiry(String Url, PluginInquireAction Action) {
+		Thread t = new Thread( new InquireRunnable(Url, Action) );
+		t.run();
+	}
+	
+	
+	/**
 	 * Registers a currently installed plugin with tracking object. Only useful
 	 * if the plugin was not installed via the install process.
 	 * 
@@ -442,8 +458,8 @@ public class PluginManager {
 	 */
 	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException,
 			org.jdom.JDOMException {
-		List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
-		Set<PluginInfo> Seen = new HashSet<PluginInfo>();
+		final List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
+		final Set<PluginInfo> Seen = new HashSet<PluginInfo>();
 		Seen.add(Plugin);
 
 		if (Plugin.getDownloadUrl() == null
@@ -451,16 +467,49 @@ public class PluginManager {
 			return UpdatablePlugins;
 		}
 
-		for (PluginInfo New : inquire(Plugin.getDownloadUrl())) {
-			if (New.getID().equals(Plugin.getID())
-					&& Plugin.isNewerPluginVersion(New)) {
-				if (!Seen.contains(New)) {
-					UpdatablePlugins.add(New);
-				} else {
-					Seen.add(New);
+		final PluginInfo PluginToUpdate = Plugin;
+		final List<Exception> Exceptions = new ArrayList<Exception>();
+
+		runThreadedInquiry(Plugin.getDownloadUrl(), new PluginInquireAction() {
+			
+			public boolean displayProgressBar() {
+				return true;
+			}
+			
+			public String getProgressBarMessage() {
+				return "Connecting to " + PluginToUpdate.getDownloadUrl() + " to search for updates...";
+			}
+			
+			public void inquireAction(List<PluginInfo> Results) {
+
+				if (isExceptionThrown()) {
+					Exceptions.add(0, getIOException());
+					Exceptions.add(1, getJDOMException());
+				}
+
+				
+				for (PluginInfo New : Results) {
+					if (New.getID().equals(PluginToUpdate.getID())
+							&& PluginToUpdate.isNewerPluginVersion(New)) {
+						if (!Seen.contains(New)) {
+							UpdatablePlugins.add(New);
+						} else {
+							Seen.add(New);
+						}
+					}
 				}
 			}
+		});
+
+		if (Exceptions.size() > 0) {
+			if (Exceptions.get(0) != null) {
+				throw (java.io.IOException) Exceptions.get(0);
+			}
+			if (Exceptions.size() > 1 && Exceptions.get(1) != null) {
+				throw (org.jdom.JDOMException) Exceptions.get(1);
+			}
 		}
+		
 		return UpdatablePlugins;
 	}
 
@@ -775,7 +824,6 @@ public class PluginManager {
 				System.out
 						.println("No plugin found in specified jar - assuming it's a library.");
 			}
-			//jar.close();
 		}
 		System.out.println("");
 	}
@@ -913,4 +961,35 @@ public class PluginManager {
 		return Value;
 	}
 
+	private class InquireRunnable implements Runnable {
+		private String url;
+		private PluginInquireAction actionObj;
+		
+		public InquireRunnable(String Url, PluginInquireAction Obj) {
+			url = Url;
+			actionObj = Obj;
+		}
+		
+		public void run() {
+			List<PluginInfo> Results = null;
+			IndeterminateProgressBar Bar = null;
+
+			if (actionObj.displayProgressBar()) {
+				Bar = actionObj.getProgressBar();
+				Bar.setVisible(true);
+			}
+			
+			try {
+				Results = PluginManager.this.inquire(url);
+			} catch (Exception e) {
+				actionObj.setExceptionThrown(e);
+			}
+			if (actionObj.displayProgressBar()) {
+				Bar.setVisible(false);
+			}
+			actionObj.inquireAction(Results);
+		}
+	}
+
+	
 }

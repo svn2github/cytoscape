@@ -46,6 +46,23 @@ public class PluginFileReader {
 		// would be nice to validate later
 		SAXBuilder Builder = new SAXBuilder(false);
 		document = Builder.build(is);
+		
+//		InputStream is = URLUtil.getInputStream( new URL(downloadUrl) );
+//		BufferedReader xsdReader = new BufferedReader( new InputStreamReader(PluginFileReader.class.getResourceAsStream("plugins.xsd")) );
+//		String line = null;
+//		String Xsd = "";
+//		while ( (line = xsdReader.readLine()) != null)
+//			Xsd += line;
+//		
+//		// validate
+//		SAXBuilder Builder = new SAXBuilder("org.apache.xerces.parsers.SAXParser", true);
+//		Builder.setFeature("http://apache.org/xml/features/validation/schema", true);
+//    Builder.setProperty(
+//        "http://apache.org/xml/properties/schema"
+//        + "/external-noNamespaceSchemaLocation",
+//        Xsd );
+//		document = Builder.build(is);
+		
 	}
 
 	/**

@@ -54,9 +54,9 @@ import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.dialogs.plugins.PluginManageDialog.PluginInstallStatus;
 
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginInquireAction;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.PluginTracker.PluginStatus;
 
 import cytoscape.util.BookmarksUtil;
@@ -66,8 +66,6 @@ import java.awt.event.ActionEvent;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
 
 public class PluginManagerAction extends CytoscapeAction {
 	private String bookmarkCategory = "plugins";
@@ -118,32 +116,55 @@ public class PluginManagerAction extends CytoscapeAction {
 					PluginInstallStatus.INSTALLED);
 		}
 
-		if (!PluginManager.usingWebstartManager()) {
-			try {
-				List<PluginInfo> AvailablePlugins = ManagerUtil.getUnique(Current, Mgr.inquire(DefaultUrl));
-				
+		Mgr.runThreadedInquiry(DefaultUrl, new ManagerAction(dialog,
+				DefaultTitle, DefaultUrl));
+	}
+
+	private class ManagerAction extends PluginInquireAction {
+
+		private PluginManageDialog dialog;
+		private String title;
+		private String url;
+
+		public ManagerAction(PluginManageDialog Dialog, String Title, String Url) {
+			dialog = Dialog;
+			title = Title;
+			url = Url;
+		}
+
+		public boolean displayProgressBar() {
+			return true;
+		}
+		
+		public String getProgressBarMessage() {
+			return "Attempting to connect to " + url;
+		}
+
+		public void inquireAction(List<PluginInfo> Results) {
+
+			if (isExceptionThrown()) {
+				if (getIOException() != null) {
+					// failed to read the given url
+					dialog.setMessage(PluginManageDialog.CommonError.NOXML
+							+ url);
+				} else if (getJDOMException() != null) {
+					// failed to parse the xml file at the url
+					dialog.setMessage(PluginManageDialog.CommonError.BADXML
+							+ url);
+				}
+			} else {
 				Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil
-						.sortByCategory(AvailablePlugins);
+						.sortByCategory(Results);
 
 				for (String Category : DownloadInfo.keySet()) {
 					// get only the unique ones
 					dialog.addCategory(Category, DownloadInfo.get(Category),
 							PluginInstallStatus.AVAILABLE);
-					
 				}
-				dialog.setSiteName(DefaultTitle);
-			} catch (java.io.IOException ioe) {
-				// failed to read the given url
-				dialog.setMessage(PluginManageDialog.CommonError.NOXML
-						+ DefaultUrl);
-			} catch (org.jdom.JDOMException jde) {
-				// failed to parse the xml file at the url
-				dialog.setMessage(PluginManageDialog.CommonError.BADXML
-						+ DefaultUrl);
 			}
-		} else {
-			dialog.setMessage("Download/Delete are not available when using Cytoscape through web start");
+			dialog.setSiteName(title);
+			dialog.setVisible(true);
 		}
-		dialog.setVisible(true);
 	}
+
 }

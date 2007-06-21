@@ -15,6 +15,7 @@ import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginInquireAction;
 import cytoscape.plugin.PluginTracker.PluginStatus;
 
 import cytoscape.util.BookmarksUtil;
@@ -40,13 +41,14 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.WindowConstants;
 
-
 /**
  * @author skillcoy
  */
 public class PluginUrlDialog extends JDialog {
 	private String bookmarkCategory = "plugins";
+
 	private Bookmarks theBookmarks;
+
 	private PluginManageDialog parentDialog;
 
 	/**
@@ -62,9 +64,9 @@ public class PluginUrlDialog extends JDialog {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param Items
-	 *          DOCUMENT ME!
+	 *            DOCUMENT ME!
 	 */
 	public void addItems(String[] Items) {
 		urlComboBox.setModel(new javax.swing.DefaultComboBoxModel(Items));
@@ -78,8 +80,8 @@ public class PluginUrlDialog extends JDialog {
 			theBookmarks = Cytoscape.getBookmarks();
 		} catch (Exception E) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-			                              "Failed to retrieve bookmarks for plugin download sites.",
-			                              "Error", JOptionPane.ERROR_MESSAGE);
+					"Failed to retrieve bookmarks for plugin download sites.",
+					"Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace();
 
 			return;
@@ -99,32 +101,10 @@ public class PluginUrlDialog extends JDialog {
 		DataSource SelectedSite = (DataSource) urlComboBox.getSelectedItem();
 		parentDialog.switchDownloadSites();
 		dispose();
-		
-		try {
-			PluginManager Mgr = PluginManager.getPluginManager();
-			List<PluginInfo> UniqueAvailable = ManagerUtil.getUnique(Mgr.getPlugins(PluginStatus.CURRENT),Mgr.inquire(SelectedSite.getHref()));
 
-			Map<String, List<PluginInfo>> NewPlugins = ManagerUtil.sortByCategory(UniqueAvailable);
-
-			parentDialog.setSiteName(SelectedSite.getName());
-			if (NewPlugins.size() <= 0) {
-				parentDialog.setMessage("No plugins compatible with " + CytoscapeVersion.version + " available from this site.");
-			} else {
-				parentDialog.setMessage("");
-			}
-
-
-			for (String Category : NewPlugins.keySet()) {
-				
-				parentDialog.addCategory(Category, NewPlugins.get(Category),
-                        PluginManageDialog.PluginInstallStatus.AVAILABLE);
-				
-			}
-		} catch (java.io.IOException ioe) {
-			parentDialog.setMessage(PluginManageDialog.CommonError.NOXML + SelectedSite.getHref());
-		} catch (org.jdom.JDOMException jde) {
-			parentDialog.setMessage(PluginManageDialog.CommonError.BADXML + SelectedSite.getHref());
-		}
+		PluginManager Mgr = PluginManager.getPluginManager();
+		Mgr.runThreadedInquiry(SelectedSite.getHref(), new UrlAction(parentDialog, SelectedSite.getHref()));
+		parentDialog.setSiteName(SelectedSite.getName());
 	}
 
 	// add - opens the bookmarks dialog to add a new download site
@@ -132,9 +112,11 @@ public class PluginUrlDialog extends JDialog {
 		try {
 			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop());
 
-			// for some reason the windowStateListener wasn't getting the event so I have to use this one
-			// this allows me to update the combo box when the user is done adding
-			bDialog.addWindowListener( new java.awt.event.WindowListener() {
+			// for some reason the windowStateListener wasn't getting the event
+			// so I have to use this one
+			// this allows me to update the combo box when the user is done
+			// adding
+			bDialog.addWindowListener(new java.awt.event.WindowListener() {
 				public void windowClosed(java.awt.event.WindowEvent evt) {
 					loadBookmarkCMBox();
 				}
@@ -160,9 +142,11 @@ public class PluginUrlDialog extends JDialog {
 			bDialog.pack();
 			bDialog.setVisible(true);
 		} catch (Exception E) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-			                              "Failed to get bookmarks.  Go to Edit->Preferences->Bookmarks to edit your plugin download sites.",
-			                              "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							Cytoscape.getDesktop(),
+							"Failed to get bookmarks.  Go to Edit->Preferences->Bookmarks to edit your plugin download sites.",
+							"Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace();
 		}
 	}
@@ -172,8 +156,8 @@ public class PluginUrlDialog extends JDialog {
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
 
 		// Extract the URL entries
-		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory,
-		                                                                     theBookmarks.getCategory());
+		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(
+				bookmarkCategory, theBookmarks.getCategory());
 
 		if (theDataSourceList != null) {
 			for (DataSource Current : theDataSourceList) {
@@ -184,9 +168,6 @@ public class PluginUrlDialog extends JDialog {
 		urlComboBox.setModel(theModel);
 	}
 
-	 
-	
-	
 	private void initComponents() {
 		labelPanel = new JPanel();
 		label = new JLabel();
@@ -203,103 +184,116 @@ public class PluginUrlDialog extends JDialog {
 
 		GroupLayout labelPanelLayout = new GroupLayout(labelPanel);
 		labelPanel.setLayout(labelPanelLayout);
-		labelPanelLayout.setHorizontalGroup(labelPanelLayout.createParallelGroup(GroupLayout.LEADING)
-		                                                    .add(labelPanelLayout.createSequentialGroup()
-		                                                                         .addContainerGap()
-		                                                                         .add(label,
-		                                                                              GroupLayout.DEFAULT_SIZE,
-		                                                                              239,
-		                                                                              Short.MAX_VALUE)
-		                                                                         .addContainerGap()));
-		labelPanelLayout.setVerticalGroup(labelPanelLayout.createParallelGroup(GroupLayout.LEADING)
-		                                                  .add(labelPanelLayout.createSequentialGroup()
-		                                                                       .addContainerGap()
-		                                                                       .add(label,
-		                                                                            GroupLayout.DEFAULT_SIZE,
-		                                                                            16,
-		                                                                            Short.MAX_VALUE)
-		                                                                       .addContainerGap()));
+		labelPanelLayout.setHorizontalGroup(labelPanelLayout
+				.createParallelGroup(GroupLayout.LEADING).add(
+						labelPanelLayout.createSequentialGroup()
+								.addContainerGap().add(label,
+										GroupLayout.DEFAULT_SIZE, 239,
+										Short.MAX_VALUE).addContainerGap()));
+		labelPanelLayout.setVerticalGroup(labelPanelLayout.createParallelGroup(
+				GroupLayout.LEADING).add(
+				labelPanelLayout.createSequentialGroup().addContainerGap().add(
+						label, GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
+						.addContainerGap()));
 		okButton.setText("Ok");
 		okButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					okHandler(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				okHandler(evt);
+			}
+		});
 		addSiteButton.setText("Add Site");
 		addSiteButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					addSiteHandler(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				addSiteHandler(evt);
+			}
+		});
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					PluginUrlDialog.this.dispose();
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				PluginUrlDialog.this.dispose();
+			}
+		});
 
 		GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.LEADING)
-		                                              .add(jPanel1Layout.createSequentialGroup()
-		                                                                .add(8, 8, 8).add(okButton)
-		                                                                .addPreferredGap(LayoutStyle.RELATED)
-		                                                                .add(addSiteButton)
-		                                                                .addPreferredGap(LayoutStyle.RELATED)
-		                                                                .add(cancelButton)
-		                                                                .addContainerGap(46,
-		                                                                                 Short.MAX_VALUE)));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.LEADING)
-		                                            .add(jPanel1Layout.createSequentialGroup()
-		                                                              .addContainerGap()
-		                                                              .add(jPanel1Layout.createParallelGroup(GroupLayout.BASELINE)
-		                                                                                .add(okButton)
-		                                                                                .add(addSiteButton)
-		                                                                                .add(cancelButton))
-		                                                              .addContainerGap(GroupLayout.DEFAULT_SIZE,
-		                                                                               Short.MAX_VALUE)));
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
+				GroupLayout.LEADING).add(
+				jPanel1Layout.createSequentialGroup().add(8, 8, 8)
+						.add(okButton).addPreferredGap(LayoutStyle.RELATED)
+						.add(addSiteButton)
+						.addPreferredGap(LayoutStyle.RELATED).add(cancelButton)
+						.addContainerGap(46, Short.MAX_VALUE)));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
+				GroupLayout.LEADING).add(
+				jPanel1Layout.createSequentialGroup().addContainerGap().add(
+						jPanel1Layout.createParallelGroup(GroupLayout.BASELINE)
+								.add(okButton).add(addSiteButton).add(
+										cancelButton)).addContainerGap(
+						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-		                                .add(layout.createSequentialGroup()
-		                                           .add(layout.createParallelGroup(GroupLayout.LEADING)
-		                                                      .add(labelPanel,
-		                                                           GroupLayout.PREFERRED_SIZE,
-		                                                           GroupLayout.DEFAULT_SIZE,
-		                                                           GroupLayout.PREFERRED_SIZE)
-		                                                      .add(layout.createSequentialGroup()
-		                                                                 .add(21, 21, 21)
-		                                                                 .add(layout.createParallelGroup(GroupLayout.LEADING)
-		                                                                            .add(urlComboBox,
-		                                                                                 0, 296,
-		                                                                                 Short.MAX_VALUE)
-		                                                                            .add(jPanel1,
-		                                                                                 GroupLayout.DEFAULT_SIZE,
-		                                                                                 GroupLayout.DEFAULT_SIZE,
-		                                                                                 Short.MAX_VALUE))))
-		                                           .addContainerGap()));
+		layout
+				.setHorizontalGroup(layout
+						.createParallelGroup(GroupLayout.LEADING)
+						.add(
+								layout
+										.createSequentialGroup()
+										.add(
+												layout
+														.createParallelGroup(
+																GroupLayout.LEADING)
+														.add(
+																labelPanel,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE)
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				21,
+																				21,
+																				21)
+																		.add(
+																				layout
+																						.createParallelGroup(
+																								GroupLayout.LEADING)
+																						.add(
+																								urlComboBox,
+																								0,
+																								296,
+																								Short.MAX_VALUE)
+																						.add(
+																								jPanel1,
+																								GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
+																								Short.MAX_VALUE))))
+										.addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-		                              .add(layout.createSequentialGroup()
-		                                         .add(labelPanel, GroupLayout.PREFERRED_SIZE,
-		                                              GroupLayout.DEFAULT_SIZE,
-		                                              GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(LayoutStyle.RELATED)
-		                                         .add(urlComboBox, GroupLayout.PREFERRED_SIZE,
-		                                              GroupLayout.DEFAULT_SIZE,
-		                                              GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(LayoutStyle.RELATED)
-		                                         .add(jPanel1, GroupLayout.PREFERRED_SIZE,
-		                                              GroupLayout.DEFAULT_SIZE,
-		                                              GroupLayout.PREFERRED_SIZE)));
+				.add(
+						layout.createSequentialGroup().add(labelPanel,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addPreferredGap(
+								LayoutStyle.RELATED).add(urlComboBox,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addPreferredGap(
+								LayoutStyle.RELATED).add(jPanel1,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)));
 		loadBookmarkCMBox();
 		pack();
 	}
 
-	// required to make the text of the data source show up correctly in the combo box
-	private class BookmarkCellRenderer extends JLabel implements ListCellRenderer {
-		public Component getListCellRendererComponent(JList list, Object value, int index,
-		                                              boolean isSelected, boolean cellHasFocus) {
+	// required to make the text of the data source show up correctly in the
+	// combo box
+	private class BookmarkCellRenderer extends JLabel implements
+			ListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
 			DataSource dataSource = (DataSource) value;
 			setText(dataSource.getName());
 
@@ -313,13 +307,75 @@ public class PluginUrlDialog extends JDialog {
 		}
 	}
 
-	
-	
+	private class UrlAction extends PluginInquireAction {
+
+		private PluginManageDialog dialog;
+		private String url;
+
+		public UrlAction(PluginManageDialog Dialog, String Url) {
+			dialog = Dialog;
+			url = Url;
+
+		}
+
+		public boolean displayProgressBar() {
+			return true;
+		}
+
+		public String getProgressBarMessage() {
+			return "Attempting to connect...";
+		}
+
+		public void inquireAction(List<PluginInfo> Results) {
+
+			if (isExceptionThrown()) {
+				if (getIOException() != null) {
+					// failed to read the given url
+					dialog.setMessage(PluginManageDialog.CommonError.NOXML
+							+ url);
+				} else if (getJDOMException() != null) {
+					// failed to parse the xml file at the url
+					dialog.setMessage(PluginManageDialog.CommonError.BADXML
+							+ url);
+				}
+			} else {
+
+				PluginManager Mgr = PluginManager.getPluginManager();
+				List<PluginInfo> UniqueAvailable = ManagerUtil.getUnique(Mgr
+						.getPlugins(PluginStatus.CURRENT), Results);
+
+				Map<String, List<PluginInfo>> NewPlugins = ManagerUtil
+						.sortByCategory(UniqueAvailable);
+
+				if (NewPlugins.size() <= 0) {
+					dialog.setMessage("No plugins compatible with "
+							+ CytoscapeVersion.version
+							+ " available from this site.");
+				} else {
+					dialog.setMessage("");
+				}
+
+				for (String Category : NewPlugins.keySet()) {
+					dialog.addCategory(Category, NewPlugins.get(Category),
+							PluginManageDialog.PluginInstallStatus.AVAILABLE);
+				}
+			}
+
+		}
+
+	}
+
 	private JButton addSiteButton;
+
 	private JButton cancelButton;
+
 	private JPanel jPanel1;
+
 	private JLabel label;
+
 	private JPanel labelPanel;
+
 	private JButton okButton;
+
 	private JComboBox urlComboBox;
 }
