@@ -186,7 +186,7 @@ public class FilterPlugin extends CytoscapePlugin {
 
          // compatible Cytoscape version
          infoObj.setCytoscapeVersion("2.5");
-         // set to “Unknown” by default
+         // set to Unknown by default 
          infoObj.setCategory(PluginInfo.Category.CORE);
     
          return infoObj;
