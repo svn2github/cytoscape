@@ -119,16 +119,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
 		{
-			System.out.println("ATTRIBUTES_CHNAGED event received");
 			refreshAttributeCMB();
-			updateCMBIndex();
+			updateIndexForWidget();
 		}
 	}
 
 	// triggerd by Cytoscape.ATTRIBUTES_CHANGED event
-	private void updateCMBIndex() {
-		System.out.println("updateCMBIndex() ...");
-		
+	private void updateIndexForWidget() {
+		// After session load, the combobox will through nullpointer exception.
+		System.out.println("updateCMBIndex() is not implemented yet");
 	}
 	
 	private void init() {
@@ -171,8 +170,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private Vector<String> getCyAttributesList(String pType) {
 		Vector<String> attributeList = new Vector<String>();
 		CyAttributes attributes = null;
-		
-		//System.out.println("getCyAttributesList(): pType ="+pType);
 		
 		if (pType.equalsIgnoreCase("node")) {
 			attributes = Cytoscape.getNodeAttributes();
@@ -274,8 +271,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel(allFilterVect);
 		cmbSelectFilter.setModel(theModel);
 		cmbSelectFilter.setRenderer(new FilterRenderer());
-
-		System.out.println("initCMBSelectFilter() ... here");
 		
 		if (allFilterVect.size() ==0) {
 			this.btnApplyFilter.setEnabled(false);
@@ -286,7 +281,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
  
 		replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
-		//replaceFilterSettingPanel(allFilterVect.elementAt(0));
 	}
 	
 	class MyCytoPanelListener implements CytoPanelListener{
@@ -294,7 +288,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		public void onComponentSelected(int componentIndex){
 
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
-				System.out.println("Filter Panel is selected");
+				//System.out.println("Filter Panel is selected");
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 					// CMBSelectFilter will not be initialize until the Filer Panel is selected
 					initCMBSelectFilter();					
@@ -585,12 +579,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				if (value == null) {
 					return false;
 				}
-				//System.out.println("objectType = " + objectType);
-				//System.out.println("value = " + value);
-				//System.out.println("theStringFilter.toString() = " + theStringFilter.toString());
 
+				if (theStringFilter == null) {
+					return false;
+				}
 				// I think that * and ? are better for now....
 				if (theStringFilter == null) {
+					return false;
+				}
+				if (theStringFilter.getSearchStr() == null) {
 					return false;
 				}
 				String[] pattern = theStringFilter.getSearchStr().split("\\s");
@@ -653,7 +650,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 						return;
 					}
 				}
-				System.out.println("\tpassedNodes.size() ="+passedNodes.size());
+				//System.out.println("\tpassedNodes.size() ="+passedNodes.size());
 				/*
 				CyAttributes data = Cytoscape.getNodeAttributes();
 
@@ -687,7 +684,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 						return;
 					}
 				}
-				System.out.println("\tpassedEdges.size() ="+passedEdges.size());
+				//System.out.println("\tpassedEdges.size() ="+passedEdges.size());
 /*				
 				CyAttributes data = Cytoscape.getEdgeAttributes();
 
@@ -736,14 +733,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 			if (_btn == btnApplyFilter) {
 
-				System.out.println("ApplyButton is clicked!");
+				//System.out.println("ApplyButton is clicked!");
 				CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
 				
 				if (theFilter == null) {
 					return;
 				}
 				
-				System.out.println("The Filter to apply:\n" + theFilter.toString()+"\n");
+				System.out.println("\nThe Filter to apply:\n" + theFilter.toString()+"\n");
 				//quickFind.selectRange(cyNetwork, lowValue, highValue);
 				//QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 				//quickFind.selectHit(currentNetwork, hit);
@@ -923,16 +920,20 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 		
 	private void deleteFilter(CompositeFilter pFilter) {
-		FilterSettingPanel theSettingPanelToRemove =filter2SettingPanelMap.get(pFilter); 
+		 
 		filter2SettingPanelMap.remove(pFilter);
 		cmbSelectFilter.removeItem(pFilter);
-		theSettingPanelToRemove.setVisible(false);
+		
+		if (allFilterVect == null || allFilterVect.size() == 0) {
+			replaceFilterSettingPanel(null);
+		}
+		this.validate();
+		this.repaint();
 	}
 
 	private void createNewFilter(String pFilterName) {
 		// Create an empty filter, add it to the current filter list
 		
-		System.out.println("createNewFilter() ...");
 		CompositeFilter newFilter = new CompositeFilter(pFilterName);
 		allFilterVect.add(newFilter);
 		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter);
