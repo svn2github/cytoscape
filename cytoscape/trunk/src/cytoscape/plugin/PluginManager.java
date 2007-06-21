@@ -982,6 +982,9 @@ public class PluginManager {
 			try {
 				Results = PluginManager.this.inquire(url);
 			} catch (Exception e) {
+				if (e.getClass().equals(java.lang.NullPointerException.class)) {
+					e = new org.jdom.JDOMException("XML was incorrectly formed", e);
+				}
 				actionObj.setExceptionThrown(e);
 			}
 			if (actionObj.displayProgressBar()) {
