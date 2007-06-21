@@ -368,6 +368,17 @@ public enum VisualPropertyType {
 		return isNodeProp;
 	}
 
+	/** 
+	 * Indicates whether or not we should be using this property for 
+	 * normal operations. If this is false, that means the property
+	 * either hasn't been implemented or has been deprecated.  This
+	 * is primarily used to build lists of properties that we can
+	 * display to users.
+	 */
+	public boolean isAllowed() {
+		return isAllowed;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -377,7 +388,7 @@ public enum VisualPropertyType {
 		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
 
 		for (VisualPropertyType type : values()) {
-			if ( type.isNodeProp() && type.isAllowed ) {
+			if ( type.isNodeProp() && type.isAllowed() ) {
 				list.add(type);
 			}
 		}
@@ -394,7 +405,7 @@ public enum VisualPropertyType {
 		List<VisualPropertyType> list = new ArrayList<VisualPropertyType>();
 
 		for (VisualPropertyType type : values()) {
-			if ( !type.isNodeProp() && type.isAllowed ) {
+			if ( !type.isNodeProp() && type.isAllowed() ) {
 				list.add(type);
 			}
 		}

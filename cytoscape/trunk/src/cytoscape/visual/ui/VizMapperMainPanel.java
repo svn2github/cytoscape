@@ -181,7 +181,6 @@ import javax.swing.table.TableCellRenderer;
  */
 public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, PopupMenuListener {
 	// VPT in this list will not be shown in this GUI.
-	private static final Set<VisualPropertyType> IGNORE = new TreeSet<VisualPropertyType>();
 	public enum DefaultEditor {
 		NODE,
 		EDGE,
@@ -227,12 +226,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static VizMapperMainPanel panel;
 
 	static {
-		IGNORE.add(NODE_LINETYPE);
-		IGNORE.add(EDGE_LINETYPE);
-		IGNORE.add(EDGE_SRCARROW);
-		IGNORE.add(EDGE_TGTARROW);
-		IGNORE.add(EDGE_LABEL_POSITION);
-
 		/*
 		 * Make dummy network nodes & edges
 		 */
@@ -2305,7 +2298,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			} else
 				mapping = calc.getMapping(0);
 
-			if ((mapping == null) && (IGNORE.contains(type) == false))
+			if ((mapping == null) && type.isAllowed())
 				noMapping.add(type);
 
 			mapping = null;
