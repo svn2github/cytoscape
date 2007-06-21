@@ -115,12 +115,11 @@ public abstract class Cytoscape {
 	//
 	// Signals
 	//
+
 	/**
-	 * Please consult CyAttributes documentation for event listening
-	 *
-	 * @deprecated this event should not be used, it is not fired. Will be
-	 *             removed June 2007.
-	 * @see CyAttributes
+	 * This signals when new attributes have been loaded and a few other
+	 * large scale changes to attributes have been made.  There is no
+	 * equivalent in the CyAttributes events.
 	 */
 	public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
 
