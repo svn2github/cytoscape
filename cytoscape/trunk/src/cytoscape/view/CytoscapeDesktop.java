@@ -36,24 +36,6 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
-
-import cytoscape.util.undo.CyUndo;
-
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapUI;
-import cytoscape.visual.ui.VizMapperMainPanel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -61,15 +43,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -84,6 +63,20 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+import cytoscape.util.undo.CyUndo;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.VizMapUI;
+import cytoscape.visual.ui.VizMapperMainPanel;
+
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
@@ -93,9 +86,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected int returnVal;
 
 	/*
-	 * Default Desktop Size (slitly wider than before for new UI)
+	 * Default Desktop Size (slitly wider than 2.4 and before for new UI)
 	 */
-	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(900, 700);
+	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 700);
 
 	/**
 	 *
@@ -144,6 +137,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * window. ( like the GIMP )
 	 */
 	public static final int EXTERNAL_VIEW = 2;
+	
+	private static final String SMALL_ICON = "images/c16.png";
+	
+	
 
 	// --------------------//
 	// Member varaibles
@@ -151,7 +148,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/**
 	 * The type of view, should be considered final
 	 */
-	protected int VIEW_TYPE;
+	protected int viewType;
 	protected VisualStyle defaultVisualStyle;
 
 	/**
@@ -185,9 +182,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	protected GraphViewController graphViewController;
 
-	// --------------------//
-	// VizMap Variables
-
 	/**
 	 * Provides Operations for Mapping Data Attributes of CyNetworks to
 	 * CyNetworkViews
@@ -207,11 +201,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * New VizMapper UI
 	 */
 	protected VizMapperMainPanel vizmapperUI;
+	
+	/**
+	 * Current network and view.
+	 */
 	protected String currentNetworkID;
 	protected String currentNetworkViewID;
 
-	// --------------------//
+	//
 	// CytoPanel Variables
+	//
 	protected CytoPanelImp cytoPanelWest;
 	protected CytoPanelImp cytoPanelEast;
 	protected CytoPanelImp cytoPanelSouth;
@@ -257,18 +256,17 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public CytoscapeDesktop(int view_type) {
 		super("Cytoscape Desktop (New Session)");
-		this.VIEW_TYPE = view_type;
+		viewType = view_type;
 		initialize();
 	}
 
 	protected void initialize() {
 		// ///////////TODO: REMOVE
-		this.VIEW_TYPE = INTERNAL_VIEW;
+		viewType = INTERNAL_VIEW;
 
-		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/c16.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 
 		main_panel = new JPanel();
-
 		main_panel.setLayout(new BorderLayout());
 
 		// ------------------------------//
@@ -334,7 +332,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
-		if ((VIEW_TYPE == TABBED_VIEW) || (VIEW_TYPE == INTERNAL_VIEW)) {
+		if ((viewType == TABBED_VIEW) || (viewType == INTERNAL_VIEW)) {
 			main_panel.add(masterPane, BorderLayout.CENTER);
 			main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
 			// Remove status bar.
@@ -342,7 +340,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			setJMenuBar(cyMenus.getMenuBar());
 		}
 		// not sure if this is correct
-		else if (VIEW_TYPE == EXTERNAL_VIEW) {
+		else if (viewType == EXTERNAL_VIEW) {
 			main_panel.add(masterPane);
 			cyMenus.getToolBar().setOrientation(JToolBar.VERTICAL);
 			main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
@@ -369,7 +367,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		setContentPane(main_panel);
 		pack();
 
-		if (VIEW_TYPE != EXTERNAL_VIEW)
+		if (viewType != EXTERNAL_VIEW)
 			setSize(DEF_DESKTOP_SIZE);
 
 		setVisible(true);
@@ -440,7 +438,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * Return the view type for this CytoscapeDesktop
 	 */
 	public int getViewType() {
-		return VIEW_TYPE;
+		return viewType;
 	}
 
 	/**
@@ -523,7 +521,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		styleBox.setMaximumSize(newSize);
 		styleBox.setPreferredSize(newSize);
 
-		if (VIEW_TYPE == EXTERNAL_VIEW) {
+		if (viewType == EXTERNAL_VIEW) {
 			if (currentStyleBox != null)
 				main_panel.remove(currentStyleBox);
 
@@ -746,11 +744,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// determine proper network view manager component
 		Component networkViewComp = null;
 
-		if (VIEW_TYPE == TABBED_VIEW)
+		if (viewType == TABBED_VIEW)
 			networkViewComp = (Component) networkViewManager.getTabbedPane();
-		else if (VIEW_TYPE == INTERNAL_VIEW)
+		else if (viewType == INTERNAL_VIEW)
 			networkViewComp = (Component) networkViewManager.getDesktopPane();
-		else if (VIEW_TYPE == EXTERNAL_VIEW) {
+		else if (viewType == EXTERNAL_VIEW) {
 			// do nothing
 		}
 
