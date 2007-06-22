@@ -179,10 +179,10 @@ public class ArrowIcon extends VisualPropertyIcon {
 		}
 
 		if (newShape.getBounds2D().getWidth() > 5)
-			g2d.drawLine(c.getX() + DEF_L_PAD, (height + 20) / 2,
+			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
 			             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
 		else
-			g2d.drawLine(c.getX() + DEF_L_PAD, (height + 20) / 2,
+			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
 			             (int) (newShape.getBounds2D().getMinX()) - 2, (height + 20) / 2);
 
 		g2d.translate(-leftPad, -bottomPad);

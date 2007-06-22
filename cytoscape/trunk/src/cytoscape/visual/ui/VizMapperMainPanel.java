@@ -129,6 +129,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1020,18 +1021,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		VisualPropertyIcon newIcon;
 
 		List<Icon> iconList = new ArrayList<Icon>();
-		iconList.addAll(nodeShapeIcons.values());
-
+		final List<NodeShape> nodeShapes = new ArrayList<NodeShape>();
+		
+		for(Object key: nodeShapeIcons.keySet()) {
+			NodeShape shape = (NodeShape) key;
+			if(shape.isSupported()) {
+				iconList.add(nodeShapeIcons.get(key));
+				nodeShapes.add(shape);
+			}
+		}
 		Icon[] iconArray = new Icon[iconList.size()];
 		String[] shapeNames = new String[iconList.size()];
-		Set nodeShapes = nodeShapeIcons.keySet();
+		
 
 		for (int i = 0; i < iconArray.length; i++) {
 			newIcon = ((NodeIcon) iconList.get(i)).clone();
 			newIcon.setIconHeight(16);
 			newIcon.setIconWidth(16);
 			iconArray[i] = newIcon;
-			shapeNames[i] = newIcon.getName();
+			shapeNames[i] = nodeShapes.get(i).getShapeName();
 		}
 
 		shapeCellEditor.setAvailableValues(nodeShapes.toArray());
