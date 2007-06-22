@@ -32,11 +32,15 @@
 package org.mskcc.pathway_commons.task;
 
 // imports
+import org.mskcc.pathway_commons.cytoscape.MergeNetworkEdit;
+
 import cytoscape.CyNode;
+import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.undo.CyUndo;
 import cytoscape.data.readers.GraphReader;
 
 import java.net.URL;
@@ -125,7 +129,10 @@ public class MergeNetworkTask implements Task {
 
 			// unselect all nodes
 			cyNetwork.unselectAllNodes();
+
+			// refs to capture new nodes and edgets
 			Set<CyNode> newNodes = new HashSet<CyNode>();
+			Set<CyEdge> newEdges = new HashSet<CyEdge>();
 
 			// add new nodes and edges to existing network
 			// tbd: worry about networks that exceed # node/edge threshold
@@ -137,6 +144,7 @@ public class MergeNetworkTask implements Task {
 			}
 			for (int edge : edges) {
 				cyNetwork.addEdge(edge);
+				newEdges.add((CyEdge)Cytoscape.getRootGraph().getEdge(edge));
 			}
 
 			// execute any post processing -
@@ -145,6 +153,9 @@ public class MergeNetworkTask implements Task {
 
 			// select nodes
 			cyNetwork.setSelectedNodeState(newNodes, true);
+
+			// setup undo
+			CyUndo.getUndoableEditSupport().postEdit(new MergeNetworkEdit(cyNetwork, newNodes, newEdges));
 
 			// update the task monitor
 			taskMonitor.setStatus(getMergeStatus(cyNetwork, nodes.length, edges.length));
