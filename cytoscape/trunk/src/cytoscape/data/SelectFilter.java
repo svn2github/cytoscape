@@ -98,8 +98,9 @@ import java.util.Set;
  */
 public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	private GraphPerspective graph;
-	private Set<Node> selectedNodes = new HashSet<Node>();
-	private Set<Edge> selectedEdges = new HashSet<Edge>();
+	private final Set<Node> selectedNodes = new HashSet<Node>();
+	private final Set<Edge> selectedEdges = new HashSet<Edge>();
+	
 	private List listeners = new ArrayList();
 
 	/**
@@ -249,11 +250,11 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 */
 	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState) {
 		final Set<Node> returnSet = new HashSet<Node>();
-
-		if (nodesToSet == null) {
+		if (nodesToSet == null || nodesToSet.size() == 0) {
 			return returnSet;
 		}
-
+		
+		
 		if (newState == true) {
 			for (Node node : nodesToSet) {
 				if (!graph.containsNode(node)) {
@@ -279,7 +280,6 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 				fireEvent(returnSet, false);
 			}
 		}
-
 		return returnSet;
 	}
 
@@ -296,10 +296,11 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 *             giny.model.Edge objects
 	 */
 	public Set<Edge> setSelectedEdges(final Collection<Edge> edgesToSet, final boolean newState) {
-		final Set<Edge> returnSet = new HashSet<Edge>();
-
-		if (edgesToSet == null) {
-			return returnSet;
+		
+		final Set<Edge> edgeReturnSet = new HashSet<Edge>();
+		
+		if (edgesToSet == null || edgesToSet.size() == 0) {
+			return edgeReturnSet;
 		}
 
 		if (newState == true) {
@@ -309,98 +310,53 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 				}
 
 				if (selectedEdges.add(edge)) {
-					returnSet.add(edge);
+					edgeReturnSet.add(edge);
 				}
 			}
 
-			if (returnSet.size() > 0) {
-				fireEvent(returnSet, true);
+			if (edgeReturnSet.size() > 0) {
+				fireEvent(edgeReturnSet, true);
 			}
 		} else {
 			for (Edge edge : edgesToSet) {
 				if (selectedEdges.remove(edge)) {
-					returnSet.add(edge);
+					edgeReturnSet.add(edge);
 				}
 			}
 
-			if (returnSet.size() > 0) {
-				fireEvent(returnSet, false);
+			if (edgeReturnSet.size() > 0) {
+				fireEvent(edgeReturnSet, false);
 			}
 		}
-
-		return returnSet;
+		return edgeReturnSet;
 	}
 
 	/**
 	 * Sets the selected state to true for all Nodes in the GraphPerspective.
 	 */
 	public Set selectAllNodes() {
-		final Set<Node> changes = new HashSet<Node>();
-
-		for (Iterator i = graph.nodesIterator(); i.hasNext();) {
-			Node node = (Node) i.next();
-
-			if (selectedNodes.add(node)) {
-				changes.add(node);
-			}
-		}
-
-		if (changes.size() > 0) {
-			fireEvent(changes, true);
-		}
-
-		return changes;
+		return setSelectedNodes(graph.nodesList(), true);
 	}
 
 	/**
 	 * Sets the selected state to true for all Edges in the GraphPerspective.
 	 */
 	public Set selectAllEdges() {
-		final Set<Edge> changes = new HashSet<Edge>();
-
-		for (Iterator i = graph.edgesIterator(); i.hasNext();) {
-			Edge edge = (Edge) i.next();
-
-			if (selectedEdges.add(edge)) {
-				changes.add(edge);
-			}
-		}
-
-		if (changes.size() > 0) {
-			fireEvent(changes, true);
-		}
-
-		return changes;
+		return setSelectedEdges(graph.edgesList(), true);
 	}
 
 	/**
 	 * Sets the selected state to false for all Nodes in the GraphPerspective.
 	 */
 	public Set unselectAllNodes() {
-		if (selectedNodes.size() == 0) {
-			return new HashSet();
-		}
-
-		Set changes = new HashSet(selectedNodes);
-		selectedNodes.clear();
-		fireEvent(changes, false);
-
-		return changes;
+		return setSelectedNodes(graph.nodesList(), false);
 	}
 
 	/**
 	 * Sets the selected state to false for all Edges in the GraphPerspective.
 	 */
 	public Set unselectAllEdges() {
-		if (selectedEdges.size() == 0) {
-			return new HashSet();
-		}
-
-		Set changes = new HashSet(selectedEdges);
-		selectedEdges.clear();
-		fireEvent(changes, false);
-
-		return changes;
+		return setSelectedEdges(graph.edgesList(), false);
 	}
 
 	/**
@@ -417,10 +373,12 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 		if (event.isNodesHiddenType()) { // at least one node was hidden
 
 			Node[] hiddenNodes = event.getHiddenNodes();
-
-			for (int index = 0; index < hiddenNodes.length; index++) {
-				Node node = hiddenNodes[index];
-				boolean setChanged = selectedNodes.remove(node);
+			final int hNodesCount = hiddenNodes.length;
+			Node node;
+			boolean setChanged;
+			for (int index = 0; index <hNodesCount; index++) {
+				node = hiddenNodes[index];
+				setChanged = selectedNodes.remove(node);
 
 				if (setChanged) { // the hidden node was actually selected
 
@@ -454,10 +412,12 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 				root = ((GraphPerspective) eventSource).getRootGraph();
 
 			int[] indices = event.getHiddenEdgeIndices();
-
-			for (int index = 0; index < indices.length; index++) {
-				Edge edge = root.getEdge(indices[index]);
-				boolean setChanged = selectedEdges.remove(edge);
+			final int eLength = indices.length;
+			Edge edge;
+			boolean setChanged;
+			for (int index = 0; index < eLength; index++) {
+				edge = root.getEdge(indices[index]);
+				setChanged = selectedEdges.remove(edge);
 
 				if (setChanged) { // the hidden edge was actually selected
 

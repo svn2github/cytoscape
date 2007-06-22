@@ -84,7 +84,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	/**
 	 * The default object to set the selected state of nodes and edges
 	 */
-	protected SelectFilter selectFilter;
+	protected final SelectFilter selectFilter;
 
 	//TODO: remove
 	int activityCount = 0;
@@ -105,6 +105,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	                     IntIterator rootGraphEdgeInx) {
 		super(root, rootGraphNodeInx, rootGraphEdgeInx);
 		initialize();
+		selectFilter = new SelectFilter(this);
 	}
 
 	protected void initialize() {
@@ -112,9 +113,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 		Integer i = new Integer(uid_counter);
 		identifier = i.toString();
 		uid_counter++;
-
 		clientData = new HashMap();
-		selectFilter = new SelectFilter(this);
 	}
 
 	/**
