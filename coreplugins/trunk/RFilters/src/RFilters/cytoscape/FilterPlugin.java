@@ -68,8 +68,8 @@ public class FilterPlugin extends CytoscapeAction {
 		this.putValue(Action.SHORT_DESCRIPTION, "Use Filters");
 		this.csfilter = csfilter;
 		setPreferredMenu("Select");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_A,
-		                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
+		//setAcceleratorCombo(java.awt.event.KeyEvent.VK_A,
+		//                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
 	}
 
 	/**
