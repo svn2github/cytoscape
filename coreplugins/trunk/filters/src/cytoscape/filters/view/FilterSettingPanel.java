@@ -107,13 +107,12 @@ public class FilterSettingPanel extends JPanel {
 				if (theAtomicVect.elementAt(i) == null) {
 					return;
 				}
-				System.out.println("theAtomicVect.elementAt(" + i + ") is instance of NumericFilter");
-				System.out.println("theAtomicVect.elementAt(i) = "+theAtomicVect.elementAt(i).toString());
 				
 				NumericFilter theNumericFilter = (NumericFilter) theAtomicVect.elementAt(i);
 				
 				int componentIndex = i*3 +1;
 				JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(componentIndex);
+
 				NumberRangeModel rangeModel = (NumberRangeModel) theSlider.getModel();
 								
 				final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
@@ -138,7 +137,7 @@ public class FilterSettingPanel extends JPanel {
 						// slider not shown on screen yet
 						System.out.println("restoreRangeSliderModel(): slider not shown on screen yet ");			
 					}			
-			}
+			}// for loop
 		}
 
 	}
@@ -206,16 +205,22 @@ public class FilterSettingPanel extends JPanel {
 	private JRangeSliderExtended createRangerSlider(NumericFilter pNumericFilter) {
 		
 		NumberIndex theIndex = createNumberIndex(pNumericFilter);
-		
-		//Initialize the search values, lowValue and highValue
-		pNumericFilter.setLowValue(theIndex.getMinimumValue().toString());
-		pNumericFilter.setHighValue(theIndex.getMinimumValue().toString());
-		
-		NumberRangeModel rangeModel = new NumberRangeModel
-				(theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMaximumValue());
+
+		NumberRangeModel rangeModel = null;
+		if (theIndex == null) {
+			rangeModel = new NumberRangeModel(0,0,0,0);			
+		}
+		else {
+			//Initialize the search values, lowValue and highValue	
+			pNumericFilter.setLowValue(theIndex.getMinimumValue().toString());
+			pNumericFilter.setHighValue(theIndex.getMaximumValue().toString());
+				
+			rangeModel = new NumberRangeModel
+						(theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMaximumValue());						
+		}
 		
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
-                JRangeSlider.LEFTRIGHT_TOPBOTTOM);
+	                JRangeSlider.LEFTRIGHT_TOPBOTTOM);		
 				
 		rangeSlider.setMinimumSize(new Dimension(100,20));
 		rangeSlider.setPreferredSize(new Dimension(100,20));
@@ -260,7 +265,8 @@ public class FilterSettingPanel extends JPanel {
 	        pnlCustomSettings.add(getTextIndexComboBox(pAtomicFilter), gridBagConstraints);		
 		}
 		else if (pAtomicFilter instanceof NumericFilter) {
-			pnlCustomSettings.add(createRangerSlider((NumericFilter) pAtomicFilter), gridBagConstraints);		
+			JRangeSliderExtended theSlider = createRangerSlider((NumericFilter) pAtomicFilter);
+			pnlCustomSettings.add(theSlider, gridBagConstraints);						
 		}
 		
 		//Col 3 ---> label (a trash can) for delete of the row
@@ -428,9 +434,7 @@ public class FilterSettingPanel extends JPanel {
 		public void stateChanged(ChangeEvent e) {
 
 			//Update theFilter object if the slider is adjusted
-			System.out.println("FilterSettingPanel.stateChanged() ...");
-			
-			System.out.println("Before: theFilter.toString() = \n" + theFilter.toString());
+			//System.out.println("FilterSettingPanel.stateChanged() ...");
 			
 			Vector<AtomicFilter> theAtomicFilterVect = theFilter.getAtomicFilterVect();
 			
@@ -447,14 +451,13 @@ public class FilterSettingPanel extends JPanel {
 				theSearchValues[1] = model.getHighValue().toString();
 				theNumericFilter.setSearchValues(theSearchValues);
 				
-				model.setLowValue(theNumericFilter.getLowValue());
-				model.setHighValue(theNumericFilter.getHighValue());								
+				//model.setLowValue(theNumericFilter.getLowValue());
+				//model.setHighValue(theNumericFilter.getHighValue());								
 			}
 			catch (Exception ex) {
 				//NullPointerException caught -- the slider is not initialized yet								
 				System.out.println("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
 			}	
-			System.out.println("After: theFilter.toString() = \n" + theFilter.toString());
 
 		}
 	}
@@ -468,6 +471,9 @@ public class FilterSettingPanel extends JPanel {
 				pNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
 
 		GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
+		if (currentIndex == null|| !(currentIndex instanceof NumberIndex)) {
+			return null;
+		}
 		return (NumberIndex) currentIndex;
 	}
 		
