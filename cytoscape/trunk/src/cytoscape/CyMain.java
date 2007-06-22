@@ -99,15 +99,12 @@ public class CyMain implements CyInitParams {
 			 * By kono 4/2/2007
 			 * Fix Application name for Mac.
 			 */
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name",
-			                   "Cytoscape 2.5 Beta");
-			System.setProperty("apple.awt.brushMetalRounded",
-            "true");
-			System.setProperty("apple.awt.antialiasing",
-            "on");
-			
-			System.setProperty("apple.awt.rendering",
-            "VALUE_RENDER_SPEED");
+			final CytoscapeVersion ver = new CytoscapeVersion();
+			final String version = ver.getVersion();
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", version);
+			System.setProperty("apple.awt.brushMetalRounded", "true");
+			System.setProperty("apple.awt.antialiasing", "on");
+			System.setProperty("apple.awt.rendering", "VALUE_RENDER_SPEED");
 		}
 
 		CyMain app = new CyMain(args);
@@ -265,6 +262,7 @@ public class CyMain implements CyInitParams {
 				 * For Unix platforms, use JGoodies Looks
 				 */
 				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+				//				UIManager.setLookAndFeel(new NimbusLookAndFeel());
 				Plastic3DLookAndFeel.set3DEnabled(true);
 				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
 				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
