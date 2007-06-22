@@ -141,7 +141,7 @@ public class MergeNetworkEdit extends CyAbstractEdit {
 				cyNetwork.restoreEdge(cyEdge);
 			}
 
-			// re-layout ?
+			// do we perform layout here ?
 		}
 
 		// fire Cytoscape.NETWORK_MODIFIED
