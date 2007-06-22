@@ -18,6 +18,8 @@ import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInquireAction;
 import cytoscape.plugin.PluginTracker.PluginStatus;
 
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 
 import org.jdesktop.layout.GroupLayout;
@@ -103,7 +105,20 @@ public class PluginUrlDialog extends JDialog {
 		dispose();
 
 		PluginManager Mgr = PluginManager.getPluginManager();
-		Mgr.runThreadedInquiry(SelectedSite.getHref(), new UrlAction(parentDialog, SelectedSite.getHref()));
+		
+		cytoscape.task.Task task = Mgr.getInquireTask
+			(SelectedSite.getHref(), new UrlAction(parentDialog, SelectedSite.getHref()));
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+		jTaskConfig.displayCancelButton(true);
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+		
+		
 		parentDialog.setSiteName(SelectedSite.getName());
 	}
 

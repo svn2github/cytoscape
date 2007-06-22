@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.task.ui.JTaskConfig;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.dialogs.plugins.PluginUpdateDialog;
@@ -38,8 +39,17 @@ public class PluginUpdateAction extends CytoscapeAction {
 			// Find updates
 			for (PluginInfo Current : Mgr.getPlugins(PluginStatus.CURRENT)) {
 
+			// Configure JTask Dialog Pop-Up Box
+			JTaskConfig jTaskConfig = new JTaskConfig();
+			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.displayCloseButton(false);
+			jTaskConfig.displayStatus(true);
+			jTaskConfig.setAutoDispose(true);
+			jTaskConfig.displayCancelButton(true);
+
+				
 				try {
-					List<PluginInfo> Updates = Mgr.findUpdates(Current);
+					List<PluginInfo> Updates = Mgr.findUpdates(Current, jTaskConfig);
 					if (Updates.size() > 0) {
 						Dialog.addCategory(Current.getCategory(), Current,
 								Updates);

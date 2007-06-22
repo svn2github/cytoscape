@@ -59,6 +59,8 @@ import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginTracker.PluginStatus;
 
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CytoscapeAction;
 
@@ -117,10 +119,25 @@ public class PluginManagerAction extends CytoscapeAction {
 					PluginInstallStatus.INSTALLED);
 		}
 
-		Mgr.runThreadedInquiry(DefaultUrl, new ManagerAction(dialog,
-				DefaultTitle, DefaultUrl));
+		cytoscape.task.Task task = Mgr.getInquireTask(DefaultUrl, new ManagerAction(dialog, DefaultTitle, DefaultUrl));
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+		jTaskConfig.displayCancelButton(true);
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+		
+//		Mgr.runThreadedInquiry(DefaultUrl, new ManagerAction(dialog,
+//				DefaultTitle, DefaultUrl));
 	}
 
+	
+
+	
+	
 	private class ManagerAction extends PluginInquireAction {
 
 		private PluginManageDialog dialog;

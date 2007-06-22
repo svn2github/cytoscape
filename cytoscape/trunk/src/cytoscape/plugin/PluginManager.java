@@ -44,6 +44,8 @@ import cytoscape.util.ZipUtil;
 import cytoscape.util.IndeterminateProgressBar;
 import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -125,14 +127,14 @@ public class PluginManager {
 	public static boolean usingWebstartManager() {
 		return usingWebstart;
 	}
-	
+
 	/**
-	 * Deletes everything under the webstart install directory.  Nothing in here
+	 * Deletes everything under the webstart install directory. Nothing in here
 	 * should stick around.
 	 * 
 	 * @return True if all files deleted successfully
 	 */
-	protected boolean removeWebstartInstalls() { 
+	protected boolean removeWebstartInstalls() {
 		return recursiveDeleteFiles(tempDir.getParentFile());
 	}
 
@@ -207,18 +209,24 @@ public class PluginManager {
 		setWebstart();
 		try {
 			String trackerFileName = "track_plugins.xml";
-			
+
 			if (tempDir == null) {
 				if (usingWebstartManager()) {
-					tempDir = new File(CytoscapeInit.getConfigDirectory(), "webstart" + File.separator + CytoscapeVersion.version + File.separator + "plugins");; 
+					tempDir = new File(CytoscapeInit.getConfigDirectory(),
+							"webstart" + File.separator
+									+ CytoscapeVersion.version + File.separator
+									+ "plugins");
+					;
 					trackerFileName = "track_webstart_plugins.xml";
-				} else {				
-					tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
+				} else {
+					tempDir = new File(CytoscapeInit
+							.getConfigVersionDirectory(), "plugins");
 				}
 			}
 
 			if (!tempDir.exists()) {
-				System.err.println("Creating directories for " + tempDir.getAbsolutePath());
+				System.err.println("Creating directories for "
+						+ tempDir.getAbsolutePath());
 				if (!tempDir.mkdirs()) {
 					Cytoscape.exit(-1);
 				}
@@ -227,7 +235,8 @@ public class PluginManager {
 			if (Tracker != null) {
 				pluginTracker = Tracker;
 			} else {
-				pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
+				pluginTracker = new PluginTracker(tempDir.getParentFile(),
+						trackerFileName);
 			}
 		} catch (java.io.IOException E) {
 			E.printStackTrace(); // TODO do something useful with error
@@ -265,16 +274,21 @@ public class PluginManager {
 	}
 
 	/**
-	 * Runs the {@link PluginManager#inquire(String)} method in a seperate thread.
-	 * The given Action object defines what is done with the results.
+	 * Runs the {@link PluginManager#inquire(String)} method in a seperate
+	 * thread. The given Action object defines what is done with the results.
+	 * 
 	 * @param Url
 	 * @param Action
 	 * @throws IOException
 	 * @throws org.jdom.JDOMException
 	 */
-	public void runThreadedInquiry(String Url, PluginInquireAction Action) {
-		Thread t = new Thread( new InquireRunnable(Url, Action) );
-		t.run();
+//	public void runThreadedInquiry(String Url, PluginInquireAction Action) {
+//		InquireTask task = new InquireTask(Url, Action);
+//		
+//	}
+
+	public InquireTask getInquireTask(String Url, PluginInquireAction Action) {
+		return new InquireTask(Url, Action);
 	}
 	
 	
@@ -294,7 +308,7 @@ public class PluginManager {
 				InfoObj.setName(Plugin.getClass().getName());
 				InfoObj.setPluginClassName(Plugin.getClass().getName());
 				InfoObj.setInstallLocation(JarFileName);
-				
+
 				if (JarFileName != null)
 					InfoObj.addFileName(JarFileName);
 			} else {
@@ -309,14 +323,16 @@ public class PluginManager {
 			nfe.printStackTrace();
 		} finally {
 			if (InfoObj != null) {
-	   			initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
-	   			// I think we can safely assume it's a jar file if it's registering
-	   			// since only CytoscapePlugin registers and at that point all we
-	   			// know is it's a jar
-	   			if (InfoObj.getFileType() == null) {
-	   				InfoObj.setFiletype(PluginInfo.FileType.JAR);
-	   			}
-	   			pluginTracker.addPlugin(InfoObj, PluginTracker.PluginStatus.CURRENT);
+				initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
+				// I think we can safely assume it's a jar file if it's
+				// registering
+				// since only CytoscapePlugin registers and at that point all we
+				// know is it's a jar
+				if (InfoObj.getFileType() == null) {
+					InfoObj.setFiletype(PluginInfo.FileType.JAR);
+				}
+				pluginTracker.addPlugin(InfoObj,
+						PluginTracker.PluginStatus.CURRENT);
 			}
 		}
 	}
@@ -348,8 +364,9 @@ public class PluginManager {
 	public void install(PluginInfo obj) {
 		pluginTracker.removePlugin(obj, PluginTracker.PluginStatus.INSTALL);
 		pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.CURRENT);
-		
-		if (usingWebstartManager()) { // mark all webstart-installed plugins for deletion 
+
+		if (usingWebstartManager()) { // mark all webstart-installed plugins
+										// for deletion
 			pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.DELETE);
 		}
 	}
@@ -369,9 +386,9 @@ public class PluginManager {
 	 * occur at start up, CytoscapeInit should be the only class to call this.
 	 * 
 	 * @throws ManagerException
-	 * 				If all files fail to delete
+	 *             If all files fail to delete
 	 * @throws WebstartException
-	 * 				If this method is called from a webstart instance 
+	 *             If this method is called from a webstart instance
 	 */
 	public void delete() throws ManagerException {
 		String ErrorMsg = "Failed to delete all files for the following plugins:\n";
@@ -412,36 +429,38 @@ public class PluginManager {
 	// removes the plugin, all files in it's install location will be removed
 	private boolean deletePlugin(PluginInfo info) {
 		boolean Deleted = false;
-		if (info.getInstallLocation() != null && info.getInstallLocation().length() > 0) {
+		if (info.getInstallLocation() != null
+				&& info.getInstallLocation().length() > 0) {
 			File Installed = new File(info.getInstallLocation());
 			Deleted = recursiveDeleteFiles(Installed);
 		} else {
-			for (String f: info.getFileList()) {
+			for (String f : info.getFileList()) {
 				Deleted = (new File(f)).delete();
 			}
 		}
 		return Deleted;
 	}
 
-    private boolean recursiveDeleteFiles(File file) {
-        if (file.isDirectory())
-            for (File f : file.listFiles()) 
-                recursiveDeleteFiles(f);
+	private boolean recursiveDeleteFiles(File file) {
+		if (file.isDirectory())
+			for (File f : file.listFiles())
+				recursiveDeleteFiles(f);
 
-		System.out.println(" recursive deleting file "+ file.getAbsolutePath());
+		System.out
+				.println(" recursive deleting file " + file.getAbsolutePath());
 		boolean del = file.delete();
 
 		// Utterly f*#king retarded, but apparently necessary since sometimes
 		// directories don't realize they're empty...
-		if ( !del ) {
-			for ( int i = 0; i < 1000 && file.exists(); i++ ) {
+		if (!del) {
+			for (int i = 0; i < 1000 && file.exists(); i++) {
 				System.gc();
 				del = file.delete();
 			}
 		}
 
 		return del;
-    }
+	}
 
 	private void checkWebstart() throws WebstartException {
 		if (usingWebstart) {
@@ -449,6 +468,12 @@ public class PluginManager {
 		}
 	}
 
+	
+	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException,
+	org.jdom.JDOMException {
+		return findUpdates(Plugin, null);
+	}
+	
 	/**
 	 * Get list of plugins that would update the given plugin.
 	 * 
@@ -456,7 +481,7 @@ public class PluginManager {
 	 * @return List<PluginInfo>
 	 * @throws ManagerException
 	 */
-	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException,
+	public List<PluginInfo> findUpdates(PluginInfo Plugin, JTaskConfig jTaskConfig) throws IOException,
 			org.jdom.JDOMException {
 		final List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
 		final Set<PluginInfo> Seen = new HashSet<PluginInfo>();
@@ -470,16 +495,18 @@ public class PluginManager {
 		final PluginInfo PluginToUpdate = Plugin;
 		final List<Exception> Exceptions = new ArrayList<Exception>();
 
-		runThreadedInquiry(Plugin.getDownloadUrl(), new PluginInquireAction() {
-			
+		
+		InquireTask task = new InquireTask(Plugin.getDownloadUrl(), new PluginInquireAction() {
+
 			public boolean displayProgressBar() {
 				return true;
 			}
-			
+
 			public String getProgressBarMessage() {
-				return "Connecting to " + PluginToUpdate.getDownloadUrl() + " to search for updates...";
+				return "Connecting to " + PluginToUpdate.getDownloadUrl()
+						+ " to search for updates...";
 			}
-			
+
 			public void inquireAction(List<PluginInfo> Results) {
 
 				if (isExceptionThrown()) {
@@ -487,7 +514,6 @@ public class PluginManager {
 					Exceptions.add(1, getJDOMException());
 				}
 
-				
 				for (PluginInfo New : Results) {
 					if (New.getID().equals(PluginToUpdate.getID())
 							&& PluginToUpdate.isNewerPluginVersion(New)) {
@@ -500,7 +526,10 @@ public class PluginManager {
 				}
 			}
 		});
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, null);
 
+		
 		if (Exceptions.size() > 0) {
 			if (Exceptions.get(0) != null) {
 				throw (java.io.IOException) Exceptions.get(0);
@@ -509,7 +538,7 @@ public class PluginManager {
 				throw (org.jdom.JDOMException) Exceptions.get(1);
 			}
 		}
-		
+
 		return UpdatablePlugins;
 	}
 
@@ -561,7 +590,8 @@ public class PluginManager {
 		if (Current.getID().equals(New.getID())
 				&& Current.getDownloadUrl().equals(New.getDownloadUrl())
 				&& Current.isNewerPluginVersion(New)) {
-			//pluginTracker.addPlugin(Current, PluginTracker.PluginStatus.DELETE);
+			// pluginTracker.addPlugin(Current,
+			// PluginTracker.PluginStatus.DELETE);
 			delete(Current);
 			download(New, taskMonitor);
 		} else {
@@ -603,7 +633,7 @@ public class PluginManager {
 
 		File PluginDir = new File(tempDir, Obj.getName() + "-"
 				+ Obj.getPluginVersion());
-		
+
 		if (!PluginDir.exists()) {
 			PluginDir.mkdirs();
 		}
@@ -613,8 +643,8 @@ public class PluginManager {
 		Download = new File(PluginDir, createFileName(Obj));
 		URLUtil.download(Obj.getUrl(), Download, taskMonitor);
 
-		ClassName = getPluginClass(Download.getAbsolutePath(), 
-				Obj.getFileType());
+		ClassName = getPluginClass(Download.getAbsolutePath(), Obj
+				.getFileType());
 
 		if (ClassName != null) {
 			Obj.setPluginClassName(ClassName);
@@ -652,8 +682,9 @@ public class PluginManager {
 
 	/**
 	 * Load a single plugin based on the PluginInfo object given
+	 * 
 	 * @param PluginInfo
-	 * 			The plugin to load
+	 *            The plugin to load
 	 * @throws MalformedURLException
 	 */
 	public void loadPlugin(PluginInfo p) throws MalformedURLException,
@@ -743,13 +774,13 @@ public class PluginManager {
 		cleanCurrentList();
 	}
 
-	
 	/**
 	 * Load all plugins by using the given URLs loading them all on one
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
 	 */
-	private void loadURLPlugins(Set<URL> pluginUrls, boolean register) throws IOException {
+	private void loadURLPlugins(Set<URL> pluginUrls, boolean register)
+			throws IOException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
@@ -828,7 +859,8 @@ public class PluginManager {
 		System.out.println("");
 	}
 
-	// these are jars that *may or may not* extend CytoscapePlugin but may be used by jars
+	// these are jars that *may or may not* extend CytoscapePlugin but may be
+	// used by jars
 	// that do
 	private void loadResourcePlugins(Set<String> resourcePlugins)
 			throws ClassNotFoundException {
@@ -961,38 +993,56 @@ public class PluginManager {
 		return Value;
 	}
 
-	private class InquireRunnable implements Runnable {
+	private class InquireTask implements cytoscape.task.Task {
+
 		private String url;
+
 		private PluginInquireAction actionObj;
-		
-		public InquireRunnable(String Url, PluginInquireAction Obj) {
+
+		private cytoscape.task.TaskMonitor taskMonitor;
+
+		public InquireTask(String Url, PluginInquireAction Obj) {
 			url = Url;
 			actionObj = Obj;
+			
+			System.out.println("Creating inquire task with object " + actionObj);
+			
 		}
-		
+
+		public void setTaskMonitor(TaskMonitor monitor)
+				throws IllegalThreadStateException {
+			taskMonitor = monitor;
+		}
+
+		public void halt() {
+			// not implemented
+		}
+
+		public String getTitle() {
+			return "Attempting to connect to " + url;
+		}
+
 		public void run() {
 			List<PluginInfo> Results = null;
-			IndeterminateProgressBar Bar = null;
 
-			if (actionObj.displayProgressBar()) {
-				Bar = actionObj.getProgressBar();
-				Bar.setVisible(true);
-			}
+			taskMonitor.setStatus( actionObj.getProgressBarMessage() );
+			taskMonitor.setPercentCompleted(-1);
 			
 			try {
 				Results = PluginManager.this.inquire(url);
 			} catch (Exception e) {
+				taskMonitor.setException(e, "Failed to read XML");
+
 				if (e.getClass().equals(java.lang.NullPointerException.class)) {
-					e = new org.jdom.JDOMException("XML was incorrectly formed", e);
+					e = new org.jdom.JDOMException(
+							"XML was incorrectly formed", e);
 				}
 				actionObj.setExceptionThrown(e);
+			} finally {
+				taskMonitor.setPercentCompleted(100);
+				actionObj.inquireAction(Results);
 			}
-			if (actionObj.displayProgressBar()) {
-				Bar.setVisible(false);
-			}
-			actionObj.inquireAction(Results);
 		}
 	}
 
-	
 }
