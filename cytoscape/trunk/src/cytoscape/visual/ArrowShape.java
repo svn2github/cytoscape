@@ -71,9 +71,9 @@ public enum ArrowShape {
 	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}),
 
 	// Not yet implemented
-	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1,
-	     new int[]{-1},
-		 new String[]{""}),
+	//	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1,
+	//	     new int[]{-1},
+	//		 new String[]{""}),
 	;
 
 

@@ -1047,7 +1047,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		iconList.clear();
 		iconList.addAll(arrowShapeIcons.values());
-
 		iconArray = new Icon[iconList.size()];
 
 		String[] arrowNames = new String[iconList.size()];
@@ -1056,7 +1055,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		for (int i = 0; i < iconArray.length; i++) {
 			newIcon = ((ArrowIcon) iconList.get(i));
 			newIcon.setIconHeight(16);
-			newIcon.setIconWidth(16);
+			newIcon.setIconWidth(40);
+			newIcon.setBottomPadding(-9);
 			iconArray[i] = newIcon;
 			arrowNames[i] = newIcon.getName();
 		}

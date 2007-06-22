@@ -122,11 +122,18 @@ public class ArrowIcon extends VisualPropertyIcon {
 		 * If shape is not defined, treat as no-head.
 		 */
 		if (shape == null) {
-			g2d.setStroke(EDGE_STROKE);
-			g2d.drawLine(c.getX() + DEF_L_PAD, (height + 20) / 2, (int) (width * 0.95),
-			             (height + 20) / 2);
+			if ((width < 30) || (height < 30)) {
+				g2d.translate(-leftPad, -bottomPad);
+				g2d.setStroke(EDGE_STROKE_SMALL);
+				g2d.drawLine(3, c.getHeight()/2,
+			             width/2 +10, c.getHeight()/2);
+				return;
+			} else {
+				g2d.setStroke(EDGE_STROKE);
+				g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
+			             (int) (c.getWidth()*0.3), (height + 20) / 2);
+			}
 			g2d.translate(-leftPad, -bottomPad);
-
 			return;
 		}
 
@@ -173,18 +180,32 @@ public class ArrowIcon extends VisualPropertyIcon {
 		 * Finally, draw an edge (line) to the arrow head.
 		 */
 		if ((width < 30) || (height < 30)) {
-			g2d.setStroke(EDGE_STROKE_SMALL);
+//			g2d.setStroke(EDGE_STROKE_SMALL);
+//			
+//			System.out.println("==== Small icon height = " + height +", " + c.getHeight());
+//			
+//			
+//			g2d.drawLine(3, c.getHeight()/2,
+//		             width/2, c.getHeight()/2);
 		} else {
 			g2d.setStroke(EDGE_STROKE);
+			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
+		             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
 		}
 
-		if (newShape.getBounds2D().getWidth() > 5)
-			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
-			             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
-		else
-			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
-			             (int) (newShape.getBounds2D().getMinX()) - 2, (height + 20) / 2);
+//		if (newShape.getBounds2D().getWidth() > 20)
+//			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
+//			             (int) (newShape.getBounds2D().getCenterX()) - 2, (height + 20) / 2);
+//		else
+//			g2d.drawLine(DEF_L_PAD, (height + 20) / 2,
+//			             (int) (newShape.getBounds2D().getMinX()) - 2, (height + 20) / 2);
 
 		g2d.translate(-leftPad, -bottomPad);
+		
+		if ((width < 30) || (height < 30)) {
+			g2d.setStroke(EDGE_STROKE_SMALL);
+			g2d.drawLine(3, c.getHeight()/2,
+		             width/2 +10, c.getHeight()/2);
+		}
 	}
 }
