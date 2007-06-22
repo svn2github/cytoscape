@@ -63,10 +63,10 @@ public class FilterMenuItem extends CytoscapeAction {
 	 * @param csfilter  DOCUMENT ME!
 	 */
 	public FilterMenuItem(ImageIcon icon, CsFilter csfilter) {
-		super("Use Filters", icon);
+		super("Use Old Filters", icon);
 		this.csfilter = csfilter;
 		setPreferredMenu("Select");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_F7, 0);
+		//setAcceleratorCombo(java.awt.event.KeyEvent.VK_F7, 0);
 	}
 
 	/**
