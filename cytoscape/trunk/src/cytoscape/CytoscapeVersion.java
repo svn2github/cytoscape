@@ -79,7 +79,7 @@ public class CytoscapeVersion {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getVersion() {
-		return "Cytoscape version: " + version;
+		return "Cytoscape Version " + version;
 	}
 
 	/**
