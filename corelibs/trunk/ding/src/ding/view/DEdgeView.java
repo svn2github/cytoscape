@@ -598,75 +598,75 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				case WHITE_DELTA:
 				case WHITE_ARROW:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					setSourceEdgeEndPaint(Color.white);
+					//setSourceEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_DELTA:
 				case BLACK_ARROW:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					setSourceEdgeEndPaint(Color.black);
+					//setSourceEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_DELTA:
 				case EDGE_COLOR_ARROW:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					setSourceEdgeEndPaint(getUnselectedPaint());
+					//setSourceEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_DIAMOND:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					setSourceEdgeEndPaint(Color.white);
+					//setSourceEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_DIAMOND:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					setSourceEdgeEndPaint(Color.black);
+					//setSourceEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_DIAMOND:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					setSourceEdgeEndPaint(getUnselectedPaint());
+					//setSourceEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_CIRCLE:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-					setSourceEdgeEndPaint(Color.white);
+					//setSourceEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_CIRCLE:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-					setSourceEdgeEndPaint(Color.black);
+					//setSourceEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_CIRCLE:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-					setSourceEdgeEndPaint(getUnselectedPaint());
+					//setSourceEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_T:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-					setSourceEdgeEndPaint(Color.white);
+					//setSourceEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_T:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-					setSourceEdgeEndPaint(Color.black);
+					//setSourceEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_T:
 					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-					setSourceEdgeEndPaint(getUnselectedPaint());
+					//setSourceEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
@@ -696,75 +696,75 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				case WHITE_DELTA:
 				case WHITE_ARROW:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					setTargetEdgeEndPaint(Color.white);
+					//setTargetEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_DELTA:
 				case BLACK_ARROW:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					setTargetEdgeEndPaint(Color.black);
+					//setTargetEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_DELTA:
 				case EDGE_COLOR_ARROW:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					setTargetEdgeEndPaint(getUnselectedPaint());
+					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_DIAMOND:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					setTargetEdgeEndPaint(Color.white);
+					//setTargetEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_DIAMOND:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					setTargetEdgeEndPaint(Color.black);
+					//setTargetEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_DIAMOND:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					setTargetEdgeEndPaint(getUnselectedPaint());
+					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_CIRCLE:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					setTargetEdgeEndPaint(Color.white);
+					//setTargetEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_CIRCLE:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					setTargetEdgeEndPaint(Color.black);
+					//setTargetEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_CIRCLE:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					setTargetEdgeEndPaint(getUnselectedPaint());
+					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
 				case WHITE_T:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					setTargetEdgeEndPaint(Color.white);
+					//setTargetEdgeEndPaint(Color.white);
 
 					break;
 
 				case BLACK_T:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					setTargetEdgeEndPaint(Color.black);
+					//setTargetEdgeEndPaint(Color.black);
 
 					break;
 
 				case EDGE_COLOR_T:
 					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					setTargetEdgeEndPaint(getUnselectedPaint());
+					//setTargetEdgeEndPaint(getUnselectedPaint());
 
 					break;
 
