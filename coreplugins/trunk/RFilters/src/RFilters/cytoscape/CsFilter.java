@@ -37,7 +37,6 @@
 package filter.cytoscape;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
 
 import cytoscape.data.*;
 
@@ -75,6 +74,31 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 	public CsFilter() {
 		initialize();
 	}
+
+	
+    public PluginInfo getPluginInfoObject() {
+        PluginInfo infoObj = new PluginInfo();
+        infoObj.setName("Old Filter Plugin");
+        infoObj.setDescription("Old Filters");
+        infoObj.setPluginVersion(0.1);
+        
+        /* The above  methods are the only required ones and will be set to default values
+         * if not set by the plugin developer.  The following methods may be set or not
+         * as the developer chooses. */
+
+        /* This method sets the site describing plugins available for install/update
+         * Set this ONLY if you do not intend to submit this plugin to http://cytoscape.org and
+         * will instead create your own download site.
+         * This is required for automatic updating of plugins. */         
+       // infoObj.setProjectUrl(http://my-project/update-site/plugins.xml);
+
+         // compatible Cytoscape version
+         infoObj.setCytoscapeVersion("2.5");
+         // set to “Unknown” by default
+         infoObj.setCategory(PluginInfo.Category.CORE);
+    
+         return infoObj;
+    }
 
 	/**
 	 *  DOCUMENT ME!
@@ -143,19 +167,19 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 		                                    .getResource("/stock_filter-data-by-criteria-16.png"));
 
 		// 
-		FilterPlugin action = new FilterPlugin(icon, this);
+		//FilterPlugin action = new FilterPlugin(icon, this);
 		FilterMenuItem menu_action = new FilterMenuItem(icon2, this);
 		//Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) menu_action);
 
-		CytoscapeDesktop desktop = Cytoscape.getDesktop();
-		CyMenus cyMenus = desktop.getCyMenus();
-		CytoscapeToolBar toolBar = cyMenus.getToolBar();
-		JButton button = new JButton(icon);
-		button.addActionListener(action);
-		button.setToolTipText("Create and apply filters");
-		button.setBorderPainted(false);
-		toolBar.add(button);
+		//CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		//CyMenus cyMenus = desktop.getCyMenus();
+		//CytoscapeToolBar toolBar = cyMenus.getToolBar();
+		//JButton button = new JButton(icon);
+		//button.addActionListener(action);
+		//button.setToolTipText("Create and apply filters");
+		//button.setBorderPainted(false);
+		//toolBar.add(button);
 
 		FilterEditorManager.defaultManager().addEditor(new NumericAttributeFilterEditor());
 		FilterEditorManager.defaultManager().addEditor(new StringPatternFilterEditor());
