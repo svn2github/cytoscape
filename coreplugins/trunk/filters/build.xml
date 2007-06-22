@@ -10,12 +10,7 @@
  <!-- The java source directory-->
  <property name="src.dir"      value="${basedir}/src"/>
 
- <!-- The lib directory -->
- <!-- Contains all third-party JAR files, required for compilation -->
- <property name="lib.dir"       value="lib"/>
-
- <!-- The dist directory -->
- <property name="dist.dir"    value="${basedir}/dist"/>
+ <property name="project.jar"    value="filters.jar"/>
 
  <!--  ============ Compilation Control Options ======================= -->
  <property name="compile.debug"       value="true"/>
@@ -25,9 +20,6 @@
 
  <!-- ==================== Compilation Classpath ====================== -->
  <path id="compile.classpath">
-  <fileset dir="${lib.dir}">
-   <include name="*.jar"/>
-  </fileset>
   <!--
   <fileset dir="${cytoscape.dir}/lib">
    <include name="*.jar"/>
@@ -42,7 +34,7 @@
  <target name="clean"
         description="Deletes all build files and starts fresh">
   <delete dir="${build.dir}"/>
-  <delete dir="${dist.dir}"/>
+  <delete file="${project.jar}"/>
  </target>
 
  <!-- ==================== Compile Target ==============================-->
@@ -63,8 +55,8 @@
  <!-- ==================== Jar Target ============================== -->
  <target name="jar" 
          depends="compile"
-         description="Creates Plugin Jar:  filters.jar">
-  <jar destfile="${dist.dir}/filters.jar"
+         description="Creates Plugin Jar:  ${project.jar}">
+  <jar destfile="${project.jar}"
        basedir="${build.dir}/classes">
    <manifest>
     <attribute name="Cytoscape-Plugin" 
@@ -74,13 +66,12 @@
  </target>
 
  <!-- ==================== Build and test jar ============================== -->
- <target name="all" depends="jar,test"/>
+ <target name="all" depends="jar"/>
 
  <!-- ==================== Prepare Target ============================== -->
  <target name="prepare">
   <!-- Create build directories as needed -->
   <mkdir  dir="${build.dir}"/>
-  <mkdir  dir="${dist.dir}"/>
   <mkdir  dir="${build.dir}/classes"/>
   <!--  Copy over images / icons -->
   <copy todir="${build.dir}/classes">
@@ -100,7 +91,7 @@
          haltonfailure="yes">
    <formatter type="plain" 
               usefile="false"/>
-   <test name="csplugins.test.AllTest"/>
+   <test name="cytoscape.test.AllTest"/>
    <classpath refid="compile.classpath"/>
   </junit>
  </target>
