@@ -135,7 +135,7 @@ public class FilterSettingPanel extends JPanel {
 					}
 					catch (Exception e) {
 						// slider not shown on screen yet
-						System.out.println("restoreRangeSliderModel(): slider not shown on screen yet ");			
+						//System.out.println("restoreRangeSliderModel(): slider not shown on screen yet ");			
 					}			
 			}// for loop
 		}
@@ -235,12 +235,12 @@ public class FilterSettingPanel extends JPanel {
 	
 	private void addCustomFilterWidget(AtomicFilter pAtomicFilter, int pGridY) {
 	
-		System.out.println("FiltersettingPanel.addCustomFilterWidget() ... ");
+		//System.out.println("FiltersettingPanel.addCustomFilterWidget() ... ");
 				
 		int indexType = getIndexTypeForAttribute(pAtomicFilter.getAttributeName());
 
 		if (indexType == -1) { //indexType = Unknown, skip ...
-			System.out.println("indexType = Unknown, skip ...");	
+			//System.out.println("indexType = Unknown, skip ...");	
 			return;
 		}
 
