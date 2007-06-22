@@ -267,14 +267,16 @@ public class BioPaxVisualStyleUtil {
 		                                                     discreteMappingWidth,
 		                                                     VisualPropertyType.NODE_WIDTH);
 		nac.setCalculator(nodeWidthCalculator);
-		nac.getDefaultAppearance().setWidth(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH);
+		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_WIDTH,
+									   new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH));
 
 		Calculator nodeHeightCalculator = new BasicCalculator("BioPAX Node Height"
 		                                                      + VERSION_POST_FIX,
 		                                                      discreteMappingHeight,
 		                                                      VisualPropertyType.NODE_HEIGHT);
 		nac.setCalculator(nodeHeightCalculator);
-		nac.getDefaultAppearance().setHeight(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT);
+		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_HEIGHT,
+									   new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT));
 	}
 
 	private static void createNodeLabel(NodeAppearanceCalculator nac) {
@@ -318,7 +320,8 @@ public class BioPaxVisualStyleUtil {
 		nac.setCalculator(nodeColorCalculator);
 
 		// set default color
-		nac.getDefaultAppearance().setFillColor(DEFAULT_NODE_COLOR);
+		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR,
+									   DEFAULT_NODE_COLOR);
 	}
 
 	private static void createNodeBorderColor(NodeAppearanceCalculator nac) {
@@ -350,7 +353,8 @@ public class BioPaxVisualStyleUtil {
 		nac.setCalculator(nodeBorderColorCalculator);
 
 		// set default color
-		nac.getDefaultAppearance().setBorderColor(DEFAULT_NODE_BORDER_COLOR);
+		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR,
+									   DEFAULT_NODE_BORDER_COLOR);
 	}
 
 	private static void createTargetArrows(EdgeAppearanceCalculator eac) {
