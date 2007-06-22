@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,16 +32,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual;
 
-import giny.view.NodeView;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
 import ding.view.DGraphView;
+
+import giny.view.NodeView;
+
 import java.awt.Shape;
-import javax.swing.Icon;
-import java.util.Map;
+
 import java.util.HashMap;
-import cytoscape.visual.ui.icon.*;
+import java.util.Map;
+
+import javax.swing.Icon;
 
 /**
  * This is a replacement for ShapeNodeRealizer.java
@@ -53,26 +57,36 @@ import cytoscape.visual.ui.icon.*;
  *
  */
 public enum NodeShape {
-	RECT(NodeView.RECTANGLE, "Rectangle"),
-	ROUND_RECT(NodeView.ROUNDED_RECTANGLE, "Round Rectangle"),
-	RECT_3D(NodeView.RECTANGLE, "3D Rectabgle"),
-	TRAPEZOID(NodeView.RECTANGLE, "Trapezoid"),
-	TRAPEZOID_2(NodeView.RECTANGLE, "Trapezoid 2"),
-	TRIANGLE(NodeView.TRIANGLE, "Triangle"),
-	PARALLELOGRAM(NodeView.PARALELLOGRAM, "Parallelogram"),
-	DIAMOND(NodeView.DIAMOND, "Diamond"),
-	ELLIPSE(NodeView.ELLIPSE, "Ellipse"),
-	HEXAGON(NodeView.HEXAGON, "Hexagon"),
-	OCTAGON(NodeView.OCTAGON, "Octagon");
+	RECT(NodeView.RECTANGLE, "Rectangle", true),
+	ROUND_RECT(NodeView.ROUNDED_RECTANGLE, "Round Rectangle", true),
+	RECT_3D(NodeView.RECTANGLE, "3D Rectabgle", false),
+	TRAPEZOID(NodeView.RECTANGLE, "Trapezoid", false),
+	TRAPEZOID_2(NodeView.RECTANGLE, "Trapezoid 2", false),
+	TRIANGLE(NodeView.TRIANGLE, "Triangle", true),
+	PARALLELOGRAM(NodeView.PARALELLOGRAM, "Parallelogram", true),
+	DIAMOND(NodeView.DIAMOND, "Diamond", true),
+	ELLIPSE(NodeView.ELLIPSE, "Ellipse", true),
+	HEXAGON(NodeView.HEXAGON, "Hexagon", true),
+	OCTAGON(NodeView.OCTAGON, "Octagon", true);
 
 	private int ginyShape;
 	private String name;
+	private boolean isSupported;
+	private static Map<Integer, Shape> nodeShapes = DGraphView.getNodeShapes();
 
-	private static Map<Integer,Shape> nodeShapes = DGraphView.getNodeShapes();
-
-	private NodeShape(int ginyShape, String name) {
+	private NodeShape(int ginyShape, String name, boolean isSupported) {
 		this.ginyShape = ginyShape;
 		this.name = name;
+		this.isSupported = isSupported;
+	}
+
+	/**
+	 * If the shape is supported by rendering engine, return true.<br>
+	 * Otherwise, return false.
+	 * @return
+	 */
+	public boolean isSupported() {
+		return isSupported;
 	}
 
 	/**
@@ -182,17 +196,21 @@ public enum NodeShape {
 		return nodeShapes.get(ginyShape);
 	}
 
-	public static Map<Object,Icon> getIconSet() {
-		Map<Object,Icon> nodeShapeIcons = new HashMap<Object,Icon>();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static Map<Object, Icon> getIconSet() {
+		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
 
 		for (NodeShape shape : values()) {
 			NodeIcon icon = new NodeIcon(nodeShapes.get(shape.getGinyShape()),
 			                             VisualPropertyIcon.DEFAULT_ICON_SIZE,
-			                             VisualPropertyIcon.DEFAULT_ICON_SIZE,
-										 shape.getShapeName());
+			                             VisualPropertyIcon.DEFAULT_ICON_SIZE, shape.getShapeName());
 			nodeShapeIcons.put(shape, icon);
 		}
-		
+
 		return nodeShapeIcons;
 	}
 }

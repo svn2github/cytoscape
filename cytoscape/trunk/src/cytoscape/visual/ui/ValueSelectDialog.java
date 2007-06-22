@@ -34,21 +34,13 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+import static cytoscape.visual.VisualPropertyType.*;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,14 +54,20 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import static cytoscape.visual.VisualPropertyType.*;
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+
+import cytoscape.Cytoscape;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
  *
  * @author kono
  */
-public class ValueSelectDialog extends javax.swing.JDialog {
+public class ValueSelectDialog extends JDialog {
 	
 	private final VisualPropertyType type;
 	private Map shapeMap;
@@ -139,6 +137,9 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 					cancelButtonActionPerformed(evt);
 				}
 			});
+		// Currently not implemented
+		cancelButton.setVisible(false);
+		
 
 		org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel
 		                                                                                      .getContentContainer());
@@ -206,9 +207,6 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 	 */
 	public Object getValue() {
 		final int selectedIndex = iconList.getSelectedIndex();
-
-		System.out.println("SELECTED = " + selectedIndex + ", " + orderedKeyList.get(selectedIndex));
-
 		if ((0 <= selectedIndex) && (selectedIndex < orderedKeyList.size()))
 			return orderedKeyList.get(selectedIndex);
 		else
@@ -234,7 +232,11 @@ public class ValueSelectDialog extends javax.swing.JDialog {
 			if(type == EDGE_SRCARROW_SHAPE || type == EDGE_TGTARROW_SHAPE) {
 				icon.setIconWidth(icon.getIconWidth()*3);
 			}
-			
+			if(type.equals(NODE_SHAPE) && ((NodeShape)key).isSupported() == false) {
+				// Filter shapes not supported by current rendering engine.
+				// Maybe supported in future versions...
+				continue;
+			}
 			icons.add(icon);
 			orderedKeyList.add(key);
 			model.addElement(icon.getName());
