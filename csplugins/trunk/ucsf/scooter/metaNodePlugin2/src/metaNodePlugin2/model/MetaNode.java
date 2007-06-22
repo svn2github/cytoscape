@@ -74,6 +74,7 @@ public class MetaNode {
 	// Static variables
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private	static HashMap<CyNode,Boolean> hiddenNodes = new HashMap();
+	private static final boolean DEBUG = false;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
@@ -146,7 +147,7 @@ public class MetaNode {
 		metaMap.put(groupNode, this);
 		metaEdgeMap = new HashMap();
 
-		System.out.println("Creating meta-group "+group.getGroupName());
+		if (DEBUG) System.out.println("Creating meta-group "+group.getGroupName());
 
 		newEdgeMap = new HashMap();
 
@@ -167,7 +168,7 @@ public class MetaNode {
 		Iterator<CyEdge>iter = externalEdges.iterator();
 		while (iter.hasNext()) {
 			CyEdge edge = iter.next();
-			System.out.println("... outer edge "+edge.getIdentifier());
+			if (DEBUG) System.out.println("... outer edge "+edge.getIdentifier());
 			if (!isMetaEdge(edge))
 				continue;
 
@@ -185,11 +186,13 @@ public class MetaNode {
 		while (iter.hasNext()) {
 			CyEdge edge = iter.next();
 			if (!externalEdges.contains(edge)) {
-					System.out.println("... adding edge "+edge.getIdentifier());
+					if (DEBUG) System.out.println("... adding edge "+edge.getIdentifier());
 			    group.addOuterEdge(edge);
 			}
 		}
-		System.out.println("... done\n\n");
+		// Note that this node is hidden
+		hiddenNodes.put(groupNode, Boolean.TRUE);
+		if (DEBUG) System.out.println("... done\n\n");
 	}
 
 	/**
@@ -228,7 +231,7 @@ public class MetaNode {
 	 * @param node the CyNode that was added
 	 */
 	public void nodeAdded(CyNode node) {
-		System.out.println(groupNode.getIdentifier()+": adding node "+node.getIdentifier());
+		if (DEBUG) System.out.println(groupNode.getIdentifier()+": adding node "+node.getIdentifier());
 		// Adding a node could result in a couple of changes to our
 		// internal data structures.  First, we might have to add new
 		// metaedges to reflect the connection between this node and other
@@ -242,7 +245,7 @@ public class MetaNode {
 			if (metaEdgeMap.containsKey(node)) {
 				// Get the metaEdge
 				CyEdge metaEdge = metaEdgeMap.get(node);
-				System.out.println("... removing edge "+metaEdge.getIdentifier());
+				if (DEBUG) System.out.println("... removing edge "+metaEdge.getIdentifier());
 				// Remove it from the network
 				network.removeEdge(metaEdge.getRootGraphIndex(), true);
 				// Remove it from our data structures
@@ -257,7 +260,7 @@ public class MetaNode {
 			Iterator<CyEdge> iter = edges.iterator();
 			while (iter.hasNext()) {
 				CyEdge edge = iter.next();
-				System.out.println("... checking edge "+edge.getIdentifier());
+				if (DEBUG) System.out.println("... checking edge "+edge.getIdentifier());
 				// Did we "cause" this edge?
 				if (edge.getTarget() == node || edge.getSource() == node) {
 					// Yes, we need to create a new metaEdge, then
@@ -279,7 +282,7 @@ public class MetaNode {
 		nv = (NodeView)networkView.getNodeView(node);
 		double X = nv.getXPosition();
 		double Y = nv.getYPosition();
-		System.out.println(node.getIdentifier()+" = ("+X+", "+Y+")");
+		if (DEBUG) System.out.println(node.getIdentifier()+" = ("+X+", "+Y+")");
 		// Update our attributes
 		String nodeName = node.getIdentifier();
 		setXHintAttr(nodeAttributes, nodeName, metaX-X);
@@ -399,7 +402,7 @@ public class MetaNode {
 		if (isCollapsed) 
 			return;
 
-		System.out.println("collapsing "+groupNode);
+		if (DEBUG) System.out.println("collapsing "+groupNode);
 		// Initialize
 		update(view);
 
@@ -431,7 +434,7 @@ public class MetaNode {
 		if (!isCollapsed) 
 			return;
 
-		System.out.println("Expanding "+groupNode);
+		if (DEBUG) System.out.println("Expanding "+groupNode);
 
 		// Initialize
 		update(view);
@@ -440,7 +443,7 @@ public class MetaNode {
 		// as any edges that were created by external applications
 		int [] edgeArray = network.getAdjacentEdgeIndicesArray(groupNode.getRootGraphIndex(),true,true,true);
 
-		System.out.println(groupNode.getIdentifier()+" has "+edgeArray.length+" edges");
+		if (DEBUG) System.out.println(groupNode.getIdentifier()+" has "+edgeArray.length+" edges");
 
 		// Now, go through a (hopefully) quick loop to add any edges we don't already have into
 		// our edge map
@@ -494,7 +497,7 @@ public class MetaNode {
 	 */
 	public CyEdge createMetaEdge(CyEdge edge, CyNode partner, boolean ignoreCollapsed) {
 
-		System.out.println(metaGroup.getGroupName()+": Examining edge "+edge.getIdentifier());
+		if (DEBUG) System.out.println(metaGroup.getGroupName()+": Examining edge "+edge.getIdentifier());
 		CyNode source = (CyNode)edge.getSource();
 		CyNode target = (CyNode)edge.getTarget();
 
@@ -512,15 +515,18 @@ public class MetaNode {
 			// a meta-node back to our node, but since we're collapsing,
 			// we need to add it in without creating it.
 			MetaNode parent = getParent(partner);
-			System.out.println("... parent of "+partner.getIdentifier()+" is "+parent.metaGroup.getGroupName());
-			if (!metaMap.containsKey(parent.groupNode)) {
-				System.out.println("... returning edge "+edge.getIdentifier());
-				return edge;
+			if (parent == null) {
+				return null;
+			}
+			if (DEBUG) System.out.println("... parent of "+partner.getIdentifier()+" is "+parent.metaGroup.getGroupName());
+			if (!metaMap.containsKey(parent.groupNode) || isNodeHidden(parent.groupNode)) {
+				if (DEBUG) System.out.println("... returning edge "+edge.getIdentifier());
+				return null;
 			}
 
 			if (!multipleEdges && metaEdgeMap.containsKey(parent.groupNode) && parent.isCollapsed) {
 				// Already seen this?
-				System.out.println("... returning cached edge "+metaEdgeMap.get(parent.groupNode).getIdentifier());
+				if (DEBUG) System.out.println("... returning cached edge "+metaEdgeMap.get(parent.groupNode).getIdentifier());
 				return metaEdgeMap.get(parent.groupNode);
 			}
 
@@ -538,7 +544,7 @@ public class MetaNode {
 			
 			// First make sure our partner is not an expanded metanode
 			if (MetaNode.getMetaNode(partner) != null && !MetaNode.getMetaNode(partner).isCollapsed) {
-				System.out.println("... returning null ");
+				if (DEBUG) System.out.println("... returning null ");
 				// skip it
 				return null;
 			}
@@ -553,7 +559,7 @@ public class MetaNode {
 			newEdge = getMetaEdge(source, target, edge);
 			addMetaEdge(newEdge, partner, edge);
 		}
-		System.out.println("... returning edge "+newEdge.getIdentifier());
+		if (DEBUG) System.out.println("... returning edge "+newEdge.getIdentifier());
 		return newEdge;
 	}
 
@@ -576,7 +582,7 @@ public class MetaNode {
 
 		CyEdge newEdge = Cytoscape.getCyEdge(source.getIdentifier(),identifier,
 		                                     target.getIdentifier(),"meta-"+interaction);
-		System.out.println("Created meta-edge "+newEdge.getIdentifier());
+		if (DEBUG) System.out.println("Created meta-edge "+newEdge.getIdentifier());
 		return newEdge;
 	}
 
@@ -608,16 +614,16 @@ public class MetaNode {
 		// Restore outer edges
 		//
 		List<CyEdge> edges = metaGroup.getOuterEdges();
-		System.out.println(metaGroup.getGroupName()+": restoreEdges");
+		if (DEBUG) System.out.println(metaGroup.getGroupName()+": restoreEdges");
 		Iterator<CyEdge> iter = edges.iterator();
 		while (iter.hasNext()) {
 			// First, see if the partner of this edge is gone
 			CyEdge edge = iter.next();
-			System.out.println("... restoring outer edge "+edge.getIdentifier());
+			if (DEBUG) System.out.println("... restoring outer edge "+edge.getIdentifier());
 			String identifier = edge.getIdentifier();
 			// Get the edge partner
 			CyNode partner = getPartner(edge);
-			System.out.println("... partner is "+partner.getIdentifier());
+			if (DEBUG) System.out.println("... partner is "+partner.getIdentifier());
 			// Is our partner an expanded metaNode?
 			if (MetaNode.getMetaNode(partner) != null && !MetaNode.getMetaNode(partner).isCollapsed) {
 				// Yes, just continue
@@ -627,7 +633,7 @@ public class MetaNode {
 				// Get the parent
 				MetaNode parent = getParent(partner);
 				// Create the meta-edge
-				System.out.println("... parent of "+partner.getIdentifier()+" is "+parent.metaGroup.getGroupName());
+				if (DEBUG) System.out.println("... parent of "+partner.getIdentifier()+" is "+parent.metaGroup.getGroupName());
 				restoreEdge(parent.createMetaEdge(edge, getLocalNode(edge), false));
 			} else {
 				restoreEdge(edge);
@@ -641,7 +647,7 @@ public class MetaNode {
 		iter = edges.iterator();
 		while (iter.hasNext()) {
 			CyEdge edge = iter.next();
-			System.out.println("restoreEdges: restoring inner edge "+edge.getIdentifier());
+			if (DEBUG) System.out.println("restoreEdges: restoring inner edge "+edge.getIdentifier());
 			restoreEdge(edge);
 		}
 	}
@@ -657,10 +663,10 @@ public class MetaNode {
 		if (edge == null) return;
 		CyNode partner = getPartner(edge);
 		if (!isNodeHidden(partner)) {
-			System.out.println("Restoring edge "+edge.getIdentifier()+" partner = "+partner.getIdentifier());
+			if (DEBUG) System.out.println("Restoring edge "+edge.getIdentifier()+" partner = "+partner.getIdentifier());
 			network.restoreEdge(edge);
 		} else {
-			System.out.println("Not restoring edge "+edge.getIdentifier()+". "+
+			if (DEBUG) System.out.println("Not restoring edge "+edge.getIdentifier()+". "+
 			                    partner.getIdentifier()+" is hidden");
 		}
 	}
@@ -672,7 +678,7 @@ public class MetaNode {
 	 * @param edge the edge we want to hide
 	 */
 	private void hideEdge(CyEdge edge) {
-		System.out.println("Hiding edge "+edge.getIdentifier());
+		if (DEBUG) System.out.println("Hiding edge "+edge.getIdentifier());
 		network.hideEdge(edge);
 	}
 
@@ -790,7 +796,7 @@ public class MetaNode {
 	 * @param node the node to hide
 	 */
 	private void hideNode(CyNode node) {
-		System.out.println("Hiding node "+node.getIdentifier());
+		if (DEBUG) System.out.println("Hiding node "+node.getIdentifier());
 		network.hideNode(node);
 		hiddenNodes.put(node, Boolean.TRUE);
 	}
@@ -803,7 +809,7 @@ public class MetaNode {
 	 * @param node the node to restore
 	 */
 	private void restoreNode(CyNode node, Dimension center) {
-		System.out.println("Restoring node "+node.getIdentifier());
+		if (DEBUG) System.out.println("Restoring node "+node.getIdentifier());
 
 		network.restoreNode(node);
 		hiddenNodes.put(node, Boolean.FALSE);

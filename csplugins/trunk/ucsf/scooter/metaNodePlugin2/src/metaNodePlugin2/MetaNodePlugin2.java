@@ -170,6 +170,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			if (group.getState() == COLLAPSED) {
 				// We are, we need to "fix up" the network
 				newNode.recollapse(recursive, multipleEdges, myview);
+			} else {
+				CyNetwork network = myview.getNetwork();
+				network.hideNode(group.getGroupNode());
 			}
 		}
 	}
