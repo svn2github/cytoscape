@@ -42,6 +42,7 @@ import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import giny.model.RootGraph;
+import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -122,8 +123,8 @@ public class BioPaxGraphReader implements GraphReader {
 	 *
 	 * @param view CyNetworkView Object.
 	 */
-	public void layout(CyNetworkView view) {
-		layoutUtil.doLayout(view);
+	public void layout(GraphView view) {
+		layoutUtil.doLayout((CyNetworkView)view);
 	}
 
 	/**
