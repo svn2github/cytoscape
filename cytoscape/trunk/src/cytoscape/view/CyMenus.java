@@ -451,7 +451,7 @@ public class CyMenus implements GraphViewChangeListener {
 		menuBar.getMenu("View").add(new JSeparator());
 
 		addAction(new SetVisualPropertiesAction());
-		addAction(new ToggleVisualMapperAction());
+		//addAction(new ToggleVisualMapperAction());
 
 		//
 		// Layout menu
@@ -602,7 +602,7 @@ public class CyMenus implements GraphViewChangeListener {
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
 		vizButton.setIcon(new ImageIcon(getClass()
 		                                    .getResource("images/ximian/stock_file-with-objects.png")));
-		vizButton.setToolTipText("Set Visual Style");
+		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);
 	} 
 }

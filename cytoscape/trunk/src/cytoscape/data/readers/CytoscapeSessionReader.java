@@ -557,10 +557,9 @@ public class CytoscapeSessionReader {
 					vsName = "default";
 
 				curNetView.setVisualStyle(vsName);
-				Cytoscape.getDesktop().getVizMapUI().getStyleSelector().resetStyles(vsName);
-				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-				Cytoscape.getDesktop().getVizMapUI().visualStyleChanged();
-
+				
+//				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+				
 				// Set hidden nodes + edges
 				setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
 				setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());
@@ -573,6 +572,14 @@ public class CytoscapeSessionReader {
 			if (childNet.getChild().size() != 0)
 				walkTree(childNet, new_network, sessionSource);
 		}
+		
+		// Switch vs.
+		CyNetworkView  view = Cytoscape.getCurrentNetworkView();
+		if(view != null) {
+			Cytoscape.getVisualMappingManager().setVisualStyle(view.getVisualStyle());
+		}
+		
+		
 	}
 
 	private void setSelectedNodes(final CyNetwork network, final SelectedNodes selected) {

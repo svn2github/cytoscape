@@ -223,19 +223,19 @@ public abstract class CalculatorCatalogFactory {
                 // Always re-create the vizmapper, otherwise things won't
                 // initialize correctly... or figure out how to reinitialize
                 // things, in particular the various VizMapAttrTabs.
-                Cytoscape.getDesktop()
-                         .setupVizMapper();
-                Cytoscape.getDesktop()
-                         .getVizMapUI()
-                         .getStyleSelector()
-                         .resetStyles();
-                Cytoscape.getDesktop()
-                         .getVizMapUI()
-                         .getStyleSelector()
-                         .repaint();
-                Cytoscape.getDesktop()
-                         .getVizMapUI()
-                         .refreshUI();
+//                Cytoscape.getDesktop()
+//                         .setupVizMapper();
+//                Cytoscape.getDesktop()
+//                         .getVizMapUI()
+//                         .getStyleSelector()
+//                         .resetStyles();
+//                Cytoscape.getDesktop()
+//                         .getVizMapUI()
+//                         .getStyleSelector()
+//                         .repaint();
+//                Cytoscape.getDesktop()
+//                         .getVizMapUI()
+//                         .refreshUI();
 
                 // In the situation where the old visual style has been
                 // overwritten

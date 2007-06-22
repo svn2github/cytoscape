@@ -665,6 +665,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	// For Arrow shapes
 	private CyComboBoxPropertyEditor arrowCellEditor = new CyComboBoxPropertyEditor();
+	private ShapeCellRenderer arrowShapeCellRenderer = new ShapeCellRenderer(VisualPropertyType.EDGE_TGTARROW_SHAPE);
 
 	// For sizes
 	private CyDoublePropertyEditor numberCellEditor = new CyDoublePropertyEditor();
@@ -1497,7 +1498,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					case EDGE_SRCARROW_SHAPE:
 					case EDGE_TGTARROW_SHAPE:
 						setDiscreteProps(type, discMapping, attrSet, arrowCellEditor,
-						                 defCellRenderer, calculatorTypeProp);
+								arrowShapeCellRenderer, calculatorTypeProp);
 
 						break;
 

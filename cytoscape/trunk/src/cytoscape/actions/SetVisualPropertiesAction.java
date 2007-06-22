@@ -43,16 +43,17 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
 
 import cytoscape.util.CytoscapeAction;
 
-//------------------------------------------------------------------------------
+import cytoscape.view.CyNetworkView;
+
 import java.awt.event.ActionEvent;
 
 import javax.swing.ImageIcon;
-
+import javax.swing.SwingConstants;
 import javax.swing.event.MenuEvent;
+
 
 //------------------------------------------------------------------------------
 /**
@@ -61,10 +62,15 @@ import javax.swing.event.MenuEvent;
 public class SetVisualPropertiesAction extends CytoscapeAction {
 	private static String title = "Open VizMapper\u2122";
 
+	/**
+	 * Creates a new SetVisualPropertiesAction object.
+	 */
 	public SetVisualPropertiesAction() {
-		super(title, new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_file-with-objects-16.png")));
+		super(title,
+		      new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_file-with-objects-16.png")));
 		setPreferredMenu("View");
 	}
+
 	/**
 	 * Creates a new SetVisualPropertiesAction object.
 	 *
@@ -91,20 +97,24 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// TODO: ack! this should be using the global VizMapper
-		Cytoscape.getDesktop().getVizMapUI().refreshUI();
-		Cytoscape.getDesktop().getVizMapUI().getStyleSelector().setVisible(true);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(1);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void menuSelected(MenuEvent e) {
-        CyNetworkView cv = Cytoscape.getCurrentNetworkView();
-        if (cv != null && cv != Cytoscape.getNullNetworkView()) {
-            if ( cv.getVisualMapperEnabled() )
-            	setEnabled(true);
-            else
-            	setEnabled(false);
-        } else {
-            setEnabled(false);
-        }
+		CyNetworkView cv = Cytoscape.getCurrentNetworkView();
+
+		if ((cv != null) && (cv != Cytoscape.getNullNetworkView())) {
+			if (cv.getVisualMapperEnabled())
+				setEnabled(true);
+			else
+				setEnabled(false);
+		} else {
+			setEnabled(false);
+		}
 	}
 }
