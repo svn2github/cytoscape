@@ -68,13 +68,21 @@ import java.util.TreeSet;
  */
 public class Semantics {
 
-	/*
-	 * KONO:04/19/2006 From v2.3, the following two terms will be used only by
-	 * Gene Ontology Server.
-	 *  - The basic meaning is same as above, but canonical name will be
-	 * replaced by the node id. - Aliases are no longer String object. It's a
-	 * list now.
+	/**
+	 * The name "CANONICAL_NAME" is an historical artifact.  The <b>ONLY</b>
+	 * purpose for this variable is to provide the name for an automatically
+	 * created node attribute that is guaranteed to be created when the
+	 * node is created.  Any other purpose or function this value has supported
+	 * in the past is officially no longer supported!
 	 */
+	public static final String CANONICAL_NAME = "canonicalName";
+
+	
+	// KONO:04/19/2006 From v2.3, the following two terms will be used only by
+	// Gene Ontology Server.
+	//  - The basic meaning is same as above, but canonical name will be
+	// replaced by the node id. - Aliases are no longer String object. It's a
+	// list now.
 
 	/**
 	 *
@@ -130,13 +138,6 @@ public class Semantics {
 	 *
 	 */
 	public static final String CELLULAR_COMPONENT = "cellular_component";
-
-	/**
-	 * @deprecated Use {@link CyNode.getIdentifier()} instead.
-	 *
-	 * This attribute will be removed in April, 2007.
-	 */
-	public static final String LABEL = "label";
 
 	/**
 	 * This method should be called in the process of creating a new network, or

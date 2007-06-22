@@ -598,6 +598,11 @@ public abstract class Cytoscape {
 		node = (CyNode) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(nodeID);
 
+		// create the CANONICAL_NAME attribute
+		if (getNodeAttributes().getStringAttribute(nodeID, Semantics.CANONICAL_NAME) == null) {
+			getNodeAttributes().setAttribute(nodeID, Semantics.CANONICAL_NAME, nodeID);
+		}
+
 		return node;
 	}
 
