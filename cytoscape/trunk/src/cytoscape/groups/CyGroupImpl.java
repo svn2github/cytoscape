@@ -62,8 +62,6 @@ import java.util.List;
  * mechanism for the saving and restoration of groups.  There are also opaque flags
  */
 public class CyGroupImpl implements CyGroup {
-	private static boolean initialized = false;
-
 	// Instance data
 
 	/**
@@ -124,13 +122,6 @@ public class CyGroupImpl implements CyGroup {
 		this.nodeToEdgeMap = new HashMap();
 		this.innerEdgeMap = new HashMap();
 		this.outerEdgeMap = new HashMap();
-		if (!initialized) {
-			CyAttributes attributes = Cytoscape.getNodeAttributes();
-			attributes.setUserVisible(GROUP_VIEWER_ATTR, false);
-			attributes.setUserVisible(GROUP_STATE_ATTR, false);
-			attributes.setUserVisible(MEMBER_LIST_ATTR, false);
-			initialized = true;
-		}
 	}
 
 	/**
@@ -290,6 +281,7 @@ public class CyGroupImpl implements CyGroup {
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		this.groupState = state;
 		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
+		attributes.setUserVisible(GROUP_STATE_ATTR, false);
 	}
 
 	/**
@@ -342,6 +334,7 @@ public class CyGroupImpl implements CyGroup {
 
 		if (this.viewer != null) {
 			attributes.setAttribute(this.groupName, GROUP_VIEWER_ATTR, this.viewer);
+			attributes.setUserVisible(GROUP_VIEWER_ATTR, false);
 		}
 	}
 
