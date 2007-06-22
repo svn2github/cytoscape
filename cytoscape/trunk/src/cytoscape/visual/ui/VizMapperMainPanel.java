@@ -343,7 +343,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		modifyValues = new JMenu("Modify Discrete Values");
 
 		lockSize = new JCheckBoxMenuItem("Lock Node Width/Height");
-		lockSize.setSelected(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
 		lockSize.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (lockSize.isSelected()) {
@@ -771,6 +770,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 		
 		setDefaultPanel(defImg);
+		
+		lockSize.setSelected(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
+		
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
 	}
@@ -1323,6 +1325,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Finally, build unused list
 		 */
 		setUnused(propRecord);
+		
+		vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
 	}
 
 	/*

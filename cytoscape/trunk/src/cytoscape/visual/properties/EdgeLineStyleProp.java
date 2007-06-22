@@ -68,8 +68,6 @@ public class EdgeLineStyleProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
 		final LineTypeIcon icon = new LineTypeIcon((LineStyle)value);
-		//icon.setColor(new Color(10, 10, 10, 20));
-		//icon.setText(value.toString());
 		icon.setBottomPadding(-6);
 
 		return icon;

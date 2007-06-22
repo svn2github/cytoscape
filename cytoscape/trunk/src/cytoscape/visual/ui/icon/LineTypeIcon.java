@@ -130,14 +130,11 @@ public class LineTypeIcon extends VisualPropertyIcon {
 		 * Define a stroke for the line segment icon
 		 */
 		if ((st != null) && (st.getDashArray() != null)) {
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER,
+			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
 			                              st.getMiterLimit(), st.getDashArray(),
 			                              st.getDashPhase());
-		} else if (st != null) {
-			// This is a solid line.
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
 		} else {
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
+			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 		}
 	}
 
