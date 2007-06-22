@@ -127,8 +127,9 @@ public class MergeNetworkTask implements Task {
 			taskMonitor.setStatus("Reading in Network Data for pathwaycommons.org...");
 			reader.read();
 
-			// unselect all nodes
+			// unselect all nodes / edges
 			cyNetwork.unselectAllNodes();
+			cyNetwork.unselectAllEdges();
 
 			// refs to capture new nodes and edgets
 			Set<CyNode> newNodes = new HashSet<CyNode>();
@@ -151,8 +152,9 @@ public class MergeNetworkTask implements Task {
 			// in this case, biopax style is applied, network attributes set, etc
 			reader.doPostProcessing(cyNetwork);
 
-			// select nodes
+			// select nodes / edges
 			cyNetwork.setSelectedNodeState(newNodes, true);
+			cyNetwork.setSelectedEdgeState(newEdges, true);
 
 			// setup undo
 			CyUndo.getUndoableEditSupport().postEdit(new MergeNetworkEdit(cyNetwork, newNodes, newEdges));
