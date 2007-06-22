@@ -5,7 +5,8 @@ import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
-import phoebe.PGraphView;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,7 +74,7 @@ public class MCODEUtil {
      * @return The resulting image
      */
     public static Image convertNetworkToImage(MCODELoader loader, MCODECluster cluster, int height, int width, SpringEmbeddedLayouter layouter, boolean layoutNecessary) {
-        PGraphView view;
+        DGraphView view;
         Image image;
 
         //Progress reporters.  There are three basic tasks, the progress of each is calculated and then combined
@@ -88,7 +89,7 @@ public class MCODEUtil {
         }
         double progress = 0;        // keeps track of progress as a percent of the totalGoal
 
-        view = new PGraphView(cluster.getGPCluster());
+        view = generateGraphView(cluster.getGPCluster());
 
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
             if (INTERRUPTED) {
@@ -116,17 +117,17 @@ public class MCODEUtil {
 
             //First we check if the MCODECluster already has a node view of this node (posing the more generic condition
             //first prevents the program from throwing a null pointer exception in the second condition)
-            if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+            if (cluster.getDGView() != null && cluster.getDGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
                 //If it does, then we take the layout position that was already generated for it
-                nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
-                nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
+                nv.setXPosition(cluster.getDGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                nv.setYPosition(cluster.getDGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
             } else {
                 //Otherwise, randomize node positions before layout so that they don't all layout in a line
                 //(so they don't fall into a local minimum for the SpringEmbedder)
                 //If the SpringEmbedder implementation changes, this code may need to be removed
-                nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
-                //height is small for many default drawn graphs, thus +100
-                nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+                //size is small for many default drawn graphs, thus +100
+                nv.setXPosition((view.getCanvas().getWidth() + 100) * Math.random());
+                nv.setYPosition((view.getCanvas().getHeight() + 100) * Math.random());
                 if (!layoutNecessary) {
                     goalTotal += weightLayout;
                     progress /= (goalTotal / (goalTotal - weightLayout));
@@ -170,20 +171,47 @@ public class MCODEUtil {
                 return null;
             }
         }
+	
+		image = generateImage(view,width,height);
 
-        image = view.getCanvas().getLayer().toImage(width, height, null);
-
-        double largestSide = view.getCanvas().getLayer().getFullBounds().width;
-        if (view.getCanvas().getLayer().getFullBounds().height > largestSide) {
-            largestSide = view.getCanvas().getLayer().getFullBounds().height;
+        double largestSide = view.getCanvas().getWidth();
+        if (view.getCanvas().getHeight() > largestSide) {
+            largestSide = view.getCanvas().getHeight();
         }
         if (view.getNodeViewCount() >= 1) {
-            cluster.setPGView(view);
+            cluster.setDGView(view);
         }
         layouter.resetDoLayout();
         resetLoading();
         return (image);
     }
+
+	private static Image generateImage(DGraphView view, int width, int height) {
+        view.getCanvas().setSize(width, height);
+        view.fitContent();
+        Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        final Graphics2D g = (Graphics2D) image.getGraphics();
+        g.setColor((Color) view.getBackgroundPaint());
+        g.fillRect(0, 0, width, height);
+        view.getCanvas().paint(g);
+		return image;
+	}
+
+	private static DGraphView generateGraphView(GraphPerspective gp) {
+        DGraphView view = new DGraphView(gp);
+
+        final int[] nodes = gp.getNodeIndicesArray();
+        for (int i = 0; i < nodes.length; i++) {
+            view.addNodeView(nodes[i]);
+        }
+
+        final int[] edges = gp.getEdgeIndicesArray();
+        for (int i = 0; i < edges.length; i++) {
+            view.addEdgeView(edges[i]);
+        }
+
+		return view;
+	}
 
     public static void interruptLoading() {
         INTERRUPTED = true;
