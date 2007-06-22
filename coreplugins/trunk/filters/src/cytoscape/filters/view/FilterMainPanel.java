@@ -115,12 +115,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		allFilterVect = pAllFilterVect;
 	}
 	
+	
+	
 	// Listen to ATTRIBUTES_CHNAGED event
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
 		{
+			//System.out.println("FilterMainPanel: ATTRIBUTES_CHANGED event is received!");
+			
+			//refreshFilterSettingPanels();
 			refreshAttributeCMB();
 			updateIndexForWidget();
+			//replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
 		}
 	}
 
@@ -161,7 +167,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		updateCMBAttributes();
 		cmbAttributes.repaint();
 	}
-	
+		
 	/*
 	 * Get the list of attribute names for either "node" or "edge". The attribute names will be
 	 * prefixed either with "node." or "edge.". Those attributes whose data type is neither
@@ -290,7 +296,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
 				//System.out.println("Filter Panel is selected");
 				
-				if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
+				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
+				if (cmbSelectFilter.getModel().getSize() == 0) {
 					// CMBSelectFilter will not be initialize until the Filer Panel is selected
 					initCMBSelectFilter();					
 				}
