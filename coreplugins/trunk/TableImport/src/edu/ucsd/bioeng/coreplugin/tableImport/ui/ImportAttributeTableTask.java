@@ -36,6 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
+import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
@@ -75,6 +76,7 @@ public class ImportAttributeTableTask implements Task {
 		try {
 			reader.readTable();
 			taskMonitor.setPercentCompleted(100);
+			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);
 			informUserOfAnnotationStats();
 		} catch (IOException e) {
 			e.printStackTrace();
