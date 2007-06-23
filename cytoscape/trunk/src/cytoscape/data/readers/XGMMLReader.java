@@ -1184,6 +1184,8 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 
 			createComplexAttribute(attrName, attributes, targetName, curAtt, null, 0, numKeys);
+			// Skip over check for embedded content
+			return;
 		}
 
 		// Check the content of this attribute -- we might either have embedded
