@@ -774,7 +774,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		setDefaultPanel(defImg);
 		
-//		lockSize.setSelected(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
+		vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
+		lockSize.setSelected(true);
 		
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);

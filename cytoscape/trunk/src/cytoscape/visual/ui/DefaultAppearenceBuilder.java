@@ -138,6 +138,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		buildDefaultViewDialog(parent);
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
+		dab.lockSize();
+		dab.lockNodeSizeCheckBox.setSelected(dab.nac.getNodeSizeLocked());
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
