@@ -233,8 +233,18 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		final CyNode source = Cytoscape.getCyNode("Source", true);
 		final CyNode target = Cytoscape.getCyNode("Target", true);
-		final CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION,
+		final CyEdge edge = Cytoscape.getCyEdge(source, target, "dummyInteraction",
 		                                        "interaction", true, true);
+		
+		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
+		nodeAttr.setAttribute("Target", "hiddenLabel", "Target");
+		nodeAttr.setUserVisible("hiddenLabel", false);
+		nodeAttr.setUserEditable("hiddenLabel", false);
+		
+		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		edgeAttr.setUserVisible("dummyInteraction", false);
+		edgeAttr.setUserEditable("dummyInteraction", false);
 	}
 
 	/*
@@ -1151,7 +1161,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		names.add("ID");
 
 		for (String name : nameArray) {
-			names.add(name);
+			if(attr.getUserVisible(name)) {
+				names.add(name);
+			}
 		}
 
 		nodeAttrEditor.setAvailableValues(names.toArray());
@@ -1177,7 +1189,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		names.add("ID");
 
 		for (String name : nameArray) {
-			names.add(name);
+			if(attr.getUserVisible(name)) {
+				names.add(name);
+			}
 		}
 
 		edgeAttrEditor.setAvailableValues(names.toArray());
@@ -1859,7 +1873,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			return;
-		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED) || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			System.out.println("Updating attr: Event = " + e.getPropertyName() + ", Source = "
 			                   + e.getSource());
 
