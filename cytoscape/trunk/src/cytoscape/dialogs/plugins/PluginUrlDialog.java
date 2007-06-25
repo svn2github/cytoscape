@@ -307,6 +307,11 @@ public class PluginUrlDialog extends JDialog {
 	// combo box
 	private class BookmarkCellRenderer extends JLabel implements
 			ListCellRenderer {
+		
+		public BookmarkCellRenderer() {
+			setOpaque(true);
+		}
+		
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			DataSource dataSource = (DataSource) value;
