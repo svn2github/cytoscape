@@ -252,7 +252,7 @@ public class NetworkUtil extends Thread {
 									   dataSources);
 
 		// setup the context menu
-		view.addNodeContextMenuListener(nodeContextMenuListener);
+		//view.addNodeContextMenuListener(nodeContextMenuListener);
 
 		// set focus current
 		Cytoscape.firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUS,
