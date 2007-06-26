@@ -279,25 +279,30 @@ public class MapBioPaxToCytoscape {
 	 * @param cyNetwork CyNetwork Object.
 	 */
 	public static void repairNetworkName(final CyNetwork cyNetwork) {
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		Iterator iter = cyNetwork.nodesIterator();
-		CyNode node = (CyNode) iter.next();
 
-		if (node != null) {
-			String pathwayName = nodeAttributes.getStringAttribute(node.getIdentifier(),
-			                                                       MapNodeAttributes.BIOPAX_PATHWAY_NAME);
+		try {
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			Iterator iter = cyNetwork.nodesIterator();
+			CyNode node = (CyNode) iter.next();
 
-			if (pathwayName != null) {
-				cyNetwork.setTitle(pathwayName);
+			if (node != null) {
+				String pathwayName = nodeAttributes.getStringAttribute(node.getIdentifier(),
+																	   MapNodeAttributes.BIOPAX_PATHWAY_NAME);
+				if (pathwayName != null) {
+					cyNetwork.setTitle(pathwayName);
 
-				//  Update UI.  Must be done via SwingUtilities,
-				// or it won't work.
-				SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-						}
-					});
+					//  Update UI.  Must be done via SwingUtilities,
+					// or it won't work.
+					SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+							}
+						});
+				}
 			}
+		}
+		catch (java.util.NoSuchElementException e) {
+			// network is empty, do nothing
 		}
 	}
 
