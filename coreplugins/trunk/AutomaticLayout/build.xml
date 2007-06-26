@@ -74,7 +74,11 @@
            nowarn="${nowarn}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
-           fork="${fork}"/>
+           fork="${fork}">
+	 <!--
+      <compilerarg line="-Xlint:unchecked"/>
+	  -->
+	</javac>
   </target>
 
   <!-- =================================================================== -->
