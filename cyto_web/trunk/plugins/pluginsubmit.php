@@ -394,11 +394,11 @@ if ($tried != NULL && $tried == 'yes') {
 		}
 	}
 
-	//Either a jarURL or a jar file should supplied
-	if (empty ($_POST['tfJarURL']) && empty ($_FILES['filePlugin']['name'])) {
+	//A jar/zip file is required
+	if (empty ($_FILES['filePlugin']['name'])) {
 		$validated = false;
 ?>
-		Error: Either a jarURL or a jar file should be supplied.<br>
+		Error: A jar/zip file is required.<br>
 		<?php
 
 
@@ -485,16 +485,8 @@ if (!($tried && $validated)) {
     <td><label></label></td>
   </tr>
   <tr>
-    <td><div align="right">Jar/Zip File </div></td>
+    <td><div align="right"><span class="style4">*</span>Jar/Zip File </div></td>
     <td><input name="filePlugin" type="file" id="filePlugin" size="80" /></td>
-  </tr>
-  <tr>
-    <td><div align="right"><span class="style4">*</span>or</div></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td><div align="right">Jar/Zip URL </div></td>
-    <td><input name="tfJarURL" type="text" id="jarURL" value ="<?php echo $jarURL ?>" size="80" /></td>
   </tr>
   <tr>
     <td><div align="right"></div></td>
