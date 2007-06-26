@@ -92,7 +92,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 
 		// to catch network creation events - to setup context menu
 		NetworkListener networkListener = new NetworkListener();
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(networkListener);
+		//Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(networkListener);
 
 		// create our http server and start its thread
 		new HTTPServer(HTTPServer.DEFAULT_PORT,
