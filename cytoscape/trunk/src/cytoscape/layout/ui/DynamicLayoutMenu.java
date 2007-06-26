@@ -228,7 +228,9 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 				layout.setLayoutAttribute(e.getActionCommand());
 			}
 
-			layout.doLayout(Cytoscape.getCurrentNetworkView());
+			// layout.doLayout(Cytoscape.getCurrentNetworkView());
+			TaskManager.executeTask( new LayoutTask(layout, Cytoscape.getCurrentNetworkView()), 
+			                         LayoutTask.getDefaultTaskConfig() );
 		}
 	}
 }
