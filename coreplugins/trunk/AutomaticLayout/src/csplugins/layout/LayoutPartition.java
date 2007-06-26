@@ -75,6 +75,7 @@ public class LayoutPartition {
 	private static OpenIntIntHashMap nodesSeenMap = null;
 	private static OpenIntIntHashMap edgesSeenMap = null;
 	private int nodeIndex = 0;
+	private int partitionNumber = 0;
 
 	// Keep track of the node min and max values
 	private double maxX = -100000;
@@ -117,6 +118,7 @@ public class LayoutPartition {
 	public LayoutPartition(int nodeCount, int edgeCount) {
 		nodeList = new ArrayList(nodeCount);
 		edgeList = new ArrayList(edgeCount);
+		partitionNumber = 1;
 
 		if (nodeToLayoutNode == null)
 			nodeToLayoutNode = new HashMap(nodeCount);
@@ -149,6 +151,7 @@ public class LayoutPartition {
 		nodeListInitialize(network, networkView, selectedOnly);
 		edgeListInitialize(network, networkView, edgeAttribute);
 		trimToSize();
+		partitionNumber = 1;
 	}
 
 	/**
@@ -439,6 +442,24 @@ public class LayoutPartition {
 	 */
 	public double getHeight() {
 		return height;
+	}
+
+	/**
+	 * Return the partition number of this partition
+	 *
+	 * @return partition number
+	 */
+	public int getPartitionNumber() {
+		return partitionNumber;
+	}
+
+	/**
+	 * Set the partition number of this partition
+	 *
+	 * @param part partition number
+	 */
+	public void setPartitionNumber(int part) {
+		partitionNumber = part;
 	}
 
 	/**

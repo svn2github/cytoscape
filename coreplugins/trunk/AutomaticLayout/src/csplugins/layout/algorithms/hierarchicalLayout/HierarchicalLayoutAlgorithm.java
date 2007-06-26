@@ -730,15 +730,6 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	* Sets the Task Monitor.
-	*
-	* @param taskMonitor TaskMonitor Object.
-	*/
-	public void setTaskMonitor(TaskMonitor tm) {
-		taskMonitor = tm;
-	}
-
-	/**
 	* Gets the Task Title.
 	*
 	* @return human readable task title.

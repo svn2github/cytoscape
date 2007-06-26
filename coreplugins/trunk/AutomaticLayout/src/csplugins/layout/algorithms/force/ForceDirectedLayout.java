@@ -159,7 +159,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e)); 
 		}
 
-		setTaskStatus(5); // This is a rough approximation, but probably good enough
+		// setTaskStatus(5); // This is a rough approximation, but probably good enough
+		if (taskMonitor != null) {
+			taskMonitor.setStatus("Initializing partition "+part.getPartitionNumber());
+		}
 
 		// perform layout
 		long timestep = 1000L;

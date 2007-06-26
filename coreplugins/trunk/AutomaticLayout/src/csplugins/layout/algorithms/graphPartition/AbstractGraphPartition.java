@@ -132,8 +132,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			current_size = (double)partition.size();
 			setTaskStatus(1);
 
-			numCurrent = partition.size();
-
 			// Partitions Requiring Layout
 			if (partition.nodeCount() > 1) {
 				try {
@@ -175,8 +173,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 				next_x_start += incr;
 			}
 
-			current_start += current_size;
 			setTaskStatus( 100 );
+			current_start += current_size;
 		} 
 	}
 }
