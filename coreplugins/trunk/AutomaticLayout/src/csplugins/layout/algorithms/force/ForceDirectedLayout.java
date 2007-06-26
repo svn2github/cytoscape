@@ -46,6 +46,7 @@ import csplugins.layout.LayoutNode;
 import csplugins.layout.algorithms.graphPartition.*;
 
 import cytoscape.view.CyNetworkView;
+import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 
 import java.awt.GridLayout;
@@ -66,10 +67,22 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 	private int numIterations = 100;
 	double defaultSpringCoefficient = -1.0;
-	double defaultSpringLength = -1.0;
+	double defaultSpringLength = 100.0;
 	double defaultNodeMass = 3.0;
 
-	private boolean selected_only = false;
+	/**
+	 * Value to set for doing unweighted layouts
+	 */
+	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
+
+  /**
+   * Minimum and maximum weights.  This is used to
+   * provide a bounds on the weights.
+   */
+  protected double minWeightCutoff = 0;
+  protected double maxWeightCutoff = Double.MAX_VALUE;
+
+	private boolean supportWeights = true;
 	private LayoutProperties layoutProperties;
 	Map<LayoutNode,ForceItem> forceItems;
 	
@@ -94,7 +107,29 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		return "Force-Directed Layout";
 	}
 
+	protected void initialize_local() {
+		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
+		// Depending on whether we are partitioned or not,
+		// we use different initialization.  Note that if the user only wants
+		// to lay out selected nodes, partitioning becomes a very bad idea!
+		if (selectedOnly) {
+			// We still use the partition abstraction, even if we're
+			// not partitioning.  This makes the code further down
+			// much cleaner
+			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly,
+			                                                edgeAttribute);
+			partitionList = new ArrayList(1);
+			partitionList.add(partition);
+		} else {
+			partitionList = LayoutPartition.partition(network, networkView, selectedOnly,
+			                                          edgeAttribute);
+		}
+	}
+
+
 	public void layoutPartion(LayoutPartition part) {
+		// Calculate our edge weights
+		part.calculateEdgeWeights();
 
         m_fsim.clear();
 
@@ -124,23 +159,27 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e)); 
 		}
 
+		setTaskStatus(5); // This is a rough approximation, but probably good enough
+
 		// perform layout
 		long timestep = 1000L;
 		for ( int i = 0; i < numIterations && !canceled; i++ ) {
 			timestep *= (1.0 - i/(double)numIterations);
 			long step = timestep+50;
 			m_fsim.runSimulator(step);
-			subClassSetTaskStatus(i/(double)numIterations);
+			setTaskStatus((int)(((double)i/(double)numIterations)*90.+5));
 		}
 		
         // update positions
         iter = part.nodeIterator(); 
         while ( iter.hasNext() ) {
 			LayoutNode ln = (LayoutNode)iter.next();
-            ForceItem fitem = forceItems.get(ln); 
-			ln.setX(fitem.location[0]);
-			ln.setY(fitem.location[1]);
-			part.moveNodeToLocation(ln);
+			if (!ln.isLocked()) {
+            	ForceItem fitem = forceItems.get(ln); 
+				ln.setX(fitem.location[0]);
+				ln.setY(fitem.location[1]);
+				part.moveNodeToLocation(ln);
+			}
         }
     }
     
@@ -163,7 +202,8 @@ public class ForceDirectedLayout extends AbstractGraphPartition
      * -1 means to ignore this method and use the global default.
      */
     protected float getSpringLength(LayoutEdge e) {
-        return (float)defaultSpringLength;
+		double weight = e.getWeight();
+		return (float)(defaultSpringLength/weight);
     }
 
     /**
@@ -177,6 +217,29 @@ public class ForceDirectedLayout extends AbstractGraphPartition
     protected float getSpringCoefficient(LayoutEdge e) {
         return (float)defaultSpringCoefficient;
     }
+
+	/**
+	 * Return information about our algorithm
+	 */
+	public boolean supportsSelectedOnly() {
+		return true;
+	}
+
+	public byte[] supportsEdgeAttributes() {
+		if (!supportWeights)
+			return null;
+		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+
+		return attrs;
+	}
+
+	public List getInitialAttributeList() {
+		ArrayList list = new ArrayList();
+		list.add(UNWEIGHTEDATTRIBUTE);
+
+		return list;
+	}
+
 	
 	protected void initialize_properties() {
 		layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
@@ -190,6 +253,21 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
+
+		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider",
+       		                              Tunable.DOUBLE, new Double(0)));
+
+		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider",
+           		                          Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
+
+		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		                                 Tunable.BOOLEAN, new Boolean(false)));
+
+		layoutProperties.add(new Tunable("edge_attribute", 
+		                                 "The edge attribute that contains the weights",
+		                                 Tunable.EDGEATTRIBUTE, "weight",
+		                                 (Object) getInitialAttributeList(), (Object) null,
+		                                 Tunable.NUMERICATTRIBUTE));
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
@@ -222,6 +300,22 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		t = layoutProperties.get("numIterations");
 		if ((t != null) && (t.valueChanged() || force))
 			numIterations = ((Integer) t.getValue()).intValue();
+
+		t = layoutProperties.get("selected_only");
+		if ((t != null) && (t.valueChanged() || force))
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
+
+		t = layoutProperties.get("min_weight");
+		if ((t != null) && (t.valueChanged() || force))
+			minWeightCutoff = ((Double) t.getValue()).doubleValue();
+
+		t = layoutProperties.get("max_weight");
+		if ((t != null) && (t.valueChanged() || force))
+			maxWeightCutoff = ((Double) t.getValue()).doubleValue();
+
+		t = layoutProperties.get("edge_attribute");
+		if ((t != null) && (t.valueChanged() || force))
+			edgeAttribute = (t.getValue().toString());
 	}
 
 	public JPanel getSettingsPanel() {
