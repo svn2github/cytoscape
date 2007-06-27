@@ -57,7 +57,7 @@ public class SessionForWebPlugin extends CytoscapePlugin
 		result.setDescription("Prepares and exports a session for the web");
 		result.setPluginVersion(2.1);
 		result.setCytoscapeVersion("2.5");
-		result.setCategory(PluginInfo.Category.COMMUNICATION_SCRIPTING);
+		result.setCategory(PluginInfo.Category.NETWORK_ATTRIBUTE_IO);
 		result.addAuthor("Samad Lotia", "UCSD");
 		return result;
 	}
