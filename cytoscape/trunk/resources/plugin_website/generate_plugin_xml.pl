@@ -168,6 +168,11 @@ sub addFileInfo
 	print "$PluginFileId: $FileType : $FileName\n";
 		
 	my $PluginFileType = $Doc->createElement("filetype");
+	if ($FileType =~ /^application\/x-jar$/)
+		{ $FileType = "jar"; }
+	elsif ($FileType =~ /^application\/x-zip-compressed$/)
+		{ $FileType = "zip"; }
+		
 	$PluginFileType->appendChild($Doc->createTextNode($FileType));
 	$PluginElement->appendChild($PluginFileType);
 	
