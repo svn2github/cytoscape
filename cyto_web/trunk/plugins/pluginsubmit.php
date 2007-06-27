@@ -35,8 +35,8 @@ if ($mode == 'new') {
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title><?php echo $pageTitle;?></title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/css/cytoscape.css">
-	<link rel="shortcut icon" href="images/cyto.ico">
+	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
+	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 	<style type="text/css">
 <!--
 .style3 {color: #FF0066}
@@ -394,8 +394,10 @@ if ($tried != NULL && $tried == 'yes') {
 		}
 	}
 
-	//A jar/zip file is required
-	if (empty ($_FILES['filePlugin']['name'])) {
+	//if mode == 'new', A jar/zip file is required
+	//if mode == 'edit', if a jar/zip file is provided, the new one will replace the existing one, otherwise,
+	//the existing file will not be updated. 
+	if ((mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
 		$validated = false;
 ?>
 		Error: A jar/zip file is required.<br>
@@ -455,7 +457,11 @@ if (!($tried && $validated)) {
     <td><div align="right"><span class="style4">*</span>Category</div></td>
     <td><label>
       <select name="optCategory" id="optCategory" >
+
         <option <?php if ($category && $category == 'Please choose one') echo 'selected' ?>>Please choose one</option>	
+        <?php if ($mode == 'edit') {  
+		echo '<option>Core Plugins</option>';
+	} ?>
         <option <?php if ($category && $category == 'Analysis Plugins') echo 'selected' ?>>Analysis Plugins</option>
         <option <?php if ($category && $category == 'Network and Attribute I/O Plugins') echo 'selected' ?>>Network and Attribute I/O Plugins</option>
         <option <?php if ($category && $category == 'Network Inference Plugins') echo 'selected' ?>>Network Inference Plugins</option>
