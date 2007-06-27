@@ -36,13 +36,13 @@ package cytoscape.visual.ui.editors.discrete;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.swing.JTextField;
 
 import com.l2fprod.common.beans.editor.DoublePropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+
+import cytoscape.Cytoscape;
 
 
 /**
@@ -59,62 +59,9 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 		super();
 
 		((JTextField) editor).addFocusListener(new FocusListener() {
-
 				public void focusGained(FocusEvent e) {
-					Method getM = null;
-					Object val = null;
-
-					try {
-						getM = e.getOppositeComponent().getClass().getMethod("getSelectedRow", null);
-					} catch (SecurityException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (NoSuchMethodException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-					try {
-						val = getM.invoke(e.getOppositeComponent(), null);
-					} catch (IllegalArgumentException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IllegalAccessException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (InvocationTargetException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-					try {
-						getM = e.getOppositeComponent().getClass()
-						        .getMethod("getValueAt", new Class[] { int.class, int.class });
-					} catch (SecurityException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (NoSuchMethodException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-					Object val2 = null;
-
-					try {
-						val2 = getM.invoke(e.getOppositeComponent(),
-						                   new Object[] { (Integer) val, new Integer(0) });
-					} catch (IllegalArgumentException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IllegalAccessException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (InvocationTargetException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-					selected = ((Item) val2).getProperty().getDisplayName();
+					final Item item = (Item) Cytoscape.getDesktop().getVizMapperUI().getSelectedItem();
+					selected = item.getProperty().getDisplayName();
 					setCurrentValue();
 				}
 
@@ -130,12 +77,14 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 
 	private void checkChange() {
 		Number newValue = (Number) super.getValue();
-		if(newValue.doubleValue()<=0) {
+
+		if (newValue.doubleValue() <= 0) {
 			newValue = 0;
 			currentValue = 0;
 			((JTextField) editor).setText("0");
 			editor.repaint();
 		}
+
 		firePropertyChange(selected, newValue);
 	}
 }
