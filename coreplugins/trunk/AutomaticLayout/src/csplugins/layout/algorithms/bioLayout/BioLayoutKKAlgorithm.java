@@ -44,8 +44,6 @@ import cytoscape.data.*;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import cytoscape.task.TaskMonitor;
-
 import cytoscape.util.*;
 
 import cytoscape.view.*;
@@ -453,7 +451,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 		int numIterations = (int) ((m_nodeCount * m_averageIterationsPerNode) / m_numLayoutPasses);
 
-		List partialsList = new ArrayList();
+		List <PartialDerivatives>partialsList = new ArrayList<PartialDerivatives>();
 		double[] potentialEnergy = new double[1];
 
 		if (potentialEnergy[0] != 0.0)
@@ -616,7 +614,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 	private int[][] calculateNodeDistances() {
 		int[][] distances = new int[m_nodeCount][];
-		LinkedList queue = new LinkedList();
+		LinkedList<Integer> queue = new LinkedList<Integer>();
 		boolean[] completedNodes = new boolean[m_nodeCount];
 		int toNode;
 		int fromNode;

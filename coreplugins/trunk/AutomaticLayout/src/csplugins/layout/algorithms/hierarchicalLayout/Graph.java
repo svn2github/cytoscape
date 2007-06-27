@@ -230,8 +230,8 @@ public class Graph {
 		int x;
 
 		for (x = 0; x < nodecount; x++) {
-			edgesFrom[x] = new LinkedList();
-			edgesTo[x] = new LinkedList();
+			edgesFrom[x] = new LinkedList<Integer>();
+			edgesTo[x] = new LinkedList<Integer>();
 		}
 
 		for (x = 0; x < a_edge.length; x++) {
@@ -272,15 +272,15 @@ public class Graph {
 		String linebuf = br.readLine();
 		nodecount = Integer.parseInt(linebuf);
 
-		LinkedList<Edge> edges = new LinkedList();
+		LinkedList<Edge> edges = new LinkedList<Edge>();
 		edgesFrom = new LinkedList[nodecount];
 		edgesTo = new LinkedList[nodecount];
 
 		int x;
 
 		for (x = 0; x < nodecount; x++) {
-			edgesFrom[x] = new LinkedList();
-			edgesTo[x] = new LinkedList();
+			edgesFrom[x] = new LinkedList<Integer>();
+			edgesTo[x] = new LinkedList<Integer>();
 		}
 
 		for (linebuf = br.readLine(); !(linebuf.equals(".")); linebuf = br.readLine()) {
@@ -357,7 +357,7 @@ public class Graph {
 	 * be part of a cycle of length two.
 	*/
 	public Graph getGraphWithoutOneOrTwoCycles() {
-		LinkedList<Edge> newEdges = new LinkedList();
+		LinkedList<Edge> newEdges = new LinkedList<Edge>();
 		int x;
 
 		for (x = 0; x < edge.length; x++) {
@@ -387,11 +387,11 @@ public class Graph {
 	 * @return a graph without duplicate edges
 	*/
 	public Graph getGraphWithoutMultipleEdges() {
-		LinkedList<Edge> newEdges = new LinkedList();
+		LinkedList<Edge> newEdges = new LinkedList<Edge>();
 		int edgeFrom;
 
 		for (edgeFrom = 0; edgeFrom < nodecount; edgeFrom++) {
-			HashSet seenEdgeTo = new HashSet();
+			HashSet<Integer> seenEdgeTo = new HashSet<Integer>();
 			Iterator iter = edgesFrom[edgeFrom].iterator();
 
 			while (iter.hasNext()) {
@@ -420,12 +420,12 @@ public class Graph {
 	*/
 	public int[] componentIndex() {
 		int[] cI = new int[nodecount];
-		LinkedList[] componentNode = new LinkedList[nodecount];
+		LinkedList<Integer>[] componentNode = new LinkedList[nodecount];
 		int x;
 
 		for (x = 0; x < nodecount; x++) {
 			cI[x] = x;
-			componentNode[x] = new LinkedList();
+			componentNode[x] = new LinkedList<Integer>();
 			componentNode[x].add(new Integer(x));
 		}
 
@@ -508,10 +508,10 @@ public class Graph {
 			}
 		}
 
-		LinkedList[] partitionEdges = new LinkedList[numberOfPartitions];
+		LinkedList<Edge>[] partitionEdges = new LinkedList[numberOfPartitions];
 
 		for (x = 0; x < numberOfPartitions; x++) {
-			partitionEdges[x] = new LinkedList();
+			partitionEdges[x] = new LinkedList<Edge>();
 		}
 
 		for (x = 0; x < edge.length; x++) {
@@ -596,18 +596,18 @@ public class Graph {
 
 		LinkedList[] simpleEdgesTo = simplifiedGraph.edgesTo;
 		LinkedList[] simpleEdgesFrom = simplifiedGraph.edgesFrom;
-		LinkedList[] bucket = new LinkedList[(2 * nodecount) - 3];
-		LinkedList Sr = new LinkedList();
-		LinkedList Sl = new LinkedList();
+		LinkedList<Integer>[] bucket = new LinkedList[(2 * nodecount) - 3];
+		LinkedList<Integer> Sr = new LinkedList<Integer>();
+		LinkedList<Integer> Sl = new LinkedList<Integer>();
 		final int bucketOffset = nodecount - 2;
 		int x;
 
 		for (x = 0; x < bucket.length; x++) {
-			bucket[x] = new LinkedList();
+			bucket[x] = new LinkedList<Integer>();
 		}
 
-		LinkedList sink = bucket[0];
-		LinkedList source = bucket[bucket.length - 1];
+		LinkedList<Integer>sink = bucket[0];
+		LinkedList<Integer>source = bucket[bucket.length - 1];
 		;
 
 		for (x = 0; x < nodecount; x++) {
@@ -756,7 +756,7 @@ public class Graph {
 			priorityIndex[cycleEliminationPriority[x]] = x;
 		}
 
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Edge> newEdges = new LinkedList<Edge>();
 
 		for (x = 0; x < edge.length; x++) {
 			int edgeFrom = edge[x].getFrom();
@@ -826,15 +826,15 @@ public class Graph {
 			priorityIndex[topologicalOrder[x]] = x;
 		}
 
-		LinkedList newEdges = new LinkedList();
-		LinkedHashSet[] descendants = new LinkedHashSet[nodecount];
+		LinkedList<Edge> newEdges = new LinkedList<Edge>();
+		LinkedHashSet<Integer>[] descendants = new LinkedHashSet[nodecount];
 		int nodeIndex;
 
 		for (nodeIndex = topologicalOrder.length - 1; nodeIndex >= 0; nodeIndex--) {
 			int nodeId = topologicalOrder[nodeIndex];
 
 			/* determine topologically ordered list of children */
-			LinkedHashSet daughters = new LinkedHashSet(edgesFrom[nodeId]);
+			LinkedHashSet daughters = new LinkedHashSet<Integer>(edgesFrom[nodeId]);
 			IntSortNode[] daughter = new IntSortNode[daughters.size()];
 			int daughterIndex = 0;
 			Iterator iter = daughters.iterator();
@@ -852,9 +852,9 @@ public class Graph {
 
 				if (descendants[nodeId] == null) {
 					if (descendants[daughterId] == null) {
-						descendants[nodeId] = new LinkedHashSet();
+						descendants[nodeId] = new LinkedHashSet<Integer>();
 					} else {
-						descendants[nodeId] = new LinkedHashSet(descendants[daughterId]);
+						descendants[nodeId] = new LinkedHashSet<Integer>(descendants[daughterId]);
 					}
 
 					newEdges.add(new Edge(nodeId, daughterId));
@@ -964,7 +964,7 @@ public class Graph {
 		}
 
 		int[][] parentLabels = new int[nodecount][];
-		LinkedHashSet eligible = new LinkedHashSet((nodecount * 3) / 2);
+		LinkedHashSet<Integer> eligible = new LinkedHashSet<Integer>((nodecount * 3) / 2);
 		boolean[] onEligible = new boolean[nodecount];
 
 		/* add all sources and isolated nodes to eligible list */
@@ -1046,7 +1046,7 @@ NEXTCHILD:
 
 		eligible.clear();
 
-		LinkedHashSet nominated = new LinkedHashSet();
+		LinkedHashSet<Integer> nominated = new LinkedHashSet<Integer>();
 
 		/* add all sinks and isolated nodes to eligible */
 		for (x = 0; x < nodecount; x++) {
@@ -1171,7 +1171,7 @@ NEXTPARENT:
 		double[] median = new double[nodecount];
 		double[] baryCenter = new double[nodecount];
 		int[] nextFreeSpotOnLayer = new int[nodecount + 1];
-		LinkedList[] nodesOnLayer = new LinkedList[nodecount + 1];
+		LinkedList<Integer>[] nodesOnLayer = new LinkedList[nodecount + 1];
 		int x;
 		int topLayer = 0;
 
@@ -1182,7 +1182,7 @@ NEXTPARENT:
 			int nLayer = vertexLayer[x];
 
 			if (nodesOnLayer[nLayer] == null) {
-				nodesOnLayer[nLayer] = new LinkedList();
+				nodesOnLayer[nLayer] = new LinkedList<Integer>();
 			}
 
 			nodesOnLayer[nLayer].add(new Integer(x));

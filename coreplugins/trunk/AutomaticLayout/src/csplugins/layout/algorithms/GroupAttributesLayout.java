@@ -153,7 +153,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getInitialAttributeList() {
+	public List<String> getInitialAttributeList() {
 		return null;
 	}
 

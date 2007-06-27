@@ -67,7 +67,7 @@ public class LayoutNode {
 	private NodeView nodeView;
 	private int index;
 	private boolean isLocked = false;
-	private ArrayList neighbors = null;
+	private ArrayList<LayoutNode> neighbors = null;
 
 	/**
 	   * Empty constructor
@@ -87,7 +87,7 @@ public class LayoutNode {
 		this.index = index;
 		this.x = nodeView.getXPosition();
 		this.y = nodeView.getYPosition();
-		this.neighbors = new ArrayList();
+		this.neighbors = new ArrayList<LayoutNode>();
 	}
 
 	/**
@@ -178,8 +178,8 @@ public class LayoutNode {
 	 *
 	 * @return        List of all of the neighbors (nodes with shared edges) of this node.
 	 */
-	public List getNeighbors() {
-		return (List) this.neighbors;
+	public List<LayoutNode> getNeighbors() {
+		return this.neighbors;
 	}
 
 	/**

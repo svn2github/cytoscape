@@ -196,7 +196,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	 *
 	 * @returns List of our "special" weights
 	 */
-	public List getInitialAttributeList() {
+	public List<String> getInitialAttributeList() {
 		ArrayList<String> attList = new ArrayList<String>();
 		attList.add("(none)");
 
@@ -243,7 +243,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 
 		// nodesList is deprecated, so we need to create our own so
 		// that we can hand it off to the sort routine
-		List nodes = partition.getNodeList();
+		List<LayoutNode> nodes = partition.getNodeList();
 
 		if (this.attribute != null)
 			Collections.sort(nodes, new AttributeComparator());
@@ -264,13 +264,11 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		}
 	}
 
-	private class AttributeComparator implements Comparator {
+	private class AttributeComparator implements Comparator<LayoutNode> {
 		private AttributeComparator() {
 		}
 
-		public int compare(Object oo1, Object oo2) {
-			LayoutNode o1 = (LayoutNode) oo1;
-			LayoutNode o2 = (LayoutNode) oo2;
+		public int compare(LayoutNode o1, LayoutNode o2) {
 
 			byte type = data.getType(attribute);
 

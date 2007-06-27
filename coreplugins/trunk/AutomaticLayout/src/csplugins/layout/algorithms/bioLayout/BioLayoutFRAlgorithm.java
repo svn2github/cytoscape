@@ -141,7 +141,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * of the displacement.  When the slope is (approximately) 0, we're
 	 * done.
 	 */
-	private ArrayList displacementArray;
+	private ArrayList<Double> displacementArray;
 
 	/**
 	 * The partition we're laying out
@@ -165,7 +165,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		supportWeights = supportEdgeWeights;
 
-		displacementArray = new ArrayList(100);
+		displacementArray = new ArrayList<Double>(100);
 		this.initializeProperties();
 	}
 

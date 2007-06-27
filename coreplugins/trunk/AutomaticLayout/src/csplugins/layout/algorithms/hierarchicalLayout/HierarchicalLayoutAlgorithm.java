@@ -46,8 +46,6 @@ import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import cytoscape.task.TaskMonitor;
-
 import cytoscape.view.CyNetworkView;
 
 import giny.view.EdgeView;
@@ -288,7 +286,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		final int numLayoutNodes = (numSelectedNodes < 1) ? numNodes : numSelectedNodes;
 		NodeView[] nodeView = new NodeView[numNodes];
 		int nextNode = 0;
-		HashMap<Integer, Integer> ginyIndex2Index = new HashMap(numNodes * 2);
+		HashMap<Integer, Integer> ginyIndex2Index = new HashMap<Integer, Integer>(numNodes * 2);
 
 		if (numSelectedNodes > 1) {
 			Iterator iter = selectedNodes.iterator();
@@ -318,7 +316,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			return;
 
 		/* create edge list from edges between selected nodes */
-		LinkedList<Edge> edges = new LinkedList();
+		LinkedList<Edge> edges = new LinkedList<Edge>();
 		Iterator iter = networkView.getEdgeViewsIterator();
 
 		while (iter.hasNext()) {

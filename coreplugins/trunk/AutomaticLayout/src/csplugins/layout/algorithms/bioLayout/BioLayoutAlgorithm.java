@@ -190,8 +190,8 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 *
 	 * @returns List of our "special" weights
 	 */
-	public List getInitialAttributeList() {
-		ArrayList list = new ArrayList();
+	public List<String> getInitialAttributeList() {
+		ArrayList<String> list = new ArrayList<String>();
 		list.add(UNWEIGHTEDATTRIBUTE);
 
 		return list;
@@ -514,7 +514,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 			// much cleaner
 			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly,
 			                                                edgeAttribute);
-			partitionList = new ArrayList(1);
+			partitionList = new ArrayList<LayoutPartition>(1);
 			partitionList.add(partition);
 		} else {
 			partitionList = LayoutPartition.partition(network, networkView, selectedOnly,

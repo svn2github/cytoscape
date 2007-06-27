@@ -116,12 +116,12 @@ public class LayoutPartition {
 	 * @param edgeCount    The number of edges in the new partition.
 	 */
 	public LayoutPartition(int nodeCount, int edgeCount) {
-		nodeList = new ArrayList(nodeCount);
-		edgeList = new ArrayList(edgeCount);
+		nodeList = new ArrayList<LayoutNode>(nodeCount);
+		edgeList = new ArrayList<LayoutEdge>(edgeCount);
 		partitionNumber = 1;
 
 		if (nodeToLayoutNode == null)
-			nodeToLayoutNode = new HashMap(nodeCount);
+			nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(nodeCount);
 	}
 
 	/**
@@ -137,11 +137,11 @@ public class LayoutPartition {
 	public LayoutPartition(CyNetwork network, CyNetworkView networkView, boolean selectedOnly,
 	                       String edgeAttribute) {
 		// Initialize
-		nodeList = new ArrayList(network.getNodeCount());
-		edgeList = new ArrayList(network.getEdgeCount());
+		nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
+		edgeList = new ArrayList<LayoutEdge>(network.getEdgeCount());
 
 		if (nodeToLayoutNode == null)
-			nodeToLayoutNode = new HashMap(network.getNodeCount());
+			nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(network.getNodeCount());
 
 		// Initialize/reset edge weighting
 		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
@@ -542,7 +542,7 @@ public class LayoutPartition {
 	private void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
 	                                boolean selectedOnly) {
 		int nodeIndex = 0;
-		this.nodeList = new ArrayList(network.getNodeCount());
+		this.nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
 
 		Set selectedNodes = null;
 		Iterator iter = networkView.getNodeViewsIterator();
@@ -646,15 +646,15 @@ public class LayoutPartition {
 	 * @param edgeAttribute the attribute to use for edge weighting
 	 * @return a List of LayoutPartitions
 	 */
-	public static List partition(CyNetwork network, CyNetworkView networkView,
+	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
 	                             boolean selectedOnly, String edgeAttribute) {
-		ArrayList partitions = new ArrayList();
+		ArrayList<LayoutPartition> partitions = new ArrayList<LayoutPartition>();
 
 		nodesSeenMap = new IntIntHash();
 		edgesSeenMap = new IntIntHash();
 
 		IntObjHash nodesToViews = new IntObjHash();
-		nodeToLayoutNode = new HashMap(network.getNodeCount());
+		nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(network.getNodeCount());
 
 		// Initialize the maps
 		Iterator nodeViewIter = networkView.getNodeViewsIterator();
@@ -715,17 +715,15 @@ public class LayoutPartition {
 		}
 
 		// Now sort the partitions based on the partition's node count
-		Object[] parts = partitions.toArray();
+		LayoutPartition[] a = new LayoutPartition[1];
+		LayoutPartition[] parts = partitions.toArray(a);
 		Arrays.sort(parts,
-		            new Comparator() {
-				public int compare(Object o1, Object o2) {
-					LayoutPartition p1 = (LayoutPartition) o1;
-					LayoutPartition p2 = (LayoutPartition) o2;
-
+		            new Comparator<LayoutPartition>() {
+				public int compare(LayoutPartition p1, LayoutPartition p2) {
 					return (p2.size() - p1.size());
 				}
 
-				public boolean equals(Object obj) {
+				public boolean equals(LayoutPartition obj) {
 					return false;
 				}
 			});
