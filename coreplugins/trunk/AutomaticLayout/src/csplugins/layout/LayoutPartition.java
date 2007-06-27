@@ -32,12 +32,12 @@
  */
 package csplugins.layout;
 
-import cern.colt.map.OpenIntIntHashMap;
-import cern.colt.map.OpenIntObjectHashMap;
-
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.Profile;
+
+import cytoscape.util.intr.IntIntHash;
+import cytoscape.util.intr.IntObjHash;
 
 import cytoscape.*;
 
@@ -72,8 +72,8 @@ public class LayoutPartition {
 	private ArrayList<LayoutNode> nodeList;
 	private ArrayList<LayoutEdge> edgeList;
 	private static HashMap<CyNode, LayoutNode> nodeToLayoutNode = null;
-	private static OpenIntIntHashMap nodesSeenMap = null;
-	private static OpenIntIntHashMap edgesSeenMap = null;
+	private static IntIntHash nodesSeenMap = null;
+	private static IntIntHash edgesSeenMap = null;
 	private int nodeIndex = 0;
 	private int partitionNumber = 0;
 
@@ -160,7 +160,7 @@ public class LayoutPartition {
 	 * @param nv the NodeView of the node to add
 	 * @param locked a boolean value to determine if this node is locked or not
 	 */
-	public void addNode(NodeView nv, boolean locked) {
+	protected void addNode(NodeView nv, boolean locked) {
 		CyNode node = (CyNode) nv.getNode();
 		LayoutNode v = new LayoutNode(nv, nodeIndex++);
 		nodeList.add(v);
@@ -186,7 +186,7 @@ public class LayoutPartition {
 	 * @param edgeAttribute    the attribute name (if any) that contains the
 	 *                      weights to use for this edge
 	 */
-	public void addEdge(CyEdge edge, String edgeAttribute) {
+	protected void addEdge(CyEdge edge, String edgeAttribute) {
 		LayoutEdge newEdge = new LayoutEdge(edge);
 		updateWeights(newEdge, edgeAttribute);
 		edgeList.add(newEdge);
@@ -202,7 +202,7 @@ public class LayoutPartition {
 	 * @param edgeAttribute    the attribute name (if any) that contains the
 	 *                      weights to use for this edge
 	 */
-	public void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2, String edgeAttribute) {
+	protected void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2, String edgeAttribute) {
 		LayoutEdge newEdge = new LayoutEdge(edge, v1, v2);
 		updateWeights(newEdge, edgeAttribute);
 		edgeList.add(newEdge);
@@ -650,10 +650,10 @@ public class LayoutPartition {
 	                             boolean selectedOnly, String edgeAttribute) {
 		ArrayList partitions = new ArrayList();
 
-		nodesSeenMap = new OpenIntIntHashMap(network.getNodeCount());
-		edgesSeenMap = new OpenIntIntHashMap(network.getEdgeCount());
+		nodesSeenMap = new IntIntHash();
+		edgesSeenMap = new IntIntHash();
 
-		OpenIntObjectHashMap nodesToViews = new OpenIntObjectHashMap(network.getNodeCount());
+		IntObjHash nodesToViews = new IntObjHash();
 		nodeToLayoutNode = new HashMap(network.getNodeCount());
 
 		// Initialize the maps
@@ -662,8 +662,8 @@ public class LayoutPartition {
 		while (nodeViewIter.hasNext()) {
 			NodeView nv = (NodeView) nodeViewIter.next();
 			int node = nv.getNode().getRootGraphIndex();
-			nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
-			nodesToViews.put(node, nv);
+			nodesSeenMap.put(-node, m_NODE_HAS_NOT_BEEN_SEEN);
+			nodesToViews.put(-node, nv);
 		}
 
 		// Initialize/reset edge weighting
@@ -674,7 +674,7 @@ public class LayoutPartition {
 
 		while (edgeIter.hasNext()) {
 			int edge = ((CyEdge) edgeIter.next()).getRootGraphIndex();
-			edgesSeenMap.put(edge, m_NODE_HAS_NOT_BEEN_SEEN);
+			edgesSeenMap.put(-edge, m_NODE_HAS_NOT_BEEN_SEEN);
 		}
 
 		// OK, now get new iterators and traverse the graph
@@ -691,14 +691,14 @@ public class LayoutPartition {
 			int nodeIndex = node.getRootGraphIndex();
 
 			// Have we seen this already?
-			if (nodesSeenMap.get(nodeIndex) == m_NODE_HAS_BEEN_SEEN)
+			if (nodesSeenMap.get(-nodeIndex) == m_NODE_HAS_BEEN_SEEN)
 				continue;
 
 			// Nope, first time
 			LayoutPartition part = new LayoutPartition(network.getNodeCount(),
 			                                           network.getEdgeCount());
 
-			nodesSeenMap.put(nodeIndex, m_NODE_HAS_BEEN_SEEN);
+			nodesSeenMap.put(-nodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Traverse through all connected nodes
 			traverse(network, networkView, nodesToViews, node, part, edgeAttribute);
@@ -744,12 +744,12 @@ public class LayoutPartition {
 	      *                         for weights
 	  */
 	private static void traverse(CyNetwork network, CyNetworkView networkView,
-	                             OpenIntObjectHashMap nodesToViews, CyNode node,
+	                             IntObjHash nodesToViews, CyNode node,
 	                             LayoutPartition partition, String edgeAttribute) {
 		int nodeIndex = node.getRootGraphIndex();
 
 		// Get the nodeView
-		NodeView nv = (NodeView) nodesToViews.get(nodeIndex);
+		NodeView nv = (NodeView) nodesToViews.get(-nodeIndex);
 
 		// Add this node to the partition
 		partition.addNode(nv, false);
@@ -765,13 +765,12 @@ public class LayoutPartition {
 			int edgeIndex = incidentEdge.getRootGraphIndex();
 
 			// Have we already seen this edge?
-			if (!edgesSeenMap.containsKey(edgeIndex)
-			    || (edgesSeenMap.get(edgeIndex) == m_NODE_HAS_BEEN_SEEN)) {
+			if (edgesSeenMap.get(-edgeIndex) == m_NODE_HAS_BEEN_SEEN) {
 				// Yes, continue since it means we *must* have seen both sides
 				continue;
 			}
 
-			edgesSeenMap.put(edgeIndex, m_NODE_HAS_BEEN_SEEN);
+			edgesSeenMap.put(-edgeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Make sure we clean up after any previous layouts
 			EdgeView ev = networkView.getEdgeView(incidentEdge);
@@ -792,10 +791,9 @@ public class LayoutPartition {
 			int incidentNodeIndex = otherNode.getRootGraphIndex();
 
 			// Have we seen the connecting node yet?
-			if (nodesSeenMap.containsKey(incidentNodeIndex)
-			    && (nodesSeenMap.get(incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN)) {
-				// Mak it as having been seen
-				nodesSeenMap.put(incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
+			if (nodesSeenMap.get(-incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN) {
+				// Mark it as having been seen
+				nodesSeenMap.put(-incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 				// Traverse through this one
 				traverse(network, networkView, nodesToViews, otherNode, partition, edgeAttribute);

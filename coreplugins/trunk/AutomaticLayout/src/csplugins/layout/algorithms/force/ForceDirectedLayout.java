@@ -67,7 +67,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 	private int numIterations = 100;
 	double defaultSpringCoefficient = -1.0;
-	double defaultSpringLength = 100.0;
+	double defaultSpringLength = -1.0;
 	double defaultNodeMass = 3.0;
 
 	/**
@@ -75,16 +75,23 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	 */
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
-  /**
-   * Minimum and maximum weights.  This is used to
-   * provide a bounds on the weights.
-   */
-  protected double minWeightCutoff = 0;
-  protected double maxWeightCutoff = Double.MAX_VALUE;
+	/**
+	 * Integrators
+	 */
+	String[] integratorArray = {"Runge-Kutta", "Euler"};
+
+	/**
+	 * Minimum and maximum weights.  This is used to
+	 * provide a bounds on the weights.
+	 */
+	protected double minWeightCutoff = 0;
+	protected double maxWeightCutoff = Double.MAX_VALUE;
 
 	private boolean supportWeights = true;
 	private LayoutProperties layoutProperties;
 	Map<LayoutNode,ForceItem> forceItems;
+
+	private Integrator integrator = null;
 	
 	public ForceDirectedLayout() {
 		super();
@@ -263,6 +270,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider",
            		                          Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
 
+		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
+		                                 Tunable.LIST, new Integer(0), 
+		                                 (Object) integratorArray, (Object) null, 0));
+
 		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 
@@ -319,6 +330,18 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		t = layoutProperties.get("edge_attribute");
 		if ((t != null) && (t.valueChanged() || force))
 			edgeAttribute = (t.getValue().toString());
+
+		t = layoutProperties.get("integrator");
+		if ((t != null) && (t.valueChanged() || force)) {
+			if (((Integer) t.getValue()).intValue() == 0)
+				integrator = new RungeKuttaIntegrator();
+			else if (((Integer) t.getValue()).intValue() == 1)
+				integrator = new EulerIntegrator();
+			else
+				return;
+
+			m_fsim.setIntegrator(integrator);
+		}
 	}
 
 	public JPanel getSettingsPanel() {
