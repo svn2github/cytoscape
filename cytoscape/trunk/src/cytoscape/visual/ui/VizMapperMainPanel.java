@@ -113,6 +113,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -1263,6 +1264,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				visualPropertySheetPanel.addProperty(0, newProp);
 
 				expandLastSelectedItem(type.getName());
+				
+				visualPropertySheetPanel.getTable().scrollRectToVisible(new Rectangle(0, 0, 10, 10));
+				visualPropertySheetPanel.repaint();
 
 				return;
 			} else if ((e.getClickCount() == 1) && (category == null)) {
