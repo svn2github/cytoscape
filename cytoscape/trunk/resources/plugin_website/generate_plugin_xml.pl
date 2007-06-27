@@ -105,12 +105,13 @@ sub addVersions
 	my $VersionPlugin = shift || die "Missing required plugin element";
 
 	my $VersionOk = 0;
-
+	
 	# get all possible versions
+	# Note: only pull out those versions whose status is "published", exclude those with status "new", i.e. pending to be curated by CytoStaff
 	my $Versions = $dbh->selectall_hashref
 		("SELECT cy_version, version, plugin_file_id, version_auto_id  
 			FROM plugin_version 
-			WHERE plugin_id = $PluginId", 'version_auto_id');
+			WHERE plugin_id = $PluginId and status = 'published'", 'version_auto_id');
 
 	foreach my $vid (keys %$Versions)
 		{
