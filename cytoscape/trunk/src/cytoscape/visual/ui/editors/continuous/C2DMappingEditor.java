@@ -104,6 +104,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	                                VisualPropertyType type) {
 		editor = new C2DMappingEditor(type);
 
+		if(editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
+			return null;
+		} 
 		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
@@ -246,6 +249,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		/*
 		 * NPE?
 		 */
+		if(allPoints == null) {
+			return;
+		}
 		for (ContinuousMappingPoint point : allPoints) {
 			bound = point.getRange();
 

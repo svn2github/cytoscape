@@ -44,17 +44,7 @@ package cytoscape.visual;
 
 
 //----------------------------------------------------------------------------
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
-import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
+import static cytoscape.visual.VisualPropertyType.*;
 
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.CalculatorFactory;
@@ -384,6 +374,38 @@ public class CalculatorIO {
 
 				// handle normal names
 				// This is how all "modern" properties files should work.
+			} else if (key.startsWith(EDGE_LINETYPE.getPropertyLabel() + ".")) {
+				// This first store is to support deprecated EDGE_LINETYPE.
+				// This should be replaced with line style and line width.
+				storeKey(key, props, calcNames);
+
+				// eventually, these should be the only separations
+				key = updateLegacyKey(key, props, EDGE_LINETYPE.getPropertyLabel(),
+				                      EDGE_LINE_STYLE.getPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
+				storeKey(key, props, calcNames);
+
+				key = updateLegacyKey(key, props, EDGE_LINE_STYLE.getPropertyLabel(),
+				                      EDGE_LINE_WIDTH.getPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericEdgeLineWidthCalculator");
+				storeKey(key, props, calcNames);
+
+			} else if (key.startsWith(NODE_LINETYPE.getPropertyLabel() + ".")) {
+				// This first store is to support deprecated EDGE_LINETYPE.
+				// This should be replaced with line style and line width.
+				storeKey(key, props, calcNames);
+
+				// eventually, these should be the only separations
+				key = updateLegacyKey(key, props, NODE_LINETYPE.getPropertyLabel(),
+				                      NODE_LINE_STYLE.getPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
+				storeKey(key, props, calcNames);
+
+				key = updateLegacyKey(key, props, NODE_LINE_STYLE.getPropertyLabel(),
+				                      NODE_LINE_WIDTH.getPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericNodeLineWidthCalculator");
+				storeKey(key, props, calcNames);
+
 			} else
 				storeKey(key, props, calcNames);
 		}
