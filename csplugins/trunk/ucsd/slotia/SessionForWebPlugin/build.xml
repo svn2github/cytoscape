@@ -29,7 +29,7 @@
   <property name="project.jar.manifest"		location="${manifest.dir}/project.manifest"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../../cytoscape-2.4.1"/>
+  <property name="cytoscape.root.dir"		location="../../../../cytoscape_trunk"/>
   <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
   <!-- Cytoscape directories and files needed for installing -->
   <property name="cytoscape.distro.dir"		location="${cytoscape.root.dir}/build/cytoscape-v2.4.1"/>
@@ -67,7 +67,7 @@
 		
     <mkdir dir="${manifest.dir}"/>
     <manifest file="${project.jar.manifest}">
-      <attribute name="Main-Class" value="${project.jar.main.class}"/>
+      <attribute name="Cytoscape-Plugin" value="${project.jar.main.class}"/>
     </manifest>
     
   </target>
