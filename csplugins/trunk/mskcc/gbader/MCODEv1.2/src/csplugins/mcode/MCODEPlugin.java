@@ -39,6 +39,7 @@ package csplugins.mcode;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 
 import javax.swing.*;
 
@@ -121,5 +122,17 @@ public class MCODEPlugin extends CytoscapePlugin {
      */
     public String describe() {
         return new String("Clusters a network using the MCODE algorithm.");
+    }
+
+    public PluginInfo getPluginInfoObject()
+    {
+    	PluginInfo result = new PluginInfo();
+	result.setName("MCODE");
+	result.setDescription(describe());
+	result.setPluginVersion(1.2);
+	result.setCytoscapeVersion("2.5");
+	result.setCategory(PluginInfo.Category.ANALYSIS);
+	result.addAuthor("Gary Bader", "MSKCC");
+	return result;
     }
 }
