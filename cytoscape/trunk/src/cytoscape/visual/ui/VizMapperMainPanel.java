@@ -185,6 +185,10 @@ import javax.swing.table.TableCellRenderer;
  */
 public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, PopupMenuListener,
                                                           ChangeListener {
+	
+	private static final Color UNUSED_COLOR = new Color(100, 100, 100, 50);
+	
+	
 	// VPT in this list will not be shown in this GUI.
 	public enum DefaultEditor {
 		NODE,
@@ -1015,7 +1019,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		collorCellRenderer.setOddBackgroundColor(new Color(150, 150, 150, 20));
 		collorCellRenderer.setEvenBackgroundColor(Color.white);
 
-		// rend2.setIcon(vmIcon);
 		emptyBoxRenderer.setHorizontalTextPosition(SwingConstants.CENTER);
 		emptyBoxRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyBoxRenderer.setBackground(new Color(0, 200, 255, 20));
@@ -1101,7 +1104,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private void updateTableView() {
 		final PropertySheetTable table = visualPropertySheetPanel.getTable();
 		Property shownProp = null;
-
+		final DefaultTableCellRenderer empRenderer = new DefaultTableCellRenderer();
+		
 		// Number of rows shown now.
 		int rowCount = table.getRowCount();
 
@@ -1141,14 +1145,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 							gradientRenderer.setIcon(icon);
 							rendReg.registerRenderer(shownProp, gradientRenderer);
 						} else if (dataType == Number.class) {
-							continuousRenderer.setIcon(icon);
-							rendReg.registerRenderer(shownProp, continuousRenderer);
+							final DefaultTableCellRenderer cRenderer = new DefaultTableCellRenderer();
+//							continuousRenderer.setIcon(icon);
+							cRenderer.setIcon(icon);
+							rendReg.registerRenderer(shownProp, cRenderer);
 						} else {
-							discreteRenderer.setIcon(icon);
-							rendReg.registerRenderer(shownProp, discreteRenderer);
+							final DefaultTableCellRenderer dRenderer = new DefaultTableCellRenderer();
+//							discreteRenderer.setIcon(icon);
+							dRenderer.setIcon(icon);
+							rendReg.registerRenderer(shownProp, dRenderer);
 						}
 					}
 				}
+			} else if(shownProp != null && shownProp.getCategory() != null && shownProp.getCategory().equals(CATEGORY_UNUSED)) {
+				empRenderer.setForeground(UNUSED_COLOR);
+				rendReg.registerRenderer(shownProp, empRenderer);
 			}
 		}
 
@@ -1380,8 +1391,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			prop.setDisplayName(type.getName());
 			prop.setHiddenObject(type);
 			prop.setValue("Double-Click to create...");
-			prop.setEditable(false);
-			// regr.registerEditor(prop, newMappingTypeEditor);
+			//prop.setEditable(false);
 			visualPropertySheetPanel.addProperty(prop);
 			propList.add(prop);
 		}
@@ -2144,10 +2154,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		Object newValue = e.getNewValue();
-
-		if (type.equals(NODE_SIZE) || type.equals(NODE_WIDTH) || type.equals(NODE_HEIGHT)
-		    || type.equals(EDGE_LINE_WIDTH)) {
-			if (((Number) newValue).doubleValue() == 0) {
+		if (type.getDataType() == Number.class) {
+			if (((Number) newValue).doubleValue() == 0 || (newValue instanceof Number && type.toString().endsWith("OPACITY") && ((Number) newValue).doubleValue()>255)) {
 				//				JOptionPane.showMessageDialog(this, type.getName() + " should be positive number.",
 				//				                              "Value is out of range", JOptionPane.WARNING_MESSAGE);
 				int shownPropCount = table.getRowCount();
@@ -2169,7 +2177,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				return;
-			}
+			} 
 		}
 
 		((DiscreteMapping) mapping).putMapValue(key, newValue);
