@@ -1920,8 +1920,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		} else {
 			typeRootProp = (VizMapperProperty) prop.getParentProperty();
-			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getHiddenObject();
+			
+			if(prop.getParentProperty() == null) {
+				return;
+			}
+			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty()).getHiddenObject();
 		}
 
 		/*
@@ -1964,6 +1967,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				return;
 			}
 
+			System.out.println("Mapping new val = " + e.getNewValue());
+			if(e.getNewValue().toString().endsWith("Mapper") == false) {
+				return;
+			}
 			switchMapping(prop, e.getNewValue().toString(), prop.getParentProperty().getValue());
 
 			/*
@@ -2269,6 +2276,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 
 		Class mapperClass = catalog.getMapping(newMappingName);
+		if(mapperClass == null) {
+			return null;
+		}
 
 		// create the selected mapper
 		Class[] conTypes = { Object.class, byte.class };
