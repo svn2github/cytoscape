@@ -87,6 +87,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 	result.setPluginVersion(2.2);
 	result.setCytoscapeVersion("2.4");
 	result.setCategory(PluginInfo.Category.ANALYSIS);
+	result.addAuthor("Ryan M. Kelley", "UCSD");
 	return result;
   }
 
