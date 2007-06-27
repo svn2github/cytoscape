@@ -23,6 +23,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
@@ -76,6 +77,17 @@ public class ActiveModulesUI extends CytoscapePlugin {
       "interaction network to find expression activated subnetworks, " +
       "i.e., modules.";
     return desc;
+  }
+
+  public PluginInfo getPluginInfoObject()
+  {
+  	PluginInfo result = new PluginInfo();
+	result.setName("jActiveModules");
+	result.setDescription(describe());
+	result.setPluginVersion(2.2);
+	result.setCytoscapeVersion("2.4");
+	result.setCategory(PluginInfo.Category.ANALYSIS);
+	return result;
   }
 
   /**

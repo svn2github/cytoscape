@@ -12,7 +12,7 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="cyto.lib.dir" value="../../../../cytoscape/lib"/>
+	<property name="cyto.lib.dir" value="../../../../cytoscape_trunk/lib"/>
 	<property name="lib.dir" value="lib"/>
 	
   	<!-- Temporary build directories -->
@@ -26,7 +26,7 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
-		<pathelement path="../../../../cytoscape/build/classes"/>
+		<pathelement path="../../../../cytoscape_trunk/build/classes"/>
 		<fileset dir="${cyto.lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
@@ -50,7 +50,7 @@
 	
 	<!-- Target to create Cytoscape Jar File  -->
 	<target name="build_cytoscape">
-		<ant antfile="../../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
+		<ant antfile="../../../../cytoscape_trunk/build.xml" inheritAll="false" target="jar"/>
 	</target>
 
         <!-- Target to create the javadoc information -->
@@ -78,6 +78,9 @@
 	   	<fileset dir="${lib.dir}" includes="*"/>
 	   </unzip>
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
+			<manifest>
+			<attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>
+			</manifest>
 			<fileset dir="${build.classes}"/>
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
