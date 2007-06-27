@@ -9,6 +9,7 @@ import cytoscape.data.CyAttributes;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -78,6 +79,11 @@ public class Tunable {
 	final public static int EDGEATTRIBUTE = 5;
 
 	/**
+	 *
+	 */
+	final public static int LIST = 6;
+
+	/**
 	 * Flags
 	 */
 	final public static int NOINPUT = 0x1;
@@ -145,10 +151,13 @@ public class Tunable {
 	 *             the Tunable.  The type not only impact the
 	 *             way that the value is interpreted, but also
 	 *             the component used for the LayoutSettingsDialog
-	 * @param value The initial (default) value of the Tunable
+	 * @param value The initial (default) value of the Tunable.  This
+	 *             is a String in the case of an EDGEATTRIBUTE or
+	 *             NODEATTRIBUTE tunable, it is an Integer index 
+	 *             a LIST tunable.
 	 * @param lowerBound An Object that either represents the lower
-	 *             bounds of a numeric Tunable or the list of values
-	 *             for an attribute list.
+	 *             bounds of a numeric Tunable or an array of values
+	 *             for an attribute (or other type of) list.
 	 * @param upperBound An Object that represents the upper bounds
 	 *             of a numeric Tunable.
 	 * @param flag The initial value of the flag.  This can be
@@ -302,6 +311,9 @@ public class Tunable {
 			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 			inputField = getAttributePanel(edgeAttributes);
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
+		} else if (type == LIST) {
+			inputField = getListPanel((Object[])lowerBound);
+			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		}
 
 		return tunablePanel;
@@ -341,6 +353,22 @@ public class Tunable {
 	}
 
 	/**
+	 * This method is used by getPanel to construct a JComboBox that
+	 * contains a list of values the user can choose from.
+	 *
+	 * @param list Array of Objects containing the list
+	 * @return a JComboBox with an entry for each item on the list
+	 */
+	private JComboBox getListPanel(Object[] list) {
+
+		// Set our current value as selected
+		JComboBox box = new JComboBox(list);
+		box.setSelectedIndex(((Integer)value).intValue());
+
+		return box;
+	}
+
+	/**
 	 * This method is called to extract the user-entered data from the
 	 * JPanel and store it as our value.
 	 */
@@ -356,6 +384,8 @@ public class Tunable {
 			newValue = new Integer(((JTextField) inputField).getText());
 		} else if (type == BOOLEAN) {
 			newValue = new Boolean(((JCheckBox) inputField).isSelected());
+		} else if (type == LIST ) {
+			newValue = new Integer(((JComboBox) inputField).getSelectedIndex());
 		} else if ((type == NODEATTRIBUTE) || (type == EDGEATTRIBUTE)) {
 			newValue = (String) ((JComboBox) inputField).getSelectedItem();
 		} else {
