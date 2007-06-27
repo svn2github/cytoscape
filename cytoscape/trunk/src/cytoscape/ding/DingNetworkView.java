@@ -38,6 +38,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import cytoscape.layout.LayoutAlgorithm;
 
@@ -120,6 +121,13 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualStyle getVisualStyle() {
+		if (vs == null)
+		{
+			String defaultStyle = CytoscapeInit.getProperties().getProperty("defaultVisualStyle");
+			if (defaultStyle == null)
+				defaultStyle = "default";
+			setVisualStyle(defaultStyle);
+		}
 		return vs;
 	}
 
