@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-  <title>5th Annual Cytoscape Retreat and Symposium</title>
+  <title>5th Annual Cytoscape Symposium and Retreat</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/cytoretreat.css">
   <link rel="../shortcut icon" href="../images/cyto.ico">
 </head>
@@ -26,8 +26,8 @@
   <div id="content">
   <div class="item">
   <div class="top">
-   <h2>Cytoscape Developers Retreat and Symposium</h2>
-   <h3>November 5-9, 2007</h3>
+   <h2>Cytoscape Symposium and Developers Retreat</h2>
+   <h3>November 6-9, 2007</h3>
    <h3>Academic Medical Center, University of Amsterdam, Netherlands</h3>
   </div>
 

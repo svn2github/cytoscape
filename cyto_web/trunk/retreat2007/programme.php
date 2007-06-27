@@ -37,7 +37,7 @@ The main event is the Public Symposium on November 8<sup>th</sup> entitled: <a h
 Preceding the symposium is a <a href="#nov_7"><strong>Demoday</strong></a> (November 7<sup>th</sup>) that will be filled with hands-on training sessions and demonstrations of plugin developers.
 <br>
 <br>
-Surrounding these are the so-called hackathon days; <a href="#nov_5">November 5<sup>th</sup></a>, <a href="#nov_6">6<sup>th</sup></a> and <a href="#nov_9">9<sup>th</sup></a>. 
+Surrounding these are the so-called hackathon days; <a href="#nov_6">6<sup>th</sup></a> and <a href="#nov_9">9<sup>th</sup></a>. 
 These are targeted at the core-development team of Cytoscape and (plugin-)developers contributing to the source code.
 </p>
 <hr>

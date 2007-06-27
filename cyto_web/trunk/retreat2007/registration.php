@@ -29,7 +29,7 @@
   <div class="top">
    <h2>Registration</h2>
   </div>
-Registration will be announced in due course (current estimation: June 2007)
+Registration will be announced in due course (current estimation: July 2007)
 
   </div>
   </div>

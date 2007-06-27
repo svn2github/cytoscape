@@ -1,10 +1,10 @@
 <table id="adambanner" summary="" border="0" cellpadding="0" cellspacing="0" width="100%">
   <tbody>
-    <tr >
+    <tr>
       <td>
       <a href="http://www.cytoscape.org" target="_blank"><img src="images/cyto_icon100.png" width=100 height=100 border="0" align="left" alt="Cytoscape" /></a>
       </td>
-      <td >
+      <td>
       <img src="images/cytoretreattitle.png" width="100%" height=100 border="0" align="center"/>
       </td>
     </tr>
