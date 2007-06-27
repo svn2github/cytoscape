@@ -1942,16 +1942,22 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (parentValue != null) {
 				ctrAttrName = parentValue.toString();
 
-				final Class dataClass = CyAttributesUtils.getClass(ctrAttrName,
-				                                                   Cytoscape.getNodeAttributes());
+				final Class dataClass;
+				
+				if(type.isNodeProp()) {
+					dataClass = CyAttributesUtils.getClass(ctrAttrName,Cytoscape.getNodeAttributes());
 
+				} else {
+					dataClass = CyAttributesUtils.getClass(ctrAttrName,Cytoscape.getEdgeAttributes());
+
+				}
+				                                                   
 				if (e.getNewValue().equals("Continuous Mapper")
-				    && ((dataClass != Integer.class) && (dataClass != Double.class))) {
+				    && ((dataClass != Integer.class) && (dataClass != Double.class) && (dataClass != Float.class) )) {
 					JOptionPane.showMessageDialog(this,
 					                              "Continuous Mapper can be used with Numbers only.",
 					                              "Incompatible Mapping Type!",
 					                              JOptionPane.INFORMATION_MESSAGE);
-
 					return;
 				}
 			} else {
