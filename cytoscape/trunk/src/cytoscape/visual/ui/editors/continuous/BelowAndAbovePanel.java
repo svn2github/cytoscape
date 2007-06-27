@@ -54,9 +54,9 @@ public class BelowAndAbovePanel extends JPanel {
         this.type = type;
 
         if (below)
-            this.setToolTipText("Click triangle to set below color...");
+            this.setToolTipText("Double-click triangle to set below color...");
         else
-            this.setToolTipText("Click triangle to set above color...");
+            this.setToolTipText("Double-click triangle to set above color...");
 
         this.addMouseListener(new MouseEventHandler(this));
     }
