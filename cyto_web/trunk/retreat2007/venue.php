@@ -38,6 +38,7 @@
   <a href="http://www.iamsterdam.com/introducing" target="_blank"><p>Amsterdam portal</a><br>
   <h3>AMC</h3>
   <a href="http://www.amc.nl" target="_blank"><p>Academic Medical Center, University of Amsterdam</a><br>
+  <h3>Hotel and route information will be available shortly</h3>
   </td>
   <td>
   <img border="0" align="right" alt="Students at AMC" height="500" width="334" src="images/amc/students_in_sun.jpg">
