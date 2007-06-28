@@ -2199,17 +2199,26 @@ public class DGraphView implements GraphView, Printable {
 	 * Method to return a reference to an Image object,
 	 * which represents the current network view.
 	 *
-	 * @param width int
-	 * @param height int
+	 * @param width Width of desired image.
+	 * @param height Height of desired image.
+	 * @param shrink Percent to shrink the network shown in the image. 
+	 * This doesn't shrink the image, just the network shown, as if the user zoomed out.
+	 * Can be between 0 and 1, if not it will default to 1.  
 	 * @return Image
 	 * @throws IllegalArgumentException
 	 */
-	public Image createImage(int width, int height) {
+	public Image createImage(int width, int height, double shrink) {
 
 		// check args
 		if (width < 0 || height < 0) {
 			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): " +
 											   "width and height arguments must be greater than zero");
+		}
+
+		if ( shrink < 0 || shrink > 1.0 ) {
+			System.out.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
+			                   + shrink + "  using default of 1.0");
+			shrink = 1.0;
 		}
 
 		// create image to return
@@ -2226,6 +2235,7 @@ public class DGraphView implements GraphView, Printable {
 		dim = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
         fitContent();
+		setZoom( getZoom() * shrink );
 		m_networkCanvas.paint(g);
 		m_networkCanvas.setSize(dim);
 
