@@ -542,11 +542,11 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				taskMonitor.setStatus(pluginInfo.getName() + " v"
 						+ pluginInfo.getPluginVersion() + " loading...");
 			} catch (java.io.IOException ioe) {
-				pluginInfo = null;
 				taskMonitor
 						.setException(ioe, "Failed to download "
 								+ pluginInfo.getName() + " from "
 								+ pluginInfo.getUrl());
+				pluginInfo = null;
 			} catch (cytoscape.plugin.ManagerException me) {
 				pluginInfo = null;
 				taskMonitor.setException(me, me.getMessage());
