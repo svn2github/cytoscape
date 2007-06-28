@@ -6,17 +6,22 @@
 # -image [ps|pdf|png]
 # -network write SIF file
 
-OPTS="-html -run -image png" #default options, #
-OPTS=$1
+if [ -z "$1" ]; then
+    OPTS="-html -run -image png" #default options, #
+else
+    OPTS=$1
+fi
 
 #allProbes.txt.withSize
-RUN_HARBISON=1
+RUN_HARBISON=
 RUN_BOYER=
 RUN_SIMON=
 RUN_WORKMAN=
 RUN_YEAST_ANNOTATION=
 RUN_GASCH=
 RUN_HUGHES=
+RUN_GIAEVER=
+RUN_TAN=1
 
 echo "### OPTS = $OPTS"
 
@@ -27,11 +32,11 @@ mkdir output/harbison_YPD
 mkdir output/harbison_YPD_noY
 mkdir output/harbison_Other
 mkdir output/harbison_Other_noY
-#./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -mtd 30000 -featureType sgd -org sc  output/harbison_YPD $HARBISON/Harbison2004_9.2_forpaper_YPD.1e-3.ORFlists 
+./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -mtd 30000 -featureType sgd -org sc  output/harbison_YPD $HARBISON/Harbison2004_9.2_forpaper_YPD.1e-3.ORFlists 
 
 ./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -mtd 30000 -featureType sgd -org sc  output/harbison_YPD_noY $HARBISON/Harbison2004_9.2_forpaper_YPD.1e-3.noY-element.ORFlists 
 
-#./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -mtd 30000 -featureType sgd -org sc  output/harbison_Other $HARBISON/Harbison2004_9.2_forpaper_Other.1e-3.ORFlists 
+./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -mtd 30000 -featureType sgd -org sc  output/harbison_Other $HARBISON/Harbison2004_9.2_forpaper_Other.1e-3.ORFlists 
 
 ./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -mtd 30000 -featureType sgd -org sc  output/harbison_Other_noY $HARBISON/Harbison2004_9.2_forpaper_Other.1e-3.noY-element.ORFlists 
 }
@@ -114,6 +119,22 @@ PARAMS=" $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -featureType sgd -org sc -mtd 3
 ./cpos.pl $PARAMS output/GO_component $YA/GOcomponent.ORFlists
 ./cpos.pl $PARAMS output/GO_function $YA/GOfunction.ORFlists
 ./cpos.pl $PARAMS output/SGDbiochem_pathway $YA/SGDbiochem_pathway.ORFlists
+}
+
+# Giaever yeast knockout collection phenotyping
+test $RUN_GIAEVER && {
+GIAEVER=/Users/cmak/Desktop/ChIP-papers/Giaever-YKO
+mkdir output/giaever-YKO
+./cpos.pl $OPTS -ks two.sided -bkgdFile $GIAEVER/YKO-ORFs.loc -featureType sgd -featureFile $GIAEVER/YKO-SGD_features.tab -mtd 30000 -org sc  output/giaever-YKO  $GIAEVER/YKO-100.ORFlists
+}
+
+
+# Kai's YAP data
+test $RUN_TAN && {
+TAN=/Users/cmak/Desktop/ChIP-papers/Tan-YAP
+TAN_OUT=output/tan-YAP
+mkdir $TAN_OUT
+./cpos.pl $OPTS -bkgdFile ~/data/all-SGD-ORFs.loc -featureType sgd -mtd 30000 -org sc  $TAN_OUT  $TAN/KT-YAP-NT.chip-regulon.ORFlists
 }
 
 

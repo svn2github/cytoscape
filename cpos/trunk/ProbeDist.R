@@ -58,7 +58,61 @@ viz.chr <- function(dat, mtd.thresh, allchr=1:16,
       }
   }
 
+get.counts <- function(data, size, breaks)
+  {
+
+    if(length(data) == 0) {
+      counts <- rep(0, times=size)
+    }
+    else {
+      h <- hist(data, breaks=breaks, plot=F)
+      counts <- h$counts
+    }
+    return(counts)
+  }
+
 plot.chr <- function(dat, mtd.thresh, allchr=1:16, main="mtd thresh")
+{
+  if(nrow(dat) == 0) { return (NA) }
+  subt <- dat$mtd <= mtd.thresh
+
+  breaks <- seq(min(allchr)-0.5, max(allchr)+0.5, 1)
+
+  subt.L <- subt & (dat$mtd == dat$mid)
+  subt.R <- subt & !subt.L
+  
+  S <- length(allchr)
+  
+  subt.L.counts <- get.counts(data=dat$chr[subt.L],
+                              size=S, breaks=breaks)
+
+  subt.R.counts <- get.counts(data=dat$chr[subt.R],
+                              size=S, breaks=breaks)
+  
+  barplot(rbind(subt.L.counts,
+                subt.R.counts),
+          beside=F,
+          horiz=T,
+          names.arg=allchr,
+          xaxt="n",
+          ylab="Chromosome",
+          col=c("black", "grey"),
+          border=c("black", "grey"),
+          main=paste(main, ":", sprintf("%.2e", mtd.thresh)),
+          sub="left-arm(black), right-arm(grey)",
+          xlab="Number of subtelomeric genes",
+          las=1, cex.axis=0.7)
+
+  y.range <- range(c(subt.L.counts + subt.R.counts))
+  T <- axTicks(1)
+  is.digit <- sapply(T, function(x) { x == round(x) })
+  filter <- filterGreyTicks(T[is.digit], y.range)
+  axis(1, at=T[is.digit & filter], las=1, col="black", col.axis="black")
+  axis(1, at=y.range, las=1, lwd=2)
+}
+
+
+plot.chr.allgenes <- function(dat, mtd.thresh, allchr=1:16, main="mtd thresh")
 {
   if(nrow(dat) == 0) { return (NA) }
   subt <- dat$mtd <= mtd.thresh
@@ -160,22 +214,23 @@ plot.hist.modular <- function(dat, main="", ylim=c(0,20),
   }
 
 
-plot.pvalues <- function(outfile, D.list, all.results, highlight=c("SWI4", "GAT3", "MSN4"))
+plot.pvalues <- function(outfile, D.list, all.results, mtd.thresh=NA, highlight=c("SWI4", "GAT3", "MSN4"))
   {
     cats <- c()
     pvals <- c()
+    fractions <- c()
     
     for(i in 1:length(D.list))
       {
+        i.D <- D.list[[i]]$D
         cats <- c(cats, D.list[[i]]$cat)
-        pvals <- c(pvals, ks.wrapper(all.results$D, D.list[[i]]$D, format=F))
+        pvals <- c(pvals, ks.wrapper(all.results$D, i.D, format=F))
+        fractions <- c(fractions, sum(i.D <= log10(mtd.thresh))/length(i.D))
       }
     
-    res <- data.frame(cats, pvals)
+    res <- data.frame(cats, pvals, fractions)
     o.p <- order(pvals)
     
-##    res[o.p,]
-
     write.table(file=outfile,
                 res[o.p,], quote=F, row.names=F)
 
@@ -187,15 +242,37 @@ plot.pvalues <- function(outfile, D.list, all.results, highlight=c("SWI4", "GAT3
                      paste(cats[hh], collapse=", "), "]"))
         cols[hh] <- "red"
       }
-    barplot(log10(pvals[o.p]), las=2, ylab="KS P-value (log10)", col=cols[o.p])
-    abline(h=log10(1e-3), lty=2, col="red")
+    par(mar=c(5.1, 4.1, 3, 4.1))
+    #barplot(log10(pvals[o.p]), las=2, ylab="KS P-value (log10)", col=cols[o.p],
+    #        ylim=c(min(log10(pvals), na.rm=T), max(fractions, na.rm=T)))
+            
+    #abline(h=log10(1e-3), lty=2, col="red")
+
+    #barplot(fractions[o.p], add=T, border="grey", col="grey", yaxt="n")
+    #axis(4, at=c(0,round(max(fractions), 2)), las=2)
+
+    sig <- 0.001
+    sig.ind <- pvals <= sig
+    cols <- rep("grey", times=length(pvals))
+    cols[sig.ind] <- "black"
+    plot(x=100*fractions, y=(-1 * log10(pvals)),
+         pch=16, cex=0.7, col=cols,
+         ylab="significance (-log10 P-value)",
+         xlab="% subtelomeric")
+    
+    abline(h=-log10(sig), lty=2, col="grey")
+    o.p <- order(pvals)
+    show <- pvals <= sig
+    text(x=100*fractions[show], y=(-1*log10(pvals[show])), labels=cats[show], cex=0.8, pos=4)
   }
+
+GLOBAL.ks.test.alternative="less"
 
 ks.wrapper <- function(v1, v2, format=T)
   {
     if((length(v1) > 0) & (length(v2) > 0))
       {
-        pval <- ks.test(v1, v2, alternative="less")$p.value 
+        pval <- ks.test(v1, v2, alternative=GLOBAL.ks.test.alternative)$p.value 
 
         if(format)
           {

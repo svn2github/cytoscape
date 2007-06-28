@@ -28,6 +28,7 @@ $0: <outputDir> <orflist|featurefiles>+
  -org [sc|hs]             Organism
  -bkgdFile                Location of all probes
  -mtd                     Min Telomere Distance cutoff
+ -ks                      Kolmogorov-Smirnoff test type (less|greater|two.sided)
  -image [ps|pdf|png]      Default is png
 USAGE
 
@@ -44,6 +45,7 @@ my $FEATURE_TYPE = "sgd";
 my $FEATURE_FILE = $ENV{"HOME"} ."/data/SGD_features.tab";
 my $BKGD_FILE = "";
 my $IMAGE_FORMAT = "png";
+my $KS_TEST = "less";
 
 my %CHROMOSOME_FILES = ( sc => $ENV{"HOME"} . "/data/sc-chromosome-data.txt",
 			 hs => $ENV{"HOME"} . "/data/hs-chromosome-data.txt");
@@ -63,6 +65,7 @@ my %CHROMOSOME_FILES = ( sc => $ENV{"HOME"} . "/data/sc-chromosome-data.txt",
      elsif($arg =~ /^-mtd$/) { $MTD_CUTOFF = shift @ARGV }
      elsif($arg =~ /^-run$/) { $RUN_R = 1 }
      elsif($arg =~ /^-image$/) { $IMAGE_FORMAT = shift @ARGV; }
+     elsif($arg =~ /^-ks$/) { $KS_TEST = shift @ARGV; }
      else { push @newArg, $arg }
  }
 }
@@ -109,7 +112,7 @@ foreach my $in (@INPUT_FILES)
 {
     print STDERR "Processing $in...\n";
     die "$in does not exist\n" if(! -e $in);
-    if($in =~ /\.ORFlists$/)
+    if($in =~ /\.ORFlist/)
     {
 	push @geneSets, processORFlist($in);
     }
@@ -340,7 +343,7 @@ EOF
     # Print the ORFlist file name, the TF-specific plot, 
     # and the background distribution plot
     print H join("\n", (tag("h3", $basename), 
-			"All P-values" . "<br>",
+			"All P-values (black), Fraction subtelomeric (grey)" . "<br>",
 			tag("img", "", {src=>$KS_PLOT_FILE, alt=>"all KS pvalues"}),
 			tag("div",
 			    tag("a", "Hide/Swap All", {onClick=>"hide_images()"}) .
@@ -353,13 +356,15 @@ EOF
 				{onClick=>"toggle_element('bkPlot')"}),
 			    {id=>"histograms"})));
     
-    print H "<br>Min Telomere Distance cutoff = $mtdCutoff\n";
-    print H "<table id=\"main\" class=$tableClass>\n";
+    print H "Min Telomere Distance cutoff = [$mtdCutoff]\n";
+    print H "<br>Kolmogorov-Smirnoff test = [$KS_TEST]\n";
+    print H "<br><br><table id=\"main\" class=$tableClass>\n";
     # Print the table header row
     print H tag("tr", 
 		join("\n", tag("th", "Name"), tag("th", "KS Pval"), 
 		     tag("th", "#Genes"),
 		     tag("th", "#Subt"),
+		     tag("th", "Frac."),
 		     tag("th", "Hist"))
 	       ) . "\n";
     
@@ -386,11 +391,13 @@ EOF
 	{
 	    $mouseOver = sprintf("change_image( '%s')", pngForGS($gs, "hist", $IMAGE_FORMAT));
 	}
+	my $Ncat = scalar(@{$gs->orfs()});
 	print H tag("tr",
 		    tag("td", addBreaks($name)) . 
 		    tag("td", $pval) . 
-		    tag("td", scalar(@{$gs->orfs()}), {class=>"center"}) . 
+		    tag("td", $Ncat, {class=>"center"}) . 
 		    tag("td", $Nsubt, {class=>"center"}) . 
+		    tag("td", sprintf("%.2f", $Nsubt/$Ncat), {class=>"center"}) . 
 		    tag("td", 
 			tag("a", "show plot", 
 			    { onMouseOver=>$mouseOver }))
@@ -513,7 +520,7 @@ sub writeRcommands
 source("ProbeDist.R")
 bkgd.max <- NA
 D.list <- list()
-
+GLOBAL.ks.test.alternative <- "$KS_TEST"
 EOF
 
     if($BKGD_FILE ne "")
@@ -569,7 +576,7 @@ dev.off()
     }
 
     print OUT newRImage($OUTDIR . "/" . $KS_PLOT_FILE, $IMAGE_FORMAT, 400, 250);
-    print OUT sprintf("plot.pvalues(%s, D.list, all.results)\n", qt($OUTDIR . "/" . $KS_TAB_FILE));
+    print OUT sprintf("plot.pvalues(outfile=%s, D.list=D.list, all.results=all.results, mtd.thresh=%d)\n", qt($OUTDIR . "/" . $KS_TAB_FILE), $MTD_CUTOFF);
     print OUT qq(dev.off()\n);
 
     close OUT;
