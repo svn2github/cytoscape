@@ -79,13 +79,12 @@ public class PluginManager {
 
 	private static File tempDir;
 
-	private static Set<java.net.URL> pluginURLs;
+	private static List<java.net.URL> pluginURLs;
+	private static List<String> resourcePlugins;
 
 	private static Set<String> loadedPlugins;
 
 	private static HashMap<String, PluginInfo> initializedPlugins;
-
-	private static Set<String> resourcePlugins;
 
 	private static URLClassLoader classLoader;
 
@@ -105,7 +104,7 @@ public class PluginManager {
 	 * 
 	 * @return Set<String> of resource plugins
 	 */
-	public static Set<String> getResourcePlugins() {
+	public static List<String> getResourcePlugins() {
 		return resourcePlugins;
 	}
 
@@ -114,7 +113,7 @@ public class PluginManager {
 	 * 
 	 * @return Set<URL> of plugin URL's
 	 */
-	public static Set<java.net.URL> getPluginURLs() {
+	public static List<java.net.URL> getPluginURLs() {
 		return pluginURLs;
 	}
 
@@ -241,10 +240,11 @@ public class PluginManager {
 		} catch (java.io.IOException E) {
 			E.printStackTrace(); // TODO do something useful with error
 		}
-		pluginURLs = new HashSet<java.net.URL>();
+		//pluginURLs = new HashSet<java.net.URL>();
+		pluginURLs = new ArrayList<java.net.URL>();
 		loadedPlugins = new HashSet<String>();
 		initializedPlugins = new HashMap<String, PluginInfo>();
-		resourcePlugins = new HashSet<String>();
+		resourcePlugins = new ArrayList<String>();
 	}
 
 	/**
@@ -274,24 +274,18 @@ public class PluginManager {
 	}
 
 	/**
-	 * Runs the {@link PluginManager#inquire(String)} method in a seperate
-	 * thread. The given Action object defines what is done with the results.
+	 * Creates a Task for inquiring through a site about plugins.
 	 * 
 	 * @param Url
+	 *            Plugin site to connect to
 	 * @param Action
-	 * @throws IOException
-	 * @throws org.jdom.JDOMException
+	 *            Code to run on the results of the inquiry
+	 * @return
 	 */
-//	public void runThreadedInquiry(String Url, PluginInquireAction Action) {
-//		InquireTask task = new InquireTask(Url, Action);
-//		
-//	}
-
 	public InquireTask getInquireTask(String Url, PluginInquireAction Action) {
 		return new InquireTask(Url, Action);
 	}
-	
-	
+
 	/**
 	 * Registers a currently installed plugin with tracking object. Only useful
 	 * if the plugin was not installed via the install process.
@@ -366,7 +360,7 @@ public class PluginManager {
 		pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.CURRENT);
 
 		if (usingWebstartManager()) { // mark all webstart-installed plugins
-										// for deletion
+			// for deletion
 			pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.DELETE);
 		}
 	}
@@ -468,12 +462,11 @@ public class PluginManager {
 		}
 	}
 
-	
 	public List<PluginInfo> findUpdates(PluginInfo Plugin) throws IOException,
-	org.jdom.JDOMException {
+			org.jdom.JDOMException {
 		return findUpdates(Plugin, null);
 	}
-	
+
 	/**
 	 * Get list of plugins that would update the given plugin.
 	 * 
@@ -481,8 +474,8 @@ public class PluginManager {
 	 * @return List<PluginInfo>
 	 * @throws ManagerException
 	 */
-	public List<PluginInfo> findUpdates(PluginInfo Plugin, JTaskConfig jTaskConfig) throws IOException,
-			org.jdom.JDOMException {
+	public List<PluginInfo> findUpdates(PluginInfo Plugin,
+			JTaskConfig jTaskConfig) throws IOException, org.jdom.JDOMException {
 		final List<PluginInfo> UpdatablePlugins = new ArrayList<PluginInfo>();
 		final Set<PluginInfo> Seen = new HashSet<PluginInfo>();
 		Seen.add(Plugin);
@@ -495,41 +488,37 @@ public class PluginManager {
 		final PluginInfo PluginToUpdate = Plugin;
 		final List<Exception> Exceptions = new ArrayList<Exception>();
 
-		
-		InquireTask task = new InquireTask(Plugin.getDownloadUrl(), new PluginInquireAction() {
+		InquireTask task = new InquireTask(Plugin.getDownloadUrl(),
+				new PluginInquireAction() {
 
-			public boolean displayProgressBar() {
-				return true;
-			}
+					public String getProgressBarMessage() {
+						return "Connecting to "
+								+ PluginToUpdate.getDownloadUrl()
+								+ " to search for updates...";
+					}
 
-			public String getProgressBarMessage() {
-				return "Connecting to " + PluginToUpdate.getDownloadUrl()
-						+ " to search for updates...";
-			}
+					public void inquireAction(List<PluginInfo> Results) {
 
-			public void inquireAction(List<PluginInfo> Results) {
+						if (isExceptionThrown()) {
+							Exceptions.add(0, getIOException());
+							Exceptions.add(1, getJDOMException());
+						}
 
-				if (isExceptionThrown()) {
-					Exceptions.add(0, getIOException());
-					Exceptions.add(1, getJDOMException());
-				}
-
-				for (PluginInfo New : Results) {
-					if (New.getID().equals(PluginToUpdate.getID())
-							&& PluginToUpdate.isNewerPluginVersion(New)) {
-						if (!Seen.contains(New)) {
-							UpdatablePlugins.add(New);
-						} else {
-							Seen.add(New);
+						for (PluginInfo New : Results) {
+							if (New.getID().equals(PluginToUpdate.getID())
+									&& PluginToUpdate.isNewerPluginVersion(New)) {
+								if (!Seen.contains(New)) {
+									UpdatablePlugins.add(New);
+								} else {
+									Seen.add(New);
+								}
+							}
 						}
 					}
-				}
-			}
-		});
+				});
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, null);
 
-		
 		if (Exceptions.size() > 0) {
 			if (Exceptions.get(0) != null) {
 				throw (java.io.IOException) Exceptions.get(0);
@@ -689,7 +678,7 @@ public class PluginManager {
 	 */
 	public void loadPlugin(PluginInfo p) throws MalformedURLException,
 			IOException, ClassNotFoundException {
-		Set<URL> ToLoad = new HashSet<URL>();
+		List<URL> ToLoad = new ArrayList<URL>();
 
 		for (String FileName : p.getFileList()) {
 			if (FileName.endsWith(".jar")) {
@@ -706,15 +695,10 @@ public class PluginManager {
 	 */
 	public void loadPlugins(List<String> p) throws MalformedURLException,
 			IOException, ClassNotFoundException {
-		Set<String> plugins = new HashSet<String>();
-
-		if (p != null) {
-			plugins.addAll(p);
-		}
 
 		// Parse the plugin strings and determine whether they're urls,
 		// files, directories, class names, or manifest file names.
-		for (String currentPlugin : plugins) {
+		for (String currentPlugin : p) {
 			File f = new File(currentPlugin);
 
 			// If the file name ends with .jar add it to the list as a url.
@@ -779,7 +763,7 @@ public class PluginManager {
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
 	 */
-	private void loadURLPlugins(Set<URL> pluginUrls, boolean register)
+	private void loadURLPlugins(List<URL> pluginUrls, boolean register)
 			throws IOException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
@@ -860,9 +844,8 @@ public class PluginManager {
 	}
 
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
-	// used by jars
-	// that do
-	private void loadResourcePlugins(Set<String> resourcePlugins)
+	// used by jars that do
+	private void loadResourcePlugins(List<String> resourcePlugins)
 			throws ClassNotFoundException {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
@@ -1004,9 +987,6 @@ public class PluginManager {
 		public InquireTask(String Url, PluginInquireAction Obj) {
 			url = Url;
 			actionObj = Obj;
-			
-			System.out.println("Creating inquire task with object " + actionObj);
-			
 		}
 
 		public void setTaskMonitor(TaskMonitor monitor)
@@ -1025,13 +1005,12 @@ public class PluginManager {
 		public void run() {
 			List<PluginInfo> Results = null;
 
-			taskMonitor.setStatus( actionObj.getProgressBarMessage() );
+			taskMonitor.setStatus(actionObj.getProgressBarMessage());
 			taskMonitor.setPercentCompleted(-1);
-			
+
 			try {
 				Results = PluginManager.this.inquire(url);
 			} catch (Exception e) {
-				taskMonitor.setException(e, "Failed to read XML");
 
 				if (e.getClass().equals(java.lang.NullPointerException.class)) {
 					e = new org.jdom.JDOMException(
