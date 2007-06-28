@@ -5,46 +5,15 @@
  */
 package cytoscape.dialogs;
 
-import cytoscape.Cytoscape;
-
-//import cytoscape.actions.ExportAsGMLTask;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.Category;
-import cytoscape.bookmarks.DataSource;
-
-import cytoscape.data.ImportHandler;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -57,9 +26,21 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
-
+import javax.swing.ToolTipManager;
 import javax.xml.bind.JAXBException;
+
+import cytoscape.Cytoscape;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.Category;
+import cytoscape.bookmarks.DataSource;
+import cytoscape.data.ImportHandler;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
 
 
 /**
@@ -112,6 +93,8 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 			List<Category> theCategoryList = theBookmarks.getCategory();
 			theCategoryList.add(theCategory);
 		}
+		
+		
 	}
 
 	/**
@@ -171,7 +154,7 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
-		java.awt.GridBagConstraints gridBagConstraints;
+		
 
 		buttonGroup1 = new javax.swing.ButtonGroup();
 		titleLabel = new javax.swing.JLabel();
@@ -185,70 +168,43 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 		titleSeparator = new javax.swing.JSeparator();
 		radioButtonPanel = new javax.swing.JPanel();
 
-		// getContentPane().setLayout(new java.awt.GridBagLayout());
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
 		titleLabel.setText("Import Network File");
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		// gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
-		// getContentPane().add(titleLabel, gridBagConstraints);
+
 		radioButtonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Data Source Type"));
 		buttonGroup1.add(localRadioButton);
 		localRadioButton.setSelected(true);
 		localRadioButton.setText("Local");
 		localRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		localRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 0;
-		// gridBagConstraints.gridy = 1;
-		// gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		// gridBagConstraints.insets = new java.awt.Insets(10, 20, 10, 0);
-		// getContentPane().add(localRadioButton, gridBagConstraints);
+
 		buttonGroup1.add(remoteRadioButton);
 		remoteRadioButton.setText("Remote");
 		remoteRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		remoteRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 1;
-		// gridBagConstraints.gridy = 1;
-		// gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		// getContentPane().add(remoteRadioButton, gridBagConstraints);
+
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
 
 		selectButton.setText("Select");
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 2;
-		// gridBagConstraints.gridy = 2;
-		// gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
-		// getContentPane().add(selectButton, gridBagConstraints);
+
 		importButton.setText("Import");
 		importButton.setName("btnImport");
-		// btnPanel.add(importButton);
+
 		cancelButton.setText("Cancel");
 		cancelButton.setName("btnCancel");
-		// btnPanel.add(cancelButton);
 
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 0;
-		// gridBagConstraints.gridy = 5;
-		// gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		// gridBagConstraints.insets = new java.awt.Insets(30, 0, 10, 0);
-		// getContentPane().add(btnPanel, gridBagConstraints);
-
-		// advancedButton.setText("Advanced");
-		// gridBagConstraints = new java.awt.GridBagConstraints();
-		// gridBagConstraints.gridx = 2;
-		// gridBagConstraints.gridy = 4;
-		// gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		// gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
-		// getContentPane().add(advancedButton, gridBagConstraints);
 		networkFileComboBox.setRenderer(new MyCellRenderer());
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
 		networkFileComboBox.setName("networkFileComboBox");
-
+		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");
+		final ToolTipManager tp = ToolTipManager.sharedInstance();
+		tp.setInitialDelay(1);
+		tp.setDismissDelay(7500);
+		
+		
 		org.jdesktop.layout.GroupLayout radioButtonPanelLayout = new org.jdesktop.layout.GroupLayout(radioButtonPanel);
 		radioButtonPanel.setLayout(radioButtonPanelLayout);
 		radioButtonPanelLayout.setHorizontalGroup(radioButtonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -321,8 +277,6 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 		                                                    .add(cancelButton).add(importButton))
 		                                         .addContainerGap()));
 		pack();
-
-		pack();
 	} // </editor-fold>
 
 	private void addListeners() {
@@ -362,8 +316,8 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 
 		DataSource firstDataSource = new DataSource();
 		firstDataSource.setName("");
-		firstDataSource.setHref(" " + pleaseMessage);
-
+		firstDataSource.setHref(null);
+		
 		theModel.addElement(firstDataSource);
 
 		// Extract the URL entries
