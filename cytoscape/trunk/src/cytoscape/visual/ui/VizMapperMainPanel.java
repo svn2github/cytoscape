@@ -795,8 +795,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		setDefaultPanel(defImg);
 
-		vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
-		lockSize.setSelected(true);
+		lockSize.setSelected(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
 
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
@@ -1325,8 +1324,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Finally, build unused list
 		 */
 		setUnused(propRecord);
-
-		vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
+		if(vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(NODE_WIDTH) != null 
+				|| vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(NODE_HEIGHT) != null) {
+			vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
+		}
+		
 	}
 
 	/*
@@ -1643,12 +1645,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
 				}
 			}
-
-			//System.out.println("@@@@Editor = " + calculatorTypeProp.getDisplayName() + ",  " + editorReg.getEditor(calculatorTypeProp));
 			propRecord.add(calculatorTypeProp);
 		}
-
-		System.out.println("\n\n");
 	}
 
 	private Set<Object> loadKeys(final String attrName, final CyAttributes attrs,
