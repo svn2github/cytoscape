@@ -41,7 +41,28 @@ printf "### ARGS: \n   %s\n", join("\n   ", map {sprintf "[%s]", $_} @newArg);
 
 if(scalar(@newArg != 3))
 {
-    die "$0: [-thresh <threshold>|min] -e [lrpv|qpcr|mqpcr] <sif> <timeseries lrpv> <output name>\n";
+    die <<USAGE;
+$0: [-thresh <threshold>|min|max2] -e [lrpv|qpcr|mqpcr] <sif> <timeseries lrpv> <output name>
+
+[-thresh <threshold>|min=XX|max2=XX] threshold used for TME calculation
+                           <number>  P-value threshold
+                             min=XX  XX is a file of genes (one gene per line)
+                                     For genes in XX, the time of the min expr 
+                                     value will be the TME.  Otherwise, use the AbsMax.
+                            max2=XX  XX is a file genes.  For genes in XX, look for 
+                                     2 max times (the first one in the first 5 time 
+                                     points, the second one in the last 5 timepoints)
+
+-e [lrpv|qpcr|mqpcr]                 format of expression data
+                              lrpv   Log-Ratio P-value double columns
+                              qpcr   Tim's qPCR data
+                              mqpcr  qPCR data that can have multiple TME
+
+<sif>                                network in SIF format
+<timeseries lrpv>                    expression data file
+<output name>                        base name of output files
+
+USAGE
 }
 
 my $DEBUG = 0;
