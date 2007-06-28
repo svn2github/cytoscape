@@ -68,10 +68,12 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.Dimension;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2163,20 +2165,22 @@ public class DGraphView implements GraphView, Printable {
 
 	// AJK: 04/02/06 BEGIN
 	/**
-	 *  DOCUMENT ME!
+	 * Method to return a reference to the network canvas.
+	 * This method existed before the addition of background
+	 * and foreground canvases, and it remains for backward compatibility.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return InnerCanvas
 	 */
 	public InnerCanvas getCanvas() {
 		return m_networkCanvas;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Method to return a reference to a DingCanvas object,
+	 * given a canvas id.
 	 *
-	 * @param canvasId DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @param canvasId Canvas
+	 * @return  DingCanvas
 	 */
 	public DingCanvas getCanvas(Canvas canvasId) {
 		if (canvasId == Canvas.BACKGROUND_CANVAS) {
@@ -2189,6 +2193,50 @@ public class DGraphView implements GraphView, Printable {
 
 		// made it here
 		return null;
+	}
+
+	/**
+	 * Method to return a reference to an Image object,
+	 * which represents the current network view.
+	 *
+	 * @param width int
+	 * @param height int
+	 * @return Image
+	 * @throws IllegalArgumentException
+	 */
+	public Image createImage(int width, int height) {
+
+		// check args
+		if (width < 0 || height < 0) {
+			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): " +
+											   "width and height arguments must be greater than zero");
+		}
+
+		// create image to return
+        Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);		
+        Graphics g = image.getGraphics();
+
+		// paint background canvas into image
+		Dimension dim = m_backgroundCanvas.getSize();
+		m_backgroundCanvas.setSize(width, height);
+		m_backgroundCanvas.paint(g);
+		m_backgroundCanvas.setSize(dim);
+
+		// paint inner canvas (network)
+		dim = m_networkCanvas.getSize();
+		m_networkCanvas.setSize(width, height);
+        fitContent();
+		m_networkCanvas.paint(g);
+		m_networkCanvas.setSize(dim);
+
+		// paint foreground canvas
+		dim = m_foregroundCanvas.getSize();
+		m_foregroundCanvas.setSize(width, height);
+		m_foregroundCanvas.paint(g);
+		m_foregroundCanvas.setSize(dim);
+
+		// outta here
+		return image;
 	}
 
 	/**
