@@ -101,14 +101,18 @@ class QuickFindImpl implements QuickFind {
 
 		if (controllingAttribute == null) {
             //  Small hack to index BioPAX Networks by default with node_label.
+			
             Iterator nodesIterator = network.nodesIterator();
-            CyNode node = (CyNode) nodesIterator.next();
-            String bioPaxFlag = Cytoscape.getNodeAttributes().getStringAttribute
-                    (node.getIdentifier(), "biopax.node_label");
-            if (bioPaxFlag != null) {
-                controllingAttribute = "biopax.node_label";
-            } else {
-                controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
+            if (nodesIterator.hasNext())
+            {
+                CyNode node = (CyNode) nodesIterator.next();
+                String bioPaxFlag = Cytoscape.getNodeAttributes().getStringAttribute
+                        (node.getIdentifier(), "biopax.node_label");
+                if (bioPaxFlag != null) {
+                    controllingAttribute = "biopax.node_label";
+                } else {
+                    controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
+                }           	
             }
         }
 
