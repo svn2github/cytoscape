@@ -72,6 +72,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
+	
+	
 	/**
 	 *
 	 * @return a PluginInfo object with the following methods set: setName()
@@ -154,25 +156,12 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 		try {
 			object = pluginClass.newInstance();
-//			PluginManager Mgr = PluginManager.getPluginManager();
-//			Mgr.register((CytoscapePlugin) object, JarFileName);
-//		} catch (InstantiationException e) {
-//			System.out.println("InstantiationException");
-//			System.out.println(e);
-//			e.printStackTrace();
-//			object = null;
-//		} catch (IllegalAccessException e) {
-//			System.out.println("IllegalAccessException");
-//			System.out.println(e);
-//			e.printStackTrace();
-//			object = null;
 		// We want to catch everything possible.  Errors will cause the entire
 		// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any
-			// exception
-			// that occurs during the creation of that new instance. Here,
+			// exception that occurs during the creation of that new instance. Here,
 			// we need to catch whatever other exceptions might be thrown --
 			// for example, attempting to load an older plugin that looks
 			// for the class cytoscape.CyWindow, which is no longer defined,
@@ -191,14 +180,11 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 		if (object == null) {
 			System.out.println("Instantiation has failed for: " + pluginClass);
-//			return false;
 		} else {
 			System.out.println("Successfully loaded: " + pluginClass);
-//			return true;
 		}
 
 		return object;
-//		return true;
 	}
 
 	private HashMap<String, List<File>> pluginFileListMap;

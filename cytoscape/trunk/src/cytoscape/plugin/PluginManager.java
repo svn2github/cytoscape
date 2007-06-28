@@ -41,8 +41,6 @@ import cytoscape.*;
 import cytoscape.util.FileUtil;
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
-import cytoscape.util.IndeterminateProgressBar;
-import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -80,6 +78,7 @@ public class PluginManager {
 	private static File tempDir;
 
 	private static List<java.net.URL> pluginURLs;
+	
 	private static List<String> resourcePlugins;
 
 	private static Set<String> loadedPlugins;
