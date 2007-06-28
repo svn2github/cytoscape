@@ -45,7 +45,7 @@ public class PluginUpdateAction extends CytoscapeAction {
 			jTaskConfig.displayCloseButton(false);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(true);
-			jTaskConfig.displayCancelButton(true);
+			jTaskConfig.displayCancelButton(false);
 
 				
 				try {

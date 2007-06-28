@@ -106,7 +106,6 @@ public class PluginManagerAction extends CytoscapeAction {
 				}
 			}
 		} catch (Exception E) {
-			//E.printStackTrace();
 			System.err.println("There was an error while reading the bookmarks file.");
 		}
 
@@ -126,17 +125,11 @@ public class PluginManagerAction extends CytoscapeAction {
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);
-		jTaskConfig.displayCancelButton(true);
+		jTaskConfig.displayCancelButton(false);
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
-		
-//		Mgr.runThreadedInquiry(DefaultUrl, new ManagerAction(dialog,
-//				DefaultTitle, DefaultUrl));
 	}
 
-	
-
-	
 	
 	private class ManagerAction extends PluginInquireAction {
 
@@ -150,10 +143,6 @@ public class PluginManagerAction extends CytoscapeAction {
 			url = Url;
 		}
 
-		public boolean displayProgressBar() {
-			return true;
-		}
-		
 		public String getProgressBarMessage() {
 			return "Attempting to connect to " + url;
 		}
@@ -163,12 +152,10 @@ public class PluginManagerAction extends CytoscapeAction {
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
 					// failed to read the given url
-					dialog.setMessage(PluginManageDialog.CommonError.NOXML
-							+ url);
+					dialog.setMessage(PluginManageDialog.CommonError.NOXML.toString());
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
-					dialog.setMessage(PluginManageDialog.CommonError.BADXML
-							+ url);
+					dialog.setMessage(PluginManageDialog.CommonError.BADXML.toString());
 				} else {
 					dialog.setMessage(getException().getMessage());
 				}
