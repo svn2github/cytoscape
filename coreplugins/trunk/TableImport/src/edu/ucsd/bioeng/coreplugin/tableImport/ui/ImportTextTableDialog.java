@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
 import cytoscape.CyNetwork;
@@ -179,12 +177,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	public static final int SIMPLE_ATTRIBUTE_IMPORT = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int ONTOLOGY_AND_ANNOTATION_IMPORT = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int NETWORK_IMPORT = 3;
 
@@ -345,7 +343,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				curTable.setDefaultRenderer(Object.class,
 				                            new AliasTableRenderer(attributeDataTypes,
 				                                                   primaryKeyComboBox
-				                                                                                                                                                                                                                                                                                                                                           .getSelectedIndex()));
+				                                                                                                                                                                                                                                                                                                                                          .getSelectedIndex()));
 				curTable.repaint();
 			}
 		} else if (evt.getPropertyName().equals(ATTRIBUTE_NAME_CHANGED)) {
@@ -1643,14 +1641,26 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		/*
 		 * Get Attribute Names
 		 */
-		final String[] attributeNames = new String[previewPanel.getPreviewTable().getColumnModel()
-		                                                       .getColumnCount()];
+		final int colCount = previewPanel.getPreviewTable().getColumnModel().getColumnCount();
+		final String[] attributeNames;
+		final List<String> attrNameList = new ArrayList<String>();
+		String curName = null;
 
-		for (int i = 0; i < previewPanel.getPreviewTable().getColumnModel().getColumnCount();
-		     i++) {
-			attributeNames[i] = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
-			                                .getHeaderValue().toString();
+		for (int i = 0; i < colCount; i++) {
+			curName = previewPanel.getPreviewTable().getColumnModel().getColumn(i).getHeaderValue()
+			                      .toString();
+
+			if (attrNameList.contains(curName)) {
+				final JLabel label = new JLabel("Duplicate Attribute Name Found: " + curName);
+				label.setForeground(Color.RED);
+				JOptionPane.showMessageDialog(this, label);
+				return;
+			}
+
+			attrNameList.add(curName);
 		}
+
+		attributeNames = attrNameList.toArray(new String[0]);
 
 		/*
 		 * Get import flags
@@ -1779,10 +1789,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				 * Now, load & map annotation.
 				 */
 				final String annotationSource = annotationUrlMap.get(annotationComboBox
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getSelectedItem());
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getSelectedItem());
 
 				if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
-					
 					/*
 					 * This is a Gene Association file.
 					 */
@@ -1791,11 +1800,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 					if (importAllCheckBox.isSelected()) {
 						gaReader = new GeneAssociationReader(selectedOntologyName,
-								URLUtil.getInputStream(new URL(annotationSource)),
+						                                     URLUtil.getInputStream(new URL(annotationSource)),
 						                                     mappingAttribute, true, keyInFile);
 					} else {
 						gaReader = new GeneAssociationReader(selectedOntologyName,
-								URLUtil.getInputStream(new URL(annotationSource)),
+						                                     URLUtil.getInputStream(new URL(annotationSource)),
 						                                     mappingAttribute, false, keyInFile);
 					}
 
@@ -3408,7 +3417,7 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 		} else if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
 		           && (index < attributeDataTypes.size())) {
 			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes.get(list
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getSelectedIndex())));
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getSelectedIndex())));
 		}
 
 		return this;
