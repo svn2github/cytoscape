@@ -55,6 +55,10 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 	private String URLstr;
 	private BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
 	private String pleaseMessage = "Please provide URL or select from list";
+	
+	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
+	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
+	
 
 	/** Creates new form NetworkImportDialog
 	 * @throws IOException
@@ -178,12 +182,14 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 		localRadioButton.setText("Local");
 		localRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		localRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		localRadioButton.setToolTipText(LOCAL_TOOLTIP);
 
 		buttonGroup1.add(remoteRadioButton);
-		remoteRadioButton.setText("Remote");
+		remoteRadioButton.setText("Remote/URL");
 		remoteRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		remoteRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
+		remoteRadioButton.setToolTipText(URL_TOOLTIP);
+		
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
 
