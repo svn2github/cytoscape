@@ -57,7 +57,7 @@ public class BioPaxContainer extends JPanel {
 	/**
 	 * CytoPanel Location of this Panel
 	 */
-	public static final int CYTO_PANEL_LOCATION = SwingConstants.WEST;
+	public static final int CYTO_PANEL_LOCATION = SwingConstants.SOUTH;
 	private JTabbedPane tabbedPane;
 	private BioPaxDetailsPanel bpDetailsPanel;
 	private NetworkListener networkListener;
