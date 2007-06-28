@@ -118,7 +118,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -847,26 +846,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param size
 	 */
 	private void createDefaultImage(String vsName, DGraphView view, Dimension size) {
-		/*
-		 * Adjust image size
-		 */
-		view.getCanvas().setSize((int) size.getWidth() - 10, (int) size.getHeight() - 10);
-		view.fitContent();
-		view.setZoom(view.getZoom() * 0.9);
 
 		defaultAppearencePanel.setLayout(new BorderLayout());
 
-		final InnerCanvas canvas = view.getCanvas();
-		canvas.setLocation(5, 5);
+		final Image image = view.createImage((int)size.getWidth(), (int)size.getHeight(), 0.9);
 
-		final Dimension imageSize = canvas.getSize();
-		final Image image = new BufferedImage(imageSize.width, imageSize.height,
-		                                      BufferedImage.TYPE_INT_RGB);
-
-		final Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setColor((Color) view.getBackgroundPaint());
-		g.fillRect(0, 0, imageSize.width, imageSize.height);
-		canvas.paint(g);
 		defaultImageManager.put(vsName, image);
 	}
 
