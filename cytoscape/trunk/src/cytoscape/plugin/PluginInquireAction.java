@@ -52,15 +52,6 @@ public abstract class PluginInquireAction {
 	}
 	
 	
-	protected IndeterminateProgressBar getProgressBar() {
-		IndeterminateProgressBar bar = new IndeterminateProgressBar(cytoscape.Cytoscape.getDesktop(),
-				getProgressBarMessage(), "Connecting to Plugin Website");
-		bar.pack();
-		bar.setLocationRelativeTo(cytoscape.Cytoscape.getDesktop());
-		return bar;
-	}
-	
-	
 	/**
 	 * 
 	 * @return Message to display in progress bar
@@ -72,7 +63,6 @@ public abstract class PluginInquireAction {
 	 * @return True to display the IndeterminateProgressBar while running
 	 * 			{@link PluginManager#inquireThread(String, PluginInquireAction)}
 	 */
-	public abstract boolean displayProgressBar();
 	
 	
 	/**
