@@ -38,6 +38,7 @@ package ManualLayout.control;
 
 import ManualLayout.control.view.AlignPanel;
 import ManualLayout.control.view.DistPanel;
+import ManualLayout.control.view.StackPanel;
 
 import cytoscape.Cytoscape;
 
@@ -65,6 +66,7 @@ public class ControlPanel extends JPanel {
 
 		AlignPanel ap = new AlignPanel();
 		DistPanel dp = new DistPanel();
+		StackPanel sp = new StackPanel();
 
 		setLayout(new GridBagLayout());
 
@@ -80,5 +82,7 @@ public class ControlPanel extends JPanel {
 
 		gbc.gridy = 1;
 		add(dp, gbc);
+		gbc.gridy = 2;
+		add(sp, gbc);
 	} // constructor
 } // End of class ControlPanel
