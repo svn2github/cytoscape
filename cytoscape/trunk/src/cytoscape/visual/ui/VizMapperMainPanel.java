@@ -1368,7 +1368,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
-			valProp.setName(strVal);
+			valProp.setName(strVal + "-" + type.toString());
 			valProp.setParentProperty(parent);
 
 			try {
