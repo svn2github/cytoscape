@@ -172,7 +172,7 @@ public class MCODEUtil {
             }
         }
 	
-		image = generateImage(view,width,height);
+		image = view.createImage(width,height,1.0); 
 
         double largestSide = view.getCanvas().getWidth();
         if (view.getCanvas().getHeight() > largestSide) {
@@ -185,17 +185,6 @@ public class MCODEUtil {
         resetLoading();
         return (image);
     }
-
-	private static Image generateImage(DGraphView view, int width, int height) {
-        view.getCanvas().setSize(width, height);
-        view.fitContent();
-        Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = (Graphics2D) image.getGraphics();
-        g.setColor((Color) view.getBackgroundPaint());
-        g.fillRect(0, 0, width, height);
-        view.getCanvas().paint(g);
-		return image;
-	}
 
 	private static DGraphView generateGraphView(GraphPerspective gp) {
         DGraphView view = new DGraphView(gp);
