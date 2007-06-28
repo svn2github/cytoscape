@@ -189,11 +189,12 @@ public class CytoscapeInit {
 				/* TODO smart plugin loading.  If there are multiple of the same plugin (this will only work
 				 * in the .cytoscape directory) load the newest version first.  Should be able to examine the 
 				 * directories for this information.  All installed plugins are named like  'MyPlugin-1.0' 
+				 * currently this isn't necessary as old version are not kept around
 				 */ 
 				List<String> InstalledPlugins = new ArrayList<String>();
 				// load from those listed on the command line
 				InstalledPlugins.addAll(initParams.getPlugins());
-
+				
 				// this is the directory where user-installed plugins should live
 				for (String f : mgr.getPluginManageDirectory().list()) {
 					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath()
@@ -201,6 +202,7 @@ public class CytoscapeInit {
 				}
 
 				mgr.loadPlugins(InstalledPlugins);
+				
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
@@ -281,9 +283,7 @@ public class CytoscapeInit {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getPluginURLs() {
-		return PluginManager.getPluginURLs();
-
-		//return pluginURLs;
+		return new java.util.HashSet<java.net.URL>(PluginManager.getPluginURLs());
 	}
 
 	/**
@@ -293,31 +293,16 @@ public class CytoscapeInit {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Set getResourcePlugins() {
-		return PluginManager.getResourcePlugins();
-
-		//return resourcePlugins;
+		return new java.util.HashSet<String>(PluginManager.getResourcePlugins());
 	}
 
 	/**
 	 *  DEPRECATED
-	 * @deprecated PluginManager handles all plugin loading now.
-	 *         This method doesn't do anything, but it doesn't appear to be used in csplugins or core plugins
-	 * @param plugin DOCUMENT ME!
+	 * @deprecated Will be removed December 2007. 
+	 *   Will not be replaced by a public method, PluginManager handles all loading now.
 	 */
 	public void loadPlugin(Class plugin, String PluginJarFile) {
 		System.err.println("This method will not load plugins and should never be called, see PluginManager loadPlugins()");
-
-		//		if (CytoscapePlugin.class.isAssignableFrom(plugin)
-		//		    && !loadedPlugins.contains(plugin.getName())) {
-		//			try {
-		//				CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
-		//				loadedPlugins.add(plugin.getName());
-		//			} catch (Exception e) {
-		//				e.printStackTrace();
-		//			}
-		//		} else if (loadedPlugins.contains(plugin.getName())) {
-		//			// TODO warn user class of this name has already been loaded and can't be loaded again
-		//		}
 	}
 
 	/**
