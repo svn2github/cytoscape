@@ -6,7 +6,8 @@
 # The plugin name that will be displayed to users
 pluginName=My Plugin
 
-# Description used to give users information about the plugin such as what it does
+# Description used to give users information about the plugin such as what it does.  
+# Html tags are encouraged for formatting purposes.
 pluginDescription=Information about the plugin that will be displayed to users
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
@@ -24,7 +25,6 @@ pluginCategory=Scripting/Communication
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
 projectURL=http://my-lab-site.org/myCytoscapePlugin
 
-# List of authors, each author(s) and institution must be on a separate line
-pluginAuthorsIntsitutions=
-Sarah and Victor: ISB
-Mike: UCSD
+# List of authors.  Note each author and institution pair are separated by a : (colon)
+# each additional author institution pair must be separated from other pairs bye a ; (semicolon)
+pluginAuthorsIntsitutions=Sarah and Victor:ISB;Mike, Kei and Peng:UCSD
