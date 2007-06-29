@@ -115,9 +115,16 @@ sub addVersions
 
 	foreach my $vid (keys %$Versions)
 		{
-		my $CytoVersion = $Doc->createElement("cytoscapeVersion");
-		$CytoVersion->appendChild($Doc->createTextNode($Versions->{$vid}->{'cy_version'}));
-		$VersionPlugin->appendChild($CytoVersion);
+		foreach my $cyVers (split /,/, $Versions->{$vid}->{'cy_version'}) 
+			{
+		
+			my $CytoVersion = $Doc->createElement("cytoscapeVersion");
+		
+			$CytoVersion->appendChild($Doc->createTextNode($cyVers));
+		
+			$VersionPlugin->appendChild($CytoVersion);
+		
+			}
 		
 		my $PluginVersionNum = $Doc->createElement("pluginVersion");
 		$PluginVersionNum->appendChild($Doc->createTextNode($Versions->{$vid}->{'version'}));
