@@ -55,14 +55,20 @@ public class StackPanel extends JPanel {
 	 */
 	public StackPanel() {
 
-		ImageIcon vati = new ImageIcon(getClass().getResource("/V_STACK.gif"));
-		ImageIcon hati = new ImageIcon(getClass().getResource("/H_STACK.gif"));
-//		ImageIcon mati = new ImageIcon(getClass().getResource("/V_DIST_TOP.gif"));
+		ImageIcon vali = new ImageIcon(getClass().getResource("/V_STACK_LEFT.gif"));
+		ImageIcon vaci = new ImageIcon(getClass().getResource("/V_STACK_CENTER.gif"));
+		ImageIcon vari = new ImageIcon(getClass().getResource("/V_STACK_RIGHT.gif"));
+		ImageIcon hati = new ImageIcon(getClass().getResource("/H_STACK_TOP.gif"));
+		ImageIcon haci = new ImageIcon(getClass().getResource("/H_STACK_CENTER.gif"));
+		ImageIcon habi = new ImageIcon(getClass().getResource("/H_STACK_BOTTOM.gif"));
 
-		VStack vat = new VStack(vati);
-		HStack hat = new HStack(hati);
-//		MStack mat = new MStack(mati);
+		VStackLeft val = new VStackLeft(vali);
+		VStackCenter vac = new VStackCenter(vaci);
+		VStackRight var = new VStackRight(vari);
 
+		HStackTop hat = new HStackTop(hati);
+		HStackCenter hac = new HStackCenter(haci);
+		HStackBottom hab = new HStackBottom(habi);
 
 		setLayout(new java.awt.GridBagLayout());
 
@@ -71,10 +77,13 @@ public class StackPanel extends JPanel {
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
 
+		add(createJButton(val, "Vertical Left"), gridBagConstraints);
+		add(createJButton(vac, "Vertical Center"), gridBagConstraints);
+		add(createJButton(var, "Vertical Right"), gridBagConstraints);
 		//JPanel v_panel = new JPanel();
-		add(createJButton(vat, "Vertical Stack"), gridBagConstraints);
-		add(createJButton(hat, "Horizontal Stack"), gridBagConstraints);
-//		add(createJButton(mat, "Matrix Stack"), gridBagConstraints);
+		add(createJButton(hat, "Horizontal Top"), gridBagConstraints);
+		add(createJButton(hac, "Horizontal Center"), gridBagConstraints);
+		add(createJButton(hab, "Horizontal Bottom"), gridBagConstraints);
 
 
 		//setLayout( new BorderLayout() );
