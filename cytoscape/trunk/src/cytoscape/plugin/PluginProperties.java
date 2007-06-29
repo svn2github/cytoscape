@@ -8,11 +8,38 @@ import java.util.Properties;
 
 public class PluginProperties extends Properties {
 	private String configFileName = "plugin.props";
+	private CytoscapePlugin plugin;
+	
+	public PluginProperties(CytoscapePlugin CyPlugin) throws IOException {
+		plugin = CyPlugin;
+		this.readPluginProperties();
+	}
+	
+	private void readPluginProperties() throws IOException {
+		System.out.println("Reading " + configFileName + " for " + plugin.getClass().getName());
+		InputStream is = plugin.getClass().getResourceAsStream(configFileName);
+		//InputStream is = CytoscapePlugin.class.getResourceAsStream(configFileName);
+		if (is == null || is.available() == 0) {
+			// throw an error!
+			String Msg = "";
+			if (is == null) {
+				Msg = "input stream is null";
+			} else if (is.available() == 0) {
+				Msg = "0 bytes in input stream";
+			}
+	
+			IOException Error = new IOException("Unable to load "
+					+ configFileName + ": " + Msg);
+			throw Error;
+		} else {
+			load(is);
+		}
+	}
+	
 
-
-	public PluginInfo getPluginInfoObject() {
+	public PluginInfo getPluginInfoObject() throws ManagerException {
 		if (!expectedPropertiesPresent()) {
-			// TODO throw an exception
+			throw new ManagerException("Required properties are missing from plugins.props file");
 		}
 		
 		PluginInfo pi;
@@ -57,24 +84,6 @@ public class PluginProperties extends Properties {
 		return pi;
 	}
 
-	private void readPluginProperties() throws IOException {
-		InputStream is = CytoscapePlugin.class.getResourceAsStream(configFileName);
-		if (is == null || is.available() == 0) {
-			// throw an error!
-			String Msg = "";
-			if (is == null) {
-				Msg = "input stream is null";
-			} else if (is.available() == 0) {
-				Msg = "0 bytes in input stream";
-			}
-
-			IOException Error = new IOException("Unable to load "
-					+ configFileName + ": " + Msg);
-			throw Error;
-		} else {
-			load(is);
-		}
-	}
 
 	private boolean expectedPropertiesPresent() {
 		if (!containsKey(name) ||			
