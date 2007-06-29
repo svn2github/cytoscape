@@ -59,6 +59,8 @@ import java.util.List;
  * should be used.
  */
 public abstract class CytoscapePlugin implements PropertyChangeListener {
+	private PluginInfo infoObj;
+
 	/**
 	 * There are no arguments required or allowed in a CytoscapePlugin
 	 * constructor.
@@ -72,21 +74,15 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
-	
+	protected void setPluginInfoObject(PluginInfo obj) {
+		infoObj = obj;
+	}
 	
 	/**
 	 *
-	 * @return a PluginInfo object with the following methods set: setName()
-	 *         setDescription() setPluginVersion() 
-	 *         setCategory() setProjectUrl()
-	 *
-	 * All other methods that PluginInfo sets are optional.
-	 *
-	 * Use this to control what is displayed about your plugin in the Plugin
-	 * Manage screens.
 	 */
 	public PluginInfo getPluginInfoObject() {
-		return null;
+		return infoObj;
 	}
 
 	/**
