@@ -79,18 +79,6 @@ public class ActiveModulesUI extends CytoscapePlugin {
     return desc;
   }
 
-  public PluginInfo getPluginInfoObject()
-  {
-  	PluginInfo result = new PluginInfo();
-	result.setName("jActiveModules");
-	result.setDescription(describe());
-	result.setPluginVersion(2.2);
-	result.setCytoscapeVersion("2.4");
-	result.setCategory(PluginInfo.Category.ANALYSIS);
-	result.addAuthor("Ryan M. Kelley", "UCSD");
-	return result;
-  }
-
   /**
    * Action to allow the user to change the current options
    * for running jActiveModules, wiht a gui interface

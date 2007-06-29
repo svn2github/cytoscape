@@ -15,6 +15,7 @@
 	<property name="cyto.dir" value="../../../../cytoscape"/>
 	<property name="cyto.lib.dir" value="${cyto.dir}/lib"/>
 	<property name="lib.dir" value="lib"/>
+	<property name="resources.dir" value="resources"/>
 	
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -78,6 +79,7 @@
            <unzip dest="${build.classes}">
 	   	<fileset dir="${lib.dir}" includes="*"/>
 	   </unzip>
+	   <copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<manifest>
 			<attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>
