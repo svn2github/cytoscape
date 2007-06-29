@@ -332,7 +332,6 @@ public class PluginManager {
 				pluginTracker.addPlugin(InfoObj,
 						PluginTracker.PluginStatus.CURRENT);
 			}
-		Plugin.setPluginInfoObject(InfoObj);
 	}
 
 	
