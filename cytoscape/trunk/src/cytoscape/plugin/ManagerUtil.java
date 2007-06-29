@@ -38,6 +38,7 @@ package cytoscape.plugin;
 
 import java.util.List;
 import java.util.Map;
+import cytoscape.plugin.PluginTracker.PluginStatus;
 
 
 /**
@@ -122,6 +123,24 @@ public class ManagerUtil {
 			}
 		}
 		return UniqueAvail;
+	}
+	
+	/**
+	 * Takes a Class object for a CytoscapePlugin and returns the PluginInfo object
+	 * associated
+	 * @param pluginClass
+	 * @return PluginInfo object
+	 */
+	public static PluginInfo getInfoObject(Class pluginClass) {
+		PluginManager mgr = PluginManager.getPluginManager();
+		List<PluginInfo> Plugins = mgr.getPlugins(PluginStatus.CURRENT);
+	
+		for (PluginInfo Current : Plugins) {
+			if (Current.getPluginClassName().equals(pluginClass.getName())) {
+				return Current;
+			}
+		}
+		return null;
 	}
 	
 }
