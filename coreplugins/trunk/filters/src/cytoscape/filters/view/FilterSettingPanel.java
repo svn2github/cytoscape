@@ -355,16 +355,55 @@ public class FilterSettingPanel extends JPanel {
 		
 		if (_actionObject instanceof JLabel) {
 			JLabel _lbl = (JLabel) _actionObject;
-			theFilter.removeAtomicFilterAt((new Integer(_lbl.getName())).intValue());
+			int widgetIndex = (new Integer(_lbl.getName())).intValue();
+			theFilter.removeAtomicFilterAt(widgetIndex);
+
+			pnlCustomSettings.removeAll();			
 			
-			pnlCustomSettings.removeAll();
 			initCustomSetting();
 			
-			this.validate();
+			this.revalidate();
 		}
 	}
 
+	/*   For test only , should be removed later
+	//Remove event listener for each components in the customSettingPanel
+	private void cleanupCustomSettingPanel(){
+		//pWidgetIndex is the row index of the widget to be removed
+		
+		System.out.println("FilterSettingPanel.cleanupCustomsettingPanel()...");
 	
+		int componentIndex = pWidgetIndex*3+1;
+		
+		System.out.println("\tpWidgetIndex = "+ pWidgetIndex);
+		System.out.println("\tcomponentIndex = "+ componentIndex);
+		
+		Component[] allComponentArray = pnlCustomSettings.getComponents();
+
+		if (allComponentArray[componentIndex] instanceof JRangeSliderExtended) {
+			JRangeSliderExtended theSlider = (JRangeSliderExtended) allComponentArray[componentIndex];
+			System.out.println("\tIt is JRangeSliderExtended. Name = " + theSlider.getName());
+			theSlider.hidePopupPanel();
+		}
+
+		int componentCount = pnlCustomSettings.getComponentCount();
+		
+		if (componentCount == 0) {
+			return;
+		}
+		Component[] allComponentArray = pnlCustomSettings.getComponents();
+		
+		for (int i=0; i< componentCount; i++) {
+			if (allComponentArray[i] instanceof JRangeSliderExtended) {
+				JRangeSliderExtended theSlider = (JRangeSliderExtended) allComponentArray[i];
+				System.out.println("\tIt is JRangeSliderExtended. Name = " + theSlider.getName());
+				theSlider.hidePopupPanel();
+				theSlider.resetPopup();
+			}
+		}
+
+	}
+*/	
 	/**
 	 * Listens for Final Selection from User.
 	 *
