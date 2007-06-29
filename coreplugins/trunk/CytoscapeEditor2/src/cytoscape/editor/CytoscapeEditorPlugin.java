@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Fri May 11 16:37:58 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri Jun 29 09:30:13 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Fri Jun 29 09:30:00 2007 (Michael L. Creech) creech@w235krbza760
+*  Updated VERSION to 2.51.
 * Fri May 11 16:37:23 2007 (Michael L. Creech) creech@w235krbza760
 *  Updated VERSION to 2.50 and added getPluginInfoObject() for Cytoscape 2.5.
 * Fri Dec 15 10:08:07 2006 (Michael L. Creech) creech@w235krbza760
@@ -51,7 +53,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
     // MLC 12/11/06:
     private static boolean _initialized = false;
     // MLC 05/11/07:
-    private static final double VERSION = 2.501;
+    private static final double VERSION = 2.51;
 
 	/**
 	 * Creates a new CytoscapeEditorPlugin object.
