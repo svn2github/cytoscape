@@ -54,6 +54,7 @@
 		<!-- maybe need to do fileset if we use any other libraries in this plugin -->
 		<unjar src="${basedir}/lib/gaggle.jar" dest="${classes.dir}"/>
 		<delete dir="${classes.dir}/META-INF"/>
+		<copy file="${basedir}/resources/plugins.props" todir="${classes.dir}" />
 	</target>
 
 	<target name="compile" description="Compile pipeline task" depends="init">
