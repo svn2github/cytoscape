@@ -40,7 +40,7 @@ CREATE TABLE plugin_author (
 
 CREATE TABLE plugin_files (
   plugin_file_auto_id int(11) NOT NULL auto_increment,
-  file_data mediumblob,
+  file_data longblob,
   file_type enum('jar','zip') default NULL,
   file_name varchar(100) default NULL,
   PRIMARY KEY  (plugin_file_auto_id)
