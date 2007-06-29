@@ -239,7 +239,6 @@ public class PluginManager {
 		} catch (java.io.IOException E) {
 			E.printStackTrace(); // TODO do something useful with error
 		}
-		//pluginURLs = new HashSet<java.net.URL>();
 		pluginURLs = new ArrayList<java.net.URL>();
 		loadedPlugins = new HashSet<String>();
 		initializedPlugins = new HashMap<String, PluginInfo>();
@@ -285,6 +284,7 @@ public class PluginManager {
 		return new InquireTask(Url, Action);
 	}
 
+	
 	/**
 	 * Registers a currently installed plugin with tracking object. Only useful
 	 * if the plugin was not installed via the install process.
@@ -292,43 +292,51 @@ public class PluginManager {
 	 * @param Plugin
 	 * @param JarFileName
 	 */
-	protected void register(CytoscapePlugin Plugin, String JarFileName) {
+	protected void register(CytoscapePlugin Plugin, JarFile Jar) {
 		System.out.println("Registering " + Plugin.toString());
+
 		PluginInfo InfoObj = null;
 		try {
-			if (Plugin.getPluginInfoObject() == null) {
-				InfoObj = new PluginInfo();
-				InfoObj.setName(Plugin.getClass().getName());
-				InfoObj.setPluginClassName(Plugin.getClass().getName());
-				InfoObj.setInstallLocation(JarFileName);
-
-				if (JarFileName != null)
-					InfoObj.addFileName(JarFileName);
-			} else {
-				InfoObj = Plugin.getPluginInfoObject();
-				InfoObj.setPluginClassName(Plugin.getClass().getName());
-
-				if (JarFileName != null) {
-					InfoObj.addFileName(JarFileName);
-				}
-			}
+			PluginProperties pp = new PluginProperties(Jar);
+			InfoObj = pp.getPluginInfoObject();
+		} catch (ManagerException me) {
+			me.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		} catch (NumberFormatException nfe) {
 			nfe.printStackTrace();
 		} finally {
-			if (InfoObj != null) {
+			if (InfoObj == null) {
+					InfoObj = new PluginInfo();
+					InfoObj.setName(Plugin.getClass().getName());
+					InfoObj.setPluginClassName(Plugin.getClass().getName());
+					InfoObj.setInstallLocation(Jar.getName());
+	
+					if (Jar.getName() != null)
+						InfoObj.addFileName(Jar.getName());
+				} else {
+					InfoObj.setPluginClassName(Plugin.getClass().getName());
+					if (Jar.getName() != null) {
+						InfoObj.addFileName(Jar.getName());
+					}
+				} 		
+			
+			//if (InfoObj != null) {
 				initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
-				// I think we can safely assume it's a jar file if it's
-				// registering
-				// since only CytoscapePlugin registers and at that point all we
-				// know is it's a jar
+			 /* I think we can safely assume it's a jar file if it's
+				* registering since only CytoscapePlugin registers and 
+				* at that point all we know is it's a jar 
+				*/
 				if (InfoObj.getFileType() == null) {
 					InfoObj.setFiletype(PluginInfo.FileType.JAR);
 				}
 				pluginTracker.addPlugin(InfoObj,
 						PluginTracker.PluginStatus.CURRENT);
 			}
-		}
+	//	}
 	}
+
+	
 
 	private void cleanCurrentList() {
 		List<PluginInfo> CurrentList = getPlugins(PluginTracker.PluginStatus.CURRENT);
@@ -354,6 +362,7 @@ public class PluginManager {
 	 * 
 	 * @param obj
 	 */
+
 	public void install(PluginInfo obj) {
 		pluginTracker.removePlugin(obj, PluginTracker.PluginStatus.INSTALL);
 		pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.CURRENT);
@@ -619,9 +628,8 @@ public class PluginManager {
 	public PluginInfo download(PluginInfo Obj, TaskMonitor taskMonitor)
 			throws IOException, ManagerException {
 
-		File PluginDir = new File(tempDir, Obj.getName() + "-"
-				+ Obj.getPluginVersion());
-
+		File PluginDir = Obj.getPluginDirectory();
+			
 		if (!PluginDir.exists()) {
 			PluginDir.mkdirs();
 		}
@@ -794,7 +802,8 @@ public class PluginManager {
 
 				if (pc != null) {
 					System.out.println("Loading from manifest");
-					loadPlugin(pc, jar.getName(), register);
+					//loadPlugin(pc, jar.getName(), register);
+					loadPlugin(pc, jar, register);
 					continue;
 				}
 			}
@@ -830,7 +839,8 @@ public class PluginManager {
 					}
 
 					totalPlugins++;
-					loadPlugin(pc, jar.getName(), register);
+					//loadPlugin(pc, jar.getName(), register);
+					loadPlugin(pc, jar, register);
 					break;
 				}
 			}
@@ -860,32 +870,30 @@ public class PluginManager {
 		System.out.println("");
 	}
 
-	/*
-	 * Actually load the plugin
-	 */
-	private void loadPlugin(Class plugin, String PluginJarFile, boolean register) {
-		if (CytoscapePlugin.class.isAssignableFrom(plugin)
-				&& !loadedPlugins.contains(plugin.getName())) {
-			try {
-				Object obj = CytoscapePlugin.loadPlugin(plugin, PluginJarFile);
-				loadedPlugins.add(plugin.getName());
-				if (register) {
-					register((CytoscapePlugin) obj, PluginJarFile);
-				}
-			} catch (InstantiationException inse) {
-				inse.printStackTrace();
-			} catch (IllegalAccessException ille) {
-				ille.printStackTrace();
+	
+	private void loadPlugin(Class plugin, JarFile jar, boolean register) {
+	if (CytoscapePlugin.class.isAssignableFrom(plugin)
+			&& !loadedPlugins.contains(plugin.getName())) {
+		try {
+			Object obj = CytoscapePlugin.loadPlugin(plugin);
+			loadedPlugins.add(plugin.getName());
+			if (register) {
+				register((CytoscapePlugin) obj, jar);
 			}
-
-		} else if (loadedPlugins.contains(plugin.getName())) {
-			// TODO warn user class of this name has already been loaded and
-			// can't be loaded again
-			System.err.println("A plugin with the name '" + plugin.getName()
-					+ "' is already loaded, skipping.");
+		} catch (InstantiationException inse) {
+			inse.printStackTrace();
+		} catch (IllegalAccessException ille) {
+			ille.printStackTrace();
 		}
-	}
 
+	} else if (loadedPlugins.contains(plugin.getName())) {
+		// TODO warn user class of this name has already been loaded and
+		// can't be loaded again
+		System.err.println("A plugin with the name '" + plugin.getName()
+				+ "' is already loaded, skipping.");
+	}
+}
+	
 	/**
 	 * Determines whether the class with a particular name extends
 	 * CytoscapePlugin by attempting to load the class first.

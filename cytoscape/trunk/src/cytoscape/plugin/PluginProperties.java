@@ -5,20 +5,20 @@ package cytoscape.plugin;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.jar.JarFile;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 public class PluginProperties extends Properties {
 	private String configFileName = "plugin.props";
-	private CytoscapePlugin plugin;
 	
-	public PluginProperties(CytoscapePlugin CyPlugin) throws IOException {
-		plugin = CyPlugin;
-		this.readPluginProperties();
+	public PluginProperties(JarFile jar) throws IOException {
+		JarEntry Entry = jar.getJarEntry(configFileName);
+		if (Entry != null) 
+			readPluginProperties(jar.getInputStream(Entry));
 	}
 	
-	private void readPluginProperties() throws IOException {
-		System.out.println("Reading " + configFileName + " for " + plugin.getClass().getName());
-		InputStream is = plugin.getClass().getResourceAsStream(configFileName);
-		//InputStream is = CytoscapePlugin.class.getResourceAsStream(configFileName);
+	private void readPluginProperties(InputStream is) throws IOException {
 		if (is == null || is.available() == 0) {
 			// throw an error!
 			String Msg = "";
@@ -35,7 +35,6 @@ public class PluginProperties extends Properties {
 			load(is);
 		}
 	}
-	
 
 	public PluginInfo getPluginInfoObject() throws ManagerException {
 		if (!expectedPropertiesPresent()) {
@@ -56,11 +55,12 @@ public class PluginProperties extends Properties {
 			pi.setPluginVersion( Double.valueOf(getProperty(version)) );
 		} catch (java.lang.NumberFormatException ne) { // skip it or set it to a default value??
 			System.err.println(pi.getName() + " version is incorrectly formatted, format is: \\d+.\\d+. Version set to 0.1 to allow plugin to load");
+			ne.printStackTrace();
 			pi.setPluginVersion(0.1);
 		}
 		
-		pi.setDescription(desc);
-		pi.setCategory(category);
+		pi.setDescription(getProperty(desc));
+		pi.setCategory(getProperty(category));
 		
 		pi.setCytoscapeVersion(getProperty(cyVersion));
 		
@@ -73,8 +73,8 @@ public class PluginProperties extends Properties {
 			// split up the value and add each
 			String[] AuthInst = parseAuthors();
 			for (String ai: AuthInst) {
-				String[] CurrentAI = ai.split(",");
-				if (CurrentAI.length > 2) {
+				String[] CurrentAI = ai.split(":");
+				if (CurrentAI.length != 2) {
 					System.err.println("Author line '" + ai + "' incorrectly formatted. Please enter authors as 'Name1, Name2 and Name3: Institution");
 					continue;
 				}
@@ -97,7 +97,7 @@ public class PluginProperties extends Properties {
 	
 	private String[] parseAuthors() {
 		String AuthorProp = getProperty(authors);
-		String[] Authors = AuthorProp.split("\n");
+		String[] Authors = AuthorProp.split(";");
 		return Authors;
 	}
 	
