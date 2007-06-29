@@ -60,35 +60,32 @@ import javax.swing.*;
 /**
  *
  */
-public class VStack extends AbstractControlAction {
+public class HStackCenter extends AbstractControlAction {
 	/**
 	 * Creates a new VStack object.
 	 *
 	 * @param icon  DOCUMENT ME!
 	 */
-	public VStack(ImageIcon icon) {
-		super("Veritcal Stack", icon);
+	public HStackCenter(ImageIcon icon) {
+		super("Horizontal Stack", icon);
 	}
 
 	protected void control(List nodes) {
 		if (nodes.size() <= 1)
 			return;
 
-		Collections.sort(nodes, new YComparator());
+		Collections.sort(nodes, new XComparator());
 
 		
-//		double d = Y_max - Y_min;
-//		d = d / (nodes.size() - 1);
-
 		//Note: X, Y are at node centers
 		for (int i = 1; i < nodes.size(); i++) {
-			((NodeView) nodes.get(i)).setYPosition(
-					((NodeView) nodes.get(i-1)).getYPosition() + 
-					((NodeView) nodes.get(i-1)).getHeight() *0.5 +
-					((NodeView) nodes.get(i)).getHeight() * 0.5
-					);
 			((NodeView) nodes.get(i)).setXPosition(
-					((NodeView) nodes.get(i-1)).getXPosition()  
+					((NodeView) nodes.get(i-1)).getXPosition() + 
+					((NodeView) nodes.get(i-1)).getWidth() *0.5 +
+					((NodeView) nodes.get(i)).getWidth() * 0.5
+					);
+			((NodeView) nodes.get(i)).setYPosition(
+					((NodeView) nodes.get(i-1)).getYPosition()  
 					);
 			
 		}
