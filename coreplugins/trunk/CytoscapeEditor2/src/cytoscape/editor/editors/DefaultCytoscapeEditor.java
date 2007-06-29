@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun Oct 04 05:35:56 2005
-* Modified:     Thu May 10 09:37:30 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri Jun 29 09:24:44 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Fri Jun 29 09:24:02 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed deprecated use in getNodeShape() and getFillColor() in
+*  generateNodePaletteEntries().
 * Thu May 10 09:37:06 2007 (Michael L. Creech) creech@w235krbza760
 *  Updated to use VisualPropertyType versus VizMapUI for Cytoscape 2.5.
 * Sun Dec 17 05:36:01 2006 (Michael L. Creech) creech@w235krbza760
@@ -209,13 +212,14 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 
 		if (!spEntries.hasNext()) {
 			shapePalette.addShape(controllingAttribute, "DefaultNode",
-					      // MLC 05/09/07:
-			                      // new CytoShapeIcon(nac.getDefaultAppearance().getShape(),
-					      // MLC 05/09/07:
-			                      new CytoShapeIcon(nac.getDefaultAppearance().getNodeShape(),
-			                                        nac.getDefaultAppearance().getFillColor()),
-			                      "Add a Node", // MLC 12/16/06:
-			null);
+					      // MLC 06/30/07 BEGIN:
+			                      // new CytoShapeIcon(nac.getDefaultAppearance().getNodeShape(),
+					      //                   nac.getDefaultAppearance().getFillColor()),
+			                      new CytoShapeIcon((NodeShape)(nac.getDefaultAppearance().get (VisualPropertyType.NODE_SHAPE)),
+			                                        (Color)(nac.getDefaultAppearance().get (VisualPropertyType.NODE_FILL_COLOR))),
+								// MLC 06/30/07 END.
+								"Add a Node", // MLC 12/16/06:
+								null);
 		} else {
 			while (spEntries.hasNext()) {
 				ShapePaletteInfo spi = spEntries.next();
