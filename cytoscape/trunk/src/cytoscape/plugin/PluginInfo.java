@@ -133,6 +133,7 @@ public class PluginInfo {
 	
 	protected String installLocation;
 
+	
 	/**
 	 * Initializes a PluginInfo object with the following defaults:
 	 * setName("Unknown"); setDescription("No pluginDescription");
@@ -177,9 +178,19 @@ public class PluginInfo {
 				"defaultPluginUrl"));
 	}
 
-	// TODO These maybe should check to be sure nothing is being set to null
 	/* SET */
+	/**
+	 * Gets the full install path for this plugin.  Should look like
+	 * <HOME_DIR>/.cytoscape/<cytoscape_version>/plugins/<pluginName-pluginVersion>
+	 */
+	public java.io.File getPluginDirectory() {
+	 java.io.File PluginDir = new java.io.File(
+			 PluginManager.getPluginManager().getPluginManageDirectory(),
+			 this.getName()+"-"+this.getPluginVersion());
+	return PluginDir;
+}
 
+	
 	/**
 	 * Sets name of plugin. This will be displayed to users.
 	 * 
