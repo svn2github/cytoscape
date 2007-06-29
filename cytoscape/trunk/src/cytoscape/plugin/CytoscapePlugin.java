@@ -144,9 +144,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 * @return The object, if it was not successfully constructed object will be null
 	 * @return true if the plugin was successfulyl constructed, false otherwise
 	 */
-	public static Object loadPlugin(Class pluginClass, String JarFileName) throws InstantiationException,
+	public static Object loadPlugin(Class pluginClass) throws InstantiationException,
 		IllegalAccessException {
-		System.out.println("Loading: " + pluginClass + " from " + JarFileName);
 
 		if (pluginClass == null) {
 			return false;
