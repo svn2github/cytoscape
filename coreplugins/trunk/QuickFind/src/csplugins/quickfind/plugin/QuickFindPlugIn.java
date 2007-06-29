@@ -94,7 +94,8 @@ import javax.swing.event.ChangeListener;
  */
 public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeListener,
                                                                 QuickFindListener {
-	private QuickFindPanel quickFindToolBar;
+    static final int REINDEX_THRESHOLD = 1000;
+    private QuickFindPanel quickFindToolBar;
 	private static final int NODE_SIZE_MULTIPLER = 10;
 
 	/**
@@ -113,7 +114,11 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 		// to catch network create/destroy/focus events
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+        //  to catch network modified events
+        NetworkModifiedListener networkModifiedListener = new NetworkModifiedListener();
+        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(networkModifiedListener);
+
+        QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		quickFind.addQuickFindListener(this);
 	}
 
@@ -492,4 +497,41 @@ class RangeSelectionListener implements ChangeListener {
 			}
 		}
 	}
+}
+
+class NetworkModifiedListener implements PropertyChangeListener {
+
+	/**
+	 * Property change listener - to get network modified events.
+	 *
+	 * @param event PropertyChangeEvent
+	 */
+	public void propertyChange(PropertyChangeEvent event) {
+		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+
+        if (event.getPropertyName() != null) {
+            if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
+
+				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+                if (cyNetwork.nodesList() != null) {
+
+                    //  Only re-index if network has fewer than REINDEX_THRESHOLD nodes
+                    //  I put this in to prevent quick find from auto re-indexing
+                    //  very large networks.  
+                    if (cyNetwork.nodesList().size() < QuickFindPlugIn.REINDEX_THRESHOLD) {
+                        //  Run Indexer in separate background daemon thread.
+                        Thread thread = new Thread() {
+                            public void run() {
+                                GenericIndex index = quickFind.getIndex(cyNetwork);
+                                quickFind.reindexNetwork(cyNetwork, index.getIndexType(),
+                                        index.getControllingAttribute(), new TaskMonitorBase());
+                            }
+                        };
+                        thread.start();
+                    }
+                }
+            }
+		}
+	}
+
 }
