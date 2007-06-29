@@ -61,7 +61,8 @@ team and other developers who write their own Cytoscape plugins. The
 second and third days are aimed at a wide audience of molecular
 biologists and bioinformaticians in the Netherlands, Europe and
 internationally. To attract them a formidable list of confirmed speakers 
-will present their scientific work at the public symposium on November 8<sup>th</sup>.
+will present their scientific work at the public symposium on November 8<sup>th</sup> 
+entitled <a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>.
 Among them:
 <p>
 <ul>
