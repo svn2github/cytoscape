@@ -37,6 +37,7 @@
     <property name="layout.packages" value="layout.*"/>
     <!-- Subdirectory for test reports -->
     <property name="layout.tests.reports.dir" value="${layout.root.dir}/reports/tests" />
+    <property name="resources.dir" value="${layout.root.dir}/resources" />
 
     <!-- Define excludes for layout compile and javadoc -->
     <property name="layout.excludes" value="**/notyet/*"/>
@@ -85,6 +86,7 @@
   <!-- Creates the layout.jar file                                           -->
   <!-- =================================================================== -->
   <target name="layout" depends="compile-layout"  >
+    <copy todir="${layout.classes.dir}" file="${resources.dir}/plugin.props"/>
     <jar destfile="${layout.jar}" manifest="${layout.manifest.dir}/layout.manifest">
       <fileset
         dir="${layout.classes.dir}"
