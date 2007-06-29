@@ -321,7 +321,6 @@ public class PluginManager {
 					}
 				} 		
 			
-			//if (InfoObj != null) {
 				initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
 			 /* I think we can safely assume it's a jar file if it's
 				* registering since only CytoscapePlugin registers and 
@@ -333,7 +332,7 @@ public class PluginManager {
 				pluginTracker.addPlugin(InfoObj,
 						PluginTracker.PluginStatus.CURRENT);
 			}
-	//	}
+		Plugin.setPluginInfoObject(InfoObj);
 	}
 
 	
