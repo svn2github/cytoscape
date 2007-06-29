@@ -167,6 +167,7 @@ public class JRangeSliderExtended extends JRangeSlider implements ChangeListener
 				                              getLocationOnScreen().y + getPreferredSize().height
 				                              + 2);
 				popupDaemon = new PopupDaemon(this, 1000);
+				popupDaemon.restart();
 				popup.show();
 			} else {
 				popupLow.setText(lowStr);
