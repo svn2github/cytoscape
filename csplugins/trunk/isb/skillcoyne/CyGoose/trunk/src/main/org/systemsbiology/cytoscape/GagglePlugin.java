@@ -43,6 +43,7 @@ import java.beans.PropertyChangeEvent;
 public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListener
 	{
 	private boolean registered;
+	private RenameThread renameGoose;
 	
 	private static Boss gaggleBoss;
 	private static GooseDialog gDialog;
@@ -59,6 +60,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		{
 		// constructor gets called at load time and every time the toolbar is used
 		if (pluginInitialized) { return; }
+		renameGoose = new RenameThread(  );
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( this );
 		
@@ -80,6 +82,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 			createDefaultGoose();
 			updateAction();
 			registered = true;
+			renameGoose.run();
 			}
 		catch (Exception E)
 			{ // TODO add error message text area to goose panel and stop popping error box up
@@ -232,6 +235,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 					createDefaultGoose();
 					updateAction();
 					registered = true;
+					renameGoose.run();
 					// todo want to be able to update all the networks/geese here since user 
 					// may have opened some prior to connection
 					}
@@ -255,7 +259,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 				public void actionPerformed(ActionEvent event)
 					{
 					System.out.println("--- update action ----");
-					checkNameChange();
+					//checkNameChange();
 					MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
 					}
 			});
@@ -422,26 +426,94 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	public static void showDialogBox(String message, String title, int msgType)
 		{ JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, title, msgType); }
 	
-	public PluginInfo getPluginInfoObject()
+	private class RenameThread extends Thread
 		{
-		PluginInfo Info = new PluginInfo(this.getClass().getName());
-		Info.setName("CyGoose");
-		Info.setPluginVersion(2.43);
-		Info.setCategory(Category.COMMUNICATION_SCRIPTING);
-		Info.setDescription(getDesc());
-		Info.addAuthor("Sarah Killcoyne", "Institute for Systems Biology");
-		Info.addAuthor("John Lin, Kevin Drew and Richard Bonneau", "NYU Bonneau Lab");
-		return Info;
+		RenameRunnable rr;
+		public RenameThread()
+			{
+			rr = new RenameRunnable();
+			}
+		public void run()
+			{
+			while (registered)
+				{
+				rr.run();
+				try { this.wait(1000); }
+				catch (Exception E) { E.printStackTrace(); System.exit(0); }
+				}
+			}
 		}
-
-	private String getDesc()
+	
+	private class RenameRunnable implements Runnable 
 		{
-		return "The CyGoose Cytoscape Plugin gives any network in Cytoscape full access to the Gaggle. " +
-		"The Gaggle is a tool to create a data exploration and analysis environment. " +
-		"Other geese (independent threads/tools which Cytoscape can now interact with through the Gaggle Boss) " + 
-		"can be found at http://gaggle.systemsbiology.org/docs/geese/. " +
-		"ISSUE: This goose does not work with a local install of Cytoscape on a Windows machine. It will work with Mac or Linux and " + 
-		"as a webstart on Mac/Linux/Windows. We are working on this and will release a fix as soon as we can.";
+		public void run()
+			{
+			//while (registered)
+				{
+				checkNameChange();
+				
+//				try { this.wait(100); }
+//				catch (Exception e) { e.printStackTrace(); }
+				}
+			}
+		
+		
+		private void checkNameChange()
+			{
+			System.out.println("checkNameChange()");
+			
+			Iterator<CyNetwork> NetIter = Cytoscape.getNetworkSet().iterator();
+			while (NetIter.hasNext())
+				{
+				CyNetwork Network = NetIter.next();
+				if (networkGeese.containsKey(Network.getIdentifier()))
+					{
+					// check the name of the goose somehow
+					CyGoose Goose = networkGeese.get(Network.getIdentifier());
+					System.out.println("*** Goose:" + Goose.getName() + " Network:" + Network.getTitle());
+					
+					// Network name has changed
+					//if (!Goose.getName().matches("^"+Network.getTitle()+"\\(" + Network.getIdentifier() + "\\)(-\\d+)?"))
+					if (!Goose.getName().matches("^"+Network.getTitle()+"(-\\d+)?"))
+						{
+						System.out.println("Renaming goose, net id: " + Network.getIdentifier());
+						try 
+							{ 
+//							Goose.setName( gaggleBoss.renameGoose(Goose.getName(), createGooseName(Network.getTitle()))); 
+//							MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+//							networkGeese.put(Network.getIdentifier(), Goose);
+							
+							// HACK!!! Delete goose, re-register 
+							gaggleBoss.remove( Goose.getName() ); 
+							gDialog.getGooseBox().removeItem( Goose.getName() );
+							UnicastRemoteObject.unexportObject(Goose, true);
+							
+							networkGeese.put(Network.getIdentifier(), createNewGoose(Network));
+				      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+							}
+						catch (RemoteException re)
+							{ re.printStackTrace(); }
+						}
+					}
+				else 
+					{
+		      try
+		      	{
+			      CyGoose NewGoose = createNewGoose(Network);
+						networkGeese.put(Network.getIdentifier(), NewGoose);
+			      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+		      	}
+		      catch (RemoteException E)
+		      	{
+		      	GagglePlugin.showDialogBox("Failed to create a new Goose for network " + Network.getTitle(), "Error", JOptionPane.ERROR_MESSAGE);
+		      	E.printStackTrace();
+		      	}
+
+					}
+				}
+			}
+
+		
 		}
 	
 	}
