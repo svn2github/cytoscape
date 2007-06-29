@@ -24,6 +24,8 @@
     <property name="jars.dir" value="${build.dir}/jars"/>
     <!-- plugins dir -->
     <property name="plugins.dir" value="plugins"/>
+    <!-- resources dir -->
+    <property name="resources.dir" value="resources"/>
     <!-- styles dir -->
     <property name="style.dir" value="style"/>
     <!-- release dir -->
@@ -171,6 +173,7 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  create jar -->
+	<copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
         <jar destfile="${jars.dir}/${jar_file}">
             <fileset dir="${build.classes}"/>
 	    <manifest>
