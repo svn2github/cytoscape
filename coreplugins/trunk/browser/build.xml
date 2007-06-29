@@ -121,6 +121,7 @@
 		<copy todir="${browser.classes.dir}/browser/images">
   	            <fileset dir="${browser.root.dir}/images"/>
   	</copy>
+	<copy todir="${browser.classes.dir}" file="${browser.resources.dir}/plugin.props"/>
     <jar destfile="browser.jar" manifest="${browser.manifest.dir}/browser.manifest">
       <fileset
         dir="${browser.classes.dir}"
