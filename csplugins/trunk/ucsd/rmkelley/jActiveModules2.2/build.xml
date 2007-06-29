@@ -12,7 +12,8 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="cyto.lib.dir" value="../../../../cytoscape_trunk/lib"/>
+	<property name="cyto.dir" value="../../../../cytoscape"/>
+	<property name="cyto.lib.dir" value="${cyto.dir}/lib"/>
 	<property name="lib.dir" value="lib"/>
 	
   	<!-- Temporary build directories -->
@@ -26,7 +27,7 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
-		<pathelement path="../../../../cytoscape_trunk/build/classes"/>
+		<pathelement path="${cyto.dir}/build/classes"/>
 		<fileset dir="${cyto.lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
