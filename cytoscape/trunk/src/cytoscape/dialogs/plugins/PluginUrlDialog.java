@@ -351,12 +351,12 @@ public class PluginUrlDialog extends JDialog {
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
 					// failed to read the given url
-					dialog.setMessage(PluginManageDialog.CommonError.NOXML
-							+ url);
+					getIOException().printStackTrace();
+					dialog.setMessage(PluginManageDialog.CommonError.NOXML + url);
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
-					dialog.setMessage(PluginManageDialog.CommonError.BADXML
-							+ url);
+					getJDOMException().printStackTrace();
+					dialog.setMessage(PluginManageDialog.CommonError.BADXML + url);
 				}
 			} else {
 
