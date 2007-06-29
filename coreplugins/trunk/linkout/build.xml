@@ -20,6 +20,7 @@
     <property name="fork" value="false"/>
     <property name="linkout.root.dir" value="."/>
     <property name="linkout.lib.dir" value="${linkout.root.dir}/lib"/>
+    <property name="linkout.resources.dir" value="${linkout.root.dir}/resources"/>
     <property name="cytoscape.lib.dir" value="${linkout.root.dir}/../../cytoscape/lib"/>
     <!--property name="cytoscape.plugin.dir" value="${linkout.root.dir}/../../../../cytoscape/plugins"/-->
     <path id="project.class.path">
@@ -97,8 +98,9 @@
   <target name="linkout" depends="compile-linkout"  >
     
     <echo message="Running linkout"/>
-    <copy file="${linkout.root.dir}/linkout.props" 
-          todir="${linkout.classes.dir}"/>
+    <copy todir="${linkout.classes.dir}">
+		<fileset dir="${linkout.resources.dir}"/>
+	</copy>
     <jar destfile="linkout.jar"> 
       <fileset dir="${linkout.classes.dir}" includes="**"/>
       <manifest>
