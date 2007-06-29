@@ -74,17 +74,6 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
-	protected void setPluginInfoObject(PluginInfo obj) {
-		infoObj = obj;
-	}
-	
-	/**
-	 *
-	 */
-	public PluginInfo getPluginInfoObject() {
-		return infoObj;
-	}
-
 	/**
 	 * DEPRECATED This method will be removed in Dec 2007 
 	 * please use the getPluginInfoObject() method and
