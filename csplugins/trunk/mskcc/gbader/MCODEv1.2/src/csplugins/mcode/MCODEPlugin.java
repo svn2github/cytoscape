@@ -114,25 +114,4 @@ public class MCODEPlugin extends CytoscapePlugin {
         
         menu.add(submenu);
     }                                     
-
-    /**
-     * Describes the plug in.
-     *
-     * @return short plug in description.
-     */
-    public String describe() {
-        return new String("Clusters a network using the MCODE algorithm.");
-    }
-
-    public PluginInfo getPluginInfoObject()
-    {
-    	PluginInfo result = new PluginInfo();
-	result.setName("MCODE");
-	result.setDescription(describe());
-	result.setPluginVersion(1.2);
-	result.setCytoscapeVersion("2.5");
-	result.setCategory(PluginInfo.Category.ANALYSIS);
-	result.addAuthor("Gary Bader", "MSKCC");
-	return result;
-    }
 }
