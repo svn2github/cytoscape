@@ -185,7 +185,8 @@ class QuickFindImpl implements QuickFind {
 	public synchronized GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType,
 	                                                String controllingAttribute,
 	                                                TaskMonitor taskMonitor) {
-		if ((indexType != QuickFind.INDEX_NODES) && (indexType != QuickFind.INDEX_EDGES)) {
+        Date start = new Date();
+        if ((indexType != QuickFind.INDEX_NODES) && (indexType != QuickFind.INDEX_EDGES)) {
 			throw new IllegalArgumentException("indexType must be set to: "
 			                                   + "QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES");
 		}
@@ -245,13 +246,16 @@ class QuickFindImpl implements QuickFind {
 
 		networkMap.put(cyNetwork, index);
 
-		// Notify all listeners of index start event
+		// Notify all listeners of index end event
 		for (int i = 0; i < listenerList.size(); i++) {
 			QuickFindListener listener = (QuickFindListener) listenerList.get(i);
 			listener.indexingEnded();
 		}
 
-		return index;
+        Date stop = new Date();
+        long duration = stop.getTime() - start.getTime();
+        // System.out.println("Time to re-index:  " + duration + " ms");
+        return index;
 	}
 
 	/**
