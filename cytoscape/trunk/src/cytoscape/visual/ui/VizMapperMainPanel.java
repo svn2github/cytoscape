@@ -2359,24 +2359,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (name == null)
 				return;
 
+			final String selectedID = Cytoscape.getCurrentNetworkView().getIdentifier();
+			
 			// Create the new style
 			final VisualStyle newStyle = new VisualStyle(name);
+			
 
 			// add it to the catalog
 			vmm.getCalculatorCatalog().addVisualStyle(newStyle);
 			// Apply the new style
 			vmm.setVisualStyle(newStyle);
 			vmm.getNetworkView().setVisualStyle(newStyle.getName());
-
-			// this applies the new style to the graph
-			vmm.getNetworkView().redrawGraph(false, true);
-
-			/*
-			 * Rebuild the visual mapping browser.
-			 */
-			final String selectedID = Cytoscape.getCurrentNetworkView().getIdentifier();
-			vsNameComboBox.addItem(name);
-			switchVS(name);
 
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(name);
 			final DGraphView view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
