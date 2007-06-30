@@ -70,6 +70,7 @@
     <!-- ==================== Jar Target ============================== -->
     <target name="jar" depends="compile"
             description="Creates Plugin Jar:  quick_find.jar">
+		<copy file="${config.dir}/plugin.props" todir="${build.dir}/classes"/>
         <jar destfile="${dist.dir}/quick_find.jar"
              basedir="${build.dir}/classes">
 	     <manifest>
