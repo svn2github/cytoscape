@@ -124,14 +124,13 @@ public class PluginFileReader {
 		Info.setUrl(CurrentPlugin.getChildTextTrim(urlTag));
 		Info.setDownloadUrl(downloadUrl);
 		Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
-		Info.setCytoscapeVersion(CurrentPlugin.getChildTextTrim(cytoVersTag));
 		Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
 		
 		// category
 		if (CurrentPlugin.getChild(categoryTag) != null) {
 			Info.setCategory(CurrentPlugin.getChildTextTrim(categoryTag));
 		} else {
-			Info.setCategory(PluginInfo.Category.NONE);
+			Info.setCategory(Category.NONE);
 		}
 
 		// file type
@@ -151,13 +150,17 @@ public class PluginFileReader {
 		// plugin version
 		Info = addVersion(Info, CurrentPlugin);
 
-		// Cytoscape version
-		if (Info != null && !Info.isCytoscapeVersionCurrent()) {
-			Info = null;
+		Iterator<Element> versionI = CurrentPlugin.getChild("cytoscapeVersions").getChildren().iterator();
+		while (versionI.hasNext()) {
+			Element Version = versionI.next();
+			Info.setCytoscapeVersion(Version.getTextTrim());
+
+			if (Info != null && Info.isCytoscapeVersionCurrent()) {
+				return Info;
+			}
 		}
 		
-		
-		return Info;
+		return null;
 	}
 	
 	protected PluginInfo addVersion(PluginInfo obj, Element Plugin) {
