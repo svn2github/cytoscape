@@ -38,7 +38,7 @@ package cytoscape.plugin;
 
 import java.util.List;
 import java.util.Map;
-import cytoscape.plugin.PluginTracker.PluginStatus;
+import cytoscape.plugin.PluginStatus;
 
 
 /**
