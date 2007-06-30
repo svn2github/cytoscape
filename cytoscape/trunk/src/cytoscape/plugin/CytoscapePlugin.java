@@ -59,7 +59,6 @@ import java.util.List;
  * should be used.
  */
 public abstract class CytoscapePlugin implements PropertyChangeListener {
-	private PluginInfo infoObj;
 
 	/**
 	 * There are no arguments required or allowed in a CytoscapePlugin
