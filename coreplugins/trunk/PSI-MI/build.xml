@@ -7,6 +7,8 @@
     <taskdef resource="checkstyletask.properties"/>
     <!-- The directory containing source code -->
     <property name="src.dir" value="src"/>
+    <!-- The directory containing resources -->
+    <property name="resources.dir" value="resources"/>
     <!-- The directory containing the configuration files -->
     <property name="config.dir" value="config"/>
     <!-- Temporary build directories -->
@@ -129,6 +131,7 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  Create PSI-MI Jar -->
+	<copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
         <jar destfile="${jars.dir}/psi_mi.jar">
             <fileset dir="${build.classes}"/>
 	    <manifest>
