@@ -1,0 +1,110 @@
+package cytoscape.filters;
+
+
+//Advanced settings
+public class AdvancedSetting {
+	// default settings
+	private boolean session = true, global=false; //scope
+	private boolean node=true, edge=true; // selectionType
+	private boolean source=true, target=true; // interactionType
+		
+	public String toString() {
+		String retStr = "";
+		retStr += "AdvancedSetting.scope.global = ";
+		if (global) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "AdvancedSetting.scope.session = ";
+		if (session) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "AdvancedSetting.selection.node = ";
+		if (node) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "AdvancedSetting.selection.edge = ";
+		if (edge) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "AdvancedSetting.interaction.source = ";
+		if (source) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "AdvancedSetting.interaction.target = ";
+		if (target) {
+			retStr += "true";
+		}
+		else {
+			retStr += "false";
+		}
+
+		return retStr;
+	}
+	
+	// util
+	public boolean isSessionChecked()
+	{
+		return session;
+	}
+	public void setSession(boolean pSession)
+	{
+		session = pSession;
+	}
+	
+	public boolean isGlobalChecked()
+	{
+		return global;
+	}
+	public void setGlobal(boolean pGlobal)
+	{
+		global = pGlobal;
+	}
+
+	public boolean isNodeChecked()
+	{
+		return node;
+	}
+	public void setNode(boolean pNode)
+	{
+		node = pNode;
+	}
+	public boolean isEdgeChecked()
+	{
+		return edge;
+	}
+	public void setEdge(boolean pEdge)
+	{
+		edge = pEdge;
+	}
+	public boolean isSourceChecked()
+	{
+		return source;
+	}
+	public void setSource(boolean pSource)
+	{
+		source = pSource;
+	}
+	public boolean isTargetChecked()
+	{
+		return target;
+	}
+	public void setTarget(boolean pTarget)
+	{
+		target = pTarget;
+	}
+}//End of Advanced settings
