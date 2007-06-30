@@ -15,10 +15,8 @@ import cytoscape.dialogs.plugins.PluginUpdateDialog;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.ManagerException;
-// import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.PluginTracker.PluginStatus;
+import cytoscape.plugin.PluginStatus;
 
-// import java.util.Map;
 import java.util.List;
 
 import javax.swing.JOptionPane;

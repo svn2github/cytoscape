@@ -57,7 +57,7 @@ import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInquireAction;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.PluginTracker.PluginStatus;
+import cytoscape.plugin.PluginStatus;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
