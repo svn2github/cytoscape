@@ -11,6 +11,9 @@
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="src"/>
 
+  	<!-- The directory containing resources -->
+  	<property name="resources.dir" value="resources"/>
+
 	<!-- The directory containing the configuration files -->
   	<property name="config.dir" value="config"/>
 	
@@ -88,6 +91,7 @@
 
     <!--  Target to Create PlugIn JARs -->
     <target name="jar" depends="compile" description="Creates PlugIn Jars">
+        <copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
         <jar destfile="${plugins.dir}/${jar.name}">
             <fileset dir="${build.classes}"/>
             <manifest>
