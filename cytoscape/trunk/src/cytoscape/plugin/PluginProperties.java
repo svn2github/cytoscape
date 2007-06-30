@@ -12,6 +12,38 @@ import java.util.jar.JarInputStream;
 public class PluginProperties extends Properties {
 	private String configFileName = "plugin.props";
 	
+	public enum PluginProperty {
+		NAME("pluginName", true), DESCRIPTION("pluginDescription", true),
+		VERSION("pluginVersion", true), CYTOSCAPE_VERSION("cytoscapeVersion", true),
+		CATEGORY("pluginCategory", true),
+		PROJECT_URL("projectURL", false), AUTHORS("pluginAuthorsIntsitutions", false),
+		RELEASE_DATE("releaseDate", false), UNIQUE_ID("uniqueID", false);
+		
+		private String propText;
+		private boolean requiredProp;
+	
+		private PluginProperty(String prop, boolean required) {
+			propText = prop;
+			requiredProp = required;
+		}
+
+		public String toString() {
+			return propText + ":" + requiredProp;
+		}
+		
+		public String getPropertyKey() {
+			return propText;
+		}
+		
+		public boolean isRequired() {
+			return requiredProp;
+		}
+		
+		
+		
+	}
+
+	
 	public PluginProperties(JarFile jar) throws IOException {
 		JarEntry Entry = jar.getJarEntry(configFileName);
 		if (Entry != null) 
@@ -42,36 +74,38 @@ public class PluginProperties extends Properties {
 		}
 		
 		PluginInfo pi;
-		if (containsKey("uniqueID")) {
-			pi = new PluginInfo(getProperty("uniqueID"));
+		if (containsKey(PluginProperty.UNIQUE_ID)) {
+			pi = new PluginInfo(getProperty(PluginProperty.UNIQUE_ID.getPropertyKey()));
 		} else {
 			pi = new PluginInfo();
 		}
 		
 		// required parameters
-		pi.setName(getProperty(name));
+		pi.setName(getProperty(PluginProperty.NAME.getPropertyKey()));
 
 		try {
-			pi.setPluginVersion( Double.valueOf(getProperty(version)) );
+			pi.setPluginVersion( Double.valueOf(getProperty(PluginProperty.VERSION.getPropertyKey())) );
 		} catch (java.lang.NumberFormatException ne) { // skip it or set it to a default value??
 			System.err.println(pi.getName() + " version is incorrectly formatted, format is: \\d+.\\d+. Version set to 0.1 to allow plugin to load");
 			ne.printStackTrace();
 			pi.setPluginVersion(0.1);
 		}
 		
-		pi.setDescription(getProperty(desc));
-		pi.setCategory(getProperty(category));
+		pi.setDescription(getProperty(PluginProperty.DESCRIPTION.getPropertyKey()));
+		pi.setCategory(getProperty(PluginProperty.CATEGORY.getPropertyKey()));
 		
-		pi.setCytoscapeVersion(getProperty(cyVersion));
+		pi.setCytoscapeVersion(getProperty(PluginProperty.CYTOSCAPE_VERSION.getPropertyKey()));
 		
 		// optional parameters
-		if (containsKey(projUrl)) {
-			pi.setProjectUrl(getProperty(projUrl));
+		if (containsKey(PluginProperty.PROJECT_URL.getPropertyKey())) {
+			pi.setProjectUrl(getProperty(PluginProperty.PROJECT_URL.getPropertyKey()));
 		}
 		
-		if (containsKey(authors)) {
+		if (containsKey(PluginProperty.AUTHORS.getPropertyKey())) {
 			// split up the value and add each
-			String[] AuthInst = parseAuthors();
+			String AuthorProp = getProperty(PluginProperty.AUTHORS.getPropertyKey());
+			String[] AuthInst = AuthorProp.split(";");
+
 			for (String ai: AuthInst) {
 				String[] CurrentAI = ai.split(":");
 				if (CurrentAI.length != 2) {
@@ -81,32 +115,23 @@ public class PluginProperties extends Properties {
 				pi.addAuthor(CurrentAI[0], CurrentAI[1]);
 			}
 		}
+		
+		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
+			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
+		}
 		return pi;
 	}
 
 
 	private boolean expectedPropertiesPresent() {
-		if (!containsKey(name) ||			
-			!containsKey(desc) ||
-			!containsKey(version) ||
-			!containsKey(cyVersion) ||
-			!containsKey(category))
-			return false;
-		else return true;
+		for (PluginProperty pp : PluginProperty.values()) {
+			System.err.println(pp.toString());
+			if (pp.isRequired() && !containsKey(pp.getPropertyKey())) {
+				return false;
+			}
+		}
+	return true;
 	}
 	
-	private String[] parseAuthors() {
-		String AuthorProp = getProperty(authors);
-		String[] Authors = AuthorProp.split(";");
-		return Authors;
-	}
 	
-	// Property file keys
-	private String name = "pluginName";
-	private String desc = "pluginDescription";
-	private String version = "pluginVersion";
-	private String cyVersion = "cytoscapeVersion";
-	private String category = "pluginCategory";
-	private String projUrl = "projectURL";
-	private String authors = "pluginAuthorsIntsitutions";
 }
