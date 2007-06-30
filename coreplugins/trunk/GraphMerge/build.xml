@@ -35,6 +35,7 @@
     <property name="images" value="images"/>
     <property name="logs" value="logs"/>
     <property name="lib" value="lib"/>
+    <property name="resources" value="resources"/>
 
     <property name="root.dir" value="."/>
     <property name="lib.dir" value="${root.dir}/${lib}"/>
@@ -49,6 +50,7 @@
     <property name="images.dir" value="${root.dir}/${images}"/>
     <property name="log.dir" value="${root.dir}/${logs}" />
     <property name="junit.report.dir" value="${log.dir}/junit-reports" />
+    <property name="resources.dir" value="${root.dir}/${resources}" />
 
     <property name="cytoscape" value="cytoscape" />
     <property name="cytoscape.dir" value="../../${cytoscape}" />
@@ -193,6 +195,7 @@
     <copy todir="${build.dir}">
         <fileset dir="${images.dir}"/>
     </copy>
+    <copy todir="${build.dir}" file="${resources.dir}/plugin.props"/>
     <jar destfile="${project.jar}" 
          manifest="${project.manifest}">
       <fileset dir="${build.dir}"
