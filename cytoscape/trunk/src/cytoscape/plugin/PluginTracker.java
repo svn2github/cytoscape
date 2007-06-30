@@ -62,21 +62,6 @@ import java.util.*;
 public class PluginTracker {
 	private Document trackerDoc;
 	private File installFile;
-	public enum PluginStatus { // xml tags describing status of plugin
-		CURRENT("CurrentPlugins"),
-		DELETE("DeletePlugins"),
-		INSTALL("InstallPlugins");
-
-		private String statusText;
-
-		private PluginStatus(String status) {
-			statusText = status;
-		}
-
-		public String getTagName() {
-			return statusText;
-		}
-	}
 
 	/**
 	 * Used for testing
@@ -155,7 +140,7 @@ public class PluginTracker {
 			if (!obj.getName().equals(obj.getPluginClassName())) {
 				Plugin.getChild(nameTag).setText(obj.getName());
 			}
-			if (!obj.getCategory().equals(PluginInfo.Category.NONE.getCategoryText())) {
+			if (!obj.getCategory().equals(Category.NONE.getCategoryText())) {
 				Plugin.getChild(categoryTag).setText(obj.getCategory());
 			}
 			
