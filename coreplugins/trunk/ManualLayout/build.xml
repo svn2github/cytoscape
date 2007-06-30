@@ -37,6 +37,7 @@
     <property name="ManualLayout.classes.dir" value="${ManualLayout.root.dir}/classes"/>
     <property name="ManualLayout.resources.dir" value="${ManualLayout.root.dir}/resources"/>
     <property name="ManualLayout.manifest.dir" value="${ManualLayout.root.dir}/manifest"/>
+    <property name="ManualLayout.resources.dir" value="${ManualLayout.root.dir}/resources"/>
     <property name="ManualLayout.packages" value="ManualLayout.*"/>
 
     <!-- Define excludes for ManualLayout compile and javadoc -->
@@ -90,6 +91,7 @@
   <!-- Creates the ManualLayout.jar file                                           -->
   <!-- =================================================================== -->
   <target name="ManualLayout" depends="compile-ManualLayout"  >
+    <copy todir="${ManualLayout.classes.dir}" file="${ManualLayout.resources.dir}/plugin.props"/>
     <jar destfile="${ManualLayout.jar}" manifest="${ManualLayout.manifest.dir}/ManualLayout.manifest">
       <fileset
         dir="${ManualLayout.classes.dir}"
