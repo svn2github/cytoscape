@@ -8,10 +8,10 @@ pluginName=cPath
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Web service plugin that queries the MSKCC database for protein networks
+pluginDescription=A plugin that queries the cPath database for specified terms and returns interaction networks. 
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.1
+pluginVersion=1.0
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.5
@@ -22,4 +22,4 @@ pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Cytostaff:Cytoscape Consortium
+pluginAuthorsIntsitutions=Ethan Cerami:Memorial Sloan-Kettering Cancer Center

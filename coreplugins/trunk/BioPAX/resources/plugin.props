@@ -8,7 +8,7 @@ pluginName=BioPAX
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Reads the BioPAX XML file format
+pluginDescription=Provides reading and rendering support for Biological Pathways in BioPAX format.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=0.5
@@ -22,4 +22,4 @@ pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Cytostaff:Cytoscape Consortium
+pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross:Computational Biology Lab - Memorial Sloan-Kettering Cancer Center

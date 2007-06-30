@@ -168,31 +168,6 @@ public class FilterPlugin extends CytoscapePlugin {
 		return retVect;
 	}
 
-    public PluginInfo getPluginInfoObject() {
-        PluginInfo infoObj = new PluginInfo();
-        infoObj.setName("Filter Plugin");
-        infoObj.setDescription("Filters");
-        infoObj.setPluginVersion(0.11);
-        
-        /* The above  methods are the only required ones and will be set to default values
-         * if not set by the plugin developer.  The following methods may be set or not
-         * as the developer chooses. */
-
-        /* This method sets the site describing plugins available for install/update
-         * Set this ONLY if you do not intend to submit this plugin to http://cytoscape.org and
-         * will instead create your own download site.
-         * This is required for automatic updating of plugins. */         
-       // infoObj.setProjectUrl(http://my-project/update-site/plugins.xml);
-
-         // compatible Cytoscape version
-         infoObj.setCytoscapeVersion("2.5");
-         // set to Unknown by default 
-         infoObj.setCategory(PluginInfo.Category.CORE);
-    
-         return infoObj;
-    }
-    
-        
 	public void onCytoscapeExit(){
 		//System.out.println("onCytoscapeExit() ...");
 		// Save global filter to "filters.prop"

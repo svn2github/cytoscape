@@ -22,4 +22,4 @@ pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Cytostaff:Cytoscape Consortium
+pluginAuthorsIntsitutions=Ethan Cerami:Memorial Sloan-Kettering Cancer Center

@@ -76,30 +76,6 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 	}
 
 	
-    public PluginInfo getPluginInfoObject() {
-        PluginInfo infoObj = new PluginInfo();
-        infoObj.setName("Old Filter Plugin");
-        infoObj.setDescription("Old Filters");
-        infoObj.setPluginVersion(0.1);
-        
-        /* The above  methods are the only required ones and will be set to default values
-         * if not set by the plugin developer.  The following methods may be set or not
-         * as the developer chooses. */
-
-        /* This method sets the site describing plugins available for install/update
-         * Set this ONLY if you do not intend to submit this plugin to http://cytoscape.org and
-         * will instead create your own download site.
-         * This is required for automatic updating of plugins. */         
-       // infoObj.setProjectUrl(http://my-project/update-site/plugins.xml);
-
-         // compatible Cytoscape version
-         infoObj.setCytoscapeVersion("2.5");
-         // set to “Unknown” by default
-         infoObj.setCategory(PluginInfo.Category.CORE);
-    
-         return infoObj;
-    }
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -187,15 +163,6 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 		FilterEditorManager.defaultManager().addEditor(new BooleanMetaFilterEditor());
 		FilterEditorManager.defaultManager().addEditor(new NodeInteractionFilterEditor());
 		FilterEditorManager.defaultManager().addEditor(new EdgeInteractionFilterEditor());
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String describe() {
-		return "New Filters";
 	}
 
 	/**

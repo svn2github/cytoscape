@@ -8,7 +8,7 @@ pluginName=GraphMerge
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Merges networks
+pluginDescription=Provides set operations (union, intersection, difference) for networks.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=1.0
@@ -22,4 +22,4 @@ pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Cytostaff:Cytoscape Consortium
+pluginAuthorsIntsitutions=Ryan Kelley:UCSD

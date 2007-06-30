@@ -101,25 +101,4 @@ public class BioPaxPlugIn extends CytoscapePlugin {
 		// a BioPaxContainerClass - this contains the network listener
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
 	}
-
-	/**
-	 * Our implementation of CytoscapePlugin.getPluginInfoObject()
-	 *
-	 * @return PluginInfo
-	 */
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setName(PLUGIN_NAME);
-		info.setDescription("Provides reading and rendering support for Biological Pathways in BioPAX format.");
-		info.setPluginVersion(Double.valueOf(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM));
-		info.setCategory(PluginInfo.Category.CORE);
-
-		//info.setCategory("Data Integration");
-		//info.setProjectUrl("http://www.biopax.org"); // this should actually point to the url where the plugin could be updated from, ie cytoscape
-
-		info.addAuthor("Ethan Cerami, Benjamin Gross", "Computational Biology Lab, Memorial Sloan-Kettering Cancer Center");
-
-		// outta here
-		return info;
-	}
 }

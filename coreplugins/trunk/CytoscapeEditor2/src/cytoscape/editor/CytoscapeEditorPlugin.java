@@ -77,12 +77,6 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
     // MLC 06/30/07 END.
 
 	// MLC 07/24/06 BEGIN:
-	/**
-	 * Overrides CytoscapePlugin.describe():
-	 */
-	public String describe() {
-		return "Add nodes and edges to a Cytoscape Network. ";
-	}
 
 	/**
 	 * sets various flags and registers various editors with the CytoscapeEditorManager
