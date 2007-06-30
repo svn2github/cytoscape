@@ -39,7 +39,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
 
 
 /**
