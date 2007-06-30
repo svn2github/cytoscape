@@ -26,27 +26,22 @@
 */
 package cytoscape.editor.event;
 
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorManager;
-
-import cytoscape.editor.impl.BasicCytoShapeEntity;
-import cytoscape.editor.impl.ShapePalette;
-
-import cytoscape.view.CyNetworkView;
-
 import giny.view.NodeView;
-
-import phoebe.PhoebeCanvasDropEvent;
 
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-
 import java.io.IOException;
+
+import phoebe.PhoebeCanvasDropEvent;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.impl.BasicCytoShapeEntity;
+import cytoscape.editor.impl.ShapePalette;
+import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -202,198 +197,6 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		beginEdge(location, targetNode);
 	}
 
-	// // implements PhoebeCanvasDropListener interface:
-	// public void itemDropped(PhoebeCanvasDropEvent e) {
-	// Object shape = null;
-	// String shapeName = null;
-	//
-	// // AJK: 07/17/06 BEGIN Debugging code
-	// // DGraphView view = (DGraphView) Cytoscape.getCurrentNetworkView();
-	// // JLabel button = new JLabel ("test 1");
-	// // view.getBackgroundCanvas().add(button);
-	// // CytoscapeEditorManager.log("added component to background canvas: " +
-	// view.getBackgroundCanvas());
-	// //
-	// // button.setLocation(e.getLocation());
-	// // button.setPreferredSize(new Dimension (70, 20));
-	// // button.setOpaque(true);
-	// // button.setBackground(Color.BLUE);
-	// // button.setVisible(true);
-	// // view.getCanvas().repaint();
-	// // AJK: 07/17/06 END
-	//
-	// Point location = e.getLocation();
-	// Transferable t = e.getTransferable();
-	// BasicCytoShapeEntity myShape = null;
-	// DataFlavor [] dfl = t.getTransferDataFlavors();
-	//	
-	// for (int i = 0; i < dfl.length; i++)
-	// {
-	// DataFlavor d = dfl[i];
-	// if (d.isMimeTypeEqual("application/x-java-url"))
-	// {
-	// handleDroppedURL(t, d, location);
-	// }
-	// else if (t.isDataFlavorSupported(dfl[i])) // should be d
-	// {
-	// try
-	// {
-	// // should be d
-	// shape = t.getTransferData(dfl[i]);
-	// }
-	//			
-	// catch (UnsupportedFlavorException exc)
-	// {
-	// exc.printStackTrace();
-	// return;
-	// }
-	// catch (IOException exc)
-	// {
-	// exc.printStackTrace();
-	// return;
-	// }
-	// }
-	// }
-	//        
-	// if (shape != null)
-	// {
-	// shapeName = shape.toString();
-	// myShape = ShapePalette.getBasicCytoShapeEntity(shapeName); }
-	//	
-	// if (myShape != null) {
-	// // need to handle nodes and edges differently
-	// String attributeName = myShape.getAttributeName();
-	// String attributeValue = myShape.getAttributeValue();
-	//
-	// // CytoscapeEditorManager.log("Item dropped of type: " + attributeName);
-	//
-	// if (attributeName.equals(PaletteNetworkEditEventHandler.NODE_TYPE)) {
-	// this.setNodeAttributeName(attributeName);
-	// this.setNodeAttributeValue(attributeValue);
-	//
-	// _caller.addNode("node" + counter, attributeName,
-	// attributeValue, location);
-	// counter++;
-	// handleDroppedNode(attributeName, attributeValue, location);
-	// } else if
-	// (attributeName.equals(PaletteNetworkEditEventHandler.EDGE_TYPE)) {
-	// this.setEdgeAttributeName(attributeName);
-	// this.setEdgeAttributeValue(attributeValue);
-	// handleDroppedEdge(attributeValue, e);
-	// }
-	// }
-	// }
-	//
-	//
-	// /**
-	// * specialized processing for a dropped shape that represents an edge.
-	// * if the edge shape is dropped on a node, then start an edge from the
-	// node that is
-	// * dropped on. Subsequent movements of the mouse extend the edge, as in
-	// the BasicNetworkEditEventHandler.
-	// * A mouse click when over the desired target node completes the edge.
-	// *
-	// * @param attributeValue the type of the edge
-	// * @param e the drop event
-	// */
-	//
-	// public void handleDroppedEdge(String attributeValue,
-	// PhoebeCanvasDropEvent e) {
-	// Point location = e.getLocation();
-	//
-	// // MLC: Why not just use location?:
-	// Point2D locn = (Point2D) location.clone();
-	//
-	// // locn = canvas.getCamera().localToView(locn);
-	//
-	// // MLC 12/07/06:
-	// // editEvent = this;
-	// if (edgeStarted) {
-	// // if there is another edit in progress, then don't process a drag/drop
-	// return;
-	// }
-	//
-	// // NB: targetNode is *drop* target
-	// // MLC: I think findEdgeDropTarget can be replaced with
-	// // getView().getPickedNodeView(location) and
-	// // this would fix the issues listed in the header for
-	// // findEdgeDropTarget.
-	// NodeView targetNode = findEdgeDropTarget(locn);
-	//
-	// // CytoscapeEditorManager.log ("drop target = " + targetNode);
-	// if (targetNode == null) {
-	// return;
-	// }
-	//
-	// // if we reach this point, then the edge shape has been dropped onto a
-	// nod3e
-	// // MLC: why do we need nextPoint?:
-	// nextPoint = e.getLocation();
-	//
-	// // MLC: why do we need onNode:
-	// boolean onNode = true;
-	//
-	// // MLC: Why is this 'if' here? It will always be true:
-	// if (onNode && !(edgeStarted)) {
-	// // Begin Edge creation
-	// setHandlingEdgeDrop(true);
-	// // MLC: why edgeStarted and setEdgeStarted():
-	// // MLC: Also, why not replace all the following
-	// // lines of the 'if' with BasicNetworkEditEventHandler.beginEdge()?:
-	// edgeStarted = true;
-	// setEdgeStarted(true);
-	// setNode(targetNode);
-	// // edge = new PPath();
-	// //
-	// // edge.setStroke(new PFixedWidthStroke(3));
-	// // edge.setPaint(Color.black);
-	// // MLC: why setting startPoint directly and then
-	// // with setStartPoint()?:
-	// startPoint = nextPoint;
-	// updateEdge();
-	// setStartPoint(startPoint);
-	// }
-	// }
-	//
-	// /**
-	// * determine which node the edge has been dropped on, if any
-	// * <p>
-	// * TODO: findEdgeDropTarget currently iterates through all of the Nodes in
-	// the current network and
-	// * checks whether the drop event position is contained within the bounds
-	// of the node. Is
-	// * there a more efficient way to do this?
-	// * TODO: 06/22/06: update this to use new renderer routines for finding
-	// nodes intersecting point
-	// * @param location the location of the drop event
-	// * @return the NodeView that is located at the drop location.
-	// */
-	// public NodeView findEdgeDropTarget(Point2D location) {
-	// double[] locn = new double[2];
-	// locn[0] = location.getX();
-	// locn[1] = location.getY();
-	// this.getView().xformComponentToNodeCoords(locn);
-	//
-	// double locnX = locn[0];
-	// double locnY = locn[1];
-	//
-	// Iterator it = Cytoscape.getCurrentNetworkView().getNodeViewsIterator();
-	// NodeView nv;
-	//
-	// while (it.hasNext()) {
-	// nv = (NodeView) it.next();
-	//
-	// if ((locnX >= (nv.getXPosition() - nv.getWidth())) &&
-	// (locnX <= (nv.getXPosition() + nv.getWidth())) &&
-	// (locnY >= (nv.getYPosition() - nv.getHeight())) &&
-	// (locnY <= (nv.getYPosition() + nv.getHeight()))) {
-	// return nv;
-	// }
-	// }
-	//
-	// return null;
-	// }
-	// MLC 12/07/06 END.
 
 	/**
 	 * A stub routine that currently just adds a node at the drop position. In
@@ -414,27 +217,10 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	public void handleDroppedURL(Transferable t, DataFlavor d, Point location) {
 		Object URL;
 
-		// AJK: 12/08/06 oy, what a hack. try to send transferable to
-		// transferhandler
-		// of cytoscapeDesktopPane
-		// AJK: 12/08/06 always dispatch event to next listener
-		// TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
-		// getDesktopPane().getTransferHandler();
-		// if (th != null)
-		// {
-		// th.importData(Cytoscape.getDesktop().getNetworkViewManager().
-		// getDesktopPane(), t);
-		// }
-		// AJK: 12/08/06 END
 		try {
 			URL = t.getTransferData(d);
 
 			if (URL != null) {
-				// CytoscapeEditorManager.log ("Handling dropped URL = " +
-				// URLString);
-				// MLC 12/07/06:
-				// CyNode cn = _caller.addNode("node" + counter, "URL");
-				// MLC 12/07/06:
 				CyNode cn = get_caller().addNode("node" + counter, "URL");
 				counter++;
 				Cytoscape.getCurrentNetwork().restoreNode(cn);

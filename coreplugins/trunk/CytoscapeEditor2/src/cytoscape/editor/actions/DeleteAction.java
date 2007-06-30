@@ -28,34 +28,27 @@
  */
 package cytoscape.editor.actions;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.DeleteEdit;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.util.undo.CyUndo;
-
-import cytoscape.view.CyNetworkView;
-
 import giny.model.GraphObject;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
-
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.DeleteEdit;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.undo.CyUndo;
+import cytoscape.view.CyNetworkView;
 
 
 /**

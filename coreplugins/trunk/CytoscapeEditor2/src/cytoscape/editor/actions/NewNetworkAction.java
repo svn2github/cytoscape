@@ -4,21 +4,18 @@
  */
 package cytoscape.editor.actions;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorFactory;
-import cytoscape.editor.CytoscapeEditorManager;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CyNetworkView;
-
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorFactory;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
 
 
 /**

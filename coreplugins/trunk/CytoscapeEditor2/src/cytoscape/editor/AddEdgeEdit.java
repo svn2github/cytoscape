@@ -1,9 +1,9 @@
 
 package cytoscape.editor;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 
 /**

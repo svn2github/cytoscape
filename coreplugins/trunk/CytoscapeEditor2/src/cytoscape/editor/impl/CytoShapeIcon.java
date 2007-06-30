@@ -29,9 +29,6 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.NodeShape;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -39,6 +36,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.Icon;
+
+import cytoscape.visual.Arrow;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.NodeShape;
 
 
 /**
@@ -80,31 +81,7 @@ public class CytoShapeIcon implements Icon {
     // MLC 05/09/07:
 	private NodeShape _shape;
 	private Arrow _arrowType = null;
-    // MLC 05/09/07 BEGIN:
-    //	/**
-    //	 * Creates a new CytoShapeIcon object.
-    //	 *
-    //	 * @param shape  DOCUMENT ME!
-    //	 * @param color  DOCUMENT ME!
-    //	 * @param size  DOCUMENT ME!
-    //	 */
-    //	public CytoShapeIcon(byte shape, Color color, Dimension size) {
-    //		this(shape, color);
-    //		_size = size;
-    //	}
-    //	/**
-    //	 * Creates a new CytoShapeIcon object.
-    //	 *
-    //	 * @param shape  DOCUMENT ME!
-    //	 * @param color  DOCUMENT ME!
-    //	 */
-    //	public CytoShapeIcon(byte shape, Color color) {
-    //		_color = color;
-    //		_shape = shape;
-    //		_image = null;
-    //		_arrowType = null;
-    //	}
-
+ 
     public CytoShapeIcon(NodeShape shape, Color color, Dimension size) {
     	this(shape, color);
 	_size = size;

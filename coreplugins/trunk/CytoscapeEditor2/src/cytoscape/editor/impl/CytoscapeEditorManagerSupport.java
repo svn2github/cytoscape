@@ -30,25 +30,6 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorFactory;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.InvalidEditorException;
-
-import cytoscape.editor.actions.DeleteAction;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
 
@@ -58,6 +39,20 @@ import java.beans.PropertyChangeListener;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorFactory;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.InvalidEditorException;
+import cytoscape.editor.actions.DeleteAction;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 
 /**

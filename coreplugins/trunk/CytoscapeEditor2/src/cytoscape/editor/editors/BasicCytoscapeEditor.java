@@ -29,40 +29,7 @@
  */
 package cytoscape.editor.editors;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeModifiedNetworkManager;
-
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
-import cytoscape.data.Semantics;
-
-import cytoscape.editor.AddEdgeEdit;
-import cytoscape.editor.AddNodeEdit;
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorManager;
-
-import cytoscape.editor.actions.DeleteAction;
-
-import cytoscape.editor.event.BasicNetworkEditEventHandler;
-import cytoscape.editor.event.NetworkEditEventAdapter;
-
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.CytoscapeToolBar;
-
-import cytoscape.util.undo.CyUndo;
-
-import cytoscape.view.CyMenus;
-import cytoscape.view.CyNetworkView;
-
-import ding.view.DGraphView;
-import ding.view.EdgeContextMenuListener;
-import ding.view.NodeContextMenuListener;
-
 import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -70,7 +37,6 @@ import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +45,30 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeModifiedNetworkManager;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
+import cytoscape.data.Semantics;
+import cytoscape.editor.AddEdgeEdit;
+import cytoscape.editor.AddNodeEdit;
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.actions.DeleteAction;
+import cytoscape.editor.event.BasicNetworkEditEventHandler;
+import cytoscape.editor.event.NetworkEditEventAdapter;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CytoscapeToolBar;
+import cytoscape.util.undo.CyUndo;
+import cytoscape.view.CyMenus;
+import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
+import ding.view.EdgeContextMenuListener;
+import ding.view.NodeContextMenuListener;
 
 
 /**

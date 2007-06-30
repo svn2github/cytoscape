@@ -34,29 +34,6 @@
  */
 package cytoscape.editor.editors;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditorFactory;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.DragSourceContextCursorSetter;
-import cytoscape.editor.ShapePaletteInfo;
-import cytoscape.editor.ShapePaletteInfoGenerator;
-
-import cytoscape.editor.event.PaletteNetworkEditEventHandler;
-
-import cytoscape.editor.impl.CytoShapeIcon;
-import cytoscape.editor.impl.ShapePalette;
-
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-
-import ding.view.DGraphView;
-
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -65,12 +42,28 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
-
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditorFactory;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.DragSourceContextCursorSetter;
+import cytoscape.editor.ShapePaletteInfo;
+import cytoscape.editor.ShapePaletteInfoGenerator;
+import cytoscape.editor.event.PaletteNetworkEditEventHandler;
+import cytoscape.editor.impl.CytoShapeIcon;
+import cytoscape.editor.impl.ShapePalette;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import ding.view.DGraphView;
 
 
 /**
@@ -96,10 +89,6 @@ import javax.swing.event.ChangeListener;
  *
  */
 public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements ChangeListener {
-	// MLC 12/02/06:
-	//    public static final String NODE_TYPE = "NODE_TYPE";
-	// MLC 12/02/06:
-	//    public static final String EDGE_TYPE = "EDGE_TYPE";
 
 	/**
 	 * main data structures for all node and edge attributes
@@ -163,10 +152,6 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		ShapePaletteInfoGenerator palGen = CytoscapeEditorFactory.INSTANCE
 		                                                                                                                                                       .createShapePaletteInfoGenerator();
 
-		// CytoscapeEditorManager.log("Got edge target arrow calculator: " + edgeCalc);
-		// MLC 05/09/07:
-		// byte[] calcsToUse = new byte[] { VizMapUI.EDGE_TGTARROW };
-		// MLC 05/09/07:
 		VisualPropertyType[] calcsToUse = new VisualPropertyType [] { VisualPropertyType.EDGE_TGTARROW };
 
 		Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac, calcsToUse,
@@ -202,9 +187,6 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 
 		ShapePaletteInfoGenerator palGen = CytoscapeEditorFactory.INSTANCE
 		                                                                                                                                                                                          .createShapePaletteInfoGenerator();
-		// MLC 05/09/07:
-		// byte[] calcsToUse = new byte[] { VizMapUI.NODE_COLOR, VizMapUI.NODE_SHAPE, VizMapUI.NODE_SIZE };
-		// MLC 05/09/07:
 		VisualPropertyType[] calcsToUse = new VisualPropertyType[] { VisualPropertyType.NODE_FILL_COLOR, VisualPropertyType.NODE_SHAPE, VisualPropertyType.NODE_SIZE };
 		Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(nac, calcsToUse,
 		                                                                    controllingAttribute,
@@ -224,11 +206,6 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 			while (spEntries.hasNext()) {
 				ShapePaletteInfo spi = spEntries.next();
 
-				// CytoscapeEditorManager.log("   node palette entry = " + spi);
-				// MLC 05/09/07 BEGIN:
-				// Color nodeColor = (Color) spi.getValue(VizMapUI.NODE_COLOR);
-				// byte nodeShape = (Byte) spi.getValue(VizMapUI.NODE_SHAPE);
-				// int nodeSize = (int) ((Double) spi.getValue(VizMapUI.NODE_SIZE)).longValue();
 				Color nodeColor = (Color) spi.getValue(VisualPropertyType.NODE_FILL_COLOR);
 				NodeShape nodeShape = (NodeShape) spi.getValue(VisualPropertyType.NODE_SHAPE);
 				int nodeSize = (int) ((Double) spi.getValue(VisualPropertyType.NODE_SIZE)).longValue();
@@ -246,268 +223,6 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		return shapePalette;
 	}
 
-	//    /**
-	//     * specialized initialization code for editor, called by
-	//     * CytoscapeEditorManager when a new editor is built.
-	//     * draws shapes on the palette, based upon the visual style
-	//     *
-	//     * @param args
-	//     *            an arbitrary list of arguments passed to initialization
-	//     *            routine. Not used in this editor
-	//     */
-	//    public void initializeControls(List args) {
-	//        shapePalette = CytoscapeEditorManager.getCurrentShapePalette();
-	//        shapePalette.clear();
-	//
-	//        VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-	//
-	//        VisualStyle          vizStyle = manager.getVisualStyle();
-	//        CytoscapeEditorManager.log("Got visual style: " + vizStyle);
-	//
-	//        // first do edges
-	//        EdgeAppearanceCalculator eac = vizStyle.getEdgeAppearanceCalculator();
-	//        CytoscapeEditorManager.log("Got edgeAppearanceCalculator: " + eac);
-	//
-	//        // TODO: MLC: Place in a method for handling edge arrows:
-	//        GenericEdgeArrowCalculator edgeCalc = null;
-	//
-	//        if (eac != null) {
-	//            edgeCalc = (GenericEdgeArrowCalculator) eac.getEdgeTargetArrowCalculator();
-	//            CytoscapeEditorManager.log("Got edge target arrow calculator: " + edgeCalc);
-	//
-	//            // TODO: MLC: Remove this?:
-	//            if (edgeCalc == null) {
-	//            }
-	//        }
-	//
-	//        DiscreteMapping dArrow = null;
-	//
-	//        if (edgeCalc != null) {
-	//            Vector edgeMappings = edgeCalc.getMappings();
-	//
-	//            // TODO: MLC: This code is duplicated 3
-	//            //       times--make a method called to compute the
-	//            //       mapping:
-	//            for (int i = 0; i < edgeMappings.size(); i++) {
-	//                if (edgeMappings.get(i) instanceof DiscreteMapping) {
-	//                    DiscreteMapping dArrowCandidate = (DiscreteMapping) edgeMappings.get(i);
-	//                    // AJK: 07/06/06 default editor shouldn't set NODE_TYPE as controlling attribute
-	//                    //					if (attr.equals(controllingEdgeAttribute)) {
-	//                    dArrow = dArrowCandidate;
-	//
-	//                    break;
-	//                    //					}
-	//                }
-	//            }
-	//        }
-	//
-	//        if (dArrow == null) {
-	//            shapePalette.addShape(EDGE_TYPE,
-	//                                  "DirectedEdge",
-	//                                  new CytoShapeIcon(Arrow.BLACK_DELTA),
-	//                                  "Directed Edge");
-	//        } else {
-	//            Arrow arrowType;
-	//            Map   edgeTargetArrows = dArrow.getAll();
-	//
-	//            Set      mapKeys = edgeTargetArrows.keySet();
-	//            Iterator it = mapKeys.iterator();
-	//
-	//            while (it.hasNext()) {
-	//                Object arrowKey = it.next();
-	//                String keyName = arrowKey.toString();
-	//                arrowType = (Arrow) dArrow.getMapValue(arrowKey);
-	//                shapePalette.addShape(EDGE_TYPE,
-	//                                      keyName,
-	//                                      new CytoShapeIcon(arrowType),
-	//                                      keyName);
-	//
-	//                // add this as a change listener. Make sure it's unique by
-	//                // removing
-	//                // any past listeners
-	//                // TODO: MLC: Shouldn't this be moved out of the loop?:
-	//                dArrow.removeChangeListener(this);
-	//                dArrow.addChangeListener(this);
-	//            }
-	//        }
-	//
-	//        // then add nodes
-	//        Color           nodeColor = null;
-	//        byte            nodeShape;
-	//        DiscreteMapping dfill  = null;
-	//        DiscreteMapping dshape = null;
-	//
-	//        NodeAppearanceCalculator nac = vizStyle.getNodeAppearanceCalculator();
-	//
-	//        //		CytoscapeEditorManager.log("Got NodeAppearanceCalculator: " + nac);
-	//        GenericNodeColorCalculator nfill = null;
-	//
-	//        if (nac != null) {
-	//            nfill = (GenericNodeColorCalculator) nac.getNodeFillColorCalculator();
-	//        }
-	//
-	//        if (nfill == null) {
-	//            nodeColor = nac.getDefaultNodeFillColor();
-	//        } else {
-	//            // TODO: MLC: This code is duplicated 3
-	//            //       times--make a method called to compute the
-	//            //       mapping:
-	//            Vector mappings = nfill.getMappings();
-	//            dfill = null;
-	//
-	//            for (int i = 0; i < mappings.size(); i++) {
-	//                if (mappings.get(i) instanceof DiscreteMapping) {
-	//                    DiscreteMapping dfillCandidate = (DiscreteMapping) mappings.get(i);
-	//                    // AJK: 07/06/06 default editor shouldn't set NODE_TYPE as controlling attribute
-	//                    //					if (attr.equals(controllingNodeAttribute)) {
-	//                    dfill = dfillCandidate;
-	//
-	//                    break;
-	//                    //					}
-	//                }
-	//            }
-	//
-	//            if (dfill == null) {
-	//                nodeColor = nac.getDefaultNodeFillColor();
-	//            } else {
-	//                // add this as a change listener. Make sure it's unique by
-	//                // removing
-	//                // any past listeners
-	//                CytoscapeEditorManager.log("NODE COLOR: real controlling attribute = " +
-	//                                   getControllingNodeAttribute() +
-	//                                   " color mapping controlling attribute = " +
-	//                                   dfill.getControllingAttributeName());
-	//                nfill.removeChangeListener(this);
-	//                nfill.addChangeListener(this);
-	//            }
-	//        }
-	//
-	//        GenericNodeShapeCalculator nshape = null;
-	//
-	//        if (nac != null) {
-	//            nshape = (GenericNodeShapeCalculator) nac.getNodeShapeCalculator();
-	//        }
-	//
-	//        if (nshape == null) {
-	//            nodeShape = nac.getDefaultNodeShape();
-	//        } else {
-	//            // TODO: MLC: This code is duplicated 3
-	//            //       times--make a method called to compute the
-	//            //       mapping:
-	//            Vector mappings = nshape.getMappings();
-	//
-	//            for (int i = 0; i < mappings.size(); i++) {
-	//                if (mappings.get(i) instanceof DiscreteMapping) {
-	//                    DiscreteMapping dshapeCandidate = (DiscreteMapping) mappings.get(i);
-	//                    // MLC 07/27/06:
-	//                    //					String attr = dshapeCandidate.getControllingAttributeName();
-	//                    //					if (attr.equals(controllingNodeAttribute)) {
-	//                    dshape = dshapeCandidate;
-	//
-	//                    break;
-	//                    //					}
-	//                }
-	//            }
-	//
-	//            if (dshape == null) {
-	//                nodeShape = nac.getDefaultNodeShape();
-	//            } else {
-	//                CytoscapeEditorManager.log("NODE SHAPE: real controlling attribute = " +
-	//                                   getControllingNodeAttribute() +
-	//                                   " shape mapping controlling attribute = " +
-	//                                   dshape.getControllingAttributeName());
-	//                nshape.removeChangeListener(this);
-	//                nshape.addChangeListener(this);
-	//            }
-	//        }
-	//
-	//        Color defaultNodeColor = nac.getDefaultNodeFillColor();
-	//        byte  defaultNodeShape = nac.getDefaultNodeShape();
-	//
-	//        // TODO: MLC: remove this if and handle each case in following else for when
-	//        //            nodeShapeIt==null and nodeColorIt==null.
-	//        //            Separate code into a node shape and node color shape creater.
-	//        if ((dshape == null) && (dfill == null)) {
-	//            shapePalette.addShape("NODE_TYPE",
-	//                                  "DefaultNode",
-	//                                  new CytoShapeIcon(defaultNodeShape,
-	//                                                    defaultNodeColor),
-	//                                  "Add a Node");
-	//        } else {
-	//            // TODO: MLC: This else is complicated and needs comments:
-	//            Map      nodeColorValues = (dfill == null) ? null : dfill.getAll();
-	//            Map      nodeShapeValues = (dshape == null) ? null : dshape.getAll();
-	//            Set      nodeColorKeys   = (nodeColorValues == null) ? null
-	//                                       : nodeColorValues.keySet();
-	//            Set      nodeShapeKeys   = (nodeShapeValues == null) ? null
-	//                                       : nodeShapeValues.keySet();
-	//            Iterator nodeShapeIt     = (nodeShapeKeys == null) ? null
-	//                                       : nodeShapeKeys.iterator();
-	//            Iterator nodeColorIt     = (nodeColorKeys == null) ? null
-	//                                       : nodeColorKeys.iterator();
-	//            List     keysVisited     = new ArrayList();
-	//
-	//            // MLC: TODO: Is this code correct in that if I have 6 different colors and
-	//            //            5 different shapes, shouldn't a palette entry be made for
-	//            //            each combination (30 entries) versus one for each color and one
-	//            //            one for each shape (the color ones created use the default shape):
-	//            if (nodeShapeIt != null) {
-	//                while (nodeShapeIt.hasNext()) {
-	//                    Object shapeKey = nodeShapeIt.next();
-	//
-	//                    if (!keysVisited.contains(shapeKey)) {
-	//                        keysVisited.add(shapeKey);
-	//
-	//                        String shapeKeyName = shapeKey.toString();
-	//                        nodeShape = ((Byte) dshape.getMapValue(shapeKey)).byteValue();
-	//
-	//                        if (dfill == null) {
-	//                            nodeColor = nac.getDefaultNodeFillColor();
-	//                        } else {
-	//                            nodeColor = (Color) dfill.getMapValue(shapeKey);
-	//
-	//                            if (nodeColor == null) {
-	//                                nodeColor = nac.getDefaultNodeFillColor();
-	//                            }
-	//                        }
-	//
-	//                        shapePalette.addShape("NODE_TYPE",
-	//                                              shapeKeyName,
-	//                                              new CytoShapeIcon(nodeShape,
-	//                                                                nodeColor),
-	//                                              shapeKeyName);
-	//                    }
-	//                }
-	//            }
-	//
-	//            if (nodeColorIt != null) {
-	//                while (nodeColorIt.hasNext()) {
-	//                    Object colorKey = nodeColorIt.next();
-	//
-	//                    if (!keysVisited.contains(colorKey)) {
-	//                        keysVisited.add(colorKey);
-	//
-	//                        String colorKeyName = colorKey.toString();
-	//                        nodeColor = (Color) dfill.getMapValue(colorKey);
-	//                        // at this point, we will have visited all shape keys,
-	//                        // so shape key for this
-	//                        // color key would be null
-	//                        shapePalette.addShape("NODE_TYPE",
-	//                                              colorKeyName,
-	//                                              new CytoShapeIcon(defaultNodeShape,
-	//                                                                nodeColor),
-	//                                              colorKeyName);
-	//                    }
-	//                }
-	//            }
-	//        }
-	//
-	//        shapePalette.showPalette();
-	//
-	//        super.initializeControls(null);
-	//    }
-	//
-	// MLC 12/02/06 END.
 	/**
 	 * sets controls invisible when editor type is switched
 	 *

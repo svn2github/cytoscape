@@ -23,12 +23,11 @@
 */
 package cytoscape.editor;
 
-import cytoscape.editor.event.NetworkEditEventAdapter;
-
-import cytoscape.editor.impl.CytoscapeEditorFactoryImpl;
-
 import java.util.Collection;
 import java.util.Iterator;
+
+import cytoscape.editor.event.NetworkEditEventAdapter;
+import cytoscape.editor.impl.CytoscapeEditorFactoryImpl;
 
 
 /**

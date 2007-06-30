@@ -31,15 +31,6 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.DragSourceContextCursorSetter;
-import cytoscape.editor.GraphicalEntity;
-
-import cytoscape.editor.event.BasicCytoShapeTransferHandler;
-
-import cytoscape.view.CyNetworkView;
-
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -64,6 +55,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+
+import cytoscape.Cytoscape;
+import cytoscape.editor.DragSourceContextCursorSetter;
+import cytoscape.editor.GraphicalEntity;
+import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+import cytoscape.view.CyNetworkView;
 
 
 /**
@@ -255,18 +252,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 		this.setMinimumSize(mySize);
 		this.setPreferredSize(mySize);
 
-		//        this.setMaximumSize(new Dimension(((JPanel) Cytoscape.getDesktop()
-		//                                                             .getCytoPanel(SwingConstants.WEST)).getSize().width -
-		//                5, 2 * CytoShapeIcon.HEIGHT));
-		//
-		//        this.setMinimumSize(new Dimension(((JPanel) Cytoscape.getDesktop()
-		//                                                             .getCytoPanel(SwingConstants.WEST)).getSize().width -
-		//                5, 2 * CytoShapeIcon.HEIGHT));
-		//
-		//        this.setPreferredSize(new Dimension(((JPanel) Cytoscape.getDesktop()
-		//                                                               .getCytoPanel(SwingConstants.WEST)).getSize().width -
-		//                5, 2 * CytoShapeIcon.HEIGHT));
-		// MLC 12/04/06 END.
+
 	}
 
 	/**

@@ -24,12 +24,12 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.editor.ShapePaletteInfo;
-import cytoscape.visual.VisualPropertyType;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import cytoscape.editor.ShapePaletteInfo;
+import cytoscape.visual.VisualPropertyType;
 
 
 /**

@@ -36,8 +36,6 @@
 
 package cytoscape.editor.impl;
 
-import cytoscape.editor.CytoscapeEditorManager;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -47,6 +45,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+
+import cytoscape.editor.CytoscapeEditorManager;
 
 
 /**

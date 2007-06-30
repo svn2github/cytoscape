@@ -1,12 +1,12 @@
 
 package cytoscape.editor;
 
-import cytoscape.Cytoscape;
+import giny.view.NodeView;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.view.CyNetworkView;
-import giny.view.NodeView;
+import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
+import cytoscape.view.CyNetworkView;
 
 /**
  * An edit used by the Editor when adding new nodes to a network.

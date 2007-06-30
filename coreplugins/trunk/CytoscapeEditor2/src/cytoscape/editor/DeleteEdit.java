@@ -1,11 +1,11 @@
 
 package cytoscape.editor;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
+import cytoscape.view.CyNetworkView;
 
 
 /**

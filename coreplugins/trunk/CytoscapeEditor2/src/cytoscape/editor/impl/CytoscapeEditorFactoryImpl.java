@@ -28,15 +28,6 @@
  */
 package cytoscape.editor.impl;
 
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorFactory;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.InvalidEditorException;
-import cytoscape.editor.ShapePaletteInfo;
-import cytoscape.editor.ShapePaletteInfoGenerator;
-
-import cytoscape.editor.event.NetworkEditEventAdapter;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,6 +35,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorFactory;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.InvalidEditorException;
+import cytoscape.editor.ShapePaletteInfo;
+import cytoscape.editor.ShapePaletteInfoGenerator;
+import cytoscape.editor.event.NetworkEditEventAdapter;
 
 
 /**

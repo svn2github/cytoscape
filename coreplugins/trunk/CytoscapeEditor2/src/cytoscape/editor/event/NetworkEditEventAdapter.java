@@ -4,14 +4,6 @@
  */
 package cytoscape.editor.event;
 
-import cytoscape.editor.CytoscapeEditor;
-
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
-
-import phoebe.PhoebeCanvasDropEvent;
-import phoebe.PhoebeCanvasDropListener;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,6 +11,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
+import phoebe.PhoebeCanvasDropEvent;
+import phoebe.PhoebeCanvasDropListener;
+import cytoscape.editor.CytoscapeEditor;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
 
 
 /**
@@ -63,15 +61,9 @@ public class NetworkEditEventAdapter implements MouseListener, MouseMotionListen
 	public void start(DGraphView view) {
 		this.view = view;
 		this.canvas = view.getCanvas();
-		// AJK: 04/15/06 for Cytoscape 2.3
-		// canvas.addInputEventListener(this);
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
-
-		// CytoscapeEditorManager.log("Mouse and MotionListeners added to " + canvas);
-		// CytoscapeEditorManager.log("Canvas has total number of Listeners = " +
-		// canvas.getMouseListeners().length);
 	}
 
 	/**

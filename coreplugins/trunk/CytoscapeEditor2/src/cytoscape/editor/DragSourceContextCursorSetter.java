@@ -17,11 +17,11 @@
 */
 package cytoscape.editor;
 
-import cytoscape.view.CyNetworkView;
-
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.dnd.DragSourceDragEvent;
+
+import cytoscape.view.CyNetworkView;
 
 
 /**
