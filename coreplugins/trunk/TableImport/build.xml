@@ -24,7 +24,6 @@
 		<property name="nowarn" value="true" />
 		<property name="fork" value="false" />
 		<property name="tableImport.root.dir" value="." />
-		<property name="tableImport.lib.dir" value="${tableImport.root.dir}/lib" />
 
 		<!-- You need to modify this line to point to Cytoscape directory.  -->
 		<property name="cytoscape.dir" value="${tableImport.root.dir}/../../cytoscape" />
@@ -70,10 +69,10 @@
 
 		<path id="tableImport.project.class.path">
 			<pathelement location="${tableImport.classes.dir}" />
-			<!--pathelement path="${cytoscape.dir}/cytoscape.jar/" />
-			<pathelement location="${cytoscape.lib.dir}/**" /-->
-			<pathelement path="${tableImport.lib.dir}/poi-2.5.1-final-20040804.jar" />
 			<pathelement path="${tableImport.root.dir}/TableImportTests.jar/" />
+			<fileset dir="${tableImport.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
 			<fileset dir="${cytoscape.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -118,6 +117,7 @@
 		<copy todir="${tableImport.classes.dir}/images">
 			<fileset dir="${tableImport.root.dir}/images" />
 		</copy>
+		<copy todir="${tableImport.classes.dir}" file="${tableImport.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${tableImport.classes.dir}">
 			<fileset dir="${tableImport.lib.dir}">
