@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Fri Jun 29 09:30:13 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Sat Jun 30 04:41:38 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -70,21 +70,21 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		// MLC 07/24/06 END.
 	}
 
-    // MLC 05/10/07 BEGIN:
+    // MLC 06/30/07 BEGIN:
     // overrides CytoscapePlugin.getPluginInfoObject():
-    public PluginInfo getPluginInfoObject() {
-        PluginInfo info = new PluginInfo();
-        info.setName("CytoscapeEditor");
-        info.setDescription("Add nodes and edges to a Cytoscape Network.");
-        info.setCategory(PluginInfo.Category.CORE);
-        info.setPluginVersion(VERSION);
-        info.setCytoscapeVersion("2.5");
-        // info.setProjectUrl("http://www.cytoscape.org/download_agilent_literature_search_v2.5.php?file=litsearch_v2.4");
-        info.addAuthor("Allan Kuchinsky", "Agilent Labs");
-        info.addAuthor("Michael Creech", "Blue Oak Software");
-        return info;
-    }
-    // MLC 05/10/07 END.
+    //    public PluginInfo getPluginInfoObject() {
+    //        PluginInfo info = new PluginInfo();
+    //        info.setName("CytoscapeEditor");
+    //        info.setDescription("Add nodes and edges to a Cytoscape Network.");
+    //        info.setCategory(PluginInfo.Category.CORE);
+    //        info.setPluginVersion(VERSION);
+    //        info.setCytoscapeVersion("2.5");
+    //        // info.setProjectUrl("http://www.cytoscape.org/download_agilent_literature_search_v2.5.php?file=litsearch_v2.4");
+    //        info.addAuthor("Allan Kuchinsky", "Agilent Labs");
+    //        info.addAuthor("Michael Creech", "Blue Oak Software");
+    //        return info;
+    //    }
+    // MLC 06/30/07 END.
 
 	// MLC 07/24/06 BEGIN:
 	/**
