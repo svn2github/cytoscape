@@ -3,7 +3,7 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.plugin.PluginTracker.PluginStatus;
+import cytoscape.plugin.PluginStatus;
 
 import java.io.*;
 import org.jdom.*;

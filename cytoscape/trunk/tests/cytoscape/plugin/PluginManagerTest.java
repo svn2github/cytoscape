@@ -2,7 +2,6 @@ package cytoscape.plugin;
 
 import cytoscape.*;
 
-import cytoscape.plugin.PluginTracker.PluginStatus;
 import java.io.File;
 import java.util.*;
 import junit.framework.TestCase;
