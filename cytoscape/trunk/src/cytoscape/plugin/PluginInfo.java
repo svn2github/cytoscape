@@ -48,34 +48,6 @@ import java.net.URL;
  */
 public class PluginInfo {
 	/**
-	 * Preset categories for use by plugin developers. 
-	 * Core plugins should use CORE.  If none fit please create your own,
-	 * NONE should be reserved for plugins that don't know about the PluginInfo
-	 * object.
-	 */
-	public enum Category {
-		CORE("Core"), ANALYSIS("Analysis"), NETWORK_ATTRIBUTE_IO(
-				"Network and Attribute I/O"), NETWORK_INFERENCE(
-				"Network Inference"), FUNCTIONAL_ENRICHMENT(
-				"Functional Enrichment"), COMMUNICATION_SCRIPTING(
-				"Communication/Scripting"), NONE("Uncategorized");
-
-		private String catText;
-
-		private Category(String type) {
-			catText = type;
-		}
-
-		public String toString() {
-			return catText;
-		}
-
-		public String getCategoryText() {
-			return toString();
-		}
-	}
-
-	/**
 	 * Jar and Zip files currently supported
 	 * 
 	 * @author skillcoy
@@ -94,7 +66,7 @@ public class PluginInfo {
 			return typeText;
 		}
 	}
-
+	private String releaseDate;
 	private FileType fileType;
 
 	private String uniqueID;
@@ -180,18 +152,6 @@ public class PluginInfo {
 
 	/* SET */
 	/**
-	 * Gets the full install path for this plugin.  Should look like
-	 * <HOME_DIR>/.cytoscape/<cytoscape_version>/plugins/<pluginName-pluginVersion>
-	 */
-	public java.io.File getPluginDirectory() {
-	 java.io.File PluginDir = new java.io.File(
-			 PluginManager.getPluginManager().getPluginManageDirectory(),
-			 this.getName()+"-"+this.getPluginVersion());
-	return PluginDir;
-}
-
-	
-	/**
 	 * Sets name of plugin. This will be displayed to users.
 	 * 
 	 * @param name
@@ -200,6 +160,14 @@ public class PluginInfo {
 		pluginName = name;
 	}
 
+	/**
+	 * Sets the release date of a plugin.  Displayed to users;
+	 * @param date
+	 */
+	public void setReleaseDate(String date) {
+		releaseDate = date;
+	}
+	
 	/**
 	 * Sets the plugin class name. Used for tracking plugins.
 	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
@@ -420,11 +388,26 @@ public class PluginInfo {
 	
 	/* GET */
 	/**
+	 * Gets the full install path for this plugin.  Should look like
+	 * <HOME_DIR>/.cytoscape/<cytoscape_version>/plugins/<pluginName-pluginVersion>
+	 */
+	public java.io.File getPluginDirectory() {
+		 java.io.File PluginDir = new java.io.File(
+				 PluginManager.getPluginManager().getPluginManageDirectory(),
+				 this.getName()+"-"+this.getPluginVersion());
+		return PluginDir;
+	}
+
+	/**
 	 * @return String of the installation location for the plugin and all of it's files.
 	 * 		Generally this is .cytoscape/[cytoscape version]/plugins/PluginName-version
 	 */
 	public String getInstallLocation() {
 		return installLocation;
+	}
+	
+	public String getReleaseDate() {
+		return releaseDate;
 	}
 	
 	/**
@@ -603,16 +586,18 @@ public class PluginInfo {
 		Html += "ul {list-style-type: none}";
 		Html += "</style><body>";
 
-		Html += "<strong>" + getName() + "</strong><p>";
-		Html += "<strong>Version:</strong>&nbsp;" + getPluginVersion() + "<p>";
-		Html += "<strong>Category:</strong>&nbsp;" + getCategory() + "<p>";
-		Html += "<strong>Description:</strong><br>" + getDescription() + "<p>";
-		Html += "<strong>Released By:</strong><br><ul>";
+		Html += "<b>" + getName() + "</b><p>";
+		Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>"; 
+		Html += "<b>Version:</b>&nbsp;" + getPluginVersion() + "<p>";
+		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
+		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
+		Html += "<b>Released By:</b><br><ul>";
 		for (AuthorInfo ai : getAuthors()) {
 			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution()
 					+ "<br>";
 		}
 		Html += "</ul>";
+
 		Html += "</font></body></html>";
 		return Html;
 	}
