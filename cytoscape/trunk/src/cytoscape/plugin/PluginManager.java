@@ -252,7 +252,7 @@ public class PluginManager {
 	 * @param Status
 	 * @return
 	 */
-	public List<PluginInfo> getPlugins(PluginTracker.PluginStatus Status) {
+	public List<PluginInfo> getPlugins(PluginStatus Status) {
 		return pluginTracker.getListByStatus(Status);
 	}
 
@@ -330,18 +330,18 @@ public class PluginManager {
 					InfoObj.setFiletype(PluginInfo.FileType.JAR);
 				}
 				pluginTracker.addPlugin(InfoObj,
-						PluginTracker.PluginStatus.CURRENT);
+						PluginStatus.CURRENT);
 			}
 	}
 
 	
 
 	private void cleanCurrentList() {
-		List<PluginInfo> CurrentList = getPlugins(PluginTracker.PluginStatus.CURRENT);
+		List<PluginInfo> CurrentList = getPlugins(PluginStatus.CURRENT);
 		for (PluginInfo info : CurrentList) {
 			if (!initializedPlugins.containsKey(info.getPluginClassName())) {
 				pluginTracker.removePlugin(info,
-						PluginTracker.PluginStatus.CURRENT);
+						PluginStatus.CURRENT);
 			}
 		}
 	}
@@ -350,7 +350,7 @@ public class PluginManager {
 	 * Sets all plugins on the "install" list to "current"
 	 */
 	public void install() {
-		for (PluginInfo info : getPlugins(PluginTracker.PluginStatus.INSTALL)) {
+		for (PluginInfo info : getPlugins(PluginStatus.INSTALL)) {
 			install(info);
 		}
 	}
@@ -362,12 +362,12 @@ public class PluginManager {
 	 */
 
 	public void install(PluginInfo obj) {
-		pluginTracker.removePlugin(obj, PluginTracker.PluginStatus.INSTALL);
-		pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.CURRENT);
+		pluginTracker.removePlugin(obj, PluginStatus.INSTALL);
+		pluginTracker.addPlugin(obj, PluginStatus.CURRENT);
 
 		if (usingWebstartManager()) { // mark all webstart-installed plugins
 			// for deletion
-			pluginTracker.addPlugin(obj, PluginTracker.PluginStatus.DELETE);
+			pluginTracker.addPlugin(obj, PluginStatus.DELETE);
 		}
 	}
 
@@ -378,7 +378,7 @@ public class PluginManager {
 	 */
 	public void delete(PluginInfo Obj) throws WebstartException {
 		checkWebstart();
-		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.DELETE);
+		pluginTracker.addPlugin(Obj, PluginStatus.DELETE);
 	}
 
 	/**
@@ -395,7 +395,7 @@ public class PluginManager {
 		List<String> DeleteFailed = new ArrayList<String>();
 
 		List<PluginInfo> Plugins = pluginTracker
-				.getListByStatus(PluginTracker.PluginStatus.DELETE);
+				.getListByStatus(PluginStatus.DELETE);
 
 		for (PluginInfo CurrentPlugin : Plugins) {
 			System.out.println("  deleting plugin " + CurrentPlugin.getName());
@@ -405,10 +405,10 @@ public class PluginManager {
 			deleteOk = deletePlugin(CurrentPlugin);
 
 			pluginTracker.removePlugin(CurrentPlugin,
-					PluginTracker.PluginStatus.DELETE);
+					PluginStatus.DELETE);
 
 			pluginTracker.removePlugin(CurrentPlugin,
-					PluginTracker.PluginStatus.CURRENT);
+					PluginStatus.CURRENT);
 
 			if (!deleteOk) {
 				DeleteFailed.add(CurrentPlugin.getName() + " "
@@ -586,7 +586,7 @@ public class PluginManager {
 				&& Current.getDownloadUrl().equals(New.getDownloadUrl())
 				&& Current.isNewerPluginVersion(New)) {
 			// pluginTracker.addPlugin(Current,
-			// PluginTracker.PluginStatus.DELETE);
+			// PluginStatus.DELETE);
 			delete(Current);
 			download(New, taskMonitor);
 		} else {
@@ -664,7 +664,7 @@ public class PluginManager {
 
 		Obj.setInstallLocation(PluginDir.getAbsolutePath());
 		Obj.addFileName(Download.getAbsolutePath());
-		pluginTracker.addPlugin(Obj, PluginTracker.PluginStatus.INSTALL);
+		pluginTracker.addPlugin(Obj, PluginStatus.INSTALL);
 
 		return Obj;
 	}
