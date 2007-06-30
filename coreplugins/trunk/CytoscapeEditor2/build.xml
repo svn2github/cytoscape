@@ -74,6 +74,7 @@
 		<unjar dest="${build.dir}">
 			<fileset dir="${lib.dir}"/>
        		</unjar>
+		<copy todir="${build.dir}" file="plugin.props"/>
 		<jar destfile="${plugin.jar}">
 			<manifest>
 				<attribute name="Cytoscape-Plugin" 
