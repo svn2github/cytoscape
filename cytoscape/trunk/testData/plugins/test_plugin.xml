@@ -19,7 +19,12 @@
 				This plugin demonstrates the use of a jar file with the PluginInfo object created and a correct manifest file. 
 			</description>
 			<pluginVersion> 1.0 </pluginVersion>
-			<cytoscapeVersion> 2.5 </cytoscapeVersion>
+
+			<cytoscapeVersions>
+				<version>2.4</version>
+				<version>2.5</version>
+			</cytoscapeVersions>
+
 			<filetype> jar </filetype>
 			<category> Test </category>
 			<url> GoodPlugin.jar </url>
@@ -44,7 +49,12 @@
 				This one is an "update" to the previous one for the purposes of testing.
 			</description>
 			<pluginVersion> 2.1 </pluginVersion>
-			<cytoscapeVersion> 2.5 </cytoscapeVersion>
+
+			<cytoscapeVersions>
+				<version>2.5</version>
+			</cytoscapeVersions>
+
+
 			<filetype> jar </filetype>
 			<category> Test </category>
 			<url> GoodPlugin.jar </url>
@@ -75,7 +85,11 @@
 				a correct manifest file.
 			</description>
 			<pluginVersion> 0.45 </pluginVersion>
-			<cytoscapeVersion> 2.5 </cytoscapeVersion>
+
+			<cytoscapeVersions>
+				<version>2.5</version>
+			</cytoscapeVersions>
+
 			<filetype> zip </filetype>
 			<category> Test </category>
 			<url> GoodPlugin.zip </url>
@@ -95,7 +109,11 @@
 				This plugin jar file does not contain the correct manifest file and should fail to install.
 			</description>
 			<pluginVersion> 0.3 </pluginVersion>
-			<cytoscapeVersion> 2.5 </cytoscapeVersion>
+
+			<cytoscapeVersions>
+				<version>2.5</version>
+			</cytoscapeVersions>
+
 			<filetype> jar </filetype>
 			<category> Test </category>
 			<url> BadPlugin.jar </url>
@@ -114,7 +132,11 @@
 				This plugin zip file does not contain the correct directories (one plugin/*.jar file required) and will fail to install.
 			</description>
 			<pluginVersion> 0.9 </pluginVersion>
-			<cytoscapeVersion> 2.5 </cytoscapeVersion>
+
+			<cytoscapeVersions>
+				<version>2.5</version>
+			</cytoscapeVersions>
+
 			<filetype> jar </filetype>
 			<category> Test </category>
 			<url> BadPlugin.zip </url>
