@@ -1426,23 +1426,26 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			final CyAttributes attr;
 			final Iterator it;
-
+			final int nodeOrEdge;
 			if (calc.getVisualPropertyType().isNodeProp()) {
 				attr = Cytoscape.getNodeAttributes();
 				it = Cytoscape.getCurrentNetwork().nodesIterator();
 				editorReg.registerEditor(calculatorTypeProp, nodeAttrEditor);
+				nodeOrEdge = ObjectMapping.NODE_MAPPING;
 			} else {
 				attr = Cytoscape.getEdgeAttributes();
 				it = Cytoscape.getCurrentNetwork().edgesIterator();
 				editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
+				nodeOrEdge = ObjectMapping.EDGE_MAPPING;
 			}
+			
 
 			/*
 			 * Discrete Mapping
 			 */
 			if ((firstMap.getClass() == DiscreteMapping.class) && (attrName != null)) {
 				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
-				final Set<Object> attrSet = loadKeys(attrName, attr, firstMap);
+				final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
 
 				switch (type) {
 					/*
@@ -1634,9 +1637,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private Set<Object> loadKeys(final String attrName, final CyAttributes attrs,
-	                             final ObjectMapping mapping) {
+	                             final ObjectMapping mapping, final int nOre) {
 		if (attrName.equals("ID")) {
-			return loadID();
+			return loadID(nOre);
 		}
 
 		Map mapAttrs;
@@ -2776,15 +2779,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final ObjectMapping oMap;
 
 				final CyAttributes attr;
-
+				final int nOre;
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
+					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
+					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
 				if ((oMap instanceof DiscreteMapping) == false) {
@@ -2793,7 +2798,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap);
+				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap, nOre);
 
 				/*
 				 * Create random colors
@@ -2900,15 +2905,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final Map valueMap = new HashMap();
 				final ObjectMapping oMap;
 				final CyAttributes attr;
-
+				final int nOre;
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
+					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
+					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
 				if ((oMap instanceof DiscreteMapping) == false)
@@ -2916,7 +2923,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap);
+				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap, nOre);
 				final String start = JOptionPane.showInputDialog(visualPropertySheetPanel,
 				                                                 "Please enter start value (1st number in the series)",
 				                                                 "0");
@@ -3048,7 +3055,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 							attrSet1.add(((Node) node).getIdentifier());
 						}
 					} else {
-						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm);
+						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm, ObjectMapping.NODE_MAPPING);
 					}
 
 					Integer height = ((Number) (vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -3145,7 +3152,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 							attrSet1.add(((Node) node).getIdentifier());
 						}
 					} else {
-						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm);
+						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm, ObjectMapping.NODE_MAPPING);
 					}
 
 					Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -3258,15 +3265,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final ObjectMapping oMap;
 
 				final CyAttributes attr;
-
+				final int nOre;
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
+					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
+					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
 				if ((oMap instanceof DiscreteMapping) == false) {
@@ -3275,7 +3284,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap);
+				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr, oMap, nOre);
 
 				/*
 				 * Create random colors
@@ -3400,14 +3409,20 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * </p>
 	 * @return
 	 */
-	private Set<Object> loadID() {
+	private Set<Object> loadID(final int nOre) {
 		Set<Object> ids = new TreeSet<Object>();
-		List<Node> nodes = Cytoscape.getCurrentNetworkView().getNetwork().nodesList();
-
-		for (Node node : nodes) {
-			ids.add(node.getIdentifier());
+		
+		List<Object> obj;
+		if(nOre == ObjectMapping.NODE_MAPPING) {
+			obj = Cytoscape.getCurrentNetworkView().getNetwork().nodesList();
+		} else {
+			obj = Cytoscape.getCurrentNetworkView().getNetwork().edgesList();
 		}
+		
 
+		for (Object o : obj) {
+			ids.add(((GraphObject)o).getIdentifier());
+		}
 		return ids;
 	}
 
