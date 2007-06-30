@@ -98,6 +98,7 @@
   <!-- =================================================================== -->
   <target name="filter" depends="compile-filter"  >
     <mkdir dir="${filter.lib.dir}"/>
+	<copy file="${filter.manifest.dir}/plugin.props" todir="${filter.classes.dir}"/>
     <jar destfile="filter.jar" manifest="${filter.manifest.dir}/filter.manifest">
       <fileset
         dir="${filter.classes.dir}"
