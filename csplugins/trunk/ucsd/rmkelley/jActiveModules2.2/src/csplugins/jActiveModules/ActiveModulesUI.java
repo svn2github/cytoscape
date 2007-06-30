@@ -57,6 +57,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
     //String [] args = CytoscapeInit.getArgs();
     ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(null);
     apfParams = parser.getActivePathFinderParameters();
+	apfParams.reloadExpressionAttributes();
     AttrChangeListener acl = new AttrChangeListener();
     Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( Cytoscape.ATTRIBUTES_CHANGED, acl );
     Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( acl );
@@ -67,16 +68,6 @@ public class ActiveModulesUI extends CytoscapePlugin {
       // Since this is cmdline, there is no sense in using the ThreadExceptionHandler.
       t.start();
     }
-  }
-
-  /**
-   * Description of the plugin
-   */
-  public String describe () {
-    String desc = "ActiveModules is a plugin that searches a molecular " + 
-      "interaction network to find expression activated subnetworks, " +
-      "i.e., modules.";
-    return desc;
   }
 
   /**
