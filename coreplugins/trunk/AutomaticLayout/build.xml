@@ -76,9 +76,9 @@
            deprecation="${deprecation}" 
            optimize="${optimize}"
            fork="${fork}">
-	 <!--
+<!--
       <compilerarg line="-Xlint:unchecked"/>
-	  -->
+-->
 	</javac>
   </target>
 
@@ -86,7 +86,7 @@
   <!-- Creates the layout.jar file                                           -->
   <!-- =================================================================== -->
   <target name="layout" depends="compile-layout"  >
-    <copy todir="${layout.classes.dir}" file="${resources.dir}/plugin.props"/>
+    <copy todir="${layout.classes.dir}/csplugins" file="${resources.dir}/plugin.props"/>
     <jar destfile="${layout.jar}" manifest="${layout.manifest.dir}/layout.manifest">
       <fileset
         dir="${layout.classes.dir}"
