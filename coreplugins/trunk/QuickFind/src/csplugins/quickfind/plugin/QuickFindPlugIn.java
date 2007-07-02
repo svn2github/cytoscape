@@ -515,10 +515,21 @@ class NetworkModifiedListener implements PropertyChangeListener {
 				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
                 if (cyNetwork.nodesList() != null) {
 
+					// this network may not have been added to quick find - 
+					// this can happen if an empty network was added
+					if (quickFind.getIndex(cyNetwork) == null) {
+						//  Run Indexer in separate background daemon thread.
+						Thread thread = new Thread() {
+								public void run() {
+									quickFind.addNetwork(cyNetwork, new TaskMonitorBase());
+								}
+							};
+						thread.start();
+					}
                     //  Only re-index if network has fewer than REINDEX_THRESHOLD nodes
                     //  I put this in to prevent quick find from auto re-indexing
                     //  very large networks.  
-                    if (cyNetwork.nodesList().size() < QuickFindPlugIn.REINDEX_THRESHOLD) {
+                    else if (cyNetwork.nodesList().size() < QuickFindPlugIn.REINDEX_THRESHOLD) {
                         //  Run Indexer in separate background daemon thread.
                         Thread thread = new Thread() {
                             public void run() {
