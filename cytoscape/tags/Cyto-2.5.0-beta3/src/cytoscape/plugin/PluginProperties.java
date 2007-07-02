@@ -3,15 +3,24 @@
  */
 package cytoscape.plugin;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
+/**
+ * This class reads the plugin.props file that is expected to be in 
+ * each plugin jar file and turns it into a PluginInfo object for
+ * the PluginManager
+ */
 public class PluginProperties extends Properties {
 	private String configFileName = "plugin.props";
+	private String errorMsg;
 	
+	/**
+	 * Properties in the plugin.props file
+	 */
 	public enum PluginProperty {
 		NAME("pluginName", true), DESCRIPTION("pluginDescription", true),
 		VERSION("pluginVersion", true), CYTOSCAPE_VERSION("cytoscapeVersion", true),
@@ -39,15 +48,17 @@ public class PluginProperties extends Properties {
 			return requiredProp;
 		}
 		
-		
-		
 	}
 
-	
-	public PluginProperties(JarFile jar) throws IOException {
-		JarEntry Entry = jar.getJarEntry(configFileName);
-		if (Entry != null) 
-			readPluginProperties(jar.getInputStream(Entry));
+	/**
+	 * The plugin.props file is expected to be in the jar file under the package directory.  
+	 * It will not be found if it is anywhere else.
+	 * @param Plugin
+	 * @throws IOException
+	 */
+	public PluginProperties(CytoscapePlugin Plugin) throws IOException {
+		String PackageName = Plugin.getClass().getPackage().getName();
+		readPluginProperties(Plugin.getClass().getClassLoader().getResourceAsStream(PackageName + "/" +  configFileName));
 	}
 	
 	private void readPluginProperties(InputStream is) throws IOException {
@@ -70,7 +81,7 @@ public class PluginProperties extends Properties {
 
 	public PluginInfo getPluginInfoObject() throws ManagerException {
 		if (!expectedPropertiesPresent()) {
-			throw new ManagerException("Required properties are missing from plugins.props file");
+			throw new ManagerException("Required properties are missing from plugins.props file: " + errorMsg);
 		}
 		
 		PluginInfo pi;
@@ -125,8 +136,8 @@ public class PluginProperties extends Properties {
 
 	private boolean expectedPropertiesPresent() {
 		for (PluginProperty pp : PluginProperty.values()) {
-			System.err.println(pp.toString());
 			if (pp.isRequired() && !containsKey(pp.getPropertyKey())) {
+				errorMsg = pp.getPropertyKey();
 				return false;
 			}
 		}
