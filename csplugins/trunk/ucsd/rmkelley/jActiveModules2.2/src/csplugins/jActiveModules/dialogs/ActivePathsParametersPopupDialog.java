@@ -584,7 +584,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		GroupLayout layout = new GroupLayout(pathPanel);
 		pathPanel.setLayout(layout);
 
-		pathLabel = new JLabel("Number of Paths (1-1000): ");
+		pathLabel = new JLabel("Number of Modules (1-1000): ");
 		pathNum = new JTextField(Integer.toString(apfParams.getNumberOfPaths()));
 		java.awt.FontMetrics fontMetrics = pathNum.getFontMetrics(pathNum.getFont());
 		pathNum.setMaximumSize(new Dimension( fontMetrics.charWidth('m') * 7, fontMetrics.getHeight() ));
