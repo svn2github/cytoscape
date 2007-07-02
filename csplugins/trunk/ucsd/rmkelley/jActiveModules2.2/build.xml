@@ -80,6 +80,7 @@
 	   	<fileset dir="${lib.dir}" includes="*"/>
 	   </unzip>
 	   <copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
+	   <copy todir="${build.classes}" file="${resources.dir}/help.html"/>
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<manifest>
 			<attribute name="Cytoscape-Plugin" value="csplugins.jActiveModules.ActiveModulesUI"/>

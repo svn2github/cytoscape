@@ -34,6 +34,8 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -53,6 +55,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import java.util.List;
 import java.util.Collections;
 import java.util.Vector;
+import java.io.IOException;
 
 import org.jdesktop.layout.GroupLayout;
 
@@ -130,6 +133,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 	JList exprAttrsList;
 	JButton findModulesButton;
 	ActiveModulesUI parentUI;
+	JDialog helpDialog;
 
 	// -----------------------------------------------------------------------------
 	public ActivePathsParametersPopupDialog(// ActivePathsParametersPopupDialogListener
@@ -157,6 +161,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		createAnnealContentPanel();
 		createSearchContentPanel();
 		createAnnealSearchController();
+		createHelpDialog();
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -183,6 +188,14 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		// /////////////////////////////////////////
 		JPanel buttonPanel = new JPanel();
 
+		JButton helpButton = new JButton(new AbstractAction("Help")
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				helpDialog.setVisible(true);
+			}
+		});
+		buttonPanel.add(helpButton, BorderLayout.EAST);
 		JButton dismissButton = new JButton("Close");
 		dismissButton.addActionListener(new DismissAction());
 		buttonPanel.add(dismissButton, BorderLayout.EAST);
@@ -655,6 +668,26 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		// regionalBox.setEnabled(false);
 		regionalBox.addItemListener(new RSListener());
 	} // createRegionalScoringController
+
+	private void createHelpDialog()
+	{
+		helpDialog = new JDialog(Cytoscape.getDesktop(), "jActiveModules Help");
+		helpDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		try
+		{
+			JEditorPane helpPane = new JEditorPane(parentUI.getClass().getResource("/help.html"));
+			helpPane.setEditable(false);
+			JScrollPane scrollPane = new JScrollPane(helpPane);
+			helpDialog.setContentPane(scrollPane);
+			helpDialog.setPreferredSize(new Dimension(750, 400));
+		}
+		catch (IOException e)
+		{
+			JLabel label = new JLabel("Could not find help.html.");
+			helpDialog.setContentPane(label);
+		}
+		helpDialog.pack();
+	}
 
 	// -----------------------------------------------------------------------------
 	class RandomSeedListener implements ActionListener {
