@@ -89,6 +89,12 @@ class QuickFindImpl implements QuickFind {
 	 * @param taskMonitor DOCUMENT ME!
 	 */
 	public synchronized void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
+
+		// check args - short circuit if necessary
+		if (network.getNodeCount() == 0) {
+			return;
+		}
+
 		//  Use default index specified by network, if available.
 		//  Otherwise, index by UNIQUE_IDENTIFIER.
 		String controllingAttribute = null;
