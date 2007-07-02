@@ -1194,7 +1194,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				newProp.setDisplayName(type.getName());
 				newProp.setHiddenObject(type);
 				newProp.setValue("Please select an attribute!");
-				rendReg.registerRenderer(newProp, emptyBoxRenderer);
 
 				if (type.isNodeProp()) {
 					newProp.setCategory(NODE_VISUAL_MAPPING);
@@ -1205,6 +1204,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				mapProp.setDisplayName("Mapping Type");
+				mapProp.setValue("Please select a mapping type!");
 				editorReg.registerEditor(mapProp, mappingTypeEditor);
 
 				newProp.addSubProperty(mapProp);
