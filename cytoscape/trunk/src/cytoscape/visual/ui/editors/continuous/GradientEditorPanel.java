@@ -40,6 +40,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -70,18 +71,6 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
  */
 public class GradientEditorPanel extends ContinuousMappingEditorPanel
     implements PropertyChangeListener {
-	private static JPopupMenu menu;
-	private static JMenuItem deleteThumb;
-	private static JMenuItem newThumb;
-
-	static {
-		menu = new JPopupMenu();
-		deleteThumb = new JMenuItem("Delete Selected Knob");
-		newThumb = new JMenuItem("Add New Knob Here...");
-
-		menu.add(newThumb);
-		menu.add(deleteThumb);
-	}
 
 	/**
 	 * Creates a new GradientEditorPanel object.
@@ -213,7 +202,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
-		slider.setComponentPopupMenu(menu);
+//		slider.setComponentPopupMenu(menu);
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
