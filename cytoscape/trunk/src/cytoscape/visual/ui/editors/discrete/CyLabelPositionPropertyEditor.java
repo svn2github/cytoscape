@@ -34,7 +34,6 @@
 */
 package cytoscape.visual.ui.editors.discrete;
 
-import com.l2fprod.common.beans.editor.FixedButton;
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 
@@ -44,8 +43,6 @@ import cytoscape.visual.LabelPosition;
 
 import cytoscape.visual.ui.PopupLabelPositionChooser;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -66,27 +63,25 @@ public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.edit
 	 */
 	public CyLabelPositionPropertyEditor() {
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
-        ((JPanel) editor).add("*", label = new LabelPositionCellRenderer());
-        label.setOpaque(false);
-        ((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
-        button.addActionListener(
-            new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    editLabelPosition();
-                }
-            });
-        ((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
-        button.setText("X");
-        button.addActionListener(
-            new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                	LabelPosition old = position;
-                    label.setValue(null);
-                    position = null;
-                    firePropertyChange(old, null);
-                }
-            });
-        ((JPanel) editor).setOpaque(false);
+		((JPanel) editor).add("*", label = new LabelPositionCellRenderer());
+		label.setOpaque(false);
+		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
+		button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					editLabelPosition();
+				}
+			});
+		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
+		button.setText("X");
+		button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					LabelPosition old = position;
+					label.setValue(null);
+					position = null;
+					firePropertyChange(old, null);
+				}
+			});
+		((JPanel) editor).setOpaque(false);
 	}
 
 	/**

@@ -302,6 +302,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		stringCellEditor.addPropertyChangeListener(this);
 		lineCellEditor.addPropertyChangeListener(this);
 		arrowCellEditor.addPropertyChangeListener(this);
+		
+		labelPositionEditor.addPropertyChangeListener(this);
 	}
 
 	/**
@@ -1848,6 +1850,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			setAttrComboBox();
 		}
 
+//		System.out.println("--------------Prop name: " + e.getPropertyName());
+		
 		/*******************************************************************
 		 * Below this line, accept only cell editor events.
 		 ******************************************************************/
