@@ -42,6 +42,8 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
 
 
 /**
@@ -56,10 +58,6 @@ import cytoscape.view.CyNetworkView;
  *
  */
 public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler {
-	// MLC 12/07/06:
-	// BasicNetworkEditEventHandler editEvent;
-	// MLC 12/07/06:
-	// public static final String NODE_TYPE = "NODE_TYPE";
 
 	/**
 	 *
@@ -100,6 +98,7 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		DataFlavor[] dfl = t.getTransferDataFlavors();
 
 		for (DataFlavor d : dfl) {
+	
 			CytoscapeEditorManager.log("Item dropped of Mime Type: " + d.getMimeType());
 			CytoscapeEditorManager.log("Mime subtype is:  " + d.getSubType());
 			CytoscapeEditorManager.log("Mime class is: " + d.getRepresentationClass());
@@ -149,6 +148,19 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	// implements PhoebeCanvasDropListener interface:
 	public void itemDropped(PhoebeCanvasDropEvent e) {
 		Point location = e.getLocation();
+		CytoscapeEditorManager.log("Item dropped at: " + e.getLocation());
+		CytoscapeEditorManager.log("on object: " + e.getSource());
+		
+		// AJK: 07/03/07 BEGIN
+		//    do nothing if we are not dropping on canvas for current network view
+		InnerCanvas dropCanvas = (InnerCanvas) e.getSource();
+		InnerCanvas currentCanvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+		if (dropCanvas != currentCanvas)
+		{
+			return;
+		}
+		// AJK: 07/03/07 END
+		
 		BasicCytoShapeEntity myShape = getShapeEntityForLocation(location, e.getTransferable());
 
 		if (myShape != null) {
@@ -221,6 +233,11 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			URL = t.getTransferData(d);
 
 			if (URL != null) {
+				// CytoscapeEditorManager.log ("Handling dropped URL = " +
+				// URLString);
+				// MLC 12/07/06:
+				// CyNode cn = _caller.addNode("node" + counter, "URL");
+				// MLC 12/07/06:
 				CyNode cn = get_caller().addNode("node" + counter, "URL");
 				counter++;
 				Cytoscape.getCurrentNetwork().restoreNode(cn);

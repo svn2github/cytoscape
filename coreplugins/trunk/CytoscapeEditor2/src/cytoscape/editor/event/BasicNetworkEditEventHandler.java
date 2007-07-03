@@ -27,6 +27,10 @@
 */
 package cytoscape.editor.event;
 
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
+import ding.view.InnerCanvas;
+
 import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -44,10 +48,8 @@ import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
+import cytoscape.editor.impl.SIF_Interpreter;
 import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
-import ding.view.InnerCanvas;
 
 
 // TODO: No instance variables should be protected--only private and
@@ -71,8 +73,7 @@ import ding.view.InnerCanvas;
  * dependencies upon Piccolo
  *
  */
-public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implements ActionListener,
-                                                                                     cytoscape.data.attr.MultiHashMapListener //TODO: dont need MultiHashMapListener
+public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implements ActionListener, cytoscape.data.attr.MultiHashMapListener //TODO: dont need MultiHashMapListener
  {
 	// PNodeLocator locator;
 
@@ -117,13 +118,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	/**
 	 * the edge that will be dropped
 	 */
-
-	// MLC 12/07/06 BEGIN:
-	// FIX: Should really change the name--this can easily be shadowed by other
-	//      local variables:
-	//	protected PPath edge;
-	// MLC 05/10/07:
-	// private PPath edge;
 
 	// MLC 12/07/06 END.
 
@@ -210,6 +204,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * node or edge which has been highlighted for drop or edge connection
 	 * during mouseDrag
 	 */
+	// MLC 05/10/07:
+	// private NodeView _highlightedNodeView = null;
+	// MLC 05/10/07:
+	// private EdgeView _highlightedEdgeView = null;
+
+	// private float _savedStrokeWidth = Float.NaN;
+	// MLC 05/10/07:
+	// private Cursor _savedCursor = null;
 
 	/**
 	 * Creates a new BasicNetworkEditEventHandler object.
@@ -269,6 +271,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		NodeView nv = view.getPickedNodeView(nextPoint);
 		boolean onNode = (nv != null);
 
+
+		// if we have control-clicked on an edge, then just return
+		// because the user is adding edge anchors for bending edges in
+		// Cytoscape:
 		if (e.isControlDown()) {
 			if (view.getPickedEdgeView(nextPoint) != null) {
 				return;
@@ -297,6 +303,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			// control-click on a empty place will make a new Node:
 			createNode(nextPoint);
 		}
+		
+		//    invoke SIF interpreter for user to enter nodes/edges via text input
+		else if ((e.getClickCount() == 2) && (!e.isAltDown()))
+		{
+			SIF_Interpreter.processInput(e.getPoint(), _caller);
+		}
+		
 		// AJK: 12/06/06 BEGIN
 		//    toggle diagnostic logging with alt_triple-click
 		else if ((e.getClickCount() > 2) && (e.isAltDown())) {
@@ -304,8 +317,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			CytoscapeEditorManager.log("Cytoscape editor logging = "
 			                           + CytoscapeEditorManager.isLoggingEnabled());
 		}
-		// AJK: 12/06/06 END
-		else // clicking anywhere on screen will turn off node Labeling
+
+		else 
 		 {
 			//			super.mousePressed(e);
 		}
@@ -357,6 +370,16 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * @param location works in Canvas coordinates
 	 */
 	public CyEdge finishEdge(Point2D location, NodeView target) {
+		// CytoscapeEditorManager.log("finishEdge in BasicNetworkEventHandler");
+		// MLC 12/07/06 BEGIN:
+		//        edgeStarted = false;
+		//        updateEdge();
+		//
+		//        saveX1 = Double.MIN_VALUE;
+		//        saveX2 = Double.MIN_VALUE;
+		//        saveY1 = Double.MIN_VALUE;
+		//        saveY2 = Double.MIN_VALUE;
+		// MLC 12/07/06 END.
 		NodeView source = node;
 
 		Node source_node = source.getNode();
@@ -370,10 +393,38 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		                                (this.getEdgeAttributeValue() != null)
 		                                ? this.getEdgeAttributeValue()
 		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE);
+		// MLC 12/07/06 BEGIN:
+		// AJK: 11/19/05 invert selection of target, which will have had its
+		// selection inverted upon mouse entry
+		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+		//        target.setSelected(!target.isSelected());
 		completeFinishEdge();
+
+		//        edge = null;
+		//        node = null;
+		//
+		//        if (isHandlingEdgeDrop()) {
+		//            this.setHandlingEdgeDrop(false);
+		//        }
+		//
+		//        // AJK: 11/19/05 invert selection of target, which will have had its
+		//        // selection inverted upon mouse entry
+		//        target.setSelected(!target.isSelected());
+		//
+		//        // AJK: 11/18/2005 invert selection of any nodes/edges that have been highlighted
+		//        invertSelections(null);
+		//
+		//        this.getCanvas().repaint();
+		//
+		//        // redraw graph so that the correct arrow is shown (but only if network
+		//        // is small enough to see the edge...
+		//        // NOTE: this is not needed
+		//        if (Cytoscape.getCurrentNetwork().getNodeCount() <= 500) {
+		//            Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+		//        }
+		// MLC 12/07/06 END.
 		return myEdge;
 	}
-
 
 	// MLC 12/07/06 BEGIN:
 	/**
@@ -388,8 +439,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		saveX2 = Double.MIN_VALUE;
 		saveY1 = Double.MIN_VALUE;
 		saveY2 = Double.MIN_VALUE;
-        // MLC 05/10/07:
-		// edge = null;
+
 		node = null;
 
 		if (isHandlingEdgeDrop()) {
@@ -459,12 +509,34 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 
 	// TODO: this doesn't work because we are entering Canvas, NOT nodeview
 	public void mouseEntered(MouseEvent e) {
+		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+		//        Point2D  location = e.getPoint();
+		//        NodeView nv = view.getPickedNodeView(location);
+		//
+		//        if (nv != null) {
+		//            if (edgeStarted) {
+		//                nv.setSelected(!nv.isSelected());
+		//            }
+		//
+		//            this.getCanvas().repaint();
+		//        }
 	}
 
 	/**
 	 * revert temporary node highlighting that was done upon MouseEnter
 	 */
 	public void mouseExited(MouseEvent e) {
+		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+		//        Point2D  location = e.getPoint();
+		//        NodeView nv = view.getPickedNodeView(location);
+		//
+		//        if (nv != null) {
+		//            if (edgeStarted) {
+		//                nv.setSelected(!nv.isSelected());
+		//            }
+		//
+		//            this.getCanvas().repaint();
+		//        }
 	}
 
 	/**
@@ -476,6 +548,18 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		boolean onNode = false;
 		Point2D location = e.getPoint();
 		NodeView nv = view.getPickedNodeView(location);
+		// MLC 05/10/07:
+		// EdgeView ev = view.getPickedEdgeView(location);
+
+		// if over NodeView or EdgeView, then highlight
+		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+		//       if (nv != null) {
+		//            invertSelections(nv);
+		//        } else if (ev != null) {
+		//            invertSelections(ev);
+		//        } else {
+		//            invertSelections(null);
+		//        }
 		if (nv != null) {
 			onNode = true;
 		}
@@ -495,6 +579,82 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		}
 	}
 
+	// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+	/*   private void invertSelections(Object nodeOrEdgeView) {
+	    if (nodeOrEdgeView == null) // we have moved off a node or edge
+	     {
+	        if (_highlightedEdgeView != null) {
+	            _highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
+	            //                   if (_savedStrokeWidth != Float.NaN)
+	            //                {
+	            //                    _highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
+	            //                }
+	            _highlightedEdgeView = null;
+	        }
+
+	        if (_highlightedNodeView != null) {
+	            _highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
+	            _highlightedNodeView = null;
+	        }
+
+	        if (_savedCursor != null) {
+	            Cytoscape.getDesktop().setCursor(_savedCursor);
+	        }
+	    } else if (nodeOrEdgeView instanceof NodeView) {
+	        NodeView nv = (NodeView) nodeOrEdgeView;
+
+	        if (_highlightedEdgeView != null) {
+	            _highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
+	            //                   if (_savedStrokeWidth != Float.NaN)
+	            //                {
+	            //                    _highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
+	            //                    Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+	            //                }
+	            //                   _highlightedEdgeView = null;
+	        }
+
+	        if (_highlightedNodeView != null) {
+	            _highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
+	        }
+
+	        _highlightedNodeView = nv;
+	        nv.setSelected(!nv.isSelected());
+	        CytoscapeEditorManager.log("Hovering near: " + nv +
+	                                   " setting cursor to " +
+	                                   Cursor.HAND_CURSOR);
+	        _savedCursor = Cytoscape.getDesktop().getCursor();
+	        Cytoscape.getDesktop()
+	                 .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	    } else if (nodeOrEdgeView instanceof EdgeView) {
+	        EdgeView ev = (EdgeView) nodeOrEdgeView;
+
+	        if (_highlightedNodeView != null) {
+	            _highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
+	            _highlightedNodeView = null;
+	        }
+
+	        if (_highlightedEdgeView != null) {
+	            _highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
+	            //                 if (_savedStrokeWidth != Float.NaN)
+	            //                {
+	            //                    _highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
+	            //                    Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+	            //                }
+	        }
+
+	        _highlightedEdgeView = ev;
+	        ev.setSelected(!ev.isSelected());
+	        //            _savedStrokeWidth = ev.getStrokeWidth();
+	        //            ev.setStrokeWidth(4.0f);
+	        _savedCursor = Cytoscape.getDesktop().getCursor();
+	        CytoscapeEditorManager.log("Hovering near: " + ev +
+	                                   " setting cursor to " +
+	                                   Cursor.HAND_CURSOR);
+	        Cytoscape.getDesktop()
+	                 .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	    }
+	}
+	*/
 
 	/**
 	     * updates the rubberbanded edge line as the mouse is moved, works in Canvas coordinates
