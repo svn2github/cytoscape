@@ -8,7 +8,7 @@ pluginName=CytoscapeEditor
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Provides a network editor.
+pluginDescription=Provides basic ability to edit nodes and edges in a network.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=2.5
@@ -22,4 +22,9 @@ pluginCategory=Core
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Allan Kuchinsky,Michael Creech:Agilent Technologies
+pluginAuthorsIntsitutions=Allan Kuchinsky:Agilent Technologies;Michael Creech:Blue Oak Software
+
+# Date this plugin/plugin version was released
+releaseDate=July 3, 2007
+
+# uniqueID=
