@@ -29,8 +29,6 @@ import cytoscape.view.cytopanels.CytoPanel;
 
 import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.PluginInfo.Category;
 import cytoscape.CytoscapeVersion;
 
 import java.beans.PropertyChangeListener;
@@ -60,7 +58,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		{
 		// constructor gets called at load time and every time the toolbar is used
 		if (pluginInitialized) { return; }
-		renameGoose = new RenameThread(  );
+		renameGoose = new RenameThread();
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( this );
 		
@@ -94,7 +92,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		broadcast = new CyBroadcast(gDialog, gaggleBoss);
 		this.addButtonActions();
 		pluginInitialized = true;
-		 
+		System.err.println("***" + obj.getPluginDirectory().getAbsolutePath());
+
 		}
 	
 	
@@ -334,8 +333,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		}
 	
 	
-
-
 	private void addButtonActions()
 		{
 		System.out.println("add button actions");
