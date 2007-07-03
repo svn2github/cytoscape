@@ -153,7 +153,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	protected void setSpinner() {
 		spinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,
-		                                      Float.POSITIVE_INFINITY, 0.001d);
+		                                      Float.POSITIVE_INFINITY, 0.01d);
 		spinnerModel.addChangeListener(new SpinnerChangeListener());
 		valueSpinner.setModel(spinnerModel);
 	}
@@ -396,18 +396,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		if (calculator == null)
 			return;
 
-		//		final String[] names = attr.getAttributeNames();
-
-		//		byte attrType;
-		//
-		//		for (String name : names) {
-		//			attrType = attr.getType(name);
-		//
-		//			//            if ((attrType == CyAttributes.TYPE_FLOATING) ||
-		//			//                    (attrType == CyAttributes.TYPE_INTEGER))
-		//			//               
-		//		}
-
 		// Assume this calc only returns cont. mapping.
 		if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
 			mapping = (ContinuousMapping) calculator.getMapping(0);
@@ -553,7 +541,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				valueSpinner.setValue(newVal);
 
 				updateMap();
-
+				
 				slider.repaint();
 				repaint();
 

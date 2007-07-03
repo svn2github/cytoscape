@@ -49,13 +49,7 @@ public class TriangleThumbRenderer extends JComponent
          * Draw small triangle
          */
         if (selected) {
-            final Polygon thumb = new Polygon();
-
-            //			thumb.addPoint(5, 0);
-            //			thumb.addPoint(0, 5);
-            //			thumb.addPoint(5, 10);
-            //			thumb.addPoint(10, 5);
-            //			g.drawPolygon(thumb);
+           
             final Polygon outline = new Polygon();
             outline.addPoint(0, 0);
             outline.addPoint(0, 4);

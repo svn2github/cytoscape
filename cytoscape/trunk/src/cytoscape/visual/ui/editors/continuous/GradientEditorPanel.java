@@ -188,10 +188,6 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 		}
 	}
 
-	private void initButtons() {
-		addButton.addActionListener(new AddPointListener(mapping, Color.white));
-	}
-
 	/**
 	 * DOCUMENT ME!
 	 */
