@@ -195,7 +195,7 @@
     <copy todir="${build.dir}">
         <fileset dir="${images.dir}"/>
     </copy>
-    <copy todir="${build.dir}" file="${resources.dir}/plugin.props"/>
+    <copy todir="${build.dir}/GraphMerge" file="${resources.dir}/plugin.props"/>
     <jar destfile="${project.jar}" 
          manifest="${project.manifest}">
       <fileset dir="${build.dir}"

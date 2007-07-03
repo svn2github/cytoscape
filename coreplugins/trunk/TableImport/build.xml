@@ -117,7 +117,8 @@
 		<copy todir="${tableImport.classes.dir}/images">
 			<fileset dir="${tableImport.root.dir}/images" />
 		</copy>
-		<copy todir="${tableImport.classes.dir}" file="${tableImport.manifest.dir}/plugin.props"/>
+		<copy todir="${tableImport.classes.dir}/edu/ucsd/bioeng/coreplugin/tableImport" 
+			file="${tableImport.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${tableImport.classes.dir}">
 			<fileset dir="${tableImport.lib.dir}">

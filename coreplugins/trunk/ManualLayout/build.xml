@@ -91,7 +91,7 @@
   <!-- Creates the ManualLayout.jar file                                           -->
   <!-- =================================================================== -->
   <target name="ManualLayout" depends="compile-ManualLayout"  >
-    <copy todir="${ManualLayout.classes.dir}" file="${ManualLayout.resources.dir}/plugin.props"/>
+    <copy todir="${ManualLayout.classes.dir}/ManualLayout" file="${ManualLayout.resources.dir}/plugin.props"/>
     <jar destfile="${ManualLayout.jar}" manifest="${ManualLayout.manifest.dir}/ManualLayout.manifest">
       <fileset
         dir="${ManualLayout.classes.dir}"

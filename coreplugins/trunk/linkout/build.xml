@@ -98,10 +98,9 @@
   <target name="linkout" depends="compile-linkout"  >
     
     <echo message="Running linkout"/>
-    <copy todir="${linkout.classes.dir}">
-		<fileset dir="${linkout.resources.dir}"/>
-	</copy>
-    <jar destfile="linkout.jar"> 
+    <copy todir="${linkout.classes.dir}" file="${linkout.resources.dir}/linkout.props"/>
+		<copy todir="${linkout.classes.dir}/linkout" file="${linkout.resources.dir}/plugin.props"/>
+  	<jar destfile="linkout.jar"> 
       <fileset dir="${linkout.classes.dir}" includes="**"/>
       <manifest>
        <attribute name="Cytoscape-Plugin" value="linkout.LinkOutPlugin"/>
@@ -142,7 +141,7 @@
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="linkout,runtests,docs"/>
+  <target name="all" depends="linkout,docs"/>
 
    <!-- =================================================================== -->
   <!-- Run the Plugin                                                      -->

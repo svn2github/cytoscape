@@ -105,7 +105,7 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}"/>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/sbmlreader"/>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>

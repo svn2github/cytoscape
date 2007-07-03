@@ -131,7 +131,7 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  Create PSI-MI Jar -->
-	<copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
+	<copy todir="${build.classes}/org/cytoscape/coreplugin/psi_mi/plugin" file="${resources.dir}/plugin.props"/>
         <jar destfile="${jars.dir}/psi_mi.jar">
             <fileset dir="${build.classes}"/>
 	    <manifest>
@@ -142,5 +142,5 @@
     </target>
 
     <!--  Builds and tests everything -->
-    <target depends="jar,test" description="Builds and tests everything" name="all"/>
+    <target depends="jar" description="Builds and tests everything" name="all"/>
 </project>

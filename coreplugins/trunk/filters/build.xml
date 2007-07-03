@@ -57,7 +57,7 @@
  <target name="jar" 
          depends="compile"
          description="Creates Plugin Jar:  ${project.jar}">
-  <copy todir="${build.dir}/classes" file="${resources.dir}/plugin.props"/>
+  <copy todir="${build.dir}/classes/cytoscape/filters" file="${resources.dir}/plugin.props"/>
   <jar destfile="${project.jar}"
        basedir="${build.dir}/classes">
    <manifest>

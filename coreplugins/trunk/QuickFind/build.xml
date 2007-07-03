@@ -70,7 +70,7 @@
     <!-- ==================== Jar Target ============================== -->
     <target name="jar" depends="compile"
             description="Creates Plugin Jar:  quick_find.jar">
-		<copy file="${config.dir}/plugin.props" todir="${build.dir}/classes"/>
+		<copy file="${config.dir}/plugin.props" todir="${build.dir}/classes/csplugins/quickfind/plugin"/>
         <jar destfile="${dist.dir}/quick_find.jar"
              basedir="${build.dir}/classes">
 	     <manifest>
@@ -93,7 +93,7 @@
     </target>
 
     <!-- ==================== Build and test jar ============================== -->
-    <target name="all" depends="jar,test"/>
+    <target name="all" depends="jar"/>
 
     <!-- ==================== Prepare Target ============================== -->
     <target name="prepare">
