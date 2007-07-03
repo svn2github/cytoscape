@@ -2538,7 +2538,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			// get new name for clone
 			final String newName = getStyleName(clone);
-
 			if (newName == null) {
 				return;
 			}
@@ -2549,12 +2548,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			currentStyle = clone;
 
 			vmm.setVisualStyle(currentStyle);
-			// this applies the new style to the graph
-			vmm.getNetworkView().redrawGraph(false, true);
-
-			vsNameComboBox.addItem(newName);
-			vsNameComboBox.setSelectedItem(newName);
-			switchVS(newName);
 
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(newName);
 			final DGraphView view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
