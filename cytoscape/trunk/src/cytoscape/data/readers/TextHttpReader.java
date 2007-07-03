@@ -42,8 +42,6 @@ import java.io.*;
 
 import java.net.*;
 
-import java.util.*;
-
 
 /**
  *
@@ -120,6 +118,9 @@ public class TextHttpReader {
 		StringBuffer result = new StringBuffer();
 
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+		// Ensure we are reading the real content from url,
+		// and not some out-of-date cached content:
+		urlConnection.setUseCaches(false);
 		int responseCode = urlConnection.getResponseCode();
 		String contentType = urlConnection.getContentType();
 

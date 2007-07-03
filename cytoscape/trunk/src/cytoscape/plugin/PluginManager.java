@@ -784,6 +784,9 @@ public class PluginManager {
 			System.out.println(urls[i]);
 
 			JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
+			// Ensure we are reading the real content from urls[i],
+		    // and not some out-of-date cached content:
+			jc.setUseCaches (false);
 			JarFile jar = jc.getJarFile();
 
 			// if the jar file is null, do nothing

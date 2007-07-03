@@ -34,8 +34,6 @@
 */
 package cytoscape.data;
 
-import cytoscape.Cytoscape;
-
 import cytoscape.data.readers.GraphReader;
 
 import cytoscape.task.TaskMonitor;
@@ -48,14 +46,10 @@ import cytoscape.util.ProxyHandler;
 import cytoscape.util.SIFFileFilter;
 import cytoscape.util.XGMMLFileFilter;
 
-import java.awt.Component;
-import java.awt.Cursor;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,9 +57,6 @@ import java.io.InputStreamReader;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -417,7 +408,9 @@ public class ImportHandler {
 			conn = url.openConnection();
 		else
 			conn = url.openConnection(pProxyServer);
-
+		// Ensure we are reading the real content from url,
+		// and not some out-of-date cached content:
+		conn.setUseCaches(false);
 		// create the temp file
 		File tmpFile = createTempFile(conn, url);
 
