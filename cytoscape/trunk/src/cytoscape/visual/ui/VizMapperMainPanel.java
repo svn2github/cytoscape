@@ -779,8 +779,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		lastVSName = vsName;
 
-		vmm.getNetworkView().setVisualStyle(vsName);
+//		vmm.getNetworkView().setVisualStyle(vsName);
 		//vmm.getNetworkView().redrawGraph(false, true);
+		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		
 		/*
@@ -837,7 +838,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 
-		vmm.setNetworkView(oldView);
+//		vmm.setNetworkView(oldView);
+		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 		//		Cytoscape.destroyNetwork(dummyNet);
 	}
@@ -1712,10 +1714,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
 				final String targetName = vmm.getVisualStyle().getName();
-				final CyNetworkView oldView = vmm.getNetworkView();
 				final String focus = vmm.getNetwork().getIdentifier();
 
-				//				System.out.println("\n\n=========Before=============: " + targetName);
+				//System.out.println("\n\n=========Before=============: " + targetName);
 				//				Map<String, CyNetworkView> views = Cytoscape.getNetworkViewMap();
 				//				for(String key: views.keySet()) {
 				//					System.out.println("Network Name: " + Cytoscape.getNetwork(key).getTitle() + ", VS name = " + views.get(key).getVisualStyle().getName());
@@ -1723,25 +1724,18 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				//				for(String key: defaultImageManager.keySet()) {
 				//					System.out.println("Key Name: " + key );
 				//				}
-				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .showDialog(Cytoscape
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 .getDesktop());
+				final DefaultViewPanel panel = 
+					(DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop());
 				createDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
-				vmm.setNetworkView(oldView);
+				
+				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 				vmm.setVisualStyle(targetName);
 				Cytoscape.getDesktop().setFocus(focus);
 				Cytoscape.getDesktop().repaint();
-
-				//				System.out.println("=========After============= " + targetName + ", CurVS = " + vmm.getVisualStyle().getName());
-				//				views = Cytoscape.getNetworkViewMap();
-				//				for(String key: views.keySet()) {
-				//					System.out.println("Network Name: " + Cytoscape.getNetwork(key).getTitle() + ", VS name = " + views.get(key).getVisualStyle().getName());
-				//				}
-				//				for(String key: defaultImageManager.keySet()) {
-				//					System.out.println("Key Name: " + key );
-				//				}
+			
+				//System.out.println("=========After============= " + targetName + ", CurVS = " + vmm.getVisualStyle().getName());
 			}
 		}
 	}
@@ -2131,8 +2125,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		updateTableView();
 
-		visualPropertySheetPanel.repaint();
-//		vmm.getNetworkView().redrawGraph(false, true);
+		visualPropertySheetPanel.repaint();		
+		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
@@ -2384,7 +2378,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.getCalculatorCatalog().addVisualStyle(newStyle);
 			// Apply the new style
 			vmm.setVisualStyle(newStyle);
-			vmm.getNetworkView().setVisualStyle(newStyle.getName());
+			Cytoscape.getCurrentNetworkView().setVisualStyle(newStyle.getName());
 
 			removeMapping(dummy.getVisualPropertyType());
 			
@@ -2399,9 +2393,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			// Move thge current focus
-			Cytoscape.getDesktop().setFocus(selectedID);
-			vmm.setNetworkView(Cytoscape.getNetworkView(selectedID));
-			
+//			vmm.setNetworkView(Cytoscape.getNetworkView(selectedID));
+			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
@@ -2761,7 +2754,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Update table and current network view.
 		 */
 		table.repaint();
-//		vmm.getNetworkView().redrawGraph(false, true);
+		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
@@ -2905,7 +2898,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				dm.putAll(valueMap);
-//				vmm.getNetworkView().redrawGraph(false, true);
+				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 				visualPropertySheetPanel.removeProperty(prop);
@@ -3008,7 +3001,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				dm.putAll(valueMap);
-//				vmm.getNetworkView().redrawGraph(false, true);
+				
+				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 				visualPropertySheetPanel.removeProperty(prop);
@@ -3258,7 +3252,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				wm.putAll(valueMap);
-//				vmm.getNetworkView().redrawGraph(false, true);
+
+				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 				visualPropertySheetPanel.removeProperty(prop);
@@ -3365,7 +3360,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 
 				dm.putAll(valueMap);
-//				vmm.getNetworkView().redrawGraph(false, true);
+				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 				
 				visualPropertySheetPanel.removeProperty(prop);
