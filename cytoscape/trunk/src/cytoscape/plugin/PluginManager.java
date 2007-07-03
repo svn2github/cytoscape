@@ -297,7 +297,7 @@ public class PluginManager {
 
 		PluginInfo InfoObj = null;
 		try {
-			PluginProperties pp = new PluginProperties(Jar);
+			PluginProperties pp = new PluginProperties(Plugin);
 			InfoObj = pp.getPluginInfoObject();
 		} catch (ManagerException me) {
 			me.printStackTrace();
