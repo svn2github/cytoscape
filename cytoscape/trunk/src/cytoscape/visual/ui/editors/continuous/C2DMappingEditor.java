@@ -126,6 +126,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	                                  final VisualPropertyType type) {
 		editor = new C2DMappingEditor(type);
 
+		if(editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
+			return null;
+		}
 		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
