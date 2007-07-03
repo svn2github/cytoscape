@@ -76,7 +76,8 @@ sub addPlugin
 	$PluginElement->appendChild($PluginName);
 	
 	my $PluginDesc = $Doc->createElement("description");
-	$PluginDesc->appendChild($Doc->createTextNode($args{'description'}));
+#	$PluginDesc->appendChild($Doc->createTextNode($args{'description'}));
+	$PluginDesc->appendChild($Doc->createCDATASection($args{'description'}));
 	$PluginElement->appendChild($PluginDesc);
 
 	# add the license if requried	
@@ -84,7 +85,8 @@ sub addPlugin
 		{
 		my $License = $Doc->createElement("license");
 		my $LicenseText = $Doc->createElement("text");
-		$LicenseText->appendChild($Doc->createTextNode($args{'license'}));
+#		$LicenseText->appendChild($Doc->createTextNode($args{'license'}));
+		$LicenseText->appendChild($Doc->createCDATASection($args{'license'}));
 		$License->appendChild($LicenseText);
 		$PluginElement->appendChild($License);
 		}
