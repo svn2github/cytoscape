@@ -152,11 +152,13 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		ShapePaletteInfoGenerator palGen = CytoscapeEditorFactory.INSTANCE
 		                                                                                                                                                       .createShapePaletteInfoGenerator();
 
-		VisualPropertyType[] calcsToUse = new VisualPropertyType [] { VisualPropertyType.EDGE_TGTARROW };
+		VisualPropertyType[] calcsToUse = new VisualPropertyType [] { VisualPropertyType.EDGE_TGTARROW_SHAPE };
 
 		Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac, calcsToUse,
 		                                                                    controllingAttribute,
 		                                                                    this, null);
+		
+		CytoscapeEditorManager.log("any edge types for shape palette? " + spEntries.hasNext());
 
 		if (!spEntries.hasNext()) {
 			shapePalette.addShape(controllingAttribute, "DirectedEdge",
@@ -166,11 +168,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 		} else {
 			while (spEntries.hasNext()) {
 				ShapePaletteInfo spi = spEntries.next();
-				// CytoscapeEditorManager.log("   edge palette info = " + spi);
 				shapePalette.addShape(spi.getControllingAttributeName(), spi.getKey(),
 						      // MLC 05/09/07:
 				                      // new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
-				                      new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW)),
+				                      new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE)),
 				                      spi.getKey(), // MLC 12/16/06:
 				_edgeCursorSetter);
 			}
