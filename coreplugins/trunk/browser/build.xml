@@ -14,8 +14,6 @@
     <property name="browser.version" value="0.7"/>
     <property name="browser.year" value="200"/>
   	
-  	
-
     <echo message="Building ${browser.name} version ${browser.version}."/>
 
     <!-- Inheritable properties -->
@@ -27,13 +25,11 @@
     <property name="browser.root.dir" value="."/>
     <property name="browser.lib.dir" value="${browser.root.dir}/lib"/>
   	
-  	<!-- You need to modify this line to point to Cytoscape directory.  -->
-    <property name="cytoscape.dir" value="${browser.root.dir}/../../cytoscape"/>
-  	
-  	
-    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+    <property name="cytoscape.dir" value="../../cytoscape"/>
+  	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
-    <path id="project.class.path">
+
+  	<path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
 
@@ -121,7 +117,7 @@
 		<copy todir="${browser.classes.dir}/browser/images">
   	            <fileset dir="${browser.root.dir}/images"/>
   	</copy>
-	<copy todir="${browser.classes.dir}" file="${browser.resources.dir}/plugin.props"/>
+	<copy todir="${browser.classes.dir}/browser" file="${browser.resources.dir}/plugin.props"/>
     <jar destfile="browser.jar" manifest="${browser.manifest.dir}/browser.manifest">
       <fileset
         dir="${browser.classes.dir}"
