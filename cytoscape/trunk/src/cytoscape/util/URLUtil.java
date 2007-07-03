@@ -56,172 +56,171 @@ import java.util.zip.ZipInputStream;
  *
  */
 public class URLUtil {
-    private static final String GZIP = ".gz";
-    private static final String ZIP  = ".zip";
-    private static final String JAR  = ".jar";
-    public static boolean       STOP = false;
+	private static final String GZIP = ".gz";
+	private static final String ZIP = ".zip";
+	private static final String JAR = ".jar";
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param source DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    public static InputStream getInputStream(URL source)
-                                      throws IOException {
-        final InputStream newIs;
-        final InputStream proxyIs;
-        // Proxy CytoProxy = ProxyHandler.getProxyServer();
-        // if (CytoProxy == null) {
-        // 	proxyIs = source.openStream();
-        // } else {
-        // 	proxyIs = source.openConnection(CytoProxy).getInputStream();
-        // }
-        proxyIs = getBasicInputStream(source);
+	/**
+	 * 
+	 */
+	public static boolean STOP = false;
 
-        // This is not a good way to check--needs to be case insensitive
-	// and use the URL methods versus "endsWith" to get the suffix:
-        if (source.toString().endsWith(GZIP)) {
-            newIs = new GZIPInputStream(proxyIs);
-        } else if (source.toString().endsWith(ZIP)) {
-            System.err.println(source.toString() + " ZIP ");
-            newIs = new ZipInputStream(proxyIs);
-        } else if (source.toString().endsWith(JAR)) {
-            newIs = new JarInputStream(proxyIs);
-        } else {
-            newIs = proxyIs;
-        }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param source DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @throws IOException DOCUMENT ME!
+	 */
+	public static InputStream getInputStream(URL source) throws IOException {
+		final InputStream newIs;
+		final InputStream proxyIs;
+		// Proxy CytoProxy = ProxyHandler.getProxyServer();
+		// if (CytoProxy == null) {
+		// 	proxyIs = source.openStream();
+		// } else {
+		// 	proxyIs = source.openConnection(CytoProxy).getInputStream();
+		// }
+		proxyIs = getBasicInputStream(source);
+	
+		if (source.toString().toLowerCase().endsWith(GZIP)) {
+			newIs = new GZIPInputStream(proxyIs);
+		} else if (source.toString().toLowerCase().endsWith(ZIP)) {
+			//System.err.println(source.toString() + " ZIP ");
+			newIs = new ZipInputStream(proxyIs);
+		} else if (source.toString().toLowerCase().endsWith(JAR)) {
+			newIs = new JarInputStream(proxyIs);
+		} else {
+			newIs = proxyIs;
+		}
 
-        return newIs;
-    }
+		return newIs;
+	}
 
-    /**
-     * Ensure the input stream to the real URL source, not a
-     * possibly locally cached (and out of date) source. Proxy servers
-     * and other characteristics can cause pages to be cached.
-     */
-    public static InputStream getBasicInputStream(URL source)
-                                              throws IOException {
-        Proxy         cytoProxy = ProxyHandler.getProxyServer();
-        InputStream   proxyIs = null;
-        URLConnection uc      = null;
+	/**
+	 * Ensure the input stream to the real URL source, not a
+	 * possibly locally cached (and out of date) source. Proxy servers
+	 * and other characteristics can cause pages to be cached.
+	 */
+	public static InputStream getBasicInputStream(URL source) throws IOException {
+		Proxy cytoProxy = ProxyHandler.getProxyServer();
+		InputStream proxyIs = null;
+		URLConnection uc = null;
 
-        if (cytoProxy == null) {
-            uc = source.openConnection();
-        } else {
-            uc = source.openConnection(cytoProxy);
-        }
+		if (cytoProxy == null) {
+			uc = source.openConnection();
+		} else {
+			uc = source.openConnection(cytoProxy);
+		}
 
-        uc.setUseCaches(false); // don't use a cached page
-        proxyIs = uc.getInputStream();
+		uc.setUseCaches(false); // don't use a cached page
+		proxyIs = uc.getInputStream();
 
-        return proxyIs;
-    }
+		return proxyIs;
+	}
 
-    /**
-     * Download the file specified by the url string to the given File object
-     * @param urlString
-     * @param downloadFile
-     * @param taskMonitor
-     * @return
-     * @throws IOException
-     */
-    public static void download(String urlString, File downloadFile,
-                                TaskMonitor taskMonitor)
-                         throws IOException {
-        URL         url              = new URL(urlString);
+	/**
+	 * Download the file specified by the url string to the given File object
+	 * @param urlString
+	 * @param downloadFile
+	 * @param taskMonitor
+	 * @return
+	 * @throws IOException
+	 */
+	public static void download(String urlString, File downloadFile, TaskMonitor taskMonitor)
+	    throws IOException {
+		URL url = new URL(urlString);
 
-        InputStream is               = null;
-        Proxy       CytoProxyHandler = ProxyHandler.getProxyServer();
+		InputStream is = null;
+		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
 
-        int         maxCount         = 0; // -1 if unknown
-        int         progressCount    = 0;
+		int maxCount = 0; // -1 if unknown
+		int progressCount = 0;
 
-        if (CytoProxyHandler == null) {
-            java.net.URLConnection conn = url.openConnection();
-            // Ensure we are reading the real content from url,
-		    // and not some out-of-date cached content:
-            conn.setUseCaches(false);
-            maxCount = conn.getContentLength();
-            is       = conn.getInputStream();
-        } else {
-            java.net.URLConnection conn = url.openConnection(CytoProxyHandler);
-            // Ensure we are reading the real content from url,
-		    // and not some out-of-date cached content:
-            conn.setUseCaches(false);
-            maxCount = conn.getContentLength();
-            is       = conn.getInputStream();
-        }
+		if (CytoProxyHandler == null) {
+			java.net.URLConnection conn = url.openConnection();
+			// Ensure we are reading the real content from url,
+			// and not some out-of-date cached content:
+			conn.setUseCaches(false);
+			maxCount = conn.getContentLength();
+			is = conn.getInputStream();
+		} else {
+			java.net.URLConnection conn = url.openConnection(CytoProxyHandler);
+			// Ensure we are reading the real content from url,
+			// and not some out-of-date cached content:
+			conn.setUseCaches(false);
+			maxCount = conn.getContentLength();
+			is = conn.getInputStream();
+		}
 
-        FileOutputStream os      = new FileOutputStream(downloadFile);
+		FileOutputStream os = new FileOutputStream(downloadFile);
 
-        double           percent = 0.0d;
-        byte[]           buffer  = new byte[1];
+		double percent = 0.0d;
+		byte[] buffer = new byte[1];
 
-        while (((is.read(buffer)) != -1) && !STOP) {
-            progressCount += buffer.length;
+		while (((is.read(buffer)) != -1) && !STOP) {
+			progressCount += buffer.length;
 
-            //  Report on Progress
-            if (taskMonitor != null) {
-                percent = ((double) progressCount / maxCount) * 100.0;
+			//  Report on Progress
+			if (taskMonitor != null) {
+				percent = ((double) progressCount / maxCount) * 100.0;
 
-                if (maxCount == -1) { // file size unknown
-                    percent = -1;
-                }
+				if (maxCount == -1) { // file size unknown
+					percent = -1;
+				}
 
-                JTask jTask = (JTask) taskMonitor;
+				JTask jTask = (JTask) taskMonitor;
 
-                if (jTask.haltRequested()) { //abort
-                    downloadFile = null;
-                    taskMonitor.setStatus("Canceling the download ...");
-                    taskMonitor.setPercentCompleted(100);
+				if (jTask.haltRequested()) { //abort
+					downloadFile = null;
+					taskMonitor.setStatus("Canceling the download ...");
+					taskMonitor.setPercentCompleted(100);
 
-                    break;
-                }
+					break;
+				}
 
-                taskMonitor.setPercentCompleted((int) percent);
-            }
+				taskMonitor.setPercentCompleted((int) percent);
+			}
 
-            os.write(buffer);
-        }
+			os.write(buffer);
+		}
 
-        os.flush();
-        os.close();
-        is.close();
+		os.flush();
+		os.close();
+		is.close();
 
-        if (STOP) {
-            downloadFile.delete();
-        }
-    }
+		if (STOP) {
+			downloadFile.delete();
+		}
+	}
 
-    /**
-     * Get the the contents of the given URL as a string.
-     * @param source
-     * @return String
-     * @throws IOException
-     */
-    public static String download(URL source) throws IOException {
-        InputStream is = getInputStream(source);
+	/**
+	 * Get the the contents of the given URL as a string.
+	 * @param source
+	 * @return String
+	 * @throws IOException
+	 */
+	public static String download(URL source) throws IOException {
+		InputStream is = getInputStream(source);
 
-        //		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
-        //		
-        //		if (CytoProxyHandler == null) {
-        //			is = getInputStream(source);
-        //		} else {
-        //			source.openConnection(CytoProxyHandler);
-        //		}
-        StringBuffer buffer = new StringBuffer();
-        int          c;
+		//		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
+		//		
+		//		if (CytoProxyHandler == null) {
+		//			is = getInputStream(source);
+		//		} else {
+		//			source.openConnection(CytoProxyHandler);
+		//		}
+		StringBuffer buffer = new StringBuffer();
+		int c;
 
-        while ((c = is.read()) != -1) {
-            buffer.append((char) c);
-        }
+		while ((c = is.read()) != -1) {
+			buffer.append((char) c);
+		}
 
-        is.close();
+		is.close();
 
-        return buffer.toString();
-    }
+		return buffer.toString();
+	}
 }
