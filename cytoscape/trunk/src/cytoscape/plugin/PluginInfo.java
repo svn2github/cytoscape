@@ -138,6 +138,7 @@ public class PluginInfo {
 		authors = new ArrayList<AuthorInfo>();
 		setName("Unknown");
 		setDescription("No description");
+		setReleaseDate("");
 		try {
 			setPluginVersion(0.1);
 		} catch (NumberFormatException ie) {
