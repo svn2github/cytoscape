@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Cytoscape BioPAX Plug In -->
 <project  default="all" name="Cytoscape BioPAX PlugIn">
-    <!-- project name -->
-    <property name="project_name" value="biopax"/>
+
+	<!-- project name -->
+  <property name="project_name" value="biopax"/>
 	<!-- environment -->
 	<property environment="env"/>
 	<!-- tools dir -->
@@ -49,14 +50,17 @@
 	<!-- obfuscation file -->
     <property name="obfuscationlog" value="${project_name}_obflog.xml.gz"/>
 
+		<!-- cytoscape dir -->
+		<property name="cytoscape.dir" value="../../cytoscape"/>
+	
     <!-- classpath without reference to yfiles -->
     <path id="classpath.without.yfiles">
         <pathelement path="${build.classes}"/>
-        <fileset dir="../../cytoscape/lib">
+        <fileset dir="${cytoscape.dir}/lib">
                 <include name="*.jar"/>
         </fileset>
-        <fileset dir="../../cytoscape/">
-                 <include name="cytoscape.jar"/>
+        <fileset dir="${cytoscape.dir}">
+                <include name="cytoscape.jar"/>
         </fileset>
     </path>
 
@@ -173,7 +177,7 @@
         <mkdir dir="${jars.dir}"/>
 
         <!--  create jar -->
-	<copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
+	<copy todir="${build.classes}/org/mskcc/biopax_plugin/plugin" file="${resources.dir}/plugin.props"/>
         <jar destfile="${jars.dir}/${jar_file}">
             <fileset dir="${build.classes}"/>
 	    <manifest>
