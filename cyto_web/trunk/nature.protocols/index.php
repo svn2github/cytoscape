@@ -28,7 +28,7 @@
             necessary to properly run the protocol described in this paper: (ref here).</p>
 
             <p>
-            Click <A HREF="runCytoscape.jnlp">here</A> for the WebStart.
+            At this time, we are resolving some minor issues with webstart, and advise you to run a locally-installed version of Cytoscape instead.  We apologize for the inconvenience.
             </p>
             <p>
             For more information on Java Webstart, click <A HREF="http://java.sun.com/products/javawebstart/">
