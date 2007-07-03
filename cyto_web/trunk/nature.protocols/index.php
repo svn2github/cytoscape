@@ -21,7 +21,7 @@
 				</td>
 			</tr>
 		</table>
-<? include "../nav.php"; ?>
+<? include "nav.np.php"; ?>
 <div id="contents">
     <div id="content">
             <P>This page contains a link to the webstart that contains all of the plugins
@@ -35,27 +35,16 @@
 here</A>.
             </p>
 
-            <p>To get the required data and configuation files for the Agilent Literature Search software
-            click <A HREF="../../download_agilent_literature_search_v2.4_data.php">here</A>
 
             <p>The following supplemental data files are provided for the convenience of any readers who have
 no
             data available, or do not wish to execute the complete protocol:
             <ol>
-                        <li> <A HREF="gene.input.list.txt">gene.input.list.txt</A> provides sample input for t
-he cPath and
-            Agilent Literature Search network queries.
-                        <li> <A HREF="sample.session.cys">sample.session.cys</A> is a session file containing
-the network
-            data obtained with the sample query
-                        <li> <A HREF="translate.tab">translate.tab</A> is an ID translation file built with th
-e sample data
-            according to the protocol.
-                <li> <A HREF="galExpData.pvals">galExpData.pvals</A> is a sample expression data file
+                        <li> <A HREF="galFiltered.sif">galFiltered.sif</A> contains sample network data, which describes galactose utilization in yeast.  We have also provided a <A HREF="galFiltered.sif.pdf"> PDF </a> version of this file. 
+                        <li> <A HREF="galGeneNames.csv">galGeneNames.csv</A> is a comma-delimited attribute file to augment the sample data by mapping the locus tag node identifiers to standard gene symbols.  This data is also available in a <A HREF="galGeneNames.csv.pdf"> PDF </A> version.
+                        <li> <A HREF="SampleData.cys">SampleData.cys</A> is a session file containing this data, and an Agilent Literature Search network for many of the same genes.
+                	<li> <A HREF="galExpData.pvals">galExpData.pvals</A> is a sample expression data file to complement the network data.  The illustrations in the manuscript reflect the <B>gal4RG</B> experiment.  This data is also available a a <A HREF="galExpData.pvals.pdf"> PDF </A> version.
             <p>
-            Note that the number of interactions in cPath increases over time.  Users who attempt to re-genera
-te this
-            network at a later date might not get exactly the same network, but a larger one.
             </ol>
             All the figures shown in the paper were generated with these data files.
             <p>
