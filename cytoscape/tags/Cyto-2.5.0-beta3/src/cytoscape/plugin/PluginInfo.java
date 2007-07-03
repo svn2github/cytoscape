@@ -587,10 +587,13 @@ public class PluginInfo {
 		Html += "</style><body>";
 
 		Html += "<b>" + getName() + "</b><p>";
-		Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>"; 
 		Html += "<b>Version:</b>&nbsp;" + getPluginVersion() + "<p>";
 		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
 		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
+
+		if (getReleaseDate() != null) {
+			Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
+		}
 		Html += "<b>Released By:</b><br><ul>";
 		for (AuthorInfo ai : getAuthors()) {
 			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution()

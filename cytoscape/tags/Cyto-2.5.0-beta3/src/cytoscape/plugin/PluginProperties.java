@@ -58,7 +58,9 @@ public class PluginProperties extends Properties {
 	 */
 	public PluginProperties(CytoscapePlugin Plugin) throws IOException {
 		String PackageName = Plugin.getClass().getPackage().getName();
-		readPluginProperties(Plugin.getClass().getClassLoader().getResourceAsStream(PackageName + "/" +  configFileName));
+		PackageName = PackageName.replace('.', '/');
+		readPluginProperties(Plugin.getClass().getClassLoader().
+				getResourceAsStream(PackageName + "/" +  configFileName));
 	}
 	
 	private void readPluginProperties(InputStream is) throws IOException {
@@ -129,6 +131,8 @@ public class PluginProperties extends Properties {
 		
 		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
+		} else {
+			pi.setReleaseDate(" ");
 		}
 		return pi;
 	}
