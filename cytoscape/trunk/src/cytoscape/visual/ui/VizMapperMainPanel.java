@@ -2545,9 +2545,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			clone.setName(newName);
 			// add new style to the catalog
 			vmm.getCalculatorCatalog().addVisualStyle(clone);
-			currentStyle = clone;
-
-			vmm.setVisualStyle(currentStyle);
+			vmm.setVisualStyle(clone);
 
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(newName);
 			final DGraphView view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
