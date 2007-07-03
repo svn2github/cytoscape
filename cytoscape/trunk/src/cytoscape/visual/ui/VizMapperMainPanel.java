@@ -1804,6 +1804,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Got global siginal
 		 */
+		
+		//System.out.println("GLOBAL Signal: " + e.getPropertyName());
+	
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
 
@@ -1817,13 +1820,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.setVisualStyle(vmName);
 
 			return;
-		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)) {
+		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			String vmName = vmm.getVisualStyle().getName();
 			setVSSelector();
 			vsNameComboBox.setSelectedItem(vmName);
 			vmm.setVisualStyle(vmName);
 
-			//System.out.println("Visual Style Switched: " + vmm.getVisualStyle().getName());
+			
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		           && (e.getSource().getClass() == NetworkPanel.class)) {
