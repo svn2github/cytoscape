@@ -3,8 +3,8 @@
 <project name="Cytoscape Data Viewer Plug In" default="all" basedir=".">
 
     <!-- The name of the cPath JAR -->
-    <property name="jar.name" value="cPath.jar"/>
-
+  <property name="jar.name" value="cPath.jar"/>
+	
 	<property name="cytoscape.dir" value="../../cytoscape"/>
 	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
 
@@ -91,11 +91,13 @@
 
     <!--  Target to Create PlugIn JARs -->
     <target name="jar" depends="compile" description="Creates PlugIn Jars">
-        <copy todir="${build.classes}" file="${resources.dir}/plugin.props"/>
-        <jar destfile="${plugins.dir}/${jar.name}">
+        <copy todir="${build.classes}/org/cytoscape/coreplugin/cpath/plugin" 
+        	file="${resources.dir}/plugin.props"/>
+        <jar destfile="${basedir}/${jar.name}">
             <fileset dir="${build.classes}"/>
             <manifest>
-              <attribute name="Cytoscape-Plugin" value="org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn"/>
+              <attribute name="Cytoscape-Plugin" 
+              	value="org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn"/>
             </manifest>
         </jar>
     </target>
@@ -129,5 +131,5 @@
     </target>
 
     <!--  Builds and tests everything -->
-    <target depends="jar,test" description="Builds and tests everything" name="all"/>
+    <target depends="jar" description="Builds and tests everything" name="all"/>
 </project>
