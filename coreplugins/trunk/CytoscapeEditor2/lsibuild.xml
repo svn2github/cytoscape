@@ -63,9 +63,7 @@
 
 	<!-- Copy needed files into ${build.classes.dir} for jaring and testing. -->
 	<target name="add-data-files">
-		<copy todir="${build.classes.dir}" preservelastmodified="true">
-			<fileset dir="${src.dir}" includes="com/agilent/labs/lsplugin/images/**" />
-		</copy>
+		<copy todir="${build.classes.dir}/cytoscape/editor" preservelastmodified="true" file="plugin.props" />
 	</target>
 
 
@@ -151,6 +149,7 @@
 			<fileset dir="${build.classes.dir}">
 				<!-- skip items from the test directory: -->
 				<exclude name="${test.subdir}/" />
+				<exclude name="cytoscape/editor/plugin.props" />
 			</fileset>
 		</jar>
 		<echo message="${lib.loc} is now complete." />
