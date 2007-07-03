@@ -11,7 +11,7 @@ pluginName=CytoscapeEditor
 pluginDescription=Provides a network editor.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=2.0
+pluginVersion=2.5
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.5
