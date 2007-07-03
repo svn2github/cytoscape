@@ -64,6 +64,7 @@
 	</target>
 
 	<target name="jar" description="Create CyGoose jar file" depends="compile"> 
+		<copy file="${basedir}/resources/plugin.props" todir="${classes.dir}/org.systemsbiology.cytoscape"/>
 		<jar destfile="${build.dir}/${jar.file}">
 			<manifest>
 				<attribute name="Cytoscape-Plugin" value="org.systemsbiology.cytoscape.GagglePlugin" />
