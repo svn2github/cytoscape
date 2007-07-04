@@ -109,7 +109,8 @@ public class PsiMiGraphReader extends AbstractGraphReader {
 			nodeIndices = mapper2.getNodeIndices();
 			edgeIndices = mapper2.getEdgeIndices();
 		} catch (Exception e) {
-			throw new IOException(e.getMessage());
+            e.printStackTrace();
+            throw new IOException(e.getMessage());
 		}
 	}
 
