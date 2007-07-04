@@ -138,16 +138,23 @@ public class JRangeSliderExtended extends JRangeSlider implements ChangeListener
 
 		DecimalFormat format;
 
-		if ((max.doubleValue() - min.doubleValue()) < .001) {
-			format = new DecimalFormat("0.###E0");
-		} else if ((max.doubleValue() - min.doubleValue()) > 100000) {
-			format = new DecimalFormat("0.###E0");
-		} else {
-			format = new DecimalFormat("###,###.000");
-		}
+        String lowStr = null;
+        String highStr = null;
+        if (low instanceof Integer) {
+            lowStr = Integer.toString((Integer) low);
+            highStr = Integer.toString((Integer) high);
+        } else {
+            if ((max.doubleValue() - min.doubleValue()) < .001) {
+                format = new DecimalFormat("0.###E0");
+            } else if ((max.doubleValue() - min.doubleValue()) > 100000) {
+                format = new DecimalFormat("0.###E0");
+            } else {
+                format = new DecimalFormat("###,###.000");
+            }
+            lowStr = format.format(low);
+            highStr = format.format(high);
+        }
 
-		String lowStr = format.format(low);
-		String highStr = format.format(high);
 
 		if (isVisible()) {
 			if (popup == null) {
