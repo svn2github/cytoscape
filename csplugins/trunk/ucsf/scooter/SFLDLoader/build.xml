@@ -5,23 +5,14 @@
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
    <!-- path to Cytoscape under development (CVS) -->
-   <property name = "lib.dev" location = "../../../../cytoscape"/>
-   <!-- path to Cytoscape 2.2 official release -->
-   <!-- <property name = "lib.release" location = "../../../../C2.1/source"/> -->
-   <property name = "lib.release" location = "../../../../cytoscape"/>
+   <property name = "lib" location = "../../../../cytoscape"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 
-   <property name="cytoscape.plugin.release" value="${lib.release}/plugins"/>
+   <property name="cytoscape.plugin" value="${lib}/plugins"/>
 
-   <path id = "classpath_dev">
-       <fileset dir = "${lib.dev}">
-          <include name = "**/*.jar"/>
-       </fileset>
-   </path>
-
-   <path id = "classpath_release">
-       <fileset dir = "${lib.release}">
+   <path id = "classpath">
+       <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
    </path>
@@ -30,42 +21,28 @@
       <mkdir dir="${build}"/>
    </target>
 
-   <target name="compile_dev" depends = "prepare" description="Compile with Cytoscape under development">
+   <target name="compile" depends = "prepare" description="Compile with Cytoscape under development">
    <!-- Compile the java code from ${src} into ${build} -->
    <javac source = "1.5" debug="true" deprecation="true" srcdir = "${src}" destdir="${build}">
-      <classpath refid = "classpath_dev"/>
+      <classpath refid = "classpath"/>
    </javac>
    </target>
 
-   <target name="compile_release" depends = "prepare" description="Compiles with current official release of Cytoscape">
-   <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.5" debug="true" srcdir = "${src}" destdir="${build}">
-      <classpath refid = "classpath_release"/>
-   </javac>
-   </target>
-   
    <target name="clean" description="clean up" >
       <!-- Delete the ${build} and ${src} directory trees -->
       <delete dir="${build}"/>
       <delete dir="${jar}"/>
    </target>
 
-   <target name="jar_release" depends="compile_release" description="makes a jar for the current official Cytoscape release">
+   <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
    <mkdir dir = "${jar}"/>
    <jar jarfile="${jar}/SFLDLoader.jar">
       <fileset dir="${build}"/>
    </jar>
    </target>
 
-   <target name="jar_dev" depends="compile_dev" description="makes a jar for Cytoscape under development">
-   <mkdir dir = "${jar}"/>
-   <jar jarfile="${jar}/SFLDLoader.jar">
-      <fileset dir="${build}"/>
-   </jar>
-   </target>
-
-   <target name = "run_dev" depends="jar_dev" description = "Run under development">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_dev"
+   <target name = "run" depends="jar" description = "Run under development">
+      <java classname = "cytoscape.CyMain" classpathref = "classpath"
           fork = "true" maxmemory = "1g">
       	  <arg line = "--JLD"/>
       	  <arg line = "${jar}/SFLDLoader.jar"/>
@@ -74,26 +51,14 @@
       </java>
     </target>
 
-
-     <target name = "run_release" depends="jar_release" description = "Run release">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_release"
-          fork = "true" maxmemory = "1g">
-      	  <arg line = "--JLD"/>
-      	  <arg line = "${jar}/SFLDLoader.jar"/>
-      	  <arg line = "--JLD"/>
-      	  <arg line = "${cytoscape.plugin.release}"/>
-      	  <arg line = "-vt"/>
-      	  <arg line = "5000"/>
-      </java>
-    </target>
 
    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="SFLDLoader.*" sourcepath="src" source="1.5" destdir="doc"
+        <javadoc packagenames="metaNodePlugin2.*" sourcepath="src" source="1.5" destdir="doc"
 			 classpathref="classpath_release" >
         <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>
-	<link href = "http://chianti.ucsd.edu/Cyto-2_3_1/javadoc/" />
+	<link href = "http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/" />
        </javadoc>
     </target>
 

@@ -54,6 +54,7 @@ import ding.view.*;
 // Cytoscape imports
 import cytoscape.*;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
@@ -491,5 +492,20 @@ public class StructureViz extends CytoscapePlugin
 		JMenu menu = new JMenu("Structure Visualization");
 		menu.addMenuListener(new StructureVizMenuListener(nodeView));
 		pmenu.add(menu);
+	}
+
+	/**
+	 * Return our PluginInfo object
+	 * @return the PluginInfo object for metaNodePlugin2
+	 */
+	public PluginInfo getPluginInfoObject() {
+		PluginInfo info = new PluginInfo();
+		info.setName("structureViz Plugin");
+		info.setDescription("This plugin provides an interface to UCSF Chimera from within Cytoscape");
+		info.setCategory("Analysis");
+		info.setPluginVersion(VERSION);
+		info.setProjectUrl("http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz.html");
+		info.addAuthor("Scooter Morris", "UCSF");
+		return info;
 	}
 }

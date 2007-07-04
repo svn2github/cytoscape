@@ -53,6 +53,7 @@ import org.w3c.dom.NodeList;
 // Cytoscape imports
 import cytoscape.*;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
@@ -163,5 +164,20 @@ public class SFLDLoader extends CytoscapePlugin {
 			loadMenu.setText("Browse SFLD...");
 			loadMenu.setEnabled(true);
 		}
+	}
+
+	/**
+	 * Return our PluginInfo object
+	 * @return the PluginInfo object for metaNodePlugin2
+	 */
+	public PluginInfo getPluginInfoObject() {
+		PluginInfo info = new PluginInfo();
+		info.setName("SFLDLoader Plugin");
+		info.setDescription("This plugin provides an interface to the Structure-Function Linkage Database");
+		info.setCategory("Network and Attribute I/O");
+		info.setPluginVersion(VERSION);
+		info.setProjectUrl("http://www.rbvi.ucsf.edu/Research/cytoscape/SFLDLoader.html");
+		info.addAuthor("Scooter Morris", "UCSF");
+		return info;
 	}
 }

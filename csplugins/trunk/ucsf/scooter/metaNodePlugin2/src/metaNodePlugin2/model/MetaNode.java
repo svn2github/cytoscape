@@ -64,6 +64,8 @@ import cytoscape.groups.CyGroupViewer;
 // our imports
 import metaNodePlugin2.MetaNodePlugin2;
 
+import csplugins.layout.Profile;
+
 /**
  * The MetaNode class provides a wrapper for a CyGroup that
  * maintains the additional state information we want to keep
@@ -129,6 +131,25 @@ public class MetaNode {
 		if (metaMap.containsKey(groupNode))
 			return (MetaNode)metaMap.get(groupNode);
 		return null;
+	}
+
+	/**
+	 * Remove a MetaNode from our internal map
+	 *
+	 * @param groupNode the CyNode that maps to the metaNode
+	 */
+	static public void removeMetaNode(CyNode groupNode) {
+		if (metaMap.containsKey(groupNode))
+			metaMap.remove(groupNode);
+	}
+
+	/**
+	 * Remove a MetaNode from our internal map
+	 *
+	 * @param metaNode the metaNode to remove
+	 */
+	static public void removeMetaNode(MetaNode metaNode) {
+		removeMetaNode(metaNode.getCyGroup().getGroupNode());
 	}
 
 
@@ -403,17 +424,23 @@ public class MetaNode {
 			return;
 
 		if (DEBUG) System.out.println("collapsing "+groupNode);
+		Profile prf = new Profile();
+		prf.start();
+
 		// Initialize
 		update(view);
+		prf.done("collapse: Update=");
 
 		this.multipleEdges = multipleEdges;
 		this.recursive = recursive;
 
 		// Add the group node in the center of where the member nodes were
 		restoreNode(groupNode, hideNodes(recursive, multipleEdges));
+		prf.done("collapse: RestoreNode=");
 
 		// Create our meta edges
 		createMetaEdges();
+		prf.done("collapse: createMetaEdges=");
 
 		// Set our state
 		metaGroup.setState(MetaNodePlugin2.COLLAPSED);
@@ -422,6 +449,7 @@ public class MetaNode {
 		// If we're supposed to, update the display
 		if (updateNetwork)
 			updateDisplay();
+		prf.done("collapse: updateDisplay=");
 	}
 
 	/**

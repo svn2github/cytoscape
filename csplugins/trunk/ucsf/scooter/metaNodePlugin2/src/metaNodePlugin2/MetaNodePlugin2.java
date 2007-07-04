@@ -186,6 +186,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param group the CyGroup that will be deleted
 	 */
 	public void groupWillBeRemoved(CyGroup group) { 
+		MetaNode mn = MetaNode.getMetaNode(group);
+		// Expand the group
+		if (group.getState() == COLLAPSED) {
+			mn.expand(true, null);
+		}
+		// Get rid of the MetaNode
+		MetaNode.removeMetaNode(mn);
 	}
 
 	/**
