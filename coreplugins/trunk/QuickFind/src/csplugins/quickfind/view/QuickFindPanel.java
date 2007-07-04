@@ -115,11 +115,14 @@ public class QuickFindPanel extends JPanel {
 			comboBox.setTextIndex((TextIndex) index);
 		} else {
 			NumberIndex numberIndex = (NumberIndex) index;
-			rangeModel.setMinValue(numberIndex.getMinimumValue());
-			rangeModel.setMaxValue(numberIndex.getMaximumValue());
-			rangeModel.setLowValue(numberIndex.getMinimumValue());
-			rangeModel.setHighValue(numberIndex.getMinimumValue());
-			comboBox.setVisible(false);
+            //  by creating a new NumberRangeModel, the model retains the
+            //  number setting, e.g. double or integer;  otherwise, you get
+            //  the bug described in #1315.
+            rangeModel = new NumberRangeModel(numberIndex.getMinimumValue(),
+                    numberIndex.getMinimumValue(), numberIndex.getMinimumValue(),
+                    numberIndex.getMaximumValue());
+            rangeSlider.setModel(rangeModel);
+            comboBox.setVisible(false);
 			rangeSlider.setVisible(true);
 			label.setText(SELECT_STRING);
 		}
