@@ -62,7 +62,9 @@ import groupTool.ui.GroupTableModel;
  * to manipulate all groups, reguardless of what their viewer is.
  */
 public class GroupToolDialog extends JDialog 
-                             implements ActionListener, CellEditorListener {
+                             implements ActionListener, 
+                                        CellEditorListener, 
+                                        CyGroupChangeListener {
 
 	// Dialog components
 	private JLabel titleLabel;
@@ -128,10 +130,14 @@ public class GroupToolDialog extends JDialog
 		
 		dataPanel.add(buttonBox);
 		setContentPane(dataPanel);
+
+		// Set up ourselves as listeners
+		CyGroupManager.addGroupChangeListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		if ("done".equals(e.getActionCommand())) {
+			CyGroupManager.removeGroupChangeListener(this);
 			this.dispose();
 		} else if ("reload".equals(e.getActionCommand())) {
 			tableModel.updateTable();
@@ -171,5 +177,10 @@ public class GroupToolDialog extends JDialog
 
 		// Set the new viewer
 		CyGroupManager.setGroupViewer(group, viewerName, Cytoscape.getCurrentNetworkView(), true);
+	}
+
+	public void groupChanged (CyGroup group, CyGroupChangeListener.ChangeType change) {
+		// Whatever changed, we just update our table
+		tableModel.updateTable();
 	}
 }
