@@ -49,7 +49,6 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;;
 
-
 /**
  * The CyGroup class provides the implementation for a group model that
  * maintains the list of nodes belonging to a group, the parent of a particular
@@ -76,6 +75,11 @@ public class CyGroupManager {
 	 * The list of groups, indexed by the managing viewer
 	 */
 	private static HashMap<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap();
+
+	/**
+	 * The list of group change listeners
+	 */
+	private static List<CyGroupChangeListener> changeListeners = new ArrayList();
 
 	// Static methods
 	/**
@@ -175,8 +179,8 @@ public class CyGroupManager {
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName);
 		groupMap.put(group.getGroupNode(), group);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		setGroupViewer(group, viewer, null, true);
-
 		return group;
 	}
 
@@ -196,8 +200,8 @@ public class CyGroupManager {
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName, nodeList);
 		groupMap.put(group.getGroupNode(), group);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		setGroupViewer(group, viewer, null, false);
-
 		return group;
 	}
 
@@ -226,9 +230,10 @@ public class CyGroupManager {
 			group.setState(state);
 		} catch (Exception e) {}
 
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
+
 		if (viewer != null)
 			setGroupViewer(group, viewer, null, true);
-
 		return group;
 	}
 
@@ -278,6 +283,8 @@ public class CyGroupManager {
 			// RootGraph rg = groupNode.getRootGraph();
 			// Remove it from the root graph
 			// rg.removeNode(groupNode);
+
+			notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_DELETED);
 		}
 	}
 
@@ -302,6 +309,15 @@ public class CyGroupManager {
 	}
 
 	/**
+	 * Return a list of all registered viewers
+	 *
+	 * @return list of registered group viewers
+	 */
+	public static Collection<CyGroupViewer> getGroupViewers() {
+		return viewerMap.values();
+	}
+
+	/**
 	 * Set the viewer for a group
 	 *
 	 * @param group the group we're associating with a viewer
@@ -310,6 +326,16 @@ public class CyGroupManager {
 	 * @param notify if 'true' the viewer will be notified of the creation
 	 */
 	public static void setGroupViewer(CyGroup group, String viewer, CyNetworkView myView, boolean notify) {
+		// See if we need to remove the current viewer first
+		if (group.getViewer() != null) {
+			// get the viewer
+			CyGroupViewer v = (CyGroupViewer) viewerMap.get(group.getViewer());
+			groupViewerMap.get(v).remove(group);
+			if (notify)
+				v.groupWillBeRemoved(group);
+			((CyGroupImpl)group).setViewer(null);
+		}
+
 		if ((viewer != null) && viewerMap.containsKey(viewer)) {
 			// get the viewer
 			CyGroupViewer v = (CyGroupViewer) viewerMap.get(viewer);
@@ -323,6 +349,7 @@ public class CyGroupManager {
 
 			if (notify) {
 				v.groupCreated(group, myView);
+				notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_MODIFIED);
 			}
 		}
 
@@ -369,4 +396,34 @@ public class CyGroupManager {
 		}
 	}
 
+	/**
+	 * Add a new change listener to our list of listeners
+	 *
+	 * @param listener the listener to add
+	 */
+	public static void addGroupChangeListener(CyGroupChangeListener listener) {
+		changeListeners.add(listener);
+	}
+
+	/**
+	 * Remove a change listener from our list of listeners
+	 *
+	 * @param listener the listener to remove
+	 */
+	public static void removeGroupChangeListener(CyGroupChangeListener listener) {
+		changeListeners.remove(listener);
+	}
+
+	/**
+	 * Notify a listener that something has happened
+	 *
+	 * @param group the group that has changed
+	 * @param whatChanged the thing that has changed about the group
+	 */
+	private static void notifyListeners(CyGroup group, CyGroupChangeListener.ChangeType whatChanged) {
+		Iterator <CyGroupChangeListener> listeners = changeListeners.iterator();
+		while (listeners.hasNext()) {
+			(listeners.next()).groupChanged(group, whatChanged);
+		}
+	}
 }
