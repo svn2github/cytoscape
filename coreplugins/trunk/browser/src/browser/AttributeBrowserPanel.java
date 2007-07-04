@@ -49,6 +49,7 @@ import cytoscape.data.CyAttributesUtils;
 
 import cytoscape.dialogs.NetworkMetaDataDialog;
 
+import cytoscape.util.swing.CheckBoxJList;
 import cytoscape.view.cytopanels.CytoPanel;
 
 import giny.model.GraphObject;
@@ -106,7 +107,7 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 	private JMenuItem jMenuItem3 = null;
 	private JToolBar jToolBar = null;
 	private JButton selectButton = null;
-	private JList attributeList = null;
+	private cytoscape.util.swing.CheckBoxJList attributeList = null;
 	private JList attrDeletionList = null;
 	private JButton createNewAttributeButton = null;
 	private JButton deleteAttributeButton = null;
@@ -259,7 +260,7 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 	private JScrollPane getJScrollPane(AttributeModel a_model) {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
-			jScrollPane.setPreferredSize(new Dimension(220, 200));
+			jScrollPane.setPreferredSize(new Dimension(300, 200));
 			jScrollPane.setViewportView(getSelectedAttributeList(model));
 		}
 
@@ -703,44 +704,10 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 	 */
 	private JList getSelectedAttributeList(final AttributeModel a_model) {
 		if (attributeList == null) {
-			attributeList = new JList(model);
+			attributeList = new CheckBoxJList();
+			attributeList.setModel(model);
 			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			attributeList.addMouseListener(new MouseAdapter() {
-					List<String> selected = new ArrayList<String>();
-					int[] idx;
-
-					public void mouseClicked(MouseEvent e) {
-						if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
-							// Right click
-							attributeSelectionPopupMenu.setVisible(false);
-						} else {
-							// Left click
-							final String selectedItem = attributeList.getSelectedValue().toString();
-
-							if (selected.contains(selectedItem)) {
-								selected.remove(selectedItem);
-							} else {
-								selected.add(selectedItem);
-							}
-
-							idx = new int[selected.size()];
-
-							int count = 0;
-
-							for (int i = 0; i < attributeList.getModel().getSize(); i++) {
-								if (selected.contains(attributeList.getModel().getElementAt(i))) {
-									idx[count] = i;
-									count++;
-								}
-							}
-
-							// set selected indices
-							attributeList.setSelectedIndices(idx);
-						}
-					}
-				});
 			attributeList.addListSelectionListener(this);
-			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		}
 
 		return attributeList;
