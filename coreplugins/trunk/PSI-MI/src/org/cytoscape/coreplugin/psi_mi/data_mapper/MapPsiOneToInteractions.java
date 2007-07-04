@@ -304,9 +304,11 @@ public class MapPsiOneToInteractions implements Mapper {
 
 		if (xref != null) {
 			DbReferenceType primaryRef = xref.getPrimaryRef();
-			createExternalReference(primaryRef.getDb(), primaryRef.getId(), refList);
+            if (primaryRef != null) {
+                createExternalReference(primaryRef.getDb(), primaryRef.getId(), refList);
+            }
 
-			int count = xref.getSecondaryRef().size();
+            int count = xref.getSecondaryRef().size();
 
 			for (int i = 0; i < count; i++) {
 				DbReferenceType secondaryRef = xref.getSecondaryRef().get(i);
