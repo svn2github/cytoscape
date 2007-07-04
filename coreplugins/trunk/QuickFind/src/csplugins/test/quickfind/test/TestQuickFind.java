@@ -139,7 +139,7 @@ public class TestQuickFind extends TestCase {
 		assertEquals(node3, hits[0].getAssociatedObjects()[0]);
 		assertEquals(node2, hits[0].getAssociatedObjects()[1]);
 
-		//validateIndexAllAttributes(quickFind, cyNetwork, monitor);
+		validateIndexAllAttributes(quickFind, cyNetwork, monitor);
 		validateIntegerIndex(quickFind, cyNetwork, monitor);
 		validateDoubleIndex(quickFind, cyNetwork, monitor);
 
