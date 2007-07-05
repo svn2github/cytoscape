@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -38,15 +37,14 @@ package csplugins.widgets.autocomplete.view;
 
 import csplugins.widgets.autocomplete.index.TextIndex;
 
-import java.awt.*;
-import java.awt.event.*;
-
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.*;
 
 
 /**
@@ -259,6 +257,63 @@ public class TextIndexComboBox extends JComboBox {
 		//  specific keystrokes.
 		KeyAdapter editorKeyListener = new UserKeyListener(doc, editor, this);
 		editor.addKeyListener(editorKeyListener);
+
+		try {
+			//  Over-ride default key mappings in JTextField, as these conflict
+			//  with menu-item key mappings in the main Cytoscape tool bar.
+			//  See bug: #1310.
+
+			//  For future reference, built-in key mappings for JTextField are:
+			//  pressed END
+			//  ctrl pressed O
+			//  pressed KP_LEFT
+			//  pressed RIGHT
+			//  pressed HOME
+			//  pressed V
+			//  pressed H               (*)
+			//  pressed KP_LEFT
+			//  pressed LEFT
+			//  pressed X
+			//  pressed KP_RIGHT
+			//  ctrl pressed KP_RIGHT
+			//  pressed COPY
+			//  shift pressed HOME
+			//  pressed RIGHT
+			//  shift ctrl pressed LEFT
+			//  ctrl pressed KP_LEFT
+			//  ctrl pressed KP_RIGHT
+			//  pressed PASTE
+			//  shift ctrl pressed RIGHT
+			//  ctrl pressed BACK_SLASH
+			//  ctrl pressed A
+			//  shift pressed KP_RIGHT
+			//  pressed CUT
+			//  ctrl pressed LEFT
+			//  pressed BACK_SPACE
+			//  shift ctrl pressed KP_LEFT
+			//  ctrl pressed C
+			//  shift pressed END
+			//  ctrl pressed RIGHT
+			//  pressed DELETE
+			//  pressed ENTER
+			//  shift pressed LEFT
+			//
+			// * = indicates conflict with Cytsoscape Menu Item
+
+			JTextField textField = (JTextField) this.getEditor().getEditorComponent();
+
+			//  By setting to "none", these keystrokes are passed up the containment
+			//  hierarchy, and eventually make their way up to the Cytoscape Desktop.
+			KeyStroke keyStroke = javax.swing.KeyStroke.getKeyStroke
+					(java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK);
+			textField.getInputMap().put(keyStroke, "none");
+
+			keyStroke = javax.swing.KeyStroke.getKeyStroke
+					(java.awt.event.KeyEvent.VK_H, ActionEvent.ALT_MASK);
+			textField.getInputMap().put(keyStroke, "none");
+		} catch (ClassCastException e) {
+			//  Ignore it.
+		}
 
 		//  Add PopupMenuListener, in order to resize size of popup window
 		addPopupMenuListener(new UserPopupListener(popupWindowSizeMultiple));
