@@ -26,6 +26,9 @@ GetOptions ("loc=s" => \$XmlFileLoc,
 						"passwd=s" => \$PassWord, 
 						"help" => \$Help);
 
+#print Dumper BAD_HEX;
+#exit;
+
 usage("Help:") if ($Help);
 usage("ERROR: Missing required parameter:") if (!$BaseUrl || !$XmlFileLoc || !$UserName || !$PassWord);
 
@@ -36,7 +39,7 @@ dbConnect();
 
 # Create the xml document
 my $Doc = XML::DOM::Document->new();
-my $XMLPi = $Doc->setXMLDecl($Doc->createXMLDecl ('1.0', 'UTF-8'));
+my $XMLPi = $Doc->setXMLDecl($Doc->createXMLDecl ('1.0', 'UTF-16'));
 my $Root = $Doc->createElement("project");
 $Doc->appendChild($Root);
 addProjectInfo();
@@ -50,9 +53,10 @@ foreach my $id (keys %$AllPlugins)
 	{ addPlugin(%{$AllPlugins->{$id}}); }
 
 # format the xml in some basic manner, doesn't seem to be a nice lib for pretty formatting of xml
-my $Xml = $Doc->toString();
+#my $Xml = $Doc->toString();
+my $Xml = $Root->toString();
 $Xml =~  s/></>\n</g;
-
+$Xml =~ s/^\s+//;
 
 open(XMLOUT, ">$XmlFile") || die "Failed to open $XmlFile: $!";
 print XMLOUT $Xml;
@@ -76,7 +80,7 @@ sub addPlugin
 	$PluginElement->appendChild($PluginName);
 	
 	my $PluginDesc = $Doc->createElement("description");
-#	$PluginDesc->appendChild($Doc->createTextNode($args{'description'}));
+	$args{'description'} = stripBadHex($args{'description'});
 	$PluginDesc->appendChild($Doc->createCDATASection($args{'description'}));
 	$PluginElement->appendChild($PluginDesc);
 
@@ -85,7 +89,10 @@ sub addPlugin
 		{
 		my $License = $Doc->createElement("license");
 		my $LicenseText = $Doc->createElement("text");
-#		$LicenseText->appendChild($Doc->createTextNode($args{'license'}));
+
+		# these are bad hex chars, illegal for xml
+		$args{'license'} = stripBadHex($args{'license'});
+
 		$LicenseText->appendChild($Doc->createCDATASection($args{'license'}));
 		$License->appendChild($LicenseText);
 		$PluginElement->appendChild($License);
@@ -243,6 +250,16 @@ sub addProjectInfo
 	$Root->appendChild($Name);
 	$Root->appendChild($Desc);
 	$Root->appendChild($ProjUrl);
+	}
+
+
+# these are illegal for xml
+sub stripBadHex
+	{
+	my $str = shift || warn "No string passed to strip hex from";
+	$str =~ s/\x0b|\x0c|\x0d|\x0e|\x0f//g;
+	$str =~ s/([\x00-\x7f])[\x80-\xbf]/$1/g; 
+	return $str;
 	}
 
 # connect to database
