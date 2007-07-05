@@ -76,7 +76,7 @@ import structureViz.actions.Align;
 public class StructureViz extends CytoscapePlugin 
   implements NodeContextMenuListener, PropertyChangeListener {
 
-	public static final double VERSION = 0.9;
+	public static final double VERSION = 1.0;
 	public static final int NONE = 0;
 	public static final int OPEN = 1;
 	public static final int CLOSE = 2;
@@ -492,20 +492,5 @@ public class StructureViz extends CytoscapePlugin
 		JMenu menu = new JMenu("Structure Visualization");
 		menu.addMenuListener(new StructureVizMenuListener(nodeView));
 		pmenu.add(menu);
-	}
-
-	/**
-	 * Return our PluginInfo object
-	 * @return the PluginInfo object for metaNodePlugin2
-	 */
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setName("structureViz Plugin");
-		info.setDescription("This plugin provides an interface to UCSF Chimera from within Cytoscape");
-		info.setCategory("Analysis");
-		info.setPluginVersion(VERSION);
-		info.setProjectUrl("http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz.html");
-		info.addAuthor("Scooter Morris", "UCSF");
-		return info;
 	}
 }

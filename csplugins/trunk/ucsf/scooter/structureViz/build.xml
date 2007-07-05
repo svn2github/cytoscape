@@ -36,7 +36,11 @@
 
    <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
    <mkdir dir = "${jar}"/>
+   <copy todir="build/structureViz" file="resources/plugin.props"/>
    <jar jarfile="${jar}/structureViz.jar">
+      <manifest>
+          <attribute name="Cytoscape-Plugin" value="structureViz.StructureViz" />
+      </manifest>
       <fileset dir="${build}"/>
    </jar>
    </target>

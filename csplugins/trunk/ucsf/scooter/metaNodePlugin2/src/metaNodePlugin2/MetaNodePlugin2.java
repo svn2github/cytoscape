@@ -80,7 +80,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
                                         PropertyChangeListener {
 
 	public static final String viewerName = "metaNode";
-	public static final double VERSION = 0.1;
+	public static final double VERSION = 1.0;
 	public static final int NONE = 0;
 	public static final int COLLAPSE = 1;
 	public static final int EXPAND = 2;
@@ -612,21 +612,5 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			MetaNode mNode = MetaNode.getMetaNode(group);
 			mNode.expand(recursive, null);
 		}
-	}
-
-	/**
-	 * Return our PluginInfo object
-	 * @return the PluginInfo object for metaNodePlugin2
-	 */
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setName("MetaNode Plugin");
-		info.setDescription("This plugin provides a GroupViewer mechanism that allows users to group nodes together and collapse and expand the nodes");
-		info.setCategory("Analysis");
-		info.setPluginVersion(VERSION);
-		info.setCytoscapeVersion("2.5");
-		info.setProjectUrl("http://www.rbvi.ucsf.edu/Research/cytoscape/groups.html");
-		info.addAuthor("Scooter Morris", "UCSF");
-		return info;
 	}
 }

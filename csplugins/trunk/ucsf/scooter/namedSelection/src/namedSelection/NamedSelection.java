@@ -76,7 +76,7 @@ public class NamedSelection extends CytoscapePlugin
                                        PropertyChangeListener {
 
 	public static final String viewerName = "namedSelection";
-	public static final double VERSION = 0.1;
+	public static final double VERSION = 1.0;
 	public static final int NONE = 0;
 	public static final int SELECT = 1;
 	public static final int UNSELECT = 2;
@@ -458,21 +458,5 @@ public class NamedSelection extends CytoscapePlugin
 			group.setState(UNSELECTED);
 			groupPanel.groupChanged(group);
 		}
-	}
-
-	/**
-	 * Return our PluginInfo object
-	 * @return the PluginInfo object for named selections
-	 */
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setName("Named Selection Plugin");
-		info.setDescription("This plugin provides a GroupViewer mechanism that allows users to group nodes together for the purposes of remembering the selection");
-		info.setCategory("Analysis");
-		info.setPluginVersion(1.0);
-		info.setCytoscapeVersion("2.5");
-		info.setProjectUrl("http://www.rbvi.ucsf.edu/Research/cytoscape/groups.html");
-		info.addAuthor("Scooter Morris", "UCSF");
-		return info;
 	}
 }
