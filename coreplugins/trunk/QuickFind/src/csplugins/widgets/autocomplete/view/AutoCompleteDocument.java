@@ -148,6 +148,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 */
 	public void replace(int offset, int length, String text, AttributeSet attrs)
 	    throws BadLocationException {
+		text = extractAscciCharsOnly(text);
 		debug("replace(), text=" + text + ", cursorKeyPressed=" + cursorKeyPressed);
 
 		int caretPosition = editor.getCaretPosition();
@@ -226,7 +227,7 @@ public class AutoCompleteDocument extends PlainDocument {
 
 			return;
 		}
-
+		str = extractAscciCharsOnly(str);
 		debug("insertString(), str=" + str + "  --> Process");
 
 		//  Assume we have the following text:  "butter".
@@ -423,5 +424,23 @@ public class AutoCompleteDocument extends PlainDocument {
 		if (DEBUG_MODE) {
 			System.out.println(str);
 		}
+	}
+
+	/**
+	 * Enables users to only enter ASCII chars <= 255.
+	 * This prevents users from entering Unicode values via, e.g. the ALT/Option key
+	 * combination.  Part of fix for bug #1310.
+	 * @param text
+	 * @return text containing only ASCII characters;  all other chars are filered out.
+	 */
+	private String extractAscciCharsOnly (String text) {
+		StringBuffer newText = new StringBuffer();
+		for (int i=0; i<text.length(); i++) {
+			char c = text.charAt(i);
+			if (c <= 126) {
+				newText.append(c);
+			}
+		}
+		return newText.toString();
 	}
 }
