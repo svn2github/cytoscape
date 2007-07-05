@@ -87,7 +87,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
      * @param event Click of the analyzeButton on the MCODEMainPanel.
      */
     public void actionPerformed(ActionEvent event) {
-        String resultTitlePartA = "Result ";
+        String resultTitlePartA = "MCODE Result ";
 
         String callerID = "MCODEScoreAndFindAction.actionPerformed";
         String interruptedMessage = "";
