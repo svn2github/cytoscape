@@ -150,7 +150,7 @@ public class PluginFileReader {
 		// plugin version
 		Info = addVersion(Info, CurrentPlugin);
 
-		Iterator<Element> versionI = CurrentPlugin.getChild("cytoscapeVersions").getChildren().iterator();
+		Iterator<Element> versionI = CurrentPlugin.getChild(PluginXml.CYTOSCAPE_VERSIONS.getTag()).getChildren(PluginXml.CY_VERSRION.getTag()).iterator();
 		while (versionI.hasNext()) {
 			Element Version = versionI.next();
 			Info.setCytoscapeVersion(Version.getTextTrim());
@@ -227,45 +227,45 @@ public class PluginFileReader {
 	}
 
 	// XML Tags PluginTracker uses the same tags
-	protected static final String nameTag = "name";
+	private static String nameTag = PluginXml.NAME.getTag();
 
-	protected static final String descTag = "description";
+	private static String descTag = PluginXml.DESCRIPTION.getTag();
 
-	protected static final String classTag = "classname";
+	private static String classTag = PluginXml.CLASS_NAME.getTag();
 
-	protected static final String pluginVersTag = "pluginVersion";
+	private static String pluginVersTag = PluginXml.PLUGIN_VERSION.getTag();
 
-	protected static final String cytoVersTag = "cytoscapeVersion";
+	private static String cytoVersTag = "cytoscapeVersion";
 
-	protected static final String urlTag = "url";
+	private static String urlTag = PluginXml.URL.getTag();
 
-	protected static final String projUrlTag = "projectUrl";
+	private static String projUrlTag = PluginXml.PROJECT_URL.getTag();
 
-	protected static final String downloadUrlTag = "downloadUrl";
+	private static String downloadUrlTag = PluginXml.DOWNLOAD_URL.getTag();
 	
-	protected static final String categoryTag = "category";
+	private static String categoryTag = PluginXml.CATEGORY.getTag();
 
-	protected static final String fileListTag = "filelist";
+	private static String fileListTag = PluginXml.FILE_LIST.getTag();
 
-	protected static final String fileTag = "file";
+	private static String fileTag = PluginXml.FILE.getTag();
 
-	protected static final String pluginListTag = "pluginlist";
+	private static String pluginListTag = PluginXml.PLUGIN_LIST.getTag();
 
-	protected static final String pluginTag = "plugin";
+	private static String pluginTag = PluginXml.PLUGIN.getTag();
 
-	protected static final String authorListTag = "authorlist";
+	private static String authorListTag = PluginXml.AUTHOR_LIST.getTag();
 
-	protected static final String authorTag = "author";
+	private static String authorTag = PluginXml.AUTHOR.getTag();
 
-	protected static final String instTag = "institution";
+	private static String instTag = PluginXml.INSTITUTION.getTag();
 
-	protected static final String fileType = "filetype";
+	private static String fileType = PluginXml.FILE_TYPE.getTag();
 
-	protected static final String uniqueID = "uniqueID";
+	private static String uniqueID = PluginXml.UNIQUE_ID.getTag();
 
-	protected static final String licenseTag = "license";
+	private static String licenseTag = PluginXml.LICENSE.getTag();
 
-	protected static final String licenseText = "text";
+	private static String licenseText = PluginXml.LICENSE_TEXT.getTag();
 	
-	protected static final String installLocTag = "installLocation";
+	private static String installLocTag = PluginXml.INSTALL_LOCATION.getTag();
 }

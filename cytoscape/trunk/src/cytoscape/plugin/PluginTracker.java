@@ -148,9 +148,12 @@ public class PluginTracker {
 			Plugin.getChild(descTag).setText(obj.getDescription());
 			Plugin.getChild(pluginVersTag).setText(obj.getPluginVersion());
 			Plugin.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
+			
 			if (obj.getPluginClassName() != null) {
 				Plugin.getChild(classTag).setText(obj.getPluginClassName());
 			}
+
+			
 			Plugin.removeChild(authorListTag);
 			Element Authors = new Element(authorListTag);
 			for(AuthorInfo ai: obj.getAuthors()) {
@@ -199,7 +202,7 @@ public class PluginTracker {
 
 		for (Element Current : Plugins) {
 			if ((Obj.getPluginClassName() != null && Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName())) ||  
-					(Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) &&
+					(Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) && 
 					 Current.getChildTextTrim(downloadUrlTag).equals(Obj.getDownloadUrl())) ||
 				 ((Current.getChildTextTrim(urlTag).length() > 0 && Obj.getUrl() != null) &&
 					Current.getChildTextTrim(urlTag).equals(Obj.getUrl())) ) {
@@ -261,6 +264,7 @@ public class PluginTracker {
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
 			Info.setDownloadUrl(CurrentPlugin.getChildTextTrim(downloadUrlTag));
 			Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
+			Info.setReleaseDate(CurrentPlugin.getChildTextTrim(PluginXml.RELEASE_DATE.getTag()));
 			
 			// set file type
 			String FileType = CurrentPlugin.getChildTextTrim(fileTypeTag);
@@ -311,6 +315,7 @@ public class PluginTracker {
 		Plugin.addContent(new Element(categoryTag).setText(obj.getCategory()));
 		Plugin.addContent(new Element(fileTypeTag).setText(obj.getFileType().toString()));
 		Plugin.addContent(new Element(installLocTag).setText(obj.getInstallLocation()));
+		Plugin.addContent(new Element(PluginXml.RELEASE_DATE.getTag()).setText(obj.getReleaseDate()));
 		
 		// license
 		Element License = new Element(licenseTag);
@@ -341,43 +346,43 @@ public class PluginTracker {
 
 	// XML Tags to prevent misspelling issues, PluginFileReader uses most of the same
 	// tags, the xml needs to stay consistent
-	private String nameTag = PluginFileReader.nameTag;
+	private String cytoVersTag = "cytoscapeVersion";
 
-	private String descTag = PluginFileReader.descTag;
+	private String nameTag = PluginXml.NAME.getTag();
+
+	private String descTag = PluginXml.DESCRIPTION.getTag();
 	
-	private String classTag = PluginFileReader.classTag;
+	private String classTag = PluginXml.CLASS_NAME.getTag();
 	
-	private String pluginVersTag = PluginFileReader.pluginVersTag;
+	private String pluginVersTag = PluginXml.PLUGIN_VERSION.getTag();
 	
-	private String cytoVersTag = PluginFileReader.cytoVersTag;
+	private String urlTag = PluginXml.URL.getTag();
 	
-	private String urlTag = PluginFileReader.urlTag;
+	private String projUrlTag = PluginXml.PROJECT_URL.getTag();
 	
-	private String projUrlTag = PluginFileReader.projUrlTag;
+	private String downloadUrlTag = PluginXml.DOWNLOAD_URL.getTag();
 	
-	private String downloadUrlTag = PluginFileReader.downloadUrlTag;
+	private String categoryTag = PluginXml.CATEGORY.getTag();
 	
-	private String categoryTag = PluginFileReader.categoryTag;
+	private String fileListTag = PluginXml.FILE_LIST.getTag();
 	
-	private String fileListTag = PluginFileReader.fileListTag;
+	private String fileTag = PluginXml.FILE.getTag();
 	
-	private String fileTag = PluginFileReader.fileTag;
+	private String pluginListTag = PluginXml.PLUGIN_LIST.getTag();
 	
-	private String pluginListTag = PluginFileReader.pluginListTag;
+	private String pluginTag = PluginXml.PLUGIN.getTag();
 	
-	private String pluginTag = PluginFileReader.pluginTag;
+	private String authorListTag = PluginXml.AUTHOR_LIST.getTag();
 	
-	private String authorListTag = PluginFileReader.authorListTag;
+	private String authorTag = PluginXml.AUTHOR.getTag();
 	
-	private String authorTag = PluginFileReader.authorTag;
+	private String instTag = PluginXml.INSTITUTION.getTag();
 	
-	private String instTag = PluginFileReader.instTag;
+	private String uniqueIdTag = PluginXml.UNIQUE_ID.getTag();
 	
-	private String uniqueIdTag = PluginFileReader.uniqueID;
+	private String fileTypeTag = PluginXml.FILE_TYPE.getTag();
 	
-	private String fileTypeTag = PluginFileReader.fileType;
+	private String licenseTag = PluginXml.LICENSE.getTag();
 	
-	private String licenseTag = PluginFileReader.licenseTag;
-	
-	private String installLocTag = PluginFileReader.installLocTag;
+	private String installLocTag = PluginXml.INSTALL_LOCATION.getTag();
 }
