@@ -878,10 +878,14 @@ structural alignment capabilities by using the "Align" command.
 					<p>
 						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
+					<p><b>Note:  The BioPAX plugin is automatically bundled with the default installation 
+					of Cytoscape (version 2.4 and beyond).  To import BioPAX files:  select File &raquo; Import &raquo; Network.</b>
+					</p>
 				</td>
 				<td width="20%" valign="top">
-					Verified to work in 2.3.
+					Verified to work in 2.3, 2.4.
 				</td>
+				<!--
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/biopax">Release Notes</a>]
 					<br>
@@ -889,6 +893,7 @@ structural alignment capabilities by using the "Align" command.
 					<br>
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/biopax/zip_release/biopax_0_3.zip">Download .zip</a>]
 				</td>
+				-->
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -913,10 +918,15 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<p>
 						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
+					<p><b>Note:  cPath plugin is automatically bundled with the default installation 
+					of Cytoscape (version 2.4 and beyond).  To import a network from cPath:  select File &raquo; New 
+					&raquo; Network &raquo; Construct network using cPath.</b>
+					</p>					
 				</td>
 				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2, 2.3.
+				Verified to work in 2.4.
 				</td>
+				<!--
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/README.txt">Release Notes</a>]
 					<br>
@@ -924,6 +934,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<br>
 					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta3/cpath-beta3.zip">Download .zip</a>]
 				</td>
+				-->
 			</tr>
 			<tr>
 				<td colspan="4">
@@ -1082,7 +1093,7 @@ puzzle together." Nucleic Acids Res. 35(Database issue):D566-71. Epub
 
 			<tr>
 				<td width="20%" valign="top">
-					<b>PSI-MI, Level 1,2 Import Plugin</b><font size="-1">
+					<b>PSI-MI, Level 1,2 Import/Export Plugin</b><font size="-1">
 						<br>
 						Version: 1.0
 						<br>
@@ -1090,18 +1101,22 @@ puzzle together." Nucleic Acids Res. 35(Database issue):D566-71. Epub
 				</td>
 				<td width="40%" valign="top">
 					<p>
-					This plugin enables Cytoscape to import to the Proteomics Standards Initiative Molecular 
+					This plugin enables Cytoscape to import / export data in the Proteomics Standards Initiative Molecular 
 					Interaction (PSI-MI) 1.0 and 2.5 XML Format. PSI-MI is a XML format used to represent 
-					and exchange protein-protein interaction data. This plugin is extended from the 
-					existing PSI-MI import/export plugin released by Sander group. This also supports 
-					import of compressed formats like zip and gzip files containing PSI-MI 1.0 and 2.5 document. 
-					The export functionality will be added to the plugin soon.
+					and exchange protein-protein interaction data. 
 					<p>
 						Released by: Proteomics Services Team, European Bioinformatics Institute
 						<br>Hinxton, Cambridgeshire, UK
 						<br><a href="http://www.ebi.ac.uk/proteomics">http://www.ebi.ac.uk/proteomics</a>
 					</p>
+					<p>
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
+					</p>
+					<p><b>Note:  The PSI-MI plugin is automatically bundled with the default installation 
+					of Cytoscape (version 2.4 and beyond).  To import PSI-MI files:  select File &raquo; Import &raquo; Network.</b>
+					</p>
 				</td>
+				<!--
 				<td width="20%" valign="top">
 				Verified to work in 2.0, 2.1, 2.2, 2.3.
 				</td>
@@ -1112,47 +1127,7 @@ puzzle together." Nucleic Acids Res. 35(Database issue):D566-71. Epub
 					<br>
 					[<a href="http://www.ebi.ac.uk/~nvinod/psi_mi_release/Cytoscape_psi_mi_plugin2_5_src.zip">Download Source .zip</a>]
 				</td>
-			</tr>
-			<tr>
-				<td colspan="4">
-					<hr>
-				</td>
-			</tr>
-
-			<tr>
-				<td width="20%" valign="top">
-					<b>PSI-MI, Level 1 Import/Export Plugin</b><font size="-1">
-						<br>
-						Version: 3.01
-						<br>
-						Release Date: June 22, 2006</font>
-				</td>
-				<td width="40%" valign="top">
-					<p>
-					This plugin enables Cytoscape to import/export to the
-					<A HREF="http://psidev.sourceforge.net/">Proteomics
-					Standards Initiative Molecular Interaction (PSI-MI)</A> XML Format.
-					PSI-MI is a XML format used to represent and exchange protein-protein
-					interaction data.  This plugin supports PSI-MI Level 1 only.
-
-					<P>For an earlier version of this Plugin, which
-					works in Cytoscape 1.1, refer to the Data Services Plugin
-					on the <A HREF="plugins1.php">Cytoscape 1.1 Plugins</A> page.
-					<p>
-						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
-					</p>
-				</td>
-				<td width="20%" valign="top">
-				Verified to work in 2.0, 2.1, 2.2, 2.3.
-				</td>
-				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/README.txt">Release Notes</a>]
-					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-3.tar.gz">Download .tar.gz</a>]
-<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version3/psi-3.zip">Download .zip</a>]
-
-				</td>
+				-->
 			</tr>
 			<tr>
 				<td colspan="4">
