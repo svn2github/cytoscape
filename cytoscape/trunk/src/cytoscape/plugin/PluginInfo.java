@@ -138,17 +138,12 @@ public class PluginInfo {
 		authors = new ArrayList<AuthorInfo>();
 		setName("Unknown");
 		setDescription("No description");
-		setReleaseDate("");
-		try {
-			setPluginVersion(0.1);
-		} catch (NumberFormatException ie) {
-			ie.printStackTrace();
-		}
-
+		setPluginVersion(0.1);
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
-		setProjectUrl(CytoscapeInit.getProperties().getProperty(
-				"defaultPluginUrl"));
+		setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
+		setReleaseDate("");
+		setPluginClassName("");
 	}
 
 	/* SET */
@@ -588,10 +583,11 @@ public class PluginInfo {
 		Html += "</style><body>";
 
 		Html += "<b>" + getName() + "</b><p>";
-		Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>"; 
 		Html += "<b>Version:</b>&nbsp;" + getPluginVersion() + "<p>";
 		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
 		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
+
+		Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
 		Html += "<b>Released By:</b><br><ul>";
 		for (AuthorInfo ai : getAuthors()) {
 			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution()
