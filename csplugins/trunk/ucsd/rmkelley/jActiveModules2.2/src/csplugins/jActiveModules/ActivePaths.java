@@ -203,7 +203,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		tableDialog = new ConditionsVsPathwaysTable(mainFrame, cyNetwork,
 				attrNames, activePaths, this, parentUI);
 
-		cytoPanel.add("Results " + (resultsCount++), tableDialog);
+		cytoPanel.add("jActiveModules Results " + (resultsCount++), tableDialog);
 		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(tableDialog));
 		cytoPanel.setState(CytoPanelState.DOCK);
 		tableDialog.setVisible(true);
