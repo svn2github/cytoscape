@@ -62,8 +62,7 @@ import cytoscape.groups.*;
  * @see GroupToolDialog
  */
 public class GroupTableModel 
-             extends AbstractTableModel 
-             implements ListSelectionListener {
+             extends AbstractTableModel {
 
 	private static final String[] columnNames = {"Group Name", "Nodes", "Internal Edges", "External Edges", "Viewer"};
 
@@ -169,15 +168,6 @@ public class GroupTableModel
 	public void updateTable() {
 		this.groupList = CyGroupManager.getGroupList();
 		fireTableDataChanged(); 
-	}
-
-	/**
-	 * This method is called whenever a value in the table is changed.
-	 *
-	 * @param e a ListSelectionEvent
-	 */
-	public void valueChanged (ListSelectionEvent e) {
-		System.out.println("valueChanged: "+e);
 	}
 }
 

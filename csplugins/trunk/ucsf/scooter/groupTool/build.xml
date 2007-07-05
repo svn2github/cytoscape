@@ -36,7 +36,11 @@
 
    <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
    <mkdir dir = "${jar}"/>
+   <copy todir="build/groupTool" file="resources/plugin.props"/>
    <jar jarfile="${jar}/groupTool.jar">
+      <manifest>
+          <attribute name="Cytoscape-Plugin" value="groupTool.GroupTool" />
+      </manifest>
       <fileset dir="${build}"/>
    </jar>
    </target>
