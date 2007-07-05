@@ -309,18 +309,14 @@ public class PluginManager {
 			if (InfoObj == null) {
 					InfoObj = new PluginInfo();
 					InfoObj.setName(Plugin.getClass().getName());
-					InfoObj.setPluginClassName(Plugin.getClass().getName());
-					InfoObj.setInstallLocation(Jar.getName());
-	
-					if (Jar.getName() != null)
-						InfoObj.addFileName(Jar.getName());
-				} else {
-					InfoObj.setPluginClassName(Plugin.getClass().getName());
-					if (Jar.getName() != null) {
-						InfoObj.addFileName(Jar.getName());
-					}
 				} 		
-			
+
+			InfoObj.setPluginClassName(Plugin.getClass().getName());
+				if (!usingWebstart) {
+					InfoObj.setInstallLocation(Jar.getName());
+					InfoObj.addFileName(Jar.getName());
+				}
+
 				initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
 			 /* I think we can safely assume it's a jar file if it's
 				* registering since only CytoscapePlugin registers and 
