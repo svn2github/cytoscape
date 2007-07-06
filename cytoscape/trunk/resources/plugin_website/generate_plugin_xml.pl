@@ -26,8 +26,6 @@ GetOptions ("loc=s" => \$XmlFileLoc,
 						"passwd=s" => \$PassWord, 
 						"help" => \$Help);
 
-#print Dumper BAD_HEX;
-#exit;
 
 usage("Help:") if ($Help);
 usage("ERROR: Missing required parameter:") if (!$BaseUrl || !$XmlFileLoc || !$UserName || !$PassWord);
@@ -176,18 +174,18 @@ sub addFileInfo
 		return 0;
 		}
 		
-	if (!$FileType)
-		{
+	my $PluginFileType = $Doc->createElement("filetype");
+	if (isJar($FileType))
+		{ $FileType = "jar"; }
+	elsif (isZip($FileType))
+		{ $FileType = "zip"; }
+	else
+		{ 		
 		$FileName =~ /.*\.(jar|zip)/i;
 		$FileType = $1;
 		}
-	print "$PluginFileId: $FileType : $FileName\n";
-		
-	my $PluginFileType = $Doc->createElement("filetype");
-	if ($FileType =~ /^application\/x-jar$/)
-		{ $FileType = "jar"; }
-	elsif ($FileType =~ /^application\/x-zip-compressed$/)
-		{ $FileType = "zip"; }
+	# print "$PluginFileId: $FileType : $FileName\n";
+
 		
 	$PluginFileType->appendChild($Doc->createTextNode($FileType));
 	$PluginElement->appendChild($PluginFileType);
@@ -252,6 +250,20 @@ sub addProjectInfo
 	$Root->appendChild($ProjUrl);
 	}
 
+
+sub isZip
+	{
+	# application/x-zip-compressed
+	my $Type = shift || warn "No string passed to isZip method";
+	$Type =~ /^application\/x-zip-compressed$/ ? return 1: return 0;
+	}
+
+sub isJar
+	{
+	# application/x-jar  application/x-java-archive
+	my $Type = shift || warn "No string passed to isJar method";
+	$Type =~ /^application\/x-[jar|java\-archive]/ ? return 1: return 0;
+	}
 
 # these are illegal for xml
 sub stripBadHex
