@@ -162,7 +162,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 		}
 
 		if (object == null) {
-			System.out.println("Instantiation has failed for: " + pluginClass);
+			System.err.println("Instantiation has failed for: " + pluginClass);
 		} else {
 			System.out.println("Successfully loaded: " + pluginClass);
 		}

@@ -873,15 +873,17 @@ public class PluginManager {
 			&& !loadedPlugins.contains(plugin.getName())) {
 		try {
 			Object obj = CytoscapePlugin.loadPlugin(plugin);
-			loadedPlugins.add(plugin.getName());
-			if (register) {
-				register((CytoscapePlugin) obj, jar);
+			if (obj != null) {
+				loadedPlugins.add(plugin.getName());
+				if (register) {
+					register((CytoscapePlugin) obj, jar);
+				}
 			}
 		} catch (InstantiationException inse) {
 			inse.printStackTrace();
 		} catch (IllegalAccessException ille) {
 			ille.printStackTrace();
-		}
+		} 
 
 	} else if (loadedPlugins.contains(plugin.getName())) {
 		// TODO warn user class of this name has already been loaded and
@@ -954,7 +956,12 @@ public class PluginManager {
 		case ZIP:
 			List<ZipEntry> Entries = ZipUtil
 					.getAllFiles(FileName, "\\w+\\.jar");
-
+			if (Entries.size() <= 0) {
+				String[] FilePath = FileName.split(File.separator);
+				FileName = FilePath[FilePath.length-1];													
+				throw new IOException(FileName + " does not contain any jar files or is not a zip file.");
+			}
+			
 			for (ZipEntry Entry : Entries) {
 				String EntryName = Entry.getName();
 

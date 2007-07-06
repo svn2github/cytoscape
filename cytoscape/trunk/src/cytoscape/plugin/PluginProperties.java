@@ -127,7 +127,6 @@ public class PluginProperties extends Properties {
 		}
 		
 		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
-			System.err.println("Release Date: " + getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}
 		return pi;

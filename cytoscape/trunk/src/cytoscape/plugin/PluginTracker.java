@@ -204,17 +204,12 @@ public class PluginTracker {
 	 * @param Tag
 	 * @return
 	 */
-	private Element getMatchingPlugin(PluginInfo Obj, String Tag) {
+	protected Element getMatchingPlugin(PluginInfo Obj, String Tag) {
 		List<Element> Plugins = trackerDoc.getRootElement().getChild(Tag).getChildren(pluginTag);
 
 		for (Element Current : Plugins) {
-			if ((Obj.getPluginClassName() != null && Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName())) ||  
-					(Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) && 
-					 Current.getChildTextTrim(downloadUrlTag).equals(Obj.getDownloadUrl())) ||
-				 ((Current.getChildTextTrim(urlTag).length() > 0 && Obj.getUrl() != null) &&
-					Current.getChildTextTrim(urlTag).equals(Obj.getUrl())) ) {
-				  return Current;
-			}
+			if ( Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName()) ) 
+				return Current; // the class name MUST ALWAYS be unique
 		}
 		return null;
 	}
