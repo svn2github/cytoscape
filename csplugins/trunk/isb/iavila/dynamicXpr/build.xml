@@ -52,6 +52,13 @@
 
    <target name="jar" depends="compile" description="makes a jar that only contains the dynamic expression classes">
    <mkdir dir = "${jar}"/>
+   <copy todir="build/dynamicXpr" file="resources/plugin.props"/>
+   <jar jarfile="${jar}/dynamicXpr.jar">
+      <manifest>
+          <attribute name="Cytoscape-Plugin" value="dynamicXpr.DynamicXprPlugIn" />
+      </manifest>
+      <fileset dir="${build}"/>
+   </jar>
    <jar jarfile="${jar}/just-dynxpr.jar">
       <fileset dir="${build}"/>
    </jar>
