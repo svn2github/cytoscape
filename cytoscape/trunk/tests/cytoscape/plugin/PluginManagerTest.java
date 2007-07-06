@@ -231,6 +231,30 @@ public class PluginManagerTest extends TestCase {
 		}
 	}
 	
+	
+	public void testInstallIncorrectFileType() throws ManagerException, org.jdom.JDOMException {
+		PluginInfo TestObj = null;
+		try {
+			TestObj = getSpecificObj(mgr.inquire(testUrl),
+				"goodJarPlugin123", "1.0");
+		} catch (java.io.IOException ioe) {
+			ioe.printStackTrace();
+			fail();
+		}
+		
+		TestObj.setUrl(getFileUrl() + TestObj.getUrl());
+		// the real plugin is actually a jar file, this should fail
+		TestObj.setFiletype(PluginInfo.FileType.ZIP);
+		
+		try {
+			TestObj = mgr.download(TestObj, null);
+			fail(); // if it manages to download it means the test failed
+		} catch (java.io.IOException ioe) {
+			// nothing, this is exactly what should happen
+		} 
+
+	}
+	
 	/**
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.

@@ -161,7 +161,31 @@ public class PluginTrackerTest extends TestCase {
 		assertEquals(Doc.getRootElement().getChild("DeletePlugins").getChildren().size(), 0);
 	}
 
-
+	// regression test
+	public void testAddRemovePluginWithSameID() throws Exception {
+		PluginInfo objA = getInfoObj();
+		PluginInfo objB = new PluginInfo(objA.getID());
+		objB.setName("Different Test");
+		objB.setDownloadUrl("http://test.com/x.xml");
+		objB.setFiletype(PluginInfo.FileType.JAR);
+		objB.setPluginClassName("some.other.class.DifferentTest");
+		
+		
+		tracker.addPlugin(objA, PluginStatus.CURRENT);
+		tracker.addPlugin(objB, PluginStatus.CURRENT);
+		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 2);
+		List<PluginInfo> CurrentList = tracker.getListByStatus(PluginStatus.CURRENT);
+		assertFalse(CurrentList.get(0).equals(CurrentList.get(1)));
+		
+		tracker.removePlugin(objA, PluginStatus.CURRENT);
+		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		
+		// check that the correct object was actually removed
+		PluginInfo Current = tracker.getListByStatus(PluginStatus.CURRENT).get(0);
+		assertEquals(Current.getName(), objB.getName());
+	}
+	
+	
 	private Document getDoc() throws Exception {
 		File TestFile = new File( tmpDir, fileName);
 		assertTrue(TestFile.exists());
@@ -177,7 +201,7 @@ public class PluginTrackerTest extends TestCase {
 		infoObj.setName("myTest");
 		infoObj.setCategory("Test");
 		infoObj.setCytoscapeVersion("2.5");
-		infoObj.setPluginClassName("some.class");
+		infoObj.setPluginClassName("some.class.MyTest");
 		infoObj.setDownloadUrl("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);
 		return infoObj;
