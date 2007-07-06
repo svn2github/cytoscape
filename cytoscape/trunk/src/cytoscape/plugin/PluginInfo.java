@@ -142,7 +142,6 @@ public class PluginInfo {
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
 		setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
-		setReleaseDate("");
 		setPluginClassName("");
 	}
 
@@ -587,7 +586,10 @@ public class PluginInfo {
 		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
 		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
 
-		Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
+		if (getReleaseDate() != null && getReleaseDate().length() > 0) {
+			Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
+		}
+		
 		Html += "<b>Released By:</b><br><ul>";
 		for (AuthorInfo ai : getAuthors()) {
 			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution()

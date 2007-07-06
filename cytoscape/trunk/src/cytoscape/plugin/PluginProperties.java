@@ -6,8 +6,6 @@ package cytoscape.plugin;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.jar.JarFile;
-import java.util.jar.JarEntry;
 
 /**
  * This class reads the plugin.props file that is expected to be in 
@@ -129,6 +127,7 @@ public class PluginProperties extends Properties {
 		}
 		
 		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
+			System.err.println("Release Date: " + getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}
 		return pi;

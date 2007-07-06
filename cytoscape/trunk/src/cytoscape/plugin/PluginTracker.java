@@ -153,6 +153,13 @@ public class PluginTracker {
 				Plugin.getChild(classTag).setText(obj.getPluginClassName());
 			}
 
+			if (Plugin.getChild(PluginXml.RELEASE_DATE.getTag()) != null) {
+				Plugin.getChild(PluginXml.RELEASE_DATE.getTag()).setText(obj.getReleaseDate());
+			} else {
+				Element ReleaseDate = new Element(PluginXml.RELEASE_DATE.getTag());
+				Plugin.addContent( ReleaseDate.setText(obj.getReleaseDate()) );
+			}
+			
 			
 			Plugin.removeChild(authorListTag);
 			Element Authors = new Element(authorListTag);
