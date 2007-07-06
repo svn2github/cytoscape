@@ -69,6 +69,8 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 	private static Color listBackground;
 	private static final Font NORMAL_FONT = new Font("SansSerif", Font.PLAIN, 12);
 	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
+	
+	public static final String LIST_UPDATED = "LIST_UPDATED";
 
 	static {
 		UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
@@ -88,7 +90,7 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 
 	// ListSelectionListener implementation
 	/**
-	 *  DOCUMENT ME!
+	 *  Update the list items.
 	 *
 	 * @param lse DOCUMENT ME!
 	 */
@@ -129,6 +131,7 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 			}
 
 			addListSelectionListener(this);
+			firePropertyChange(LIST_UPDATED, null, null);
 		}
 	}
 
