@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,16 +32,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package browser;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
-import cytoscape.actions.MapOntologyAction;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
@@ -50,9 +46,6 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 
 import cytoscape.util.swing.CheckBoxJList;
-import cytoscape.view.cytopanels.CytoPanel;
-
-import giny.model.GraphObject;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
@@ -63,12 +56,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import java.util.ArrayList;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -80,10 +74,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 
 
 /**
@@ -94,10 +92,18 @@ import javax.swing.event.ListSelectionListener;
  * @author kono
  *
  */
-public class AttributeBrowserPanel extends JPanel implements ListSelectionListener,
-                                                             ListDataListener, ActionListener {
+public class AttributeBrowserPanel extends JPanel implements PropertyChangeListener,
+                                                             PopupMenuListener {
 	private CyAttributes attributes;
 	private DataTableModel tableModel;
+	private int objectType;
+	private AttributeModel model;
+	private String attributeType = null;
+	private Object[] selectedAttrNames = null;
+
+	/*
+	 * GUI components
+	 */
 	private JPopupMenu attributeSelectionPopupMenu = null;
 	private JScrollPane jScrollPane = null;
 	private JPopupMenu jPopupMenu1 = null;
@@ -107,16 +113,12 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 	private JMenuItem jMenuItem3 = null;
 	private JToolBar jToolBar = null;
 	private JButton selectButton = null;
-	private cytoscape.util.swing.CheckBoxJList attributeList = null;
+	private CheckBoxJList attributeList = null;
 	private JList attrDeletionList = null;
 	private JButton createNewAttributeButton = null;
 	private JButton deleteAttributeButton = null;
 	private JButton matrixButton = null;
 	private JButton importButton = null;
-	private int objectType;
-	private AttributeModel model;
-	private String attributeType = null;
-	private List<String> selectedAttributeNames;
 
 	/**
 	 * Constructor
@@ -151,8 +153,6 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 	 * @return void
 	 */
 	private void initialize(final AttributeModel a_model) {
-		selectedAttributeNames = new ArrayList<String>();
-
 		this.setLayout(new BorderLayout());
 
 		this.setPreferredSize(new java.awt.Dimension(210, 29));
@@ -190,55 +190,6 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void valueChanged(ListSelectionEvent e) {
-		try {
-			Object[] atts = attributeList.getSelectedValues();
-			tableModel.setTableDataAttributes(Arrays.asList(atts));
-		} catch (Exception ex) {
-			attributeList.clearSelection();
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void contentsChanged(ListDataEvent e) {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void intervalAdded(ListDataEvent e) {
-		// handleEvent(e);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void intervalRemoved(ListDataEvent e) {
-		// handleEvent(e);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param arg0 DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	/**
 	 * This method initializes jPopupMenu
 	 *
 	 * @return javax.swing.JPopupMenu
@@ -247,6 +198,7 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 		if (attributeSelectionPopupMenu == null) {
 			attributeSelectionPopupMenu = new JPopupMenu();
 			attributeSelectionPopupMenu.add(getJScrollPane(model));
+			attributeSelectionPopupMenu.addPopupMenuListener(this);
 		}
 
 		return attributeSelectionPopupMenu;
@@ -538,6 +490,7 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 			selectButton.setIcon(new javax.swing.ImageIcon(getClass()
 			                                                   .getResource("images/stock_select-row.png")));
 			selectButton.setToolTipText("Select Attributes");
+			//selectButton.setComponentPopupMenu(attributeSelectionPopupMenu);
 			selectButton.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
 						attributeSelectionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -656,11 +609,6 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 		matrixAction.actionPerformed(null);
 	}
 
-	protected void mapOntology() {
-		MapOntologyAction moa = new MapOntologyAction();
-		moa.actionPerformed(null);
-	}
-
 	/**
 	 * This method initializes jButton
 	 *
@@ -689,7 +637,7 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 						dDialog.setLocationRelativeTo(jToolBar);
 						dDialog.setVisible(true);
 						model.sortAtttributes();
-						valueChanged(null);
+						propertyChange(null);
 					}
 				});
 		}
@@ -707,7 +655,14 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 			attributeList = new CheckBoxJList();
 			attributeList.setModel(model);
 			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			attributeList.addListSelectionListener(this);
+			attributeList.addPropertyChangeListener(this);
+			attributeList.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						if (SwingUtilities.isRightMouseButton(e)) {
+							attributeSelectionPopupMenu.setVisible(false);
+						}
+					}
+				});
 		}
 
 		return attributeList;
@@ -832,5 +787,94 @@ public class AttributeBrowserPanel extends JPanel implements ListSelectionListen
 		}
 
 		attributeList.setSelectedIndices(selectedIndecies);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param evt DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ((evt == null) || evt.getPropertyName().equals(CheckBoxJList.LIST_UPDATED)) {
+			selectedAttrNames = attributeList.getSelectedValues();
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void columnAdded(TableColumnModelEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void columnMarginChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void columnMoved(TableColumnModelEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("C moved!!!!!!!!!!!!! " + e.getSource());
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void columnRemoved(TableColumnModelEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void columnSelectionChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void popupMenuCanceled(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		// Update actual table
+		try {
+			tableModel.setTableDataAttributes(Arrays.asList(selectedAttrNames));
+		} catch (Exception ex) {
+			attributeList.clearSelection();
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		// Do nothing
 	}
 }

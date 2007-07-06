@@ -78,7 +78,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	// Property for this browser. One for each panel.
 	private Properties props;
 	private CyAttributes data;
-	private List graphObjects;
+	private List<GraphObject> graphObjects;
 	private List attributeNames;
 
 	/**
@@ -239,7 +239,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 * @param attributeNames DOCUMENT ME!
 	 * @param objectType DOCUMENT ME!
 	 */
-	public void setTableData(CyAttributes data, List graph_objects, List attributeNames,
+	public void setTableData(CyAttributes data, List<GraphObject> graph_objects, List attributeNames,
 	                         int objectType) {
 		this.data = data;
 		this.graphObjects = graph_objects;
@@ -427,14 +427,11 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	protected void setTable() {
 		internalSelection = new HashMap();
 
-		Iterator it = graphObjects.iterator();
+		for(GraphObject obj: graphObjects) {
 
-		while (it.hasNext()) {
-			final GraphObject obj = (GraphObject) it.next();
 			internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
 
 			if (objectType == DataTable.NODES) {
-				// Node targetNode = Cytoscape.getCyNode(id);
 				final Node targetNode = obj.getRootGraph().getNode(obj.getRootGraphIndex());
 
 				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
