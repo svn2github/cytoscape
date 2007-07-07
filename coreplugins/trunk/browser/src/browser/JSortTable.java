@@ -1043,14 +1043,16 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 		    || e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		    || e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		    || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+			
 			setSelectedColor(SELECTED_NODE);
 			setSelectedColor(REV_SELECTED_NODE);
 			setSelectedColor(SELECTED_EDGE);
 			setSelectedColor(REV_SELECTED_EDGE);
 
-			if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-			}
+//			if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+//				System.out.println("############ calling rd @@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+//			}
 		}
 	}
 
