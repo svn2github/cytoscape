@@ -271,7 +271,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
+					
+					Cytoscape.getVisualMappingManager().setNetworkView(Cytoscape.getCurrentNetworkView());
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 					dispose();
 				}
 			});

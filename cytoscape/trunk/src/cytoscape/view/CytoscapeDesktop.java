@@ -593,10 +593,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 			if (new_style != null) {
 				vizMapper.setVisualStyle(new_style);
-				//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(new_style);
 			}
 			
-			vizMapper.getNetworkView().redrawGraph(false, true);
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+//			vizMapper.getNetworkView().redrawGraph(false, true);
 		}
 	}
 

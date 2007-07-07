@@ -165,14 +165,14 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param vizmap DOCUMENT ME!
 	 */
 	public void redrawGraph(boolean layout, boolean vizmap) {
-		// I think we forgot to add an important method here:
-		//
-		// public int returnSumOfOnePlusOne()
-		// {
-		//   return 2;
-		// }
-
-		// Just copying this line from the old implementation.
+		// For testing
+//		try {
+//			throw new Exception();
+//		} catch (Exception e) {
+//			System.out.println("Redraw called@@@@@@@@@ Network = " + this.title);
+//			e.printStackTrace();
+//		}
+		
 		Cytoscape.getVisualMappingManager().applyAppearances();
 		updateView();
 	}

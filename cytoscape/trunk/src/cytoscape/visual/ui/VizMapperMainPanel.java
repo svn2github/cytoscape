@@ -728,11 +728,20 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final String vsName = (String) vsNameComboBox.getSelectedItem();
 
 		if (vsName != null) {
-			switchVS(vsName);
+			if(Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView())) {
+				switchVS(vsName, false);
+			} else {
+				switchVS(vsName, true);
+			}
 		}
 	}
 
+	
 	private void switchVS(String vsName) {
+		switchVS(vsName, true);
+	}
+	
+	private void switchVS(String vsName, boolean redraw) {
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName) {
 			return;
@@ -782,8 +791,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 //		vmm.getNetworkView().setVisualStyle(vsName);
 		//vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		
+		if(redraw) {
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		}
 		/*
 		 * Draw default view
 		 */
@@ -1830,14 +1841,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		           && (e.getSource().getClass() == NetworkPanel.class)) {
-			//			System.out.println("Focus Sig Name: " + e.getPropertyName() + ", New = "
-			//			                   + e.getNewValue() + ", OLD = " + e.getOldValue());
+			
 			final VisualStyle vs = vmm.getNetworkView().getVisualStyle();
 
 			if (vs != null) {
-				switchVS(vs.getName());
-				vsNameComboBox.setSelectedItem(vs.getName());
-				setDefaultPanel(this.defaultImageManager.get(vs.getName()));
+				//System.out.println("-----combo = " + vsNameComboBox.getSelectedItem() + ", vsname = " + vs.getName());
+				
+				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+				if(vs.getName().equals(vsNameComboBox.getSelectedItem())) {
+					//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					
+				} else {
+					switchVS(vs.getName(), false);
+					
+					vsNameComboBox.setSelectedItem(vs.getName());
+					setDefaultPanel(this.defaultImageManager.get(vs.getName()));
+
+				}
 			}
 
 			return;
