@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/GSoC/cytoscape/cytoscape.jar"/>
+	<classpathentry kind="lib" path="/cytoscape/lib/giny.jar"/>
+	<classpathentry kind="lib" path="D:/GSoC/cytoscape/lib/lucene-core-2.1.1-dev.jar"/>
+	<classpathentry kind="lib" path="D:/GSoC/cytoscape/lib/lucene-common-2.1.1-dev.jar"/>
+	<classpathentry kind="lib" path="D:/GSoC/cytoscape/plugins/core/quick_find.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
