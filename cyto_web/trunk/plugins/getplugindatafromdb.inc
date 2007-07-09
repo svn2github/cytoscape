@@ -33,12 +33,12 @@
 	$db_plugin_id = $first_row['plugin_id'];
 	$db_categoryID = $first_row['catID'];
 	$db_name = $first_row['pluginName'];
-	$db_description = $first_row['pluginDescription'];
+	$db_description = stripslashes($first_row['pluginDescription']);
 	$db_version = $first_row['pluginVersion'];
 	$db_releaseDate = $first_row['releaseDate'];
 	list ($db_year, $db_month, $db_day) = split('[-]', $db_releaseDate);
 	$db_projectURL = $first_row['projectURL'];
-	$db_releaseNote = $first_row['releaseNote'];
+	$db_releaseNote = stripslashes($first_row['releaseNote']);
 	$db_releaseNoteURL = $first_row['releaseNoteURL'];
 
 	//fileUpload
@@ -47,11 +47,11 @@
 	$db_jarURL = $first_row['jarURL'];
 	$db_sourceURL = $first_row['sourceURL'];
 	$db_cyVersion = $first_row['cyVersion'];
-	$db_reference = $first_row['reference'];
+	$db_reference = stripslashes($first_row['reference']);
 
-	$db_license = $first_row['pluginLicense'];
+	$db_license = stripslashes($first_row['pluginLicense']);
 	$db_license_required = $first_row['licenseRequired'];
-	$db_comment = $first_row['comment'];
+	$db_comment = stripslashes($first_row['comment']);
 	$db_status =  $first_row['status'];
 
 
@@ -76,5 +76,20 @@
 		$db_affiliations[] = $author_row['affiliation'];
 		$db_affiliationURLs[] = $author_row['affiliationURL'];
 	}
-	
+
+	//StripSlashes for the names and affiliations, names may contain "" or ''	
+	// they should be striped somewhere, not here
+	/*
+	$names_count = count($db_names);
+
+	for ($i=0; $i<$names_count; $i++) {
+		$db_names[$i] = stripslashes($db_names[$i]);
+	}
+
+
+	$affiliations_count = count($db_affiliations);
+	for ($i=0; $i<$affiliations_count; $i++) {
+		$db_affiliations[$i] = stripslashes($db_affiliations[$i]);
+	}
+	*/
 ?>
