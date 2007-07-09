@@ -3,9 +3,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Cytoscape 2.x Plugins</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/css/cytoscape.css">
-	<link rel="shortcut icon" href="images/cyto.ico">
-	<SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
+	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
+	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
 <table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
@@ -22,14 +21,36 @@
 <?php include "../nav.php"; ?>
 
 <?php
-$data = base64_decode(($_GET['data']));
-$data = unserialize($data);
+$pluginID = $_GET['pluginid'];
 
+//echo 'pluginID = '.$pluginID;
+
+// Include the DBMS credentials
+include 'db.inc';
+
+// Connect to the MySQL DBMS
+if (!($connection = @ mysql_pconnect($dbServer, $dbUser, $dbPass)))
+    showerror();
+
+// Use the CyPluginDB database
+if (!mysql_select_db($dbName, $connection))
+   showerror();
+
+$query = "SELECT name, license FROM plugin_list where plugin_auto_id = $pluginID";
+
+// Run the query
+if (!($licenseArray= @ mysql_query ($query, $connection)))
+   showerror();
+
+$licenseRow= @mysql_fetch_array($licenseArray);
+$licenseText=stripslashes($licenseRow['license']);
+$pluginName = $licenseRow['name'];
 ?>
+
 <br>
 <div id="indent">
-	<p><strong>Name:</strong> <?php echo $data[0] ?></p>
-	<p><big><b>License:</b></big><br><?php echo $data[1] ?></p>
+	<p><strong>Name:</strong> <?php echo $pluginName ?></p>
+	<p><big><b>License:</b></big><br><?php echo $licenseText ?></p>
   <p>&nbsp;</p>
 </div>
 
