@@ -3,9 +3,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<title>Cytoscape 2.x Plugins</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/css/cytoscape.css">
-	<link rel="shortcut icon" href="images/cyto.ico">
-	<SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
+	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
+	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
 <table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
