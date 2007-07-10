@@ -71,7 +71,7 @@ public class PluginUpdateAction extends CytoscapeAction {
 				Dialog.setVisible(true);
 			} else {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-						"No updates avaialbe for currently installed plugins.",
+						"No updates available for currently installed plugins.",
 						"Plugin Updates", JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
