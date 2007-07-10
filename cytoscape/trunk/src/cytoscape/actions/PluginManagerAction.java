@@ -148,7 +148,7 @@ public class PluginManagerAction extends CytoscapeAction {
 		}
 
 		public void inquireAction(List<PluginInfo> Results) {
-
+			PluginManager Mgr = PluginManager.getPluginManager();
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
 					getIOException().printStackTrace();
@@ -162,8 +162,9 @@ public class PluginManagerAction extends CytoscapeAction {
 					dialog.setMessage(getException().getMessage());
 				}
 			} else {
+				List<PluginInfo> Unique = ManagerUtil.getUnique(Mgr.getPlugins(PluginStatus.CURRENT), Results);
 				Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil
-						.sortByCategory(Results);
+						.sortByCategory(Unique);
 
 				for (String Category : DownloadInfo.keySet()) {
 					// get only the unique ones
