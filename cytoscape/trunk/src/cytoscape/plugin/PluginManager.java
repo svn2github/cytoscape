@@ -295,18 +295,16 @@ public class PluginManager {
 	protected void register(CytoscapePlugin Plugin, JarFile Jar) {
 		System.out.println("Registering " + Plugin.toString());
 
-		PluginInfo InfoObj = null;
+		PluginInfo InfoObj = ManagerUtil.getInfoObject(Plugin.getClass()); // try to get it from the file
+		String Id = InfoObj != null? InfoObj.getID() : null;
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
-			InfoObj = pp.getPluginInfoObject();
-		} catch (ManagerException me) {
-			me.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (NumberFormatException nfe) {
-			nfe.printStackTrace();
+			InfoObj = pp.getPluginInfoObject(Id);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
-			if (InfoObj == null) {
+			if (InfoObj == null) { // still null, create a default one	
 					InfoObj = new PluginInfo();
 					InfoObj.setName(Plugin.getClass().getName());
 				} 		
@@ -318,7 +316,7 @@ public class PluginManager {
 				}
 
 				initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
-			 /* I think we can safely assume it's a jar file if it's
+			   /* I think we can safely assume it's a jar file if it's
 				* registering since only CytoscapePlugin registers and 
 				* at that point all we know is it's a jar 
 				*/
@@ -505,9 +503,15 @@ public class PluginManager {
 							Exceptions.add(0, getIOException());
 							Exceptions.add(1, getJDOMException());
 						}
+						
+						System.err.println("Updateing " + PluginToUpdate.getName());
 
 						for (PluginInfo New : Results) {
-							if (New.getID().equals(PluginToUpdate.getID())
+							System.err.println("Comparing " + New.getName() + ":" + PluginToUpdate.getName());
+							System.err.println("Comparing " + New.getID() + ":" + PluginToUpdate.getID());
+							// ID or classname are unique
+							boolean newer = PluginToUpdate.isNewerPluginVersion(New);
+							if ( (New.getID().equals(PluginToUpdate.getID()) || New.getPluginClassName().equals(PluginToUpdate.getPluginClassName()))
 									&& PluginToUpdate.isNewerPluginVersion(New)) {
 								if (!Seen.contains(New)) {
 									UpdatablePlugins.add(New);
@@ -577,12 +581,10 @@ public class PluginManager {
 					Current.getName()
 							+ " does not have a project url.\nCannot auto-update this plugin.");
 		}
-
-		if (Current.getID().equals(New.getID())
+		// ID or classname
+		if ( (Current.getID().equals(New.getID()) || Current.getPluginClassName().equals(New.getPluginClassName()))
 				&& Current.getDownloadUrl().equals(New.getDownloadUrl())
 				&& Current.isNewerPluginVersion(New)) {
-			// pluginTracker.addPlugin(Current,
-			// PluginStatus.DELETE);
 			delete(Current);
 			download(New, taskMonitor);
 		} else {
@@ -678,7 +680,7 @@ public class PluginManager {
 	 * @throws MalformedURLException
 	 */
 	public void loadPlugin(PluginInfo p) throws MalformedURLException,
-			IOException, ClassNotFoundException {
+			IOException, ClassNotFoundException, PluginException {
 		List<URL> ToLoad = new ArrayList<URL>();
 
 		for (String FileName : p.getFileList()) {
@@ -695,7 +697,7 @@ public class PluginManager {
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	public void loadPlugins(List<String> p) throws MalformedURLException,
-			IOException, ClassNotFoundException {
+			IOException, ClassNotFoundException, PluginException {
 
 		// Parse the plugin strings and determine whether they're urls,
 		// files, directories, class names, or manifest file names.
@@ -765,7 +767,7 @@ public class PluginManager {
 	 * that are CytoscapePlugins
 	 */
 	private void loadURLPlugins(List<URL> pluginUrls, boolean register)
-			throws IOException {
+			throws IOException, PluginException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
@@ -852,7 +854,7 @@ public class PluginManager {
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
 	// used by jars that do
 	private void loadResourcePlugins(List<String> resourcePlugins)
-			throws ClassNotFoundException {
+			throws ClassNotFoundException, PluginException {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
 			System.out.println("");
@@ -868,7 +870,7 @@ public class PluginManager {
 	}
 
 	
-	private void loadPlugin(Class plugin, JarFile jar, boolean register) {
+	private void loadPlugin(Class plugin, JarFile jar, boolean register) throws PluginException {
 	if (CytoscapePlugin.class.isAssignableFrom(plugin)
 			&& !loadedPlugins.contains(plugin.getName())) {
 		try {
@@ -888,8 +890,10 @@ public class PluginManager {
 	} else if (loadedPlugins.contains(plugin.getName())) {
 		// TODO warn user class of this name has already been loaded and
 		// can't be loaded again
-		System.err.println("A plugin with the name '" + plugin.getName()
-				+ "' is already loaded, skipping.");
+		String ErrorMsg = "A plugin with the name '" + plugin.getName()
+			+ "' is already loaded, skipping.";
+		System.err.println(ErrorMsg);
+		throw new PluginException("Cannot load duplicate plugin class for " + plugin.getName());
 	}
 }
 	
