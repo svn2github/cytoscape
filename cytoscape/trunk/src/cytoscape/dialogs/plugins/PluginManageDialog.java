@@ -88,9 +88,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		if (Node.isLeaf()) {
 			// display any object selected
-			String htmlOutput = ((PluginInfo) Node.getObject()).htmlOutput();
-			infoTextPane.setText(htmlOutput);
-			infoTextPane.setCaretPosition(0);
+			infoTextPane.setContentType("text/html");
+			infoTextPane.setText(((PluginInfo) Node.getObject()).htmlOutput());
 
 			if (Node.isNodeAncestor(installedNode)) {
 				deleteButton.setEnabled(true);
@@ -310,15 +309,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		closeButton = new javax.swing.JButton();
 		msgLabel = new javax.swing.JLabel();
 
-		javax.swing.JPanel buttonsPanel = new javax.swing.JPanel();
-		buttonsPanel.add(changeSiteButton);
-		buttonsPanel.add(installButton);
-		buttonsPanel.add(deleteButton);
-		buttonsPanel.add(closeButton);
-
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		jSplitPane1.setDividerLocation(250);
-		infoTextPane.setContentType("text/html");
 		infoScrollPane.setViewportView(infoTextPane);
 
 		jSplitPane1.setRightComponent(infoScrollPane);
@@ -364,31 +356,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		msgLabel.setForeground(new java.awt.Color(204, 0, 51));
 		msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-		getContentPane().setLayout(new java.awt.GridBagLayout());
-		java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
-		c.insets = new java.awt.Insets(5,5,5,5);
-
-		c.gridx = 0;		c.gridy = 0;
-		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;	c.weighty = 0.0;
-		getContentPane().add(availablePluginsLabel, c);
-
-		c.gridx = 0;		c.gridy = 1;
-		c.fill = java.awt.GridBagConstraints.BOTH;
-		c.weightx = 1.0;	c.weighty = 1.0;
-		getContentPane().add(jSplitPane1, c);
-		
-		c.gridx = 0;		c.gridy = 2;
-		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;	c.weighty = 0.0;
-		getContentPane().add(msgLabel, c);
-
-		c.gridx = 0;		c.gridy = 3;
-		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;	c.weighty = 0.0;
-		getContentPane().add(buttonsPanel, c);
-
-		/*
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
 				getContentPane());
 		getContentPane().setLayout(layout);
@@ -481,7 +448,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 														.add(deleteButton).add(
 																closeButton))
 										.addContainerGap()));
-		*/
 		pack();
 	}// </editor-fold>
 
@@ -505,7 +471,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		TaskManager.executeTask(task, jTaskConfig);
 		PluginInfo info = task.getDownloadedPlugin();
 		if (info != null) {
-			loadPlugin(info);
+//			loadPlugin(info);
+			updateCurrent(info);
 			cleanTree(node);
 		}
 	}
@@ -541,6 +508,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			cne.printStackTrace();
 		} catch (java.io.IOException ioe) {
 			ioe.printStackTrace();
+		} catch (cytoscape.plugin.PluginException pe) {
+			
 		}
 	}
 
@@ -575,6 +544,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 				taskMonitor.setStatus(pluginInfo.getName() + " v"
 						+ pluginInfo.getPluginVersion() + " loading...");
+			
 			} catch (java.io.IOException ioe) {
 				taskMonitor
 						.setException(ioe, "Failed to download "
@@ -587,6 +557,19 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
+			
+			try {
+				Mgr.install(pluginInfo);
+				Mgr.loadPlugin(pluginInfo);
+			} catch (ClassNotFoundException cne) {
+				taskMonitor.setException(cne, cne.getMessage());
+			} catch (java.io.IOException ioe) {
+				taskMonitor.setException(ioe, ioe.getMessage());
+			} catch (cytoscape.plugin.PluginException pe) {
+				taskMonitor.setException(pe, pe.getMessage());
+			}
+
+			
 		}
 
 		public PluginInfo getDownloadedPlugin() {
