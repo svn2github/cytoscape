@@ -77,8 +77,15 @@ public class PluginProperties extends Properties {
 			load(is);
 		}
 	}
-
-	public PluginInfo getPluginInfoObject(String id) throws ManagerException {
+	
+	/**
+	 * Takes a PluginInfo object (can be null) and fills it in with information that would not come from
+	 * a properties file like the unique identifier and download url.
+	 * @param info
+	 * @return
+	 * @throws ManagerException
+	 */
+	public PluginInfo fillPluginInfoObject(PluginInfo info) throws ManagerException {
 		if (!expectedPropertiesPresent()) {
 			throw new ManagerException("Required properties are missing from plugins.props file: " + errorMsg);
 		}
@@ -86,8 +93,12 @@ public class PluginProperties extends Properties {
 		PluginInfo pi;
 		if (containsKey(PluginProperty.UNIQUE_ID)) {
 			pi = new PluginInfo(getProperty(PluginProperty.UNIQUE_ID.getPropertyKey()));
-		} else if (id != null) {
-			pi = new PluginInfo(id);
+			if (info != null) {
+				pi.setUrl(info.getUrl());
+				pi.setDownloadUrl(info.getDownloadUrl());
+			}
+		} else if (info != null) {
+			pi = info;
 		} else {
 			pi = new PluginInfo();
 		}
