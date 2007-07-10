@@ -538,7 +538,7 @@ if (!($tried && $validated)) {
       </tr>
       <tr>
         <td><label>
-          <input name="tfNames0" type="text" id="tfNames0" size="70" value ="<?php echo stripslashes($names[0]) ?>" />
+          <input name="tfNames0" type="text" id="tfNames0" size="70" value ="<?php echo htmlentities(stripslashes($names[0])) ?>" />
         </label></td>
         <td><input name="tfEmail0" type="text" id="tfEmail0" size="30" value ="<?php echo $emails[0] ?>" /></td>
         </tr>
@@ -547,7 +547,7 @@ if (!($tried && $validated)) {
         <td><div align="center">Affiliation URL</div></td>
         </tr>
       <tr>
-        <td><input name="tfAffiliation0" type="text" id="tfAffiliation0" size="70" value ="<?php echo stripslashes($affiliations[0]) ?>" /></td>
+        <td><input name="tfAffiliation0" type="text" id="tfAffiliation0" size="70" value ="<?php echo htmlentities(stripslashes($affiliations[0])) ?>" /></td>
         <td><input name="tfAffiliationURL0" type="text" id="tfAffiliationURL0" size="30" value ="<?php echo $affiliationURLs[0] ?>" /></td>
       </tr>
     </table></td>
@@ -562,7 +562,7 @@ if (!($tried && $validated)) {
       </tr>
       <tr>
         <td><label>
-        <input name="tfNames1" type="text" id="tfNames1" size="70" value ="<?php if (isset($names[1])){ echo stripslashes($names[1]);} ?>" />
+        <input name="tfNames1" type="text" id="tfNames1" size="70" value ="<?php if (isset($names[1])){ echo htmlentities(stripslashes($names[1]));} ?>" />
         </label></td>
         <td><input name="tfEmail1" type="text" id="tfEmail02" size="30" value ="<?php if (isset($emails[1])){ echo $emails[1];} ?>" /></td>
       </tr>
@@ -571,8 +571,8 @@ if (!($tried && $validated)) {
         <td><div align="center">Affiliation URL</div></td>
       </tr>
       <tr>
-        <td><input name="tfAffiliation1" type="text" id="tfAffiliation1" size="70" value ="<?php if (isset($affiliations[1])){echo $affiliations[1];} ?>" /></td>
-        <td><input name="tfAffiliationURL1" type="text" id="tfAffiliationURL1" size="30" value ="<?php if (isset($affiliationURLs[1])){ echo stripslashed($affiliationURLs[1]);} ?>" /></td>
+        <td><input name="tfAffiliation1" type="text" id="tfAffiliation1" size="70" value ="<?php if (isset($affiliations[1])){echo htmlentities(stripslashes($affiliations[1]));} ?>" /></td>
+        <td><input name="tfAffiliationURL1" type="text" id="tfAffiliationURL1" size="30" value ="<?php if (isset($affiliationURLs[1])){ echo stripslashes($affiliationURLs[1]);} ?>" /></td>
       </tr>
     </table></td>
   </tr>
