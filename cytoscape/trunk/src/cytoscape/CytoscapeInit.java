@@ -207,6 +207,8 @@ public class CytoscapeInit {
 				ioe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
 				cne.printStackTrace();
+			} catch (cytoscape.plugin.PluginException pe) {
+				pe.printStackTrace();
 			}
 
 			System.out.println("loading session...");
