@@ -22,13 +22,13 @@ CREATE TABLE categories (
 );
 
 INSERT INTO categories VALUES 
-(1,'Core Plugins','Cytoscape core'),
-(2,'Analysis Plugins','Used for analyzing existing networks'),
-(3,'Network and Attribute I/O Plugins','Used for importing networks and attributes in different file formats'),
-(4,'Network Inference Plugins','Used for inferring new networks'),
-(5,'Functional Enrichment Plugins','Used for functional enrichment of networks'),
-(6,'Communication/Scripting Plugins','Used for communicating with or scripting Cytoscape'),
-(7,'Other Plugins','None of the above');
+(1,'Core','Cytoscape core'),
+(2,'Analysis','Used for analyzing existing networks'),
+(3,'Network and Attribute I/O','Used for importing networks and attributes in different file formats'),
+(4,'Network Inference','Used for inferring new networks'),
+(5,'Functional Enrichment','Used for functional enrichment of networks'),
+(6,'Communication/Scripting','Used for communicating with or scripting Cytoscape'),
+(7,'Other','None of the above');
 
 
 CREATE TABLE plugin_author (
@@ -85,5 +85,5 @@ CREATE TABLE usagelog (
   ip_address varchar(20) default NULL,
   sysdat date default NULL,
   PRIMARY KEY  (plugin_version_id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
