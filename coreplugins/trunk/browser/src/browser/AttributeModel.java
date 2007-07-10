@@ -70,6 +70,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		this.attributes = data;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
 		sortAtttributes();
+
 	}
 
 	protected void sortAtttributes() {

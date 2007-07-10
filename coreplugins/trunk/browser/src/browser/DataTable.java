@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package browser;
 
@@ -61,20 +60,25 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumnModel;
 
 /**
- *
+ * 
  * DataTable class constructs all Panels for the browser.<br>
  * One DataTable contains the table of values and the toolbar above the table
  * within a jpanel. This panel is then added to CytoPanel2. Tabbed browsing
  * between attribute tables is handled by CytoPanel2.
- *
+ * 
  * @author kono
- *
+ * 
  * Combine CytoPanel_2 and CytoPanel_3 Peng-Liang wang 9/12/2006 Move advanced
  * panel to AttrMod Dialog Peng-Liang wang 9/28/2006
- *
+ * 
  */
 public class DataTable implements PropertyChangeListener {
 	/**
@@ -139,13 +143,18 @@ public class DataTable implements PropertyChangeListener {
 
 	/**
 	 * Creates a new DataTable object.
-	 *
-	 * @param data  DOCUMENT ME!
-	 * @param tableObjectType  DOCUMENT ME!
+	 * 
+	 * @param data
+	 *            DOCUMENT ME!
+	 * @param tableObjectType
+	 *            DOCUMENT ME!
 	 */
 	public DataTable(final CyAttributes data, final int tableObjectType) {
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(this);
+
 
 		// set up CytoscapeData Object and GraphObject Type
 		this.data = data;
@@ -167,8 +176,8 @@ public class DataTable implements PropertyChangeListener {
 		// List of attributes and labels: CytoPanel 1
 
 		// Toolbar for selecting attributes and create new attribute.
-		attributeBrowserPanel = new AttributeBrowserPanel(data, new AttributeModel(data),
-		                                                  new LabelModel(data), tableObjectType);
+		attributeBrowserPanel = new AttributeBrowserPanel(data,
+				new AttributeModel(data), new LabelModel(data), tableObjectType);
 		attributeBrowserPanel.setTableModel(tableModel);
 
 		// the attribute table display: CytoPanel 2, horizontal SOUTH panel.
@@ -177,37 +186,9 @@ public class DataTable implements PropertyChangeListener {
 		mainPanel.setPreferredSize(new java.awt.Dimension(400, 180));
 
 		mainPanel.setBorder(null);
-		//		if (tableObjectType == NETWORK && Cytoscape.getCurrentNetwork() != null) {
-		//			if (Cytoscape.getCurrentNetwork().getTitle().equals("0")) {
-		//				mainPanel
-		//						.setBorder(javax.swing.BorderFactory
-		//								.createTitledBorder(
-		//										null,
-		//										type + " Attribute Browser",
-		//										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		//										javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		//										null, null));
-		//			} else {
-		//				mainPanel
-		//						.setBorder(javax.swing.BorderFactory
-		//								.createTitledBorder(
-		//										null,
-		//										type
-		//												+ " Attribute Browser ( "
-		//												+ Cytoscape.getCurrentNetwork()
-		//														.getTitle() + " )",
-		//										javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		//										javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		//										null, null));
-		//			}
-		//		} else {
-		//			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-		//					null, type + " Attribute Browser",
-		//					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		//					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-		//					null));
-		//		}
+
 		attributeTable = new JSortTable(tableModel, tableObjectType);
+//		attributeTable.getColumnModel().addColumnModelListener(this);
 		attributeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		// If this is a network attribute browser, do not allow to swap
@@ -222,14 +203,16 @@ public class DataTable implements PropertyChangeListener {
 		mainPanel.add(attributeBrowserPanel, java.awt.BorderLayout.NORTH);
 
 		// modPanel will be added to JDialog for attribute modification
-		modPanel = new AttrSelectModPanel(this, data, tableModel, tableObjectType);
+		modPanel = new AttrSelectModPanel(this, data, tableModel,
+				tableObjectType);
 		attributeBrowserPanel.setAttrModPane(modPanel, type);
 
 		// Add main browser panel to CytoPanel 2 (SOUTH)
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
-		         .add(type + " Attribute Browser", mainPanel);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).add(
+				type + " Attribute Browser", mainPanel);
 
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(CytoPanelState.DOCK);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(
+				CytoPanelState.DOCK);
 	}
 
 	protected JSortTable getattributeTable() {
@@ -258,15 +241,18 @@ public class DataTable implements PropertyChangeListener {
 		public void onComponentSelected(int componentIndex) {
 			if (componentIndex == myIndex) {
 				if (WEST != -1) {
-					Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(WEST);
+					Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
+							.setSelectedIndex(WEST);
 				}
 
 				if (SOUTH != -1) {
-					Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setSelectedIndex(SOUTH);
+					Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
+							.setSelectedIndex(SOUTH);
 				}
 
 				if (EAST != -1) {
-					Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setSelectedIndex(EAST);
+					Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+							.setSelectedIndex(EAST);
 				}
 			}
 		}
@@ -276,18 +262,18 @@ public class DataTable implements PropertyChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getGraphObjectType() {
 		return tableObjectType;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public CyAttributes getData() {
 		return data;
@@ -304,7 +290,8 @@ public class DataTable implements PropertyChangeListener {
 		if (tableObjectType == NETWORK) {
 			model.setTableData(data, null, attributeNames, tableObjectType);
 		} else {
-			model.setTableData(data, graph_objects, attributeNames, tableObjectType);
+			model.setTableData(data, graph_objects, attributeNames,
+					tableObjectType);
 		}
 
 		return model;
@@ -314,9 +301,11 @@ public class DataTable implements PropertyChangeListener {
 		if (tableObjectType == NODES) {
 			// return new ArrayList(Cytoscape.getCurrentNetwork()
 			// .getFlaggedNodes());
-			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedNodes());
+			return new ArrayList(Cytoscape.getCurrentNetwork()
+					.getSelectedNodes());
 		} else {
-			return new ArrayList(Cytoscape.getCurrentNetwork().getSelectedEdges());
+			return new ArrayList(Cytoscape.getCurrentNetwork()
+					.getSelectedEdges());
 		}
 	}
 
@@ -327,16 +316,19 @@ public class DataTable implements PropertyChangeListener {
 	/**
 	 * Catch pce here.<br>
 	 * Used mainly for the network panel.<br>
-	 *
+	 * 
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		//		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
-		//			mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-		//					null, type + " Attribute Browser ( "
-		//							+ Cytoscape.getCurrentNetwork().getTitle() + " )",
-		//					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		//					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-		//					null));
-		//		}
+		// not yet implemented.
 	}
+
+	
+	protected void restoreColumnModel(TableColumnModel newModel) {
+		attributeTable.setColumnModel(newModel);
+	}
+	
+	protected TableColumnModel getColumnModel() {
+		return attributeTable.getColumnModel();
+	}
+	
 }

@@ -40,6 +40,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualMappingManager;
 
 import giny.model.Edge;
 import giny.model.Node;
@@ -91,6 +92,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -101,6 +105,10 @@ import javax.swing.table.TableColumnModel;
  */
 public class JSortTable extends JTable implements MouseListener, ActionListener,
                                                   PropertyChangeListener, SelectEventListener {
+	
+	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+	private GlobalAppearanceCalculator gac;
+	
 	protected int sortedColumnIndex = -1;
 	protected boolean sortedColumnAscending = true;
 	private Color selectedNodeColor;
@@ -249,6 +257,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 		setSelectedColor(REV_SELECTED_EDGE);
 
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(false, objectType));
+		this.getColumnModel().addColumnModelListener(this);
 	}
 
 	private void setKeyStroke() {
@@ -261,8 +270,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 	}
 
 	protected void setSelectedColor(final int type) {
-		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                          .getGlobalAppearanceCalculator();
+		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
 
 		switch (type) {
 			case SELECTED_NODE:
@@ -292,7 +300,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 
 	protected Color getSelectedColor(final int type) {
 		Color newColor;
-		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
+		gac = vmm.getVisualStyle()
 		                                          .getGlobalAppearanceCalculator();
 
 		switch (type) {

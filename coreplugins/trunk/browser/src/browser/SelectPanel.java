@@ -48,6 +48,7 @@ import cytoscape.view.CytoscapeDesktop;
 
 import filter.model.Filter;
 import filter.model.FilterManager;
+import giny.model.GraphObject;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -68,6 +69,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumnModel;
 
 
 /**
@@ -98,6 +101,8 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 	Map titleIdMap;
 	JCheckBox mirrorSelection;
 	CyNetwork currentNetwork;
+	
+	private TableColumnModel cmodel;
 
 	/**
 	 * Constructor.<br>
@@ -148,10 +153,7 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
 
 		add(filterBox, gridBagConstraints);
-		// add(new JLabel("Network: "));
-		// add(networkBox);
-		// add(new JLabel("Mirror Network Selection"));
-		// add(mirrorSelection);
+	
 		filterBox.addActionListener(this);
 		networkBox.addActionListener(this);
 	}
@@ -163,26 +165,37 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 	 */
 	public void onSelectEvent(SelectEvent event) {
 		if (mirrorSelection.isSelected()) {
+			
+			cmodel = new DefaultTableColumnModel();
+			final TableColumnModel oldModel = table.getColumnModel(); 
+			final int colCount = oldModel.getColumnCount();
+			for(int i = 0; i<colCount; i++) {
+				cmodel.addColumn(oldModel.getColumn(i));
+			}
+			
 			if ((graphObjectType == NODES)
 			    && ((event.getTargetType() == SelectEvent.SINGLE_NODE)
 			       || (event.getTargetType() == SelectEvent.NODE_SET))) {
+				
 				// node selection
 				tableModel.setSelectedColor(JSortTable.SELECTED_NODE);
 				tableModel.setSelectedColor(JSortTable.REV_SELECTED_NODE);
 
-				tableModel.setTableDataObjects(new ArrayList(Cytoscape.getCurrentNetwork()
+				tableModel.setTableDataObjects(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
 				                                                      .getSelectedNodes()));
+				
+				table.restoreColumnModel(cmodel);
 			} else if ((graphObjectType == EDGES)
 			           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
 			              || (event.getTargetType() == SelectEvent.EDGE_SET))) {
 				// edge selection
 				tableModel.setSelectedColor(JSortTable.SELECTED_EDGE);
 				tableModel.setSelectedColor(JSortTable.REV_SELECTED_EDGE);
-				tableModel.setTableDataObjects(new ArrayList(Cytoscape.getCurrentNetwork()
+				tableModel.setTableDataObjects(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
 				                                                      .getSelectedEdges()));
 			}
 		}
-
+		
 		ColumnResizer.adjustColumnPreferredWidths(table.getattributeTable());
 	}
 

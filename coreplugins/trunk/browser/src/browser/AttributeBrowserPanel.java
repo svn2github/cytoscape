@@ -34,30 +34,12 @@
 */
 package browser;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.dialogs.NetworkMetaDataDialog;
-
-import cytoscape.util.swing.CheckBoxJList;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,13 +52,24 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.event.TableColumnModelEvent;
+
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
+
+import cytoscape.Cytoscape;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.util.swing.CheckBoxJList;
+import cytoscape.util.swing.ColumnResizer;
 
 
 /**
@@ -766,22 +759,29 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 	}
 
 	private void updateSelectedListItems(final Object newEntry, final Object[] selectedVals) {
-		List<Object> selectedList = Arrays.asList(selectedVals);
-		int[] selectedIndecies = new int[selectedVals.length + 1];
+		final List<Object> selectedList = Arrays.asList(selectedVals);
+		final int[] selectedIndecies = new int[selectedVals.length + 1];
 
+		final int listSize = attributeList.getModel().getSize();
+		final ListModel lModel = attributeList.getModel();
 		Object listItem = null;
 		int count = 0;
 
-		for (int i = 0; i < attributeList.getModel().getSize(); i++) {
-			listItem = attributeList.getModel().getElementAt(i);
+		for (int i = 0; i < listSize; i++) {
+			
+			System.out.println("  ListItem = " + lModel.getElementAt(i));
+			listItem = lModel.getElementAt(i);
 
 			if (selectedList.contains(listItem) || listItem.equals(newEntry)) {
+				System.out.println(" FOUND = " + listItem);
 				selectedIndecies[count] = i;
 				count++;
 			}
 		}
 
 		attributeList.setSelectedIndices(selectedIndecies);
+
+		
 	}
 
 	/**
@@ -793,52 +793,6 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 		if ((evt == null) || evt.getPropertyName().equals(CheckBoxJList.LIST_UPDATED)) {
 			selectedAttrNames = attributeList.getSelectedValues();
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnAdded(TableColumnModelEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnMarginChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnMoved(TableColumnModelEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("C moved!!!!!!!!!!!!! " + e.getSource());
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnRemoved(TableColumnModelEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnSelectionChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	/**
