@@ -56,10 +56,13 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSe
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.TEXT_FILE_ICON;
 
+import org.apache.poi.hssf.model.Model;
+import org.apache.poi.hssf.model.Workbook;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSDocument;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import org.jdesktop.layout.GroupLayout;
@@ -480,7 +483,10 @@ public class PreviewTablePanel extends JPanel {
 	 */
 	public JTable getPreviewTable() {
 		JScrollPane selected = (JScrollPane) tableTabbedPane.getSelectedComponent();
-
+		if(selected == null) {
+		
+			return null;
+		}
 		return (JTable) selected.getViewport().getComponent(0);
 	}
 
@@ -650,14 +656,29 @@ public class PreviewTablePanel extends JPanel {
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
 
 			POIFSFileSystem excelIn = new POIFSFileSystem(sourceURL.openStream());
-			HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+//			POIFSDocument excelIn = new POIFSDocument("foo", sourceURL.openStream());
+			HSSFWorkbook wb = new HSSFWorkbook(excelIn, true);
 
+//			HSSFWorkbook wb = new HSSFWorkbook(sourceURL.openStream());
+			
+			if(wb.getNumberOfSheets() == 0) {
+				return;
+			}
 			/*
 			 * Load each sheet in the workbook.
 			 */
+			
+			System.out.println("# of Sheets = " + wb.getNumberOfSheets());
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				HSSFSheet sheet = wb.getSheetAt(i);
+				System.out.println("Sheet name = " + wb.getSheetName(i) +", ROW = " + sheet.rowIterator().hasNext());
+				
+				System.out.println("TS = " + sheet.toString());
+				
 				newModel = parseExcel(sourceURL, size, curRenderer, sheet, startLine);
+				if(newModel.getRowCount() == 0) {
+					return;
+				}
 				guessDataTypes(newModel, wb.getSheetName(i));
 				listDataTypeMap.put(wb.getSheetName(i), initListDataTypes(newModel));
 				addTableTab(newModel, wb.getSheetName(i), curRenderer);

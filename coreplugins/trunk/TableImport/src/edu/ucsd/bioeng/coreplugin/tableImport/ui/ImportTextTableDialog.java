@@ -1638,40 +1638,58 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		final String commentChar = commentLineTextField.getText();
 
-		/*
-		 * Get Attribute Names
-		 */
-		final int colCount = previewPanel.getPreviewTable().getColumnModel().getColumnCount();
-		final String[] attributeNames;
-		final List<String> attrNameList = new ArrayList<String>();
-		String curName = null;
-
-		for (int i = 0; i < colCount; i++) {
-			curName = previewPanel.getPreviewTable().getColumnModel().getColumn(i).getHeaderValue()
-			                      .toString();
-
-			if (attrNameList.contains(curName)) {
-				final JLabel label = new JLabel("Duplicate Attribute Name Found: " + curName);
-				label.setForeground(Color.RED);
-				JOptionPane.showMessageDialog(this, label);
-				return;
-			}
-
-			attrNameList.add(curName);
-		}
-
-		attributeNames = attrNameList.toArray(new String[0]);
-
+		
 		/*
 		 * Get import flags
 		 */
-		final boolean[] importFlag = new boolean[previewPanel.getPreviewTable().getColumnCount()];
+		final int colCount = previewPanel.getPreviewTable().getColumnModel().getColumnCount();
+		final boolean[] importFlag = new boolean[colCount];
 
-		for (int i = 0; i < previewPanel.getPreviewTable().getColumnCount(); i++) {
+		for (int i = 0; i < colCount; i++) {
 			importFlag[i] = ((AttributePreviewTableCellRenderer) previewPanel.getPreviewTable()
 			                                                                 .getCellRenderer(0, i))
 			                .getImportFlag(i);
 		}
+		
+		/*
+		 * Get Attribute Names
+		 */
+		
+		final String[] attributeNames;
+		final List<String> attrNameList = new ArrayList<String>();
+		
+		Object curName = null;
+
+		for (int i = 0; i < colCount; i++) {
+			curName = previewPanel.getPreviewTable().getColumnModel().getColumn(i).getHeaderValue();
+
+			if (attrNameList.contains(curName)) {
+				
+				int dupIndex = 0;
+				for(int idx = 0; idx<attrNameList.size(); idx++) {
+					if(curName.equals(attrNameList.get(idx))) {
+						dupIndex = idx;
+						break;
+					}
+				}
+				if(importFlag[i] && importFlag[dupIndex]) {
+					final JLabel label = new JLabel("Duplicate Attribute Name Found: " + curName);
+					label.setForeground(Color.RED);
+					JOptionPane.showMessageDialog(this, label);
+					return;
+				}
+			}
+
+			if(curName == null) {
+				attrNameList.add("Column " + i);
+			} else {
+				attrNameList.add(curName.toString());
+			}
+		}
+
+		attributeNames = attrNameList.toArray(new String[0]);
+
+		
 
 		/*
 		 * Get attribute data types
@@ -1979,6 +1997,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			final URL sourceURL = new URL(targetDataSourceTextField.getText());
 
 			readAnnotationForPreview(sourceURL, checkDelimiter());
+			
+			if(previewPanel.getPreviewTable() == null) {
+				JLabel label = new JLabel("File is broken or empty!");
+			    label.setForeground(Color.RED);
+			    JOptionPane.showMessageDialog(this, label);
+			    return;
+			}
+			
 			columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
 			attrNameCheckBox.setEnabled(true);
 			attrNameCheckBox.setSelected(false);
@@ -2359,6 +2385,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize, commentChar,
 		                             startLine - 1);
 
+		if(previewPanel.getPreviewTable() == null) {
+			return;
+		}
+		
 		listDataTypes = previewPanel.getCurrentListDataTypes();
 
 		/*
@@ -2979,7 +3009,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
 				JOptionPane.showMessageDialog(this,
-				                              "Columns for source, target, and tinteraction type must be distinct.",
+				                              "Columns for source, target, and interaction type must be distinct.",
 				                              "Same column index!", JOptionPane.INFORMATION_MESSAGE);
 
 				return false;
