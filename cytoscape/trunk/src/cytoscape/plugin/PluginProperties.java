@@ -78,7 +78,7 @@ public class PluginProperties extends Properties {
 		}
 	}
 
-	public PluginInfo getPluginInfoObject() throws ManagerException {
+	public PluginInfo getPluginInfoObject(String id) throws ManagerException {
 		if (!expectedPropertiesPresent()) {
 			throw new ManagerException("Required properties are missing from plugins.props file: " + errorMsg);
 		}
@@ -86,6 +86,8 @@ public class PluginProperties extends Properties {
 		PluginInfo pi;
 		if (containsKey(PluginProperty.UNIQUE_ID)) {
 			pi = new PluginInfo(getProperty(PluginProperty.UNIQUE_ID.getPropertyKey()));
+		} else if (id != null) {
+			pi = new PluginInfo(id);
 		} else {
 			pi = new PluginInfo();
 		}
