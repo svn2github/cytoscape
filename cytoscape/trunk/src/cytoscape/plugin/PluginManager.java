@@ -296,10 +296,9 @@ public class PluginManager {
 		System.out.println("Registering " + Plugin.toString());
 
 		PluginInfo InfoObj = ManagerUtil.getInfoObject(Plugin.getClass()); // try to get it from the file
-		String Id = InfoObj != null? InfoObj.getID() : null;
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
-			InfoObj = pp.getPluginInfoObject(Id);
+			InfoObj = pp.fillPluginInfoObject(InfoObj);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
