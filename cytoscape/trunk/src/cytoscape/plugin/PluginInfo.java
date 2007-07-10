@@ -165,7 +165,6 @@ public class PluginInfo {
 	
 	/**
 	 * Sets the plugin class name. Used for tracking plugins.
-	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * 
 	 * @param className
 	 */
@@ -218,7 +217,6 @@ public class PluginInfo {
 	/**
 	 * pluginUrl this plugin was downloaded from. It is presumed this can be
 	 * used for update later.
-	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * @param url
 	 */
 	protected void setUrl(String url) {
@@ -234,8 +232,7 @@ public class PluginInfo {
 	}
 
 	/**
-	 * PLUGIN DEVELOPER It is best to let the manager set this
-	 * pluginUrl for the xml file describing all plugins from any given project
+	 * URL for the xml file describing all plugins from any given project
 	 * (ex. http://cytoscape.org/plugins/plugin.xml)
 	 * 
 	 * @param url
@@ -246,7 +243,6 @@ public class PluginInfo {
 	
 	/**
 	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
-	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}	 
 	 * @param type
 	 */
 	protected void setFiletype(FileType type) {
@@ -256,7 +252,6 @@ public class PluginInfo {
 	/**
 	 * Sets a list of files (prefer full paths) installed with this plugin.
 	 * Includes the jar file.
-	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * @param list
 	 */
 	protected void setFileList(List<String> list) {
@@ -283,7 +278,6 @@ public class PluginInfo {
 
 	/**
 	 * Adds a file to the list of installed files.
-	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * 
 	 * @param fileName
 	 */
@@ -373,7 +367,6 @@ public class PluginInfo {
 
 	/**
 	 * This is meant to only get set by the PluginManager
-	 * This should NOT be set by a plugin developer in {@link CytoscapePlugin#getPluginInfoObject()}
 	 * 
 	 * @param Loc
 	 */
