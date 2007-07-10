@@ -10,9 +10,15 @@
 		<plugin>
 			<uniqueID> A string that will not change from one version to another</uniqueID>
 			<name> foobar </name>
-			<description> Whatever you want to say about a plugin </description>
+			<description>
+				<![CDATA[
+ 				Whatever you want to say about a plugin<br>Html tags are encouraged for layout<p> 
+				]]>
+			</description>
 			<pluginVersion> 1.0 </pluginVersion>
-			<cytoscapeVersion> 2.5 </cytoscapeVersion>
+			<cytoscapeVersions> 
+				<version>2.5</version> 
+			</cytoscapeVersions>
 			<filetype> jar </filetype>
 			<category> Enrichment </category>
 			<url> http://url/to/download/jar-or-zip-file.xxx </url>
@@ -23,9 +29,10 @@
 				</author>
 			</authorlist>
 			<license>
-				<text>
+				<text><![CDATA[
 					This is some license text a user would see and have to ok in order to install a plugin.
-				</text>
+					<p>Html tags are encouraged for nicer formatting for user<p>
+				]]></text>
 			</license>
 		</plugin>
 	</pluginlist>
