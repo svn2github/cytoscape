@@ -211,8 +211,10 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		BoundaryRangeValues bound;
 		Float fraction;
 
-		List<Float> values = new ArrayList<Float>();
 
+		if(allPoints == null) {
+			return;
+		}
 		for (ContinuousMappingPoint point : allPoints) {
 			bound = point.getRange();
 
