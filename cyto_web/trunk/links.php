@@ -62,7 +62,9 @@ and provides a powerful framework for user interaction and data display.
 <ul>
 	<li><a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a>
 	<li><a href="http://amdec-bioinfo.cu-genome.org/html/caWorkBench.htm">caWorkBench2.0 - A Platform for Integrated Genomics</a>
-	<li><a href="http://www.nalapro.com/products/genpac.html">GENPAC - NLP (Natural Language Processing) based information extraction system for life science domain.</a><BR>
+	<li><a href="http://www.nalapro.com/products/genpac.html">GENPAC - NLP (Natural Language Processing) based information extraction system for life science domain.</a>
+	<li><a href="http://www.ncibi.org">National Center for Integrative Biomedical Informatics (NCIBI)</a>
+	<BR>
 </ul>
 
 <p><big><b>Support</b></big></p>
