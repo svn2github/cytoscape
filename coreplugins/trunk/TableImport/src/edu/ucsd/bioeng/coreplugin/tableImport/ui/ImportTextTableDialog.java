@@ -1589,10 +1589,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		} else {
 			// Restore row
 			String currentName = null;
-
+			Object headerVal = null;
 			for (int i = 0; i < columnHeaders.length; i++) {
-				currentName = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
-				                          .getHeaderValue().toString();
+				headerVal = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
+                .getHeaderValue();
+				if(headerVal == null) {
+					currentName = "";
+				} else {
+					currentName = headerVal.toString();
+				}
 				previewPanel.getPreviewTable().getColumnModel().getColumn(i)
 				            .setHeaderValue(columnHeaders[i]);
 				columnHeaders[i] = currentName;
