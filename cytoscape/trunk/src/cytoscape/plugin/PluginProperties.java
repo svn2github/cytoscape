@@ -99,6 +99,7 @@ public class PluginProperties extends Properties {
 			}
 		} else if (info != null) {
 			pi = info;
+			pi.clearAuthorList();
 		} else {
 			pi = new PluginInfo();
 		}

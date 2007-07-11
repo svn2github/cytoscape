@@ -296,6 +296,13 @@ public class PluginInfo {
 	}
 
 	/**
+	 * Clears author list.
+	 */
+	public void clearAuthorList() {
+		authors.clear();
+	}
+	
+	/**
 	 * Sets the license information for the plugin. Not required.
 	 * 
 	 * @param java.net.URL
