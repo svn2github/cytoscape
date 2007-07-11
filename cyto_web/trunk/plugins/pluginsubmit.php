@@ -460,14 +460,14 @@ if (!($tried && $validated)) {
 
         <option <?php if ($category && $category == 'Please choose one') echo 'selected' ?>>Please choose one</option>	
         <?php if ($mode == 'edit') {  
-		echo '<option>Core Plugins</option>';
+		echo '<option>Core</option>';
 	} ?>
-        <option <?php if ($category && $category == 'Analysis Plugins') echo 'selected' ?>>Analysis Plugins</option>
-        <option <?php if ($category && $category == 'Network and Attribute I/O Plugins') echo 'selected' ?>>Network and Attribute I/O Plugins</option>
-        <option <?php if ($category && $category == 'Network Inference Plugins') echo 'selected' ?>>Network Inference Plugins</option>
-        <option <?php if ($category && $category == 'Functional Enrichment Plugins') echo 'selected' ?>>Functional Enrichment Plugins</option>
-        <option <?php if ($category && $category == 'Communication/Scripting Plugins') echo 'selected' ?>>Communication/Scripting Plugins</option>
-		<option <?php if ($category && $category == 'Other Plugins') echo 'selected' ?>>Other Plugins</option>
+        <option <?php if ($category && $category == 'Analysis') echo 'selected' ?>>Analysis</option>
+        <option <?php if ($category && $category == 'Network and Attribute I/O') echo 'selected' ?>>Network and Attribute I/O</option>
+        <option <?php if ($category && $category == 'Network Inference') echo 'selected' ?>>Network Inference</option>
+        <option <?php if ($category && $category == 'Functional Enrichment') echo 'selected' ?>>Functional Enrichment</option>
+        <option <?php if ($category && $category == 'Communication/Scripting') echo 'selected' ?>>Communication/Scripting</option>
+		<option <?php if ($category && $category == 'Other') echo 'selected' ?>>Other</option>
       </select>
     </label></td>
   </tr>
