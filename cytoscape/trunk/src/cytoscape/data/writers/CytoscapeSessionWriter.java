@@ -341,14 +341,16 @@ public class CytoscapeSessionWriter {
 		                                     .getComponents();
 
 		for (int i = 0; i < networkFrames.length; i++) {
-			JInternalFrame networkFrame = (JInternalFrame) networkFrames[i];
-			NetworkFrame frame = factory.createNetworkFrame();
-			frame.setFrameID(networkFrame.getTitle());
-			frame.setWidth(BigInteger.valueOf(networkFrame.getWidth()));
-			frame.setHeight(BigInteger.valueOf(networkFrame.getHeight()));
-			frame.setX(BigInteger.valueOf(networkFrame.getX()));
-			frame.setY(BigInteger.valueOf(networkFrame.getY()));
-			frames.getNetworkFrame().add(frame);
+			if(networkFrames[i] instanceof JInternalFrame) {
+				JInternalFrame networkFrame = (JInternalFrame) networkFrames[i];
+				NetworkFrame frame = factory.createNetworkFrame();
+				frame.setFrameID(networkFrame.getTitle());
+				frame.setWidth(BigInteger.valueOf(networkFrame.getWidth()));
+				frame.setHeight(BigInteger.valueOf(networkFrame.getHeight()));
+				frame.setX(BigInteger.valueOf(networkFrame.getX()));
+				frame.setY(BigInteger.valueOf(networkFrame.getY()));
+				frames.getNetworkFrame().add(frame);
+			}
 		}
 
 		dSize.setHeight(BigInteger.valueOf(Cytoscape.getDesktop().getSize().height));
