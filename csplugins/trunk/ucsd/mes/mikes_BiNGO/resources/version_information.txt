@@ -1,0 +1,36 @@
+This is BiNGO version 2.0
+
+Annotations version : Default Annotations version : parsed from the files gene2go, gene2unigene, 
+and gene_info, available from the NCBI at ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/
+version January 12th 2007
+
+Ontology version : GO, December 18th 2006
+
+Ambiguities in GO category description field handled by appending 'Mol Funct' to corresponding Molecular Function categories in 
+GO_Full, GO_Molecular_Function and GOSlims:
+
+GO_Cellular_Component_ID	GO_Cellular_Component_description	GO_Cellular_Component_isa/partof	GO_Molecular_Function_ID	GO_Molecular_Function_description	GO_Molecular_Function_isa/partof
+1529	elastin	[isa: 0008370 ]	1528	elastin	[isa: 0008369 ]
+5581	collagen	[isa: 0044420 0044421 ] [partof: 0005578 ]	5202	collagen	[isa: 0008369 ]
+5733	small nucleolar RNA	[isa: 0008370 ]	5569	small nucleolar RNA	[isa: 0008369 ]
+
+GO_Biological_Process_ID	GO_Biological_Process_description	GO_Biological_Process_isa/partof	GO_Molecular_Function_ID	GO_Molecular_Function_description	GO_Molecular_Function_isa/partof
+6326	bent DNA binding	[isa: 0008371 ]	3681	bent DNA binding	[isa: 0043566 ]
+6341	chromatin insulator sequence binding	[isa: 0008371 ]	43035	chromatin insulator sequence binding	[isa: 0031490 ]
+15832	holin	[isa: 0008371 ]	15176	holin	[isa: 0008369 ]
+6717	juvenile hormone binding	[isa: 0008371 ]	5500	juvenile hormone binding	[isa: 0042562 ]
+6630	lipid binding	[isa: 0008371 ]	8289	lipid binding	[isa: 0005488 ]
+17121	phospholipid scrambling	[isa: 0007009 ]	8498	phospholipid scrambling	[isa: 0008369 ]
+6329	satellite DNA binding	[isa: 0008371 ]	3696	satellite DNA binding	[isa: 0043565 ]
+6331	single-stranded DNA binding	[isa: 0008371 ]	3697	single-stranded DNA binding	[isa: 0043566 ]
+6332	single-stranded DNA binding	[isa: 0008371 ]	3697	single-stranded DNA binding	[isa: 0043566 ]
+6330	single-stranded DNA binding	[isa: 0008371 ]	3697	single-stranded DNA binding	[isa: 0043566 ]
+6331	single-stranded DNA binding	[isa: 0008371 ]	3699	single-stranded DNA binding	[isa: 0043566 ]
+6332	single-stranded DNA binding	[isa: 0008371 ]	3699	single-stranded DNA binding	[isa: 0043566 ]
+6330	single-stranded DNA binding	[isa: 0008371 ]	3699	single-stranded DNA binding	[isa: 0043566 ]
+6331	single-stranded DNA binding	[isa: 0008371 ]	3698	single-stranded DNA binding	[isa: 0043566 ]
+6332	single-stranded DNA binding	[isa: 0008371 ]	3698	single-stranded DNA binding	[isa: 0043566 ]
+6330	single-stranded DNA binding	[isa: 0008371 ]	3698	single-stranded DNA binding	[isa: 0043566 ]
+6903	vesicle targeting	[partof: 0006899 0016192 ]	5482	vesicle targeting	[isa: 0008369 ]
+6905	vesicle transport	[isa: 0008371 ]	5480	vesicle transport	[isa: 0008369 ]
+6906	vesicle fusion	[isa: 0006944 ] [partof: 0006899 0016192 ]	5481	vesicle fusion	[isa: 0008369 ]
