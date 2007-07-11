@@ -766,7 +766,7 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 
 	private void updateSelectedListItems(final Object newEntry, final Object[] selectedVals) {
 		final List<Object> selectedList = Arrays.asList(selectedVals);
-		final int[] selectedIndecies = new int[selectedVals.length + 1];
+		final Object[] selectedObjects = new Object[selectedVals.length + 1];
 
 		final int listSize = attributeList.getModel().getSize();
 		final ListModel lModel = attributeList.getModel();
@@ -774,19 +774,17 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 		int count = 0;
 
 		for (int i = 0; i < listSize; i++) {
-			
-			System.out.println("  ListItem = " + lModel.getElementAt(i));
 			listItem = lModel.getElementAt(i);
 
-			if (selectedList.contains(listItem) || listItem.equals(newEntry)) {
-				System.out.println(" FOUND = " + listItem);
-				selectedIndecies[count] = i;
+			if (selectedList.contains(listItem) && listItem.equals(newEntry) == false) {
+				selectedObjects[count] = listItem;
 				count++;
 			}
 		}
+		selectedObjects[selectedObjects.length-1] = newEntry;
 
-		attributeList.setSelectedIndices(selectedIndecies);
-
+		selectedAttrNames = selectedObjects;
+		tableModel.setTableDataAttributes(Arrays.asList(selectedAttrNames));
 		
 	}
 
