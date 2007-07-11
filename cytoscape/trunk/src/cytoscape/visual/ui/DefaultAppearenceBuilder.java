@@ -258,7 +258,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                                               243, Short.MAX_VALUE));
 
 		lockNodeSizeCheckBox.setFont(new java.awt.Font("SansSerif", 1, 12));
-		lockNodeSizeCheckBox.setText("Lock Node With/Height");
+		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
 		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());

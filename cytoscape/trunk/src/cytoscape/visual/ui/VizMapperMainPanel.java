@@ -1127,7 +1127,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		names.add("ID");
 
 		for (String name : nameArray) {
-			if (attr.getUserVisible(name)) {
+			if (attr.getUserVisible(name) && attr.getType(name) != CyAttributes.TYPE_UNDEFINED && attr.getType(name) != CyAttributes.TYPE_COMPLEX) {
 				names.add(name);
 			}
 		}
@@ -1155,7 +1155,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		names.add("ID");
 
 		for (String name : nameArray) {
-			if (attr.getUserVisible(name)) {
+			if (attr.getUserVisible(name) && attr.getType(name) != CyAttributes.TYPE_UNDEFINED && attr.getType(name) != CyAttributes.TYPE_COMPLEX) {
 				names.add(name);
 			}
 		}
@@ -2708,14 +2708,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		Item item = null;
 
+		// If nothing selected, return.
+		if(selected == null || selected.length == 0) {
+			return;
+		}
 		/*
 		 * Test with the first selected item
 		 */
 		item = (Item) visualPropertySheetPanel.getTable().getValueAt(selected[0], 0);
 
 		VizMapperProperty prop = (VizMapperProperty) item.getProperty();
-		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getParentProperty())
+		
+		if(prop == null || prop.getParentProperty() == null) {
+			return;
+		}
+		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
 		                                .getHiddenObject();
 
 		/*
