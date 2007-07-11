@@ -748,6 +748,17 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 				}
 			});
 	}
+	
+	private Edge getEdge(final String edgeName) {
+		
+		String[] edgeNameParts = edgeName.split(" (");
+		String interaction = edgeNameParts[1].split(") ")[0];
+		Node source = Cytoscape.getCyNode(edgeNameParts[0]);
+		Node target = Cytoscape.getCyNode(edgeNameParts[2]);
+		
+		return null;
+	}
+	
 
 	private void resetObjectColor(int idLocation) {
 		for (int idx = 0; idx < dataModel.getRowCount(); idx++) {

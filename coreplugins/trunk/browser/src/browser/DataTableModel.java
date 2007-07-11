@@ -43,7 +43,9 @@ import cytoscape.data.CyAttributes;
 
 import cytoscape.data.attr.MultiHashMapListener;
 
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualMappingManager;
 
 import giny.model.Edge;
 import giny.model.GraphObject;
@@ -55,6 +57,7 @@ import giny.view.NodeView;
 import java.awt.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,7 +82,10 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	private Properties props;
 	private CyAttributes data;
 	private List<GraphObject> graphObjects;
-	private List attributeNames;
+	private List<Object> attributeNames;
+	
+	private GlobalAppearanceCalculator gac;
+	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 
 	/**
 	 * 
@@ -95,7 +101,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	private Color selectedEdgeColor;
 
 	// will be used by internal selection.
-	private HashMap internalSelection = null;
+	private Map<String, Boolean> internalSelection = new HashMap<String, Boolean>();
 
 	/**
 	 * Creates a new DataTableModel object.
@@ -170,8 +176,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	}
 
 	protected void setSelectedColor(final int type) {
-		final GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                                .getGlobalAppearanceCalculator();
+		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
 
 		switch (type) {
 			case JSortTable.SELECTED_NODE:
@@ -191,9 +196,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 
 	protected Color getSelectedColor(final int type) {
 		Color newColor;
-		final GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                                .getGlobalAppearanceCalculator();
-
+		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
+		
 		switch (type) {
 			case JSortTable.SELECTED_NODE:
 				newColor = gac.getDefaultNodeSelectionColor();
@@ -239,7 +243,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 * @param attributeNames DOCUMENT ME!
 	 * @param objectType DOCUMENT ME!
 	 */
-	public void setTableData(CyAttributes data, List<GraphObject> graph_objects, List attributeNames,
+	public void setTableData(CyAttributes data, List<GraphObject> graph_objects, List<Object> attributeNames,
 	                         int objectType) {
 		this.data = data;
 		this.graphObjects = graph_objects;
@@ -278,10 +282,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 */
 	public void resetSelectionFlags() {
 		if (this.objectType != DataTable.NETWORK) {
-			final Iterator it = graphObjects.iterator();
 
-			while (it.hasNext()) {
-				internalSelection.put(((GraphObject) it.next()).getIdentifier(), DEFAULT_FLAG);
+			for(GraphObject gObj: graphObjects) {
+				internalSelection.put(gObj.getIdentifier(), DEFAULT_FLAG);
 			}
 		}
 	}
@@ -301,7 +304,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 * @param graph_objects DOCUMENT ME!
 	 * @param attributes DOCUMENT ME!
 	 */
-	public void setTableData(List graph_objects, List attributes) {
+	public void setTableData(List graph_objects, List<Object> attributes) {
 		this.graphObjects = graph_objects;
 		this.attributeNames = attributes;
 
@@ -317,7 +320,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 *
 	 * @param attributes DOCUMENT ME!
 	 */
-	public void setTableDataAttributes(final List attributes) {
+	public void setTableDataAttributes(final List<Object> attributes) {
 		this.attributeNames = attributes;
 
 		if (this.objectType != DataTable.NETWORK) {
@@ -421,32 +424,37 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		setDataVector(data_vector, column_names);
 	}
 
+
 	// Fill the cells in the table
 	// *** need to add an argument to copy edge attribute name correctly.
 	//
 	protected void setTable() {
-		internalSelection = new HashMap();
+		internalSelection = new HashMap<String, Boolean>();
 
+		Node targetNode;
+		Edge targetEdge;
+		NodeView nv;
+		EdgeView edgeView;
+		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 		for(GraphObject obj: graphObjects) {
 
 			internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
 
 			if (objectType == DataTable.NODES) {
-				final Node targetNode = obj.getRootGraph().getNode(obj.getRootGraphIndex());
+				targetNode = obj.getRootGraph().getNode(obj.getRootGraphIndex());
 
 				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(targetNode);
+					nv = netView.getNodeView(targetNode);
 
 					if (nv != null) {
 						nv.setSelectedPaint(selectedNodeColor);
 					}
 				}
 			} else if (objectType == DataTable.EDGES) {
-				final Edge targetEdge = obj.getRootGraph().getEdge(obj.getRootGraphIndex());
+				targetEdge = obj.getRootGraph().getEdge(obj.getRootGraphIndex());
 
 				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					final EdgeView edgeView = Cytoscape.getCurrentNetworkView()
-					                                   .getEdgeView(targetEdge);
+					edgeView = netView.getEdgeView(targetEdge);
 
 					if (edgeView != null) {
 						edgeView.setSelectedPaint(selectedEdgeColor);
@@ -455,37 +463,38 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 			}
 		}
 
-		int att_length = attributeNames.size() + 1;
-		int go_length = graphObjects.size();
+		final List<Object> tempAttrNames = new ArrayList<Object>();
+		for(Object name: attributeNames) {
+			if(Arrays.asList(data.getAttributeNames()).contains(name)) {
+				tempAttrNames.add(name);
+			}
+		}
+		attributeNames = tempAttrNames;
+		
+		final int att_length = attributeNames.size() + 1;
+		final int go_length = graphObjects.size();
 
-		Object[][] data_vector = new Object[go_length][att_length];
-		Object[] column_names = new Object[att_length];
+		final Object[][] data_vector = new Object[go_length][att_length];
+		final Object[] column_names = new Object[att_length];
 
-		// Set column names (attribute names)
-		// System.out.println("Debug: testsection start.");
 		column_names[0] = DataTable.ID;
 
 		for (int j = 0; j < go_length; ++j) {
-			GraphObject obj = (GraphObject) graphObjects.get(j);
-
-			data_vector[j][0] = obj.getIdentifier();
+			data_vector[j][0] = graphObjects.get(j).getIdentifier();
 		}
 
 		// Set actual data
-		for (int i1 = 0; i1 < attributeNames.size(); ++i1) {
-			int i = i1 + 1;
-			column_names[i] = attributeNames.get(i1);
+		final int attrSize = attributeNames.size();
+		String attributeName;
+		byte type;
+		for (int i1 = 0; i1 < attrSize; ++i1) {
 
-			String attributeName = (String) attributeNames.get(i1);
-
-			byte type = data.getType(attributeName);
+			column_names[i1 + 1] = attributeNames.get(i1);
+			attributeName = (String) attributeNames.get(i1);
+			type = data.getType(attributeName);
 
 			for (int j = 0; j < go_length; ++j) {
-				GraphObject obj = (GraphObject) graphObjects.get(j);
-
-				Object value = getAttributeValue(type, obj.getIdentifier(), attributeName);
-
-				data_vector[j][i] = value;
+				data_vector[j][i1 + 1] = getAttributeValue(type, graphObjects.get(j).getIdentifier(), attributeName);;
 			}
 		}
 
@@ -581,7 +590,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	public void attributeValueRemoved(java.lang.String objectKey, java.lang.String attributeName,
 	                                  java.lang.Object[] keyIntoValue,
 	                                  java.lang.Object attributeValue) {
-		// setTable();
+		
+		
 	}
 
 	/**

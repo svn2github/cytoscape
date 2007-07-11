@@ -26,14 +26,16 @@ import javax.swing.JDialog;
 public class DeletionDialog extends JDialog {
 	private String[] attributes = null;
 	private String type;
+	private DataTableModel model;
 
 	/** Creates new form DeletionDialog */
-	public DeletionDialog(Frame parent, boolean modal, String[] attributes, String type) {
+	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, String type, DataTableModel model) {
 		super(parent, modal);
 
 		this.type = type;
 		this.attributes = attributes;
-
+		this.model = model;
+		
 		String title = "Delete " + type + " Attributes";
 		this.setTitle(title);
 		initComponents();
@@ -132,8 +134,7 @@ public class DeletionDialog extends JDialog {
 		for (int i = 0; i < selected.length; i++) {
 			attr.deleteAttribute(selected[i].toString());
 		}
-
-		//Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		model.setTable();
 		this.dispose();
 	}
 

@@ -614,18 +614,7 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 			// Create pop-up window for deletion
 			deleteAttributeButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-						final String[] attrArray = getAttributeArray();
-						Arrays.sort(attrArray);
-
-						final DeletionDialog dDialog = new DeletionDialog(Cytoscape.getDesktop(),
-						                                                  true, attrArray,
-						                                                  attributeType);
-
-						dDialog.pack();
-						dDialog.setLocationRelativeTo(jToolBar);
-						dDialog.setVisible(true);
-						model.sortAtttributes();
-						propertyChange(null);
+						removeAttribute(e);
 					}
 				});
 		}
@@ -633,6 +622,23 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 		return deleteAttributeButton;
 	}
 
+	
+	private void removeAttribute(MouseEvent e) {
+		final String[] attrArray = getAttributeArray();
+		Arrays.sort(attrArray);
+
+		final DeletionDialog dDialog = new DeletionDialog(Cytoscape.getDesktop(),
+		                                                  true, attrArray,
+		                                                  attributeType, tableModel);
+
+		dDialog.pack();
+		dDialog.setLocationRelativeTo(jToolBar);
+		dDialog.setVisible(true);
+		model.sortAtttributes();
+
+		propertyChange(null);
+	}
+	
 	/**
 	 * This method initializes jList1
 	 *
