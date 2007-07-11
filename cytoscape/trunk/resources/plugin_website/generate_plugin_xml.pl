@@ -211,7 +211,8 @@ sub addAuthors
 	my $sql = "SELECT names, affiliation FROM plugin_author 
 							INNER JOIN authors
 								ON author_auto_id = author_id
-							WHERE plugin_version_id = $PluginVersionId";
+							WHERE plugin_version_id = $PluginVersionId
+							ORDER BY authorship_seq";
 	my $Authors = $dbh->selectall_arrayref($sql);
 	
 	return 0 if (@$Authors == 0);
