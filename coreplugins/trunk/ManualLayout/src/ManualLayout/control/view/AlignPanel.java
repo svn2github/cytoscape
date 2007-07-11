@@ -69,26 +69,16 @@ public class AlignPanel extends JPanel {
 		VAlignCenter vac = new VAlignCenter(vaci);
 		VAlignBottom vab = new VAlignBottom(vabi);
 
-		setLayout(new java.awt.GridBagLayout());
+		setLayout(new GridLayout(1,6));
 
-		java.awt.GridBagConstraints gridBagConstraints;
+		add(createJButton(hal, "Horizontal Left"));
+		add(createJButton(hac, "Horizontal Center"));
+		add(createJButton(har, "Horizontal Right"));
 
-		//JPanel h_panel = new JPanel();
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+		add(createJButton(vat, "Vertical Top"));
+		add(createJButton(vac, "Vertical Center"));
+		add(createJButton(vab, "Vertical Bottom"));
 
-		add(createJButton(hal, "Horizontal Left"), gridBagConstraints);
-		add(createJButton(hac, "Horizontal Center"), gridBagConstraints);
-		add(createJButton(har, "Horizontal Right"), gridBagConstraints);
-
-		//JPanel v_panel = new JPanel();
-		add(createJButton(vat, "Vertical Top"), gridBagConstraints);
-		add(createJButton(vac, "Vertical Center"), gridBagConstraints);
-		add(createJButton(vab, "Vertical Bottom"), gridBagConstraints);
-
-		//setLayout( new BorderLayout() );
-		//add( h_panel, BorderLayout.EAST );
-		//add( v_panel, BorderLayout.WEST );
 		setBorder(new TitledBorder("Align"));
 	}
 
@@ -96,6 +86,11 @@ public class AlignPanel extends JPanel {
 		JButton b = new JButton(a);
 		b.setToolTipText(tt);
 		b.setPreferredSize(new Dimension(27, 18));
+		b.setMaximumSize(new Dimension(27, 18));
+		b.setBorder(BorderFactory.createEmptyBorder());
+		b.setBorderPainted(false);
+		b.setOpaque(false);
+		b.setContentAreaFilled(false);
 
 		return b;
 	}

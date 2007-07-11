@@ -70,32 +70,29 @@ public class StackPanel extends JPanel {
 		HStackCenter hac = new HStackCenter(haci);
 		HStackBottom hab = new HStackBottom(habi);
 
-		setLayout(new java.awt.GridBagLayout());
+		setLayout(new GridLayout(1,6,0,0));
+		add(createJButton(val, "Vertical Left"));
+		add(createJButton(vac, "Vertical Center"));
+		add(createJButton(var, "Vertical Right"));
+		add(createJButton(hat, "Horizontal Top"));
+		add(createJButton(hac, "Horizontal Center"));
+		add(createJButton(hab, "Horizontal Bottom"));
 
-		//JPanel h_panel = new JPanel();
-		java.awt.GridBagConstraints gridBagConstraints;
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
-
-		add(createJButton(val, "Vertical Left"), gridBagConstraints);
-		add(createJButton(vac, "Vertical Center"), gridBagConstraints);
-		add(createJButton(var, "Vertical Right"), gridBagConstraints);
-		//JPanel v_panel = new JPanel();
-		add(createJButton(hat, "Horizontal Top"), gridBagConstraints);
-		add(createJButton(hac, "Horizontal Center"), gridBagConstraints);
-		add(createJButton(hab, "Horizontal Bottom"), gridBagConstraints);
-
-
-		//setLayout( new BorderLayout() );
-		//add( h_panel, BorderLayout.EAST );
-		//add( v_panel, BorderLayout.WEST );
 		setBorder(new TitledBorder("Stack"));
+
+		System.out.println("StackPanel()");
 	}
 
 	protected JButton createJButton(Action a, String tt) {
 		JButton b = new JButton(a);
 		b.setToolTipText(tt);
 		b.setPreferredSize(new Dimension(27, 18));
+		b.setMaximumSize(new Dimension(27, 18));
+		b.setMinimumSize(new Dimension(27, 18));
+		b.setBorder(BorderFactory.createEmptyBorder());
+		b.setBorderPainted(false);
+		b.setOpaque(false);
+		b.setContentAreaFilled(false);
 
 		return b;
 	}

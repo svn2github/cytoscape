@@ -147,6 +147,10 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		add(jCheckBox, gbc);
 
 		new SliderStateTracker(this);
+
+		setMinimumSize(new java.awt.Dimension(100,1000));
+		setPreferredSize(new java.awt.Dimension(100,1000));
+		setMaximumSize(new java.awt.Dimension(100,1000));
 	} 
 
 	public void updateSlider(int x) {

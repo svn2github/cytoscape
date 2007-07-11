@@ -120,6 +120,10 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 		add(jCheckBox, gbc);
 
 		new SliderStateTracker(this);
+
+		setMinimumSize(new Dimension(100,1000));
+		setPreferredSize(new Dimension(100,1000));
+		setMaximumSize(new Dimension(100,1000));
 	} 
 
 	public void updateSlider(int x) {

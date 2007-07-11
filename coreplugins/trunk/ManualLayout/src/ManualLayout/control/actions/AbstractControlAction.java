@@ -78,7 +78,7 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 	 * @param icon  DOCUMENT ME!
 	 */
 	public AbstractControlAction(String title, ImageIcon icon) {
-		super(title, icon);
+		super("", icon);
 		this.title = title;
 	}
 

@@ -42,10 +42,7 @@ import ManualLayout.control.view.StackPanel;
 
 import cytoscape.Cytoscape;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 
 import javax.swing.JPanel;
 
@@ -68,21 +65,9 @@ public class ControlPanel extends JPanel {
 		DistPanel dp = new DistPanel();
 		StackPanel sp = new StackPanel();
 
-		setLayout(new GridBagLayout());
-
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 3, 0, 3);
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1.0;
-
-		add(ap, gbc);
-
-		gbc.gridy = 1;
-		add(dp, gbc);
-		gbc.gridy = 2;
-		add(sp, gbc);
+		setLayout(new java.awt.GridLayout(3,1));
+		add(ap);
+		add(dp);
+		add(sp);
 	} // constructor
 } // End of class ControlPanel

@@ -80,9 +80,9 @@ public abstract class AbstractManualLayoutAction extends CytoscapeAction impleme
                                                     manualLayoutPanel);
         split.setResizeWeight(0);
         manualLayoutPanel.setCytoPanelContainer(split);
-        manualLayoutPanel.setMinimumSize(new Dimension(180, 185));
-        manualLayoutPanel.setMaximumSize(new Dimension(180, 185));
-        manualLayoutPanel.setPreferredSize(new Dimension(180, 185));
+        manualLayoutPanel.setMinimumSize(new Dimension(180, 230));
+        manualLayoutPanel.setMaximumSize(new Dimension(180, 230));
+        manualLayoutPanel.setPreferredSize(new Dimension(180, 230));
 	}
 	private static int selectedIndex = -1;
 
