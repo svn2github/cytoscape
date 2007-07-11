@@ -960,7 +960,7 @@ public class PluginManager {
 			List<ZipEntry> Entries = ZipUtil
 					.getAllFiles(FileName, "\\w+\\.jar");
 			if (Entries.size() <= 0) {
-				String[] FilePath = FileName.split(File.separator);
+				String[] FilePath = FileName.split("/");
 				FileName = FilePath[FilePath.length-1];													
 				throw new IOException(FileName + " does not contain any jar files or is not a zip file.");
 			}
