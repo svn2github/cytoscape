@@ -2362,6 +2362,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final SwingWorker worker = new SwingWorker() {
 				public Object construct() {
 					LegendDialog ld = new LegendDialog(Cytoscape.getDesktop(), vmm.getVisualStyle());
+					ld.setLocationRelativeTo(Cytoscape.getDesktop());
 					ld.setVisible(true);
 
 					return null;

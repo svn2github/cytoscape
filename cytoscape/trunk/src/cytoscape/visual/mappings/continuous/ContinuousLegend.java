@@ -69,38 +69,42 @@ import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
  *
  */
 public class ContinuousLegend extends JPanel {
-	
 	private static final Font TITLE_FONT2 = new Font("SansSerif", Font.BOLD, 18);
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
 	private static final Border BORDER = new MatteBorder(0, 6, 3, 0, Color.DARK_GRAY);
-	
-    private List points;
-    
-    private VisualPropertyType type;
-    
-    private JLabel legend = null;
+	private List points;
+	private VisualPropertyType type;
+	private JLabel legend = null;
 
-    /**
-     * Creates a new ContinuousLegend object.
-     *
-     * @param visualAttr  DOCUMENT ME!
-     * @param dataAttr  DOCUMENT ME!
-     * @param points  DOCUMENT ME!
-     * @param obj  DOCUMENT ME!
-     * @param b  DOCUMENT ME!
+	/**
+	 * Creates a new ContinuousLegend object.
+	 *
+	 * @param visualAttr  DOCUMENT ME!
+	 * @param dataAttr  DOCUMENT ME!
+	 * @param points  DOCUMENT ME!
+	 * @param obj  DOCUMENT ME!
+	 * @param b  DOCUMENT ME!
 	 * @deprecated Use constructor with VisualPropertyType instead. Gone 5/2008.
-     */
-	@Deprecated 
-    public ContinuousLegend(String visualAttr, String dataAttr, List points, Object obj, byte b) {
-		this(dataAttr,points,obj,VisualPropertyType.getVisualPorpertyType(b));
+	 */
+	@Deprecated
+	public ContinuousLegend(String visualAttr, String dataAttr, List points, Object obj, byte b) {
+		this(dataAttr, points, obj, VisualPropertyType.getVisualPorpertyType(b));
 	}
 
-    public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
-        super();
-        this.points = points;
-        this.type = vpt;
-        
-        setLayout(new BorderLayout());
+	/**
+	 * Creates a new ContinuousLegend object.
+	 *
+	 * @param dataAttr  DOCUMENT ME!
+	 * @param points  DOCUMENT ME!
+	 * @param obj  DOCUMENT ME!
+	 * @param vpt  DOCUMENT ME!
+	 */
+	public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
+		super();
+		this.points = points;
+		this.type = vpt;
+
+		setLayout(new BorderLayout());
 		setBackground(Color.white);
 		setBorder(BORDER);
 
@@ -108,169 +112,159 @@ public class ContinuousLegend extends JPanel {
 		title.setFont(TITLE_FONT2);
 		title.setForeground(TITLE_COLOR);
 		title.setBorder(new MatteBorder(0, 10, 1, 0, TITLE_COLOR));
-//		title.setHorizontalAlignment(SwingConstants.CENTER);
-//		title.setVerticalAlignment(SwingConstants.CENTER);
+
 		title.setHorizontalTextPosition(SwingConstants.LEADING);
-//		title.setVerticalTextPosition(SwingConstants.CENTER);
-		
 		title.setPreferredSize(new Dimension(1, 50));
 		add(title, BorderLayout.NORTH);
-        
-    	setLegend();
-    	
-    	this.addComponentListener(new ComponentAdapter() {
-			public void componentResized(ComponentEvent e) {
-				setLegend();
-				repaint();
-			}
-		});
-    }
-    
-    private void setLegend() {
-    	if(legend != null) {
-    		remove(legend);
-    	}
-    	
+
+		setLegend(null);
+
+		this.addComponentListener(new ComponentAdapter() {
+				public void componentResized(ComponentEvent e) {
+					setLegend(e);
+					repaint();
+				}
+			});
+	}
+
+	private void setLegend(ComponentEvent e) {
+		if (legend != null) {
+			remove(legend);
+		}
+
 		Integer trackW = null;
-		if(getParent() == null) {
+
+		if (getParent() == null) {
 			trackW = 600;
 		} else {
-
-			trackW = ((Number) (this.getParent().getParent().getParent().getWidth()*0.82)).intValue();
+			trackW = ((Number) (this.getParent().getParent().getParent().getWidth() * 0.82))
+			                                                                                                                                    .intValue();
 		}
-        if (type.getDataType() == Color.class) {
-        	legend = new JLabel(GradientEditorPanel.getLegend(trackW, 100, type));
-        	
-        } else if(type.getDataType() == Number.class) {
-        	legend = new JLabel(C2CMappingEditor.getLegend(trackW, 150, type));
-        } else {
-        	legend = new JLabel(C2DMappingEditor.getLegend(trackW, 150, type));
-        }
-        legend.setBorder(new EmptyBorder(10, 10, 10, 10));
-        add(legend, BorderLayout.CENTER);
-    }
-    
-    
 
-    private JPanel getGradientPanel() {
-        JPanel holder = new JPanel();
-        holder.setLayout(new GridLayout(1, 2));
-        holder.setAlignmentX(0);
-        holder.setBackground(Color.white);
+		if (type.getDataType() == Color.class) {
+			legend = new JLabel(GradientEditorPanel.getLegend(trackW, 100, type));
+		} else if (type.getDataType() == Number.class) {
+			legend = new JLabel(C2CMappingEditor.getLegend(trackW, 150, type));
+		} else {
+			legend = new JLabel(C2DMappingEditor.getLegend(trackW, 150, type));
+		}
 
-        JLabel grad = new JLabel(getColorGradientIcon());
-        grad.setAlignmentX(0);
-        holder.add(grad);
+		legend.setBorder(new EmptyBorder(10, 10, 10, 10));
+		add(legend, BorderLayout.CENTER);
+	}
 
-        JLabel num = new JLabel(getNumberGradientIcon());
-        num.setAlignmentX(0);
-        holder.add(num);
+	private JPanel getGradientPanel() {
+		JPanel holder = new JPanel();
+		holder.setLayout(new GridLayout(1, 2));
+		holder.setAlignmentX(0);
+		holder.setBackground(Color.white);
 
-        return holder;
-    }
+		JLabel grad = new JLabel(getColorGradientIcon());
+		grad.setAlignmentX(0);
+		holder.add(grad);
 
-    int width = 40;
-    int height = 40;
-    int yoff = height;
+		JLabel num = new JLabel(getNumberGradientIcon());
+		num.setAlignmentX(0);
+		holder.add(num);
 
-    private ImageIcon getNumberGradientIcon() {
-        int imageHeight = (points.size() + 1) * height;
-        BufferedImage bi = new BufferedImage(width, imageHeight,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2 = bi.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setPaint(Color.white);
-        g2.fillRect(0, 0, width, imageHeight);
-        g2.setPaint(Color.black);
+		return holder;
+	}
 
-        int yoff = (int) (((float) g2.getFontMetrics()
-                                     .getMaxAscent()) / 2);
+	int width = 40;
+	int height = 40;
+	int yoff = height;
 
-        ContinuousMappingPoint curr = null;
+	private ImageIcon getNumberGradientIcon() {
+		int imageHeight = (points.size() + 1) * height;
+		BufferedImage bi = new BufferedImage(width, imageHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bi.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setPaint(Color.white);
+		g2.fillRect(0, 0, width, imageHeight);
+		g2.setPaint(Color.black);
 
-        for (int i = 0; i < points.size(); i++) {
-            curr = (ContinuousMappingPoint) points.get(i);
+		int yoff = (int) (((float) g2.getFontMetrics().getMaxAscent()) / 2);
 
-            g2.drawString(
-                Double.toString(curr.getValue()),
-                0,
-                ((i + 1) * height) + yoff);
-        }
+		ContinuousMappingPoint curr = null;
 
-        return new ImageIcon(bi);
-    }
+		for (int i = 0; i < points.size(); i++) {
+			curr = (ContinuousMappingPoint) points.get(i);
 
-    private ImageIcon getColorGradientIcon() {
-        int imageHeight = (points.size() + 1) * height;
-        BufferedImage bi = new BufferedImage(width, imageHeight,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2 = bi.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setPaint(Color.white);
-        g2.fillRect(0, 0, width, imageHeight);
+			g2.drawString(Double.toString(curr.getValue()), 0, ((i + 1) * height) + yoff);
+		}
 
-        ContinuousMappingPoint curr = null;
-        ContinuousMappingPoint next = null;
+		return new ImageIcon(bi);
+	}
 
-        Rectangle rect = new Rectangle(0, 0, width, height);
+	private ImageIcon getColorGradientIcon() {
+		int imageHeight = (points.size() + 1) * height;
+		BufferedImage bi = new BufferedImage(width, imageHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bi.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setPaint(Color.white);
+		g2.fillRect(0, 0, width, imageHeight);
 
-        for (int i = 0; i < points.size(); i++) {
-            curr = (ContinuousMappingPoint) points.get(i);
+		ContinuousMappingPoint curr = null;
+		ContinuousMappingPoint next = null;
 
-            if ((i + 1) < points.size())
-                next = (ContinuousMappingPoint) points.get(i + 1);
-            else
-                next = null;
+		Rectangle rect = new Rectangle(0, 0, width, height);
 
-            if (i == 0) {
-                g2.setPaint((Color) (curr.getRange().lesserValue));
-                rect.setBounds(0, 0, width, height);
-                g2.fill(rect);
-            }
+		for (int i = 0; i < points.size(); i++) {
+			curr = (ContinuousMappingPoint) points.get(i);
 
-            if (next != null) {
-                GradientPaint gp = new GradientPaint(0, ((i + 1) * height),
-                        (Color) curr.getRange().equalValue, 0,
-                        ((i + 2) * height), (Color) next.getRange().equalValue);
-                g2.setPaint(gp);
-                rect.setBounds(0, ((i + 1) * height), width, height);
-                g2.fill(rect);
-            } else {
-                g2.setPaint((Color) (curr.getRange().greaterValue));
-                rect.setBounds(0, ((i + 1) * height), width, height);
-                g2.fill(rect);
-            }
-        }
+			if ((i + 1) < points.size())
+				next = (ContinuousMappingPoint) points.get(i + 1);
+			else
+				next = null;
 
-        return new ImageIcon(bi);
-    }
+			if (i == 0) {
+				g2.setPaint((Color) (curr.getRange().lesserValue));
+				rect.setBounds(0, 0, width, height);
+				g2.fill(rect);
+			}
 
-    private JPanel getObjectPanel(VisualPropertyType vpt) {
-        Object[][] data = new Object[points.size() + 2][2];
+			if (next != null) {
+				GradientPaint gp = new GradientPaint(0, ((i + 1) * height),
+				                                     (Color) curr.getRange().equalValue, 0,
+				                                     ((i + 2) * height),
+				                                     (Color) next.getRange().equalValue);
+				g2.setPaint(gp);
+				rect.setBounds(0, ((i + 1) * height), width, height);
+				g2.fill(rect);
+			} else {
+				g2.setPaint((Color) (curr.getRange().greaterValue));
+				rect.setBounds(0, ((i + 1) * height), width, height);
+				g2.fill(rect);
+			}
+		}
 
-        ContinuousMappingPoint curr = null;
+		return new ImageIcon(bi);
+	}
 
-        for (int i = 0; i < points.size(); i++) {
-            curr = (ContinuousMappingPoint) points.get(i);
+	private JPanel getObjectPanel(VisualPropertyType vpt) {
+		Object[][] data = new Object[points.size() + 2][2];
 
-            if (i == 0) {
-                data[i][0] = curr.getRange().lesserValue;
-                data[i][1] = "< " + Double.toString(curr.getValue());
-            }
+		ContinuousMappingPoint curr = null;
 
-            data[i + 1][0] = curr.getRange().equalValue;
-            data[i + 1][1] = "= " + Double.toString(curr.getValue());
+		for (int i = 0; i < points.size(); i++) {
+			curr = (ContinuousMappingPoint) points.get(i);
 
-            if (i == (points.size() - 1)) {
-                data[i + 2][0] = curr.getRange().greaterValue;
-                data[i + 2][1] = "> " + Double.toString(curr.getValue());
-            }
-        }
+			if (i == 0) {
+				data[i][0] = curr.getRange().lesserValue;
+				data[i][1] = "< " + Double.toString(curr.getValue());
+			}
 
-        LegendTable lt = new LegendTable(data, vpt);
+			data[i + 1][0] = curr.getRange().equalValue;
+			data[i + 1][1] = "= " + Double.toString(curr.getValue());
 
-        return lt;
-    }
+			if (i == (points.size() - 1)) {
+				data[i + 2][0] = curr.getRange().greaterValue;
+				data[i + 2][1] = "> " + Double.toString(curr.getValue());
+			}
+		}
+
+		LegendTable lt = new LegendTable(data, vpt);
+
+		return lt;
+	}
 }

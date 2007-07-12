@@ -855,7 +855,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		Point2D p2 = new Point2D.Float(0, 0);
 
 		for (i = 0; i < floatProperty.length; i++) {
-			newX = (int) (trackWidth * (fractions[i] / 100));
+			newX = (int) (trackWidth * (fractions[i] / 100))-3;
+			if(newX<0) {
+				newX = 0;
+			}
 
 			p2.setLocation(newX, 0);
 
@@ -896,7 +899,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		g.setColor(VALUE_AREA_COLOR);
 
 		int h = trackHeight - (int) ((above.floatValue() / max) * trackHeight);
-		g.fillRect((int) p1.getX(), h, trackWidth - (int) p1.getX(),
+		g.fillRect((int) p1.getX(), h, trackWidth - (int) p1.getX()-3,
 		           (int) ((above.floatValue() / max) * trackHeight));
 
 		g.translate(-leftSpace, 0);

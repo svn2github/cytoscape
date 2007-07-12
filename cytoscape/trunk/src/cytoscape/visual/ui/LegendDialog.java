@@ -183,8 +183,9 @@ public class LegendDialog extends JDialog {
 		containerPanel.add(buttonPanel);
 
 		setContentPane(containerPanel);
-		setPreferredSize(new Dimension(400, 500));
+		setPreferredSize(new Dimension(650, 500));
 		pack();
+		repaint();
 	}
 
 	private void export() {
