@@ -148,6 +148,38 @@
 			</authorlist>
 		</plugin>
 
+		<!-- this is to test the case where the xml incorrectly id's the file type -->
+		<plugin>
+			<uniqueID> badFileType123 </uniqueID>
+			<name> Good Jar </name>
+			<description> 
+				This plugin demonstrates the use of a jar file with the PluginInfo object created and a correct manifest file. 
+			</description>
+			<pluginVersion> 1.0 </pluginVersion>
+			
+			<cytoscapeVersions>
+				<version>2.4</version>
+				<version>2.5</version>
+			</cytoscapeVersions>
+			
+			<filetype> zip </filetype>
+			<category> Test </category>
+			<url> GoodPlugin.jar </url>
+			<license>
+				<text>
+					This is some license text a user would see and have to ok in order to install a plugin.
+				</text>
+			</license>
+			<authorlist>
+				<author>
+					<name> Ann Smith </name>
+					<institution> UW </institution>
+				</author>
+			</authorlist>
+		</plugin>
+		
+
+
 	</pluginlist>
 
 </project>

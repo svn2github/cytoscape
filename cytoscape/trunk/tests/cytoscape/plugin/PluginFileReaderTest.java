@@ -79,7 +79,7 @@ public class PluginFileReaderTest extends TestCase {
 	 */
 	public void testGetPlugins() {
 		assertNotNull(reader.getPlugins());
-		assertEquals(reader.getPlugins().size(), 5);
+		assertEquals(reader.getPlugins().size(), 6);
 	}
 
 	public void testGetPluginsLicense() {

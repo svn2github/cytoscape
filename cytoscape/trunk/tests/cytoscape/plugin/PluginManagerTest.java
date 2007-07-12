@@ -154,7 +154,7 @@ public class PluginManagerTest extends TestCase {
 
 		Url = testUrl;
 		assertNotNull(mgr.inquire(Url));
-		assertEquals(mgr.inquire(Url).size(), 5);
+		assertEquals(mgr.inquire(Url).size(), 6);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class PluginManagerTest extends TestCase {
 		PluginInfo TestObj = null;
 		try {
 			TestObj = getSpecificObj(mgr.inquire(testUrl),
-				"goodJarPlugin123", "1.0");
+				"badFileType123", "1.0");
 		} catch (java.io.IOException ioe) {
 			ioe.printStackTrace();
 			fail();
