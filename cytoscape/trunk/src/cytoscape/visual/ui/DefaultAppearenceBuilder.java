@@ -214,7 +214,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Default Appearence for "
+		setTitle("Default Appearance for "
 		         + Cytoscape.getVisualMappingManager().getVisualStyle().getName());
 		mainView.setBorder(new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
 

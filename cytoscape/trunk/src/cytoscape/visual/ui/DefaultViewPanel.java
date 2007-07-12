@@ -89,7 +89,7 @@ public class DefaultViewPanel extends JPanel {
 		edges.add(edge);
 
 		dummyNet = Cytoscape.getRootGraph().createNetwork(nodes, edges);
-		dummyNet.setTitle("Default Appearence");
+		dummyNet.setTitle("Default Appearance");
 	}
 
 	/**
