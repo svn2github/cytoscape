@@ -40,6 +40,7 @@ import cytoscape.data.CyAttributes;
 
 import cytoscape.data.ontology.readers.OBOFlatFileReader;
 import cytoscape.data.ontology.readers.OBOTags;
+import cytoscape.util.URLUtil;
 
 import junit.framework.TestCase;
 
@@ -69,7 +70,10 @@ public class OBOFlatFileReaderTest extends TestCase {
 		File sampleOBO = new File(LOCAL_OBO);
 
 		URL oboUrl = sampleOBO.toURL();
-		is = oboUrl.openStream();
+		// is = oboUrl.openStream();
+        // Use URLUtil to get the InputStream since we might be using a proxy server 
+		// and because pages may be cached:
+		is = URLUtil.getBasicInputStream(oboUrl);
 	}
 
 	protected void tearDown() throws Exception {

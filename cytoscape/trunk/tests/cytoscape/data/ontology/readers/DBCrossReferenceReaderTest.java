@@ -36,6 +36,7 @@ package cytoscape.data.ontology.readers;
 
 import cytoscape.data.ontology.DBReference;
 import cytoscape.data.ontology.readers.DBCrossReferenceReader;
+import cytoscape.util.URLUtil;
 
 import junit.framework.TestCase;
 
@@ -134,7 +135,9 @@ public class DBCrossReferenceReaderTest extends TestCase {
 	}
 
 	private String connectToURL(URL url) throws IOException {
-		URLConnection uc = url.openConnection();
+		// URLConnection uc = url.openConnection();
+		// ignore cached pages and handle proxy settings:
+		URLConnection uc = URLUtil.getURLConnection(url);
 
 		/*
 		 * Set timeout.
