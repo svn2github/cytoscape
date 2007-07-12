@@ -435,6 +435,10 @@ public class CytoscapeInit {
 				System.out.println("ClassLoader for reading cytoscape.jar is null");
 
 			if (vmu != null)
+			    // We'd like to use URLUtil.getBasicInputStream() to get
+			    // InputStream, but it is too early in the initialization of
+			    // Cytoscape and vmu is most likely out of a local resource, so get
+			    // it directly:
 				props.load(vmu.openStream());
 			else
 				System.out.println("couldn't read " + defaultName + " from " + tryName);
