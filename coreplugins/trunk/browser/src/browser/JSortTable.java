@@ -23,28 +23,9 @@
  */
 package browser;
 
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
-import cytoscape.data.Semantics;
-
-import cytoscape.dialogs.NetworkMetaDataDialog;
-
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
-
 import giny.model.Edge;
+import giny.model.GraphObject;
 import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -58,19 +39,16 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,12 +70,24 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
+import cytoscape.data.Semantics;
+import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualMappingManager;
 
 
 /**
@@ -106,6 +96,12 @@ import javax.swing.table.TableColumnModel;
 public class JSortTable extends JTable implements MouseListener, ActionListener,
                                                   PropertyChangeListener, SelectEventListener {
 	
+	protected static final int SELECTED_NODE = 1;
+	protected static final int REV_SELECTED_NODE = 2;
+	protected static final int SELECTED_EDGE = 3;
+	protected static final int REV_SELECTED_EDGE = 4;
+	
+	// Gloval calcs used for coloring
 	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	private GlobalAppearanceCalculator gac;
 	
@@ -115,10 +111,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 	private Color selectedEdgeColor;
 	private Color reverseSelectedNodeColor;
 	private Color reverseSelectedEdgeColor;
-	protected static final int SELECTED_NODE = 1;
-	protected static final int REV_SELECTED_NODE = 2;
-	protected static final int SELECTED_EDGE = 3;
-	protected static final int REV_SELECTED_EDGE = 4;
+	
 
 	// For right-click menu
 	private JPopupMenu rightClickPopupMenu;
@@ -138,7 +131,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 	/**
 	 * 
 	 */
-	public static final String LS = System.getProperty("line.separator");
+	protected static final String LS = System.getProperty("line.separator");
 
 	/**
 	 * Creates a new JSortTable object.
@@ -265,7 +258,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 		// Identifying the copy KeyStroke user can modify this
 		// to copy on some other Key combination.
 		this.registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
-
 		systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	}
 
@@ -300,8 +292,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 
 	protected Color getSelectedColor(final int type) {
 		Color newColor;
-		gac = vmm.getVisualStyle()
-		                                          .getGlobalAppearanceCalculator();
+		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
 
 		switch (type) {
 			case SELECTED_NODE:
@@ -333,8 +324,97 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 		return newColor;
 	}
 
-	// Create pop-up menu for right-click
 
+	protected Edge getEdge(final String edgeString) {
+		String[] edgeNameParts = edgeString.split(" \\(");
+		final Node source = Cytoscape.getCyNode(edgeNameParts[0]);
+		edgeNameParts = edgeNameParts[1].split("\\) ");
+		
+		final String interaction = edgeNameParts[0];
+		final Node target = Cytoscape.getCyNode(edgeNameParts[1]);
+		
+		return Cytoscape.getCyEdge(source, target,
+		                                        Semantics.INTERACTION,
+		                                        interaction, false);
+	}
+	
+	private Map<String, GraphObject> paintNodesAndEdges(int idLocation) {
+		final int[] rowsSelected = getSelectedRows();
+		
+		final Map<String, GraphObject> selectedMap = new HashMap<String, GraphObject>();
+		final int selectedRowLength = rowsSelected.length;
+		String selectedName = null;
+		
+		Node selectedNode;
+		Edge selectedEdge;
+		NodeView nv;
+		EdgeView ev;
+		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
+		
+		for (int idx = 0; idx < selectedRowLength; idx++) {
+			selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
+
+			if (objectType == DataTable.NODES) {
+				// Change node color
+				selectedNode = Cytoscape.getCyNode(selectedName);
+				selectedMap.put(selectedName, selectedNode);
+
+				if (netView != Cytoscape.getNullNetworkView()) {
+					nv = netView.getNodeView(selectedNode);
+					if (nv != null) {
+						nv.setSelectedPaint(reverseSelectedNodeColor);
+					}
+				}
+			} else if (objectType == DataTable.EDGES) {
+				selectedEdge = getEdge(selectedName);
+				selectedMap.put(selectedName, selectedEdge);
+
+				if (netView != Cytoscape.getNullNetworkView()) {
+					ev = netView.getEdgeView(selectedEdge);
+					if (ev != null) {
+						ev.setSelectedPaint(reverseSelectedEdgeColor);
+					}
+				}
+			}
+		}
+		
+		return selectedMap;
+	}
+	
+	private void resetObjectColor(int idLocation) {
+		for (int idx = 0; idx < dataModel.getRowCount(); idx++) {
+			if (objectType == DataTable.NODES) {
+				Node selectedNode = Cytoscape.getCyNode((String) dataModel.getValueAt(idx,
+				                                                                      idLocation));
+
+				// Set to the original color
+				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(selectedNode);
+
+					if (nv != null) {
+						nv.setSelectedPaint(selectedNodeColor);
+					}
+				}
+			} else if (objectType == DataTable.EDGES) {
+				String selectedEdgeName = (String) dataModel.getValueAt(idx, idLocation);
+				
+				Edge selectedEdge = this.getEdge(selectedEdgeName);
+
+				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+					EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(selectedEdge);
+
+					if (ev != null) {
+						ev.setSelectedPaint(selectedEdgeColor);
+					}
+				}
+			} else {
+				// For network attr, we do not have to do anything.
+			}
+		}
+	}
+
+	
+	
 	/**
 	 * This method initializes jPopupMenu1
 	 *
@@ -382,103 +462,45 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 
 			newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
-						int[] rowsSelected = getSelectedRows();
-
-						int columnCount = getColumnCount();
+						
 						int idLocation = 0;
-
+						final int columnCount = getColumnCount();
 						// First, find the location of the ID column
 						for (int idx = 0; idx < columnCount; idx++) {
 							if (getColumnName(idx).equals(DataTable.ID)) {
 								idLocation = idx;
-
 								break;
 							}
 						}
+						final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
+						final CyNetwork curNet = Cytoscape.getCurrentNetwork();
+						
+						final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
 
-						HashMap selectedMap = new HashMap();
-						String selectedName = null;
-
-						for (int idx = 0; idx < rowsSelected.length; idx++) {
-							selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
-
-							if (objectType == DataTable.NODES) {
-								// Change node color
-								Node selectedNode = Cytoscape.getCyNode(selectedName);
-
-								selectedMap.put(selectedName, selectedNode);
-
-								if (Cytoscape.getCurrentNetworkView() != Cytoscape
-								                                                                                                                                                                                                                                                                                                                                                                                    .getNullNetworkView()) {
-									NodeView nv = Cytoscape.getCurrentNetworkView()
-									                       .getNodeView(selectedNode);
-
-									if (nv != null) {
-										nv.setSelectedPaint(Color.GREEN);
-									}
-								}
-							} else {
-								// Edge selectedEdge =
-								// Cytoscape.getCyEdge((String)
-								String[] edgeNameParts = selectedName.split(" ");
-								String interaction = edgeNameParts[1].substring(1,
-								                                                edgeNameParts[1]
-								                                                                                                                                                                                                                                                                                                                                                                                                  .length()
-								                                                - 1);
-								Node source = Cytoscape.getCyNode(edgeNameParts[0]);
-								Node target = Cytoscape.getCyNode(edgeNameParts[2]);
-								Edge selectedEdge = Cytoscape.getCyEdge(source, target,
-								                                        Semantics.INTERACTION,
-								                                        interaction, false);
-								selectedMap.put(selectedName, selectedEdge);
-
-								if (Cytoscape.getCurrentNetworkView() != Cytoscape
-								                                                                                                                                                                                                                                                                                                                                                                                                            .getNullNetworkView()) {
-									EdgeView ev = Cytoscape.getCurrentNetworkView()
-									                       .getEdgeView(selectedEdge);
-
-									if (ev != null) {
-										ev.setSelectedPaint(Color.GREEN);
-									}
-								}
-							}
-						}
-
-						Iterator it = null;
-						List nonSelectedObjects = new ArrayList();
-
+						GraphObject fromMap;
 						if (objectType == DataTable.NODES) {
-							it = Cytoscape.getCurrentNetwork().getSelectedNodes().iterator();
 
-							while (it.hasNext()) {
-								Node curNode = (Node) it.next();
-								Node fromMap = (Node) selectedMap.get(curNode.getIdentifier());
+							for(Object curNode : curNet.getSelectedNodes()) {
+								fromMap = selectedMap.get(((Node) curNode).getIdentifier());
 
 								if (fromMap == null) {
-									nonSelectedObjects.add(curNode);
+									nonSelectedObjects.add((GraphObject) curNode);
 								}
 							}
 
 							resetObjectColor(idLocation);
-
-							Cytoscape.getCurrentNetwork()
-							         .setSelectedNodeState(nonSelectedObjects, false);
+							curNet.setSelectedNodeState(nonSelectedObjects, false);
 						} else {
-							it = Cytoscape.getCurrentNetwork().getSelectedEdges().iterator();
-
-							while (it.hasNext()) {
-								Edge curEdge = (Edge) it.next();
-								Edge fromMap = (Edge) selectedMap.get(curEdge.getIdentifier());
+							for(Object curEdge : curNet.getSelectedEdges()) {
+								fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
 
 								if (fromMap == null) {
-									nonSelectedObjects.add(curEdge);
+									nonSelectedObjects.add((GraphObject) curEdge);
 								}
 							}
 
 							resetObjectColor(idLocation);
-
-							Cytoscape.getCurrentNetwork()
-							         .setSelectedEdgeState(nonSelectedObjects, false);
+							curNet.setSelectedEdgeState(nonSelectedObjects, false);
 						}
 
 						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
@@ -620,7 +642,7 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 		//
 		// Event handler. Define actions when mouse is clicked.
 		//
-		addMouseListener(new MouseListener() {
+		addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					final int column = getColumnModel().getColumnIndexAtX(e.getX());
 					final int row = e.getY() / getRowHeight();
@@ -657,26 +679,17 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 					}
 				} // mouseClicked
 
-				public void mouseExited(MouseEvent e) {
-				}
-
-				public void mousePressed(MouseEvent e) {
-				}
-
-				public void mouseEntered(MouseEvent e) {
-				}
-
 				public void mouseReleased(MouseEvent e) {
 					// When the mouse is released, fire signal to pass the selected
 					// objects in the table.
 					// Get selected object names
-					int[] rowsSelected = getSelectedRows();
+					final int[] rowsSelected = getSelectedRows();
 
 					if (rowsSelected.length == 0) {
 						return;
 					}
 
-					int columnCount = getColumnCount();
+					final int columnCount = getColumnCount();
 					int idLocation = 0;
 
 					// First, find the location of the ID column
@@ -697,50 +710,41 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 					setSelectedColor(REV_SELECTED_EDGE);
 
 					resetObjectColor(idLocation);
-
-					String selectedName = null;
-
-					for (int idx = 0; idx < rowsSelected.length; idx++) {
-						selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
-
-						if (objectType == DataTable.NODES) {
-							// Flip the internal flag
-							((DataTableModel) dataModel).setSelectionArray(selectedName, true);
-
-							Node selectedNode = Cytoscape.getCyNode(selectedName);
-
-							if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-								NodeView nv = Cytoscape.getCurrentNetworkView()
-								                       .getNodeView(selectedNode);
-
-								if (nv != null) {
-									nv.setSelectedPaint(reverseSelectedNodeColor);
-								}
-							}
-						} else if (objectType == DataTable.EDGES) {
-							// Edge selectedEdge = Cytoscape.getCyEdge((String)
-							String[] edgeNameParts = selectedName.split(" ");
-							String interaction = edgeNameParts[1].substring(1,
-							                                                edgeNameParts[1].length()
-							                                                - 1);
-							Node source = Cytoscape.getCyNode(edgeNameParts[0]);
-							Node target = Cytoscape.getCyNode(edgeNameParts[2]);
-							Edge selectedEdge = Cytoscape.getCyEdge(source, target,
-							                                        Semantics.INTERACTION,
-							                                        interaction, false);
-
-							if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-								EdgeView ev = Cytoscape.getCurrentNetworkView()
-								                       .getEdgeView(selectedEdge);
-
-								if (ev != null) {
-									ev.setSelectedPaint(reverseSelectedEdgeColor);
-								}
-							}
-						} else {
-							// For network, do nothing.
-						}
-					}
+					paintNodesAndEdges(idLocation);
+					
+//					for (int idx = 0; idx < rowsSelected.length; idx++) {
+//						selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
+//
+//						if (objectType == DataTable.NODES) {
+//							// Flip the internal flag
+//							((DataTableModel) dataModel).setSelectionArray(selectedName, true);
+//
+//							Node selectedNode = Cytoscape.getCyNode(selectedName);
+//
+//							if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+//								NodeView nv = Cytoscape.getCurrentNetworkView()
+//								                       .getNodeView(selectedNode);
+//
+//								if (nv != null) {
+//									nv.setSelectedPaint(reverseSelectedNodeColor);
+//								}
+//							}
+//						} else if (objectType == DataTable.EDGES) {
+//							
+//							Edge selectedEdge = getEdge(selectedName);
+//
+//							if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+//								EdgeView ev = Cytoscape.getCurrentNetworkView()
+//								                       .getEdgeView(selectedEdge);
+//
+//								if (ev != null) {
+//									ev.setSelectedPaint(reverseSelectedEdgeColor);
+//								}
+//							}
+//						} else {
+//							// For network, do nothing.
+//						}
+//					}
 
 					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 						Cytoscape.getCurrentNetworkView().updateView();
@@ -749,55 +753,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 			});
 	}
 	
-	private Edge getEdge(final String edgeName) {
-		
-		String[] edgeNameParts = edgeName.split(" (");
-		String interaction = edgeNameParts[1].split(") ")[0];
-		Node source = Cytoscape.getCyNode(edgeNameParts[0]);
-		Node target = Cytoscape.getCyNode(edgeNameParts[2]);
-		
-		return null;
-	}
-	
-
-	private void resetObjectColor(int idLocation) {
-		for (int idx = 0; idx < dataModel.getRowCount(); idx++) {
-			if (objectType == DataTable.NODES) {
-				Node selectedNode = Cytoscape.getCyNode((String) dataModel.getValueAt(idx,
-				                                                                      idLocation));
-
-				// Set to the original color
-				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(selectedNode);
-
-					if (nv != null) {
-						nv.setSelectedPaint(selectedNodeColor);
-					}
-				}
-			} else if (objectType == DataTable.EDGES) {
-				String selectedEdgeName = (String) dataModel.getValueAt(idx, idLocation);
-				String[] edgeNameParts = selectedEdgeName.split(" ");
-				String interaction = edgeNameParts[1].substring(1, edgeNameParts[1].length() - 1);
-				Node source = Cytoscape.getCyNode(edgeNameParts[0]);
-				Node target = Cytoscape.getCyNode(edgeNameParts[2]);
-				Edge selectedEdge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION,
-				                                        interaction, false);
-
-				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(selectedEdge);
-
-					if (ev != null) {
-						ev.setSelectedPaint(selectedEdgeColor);
-					}
-				}
-			} else {
-				// For network attr, we do not have to do anything.
-			}
-		}
-
-		// Cytoscape.getCurrentNetworkView().updateView();
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1030,7 +985,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 		}
 
 		Object tempCell = null;
-		String oneCell = null;
 
 		for (int i = 0; i < numrows; i++) {
 			for (int j = 0; j < numcols; j++) {
@@ -1068,10 +1022,6 @@ public class JSortTable extends JTable implements MouseListener, ActionListener,
 			setSelectedColor(SELECTED_EDGE);
 			setSelectedColor(REV_SELECTED_EDGE);
 
-//			if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-//				System.out.println("############ calling rd @@@@@@@@@@@@@@@@@@@@@@@@@@@");
-//				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-//			}
 		}
 	}
 
@@ -1222,17 +1172,10 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 				}
 			}
 		} else if (type == DataTable.EDGES) {
-			String edgeName = (String) table.getValueAt(row, column);
-			String[] parts = edgeName.split(" ");
-
-			CyNode source = Cytoscape.getCyNode(parts[0].trim());
-			CyNode target = Cytoscape.getCyNode(parts[2].trim());
-			String interaction = parts[1].trim().substring(1, parts[1].trim().length() - 1);
 
 			if (netview != Cytoscape.getNullNetworkView()) {
-				EdgeView edgeView = netview.getEdgeView(Cytoscape.getCyEdge(source, target,
-				                                                            Semantics.INTERACTION,
-				                                                            interaction, false));
+				final String edgeName = (String) table.getValueAt(row, column);
+				final EdgeView edgeView = netview.getEdgeView(((JSortTable)table).getEdge(edgeName));
 
 				if (edgeView != null) {
 					Color edgeColor = (Color) edgeView.getUnselectedPaint();
