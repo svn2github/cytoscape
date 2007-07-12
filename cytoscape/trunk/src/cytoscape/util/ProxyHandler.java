@@ -61,19 +61,23 @@ public class ProxyHandler implements PropertyChangeListener {
     }
 
     /**
-     *  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
+     * Return the Proxy representing the proxy server to use
+     * when reading and writing URLs. If no proxy server is being
+     * used, return null.
      */
+    // TODO: Change this to *always* return a Proxy (no null value).
+    //       For a null proxy, return Proxy.NO_PROXY instead.
     public static Proxy getProxyServer() {
         if (proxyServer == null) {
             loadProxyServer();
         }
-
         return proxyServer;
     }
 
-    // TODO: Change to not produce a new Proxy if the proxy is the same as previous Proxy.
+    // TODO: Change to always setup proxyServer to a non-null value
+    // using Proxy.NO_PROXY for direct connections. Also, change to
+    // not produce a new Proxy if the proxy is the same as previous
+    // Proxy.
     private static void loadProxyServer() {
         String proxyName = CytoscapeInit.getProperties()
                                         .getProperty(PROXY_HOST_PROPERTY_NAME);
