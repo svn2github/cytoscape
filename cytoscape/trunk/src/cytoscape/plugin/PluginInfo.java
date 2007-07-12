@@ -243,10 +243,13 @@ public class PluginInfo {
 	
 	/**
 	 * Jar or Zip are currently supported. Use PluginInfo.JAR or PluginInfo.ZIP.
+	 * This will only be set by the PluginManager generally and can only be set once 
+	 * as an object's file type will not change.
 	 * @param type
 	 */
 	protected void setFiletype(FileType type) {
-		fileType = type;
+		if (fileType == null)
+			fileType = type;
 	}
 
 	/**
@@ -282,7 +285,8 @@ public class PluginInfo {
 	 * @param fileName
 	 */
 	protected void addFileName(String fileName) {
-		pluginFiles.add(fileName);
+		if (!pluginFiles.contains(fileName))
+			pluginFiles.add(fileName);
 	}
 
 	/**
@@ -373,12 +377,14 @@ public class PluginInfo {
 	}
 
 	/**
-	 * This is meant to only get set by the PluginManager
+	 * This is meant to only get set by the PluginManager.  It can only
+	 * be set once as the install location can't move.
 	 * 
 	 * @param Loc
 	 */
 	protected void setInstallLocation(String Loc) {
-		installLocation = Loc;
+		if (installLocation == null)
+			installLocation = Loc;
 	}
 	
 	/* GET */

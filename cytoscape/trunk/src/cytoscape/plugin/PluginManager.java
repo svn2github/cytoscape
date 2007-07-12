@@ -73,6 +73,9 @@ import java.util.zip.ZipEntry;
 public class PluginManager {
 	protected PluginTracker pluginTracker;
 
+	private boolean duplicateLoadError;
+	private List<String> duplicateClasses;
+	
 	private static PluginManager pluginMgr = null;
 
 	private static File tempDir;
@@ -133,6 +136,11 @@ public class PluginManager {
 	 * @return True if all files deleted successfully
 	 */
 	protected boolean removeWebstartInstalls() {
+		if (tempDir == null) 
+			{ 
+			System.err.println("Directory not yet set up, can't delete"); 
+			return false; 
+			}
 		return recursiveDeleteFiles(tempDir.getParentFile());
 	}
 
@@ -170,7 +178,6 @@ public class PluginManager {
 	 * when running as a webstart.
 	 */
 	private static void setWebstart() {
-		System.out.println("set webstart");
 		if (System.getProperty("javawebstart.version") != null
 				&& System.getProperty("javawebstart.version").length() > 0) {
 			System.out.println("USING WEBSTART: "
@@ -215,6 +222,8 @@ public class PluginManager {
 									+ CytoscapeVersion.version + File.separator
 									+ "plugins");
 					;
+					this.removeWebstartInstalls();
+
 					trackerFileName = "track_webstart_plugins.xml";
 				} else {
 					tempDir = new File(CytoscapeInit
@@ -306,24 +315,17 @@ public class PluginManager {
 			if (InfoObj == null) { // still null, create a default one	
 					InfoObj = new PluginInfo();
 					InfoObj.setName(Plugin.getClass().getName());
-				} 		
+			} 		
 
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
 				if (!usingWebstart) {
 					InfoObj.setInstallLocation(Jar.getName());
 					InfoObj.addFileName(Jar.getName());
 				}
-
+				InfoObj.setFiletype(PluginInfo.FileType.JAR);
+				
 				initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
-			   /* I think we can safely assume it's a jar file if it's
-				* registering since only CytoscapePlugin registers and 
-				* at that point all we know is it's a jar 
-				*/
-				if (InfoObj.getFileType() == null) {
-					InfoObj.setFiletype(PluginInfo.FileType.JAR);
-				}
-				pluginTracker.addPlugin(InfoObj,
-						PluginStatus.CURRENT);
+				pluginTracker.addPlugin(InfoObj, PluginStatus.CURRENT);
 			}
 	}
 
@@ -435,13 +437,12 @@ public class PluginManager {
 	}
 
 	private boolean recursiveDeleteFiles(File file) {
-		if (file.isDirectory())
+		if (file.isDirectory()) 
 			for (File f : file.listFiles())
 				recursiveDeleteFiles(f);
 
-		System.out
-				.println(" recursive deleting file " + file.getAbsolutePath());
 		boolean del = file.delete();
+		//System.out.println(del + " recursive deleting file " + file.getAbsolutePath());
 
 		// Utterly f*#king retarded, but apparently necessary since sometimes
 		// directories don't realize they're empty...
@@ -689,6 +690,10 @@ public class PluginManager {
 		}
 		// don't need to register if we have the info object
 		loadURLPlugins(ToLoad, false);
+		if (duplicateLoadError) {
+			throwDuplicateError();
+		}
+
 	}
 
 	/**
@@ -758,18 +763,32 @@ public class PluginManager {
 		loadURLPlugins(pluginURLs, true);
 		loadResourcePlugins(resourcePlugins);
 		cleanCurrentList();
+		if (duplicateLoadError) {
+			throwDuplicateError();
+		}
 	}
 
+	private void throwDuplicateError() throws PluginException {
+		String Msg = "The following plugins were not loaded due to duplicate class definitions:\n";
+		for (String dup : duplicateClasses)
+			Msg += "\t" + dup + "\n";
+		throw new PluginException(Msg);
+	}
+	
+	
 	/**
 	 * Load all plugins by using the given URLs loading them all on one
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
 	 */
 	private void loadURLPlugins(List<URL> pluginUrls, boolean register)
-			throws IOException, PluginException {
+			throws IOException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
+		duplicateClasses = new ArrayList<String>();
+		duplicateLoadError = false;
+		
 		// the creation of the class loader automatically loads the plugins
 		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
 
@@ -853,7 +872,7 @@ public class PluginManager {
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
 	// used by jars that do
 	private void loadResourcePlugins(List<String> resourcePlugins)
-			throws ClassNotFoundException, PluginException {
+			throws ClassNotFoundException {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
 			System.out.println("");
@@ -869,8 +888,8 @@ public class PluginManager {
 	}
 
 	
-	private void loadPlugin(Class plugin, JarFile jar, boolean register) throws PluginException {
-	if (CytoscapePlugin.class.isAssignableFrom(plugin)
+	private void loadPlugin(Class plugin, JarFile jar, boolean register) {
+		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 			&& !loadedPlugins.contains(plugin.getName())) {
 		try {
 			Object obj = CytoscapePlugin.loadPlugin(plugin);
@@ -887,12 +906,8 @@ public class PluginManager {
 		} 
 
 	} else if (loadedPlugins.contains(plugin.getName())) {
-		// TODO warn user class of this name has already been loaded and
-		// can't be loaded again
-		String ErrorMsg = "A plugin with the name '" + plugin.getName()
-			+ "' is already loaded, skipping.";
-		System.err.println(ErrorMsg);
-		throw new PluginException("Cannot load duplicate plugin class for " + plugin.getName());
+		duplicateClasses.add(plugin.getName());
+		duplicateLoadError = true;
 	}
 }
 	
