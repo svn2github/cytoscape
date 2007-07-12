@@ -147,6 +147,9 @@ public class CytoscapeInit {
 			// Build the OntologyServer.
 			Cytoscape.buildOntologyServer();
 
+			// get the manager so it can test for webstart before menus are created (little hacky)
+			PluginManager.getPluginManager();
+			
 			// see if we are in headless mode
 			// show splash screen, if appropriate
 			System.out.println("init mode: " + initParams.getMode());
