@@ -923,7 +923,7 @@
 			<arg value="-cyto_dir" />
 			<arg value="${release.dir}" />
 			<arg value="-url" />
-			<arg value="${webstartURL}/webstart" />
+			<arg value="${webstartURL}" />
 			<arg value="-save_dir" /> 
 			<arg value="${basedir}/resources/webstart" />
 		</java>
@@ -953,8 +953,17 @@
             ---------------------------------------
 		</echo>
 
-		<copy file="${basedir}/resources/webstart/cy1.jnlp" tofile="${webstart.dir}/cy1.jnlp" />
+		<copy file="${basedir}/resources/webstart/cy1.jnlp" todir="${webstart.dir}" />
 
+		<copy todir="${webstart.dir}">
+			<fileset dir="${basedir}/resources/webstart">
+				<exclude name="*.jsp"/>
+			</fileset>
+		</copy>
+		
+
+
+		
 		<copy file="${basedir}/cytoscape.jar" tofile="${webstart.dir}/cytoscape.jar" />
 		<signjar jar="${webstart.dir}/cytoscape.jar" alias="cytoscape" storepass="secret" />
 
@@ -1000,6 +1009,7 @@
 		</signjar>
 	</target>
 	
+	
 	<target name="webstart-extras" 
 		description="add extra plugins into webstart">
 		<echo>
@@ -1023,15 +1033,12 @@
 	<target name="war" depends="webstart" description="Create war package for webstart distribution">
 		<!-- Using jar rather that war task because we don't have a webxml file -->
  		<jar destfile="${build.dir}/Cytoscape.war">
-			<fileset dir="${build.dir}">
-				<include name="webstart/**"/>
+			<fileset dir="${build.dir}/webstart">
+				<include name="**/**"/>
 			</fileset>
 			<fileset dir="${basedir}/resources/webstart"/>
 		</jar>
 	</target>
-
-
-
 
 
   <property name="dir.jalopy" value="/mystuff/jalopy/bin" />
