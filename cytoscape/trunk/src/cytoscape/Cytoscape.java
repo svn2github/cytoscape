@@ -577,9 +577,6 @@ public abstract class Cytoscape {
 	 *            will create a node if one does not exist
 	 * @return will always return a node, if <code>create</code> is true
 	 *
-	 * KONO: 5/4/2006 Since we removed the canonicalName, no "canonicalization"
-	 * is necessary. This method uses given nodeID as the identifier.
-	 *
 	 */
 	public static CyNode getCyNode(String nodeID, boolean create) {
 		CyNode node = Cytoscape.getRootGraph().getNode(nodeID);
@@ -705,8 +702,8 @@ public abstract class Cytoscape {
 			                                           target.getIdentifier());
 			edge.setIdentifier(edge_name);
 
-			// store edge id as INTERACTION 
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);
+			edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
 
 			return edge;
 		}
@@ -727,7 +724,6 @@ public abstract class Cytoscape {
 	 */
 	public static CyEdge getCyEdge(String source_alias, String edge_name, String target_alias,
 	                               String interaction_type) {
-		edge_name = canonicalizeName(edge_name);
 
 		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
@@ -764,29 +760,6 @@ public abstract class Cytoscape {
 		}
 	}
 
-	/**
-	 * @deprecated This will be removed Feb 2007.
-	 */
-	private static String canonicalizeName(String name) {
-		String canonicalName = name;
-
-		if (bioDataServer != null) {
-			canonicalName = bioDataServer.getCanonicalName(species, name);
-
-			if (canonicalName == null) {
-				canonicalName = name;
-			}
-		}
-
-		return canonicalName;
-	}
-
-//	/**
-//	 * @deprecated This will be removed Feb 2007.
-//	 */
-//	public static void setSpecies() {
-//		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-//	}
 
 	// --------------------//
 	// Network Methods
@@ -1307,37 +1280,6 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Creates a cytoscape.data.CyNetwork from a file. The passed variable
-	 * determines the type of file, i.e. GML, SIF, SBML, etc.
-	 * <p>
-	 * This operation may take a long time to complete. It is a good idea NOT to
-	 * call this method from the AWT event handling thread.
-	 *
-	 * A view will be created automatically.
-	 *
-	 * @param location
-	 *            the location of the file
-	 * @param file_type
-	 *            the type of file GML, SIF, SBML, etc.
-	 * @param canonicalize
-	 *            this will set the preferred display name to what is on the
-	 *            server.
-	 * @param biodataserver
-	 *            provides the name conversion service
-	 * @param species
-	 *            the species used by the BioDataServer
-	 *
-	 * @deprecated It will be removed in April 2007 Use CyNetwork
-	 *             createNetworkFromFile(String location, boolean create_view)
-	 *             instead. File type is no longer needed as ImportHandler now
-	 *             manages all file types.
-	 */
-	public static CyNetwork createNetwork(String location, int file_type, boolean canonicalize,
-	                                      BioDataServer biodataserver, String species) {
-		return createNetworkFromFile(location, true);
-	}
-
-	/**
 	 * Creates a cytoscape.data.CyNetwork from a reader. Neccesary with
 	 * cesssions.
 	 * <p>
@@ -1481,31 +1423,6 @@ public abstract class Cytoscape {
 		Cytoscape.firePropertyChange(Cytoscape.EXPRESSION_DATA_LOADED, null, expressionData);
 
 		return true;
-	}
-
-	/**
-	 * Loads Node and Edge attribute data into Cytoscape from the given file
-	 * locations. Currently, the only supported attribute types are of the type
-	 * "name = value".
-	 *
-	 * @param nodeAttrLocations
-	 *            an array of node attribute file locations. May be null.
-	 * @param edgeAttrLocations
-	 *            an array of edge attribute file locations. May be null.
-	 * @param canonicalize
-	 *            convert to the preffered name on the biodataserver
-	 * @param bioDataServer
-	 *            provides the name conversion service
-	 * @param species
-	 *            the species to use with the bioDataServer's
-	 * @deprecated Use loadAttributes(nodeAttrLocations,edgeAttrLocations)
-	 *             instead. BioDataServer, canonicalize, and species are no
-	 *             longer used. Will be removed 10/2007.
-	 */
-	public static void loadAttributes(String[] nodeAttrLocations, String[] edgeAttrLocations,
-	                                  boolean canonicalize, BioDataServer bioDataServer,
-	                                  String species) {
-		loadAttributes(nodeAttrLocations, edgeAttrLocations);
 	}
 
 	/**

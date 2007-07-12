@@ -207,8 +207,8 @@ public class CyAttributesUtilsTest extends TestCase {
 		List<String> attrNames = CyAttributesUtils.getAttributeNamesForObj(testEdgeCopy
 		                                                                                                                                                                                                        .getIdentifier(),
 		                                                                   attrs);
-		// should only have 2 attributes: ListTest and Semantics.INTERACTION:                                                                  
-		Assert.assertTrue(attrNames.size() == 2);
+		// should have 3 attributes: ListTest and Semantics.INTERACTION, and Semantics.CANONICAL_NAME:                                                                  
+		Assert.assertTrue(attrNames.size() == 3);
 	}
 
 	private void addAttributes(GraphObject go) {
