@@ -270,7 +270,10 @@ public class BioDataServerUtil {
 		taxonURL = new URL(NCBI_TAXON_SERVER + targetId);
 
 		try {
-			htmlPageReader = new BufferedReader(new InputStreamReader(taxonURL.openStream()));
+			// htmlPageReader = new BufferedReader(new InputStreamReader(taxonURL.openStream()));
+            // Use URLUtil to get the InputStream since we might be using a proxy server 
+			// and because pages may be cached:
+			htmlPageReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxonURL)));
 
 			while ((curLine = htmlPageReader.readLine()) != null) {
 				curLine.trim();

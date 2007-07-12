@@ -67,6 +67,7 @@ import cytoscape.data.synonyms.Thesaurus;
 import cytoscape.data.synonyms.readers.ThesaurusFlatFileReader;
 
 import cytoscape.util.BioDataServerUtil;
+import cytoscape.util.URLUtil;
 
 // -----------------------------------------------------------------------------------------
 import java.io.BufferedReader;
@@ -469,7 +470,11 @@ public class BioDataServer {
 			// Create tax_report file reader
 			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
 
-			taxonFileReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+			// taxonFileReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+            // Even though taxURL is probably a local URL, error on the
+			// side of caution and use URLUtil to get the input stream (which
+			// handles proxy servers and cached pages):
+			taxonFileReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 
 			// taxonName = checkSpecies(gaFileReader);
 			taxonName = bdsu.checkSpecies(gaFileReader, taxonFileReader);

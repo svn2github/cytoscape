@@ -41,6 +41,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.data.ontology.Ontology;
+import cytoscape.util.URLUtil;
 import static cytoscape.data.ontology.readers.OBOTags.BROAD_SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.DEF;
 import static cytoscape.data.ontology.readers.OBOTags.EXACT_SYNONYM;
@@ -140,7 +141,10 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * @throws IOException
 	 */
 	public OBOFlatFileReader(URL dataSource, String name) throws IOException {
-		this(dataSource.openStream(), name);
+		// this(dataSource.openStream(), name);
+        // Use URLUtil to get the InputStream since we might be using a proxy server
+		// and because pages may be cached:
+		this(URLUtil.getBasicInputStream(dataSource), name);
 	}
 
 	/**

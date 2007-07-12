@@ -61,6 +61,7 @@ import cytoscape.generated.Ontology;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 
+import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
 
 import ding.view.DGraphView;
@@ -350,8 +351,11 @@ public class CytoscapeSessionReader {
 		}
 
 		// restore cytoscape properties
-		CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
-
+		// CytoscapeInit.getProperties().load(cytoscapePropsURL.openStream());
+		// Even though cytoscapePropsURL is probably a local URL, error on the
+		// side of caution and use URLUtil to get the input stream (which
+		// handles proxy servers and cached pages):
+		CytoscapeInit.getProperties().load(URLUtil.getBasicInputStream(cytoscapePropsURL));
 		loadCySession();
 
 		// restore plugin state files
@@ -383,7 +387,11 @@ public class CytoscapeSessionReader {
 				try {
 					// get inputstream from ZIP
 					URL theURL = new URL(URLstr);
-					InputStream is = theURL.openStream();
+					// InputStream is = theURL.openStream();
+                    // Even though theURL derives from a File, error on the
+					// side of caution and use URLUtil to get the input stream (which
+					// handles proxy servers and cached pages):
+					InputStream is = URLUtil.getBasicInputStream(theURL);
 
 					// Write input stream into tmp file
 					BufferedWriter out = null;
@@ -427,7 +435,10 @@ public class CytoscapeSessionReader {
 		Bookmarks theBookmark = null;
 
 		try {
-			InputStream is = pBookmarksFileURL.openStream();
+			// InputStream is = pBookmarksFileURL.openStream();
+			// Use URLUtil to get the InputStream since we might be using a proxy server 
+			// and because pages may be cached:
+			InputStream is = URLUtil.getBasicInputStream(pBookmarksFileURL);
 
 			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
 			                                                        this.getClass().getClassLoader());
@@ -450,7 +461,11 @@ public class CytoscapeSessionReader {
 	}
 
 	private void loadCySession() throws JAXBException, IOException {
-		InputStream is = cysessionFileURL.openStream();
+		// InputStream is = cysessionFileURL.openStream();
+        // Even though cytoscapeFileURL is probably a local URL, error on the
+		// side of caution and use URLUtil to get the input stream (which
+		// handles proxy servers and cached pages):
+		InputStream is = URLUtil.getBasicInputStream(cysessionFileURL);
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
 		                                                        this.getClass().getClassLoader());
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -768,7 +783,10 @@ public class CytoscapeSessionReader {
 
             byte                  buffer[]       = new byte[100000];
             java.io.OutputStream  localContent   = new java.io.FileOutputStream(tempFile);
-            java.io.InputStream   remoteContent  = remoteURL.openStream();
+            // java.io.InputStream   remoteContent  = remoteURL.openStream();
+            // Use URLUtil to get the InputStream since we might be using a proxy server 
+    		// and because pages may be cached:
+            java.io.InputStream   remoteContent  = URLUtil.getBasicInputStream(remoteURL);
 
             for (int nBytes = remoteContent.read(buffer); nBytes>0; nBytes = remoteContent.read(buffer)) {
                 localContent.write(buffer, 0, nBytes);

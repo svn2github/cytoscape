@@ -46,6 +46,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
 
 import cytoscape.visual.mappings.ContinuousMapping;
@@ -187,7 +188,10 @@ public abstract class CalculatorCatalogFactory {
                     InputStream is = null;
 
                     if (vizmapSource.getClass() == URL.class)
-                        is = ((URL) vizmapSource).openStream();
+                        // is = ((URL) vizmapSource).openStream();
+                        // Use URLUtil to get the InputStream since we might be using a proxy server 
+        				// and because pages may be cached:
+                        is = URLUtil.getBasicInputStream((URL) vizmapSource);                     
                     else if (vizmapSource.getClass() == String.class) {
                         // if its a RESTORED event the vizmap
                         // file will be in a zip file.

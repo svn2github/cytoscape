@@ -37,6 +37,7 @@
 package cytoscape.data.readers;
 
 import cytoscape.*;
+import cytoscape.util.URLUtil;
 
 import java.io.*;
 
@@ -82,7 +83,10 @@ public class TextJarReader {
 			filename = urlString;
 
 			URL url = new URL(urlString);
-			is = url.openStream();
+			// is = url.openStream();
+            // Use URLUtil to get the InputStream since we might be using a proxy server 
+			// and because pages may be cached:
+			is = URLUtil.getBasicInputStream(url);
 		}
 
 		reader = new InputStreamReader(is);

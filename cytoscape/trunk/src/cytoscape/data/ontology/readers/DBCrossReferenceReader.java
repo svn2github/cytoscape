@@ -35,6 +35,7 @@
 package cytoscape.data.ontology.readers;
 
 import cytoscape.data.ontology.DBReference;
+import cytoscape.util.URLUtil;
 import static cytoscape.data.ontology.readers.DBXrefKeywords.ABBREVIATION;
 import static cytoscape.data.ontology.readers.DBXrefKeywords.DATABASE;
 import static cytoscape.data.ontology.readers.DBXrefKeywords.GENERIC_URL;
@@ -93,7 +94,9 @@ public class DBCrossReferenceReader {
 	 */
 	public void readResourceFile() throws IOException {
 		URL resource = getClass().getResource(DBXREF_RESOURCE_FILE);
-		BufferedReader bufRd = new BufferedReader(new InputStreamReader(resource.openStream()));
+		// BufferedReader bufRd = new BufferedReader(new InputStreamReader(resource.openStream()));
+		// Use URLUtil to get the InputStream since we might be using a proxy server and because pages may be cached:
+		BufferedReader bufRd = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream (resource)));
 		String line;
 
 		while ((line = bufRd.readLine()) != null) {

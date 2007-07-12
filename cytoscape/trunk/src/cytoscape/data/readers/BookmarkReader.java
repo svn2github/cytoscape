@@ -37,6 +37,7 @@ package cytoscape.data.readers;
 import cytoscape.Cytoscape;
 
 import cytoscape.bookmarks.Bookmarks;
+import cytoscape.util.URLUtil;
 
 import java.io.IOException;
 
@@ -94,7 +95,10 @@ public class BookmarkReader {
 		// Unmarshall the XGMML file
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-		bookmarks = (Bookmarks) unmarshaller.unmarshal(bookmarkUrl.openStream());
+		// bookmarks = (Bookmarks) unmarshaller.unmarshal(bookmarkUrl.openStream());
+        // Use URLUtil to get the InputStream since we might be using a proxy server 
+		// and because pages may be cached:
+		bookmarks = (Bookmarks) unmarshaller.unmarshal(URLUtil.getBasicInputStream (bookmarkUrl));
 	}
 
 	/**

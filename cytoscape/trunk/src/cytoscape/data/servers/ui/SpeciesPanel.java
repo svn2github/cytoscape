@@ -6,6 +6,7 @@
 package cytoscape.data.servers.ui;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.util.URLUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -162,8 +163,11 @@ public class SpeciesPanel extends JPanel {
 
 		try {
 			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
-			spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
-
+			// spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+            // Even though taxURL is probably a local URL, error on the
+			// side of caution and use URLUtil to get the input stream (which
+			// handles proxy servers and cached pages):
+			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 			System.out.println("Taxonomy table found in jar file...");
 		} catch (IOException e) {
 			e.printStackTrace();

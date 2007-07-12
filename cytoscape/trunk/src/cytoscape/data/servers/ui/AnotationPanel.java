@@ -14,6 +14,7 @@ import cytoscape.data.Semantics;
 import cytoscape.util.BioDataServerUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -562,7 +563,11 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 		try {
 			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
-			spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+			// spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
+            // Even though taxURL is probably a local URL, error on the
+			// side of caution and use URLUtil to get the input stream (which
+			// handles proxy servers and cached pages):
+			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 
 			System.out.println("Taxonomy table found in jar file...");
 		} catch (IOException e) {

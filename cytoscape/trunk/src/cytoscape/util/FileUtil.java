@@ -311,7 +311,10 @@ public abstract class FileUtil {
 		try {
 			if (name.matches(urlPattern)) {
 				URL u = new URL(name);
-				in = u.openStream();
+				// in = u.openStream();
+                // Use URLUtil to get the InputStream since we might be using a proxy server 
+				// and because pages may be cached:
+				in = URLUtil.getBasicInputStream(u);
 			} else
 				in = new FileInputStream(name);
 		} catch (IOException ioe) {
