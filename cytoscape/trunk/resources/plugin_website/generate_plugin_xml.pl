@@ -175,16 +175,17 @@ sub addFileInfo
 		}
 		
 	my $PluginFileType = $Doc->createElement("filetype");
-	if (isJar($FileType))
-		{ $FileType = "jar"; }
-	elsif (isZip($FileType))
-		{ $FileType = "zip"; }
+	$FileName =~ s/\s+$//; # in case they get inserted in the db with spaces at the end
+	if ($FileName =~ /.*\.(jar|zip)$/i)
+		{ $FileType = $1; }
 	else
-		{ 		
-		$FileName =~ /.*\.(jar|zip)/i;
-		$FileType = $1;
+		{
+		if (isJar($FileType))
+			{ $FileType = "jar"; }
+		elsif (isZip($FileType))
+			{ $FileType = "zip"; }
 		}
-	# print "$PluginFileId: $FileType : $FileName\n";
+	 #print "$PluginFileId: $FileType : $FileName\n";
 
 		
 	$PluginFileType->appendChild($Doc->createTextNode($FileType));
