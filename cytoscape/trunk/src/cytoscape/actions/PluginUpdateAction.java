@@ -25,6 +25,10 @@ public class PluginUpdateAction extends CytoscapeAction {
 	public PluginUpdateAction() {
 		super("Update Plugins");
 		setPreferredMenu("Plugins");
+
+		if (PluginManager.usingWebstartManager()) {
+			setEnabled(false);
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
