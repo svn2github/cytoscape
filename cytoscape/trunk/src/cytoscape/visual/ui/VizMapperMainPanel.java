@@ -2029,8 +2029,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
-			//vmm.getNetworkView().redrawGraph(false, true);
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			
 			/*
 			 * NEED to replace this.
@@ -2055,6 +2053,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			expandLastSelectedItem(type.getName());
 			updateTableView();
+			
+			// Finally, update graph view and focus.
+			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 			return;
 		}
@@ -2557,26 +2559,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	protected class CopyStyleListener extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			VisualStyle currentStyle = vmm.getVisualStyle();
+			final VisualStyle currentStyle = vmm.getVisualStyle();
 			VisualStyle clone = null;
-
+			
 			try {
 				clone = (VisualStyle) currentStyle.clone();
 			} catch (CloneNotSupportedException exc) {
 				System.err.println("Clone not supported exception!");
 			}
 
-			// get new name for clone
 			final String newName = getStyleName(clone);
-			if (newName == null) {
+			if (newName == null || newName.trim().length() == 0 ) {
 				return;
 			}
-
 			clone.setName(newName);
+			
 			// add new style to the catalog
 			vmm.getCalculatorCatalog().addVisualStyle(clone);
 			vmm.setVisualStyle(clone);
-
+			
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(newName);
 			final DGraphView view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
 			final Dimension panelSize = defaultAppearencePanel.getSize();
@@ -2586,6 +2587,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				createDefaultImage(newName, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(newName));
 			}
+			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetworkView().getIdentifier());
 		}
 	}
 
