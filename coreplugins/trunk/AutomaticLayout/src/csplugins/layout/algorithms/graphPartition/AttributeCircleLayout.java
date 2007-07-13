@@ -156,6 +156,10 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		updateSettings(false);
 	}
 
+	public LayoutProperties getSettings() {
+		return layoutProperties;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

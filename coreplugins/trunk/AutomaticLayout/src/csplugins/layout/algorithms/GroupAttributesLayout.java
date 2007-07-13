@@ -106,7 +106,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 	}
 
 	/**
-	 * Overrides for LayoutAlgorithm support
+	 * Overrides for CyLayoutAlgorithm support
 	 */
 	public String getName() {
 		return "attributes-layout";
@@ -242,6 +242,10 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 */
 	public void revertSettings() {
 		layoutProperties.revertProperties();
+	}
+
+	public LayoutProperties getSettings() {
+		return layoutProperties;
 	}
 
 	/*

@@ -347,6 +347,10 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		return panel;
 	}
 
+	public LayoutProperties getSettings() {
+		return layoutProperties;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 */

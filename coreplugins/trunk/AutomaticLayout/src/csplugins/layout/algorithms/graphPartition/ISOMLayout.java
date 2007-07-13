@@ -133,6 +133,10 @@ public class ISOMLayout extends AbstractGraphPartition {
 		updateSettings(false);
 	}
 
+	public LayoutProperties getSettings() {
+		return layoutProperties;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
