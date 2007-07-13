@@ -40,7 +40,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.view.CyEdgeView;
 import cytoscape.view.CyNetworkView;
@@ -448,7 +448,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @param layout DOCUMENT ME!
 	 */
-	public void applyLayout(LayoutAlgorithm layout) {
+	public void applyLayout(CyLayoutAlgorithm layout) {
 		layout.doLayout();
 	}
 
@@ -459,7 +459,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLockedLayout(LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
+	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
 		layout.lockNodes(convertToViews(nodes));
 		layout.doLayout();
 	}
@@ -471,7 +471,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLayout(LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
+	public void applyLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
 		layout.lockNodes(getInverseViews(convertToViews(nodes)));
 		layout.doLayout();
 	}
@@ -520,7 +520,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLockedLayout(LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
+	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
 		layout.lockNodes(nodes);
 		layout.doLayout();
 	}
@@ -532,7 +532,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLayout(LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
+	public void applyLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
 		layout.lockNodes(getInverseViews(nodes));
 		layout.doLayout();
 	}
@@ -544,7 +544,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLockedLayout(LayoutAlgorithm layout, int[] nodes, int[] edges) {
+	public void applyLockedLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges) {
 		layout.lockNodes(convertToNodeViews(nodes));
 		layout.doLayout();
 	}
@@ -566,7 +566,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLayout(LayoutAlgorithm layout, int[] nodes, int[] edges) {
+	public void applyLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges) {
 		layout.lockNodes(getInverseViews(convertToNodeViews(nodes)));
 		layout.doLayout();
 	}

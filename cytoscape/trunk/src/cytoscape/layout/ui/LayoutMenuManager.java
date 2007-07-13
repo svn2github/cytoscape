@@ -40,7 +40,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.init.CyInitParams;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 
 import java.util.ArrayList;
@@ -58,14 +58,14 @@ import javax.swing.event.MenuListener;
 
 public class LayoutMenuManager implements MenuListener {
 
-	private static Map<String, List<LayoutAlgorithm>> menuAlgorithmMap;
+	private static Map<String, List<CyLayoutAlgorithm>> menuAlgorithmMap;
 	private static Map<String, LayoutMenu> menuMap;
-	private static Set<LayoutAlgorithm> existingLayouts;
+	private static Set<CyLayoutAlgorithm> existingLayouts;
 
 	static {
-		menuAlgorithmMap = new HashMap<String,List<LayoutAlgorithm>>();
+		menuAlgorithmMap = new HashMap<String,List<CyLayoutAlgorithm>>();
 		menuMap = new HashMap<String,LayoutMenu>();
-		existingLayouts = new HashSet<LayoutAlgorithm>();
+		existingLayouts = new HashSet<CyLayoutAlgorithm>();
 	}
 
 	public void menuCanceled(MenuEvent e) { };
@@ -81,13 +81,13 @@ public class LayoutMenuManager implements MenuListener {
 	private void updateMenus(JMenu parentMenu) {
 
 		// first add all layouts from cylayouts if they're not already there
-		for ( LayoutAlgorithm la : CyLayouts.getAllLayouts() ) 
+		for ( CyLayoutAlgorithm la : CyLayouts.getAllLayouts() ) 
 			if ( !existingLayouts.contains(la) )
 				addLayout(la);
 
 		// now remove any existing layouts that are no longer in cylayouts
-		Set<LayoutAlgorithm> newLayouts = new HashSet<LayoutAlgorithm>(CyLayouts.getAllLayouts());
-		for ( LayoutAlgorithm la : existingLayouts ) 
+		Set<CyLayoutAlgorithm> newLayouts = new HashSet<CyLayoutAlgorithm>(CyLayouts.getAllLayouts());
+		for ( CyLayoutAlgorithm la : existingLayouts ) 
 			if ( !newLayouts.contains(la) )
 				removeLayout(la);
 
@@ -107,7 +107,7 @@ public class LayoutMenuManager implements MenuListener {
 		}
 	}
 
-	private void addLayout(LayoutAlgorithm layout) {
+	private void addLayout(CyLayoutAlgorithm layout) {
 		
 		String menuName = CyLayouts.getMenuName(layout);
 		if (menuName == null )
@@ -117,7 +117,7 @@ public class LayoutMenuManager implements MenuListener {
 
 		// make sure the list is set up for this name
 		if ( !menuAlgorithmMap.containsKey(menuName) ) {
-			List<LayoutAlgorithm> menuList = new ArrayList<LayoutAlgorithm>();
+			List<CyLayoutAlgorithm> menuList = new ArrayList<CyLayoutAlgorithm>();
 			menuAlgorithmMap.put(menuName, menuList);
 		}
 
@@ -134,11 +134,11 @@ public class LayoutMenuManager implements MenuListener {
 		menuMap.get(menuName).add(layout);
 	}
 
-	private void removeLayout(LayoutAlgorithm layout) {
+	private void removeLayout(CyLayoutAlgorithm layout) {
 
 		for (String menu : menuAlgorithmMap.keySet()) {
 
-			List<LayoutAlgorithm> menuList = menuAlgorithmMap.get(menu);
+			List<CyLayoutAlgorithm> menuList = menuAlgorithmMap.get(menu);
 
 			if (menuList.indexOf(layout) >= 0) {
 				menuList.remove(layout);
@@ -156,7 +156,7 @@ public class LayoutMenuManager implements MenuListener {
 	 * @param menu The name of the menu
 	 * @return a List of all layouts associated with this menu (could be null)
 	 */
-	static List<LayoutAlgorithm> getLayoutsInMenu(String menu) {
+	static List<CyLayoutAlgorithm> getLayoutsInMenu(String menu) {
 		return menuAlgorithmMap.get(menu);
 	}
 

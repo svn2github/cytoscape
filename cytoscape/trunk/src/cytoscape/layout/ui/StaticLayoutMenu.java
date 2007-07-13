@@ -1,5 +1,5 @@
 /*
-  File: LayoutAlgorithm.java
+  File: StaticLayoutMenu.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -38,7 +38,7 @@ package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutTask;
 
 import cytoscape.task.util.TaskManager;
@@ -54,14 +54,14 @@ import javax.swing.JMenuItem;
  * menu.
  */
 public class StaticLayoutMenu extends JMenuItem implements ActionListener {
-	private LayoutAlgorithm layout;
+	private CyLayoutAlgorithm layout;
 
 	/**
 	 * Creates a new StaticLayoutMenu object.
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public StaticLayoutMenu(LayoutAlgorithm layout,boolean enabled) {
+	public StaticLayoutMenu(CyLayoutAlgorithm layout,boolean enabled) {
 		super(layout.toString());
 		addActionListener(this);
 		this.layout = layout;

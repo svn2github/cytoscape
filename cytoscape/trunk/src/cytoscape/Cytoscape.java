@@ -64,7 +64,7 @@ import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.init.CyInitParams;
 
 import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.util.FileUtil;
 
@@ -1558,9 +1558,9 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title to use for the view
 	 * @param layout
-	 *            the LayoutAlgorithm to use to lay this out by default
+	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, LayoutAlgorithm layout) {
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}

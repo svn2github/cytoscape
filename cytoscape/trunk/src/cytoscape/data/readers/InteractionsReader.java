@@ -130,7 +130,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	}
 
 	/**
-	 * layout calls the default LayoutAlgorithm but forces it to use our
+	 * layout calls the default CyLayoutAlgorithm but forces it to use our
 	 * own taskMonitor.
 	 *
 	 * @param networkView the view of the network we want to layout

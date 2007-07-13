@@ -88,7 +88,7 @@ import cytoscape.generated2.TypeGraphicsType;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
@@ -609,9 +609,9 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * call our internal layout routine, which will just use the default layout, but
 	 * with our task monitor
 	 *
-	 * @return the LayoutAlgorithm to use
+	 * @return the CyLayoutAlgorithm to use
 	 */
-	public LayoutAlgorithm getLayoutAlgorithm() {
+	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
 			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
 				layout(networkView);

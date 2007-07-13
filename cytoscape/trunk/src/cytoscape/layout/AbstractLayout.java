@@ -42,7 +42,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.init.CyInitParams;
 
 import cytoscape.task.TaskMonitor;
@@ -78,7 +78,7 @@ import javax.swing.JPanel;
  * The AbstractLayout provides nice starting point for Layouts
  * written for Cytoscape.
  */
-abstract public class AbstractLayout implements LayoutAlgorithm {
+abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected Set<NodeView> staticNodes;
 	protected CyNetworkView networkView;
 	protected CyNetwork network;
@@ -220,6 +220,14 @@ abstract public class AbstractLayout implements LayoutAlgorithm {
 	 * that want to use properties or have a settings UI.
 	 */
 	public void updateSettings() {
+	}
+
+	/**
+	 * Property handling -- these must be overridden by any algorithms
+	 * that want to use properties or have a settings UI.
+	 */
+	public LayoutProperties getSettings () {
+		return null;
 	}
 
 	/**

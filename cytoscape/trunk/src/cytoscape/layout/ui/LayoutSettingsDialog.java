@@ -40,7 +40,7 @@ package cytoscape.layout.ui;
 import cytoscape.Cytoscape;
 
 import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutTask;
 
 import cytoscape.task.util.TaskManager;
@@ -73,11 +73,11 @@ import javax.swing.text.Position;
 /**
  *
  * The LayoutSettingsDialog is a dialog that provides an interface into all of the
- * various settings for layout algorithms.  Each LayoutAlgorithm must return a single
+ * various settings for layout algorithms.  Each CyLayoutAlgorithm must return a single
  * JPanel that provides all of its settings.
  */
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
-	private LayoutAlgorithm currentLayout = null;
+	private CyLayoutAlgorithm currentLayout = null;
 
 	// Dialog components
 	private JLabel titleLabel; // Our title
@@ -194,7 +194,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				algorithmSelector.addItem(menu);
 			}
 
-			for (LayoutAlgorithm algo : LayoutMenuManager.getLayoutsInMenu(menu)) {
+			for (CyLayoutAlgorithm algo : LayoutMenuManager.getLayoutsInMenu(menu)) {
 				if (algo.getSettingsPanel() != null) {
 					algorithmSelector.addItem(algo);
 				}
@@ -203,13 +203,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private void updateAllSettings() {
-		for ( LayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
 			algo.updateSettings();
 		}
 	}
 
 	private void revertAllSettings() {
-		for ( LayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
 			algo.revertSettings();
 		}
 	}
@@ -226,7 +226,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 					currentLayout = null;
 					algorithmPanel.setBorder(null);
 				} else {
-					LayoutAlgorithm newLayout = (LayoutAlgorithm) e.getItem();
+					CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm) e.getItem();
 
 					// Replace the previous settings panel with a new one
 					JPanel panel = newLayout.getSettingsPanel();

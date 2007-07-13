@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 /**
  * The LayoutProperties class is a helper class to support the management
  * of settings and properties for layout algorithms that implement
- * LayoutAlgorithm or extend AbstractLayout.  LayoutProperties objects
+ * CyLayoutAlgorithm or extend AbstractLayout.  LayoutProperties objects
  * maintain a list of Tunables that are supplied by the individual
  * algorithms.  Each Tunable represents a value that should be loaded
  * from the Cytoscape properties file, and made available as a setting

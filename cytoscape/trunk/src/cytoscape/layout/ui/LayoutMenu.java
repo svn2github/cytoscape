@@ -1,5 +1,5 @@
 /*
-  File: LayoutAlgorithm.java
+  File: LayoutMenu.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -41,7 +41,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.view.CyNetworkView;
 
@@ -63,7 +63,7 @@ import javax.swing.event.MenuListener;
  * attributes, etc.
  */
 public class LayoutMenu extends JMenu implements MenuListener {
-	List<LayoutAlgorithm> subMenuList;
+	List<CyLayoutAlgorithm> subMenuList;
 
 	/**
 	 * Creates a new LayoutMenu object.
@@ -73,7 +73,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	public LayoutMenu(String menuName) {
 		super(menuName);
 		addMenuListener(this);
-		subMenuList = new ArrayList<LayoutAlgorithm>();
+		subMenuList = new ArrayList<CyLayoutAlgorithm>();
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param layout DOCUMENT ME!
 	 */
-	public void add(LayoutAlgorithm layout) {
+	public void add(CyLayoutAlgorithm layout) {
 		subMenuList.add(layout);
 	}
 
@@ -90,7 +90,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param layout DOCUMENT ME!
 	 */
-	public void remove(LayoutAlgorithm layout) {
+	public void remove(CyLayoutAlgorithm layout) {
 		subMenuList.remove(layout);
 	}
 
@@ -132,7 +132,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
-		for (LayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getText())) {
+		for (CyLayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getText())) {
 			// Make sure we don't have any lingering locked nodes
 			layout.unlockAllNodes();
 

@@ -53,16 +53,16 @@ import java.util.Set;
  * layout algorithms.  
  */
 public class CyLayouts {
-	private static HashMap<String, LayoutAlgorithm> layoutMap;
-	private static HashMap<LayoutAlgorithm, String> menuNameMap;
+	private static HashMap<String, CyLayoutAlgorithm> layoutMap;
+	private static HashMap<CyLayoutAlgorithm, String> menuNameMap;
 
 	static {
 		new CyLayouts();
 	}
 
 	private CyLayouts() {
-		layoutMap = new HashMap<String,LayoutAlgorithm>();
-		menuNameMap = new HashMap<LayoutAlgorithm,String>();
+		layoutMap = new HashMap<String,CyLayoutAlgorithm>();
+		menuNameMap = new HashMap<CyLayoutAlgorithm,String>();
 
 		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
 	}
@@ -77,7 +77,7 @@ public class CyLayouts {
 	 * @param layout The layout to be added
 	 * @param menu The menu that this should appear under
 	 */
-	public static void addLayout(LayoutAlgorithm layout, String menu) {
+	public static void addLayout(CyLayoutAlgorithm layout, String menu) {
 		layoutMap.put(layout.getName(),layout);
 		menuNameMap.put(layout,menu);
 	}
@@ -87,7 +87,7 @@ public class CyLayouts {
 	 *
 	 * @param layout The layout to remove
 	 */
-	public static void removeLayout(LayoutAlgorithm layout) {
+	public static void removeLayout(CyLayoutAlgorithm layout) {
 		layoutMap.remove(layout.getName());
 		menuNameMap.remove(layout);
 	}
@@ -99,8 +99,10 @@ public class CyLayouts {
 	 * @param name String representing the name of the layout
 	 * @return the layout of that name or null if it is not reigstered
 	 */
-	public static LayoutAlgorithm getLayout(String name) {
-		return layoutMap.get(name);
+	public static CyLayoutAlgorithm getLayout(String name) {
+		if (layoutMap.containsKey(name))
+			return layoutMap.get(name);
+		return null;
 	}
 
 	/**
@@ -108,7 +110,7 @@ public class CyLayouts {
 	 *
 	 * @return a Collection of all the available layouts
 	 */
-	public static Collection<LayoutAlgorithm> getAllLayouts() {
+	public static Collection<CyLayoutAlgorithm> getAllLayouts() {
 		return layoutMap.values();
 	}
 
@@ -116,9 +118,9 @@ public class CyLayouts {
 	 * Get the default layout.  This is either the grid layout or a layout
 	 * chosen by the user via the setting of the "layout.default" property.
 	 *
-	 * @return LayoutAlgorithm to use as the default layout algorithm
+	 * @return CyLayoutAlgorithm to use as the default layout algorithm
 	 */
-	public static LayoutAlgorithm getDefaultLayout() {
+	public static CyLayoutAlgorithm getDefaultLayout() {
 		// See if the user has set the layout.default property
 		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
 
@@ -126,7 +128,7 @@ public class CyLayouts {
 			defaultLayout = "grid";
 		}
 
-		LayoutAlgorithm l = layoutMap.get(defaultLayout);
+		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
 		// System.out.println("getDefaultLayout returning " + l);
 
 		// Nope, so return the grid layout 
@@ -134,7 +136,7 @@ public class CyLayouts {
 	}
 
 	// Ack.
-	public static String getMenuName(LayoutAlgorithm layout) {
+	public static String getMenuName(CyLayoutAlgorithm layout) {
 		return menuNameMap.get(layout); 
 	}
 }

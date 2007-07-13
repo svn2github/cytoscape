@@ -219,40 +219,40 @@ public interface CyNetworkView extends GraphView {
 	/**
 	 * Applies the given layout to the entire CyNetworkView
 	 */
-	public void applyLayout(LayoutAlgorithm layout);
+	public void applyLayout(CyLayoutAlgorithm layout);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,
 	 * but locks the given Nodes and Edges in place
 	 */
-	public void applyLockedLayout(LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
+	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
 
 	/**
 	 * Applies the  given layout to only the given Nodes and Edges
 	 */
-	public void applyLayout(LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
+	public void applyLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,
 	 * but locks the given NodeViews and EdgeViews in place
 	 */
-	public void applyLockedLayout(LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
+	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
 
 	/**
 	 * Applies the  given layout to only the given NodeViews and EdgeViews
 	 */
-	public void applyLayout(LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
+	public void applyLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,
 	 * but locks the given Nodes and Edges in place
 	 */
-	public void applyLockedLayout(LayoutAlgorithm layout, int[] nodes, int[] edges);
+	public void applyLockedLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges);
 
 	/**
 	 * Applies the  given layout to only the given Nodes and Edges
 	 */
-	public void applyLayout(LayoutAlgorithm layout, int[] nodes, int[] edges);
+	public void applyLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges);
 
 	// This is necessary since we should save the association between VS
 	/**

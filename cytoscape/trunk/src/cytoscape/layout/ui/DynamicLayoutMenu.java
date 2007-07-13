@@ -1,5 +1,5 @@
 /*
-  File: LayoutAlgorithm.java
+  File: DynamicLayoutMenu.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -41,7 +41,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutTask;
 
 import cytoscape.task.util.TaskManager;
@@ -72,7 +72,7 @@ import javax.swing.event.MenuListener;
  * attributes, etc.
  */
 public class DynamicLayoutMenu extends JMenu implements MenuListener {
-	private LayoutAlgorithm layout;
+	private CyLayoutAlgorithm layout;
 	private static final String NOATTRIBUTE = "(none)";
 	private Set<Node> selectedNodes;
 
@@ -81,7 +81,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public DynamicLayoutMenu(LayoutAlgorithm layout, boolean enabled) {
+	public DynamicLayoutMenu(CyLayoutAlgorithm layout, boolean enabled) {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;

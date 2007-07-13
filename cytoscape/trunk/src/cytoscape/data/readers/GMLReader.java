@@ -50,7 +50,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.dialogs.VisualStyleBuilderDialog;
 
@@ -972,9 +972,9 @@ public class GMLReader extends AbstractGraphReader {
 	 * call our internal layout routine, which will just use the default layout, but
 	 * with our task monitor
 	 *
-	 * @return the LayoutAlgorithm to use
+	 * @return the CyLayoutAlgorithm to use
 	 */
-	public LayoutAlgorithm getLayoutAlgorithm() {
+	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
 			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
 				layout(networkView);

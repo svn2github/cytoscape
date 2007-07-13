@@ -1,5 +1,5 @@
-/* vim :set ts=2:
-  File: LayoutAdapter.java
+/* vim: set ts=2:
+  File: CyLayoutAlgorithm.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -7,7 +7,7 @@
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
+  - Institut Pasteur
   - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
@@ -36,44 +36,36 @@
 */
 package cytoscape.layout;
 
-import java.lang.String;
-import java.util.List;
-import java.util.ArrayList;
-
-import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-
 import cytoscape.task.TaskMonitor;
 
-import giny.view.EdgeView;
+import cytoscape.util.*;
+
+import cytoscape.view.CyNetworkView;
+
 import giny.view.NodeView;
+
+import java.util.List;
 
 import javax.swing.JPanel;
 
+
 /**
- * LayoutAdapter provides a *very* minimal interface to implement a layout
- * algorithm.  It is meant to be used by graph readers and plugins that provide
- * their own node placement and whose layout approach should not be made
- * available outside of the reader or plugin's context.
- */
-abstract public class LayoutAdapter implements CyLayoutAlgorithm {
+ *
+  */
+public interface CyLayoutAlgorithm {
 	/**
 	 * This method performs the layout on the current network using the
 	 * current network view.
 	 *
 	 */
-	public void doLayout() {
-		doLayout(Cytoscape.getCurrentNetworkView(), null);
-	}
+	public void doLayout();
 
 	/**
 	 * This method performs the layout on the current network.
 	 *
 	 * @param networkView the CyNetworkView on which to perform the layout
 	 */
-	public void doLayout(CyNetworkView networkView) {
-		doLayout(networkView, null);
-	}
+	public void doLayout(CyNetworkView networkView);
 
 	/**
 	 * This method performs the layout on the current network, but assumes
@@ -82,14 +74,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @param networkView the CyNetworkView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-	public abstract void doLayout(CyNetworkView networkView, TaskMonitor monitor);
-
-	/**
-	 * Get the name of this layout.
-	 *
-	 * @return String representing the name of the layout.
-	 */
-	public String getName() {return "LayoutAdaptor";}
+	public void doLayout(CyNetworkView networkView, TaskMonitor monitor);
 
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the
@@ -97,7 +82,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *
 	 * @return true if layout supports layouts on a subset of the nodes
 	 */
-	public boolean supportsSelectedOnly() {return false;}
+	public boolean supportsSelectedOnly();
 
 	/**
 	 * Sets the "selectedOnly" flag
@@ -105,7 +90,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @param selectedOnly boolean value that tells the layout algorithm whether to
 	 * only layout the selected nodes
 	 */
-	public void setSelectedOnly(boolean selectedOnly) {}
+	public void setSelectedOnly(boolean selectedOnly);
 
 	/**
 	 * Tests to see if this layout supports doing a layout based on node attributes.
@@ -113,7 +98,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return byte array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public byte[] supportsNodeAttributes() { return null; }
+	public byte[] supportsNodeAttributes();
 
 	/**
 	 * Tests to see if this layout supports doing a layout based on edge attributes.
@@ -121,14 +106,14 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return type array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public byte[] supportsEdgeAttributes() { return null; }
+	public byte[] supportsEdgeAttributes();
 
 	/**
 	 * Sets the attribute to use for node- or edge- based attribute layouts
 	 *
 	 * @param attributeName String with the name of the attribute to use
 	 */
-	public void setLayoutAttribute(String attributeName) {}
+	public void setLayoutAttribute(String attributeName);
 
 	/**
 	 * This returns a (possibly empty) List of Strings that is used for
@@ -141,7 +126,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *
 	 * @return List of Strings
 	 */
-	public List<String> getInitialAttributeList() {return new ArrayList<String>();}
+	public List<String> getInitialAttributeList();
 
 	/**
 	 * This method should return a JPanel that implements the UI to set
@@ -151,7 +136,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *                this algorithm does not support a UI for settings,
 	 *                it should return null
 	 */
-	public JPanel getSettingsPanel() {return null;}
+	public JPanel getSettingsPanel();
 
 	/**
 	 * This method is used to ask the algorithm to revert its settings
@@ -161,17 +146,17 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * NOTE: AbstractLayout implements this on behalf of all its subclasses
 	 * by using Java Preferences.
 	 */
-	public void revertSettings() {}
+	public void revertSettings();
 
 	/**
 	 * This method is used to ask the algorithm to get its settings
-	 * from the seetings dialog.  It is called from the settings dialog
+	 * from the settings dialog.  It is called from the settings dialog
 	 * when the user presses the "Done" or the "Execute" buttons.
 	 *
 	 * NOTE: AbstractLayout implements this on behalf of all its subclasses
 	 * by using Java Preferences.
 	 */
-	public void updateSettings() {}
+	public void updateSettings();
 
 	/**
 	 * This method is used to ask the algorithm to get all of its tunables
@@ -180,36 +165,48 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return the layout properties for this algorithm
 	 *
 	 */
-	public LayoutProperties getSettings() {return null;}
+	public LayoutProperties getSettings();
 
 	/**
-	 *  DOCUMENT ME!
+	 * Get the name of this layout.
 	 *
-	 * @param nodes DOCUMENT ME!
+	 * @return String representing the name of the layout.
 	 */
-	public void lockNodes(NodeView[] nodes) {}
+	public String getName();
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Lock this array of nodes.  Locking a node prevents the node
+	 * from being moved by layout algorithmes.
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param nodes the array of nodes to lock
 	 */
-	public void lockNode(NodeView v) {}
+	public void lockNodes(NodeView[] nodes);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Lock this node.  Locking a node prevents the node
+	 * from being moved by layout algorithmes.
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param node the node to lock
 	 */
-	public void unlockNode(NodeView v) {}
+	public void lockNode(NodeView v);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Unlock this node.  Unlocking a node allows the node
+	 * to be moved by a layout algorithmes.
+	 *
+	 * @param v the node to unlock
 	 */
-	public void unlockAllNodes() {}
+	public void unlockNode(NodeView v);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Unlock all of the nodes.  Unlocking a node allows the node
+	 * to be moved by a layout algorithmes.
+	 *
 	 */
-	public void halt() {}
+	public void unlockAllNodes();
+
+	/**
+	 * Can be used to stop the layout from running. 
+	 */
+	public void halt();
 }

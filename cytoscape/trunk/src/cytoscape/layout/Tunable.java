@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 
 /**
  * The Tunable class provides a convenient way to encapsulate
- * LayoutAlgorithm property and settings values.  Each Tunable
+ * CyLayoutAlgorithm property and settings values.  Each Tunable
  * has a name, which corresponds to the property name, a description,
  * which is used as the label in the settings dialog, a type, a
  * value, and information about the value, such as a list of options

@@ -40,7 +40,7 @@ import cytoscape.CyNetwork;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import giny.model.RootGraph;
 
@@ -71,11 +71,11 @@ public interface GraphReader {
 	public void layout(GraphView myView);
 
 	/**
-	 * Returns the LayoutAlgorithm used to layout the graph
+	 * Returns the CyLayoutAlgorithm used to layout the graph
 	 *
 	 * @param myView
 	 */
-	public LayoutAlgorithm getLayoutAlgorithm();
+	public CyLayoutAlgorithm getLayoutAlgorithm();
 
 	/**
 	 * Gets an array of node indices that participate in the newly created graph.

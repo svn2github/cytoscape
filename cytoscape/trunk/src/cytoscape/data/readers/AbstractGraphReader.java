@@ -48,7 +48,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.task.TaskMonitor;
 
 import cytoscape.layout.CyLayouts;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import giny.model.RootGraph;
 
@@ -127,9 +127,9 @@ public abstract class AbstractGraphReader implements GraphReader {
 	}
 
 	/**
-	 * Return the LayoutAlgorithm used to layout the graph
+	 * Return the CyLayoutAlgorithm used to layout the graph
 	 */
-	public LayoutAlgorithm getLayoutAlgorithm() {
+	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return CyLayouts.getDefaultLayout();
 	}
 
