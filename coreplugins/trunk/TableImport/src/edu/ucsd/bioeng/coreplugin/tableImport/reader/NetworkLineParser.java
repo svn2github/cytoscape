@@ -117,7 +117,7 @@ public class NetworkLineParser {
 		final Edge edge;
 
 		if ((source != null) && (target != null)) {
-			edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true);
+			edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
 			edgeList.add(edge.getRootGraphIndex());
 		} else {
 			edge = null;
