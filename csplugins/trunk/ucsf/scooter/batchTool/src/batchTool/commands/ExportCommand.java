@@ -315,7 +315,7 @@ public class ExportCommand extends AbstractCommand {
 					return ExportType.GIF;
 				else if (type.equals("png"))
 					return ExportType.PNG;
-				else if (type.equals("JPG"))
+				else if (type.equals("jpg"))
 					return ExportType.JPG;
 
 				throw new ParseException("Unknown export type: "+type, -1);
