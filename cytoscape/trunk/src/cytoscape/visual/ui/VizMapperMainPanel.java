@@ -1325,10 +1325,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Finally, build unused list
 		 */
 		setUnused(propRecord);
-		if(vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(NODE_WIDTH) != null 
-				|| vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(NODE_HEIGHT) != null) {
-			vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
-		}
+//		if(vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(NODE_WIDTH) != null 
+//				|| vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(NODE_HEIGHT) != null) {
+//			vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
+//		}
 		
 	}
 

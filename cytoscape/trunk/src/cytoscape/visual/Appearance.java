@@ -65,6 +65,7 @@ import java.awt.Color;
  */
 public class Appearance {
 
+	private static final String NODE_SIZE_LOCKED = ".nodeSizeLocked";
 	protected Object[] vizProps;
 	protected boolean nodeSizeLocked = true;
 
@@ -148,6 +149,15 @@ public class Appearance {
 			if (o != null)
 				vizProps[type.ordinal()] = o;
 		}
+		
+		// Apply nodeSizeLock
+		final String lockKey = baseKey + NODE_SIZE_LOCKED;
+		final String lockVal = nacProps.getProperty(lockKey);
+		if(lockVal == null || lockVal.equalsIgnoreCase("true")) {
+			setNodeSizeLocked(true);
+		} else {
+			setNodeSizeLocked(false);
+		}
 	}
 
 	/**
@@ -163,9 +173,16 @@ public class Appearance {
 		for (VisualPropertyType type : VisualPropertyType.values()) {
 			String key = type.getDefaultPropertyKey(baseKey);
 			String value = ObjectToString.getStringValue(vizProps[type.ordinal()]);
-			if ( key != null && value != null )
+			if ( key != null && value != null ) {
+//				System.out.println("(Key,val) = " + key + ", " + value + ", basekey = " + baseKey);
 				props.setProperty(key,value);
+			}
 		}
+
+		// Add node size lock as an extra prop.
+		final String lockKey = baseKey + NODE_SIZE_LOCKED;
+		final String lockVal = new Boolean(getNodeSizeLocked()).toString();
+		props.setProperty(lockKey, lockVal);
 
 		return props;
 	}
