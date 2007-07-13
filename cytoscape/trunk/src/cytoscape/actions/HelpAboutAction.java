@@ -92,7 +92,7 @@ public class HelpAboutAction extends CytoscapeAction {
 					               + " Hamid Bolouri\n" + " Ethan Cerami\n" + " Rowan Christmas\n"
 					               + " Melissa Cline\n" + " Mike Creech\n" + " Paul Edlefsen\n"
 					               + " Stephanie Fan\n" + " Trey Ideker\n" + " Liz Kain\n"
-					               + " Larissa Kamenkovich\n" + " Ryan Kelley\n"
+					               + " Larissa Kamenkovich\n" + " Ryan Kelley\n" + " Sarah Killcoyne\n" 
 					               + " Brad Kohlenberg\n" + " Allan Kuchinsky\n"
 					               + " Nerius Landys\n" + " Willem Ligtenberg\n" + " Samad Lotia\n"
 					               + " Andrew Markiel\n" + " James McIninch\n" + " Keiichiro Ono\n"
