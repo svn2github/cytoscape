@@ -504,11 +504,7 @@ public class PluginManager {
 							Exceptions.add(1, getJDOMException());
 						}
 						
-						System.err.println("Updateing " + PluginToUpdate.getName());
-
 						for (PluginInfo New : Results) {
-							System.err.println("Comparing " + New.getName() + ":" + PluginToUpdate.getName());
-							System.err.println("Comparing " + New.getID() + ":" + PluginToUpdate.getID());
 							// ID or classname are unique
 							boolean newer = PluginToUpdate.isNewerPluginVersion(New);
 							if ( (New.getID().equals(PluginToUpdate.getID()) || New.getPluginClassName().equals(PluginToUpdate.getPluginClassName()))
