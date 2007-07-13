@@ -190,7 +190,7 @@ public interface Calculator extends Cloneable {
      *
      * @return DOCUMENT ME!
      */
-    public Vector getMappings();
+    public Vector<ObjectMapping> getMappings();
 
     /**
      * DOCUMENT ME!
