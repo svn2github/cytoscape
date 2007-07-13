@@ -53,6 +53,7 @@ import cytoscape.task.util.TaskManager;
 
 import javax.swing.event.ChangeEvent;
 import java.awt.Component;
+import javax.swing.JRadioButton;
 
 
 
@@ -87,12 +88,11 @@ public class FilterSettingPanel extends JPanel {
 		}	
 		addBlankLabelToCustomPanel();
 		
-		//this.validate();
-		//this.repaint();
-
 		//Restore initial values for RangerSliders 
 		//Note: rangerSlider can not be set to their initial value until they are visible on screen
 		restoreRangeSliderModel();
+		this.validate();
+		//this.repaint();
 	}
 	
 	
@@ -125,18 +125,25 @@ public class FilterSettingPanel extends JPanel {
 
 				GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
 
-					try {
-						NumberIndex numberIndex = (NumberIndex) currentIndex;
-						rangeModel.setMinValue(numberIndex.getMinimumValue());
-						rangeModel.setMaxValue(numberIndex.getMaximumValue());
+				//System.out.println("FilterSettingPanel.restoreRangeSliderModel()...");
+				//System.out.println("\tInstance of NumericFilter: componentIndex = "+ componentIndex + "\n");
+				try {
+					NumberIndex numberIndex = (NumberIndex) currentIndex;
+					
+					rangeModel.setMinValue(numberIndex.getMinimumValue());
+					rangeModel.setMaxValue(numberIndex.getMaximumValue());
 
+					//System.out.println("\t here 1: " + theSlider.isShowing());
+
+					if (theSlider.isShowing()) {
 						rangeModel.setLowValue(theNumericFilter.getLowValue());
-						rangeModel.setHighValue(theNumericFilter.getHighValue());			
+						rangeModel.setHighValue(theNumericFilter.getHighValue());									
 					}
-					catch (Exception e) {
-						// slider not shown on screen yet
-						//System.out.println("restoreRangeSliderModel(): slider not shown on screen yet ");			
-					}			
+
+				}
+				catch (Exception e) {					
+					System.out.println("Exception caught: The slider is shown on screen: " + theSlider.isShowing());
+				}			
 			}// for loop
 		}
 
@@ -178,8 +185,6 @@ public class FilterSettingPanel extends JPanel {
 
 			//  Set Size of ComboBox Display, based on # of specific chars
 			comboBox.setPrototypeDisplayValue("01234567");
-			//comboBox.setToolTipText("Please select or load a network to "
-			//		+ "activate search functionality.");
 
 			//  Set Max Size of ComboBox to match preferred size
 			comboBox.setMaximumSize(comboBox.getPreferredSize());
@@ -240,7 +245,6 @@ public class FilterSettingPanel extends JPanel {
 		int indexType = getIndexTypeForAttribute(pAtomicFilter.getAttributeName());
 
 		if (indexType == -1) { //indexType = Unknown, skip ...
-			//System.out.println("indexType = Unknown, skip ...");	
 			return;
 		}
 
@@ -362,48 +366,22 @@ public class FilterSettingPanel extends JPanel {
 			
 			initCustomSetting();
 			
-			this.revalidate();
+			
+			restoreRangeSliderModel();
+			
+			//if (theSlider.isShowing()) {
+			//	rangeModel.setLowValue(theNumericFilter.getLowValue());
+			//	rangeModel.setHighValue(theNumericFilter.getHighValue());									
+			//}
+
+			//System.out.println("\t here 2: " + theSlider.isShowing());
+			//System.out.println("\trangeModel.getLowValue() =" + rangeModel.getLowValue());			
+			//System.out.println("\trangeModel.getHighValue() =" + rangeModel.getHighValue());			
+			//this.revalidate();
 		}
 	}
 
-	/*   For test only , should be removed later
-	//Remove event listener for each components in the customSettingPanel
-	private void cleanupCustomSettingPanel(){
-		//pWidgetIndex is the row index of the widget to be removed
-		
-		System.out.println("FilterSettingPanel.cleanupCustomsettingPanel()...");
 	
-		int componentIndex = pWidgetIndex*3+1;
-		
-		System.out.println("\tpWidgetIndex = "+ pWidgetIndex);
-		System.out.println("\tcomponentIndex = "+ componentIndex);
-		
-		Component[] allComponentArray = pnlCustomSettings.getComponents();
-
-		if (allComponentArray[componentIndex] instanceof JRangeSliderExtended) {
-			JRangeSliderExtended theSlider = (JRangeSliderExtended) allComponentArray[componentIndex];
-			System.out.println("\tIt is JRangeSliderExtended. Name = " + theSlider.getName());
-			theSlider.hidePopupPanel();
-		}
-
-		int componentCount = pnlCustomSettings.getComponentCount();
-		
-		if (componentCount == 0) {
-			return;
-		}
-		Component[] allComponentArray = pnlCustomSettings.getComponents();
-		
-		for (int i=0; i< componentCount; i++) {
-			if (allComponentArray[i] instanceof JRangeSliderExtended) {
-				JRangeSliderExtended theSlider = (JRangeSliderExtended) allComponentArray[i];
-				System.out.println("\tIt is JRangeSliderExtended. Name = " + theSlider.getName());
-				theSlider.hidePopupPanel();
-				theSlider.resetPopup();
-			}
-		}
-
-	}
-*/	
 	/**
 	 * Listens for Final Selection from User.
 	 *
@@ -534,7 +512,10 @@ public class FilterSettingPanel extends JPanel {
 		chkEdge.setSelected(theFilter.getAdvancedSetting().isEdgeChecked());
 		chkSource.setSelected(theFilter.getAdvancedSetting().isSourceChecked());
 		chkTarget.setSelected(theFilter.getAdvancedSetting().isTargetChecked());
-
+		
+		rbtAND.setSelected(theFilter.getAdvancedSetting().isANDSelected());
+		rbtOR.setSelected(theFilter.getAdvancedSetting().isORSelected());
+		
 		lbAdvancedIcon.setIcon(plusIcon);
 		lbAdvancedIcon.addMouseListener( new MouseAdapter() {
 			 //Inner class Mouse listener for click on the plus/minus sign.
@@ -565,6 +546,8 @@ public class FilterSettingPanel extends JPanel {
 		chkEdge.addItemListener(l);
 		chkSource.addItemListener(l);
 		chkTarget.addItemListener(l);
+		rbtAND.addItemListener(l);
+		rbtOR.addItemListener(l);
 		
 		//By default, the AdvancedPanel is invisible
 		pnlAdvancedOptions.setVisible(false);
@@ -608,6 +591,20 @@ public class FilterSettingPanel extends JPanel {
 					theFilter.getAdvancedSetting().setTarget(chkTarget.isSelected());										
 				}
 			}
+			if (soureObj instanceof javax.swing.JRadioButton) {
+				JRadioButton theRadioButton = (JRadioButton) soureObj;
+				
+				if (theRadioButton == rbtAND) {
+					//System.out.println("rbtAND.isSelected()" + rbtAND.isSelected());
+					
+					theFilter.getAdvancedSetting().setRelationAND(rbtAND.isSelected());	
+				}
+				if (theRadioButton == rbtOR) {
+					//System.out.println("rbtOR.isSelected()" + rbtOR.isSelected());
+
+					theFilter.getAdvancedSetting().setRelationOR(rbtOR.isSelected());	
+				}
+			}
 		}
 	}
 	/** This method is called from within the constructor to
@@ -619,6 +616,7 @@ public class FilterSettingPanel extends JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         pnlAdvancedSettings = new javax.swing.JPanel();
         pnlAdvancedIcon = new javax.swing.JPanel();
         lbAdvanced = new javax.swing.JLabel();
@@ -633,6 +631,9 @@ public class FilterSettingPanel extends JPanel {
         jLabel8 = new javax.swing.JLabel();
         chkSource = new javax.swing.JCheckBox();
         chkTarget = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        rbtAND = new javax.swing.JRadioButton();
+        rbtOR = new javax.swing.JRadioButton();
         pnlCustomSettings = new javax.swing.JPanel();
         //lbSpaceHolder = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -714,9 +715,10 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         pnlAdvancedOptions.add(chkEdge, gridBagConstraints);
 
-        jLabel8.setText("Interaction");
+        jLabel8.setText("Edge");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         pnlAdvancedOptions.add(jLabel8, gridBagConstraints);
 
@@ -740,6 +742,33 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         pnlAdvancedOptions.add(chkTarget, gridBagConstraints);
 
+        
+        jLabel1.setText("Relation");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        pnlAdvancedOptions.add(jLabel1, gridBagConstraints);
+
+        rbtAND.setSelected(true);
+        rbtAND.setText("AND");
+        rbtAND.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rbtAND.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
+        pnlAdvancedOptions.add(rbtAND, gridBagConstraints);
+
+        rbtOR.setText("OR");
+        rbtOR.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rbtOR.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
+        pnlAdvancedOptions.add(rbtOR, gridBagConstraints);
+
+        
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -773,9 +802,13 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         
-        //Unomment the following line fro test 
+        //Unomment the following line for test 
         //add(jPanel1, gridBagConstraints);
 
+        
+        buttonGroup1.add(rbtAND);
+        buttonGroup1.add(rbtOR);
+        
     }// </editor-fold>
 
 	
@@ -783,12 +816,14 @@ public class FilterSettingPanel extends JPanel {
 
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClose;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox chkEdge;
     private javax.swing.JCheckBox chkGlobal;
     private javax.swing.JCheckBox chkNode;
     private javax.swing.JCheckBox chkSession;
     private javax.swing.JCheckBox chkSource;
     private javax.swing.JCheckBox chkTarget;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -800,6 +835,8 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.JPanel pnlAdvancedOptions;
     private javax.swing.JPanel pnlAdvancedSettings;
     private javax.swing.JPanel pnlCustomSettings;
+    private javax.swing.JRadioButton rbtAND;
+    private javax.swing.JRadioButton rbtOR;
 
     // End of variables declaration
 
