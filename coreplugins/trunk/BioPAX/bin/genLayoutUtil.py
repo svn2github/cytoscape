@@ -58,7 +58,8 @@ import java.util.Iterator;
 import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.LayoutProperties;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -84,11 +85,11 @@ import java.awt.geom.Point2D;
 
 # write out class definition
 print >> layoutUtilFile, """/**
- * This class implements LayoutAlgorithim.  Used to layout BioPAX graphs.
+ * This class implements CyLayoutAlgorithim.  Used to layout BioPAX graphs.
  *
  * @author Benjamin Gross
  */
-public class LayoutUtil implements LayoutAlgorithm {
+public class LayoutUtil implements CyLayoutAlgorithm {
 
     /**
      * Our implementation of LayoutAlgorithm.doLayout().
@@ -267,6 +268,13 @@ print >> layoutUtilFile, """	/**
 	 * Our implementation of LayoutAlgorithm.updateSettings().
 	 */
 	public void updateSettings() {
+    }
+
+	/**
+	 * Our implementation of LayoutAlgorithm.getSettings().
+	 */
+	public LayoutProperties getSettings() {
+		return null;
     }
 
 	/**

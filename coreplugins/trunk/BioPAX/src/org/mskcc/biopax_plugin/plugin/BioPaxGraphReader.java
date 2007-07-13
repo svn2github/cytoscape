@@ -51,7 +51,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 
 import java.net.URLDecoder;
 import org.jdom.Element;
@@ -71,7 +71,7 @@ public class BioPaxGraphReader implements GraphReader {
 	private String fileName;
 	private String networkName;
 	private boolean validNetworkName;
-	private LayoutAlgorithm layoutUtil;
+	private CyLayoutAlgorithm layoutUtil;
 
 	/**
 	 * Constructor
@@ -112,7 +112,7 @@ public class BioPaxGraphReader implements GraphReader {
 	/**
 	 * Our implementation of GraphReader.getLayoutAlgorithm().
 	 */
-	public LayoutAlgorithm getLayoutAlgorithm() {
+	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return layoutUtil;
 	}
 
