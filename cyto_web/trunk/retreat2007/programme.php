@@ -59,7 +59,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  <tr>
   <td class="subheader" width="15%">Wednesday</td>
   <td class="subheader" width="15%"><a href="#nov_7">November 7th</a></td>
-  <td class="subheader" width="70%"><strong><big>Demoday</big></strong></td>
+  <td class="subheader" width="70%"><strong><big>Demoday - Hands on tutorials</big></strong></td>
  </tr>
  <tr>
   <td class="subheader" width="15%">Thursday</td>
@@ -158,7 +158,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  <table class="programme">
  <tr>
   <td class="tableheader_narrow"><p>WED November 7th</p></td>
-  <td class="tableheader_wide"><p>Application showcase and hands-on sessions</p></td>
+  <td class="tableheader_wide"><p>Application showcase and hands-on tutorial sessions</p></td>
  </tr>
  <tr>
   <td class="subheader">Where</td>
@@ -166,7 +166,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>09:30-11:00 </p></td>
-  <td><p>Application showcase 1A / Hands-on session 1A </p></td>
+  <td><p>Application showcase 1A / Hands-on tutorial session 1A </p></td>
  </tr>
  <tr>
   <td><p>11:00-11:30 </p></td>
@@ -174,7 +174,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>11:30-12:30 </p></td>
-  <td><p>Application showcase 1B / Hands-on session 1B </p></td>
+  <td><p>Application showcase 1B / Hands-on tutorial session 1B </p></td>
  </tr>
  <tr>
   <td><p>12:30-14:00 </p></td>
@@ -182,7 +182,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>14:00-15:30 </p></td>
-  <td><p>Hands-on session 2A/Application showcase 2A</p></td>
+  <td><p>Hands-on tutorial session 2A/Application showcase 2A</p></td>
  </tr>
  <tr>
   <td><p>15:30-16:00 </p></td>
@@ -190,7 +190,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>16:00-17:00 </p></td>
-  <td><p>Hands-on session 2B/Application showcase 2B</p></td>
+  <td><p>Hands-on tutorial session 2B/Application showcase 2B</p></td>
  </tr>
  <tr>
   <td><p>17:00-(...) </p></td>

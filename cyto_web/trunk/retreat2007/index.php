@@ -26,20 +26,50 @@
   <div id="content">
   <div class="item">
   <div class="top">
-   <h2>Cytoscape Symposium and Developers Retreat</h2>
+   <h2>Cytoscape Public Symposium and Developers Retreat</h2>
    <h3>November 6-9, 2007</h3>
    <h3>Academic Medical Center, University of Amsterdam, Netherlands</h3>
   </div>
 
-The Cytoscape community organizes a retreat each year to establish a
-roadmap for Cytoscape development. Until now these were held in the
-USA. At last year&rsquo;s retreat the possibility of organizing the
-next retreat in Europe was raised and the Cytoscape team was
-enthusiastic. The Human Genetics Department of the AMC has accepted the
-challenge of organizing this year's meeting<br>
-
-Amsterdam is a great location for such an event; the vibrant historic city 
-offers plenty opportunities for social activities.<br>  
+Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br>
+<br>
+This year's Public Symposium entitled 
+<a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>,
+ will be held in vibrant, historic Amsterdam on November 8<sup>th</sup>,[More on amsterdam here] 2007 and has a formidable list of speakers, among them:
+<p>
+<ul>
+<li>Keynote speaker:
+<b>Leroy Hood</b>; Institute of Systems Biology, Seattle, USA.<br>
+President of the <a href="http://www.systemsbiology.org" target="_blank">Institute of Systems Biology</a>. Winner of the Lasker and Kyoto prizes.
+</li>
+<li>
+<b>Chris Sander</b>; Memorial Sloane-Kettering Cancer Center, New York, USA.<br>
+Director of the Computational Biology Center of the <a href="http://www.mskcc.org" target="_blank">Memorial Sloane-Kettering Cancer Center</a>.
+</li>
+<li>
+<b>Ewan Birney</b>; European Bioinformatics Institute/Ensembl, Cambridge, UK.<br> 
+Head of the <a href="http://www.ebi.ac.uk/" target="_blank">European Bioinformatics Institute/Ensembl</a> project.
+</li>
+<li>
+<b>Trey Ideker</b>; University of California, San Diego, USA.<br>
+Laboratory for Integrative Network Biology at the <a href="http://chianti.ucsd.edu/idekerlab" target="_blank">University of California, San Diego</a>. 
+</li>
+<li>
+<b>Peter Sorger</b>; Harvard, Boston, USA.<br>
+Professor of Systems Biology at <a href="http://sysbio.med.harvard.edu/faculty/sorger/" target="_blank">Harvard Medical School</a>. 
+</li>
+<li>
+<b>Benno Schwikowski</b>; Institute Louis Pasteur, Paris, France.<br>
+Director of the <a href="http://www.pasteur.fr/recherche/unites/Biolsys/benno" target="_blank">Systems Biology Group</a> at the Louis Pasteur Institute.
+</li>
+<li>
+<b>Anthony Hopkins</b>; 
+</li>
+</ul>
+</p>
+In addition, the Cytoscape community organizes a developers retreat each year to establish a roadmap 
+for Cytoscape development. Attendees of the symposium may also be interested in Demo Day and Cytoscape Tutorials on Nov 8th.
+<br> 
 
 The goal of the retreat is threefold:
 
@@ -60,37 +90,7 @@ and last day (6 and 9 November)are mainly intended for the Cytoscape core develo
 team and other developers who write their own Cytoscape plugins. The
 second and third days are aimed at a wide audience of molecular
 biologists and bioinformaticians in the Netherlands, Europe and
-internationally. To attract them a formidable list of confirmed speakers 
-will present their scientific work at the public symposium on November 8<sup>th</sup> 
-entitled <a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>.
-Among them:
-<p>
-<ul>
-<li>Keynote speaker:
-<b>Leroy Hood</b>; ISB, Seattle, USA.<br>
-President of the <a href="http://www.systemsbiology.org" target="_blank">Institute of Systems Biology</a>. Winner of (a.o.) the Lasker and Kyoto prizes.
-</li>
-<li>
-<b>Chris Sander</b>; MSKCC, NY, USA.<br>
-Director of the Computational Biology Center of the <a href="http://www.mskcc.org" target="_blank">Memorial Sloane-Kettering Cancer Center</a>.
-</li>
-<li>
-<b>Ewan Birney</b>; EBI, Cambridge, UK.<br> 
-Head of the <a href="http://www.ebi.ac.uk/" target="_blank">European Bioinformatics Institute/Ensembl</a> project.
-</li>
-<li>
-<b>Trey Ideker</b>; UCSD, San Diego, USA.<br>
-Laboratory for Integrative Network Biology at the <a href="http://chianti.ucsd.edu/idekerlab" target="_blank">University of California, San Diego</a>. 
-</li>
-<li>
-<b>Peter Sorger</b>; Harvard, Boston, USA.<br>
-Professor of Systems Biology at <a href="http://sysbio.med.harvard.edu/faculty/sorger/" target="_blank">Harvard Medical School</a>. 
-</li>
-<li>
-<b>Benno Schwikowski</b>; Institute Louis Pasteur, Paris, France.<br>
-Director of the <a href="http://www.pasteur.fr/recherche/unites/Biolsys/benno" target="_blank">Systems Biology Group</a> at the Louis Pasteur Institute.
-</li>
-</p>
+internationally.
   </div>
   </div>
   </div>
