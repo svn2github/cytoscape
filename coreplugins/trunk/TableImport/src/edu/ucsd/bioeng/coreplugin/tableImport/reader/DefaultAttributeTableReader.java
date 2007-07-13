@@ -36,17 +36,15 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import cytoscape.util.URLUtil;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import cytoscape.util.URLUtil;
 
 
 /**
@@ -174,7 +172,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 * Read table from the data source.
 	 */
 	public void readTable() throws IOException {
-		InputStream is = URLUtil.getInputStream(source);
+		final InputStream is = URLUtil.getInputStream(source);
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
 		String line;
 		int lineCount = 0;
@@ -182,14 +180,15 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		/*
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
+		String[] parts = null;
 		while ((line = bufRd.readLine()) != null) {
 			/*
 			 * Ignore Empty & Commnet lines.
 			 */
 			if ((commentChar != null) && line.startsWith(commentChar)) {
 				// Do nothing
-			} else if ((lineCount > startLineNumber) && (line.trim().length() > 0)) {
-				String[] parts = line.split(mapping.getDelimiterRegEx());
+			} else if ((lineCount >= startLineNumber) && (line.trim().length() > 0)) {
+				parts = line.split(mapping.getDelimiterRegEx());
 				parser.parseEntry(parts);
 				globalCounter++;
 			}
