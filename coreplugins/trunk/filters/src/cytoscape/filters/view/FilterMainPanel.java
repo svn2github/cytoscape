@@ -549,88 +549,96 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 
-	private boolean passesFilter(String objectType, Object pObject, CompositeFilter pFilter){
+	private boolean passAtomicFilter(Object pObject, AtomicFilter pAtomicFilter) {
+				
+		CyAttributes data = null;
+		String name = "";
+				
+		if (pObject instanceof Node) {
+			data = Cytoscape.getNodeAttributes();	
+			name = ((Node) pObject).getIdentifier();
+		}
+		else {
+			data = Cytoscape.getEdgeAttributes();	
+			name = ((Edge) pObject).getIdentifier();
+		}
+
+		if (name == null) {
+			return false;
+		}			
+		
+		if (pAtomicFilter instanceof StringFilter) {
+			StringFilter theStringFilter = (StringFilter) pAtomicFilter; 
+
+			String value = data.getStringAttribute(name, theStringFilter.getAttributeName().substring(5));
+			
+			if (value == null) {
+				return false;
+			}
+
+			if (theStringFilter == null) {
+				return false;
+			}
+			if (theStringFilter.getSearchStr() == null) {
+				return false;
+			}
+			String[] pattern = theStringFilter.getSearchStr().split("\\s");
+
+			for (int p = 0; p < pattern.length; ++p) {
+				if (!Strings.isLike((String) value, pattern[p], 0, true)) {
+					// this is an OR function
+					return false;
+				}
+			}				
+		}
+		else if (pAtomicFilter instanceof NumericFilter) {
+			NumericFilter theNumericFilter = (NumericFilter) pAtomicFilter; 
+			
+			Number value;
+
+			if (data.getType(theNumericFilter.getAttributeName().substring(5)) == CyAttributes.TYPE_FLOATING)
+				value = (Number) data.getDoubleAttribute(name, theNumericFilter.getAttributeName().substring(5));
+			else
+				value = (Number) data.getIntegerAttribute(name, theNumericFilter.getAttributeName().substring(5));
+
+			if (value == null) {
+				return false;
+			}
+
+			Double lowValue =theNumericFilter.getLowValue();
+			Double highValue =theNumericFilter.getHighValue();
+			
+			if (!(value.doubleValue() > lowValue.doubleValue() && value.doubleValue()< highValue.doubleValue())) {
+				return false;
+			}				
+		}
+		
+		return true;
+	}
+
+	
+	private boolean passesCompositeFilter(Object pObject, CompositeFilter pFilter){
 		
 		Vector<AtomicFilter> atomicFilterVect = pFilter.getAtomicFilterVect();
-				
+		
 		for (int i=0; i<atomicFilterVect.size(); i++ ) {
 
-			CyAttributes data = null;
-			if (objectType.equalsIgnoreCase("node")) {
-				data = Cytoscape.getNodeAttributes();				
-			}
-			else if (objectType.equalsIgnoreCase("edge")) {
-				data = Cytoscape.getEdgeAttributes();								
-			}
-			else {
+			boolean passTheAtomicFilter = passAtomicFilter(pObject, (AtomicFilter)atomicFilterVect.elementAt(i));
+			
+			if (pFilter.getAdvancedSetting().isANDSelected() && !passTheAtomicFilter) {
 				return false;
 			}
-
-			String name = "";
-			
-			if (pObject instanceof Node) {
-				name = ((Node) pObject).getIdentifier();
-			}
-			else {
-				name = ((Edge) pObject).getIdentifier();
-			}
-
-			if (name == null) {
-				return false;
-			}			
-			
-			if (atomicFilterVect.elementAt(i) instanceof StringFilter) {
-				StringFilter theStringFilter = (StringFilter) atomicFilterVect.elementAt(i); 
-
-				String value = data.getStringAttribute(name, theStringFilter.getAttributeName().substring(5));
-				
-				if (value == null) {
-					return false;
-				}
-
-				if (theStringFilter == null) {
-					return false;
-				}
-				// I think that * and ? are better for now....
-				if (theStringFilter == null) {
-					return false;
-				}
-				if (theStringFilter.getSearchStr() == null) {
-					return false;
-				}
-				String[] pattern = theStringFilter.getSearchStr().split("\\s");
-
-				for (int p = 0; p < pattern.length; ++p) {
-					if (!Strings.isLike((String) value, pattern[p], 0, true)) {
-						// this is an OR function
-						return false;
-					}
-				}				
-			}
-			else if (atomicFilterVect.elementAt(i) instanceof NumericFilter) {
-				NumericFilter theNumericFilter = (NumericFilter) atomicFilterVect.elementAt(i); 
-				
-				Number value;
-
-				if (data.getType(theNumericFilter.getAttributeName().substring(5)) == CyAttributes.TYPE_FLOATING)
-					value = (Number) data.getDoubleAttribute(name, theNumericFilter.getAttributeName().substring(5));
-				else
-					value = (Number) data.getIntegerAttribute(name, theNumericFilter.getAttributeName().substring(5));
-
-				if (value == null) {
-					return false;
-				}
-
-				Double lowValue =theNumericFilter.getLowValue();
-				Double highValue =theNumericFilter.getHighValue();
-				
-				if (!(value.doubleValue() > lowValue.doubleValue() && value.doubleValue()< highValue.doubleValue())) {
-					return false;
-				}				
-			}
+			if (pFilter.getAdvancedSetting().isORSelected() && passTheAtomicFilter) {
+				return true;
+			}	
 		}
 				
-		return true;
+		if (pFilter.getAdvancedSetting().isANDSelected()) {
+			return true;			
+		}
+		else { // pFilter.getAdvancedSetting().isORSelected()
+			return false;			
+		}
 	}
 
 	
@@ -650,7 +658,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				for (Node node : nodes_list) {
 
 					try {
-						if (passesFilter("node",node, pCompositeFilter)) {
+						if (passesCompositeFilter(node, pCompositeFilter)) {
 							passedNodes.add(node);
 						}
 					} catch (StackOverflowError soe) {
@@ -659,21 +667,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 				}
 				//System.out.println("\tpassedNodes.size() ="+passedNodes.size());
-				/*
-				CyAttributes data = Cytoscape.getNodeAttributes();
-
-				for (int i=0; i<passedNodes.size(); i++) {
-					Number value;
-					String name = passedNodes.get(i).getIdentifier();
-
-					if (data.getType("gal1RGsig") == CyAttributes.TYPE_FLOATING)
-						value = (Number) data.getDoubleAttribute(name, "gal1RGsig");
-					else
-						value = (Number) data.getIntegerAttribute(name,"gal1RGsig");
-
-					System.out.println("\t"+passedNodes.get(i).getIdentifier()+ "--" + value);					
-				}
-				*/
 
 				Cytoscape.getCurrentNetwork().setSelectedNodeState(passedNodes, true);
 		} 
@@ -684,7 +677,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 				for (Edge edge : edges_list) {
 					try {
-						if (passesFilter("edge",edge, pCompositeFilter)) {
+						if (passesCompositeFilter(edge, pCompositeFilter)) {
 							passedEdges.add(edge);
 						}
 					} catch (StackOverflowError soe) {
@@ -693,21 +686,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 				}
 				//System.out.println("\tpassedEdges.size() ="+passedEdges.size());
-/*				
-				CyAttributes data = Cytoscape.getEdgeAttributes();
 
-				for (int i=0; i<passedEdges.size(); i++) {
-					Number value;
-					String name = passedEdges.get(i).getIdentifier();
-
-					if (data.getType("gal1RGsig") == CyAttributes.TYPE_FLOATING)
-						value = (Number) data.getDoubleAttribute(name, "gal1RGsig");
-					else
-						value = (Number) data.getIntegerAttribute(name,"gal1RGsig");
-
-					System.out.println("\t"+passedEdges.get(i).getIdentifier()+ "--" + value);					
-				}
-*/				
 				Cytoscape.getCurrentNetwork().setSelectedEdgeState(passedEdges, true);
 		}
 	}//testObjects
@@ -744,7 +723,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				Cytoscape.getCurrentNetwork().unselectAllNodes();
 				Cytoscape.getCurrentNetwork().unselectAllEdges();
 
-				//System.out.println("ApplyButton is clicked!");
+				//System.out.println("\nApplyButton is clicked!");
 				CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
 				
 				if (theFilter == null) {
