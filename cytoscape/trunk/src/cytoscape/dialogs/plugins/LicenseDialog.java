@@ -39,6 +39,7 @@ public class LicenseDialog extends javax.swing.JDialog {
 		Html += Text + "</body></html>";
 		licenseEditorPane.setText(Html);
 		licenseEditorPane.setEditable(false);
+		licenseEditorPane.setCaretPosition(0);
 	}
 
 	public void setPluginName(String Name) {
@@ -92,7 +93,46 @@ public class LicenseDialog extends javax.swing.JDialog {
 				cancelButtonActionPerformed(evt);
 			}
 		});
+
+		javax.swing.JPanel radiosPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+		radiosPanel.add(agreeRadio);
+		radiosPanel.add(declineRadio);
+		javax.swing.JPanel buttonsPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+		buttonsPanel.add(finishButton);
+		buttonsPanel.add(cancelButton);
+
 		pluginLicenseLabel.setText("Plugin License Agreement");
+
+		getContentPane().setLayout(new java.awt.GridBagLayout());
+		java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+		c.insets = new java.awt.Insets(5,5,5,5);
+
+		c.gridx = 0;		c.gridy = 0;
+		c.gridwidth = 2;	c.gridheight = 1;
+		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;	c.weighty = 0.0;
+		getContentPane().add(pluginLicenseLabel, c);
+
+		c.gridx = 0;		c.gridy = 1;
+		c.gridwidth = 2;	c.gridheight = 1;
+		c.fill = java.awt.GridBagConstraints.BOTH;
+		c.weightx = 1.0;	c.weighty = 1.0;
+		getContentPane().add(jScrollPane1, c);
+
+		c.gridx = 0;		c.gridy = 2;
+		c.gridwidth = 1;	c.gridheight = 1;
+		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;	c.weighty = 0.0;
+		getContentPane().add(radiosPanel, c);
+
+		c.gridx = 1;		c.gridy = 2;
+		c.gridwidth = 1;	c.gridheight = 1;
+		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;	c.weighty = 0.0;
+		getContentPane().add(buttonsPanel, c);
+
+
+		/*
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
 				getContentPane());
 		getContentPane().setLayout(layout);
@@ -158,6 +198,8 @@ public class LicenseDialog extends javax.swing.JDialog {
 								declineRadio).add(agreeRadio)).addContainerGap(
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						Short.MAX_VALUE)));
+		*/
+		setPreferredSize(new java.awt.Dimension(600,400));
 		pack();
 	}// </editor-fold>
 

@@ -90,6 +90,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			// display any object selected
 			infoTextPane.setContentType("text/html");
 			infoTextPane.setText(((PluginInfo) Node.getObject()).htmlOutput());
+			infoTextPane.setCaretPosition(0);
 
 			if (Node.isNodeAncestor(installedNode)) {
 				deleteButton.setEnabled(true);
