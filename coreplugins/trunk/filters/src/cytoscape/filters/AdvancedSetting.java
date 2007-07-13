@@ -7,6 +7,8 @@ public class AdvancedSetting {
 	private boolean session = true, global=false; //scope
 	private boolean node=true, edge=true; // selectionType
 	private boolean source=true, target=true; // interactionType
+	private boolean relationAND = true;
+	private boolean relationOR = false;
 		
 	public String toString() {
 		String retStr = "";
@@ -47,6 +49,21 @@ public class AdvancedSetting {
 		}
 		retStr += "AdvancedSetting.interaction.target = ";
 		if (target) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		
+		retStr += "AdvancedSetting.relation.AND = ";
+		if (relationAND) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "AdvancedSetting.relation.OR = ";
+		if (relationOR) {
 			retStr += "true";
 		}
 		else {
@@ -106,5 +123,21 @@ public class AdvancedSetting {
 	public void setTarget(boolean pTarget)
 	{
 		target = pTarget;
+	}
+	public boolean isANDSelected()
+	{
+		return relationAND;
+	}
+	public void setRelationAND(boolean pRelationAND)
+	{
+		relationAND = pRelationAND;
+	}
+	public boolean isORSelected()
+	{
+		return relationOR;
+	}
+	public void setRelationOR(boolean pRelationOR)
+	{
+		relationOR = pRelationOR;
 	}
 }//End of Advanced settings
