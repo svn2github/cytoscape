@@ -42,7 +42,6 @@ import java.io.FileReader;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeInit;
-import cytoscape.layout.LayoutAlgorithm;
 
 import batchTool.commands.*;
 

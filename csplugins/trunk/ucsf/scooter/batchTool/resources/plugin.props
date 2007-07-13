@@ -6,14 +6,14 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=namedSelection
+pluginName=batchTool
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=This plugin provides the ability to "remember" a group of selected nodes
+pluginDescription=This plugin provides a simple proof-of-concept scripting capability for Cytoscape
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.0
+pluginVersion=0.2
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.5
@@ -31,4 +31,4 @@ projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
 pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF
 
 # Date this plugin/plugin version was released
-releaseDate=July 7, 2007
+releaseDate=August 7, 2007

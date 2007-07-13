@@ -36,7 +36,7 @@ import java.util.HashMap;
 
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.Tunable;
-import cytoscape.layout.LayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutProperties;
 
 import batchTool.commands.ParseException;
@@ -48,7 +48,7 @@ import batchTool.commands.ParseException;
  */
 public class LayoutCommand extends AbstractCommand {
 	private String layoutName;
-	private	LayoutAlgorithm layoutAlgorithm;
+	private	CyLayoutAlgorithm layoutAlgorithm;
 	private LayoutProperties propertyList;
 
 	/**
