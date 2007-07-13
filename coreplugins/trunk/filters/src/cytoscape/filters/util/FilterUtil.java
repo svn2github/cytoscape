@@ -25,10 +25,6 @@ import cytoscape.data.CyAttributes;
 import cytoscape.filters.AdvancedSetting;
 
 public class FilterUtil {
-	public static void applyFilter(CompositeFilter pFilter) {
-		
-		
-	} //applyFilter()
 	
 	public static CyAttributes getCyAttributes(String pIndexType) {
 		CyAttributes attributes = null;
@@ -60,64 +56,12 @@ public class FilterUtil {
 	}
 	
 	
-
-	public static Vector<CompositeFilter> getFilterVectFromStr() {
-		return new Vector<CompositeFilter>();
-		/*
-		Vector<CompositeFilter> retVect1 = getFilterVectFromSession();
-		Vector<CompositeFilter> retVect2 = getFilterVectFromProp();
-						
-		if ((retVect1 == null)&&(retVect2 == null)) {
-			return null;
-		}
-		
-		if (retVect1 == null)
-			return retVect2;
-		
-		if (retVect2 == null)
-			return retVect1;
-		
-		retVect1.addAll(retVect2);
-		return retVect1;
-		*/
-	}
-	
-
-	public static Vector<CompositeFilter> getFilterVectFromSession() {
-		
-		Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
-		
-		return null;
-		/*
-		CompositeFilter filter1 = new CompositeFilter();
-		filter1.setName("My first filter");
-		filter1.addAtomicFilter(new StringFilter("AttNameAAA","searchStrAAA"));
-		filter1.addAtomicFilter(new StringFilter("AttNameBBB","searchStrBBB"));
-		
-		CompositeFilter filter2 = new CompositeFilter();
-		filter2.addAtomicFilter(new NumericFilter("AttNameCCC",1.5,3.8));
-		filter2.addAtomicFilter(new StringFilter("AttNameDDD","SearchStrDDD"));
-		filter2.setName("My second filter");
-
-		CompositeFilter filter3 = new CompositeFilter();
-		filter3.addAtomicFilter(new NumericFilter("AttNameEEE",1.5,3.8));
-		filter3.addAtomicFilter(new StringFilter("AttNameFFF","SearchStrFFF"));
-		filter3.setName("My third filter");
-
-		retVect.add(filter1);
-		retVect.add(filter2);
-		retVect.add(filter3);
-				
-		return retVect;
-		*/
-	}
-
-
-	
 	public static CompositeFilter createFilterFromString(Vector pFilterStrVect) {
 		if (pFilterStrVect==null || pFilterStrVect.size() == 0) {
 			return null;
 		}
+		
+		//System.out.println("createFilterFromString()\npFilterStrVect.toString() =\n" + pFilterStrVect.toString());
 		
 		CompositeFilter theFilter = new CompositeFilter();
 		String tmpStr;
@@ -165,7 +109,17 @@ public class FilterUtil {
 		tmpStrArray = tmpStr.split("=");
 		advSetting.setTarget((new Boolean(tmpStrArray[1].trim())).booleanValue());
 
-		for (int i=8; i < pFilterStrVect.size(); i++) {
+		//AND
+		tmpStr = (String) pFilterStrVect.elementAt(8);		
+		tmpStrArray = tmpStr.split("=");
+		advSetting.setRelationAND((new Boolean(tmpStrArray[1].trim())).booleanValue());
+		
+		//OR
+		tmpStr = (String) pFilterStrVect.elementAt(9);		
+		tmpStrArray = tmpStr.split("=");
+		advSetting.setRelationOR((new Boolean(tmpStrArray[1].trim())).booleanValue());
+		
+		for (int i=10; i < pFilterStrVect.size(); i++) {
 			tmpStr = (String) pFilterStrVect.elementAt(i);
 			tmpStrArray = tmpStr.split("=");
 			if (tmpStrArray[0].trim().endsWith("StringFilter")) {
@@ -193,62 +147,5 @@ public class FilterUtil {
 	}
 
 }
-
-
-
-
-/*
-public void initialize() {
-	Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-
-	try {
-		File filter_file = CytoscapeInit.getConfigFile("filter.props");
-		BufferedReader in = new BufferedReader(new FileReader(filter_file));
-		String oneLine = in.readLine();
-
-		while (oneLine != null) {
-			if (oneLine.startsWith("#")) {
-				// comment
-			} else {
-				FilterManager.defaultManager().createFilterFromString(oneLine);
-			}
-
-			oneLine = in.readLine();
-		}
-
-		in.close();
-	} catch (Exception ex) {
-		System.out.println("Filter Read error");
-		ex.printStackTrace();
-	}
-
-	// create icons
-	ImageIcon icon = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria.png"));
-	ImageIcon icon2 = new ImageIcon(getClass()
-	                                    .getResource("/stock_filter-data-by-criteria-16.png"));
-
-	// 
-	//FilterPlugin action = new FilterPlugin(icon, this);
-	FilterMenuItem menu_action = new FilterMenuItem(icon2, this);
-	//Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
-	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) menu_action);
-
-	//CytoscapeDesktop desktop = Cytoscape.getDesktop();
-	//CyMenus cyMenus = desktop.getCyMenus();
-	//CytoscapeToolBar toolBar = cyMenus.getToolBar();
-	//JButton button = new JButton(icon);
-	//button.addActionListener(action);
-	//button.setToolTipText("Create and apply filters");
-	//button.setBorderPainted(false);
-	//toolBar.add(button);
-
-	FilterEditorManager.defaultManager().addEditor(new NumericAttributeFilterEditor());
-	FilterEditorManager.defaultManager().addEditor(new StringPatternFilterEditor());
-	FilterEditorManager.defaultManager().addEditor(new NodeTopologyFilterEditor());
-	FilterEditorManager.defaultManager().addEditor(new BooleanMetaFilterEditor());
-	FilterEditorManager.defaultManager().addEditor(new NodeInteractionFilterEditor());
-	FilterEditorManager.defaultManager().addEditor(new EdgeInteractionFilterEditor());
-}
-*/
 
 
