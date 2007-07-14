@@ -82,6 +82,23 @@ public class ExportCommand extends AbstractCommand {
 	private ExportObject object = ExportObject.NONE;
 	private ExportType type = ExportType.NONE;
 	private HashMap<String,String> optionMap = null;
+	private static HashMap<String,ExportFileType> typeMap = null;
+
+	/**
+	 * Constructor to make sure we've initialized the typeMap
+	 */
+	public ExportCommand() {
+		super();
+		if (typeMap == null) {
+			typeMap = new HashMap();
+			List<ExportFileType>typeList = ExportFileType.getExportFileTypes();
+			Iterator<ExportFileType>eTypeIter = typeList.iterator();
+			while (eTypeIter.hasNext()) {
+				ExportFileType eType = eTypeIter.next();
+				typeMap.put(eType.getExtensions()[0], eType);
+			}
+		}
+	}
 
 	/**
 	 * commandName returns the command name.  This is used to build the
@@ -195,23 +212,23 @@ public class ExportCommand extends AbstractCommand {
 		// Now get the right export handler & handle any options
 		ExportFileType exportFileType = null;
 		if (type == ExportType.EPS) {
-			exportFileType = new EPSExportFileType();
+			exportFileType = typeMap.get("eps");
 		} else if (type == ExportType.SWF) {
-			exportFileType = new SWFExportFileType();
+			exportFileType = typeMap.get("swf");
 		} else if (type == ExportType.PDF) {
-			exportFileType = new PDFExportFileType();
+			exportFileType = typeMap.get("pdf");
 		} else if (type == ExportType.PS) {
-			exportFileType = new PSExportFileType();
+			exportFileType = typeMap.get("ps");
 		} else if (type == ExportType.SVG) {
-			exportFileType = new SVGExportFileType();
+			exportFileType = typeMap.get("svg");
 		} else if (type == ExportType.EMF) {
-			exportFileType = new EMFExportFileType();
+			exportFileType = typeMap.get("emf");
 		} else if (type == ExportType.GIF) {
-			exportFileType = new GIFExportFileType();
+			exportFileType = typeMap.get("gif");
 		} else if (type == ExportType.PNG) {
-			exportFileType = ImageExportFileType.getInstance("png");
+			exportFileType = typeMap.get("png");
 		} else if (type == ExportType.JPG) {
-			exportFileType = ImageExportFileType.getInstance("jpg");
+			exportFileType = typeMap.get("jpg");
 		}
 
 		// Handle filename changes
