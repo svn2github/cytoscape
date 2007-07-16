@@ -651,6 +651,11 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		}
 
 		private boolean isBelow(final Point p) {
+			
+			if(belowSquare == null) {
+				return false;
+			}
+			
 			int diffY = Math.abs(p.y - 12 - belowSquare.y);
 			int diffX = Math.abs(p.x - 6 - belowSquare.x);
 
@@ -662,6 +667,11 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		}
 
 		private boolean isAbove(final Point p) {
+			
+			if(aboveSquare == null) {
+				return false;
+			}
+			
 			int diffY = Math.abs(p.y - 12 - aboveSquare.y);
 			int diffX = Math.abs(p.x - 6 - aboveSquare.x);
 
