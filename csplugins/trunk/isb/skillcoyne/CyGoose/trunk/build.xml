@@ -54,7 +54,6 @@
 		<!-- maybe need to do fileset if we use any other libraries in this plugin -->
 		<unjar src="${basedir}/lib/gaggle.jar" dest="${classes.dir}"/>
 		<delete dir="${classes.dir}/META-INF"/>
-		<copy file="${basedir}/resources/plugins.props" todir="${classes.dir}" />
 	</target>
 
 	<target name="compile" description="Compile pipeline task" depends="init">
@@ -64,7 +63,7 @@
 	</target>
 
 	<target name="jar" description="Create CyGoose jar file" depends="compile"> 
-		<copy file="${basedir}/resources/plugin.props" todir="${classes.dir}/org.systemsbiology.cytoscape"/>
+		<copy file="${basedir}/resources/plugin.props" todir="${classes.dir}/org/systemsbiology/cytoscape" />
 		<jar destfile="${build.dir}/${jar.file}">
 			<manifest>
 				<attribute name="Cytoscape-Plugin" value="org.systemsbiology.cytoscape.GagglePlugin" />
