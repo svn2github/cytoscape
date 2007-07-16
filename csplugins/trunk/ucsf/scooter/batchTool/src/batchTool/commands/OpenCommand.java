@@ -32,6 +32,9 @@
  */
 package batchTool.commands;
 
+import java.util.List;
+import java.util.HashMap;
+
 import cytoscape.data.readers.CytoscapeSessionReader;
 
 import batchTool.commands.ParseException;
@@ -64,18 +67,17 @@ public class OpenCommand extends AbstractCommand {
 	 *
 	 * layout force-directed iterations=100
 	 */
-	public int parse(String[] args) throws ParseException {
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Second argument must be a registered layout
-		fileName = args[1];
+		fileName = args.get(1);
 		System.out.println("Session name: "+fileName);
 		try {
 			reader = new CytoscapeSessionReader(fileName);
 		} catch (Exception e) {
-			throw new ParseException("Unable to open session file "+args[1],
-			                      args[0].length()+1);
+			throw new ParseException("Unable to open session file "+args.get(1));
 		}
 
-		return args.length;
+		return args.size();
 	}
 
 	/**

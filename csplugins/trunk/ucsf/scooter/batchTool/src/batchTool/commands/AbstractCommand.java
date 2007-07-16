@@ -32,6 +32,9 @@
  */
 package batchTool.commands;
 
+import java.util.List;
+import java.util.HashMap;
+
 /**
  * The layout command handles all requests to layout the current network.
  * For efficiency reasons, this should be done assuming we're in headless
@@ -53,7 +56,7 @@ public abstract class AbstractCommand implements Command {
 	 *
 	 * @param args the arguments to the command
 	 */
-	public abstract int parse(String[] args) throws ParseException;
+	public abstract int parse(List<String> args, HashMap<String,String> optMap) throws ParseException;
 
 	/**
 	 * execute is the routine called to actually execute the command. 

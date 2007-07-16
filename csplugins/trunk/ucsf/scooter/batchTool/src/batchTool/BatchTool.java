@@ -115,26 +115,89 @@ public class BatchTool extends CytoscapePlugin {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = null;
 		while ((line = reader.readLine()) != null) {
-			if (line.startsWith("#")) continue;
-
 			// Split
-			String[] tokens = tokenize(line);
+			ArrayList<String>tokens = new ArrayList();
+			HashMap<String,String>optMap = new HashMap();
+			String command = tokenize(line, tokens, optMap);
 			// Execute it
-			if (commandMap.containsKey(tokens[0])) {
-				Command com = commandMap.get(tokens[0]);
-				com.parse(tokens);
+			if (commandMap.containsKey(command)) {
+				Command com = commandMap.get(command);
+				com.parse(tokens, optMap);
 				com.execute(null);
 			} else {
-				throw new ParseException("Unknown command: "+tokens[0],0);
+				throw new ParseException("Unknown command: "+tokens.get(0));
 			}
 		}
 	}
 
-	private String[] tokenize(String input) {
+	private String tokenize(String input, List<String> args, HashMap<String,String> optMap) {
 		// Currently, this is just a simple approach.  This eventually needs
 		// to handle things like string quoting, etc.
 		if (input == null) return null;
-		return input.split(" ");
+
+		boolean inQuote = false;
+		boolean inPair = false;
+
+		String key = null;
+		String str = null;
+		int tokenStart = 0;
+
+		for (int i = 0; i <= input.length(); i++) {
+			char c = '\0';
+			if (i < input.length()) c = input.charAt(i);
+
+			switch (c) {
+
+			case '\0':
+			case ' ':
+				if (c == ' ' && inQuote) continue;
+				str = input.substring(tokenStart, i);
+
+				if (inPair) {
+					optMap.put(key, str);
+					inPair = false;
+				} else {
+					args.add(str.toLowerCase());
+				}
+
+				tokenStart = i+1;
+				break;
+
+			case '#':
+				if (inQuote) continue;
+				if (i > tokenStart+1) {
+					str = input.substring(tokenStart, i);
+					args.add(str.toLowerCase());
+					i = input.length();
+				}
+				break;
+
+			case '"':
+				if (inQuote) 
+					inQuote=false;
+				else
+					inQuote = true;
+				break;
+
+			case '=':
+				if (inQuote) continue;
+				key = input.substring(tokenStart, i);
+				inPair = true;
+				tokenStart = i+1;
+			}
+		}
+
+/*
+		Iterator<String> tokenIter = args.iterator();
+		while (tokenIter.hasNext()) {
+			System.out.println("token: "+tokenIter.next());
+		}
+*/
+
+		if (args.size() > 0)
+			return args.get(0);
+
+		return null;
 	}
 }
 

@@ -124,10 +124,12 @@ public class ExportCommand extends AbstractCommand {
 	 * export edge attributes to filename
 	 * export network as {XGMML,PSI-MI,GML,SIF,EPS,SWF,PDF,PS,SVG,EMF,GIF,PNG,JPG} to filename
 	 */
-	public int parse(String[] args) throws ParseException {
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
+
+		this.optionMap = optMap;
 		// Second argument must be what we want to export: network, vizmap, node attributes,
 		// edge attributes, graphics
-		String obj = args[1];
+		String obj = args.get(1);
 		System.out.println("Export "+obj);
 
 		// Get the rest of the information.
@@ -140,28 +142,23 @@ public class ExportCommand extends AbstractCommand {
 			// Get our "from" clause
 			fileName = getToClause(args);
 			if (fileName == null)
-				throw new ParseException("export network requires a file name", -1);
-
-			// Get our options, if we're exporting graphics
-			if (isGraphic(type)) {
-				optionMap = getOptionMap(args);
-			}
+				throw new ParseException("export network requires a file name");
 
 		} else if (obj.equals("node")) {
 			object = ExportObject.NODEATTR;
-			if (!("attributes".startsWith(args[2]))) {
-				throw new ParseException("Don't know how to export node "+args[2],0);
+			if (!("attributes".startsWith(args.get(2)))) {
+				throw new ParseException("Don't know how to export node "+args.get(2));
 			}
 		} else if (obj.equals("edge")) {
 			object = ExportObject.EDGEATTR;
-			if (! "attributes".startsWith(args[2])) {
-				throw new ParseException("Don't know how to export edge "+args[2],0);
+			if (!("attributes".startsWith(args.get(2)))) {
+				throw new ParseException("Don't know how to export edge "+args.get(2));
 			}
 		} else if (obj.equals("vizmap")) {
 			object = ExportObject.VIZMAP;
 		}
 
-		return args.length;
+		return args.size();
 	}
 
 	/**
@@ -235,7 +232,7 @@ public class ExportCommand extends AbstractCommand {
 		String[] acceptableExtensions = exportFileType.getExtensions();
 		File outputFile = new File(fileName);
 		if (!exportFileType.checkExtension(outputFile, acceptableExtensions)) {
-			throw new ParseException("Illegal extension for file type", -1);
+			throw new ParseException("Illegal extension for file type");
 		}
 
 		try {
@@ -301,11 +298,13 @@ public class ExportCommand extends AbstractCommand {
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
 	}
 
-	private ExportType getAsClause(String[] args) throws ParseException {
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("as")) {
+	private ExportType getAsClause(List<String> args) throws ParseException {
+		Iterator <String>argIter = args.iterator();
+		while (argIter.hasNext()) {
+			String arg = argIter.next();
+			if (arg.equals("as")) {
 				// Figure out what we're exporting
-				String type = args[i+1];
+				String type = argIter.next();
 				if (type.equals("xgmml"))
 					return ExportType.XGMML;
 				else if (type.equals("gml"))
@@ -335,34 +334,21 @@ public class ExportCommand extends AbstractCommand {
 				else if (type.equals("jpg"))
 					return ExportType.JPG;
 
-				throw new ParseException("Unknown export type: "+type, -1);
+				throw new ParseException("Unknown export type: "+type);
 			}
 		}
-		throw new ParseException("No 'as export_type' clause found", -1);
+		throw new ParseException("No 'as export_type' clause found");
 	}
 
-	private String getToClause(String[] args) {
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("to")) {
-				return args[i+1];
+	private String getToClause(List<String> args) {
+		Iterator <String>argIter = args.iterator();
+		while (argIter.hasNext()) {
+			String arg = argIter.next();
+			if (arg.equals("to")) {
+				return argIter.next();
 			}
 		}
 		return null;
-	}
-
-	private HashMap getOptionMap(String[] args) {
-		HashMap<String,String>optionMap = null;
-		// step through all of the args
-		for (int i = 0; i < args.length; i++) {
-			// See if we have an "="
-			String[] pair = args[i].split("=");
-			if (pair.length == 2) {
-				// Yes, add it to the map
-				if (optionMap == null) optionMap = new HashMap();
-				optionMap.put(pair[0],pair[1]);
-			}
-		}
-		return optionMap;
 	}
 
 	private boolean isGraphic(ExportType type) {

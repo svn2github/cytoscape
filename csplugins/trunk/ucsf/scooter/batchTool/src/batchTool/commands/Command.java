@@ -32,6 +32,9 @@
  */
 package batchTool.commands;
 
+import java.util.List;
+import java.util.HashMap;
+
 /**
  * The Command interface
  */
@@ -51,7 +54,7 @@ public interface Command {
 	 *
 	 * @param args the arguments to the command
 	 */
-	public int parse(String[] args) throws ParseException;
+	public int parse(List<String> args, HashMap<String,String> optMap) throws ParseException;
 
 	/**
 	 * execute is the routine called to actually execute the command.  This

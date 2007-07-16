@@ -32,6 +32,9 @@
  */
 package batchTool.commands;
 
+import java.util.List;
+import java.util.HashMap;
+
 import cytoscape.data.writers.CytoscapeSessionWriter;
 import cytoscape.Cytoscape;
 
@@ -65,10 +68,10 @@ public class SaveCommand extends AbstractCommand {
 	 *
 	 * layout force-directed iterations=100
 	 */
-	public int parse(String[] args) throws ParseException {
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Second argument must be a registered layout
-		if (args[1].equals("as")) {
-			fileName = args[2];
+		if (args.get(1).equals("as")) {
+			fileName = args.get(2);
 		} else {
 			fileName = Cytoscape.getCurrentSessionFileName();
 		}
@@ -77,7 +80,7 @@ public class SaveCommand extends AbstractCommand {
 			fileName = fileName + ".cys";
 
 
-		return args.length;
+		return args.size();
 	}
 
 	/**
@@ -94,7 +97,7 @@ public class SaveCommand extends AbstractCommand {
 			writer.writeSessionToDisk();
 		} catch (Exception e) {
 			throw new ParseException("Unable to save session file "+fileName+": "+
-			                         e.getMessage(),-1);
+			                         e.getMessage());
 		}
 		return -1;
 	}

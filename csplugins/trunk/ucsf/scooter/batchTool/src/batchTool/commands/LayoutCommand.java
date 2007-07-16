@@ -33,6 +33,9 @@
 package batchTool.commands;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.Tunable;
@@ -72,34 +75,36 @@ public class LayoutCommand extends AbstractCommand {
 	 *
 	 * layout force-directed iterations=100
 	 */
-	public int parse(String[] args) throws ParseException {
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Second argument must be a registered layout
-		layoutName = args[1];
+		layoutName = args.get(1);
 		System.out.println("Layout type: "+layoutName);
 		layoutAlgorithm = CyLayouts.getLayout(layoutName);
 		if (layoutAlgorithm == null) {
-			throw new ParseException("The layout "+args[1]+" isn't available",
-			                      args[0].length()+1);
+			throw new ParseException("The layout "+args.get(1)+" isn't available");
 		}
 
 		propertyList = layoutAlgorithm.getSettings();
 		if (propertyList == null)
-			return args.length;
+			return args.size();
 
-		for (int i=2; i < args.length; i++) {
-			System.out.println(args[i]);
+		Set<String>keys = optMap.keySet();
+		Iterator<String>keyIter = keys.iterator();
+		while(keyIter.hasNext()) {
+			String key = keyIter.next();
+			System.out.println(key);
 			// Split the pair
-			String[] pair = args[i].split("=");
-			Tunable tunable = propertyList.get(pair[0]);
+			Tunable tunable = propertyList.get(key);
 			if (tunable == null) {
-				throw new ParseException("No such property: "+pair[0],-1);
+				throw new ParseException("No such property: "+key);
 			}
-			System.out.println("Setting tunable "+pair[0]+" to "+pair[1]);
-			tunable.setValue(pair[1]);
+			String value = optMap.get(key);
+			System.out.println("Setting tunable "+key+" to "+value);
+			tunable.setValue(value);
 			layoutAlgorithm.updateSettings();
 		}
 
-		return args.length;
+		return args.size();
 	}
 
 	/**

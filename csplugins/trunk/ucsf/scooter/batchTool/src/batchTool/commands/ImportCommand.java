@@ -34,6 +34,8 @@ package batchTool.commands;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
+import java.util.HashMap;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -71,12 +73,12 @@ public class ImportCommand extends AbstractCommand {
 	 *
 	 * layout force-directed iterations=100
 	 */
-	public int parse(String[] args) throws ParseException {
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Get the file name
-		fileName = args[1];
+		fileName = args.get(1);
 		file = new File(fileName);
 
-		return args.length;
+		return args.size();
 	}
 
 	/**

@@ -37,6 +37,8 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
+import java.util.List;
+import java.util.HashMap;
 import batchTool.commands.ParseException;
 
 /**
@@ -65,9 +67,9 @@ public class ApplyCommand extends AbstractCommand {
 	 *
 	 * layout force-directed iterations=100
 	 */
-	public int parse(String[] args) throws ParseException {
-		styleName = args[1];
-		return args.length;
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
+		styleName = args.get(1);
+		return args.size();
 	}
 
 	/**
@@ -91,5 +93,3 @@ public class ApplyCommand extends AbstractCommand {
 	}
 
 }
-
-

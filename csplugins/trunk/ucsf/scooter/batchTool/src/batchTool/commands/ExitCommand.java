@@ -34,6 +34,9 @@ package batchTool.commands;
 
 import cytoscape.Cytoscape;
 
+import java.util.List;
+import java.util.HashMap;
+
 import batchTool.commands.ParseException;
 
 /**
@@ -61,8 +64,8 @@ public class ExitCommand extends AbstractCommand {
 	 *
 	 * layout force-directed iterations=100
 	 */
-	public int parse(String[] args) throws ParseException {
-		return args.length;
+	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
+		return args.size();
 	}
 
 	/**
