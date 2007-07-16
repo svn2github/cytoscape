@@ -194,8 +194,8 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 */
 	public String getReport() {
 		final StringBuffer sb = new StringBuffer();
-		final Set uniqueNodes = new TreeSet(nodeList);
-		final Set uniqueEdges = new TreeSet(edgeList);
+		final Set<Integer> uniqueNodes = new TreeSet<Integer>(nodeList);
+		final Set<Integer> uniqueEdges = new TreeSet<Integer>(edgeList);
 
 		sb.append(uniqueNodes.size() + " nodes and " + uniqueEdges.size() + " edges are loaded.\n");
 		sb.append("New network name is " + super.getNetworkName() + "\n\n");

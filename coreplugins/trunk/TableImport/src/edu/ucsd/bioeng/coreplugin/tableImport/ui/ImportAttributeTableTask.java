@@ -78,7 +78,7 @@ public class ImportAttributeTableTask implements Task {
 			taskMonitor.setPercentCompleted(100);
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED,null,null);
 			informUserOfAnnotationStats();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			taskMonitor.setException(e, "Unable to import annotation data.");
 		}

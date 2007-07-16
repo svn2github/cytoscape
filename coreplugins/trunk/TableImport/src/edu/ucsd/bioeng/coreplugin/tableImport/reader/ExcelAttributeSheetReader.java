@@ -45,6 +45,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -65,6 +66,8 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	private final AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
 	private final int startLineNumber;
+	
+	private int globalCounter = 0;
 
 	/**
 	 * Constructor.<br>
@@ -106,6 +109,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 			cellsInOneRow = createElementStringArray(row);
 			parser.parseEntry(cellsInOneRow);
 			rowCount++;
+			globalCounter++;
 		}
 	}
 
@@ -153,9 +157,17 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getReport() {
-		// TODO Auto-generated method stub
-		final StringBuffer sb = new StringBuffer();
-
+		final StringBuilder sb = new StringBuilder();
+		final Map<String, Object> invalid = parser.getInvalidMap();
+		sb.append(globalCounter + " entries are loaded and mapped onto\n");
+		sb.append(mapping.getObjectType().toString() + " attributes.");
+		
+		if(invalid.size() != 0) {
+			sb.append("\n\nThe following enties are invalid and not imported:\n");
+			for(String key: invalid.keySet()) {
+				sb.append(key + " = " + invalid.get(key) + "\n");
+			}
+		}
 		return sb.toString();
 	}
 }

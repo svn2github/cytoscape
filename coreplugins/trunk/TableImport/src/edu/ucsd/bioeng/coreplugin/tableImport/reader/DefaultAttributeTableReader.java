@@ -43,6 +43,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cytoscape.util.URLUtil;
 
@@ -198,6 +199,8 @@ public class DefaultAttributeTableReader implements TextTableReader {
 
 		is.close();
 		bufRd.close();
+		
+		
 	}
 
 	/**
@@ -206,10 +209,17 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getReport() {
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
+		final Map<String, Object> invalid = parser.getInvalidMap();
 		sb.append(globalCounter + " entries are loaded and mapped onto\n");
-		sb.append(mapping.getObjectType().toString() + " attributes");
-
+		sb.append(mapping.getObjectType().toString() + " attributes.");
+		
+		if(invalid.size() != 0) {
+			sb.append("\n\nThe following enties are invalid and not imported:\n");
+			for(String key: invalid.keySet()) {
+				sb.append(key + " = " + invalid.get(key) + "\n");
+			}
+		}
 		return sb.toString();
 	}
 }

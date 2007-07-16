@@ -57,7 +57,6 @@ import java.net.URL;
 public class ImportNetworkTask implements Task {
 	private final GraphReader reader;
 	private final URL source;
-	private CyNetwork network;
 	private TaskMonitor taskMonitor;
 
 	/**
@@ -78,7 +77,7 @@ public class ImportNetworkTask implements Task {
 		taskMonitor.setStatus("Loading network and edge attributes...");
 		taskMonitor.setPercentCompleted(-1);
 
-		network = Cytoscape.createNetwork(reader, true, null);
+		Cytoscape.createNetwork(reader, true, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, source);
 
 		taskMonitor.setPercentCompleted(100);
@@ -122,6 +121,6 @@ public class ImportNetworkTask implements Task {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return new String("Loading Annotation");
+		return new String("Loading Network and Edge Attributes");
 	}
 }

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import cytoscape.Cytoscape;
@@ -46,7 +44,9 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -61,6 +61,7 @@ import java.util.TreeSet;
  */
 public class AttributeLineParser {
 	private AttributeMappingParameters mapping;
+	private Map<String, Object> invalid = new HashMap<String, Object>();
 
 	/**
 	 * Creates a new AttributeLineParser object.
@@ -258,16 +259,19 @@ public class AttributeLineParser {
 		 */
 		if (altKey == null) {
 			mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
-			mapping.getAttributes().setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()], primaryKey);
+			mapping.getAttributes()
+			       .setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
+			                     primaryKey);
 		} else {
 			mapping.getAlias().add(altKey, new ArrayList<String>(aliasSet));
-			mapping.getAttributes().setAttribute(altKey, mapping.getAttributeNames()[mapping.getKeyIndex()], primaryKey);
+			mapping.getAttributes()
+			       .setAttribute(altKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
+			                     primaryKey);
 		}
-		
+
 		/*
 		 * Add primary key as an attribute
 		 */
-		
 	}
 
 	/**
@@ -278,24 +282,47 @@ public class AttributeLineParser {
 	 * @param index
 	 */
 	private void mapAttribute(final String key, final String entry, final int index) {
-		Byte type = mapping.getAttributeTypes()[index];
+		final Byte type = mapping.getAttributeTypes()[index];
 
 		switch (type) {
 			case CyAttributes.TYPE_BOOLEAN:
-				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], new Boolean(entry));
+
+				Boolean newBool;
+				try {
+					newBool = new Boolean(entry);
+					mapping.getAttributes()
+					       .setAttribute(key, mapping.getAttributeNames()[index], newBool);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
 			case CyAttributes.TYPE_INTEGER:
-				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], new Integer(entry));
+
+				Integer newInt;
+
+				try {
+					newInt = new Integer(entry);
+					mapping.getAttributes()
+					       .setAttribute(key, mapping.getAttributeNames()[index], newInt);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
 			case CyAttributes.TYPE_FLOATING:
-				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], new Double(entry));
+
+				Double newDouble;
+
+				try {
+					newDouble = new Double(entry);
+					mapping.getAttributes()
+					       .setAttribute(key, mapping.getAttributeNames()[index], newDouble);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
@@ -339,6 +366,10 @@ public class AttributeLineParser {
 			default:
 				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
 		}
+	}
+	
+	protected Map getInvalidMap() {
+		return invalid;
 	}
 
 	/**
