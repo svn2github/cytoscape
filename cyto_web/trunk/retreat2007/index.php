@@ -35,7 +35,10 @@ Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br
 <br>
 This year's Public Symposium entitled 
 <a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>,
- will be held in vibrant, historic Amsterdam on November 8<sup>th</sup>,[More on amsterdam here] 2007 and has a formidable list of speakers, among them:
+ will be held in vibrant, historic Amsterdam on November 8<sup>th</sup>, 2007. 'Floating' on a web of canals, 
+ with its unique combination of old-world charm and cosmopolitan culture, Amsterdam is one of the most popular 
+ European cities for international visitors. 
+We already have a formidable list of confirmed speakers, among them:
 <p>
 <ul>
 <li>Keynote speaker:
@@ -63,7 +66,8 @@ Professor of Systems Biology at <a href="http://sysbio.med.harvard.edu/faculty/s
 Director of the <a href="http://www.pasteur.fr/recherche/unites/Biolsys/benno" target="_blank">Systems Biology Group</a> at the Louis Pasteur Institute.
 </li>
 <li>
-<b>Anthony Hopkins</b>; 
+<b>Anthony Hopkins</b>;  Pfizer Global Research & Development, Sandwich, Kent, UK. <br>
+Head of knowledge discovery at <a href="http://www.pfizer.com" target="_blank">Pfizer Global R&D</a>.
 </li>
 </ul>
 </p>
