@@ -1331,7 +1331,8 @@ public abstract class Cytoscape {
 		// network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, false);
 
-		if (create_view) {
+		if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+		                                                            .getProperty("viewThreshold")))) {
 			createNetworkView(network,title,reader.getLayoutAlgorithm());
 		}
 
