@@ -85,15 +85,14 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		catch (Exception E)
 			{ // TODO add error message text area to goose panel and stop popping error box up
 			registered = false;
-			GagglePlugin.showDialogBox("Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
+			//GagglePlugin.showDialogBox("Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE);
+			System.err.println(E.getMessage());
+			//E.printStackTrace();
 			}
 		
 		broadcast = new CyBroadcast(gDialog, gaggleBoss);
 		this.addButtonActions();
 		pluginInitialized = true;
-		System.err.println("***" + obj.getPluginDirectory().getAbsolutePath());
-
 		}
 	
 	
