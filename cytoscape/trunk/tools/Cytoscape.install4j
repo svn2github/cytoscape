@@ -16,7 +16,7 @@
       <mountPoint name="" id="1" location="" mode="755" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="1" file="./cytoscape-v%VERSION%" overwrite="4" shared="false" mode="644" dontUninstall="false" excludeSuffixes="" dirMode="777">
+      <dirEntry mountPoint="1" file="./cytoscape-v%VERSION%" overwrite="4" shared="false" mode="755" dontUninstall="false" excludeSuffixes="" dirMode="777">
         <exclude />
       </dirEntry>
     </entries>
