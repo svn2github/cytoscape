@@ -309,6 +309,9 @@ public class PluginManager {
 			PluginProperties pp = new PluginProperties(Plugin);
 			InfoObj = pp.fillPluginInfoObject(InfoObj);
 			
+		} catch (IOException ioe) {
+			System.err.println("ERROR registering plugin: " + ioe.getMessage());
+			System.err.println(Plugin.getClass().getName() + " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

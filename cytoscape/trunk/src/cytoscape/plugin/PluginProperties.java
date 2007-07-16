@@ -14,6 +14,7 @@ import java.util.Properties;
  */
 public class PluginProperties extends Properties {
 	private String configFileName = "plugin.props";
+	private String packageName;
 	private String errorMsg;
 	
 	/**
@@ -48,6 +49,8 @@ public class PluginProperties extends Properties {
 		
 	}
 
+	
+	
 	/**
 	 * The plugin.props file is expected to be in the jar file under the package directory.  
 	 * It will not be found if it is anywhere else.
@@ -55,9 +58,9 @@ public class PluginProperties extends Properties {
 	 * @throws IOException
 	 */
 	public PluginProperties(CytoscapePlugin Plugin) throws IOException {
-		String PackageName = Plugin.getClass().getPackage().getName();
-		PackageName = PackageName.replace('.', '/'); // the package name has to be in the directory structure form
-		readPluginProperties(Plugin.getClass().getClassLoader().getResourceAsStream(PackageName + "/" +  configFileName));
+		packageName = Plugin.getClass().getPackage().getName();
+		packageName = packageName.replace('.', '/'); // the package name has to be in the directory structure form
+		readPluginProperties(Plugin.getClass().getClassLoader().getResourceAsStream(packageName + "/" +  configFileName));
 	}
 	
 	private void readPluginProperties(InputStream is) throws IOException {
@@ -65,13 +68,13 @@ public class PluginProperties extends Properties {
 			// throw an error!
 			String Msg = "";
 			if (is == null) {
-				Msg = "input stream is null";
+				Msg = "File is not in the expected location: " + packageName;
 			} else if (is.available() == 0) {
 				Msg = "0 bytes in input stream";
 			}
 	
 			IOException Error = new IOException("Unable to load "
-					+ configFileName + ": " + Msg);
+					+ configFileName + ". " + Msg);
 			throw Error;
 		} else {
 			load(is);
