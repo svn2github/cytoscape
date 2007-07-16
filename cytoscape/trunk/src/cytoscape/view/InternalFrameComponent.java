@@ -152,6 +152,16 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	    throws PrinterException {
 		if (pageIndex == 0) {
 			((Graphics2D) graphics).translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+			
+			// Apply a scale factor to the image to make sure the whole image on the screen 
+			// will fit to the printable area of the paper
+			double image_scale = Math.min(pageFormat.getImageableWidth() / this.getWidth(),
+			                              pageFormat.getImageableHeight() / this.getHeight());
+
+			if (image_scale < 1.0d) {
+				((Graphics2D) graphics).scale(image_scale, image_scale);
+			}
+
 			//TODO look at whether we should be clipping like this
 			graphics.clipRect(0, 0, backgroundCanvas.getWidth(), backgroundCanvas.getHeight());
 			backgroundCanvas.print(graphics);
