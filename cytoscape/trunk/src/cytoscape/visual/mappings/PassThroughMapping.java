@@ -131,10 +131,10 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @return  DOCUMENT ME!
 	 */
 	public Object clone() {
-		PassThroughMapping miniMe;
+		final PassThroughMapping copy;
 
 		try {
-			miniMe = (PassThroughMapping) super.clone();
+			copy = (PassThroughMapping) super.clone();
 		} catch (CloneNotSupportedException e) {
 			System.err.println("Critical error in PassThroughMapping - was not cloneable");
 			e.printStackTrace();
@@ -142,11 +142,11 @@ public class PassThroughMapping implements ObjectMapping {
 			return null;
 		}
 
-		miniMe.attrName = new String(attrName);
+		copy.attrName = new String(attrName);
 
 		// don't need to explicitly clone rangeClass since cloned calculator
 		//has same type as original.
-		return miniMe;
+		return copy;
 	}
 
 	/**

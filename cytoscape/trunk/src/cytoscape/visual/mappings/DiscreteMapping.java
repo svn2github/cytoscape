@@ -122,11 +122,12 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * @return DiscreteMapping Object.
 	 */
 	public Object clone() {
-		DiscreteMapping clone = new DiscreteMapping(defaultObj, attrName, mapType);
+		final DiscreteMapping clone = new DiscreteMapping(defaultObj, attrName, mapType);
 
 		//  Copy over all listeners...
-		for (int i = 0; i < observers.size(); i++)
-			clone.addChangeListener((ChangeListener) observers.get(i));
+		for (ChangeListener listener : observers) {
+			clone.addChangeListener(listener);
+		}
 
 		clone.putAll((TreeMap) treeMap.clone());
 
@@ -156,6 +157,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 		if (value instanceof Byte) {
 			value = ShapeNodeRealizer.getNodeShape(((Byte) value).byteValue());
 		}
+
 		System.out.println("key = " + key + ", val = " + value);
 		treeMap.put(key, value);
 		fireStateChanged();
@@ -204,8 +206,8 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 */
 	public Class[] getAcceptedDataClasses() {
 		Class[] ret = {
-		                  String.class, Number.class, Integer.class, Double.class, Float.class, Long.class,
-		                  Short.class, NodeShape.class, List.class
+		                  String.class, Number.class, Integer.class, Double.class, Float.class,
+		                  Long.class, Short.class, NodeShape.class, List.class
 		              };
 
 		return ret;
@@ -304,9 +306,16 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 */
 	@Deprecated
 	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b)); 
+		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vpt DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JPanel getLegend(VisualPropertyType vpt) {
 		return new DiscreteLegend(treeMap, attrName, vpt);
 	}

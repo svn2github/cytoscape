@@ -73,13 +73,26 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	private Color defaultEdgeSelectionColor = Color.RED;
 	private Color defaultEdgeReverseSelectionColor = Color.GREEN;
 
+//	/**
+//	 * Make shallow copy of this object
+//	 */
+//	public Object clone() throws CloneNotSupportedException {
+//		Object copy = null;
+//		copy = super.clone();
+//
+//		return copy;
+//	}
+//	
 	/**
-	 * Make shallow copy of this object
+	 * Make deep copy of this object
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		Object copy = null;
-		copy = super.clone();
-
+		final GlobalAppearanceCalculator copy = new GlobalAppearanceCalculator();
+		copy.setDefaultBackgroundColor(this.defaultBackgroundColor);
+		copy.setDefaultNodeSelectionColor(this.defaultNodeSelectionColor);
+		copy.setDefaultEdgeSelectionColor(this.defaultEdgeSelectionColor);
+		copy.setDefaultNodeReverseSelectionColor(this.defaultNodeReverseSelectionColor);
+		copy.setDefaultEdgeReverseSelectionColor(this.defaultEdgeReverseSelectionColor);
 		return copy;
 	}
 

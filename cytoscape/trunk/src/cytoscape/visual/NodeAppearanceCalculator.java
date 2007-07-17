@@ -39,6 +39,7 @@ package cytoscape.visual;
 import cytoscape.CyNetwork;
 
 import cytoscape.visual.calculators.*;
+import cytoscape.visual.mappings.ObjectMapping;
 
 import giny.model.Node;
 
@@ -101,6 +102,30 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
         calculateNodeAppearance(appr, node, network);
 
         return appr;
+    }
+    
+    /**
+     * Create deep copy of the object.
+     */
+    public Object clone() {
+    	final NodeAppearanceCalculator copy = new NodeAppearanceCalculator();
+    	
+    	// Copy defaults
+    	final NodeAppearance defAppr = new NodeAppearance();
+    	for(VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList()) {
+    		defAppr.set(type, defaultAppearance.get(type));
+    	}
+    	defAppr.setNodeSizeLocked(defaultAppearance.getNodeSizeLocked());
+    	copy.setDefaultAppearance(defAppr);
+    	
+    	//Copy mappings
+    	for(Calculator cal  : this.calcs) {
+    		ObjectMapping mCopy = (ObjectMapping) cal.getMapping(0).clone();
+    		BasicCalculator bCalc = new BasicCalculator(cal.toString(), mCopy, cal.getVisualPropertyType());
+    		copy.setCalculator(bCalc);
+    	}
+    	
+    	return copy;
     }
 
     /**
