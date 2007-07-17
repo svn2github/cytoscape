@@ -1,4 +1,4 @@
-<table id="adambanner" summary="" border="0" cellpadding="0" cellspacing="0" width="100%">
+<table id="adambanner" STYLE="background-image: url('images/banner/0-banner.jpg'); border="0" cellpadding="0" cellspacing="0" width="100%">
   <tbody>
     <tr>
       <td>
