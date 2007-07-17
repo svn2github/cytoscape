@@ -34,23 +34,6 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.calculators.Calculator;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -58,9 +41,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +53,18 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**
@@ -470,8 +463,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 		for (i = 0; i < thumbs.size(); i++) {
 			if (thumbs.get(i) == selected) {
-				System.out.println("=====Selected Color = " + i + ", " + thumbs.get(i).getObject());
-
 				return i;
 			}
 		}
@@ -487,16 +478,13 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		Double newVal;
 
 		if (thumbs.size() == 1) {
-			System.out.println("Enter update code: " + mapping.getPointCount());
-
+			// Special case: only one handle.
 			mapping.getPoint(0).getRange().equalValue = thumbs.get(0).getObject();
-
 			mapping.getPoint(0).getRange().lesserValue = below;
-
 			mapping.getPoint(0).getRange().greaterValue = above;
+			
 			newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
 			mapping.getPoint(0).setValue(newVal);
-
 			return;
 		}
 
@@ -505,15 +493,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 			if (i == 0) {
 				mapping.getPoint(i).getRange().lesserValue = below;
-
 				mapping.getPoint(i).getRange().greaterValue = t.getObject();
 			} else if (i == (thumbs.size() - 1)) {
 				mapping.getPoint(i).getRange().greaterValue = above;
-
 				mapping.getPoint(i).getRange().lesserValue = t.getObject();
 			} else {
 				mapping.getPoint(i).getRange().lesserValue = t.getObject();
-
 				mapping.getPoint(i).getRange().greaterValue = t.getObject();
 			}
 
@@ -521,10 +506,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			mapping.getPoint(i).setValue(newVal);
 
 			mapping.getPoint(i).getRange().equalValue = t.getObject();
-
-			//            System.out.println("Selected idx = " + selectedIndex +
-			//                ", new val = " + newVal + ", New obj = " + t.getObject() +
-			//                ", Pos = " + t.getPosition());
 		}
 	}
 

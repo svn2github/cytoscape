@@ -49,6 +49,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import java.beans.PropertyChangeEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 
@@ -57,7 +58,9 @@ import javax.swing.ImageIcon;
  * Continuous Mapping editor for discrete values,
  * such as Font, Shape, Label Position, etc.
  *
- * @author kono
+ * @version 0.5
+ * @since Cytoscape 2.5
+ * @author Keiichiro Ono
   */
 public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	/**
@@ -179,6 +182,49 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.repaint();
 		repaint();
+	}
+	
+	protected void updateMap() {
+		List<Thumb> thumbs = slider.getModel().getSortedThumbs();
+
+		//List<ContinuousMappingPoint> points = mapping.getAllPoints();
+		Thumb t;
+		Double newVal;
+
+		if (thumbs.size() == 1) {
+			// Special case: only one handle.
+			mapping.getPoint(0).getRange().equalValue = below;
+			mapping.getPoint(0).getRange().lesserValue = below;
+			mapping.getPoint(0).getRange().greaterValue = above;
+			
+			newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
+			mapping.getPoint(0).setValue(newVal);
+			return;
+		}
+
+		for (int i = 0; i < thumbs.size(); i++) {
+			t = thumbs.get(i);
+
+			if (i == 0) {
+				// First thumb
+				mapping.getPoint(i).getRange().lesserValue = below;
+				mapping.getPoint(i).getRange().equalValue = below;
+				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i+1).getObject();
+			} else if (i == (thumbs.size() - 1)) {
+				// Last thumb
+				mapping.getPoint(i).getRange().greaterValue = above;
+				mapping.getPoint(i).getRange().equalValue = t.getObject();
+				mapping.getPoint(i).getRange().lesserValue = t.getObject();
+			} else {
+				// Others
+				mapping.getPoint(i).getRange().lesserValue = t.getObject();
+				mapping.getPoint(i).getRange().equalValue = t.getObject();
+				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i+1).getObject();
+			}
+
+			newVal = ((t.getPosition() / 100) * valRange) + minValue;
+			mapping.getPoint(i).setValue(newVal);
+		}
 	}
 
 	@Override

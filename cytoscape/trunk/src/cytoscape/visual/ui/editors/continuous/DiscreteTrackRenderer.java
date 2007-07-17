@@ -281,9 +281,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-			Float curPositionValue = ((Double) (((fractions[i] / 100) * valueRange)
-			                         - Math.abs(minValue))).floatValue();
-			String valueString = String.format("%.5f", curPositionValue);
+			final Float curPositionValue = ((Number) (((fractions[i] / 100) * valueRange)
+			                         + minValue)).floatValue();
+			final String valueString = String.format("%.5f", curPositionValue);
 
 			int flipLimit = 90;
 			int borderVal = track_width - newX;
