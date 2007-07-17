@@ -45,12 +45,15 @@ import cytoscape.data.readers.GraphReader;
 
 import batchTool.commands.ParseException;
 
+enum ImportType {NETWORK, EDGE_ATTRIBUTES, NODE_ATTRIBUTES};
+
 /**
  * The open command opens a Cytoscape session file
  */
 public class ImportCommand extends AbstractCommand {
 	private String fileName = null;
 	private File file = null;
+	private ImportType importType = ImportType.NETWORK;
 
 	/**
 	 * commandName returns the command name.  This is used to build the
@@ -65,17 +68,28 @@ public class ImportCommand extends AbstractCommand {
 	 * along with all of its arguments.  If the command is successfully
 	 * parsed, the number of arguments actually read is returned.
 	 *
-	 * @param args the arguments to the command.  The "layout" command
-	 * takes an initial, mandatory argument, which must be the name of
-	 * a registered layout algorithm.  Subsequent arguments can be parameters
-	 * to be passed to the layout algorihm of the form of name=value pairs.
-	 * For example, to perform a force-directed layout, you would use:
+	 * @param args the arguments to the command.  The "import" command
+	 * takes two arguments.  The first argument is what you want to
+	 * import and the second is the name of the file.
 	 *
-	 * layout force-directed iterations=100
+	 * import [network|edge attributes|node attributes] filename
 	 */
 	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
-		// Get the file name
-		fileName = args.get(1);
+		// Get the type of import
+		String type = args.get(1);
+		if (commpare("network", type, 1)) {
+			importType = ImportType.NETWORK;
+			fileName = args.get(2);
+		} else if (commpare("edge", type, 1) && commpare("attributes", args.get(2), 1)) {
+			importType = ImportType.EDGE_ATTRIBUTES;
+			fileName = args.get(3);
+		} else if (commpare("node", type, 1) && commpare("attributes", args.get(2), 1)) {
+			importType = ImportType.NODE_ATTRIBUTES;
+			fileName = args.get(3);
+		} else {
+			fileName = args.get(1);
+		}
+
 		file = new File(fileName);
 
 		return args.size();
@@ -90,21 +104,41 @@ public class ImportCommand extends AbstractCommand {
 		// Do the appropriate substitutions (if any)
 		CyNetwork cyNetwork = null;
 		System.out.println("ImportCommand: executing");
-		GraphReader reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
-		URI uri = file.toURI();
+		if (importType == ImportType.NETWORK) {
+			GraphReader reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
+			URI uri = file.toURI();
 
-		try {
-			cyNetwork = Cytoscape.createNetwork(reader, true, null);
-		} catch (Exception e) {
-			throw new ParseException("Failed to read network: "+
-			                         fileName+": "+e.getMessage());
+			try {
+				cyNetwork = Cytoscape.createNetwork(reader, true, null);
+			} catch (Exception e) {
+				throw new ParseException("Failed to read network: "+
+				                         fileName+": "+e.getMessage());
+			}
+
+			Object[] ret_val = new Object[2];
+			ret_val[0] = cyNetwork;
+			ret_val[1] = uri;
+
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+		} else if (importType == ImportType.EDGE_ATTRIBUTES) {
+			try {
+				Cytoscape.loadAttributes(new String[] { file.getAbsolutePath() },
+			 	                        new String[] { });
+			} catch (Exception e) {
+				throw new ParseException("Failed to read edge attributes from: "+
+				                         fileName+": "+e.getMessage());
+			}
+			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		} else if (importType == ImportType.NODE_ATTRIBUTES) {
+			try {
+				Cytoscape.loadAttributes(new String[] { },
+			 	                        new String[] { file.getAbsolutePath() });
+			} catch (Exception e) {
+				throw new ParseException("Failed to read node attributes from: "+
+				                         fileName+": "+e.getMessage());
+			}
+			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		}
-
-		Object[] ret_val = new Object[2];
-		ret_val[0] = cyNetwork;
-		ret_val[1] = uri;
-
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 		return -1;
 	}

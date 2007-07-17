@@ -65,4 +65,17 @@ public abstract class AbstractCommand implements Command {
 	 */
 	public abstract int execute(String[] substitutions) throws Exception;
 
+	/**
+	 * commpare compares two strings but looks for potential abbreviations
+	 *
+	 * @param command the full command name
+	 * @param userInput what the user typed
+	 * @param minInput the minimum input string length
+	 * @return true if there is a match, false otherwise
+	 */
+	public boolean commpare(String command, String userInput, int minInput) {
+		if (userInput.length() < minInput) return false;
+		return command.startsWith(userInput);
+	}
+
 }
