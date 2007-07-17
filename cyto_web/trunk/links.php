@@ -40,6 +40,8 @@ and provides a powerful framework for user interaction and data display.
 	<li><a href="http://nemo-cyclone.sourceforge.net">Cyclone</a>
 	<li><a href="http://medcd.iab.keio.ac.jp/expanda/">eXpanda (Network visualization/analysis Perl library supporting sif/gml file I/O)</a>
 	<li><a href="http://pynetconv.sourceforge.net/">pyNetConv - Interconverts network file formats e.g. .net, .gml, .sif</a>
+	<li><a href="http://biologicalnetworks.net">BiologicalNetworks</a>
+
 </ul>
 
 <p><big><b>Network Databases</b></big></p>
