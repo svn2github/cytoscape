@@ -5,6 +5,9 @@
   <title>5th Annual Cytoscape Retreat and Symposium - Organization</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/cytoretreat.css">
   <link rel="../shortcut icon" href="../images/cyto.ico">
+  <!--[if lt IE 7]>
+  <script defer type="text/javascript" src="js/pngfix.js"></script>
+  <![endif]-->
 </head>
 <body style="background-color: rgb(255, 255, 255);">
 

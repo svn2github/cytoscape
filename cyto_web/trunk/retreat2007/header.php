@@ -5,7 +5,7 @@
       <a href="http://www.cytoscape.org" target="_blank"><img src="images/cyto_icon100.png" width=100 height=100 border="0" align="left" alt="Cytoscape" /></a>
       </td>
       <td>
-      <img src="images/cytoretreattitle.png" width="100%" height=100 border="0" align="center"/>
+      <img src="images/cytoretreattitle.png" width=1185 height=100 border="0" align="left"/>
       </td>
     </tr>
   </tbody>

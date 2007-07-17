@@ -5,6 +5,9 @@
   <title>5th Annual Cytoscape Symposium and Retreat</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/cytoretreat.css">
   <link rel="../shortcut icon" href="../images/cyto.ico">
+  <!--[if lt IE 7]>
+  <script defer type="text/javascript" src="js/pngfix.js"></script>
+  <![endif]-->
 </head>
 <body style="background-color: rgb(255, 255, 255);">
 
@@ -66,7 +69,7 @@ Professor of Systems Biology at <a href="http://sysbio.med.harvard.edu/faculty/s
 Director of the <a href="http://www.pasteur.fr/recherche/unites/Biolsys/benno" target="_blank">Systems Biology Group</a> at the Louis Pasteur Institute.
 </li>
 <li>
-<b>Anthony Hopkins</b>;  Pfizer Global Research & Development, Sandwich, Kent, UK. <br>
+<b>Andrew Hopkins</b>;  Pfizer Global Research & Development, Sandwich, Kent, UK. <br>
 Head of knowledge discovery at <a href="http://www.pfizer.com" target="_blank">Pfizer Global R&D</a>.
 </li>
 </ul>
