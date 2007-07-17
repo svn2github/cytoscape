@@ -3,35 +3,35 @@
 			<td colspan="6" id="caption">
 				<h1>
 					Cytoscape:
-					<a href="index.php">
+					<a href="http://cytoscape.org/index.php">
 						Home
 					</a>
 					|
-					<a href="features.php">
+					<a href="http://cytoscape.org/features.php">
 						Features 
 					</a>
 					| 
-					<a href="screenshots.php">
+					<a href="http://cytoscape.org/screenshots.php">
 						Screenshots 
 					</a>
 					| 
-					<a href="plugins2.php">
+					<a href="http://cytoscape.org/plugins2.php">
 						PlugIns 
 					</a>
 					| 
-					<a href="community.php">
+					<a href="http://cytoscape.org/community.php">
 						Community 
 					</a>					
 					| 
-					<a href="download_list.php">
+					<a href="http://cytoscape.org/download_list.php">
 						All Releases
 					</a>
 					|
-					<a href="people.php">
+					<a href="http://cytoscape.org/people.php">
 						Dev Team
 					</a>
 					| 
-					<a href="links.php">
+					<a href="http://cytoscape.org/links.php">
 						Links
 					</a>
 					| 
