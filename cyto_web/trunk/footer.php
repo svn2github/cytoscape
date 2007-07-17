@@ -8,7 +8,7 @@ Corporate funding is provided through a contract from
 </b>
 <p>
 <center>
-	<a href="index.php">
+	<a href="http://cytoscape.org/index.php">
 		Cytoscape home
 	</a>
 	|
