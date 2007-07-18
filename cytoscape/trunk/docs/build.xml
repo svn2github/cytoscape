@@ -134,10 +134,7 @@
 	        description="Prep Manual XML"
 		depends="fetch-images">
 
-		<mkdir dir="pdf"/>
-		<mkdir dir="html"/>
 		<mkdir dir="html/images"/>
-		<mkdir dir="help"/>
 		<mkdir dir="help/images"/>
 	
 		<copy file="manual_raw.xml" 
@@ -316,9 +313,17 @@
 	        description="Deletes all generated files - but not downloaded files.">
 		<delete file="manual.xml"/>
 		<delete file="fetch_image_files.xml"/>
-		<delete dir="help"/>
-		<delete dir="pdf"/>
-		<delete dir="html"/>
+		<delete>
+			<fileset dir="html">
+				<exclude name=".svn"/>
+			</fileset>
+			<fileset dir="help">
+				<exclude name=".svn"/>
+			</fileset>
+			<fileset dir="pdf">
+				<exclude name=".svn"/>
+			</fileset>
+		</delete>
 		<delete dir="xsl/${docbook-xsl}"/>
 	</target>
 
