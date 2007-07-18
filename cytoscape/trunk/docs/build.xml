@@ -5,12 +5,8 @@
 	<property name="docbook-xsl" value="docbook-xsl-1.70.1"/>
 	<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
 	<property name="xep.home" value="/cellar/users/mes/XEP"/>
-	<property name="version" value="2.4.0"/>
+	<property name="version" value="2.5.0"/>
 
-	<!-- ick -->
-	<available file="images/cyto-logo-smaller.gif" type="file" property="images-exist"/>
-
-	<available file="manual_raw.xml" property="raw-manual-exists"/>
 	<available file="${xep.home}" property="xep-exists"/>
 	<available file="${basedir}/xsl/${docbook-xsl}" property="no-unzip"/>
 
@@ -64,13 +60,22 @@
 		       dest="${basedir}/xsl" />
 	</target>
 
+	<!--==============================================================-->
+	<!-- A separate target to see if the raw manual exists. This can't
+	     be run as part of init, because the manual may exist for clean
+		 which would break things here. -->
+	<target name="raw-exists">
+		<available file="manual_raw.xml" property="raw-manual-exists"/>
+		<available file="images/cyto-logo-smaller.gif" type="file" property="images-exist"/>
+	</target>
+
 
 	<!--==============================================================-->
 	<!-- Fetch the DocBook XML from the wiki page. --> 
 	<target name="fetch-manual" 
 	        description="fetches the raw manual file"
-	        depends="init"
-		unless="raw-manual-exists">
+	        depends="init,raw-exists"
+	        unless="raw-manual-exists">
 		<get src="http://cytoscape.org/cgi-bin/moin.cgi/Cytoscape_User_Manual?action=format&amp;mimetype=xml/docbook" 
 		     dest="manual_raw.xml"/>
 	</target>
@@ -80,8 +85,8 @@
 	<!-- Fetch the images from the wiki page. --> 
 	<target name="fetch-images" 
 	        description="Fetches the images from the manual"
-		depends="fetch-manual"
-		unless="images-exist">
+	        depends="fetch-manual"
+	        unless="images-exist">
 
 		<!-- Correct the urls in the raw manual.  -->
 		<copy file="manual_raw.xml" 
@@ -139,7 +144,8 @@
 	
 		<copy file="manual_raw.xml" 
 		      tofile="manual_tmp.xml" 
-		      overwrite="yes">
+		      overwrite="yes"
+			  encoding="utf-8">
 		      <filterchain>
 				<tokenfilter>
 					<!-- this gets the images -->
@@ -151,6 +157,7 @@
 					<replacestring from="&amp;amp;#8594;" to="&amp;#8594;" />
 					<replacestring from="&amp;amp;#8595;" to="&amp;#8595;" />
 					<replacestring from="@version@" to="${version}" />
+
 					<!-- this gets links -->
 					<replacestring from="/cgi-bin/moin.cgi" 
 					               to="http://cytoscape.org/cgi-bin/moin.cgi"/>
@@ -167,20 +174,21 @@
 
 		<delete file="manual_tmp.xml"/>
 
-		<!-- check if everything is up to date -->
+		<!-- check if everything is up to date 
 		<uptodate property="pdf-up-to-date"
 		          targetfile="pdf/manual.pdf"
-			  srcfile="manual_raw.xml"/>
+		          srcfile="manual_raw.xml"/>
 		<uptodate property="help-up-to-date"
 		          targetfile="help/index.html"
-			  srcfile="manual_raw.xml"/>
+		          srcfile="manual_raw.xml"/>
 		<uptodate property="html-up-to-date"
 		          targetfile="html/manual.html"
-			  srcfile="manual_raw.xml"/>
+		          srcfile="manual_raw.xml"/>
 
 		<echo message="pdf  up-to-date: ${pdf-up-to-date}"/>
 		<echo message="help up-to-date: ${help-up-to-date}"/>
 		<echo message="html up-to-date: ${html-up-to-date}"/>
+		-->
 
 	</target> 
 
@@ -190,13 +198,14 @@
 	<target name="create-pdf" 
 	        description="Create Cytoscape Manual PDF"
 		depends="prep-manual"
-		if="xep-exists" 
-		unless="pdf-up-to-date">
+		if="xep-exists">
 
 		<!-- so that images scale correctly 
+		-->
 		<copy file="manual.xml" 
 		      tofile="manual_pdf.xml" 
-		      overwrite="yes">
+		      overwrite="yes"
+			  encoding="utf-8">
 		      <filterchain>
 				<tokenfilter>
 					<replacestring from="imagedata fileref" 
@@ -204,7 +213,6 @@
 				</tokenfilter>
 		      </filterchain>
 		</copy>
-		-->
 
 		<!-- transform the manual to fo -->
 		<xslt classpathref="classpath"
@@ -224,14 +232,14 @@
 
 		<!-- clean up -->
 		<delete file="manual.fo"/>
+		<delete file="manual_pdf.xml"/>
 	</target>
 
 	<!--==============================================================-->
 	<!-- Create the java help.  -->
 	<target name="create-help"
 	        description="Create Cytoscape Java Help"
-		depends="prep-manual"
-		unless="help-up-to-date">
+		depends="prep-manual">
 
 		<!-- transform the manual -->
 		<xslt scanincludeddirectories="no"
@@ -278,8 +286,7 @@
 	<!-- Create an html version of the manual.  -->
 	<target name="create-html"
 	        description="Create Cytoscape Manual HTML"
-		depends="prep-manual"
-		unless="html-up-to-date">
+		depends="prep-manual">
 
 		<!-- transform the manual -->
 		<xslt scanincludeddirectories="no"
@@ -308,11 +315,24 @@
 		depends="clean-all,all"/>
 
 	<!--==============================================================-->
-	<!-- Deletes all generated files - but not downloaded files.  -->
+	<!-- Deletes all generated files - including downloaded files.  -->
 	<target name="clean"
-	        description="Deletes all generated files - but not downloaded files.">
+	        description="Deletes all temp files so that we can commit.">
 		<delete file="manual.xml"/>
 		<delete file="fetch_image_files.xml"/>
+		<delete dir="xsl/${docbook-xsl}"/>
+		<delete dir="help/images"/>
+		<delete dir="html/images"/>
+		<echo message="See also:"/>
+		<echo message="	ant clean-gen (removes all generated files)"/>
+		<echo message="	ant clean-all (removes all generated AND downloaded files)"/>
+	</target>
+
+	<!--==============================================================-->
+	<!-- Deletes all generated files - but not downloaded files.  -->
+	<target name="clean-gen"
+	        description="Deletes all generated files - but not downloaded files."
+			depends="clean">
 		<delete>
 			<fileset dir="html">
 				<exclude name=".svn"/>
@@ -324,13 +344,12 @@
 				<exclude name=".svn"/>
 			</fileset>
 		</delete>
-		<delete dir="xsl/${docbook-xsl}"/>
 	</target>
 
 	<!--==============================================================-->
 	<!-- Deletes all generated files - including downloaded files.  -->
 	<target name="clean-all"
-	        depends="clean"
+	        depends="clean-gen"
 	        description="Deletes all generated files - including downloaded files.">
 		<delete>
 			<fileset dir="images">
@@ -339,5 +358,6 @@
 		</delete>
 		<delete file="manual_raw.xml"/>
 	</target>
+
 
 </project>
