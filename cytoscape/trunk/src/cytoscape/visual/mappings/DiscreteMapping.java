@@ -157,8 +157,6 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 		if (value instanceof Byte) {
 			value = ShapeNodeRealizer.getNodeShape(((Byte) value).byteValue());
 		}
-
-		System.out.println("key = " + key + ", val = " + value);
 		treeMap.put(key, value);
 		fireStateChanged();
 	}
