@@ -60,7 +60,7 @@ public enum ArrowShape {
 	DELTA("Delta", "COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA,
 	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
 	     new String[]{"EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
-	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_ARROW,
+	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_DELTA,
 	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW},
 	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW"}),
 	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T,
