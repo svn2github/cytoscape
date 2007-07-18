@@ -91,7 +91,8 @@
 		<!-- Correct the urls in the raw manual.  -->
 		<copy file="manual_raw.xml" 
 		      tofile="manual_tmp.xml" 
-		      overwrite="yes">
+		      overwrite="yes"
+			  encoding="utf-8">
 		      <filterchain>
 				<tokenfilter>
 					<replacestring from="/cgi-bin/moin.cgi" 
@@ -111,7 +112,8 @@
 		<!-- Change the file destination in the build file. -->
 		<copy file="tmp.xml" 
 		      tofile="fetch_image_files.xml" 
-		      overwrite="yes">
+		      overwrite="yes"
+			  encoding="utf-8">
 		      <filterchain>
 				<tokenfilter>
 					<replaceregex pattern='dest=\S+target=' 
@@ -174,22 +176,6 @@
 
 		<delete file="manual_tmp.xml"/>
 
-		<!-- check if everything is up to date 
-		<uptodate property="pdf-up-to-date"
-		          targetfile="pdf/manual.pdf"
-		          srcfile="manual_raw.xml"/>
-		<uptodate property="help-up-to-date"
-		          targetfile="help/index.html"
-		          srcfile="manual_raw.xml"/>
-		<uptodate property="html-up-to-date"
-		          targetfile="html/manual.html"
-		          srcfile="manual_raw.xml"/>
-
-		<echo message="pdf  up-to-date: ${pdf-up-to-date}"/>
-		<echo message="help up-to-date: ${help-up-to-date}"/>
-		<echo message="html up-to-date: ${html-up-to-date}"/>
-		-->
-
 	</target> 
 
 
@@ -200,8 +186,7 @@
 		depends="prep-manual"
 		if="xep-exists">
 
-		<!-- so that images scale correctly 
-		-->
+		<!-- so that images scale correctly -->
 		<copy file="manual.xml" 
 		      tofile="manual_pdf.xml" 
 		      overwrite="yes"
@@ -266,20 +251,6 @@
 		<copy todir="help/images">
 			<fileset dir="images"/>
 		</copy>
-		<!--
-		<move todir="help">
-			<fileset dir=".">
-				<include name="jhelp*"/>
-			</fileset>
-		</move>
-		<move todir="help">
-			<fileset dir=".">
-				<include name="ar*"/>
-			</fileset>
-		</move>
-		<move file="index.html" todir="help"/>
-		-->
-
 	</target>
 
 	<!--==============================================================-->
@@ -324,8 +295,8 @@
 		<delete dir="help/images"/>
 		<delete dir="html/images"/>
 		<echo message="See also:"/>
-		<echo message="	ant clean-gen (removes all generated files)"/>
-		<echo message="	ant clean-all (removes all generated AND downloaded files)"/>
+		<echo message="   ant clean-gen (removes all generated files)"/>
+		<echo message="   ant clean-all (removes all generated AND downloaded files)"/>
 	</target>
 
 	<!--==============================================================-->
