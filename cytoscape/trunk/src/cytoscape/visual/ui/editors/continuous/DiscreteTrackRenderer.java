@@ -78,7 +78,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
-	private int SMALL_ICON_SIZE = 24;
+	private int SMALL_ICON_SIZE = 20;
 	private static final Color ICON_COLOR = new Color(10, 100, 255, 200);
 	private static int TRACK_HEIGHT = 70;
 	private static final int THUMB_WIDTH = 12;
@@ -597,14 +597,14 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			case EDGE_SRCARROW_SHAPE:
 			case EDGE_TGTARROW_SHAPE:
 
-				final VisualPropertyIcon arrowIcon = (VisualPropertyIcon) type.getVisualProperty()
-				                                                         .getIconSet().get(key);
+				final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getVisualProperty()
+				                                                         .getIconSet().get(key));
 				if(arrowIcon == null) {
 					break;
 				}
-				final int newSize = size/2;
+				final int newSize = size;
 				arrowIcon.setIconHeight(newSize);
-				arrowIcon.setIconWidth(newSize*3);
+				arrowIcon.setIconWidth(((Number)(newSize*2.5)).intValue());
 				
 				g.translate(-newSize, 0);
 				arrowIcon.paintIcon(this, g, x, y);
@@ -655,6 +655,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			case NODE_TOOLTIP:
 			case EDGE_LABEL:
 			case EDGE_TOOLTIP:
+				if(key != null) {
+					g.drawString(key.toString(), 0, g.getFont().getSize()*2);
+				}
 				break;
 
 			default:
@@ -723,17 +726,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			fractions[i] = thumb.getPosition();
 			i++;
 		}
-
-//		g.setFont(ICON_FONT);
-//
-//		String numbers = String.format("%.2f", minValue);
-//		int strWidth;
-//		g.setColor(Color.DARK_GRAY);
-//		g.drawString(numbers, 0, iconHeight);
-//
-//		numbers = String.format("%.2f", maxValue);
-//		strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), numbers);
-//		g.drawString(numbers, iconWidth - strWidth - 2, iconHeight);
 
 		/*
 		 * If no points, just draw empty box.

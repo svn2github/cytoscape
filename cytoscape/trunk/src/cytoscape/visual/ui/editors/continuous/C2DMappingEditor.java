@@ -160,9 +160,6 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		// Add a new thumb with default value
 		slider.getModel().addThumb(100f, defValue);
 
-		// Update continuous mapping
-		final Double newVal = maxValue;
-
 		// Pick Up first point.
 		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
 
@@ -171,7 +168,6 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		newRange.lesserValue = slider.getModel().getSortedThumbs()
 		                             .get(slider.getModel().getThumbCount() - 1);
-		System.out.println("EQ Val = " + newRange.lesserValue);
 		newRange.equalValue = defValue;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);
