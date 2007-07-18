@@ -1,8 +1,13 @@
 package cytoscape.filters.util;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.AtomicFilter;
+import ViolinStrings.Strings;
+import giny.model.Edge;
+import giny.model.Node;
 
 import java.beans.PropertyChangeEvent;
 import java.io.BufferedReader;
@@ -13,6 +18,8 @@ import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 
@@ -25,6 +32,37 @@ import cytoscape.data.CyAttributes;
 import cytoscape.filters.AdvancedSetting;
 
 public class FilterUtil {
+
+	// For test only
+	public static Vector<CompositeFilter> getTestFilterVect() {
+		
+		Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
+
+		CompositeFilter filter1 = new CompositeFilter();
+		filter1.setName("My first filter");
+		filter1.addAtomicFilter(new StringFilter("node.annotation.Date","20010124"));
+		
+		CompositeFilter filter2 = new CompositeFilter();
+		filter2.addAtomicFilter(new NumericFilter("node.gal80Rsig",0.2,0.57));
+		filter2.setName("My second filter");
+
+		CompositeFilter filter3 = new CompositeFilter();
+		filter3.addAtomicFilter(new NumericFilter("AttNameEEE",1.5,3.8));
+		filter3.addAtomicFilter(new StringFilter("AttNameFFF","SearchStrFFF"));
+		filter3.setName("My third filter");
+
+		retVect.add(filter1);
+		retVect.add(filter2);
+		retVect.add(filter3);
+				
+		return retVect;
+	}
+
+	
+	public static void applyFilter(CompositeFilter pFilter) {
+		ApplyFilterThread applyFilterThread = new ApplyFilterThread(pFilter);
+		applyFilterThread.start();
+	}
 	
 	public static CyAttributes getCyAttributes(String pIndexType) {
 		CyAttributes attributes = null;
