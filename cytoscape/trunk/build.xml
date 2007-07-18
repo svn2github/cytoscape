@@ -332,6 +332,10 @@
 		<copy todir="${build.classes}/cytoscape/help">
 			<fileset dir="${basedir}/docs/help" />
 		</copy>
+		<mkdir dir="${build.classes}/cytoscape/help/images"/>
+		<copy todir="${build.classes}/cytoscape/help/images">
+			<fileset dir="${basedir}/docs/images" />
+		</copy>
 
 		<!-- then index the help files in the build area -->
 		<echo>Indexing help files and creating search db</echo>
