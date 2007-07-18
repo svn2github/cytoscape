@@ -268,9 +268,9 @@ public class CalculatorIO {
 		// use the propertyNames() method instead of the generic Map iterator,
 		// because the former method recognizes layered properties objects.
 		// see the Properties javadoc for details
+		String key;
 		for (Enumeration eI = props.propertyNames(); eI.hasMoreElements();) {
-			String key = (String) eI.nextElement();
-
+			key = (String) eI.nextElement();
 			// handle legacy names In these cases the old calculator base key
 			// was applicable to more than one calculator. In the new system
 			// it's one key to one calculator, so we simply apply the old
@@ -307,6 +307,7 @@ public class CalculatorIO {
 
 				// separate arrow into source shape, source color, target shape, target color
 			} else if (key.startsWith(edgeArrowBaseKey + ".")) {
+				
 				// the first two separations are to support the 
 				// deprecated EDGE_SRCARROW and EDGE_TGTARROW
 				key = updateLegacyKey(key, props, edgeArrowBaseKey,
@@ -342,8 +343,9 @@ public class CalculatorIO {
 
 				// separated source arrow into source color and source shape
 			} else if (key.startsWith(EDGE_SRCARROW.getPropertyLabel() + ".")) {
+				
 				// this first store is to support deprecated EDGE_SRCARROW
-				storeKey(key, props, calcNames);
+				//storeKey(key, props, calcNames);
 
 				// eventually, these should be the only separations
 				key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(),
@@ -354,12 +356,14 @@ public class CalculatorIO {
 				key = updateLegacyKey(key, props, EDGE_SRCARROW_COLOR.getPropertyLabel(),
 				                      EDGE_SRCARROW_SHAPE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
+				
 				storeKey(key, props, calcNames);
 
 				// separated target arrow into target color and target shape
 			} else if (key.startsWith(EDGE_TGTARROW.getPropertyLabel() + ".")) {
+				
 				// this first store is to support deprecated EDGE_TGTARROW
-				storeKey(key, props, calcNames);
+				//storeKey(key, props, calcNames);
 
 				// eventually, these should be the only separations
 				key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
@@ -370,6 +374,7 @@ public class CalculatorIO {
 				key = updateLegacyKey(key, props, EDGE_TGTARROW_COLOR.getPropertyLabel(),
 				                      EDGE_TGTARROW_SHAPE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
+				
 				storeKey(key, props, calcNames);
 
 				// handle normal names
@@ -406,6 +411,24 @@ public class CalculatorIO {
 				                      "cytoscape.visual.calculators.GenericNodeLineWidthCalculator");
 				storeKey(key, props, calcNames);
 
+			} else if(key.endsWith(EDGE_TGTARROW.getPropertyLabel())) {
+				key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
+						EDGE_TGTARROW_SHAPE.getPropertyLabel(),
+	                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
+				storeKey(key, props, calcNames);
+				
+				
+			} else if(key.endsWith(EDGE_SRCARROW.getPropertyLabel())) {			
+				key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(),
+						EDGE_SRCARROW_SHAPE.getPropertyLabel(),
+	                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
+				storeKey(key, props, calcNames);
+				
+			} else if(key.endsWith(EDGE_LINETYPE.getPropertyLabel())) {
+					key = updateLegacyKey(key, props, EDGE_LINETYPE.getPropertyLabel(),
+							EDGE_LINE_STYLE.getPropertyLabel(),
+		                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
+					storeKey(key, props, calcNames);	
 			} else
 				storeKey(key, props, calcNames);
 		}
@@ -452,7 +475,6 @@ public class CalculatorIO {
 				vs = new VisualStyle(name);
 				visualStyles.put(name, vs);
 			}
-
 			vs.setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(name, eacNames.get(name),
 			                                                            edgeAppearanceBaseKey + "."
 			                                                            + name, catalog));
@@ -621,14 +643,20 @@ public class CalculatorIO {
 	 */
 	private static String updateLegacyKey(String key, Properties props, String oldKey,
 	                                      String newKey, String newClass) {
-		final String value = props.getProperty(key);
+		String value = props.getProperty(key);
+		
+		// Update arrow
+		if((key.endsWith("equal") || key.endsWith("greater") || key.endsWith("lesser")) 
+				&& (key.startsWith(EDGE_TGTARROW.getPropertyLabel() +".") || key.startsWith(EDGE_SRCARROW.getPropertyLabel() +"."))) {
+			value = Arrow.parseArrowText(value).getShape().toString();
+		}
+
 		key = key.replace(oldKey, newKey);
 
 		if (key.endsWith(".class"))
 			props.setProperty(key, newClass);
 		else
 			props.setProperty(key, value);
-
 		return key;
 	}
 
