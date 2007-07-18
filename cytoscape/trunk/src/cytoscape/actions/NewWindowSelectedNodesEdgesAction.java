@@ -116,7 +116,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
         java.util.List edges = v.getSelectedEdges();
         java.util.List nodes = v.getSelectedNodes();
 
-        if ( ( nodes != null && nodes.size() > 0 ) &&
+        if ( ( nodes != null && nodes.size() > 0 ) ||
              ( edges != null && edges.size() > 0 ) )
             setEnabled(true);
         else
