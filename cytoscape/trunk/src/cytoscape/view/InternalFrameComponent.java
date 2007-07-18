@@ -179,8 +179,8 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 * This method is used by freehep lib to export network as graphics.
 	 */
 	public void print(Graphics g) {
-
 		backgroundCanvas.print(g);
+		networkCanvas.setBackground(backgroundCanvas.getBackground());
 		networkCanvas.print(g);
 		foregroundCanvas.print(g);
 	}
