@@ -1,31 +1,30 @@
 package cytoscape.actions;
 
-import java.awt.Graphics2D;
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import javax.imageio.ImageIO;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.InternalFrameComponent;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.InternalFrameComponent;
 import cytoscape.util.CytoscapeAction;
+
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
 
-// imports for PDF writing
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import cytoscape.util.export.Exporter;
+import cytoscape.util.export.BitmapExporter;
+import cytoscape.util.export.PDFExporter;
+import cytoscape.util.export.SVGExporter;
+import cytoscape.dialogs.ExportBitmapOptionsDialog;
 
 /**
  * Action for exporting a network view to bitmap or vector graphics.
@@ -33,11 +32,12 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ExportAsGraphicsAction extends CytoscapeAction
 {
-	private static ExportFilter BMP_FILTER = new ExportFilter("BMP", "bmp", new BitmapExporter("bmp"));
-	private static ExportFilter JPG_FILTER = new ExportFilter("JPEG", "jpg", new BitmapExporter("jpg"));
-	private static ExportFilter PDF_FILTER = new ExportFilter("PDF", "pdf", new PDFExporter());
-	private static ExportFilter PNG_FILTER = new ExportFilter("PNG", "png", new BitmapExporter("png"));
-	private static ExportFilter[] FILTERS = { BMP_FILTER, JPG_FILTER, PDF_FILTER, PNG_FILTER };
+	private static ExportFilter BMP_FILTER = new BitmapExportFilter("BMP", "bmp");
+	private static ExportFilter JPG_FILTER = new BitmapExportFilter("JPEG", "jpg");
+	private static ExportFilter PDF_FILTER = new PDFExportFilter();
+	private static ExportFilter PNG_FILTER = new BitmapExportFilter("PNG", "png");
+	private static ExportFilter SVG_FILTER = new SVGExportFilter();
+	private static ExportFilter[] FILTERS = { BMP_FILTER, JPG_FILTER, PDF_FILTER, PNG_FILTER, SVG_FILTER };
 
 	private static String TITLE = "Network View as Graphics";
 
@@ -63,7 +63,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 					int choice = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
 							"\"" + getSelectedFile() + "\" already exists.\n\n" +
 							"Do you want to replace it?",
-							"Save Cytoscape Session To",
+							"Save " + TITLE,
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE,
 							null, options, options[1]);
@@ -87,20 +87,48 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 		if (result != JFileChooser.APPROVE_OPTION)
 			return;
 
-		final ExportFilter filter = (ExportFilter) fileChooser.getFileFilter();
-		final File file = checkExtension(fileChooser.getSelectedFile(), filter.getExtension());
+		// Create the file stream
+		ExportFilter filter = (ExportFilter) fileChooser.getFileFilter();
+		File file = filter.checkExtension(fileChooser.getSelectedFile());
+		FileOutputStream stream = null;
+		try
+		{
+			stream = new FileOutputStream(file);
+		}
+		catch (Exception exp)
+		{
+			JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
+							"Could not create file " + file.getName()
+							+ "\n\nError: " + exp.getMessage());
+			return;
+		}
 
+		// Export
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		filter.export(view, stream);
+	}
+}
+
+class ExportTask
+{
+	public static void run(	final String title,
+				final Exporter exporter,
+				final CyNetworkView view,
+				final FileOutputStream stream)
+	{
 		// Create the Task
 		Task task = new Task()
 		{
+			TaskMonitor monitor;
+
 			public String getTitle()
 			{
-				return TITLE;
+				return title;
 			}
 
 			public void setTaskMonitor(TaskMonitor monitor)
 			{
-				monitor.setStatus("Saving " + TITLE + " to " + file.getName());
+				this.monitor = monitor;
 			}
 
 			public void halt()
@@ -109,9 +137,14 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 
 			public void run()
 			{
-				CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-				InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(networkView);
-				filter.getExporter().export(ifc, file);
+				try
+				{
+					exporter.export(view, stream);
+				}
+				catch (IOException e)
+				{
+					monitor.setException(e, "Could not complete export of network");
+				}
 			}
 		};
 		
@@ -119,7 +152,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.displayCancelButton(false);
 		jTaskConfig.displayCloseButton(false);
-		jTaskConfig.displayStatus(true);
+		jTaskConfig.displayStatus(false);
 		jTaskConfig.displayTimeElapsed(true);
 		jTaskConfig.displayTimeRemaining(false);
 		jTaskConfig.setAutoDispose(true);
@@ -127,25 +160,16 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		TaskManager.executeTask(task, jTaskConfig);
 	}
-
-	private File checkExtension(File file, String extension)
-	{
-		if (!file.getName().endsWith(extension))
-			file = new File(file.getPath() + extension);
-		return file;
-	}
 }
 
-class ExportFilter extends FileFilter
+abstract class ExportFilter extends FileFilter
 {
-	private String description, extension;
-	private Exporter exporter;
+	protected String description, extension;
 	
-	public ExportFilter(String description, String extension, Exporter exporter)
+	public ExportFilter(String description, String extension)
 	{
 		this.description = description;
 		this.extension = extension;
-		this.exporter = exporter;
 	}
 
 	public String getDescription()
@@ -160,83 +184,69 @@ class ExportFilter extends FileFilter
 		return f.getName().endsWith(getExtension());
 	}
 
-	public Exporter getExporter()
-	{
-		return exporter;
-	}
-
 	public String getExtension()
 	{
 		return "." + extension;
 	}
-}
 
-interface Exporter
-{
-	public void export(InternalFrameComponent ifc, File file);
-}
-
-class PDFExporter implements Exporter
-{
-	public void export(InternalFrameComponent ifc, File file)
+	public File checkExtension(File file)
 	{
-		Rectangle pageSize = PageSize.LETTER;
-		Document document = new Document(pageSize);
-		try
-		{
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-			document.open();
-			PdfContentByte cb = writer.getDirectContent();
-			Graphics2D g = cb.createGraphicsShapes((int) pageSize.getWidth(), (int) pageSize.getHeight());
-			double imageScale = Math.min(pageSize.getWidth()  / ((double) ifc.getWidth()),
-			                             pageSize.getHeight() / ((double) ifc.getHeight()));
-			g.scale(imageScale, imageScale);
-			ifc.print(g);
-			g.dispose();
-		}
-		catch (Exception exp)
-		{
-			JOptionPane.showMessageDialog(
-				Cytoscape.getDesktop(),
-				"Could not export to PDF.\n\nError: " + exp.getMessage(),
-				"Export to PDF", JOptionPane.ERROR_MESSAGE);
-		}
+		if (!file.getName().endsWith(getExtension()))
+			file = new File(file.getPath() + getExtension());
+		return file;
+	}
 
-		document.close();
+	public abstract void export(CyNetworkView view, FileOutputStream stream);
+}
+
+class PDFExportFilter extends ExportFilter
+{
+	public PDFExportFilter()
+	{
+		super("PDF", "pdf");
+	}
+	public void export(final CyNetworkView view, final FileOutputStream stream)
+	{
+		PDFExporter exporter = new PDFExporter();
+		ExportTask.run("Exporting to PDF", exporter, view, stream);
 	}
 }
 
-class BitmapExporter implements Exporter
+class BitmapExportFilter extends ExportFilter
 {
-	private String extension;
-
-	public BitmapExporter(String extension)
+	public BitmapExportFilter(String description, String extension)
 	{
-		this.extension = extension;
+		super(description, extension);
 	}
 
-	public void export(InternalFrameComponent ifc, File file)
+	public void export(final CyNetworkView view, final FileOutputStream stream)
 	{
-		int width = ifc.getWidth();
-		int height = ifc.getHeight();
+		final InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
+		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(ifc.getWidth(), ifc.getHeight());
+		ActionListener listener = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				BitmapExporter exporter = new BitmapExporter(extension, dialog.getZoom());
+				dialog.dispose();
+				ExportTask.run("Exporting to " + extension, exporter, view, stream);
+			}
+		};
+		dialog.addActionListener(listener);
+		dialog.setVisible(true);
+	}
+}
 
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		ifc.print(g);
-		g.dispose();
-		
-		try
-		{
-			FileOutputStream stream = new FileOutputStream(file);
-			ImageIO.write(image, extension, stream);
-			stream.close();
-		}
-		catch (Exception exp)
-		{
-			JOptionPane.showMessageDialog(
-				Cytoscape.getDesktop(),
-				"Could not export to bitmap graphics.\n\nError: " + exp.getMessage(),
-				"Export to Bitmap Graphics", JOptionPane.ERROR_MESSAGE);
-		}
+class SVGExportFilter extends ExportFilter
+{
+	public SVGExportFilter()
+	{
+		super("SVG", "svg");
+	}
+
+	public void export(final CyNetworkView view, final FileOutputStream stream)
+	{
+		SVGExporter exporter = new SVGExporter();
+		ExportTask.run("Exporting to SVG", exporter, view, stream);
 	}
 }
