@@ -70,8 +70,10 @@
           description="Compiles all source code.">
 
 		<!-- copy over all core plugins  -->
-		<copy todir="${plugins.dir}">
-			<fileset dir="${cytoscape.dir}/plugins/core"/>
+		<copy todir="${plugins.dir}" verbose="true">
+			<fileset dir="${cytoscape.dir}/plugins/core">
+                <exclude name="cPath.jar"/>
+            </fileset>
         </copy>
 
         <javac srcdir="${src.dir}" destdir="${build.classes}"
@@ -93,7 +95,7 @@
     <target name="jar" depends="compile" description="Creates PlugIn Jars">
         <copy todir="${build.classes}/org/cytoscape/coreplugin/cpath/plugin" 
         	file="${resources.dir}/plugin.props"/>
-        <jar destfile="${basedir}/${jar.name}">
+        <jar destfile="${plugins.dir}/${jar.name}">
             <fileset dir="${build.classes}"/>
             <manifest>
               <attribute name="Cytoscape-Plugin" 
