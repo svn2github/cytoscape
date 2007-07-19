@@ -49,39 +49,6 @@ import cytoscape.plugin.CytoscapePlugin;
 public class PathwayCommonsPlugin extends CytoscapePlugin {
 
     /**
-     * Version Major Number.
-     */
-    public static final int VERSION_MAJOR_NUM = 0;
-
-    /**
-     * Version Minor Number.
-     */
-    public static final int VERSION_MINOR_NUM = 1;
-
-    /**
-     * Name of Plugin.
-     */
-    public static final String PLUGIN_NAME = "Pathway Commons Plugin";
-
-	/**
-	 * Our implementation of CytoscapePlugin.getPluginInfoObject()
-	 *
-	 * @return PluginInfo
-	 */
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setName(PLUGIN_NAME);
-		info.setDescription("Provides connectivity to Pathway Commons Repository (www.pathwaycommons.org).");
-		info.setCategory("Connectivity");
-		info.setPluginVersion(Double.valueOf(VERSION_MAJOR_NUM + "." + VERSION_MINOR_NUM));
-		//info.setProjectUrl("http://www.pathwaycommons.org");
-		info.addAuthor("Benjamin Gross", "Computational Biology Center, Memorial Sloan-Kettering Cancer Center");
-
-		// outta here
-		return info;
-	}
-
-    /**
      * Constructor.
      */
     public PathwayCommonsPlugin() {
