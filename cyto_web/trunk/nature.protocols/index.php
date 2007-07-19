@@ -44,6 +44,7 @@ no
                         <li> <A HREF="galGeneNames.csv">galGeneNames.csv</A> is a comma-delimited attribute file to augment the sample data by mapping the locus tag node identifiers to standard gene symbols.  These data are also available as a <A HREF="galGeneNames.csv.pdf"> PDF </A> version.
                 	<li> <A HREF="galExpData.pvals">galExpData.pvals</A> is a sample expression data file to complement the network data.  The illustrations in the manuscript reflect the <B>gal4RG</B> experiment.  These data are also available as a <A HREF="galExpData.pvals.pdf"> PDF </A> version.
                         <li> <A HREF="SampleData.cys">SampleData.cys</A> is a Cytoscape session file with all of the above three data items already loaded and an Agilent Literature Search network for many of the same genes.
+			<li><A HREF="sample.input.genes.txt">sample.input.genes.txt</A> provides a sample list of genes for use with cPath. 
             <p>
             </ol>
             All of the figures shown in the paper were generated with these data files.
