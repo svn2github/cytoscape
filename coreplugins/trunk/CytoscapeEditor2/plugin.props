@@ -1,6 +1,8 @@
 # This props file would be filled out and included in the plugin jar file.  This props file will be used 
 # to put information into the Plugin Manager about the plugin 
 
+uniqueID=5
+
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
@@ -27,4 +29,3 @@ pluginAuthorsIntsitutions=Allan Kuchinsky:Agilent Technologies;Michael Creech:Bl
 # Date this plugin/plugin version was released
 releaseDate=July 3, 2007
 
-# uniqueID=
