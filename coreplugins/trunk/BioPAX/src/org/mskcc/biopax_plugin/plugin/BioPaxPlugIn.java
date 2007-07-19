@@ -35,7 +35,6 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import cytoscape.CytoscapeInit;
 import cytoscape.data.ImportHandler;
-import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.CytoscapePlugin;
 
 import java.util.Properties;
