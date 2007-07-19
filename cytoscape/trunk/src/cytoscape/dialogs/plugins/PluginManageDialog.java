@@ -105,6 +105,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 		if (PluginManager.usingWebstartManager()) {
 			deleteButton.setEnabled(false);
+			setMessage("Delete is unavailable when using Web Start");
 		}
 
 	}
@@ -177,10 +178,15 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	private void addCategory(String CategoryName, List<PluginInfo> Plugins,
 			TreeNode node) {
 		TreeNode Category = new TreeNode(CategoryName, true);
-		node.addChild(Category);
+		/* if the tree is to update the model "add" method must be used, not
+		   sure if the TreeNode could be changed to handle this properly? */
+		//node.addChild(Category); 
+		treeModel.addNodeToParent(node, Category);
 
 		for (PluginInfo CurrentPlugin : Plugins) {
-			Category.addChild(new TreeNode(CurrentPlugin));
+			TreeNode PluginNode = new TreeNode(CurrentPlugin);	
+			//Category.addChild(PluginNode);
+			treeModel.addNodeToParent(Category, PluginNode);
 		}
 	}
 
@@ -419,7 +425,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		TaskManager.executeTask(task, jTaskConfig);
 		PluginInfo info = task.getDownloadedPlugin();
 		if (info != null) {
-//			loadPlugin(info);
 			updateCurrent(info);
 			cleanTree(node);
 		}

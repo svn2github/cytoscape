@@ -4,7 +4,6 @@
 package cytoscape.dialogs.plugins;
 
 import cytoscape.plugin.PluginInfo;
-
 import java.util.Vector;
 
 public class TreeNode {
@@ -122,11 +121,14 @@ public class TreeNode {
 	 * @param newChild
 	 */
 	public void addChild(TreeNode newChild) {
-		if (childAllowed) {
-			children.add(newChild);
-			newChild.setParent(this);
-		} else
-			System.err.println(getTitle() + " does not allow child nodes");
+		if (!childAllowed)
+			throw new IllegalStateException();
+		if (newChild == null)
+			throw new IllegalArgumentException();
+		if (isNodeAncestor(newChild))
+			throw new IllegalArgumentException("Cannot add ancestor node.");
+		children.add(newChild);
+		newChild.setParent(this);
 	}
 
 	/**
@@ -151,12 +153,9 @@ public class TreeNode {
 	 * @param children
 	 */
 	public void addChildren(TreeNode[] children) {
-		if (childAllowed) {
-			for (TreeNode c : children) {
-				addChild(c);
-			}
-		} else
-			System.err.println(getTitle() + " does not allow child nodes");
+		for (TreeNode c : children) {
+			addChild(c);
+		}
 	}
 
 	/**
@@ -273,5 +272,4 @@ public class TreeNode {
 		}
 		return lookup;
 	}
-
 }

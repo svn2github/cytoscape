@@ -52,6 +52,7 @@ public class ManagerModel implements TreeModel {
 	 */
 	public void addNodeToParent(TreeNode parent, TreeNode child) {
 		parent.addChild(child);
+		System.err.println("NODE " + child.getTitle() + " TO " + parent.getTitle());
 		TreeNode[] Children = new TreeNode[] { child };
 		int[] ChildIndicies = new int[] { getIndexOfChild(parent, child) };
 		nodesAdded(parent, ChildIndicies, Children);
