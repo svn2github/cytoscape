@@ -340,7 +340,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
 			Float curPositionValue = ((Double) (((fractions[i] / 100) * valueRange)
-			                         - Math.abs(minValue))).floatValue();
+			                         + minValue)).floatValue();
 			String valueString = String.format("%.4f", curPositionValue);
 
 			int flipLimit = 90;
