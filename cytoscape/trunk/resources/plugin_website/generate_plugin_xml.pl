@@ -70,7 +70,7 @@ sub addPlugin
 
 	# create a unique id, this can't change from one version of a plugin to another! Name and auto_id should work
 	my $Id = $Doc->createElement("uniqueID");
-	$Id->appendChild($Doc->createTextNode($args{'plugin_auto_id'}));
+	$Id->appendChild($Doc->createTextNode($args{'unique_id'}));
 	$PluginElement->appendChild($Id);
 
 	my $PluginName = $Doc->createElement("name");
