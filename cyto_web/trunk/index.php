@@ -456,6 +456,8 @@
 				</td>
 				<td>
 <?
+include "help.php";
+echo "<P>";
 if ($news_option == "atom") {
 	include "feed.php";
 	include "community_box.php";
