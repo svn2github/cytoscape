@@ -1,6 +1,8 @@
 # This props file would be filled out and included in the plugin jar file.  This props file will be used 
 # to put information into the Plugin Manager about the plugin 
 
+uniqueID=1
+
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
