@@ -37,6 +37,7 @@ package org.cytoscape.coreplugin.cpath.task;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -202,7 +203,10 @@ public class QueryCPathTask implements Task {
 
         CyNetworkView networkView = createNetworkView(cyNetwork);
         if (networkView != null) {
-            graphReader.getLayoutAlgorithm().doLayout(networkView);
+            CyLayoutAlgorithm layoutAlgorithm = graphReader.getLayoutAlgorithm();
+            if (layoutAlgorithm != null) {
+                layoutAlgorithm.doLayout(networkView);
+            }
         }
     }
 
