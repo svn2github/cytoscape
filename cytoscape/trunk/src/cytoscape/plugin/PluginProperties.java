@@ -58,8 +58,11 @@ public class PluginProperties extends Properties {
 	 * @throws IOException
 	 */
 	public PluginProperties(CytoscapePlugin Plugin) throws IOException {
+		if (Plugin.getClass().getPackage() == null) {
+			throw new IOException(Plugin.getClass().getName() + " is not part of a package, cannot read " + configFileName);
+		}
 		packageName = Plugin.getClass().getPackage().getName();
-		packageName = packageName.replace('.', '/'); // the package name has to be in the directory structure form
+		packageName = packageName.replace('.', '/'); // the package name has to be in the directory structure form with unix slashes
 		readPluginProperties(Plugin.getClass().getClassLoader().getResourceAsStream(packageName + "/" +  configFileName));
 	}
 	
