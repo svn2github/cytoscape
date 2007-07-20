@@ -194,7 +194,7 @@ public class PluginUrlDialog extends JDialog {
 		okButton = new JButton();
 		addSiteButton = new JButton();
 		cancelButton = new JButton();
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		label.setText("Choose a plugin download site");
 
 		GroupLayout labelPanelLayout = new GroupLayout(labelPanel);
