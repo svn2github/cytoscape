@@ -59,6 +59,7 @@
     <jar href="lib/biojava-1.4.jar" />
     <jar href="lib/cytoscape-geom-rtree.jar" />
     <jar href="lib/jaxb-api.jar" />
+    <jar href="lib/itext-2.0.4.jar" />
     <jar href="lib/fing.jar" />
     <jar href="lib/swing-layout-1.0.1.jar" />
     <jar href="lib/com-nerius-math-xform.jar" />
