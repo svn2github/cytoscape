@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package browser;
 
 import cytoscape.CyNetwork;
@@ -42,14 +40,22 @@ import cytoscape.Cytoscape;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 
+import cytoscape.filters.AdvancedSetting;
+import cytoscape.filters.CompositeFilter;
+//import cytoscape.filters.view.FilterMainPanel;
+import cytoscape.filters.util.FilterUtil;
+import cytoscape.filters.FilterPlugin;
+
 import cytoscape.util.swing.ColumnResizer;
 
 import cytoscape.view.CytoscapeDesktop;
 
 import filter.model.Filter;
 import filter.model.FilterManager;
+
 import giny.model.GraphObject;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,13 +70,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.ListDataEvent;;
 
 
 /**
@@ -85,12 +97,12 @@ import javax.swing.table.TableColumnModel;
 public class SelectPanel extends JPanel implements PropertyChangeListener, ActionListener,
                                                    SelectEventListener {
 	/**
-	 * 
+	 *
 	 */
 	public static final int NODES = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int EDGES = 1;
 	int graphObjectType;
@@ -101,7 +113,6 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 	Map titleIdMap;
 	JCheckBox mirrorSelection;
 	CyNetwork currentNetwork;
-	
 	private TableColumnModel cmodel;
 
 	/**
@@ -124,8 +135,12 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 		networkBox.setMaximumSize(new Dimension(15, (int) networkBox.getPreferredSize().getHeight()));
 
 		// Filter is disabled for now...
-		filterBox = new JComboBox(FilterManager.defaultManager().getComboBoxModel());
+		filterBox = new JComboBox(FilterPlugin.getAllFilterVect());
+		filterBox.setRenderer(new FilterRenderer());
 
+		// sync the filter combobox, if filters were modified in the filter plugin 
+		FilterPlugin.getFilterMainPanel().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -153,10 +168,48 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
 
 		add(filterBox, gridBagConstraints);
-	
+
 		filterBox.addActionListener(this);
 		networkBox.addActionListener(this);
 	}
+
+
+	class FilterRenderer extends JLabel implements ListCellRenderer {
+		public FilterRenderer() {
+			setOpaque(true);
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value, int index,
+		                                              boolean isSelected, boolean cellHasFocus) {
+			if (value != null) {
+					CompositeFilter theFilter = (CompositeFilter) value;
+					AdvancedSetting advancedSetting = theFilter.getAdvancedSetting();
+					String prefix = "";
+
+					if (advancedSetting.isGlobalChecked()) {
+						prefix = "global: ";
+					}
+
+					if (advancedSetting.isSessionChecked()) {
+						prefix += "session: ";
+					}
+
+					setText(prefix + theFilter.getName());
+			} else { // value == null
+				setText("");
+			}
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+
+			return this;
+		}
+	} // FilterRenderer
 
 	/**
 	 * Catch the selection event.<br>
@@ -165,25 +218,25 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 	 */
 	public void onSelectEvent(SelectEvent event) {
 		if (mirrorSelection.isSelected()) {
-			
 			cmodel = new DefaultTableColumnModel();
-			final TableColumnModel oldModel = table.getColumnModel(); 
+
+			final TableColumnModel oldModel = table.getColumnModel();
 			final int colCount = oldModel.getColumnCount();
-			for(int i = 0; i<colCount; i++) {
+
+			for (int i = 0; i < colCount; i++) {
 				cmodel.addColumn(oldModel.getColumn(i));
 			}
-			
+
 			if ((graphObjectType == NODES)
 			    && ((event.getTargetType() == SelectEvent.SINGLE_NODE)
 			       || (event.getTargetType() == SelectEvent.NODE_SET))) {
-				
 				// node selection
 				tableModel.setSelectedColor(JSortTable.SELECTED_NODE);
 				tableModel.setSelectedColor(JSortTable.REV_SELECTED_NODE);
 
 				tableModel.setTableDataObjects(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-				                                                      .getSelectedNodes()));
-				
+				                                                                   .getSelectedNodes()));
+
 				table.restoreColumnModel(cmodel);
 			} else if ((graphObjectType == EDGES)
 			           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
@@ -192,10 +245,10 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 				tableModel.setSelectedColor(JSortTable.SELECTED_EDGE);
 				tableModel.setSelectedColor(JSortTable.REV_SELECTED_EDGE);
 				tableModel.setTableDataObjects(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-				                                                      .getSelectedEdges()));
+				                                                                   .getSelectedEdges()));
 			}
 		}
-		
+
 		ColumnResizer.adjustColumnPreferredWidths(table.getattributeTable());
 	}
 
@@ -206,20 +259,9 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == filterBox) {
-			Filter filter = (Filter) filterBox.getSelectedItem();
-			System.out.println("Showing all that Pass Filter: " + filter);
-
-			List list = new ArrayList(getGraphObjectCount());
-			Iterator objs = getGraphObjectIterator();
-
-			while (objs.hasNext()) {
-				Object obj = objs.next();
-
-				if (filter.passesFilter(obj))
-					list.add(obj);
-			}
-
-			tableModel.setTableDataObjects(list);
+			//System.out.println("\tShowing all that Pass Filter: " + filter.getName());
+			CompositeFilter filter = (CompositeFilter) filterBox.getSelectedItem();
+			FilterUtil.applyFilter(filter);			
 		}
 
 		if (e.getSource() == networkBox) {
@@ -271,6 +313,16 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
+
+		if (e.getSource() instanceof cytoscape.filters.view.FilterMainPanel) {
+			// The filters may be created, deleted, modified in the filter plugins
+			//filterBox.revalidate();
+			
+			// If the model contents change, the FilterCombobox should refresh
+			// but invalidate doesn't work, so rebuild the model
+			filterBox.setModel(new DefaultComboBoxModel(FilterPlugin.getAllFilterVect()));
+		}
+		
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
 		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
 			updateNetworkBox();
