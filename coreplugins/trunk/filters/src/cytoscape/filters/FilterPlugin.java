@@ -76,9 +76,23 @@ import javax.swing.*;
 public class FilterPlugin extends CytoscapePlugin {
 	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
 	                                                             .getCytoPanel(SwingConstants.WEST);
-	private FilterMainPanel filterMainPanel = new FilterMainPanel();
-	private Vector<CompositeFilter> allFilterVect = null;
+	private static FilterMainPanel filterMainPanel = null;
+	private static Vector<CompositeFilter> allFilterVect = null;
 
+	//Used to pass values to other plugin, the BrowserPlugin
+	public static Vector<CompositeFilter> getAllFilterVect() {
+		if (allFilterVect == null) {
+			allFilterVect = new Vector<CompositeFilter>();
+		}
+		return allFilterVect;
+	}
+	
+	public static FilterMainPanel getFilterMainPanel() {
+		if (filterMainPanel == null) {
+			filterMainPanel = new FilterMainPanel();
+		}
+		return filterMainPanel;
+	}
 	/**
 	 * Creates a new FilterPlugin object.
 	 *
@@ -112,7 +126,16 @@ public class FilterPlugin extends CytoscapePlugin {
 
 		//initialize the filterMainPanel and add it to the CytoPanelWEST, i.e. the control (management) panel
 		File global_filter_file = CytoscapeInit.getConfigFile("filters.props");
-		allFilterVect = getFilterVectFromPropFile(global_filter_file);
+
+		if (allFilterVect == null) {
+			allFilterVect = new Vector<CompositeFilter>();
+		}
+
+		if (filterMainPanel == null) {
+			filterMainPanel = new FilterMainPanel();
+		}
+
+		allFilterVect.addAll(getFilterVectFromPropFile(global_filter_file));
 
 		System.out.println("FilterPlugin.init(): load " + allFilterVect.size()
 		                   + " filters from filters.prop");
