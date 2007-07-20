@@ -186,7 +186,33 @@ public abstract class FileUtil {
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
 	  */
 	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
-	                              String start_dir, String custom_approve_text, boolean multiselect) {
+	                              String start_dir, String custom_approve_text, boolean multiselect)
+	{
+		return getFiles(title, load_save_custom, filters, start_dir, custom_approve_text, multiselect, false);
+	}
+
+	/**
+	  * Returns a list of File objects, this method should be used instead
+	  * of rolling your own JFileChooser.
+	  *
+	  * @return and array of selected files, or null if none are selected
+	  * @param title the title of the dialog box
+	  * @param load_save_custom a flag for the type of file dialog
+	  * @param filters an array of CyFileFilters that let you filter
+	  *                based on extension
+	  * @param start_dir an alternate start dir, if null the default
+	  *                  cytoscape MUD will be used
+	  * @param custom_approve_text if this is a custom dialog, then
+	  *                            custom text should be on the approve
+	  *                            button.
+	  * @param multiselect Enable selection of multiple files (Macs are
+	  *                    still limited to a single file because we use
+	  *                    FileDialog there -- is this fixed in Java 1.5?)
+	  * @param appendExtension If true, appends an extension to selected File(s),
+	  *                        depending on what file filter was selected.
+	  */
+	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
+	                              String start_dir, String custom_approve_text, boolean multiselect, boolean appendExtension) {
 		File start = null;
 
 		if (start_dir == null) {
@@ -275,6 +301,25 @@ public abstract class FileUtil {
 					else if ((tmp = chooser.getSelectedFile()) != null) {
 						result = new File[1];
 						result[0] = tmp;
+					}
+				}
+			}
+
+			if (appendExtension)
+			{
+				CyFileFilter filter = (CyFileFilter) chooser.getFileFilter();
+				if (filter != null)
+				{
+					for (int i = 0; i < result.length; i++)
+					{
+						File file = result[i];
+						if (filter.accept(file.getName()))
+							continue;
+						Iterator extensionsIterator = filter.getExtensionSet().iterator();
+						if (!extensionsIterator.hasNext())
+							continue;
+						String extension = (String) extensionsIterator.next();
+						result[i] = new File(file.getPath() + "." + extension);
 					}
 				}
 			}
