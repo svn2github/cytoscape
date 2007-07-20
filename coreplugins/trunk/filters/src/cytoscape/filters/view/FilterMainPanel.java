@@ -34,6 +34,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.AdvancedSetting;
@@ -103,8 +104,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 
+	
+	private SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
+	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
+		return pcs;
+	}
+
+	
 	public FilterMainPanel() {
-		init();
+			init();			
 	}
 
 	public Vector<CompositeFilter> getAllFilterVect() {
@@ -114,15 +122,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	public void setAllFilterVect(Vector<CompositeFilter> pAllFilterVect) {
 		allFilterVect = pAllFilterVect;
 	}
-	
-	
-	
+
 	// Listen to ATTRIBUTES_CHNAGED event
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
-		{
-			//System.out.println("FilterMainPanel: ATTRIBUTES_CHANGED event is received!");
-			
+		{	
 			//refreshFilterSettingPanels();
 			refreshAttributeCMB();
 			updateIndexForWidget();
@@ -270,7 +274,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cytoPanelWest.addCytoPanelListener(l);
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
-
 	}
 
 	public void initCMBSelectFilter(){
@@ -548,161 +551,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}	
 	}
 
-
-	private boolean passAtomicFilter(Object pObject, AtomicFilter pAtomicFilter) {
-				
-		CyAttributes data = null;
-		String name = "";
-				
-		if (pObject instanceof Node) {
-			data = Cytoscape.getNodeAttributes();	
-			name = ((Node) pObject).getIdentifier();
-		}
-		else {
-			data = Cytoscape.getEdgeAttributes();	
-			name = ((Edge) pObject).getIdentifier();
-		}
-
-		if (name == null) {
-			return false;
-		}			
-		
-		if (pAtomicFilter instanceof StringFilter) {
-			StringFilter theStringFilter = (StringFilter) pAtomicFilter; 
-
-			String value = data.getStringAttribute(name, theStringFilter.getAttributeName().substring(5));
-			
-			if (value == null) {
-				return false;
-			}
-
-			if (theStringFilter == null) {
-				return false;
-			}
-			if (theStringFilter.getSearchStr() == null) {
-				return false;
-			}
-			String[] pattern = theStringFilter.getSearchStr().split("\\s");
-
-			for (int p = 0; p < pattern.length; ++p) {
-				if (!Strings.isLike((String) value, pattern[p], 0, true)) {
-					// this is an OR function
-					return false;
-				}
-			}				
-		}
-		else if (pAtomicFilter instanceof NumericFilter) {
-			NumericFilter theNumericFilter = (NumericFilter) pAtomicFilter; 
-			
-			Number value;
-
-			if (data.getType(theNumericFilter.getAttributeName().substring(5)) == CyAttributes.TYPE_FLOATING)
-				value = (Number) data.getDoubleAttribute(name, theNumericFilter.getAttributeName().substring(5));
-			else
-				value = (Number) data.getIntegerAttribute(name, theNumericFilter.getAttributeName().substring(5));
-
-			if (value == null) {
-				return false;
-			}
-
-			Double lowValue =theNumericFilter.getLowValue();
-			Double highValue =theNumericFilter.getHighValue();
-			
-			if (!(value.doubleValue() > lowValue.doubleValue() && value.doubleValue()< highValue.doubleValue())) {
-				return false;
-			}				
-		}
-		
-		return true;
-	}
-
-	
-	private boolean passesCompositeFilter(Object pObject, CompositeFilter pFilter){
-		
-		Vector<AtomicFilter> atomicFilterVect = pFilter.getAtomicFilterVect();
-		
-		for (int i=0; i<atomicFilterVect.size(); i++ ) {
-
-			boolean passTheAtomicFilter = passAtomicFilter(pObject, (AtomicFilter)atomicFilterVect.elementAt(i));
-			
-			if (pFilter.getAdvancedSetting().isANDSelected() && !passTheAtomicFilter) {
-				return false;
-			}
-			if (pFilter.getAdvancedSetting().isORSelected() && passTheAtomicFilter) {
-				return true;
-			}	
-		}
-				
-		if (pFilter.getAdvancedSetting().isANDSelected()) {
-			return true;			
-		}
-		else { // pFilter.getAdvancedSetting().isORSelected()
-			return false;			
-		}
-	}
-
-	
-	protected void testObjects(CompositeFilter pCompositeFilter) {
-		
-		final CyNetwork network = Cytoscape.getCurrentNetwork();
-
-		final List<Node> nodes_list = network.nodesList();
-		final List<Edge> edges_list = network.edgesList();
-
-		if (pCompositeFilter == null) return;
-
-		if (pCompositeFilter.getAdvancedSetting().isNodeChecked())
-		{
-				final List<Node> passedNodes = new ArrayList<Node>();
-
-				for (Node node : nodes_list) {
-
-					try {
-						if (passesCompositeFilter(node, pCompositeFilter)) {
-							passedNodes.add(node);
-						}
-					} catch (StackOverflowError soe) {
-						soe.printStackTrace();
-						return;
-					}
-				}
-				//System.out.println("\tpassedNodes.size() ="+passedNodes.size());
-
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(passedNodes, true);
-		} 
-
-		if (pCompositeFilter.getAdvancedSetting().isEdgeChecked())
-		{
-				final List<Edge> passedEdges = new ArrayList<Edge>();
-
-				for (Edge edge : edges_list) {
-					try {
-						if (passesCompositeFilter(edge, pCompositeFilter)) {
-							passedEdges.add(edge);
-						}
-					} catch (StackOverflowError soe) {
-						soe.printStackTrace();
-						return;
-					}
-				}
-				//System.out.println("\tpassedEdges.size() ="+passedEdges.size());
-
-				Cytoscape.getCurrentNetwork().setSelectedEdgeState(passedEdges, true);
-		}
-	}//testObjects
-
-	
-	private class ApplyFilterThread extends Thread {
-		CompositeFilter theFilter= null;
-		public ApplyFilterThread(CompositeFilter pFilter) {
-			theFilter = pFilter;
-		}
-		public void run() {
-			testObjects(theFilter);
-			Cytoscape.getCurrentNetworkView().updateView();
-		}
-	}
-	
 	
 	/**
 	 * DOCUMENT ME!
@@ -720,8 +568,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 			if (_btn == btnApplyFilter) {
 
-				Cytoscape.getCurrentNetwork().unselectAllNodes();
-				Cytoscape.getCurrentNetwork().unselectAllEdges();
 
 				//System.out.println("\nApplyButton is clicked!");
 				CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
@@ -737,9 +583,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				 // We have to run "Apply filter" in a seperate thread, becasue
 				 //we want to monitor the progress
+				FilterUtil.applyFilter(theFilter);
 				
-				ApplyFilterThread applyFilterThread = new ApplyFilterThread(theFilter);
-				applyFilterThread.start();
+				//ApplyFilterThread applyFilterThread = new ApplyFilterThread(theFilter);
+				//applyFilterThread.start();
 			}
 			if (_btn == btnAddFilterWidget) {
 
@@ -788,6 +635,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				if ((newFilterName != null)
 						&& (!newFilterName.trim().equals(""))) {
 					createNewFilter(newFilterName);
+					
+					//System.out.println("FilterMainPanel.firePropertyChange() -- NEW_FILTER_CREATED");
+					//pcs.firePropertyChange("NEW_FILTER_CREATED", "", "");
+					PropertyChangeEvent evt = new PropertyChangeEvent(this, "NEW_FILTER_CREATED", null, null);
+					pcs.firePropertyChange(evt);
+					
 				}
 			} else if (_menuItem == deleteFilterMenuItem) {
 				CompositeFilter theSelectedFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();	
@@ -805,22 +658,26 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					return;
 				}
 				deleteFilter(theSelectedFilter);
+				PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DELETED", null, null);
+				pcs.firePropertyChange(evt);
 			} else if (_menuItem == renameFilterMenuItem) {
 				CompositeFilter theSelectedFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();				
 				if (theSelectedFilter == null) {
 					return;
 				}
 				renameFilter();
+				PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_RENAMED", null, null);
+				pcs.firePropertyChange(evt);
 			} else if (_menuItem == duplicateFilterMenuItem) {
 				CompositeFilter theSelectedFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();				
 				if (theSelectedFilter == null) {
 					return;
 				}
 				duplicateFilter();
+				PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DUPLICATED", null, null);
+				pcs.firePropertyChange(evt);
 			}
 		} // JMenuItem event
-		
-
 	}
 
 	private void duplicateFilter(){
