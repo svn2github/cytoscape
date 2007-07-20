@@ -427,6 +427,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		if (info != null) {
 			updateCurrent(info);
 			cleanTree(node);
+		} else {
+			// somehow disable the node??
 		}
 	}
 
@@ -446,23 +448,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		for (TreeNode treeNode : RemovableNodes) {
 			treeModel.removeNodeFromParent(treeNode);
-		}
-
-	}
-
-	// install and initialize the new plugin
-	private void loadPlugin(PluginInfo info) {
-		PluginManager Mgr = PluginManager.getPluginManager();
-		try {
-			Mgr.install(info);
-			Mgr.loadPlugin(info);
-			updateCurrent(info);
-		} catch (ClassNotFoundException cne) {
-			cne.printStackTrace();
-		} catch (java.io.IOException ioe) {
-			ioe.printStackTrace();
-		} catch (cytoscape.plugin.PluginException pe) {
-			
 		}
 	}
 
@@ -514,15 +499,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			try {
 				Mgr.install(pluginInfo);
 				Mgr.loadPlugin(pluginInfo);
-			} catch (ClassNotFoundException cne) {
-				taskMonitor.setException(cne, cne.getMessage());
-			} catch (java.io.IOException ioe) {
-				taskMonitor.setException(ioe, ioe.getMessage());
-			} catch (cytoscape.plugin.PluginException pe) {
-				taskMonitor.setException(pe, pe.getMessage());
+//			} catch (ClassNotFoundException cne) {
+//				taskMonitor.setException(cne, cne.getMessage());
+//				
+//			} catch (java.io.IOException ioe) {
+//				taskMonitor.setException(ioe, ioe.getMessage());
+//			} catch (cytoscape.plugin.PluginException pe) {
+//				taskMonitor.setException(pe, pe.getMessage());
+			} catch (Exception e) {
+				taskMonitor.setException(e, e.getMessage());
+				pluginInfo = null;
 			}
-
-			
 		}
 
 		public PluginInfo getDownloadedPlugin() {
