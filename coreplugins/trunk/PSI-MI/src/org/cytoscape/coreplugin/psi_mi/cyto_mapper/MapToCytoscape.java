@@ -393,7 +393,7 @@ public class MapToCytoscape implements Mapper {
 					}
 				}
 			}
-		} else {
+		} else if (interactors.size() == 2) {
 			Interactor interactor0 = (Interactor) interactors.get(0);
 			Interactor interactor1 = (Interactor) interactors.get(1);
 
