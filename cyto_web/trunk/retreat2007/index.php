@@ -57,6 +57,10 @@ Director of the Computational Biology Center of the <a href="http://www.mskcc.or
 Head of the <a href="http://www.ebi.ac.uk/" target="_blank">European Bioinformatics Institute/Ensembl</a> project.
 </li>
 <li>
+<b>Ruedi Aebersold</b>; Swiss Federal Institute of Technology, Zurich, Switzerland.<br> 
+Professor at the <a href="http://www.imsb.ethz.ch/researchgroup/rudolfa" target="_blank">Institute of Molecular Systems Biology</a>.
+</li>
+<li>
 <b>Trey Ideker</b>; University of California, San Diego, USA.<br>
 Laboratory for Integrative Network Biology at the <a href="http://chianti.ucsd.edu/idekerlab" target="_blank">University of California, San Diego</a>. 
 </li>
