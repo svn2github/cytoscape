@@ -6,14 +6,15 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.util.CytoscapeAction;
+
+import cytoscape.util.FileUtil;
+import cytoscape.util.CyFileFilter;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.Task;
@@ -32,10 +33,10 @@ import cytoscape.dialogs.ExportBitmapOptionsDialog;
  */
 public class ExportAsGraphicsAction extends CytoscapeAction
 {
-	private static ExportFilter BMP_FILTER = new BitmapExportFilter("BMP", "bmp");
-	private static ExportFilter JPG_FILTER = new BitmapExportFilter("JPEG", "jpg");
+	private static ExportFilter BMP_FILTER = new BitmapExportFilter("bmp", "BMP");
+	private static ExportFilter JPG_FILTER = new BitmapExportFilter("jpg", "JPEG");
 	private static ExportFilter PDF_FILTER = new PDFExportFilter();
-	private static ExportFilter PNG_FILTER = new BitmapExportFilter("PNG", "png");
+	private static ExportFilter PNG_FILTER = new BitmapExportFilter("png", "PNG");
 	private static ExportFilter SVG_FILTER = new SVGExportFilter();
 	private static ExportFilter[] FILTERS = { BMP_FILTER, JPG_FILTER, PDF_FILTER, PNG_FILTER, SVG_FILTER };
 
@@ -50,46 +51,13 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 
 	public void actionPerformed(ActionEvent e)
 	{
-		JFileChooser fileChooser = new JFileChooser()
-		{
-			// When the user clicks "Save"
-			public void approveSelection()
-			{
-				// If the file exists, we should make sure that it is OK
-				// to replace it
-				if (getSelectedFile().exists())
-				{
-					Object options[] = { "Yes", "No" };
-					int choice = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
-							"\"" + getSelectedFile() + "\" already exists.\n\n" +
-							"Do you want to replace it?",
-							"Save " + TITLE,
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.WARNING_MESSAGE,
-							null, options, options[1]);
-					
-					if (choice == 0)
-						super.approveSelection();
-				}
-				else
-					super.approveSelection();
-			}
-		};
-
-		// Assign settings to the file chooser
-		fileChooser.setDialogTitle("Save " + TITLE);
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		for (int i = 0; i < FILTERS.length; i++)
-			fileChooser.addChoosableFileFilter(FILTERS[i]);
-		
 		// Show the file chooser
-		int result = fileChooser.showSaveDialog(Cytoscape.getDesktop());
-		if (result != JFileChooser.APPROVE_OPTION)
+		File[] files = FileUtil.getFiles(TITLE, FileUtil.SAVE, FILTERS, null, null, false, true);
+		if (files == null || files.length == 0 || files[0] == null)
 			return;
+		File file = files[0];
 
 		// Create the file stream
-		ExportFilter filter = (ExportFilter) fileChooser.getFileFilter();
-		File file = filter.checkExtension(fileChooser.getSelectedFile());
 		FileOutputStream stream = null;
 		try
 		{
@@ -104,8 +72,22 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 		}
 
 		// Export
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		filter.export(view, stream);
+		while (true)
+		{
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			for (int i = 0; i < FILTERS.length; i++)
+			{
+				if (FILTERS[i].accept(file))
+				{
+					FILTERS[i].export(view, stream);
+					break;
+				}
+			}
+
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				"An appropriate extension was not specified for the file.\n\n" +
+				"Please specify an extension for the desired format.");
+		}
 	}
 }
 
@@ -162,38 +144,16 @@ class ExportTask
 	}
 }
 
-abstract class ExportFilter extends FileFilter
+abstract class ExportFilter extends CyFileFilter
 {
-	protected String description, extension;
-	
-	public ExportFilter(String description, String extension)
+	public ExportFilter(String extension, String description)
 	{
-		this.description = description;
-		this.extension = extension;
+		super(extension, description);
 	}
 
-	public String getDescription()
+	public boolean isExtensionListInDescription()
 	{
-		return description + " (" + getExtension() + ")";
-	}
-
-	public boolean accept(File f)
-	{
-		if (f.isDirectory())
-			return true;
-		return f.getName().endsWith(getExtension());
-	}
-
-	public String getExtension()
-	{
-		return "." + extension;
-	}
-
-	public File checkExtension(File file)
-	{
-		if (!file.getName().endsWith(getExtension()))
-			file = new File(file.getPath() + getExtension());
-		return file;
+		return true;
 	}
 
 	public abstract void export(CyNetworkView view, FileOutputStream stream);
@@ -203,7 +163,7 @@ class PDFExportFilter extends ExportFilter
 {
 	public PDFExportFilter()
 	{
-		super("PDF", "pdf");
+		super("pdf", "PDF");
 	}
 	public void export(final CyNetworkView view, final FileOutputStream stream)
 	{
@@ -214,9 +174,12 @@ class PDFExportFilter extends ExportFilter
 
 class BitmapExportFilter extends ExportFilter
 {
-	public BitmapExportFilter(String description, String extension)
+	private String extension;
+
+	public BitmapExportFilter(String extension, String description)
 	{
-		super(description, extension);
+		super(extension, description);
+		this.extension = extension;
 	}
 
 	public void export(final CyNetworkView view, final FileOutputStream stream)
@@ -241,7 +204,7 @@ class SVGExportFilter extends ExportFilter
 {
 	public SVGExportFilter()
 	{
-		super("SVG", "svg");
+		super("svg", "SVG");
 	}
 
 	public void export(final CyNetworkView view, final FileOutputStream stream)
