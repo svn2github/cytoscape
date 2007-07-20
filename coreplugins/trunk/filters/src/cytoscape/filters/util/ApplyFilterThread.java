@@ -92,6 +92,9 @@ class ApplyFilterThread extends Thread {
 	 *  DOCUMENT ME!
 	 */
 	public void run() {
+		Cytoscape.getCurrentNetwork().unselectAllNodes();
+		Cytoscape.getCurrentNetwork().unselectAllEdges();
+		
 		testObjects(theFilter);
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
@@ -159,13 +162,24 @@ class ApplyFilterThread extends Thread {
 			Double lowValue = theNumericFilter.getLowValue();
 			Double highValue = theNumericFilter.getHighValue();
 
-			//System.out.println("lowValue = "+lowValue);
-			//System.out.println("highValue = "+highValue);
-			//System.out.println("value = "+value);
+			//To correct the boundary values for lowValue and highValue
+			if (lowValue.doubleValue()>0.0) {
+				lowValue = lowValue*0.99999;
+			}
+			else {
+				lowValue = lowValue*1.00001;
+			}
+
+			if (highValue.doubleValue()>0.0) {
+				highValue = highValue*1.00001;
+			}
+			else {
+				highValue = highValue*0.99999;
+			}
 
 			//if (!(value.doubleValue() >= lowValue.doubleValue() && value.doubleValue()<= highValue.doubleValue())) {
 			if (!((Double.compare(value.doubleValue(), lowValue.doubleValue()) >= 0)
-			    && (Double.compare(value.doubleValue(), highValue.doubleValue()) <= 0))) {
+			    && (Double.compare(value.doubleValue(), highValue.doubleValue())) <= 0)) {
 				return false;
 			}
 		}
