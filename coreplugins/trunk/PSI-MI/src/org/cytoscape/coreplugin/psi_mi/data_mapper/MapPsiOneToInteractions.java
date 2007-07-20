@@ -407,26 +407,29 @@ public class MapPsiOneToInteractions implements Mapper {
 
 		if (expDesc != null) {
 			CvType detection = expDesc.getInteractionDetection();
-			NamesType names = detection.getNames();
-			expSystem = names.getShortLabel();
+            if (detection != null) {
+                NamesType names = detection.getNames();
+                if (names != null) {
+                    expSystem = names.getShortLabel();
 
-			if (expSystem != null) {
-				interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_NAME, expSystem);
-			}
+                    if (expSystem != null) {
+                        interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_NAME, expSystem);
+                    }
+                }
+                XrefType xref = detection.getXref();
 
-			XrefType xref = detection.getXref();
+                if (xref != null) {
+                    DbReferenceType primaryRef = xref.getPrimaryRef();
 
-			if (xref != null) {
-				DbReferenceType primaryRef = xref.getPrimaryRef();
-
-				if (primaryRef != null) {
-					interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB,
-					                         primaryRef.getDb());
-					interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID,
-					                         primaryRef.getId());
-				}
-			}
-		}
+                    if (primaryRef != null) {
+                        interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB,
+                                                 primaryRef.getDb());
+                        interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID,
+                                                 primaryRef.getId());
+                    }
+                }
+            }
+        }
 	}
 
 	/**
