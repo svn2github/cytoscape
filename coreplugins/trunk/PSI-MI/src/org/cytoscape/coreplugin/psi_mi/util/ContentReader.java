@@ -180,21 +180,24 @@ public class ContentReader {
 	private String retrieveContentFromFile(InputStreamReader reader) throws IOException {
 		final int bufSize = 65536;
 		char[] buf = new char[bufSize];
-		String content = "";
+		StringBuffer content = new StringBuffer("");
 		int charsread = 0;
 
-		while (true) {
+        int totalcharsread = 0;
+        while (true) {
 			charsread = reader.read(buf, 0, bufSize);
+            totalcharsread += charsread;
 
-			if (charsread == -1) {
+            if (charsread == -1) {
 				break;
 			}
 
 			String bufstring = new String(buf, 0, charsread);
-			content += bufstring;
-		}
+			content.append(bufstring);
 
-		return content;
+        }
+
+		return content.toString();
 	}
 
 	/**
