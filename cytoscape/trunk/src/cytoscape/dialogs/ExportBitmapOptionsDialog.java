@@ -135,6 +135,7 @@ public class ExportBitmapOptionsDialog extends JDialog
 		sizePanel.add(resolutionPanel, c);
 
 		okButton = new JButton("OK");
+		okButton.setDefaultCapable(true);
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new CancelListener());
 
@@ -154,6 +155,7 @@ public class ExportBitmapOptionsDialog extends JDialog
 
 		updateOnZoom(1.0);
 		//setPreferredSize(new Dimension(250, 280));
+		setLocationRelativeTo(Cytoscape.getDesktop());
 		setResizable(false);
 		pack();
 	}
