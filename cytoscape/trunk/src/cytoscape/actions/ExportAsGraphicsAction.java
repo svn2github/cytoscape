@@ -80,7 +80,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 				if (FILTERS[i].accept(file))
 				{
 					FILTERS[i].export(view, stream);
-					break;
+					return;
 				}
 			}
 
