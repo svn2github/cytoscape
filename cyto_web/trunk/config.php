@@ -39,7 +39,7 @@ $latest_release_notes_link = "cyto_2_5_features.php";
 $latest_download_link = "download.php?file=cyto2_5";
 $latest_manual_pdf = "manual/Cytoscape2_5Manual.pdf";
 $latest_manual_html = "manual/Cytoscape2_5Manual.html";
-$latest_javadoc = $chianti_base."Cyto-2_5/Cytoscape_2_5_unix.sh";
+$latest_javadoc = $chianti_base."Cyto-2_5/javadoc/";
 $release_array = array( 
 					  'cyto2_5'   => '2.5',
                       'cyto2_4_1' => '2.4.1',
