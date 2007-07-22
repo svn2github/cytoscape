@@ -58,7 +58,7 @@
 					<a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Future_Cytoscape_Features">
 						Roadmap
 					</a> |
-    				<a href="http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/">
+    				<a href="<?= $latest_javadoc?>">
 						Javadoc API
 					</a> |
     			    <a href="cgi-bin/moin.cgi/">
