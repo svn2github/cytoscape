@@ -101,7 +101,7 @@
     <td>John "Scooter"<br /> Morris</td>
     <td>Peng Wang</td>
     <td>Sarah Killcoyne</td>
-    <td>Samad Lotia</td>
+    <td><a href="http://chianti.ucsd.edu/~slotia/">Samad Lotia</a></td>
    </tr>
 
     <tr>
