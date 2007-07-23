@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<project name="HyperEdge" default="jar-middleware" basedir=".">
+   <!-- TO USE THIS BUILD SCRIPT:
+     1) FILL IN the location of Cytoscape root wrt this build file in
+        'cytoscape.dir'.
+     2) Uncomment 'hee.jarlib.dir'  and fill it in with the right location if
+	     you want the HyperEdgeEditor's HyperEdge jar updated when
+	     HyperEdge is built.
+    NOTE: Until it is OK for the HyperEdge to be treated as a separate
+	plugin, don't use the 'jar' target. The problem is that plugin
+	dependencies in between the HyperEdgeEditor and HyperEdge
+	plugins. For now, the HyperEdgeEditor subsumes HyperEdge. -->
+	
+	<!-- directory definitions -->
+  	<property name="root.dir" value="."/>
+  	<property name="src.dir" value="${root.dir}/src"/>
+	<property name="doc.dir" value="${root.dir}/doc"/> 
+	<property name="jarlib.dir" value="${root.dir}/jarlib"/>
+ 	<property name="build.dir" value="${root.dir}/build"/>
+ 	<property name="build.classes.dir" value="${build.dir}/classes"/>
+	<property name="apidocs.dir" location="${build.dir}/api-docs" />
+
+	<property name="cytoscape.dir" value="../cytoscape-2.5"/>
+	<property name="cytoscape.lib.dir" value = "${cytoscape.dir}/lib"/>
+	<!-- <property name="hee.jarlib.dir" location="../HyperEdgeEditor/jarlib" /> -->
+	<property name="test.dir" location="${build.dir}/test" />
+	<property name="test.subdir" value="cytoscape/hyperedge/unittest" />
+	<property name="test.reports.dir" location="${test.dir}/reports" />
+	<property name="test.data.dir" location="${test.dir}/data" />
+	<property name="test.classes.root.dir" location="${build.classes.dir}" />
+
+	<!-- plugin definitions -->
+	<property name="plugin.name" value="${ant.project.name}" />
+	<property name="plugin.loc" value = "${build.dir}/${plugin.name}.jar"/>
+
+	<!-- compiler options -->
+	<property name="build.compiler" value="modern"/>
+	
+	<!-- classpath with all lib, cytoscape, and cytoscape lib classes -->
+	<path id="plugin.classpath">
+		<fileset dir="${jarlib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+  	<!-- Target to create the build directories prior to compilation -->
+  	<target name="prepare">
+    		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${test.dir}" />
+		<mkdir dir="${test.data.dir}" />
+		<mkdir dir="${test.reports.dir}" />
+		<echo message="Finished prepare." />
+  	</target>
+
+	<!--  Target to clean out all directories -->
+  	<target name="clean" 
+	        description="Removes all generated jars, test, and class files. Leaves API docs.">
+		<!-- would be better to delete build.dir excluding the api-docs directory,
+	             but can't get that to work: -->
+		<delete dir="${build.classes.dir}" />
+		<delete dir="${plugin.loc}" />
+		<delete dir="${test.dir}" />
+  	</target>
+
+	<target name="clean-docs" description="Remove all generated java API docs.">
+		<delete dir="${apidocs.dir}" />
+	</target>
+	
+	<!--  Target to create the javadoc information -->
+	<target name="doc" 
+	        depends="clean-docs"> 
+		<mkdir dir="${apidocs.dir}"/>
+		<javadoc destdir="${apidocs.dir}" 
+		         classpathref="plugin.classpath"
+			 Windowtitle="${plugin.name} API Docs"
+		         header="${plugin.name}"
+		         Private="yes"> 
+			<fileset dir="${src.dir}" defaultexcludes="no"/> 
+			<doctitle>${plugin.name} API Docs</doctitle>
+		</javadoc> 
+	</target>
+
+        
+	<target name="test" depends="compile" description="compile code and run all tests and create a test report.">
+		<echo message="test.classes.root.dir = ${test.classes.root.dir}" />
+
+		<path id="test.classpath">
+		        <path refid="plugin.classpath" />
+			<pathelement location="${build.classes.dir}" />
+		</path>
+		<junit printsummary="false" errorProperty="test.failed" failureProperty="test.failed">
+			<!-- junit requires a different classpath then standard compile: -->
+			<classpath refid="test.classpath" />
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<batchtest todir="${test.data.dir}">
+				<fileset dir="${test.classes.root.dir}" includes="**/${test.subdir}/*Test.class" />
+			</batchtest>
+		</junit>
+		<!-- create the nice HTML, browsable report of test results: -->
+		<junitreport todir="${test.data.dir}">
+			<fileset dir="${test.data.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${test.reports.dir}" />
+		</junitreport>
+		<antcall target="display-test-report" />
+		<fail message="Test failed. Check report in ${test.reports.dir}/index.html." if="test.failed" />
+		<echo message="Tests passed. Check report in ${test.reports.dir}/index.html." />
+	</target>
+
+	<target name="display-test-report" description="Display test results in a browser when desired." if="display-browser">
+		<exec executable="cmd">
+			<arg line="/c start ${test.reports.dir}/index.html" />
+		</exec>
+	</target>
+
+	<!--  Target to compile all Plug In Code -->
+  	<target name="compile" 
+	        depends="prepare" 
+		description="Compiles all PlugIn source code.">
+                <javac debug="Yes" 
+		       srcdir="${src.dir}" 
+		       destdir="${build.classes.dir}"
+		       deprecation="true"
+		       classpathref="plugin.classpath"/>
+		<echo message="Finished compile." />
+	</target>
+  	
+	<target name="add-data-files">
+	<!-- Don't allow HyperEdge to be its own plugin right now: -->
+	<!-- <copy todir="${build.classes.dir}/cytoscape/hyperedge" preservelastmodified="true" file="plugin.props" /> -->
+	</target>
+
+	<!--  Create PlugIn Jar File -->
+	<!-- NOTE: Until it is OK for the HyperEdgeEditor to be
+	treated as a separate plugin, don't use jar. The problem is
+	plugin dependencies between the HyperEdgeEditor and HyperEdge
+	plugins. For now, the HyperEdgeEditor subsumes HyperEdge. -->
+   	<target name="jar" 
+	        depends="clean,compile,add-data-files" 
+	        description="Compile code and create plugin ${plugin.name} jar.">
+		<unjar dest="${build.dir}">
+			<fileset dir="${jarlib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+       		</unjar>
+		<jar destfile="${plugin.loc}">
+ 			<fileset dir="${build.classes.dir}">
+ 				<!-- skip items from the test directory: -->
+ 				<exclude name="${test.subdir}/" />
+ 			</fileset>
+			<!-- <manifest> -->
+			<!-- <attribute name="Cytoscape-Plugin" -->
+			<!--     value="cytoscape.hyperedge.HyperEdgePlugin"/> -->
+			<!-- </manifest> -->
+		</jar>
+	</target>
+
+	<target name="jar-middleware" depends="clean,compile,add-data-files" description="Create only a jar of the compiled code--don't include any other needed libraries.">
+		<jar destfile="${plugin.loc}">
+			<fileset dir="${build.classes.dir}">
+				<!-- skip items from the test directory: -->
+				<exclude name="${test.subdir}/" />
+				<exclude name="cytoscape/hyperedge/plugin.props" />
+			</fileset>
+		</jar>
+		<echo message="${lib.loc} is now complete." />
+		<antcall target="copy-jar-to-hee" />
+	</target>
+
+
+   	<target name="all" 
+	        depends="clean,jar-middleware,doc,test"/>
+
+	<target name="copy-jar-to-hee" if="hee.jarlib.dir">
+		<copy file="${plugin.loc}" todir="${hee.jarlib.dir}" preservelastmodified="true" />
+	</target>
+</project>
