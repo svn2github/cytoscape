@@ -7,10 +7,10 @@
 	<link rel="shortcut icon" href="images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
-<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
 <div id="topbar">
 	<div class="title">Cytoscape 2.x Plugins</div>
 </div>
+
 <? include "nav.php"; ?>
 <br>
 <div id="indent">

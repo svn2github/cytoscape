@@ -127,7 +127,6 @@ body {
 #links {
 	width: 100%;
 	color: #000000;
- #background-color: #ddeeee;
 	border: none;
 	border-bottom: 1px solid #999999;
 }
@@ -163,14 +162,13 @@ body {
 }
 #links #caption {
 	color: #000000;
- #background-color:  #99ccff;
 	background: #FFFFFF url(../images/menubg.png);
 	padding-left: 15px;
 	text-align: center;
 	vertical-align:middle;
 	border: none;
 	height:32px;
- #border-bottom: 2px solid #1177cc;
+
 }
 #links h1 a {
 	text-decoration: none;
@@ -263,10 +261,7 @@ body {
 	margin-bottom: 10px;
 	margin-left: 5px;
 	font-size: 12px;
- #border: dotted gray 1px;
- #padding-left: 10px;
 	padding-bottom: 10px;
- #background: #FFFFFF url(../images/blue_grad.png);
 	background-repeat: repeat-y;
 	border: 1px solid #878087;
 }
@@ -467,7 +462,6 @@ a {
  #border: dotted gray 1px;
  #padding-left: 10px;
 	padding-bottom: 10px;
- #background: #FFFFFF url(../images/blue_grad.png);
 	background-repeat: repeat-y;
 	border: 1px solid #878087;
 }
