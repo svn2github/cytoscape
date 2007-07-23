@@ -47,7 +47,7 @@
 <!>
 <div id="content">
   <div class="item">
-    <h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5</h2>
+    <h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5.0</h2>
     <A HREF="screenshots/2_5_ss1.png"><img src="screenshots/2_5_ss1_thumb.png" border="0" align="left" alt="Cytoscape 2.5 Screenshot" /> </A>
     <div class="paragraph"> (Updated 7/23/2007) <br>
       New features include: <br>
