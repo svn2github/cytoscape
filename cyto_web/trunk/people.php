@@ -101,6 +101,7 @@
     <td>John "Scooter"<br /> Morris</td>
     <td>Peng Wang</td>
     <td>Sarah Killcoyne</td>
+    <td>Samad Lotia</td>
    </tr>
 
     <tr>
@@ -109,8 +110,9 @@
      <td><img src="people_photos/alex.jpg"></img></td>
      <td><img src="people_photos/kristina.jpg"></img></td>
      <td><img src="people_photos/scooter.jpg"></img></td>
-        <td><img src="people_photos/peng.jpg"></img></td>
+     <td><img src="people_photos/peng.jpg"></img></td>
      <td><img src="people_photos/sarah.jpg"></img></td>
+     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
   </tr>
 
   
