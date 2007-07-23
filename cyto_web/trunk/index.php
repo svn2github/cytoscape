@@ -19,38 +19,35 @@
 <!>
 <! ========== Title and menu bar ============ >
 <!>
-<table summary="" cellspacing="0" cellpadding="0" border="0" id="feature">
-  <tbody>
-    <tr>
-      <td width="15">&nbsp;</td>
-      <td height="200" width="200" valign="top" align="center"><div id="about">
-          <h1> Cytoscape </h1>
-          <img src="images/logo.png" align="center"/> </div></td>
-      <td width="200" valign="bottom"><div id="about2"> Cytoscape is an open source bioinformatics software platform for <b> <i> visualizing </i> </b> molecular interaction networks and <b> <i> integrating </i> </b> these interactions with gene expression profiles and other state data. <a href="features.php"> Read more &raquo; </a> </div></td>
-      </td>
-      <td valign="center" align="right"><div id="article">
-          <h2> <a href='<?= $latest_download_link ?>'> Download Cytoscape
+<div id="feature">
+	<div class="title">
+		Cytoscape
+	</div>
+   <img src="images/logo.png"/>
+
+   <div class="about2">
+		Cytoscape is an open source bioinformatics software platform for <b><i>visualizing</i></b> molecular interaction networks and <b><i>integrating</i></b> these interactions with gene expression profiles and other state data. <a href="features.php"><br>Read more &raquo; </a>
+	</div>
+   <div class="article">
+		<h2><a href='<?= $latest_download_link ?>'>Download Cytoscape
             <?= $latest_version ?>
-            ! </a> </h2>
-          <p> New!&nbsp; Cytoscape
+            ! </a>
+		</h2>
+		New!&nbsp; Cytoscape
             <?= $latest_version ?>
             is now available. <br>
-            <br>
             <a href='<?= $latest_release_notes_link ?>'>
             <?= $latest_version ?>
             Release Notes &raquo; </a> <br>
             <a href='<?= $latest_download_link ?>'> Download &raquo; </a> <br>
-          </p>
-          <p> <br>
+          <p>
           <h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
-          <p><a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a></p>
-          <p><b>November 6<sup>th</sup>-9<sup>th</sup> 2007</b></p>
+          <a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a><br>
+          <b>November 6<sup>th</sup>-9<sup>th</sup> 2007</b>
           <br>
           </p>
-        </div></td>
-    </tr>
-  </tbody>
-</table>
+	</div>
+</div>
 <? include "nav.php"; ?>
 <? include "detailed_nav.php"; ?>
 <!>
