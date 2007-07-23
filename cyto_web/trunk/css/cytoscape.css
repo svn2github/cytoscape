@@ -28,6 +28,27 @@ body {
 	/* this bottom border is necessary to work around an opera 6 bug */
    border-bottom: 1px solid #2a5a8a;
 }
+
+#topbar {
+	height: 130px;
+	width: 100%;
+	color: #ffffff;
+	background-color: #2a5a8a;
+	background: url(../images/title.png);
+	background-color: #5b6be2;
+   background-repeat: x-repeat;
+	background-position: top left;
+	border: none;
+	/* this bottom border is necessary to work around an opera 6 bug */
+   border-bottom: 1px solid #2a5a8a;
+}
+#topbar .title {
+	font-size: 36px;
+	mrgine:5px;
+	padding-left:10px;
+	font-family: Arial;
+}
+
 #feature, #feature p {
 	color: #ffffff;
 	font-size: 12px;
