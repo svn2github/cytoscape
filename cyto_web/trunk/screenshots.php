@@ -8,12 +8,9 @@
 <link rel="shortcut icon" href="images/cyto.ico" />
 </head>
 <body bgcolor="#FFFFFF">
-<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
-  <tr>
-    <td width="10">&nbsp;</td>
-    <td valign="center"><h1>Cytoscape Screen Shots</h1></td>
-  </tr>
-</table>
+<div id="topbar">
+	<div class="title">Cytoscape Screen Shots</div>
+</div>
 <? include "nav.php"; ?>
 <div id="indent">
   <p> (All images below are created by Cytoscape version 2.4) </p>

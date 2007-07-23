@@ -9,16 +9,10 @@
 	<link rel="shortcut icon" href="images/cyto.ico" />
 </head>
 <body bgcolor="#FFFFFF">
-<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
-	<tr>
-		<td width="10">
-			&nbsp;
-		</td>
-		<td valign="center">
-			<h1> Cytoscape Features </h1>
-		</td>
-	</tr>
-</table>
+<div id="topbar">
+	<div class="title">Cytoscape Features</div>
+</div>
+
 <? include "nav.php"; ?>
 <div id="indent">
 	<P>

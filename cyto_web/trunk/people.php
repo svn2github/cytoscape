@@ -11,26 +11,16 @@
 		<link rel="shortcut icon" href="images/cyto.ico" />
 	</head>
 	<body bgcolor="#FFFFFF">
-		<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
-			<tr>
-				<td width="10">
-					&nbsp;
-				</td>
-				<td valign="center">
-					<h1>
-						Cytoscape Development Team
-					</h1>
-				</td>
-			</tr>
-		</table>
+	<div id="topbar">
+		<div class="title">Cytoscape Development Team</div>
+	</div>
 <? include "nav.php"; ?>
 <blockquote>
-			<P><big>
+			<big>
 				<b>
 					Board of Directors:</b>
 			</big>
-			<br>
-			<br>
+			
 </blockquote>
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
