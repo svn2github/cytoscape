@@ -64,6 +64,7 @@
     <path id="browser.project.class.path">
       <pathelement location="${browser.classes.dir}"/>
       <pathelement location="${cytoscape.plugin.dir}/core/filter.jar"/>
+      <pathelement location="${cytoscape.plugin.dir}/core/filters.jar"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
