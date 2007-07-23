@@ -93,6 +93,71 @@
 								<br>
 								<p>
 								<big><b>
+									<i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5
+								</b></big>
+								<table width="100%">
+									<tr valign="top">
+										<td width="47%" valign="top">
+											<br>
+											(Updated 7/23/2007)
+											<br>
+										New features include:	
+											<br>
+											<ul>
+
+		<li> New VizMapper User Interface
+			<ul>
+		    <li> More intuitive.</li>
+		    <li> Continuous mapping editors.</li>
+		    <li> Visual editor for default view.</li>
+		    <li> Visual mapping browser. </li>
+			<li> Improved visual legend generator. </li>
+			<li> Utilities to generate discrete values. </li>
+			</ul></li>
+
+
+		<li>New Features for Visual Style
+			<ul>
+			<li> Transparency (opactiy) support.</li>
+			<li> Continuous edge width.</li>
+			<li> Color visual property is separated from Arrow and Edge.</li>
+			</ul></li>
+		<li>New Filter User Interface
+			<ul>
+			<li> Intuitive widgets for basic filters.</li>
+			<li> Suggested search values with indexing.</li>
+			<li> Options to save in session or globally.</li>
+			</ul></li>
+		<li>Plugin Manager and New Plugin Website
+			<ul>
+		    <li> Install/Update/Delete plugins from within Cytoscape.</li>
+		    <li> Search for version compatible plugins from any host site.</li>
+			<li> Display list of installed plugins.</li>
+			</ul></li>
+
+		<li>Layout customization.</li>
+		<li>Undo and Redo.</li>
+		<li>Group API for plugin developers.</li>
+		<li>Node stacking.</li>
+		
+		<li>Tested on both Java SE 5 and 6</li>
+		<li> Many, many bug fixes! </li>
+											</ul>
+										</td>
+										<td valign="top">
+											<A HREF="screenshots/2_5_ss1.png">
+												<img src="screenshots/2_5_ss1_thumb.png" border="0" align="left" alt="Cytoscape 2.5 Screenshot" />
+											</A>
+										</td>
+									</tr>
+								</table>
+							</div>
+								<p>
+						
+							<div class="item">
+								<br>
+								<p>
+								<big><b>
 									<i>NEW!</i> &nbsp;&nbsp;<a href="retreat2007/index.php">Cytoscape Retreat 2007!</a>
 								</b></big>
 
@@ -129,7 +194,7 @@
 								<br>
 								<p>
 								<big><b>
-									<i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.4.1
+									Cytoscape 2.4.1
 								</b></big>
 								<table width="100%">
 									<tr valign="top">
