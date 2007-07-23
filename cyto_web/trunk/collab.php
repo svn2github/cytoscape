@@ -1,6 +1,6 @@
 <div class="roundbox blue_outline">
-The <b> Cytoscape </b> project is an ongoing collaboration between: 
-<br>
+<h2>The <b> Cytoscape </b> project is an ongoing collaboration between:</h2> 
+
 <table cellpadding="2" cellspacing="2" border="0" width="100%" align="center">
 
 <tbody>
@@ -29,8 +29,8 @@ The <b> Cytoscape </b> project is an ongoing collaboration between:
 </td>
 </tr>
 <tr>
-	<td width="10">
-		&nbsp; 
+	<td width="10">&nbsp;
+		 
 	</td>
 	<td valign="middle">
 		<a href="http://www.pasteur.fr"> <img src="images/ip60.gif" width="60" height="60" border="0" alt="IP" align="middle"> </a> <a href="http://www.pasteur.fr"> Institut Pasteur </a> 

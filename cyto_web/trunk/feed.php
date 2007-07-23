@@ -1,14 +1,14 @@
 <table width=100%>
-<TR><TD>
-<div class="roundbox blue">
-<?
+  <TR>
+    <TD><div class="roundbox blue">
+        <?
 require_once 'magpie/rss_fetch.inc';
 
 $url = 'http://groups.google.com/group/cytoscape-announce/feed/rss_v2_0_msgs.xml';
 $rss = fetch_rss($url);
 
-echo "<A HREF='http://groups.google.com/group/cytoscape-announce'>";
-echo "Cytoscape Announcements:</A></B><P>\n";
+echo "<h2><A HREF='http://groups.google.com/group/cytoscape-announce'>";
+echo "Cytoscape Announcements:</A></h2>\n";
 #  Only show the three most recent items.
 $counter = 0;
 foreach ($rss->items as $item ) {
@@ -55,18 +55,12 @@ foreach ($rss->items as $item ) {
 echo "<A HREF='http://groups-beta.google.com/group/cytoscape-announce'>";
 echo "View All Announcements</A></B><P>\n";
 ?>
-<P>
-	<P>
-	<form action="http://groups-beta.google.com/group/cytoscape-announce/boxsubscribe">
-		<div class="item">
-		Subscribe to cytoscape-announce:
-		<P>
-		Email: <input type=text name=email>
-       		<input type=submit name="sub" value="Subscribe">
-	</form>
-</div>
-</TD>
-</TR>
+        <form action="http://groups-beta.google.com/group/cytoscape-announce/boxsubscribe">
+          Subscribe to cytoscape-announce:
+          <P> Email:
+            <input type=text name=email>
+            <input type=submit name="sub" value="Subscribe">
+        </form>
+      </div></TD>
+  </TR>
 </TABLE>
-
-
