@@ -1,0 +1,175 @@
+/* -*-Java-*-
+********************************************************************************
+*
+* File:         HyperEdgeEditEventHandler.java
+* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdgeEditor/src/cytoscape/hyperedge/editor/event/HyperEdgeEditEventHandler.java,v 1.1 2007/07/04 01:19:09 creech Exp $
+* Description:
+* Author:       Michael L. Creech
+* Created:      Fri Jul 21 11:28:16 2006
+* Modified:     Thu Jun 28 17:00:42 2007 (Michael L. Creech) creech@w235krbza760
+* Language:     Java
+* Package:
+* Status:       Experimental (Do Not Distribute)
+*
+* (c) Copyright 2006, Agilent Technologies, all rights reserved.
+*
+********************************************************************************
+*
+* Revisions:
+*
+* Tue Jan 16 09:20:14 2007 (Michael L. Creech) creech@w235krbza760
+*  Commented out some debugging statements.
+********************************************************************************
+*/
+package cytoscape.hyperedge.editor.event;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.editor.CytoscapeEditor;
+
+import cytoscape.editor.event.PaletteNetworkEditEventHandler;
+
+import cytoscape.editor.impl.BasicCytoShapeEntity;
+import cytoscape.hyperedge.editor.HyperEdgeEditor;
+
+import cytoscape.view.CyNetworkView;
+
+import giny.view.EdgeView;
+
+import phoebe.PhoebeCanvasDropEvent;
+
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+
+
+
+/**
+ * @author Michael L. Creech
+ *
+ */
+public class HyperEdgeEditEventHandler extends PaletteNetworkEditEventHandler {
+    public HyperEdgeEditEventHandler() {
+        super();
+    }
+
+    public HyperEdgeEditEventHandler(CytoscapeEditor caller) {
+        super(caller);
+    }
+
+    public HyperEdgeEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
+        super(caller, view);
+    }
+
+    /**
+     * The <b>itemDropped()</b> method is at the heart of the
+     * palette-based editor.  The method can respond to a variety
+     * of DataFlavors that correspond to the shape being dragged
+     * and dropped from the palette.  These include Cytoscape
+     * nodes and edges, as well as URLs that can be dragged and
+     * dropped from other applications onto the palette.
+     *
+     */
+    public void itemDropped(PhoebeCanvasDropEvent e) {
+        Point                location = e.getLocation();
+        BasicCytoShapeEntity myShape = getShapeEntityForLocation(location,
+                                                                 e.getTransferable());
+
+        if (myShape == null) {
+            return;
+        }
+
+        // need to handle nodes and edges differently 
+        String attributeName  = myShape.getAttributeName();
+        String attributeValue = myShape.getAttributeValue();
+
+	// MLC 01/15/07:
+        // HEUtils.log("Item dropped attribute name = " + attributeName +
+        //            " attribute value = " + attributeValue);
+        if (HyperEdgeEditor.COMPLEX_TYPE.equals(attributeName)) {
+	    // MLC 01/15/07:
+            // HEUtils.log("getView() = " + getView());
+            // HEUtils.log("getCurrentView() = " +
+            //            Cytoscape.getCurrentNetworkView());
+            ((HyperEdgeEditor) get_caller()).determineAction(getView(),
+                                                             attributeValue,
+                                                             location);
+        } else {
+            super.itemDropped(e);
+        }
+    }
+
+    //    // override handleDroppedEdge in PaletteNetworkEditEventHandler:
+    //    protected handleDroppedEdge (String attributeName, String attributeValue, Point loc) {
+    //        if (isEdgeStarted()) {
+    //            // if there is another edit in progress, then don't
+    //            // process a drag/drop
+    //            return;
+    //        }
+    //
+    //	NodeView targetNode = getView().getPickedNodeView(location);
+    //        if (targetNode != null) {
+    //	    // if we reach this point, then the edge shape has been
+    //	    // dropped onto a node begin Edge creation
+    //	    setHandlingEdgeDrop(true);
+    //	    beginEdge(location,targetNode);	
+    //	    return;
+    //        }
+    //	EdgeView targetEdge = getView().getPickedEdgeView(location);	
+    //        if (targetEdge != null) {
+    //	    // if we reach this point, then the edge shape has been
+    //	    // dropped onto an edge begin Edge creation
+    //	    setHandlingEdgeDrop(true);
+    //	    beginEdge(location,targetEdge);	
+    //        }
+    //    }
+    //
+    //    // overloaded version of BasicNetworkEditEventHandler.beginEdge():
+    //    private void beginEdge(Point2D location, EdgeView ev) {
+    //	edgeSource = ev;
+    //	setupBeginEdgeState (location);
+    //    }
+
+    // override mousePressed() in BasicNetworkEditEventHandler:
+    public void mousePressed(MouseEvent e) {
+	// MLC 01/15/07:
+        // CytoscapeEditorManager.log("In HyperEdgeEditEventHandler.mousePressed");
+        nextPoint = e.getPoint();
+
+        EdgeView ev     = getView().getPickedEdgeView(nextPoint);
+        boolean  onEdge = (ev != null);
+
+        if (!onEdge) {
+            // to normal mouse operation:
+            super.mousePressed(e);
+        } else if (onEdge && isEdgeStarted() && !e.isControlDown()) {
+            // special use for HyperEdgeEditor.
+            // Finish Edge Creation
+            finishEdge(nextPoint, ev);
+            // MLC 06/29/07 DEBUG:
+            System.out.println ("FINISHED MOUSEPRESSED");
+        } else {
+            super.mousePressed(e);
+        }
+    }
+
+    // Overloading finishEdge
+    // Finish dropping an edge onto another edge.
+    public void finishEdge(Point2D location, EdgeView target) {
+        CyEdge tEdge = (CyEdge) target.getEdge();
+
+        // CyNetworkView    netView = (CyNetworkView) getView();
+        CyNetworkView netView = (CyNetworkView) target.getGraphView();
+        ((HyperEdgeEditor) get_caller()).convertEdgeIntoHyperEdge(location,
+                                                                  tEdge,
+                                                                  (CyNode) (getNode()
+                                                                                .getNode()),
+                                                                  getEdgeAttributeName(),
+                                                                  getEdgeAttributeValue(),
+                                                                  netView);
+        // MLC 06/29/07 DEBUG:
+        System.out.println ("BEFORE COMPLETEFINISHEDGE");
+        completeFinishEdge();
+        System.out.println ("AFTER COMPLETEFINISHEDGE");
+    }
+}

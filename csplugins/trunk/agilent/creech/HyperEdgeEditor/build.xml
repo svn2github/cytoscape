@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<project name="HyperEdgeEditor" default="jar" basedir=".">
+	
+	<!-- directory definitions -->
+  	<property name="root.dir" value="."/>
+  	<property name="src.dir" value="${root.dir}/src"/>
+	<property name="doc.dir" value="${root.dir}/doc"/> 
+	<property name="jarlib.dir" value="${root.dir}/jarlib"/>
+ 	<property name="build.dir" value="${root.dir}/build"/>
+ 	<property name="build.classes.dir" value="${build.dir}/classes"/>
+	<property name="apidocs.dir" location="${build.dir}/api-docs" />
+
+	<property name="cytoscape.dir" value="../cytoscape-2.5"/>
+	<property name="cytoscape.lib.dir" value = "${cytoscape.dir}/lib"/>
+	<property name="cytoscape.plugin.dir" value = "${cytoscape.dir}/plugins/core"/>
+
+	<!-- plugin definitions -->
+	<property name="plugin.name" value="${ant.project.name}" />
+	<property name="plugin.loc" value = "${build.dir}/${plugin.name}.jar"/>
+
+	<!-- compiler options -->
+	<property name="build.compiler" value="modern"/>
+	
+	<!-- classpath with all lib, cytoscape, and cytoscape lib classes -->
+	<path id="plugin.classpath">
+		<fileset dir="${jarlib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.plugin.dir}">
+			<include name="CytoscapeEditor.jar"/>
+		</fileset>
+	</path>
+
+  	<!-- Target to create the build directories prior to compilation -->
+  	<target name="prepare">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${build.classes.dir}"/>
+  	</target>
+
+	<!--  Target to clean out all directories -->
+  	<target name="clean" 
+	        description="Removes all generated jars, test, and class files. Leaves API docs.">
+		<!-- would be better to delete build.dir excluding the api-docs directory,
+	             but can't get that to work: -->
+		<delete dir="${build.classes.dir}" />
+		<delete dir="${plugin.loc}" />
+		<delete dir="${test.dir}" />
+  	</target>
+	
+	<target name="clean-docs" description="Remove all generated java API docs.">
+		<delete dir="${apidocs.dir}" />
+	</target>
+
+	<!--  Target to create the javadoc information -->
+	<target name="doc" 
+	        depends="clean-docs"> 
+		<mkdir dir="${apidocs.dir}"/>
+		<javadoc destdir="${apidocs.dir}" 
+		         classpathref="plugin.classpath"
+			 Windowtitle="${plugin.name} API Docs"
+		         header="${plugin.name}"
+		         Private="yes"> 
+ 		        <fileset dir="${src.dir}" defaultexcludes="no"/> 
+			<doctitle>${plugin.name} API Docs</doctitle>
+		</javadoc> 
+	</target>
+
+        
+	<!--  Target to compile all Plug In Code -->
+  	<target name="compile" 
+	        depends="prepare" 
+		description="compile all HyperEdgeEditor code.">
+                <javac debug="Yes" 
+		       srcdir="${src.dir}" 
+		       destdir="${build.classes.dir}"
+		       deprecation="true"
+		       classpathref="plugin.classpath"/>
+		<echo message="Finished compile." />
+	</target>
+  	
+	<!-- Copy needed files into ${build.classes.dir} for jaring and testing. -->
+	<target name="add-data-files">
+		<copy todir="${build.classes.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}" includes="cytoscape/hyperedge/editor/images/*.png" />
+		</copy>
+		<copy todir="${build.classes.dir}/cytoscape/hyperedge/editor" preservelastmodified="true" file="plugin.props" />
+	</target>
+
+	<!--  Create PlugIn Jar File -->
+   	<target name="jar" 
+	        depends="clean,compile,add-data-files" 
+	        description="Compile code and create ${plugin.name} jar.">
+		<unjar dest="${build.classes.dir}">
+			<fileset dir="${jarlib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+       		</unjar>
+		<jar destfile="${plugin.loc}">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" 
+				           value="cytoscape.hyperedge.editor.HyperEdgeEditorPlugin"/>
+			</manifest>
+			<fileset dir="${build.classes.dir}"/>
+		</jar>
+		<echo message="${plugin.loc} is now complete." />
+	</target>
+
+   	<target name="all" 
+	        depends="clean,jar,doc"/>
+</project>
