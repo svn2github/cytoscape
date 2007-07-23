@@ -2,7 +2,6 @@
 		<tr>
 			<td colspan="6" id="caption">
 				<h1>
-					Cytoscape:
 					<a href="http://cytoscape.org/index.php">
 						Home
 					</a>

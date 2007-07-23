@@ -5,6 +5,14 @@
 			<td width="120" id="first">
 				<h1>
 					<a href="<?= $latest_download_link?>">
+						About Cytoscape
+					</a>
+				</h1>
+				Cytoscape is an open source bioinformatics software platform for <b><i>visualizing</i></b> molecular interaction networks and <b><i>integrating</i></b> these interactions with gene expression profiles and other state data. <a href="features.php"><br><strong>Read more &raquo; </strong></a>
+			</td>
+			<td width="60">
+				<h1>
+					<a href="<?= $latest_download_link?>">
 						Download Cytoscape
 					</a>
 				</h1>
@@ -19,6 +27,9 @@
 						Java 1.5.0
 					</a>
 				</p>
+				<a href='<?= $latest_release_notes_link ?>'>
+            <?= $latest_version ?>
+            Release Notes &raquo; </a>
 			</td>
 			<td width="120">
 				<h1>
@@ -72,7 +83,7 @@
 				</p>
 				<p>
 					<a href="download_list.php#cvs">
-					Download Source from CVS</A>
+					Download Source from SVN</A>
 				</p>
 			</td>
 		</tr>

@@ -25,23 +25,13 @@
 	</div>
    <img src="images/logo.png"/>
 
-   <div class="about2">
-		Cytoscape is an open source bioinformatics software platform for <b><i>visualizing</i></b> molecular interaction networks and <b><i>integrating</i></b> these interactions with gene expression profiles and other state data. <a href="features.php"><br>Read more &raquo; </a>
-	</div>
    <div class="article">
 		<h2><a href='<?= $latest_download_link ?>'>Download Cytoscape
             <?= $latest_version ?>
             ! </a>
 		</h2>
-		New!&nbsp; Cytoscape
-            <?= $latest_version ?>
-            is now available. <br>
-            <a href='<?= $latest_release_notes_link ?>'>
-            <?= $latest_version ?>
-            Release Notes &raquo; </a> <br>
-            <a href='<?= $latest_download_link ?>'> Download &raquo; </a> <br>
-          <p>
-          <h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
+
+       <h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
           <a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a><br>
           <b>November 6<sup>th</sup>-9<sup>th</sup> 2007</b>
           <br>
