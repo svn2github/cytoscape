@@ -6,7 +6,7 @@ body {
 	color: #333333;
 	background-color: #ffffff;
 	min-width:800px;
-	max-width:1500px;
+	max-width:1900px;
 }
 
 
@@ -248,7 +248,7 @@ body {
 	text-decoration: underline;
 }
 .item .paragraph {
-max-width:450px:
+	max-width:550px:
 	float:left;
 	font-size: 12px;
 	margin: 10px;
@@ -322,7 +322,7 @@ a {
 }
 #rightbox .roundbox h2 {
 	font-size:14px;
-	
+	padding:0px;
 }
 
 #rightbox .roundbox h3 {
@@ -339,7 +339,7 @@ a {
 	content: "\00BB \0020";
 }
 .blue {
-	background-color: #F0F8FF;
+	background-color: #ECECEC;
 	border: 1px solid #CCE6FF;
 }
 .roundbox a {

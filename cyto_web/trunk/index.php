@@ -22,10 +22,10 @@
 <table summary="" cellspacing="0" cellpadding="0" border="0" id="feature">
   <tbody>
     <tr>
-      <td width="10">&nbsp;</td>
-      <td height="290" width="200" valign="top"><div id="about">
+      <td width="15">&nbsp;</td>
+      <td height="200" width="200" valign="top" align="center"><div id="about">
           <h1> Cytoscape </h1>
-          <img src="images/logo.png"/> </div></td>
+          <img src="images/logo.png" align="center"/> </div></td>
       <td width="200" valign="bottom"><div id="about2"> Cytoscape is an open source bioinformatics software platform for <b> <i> visualizing </i> </b> molecular interaction networks and <b> <i> integrating </i> </b> these interactions with gene expression profiles and other state data. <a href="features.php"> Read more &raquo; </a> </div></td>
       </td>
       <td valign="center" align="right"><div id="article">
@@ -116,7 +116,7 @@
       Hosted by the <a href="http://www.humangenetics-amc.nl" target="_blank">Human Genetics Department of the Academic Medical Center</a> in the vibrant historic city of <a href="/retreat2007/venue.php">Amsterdam</a>. </div>
   </div>
   <div class="item">
-    <h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.4.1 </h2>
+    <h2>Cytoscape 2.4.1</h2>
     <div class="paragraph"> No new features, but several bugs have been fixed. </div>
   </div>
   <div class="item">
@@ -211,6 +211,11 @@
         [<A HREF="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</A>] <br>
       <P> <br>
         <b> Note: </b> If you have a publication which makes use of Cytoscape, please let us know by sending an email to the <a href="http://groups-beta.google.com/group/cytoscape-discuss"> cytoscape-discuss </a> mailing list. 
+    </div>
+  </div>
+  <div class="item">
+    <div class="paragraph">
+      Past news articles are available <a href="past_news.php">here.</a>
     </div>
   </div>
 </div>
