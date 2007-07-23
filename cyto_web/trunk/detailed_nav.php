@@ -1,5 +1,5 @@
 <? include "config.php"; ?>
-<table cellspacing="0" cellpadding="2" border="0" summary="" id="links">
+<table cellspacing="0" cellpadding="2" border="0" summary="" id="links2">
 
 		<tr>
 			<td width="120" id="first">
