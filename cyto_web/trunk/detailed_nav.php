@@ -4,7 +4,7 @@
 		<tr>
 			<td width="120" id="first">
 				<h1>
-					<a href="<?= $latest_download_link?>">
+					<a href="features.php">
 						About Cytoscape
 					</a>
 				</h1>
@@ -36,7 +36,6 @@
 					<a href="tut/tutorial.php">
 						Online Tutorials
 					</a>
-					<IMG src="wiki/modern/img/moin-new.png">
 				</h1>
 				<p>
 					Get Started with the expanded Cytoscape <a href="tut/tutorial.php">online tutorials</a>.  Eight tutorials describe Cytoscape from basic operation to detailed plugin operation.

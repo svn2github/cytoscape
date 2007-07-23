@@ -35,7 +35,7 @@ $chianti_base = "http://chianti.ucsd.edu/";
 # including release notes and download links
 #################################################
 $latest_version = "2.5.0";
-$latest_release_notes_link = "cyto_2_5_0_features.php";
+$latest_release_notes_link = "cyto_2_5_features.php";
 $latest_download_link = "download.php?file=cyto2_5_0";
 $latest_manual_pdf = "manual/Cytoscape2_5Manual.pdf";
 $latest_manual_html = "manual/Cytoscape2_5Manual.html";

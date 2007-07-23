@@ -10,14 +10,10 @@
 	</head>
 
 	<body bgcolor="#FFFFFF">
-		<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
-			<tr>
-				<td width="10"></td>
-				<td valign="center">
-					<h1>Cytoscape 2.4 Release Notes</h1>
-				</td>
-			</tr>
-		</table>
+	<div id="topbar">
+	    <div class="title">Cytoscape 2.4 Release Notes</div>
+		</div>
+
 		<? include "nav.php"; ?>
 		<div id="indent">
 			<p>Cytoscape version 2.4 is the latest release of the open source bioinformatics software platform for visualizing general networks, especially for molecular interaction networks.  Cytoscape can integrating these networks with any attributes, such as gene expression profiles and other state data.</p>

@@ -30,6 +30,8 @@
             <?= $latest_version ?>
             ! </a>
 		</h2>
+		<a href='<?= $latest_release_notes_link ?>'> <?= $latest_version ?> Release Notes &raquo; </a>
+
 
        <h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
           <a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a><br>
