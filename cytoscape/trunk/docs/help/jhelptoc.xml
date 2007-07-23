@@ -8,7 +8,7 @@
       <tocitem target="Introduction" text="Introduction">
          <tocitem target="Development" text="Development"/>
          <tocitem target="License" text="License"/>
-         <tocitem target="What&#8217;s New in 2.4" text="What&#8217;s New in 2.4"/>
+         <tocitem target="What&#8217;s New in 2.5" text="What&#8217;s New in 2.5"/>
       </tocitem>
       <tocitem target="Launching Cytoscape" text="Launching Cytoscape">
          <tocitem target="System requirements" text="System requirements"/>
@@ -103,6 +103,7 @@
             <tocitem target="yFiles Hierarchical Layout" text="yFiles Hierarchical Layout"/>
             <tocitem target="yFiles Organic Layout" text="yFiles Organic Layout"/>
          </tocitem>
+         <tocitem target="Layout Parameters" text="Layout Parameters"/>
          <tocitem target="Manual Layout" text="Manual Layout">
             <tocitem target="Rotate" text="Rotate"/>
             <tocitem target="Scale" text="Scale"/>
@@ -126,15 +127,21 @@
             <tocitem target="Editing Discrete Mappings" text="Editing Discrete Mappings">
                <tocitem target="Automatic Value Generators" text="Automatic Value Generators"/>
                <tocitem target="Edit Selected Values at Once" text="Edit Selected Values at Once"/>
+               <tocitem target="Lock Node Width/Height" text="Lock Node Width/Height"/>
             </tocitem>
-            <tocitem target="Working with Continuous Mapping Editors" text="Working with Continuous Mapping Editors"/>
+            <tocitem target="Working with Continuous Mapping Editors" text="Working with Continuous Mapping Editors">
+               <tocitem target="Range Setting Panel" text="Range Setting Panel"/>
+               <tocitem target="Gradient Editor" text="Gradient Editor"/>
+               <tocitem target="Continuous-Continuous Editor" text="Continuous-Continuous Editor"/>
+               <tocitem target="Continuous-Discrete Editor" text="Continuous-Discrete Editor"/>
+            </tocitem>
          </tocitem>
          <tocitem target="Managing Visual Styles" text="Managing Visual Styles">
             <tocitem target="Saving Visual Styles" text="Saving Visual Styles"/>
             <tocitem target="Importing Visual Styles" text="Importing Visual Styles"/>
             <tocitem target="Default Visual Styles" text="Default Visual Styles"/>
-            <tocitem target="Bypassing Visual Styles" text="Bypassing Visual Styles"/>
          </tocitem>
+         <tocitem target="Bypassing Visual Styles" text="Bypassing Visual Styles"/>
       </tocitem>
       <tocitem target="Finding and Filtering Nodes and Edges" text="Finding and Filtering Nodes and Edges">
          <tocitem target="QuickFind" text="QuickFind">
@@ -181,12 +188,16 @@
             <tocitem target="Visualize and Browse Ontology DAG (for Advanced Users)" text="Visualize and Browse Ontology DAG (for Advanced Users)"/>
             <tocitem target="Gene Association File" text="Gene Association File"/>
          </tocitem>
+         <tocitem target="Node Name Mapping" text="Node Name Mapping">
+            <tocitem target="Import Network and Name Mapping Files" text="Import Network and Name Mapping Files"/>
+         </tocitem>
          <tocitem target="Import Ontology and Annotation" text="Import Ontology and Annotation">
             <tocitem target="Import Gene Ontology and Gene Association Files" text="Import Gene Ontology and Gene Association Files">
                <tocitem target="Step 1. Select an Annotation File" text="Step 1. Select an Annotation File"/>
                <tocitem target="Step 2. Select an Ontology File" text="Step 2. Select an Ontology File"/>
                <tocitem target="Step 3. Import the files" text="Step 3. Import the files"/>
                <tocitem target="Step 4." text="Step 4."/>
+               <tocitem target="Note: Switching Primary Key for Go Annotation Import" text="Note: Switching Primary Key for Go Annotation Import"/>
             </tocitem>
          </tocitem>
          <tocitem target="Custom Annotation Files for Ontologies Other than GO (for Advanced Users)" text="Custom Annotation Files for Ontologies Other than GO (for Advanced Users)"/>

@@ -8,7 +8,7 @@
    <mapID target="Introduction" url="ar01s02.html"/>
    <mapID target="Development" url="ar01s02.html#Development"/>
    <mapID target="License" url="ar01s02.html#License"/>
-   <mapID target="What&#8217;s New in 2.4" url="ar01s02.html#What&#8217;s New in 2.4"/>
+   <mapID target="What&#8217;s New in 2.5" url="ar01s02.html#What&#8217;s New in 2.5"/>
    <mapID target="Launching Cytoscape" url="ar01s03.html"/>
    <mapID target="System requirements" url="ar01s03.html#System requirements"/>
    <mapID target="Getting Started" url="ar01s03.html#Getting Started"/>
@@ -87,6 +87,7 @@
    <mapID target="yFiles Circular Layout" url="ar01s11.html#yFiles Circular Layout"/>
    <mapID target="yFiles Hierarchical Layout" url="ar01s11.html#yFiles Hierarchical Layout"/>
    <mapID target="yFiles Organic Layout" url="ar01s11.html#yFiles Organic Layout"/>
+   <mapID target="Layout Parameters" url="ar01s11.html#Layout Parameters"/>
    <mapID target="Manual Layout" url="ar01s11.html#Manual Layout"/>
    <mapID target="Rotate" url="ar01s11.html#Rotate"/>
    <mapID target="Scale" url="ar01s11.html#Scale"/>
@@ -107,7 +108,12 @@
    <mapID target="Editing Discrete Mappings" url="ar01s12.html#Editing Discrete Mappings"/>
    <mapID target="Automatic Value Generators" url="ar01s12.html#Automatic Value Generators"/>
    <mapID target="Edit Selected Values at Once" url="ar01s12.html#Edit Selected Values at Once"/>
+   <mapID target="Lock Node Width/Height" url="ar01s12.html#Lock Node Width/Height"/>
    <mapID target="Working with Continuous Mapping Editors" url="ar01s12.html#Working with Continuous Mapping Editors"/>
+   <mapID target="Range Setting Panel" url="ar01s12.html#Range Setting Panel"/>
+   <mapID target="Gradient Editor" url="ar01s12.html#Gradient Editor"/>
+   <mapID target="Continuous-Continuous Editor" url="ar01s12.html#Continuous-Continuous Editor"/>
+   <mapID target="Continuous-Discrete Editor" url="ar01s12.html#Continuous-Discrete Editor"/>
    <mapID target="Managing Visual Styles" url="ar01s12.html#Managing Visual Styles"/>
    <mapID target="Saving Visual Styles" url="ar01s12.html#Saving Visual Styles"/>
    <mapID target="Importing Visual Styles" url="ar01s12.html#Importing Visual Styles"/>
@@ -150,12 +156,15 @@
    <mapID target="Default List of Ontologies" url="ar01s18.html#Default List of Ontologies"/>
    <mapID target="Visualize and Browse Ontology DAG (for Advanced Users)" url="ar01s18.html#Visualize and Browse Ontology DAG (for Advanced Users)"/>
    <mapID target="Gene Association File" url="ar01s18.html#Gene Association File"/>
+   <mapID target="Node Name Mapping" url="ar01s18.html#Node Name Mapping"/>
+   <mapID target="Import Network and Name Mapping Files" url="ar01s18.html#Import Network and Name Mapping Files"/>
    <mapID target="Import Ontology and Annotation" url="ar01s18.html#Import Ontology and Annotation"/>
    <mapID target="Import Gene Ontology and Gene Association Files" url="ar01s18.html#Import Gene Ontology and Gene Association Files"/>
    <mapID target="Step 1. Select an Annotation File" url="ar01s18.html#Step 1. Select an Annotation File"/>
    <mapID target="Step 2. Select an Ontology File" url="ar01s18.html#Step 2. Select an Ontology File"/>
    <mapID target="Step 3. Import the files" url="ar01s18.html#Step 3. Import the files"/>
    <mapID target="Step 4." url="ar01s18.html#Step 4."/>
+   <mapID target="Note: Switching Primary Key for Go Annotation Import" url="ar01s18.html#Note: Switching Primary Key for Go Annotation Import"/>
    <mapID target="Custom Annotation Files for Ontologies Other than GO (for Advanced Users)" url="ar01s18.html#Custom Annotation Files for Ontologies Other than GO (for Advanced Users)"/>
    <mapID target="Linkout" url="ar01s19.html"/>
    <mapID target="Adding or Removing Links" url="ar01s19.html#Adding or Removing Links"/>
