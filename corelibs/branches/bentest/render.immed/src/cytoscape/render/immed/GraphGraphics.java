@@ -205,6 +205,11 @@ public final class GraphGraphics {
 
 	private static final double DEF_SHAPE_SIZE = 32;
 
+	/*
+	 * Color used to clear away any previous drawing to image
+	 */
+	private static final Color clearColor = new Color(0,0,0,0);
+
 	/**
 	 * The image that was passed into the constructor.
 	 */
@@ -299,6 +304,23 @@ public final class GraphGraphics {
 	}
 
 	/**
+	 * Clears image area with black background paint and complete translucency,
+	 * so when GraphRenderer.renderGraph() is called (and subsequent call to
+	 * clear (final Paint bgPaint, final double xCenter, final double yCenter, final double scaleFactor))
+	 * the inner canvas will be properly rendered on top of canvases lower in the z order.
+	 *
+	 * This method uses SRC alpha composite to blow-away any previous rendering on image context.
+	 */
+	public final void clear() {
+		Graphics2D image2D = (Graphics2D) image.getGraphics();
+		final Composite origComposite = image2D.getComposite();
+		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		image2D.setPaint(clearColor);
+		image2D.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+		image2D.setComposite(origComposite);
+	}
+
+	/**
 	 * Clears image area with background paint specified and sets an appropriate
 	 * transformation of coordinate systems. See the class description for a
 	 * definition of the two coordinate systems: the node coordinate system and
@@ -363,7 +385,7 @@ public final class GraphGraphics {
 		m_g2d = (Graphics2D) image.getGraphics();
 
 		final Composite origComposite = m_g2d.getComposite();
-		m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		m_g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		m_g2d.setPaint(bgPaint);
 		m_g2d.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
 		m_g2d.setComposite(origComposite);
