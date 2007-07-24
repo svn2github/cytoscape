@@ -167,15 +167,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	private Vector transferComponents = new Vector();
 
-	/**
-	 * The collection of objects
-	 * listening for innercanvas events.
-	 * Events supported on this vector:
-	 *
-	 * event fired when network rendering is complete
-	 */
-	private Vector innerCanvasListeners = new Vector();
-
 	//       AJK: 04/02/06 END
 	// AJK: 04/27/06 for context menus
 
@@ -309,9 +300,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (lis != null)
 				lis.viewportChanged(getWidth(), getHeight(), xCenter, yCenter, scaleFactor);
 		}
-
-		// let our listeners know of the update
-		notifyNetworkUpdateComplete();
 	}
 
 	/**
@@ -1389,26 +1377,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return m_lastRenderDetail;
 	}
 
-	/**
-	 * Called to add an inner canvas listener.
-	 */
-	public synchronized void addInnerCanvasListener(InnerCanvasListener l) {
-		// add a listener if it is not already registered
-		if (!innerCanvasListeners.contains(l)) {
-			innerCanvasListeners.addElement(l);
-		}
-	}
-
-	/**
-	 * Called to remove an inner canvas listener.
-	 */
-	public synchronized void removeInnerCanvasListener(InnerCanvasListener l) {
-		// remove it if it is registered
-		if (innerCanvasListeners.contains(l)) {
-			innerCanvasListeners.removeElement(l);
-		}
-	}
-
 	// AJK: 01/14/2007 BEGIN
 	/**
 	 *  DOCUMENT ME!
@@ -1438,30 +1406,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public AffineTransform getAffineTransform() {
 		return (m_grafx != null) ? m_grafx.getTransform() : null;
-	}
-
-	/**
-	 * Called to notify our listeners when network has been updated.
-	 */
-	private void notifyNetworkUpdateComplete() {
-		// create the event object
-		InnerCanvasEvent evt = new InnerCanvasEvent(this);
-
-		// make a copy of the listener object vector so that it cannot
-		// be changed while we are firing events
-		Vector v;
-
-		synchronized (this) {
-			v = (Vector) innerCanvasListeners.clone();
-		}
-
-		// fire the event to all listeners
-		int cnt = v.size();
-
-		for (int i = 0; i < cnt; i++) {
-			InnerCanvasListener client = (InnerCanvasListener) v.elementAt(i);
-			client.innerCanvasUpdate(evt);
-		}
 	}
 
 	/**
