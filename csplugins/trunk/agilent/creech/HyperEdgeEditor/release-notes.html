@@ -1,0 +1,247 @@
+<HTML>
+<HEAD>
+<TITLE>HyperEdgeEditor Release Notes (version 2.54)</TITLE>
+</HEAD>
+<BODY>
+
+<H1>HyperEdgeEditor Release Notes (version 2.54)</H1>
+<OL>
+<LI>Updated BioChemicalReaction visual style to create tooltips for
+edges that are the edgeIDs.
+<P><LI>Changed sample HyperEdge networks to use force-directed layout
+for their initial presentation.
+<P><LI>Updated code for Cytoscape CyLayouts.getLayout() API change.
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>HyperEdgeEditor Release Notes (version 2.53)</H2>
+<OL>
+<LI>Updated for use with new Cytoscape PluginManager that now uses a
+plugin.props file and removed no longer used
+HyperEdgeEditorPlugin.getPluginInfoObject().
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 2.52)</H2>
+<OL>
+<LI>Updated LitSearchPlugin.getPluginInfoObject() for changes to the
+PluginManager.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 2.51)</H2>
+<OL>
+<LI>Moved HyperEdgeEditor from cytoscape.editor.editors package to
+com.agilent.labs.hyperedge.editor package.
+<P>Now all HyperEdgeEditor code is in the same package structure.
+</OL>
+<H2>HyperEdgeEditor Release Notes (version 2.50)</H2>
+<OL>
+<LI>Updated code to use new Cytoscape 2.5 VizMap API.
+<P><LI>Patched infinite loop bug when sessions in BioChemicalReaction are
+    opened after being in BioChemicalReaction within an existing network.
+<P><LI>Fixed bug where delete popup menu and delete key would not remove
+all ConnectorNodes.
+<P>Needed to call HyperEdgeManager.hideConnectorNodes().
+<P><LI>Made HyperEdgeEditor be a good citizen for the Cytoscape PluginManager.
+<P> Added HyperEdgeEditorPlugin.getPluginInfoObject().
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 2.4 beta 1)</H2>
+<OL>
+<LI>Removed IllegalArgumentException when attempting to
+drop an edge palette entry with a ConnectorNode source and HyperEdge
+edge target.
+<P><LI>Added handling of dropping an edge palette entry with regular node
+source and shared edge target.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 2.4 alfa 1)</H2>
+<OL>
+<LI>Commented out various debugging statements.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.09)</H2>
+<OL>
+
+<LI>Changed edge palette entry drop on a HyperEdge edge or a regular edge
+(droppedOnEdge) to always use EdgeTypeMap.SUBSTRATE for the
+interaction type of the source of droppedOnEdge.
+
+<P><LI>Changed to present message dialog when attempt is made to connect two
+HyperEdges and one exists in multiple CyNetworks.
+
+<P><LI>Fixed the direction of edges added in between two HyperEdge
+ConnectorNodes.
+
+<P><LI>Fixed NullPointerException when attempting to drop an edge on
+an edge shared within two HyperEdges.
+
+<P>Now presents message dialog to user.
+
+<P><LI>Changed reference to addReaction.gif-->addReaction.png in
+generateHyperEdgePaletteEntries().
+
+<P><LI>Change to build.xml file for gathering image files.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.08)</H2>
+<OL>
+<LI>Changed initialization of the HyperEdgeEditor plugin to replace the
+CytoscapeEditor DeleteAction ("Delete Selected Nodes and Edges")
+with our wrapper version to handle correct deletion of HyperEdges.
+
+<P><LI>Replaced popup menu items for deleting nodes and edges to use
+special HyperEdgeEditor versions.
+
+<P>This is part of a delayed node hiding solution to updating
+HyperEdges when Cytoscape nodes and edges are hidden.  Overrode
+addNodeContextMenuItems() and addEdgeContextMenuItems() from
+BasicCytoscapeEditor to add custom popup delete menu items.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.07)</H2>
+<OL>
+<LI>Updated icons used for palette items Add Reaction, Add Product,
+Add Substrate, Add Inhibiting Mediator, and Add Activating Mediator.
+<P><LI>Renamed "Reaction" to "Add Reaction" and moved to front of
+ reaction palette entries.
+<P><LI>Added VERSION constant.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.06)</H2>
+
+<OL>
+<LI>Added intelligent setting of the drag cursor for HyperEdgeEditor-specific
+palette entries so that the cursor shows you can't perform a drop operation unless you are on a ConnectorNode.
+<P>Updated to use CytoscapeEditor DragSourceContextCursorSetters and
+created new HyperEdgePaletteItemDragCursorSetter.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.05)</H2>
+<OL>
+
+<P><LI>Added basic Node & Edge creation ability to HyperEdgeEditor.
+
+<P>Dropping an Edge palette entry on a ConnectorNode will add an Edge
+to a HyperEdge. 
+
+<P><LI>Added ability to drop an edge palette entry on an edge in the
+canvas.
+
+<P> When an edge palette item is dragged onto a Node (source) and then the
+     rubberband edge is dropped on another Edge (target), this deletes the
+     first target Edge and replaces with a new HyperEdge with three other
+     Edges. For example, if we have:
+<PRE>
+       A--->B
+       C--->D
+</PRE>
+     If we drop an edge palette item onto C (source) and then onto the
+     edge in between A & B (target), then this creates:
+<PRE>
+        A---.-->B
+            ^
+            |
+            C
+</PRE>
+     This may lead to a HyperEdge-HyperEdge connection if the edge
+     dropped onto is a HyperEdge edge. For example, if we drop an edge
+     palette item onto M2 (source) and then onto the edge in between
+     M1 and the ConnectorNode in:
+<PRE>
+        S--.-->P
+           ^      M2
+           |
+           M1
+     Then we would get:
+
+        S--.-->P
+           ^
+           |
+           .<----M2
+           ^
+           |
+           M1
+</PRE>
+
+<P><LI>Added ability to drop an edge palette entry on an edge on the
+canvas.
+
+<P><LI> Added ability to delete a HyperEdge
+
+<P> Added two popup menu items for deleting a HyperEdge
+         from current network and from all networks. 
+
+<P><LI> Added ability to select a HyperEdge
+
+<P> Right-click on a ConnectorNode, to get popup menu item
+    "HyperEdge->Select" This ignores selected nodes/edges--only works
+    on the ConnectorNode that was right-clicked on. Actually selects
+    the ConnectorNode and edges but not nodes that are part of the
+    HyperEdge. Places HyperEdge on a "clipboard" for future use.
+    Previous selections are unselected.
+
+<P><LI>Changed to use new CytoscapeEditor palette generator for
+       creating HyperEdgeEditor palette.
+
+<P><LI> Fixed translation bug where drop location is screen coordinates
+      versus canvas coordinates.
+
+<P><LI>Added popup menu item "HyperEdge" which is a submenu with Select
+      and Delete menu items. Delete is itself a submenu with "Delete
+      From This Network" and "Delete From All Networks" menu items.
+
+<P><LI> Ensure initial vismap display of networks to be correct (same as
+      minimizing and then maximizing the network window, which does the
+      right thing).
+
+<P><LI> Added tooltips to nodes and edges.
+
+<P><LI>Fixed bug in BioChemicalReactionVisualStyle with using read in visual properties.
+
+<P><LI>Changed BioChemicalReactionVisualStyle to use new controlling
+attributes: Semantics.INTERACTION for Edges and
+HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME for Nodes.
+
+<P>This uses newly generated attributes in HyperEdge 2.4.
+
+<P><LI>Patched HyperEdgeEditor to work when loaded before CytoscapeEditor.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.04)</H2>
+<OL>
+<LI>Added sample networks (migrated from HyperEdge).
+
+<P>These are currently available off the Cytoscape
+File->Import->HyperEdge Sample Networks menu.
+
+<P><LI>Refactored and updated BioChemicalReaction visual style to use
+    undeprecated API for Cytoscape 2.4.
+    
+<P><LI>Updated for use with HyperEdge 2.4 alfa 2.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.03)</H2>
+<OL>
+<LI>Updated for use with HyperEdge 2.4 alfa 1.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.02)</H2>
+<OL>
+<LI>Updated for use with HyperEdge 2.1.1.
+</OL>
+
+<H2>HyperEdgeEditor Release Notes (version 0.01)</H2>
+
+An initial version of a HyperEdge Editor. The Editor appears off the
+Editor tab of CytoPanel 1 when the visual style is
+BioChemicalReaction.
+
+<P>The jar representing the HyperEdgeEditor is called HyperEdgeEditor.jar.
+
+
+<HR>
+<SMALL><EM>This page was last updated: 07/16/07</EM></SMALL>
+
+</BODY>
+</HTML>
