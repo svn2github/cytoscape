@@ -308,8 +308,10 @@ public class DGraphView implements GraphView, Printable {
 		m_networkCanvas = new InnerCanvas(m_lock, this);
 		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
 		                                                 Color.white, true, true);
+		addViewportChangeListener(m_backgroundCanvas);
 		m_foregroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
 		                                                 Color.white, true, false);
+		addViewportChangeListener(m_foregroundCanvas);
 		m_selectedNodes = new IntBTree();
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
