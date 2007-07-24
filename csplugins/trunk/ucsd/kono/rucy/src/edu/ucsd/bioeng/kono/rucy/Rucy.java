@@ -23,9 +23,6 @@ public class Rucy {
 				new String[] { ENGINE_NAME });
 
 
-//		final Object obj = bsfmgr.eval(ENGINE_NAME, scriptFileName, 1, 1, IOUtils
-//				.getStringFromReader(new FileReader(scriptFileName)));
-		
 		bsfmgr.declareBean("arguments", arguments, HashMap.class);
 		final Object returnVal = bsfmgr.eval(ENGINE_NAME, scriptFileName, 1, 1, IOUtils
 				.getStringFromReader(new FileReader(scriptFileName)));
