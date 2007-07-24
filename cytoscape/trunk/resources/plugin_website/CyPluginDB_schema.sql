@@ -50,6 +50,7 @@ CREATE TABLE plugin_files (
 CREATE TABLE plugin_list (
   plugin_auto_id int(11) NOT NULL auto_increment,
   name varchar(100) NOT NULL,
+  unique_id	int,
   description text,
   license text,
   license_required varchar(3) default NULL,
