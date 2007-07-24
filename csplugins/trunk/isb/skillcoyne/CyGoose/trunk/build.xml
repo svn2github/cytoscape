@@ -73,6 +73,10 @@
 		</jar>
 	</target>
 
+	<target name="copyJar" depends="jar" description="Copy to Cytocape project">
+		<copy todir="${cytoscape.dir}/plugins/core" file="${build.dir}/${jar.file}"/>
+	</target>
+	
 	<target name="signJar" depends="jar" description="Sign jar file">
 		<!-- Important to use same keypass information as used for signing cytoscape -->
 		<signjar alias="cytoscape" storepass="secret" jar="${build.dir}/${jar.file}"/>
