@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue Jul 05 11:44:41 2005
-* Modified:     Fri May 11 16:58:53 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Mon Jul 23 19:25:16 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,12 @@
 *
 * Revisions:
 *
+* Mon Jul 23 19:24:02 2007 (Michael L. Creech) creech@w235krbza760
+*  Fixed NPE bug in register() where CytoscapeEditorManager.log() statements
+*  were being called without null pointer check.
+* Fri Jul 20 08:36:25 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed use of _initialized and simplified to assume CytoscapeEditor
+*  is always loaded before any other editor. Added getDeleteAction().
 * Fri May 11 16:58:47 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed unneeded imports.
 * Wed Dec 27 09:03:24 2006 (Michael L. Creech) creech@w235krbza760
@@ -78,8 +84,6 @@ import ding.view.DGraphView.Canvas;
  *
  */
 public abstract class CytoscapeEditorManager {
-	// MLC 07/26/06:
-	// TODO: ALL THESE VARIABLES SHOULD BE PRIVATE.
 	/**
 	 * holding area for deleted nodes used when undo-ing deletes.
 	 */
@@ -109,8 +113,9 @@ public abstract class CytoscapeEditorManager {
 	 * references, e.g. a Swing PropertyChangeListener
 	 */
 
-	// MLC 12/27/06 - This should NOT be public--make a get method for it:
-	public static CytoscapeEditorManagerSupport manager;
+	// // MLC 12/27/06 - This should NOT be public--make a get method for it:
+	// public static CytoscapeEditorManagerSupport manager;
+	private static CytoscapeEditorManagerSupport manager;
 
 	/**
 	 * pointer to currently active editor
@@ -244,8 +249,8 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static final String CYTOSCAPE_EDITOR = "cytoscape.editor";
 
-	// MLC 07/24/06:
-	private static boolean _initialized = false;
+        // MLC 07/20/07:
+        // private static boolean _initialized = false;
 
 	// AJK: 12/06/06: flag for "logging" diagnostic output
 	private static boolean loggingEnabled = false;
@@ -255,29 +260,35 @@ public abstract class CytoscapeEditorManager {
 	 * accelerators
 	 *
 	 */
-	public static void initialize() {
-		// MLC 12/27/06 BEGIN:
-		DeleteAction delete = new DeleteAction();
-		manager = new CytoscapeEditorManagerSupport(delete);
-
-		// MLC 12/27/06 END.
-		NewNetworkAction newNetwork = new NewNetworkAction("Empty Network",
-		                                                   CytoscapeEditorFactory.INSTANCE);
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New");
-		Cytoscape.getDesktop().getCyMenus().addAction(newNetwork);
-
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New").setEnabled(true);
-
-		// MLC 12/27/06:
-		// DeleteAction delete = new DeleteAction();
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit");
-		Cytoscape.getDesktop().getCyMenus().addAction(delete);
-
-		ShapePalette shapePalette = new ShapePalette();
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Editor", shapePalette);
-		// MLC 07/24/06:
-		_initialized = true;
+        // MLC 07/20/07 BEGIN:
+        // public static void initialize() {
+        protected static void initialize() {
+	    CytoscapeEditorManager.setRunningEditorFramework(true);
+	    CytoscapeEditorManager.setEditingEnabled(true);
+	    // MLC 07/20/07 END.
+	    DeleteAction delete = new DeleteAction();
+	    manager = new CytoscapeEditorManagerSupport(delete);
+	    System.out.println ("CEM. initialize, manager delete action = " +
+				manager.getDeleteAction());
+	    // MLC 12/27/06 END.
+	    NewNetworkAction newNetwork = new NewNetworkAction("Empty Network",
+							       CytoscapeEditorFactory.INSTANCE);
+	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New");
+	    Cytoscape.getDesktop().getCyMenus().addAction(newNetwork);
+	    
+	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New").setEnabled(true);
+	    
+	    // MLC 12/27/06:
+	    // DeleteAction delete = new DeleteAction();
+	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit");
+	    Cytoscape.getDesktop().getCyMenus().addAction(delete);
+	    
+	    ShapePalette shapePalette = new ShapePalette();
+	    Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Editor", shapePalette);
+	    // MLC 07/20/07:
+	    // _initialized = true;
 	}
+
 
 	/**
 	 * initialize the editor as a side-effect of registering it.
@@ -473,12 +484,14 @@ public abstract class CytoscapeEditorManager {
 	public static void register(String editorName, String networkEditAdapterName,
 	                            String controllingNodeAttribute, String controllingEdgeAttribute,
 	                            String visualStyleName) {
-		// MLC 07/24/06 BEGIN:
-		if (!_initialized) {
-			initialize();
-		}
-
-		CytoscapeEditorManager.log("Putting " + visualStyleName + " --> " + editorName);
+	    // MLC 07/19/07 BEGIN:
+	    // ASSUME: We have been initialized() before register() is ever called.
+	    System.out.println ("BEGIN CEM.register()");
+	    // if (!_initialized) {
+	    //    initialize();
+	    // }
+	    // MLC 07/19/07 END.
+	        CytoscapeEditorManager.log("Putting " + visualStyleName + " --> " + editorName);
 		visualStyleNameToEditorNameMap.put(visualStyleName, editorName);
 
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.initializeEditor(editorName,
@@ -492,11 +505,15 @@ public abstract class CytoscapeEditorManager {
 			                           + controllingEdgeAttribute);
 			cyEditor.setControllingNodeAttribute(controllingNodeAttribute);
 			cyEditor.setControllingEdgeAttribute(controllingEdgeAttribute);
+			// MLC 07/23/07 BEGIN:
+			CytoscapeEditorManager.log("now controlling attributes for editor " + cyEditor);
+			CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute() + " and "
+						   + cyEditor.getControllingEdgeAttribute());
 		}
-
-		CytoscapeEditorManager.log("now controlling attributes for editor " + cyEditor);
-		CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute() + " and "
-		                           + cyEditor.getControllingEdgeAttribute());
+		//		CytoscapeEditorManager.log("now controlling attributes for editor " + cyEditor);
+		//		CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute() + " and "
+		//		                           + cyEditor.getControllingEdgeAttribute());
+		// MLC 07/23/07 END.
 	}
 
 	// MLC 08/06/06 BEGIN:
@@ -828,6 +845,16 @@ public abstract class CytoscapeEditorManager {
 	public static CytoscapeEditor getCurrentEditor() {
 		return currentEditor;
 	}
+
+    // MLC 07/20/07 BEGIN:
+    /**
+     * Return the DeleteAction associated with this CytoscapeEditorManager.
+     */
+     
+	public static DeleteAction getDeleteAction() {
+	    return manager.getDeleteAction();
+	}
+    // MLC 07/20/07 END.
 
 	/**
 	 * @param currentEditor
