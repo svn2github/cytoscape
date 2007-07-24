@@ -80,6 +80,6 @@ public class DeselectAllAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
+        enableForNetwork();
     }
 }

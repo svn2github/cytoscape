@@ -85,17 +85,21 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork origNet = Cytoscape.getCurrentNetwork();
-		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
-		VisualStyle vs = origView.getVisualStyle();
-		String viewName = CytoscapeInit.getProperties().getProperty("defaultVisualStyle"); 
-		if ( vs != null )
-			viewName = vs.getName();
-
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
 		                                                origNet.getEdgeIndicesArray(),
 		                                                origNet.getTitle() + " copy", 
 														null,
 														true);
+
+		// only clone the view if one actually exists
+		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
+		if ( origView == null || origView == Cytoscape.getNullNetworkView() )
+			return;
+
+		VisualStyle vs = origView.getVisualStyle();
+		String viewName = CytoscapeInit.getProperties().getProperty("defaultVisualStyle"); 
+		if ( vs != null )
+			viewName = vs.getName();
 
 		CyNetworkView newView = Cytoscape.getNetworkView(new_network.getIdentifier());
 		if ( newView != null || newView != Cytoscape.getNullNetworkView() ) {
@@ -134,6 +138,6 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		enableForNetworkAndView();
+		enableForNetwork();
 	}
 }

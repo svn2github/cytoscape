@@ -93,6 +93,6 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	} // actionPerformed
 
     public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
+        enableForNetwork();
     }
 }

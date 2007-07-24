@@ -81,6 +81,6 @@ public class DeSelectAllNodesAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
+        enableForNetwork();
     }
 }

@@ -107,14 +107,8 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 			return;
 		}
 
-        CyNetworkView v = Cytoscape.getCurrentNetworkView();
-        if ( v == null || v == Cytoscape.getNullNetworkView() ) {
-           	setEnabled(false); 
-			return;	
-		}
-
-        java.util.List edges = v.getSelectedEdges();
-        java.util.List nodes = v.getSelectedNodes();
+        java.util.Set edges = n.getSelectedEdges();
+        java.util.Set nodes = n.getSelectedNodes();
 
         if ( ( nodes != null && nodes.size() > 0 ) ||
              ( edges != null && edges.size() > 0 ) )
