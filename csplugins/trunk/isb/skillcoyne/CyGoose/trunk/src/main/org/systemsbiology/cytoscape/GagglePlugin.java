@@ -80,7 +80,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 			createDefaultGoose();
 			updateAction();
 			registered = true;
-			renameGoose.run();
+			//renameGoose.run();
 			}
 		catch (Exception E)
 			{ // TODO add error message text area to goose panel and stop popping error box up
@@ -233,7 +233,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 					createDefaultGoose();
 					updateAction();
 					registered = true;
-					renameGoose.run();
+					//renameGoose.run();
 					// todo want to be able to update all the networks/geese here since user 
 					// may have opened some prior to connection
 					}
@@ -434,7 +434,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 			while (registered)
 				{
 				rr.run();
-				try { this.wait(1000); }
+				try { wait(1000); }
 				catch (Exception E) { E.printStackTrace(); System.exit(0); }
 				}
 			}

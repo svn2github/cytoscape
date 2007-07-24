@@ -25,8 +25,8 @@ import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
-import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+
 
 import giny.model.Node;
 import giny.model.Edge;
@@ -376,7 +376,7 @@ public class CyGoose implements Goose
 	 * If this is broadcast to a network goose interactions are added to the network
 	 * and all added interactions and matching interactions are selected.
 	 */
-	public void handleNetwork(String species, Network network) throws RemoteException
+	public void handleNetwork(String species, Network gNetwork) throws RemoteException
 		{
     print("handleNetwork(String, Network, CyNetwork)");
     // create a network if none exists
@@ -386,22 +386,17 @@ public class CyGoose implements Goose
     	{ 
     	System.out.println("  --Null network");
     	CyNetwork NewNet = Cytoscape.createNetwork("Gaggle "+species, false);
-    	handleNetwork(species, network, NewNet, false); 
-    	// basic layout
-    	for (LayoutAlgorithm la: CyLayouts.getAllLayouts())
-    		{
-    		System.out.println("Layout: " + la.getName());
-    		}
-    	
-    	LayoutAlgorithm Layout = CyLayouts.getDefaultLayout();
-    	Cytoscape.createNetworkView(NewNet, NewNet.getTitle(), Layout);
+    	handleNetwork(species, gNetwork, NewNet, false); 
+
+    	// basic layout 
+    	Cytoscape.createNetworkView(NewNet, NewNet.getTitle(), CyLayouts.getDefaultLayout());
     	
     	NetworkId = NewNet.getIdentifier();
     	}
 		else 
 			{ 
 			System.out.println("  --Network " + this.getNetworkId());
-			handleNetwork(species, network, Cytoscape.getNetwork(this.getNetworkId()), true); 
+			handleNetwork(species, gNetwork, Cytoscape.getNetwork(this.getNetworkId()), true); 
 			NetworkId = getNetworkId();
 			}
     // refresh network to flag selected nodes
@@ -433,6 +428,8 @@ public class CyGoose implements Goose
     	CyNet.addNode(NewNode);
     	CyNet.setSelectedNodeState(NewNode, SelectNodes);
     	}
+    addAttributes(GaggleNet, NetworkObject.NODE);
+
     
     for (Interaction CurrentInteraction: GaggleNet.getInteractions())
       {
@@ -457,6 +454,7 @@ public class CyGoose implements Goose
       if (!CyNet.containsEdge(selectEdge)) CyNet.addEdge(selectEdge);
       edgeCollection.add(selectEdge);
       }
+    addAttributes(GaggleNet, NetworkObject.EDGE);
 
     // flag all selected nodes & edges
 		if (SelectNodes)
@@ -468,6 +466,50 @@ public class CyGoose implements Goose
 
 		}
 
+	// TODO handle both node and edge atts from gaggle network
+	private void addAttributes(Network gNet, NetworkObject obj)
+		{
+		System.out.println("Adding attributes");
+    switch (obj)
+	    {
+	    case NODE:
+			System.out.println("Adding NODE attributes");
+		    for (String att: gNet.getNodeAttributeNames())
+					{
+					HashMap<String, Object> Attributes = gNet.getNodeAttributes(att);
+					for (String nodeName : Attributes.keySet())
+						setAttribute(Cytoscape.getNodeAttributes(), nodeName, att, Attributes.get(nodeName));
+					}
+			  break;
+
+	    case EDGE:
+			System.out.println("Adding EDGE attributes");
+		    for (String att: gNet.getEdgeAttributeNames())
+					{
+					HashMap<String, Object> Attributes = gNet.getEdgeAttributes(att);
+					for (String edgeName : Attributes.keySet())
+						setAttribute(Cytoscape.getEdgeAttributes(), edgeName, att, Attributes.get(edgeName));
+					}
+	    	break;
+	    };
+		}
+
+	
+	private void setAttribute(CyAttributes cyAtts, String networkObjId, String attributeName, Object attributeValue)
+		{
+		//System.out.println("Setting attribute name '" + attributeName + "' to '" + attributeValue + "' on network object '" + networkObjId + "'");
+		if (attributeValue.getClass().equals(java.lang.String.class))
+			cyAtts.setAttribute(networkObjId, attributeName, (String)attributeValue);
+
+		else if (attributeValue.getClass().equals(Integer.class))
+			cyAtts.setAttribute(networkObjId, attributeName, (Integer)attributeValue);
+
+		else if (attributeValue.getClass().equals(Double.class))
+			cyAtts.setAttribute(networkObjId, attributeName, (Double)attributeValue);
+		}
+	
+	
+	
 	// no point in this one
 	public void setGeometry(int x, int y, int width, int height) throws RemoteException
 		{ print("setGeometry() not implemented"); }
