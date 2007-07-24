@@ -69,6 +69,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 		super(title,
 		      new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_file-with-objects-16.png")));
 		setPreferredMenu("View");
+		setEnabled(true);
 	}
 
 	/**
@@ -79,6 +80,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	public SetVisualPropertiesAction(ImageIcon icon) {
 		super(title, icon);
 		setPreferredMenu("View");
+		setEnabled(true);
 	}
 
 	/**
@@ -89,6 +91,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	public SetVisualPropertiesAction(boolean showLabel) {
 		super(); // no title here - this is for the toolbar
 		setPreferredMenu("View");
+		setEnabled(true);
 	}
 
 	/**
@@ -98,23 +101,5 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(1);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void menuSelected(MenuEvent e) {
-		CyNetworkView cv = Cytoscape.getCurrentNetworkView();
-
-		if ((cv != null) && (cv != Cytoscape.getNullNetworkView())) {
-			if (cv.getVisualMapperEnabled())
-				setEnabled(true);
-			else
-				setEnabled(false);
-		} else {
-			setEnabled(false);
-		}
 	}
 }
