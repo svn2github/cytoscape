@@ -170,15 +170,15 @@ public class DeleteAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent me) {
-        CyNetworkView currView = Cytoscape.getCurrentNetworkView();
-        if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+        CyNetwork n = Cytoscape.getCurrentNetwork();
+        if ( n == null || n == Cytoscape.getNullNetwork() ) {
             setEnabled(false);
+            return;
+        }
 
-        List n = currView.getSelectedNodes();
-        List e = currView.getSelectedEdges();
+        java.util.Set nodes = n.getSelectedNodes();
 
-        if ( (n != null && n.size() > 0 ) ||
-             (e != null && e.size() > 0 ) )
+        if ( nodes != null && nodes.size() > 0 )
             setEnabled(true);
         else
             setEnabled(false);
