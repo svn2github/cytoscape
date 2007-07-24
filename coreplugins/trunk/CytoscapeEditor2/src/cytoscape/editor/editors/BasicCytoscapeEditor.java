@@ -17,6 +17,9 @@
  *
  * Revisions:
  *
+ * Mon Jul 23 16:23:00 2007 (Michael L. Creech) creech@w235krbza760
+ *  Removed adding of tooltips in addEdge() since this is now done
+ *  using visual styles.
  * Wed Dec 27 06:51:00 2006 (Michael L. Creech) creech@w235krbza760
  *  Cleanup and changed addNodeContextMenuItems(),
  *  addEdgeContextMenuItems(), and
@@ -478,13 +481,14 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 				Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(this);
 			}
 		}
-
+        // MLC 07/13/07 BEGIN:
+		// tooltips are now handles as vismap entries:
 		// set tooltip
-		if (edge != null) {
-			EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(edge);
-			ev.setToolTip(edge.getIdentifier());
-		}
-
+		// if (edge != null) {
+		//	 EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(edge);
+		//	 ev.setToolTip(edge.getIdentifier());
+		// }
+// MLC 07/13/07 END.
 		return edge;
 	}
 
