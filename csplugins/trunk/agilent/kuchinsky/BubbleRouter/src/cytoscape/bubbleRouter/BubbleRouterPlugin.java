@@ -841,6 +841,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		// REGION_NODEVIEWS_ATT, region.getNodeViews().toString());
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT,
 				region.getColorIndex());
+		
+		//Set Region Variables to Hidden
+		attributes.setUserVisible(REGION_NAME_ATT, false);
+		attributes.setUserVisible(REGION_COLORINT_ATT, false);
+		attributes.setUserVisible(REGION_X_ATT, false);
+		attributes.setUserVisible(REGION_Y_ATT, false);
+		attributes.setUserVisible(REGION_W_ATT, false);
+		attributes.setUserVisible(REGION_H_ATT, false);
+		
 	}
 
 	/**
@@ -1155,7 +1164,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	// KH: 03/14/07
 	class GetBubbleHelpListener implements ActionListener {
-		private String helpURL = "http://www.genmapp.org/InteractiveLayout/manual.htm";
+		private String helpURL = "http://www.genmapp.org/BubbleRouter/manual.htm";
 
 		public void actionPerformed(ActionEvent ae) {
 			cytoscape.util.OpenBrowser.openURL(helpURL);
@@ -1163,33 +1172,33 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	}
 
-	public PluginInfo getPluginInfoObject() {
-
-		PluginInfo Info = new PluginInfo(); // can be created with a unique id,
-		// but for updating this has to
-		// match what the document contains
-		// as an id
-
-		Info.setName("BubbleRouter"); // name can be anything
-
-		Info.setDescription("Attribute-based layout using interactive regions");
-
-		Info.setCategory("Functional Enrichment"); // currently no categories
-		// preset, but
-		// this is an option
-
-		Info.setPluginVersion(1.0);
-
-		Info
-				.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Interactive_Layout_Plugin");
-
-		Info.addAuthor("Allan Kuchinsky", "Agilent");
-
-		Info.addAuthor("Alex Pico", "UCSF");
-		Info.addAuthor("Kristina Hanspers", "UCSF");
-
-		return Info;
-
-	}
+//	public PluginInfo getPluginInfoObject() {
+//
+//		PluginInfo Info = new PluginInfo(); // can be created with a unique id,
+//		// but for updating this has to
+//		// match what the document contains
+//		// as an id
+//		Info.setName("BubbleRouter"); // name can be anything
+//
+//		Info.setDescription("Attribute-based layout using interactive regions");
+//
+//		Info.setCategory("Functional Enrichment"); // currently no categories
+//		// preset, but
+//		// this is an option
+//
+//		Info.setPluginVersion(1.0);
+//		
+//		Info.setCytoscapeVersion("2.5");
+//		
+//		Info.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Bubble_Router_Plugin");
+//
+//		Info.addAuthor("Allan Kuchinsky", "Agilent");
+//
+//		Info.addAuthor("Alex Pico", "UCSF");
+//		Info.addAuthor("Kristina Hanspers", "UCSF");
+//
+//		return Info;
+//
+//	}
 
 }
