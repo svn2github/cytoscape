@@ -263,7 +263,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 
 		// set the alpha composite on the image, and clear its area
 		Composite origComposite = image2D.getComposite();
-		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		image2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		image2D.setPaint(backgroundColor);
 		image2D.fillRect(0, 0, m_img.getWidth(null), m_img.getHeight(null));
 		image2D.setComposite(origComposite);
