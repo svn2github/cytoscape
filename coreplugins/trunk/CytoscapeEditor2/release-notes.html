@@ -7,7 +7,16 @@
 
 <H1>CytoscapeEditor Release Notes (version 2.51)</H1>
 <OL>
-<LI>Updated missed deprecated code reference to use new Cytoscape 2.5
+<LI>Simplified CytoscapeEditor initialization with assumption that
+the CytoscapeEditor is always loaded before any extension to
+this editor.
+<P><LI>Removed unneeded definitions of getPluginInfoObject() and describe().
+<P><LI>Removed manual setting of EdgeView tooltips, since tooltips should
+now be set using Visual Styles.
+<P><LI>Fixed NPE bug in CyotscapeEditorManger.register() where
+CytoscapeEditorManager.log() statements were being called without null
+pointer check.
+<P><LI>Updated missed deprecated code reference to use new Cytoscape 2.5
     VizMap API.
 </OL>
 
@@ -144,7 +153,7 @@ CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
 </OL>
 
 <HR>
-<SMALL><EM>This page was last updated: 06/30/07</EM></SMALL>
+<SMALL><EM>This page was last updated: 07/23/07</EM></SMALL>
 
 </BODY>
 </HTML>
