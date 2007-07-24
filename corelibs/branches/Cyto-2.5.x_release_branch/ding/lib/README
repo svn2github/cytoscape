@@ -1,0 +1,5 @@
+The following jars are not needed for the ding.view implementation; they are
+only here for the test cases:
+
+cytoscape-graph-dynamic.jar
+fing.jar
