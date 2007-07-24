@@ -1,0 +1,397 @@
+<HTML>
+<HEAD>
+<TITLE>HyperEdge Release Notes (version 2.53)</TITLE>
+</HEAD>
+<BODY>
+
+<H1>HyperEdge Release Notes (version 2.53)</H1>
+<OL>
+<LI>Updated for use with new Cytoscape PluginManager that now uses a
+plugin.props file and removed no longer used
+HyperEdgePlugin.getPluginInfoObject().
+<P><LI>Stopped this plugin from being an independent plugin.
+<P>This is because this plugin is
+supplied by the HyperEdgeEditor and there are too many issues with dependent
+plugins at this time--especially when multiple versions are available. 
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>HyperEdge Release Notes (version 2.52)</H2>
+<OL>
+<LI>Changed package structure from
+com.agilent.labs.hyperedge-->cytoscape.hyperedge.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.51)</H2>
+<OL>
+
+<LI>Updated LitSearchPlugin.getPluginInfoObject() for changes to the
+PluginManager.
+<P><LI>Changed use of
+CyAttributes.deleteAttribute()->HEUtils.deleteAttribute() due to
+Cytoscape bug.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.50)</H2>
+<OL>
+<LI>Made HyperEdge be a good citizen for the Cytoscape PluginManager.
+<P> Added HyperEdgePlugin.getPluginInfoObject().
+<P><LI>Added no arg version of
+HyperEdgeManagerImpl.hideConnectorNodes() that removes nodes from all
+Networks.
+
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.4 alfa 6)</H2>
+
+<OL>
+<LI>Commented out various debugging statements.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.4 alfa 5)</H2>
+<OL>
+<LI>Added the delayed node deletion solution to the recursive
+hiding problem (see HyperEdge documents, deletion-issues.txt).
+
+<P>This involved removing use of HyperEdgeManager.DeletedCatcher and
+adding HyperEdgeManager.hideConnectorNodes() and
+HyperEdgeManager.addToDelayedHidingMap().
+
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.4 alfa 4)</H2>
+<OL>
+<LI>Added removeEdgeBookkeeping() and removeFromNetworkBookkeeping(),
+ and use of BookkeepingItem in attempted fix problem with rehiding
+ GraphObjects in GraphPerspectiveChanged() event callback.
+ Will be modified/removed in future.
+<P><LI>Fixed bug in removeNodeInfoWhenNeeded() where nodes that are
+  both regular nodes and ConnectorNodes (via a shared edge) were
+  having their attributes removed when a shared edge connecting them
+  was removed.
+<P><LI>Added HEUtils.getEdgeInteractionType() and updated
+HEUtils.toString() method to handle HyperEdges.
+<P><LI>Fixed bug where ConnectorNodes read in needed to have their
+CANONICAL_NAME attribute removed (so their names don't show up in the
+BioChemicalReaction visual style).
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.4 alfa 3)</H2>
+<OL>
+<LI>Changed HyperEdge methods: addToCyNetwork()-->addToNetwork(),
+ getCyNetwork()-->getNetwork(), inCyNetwork()-->inNetwork(), and
+ removeFromCyNetwork()-->removeFromNetwork().
+<P><LI>Changed HyperEdgeManager methods:
+getEdgesByCyNetwork-->getEdgesByNetwork(),
+getHyperEdgesByCyNetwork()-->getHyperEdgesByNetwork().
+
+<P><LI>Added creation and removal of ENTITY_TYPE_ATTRIBUTE_NAME attribute to
+ConnectorNodes and regular nodes for use by HyperEdgeEditor.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.4 alfa 2)</H2>
+<OL>
+<LI>Implemented HyperEdge.connectHyperEdges().
+
+<P><LI>Implemented HyperEdge.copy()
+
+<P>All attributes of the ConnectorNode and CyEdges are also copied.
+
+<P><LI>Changed HyperEdge.addEdge() to not allow two edges with the same
+    characteristics (throws an exception
+    if an edge already exists to the given node and with the same edgeIType).
+
+<P><LI>Changed HyperEdge.destroy() to remove the HyperEdge's
+ConnectorNode from each CyNetwork to which it belongs when no
+"regular" edges connect to it in each CyNetwork.
+
+<P><LI>Added a Glycolysis reaction sample network demonstrating
+HyperEdges with shared CyEdges.
+
+
+<P><LI>Changed created Edges to use standard Cytoscape getCyEdge and create
+standard Cytoscape edge identifier.
+
+<P><LI>Changed so deletion of Nodes, Edges, and Networks update
+HyperEdge structures.
+
+<P><LI>Fixed reloading of HyperEdges containing shared edges.
+
+<P>The issue here is that HyperEdges with shared edges can only exist
+in one CyNetwork. Reloading a file with such HyperEdges attempts to
+place these HyperEdges in multiple CyNetworks. The current approach
+this problem is to copy the HyperEdges in the newly loaded CyNetwork
+so that they are separate HyperEdges that, once again, only exist in
+one CyNetwork.
+
+<P><LI>Changed shared edges to no longer have two interaction types
+and went back to having interaction types defined by
+Semantics.INTERACTION attribute versus generated attribute based on
+ConnectorNode uuid.
+
+<P><LI>Added HyperEdge.hasSharedEdges(), HyperEdge.getSharedEdges(),
+HyperEdge.isSharedEdge(), HyperEdge.getNode().
+
+<P><LI> Added HyperEdgeManager.isHyperEdgeEdge ().
+
+<P><LI>Migrated sample networks to HyperEdgeEditor.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.4 alfa 1)</H2>
+
+Major API and implementation change from GINY GraphPerpsectives,
+Nodes, and Edges to Cytoscape CyNetworks, CyNodes, and CyEdges.
+
+<H2>HyperEdge Release Notes (version 2.1.1)</H2>
+<OL>
+
+<LI>Changed HyperEdgeManager.getNodesByEdgeTypes() to be ORing of edge
+interaction types versus ANDing.
+<P><LI>Removed complicated internal datastructure--_gp_to_nodes_map and
+RefCountMultiValue class.
+<P><LI>Changed storing of Edge interaction types in preparation for allowing
+shared edges.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.1)</H2>
+<OL>
+<LI>Changed overall API and implementation so that HyperEdges are shared
+across GraphPerspectives (based on decisions made at the Cytoscape 2006
+Retreat).
+<P>Any change to a HyperEdge existing in more than one
+GraphPerspective is reflected in all GraphPerspectives to which the
+HyperEdge belongs. This is similar behavior to HyperEdge 1.0 alfa 8.
+<P><LI>Added more strong typing of generic collections used throughout
+HyperEdge.
+<P><LI>Updated build.properties for Cytoscape 2.4 changes.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.0 alfa 5)</H2>
+<OL>
+<LI>Many HyperEdge methods changed to remove use of GraphPerspective (e.g. getEdges()).
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.0 alfa 4)</H2>
+<OL>
+<LI>Changed name of Persistent interface to Identifiable interface.
+
+<P>Since this interface now only contains one method getIdentifier(),
+the name no longer seemed appropriate.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.0 alfa 3)</H2>
+<OL>
+<LI>Various Java 1.5 changes including:
+<P><OL type=a>
+<LI>Changing LifeState to a Java 1.5 enum.
+<LI>Strongly typing all code so no Java 1.5 warnings are issued.
+<LI>Creating various generic classes (e.g., MapUtils) and methods.
+</OL>
+
+<P><LI>Changing to use new LSIUtils versus quattrolite.
+<P>HyperEdge is now completely free from ALFA and BlueOakSoftware code.
+
+<P><LI>Fixing bug in HyperEdge.getNodesByEdgeTypes() where an empty
+iterator would be returned when the GrapPerspective and edgeITypes is
+non-null.
+
+<P><LI>Changing API for createHyperEdge(Collection...)-->
+createHyperEdge(List...) because the elements must be ordered.
+
+<P><LI>Adding HyperEdge.connectHyperEdges() to API, but not yet
+implemented.
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.0 alfa 2)</H2>
+
+Changed API so the underlying "rootgraph" of a HyperEdge,
+independent of any GraphPerspective, is not accessable. This includes:
+<OL>
+<LI>Changing all HyperEdge contructors to require an initial
+GraphPerspective to place the newly constructed HyperEdge.
+
+<LI>Changing HyperEdge.addToGraphPerspective() to take a source and target
+GraphPerpsective.
+
+<LI>Changing HyperEdge.removeFromGraphPerspective() to perform
+HyperEdge.destroy() if GraphPerspective is null.
+
+<LI>Changing HyperEdge.addEdge() to require the HyperEdge to belong to
+the given GraphPerspective before an edge can be added.
+
+<LI>Changing HyperEdge.inGraphPerspective() to require gp to be non-null.
+
+<LI>Adding HyperEdge.getMinimumNumberEdges ().
+
+<LI>Changing deletion of HyperEdges to hide edges and leave the
+ConnectorNode alone (similar to removing an Edge in Cytoscape).
+
+<LI>Various semantic changes to HyperEdge.removeEdge() and
+HyperEdge.removeNode().
+
+</OL>
+
+<H2>HyperEdge Release Notes (version 2.0 alfa 1)</H2>
+
+This is an intermediate state major iteration of the HyperEdge
+API not ment for public release. Changes include:
+
+<OL>
+<LI>Major API changes to support HyperEdges with different numbers of
+nodes and edges within each GraphPerspective. Most HyperEdge
+operations and constructors have been changed by adding a
+GraphPerspective parameter.
+
+<LI>Refactoring HyperEdge event handling moving all event handling
+operations to the HyperEdgeManager and adding GraphPerspective
+information to various events notifications.
+
+<LI>Moving to Java 5 based library with strongly typed collections and
+MapUtils and RefCountMultiValue becoming generic classes of
+operations.
+
+<LI>Migrating all add/removeXXXListeners to HyperEdgeManager from
+  HyperEdgeFactory and HyperEdge.
+
+<LI>Adding HyperEdge.addToGraphPerspective (),
+     HyperEdge.removeFromPerspective (), and HyperEdge.inGraphPerspective().
+
+<LI>Removing EdgeTypeMap persistent related methods and adding
+   EdgeTypeMap.reset().
+
+<LI>Removing Explicit persistence classes and interfaces.
+
+<P>All state information (e.g., directed, name) are now stored as
+    attribute info on connector node.
+<P>Removed all load, save, and "dirty" related operations and classes.
+
+<LI>Removed interface Mutable.
+
+</OL>
+
+NOTE: Due to how Cytoscape works, multiple edges to the same node with
+the same interaction type will not restore correctly.
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 8)</H2>
+<OL>
+<LI>Added HyperEdge.getNodesByEdgeTypes(Collection)
+
+<P>This is useful for returning all Nodes connected by edges that
+belong to one or more interation types. For example, getting an
+Iterator of all nodes that are Mediators--either inhibiting or
+activating.
+
+<P>Updated HyperEdgeTest to test usage of this new operation.
+
+<P><LI>Fixed bug where HyperEdge.addEdge() was not correctly adding
+the new edge and node to all graph perspectives that the HyperEdge belongs to.
+
+<P>It also was not setting HyperEdgeManager _gp_to_edges_map correctly. Added HyperEdgeManagerTests for this bug.
+
+<P><LI>Added EdgeTypeMap.INHIBITING_MEDIATOR and
+       EdgeTypeMap.ACTIVATING_MEDIATOR.
+
+<P>Deprecated EdgeTypeMap.MEDIATOR.
+
+</OL>
+
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 7)</H2>
+<OL>
+<LI>Changed use of Semantics.LABEL-->AttributeConstants.MONIKER.
+</OL>
+
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 6)</H2>
+<OL>
+<LI>Changed references to Semantics.CANONICAL_NAME-->Semantics.LABEL
+and commented out references to Semantics.COMMON_NAME.
+</OL>
+<H2>HyperEdge Release Notes (version 1.0 alfa 5)</H2>
+<OL>
+<LI>Various changes and additions to handle new ANT build process.
+<P>Changes include local 'libs' jar files removed, javadoc files
+removed, added .xml and .properties files.
+
+<P><LI>Updated to use new Cytoscape 2.3.
+</OL>
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 4)</H2>
+<OL>
+<P><LI>Added new EdgeTypeMap
+
+<P>Maps an edge_i_type to an EdgeRole for determining the placement within
+an Edge of any Node added to a HyperEdge using that edge_i_type.
+
+<P><LI>Added creation of isConnectorNode attribute for all Connector Nodes.
+
+<P><LI>Removed HyperEdge .hpe storage from Cytoscape load and
+save Network operations (piggybacked).
+
+<P>Load and Save are removed until Cytoscape fixes its .gml and .sif
+load and save to handle the identifiers associated with Edges and
+Nodes. This problem causes duplicate Nodes and Edges to be incorrectly
+created.
+
+<P><LI>Beefed up JUnit tests
+
+<P>Added EdgeTypeMapTest and added to several other test modules.
+
+<P><LI>Changed load/save to escape common characters in fields that would
+disrupt XML representation.
+<P>For example, double-quote, '<', and '&'.
+</OL>
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 3)</H2>
+<OL>
+<P><LI>Refactored save() and load() operations and added Format parameter to
+HyperEdge.save ().
+
+<P><LI>Changed use of edge_i_type throughout HyperEdge to determine
+whether a Node will be the source or target of a created Edge.
+
+<P>If edge_i_type is PRODUCT, the edge added will have the Node as
+   the target of the edge. For SUBSTRATE, MEDIATOR, and any other
+   types given, the Node will be the source of the new edge.
+</OL>
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 2)</H2>
+<OL>
+<P><LI>Added user display feedback of loading and saving HyperEdge
+   information.
+<P><LI>Added HyperEdgeManager.getEdgesByNode().
+<P><LI>Fixed HyperEdgeManager.getNodesByEdgeTypes() to work correctly.
+<P><LI>Changed suffix for loading and saving hyperedge files from .xml to .hpe.
+<P><LI>Changed to strictly append .hpe suffix to file name written
+      versus remove old suffix and append new .hpe suffix.
+
+<P>This is necessary because user may write a network in more than one
+form, such as .sif and .gml and we want a separate .hpe file for each.
+
+<P><LI>Added removal of automatically generated attributes on
+Connector Nodes and Edges when a HyperEdge is removed.
+<P><LI>Added patches for Cytoscape getNode() and getEdge() bugs.
+<P><LI>Changed sample networks to have HyperEdges more appropriately named.
+<P><LI>Fixed JUnit tests to write to Cytoscape user's home directory
+in '.hyperedge/test-results/' directory.
+</OL>
+
+<H2>HyperEdge Release Notes (version 1.0 alfa 1)</H2>
+
+This is the first rough cut implementation of the HyperEdge API.
+To use, place lib/hyperedge.jar into Cytoscape '/plugins/core' directory.
+
+<P>Then run Cytoscape and execute 'Plugins-->HyperEdge Plugin'.  This
+will load two HyperEdge CyNetworks without initial views.  The
+'File-->Load-->Network...',  'File-->Save-->Network As Interactions' and
+'File-->Save-->Network As GML' will seamlessly save and load
+HyperEdges along with your Cytoscape structures.
+
+<P>To compile, point at your cytoscape 2.2 libraries in your Eclipse project.
+
+<HR>
+<SMALL><EM>This page was last updated: 07/03/07</EM></SMALL>
+
+</BODY>
+</HTML>
