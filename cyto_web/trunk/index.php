@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <? include "config.php"; ?>
-<! Updated by kono for 2.3 release on 06_21_2006 >
+<! Updated by kono for 2.5 7_23_2007 >
 <! Updated by apico with "latest release" variables for future updates (see config.php). 12_21_2006 >
 <html>
 <head>
@@ -48,7 +48,7 @@
 <div id="content">
   <div class="item">
     <h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5.0</h2>
-    <A HREF="screenshots/2_5_ss1.png"><img src="screenshots/2_5_ss1_thumb.png" border="0" align="left" alt="Cytoscape 2.5 Screenshot" /> </A>
+        <A HREF="screenshots/2_5_ss1.png"><img src="screenshots/2_5_ss1_thumb.png" border="0" align="left" alt="Cytoscape 2.5 Screenshot" /> </A>
     <div class="paragraph"> (Updated 7/23/2007) <br>
       New features include: <br>
       <ul>

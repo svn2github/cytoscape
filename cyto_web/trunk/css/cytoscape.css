@@ -299,7 +299,7 @@ body {
 }
 
 .item img {
-	float:left;
+	float:right;
 	margin:10px;
 	margin-bottom:0px;
 }
@@ -455,8 +455,6 @@ a {
 	margin-bottom: 10px;
 	margin-left: 5px;
 	font-size: 12px;
- #border: dotted gray 1px;
- #padding-left: 10px;
 	padding-bottom: 10px;
 	background-repeat: repeat-y;
 	border: 1px solid #878087;
