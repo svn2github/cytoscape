@@ -139,13 +139,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			return;
 		}
 
-        CyNetworkView v = Cytoscape.getCurrentNetworkView();
-        if ( v == null || v == Cytoscape.getNullNetworkView() ) {
-           	setEnabled(false); 
-			return;	
-		}
-
-        java.util.List nodes = v.getSelectedNodes();
+        java.util.Set nodes = n.getSelectedNodes();
 
         if ( nodes != null && nodes.size() > 0 )
             setEnabled(true);

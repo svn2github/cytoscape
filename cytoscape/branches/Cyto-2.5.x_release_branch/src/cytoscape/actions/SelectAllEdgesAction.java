@@ -80,6 +80,6 @@ public class SelectAllEdgesAction extends CytoscapeAction {
 	} // action performed
 
     public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
+        enableForNetwork();
     }
 }

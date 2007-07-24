@@ -138,6 +138,6 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 	}
 
     public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
+        enableForNetwork();
     }
 }

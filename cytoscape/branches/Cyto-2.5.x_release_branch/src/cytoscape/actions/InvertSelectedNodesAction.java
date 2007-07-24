@@ -86,6 +86,6 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent e) {
-        enableForNetworkAndView();
+        enableForNetwork();
     }
 }
