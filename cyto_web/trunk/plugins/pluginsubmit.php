@@ -905,9 +905,12 @@ if (!($tried && $validated)) {
 		} else {
 			//This is a new plugin, add a row in the table plugin_list
 
+			$plugin_unique_id = -1;
+
 			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
-			'(0, "' . $name . '", "' . $description . '", "'.$license.'", "'.$license_required.'", "'. $projectURL . '",' .
+			'(0, "' . $name . '", "'.$plugin_unique_id.'", "'. $description . '", "'.$license.'", "'.$license_required.'", "'. $projectURL . '",' .
 			$category_id . ',now())';
+
 			// Run the query
 			if (!($result = @ mysql_query($dbQuery, $connection)))
 				showerror();
