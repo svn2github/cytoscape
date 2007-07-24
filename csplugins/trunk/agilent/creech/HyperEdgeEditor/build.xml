@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="HyperEdgeEditor" default="jar" basedir=".">
-	
+   <!-- TO USE THIS BUILD SCRIPT:
+     1) FILL IN the location of Cytoscape root wrt this build file in
+        'cytoscape.dir'. -->	
 	<!-- directory definitions -->
   	<property name="root.dir" value="."/>
   	<property name="src.dir" value="${root.dir}/src"/>
