@@ -1,0 +1,35 @@
+#Linkout  Property File
+#Sat Apr 08 17:45:50 EDT 2006
+nodelinkouturl.Entrez.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=%ID%&doptcmdl\=Abstract
+nodelinkouturl.yeast.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=4932
+nodelinkouturl.yeast.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=4932
+nodelinkouturl.human.iHOP=http\://www.ihop-net.org/UniPub/iHOP/?search\=%ID%&field\=all&ncbi_tax_id\=9606
+nodelinkouturl.yeast.SGD=http\://db.yeastgenome.org/cgi-bin/locus.pl?locus\=%ID%
+nodelinkouturl.Entrez.Protein=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=Protein&term\=%ID%&doptcmdl\=GenPept
+nodelinkouturl.Entrez.Nucleotide=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=nucleotide&term\=%ID%&doptcmdl\=GenBank
+nodelinkouturl.Entrez.OMIM=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=omim&term\=%ID%&doptcmdl\=Synopsis
+nodelinkouturl.Entrez.Structure=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=structure&term\=%ID%&doptcmdl\=Brief
+nodelinkouturl.Entrez.Gene=http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&cmd=Search&term=%ID%
+nodelinkouturl.mouse.MGI=http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=%ID%&selectedQuery=Genes+and+Markers
+nodelinkouturl.Biological\ resources.BioGRID=http://www.thebiogrid.org/search.php?keywords=%ID%&searchbutton=GO&organismid=0
+nodelinkouturl.Biological\ resources.iHOP=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID%
+nodelinkouturl.Web\ resources.Google=http://www.google.com/search?hl=en&q=%ID%&btnG=Google+Search
+nodelinkouturl.UniProt.PIR=http://www.uniprot.org/entry/%ID%
+nodelinkouturl.UniProt.EBI=http://www.ebi.uniprot.org/uniprot-srv/uniProtView.do?proteinId=%ID%&pager.offset=0
+nodelinkouturl.fly.FlyBase=http://flybase.bio.indiana.edu/.bin/fbidq.html?%ID%
+nodelinkouturl.worm.WormBase=http://www.wormbase.org/db/gene/gene?name=%ID%
+nodelinkouturl.Biological\ resources.GeneCards=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%ID%&alias=yes
+nodelinkouturl.Biological\ resources.Pfam=http://www.sanger.ac.uk/cgi-bin/Pfam/getacc?%ID%
+nodelinkouturl.Biological\ resources.InterPro=http://www.ebi.ac.uk/interpro/IEntry?ac=%ID%
+nodelinkouturl.Web\ resources.Ask=http://www.ask.com/web?q=%ID%&qsrc=0&o=0
+
+#Reactome links
+nodelinkouturl.Reactome.Entrez=http://www.reactome.org/cgi-bin/link?SOURCE=Entrez+Gene&ID=%ID%
+nodelinkouturl.Reactome.UniProt=http://www.reactome.org/cgi-bin/link?SOURCE=UNIPROT&ID=%ID%
+nodelinkouturl.Reactome.SGD=http://www.reactome.org/cgi-bin/link?SOURCE=SGD&ID=%ID%&FOCUS_SPECIES=Saccharomyces+cerevisiae
+nodelinkouturl.Reactome.RefSeq=http://www.reactome.org/cgi-bin/link?SOURCE=RefSeq&ID=%ID%
+nodelinkouturl.Reactome.Wormbase=http://www.reactome.org/cgi-bin/link?SOURCE=Wormbase&ID=%ID%&FOCUS_SPECIES=Caenorhabditis+elegans
+
+#Edge Links
+edgelinkouturl.iHop.yeast=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID1%&ncbi_tax_id_1=4932&syns_2=%ID2%&ncbi_tax_id_2=4932
+edgelinkouturl.iHop.human=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID1%&ncbi_tax_id_1=9606&syns_2=%ID2%&ncbi_tax_id_2=9606
