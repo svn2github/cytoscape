@@ -7,16 +7,11 @@
 	<link rel="shortcut icon" href="images/cyto.ico">
 </head>
 <body bgcolor="#FFFFFF">
-<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
-	<tr>
-		<td width="10">
-			�
-		</td>
-		<td valign="center">
-			<h1> Research using Cytoscape </h1>
-		</td>
-	</tr>
-</table>
+
+<div id="topbar">
+	<div class="title">Research Using Cytoscape</div>
+</div>
+
 <? include "nav.php"; ?>
 <div id="indent">
 
