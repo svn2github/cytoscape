@@ -1152,6 +1152,9 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 
 			attributes.setListAttribute(targetName, attrName, listAttr);
+
+			// Skip over check for embedded content
+			return;
 		}
 		// map
 		else if (dataType.equals(ObjectType.MAP)) {
