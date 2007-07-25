@@ -27,6 +27,7 @@ import cytoscape.util.export.BitmapExporter;
 import cytoscape.util.export.PDFExporter;
 import cytoscape.util.export.SVGExporter;
 import cytoscape.dialogs.ExportBitmapOptionsDialog;
+import cytoscape.dialogs.ExportAsGraphicsFileChooser;
 
 /**
  * Action for exporting a network view to bitmap or vector graphics.
@@ -57,44 +58,33 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 
 	public void actionPerformed(ActionEvent e)
 	{
-		while (true)
+		final ExportAsGraphicsFileChooser chooser = new ExportAsGraphicsFileChooser(FILTERS);
+		chooser.setVisible(true);
+		ActionListener listener = new ActionListener()
 		{
-			// Show the file chooser
-			File[] files = FileUtil.getFiles(TITLE, FileUtil.SAVE, FILTERS, null, null, false, true);
-			if (files == null || files.length == 0 || files[0] == null)
-				return;
-			File file = files[0];
-
-
-			for (int i = 0; i < FILTERS.length; i++)
+			public void actionPerformed(ActionEvent event)
 			{
-				if (FILTERS[i].accept(file))
+				ExportFilter filter = (ExportFilter) chooser.getSelectedFormat();
+				File file = chooser.getSelectedFile();
+				chooser.dispose();
+
+				FileOutputStream stream = null;
+				try
 				{
-					CyNetworkView view = Cytoscape.getCurrentNetworkView();
-
-					// Create the file stream
-					FileOutputStream stream = null;
-					try
-					{
-						stream = new FileOutputStream(file);
-					}
-					catch (Exception exp)
-					{
-						JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
-										"Could not create file " + file.getName()
-										+ "\n\nError: " + exp.getMessage());
-						return;
-					}
-
-					FILTERS[i].export(view, stream);
+					stream = new FileOutputStream(file);
+				}
+				catch (Exception exp)
+				{
+					JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
+									"Could not create file " + file.getName()
+									+ "\n\nError: " + exp.getMessage());
 					return;
 				}
+				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				filter.export(view, stream);
 			}
-
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-				"An appropriate extension was not specified for the file.\n\n" +
-				"Please specify an extension for the desired format.");
-		}
+		};
+		chooser.addActionListener(listener);
 	}
 }
 
@@ -161,6 +151,11 @@ abstract class ExportFilter extends CyFileFilter
 	public boolean isExtensionListInDescription()
 	{
 		return true;
+	}
+
+	public String toString()
+	{
+		return getDescription();
 	}
 
 	public abstract void export(CyNetworkView view, FileOutputStream stream);
