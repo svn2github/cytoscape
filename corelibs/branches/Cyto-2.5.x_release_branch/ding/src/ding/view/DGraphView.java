@@ -308,8 +308,10 @@ public class DGraphView implements GraphView, Printable {
 		m_networkCanvas = new InnerCanvas(m_lock, this);
 		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
 		                                                 Color.white, true, true);
+		addViewportChangeListener(m_backgroundCanvas);
 		m_foregroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
 		                                                 Color.white, true, false);
+		addViewportChangeListener(m_foregroundCanvas);
 		m_selectedNodes = new IntBTree();
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
@@ -534,7 +536,7 @@ public class DGraphView implements GraphView, Printable {
 	public void setBackgroundPaint(Paint paint) {
 		synchronized (m_lock) {
 			if (paint instanceof Color) {
-				m_networkCanvas.setBackground((Color) paint);
+				m_backgroundCanvas.setBackground((Color) paint);
 				m_contentChanged = true;
 			} else {
 				System.out.println("DGraphView.setBackgroundPaint(), Color not found!");
@@ -548,7 +550,7 @@ public class DGraphView implements GraphView, Printable {
 	 * @return The background color on the canvas.
 	 */
 	public Paint getBackgroundPaint() {
-		return m_networkCanvas.getBackground();
+		return m_backgroundCanvas.getBackground();
 	}
 
 	/**
