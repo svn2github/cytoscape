@@ -44,102 +44,167 @@ public class ExportBitmapOptionsDialog extends JDialog
 		sizePanel.setBorder(new TitledBorder(new EtchedBorder(), "Image Size"));
 		sizePanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridwidth = 1;	c.gridheight = 1;
-		c.weightx = 1.0;	c.weighty = 0.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.WEST;
+		c.insets = new Insets(5,5,5,5);
 
 		JLabel zoomLabel = new JLabel("Zoom: ");
+		c.gridx = 0;			c.gridy = 0;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(zoomLabel, c);
+		
 		zoomField = new JFormattedTextField(new DecimalFormat());
 		zoomField.setColumns(3);
 		ZoomListener zoomListener = new ZoomListener(zoomField);
-		JLabel zoomPercentLabel = new JLabel("%");
+		c.gridx = 1;			c.gridy = 0;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		sizePanel.add(zoomField, c);
 
-		JPanel zoomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		zoomPanel.add(zoomLabel);
-		zoomPanel.add(zoomField);
-		zoomPanel.add(zoomPercentLabel);
-		c.gridx = 0;		c.gridy = 0;
-		sizePanel.add(zoomPanel, c);
+		JLabel zoomPercentLabel = new JLabel("%");
+		c.gridx = 2;			c.gridy = 0;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(zoomPercentLabel, c);
 
 		JSeparator separator0 = new JSeparator();
-		c.gridx = 0;		c.gridy = 1;
+		c.gridx = 0;			c.gridy = 1;
+		c.gridwidth = 3;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		sizePanel.add(separator0, c);
 
 		JLabel widthInPixelsLabel = new JLabel("Width: ");
+		c.gridx = 0;			c.gridy = 2;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(widthInPixelsLabel, c);
+
 		widthInPixelsField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		widthInPixelsField.setColumns(4); 
 		new WidthInPixelsListener(widthInPixelsField);
+		c.gridx = 1;			c.gridy = 2;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		sizePanel.add(widthInPixelsField, c);
+
 		JLabel widthPixelsLabel = new JLabel("pixels");
-		
-		JPanel widthInPixelsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		widthInPixelsPanel.add(widthInPixelsLabel);
-		widthInPixelsPanel.add(widthInPixelsField);
-		widthInPixelsPanel.add(widthPixelsLabel);
-		c.gridx = 0;		c.gridy = 2;
-		sizePanel.add(widthInPixelsPanel, c);
+		c.gridx = 2;			c.gridy = 2;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(widthPixelsLabel, c);
 
 		JLabel heightInPixelsLabel = new JLabel("Height:");
+		c.gridx = 0;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(heightInPixelsLabel, c);
+
 		heightInPixelsField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		heightInPixelsField.setColumns(4);
 		new HeightInPixelsListener(heightInPixelsField);
-		JLabel heightPixelsLabel = new JLabel("pixels");
+		c.gridx = 1;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		sizePanel.add(heightInPixelsField, c);
 
-		JPanel heightInPixelsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		heightInPixelsPanel.add(heightInPixelsLabel);
-		heightInPixelsPanel.add(heightInPixelsField);
-		heightInPixelsPanel.add(heightPixelsLabel);
-		c.gridx = 0;		c.gridy = 3;
-		sizePanel.add(heightInPixelsPanel, c);
+		JLabel heightPixelsLabel = new JLabel("pixels");
+		c.gridx = 2;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(heightPixelsLabel, c);
 
 		JSeparator separator1 = new JSeparator();
-		c.gridx = 0;		c.gridy = 4;
+		c.gridx = 0;			c.gridy = 4;
+		c.gridwidth = 3;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		sizePanel.add(separator1, c);
 
 		JLabel widthInInchesLabel = new JLabel("Width: ");
+		c.gridx = 0;			c.gridy = 5;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(widthInInchesLabel, c);
+
 		widthInInchesField = new JFormattedTextField(new DecimalFormat());
 		widthInInchesField.setColumns(4); 
 		new WidthInInchesListener(widthInInchesField);
+		c.gridx = 1;			c.gridy = 5;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		sizePanel.add(widthInInchesField, c);
+
 		JLabel widthInchesLabel = new JLabel("inches");
-		
-		JPanel widthInInchesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		widthInInchesPanel.add(widthInInchesLabel);
-		widthInInchesPanel.add(widthInInchesField);
-		widthInInchesPanel.add(widthInchesLabel);
-		c.gridx = 0;		c.gridy = 5;
-		sizePanel.add(widthInInchesPanel, c);
+		c.gridx = 2;			c.gridy = 5;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(widthInchesLabel, c);
 
 		JLabel heightInInchesLabel = new JLabel("Height:");
+		c.gridx = 0;			c.gridy = 6;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(heightInInchesLabel, c);
+
 		heightInInchesField = new JFormattedTextField(new DecimalFormat());
 		heightInInchesField.setColumns(4);
 		new HeightInInchesListener(heightInInchesField);
+		c.gridx = 1;			c.gridy = 6;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		sizePanel.add(heightInInchesField, c);
+		
 		JLabel heightInchesLabel = new JLabel("inches");
-
-		JPanel heightInInchesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		heightInInchesPanel.add(heightInInchesLabel);
-		heightInInchesPanel.add(heightInInchesField);
-		heightInInchesPanel.add(heightInchesLabel);
-		c.gridx = 0;		c.gridy = 6;
-		sizePanel.add(heightInInchesPanel, c);
+		c.gridx = 2;			c.gridy = 6;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(heightInchesLabel, c);
 
 		JLabel resolutionLabel = new JLabel("Resolution:");
+		c.gridx = 0;			c.gridy = 7;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(resolutionLabel, c);
+
 		Integer[] resolutions = { new Integer(72), new Integer(100), new Integer(150), new Integer(300) };
 		resolutionComboBox = new JComboBox(resolutions);
 		resolutionComboBox.addActionListener(zoomListener);
+		c.gridx = 1;			c.gridy = 7;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		sizePanel.add(resolutionComboBox, c);
+		
 		JLabel dpiLabel = new JLabel("DPI");
+		c.gridx = 2;			c.gridy = 7;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		sizePanel.add(dpiLabel, c);
 
-		JPanel resolutionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		resolutionPanel.add(resolutionLabel);
-		resolutionPanel.add(resolutionComboBox);
-		resolutionPanel.add(dpiLabel);
-		c.gridx = 0;		c.gridy = 7;
-		sizePanel.add(resolutionPanel, c);
-
-		okButton = new JButton("OK");
+		okButton = new JButton("   OK   ");
 		okButton.setDefaultCapable(true);
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new CancelListener());
 
-		JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.add(cancelButton);
 		buttonsPanel.add(okButton);
 
@@ -150,13 +215,13 @@ public class ExportBitmapOptionsDialog extends JDialog
 		content.add(sizePanel, c);
 		c.gridx = 0;		c.gridy = 1;
 		c.weightx = 1.0;	c.weighty = 1.0;
-		c.fill = GridBagConstraints.BOTH;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.SOUTHEAST;
 		content.add(buttonsPanel, c);
 
 		updateOnZoom(1.0);
-		//setPreferredSize(new Dimension(250, 280));
+
 		setLocationRelativeTo(Cytoscape.getDesktop());
-		setResizable(false);
 		pack();
 	}
 
