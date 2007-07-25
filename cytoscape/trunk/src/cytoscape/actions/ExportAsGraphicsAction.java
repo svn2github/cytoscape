@@ -3,6 +3,7 @@ package cytoscape.actions;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,36 +50,42 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 		setAcceleratorCombo(KeyEvent.VK_P, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
 	}
 
+	public void menuSelected(MenuEvent e)
+	{
+		enableForNetworkAndView();
+	}
+
 	public void actionPerformed(ActionEvent e)
 	{
-		// Show the file chooser
-		File[] files = FileUtil.getFiles(TITLE, FileUtil.SAVE, FILTERS, null, null, false, true);
-		if (files == null || files.length == 0 || files[0] == null)
-			return;
-		File file = files[0];
-
-		// Create the file stream
-		FileOutputStream stream = null;
-		try
-		{
-			stream = new FileOutputStream(file);
-		}
-		catch (Exception exp)
-		{
-			JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
-							"Could not create file " + file.getName()
-							+ "\n\nError: " + exp.getMessage());
-			return;
-		}
-
-		// Export
 		while (true)
 		{
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			// Show the file chooser
+			File[] files = FileUtil.getFiles(TITLE, FileUtil.SAVE, FILTERS, null, null, false, true);
+			if (files == null || files.length == 0 || files[0] == null)
+				return;
+			File file = files[0];
+
+
 			for (int i = 0; i < FILTERS.length; i++)
 			{
 				if (FILTERS[i].accept(file))
 				{
+					CyNetworkView view = Cytoscape.getCurrentNetworkView();
+
+					// Create the file stream
+					FileOutputStream stream = null;
+					try
+					{
+						stream = new FileOutputStream(file);
+					}
+					catch (Exception exp)
+					{
+						JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
+										"Could not create file " + file.getName()
+										+ "\n\nError: " + exp.getMessage());
+						return;
+					}
+
 					FILTERS[i].export(view, stream);
 					return;
 				}
