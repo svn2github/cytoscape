@@ -67,7 +67,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 	$versionCount = @ mysql_num_rows($allVersionInfo);
 
 	if ($versionCount == 0)
-		return "Pending to Cytoscape staff review";
+		return "Pending Cytoscape staff review";
 
 	//List info for all available versions
 	while ($versionCount > 0) {
