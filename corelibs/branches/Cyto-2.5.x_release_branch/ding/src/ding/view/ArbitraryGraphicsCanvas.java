@@ -63,7 +63,7 @@ import java.util.Map;
  * to live within a ding.view.DGraphView class.  It is the canvas
  * used for arbitrary graphics drawing (background & foreground panes).
  */
-public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasListener {
+public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChangeListener {
 	/**
 	 * Testing boolean to quickly turn on/off anchor nodes.
 	 */
@@ -110,9 +110,6 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 		m_isVisible = isVisible;
 		m_isOpaque = isOpaque;
 		m_componentToNodeMap = new HashMap<Component, Node>();
-
-		// we want to listen to the inner canvas
-		m_innerCanvas.addInnerCanvasListener(this);
 	}
 
 	/**
@@ -150,9 +147,10 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements InnerCanvasLi
 	}
 
 	/**
-	 * Our implementation of InnerCanvasListener.
+	 * Our implementation of ViewportChangeListener.
 	 */
-	public void innerCanvasUpdate(InnerCanvasEvent event) {
+	public void viewportChanged(int viewportWidth, int viewportHeight, double newXCenter,
+	                            double newYCenter, double newScaleFactor) {
 		if (USE_REPOSITION_CODE) {
 			if (setBoundsChildren())
 				repaint();
