@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: infovis.panel.MainFrameDecorator
+Class-Path: lib/colt.jar lib/concurrent.jar lib/antlr.jar lib/xml-writer.jar lib/log4j.jar
+Created-By: Jean-Daniel Fekete

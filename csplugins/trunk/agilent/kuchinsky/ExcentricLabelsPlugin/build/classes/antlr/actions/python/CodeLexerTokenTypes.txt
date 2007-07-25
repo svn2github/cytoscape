@@ -1,0 +1,8 @@
+// $ANTLR : code.g -> CodeLexerTokenTypes.txt$
+CodeLexer    // output token vocab name
+ACTION=4
+STUFF=5
+COMMENT=6
+SL_COMMENT=7
+IGNWS=8
+ML_COMMENT=9
