@@ -1,0 +1,5 @@
+#Thu Nov 24 17:15:21 CET 2005
+filenames.suppression=/infovis/suppressions.xml
+enabled=true
+projectclassloader=false
+filenames.config=/infovis/checkstyle.xml

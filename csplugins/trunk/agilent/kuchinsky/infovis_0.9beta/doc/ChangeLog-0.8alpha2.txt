@@ -1,0 +1,11 @@
+2005-01-30    <Jean-Danie.Feket@inria.fr>
+     * Rulers are introduced to show in the background of visualizations when that make sense.
+     * Renderers are generalized for filtering, selection and fisheyes, for the best.
+     * The license have changed: it is now the ultra*liberal X11/MIT license
+     * Visualization components are split into several parts: interactors, layout and rendering items.  This split improves the modularity and extensibility of visualizations.
+     * Visualizations can ask for a preferred size, allowing visualization panels to scroll.
+     * More layouts are available: the new GraphViz 2 programs can be used (circo, fdp, etc.)  and an implementation of a dynamic graph layout is provided.
+     * Lots of cleanup on internal structures: Factories are unified, Columns rely on Colt arrays.
+     * Log4j is used for logging
+     * Agile2D has been removed from the distribution and can be downloaded from elsewhere.
+     * Many more details are improved.

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>The package column</title>
+<!--
+/*****************************************************************************
+ * Copyright (C) 2003-2005 Jean-Daniel Fekete and INRIA, France              *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the X11 Software License    *
+ * a copy of which has been included with this distribution in the           *
+ * license-infovis.txt file.                                                 *
+ *****************************************************************************/
+ $Revision: 1.8 $
+-->
+</head>
+<body>
+<p>This package provides a set of classes related to columns used in
+  tables.</p>
+
+<p>There are quite a large set of column types.  For each literal
+  type used by the InfoVis Toolkit, there is a concrete column type:
+  <A HREF="IntColumn.html">IntColumn</a>,
+  <A HREF="LongColumn.html">LongColumn</a>,
+  <A HREF="FloatColumn.html">FloatColumn</a>,
+  <A HREF="DoubleColumn.html">DoubleColumn</a>.  These columns are
+  dense, meaning that they allocate memory for all of their potential
+  values, even if most are undefined at the end.  A second set of
+  implementations is provided for mostly spare columns:
+  <A HREF="IntSparseColumn.html">IntSparseColumn</a> and others (yet
+  to come) that inherit from
+  <A HREF="SparseColumn.html">SparseColumn</a>.</p>
+
+<p>For other types inheriting from <code>java.lang.Object</code>,
+  there is a base class 
+  <A HREF="BasicObjectColumn.html">BasicObjectColumn</a> and several
+  specialized columns such as:
+  <A HREF="ObjectColumn.html">ObjectColumn</a>,
+  <A HREF="StringColumn.html">StringColumn</a> and
+  <A HREF="ShapeColumn.html">ShapeColumn</a>.</p>
+
+<p>Columns containing literal values inherit from the 
+  <a href="LiteralColumn.html">LiteralColumn</a>
+  base class for their implementation.  They all implement the
+  <a href="NumberColumn.html">NumberColumn</a> interface.  This
+  interface provides a uniform access to any literal values for
+  contexts where algorithms only care about getting a number and not
+  about its concrete representation.</p>
+
+<p>Columns are meant to expose the structure of their contents so,
+  for example, when a table needs to contain 2-dimensional point
+  using X and Y double coordinates, it is best to use two
+  <code>DoubleColumn</code>s instead of one
+  <code>ObjectColumn</code> containing <code>Point2D</code>
+  elements.</p>
+
+<p>For more information about specific column classes, look at their
+  specific documentation.</p>
+</body>
+</html>

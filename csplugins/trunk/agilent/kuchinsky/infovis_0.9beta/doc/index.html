@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>The InfoVis Toolkit</title>
+  </head>
+  <body>
+<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=117801&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" align="right"/></a>
+<h1>The InfoVis Toolkit</h1>
+    <h2>Version 0.9beta, Nov, 30 2005</h2>
+    <h3>by Jean-Daniel Fekete <a
+    href="mailto:Jean-Daniel.Fekete@inria.fr">Jean-Daniel.Fekete@inria.fr</a></h3>
+    <h4><a href="http://www.inria.fr/index.en.html">INRIA Futurs</a>/
+      <a href="http://www.lri.fr/introduction.en.shtml">LRI</a>,
+      <a href="http://www.lri.fr/~ihm/index.en.html">IN-SITU</a> Project</h4>
+
+    <ul>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#pub">Publications</a></li>
+      <li><a href="#downloads">Downloads</a></li>
+      <li><a href="#documentation">Documentation</a></li>
+      <li><a href="#toolkits">Other Toolkits</a></li>
+      <li><a href="#acknowledgments">Acknowledgments</a></li>
+    </ul>
+
+<table>
+  <tr>
+    <td>
+      <a href="TableScatterPlot.png"><img src="TableScatterPlot-small.png" ALT="Scatter Plot Visualization"></a>
+    </td>
+    <td>
+      <a href="TableTimeSeries.png"><img src="TableTimeSeries-small.png" ALT="Time Series Visualization"></a>
+    </td>
+    <td>
+      <a href="TableParallelCoordinates.png"><img src="TableParallelCoordinates-small.png" ALT="Parallel Coordinates Visualization"></a>
+    </td>
+    <td>
+      <a href="TableMatrix.png"><img src="TableMatrix-small.png" ALT="Table Matrix Visualization"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="Treemap.png"><img src="Treemap-small.png" ALT="Treemap Visualization"></a>
+    </td>
+    <td>
+      <a href="TreeNodeLink.png"><img src="TreeNodeLink-small.png" ALT="Tree Node-Link Vizualization"></a>
+    </td>
+    <td>
+      <a href="TreeIcicle.png"><img src="TreeIcicle-small.png" ALT="Icicle Tree Vizualization"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="GraphNodeLink.png"><img src="GraphNodeLink-small.png" ALT="Graph Node-Link Visualization"></a>
+    </td>
+    <td>
+      <a href="GraphMatrix.png"><img src="GraphMatrix-small.png" ALT="Graph Matrix Visualization"></a>
+    </td>
+  </tr>
+</table>
+    <a name="intro"></a><h2>Introduction</h2>
+
+    <p>The InfoVis Toolkit is a Interactive Graphics Toolkit written
+    in Java to ease the development of Information Visualization
+    applications and components.</p>
+
+    <p>The main characteristics of the InfoVis Toolkit are:</p>
+    <dl>
+      <dt><b>Unified data structure</b></dt>
+      <dd>The base data structure is a table
+      of columns.  Columns contain objects of homogeneous types, such
+      as integers or strings.  Trees and Graphs are derived from
+      Tables.</dd>
+
+      <dt><b>Small memory footprint</b></dt>
+      <dd>Using homogeneous columns instead of compound types improves
+      dramatically the memory required to store large tables, trees or
+      graphs, and generally the time to manage them.</dd>
+
+      <dt><b>Unified set of interactive components</b></dt>
+      <dd>Interactive filtering (a.k.a. dynamic queries) can be
+      performed with the same control objects and components
+      regardless of the data structure, simplifying the reuse of
+      existing components and the design of generic ones.</dd>
+
+      <dt><b>Fast</b></dt>
+      <dd>the InfoVis Toolkit can use accelerated graphics provided by
+      <a href="http://www.cs.umd.edu/hcil/agile2d/index.shtml">
+      Agile2D</a>, an implementations of Java2D based on the OpenGL
+      API for hardware accelerated graphics.  On machine with hardware
+      acceleration, some visualizations redisplay 100 times faster
+      than with the standard Java2D implementation.</dd>
+
+      <dt><b>Extensible</b></dt>
+      <dd>the InfoVis Toolkit is meant to incorporate new information
+      visualization techniques and is distributed with the full
+      sources and with a very liberal licence.  It could be a base for
+      student projects, reseach projects or commercial products.  </dd>
+    </dl>
+
+    <h3>Visualizations</h3>
+
+    <p>The InfoVis Toolkit, as of version 0.9, implements nine (9)
+    types of visualization: Scatter Plots, Time Series, Parallel
+    Coordinates and Matrices for tables; Node-Link diagrams, Icicle
+    trees and Treemaps for trees; Adjacency Matrices and Node-Link
+    diagrams for graphs.  Node-Link visualizations provides several
+    variants (8 for graphs and 4 for trees).</p>
+
+    <p>The framework has been designed to support this versatility so,
+    if you see a problem or improvements when trying to implement your
+    own visualizations, let me know so that I can improve the
+    Toolkit.</p>
+
+    <a name="pub"><h2>Publications</h2></a>
+
+    <p>Jean-Daniel Fekete, <a href="http://www.lri.fr/~fekete/ps/ivtk-04.pdf">The InfoVis Toolkit</a>, in Proceedings of the
+    10th IEEE Symposium on Information Visualization (InfoVis'04),
+    IEEE Press, 2004, pp. 167-174.</p>
+    <p><a href="http://www.inria.fr/rrrt/rr-4818.html">Jean-Daniel
+    Fekete, The InfoVis Toolkit, Research Report RR-4818, INRIA
+    Futurs, May 2003.</a></p>
+
+    <a name="downloads"></a><h2>Downloads</h2>
+
+    <p>The InfoVis Toolkit is available at
+    <a
+    href="http://ivtk.sourceforge.net">http://ivtk.sourceforge.net</a>.
+    The project is at <a
+    href="http://sourceforge.net/projects/ivtk/">http://sourceforge.net/projects/ivtk/</a>.
+    The latest version is
+    <a href="http://sourceforge.net/project/showfiles.php?group_id=117801">0.9alpha</a>.
+    </p>
+    <p>The previous versions are available on sourceforge at
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=117801">
+      http://sourceforge.net/project/showfiles.php?group_id=117801</a>.</p>
+
+    <p>Versions before 0.7 are available in
+    <a
+      href="http://www.lri.fr/~fekete/InfovisToolkit/infovis-0.6alpha1-compiled.zip">binary format in
+      infovis-0.6alpha1-compiled.zip</a> or in <a
+      href="http://www.lri.fr/~fekete/InfovisToolkit/infovis-0.6alpha1.zip">source format in
+      infovis-0.6alpha1.zip</a>.<br>
+    <a
+      href="http://www.lri.fr/~fekete/InfovisToolkit/infovis-0.5beta2-compiled.zip">binary format in
+      infovis-0.5beta2-compiled.zip</a> or in <a
+      href="http://www.lri.fr/~fekete/InfovisToolkit/infovis-0.5beta2.zip">source format in
+      infovis-0.5beta2.zip</a>.
+
+      <p>For information or bug report, send mail to <a
+      href="mailto:infovis.toolkit@inria.fr">infovis.toolkit@inria.fr</a>.</p>
+
+    <a name="documentation"></a><h2>Documentation</h2>
+
+    <p>You can look at the the <a href="api/index.html">javadoc pages
+    here</a> or read the <a href="manual.html">preliminary version of the manual</a>.</p>
+
+    <a name="toolkits"></a><h2>Other Toolkits</h2>
+
+    <p>Other toolkits related to Information Visualization:</p>
+    <ul>
+
+    <li>Katy Borner's <a
+    href="http://iv.slis.indiana.edu/sw/index.html">InfoVis
+    CyberInfrastructure</a>
+
+    <li>UC Berkeley's User Interface Research Group's <a
+    href="http://prefuse.sourceforge.net/">Prefuse</a></li>
+
+    <li>University of Maryland's <a
+    href="http://www.cs.umd.edu/hcil/piccolo/">Piccolo
+    Toolkit</a></li>
+
+    <li>Penn State Departement of Geography's <a
+    href="http://www.geovistastudio.psu.edu/jsp/index.jsp">GeoVISTA
+    Studio</a></li>
+
+    </ul>
+
+    <p>For network visualization or graph layout:</p>
+    <ul>
+
+    <li>UC Irvine's <a href="http://jung.sourceforge.net/">Java
+    Universal Network/Graph Framework (JUNG)</a>
+
+    <li>Dimitris Kalamaras's <a
+    href="http://socnetv.tripod.com/">Social Network
+    Visualizer</a></li>
+
+    <li>AT&T's <a href="http://www.graphviz.org">GraphViz</a> </li>
+
+    <li>University of Ljubljana's <a href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/">Pajek</a></li>
+
+    <li>David Auber's <a
+    href="http://www.labri.fr/Perso/~auber/projects/tulip/">Tulip</a></li>
+
+    </ul>
+
+    <a name="acknowledgments"></a><h2>Acknowledgments</h2>
+
+    <p>Many people contributed to the improvement of the Infovis
+    Toolkit:</p>
+    <ul>
+      <li>Pooven Calinghee</li>
+      <li>Urska Cvek</li>
+      <li>Naomi Durshay</li>
+      <li>Frabrice Ha&uuml;y</li>
+      <li>Nathalie Henry</li>
+      <li>Harry Hochheiser</li>
+      <li>Jean-Christophe Latsis</li>
+      <li>Elie Noleau</li>
+      <li>James Rose</li>
+    </ul>
+      
+  </body>
+ </html>

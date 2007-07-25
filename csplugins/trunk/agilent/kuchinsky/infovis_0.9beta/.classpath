@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="src" path="examples"/>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xml-writer.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/png.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/colt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/concurrent.jar"/>
+	<classpathentry exported="true" sourcepath="C:/logging-log4j-1.2.9/src" kind="lib" path="lib/log4j.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/antlr.jar"/>
+	<classpathentry kind="lib" path="lib/JFontChooser.jar"/>
+	<classpathentry kind="output" path="class"/>
+</classpath>
