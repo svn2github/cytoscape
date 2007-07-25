@@ -536,7 +536,7 @@ public class DGraphView implements GraphView, Printable {
 	public void setBackgroundPaint(Paint paint) {
 		synchronized (m_lock) {
 			if (paint instanceof Color) {
-				m_networkCanvas.setBackground((Color) paint);
+				m_backgroundCanvas.setBackground((Color) paint);
 				m_contentChanged = true;
 			} else {
 				System.out.println("DGraphView.setBackgroundPaint(), Color not found!");
@@ -550,7 +550,7 @@ public class DGraphView implements GraphView, Printable {
 	 * @return The background color on the canvas.
 	 */
 	public Paint getBackgroundPaint() {
-		return m_networkCanvas.getBackground();
+		return m_backgroundCanvas.getBackground();
 	}
 
 	/**
