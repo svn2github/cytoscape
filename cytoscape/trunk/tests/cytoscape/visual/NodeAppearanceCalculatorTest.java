@@ -260,8 +260,10 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		assertTrue("b border color  " + nb.getBorderColor() + " expect "
 				+ Color.BLACK, nb.getBorderColor().equals(Color.BLACK));
 		//assertEquals("b lineType  ", LineType.LINE_5, nb.getBorderLineType());
-		assertEquals("b line width  ", 5.0f, nb.getBorderLineType().getWidth());
-		assertEquals("b line type  ", LineStyle.SOLID, nb.getBorderLineType().getType());
+		//assertEquals("b line width  ", 5.0f, nb.getBorderLineType().getWidth());
+		assertEquals("b line width  ", 1.0f, nb.get(VisualPropertyType.NODE_LINE_WIDTH));
+		
+		assertEquals("b line style  ", LineStyle.SOLID, nb.get(VisualPropertyType.NODE_LINE_STYLE));
 		
 		assertEquals("b shape  ", ShapeNodeRealizer.RECT, nb.getShape());
 		assertEquals("b width  ", 70.0, nb.getWidth());
@@ -286,7 +288,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 				nc.getFillColor().equals(cc));
 		assertTrue("c border color  " + nc.getBorderColor() + " expect "
 				+ Color.BLACK, nc.getBorderColor().equals(Color.BLACK));
-		assertEquals("c line Type  ", LineStyle.LONG_DASH, nc.getBorderLineType().getType());
+		assertEquals("c line Type  ", LineStyle.SOLID, nb.get(VisualPropertyType.NODE_LINE_STYLE));
 		assertEquals("c line width  ", 1.0f, nc.getBorderLineType().getWidth());
 		
 		assertEquals("c shape  ", ShapeNodeRealizer.RECT, nc.getShape());
