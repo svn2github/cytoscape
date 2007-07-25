@@ -1,0 +1,10 @@
+The InfoVis Toolkit is a Interactive Graphics Toolkit written in Java/Swing to ease the development of Information Visualization applications and components.
+
+Its main characteristics are:
+1) A unified data structure to manage large datasets quickly
+2) A rich and extensible set of data structures and visualization components
+3) A unified set of interactive components for filtering (a.k.a. dynamic queries) and Magic Lenses.
+4) A small memory footprint
+5) Fast: java graphics can be accelerated using the Agile2D package based on OpenGL.
+
+Lots of cleanup and changes.

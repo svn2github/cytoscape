@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: infovis.example.InfovisSet.InfovisSet
+Class-Path: infovis.jar
+Created-By: Jean-Daniel Fekete

@@ -1,0 +1,100 @@
+List of things to do for the Infovis Toolkit
+Jean-Daniel Fekete (Jean-Daniel.Fekete@inria.fr)
+
+$Revision: 1.23 $
+
+Global
+	Add save
+	Add global menus
+	Add print/export image
+	Check removing of controls (listeners not removed)
+	Cleanup Columns classes / create a template.
+	Add references to Algorithms.
+	Add general string search
+	Thread safety policy for monitoring
+	Add a demo with all the visualizations
+	Diffentiate internal columns and synthetic columns
+		Use metadata / sync with IO to not save them
+	Check desallocation of visualizations (listeners prevent it)
+	Turn objects into Beans when that makes sense
+		Visualizations
+			PropertyChange
+			BeanInfo for visual attributes
+	Cleanup factories to all look the same, using a getInstance().
+	Load/Save configurations
+	Create a ruler layer for visualizations needing rulers
+	Animate visualizations
+
+Issues
+	Should DefaultVisualization call the factories itself or should we
+	provide an Infovis.initialize method to initialize visualizations
+	with convenient defaults?
+
+Examples
+	Create a large set of examples structured by conference/year (e.g. InfoVis02)
+	InfoVis02/03...
+
+Columns
+	Index columns for fast queries
+	Two-stage indexing for dense columns
+	Implement sparse columns
+	Computed columns through scripting / JavaScript
+	Add column visualizations
+		Histograms
+		TimeSketch
+		Arc Diagrams
+		Tile / Overlay / 
+
+Tables
+	Embed axis range sliders (create vertical rs)
+	Traditional Tables / table lens
+	Add column selection for Time Series
+
+Trees
+	Structural fisheyes (DOI [integrate])
+	Hyperbolic trees
+
+Graphs
+	Finish searches
+
+Panels
+	Other dynamic query components
+		Radio buttons
+		Check boxes
+		brushing histograms
+	Range sliders
+		Alpha-slider
+		Overlaying of information on range sliders
+		(1) display of values on both sides
+
+IO
+	Cleanup Readers and Writers
+		Move Table{Reader,Writer} in table/io
+		Provide an AbstractWriter
+	Manage metadata in Writers/Readers
+	Guess column types after loading them as strings to guess right
+	When loading XML trees, don't leave the ROOT without attributes
+
+Components
+	Color editors for Color Visualizations
+	Create sparse columns for loading XML/HTML files.
+	
+Graphics
+	Stroked fonts
+	GL vertex arrays as shapes (with Agile2D)
+	HVC/Luv Lab/LCH color management
+
+Visualization
+	Add "rulers" for scales and so.
+	Change <name>_COLUMN in visualization to COLUMN_<name> for consistency.
+	Add links clipped by shapes in LinkVisualization
+
+Excentric Labels
+	Allow selection through labels by freezing them with shift
+	      - needs change to LabelItem interface for selection
+
+Fisheyes
+	Create multi-foci fisheyes [integrate]
+
+BUGS
+	Range slider disappear under the scroll bar when it appears

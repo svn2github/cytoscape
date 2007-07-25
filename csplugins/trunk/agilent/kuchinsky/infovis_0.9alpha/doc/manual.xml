@@ -1,0 +1,1921 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "file://usr/share/xml/docbook/4.2/docboocx.dtd">
+<book id="the-infovis-toolkit">
+ <title>The InfoVis Toolkit</title>
+ <bookinfo>
+  <author>
+   <firstname>Jean-Daniel</firstname>
+   <surname>Fekete</surname>
+   <affiliation>
+    <orgname>INRIA</orgname>
+    <address role="email">Jean-Daniel.Fekete@inria.fr</address>
+   </affiliation>
+  </author>
+  <editor>
+   <firstname>Jean-Daniel</firstname>
+   <surname>Fekete</surname>
+  </editor>
+  <copyright>
+   <year>2003, 2004</year>
+   <holder>INRIA</holder>
+  </copyright>
+  <title>The InfoVis Toolkit</title>
+  <legalnotice>
+   <para>The contents of this book can be freely used and distributed
+    as far as the source is mentioned as a reference that is, its URL:
+    <ulink
+    url="http://www.lri.fr/~fekete/InfovisToolkit/manual.html">http://www.lri.fr/~fekete/InfovisToolkit/manual.html</ulink>.</para>
+  </legalnotice>
+  <publisher>
+   <publishername>INRIA Futurs/LRI</publishername>
+   <address>LRI, Batiment 490, Universitée Paris-Sud, F91405
+    Orsay, France</address>
+  </publisher>
+  <revhistory>
+   <revision>
+    <revnumber>0.4</revnumber>
+    <date>March 2004</date>
+    <revremark>Extended the tutorial and installation instructions.</revremark>
+   </revision>
+   <revision>
+    <revnumber>0.3</revnumber>
+    <date>February 2004</date>
+    <revremark>Updated to release 0.6 of the Toolkit</revremark>
+   </revision>
+   <revision>
+    <revnumber>0.2</revnumber>
+    <date>October 2003</date>
+    <revremark>Description of columns, Metadata and tables.</revremark>
+   </revision>
+   <revision>
+    <revnumber>0.1</revnumber>
+    <date>January 2003</date>
+    <revremark>Start of document</revremark>
+   </revision>
+  </revhistory>
+ </bookinfo>
+ 
+
+ <chapter>
+  <title>Introduction</title>
+
+  <para>The InfoVis toolkit is a software package aimed at simplifying
+   the development of Information Visualization Systems.  It is
+   written in Java, capitalizing on its rich interactive graphics
+   environment and portability. </para>
+
+  <para>Information Visualization is a domain that emerged in the
+   early 1990 and has expanded at a steady pace since then, showing
+   great results, innovative concepts and techniques.  So many
+   concepts and techniques that it is challenging to keep pace with
+   the implementation of the most useful techniques.  The InfoVis
+   toolkit is designed to be a repository of know-how for building
+   highest quality information visualization systems.</para>
+
+  <para>Practically, visualizations translate data items into visual
+  marks.  Data items are made of typed data attributes organized in a
+  data structure, such as employee records in a table, or files in a
+  hierarchical file system.  Visual marks are eventually made of
+  colored pixels on a screen, but can more accurately be described as
+  geometric entities displayed with graphical attributes such as color
+  or transparency.  A visualization technique consists in translating
+  each data item into a geometry and related graphical attributes to
+  draw them on screen in a specified order.  The visualization toolkit
+  provides several visualization techniques for three main data
+  structures: tables, trees and graphs. It also provides mechanisms to
+  add visualization techniques and data structures.</para>
+
+  <figure>
+   <title>Examples of Visualizations Provided by the InfoVis
+   Toolkit</title>
+   <screenshot>
+    <graphic fileref="scatterplot-small.png" format="PNG"/>
+   </screenshot>
+   <screenshot>
+    <graphic fileref="nbatreemap-small.png" format="PNG"/>
+   </screenshot>
+   <screenshot>
+    <graphic fileref="htmlgraph-small.png" format="PNG"/>
+   </screenshot>
+  </figure>
+
+  <para>Visualizations also involves <emphasis>interacting</emphasis>
+  with the visualized items and the data structures.  Interactions
+  include navigation into the data structure &mdash; including
+  zooming, dynamically filtering visualized items &mdash; including
+  dynamic queries, and various dynamic techniques such as space
+  deformations using fisheye lenses or dynamic labeling.  The
+  visualization toolkit provides several techniques for interacting
+  with the visualizations and mechanisms to add new interaction
+  techniques.</para>
+
+  <para>Interacting with visualizations require stringent constraints
+  on time.  Dynamic updates of visualization should be performed in
+  less than 100ms to appear smooth and continuous.  This constraint
+  requires the data structures to be organized in memory in a way
+  specially crafted for fast access.  The visualization toolkit
+  provides homogeneous data structures to store visualization data
+  into memory.  All data structures are represented as tables of
+  columns.  Each column contain data of homogeneous data type such as
+  integers, floating point values or strings.  This mechanism allows
+  new columns to be added to existing data structures, allowing new
+  attributes to be computed and used to enrich visualizations in a
+  uniform way.</para>
+
+  <para>This document is both a tutorial and a user's manual.  The
+   reference information can be found on the HTML descriptions produced
+   by Javadoc and will keep synchronized with the code more closely
+   than this manual.</para>
+
+  <section id="sec_installing">
+   <title>Installing the InfoVis Toolkit</title>
+   <para>The InfoVis Toolkit is a Java library, designed to work with
+   Java/Swing components.  It requires a Java 1.4 runtime or above for
+   running the library programs and examples. A Java compiler is
+   required to create applications using the InfoVis Toolkit.
+
+   The InfoVis Toolkit is composed of one main library jar file
+   called infovis.jar and several supporting libraries and programs.
+   A sample application can be run using directly from the infovis.jar
+    library using the following command, assuming the file infovis.jar
+   is in the current directory: "java -jar infovis.jar"</para>
+
+   <para>To compile applications or examples using the InfoVis
+   Toolkit, the file infovis.jar should be added to the Java class
+   path.  This is generally done using an option of you favorite IDE
+   for Java or by setting the shell variable CLASSPATH to the location
+   of the file <filename>infovis.jar</filename>.  Furthermore, you
+   need to have other library files available to run the InfoVis
+   Toolkit, all distributed with the InfoVis Toolkit in the "lib"
+   directory:</para>
+
+   <variablelist>
+    <varlistentry>
+     <term><filename>agile2d.jar</filename> and
+      <filename>agile2d_opengl.jar</filename></term>
+     <listitem>
+      <para>Agile2D library files.  These files are used by the
+      InfoVis Toolkit to support hardware accelerated graphics when
+      available.  See <ulink
+      url="http://www.cs.umd.edu/hcil/agile2d">the official site of
+      Agile2D</ulink>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>antlrall.jar</term>
+     <listitem>
+      <para>ANTLR library file, used to parse some complex file
+      formats such as the Newick Tree format or the DOT Graph
+       format.  See <ulink url="http://www.antlr.org">the official
+      site of ANTLR</ulink>.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>gl4java.jar</filename>,
+      <filename>gl4java-glffonts.jar</filename> and
+      <filename>gl4java-glutfonts.jar</filename></term>
+     <listitem>
+      <para>The Gl4java library files.  These files are used by
+      Agile2D to access the OpenGL low level library of hardware
+      accelerated graphics.  gl4java can be downloaded at <ulink
+      url="http://www.jausoft.com/products/gl4java/gl4java_main.html">
+      http://www.jausoft.com/products/gl4java/gl4java_main.html</ulink></para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>png.jar</filename></term>
+     <listitem>
+      <para>Library allowing the loading of image file of type PNG.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>xml-writer.jar</filename></term>
+     <listitem>
+      <para>A library simplifying the writing of XML files following
+      the syntactic conventions of XML.  This library is used for XML
+      file writers.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>Furthermore, some programs are used by the toolkit to layout
+    graphs: <application>dot</application>,
+    <application>neato</application> and
+    <application>twopi</application>.  These programs are provided by
+    the GraphViz package of AT&amp;T, available at <ulink
+    url="http://www.graphviz.org">the official site of
+    GraphViz</ulink>.  These programs should be in the executable PATH
+    because they will be called from the InfoVis Toolkit when graph
+    layout is used.</para>
+  </section>
+
+  <section id="sec_sample_data">
+   <title>Sample Data and File Formats</title>
+   <para>The InfoVis Toolkit is distributed with a set of sample data
+   files to try and test the toolkit or user applications.  They are
+   also used as examples of the file formats supported. </para>
+
+   <variablelist>
+    <varlistentry>
+     <term><filename>52weeks.tqd</filename> and
+     <filename>salivary.tqd</filename></term>
+     <listitem>
+      <para>Time series data provided by Harry Hochheiser from the
+      University of Maryland.  The TQD format is a variant of the CSV
+      format used by <application>Excel</application> and similar
+      applications.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>ABCYIM.clustalw</filename> and
+     <filename>ABCYabc.clustalw</filename></term>
+     <listitem>
+      <para>Phylogenetic trees in Newick format, used by the InfoVis
+      2003 Contest and provided by Elie Dassa from Institut Pasteur,
+      France.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>ABCYIM.xml</filename> and
+     <filename>ABCYabc.xml</filename></term>
+     <listitem>
+      <para>Phylogenetic trees in XML format, same as previous files
+      in another format.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>election.tm3</filename> and
+     <filename>nba.tm3</filename></term>
+     <listitem>
+      <para>Analysis data for the USA 2002 elections in a tree format,
+       by region and state.  These file are part of the
+       <application>Treemap4</application> distribution from the
+       University of Maryland. </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>nodelinktest.xml</filename>,
+      <filename>testtree.xml</filename>,
+      <filename>testtreeml.xml</filename> and
+      <filename>tree3.xml</filename></term>
+     <listitem>
+      <para>Various trees in XML using the treeml dtd provided in the
+      same directory.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><filename>jsort.dot</filename> and
+     <filename>testgraph2.dot</filename></term>
+     <listitem>
+      <para>Graphs in the DOT format. The first graph is distributed
+      with the GraphViz system and the second is a sample graph
+       provided for testing.  The file
+       <filename>jsort.out.dot</filename> provides the graph
+       <filename>jsort.dot</filename> graph positioned by the
+       <application>dot</application> program.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>testgraph.xml</filename> and
+     <filename>testgraph2.xml</filename></term>
+     <listitem>
+      <para>Two graphs using the GraphML DTD provided in the same
+      directory. </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
+  <section id="sec_file_formats">
+   <title>Supported File Formats</title>
+   <para>The InfoVis Toolkit supports a limited but extensible set of
+    file formats.  Section <xref linkend="readerswriters"/> explains
+   how file formats are read and written and how to extend the list of
+   supported file formats.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>CSV Format</term>
+     <listitem>
+      <para>Format used by <application>Excel</application> and
+      similar programs to export files using a readable format.  CSV
+      files contain tabular organized as lines, each element separated
+      by a specific character.  The InfoVis Toolkit reader for CSV
+      file can be configured to read any delimiter but, for by
+      default, the separator is the semicolon character.</para>
+
+      <para>On some CSV files, the first line contain the names of the
+      columns.  The CSV reader can be configured to read them
+      accordingly.  On some file also, the second line contain column
+      type names such as "integer" or "string".  The CSV reader can
+      also be configured to take that line into account.</para>
+
+      <para>Finally, some CSV files use initial lines for heading
+      information not relevant to the table.  the CSV reader can be
+      configured to skip a specified number of initial lines.</para>
+
+      <para>So far, all these configurations should be specified by
+      program.  A useful extension to the toolkit would allow a user
+      to load a file an specify interactively the right parameters to
+      load any kind of CSV file, but this module remains to be done.
+      Meanwhile, applications should configure the loader
+      programmatically.</para>
+
+      <para>Many file readers use that format as a base.
+       This format supports an arbitrary number of attributes
+      associated with table rows.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>XML format</term>
+     <listitem>
+      <para>XML is a meta-syntax for describing data files.  The
+      InfoVis Toolkit supports several instances of XML documents for
+      all its data types.  XML specific syntaxes is specified inside
+      XML files using a DTD declaration usually or a starting "tag"
+      expressing its contents.  The InfoVis Toolkit recognizes some
+      specific XML syntaxes and can load any XML files as a tree.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TQD</term>
+     <listitem>
+      <para>The TQD format is a variant of the CSV format using some
+      initial lines to describe the file contents and a coma as column
+      separator.  You should take a look at the sample files for more
+      hints about the format.</para>
+
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Newick format</term>
+     <listitem>
+      <para>The Newick format is used in Biology to describe
+      phylogenetic trees.  It is a weird parenthesized format
+      described at this url: <ulink
+      url="http://evolution.genetics.washington.edu/phylip/newicktree.html">http://evolution.genetics.washington.edu/phylip/newicktree.html</ulink>.</para>
+
+      <para>This format supports a limited number of attributes
+      associated with nodes.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>TM3 format</term>
+     <listitem>
+      <para>The TM3 format is the internal format used by the
+       <application>Treemap4</application> program.  It is a variant
+       of the CSV format, using the TAB character as separator.  Its
+       first line contains the column names, the second line contains
+       the column types. The remaining lines contain one entry per
+       tree node.  The path of the node is encoded after the last
+       column, following two TAB characters. It contains the path to
+       the node: the first name is the name of the root node, the
+       second name is a child of the root node etc.</para>
+
+      <para>This format supports an arbitrary number of attributes
+      associated with tree nodes.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <variablelist>
+    <varlistentry>
+     <term>The DOT format</term>
+     <listitem>
+      <para>Format used by the GraphViz applications to represent
+      graphs.  It is readable, supports an arbitrary number of
+      attributes although some of these attributes have a meaning for
+      the layout algorithms and cannot be used with an arbitrary
+      meaning.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>The XML TreeML DTD</term>
+     <listitem>
+      <para>An XML DTD has been developed for describing general
+       trees, mainly for the InfoVis 2004 Contest.  The
+       <filename>treeml.dtd</filename> file contains a good
+       description of its elements and several files show samples of
+       the format.</para>
+      <para>This format supports an arbitrary number of attributes
+      associated with tree nodes.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>The XML GraphML DTD</term>
+     <listitem>
+      <para>The GraphML format is meant for exchanging graphs.  It is
+       described in <ulink
+       url="http://graphml.graphdrawing.org">http://graphml.graphdrawing.org</ulink>. The
+       InfoVis Toolkit implements it partially.</para> <para>This
+       format supports an arbitrary number of attributes associated
+       with vertices and edges.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   
+  </section>
+
+ </chapter>
+
+ <chapter>
+  <title>Tutorial</title>
+
+  <section id="sec_starting_infovis">
+   <title>Starting with the InfoVis Toolkit</title>
+
+   <para>Several sample applications of the InfoVis Toolkit are
+    provided in the example folder in the distribution.  Visualizing a
+    table as a time-series data can be done as follows:</para>
+
+   <example id="ex1_1">
+    <title>Simple visualization program for time series data</title>
+    <programlisting linenumbering='numbered'><![CDATA[public class Example1 {
+    public static void main(String args[]) {
+        String fileName =
+            (args.length == 0) ? "data/salivary.tqd" : args[0];
+        DefaultTable t = new DefaultTable();
+        t.setName(fileName);
+        AbstractReader reader =
+            TableReaderFactory.createReader(fileName, t);
+        if (reader == null || !reader.load()) {
+            System.err.println("cannot load " + fileName);
+            return;
+        }
+        TimeSeriesVisualization visualization =
+            new TimeSeriesVisualization(t);
+        VisualizationPanel panel =
+            new VisualizationPanel(visualization);
+            
+        JFrame frame = new JFrame(fileName);
+        frame.getContentPane().add(panel);
+        frame.setVisible(true);
+        frame.pack();
+    }
+}
+]]>
+    </programlisting>
+   </example>
+
+   <para>The package declarations have been omitted for clarity.  The
+    main program creates and displays a simple time series
+    visualization from the file name specified in the first argument
+    of the program.  First, a table is created and named with the file
+    name.  Loading the file is done in two steps: finding a reader and
+    actually loading the file from this reader.  The reader is created
+    through a <indexterm><primary>factory object</primary></indexterm>
+    <emphasis>factory object</emphasis>.  Factories are used to create
+    objects indirectly according to some specified parameters (we will
+    describe them later in depth). Here, a reader object is created
+    from a file name and a table object.  The factory analyzes the
+    file name and maybe the file contents to create the most suitable
+    reader for it.  If no reader is returned or the reader cannot load
+    the file, the program is exited with an error message.  Otherwise,
+    a visualization object is created and inserted in a standard
+    Java/Swing JFrame inside a visualization panel.
+   </para>
+
+   <para>In this example, the visualization is not interactive because
+   we haven't created any control panel associated with the
+   visualization.  We can have the control panel if we replace the
+   creation of the visualization panel by the following code:</para>
+
+   <programlisting linenumbering='numbered'><![CDATA[        ControlPanel panel =
+            ControlPanelFactory.sharedInstance()
+              .createControlPanel(visualization);
+]]>
+</programlisting>
+
+   <para>Factories are quite simple and very useful for extending the
+    infovis toolkit.  They are simple objects with one creator method
+    that looks at it arguments and create an object according to them.
+    The TableReaderFactory looks at the file name and, if it recognizes
+    that it ends with the ".csv" extension returns a new CSVTableReader.
+    If it receives a file name ending with ".csv.gz", it recognizes that
+    the file is compressed by GZIP and decompress is on the fly.  New
+    file readers can then be defined by programmers and added to newer
+    releases of the infovis toolkit and the same program will then be
+    able to read these new file formats without modification.  Other
+    kinds of customizations are allowed by the "factory" pattern but we
+    will describe them on a separate section.</para>
+  </section>
+
+  <section id="sec_organization">
+   <title>Organization of the InfoVis Toolkit</title>
+
+   <para>Although the InfoVis Toolkit may seem large by the number of
+    classes it defines, it follows a very simple structure.  At the
+    top-level, it defines the most important interfaces and classes:
+    <classname>Column</classname>, <classname>Table</classname>,
+    <classname>Tree</classname>, <classname>Graph</classname>,
+    <classname>Visualization</classname> and
+    <classname>Metadata</classname>.  The first-level defines the
+    several column classes in the <filename>column</filename> package,
+    basic input/output classes in the <filename>io</filename> package,
+    several metadata categories in the <filename>metadata</filename>
+    package, control panels and interaction components in the
+    <filename>panel</filename> package, a
+    <filename>visualization</filename> package for the visualization
+    internals and subpackages for the data-structures:
+    <filename>table</filename>, <filename>tree</filename> and
+    <filename>graph</filename>.  Finally, a <filename>utils</filename>
+    package contains utility classes that don't fit in other packages.
+   </para>
+
+   <para>Each data-structure related package also contain sub-packages
+    for their input/output components and their visualizations.  This
+    is where the default readers and writers are defined, as well as
+    the visualizations provided by default.</para>
+  </section>
+
+  <section id="sec_visualizing_tree">
+   <title>Carrying on: Visualizing a Tree as a Treemap</title>
+
+   <para>To visualize a tree data-structure using the "Treemap"
+    <citation xreflabel="treemap"/> visualization technique, the code
+    would be:</para>
+
+   <example id="ex1_2">
+    <title>Simple visualization program for hierarchical data</title>
+    <programlisting linenumbering='numbered'><![CDATA[import infovis.tree.DefaultTree;
+import infovis.tree.io.TreeReaderFactory;
+import infovis.tree.visualization.TreemapVisualization;
+import infovis.io.AbstractReader;
+import infovis.panel.ControlPanel;
+import infovis.panel.ControlPanelFactory;
+
+import javax.swing.JFrame;
+
+public class Example2 {
+    public static void main(String[] args) {
+        String fileName =
+            (args.length == 0) ? "data/salivary.tqd" : args[0];
+        DefaultTree t = new DefaultTree();
+        AbstractReader reader =
+            TreeReaderFactory.createReader(fileName, t);
+        if (reader == null || !reader.load()) {
+            System.err.println("cannot load " + fileName);
+        }
+
+        TreemapVisualization visualization =
+            new TreemapVisualization(t, null, Squarified.SQUARIFIED);
+        ControlPanel control =
+            ControlPanelFactory.sharedInstance().createControlPanel(
+                visualization);
+
+        JFrame frame = new JFrame(fileName);
+        frame.getContentPane().add(control);
+        frame.setVisible(true);
+        frame.pack();
+    }
+}
+]]>
+    </programlisting>
+   </example>
+
+   <para>The package declaration for the program <xref
+     linkend="ex1_1"/> is:</para>
+
+   <programlisting id="ex1_3"><![CDATA[import infovis.io.AbstractReader;
+import infovis.table.DefaultTable;
+import infovis.table.io.TableReaderFactory;
+import infovis.table.visualization.TimeSeriesVisualization;
+import infovis.panel.ControlPanel;
+import infovis.panel.ControlPanelFactory;
+
+import javax.swing.JFrame;
+    ]]>
+   </programlisting>
+  </section>
+
+  <section id="sec_spec_visual_attr">
+   <title>Specifying Visual Attributes</title>
+
+   <para>Each visualization technique use a layout algorithm and
+   several visual attributes to set the color or geometric properties
+   of the displayed items.  For example, scatter plots compute the
+   position of items based on two visual attributes: one for the X
+   coordinate and one for the Y coordinate.  Each item can have a size
+   and a color.  These visual attributes can be associated with data
+   columns or set to default values.</para>
+
+   <para>Some visual attributes are generic to all visualizations and
+   others are specific.  The generic attributes are color,
+    label and size.  For example, if you know that the tree in example
+   <xref linkend="ex1_2"/> has an column called "name", you can
+   specify it as the label column like this:</para>
+
+   <programlisting id="ex1_4"><![CDATA[            visualization.setVisualColumn(
+                Visualization.VISUAL_LABEL,
+                t.getColumn("name"));
+]]></programlisting>
+
+   <para>The label will then appear with a form depending on the
+   visualization: inside items for scatter plots or trees.  If
+   dynamic labels are enabled, they will use the content of this
+   column for their labels.</para>
+
+   <para>Visualization technique may use additional visual attributes
+   such as shape for scatter plots.  Some visual attributes, such as
+   color and stroke, are defaulted when they not specified.  The
+   default value can be set through the methods of the form:
+   <methodname>setDefault&lt;ATTRIB&gt;(ATTRIB default)</methodname>.
+   </para>
+
+  </section>
+
+  <section id="sec_using_fisheyes">
+   <title>Using Fisheye Lenses or Dynamic Labeling</title>
+
+   <para>Allowing Fisheye Lenses is just a visualization
+   option:</para>
+
+   <programlisting id="ex1_6"><![CDATA[
+            visualization.setFisheyes(new Fisheyes());
+]]></programlisting>
+
+   <para>Enabling Dynamic Labeling involves creating a new
+    <indexterm><primary>visualization layer</primary></indexterm>
+    visualization layer above the main visualization.  Here is the
+    required code:</para>
+
+   <programlisting id="ex1_5"><![CDATA[
+        TimeSeriesVisualization visualization =
+            new TimeSeriesVisualization(t);
+        ControlPanel control =
+            ControlPanelFactory.sharedInstance().
+                createControlPanel(excentric);
+]]></programlisting>
+
+   <para>The toolkit provides higher-level mechanisms to create
+   visualizations and display them using option panels allowing
+   fisheye views and dynamic labeling to be enabled or disabled at
+   will. </para>
+
+  </section>
+
+  <section id="sec_creating_managing_ds">
+   <title>Creating and Managing Data Structures</title>
+   <para>The InfoVis Toolkit comes with three main data types suited
+   to visualizations: tables, trees and graphs.  This section shows
+   how to create and manage them.</para>
+
+   <section id="sec_managing_tables">
+    <title>Managing Tables</title>
+
+    <para><classname>Table</classname> is the basic structure for
+     storing data managed by the InfoVis Toolkit.  A Table is made of
+     <classname>Column</classname>s.  Here is a example of table
+     creation and initialization.  The table will be made of three
+     columns called "name", "date" and "size":</para>
+    <programlisting id="ex1_7"><![CDATA[Table table = new DefaultTable();
+StringColumn name = new StringColumn("name");
+table.addColumn(name);
+LongColumn date = new LongColumn("date");
+table.addColumn(date);
+IntColumn size = new IntColumn("size");
+table.addColumn(size);
+]]></programlisting>
+
+    <para>At this point, the table only contains columns, no
+    values. To add two values to the table, the columns should be
+    filled:</para>
+    <programlisting id="ex1_8"><![CDATA[
+name.add("file1");
+date.add(124334);
+size.add(1024);
+name.add("file2");
+date.add(143434);
+size.add(10);
+]]></programlisting>
+
+    <para>Adding dates as long integer is not very convenient.
+     Columns can convert strings into the values they hold using a
+     <classname>Format</classname>:</para>
+    <programlisting id="ex1_9"><![CDATA[
+date.setFormat(new UTCDateFormat());
+name.add("file1");
+date.addValue("03/23/2003 15:32:10");
+size.add(1024);
+name.add("file2");
+date.addValue("03/10/2004 10:43:21");
+size.add(10);
+]]></programlisting>
+
+    <para>This syntax is much simpler to read and is also useful for
+    reading from a data file.  Formats transform a string into a typed
+    value and, on the other direction, transform an internal
+    representation into an printable string.  Dates could be managed
+     as Java Objects using an <classname>ObjectColumn</classname> but
+    their memory footprint and speed would be much worse.  In general,
+    it is wise to transform an external representation into the most
+    suitable internal representation.  If you want to manage a table
+    containing names that are categories, such as the days of the week
+    or the states of the USA, you should use an IntColumn to hold the
+     category number and use a
+    <classname>CategoricalFormat</classname> to map from the category
+    name to the category number in the column automatically.</para>
+
+    <para>Columns can have missing values.  Suppose your have a
+    dataset containing a pollution value sent by a sensor every hour.
+    If this sensor stops working properly and is fixed in four hours,
+    your serial dataset will miss four values.  Here is an example of
+    code that reads a file containing values where empty lines are
+    considered missing values:</para>
+
+    <programlisting id="ex1_10"><![CDATA[IntColumn pollution = new IntColumn("pollution");
+for (int i = 0; true; i++) {
+    String line = input.readLine();
+    if (line == null)
+        break;
+    if (line.length() != 0) {
+        pollution.setValue(i, line);
+    }
+}
+]]></programlisting>
+
+    <para>Once a table has been created and filled, it can be
+    visualized.  The table can also be dynamically modified while it
+    is visualized since columns implement a mechanism to notify
+    interested objects when they are modified.  </para>
+
+    <para>Section <xref linkend="sec_tables"/> provides all the
+    details on manipulating tables.</para>
+   </section>
+
+   </section>
+
+   <section id="sec_managing_trees">
+    <title>Managing Trees</title>
+
+    <para>Trees are data structures based on tables.  Here is an
+    example of tree creation:</para>
+    <programlisting id="ex1_11"><![CDATA[Tree tree = new DefaultTree();
+StringColumn name = new StringColumn("name");
+tree.addColumn(name);
+LongColumn date = new LongColumn("date");
+tree.addColumn(date);
+IntColumn size = new IntColumn("size");
+tree.addColumn(size);
+date.setFormat(new UTCDateFormat());
+int node = tree.addNode(Tree.ROOT);
+name.setValue(node, "file1");
+date.setValue(node, "03/23/2003 15:32:10");
+size.setExtend(node, 1024);
+node = tree.addNode(Tree.ROOT);
+name.setValue(node, "file2");
+date.setValue(node, "03/10/2004 10:43:21");
+size.setExtend(node,10);
+]]></programlisting>
+
+    <para>This example is similar to the table example but instead of
+    adding data in columns, it uses node numbers created by the tree
+    as indexes. Contrary to the table example, the indexes returned by
+    the tree method <methodname>addNode(int parent)</methodname> can
+    be in any order and the attribute values should be set at the node
+    index.  This explains why we used the methods
+    <methodname>setValue(int index, String v)</methodname> and
+    <methodname>setExtend(int index, TYPE v)</methodname> instead of
+    <methodname>addValue(String v)</methodname> and
+    <methodname>add(TYPE v)</methodname> in the table example.</para>
+
+    <para>Section <xref linkend="sec_tree"/> prodigies all the details
+    on manipulating trees.</para>
+   </section>
+
+   <section id="sec_managing_graphs">
+    <title>Managing Graphs</title>
+
+    <para>Graphs data structures are based on tables.  A graph is made
+    of two tables: the vertex table and the edge table.  Here is an
+    example of graph creation:</para>
+
+    <programlisting id="ex1_12"><![CDATA[Graph graph = new DefaultGraph();
+StringColumn name = new StringColumn("name");
+graph.getVertexTable().addColumn(name);
+LongColumn date = new LongColumn("date");
+graph.getVertexTable().addColumn(date);
+IntColumn size = new IntColumn("size");
+graph.getVertexTable().addColumn(size);
+date.setFormat(new UTCDateFormat());
+int v1 = graph.addVertex();
+name.setValue(v1, "file1");
+date.setValue(v1, "03/23/2003 15:32:10");
+size.setExtend(v1, 1024);
+int v2 = graph.addVertex();
+name.setValue(v2, "file2");
+date.setValue(v2, "03/10/2004 10:43:21");
+size.setExtend(v2,10);
+
+IntColumn refCount = new IntColumn("edgeCount");
+graph.getEdgeTable().addColumn(refCount);
+int e1 = graph.addEdge(v1, v2);
+refCount.setExtend(e1, 1);
+]]></programlisting>
+
+   <para>This example creates a new graph and adds the same three columns
+    as in the previous examples to the vertex table.  It also creates
+    a column name "refCount" associated with the edge table, so the
+    graph has both attributes associated to its vertices ("name",
+    "date" and "size") and to its edges ("refCount").</para>
+   
+    <para>Section <xref linkend="sec_graphs"/> provides all the details
+    on manipulating graphs.</para>
+  </section>
+
+ </chapter>
+ 
+ <chapter id="chap_data_structures">
+  <title>Data Structures</title>
+
+  <para>Data structures define two things: a topology and data
+   attributes.  Classical topologies include tables, trees and graphs.
+   data attributes are usually defined as tuples associated with the
+   topology.  For example, an employee data type can be described by a
+   set of attributes such as "birth date", "first name", "last name",
+   and "social security number".  A table of employees is an indexed
+   container that contains one employee per defined index.</para>
+
+  <para>Tables, trees and the graphs data structures are well
+   documented on text books such as <citation>Knuth97</citation>
+   <citation>Cormen01</citation>, albeit with a different focus than
+   ours. The associated data attributes associated with the topology
+   are well described in databases -- where they are sometimes called
+   tuples and managed as tables -- and in programming languages also
+   provide simple means to define data types and aggregate them in
+   compound structures such as tables, trees or graphs.  Advanced
+   computer languages allow the definition of tables of employees,
+   trees of employees or graph of employees related by some
+   relationship.</para>
+
+  <para>These systems usually represent tables as an array of tuples
+   where each tuple is a row and each attribute is a column.  They
+   allow for easy insertion or deletion of new tuples, but don't allow
+   the easy modification of the data structure.</para>
+
+  <para>The InfoVis Toolkit takes a different approach than databases
+   tuples and language aggregated data structures: it uses "columns"
+   internally so that new attributes can easily be added to existing
+   data structures.  Inserting or removing rows is as easy as inserting
+   or removing attributes.</para>
+
+  <para>This approach is important in Information Visualization as it
+   is in spreadsheet calculators since several computations or
+   visualizations require new values to be computed and
+   manipulated.</para>
+
+  <para>In the next sections, we explain the main properties of a
+   column and how it can be used.  We then describe how traditional
+   data structures are built on top of the columns.</para>
+
+  <section id="sec_columns">
+   <title>Columns</title>
+
+   <para>A column is an index container that contains a homogeneous
+    data structure, such as integers, floating point values or string.
+    Columns also manage <emphasis>Metadata</emphasis>,
+    <emphasis>notification</emphasis> and <emphasis>undefined
+     values</emphasis>.</para>
+
+   <para><interface>Column</interface> is a Java interface
+    with several concrete implementations. There are two derivation
+    paths for columns, one is for concrete data types and the other one
+    is for dense versus sparse columns.</para>
+
+   <para>Dense columns are based on primitive array, providing a
+    constant access time and a memory footprint linear with the number
+    of entries.  Sparse columns are based on sorted trees, providing a
+    log(n) access time and a memory footprint linear with the number of
+    defined entries.  They come specialized for the most used data
+    types such as <type>int</type>, <type>long</type>,
+    <type>float</type>, <type>double</type>, <type>String</type>,
+    <type>Object</type>, <type>bool</type> and some others used
+    internally. </para>
+
+   <para>The interface of the <ulink url="api/infovis/Column.html">
+    <interfacename>Column</interfacename></ulink> should be described
+    using an extended syntax with parameterized types to be complete.
+    Each of the concrete class implementing the Column interface for
+    storing an object of class TYPE should provide a set of methods
+    using this concrete type.  For example, the IntColumn class
+    implements all the methods with "TYPE" replaced by
+    <type>int</type> so the <methodname>get</methodname> method
+    returns an <type>int</type>.</para>
+
+   <para>The Java language doesn't allow this kind of type
+   parametrization yet &mdash; although a newer experimental version
+   does &mdash; so the declaration doesn't express this requirement
+   and the Java compiler doesn't enforce these methods, but we have
+   worked hard to implement them and check them by hand.  If you want
+   to implement a new kind of <interfacename>Column</interfacename>,
+   you will also have to implement them.</para>
+   
+   <para>The <ulink url="api/infovis/utils/RowComparator.html">
+     <interfacename>RowComparator</interfacename></ulink> interface
+     allows elements to be compared and sorted without having to know
+     their type.  It declares the
+     <methodname>compare(int,int)</methodname> method for comparing
+     the values of two rows in the column. </para>
+
+   <para>The basic interface specifies that column elements can always
+   be manipulated in their textual representations.  This is
+   convenient for loading column contents from a textual file or
+   saving them.  It also provides a representation for using the
+   columns for labeling visualizations.  However, the real value
+   stored in a concrete column can be of any type.</para>
+
+   <para>When the concrete type of the column is known, the concrete
+    method, shown as parametrized in the interface, such as
+    <methodname>get</methodname> or<methodname>set</methodname>, can
+    be used to access the concrete values of the column elements.
+    These methods are fast since they don't involve any allocation or
+    transformation.</para>
+
+   <section>
+    <title>Presentation Format</title>
+
+    <para>Transforming from <type>String</type> values to internal
+     values is performed by <classname>java.text.Format</classname>
+     objects.  These objects can transform a <type>String</type> into
+     an <type>Object</type> through the <methodname>parse</methodname>
+     method.  They can also transform an <type>Object</type> into a
+     <type>String</type> through the <methodname>format</methodname>
+     method.  This mechanism is used internally by columns and can be
+     extended by users if needed.</para>
+
+    <para>For example, date and time information associated to
+    computer files is usually represented as a 32bits or 64bits
+    integer value.  Storing file dates in a table or tree structure
+     can be done either as a column of <type>String</type> or as a
+    column of <classname>long</classname>.  The later offer two
+    advantages: it is more compact and dates can then be compared using
+    standard integer comparison.  Translating from a standard date
+    format such as the Unix date for files can be specified as follows:
+  </para>
+
+    <example id="ex2_1">
+     <title>Creating a <classname>LongColumn</classname> Reading Dates
+     in the Unix Format </title>
+     <programlisting><![CDATA[      LongColumn dateColumn = new LongColumn("date");
+      dateColumn.setFormat(new UTCDateFormat());
+      dateColumn.addValueOrNull("29 Oct 2003 21:47:32");
+]]>
+</programlisting>
+    </example>
+
+    <para>If the values are read as integers, maybe because they have
+     been read directly from a function that return them as a
+     <type>long</type>, the format can still be specified but the
+     value can now be added as a <type>long</type> using the
+     <methodname>add</methodname> method.</para>
+
+    <para>Java Formats transform a string into an object or an object
+    into a string.  to work in a Column, the format should return an
+    object compatible with the concrete type of the column.  For
+    example, number columns expect the object to be a Java
+    <interfacename>Number</interfacename> to extract the value from
+    it.  Ganeral Java Formats may not return the right kind of object,
+    requiring the derivation of the Format class to return the propoer
+    value.  This is what the <ulink
+    url="api/infovis/column/UTCDateFormat.java">UTCDataFormat</ulink>
+    does for dates.</para>
+   </section>
+
+   <section>
+    <title>NumberColumns</title>
+
+    <para>Very often, Columns contain number of different types such
+    as integers, floats, long or doubles.  It is however very
+    convenient to abstract the differences between these
+    representation of numbers and manipulate them all in a similar
+    way.  <classname>NumberColumn</classname> is an interface that
+    allows columns holding numeric types to be manipulated in a
+    similar way.  For example, when a visualization needs to map a
+    number column to the X screen position, it usually applies a
+    simple linear transformation to the values of the column,
+    regardless of their concrete type.  Without the
+    <classname>NumberColumn</classname> abstraction, the mapping would
+    have to consider each concrete number type, which would be painful
+    and error prone.  </para>
+
+    <para><classname>NumberColumn</classname> should define methods to
+    get or set a row with all the Java number types.  These methods
+    are <methodname>get&lt;TYPE&gt;at(int)</methodname> and
+    <methodname>set&lt;TYPE&gt;At(int,TYPE)</methodname>.  The
+    implementation should take care not to lose precision when
+    possible.  The safest bet when getting values from a NumberColumn
+    is to ask for a <type>double</type>.  Only some <type>long</type>
+    values may loose precision when represented as a double.  Ideally,
+    this should be checked but isn't currently.  When setting a value,
+    it could be specified using its "natural" type to insure that the
+    conversion will be as lossless as possible.</para>
+
+    <para>Methods are also defined to get the minimum and maximum
+     values contained in the columns:
+     <methodname>get&lt;TYPE&gt;Min()</methodname> and
+     <methodname>get&lt;TYPE&gt;Max()</methodname>.  Finally, a
+     <methodname>round(double)</methodname> method returns the closest
+     representation of a number for the column, as a double.  For
+     example, on a column of integers, round(3.5) will return
+     3.</para>
+
+   </section>
+
+   <section>
+    <title>Dense Columns</title>
+
+    <para>Dense columns are based on primitive Java arrays.  For now,
+    they use one large array but this may change for several array
+    chunks to avoid copying large blocks when resizing the array.
+    Access time and modification time are constant, not counting the
+    time required to perform notification when the changing the
+    values.</para>
+
+    <para>Undefined values are still allowed.  For columns containing
+     object-values (non-literal values), undefined rows contain the
+     <varname>null</varname> value.  For Column containing literal
+     types, undefined rows are stored as integers in a balanced binary
+     tree.</para>
+
+    <section id="sec_literal_columns">
+     <title>Literal Columns: <classname>IntColumn</classname>,
+      <classname>LongColumn</classname>,
+      <classname>FloatColumn</classname> and
+      <classname>DoubleColumn</classname></title>
+
+     <para>Literal columns contain values considered as literal in
+     Java: integers, longs, floating point values and double values.
+     These number types are not objects but are much more efficient
+     than general objects in term of storage and computation. This is
+     why the Infovis Toolkit rely on them for efficiency. </para>
+    </section>
+
+    <section>
+     <title>BooleanColumn</title>
+     <para><type>Boolean</type> columns are literal columns containing
+     boolean value.  They are also number columns, returning a 0 for a
+     false value and a one for a true value.  They also implement the
+     ListSelection interface acd+++ </para>
+    </section>
+
+    <section>
+     <title>FilterColumn</title>
+     <para></para>
+    </section>
+
+    <section>
+     <title>StringColumn and ObjectColumn</title>
+     <para></para>
+
+    </section>
+
+   </section>
+
+   <section>
+    <title>Sparse Columns</title>
+    <para></para>
+
+   </section>
+
+   <section>
+    <title>Column Dependencies</title>
+
+    <para>The values of one column can be the result of a computation
+     made from values taken from other columns.  The dependencies can
+     be maintained so that each time an column value is modified, all
+     the dependent columns are updated. </para>
+
+    <para>MORE TO COME</para>
+   </section>
+  </section>
+
+  <section id="sec_tables">
+   <title>Tables</title>
+
+   <para>Tables are the simplest data structure of the InfoVis
+   toolkit.  A simple way to create and populate a table is:</para>
+
+   <programlisting linenumbering='numbered'><![CDATA[Table table = new DefaultTable();
+table.setName("Cities");
+StringColumn name = StringColumn.findColumn(table, "name");
+IntColumn population = IntColumn.findColumn(table, "population");
+name.add("New York");
+population.add(2000000);
+name.add("Los Angeles");
+population.add(1000000);
+]]>
+</programlisting>
+
+   <figure id="fig_table">
+    <title>The Table interface</title>
+    <classsynopsis language="java" id="Table" class="interface">
+     <ooclass>
+      <modifier>public</modifier>
+      <classname>Table</classname>
+     </ooclass>
+     <oointerface>
+      <interfacename>Metadata</interfacename>
+     </oointerface>
+     <oointerface>
+      <interfacename>TableModel</interfacename>
+     </oointerface>
+    </classsynopsis>
+   </figure>
+
+   <para>The Table interface is described in <xref
+   linkend="fig_table"/>.  A Table also manages Metadata and
+   implements the TableModel interface, enabling its use in a standard
+   Java Swing JTable.  Table defines methods to add/remove/access
+   columns by name or index.  The <methodname>getRowCount</methodname>
+   method returns the maximum number of rows of each of the columns in
+   the table; Tables don't maintain their own row counts.  The columns
+   contained in a Table may have different row counts.  This is not a
+   problem at all considering that columns can contain undefined rows;
+   the row count of a table is indeed the largest row count and
+   columns with less elements are considered as having undefined
+   values at their ends.</para>
+
+   <para>The default implementation of the Table interface is the
+   <classname>DefaultTable</classname> class.  Concrete
+   implementations of <interfacename>Tree</interfacename> and
+   <interfacename>Graph</interfacename> derive from this
+   class. </para>
+
+  </section>
+
+  <section id="sec_tree">
+   <title>Trees</title>
+
+   <figure id="fig_tree">
+    <title>The Tree interface</title>
+    <classsynopsis language="java" id="Tree" class="interface">
+     <ooclass>
+      <modifier>public</modifier>
+      <classname>Tree</classname>
+     </ooclass>
+     <oointerface>
+      <interfacename>Table</interfacename>
+     </oointerface>
+    </classsynopsis>
+   </figure>
+
+   <para>The InfoVis Toolkit implements rooted trees with the
+   interface describe in <xref linkend="fig_tree"/>.  A Tree manages a
+   topology and associated attributes, stored in columns.  Creating a
+   file-system like tree can be done using this example
+   program:</para>
+
+   <programlisting><![CDATA[    Tree tree = new DefaultTree();
+    StringColumn name = StringColumn.findColumn(tree, "name");
+    LongColumn date = LongColumn.findColumn(tree, "date");
+    date.setFormat(new UTCDateFormat());
+    
+    name.setValueAt(Tree.ROOT, "/");
+    date.setValueAt(Tree.ROOT, "29 Oct 2003 21:47:32");
+
+    int n1 = tree.add(Tree.ROOT); // Child of tree root
+    name.setValueAt(n1, ".classpath");
+    date.setValueAt(n1, "23 Feb 2004 22:46:30");
+
+    int n2 = tree.add(Tree.ROOT); // 2nd child of tree root
+    name.setValueAt(n2, "CVS");
+    date.setValueAt(n2, "6 May 2003 23:32:34");
+
+    int n3 = tree.add(n2); // child of node n2
+    name.setValueAt(n3, "Entries");
+    date.setValueAt(n3, "24 Feb 2003 23:30:13");
+]]></programlisting>
+
+   <para>A Tree is implemented as a Table.  Nodes are simply indexes.
+    Currently, four internal columns are used to manage the topology.
+    These columns can be read and even modified, but doing so would
+    certainly break the structure so it should be avoided.  The
+    internal columns are all <classname>IntColumn</classname>s.  Here
+    is their description:</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>"#parent"</term>
+     <listitem>
+      <para>Contain the parent node for each node.  The first line in
+      the following examples is equivalent to the next two
+      lines:</para>
+      <programlisting><![CDATA[       int p = tree.getParent(node);
+
+       IntColumn parentColumn = IntColumn.findColumn(tree, Tree.PARENT_COLUMN);
+       int p = parentColumn.get(node);
+]]></programlisting>
+
+      <para>The parent of the node <constant>Tree.ROOT</constant> is
+       <constant>Tree.NIL</constant>.  All other valid nodes have
+       non-nil parents. </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>"#child"</term>
+     <listitem>
+      <para>Contains the first child of a node or
+      <constant>Tree.NIL</constant> for a leaf node.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>"#next"</term>
+     <listitem>
+      <para>Contains the next sibling of nodes, or
+      <constant>Tree.NIL</constant> if the node is the last child of a
+      node.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>"#last"</term>
+     <listitem>
+      <para>Contains the last child of a node or
+      <constant>Tree.NIL</constant> for a leaf node.  The last child
+      of a node could be computed by following the siblings of the
+      first child of a node but Maintaining the last node is faster.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>Other internal columns can be maintained automatically by the
+    <classname>DefaultTree</classname> implementation to speedup
+    topological queries such as the depth of a node, its degree
+    (number of children) or to access the children list faster.  The
+    depth column is created and maintained using the method
+    <methodname>createDepthColumn</methodname>.  The degree column is
+    created and maintained using the method
+    <methodname>createDegreeColumn</methodname>.</para>
+
+  </section>
+
+  <section id="sec_graphs">
+   <title>Graphs</title>
+
+   <figure id="fig_graph">
+    <title>The Graph interface</title>
+    <classsynopsis language="java" id="Graph" class="interface">
+     <ooclass>
+      <modifier>public</modifier>
+      <classname>Graph</classname>
+     </ooclass>
+     <oointerface>
+      <interfacename>Table</interfacename>
+     </oointerface>
+    </classsynopsis>
+   </figure>
+
+
+   <para>Graphs are composed of two tables: a vertex table and a link
+   table.  The first holds topological informations about the vertices
+   and their associated attributes as columns.  The second holds the
+   topological information about the links.  The Graph interface is
+   described in <xref linkend="fig_graph"/>.</para>
+
+   
+
+  </section>
+
+  <section id="sec_metadata">
+   <title>Metadata</title>
+
+   <para><indexterm><primary>Metadata</primary></indexterm>Metadata
+    is information about the data.  Columns and tables can contain
+    metadata implemented as an associative map between a key and a
+    value, usually strings.  </para>
+
+   <para>There are many types of metadata; well known uses include the
+   description of the dataset in term of a title, an author, a
+   creation date, etc.  Another use could be describing the processing
+   performed on a table or on a column to create it.  The InfoVis
+   toolkit uses the metadata for several different purposes that we
+   describe here with no particular order.</para>
+   
+
+   <section>
+    <title>Standard Description</title>
+
+    <para>It is useful to describe a dataset using standard and
+    well-understood metadata categories. We use the Dublin Core
+    metadata vocabulary, meant to standardize simple and useful
+    description attributes.</para>
+
+    <para>MORE TO COME</para>
+
+    
+
+   </section>
+
+   <section>
+    <title>Aggregation</title> <para><indexterm>
+      <primary>Aggregation</primary></indexterm>Aggregation information
+     applies to columns in a Tree.  Some columns only define values
+     for the leaf nodes of the tree.  For example, when loading the a
+     file directory in a Tree, InfoVis doesn't provide size
+     information for directories, only for files.  However, we know
+     what the file size of a directory means, it is the sum of the
+     file sizes.  In that situation, the column containing the file
+     sizes will have an aggregation metadata explaining just that: the
+     file sizes add up with the hierarchy.</para>
+
+    <para>Adding up with the hierarchy is a common aggregation
+     method, but others exist as well.  First, some column don't
+     aggregate at all.  For example, the file names don't aggregate,
+     but it turns out they are defined for all the directories so we
+     don't need to invent a new name.  Usually, nominal and
+     categorical information don't aggregate.  If your file have
+     types, such as image or text, the directory cannot simply compute
+     a similar category.  We will see later that we could still create
+     an aggregation function in similar cases, but let's continue with
+     simpler cases.</para>
+
+    <para>The InfoVis Toolkit defines seven well understood
+     aggregation types: <firstterm>additive</firstterm>,
+     <firstterm>max</firstterm>, <firstterm>min</firstterm>,
+     <firstterm>mean</firstterm>, <firstterm>concat</firstterm>,
+     <firstterm>atleaf</firstterm> and <firstterm>none</firstterm>.
+     We have already discussed the additive type.  The "max", "min"
+     and "mean" are similar.  "Max" computes the maximum over all the
+     children as the aggregation function.  "Min" and "mean" compute
+     the minimum and the mean respectively.  As an example, consider
+     file dates in a directory tree.  If you are interested by
+     finding the latests work performed, you want to aggregate dates
+     on the maximum date value of each directory.</para>
+
+    <para>The "concat" type is for string values and simply specifies
+     that the values will be concatenated into a string with a space
+     between them.  Finally, the "atleaf" means that the attributes
+     are only defined at the leaves, not for interior nodes.  In that
+     case, any of the numeric aggregation function can be freely
+     applied to the column if it is a numerical column, and the
+     concatenation function can be applied in all cases.</para>
+
+    <para>There is one class defined to manage each aggregation
+     function.  These classes are useful to compute the aggregated
+     values of a column or checking whether a column belongs to one
+     aggregation category.  Furthermore, new aggregation classes can
+     be defined if you need it.  In that case, you will need to define
+     how to recognize a column that aggregates using your function and
+     to compute the function.  The
+     <classname>AggregationCategory</classname> class is a factory for
+     aggregation functions so you can add yours and it will be
+     correctly applied.  </para>
+
+    <para>Aggregation information is stored with the
+     <constant>AGGREGATION_TYPE</constant> metadata key.  The
+     following constants are defined in
+     <filename>infovis.metadata.AggregationConstants.java</filename>:
+     <itemizedlist>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_NONE</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_NONE</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_ATLEAF</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_ADDITIVE</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_MAX</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_MIN</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_MEAN</constant></para>
+      </listitem>
+      <listitem>
+       <para><constant>AGGREGATION_TYPE_CONCAT</constant></para>
+      </listitem>
+     </itemizedlist>
+    </para>
+    
+    <section>
+     <title>The Aggregation Class</title>
+     
+     <classsynopsis class="interface">
+      <ooclass>
+       <modifier>public</modifier>
+       <classname>Aggregation </classname>
+      </ooclass>
+      <oointerface>
+       <interfacename>AggregationConstants</interfacename>
+      </oointerface>
+      <fieldsynopsis>
+       <modifier>public static final</modifier>
+       <type>short</type>
+       <varname>AGGREGATE_NO</varname>
+       <initializer>0</initializer>
+      </fieldsynopsis>
+      <fieldsynopsis>
+       <modifier>public static final</modifier>
+       <type>short</type>
+       <varname>AGGREGATE_YES</varname>
+       <initializer>1</initializer>
+      </fieldsynopsis>
+      <fieldsynopsis>
+       <modifier>public static final</modifier>
+       <type>short</type>
+       <varname>AGGREGATE_COMPATIBLE</varname>
+       <initializer>-1</initializer>
+      </fieldsynopsis>
+      <methodsynopsis>
+       <modifier>public</modifier>
+       <type>short</type>
+       <methodname>isAggregating</methodname>
+       <methodparam>
+	<parameter>Column col</parameter>
+       </methodparam>
+      </methodsynopsis>
+      <methodsynopsis>
+       <modifier>public</modifier>
+       <type>Column</type>
+       <methodname>aggregate</methodname>
+       <methodparam>
+	<type>Column</type>
+	<parameter>src</parameter>
+       </methodparam>
+       <methodparam>
+	<type>Tree</type>
+	<parameter>tree</parameter>
+       </methodparam>
+       <methodparam>
+	<type>Column</type>
+	<parameter>dst</parameter>
+       </methodparam>
+      </methodsynopsis>
+     </classsynopsis>
+    </section>
+   </section>
+
+   <section>
+    <title>Converting to Number Columns</title>
+    <para></para>
+   </section>
+
+   <section>
+    <title>Color Scheme Categories</title>
+    <para></para>
+   </section>
+
+  </section>
+
+ </chapter>
+
+ <chapter id="chap_visualizations">
+  <title>Visualizations</title>
+
+  <para>Visualizations transform a data structure into a visual
+  representation, allowing exploration and interaction.  To create the
+  visual representation, a visualization relies on the topology of the
+  data structure and a set of attributes implemented as columns in the
+  data structure. </para>
+
+  <para>More formally, a visualization creates one graphical mark for
+  each table row.  This mark is defined by a shape, position,
+  color and transparency.  The shape itself can be decomposed into a
+  basic shape, a size and a position.  These attributes altogether are
+  called visual attributes.  </para>
+
+  <para>All visualizations implement the interface
+   <ulink url="api/infovis/Visualization.html">
+   <interfacename>Visualization</interfacename></ulink>.  A
+  visualization is always related to one and only one table and should
+  be installed in a Java <classname>JComponent</classname> to show in
+  a window.  The InfoVis toolkit provides the
+  <classname>VisualizationPanel</classname> for that purpose.</para>
+
+  <section>
+   <title>Implementation of the Visualization Classes</title>
+
+   <para>The main implementation of the
+    <interfacename>Visualization</interfacename> interface is the
+    <classname>DefaultVisualization</classname> class.  All the
+    specific visualizations derive from it.</para>
+
+   <para>When a visualization is created, it should be configured to
+    map table columns to visual columns.  Visualizations use several
+    types of visual properties, some being standard and some being
+    specific to a visualization technique.  The standard visual
+    properties are the following:
+    <variablelist>
+     <varlistentry>
+      <term>Color</term>
+      <listitem>
+       <para>The column used to specify the color of items.  For
+	example, if the visualized table contains a number column named
+	"length", using it for coloring the items can be done in the
+	following way:
+	<programlisting><![CDATA[visualization.setVisualColumn(
+	 Visualization.VISUAL_COLOR, table.getColumn("length"));
+	 ]]>
+	</programlisting></para>
+       
+       <para>Section <xref linkend="sec_color"/> provides more details
+	on the mechanisms for color management.</para>
+
+       <para>The constant string
+	<constant>Visualization.VISUAL_COLOR</constant> contains the
+	name of the visual column for colors.</para>
+
+       <para>When no column is mapped to the color visual attribute, a
+	default color is used, specified by the
+	<methodname>setDefaultColor(Color)</methodname> method.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Size</term>
+      <listitem>
+       <para>The column used to specify the size of items.  Sizes have
+	different meaning depending on the specific visualization.  For
+	Treemaps, it is the taken as the relative size of Treemap
+	rectangles.  On scatter plots, it controls the size of each item
+	varying from a minimum and maximum size specific to the scatter
+	plot visualization class.</para>
+
+       <para>The constant string
+	<constant>Visualization.VISUAL_SIZE</constant> contains the
+	name of the visual column for sizes.</para>
+
+       <para>When no column is mapped to the size visual attribute, a
+	default size is used, specified by the
+	<methodname>setDefaultSize(double)</methodname> method.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Alpha</term>
+      <listitem>
+       <para>The column used to specify the transparency or Alpha
+	channel of items.  The constant string
+	<constant>Visualization.VISUAL_ALPHA</constant> contains the
+	name of the visual column for transparencies.</para>
+
+       <para>When no column is mapped to the alpha visual attribute, a
+	default alpha values is used, specified by the
+	<methodname>setDefaultAlpha(double)</methodname> method.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Label</term>
+      <listitem>
+       <para>The column used to specify the name or label or items. The
+	constant string <constant>Visualization.VISUAL_LABEL</constant>
+	contains the name of the visual column for
+	labels.</para>
+
+       <para>When no column is mapped to the label visual attribute,
+	the items are labeled "item" and the item number.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+
+   <para>Other attributes can be specified using the same mechanism,
+    although they are not "visual" attributes per se.  These attributes
+    are:
+    <variablelist>
+     <varlistentry>
+      <term>Selection</term>
+      <listitem>
+       <para>The column used to specify which items are selected. The
+	constant string
+	<constant>Visualization.VISUAL_SELECTION</constant> contains the
+	name of the visual column for selection.  It should be a boolean
+	column.  One important use of this column is to share selection
+	among several visualizations showing the same table.</para>
+
+       <para>When no column is mapped to the selection visual attribute,
+	a new selection column is created.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Filter</term>
+      <listitem>
+       <para>The column used to specify which items are filtered. The
+	constant string <constant>Visualization.VISUAL_FILTER</constant>
+	contains the name of the visual column for filtering.  It should
+	be a <classname>FilterColumn</classname>.  One important use of
+	this column is to share selection among several visualizations
+	showing the same table.</para>
+
+       <para>When no column is mapped to the filter visual attribute,
+	a new filter column is created.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>Sort</term>
+      <listitem>
+       <para>The column used to specify the item order in the
+	visualization.  The constant string
+	<constant>Visualization.VISUAL_SORT</constant> contains the
+	name of the visual column for sorting. </para>
+
+       <para>When no column is mapped to the sort visual attribute,
+	the items are visualized in the table order.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist></para>
+
+   <section>
+    <title>Displaying Items in Visualizations</title>
+
+    <para>Displaying items is performed through several steps, each
+     being configurable or modifiable by class derivation.  
+     <variablelist>
+      <varlistentry>
+       <term>Layout</term>
+       <listitem>
+	<para>This steps compute a shape for each visualized item.  A
+	 <interfacename>Shape</interfacename> is a Java interface that
+	 describes a general geometry.  Specific visualizations can
+	 decide to limit the shapes they compute and position to
+	 rectangles or squares.  For that purpose, a Java
+	 <classname>Rectangle2D</classname> implements the
+	 <interfacename>Shape</interfacename> interface.</para>
+
+	<para>The computed shapes will be used for displaying the
+	 items and for hit detection when the mouse pointer moves over
+	 displayed items.  The computed shapes are stored in a visual column
+	 called <constant>Visualization.VISUAL_SHAPE</constant> and
+	 can be queried from outside the visualization if
+	 required.</para>
+
+	<para>The method used to compute the layout is called
+	 <methodname>computeShapes</methodname> and is triggered when
+	 the layout needs to be computed.  The method is called just
+	 before painting or hit detection when either of the following
+	 events occurred:
+	 <itemizedlist>
+	  <listitem>
+	   <para>The visualization has just been displayed on screen,
+	    no layout has been computed before;</para>
+	  </listitem>
+	  <listitem>
+	   <para>A visual column involved in computing the layout has
+	    been associated with a new table column;</para>
+	  </listitem>
+	  <listitem>
+	   <para>A visual column involved in computing the layout has
+	    been modified.</para>
+	  </listitem>
+	 </itemizedlist>
+	</para>
+
+	<para>There is no automatic way to guess whether a visual
+	 column is used for computing the layout; it should be specified
+	 by each specific visualization class for each visual column.
+	 This is usually done from the constructor of the visualization
+	 class by calling the method
+	 <methodname>setVisualColumnInvalidate(String,boolean)</methodname>.
+	 When the second argument is <constant>true</constant>, changing
+	 the specified column will trigger a recomputation of the
+	 layout.  When it is <constant>false</constant>, the
+	 visualization will be redisplayed without changing its
+	 layout.</para>
+
+	<para>By default, the "color" visual attribute does not
+	trigger a layout recomputation whereas the "size" attribute
+	does trigger a layout recomputation.  Stroke-based
+	visualizations such as time series or parallel visualizations
+	change the latter because the size only change the stroke
+	thickness, not the shape geometry so changing the size visual
+	column only need to trigger a redisplay, the geometry of
+	shapes shall not change.</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Items display</term>
+       <listitem>
+
+	<para>When the shapes have been computed, the items can be
+	displayed one at a time, in the sorting order, using the
+	shapes for the geometry and other visual columns for visual
+	 attributes.  The default implementation uses the
+	<methodname>paintItems(Graphics2D g,Rectangle2D
+	bounds)</methodname> implemented as follows:
+	 <programlisting><![CDATA[            for (RowIterator iter = iterator(); iter.hasNext();) {
+                int row = iter.nextRow();
+                if (isFiltered(row))
+                    continue;
+                paintItem(graphics, row);
+]]>
+</programlisting>
+	</para>
+
+	<para>The method uses a
+	<interfacename>RowIterator</interfacename> to iterate over all
+	 the items in sorting order, skip the filtered items using the
+	 <methodname>isFiltered(int row)</methodname> method and
+	 draws the items using the <methodname>paintItem(Graphics2D
+	g,int row)</methodname> method.</para>
+
+	<para>The method can be overridden in a derived class if, for
+	example, the visualization wants to grey-out the filtered
+	items.</para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Item Display</term>
+       <listitem>
+	<para>Displaying an item needs several steps: installing all
+	the graphic attributes, transforming the shape by a fisheye
+	lens, drawing the shape, drawing its outline and drawing a
+	 label.  Each of these steps are done inside the
+	<methodname>paintItem(Graphics2D g, int row)</methodname>
+	method as follow:
+	 <programlisting><![CDATA[        Shape s = getShapeAt(row);
+        if (s == null)
+            return;
+        s = transformShape(s);
+
+        installAlpha(graphics, row);
+        installColor(graphics, row, s);
+        displayedItems++;
+        paintShape(graphics, row, s);
+        paintOutline(graphics, row, s);
+        paintLabel(graphics, row, s);
+]]>
+</programlisting>
+	</para>
+
+	<para>All of the called methods can be overridden by
+	 subclasses if required.  For example, the
+	 <classname>StrokingVisualization</classname> class interprets
+	 shapes as stroked instead of filled.  It redefines the
+	 <methodname>paintShape</methodname> method as doing nothing
+	 and the paintOutline as drawing the shape using either red if
+	 the item is selected or the selected color otherwise as
+	 follows:
+	 <programlisting><![CDATA[    public void paintOutline(Graphics2D graphics, int row, Shape s) {
+        if (selection != null
+            && (!selection.isValueUndefined(row))
+            && selectedColor != null) {
+            graphics.setColor(selectedColor);
+        }
+        installSize(graphics, row);
+        graphics.draw(s);
+        graphics.setStroke(savedStroke);
+    }
+]]>
+</programlisting>
+</para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+   </section>
+
+   <section>
+    <title>Visual Column Management</title>
+
+    <para>Visual columns are used internally by visualizations to compute
+     the mapping between table rows and visual marks.  They are also
+     managed to trigger redisplays when one of the visual column has
+     changes.  </para>
+
+   </section>
+   
+
+
+   <section id="sec_color">
+    <title>Color Management</title>
+    <para>Color is managed using several mechanisms inside
+     visualizations. +++</para>
+   </section>
+
+   <section>
+    <title>Picking</title>
+    <para></para>
+   </section>
+   
+  </section>
+
+  <section>
+   <title>Table Visualizations</title>
+   <para></para>
+
+  </section>
+
+  <section>
+   <title>Stroking and Link Visualizations</title>
+   <para></para>
+
+  </section>
+  
+  <section>
+   <title>Tree Visualizations</title>
+   <para></para>
+
+  </section>
+
+  <section>
+   <title>Graph Visualizations</title>
+   <para></para>
+
+  </section>
+
+  <section>
+   <title>Dynamic Labeling</title>
+
+   <para></para>
+
+  </section>
+
+  <section>
+   <title>Fisheye Lenses</title>
+
+   <para></para>
+  </section>
+
+ </chapter>
+
+ <chapter id="chap_interaction">
+  <title>Interaction</title>
+
+  <para>Direct through Picking, indirect through columns </para>
+
+  <section>
+   <title>Dynamic Queries</title>
+
+   <para></para>
+
+  </section>
+
+
+ </chapter>
+
+ <chapter id="readerswriters">
+  <title>Readers and Writers</title>
+  <para></para>
+
+  <section>
+   <title>Table Readers and Writers</title>
+   <para></para>
+  </section>
+
+  <section>
+   <title>Tree Readers and Writers</title>
+   <para></para>
+  </section>
+
+  <section>
+   <title>Graph Readers and Writers</title>
+   <para></para>
+  </section>
+  
+ </chapter>
+ 
+ <chapter>
+  <title>Design Patterns</title>
+  <para></para>
+
+  <section>
+   <title>Abstract Factory</title>
+   <para></para>
+  </section>
+
+  <section>
+   <title>Observer</title>
+   <para></para>
+  </section>
+
+  <section>
+   <title>Visitor</title>
+   <para></para>
+  </section>
+
+ </chapter>
+
+
+
+<!--
+ <bibliography>
+ </bibliography>
+-->
+ <index></index>
+
+</book>

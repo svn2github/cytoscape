@@ -1,0 +1,276 @@
+ID;Type;Address;Neighborhood;Cost;Bed;Fp;Gr;Ac;Nw
+Int;Cat;String;String;;Int;Int;Bool;Bool;Bool;Bool
+24;THse;4856 31st Street;"Beltsville, MD";140950;2;N;N;Y;Y
+29;THse;4340 Baltimore Blvd.;"Beltsville, MD";125950;2;N;N;Y;Y
+41;THse;4412 Baltimore Blvd.;"Beltsville, MD";125950;2;N;N;Y;Y
+46;THse;4554 Hapsburg Road;"Greenbelt, MD";136950;2;N;N;Y;Y
+53;THse;5400 S. Capitol St.;"Greenbelt, MD";162950;2;N;N;Y;Y
+61;THse;4730 Hapsburg Road;"Greenbelt, MD";136950;2;N;N;Y;Y
+64;THse;4691 Hapsburg Road;"Greenbelt, MD";136950;2;N;N;Y;Y
+90;Condo;4904 S. Capitol St.;"N. Laurel, MD";162950;2;N;N;Y;Y
+92;Condo;4715 Jones Street;"N. Laurel, MD";151950;2;N;N;Y;Y
+93;Condo;4790 Jones Street;"N. Laurel, MD";151950;1;N;N;Y;Y
+95;Condo;4595 Jones Street;"N. Laurel, MD";151950;2;N;N;Y;Y
+97;Condo;5375 Hamilton Street;"N. Laurel, MD";184950;2;N;N;Y;Y
+99;Condo;5349 S. Lincoln St.;"N. Laurel, MD";173950;2;N;N;Y;Y
+100;Condo;4790 Jones Street;"N. Laurel, MD";151950;1;N;N;Y;Y
+101;Condo;4820 Jones Street;"N. Laurel, MD";151950;2;N;N;Y;Y
+104;Condo;4864 S. Capitol St.;"N. Laurel, MD";162950;2;N;N;Y;Y
+105;Condo;5016 S. Capitol St.;"N. Laurel, MD";162950;2;N;N;Y;Y
+106;Condo;5007 Jones Street;"N. Laurel, MD";151950;2;N;N;Y;Y
+109;Condo;5048 S. Capitol St.;"N. Laurel, MD";162950;2;N;N;Y;Y
+114;Condo;4944 Hapsburg Road;"College Park, MD";136950;2;N;N;Y;Y
+115;Condo;4469 Market Place;"College Park, MD";114950;1;N;N;Y;Y
+116;Condo;4814 Hapsburg Road;"College Park, MD";136950;2;N;N;Y;Y
+117;Condo;4634 Baltimore Blvd.;"College Park, MD";125950;2;N;N;Y;Y
+118;Condo;4892 Hapsburg Road;"College Park, MD";136950;2;N;N;Y;Y
+119;Condo;4586 Baltimore Blvd.;"College Park, MD";125950;1;N;N;Y;Y
+124;Condo;4415 Second Street;"College Park, MD";103950;2;N;N;Y;Y
+125;Condo;4742 Baltimore Blvd.;"College Park, MD";125950;2;N;N;Y;Y
+127;Condo;4951 Hapsburg Road;"College Park, MD";136950;1;N;N;Y;Y
+130;Condo;4652 Baltimore Blvd.;"College Park, MD";125950;2;N;N;Y;Y
+131;Condo;4425 Second Street;"College Park, MD";103950;2;N;N;Y;Y
+175;Condo;2324 Campus Drive;"Gaithersburg, MD";81950;2;N;N;N;N
+176;Condo;2464 Campus Drive;"Gaithersburg, MD";81950;2;N;N;N;N
+177;Condo;2275 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+178;Condo;2255 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+179;Condo;2294 Tilden Road;"Gaithersburg, MD";66950;2;N;N;N;N
+180;Condo;2200 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+181;Condo;2240 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+182;Condo;2284 Campus Drive;"Gaithersburg, MD";81950;2;N;N;N;N
+183;Condo;2277 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+185;Condo;2330 Tilden Road;"Gaithersburg, MD";66950;2;N;N;N;N
+186;Condo;2220 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+187;Condo;2207 Tilden Road;"Gaithersburg, MD";66950;2;N;N;N;N
+188;Condo;2195 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+189;Condo;2210 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+191;Condo;2460 Campus Drive;"Gaithersburg, MD";81950;1;N;N;N;N
+194;Condo;2348 Campus Drive;"Gaithersburg, MD";81950;2;N;N;N;N
+195;Condo;2277 Partridge Place;"Gaithersburg, MD";55950;2;N;N;N;N
+197;THse;4133 Lehigh Avenue;"Mt. Rainer, NE";92950;2;N;N;N;Y
+200;THse;4563 Market Place;"Mt. Rainer, NE";114950;2;N;N;N;Y
+206;THse;4196 Lehigh Avenue;"Mt. Rainer, NE";92950;2;N;N;N;Y
+212;THse;3880 Campus Drive;"Mt. Rainer, NE";81950;2;N;N;N;Y
+214;THse;3812 Campus Drive;"Mt. Rainer, NE";81950;2;N;N;N;Y
+218;THse;3908 Campus Drive;"Mt. Rainer, NE";81950;2;N;N;N;Y
+219;THse;3578 Conneticut Ave.;"Mt. Pleasant, NW";70950;2;Y;N;N;N
+225;THse;3684 Campus Drive;"Mt. Pleasant, NW";81950;2;Y;N;N;N
+227;THse;3533 Conneticut Ave.;"Mt. Pleasant, NW";70950;2;Y;N;N;N
+228;THse;3508 Conneticut Ave.;"Mt. Pleasant, NW";70950;2;Y;N;N;N
+230;THse;3110 Partridge Place;"Mt. Pleasant, NW";55950;2;Y;N;N;N
+233;THse;3075 Partridge Place;"Mt. Pleasant, NW";55950;2;Y;N;N;N
+235;THse;3233 Tilden Road;"Mt. Pleasant, NW";66950;2;Y;N;N;N
+242;Condo;3589 Conneticut Ave.;"Adams Morgan, NW";70950;2;N;N;N;N
+243;Condo;3632 Campus Drive;"Adams Morgan, NW";81950;1;N;N;N;N
+244;Condo;3795 Lehigh Avenue;"Adams Morgan, NW";92950;2;N;N;N;N
+245;Condo;3867 Lehigh Avenue;"Adams Morgan, NW";92950;2;N;N;N;N
+246;Condo;4150 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+247;Condo;4355 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+249;Condo;3780 Campus Drive;"Adams Morgan, NW";81950;2;N;N;N;N
+250;Condo;3704 Campus Drive;"Adams Morgan, NW";81950;1;N;N;N;N
+251;Condo;4215 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+252;Condo;3612 Campus Drive;"Adams Morgan, NW";81950;2;N;N;N;N
+253;Condo;3266 Tilden Road;"Adams Morgan, NW";66950;1;N;N;N;N
+254;Condo;4320 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+255;Condo;4200 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+256;Condo;4335 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+257;Condo;4270 Second Street;"Adams Morgan, NW";103950;1;N;N;N;N
+258;Condo;3696 Campus Drive;"Adams Morgan, NW";81950;1;N;N;N;N
+259;Condo;4074 Lehigh Avenue;"Adams Morgan, NW";92950;2;N;N;N;N
+261;Condo;4075 Second Street;"Adams Morgan, NW";103950;2;N;N;N;N
+262;Condo;3975 Lehigh Avenue;"Adams Morgan, NW";92950;2;N;N;N;N
+263;Condo;3885 Lehigh Avenue;"Adams Morgan, NW";92950;2;N;N;N;N
+380;THse;3515 Conneticut Ave.;"Brookland, NE";70950;2;N;N;Y;N
+384;THse;3512 Tilden Road;"Brookland, NE";66950;2;N;N;Y;N
+390;THse;3260 Partridge Place;"Brookland, NE";55950;2;N;N;Y;N
+392;THse;3743 Conneticut Ave.;"Brookland, NE";70950;2;N;N;Y;N
+417;Condo;3707 Tilden Road;"Anacostia, SE";66950;1;N;N;N;Y
+418;Condo;3977 Conneticut Ave.;"Anacostia, SE";70950;2;N;N;N;Y
+419;Condo;3749 Tilden Road;"Anacostia, SE";66950;2;N;N;N;Y
+420;Condo;3716 Tilden Road;"Anacostia, SE";66950;1;N;N;N;Y
+421;Condo;3397 Partridge Place;"Anacostia, SE";55950;2;N;N;N;Y
+422;Condo;4475 Lehigh Avenue;"Anacostia, SE";92950;2;N;N;N;Y
+423;Condo;4023 Conneticut Ave.;"Anacostia, SE";70950;2;N;N;N;Y
+424;Condo;3865 Conneticut Ave.;"Anacostia, SE";70950;2;N;N;N;Y
+426;Condo;4300 Campus Drive;"Anacostia, SE";81950;2;N;N;N;Y
+427;Condo;4256 Campus Drive;"Anacostia, SE";81950;1;N;N;N;Y
+429;Condo;3635 Tilden Road;"Anacostia, SE";66950;2;N;N;N;Y
+430;Condo;3632 Tilden Road;"Anacostia, SE";66950;1;N;N;N;Y
+432;Condo;3400 Partridge Place;"Anacostia, SE";55950;1;N;N;N;Y
+435;Condo;5990 Baltimore Blvd.;"Bowie, MD";125950;2;Y;N;Y;N
+436;Condo;5509 Market Place;"Bowie, MD";114950;1;Y;N;Y;N
+437;Condo;5597 Market Place;"Bowie, MD";114950;1;Y;N;Y;N
+438;Condo;5340 Second Street;"Bowie, MD";103950;2;Y;N;Y;N
+440;Condo;5619 Market Place;"Bowie, MD";114950;2;Y;N;Y;N
+441;Condo;6578 31st Street;"Bowie, MD";140950;2;Y;N;Y;N
+442;Condo;5465 Market Place;"Bowie, MD";114950;2;Y;N;Y;N
+443;Condo;6361 Hapsburg Road;"Bowie, MD";136950;1;Y;N;Y;N
+444;Condo;5646 Market Place;"Bowie, MD";114950;2;Y;N;Y;N
+445;Condo;5726 Baltimore Blvd.;"Bowie, MD";125950;2;Y;N;Y;N
+448;Condo;4938 Lehigh Avenue;"Bowie, MD";92950;1;Y;N;Y;N
+449;Condo;5305 Second Street;"Bowie, MD";103950;1;Y;N;Y;N
+450;Condo;5210 Second Street;"Bowie, MD";103950;1;Y;N;Y;N
+451;Condo;5536 Market Place;"Bowie, MD";114950;2;Y;N;Y;N
+452;Condo;5465 Market Place;"Bowie, MD";114950;1;Y;N;Y;N
+453;Condo;5190 Second Street;"Bowie, MD";103950;2;Y;N;Y;N
+454;Condo;5265 Second Street;"Bowie, MD";103950;2;Y;N;Y;N
+455;Condo;5591 Market Place;"Bowie, MD";114950;2;Y;N;Y;N
+456;Condo;6413 Hapsburg Road;"Bowie, MD";136950;2;Y;N;Y;N
+480;THse;5740 Polk Street;"Falls Church, VA";221950;2;Y;N;N;Y
+482;THse;5392 Paint Branch Rd.;"Falls Church, VA";232950;2;Y;N;N;Y
+485;THse;5151 Paint Branch Rd.;"Falls Church, VA";232950;2;Y;N;N;Y
+488;THse;5135 Polk Street;"Falls Church, VA";221950;2;Y;N;N;Y
+491;THse;5288 Beach Drive;"Falls Church, VA";243950;2;Y;N;N;Y
+493;THse;5392 Paint Branch Rd.;"Falls Church, VA";232950;2;Y;N;N;Y
+498;THse;5362 Skyline Drive;"Falls Church, VA";254950;2;Y;N;N;Y
+499;THse;5795 Paint Branch Rd.;"Falls Church, VA";232950;2;Y;N;N;Y
+500;THse;5737 Paint Branch Rd.;"Falls Church, VA";232950;2;Y;N;N;Y
+502;Condo;5050 Skyline Drive;"Reston, VA";254950;2;N;N;Y;N
+503;Condo;5570 Main Street;"Reston, VA";280950;2;N;N;Y;N
+504;Condo;5341 Dorset Avenue;"Reston, VA";265950;2;N;N;Y;N
+505;Condo;5024 Beach Drive;"Reston, VA";243950;2;N;N;Y;N
+507;Condo;5133 Dorset Avenue;"Reston, VA";265950;2;N;N;Y;N
+508;Condo;4937 Skyline Drive;"Reston, VA";254950;1;N;N;Y;N
+511;Condo;5510 Dorset Avenue;"Reston, VA";265950;2;N;N;Y;N
+512;Condo;4899 Dorset Avenue;"Reston, VA";265950;1;N;N;Y;N
+513;Condo;5275 Skyline Drive;"Reston, VA";254950;2;N;N;Y;N
+514;Condo;5375 Skyline Drive;"Reston, VA";254950;1;N;N;Y;N
+515;Condo;5042 Dorset Avenue;"Reston, VA";265950;2;N;N;Y;N
+516;Condo;4990 Dorset Avenue;"Reston, VA";265950;1;N;N;Y;N
+518;Condo;5682 Main Street;"Reston, VA";280950;2;N;N;Y;N
+519;Condo;5315 Dorset Avenue;"Reston, VA";265950;2;N;N;Y;N
+521;Condo;5672 Wisconsin Avenue;"Reston, VA";276950;2;N;N;Y;N
+522;Condo;5614 Dorset Avenue;"Reston, VA";265950;2;N;N;Y;N
+524;Condo;4749 Hapsburg Road;"Spout Run, VA";136950;1;N;N;N;Y
+526;Condo;4762 Hapsburg Road;"Spout Run, VA";136950;2;N;N;N;Y
+529;Condo;4412 Baltimore Blvd.;"Spout Run, VA";125950;2;N;N;N;Y
+530;Condo;4964 Hapsburg Road;"Spout Run, VA";136950;2;N;N;N;Y
+532;Condo;4634 Baltimore Blvd.;"Spout Run, VA";125950;2;N;N;N;Y
+534;Condo;4788 Hapsburg Road;"Spout Run, VA";136950;2;N;N;N;Y
+536;Condo;4337 Market Place;"Spout Run, VA";114950;1;N;N;N;Y
+537;Condo;4618 31st Street;"Spout Run, VA";140950;2;N;N;N;Y
+538;Condo;5448 S. Capitol St.;"Spout Run, VA";162950;2;N;N;N;Y
+540;Condo;5073 31st Street;"Spout Run, VA";140950;1;N;N;N;Y
+542;Condo;4898 31st Street;"Spout Run, VA";140950;2;N;N;N;Y
+565;Condo;4767 Jones Street;"Arlington, VA";151950;2;N;N;Y;N
+567;Condo;4190 Baltimore Blvd.;"Arlington, VA";125950;1;N;N;Y;N
+568;Condo;4281 Hapsburg Road;"Arlington, VA";136950;2;N;N;Y;N
+570;Condo;4502 Baltimore Blvd.;"Arlington, VA";125950;2;N;N;Y;N
+572;Condo;4464 31st Street;"Arlington, VA";140950;1;N;N;Y;N
+574;Condo;3936 Market Place;"Arlington, VA";114950;2;N;N;Y;N
+575;Condo;4080 Second Street;"Arlington, VA";103950;1;N;N;Y;N
+576;Condo;5157 Jones Street;"Arlington, VA";151950;2;N;N;Y;N
+577;Condo;4156 Market Place;"Arlington, VA";114950;2;N;N;Y;N
+578;Condo;4583 31st Street;"Arlington, VA";140950;2;N;N;Y;N
+579;Condo;4196 Baltimore Blvd.;"Arlington, VA";125950;1;N;N;Y;N
+580;Condo;4515 Hapsburg Road;"Arlington, VA";136950;2;N;N;Y;N
+581;Condo;4765 31st Street;"Arlington, VA";140950;2;N;N;Y;N
+582;Condo;5082 Jones Street;"Arlington, VA";151950;2;N;N;Y;N
+585;Condo;4476 Hapsburg Road;"Arlington, VA";136950;2;N;N;Y;N
+586;Condo;3963 Market Place;"Arlington, VA";114950;1;N;N;Y;N
+589;THse;6266 Hamilton Street;"Rossyln, VA";184950;2;N;N;Y;N
+594;THse;6122 Hamilton Street;"Rossyln, VA";184950;2;N;N;Y;N
+598;THse;6600 Webster Court;"Rossyln, VA";206950;2;N;N;Y;N
+600;THse;5728 S. Capitol St.;"Rossyln, VA";162950;2;N;N;Y;N
+763;THse;3096 S. Capitol St.;"Rockville, MD";162950;2;N;N;N;N
+764;THse;3170 Jones Street;"Rockville, MD";151950;2;N;N;N;N
+770;THse;2600 S. Capitol St.;"Rockville, MD";162950;2;N;N;N;N
+771;THse;2907 Jones Street;"Rockville, MD";151950;2;N;N;N;N
+776;THse;2772 Jones Street;"Rockville, MD";151950;2;N;N;N;N
+806;THse;3529 Market Place;"Silver Spring, MD";114950;2;Y;N;N;N
+808;THse;3435 Lehigh Avenue;"Silver Spring, MD";92950;2;Y;N;N;N
+809;THse;3615 Second Street;"Silver Spring, MD";103950;2;Y;N;N;N
+813;THse;3992 Baltimore Blvd.;"Silver Spring, MD";125950;2;Y;N;N;N
+816;THse;3336 Lehigh Avenue;"Silver Spring, MD";92950;2;Y;N;N;N
+821;THse;3212 Campus Drive;"Silver Spring, MD";81950;2;Y;N;N;N
+851;Condo;3156 Campus Drive;"Silver Spring, MD";81950;2;N;Y;N;Y
+852;Condo;3523 Market Place;"Silver Spring, MD";114950;1;N;Y;N;Y
+853;Condo;3562 Market Place;"Silver Spring, MD";114950;2;N;Y;N;Y
+854;Condo;3088 Campus Drive;"Silver Spring, MD";81950;2;N;Y;N;Y
+855;Condo;3818 Baltimore Blvd.;"Silver Spring, MD";125950;2;N;Y;N;Y
+856;Condo;3233 Lehigh Avenue;"Silver Spring, MD";92950;2;N;Y;N;Y
+857;Condo;3540 Second Street;"Silver Spring, MD";103950;2;N;Y;N;Y
+858;Condo;3381 Lehigh Avenue;"Silver Spring, MD";92950;2;N;Y;N;Y
+859;Condo;3340 Second Street;"Silver Spring, MD";103950;2;N;Y;N;Y
+861;Condo;3515 Second Street;"Silver Spring, MD";103950;1;N;Y;N;Y
+863;Condo;3430 Second Street;"Silver Spring, MD";103950;2;N;Y;N;Y
+865;Condo;3727 Market Place;"Silver Spring, MD";114950;1;N;Y;N;Y
+866;Condo;3233 Lehigh Avenue;"Silver Spring, MD";92950;2;N;Y;N;Y
+867;Condo;3500 Second Street;"Silver Spring, MD";103950;2;N;Y;N;Y
+868;Condo;3704 Baltimore Blvd.;"Silver Spring, MD";125950;2;N;Y;N;Y
+870;Condo;3305 Lehigh Avenue;"Silver Spring, MD";92950;2;N;Y;N;Y
+871;Condo;3622 Market Place;"Wheaton, MD";114950;2;N;Y;N;N
+873;Condo;3358 Market Place;"Wheaton, MD";114950;1;N;Y;N;N
+874;Condo;3422 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+875;Condo;3415 Second Street;"Wheaton, MD";103950;1;N;Y;N;N
+876;Condo;3560 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+878;Condo;3750 31st Street;"Wheaton, MD";140950;2;N;Y;N;N
+879;Condo;3606 Market Place;"Wheaton, MD";114950;2;N;Y;N;N
+881;Condo;3729 Hapsburg Road;"Wheaton, MD";136950;1;N;Y;N;N
+883;Condo;3715 31st Street;"Wheaton, MD";140950;2;N;Y;N;N
+884;Condo;3386 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+885;Condo;3848 31st Street;"Wheaton, MD";140950;2;N;Y;N;N
+886;Condo;3410 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+887;Condo;3512 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+888;Condo;3295 Second Street;"Wheaton, MD";103950;2;N;Y;N;N
+889;Condo;3800 Hapsburg Road;"Wheaton, MD";136950;2;N;Y;N;N
+890;Condo;3638 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+892;Condo;3446 Baltimore Blvd.;"Wheaton, MD";125950;2;N;Y;N;N
+893;Condo;2875 Conneticut Ave.;"Wheaton, MD";70950;2;N;Y;N;N
+894;Condo;3024 Campus Drive;"Wheaton, MD";81950;2;N;Y;N;N
+895;Condo;3210 Second Street;"Wheaton, MD";103950;2;N;Y;N;N
+896;Condo;3275 Second Street;"Wheaton, MD";103950;1;N;Y;N;N
+897;Condo;3359 Lehigh Avenue;"Wheaton, MD";92950;2;N;Y;N;N
+899;Condo;3161 Lehigh Avenue;"Wheaton, MD";92950;1;N;Y;N;N
+900;Condo;3179 Lehigh Avenue;"Wheaton, MD";92950;2;N;Y;N;N
+902;Condo;2934 Conneticut Ave.;"Wheaton, MD";70950;2;N;Y;N;N
+903;Condo;3108 Campus Drive;"Wheaton, MD";81950;2;N;Y;N;N
+904;Condo;3210 Lehigh Avenue;"Wheaton, MD";92950;1;N;Y;N;N
+905;Condo;3300 Second Street;"Wheaton, MD";103950;2;N;Y;N;N
+907;Condo;3540 Market Place;"Wheaton, MD";114950;2;N;Y;N;N
+908;Condo;3156 Campus Drive;"Wheaton, MD";81950;2;N;Y;N;N
+909;Condo;3183 Lehigh Avenue;"Wheaton, MD";92950;2;N;Y;N;N
+910;Condo;3225 Second Street;"Wheaton, MD";103950;2;N;Y;N;N
+912;Condo;3405 Second Street;"Wheaton, MD";103950;1;N;Y;N;N
+913;Condo;3165 Lehigh Avenue;"Wheaton, MD";92950;2;N;Y;N;N
+917;THse;2279 Hamilton Street;"Germantown, MD";184950;2;N;N;N;Y
+920;THse;2040 S. Capitol St.;"Germantown, MD";162950;2;N;N;N;Y
+921;THse;2264 S. Capitol St.;"Germantown, MD";162950;2;N;N;N;Y
+924;THse;2218 Glass Road;"Germantown, MD";195950;2;N;N;N;Y
+928;THse;2513 Glass Road;"Germantown, MD";195950;2;N;N;N;Y
+929;THse;2176 S. Capitol St.;"Germantown, MD";162950;2;N;N;N;Y
+937;THse;6488 Polk Street;"Vienna, VA";221950;2;N;N;Y;Y
+938;THse;6968 Beach Drive;"Vienna, VA";243950;2;N;N;Y;Y
+951;THse;5751 Polk Street;"Vienna, VA";221950;2;N;N;Y;Y
+952;THse;5770 Webster Court;"Vienna, VA";206950;2;N;N;Y;Y
+953;THse;6081 Polk Street;"Vienna, VA";221950;2;N;N;Y;Y
+957;THse;5820 Webster Court;"Vienna, VA";206950;2;N;N;Y;Y
+958;Condo;6012 S. Lincoln St.;"Waterfront, SW";173950;2;N;N;Y;N
+959;Condo;6012 S. Lincoln St.;"Waterfront, SW";173950;2;N;N;Y;N
+961;Condo;6003 S. Lincoln St.;"Waterfront, SW";173950;2;N;N;Y;N
+963;Condo;6257 Hamilton Street;"Waterfront, SW";184950;2;N;N;Y;N
+964;Condo;5920 S. Capitol St.;"Waterfront, SW";162950;1;N;N;Y;N
+965;Condo;5540 Jones Street;"Waterfront, SW";151950;2;N;N;Y;N
+967;Condo;6080 S. Lincoln St.;"Waterfront, SW";173950;1;N;N;Y;N
+968;Condo;6417 Glass Road;"Waterfront, SW";195950;2;N;N;Y;N
+969;Condo;5630 Jones Street;"Waterfront, SW";151950;2;N;N;Y;N
+970;Condo;5675 Jones Street;"Waterfront, SW";151950;1;N;N;Y;N
+971;Condo;6054 S. Lincoln St.;"Waterfront, SW";173950;2;N;N;Y;N
+972;Condo;6250 S. Lincoln St.;"Waterfront, SW";173950;1;N;N;Y;N
+973;Condo;5675 Jones Street;"Waterfront, SW";151950;1;N;N;Y;N
+975;Condo;5690 Jones Street;"Waterfront, SW";151950;2;N;N;Y;N
+976;Condo;6311 Hamilton Street;"Waterfront, SW";184950;2;N;N;Y;N
+977;Condo;6509 Hamilton Street;"Waterfront, SW";184950;1;N;N;Y;N
+989;THse;5388 Market Place;"W. Bowie, MD";114950;2;N;N;N;N
+990;THse;5666 Hapsburg Road;"W. Bowie, MD";136950;2;N;N;N;N
+1023;THse;5562 Hapsburg Road;"Jessup, MD";136950;2;N;N;N;N
+1024;THse;5151 Market Place;"Jessup, MD";114950;2;N;N;N;N
+1027;THse;4479 Lehigh Avenue;"Jessup, MD";92950;2;N;N;N;N
+1035;THse;5041 Market Place;"Jessup, MD";114950;2;N;N;N;N
+1038;THse;5724 Hapsburg Road;"Jessup, MD";136950;2;N;N;N;N
+1039;THse;4790 Second Street;"Jessup, MD";103950;2;N;N;N;N
+1041;THse;4371 Lehigh Avenue;"Jessup, MD";92950;2;N;N;N;N
+1044;THse;5456 Baltimore Blvd.;"Jessup, MD";125950;2;N;N;N;N
+1099;THse;9403 Polk Street;"Upper Marlboro, MD";221950;2;Y;N;Y;Y
+1100;THse;9370 Polk Street;"Upper Marlboro, MD";221950;2;Y;N;Y;
+1101;THse;8760 Webster Court;"Upper Marlboro, MD";206950;2;Y;N;Y;Y

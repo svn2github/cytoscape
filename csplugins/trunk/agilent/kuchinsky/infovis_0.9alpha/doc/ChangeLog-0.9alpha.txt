@@ -1,0 +1,24 @@
+2005-07-29    <Jean-Danie.Feket@inria.fr>
+ 	* New visualization for tables as matrix called ColumnsVisualization
+	* New visualization for column called ColumnVisualization
+	* Added DynamicTable, a table where elements can be added or removed
+	* DefaultTree and graph Edge/Vertex tables are now DynamicTables
+	* Graph is not a table anymore but contains two tables
+	* A Table is now defined as a column of columns
+	* Visualization has an iterator over all its visual columns
+	* Added several layouts for node*link graph visualizations:
+	circular, force*directed, plus new GraphViz fdp, circo, etc.
+	* New graph algorithms available (Dijkstra etc.)
+	* Added two layouts for node*link tree visualizations:
+	simple and dendrogram
+	* Added a JPanner to show thumbnails of visualizations and scroll
+	* Control panels are now synchronized with visualization
+	attributes: when the attributes change, they show the correct
+	values
+	* Control panels sub*panels for visual attributes are generater
+	through a factory in infovis.panel.render
+	* New Ruler framework: visualization can provide a table of rulers
+	* More generalization of renderers
+	* New item renderers: Area, ArrowHead, StrokingLable, Visualization
+	* New datasets added: Infovis authors cocitation graph, films and homes tables
+	* A new InfovisSet example showing all the visualizations at once

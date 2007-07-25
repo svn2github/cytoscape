@@ -1,0 +1,16 @@
+<!DOCTYPE graphml SYSTEM "GraphML.dtd">
+<graphml>
+ <graph edgedefault="directed">
+  <key id="name" for="node">String</key>
+  <key id="ref" for="edge">Integer</key>
+  <node id="n1">
+   <data key="name">foo</data>
+  </node>
+  <node id="n2">
+   <data key="name">bar</data>
+  </node>
+  <edge source="n1" target="n2">
+   <data key="ref">42</data>
+  </edge>
+ </graph>
+</graphml>
