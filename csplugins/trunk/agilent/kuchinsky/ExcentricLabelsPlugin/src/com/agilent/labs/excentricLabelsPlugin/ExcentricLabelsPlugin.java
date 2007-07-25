@@ -84,7 +84,7 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
 
             //  Create the LabeledComponent.
             //  Given rectangular coordinates, the LabeledComponent returns a set of "things"
-            //  that appear within this rectangle
+            //  that appear within this rectangle.
             CyLabeledComponent labeledComponent = new CyLabeledComponent(newView);
             excentric.setVisualization(labeledComponent);
 

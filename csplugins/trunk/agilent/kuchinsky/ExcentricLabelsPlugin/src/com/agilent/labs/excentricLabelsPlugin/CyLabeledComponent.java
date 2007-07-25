@@ -5,6 +5,7 @@ import infovis.visualization.magicLens.LabeledComponent;
 import java.awt.geom.Rectangle2D;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 
@@ -52,7 +53,7 @@ public class CyLabeledComponent implements LabeledComponent {
 	 * @return the Set of LabeledItems under the specified Rectangle.
 	 */
 	public Set pickAll(Rectangle2D hitBox, Rectangle2D bounds, Set pick) {
-		if (pick == null) {
+        if (pick == null) {
 			pick = new HashSet();
 		}
 		
@@ -81,11 +82,13 @@ public class CyLabeledComponent implements LabeledComponent {
 	                                		  GraphRenderer.LOD_HIGH_DETAIL) == 0,
 	                                  nodeStack);
         final IntEnumerator nodesXSect = nodeStack.elements();
+        System.out.println("----------");
         while (nodesXSect.numRemaining() > 0) {
           final int nodeXSect = nodesXSect.nextInt();
           pick.add(new CyLabeledItem(view, nodeXSect, this));
+          System.out.println("Got node:  " + nodeXSect);
         }
-		return pick;
+        return pick;
 	}
 
 	/**

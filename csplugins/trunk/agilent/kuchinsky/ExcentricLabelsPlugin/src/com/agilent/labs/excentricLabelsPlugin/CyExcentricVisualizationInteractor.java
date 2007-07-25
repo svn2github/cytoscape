@@ -28,7 +28,8 @@ public class CyExcentricVisualizationInteractor extends
 		this.wrapper = wrapper;
 		insideTimer = new Timer(50000, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				excentric.setVisible(true);
+                System.out.println("Ping!");
+                excentric.setVisible(true);
 		
 			}
 		});
