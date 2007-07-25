@@ -12,13 +12,9 @@ import java.awt.*;
 public class CyExcentricLabelsWrapper extends JPanel {
 
     private ExcentricLabels excentric;
-
     protected CyExcentricVisualizationInteractor interactor;
-
     protected JComponent parent;
-
     private boolean isInstalled = false;
-
     private CyLabeledComponent labeledComponent;
 
     /**
@@ -105,5 +101,4 @@ public class CyExcentricLabelsWrapper extends JPanel {
     public void setInstalled (boolean isInstalled) {
         this.isInstalled = isInstalled;
     }
-
 }
