@@ -167,15 +167,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	private Vector transferComponents = new Vector();
 
-	/**
-	 * The collection of objects
-	 * listening for innercanvas events.
-	 * Events supported on this vector:
-	 *
-	 * event fired when network rendering is complete
-	 */
-	private Vector innerCanvasListeners = new Vector();
-
 	//       AJK: 04/02/06 END
 	// AJK: 04/27/06 for context menus
 
@@ -260,14 +251,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
 		                                  m_backgroundColor.getBlue(), alpha);
 
-		// short circuit if we are not visible
-		if (!m_isVisible) {
-			// clear the background
-			m_grafx.clear(backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
-			// update the context canvas
-			g.drawImage(m_img, 0, 0, null);
-		}
-
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
 				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
@@ -286,7 +269,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 		}
 
-		g.drawImage(m_img, 0, 0, null);
+		// if canvas is visible, draw it (could be made invisible via DingCanvas api)
+		if (m_isVisible) {
+			g.drawImage(m_img, 0, 0, null);
+		}
 
 		// AJK: 01/14/2007 only draw selection rectangle when selection flag is on
 		//        if (m_selectionRect != null) {
@@ -309,9 +295,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (lis != null)
 				lis.viewportChanged(getWidth(), getHeight(), xCenter, yCenter, scaleFactor);
 		}
-
-		// let our listeners know of the update
-		notifyNetworkUpdateComplete();
 	}
 
 	/**
@@ -329,12 +312,13 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param g DOCUMENT ME!
 	 */
 	public void print(Graphics g) {
-		final ImageImposter img = new ImageImposter(g, getWidth(), getHeight());
+		final Image img = new BufferedImage(getWidth(), getHeight(),
+											BufferedImage.TYPE_INT_ARGB);
 
 		// set color alpha based on opacity setting
 		int alpha = (m_isOpaque) ? 255 : 0;
 		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-		                                  m_backgroundColor.getBlue(), alpha);
+										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
 			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
@@ -342,6 +326,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
 		}
+
+		g.drawImage(img, 0, 0, null);
 	}
 
 	private int m_currMouseButton = 0;
@@ -1389,26 +1375,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return m_lastRenderDetail;
 	}
 
-	/**
-	 * Called to add an inner canvas listener.
-	 */
-	public synchronized void addInnerCanvasListener(InnerCanvasListener l) {
-		// add a listener if it is not already registered
-		if (!innerCanvasListeners.contains(l)) {
-			innerCanvasListeners.addElement(l);
-		}
-	}
-
-	/**
-	 * Called to remove an inner canvas listener.
-	 */
-	public synchronized void removeInnerCanvasListener(InnerCanvasListener l) {
-		// remove it if it is registered
-		if (innerCanvasListeners.contains(l)) {
-			innerCanvasListeners.removeElement(l);
-		}
-	}
-
 	// AJK: 01/14/2007 BEGIN
 	/**
 	 *  DOCUMENT ME!
@@ -1438,30 +1404,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public AffineTransform getAffineTransform() {
 		return (m_grafx != null) ? m_grafx.getTransform() : null;
-	}
-
-	/**
-	 * Called to notify our listeners when network has been updated.
-	 */
-	private void notifyNetworkUpdateComplete() {
-		// create the event object
-		InnerCanvasEvent evt = new InnerCanvasEvent(this);
-
-		// make a copy of the listener object vector so that it cannot
-		// be changed while we are firing events
-		Vector v;
-
-		synchronized (this) {
-			v = (Vector) innerCanvasListeners.clone();
-		}
-
-		// fire the event to all listeners
-		int cnt = v.size();
-
-		for (int i = 0; i < cnt; i++) {
-			InnerCanvasListener client = (InnerCanvasListener) v.elementAt(i);
-			client.innerCanvasUpdate(evt);
-		}
 	}
 
 	/**
