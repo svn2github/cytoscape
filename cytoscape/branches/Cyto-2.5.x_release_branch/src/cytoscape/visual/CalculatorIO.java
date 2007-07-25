@@ -430,7 +430,28 @@ public class CalculatorIO {
 				                      NODE_LINE_STYLE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
 				storeKey(key, props, calcNames);
-			} else
+			} else if (key.endsWith(NODE_LINETYPE.getDefaultPropertyLabel())) {
+				key = updateLegacyKey(key, props, NODE_LINETYPE.getDefaultPropertyLabel(),
+	                      NODE_LINE_STYLE.getDefaultPropertyLabel(),
+	                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
+				storeKey(key, props, calcNames); 
+			} else if (key.endsWith(EDGE_LINETYPE.getDefaultPropertyLabel())) {
+					key = updateLegacyKey(key, props, EDGE_LINETYPE.getDefaultPropertyLabel(),
+		                      EDGE_LINE_STYLE.getDefaultPropertyLabel(),
+		                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
+					storeKey(key, props, calcNames); 
+			} else if (key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel())) {
+				key = updateLegacyKey(key, props, EDGE_TGTARROW.getDefaultPropertyLabel(),
+	                      EDGE_TGTARROW_SHAPE.getDefaultPropertyLabel(),
+	                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
+				storeKey(key, props, calcNames);
+			} else if (key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
+				key = updateLegacyKey(key, props, EDGE_SRCARROW.getDefaultPropertyLabel(),
+	                      EDGE_SRCARROW_SHAPE.getDefaultPropertyLabel(),
+	                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
+				storeKey(key, props, calcNames);
+			
+		}	else
 				storeKey(key, props, calcNames);
 		}
 
@@ -651,6 +672,10 @@ public class CalculatorIO {
 		if ((key.endsWith("equal") || key.endsWith("greater") || key.endsWith("lesser"))
 		    && (key.startsWith(EDGE_TGTARROW.getPropertyLabel() + ".")
 		       || key.startsWith(EDGE_SRCARROW.getPropertyLabel() + "."))) {
+			value = Arrow.parseArrowText(value).getShape().toString();
+		}
+		
+		if(key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel()) || key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
 			value = Arrow.parseArrowText(value).getShape().toString();
 		}
 
