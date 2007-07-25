@@ -11,9 +11,15 @@ import ding.view.DGraphView;
 import ding.view.DingCanvas;
 import ding.view.DGraphView.Canvas;
 
+/**
+ * @author apico
+ *
+ */
 public class LayoutRegionManager {
 
 	public static HashMap<CyNetworkView, List<LayoutRegion>> regionViewMap = new HashMap();
+	
+	public static int regionCount = 0;
 	
 	/**
 	 * canvas to add regions to -- currently BACKGROUND_CANVAS
@@ -121,6 +127,17 @@ public class LayoutRegionManager {
 		}
 	}
 
+	/**
+	 * Keeps count of all created regions (even ones that have been deleted/removed)
+	 * to allow for unique region counter 
+	 * 
+	 * Useful in generating a unique name for each region Group
+	 * 
+	 * @return
+	 */
+	public static int getRegionCount() {
+		return regionCount;
+	}
 
 	/**
 	 * higher-level routine for adding a region to a view
@@ -130,6 +147,9 @@ public class LayoutRegionManager {
 	public static void addRegion(CyNetworkView view, LayoutRegion region) {
 		addRegionForView(view, region);
 
+		// Add to counter
+		regionCount++;
+		
 		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
 		// layout region
 		DGraphView dview = (DGraphView) view;
