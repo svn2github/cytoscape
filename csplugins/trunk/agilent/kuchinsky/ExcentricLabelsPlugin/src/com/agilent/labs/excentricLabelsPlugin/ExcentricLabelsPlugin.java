@@ -19,7 +19,6 @@ package com.agilent.labs.excentricLabelsPlugin;
  * 
  * 
  */
-
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyMenus;
@@ -34,6 +33,7 @@ import java.util.HashMap;
 
 public class ExcentricLabelsPlugin extends CytoscapePlugin {
 
+    //  Currently stores a HashMap of network IDs -->  CyExcentricLabelsWrapper Objects.
     private HashMap viewWrapperMap = new HashMap();
 
     /**
@@ -49,9 +49,6 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
         plugInMenu.add(menuItem1);
         menuItem1.addActionListener(mpa);
     }
-
-    // ~ Inner Classes
-    // //////////////////////////////////////////////////////////
 
     /**
      * This class gets attached to the menu item.
@@ -106,7 +103,7 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
 
             //  Add the CyWrapper class to the FOREGROUND_CANVAS.
             ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).add(wrapper);
-            
+
             //			if (component instanceof JInternalFrame) {
             //				JInternalFrame j = (JInternalFrame) component;
             //				j.setGlassPane(wrapper);
