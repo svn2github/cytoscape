@@ -11,9 +11,9 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="cytoroot.dir" value=".."/>
+	<property name="cytoroot.dir" value="../../../../cytoscape"/>
 	<property name="release.dir" value="../cytoscape"/>
-	<property name="lib.dir" value = "../cytoscape"/>
+	<property name="lib.dir" value = "lib"/>
 		
   	<!-- Temporary build directories -->
 
@@ -34,11 +34,16 @@
 		</fileset>
 		
 		<!-- include cytoscape.jar, which is it release directory top level -->
-		<fileset dir="${release.dir}">
+		<fileset dir="${cytoroot.dir}">
 			<include name="*.jar"/>
 		</fileset>
-		
-		<fileset dir="${pluginlib.dir}">
+
+		<!-- include cytoscape JARs -->
+		<fileset dir="${cytoroot.dir}/lib">
+			<include name="*.jar"/>
+		</fileset>
+
+        <fileset dir="${pluginlib.dir}">
 			<include name="*.jar"/>
 		</fileset>
 
@@ -70,7 +75,7 @@
 		<ant antfile="${cytoroot.dir}/cytoscape-2.3/build.xml" inheritAll="false" target="jar"/>
 	</target>
 
- <!--       Target to create the javadoc information -->
+    <!--       Target to create the javadoc information -->
      <target name="doc" depends="prepare"> 
           <echo>${src.dir}</echo> 
           <javadoc destdir="${doc.dir}" Private="yes"> 
@@ -90,9 +95,9 @@
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
 
-           <unjar dest="${build.classes}">
-            <fileset dir="${pluginlib.dir}"/>
-           </unjar>
+       <unjar dest="${build.classes}">
+        <fileset dir="${pluginlib.dir}"/>
+       </unjar>
    		
    		<!---
    		<manifest> file="MANIFEST.MF" mode="replace" >
@@ -110,7 +115,7 @@
    		<!---
   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/core"/>  
   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins"/>
--->  		
+        -->  		
    		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/core"/>
    		<!--   		<copy file="${build.dir}/${plugin.name}.jar" todir="../../../Program Files/Cytoscape-v2.3/plugins/"/>
   		
