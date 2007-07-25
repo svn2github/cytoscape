@@ -251,14 +251,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
 		                                  m_backgroundColor.getBlue(), alpha);
 
-		// short circuit if we are not visible
-		if (!m_isVisible) {
-			// clear the background
-			m_grafx.clear(backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
-			// update the context canvas
-			g.drawImage(m_img, 0, 0, null);
-		}
-
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
 				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
@@ -277,7 +269,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 		}
 
-		g.drawImage(m_img, 0, 0, null);
+		// if canvas is visible, draw it (could be made invisible via DingCanvas api)
+		if (m_isVisible) {
+			g.drawImage(m_img, 0, 0, null);
+		}
 
 		// AJK: 01/14/2007 only draw selection rectangle when selection flag is on
 		//        if (m_selectionRect != null) {
@@ -317,12 +312,13 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param g DOCUMENT ME!
 	 */
 	public void print(Graphics g) {
-		final ImageImposter img = new ImageImposter(g, getWidth(), getHeight());
+		final Image img = new BufferedImage(getWidth(), getHeight(),
+											BufferedImage.TYPE_INT_ARGB);
 
 		// set color alpha based on opacity setting
 		int alpha = (m_isOpaque) ? 255 : 0;
 		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-		                                  m_backgroundColor.getBlue(), alpha);
+										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
 			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
@@ -330,6 +326,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
 		}
+
+		g.drawImage(img, 0, 0, null);
 	}
 
 	private int m_currMouseButton = 0;
