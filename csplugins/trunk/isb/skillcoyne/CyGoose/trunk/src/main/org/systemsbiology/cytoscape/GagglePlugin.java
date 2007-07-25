@@ -58,7 +58,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		{
 		// constructor gets called at load time and every time the toolbar is used
 		if (pluginInitialized) { return; }
-		renameGoose = new RenameThread();
+//		renameGoose = new RenameThread();
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( this );
 		
@@ -68,7 +68,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		gDialog = new GooseDialog();
 		
 		CytoPanel GoosePanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
-		GoosePanel.add("CyGoose Plugin", null, gDialog, "Gaggle Goose");
+		GoosePanel.add("CyGoose", null, gDialog, "Gaggle Goose");
 		GoosePanel.setSelectedIndex( GoosePanel.indexOfComponent(gDialog) );
 		
 		registerAction();
@@ -80,7 +80,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 			createDefaultGoose();
 			updateAction();
 			registered = true;
-			//renameGoose.run();
+//			renameGoose.run();
 			}
 		catch (Exception E)
 			{ // TODO add error message text area to goose panel and stop popping error box up
@@ -233,7 +233,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 					createDefaultGoose();
 					updateAction();
 					registered = true;
-					//renameGoose.run();
+//					renameGoose.run();
 					// todo want to be able to update all the networks/geese here since user 
 					// may have opened some prior to connection
 					}
@@ -257,7 +257,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 				public void actionPerformed(ActionEvent event)
 					{
 					System.out.println("--- update action ----");
-					//checkNameChange();
+					checkNameChange();
 					MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
 					}
 			});
@@ -415,6 +415,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
             }
 					}
 			});
+		
+		
 		}
 
 	
@@ -434,7 +436,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 			while (registered)
 				{
 				rr.run();
-				try { wait(1000); }
+				try { this.wait(1000); }
 				catch (Exception E) { E.printStackTrace(); System.exit(0); }
 				}
 			}
@@ -444,13 +446,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		{
 		public void run()
 			{
-			//while (registered)
-				{
-				checkNameChange();
-				
-//				try { this.wait(100); }
-//				catch (Exception e) { e.printStackTrace(); }
-				}
+			checkNameChange();
 			}
 		
 		

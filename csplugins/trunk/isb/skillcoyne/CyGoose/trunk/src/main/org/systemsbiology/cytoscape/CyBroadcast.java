@@ -375,12 +375,10 @@ public class CyBroadcast
 		String Species = "";
 
 		Iterator<CyNode> NodesIter = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().iterator();
-		CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
 		while (NodesIter.hasNext())
 			{
 			CyNode CurrentSelectedNode = NodesIter.next();
 			GaggleNetwork.add(CurrentSelectedNode.getIdentifier());
-//			GaggleNetwork = addAttributes(CurrentSelectedNode.getIdentifier(), NodeAtts, GaggleNetwork);
 			}
 
 		Iterator<CyEdge> EdgesIter = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedEdges().iterator();
@@ -388,8 +386,6 @@ public class CyBroadcast
 		while (EdgesIter.hasNext())
 			{
 			CyEdge CurrentSelectedEdge = EdgesIter.next();
-//			GaggleNetwork = addAttributes(CurrentSelectedEdge.getIdentifier(), EdgeAtts, GaggleNetwork);
-
 			
 			CyNode SourceNode = (CyNode) CurrentSelectedEdge.getSource();
 			CyNode TargetNode = (CyNode) CurrentSelectedEdge.getTarget();
@@ -401,15 +397,11 @@ public class CyBroadcast
 					InteractionType, CurrentSelectedEdge.isDirected());
 			GaggleNetwork.add(GaggleInteraction);
 
-//			GaggleNetwork = addAttributes(SourceNode.getIdentifier(), NodeAtts, GaggleNetwork);
-//			GaggleNetwork = addAttributes(TargetNode.getIdentifier(), NodeAtts, GaggleNetwork);
-
-			
 			// again if there's more than one species we'll only get the last one!!!
 			Species = getSpecies(SourceNode.getIdentifier());
 			}
 		
-		GaggleNetwork = setAttributes(GaggleNetwork);
+		GaggleNetwork = addAttributes(GaggleNetwork);
 		
 		try
 			{
@@ -423,11 +415,10 @@ public class CyBroadcast
 		}
 
 	
-	private Network setAttributes(Network gaggleNet)
+	private Network addAttributes(Network gaggleNet)
 		{
 		for (String id : gaggleNet.getNodes())
 			{
-			System.err.println("Adding attributes to node: " + id);
 			gaggleNet = addAttributes(id, Cytoscape.getNodeAttributes(), gaggleNet, NetworkObject.NODE);
 			}
 		
@@ -460,7 +451,9 @@ public class CyBroadcast
 			{
 			Object Value = "";
 			if (!cyAtts.getUserVisible(AttributeName))
+				{
 				continue; // don't think we should pass on hidden attributes, they aren't useful to the user 
+				}
 				
 			switch (cyAtts.getType(AttributeName))
 				{
@@ -484,7 +477,6 @@ public class CyBroadcast
 			switch (obj)
 				{
 				case NODE:
-				System.err.println("  - adding " + AttributeName + " : " + Value);
 					gaggleNet.addNodeAttribute(Identifier, AttributeName, Value);
 				break;
 				
