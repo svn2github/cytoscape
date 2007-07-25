@@ -41,7 +41,6 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -178,6 +177,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	public static final int SELECTED = 1;
 
 	public static final int UNSELECTED = 2;
+
 
 	/**
 	 * 
@@ -810,8 +810,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private static final String REGION_NAME_ATT = "__Region_name";
 
-	// private static final String REGION_NODEVIEWS_ATT = "__Region_nodeViews";
-
 	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
 
 	/**
@@ -823,11 +821,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		for (NodeView cnv : currentNodeViews) {
 			currentNodes.add((CyNode) cnv.getNode());
 		}
-		// CyNetwork network = Cytoscape.getCurrentNetwork();
-		// List<CyNode> currentNodes = new
-		// ArrayList(network.getSelectedNodes());
 		String groupName = region.getRegionAttributeValue().toString();
-		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes,
+		String uniqueGroupName = groupName + "_" + LayoutRegionManager.getRegionCount();
+		CyGroup group = CyGroupManager.createGroup(uniqueGroupName, currentNodes,
 				viewerName);
 		region.setMyGroup(group);
 		group.setState(SELECTED);
@@ -836,9 +832,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		CyNode groupNode = group.getGroupNode();
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_NAME_ATT,
-				groupName);
-		// attributes.setAttribute(groupNode.getIdentifier(),
-		// REGION_NODEVIEWS_ATT, region.getNodeViews().toString());
+				uniqueGroupName);
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT,
 				region.getColorIndex());
 		
@@ -951,7 +945,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	private void select(LayoutRegion region) {
 		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region
-				.getRegionAttributeValue().toString()));
+				.getRegionAttributeValue().toString() + "_" + LayoutRegionManager.getRegionCount()));
 		// List<CyNode> nodeList = group.getNodes();
 		// Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, true);
 		// Cytoscape.getCurrentNetworkView().updateView();
@@ -964,7 +958,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	private void unselect(LayoutRegion region) {
 		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region
-				.getRegionAttributeValue().toString()));
+				.getRegionAttributeValue().toString() + "_" + LayoutRegionManager.getRegionCount()));
 		// List<CyNode> nodeList = group.getNodes();
 		// Cytoscape.getCurrentNetwork().setSelectedNodeState(nodeList, false);
 		// Cytoscape.getCurrentNetworkView().updateView();
