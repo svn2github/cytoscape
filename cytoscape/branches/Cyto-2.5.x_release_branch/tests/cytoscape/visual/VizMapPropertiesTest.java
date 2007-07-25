@@ -88,8 +88,11 @@ public class VizMapPropertiesTest extends TestCase {
 
 		Collection nodeLineTypeCalcs = catalog.getNodeLineTypeCalculators();
 		System.out.println("nodeLineTypeCalcs.size() = " + nodeLineTypeCalcs.size());
-		checkCalculator(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeLineTypeCalculator("BasicContinuous"));
+		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
+		assertNull(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
+		
+		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicContinuous"));
+		assertNull(catalog.getNodeLineTypeCalculator("BasicContinuous"));
 		System.out.println();
 
 		Collection nodeShapeCalcs = catalog.getNodeShapeCalculators();
@@ -135,8 +138,9 @@ public class VizMapPropertiesTest extends TestCase {
 
 		Collection edgeLineTypeCalcs = catalog.getEdgeLineTypeCalculators();
 		System.out.println("edgeLineTypeCalcs.size() = " + edgeLineTypeCalcs.size());
-		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
+		assertEquals(0, edgeLineTypeCalcs.size());
+//		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicDiscrete"));
+//		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
 		System.out.println();
 
 		Collection edgeArrowCalcs = catalog.getEdgeArrowCalculators();
