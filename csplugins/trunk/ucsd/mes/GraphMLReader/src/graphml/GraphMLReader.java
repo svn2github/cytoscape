@@ -79,7 +79,7 @@ public class GraphMLReader extends AbstractGraphReader {
 		return edgeInds;
 	}
 	
-	public void read() {
+	public void read() throws IOException {
         try {
             FileInputStream fileInputStream = new FileInputStream(fileName);
             XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(fileInputStream);
@@ -88,10 +88,9 @@ public class GraphMLReader extends AbstractGraphReader {
                 printEventInfo(xmlStreamReader);
             }
             xmlStreamReader.close();
-        } catch (XMLStreamException e) {
-            e.printStackTrace();  
-        } catch (FileNotFoundException e) {
-            e.printStackTrace(); 
+        } catch (Throwable e) {
+			throw new IOException(e.getMessage());
+			//throw new IOException(e); // java 1.6 only!
         }
     }
 
