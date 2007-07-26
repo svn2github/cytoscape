@@ -90,5 +90,6 @@ The retreat is generously supported by partners from both government and industr
 
  </tr>
 </table>
+<? include "footer.php"; ?>
 </body>
 </html>

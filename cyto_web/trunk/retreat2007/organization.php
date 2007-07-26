@@ -75,6 +75,6 @@ Talks will have a focus on network-based approaches to biological data integrati
   </td>
  </tr>
 </table>
-
+<? include "footer.php"; ?>
 </body>
 </html>

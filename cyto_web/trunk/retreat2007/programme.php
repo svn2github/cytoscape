@@ -348,5 +348,6 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   </td>
  </tr>
 </table>
+<? include "footer.php"; ?>
 </body>
 </html>

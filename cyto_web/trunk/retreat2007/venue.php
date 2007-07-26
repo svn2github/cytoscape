@@ -61,7 +61,7 @@
   </td>
  </tr>
 </table>
-
+<? include "footer.php"; ?>
 </body>
 </html>
 
