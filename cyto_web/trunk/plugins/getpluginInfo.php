@@ -1,4 +1,31 @@
 <?php
+function getPluginFileSize($connection, $plugin_file_id) {
+
+	$query = 'SELECT length(file_data) as pluginFileSize FROM plugin_files ' .
+		'WHERE plugin_file_auto_id = ' . $plugin_file_id;
+
+        // Run the query
+        if (!($PluginFileInfo = @ mysql_query($query, $connection)))
+                showerror();
+
+	$PluginFileInfo_row =  @ mysql_fetch_array($PluginFileInfo);
+	$pluginFileSize = $PluginFileInfo_row['pluginFileSize'];
+
+	$retStr = "";
+	if ($pluginFileSize<1024)
+		$retStr = " (".$pluginFileSize."bytes)";
+
+	if ($pluginFileSize>1023) 
+		$retStr = " (".round(($pluginFileSize/1024),1)."KB)";
+
+	if ($pluginFileSize>1048576)
+		$retStr = " (".round(($pluginFileSize/1000000),2) . "MB)";
+	
+	return  $retStr;
+
+} // end of getPluginFileSize()
+
+
 function getAuthorInfo($connection, $plugin_version_id) {
 
 	// A plugin may be released by more than one institution, more than one author at
@@ -119,7 +146,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 		if ($versionSpecific_row["jar_url"] != null) {
 			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
 		} else {
-			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a><br>";
+			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a>".getPluginFileSize($connection, $versionSpecific_row["plugin_file_id"])."<br>";
 		}
 
 		if ($versionSpecific_row["source_url"] != null) {
