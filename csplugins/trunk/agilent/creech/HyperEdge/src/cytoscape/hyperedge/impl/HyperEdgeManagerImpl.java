@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Sep 16 17:13:31 2005
-* Modified:     Tue Jul 03 16:36:23 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Jul 25 16:09:27 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Jul 25 16:09:15 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.54.
 * Tue Jul 03 16:36:16 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.53.
 * Thu Jun 28 16:44:28 2007 (Michael L. Creech) creech@w235krbza760
@@ -143,10 +145,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // used for fine-grained synchronization:
     private final static Boolean          INTERSECTION_LOCK   = new Boolean(true);
     private static final HyperEdgeManager INSTANCE            = new HyperEdgeManagerImpl();
-    private static final Double           VERSION_NUMBER      = 2.53;
+    private static final Double           VERSION_NUMBER      = 2.54;
     private static final String           VERSION             = "HyperEdge Version " +
                                                                 VERSION_NUMBER +
-                                                                ", 03-Jul-07";
+                                                                ", 25-Jul-07";
     private static transient ListenerList _new_listener_store = new ListenerList();
 
     // Used for setting and reading _internalRemoval:
