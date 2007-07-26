@@ -129,9 +129,9 @@ public class CyExcentricVisualizationInteractor extends
      * @see java.awt.event.MouseMotionListener#mouseMoved(MouseEvent)
      */
     public void mouseMoved (MouseEvent e) {
-//		System.out.println("mouse event at: " + e.getWhen());
+		System.out.println("mouse event at: " + e.getWhen());
         if (isVisible()) {
-//			System.out.println("Visible mouse event: " + e);
+			System.out.println("Visible mouse event: " + e);
             if (e.getModifiers() != 0) {
                 return;
             }

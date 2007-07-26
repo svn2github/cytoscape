@@ -23,6 +23,7 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.cytopanels.CytoPanel;
 import ding.view.DGraphView;
 import infovis.visualization.magicLens.DefaultExcentricLabels;
 import infovis.visualization.magicLens.ExcentricLabels;
@@ -116,6 +117,13 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
             wrapper.addMouseMotionListener(wrapper.getInteractor());
             wrapper.setVisible(true);
             wrapper.setSize(component.getWidth(), component.getHeight());
+
+            CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+            ExcentricLabelsConfigPanel configPanel = new ExcentricLabelsConfigPanel(excentric,
+                    wrapper);
+            cytoPanelSouth.add("Excentric Labels", configPanel);
+            int index = cytoPanelSouth.indexOfComponent(configPanel);
+            cytoPanelSouth.setSelectedIndex(index);
             //
             //}
         }
