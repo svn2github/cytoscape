@@ -72,6 +72,10 @@ public class ValueSelectDialog extends JDialog {
 	private final VisualPropertyType type;
 	private Map shapeMap;
 	private List orderedKeyList;
+	
+	private Object originalValue;
+	
+	private boolean canceled = false;
 
 	/**
 	 * Static method to show dialog and get a value from user.
@@ -95,6 +99,9 @@ public class ValueSelectDialog extends JDialog {
 		initComponents();
 
 		setList();
+		
+		// get original value and sete the selected item.
+		originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
 	}
 
 	/**
@@ -138,7 +145,7 @@ public class ValueSelectDialog extends JDialog {
 				}
 			});
 		// Currently not implemented
-		cancelButton.setVisible(false);
+		cancelButton.setVisible(true);
 		
 
 		org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel
@@ -185,6 +192,7 @@ public class ValueSelectDialog extends JDialog {
 
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		dispose();
+		canceled = true;
 	}
 
 	private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,12 +214,16 @@ public class ValueSelectDialog extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public Object getValue() {
+		
+		if(canceled == true) {
+			return originalValue;
+		}
+		
 		final int selectedIndex = iconList.getSelectedIndex();
 		if ((0 <= selectedIndex) && (selectedIndex < orderedKeyList.size()))
 			return orderedKeyList.get(selectedIndex);
 		else
-
-			return orderedKeyList.get(0);
+			return originalValue;
 	}
 
 	/*
