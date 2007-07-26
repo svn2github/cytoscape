@@ -39,6 +39,7 @@ package graphml;
 
 import java.io.*;
 import java.util.*;
+import java.awt.Color;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLInputFactory;
@@ -51,6 +52,7 @@ import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
 
 /**
  * Rudimentary GraphML file reader.
@@ -62,6 +64,7 @@ public class GraphMLReader extends AbstractGraphReader {
 
 	private int[] edgeInds;
 	private int[] nodeInds;
+	private VisualStyleCreator styleCreator;
 
 	public GraphMLReader(String fileName) {
 		super(fileName);
@@ -69,6 +72,8 @@ public class GraphMLReader extends AbstractGraphReader {
 		nodes = new LinkedList<CyNode>();
 		edgeInds = null;
 		nodeInds = null;
+		
+		styleCreator = new VisualStyleCreator(fileName);
 	}
 
 	public int[] getNodeIndicesArray() {
@@ -113,6 +118,22 @@ public class GraphMLReader extends AbstractGraphReader {
 					String nodeName = reader.getAttributeValue(0);
 					CyNode node = Cytoscape.getCyNode(nodeName, true);
 					nodes.add( node );
+
+				} else if ( reader.getLocalName().equals("Shape") ) {
+					String shape = reader.getAttributeValue(0);
+					System.out.println("read shape: " + shape);
+					String id = nodes.get(nodes.size()-1).getIdentifier();
+					styleCreator.addProperty( id, VisualPropertyType.NODE_SHAPE, 
+					                                VisualPropertyType.NODE_SHAPE.getValueParser().
+													  parseStringValue(shape) );
+					
+				} else if ( reader.getLocalName().equals("Fill") ) {
+					String color = reader.getAttributeValue(0);
+					System.out.println("read color: " + color);
+					String id = nodes.get(nodes.size()-1).getIdentifier();
+					styleCreator.addProperty( id, VisualPropertyType.NODE_FILL_COLOR, 
+												new Color(Integer.parseInt(color.substring(1,color.length()-1),16)));
+					                                
 				}
                 break;
 
@@ -128,6 +149,8 @@ public class GraphMLReader extends AbstractGraphReader {
 				i = 0;
 				for ( CyNode node : nodes )
 					nodeInds[i++] = node.getRootGraphIndex();
+
+				styleCreator.buildStyle();
 
                 break;
 
