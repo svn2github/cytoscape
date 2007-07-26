@@ -82,11 +82,9 @@ public class CyLabeledComponent implements LabeledComponent {
 	                                		  GraphRenderer.LOD_HIGH_DETAIL) == 0,
 	                                  nodeStack);
         final IntEnumerator nodesXSect = nodeStack.elements();
-        System.out.println("----------");
         while (nodesXSect.numRemaining() > 0) {
           final int nodeXSect = nodesXSect.nextInt();
           pick.add(new CyLabeledItem(view, nodeXSect, this));
-          System.out.println("Got node:  " + nodeXSect);
         }
         return pick;
 	}
