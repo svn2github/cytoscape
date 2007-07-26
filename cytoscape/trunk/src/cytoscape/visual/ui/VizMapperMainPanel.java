@@ -2352,8 +2352,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			mapping = null;
 		}
-
-		System.out.println("Undef = " + noMapping.size());
 	}
 
 	/*
