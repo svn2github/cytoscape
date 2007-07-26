@@ -44,8 +44,25 @@ package cytoscape.visual;
 
 
 //----------------------------------------------------------------------------
-import static cytoscape.visual.VisualPropertyType.*;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
+import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_COLOR;
+import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
+import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
+import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
+import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
+import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
+import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
+import static cytoscape.visual.VisualPropertyType.NODE_LINE_STYLE;
+import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;
+import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
+import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
+import cytoscape.Cytoscape;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.CalculatorFactory;
 
@@ -65,6 +82,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 //----------------------------------------------------------------------------
@@ -119,7 +137,7 @@ public class CalculatorIO {
 		header.append(lineSep);
 		header.append("# Please make sure you know what you are doing before");
 		header.append(" modifying this file by hand.").append(lineSep);
-
+		
 		final BufferedWriter writer;
 		final BufferedReader reader;
 		final ByteArrayOutputStream buffer;
@@ -432,26 +450,25 @@ public class CalculatorIO {
 				storeKey(key, props, calcNames);
 			} else if (key.endsWith(NODE_LINETYPE.getDefaultPropertyLabel())) {
 				key = updateLegacyKey(key, props, NODE_LINETYPE.getDefaultPropertyLabel(),
-	                      NODE_LINE_STYLE.getDefaultPropertyLabel(),
-	                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
-				storeKey(key, props, calcNames); 
+				                      NODE_LINE_STYLE.getDefaultPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
+				storeKey(key, props, calcNames);
 			} else if (key.endsWith(EDGE_LINETYPE.getDefaultPropertyLabel())) {
-					key = updateLegacyKey(key, props, EDGE_LINETYPE.getDefaultPropertyLabel(),
-		                      EDGE_LINE_STYLE.getDefaultPropertyLabel(),
-		                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
-					storeKey(key, props, calcNames); 
+				key = updateLegacyKey(key, props, EDGE_LINETYPE.getDefaultPropertyLabel(),
+				                      EDGE_LINE_STYLE.getDefaultPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
+				storeKey(key, props, calcNames);
 			} else if (key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel())) {
 				key = updateLegacyKey(key, props, EDGE_TGTARROW.getDefaultPropertyLabel(),
-	                      EDGE_TGTARROW_SHAPE.getDefaultPropertyLabel(),
-	                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
+				                      EDGE_TGTARROW_SHAPE.getDefaultPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
 				storeKey(key, props, calcNames);
 			} else if (key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
 				key = updateLegacyKey(key, props, EDGE_SRCARROW.getDefaultPropertyLabel(),
-	                      EDGE_SRCARROW_SHAPE.getDefaultPropertyLabel(),
-	                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
+				                      EDGE_SRCARROW_SHAPE.getDefaultPropertyLabel(),
+				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
 				storeKey(key, props, calcNames);
-			
-		}	else
+			} else
 				storeKey(key, props, calcNames);
 		}
 
@@ -674,8 +691,9 @@ public class CalculatorIO {
 		       || key.startsWith(EDGE_SRCARROW.getPropertyLabel() + "."))) {
 			value = Arrow.parseArrowText(value).getShape().toString();
 		}
-		
-		if(key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel()) || key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
+
+		if (key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel())
+		    || key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
 			value = Arrow.parseArrowText(value).getShape().toString();
 		}
 
@@ -688,7 +706,7 @@ public class CalculatorIO {
 
 		return key;
 	}
-
+	
 	// agony
 
 	/** @deprecated Implement this yourself. Will be removed 10/2007 */
