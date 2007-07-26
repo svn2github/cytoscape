@@ -4,6 +4,7 @@ import infovis.visualization.magicLens.ExcentricLabels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Date;
 
 /**
  * AJK: 07/22/06 substitute for Visualization because I can't seem to be able to add
@@ -48,22 +49,20 @@ public class CyExcentricLabelsWrapper extends JPanel {
      * @param g Graphics Object.
      */
     public void paint (Graphics g) {
-        excentric.setVisible(true);
-        excentric.setEnabled(true);
+
+        //  Conditionally call setVisible and setEnabled.
+        if (!excentric.isVisible()) {
+            excentric.setVisible(true);
+        }
+        if (!excentric.isEnabled()) {
+            excentric.setEnabled(true);
+        }
         //		Rectangle2D hBox = labeledComponent.getHitBox();
         //		if (hBox != null) {
         //			g.setClip(Math.max(((int) hBox.getMinX()) - 50, 0), Math.max(
         //					((int) hBox.getMinY()) - 50, 0), 100, 100);
         //		}
-
-        // AJK: 07/21/07 BEGIN
-        //    try cutting down on number of paint events by exiting 9 out of 10 times
-        double kount = Math.random();
-        if (kount < 0.9d) {
-            return;
-        }
-        // AJK: 07/21/07 END
-
+        System.out.println("Paint:  " + new Date());
         excentric.paint((Graphics2D) g, this.bounds());
     }
 
