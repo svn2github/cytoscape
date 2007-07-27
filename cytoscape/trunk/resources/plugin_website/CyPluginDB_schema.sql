@@ -81,10 +81,11 @@ CREATE TABLE plugin_version (
 
 
 CREATE TABLE usagelog (
+  log_auto_id int not null auto_increment,
   plugin_version_id int(11) NOT NULL,
   remote_host varchar(60) default NULL,
   ip_address varchar(20) default NULL,
   sysdat date default NULL,
-  PRIMARY KEY  (plugin_version_id)
+  PRIMARY KEY  (log_auto_id)
 );
 
