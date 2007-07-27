@@ -26,11 +26,9 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.cytopanels.CytoPanel;
 import ding.view.DGraphView;
 import infovis.visualization.magicLens.DefaultExcentricLabels;
-import infovis.visualization.magicLens.ExcentricLabels;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.*;
 import java.util.HashMap;
 
 public class ExcentricLabelsPlugin extends CytoscapePlugin {
@@ -44,11 +42,12 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
     public ExcentricLabelsPlugin () {
 
         //  Create PlugIn Menu Action, and add to PlugIns Menu
-        MainPluginAction mpa = new MainPluginAction();
         CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
-        JMenu plugInMenu = cyMenus.getOperationsMenu();
-        JMenuItem menuItem1 = new JMenuItem("Show excentric labels");
+        JMenu plugInMenu = cyMenus.getViewMenu();
+        JCheckBoxMenuItem menuItem1 = new JCheckBoxMenuItem("Show excentric labels");
+        menuItem1.setSelected(false);
         plugInMenu.add(menuItem1);
+        MainPluginAction mpa = new MainPluginAction(menuItem1);
         menuItem1.addActionListener(mpa);
     }
 
@@ -56,11 +55,18 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
      * This class gets attached to the menu item.
      */
     public class MainPluginAction extends AbstractAction {
+        private JCheckBoxMenuItem menuItem;
+        private boolean excentricEnabled = false;
+        private DefaultExcentricLabels excentric;
+        private CyExcentricLabelsWrapper wrapper;
+        private ExcentricLabelsConfigPanel configPanel;
+
         /**
          * The constructor sets the text that should appear on the menu item.
          */
-        public MainPluginAction () {
+        public MainPluginAction (JCheckBoxMenuItem menuItem) {
             super("Show excentric labels");
+            this.menuItem = menuItem;
         }
 
         /**
@@ -76,57 +82,63 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
          * This method is called when the user selects the menu item.
          */
         public void actionPerformed (ActionEvent ae) {
+            boolean errorOccurred = false;
 
-            // Get Current Network View
-            CyNetworkView newView = Cytoscape.getCurrentNetworkView();
+            if (!excentricEnabled) {
+                // Get Current Network View
+                CyNetworkView newView = Cytoscape.getCurrentNetworkView();
 
-            //  Create Default InfoViz Excentric Label Handler
-            DefaultExcentricLabels excentric = new CustomExcentricLabels();
-            excentric.setOpaque(true);
+                if (newView != null) {
+                    //  Create Default InfoViz Excentric Label Handler
+                    excentric = new CustomExcentricLabels();
+                    excentric.setOpaque(true);
 
-            //  Create the LabeledComponent.
-            //  Given rectangular coordinates, the LabeledComponent returns a set of "things"
-            //  that appear within this rectangle.
-            CyLabeledComponent labeledComponent = new CyLabeledComponent(newView);
-            excentric.setVisualization(labeledComponent);
+                    //  Create the LabeledComponent.
+                    //  Given rectangular coordinates, the LabeledComponent returns a set of "things"
+                    //  that appear within this rectangle.
+                    CyLabeledComponent labeledComponent = new CyLabeledComponent(newView);
+                    excentric.setVisualization(labeledComponent);
 
-            // JComponent component = Cytoscape.getDesktop()
-            // .getNetworkViewManager().getComponentForView(newView);
+                    //  Get the FOREGROUND_CANVAS, so we can draw labels on it.
+                    JComponent component =
+                            ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
 
-            //  Get the FOREGROUND_CANVAS, so we can draw labels on it.
-            JComponent component =
-            // Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(newView);
-                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+                    //  Create the CyWrapper class
+                    wrapper = new CyExcentricLabelsWrapper(excentric, component, labeledComponent);
+                    viewWrapperMap.put(newView.getIdentifier(), wrapper);
 
-            //  Create the CyWrapper class
-            CyExcentricLabelsWrapper wrapper = new CyExcentricLabelsWrapper(
-                    excentric, component, labeledComponent);
-            viewWrapperMap.put(newView.getIdentifier(), wrapper);
+                    //  Add the CyWrapper class to the FOREGROUND_CANVAS.
+                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).add(wrapper);
+                    wrapper.getInteractor().install(wrapper);
+                    wrapper.setInstalled(true);
+                    wrapper.addMouseMotionListener(wrapper.getInteractor());
+                    wrapper.setVisible(true);
+                    wrapper.setSize(component.getWidth(), component.getHeight());
 
-            //  Add the CyWrapper class to the FOREGROUND_CANVAS.
-            ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).add(wrapper);
-
-            //			if (component instanceof JInternalFrame) {
-            //				JInternalFrame j = (JInternalFrame) component;
-            //				j.setGlassPane(wrapper);
-            //				wrapper.setOpaque(false);
-            //				j.getGlassPane().setVisible(true);
-
-            //				if (!wrapper.isInstalled()) {
-            wrapper.getInteractor().install(wrapper);
-            wrapper.setInstalled(true);
-            wrapper.addMouseMotionListener(wrapper.getInteractor());
-            wrapper.setVisible(true);
-            wrapper.setSize(component.getWidth(), component.getHeight());
-
-            CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-            ExcentricLabelsConfigPanel configPanel = new ExcentricLabelsConfigPanel(excentric,
-                    wrapper);
-            cytoPanelSouth.add("Excentric Labels", configPanel);
-            int index = cytoPanelSouth.indexOfComponent(configPanel);
-            cytoPanelSouth.setSelectedIndex(index);
-            //
-            //}
+                    //  Create the config panel in the WEST
+                    CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+                    configPanel = new ExcentricLabelsConfigPanel(excentric,
+                            wrapper);
+                    cytoPanelSouth.add("Excentric Labels", configPanel);
+                    int index = cytoPanelSouth.indexOfComponent(configPanel);
+                    cytoPanelSouth.setSelectedIndex(index);
+                } else {
+                    errorOccurred = true;
+                }
+            } else {
+                CyNetworkView newView = Cytoscape.getCurrentNetworkView();
+                if (newView != null) {
+                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).remove(wrapper);
+                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).repaint();
+                }
+                CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+                cytoPanelSouth.remove(configPanel);
+                cytoPanelSouth.setSelectedIndex(0);
+            }
+            if (!errorOccurred) {
+                this.excentricEnabled = ! excentricEnabled;
+                menuItem.setSelected(excentricEnabled);
+            }
         }
     }
 }
