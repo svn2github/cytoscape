@@ -52,8 +52,17 @@ public class CyLabeledItem implements LabeledComponent.LabeledItem {
 
 	public String getLabel() {
 		String id = nv.getNode().getIdentifier();
-		return nodeAttribs.getStringAttribute(id, Semantics.CANONICAL_NAME);
-	}
+		String label = nodeAttribs.getStringAttribute(id,
+                GlobalLabelConfig.getCurrentAttributeName());
+        if (label == null) {
+            return "---";
+        } else {
+            if (label.length() > 20) {
+                label = label.substring(0, 18) + "...";
+            }
+            return label;
+        }
+    }
 
 	public Shape getShape() {
 		return shape;		
