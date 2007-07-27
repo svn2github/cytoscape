@@ -30,6 +30,7 @@ import infovis.visualization.magicLens.ExcentricLabels;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.*;
 import java.util.HashMap;
 
 public class ExcentricLabelsPlugin extends CytoscapePlugin {
@@ -80,7 +81,7 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
             CyNetworkView newView = Cytoscape.getCurrentNetworkView();
 
             //  Create Default InfoViz Excentric Label Handler
-            ExcentricLabels excentric = new DefaultExcentricLabels();
+            DefaultExcentricLabels excentric = new CustomExcentricLabels();
             excentric.setOpaque(true);
 
             //  Create the LabeledComponent.
@@ -118,7 +119,7 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
             wrapper.setVisible(true);
             wrapper.setSize(component.getWidth(), component.getHeight());
 
-            CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+            CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
             ExcentricLabelsConfigPanel configPanel = new ExcentricLabelsConfigPanel(excentric,
                     wrapper);
             cytoPanelSouth.add("Excentric Labels", configPanel);
