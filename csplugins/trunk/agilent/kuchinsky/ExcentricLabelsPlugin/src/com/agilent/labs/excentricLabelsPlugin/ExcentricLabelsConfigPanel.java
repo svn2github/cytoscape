@@ -6,6 +6,15 @@ import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.util.Vector;
+import java.util.Collections;
+import java.util.ArrayList;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
+import cytoscape.Cytoscape;
 
 public class ExcentricLabelsConfigPanel extends JPanel {
     private ExcentricLabels excentric;
@@ -18,7 +27,7 @@ public class ExcentricLabelsConfigPanel extends JPanel {
     }
 
     private void initUi() {
-        GridLayout gridLayout = new GridLayout(2,2);
+        GridLayout gridLayout = new GridLayout(20,1);
         this.setLayout(gridLayout);
         JLabel radiusLabel = new JLabel("Set Radius: ");
         float lensRadius = excentric.getLensRadius();
@@ -35,6 +44,45 @@ public class ExcentricLabelsConfigPanel extends JPanel {
         JLabel maxNumLabelsLabel = new JLabel("Set Max Number of Labels: ");
         this.add(maxNumLabelsLabel);
         this.add(maxLabelsSlider);
+
+        JLabel attributeLabel = new JLabel("Set Attribute: ");
+        this.add(attributeLabel);
+        
+        Vector attributeList = createAttributeList();
+        final JComboBox attributeComboBox = new JComboBox(attributeList);
+        attributeComboBox.setSelectedItem(Semantics.CANONICAL_NAME);
+        this.add(attributeComboBox);
+        attributeComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed (ActionEvent e) {
+                String attribute = (String) attributeComboBox.getSelectedItem();
+                GlobalLabelConfig.setCurrentAttributeName(attribute);
+            }
+        });
+
+    }
+
+    private Vector createAttributeList() {
+        Vector attributeList = new Vector();
+        CyAttributes attributes = Cytoscape.getNodeAttributes();
+        String[] attributeNames = attributes.getAttributeNames();
+
+        if (attributeNames != null) {
+            //  Get all String attributes
+            for (int i = 0; i < attributeNames.length; i++) {
+                int type = attributes.getType(attributeNames[i]);
+
+                //  only show user visible attributes
+                if (attributes.getUserVisible(attributeNames[i])) {
+                    if (type == CyAttributes.TYPE_STRING) {
+                        attributeList.add(attributeNames[i]);
+                    }
+                }
+            }
+
+            //  Alphabetical sort
+            Collections.sort(attributeList);
+        }
+        return attributeList;
     }
 }
 
