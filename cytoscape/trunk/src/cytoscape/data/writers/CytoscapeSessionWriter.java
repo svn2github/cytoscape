@@ -316,14 +316,10 @@ public class CytoscapeSessionWriter {
 		
 		String newFileName = fileName;
 		Integer i = 0;
-		for(Character ch : INVALID_CHAR) {
-			System.out.println("Ch = " + ch + ", numeric = " + Character.getNumericValue(ch));
-			newFileName = newFileName.replace(ch.toString(), i.toString());
-			i++;
-		}
+		for(Character ch : INVALID_CHAR) 
+			newFileName = newFileName.replace(ch.toString(), (i++).toString());
 		
 		return newFileName;
-//		return fileName.replaceAll("[\\/:*?\"<>|]", "_");
 	}
 
 	/**
