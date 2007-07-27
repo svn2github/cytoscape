@@ -1920,6 +1920,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			default:
 				return;
 		}
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 		dispose();
 	}
