@@ -215,7 +215,7 @@ public class Graph {
 		BufferedReader br = new BufferedReader(r);
 		String linebuf = br.readLine();
 		nodecount = Integer.parseInt(linebuf);
-		LinkedList edges = new LinkedList();
+		LinkedList<Object> edges = new LinkedList<Object>();
 		edgesFrom = new LinkedList[nodecount];
 		edgesTo = new LinkedList[nodecount];
 		int x;
@@ -291,7 +291,7 @@ public class Graph {
 	 * be part of a cycle of length two.
 	*/
 	public Graph getGraphWithoutOneOrTwoCycles() {
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Object> newEdges = new LinkedList<Object>();
 		int x;
 		for (x=0; x<edge.length; x++) {
 			int edgeFrom = edge[x].getFrom();
@@ -313,10 +313,10 @@ public class Graph {
 	 * @return a graph without duplicate edges
 	*/
 	public Graph getGraphWithoutMultipleEdges() {
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Object> newEdges = new LinkedList<Object>();
 		int edgeFrom;
 		for (edgeFrom=0; edgeFrom<nodecount; edgeFrom++) {
-			HashSet seenEdgeTo = new HashSet();
+			HashSet<Object> seenEdgeTo = new HashSet<Object>();
 			Iterator iter = edgesFrom[edgeFrom].iterator();
 			while (iter.hasNext()) {
 				Integer edgeTo = (Integer)(iter.next());
@@ -620,7 +620,7 @@ public class Graph {
 		for (x=0; x<cycleEliminationPriority.length; x++) {
 			priorityIndex[cycleEliminationPriority[x]]=x;
 		}
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Object> newEdges = new LinkedList<Object>();
 		for (x=0; x<edge.length; x++) {
 			int edgeFrom = edge[x].getFrom();
 			int edgeTo = edge[x].getTo();
@@ -679,7 +679,7 @@ public class Graph {
 		for (x=0; x<topologicalOrder.length; x++) {
 			priorityIndex[topologicalOrder[x]]=x;
 		}
-		LinkedList newEdges = new LinkedList();
+		LinkedList<Object> newEdges = new LinkedList<Object>();
 		LinkedHashSet descendants[] = new LinkedHashSet[nodecount];
 		int nodeIndex;
 		for (nodeIndex = topologicalOrder.length - 1; nodeIndex >= 0; nodeIndex--) {
@@ -796,7 +796,7 @@ public class Graph {
 			vertexLabel[x] = 0; /* 0 is the "unlabelled" label */
 		}
 		int parentLabels[][] = new int[nodecount][];
-		LinkedHashSet eligible = new LinkedHashSet(nodecount * 3 / 2);
+		LinkedHashSet<Object> eligible = new LinkedHashSet<Object>(nodecount * 3 / 2);
 		boolean onEligible[] = new boolean[nodecount];
 		/* add all sources and isolated nodes to eligible list */
 		for (x=0; x<nodecount; x++) {
@@ -859,7 +859,7 @@ public class Graph {
 			vertexLayer[x] = 0; /* 0 means unassigned */
 		}
 		eligible.clear();
-		LinkedHashSet nominated = new LinkedHashSet();
+		LinkedHashSet<Object> nominated = new LinkedHashSet<Object>();
 		/* add all sinks and isolated nodes to eligible */
 		for (x=0; x<nodecount; x++) {
 			if (edgesFrom[x].size() == 0) {
