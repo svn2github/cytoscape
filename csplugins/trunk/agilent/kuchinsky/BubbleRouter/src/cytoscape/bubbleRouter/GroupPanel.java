@@ -32,33 +32,44 @@
  */
 package cytoscape.bubbleRouter;
 
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import giny.model.Node;
+import giny.view.GraphViewChangeEvent;
+import giny.view.GraphViewChangeListener;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
-
-// System imports
-import javax.swing.JPanel;
-import java.util.List;
-import java.util.*;
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
-
-import giny.view.*;
-import giny.model.Node;
 
 /**
  * The GroupPanel is the implementation for the Cytopanel that presents
  * the named selection mechanism to the user.
  */
+@SuppressWarnings("serial")
 public class GroupPanel extends JPanel implements TreeSelectionListener,
                                                   TreeExpansionListener,
                                                   GraphViewChangeListener {
@@ -66,7 +77,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	JTree navTree = null;
 	GroupTreeModel treeModel = null;
 	TreeSelectionModel treeSelectionModel = null;
-	HashMap nodeMap = null;
+	HashMap<Object, Object> nodeMap = null;
 	boolean updateSelection = true;
 	boolean updateTreeSelection = true;
 
@@ -357,7 +368,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 */
 		
 		// Build a path list corresponding to the selection
-		int j = 0;
 		for (int i = 0; i < nodeList.length; i++) {
 			CyNode node = (CyNode)nodeList[i];
 
@@ -377,7 +387,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 	private void checkGroupSelection(Node nodeList[], boolean select) {
 		// First, get a list of groups
-		ArrayList<CyGroup> groupList = new ArrayList();
+		ArrayList<CyGroup> groupList = new ArrayList<CyGroup>();
 		for (int i = 0; i < nodeList.length; i++) {
 			CyNode node = (CyNode) nodeList[i];
 			List<CyGroup> groups = node.getGroups();
@@ -481,7 +491,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		 * @return a DefaultMutableTreeNode that represents the root of the tree
 		 */
 		DefaultMutableTreeNode buildTree() {
-			nodeMap = new HashMap();
+			nodeMap = new HashMap<Object, Object>();
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Bubble Router Regions");
 			TreePath rootPath = new TreePath(rootNode);
 			rootNode.add(addClearToTree("Clear Selections", rootNode, rootPath));
@@ -508,7 +518,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			// Create the tree
 			DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(message);
 			// Add it to our path
-			TreePath path = parentPath.pathByAddingChild(treeNode);
+			parentPath.pathByAddingChild(treeNode);
 			return treeNode;
 		}
 
