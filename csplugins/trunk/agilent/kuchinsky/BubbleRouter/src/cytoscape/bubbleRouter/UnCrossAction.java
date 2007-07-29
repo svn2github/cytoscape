@@ -26,19 +26,16 @@ import cytoscape.view.CyNetworkView;
 
 /**
  * Rearranges the set of selected nodes in a way that minimizes edge crossings.
- * Uses a very simple method. 
- * 1. randomly order the list of nodes 
- * 2. select the first node in the list. 
- * 3. for each subsequent node in the list, calculate
+ * Uses a very simple method. 1. randomly order the list of nodes 2. select the
+ * first node in the list. 3. for each subsequent node in the list, calculate
  * number of edge crossings before and after a possible permutation, as follows
- *    a. for each edge incident to each node, 
- *        (1) for each edge in the network, see if the two edges intersect 
- *    b. total the intersections for all incident edges, before and after permutation 
- * 4. permute the node with the node in the list that has resulted in largest drop between before and 
- * after calculation of edge crossings. 
- * 5. increment iterations counter. 
- * 6. if iterations counter > threshold, then done. repeat at 3 using the node that
- * has just been switched into first position
+ * a. for each edge incident to each node, (1) for each edge in the network, see
+ * if the two edges intersect b. total the intersections for all incident edges,
+ * before and after permutation 4. permute the node with the node in the list
+ * that has resulted in largest drop between before and after calculation of
+ * edge crossings. 5. increment iterations counter. 6. if iterations counter >
+ * threshold, then done. repeat at 3 using the node that has just been switched
+ * into first position
  * 
  * @author Allan Kuchinsky, Agilent Technologies
  * 
@@ -47,7 +44,7 @@ import cytoscape.view.CyNetworkView;
 @SuppressWarnings("serial")
 class UnCrossAction extends CytoscapeAction {
 
-	private static List _selectedNodes;
+	private static List _selectedNodeViews;
 
 	/**
 	 * Array of NodeViews
@@ -78,124 +75,111 @@ class UnCrossAction extends CytoscapeAction {
 	 * for undo/redo of uncrossing
 	 */
 	private static Point2D[] _undoOffsets;
+
 	private static Point2D[] _redoOffsets;
 
 	/**
 	 * number of edge crossings for best fit so far
 	 */
 	private static int _nbr_crossings_for_best_fit;
+
 	private static int _index_for_best_fit;
 
 	/**
 	 * before and after positions for candidate and other node
 	 */
 	static Point2D _candidate_before_locn = null;
-	static Point2D _candidate_after_locn = null;
-	static Point2D _other_before_locn = null;
-	static Point2D _other_after_locn = null;
-	static Point2D _tmpPoint;
 
+	static Point2D _candidate_after_locn = null;
+
+	static Point2D _other_before_locn = null;
+
+	static Point2D _other_after_locn = null;
+
+	static Point2D _tmpPoint;
 
 	/**
 	 * Cytoscape working objects
 	 */
 	private static CyNetwork _net;
+
 	private static CyNetworkView _view;
 
 	/**
 	 * number of iterations before quitting
 	 */
 	// for debugging set to 1
-	private static final int ITERATION_LIMIT = 10; 
-	
+	private static final int ITERATION_LIMIT = 10;
+
 	/**
-	 * for performance reasons, set threshold so that this doesn't execute with large networks
+	 * for performance reasons, set threshold so that this doesn't execute with
+	 * large networks
 	 */
 	public static final int UNCROSS_THRESHOLD = 50;
-
 
 	/**
 	 * iterations counter
 	 */
 	private static int iteration = 0;
 
+	/**
+	 * Constructor.
+	 * 
+	 * Note: Alt-U is used by default on MacOS; use Alt-X instead
+	 * setAcceleratorCombo(java.awt.event.KeyEvent.VK_X, ActionEvent.ALT_MASK);
+	 */
 	public UnCrossAction() {
-		// super("Minimize Edge Crossings for Selected Nodes");
-		// setPreferredMenu("Layout");
-		// Note: Alt-U is used by default on MacOS; use Alt-X instead
-		// setAcceleratorCombo(java.awt.event.KeyEvent.VK_X,
-		// ActionEvent.ALT_MASK);
-	}
-
-	public UnCrossAction(boolean label) {
-		super();
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		// unCross(Cytoscape.getCurrentNetworkView().getSelectedNodes());
+		// required inherited method
 	}
 
-	public List get_selectedNodes() {
-		return _selectedNodes;
-	}
-
-	public void set_selectedNodes(List nodes) {
-		_selectedNodes = nodes;
-	}
-
-
-	public static void unCross(List<NodeView> nodes) {
-		unCross(nodes, true);
-	}
-
-	// AP: 2.25.07 now takes list of nodes WITHIN bounds of a region
 	/**
- * Rearranges the set of selected nodes in a way that minimizes edge crossings.
- * Uses a very simple method. 
- * 1. randomly order the list of nodes 
- * 2. select the first node in the list. 
- * 3. for each subsequent node in the list, calculate
- * number of edge crossings before and after a possible permutation, as follows
- *    a. for each edge incident to each node, 
- *        (1) for each edge in the network, see if the two edges intersect 
- *    b. total the intersections for all incident edges, before and after permutation 
- * 4. permute the node with the node in the list that has resulted in largest drop between before and 
- * after calculation of edge crossings. 
- * 5. increment iterations counter. 
- * 6. if iterations counter > threshold, then done. repeat at 3 using the node that
- * has just been switched into first position
- * 	 * 
+	 * Rearranges the set of selected nodes in a way that minimizes edge
+	 * crossings. Uses a very simple method. 1. randomly order the list of nodes
+	 * 2. select the first node in the list. 3. for each subsequent node in the
+	 * list, calculate number of edge crossings before and after a possible
+	 * permutation, as follows a. for each edge incident to each node, (1) for
+	 * each edge in the network, see if the two edges intersect b. total the
+	 * intersections for all incident edges, before and after permutation 4.
+	 * permute the node with the node in the list that has resulted in largest
+	 * drop between before and after calculation of edge crossings. 5. increment
+	 * iterations counter. 6. if iterations counter > threshold, then done.
+	 * repeat at 3 using the node that has just been switched into first
+	 * position *
 	 * 
-	 * @param nodes
-	 * @param calledByEndUser  was this called from the UI or by another part of BubbleRouter (avoids undo/redo logic if called by another component)
+	 * @param nodeViews
+	 * @param calledByEndUser
+	 *            was this called from the UI or by another part of BubbleRouter
+	 *            (avoids undo/redo logic if called by another component)
 	 */
-	public static void unCross(List<NodeView> nodes, boolean calledByEndUser) {
+	public static void unCross(List<NodeView> nodeViews, boolean calledByEndUser) {
 
-		// AP: 2/25/07 warn if no nodes are selected
-		if (nodes.size() <= 0) {
+		// warn if no nodeViewss are selected
+		if (nodeViews.size() <= 0) {
 			JOptionPane
 					.showMessageDialog(Cytoscape.getDesktop(),
 							"You must first select some nodes in order to minimize edge crossings.");
 			return;
-		
-		} 
-		else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD)
-		{
-			if (calledByEndUser)
-			{
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-						"Sorry, this network is too large to run incremental edge cross miminization." + 
-						"\nYou should one of the automated layout tools instead.");
+
+		} else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD) {
+			if (calledByEndUser) {
+				JOptionPane
+						.showMessageDialog(
+								Cytoscape.getDesktop(),
+								"Sorry, this network is too large to run incremental edge cross miminization."
+										+ "\nYou should one of the automated layout tools instead.");
 			}
 			return;
 		}
-		
+
 		else {
 			UnCrossAction uncross = new UnCrossAction();
 
-			Task unCrossTask = uncross.new UnCrossTask(nodes, calledByEndUser);
-			
-			
+			Task unCrossTask = uncross.new UnCrossTask(nodeViews,
+					calledByEndUser);
+
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
@@ -203,7 +187,6 @@ class UnCrossAction extends CytoscapeAction {
 			jTaskConfig.displayTimeElapsed(true);
 
 			jTaskConfig.setAutoDispose(true);
-			
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
 			TaskManager.executeTask(unCrossTask, jTaskConfig);
@@ -215,22 +198,22 @@ class UnCrossAction extends CytoscapeAction {
 		boolean interrupted = false;
 
 		private TaskMonitor taskMonitor = null;
-		
 
 		private List<NodeView> nodes;
 
-		// only implement undo/redo logic if we are called by the end user, rather than by another class
+		// only implement undo/redo logic if we are called by the end user,
+		// rather than by another class
 		private boolean _calledByEndUser = true;
 
 		/**
 		 * 
-		 * @param nodeList
+		 * @param nodeViews
 		 * @param needUndo
 		 */
-		public UnCrossTask(List<NodeView> nodeList, boolean needUndo) {
+		public UnCrossTask(List<NodeView> nodeViews, boolean needUndo) {
 			_calledByEndUser = needUndo;
-			// AJK: 03/15/07 END
-			nodes = nodeList;
+
+			nodes = nodeViews;
 		}
 
 		@SuppressWarnings("serial")
@@ -245,8 +228,6 @@ class UnCrossAction extends CytoscapeAction {
 				_undoOffsets[j] = _nodeViews[j].getOffset();
 			}
 
-
-			
 			for (iteration = 0; iteration < ITERATION_LIMIT; iteration++) {
 				taskMonitor.setStatus("Iteration " + iteration + " of "
 						+ ITERATION_LIMIT);
@@ -266,93 +247,97 @@ class UnCrossAction extends CytoscapeAction {
 					}
 					permuteToBestFit(i);
 				}
-				
-				//    performance tuning
-				if (nodes.size() <= UNCROSS_THRESHOLD)
-				{
+
+				// performance tuning
+				if (nodes.size() <= UNCROSS_THRESHOLD) {
 					_view.redrawGraph(true, true);
 				}
-	
+
 			}
 			for (int m = 0; m < _nodeViews.length; m++) {
 				_redoOffsets[m] = _nodeViews[m].getOffset();
 			}
 
-			// only implement undo/redo logic if we are called by the end user, rather than by another class
+			// only implement undo/redo logic if we are called by the end user,
+			// rather than by another class
 			if (_calledByEndUser) {
-				CyUndo.getUndoableEditSupport().postEdit(new AbstractUndoableEdit() {
-//				CytoscapeDesktop.undo.addEdit(new AbstractUndoableEdit() {
+				CyUndo.getUndoableEditSupport().postEdit(
+						new AbstractUndoableEdit() {
+							// CytoscapeDesktop.undo.addEdit(new
+							// AbstractUndoableEdit() {
 
-					public String getPresentationName() {
-						return "UnCross";
-					}
+							public String getPresentationName() {
+								return "UnCross";
+							}
 
-					public String getRedoPresentationName() {
+							public String getRedoPresentationName() {
 
-						return "Redo: Edge Minimization";
-					}
+								return "Redo: Edge Minimization";
+							}
 
-					public String getUndoPresentationName() {
-						return "Undo: Edge Minimization";
-					}
+							public String getUndoPresentationName() {
+								return "Undo: Edge Minimization";
+							}
 
-					public void redo() {
-						for (int m = 0; m < _nodeViews.length; m++) {
-							_nodeViews[m].setOffset(_redoOffsets[m].getX(),
-									_redoOffsets[m].getY());
-						}
-					}
+							public void redo() {
+								for (int m = 0; m < _nodeViews.length; m++) {
+									_nodeViews[m].setOffset(_redoOffsets[m]
+											.getX(), _redoOffsets[m].getY());
+								}
+							}
 
-					public void undo() {
-						for (int m = 0; m < _nodeViews.length; m++) {
-							_nodeViews[m].setOffset(_undoOffsets[m].getX(),
-									_undoOffsets[m].getY());
-						}
-					}
-				});
+							public void undo() {
+								for (int m = 0; m < _nodeViews.length; m++) {
+									_nodeViews[m].setOffset(_undoOffsets[m]
+											.getX(), _undoOffsets[m].getY());
+								}
+							}
+						});
 			}
 
-			// AJK: 03/17/2007 redraw one last time, just in case we haven't been incrementally redrawing
-			 _view.redrawGraph(true, true);
+			// redraw one last time, just in case we haven't
+			// been incrementally redrawing
+			_view.redrawGraph(true, true);
 		}
 
 		/**
 		 * initialize internal data structures for algorithm and first iteration
-		 * @param nodes
+		 * 
+		 * @param nodeViews
 		 */
-		private void initialize(List<NodeView> nodes) {
+		private void initialize(List<NodeView> nodeViews) {
 
 			// initialize the data arrays
-			_beforeEdgeCrossings = new int[nodes.size()];
-			_afterEdgeCrossings = new int[nodes.size()];
-			_totalEdgeCrossings = new int[nodes.size()];
-			_undoOffsets = new Point2D[nodes.size()];
-			_redoOffsets = new Point2D[nodes.size()];
+			_beforeEdgeCrossings = new int[nodeViews.size()];
+			_afterEdgeCrossings = new int[nodeViews.size()];
+			_totalEdgeCrossings = new int[nodeViews.size()];
+			_undoOffsets = new Point2D[nodeViews.size()];
+			_redoOffsets = new Point2D[nodeViews.size()];
 
 			// start the first iteration
-			_selectedNodes = nodes;
+			_selectedNodeViews = nodeViews;
 			iteration = 0;
 			_net = Cytoscape.getCurrentNetwork();
 			_view = Cytoscape.getCurrentNetworkView();
 
-			// first initialize array of NodeViews, starting from randomly generated position
-			int len = nodes.size();
+			// first initialize array of NodeViews, starting from randomly
+			// generated position
+			int len = nodeViews.size();
 			int startPosn = (int) (len * Math.random());
 			_nodeViews = new NodeView[len];
-			ListIterator it = _selectedNodes.listIterator(startPosn);
+			ListIterator it = _selectedNodeViews.listIterator(startPosn);
 			int i = 0;
 			while (it.hasNext()) {
 				_nodeViews[i] = (NodeView) it.next();
 				i++;
 			}
-			it = _selectedNodes.listIterator(startPosn);
+			it = _selectedNodeViews.listIterator(startPosn);
 			while (it.hasPrevious()) {
 				_nodeViews[i] = (NodeView) it.previous();
 				i++;
 			}
 
 			// now calculate base set of edge crossing values
-
 			for (int j = 0; j < _nodeViews.length; j++) {
 				NodeView nv = _nodeViews[j];
 				Point2D locn = nv.getOffset();
@@ -361,7 +346,8 @@ class UnCrossAction extends CytoscapeAction {
 			}
 
 			int totalCrossings = calculateTotalCrossings(_beforeEdgeCrossings);
-			_totalEdgeCrossings[0] = totalCrossings; // we start at first index
+			// we start at the first index
+			_totalEdgeCrossings[0] = totalCrossings;
 		}
 
 		/**
@@ -380,17 +366,19 @@ class UnCrossAction extends CytoscapeAction {
 		/**
 		 * permute node at index with one of the other nodes such that edge
 		 * crossings are minimized
-		 * @param index  integer index of node to be permuted
+		 * 
+		 * @param index
+		 *            integer index of node to be permuted
 		 * 
 		 */
 		private void permuteToBestFit(int index) {
 			/**
-			 * loop through _nodeViews and for each _nodeView 
-			 * a. calculate edge crossings for the node at index if moved to position of _nodeView
+			 * loop through _nodeViews and for each _nodeView a. calculate edge
+			 * crossings for the node at index if moved to position of _nodeView
 			 * b. calculate edge crossings for the node at current position if
-			 * moved to position of _nodeView at index 
-			 * c. sum a and b and store in total edge crossings for counter position 
-			 * d. permute _nodeView at index with _nodeView at position
+			 * moved to position of _nodeView at index c. sum a and b and store
+			 * in total edge crossings for counter position d. permute _nodeView
+			 * at index with _nodeView at position
 			 * 
 			 */
 
@@ -434,7 +422,8 @@ class UnCrossAction extends CytoscapeAction {
 
 				}
 			}
-			// now go through the totals and find index with minimum edge crossings
+			// now go through the totals and find index with minimum edge
+			// crossings
 			_index_for_best_fit = index;
 			_nbr_crossings_for_best_fit = _totalEdgeCrossings[index];
 			for (int k = 0; k < _nodeViews.length; k++) {
@@ -445,13 +434,13 @@ class UnCrossAction extends CytoscapeAction {
 			}
 			if (_index_for_best_fit != index) // swap for lower edge crossings
 			{
-				// shift X position by a small random amount so as to indicate movement
+				// shift X position by a small random amount so as to indicate
+				// movement
 				NodeView swapNv = _nodeViews[_index_for_best_fit];
 				_tmpPoint = swapNv.getOffset();
 				swapNv.setOffset(_nodeViews[index].getXPosition(),
 						_nodeViews[index].getYPosition());
-				_nodeViews[index].setOffset(_tmpPoint.getX(),
-						_tmpPoint.getY());
+				_nodeViews[index].setOffset(_tmpPoint.getX(), _tmpPoint.getY());
 				_totalEdgeCrossings[_index_for_best_fit] = _totalEdgeCrossings[index];
 				_totalEdgeCrossings[index] = _nbr_crossings_for_best_fit;
 			}
@@ -567,14 +556,16 @@ class UnCrossAction extends CytoscapeAction {
 				return 0; // no intersection
 			}
 
-			// eliminate the case where lines intersect at their end points, i.e.
+			// eliminate the case where lines intersect at their end points,
+			// i.e.
 			// it's a junction at a node, not an edge crossing
 			else if ((((int) (intersectionPt.getX()) == ((int) thisLine.getX1())) && ((int) (intersectionPt
 					.getY()) == ((int) thisLine.getY1())))
 					|| (((int) (intersectionPt.getX()) == ((int) thisLine
 							.getX2())) && ((int) (intersectionPt.getY()) == ((int) thisLine
 							.getY2()))))
-			// we are at the endpoint of one line. Are we at endPoint of the other?
+			// we are at the endpoint of one line. Are we at endPoint of the
+			// other?
 			{
 				if ((((int) (intersectionPt.getX()) == ((int) otherLine.getX1())) && ((int) (intersectionPt
 						.getY()) == ((int) otherLine.getY1())))
@@ -585,9 +576,9 @@ class UnCrossAction extends CytoscapeAction {
 				}
 			}
 
-			// make sure that point is actually on both lines, not their extensions to infinity
-			else if (thisLine.intersectsLine(otherLine))
-			{
+			// make sure that point is actually on both lines, not their
+			// extensions to infinity
+			else if (thisLine.intersectsLine(otherLine)) {
 				return 1;
 
 			}
@@ -614,12 +605,12 @@ class UnCrossAction extends CytoscapeAction {
 			double e2y1 = otherLine.getY1();
 			double e2y2 = otherLine.getY2();
 
-
 			double dx1 = e1x2 - e1x1;
 			double dx2 = e2x2 - e2x1;
 
 			if ((dx1 == 0.0d) && (dx2 == 0.0d)) {
-				return null; // both lines are vertical and parallel (unless the same)
+				return null; // both lines are vertical and parallel (unless
+				// the same)
 			}
 
 			double m1 = Double.NaN;
