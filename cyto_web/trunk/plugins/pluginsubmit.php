@@ -389,7 +389,7 @@ if ($tried != NULL && $tried == 'yes') {
 	//if mode == 'new', A jar/zip file is required
 	//if mode == 'edit', if a jar/zip file is provided, the new one will replace the existing one, otherwise,
 	//the existing file will not be updated. 
-	if ((mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
+	if (($mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
 		$validated = false;
 ?>
 		Error: A jar/zip file is required.<br>
@@ -843,11 +843,16 @@ if (!($tried && $validated)) {
 		}
 ?>
 	Database is updated successfully!
+	<p>Go back to <a href="pluginadmin.php">Plugin adminstration page</a></p>
 	<?php
+		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
+		system("./run_generate_plugin_xml.csh");
+
 
 	} // case for mode = 'edit'
 
 	if ($mode == 'new') {
+
 		//$submitAction == 'Submit', accept data submited from user
 		//process the data and Save the data into DB.
 
@@ -956,8 +961,42 @@ if (!($tried && $validated)) {
 				showerror();
 		}
 ?>
-	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If there are any questions and your-mail address is provided, you will be contacted via e-mail.
+	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If your-mail address is provided, you will get confirmation via e-mail.
+
 	<?php
+	// Send a confirmation e-mail to user
+	// Also send e-mails to notify cytostaff that new plugin is uploaded
+	include 'cytostaff_emails.inc';
+
+	$from = $cytostaff_emails[0];
+	$to = $emails[0];// Author e-mail contact
+	$bcc = "";
+	for ($i=0; $i<count($cytostaff_emails); $i++){
+        	$bcc = $bcc . $cytostaff_emails[$i] . " ";
+	}
+	$subject = "Your plugin -- " . $name;
+	$body = "Thank you for submitting " . $name . " to Cytoscape. " .
+        	"Cytoscape staff will review your plugin and publish it on the Cytoscape website." .
+        	"\nCytoscape team";
+
+	$headers = "From: " . $from . "\r\n"; 
+	if ($bcc != "") {
+		$headers = $headers . "BCC: " . $bcc;
+	}
+
+	if (trim($to) == "") {
+		// in case user did not provide an e-mail address, notify the cytostaff
+        	$to = $cytostaff_emails[0];
+        	$body = $body . "\n\nNote: User did not provide an e-mail address!";
+	}
+
+
+	if (mail($to, $subject, $body, $headers)) {
+  		echo("<p>Confirmation e-mail was sent!</p>");
+ 	} else {
+  		echo("<p>Failed to send a confirmation e-mail...</p>");
+ 	}
+
 	} // end of form processing
 }// case for mode == 'new'
 ?>
