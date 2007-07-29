@@ -16,6 +16,7 @@ package cytoscape.bubbleRouter;
 import java.util.*;
 import javax.swing.table.*;
 
+@SuppressWarnings("serial")
 public class DefaultSortTableModel
   extends DefaultTableModel
   implements SortTableModel
@@ -52,7 +53,8 @@ public class DefaultSortTableModel
     return true;
   }
   
-  public void sortColumn(int col, boolean ascending)
+  @SuppressWarnings("unchecked")
+public void sortColumn(int col, boolean ascending)
   {
     Collections.sort(getDataVector(),
       new ColumnComparator(col, ascending));
