@@ -2,7 +2,6 @@ package cytoscape.bubbleRouter;
 
 import giny.model.Edge;
 import giny.model.Node;
-import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
@@ -45,6 +44,7 @@ import cytoscape.view.CyNetworkView;
  * 
  */
 
+@SuppressWarnings("serial")
 class UnCrossAction extends CytoscapeAction {
 
 	private static List _selectedNodes;
@@ -53,11 +53,6 @@ class UnCrossAction extends CytoscapeAction {
 	 * Array of NodeViews
 	 */
 	private static NodeView[] _nodeViews;
-
-	/**
-	 * Array of EdgeViews
-	 */
-	private static EdgeView[] _edgeViews;
 
 	/**
 	 * Data structures containing totals for before/after edge crossings should
@@ -84,22 +79,6 @@ class UnCrossAction extends CytoscapeAction {
 	 */
 	private static Point2D[] _undoOffsets;
 	private static Point2D[] _redoOffsets;
-
-	/**
-	 * index position of node to swap with candidate
-	 */
-	private static int _index_of_other;
-
-	/**
-	 * index position of candidate node to swap
-	 */
-	private static int _index_of_candidate;
-
-	/**
-	 * Nodes for candidate and other node, for swapping
-	 */
-	private static Node _candidate_node = null;
-	private static Node _other_node = null;
 
 	/**
 	 * number of edge crossings for best fit so far
@@ -165,7 +144,7 @@ class UnCrossAction extends CytoscapeAction {
 	}
 
 
-	public static void unCross(List<Node> nodes) {
+	public static void unCross(List<NodeView> nodes) {
 		unCross(nodes, true);
 	}
 
@@ -190,7 +169,7 @@ class UnCrossAction extends CytoscapeAction {
 	 * @param nodes
 	 * @param calledByEndUser  was this called from the UI or by another part of BubbleRouter (avoids undo/redo logic if called by another component)
 	 */
-	public static void unCross(List<Node> nodes, boolean calledByEndUser) {
+	public static void unCross(List<NodeView> nodes, boolean calledByEndUser) {
 
 		// AP: 2/25/07 warn if no nodes are selected
 		if (nodes.size() <= 0) {
@@ -238,7 +217,7 @@ class UnCrossAction extends CytoscapeAction {
 		private TaskMonitor taskMonitor = null;
 		
 
-		private List nodes;
+		private List<NodeView> nodes;
 
 		// only implement undo/redo logic if we are called by the end user, rather than by another class
 		private boolean _calledByEndUser = true;
@@ -248,12 +227,13 @@ class UnCrossAction extends CytoscapeAction {
 		 * @param nodeList
 		 * @param needUndo
 		 */
-		public UnCrossTask(List<Node> nodeList, boolean needUndo) {
+		public UnCrossTask(List<NodeView> nodeList, boolean needUndo) {
 			_calledByEndUser = needUndo;
 			// AJK: 03/15/07 END
 			nodes = nodeList;
 		}
 
+		@SuppressWarnings("serial")
 		public void run() {
 			if (taskMonitor == null) {
 				throw new IllegalStateException("Task Monitor is not set");
@@ -340,7 +320,7 @@ class UnCrossAction extends CytoscapeAction {
 		 * initialize internal data structures for algorithm and first iteration
 		 * @param nodes
 		 */
-		private void initialize(List<Node> nodes) {
+		private void initialize(List<NodeView> nodes) {
 
 			// initialize the data arrays
 			_beforeEdgeCrossings = new int[nodes.size()];
