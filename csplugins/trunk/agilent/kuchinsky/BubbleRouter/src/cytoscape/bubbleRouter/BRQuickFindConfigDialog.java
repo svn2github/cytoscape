@@ -29,45 +29,37 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import csplugins.brquickfind.util.BRCyAttributesUtil;
-import csplugins.brquickfind.util.BRQuickFind;
-import csplugins.brquickfind.util.BRQuickFindFactory;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.servers.BioDataServer;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
 /**
- * BubbleRouter Dialog Box.
+ * BubbleRouter Dialog is the primary user interface, providing attribute
+ * selection, description and values. You can also load an attribute file from
+ * within the dialog.
  * 
- * @author Allan Kuchinsky, Alexander Pico, Kristina Hanspers. 
- * Adapted from code by Ethan Cerami.
+ * @author Allan Kuchinsky, Alexander Pico, Kristina Hanspers. Adapted from code
+ *         by Ethan Cerami.
  */
+@SuppressWarnings("serial")
 public class BRQuickFindConfigDialog extends JDialog {
+
 	/**
-	 * Attribute ComboBox
+	 * Pull down list of attributes associated with network.
 	 */
 	private JComboBox attributeComboBox;
 
-	private static ArrayList<Object> selectedValues = new ArrayList<Object>();
-
-	private static String currentAttribute;
-
 	/**
-	 * Table of Sample Attribute Values
+	 * Currently selected attribute from combobox.
 	 */
-	private JSortTable sampleAttributeValuesTable;
+	private static String currentAttribute;
 
 	/**
 	 * Attribute description text area.
@@ -75,61 +67,62 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private JTextArea attributeDescriptionBox;
 
 	/**
-	 * Current Network
+	 * Table of attribute values (maximum of 50 values collected).
 	 */
-	private CyNetwork currentNetwork;
+	private JSortTable attributeValuesTable;
 
 	/**
-	 * Apply Text.
+	 * List of one or more attribute values selected from table.
 	 */
-	private static final String BUTTON_TEXT = "Select";
+	private static ArrayList<Object> selectedValues = new ArrayList<Object>();
 
 	/**
-	 * Load Attributes Button Text
-	 */
-	private static final String FILE_SELECT_BUTTON_TEXT = "Load attributes from file";
-
-	/**
-	 * Help Text
-	 */
-	private static final String HELP_BUTTON_TEXT = "Help";
-
-	/**
-	 * Apply Button, Attributes Button and Help Button.
+	 * Buttons and Text Labels
 	 */
 	private JButton applyButton;
 
-	private JButton fileBrowserButton;
+	private JButton fileSelectButton;
 
 	private JButton helpButton;
 
-	private LayoutRegion _region;
+	private JButton cancelButton;
+
+	private static final String APPLY_BUTTON_TEXT = "Select";
+
+	private static final String FILE_SELECT_BUTTON_TEXT = "Load attributes from file";
+
+	private static final String HELP_BUTTON_TEXT = "Help";
+
+	private static final String CANCEL_BUTTON_TEXT = "Cancel";
 
 	/**
-	 * Constructor.
+	 * Instance variable for particular LayoutRegion to which the BubbleRouter
+	 * dialog refers.
 	 */
-	public BRQuickFindConfigDialog() {
-		this(null);
+	private LayoutRegion region;
 
-	}
+	/**
+	 * URL for BubbleRouter manual.
+	 */
+	private String helpURL = "http://www.genmapp.org/BubbleRouter/manual.htm";
 
-	public BRQuickFindConfigDialog(LayoutRegion region) {
+	/**
+	 * Constructor. e.g., LayoutRegion.selectRegionAttributeValue(this).
+	 */
+	public BRQuickFindConfigDialog(LayoutRegion lr) {
 
-		this._region = region;
+		this.region = lr;
 
 		/**
-		 * Initialize, based on currently selected network
+		 * Initialize, based on current network
 		 */
-		
-		currentNetwork = Cytoscape.getCurrentNetwork();
-
 		Container container = getContentPane();
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 		this.setTitle("Select Attribute for Interactive Layout");
 
 		/**
-		 * If we are working on Linux, set always on top to true.
-		// This is a hack to deal with numerous z-ordering bugs on Linux.
+		 * If we are working on Linux, set always on top to true. // This is a
+		 * hack to deal with numerous z-ordering bugs on Linux.
 		 */
 		String os = System.getProperty("os.name");
 		if (os != null) {
@@ -140,7 +133,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 
 		/**
 		 * Create Master Panel
-		 */ 
+		 */
 		JPanel masterPanel = new JPanel();
 		masterPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
@@ -158,7 +151,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		masterPanel.add(attributeDescriptionPanel);
 
 		/**
-		 * Add Sample Attribute Values Panel
+		 * Add Attribute Values Panel
 		 */
 		JPanel attributeValuePanel = createAttributeValuePanel();
 		masterPanel.add(attributeValuePanel);
@@ -204,12 +197,8 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Help Button
 		 */
-
 		helpButton = new JButton(HELP_BUTTON_TEXT);
-
 		helpButton.addActionListener(new ActionListener() {
-			private String helpURL = "http://www.genmapp.org/InteractiveLayout/manual.htm";
-
 			public void actionPerformed(ActionEvent e) {
 				cytoscape.util.OpenBrowser.openURL(helpURL);
 			}
@@ -218,7 +207,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Cancel Button
 		 */
-		JButton cancelButton = new JButton("Cancel");
+		cancelButton = new JButton(CANCEL_BUTTON_TEXT);
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BRQuickFindConfigDialog.this.setVisible(false);
@@ -229,12 +218,13 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Apply Button
 		 */
-		applyButton = new JButton(BUTTON_TEXT);
+		applyButton = new JButton(APPLY_BUTTON_TEXT);
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				applyAction(selectedValues);
 			}
 		});
+
 		buttonPanel.add(Box.createHorizontalGlue());
 		buttonPanel.add(helpButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(15, 0)));
@@ -264,7 +254,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 	}
 
 	/**
-	 * Creates a Panel of Sample Attribute Values.
+	 * Creates a Panel of Attribute Values.
 	 * 
 	 * @return JPanel Object.
 	 */
@@ -276,14 +266,26 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Table Cells are not editable
 		 */
-		sampleAttributeValuesTable = new JSortTable() {
+		attributeValuesTable = new JSortTable() {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
-		addSortTableModel(sampleAttributeValuesTable);
-		this.setVisibleRowCount(sampleAttributeValuesTable, 7);
-		JScrollPane scrollPane = new JScrollPane(sampleAttributeValuesTable);
+
+		/**
+		 * Add Action Listener to Table for Double-Click Selection
+		 */
+		attributeValuesTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					applyAction(selectedValues);
+				}
+			}
+		});
+
+		addSortTableModel(attributeValuesTable);
+		this.setVisibleRowCount(attributeValuesTable, 7);
+		JScrollPane scrollPane = new JScrollPane(attributeValuesTable);
 		panel.add(scrollPane);
 		return panel;
 	}
@@ -301,7 +303,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 			attributeKey = "NO_SELECTION";
 		}
 		String description;
-		if (attributeKey.equals(BRQuickFind.UNIQUE_IDENTIFIER)) {
+		if (attributeKey.equals(Semantics.CANONICAL_NAME)) {
 			description = "Each node and edge in Cytoscape is assigned a "
 					+ "unique identifier.  This is an alphanumeric value.";
 		} else if (attributeKey.equals("NO_SELECTION")) {
@@ -320,7 +322,6 @@ public class BRQuickFindConfigDialog extends JDialog {
 	/**
 	 * Creates TableModel consisting of Distinct Attribute Values.
 	 */
-
 	private void addSortTableModel(JSortTable table) {
 		Object selectedAttribute = attributeComboBox.getSelectedItem();
 
@@ -337,23 +338,32 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Create column names
 		 */
-		Vector columnNames = new Vector();
-		columnNames.add(attributeKey);		
+		Vector<Object> columnNames = new Vector<Object>();
+		columnNames.add(attributeKey);
+
 		/**
-		 * Collect attribute values
+		 * Collect attribute values.
 		 */
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator nodeIterator = network.nodesIterator();
 
+		/**
+		 * Set maximum number of collected values here (e.g., 50).
+		 */
 		String valueSet[] = BRCyAttributesUtil.getDistinctAttributeValues(
 				nodeIterator, nodeAttributes, attributeKey, 50);
 
+		/**
+		 * Add "unassigned" to list.
+		 */
 		ArrayList<String> finalValues = new ArrayList<String>();
 		finalValues.add("unassigned");
 
+		/**
+		 * Split up comma-separated lists into individual values.
+		 */
 		String splitValueSet[] = null;
-
 		for (int i = 0; i < (valueSet.length); i++) {
 			splitValueSet = valueSet[i].split(", ");
 			for (int j = 0; j < (splitValueSet.length); j++) {
@@ -363,24 +373,24 @@ public class BRQuickFindConfigDialog extends JDialog {
 			}
 		}
 
-		TableModel model = new DefaultSortTableModel(columnNames,
-				finalValues.toArray().length);
-
+		/**
+		 * Populate table model with first 50 values.
+		 */
+		TableModel model = new DefaultSortTableModel(columnNames, finalValues
+				.toArray().length);
 		if (finalValues != null && finalValues.toArray().length > 0) {
 			for (int i = 0; i < ((finalValues.toArray().length >= 50) ? 50
 					: finalValues.toArray().length); i++) {
 				model.setValueAt(finalValues.toArray()[i], i, 0);
 			}
 		}
-		/**
-		 * Execute Task via TaskManager
-		// This automatically pops-open a JTask Dialog Box.
-		// This method will block until the JTask Dialog Box
-		// is disposed.
-		 */
+
 		table.setModel(model);
 		table.setAutoscrolls(true);
 
+		/**
+		 * Define default selection and allow multiple selection.
+		 */
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		ListSelectionModel rowSM = table.getSelectionModel();
 		rowSM.addListSelectionListener(new ListSelectionListener() {
@@ -389,15 +399,15 @@ public class BRQuickFindConfigDialog extends JDialog {
 					selectedValues.clear();
 					ListSelectionModel lsm = (ListSelectionModel) e.getSource();
 					if (lsm.isSelectionEmpty()) {
-						selectedValues.add(sampleAttributeValuesTable
-								.getModel().getValueAt(0, 0));
+						selectedValues.add(attributeValuesTable.getModel()
+								.getValueAt(0, 0));
 					} else {
 						int minIndex = lsm.getMinSelectionIndex();
 						int maxIndex = lsm.getMaxSelectionIndex();
 						for (int i = minIndex; i <= maxIndex; i++) {
 							if (lsm.isSelectedIndex(i)) {
-								selectedValues.add(sampleAttributeValuesTable
-								.getModel().getValueAt(i, 0));
+								selectedValues.add(attributeValuesTable
+										.getModel().getValueAt(i, 0));
 							}
 						}
 					}
@@ -406,16 +416,8 @@ public class BRQuickFindConfigDialog extends JDialog {
 			}
 
 		});
-
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					applyAction(selectedValues);
-				}
-			}
-		});
 	}
-	
+
 	/**
 	 * Creates the Attribute Selection Panel.
 	 * 
@@ -427,28 +429,26 @@ public class BRQuickFindConfigDialog extends JDialog {
 				.setLayout(new BoxLayout(attributePanel, BoxLayout.X_AXIS));
 
 		/**
-		 * Add shortcut button in Bubblerouter window for loading
-		// node attribute file
+		 * Add shortcut button in BubbleRouter dialog for loading node attribute
+		 * file
 		 */
-
-		fileBrowserButton = new JButton(FILE_SELECT_BUTTON_TEXT);
-
-		fileBrowserButton.addActionListener(new ActionListener() {
+		fileSelectButton = new JButton(FILE_SELECT_BUTTON_TEXT);
+		fileSelectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				/**
 				 * Use a Default CyFileFilter: enables user to select any file
-				// type.
+				 * type.
 				 */
 				CyFileFilter nf = new CyFileFilter();
 
 				/**
-				 * get the file name
+				 * Get the file name
 				 */
 				File[] files = FileUtil.getFiles("Import Node Attributes",
 						FileUtil.LOAD, new CyFileFilter[] { nf });
-
 				if (files != null) {
+
 					/**
 					 * Create Load Attributes Task
 					 */
@@ -470,18 +470,24 @@ public class BRQuickFindConfigDialog extends JDialog {
 					TaskManager.executeTask(task, jTaskConfig);
 
 					/**
-					 * Get the list of attribute names and transform from vector
-					// to array
+					 * Get the list of attribute names (including newly loaded
+					 * attribute) and transform from vector to array
 					 */
 					String[] forms = new String[getBubbleAttributes().size()];
+
 					getBubbleAttributes().toArray(forms);
 
 					/**
 					 * Add latest attribute to already existing
-					// attributecombobox
+					 * attributecombobox
 					 */
-					String newItem = forms[forms.length - 1];
-					attributeComboBox.addItem(newItem);
+					attributeComboBox.removeAllItems();
+					for (int i = 0; i < forms.length; i++) {
+						attributeComboBox.addItem(forms[i]);
+					}
+					attributeComboBox.setSelectedItem(null);
+					// String newItem = forms[0];
+					// attributeComboBox.addItem(newItem);
 
 				}
 
@@ -504,8 +510,8 @@ public class BRQuickFindConfigDialog extends JDialog {
 			 */
 			attributeComboBox = new JComboBox(getBubbleAttributes());
 			/**
-			 *  simply set to first in list for now; later set to
-			// current attribute for regions that have been previously assigned.
+			 * simply set to first in list for now; later set to // current
+			 * attribute for regions that have been previously assigned.
 			 */
 			if (currentAttribute == null) {
 				currentAttribute = nodeAttributes.getAttributeNames()[0];
@@ -514,17 +520,15 @@ public class BRQuickFindConfigDialog extends JDialog {
 
 			attributePanel.add(attributeComboBox);
 			attributePanel.add(Box.createHorizontalGlue());
-			attributePanel.add(fileBrowserButton);
+			attributePanel.add(fileSelectButton);
 
 			/**
-			 * Add Action Listener
+			 * Add Action Listener to Attribute Combo Box
 			 */
 			attributeComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-
-					applyButton.setText(BUTTON_TEXT);
-
-					addSortTableModel(sampleAttributeValuesTable);
+					applyButton.setText(APPLY_BUTTON_TEXT);
+					addSortTableModel(attributeValuesTable);
 					setAttributeDescription();
 					currentAttribute = attributeComboBox.getSelectedItem()
 							.toString();
@@ -546,16 +550,16 @@ public class BRQuickFindConfigDialog extends JDialog {
 	/**
 	 * Gets list of currently loaded attribute names
 	 */
-	private Vector getBubbleAttributes() {
+	private Vector<String> getBubbleAttributes() {
 		/**
 		 * Obtain Node Attributes
 		 */
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String attributeNames[] = nodeAttributes.getAttributeNames();
-		Vector attributeList = new Vector();
+		Vector<String> attributeList = new Vector<String>();
 
 		/**
-		 * Show all attributes, except those of TYPE_COMPLEX
+		 * Show attributes associated with network
 		 */
 		for (int i = 0; i < attributeNames.length; i++) {
 			int type = nodeAttributes.getType(attributeNames[i]);
@@ -563,50 +567,55 @@ public class BRQuickFindConfigDialog extends JDialog {
 			 * only show user visible attributes
 			 */
 			if (nodeAttributes.getUserVisible(attributeNames[i])) {
-				if (type != CyAttributes.TYPE_COMPLEX) {
+				/**
+				 * and skip the __unknown attribute (whatever that is!?)
+				 */
+				if (attributeNames[i] != "__unknown") {
 					/**
-					 * Explicitly filter out CANONICAL_NAME, as it is
-					// now deprecated.
+					 * and skip attributes of TYPE_COMPLEX
 					 */
-					if (!attributeNames[i].equals(Semantics.CANONICAL_NAME)) {
+					if (type != CyAttributes.TYPE_COMPLEX) {
 						attributeList.add(attributeNames[i]);
+
 					}
 				}
 			}
 		}
 		Collections.sort(attributeList);
 
-		/**
-		 * Add default: Unique Identifier
-		 */
-		attributeList.insertElementAt(BRQuickFind.UNIQUE_IDENTIFIER, 0);
 		return attributeList;
 	}
 
+	/**
+	 * Apply Button Action.
+	 * 
+	 * @param selectedValues
+	 */
 	private void applyAction(ArrayList selectedValues) {
+		/**
+		 * Close dialog
+		 */
 		BRQuickFindConfigDialog.this.setVisible(false);
 		BRQuickFindConfigDialog.this.dispose();
-		String newAttribute = (String) attributeComboBox.getSelectedItem();
-		ReindexQuickFind task = new ReindexQuickFind(currentNetwork,
-				newAttribute, _region);
-		JTaskConfig config = new JTaskConfig();
-		config.setAutoDispose(true);
-		config.displayStatus(true);
-		config.displayTimeElapsed(false);
-		config.displayCloseButton(true);
-		config.setOwner(Cytoscape.getDesktop());
-		config.setModal(true);
 
 		/**
-		 * Execute Task via TaskManager
-		// This automatically pops-open a JTask Dialog Box.
-		// This method will block until the JTask Dialog Box
-		// is disposed.
+		 * Get selected attribute
 		 */
-		TaskManager.executeTask(task, config);
-		_region.setRegionAttributeValue(selectedValues);
+		String newAttribute = (String) attributeComboBox.getSelectedItem();
+
+		/**
+		 * Set user selections to layout region
+		 */
+		region.setAttributeName(newAttribute);
+		region.setRegionAttributeValue(selectedValues);
 	}
 
+	/**
+	 * Set the number of visible rows for table.
+	 * 
+	 * @param table
+	 * @param rows
+	 */
 	private void setVisibleRowCount(JTable table, int rows) {
 		int height = 0;
 		for (int row = 0; row < rows; row++) {
@@ -616,194 +625,4 @@ public class BRQuickFindConfigDialog extends JDialog {
 		table.setPreferredScrollableViewportSize(new Dimension(table
 				.getPreferredScrollableViewportSize().width, height));
 	}
-
-	/**
-	 * Main method: used for local debugging purposes only.
-	 * 
-	 * @param args
-	 *            No command line arguments expected.
-	 */
-	public static void main(String[] args) {
-		new BRQuickFindConfigDialog();
-	}
 }
-
-/**
- * Long-term task to Reindex QuickFind.
- * 
- * @author Ethan Cerami.
- */
-
-class ReindexQuickFind implements Task {
-	private String newAttributeKey;
-
-	private CyNetwork cyNetwork;
-
-	private TaskMonitor taskMonitor;
-
-	private LayoutRegion _region;
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param newAttributeKey
-	 *            New Attribute Key for Indexing.
-	 */
-	ReindexQuickFind(CyNetwork cyNetwork, String newAttributeKey,
-			LayoutRegion region) {
-		this.cyNetwork = cyNetwork;
-		this.newAttributeKey = newAttributeKey;
-		this._region = region;
-	}
-
-	/**
-	 * Executes Task: Reindex.
-	 */
-	public void run() {
-		BRQuickFind quickFind = BRQuickFindFactory.getGlobalQuickFindInstance();
-
-		/**
-		 * Send user-selected attribute name to bubble router
-		 */
-		_region.setAttributeName(newAttributeKey);
-	}
-
-	public void halt() {
-	}
-
-	/**
-	 * Sets the TaskMonitor.
-	 * 
-	 * @param taskMonitor
-	 *            TaskMonitor Object.
-	 * @throws IllegalThreadStateException
-	 *             Illegal Thread State.
-	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor)
-			throws IllegalThreadStateException {
-		this.taskMonitor = taskMonitor;
-	}
-
-	/**
-	 * Gets Title of Task.
-	 * 
-	 * @return Title of Task.
-	 */
-	public String getTitle() {
-		return "ReIndexing";
-	}
-
-}
-
-/**
- * Import Node Attributes from file
- *
- */
-
-class ImportAttributesTask implements Task {
-	private TaskMonitor taskMonitor;
-
-	private File[] files;
-
-	private int type;
-
-	static final int NODE_ATTRIBUTES = 0;
-
-	static final int EDGE_ATTRIBUTES = 1;
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param file
-	 *            File Object.
-	 * @param type
-	 *            NODE_ATTRIBUTES or EDGE_ATTRIBUTES
-	 */
-	ImportAttributesTask(File[] files, int type) {
-		this.files = files;
-		this.type = type;
-	}
-
-	/**
-	 * Executes Task.
-	 */
-	public void run() {
-		try {
-			taskMonitor.setPercentCompleted(-1);
-			taskMonitor.setStatus("Reading in Attributes");
-			/**
-			 * Get Defaults.
-			 */
-			BioDataServer bioDataServer = Cytoscape.getBioDataServer();
-			String speciesName = CytoscapeInit.getProperties().getProperty(
-					"defaultSpeciesName");
-			boolean canonicalize = CytoscapeInit.getProperties().getProperty(
-					"canonicalizeNames").equals("true");
-
-			/**
-			 * Read in Data
-
-			// track progress. CyAttributes has separation between
-			// reading attributes and storing them
-			// so we need to find a different way of monitoring this task:
-			// attributes.setTaskMonitor(taskMonitor);
-			 */
-
-			for (int i = 0; i < files.length; ++i) {
-				taskMonitor.setPercentCompleted(100 * i / files.length);
-				if (type == NODE_ATTRIBUTES)
-					Cytoscape.loadAttributes(new String[] { files[i]
-							.getAbsolutePath() }, new String[] {},
-							canonicalize, bioDataServer, speciesName);
-				else if (type == EDGE_ATTRIBUTES)
-					Cytoscape.loadAttributes(new String[] {},
-							new String[] { files[i].getAbsolutePath() },
-							canonicalize, bioDataServer, speciesName);
-				else
-					throw new Exception("Unknown attribute type: "
-							+ Integer.toString(type));
-			}
-
-			/**
-			 * Inform others via property change event
-			 */
-			taskMonitor.setPercentCompleted(100);
-			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null,
-					null);
-			taskMonitor.setStatus("Done");
-		} catch (Exception e) {
-			taskMonitor.setException(e, e.getMessage());
-		}
-	}
-
-	/**
-	 * Halts the Task: Not Currently Implemented.
-	 */
-	public void halt() {
-	}
-
-	/**
-	 * Sets the Task Monitor Object.
-	 * 
-	 * @param taskMonitor
-	 * @throws IllegalThreadStateException
-	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor)
-			throws IllegalThreadStateException {
-		this.taskMonitor = taskMonitor;
-	}
-
-	/**
-	 * Gets the Task Title.
-	 * 
-	 * @return Task Title.
-	 */
-	public String getTitle() {
-		if (type == NODE_ATTRIBUTES) {
-			return new String("Loading Node Attributes");
-		} else {
-			return new String("Loading Edge Attributes");
-		}
-	}
-}
-
