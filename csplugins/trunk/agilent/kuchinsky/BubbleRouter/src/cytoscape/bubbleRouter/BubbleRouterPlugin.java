@@ -311,9 +311,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			starty = e.getY();
 			startPoint = e.getPoint();
 
-			// Don't draw rectangle during move
+			// Don't draw rectangle or make selection during move
 			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 					.setSelecting(false);
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.disableNodeSelection();
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.disableEdgeSelection();
 		} else if (moving) {
 			mousex = e.getX();
 			mousey = e.getY();
@@ -340,9 +344,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			regionToStretch = pickedRegion;
 			edgeBeingStretched = onEdge;
 
-			// Don't draw rectangle during stretch
+			// Don't draw rectangle or make selection during stretch
 			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 					.setSelecting(false);
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.disableNodeSelection();
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.disableEdgeSelection();
 		} else if (stretching) {
 			stretchRegion(regionToStretch, edgeBeingStretched, e);
 		}
@@ -370,6 +378,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		edgeBeingStretched = NOT_ON_EDGE;
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 				.setSelecting(true);
+		((DGraphView) Cytoscape.getCurrentNetworkView()).enableNodeSelection();
+		((DGraphView) Cytoscape.getCurrentNetworkView()).enableEdgeSelection();
 		recursiveSetCursor(Cytoscape.getDesktop(), Cursor
 				.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
@@ -427,12 +437,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			setRegionSelection(e);
 			processRegionContextMenu(e);
 		} else {
-			setRegionSelection(e);
+			setRegionSelection(e);	
 		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		// handled by mousePressed
+		 // handled by mousePressed
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -462,7 +472,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	public void setRegionSelection(MouseEvent e) {
 		oldPickedRegion = pickedRegion;
 		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
-
+		
 		// unselect old region
 		List regionNameList = LayoutRegionManager.getRegionNameList();
 		if ((oldPickedRegion != null)
@@ -1018,13 +1028,14 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 				pickedRegion.repaint();
 				System.out.println("Region layout updated");
-				
+
 				// collect NodeViews bounded by current region
 				boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
 						.getNodeViews(), pickedRegion.getBounds());
-				
-				UnCrossAction.unCross(boundedNodeViews, false);		
-				// boolean=false indicates that UnCrossAction is not the top level
+
+				UnCrossAction.unCross(boundedNodeViews, false);
+				// boolean=false indicates that UnCrossAction is not the top
+				// level
 				// caller, does not need undo/redo logic
 
 				for (int m = 0; m < _nodeViews.length; m++) {
