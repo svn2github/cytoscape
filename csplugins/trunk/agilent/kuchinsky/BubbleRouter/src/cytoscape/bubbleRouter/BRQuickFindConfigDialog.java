@@ -336,13 +336,13 @@ public class BRQuickFindConfigDialog extends JDialog {
 		}
 
 		/**
-		 * Create column names
+		 * Create column names.
 		 */
 		Vector<Object> columnNames = new Vector<Object>();
 		columnNames.add(attributeKey);
 
 		/**
-		 * Collect attribute values.
+		 * Collect node attributes.
 		 */
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -470,25 +470,27 @@ public class BRQuickFindConfigDialog extends JDialog {
 					TaskManager.executeTask(task, jTaskConfig);
 
 					/**
-					 * Get the list of attribute names (including newly loaded
-					 * attribute) and transform from vector to array
+					 * Identify newly added attribute by comparing current
+					 * attributeComboBox items (oldItems) against current node
+					 * attributes (newItems), then add newItem to combo box.
 					 */
-					String[] forms = new String[getBubbleAttributes().size()];
-
-					getBubbleAttributes().toArray(forms);
-
-					/**
-					 * Add latest attribute to already existing
-					 * attributecombobox
-					 */
-					attributeComboBox.removeAllItems();
-					for (int i = 0; i < forms.length; i++) {
-						attributeComboBox.addItem(forms[i]);
+					Vector<String> oldList = new Vector<String>();
+					for (int i = 0; i < attributeComboBox.getItemCount(); i++) {
+						Object item = attributeComboBox.getItemAt(i);
+						oldList.add(item.toString());
 					}
-					attributeComboBox.setSelectedItem(null);
-					// String newItem = forms[0];
-					// attributeComboBox.addItem(newItem);
 
+					Vector<String> newList = getBubbleAttributes();
+					String newItem = null;
+
+					Iterator<String> it = newList.iterator();
+					while (it.hasNext()) {
+						String item = it.next();
+						if (!oldList.contains(item)) {
+							newItem = item;
+						}
+					}
+					attributeComboBox.addItem(newItem);
 				}
 
 			}
@@ -514,7 +516,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 			 * attribute for regions that have been previously assigned.
 			 */
 			if (currentAttribute == null) {
-				currentAttribute = nodeAttributes.getAttributeNames()[0];
+				currentAttribute = attributeComboBox.getItemAt(0).toString();
 			}
 			attributeComboBox.setSelectedItem(currentAttribute);
 
