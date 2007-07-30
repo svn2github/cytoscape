@@ -43,7 +43,6 @@ import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
-import ding.view.InnerCanvas;
 
 /**
  * BubbleRouterPlugin is the main plugin class, setting layout and context menu
@@ -117,11 +116,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private int edgeTolerance = 5; // number of 'cushion' pixels for edge
 
-	private LayoutRegion changedCursorRegion = null;
+	private int whichEdge = NOT_ON_EDGE;
 
 	private LayoutRegion regionToStretch = null;
 
 	private LayoutRegion pickedRegion = null;
+
+	private LayoutRegion oldPickedRegion = null;
 
 	public static final int SELECTED = 1;
 
@@ -132,7 +133,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	boolean handlerStarted = false;
 
 	/**
-	 * For Popup Menu
+	 * For Region Context Menu
 	 */
 	private JPopupMenu menu = new JPopupMenu("Layout Region");
 
@@ -171,10 +172,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	public static final double VERSION = 1.0;
 
-	/**
-	 * The Inner Canvas
-	 */
-	protected InnerCanvas canvas;
+	public static final String REGION_X_ATT = "__Region_x";
+
+	public static final String REGION_Y_ATT = "__Region_y";
+
+	public static final String REGION_W_ATT = "__Region_w";
+
+	public static final String REGION_H_ATT = "__Region_h";
+
+	private static final String REGION_NAME_ATT = "__Region_name";
+
+	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
 
 	/**
 	 * Constructor
@@ -196,11 +204,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
-
-		// Add Mouse Listener to canvas to capture mouse events
-		canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
-		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
-				.addMouseListener(this);
 
 		/**
 		 * Build Context Menus per Region
@@ -265,6 +268,23 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 
 	/**
+	 * Adds listeners: Mouse Mouse Motion Graph View Change
+	 * 
+	 * @see cytoscape.plugin.CytoscapePlugin#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
+					.addMouseListener(this);
+			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
+					.addMouseMotionListener(this);
+			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(
+					groupPanel);
+		}
+	}
+
+	/**
 	 * Captures dragging with SHIFT pressed for region drawing, as well as using
 	 * drag to move and stretch a region.
 	 * 
@@ -308,7 +328,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 				pickedRegion.repaint();
 			}
-			
+
 			// reset mouse point for continuing drag
 			startx = mousex;
 			starty = mousey;
@@ -329,9 +349,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 
 	/**
-	 * End the dragging operation if one is in progress. Draw the final figure,
-	 * if any, onto the off-screen canvas so it becomes a permanent part of the
-	 * image.
+	 * Captures release after SHIFT+dragging and calls for the region to be
+	 * drawn. Method is also used to reset flags and setting after any mouse
+	 * release event.
 	 * 
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
@@ -340,7 +360,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			dragging = false;
 			drawRectRegion();
 		}
-		
+
 		// reset all flags
 		moving = false;
 		dragging = false;
@@ -354,46 +374,33 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
-	public void mouseExited(MouseEvent e) {
-	}
-
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	public void mousePressed(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON3) {
-			setRegionSelection(e);
-			processRegionContextMenu(e);
-		} else {
-			menu.setVisible(false);
-			// TODO: refactor processRegionMousePressEvent
-			// AJK: 02/20/07 process selection/deselection of region
-			setRegionSelection(e);
-		}
-	}
-
 	/**
-	 * 
-	 */
-	private void initToolTip() {
-		labelRegionInfo.setOpaque(true);
-		labelRegionInfo.setBackground(UIManager.getColor("ToolTip.background"));
-		labelRegionInfo.setText(boundedNodeViews.size() + " of "
-				+ pickedRegion.getNodeViews().size() + " nodes in "
-				+ pickedRegion.getRegionAttributeValue().toString());
-		toolTip.add(labelRegionInfo);
-	}
-
-	/*
-	 * (non-Javadoc)
+	 * Captures mouse over events to trigger cursor changes, flags and tool
+	 * tips.
 	 * 
 	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
 	 */
 	public void mouseMoved(MouseEvent e) {
-		LayoutRegion overRegion = LayoutRegionManager.getPickedLayoutRegion(e
-				.getPoint());
-		int hoveringOnEdge = calculateOnEdge(e.getPoint(), overRegion);
-		int hoveringInArea = calculateInArea(e.getPoint(), overRegion);
+
+		// mouse over edge of region or not: change cursor
+		int hoveringOnEdge = calculateOnEdge(e.getPoint(), pickedRegion);
+		if (hoveringOnEdge == NOT_ON_EDGE) {
+			if (whichEdge != NOT_ON_EDGE) {
+				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				whichEdge = NOT_ON_EDGE;
+			}
+		} else {
+			if ((pickedRegion != null) && (whichEdge != hoveringOnEdge)) {
+				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				whichEdge = hoveringOnEdge;
+				setResizeCursor(pickedRegion, hoveringOnEdge);
+			}
+		}
+
+		// mouse over label area within region: show tool tip
+		int hoveringInArea = calculateInArea(e.getPoint(), pickedRegion);
 		if (hoveringInArea == IN_AREA) {
 			toolTip.pack();
 			Point pt = new Point(e.getX(), e.getY());
@@ -407,41 +414,57 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			toolTip.setVisible(false);
 		}
 
-		if (hoveringOnEdge == NOT_ON_EDGE) {
-			if (changedCursorRegion != null) {
-				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-				changedCursorRegion = null;
-			}
-		} else {
-			if ((overRegion != null) && (changedCursorRegion != overRegion)) {
-				recursiveSetCursor(Cytoscape.getDesktop(), Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-				// changedCursorRegion.setCursor(changedCursorRegion.getSavedCursor());
-				changedCursorRegion = overRegion;
-				setResizeCursor(changedCursorRegion, hoveringOnEdge);
-			}
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-	 */
-	public void mouseClicked(MouseEvent e) {
-		setRegionSelection(e);
 	}
 
 	/**
+	 * Captures clicks on regions for selection and right-clicks on regions to
+	 * trigger context menu.
+	 * 
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	public void mousePressed(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			setRegionSelection(e);
+			processRegionContextMenu(e);
+		} else {
+			setRegionSelection(e);
+		}
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		// handled by mousePressed
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	/**
+	 * This method adds tool tip info to the region label
+	 */
+	private void initToolTip() {
+		labelRegionInfo.setOpaque(true);
+		labelRegionInfo.setBackground(UIManager.getColor("ToolTip.background"));
+		labelRegionInfo.setText(boundedNodeViews.size() + " of "
+				+ pickedRegion.getNodeViews().size() + " nodes in "
+				+ pickedRegion.getRegionAttributeValue().toString());
+		toolTip.add(labelRegionInfo);
+	}
+
+	/**
+	 * Sets pickedRegion, remembers oldPickedRegion, defined NodeViews bounded
+	 * by pickedRegion.
+	 * 
 	 * @param e
 	 */
 	public void setRegionSelection(MouseEvent e) {
-		// AJK: 12/24/06 BEGIN
-		// set picked region
-		LayoutRegion oldPickedRegion = pickedRegion;
-		List regionNameList = LayoutRegionManager.getRegionNameList();
+		oldPickedRegion = pickedRegion;
 		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
+
+		// unselect old region
+		List regionNameList = LayoutRegionManager.getRegionNameList();
 		if ((oldPickedRegion != null)
 				&& (oldPickedRegion != pickedRegion)
 				&& (regionNameList.contains(oldPickedRegion
@@ -450,60 +473,52 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			oldPickedRegion.repaint();
 			unselect(oldPickedRegion);
 		}
+
+		// select new region
 		if (pickedRegion != null) {
 			pickedRegion.setSelected(true);
 			pickedRegion.repaint();
 			select(pickedRegion);
 
+			// define NodeView bounded by region
 			boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
 					.getNodeViews(), pickedRegion.getBounds());
 
-			// Initialize Region Info Tool Tip
+			// initialize region info tool tip
 			initToolTip();
 		}
 
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Display context menu relative to mouse position.
 	 * 
-	 * @see cytoscape.plugin.CytoscapePlugin#propertyChange(java.beans.PropertyChangeEvent)
+	 * @param event
 	 */
-	public void propertyChange(PropertyChangeEvent e) {
-
-		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
-			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.addMouseListener(this);
-			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.addMouseMotionListener(this);
-			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(
-					groupPanel);
-		}
-	}
-
-	// AJK: 12/01/06 BEGIN
-
 	protected void processRegionContextMenu(MouseEvent event) {
+		if (pickedRegion != null) {
+			menu.setLocation(event.getX()
+					+ Cytoscape.getDesktop().getNetworkPanel().getWidth(),
+					event.getY()
+							+ Cytoscape.getDesktop().getCyMenus().getMenuBar()
+									.getHeight()
+							+ Cytoscape.getDesktop().getCyMenus().getToolBar()
+									.getHeight());
 
-		if (pickedRegion == null) {
+			menu.show(((DGraphView) Cytoscape.getCurrentNetworkView())
+					.getCanvas(), event.getX() - 3, event.getY() + 1);
+		} else {
 			menu.setVisible(false);
-			return;
 		}
-
-		if (pickedRegion.getRegionAttributeValue() != null) {
-			menu.setLabel(pickedRegion.getRegionAttributeValue().toString());
-		}
-
-		menu.setLocation(event.getX()
-				+ Cytoscape.getDesktop().getNetworkPanel().getWidth(), event
-				.getY()
-				+ Cytoscape.getDesktop().getCyMenus().getMenuBar().getHeight()
-				+ Cytoscape.getDesktop().getCyMenus().getToolBar().getHeight());
-
-		menu.show(((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(),
-				event.getX() - 3, event.getY() + 1);
 	}
 
+	/**
+	 * Determines whether cursor is in label area of region.
+	 * 
+	 * @param pt
+	 * @param region
+	 * @return
+	 */
 	private int calculateInArea(Point2D pt, LayoutRegion region) {
 		if (pickedRegion == null || region == null || region != pickedRegion) {
 			return NOT_IN_AREA;
@@ -520,7 +535,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 
-	// for stretching
+	/**
+	 * Determines which edge of region the cursor is over
+	 * 
+	 * @param pt
+	 * @param region
+	 * @return
+	 */
 	private int calculateOnEdge(Point2D pt, LayoutRegion region) {
 		if (region == null) {
 			return NOT_ON_EDGE;
@@ -568,6 +589,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 
+	/**
+	 * Changes the cursor to reflect which resize function is active.
+	 * 
+	 * @param region
+	 * @param whichEdge
+	 */
 	private void setResizeCursor(LayoutRegion region, int whichEdge) {
 		if (whichEdge == TOP) {
 			recursiveSetCursor(Cytoscape.getDesktop(), Cursor
@@ -596,6 +623,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 
+	/**
+	 * Actually changes the cursor.
+	 * 
+	 * @param comp
+	 * @param cursor
+	 */
 	private void recursiveSetCursor(Container comp, Cursor cursor) {
 		comp.setCursor(cursor);
 		Component children[] = comp.getComponents();
@@ -607,6 +640,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 	}
 
+	/**
+	 * Performs resize functions on the region.
+	 * 
+	 * @param region
+	 * @param whichEdge
+	 * @param event
+	 */
 	private void stretchRegion(LayoutRegion region, int whichEdge,
 			MouseEvent event) {
 		mousex = event.getX();
@@ -670,7 +710,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					&& (mousex > regionToStretch.getX1())) {
 				regionToStretch
 						.setH1(regionToStretch.getH1() + mousey - starty);
-				;
 				regionToStretch
 						.setW1(regionToStretch.getW1() + mousex - startx);
 			}
@@ -681,7 +720,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				.getBounds());
 		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 		regionToStretch.repaint();
-		startx = mousex; // reset mouse point for continuing drag
+
+		// reset mouse point for continuing drag
+		startx = mousex;
 		starty = mousey;
 	}
 
@@ -716,12 +757,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			// Create LayoutRegion object
 			LayoutRegion region = new LayoutRegion(x, y, w, h);
 
-			// if value is selected by user, i.e., not cancelled
+			// if value is selected by user, i.e., not cancelled or blank
 			if (region.getRegionAttributeValue() != null
 					&& !region.getRegionAttributeValue().toString()
 							.contentEquals("[]")) {
 
-				// Check for pre-existing region
+				// Check for pre-existing region with same name
 				List regionNameList = LayoutRegionManager.getRegionNameList();
 				if (regionNameList.contains(region.getRegionAttributeValue()
 						.toString())) {
@@ -734,20 +775,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 
 	}
-
-	public static final String REGION_X_ATT = "__Region_x";
-
-	public static final String REGION_Y_ATT = "__Region_y";
-
-	public static final String REGION_W_ATT = "__Region_w";
-
-	public static final String REGION_H_ATT = "__Region_h";
-
-	private static final String REGION_NAME_ATT = "__Region_name";
-
-	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
-
-	private static final String UNKNOWN = "__unknown";
 
 	/**
 	 * Create a new group.
@@ -803,8 +830,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		this.groupCreated(group, null);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Generates layout region from xGMML
 	 * 
 	 * @see cytoscape.groups.CyGroupViewer#groupCreated(cytoscape.groups.CyGroup,
 	 *      cytoscape.view.CyNetworkView)
@@ -856,7 +883,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		attributes.setUserVisible(REGION_Y_ATT, false);
 		attributes.setUserVisible(REGION_W_ATT, false);
 		attributes.setUserVisible(REGION_H_ATT, false);
-		attributes.setUserVisible(UNKNOWN, false);
 
 		// Create Region
 		LayoutRegion region = new LayoutRegion(x, y, w, h, name, nv, color,
@@ -923,26 +949,22 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	}
 
 	/**
-	 * This class gets attached to the menu item.
+	 * This class gets attached to the menu item. Bubble Router does not have a
+	 * Plugin Menu action.
 	 */
 	@SuppressWarnings("serial")
 	public class MainPluginAction extends AbstractAction {
-		/**
-		 * The constructor sets the text that should appear on the menu item.
-		 */
+
+		// The constructor sets the text that should appear on the menu item.
 		public MainPluginAction() {
 			super("Interactive Layout");
 		}
 
-		/**
-		 * This method is called when the user selects the menu item.
-		 */
+		// This method is called when the user selects the menu item.
 		public void actionPerformed(ActionEvent ae) {
-
 		}
 
 		public void initializeBubbleRouter() {
-
 		}
 
 	}
@@ -990,20 +1012,19 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					_nodeViews[j] = (NodeView) myNodeViews.get(j);
 				}
 
-				/**
-				 * for undo/redo of uncrossing
-				 */
 				NodeViewsTransformer.transform(pickedRegion.getNodeViews(),
 						pickedRegion.getBounds());
 
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 				pickedRegion.repaint();
 				System.out.println("Region layout updated");
+				
 				// collect NodeViews bounded by current region
 				boundedNodeViews = NodeViewsTransformer.bounded(pickedRegion
 						.getNodeViews(), pickedRegion.getBounds());
-				UnCrossAction.unCross(boundedNodeViews, false);
-				// boolean indicates that UnCrossAction is not the top level
+				
+				UnCrossAction.unCross(boundedNodeViews, false);		
+				// boolean=false indicates that UnCrossAction is not the top level
 				// caller, does not need undo/redo logic
 
 				for (int m = 0; m < _nodeViews.length; m++) {
@@ -1012,15 +1033,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 				CyUndo.getUndoableEditSupport().postEdit(
 						new AbstractUndoableEdit() {
-							// CytoscapeDesktop.addEdit(new
-							// AbstractUndoableEdit() {
 
 							public String getPresentationName() {
 								return "Layout Region";
 							}
 
 							public String getRedoPresentationName() {
-
 								return "Redo: Layout region";
 							}
 
@@ -1048,7 +1066,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 						});
 
 			} else if ((label == UNCROSS_EDGES) && (pickedRegion != null)) {
-				// uncross edges of nodes selected only WITHIN a region
+				// uncross edges of nodes selected only within a region
 				UnCrossAction.unCross(boundedNodeViews, true);
 				System.out.println("Edges uncrossed");
 			} else if ((label == ITEM_HELP) && (pickedRegion != null)) {
