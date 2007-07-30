@@ -243,7 +243,7 @@ public class LayoutRegionManager {
 				Cytoscape.getCurrentNetworkView()).getPickedNodeView(pt) != null) ||
 				(((DGraphView) 
 						Cytoscape.getCurrentNetworkView()).
-						getPickedNodeView(pt) != null))
+						getPickedEdgeView(pt) != null))
 		{
 			return null;
 		}
