@@ -248,8 +248,7 @@ public class LayoutRegionManager {
 			return null;
 		}
 		
-		// next go down list of regions and see if there is a hit
-/		
+		// next go down list of regions and see if there is a hit		
 		DingCanvas myCanvas = 
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(REGION_CANVAS);
 		
