@@ -17,6 +17,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
+@SuppressWarnings("serial")
 public class SortHeaderRenderer
   extends DefaultTableCellRenderer
 {
