@@ -180,21 +180,17 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		List selectedNodes = networkView.getSelectedNodes();
 		final int numSelectedNodes = selectedNodes.size();
 		final int numNodes = networkView.getNodeViewCount();
-		// AJK: 11/28/06 BEGIN
-		//    correct for edge case where there is only one node
+		// correct for edge case where there is only one node
 		if (numSelectedNodes == 1)
 		{
-//			System.out.println ("Sorry, you need two or more nodes to route a region.");
 			return;
 		}
-		
-		// AJK: 11/28/06 END
-		
+				
 		final int numLayoutNodes = (numSelectedNodes <= 1) ? numNodes : numSelectedNodes;
 
 		NodeView nodeView[] = new NodeView[numNodes];
 		int nextNode = 0;
-		HashMap ginyIndex2Index = new HashMap(numNodes*2);
+		HashMap<Object, Object> ginyIndex2Index = new HashMap<Object, Object>(numNodes*2);
 		if (numSelectedNodes > 1) {
 			Iterator iter = selectedNodes.iterator();
 			while (iter.hasNext()) {
@@ -214,7 +210,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			}
 		}
 		/* create edge list from edges between selected nodes */
-		LinkedList edges = new LinkedList();
+		LinkedList<Object> edges = new LinkedList<Object>();
 		iter = networkView.getEdgeViewsIterator();
 		while (iter.hasNext()) {
 			EdgeView ev = (EdgeView)(iter.next());
@@ -236,21 +232,10 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		Edge edge[] = new Edge[edges.size()];
 		edges.toArray(edge);
 		Graph graph = new Graph(numLayoutNodes,edge);
-		/*
-		int edgeIndex;
-		for (edgeIndex = 0; edgeIndex<edge.length; edgeIndex++) {
-			 System.out.println("Edge: " + edge[edgeIndex].getFrom() + " - " + edge[edgeIndex].getTo());
-		}
-		*/
+
 		int cI[] = graph.componentIndex();
 		int x;
-		/*
-		System.out.println("Node index:\n");
-		for (x=0; x<graph.getNodecount(); x++) {
-			System.out.println(cI[x]);
-		}
-		System.out.println("Partitioning into components:\n");
-		*/
+
 		taskMonitor.setPercentCompleted(10);
 		taskMonitor.setStatus("finding connected components");
 		Thread.yield();
@@ -261,20 +246,6 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 		int layer[][] = new int[numComponents][];
 		int horizontalPosition[][] = new int[numComponents][];
 		for (x=0; x<component.length; x++) {
-			/*
-			System.out.println("plain component:\n");
-			System.out.println(component[x]);
-			System.out.println("filtered component:\n");
-			System.out.println(component[x].getGraphWithoutOneOrTwoCycles());
-			System.out.println("nonmulti component:\n");
-			System.out.println(component[x].getGraphWithoutMultipleEdges());
-			int cycleEliminationPriority[] = component[x].getCycleEliminationVertexPriority();
-			System.out.println("acyclic component:\n");
-			System.out.println(component[x].getGraphWithoutCycles(cycleEliminationPriority));
-			System.out.println("reduced component:\n");
-			System.out.println(component[x].getReducedGraph());
-			System.out.println("layer assignment:\n");
-			*/
 			taskMonitor.setPercentCompleted(20 + 60 * (x * 3) / numComponents / 3);
 			taskMonitor.setStatus("making acyclic transitive reduction");
 			Thread.yield();
@@ -285,23 +256,12 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			Thread.yield();
 			if (interrupted) return;
 			layer[x] = reduced.getVertexLayers();
-			/*
-			int y;
-			for (y=0;y<layer[x].length;y++) {
-				System.out.println("" + y + " : " + layer[x][y]);
-			}
-			System.out.println("horizontal position:\n");
-			*/
+
 			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 2) / numComponents / 3);
 			taskMonitor.setStatus("positioning nodes within layer");
 			Thread.yield();
 			if (interrupted) return;
 			horizontalPosition[x] = reduced.getHorizontalPosition(layer[x]);
-			/*
-			for (y=0;y<horizontalPosition[x].length;y++) {
-				System.out.println("" + y + " : " + horizontalPosition[x][y]);
-			}
-			*/
 		}
 		taskMonitor.setPercentCompleted(80);
 		taskMonitor.setStatus("repositioning nodes in view");
@@ -434,7 +394,7 @@ public class HierarchicalLayoutListener implements ActionListener, Task {
 			}
 			int shiftY = cleanBandY + bandGap - highestY; 
 			
-			// AJK: 09/03/06 try not shifting the Y-positions
+			// try not shifting the Y-positions
 			shiftY = 0;
 			
 			for (x=numLayoutNodes; x<numNodes; x++) {
