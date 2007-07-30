@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jun 17 05:05:12 2005
-* Modified:     Mon Jul 23 09:35:37 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Mon Jul 30 14:45:49 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -49,6 +49,8 @@ import cytoscape.plugin.PluginManager;
  * @version 1.0
  */
 public class HyperEdgePlugin extends CytoscapePlugin {
+    // MLC 07/30/07:
+    public static final String MY_NAME = "HyperEdgePlugin";
     public HyperEdgePlugin() {
         //        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
         //                 .add(new MainPluginAction());
