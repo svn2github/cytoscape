@@ -29,17 +29,15 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
-import ding.view.InnerCanvas;
 import ding.view.ViewportChangeListener;
 
+@SuppressWarnings("serial")
 public class LayoutRegion extends JComponent
 // AJK: 01/4/07 ViewportListener for accommodating pan/zoom
 		implements ViewportChangeListener {
@@ -110,11 +108,6 @@ public class LayoutRegion extends JComponent
 	private String attributeName = null;
 
 	/**
-	 * unique list of values for attributeName
-	 */
-	private Object[] attributeValues = null;
-
-	/**
 	 * particular value associated with a layout region
 	 */
 	public ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
@@ -125,7 +118,7 @@ public class LayoutRegion extends JComponent
 	 * list of nodes associated with a layout region based on
 	 * regionAttributeValue
 	 */
-	private List nodeViews;
+	private List<NodeView> nodeViews;
 
 	private CyNetworkView myView;
 
@@ -177,16 +170,18 @@ public class LayoutRegion extends JComponent
 
 		// AJK: 04/18/07 BEGIN
 		// enforce minimum size on region of 110% default node width and height
-//		VisualStyle vizStyle = Cytoscape.getCurrentNetworkView()
-//				.getVisualStyle();
-//		NodeAppearance na = vizStyle.getNodeAppearanceCalculator()
-//				.getDefaultAppearance();
-//		if ((width < 1.1 * na.getWidth()) || (height < 1.1 * na.getHeight())) {
-//			JOptionPane
-//					.showMessageDialog(Cytoscape.getDesktop(),
-//							"This region is too small to fit anything.  Please draw a larger region.");
-//			return;
-//		}
+		// VisualStyle vizStyle = Cytoscape.getCurrentNetworkView()
+		// .getVisualStyle();
+		// NodeAppearance na = vizStyle.getNodeAppearanceCalculator()
+		// .getDefaultAppearance();
+		// if ((width < 1.1 * na.getWidth()) || (height < 1.1 * na.getHeight()))
+		// {
+		// JOptionPane
+		// .showMessageDialog(Cytoscape.getDesktop(),
+		// "This region is too small to fit anything. Please draw a larger
+		// region.");
+		// return;
+		// }
 		if ((width < 20) || (height < 20)) {
 			JOptionPane
 					.showMessageDialog(Cytoscape.getDesktop(),
@@ -203,6 +198,16 @@ public class LayoutRegion extends JComponent
 				|| this.getRegionAttributeValue().toString()
 						.contentEquals("[]")) {
 			return;
+		}
+		// if region already exists
+		else if (LayoutRegionManager.getRegionNameList().contains(
+				this.getRegionAttributeValue().toString())) {
+			JOptionPane
+					.showMessageDialog(
+							Cytoscape.getDesktop(),
+							"This region already exists.  Please make another selection or delete the original region first.");
+			return;
+
 		}
 
 		// AJK: 12/25/06 for stretching
@@ -241,7 +246,7 @@ public class LayoutRegion extends JComponent
 	 * 
 	 */
 	public LayoutRegion(double x, double y, double width, double height,
-			ArrayList name, List nv, int color, CyNetworkView view,
+			ArrayList name, List<NodeView> nv, int color, CyNetworkView view,
 			CyGroup group) {
 		super();
 		this.setRegionAttributeValue(name);
@@ -262,7 +267,7 @@ public class LayoutRegion extends JComponent
 	public LayoutRegion() {
 		super();
 
-		nodeViews = new ArrayList();
+		nodeViews = new ArrayList<NodeView>();
 
 	}
 
@@ -437,7 +442,7 @@ public class LayoutRegion extends JComponent
 	/**
 	 * @return Returns the nodeViews.
 	 */
-	public List getNodeViews() {
+	public List<NodeView> getNodeViews() {
 		return nodeViews;
 	}
 
@@ -445,7 +450,7 @@ public class LayoutRegion extends JComponent
 	 * @param list
 	 *            The nodeViews to set.
 	 */
-	public void setNodeViews(List list) {
+	public void setNodeViews(List<NodeView> list) {
 		this.nodeViews = list;
 	}
 
@@ -498,17 +503,6 @@ public class LayoutRegion extends JComponent
 	 */
 	public String getAttributeName() {
 		return attributeName;
-	}
-
-	/**
-	 * Used by QuickFindConfigDialog
-	 * 
-	 * @param objects
-	 */
-	// AJK: 11/15/06 make non-static
-	// public static void setAttributeValues(Object[] objects) {
-	public void setAttributeValues(Object[] objects) {
-		attributeValues = objects;
 	}
 
 	/**
@@ -573,38 +567,7 @@ public class LayoutRegion extends JComponent
 		Double vpY = this.getY1();
 		Double vpW = this.getW1();
 		Double vpH = this.getH1();
-		// new image coordinates
-		// double[] currentNodeCoordinates = new double[4];
-		// currentNodeCoordinates[0] = this.x1;
-		// currentNodeCoordinates[1] = this.y1;
-		// currentNodeCoordinates[2] = this.x1 + this.w1;
-		// currentNodeCoordinates[3] = this.y1 + this.h1;
-		// InnerCanvas canvas = ((DGraphView)
-		// Cytoscape.getCurrentNetworkView()).getCanvas();
-		// AffineTransform transform = canvas.getAffineTransform();
-		// transform.transform(currentNodeCoordinates, 0,
-		// currentNodeCoordinates, 0, 2);
-		//		
-		// this.x1 = currentNodeCoordinates[0];
-		// this.y1 = currentNodeCoordinates[1];
-		// this.w1 = currentNodeCoordinates[2] - currentNodeCoordinates[0];
-		// this.h1 = currentNodeCoordinates[3] - currentNodeCoordinates[1];
 
-		// System.out.println(" ");
-		// System.out.println("Viewport changed, w = " + w + ", h = " + h
-		// + ", newXCenter = " + newXCenter + ", newYCenter = "
-		// + newYCenter + ", newScaleFactor = " + newScaleFactor);
-
-		InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
-				.getCanvas();
-		// System.out.println("Inner Canvas: width = " +
-		// canvas.getWidth() + ", height = " + canvas.getHeight() +
-		// ", centerX = " + (canvas.getX() + ((int) (canvas.getWidth() * 0.5)))
-		// +
-		// ", centerY = " + (canvas.getY() + ((int) (canvas.getHeight() * 0.5)))
-		// +
-		// ". zoom = " + Cytoscape.getCurrentNetworkView().getZoom());
-		//		
 		// first time initialization of zoom and centerpoint, if needed
 		if (!viewportSet) {
 			viewportSet = true;
@@ -614,9 +577,6 @@ public class LayoutRegion extends JComponent
 			viewportWidth = w;
 			viewportHeight = h;
 		}
-		// System.out.println("currentZoom = " + currentZoom
-		// + ", currentCenterX = " + currentCenterX
-		// + ", currentCenterY = " + currentCenterY);
 
 		double deltaZoom = newScaleFactor / currentZoom;
 		double deltaX = vpX - (0.5 * w);
@@ -643,88 +603,23 @@ public class LayoutRegion extends JComponent
 
 			vpX = (0.5 * w) + deltaX;
 			vpY = (0.5 * h) + deltaY;
-			// this.x1 = ((this.x1 - currentCenterX) + (currentCenterX *
-			// deltaZoom))
-			// / deltaZoom;
-			// this.y1 = ((this.y1 - currentCenterY) + (currentCenterY *
-			// deltaZoom))
-			// / deltaZoom;
-			// if we are both zooming and panning, then do the pan
-			// this.x1 += (currentCenterX - newXCenter) * deltaZoom;
-			// this.y1 += (currentCenterY - newYCenter) * deltaZoom;
-			// this.x1 = newXCenter + (deltaZoom * (this.x1 - currentCenterX));
-			// this.y1 = newXCenter + (deltaZoom * (this.y1 - currentCenterY));
-			// this.x1 += currentCenterX - newXCenter;
-			// this.y1 += currentCenterY - newYCenter;
 
 			// do whatever translation is necessary
 			this.setX1(vpX + (currentCenterX - newXCenter) * newScaleFactor);
 			this.setY1(vpY + (currentCenterY - newYCenter) * newScaleFactor);
 		}
 
-		// System.out.println("new scale factor: " + newScaleFactor
-		// + " deltaZoom: " + deltaZoom);
-
-		// this.x1 = newXCenter + (deltaZoom * deltaX);
-		// this.y1 = newYCenter + (deltaZoom * deltaY);
-		// this.w1 *= deltaZoom;
-		// this.h1 *= deltaZoom;
 		currentZoom = newScaleFactor;
 		currentCenterX = newXCenter;
 		currentCenterY = newYCenter;
 		viewportWidth = w;
 		viewportHeight = h;
 
-		// System.out.println("newX1 = " + this.x1 + ", newY1 = " + this.y1
-		// + ", newWidth = " + this.w1 + ", newHeight = " + this.h1);
-		// System.out.println(" ");
-
-		// AJK: 01/09/07 use double coordinates to avoid roundoff error
-		// this.setBounds((int) this.x1, (int) this.y1, (int) this.w1,
-		// (int) this.h1);
 		this.setBounds(this.getX1(), this.getY1(), this.getW1(), this.getH1());
-
-		// repaint();
 	}
 
-	/*
-	 * public void viewportChanged(int w, int h, double newXCenter, double
-	 * newYCenter, double newScaleFactor) {
-	 * 
-	 * 
-	 * InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
-	 * .getCanvas(); if (!viewportSet) { viewportSet = true; currentZoom =
-	 * newScaleFactor; currentCenterX = newXCenter; currentCenterY = newYCenter;
-	 * viewportWidth = w; viewportHeight = h; } System.out.println("currentZoom = " +
-	 * currentZoom + ", currentCenterX = " + currentCenterX + ", currentCenterY = " +
-	 * currentCenterY);
-	 * 
-	 * double deltaZoom = newScaleFactor / currentZoom; double deltaX =
-	 * newXCenter - currentCenterX; double deltaY = newYCenter - currentCenterY;
-	 * double deltaViewWidth = w - viewportWidth; double deltaViewHeight = h -
-	 * viewportHeight;
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * currentZoom = newScaleFactor; currentCenterX = newXCenter; currentCenterY =
-	 * newYCenter; viewportWidth = w; viewportHeight = h;
-	 * 
-	 * System.out.println("newX1 = " + this.x1 + ", newY1 = " + this.y1 + ",
-	 * newWidth = " + this.w1 + ", newHeight = " + this.h1);
-	 * System.out.println(" "); // AJK: 01/09/07 use double coordinates to avoid
-	 * roundoff error // this.setBounds((int) this.x1, (int) this.y1, (int)
-	 * this.w1, // (int) this.h1); this.setBounds(this.x1, this.y1, this.w1,
-	 * this.h1); // repaint(); }
-	 * 
-	 */
-	// AJK: 01/04/07 END
 	// select all nodeViews with specified attribute value for attribute
-	public List populateNodeViews() {
+	public List<NodeView> populateNodeViews() {
 		Comparator<Object> comparator = new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
 				return o1.toString().compareToIgnoreCase(o2.toString());
@@ -755,33 +650,21 @@ public class LayoutRegion extends JComponent
 				val = attribs.getStringAttribute(node.getIdentifier(),
 						attributeName);
 			}
-			// System.out.println("VAL= " + val + "; REGION= " +
-			// regionAttributeValue);
+
 			// loop through elements in array below and match
 
 			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
-				// System.out.println("this.regionAttributeValue = "
-				// + this.regionAttributeValue);
-				// if
-				// (val.equalsIgnoreCase(this.regionAttributeValue.toString()))
-				// {
 				for (Object o : regionAttributeValues) {
 					if (val.indexOf(o.toString()) >= 0) {
 						selectedNodes.add(node);
 					}
 				}
-				// Iterator itx = regionAttributeValues.iterator();
-				// while (itx.hasNext()){
-				// if (val.indexOf(itx.next().toString()) >= 0) {
-				// selectedNodes.add(node);
-				// }
-				// }
 			} else if (regionAttributeValues.get(0).equals("unassigned")) {
 				selectedNodes.add(node);
 			}
 		}
 		Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
-		System.out.println("\n\rSelected " + selectedNodes.size()
+		System.out.println("Selected " + selectedNodes.size()
 				+ " nodes for layout in "
 				+ this.regionAttributeValues.toString());
 
@@ -789,8 +672,8 @@ public class LayoutRegion extends JComponent
 		// layout
 		if (selectedNodes.size() > 0) {
 
-			// AJK: 11/15/06 BEGIN
 			// for undo/redo
+			List<NodeView> selectedNodeViews = new ArrayList<NodeView>();
 			_selectedNodeViews = new NodeView[selectedNodes.size()];
 			_undoOffsets = new Point2D[selectedNodes.size()];
 			_redoOffsets = new Point2D[selectedNodes.size()];
@@ -798,42 +681,24 @@ public class LayoutRegion extends JComponent
 			int j = 0;
 			for (Object o : selectedNodes) {
 				Node n = (Node) o;
+				selectedNodeViews.add(Cytoscape.getCurrentNetworkView()
+						.getNodeView(n));
 				_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
 						.getNodeView(n);
 				_undoOffsets[j] = _selectedNodeViews[j].getOffset();
 				j++;
 			}
-			// Iterator itx = selectedNodes.iterator();
-			// int j = 0;
-			// while (itx.hasNext()) {
-			// Node n = (Node) itx.next();
-			// _selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
-			// .getNodeView(n);
-			// _undoOffsets[j] = _selectedNodeViews[j].getOffset();
-			// j++;
-			// }
-			// AJK: 11/15/96 END
 
 			HierarchicalLayoutListener hierarchicalListener = new HierarchicalLayoutListener();
 			System.out.println("Running hierarchical layout algorithm");
 			hierarchicalListener.actionPerformed(null);
 
 			NodeViewsTransformer.transform(Cytoscape.getCurrentNetworkView()
-			// AJK: 1/1/06 accommodate space for handles
-					// .getSelectedNodes(), new Rectangle2D.Double(x1, y1,
 					.getSelectedNodes(), new Rectangle2D.Double(x1
 					+ (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2), w1, h1));
 
-			// AP: 2/25/07 add automatic edge minimization following region
-			// routing
-			// AJK: 03/17/07 for performance reasons, only call unCross if we
-			// are below a certain
-			// threshold for network size
-			if (Cytoscape.getCurrentNetwork().getNodeCount() < UnCrossAction.UNCROSS_THRESHOLD) {
-				UnCrossAction.unCross(Cytoscape.getCurrentNetworkView()
-						.getSelectedNodes());
-
-			}
+			// add automatic edge minimization following region routing
+			UnCrossAction.unCross(selectedNodeViews, false);
 
 			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
@@ -910,7 +775,7 @@ public class LayoutRegion extends JComponent
 			// AJK: 12/24/06 BEGIN
 			// bug fix: need to return selectedNodeViews, not selectedNodes
 			// return selectedNodes;
-			List selectedNodeViewsList = new ArrayList();
+			List<NodeView> selectedNodeViewsList = new ArrayList<NodeView>();
 			for (int i = 0; i < _selectedNodeViews.length; i++) {
 				selectedNodeViewsList.add(_selectedNodeViews[i]);
 			}
