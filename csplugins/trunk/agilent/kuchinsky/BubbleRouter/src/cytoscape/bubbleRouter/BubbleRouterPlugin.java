@@ -205,6 +205,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
 
+		// Listen for Network View Destruction
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(
+						CytoscapeDesktop.NETWORK_VIEW_DESTROYED, this);
+
 		/**
 		 * Build Context Menus per Region
 		 */
@@ -282,6 +287,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(
 					groupPanel);
 		}
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
+			LayoutRegionManager.removeAllRegions();
+			}
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
+				// Beuler? Beuler?
+			}
 	}
 
 	/**
