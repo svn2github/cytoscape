@@ -73,7 +73,7 @@
              basedir="${build.dir}/classes">
 	    	<manifest>
 	     		<attribute name="Cytoscape-Plugin" 
-		           value="csplugins.summer.maital.EnhancedSearchPlugin"/>
+		           value="csplugins.enhanced.search.EnhancedSearchPlugin"/>
 	     	</manifest>
 		</jar>
         <copy todir="../cytoscape/plugins/core">
