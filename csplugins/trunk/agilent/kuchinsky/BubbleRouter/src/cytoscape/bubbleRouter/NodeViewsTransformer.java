@@ -95,9 +95,10 @@ public class NodeViewsTransformer {
 	}
 	
 	
-	// from Region: AP 1.2.07
 	/**
-	 * 
+	 * takes a list of nodeviews and, for each NodeView, transforms its coordinates
+     * into those specifying the corresponding position in the *from* rectangle.
+     * 
 	 * @param nodeViews
 	 * @param from
 	 * @return NodeViews within boundary of current region (for moving and resizing)
