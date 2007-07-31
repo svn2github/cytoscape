@@ -166,7 +166,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		updateSelection = false;
 
 		for (int i = cPaths.length-1; i >= 0; i--) {
-			// System.out.println(cPaths[i]);
 			DefaultMutableTreeNode treeNode = 
 			     (DefaultMutableTreeNode) cPaths[i].getLastPathComponent();
 			// Special case for "clear"
@@ -283,7 +282,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	public void treeExpanded(TreeExpansionEvent event) {
 		// Get the path
 		TreePath path = event.getPath();
-		// System.out.println("expanded "+path);
 		// Is it selected?
 		if (path.getPathCount() < 2) {
 			// No, just return
@@ -300,7 +298,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		while (nodeIter.hasNext()) {
 			CyNode node = nodeIter.next();
 			if (nodeMap.containsKey(node) && network.isSelected(node)) {
-				// System.out.println ("Node "+node+" is selected");
 				TreePath nodePath = (TreePath)nodeMap.get(node);
 				treeSelectionModel.addSelectionPath(nodePath);
 			}
@@ -316,7 +313,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		// Get the path
 		TreePath path = event.getPath();
 		// Is it selected already?
-		// System.out.println("collapsed "+path);
 		if (!navTree.isPathSelected(path)) {
 			// OK, this is a little ugly.  By default, JTree will promote
 			// selections to the parent.  This means that if a single child
@@ -360,18 +356,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			return;
 		}
 
-/*
-		if (select)
-			System.out.print("graphViewChanged selecting "+nodeList.length+" nodes: ");
-		else
-			System.out.print("graphViewChanged unselecting "+nodeList.length+" nodes: ");
-*/
-		
 		// Build a path list corresponding to the selection
 		for (int i = 0; i < nodeList.length; i++) {
 			CyNode node = (CyNode)nodeList[i];
 
-			// System.out.print(node.getIdentifier()+", ");
 			if (nodeMap.containsKey(node)) {
 				TreePath path = (TreePath)nodeMap.get(node);
 				if (select) {
@@ -382,7 +370,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			}
 		}
 		checkGroupSelection(nodeList,select);
-		// System.out.println(" ");
 	}
 
 	private void checkGroupSelection(Node nodeList[], boolean select) {
@@ -542,7 +529,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			nodeMap.put(groupNode, path);
 			// Is the group node selected?
 			if (group.getState() == BubbleRouterPlugin.SELECTED) {
-				// System.out.println("Group "+group+" is selected");
 				treeSelectionModel.addSelectionPath(path);
 			}
 
