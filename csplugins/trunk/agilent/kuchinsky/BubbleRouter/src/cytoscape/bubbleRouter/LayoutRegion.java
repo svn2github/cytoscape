@@ -38,10 +38,8 @@ import ding.view.DingCanvas;
 import ding.view.ViewportChangeListener;
 
 @SuppressWarnings("serial")
-public class LayoutRegion extends JComponent
-// AJK: 01/4/07 ViewportListener for accommodating pan/zoom
-		implements ViewportChangeListener {
-	// {
+public class LayoutRegion extends JComponent implements ViewportChangeListener {
+
 	/**
 	 * Translucency level of region
 	 */
@@ -81,27 +79,6 @@ public class LayoutRegion extends JComponent
 	 */
 	private BufferedImage image;
 
-	// variables for attribute and value selection
-
-	// AJK: 11/15/06 BEGIN
-	// make non-static so that we can have different attribute values and names
-	// across regions
-	//	
-	// /**
-	// * name of the selected attribute field
-	// */
-	// private static String attributeName = null;
-	//
-	// /**
-	// * unique list of values for attributeName
-	// */
-	// private static Object[] attributeValues = null;
-	//
-	// /**
-	// * particular value associated with a layout region
-	// */
-	// public static Object regionAttributeValue = null;
-
 	/**
 	 * name of the selected attribute field
 	 */
@@ -111,8 +88,6 @@ public class LayoutRegion extends JComponent
 	 * particular value associated with a layout region
 	 */
 	public ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
-
-	// AJK: 11/15/06 END
 
 	/**
 	 * list of nodes associated with a layout region based on
@@ -124,9 +99,8 @@ public class LayoutRegion extends JComponent
 
 	private CyGroup myGroup = null;
 
-	// AJK: 11/15/06 BEGIN
 	/**
-	 * for undo/redo
+	 * For undo/redo
 	 */
 	private Point2D[] _undoOffsets;
 
@@ -136,30 +110,28 @@ public class LayoutRegion extends JComponent
 
 	private LayoutRegion _thisRegion;
 
-	// AJK: 11/15/06 END
-
-	// AJK: 12/25/06 for stretching
 	private Cursor savedCursor;
 
 	private static final int HANDLE_SIZE = 8;
 
 	private boolean selected = false;
 
-	// AJK: 01/04/06 for accommodating pan and zoom of InnerCanvas
+	/**
+	 * For accommodating pan and zoom of InnerCanvas
+	 */
 	private double currentZoom = Double.NaN;
 
 	private double currentCenterX = Double.NaN, currentCenterY = Double.NaN;
 
 	private boolean viewportSet = false;
 
-	// private double originalZoom = Double.NaN;
-	// private double originalOffsetX = Double.NaN, originalOffsetY =
-	// Double.NaN;
 	private int viewportWidth;
 
 	private int viewportHeight;
 
 	/**
+	 * This is used to generate all the properties of the layout region object.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
@@ -168,29 +140,15 @@ public class LayoutRegion extends JComponent
 	public LayoutRegion(double x, double y, double width, double height) {
 		super();
 
-		// AJK: 04/18/07 BEGIN
-		// enforce minimum size on region of 110% default node width and height
-		// VisualStyle vizStyle = Cytoscape.getCurrentNetworkView()
-		// .getVisualStyle();
-		// NodeAppearance na = vizStyle.getNodeAppearanceCalculator()
-		// .getDefaultAppearance();
-		// if ((width < 1.1 * na.getWidth()) || (height < 1.1 * na.getHeight()))
-		// {
-		// JOptionPane
-		// .showMessageDialog(Cytoscape.getDesktop(),
-		// "This region is too small to fit anything. Please draw a larger
-		// region.");
-		// return;
-		// }
+		// if the drawn region is unreasonably small, then reject
 		if ((width < 20) || (height < 20)) {
 			JOptionPane
 					.showMessageDialog(Cytoscape.getDesktop(),
 							"This region is too small to fit anything.  Please draw a larger region.");
 			return;
 		}
-		// AJK: 04/18/07 END
 
-		// init member vars
+		// init member vars via user dialog
 		selectRegionAttributeValue();
 
 		// if no selection is made, or if 'cancel' is clicked
@@ -199,7 +157,8 @@ public class LayoutRegion extends JComponent
 						.contentEquals("[]")) {
 			return;
 		}
-		// if region already exists
+
+		// if region already exists; "there can only be one"
 		else if (LayoutRegionManager.getRegionNameList().contains(
 				this.getRegionAttributeValue().toString())) {
 			JOptionPane
@@ -210,15 +169,16 @@ public class LayoutRegion extends JComponent
 
 		}
 
-		// AJK: 12/25/06 for stretching
+		// for stretching
 		savedCursor = this.getCursor();
 
-		// setbounds must come before populate nodeviews
-
-		// note that coordinates are in terms of screen coordinates, not node
-		// coordinates
-		// AJK: 01/09/07 use double coordinates, to avoid roundoff errors
-		// setBounds((int) x, (int) y, (int) width, (int) height);
+		/**
+		 * Setbounds must come before populate nodeviews.
+		 * 
+		 * Note that coordinates are in terms of screen coordinates, not node
+		 * coordinates. Use double coordinates, to avoid roundoff errors
+		 * setBounds((int) x, (int) y, (int) width, (int) height);
+		 */
 		setBounds(x, y, width, height);
 		nodeViews = populateNodeViews();
 
@@ -227,18 +187,9 @@ public class LayoutRegion extends JComponent
 		this.paint = colors[colorIndex];
 		this.setColorIndex(colorIndex);
 
-		// AJK: 01/04/07 add ViewportChangeListener for accommodating pan/zoom
-		// currentZoom = ((DGraphView) Cytoscape.getCurrentNetworkView())
-		// .getZoom();
-		// currentX = ((DGraphView)
-		// Cytoscape.getCurrentNetworkView()).getCenter()
-		// .getX();
-		// currentY = ((DGraphView)
-		// Cytoscape.getCurrentNetworkView()).getCenter()
-		// .getY();
+		// add ViewportChangeListener for accommodating pan/zoom
 		((DGraphView) Cytoscape.getCurrentNetworkView())
 				.addViewportChangeListener(this);
-
 	}
 
 	/**
@@ -392,38 +343,6 @@ public class LayoutRegion extends JComponent
 		this.y1 = y1;
 	}
 
-	// public double getNodeH1() {
-	// return nodeH1;
-	// }
-	//
-	// public void setNodeH1(double nodeH1) {
-	// this.nodeH1 = nodeH1;
-	// }
-	//
-	// public double getNodeW1() {
-	// return nodeW1;
-	// }
-	//
-	// public void setNodeW1(double nodeW1) {
-	// this.nodeW1 = nodeW1;
-	// }
-	//
-	// public double getNodeX1() {
-	// return nodeX1;
-	// }
-	//
-	// public void setNodeX1(double nodeX1) {
-	// this.nodeX1 = nodeX1;
-	// }
-	//
-	// public double getNodeY1() {
-	// return nodeY1;
-	// }
-	//
-	// public void setNodeY1(double nodeY1) {
-	// this.nodeY1 = nodeY1;
-	// }
-
 	/**
 	 * @return Returns the paint.
 	 */
@@ -459,30 +378,10 @@ public class LayoutRegion extends JComponent
 	 * 
 	 * @return
 	 */
-
-	// AJK: 11/15/06 BEGIN
-	// make non-static so that we can have different attribute names/values
-	// across different regions
-	// public static void selectRegionAttributeValue() {
 	public void selectRegionAttributeValue() {
 
 		// Use Ethan's QuickFind dialog for attribute selection
-		// TODO: modify dialog to provide value selection as well
-		// and perhaps an all-value "brick" layout too
-		// if (attributeName == null) {
-		// new QuickFindConfigDialog();
 		new BRQuickFindConfigDialog(this);
-
-		// System.out.println("Got attribute name: " + attributeName);
-		// AJK: 11/15/06 END
-
-		// }
-
-		// Object s = JOptionPane.showInputDialog(Cytoscape.getDesktop(),
-		// "Assign a value to this region", "Bubble Router",
-		// JOptionPane.PLAIN_MESSAGE, null, attributeValues,
-		// attributeValues[0]);
-		// return s;
 	}
 
 	/**
@@ -490,11 +389,8 @@ public class LayoutRegion extends JComponent
 	 * 
 	 * @param newAttributeKey
 	 */
-	// AJK: 11/15/06 make non-static
-	// public static void setAttributeName(String newAttributeKey) {
 	public void setAttributeName(String newAttributeKey) {
 		attributeName = newAttributeKey;
-		// System.out.println("Attribute name selected: " + attributeName);
 	}
 
 	/**
@@ -521,27 +417,15 @@ public class LayoutRegion extends JComponent
 	 * 
 	 * @param regionAttributeValue
 	 */
-	// AJK: 11/15/06 make non-static
-	// public static void setRegionAttributeValue(Object object) {
 	public void setRegionAttributeValue(ArrayList selected) {
 		for (Object o : selected) {
 			regionAttributeValues.add(o);
 		}
-		// Iterator itx = selected.iterator();
-		// while (itx.hasNext()){
-		// regionAttributeValues.add(itx.next());
-		// }
-		// System.out.println("Attribute value selected: " +
-		// regionAttributeValue);
-
 	}
 
-	// AJK: 01/04/07 BEGIN
-	// respond to changes in viewport to zoom or scroll
 	/**
 	 * Our implementation of ViewportChangeListener.
 	 */
-
 	public void resetViewportMappings() {
 		viewportSet = false;
 
@@ -559,7 +443,6 @@ public class LayoutRegion extends JComponent
 	 * deltaZoom * deltaX
 	 * 
 	 */
-
 	public void viewportChanged(int w, int h, double newXCenter,
 			double newYCenter, double newScaleFactor) {
 
@@ -633,11 +516,11 @@ public class LayoutRegion extends JComponent
 			Node node = (Node) it.next();
 			String val = null;
 			String terms[] = new String[1];
-			// AP: 2/26/07 add support for parsing List type attributes
+			// add support for parsing List type attributes
 			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
 				List valList = attribs.getListAttribute(node.getIdentifier(),
 						attributeName);
-				// Iterate through all elements in the list
+				// iterate through all elements in the list
 				if (valList != null && valList.size() > 0) {
 					terms = new String[valList.size()];
 					for (int i = 0; i < valList.size(); i++) {
@@ -668,8 +551,7 @@ public class LayoutRegion extends JComponent
 				+ " nodes for layout in "
 				+ this.regionAttributeValues.toString());
 
-		// If some nodes were select, then it's safe to run the hierarchical
-		// layout
+		// only run layout if some nodes are selected
 		if (selectedNodes.size() > 0) {
 
 			// for undo/redo
@@ -700,7 +582,6 @@ public class LayoutRegion extends JComponent
 			// add automatic edge minimization following region routing
 			UnCrossAction.unCross(selectedNodeViews, false);
 
-			// AJK: 11/15/06 BEGIN
 			// undo/redo facility
 			for (int k = 0; k < _selectedNodeViews.length; k++) {
 				_redoOffsets[k] = _selectedNodeViews[k].getOffset();
@@ -708,8 +589,6 @@ public class LayoutRegion extends JComponent
 
 			CyUndo.getUndoableEditSupport().postEdit(
 					new AbstractUndoableEdit() {
-						// CytoscapeDesktop.undo.addEdit(new
-						// AbstractUndoableEdit() {
 
 						public String getPresentationName() {
 							return "Interactive Layout";
@@ -734,10 +613,7 @@ public class LayoutRegion extends JComponent
 									.getCurrentNetworkView(), _thisRegion);
 
 							// Grab ArbitraryGraphicsCanvas (a prefab canvas)
-							// and
-							// add
-							// the
-							// layout region
+							// and add the layout region
 							DGraphView view = (DGraphView) Cytoscape
 									.getCurrentNetworkView();
 							DingCanvas backgroundLayer = view
@@ -756,9 +632,7 @@ public class LayoutRegion extends JComponent
 									.getCurrentNetworkView(), _thisRegion);
 
 							// Grab ArbitraryGraphicsCanvas (a prefab canvas)
-							// and add
-							// the
-							// layout region
+							// and add the layout region
 							DGraphView view = (DGraphView) Cytoscape
 									.getCurrentNetworkView();
 							DingCanvas backgroundLayer = view
@@ -766,57 +640,24 @@ public class LayoutRegion extends JComponent
 							backgroundLayer.remove(_thisRegion);
 						}
 					});
-			// AJK: 11/15/06 END
 
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 
-			// Associate selected nodes with region
-
-			// AJK: 12/24/06 BEGIN
-			// bug fix: need to return selectedNodeViews, not selectedNodes
-			// return selectedNodes;
+			// Associate selected node views with region
 			List<NodeView> selectedNodeViewsList = new ArrayList<NodeView>();
 			for (int i = 0; i < _selectedNodeViews.length; i++) {
 				selectedNodeViewsList.add(_selectedNodeViews[i]);
 			}
 			return selectedNodeViewsList;
-			// AJK: 12/24/06 END
 		} else {
 			return null;
 		}
 	}
 
-	// public void setBounds(int x, int y, int width, int height) {
-	// // AJK: 1/1/06 BEGIN
-	// // make room for handles
-	// // super.setBounds(x, y, width, height);
-	// super.setBounds(x - (HANDLE_SIZE / 2), y - (HANDLE_SIZE / 2), width
-	// + HANDLE_SIZE, height + HANDLE_SIZE);
-	//
-	// // set member vars
-	// this.x1 = x;
-	// this.y1 = y;
-	// this.w1 = width;
-	// this.h1 = height;
-	//
-	// // our bounds have changed, create a new image with new size
-	// if ((width > 0) && (height > 0)) {
-	// // AJK: 1/1/06 make room for handles
-	// // image = new BufferedImage(width, height,
-	// image = new BufferedImage(width + HANDLE_SIZE,
-	// height + HANDLE_SIZE, BufferedImage.TYPE_INT_ARGB);
-	// }
-	// }
-	//
-	// AJK: 01/09/07 BEGIN
-	// make a version of setBounds that takes double coordinates, to fix
-	// roundoff problems
 	public void setBounds(double x, double y, double width, double height,
 			boolean fromNode) {
 
-		// AJK: 1/1/06 BEGIN
 		// make room for handles
-		// super.setBounds(x, y, width, height);
 		super.setBounds(((int) x - (HANDLE_SIZE / 2)),
 				((int) y - (HANDLE_SIZE / 2)), ((int) width + HANDLE_SIZE),
 				((int) height + HANDLE_SIZE));
@@ -829,8 +670,7 @@ public class LayoutRegion extends JComponent
 
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
-			// AJK: 1/1/06 make room for handles
-			// image = new BufferedImage(width, height,
+			// make room for handles
 			image = new BufferedImage(((int) width + HANDLE_SIZE),
 					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
 		}
@@ -838,9 +678,8 @@ public class LayoutRegion extends JComponent
 	}
 
 	public void setBounds(double x, double y, double width, double height) {
-		// AJK: 1/1/06 BEGIN
+
 		// make room for handles
-		// super.setBounds(x, y, width, height);
 		super.setBounds(((int) x - (HANDLE_SIZE / 2)),
 				((int) y - (HANDLE_SIZE / 2)), ((int) width + HANDLE_SIZE),
 				((int) height + HANDLE_SIZE));
@@ -853,8 +692,7 @@ public class LayoutRegion extends JComponent
 
 		// our bounds have changed, create a new image with new size
 		if ((width > 0) && (height > 0)) {
-			// AJK: 1/1/06 make room for handles
-			// image = new BufferedImage(width, height,
+			// make room for handles
 			image = new BufferedImage(((int) width + HANDLE_SIZE),
 					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
 		}
@@ -871,7 +709,6 @@ public class LayoutRegion extends JComponent
 			nodeY1 = (newCorners[0].getY());
 			nodeW1 = (newCorners[1].getX() - newCorners[0].getX());
 			nodeH1 = (newCorners[1].getY() - newCorners[0].getY());
-			// System.out.println("setBounds: nodeX1 =" + nodeX1);
 
 			if (myGroup != null) {
 				CyNode groupNode = this.myGroup.getGroupNode();
@@ -889,32 +726,6 @@ public class LayoutRegion extends JComponent
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// double[] topLeft = new double[2];
-		//
-		// topLeft[0] = x;
-		// topLeft[1] = y;
-		// ((DGraphView) myView)
-		// .xformComponentToNodeCoords(topLeft);
-		// double toMinX = (topLeft[0]);
-		// double toMinY = (topLeft[1]);
-		//
-		// double[] bottomRight = new double[2];
-		// bottomRight[0] = x + width;
-		// bottomRight[1] = y + height;
-		// ((DGraphView) myView)
-		// .xformComponentToNodeCoords(bottomRight);
-		// double toMaxX = (bottomRight[0]);
-		// double toMaxY = (bottomRight[1]);
-		//
-		// double toWidth = toMaxX - toMinX;
-		// double toHeight = toMaxY - toMinY;
-		//		
-		// this.nodeX1 = toMinX;
-		// this.nodeY1 = toMinY;
-		// this.nodeW1 = toWidth;
-		// this.nodeH1 = toHeight;
-
 	}
 
 	public void paint(Graphics g) {
@@ -951,15 +762,8 @@ public class LayoutRegion extends JComponent
 					.setComposite(AlphaComposite
 							.getInstance(AlphaComposite.SRC));
 
-			// AJK: 1/1/06 BEGIN
 			// leave space for handles
-
-			// // first clear background in case region has been deselected
-			// image2D.setPaint(Cytoscape.getCurrentNetworkView()
-			// .getVisualStyle().getGlobalAppearanceCalculator()
-			// .calculateBackgroundColor(Cytoscape.getCurrentNetwork()));
-			// image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
-
+			// first clear background in case region has been deselected
 			VisualStyle vs = Cytoscape.getVisualMappingManager()
 					.getVisualStyle();
 			GlobalAppearanceCalculator gCalc = vs
@@ -967,31 +771,19 @@ public class LayoutRegion extends JComponent
 			Color backgroundColor = gCalc.getDefaultBackgroundColor();
 			image2D.setPaint(backgroundColor);
 			image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
-
 			image2D.setPaint(fillColor);
-
-			// image2D.fillRect(0, 0, image.getWidth(null),
-			// image.getHeight(null));
 			image2D.fillRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, image
 					.getWidth(null)
 					- HANDLE_SIZE, image.getHeight(null) - HANDLE_SIZE);
-
 			image2D.setColor(new Color(0, 0, 0, 255));
 			if (regionAttributeValues != null) {
 				image2D.drawString(regionAttributeValues.toString(), 20, 20);
 			}
-			// AJK: 01/01/06 END
 
 			image2D.setColor(drawColor);
-			// adds thickness to border
 
-			// AJK: 1/1/06 BEGIN
 			// leave space for handles
-			// image2D.drawRect(1, 1, image.getWidth(null) - 3, image
-			// .getHeight(null) - 3);
-			// // give border dimensionality
-			// image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
-			// .getHeight(null) - 1, true);
+			// adds thickness to border
 			image2D.drawRect(1 + (HANDLE_SIZE / 2), 1 + (HANDLE_SIZE / 2),
 					image.getWidth(null) - 3 - HANDLE_SIZE, image
 							.getHeight(null)
@@ -1001,9 +793,7 @@ public class LayoutRegion extends JComponent
 					.getWidth(null)
 					- 1 - HANDLE_SIZE, image.getHeight(null) - 1 - HANDLE_SIZE,
 					true);
-			// AJK: 1/1/06 END
 
-			// AJK: 12/29/06 BEGIN
 			// draw handles for stretching if selected
 			if (this.isSelected()) {
 				drawHandles(image2D);
@@ -1015,7 +805,6 @@ public class LayoutRegion extends JComponent
 		}
 	}
 
-	// AJK: 12/29/06 BEGIN
 	/**
 	 * add handles on the corners and edges of the region -- affordances for
 	 * stretching
@@ -1051,7 +840,7 @@ public class LayoutRegion extends JComponent
 		// bottom right
 		image2D
 				.fillOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
-						HANDLE_SIZE); // bottom right
+						HANDLE_SIZE);
 
 		// now draw outline of handle
 		image2D.setColor(Color.black);
@@ -1080,31 +869,24 @@ public class LayoutRegion extends JComponent
 		// bottom right
 		image2D
 				.drawOval((int) this.w1, (int) this.h1, HANDLE_SIZE,
-						HANDLE_SIZE); // bottom right
+						HANDLE_SIZE); 
 
 	}
 
-	// AJK: 12/29/06 END
-
-	// AJK: 12/25/06 BEGIN
 	// for stretching
 	public Cursor getSavedCursor() {
 		return savedCursor;
 	}
 
-	// AJK: 12/25/06 END
-
 	public boolean isSelected() {
 		return selected;
 	}
 
-	// AJK: 02/20/07 BEGIN
 	// selection and de-selection of a region
-
 	public void setSelected(boolean isSelected) {
 		this.selected = isSelected;
+		
 		// select nodes in this region
-		// TODO: should *all* other nodes be unselected?
 		Iterator itx = this.getNodeViews().iterator();
 		while (itx.hasNext()) {
 			NodeView nv = (NodeView) itx.next();
@@ -1112,8 +894,6 @@ public class LayoutRegion extends JComponent
 		}
 		this.repaint();
 	}
-
-	// AJK: 02/20/07 END
 
 	private static String join(String values[]) {
 		StringBuffer buf = new StringBuffer();
