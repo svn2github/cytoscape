@@ -65,8 +65,6 @@ public class TestEnhancedSearch extends TestCase {
 	private void init() {
 
 		cyNetwork = Cytoscape.createNetworkFromFile("testData/network.sif");
-		final CyNetwork currNetwork = Cytoscape.getCurrentNetwork(); // for
-		// debug
 
 		String[] noa = new String[7];
 		noa[0] = new File("testData/GOMolecularFunction.NA").getAbsolutePath();
@@ -87,59 +85,63 @@ public class TestEnhancedSearch extends TestCase {
 
 	// Index sample network
 	public void testEnhancedSearchIndex() throws Exception {
-		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex();
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		idx = indexHandler.getIndex();
-	}
-
-	// Create query handler
-	public void testEnhancedSearchQuery() throws Exception {
-		queryHandler = new EnhancedSearchQuery();
+		queryHandler = new EnhancedSearchQuery(idx);
 	}
 
 	// Simple queries
 	public void testSimpleQueries() throws Exception {
 
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
+		idx = indexHandler.getIndex();
+		queryHandler = new EnhancedSearchQuery(idx);
+
 		query = "Gene_Title:putative";
-		queryHandler.ExecuteQuery(idx, query); // 56
+		queryHandler.ExecuteQuery(query); // 56
 		hits = queryHandler.getHits();
 		assertEquals(query, 56, hits.length());
 
 		query = "GO_Cellular_Component:\"plasma membrane\"";
-		queryHandler.ExecuteQuery(idx, query); // 7
+		queryHandler.ExecuteQuery(query); // 7
 		hits = queryHandler.getHits();
 		assertEquals(query, 7, hits.length());
 
 		query = "canonicalName:251155_at";
-		queryHandler.ExecuteQuery(idx, query); // 1
+		queryHandler.ExecuteQuery(query); // 1
 		hits = queryHandler.getHits();
 		assertEquals(query, 1, hits.length());
 
 		query = "265480_at";
-		queryHandler.ExecuteQuery(idx, query); // 1
+		queryHandler.ExecuteQuery(query); // 1
 		hits = queryHandler.getHits();
 		assertEquals(query, 1, hits.length());
 
 		query = "response";
-		queryHandler.ExecuteQuery(idx, query); // Search in all attributes
+		queryHandler.ExecuteQuery(query); // Search in all attributes
 		hits = queryHandler.getHits();
-		assertEquals(query, 00, hits.length());
+		assertEquals(query, 70, hits.length());
 	}
 
 	// Queries on multiple attribute fields
 	public void testComplexQueries() throws Exception {
 
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
+		idx = indexHandler.getIndex();
+		queryHandler = new EnhancedSearchQuery(idx);
+
 		query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
-		queryHandler.ExecuteQuery(idx, query); // 3
+		queryHandler.ExecuteQuery(query); // 3
 		hits = queryHandler.getHits();
 		assertEquals(query, 3, hits.length());
 
 		query = "Desiccation_Response:true NOT Chromosome:5";
-		queryHandler.ExecuteQuery(idx, query); // 20
+		queryHandler.ExecuteQuery(query); // 20
 		hits = queryHandler.getHits();
 		assertEquals(query, 20, hits.length());
 
 		query = "GO_Biological_Process:stress AND (GO_Molecular_Function:peroxidase OR GO_Molecular_Function:catalase)";
-		queryHandler.ExecuteQuery(idx, query); // 4
+		queryHandler.ExecuteQuery(query); // 4
 		hits = queryHandler.getHits();
 		assertEquals(query, 4, hits.length());
 	}
@@ -147,8 +149,12 @@ public class TestEnhancedSearch extends TestCase {
 	// Multiple values for same attribute
 	public void testFieldGrouping() throws Exception {
 
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
+		idx = indexHandler.getIndex();
+		queryHandler = new EnhancedSearchQuery(idx);
+
 		query = "Gene_Title:(+60S +\"ribosomal protein\")";
-		queryHandler.ExecuteQuery(idx, query); // 9
+		queryHandler.ExecuteQuery(query); // 9
 		hits = queryHandler.getHits();
 		assertEquals(query, 9, hits.length());
 	}
@@ -156,8 +162,12 @@ public class TestEnhancedSearch extends TestCase {
 	// Wildcards queries
 	public void testWildcardsQueries() throws Exception {
 
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
+		idx = indexHandler.getIndex();
+		queryHandler = new EnhancedSearchQuery(idx);
+
 		query = "Gene_Title:deHYdr*n";
-		queryHandler.ExecuteQuery(idx, query); // 4
+		queryHandler.ExecuteQuery(query); // 4
 		hits = queryHandler.getHits();
 		assertEquals(query, 4, hits.length());
 	}
@@ -165,28 +175,32 @@ public class TestEnhancedSearch extends TestCase {
 	// Range queries
 	public void testRangeQueries() throws Exception {
 
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
+		idx = indexHandler.getIndex();
+		queryHandler = new EnhancedSearchQuery(idx);
+
 		query = "Chromosome:5";
-		queryHandler.ExecuteQuery(idx, query); // 39
+		queryHandler.ExecuteQuery(query); // 39
 		hits = queryHandler.getHits();
 		assertEquals(query, 39, hits.length());
 
 		query = "Chromosome:[4 TO 5]";
-		queryHandler.ExecuteQuery(idx, query); // 79
+		queryHandler.ExecuteQuery(query); // 79
 		hits = queryHandler.getHits();
 		assertEquals(query, 79, hits.length());
 
 		query = "weight:[0.95 TO 1]";
-		queryHandler.ExecuteQuery(idx, query);
+		queryHandler.ExecuteQuery(query);
 		hits = queryHandler.getHits();
 		assertEquals(query, 00, hits.length());
 
 		query = "weight:[-1 TO -0.95]";
-		queryHandler.ExecuteQuery(idx, query);
+		queryHandler.ExecuteQuery(query);
 		hits = queryHandler.getHits();
 		assertEquals(query, 00, hits.length());
 
 		query = "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]";
-		queryHandler.ExecuteQuery(idx, query); // 62
+		queryHandler.ExecuteQuery(query); // 62
 		hits = queryHandler.getHits();
 		assertEquals(query, 62, hits.length());
 	}
@@ -194,8 +208,12 @@ public class TestEnhancedSearch extends TestCase {
 	// Queries with no results
 	public void testNoResultsQueries() throws Exception {
 
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
+		idx = indexHandler.getIndex();
+		queryHandler = new EnhancedSearchQuery(idx);
+
 		query = "interaction:neg AND weight:[0.9 TO 0.95]";
-		queryHandler.ExecuteQuery(idx, query);
+		queryHandler.ExecuteQuery(query);
 		hits = queryHandler.getHits();
 		assertEquals(query, 0, hits.length());
 	}

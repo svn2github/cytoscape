@@ -68,8 +68,8 @@ public class EnhancedSearch {
 				System.out.println("[EnhancedSearch] - " + query);
 				EnhancedSearchIndex index = new EnhancedSearchIndex();
 				RAMDirectory idx = index.getIndex();
-				EnhancedSearchQuery myQuery = new EnhancedSearchQuery();
-				myQuery.ExecuteQuery(idx, query);
+				EnhancedSearchQuery myQuery = new EnhancedSearchQuery(idx);
+				myQuery.ExecuteQuery(query);
 			} else {
 				System.out.println("[EnhancedSearch] - Search was canceled");
 			}

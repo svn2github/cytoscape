@@ -60,14 +60,24 @@ public class EnhancedSearchIndex {
 
 	RAMDirectory idx;
 
+	// Index current network
 	public EnhancedSearchIndex() {
 		// Construct a RAMDirectory to hold the in-memory representation of the
 		// index.
 		idx = new RAMDirectory();
-		BuildIndex(idx);
+		final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
+		BuildIndex(idx, currNetwork);
 	}
 
-	public void BuildIndex(RAMDirectory idx) {
+	// Index the given network
+	public EnhancedSearchIndex(CyNetwork network) {
+		// Construct a RAMDirectory to hold the in-memory representation of the
+		// index.
+		idx = new RAMDirectory();
+		BuildIndex(idx, network);
+	}
+
+	public void BuildIndex(RAMDirectory idx, CyNetwork network) {
 		try {
 			// Make a writer to create the index
 			IndexWriter writer = new IndexWriter(idx, new StandardAnalyzer(),
@@ -79,10 +89,9 @@ public class EnhancedSearchIndex {
 
 			// Define network attributes iterator
 			Iterator it = null;
-			final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
 
 			// Index node attributes
-			it = currNetwork.nodesIterator();
+			it = network.nodesIterator();
 			while (it.hasNext()) {
 				CyNode currNode = (CyNode) it.next();
 				String currNodeIdentifier = currNode.getIdentifier();
@@ -91,7 +100,7 @@ public class EnhancedSearchIndex {
 			}
 
 			// Index edge attributes
-			it = currNetwork.edgesIterator();
+			it = network.edgesIterator();
 			while (it.hasNext()) {
 				CyEdge currEdge = (CyEdge) it.next();
 				String currEdgeIdentifier = currEdge.getIdentifier();

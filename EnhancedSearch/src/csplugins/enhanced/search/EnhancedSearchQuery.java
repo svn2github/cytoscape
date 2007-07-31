@@ -59,10 +59,13 @@ public class EnhancedSearchQuery {
 
 	private Hits hits;
 
-	public EnhancedSearchQuery() {
+	RAMDirectory idx;
+
+	public EnhancedSearchQuery(RAMDirectory index) {
+		idx = index;
 	}
 
-	public void ExecuteQuery(RAMDirectory idx, String queryString) {
+	public void ExecuteQuery(String queryString) {
 		try {
 
 			// Define attribute fields in which the search is to be carried on
