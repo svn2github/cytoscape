@@ -1290,8 +1290,7 @@ public class Graph {
 	static public void main(String args[]) {
 		try {
 			Graph graph = new Graph(new InputStreamReader(System.in));
-/*			System.out.println(graph);
-*/
+
 			int cI[] = graph.componentIndex();
 			int x;
 			System.out.println("Node index:\n");
@@ -1301,25 +1300,8 @@ public class Graph {
 			System.out.println("Partitioning into components:\n");
 			int renumber[] = new int[cI.length];
 			Graph component[] = graph.partition(cI,renumber);
-/*
-			for (x=0; x<graph.getNodecount(); x++) {
-				System.out.println("w: " + x + " n: " + renumber[x]);
-			}
-*/
+
 			for (x=0; x<component.length; x++) {
-/*
-				System.out.println("plain component:\n");
-				System.out.println(component[x]);
-				System.out.println("filtered component:\n");
-				System.out.println(component[x].getGraphWithoutOneOrTwoCycles());
-				System.out.println("nonmulti component:\n");
-				System.out.println(component[x].getGraphWithoutMultipleEdges());
-				int cycleEliminationPriority[] = component[x].getCycleEliminationVertexPriority();
-				System.out.println("acyclic component:\n");
-				System.out.println(component[x].getGraphWithoutCycles(cycleEliminationPriority));
-				System.out.println("reduced component:\n");
-				System.out.println(component[x].getReducedGraph());
-*/
                 System.out.println("layer assignment:\n");
 				Graph red = component[x].getReducedGraph();
 				int layer[] = red.getVertexLayers();
