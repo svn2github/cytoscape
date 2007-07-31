@@ -3,7 +3,9 @@ package cytoscape.bubbleRouter;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
@@ -21,7 +23,7 @@ public class LayoutRegionManager {
 
 	public static List<String> regionNameList = new ArrayList<String>();
 
-	public static int regionCount = 0;
+	public static int regionTotalCount = 0;
 
 	/**
 	 * canvas to add regions to -- currently BACKGROUND_CANVAS
@@ -92,6 +94,22 @@ public class LayoutRegionManager {
 		return regionNameList;
 	}
 
+	public static void removeAllRegions() {
+		// Iterate through regionViewMap and remove all regions from all views
+		HashMap<CyNetworkView, List<LayoutRegion>> regionViewMapTemp = regionViewMap;
+		Iterator<CyNetworkView> key = regionViewMapTemp.keySet().iterator();
+		while (key.hasNext()) {
+			CyNetworkView cnv = key.next();
+			List<LayoutRegion> lrList = regionViewMapTemp.get(cnv);
+			while (lrList.size() > 0){
+				BubbleRouterPlugin.groupWillBeRemoved(lrList.get(0));
+				removeRegionNameFromList(lrList.get(0));
+				removeRegionFromView(cnv, lrList.get(0));
+			}
+		}
+		regionTotalCount = 0;
+	}
+
 	/**
 	 * 
 	 * @param view
@@ -156,7 +174,7 @@ public class LayoutRegionManager {
 	 * @return
 	 */
 	public static int getRegionCount() {
-		return regionCount;
+		return regionTotalCount;
 	}
 
 	/**
@@ -169,7 +187,7 @@ public class LayoutRegionManager {
 		addRegionForView(view, region);
 		addRegionNameToList(region);
 		// Add to counter
-		regionCount++;
+		regionTotalCount++;
 
 		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
 		// layout region
@@ -196,7 +214,7 @@ public class LayoutRegionManager {
 		addRegionForView(view, region);
 		addRegionNameToList(region);
 		// Add to counter
-		regionCount++;
+		regionTotalCount++;
 
 		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
 		// layout region
@@ -236,29 +254,23 @@ public class LayoutRegionManager {
 	 * @param pt
 	 * @return
 	 */
-	public static LayoutRegion getPickedLayoutRegion(Point pt)
-	{
+	public static LayoutRegion getPickedLayoutRegion(Point pt) {
 		// first see if click was on a node or edge. If so, return
-		if ((((DGraphView) 
-				Cytoscape.getCurrentNetworkView()).getPickedNodeView(pt) != null) ||
-				(((DGraphView) 
-						Cytoscape.getCurrentNetworkView()).
-						getPickedEdgeView(pt) != null))
-		{
+		if ((((DGraphView) Cytoscape.getCurrentNetworkView())
+				.getPickedNodeView(pt) != null)
+				|| (((DGraphView) Cytoscape.getCurrentNetworkView())
+						.getPickedEdgeView(pt) != null)) {
 			return null;
 		}
-		
-		// next go down list of regions and see if there is a hit		
-		DingCanvas myCanvas = 
-		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(REGION_CANVAS);
-		
-		for (int i = myCanvas.getComponentCount(); i > 0; i--)
-		{
+
+		// next go down list of regions and see if there is a hit
+		DingCanvas myCanvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
+				.getCanvas(REGION_CANVAS);
+
+		for (int i = myCanvas.getComponentCount(); i > 0; i--) {
 			LayoutRegion region = (LayoutRegion) myCanvas.getComponent(i - 1);
-			if (region != null)
-			{
-				if (isPointOnRegion (pt, region))
-				{
+			if (region != null) {
+				if (isPointOnRegion(pt, region)) {
 					return region;
 				}
 			}
