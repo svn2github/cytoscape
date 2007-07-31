@@ -346,23 +346,37 @@ public class CyGoose implements Goose
 	public void handleNameList(String species, String[] names) throws RemoteException
 		{
 		print("**** handleNameList(String, String[]) *****");
-		CyNetwork Net = Cytoscape.getNetwork( this.getNetworkId() );
+		CyNetwork CyNet = Cytoscape.getNetwork( this.getNetworkId() );
 
-		for ( String CurrentName: names )
-			{
-			CyNode SelectNode = Cytoscape.getCyNode(CurrentName);
-			if ( (SelectNode != null) ) 
-				{ Net.setSelectedNodeState( (Node)SelectNode, true ); }
- 			}
+    if ( this.getNetworkId() == null || this.getNetworkId().equals("0") ) 
+    	{ 
+    	System.out.println("  --Null network");
+    	CyNetwork NewNet = Cytoscape.createNetwork("Gaggle "+species, false);
+    	for (String CurrentName : names)
+    		{
+      	Node NewNode = (Node) Cytoscape.getCyNode(CurrentName, true);
+      	CyNet.addNode(NewNode);
+      	CyNet.setSelectedNodeState(NewNode, true);
+    		}
+    	}
+    else
+    	{
+			for ( String CurrentName: names )
+				{
+				CyNode SelectNode = Cytoscape.getCyNode(CurrentName);
+				if ( (SelectNode != null) ) 
+					{ CyNet.setSelectedNodeState( (Node)SelectNode, true ); }
+	 			}
+	
+			if (CyNet.getSelectedNodes().size() <= 0)
+				{ 
+				String Msg = "No matching nodes were found, please check that you are using the same ID's between geese";
+				GagglePlugin.showDialogBox(Msg, "Node Matches Not Found", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+				print(Msg);
+				}
+    	}
 
-		if (Net.getSelectedNodes().size() <= 0)
-			{ 
-			String Msg = "No matching nodes were found, if you think this is incorrect check that your nodes have the ." + 
-										Semantics.SPECIES + " attribute set.";
-			print(Msg);
-			}
-
-		// refresh network to flag selected nodes
+    // refresh network to flag selected nodes
 		Cytoscape.getDesktop().setFocus(Net.getIdentifier());
 		}
 
