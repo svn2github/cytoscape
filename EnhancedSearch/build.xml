@@ -16,6 +16,7 @@
     <!-- The lib directory -->
     <!-- Contains all third-party JAR files, required for compilation -->
     <property name="lib.dir"       value="lib"/>
+    <property name="junit.dir"       value="junit"/>
 
     <!-- The dist directory -->
     <property name="dist.dir"    value="${basedir}/plugins"/>
@@ -106,4 +107,13 @@
     </target>
 
 
+    <!-- ==================== JUnit Test Target =========================== -->
+    <target name="test" description="Runs all JUnit tests" depends="compile">
+            <junit printsummary="yes" fork="yes" haltonfailure="yes">
+            <formatter type="plain" usefile="false"/>
+            <test name="csplugins.enhanced.search.TestEnhancedSearch"/>
+            <classpath refid="compile.classpath"/>
+        </junit>
+    </target>
+	
 </project>
