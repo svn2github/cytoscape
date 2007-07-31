@@ -263,8 +263,6 @@ class UnCrossAction extends CytoscapeAction {
 			if (_calledByEndUser) {
 				CyUndo.getUndoableEditSupport().postEdit(
 						new AbstractUndoableEdit() {
-							// CytoscapeDesktop.undo.addEdit(new
-							// AbstractUndoableEdit() {
 
 							public String getPresentationName() {
 								return "UnCross";
@@ -557,8 +555,7 @@ class UnCrossAction extends CytoscapeAction {
 			}
 
 			// eliminate the case where lines intersect at their end points,
-			// i.e.
-			// it's a junction at a node, not an edge crossing
+			// i.e. it's a junction at a node, not an edge crossing
 			else if ((((int) (intersectionPt.getX()) == ((int) thisLine.getX1())) && ((int) (intersectionPt
 					.getY()) == ((int) thisLine.getY1())))
 					|| (((int) (intersectionPt.getX()) == ((int) thisLine
@@ -608,9 +605,9 @@ class UnCrossAction extends CytoscapeAction {
 			double dx1 = e1x2 - e1x1;
 			double dx2 = e2x2 - e2x1;
 
+			// both lines are vertical and parallel (unless the same)
 			if ((dx1 == 0.0d) && (dx2 == 0.0d)) {
-				return null; // both lines are vertical and parallel (unless
-				// the same)
+				return null; 
 			}
 
 			double m1 = Double.NaN;
