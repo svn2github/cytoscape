@@ -28,8 +28,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.data.readers.GraphReader;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyFileFilter;
@@ -188,7 +188,7 @@ public class GpmlImporter extends CytoscapePlugin {
 			view.updateView();
 		}
 
-		public LayoutAlgorithm getLayoutAlgorithm() {
+		public CyLayoutAlgorithm getLayoutAlgorithm() {
 			return new LayoutAdapter() {
 				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
 					layout(networkView);
