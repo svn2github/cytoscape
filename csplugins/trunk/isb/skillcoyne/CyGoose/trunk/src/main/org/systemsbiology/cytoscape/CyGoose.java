@@ -492,6 +492,7 @@ public class CyGoose implements Goose
 					}
 	    	break;
 	    };
+	  Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		}
 
 	
