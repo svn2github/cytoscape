@@ -1,3 +1,4 @@
+
 /*
  This mosule was seperated into EnhancedSearchIndex, EnhancedSearchQuery and enhancedSearchUtils.
  It will be removed when testing is completed.
