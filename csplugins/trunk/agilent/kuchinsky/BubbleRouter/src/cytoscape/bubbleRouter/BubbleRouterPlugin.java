@@ -200,11 +200,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 
-		// Listen for Network View Creation
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-				.addPropertyChangeListener(
-						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
-
 		// Listen for Network View Destruction
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
@@ -288,10 +283,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					groupPanel);
 		}
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
-			LayoutRegionManager.removeAllRegions();
-			}
-		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
-				// Beuler? Beuler?
+			CyNetworkView view = (CyNetworkView) e.getNewValue();
+			LayoutRegionManager.removeAllRegionsForView(view);
 			}
 	}
 
@@ -485,11 +478,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
 		
 		// unselect old region
-		List regionNameList = LayoutRegionManager.getRegionNameList();
+		List regionList = LayoutRegionManager.getRegionListForView(Cytoscape.getCurrentNetworkView());
 		if ((oldPickedRegion != null)
 				&& (oldPickedRegion != pickedRegion)
-				&& (regionNameList.contains(oldPickedRegion
-						.getRegionAttributeValue().toString()))) {
+				&& (regionList.contains(oldPickedRegion))) {
 			oldPickedRegion.setSelected(false);
 			oldPickedRegion.repaint();
 			unselect(oldPickedRegion);
@@ -578,8 +570,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					&& (pt.getY() <= region.getY1() + region.getH1()
 							+ edgeTolerance)) {
 				return BOTTOM_LEFT;
-			} else {
+			} else if ((pt.getY() >= region.getY1()) 
+					&& (pt.getY() <= region.getY1() + region.getH1())) {
 				return LEFT;
+			} else {
+				return NOT_ON_EDGE;
 			}
 		} else if ((pt.getX() >= region.getX1() + region.getW1()
 				- edgeTolerance)
@@ -779,20 +774,19 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			LayoutRegion region = new LayoutRegion(x, y, w, h);
 
 			// if value is selected by user, i.e., not cancelled or blank
-			if (region.getRegionAttributeValue() != null
-					&& !region.getRegionAttributeValue().toString()
-							.contentEquals("[]")) {
+//			if (region.getRegionAttributeValue() != null
+//					&& !region.getRegionAttributeValue().toString()
+//							.contentEquals("[]")) {
 
 				// Check for pre-existing region with same name
-				List regionNameList = LayoutRegionManager.getRegionNameList();
-				if (regionNameList.contains(region.getRegionAttributeValue()
-						.toString())) {
-					return;
-				} else {
-					LayoutRegionManager.addRegion(Cytoscape
-							.getCurrentNetworkView(), region);
-				}
-			}
+//				List<LayoutRegion> list = LayoutRegionManager.getRegionListForView(Cytoscape.getCurrentNetworkView());
+//				if (list.contains(region)){
+//					return;
+//				} else {
+//					LayoutRegionManager.addRegion(Cytoscape
+//							.getCurrentNetworkView(), region);
+//				}
+//			}
 		}
 
 	}
