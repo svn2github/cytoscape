@@ -20,7 +20,7 @@ public class LayoutRegionManager {
 
 	public static HashMap<CyNetworkView, List<LayoutRegion>> regionViewMap = new HashMap<CyNetworkView, List<LayoutRegion>>();
 
-	public static List<String> regionNameList = new ArrayList<String>();
+//	public static List<String> regionNameList = new ArrayList<String>();
 
 	public static int regionTotalCount = 0;
 
@@ -76,22 +76,28 @@ public class LayoutRegionManager {
 	 * @param region
 	 *            the region you are adding
 	 */
-	public static void addRegionNameToList(LayoutRegion region) {
-		regionNameList.add(region.getRegionAttributeValue().toString());
-	}
+//	public static void addRegionNameToList(LayoutRegion region) {
+//		regionNameList.add(region.getRegionAttributeValue().toString());
+//	}
 
 	/**
 	 * remove the region name from the list
 	 * 
 	 * @param index
 	 */
-	public static void removeRegionNameFromList(LayoutRegion region) {
-		regionNameList.remove(region.getRegionAttributeValue().toString());
-	}
+//	public static void removeRegionNameFromList(LayoutRegion region) {
+//		regionNameList.remove(region.getRegionAttributeValue().toString());
+//	}
 
-	public static List getRegionNameList() {
-		return regionNameList;
-	}
+//	public static List getRegionNameList(CyNetworkView view) {
+//		List
+//		List<LayoutRegion> list = getRegionListForView(view);
+//		Iterator<LayoutRegion> it = list.iterator();
+//		while(it.hasNext()){
+//			regionNameList.add(it.next().getRegionAttributeValue().toString());
+//		}
+//		return regionNameList;
+//	}
 
 	public static void removeAllRegions() {
 		// Iterate through regionViewMap and remove all regions from all views
@@ -102,7 +108,7 @@ public class LayoutRegionManager {
 			List<LayoutRegion> lrList = regionViewMapTemp.get(cnv);
 			while (lrList.size() > 0){
 				BubbleRouterPlugin.groupWillBeRemoved(lrList.get(0));
-				removeRegionNameFromList(lrList.get(0));
+//				removeRegionNameFromList(lrList.get(0));
 				removeRegionFromView(cnv, lrList.get(0));
 			}
 		}
@@ -184,7 +190,7 @@ public class LayoutRegionManager {
 	 */
 	public static void addRegionFromFile(CyNetworkView view, LayoutRegion region) {
 		addRegionForView(view, region);
-		addRegionNameToList(region);
+//		addRegionNameToList(region);
 		// Add to counter
 		regionTotalCount++;
 
@@ -211,7 +217,7 @@ public class LayoutRegionManager {
 	 */
 	public static void addRegion(CyNetworkView view, LayoutRegion region) {
 		addRegionForView(view, region);
-		addRegionNameToList(region);
+//		addRegionNameToList(region);
 		// Add to counter
 		regionTotalCount++;
 
@@ -238,7 +244,7 @@ public class LayoutRegionManager {
 	 */
 	public static void removeRegion(CyNetworkView view, LayoutRegion region) {
 		removeRegionFromView(view, region);
-		removeRegionNameFromList(region);
+//		removeRegionNameFromList(region);
 		DGraphView dview = (DGraphView) view;
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
 		backgroundLayer.remove(region);
