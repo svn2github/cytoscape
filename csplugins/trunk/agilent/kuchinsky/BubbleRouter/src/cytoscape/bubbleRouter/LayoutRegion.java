@@ -159,8 +159,8 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		}
 
 		// if region already exists; "there can only be one"
-		else if (LayoutRegionManager.getRegionNameList().contains(
-				this.getRegionAttributeValue().toString())) {
+		else if (LayoutRegionManager.getRegionListForView(myView).contains(
+				this)) {
 			JOptionPane
 					.showMessageDialog(
 							Cytoscape.getDesktop(),
@@ -168,6 +168,10 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			return;
 
 		}
+		
+		// add region to hashmap
+		LayoutRegionManager.addRegion(Cytoscape
+				.getCurrentNetworkView(), this);
 
 		// for stretching
 		savedCursor = this.getCursor();
