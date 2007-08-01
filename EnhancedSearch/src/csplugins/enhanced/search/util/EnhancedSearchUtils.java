@@ -89,6 +89,7 @@ public class EnhancedSearchUtils {
 
 		int hitCount = hits.length();
 		if (hitCount == 0) {
+			System.out.println("No hits. ");
 			return;
 		} else {
 			try {
@@ -104,9 +105,17 @@ public class EnhancedSearchUtils {
 					System.out.println("  " + (i + 1) + ". " + doc.get(INDEX_FIELD));
 					String currID = doc.get(INDEX_FIELD);
 					CyNode currNode = Cytoscape.getCyNode(currID, false);
-// CyEdge currEdge = Cytoscape.getCyEdge(currID, false);
-					network.setSelectedNodeState(currNode, true);
-// network.setSelectedEdgeState(currEdge, true);
+					if (currNode != null) {
+						network.setSelectedNodeState(currNode, true);
+					} else {
+//						CyEdge currEdge = Cytoscape.getCyEdge(currID, false);
+						CyEdge currEdge = Cytoscape.getRootGraph().getEdge(currID);
+						if (currEdge != null) {
+							network.setSelectedEdgeState(currEdge, true);
+						} else {
+							System.out.println("Unknown identifier " + (currID));
+						}
+					}
 				}
 				
 				Cytoscape.getCurrentNetworkView().updateView();
