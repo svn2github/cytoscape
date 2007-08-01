@@ -67,6 +67,9 @@ import javax.swing.ImageIcon;
  *
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
+	
+	private static final Float DEF_BELOW_AND_ABOVE = 1f;
+	
 	/**
 	 * Creates a new C2CMappingEditor object.
 	 *
@@ -226,8 +229,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 			below = (Number) allPoints.get(0).getRange().lesserValue;
 			above = (Number) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
 		} else {
-			below = 30f;
-			above = 30f;
+			below = DEF_BELOW_AND_ABOVE;
+			above = DEF_BELOW_AND_ABOVE;
 		}
 
 		/*
