@@ -39,7 +39,6 @@ package csplugins.enhanced.search;
 import java.io.IOException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -53,9 +52,10 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
 
+
 public class EnhancedSearchQuery {
 
-	public static final String INDEX_FIELD = "Identifier";
+//	public static final String INDEX_FIELD = "Identifier";
 
 	private Hits hits;
 
@@ -65,7 +65,7 @@ public class EnhancedSearchQuery {
 		idx = index;
 	}
 
-	public void ExecuteQuery(String queryString) {
+	public Hits ExecuteQuery(String queryString) {
 		try {
 
 			// Define attribute fields in which the search is to be carried on
@@ -88,6 +88,8 @@ public class EnhancedSearchQuery {
 		} catch (ParseException pe) {
 			pe.printStackTrace();
 		}
+		
+		return hits;
 	}
 
 	/**
@@ -98,35 +100,14 @@ public class EnhancedSearchQuery {
 			throws ParseException, IOException {
 
 		// Build a Query object
-		QueryParser queryParser = new MultiFieldQueryParser(fields,
-				new StandardAnalyzer());
+		QueryParser queryParser = new MultiFieldQueryParser(fields, new StandardAnalyzer());
 		Query query = queryParser.parse(queryString);
 
 		// Search for the query
 		hits = null;
 		hits = searcher.search(query);
-
-		// Examine the Hits object to see if there were any matches
-		int hitCount = hits.length();
-		if (hitCount == 0) {
-			System.out.println("No matches were found for \"" + queryString
-					+ "\"");
-		} else {
-			System.out.println("Hits for \"" + queryString
-					+ "\" were found in:");
-			// Iterate over the Documents in the Hits object
-			for (int i = 0; i < hitCount; i++) {
-				Document doc = hits.doc(i);
-				// Print the value that we stored in the INDEX_FIELD field.
-				// Note that this Field was not indexed, but (unlike other
-				// attribute fields)
-				// was stored verbatim and can be retrieved.
-				System.out
-						.println("  " + (i + 1) + ". " + doc.get(INDEX_FIELD));
-			}
-		}
 	}
-
+	
 	public Hits getHits() {
 		return hits;
 	}

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -60,15 +59,6 @@ public class EnhancedSearchIndex {
 
 	RAMDirectory idx;
 
-	// Index current network
-	public EnhancedSearchIndex() {
-		// Construct a RAMDirectory to hold the in-memory representation of the
-		// index.
-		idx = new RAMDirectory();
-		final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
-		BuildIndex(idx, currNetwork);
-	}
-
 	// Index the given network
 	public EnhancedSearchIndex(CyNetwork network) {
 		// Construct a RAMDirectory to hold the in-memory representation of the
@@ -77,7 +67,7 @@ public class EnhancedSearchIndex {
 		BuildIndex(idx, network);
 	}
 
-	public void BuildIndex(RAMDirectory idx, CyNetwork network) {
+	private void BuildIndex(RAMDirectory idx, CyNetwork network) {
 		try {
 			// Make a writer to create the index
 			IndexWriter writer = new IndexWriter(idx, new StandardAnalyzer(),
@@ -156,7 +146,6 @@ public class EnhancedSearchIndex {
 	}
 
 	public RAMDirectory getIndex() {
-
 		return idx;
 	}
 

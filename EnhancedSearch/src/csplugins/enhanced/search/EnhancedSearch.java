@@ -35,10 +35,16 @@
 
 package csplugins.enhanced.search;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import java.awt.event.ActionEvent;
+
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.search.Hits;
+import csplugins.enhanced.search.util.EnhancedSearchUtils;
+
+;
 
 public class EnhancedSearch {
 
@@ -56,23 +62,36 @@ public class EnhancedSearch {
 		/**
 		 * This method is called when the user selects the menu item.
 		 */
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e){
 
 			// Display dialog
 			EnhancedSearchDialog dialog = new EnhancedSearchDialog();
 			dialog.setVisible(true);
 
+			// Perform search
 			if (!dialog.isCancelled()) {
 				String query = dialog.getQuery();
-				System.out.println("[EnhancedSearch] - " + query);
-				EnhancedSearchIndex index = new EnhancedSearchIndex();
-				RAMDirectory idx = index.getIndex();
-				EnhancedSearchQuery myQuery = new EnhancedSearchQuery(idx);
-				myQuery.ExecuteQuery(query);
+				final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
+				indexAndSearch(currNetwork, query);
+
 			} else {
-				System.out.println("[EnhancedSearch] - Search was canceled");
+				return;
 			}
 		}
 
+	}
+
+	public void indexAndSearch(CyNetwork network, String query) {
+
+		// Index the given network
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
+		RAMDirectory idx = indexHandler.getIndex();
+
+		// Perform search
+		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
+		Hits hits = queryHandler.ExecuteQuery(query);
+		
+		// Display results
+		EnhancedSearchUtils.displayResults(network, hits);
 	}
 }

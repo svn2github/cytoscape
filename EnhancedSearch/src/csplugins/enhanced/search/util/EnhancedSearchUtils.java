@@ -36,7 +36,23 @@
 
 package csplugins.enhanced.search.util;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
+
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.generated.Node;
+import cytoscape.generated.SelectedNodes;
+
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.document.Document;
+
+
 
 /*******************************************************************************
  * Perhaps this method can be merged with CtAttributesUtil in
@@ -47,6 +63,9 @@ public class EnhancedSearchUtils {
 	public static final String SEARCH_STRING = "\\s";
 
 	public static final String REPLACE_STRING = "_";
+
+	public static final String INDEX_FIELD = "Identifier";
+
 
 	/**
 	 * Replaces whitespace characters with underline. Method: Search for
@@ -64,4 +83,41 @@ public class EnhancedSearchUtils {
 
 		return replaceTerm;
 	}
+	
+	
+	public static void displayResults(CyNetwork network, Hits hits) {
+
+		int hitCount = hits.length();
+		if (hitCount == 0) {
+			return;
+		} else {
+			try {
+				Cytoscape.getCurrentNetwork().unselectAllNodes();
+				Cytoscape.getCurrentNetwork().unselectAllEdges();
+
+				// Print the value that we stored in the INDEX_FIELD field.
+				// Note that this Field was not indexed, but (unlike other
+				// attribute fields)
+				// was stored verbatim and can be retrieved.
+				for (int i = 0; i < hitCount; i++) {
+					Document doc = hits.doc(i);
+					System.out.println("  " + (i + 1) + ". " + doc.get(INDEX_FIELD));
+					String currID = doc.get(INDEX_FIELD);
+					CyNode currNode = Cytoscape.getCyNode(currID, false);
+// CyEdge currEdge = Cytoscape.getCyEdge(currID, false);
+					network.setSelectedNodeState(currNode, true);
+// network.setSelectedEdgeState(currEdge, true);
+				}
+				
+				Cytoscape.getCurrentNetworkView().updateView();
+				
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}
+
+
 }
+
+
