@@ -37,12 +37,12 @@
 package csplugins.enhanced.search;
 
 import java.io.File;
-import org.apache.lucene.store.RAMDirectory;
-import csplugins.enhanced.search.EnhancedSearchQuery;
+import junit.framework.TestCase;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import org.apache.lucene.search.Hits;
-import junit.framework.TestCase;
+import org.apache.lucene.store.RAMDirectory;
+import csplugins.enhanced.search.EnhancedSearchQuery;
 
 public class TestEnhancedSearch extends TestCase {
 

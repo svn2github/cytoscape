@@ -65,8 +65,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin {
 		info.setCategory(PluginInfo.Category.NETWORK_ATTRIBUTE_IO);
 		info.setPluginVersion(VERSION);
 		info.setCytoscapeVersion("2.5");
-		info
-				.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Google_Summer_of_Code_2007/Maital");
+		info.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Google_Summer_of_Code_2007/Maital");
 		info.addAuthor("Maital Ashkenazi", "HUJI");
 
 		return info;

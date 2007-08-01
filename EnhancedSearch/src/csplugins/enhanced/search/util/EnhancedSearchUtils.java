@@ -37,17 +37,12 @@
 package csplugins.enhanced.search.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.generated.Node;
-import cytoscape.generated.SelectedNodes;
 
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.document.Document;
