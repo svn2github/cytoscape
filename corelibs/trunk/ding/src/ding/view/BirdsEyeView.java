@@ -41,6 +41,8 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -69,6 +71,7 @@ public class BirdsEyeView extends Component {
 	private double m_viewXCenter;
 	private double m_viewYCenter;
 	private double m_viewScaleFactor;
+	private Component m_desktopView;
 
 	/**
 	 * Creates a new BirdsEyeView object.
@@ -76,9 +79,20 @@ public class BirdsEyeView extends Component {
 	 * @param view DOCUMENT ME!
 	 */
 	public BirdsEyeView(DGraphView view) {
+		this(view, null);
+	}
+
+	/**
+	 * Creates a new BirdsEyeView object.
+	 *
+	 * @param view The view to monitor
+	 * @param desktopView The desktop area holding the view. This should be NetworkViewManager.getDesktopPane().
+	 */
+	public BirdsEyeView(DGraphView view, Component desktopView) {
 		super();
 		m_cLis = new InnerContentChangeListener();
 		m_vLis = new InnerViewportChangeListener();
+		m_desktopView = desktopView;
 		addMouseListener(new InnerMouseListener());
 		addMouseMotionListener(new InnerMouseMotionListener());
 		changeView(view);
@@ -96,9 +110,7 @@ public class BirdsEyeView extends Component {
 		if (m_view != null) {
 			m_view.addContentChangeListener(m_cLis);
 			m_view.addViewportChangeListener(m_vLis);
-			m_viewWidth = m_view.getComponent().getWidth();
-			m_viewHeight = m_view.getComponent().getHeight();
-
+			updateBounds();
 			final Point2D pt = m_view.getCenter();
 			m_viewXCenter = pt.getX();
 			m_viewYCenter = pt.getY();
@@ -107,6 +119,72 @@ public class BirdsEyeView extends Component {
 		}
 
 		repaint();
+	}
+
+	private void updateBounds()
+	{
+		final Rectangle2D viewable = getViewableRect();
+		m_viewWidth = (int) viewable.getWidth();
+		m_viewHeight = (int) viewable.getHeight();
+		final Rectangle2D viewableInView = getViewableRectInView(viewable);
+		m_viewXCenter = viewableInView.getX() + viewableInView.getWidth() / 2.0;
+		m_viewYCenter = viewableInView.getY() + viewableInView.getHeight() / 2.0;
+	}
+
+	private Rectangle2D getViewableRectInView(final Rectangle2D viewable)
+	{
+		if (m_view == null || m_view.getCanvas() == null || m_view.getCanvas().m_grafx == null)
+			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
+
+		final double[] origin = new double[2];
+		origin[0] = viewable.getX();
+		origin[1] = viewable.getY();
+		m_view.xformComponentToNodeCoords(origin);
+
+
+		final double[] destination = new double[2];
+		destination[0] = viewable.getX() + viewable.getWidth();
+		destination[1] = viewable.getY() + viewable.getHeight();
+		m_view.xformComponentToNodeCoords(destination);
+
+		Rectangle2D result = new Rectangle2D.Double(origin[0], origin[1], destination[0] - origin[0], destination[1] - origin[1]);
+		return result;
+	}
+
+	private Rectangle2D getViewableRect()
+	{
+		if (m_view == null)
+			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
+
+		if (m_desktopView == null)
+		{
+			final Rectangle r = m_view.getComponent().getBounds();
+			return new Rectangle2D.Double(r.x, r.y, r.width, r.height);
+		}
+
+		final Rectangle desktopRect = m_desktopView.getBounds();
+		if (m_desktopView.isShowing())
+		{
+			Point s = m_desktopView.getLocationOnScreen();
+			desktopRect.x = s.x;
+			desktopRect.y = s.y;
+		}
+
+		final Rectangle viewRect = m_view.getComponent().getBounds();
+		if (m_view.getComponent().isShowing())
+		{
+			Point s = m_view.getComponent().getLocationOnScreen();
+			viewRect.x = s.x;
+			viewRect.y = s.y;
+		}
+
+		desktopRect.x -= viewRect.x;
+		desktopRect.y -= viewRect.y;
+		viewRect.x = 0;
+		viewRect.y = 0;
+
+		final Rectangle viewable = desktopRect.intersection(viewRect);
+		return viewable;
 	}
 
 	/**
@@ -153,6 +231,8 @@ public class BirdsEyeView extends Component {
 
 			return;
 		}
+
+		updateBounds();
 
 		if (m_contentChanged) {
 			if (m_view.getExtents(m_extents)) {
