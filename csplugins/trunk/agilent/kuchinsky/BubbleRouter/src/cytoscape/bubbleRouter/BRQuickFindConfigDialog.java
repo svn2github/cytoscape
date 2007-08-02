@@ -12,6 +12,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -20,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -77,6 +80,13 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private static ArrayList<Object> selectedValues = new ArrayList<Object>();
 
 	/**
+	 * Layout Region Dimensions
+	 */
+	Double x, y; // Top left corner of the rectangle.
+
+	Double w, h; // Width and height of the rectangle.
+
+	/**
 	 * Buttons and Text Labels
 	 */
 	private JButton applyButton;
@@ -96,22 +106,25 @@ public class BRQuickFindConfigDialog extends JDialog {
 	private static final String CANCEL_BUTTON_TEXT = "Cancel";
 
 	/**
-	 * Instance variable for particular LayoutRegion to which the BubbleRouter
-	 * dialog refers.
-	 */
-	private LayoutRegion region;
-
-	/**
 	 * URL for BubbleRouter manual.
 	 */
 	private String helpURL = "http://www.genmapp.org/BubbleRouter/manual.htm";
 
 	/**
-	 * Constructor. e.g., LayoutRegion.selectRegionAttributeValue(this).
+	 * Constructor.
+	 * 
+	 * Returns region attribute name and values.
 	 */
-	public BRQuickFindConfigDialog(LayoutRegion lr) {
+	public BRQuickFindConfigDialog(double x, double y, double width,
+			double height) {
 
-		this.region = lr;
+		/**
+		 * Set layout region dimension variables
+		 */
+		this.x = x;
+		this.y = y;
+		this.w = width;
+		this.h = height;
 
 		/**
 		 * Initialize, based on current network
@@ -324,7 +337,10 @@ public class BRQuickFindConfigDialog extends JDialog {
 	 */
 	private void addSortTableModel(JSortTable table) {
 		Object selectedAttribute = attributeComboBox.getSelectedItem();
-
+		
+		// reset value selection whenever a new attribute is selection
+		selectedValues.clear();
+		
 		/**
 		 * Determine current attribute key
 		 */
@@ -378,6 +394,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		 */
 		TableModel model = new DefaultSortTableModel(columnNames, finalValues
 				.toArray().length);
+
 		if (finalValues != null && finalValues.toArray().length > 0) {
 			for (int i = 0; i < ((finalValues.toArray().length >= 50) ? 50
 					: finalValues.toArray().length); i++) {
@@ -541,15 +558,6 @@ public class BRQuickFindConfigDialog extends JDialog {
 	}
 
 	/**
-	 * Sets the Visible Row Count.
-	 * 
-	 * @param table
-	 *            JTable Object.
-	 * @param rows
-	 *            Number of Visible Rows.
-	 */
-
-	/**
 	 * Gets list of currently loaded attribute names
 	 */
 	private Vector<String> getBubbleAttributes() {
@@ -589,30 +597,6 @@ public class BRQuickFindConfigDialog extends JDialog {
 	}
 
 	/**
-	 * Apply Button Action.
-	 * 
-	 * @param selectedValues
-	 */
-	private void applyAction(ArrayList selectedValues) {
-		/**
-		 * Close dialog
-		 */
-		BRQuickFindConfigDialog.this.setVisible(false);
-		BRQuickFindConfigDialog.this.dispose();
-
-		/**
-		 * Get selected attribute
-		 */
-		String newAttribute = (String) attributeComboBox.getSelectedItem();
-
-		/**
-		 * Set user selections to layout region
-		 */
-		region.setAttributeName(newAttribute);
-		region.setRegionAttributeValue(selectedValues);
-	}
-
-	/**
 	 * Set the number of visible rows for table.
 	 * 
 	 * @param table
@@ -627,4 +611,61 @@ public class BRQuickFindConfigDialog extends JDialog {
 		table.setPreferredScrollableViewportSize(new Dimension(table
 				.getPreferredScrollableViewportSize().width, height));
 	}
+
+	/**
+	 * Apply Button Action.
+	 * 
+	 * @param selectedValuesForRegion
+	 */
+	private void applyAction(ArrayList<Object> selectedValuesForRegion) {
+
+		/**
+		 * Check for valid selection
+		 */
+		if (selectedValuesForRegion == null
+				|| selectedValuesForRegion.toString().contentEquals("[]")) {
+			JOptionPane.showMessageDialog(this,
+					"Invalid selection. Please try again.");
+			return;
+		}
+
+		/**
+		 * Check for unique selection per view.
+		 */
+		List<LayoutRegion> regionListForView = LayoutRegionManager
+				.getRegionListForView(Cytoscape.getCurrentNetworkView());
+		if (regionListForView != null) {
+			Iterator<LayoutRegion> it = regionListForView.iterator();
+			while (it.hasNext()) {
+				LayoutRegion lr = it.next();
+				if (lr.getRegionAttributeValue()
+						.equals(selectedValuesForRegion)) {
+					JLabel values = new JLabel(selectedValuesForRegion
+							.toString());
+					values.setForeground(lr.getColor());
+					JLabel label = new JLabel(
+							"A region for "
+									+ selectedValuesForRegion
+									+ " already exists. \nPlease make another selection.");
+					JPanel p = new JPanel(new java.awt.GridLayout(1, 1));
+					p.add(label);
+					JOptionPane.showMessageDialog(this, p);
+					return;
+				}
+			}
+		}
+
+		// Close dialog
+		BRQuickFindConfigDialog.this.setVisible(false);
+		BRQuickFindConfigDialog.this.dispose();
+
+		// Get selected attribute
+		String newAttribute = (String) attributeComboBox.getSelectedItem();
+
+		/**
+		 * Create LayoutRegion object
+		 */
+		new LayoutRegion(x, y, w, h, newAttribute, selectedValuesForRegion);
+	}
+
 }

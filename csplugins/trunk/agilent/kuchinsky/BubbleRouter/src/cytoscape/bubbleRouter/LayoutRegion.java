@@ -6,7 +6,6 @@ import giny.view.NodeView;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -22,7 +21,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
 
 import cytoscape.CyNode;
@@ -85,9 +83,9 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	private String attributeName = null;
 
 	/**
-	 * particular value associated with a layout region
+	 * particular value(s) associated with a layout region
 	 */
-	public ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
+	private ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
 
 	/**
 	 * list of nodes associated with a layout region based on
@@ -99,6 +97,8 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 	private CyGroup myGroup = null;
 
+	private int viewID = 0;
+
 	/**
 	 * For undo/redo
 	 */
@@ -109,8 +109,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	private NodeView[] _selectedNodeViews;
 
 	private LayoutRegion _thisRegion;
-
-	private Cursor savedCursor;
 
 	private static final int HANDLE_SIZE = 8;
 
@@ -137,45 +135,15 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	 * @param width
 	 * @param height
 	 */
-	public LayoutRegion(double x, double y, double width, double height) {
+	public LayoutRegion(double x, double y, double width, double height, String attName, ArrayList<Object> regionAttValues) {
 		super();
 
-		// if the drawn region is unreasonably small, then reject
-		if ((width < 20) || (height < 20)) {
-			JOptionPane
-					.showMessageDialog(Cytoscape.getDesktop(),
-							"This region is too small to fit anything.  Please draw a larger region.");
-			return;
-		}
-
-		// init member vars via user dialog
-		selectRegionAttributeValue();
-
-		// if no selection is made, or if 'cancel' is clicked
-		if (this.getRegionAttributeValue() == null
-				|| this.getRegionAttributeValue().toString()
-						.contentEquals("[]")) {
-			return;
-		}
-
-		// if region already exists; "there can only be one"
-		else if (LayoutRegionManager.getRegionListForView(myView).contains(
-				this)) {
-			JOptionPane
-					.showMessageDialog(
-							Cytoscape.getDesktop(),
-							"This region already exists.  Please make another selection or delete the original region first.");
-			return;
-
-		}
+		/**
+		 * Set attributeName and regionAttributeValues from dialog
+		 */
+		this.setAttributeName(attName);
+		this.setRegionAttributeValue(regionAttValues);
 		
-		// add region to hashmap
-		LayoutRegionManager.addRegion(Cytoscape
-				.getCurrentNetworkView(), this);
-
-		// for stretching
-		savedCursor = this.getCursor();
-
 		/**
 		 * Setbounds must come before populate nodeviews.
 		 * 
@@ -191,9 +159,14 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		this.paint = colors[colorIndex];
 		this.setColorIndex(colorIndex);
 
+		myView = Cytoscape.getCurrentNetworkView();
+		
 		// add ViewportChangeListener for accommodating pan/zoom
-		((DGraphView) Cytoscape.getCurrentNetworkView())
+		((DGraphView) myView)
 				.addViewportChangeListener(this);
+		
+		// add region to hashmap
+		LayoutRegionManager.addRegion(myView, this);
 	}
 
 	/**
@@ -201,18 +174,17 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	 * 
 	 */
 	public LayoutRegion(double x, double y, double width, double height,
-			ArrayList name, List<NodeView> nv, int color, CyNetworkView view,
-			CyGroup group) {
+			ArrayList name, List<NodeView> nv, int color, CyNetworkView view) {
 		super();
 		this.setRegionAttributeValue(name);
-		savedCursor = this.getCursor();
 		setBounds(x, y, width, height, true);
 		nodeViews = nv;
 		this.paint = colors[color];
 		this.setColorIndex(color);
 		myView = view;
-		myGroup = group;
 		((DGraphView) myView).addViewportChangeListener(this);
+		LayoutRegionManager.addRegion(myView, this);
+
 	}
 
 	/**
@@ -227,10 +199,17 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
+	 * @return Color
+	 */
+	public Color getColor() {
+		return colors[LayoutRegion.colorIndex];
+	}
+
+	/**
 	 * @return colorIndex
 	 */
 	public int getColorIndex() {
-		return colorIndex;
+		return LayoutRegion.colorIndex;
 	}
 
 	/**
@@ -378,41 +357,30 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * Prompt user to select and attribute name and value
-	 * 
-	 * @return
+	 * Could be used to display attribute name associated with region and/or to
+	 * initialize selection dialog when changing attribute name
 	 */
-	public void selectRegionAttributeValue() {
-
-		// Use Ethan's QuickFind dialog for attribute selection
-		new BRQuickFindConfigDialog(this);
-	}
-
-	/**
-	 * Used by QuickFindConfigDialog
-	 * 
-	 * @param newAttributeKey
-	 */
-	public void setAttributeName(String newAttributeKey) {
-		attributeName = newAttributeKey;
+	public String getAttributeName() {
+		return this.attributeName;
 	}
 
 	/**
 	 * Could be used to display attribute name associated with region and/or to
 	 * initialize selection dialog when changing attribute name
 	 */
-	public String getAttributeName() {
-		return attributeName;
+	public void setAttributeName(String attName) {
+		attributeName = attName;
 	}
 
 	/**
-	 * Used by BubbleRouterPlugin to verify that a value has been selected,
-	 * i.e., that the user did NOT cancel the selection dialog
+	 * Returns the list of values associated with a region as an object.
+	 * 
+	 * e.g., "[value1, value2, value3]"
 	 * 
 	 * @return Returns the regionAttributeValue.
 	 */
 	public Object getRegionAttributeValue() {
-		return regionAttributeValues;
+		return this.regionAttributeValues;
 	}
 
 	/**
@@ -753,7 +721,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			Color fillColor = new Color(fillBaseColor.getRed(), fillBaseColor
 					.getGreen(), fillBaseColor.getBlue(), TRANSLUCENCY_LEVEL);
 
-			// set vaiable edge/rim color
+			// set visable edge/rim color
 			Color drawColor = new Color(currentColor.getRed(), currentColor
 					.getGreen(), currentColor.getBlue());
 
@@ -877,11 +845,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 	}
 
-	// for stretching
-	public Cursor getSavedCursor() {
-		return savedCursor;
-	}
-
 	public boolean isSelected() {
 		return selected;
 	}
@@ -928,5 +891,4 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	public void setMyGroup(CyGroup group) {
 		myGroup = group;
 	}
-
 }

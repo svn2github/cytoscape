@@ -184,6 +184,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
 
+	private int viewID = 0;
+
 	/**
 	 * Constructor
 	 * 
@@ -204,6 +206,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_DESTROYED, this);
+
+		// Listen for Network View Destruction
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(
+						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
 
 		/**
 		 * Build Context Menus per Region
@@ -285,7 +292,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
 			CyNetworkView view = (CyNetworkView) e.getNewValue();
 			LayoutRegionManager.removeAllRegionsForView(view);
-			}
+			LayoutRegionManager.removeViewId(view);
+		}
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
+			viewID++;
+			CyNetworkView view = (CyNetworkView) e.getNewValue();
+			LayoutRegionManager.setViewIdMap(view, viewID);
+		}
 	}
 
 	/**
@@ -441,12 +454,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			setRegionSelection(e);
 			processRegionContextMenu(e);
 		} else {
-			setRegionSelection(e);	
+			setRegionSelection(e);
 		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		 // handled by mousePressed
+		// handled by mousePressed
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -476,11 +489,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	public void setRegionSelection(MouseEvent e) {
 		oldPickedRegion = pickedRegion;
 		pickedRegion = LayoutRegionManager.getPickedLayoutRegion(e.getPoint());
-		
+
 		// unselect old region
-		List regionList = LayoutRegionManager.getRegionListForView(Cytoscape.getCurrentNetworkView());
-		if ((oldPickedRegion != null)
-				&& (oldPickedRegion != pickedRegion)
+		List regionList = LayoutRegionManager.getRegionListForView(Cytoscape
+				.getCurrentNetworkView());
+		if ((oldPickedRegion != null) && (oldPickedRegion != pickedRegion)
 				&& (regionList.contains(oldPickedRegion))) {
 			oldPickedRegion.setSelected(false);
 			oldPickedRegion.repaint();
@@ -570,7 +583,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					&& (pt.getY() <= region.getY1() + region.getH1()
 							+ edgeTolerance)) {
 				return BOTTOM_LEFT;
-			} else if ((pt.getY() >= region.getY1()) 
+			} else if ((pt.getY() >= region.getY1())
 					&& (pt.getY() <= region.getY1() + region.getH1())) {
 				return LEFT;
 			} else {
@@ -770,37 +783,34 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				h = starty - mousey;
 			}
 
-			// Create LayoutRegion object
-			LayoutRegion region = new LayoutRegion(x, y, w, h);
+			// if the drawn region is unreasonably small, then reject
+			if ((w < 20) || (h < 20)) {
+				JOptionPane
+						.showMessageDialog(Cytoscape.getDesktop(),
+								"This region is too small to fit anything.  Please draw a larger region.");
+				return;
+			}
 
-			// if value is selected by user, i.e., not cancelled or blank
-//			if (region.getRegionAttributeValue() != null
-//					&& !region.getRegionAttributeValue().toString()
-//							.contentEquals("[]")) {
-
-				// Check for pre-existing region with same name
-//				List<LayoutRegion> list = LayoutRegionManager.getRegionListForView(Cytoscape.getCurrentNetworkView());
-//				if (list.contains(region)){
-//					return;
-//				} else {
-//					LayoutRegionManager.addRegion(Cytoscape
-//							.getCurrentNetworkView(), region);
-//				}
-//			}
+			/**
+			 * Use Ethan's QuickFind dialog for attribute selection.
+			 * 
+			 * Returns region attribute name and values.
+			 */
+			new BRQuickFindConfigDialog(x, y, w, h);
 		}
-
 	}
 
 	/**
 	 * Create a new group.
 	 */
-	public static void newGroup(LayoutRegion region) {
+	public static void newGroup(LayoutRegion region, int viewID) {
 		List<NodeView> currentNodeViews = region.getNodeViews();
 		List<CyNode> currentNodes = new ArrayList<CyNode>();
 		for (NodeView cnv : currentNodeViews) {
 			currentNodes.add((CyNode) cnv.getNode());
 		}
-		String groupName = region.getRegionAttributeValue().toString();
+		String groupName = region.getRegionAttributeValue().toString() + "_"
+				+ viewID;
 		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes,
 				viewerName);
 		region.setMyGroup(group);
@@ -868,10 +878,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		String nameString = attributes.getStringAttribute(groupNode
 				.getIdentifier(), REGION_NAME_ATT);
 		nameString = nameString.replace("[", "");
-		nameString = nameString.replace("]", "");
+		nameString = nameString.replace("]_", ","); // mark viewID
 		String[] nameArray = nameString.split(",");
 		ArrayList<Object> name = new ArrayList<Object>();
-		for (int j = 0; j < nameArray.length; j++) {
+		for (int j = 0; j < (nameArray.length - 1); j++) { // skip viewID
 			name.add(nameArray[j]);
 		}
 		Iterator<Node> nodes = myView.getNetwork().nodesIterator();
@@ -886,11 +896,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 		int color = attributes.getIntegerAttribute(groupNode.getIdentifier(),
 				REGION_COLORINT_ATT);
-		group.getGroupNode().getRootGraph();
-
-		group.setState(SELECTED);
-		groupPanel.groupCreated(group);
-
+		
+		//remove Group and create a fresh one later
+		CyGroupManager.removeGroup(group);
+		groupPanel.groupRemoved(group);
+		
 		// Set Region Variables to Hidden
 		attributes.setUserVisible(REGION_NAME_ATT, false);
 		attributes.setUserVisible(REGION_COLORINT_ATT, false);
@@ -900,9 +910,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		attributes.setUserVisible(REGION_H_ATT, false);
 
 		// Create Region
-		LayoutRegion region = new LayoutRegion(x, y, w, h, name, nv, color,
-				myView, group);
-		LayoutRegionManager.addRegionFromFile(myView, region);
+		new LayoutRegion(x, y, w, h, name, nv, color, myView);
 	}
 
 	/**
@@ -950,7 +958,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	private void select(LayoutRegion region) {
 		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region
-				.getRegionAttributeValue().toString()));
+				.getRegionAttributeValue().toString()
+				+ "_"
+				+ LayoutRegionManager.getIdForView(Cytoscape
+						.getCurrentNetworkView())));
 		group.setState(SELECTED);
 	}
 
@@ -959,7 +970,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	private void unselect(LayoutRegion region) {
 		CyGroup group = CyGroupManager.getCyGroup(Cytoscape.getCyNode(region
-				.getRegionAttributeValue().toString()));
+				.getRegionAttributeValue().toString()
+				+ "_"
+				+ LayoutRegionManager.getIdForView(Cytoscape
+						.getCurrentNetworkView())));
 		group.setState(UNSELECTED);
 	}
 

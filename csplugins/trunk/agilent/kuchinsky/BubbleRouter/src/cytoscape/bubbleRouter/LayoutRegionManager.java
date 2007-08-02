@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
@@ -17,12 +18,10 @@ import ding.view.DGraphView.Canvas;
  * to a updated unique name list and counter.
  */
 public class LayoutRegionManager {
+	
+	public static HashMap<CyNetworkView, Integer> viewIdMap = new HashMap<CyNetworkView, Integer>();
 
 	public static HashMap<CyNetworkView, List<LayoutRegion>> regionViewMap = new HashMap<CyNetworkView, List<LayoutRegion>>();
-
-//	public static List<String> regionNameList = new ArrayList<String>();
-
-	public static int regionTotalCount = 0;
 
 	/**
 	 * canvas to add regions to -- currently BACKGROUND_CANVAS
@@ -30,6 +29,7 @@ public class LayoutRegionManager {
 	private static final Canvas REGION_CANVAS = DGraphView.Canvas.BACKGROUND_CANVAS;
 
 	/**
+	 * Returns a list of of regions per view.
 	 * 
 	 * @param view
 	 * @return list of regions for this NetworkView
@@ -71,51 +71,6 @@ public class LayoutRegionManager {
 	}
 
 	/**
-	 * add a region name to the regionNameList
-	 * 
-	 * @param region
-	 *            the region you are adding
-	 */
-//	public static void addRegionNameToList(LayoutRegion region) {
-//		regionNameList.add(region.getRegionAttributeValue().toString());
-//	}
-
-	/**
-	 * remove the region name from the list
-	 * 
-	 * @param index
-	 */
-//	public static void removeRegionNameFromList(LayoutRegion region) {
-//		regionNameList.remove(region.getRegionAttributeValue().toString());
-//	}
-
-//	public static List getRegionNameList(CyNetworkView view) {
-//		List
-//		List<LayoutRegion> list = getRegionListForView(view);
-//		Iterator<LayoutRegion> it = list.iterator();
-//		while(it.hasNext()){
-//			regionNameList.add(it.next().getRegionAttributeValue().toString());
-//		}
-//		return regionNameList;
-//	}
-
-	public static void removeAllRegions() {
-		// Iterate through regionViewMap and remove all regions from all views
-		HashMap<CyNetworkView, List<LayoutRegion>> regionViewMapTemp = regionViewMap;
-		Iterator<CyNetworkView> key = regionViewMapTemp.keySet().iterator();
-		while (key.hasNext()) {
-			CyNetworkView cnv = key.next();
-			List<LayoutRegion> lrList = regionViewMapTemp.get(cnv);
-			while (lrList.size() > 0){
-				BubbleRouterPlugin.groupWillBeRemoved(lrList.get(0));
-//				removeRegionNameFromList(lrList.get(0));
-				removeRegionFromView(cnv, lrList.get(0));
-			}
-		}
-		regionTotalCount = 0;
-	}
-
-	/**
 	 * 
 	 * @param view
 	 * @return number of regions for this CyNetworkView
@@ -146,6 +101,7 @@ public class LayoutRegionManager {
 	}
 
 	/**
+	 * remove given region from view
 	 * 
 	 * @param view
 	 * @param region
@@ -170,44 +126,31 @@ public class LayoutRegionManager {
 		}
 	}
 
-	/**
-	 * Keeps count of all created regions (even ones that have been
-	 * deleted/removed) to allow for unique region counter
-	 * 
-	 * Useful in generating a unique name for each region Group
-	 * 
-	 * @return
-	 */
-	public static int getRegionCount() {
-		return regionTotalCount;
-	}
-
-	/**
-	 * higher-level routine for adding a region to a view
-	 * 
-	 * @param view
-	 * @param region
-	 */
-	public static void addRegionFromFile(CyNetworkView view, LayoutRegion region) {
-		addRegionForView(view, region);
-//		addRegionNameToList(region);
-		// Add to counter
-		regionTotalCount++;
-
-		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
-		// layout region
-		DGraphView dview = (DGraphView) view;
-		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
-		backgroundLayer.add(region);
-
-		// oy what a hack: do an infinitesimal change of zoom factor so that it
-		// forces a viewport changed event,
-		// which enables us to get original viewport centerpoint and scale
-		// factor
-		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
-
-		// Do not call BubbleRouterPlugin.newGroup(region)
-	}
+//	/**
+//	 * higher-level routine for adding a region to a view from xGMML
+//	 * 
+//	 * Note: does not call BubbleRouterPlugin.newGroup(region);
+//	 * 
+//	 * @param view
+//	 * @param region
+//	 */
+//	public static void addRegionFromFile(CyNetworkView view, LayoutRegion region) {
+//		addRegionForView(view, region);
+//
+//		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
+//		// layout region
+//		DGraphView dview = (DGraphView) view;
+//		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
+//		backgroundLayer.add(region);
+//
+//		// oy what a hack: do an infinitesimal change of zoom factor so that it
+//		// forces a viewport changed event,
+//		// which enables us to get original viewport centerpoint and scale
+//		// factor
+//		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
+//
+//		// Do not call BubbleRouterPlugin.newGroup(region)
+//	}
 
 	/**
 	 * higher-level routine for adding a region to a view
@@ -217,9 +160,6 @@ public class LayoutRegionManager {
 	 */
 	public static void addRegion(CyNetworkView view, LayoutRegion region) {
 		addRegionForView(view, region);
-//		addRegionNameToList(region);
-		// Add to counter
-		regionTotalCount++;
 
 		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
 		// layout region
@@ -233,7 +173,8 @@ public class LayoutRegionManager {
 		// factor
 		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
 
-		BubbleRouterPlugin.newGroup(region);
+		// generate unique group name by combining region name and view ID
+		BubbleRouterPlugin.newGroup(region, viewIdMap.get(view));
 	}
 
 	/**
@@ -244,7 +185,7 @@ public class LayoutRegionManager {
 	 */
 	public static void removeRegion(CyNetworkView view, LayoutRegion region) {
 		removeRegionFromView(view, region);
-//		removeRegionNameFromList(region);
+		// removeRegionNameFromList(region);
 		DGraphView dview = (DGraphView) view;
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
 		backgroundLayer.remove(region);
@@ -295,6 +236,18 @@ public class LayoutRegionManager {
 	 */
 	private static boolean isPointOnRegion(Point pt, LayoutRegion region) {
 		return region.getBounds().contains(pt);
+	}
+
+	public static Integer getIdForView(CyNetworkView view) {
+		return viewIdMap.get(view);
+	}
+
+	public static void setViewIdMap(CyNetworkView view, Integer id) {
+		LayoutRegionManager.viewIdMap.put(view, id);
+	}
+	
+	public static void removeViewId(CyNetworkView view) {
+		LayoutRegionManager.viewIdMap.remove(view);
 	}
 
 }
