@@ -25,7 +25,8 @@ public class PluginProperties extends Properties {
 		VERSION("pluginVersion", true), CYTOSCAPE_VERSION("cytoscapeVersion", true),
 		CATEGORY("pluginCategory", true),
 		PROJECT_URL("projectURL", false), AUTHORS("pluginAuthorsIntsitutions", false),
-		RELEASE_DATE("releaseDate", false), UNIQUE_ID("uniqueID", false);
+		RELEASE_DATE("releaseDate", false), UNIQUE_ID("uniqueID", false),
+		DOWNLOAD_URL("downloadURL", false);
 		
 		private String propText;
 		private boolean requiredProp;
@@ -129,6 +130,10 @@ public class PluginProperties extends Properties {
 		// optional parameters
 		if (containsKey(PluginProperty.PROJECT_URL.getPropertyKey())) {
 			pi.setProjectUrl(getProperty(PluginProperty.PROJECT_URL.getPropertyKey()));
+		}
+
+		if (containsKey(PluginProperty.DOWNLOAD_URL.getPropertyKey())) {
+			pi.setDownloadUrl(PluginProperty.DOWNLOAD_URL.getPropertyKey());
 		}
 		
 		if (containsKey(PluginProperty.AUTHORS.getPropertyKey())) {

@@ -141,7 +141,6 @@ public class PluginInfo {
 		setPluginVersion(0.1);
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
-		setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
 		setPluginClassName("");
 	}
 
