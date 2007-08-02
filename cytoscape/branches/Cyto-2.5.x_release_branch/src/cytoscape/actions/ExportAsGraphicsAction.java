@@ -40,7 +40,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 	private static ExportFilter PDF_FILTER = new PDFExportFilter();
 	private static ExportFilter PNG_FILTER = new BitmapExportFilter("png", "PNG");
 	private static ExportFilter SVG_FILTER = new SVGExportFilter();
-	private static ExportFilter[] FILTERS = { BMP_FILTER, JPG_FILTER, PDF_FILTER, PNG_FILTER, SVG_FILTER };
+	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
 
 	private static String TITLE = "Network View as Graphics";
 
