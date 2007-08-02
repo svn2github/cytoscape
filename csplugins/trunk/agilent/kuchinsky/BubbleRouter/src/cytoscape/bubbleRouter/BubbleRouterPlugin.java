@@ -602,17 +602,30 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					&& (pt.getY() <= region.getY1() + region.getH1()
 							+ edgeTolerance)) {
 				return BOTTOM_RIGHT;
-			} else {
+			} else if ((pt.getY() >= region.getY1())
+					&& (pt.getY() <= region.getY1() + region.getH1())) {
 				return RIGHT;
+			} else {
+				return NOT_ON_EDGE;
 			}
-		} else if ((pt.getY() >= region.getY1() - edgeTolerance)
-				&& (pt.getY() <= region.getY1() + edgeTolerance)) {
-			return TOP;
-		} else if ((pt.getY() >= region.getY1() + region.getH1()
-				- edgeTolerance)
-				&& (pt.getY() <= region.getY1() + region.getH1()
-						+ edgeTolerance)) {
-			return BOTTOM;
+		} else if ((pt.getX() >= region.getX1())
+				&& (pt.getX() <= region.getX1() + region.getW1())) {
+
+			// at top
+			if ((pt.getY() >= region.getY1() - edgeTolerance)
+					&& (pt.getY() <= region.getY1() + edgeTolerance)) {
+				return TOP;
+			}
+
+			// at bottom
+			else if ((pt.getY() >= region.getY1() + region.getH1()
+					- edgeTolerance)
+					&& (pt.getY() <= region.getY1() + region.getH1()
+							+ edgeTolerance)) {
+				return BOTTOM;
+			} else {
+				return NOT_ON_EDGE;
+			}
 		} else {
 			return NOT_ON_EDGE;
 		}
@@ -896,11 +909,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		}
 		int color = attributes.getIntegerAttribute(groupNode.getIdentifier(),
 				REGION_COLORINT_ATT);
-		
-		//remove Group and create a fresh one later
+
+		// remove Group and create a fresh one later
 		CyGroupManager.removeGroup(group);
 		groupPanel.groupRemoved(group);
-		
+
 		// Set Region Variables to Hidden
 		attributes.setUserVisible(REGION_NAME_ATT, false);
 		attributes.setUserVisible(REGION_COLORINT_ATT, false);
