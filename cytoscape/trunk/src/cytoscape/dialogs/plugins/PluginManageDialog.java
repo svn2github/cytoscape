@@ -458,7 +458,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		private TreeNode node;
 
-		public PluginInstallTask(PluginInfo Info, TreeNode Node) {
+		public PluginInstallTask(PluginInfo Info, TreeNode Node) throws java.lang.IllegalArgumentException {
+			String ErrorMsg = null;
+			if (Info == null) {
+				ErrorMsg = "PluginInfo object cannot be null\n";
+				throw new java.lang.IllegalArgumentException(ErrorMsg);
+			}
 			pluginInfo = Info;
 			node = Node;
 		}
@@ -483,6 +488,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				taskMonitor.setStatus(pluginInfo.getName() + " v"
 						+ pluginInfo.getPluginVersion() + " loading...");
 			
+				Mgr.loadPlugin(pluginInfo);
+				Mgr.install(pluginInfo);
+
 			} catch (java.io.IOException ioe) {
 				taskMonitor
 						.setException(ioe, "Failed to download "
@@ -492,24 +500,16 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			} catch (cytoscape.plugin.ManagerException me) {
 				pluginInfo = null;
 				taskMonitor.setException(me, me.getMessage());
+			} catch (cytoscape.plugin.PluginException pe) {
+				pluginInfo = null;
+				taskMonitor.setException(pe, pe.getMessage());
+			} catch (ClassNotFoundException cne) {
+				pluginInfo = null;
+				taskMonitor.setException(cne, cne.getMessage());
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
 			
-			try {
-				Mgr.install(pluginInfo);
-				Mgr.loadPlugin(pluginInfo);
-//			} catch (ClassNotFoundException cne) {
-//				taskMonitor.setException(cne, cne.getMessage());
-//				
-//			} catch (java.io.IOException ioe) {
-//				taskMonitor.setException(ioe, ioe.getMessage());
-//			} catch (cytoscape.plugin.PluginException pe) {
-//				taskMonitor.setException(pe, pe.getMessage());
-			} catch (Exception e) {
-				taskMonitor.setException(e, e.getMessage());
-				pluginInfo = null;
-			}
 		}
 
 		public PluginInfo getDownloadedPlugin() {
