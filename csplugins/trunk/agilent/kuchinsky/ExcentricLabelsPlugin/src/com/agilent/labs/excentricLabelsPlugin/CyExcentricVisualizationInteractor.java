@@ -1,5 +1,7 @@
 package com.agilent.labs.excentricLabelsPlugin;
 
+import cytoscape.Cytoscape;
+import ding.view.DGraphView;
 import infovis.visualization.inter.BasicVisualizationInteractor;
 import infovis.visualization.magicLens.ExcentricLabels;
 
@@ -13,157 +15,91 @@ import java.awt.event.MouseEvent;
  *
  * @author Allan Kuchinsky, Jean-Daniel Fekete
  * @version $Revision: 0.1 $
-*/
+ */
 public class CyExcentricVisualizationInteractor extends
         BasicVisualizationInteractor {
-    protected ExcentricLabels excentric;
-
     protected Timer insideTimer;
-
-    protected int threshold = 20;
-
-    protected boolean entered;
-
+    protected int threshold = 50;
     private CyExcentricLabelsWrapper wrapper;
 
     public CyExcentricVisualizationInteractor (CyExcentricLabelsWrapper wrapper) {
         super();
-        this.excentric = wrapper.getExcentric();
         this.wrapper = wrapper;
-        insideTimer = new Timer(50000, new ActionListener() {
+        wrapper.addMouseListener(this);
+        wrapper.addMouseMotionListener(this);
+        final ExcentricLabels excentric = wrapper.getExcentric();
+        insideTimer = new Timer(1000, new ActionListener() {
             public void actionPerformed (ActionEvent e) {
+                System.out.println("Showing Excentric Labels");
                 excentric.setVisible(true);
-
+                excentric.setEnabled(true);
             }
         });
         insideTimer.setRepeats(false);
-        setVisualization(wrapper);
-    }
-
-    public void setVisualization (CyExcentricLabelsWrapper wrapper) {
-        if (this.wrapper == wrapper) {
-            return;
-        }
-        if (wrapper != null && wrapper.getParent() != null) {
-            uninstall(wrapper);
-        }
-        this.wrapper = wrapper;
-        if (wrapper != null) {
-            if (wrapper.parent != null) {
-                install(wrapper);
-            }
-        }
-    }
-
-    public void install (JComponent comp) {
-        if (comp != null) {
-            comp.addMouseListener(this);
-            comp.addMouseMotionListener(this);
-            restart();
-        }
-    }
-
-    public void uninstall (JComponent comp) {
-        super.uninstall(comp);
-        if (comp != null) {
-            setVisible(false);
-            stop();
-            comp.removeMouseListener(this);
-            comp.removeMouseMotionListener(this);
-        }
-    }
-
-    public void restart () {
-        if (insideTimer != null) {
-            insideTimer.restart();
-        }
-    }
-
-    public void stop () {
-        if (insideTimer != null) {
-            insideTimer.stop();
-        }
-    }
-
-    public void setVisible (boolean v) {
-        excentric.setVisible(v);
-    }
-
-    public boolean isVisible () {
-        return excentric.isVisible();
-    }
-
-    public static float dist2 (float dx, float dy) {
-        return dx * dx + dy * dy;
-    }
-
-    /**
-     * @see java.awt.event.MouseAdapter#mouseEntered(MouseEvent)
-     */
-    public void mouseEntered (MouseEvent e) {
-        entered = true;
-        restart();
-    }
-
-    /**
-     * @see java.awt.event.MouseAdapter#mouseExited(MouseEvent)
-     */
-    public void mouseExited (MouseEvent e) {
-        if (e.getModifiers() != 0) {
-            return;
-        }
-        entered = false;
-        stop();
-        setVisible(false);
-    }
-
-    /**
-     * @see java.awt.event.MouseAdapter#mousePressed(MouseEvent)
-     */
-    public void mousePressed (MouseEvent e) {
-        setVisible(false);
     }
 
     /**
      * @see java.awt.event.MouseMotionListener#mouseMoved(MouseEvent)
      */
     public void mouseMoved (MouseEvent e) {
-		System.out.println("mouse event at: " + e.getWhen());
-        if (isVisible()) {
-			System.out.println("Visible mouse event: " + e);
-            if (e.getModifiers() != 0) {
-                return;
-            }
-            if (dist2(excentric.getLensX() - e.getX(), excentric.getLensY()
-                    - e.getY()) > threshold * threshold) {
-                setVisible(false);
-                insideTimer.restart();
-            }
+        wrapper.getExcentric().setLens(e.getX(), e.getY());
+        if (!wrapper.getExcentric().isVisible()) {
+            insideTimer.restart();
+            redispatchMouseEvent(e);
         }
-        excentric.setLens(e.getX(), e.getY());
+    }
+
+    public void mouseDragged (MouseEvent e) {
+        if (!wrapper.getExcentric().isVisible()) {
+            insideTimer.restart();
+            redispatchMouseEvent(e);
+        }
+    }
+
+    public void mouseClicked (MouseEvent e) {
+        if (!wrapper.getExcentric().isVisible()) {
+            insideTimer.restart();
+            redispatchMouseEvent(e);
+        }
     }
 
     /**
-     * Returns the threshold.
-     * <p/>
-     * When the mouse moves a distance larger than this threshold since the last
-     * event, excentric labels are disabled.
-     *
-     * @return int
+     * @see java.awt.event.MouseAdapter#mouseEntered(MouseEvent)
      */
-    public int getThreshold () {
-        return threshold;
+    public void mouseEntered (MouseEvent e) {
+        insideTimer.restart();
     }
 
     /**
-     * Sets the threshold.
-     * <p/>
-     * When the mouse moves a distance larger than the specified threshold since
-     * the last event, excentric labels are disabled.
-     *
-     * @param threshold The threshold to set
+     * @see java.awt.event.MouseAdapter#mousePressed(MouseEvent)
      */
-    public void setThreshold (int threshold) {
-        this.threshold = threshold;
+    public void mousePressed (MouseEvent e) {
+        if (wrapper.getExcentric().isVisible()) {
+            wrapper.getExcentric().setVisible(false);
+            insideTimer.restart();
+        } else {
+            redispatchMouseEvent(e);
+        }
+    }
+
+    /**
+     * @see java.awt.event.MouseAdapter#mouseExited(MouseEvent)
+     */
+    public void mouseExited (MouseEvent e) {
+        insideTimer.stop();
+        wrapper.getExcentric().setVisible(false);
+    }
+
+    private void redispatchMouseEvent (MouseEvent e) {
+        DGraphView dGraphView = (DGraphView) Cytoscape.getCurrentNetworkView();
+        JComponent networkCanvas = dGraphView.getCanvas(DGraphView.Canvas.NETWORK_CANVAS);
+        networkCanvas.dispatchEvent(new MouseEvent(networkCanvas,
+                e.getID(),
+                e.getWhen(),
+                e.getModifiers(),
+                e.getX(),
+                e.getY(),
+                e.getClickCount(),
+                e.isPopupTrigger()));
     }
 }

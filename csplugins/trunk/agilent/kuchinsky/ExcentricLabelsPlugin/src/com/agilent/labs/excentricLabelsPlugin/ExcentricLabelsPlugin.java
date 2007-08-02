@@ -19,22 +19,27 @@ package com.agilent.labs.excentricLabelsPlugin;
  * 
  * 
  */
+
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import ding.view.DGraphView;
 import infovis.visualization.magicLens.DefaultExcentricLabels;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 
 public class ExcentricLabelsPlugin extends CytoscapePlugin {
-
-    //  Currently stores a HashMap of network IDs -->  CyExcentricLabelsWrapper Objects.
-    private HashMap viewWrapperMap = new HashMap();
+    private JButton excentricButton = new JButton("Configure Excentric Labels");
+    private DefaultExcentricLabels excentric;
+    private CyExcentricLabelsWrapper wrapper;
+    private ExcentricLabelsConfigPanel configPanel;
 
     /**
      * PlugIn Constructor.
@@ -43,102 +48,77 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
 
         //  Create PlugIn Menu Action, and add to PlugIns Menu
         CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
-        JMenu plugInMenu = cyMenus.getViewMenu();
-        JCheckBoxMenuItem menuItem1 = new JCheckBoxMenuItem("Show excentric labels");
-        menuItem1.setSelected(false);
-        plugInMenu.add(menuItem1);
-        MainPluginAction mpa = new MainPluginAction(menuItem1);
-        menuItem1.addActionListener(mpa);
+        CytoscapeToolBar toolBar = cyMenus.getToolBar();
+        excentricButton.addActionListener(new ActionListener() {
+            public void actionPerformed (ActionEvent e) {
+                initExcentricLabelConfig();
+            }
+        });
+        toolBar.add(excentricButton);
+        Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
     }
 
     /**
-     * This class gets attached to the menu item.
+     * Property change listener - to get network/network view destroy events.
+     *
+     * @param event PropertyChangeEvent
      */
-    public class MainPluginAction extends AbstractAction {
-        private JCheckBoxMenuItem menuItem;
-        private boolean excentricEnabled = false;
-        private DefaultExcentricLabels excentric;
-        private CyExcentricLabelsWrapper wrapper;
-        private ExcentricLabelsConfigPanel configPanel;
-
-        /**
-         * The constructor sets the text that should appear on the menu item.
-         */
-        public MainPluginAction (JCheckBoxMenuItem menuItem) {
-            super("Show excentric labels");
-            this.menuItem = menuItem;
-        }
-
-        /**
-         * Gives a description of this plugin.
-         */
-        public String describe () {
-            StringBuffer sb = new StringBuffer();
-            sb.append("Show excentric labels");
-            return sb.toString();
-        }
-
-        /**
-         * This method is called when the user selects the menu item.
-         */
-        public void actionPerformed (ActionEvent ae) {
-            boolean errorOccurred = false;
-
-            if (!excentricEnabled) {
-                // Get Current Network View
-                CyNetworkView newView = Cytoscape.getCurrentNetworkView();
-
-                if (newView != null) {
-                    //  Create Default InfoViz Excentric Label Handler
-                    excentric = new CustomExcentricLabels();
-                    excentric.setOpaque(true);
-
-                    //  Create the LabeledComponent.
-                    //  Given rectangular coordinates, the LabeledComponent returns a set of "things"
-                    //  that appear within this rectangle.
-                    CyLabeledComponent labeledComponent = new CyLabeledComponent(newView);
-                    excentric.setVisualization(labeledComponent);
-
-                    //  Get the FOREGROUND_CANVAS, so we can draw labels on it.
-                    JComponent component =
-                            ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-
-                    //  Create the CyWrapper class
-                    wrapper = new CyExcentricLabelsWrapper(excentric, component, labeledComponent);
-                    viewWrapperMap.put(newView.getIdentifier(), wrapper);
-
-                    //  Add the CyWrapper class to the FOREGROUND_CANVAS.
-                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).add(wrapper);
-                    wrapper.getInteractor().install(wrapper);
-                    wrapper.setInstalled(true);
-                    wrapper.addMouseMotionListener(wrapper.getInteractor());
-                    wrapper.setVisible(true);
-                    wrapper.setSize(component.getWidth(), component.getHeight());
-
-                    //  Create the config panel in the WEST
-                    CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-                    configPanel = new ExcentricLabelsConfigPanel(excentric,
-                            wrapper);
-                    cytoPanelSouth.add("Excentric Labels", configPanel);
-                    int index = cytoPanelSouth.indexOfComponent(configPanel);
-                    cytoPanelSouth.setSelectedIndex(index);
-                } else {
-                    errorOccurred = true;
-                }
-            } else {
-                CyNetworkView newView = Cytoscape.getCurrentNetworkView();
-                if (newView != null) {
-                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).remove(wrapper);
-                    ((DGraphView) newView).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS).repaint();
-                }
-                CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-                cytoPanelSouth.remove(configPanel);
-                cytoPanelSouth.setSelectedIndex(0);
-            }
-            if (!errorOccurred) {
-                this.excentricEnabled = ! excentricEnabled;
-                menuItem.setSelected(excentricEnabled);
+    public void propertyChange (PropertyChangeEvent event) {
+        if (event.getPropertyName() != null) {
+            if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
+                SwingUtilities.invokeLater(new Runnable(){
+                    public void run() {
+                        initExcentricLabels ();
+                    }
+                });
+            } else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
+            } else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)) {
             }
         }
+    }
+
+    public void initExcentricLabels () {
+        System.out.println("Activating Excentric labels");
+        // Get Current Network View
+        CyNetworkView newView = Cytoscape.getCurrentNetworkView();
+
+        if (newView != null) {
+            //  Create Default InfoViz Excentric Label Object
+            excentric = new CustomExcentricLabels();
+            excentric.setOpaque(true);
+
+            //  Create the LabeledComponent.
+            //  Given rectangular coordinates, the LabeledComponent returns a set of "things"
+            //  that appear within this rectangle.
+            CyLabeledComponent labeledComponent = new CyLabeledComponent(newView);
+            excentric.setVisualization(labeledComponent);
+
+            //  Get the FOREGROUND_CANVAS, so we can draw labels on it.
+            JComponent foregroundCanvas = ((DGraphView) newView).getCanvas
+                    (DGraphView.Canvas.FOREGROUND_CANVAS);
+
+            //  Create the CyWrapper class
+            wrapper = new CyExcentricLabelsWrapper(excentric, false);
+
+            //  Add the CyWrapper class to the FOREGROUND_CANVAS.
+            foregroundCanvas.add(wrapper);
+
+            //  Set size of wrapper and default location of lens
+            wrapper.setSize(foregroundCanvas.getWidth(), foregroundCanvas.getHeight());
+            wrapper.getExcentric().setLens(foregroundCanvas.getWidth() / 2,
+                    foregroundCanvas.getHeight() / 2);
+
+        }
+    }
+
+    private void initExcentricLabelConfig() {
+        CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel
+                (SwingConstants.WEST);
+        if (configPanel == null) {
+            configPanel = new ExcentricLabelsConfigPanel(excentric, wrapper);
+            cytoPanelSouth.add("Excentric Labels", configPanel);
+        }
+        int index = cytoPanelSouth.indexOfComponent(configPanel);
+        cytoPanelSouth.setSelectedIndex(index);
     }
 }
