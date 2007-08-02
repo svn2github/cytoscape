@@ -44,26 +44,36 @@ import ding.view.DGraphView;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 
  * and handles the events which change view seen. 
  */
 class BirdsEyeViewHandler implements PropertyChangeListener {
-	BirdsEyeView bev;
+	final BirdsEyeView bev;
+	FrameListener frameListener = new FrameListener();
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
+	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler() {
-		bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView()) {
+	BirdsEyeViewHandler(Component desktopPane) {
+		bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView(), desktopPane) {
 				public Dimension getMinimumSize() {
 					return new Dimension(180, 180);
 				}
 			};
+		
+		if (desktopPane != null)
+			desktopPane.addComponentListener(new DesktopListener());
 	}
 
 	/**
@@ -79,6 +89,28 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 		    || (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			bev.changeView((DGraphView) Cytoscape.getCurrentNetworkView());
 		}
+
+		// Add the frameListener to the currently focused view if it
+		// doesn't already have one.
+		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
+		{
+			JDesktopPane desktopPane = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane();
+			if (desktopPane == null)
+				return;
+
+			JInternalFrame frame = desktopPane.getSelectedFrame();
+			if (frame == null)
+				return;
+
+			boolean hasListener = false;
+			ComponentListener[] listeners = frame.getComponentListeners();
+			for(int i = 0; i < listeners.length; i++)
+				if (listeners[i] == frameListener)
+					hasListener = true;
+
+			if (!hasListener)
+				frame.addComponentListener(frameListener);
+		}
 	}
 
 	/**
@@ -87,5 +119,33 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	 */
 	Component getBirdsEyeView() {
 		return bev;
+	}
+
+	/**
+	 * Repaint a JInternalFrame whenever it is moved.
+	 */
+	class FrameListener implements ComponentListener
+	{
+		public void componentHidden(ComponentEvent e) {}
+		public void componentMoved(ComponentEvent e)
+		{
+			bev.repaint();
+		}
+		public void componentResized(ComponentEvent e) {}
+		public void componentShown(java.awt.event.ComponentEvent e) {}
+	}
+
+	/**
+	 * Repaint the JDesktopPane whenever its size has changed.
+	 */
+	class DesktopListener implements ComponentListener
+	{
+		public void componentHidden(ComponentEvent e) {}
+		public void componentMoved(ComponentEvent e) {}
+		public void componentResized(ComponentEvent e)
+		{
+			bev.repaint();
+		}
+		public void componentShown(java.awt.event.ComponentEvent e) {}
 	}
 }
