@@ -1,8 +1,6 @@
 # This props file would be filled out and included in the plugin jar file.  This props file will be used 
 # to put information into the Plugin Manager about the plugin 
 
-uniqueID=15
-
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
@@ -25,3 +23,8 @@ pluginCategory=Core
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
 pluginAuthorsIntsitutions=Willem Ligtenberg:Eindhoven University of Technology
+
+# -- The following properties should be set ONLY BY CORE PLUGINS -- #
+downloadURL=http://cytoscape.org/plugins/plugins.xml
+uniqueID=15
+
