@@ -29,7 +29,7 @@ import java.beans.PropertyChangeEvent;
  *
  * and as implemented in the InfoViz Toolkit (http://ivtk.sourceforge.net/)
  *
- * @author Jean-Daniel Fekete (INRIA), Allan Kuchinsky (Agilent)
+ * @author Jean-Daniel Fekete (INRIA), Allan Kuchinsky (Agilent), Ethan Cerami (MSKCC).
  * @version 0.1
  *
  *
