@@ -1,25 +1,5 @@
 package com.agilent.labs.excentricLabelsPlugin;
 
-/**
- * 
- * 
- * Cytoscape plugin that implements dynamic neighborhood labeling, 
- * also known as Excentric Labels, a visualization that enables
- * dynamic labeling of the neighborhood of Nodes located around the cursor.  
- * 
- * as described in 
- * J.-D. Fekete and C. Plaisant. Excentric labeling: Dynamic neighborhood labeling 
- * for data visualization. In K. Ehrlich and W. Newman, editors, Proceedings of the International Conference 
- * on Human Factors in Computing Systems (CHI 99), pages 512--519. ACM, May 1999 
- * 
- * and as implemented in the InfoViz Toolkit (http://ivtk.sourceforge.net/) 
- * 
- * @author Jean-Daniel Fekete (INRIA), Allan Kuchinsky (Agilent) 
- * @version 0.1
- * 
- * 
- */
-
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeToolBar;
@@ -35,6 +15,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 
+/**
+ *
+ *
+ * Cytoscape plugin that implements dynamic neighborhood labeling,
+ * also known as Excentric Labels, a visualization that enables
+ * dynamic labeling of the neighborhood of Nodes located around the cursor.
+ *
+ * as described in
+ * J.-D. Fekete and C. Plaisant. Excentric labeling: Dynamic neighborhood labeling
+ * for data visualization. In K. Ehrlich and W. Newman, editors, Proceedings of the International Conference
+ * on Human Factors in Computing Systems (CHI 99), pages 512--519. ACM, May 1999
+ *
+ * and as implemented in the InfoViz Toolkit (http://ivtk.sourceforge.net/)
+ *
+ * @author Jean-Daniel Fekete (INRIA), Allan Kuchinsky (Agilent)
+ * @version 0.1
+ *
+ *
+ */
 public class ExcentricLabelsPlugin extends CytoscapePlugin {
     private JButton excentricButton = new JButton("Configure Excentric Labels");
     private DefaultExcentricLabels excentric;
@@ -77,6 +76,9 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
         }
     }
 
+    /**
+     * Initializes Excentric Labels.
+     */
     public void initExcentricLabels () {
         System.out.println("Activating Excentric labels");
         // Get Current Network View
@@ -111,6 +113,9 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
         }
     }
 
+    /**
+     * Initializes Config Panel
+     */
     private void initExcentricLabelConfig() {
         CytoPanel cytoPanelSouth = Cytoscape.getDesktop().getCytoPanel
                 (SwingConstants.WEST);
