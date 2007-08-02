@@ -6,6 +6,7 @@ import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.InternalFrameComponent;
 import cytoscape.view.cytopanels.CytoPanel;
 import ding.view.DGraphView;
 import infovis.visualization.magicLens.DefaultExcentricLabels;
@@ -13,7 +14,10 @@ import infovis.visualization.magicLens.DefaultExcentricLabels;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -107,6 +111,23 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
 
             //  Set size of wrapper and default location of lens
             wrapper.setSize(foregroundCanvas.getWidth(), foregroundCanvas.getHeight());
+
+            final InternalFrameComponent internalFrame = Cytoscape.getDesktop().getNetworkViewManager().
+                    getInternalFrameComponent(newView);
+            internalFrame.addComponentListener(new ComponentListener() {
+                public void componentResized (ComponentEvent e) {
+                    wrapper.setSize(internalFrame.getSize());
+                }
+
+                public void componentMoved (ComponentEvent e) {
+                }
+
+                public void componentShown (ComponentEvent e) {
+                }
+
+                public void componentHidden (ComponentEvent e) {
+                }
+            });
             wrapper.getExcentric().setLens(foregroundCanvas.getWidth() / 2,
                     foregroundCanvas.getHeight() / 2);
 

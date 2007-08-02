@@ -60,7 +60,6 @@ public class ExcentricLabelsConfigPanel extends JPanel {
                 GlobalLabelConfig.setCurrentAttributeName(attribute);
             }
         });
-
     }
 
     private Vector createAttributeList() {

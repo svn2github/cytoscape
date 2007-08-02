@@ -57,41 +57,46 @@ public class CyExcentricVisualizationInteractor extends
 
     public void mouseDragged (MouseEvent e) {
         if (!wrapper.getExcentric().isVisible()) {
+            wrapper.getExcentric().setVisible(false);
             insideTimer.restart();
-            redispatchMouseEvent(e);
-        } else {
-            ExcentricLabels excentric = wrapper.getExcentric();
-            float radius = excentric.getLensRadius();
-            boolean modified = false;
-            if (e.getX() > currentX && e.getY() > currentY) {
-                if (radius <= 100) {
-                    excentric.setLensRadius(radius + 3);
-                    modified = true;
-                }
-            } else if (e.getX() < currentX && e.getY() < currentY) {
-                if (radius >= 20 ) {
-                    excentric.setLensRadius(radius - 3);
-                    modified = true;
-                }
-            }
-            if (modified ) {
-                CyNetworkView view = Cytoscape.getCurrentNetworkView();
-                JComponent foregroundCanvas = ((DGraphView) view).getCanvas
-                        (DGraphView.Canvas.FOREGROUND_CANVAS);
-                foregroundCanvas.repaint();
-            }
-            currentX = e.getX();
-            currentY = e.getY();
         }
+        redispatchMouseEvent(e);
+//        else {
+//            ExcentricLabels excentric = wrapper.getExcentric();
+//            float radius = excentric.getLensRadius();
+//            boolean modified = false;
+//            if (e.getX() > currentX && e.getY() > currentY) {
+//                if (radius <= 100) {
+//                    excentric.setLensRadius(radius + 3);
+//                    modified = true;
+//                }
+//            } else if (e.getX() < currentX && e.getY() < currentY) {
+//                if (radius >= 20 ) {
+//                    excentric.setLensRadius(radius - 3);
+//                    modified = true;
+//                }
+//            }
+//            if (modified ) {
+//                CyNetworkView view = Cytoscape.getCurrentNetworkView();
+//                JComponent foregroundCanvas = ((DGraphView) view).getCanvas
+//                        (DGraphView.Canvas.FOREGROUND_CANVAS);
+//                foregroundCanvas.repaint();
+//            }
+//            currentX = e.getX();
+//            currentY = e.getY();
+//        }
     }
 
     public void mouseClicked (MouseEvent e) {
         if (wrapper.getExcentric().isVisible()) {
             wrapper.getExcentric().setVisible(false);
             insideTimer.restart();
-        } else {
-            redispatchMouseEvent(e);
         }
+        redispatchMouseEvent(e);
+    }
+
+    public void mouseReleased (MouseEvent e) {
+        redispatchMouseEvent(e);
     }
 
     /**

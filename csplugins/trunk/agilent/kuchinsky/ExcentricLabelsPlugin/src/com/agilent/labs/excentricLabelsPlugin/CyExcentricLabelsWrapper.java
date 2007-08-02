@@ -53,6 +53,7 @@ public class CyExcentricLabelsWrapper extends JPanel {
             g.setColor(Color.BLACK);
             g.drawString(firstLine, 20, 20);
             g.drawString(secondLine, 20, 20 + (int) boundsLine1.getHeight() + 5);
+            g.drawRect(5,5, getBounds().width - 10, getBounds().height - 10);
         }
     }
 
