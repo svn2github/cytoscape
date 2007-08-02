@@ -166,7 +166,7 @@ public class PluginTrackerTest extends TestCase {
 		PluginInfo objA = getInfoObj();
 		PluginInfo objB = new PluginInfo(objA.getID());
 		objB.setName("Different Test");
-		objB.setDownloadUrl("http://test.com/x.xml");
+		objB.setDownloadUrl("http://test.com/blue.xml");
 		objB.setFiletype(PluginInfo.FileType.JAR);
 		objB.setPluginClassName("some.other.class.DifferentTest");
 		
