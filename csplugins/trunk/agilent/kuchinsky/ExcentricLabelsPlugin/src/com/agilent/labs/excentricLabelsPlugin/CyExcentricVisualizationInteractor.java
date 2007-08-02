@@ -90,6 +90,11 @@ public class CyExcentricVisualizationInteractor extends
         wrapper.getExcentric().setVisible(false);
     }
 
+    /**
+     * Redispatch events to the network canvas.  Otherwise, the glass pane intercepts
+     * all these events.
+     * @param e MouseEvent.
+     */
     private void redispatchMouseEvent (MouseEvent e) {
         DGraphView dGraphView = (DGraphView) Cytoscape.getCurrentNetworkView();
         JComponent networkCanvas = dGraphView.getCanvas(DGraphView.Canvas.NETWORK_CANVAS);
