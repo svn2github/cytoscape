@@ -31,3 +31,13 @@ pluginAuthorsIntsitutions=Sarah and Victor:ISB;Mike, Kei and Peng:UCSD
 
 # Date this plugin/plugin version was released
 releaseDate=May 1, 2008
+
+
+# -- The following properties should be set ONLY BY CORE PLUGINS -- #
+
+# URL where these plugins will be found on (xml file describing all plugins)
+downloadURL=http://cytoscape.org/plugins/plugins.xml
+
+# Unique identifier, for core plugins this would come from the database and should not change, all other plugins will
+# have defined this in the download xml file and shout NOT set this property
+uniqueID=1 
