@@ -4,6 +4,7 @@ import infovis.visualization.magicLens.ExcentricLabels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  * AJK: 07/22/06 substitute for Visualization because I can't seem to be able to add
@@ -39,10 +40,19 @@ public class CyExcentricLabelsWrapper extends JPanel {
     public void paint (Graphics g) {
         if (excentric.isVisible()) {
             excentric.paint((Graphics2D) g, getBounds());
+            String firstLine = "Excentric Label Mode";
+            //String secondLine = "Click to exit.  Drag to resize lens.";
+            String secondLine = "Click to exit.";
+
+            Rectangle2D boundsLine1 = g.getFontMetrics().getStringBounds(firstLine, g);
+            Rectangle2D boundsLine2 = g.getFontMetrics().getStringBounds(secondLine, g);
+
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(5, 5, 225, 25);
+            g.fillRect(10, 6, (int) boundsLine1.getWidth() + 15, (int) boundsLine2.getHeight() * 3);
+
             g.setColor(Color.BLACK);
-            g.drawString("Excentric Label Mode:  Click to Exit", 20, 20);
+            g.drawString(firstLine, 20, 20);
+            g.drawString(secondLine, 20, 20 + (int) boundsLine1.getHeight() + 5);
         }
     }
 

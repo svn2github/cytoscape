@@ -1,6 +1,7 @@
 package com.agilent.labs.excentricLabelsPlugin;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import infovis.visualization.inter.BasicVisualizationInteractor;
 import infovis.visualization.magicLens.ExcentricLabels;
@@ -9,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * Handles user interaction with Excentric labels.
@@ -21,6 +23,8 @@ public class CyExcentricVisualizationInteractor extends
     protected Timer insideTimer;
     protected int threshold = 50;
     private CyExcentricLabelsWrapper wrapper;
+    private int currentX;
+    private int currentY;
 
     public CyExcentricVisualizationInteractor (CyExcentricLabelsWrapper wrapper) {
         super();
@@ -42,6 +46,8 @@ public class CyExcentricVisualizationInteractor extends
      * @see java.awt.event.MouseMotionListener#mouseMoved(MouseEvent)
      */
     public void mouseMoved (MouseEvent e) {
+        currentX = e.getX();
+        currentY = e.getY();
         wrapper.getExcentric().setLens(e.getX(), e.getY());
         if (!wrapper.getExcentric().isVisible()) {
             insideTimer.restart();
@@ -53,12 +59,37 @@ public class CyExcentricVisualizationInteractor extends
         if (!wrapper.getExcentric().isVisible()) {
             insideTimer.restart();
             redispatchMouseEvent(e);
+        } else {
+            ExcentricLabels excentric = wrapper.getExcentric();
+            float radius = excentric.getLensRadius();
+            boolean modified = false;
+            if (e.getX() > currentX && e.getY() > currentY) {
+                if (radius <= 100) {
+                    excentric.setLensRadius(radius + 3);
+                    modified = true;
+                }
+            } else if (e.getX() < currentX && e.getY() < currentY) {
+                if (radius >= 20 ) {
+                    excentric.setLensRadius(radius - 3);
+                    modified = true;
+                }
+            }
+            if (modified ) {
+                CyNetworkView view = Cytoscape.getCurrentNetworkView();
+                JComponent foregroundCanvas = ((DGraphView) view).getCanvas
+                        (DGraphView.Canvas.FOREGROUND_CANVAS);
+                foregroundCanvas.repaint();
+            }
+            currentX = e.getX();
+            currentY = e.getY();
         }
     }
 
     public void mouseClicked (MouseEvent e) {
-        if (!wrapper.getExcentric().isVisible()) {
+        if (wrapper.getExcentric().isVisible()) {
+            wrapper.getExcentric().setVisible(false);
             insideTimer.restart();
+        } else {
             redispatchMouseEvent(e);
         }
     }
@@ -87,7 +118,7 @@ public class CyExcentricVisualizationInteractor extends
      */
     public void mouseExited (MouseEvent e) {
         insideTimer.stop();
-        wrapper.getExcentric().setVisible(false);
+        //wrapper.getExcentric().setVisible(false);
     }
 
     /**

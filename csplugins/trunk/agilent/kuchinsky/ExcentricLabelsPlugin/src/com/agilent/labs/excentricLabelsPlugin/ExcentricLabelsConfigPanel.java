@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 
 public class ExcentricLabelsConfigPanel extends JPanel {
     private ExcentricLabels excentric;
@@ -38,7 +40,7 @@ public class ExcentricLabelsConfigPanel extends JPanel {
         radiusSlider.addChangeListener(new RadiusSliderListener(excentric, wrapper));
 
         int maxLabels = excentric.getMaxLabels();
-        JSlider maxLabelsSlider = new JSlider (5, 100);
+        JSlider maxLabelsSlider = new JSlider (5, 60);
         maxLabelsSlider.setValue(maxLabels);
         maxLabelsSlider.addChangeListener(new MaxNumLabelsListener(excentric, wrapper));
         JLabel maxNumLabelsLabel = new JLabel("Set Max Number of Labels: ");
@@ -47,7 +49,7 @@ public class ExcentricLabelsConfigPanel extends JPanel {
 
         JLabel attributeLabel = new JLabel("Set Attribute: ");
         this.add(attributeLabel);
-        
+
         Vector attributeList = createAttributeList();
         final JComboBox attributeComboBox = new JComboBox(attributeList);
         attributeComboBox.setSelectedItem(Semantics.CANONICAL_NAME);
@@ -99,9 +101,10 @@ class RadiusSliderListener implements ChangeListener {
         if (!source.getValueIsAdjusting()) {
     	    int radius = source.getValue();
             excentric.setLensRadius((float) radius);
-            excentric.setVisible(false);
-            excentric.setEnabled(false);
-            wrapper.repaint();
+            CyNetworkView newView = Cytoscape.getCurrentNetworkView();
+            JComponent foregroundCanvas = ((DGraphView) newView).getCanvas
+                    (DGraphView.Canvas.FOREGROUND_CANVAS);
+            foregroundCanvas.repaint();
         }
     }
 }
@@ -119,9 +122,10 @@ class MaxNumLabelsListener implements ChangeListener {
         if (!source.getValueIsAdjusting()) {
     	    int maxNumLabels = source.getValue();
             excentric.setMaxLabels(maxNumLabels);
-            excentric.setVisible(false);
-            excentric.setEnabled(false);
-            wrapper.repaint();
+            CyNetworkView newView = Cytoscape.getCurrentNetworkView();
+            JComponent foregroundCanvas = ((DGraphView) newView).getCanvas
+                    (DGraphView.Canvas.FOREGROUND_CANVAS);
+            foregroundCanvas.repaint();
         }
     }
 }
