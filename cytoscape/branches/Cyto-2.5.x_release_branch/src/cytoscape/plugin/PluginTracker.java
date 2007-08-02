@@ -208,7 +208,9 @@ public class PluginTracker {
 		List<Element> Plugins = trackerDoc.getRootElement().getChild(Tag).getChildren(pluginTag);
 
 		for (Element Current : Plugins) {
-			if ( Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName()) ) 
+			if ( Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) && 
+					 Current.getChildTextTrim(downloadUrlTag).equals(Obj.getDownloadUrl()) )
+//			if ( Current.getChildTextTrim(classTag).equals(Obj.getPluginClassName()) ) 
 				return Current; // the class name MUST ALWAYS be unique
 		}
 		return null;
