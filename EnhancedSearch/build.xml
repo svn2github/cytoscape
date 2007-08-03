@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 	Enhanced Search Ant Build Script.
-	Author:  Maital Ashkenazi HUJI
+	Author:  Maital Ashkenazi
 -->
 
 <project name="EnhancedSearch" default="all" basedir=".">
