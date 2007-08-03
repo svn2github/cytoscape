@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -90,6 +89,7 @@ public class EnhancedSearchQuery {
 		}
 		
 		return hits;
+		
 	}
 
 	/**
