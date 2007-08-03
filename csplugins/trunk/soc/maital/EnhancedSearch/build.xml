@@ -50,6 +50,7 @@
         description="Deletes all build files and starts fresh">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
+        <delete file="${basedir}/EnhancedSearch.jar"/>
     </target>
 
     <!-- ==================== Compile Target ============================= -->
