@@ -48,11 +48,6 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.document.Document;
 
 
-
-/*******************************************************************************
- * Perhaps this method can be merged with CtAttributesUtil in
- * csplugins.quickfind.util.
- ******************************************************************************/
 public class EnhancedSearchUtils {
 
 	public static final String SEARCH_STRING = "\\s";
@@ -120,8 +115,6 @@ public class EnhancedSearchUtils {
 			}
 		}
 	}
-
-
 }
 
 

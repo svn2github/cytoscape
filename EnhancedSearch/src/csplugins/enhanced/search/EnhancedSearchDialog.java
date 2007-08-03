@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -44,9 +43,7 @@ import java.awt.event.*;
 class EnhancedSearchDialog extends JDialog {
 
 	JButton search;
-
 	JButton cancel;
-
 	JTextField searchField;
 
 	boolean cancelled = true;

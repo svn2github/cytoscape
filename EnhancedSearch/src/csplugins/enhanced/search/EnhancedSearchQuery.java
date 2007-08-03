@@ -80,8 +80,8 @@ public class EnhancedSearchQuery {
 			// Build an IndexSearcher using the in-memory index
 			Searcher searcher = new IndexSearcher(idx);
 			search(searcher, queryString, attrNameArray);
-
 			searcher.close();
+
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} catch (ParseException pe) {

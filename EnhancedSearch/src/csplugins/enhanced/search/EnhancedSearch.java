@@ -44,7 +44,6 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.search.Hits;
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
 
-;
 
 public class EnhancedSearch {
 

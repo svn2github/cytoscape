@@ -88,7 +88,7 @@ public class IndexAndSearch {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-
+		
 	}
 
 	public void PerformSearch(RAMDirectory idx, String queryString) {
@@ -106,35 +106,6 @@ public class IndexAndSearch {
 			// Build an IndexSearcher using the in-memory index
 			Searcher searcher = new IndexSearcher(idx);
 			search(searcher, queryString, attrNameArray);
-
-			/**
-			 * // Run some queries search(searcher, "Gene_Title:putative",
-			 * attrNameArray); // 56 search(searcher,
-			 * "GO_Cellular_Component:\"plasma membrane\"", attrNameArray); // 7
-			 * search(searcher, "canonicalName:251155_at", attrNameArray); // 1
-			 * search(searcher, "265480_at", attrNameArray); // 1
-			 * search(searcher, "response", attrNameArray); // Search in all
-			 * attributes search(searcher, "GO_Biological_Process:\"water
-			 * deprivation\" AND Gene_Title:aquaporin", attrNameArray); // 3
-			 * search(searcher, "Desiccation_Response:true NOT Chromosome:5",
-			 * attrNameArray); // 20 search(searcher,
-			 * "GO_Biological_Process:stress AND
-			 * (GO_Molecular_Function:peroxidase OR
-			 * GO_Molecular_Function:catalase)", attrNameArray); // 4
-			 * search(searcher, "Gene_Title:(+60S +\"ribosomal protein\")",
-			 * attrNameArray); // 9 search(searcher, "Gene_Title:deHYdr*n",
-			 * attrNameArray); // 4 search(searcher, "Chromosome:5",
-			 * attrNameArray); // 39 search(searcher, "Chromosome:[4 TO 5]",
-			 * attrNameArray); // 79 // These searches doesn't return expected
-			 * results. CyAttributes edgeAttributes =
-			 * Cytoscape.getEdgeAttributes(); attrNameArray =
-			 * edgeAttributes.getAttributeNames(); search(searcher,
-			 * "weight:[0.95 TO 1]", attrNameArray); search(searcher,
-			 * "weight:[-1 TO -0.95]", attrNameArray); search(searcher,
-			 * "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]", attrNameArray); //
-			 * 62 search(searcher, "interaction:neg AND weight:[0.9 TO 0.95]",
-			 * attrNameArray);
-			 */
 
 			searcher.close();
 		} catch (IOException ioe) {

@@ -173,6 +173,7 @@ public class TestEnhancedSearch extends TestCase {
 		assertEquals(query, 62, hits.length());
 	}
 	
+	
 	// Queries with no results
 	public void testNoResultsQueries() throws Exception {
 	
@@ -185,6 +186,6 @@ public class TestEnhancedSearch extends TestCase {
 		assertEquals(query, 0, hits.length());
 	}
 
-	 */
+*/
 	
 }
