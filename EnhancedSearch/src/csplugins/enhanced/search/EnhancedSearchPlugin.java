@@ -38,6 +38,7 @@ package csplugins.enhanced.search;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.Category;
 
 /**
  * Enhanced Search plugin
@@ -62,7 +63,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin {
 
 		info.setName("EnhancedSearch");
 		info.setDescription("Perform search on multiple attribute fields.");
-		info.setCategory(PluginInfo.Category.NETWORK_ATTRIBUTE_IO);
+		info.setCategory(Category.NONE);
 		info.setPluginVersion(VERSION);
 		info.setCytoscapeVersion("2.5");
 		info.setProjectUrl("http://conklinwolf.ucsf.edu/genmappwiki/Google_Summer_of_Code_2007/Maital");

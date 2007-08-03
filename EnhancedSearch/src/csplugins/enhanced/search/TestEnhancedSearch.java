@@ -46,10 +46,10 @@ import csplugins.enhanced.search.EnhancedSearchQuery;
 
 public class TestEnhancedSearch extends TestCase {
 
-	CyNetwork cyNetwork;
-
 	String query = null;
 	Hits hits = null;
+
+	CyNetwork cyNetwork;
 
 	// Load sample network and attributes into memory
 	public TestEnhancedSearch() {
@@ -88,12 +88,12 @@ public class TestEnhancedSearch extends TestCase {
 		assertEquals(query, 7, hits.length());
 
 		query = "canonicalName:251155_at";
-		hits = queryHandler.ExecuteQuery(query); // 1
-		assertEquals(query, 1, hits.length());
+		hits = queryHandler.ExecuteQuery(query); // 12 - notice it returnes both nodes and edges.
+		assertEquals(query, 12, hits.length());
 
 		query = "265480_at";
-		hits = queryHandler.ExecuteQuery(query); // 1
-		assertEquals(query, 1, hits.length());
+		hits = queryHandler.ExecuteQuery(query); // 26 - notice: search is executed on nodes and edges.
+		assertEquals(query, 26, hits.length());
 
 		query = "response";
 		hits = queryHandler.ExecuteQuery(query); // Search in all attributes
@@ -175,7 +175,7 @@ public class TestEnhancedSearch extends TestCase {
 	
 	// Queries with no results
 	public void testNoResultsQueries() throws Exception {
-
+	
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
@@ -185,5 +185,6 @@ public class TestEnhancedSearch extends TestCase {
 		assertEquals(query, 0, hits.length());
 	}
 
-	*/
+	 */
+	
 }
