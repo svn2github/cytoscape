@@ -1,4 +1,4 @@
-GO Molecular Functio (class=java.lang.String)
+GO Molecular Function (class=java.lang.String)
 248337_at = (0003674 // molecular_function // ---)
 265478_at = (0003674 // molecular_function // ---)
 264069_at = (0000166 // nucleotide binding // inferred from electronic annotation::0005515 // protein binding // inferred from electronic annotation::0005524 // ATP binding // inferred from electronic annotation::0051082 // unfolded protein binding // inferred from electronic annotation)

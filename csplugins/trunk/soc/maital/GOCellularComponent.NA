@@ -1,4 +1,4 @@
-GO Cellula Component (class=java.lang.String)
+GO Cellular Component (class=java.lang.String)
 248337_at = (0005575 // cellular_component // ---)
 265478_at = (0009507 // chloroplast // inferred from electronic annotation)
 264069_at = (0009507 // chloroplast // inferred from direct assay::0009507 // chloroplast // inferred from sequence or structural similarity::0009507 // chloroplast // inferred from electronic annotation::0005739 // mitochondrion // inferred from direct assay)

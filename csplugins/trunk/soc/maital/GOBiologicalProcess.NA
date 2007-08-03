@@ -1,4 +1,4 @@
-GO Biological Proces (class=java.lang.String)
+GO Biological Process (class=java.lang.String)
 248337_at = (0006970 // response to osmotic stress // inferred from genetic interaction::0009269 // response to desiccation // inferred from mutant phenotype::0009409 // response to cold // inferred from expression pattern::0009737 // response to abscisic acid stimulus // inferred from expression pattern::0042538 // hyperosmotic salinity response // inferred from expression pattern::0009414 // response to water deprivation // inferred from expression pattern::0009651 // response to salt stress // inferred from expression pattern)
 265478_at = (0008150 // biological_process // ---)
 264069_at = (0006457 // protein folding // traceable author statement::0009658 // chloroplast organization and biogenesis // inferred from mutant phenotype::0009790 // embryonic development // inferred from mutant phenotype::0006457 // protein folding // inferred from electronic annotation::0044267 // cellular protein metabolism // inferred from electronic annotation)
