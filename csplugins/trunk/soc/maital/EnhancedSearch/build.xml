@@ -24,6 +24,9 @@
     <!-- The testData directory -->
     <property name="testData.dir"    value="${basedir}/testData"/>
 
+    <!-- The cytoscape directory -->
+    <property name="cytoscape.dir"    value="../../../../cytoscape"/>
+
 	<!--  ============ Compilation Control Options ======================= -->
   	<property name="compile.debug"       value="true"/>
   	<property name="compile.deprecation" value="true"/>
@@ -37,10 +40,16 @@
     -->
     <path id="compile.classpath">
 		<pathelement path="${build.dir}/classes"/>
-		<fileset dir="../cytoscape/${lib.dir}">
+		<fileset dir="${lib.dir}">
        		 	<include name="*.jar"/>
 		</fileset>
-         <fileset dir="../cytoscape/">
+		<fileset dir="${cytoscape.dir}/lib">
+       		 	<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${cytoscape.dir}/plugins/core">
+       		 	<include name="quick_find.jar"/>
+		</fileset>
+         <fileset dir="${cytoscape.dir}">
                      <include name="cytoscape.jar"/>
          </fileset>
   	</path>
@@ -70,6 +79,11 @@
     <!-- ==================== Jar Target ================================= -->
     <target name="jar" depends="compile"
             description="Creates Plugin Jar:  EnhancedSearch.jar">
+       <unzip dest="${build.dir}/classes">
+         <fileset dir="${lib.dir}">
+           <include name="*.jar"/>
+         </fileset>
+       </unzip>
         <jar destfile="${basedir}/EnhancedSearch.jar"
              basedir="${build.dir}/classes">
 	    	<manifest>
@@ -77,7 +91,7 @@
 		           value="csplugins.enhanced.search.EnhancedSearchPlugin"/>
 	     	</manifest>
 		</jar>
-        <copy todir="../cytoscape/plugins/core">
+        <copy todir="${cytoscape.dir}/plugins/core">
             <fileset file="${basedir}/EnhancedSearch.jar"/>
         </copy>
     </target>
@@ -91,7 +105,7 @@
             	-n ${testData.dir}/DesiccationResponse.NA -n ${testData.dir}/GeneTitle.NA 
             	-n ${testData.dir}/GOBiologicalProcess.NA -n ${testData.dir}/GOCellularComponent.NA 
             	-n ${testData.dir}/GOMolecularFunction.NA -e ${testData.dir}/interaction.EA 
-            	-e ${testData.dir}/weight.EA -p ../cytoscape/plugins/core"/>
+            	-e ${testData.dir}/weight.EA -p ${cytoscape.dir}/plugins/core"/>
         </java>
     </target>
 
