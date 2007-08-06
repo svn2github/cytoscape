@@ -418,8 +418,6 @@ public enum VisualPropertyType {
 	               SecurityException, NoSuchMethodException {
 		Method method = action.getActionClass()
 		                      .getMethod(action.getCommand(), action.getParamTypes());
-
-		System.out.println("Action = " + action.getCommand());
 		
 		
 		Object ret = method.invoke(null, action.getParameters());
@@ -429,10 +427,34 @@ public enum VisualPropertyType {
 			return ret;
 		
 		else if ((ret != null) && this == EDGE_LINE_WIDTH) {
-				System.out.println("L W!!!!!!");
+			try {
 				ret = Float.valueOf(((String)ret));
-		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass()))
-			ret = Double.parseDouble(ret.toString());
+			} catch (NumberFormatException e){
+				ret = 1f;
+			}
+		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass())) {
+			try {
+				ret = Double.parseDouble(ret.toString());
+			} catch (NumberFormatException e){
+				ret = 1d;
+			}
+			
+			
+		}
+		// Error check
+		if((this.name()).toUpperCase().endsWith("WIDTH") || (this.name()).toUpperCase().endsWith("SIZE")) {
+			if(((Number)ret).doubleValue() <= 0) {
+				ret = 1f;
+			}
+		}
+		
+		if((this.name()).toUpperCase().endsWith("OPACITY")) {
+			if (((Number)ret).doubleValue() > 255) {
+				ret = 255d;
+			} else if(((Number)ret).doubleValue() < 0) {
+				ret = 0d;
+			}
+		}
 
 		return ret;
 	}
