@@ -23,7 +23,6 @@ function updateUsageLog($connection, $plugin_file_id) {
 
         // populate the usagelog table
         $dbQuery = 'insert into usagelog values (0, "'.$plugin_version_id. '","'.$remote_host.'","'.$remote_ip_address.'"'.',now())';
-        echo "<br>dbQuery = ",$dbQuery, "<br>";
 
         // Run the query
         if (!($result = @ mysql_query($dbQuery,$connection)))
