@@ -1,7 +1,0 @@
-<?xml encoding="UTF-8"?>
-<!ELEMENT goProcesses (goProcess)+>
-<!ELEMENT goProcess (name, id, isa*, partof*)>
-<!ELEMENT name (#PCDATA)>
-<!ELEMENT id (#PCDATA)>
-<!ELEMENT isa (#PCDATA)>
-<!ELEMENT partof (#PCDATA)>

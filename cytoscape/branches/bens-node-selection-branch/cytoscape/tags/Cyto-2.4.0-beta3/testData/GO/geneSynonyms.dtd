@@ -1,5 +1,0 @@
-<?xml encoding="US-ASCII"?>
-<!ELEMENT geneSynonyms (synonym)+>
-<!ELEMENT synonym EMPTY>
-<!ATTLIST synonym name CDATA #REQUIRED>
-<!ATTLIST synonym value CDATA #REQUIRED>

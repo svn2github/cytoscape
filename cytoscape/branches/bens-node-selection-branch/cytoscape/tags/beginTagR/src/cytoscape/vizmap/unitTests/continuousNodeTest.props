@@ -1,9 +1,0 @@
-node.fillcolor.controller=expression
-node.fillcolor.expression.type=continuous
-
-node.fillcolor.expression.min.value=0.0
-node.fillcolor.expression.min.color=0,255,0
-
-node.fillcolor.expression.max.value=100.0
-node.fillcolor.expression.max.color=255,0,0
-
