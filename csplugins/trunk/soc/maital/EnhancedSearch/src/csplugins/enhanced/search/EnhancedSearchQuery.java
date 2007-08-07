@@ -98,7 +98,7 @@ public class EnhancedSearchQuery {
 	 */
 	private void search(Searcher searcher, String queryString, String[] fields)
 			throws ParseException, IOException {
-
+		
 		// Build a Query object
 		QueryParser queryParser = new MultiFieldQueryParser(fields, new StandardAnalyzer());
 		Query query = queryParser.parse(queryString);

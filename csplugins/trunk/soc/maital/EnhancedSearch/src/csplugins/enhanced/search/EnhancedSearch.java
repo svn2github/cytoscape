@@ -44,7 +44,6 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.search.Hits;
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
 
-
 public class EnhancedSearch {
 
 	public EnhancedSearch() {
@@ -61,7 +60,7 @@ public class EnhancedSearch {
 		/**
 		 * This method is called when the user selects the menu item.
 		 */
-		public void actionPerformed(ActionEvent e){
+		public void actionPerformed(ActionEvent e) {
 
 			// Display dialog
 			EnhancedSearchDialog dialog = new EnhancedSearchDialog();
@@ -70,14 +69,17 @@ public class EnhancedSearch {
 			// Perform search
 			if (!dialog.isCancelled()) {
 				String query = dialog.getQuery();
-				final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
-				indexAndSearch(currNetwork, query);
+				if (!query.trim().isEmpty()) {
+					final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
+					indexAndSearch(currNetwork, query);
+				} else {
+					return;
+				}
 
 			} else {
 				return;
 			}
 		}
-
 	}
 
 	public void indexAndSearch(CyNetwork network, String query) {
@@ -89,7 +91,7 @@ public class EnhancedSearch {
 		// Perform search
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 		Hits hits = queryHandler.ExecuteQuery(query);
-		
+
 		// Display results
 		EnhancedSearchUtils.displayResults(network, hits);
 	}
