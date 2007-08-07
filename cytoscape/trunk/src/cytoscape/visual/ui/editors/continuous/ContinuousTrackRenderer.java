@@ -80,22 +80,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	/*
 	 * Constants for diagram.
 	 */
-	
-	private final static float UPPER_LIMIT;
-	static {
-		Float val; 
-		try {
-			val = Float.parseFloat(CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit"));
-		} catch (NumberFormatException e) {
-			val = 2000f;
-		}
-		if(val != null) {
-			UPPER_LIMIT = val;
-		} else {
-			UPPER_LIMIT = 2000f;
-		}
-	}
-	
+	private static float UPPER_LIMIT;
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
 	private static final int THUMB_WIDTH = 12;
@@ -168,6 +153,21 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		title = cMapping.getControllingAttributeName();
 		valueRange = Math.abs(maxValue - minValue);
+
+		Float val;
+		Object propStr = CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
+
+		if (propStr != null) {
+			try {
+				val = Float.parseFloat(propStr.toString());
+			} catch (NumberFormatException e) {
+				val = 2000f;
+			}
+
+			UPPER_LIMIT = val;
+		} else {
+			UPPER_LIMIT = 2000f;
+		}
 	}
 
 	/**
@@ -362,7 +362,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
 			Float curPositionValue = ((Double) (((fractions[i] / 100) * valueRange) + minValue))
-			                                                                                                                                                                                                                                                                                                                                                .floatValue();
+			                                                                                                                                                                                                                                                                                                                                                                 .floatValue();
 			String valueString = String.format("%.4f", curPositionValue);
 
 			int flipLimit = 90;
@@ -507,9 +507,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				double curY = curPoint.getY();
 
 				float newY = (float) ((((trackHeight + 5) - curY) * max) / (trackHeight + 5));
-				if(newY >UPPER_LIMIT)
+
+				if (newY > UPPER_LIMIT)
 					newY = UPPER_LIMIT;
-				
+
 				selectedThumb.setObject(newY);
 
 				//updateMax();
