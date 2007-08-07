@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Node and Edge Attributes</title>
+</head>
+<body>
+<h1 class="western">Node and Edge Attributes</h1>
+<h2>Attributes and File Format</h2>
+Cytoscape allows the user to add arbitrary node
+and edge information to Cytoscape as node and edge <b>attributes</b>.
+Attributes could be, for example, annotation data on a gene or
+confidence values in a protein-protein interaction. These attributes
+can then be visualized in a custom user-defined way by setting up a
+mapping from data attributes to visual attributes (colors, shapes,
+etc.) (see section <i>9. Visual Styles</i>).
+<br>
+<br>
+Node and edge attribute files are very simply
+formatted: A node attribute file begins with the name of the
+attribute on the first line, and on each following line, has the name
+of the node, followed by an equals sign, followed by the value of
+that attribute. Numbers and text strings are the most common
+attribute types. All values for a given attribute must have the same
+type. For example:
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">FunctionalCategory</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">YAL001C
+= metabolism</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">YAR002W
+= apoptosis</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">YBL007C
+= ribosome</font></font>
+<br>
+<br>
+An edge attribute file has much the
+same structure, except that the name of the edge is the source node
+name, followed by the interaction type in parentheses, followed by
+the target node name. Directionality counts, so switching the source
+and target will refer to a different (or perhaps non-existent) edge.
+The following is an example edge attributes file:
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">InteractionStrength</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">YAL001C
+(pp) YBR043W = 0.82</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">YMR022W
+(pd) YDL112C = 0.441</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">YDL112C
+(pd) YMR022W = 0.9013</font></font>
+<br>
+<br>
+Cytoscape treats edge attributes as
+directional, so note that the second and third edge attribute values
+refer to two different edges (source and target are reversed, though
+the nodes involved are the same).
+<br>
+<br>
+Each attribute is stored in a
+separate file. Node and edge attribute files use the same format.
+Node attribute file names often use the suffix ".noa",
+while edge attribute file names use the suffix ".eda".
+Cytoscape recognizes these suffixes when browsing for attribute
+files.
+<br>
+Node and edge attributes may be
+loaded at the command line using the &#8211;n and &#8211;j options or via the
+<u>File / Load</u> menu.
+<br>
+When expression data is loaded using
+an expression matrix file (See <i>6. Loading Gene Expression Data</i>),
+it is automatically copied into the Node Attributes data structure
+unless explicitly specified not to.
+<h2><b>Detailed file format (Advanced
+users)</b></h2>
+Every attribute file has one header
+line that gives the name of the attribute, and optionally some
+additional meta-information about that attribute. The format is as
+follows: <br>
+<br>
+<code><font face="Courier New, monospace"><font size="2">attributeName
+class=formal.class.of.value category=attributeCategory</font></font></code>
+<br>
+<br>
+The
+first field is always the attribute name: it cannot contain spaces.
+The file may optionally include either of the class and category
+fields.
+<br>
+The
+category, if present, is saved and can be used by Cytoscape tools and
+plugins to group or filter the set of available attributes.
+<br>
+If
+present, the class field defines the formal (package qualified) name
+of the class of the attribute values. For example, <font
+ face="Courier New, monospace"><font size="2">java.lang.String</font></font>
+for Strings, <font face="Courier New, monospace"><font size="2">java.lang.Double</font></font>
+for floating point values, <font face="Courier New, monospace"><font
+ size="2">java.lang.Integer</font></font>
+for integer values, etc. If the value is actually a list of values,
+the class should be the type of the objects in the list. The value
+class must implement the Serializable interface (see the object
+serialization section of the Java tutorial), allowing the data to be
+saved in an efficient binary form (this binary attribute format is
+not directly supported by Cytoscape). If the class is not a basic
+String or Number class, it should have a String representation and a
+constructor that takes a String argument, allowing Cytoscape to
+construct an instance from the String representation in the file.
+<br>
+<br>
+If
+no class is specified in the header line, Cytoscape will attempt to
+guess the type from the first value. If the first value contains
+numbers in a floating point format, Cytoscape will assume
+<font face="Courier New, monospace"><font size="2">java.lang.Double</font></font>;
+if the first value contains only numbers with no decimal point,
+Cytoscape will assume <font face="Courier New, monospace"><font
+ size="2">java.lang.Integer</font></font>;
+otherwise Cytoscape will assume <font face="Courier New, monospace"><font
+ size="2">java.lang.String</font></font>.
+Note that the first value can lead Cytoscape astray: for example,
+<br>
+<br>
+<code><font face="Courier New, monospace"><font size="2">floatingPointAttribute</font></font><font
+ size="2"><font face="Courier New, monospace"><br>
+</font></font><font face="Courier New, monospace"><font size="2">firstName
+= 1</font></font><font size="2"><font face="Courier New, monospace"><br>
+</font></font><font face="Courier New, monospace"><font size="2">secondName
+= 2.5</font></font></code>
+<br>
+<br>
+In
+this case, the first value will make Cytoscape think the values
+should be integers, when in fact they should be floating point
+numbers. It's safest to explicitly specify the value type to prevent
+confusion.
+<br>
+<br>
+Every
+line past the first line identifies the name of an object and the
+String representation of the attribute value. The delimiter is always
+an equals sign; whitespace (spaces and/or tabs) before and after the
+equals sign is ignored. This means that your names and values can
+contain whitespace, but object names cannot contain an equals sign
+and no guarantees are made concerning leading or trailing whitespace.
+Usually the object names should be the same as the names in your
+graph file, unless name conversion is being used (see the section on
+name resolution in section <i>5. Building and Storing Interaction
+Networks</i>).
+Edge names are all of the form <br>
+<br>
+<font face="Courier New, monospace"><font size="2"><code>sourceName
+(edgeType) targetName</code> <br>
+<br>
+</font></font>
+Note
+that this format is different from the specification of interactions
+in the SIF file format. To be explicit: in a SIF file, an interaction
+looks like
+<br>
+<br>
+<code><font face="Courier New, monospace"><font size="2">sourceName
+edgeType targetName</font></font></code> <br>
+<br>
+To
+set an attribute for the edge defined by this interaction, the
+matching line in a attributes file should look like <br>
+<code><font face="Courier New, monospace"><font size="2">sourceName
+(edgeType) targetName = value</font></font></code> <br>
+<br>
+(Yes,
+this is confusing; we're planning on fixing this in the next file
+format update for Cytoscape).
+<br>
+<br>
+To
+specify lists of values, use the following syntax: <br>
+<br>
+<code><font face="Courier New, monospace"><font size="2">listAttributeName
+class=java.lang.String</font></font><font size="2"><font
+ face="Courier New, monospace"><br>
+</font></font><font face="Courier New, monospace"><font size="2">firstObjectName
+= (firstValue::secondValue::thirdValue)</font></font><font size="2"><font
+ face="Courier New, monospace"><br>
+</font></font></code><font face="Courier New, monospace"><font size="2"><code>secondObjectName
+= (onlyOneValue)</code> <br>
+<br>
+</font></font>
+This
+defines an attribute which is a list of Strings. The first object has
+three strings, and thus three elements in its list, while the second
+object has a list with only one member. In the case of a list every
+attribute value should be specified as a list, and every member of
+the list should be of the same class. Again, the class will be
+inferred if it is not specified in the header line. Lists are not
+supported by the visual mapper, so can&#8217;t be mapped to visual
+attributes.
+<p align="left" style="margin-top: 0.18cm; margin-bottom: 0.18cm;"><br>
+</p>
+</body>
+</html>

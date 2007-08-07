@@ -1,0 +1,6 @@
+#Cytoscape Property File
+#Fri Oct 22 18:58:26 PDT 2004
+viewType=tabbed
+bioDataDirectory=annotation/manifest
+defaultSpeciesName=Saccharomyces cerevisiae
+viewThreshold=500

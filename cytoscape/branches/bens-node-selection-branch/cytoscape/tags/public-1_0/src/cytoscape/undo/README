@@ -1,0 +1,34 @@
+
+*UndoItem
+--
+UndoItem provides a simple interface implemented by the *UndoItem
+classes.  These classes provide an undo() and redo() method, which
+undo and redo a given action.
+
+UndoManager
+--
+The UndoManager provides a basic stack-like structure for queing a
+list of UndoItem's for undo()ing and redo()ing.
+
+CytoscapeUndoManager
+--
+The CytoscapeUndoManager adds additional functionality to UndoManager:
+namely, the CytoscapeUndoManager is owned by CytoscapeWindow and acts
+as a GraphListener to catch alterations to the current graph (so that
+they can be undone).  Consequently, it has knowledge of all the
+specific UndoItem implementations.
+
+UndoableGraphHider
+--
+A graph hider that behaves much like y.algo.GraphHider, but generates
+UndoItems.
+
+The upshot: Supporting undo requires some (but not much) discipline on
+the part of UI programmers.
+
+Before doing *anything* that should be undoable, the user should call
+graph.firePreEvent() and graph.firePostEvent() to inform
+CytoscapeUndoManager of the logical coherence of the intervening
+operations (all alterations will be undone in the same step).
+
+

@@ -1,0 +1,105 @@
+################################################
+# CYTOSCAPE INSTALLATION INSTRUCTIONS          #
+# Cytoscape version @version@, June., 2006         #
+# http://www.cytoscape.org                     #
+#                                              # 
+# (c) The Cytoscape Collaboration              #
+#                                              # 
+################################################
+
+######################################################################
+LICENSE AGREEMENT AND DISCLAIMER #####################################
+######################################################################
+
+Cytoscape is a collaborative effort between the Institute for Systems
+Biology, the University of California at San Diego, Memorial Sloan-
+Kettering Cancer Center, the Institut Pasteur, and Agilent Technologies.  
+It is available at http://www.cytoscape.org and provided to all users 
+free of charge.
+
+Users of Cytoscape must first agree to the license agreement provided
+in the file "LICENSE.txt".
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+######################################################################
+INSTALLATION AND STARTUP #############################################
+######################################################################
+
+Currently, Cytoscape runs under Java on Linux, Windows, and MacOSX
+platforms.  Although Cytoscape handles arbitrary types and sizes
+of interaction network, it is most powerful when used in conjunction
+with large interaction data sets such as are currently available for
+species such as the yeast S. cerevisiae.
+
+(1) Download and unpack the distribution.  Cytoscape is distributed as
+a compressed archive containing the following files and directories:
+
+INSTALL.txt ............ Quick-start installation instructions (this file)
+manual.pdf.............. Overview and details of Cytoscape functionality
+LICENSE.txt ............ The license agreement
+LICENSE.html............ The license agreement in a different format
+
+cytoscape.jar .......... Main Cytoscape application (Java archive)
+
+cytoscape.sh ........... Shell script used to run Cytoscape (Linux)*
+cytoscape.bat .......... Shell script used to run Cytoscape (Windows)
+
+*Note: the cytoscape.sh shell script can be used to start Cytoscape on
+Mac OS X, although the default use for Mac OS X is to double-click on
+the Cytoscape application.
+
+sampleData/
+   galFiltered.gml ..... Sample molecular interaction network file *
+   galFiltered.sif ..... Identical network in Simple Interaction Format *
+   galFiltered.cys ..... Cytoscape session file containing galFiltered
+                         data.       
+   galExpData.pvals .... Sample gene expression matrix file *
+   galFiltered.*attr*... Various sample attribute files for the 
+                         galFiltered data.
+   BINDyeast.sif ....... Network of all yeast protein-protein
+                         interactions in the BIND database as of 
+                         July, 2004 **
+   BINDhuman.sif ....... Network of all human protein-protein
+                         interactions in the BIND database as of 
+                         July, 2004 **
+   yeastHighQuality.sif  Set of high-quality yeast interactions as
+                         determined by:
+                         von Mering et al., Nature p.399,2002
+                         Lee et al., Science p.799,2002
+
+annotation/ ............ Directory containing Gene Ontology database
+                         and KEGG ontology entries (currently for
+                         yeast only). Info in this directory is used
+                         to associate gene names with synonyms as well
+                         as process, function, and and cellular location data.
+
+*  Sample data sets taken from Ideker et al, Science 292:929 (2001)
+** Obtained from data hosted at http://www.bind.ca/
+
+(2) If not already installed on your computer, download and install
+the Java 2 Runtime Environment, version 1.4.2 or higher.  It can be
+found at:
+
+http://java.sun.com/j2se/1.4.2/download.html.
+
+(3) Launch the application by running "cytoscape.sh" from the command
+line (Linux) or double-clicking "cytoscape.bat" (Windows) or double-
+clicking on the Cytoscape icon under Mac OS X.
+Alternatively, you can pass the .jar file to Java directly using the
+command "java -jar cytoscape".  In Windows, it is also possible to
+directly double-click the .jar file to launch it.  However, this does
+not allow specification of command-line arguments (such as the
+location of the annotation data directory, see MANUAL.txt for details).
+
+!!!!IMPORTANT NOTE!!!!  For the application to work properly, ALL
+FILES MUST BE LEFT IN THE DIRECTORY IN WHICH THEY ARE UNPACKED.  [The
+core Cytoscape application assumes this directory structure when
+looking for plugins. 
+

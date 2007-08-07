@@ -1,0 +1,601 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Visual Styles</title>
+</head>
+<body>
+<h1 class="western">Visual Styles</h1>
+With the Cytoscape Visual Style feature, you can
+easily customize the visual appearance of your network. For example,
+you can specify a default color and shape for all nodes, use specific
+line types to indicate different types of interactions, or visualize
+gene expression data using a color gradient. All these features are
+available by selecting Visualization <font face="Wingdings">&#61664;</font>
+Set Visual Properties from the main menu or clicking on the color
+wheel in the main button bar menu.
+<h2 class="western">Introduction to Visual Styles</h2>
+The Cytoscape distribution you have
+downloaded includes three predefined visual styles to get you
+started. To demonstrate these styles, try out the following example:
+<ol>
+  <li> Load a sample network: From the
+main menu, select File <font face="Wingdings">&#61664;</font> Load <font
+ face="Wingdings">&#61664;</font> Graph, and select
+sampleData/galFiltered.sif. </li>
+  <li>Load a sample set of expression
+data: From the main menu, select File <font face="Wingdings">&#61664;</font>
+Load <font face="Wingdings">&#61664;</font> Expression Matrix File, and
+select sampleData/galExpData.pvals.</li>
+</ol>
+By default, the Visual Style labeled
+&#8220;default&#8221; will be automatically applied to your network. This
+default style has a blue background, circular pink nodes, and blue
+edges (see sample screenshot below).
+<p class="western" align="center"><img
+ src="images/Cytoscape2_0Manual_html_51c363a2.png" name="Graphic16"
+ align="bottom" width="502" height="304" border="0"></p>
+<p class="western" align="center"><font size="2" style="font-size: 9pt;">Figure:
+Using the default Visual Style.</font></p>
+<p class="western" align="left"><font size="2"><b>The vizmap.props
+File:</b> All Cytoscape Visual Style settings are automatically stored
+in a file called vizmap.props. Upon startup, Cytoscape will first try
+to locate the vizmap.props file in the &#8220;user home&#8221; directory. For
+example, on Windows XP, this corresponds to the user &#8220;Documents and
+Settings&#8221; directory, e.g. c:\Documents and Settings\cerami. On Linux or
+Mac OS X, this corresponds to the user home directory, e.g.
+/Users/cerami or ~. If no vizmap.props file is found in the user&#8217;s home
+directory, Cytoscape will next search the current local directory.
+Note: vizmap.props is a text file that can be edited, but it is not
+recommended. If you do edit this file, make sure it is saved in text
+format and not that of any other editor.</font></p>
+<p></p>
+<p class="western" align="left"><b><font size="4">[!]</font><font
+ size="2"> If you are upgrading from Cytoscape 1.1:</font></b><font
+ size="2"> If you are upgrading from Cytoscape 1.1, you may have an
+existing vizmap.props file in your home directory. If this is the case,
+you will not have the sample1 and sample2 visual styles described
+below. To get around this issue, backup your current vizmap.props file
+to safe place, and copy the new Cytoscape 2.1 vizmap.props file to your
+home directory.</font></p>
+<br>
+You can flip through different visual styles by
+making a selection from the Visual Style pull down menu. For
+example, if you select &#8220;Sample1&#8221;, a new visual style will be
+applied to your network, and you will see a green background and
+round blue nodes. Additionally, protein-DNA interactions (specified
+with the label: pd) are drawn with dashed edges, whereas
+protein-protein interactions (specified with the label: pp) are drawn
+with drawn with a light yellow color which is difficult to discern on
+the green background (see sample screenshot below). The background
+can be changed through the Visualization menu.
+<p class="western" align="center"><img
+ src="images/Cytoscape2_0Manual_html_m405747fe.png" name="Graphic17"
+ align="bottom" width="505" height="304" border="0"></p>
+<p class="western" align="center"><font size="2" style="font-size: 9pt;">Figure:
+Using the Sample1 Visual Style. Protein-Protein interactions (solid
+lines) are now distinguishable from Protein-DNA interactions (dashed
+lines).</font></p>
+<br>
+Finally, if you select &#8220;Sample2&#8221;,
+gene expression values for each node will be colored along a color
+gradient between red and green (where red represents a low expression
+ratio, and green represents a high expression ratio - with thresholds
+set for the gal1RGexp experiment bundled with Cytoscape in the
+sampleData/galExpData.pvals file). See sample screenshot below:
+<p class="western" align="center"><img
+ src="images/Cytoscape2_0Manual_html_54c80f32.png" name="Graphic18"
+ align="bottom" width="502" height="304" border="0"></p>
+<p class="western" align="center"><font size="2" style="font-size: 9pt;">Figure:
+Using the Sample2 Visual Style. Gene expression values are now
+displayed along a red/green color gradient.</font></p>
+<h2 class="western">Visual Attributes, Graph Attributes and
+Visual Mappers</h2>
+The Cytoscape Visual Mapper has
+three core components: <i>visual attributes, graph attributes </i>and
+<i>visual mappers</i>:
+<ol>
+  <li>A <i>visual attribute</i> is
+any visual setting that can be applied to your network. For example,
+you can change all nodes to squares by setting the node shape visual
+attribute.</li>
+  <li>A <i>graph attribute</i> is any
+attribute associated with a node or an edge. For example, each edge in
+a network may be associated with a label, such as &#8220;pd&#8221; (protein-DNA
+interactions), or &#8220;pp&#8221; (protein-protein interactions).</li>
+  <li>A <i>visual mapper</i> maps
+graph attributes to visual attributes. For example, a visual mapper can
+map all protein-DNA interactions to the color blue, and all
+protein-protein interactions to the color red.</li>
+</ol>
+Cytoscape includes a large number of
+visual attributes. These are summarized in the tables below.<br>
+<br>
+<center>
+<table width="588" border="1" bordercolor="#000000" cellpadding="8"
+ cellspacing="0">
+  <col width="570"> <tbody>
+    <tr>
+      <td width="570" valign="top" bgcolor="#ffffff">
+      <p class="western" align="left"><b>Visual Attributes Associated
+with Nodes:</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="570" valign="top"> <br>
+Node Color<br>
+      <br>
+Node Border Color<br>
+      <br>
+Node Border Type. The
+following options are available:<br>
+      <img src="images/Cytoscape2_0Manual_html_60959366.jpg"
+ name="Graphic19" align="bottom" width="365" height="28" border="0"><br>
+      <br>
+Node Shape. The following
+options are available:<br>
+      <img src="images/Cytoscape2_0Manual_html_m6dd4f5e0.jpg"
+ name="Graphic20" align="bottom" width="462" height="36" border="0"><br>
+      <br>
+Node Size: width and height
+of each node.<br>
+      <br>
+Node Label: the text label
+for each node.<br>
+      <br>
+Node Font: node
+font and size. </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<p class="western" align="left"><br>
+</p>
+<center>
+<table width="588" border="1" bordercolor="#000000" cellpadding="8"
+ cellspacing="0">
+  <col width="570"> <tbody>
+    <tr>
+      <td width="570" valign="top" bgcolor="#ffffff">
+      <p class="western" align="left"><b>Visual Attributes Associated
+with Edges:</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="570" valign="top">Edge Color<br>
+      <br>
+Edge Line Type. The following
+options are available:<br>
+      <img src="images/Cytoscape2_0Manual_html_60959366.jpg"
+ name="Graphic21" align="bottom" width="365" height="28" border="0"><br>
+      <br>
+Edge Source Arrow. The
+following options are available:<br>
+      <img src="images/Cytoscape2_0Manual_html_58ca4693.jpg"
+ name="Graphic22" align="bottom" width="515" height="29" border="0"><br>
+      <br>
+Edge Target Arrow. The
+following options are available:<br>
+      <img src="images/Cytoscape2_0Manual_html_58ca4693.jpg"
+ name="Graphic23" align="bottom" width="515" height="29" border="0"><br>
+      <br>
+Edge Label: the text label
+for each edge.<br>
+      <br>
+Edge Font: edge font and size. </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<p class="western" align="left"><br>
+</p>
+<center>
+<table width="588" border="1" bordercolor="#000000" cellpadding="8"
+ cellspacing="0">
+  <col width="570"> <tbody>
+    <tr>
+      <td width="570" valign="top" bgcolor="#ffffff">
+      <p class="western" align="left"><b>Global Visual Properties:</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="570" valign="top">Background Color </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<p class="western" align="left"><br>
+</p>
+For each visual attribute, you can
+specify a default value or define a visual mapping. Cytoscape
+currently supports three different types of visual mappers:
+<br>
+<ol>
+  <li><b>Passthrough Mapper:</b> graph
+attributes are passed directly through to visual attributes. A
+passthrough mapper only works for node / edge labels. For example, a
+passthrough mapper can draw the common gene name on all nodes. </li>
+  <li><b>Discrete Mapper:</b> discrete
+graph attributes are mapped to discrete visual attributes. For example,
+a discrete mapper can map all protein-protein interactions to the color
+blue. </li>
+  <li><b>Continuous Mapper</b>:
+continuous graph attributes are mapped to visual attributes. Depending
+on the visual attribute, there are two types of continuous mappers: </li>
+</ol>
+<ul>
+  <ul>
+    <li> <b>continuous to continuous mapper</b>:
+for example, you can map a continuous value (0..1) to a color gradient
+(red..green) or node/font size (10..100). </li>
+    <li> <b>continuous to discrete mapper</b>:
+for example, all values below 0 are mapped to square nodes, and all
+values above 0 are mapped to circular nodes. However, there is no way
+to smoothly morph between circular nodes and square nodes. </li>
+  </ul>
+</ul>
+The matrix below shows visual mapper
+support for each visual property.<br>
+<br>
+<center>
+<table width="356" border="1" bordercolor="#000000" cellpadding="8"
+ cellspacing="0">
+  <col width="158"> <col width="35"> <col width="48"> <col width="48">
+  <tbody>
+    <tr valign="top">
+      <td width="35"> <font size="2">Passthrough Mapper</font> </td>
+      <td width="48"> <font size="2">Discrete Mapper</font> </td>
+      <td width="48"> <font size="2">Continuous Mapper</font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158" bgcolor="#ffffff"> <font size="2">Node Properties</font>
+      </td>
+      <td width="35" bgcolor="#ffffff"> <br>
+      </td>
+      <td width="48" bgcolor="#ffffff"> <br>
+      </td>
+      <td width="48" bgcolor="#ffffff"> <br>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Color</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Border Color</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Border Type</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Shape</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Size</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Label</font> </td>
+      <td width="35"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Font Family</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Node Font Size</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158" bgcolor="#ffffff"> <font size="2">Edge Properties</font>
+      </td>
+      <td width="35" bgcolor="#ffffff"> <br>
+      </td>
+      <td width="48" bgcolor="#ffffff"> <br>
+      </td>
+      <td width="48" bgcolor="#ffffff"> <br>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Color</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Line Type</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Source Arrow</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Target Arrow</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Label</font> </td>
+      <td width="35"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Font Family</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="158"> <font size="2"> Edge Font Size</font> </td>
+      <td width="35"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="48"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<center>
+<table width="536" border="1" bordercolor="#000000" cellpadding="8"
+ cellspacing="0">
+  <col width="29"> <col width="473"> <tbody>
+    <tr style="font-weight: bold;">
+      <td colspan="2" width="518" valign="top" bgcolor="#ffffff">
+Legend </td>
+    </tr>
+    <tr valign="top">
+      <td width="29"> <font size="2"> <font face="Webdings, serif">&#61560;</font></font>
+      </td>
+      <td width="473"> <font size="2">Mapping is not
+supported for specified visual property.</font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="29"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61548;</font></font> </td>
+      <td width="473"> <font size="2">Mapping is fully
+supported for specified visual property. </font> </td>
+    </tr>
+    <tr valign="top">
+      <td width="29"> <font size="2"> <font
+ face="Zapf Dingbats, ZapfDingbats">&#61559;</font></font> </td>
+      <td width="473"> <font size="2">Mapping is
+partially supported for specified visual property. Support for
+&#8220;continuous to continuous&#8221; mapping is not supported.</font> </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<h2 class="western">Tutorial: Creating a New Visual Style</h2>
+To
+create a new visual style, select Visualization <font face="Wingdings">&#61664;</font>
+<br>
+<br>
+Set Visual Properties from the main
+menu, or select the color wheel
+icon in the main button bar. You will<br>
+&nbsp;now see a new Visual Styles
+dialog box (shown at right.)
+<p lang="" class="western" align="left"><img
+ src="file:///cellar/users/anderson/CVS/cytoscape/help/html/images/Cytoscape2_0Manual_html_m320c4332.jpg"
+ name="Graphic24"
+ style="border: 0px solid ; width: 283px; height: 72px;" title=""
+ alt="Visual Styles"><br>
+</p>
+<p lang="" class="western" align="left">Click
+the New button, and enter a name for your new visual style when
+prompted. Then click the Define button. You will now see the main
+Visual Styles Properties dialog box.<br>
+</p>
+<p class="western" align="left"><img
+ src="file:///cellar/users/anderson/CVS/cytoscape/help/html/images/Cytoscape2_0Manual_html_m4ece55ac.jpg"
+ name="Graphic25"
+ style="border: 0px solid ; width: 223px; height: 293px;" title=""
+ alt="Visual Property Categories">
+</p>
+From this dialog box, you can flip between Node Attributes, Edge
+Attributes,
+and Global Defaults. You can also specify default values for any
+visual property, or define a new custom mapping.&nbsp;
+<br>
+<br>
+For example, to set the default node
+shape to triangles, select Node Attributes <font face="Wingdings">&#61664;</font>
+Node Shape. Then, click the &#8220;Change Default&#8221; button, and select
+the Triangle icon from the selection list.
+<h3>Applying Changes to the Network</h3>
+To apply your visual style to your
+network, hit the &#8220;Apply to Graph&#8221; button, available in the bottom of
+the
+dialog panel.
+<h3 class="western">Saving a Visual Style</h3>
+When you exit Cytoscape, new visual
+styles or newly modified visual styles will automatically be saved in
+the vizmap.props file. You can therefore create a new visual style
+and apply it to all future networks.<br>
+<br>
+<h2 class="western" style="page-break-before: always;">Tutorial:
+Creating a New Visual Style with a Discrete Mapper</h2>
+<p lang="" class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m540164d3.jpg" name="Graphic28"
+ style="border: 0px solid ; width: 224px; height: 299px;" title=""
+ alt=""><br>
+</p>
+The following tutorial demonstrates how
+to create a new visual style with a discrete mapper. The goal is to
+draw Protein-DNA interactions with blue edges, and Protein-Protein
+interactions with red edges.
+<br>
+<ol>
+  <li> Load a sample network: From the
+main menu, select File <font face="Wingdings">&#61664;</font> Load <font
+ face="Wingdings">&#61664;</font> Graph, and select sampleData/galFiltered.sif.</li>
+  <li> Select Visualization <font face="Wingdings">&#61664;</font> Set Visual
+Properties.</li>
+  <li> Select &#8220;New&#8221; to create a new Visual
+Style. Name your new style: &#8220;Sample3&#8221;. </li>
+  <li> Click the &#8220;Define&#8221; button to define
+the newly created Visual Style. </li>
+  <li> In the &#8220;Set Visual Properties&#8221;
+Dialog box, select Edge Attributes <font face="Wingdings">&#61664;</font>
+Edge Color. </li>
+  <li> Click the New button in the mapping
+panel. </li>
+  <li> You will be prompted to select a
+mapping type: passthrough mapper, discrete mapper or continuous mapper
+(for an overview of the differences between these mappers, please refer
+back to section 8.2.) Select &#8220;discrete mapper&#8221;, and enter a descriptive
+name. For example, enter: &#8220;InteractionTypeColor&#8221;. </li>
+  <li> From the &#8220;Map Attribute&#8221; pull-down
+menu, select &#8220;interaction.&#8221; You should now see two buttons, one for pd
+(Protein-DNA interactions), and one for pp (Protein-Protein
+interactions). </li>
+  <li><img src="images/Cytoscape2_0Manual_html_438d85eb.jpg"
+ name="Graphic29"
+ style="border: 0px solid ; width: 322px; height: 211px;" title=""
+ alt=""> </li>
+  <li> Click
+the &#8220;pd&#8221; button and select a blue color. </li>
+  <li> Click the &#8220;pp&#8221; button and select a
+red color. </li>
+  <li> Click the &#8220;Apply to Graph&#8221; button. </li>
+  <li>You network should now show &#8220;pd&#8221;
+interactions in blue, and &#8220;pp&#8221; interactions in red. Sample
+screenshot is shown above.</li>
+</ol>
+<h2 class="western" style="page-break-before: always;">Tutorial:
+Visualizing Expression Data on a Network</h2>
+The following tutorial demonstrates
+how to create a new continuous mapper. The goal is to superpose gene
+expression data onto a network, and to display gene expression values
+along a color gradient.
+<p lang="" class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m50f0b1f.jpg" name="Graphic30"
+ style="border: 0px solid ; width: 255px; height: 336px;" title=""
+ alt=""><br>
+</p>
+<ol>
+  <li> Load a sample network: From the
+main menu, select File <font face="Wingdings">&#61664;</font> Load <font
+ face="Wingdings">&#61664;</font> Graph, and select
+sampleData/galFiltered.sif. </li>
+  <li> Load a sample set of expression
+data: From the main menu, select File <font face="Wingdings">&#61664;</font>
+Load <font face="Wingdings">&#61664;</font> Expression Matrix File, and
+select sampleData/galExpData.pvals. </li>
+  <li> Select Visualization <font face="Wingdings">&#61664;</font> Set Visual
+Properties. </li>
+  <li> Select &#8220;New&#8221; to create a new Visual
+Style. Name your new style: &#8220;Sample4&#8221;. </li>
+  <li> Click the &#8220;Define&#8221; button to define
+the newly created Visual Style. </li>
+  <li> In the &#8220;Set Visual Properties&#8221;
+Dialog box, select Node Attributes <font face="Wingdings">&#61664;</font>
+Node Color. </li>
+  <li> Click the New button in the mapping
+panel. </li>
+  <li> You will be prompted to select a
+mapping type: passthrough mapper, discrete mapper or continuous mapper
+(for an overview of the differences between these mappers, please refer
+back to section 8.2.) Select &#8220;continuous mapper&#8221;, and enter a
+descriptive name. For example, enter: &#8220;ColorGradient&#8221;. </li>
+  <li> From the &#8220;Map Attribute&#8221; pull-down
+menu, select &#8220;gal1RGexp.&#8221; </li>
+  <li> Click the &#8220;Add Point&#8221; button twice
+to add two data points. </li>
+  <li> Set the first point to &#8220;-1&#8221;, Below
+= Yellow, Equal = White. </li>
+  <li> Set the second point to &#8220;2&#8221;, Equal
+= Red, Above = Black. </li>
+  <li> Click the &#8220;Apply to Graph&#8221; button. </li>
+</ol>
+<p lang="" class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_2d6d3659.jpg" name="Graphic31"
+ style="border: 0px solid ; width: 310px; height: 197px;" title=""
+ alt=""><br>
+</p>
+This visual mapper will set all nodes
+with a gal1RGexp value less than &#8211;1 to Yellow, and all nodes with a
+gal1RGExp value greater than 2 to Black. Additionally, all values
+between &#8211;1 and 2 will be painted with a white/red color gradient.
+Sample screenshot is shown at right.
+<p class="western" align="left"></p>
+<p class="western" align="left"><br>
+</p>
+<p class="western" align="left"></p>
+<p class="western" align="left"><br>
+</p>
+</body>
+</html>

@@ -1,0 +1,1 @@
+java cytoscape.cytoscape -i galFiltered.sif -b annotationAndSynonyms

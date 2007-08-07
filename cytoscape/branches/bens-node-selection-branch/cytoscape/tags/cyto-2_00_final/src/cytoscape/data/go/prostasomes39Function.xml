@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="Homo sapiens"
+            type="function"
+            ontology="goOntologies.xml">
+
+<term>
+  <entity> 6PGD </entity>
+  <id> 4616 </id>
+</term>
+
+
+<term>
+  <entity> 6PGD </entity>
+  <id> 5489 </id>
+</term>
+
+
+<term>
+  <entity> 6PGD </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 287 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 3878 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 5524 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 16829 </id>
+</term>
+
+
+<term>
+  <entity> ALFC </entity>
+  <id> 4332 </id>
+</term>
+
+
+<term>
+  <entity> ALFC </entity>
+  <id> 16829 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 4177 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 4179 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 4872 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 8237 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 4623 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16209 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16224 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16685 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16686 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16687 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 287 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 4005 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 5524 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 287 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 4005 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 5524 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 3754 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 3755 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 4600 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 8565 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 16853 </id>
+</term>
+
+
+<term>
+  <entity> DHA6 </entity>
+  <id> 4030 </id>
+</term>
+
+
+<term>
+  <entity> DHA6 </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> DHC3 </entity>
+  <id> 4090 </id>
+</term>
+
+
+<term>
+  <entity> DHC3 </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> DHSO </entity>
+  <id> 3939 </id>
+</term>
+
+
+<term>
+  <entity> DHSO </entity>
+  <id> 4024 </id>
+</term>
+
+
+<term>
+  <entity> DHSO </entity>
+  <id> 8270 </id>
+</term>
+
+
+<term>
+  <entity> DHSO </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 4177 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 4274 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 4287 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 5209 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 16805 </id>
+</term>
+
+
+<term>
+  <entity> ENOA </entity>
+  <id> 287 </id>
+</term>
+
+
+<term>
+  <entity> ENOA </entity>
+  <id> 4634 </id>
+</term>
+
+
+<term>
+  <entity> ENOA </entity>
+  <id> 16829 </id>
+</term>
+
+
+<term>
+  <entity> ESTD </entity>
+  <id> 4091 </id>
+</term>
+
+
+<term>
+  <entity> ESTD </entity>
+  <id> 4759 </id>
+</term>
+
+
+<term>
+  <entity> ESTD </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> G3P2 </entity>
+  <id> 4365 </id>
+</term>
+
+
+<term>
+  <entity> G3P2 </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 3840 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 4629 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 8270 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 8415 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 16740 </id>
+</term>
+
+
+<term>
+  <entity> GTP </entity>
+  <id> 4364 </id>
+</term>
+
+
+<term>
+  <entity> GTP </entity>
+  <id> 16740 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 4450 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> IMD2 </entity>
+  <id> 3938 </id>
+</term>
+
+
+<term>
+  <entity> IMD2 </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> KCRB </entity>
+  <id> 4111 </id>
+</term>
+
+
+<term>
+  <entity> KCRB </entity>
+  <id> 16772 </id>
+</term>
+
+
+<term>
+  <entity> KLK3 </entity>
+  <id> 4263 </id>
+</term>
+
+
+<term>
+  <entity> KLK3 </entity>
+  <id> 4295 </id>
+</term>
+
+
+<term>
+  <entity> KLK3 </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> LGUL </entity>
+  <id> 4462 </id>
+</term>
+
+
+<term>
+  <entity> LGUL </entity>
+  <id> 16829 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 4465 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 5323 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 8201 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 5489 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 5506 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 16165 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> MDHC </entity>
+  <id> 4470 </id>
+</term>
+
+
+<term>
+  <entity> MDHC </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> MDHC </entity>
+  <id> 30060 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 4339 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 4553 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 4558 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 4562 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 4245 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 8237 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> PDX1 </entity>
+  <id> 16209 </id>
+</term>
+
+
+<term>
+  <entity> PDX2 </entity>
+  <id> 5489 </id>
+</term>
+
+
+<term>
+  <entity> PDX2 </entity>
+  <id> 8379 </id>
+</term>
+
+
+<term>
+  <entity> PDX2 </entity>
+  <id> 16209 </id>
+</term>
+
+
+<term>
+  <entity> PEPC </entity>
+  <id> 4194 </id>
+</term>
+
+
+<term>
+  <entity> PEPC </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> PPAP </entity>
+  <id> 3993 </id>
+</term>
+
+
+<term>
+  <entity> PPAP </entity>
+  <id> 4725 </id>
+</term>
+
+
+<term>
+  <entity> PPAP </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> SPSY </entity>
+  <id> 4766 </id>
+</term>
+
+
+<term>
+  <entity> SPSY </entity>
+  <id> 16740 </id>
+</term>
+
+
+<term>
+  <entity> SPSY </entity>
+  <id> 16768 </id>
+</term>
+
+
+<term>
+  <entity> TMS2 </entity>
+  <id> 4263 </id>
+</term>
+
+
+<term>
+  <entity> TMS2 </entity>
+  <id> 4295 </id>
+</term>
+
+
+<term>
+  <entity> TMS2 </entity>
+  <id> 5044 </id>
+</term>
+
+
+<term>
+  <entity> TMS2 </entity>
+  <id> 16787 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 4807 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 16853 </id>
+</term>
+
+
+<term>
+  <entity> UBA1 </entity>
+  <id> 4839 </id>
+</term>
+
+
+<term>
+  <entity> UBA1 </entity>
+  <id> 16874 </id>
+</term>
+
+
+<term>
+  <entity> KPY1 </entity>
+  <id> 287 </id>
+</term>
+
+
+<term>
+  <entity> KPY1 </entity>
+  <id> 4743 </id>
+</term>
+
+
+<term>
+  <entity> KPY1 </entity>
+  <id> 4743 </id>
+</term>
+
+
+<term>
+  <entity> KPY1 </entity>
+  <id> 16740 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 8603 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 30552 </id>
+</term>
+
+
+<term>
+  <entity> PGK1 </entity>
+  <id> 4618 </id>
+</term>
+
+
+<term>
+  <entity> PGK1 </entity>
+  <id> 16740 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 4024 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 4314 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 4320 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 8270 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 8757 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16294 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16295 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16296 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16491 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16740 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16788 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 16829 </id>
+</term>
+
+
+</annotation>

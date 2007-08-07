@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="Homo sapiens"
+            type="component"
+            ontology="goOntologies.xml">
+
+<term>
+  <entity> 143S </entity>
+  <id> 5615 </id>
+</term>
+
+
+<term>
+  <entity> 143S </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> ACTA </entity>
+  <id> 5865 </id>
+</term>
+
+
+<term>
+  <entity> ACTA </entity>
+  <id> 5884 </id>
+</term>
+
+
+<term>
+  <entity> ACTB </entity>
+  <id> 5884 </id>
+</term>
+
+
+<term>
+  <entity> ACTZ </entity>
+  <id> 5869 </id>
+</term>
+
+
+<term>
+  <entity> ACTZ </entity>
+  <id> 5875 </id>
+</term>
+
+
+<term>
+  <entity> ACTZ </entity>
+  <id> 5884 </id>
+</term>
+
+
+<term>
+  <entity> ANX2 </entity>
+  <id> 5625 </id>
+</term>
+
+
+<term>
+  <entity> ANX2 </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> ANX3 </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> ANXB </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> ANXB </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> ARVC </entity>
+  <id> 5622 </id>
+</term>
+
+
+<term>
+  <entity> ARVC </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> ARVC </entity>
+  <id> 5622 </id>
+</term>
+
+
+<term>
+  <entity> ARVC </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> BASP </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> BASP </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> CALM </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> CALM </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> CAPG </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> CAPG </entity>
+  <id> 8290 </id>
+</term>
+
+
+<term>
+  <entity> CD81 </entity>
+  <id> 5887 </id>
+</term>
+
+
+<term>
+  <entity> COF1 </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> COF1 </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> EF11 </entity>
+  <id> 5853 </id>
+</term>
+
+
+<term>
+  <entity> EZRI </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> EZRI </entity>
+  <id> 5902 </id>
+</term>
+
+
+<term>
+  <entity> FINC </entity>
+  <id> 5576 </id>
+</term>
+
+
+<term>
+  <entity> G25P </entity>
+  <id> 8372 </id>
+</term>
+
+
+<term>
+  <entity> GBAS </entity>
+  <id> 138 </id>
+</term>
+
+
+<term>
+  <entity> GBAS </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> GBAS </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> GR78 </entity>
+  <id> 5788 </id>
+</term>
+
+
+<term>
+  <entity> GTR5 </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> GTR5 </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> HINT </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> HINT </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> HS27 </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> HS71 </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> HS71 </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> HS7C </entity>
+  <id> 5622 </id>
+</term>
+
+
+<term>
+  <entity> HS9A </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> HS9B </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> KI67 </entity>
+  <id> 5730 </id>
+</term>
+
+
+<term>
+  <entity> LMP1 </entity>
+  <id> 5624 </id>
+</term>
+
+
+<term>
+  <entity> LMP1 </entity>
+  <id> 5764 </id>
+</term>
+
+
+<term>
+  <entity> LMP1 </entity>
+  <id> 5887 </id>
+</term>
+
+
+<term>
+  <entity> MIF </entity>
+  <id> 5615 </id>
+</term>
+
+
+<term>
+  <entity> NDR1 </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> PIP </entity>
+  <id> 5576 </id>
+</term>
+
+
+<term>
+  <entity> PLSL </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> PRO1 </entity>
+  <id> 15629 </id>
+</term>
+
+
+<term>
+  <entity> PRO2 </entity>
+  <id> 15629 </id>
+</term>
+
+
+<term>
+  <entity> PTI6 </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> R33B </entity>
+  <id> 5794 </id>
+</term>
+
+
+<term>
+  <entity> RB1A </entity>
+  <id> 5783 </id>
+</term>
+
+
+<term>
+  <entity> RB1A </entity>
+  <id> 5794 </id>
+</term>
+
+
+<term>
+  <entity> RB3A </entity>
+  <id> 8021 </id>
+</term>
+
+
+<term>
+  <entity> RB6B </entity>
+  <id> 5794 </id>
+</term>
+
+
+<term>
+  <entity> RHOA </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> SCA2 </entity>
+  <id> 5624 </id>
+</term>
+
+
+<term>
+  <entity> SCA2 </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> STB2 </entity>
+  <id> 8372 </id>
+</term>
+
+
+<term>
+  <entity> TBA1 </entity>
+  <id> 5874 </id>
+</term>
+
+
+<term>
+  <entity> TBB2 </entity>
+  <id> 5856 </id>
+</term>
+
+
+<term>
+  <entity> TBB2 </entity>
+  <id> 5874 </id>
+</term>
+
+
+<term>
+  <entity> TRFL </entity>
+  <id> 5615 </id>
+</term>
+
+
+<term>
+  <entity> UBIQ </entity>
+  <id> 5634 </id>
+</term>
+
+
+<term>
+  <entity> VAT1 </entity>
+  <id> 8021 </id>
+</term>
+
+
+<term>
+  <entity> VAT1 </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> WDR6 </entity>
+  <id> 8372 </id>
+</term>
+
+
+<term>
+  <entity> ZA2G </entity>
+  <id> 5615 </id>
+</term>
+
+
+<term>
+  <entity> ZA2G </entity>
+  <id> 5625 </id>
+</term>
+
+
+<term>
+  <entity> ZA2G </entity>
+  <id> 16020 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 9346 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 5888 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 5764 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> DHC3 </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> ENOA </entity>
+  <id> 15 </id>
+</term>
+
+
+<term>
+  <entity> ESTD </entity>
+  <id> 16023 </id>
+</term>
+
+
+<term>
+  <entity> G3P2 </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 5624 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> KCRB </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 5576 </id>
+</term>
+
+
+<term>
+  <entity> MDHC </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 16021 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 5887 </id>
+</term>
+
+
+<term>
+  <entity> PDX2 </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> PEPC </entity>
+  <id> 5615 </id>
+</term>
+
+
+<term>
+  <entity> PPAP </entity>
+  <id> 5576 </id>
+</term>
+
+
+<term>
+  <entity> TMS2 </entity>
+  <id> 5887 </id>
+</term>
+
+
+<term>
+  <entity> KPY1 </entity>
+  <id> 5829 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 5624 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 5737 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 5886 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 5952 </id>
+</term>
+
+
+</annotation>

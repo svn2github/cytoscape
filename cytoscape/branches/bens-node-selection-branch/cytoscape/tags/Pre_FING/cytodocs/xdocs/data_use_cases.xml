@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <author>Ethan Cerami</author>
+        <title>Cytoscape Data: Use Cases</title>
+    </properties>
+    <body>
+        <section name="Use Case Overview">
+            <P>To help define useful functionality for a Cytoscape data layer, we have defined 6
+                high-level use cases. These use cases (in rough order of priority) include:</P>
+            <UL>
+                <LI>Use Case 1: User selects a node and retrieves additional details about that node
+                    from one or more data sources. For example, the user may want to view the
+                    GenBank File for a selected node, or lookup known homologs.</LI>
+                <LI>Use Case 2: User wants to load interaction data from a remote data source, and
+                    immediately view the data within cytoscape. For example, the user may want to
+                    load data from <A
+                    HREF="http://biodata.mshri.on.ca/grid/">GRID</A>, or <A
+                    HREF="http://bind.ca/">BIND</A>. </LI>
+                <LI>Use Case 3: User wants to load a SIF/GML file from over the network.</LI>
+                <LI>Use Case 4: User selects a node and initiates a computational query that runs on
+                    a remote server. For example, the user can click on a node, and run a BLAST
+                    search via the NCBI QBlast API (http://www.ncbi.nlm.nih.gov/BLAST/qblast.html).</LI>
+                <LI>Use Case 5: User creates a set of data within Cytoscape, and wants to submit
+                    that data to a remote database. For example, the user can submit new data to
+                    GRID or BIND. </LI>
+                <LI>Use Case 6: User selects a node and does a thesaurus look-up. For example, the
+                    user selects a node, and retrieves all aliases / synonyms for the gene/protein. </LI>
+            </UL>
+	    <P>
+		    For the first iteration of development, our plan is to focus on specific portions
+		    of Use Cases 1 and 2.  Details are available in the <A HREF="phase1.html">
+		    Phase 1</A> document.
+	    </P> 
+        </section>
+    </body>
+</document>

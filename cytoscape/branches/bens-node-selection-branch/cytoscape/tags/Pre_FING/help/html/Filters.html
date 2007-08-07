@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Filters</title>
+</head>
+<body>
+<h1 class="western">Filters</h1>
+The Cytoscape Filter plugin, which
+is packaged with the official Cytoscape 2.0 release and is active by
+default, allows for a wide variety of fine-tuned filtering on node
+and edge attributes loaded onto Cytoscape networks. For example, you
+can easily select all the nodes whose name contains a specific
+pattern that you define. Example filters are shipped with the plugin
+to get started. Base filters only operate on String and Scalar data
+i.e. any names, descriptions or numerical node or edge attributes can
+be filtered. A Boolean filter is also available that can be used to
+combine any number of existing filters in logical combinations, so as
+you add filters, the plugin becomes more powerful.
+<h2><b>Using the Plugin</b></h2>
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m47d7831d.png" name="Graphic32"
+ align="left" width="290" height="68" border="0"><br clear="left">
+</p>
+If the Filter plugin is loaded, then you should see a menu called
+&#8220;Filters&#8221; and the filter icon:
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_mc659dc7.png" name="Graphic33"
+ align="left" width="618" height="199" border="0"><br clear="left">
+</p>
+Activate
+the filters using either the &#8220;Use Filters&#8221; menu entry or the
+large filters icon (red and green arrows). The filters dialog looks
+like the following (without the colors...)
+<br>
+<br>
+As for the colors:
+<br>
+<br>
+<font color="#ff0000">The Red Box:</font>
+Each available filter has its own tab. The default filter is <b>Node
+Interactions</b> (which allows you to filter nodes, based on the
+edges that they are connected to), <b>Boolean</b> (which allows you
+to combine filters together using AND, OR and XOR operators),
+<b>Topology</b> (which allows you to filter nodes based on the number
+of edges to other nodes), <b>Numerical</b> (which allows for &gt;, =,
+and &lt; filtering operations on numerical attributes) and <b>String</b>
+(which allows for filtering using * and ? as wildcards).
+<br>
+<br>
+<font color="#000080">The Purple
+Box</font><font color="#800080">:</font> An existing or newly created
+filter can be edited in this area. Each filter type has its own user
+interface for editing.
+<br>
+<br>
+<font color="#ff0000">The Orange
+Box: </font>All available filters are shown in this list. Initially,
+this list will contain sample filters, but as you create more, they
+will be added here.
+<br>
+<br>
+<font color="#00ffff">The Cyan Box:
+</font>Pressing &#8220;Add Current Filter&#8221; adds the filter being edited
+to the &#8220;Available Filters&#8221; box, and &#8220;Remove Selected Filter&#8221;
+deletes the currently selected filter.
+<br>
+<br>
+<font color="#008000">The Green Box:</font>
+This area contains default actions for a given filter. These specify
+how Cytoscape should display the network components (nodes and edges)
+that pass a filter. You can choose to have Cytoscape select the nodes
+and/or edges that pass a given filter or alternatively have Cytoscape
+hide the nodes and/or edges that do not pass a given filter. A useful
+operation is to have a filter select a set of nodes and then send
+these nodes to a new network (through the <b>Select</b> menu).
+<h2><b>Creating Filters</b></h2>
+The important thing to realize when
+creating a filter is that the filter does not <b>do</b> anything by
+itself. Once created, the filter must be run.
+<p class="western" align="left"><b>String Filter:</b></p>
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m19d4cfd5.png" name="Graphic34"
+ align="left" width="618" height="195" border="0"><br clear="left">
+<br>
+</p>
+The String Filter allows you to
+choose to Filter Node or Edges, and gives you a list of available
+attributes to search for each (those attributes that are loaded on
+the network). If you have the filters dialog box active and you load
+new graph attributes, you can click the update button to refresh the
+attribute list. Search terms are entered in the text box at the
+bottom. For example to match any Node whose canonicalName starts
+with &#8220;YDL&#8221; you would select &#8220;Node&#8221;, &#8220;canonicalName&#8221; and
+type &#8220;YDL*&#8221;. The * is important as it matches anything for any
+number of characters after YDL. If you want to be more specific and
+only select Nodes whose canonicalName starts with YDL00 followed by
+any other two characters, you would type &#8220;YDL00??&#8221;. The &#8220;?&#8221;
+denotes any single character, while the &#8220;*&#8221; represents zero or
+more characters. Full regular expression searching is supported,
+although is not covered here. Once the filter is defined, it will be
+assigned a default descriptive name, although this name can be
+edited. Pressing the &#8220;Add Current Filter&#8221; button will add your
+filter to the list of available filters to the left.
+<p class="western" align="left"><b>Numerical Filter:</b></p>
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m630e6784.png" name="Graphic35"
+ align="left" width="616" height="200" border="0"><br clear="left">
+<br>
+</p>
+The Numerical Filter also allows you
+to filter Nodes or Edges, and presents you with a list of available
+attributes. This filter matches greater-than, less-than, or equal-to
+a number you type in the search box. See the String filter
+description for more information.
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m1b2fbbab.png" name="Graphic36"
+ align="left" width="618" height="194" border="0"><br clear="left">
+</p>
+<p class="western" align="left"><b>Boolean Filter:</b></p>
+The Boolean filter allows you to
+define a new filter that is a logical combination of existing
+filters. Available filters are displayed (although the list can be
+refreshed by clicking the &#8220;Update List of Filters&#8221; button). By
+selecting one or more filters, you can then choose whether Nodes or
+Edges pass &#8220;ALL&#8221; (AND), &#8220;AT LEAST ONE&#8221; (OR), or &#8220;ONLY ONE&#8221;
+(XOR) of the selected filters. Once created Boolean filters can then
+themselves be combined using the Boolean filter to create arbitrarily
+complex logical combinations of filters. Note that unlike the String
+and Numerical Filters, Boolean Filters will need to be assigned a
+name manually.
+<br>
+<br>
+Once created, filters are saved for
+future sessions, as long as you exit Cytoscape normally via the exit
+command in the File menu (i.e. not via ctrl-c on Linux).
+<h2><b>Running filters</b></h2>
+Any available filter can be run by
+selecting a visualization action for Cytoscape (how your filter
+results should be displayed) and pressing the &#8216;Go!&#8217; button.
+<p class="western" align="left" style="page-break-before: always;"><b>The
+Network +/- Filter Feature</b></p>
+The &#8220;Network +/-&#8221; dialog is
+available from the Filters menu. It allows you to create new networks
+and add/remove nodes to/from existing networks based on available
+filters. The dialog box is shown below:
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m2659d21f.png" name="Graphic37"
+ align="left" width="381" height="463" border="0"><br clear="left">
+</p>
+<b>The Attribute Browser Filter
+Feature<br>
+<br>
+</b>The &#8220;Attributes Browser if passed
+Filter&#8221; item from the Data menu allows you to see the normal
+Cytoscape graph attribute browser for all nodes or edges that pass a
+given filter.
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m42a6b598.png" name="Graphic38"
+ align="left" width="282" height="95" border="0"><br clear="left">
+<br>
+</p>
+Once clicked, the following dialog
+box appears to allow you to choose an available filter:
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_7e2117bc.png" name="Graphic39"
+ align="left" width="228" height="265" border="0"><br clear="left">
+</p>
+Clicking on the Browser button will
+open the graph attributes browser. <br>
+<br>
+<b>The Diff Filter Feature</b>
+<br>
+<br>
+The Diff feature, accessible from
+the Data menu shown above, allows you to see which nodes or edges
+pass each of two selected filters and which nodes or edges those
+filters don&#8217;t have in common (i.e. it shows the differences between
+two filters). This is useful for quickly comparing two filters. You
+can then create a new network that contains the differences (&#8220;Create
+Network&#8221; button) or create a new filter that selects the
+differences (&#8220;Create Filter&#8221; button).
+<p class="western" align="left"><img
+ src="images/Cytoscape2_0Manual_html_m77e7b40d.png" name="Graphic40"
+ align="left" width="329" height="333" border="0"><br clear="left">
+<br>
+</p>
+The same functionality is available
+here for networks. You can select any two networks that are loaded
+and create a new network from their differences.
+</body>
+</html>

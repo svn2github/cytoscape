@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<document>
+  <body>
+
+  <section name="About this Document">
+    <p>
+	    This document describes user functionality that will be built in Phase 1 of the 
+	    Cytoscape Data Services project.  The focus of Phase 1 is to provide similar data
+	    services functionality to that provided in Osprey.
+    </p>
+  </section>
+  <section name="Feature #1:  Obtain Node Information from GRID">
+    <P>
+	    For each node in the graph, Cytoscape will download node information from GRID.
+	    For each node, information will include:
+	    <OL>
+		<LI>ORF Name(s)</LI>
+		<LI>Gene / Alias Name(s)</LI>	
+		<LI>Description</LI>
+	    	<LI>Gene Ontology Information
+	    		<OL>
+				<LI>GO Component</LI>
+				<LI>GO Process</LI>
+				<LI>GO Function</LI>
+				<LI>GO Special</LI>
+			</OL>
+		</LI>
+		</OL>
+		All of this data will be displayed in a separate window.  Initially, data will 
+		be presented in the same manner as currently used by Osprey (basically, a simple
+		panel of tables and text boxes.)  In a later phase, we will redesign the data
+	        presentation to follow the new Cytoscape look and feel guidelines.
+	</P>
+	<P>
+		In Phase 1, the user will see one option under the Cytoscape PlugIn menu:
+		<UL>
+			<LI>Get Gene Information from GRID</LI>
+		</UL>
+	</P>
+	<P>
+		When the user selects this option, Cytoscape will download information about
+		all nodes within the graph and cache the contents locally in memory.  Cytoscape
+		will then pop-up a new "Gene Information" window.  When the user select
+		an individual node, the Gene Information window will be updated to show the 
+		selected node data.  If no node is selected, the window will not show any data.
+    </P>
+  </section>
+  <section name="Feature 2:  Obtain additional interaction data from GRID">
+	  <P>
+		  Just like in Osprey, a user will be able to select a specific node, and 
+		  then view node information within the "Gene Information" window.  Within
+		  this window, we will include a "Get New Interactions" button.  
+		  When the user clicks on this button, Cytoscape will connect to GRID, 
+		  download a full list of interactions and display the list to the user.
+		  The user can then add all of these interactions to the graph.
+	  </P>
+	  <P>
+		  Again, for Phase 1, we will follow the design already provided by Osprey.
+	  </P>
+  </section>
+  <section name="Technical Features">
+	  <P>
+		  This first phase of the project will follow the general guidelines put
+		  forth in our Data Services Technical architecture document.
+		  Phase 1 will therefore include:
+		  First iteration of Cytoscape data services layer; and
+		  Use of Java Caching System.
+	  </P>
+  </section>
+  <section name="Schedule">
+	  <P>
+		  Phase 1 should take approximately two weeks of development.  Assuming 
+		  we nail down user functionality by Wednesday, April 23, we can start real
+		  coding on Thursday, April 24.  Phase 1 should therefore be complete by 
+		  Friday, May 9.  This includes time to create unit test scripts via JUnit,
+		  create a better Ant build process, and tweak the user interface.
+	  </P>
+  </section>
+</body>
+</document>

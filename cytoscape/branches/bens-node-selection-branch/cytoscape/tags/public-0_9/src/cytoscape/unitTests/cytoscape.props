@@ -1,0 +1,47 @@
+#------------------------------------------------------------------------------------
+# interaction will determine the edge color.  this is the middle term in
+# an intr file, where the form is (by example)
+#    YPL075W pd YOL086C
+#    YPL248C pp YBR018C
+#    YPL248C pp YBR019C
+#
+#  specify that 'interaction' values control the color
+edge.color.controller=interaction
+
+#---------------------------------------------------------------------
+# and that an interaction value of pp specifes a blue edge
+edge.color.map.interaction.pp=0,0,255
+#---------------------------------------------------------------------
+# pd specifies a yellow edge
+edge.color.map.interaction.pd=255,0,0
+
+#---------------------------------------------------------------------
+# interaction values also control the decoration at the end of
+# an edge on the graph.  'pd' causes an arrow to be drawn
+# where the edge hits the target node; the default target
+# and source decorators (no decoration) is used everywhere else
+
+edge.targetDecoration.controller=interaction
+edge.targetDecoration.map.interaction.pd=arrow
+
+edge.sourceDecoration.controller=interaction
+edge.sourceDecoration.map.interaction.pp=arrow
+
+#background.color=200,200,200
+background.color=230,230,205
+#node.fill.color=204,255,255
+node.fill.color=250,255,255
+node.border.color=255,0,0
+
+#--------------------------------------------------------------------
+# plugins. for each plugin, specify
+#
+#   1. the full name of the class to be loaded.
+#   2. the file extension which tells cytoscape to load the plugin
+#   3. the attribute name which, if present in node or edge attributes,
+#      tells cytoscape to load the plugin
+#--------------------------------------------------------------------
+plugin.foo.className=cytoscape.plugins.demo.Foo
+plugin.foo.fileExtension=mrna
+plugin.foo.attributeName=foo
+plugin.bar.load=cytoscape.plugins.demo.Bar

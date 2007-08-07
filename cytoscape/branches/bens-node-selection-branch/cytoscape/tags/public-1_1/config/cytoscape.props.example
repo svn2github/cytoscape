@@ -1,0 +1,23 @@
+species=Saccharomyces cerevisiae
+#set this to false to disable the undo features
+enableUndo=true
+
+# pick calculators from the vizmap.props file
+visualStyle=default
+
+#--------------------------------------------------------------------
+# plugins. for each plugin, specify
+#
+#   1. the full name of the class to be loaded.
+#   2. the file extension which tells cytoscape to load the plugin
+#   3. the attribute name which, if present in node or edge attributes,
+#      tells cytoscape to load the plugin
+#--------------------------------------------------------------------
+plugin.bar.className=csplugins.demo.Bar
+plugin.bar.fileExtension=bar
+plugin.bar.attributeName=bar
+
+# optional load, based on the presence of an "xxx.pvals" file
+plugin.activeModules.className=csplugins.activeModules.ActiveModulesUI
+plugin.activeModules.fileExtension=pvals
+

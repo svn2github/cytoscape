@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<document>
+  <body>
+
+  <section name="Cytoscape Tech Docs">
+    <p>
+	    Welcome to the Cytoscape Tech Docs Site.
+	    This site was automatically generated via an open source tool, called Maven.
+    </p>
+    <P>Here's how to create/edit documents:
+    <UL>
+	<LI>Download and install the latest <A HREF="http://maven.apache.org/">Maven distribution</A>.</LI>
+	<LI>In the main cytoscape cvs system, there is a new directory called cytodocs.
+		Within cytodocs is a directory named xdocs -- all tech docs go in here.  All images 
+		go in xdocs/images.
+	</LI>
+    <LI>Documents checked into cytodocs/xdocs need to conform to the XDocs format.  This is basically 
+        a bare bones subset of XHTML.  Sample tags are available from the
+        <A HREF="http://jakarta.apache.org/site/jakarta-site-tags.html">Jakarta Site.</A>  The only
+        tricky part is to remember that all your docs need to be XHTML compliant -- most importantly,
+	this means that every start tag, even &lt;P&gt; must have a corresponding end tag. 
+	The easiest option to test for well-formedness is to load your XML document into 
+	Internet Explorer -- if it renders, the document is well-formed;  otherwise, Explorer
+	will display the specific error message.</LI>
+	<LI>To add your document to the left-hand navigation bar, you need to modify 
+		cytodocs/xdocs/navigation.xml.  Examples are already provided in the file.</LI>
+	<LI>Once you are happy with your document, try previewing the document.  To do so, make sure Maven
+		is installed correctly.  Then run:
+<pre>
+cd cytodocs
+maven site:generate
+</pre>
+		This will automatically rebuild the whole tech docs site and place it in 
+		cytodocs/target/docs/.  To preview the new site, open cytodocs/target/docs/index.html.
+	</LI>
+	<LI>Once you have previewed the site, and are happy with your new documents, email Ethan, and
+		he will redeploy the site on the CBio site.  Obviously, we will work out something 
+		more automatic in the future, but for low volume, this is fine.
+	</LI>
+    </UL>
+    </P>
+  </section>
+</body>
+</document>

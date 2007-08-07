@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<toc version="1.0">
+  <tocitem target="index" text="Cytoscape 2.3 User Manual">
+    <tocitem target="Cytoscape231UserManual" text="Cytoscape 2.3.1 User Manual"/>
+    <tocitem target="Introduction" text="Introduction"/>
+    <tocitem target="LaunchingCytoscape" text="Launching Cytoscape"/>
+    <tocitem target="QuickTourofCytoscape" text="Quick Tour of Cytoscape">
+      <tocitem target="TheMenus" text="The Menus"/>
+      <tocitem target="NetworkManagement" text="Network Management"/>
+      <tocitem target="TheNetworkOverviewWindow" text="The Network Overview Window"/>
+    </tocitem>
+    <tocitem target="CommandLineArgumentsandProperties" text="Command Line Arguments and Properties">
+      <tocitem target="CommandLineArguments" text="Command Line Arguments"/>
+      <tocitem target="CytoscapeProperties" text="Cytoscape Properties"/>
+    </tocitem>
+    <tocitem target="BuildingandStoringInteractionNetworks" text="Building and Storing Interaction Networks"/>
+    <tocitem target="LoadingGeneExpressionAttributeMatrixData" text="Loading Gene Expression (Attribute Matrix) Data"/>
+    <tocitem target="NodeandEdgeAttributes" text="Node and Edge Attributes"/>
+    <tocitem target="NavigationandLayout" text="Navigation and Layout">
+      <tocitem target="Navigation" text="Navigation"/>
+      <tocitem target="AutomaticLayoutAlgorithms" text="Automatic Layout Algorithms"/>
+      <tocitem target="ManualLayout" text="Manual Layout"/>
+    </tocitem>
+    <tocitem target="VisualStyles" text="Visual Styles">
+      <tocitem target="IntroductiontoVisualStyles" text="Introduction to Visual Styles"/>
+      <tocitem target="VisualAttributesGraphAttributesandVisualMappers" text="Visual Attributes, Graph Attributes and Visual Mappers"/>
+      <tocitem target="VisualStylesTutorials" text="Visual Styles Tutorials">
+        <tocitem target="Tutorial1CreatingaBasicVisualStyle" text="Tutorial 1: Creating a Basic Visual Style"/>
+        <tocitem target="Tutorial2CreatingaNewVisualStylewithaDiscreteMapper" text="Tutorial 2: Creating a New Visual Style with a Discrete Mapper"/>
+        <tocitem target="Tutorial3VisualizingExpressionDataonaNetwork" text="Tutorial 3: Visualizing Expression Data on a Network"/>
+      </tocitem>
+      <tocitem target="ManagingVisualStyles" text="Managing Visual Styles">
+        <tocitem target="SavingVisualStyles" text="Saving Visual Styles"/>
+        <tocitem target="ImportingVisualStyles" text="Importing Visual Styles"/>
+        <tocitem target="DefaultVisualStyles" text="Default Visual Styles"/>
+      </tocitem>
+    </tocitem>
+    <tocitem target="EditingNetworks" text="Editing Networks"/>
+    <tocitem target="CytoPanels" text="CytoPanels"/>
+    <tocitem target="RenderingEngine" text="Rendering Engine"/>
+    <tocitem target="Annotation" text="Annotation">
+      <tocitem target="GeneOntologyServerWizard" text="Gene Ontology Server Wizard"/>
+    </tocitem>
+    <tocitem target="Filters" text="Filters"/>
+    <tocitem target="LinkOut" text="LinkOut"/>
+    <tocitem target="Acknowledgements" text="Acknowledgements"/>
+    <tocitem target="AppendixAOldAnnotationServerFormat" text="Appendix A: Old Annotation Server Format">
+      <tocitem target="GeneOntologyServerWizard" text="Gene Ontology Server Wizard"/>
+      <tocitem target="Buildingyourownannotationfiles" text="Building your own annotation files">
+        <tocitem target="TheOntologyFormat" text="The Ontology Format"/>
+        <tocitem target="TheAnnotationFormat" text="The Annotation Format"/>
+      </tocitem>
+      <tocitem target="LoadDataintoCytoscape" text="Load Data into Cytoscape">
+        <tocitem target="TheAnnotationManifest" text="The Annotation Manifest"/>
+      </tocitem>
+      <tocitem target="GettingandReformattingGOData" text="Getting and Reformatting GO Data"/>
+    </tocitem>
+    <tocitem target="AppendixBGNULesserGeneralPublicLicense" text="Appendix B: GNU Lesser General Public License"/>
+  </tocitem>
+</toc>

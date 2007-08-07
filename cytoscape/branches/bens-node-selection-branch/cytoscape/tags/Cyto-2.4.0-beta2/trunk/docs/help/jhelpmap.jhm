@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
+<map version="1.0">
+   <mapID target="d0e1" url="index.html"/>
+   <mapID target="Cytoscape 2.4.0-b1 User Manual" url="index.html#Cytoscape 2.4.0-b1 User Manual"/>
+   <mapID target="Introduction" url="ar01s02.html"/>
+   <mapID target="Launching Cytoscape" url="ar01s03.html"/>
+   <mapID target="Quick Tour of Cytoscape" url="ar01s04.html"/>
+   <mapID target="menus" url="ar01s04.html#menus"/>
+   <mapID target="The Menus" url="ar01s04.html#The Menus"/>
+   <mapID target="Network Management" url="ar01s04.html#Network Management"/>
+   <mapID target="The Network Overview Window" url="ar01s04.html#The Network Overview Window"/>
+   <mapID target="command_line_args" url="index.html#command_line_args"/>
+   <mapID target="Command Line Arguments" url="ar01s05.html"/>
+   <mapID target="properties" url="index.html#properties"/>
+   <mapID target="Cytoscape Properties" url="ar01s06.html"/>
+   <mapID target="Building and Storing Interaction Networks" url="ar01s07.html"/>
+   <mapID target="Loading Gene Expression (Attribute Matrix) Data" url="ar01s08.html"/>
+   <mapID target="Node and Edge Attributes" url="ar01s09.html"/>
+   <mapID target="Navigation and Layout" url="ar01s10.html"/>
+   <mapID target="navigation" url="ar01s10.html#navigation"/>
+   <mapID target="Navigation" url="ar01s10.html#Navigation"/>
+   <mapID target="Automatic Layout Algorithms" url="ar01s10.html#Automatic Layout Algorithms"/>
+   <mapID target="Manual Layout" url="ar01s10.html#Manual Layout"/>
+   <mapID target="Visual Styles" url="ar01s11.html"/>
+   <mapID target="Introduction to Visual Styles" url="ar01s11.html#Introduction to Visual Styles"/>
+   <mapID target="Visual Attributes, Graph Attributes and Visual Mappers" url="ar01s11.html#Visual Attributes, Graph Attributes and Visual Mappers"/>
+   <mapID target="Visual Styles Tutorials" url="ar01s11.html#Visual Styles Tutorials"/>
+   <mapID target="Tutorial 1: Creating a Basic Visual Style" url="ar01s11.html#Tutorial 1: Creating a Basic Visual Style"/>
+   <mapID target="Tutorial 2: Creating a New Visual Style with a Discrete Mapper" url="ar01s11.html#Tutorial 2: Creating a New Visual Style with a Discrete Mapper"/>
+   <mapID target="Tutorial 3: Visualizing Expression Data on a Network" url="ar01s11.html#Tutorial 3: Visualizing Expression Data on a Network"/>
+   <mapID target="Managing Visual Styles" url="ar01s11.html#Managing Visual Styles"/>
+   <mapID target="Saving Visual Styles" url="ar01s11.html#Saving Visual Styles"/>
+   <mapID target="Importing Visual Styles" url="ar01s11.html#Importing Visual Styles"/>
+   <mapID target="Default Visual Styles" url="ar01s11.html#Default Visual Styles"/>
+   <mapID target="Editing Networks" url="ar01s12.html"/>
+   <mapID target="CytoPanels" url="ar01s13.html"/>
+   <mapID target="renderer" url="index.html#renderer"/>
+   <mapID target="Rendering Engine" url="ar01s14.html"/>
+   <mapID target="Annotation" url="ar01s15.html"/>
+   <mapID target="Gene Ontology Server Wizard" url="ar01s15.html#Gene Ontology Server Wizard"/>
+   <mapID target="Filters" url="ar01s16.html"/>
+   <mapID target="Linkout" url="ar01s17.html"/>
+   <mapID target="acknowledgements" url="index.html#acknowledgements"/>
+   <mapID target="Acknowledgements" url="ar01s18.html"/>
+   <mapID target="Appendix A: Old Annotation Server Format" url="ar01s19.html"/>
+   <mapID target="Gene Ontology Server Wizard" url="ar01s19.html#Gene Ontology Server Wizard"/>
+   <mapID target="Building your own annotation files" url="ar01s19.html#Building your own annotation files"/>
+   <mapID target="The Ontology Format" url="ar01s19.html#The Ontology Format"/>
+   <mapID target="The Annotation Format" url="ar01s19.html#The Annotation Format"/>
+   <mapID target="Load Data into Cytoscape" url="ar01s19.html#Load Data into Cytoscape"/>
+   <mapID target="The Annotation Manifest" url="ar01s19.html#The Annotation Manifest"/>
+   <mapID target="Getting and Reformatting GO Data" url="ar01s19.html#Getting and Reformatting GO Data"/>
+   <mapID target="Appendix B: GNU Lesser General Public License" url="ar01s20.html"/>
+</map>

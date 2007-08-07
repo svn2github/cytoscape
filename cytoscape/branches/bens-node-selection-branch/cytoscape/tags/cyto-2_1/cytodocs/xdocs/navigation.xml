@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Cytoscape">
+    <title>Cytoscape</title>
+    <body>
+        <menu name="How-to Docs">
+		<item href="/plugins/PlugInDevGuide.pdf" name="Plugin Developer Guide"/>
+        </menu>
+	<menu name="Graph Library Tech Docs">
+		<item href="graph.html" name="Graph Library Doc"/>
+	</menu>
+        <menu name="Data Services Tech Docs">
+               <item href="./ds/index.html" name="Data Services Site"/>
+        </menu>
+        <footer>
+		<a href="http://www.cytoscape.org">Cytoscape home</a>
+		2001-2003 Cytoscape.
+        </footer>
+    </body>
+</project>

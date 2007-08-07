@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document componentFinder="A_COUPLE_OF_CLASS_AND_LABEL_IS_EQUAL" 
+    windowFinder="CLASS_IS_EQUAL_STRICTLY"  windowClass="cytoscape.view.CytoscapeDesktop">
+    
+    <scenario name="OPEN_NETWORK_FILE">
+        <Click componentClass="JMenu" label="File"/>
+        <Click componentClass="JMenuItem" label="Import"/>
+        <Click componentClass="JMenuItem" label="Network..."/>
+        <retriever retryTime="2000">
+            <Click componentClass="JButton" dialogTitle="Import a Network" label="Select" windowFinder="CLASS_IS_ACCESSIBLE" 
+                windowClass="cytoscape.dialogs.ImportNetworkDialog"/>
+        </retriever>
+        <retriever retryTime="2000">
+            <!-- $(OPEN_FILE) is substituted by the JUnit program. -->
+                 <FileChooser dialogTitle="Import Network File" 
+                    directory="testData" fileName="$(FILE_TO_OPEN)"/>
+        </retriever>
+        <retriever retryTime="2000">
+            <Click componentClass="JButton" dialogTitle="Import a Network" label="Import" windowFinder="CLASS_IS_ACCESSIBLE" 
+                windowClass="cytoscape.dialogs.ImportNetworkDialog"/>
+        </retriever>
+       
+        <Delay ms="3000"/>
+        <retriever retryTime="10000" intervalTime="1000">
+            <if verifier="Verify" property="enabled" expected="true" 
+                componentClass="JButton" label="    Close    " 
+                windowFinder="CLASS_IS_ACCESSIBLE" windowClass="cytoscape.task.ui.JTask">
+                <Click label="    Close    " componentClass="JButton" 
+                    windowFinder="CLASS_IS_ACCESSIBLE" 
+                    windowClass="cytoscape.task.ui.JTask"/>
+            </if>
+        </retriever>
+        
+     <!--   <Click componentClass="JMenu" label="Layout"/>
+        <Click componentClass="JMenuItem" label="Cytoscape Layouts"/>
+        <Click componentClass="JMenuItem" label="Spring Embedded"/>
+        <Click componentClass="JMenuItem" label="All Nodes"/>
+        
+        <Delay ms="16000"/>
+        <retriever retryTime="10000" intervalTime="1000">
+            <if verifier="Verify" property="enabled" expected="true" 
+                componentClass="JButton" label="    Close    " 
+                windowFinder="CLASS_IS_ACCESSIBLE" windowClass="cytoscape.task.ui.JTask">
+                <Click label="    Close    " componentClass="JButton" 
+                    windowFinder="CLASS_IS_ACCESSIBLE" 
+                    windowClass="cytoscape.task.ui.JTask"/>
+            </if>
+        </retriever> -->
+        
+        
+  </scenario>
+    
+    <scenario name="APPLY_SPRING_LAYOUT">
+            <Click componentClass="JMenu" label="Layout"/>
+            <Click componentClass="JMenuItem" label="Cytoscape Layouts"/>
+            <Click componentClass="JMenuItem" label="Spring Embedded"/>
+            <Click componentClass="JMenuItem" label="All Nodes"/>
+    
+            <Delay ms="16000"/>
+            <retriever retryTime="10000" intervalTime="1000">
+                <if verifier="Verify" property="enabled" expected="true" 
+                    componentClass="JButton" label="    Close    " 
+                    windowFinder="CLASS_IS_ACCESSIBLE" windowClass="cytoscape.task.ui.JTask">
+                    <Click label="    Close    " componentClass="JButton" 
+                        windowFinder="CLASS_IS_ACCESSIBLE" 
+                        windowClass="cytoscape.task.ui.JTask"/>
+                </if>
+            </retriever>
+    </scenario>
+
+    <scenario name="SELECT_EDGES">
+            <Click componentClass="JMenu" label="Select"/>
+            <Click componentClass="JMenuItem" label="Edges"/>
+            <Click componentClass="JMenuItem" label="Select all edges"/>
+    </scenario>
+
+    <scenario name="SELECT_NODE_BY_NAME">
+<!-- WTF!@!!!!
+    	<KeyType keyStroke="pressed F"/>
+    	<KeyType keyStroke="CTRL"/>
+
+	<Click componentFinder="FIND_BY_MNEMONIC" mnemonic="Ctrl-F" windowFinder="CLASS_IS_ACCESSIBLE" windowClass="cytoscape.actions.AlphabeticalSelectionAction"/> 
+	<Click componentFinder="FIND_BY_MNEMONIC" mnemonic="Ctrl-F" windowFinder="NAME_IS_EQUAL" windowName="Select Nodes By Name"/> 
+	<Click componentClass="JMenu" label="Select"/>
+	<Click componentClass="JMenuItem" label="Nodes"/>
+	<Click componentClass="JMenuItem" label="By Name..."/>
+	                        <Click label="Yes" componentClass="JButton"
+	                               windowFinder="CLASS_IS_ACCESSIBLE"
+                                      windowClass="JDialog"/>
+        </retriever>
+
+        <retriever retryTime="2000">
+	<TypeText text="$(NODE_NAME)" windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog"/>
+	<Click componentClass="JButton" label="Search" windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog" />
+	<Click componentClass="JButton" label="Cancel" windowFinder="CLASS_IS_ACCESSIBLE" windowClass="JDialog"/>
+        </retriever>
+	-->
+
+    </scenario>
+
+    <scenario name="SELECT_FIRST_NEIGHBORS">
+            <Click componentClass="JMenu" label="Select"/>
+            <Click componentClass="JMenuItem" label="Nodes"/>
+            <Click componentClass="JMenuItem" label="First neighbors of selected nodes"/>
+    </scenario>
+    
+</document>
