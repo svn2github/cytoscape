@@ -180,7 +180,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @version 0.5
  * @since Cytoscape 2.5
- * @author kono
+ * @author Keiichiro Ono
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, PopupMenuListener,
