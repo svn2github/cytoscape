@@ -123,18 +123,21 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Displays all network views in TabbedPanes ( like Mozilla )
+	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
 	 */
 	public static final int TABBED_VIEW = 0;
 
 	/**
 	 * Displays all network views in JInternalFrames, using the mock desktop
 	 * interface. ( like MS Office )
+	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
 	 */
 	public static final int INTERNAL_VIEW = 1;
 
 	/**
 	 * Displays all network views in JFrames, so each Network has its own
 	 * window. ( like the GIMP )
+	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
 	 */
 	public static final int EXTERNAL_VIEW = 2;
 	
@@ -145,10 +148,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// --------------------//
 	// Member varaibles
 
-	/**
-	 * The type of view, should be considered final
-	 */
-	protected int viewType;
 	protected VisualStyle defaultVisualStyle;
 
 	/**
@@ -228,41 +227,24 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected HashMap vsAssociationMap;
 	protected JPanel main_panel;
 
-	// This is used to keep track of the visual style combo box in EXTERNAL_VIEW
-	// mode only. Basically, we need to remove the styleBox and create a new one
-	// each time a session is loaded. To do this, we need to know which
-	// component
-	// to remove.
-	protected JComboBox currentStyleBox = null;
-
-	// This is used to keep track of the visual style combo box in every other
-	// mode
+	// This is used to keep track of the visual style combo box. 
 	// This is the index of the box in the toolbar. We use this so that we can
 	// add and remove the stylebox from the same place.
 	protected int styleBoxIndex = -1;
 
 	/**
-	 * Creates a new CytoscapeDesktop object.
+	 * @deprecated view_type is no longer used.  Use the other CytoscapeDesktop() instead. 
+	 * Will be gone August 1008.
 	 */
-	public CytoscapeDesktop() {
-		this(TABBED_VIEW);
+	public CytoscapeDesktop(int view_type) {
+		this();
 	}
 
 	/**
-	 * Create a CytoscapeDesktop that conforms the given view type.
-	 *
-	 * @param view_type
-	 *            one of the ViewTypes
+	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(int view_type) {
+	public CytoscapeDesktop() {
 		super("Cytoscape Desktop (New Session)");
-		viewType = view_type;
-		initialize();
-	}
-
-	protected void initialize() {
-		// ///////////TODO: REMOVE
-		viewType = INTERNAL_VIEW;
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 
@@ -333,20 +315,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
-		if ((viewType == TABBED_VIEW) || (viewType == INTERNAL_VIEW)) {
-			main_panel.add(masterPane, BorderLayout.CENTER);
-			main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
-			// Remove status bar.
-			initStatusBar(main_panel);
-			setJMenuBar(cyMenus.getMenuBar());
-		}
-		// not sure if this is correct
-		else if (viewType == EXTERNAL_VIEW) {
-			main_panel.add(masterPane);
-			cyMenus.getToolBar().setOrientation(JToolBar.VERTICAL);
-			main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
-			setJMenuBar(cyMenus.getMenuBar());
-		}
+		main_panel.add(masterPane, BorderLayout.CENTER);
+		main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
+		// Remove status bar.
+		initStatusBar(main_panel);
+		setJMenuBar(cyMenus.getMenuBar());
 
 		// Set up the VizMapper
 		//setupVizMapper();
@@ -364,13 +337,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				}
 			});
 
+
 		// show the Desktop
 		setContentPane(main_panel);
 		pack();
-
-		if (viewType != EXTERNAL_VIEW)
-			setSize(DEF_DESKTOP_SIZE);
-
+		setSize(DEF_DESKTOP_SIZE);
 		setVisible(true);
 		toFront();
 	}
@@ -437,9 +408,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Return the view type for this CytoscapeDesktop
+	 * @deprecated View type is no longer used, so just don't use this method. Will be gone August 2008.
 	 */
 	public int getViewType() {
-		return viewType;
+		return 1; // what was internal
 	}
 
 	/**
@@ -522,26 +494,18 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		styleBox.setMaximumSize(newSize);
 		styleBox.setPreferredSize(newSize);
 
-		if (viewType == EXTERNAL_VIEW) {
-			if (currentStyleBox != null)
-				main_panel.remove(currentStyleBox);
+		JToolBar toolBar = cyMenus.getToolBar();
 
-			main_panel.add(styleBox, BorderLayout.SOUTH);
-			currentStyleBox = styleBox;
+		// first time
+		if (styleBoxIndex == -1) {
+			toolBar.add(styleBox);
+			styleBoxIndex = toolBar.getComponentCount() - 1;
+			toolBar.addSeparator();
+
+			// subsequent times
 		} else {
-			JToolBar toolBar = cyMenus.getToolBar();
-
-			// first time
-			if (styleBoxIndex == -1) {
-				toolBar.add(styleBox);
-				styleBoxIndex = toolBar.getComponentCount() - 1;
-				toolBar.addSeparator();
-
-				// subsequent times
-			} else {
-				toolBar.remove(styleBoxIndex);
-				toolBar.add(styleBox, styleBoxIndex);
-			}
+			toolBar.remove(styleBoxIndex);
+			toolBar.add(styleBox, styleBoxIndex);
 		}
 	}
 
@@ -745,13 +709,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// determine proper network view manager component
 		Component networkViewComp = null;
 
-		if (viewType == TABBED_VIEW)
-			networkViewComp = (Component) networkViewManager.getTabbedPane();
-		else if (viewType == INTERNAL_VIEW)
-			networkViewComp = (Component) networkViewManager.getDesktopPane();
-		else if (viewType == EXTERNAL_VIEW) {
-			// do nothing
-		}
+		networkViewComp = (Component) networkViewManager.getDesktopPane();
 
 		// create the split pane - we show this on startup
 		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
@@ -845,21 +803,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @param vt DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
+	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
 	 */
 	public static int parseViewType(String vt) {
-		int type = -1;
-
-		if ((vt == null) || vt.equals("tabbed"))
-			type = TABBED_VIEW;
-		else if (vt.equals("internal"))
-			type = INTERNAL_VIEW;
-		else if (vt.equals("external"))
-			type = EXTERNAL_VIEW;
-		else {
-			System.out.println("Couldn't parse view type: " + vt + " -- using TABBED");
-			type = TABBED_VIEW;
-		}
-
-		return type;
+		return 1; // What was internal
 	}
 }

@@ -837,9 +837,7 @@ public abstract class Cytoscape {
 	 */
 	public static CytoscapeDesktop getDesktop() {
 		if (defaultDesktop == null) {
-			// System.out.println( " Defaultdesktop created: "+defaultDesktop );
-			defaultDesktop = new CytoscapeDesktop(CytoscapeDesktop.parseViewType(CytoscapeInit.getProperties()
-			                                                                                  .getProperty("viewType")));
+			defaultDesktop = new CytoscapeDesktop();
 		}
 
 		return defaultDesktop;
