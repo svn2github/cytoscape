@@ -78,12 +78,13 @@
 
     <!-- ==================== Jar Target ================================= -->
     <target name="jar" depends="compile"
-            description="Creates Plugin Jar:  EnhancedSearch.jar">
+            description="Creates Plugin Jar: EnhancedSearch.jar">
        <unzip dest="${build.dir}/classes">
          <fileset dir="${lib.dir}">
            <include name="*.jar"/>
          </fileset>
        </unzip>
+        <copy file="${basedir}/plugin.props" todir="${build.dir}/classes/csplugins/enhanced/search" />
         <jar destfile="${basedir}/EnhancedSearch.jar"
              basedir="${build.dir}/classes">
 	    	<manifest>
