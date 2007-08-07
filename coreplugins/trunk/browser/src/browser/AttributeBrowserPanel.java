@@ -133,6 +133,7 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 		this.model = a_model;
 
 		initialize(a_model);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	/**
@@ -761,6 +762,7 @@ public class AttributeBrowserPanel extends JPanel implements PropertyChangeListe
 			attributes.deleteAttribute(testVal, name);
 
 			updateSelectedListItems(name, selectedVals);
+			Cytoscape.getSwingPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		}
 	}
 
