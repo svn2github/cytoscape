@@ -190,8 +190,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 				// Do nothing
 			} else if ((lineCount >= startLineNumber) && (line.trim().length() > 0)) {
 				parts = line.split(mapping.getDelimiterRegEx());
-				parser.parseEntry(parts);
-				globalCounter++;
+				if(parts.length>=mapping.getKeyIndex()+1) {
+					parser.parseEntry(parts);
+					globalCounter++;
+				}
 			}
 
 			lineCount++;
@@ -199,8 +201,6 @@ public class DefaultAttributeTableReader implements TextTableReader {
 
 		is.close();
 		bufRd.close();
-		
-		
 	}
 
 	/**

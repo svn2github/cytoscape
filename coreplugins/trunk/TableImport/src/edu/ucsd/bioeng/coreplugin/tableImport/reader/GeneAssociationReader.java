@@ -429,8 +429,11 @@ public class GeneAssociationReader implements TextTableReader {
 					break;
 
 				case TAXON:
-					nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
-					                            (String) speciesMap.get(entries[i].split(":")[1]));
+					if(speciesMap.get(entries[i].split(":")[1]) != null) {
+						nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
+	                            (String) speciesMap.get(entries[i].split(":")[1]));
+					}
+					
 
 					break;
 
