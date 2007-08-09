@@ -138,6 +138,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
@@ -741,11 +745,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (lastVSName == vsName) {
 			return;
 		}
-
+		
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		vmm.setVisualStyle(vsName);
 
 		if (propertyMap.containsKey(vsName) && (vsName.equals(lastVSName) == false)) {
+			
 			final List<Property> props = propertyMap.get(vsName);
 			final Map<String, Property> unused = new TreeMap<String, Property>();
 
@@ -1312,9 +1317,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Add properties to the browser.
 		 */
 		List<Property> propRecord = new ArrayList<Property>();
+		
 		setPropertyFromCalculator(nacList, NODE_VISUAL_MAPPING, propRecord);
 		setPropertyFromCalculator(eacList, EDGE_VISUAL_MAPPING, propRecord);
-
+		
 		// Save it for later use.
 		propertyMap.put(vmm.getVisualStyle().getName(), propRecord);
 
@@ -1357,12 +1363,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	                              DefaultProperty parent) {
 		if (attrKeys == null)
 			return;
-
+		
 		Object val = null;
 		VizMapperProperty valProp;
 		String strVal;
 
 		for (Object key : attrKeys) {
+
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
@@ -1386,6 +1393,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			valProp.setValue(val);
 		}
+//		System.out.println("=========Set prop done in " + (System.currentTimeMillis()-start) + " msec.");
 	}
 
 	/*
@@ -1406,7 +1414,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Mapping 0 is always currently used mapping.
 		 */
 		final ObjectMapping firstMap = calc.getMapping(0);
-
 		String attrName;
 
 		if (firstMap != null) {
@@ -1750,6 +1757,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 	}
 
+	public void enableListeners(boolean on) {
+		if(on) {
+			Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		} else {
+			Cytoscape.getSwingPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+	}
+	
+	public void initializeTableState() {
+		propertyMap = new HashMap<String, List<Property>>();
+		editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
+		defaultImageManager = new HashMap<String, Image>();
+	}
+	
+	
 	/**
 	 * Handle propeaty change events.
 	 *
@@ -1830,12 +1852,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
-		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
-			String vmName = vmm.getVisualStyle().getName();
+		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) { 
+			
+			final String vsName = vmm.getVisualStyle().getName();
+			this.lastVSName = null;
 			setVSSelector();
-			vsNameComboBox.setSelectedItem(vmName);
-			vmm.setVisualStyle(vmName);
-
+			vsNameComboBox.setSelectedItem(vsName);
+			vmm.setVisualStyle(vsName);
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		           && (e.getSource().getClass() == NetworkPanel.class)) {
@@ -1863,8 +1886,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			setAttrComboBox();
 		}
-
-		//		System.out.println("--------------Prop name: " + e.getPropertyName());
 
 		/*******************************************************************
 		 * Below this line, accept only cell editor events.

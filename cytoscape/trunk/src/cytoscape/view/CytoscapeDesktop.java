@@ -462,7 +462,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			this.vizMapper = Cytoscape.getVisualMappingManager();
 			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
-			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
+			//this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
 		}
 		return vizmapperUI;
 	}
