@@ -560,12 +560,16 @@ public class CytoscapeSessionReader {
 			targetNetworkURL = (URL) networkURLs.get(sessionID + "/"
 			                                                   + childNet.getFilename());
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
-			networkStream = (InputStream) jarConnection.getContent();	
-			new_network = Cytoscape.createNetwork(new XGMMLReader(networkStream),
-			                                                      false, parent);
+			networkStream = (InputStream) jarConnection.getContent();
+			final XGMMLReader reader = new XGMMLReader(networkStream);
+			new_network = Cytoscape.createNetwork(reader, false, parent);
+			
 			if(childNet.isViewAvailable()) {
-				Cytoscape.createNetworkView(new_network);
+				Cytoscape.createNetworkView(new_network, new_network.getTitle(),reader.getLayoutAlgorithm());
 			}
+			
+			reader.doPostProcessing(new_network);
+			
 			if (networkStream != null) {
 				try {
 					networkStream.close();
