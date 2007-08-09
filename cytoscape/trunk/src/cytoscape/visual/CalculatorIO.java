@@ -62,10 +62,6 @@ import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
-import cytoscape.Cytoscape;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.CalculatorFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -73,7 +69,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -82,7 +77,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
+
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.CalculatorFactory;
 
 
 //----------------------------------------------------------------------------

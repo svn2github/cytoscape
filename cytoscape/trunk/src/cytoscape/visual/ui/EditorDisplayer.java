@@ -184,7 +184,6 @@ public enum EditorDisplayer {
 	 */
 	public static EditorDisplayer getEditor(final VisualPropertyType type, final EditorType editor) {
 		final Class dataType = type.getDataType();
-
 		for (EditorDisplayer command : values()) {
 			if ((dataType == command.getCompatibleClass())
 			    && (((editor == EditorType.CONTINUOUS)

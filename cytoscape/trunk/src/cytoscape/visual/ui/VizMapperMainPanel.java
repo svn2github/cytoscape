@@ -283,6 +283,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		propertyMap = new HashMap<String, List<Property>>();
 		setMenu();
 
+		// Need to register listener here, instead of Desktop.
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		initComponents();

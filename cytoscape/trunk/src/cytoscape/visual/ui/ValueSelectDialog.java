@@ -88,7 +88,6 @@ public class ValueSelectDialog extends JDialog {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
 		dialog.setVisible(true);
-
 		return dialog.getValue();
 	}
 

@@ -113,7 +113,7 @@ import javax.xml.bind.JAXBException;
  */
 public abstract class Cytoscape {
 	//
-	// Signals
+	// Events
 	//
 
 	/**

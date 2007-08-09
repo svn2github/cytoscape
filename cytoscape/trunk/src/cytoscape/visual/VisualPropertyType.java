@@ -441,7 +441,8 @@ public enum VisualPropertyType {
 			
 			
 		}
-		// Error check
+		
+		// If size, it should be greater than 0.  Otherwise, 1 will be set.
 		if((this.name()).toUpperCase().endsWith("WIDTH") || (this.name()).toUpperCase().endsWith("SIZE")) {
 			if(((Number)ret).doubleValue() <= 0) {
 				ret = 1f;

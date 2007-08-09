@@ -80,6 +80,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	/*
 	 * Constants for diagram.
 	 */
+	
 	private static float UPPER_LIMIT;
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);

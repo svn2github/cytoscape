@@ -143,8 +143,8 @@ import javax.xml.stream.XMLStreamException;
  */
 public class CytoscapeSessionWriter {
 	
+	// These values will be replaced.
 	private static final char[] INVALID_CHAR = {'[', '\\', '/', ':', '*', '?', '"', '<', '>', '|', ']'};
-	
 	
 	// cysession.xml document version
 	private static final String cysessionVersion = "0.9";

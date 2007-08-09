@@ -68,6 +68,7 @@ import javax.swing.ImageIcon;
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	
+	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;
 	
 	/**
