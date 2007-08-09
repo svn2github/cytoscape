@@ -638,7 +638,7 @@
 	<!--                                                         -->
 	<!-- ======================================================= -->
 	<target name="release" 
-	        depends="jar, test" 
+	        depends="jar" 
 		description="Creates Cytoscape Release">
 
 		<echo>

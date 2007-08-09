@@ -36,6 +36,7 @@
  */
 package cytoscape.data.readers;
 
+import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import cern.colt.list.IntArrayList;
 
 import cytoscape.CyEdge;
@@ -108,6 +109,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -134,6 +138,10 @@ import javax.xml.stream.events.XMLEvent;
  *
  */
 public class XGMMLReader extends AbstractGraphReader {
+	
+	private final ExecutorService ex = Executors.newFixedThreadPool(1);
+	
+	
 	// Graph Tags
 	protected static final String GRAPH = "graph";
 	protected static final String NODE = "node";
@@ -285,9 +293,9 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void readXGMML() throws JAXBException, IOException {
 		// Performance check
-		final long start = System.currentTimeMillis();
-		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-		final MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
+//		final long start = System.currentTimeMillis();
+//		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+//		final MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
 
 		//		System.out.println("Memory status: used = " + heapUsage.getUsed());
 		//		System.out.println("Memory status: MAX = " + heapUsage.getMax());
@@ -309,8 +317,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			((XMLInputFactory2) factory).configureForSpeed();
 
 			XMLEventReader reader = factory.createXMLEventReader(new BufferedInputStream(networkStream));
-
-			long memstart = Runtime.getRuntime().freeMemory();
+//			long memstart = Runtime.getRuntime().freeMemory();
 
 			final EventFilter filter = new EventFilter() {
 				public boolean accept(XMLEvent event) {
@@ -364,7 +371,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			reader = null;
 			xmlfer = null;
 
-			long memend = Runtime.getRuntime().freeMemory();
+//			long memend = Runtime.getRuntime().freeMemory();
 		
 //			System.out.println("============= Unmarshalling time = "
 //			                   + (System.currentTimeMillis() - start));
@@ -488,6 +495,9 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 */
 	private void createGraph() {
+		
+		final long start = System.currentTimeMillis();
+		
 		final int nodeCount = nodes.size();
 		final int edgeCount = edges.size();
 
@@ -591,6 +601,9 @@ public class XGMMLReader extends AbstractGraphReader {
 				                         + curEdge.getTarget() + "]");
 			}
 		}
+		
+//		System.out.println("============= Create Graqph time = "
+//                + (System.currentTimeMillis() - start));
 	}
 
 	/**
@@ -708,7 +721,8 @@ public class XGMMLReader extends AbstractGraphReader {
 		return new LayoutAdapter() {
 				@Override
 				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
-					layout(networkView);
+//					final ExecutorService ex = Executors.newFixedThreadPool(1);
+					ex.execute(new LayoutTask(networkView));
 				}
 			};
 	}
@@ -718,18 +732,32 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param myView the view of the network we want to layout
 	 */
+	
+	class LayoutTask implements Runnable{
+
+		private CyNetworkView view;
+		
+		public LayoutTask(final CyNetworkView view) {
+			this.view = view;
+		}
+		public void run() {
+			layout(view);
+		}
+		
+	}
+	
 	public void layout(CyNetworkView myView) {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
 
-		CyNetwork network = (myView).getNetwork();
+		final CyNetwork network = myView.getNetwork();
 
 		/*
 		 * Now that we have a network (and a view), handle the groups. Note
 		 * that this must be done in depth-first order!
 		 */
-		ArrayList<CyGroup> groupList = new ArrayList();
+		final ArrayList<CyGroup> groupList = new ArrayList<CyGroup>();
 
 		for (int i = 0; i < groupTree.size(); i++) {
 			GraphicNode parent = (GraphicNode) groupTree.get(i++);
@@ -793,14 +821,10 @@ public class XGMMLReader extends AbstractGraphReader {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
-
-		for (final Iterator it = nodes.iterator(); it.hasNext();) {
-			// Extract a node from JAXB-generated object
-			final GraphicNode curNode = (GraphicNode) it.next();
-
+		Graphics graphics;
+		for(GraphicNode curNode: nodes) {
 			label = curNode.getLabel();
-
-			final Graphics graphics = curNode.getGraphics();
+			graphics = curNode.getGraphics();
 
 			nodeGraphicsMap.put(label, graphics);
 			view = myView.getNodeView(Cytoscape.getRootGraph().getNode(label).getRootGraphIndex());
@@ -889,14 +913,17 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 		}
 
+		Att localGraphics;
+		Iterator it;
+		Object obj;
 		if (graphics.getAtt().size() != 0) {
 			// This object includes non-GML graphics property.
-			final Att localGraphics = graphics.getAtt().get(0);
-			final Iterator it = localGraphics.getContent().iterator();
+			localGraphics = graphics.getAtt().get(0);
+			it = localGraphics.getContent().iterator();
 
 			// Extract edge graphics attributes one by one.
 			while (it.hasNext()) {
-				final Object obj = it.next();
+				obj = it.next();
 
 				if (obj.getClass() == Att.class) {
 					final Att nodeGraphics = (Att) obj;
@@ -920,20 +947,18 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void layoutEdge(final GraphView myView) {
 		EdgeView view = null;
-
-		// Extract an edge from JAXB-generated object
-		for (final Iterator it = edges.iterator(); it.hasNext();) {
-			GraphicEdge curEdge = (GraphicEdge) it.next();
-
-			Graphics graphics = curEdge.getGraphics();
-			String edgeID = curEdge.getId();
+		Graphics graphics;
+		String edgeID;
+		CyEdge testEdge=null;
+		
+		for(GraphicEdge curEdge: edges) {
+			graphics = curEdge.getGraphics();
+			edgeID = curEdge.getId();
 
 			edgeGraphicsMap.put(edgeID, graphics);
 
 			int rootindex = 0;
 			view = null;
-
-			CyEdge testEdge = null;
 
 			if (edgeID != null) {
 				testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
@@ -1596,7 +1621,29 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (attrs.size() > 0) {
 			readAttributes(targetName, attrs, type, parent);
+		
+//			ex.execute(new ReadAttrTask(targetName, attrs, type, parent));
+		
 		}
+	}
+	
+	class ReadAttrTask implements Runnable{
+
+		String targetName;
+		List attrs;
+		String type;
+		GraphicNode parent;
+		
+		public ReadAttrTask(String targetName, List attrs, String type, GraphicNode parent) {
+			this.targetName = targetName;
+			this.attrs = attrs;
+			this.type = type;
+			this.parent = parent;
+		}
+		public void run() {
+			readAttributes(targetName, attrs, type, parent);
+		}
+		
 	}
 
 	/**
