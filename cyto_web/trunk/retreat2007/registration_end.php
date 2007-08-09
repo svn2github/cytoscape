@@ -14,33 +14,24 @@
 
 <!-- The header with changing pictures -->
 
-<? include "header.php"; ?>
-
 <!-- Retreat content table-->
 
-<table>
+<table width="100%" height="500">
  <tr valign="top">
-  <!-- Left retreat navigation bar -->
-  <td width="10%">
-   <? include "nav_retreat.php"; ?>
-  </td>
   <!-- This page content -->
-  <td width="90%">
+  <td >
   <div id="contents">
   <div id="content">
   <div class="item">
-  <div class="top">
-   <h2>Registration </h2>
-   <br>
-  </div>
-  Registration is now complete; thank you for registering and see you at the retreat!  
+  Registration is now complete; thank you for registering and see you at the retreat!
   </div>
   </div>
   </div>
-
-  </td>  <!--End Main page content -->
+  </td> 
+  <td>
+  <img border="0" align="right" alt="Students at AMC" height="500" width="334" src="images/amc/students_in_sun.jpg">
+  </td>
  </tr>
 </table>
-<? include "footer.php"; ?>
 </body>
 </html>
