@@ -53,6 +53,10 @@ import giny.view.Label;
 import giny.view.NodeView;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,14 +74,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -91,15 +98,24 @@ class MergeDialog extends JDialog {
 	JButton cancel;
 	JList networkList;
 	JList unselectedNetworkList;
+	JLabel operationIcon;
 	JComboBox operations;
 	DefaultListModel networkData;
 	DefaultListModel unselectedNetworkData;
 	boolean cancelled = true;
-	protected static int LIST_WIDTH = 150;
-	protected static int DIALOG_SPACE = 110;
-	protected static String UNION = "Union";
-	protected static String INTERSECTION = "Intersection";
-	protected static String DIFFERENCE = "Difference";
+
+	protected final int LIST_WIDTH = 150;
+	protected final int DIALOG_SPACE = 110;
+
+	protected static final String UNION = "Union";
+	protected static final String INTERSECTION = "Intersection";
+	protected static final String DIFFERENCE = "Difference";
+	protected final String[] OPERATIONS = { UNION, INTERSECTION, DIFFERENCE };
+
+	protected final ImageIcon UNION_ICON = new ImageIcon(getClass().getResource("/union.png"));
+	protected final ImageIcon INTERSECTION_ICON = new ImageIcon(getClass().getResource("/intersection.png"));
+	protected final ImageIcon DIFFERENCE_ICON = new ImageIcon(getClass().getResource("/difference.png"));
+	protected final ImageIcon[] OPERATION_ICONS =  { UNION_ICON, INTERSECTION_ICON, DIFFERENCE_ICON };
 
 	/**
 	 * Creates a new MergeDialog object.
@@ -108,59 +124,10 @@ class MergeDialog extends JDialog {
 		/*
 		 * Set up all of the GUI bits
 		 */
-
-		/*
-		 * Set up the menu system
-		 */
-		JMenu help = new JMenu("Help");
-		help.add(new AbstractAction("About") {
-				public void actionPerformed(ActionEvent ae) {
-					JTextPane tp = new JTextPane();
-					JScrollPane js = new JScrollPane();
-					js.getViewport().add(tp);
-
-					JDialog jf = new JDialog(MergeDialog.this);
-					jf.getContentPane().add(js);
-					jf.pack();
-					jf.setSize(400, 500);
-					jf.setVisible(true);
-
-					try {
-						tp.setPage(getClass().getResource("/about.html"));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
-		help.add(new AbstractAction("Manual") {
-				public void actionPerformed(ActionEvent ae) {
-					JTextPane tp = new JTextPane();
-					JScrollPane js = new JScrollPane();
-					js.getViewport().add(tp);
-
-					JDialog jf = new JDialog(MergeDialog.this);
-					jf.getContentPane().add(js);
-					jf.pack();
-					jf.setSize(400, 500);
-					jf.setVisible(true);
-
-					try {
-						tp.setPage(getClass().getResource("/manual.html"));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
-
-		setJMenuBar(new JMenuBar());
-		getJMenuBar().add(help);
-
 		setModal(true);
 		setTitle("Merge Networks");
-		getContentPane().setLayout(new BorderLayout());
-
-		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
+		setSize(new Dimension((2 * LIST_WIDTH) + DIALOG_SPACE, 180));
+		setResizable(true);
 
 		networkData = new DefaultListModel();
 		unselectedNetworkData = new DefaultListModel();
@@ -293,31 +260,34 @@ class MergeDialog extends JDialog {
 		JScrollPane leftPane = new JScrollPane(unselectedNetworkList);
 		leftPane.setBorder(new TitledBorder("Available Networks"));
 		leftPane.setPreferredSize(new Dimension(LIST_WIDTH, 100));
-		centerPanel.add(leftPane);
 
 		JPanel lrButtonPanel = new JPanel();
-		lrButtonPanel.setLayout(new BoxLayout(lrButtonPanel, BoxLayout.Y_AXIS));
+		lrButtonPanel.setLayout(new BoxLayout(lrButtonPanel, BoxLayout.PAGE_AXIS));
 		lrButtonPanel.add(leftButton);
 		lrButtonPanel.add(rightButton);
-		centerPanel.add(lrButtonPanel);
 
 		JScrollPane rightPane = new JScrollPane(networkList);
 		rightPane.setBorder(new TitledBorder("Selected Networks"));
 		rightPane.setPreferredSize(new Dimension(LIST_WIDTH, 100));
-		centerPanel.add(rightPane);
 
 		JPanel udButtonPanel = new JPanel();
-		udButtonPanel.setLayout(new BoxLayout(udButtonPanel, BoxLayout.Y_AXIS));
+		udButtonPanel.setLayout(new BoxLayout(udButtonPanel, BoxLayout.PAGE_AXIS));
 		udButtonPanel.add(upButton);
 		udButtonPanel.add(downButton);
-		centerPanel.add(udButtonPanel);
 
-		getContentPane().add(centerPanel, BorderLayout.CENTER);
+		JPanel operationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		operations = new JComboBox(OPERATIONS);
+		operations.addActionListener(new OperationsComboBoxListener());
+		JLabel operationLabel = new JLabel("Operation: ");
+		operationsPanel.add(operationLabel);
+		operationsPanel.add(operations);
 
-		JPanel southPanel = new JPanel();
-		operations = new JComboBox(new String[] { UNION, INTERSECTION, DIFFERENCE });
+		JSeparator separator0 = new JSeparator();
 
-		ok = new JButton("OK");
+		operationIcon = new JLabel();
+		updateIcon();
+
+		ok = new JButton("   OK   ");
 		ok.setEnabled(false);
 		ok.setToolTipText("Select at least two network to merge");
 		cancel = new JButton("Cancel");
@@ -333,14 +303,81 @@ class MergeDialog extends JDialog {
 				}
 			});
 
-		southPanel.add(operations);
-		southPanel.add(cancel);
-		southPanel.add(ok);
-		getContentPane().add(southPanel, BorderLayout.SOUTH);
-		setSize(new Dimension((2 * LIST_WIDTH) + DIALOG_SPACE, 180));
-		setResizable(true);
+		JSeparator separator1 = new JSeparator();
 
-		// this.pack();
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.add(cancel);
+		buttonPanel.add(ok);
+
+		Container content = getContentPane();
+		content.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new java.awt.Insets(5,5,5,5);
+		
+		c.gridx = 0;			c.gridy = 0;
+		c.gridwidth = 4;		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		content.add(operationsPanel, c);
+
+		c.gridx = 0;			c.gridy = 1;
+		c.gridwidth = 4;		c.gridheight = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		content.add(operationIcon, c);
+
+		c.gridx = 0;			c.gridy = 2;
+		c.gridwidth = 4;		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		content.add(separator0, c);
+
+		c.gridx = 0;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		content.add(leftPane, c);
+
+		c.gridx = 1;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		content.add(lrButtonPanel, c);
+
+		c.gridx = 2;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		content.add(rightPane, c);
+
+		c.gridx = 3;			c.gridy = 3;
+		c.gridwidth = 1;		c.gridheight = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		content.add(udButtonPanel, c);
+
+		c.gridx = 0;			c.gridy = 4;
+		c.gridwidth = 4;		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		content.add(separator1, c);
+
+		c.gridx = 0;			c.gridy = 5;
+		c.gridwidth = 4;		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		content.add(buttonPanel, c);
+
+		this.pack();
 	}
 
 	/**
@@ -374,5 +411,32 @@ class MergeDialog extends JDialog {
 	 */
 	public boolean isCancelled() {
 		return cancelled;
+	}
+
+	private class OperationsComboBoxListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			updateIcon();
+		}
+	}
+
+	private void updateIcon()
+	{
+		int oldHeight = 0;
+		if (operationIcon.getIcon() != null)
+			oldHeight = operationIcon.getIcon().getIconHeight();
+
+		int index = operations.getSelectedIndex();
+		if (index < 0 || index >= OPERATION_ICONS.length)
+			operationIcon.setIcon(null);
+		else
+			operationIcon.setIcon(OPERATION_ICONS[operations.getSelectedIndex()]);
+
+		int newHeight = 0;
+		if (operationIcon.getIcon() != null)
+			newHeight = operationIcon.getIcon().getIconHeight();
+		
+		setSize(new Dimension(getWidth(), getHeight() - oldHeight + newHeight));
 	}
 }
