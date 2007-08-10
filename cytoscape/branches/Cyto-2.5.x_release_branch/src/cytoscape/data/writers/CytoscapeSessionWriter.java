@@ -142,6 +142,10 @@ import javax.xml.stream.XMLStreamException;
  *
  */
 public class CytoscapeSessionWriter {
+	
+	// These values will be replaced.
+	private static final char[] INVALID_CHAR = {'[', '\\', '/', ':', '*', '?', '"', '<', '>', '|', ']'};
+	
 	// cysession.xml document version
 	private static final String cysessionVersion = "0.9";
 
@@ -309,7 +313,13 @@ public class CytoscapeSessionWriter {
 	 *
 	 */
 	private String getValidFileName(String fileName) {
-		return fileName.replaceAll("[\\/:*?\"<>|]", "_");
+		
+		String newFileName = fileName;
+		Integer i = 0;
+		for(Character ch : INVALID_CHAR) 
+			newFileName = newFileName.replace(ch.toString(), (i++).toString());
+		
+		return newFileName;
 	}
 
 	/**

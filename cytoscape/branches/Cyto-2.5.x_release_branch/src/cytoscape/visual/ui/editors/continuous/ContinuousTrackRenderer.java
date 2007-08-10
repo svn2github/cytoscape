@@ -34,6 +34,17 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -48,6 +59,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,24 +70,18 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
-import cytoscape.Cytoscape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-
 
 /**
- * DOCUMENT ME!
  *
- * @author $author$
+ *
+ * @author kono
   */
 public class ContinuousTrackRenderer extends JComponent implements VizMapperTrackRenderer {
 	/*
 	 * Constants for diagram.
 	 */
+	
+	private static float UPPER_LIMIT;
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
 	private static final int THUMB_WIDTH = 12;
@@ -148,6 +154,21 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		title = cMapping.getControllingAttributeName();
 		valueRange = Math.abs(maxValue - minValue);
+
+		Float val;
+		Object propStr = CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
+
+		if (propStr != null) {
+			try {
+				val = Float.parseFloat(propStr.toString());
+			} catch (NumberFormatException e) {
+				val = 2000f;
+			}
+
+			UPPER_LIMIT = val;
+		} else {
+			UPPER_LIMIT = 2000f;
+		}
 	}
 
 	/**
@@ -155,6 +176,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 *
 	 * @param g DOCUMENT ME!
 	 */
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		paintComponent(g);
@@ -185,6 +207,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 * (non-Javadoc)
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
+	@Override
 	protected void paintComponent(Graphics gfx) {
 		trackHeight = slider.getHeight() - 100;
 		arrowBarPosition = trackHeight + 50;
@@ -339,8 +362,8 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-			Float curPositionValue = ((Double) (((fractions[i] / 100) * valueRange)
-			                         + minValue)).floatValue();
+			Float curPositionValue = ((Double) (((fractions[i] / 100) * valueRange) + minValue))
+			                                                                                                                                                                                                                                                                                                                                                                 .floatValue();
 			String valueString = String.format("%.4f", curPositionValue);
 
 			int flipLimit = 90;
@@ -486,6 +509,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 				float newY = (float) ((((trackHeight + 5) - curY) * max) / (trackHeight + 5));
 
+				if (newY > UPPER_LIMIT)
+					newY = UPPER_LIMIT;
+
 				selectedThumb.setObject(newY);
 
 				//updateMax();
@@ -526,6 +552,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	}
 
 	class CMouseListener extends MouseAdapter {
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			/*
 			 * Show popup dialog to enter new numerical value.
@@ -651,11 +678,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		}
 
 		private boolean isBelow(final Point p) {
-			
-			if(belowSquare == null) {
+			if (belowSquare == null) {
 				return false;
 			}
-			
+
 			int diffY = Math.abs(p.y - 12 - belowSquare.y);
 			int diffX = Math.abs(p.x - 6 - belowSquare.x);
 
@@ -667,11 +693,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		}
 
 		private boolean isAbove(final Point p) {
-			
-			if(aboveSquare == null) {
+			if (aboveSquare == null) {
 				return false;
 			}
-			
+
 			int diffY = Math.abs(p.y - 12 - aboveSquare.y);
 			int diffX = Math.abs(p.x - 6 - aboveSquare.x);
 
@@ -682,6 +707,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			return false;
 		}
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			curPoint = e.getPoint();
 			dragOrigin = e.getPoint();
@@ -698,6 +724,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			}
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent arg0) {
 			clickFlag = false;
 			updateMax();
@@ -865,8 +892,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		Point2D p2 = new Point2D.Float(0, 0);
 
 		for (i = 0; i < floatProperty.length; i++) {
-			newX = (int) (trackWidth * (fractions[i] / 100))-3;
-			if(newX<0) {
+			newX = (int) (trackWidth * (fractions[i] / 100)) - 3;
+
+			if (newX < 0) {
 				newX = 0;
 			}
 
@@ -909,7 +937,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		g.setColor(VALUE_AREA_COLOR);
 
 		int h = trackHeight - (int) ((above.floatValue() / max) * trackHeight);
-		g.fillRect((int) p1.getX(), h, trackWidth - (int) p1.getX()-3,
+		g.fillRect((int) p1.getX(), h, trackWidth - (int) p1.getX() - 3,
 		           (int) ((above.floatValue() / max) * trackHeight));
 
 		g.translate(-leftSpace, 0);
