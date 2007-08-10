@@ -74,6 +74,7 @@ public class GroupToolDialog extends JDialog
 	private JTable groupTable;
 	private JPanel buttonBox;
 	private JButton createButton;
+	private JButton createByAttributesButton;
 	private JButton clearButton;
 	private JButton clearAllButton;
 	private JButton selectButton;
@@ -133,6 +134,11 @@ public class GroupToolDialog extends JDialog
 		createButton.setEnabled(true);
 		createButton.addActionListener(this);
 
+		createByAttributesButton = new JButton("Create By Attributes");
+		createByAttributesButton.setActionCommand("createByAttributes");
+		createByAttributesButton.setEnabled(true);
+		createByAttributesButton.addActionListener(this);
+
 		selectButton = new JButton("Select");
 		selectButton.setActionCommand("select");
 		selectButton.setEnabled(true);
@@ -149,6 +155,7 @@ public class GroupToolDialog extends JDialog
 		clearAllButton.addActionListener(this);
 
 		buttonBox.add(createButton);
+		buttonBox.add(createByAttributesButton);
 		buttonBox.add(selectButton);
 		buttonBox.add(clearButton);
 		buttonBox.add(clearAllButton);
@@ -173,6 +180,13 @@ public class GroupToolDialog extends JDialog
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this group");
 			if (groupName == null) return;
 			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, null);
+		} else if ("createByAttributes".equals(e.getActionCommand())) {
+			System.out.println("createByAttribute");
+			// Get the list of group viewers
+			CreateByAttributeDialog d = new CreateByAttributeDialog(Cytoscape.getDesktop());
+			d.pack();
+			d.setLocationRelativeTo(Cytoscape.getDesktop());
+			d.setVisible(true);
 		} else if ("select".equals(e.getActionCommand()) 
 		           || "clear".equals(e.getActionCommand())) {
 			int row = groupTable.getSelectedRow();
