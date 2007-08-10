@@ -61,6 +61,8 @@ import cytoscape.generated.Ontology;
 import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.PercentUtil;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
 
@@ -159,6 +161,13 @@ public class CytoscapeSessionReader {
 	private Bookmarks bookmarks = null;
 	private HashMap<String, List<File>> pluginFileListMap;
 	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
+	
+	// Task monitor
+	private TaskMonitor taskMonitor;
+	private PercentUtil percentUtil;
+	
+	private float networkCounter = 0;
+	private float netIndex = 0;
 
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
@@ -168,7 +177,7 @@ public class CytoscapeSessionReader {
 	 *
 	 * This is for remote session file (URL).
 	 */
-	public CytoscapeSessionReader(final URL sourceName) throws IOException {
+	public CytoscapeSessionReader(final URL sourceName, final TaskMonitor monitor) throws IOException {
 		this.sourceURL = sourceName;
 
         if (sourceName.getProtocol().equals("file"))
@@ -179,6 +188,15 @@ public class CytoscapeSessionReader {
 		networkList = new ArrayList();
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
+		
+		if(monitor != null) {
+			this.taskMonitor = monitor;
+			percentUtil = new PercentUtil(1);
+		}
+	}
+	
+	public CytoscapeSessionReader(final String fileName, final TaskMonitor monitor) throws IOException {
+		this(new File(fileName).toURL(), monitor);
 	}
 
 	/**
@@ -189,7 +207,11 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	public CytoscapeSessionReader(final String fileName) throws IOException {
-		this(new File(fileName).toURL());
+		this(new File(fileName).toURL(), null);
+	}
+	
+	public CytoscapeSessionReader(final URL sourceName) throws IOException {
+		this(sourceName, null);
 	}
 
 	/**
@@ -242,6 +264,7 @@ public class CytoscapeSessionReader {
 			} else if (entryName.endsWith(XGMML_EXT)) {
 				URL networkURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
 				networkURLs.put(entryName, networkURL);
+				networkCounter++;
 			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
 				bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
 			} else {
@@ -288,6 +311,8 @@ public class CytoscapeSessionReader {
 		Cytoscape.getDesktop().getVizMapperUI().enableListeners(false);
 		Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
 		
+		Cytoscape.getDesktop().removePropertyChangeListener(Cytoscape.getDesktop());
+		
 		unzipSessionFromURL();
 
 		if (session.getSessionState().getDesktop() != null) {
@@ -303,6 +328,8 @@ public class CytoscapeSessionReader {
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
 
+		Cytoscape.getDesktop().getVizMapperUI().enableListeners(false);
+		
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
@@ -312,6 +339,7 @@ public class CytoscapeSessionReader {
 		deleteTmpPluginFiles();
 
 		System.out.println("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
+		Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 	}
 
 	// Delete tmp files (the plugin state files) to cleanup
@@ -571,6 +599,11 @@ public class CytoscapeSessionReader {
 			}
 			
 			reader.doPostProcessing(new_network);
+			
+			if (taskMonitor != null && networkCounter >=20) {
+				netIndex++;
+				taskMonitor.setPercentCompleted(((Number)((netIndex/networkCounter)*100)).intValue());
+			}
 			
 			if (networkStream != null) {
 				try {

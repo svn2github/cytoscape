@@ -271,7 +271,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * structure.
 			 */
 			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted(-1);
+				taskMonitor.setPercentCompleted(1);
 				taskMonitor.setStatus("Reading XGMML data...");
 			}
 

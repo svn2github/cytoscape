@@ -200,7 +200,7 @@ class OpenSessionTask implements Task {
 	 */
 	public void run() {
 		taskMonitor.setStatus("Opening Session File.\n\nIt may take a while.\nPlease wait...");
-		taskMonitor.setPercentCompleted(-1);
+		taskMonitor.setPercentCompleted(0);
 
 		CytoscapeSessionReader sr;
 
@@ -209,7 +209,7 @@ class OpenSessionTask implements Task {
 		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 
 		try {
-			sr = new CytoscapeSessionReader(fileName);
+			sr = new CytoscapeSessionReader(fileName, taskMonitor);
 			sr.read();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -242,6 +242,10 @@ class OpenSessionTask implements Task {
 	 */
 	public void halt() {
 		// Task can not currently be halted.
+		
+		System.out.println("HALT called!!!");
+		taskMonitor.setPercentCompleted(100);
+		taskMonitor.setStatus("Failed!!!");
 	}
 
 	/**
