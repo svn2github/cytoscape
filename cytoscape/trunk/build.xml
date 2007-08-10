@@ -638,7 +638,7 @@
 	<!--                                                         -->
 	<!-- ======================================================= -->
 	<target name="release" 
-	        depends="jar" 
+	        depends="jar, test" 
 		description="Creates Cytoscape Release">
 
 		<echo>
@@ -932,8 +932,6 @@
 			<arg value="${basedir}/resources/webstart" />
 		</java>
 	</target>
-
-	
 	
 	<target name="webstart" depends="jnlp" description="Creates Cytoscape Webstart Release">
 
