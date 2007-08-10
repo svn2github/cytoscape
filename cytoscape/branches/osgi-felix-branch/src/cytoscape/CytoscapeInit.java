@@ -241,6 +241,8 @@ public class CytoscapeInit {
 			}
 		}
 
+		new cytoscape.plugin.OSGIPlugin();
+
 		long endtime = System.currentTimeMillis() - begintime;
 		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
