@@ -43,6 +43,7 @@ CREATE TABLE plugin_files (
   file_data longblob,
   file_type enum('jar','zip') default NULL,
   file_name varchar(100) default NULL,
+  md5 varchar(40),
   PRIMARY KEY  (plugin_file_auto_id)
 );
 
@@ -85,6 +86,7 @@ CREATE TABLE usagelog (
   plugin_version_id int(11) NOT NULL,
   remote_host varchar(60) default NULL,
   ip_address varchar(20) default NULL,
+  refer_page varchar(99),
   sysdat date default NULL,
   PRIMARY KEY  (log_auto_id)
 );
