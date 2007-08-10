@@ -1866,7 +1866,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final VisualStyle vs = vmm.getNetworkView().getVisualStyle();
 
 			if (vs != null) {
-				//System.out.println("-----combo = " + vsNameComboBox.getSelectedItem() + ", vsname = " + vs.getName());
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {

@@ -36,23 +36,47 @@
  */
 package cytoscape.data.readers;
 
-import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
-import cern.colt.list.IntArrayList;
+import giny.model.Edge;
+import giny.model.Node;
+import giny.view.EdgeView;
+import giny.view.GraphView;
+import giny.view.NodeView;
 
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
+import org.xml.sax.SAXException;
+
+import cern.colt.list.IntArrayList;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
-
 import cytoscape.data.writers.XGMMLWriter;
-
 import cytoscape.generated2.Att;
 import cytoscape.generated2.GraphicEdge;
 import cytoscape.generated2.GraphicGraph;
@@ -61,70 +85,16 @@ import cytoscape.generated2.Graphics;
 import cytoscape.generated2.ObjectType;
 import cytoscape.generated2.RdfRDF;
 import cytoscape.generated2.TypeGraphicsType;
-
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
-
-import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutAdapter;
-
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
-
 import cytoscape.view.CyNetworkView;
-
 import cytoscape.visual.LineStyle;
-
 import ding.view.DGraphView;
-
-import giny.model.Edge;
-import giny.model.Node;
-
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
-
-import org.codehaus.stax2.XMLInputFactory2;
-
-import org.xml.sax.SAXException;
-
-import java.awt.Color;
-import java.awt.geom.Point2D;
-
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.EventFilter;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 
 /**
@@ -138,10 +108,6 @@ import javax.xml.stream.events.XMLEvent;
  *
  */
 public class XGMMLReader extends AbstractGraphReader {
-	
-	private final ExecutorService ex = Executors.newFixedThreadPool(1);
-	
-	
 	// Graph Tags
 	protected static final String GRAPH = "graph";
 	protected static final String NODE = "node";
@@ -199,7 +165,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	private HashMap<String, Graphics> nodeGraphicsMap;
 	private HashMap<String, Graphics> edgeGraphicsMap;
 	private HashMap nodeMap;
-	private List<Att> networkAtt = new ArrayList<Att>();
+	private List<Att> networkAtt;
 	private Properties prop = CytoscapeInit.getProperties();
 	private String vsbSwitch = prop.getProperty("visualStyleBuilder");
 
@@ -264,7 +230,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	@Override
 	public void read() throws IOException {
 		try {
 			this.readXGMML();
@@ -292,13 +257,14 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @throws XMLStreamException
 	 */
 	private void readXGMML() throws JAXBException, IOException {
-		// Performance check
-//		final long start = System.currentTimeMillis();
-//		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-//		final MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
+		JAXBElement<GraphicGraph> graphicGraphElement;
 
-		//		System.out.println("Memory status: used = " + heapUsage.getUsed());
-		//		System.out.println("Memory status: MAX = " + heapUsage.getMax());
+		final JAXBContext jaxbContext = JAXBContext.newInstance(XGMML_PACKAGE,
+		                                                        this.getClass().getClassLoader());
+
+		// Unmarshall the XGMML file
+		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
 		try {
 			/*
 			 * Read the file and map the entire XML document into data
@@ -313,71 +279,9 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * New in JAXB 2.0: Unmashaller returns JAXBElement, instead of
 			 * actual Graph object.
 			 */
-			final XMLInputFactory factory = XMLInputFactory.newInstance();
-			((XMLInputFactory2) factory).configureForSpeed();
-
-			XMLEventReader reader = factory.createXMLEventReader(new BufferedInputStream(networkStream));
-//			long memstart = Runtime.getRuntime().freeMemory();
-
-			final EventFilter filter = new EventFilter() {
-				public boolean accept(XMLEvent event) {
-					return event.isStartElement();
-				}
-			};
-
-			XMLEventReader xmlfer = factory.createFilteredReader(reader, filter);
-
-			// Jump to the first element in the document, the enclosing BugCollection
-			final StartElement e = (StartElement) xmlfer.nextEvent();
-			final Iterator<javax.xml.stream.events.Attribute> it = e.getAttributes();
-			javax.xml.stream.events.Attribute attr;
-
-			while (it.hasNext()) {
-				attr = it.next();
-
-				if (attr.getName().toString().equals(LABEL)) {
-					networkName = attr.getValue();
-				}
-			}
-
-			// Parse into typed objects
-			final JAXBContext ctx = JAXBContext.newInstance(XGMML_PACKAGE,
-			                                                this.getClass().getClassLoader());
-			final Unmarshaller um = ctx.createUnmarshaller();
-
-			Object umrObj;
-			final List groupChildren = new ArrayList();
-
-			while (xmlfer.peek() != null) {
-				umrObj = um.unmarshal(reader);
-
-				if (umrObj instanceof JAXBElement) {
-					umrObj = ((JAXBElement) umrObj).getValue();
-
-					if (umrObj instanceof GraphicNode) {
-						addNode((GraphicNode) umrObj);
-						groupChildren.add(umrObj);
-					} else if (umrObj instanceof GraphicEdge) {
-						edges.add((GraphicEdge) umrObj);
-					}
-				} else if (umrObj instanceof Att) {
-					networkAtt.add((Att) umrObj);
-				}
-			}
-
-			umrObj = null;
-			xmlfer.close();
-			reader.close();
-			reader = null;
-			xmlfer = null;
-
-//			long memend = Runtime.getRuntime().freeMemory();
-		
-//			System.out.println("============= Unmarshalling time = "
-//			                   + (System.currentTimeMillis() - start));
-//			System.out.println("Memory after unmarshalling = " + (heapUsage.getUsed() / 1000)
-//			                   + "KB");
-
+			graphicGraphElement = (JAXBElement<GraphicGraph>) unmarshaller.unmarshal(new BufferedInputStream(networkStream));
+			networkName = graphicGraphElement.getValue().getLabel();
+			networkAtt = graphicGraphElement.getValue().getAtt();
 
 			// Report Status Value
 			if (taskMonitor != null) {
@@ -394,12 +298,12 @@ public class XGMMLReader extends AbstractGraphReader {
 			 * the network.
 			 *
 			 */
+			getNodesAndEdges(graphicGraphElement.getValue(), null);
 
 			/*
 			 * Pass 2: Build the network
 			 */
 			createGraph();
-
 		} catch (OutOfMemoryError oe) {
 			/*
 			 * It's not generally a good idea to catch OutOfMemoryErrors, but in
@@ -411,18 +315,14 @@ public class XGMMLReader extends AbstractGraphReader {
 			nodeMap = null;
 			System.gc();
 			throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} finally {
+			graphicGraphElement = null;
+
 			if (networkStream != null) {
 				networkStream.close();
 				networkStream = null;
 			}
 		}
-
-//		System.out.println("============= Total time for " + networkName + " = "
-//		                   + (System.currentTimeMillis() - start));
 	}
 
 	/**
@@ -495,9 +395,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 */
 	private void createGraph() {
-		
-		final long start = System.currentTimeMillis();
-		
 		final int nodeCount = nodes.size();
 		final int edgeCount = edges.size();
 
@@ -601,9 +498,6 @@ public class XGMMLReader extends AbstractGraphReader {
 				                         + curEdge.getTarget() + "]");
 			}
 		}
-		
-//		System.out.println("============= Create Graqph time = "
-//                + (System.currentTimeMillis() - start));
 	}
 
 	/**
@@ -668,7 +562,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			if (targetNodeName == null)
 				continue;
 
-			CyNode targetChildNode = Cytoscape.getRootGraph().getNode(targetNodeName);
+			CyNode targetChildNode = (CyNode) Cytoscape.getRootGraph().getNode(targetNodeName);
 
 			nodeList.add(targetChildNode);
 		}
@@ -716,15 +610,12 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @return the CyLayoutAlgorithm to use
 	 */
-	@Override
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
-				@Override
-				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
-//					final ExecutorService ex = Executors.newFixedThreadPool(1);
-					ex.execute(new LayoutTask(networkView));
-				}
-			};
+			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+				layout(networkView);
+			}
+		};
 	}
 
 	/**
@@ -732,32 +623,18 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param myView the view of the network we want to layout
 	 */
-	
-	class LayoutTask implements Runnable{
-
-		private CyNetworkView view;
-		
-		public LayoutTask(final CyNetworkView view) {
-			this.view = view;
-		}
-		public void run() {
-			layout(view);
-		}
-		
-	}
-	
 	public void layout(CyNetworkView myView) {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
 
-		final CyNetwork network = myView.getNetwork();
+		CyNetwork network = ((CyNetworkView) myView).getNetwork();
 
 		/*
 		 * Now that we have a network (and a view), handle the groups. Note
 		 * that this must be done in depth-first order!
 		 */
-		final ArrayList<CyGroup> groupList = new ArrayList<CyGroup>();
+		ArrayList<CyGroup> groupList = new ArrayList();
 
 		for (int i = 0; i < groupTree.size(); i++) {
 			GraphicNode parent = (GraphicNode) groupTree.get(i++);
@@ -792,10 +669,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		for (int i = 0; i < groupList.size(); i++) {
 			CyGroup group = groupList.get(i);
-
-			if (group == null)
-				continue;
-
+			if (group == null) continue;
 			CyNode groupNode = group.getGroupNode();
 
 			// Get the viewer
@@ -821,10 +695,14 @@ public class XGMMLReader extends AbstractGraphReader {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
-		Graphics graphics;
-		for(GraphicNode curNode: nodes) {
+
+		for (final Iterator it = nodes.iterator(); it.hasNext();) {
+			// Extract a node from JAXB-generated object
+			final GraphicNode curNode = (GraphicNode) it.next();
+
 			label = curNode.getLabel();
-			graphics = curNode.getGraphics();
+
+			final Graphics graphics = (Graphics) curNode.getGraphics();
 
 			nodeGraphicsMap.put(label, graphics);
 			view = myView.getNodeView(Cytoscape.getRootGraph().getNode(label).getRootGraphIndex());
@@ -913,17 +791,14 @@ public class XGMMLReader extends AbstractGraphReader {
 			}
 		}
 
-		Att localGraphics;
-		Iterator it;
-		Object obj;
 		if (graphics.getAtt().size() != 0) {
 			// This object includes non-GML graphics property.
-			localGraphics = graphics.getAtt().get(0);
-			it = localGraphics.getContent().iterator();
+			final Att localGraphics = (Att) graphics.getAtt().get(0);
+			final Iterator it = localGraphics.getContent().iterator();
 
 			// Extract edge graphics attributes one by one.
 			while (it.hasNext()) {
-				obj = it.next();
+				final Object obj = it.next();
 
 				if (obj.getClass() == Att.class) {
 					final Att nodeGraphics = (Att) obj;
@@ -947,18 +822,20 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void layoutEdge(final GraphView myView) {
 		EdgeView view = null;
-		Graphics graphics;
-		String edgeID;
-		CyEdge testEdge=null;
-		
-		for(GraphicEdge curEdge: edges) {
-			graphics = curEdge.getGraphics();
-			edgeID = curEdge.getId();
+
+		// Extract an edge from JAXB-generated object
+		for (final Iterator it = edges.iterator(); it.hasNext();) {
+			GraphicEdge curEdge = (GraphicEdge) it.next();
+
+			Graphics graphics = (Graphics) curEdge.getGraphics();
+			String edgeID = curEdge.getId();
 
 			edgeGraphicsMap.put(edgeID, graphics);
 
 			int rootindex = 0;
 			view = null;
+
+			CyEdge testEdge = null;
 
 			if (edgeID != null) {
 				testEdge = Cytoscape.getRootGraph().getEdge(edgeID);
@@ -1011,10 +888,10 @@ public class XGMMLReader extends AbstractGraphReader {
 			edgeView.setStrokeWidth(((Number) graphics.getWidth()).floatValue());
 
 		if (graphics.getFill() != null)
-			edgeView.setUnselectedPaint(getColor(graphics.getFill()));
+			edgeView.setUnselectedPaint(getColor((String) graphics.getFill()));
 
 		if (graphics.getAtt().size() != 0) {
-			final Iterator it = (graphics.getAtt().get(0)).getContent().iterator();
+			final Iterator it = ((Att) graphics.getAtt().get(0)).getContent().iterator();
 
 			// Extract edge graphics attributes one by one.
 			while (it.hasNext()) {
@@ -1092,7 +969,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	/**
 	 * Part of interace contract
 	 */
-	@Override
 	public int[] getNodeIndicesArray() {
 		if (giny_nodes == null) {
 			return new int[0];
@@ -1106,7 +982,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	/**
 	 * Part of interace contract
 	 */
-	@Override
 	public int[] getEdgeIndicesArray() {
 		if (giny_edges == null) {
 			return new int[0];
@@ -1130,7 +1005,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @return Returns the networkName.
 	 * @uml.property name="networkName"
 	 */
-	@Override
 	public String getNetworkName() {
 		return networkName;
 	}
@@ -1305,14 +1179,13 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 		// complex type
 		else if (dataType.equals(ObjectType.COMPLEX)) {
-			final int numKeys = Integer.valueOf(curAtt.getValue()).intValue();
+			final int numKeys = Integer.valueOf((String) curAtt.getValue()).intValue();
 
 			if (!multihashmapdefExists(attributes, attrName)) {
 				defineComplexAttribute(attrName, attributes, curAtt, null, 0, numKeys);
 			}
 
 			createComplexAttribute(attrName, attributes, targetName, curAtt, null, 0, numKeys);
-
 			// Skip over check for embedded content
 			return;
 		}
@@ -1549,29 +1422,11 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 */
 	public void setNetworkAttributes(final CyNetwork cyNetwork) {
-		if (networkAtt == null) {
-			return;
-		}
-
 		for (Att curAtt : networkAtt) {
 			if (curAtt.getName().equals("networkMetadata")) {
-				for (Object cont : curAtt.getContent()) {
-					if (cont instanceof RdfRDF) {
-						metadata = (RdfRDF) cont;
-					}
-				}
+				metadata = (RdfRDF) (curAtt.getContent().get(0));
 
 				MetadataParser mdp = new MetadataParser(cyNetwork);
-
-				if (metadata == null) {
-					try {
-						metadata = mdp.getMetadata();
-					} catch (JAXBException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
 				mdp.setMetadata(metadata);
 			} else if (curAtt.getName().equals(XGMMLWriter.BACKGROUND)) {
 				backgroundColor = curAtt.getValue();
@@ -1621,29 +1476,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (attrs.size() > 0) {
 			readAttributes(targetName, attrs, type, parent);
-		
-//			ex.execute(new ReadAttrTask(targetName, attrs, type, parent));
-		
 		}
-	}
-	
-	class ReadAttrTask implements Runnable{
-
-		String targetName;
-		List attrs;
-		String type;
-		GraphicNode parent;
-		
-		public ReadAttrTask(String targetName, List attrs, String type, GraphicNode parent) {
-			this.targetName = targetName;
-			this.attrs = attrs;
-			this.type = type;
-			this.parent = parent;
-		}
-		public void run() {
-			readAttributes(targetName, attrs, type, parent);
-		}
-		
 	}
 
 	/**
@@ -1651,7 +1484,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	@Override
 	public void doPostProcessing(CyNetwork network) {
 		setNetworkAttributes(network);
 

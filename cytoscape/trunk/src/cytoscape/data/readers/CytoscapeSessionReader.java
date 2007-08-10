@@ -297,7 +297,6 @@ public class CytoscapeSessionReader {
 		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
 		}
-		
 		// Restore listeners for VizMapper.
 		Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 		
