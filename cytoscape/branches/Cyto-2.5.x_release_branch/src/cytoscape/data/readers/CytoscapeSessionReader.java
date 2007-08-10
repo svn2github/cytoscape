@@ -282,6 +282,12 @@ public class CytoscapeSessionReader {
 	public void read() throws IOException, JAXBException {
 		final long start = System.currentTimeMillis();
 
+		// This is a hack.
+		// We need a new event to tell other components/plugins that core starts loading
+		// Session.  Then we can avoid unnecessary event firing.
+		Cytoscape.getDesktop().getVizMapperUI().enableListeners(false);
+		Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
+		
 		unzipSessionFromURL();
 
 		if (session.getSessionState().getDesktop() != null) {
@@ -291,7 +297,10 @@ public class CytoscapeSessionReader {
 		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
 		}
-
+		
+		// Restore listeners for VizMapper.
+		Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
+		
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
 
@@ -536,22 +545,34 @@ public class CytoscapeSessionReader {
 	private void walkTree(final Network currentNetwork, final CyNetwork parent,
 	                      final Object sessionSource) throws JAXBException, IOException {
 		// Get the list of children under this root
-		final List children = currentNetwork.getChild();
+		final List<Child> children = currentNetwork.getChild();
 
 		// Traverse using recursive call
-		for (int i = 0; i < children.size(); i++) {
-			final Child child = (Child) children.get(i);
-			final Network childNet = (Network) netMap.get(child.getId());
+		final int numChildren = children.size();
+		Child child;
+		Network childNet;
+		URL targetNetworkURL;
+		JarURLConnection jarConnection;
+		InputStream networkStream;
+		CyNetwork new_network;
+		CyNetworkView curNetView;
+		for (int i = 0; i < numChildren; i++) {
+			child = children.get(i);
+			childNet = netMap.get(child.getId());
 
-			final URL targetNetworkURL = (URL) networkURLs.get(sessionID + "/"
+			targetNetworkURL = (URL) networkURLs.get(sessionID + "/"
 			                                                   + childNet.getFilename());
-			final JarURLConnection jarConnection = (JarURLConnection) (targetNetworkURL)
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .openConnection();
-			InputStream networkStream = (InputStream) jarConnection.getContent();
-
-			final CyNetwork new_network = Cytoscape.createNetwork(new XGMMLReader(networkStream),
-			                                                      childNet.isViewAvailable(), parent);
-
+			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
+			networkStream = (InputStream) jarConnection.getContent();
+			final XGMMLReader reader = new XGMMLReader(networkStream);
+			new_network = Cytoscape.createNetwork(reader, false, parent);
+			
+			if(childNet.isViewAvailable()) {
+				Cytoscape.createNetworkView(new_network, new_network.getTitle(),reader.getLayoutAlgorithm());
+			}
+			
+			reader.doPostProcessing(new_network);
+			
 			if (networkStream != null) {
 				try {
 					networkStream.close();
@@ -561,8 +582,7 @@ public class CytoscapeSessionReader {
 			}
 
 			networkList.add(new_network.getIdentifier());
-
-			final CyNetworkView curNetView = Cytoscape.getNetworkView(new_network.getIdentifier());
+			curNetView = Cytoscape.getNetworkView(new_network.getIdentifier());
 
 			if (curNetView != Cytoscape.getNullNetworkView()) {
 				// Set visual style
