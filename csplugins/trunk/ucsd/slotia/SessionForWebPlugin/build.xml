@@ -22,6 +22,7 @@
   <property name="root.dir"			location="."/>
   <property name="manifest.dir"			location="${root.dir}/manifest"/>
   <property name="build.dir"			location="${root.dir}/build"/>
+  <property name="resources.dir"			location="${root.dir}/resources"/>
 
   <!-- Project directories and files -->
   <property name="project.src.dir"		location="${root.dir}/src"/>
@@ -29,7 +30,7 @@
   <property name="project.jar.manifest"		location="${manifest.dir}/project.manifest"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../../../../cytoscape_trunk"/>
+  <property name="cytoscape.root.dir"		location="../../../../cytoscape"/>
   <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
   <!-- Cytoscape directories and files needed for installing -->
   <property name="cytoscape.distro.dir"		location="${cytoscape.root.dir}/build/cytoscape-v2.4.1"/>
@@ -41,6 +42,7 @@
     <pathelement location="${cytoscape.root.dir}/cytoscape.jar"/>
     <pathelement location="${cytoscape.lib.dir}/cytoscape-render-stateful.jar"/>
     <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.1.jar"/>
   </path>
   
   <!-- ===================================================================	-->
@@ -79,7 +81,7 @@
   <target	name="jar"
   		depends="compile,manifest"
 		description="package all class files into a jar">
-
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/SessionForWebPlugin"/>
     <jar	jarfile="${project.jar}"
     		basedir="${build.dir}"
     		manifest="${project.jar.manifest}"/>
@@ -98,7 +100,7 @@
   <!-- ===================================================================	-->
   <!-- all				                                      	-->
   <!-- ===================================================================	-->
-  <target name="all" depends="install"/>
+  <target name="all" depends="jar"/>
 
   <!-- ===================================================================	-->
   <!-- clean 									-->

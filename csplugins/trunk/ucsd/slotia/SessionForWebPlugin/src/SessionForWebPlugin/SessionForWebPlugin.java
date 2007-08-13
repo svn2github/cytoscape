@@ -49,16 +49,4 @@ public class SessionForWebPlugin extends CytoscapePlugin
 		}
 		throw new RuntimeException("Could not find \"Export\" submenu in the \"File\" menu");
 	}
-
-	public PluginInfo getPluginInfoObject()
-	{
-		PluginInfo result = new PluginInfo();
-		result.setName("Session For Web");
-		result.setDescription("Prepares and exports a session for the web");
-		result.setPluginVersion(2.1);
-		result.setCytoscapeVersion("2.5");
-		result.setCategory(PluginInfo.Category.NETWORK_ATTRIBUTE_IO);
-		result.addAuthor("Samad Lotia", "UCSD");
-		return result;
-	}
 }

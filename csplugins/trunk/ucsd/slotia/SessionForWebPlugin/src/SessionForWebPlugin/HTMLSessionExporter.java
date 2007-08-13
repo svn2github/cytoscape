@@ -312,6 +312,7 @@ public class HTMLSessionExporter
 			private void generateNetworkFiles(List<String> networkIDs) throws Exception
 			{
 				Map viewMap = Cytoscape.getNetworkViewMap();
+				Map<VisualStyle,BufferedImage> vizStyles = new HashMap<VisualStyle,BufferedImage>();
 				int currentNetwork = 0;
 				int networkCount = networkIDs.size();
 				for (String networkID : networkIDs)
@@ -360,10 +361,17 @@ public class HTMLSessionExporter
 						return;
 
 					// render legend
-					setStatus("Rendering legend for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 60 / networkCount);
 					VisualStyle visualStyle = Cytoscape.getNetworkView(networkID).getVisualStyle();
-					BufferedImage legend = VisualStyleToImage.convert(visualStyle);
+
+					BufferedImage legend = vizStyles.get(visualStyle); 
+					if ( legend == null ) 
+					{
+						setStatus("Rendering legend for: " + networkTitle);
+						legend = VisualStyleToImage.convert(visualStyle);
+						vizStyles.put(visualStyle,legend);
+					}
+
 					if (legend != null)
 					{
 						bundle.openEntry(Bundle.legendFile(networkTitle, settings.imageFormat));
