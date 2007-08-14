@@ -450,7 +450,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 */
 	public Double getSelectedThumbValue() {
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * valueRange) - Math.abs(minValue));
+		final double thumbVal = (((position / 100) * valueRange) + minValue);
 
 		return thumbVal;
 	}
@@ -963,8 +963,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			String fNum = null;
 
 			for (int j = 0; j < fractions.length; j++) {
-				fNum = String.format("%.2f",
-				                     ((fractions[j] / 100) * valueRange) - Math.abs(minValue));
+				fNum = String.format("%.2f", ((fractions[j] / 100) * valueRange) + minValue);
 				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
 				g.drawString(fNum,
 				             ((fractions[j] / 100) * trackWidth) - (strWidth / 2) + leftSpace,

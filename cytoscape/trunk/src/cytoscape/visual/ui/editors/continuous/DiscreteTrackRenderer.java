@@ -797,7 +797,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		if(detail) {
 			String fNum = null;
 			for(int j=0; j<fractions.length; j++) {
-				fNum = String.format("%.2f", (fractions[j]/100)*maxValue - minValue);
+				fNum = String.format("%.2f", ((fractions[j]/100)*valueRange) + minValue);
 				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
 				g.drawString(fNum, (fractions[j]/100)*iconWidth-strWidth/2, iconHeight-20);
 			}
@@ -840,7 +840,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 */
 	public Double getSelectedThumbValue() {
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * valueRange) - Math.abs(minValue));
+		final double thumbVal = (((position / 100) * valueRange) + minValue);
 
 		return thumbVal;
 	}
