@@ -335,13 +335,6 @@ public class CytoscapeSessionReader {
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 		         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 
-		PropertyChangeListener[] pcl = Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-		                                        .getPropertyChangeListeners();
-
-		for (PropertyChangeListener p : pcl) {
-			System.out.println("############PCL = " + p.toString());
-		}
-
 		unzipSessionFromURL();
 
 		if (session.getSessionState().getDesktop() != null) {
