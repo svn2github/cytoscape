@@ -415,7 +415,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		if(detail && fractions != null) {
 			String fNum = null;
 			for(int i=0; i<fractions.length; i++) {
-				fNum = String.format("%.2f", fractions[i]*maxValue - minValue);
+				fNum = String.format("%.2f", (fractions[i]*range) + minValue);
 				
 				strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), fNum);
 				
@@ -456,7 +456,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 */
 	public Double getSelectedThumbValue() {
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * range) - Math.abs(minValue));
+		final double thumbVal = (((position / 100) * range) + minValue);
 
 		return thumbVal;
 	}
