@@ -1487,7 +1487,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	public void doPostProcessing(CyNetwork network) {
 		setNetworkAttributes(network);
 
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		if (view == Cytoscape.getNullNetworkView())
 			return;

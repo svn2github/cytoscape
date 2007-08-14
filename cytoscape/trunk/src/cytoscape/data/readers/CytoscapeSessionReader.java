@@ -62,14 +62,18 @@ import cytoscape.generated.SelectedEdges;
 import cytoscape.generated.SelectedNodes;
 
 import cytoscape.task.TaskMonitor;
+
 import cytoscape.util.PercentUtil;
 import cytoscape.util.URLUtil;
+
 import cytoscape.view.CyNetworkView;
 
 import ding.view.DGraphView;
 
 import java.awt.Component;
 import java.awt.geom.Point2D;
+
+import java.beans.PropertyChangeListener;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -161,11 +165,10 @@ public class CytoscapeSessionReader {
 	private Bookmarks bookmarks = null;
 	private HashMap<String, List<File>> pluginFileListMap;
 	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
-	
+
 	// Task monitor
 	private TaskMonitor taskMonitor;
 	private PercentUtil percentUtil;
-	
 	private float networkCounter = 0;
 	private float netIndex = 0;
 
@@ -177,25 +180,35 @@ public class CytoscapeSessionReader {
 	 *
 	 * This is for remote session file (URL).
 	 */
-	public CytoscapeSessionReader(final URL sourceName, final TaskMonitor monitor) throws IOException {
+	public CytoscapeSessionReader(final URL sourceName, final TaskMonitor monitor)
+	    throws IOException {
 		this.sourceURL = sourceName;
 
-        if (sourceName.getProtocol().equals("file"))
-            this.sourceURL = sourceName;
-        else
-            this.sourceURL = temporaryLocalFileURL(sourceName);
+		if (sourceName.getProtocol().equals("file"))
+			this.sourceURL = sourceName;
+		else
+			this.sourceURL = temporaryLocalFileURL(sourceName);
 
 		networkList = new ArrayList();
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
-		
-		if(monitor != null) {
+
+		if (monitor != null) {
 			this.taskMonitor = monitor;
 			percentUtil = new PercentUtil(1);
 		}
 	}
-	
-	public CytoscapeSessionReader(final String fileName, final TaskMonitor monitor) throws IOException {
+
+	/**
+	 * Creates a new CytoscapeSessionReader object.
+	 *
+	 * @param fileName  DOCUMENT ME!
+	 * @param monitor  DOCUMENT ME!
+	 *
+	 * @throws IOException  DOCUMENT ME!
+	 */
+	public CytoscapeSessionReader(final String fileName, final TaskMonitor monitor)
+	    throws IOException {
 		this(new File(fileName).toURL(), monitor);
 	}
 
@@ -209,7 +222,14 @@ public class CytoscapeSessionReader {
 	public CytoscapeSessionReader(final String fileName) throws IOException {
 		this(new File(fileName).toURL(), null);
 	}
-	
+
+	/**
+	 * Creates a new CytoscapeSessionReader object.
+	 *
+	 * @param sourceName  DOCUMENT ME!
+	 *
+	 * @throws IOException  DOCUMENT ME!
+	 */
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
 		this(sourceName, null);
 	}
@@ -310,9 +330,18 @@ public class CytoscapeSessionReader {
 		// Session.  Then we can avoid unnecessary event firing.
 		Cytoscape.getDesktop().getVizMapperUI().enableListeners(false);
 		Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
-		
-		Cytoscape.getDesktop().removePropertyChangeListener(Cytoscape.getDesktop());
-		
+
+		//Cytoscape.getDesktop().getSwingPropertyChangeSupport().removePropertyChangeListener(Cytoscape.getDesktop().getNetworkPanel());
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+
+		PropertyChangeListener[] pcl = Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		                                        .getPropertyChangeListeners();
+
+		for (PropertyChangeListener p : pcl) {
+			System.out.println("############PCL = " + p.toString());
+		}
+
 		unzipSessionFromURL();
 
 		if (session.getSessionState().getDesktop() != null) {
@@ -322,14 +351,15 @@ public class CytoscapeSessionReader {
 		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
 		}
-		// Restore listeners for VizMapper.
+
+		// Restore listeners for VizMapper and Bird's Eye View.
 		Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
-		
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
 
-		Cytoscape.getDesktop().getVizMapperUI().enableListeners(false);
-		
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
@@ -339,7 +369,6 @@ public class CytoscapeSessionReader {
 		deleteTmpPluginFiles();
 
 		System.out.println("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
-		Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 	}
 
 	// Delete tmp files (the plugin state files) to cleanup
@@ -423,8 +452,9 @@ public class CytoscapeSessionReader {
 				try {
 					// get inputstream from ZIP
 					URL theURL = new URL(URLstr);
+
 					// InputStream is = theURL.openStream();
-                    // Even though theURL derives from a File, error on the
+					// Even though theURL derives from a File, error on the
 					// side of caution and use URLUtil to get the input stream (which
 					// handles proxy servers and cached pages):
 					InputStream is = URLUtil.getBasicInputStream(theURL);
@@ -498,7 +528,7 @@ public class CytoscapeSessionReader {
 
 	private void loadCySession() throws JAXBException, IOException {
 		// InputStream is = cysessionFileURL.openStream();
-        // Even though cytoscapeFileURL is probably a local URL, error on the
+		// Even though cytoscapeFileURL is probably a local URL, error on the
 		// side of caution and use URLUtil to get the input stream (which
 		// handles proxy servers and cached pages):
 		InputStream is = URLUtil.getBasicInputStream(cysessionFileURL);
@@ -583,28 +613,24 @@ public class CytoscapeSessionReader {
 		InputStream networkStream;
 		CyNetwork new_network;
 		CyNetworkView curNetView;
+
 		for (int i = 0; i < numChildren; i++) {
 			child = children.get(i);
 			childNet = netMap.get(child.getId());
 
-			targetNetworkURL = (URL) networkURLs.get(sessionID + "/"
-			                                                   + childNet.getFilename());
+			targetNetworkURL = (URL) networkURLs.get(sessionID + "/" + childNet.getFilename());
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
 			networkStream = (InputStream) jarConnection.getContent();
+
 			final XGMMLReader reader = new XGMMLReader(networkStream);
 			new_network = Cytoscape.createNetwork(reader, false, parent);
-			
-			if(childNet.isViewAvailable()) {
-				Cytoscape.createNetworkView(new_network, new_network.getTitle(),reader.getLayoutAlgorithm());
-			}
-			
-			reader.doPostProcessing(new_network);
-			
-			if (taskMonitor != null && networkCounter >=20) {
+
+			if ((taskMonitor != null) && (networkCounter >= 20)) {
 				netIndex++;
-				taskMonitor.setPercentCompleted(((Number)((netIndex/networkCounter)*100)).intValue());
+				taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              .intValue());
 			}
-			
+
 			if (networkStream != null) {
 				try {
 					networkStream.close();
@@ -614,19 +640,23 @@ public class CytoscapeSessionReader {
 			}
 
 			networkList.add(new_network.getIdentifier());
-			curNetView = Cytoscape.getNetworkView(new_network.getIdentifier());
 
-			if (curNetView != Cytoscape.getNullNetworkView()) {
+			if(childNet.isViewAvailable()) {
+
 				// Set visual style
 				String vsName = childNet.getVisualStyle();
-
 				if (vsName == null)
 					vsName = "default";
-
+				
+				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+				Cytoscape.getVisualMappingManager().applyAppearances();
+				Cytoscape.createNetworkView(new_network, new_network.getTitle(),
+                        reader.getLayoutAlgorithm());
+				
+				curNetView = Cytoscape.getNetworkView(new_network.getIdentifier());
 				curNetView.setVisualStyle(vsName);
-				
-//				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-				
+
+				reader.doPostProcessing(new_network);
 				// Set hidden nodes + edges
 				setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
 				setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());
@@ -639,14 +669,13 @@ public class CytoscapeSessionReader {
 			if (childNet.getChild().size() != 0)
 				walkTree(childNet, new_network, sessionSource);
 		}
-		
+
 		// Switch vs.
-		CyNetworkView  view = Cytoscape.getCurrentNetworkView();
-		if(view != null) {
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+
+		if (view != null) {
 			Cytoscape.getVisualMappingManager().setVisualStyle(view.getVisualStyle());
 		}
-		
-		
 	}
 
 	private void setSelectedNodes(final CyNetwork network, final SelectedNodes selected) {
@@ -786,11 +815,11 @@ public class CytoscapeSessionReader {
 			targetCyNetworkID = getNetworkIdFromTitle(server.getName());
 
 			cytoscape.data.ontology.Ontology onto = new cytoscape.data.ontology.Ontology(server
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .getName(),
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .getName(),
 			                                                                             curator,
 			                                                                             description,
 			                                                                             Cytoscape
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getNetwork(targetCyNetworkID));
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getNetwork(targetCyNetworkID));
 			Cytoscape.getOntologyServer().addOntology(onto);
 		}
 
@@ -810,60 +839,62 @@ public class CytoscapeSessionReader {
 		return null;
 	}
 
-    /**
-     * The CytoscapeSessionReader class reopens the session file each time it accesses or reads one of
-     * the files contained within the session file (which is just a zip container). This is fine for
-     * local files, but if you refer to a remote URL, it means that the session file is downloaded once
-     * for each file accessed -- that's 4-5 times on average, and performance suffers immensely.
-     *
-     * This method will attempt to create a local temporary file and copy the contents of the remote URL
-     * into the temporary file. It returns the URL for the local temporary file. Note that the file is
-     * marked "deleteOnExit", which means that if the JVM exits normally, it will be cleaned up automatically.
-     *
-     * The method returns either the local file URL, or the original remote URL if there was a problem in
-     * creating the local file.
-     *
-     * @param remoteURL
-     * @return
-     */
-    private URL temporaryLocalFileURL(final URL remoteURL) {
-        try {
-            // We need a unique local filename for the temporary file - which seems like a
-            // logical job for Java's UUID class...
-            File tempFile = File.createTempFile(java.util.UUID.randomUUID().toString(), ".cys");
-                 tempFile.deleteOnExit();
+	/**
+	 * The CytoscapeSessionReader class reopens the session file each time it accesses or reads one of
+	 * the files contained within the session file (which is just a zip container). This is fine for
+	 * local files, but if you refer to a remote URL, it means that the session file is downloaded once
+	 * for each file accessed -- that's 4-5 times on average, and performance suffers immensely.
+	 *
+	 * This method will attempt to create a local temporary file and copy the contents of the remote URL
+	 * into the temporary file. It returns the URL for the local temporary file. Note that the file is
+	 * marked "deleteOnExit", which means that if the JVM exits normally, it will be cleaned up automatically.
+	 *
+	 * The method returns either the local file URL, or the original remote URL if there was a problem in
+	 * creating the local file.
+	 *
+	 * @param remoteURL
+	 * @return
+	 */
+	private URL temporaryLocalFileURL(final URL remoteURL) {
+		try {
+			// We need a unique local filename for the temporary file - which seems like a
+			// logical job for Java's UUID class...
+			File tempFile = File.createTempFile(java.util.UUID.randomUUID().toString(), ".cys");
+			tempFile.deleteOnExit();
 
-            byte                  buffer[]       = new byte[100000];
-            java.io.OutputStream  localContent   = new java.io.FileOutputStream(tempFile);
-            // java.io.InputStream   remoteContent  = remoteURL.openStream();
-            // Use URLUtil to get the InputStream since we might be using a proxy server 
-    		// and because pages may be cached:
-            java.io.InputStream   remoteContent  = URLUtil.getBasicInputStream(remoteURL);
+			byte[] buffer = new byte[100000];
+			java.io.OutputStream localContent = new java.io.FileOutputStream(tempFile);
 
-            for (int nBytes = remoteContent.read(buffer); nBytes>0; nBytes = remoteContent.read(buffer)) {
-                localContent.write(buffer, 0, nBytes);
-            }
+			// java.io.InputStream   remoteContent  = remoteURL.openStream();
+			// Use URLUtil to get the InputStream since we might be using a proxy server 
+			// and because pages may be cached:
+			java.io.InputStream remoteContent = URLUtil.getBasicInputStream(remoteURL);
 
-            remoteContent.close();
-            localContent.close();
-            remoteContent = null;
-            localContent  = null;
-            buffer        = null;
+			for (int nBytes = remoteContent.read(buffer); nBytes > 0;
+			     nBytes = remoteContent.read(buffer)) {
+				localContent.write(buffer, 0, nBytes);
+			}
 
-            return tempFile.toURL();
-        } catch (FileNotFoundException e) {
-            // This could happen if the OS' temp directory doesn't exist
-            System.err.println("Can't create a temporary file.");
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            // If the provided URL is bad, this will happen
-            System.err.println("Bad URL provided: " + remoteURL.toString());
-            e.printStackTrace();
-        } catch (IOException e) {
-            // Any problem read or writing from either the remoteURL or the tempFile
-            e.printStackTrace();
-        }
+			remoteContent.close();
+			localContent.close();
+			remoteContent = null;
+			localContent = null;
+			buffer = null;
 
-        return remoteURL; // if we can't make a local copy for some reason, work with the remote.
-    }
+			return tempFile.toURL();
+		} catch (FileNotFoundException e) {
+			// This could happen if the OS' temp directory doesn't exist
+			System.err.println("Can't create a temporary file.");
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// If the provided URL is bad, this will happen
+			System.err.println("Bad URL provided: " + remoteURL.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			// Any problem read or writing from either the remoteURL or the tempFile
+			e.printStackTrace();
+		}
+
+		return remoteURL; // if we can't make a local copy for some reason, work with the remote.
+	}
 }

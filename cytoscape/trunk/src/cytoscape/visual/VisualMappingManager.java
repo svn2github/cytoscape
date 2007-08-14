@@ -354,7 +354,7 @@ public class VisualMappingManager extends SubjectBase {
      * applyEdgeAppearances, and applyGlobalAppearances.
      */
     public void applyAppearances() {
-        final long start = System.currentTimeMillis();
+//        final long start = System.currentTimeMillis();
         /** first apply the node appearance to all nodes */
         applyNodeAppearances();
         /** then apply the edge appearance to all edges */

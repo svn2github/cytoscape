@@ -103,7 +103,6 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 		}
 
 		new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getSelectFilter(), this);
-
 	}
 
 	/**
@@ -121,13 +120,15 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualStyle getVisualStyle() {
-		if (vs == null)
-		{
+		if (vs == null) {
 			String defaultStyle = CytoscapeInit.getProperties().getProperty("defaultVisualStyle");
+
 			if (defaultStyle == null)
 				defaultStyle = "default";
+
 			setVisualStyle(defaultStyle);
 		}
+
 		return vs;
 	}
 
@@ -166,13 +167,10 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 */
 	public void redrawGraph(boolean layout, boolean vizmap) {
 		// For testing
-//		try {
-//			throw new Exception();
-//		} catch (Exception e) {
-//			System.out.println("Redraw called@@@@@@@@@ Network = " + this.title);
-//			e.printStackTrace();
-//		}
-		
+		//			Exception ex = new Exception();
+		//			System.out.println("Redraw called@@@@@@@@@ Network = " + this.title);
+		//			ex.printStackTrace();
+		//		}
 		Cytoscape.getVisualMappingManager().applyAppearances();
 		updateView();
 	}

@@ -231,6 +231,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// This is the index of the box in the toolbar. We use this so that we can
 	// add and remove the stylebox from the same place.
 	protected int styleBoxIndex = -1;
+	
+	//
+	// Overview Window;
+	//
+	private BirdsEyeViewHandler bevh;
 
 	/**
 	 * @deprecated view_type is no longer used.  Use the other CytoscapeDesktop() instead. 
@@ -256,7 +261,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		networkViewManager = new NetworkViewManager(this);
 
-		BirdsEyeViewHandler bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane());
+		bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane());
 		getSwingPropertyChangeSupport().addPropertyChangeListener(bevh);
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(bevh);
 
@@ -462,6 +467,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			this.vizMapper = Cytoscape.getVisualMappingManager();
 			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
+			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
 		}
 		return vizmapperUI;
 	}
@@ -793,6 +799,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public NetworkViewManager getNetworkViewManager() {
 		return this.networkViewManager;
+	}
+	
+	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
+		return this.bevh;
 	}
 	
 
