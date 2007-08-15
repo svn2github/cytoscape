@@ -1,0 +1,160 @@
+/* SWIM2.0 :: Simple website menu
+****************************************************************
+* DOM scripting by brothercake -- http://www.brothercake.com/
+* Licensed under GPL -- http://www.gnu.org/copyleft/gpl.html
+****************************************************************
+* For professional menu solutions visit -- http://www.udm4.com/ 
+****************************************************************
+*/
+
+
+
+
+
+/* tame the lists */
+ul.vertical, ul.vertical li {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	font-size:100%; /* fix for win/ie's "non-linear text scaling" bug */
+	}
+
+
+/* navbar list */
+ul.vertical {
+	position:absolute;
+	z-index:1000;
+	cursor:default;
+	
+	/* navbar width */
+	width:6em;
+
+	/* navbar left and top position 
+	   this DOES NOT already include 1px compensation 
+	   on TOP, for list-item border collapse 
+	   (1px defaults to around 0.05em) */
+	left:0.2em;
+	top:0.2em;
+	}
+
+/* navbar list-items */
+ul.vertical li {
+	position:relative;
+	text-align:left;
+	cursor:pointer;
+	cursor:hand;
+	
+	/* duplicate navbar width */
+	width:6em;
+	
+	/* shift list-items to collapse borders vertically */
+	margin:-1px 0 0 0;
+	}
+
+
+/* menu lists */
+ul.vertical ul {
+	z-index:1020;
+	cursor:default;
+	position:absolute;
+	
+	/* menu width */
+	width:6.2em;
+	
+	/* menu offset, which already includes 1px compensation 
+	   on TOP, for list-item border collapse */
+	margin:-0.5em 0 0 5.5em;
+	/* overlapping the menus improves usability */
+	
+	/* 
+	position menus off the screen to hide 
+	because using display, visibility, overflow or clip,  
+	would hide them from browser-based screenreaders as well 
+	*/
+	top:-100em;
+	
+	/* shift menus to collapse navbar->menu borders */
+	left:-1px;
+	
+	/* compensate for list-item border collapse */
+	padding:1px 0 0 0;
+	}
+	
+/* menu list-items */
+ul.vertical ul li {
+	/* duplicate menu width 8.2em*/
+	width:6.2em;
+	}
+	
+ul.vertical ul li a, ul.vertical ul li a:visited {
+	/* submenu items lighter */
+	font-weight:lighter;
+	padding-bottom: 3px; 
+        padding-top: 3px
+	}
+
+
+/* further child-menu offset */
+ul.vertical ul ul {
+	/* this already includes 1px compensation 
+	   for list-item border collapse */
+	margin:-0.5em 0 0 4.7em;
+	/* overlapping the menus improves usability */
+	}
+
+
+/* menu triggers -- position menus back on the screen to show 
+   hide these from safari < 1.2 because of it's "sticky hover" bug 
+   that would make it difficult or impossible to close the menus 
+   we're hiding it using the "@media with Media Type in Mixed Case" hack
+   http://www.dithered.com/css_filters/css_only/media_mixed_case.html */
+@media Screen, Projection { 
+	ul.vertical li:hover > ul { top:0; }
+	}
+
+
+/* links */
+ul.vertical a, ul.vertical a:visited {
+	display:block;
+	font-family: trebuchet MS, trebuchet, verdana, arial, sans-serif;
+	font-size: 0.7em;
+	font-weight:normal normal bold;
+	padding:5px 7px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;	
+	background-color: #FFFFFF;
+	cursor:pointer;
+	cursor:hand;
+	color:#000000;
+	border: 1px solid #CCE6FF;
+	text-decoration:none;
+	}
+	
+/* rollover pseudo-classes, and scriptable persistence class */
+ul.vertical a:hover, ul.vertical a:focus, ul.vertical a.rollover, ul.vertical a.rollover:visited {
+	background:#EEF6FE;
+	color:#992035;
+	}
+
+
+
+/* hacks for win/ie to cure 'excess hidden margins' bug */
+@media screen, projection {
+	* html ul.vertical li {
+		/* for ie5.0 */
+		display:inline; 
+		/* for ie5.5+ */
+		f\loat:left; 
+		/* this cures 'events fall through the menu' bug in ie6 */
+		background:#ffffff; 
+		}
+	}
+	
+/* use different comparative positioning for ie, 
+   to avoid problems with virtual z-ordering */
+* html ul.vertical li { position:static; }
+* html ul.vertical a { position:relative; }
+
+/* hide menus from konqueror < 3.2 */
+ul[class^="vertical"] ul { display:none; }
+ul[class^="vertical"] ul { displa\y:block; }

@@ -8,6 +8,7 @@
   <!--[if lt IE 7]>
   <script defer type="text/javascript" src="js/pngfix.js"></script>
   <![endif]-->
+  <script src="js/onloadheaderonly.js" type="text/javascript"></script>  
 </head>
 
 <body style="background-color: rgb(255, 255, 255);">

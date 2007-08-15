@@ -2,9 +2,12 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-  <title>5th Annual Cytoscape Retreat and Symposium - Venue</title>
+  <title>5th Annual Cytoscape Retreat and Symposium - Template</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/cytoretreat.css">
   <link rel="../shortcut icon" href="../images/cyto.ico">
+  <!--[if lt IE 7]>
+  <script defer type="text/javascript" src="js/pngfix.js"></script>
+  <![endif]-->
 </head>
 
 <body style="background-color: rgb(255, 255, 255);">
@@ -27,10 +30,9 @@
   <div id="content">
   <div class="item">
   <div class="top">
-   <h2>This page header</h2>
+   <h2>Template</h2>
   </div>
   <!-- This page content goes here -->
-
   </div>
   </div>
   </div>
@@ -44,5 +46,6 @@
   </td>
  </tr>
 </table>
+<? include "footer.php"; ?>
 </body>
 </html>

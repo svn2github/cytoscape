@@ -8,6 +8,13 @@ body {
  background-color: #ffffff;
 }
 
+p {
+ font-size: 12px;
+ padding-left: 10px;
+ padding-right: 10px;
+ padding-bottom: 10px;
+}
+
 #indent {
  padding-left: 30px;
 }
@@ -163,7 +170,6 @@ body {
 #content .item {
  margin-bottom: 0px;
  font-size: 12px;
- #border: dotted gray 1px;
  padding-left: 10px;
  padding-right: 10px;
  padding-bottom: 10px;

@@ -1,3 +1,8 @@
+<noscript><b>JavaScript must be enabled in order for you to show the menu proberly and to use Google Maps.</b> 
+      However, it seems JavaScript is either disabled or not supported by your browser. 
+      To view Google Maps en view the menu properly, enable JavaScript by changing your browser options, and then 
+      try again.
+</noscript> 
 <table id="adambanner" STYLE="background-image: url('images/banner/0-banner.jpg'); border="0" cellpadding="0" cellspacing="0" width="100%">
   <tbody>
     <tr>
@@ -11,12 +16,3 @@
   </tbody>
 </table>
 
-<script language="javascript">
-   window.onload = function() {
-       	
-       var bimages = ["0-banner.jpg", "1-banner.jpg", "2-banner.jpg", "3-banner.jpg", "4-banner.jpg", "5-banner.jpg"];
-       var rand=Math.floor(Math.random()*6);
-       newImage = "url(images/banner/" + bimages[rand] + ")";
-       document.getElementById('adambanner').style.backgroundImage = newImage;
-   }      
-</script>

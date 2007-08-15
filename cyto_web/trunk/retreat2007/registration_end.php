@@ -10,23 +10,22 @@
   <![endif]-->
 </head>
 
-<body style="background-color: rgb(255, 255, 255);">
+<body STYLE="background-color: transparent;">
 
 <!-- The header with changing pictures -->
 
 <!-- Retreat content table-->
 
-<table width="100%" height="500">
+<table>
  <tr valign="top">
   <!-- This page content -->
   <td >
-  <div id="contents">
-  <div id="content">
-  <div class="item">
+  <p>
   Registration is now complete; thank you for registering and see you at the retreat!
-  </div>
-  </div>
-  </div>
+  </p>
+  <p>
+  For hotel reservations and travel directions go to our <a href="travel_stay.php">Travel and Accomodation page</a> on this site.
+  </p>
   </td> 
   <td>
   <img border="0" align="right" alt="Students at AMC" height="500" width="334" src="images/amc/students_in_sun.jpg">
