@@ -12,7 +12,6 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import giny.view.*;
-import giny.view.NodeView;
 
 import java.awt.event.*;
 
@@ -21,6 +20,8 @@ import java.io.*;
 import java.net.URL;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 
@@ -56,10 +57,10 @@ public class LinkOut {
 	}
 
 	/**
-	* Generates URL links with node name and places them in hierarchical JMenu list
-	* @param node the NodeView.
-	* @return JMenuItem
-	***/
+	 * Generates URL links with node name and places them in hierarchical JMenu list
+	 * @param node the NodeView.
+	 * @return JMenuItem
+	 */
 	public JMenuItem addLinks(NodeView node) {
 		System.out.println("linkout.addLinks called with node "
 		                   + ((NodeView) node).getLabel().getText());
@@ -92,17 +93,11 @@ public class LinkOut {
 
 				final NodeView mynode = (NodeView) node;
 
-				//node label
-				nodelabel = mynode.getLabel().getText();
-
-				if ((nodelabel == null) || (0 == nodelabel.length())) {
-					//Lama nodeAttributes?
-					//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-					nodelabel = mynode.getNode().getIdentifier();
-				}
-
-				//Replace %ID% mark with the node label
-				final String fUrl = url.replaceFirst("%ID%", nodelabel);
+				// Get the set of attribute names for this node
+				Node n = mynode.getNode();
+				CyAttributes na = Cytoscape.getNodeAttributes();
+				String nodeId = n.getIdentifier();
+				String fUrl = subsAttrs(url, na, nodeId, "ID", "");
 
 				//the link name
 				String[] temp = ((String) propKey.substring(p)).split("\\.");
@@ -119,10 +114,9 @@ public class LinkOut {
 				top_menu.add(new JMenuItem(url));
 			}
 
-			/* For debugging */
+			// For debugging
 			// printMenu(top_menu);
-		}
-		catch (NullPointerException e) {
+		} catch (NullPointerException e) {
 			String url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
 			             + "http://www.cytoscape.org/";
 			top_menu.add(new JMenuItem(url));
@@ -133,10 +127,93 @@ public class LinkOut {
 	}
 
 	/**
+	 * Perform variable substitution on a url using attribute values.
+	 *
+	 * Given a url, look for attribute names within that url specified by %AttributeName%
+	 * If our current node or edge (as specified by graphObjId) has an attribute name that
+	 * matches the string in the URL, replace the string with the value of the attribute.
+	 *
+	 * Special cases:
+	 * 1. For backwards compatibility, if the attribute name given by idKeyword is found
+	 *    substitute the value of the attribute id as given by graphObjId.
+	 * 2. When looking for attribute names, we can specify that they must have a prefix added
+	 *    to the beginning.  This allows us to specify a "from" or "to" prefix in edge attributes
+	 *    so that from.AttributeName and to.AttributeName can select different properties.
+	 *
+	 * @param url the url to perform replacements on.
+	 * @param attrs  a set of node or edge attributes.
+	 * @param graphObjId the id of the node or edge that is selected.
+	 * @param idKeyword a special attribute keyword, that if found, should be replaced by graphObjId
+	 * @param prefix a prefix to prepend to attribute names.
+	 * @return modified url after variable substitution
+	 */
+	private String subsAttrs(String url, CyAttributes attrs, String graphObjId, String idKeyword,
+	                         String prefix) {
+
+		Set<String> validAttrs = new HashSet<String>();
+		for (String attrName : attrs.getAttributeNames() ) {
+			if (attrs.hasAttribute(graphObjId, attrName)) {
+				validAttrs.add(prefix + attrName);
+			}
+		}
+
+		// Replace %ATTRIBUTE.NAME% mark with the value of the attribute
+		final String REGEX = "%.*%";
+		Pattern pat = Pattern.compile(REGEX);
+		Matcher mat = pat.matcher(url); 
+
+		while (mat.find()) {
+			String attrName = url.substring(mat.start() + 1, mat.end() - 1);
+
+			// backwards compatibility, old keywords were %ID%, %ID1%, %ID2%.
+			if (attrName.equals(idKeyword)) { 
+				String attrValue = graphObjId;
+				url = url.replace("%" + idKeyword + "%", attrValue);
+				mat = pat.matcher(url);
+			} else if (validAttrs.contains(attrName)) {
+				String attrValue = attrToString(attrs, graphObjId, attrName);
+				url = url.replace("%" + attrName + "%", attrValue);
+				mat = pat.matcher(url);
+			}
+		}
+
+		return url;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param attributes DOCUMENT ME!
+	 * @param id DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	private String attrToString(CyAttributes attributes, String id, String attributeName) {
+		Object value = null;
+		byte attrType = attributes.getType(attributeName);
+
+		if (attrType == CyAttributes.TYPE_BOOLEAN) {
+			value = attributes.getBooleanAttribute(id, attributeName);
+		} else if (attrType == CyAttributes.TYPE_FLOATING) {
+			value = attributes.getDoubleAttribute(id, attributeName);
+		} else if (attrType == CyAttributes.TYPE_INTEGER) {
+			value = attributes.getIntegerAttribute(id, attributeName);
+		} else if (attrType == CyAttributes.TYPE_STRING) {
+			value = attributes.getStringAttribute(id, attributeName);
+		}
+
+		if (value != null)
+			return value.toString();
+		else
+			return "N/A";
+	}
+
+	/**
 	 * Generate URL links with edge property and places them in hierarchical JMenu list
 	 * @param edge edgeView object
 	 * @return JMenuItem
-	 **/
+	 */
 	public JMenuItem addLinks(EdgeView edge) {
 		readProperties();
 
@@ -167,21 +244,13 @@ public class LinkOut {
 
 				final EdgeView myedge = (EdgeView) edge;
 
-				//Get edge atrributes
-				//                        edgelabel=myedge.getLabel().getText();
-				//                        if(edgelabel==null || 0==edgelabel.length()){
-				//                            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-				//                            edgelabel=myedge.getEdge().getIdentifier();
-				//                        }
-				String sourceLabel = myedge.getEdge().getSource().getIdentifier();
-				String targetLabel = myedge.getEdge().getTarget().getIdentifier();
-				System.out.println("Edge link out with source" + sourceLabel + " target "
-				                   + targetLabel);
-
-				// Generate URL links with edge attributes
-				// Replace %ID% mark with the node label
-				final String fUrl = (url.replaceFirst("%ID1%", sourceLabel)).replaceFirst("%ID2%",
-				                                                                          targetLabel);
+				// Replace edge attributes with values
+				Edge ed = myedge.getEdge();
+				CyAttributes attrs = Cytoscape.getNodeAttributes();
+				String sourceId = ed.getSource().getIdentifier();
+				String targetId = ed.getTarget().getIdentifier();
+				String fUrl = subsAttrs(url, attrs, sourceId, "ID%1", "source.");
+				fUrl = subsAttrs(fUrl, attrs, targetId, "ID%2", "target.");
 
 				System.out.println(fUrl);
 
@@ -200,10 +269,9 @@ public class LinkOut {
 				top_menu.add(new JMenuItem(url));
 			}
 
-			/* For debugging */
+			// For debugging 
 			// printMenu(top_menu);
-		}
-		catch (NullPointerException e) {
+		} catch (NullPointerException e) {
 			String url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
 			             + "http://www.cytoscape.org/";
 			top_menu.add(new JMenuItem(url));
@@ -219,7 +287,7 @@ public class LinkOut {
 	 * @param keys ArrayList
 	 * @param j JMenu the curren JMenu object
 	 * @param url String the url to link the node
-	 **/
+	 */
 	private void generateLinks(ArrayList keys, JMenu j, final String url) {
 		//Get the sub-menu
 		JMenuItem jmi = getMenuItem((String) keys.get(0), j);
@@ -241,15 +309,15 @@ public class LinkOut {
 
 			return;
 
-			//if its a JMenuItem and this is the last key then there
-			//is a duplicate of keys in the file. i.e two url with the exact same manu path
+		//if its a JMenuItem and this is the last key then there
+		//is a duplicate of keys in the file. i.e two url with the exact same manu path
 		} else if (jmi instanceof JMenuItem && (keys.size() == 1)) {
 			System.out.println("Duplicate URL specified for " + (String) keys.get(0));
 
 			return;
 
-			//if not null create a new JMenu  with current key
-			// remove key from the keys ArrayList and call generateLinks
+		//if not null create a new JMenu  with current key
+		// remove key from the keys ArrayList and call generateLinks
 		} else if (jmi == null) {
 			JMenu new_jm = new JMenu((String) keys.get(0));
 
@@ -259,7 +327,7 @@ public class LinkOut {
 
 			return;
 
-			//Remove key from top of the list and call generateLinks with new JMenu
+		//Remove key from top of the list and call generateLinks with new JMenu
 		} else {
 			keys.remove(0);
 
@@ -274,7 +342,7 @@ public class LinkOut {
 	 * @param name String the name of the jmenu item
 	 * @param menu JMenu the parent JMenu to search in
 	 * @return JMenuItem if found, null otherwise
-	 * */
+	 */
 	private JMenuItem getMenuItem(String name, JMenu menu) {
 		int count = menu.getMenuComponentCount();
 
@@ -310,8 +378,7 @@ public class LinkOut {
 				System.out.println(jm.getItem(i).getText());
 
 				continue;
-			}
-			else {
+			} else {
 				System.out.println(jm.getItem(i).getText() + "--");
 				printMenu((JMenu) jm.getItem(i));
 			}
@@ -367,4 +434,3 @@ public class LinkOut {
 		}
 	}
 }
-;
