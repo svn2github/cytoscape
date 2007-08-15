@@ -90,6 +90,12 @@ $releaseNoteURL = NULL;
 $fileUpload = NULL;
 $jarURL = NULL;
 $sourceURL = NULL;
+$Cy2p0_checked = NULL;
+$Cy2p1_checked = NULL;
+$Cy2p2_checked = NULL;
+$Cy2p3_checked = NULL;
+$Cy2p4_checked = NULL;
+$Cy2p5_checked = NULL;
 $license_required_checked = NULL;
 $cyVersion = NULL;
 $reference = NULL;
@@ -100,6 +106,7 @@ $names = NULL; // author names
 $emails = NULL;
 $affiliations = NULL;
 $affiliationURLs = NULL;
+
 
 // Case for 'edit', pull data out of DB for the given versionID
 if (($tried == NULL) && ($mode == 'edit')) {
@@ -146,16 +153,16 @@ if (($tried == NULL) && ($mode == 'edit')) {
 // be used to fill the refreshed form. If pass, they will be saved into
 // database
 
+if (isset ($_FILES['filePlugin'])) {
+	$fileUpload = $_FILES['filePlugin'];
+}
+
 if (isset ($_POST['taReleaseNote'])) {
 	$releaseNote = addslashes($_POST['taReleaseNote']);
 }
 
 if (isset ($_POST['tfReleaseNoteURL'])) {
 	$releaseNoteURL = $_POST['tfReleaseNoteURL'];
-}
-
-if (isset ($_FILES['filePlugin'])) {
-	$fileUpload = $_FILES['filePlugin'];
 }
 
 if (isset ($_POST['tfSourceURL'])) {
@@ -166,9 +173,6 @@ if (isset ($_POST['taReference'])) {
 	$reference = addslashes($_POST['taReference']);
 }
 
-if (isset ($_POST['taComment'])) {
-	$comment = addslashes($_POST['taComment']);
-}
 if (isset ($_POST['taLicense'])) {
 	$license = addslashes($_POST['taLicense']);
 }
@@ -178,6 +182,9 @@ if (isset ($_POST['chkLicense_required'])) {
 }
 else {
 	$license_required = "no";
+}
+if (isset ($_POST['taComment'])) {
+	$comment = addslashes($_POST['taComment']);
 }
 
 //Authors
@@ -204,23 +211,24 @@ if ($tried != NULL && $tried == 'yes') {
 		Error: A jar/zip file is required.<br>
 		<?php
 	}
-
-	// get plugin properties from the jar/zip file uploaded
-	include "pluginPropsUtil.inc";
-	$pluginProps = getPluginProps($fileUpload['tmp_name']);
-	
-	$validated = validatePluginProps($pluginProps);
-
-} // End of form validation
+	else {
+		// get plugin properties from the jar/zip file uploaded
+		include "pluginPropsUtil.inc";
+		$pluginProps = getPluginProps($fileUpload['tmp_name']);
+		
+		$validated = validatePluginProps($pluginProps);
+	}
+} 
+//////// End of form validation ////////////////////
 
 // if the mode is 'new' (i.e. submit from user), check if the plugin already existed
 if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 	$query = 'SELECT version_auto_id FROM categories, plugin_list, plugin_version' .
 	' WHERE categories.category_id = plugin_list.category_id ' .
 	'       and plugin_list.plugin_auto_id = plugin_version.plugin_id ' .
-	'       and categories.name ="' . $category . "\" " .
-	'		and plugin_list.name = "' . $name . "\" " .
-	'		and plugin_version.version = "' . $version . "\"";
+	'       and categories.name ="' . $pluginProps['pluginCategory'] . "\" " .
+	'		and plugin_list.name = "' . $pluginProps['pluginName'] . "\" " .
+	'		and plugin_version.version = "' . $pluginProps['pluginVersion'] . "\"";
 
 	// Run the query
 	if (!($result = @ mysql_query($query, $connection)))
@@ -235,7 +243,7 @@ if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 
 	}
 }
-
+$validated = true; // debug only
 /////////////////////////////////  Form definition //////////////////////////
 
 if (!($tried && $validated)) {
@@ -358,7 +366,7 @@ else
 
 	{
 		// Get the category_id
-		$query = 'SELECT category_id FROM categories WHERE name = "' . $category . '"';
+		$query = 'SELECT category_id FROM categories WHERE name = "' . $pluginProps['pluginCategory'] . '"';
 		// Run the query
 		if (!($result = @ mysql_query($query, $connection)))
 			showerror();
@@ -556,11 +564,12 @@ else
 		//$submitAction == 'Submit', accept data submited from user
 		//process the data and Save the data into DB.
 
-		//Load the Jar file to DB if any
+		//Load the Jar file to DB
 		$plugin_file_auto_id = NULL;
 
 		if ($fileUpload['name'] != NULL) {
-			//echo "A file is selected";
+			//echo "A file is selected";`
+			$md5 = md5_file($fileUpload['tmp_name']);
 			$fileUpload_type = $fileUpload['type'];
 			$fileUpload_name = $fileUpload['name'];
 
@@ -569,7 +578,7 @@ else
 			$fileContent = addslashes($fileContent);
 
 			$dbQuery = "INSERT INTO plugin_files VALUES ";
-			$dbQuery .= "(0, '$fileContent', '$fileUpload_type', '$fileUpload_name')";
+			$dbQuery .= "(0, '$fileContent', '$fileUpload_type', '$fileUpload_name', '$md5')";
 			//echo "<br>dbQuery = " . $dbQuery . "<br>";
 			// Run the query
 			if (!(@ mysql_query($dbQuery, $connection)))
@@ -579,11 +588,10 @@ else
 			$plugin_file_auto_id = mysql_insert_id($connection);
 		}
 
-
 		$plugin_auto_id = NULL;
 		//Check if there is an old version of this plugin in DB
 		$dbQuery = 'SELECT plugin_auto_id FROM plugin_list ' .
-		'         WHERE plugin_list.name = "' . $name . '" and category_id =' . $category_id;
+		'         WHERE plugin_list.name = "' . $pluginProps['pluginName'] . '" and category_id =' . $category_id;
 
 		// Run the query
 		if (!($result = @ mysql_query($dbQuery, $connection)))
@@ -591,14 +599,15 @@ else
 
 		if (@ mysql_num_rows($result) != 0) {
 			//There is an old version in the DB, update the row in the table plugin_list
+
 			$the_row = @ mysql_fetch_array($result);
 			$plugin_auto_id = $the_row['plugin_auto_id'];
 			//echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
 			
 			// Update the table "plugin_list"  
 			$dbQuery = 'UPDATE plugin_list '.
-					 	'SET description = "'.$description.'",'.
-						'project_url ="'.$projectURL.'",'.
+					 	'SET description = "'.$pluginProps['pluginDescription'].'",'.
+						'project_url ="'.$pluginProps['projectURL'].'",'.
 						'license ="'.$license.'",'.
 						'license_required ="'.$license_required.'" '.
 						'WHERE plugin_auto_id = '.$plugin_auto_id;						
@@ -613,7 +622,7 @@ else
 			$plugin_unique_id = -1;
 
 			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
-			'(0, "' . $name . '", "'.$plugin_unique_id.'", "'. $description . '", "'.$license.'", "'.$license_required.'", "'. $projectURL . '",' .
+			'(0, "' . $pluginProps['pluginName'] . '", "'.$plugin_unique_id.'", "'. $pluginProps['pluginDescription'] . '", "'.$license.'", "'.$license_required.'", "'. $pluginProps['projectURL'] . '",' .
 			$category_id . ',now())';
 
 			// Run the query
@@ -631,9 +640,9 @@ else
 		} else {
 			$dbQuery .= $plugin_file_auto_id;
 		}
-		$dbQuery .= ',"' . $version . '",\'' .
-		$releaseDate . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
-		$sourceURL . '","' . $cyVersion . '","' . $status . '","' . $reference . '", now())';
+		$dbQuery .= ',"' . $pluginProps['pluginVersion'] . '",\'' .
+		$pluginProps['releaseDate'] . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
+		$sourceURL . '","' . $pluginProps['cytoscapeVersion'] . '","' . $status . '","' . $reference . '", now())';
 
 		// Run the query
 		if (!(@ mysql_query($dbQuery, $connection)))
@@ -642,10 +651,11 @@ else
 		$version_auto_id = mysql_insert_id($connection);
 		// insert rows into author tables (authors and plugin_author)
 
-		$authorCount = count($names);
+		$authorCount = count($pluginProps['pluginAuthorsInstitutions']['names']);
 
 		for ($i = 0; $i < $authorCount; $i++) {
-			$dbQuery = 'INSERT INTO authors VALUES (0, "' . $names[$i] . '", "' . $emails[$i] . '","' . $affiliations[$i] . '","' . $affiliationURLs[$i] . '")';
+			$dbQuery = 'INSERT INTO authors VALUES (0, "' . $pluginProps['pluginAuthorsInstitutions']['names'][$i] . '", "' 
+			. 'null' . '","' . $pluginProps['pluginAuthorsInstitutions']['insts'][$i] . '","' . 'null' . '")';
 
 			// Run the query
 			if (!(@ mysql_query($dbQuery, $connection)))
@@ -662,11 +672,11 @@ else
 		}
 ?>
 	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If your-mail address is provided, you will get confirmation via e-mail.
-
+	<p>Go back to <a href="index.php">Back to cytoscape plugin page</a></p>
 	<?php
 	// Send a confirmation e-mail to user
 	// Also cc to cytostaff,  new plugin is uploaded
-	sendConfirmartionEmail($name, $emails[0]);
+	//sendConfirmartionEmail($name, $emails[0]);
 	
 	} // end of form processing
 }
