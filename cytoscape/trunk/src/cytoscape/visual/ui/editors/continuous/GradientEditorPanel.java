@@ -126,7 +126,6 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 		CyGradientTrackRenderer rend = (CyGradientTrackRenderer)editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
-
 	}
 
 	@Override

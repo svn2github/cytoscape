@@ -103,6 +103,11 @@ public class ContinuousLegend extends JPanel {
 		super();
 		this.points = points;
 		this.type = vpt;
+		this.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				setLegend(e);
+			}
+		});
 
 		setLayout(new BorderLayout());
 		setBackground(Color.white);
@@ -118,13 +123,6 @@ public class ContinuousLegend extends JPanel {
 		add(title, BorderLayout.NORTH);
 
 		setLegend(null);
-
-		this.addComponentListener(new ComponentAdapter() {
-				public void componentResized(ComponentEvent e) {
-					setLegend(e);
-					repaint();
-				}
-			});
 	}
 
 	private void setLegend(ComponentEvent e) {
@@ -137,8 +135,10 @@ public class ContinuousLegend extends JPanel {
 		if (getParent() == null) {
 			trackW = 600;
 		} else {
-			trackW = ((Number) (this.getParent().getParent().getParent().getWidth() * 0.82))
-			                                                                                                                                    .intValue();
+			trackW = ((Number)(this.getParent().getParent().getParent().getWidth()*0.82)).intValue();
+			if(trackW < 200) {
+				trackW = 200;
+			}
 		}
 
 		if (type.getDataType() == Color.class) {
@@ -151,6 +151,7 @@ public class ContinuousLegend extends JPanel {
 
 		legend.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(legend, BorderLayout.CENTER);
+		repaint();
 	}
 
 	private JPanel getGradientPanel() {
