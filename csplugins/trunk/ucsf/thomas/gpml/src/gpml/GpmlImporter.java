@@ -3,6 +3,8 @@ package gpml;
 import giny.view.GraphView;
 import giny.view.NodeView;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -20,6 +22,8 @@ import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.GraphLink.GraphRefContainer;
 import org.pathvisio.model.PathwayElement.MPoint;
 
+import phoebe.PhoebeCanvasDropEvent;
+import phoebe.PhoebeCanvasDropListener;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -28,20 +32,40 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.data.readers.GraphReader;
-import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutAdapter;
+import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyFileFilter;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
+import ding.view.InnerCanvas;
 
-public class GpmlImporter extends CytoscapePlugin {
+public class GpmlImporter extends CytoscapePlugin implements PhoebeCanvasDropListener, PropertyChangeListener {
 	static PrintStream out = System.out;
 	
+	public PluginInfo getPluginInfoObject() {
+		PluginInfo info = new PluginInfo();
+		info.setDescription("This plugin allows you to import pathways in the GPML format");
+		info.setName("GPML importer");
+		info.addAuthor("Thomas Kelder", "BiGCaT Bioinformatics / University of Maastricht");
+		info.setPluginVersion(0.5);
+		info.setProjectUrl("http://wikipathways.org");
+		
+		return info;
+	}
+		
     public GpmlImporter() {
         Cytoscape.getImportHandler().addFilter(new GpmlFilter());
+        
+		// Listen for Network View Creation
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(
+						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+
     }
         
     void mapGpmlData(CyNetwork cyn, Pathway data) {
@@ -188,13 +212,14 @@ public class GpmlImporter extends CytoscapePlugin {
 			view.updateView();
 		}
 
-		public CyLayoutAlgorithm getLayoutAlgorithm() {
+		public LayoutAlgorithm getLayoutAlgorithm() {
 			return new LayoutAdapter() {
 				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
 					layout(networkView);
 				}
 			};
 		}
+
     }
     
     static void transferAttributes(String id, PathwayElement o, CyAttributes attr) {
@@ -239,4 +264,19 @@ public class GpmlImporter extends CytoscapePlugin {
     static double mToV(double m) {
     	return m * 1.0/15; //Should be stored in the model somewhere (pathvisio)
     }
+
+	public void itemDropped(PhoebeCanvasDropEvent e) {
+		//TODO:
+		System.out.println("Dropped!");
+		
+	}
+	
+	public void propertyChange(PropertyChangeEvent e) {
+		//Register droplistener to new canvas
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
+			DGraphView view = (DGraphView) e.getNewValue();
+			((InnerCanvas)view.getCanvas()).addPhoebeCanvasDropListener(this);
+		}
+		super.propertyChange(e);
+	}
 }
