@@ -15,6 +15,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -211,7 +213,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
-
+		
 		/**
 		 * Build Context Menus per Region
 		 */
@@ -523,14 +525,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	protected void processRegionContextMenu(MouseEvent event) {
 		if (pickedRegion != null) {
-			menu.setLocation(event.getX()
-					+ Cytoscape.getDesktop().getNetworkPanel().getWidth(),
-					event.getY()
-							+ Cytoscape.getDesktop().getCyMenus().getMenuBar()
-									.getHeight()
-							+ Cytoscape.getDesktop().getCyMenus().getToolBar()
-									.getHeight());
-
 			menu.show(((DGraphView) Cytoscape.getCurrentNetworkView())
 					.getCanvas(), event.getX() - 3, event.getY() + 1);
 		} else {
@@ -910,9 +904,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		int color = attributes.getIntegerAttribute(groupNode.getIdentifier(),
 				REGION_COLORINT_ATT);
 
-		// remove Group and create a fresh one later
-		CyGroupManager.removeGroup(group);
-		groupPanel.groupRemoved(group);
+		
+		//TODO: rename GroupNode based on new viewID
+		
+		group.setState(SELECTED);
+		groupPanel.groupCreated(group);
+
 
 		// Set Region Variables to Hidden
 		attributes.setUserVisible(REGION_NAME_ATT, false);
@@ -923,7 +920,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		attributes.setUserVisible(REGION_H_ATT, false);
 
 		// Create Region
-		new LayoutRegion(x, y, w, h, name, nv, color, myView);
+		new LayoutRegion(x, y, w, h, name, nv, color, myView, group);
 	}
 
 	/**

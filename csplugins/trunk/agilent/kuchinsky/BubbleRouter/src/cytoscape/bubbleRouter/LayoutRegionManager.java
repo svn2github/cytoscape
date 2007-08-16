@@ -3,10 +3,9 @@ package cytoscape.bubbleRouter;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
@@ -99,6 +98,16 @@ public class LayoutRegionManager {
 		}
 		regionViewMap.put(view, null);
 	}
+	
+	/**
+	 * clears hash map of regions per view and view IDs 
+	 * to reset maps when a new session is loaded.
+	 *
+	 */
+	public static void clearRegionViewMap() {
+		regionViewMap.clear();
+		viewIdMap.clear();
+	}
 
 	/**
 	 * remove given region from view
@@ -126,31 +135,39 @@ public class LayoutRegionManager {
 		}
 	}
 
-//	/**
-//	 * higher-level routine for adding a region to a view from xGMML
-//	 * 
-//	 * Note: does not call BubbleRouterPlugin.newGroup(region);
-//	 * 
-//	 * @param view
-//	 * @param region
-//	 */
-//	public static void addRegionFromFile(CyNetworkView view, LayoutRegion region) {
-//		addRegionForView(view, region);
-//
-//		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
-//		// layout region
-//		DGraphView dview = (DGraphView) view;
-//		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
-//		backgroundLayer.add(region);
-//
-//		// oy what a hack: do an infinitesimal change of zoom factor so that it
-//		// forces a viewport changed event,
-//		// which enables us to get original viewport centerpoint and scale
-//		// factor
-//		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
-//
-//		// Do not call BubbleRouterPlugin.newGroup(region)
-//	}
+	/**
+	 * higher-level routine for adding a region to a view from xGMML
+	 * 
+	 * Note: does not call BubbleRouterPlugin.newGroup(region);
+	 * 
+	 * @param view
+	 * @param region
+	 */
+	public static void addRegionFromFile(CyNetworkView view, LayoutRegion region) {
+		addRegionForView(view, region);
+
+		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
+		// layout region
+		DGraphView dview = (DGraphView) view;
+		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
+		backgroundLayer.add(region);
+
+		// oy what a hack: do an infinitesimal change of zoom factor so that it
+		// forces a viewport changed event,
+		// which enables us to get original viewport centerpoint and scale
+		// factor
+		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
+
+		// Do not call BubbleRouterPlugin.newGroup(region)
+		
+		// update viewID for the group node identifier
+		Integer viewID = viewIdMap.get(view);
+		CyNode groupNode = region.getMyGroup().getGroupNode();
+		String name = groupNode.getIdentifier();
+		String nameNew = name.substring(0, name.indexOf("]_"));
+		nameNew += "]_" + viewID;
+		region.getMyGroup().getGroupNode().setIdentifier(nameNew);
+	}
 
 	/**
 	 * higher-level routine for adding a region to a view

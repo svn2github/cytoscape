@@ -27,6 +27,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.GlobalAppearanceCalculator;
@@ -174,7 +175,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	 * 
 	 */
 	public LayoutRegion(double x, double y, double width, double height,
-			ArrayList name, List<NodeView> nv, int color, CyNetworkView view) {
+			ArrayList name, List<NodeView> nv, int color, CyNetworkView view, CyGroup group) {
 		super();
 		this.setRegionAttributeValue(name);
 		setBounds(x, y, width, height, true);
@@ -182,8 +183,9 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		this.paint = colors[color];
 		this.setColorIndex(color);
 		myView = view;
+		this.setMyGroup(group);
 		((DGraphView) myView).addViewportChangeListener(this);
-		LayoutRegionManager.addRegion(myView, this);
+		LayoutRegionManager.addRegionFromFile(myView, this);
 
 	}
 
