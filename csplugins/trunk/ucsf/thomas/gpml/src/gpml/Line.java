@@ -61,7 +61,7 @@ public class Line extends Annotation {
 		
 		Composite origComposite = image2D.getComposite();
 		
-		Color c = color(pwElm.getColor());
+		Color c = pwElm.getColor();
 		image2D.setColor(c);
 				
 		int ls = pwElm.getLineStyle();

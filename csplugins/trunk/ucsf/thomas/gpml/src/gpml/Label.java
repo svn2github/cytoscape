@@ -2,12 +2,11 @@ package gpml;
 
 import java.awt.Composite;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
+import java.awt.Color;
 
 import org.pathvisio.model.PathwayElement;
 
@@ -42,10 +41,9 @@ public class Label extends Annotation {
 
 		Rectangle b = getBounds();
 		image2D.setFont(getVFont());
-		image2D.setColor(color(pwElm.getColor()));
+		image2D.setColor(pwElm.getColor());
 		
 		image2D.drawString(pwElm.getTextLabel(), 0, b.height / 2);
-		image2D.drawRect(0, 0, b.width - 1, b.height - 1);
 		
 		image2D.setComposite(origComposite);
 		((Graphics2D) g).drawImage(image, null, 0, 0);

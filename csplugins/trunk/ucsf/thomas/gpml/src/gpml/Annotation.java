@@ -94,8 +94,4 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 			Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
 			setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor, b.height * newScaleFactor);
 		}
-		
-		protected static final Color color(org.pathvisio.model.Color c) {
-			return new Color(c.red, c.green, c.blue);
-		}
 }

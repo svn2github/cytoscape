@@ -8,19 +8,26 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.jdom.Attribute;
+import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
 import org.pathvisio.model.GpmlFormat;
 import org.pathvisio.model.ObjectType;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.GraphLink.GraphRefContainer;
 import org.pathvisio.model.PathwayElement.MPoint;
+import org.pathvisio.view.swing.PathwayTransferable;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
@@ -32,8 +39,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.data.readers.GraphReader;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.LayoutAlgorithm;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.task.TaskMonitor;
@@ -212,7 +219,7 @@ public class GpmlImporter extends CytoscapePlugin implements PhoebeCanvasDropLis
 			view.updateView();
 		}
 
-		public LayoutAlgorithm getLayoutAlgorithm() {
+		public CyLayoutAlgorithm getLayoutAlgorithm() {
 			return new LayoutAdapter() {
 				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
 					layout(networkView);
@@ -266,9 +273,20 @@ public class GpmlImporter extends CytoscapePlugin implements PhoebeCanvasDropLis
     }
 
 	public void itemDropped(PhoebeCanvasDropEvent e) {
-		//TODO:
-		System.out.println("Dropped!");
-		
+		if(e.getTransferable().isDataFlavorSupported(PathwayTransferable.pathwayDataFlavor)) {
+			try {
+				String xml = (String)e.getTransferable().getTransferData(PathwayTransferable.pathwayDataFlavor);
+				if(e.getTransferable().isDataFlavorSupported(PathwayTransferable.pathwayDataFlavor)) {
+					SAXBuilder builder  = new SAXBuilder(false);
+					Document doc = builder.build(new InputSource(new StringReader(xml)));
+					for(Object child : doc.getRootElement().getChildren()) {
+						//TODO: add to network
+					}
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	public void propertyChange(PropertyChangeEvent e) {

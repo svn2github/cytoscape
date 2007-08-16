@@ -53,8 +53,8 @@ public class Shape extends Annotation implements ViewportChangeListener {
 		//Rectangle b = relativeToBounds(getUnrotatedBounds()).getBounds();
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle())).getBounds();
 		
-		Color fillcolor = color(pwElm.getFillColor());
-		Color linecolor = color(pwElm.getColor());
+		Color fillcolor = pwElm.getFillColor();
+		Color linecolor = pwElm.getColor();
 		
 		int sw = (int)getStrokeWidth();
 		int x = b.x;
