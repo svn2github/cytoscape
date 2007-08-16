@@ -16,6 +16,9 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,6 +40,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
@@ -274,6 +278,38 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Regions",
 				groupPanel);
 		CyGroupManager.registerGroupViewer(this);
+		
+		preloadCellularComponents();
+		
+		
+
+	}
+	
+	private void preloadCellularComponents ()
+	{
+		// AJK: 08/16/07 BEGIN
+		//     try to load file from the jar
+		InputStream is = this.getClass().getResourceAsStream("BasicCellularComponents.na");
+		System.out.println("InputStream = " + is);
+		try {
+		System.out.println
+		(" available bytes = " + is.available());
+		} catch (IOException ex) { ex.printStackTrace(); }
+//		path = path.substring(path.indexOf(":") + 1, path.length());
+		
+		try {
+			InputStreamReader reader = new InputStreamReader(is);
+			CyAttributesReader.loadAttributes(
+					Cytoscape.getNodeAttributes(), reader);
+			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new IllegalArgumentException("Failure loading node attribute data: "
+			                                   + is + "  because of:"
+			                                   + ex.getMessage());
+		}
+		
+		// AJK: 08/16/07 END		
 	}
 
 	/**
