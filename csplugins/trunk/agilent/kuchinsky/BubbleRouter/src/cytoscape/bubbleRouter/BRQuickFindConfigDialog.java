@@ -9,12 +9,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -41,8 +42,6 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
 
 /**
  * BubbleRouter Dialog is the primary user interface, providing attribute
@@ -469,10 +468,33 @@ public class BRQuickFindConfigDialog extends JDialog {
 
 				//AP20070815
 				//Load file from jar
-				String path = this.getClass().getResource("data/BasicCellularComponents.na").getFile();
-				path = path.substring(path.indexOf(":") + 1, path.length());	
+//				String path = this.getClass().getResource("gal.probeset.na").getFile();
+				InputStream is = this.getClass().getResourceAsStream("BasicCellularComponents.na");
+				System.out.println("InputStream = " + is);
+				try {
+				System.out.println
+				(" available bytes = " + is.available());
+				} catch (IOException ex) { ex.printStackTrace(); }
+//				path = path.substring(path.indexOf(":") + 1, path.length());
+				URL url = this.getClass().getResource("BasicCellularComponents.na");
+				String path = url.getPath();
+
+				try
+				{
+					is = url.openStream();
+					System.out.println
+					(" available bytes = " + is.available());
+					System.out.println("Filename is = " + is.toString());
+				}
+				catch (IOException ex) { ex.printStackTrace(); }
+				
 				File[] files = new File[1];
 				files[0] = new File(path);
+				
+				
+	
+				
+				System.out.println ("For class: " + this.getClass());
 				System.out.println("file: "+files[0]);	
 				//AP20070815 end
 				
