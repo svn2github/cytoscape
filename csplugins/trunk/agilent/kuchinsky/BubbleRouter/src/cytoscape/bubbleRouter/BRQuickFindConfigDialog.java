@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -453,19 +454,30 @@ public class BRQuickFindConfigDialog extends JDialog {
 		fileSelectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				/**
-				 * Use a Default CyFileFilter: enables user to select any file
-				 * type.
-				 */
-				CyFileFilter nf = new CyFileFilter();
+//				/**
+//				 * Use a Default CyFileFilter: enables user to select any file
+//				 * type.
+//				 */
+//				CyFileFilter nf = new CyFileFilter();
+//
+//				/**
+//				 * Get the file name
+//				 */
+//				File[] files = FileUtil.getFiles("Import Node Attributes",
+//						FileUtil.LOAD, new CyFileFilter[] { nf });
+				
 
-				/**
-				 * Get the file name
-				 */
-				File[] files = FileUtil.getFiles("Import Node Attributes",
-						FileUtil.LOAD, new CyFileFilter[] { nf });
+				//AP20070815
+				//Load file from jar
+				String path = this.getClass().getResource("data/BasicCellularComponents.na").getFile();
+				path = path.substring(path.indexOf(":") + 1, path.length());	
+				File[] files = new File[1];
+				files[0] = new File(path);
+				System.out.println("file: "+files[0]);	
+				//AP20070815 end
+				
 				if (files != null) {
-
+					
 					/**
 					 * Create Load Attributes Task
 					 */
