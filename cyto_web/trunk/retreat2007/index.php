@@ -37,6 +37,9 @@
 
 Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br>
 <br>
+<a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="images/attention.gif"><b>&nbsp;Registration</b></a><b> now open!!!</b>
+<br>
+<br>
 This year's Public Symposium entitled 
 <a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>,
  will be held in vibrant, historic Amsterdam on November 8<sup>th</sup>, 2007. 'Floating' on a web of canals, 
