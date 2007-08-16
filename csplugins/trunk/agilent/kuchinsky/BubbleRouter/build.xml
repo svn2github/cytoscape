@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for Sample Cytoscape Plugin -->
-<project name="BubbleRouter" default="jar" basedir=".">
+<project name="BubbleRouter7" default="jar" basedir=".">
 	
 	<!-- Name of Plug In -->
 	<!-- Change this to the name of your Plug In -->
@@ -11,48 +11,27 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-<!--        <property name="cytoroot.dir" value="../../../../Cytoscape"/>
--->
-	<property name="cytoroot.dir" value="../../../../Cytoscape"/>
+	<property name="cytoroot.dir" value="../cytoscape2.5c"/>
 	
 	
-<!-- 	<property name="lib.dir" value="${cytoroot.dir}/cytoscape-2.1/lib"/>  -->
-	
-<!--	<property name="release.dir" value="../cytoscape-2.1/release"/>
+	<property name="release.dir" value="../cytoscape2.5c"/>
 
-	<property name="lib.dir" value = "../cytoscape-2.1/release/lib"/>
-	
-
-	<property name="release.dir" value="../cytoscape_2.3_beta"/>
--->
-	
-	<property name="release.dir" value="../../../../Cytoscape"/>
-	
-<!--		<property name="lib.dir" value = "../cytoscape/lib"/> 
-	<property name="lib.dir" value = "../../../../Cytoscape/lib"/>  -->
-	<property name="lib.dir" value = "../../../../Cytoscape/lib"/>
-	
-<!---	<property name="images.dir" value = "src/cytoscape/editor/editors/images"/>  -->
+	<property name="lib.dir" value = "../cytoscape2.5c/lib"/>
 	
   	<!-- Temporary build directories -->
 
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
 
-<!--	<property name="dist.dir" value="dist"/> -->
-    <property name="doc.dir" value="doc"/> 
+	<property name="doc.dir" value="doc"/> 
 	<property name="pluginlib.dir" value="lib"/>
+	<property name="plugindata.dir" value="data"/>
 
 	<!-- Global "magic" property for <javac> -->
 	<property name="build.compiler" value="modern"/>
 	
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
-		
-		<!--
-		<pathelement path="${build.classes}"/>
-		<pathelement path="${cytoroot.dir}/cytoscape-2.1/build/classes"/> 
-		-->
 		
 		<fileset dir="${lib.dir}">
 			<include name="*.jar"/>
@@ -105,37 +84,27 @@
                 <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
+ 		<copy file="${plugindata.dir}/BasicCellularComponents.na" todir="${build.classes}"/>
 	</target>
   	
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
 
-           <unjar dest="${build.classes}">
-            <fileset dir="${pluginlib.dir}"/>
-           </unjar>
-   		
-   		<!---
-   		<manifest> file="MANIFEST.MF" mode="replace" >
-   		<attribute	name="Name:" value="com/sun/java/help/impl/ViewAwareComponent.class"/>
-   		<attribute name="SHA1-Digest:" value="ZPmang/s5nBoB4avyNjOAke7EKU="/>
-   			</manifest>
-   			-->
+        <unjar dest="${build.classes}">
+         <fileset dir="${pluginlib.dir}"/>
+        </unjar>
 
-	   <jar destfile="${build.dir}/${plugin.name}.jar">
-			<fileset dir="${build.classes}"/>
+         <copy todir="${build.classes}/cytoscape/bubbleRouter/data">
+         <fileset dir="${plugindata.dir}"/>
+               </copy>   
 
-		</jar>
-		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+      <jar destfile="${build.dir}/${plugin.name}.jar">
+               <fileset dir="${build.classes}"/>
+         </jar>
+ 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 
-   		<!---
-<copy file="${build.dir}/${plugin.name}.jar" todir="${cytoroot.dir}/cytoscape-2.1/plugins"/>
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.1/release/plugins"/>
-   		
-  		<copy file="${build.dir}/${plugin.name}.jar" todir="../../../../Cytoscape/plugins/core"/>  
-  		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins"/>
-  		-->
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.4_alpha/plugins/core/"/>
-  		<copy file="${build.dir}/${plugin.name}.jar" todir="../../../../Cytoscape/plugins/core"/>
+   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape2.5c/plugins/core/"/>
+   		<copy file="${build.dir}/${plugin.name}.jar" todir="/Applications/Cytoscape_v2.5.0/plugins"/>
 	</target>
 
 </project>
