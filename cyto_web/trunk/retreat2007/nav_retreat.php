@@ -10,7 +10,8 @@
 <li><a href="registration.php">Registration</a></li>
   <li><a href="venue.php">Venue</a>
     <ul>
-      <li><a href="travel_stay.php">Travel and Accomodation</a></li>
+      <li><a href="travel.php">Travel</a></li>
+      <li><a href="accomodation.php">Accomodation</a></li>
       <li><a href="amsterdam.php">Amsterdam</a></li>
     </ul>
   </li>
