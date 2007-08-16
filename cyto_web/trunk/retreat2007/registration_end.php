@@ -21,10 +21,11 @@
   <!-- This page content -->
   <td >
   <p>
-  Registration is now complete; thank you for registering and see you at the retreat!
+  Registration is now complete; thank you for registering and see you at the retreat!<br>
+  If you have any questions regarding the registration please mail <a href="mailto:cytoscape@amc.nl?subject=Question%20on%20Cytoretreat%20registration">cytoscape@amc.nl</a>
   </p>
   <p>
-  For hotel reservations and travel directions go to our <a href="travel_stay.php">Travel and Accomodation page</a> on this site.
+  For hotel reservations and travel directions go to our <a href="travel.php">Travel</a> and <a href="accomodation.php">Accomodation</a> pages on this site.
   </p>
   </td> 
   <td>

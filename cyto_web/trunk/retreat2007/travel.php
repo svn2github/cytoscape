@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <title>5th Annual Cytoscape Retreat and Symposium - Travel and Accomodation</title>
+  <title>5th Annual Cytoscape Retreat and Symposium - Travel</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/cytoretreat.css">
   <link rel="../shortcut icon" href="../images/cyto.ico">
   <!--[if lt IE 7]>
@@ -31,7 +31,7 @@
   <div id="content">
   <div class="item">
   <div class="top">
-   <h2>Travel and Accomodation</h2>
+   <h2>Travel</h2>
   </div>
   <!-- This page content goes here -->
   <p>
@@ -67,20 +67,6 @@
 
   <h4>Taxis</h4>
   Taxis in Amsterdam are plentiful but expensive. Find the details <a href="http://www.iamsterdam.com/visiting_exploring/getting_there_around/taxis" target="_blank">here</a>.
-
-
-  <h3>Accomodation</h3>
-  <ul>
-  <li>Conference hotel site: <a href="http://www.rai-hotelservice.com/compass/webdirect.cfm?code=ACRS07" target="_blank"><img border="0" align="middle" alt="Rai hotel service" height="53" width="117" src="images/rai_hotel_button_117_53.gif"></a>
-  <br>Rooms will be reserved till 4 weeks before start of the Symposium, a small number till the start.
-  </li>
-  <li><a href="http://www.nh-hotels.com/nh/en/hotels/the-netherlands/amsterdam/nh-doelen.html?action=search" target="_blank">Doelen hotel</a>
-  </li>
-  <li>Cheap alternatives (to be filled in)
-  </li>
-  <li>Charming alternatives (to be filled in)
-  </li>  
-  </ul>
   
   </p>
   <!--End Main page content -->  

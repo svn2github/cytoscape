@@ -266,7 +266,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>13:15-14:15 </p></td>
-  <td><p>Lunch (separate Cytoscape SAB/Board lunch)</p></td>
+  <td><p>Lunch (separate Cytoscape Board lunch)</p></td>
  </tr>
  <tr>
   <td><p>14:15-15:00 </p></td>
