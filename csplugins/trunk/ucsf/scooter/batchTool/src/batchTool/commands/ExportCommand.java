@@ -39,6 +39,7 @@ import java.util.Vector;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 
 import batchTool.commands.ParseException;
 
@@ -49,19 +50,13 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.ding.DingNetworkView;
 
-import ding.view.DGraphView;
+// Cytoscape exporter imports
+import cytoscape.util.export.BitmapExporter;
+import cytoscape.util.export.PDFExporter;
+import cytoscape.util.export.SVGExporter;
+import cytoscape.util.export.Exporter;
 
-// FreeHEP imports
-import org.freehep.util.export.ExportFileTypeRegistry;
-import org.freehep.util.export.ExportFileType;
-import org.freehep.graphicsio.ps.PSExportFileType;
-import org.freehep.graphicsio.ps.EPSExportFileType;
-import org.freehep.graphicsio.pdf.PDFExportFileType;
-import org.freehep.graphicsio.gif.GIFExportFileType;
-import org.freehep.graphicsio.svg.SVGExportFileType;
-import org.freehep.graphicsio.emf.EMFExportFileType;
-import org.freehep.graphicsio.swf.SWFExportFileType;
-import org.freehep.graphicsio.exportchooser.ImageExportFileType;
+import ding.view.DGraphView;
 
 //
 import cytoscape.data.readers.GMLWriter;
@@ -72,7 +67,7 @@ import cytoscape.data.writers.InteractionWriter;
 
 enum ExportObject {NONE, NETWORK, EDGEATTR, NODEATTR, VIZMAP};
 enum ExportType {NONE, XGMML, GML, SIF, PSI_MI, PSI_MI_1, 
-                 EPS, SWF, PDF, PS, SVG, EMF, GIF, PNG, JPG};
+                 PDF, SVG, GIF, PNG, JPG, BMP};
 
 /**
  * The open command opens a Cytoscape session file
@@ -82,22 +77,12 @@ public class ExportCommand extends AbstractCommand {
 	private ExportObject object = ExportObject.NONE;
 	private ExportType type = ExportType.NONE;
 	private HashMap<String,String> optionMap = null;
-	private static HashMap<String,ExportFileType> typeMap = null;
 
 	/**
 	 * Constructor to make sure we've initialized the typeMap
 	 */
 	public ExportCommand() {
 		super();
-		if (typeMap == null) {
-			typeMap = new HashMap();
-			List<ExportFileType>typeList = ExportFileType.getExportFileTypes();
-			Iterator<ExportFileType>eTypeIter = typeList.iterator();
-			while (eTypeIter.hasNext()) {
-				ExportFileType eType = eTypeIter.next();
-				typeMap.put(eType.getExtensions()[0], eType);
-			}
-		}
 	}
 
 	/**
@@ -185,6 +170,13 @@ public class ExportCommand extends AbstractCommand {
 			return;
 		}
 
+		// Get the zoom option (if provided)
+		float zoom = 1.0f;
+		if (optionMap.containsKey("zoom")) {
+			String value = optionMap.get("zoom");
+			zoom = (float)(new Float(value)).floatValue();
+		}
+
 		// Get the component to export
 		InternalFrameComponent ifc = 
 			Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curr);
@@ -195,48 +187,23 @@ public class ExportCommand extends AbstractCommand {
         new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue();
     theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
 
-/*
-		ExportFileTypeRegistry r = ExportFileTypeRegistry.getDefaultInstance(null);
-		List<ExportFileType> l = r.get();
-		Iterator<ExportFileType>ftIter = l.iterator();
-		while (ftIter.hasNext()) {
-			ExportFileType ft = ftIter.next();
-			System.out.println(ft.getDescription());
-			System.out.println(ft);
-		}
-*/
-
 		// Now get the right export handler & handle any options
-		ExportFileType exportFileType = null;
-		if (type == ExportType.EPS) {
-			exportFileType = typeMap.get("eps");
-		} else if (type == ExportType.SWF) {
-			exportFileType = typeMap.get("swf");
-		} else if (type == ExportType.PDF) {
-			exportFileType = typeMap.get("pdf");
-		} else if (type == ExportType.PS) {
-			exportFileType = typeMap.get("ps");
+		Exporter exporter = null;
+		if (type == ExportType.PDF) {
+			exporter = new PDFExporter();
 		} else if (type == ExportType.SVG) {
-			exportFileType = typeMap.get("svg");
-		} else if (type == ExportType.EMF) {
-			exportFileType = typeMap.get("emf");
-		} else if (type == ExportType.GIF) {
-			exportFileType = typeMap.get("gif");
+			exporter = new SVGExporter();
 		} else if (type == ExportType.PNG) {
-			exportFileType = typeMap.get("png");
+			exporter = new BitmapExporter("png", zoom);
 		} else if (type == ExportType.JPG) {
-			exportFileType = typeMap.get("jpg");
-		}
-
-		// Handle filename changes
-		String[] acceptableExtensions = exportFileType.getExtensions();
-		File outputFile = new File(fileName);
-		if (!exportFileType.checkExtension(outputFile, acceptableExtensions)) {
-			throw new ParseException("Illegal extension for file type");
+			exporter = new BitmapExporter("jpg", zoom);
+		} else if (type == ExportType.BMP) {
+			exporter = new BitmapExporter("bmp", zoom);
 		}
 
 		try {
-			exportFileType.exportToFile(outputFile, ifc, ifc, null, "Cytoscape");
+			FileOutputStream outputFile = new FileOutputStream(fileName);
+			exporter.export(curr, outputFile);
 		} catch (IOException e) {
 			System.out.println("Unable to export "+fileName+": "+e.getMessage());
 			return;
@@ -315,20 +282,12 @@ public class ExportCommand extends AbstractCommand {
 					return ExportType.PSI_MI;
 				else if (type.equals("psi-mi-1"))
 					return ExportType.PSI_MI_1;
-				else if (type.equals("eps"))
-					return ExportType.EPS;
-				else if (type.equals("swf"))
-					return ExportType.SWF;
 				else if (type.equals("pdf"))
 					return ExportType.PDF;
-				else if (type.equals("ps"))
-					return ExportType.PS;
 				else if (type.equals("svg"))
 					return ExportType.SVG;
-				else if (type.equals("emf"))
-					return ExportType.EMF;
-				else if (type.equals("gif"))
-					return ExportType.GIF;
+				else if (type.equals("bmp"))
+					return ExportType.BMP;
 				else if (type.equals("png"))
 					return ExportType.PNG;
 				else if (type.equals("jpg"))
@@ -352,13 +311,9 @@ public class ExportCommand extends AbstractCommand {
 	}
 
 	private boolean isGraphic(ExportType type) {
-		if (type == ExportType.EPS ||
-		    type == ExportType.SWF ||
-		    type == ExportType.PDF ||
-		    type == ExportType.PS ||
+		if (type == ExportType.PDF ||
 		    type == ExportType.SVG ||
-		    type == ExportType.EMF ||
-		    type == ExportType.GIF ||
+		    type == ExportType.BMP ||
 		    type == ExportType.PNG ||
 		    type == ExportType.JPG) {
 			return true;
