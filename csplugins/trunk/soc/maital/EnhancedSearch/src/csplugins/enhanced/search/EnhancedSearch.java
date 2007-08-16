@@ -35,64 +35,60 @@
 
 package csplugins.enhanced.search;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.store.RAMDirectory;
+
+import csplugins.enhanced.search.util.EnhancedSearchUtils;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-import java.awt.event.ActionEvent;
-
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.search.Hits;
-import csplugins.enhanced.search.util.EnhancedSearchUtils;
+import cytoscape.util.CytoscapeToolBar;
 
 public class EnhancedSearch {
 
+	private EnhancedSearchPanel enhancedSearchToolBar;
+	
 	public EnhancedSearch() {
-		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
-				new MenuItemEnhancedSearchAction());
+//		initListeners();
+		initToolBar();
 	}
+	
+	
+	/**
+	 * Initializes All Cytoscape Listeners.
+	 
+	private void initListeners() {
+		// to catch network create/destroy/focus events
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-	public class MenuItemEnhancedSearchAction extends CytoscapeAction {
-
-		public MenuItemEnhancedSearchAction() {
-			super("Enhanced Search");
-		}
-
-		/**
-		 * This method is called when the user selects the menu item.
-		 */
-		public void actionPerformed(ActionEvent e) {
-
-			// Display dialog
-			EnhancedSearchDialog dialog = new EnhancedSearchDialog();
-			dialog.setVisible(true);
-
-			// Perform search
-			if (!dialog.isCancelled()) {
-				String query = dialog.getQuery();
-				if (!query.trim().isEmpty()) {
-					final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
-					indexAndSearch(currNetwork, query);
-				} else {
-					return;
-				}
-
-			} else {
-				return;
-			}
-		}
+//		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+//		quickFind.addQuickFindListener(this);
 	}
+*/
+	
+	/**
+	 * Initalizes Tool Bar.
+	 */
+	private void initToolBar() {
+		
+		CytoscapeToolBar cytoscapeToolBar = Cytoscape.getDesktop()
+		.getCyMenus().getToolBar();
+		enhancedSearchToolBar = new EnhancedSearchPanel();
 
-	public void indexAndSearch(CyNetwork network, String query) {
-
-		// Index the given network
-		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
-		RAMDirectory idx = indexHandler.getIndex();
-
-		// Perform search
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
-		Hits hits = queryHandler.ExecuteQuery(query);
-
-		// Display results
-		EnhancedSearchUtils.displayResults(network, hits);
+		cytoscapeToolBar.add(enhancedSearchToolBar);
+		cytoscapeToolBar.validate();
+		
 	}
+	
 }

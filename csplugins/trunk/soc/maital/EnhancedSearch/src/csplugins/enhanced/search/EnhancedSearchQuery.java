@@ -38,6 +38,7 @@ package csplugins.enhanced.search;
 import java.io.IOException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -47,18 +48,22 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.RAMDirectory;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
 
-
 public class EnhancedSearchQuery {
 
-//	public static final String INDEX_FIELD = "Identifier";
+	// public static final String INDEX_FIELD = "Identifier";
 
-	private Hits hits;
+	private Hits hits = null;
 
-	RAMDirectory idx;
+	private RAMDirectory idx;
+
+	private Searcher searcher;
 
 	public EnhancedSearchQuery(RAMDirectory index) {
 		idx = index;
@@ -78,18 +83,20 @@ public class EnhancedSearchQuery {
 			}
 
 			// Build an IndexSearcher using the in-memory index
-			Searcher searcher = new IndexSearcher(idx);
+			searcher = new IndexSearcher(idx);
 			search(searcher, queryString, attrNameArray);
-			searcher.close();
+			
 
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} catch (ParseException pe) {
-			pe.printStackTrace();
+			// Take no action. Parse exceptions occure if attribute or value are
+			// missing from the search query. In such case, returned hits variable will be null.
+//			pe.printStackTrace();
 		}
-		
+
 		return hits;
-		
+
 	}
 
 	/**
@@ -98,18 +105,26 @@ public class EnhancedSearchQuery {
 	 */
 	private void search(Searcher searcher, String queryString, String[] fields)
 			throws ParseException, IOException {
-		
+
 		// Build a Query object
-		QueryParser queryParser = new MultiFieldQueryParser(fields, new StandardAnalyzer());
+		QueryParser queryParser = new MultiFieldQueryParser(fields,
+				new StandardAnalyzer());
 		Query query = queryParser.parse(queryString);
 
 		// Search for the query
 		hits = null;
 		hits = searcher.search(query);
 	}
-	
+
 	public Hits getHits() {
 		return hits;
 	}
 
+	public void close() {
+		try {
+			searcher.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
 }

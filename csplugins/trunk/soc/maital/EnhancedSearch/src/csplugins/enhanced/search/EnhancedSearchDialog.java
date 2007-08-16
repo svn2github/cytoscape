@@ -40,6 +40,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.event.*;
 
+
 class EnhancedSearchDialog extends JDialog {
 
 	JButton search;
@@ -49,7 +50,7 @@ class EnhancedSearchDialog extends JDialog {
 	boolean cancelled = true;
 
 	public EnhancedSearchDialog() {
-
+		
 		setTitle("Enhanced Search");
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout());
@@ -95,7 +96,7 @@ class EnhancedSearchDialog extends JDialog {
 
 		setResizable(true);
 		this.pack();
-
+		
 	}
 
 	public boolean isCancelled() {

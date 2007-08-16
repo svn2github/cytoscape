@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -47,7 +46,6 @@ import cytoscape.Cytoscape;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.document.Document;
 
-
 public class EnhancedSearchUtils {
 
 	public static final String SEARCH_STRING = "\\s";
@@ -55,7 +53,6 @@ public class EnhancedSearchUtils {
 	public static final String REPLACE_STRING = "_";
 
 	public static final String INDEX_FIELD = "Identifier";
-
 
 	/**
 	 * Replaces whitespace characters with underline. Method: Search for
@@ -73,48 +70,56 @@ public class EnhancedSearchUtils {
 
 		return replaceTerm;
 	}
-	
-	
+
 	public static void displayResults(CyNetwork network, Hits hits) {
 
-		int hitCount = hits.length();
-		if (hitCount == 0) {
-			System.out.println("No hits. ");
-			return;
-		} else {
-			try {
-				Cytoscape.getCurrentNetwork().unselectAllNodes();
-				Cytoscape.getCurrentNetwork().unselectAllEdges();
+		if (hits != null) {
+			int hitCount = hits.length();
+			if (hitCount == 0) {
+				System.out.println("No hits. ");
+				return;
+			} else {
+				try {
 
-				// Print the value that we stored in the INDEX_FIELD field.
-				// Note that this Field was not indexed, but (unlike other
-				// attribute fields)
-				// was stored verbatim and can be retrieved.
-				for (int i = 0; i < hitCount; i++) {
-					Document doc = hits.doc(i);
-					System.out.println("  " + (i + 1) + ". " + doc.get(INDEX_FIELD));
-					String currID = doc.get(INDEX_FIELD);
-					CyNode currNode = Cytoscape.getCyNode(currID, false);
-					if (currNode != null) {
-						network.setSelectedNodeState(currNode, true);
-					} else {
-//						CyEdge currEdge = Cytoscape.getCyEdge(currID, false);
-						CyEdge currEdge = Cytoscape.getRootGraph().getEdge(currID);
-						if (currEdge != null) {
-							network.setSelectedEdgeState(currEdge, true);
+					// Clear all previously selected nodes and edges.
+					Cytoscape.getCurrentNetwork().unselectAllNodes();
+					Cytoscape.getCurrentNetwork().unselectAllEdges();
+
+					// Print the value that we stored in the INDEX_FIELD field.
+					// Note that this Field was not indexed, but (unlike other
+					// attribute fields)
+					// was stored verbatim and can be retrieved.
+					for (int i = 0; i < hitCount; i++) {
+						Document doc = hits.doc(i);
+						System.out.println("  " + (i + 1) + ". "
+								+ doc.get(INDEX_FIELD));
+						String currID = doc.get(INDEX_FIELD);
+						CyNode currNode = Cytoscape.getCyNode(currID, false);
+						if (currNode != null) {
+							network.setSelectedNodeState(currNode, true);
 						} else {
-							System.out.println("Unknown identifier " + (currID));
+							// CyEdge currEdge = Cytoscape.getCyEdge(currID,
+							// false);
+							CyEdge currEdge = Cytoscape.getRootGraph().getEdge(
+									currID);
+							if (currEdge != null) {
+								network.setSelectedEdgeState(currEdge, true);
+							} else {
+								System.out.println("Unknown identifier "
+										+ (currID));
+							}
 						}
 					}
+
+					Cytoscape.getCurrentNetworkView().updateView();
+
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
 				}
-				
-				Cytoscape.getCurrentNetworkView().updateView();
-				
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
 			}
+		} else {
+			System.out.println("Check query. ");
 		}
+
 	}
 }
-
-
