@@ -84,7 +84,7 @@
                 <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
- 		<copy file="${plugindata.dir}/BasicCellularComponents.na" todir="${build.classes}"/>
+
 	</target>
   	
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
