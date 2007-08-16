@@ -94,7 +94,7 @@
          <fileset dir="${pluginlib.dir}"/>
         </unjar>
 
-         <copy todir="${build.classes}/cytoscape/bubbleRouter/data">
+         <copy todir="${build.classes}/cytoscape/bubbleRouter">
          <fileset dir="${plugindata.dir}"/>
                </copy>   
 
