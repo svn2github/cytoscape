@@ -69,6 +69,8 @@ import cytoscape.visual.NodeShape;
  * This used to be the MiscDialog class, but that was so poorly named, I had to
  * change it.  This class also contains support for getting an icon based on an
  * object or type (as defined in ValueDisplayer).
+ * 
+ * @deprecated Will be removed 5/2008
  */
 @Deprecated
 public class IconSupport {

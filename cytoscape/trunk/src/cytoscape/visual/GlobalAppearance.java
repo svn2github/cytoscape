@@ -123,6 +123,7 @@ public class GlobalAppearance {
 	 *  Do not use this.
 	 *
 	 * @return  DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Color getSloppySelectionColor() {
@@ -133,6 +134,7 @@ public class GlobalAppearance {
 	 *  Do not use this.
 	 *
 	 * @param c DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public void setSloppySelectionColor(Color c) {

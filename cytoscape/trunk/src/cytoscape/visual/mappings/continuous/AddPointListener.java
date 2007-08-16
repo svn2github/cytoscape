@@ -65,6 +65,7 @@ public class AddPointListener
      * Constructor.
      * @param ui ContinuousUI Object.
      * @param cm ContinuousMapping Object.
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public AddPointListener(ContinuousUI ui, ContinuousMapping cm,

@@ -52,6 +52,8 @@ import java.io.Serializable;
 //----------------------------------------------------------------------------
 /**
  * This class is a replacement for the yFiles LineType class.
+ * 
+ * @deprecated Will be removed 5/2008.  Use LineStyle and LineWidth instead. 
  */
 @Deprecated
 public class LineType

@@ -78,6 +78,8 @@ public class GenericEdgeArrowCalculator extends AbstractEdgeArrowCalculator
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public GenericEdgeArrowCalculator(String name, ObjectMapping m) {

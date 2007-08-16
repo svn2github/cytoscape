@@ -47,11 +47,7 @@ package cytoscape.visual;
  * This class is a replacement for the yFiles ShapeNodeRealizer class.
  * It defines byte constants specifying shape types.<br>
  *
- * <p>
- * kono(4/12/2007)
- * This class is deplicated.
- * Use enum NodeShape instead.
- * </p>
+ * @deprecated Will be removed 5/2008. Use enum NodeShape instead.
  *
  */
 @Deprecated

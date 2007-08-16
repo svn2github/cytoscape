@@ -72,6 +72,7 @@ public class EdgeCalculator extends BasicCalculator {
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      * @param c DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public EdgeCalculator(String name, ObjectMapping m, Class c) {
@@ -93,6 +94,7 @@ public class EdgeCalculator extends BasicCalculator {
     /**
      * Constructor that calls {@link MappingFactory} to construct a new
      * ObjectMapping based on the supplied arguments.
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public EdgeCalculator(String name, Properties props, String baseKey,

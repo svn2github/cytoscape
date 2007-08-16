@@ -73,6 +73,8 @@ public class NodeShapeParser
      * @param value DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public Byte parseNodeShape(String value) {
@@ -107,6 +109,8 @@ public class NodeShapeParser
      * @param shape DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static boolean isValidShape(byte shape) {

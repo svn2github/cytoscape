@@ -97,9 +97,7 @@ import javax.swing.event.ChangeListener;
 /**
  * Primary UI class for the Set Visual Properties dialog box.
  *
- *<p>
- *        This class is deprecated.  Use VizMapperMainPanel instead.
- *</p>
+ * @deprecated Will be removed 5/2008.  Use VizMapperMainPanel instead.
  */
 @Deprecated
 public class VizMapUI extends JDialog

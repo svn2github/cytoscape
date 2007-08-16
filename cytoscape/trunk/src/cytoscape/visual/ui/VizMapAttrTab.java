@@ -86,6 +86,8 @@ import javax.swing.event.ChangeListener;
  * VizMapAttrTab implements a tab for each mappable attribute of the graph
  * except the size tab, which is a special case. These tabs are displayed in the
  * Set Visual Properties dialog.
+ * 
+ * @deprecated Will be removed 5/2008.  Use New Vizmapper UI instead.
  */
 @Deprecated
 public class VizMapAttrTab extends VizMapTab {

@@ -66,6 +66,7 @@ import cytoscape.visual.ui.ValueDisplayer;
 
 /**
  * Provides User Interface Controls for Continuous Mappers.
+ * @deprecated Will be removed 5/2008
  */
 @Deprecated
 public class ContinuousUI extends JPanel

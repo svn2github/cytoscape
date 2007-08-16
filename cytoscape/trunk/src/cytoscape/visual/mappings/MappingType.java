@@ -50,6 +50,7 @@ public enum MappingType {DISCRETE("Discrete"), CONTINUOUS("Continuous"),
      * @param baseKey DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static MappingType getMappingType(final String baseKey) {

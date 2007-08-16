@@ -330,6 +330,7 @@ public enum VisualPropertyType {
 	 * Replace your "byte" with is emum!
 	 *
 	 * @return byte type
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public byte getType() {
@@ -341,6 +342,7 @@ public enum VisualPropertyType {
 	 *
 	 * @param type
 	 * @return
+	 * @deprecated Will be removed 5/2008.
 	 */
 	@Deprecated
 	public static VisualPropertyType getVisualPorpertyType(byte type) {

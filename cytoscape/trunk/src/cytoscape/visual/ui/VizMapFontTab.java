@@ -57,6 +57,8 @@ import cytoscape.visual.calculators.Calculator;
  * Because font size and face are mapped separately, the UI should integrate the
  * UI of the font size and font face calculators to present a unified UI for
  * these closely related attributes.
+ * 
+ * @deprecated Will be removed 5/2008
  */
 @Deprecated
 public class VizMapFontTab extends VizMapTab {

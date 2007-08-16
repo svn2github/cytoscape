@@ -42,24 +42,12 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.visual.mappings.ObjectMapping;
-
-import cytoscape.visual.parsers.ValueParser;
-
-//------------------------------------------------------------------------------
-import giny.model.Node;
-
-import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.mappings.MappingFactory;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.parsers.ValueParser;
 
 
 //------------------------------------------------------------------------------
@@ -74,6 +62,8 @@ public class NodeCalculator extends BasicCalculator {
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      * @param c DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public NodeCalculator(String name, ObjectMapping m, Class c) {
@@ -95,6 +85,8 @@ public class NodeCalculator extends BasicCalculator {
     /**
      * Constructor that calls {@link MappingFactory} to construct a new
      * ObjectMapping based on the supplied arguments.
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public NodeCalculator(String name, Properties props, String baseKey,

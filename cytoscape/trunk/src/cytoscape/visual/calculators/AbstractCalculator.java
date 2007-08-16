@@ -133,6 +133,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 *            Object mapping for this calculator, or null
 	 * @param name
 	 *            Name of this calculator
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public AbstractCalculator(String name, ObjectMapping m, Class c) {
@@ -659,6 +660,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public byte getType() {
@@ -669,6 +671,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public String getPropertyLabel() {
@@ -679,6 +682,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public String getTypeName() {

@@ -62,6 +62,7 @@ import javax.swing.SwingUtilities;
  * Prompts User for New Background Color.
  * 
  * @deprecated Use vizmapper gui to edit background color.
+ * Will be removed 5/2008
  */
 @Deprecated
 public class BackgroundColorAction extends CytoscapeAction {

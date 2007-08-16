@@ -66,6 +66,8 @@ public class DeletePointListener
      *            ContinuousUI Object.
      * @param cm
      *            ContinuousMapping Object.
+     *            
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public DeletePointListener(ContinuousUI ui, ContinuousMapping cm, int i) {

@@ -125,6 +125,7 @@ public class CalculatorCatalog {
 	 *            constants
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	protected List getListenerList(byte type) throws IllegalArgumentException {
@@ -158,6 +159,7 @@ public class CalculatorCatalog {
 	 *            constants
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public void addChangeListener(ChangeListener l, byte type) throws IllegalArgumentException {
@@ -195,6 +197,7 @@ public class CalculatorCatalog {
 	 *            one of VizMapUI constants, which set of listeners to notify
 	 * @throws IllegalArgumentException
 	 *             if type is unknown
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	protected void fireStateChanged(byte type) throws IllegalArgumentException {
@@ -236,6 +239,7 @@ public class CalculatorCatalog {
 	 * @param type
 	 *            a known type identifier
 	 * @return Map the matching Map structure
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	protected Map<String, Calculator> getCalculatorMap(byte type) {
@@ -290,6 +294,7 @@ public class CalculatorCatalog {
 	 * @return a valid name for the calculator. If the given name was not valid,
 	 *         numbers are appended until a valid name is found; this valid name
 	 *         is returned to the caller.
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public String checkCalculatorName(String calcName, byte calcType) {
@@ -576,6 +581,7 @@ public class CalculatorCatalog {
 	 *
 	 * @param type
 	 * @return
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Collection<Calculator> getCalculators(byte type) {
@@ -601,6 +607,7 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @param name
 	 * @return
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Calculator getCalculator(byte type, String name) {
@@ -627,6 +634,7 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @param name
 	 * @return
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public String checkCalculatorName(byte type, String name) {
@@ -651,6 +659,7 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @param name
 	 * @return
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Calculator removeCalculator(byte type, String name) {

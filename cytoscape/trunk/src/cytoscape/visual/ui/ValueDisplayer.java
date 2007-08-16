@@ -68,9 +68,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
  * ItemListener to the button. The ItemListener is triggered when the user's
  * selection changes.
  *
- * <p>
- *         This class is deprecated.
- * </p>
+ * @deprecated Will be removed 5/2008
  */
 @Deprecated
 public class ValueDisplayer extends JButton {

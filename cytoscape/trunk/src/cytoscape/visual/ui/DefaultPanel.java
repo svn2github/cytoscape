@@ -71,6 +71,7 @@ import javax.swing.event.ChangeListener;
  * </p>
  * @see cytoscape.visual.ui.VizMapUI
  *
+ * @deprecated Will be removed 5/2008
  */
 @Deprecated
 public class DefaultPanel extends JPanel

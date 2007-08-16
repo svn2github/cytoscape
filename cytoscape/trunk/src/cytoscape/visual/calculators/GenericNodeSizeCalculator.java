@@ -80,6 +80,8 @@ public class GenericNodeSizeCalculator extends AbstractNodeSizeCalculator
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public GenericNodeSizeCalculator(String name, ObjectMapping m) {

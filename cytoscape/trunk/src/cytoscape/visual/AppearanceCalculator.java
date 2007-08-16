@@ -121,6 +121,8 @@ abstract class AppearanceCalculator implements Cloneable {
 	 *
 	 * @param type
 	 * @return
+	 * 
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Calculator getCalculator(byte type) {
@@ -156,6 +158,7 @@ abstract class AppearanceCalculator implements Cloneable {
 	 * Use removeCalculator(final VisualPropertyType type) instead.
 	 *
 	 * @param type
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public void removeCalculator(byte type) {

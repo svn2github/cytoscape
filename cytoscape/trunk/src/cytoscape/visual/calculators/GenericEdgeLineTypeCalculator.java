@@ -93,6 +93,8 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator
      * @param n DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public LineType calculateEdgeLineType(Edge e, CyNetwork n) {

@@ -74,6 +74,8 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      *
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public GenericNodeColorCalculator(String name, ObjectMapping m) {
@@ -97,6 +99,8 @@ public class GenericNodeColorCalculator extends AbstractNodeColorCalculator
      * @param name DOCUMENT ME!
      * @param props DOCUMENT ME!
      * @param baseKey DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public GenericNodeColorCalculator(String name, Properties props, String baseKey) {

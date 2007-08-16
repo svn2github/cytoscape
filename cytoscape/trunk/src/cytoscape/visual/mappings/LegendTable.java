@@ -118,64 +118,13 @@ public class LegendTable extends JPanel {
 		icon.setLeftPadding(5);
 
 		return icon;
-
-		//		if (value instanceof Byte || value instanceof NodeShape) {
-		//			component = new JLabel(type.getVisualProperty().getIcon(value));
-		//		} else if (value instanceof LineType) {
-		//			i = getIcon(value);
-		//			component = new JLabel(i);
-		//		} else if (value instanceof Arrow) {
-		//			i = getIcon(value);
-		//			component = new JLabel(i);
-		//		} else if (value instanceof Color) {
-		//			i = type.getVisualProperty().getIcon(value);
-		//			component = new JLabel(i);
-		//		} else if (value instanceof Font) {
-		//			final Font f = (Font) value;
-		//			final JLabel lab = new JLabel();
-		//			lab.setText(f.getFontName());
-		//			lab.setFont(f);
-		//			component = lab;
-		//		} else if (value instanceof Double) {
-		//			if (type == NODE_SIZE)
-		//				component = new JLabel(IconSupport.getNodeSizeIcon((Double) value));
-		//			else if (type == NODE_WIDTH)
-		//				component = new JLabel(IconSupport.getNodeWidthIcon((Double) value));
-		//			else if (type == NODE_HEIGHT)
-		//				component = new JLabel(IconSupport.getNodeHeightIcon((Double) value));
-		//			else if (type == NODE_OPACITY) {
-		//				component = new JLabel(type.getVisualProperty().getDefaultIcon());
-		//			}
-		//		} else if (value instanceof LabelPosition)
-		//			component = new JLabel(IconSupport.getLabelPositionIcon((LabelPosition) value));
-		//		else
-		//			component = new JLabel(value.toString());
-		//
-		//		if (component == null) {
-		//			return null;
-		//		}
-		//
-		//		component.setAlignmentX(50);
-		//		component.setHorizontalAlignment(SwingConstants.CENTER);
-		//
-		//		component.setPreferredSize(new Dimension(100, 50));
-		//
-		//		return component;
 	}
-
-	//	private ImageIcon getIcon(final Object o) {
-	//		if (o == null)
-	//			return null;
-	//
-	//		final IconSupport is = new IconSupport(o);
-	//
-	//		return is.getCurrentIcon();
-	//	}
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public static JPanel getHeader() {

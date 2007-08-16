@@ -139,6 +139,7 @@ public interface Calculator extends Cloneable {
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public byte getType();
@@ -147,6 +148,7 @@ public interface Calculator extends Cloneable {
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public String getTypeName();
@@ -155,6 +157,7 @@ public interface Calculator extends Cloneable {
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public String getPropertyLabel();

@@ -231,6 +231,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Color getDefaultSloppySelectionColor() {
@@ -241,6 +242,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *  DOCUMENT ME!
 	 *
 	 * @param c DOCUMENT ME!
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public void setDefaultSloppySelectionColor(Color c) {
@@ -337,6 +339,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	/**
 	 * Currently no calculators are supported for global visual attributes, so
 	 * this method simply returns the default sloppy selection color.
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public Color calculateSloppySelectionColor(CyNetwork network) {

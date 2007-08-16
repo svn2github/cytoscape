@@ -92,6 +92,8 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator
      * @param n DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public LineType calculateNodeLineType(Node e, CyNetwork n) {

@@ -56,6 +56,8 @@ import javax.swing.JPanel;
  * Properties dialog. You probably don't want to extend this class, since
  * {@link VizMapAttrTab}, {@link VizMapFontTab}, and {@link VizMapSizeTab}
  * provide UI functionality for all mappable attributes in Cytoscape.
+ * 
+ * @deprecated Will be removed 5/2008
  */
 @Deprecated
 public abstract class VizMapTab extends JPanel {

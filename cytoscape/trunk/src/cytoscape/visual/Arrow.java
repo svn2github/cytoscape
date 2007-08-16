@@ -97,36 +97,42 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow COLOR_DIAMOND = DIAMOND;
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow COLOR_DELTA = DELTA;
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow COLOR_ARROW = ARROW;
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow COLOR_T = T;
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow COLOR_CIRCLE = CIRCLE;
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow BLACK_DIAMOND = new Arrow(ArrowShape.DIAMOND,
@@ -134,6 +140,7 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow WHITE_DIAMOND = new Arrow(ArrowShape.DIAMOND,
@@ -141,6 +148,7 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow BLACK_DELTA = new Arrow(ArrowShape.DELTA,
@@ -148,6 +156,7 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow WHITE_DELTA = new Arrow(ArrowShape.DELTA,
@@ -155,6 +164,7 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow BLACK_ARROW = new Arrow(ArrowShape.ARROW,
@@ -162,6 +172,7 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow WHITE_ARROW = new Arrow(ArrowShape.ARROW,
@@ -169,18 +180,21 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow BLACK_T = new Arrow(ArrowShape.T, Color.BLACK);
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow WHITE_T = new Arrow(ArrowShape.T, Color.WHITE);
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow BLACK_CIRCLE = new Arrow(ArrowShape.CIRCLE,
@@ -188,6 +202,7 @@ public class Arrow
 
     /**
      * DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public static final Arrow WHITE_CIRCLE = new Arrow(ArrowShape.CIRCLE,
@@ -219,6 +234,7 @@ public class Arrow
      * Creates a new Arrow object.
      *
      * @param name DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public Arrow(String name) {
@@ -231,6 +247,7 @@ public class Arrow
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public int getGinyArrow() {
@@ -317,6 +334,7 @@ public class Arrow
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated Will be removed 5/2008
      */
     @Deprecated
     public String getName() {

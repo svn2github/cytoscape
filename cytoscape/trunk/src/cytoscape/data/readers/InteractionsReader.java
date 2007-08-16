@@ -147,6 +147,8 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @param canonicalize This parameter does not in use from 2.5.
 	 *
 	 * @throws IOException DOCUMENT ME!
+	 * 
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	public void read(boolean canonicalize) throws IOException {
@@ -229,6 +231,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	/*
 	 * KONO: 5/4/2006 "Canonical Name" is no longer used in Cytoscape. Use ID
 	 * instead.
+	 * @deprecated Will be removed 5/2008
 	 */
 	@Deprecated
 	protected String canonicalizeName(String name) {
