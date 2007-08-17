@@ -205,17 +205,48 @@ public class EnhancedSearchPanel extends JPanel {
 
 	public void indexAndSearch(CyNetwork network, String query) {
 
+		long start = 0;
+		long end = 0;
+
+		
+		System.gc();
+	    start = System.currentTimeMillis();
+	    System.out.println("Indexing started");
+	    	    
 		// Index the given network
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
 		RAMDirectory idx = indexHandler.getIndex();
 
+		System.gc();
+	    end = System.currentTimeMillis();
+	    System.out.println("Indexing took " + ((end-start)/1000) + " seconds.");
+
+	    
+	    System.gc();
+	    start = System.currentTimeMillis();
+	    System.out.println("Query execution started");
+    
+	    
 		// Perform search
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 		Hits hits = queryHandler.ExecuteQuery(query);
 
+		System.gc();
+	    end = System.currentTimeMillis();
+	    System.out.println("Query execution took " + ((end-start)/1000) + " seconds.");
+	    
+	    System.gc();
+	    start = System.currentTimeMillis();
+	    System.out.println("Display results started");
+		
 		// Display results
 		EnhancedSearchUtils.displayResults(network, hits);
 		queryHandler.close();
+		
+		System.gc();
+	    end = System.currentTimeMillis();
+	    System.out.println("Display results took " + ((end-start)/1000) + " seconds.");
+
 	}
 
 }
