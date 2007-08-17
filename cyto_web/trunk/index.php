@@ -30,6 +30,7 @@
 				<h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
 				<a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a><br>
 				<b>November 6<sup>th</sup>-9<sup>th</sup> 2007</b><br>
+				<a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="retreat2007/images/attention.gif"><b>&nbsp;Registration</b></a><b> now open!!!</b>
 				</p></div>
 		</div>
 		<? include "nav.php"; ?><? include "detailed_nav.php"; ?>

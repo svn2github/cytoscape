@@ -25,7 +25,7 @@
   If you have any questions regarding the registration please mail <a href="mailto:cytoscape@amc.nl?subject=Question%20on%20Cytoretreat%20registration">cytoscape@amc.nl</a>
   </p>
   <p>
-  For hotel reservations and travel directions go to our <a href="travel.php">Travel</a> and <a href="accomodation.php">Accomodation</a> pages on this site.
+  For hotel reservations and travel directions go to our <a href="travel.php" target="_blank">Travel</a> and <a href="accomodation.php" target="_blank">Accomodation</a> pages on this site.
   </p>
   </td> 
   <td>
