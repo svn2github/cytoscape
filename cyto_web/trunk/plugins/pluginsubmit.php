@@ -76,36 +76,16 @@ if (!mysql_select_db($dbName, $connection))
 	showerror();
 
 // initialize the variables
-//$name = NULL; // plugin name
-//$version = NULL;
-//$description = NULL;
-//$projectURL = NULL;
-//$category = NULL;
-//$releaseDate = NULL;
-//$month = NULL;
-//$day = NULL;
-//$year = NULL;
 $releaseNote = NULL;
 $releaseNoteURL = NULL;
 $fileUpload = NULL;
 $jarURL = NULL;
 $sourceURL = NULL;
-//$Cy2p0_checked = NULL;
-//$Cy2p1_checked = NULL;
-//$Cy2p2_checked = NULL;
-//$Cy2p3_checked = NULL;
-//$Cy2p4_checked = NULL;
-//$Cy2p5_checked = NULL;
 $license_required_checked = NULL;
-//$cyVersion = NULL;
 $reference = NULL;
 $comment = NULL;
 $license = NULL;
 $license_required = NULL;
-//$names = NULL; // author names
-//$emails = NULL;
-//$affiliations = NULL;
-//$affiliationURLs = NULL;
 $contactName = NULL;
 $contactEmail = NULL;
 
@@ -114,52 +94,27 @@ if (($tried == NULL) && ($mode == 'edit')) {
 
 	include 'getplugindatafromdb.inc';
 
-	//$category = $db_category;
-	$pluginProps['pluginCategory'] = $db_category;
 	$categoryID = $db_categoryID;
-
-	//$name = $db_name; // plugin name
-	$pluginProps['pluginName'] = $db_name;
 	$plugin_id = $db_plugin_id;
-	//$description = $db_description;
-	$pluginProps['pluginDescription'] = $db_description;
-
-	//$version = $db_version;
-	$pluginProps['pluginVersion'] = $db_version;
-
-	//$releaseDate = $db_releaseDate;
-	$pluginProps['releaseDate'] = $db_year . '-' . $db_month . '-' . $db_day;
-
-	//$year = $db_year;
-	//$month = $db_month;
-	//$day = $db_day;
-	//$projectURL = $db_projectURL;
-	$pluginProps['projectURL'] = $db_projectURL;
-
 	$releaseNote = $db_releaseNote;
 	$releaseNoteURL = $db_releaseNoteURL;
-
-	$authorInst['names'] = $db_names;
-	$authorInst['insts'] = $db_affiliations;
-	$pluginProps['pluginAuthorsInstitutions'] = $authorInstL;
-	//$names = $db_names;
-	//$emails = $db_emails;
-	//$affiliations = $db_affiliations;
-	//$affiliationURLs = $db_affiliationURLs;
-
-	//fileUpload
-
 	$jarURL = $db_jarURL;
 	$sourceURL = $db_sourceURL;
-	//$cyVersion = $db_cyVersion;
-	$pluginProps['cytoscapeVersion'] = $db_cyVersion;
-
 	$reference = $db_reference;
 	$license = $db_license;
 	$license_required = $db_license_required;
 	$comment = $db_comment;
-
-	//$theVersions = preg_split("{,}", $db_cyVersion); // Split into an array
+	
+	$pluginProps['pluginCategory'] = $db_category;
+	$pluginProps['pluginName'] = $db_name;
+	$pluginProps['pluginDescription'] = $db_description;
+	$pluginProps['pluginVersion'] = $db_version;
+	$pluginProps['releaseDate'] = $db_year . '-' . $db_month . '-' . $db_day;
+	$pluginProps['projectURL'] = $db_projectURL;
+	$authorInst['names'] = $db_names;
+	$authorInst['insts'] = $db_affiliations;
+	$pluginProps['pluginAuthorsInstitutions'] = $authorInst;
+	$pluginProps['cytoscapeVersion'] = $db_cyVersion;
 
 	if ($license_required == "yes") {
 		$license_required_checked = "checked";
@@ -244,7 +199,6 @@ if ($tried != NULL && $tried == 'yes') {
 		$validated = validatePluginProps($pluginProps);
 	}
 }
-
 //////// End of form validation ////////////////////
 
 // if the mode is 'new' (i.e. submit from user), check if the plugin already existed
@@ -269,7 +223,6 @@ if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 
 	}
 }
-//$validated = true; // debug only
 /////////////////////////////////  Form definition //////////////////////////
 
 if (!($tried && $validated)) {
@@ -356,14 +309,10 @@ if (!($tried && $validated)) {
 </table>
 <p align="center">
 <?php
-
-
 	if ($mode == 'new') {
 ?>
 <input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
 <?php
-
-
 	} else
 		if ($mode == 'edit') {
 ?>	
@@ -428,6 +377,9 @@ else
 		if ($license != $db_license) {
 			$query1 .= 'license ="' . $license . '",';
 		}
+		if ($license_required != $db_license_required) {
+			$query1 .= 'license_required ="' . $license_required . '",';
+		}
 		if ($pluginProps['projectURL'] != $db_projectURL) {
 			$query1 .= 'project_url ="' . $pluginProps['projectURL'] . '",';
 		}
@@ -450,9 +402,9 @@ else
 
 		$query2 = $query2_prefix;
 
-		// Check plugin_file_id???
-		if ($pluginProps['pluginVesion'] != $db_version) { // plugin version
-			$query2 .= 'version ="' . $pluginProps['pluginVesion'] . '",';
+		// Check plugin_file_id???		
+		if ($pluginProps['pluginVersion'] != $db_version) { // plugin version
+			$query2 .= 'version ="' . $pluginProps['pluginVersion'] . '",';
 		}
 		if ($pluginProps['releaseDate'] != $db_releaseDate) {
 			$query2 .= 'release_date ="' . $pluginProps['releaseDate'] . '",';
@@ -498,7 +450,6 @@ else
 		if ($query2 != $query2_prefix) {
 			$query2 .= 'sysdat =' . 'now()';
 		}
-		//echo '<br>query2 = ',$query2,'<br>';
 
 		// Run the querys to update table plugin_version
 		if ($query2 != $query2_prefix) {
@@ -567,7 +518,7 @@ else
 		<?php
 
 		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
-		system("./run_generate_plugin_xml.csh");
+		//system("./run_generate_plugin_xml.csh");
 	}
 	// End of case for 'edit' mode
 
@@ -681,6 +632,12 @@ else
 			if (!(@ mysql_query($dbQuery, $connection)))
 				showerror();
 		}
+		
+		// Save contact name and email into table "contacts"
+		echo "contactName =",$contactName,"<br>";
+		echo "contactEmail =",$contactEmail,"<br>";
+		
+		
 ?>
 	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If your-mail address is provided, you will get confirmation via e-mail.
 	<p>Go back to <a href="index.php">Back to cytoscape plugin page</a></p>
@@ -688,7 +645,7 @@ else
 
 		// Send a confirmation e-mail to user
 		// Also cc to cytostaff,  new plugin is uploaded
-		sendConfirmartionEmail($name, $emails[0]);
+		//sendConfirmartionEmail($contactName, $contactEmail);
 
 	} // end of form processing
 }
