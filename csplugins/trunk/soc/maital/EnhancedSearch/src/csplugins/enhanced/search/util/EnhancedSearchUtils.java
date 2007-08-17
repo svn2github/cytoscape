@@ -79,6 +79,7 @@ public class EnhancedSearchUtils {
 				System.out.println("No hits. ");
 				return;
 			} else {
+				System.out.println("Number of hits: " + hitCount);
 				try {
 
 					// Clear all previously selected nodes and edges.
@@ -91,8 +92,8 @@ public class EnhancedSearchUtils {
 					// was stored verbatim and can be retrieved.
 					for (int i = 0; i < hitCount; i++) {
 						Document doc = hits.doc(i);
-						System.out.println("  " + (i + 1) + ". "
-								+ doc.get(INDEX_FIELD));
+//						System.out.println("  " + (i + 1) + ". "
+//								+ doc.get(INDEX_FIELD));
 						String currID = doc.get(INDEX_FIELD);
 						CyNode currNode = Cytoscape.getCyNode(currID, false);
 						if (currNode != null) {
