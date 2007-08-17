@@ -45,6 +45,7 @@
   The symposium and retreat will be held at the <a href="http://www.amc.nl" target="_blank">Academic Medical Center</a> 
   in Amsterdam. It is one of the largest University hospitals in the Netherlands with a staff
   of over 7000 and over 1000 beds. Affiliated with the University of Amsterdam more than 2000 students are enrolled.<br>
+  Go to our <a href="galleries/venue/index.html" target="_blank">PhotoGallery</a> to get an impression.<br>
   <br>
   AMC - Academic Medical Center<br>
   Meibergdreef 9<br>

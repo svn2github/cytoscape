@@ -1,0 +1,129 @@
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	color: #666666;
+	background-color: #ffffff;
+	margin: 0px;
+	padding: 0px;
+}
+
+html {
+	scrollbar-face-color:#DDDDDD;
+	scrollbar-highlight-color:#444444;
+	scrollbar-3dlight-color:#444444;
+	scrollbar-darkshadow-color:#444444;
+	scrollbar-shadow-color:#444444;
+	scrollbar-arrow-color:#444444;
+	scrollbar-track-color:#EEEEEE;
+}
+
+a:link {
+	text-decoration: none;
+ 	color: #888888;
+}
+
+a:visited {
+	text-decoration: none;
+	color: #888888;
+}
+
+a:hover {
+	text-decoration: none;
+	color: #000000;
+}
+
+.current {
+	font-weight: bold;
+	background-color: #a4cee0;
+}
+
+.cthumb {
+	background-color: #a4cee0;
+	border: 1px solid #CCCCCC;
+}
+
+.thumb {
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+}
+
+.image { border: 1px solid #aaaaaa;}
+a:link .image {  border-color: #aaaaaa;}
+a:visited .image {  border-color: #aaaaaa;}
+a:hover .image { border-color: #ffffff;}
+
+.mthumb { border: 1px solid #aaaaaa;}
+a:link .mthumb {  border-color: #aaaaaa;}
+a:visited .mthumb {  border-color: #aaaaaa;}
+a:hover .mthumb { border-color: #ffffff;}
+
+.slideImage { border-width: 1px; border: 1px solid; border-color: #ffffff;}
+a:link .slideImage { border-color: #ffffff;}
+a:visited .slideImage { border-color: #ffffff;}
+
+.title {
+	font-size: 120%;
+	font-weight: bold;
+	color: #444444;
+}
+
+.title a:link {
+	text-decoration: none;
+	color: #000000;
+}
+
+.title a:visited {
+	text-decoration: none;
+	color: #000000;
+}
+
+.title a:hover {
+	text-decoration: none;
+	color: #ffffff;
+}
+
+.infotable {
+	border: 1px dotted #AAAAAA;
+	border-collapse: collapse;
+}
+
+.infotable td {
+	border: 1px dotted #AAAAAA;
+}
+
+.infotable table {
+	border-collapse: separate;
+}
+
+.infotable table td {
+	border: 0px;
+}
+
+.dirname {
+	font-size: 100%;
+	font-weight: bold;
+	color: #888888;
+}
+
+.comment {
+	color: #444444;
+	font-weight: bold;
+	font-size: 100%;
+}
+
+.smalltxt {
+	color: #888888;
+	font-size: 90%;
+}
+
+.xsmalltxt {
+	color: #aaaaaa;
+	font-size: 80%;
+}
+
+.newlabel {
+	font-size: 70%;
+	font-weight: bold;
+	color: #000000;
+	background-color: #a4cee0;
+}
