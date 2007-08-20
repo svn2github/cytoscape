@@ -604,7 +604,7 @@ else
 			$dbQuery .= $plugin_file_auto_id;
 		}
 		$dbQuery .= ',"' . $pluginProps['pluginVersion'] . '",\'' .
-		$pluginProps['releaseDate'] . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $comment . '","' . $jarURL . '","' .
+		$pluginProps['releaseDate'] . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $pluginProps['minimumJavaVersion'] . '","' . $comment . '","' . $jarURL . '","' .
 		$sourceURL . '","' . $pluginProps['cytoscapeVersion'] . '","' . $status . '","' . $reference . '", now())';
 
 		// Run the query
