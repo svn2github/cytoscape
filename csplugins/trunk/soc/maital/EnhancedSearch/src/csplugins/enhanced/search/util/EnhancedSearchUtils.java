@@ -35,16 +35,7 @@
 
 package csplugins.enhanced.search.util;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
-
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.document.Document;
 
 public class EnhancedSearchUtils {
 
@@ -69,58 +60,5 @@ public class EnhancedSearchUtils {
 		}
 
 		return replaceTerm;
-	}
-
-	public static void displayResults(CyNetwork network, Hits hits) {
-
-		if (hits != null) {
-			int hitCount = hits.length();
-			if (hitCount == 0) {
-				System.out.println("No hits. ");
-				return;
-			} else {
-				System.out.println("Number of hits: " + hitCount);
-				try {
-
-					// Clear all previously selected nodes and edges.
-					Cytoscape.getCurrentNetwork().unselectAllNodes();
-					Cytoscape.getCurrentNetwork().unselectAllEdges();
-
-					// Print the value that we stored in the INDEX_FIELD field.
-					// Note that this Field was not indexed, but (unlike other
-					// attribute fields)
-					// was stored verbatim and can be retrieved.
-					for (int i = 0; i < hitCount; i++) {
-						Document doc = hits.doc(i);
-//						System.out.println("  " + (i + 1) + ". "
-//								+ doc.get(INDEX_FIELD));
-						String currID = doc.get(INDEX_FIELD);
-						CyNode currNode = Cytoscape.getCyNode(currID, false);
-						if (currNode != null) {
-							network.setSelectedNodeState(currNode, true);
-						} else {
-							// CyEdge currEdge = Cytoscape.getCyEdge(currID,
-							// false);
-							CyEdge currEdge = Cytoscape.getRootGraph().getEdge(
-									currID);
-							if (currEdge != null) {
-								network.setSelectedEdgeState(currEdge, true);
-							} else {
-								System.out.println("Unknown identifier "
-										+ (currID));
-							}
-						}
-					}
-
-					Cytoscape.getCurrentNetworkView().updateView();
-
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				}
-			}
-		} else {
-			System.out.println("Check query. ");
-		}
-
 	}
 }

@@ -39,6 +39,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -49,12 +52,16 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.store.RAMDirectory;
 
-import csplugins.enhanced.search.util.EnhancedSearchUtils;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
 public class EnhancedSearchPanel extends JPanel {
@@ -89,7 +96,7 @@ public class EnhancedSearchPanel extends JPanel {
 		// Add Right Buffer, to prevent config button from occassionally
 		// being partially obscured.
 		add(Box.createHorizontalStrut(5));
-		
+
 		enableAllEnhancedSearchButtons();
 	}
 
@@ -104,11 +111,10 @@ public class EnhancedSearchPanel extends JPanel {
 	/**
 	 * Indexing Operating in Progress.
 	 */
-	public void indexingInProgress() {
+	public void queryInProgress() {
 		disableAllEnhancedSearchButtons();
-		searchField.setToolTipText("Indexing network.  Please wait...");
+		searchField.setToolTipText("Query in progress. Please wait...");
 	}
-
 
 	/**
 	 * Disables all Enhanced Search Buttons.
@@ -160,7 +166,7 @@ public class EnhancedSearchPanel extends JPanel {
 		searchField = new JTextField(30);
 		searchField.setEnabled(false);
 		searchField.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
-		Dimension size = new Dimension (1, 30);
+		Dimension size = new Dimension(1, 30);
 		searchField.setPreferredSize(size);
 		searchField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -168,7 +174,22 @@ public class EnhancedSearchPanel extends JPanel {
 				System.out.println(query);
 				if (!query.trim().isEmpty()) {
 					final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
-					indexAndSearch(currNetwork, query);
+
+					IndexAndSearchTask task = new IndexAndSearchTask(
+							currNetwork, query);
+					JTaskConfig config = new JTaskConfig();
+					config.setAutoDispose(true);
+					config.displayStatus(true);
+					config.displayTimeElapsed(true);
+					config.displayCancelButton(true);
+					config.setOwner(Cytoscape.getDesktop());
+					config.setModal(true);
+
+					// Execute Task via TaskManager
+					// This automatically pops-open a JTask Dialog Box.
+					// This method will block until the JTask Dialog Box is disposed.
+					TaskManager.executeTask(task, config);
+
 				} else {
 					return;
 				}
@@ -202,51 +223,145 @@ public class EnhancedSearchPanel extends JPanel {
 		String query = searchField.getText();
 		return query;
 	}
+}
 
-	public void indexAndSearch(CyNetwork network, String query) {
+class IndexAndSearchTask implements Task {
 
-		long start = 0;
-		long end = 0;
+	public static final String INDEX_FIELD = "Identifier";
 
-		
-		System.gc();
-	    start = System.currentTimeMillis();
-	    System.out.println("Indexing started");
-	    	    
+	private CyNetwork network;
+
+	private String query;
+
+	private TaskMonitor taskMonitor;
+
+	private boolean interrupted = false;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param network
+	 *            Network to execute query on.
+	 * @param query
+	 *            Query string.
+	 */
+	IndexAndSearchTask(CyNetwork network, String query) {
+		this.network = network;
+		this.query = query;
+	}
+
+	/**
+	 * Executes Task: IndexAndSearch
+	 */
+	public void run() {
+		Date start = new Date();
+
+		taskMonitor.setStatus("Indexing network");
 		// Index the given network
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
 		RAMDirectory idx = indexHandler.getIndex();
 
-		System.gc();
-	    end = System.currentTimeMillis();
-	    System.out.println("Indexing took " + ((end-start)/1000) + " seconds.");
+		if (interrupted) {
+			return;
+		}
 
-	    
-	    System.gc();
-	    start = System.currentTimeMillis();
-	    System.out.println("Query execution started");
-    
-	    
-		// Perform search
+		// Execute query
+		taskMonitor.setStatus("Executing query");
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
-		Hits hits = queryHandler.ExecuteQuery(query);
+		EnhancedSearchQuery.IdentifiersCollector hitCollector = queryHandler.ExecuteQuery(query);
 
-		System.gc();
-	    end = System.currentTimeMillis();
-	    System.out.println("Query execution took " + ((end-start)/1000) + " seconds.");
-	    
-	    System.gc();
-	    start = System.currentTimeMillis();
-	    System.out.println("Display results started");
-		
+		if (interrupted) {
+			return;
+		}
+
 		// Display results
-		EnhancedSearchUtils.displayResults(network, hits);
-		queryHandler.close();
-		
-		System.gc();
-	    end = System.currentTimeMillis();
-	    System.out.println("Display results took " + ((end-start)/1000) + " seconds.");
+		if (hitCollector != null) {
+			// int hitCount = hitCollector.length();
+			int hitCount = hitCollector.hitsIdentifiers.size();
+			if (hitCount == 0) {
+				System.out.println("No hits. ");
+				return;
+			} else {
+				taskMonitor.setStatus("Displaying " + hitCount + " hits");
 
+				// Clear all previously selected nodes and edges.
+				Cytoscape.getCurrentNetwork().unselectAllNodes();
+				Cytoscape.getCurrentNetwork().unselectAllEdges();
+
+				// Print the value that we stored in the INDEX_FIELD field.
+				// Note that this Field was not indexed, but (unlike other
+				// attribute fields)
+				// was stored verbatim and can be retrieved.
+				ArrayList<String> results = hitCollector.hitsIdentifiers;
+				Iterator it = results.iterator();
+				int i = 0;
+				while (it.hasNext() && !interrupted) {
+					// Document doc = hits.doc(i);
+					// String currID = doc.get(INDEX_FIELD);
+					String currID = (String) it.next();
+					CyNode currNode = Cytoscape.getCyNode(currID, false);
+					if (currNode != null) {
+						network.setSelectedNodeState(currNode, true);
+					} else {
+						CyEdge currEdge = Cytoscape.getRootGraph().getEdge(currID);
+						if (currEdge != null) {
+							network.setSelectedEdgeState(currEdge, true);
+						} else {
+							System.out.println("Unknown identifier " + (currID));
+						}
+					}
+
+					int percentCompleted = (i * 100 / hitCount);
+					taskMonitor.setPercentCompleted(percentCompleted);
+
+					i++;
+				}
+
+				// Refresh view to show selected nodes and edges
+				Cytoscape.getCurrentNetworkView().updateView();
+
+			}
+		}
+
+		queryHandler.close();
+
+		if (interrupted) {
+			return;
+		}
+
+		Date stop = new Date();
+		long duration = ((stop.getTime() - start.getTime()) / 1000);
+		System.out.println("Searching time:  " + duration + " sec");
+
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void halt() {
+		this.interrupted = true;
+	}
+
+	/**
+	 * Sets the TaskMonitor.
+	 * 
+	 * @param taskMonitor
+	 *            TaskMonitor Object.
+	 * @throws IllegalThreadStateException
+	 *             Illegal Thread State.
+	 */
+	public void setTaskMonitor(TaskMonitor taskMonitor)
+			throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+	/**
+	 * Gets Title of Task.
+	 * 
+	 * @return Title of Task.
+	 */
+	public String getTitle() {
+		return "Searching the network";
 	}
 
 }

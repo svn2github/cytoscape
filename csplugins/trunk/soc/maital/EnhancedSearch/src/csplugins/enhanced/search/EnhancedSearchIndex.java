@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -58,6 +57,8 @@ public class EnhancedSearchIndex {
 
 	public static final String INDEX_FIELD = "Identifier";
 
+	public static final int MAX_FIELD_LENGTH = 50000;
+
 	RAMDirectory idx;
 
 	// Index the given network
@@ -73,6 +74,9 @@ public class EnhancedSearchIndex {
 			// Make a writer to create the index
 			IndexWriter writer = new IndexWriter(idx, new StandardAnalyzer(),
 					true);
+
+			// Set the number of terms to be indexed for a field.
+			// writer.setMaxFieldLength(MAX_FIELD_LENGTH);
 
 			// Fetch nodes and edges attributes
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();

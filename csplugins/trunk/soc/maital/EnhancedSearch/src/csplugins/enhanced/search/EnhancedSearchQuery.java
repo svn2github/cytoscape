@@ -36,16 +36,18 @@
 package csplugins.enhanced.search;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.document.Document;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -53,9 +55,7 @@ import csplugins.enhanced.search.util.EnhancedSearchUtils;
 
 public class EnhancedSearchQuery {
 
-	// public static final String INDEX_FIELD = "Identifier";
-
-	private Hits hits = null;
+	private IdentifiersCollector hitCollector = null;
 
 	private RAMDirectory idx;
 
@@ -65,7 +65,7 @@ public class EnhancedSearchQuery {
 		idx = index;
 	}
 
-	public Hits ExecuteQuery(String queryString) {
+	public IdentifiersCollector ExecuteQuery(String queryString) {
 		try {
 
 			// Define attribute fields in which the search is to be carried on
@@ -84,14 +84,9 @@ public class EnhancedSearchQuery {
 
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-		} catch (ParseException pe) {
-			// Take no action. Parse exceptions occure if attribute or value are
-			// missing from the search query. In such case, returned hits
-			// variable will be null.
-			pe.printStackTrace();
 		}
 
-		return hits;
+		return hitCollector;
 
 	}
 
@@ -100,20 +95,25 @@ public class EnhancedSearchQuery {
 	 * attributeName), search is carried out on all attribute fields.
 	 */
 	private void search(Searcher searcher, String queryString, String[] fields)
-			throws ParseException, IOException {
+			throws IOException {
 
 		// Build a Query object
 		QueryParser queryParser = new MultiFieldQueryParser(fields,
 				new StandardAnalyzer());
-		Query query = queryParser.parse(queryString);
-
-		// Search for the query
-		hits = null;
-		hits = searcher.search(query);
-	}
-
-	public Hits getHits() {
-		return hits;
+		try {
+			// Execute query
+			Query query = queryParser.parse(queryString);
+			hitCollector = new IdentifiersCollector(searcher);
+			searcher.search(query, hitCollector);
+		} catch (ParseException pe) {
+			// Parse exceptions occure when colon appear in the query in an
+			// unexpected location, e.g. when attribute or value are
+			// missing in the query. In such case, the returned hits
+			// variable will be null.
+			System.out.println("Invalid query '" + queryString + "'");
+			String message = pe.getMessage();
+			System.out.println(message);
+		}
 	}
 
 	public void close() {
@@ -123,4 +123,29 @@ public class EnhancedSearchQuery {
 			ioe.printStackTrace();
 		}
 	}
+
+	public class IdentifiersCollector extends HitCollector {
+
+		public static final String INDEX_FIELD = "Identifier";
+
+		private Searcher searcher;
+
+		public ArrayList<String> hitsIdentifiers = new ArrayList<String>();
+
+		public IdentifiersCollector(Searcher searcher) {
+			this.searcher = searcher;
+		}
+
+		public void collect(int id, float score) {
+			try {
+				Document doc = searcher.doc(id);
+				String currID = doc.get(INDEX_FIELD);
+				hitsIdentifiers.add(currID);
+			} catch (IOException e) {
+				// ignored
+			}
+		}
+
+	}
+
 }
