@@ -59,14 +59,11 @@ function validatePluginProps($pluginProps) {
 
 	} else {
 		//releaseDate = $year.'-'.$month.'-'.$day;
-		$tmpArray1 = preg_split("{,}", $pluginProps['releaseDate']); // Split into an array
-		$tmpArray2 = preg_split("{' '}", $tmpArray1[0]);
-		$year = $tmpArray[1];
 
 	}
 
 	//return false;
-	return retVal;
+	return $retVal;
 }
 
 function getReleaseDateFromStr($releaseDateStr) {
@@ -205,7 +202,8 @@ function getPluginProps($zipFileName) {
 							$pluginProps['releaseDate'] = getReleaseDateFromStr(trim(substr($cur_line, $pos +1)));
 						}
 					}
-
+					//Not defined yet, may need it, in the future
+					$pluginProps['minimumJavaVersion'] = '0.0';
 					zip_entry_close($zip_entry);
 				}
 				break;
