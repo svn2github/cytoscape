@@ -151,8 +151,9 @@ if (!($tried)) {
 	}
 	
 	// delete successful, redirect to admin page	
-	header('location:pluginadmin.php');
-		  	
+	?>
+	The plugin is deleted. <a href="pluginadmin.php">Back to plugin administration page</a>
+	<?php 	  	
 }
 ?>
 <p>
