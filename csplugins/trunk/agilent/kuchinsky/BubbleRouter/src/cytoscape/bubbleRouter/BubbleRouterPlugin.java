@@ -19,10 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -217,7 +219,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener(
 						CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
-		
+
 		/**
 		 * Build Context Menus per Region
 		 */
@@ -278,38 +280,61 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Regions",
 				groupPanel);
 		CyGroupManager.registerGroupViewer(this);
-		
-		preloadCellularComponents();
-		
-		
 
+		// Load .na file(s) from jar
+		// preloadCellularComponents();
 	}
-	
-	private void preloadCellularComponents ()
-	{
-		// AJK: 08/16/07 BEGIN
-		//     try to load file from the jar
-		InputStream is = this.getClass().getResourceAsStream("BasicCellularComponents.na");
-		System.out.println("InputStream = " + is);
+
+	/**
+	 * Loads Node Attribute files packaged in the jar in the data directory
+	 * 
+	 */
+	private void preloadCellularComponents() {
 		try {
-		System.out.println
-		(" available bytes = " + is.available());
-		} catch (IOException ex) { ex.printStackTrace(); }
-//		path = path.substring(path.indexOf(":") + 1, path.length());
-		
-		try {
-			InputStreamReader reader = new InputStreamReader(is);
-			CyAttributesReader.loadAttributes(
-					Cytoscape.getNodeAttributes(), reader);
-			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new IllegalArgumentException("Failure loading node attribute data: "
-			                                   + is + "  because of:"
-			                                   + ex.getMessage());
+			String path = this.getClass().getResource("data/").toString();
+			path = path.substring(path.indexOf("e:") + 2, path
+					.indexOf("cytoscape"));
+			path = path.replace("!", "");
+
+			JarFile jar = new JarFile(path);
+			Enumeration files = jar.entries();
+
+			while (files.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) files.nextElement();
+				if (entry.getName().contains("data")
+						&& entry.getName().contains(".na")) {
+					String name = entry.getName().substring(
+							entry.getName().indexOf("data/"),
+							entry.getName().length());
+					System.out.println("Loading node attribute file: " + name);
+					InputStream is = this.getClass().getResourceAsStream(name);
+
+					// System.out.println("InputStream = " + is);
+					// try {
+					// System.out.println(" available bytes = "
+					// + is.available());
+					// } catch (IOException ex) {
+					// ex.printStackTrace();
+					// }
+
+					try {
+						InputStreamReader reader = new InputStreamReader(is);
+						CyAttributesReader.loadAttributes(Cytoscape
+								.getNodeAttributes(), reader);
+						// Cytoscape.firePropertyChange(
+						// Cytoscape.ATTRIBUTES_CHANGED, null, null);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						throw new IllegalArgumentException(
+								"Failure loading node attribute data: " + is
+										+ "  because of:" + ex.getMessage());
+					}
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		// AJK: 08/16/07 END		
 	}
 
 	/**
@@ -333,7 +358,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			LayoutRegionManager.removeViewId(view);
 		}
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
-			viewID++;
+
+			// If this is a new session; the first view-id mapping
+			if (LayoutRegionManager.getViewIdMapSize() == 0) {
+				// Load .na file(s) from jar
+				preloadCellularComponents();
+				// Reset counter
+				viewID = 1;
+			} else {
+				viewID++;
+			}
+
 			CyNetworkView view = (CyNetworkView) e.getNewValue();
 			LayoutRegionManager.setViewIdMap(view, viewID);
 		}
@@ -940,12 +975,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		int color = attributes.getIntegerAttribute(groupNode.getIdentifier(),
 				REGION_COLORINT_ATT);
 
-		
-		//TODO: rename GroupNode based on new viewID
-		
+		// TODO: rename GroupNode based on new viewID
+
 		group.setState(SELECTED);
 		groupPanel.groupCreated(group);
-
 
 		// Set Region Variables to Hidden
 		attributes.setUserVisible(REGION_NAME_ATT, false);

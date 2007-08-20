@@ -258,6 +258,10 @@ public class LayoutRegionManager {
 	public static Integer getIdForView(CyNetworkView view) {
 		return viewIdMap.get(view);
 	}
+	
+	public static Integer getViewIdMapSize(){
+		return viewIdMap.size();
+	}
 
 	public static void setViewIdMap(CyNetworkView view, Integer id) {
 		LayoutRegionManager.viewIdMap.put(view, id);
