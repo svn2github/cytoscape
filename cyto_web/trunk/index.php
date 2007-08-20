@@ -187,64 +187,6 @@
 									
 					<p>[<a href="pubs.php">Link to Publications Page</a>]</p>
 					
-					<hr>
-					
-					<h4>Some Example Papers Using Cytoscape</h4>
-					 
-					<p><b>Nature Aug. 2005</b><br>
-						Kristin C. Gunsalus, Hui Ge, Aaron J. Schetter, Debra S. Goldberg, 
-        Jing-Dong J. Han, Tong Hao, Gabriel F. Berriz, Nicolas Bertin, Jerry Huang, 
-        Ling-Shiang Chuang, Ning Li, Ramamurthy Mani, Anthony A. Hyman, Birte Sönnichsen, 
-        Christophe J. Echeverri, Frederick P. Roth, Marc Vidal and Fabio Piano <br>
-						Predictive models of molecular machines involved in Caenorhabditis elegans early embryogenesis <br>
-						 [<a href="http://www.nature.com/nature/journal/v436/n7052/abs/nature03876.html"/>Abstract</A>]
-        [<a href="http://www.nature.com/nature/journal/v436/n7052/full/nature03876.html">Full Text</a>]
-        [<a href="http://www.nature.com/nature/journal/v436/n7052/pdf/nature03876.pdf">PDF</a>] <br>
-					</p>
-					<p></p>
-					<p><b>Nature Nov. 2005</b><br>
-						Suthram S, Sittler T, Ideker T. <br>
-						Plasmodium protein network diverges from those of other eukaryotes. <br>
-						 [<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16267557&query_hl=5"/>Abstract</A>]
-        [<a href="">Full Text</a>]
-        [<a href="">PDF</a>] <br>
-						<br>
-					</p>
-					<p></p>
-					<p><b>J Comput Biol. Jul-Aug 2005</b><br>
-						Sharan R, Ideker T, Kelley B, Shamir R, Karp RM. <br>
-						Identification of protein complexes by comparative analysis of yeast and bacterial protein interaction data. <br>
-						 [<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16108720&query_hl=5"/>Abstract</A>]
-        [<a href="http://www.liebertonline.com/doi/pdf/10.1089/cmb.2005.12.835">Full Text</a>]
-        [<a href="http://www.liebertonline.com/doi/pdf/10.1089/cmb.2005.12.835">PDF</a>] <br>
-						<br>
-					</p>
-					<p></p>
-					<p><b>Genome Biology. July 2005</b><br>
-						Yeang CH, Mak HC, McCuine S, Workman C, Jaakkola T, Ideker T. <br>
-						Validation and refinement of gene-regulatory pathways on a network of physical interactions. <br>
-						 [<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15998451&query_hl=5"/>Abstract</A>]
-        [<a href="http://www.pubmedcentral.gov/articlerender.fcgi?tool=pubmed&pubmedid=15998451">Full Text</a>]
-        [<a href="http://www.pubmedcentral.gov/picrender.fcgi?artid=1175993&blobtype=pdf">PDF</a>] <br>
-						<br>
-					</p>
-					<p></p>
-					<p><b>Nature Biotechnology. May 2005</b><br>
-						Kelley R, Ideker T. <br>
-						Systematic interpretation of genetic interactions using protein networks. <br>
-						 [<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15877074&query_hl=5"/>Abstract</A>]
-        [<a href="http://www.nature.com/nbt/journal/v23/n5/full/nbt1096.html">Full Text</a>]
-        [<a href="http://www.nature.com/nbt/journal/v23/n5/pdf/nbt1096.pdf">PDF</a>] <br>
-						<br>
-					</p>
-					<p><b>BMC Bioinformatics, July 2005</b><br>
-						David J Reiss , Iliana Avila-Campillo , Vesteinn Thorsson , Benno Schwikowski  and Timothy Galitski <br>
-						Tools enabling the elucidation of molecular pathways active in human disease: Application to Hepatitis C virus infection <br>
-						BMC Bioinformatics 2005, 6:154 <br>
-						 [<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15967031">Abstract</a>]
-        [<a href="http://www.biomedcentral.com/1471-2105/6/154">Full Text</a>]
-        [<a href="http://www.biomedcentral.com/content/pdf/1471-2105-6-154.pdf">PDF</a>] <br>
-					</p>
 					<p><br>
 						<b> Note: </b> If you have a publication which makes use of Cytoscape, please let us know by sending an email to the <a href="http://groups-beta.google.com/group/cytoscape-discuss"> cytoscape-discuss </a> mailing list. 
     </p>
