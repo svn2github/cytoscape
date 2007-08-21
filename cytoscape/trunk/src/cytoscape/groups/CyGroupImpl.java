@@ -422,6 +422,8 @@ public class CyGroupImpl implements CyGroup {
 
 		// Add all of the edges
 		int [] edgeArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),true,true,true);
+		if (edgeArray == null)
+			edgeArray = new int[]{};
 		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
 			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
 			// Not sure if this is faster or slower than going through the entire loop
