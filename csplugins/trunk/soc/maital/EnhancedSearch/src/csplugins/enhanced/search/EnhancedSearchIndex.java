@@ -135,7 +135,9 @@ public class EnhancedSearchIndex {
 			// Create a document for each value.
 			if (valueList != null) {
 
+				// Handle whitespace characters and case in attribute names
 				attrName = EnhancedSearchUtils.replaceWhitespace(attrName);
+//				attrName = attrName.toLowerCase();
 
 				for (int j = 0; j < valueList.length; j++) {
 					String attrValue = valueList[j];

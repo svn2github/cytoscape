@@ -40,14 +40,13 @@ import java.io.File;
 import junit.framework.TestCase;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.store.RAMDirectory;
 import csplugins.enhanced.search.EnhancedSearchQuery;
 
 public class TestEnhancedSearch extends TestCase {
 
 	String query = null;
-	Hits hits = null;
+	int hitCount;
 
 	CyNetwork cyNetwork;
 
@@ -80,24 +79,29 @@ public class TestEnhancedSearch extends TestCase {
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
 		query = "Gene_Title:putative";
-		hits = queryHandler.ExecuteQuery(query); // 56
-		assertEquals(query, 56, hits.length());
+		queryHandler.executeQuery(query); // 56
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 56, hitCount);
 
 		query = "GO_Cellular_Component:\"plasma membrane\"";
-		hits = queryHandler.ExecuteQuery(query); // 7
-		assertEquals(query, 7, hits.length());
+		queryHandler.executeQuery(query); // 7
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 7, hitCount);
 
 		query = "canonicalName:251155_at";
-		hits = queryHandler.ExecuteQuery(query); // 12 - notice it returnes both nodes and edges.
-		assertEquals(query, 12, hits.length());
+		queryHandler.executeQuery(query); // 12 - notice it returnes both nodes and edges.
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 12, hitCount);
 
 		query = "265480_at";
-		hits = queryHandler.ExecuteQuery(query); // 26 - notice: search is executed on nodes and edges.
-		assertEquals(query, 26, hits.length());
+		queryHandler.executeQuery(query); // 26 - notice: search is executed on nodes and edges.
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 26, hitCount);
 
 		query = "response";
-		hits = queryHandler.ExecuteQuery(query); // Search in all attributes
-		assertEquals(query, 70, hits.length());
+		queryHandler.executeQuery(query); // Search in all attributes
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 70, hitCount);
 	}
 
 	// Queries on multiple attribute fields
@@ -108,16 +112,19 @@ public class TestEnhancedSearch extends TestCase {
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
 		query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
-		hits = queryHandler.ExecuteQuery(query); // 3
-		assertEquals(query, 3, hits.length());
+		queryHandler.executeQuery(query); // 3
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 3, hitCount);
 
 		query = "Desiccation_Response:true NOT Chromosome:5";
-		hits = queryHandler.ExecuteQuery(query); // 20
-		assertEquals(query, 20, hits.length());
+		queryHandler.executeQuery(query); // 20
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 20, hitCount);
 
 		query = "GO_Biological_Process:stress AND (GO_Molecular_Function:peroxidase OR GO_Molecular_Function:catalase)";
-		hits = queryHandler.ExecuteQuery(query); // 4
-		assertEquals(query, 4, hits.length());
+		queryHandler.executeQuery(query); // 4
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 4, hitCount);
 	}
 
 	// Multiple values for same attribute
@@ -128,8 +135,9 @@ public class TestEnhancedSearch extends TestCase {
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
 		query = "Gene_Title:(+60S +\"ribosomal protein\")";
-		hits = queryHandler.ExecuteQuery(query); // 9
-		assertEquals(query, 9, hits.length());
+		queryHandler.executeQuery(query); // 9
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 9, hitCount);
 	}
 
 	// Wildcards queries
@@ -140,8 +148,9 @@ public class TestEnhancedSearch extends TestCase {
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
 		query = "Gene_Title:deHYdr*n";
-		hits = queryHandler.ExecuteQuery(query); // 4
-		assertEquals(query, 4, hits.length());
+		queryHandler.executeQuery(query); // 4
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 4, hitCount);
 	}
 
 	/*
@@ -153,24 +162,29 @@ public class TestEnhancedSearch extends TestCase {
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
 		query = "Chromosome:5";
-		hits = queryHandler.ExecuteQuery(query); // 39
-		assertEquals(query, 39, hits.length());
+		queryHandler.executeQuery(query); // 39
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 39, hitCount);
 
 		query = "Chromosome:[4 TO 5]";
-		hits = queryHandler.ExecuteQuery(query); // 79
-		assertEquals(query, 79, hits.length());
+		queryHandler.executeQuery(query); // 79
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 79, hitCount);
 
 		query = "weight:[0.95 TO 1]";
-		hits = queryHandler.ExecuteQuery(query);
-		assertEquals(query, 00, hits.length());
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 00, hitCount);
 
 		query = "weight:[-1 TO -0.95]";
-		hits = queryHandler.ExecuteQuery(query);
-		assertEquals(query, 00, hits.length());
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 00, hitCount);
 
 		query = "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]";
-		hits = queryHandler.ExecuteQuery(query); // 62
-		assertEquals(query, 62, hits.length());
+		queryHandler.executeQuery(query); // 62
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 62, hitCount);
 	}
 	
 	
@@ -182,8 +196,9 @@ public class TestEnhancedSearch extends TestCase {
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
 		query = "interaction:neg AND weight:[0.9 TO 0.95]";
-		hits = queryHandler.ExecuteQuery(query);
-		assertEquals(query, 0, hits.length());
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 0, hitCount);
 	}
 
 */

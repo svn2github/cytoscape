@@ -65,39 +65,49 @@ public class EnhancedSearchQuery {
 		idx = index;
 	}
 
-	public IdentifiersCollector ExecuteQuery(String queryString) {
+	public void executeQuery (String queryString) {
 		try {
 
 			// Define attribute fields in which the search is to be carried on
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			String[] attrNameArray = nodeAttributes.getAttributeNames();
-
-			// Handle whitespace characters in attribute names
-			for (int i = 1; i < attrNameArray.length; i++) {
-				attrNameArray[i] = EnhancedSearchUtils
-						.replaceWhitespace(attrNameArray[i]);
+			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+			String[] nodeAttrNameArray = nodeAttributes.getAttributeNames();
+			String[] edgeAttNameArray = edgeAttributes.getAttributeNames();
+			int numOfNodeAttributes = nodeAttrNameArray.length;
+			int numOfEdgeAttributes = edgeAttNameArray.length;
+			String[] fields = new String [numOfNodeAttributes + numOfEdgeAttributes];
+			System.arraycopy(nodeAttrNameArray, 0, fields, 0, numOfNodeAttributes);
+			System.arraycopy(edgeAttNameArray, 0, fields, numOfNodeAttributes, numOfEdgeAttributes);
+			
+			// Handle whitespace characters and case in attribute names
+			for (int i = 1; i < fields.length; i++) {
+				fields[i] = EnhancedSearchUtils
+						.replaceWhitespace(fields[i]);
+//				fields[i] = fields[i].toLowerCase();
 			}
 
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
-			search(searcher, queryString, attrNameArray);
-
+//			System.out.println("Before: " + queryString);
+//			queryString = EnhancedSearchUtils.setQueryLowerCase(queryString);
+//			System.out.println("After: " + queryString);
+			search(searcher, queryString, fields);
+			searcher.close();
+			
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-
-		return hitCollector;
-
 	}
 
 	/**
 	 * Searches for the given query string. By default (without specifying
 	 * attributeName), search is carried out on all attribute fields.
+	 * This functionality is enabled with the use of MultiFieldQueryParser.
 	 */
 	private void search(Searcher searcher, String queryString, String[] fields)
 			throws IOException {
 
-		// Build a Query object
+		// Build a Query object.
 		QueryParser queryParser = new MultiFieldQueryParser(fields,
 				new StandardAnalyzer());
 		try {
@@ -108,7 +118,7 @@ public class EnhancedSearchQuery {
 		} catch (ParseException pe) {
 			// Parse exceptions occure when colon appear in the query in an
 			// unexpected location, e.g. when attribute or value are
-			// missing in the query. In such case, the returned hits
+			// missing in the query. In such case, the hitCollector
 			// variable will be null.
 			System.out.println("Invalid query '" + queryString + "'");
 			String message = pe.getMessage();
@@ -116,36 +126,56 @@ public class EnhancedSearchQuery {
 		}
 	}
 
-	public void close() {
+	// hitCollector object may be null if this method is called before executeQuery
+	public int getHitCount() {
+		if (hitCollector != null) {
+			return hitCollector.getHitCount();
+		} else {
+			return 0;
+		}
+	}
+
+	// hitCollector object may be null if this method is called before ExecuteQuery
+	public ArrayList<String> getHits() {
+		if (hitCollector != null) {
+			return hitCollector.getHits();
+		} else {
+			return null;
+		}
+	}
+	
+}
+
+
+class IdentifiersCollector extends HitCollector {
+
+	public static final String INDEX_FIELD = "Identifier";
+
+	private Searcher searcher;
+
+	public ArrayList<String> hitsIdentifiers = new ArrayList<String>();
+
+	public IdentifiersCollector(Searcher searcher) {
+		this.searcher = searcher;
+	}
+
+	public void collect(int id, float score) {
 		try {
-			searcher.close();
+			Document doc = searcher.doc(id);
+			String currID = doc.get(INDEX_FIELD);
+			hitsIdentifiers.add(currID);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
 	}
-
-	public class IdentifiersCollector extends HitCollector {
-
-		public static final String INDEX_FIELD = "Identifier";
-
-		private Searcher searcher;
-
-		public ArrayList<String> hitsIdentifiers = new ArrayList<String>();
-
-		public IdentifiersCollector(Searcher searcher) {
-			this.searcher = searcher;
-		}
-
-		public void collect(int id, float score) {
-			try {
-				Document doc = searcher.doc(id);
-				String currID = doc.get(INDEX_FIELD);
-				hitsIdentifiers.add(currID);
-			} catch (IOException e) {
-				// ignored
-			}
-		}
-
+	
+	public int getHitCount() {
+		return hitsIdentifiers.size();
 	}
 
+	public ArrayList<String> getHits() {
+		return hitsIdentifiers;
+	}
+
+	
 }

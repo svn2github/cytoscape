@@ -43,7 +43,9 @@ public class EnhancedSearchUtils {
 
 	public static final String REPLACE_STRING = "_";
 
-	public static final String INDEX_FIELD = "Identifier";
+	public static final String AND_PATTERN = " AND ";
+	public static final String OR_PATTERN = " OR ";
+	public static final String NOT_PATTERN = " NOT ";
 
 	/**
 	 * Replaces whitespace characters with underline. Method: Search for
@@ -55,10 +57,45 @@ public class EnhancedSearchUtils {
 		Pattern searchPattern = Pattern.compile(SEARCH_STRING);
 		String[] result = searchPattern.split(searchTerm);
 		replaceTerm = result[0];
-		for (int j = 1; j < result.length; j++) {
-			replaceTerm = replaceTerm + REPLACE_STRING + result[j];
+		for (int i = 1; i < result.length; i++) {
+			replaceTerm = replaceTerm + REPLACE_STRING + result[i];
 		}
 
 		return replaceTerm;
 	}
+
+	/**
+	 * This special lowercase handling turns a query string into lowercase,
+	 * keeping logical operators (AND, OR, NOT) in uppercase.
+	 */
+	public static String setQueryLowerCase (String query) {
+
+		// Take care of ANDs
+		Pattern andPattern = Pattern.compile(AND_PATTERN);
+		String[] andArray = andPattern.split(query);
+		String firstStage = andArray[0].toLowerCase();
+		for (int i = 1; i < andArray.length; i++) {
+			firstStage = firstStage + AND_PATTERN + andArray[i].toLowerCase();
+		}
+
+		// Take care of ORs
+		Pattern orPattern = Pattern.compile(OR_PATTERN);
+		String[] orArray = orPattern.split(firstStage);
+		String secondStage = orArray[0].toLowerCase();
+		for (int i = 1; i < orArray.length; i++) {
+			secondStage = secondStage + OR_PATTERN + orArray[i].toLowerCase();
+		}
+
+		// Take care of NOTs
+		Pattern notPattern = Pattern.compile(NOT_PATTERN);
+		String[] notArray = notPattern.split(secondStage);
+		String thirdstage = notArray[0].toLowerCase();
+		for (int i = 1; i < notArray.length; i++) {
+			thirdstage = thirdstage + NOT_PATTERN + notArray[i].toLowerCase();
+		}
+
+		return thirdstage;
+	}
+
+
 }
