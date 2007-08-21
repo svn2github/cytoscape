@@ -336,10 +336,13 @@ public class BRQuickFindConfigDialog extends JDialog {
 	 */
 	private void addSortTableModel(JSortTable table) {
 		Object selectedAttribute = attributeComboBox.getSelectedItem();
-		
+
 		// reset value selection whenever a new attribute is selection
 		selectedValues.clear();
-		
+
+		// Disable apply button, while task is in progress.
+		this.enableApplyButton(false);
+
 		/**
 		 * Determine current attribute key
 		 */
@@ -378,60 +381,72 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Split up comma-separated lists into individual values.
 		 */
-		String splitValueSet[] = null;
-		for (int i = 0; i < (valueSet.length); i++) {
-			splitValueSet = valueSet[i].split(", ");
-			for (int j = 0; j < (splitValueSet.length); j++) {
-				if (!finalValues.contains(splitValueSet[j])) {
-					finalValues.add(splitValueSet[j]);
+		if ((valueSet != null) && (valueSet.length > 0)) {
+			String splitValueSet[] = null;
+			for (int i = 0; i < (valueSet.length); i++) {
+				splitValueSet = valueSet[i].split(", ");
+				for (int j = 0; j < (splitValueSet.length); j++) {
+					if (!finalValues.contains(splitValueSet[j])) {
+						finalValues.add(splitValueSet[j]);
+					}
 				}
 			}
-		}
-
-		/**
-		 * Populate table model with first 50 values.
-		 */
-		TableModel model = new DefaultSortTableModel(columnNames, finalValues
-				.toArray().length);
-
-		if (finalValues != null && finalValues.toArray().length > 0) {
-			for (int i = 0; i < ((finalValues.toArray().length >= 50) ? 50
-					: finalValues.toArray().length); i++) {
-				model.setValueAt(finalValues.toArray()[i], i, 0);
+			
+			this.enableApplyButton(true);
+			
+			/**
+			 * Populate table model with first 50 values.
+			 */
+			TableModel model = new DefaultSortTableModel(columnNames,
+					finalValues.toArray().length);
+			if (finalValues != null && finalValues.toArray().length > 0) {
+				for (int i = 0; i < ((finalValues.toArray().length >= 50) ? 50
+						: finalValues.toArray().length); i++) {
+					model.setValueAt(finalValues.toArray()[i], i, 0);
+				}
 			}
-		}
 
-		table.setModel(model);
-		table.setAutoscrolls(true);
+			table.setModel(model);
+			table.setAutoscrolls(true);
 
-		/**
-		 * Define default selection and allow multiple selection.
-		 */
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		ListSelectionModel rowSM = table.getSelectionModel();
-		rowSM.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if (e.getValueIsAdjusting() == false) {
-					selectedValues.clear();
-					ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-					if (lsm.isSelectionEmpty()) {
-						selectedValues.add(attributeValuesTable.getModel()
-								.getValueAt(0, 0));
-					} else {
-						int minIndex = lsm.getMinSelectionIndex();
-						int maxIndex = lsm.getMaxSelectionIndex();
-						for (int i = minIndex; i <= maxIndex; i++) {
-							if (lsm.isSelectedIndex(i)) {
-								selectedValues.add(attributeValuesTable
-										.getModel().getValueAt(i, 0));
+			/**
+			 * Define default selection and allow multiple selection.
+			 */
+			table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			ListSelectionModel rowSM = table.getSelectionModel();
+			rowSM.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent e) {
+					if (e.getValueIsAdjusting() == false) {
+						selectedValues.clear();
+						ListSelectionModel lsm = (ListSelectionModel) e
+								.getSource();
+						if (lsm.isSelectionEmpty()) {
+							selectedValues.add(attributeValuesTable.getModel()
+									.getValueAt(0, 0));
+						} else {
+							int minIndex = lsm.getMinSelectionIndex();
+							int maxIndex = lsm.getMaxSelectionIndex();
+							for (int i = minIndex; i <= maxIndex; i++) {
+								if (lsm.isSelectedIndex(i)) {
+									selectedValues.add(attributeValuesTable
+											.getModel().getValueAt(i, 0));
+								}
 							}
 						}
+
 					}
-
 				}
-			}
 
-		});
+			});
+
+		} else {
+			//No values map to network
+			TableModel modelEmpty = new DefaultSortTableModel(columnNames, 1);
+			modelEmpty.setValueAt("No attibutes values found in network!  Please choose another attribute.", 0, 0);
+			table.setModel(modelEmpty);
+			table.setAutoscrolls(true);
+		}
+
 	}
 
 	/**
@@ -463,11 +478,9 @@ public class BRQuickFindConfigDialog extends JDialog {
 				 */
 				File[] files = FileUtil.getFiles("Import Node Attributes",
 						FileUtil.LOAD, new CyFileFilter[] { nf });
-				
 
-				
 				if (files != null) {
-					
+
 					/**
 					 * Create Load Attributes Task
 					 */
@@ -519,7 +532,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		/**
 		 * Obtain Node Attributes
 		 */
-		
+
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		if (nodeAttributes.getAttributeNames() != null) {
