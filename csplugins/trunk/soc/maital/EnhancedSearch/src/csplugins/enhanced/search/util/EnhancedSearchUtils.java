@@ -43,9 +43,14 @@ public class EnhancedSearchUtils {
 
 	public static final String REPLACE_STRING = "_";
 
-	public static final String AND_PATTERN = " AND ";
-	public static final String OR_PATTERN = " OR ";
-	public static final String NOT_PATTERN = " NOT ";
+	public static final String LOWERCASE_AND = " and ";
+	public static final String LOWERCASE_OR = " or ";
+	public static final String LOWERCASE_NOT = " not ";
+	public static final String LOWERCASE_TO = " to ";
+	public static final String UPPERCASE_AND = " AND ";
+	public static final String UPPERCASE_OR = " OR ";
+	public static final String UPPERCASE_NOT = " NOT ";
+	public static final String UPPERCASE_TO = " TO ";
 
 	/**
 	 * Replaces whitespace characters with underline. Method: Search for
@@ -66,35 +71,21 @@ public class EnhancedSearchUtils {
 
 	/**
 	 * This special lowercase handling turns a query string into lowercase,
-	 * keeping logical operators (AND, OR, NOT) in uppercase.
+	 * and logical operators (AND, OR, NOT) into uppercase.
 	 */
-	public static String setQueryLowerCase (String query) {
+	public static String queryToLowerCase (String queryString) {
 
-		// Take care of ANDs
-		Pattern andPattern = Pattern.compile(AND_PATTERN);
-		String[] andArray = andPattern.split(query);
-		String firstStage = andArray[0].toLowerCase();
-		for (int i = 1; i < andArray.length; i++) {
-			firstStage = firstStage + AND_PATTERN + andArray[i].toLowerCase();
-		}
+		String lowercaseQuery;
 
-		// Take care of ORs
-		Pattern orPattern = Pattern.compile(OR_PATTERN);
-		String[] orArray = orPattern.split(firstStage);
-		String secondStage = orArray[0].toLowerCase();
-		for (int i = 1; i < orArray.length; i++) {
-			secondStage = secondStage + OR_PATTERN + orArray[i].toLowerCase();
-		}
-
-		// Take care of NOTs
-		Pattern notPattern = Pattern.compile(NOT_PATTERN);
-		String[] notArray = notPattern.split(secondStage);
-		String thirdstage = notArray[0].toLowerCase();
-		for (int i = 1; i < notArray.length; i++) {
-			thirdstage = thirdstage + NOT_PATTERN + notArray[i].toLowerCase();
-		}
-
-		return thirdstage;
+		lowercaseQuery = queryString;
+		lowercaseQuery = lowercaseQuery.toLowerCase();
+		
+		lowercaseQuery = lowercaseQuery.replaceAll(LOWERCASE_AND, UPPERCASE_AND);
+		lowercaseQuery = lowercaseQuery.replaceAll(LOWERCASE_OR, UPPERCASE_OR);
+		lowercaseQuery = lowercaseQuery.replaceAll(LOWERCASE_NOT, UPPERCASE_NOT);
+		lowercaseQuery = lowercaseQuery.replaceAll(LOWERCASE_TO, UPPERCASE_TO);
+		
+		return lowercaseQuery;
 	}
 
 

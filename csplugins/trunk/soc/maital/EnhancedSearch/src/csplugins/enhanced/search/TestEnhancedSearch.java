@@ -83,6 +83,11 @@ public class TestEnhancedSearch extends TestCase {
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 56, hitCount);
 
+		query = "gENE_TitlE:putATIVE";
+		queryHandler.executeQuery(query); // 56 - tests case insensitivity
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 56, hitCount);
+
 		query = "GO_Cellular_Component:\"plasma membrane\"";
 		queryHandler.executeQuery(query); // 7
 		hitCount = queryHandler.getHitCount();
@@ -153,7 +158,6 @@ public class TestEnhancedSearch extends TestCase {
 		assertEquals(query, 4, hitCount);
 	}
 
-	/*
 	// Range queries
 	public void testRangeQueries() throws Exception {
 
@@ -172,19 +176,19 @@ public class TestEnhancedSearch extends TestCase {
 		assertEquals(query, 79, hitCount);
 
 		query = "weight:[0.95 TO 1]";
-		queryHandler.executeQuery(query);
+		queryHandler.executeQuery(query); // 369
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 00, hitCount);
+		assertEquals(query, 369, hitCount);
 
-		query = "weight:[-1 TO -0.95]";
-		queryHandler.executeQuery(query);
+		query = "weight:[-0.95 TO -1]";
+		queryHandler.executeQuery(query); // 30
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 00, hitCount);
+		assertEquals(query, 30, hitCount);
 
-		query = "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]";
-		queryHandler.executeQuery(query); // 62
+		query = "weight:[0.95 TO 1] OR weight:[-0.95 TO -1]";
+		queryHandler.executeQuery(query); // 399
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 62, hitCount);
+		assertEquals(query, 399, hitCount);
 	}
 	
 	
@@ -200,7 +204,5 @@ public class TestEnhancedSearch extends TestCase {
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 0, hitCount);
 	}
-
-*/
 	
 }

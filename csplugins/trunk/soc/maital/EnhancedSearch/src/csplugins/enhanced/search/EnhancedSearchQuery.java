@@ -83,14 +83,12 @@ public class EnhancedSearchQuery {
 			for (int i = 1; i < fields.length; i++) {
 				fields[i] = EnhancedSearchUtils
 						.replaceWhitespace(fields[i]);
-//				fields[i] = fields[i].toLowerCase();
+				fields[i] = fields[i].toLowerCase();
 			}
 
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
-//			System.out.println("Before: " + queryString);
-//			queryString = EnhancedSearchUtils.setQueryLowerCase(queryString);
-//			System.out.println("After: " + queryString);
+			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);
 			search(searcher, queryString, fields);
 			searcher.close();
 			

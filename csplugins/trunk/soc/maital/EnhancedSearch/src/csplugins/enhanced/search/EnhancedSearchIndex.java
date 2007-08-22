@@ -122,11 +122,12 @@ public class EnhancedSearchIndex {
 
 		Document doc = new Document();
 		doc.add(new Field(INDEX_FIELD, identifier, Field.Store.YES,
-				Field.Index.NO));
+				Field.Index.TOKENIZED));
 
 		String[] attrNameArray = attributes.getAttributeNames();
 		for (int i = 0; i < attrNameArray.length; i++) {
 			String attrName = attrNameArray[i];
+
 			String[] valueList = CyAttributesUtil.getAttributeValues(
 					attributes, identifier, attrName);
 
@@ -137,13 +138,26 @@ public class EnhancedSearchIndex {
 
 				// Handle whitespace characters and case in attribute names
 				attrName = EnhancedSearchUtils.replaceWhitespace(attrName);
-//				attrName = attrName.toLowerCase();
+				attrName = attrName.toLowerCase();
 
 				for (int j = 0; j < valueList.length; j++) {
 					String attrValue = valueList[j];
 
-					// Add Document objects
-					doc.add(new Field(attrName, new StringReader(attrValue)));
+					byte valueType = attributes.getType(attrName);
+					if (valueType == CyAttributes.TYPE_FLOATING
+							|| valueType == CyAttributes.TYPE_INTEGER
+							|| valueType == CyAttributes.TYPE_BOOLEAN) {
+						// Add Document objects
+						// doc.add(new Field(attrName, new
+						// StringReader(attrValue)));
+						doc.add(new Field(attrName, attrValue, Field.Store.NO,
+								Field.Index.UN_TOKENIZED));
+					} else {
+						// Add Document objects
+						doc.add(new Field(attrName, attrValue, Field.Store.NO,
+								Field.Index.TOKENIZED));
+
+					}
 				}
 			}
 
