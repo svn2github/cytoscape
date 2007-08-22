@@ -4,7 +4,7 @@
   PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
 <map version="1.0">
    <mapID target="d0e1" url="index.html"/>
-   <mapID target="Cytoscape 2.5.0 User Manual" url="index.html#Cytoscape 2.5.0 User Manual"/>
+   <mapID target="Cytoscape 2.5.1 User Manual" url="index.html#Cytoscape 2.5.1 User Manual"/>
    <mapID target="Introduction" url="ar01s02.html"/>
    <mapID target="Development" url="ar01s02.html#Development"/>
    <mapID target="License" url="ar01s02.html#License"/>
