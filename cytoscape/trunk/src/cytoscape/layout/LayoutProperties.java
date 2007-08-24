@@ -82,6 +82,16 @@ public class LayoutProperties {
 	}
 
 	/**
+ 	 * This method is used to get the list of available Tunables for
+ 	 * this algorithm.
+ 	 *
+ 	 * @return the list of the names of Tunables for this algorithm
+ 	 */
+	public List<String> getTunableList() {
+		return new ArrayList<String>(tunablesMap.keySet());
+	}
+
+	/**
 	 * This method is used to get the value from the Tunable
 	 * named <tt>name</tt> from this LayoutProperties.  The
 	 * value is always returned as a String.
