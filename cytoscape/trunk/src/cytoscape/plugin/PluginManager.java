@@ -180,7 +180,7 @@ public class PluginManager {
 	private static void setWebstart() {
 		if (System.getProperty("javawebstart.version") != null
 				&& System.getProperty("javawebstart.version").length() > 0) {
-			System.out.println("USING WEBSTART: "
+			System.err.println("USING WEBSTART: "
 					+ System.getProperty("javawebstart.version"));
 			usingWebstart = true;
 		} else {
@@ -321,7 +321,7 @@ public class PluginManager {
 			} 		
 
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
-				if (!usingWebstart) {
+				if (!usingWebstart && Jar != null) {
 					InfoObj.setInstallLocation(Jar.getName());
 					InfoObj.addFileName(Jar.getName());
 				}
