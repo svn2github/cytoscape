@@ -321,7 +321,7 @@ public class PluginManager {
 			} 		
 
 			InfoObj.setPluginClassName(Plugin.getClass().getName());
-				if (!usingWebstart) {
+				if (!usingWebstart && Jar != null) {
 					InfoObj.setInstallLocation(Jar.getName());
 					InfoObj.addFileName(Jar.getName());
 				}
