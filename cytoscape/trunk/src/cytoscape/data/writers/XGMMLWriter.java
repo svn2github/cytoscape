@@ -83,6 +83,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 enum GraphicsType {
 	ARC("arc"),
@@ -111,7 +112,40 @@ enum GraphicsType {
   	value = v;
   }
 
-	public String value() {
+	String value() {
+		return value;
+	}
+}
+
+enum ObjectType {
+	LIST("list"),
+	STRING("string"),
+	REAL("real"),
+	INTEGER("integer"),
+	BOOLEAN("boolean"),
+	MAP("map"),
+	COMPLEX("complex");
+
+	private final String value;
+
+	ObjectType(String v) {
+		value = v;
+	}
+
+	String value() {
+		return value;
+	}
+
+	static ObjectType fromValue(String v) {
+		for (ObjectType c: ObjectType.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v.toString());
+	}
+
+	public String toString() {
 		return value;
 	}
 }
@@ -122,10 +156,11 @@ enum GraphicsType {
  * Write network and attributes in XGMML format and <br>
  * marshall it in a streme.<br>
  *
- * @version 1.0
- * @since Cytoscape 2.3
+ * @version 1.2
+ * @since Cytoscape 2.6
  * @see cytoscape.data.readers.XGMMLReader
  * @author kono
+ * @author scooter
  *
  */
 public class XGMMLWriter {
@@ -176,16 +211,6 @@ public class XGMMLWriter {
 	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
-	// These types are permitted by the XGMML standard
-	protected static final String FLOAT_TYPE = "real";
-	protected static final String INT_TYPE = "integer";
-	protected static final String STRING_TYPE = "string";
-	protected static final String LIST_TYPE = "list";
-
-	// These types are not permitted by the XGMML standard
-	protected static final String BOOLEAN_TYPE = "boolean";
-	protected static final String MAP_TYPE = "map";
-	protected static final String COMPLEX_TYPE = "complex";
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
 	private CyAttributes networkAttributes;
@@ -367,15 +392,15 @@ public class XGMMLWriter {
 			DingCanvas backgroundCanvas = 
 				((DGraphView)Cytoscape.getCurrentNetworkView()).
 				getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-			writeAttributeXML(BACKGROUND, STRING_TYPE, paint2string(backgroundCanvas.getBackground()), true);
+			writeAttributeXML(BACKGROUND, ObjectType.STRING, paint2string(backgroundCanvas.getBackground()), true);
 
 			// lets also write the zoom
 			final Double dAttr = new Double(networkView.getZoom());
-			writeAttributeXML(GRAPH_VIEW_ZOOM, FLOAT_TYPE, dAttr ,true);
+			writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, dAttr ,true);
 
 			final Point2D center = ((DGraphView) networkView).getCenter();
-			writeAttributeXML(GRAPH_VIEW_CENTER_X, FLOAT_TYPE, new Double(center.getX()) ,true);
-			writeAttributeXML(GRAPH_VIEW_CENTER_Y, FLOAT_TYPE, new Double(center.getY()) ,true);
+			writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, new Double(center.getX()) ,true);
+			writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, new Double(center.getY()) ,true);
 		}
 
 		// Now handle all of the other network attributes
@@ -694,12 +719,12 @@ public class XGMMLWriter {
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
 			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
-			writeAttributeXML(attributeName, FLOAT_TYPE, dAttr, true);
+			writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true);
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
 			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
-			writeAttributeXML(attributeName, INT_TYPE, iAttr, true);
+			writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true);
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
@@ -707,18 +732,18 @@ public class XGMMLWriter {
 			if (sAttr != null) {
 				sAttr = sAttr.replace("\n", "\\n");
 			} 
-			writeAttributeXML(attributeName, STRING_TYPE, sAttr, true);
+			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true);
 		}
 		// process boolean
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
 			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
-			writeAttributeXML(attributeName, BOOLEAN_TYPE, bAttr, true);
+			writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true);
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
 			final List listAttr = attributes.getListAttribute(id, attributeName);
-			writeAttributeXML(attributeName, LIST_TYPE, null, false);
+			writeAttributeXML(attributeName, ObjectType.LIST, null, false);
 
 			depth++;
 			// interate through the list
@@ -733,7 +758,7 @@ public class XGMMLWriter {
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// get the attribute map
 			final Map mapAttr = attributes.getMapAttribute(id, attributeName);
-			writeAttributeXML(attributeName, MAP_TYPE, null, false);
+			writeAttributeXML(attributeName, ObjectType.MAP, null, false);
 
 			depth++;
 			// interate through the map
@@ -747,6 +772,133 @@ public class XGMMLWriter {
 			depth++;
 			writeAttributeXML(null, null, null, true);
 		}
+		// process complex map
+		else if (attType == CyAttributes.TYPE_COMPLEX) {
+			MultiHashMap mmap = attributes.getMultiHashMap();
+			MultiHashMapDefinition mmapDef = attributes.getMultiHashMapDefinition();
+
+			// get the number & types of dimensions
+			byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attributeName);
+
+			// Check to see if id has value assigned to attribute
+			if (!objectHasKey(id, attributes, attributeName)) {
+				return;
+			}
+			// Output the first <att>
+			writeAttributeXML(attributeName, ObjectType.COMPLEX, String.valueOf(dimTypes.length), false);
+
+			// grab the complex attribute structure
+			Map complexAttributeStructure = getComplexAttributeStructure(mmap, id, attributeName, null,
+			                                                             0, dimTypes.length);
+
+			// determine val type, get its string equivalent to store in XGMML
+			ObjectType valType = getType(mmapDef.getAttributeValueType(attributeName));
+
+			depth++;
+			// walk the structure
+			writeComplexAttribute(complexAttributeStructure, valType, dimTypes, 0);
+			depth--;
+			// Close
+			writeAttributeXML(null, null, null, true);
+		}
+	}
+
+  /**
+   * Returns a map where the key(s) are each key in the attribute key space,
+   * and the value is another map or the attribute value.
+	 *
+	 * For example, if the following key:
+	 *
+	 * {externalref1}{authors}{1} pointed to the following value:
+	 *
+	 * "author 1 name",
+	 *
+	 * Then we would have a Map where the key is externalref1, the value is a
+	 * Map where the key is {authors}, the value is a Map where the key is {1},
+	 * the value is "author 1 name".
+	 *
+	 * @param mmap -
+	 *            reference to MultiHashMap used by CyAttributes
+	 * @param id -
+	 *            id of node, edge or network
+	 * @param attributeName -
+	 *            name of attribute
+	 * @param keys -
+	 *            array of objects which store attribute keys
+	 * @param keysIndex -
+	 *            index into keys array we should add the next key
+	 * @param numKeyDimensions -
+	 *            the number of keys used for given attribute name
+	 * @return Map - ref to Map interface
+	 */
+  private Map getComplexAttributeStructure(MultiHashMap mmap, String id, String attributeName,
+                                           Object[] keys, int keysIndex, int numKeyDimensions) {
+		// are we done?
+		if (keysIndex == numKeyDimensions)
+			return null;
+
+		// the hashmap to return
+		Map keyHashMap = new HashMap();
+
+		// create a new object array to store keys for this interation
+		// copy all existing keys into it
+		Object[] newKeys = new Object[keysIndex + 1];
+
+		for (int lc = 0; lc < keysIndex; lc++) {
+			newKeys[lc] = keys[lc];
+		}
+
+		// get the key span
+		Iterator keyspan = mmap.getAttributeKeyspan(id, attributeName, keys);
+
+		while (keyspan.hasNext()) {
+			Object newKey = keyspan.next();
+			newKeys[keysIndex] = newKey;
+
+			Map nextLevelMap = getComplexAttributeStructure(mmap, id, attributeName, newKeys,
+			                                                keysIndex + 1, numKeyDimensions);
+			Object objectToStore = (nextLevelMap == null)
+			                       ? mmap.getAttributeValue(id, attributeName, newKeys) : nextLevelMap;
+			keyHashMap.put(newKey, objectToStore);
+		}
+		return keyHashMap;
+	}
+
+
+	/**
+	 * This method is a recursive routine to output a complex attribute.
+	 *
+	 * @param complexAttributeStructure the structure of the attribute
+	 * @param type the type of the attribute
+	 * @param dimTypes the array of dimension types
+	 * @param dimTypesIndex which dimType we're working on
+	 */
+	private void writeComplexAttribute(Map complexAttributeStructure, ObjectType type,
+	                                   byte[] dimTypes, int dimTypesIndex) throws IOException {
+		for (Object key: complexAttributeStructure.keySet()) {
+			Object possibleAttributeValue = complexAttributeStructure.get(key);
+
+			// Is this a leaf or are we still dealing with maps?
+			if (possibleAttributeValue instanceof Map) {
+				// Another map
+				writeAttributeXML(key.toString(), getType(dimTypes[dimTypesIndex]),
+				                  String.valueOf(((Map) possibleAttributeValue).size()), false);
+				// Recurse
+				depth++;
+				writeComplexAttribute((Map)possibleAttributeValue, type, dimTypes, dimTypesIndex+1);
+				depth--;
+				// Close
+				writeAttributeXML(null, null, null, true);
+			} else {
+				// Final key
+				writeAttributeXML(key.toString(), getType(dimTypes[dimTypesIndex]),
+				                  String.valueOf(1), false);
+				depth++;
+				writeAttributeXML(null, type, possibleAttributeValue.toString(), true);
+				depth--;
+				writeAttributeXML(null, null, null, true);
+			}
+		}
 	}
 
 	/**
@@ -759,11 +911,11 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttributeXML(String name, String type, Object value, boolean end) throws IOException {
+	private void writeAttributeXML(String name, ObjectType type, Object value, boolean end) throws IOException {
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
-			writeElement("<att name="+quote(name)+" type="+quote(type));
+			writeElement("<att name="+quote(name)+" type="+quote(type.toString()));
 			if (value != null)
 				writer.write(" value="+quote(value.toString()));
 			if (end)
@@ -866,15 +1018,15 @@ public class XGMMLWriter {
 	 * @return Attribute type in string.
 	 *
 	 */
-	private String checkType(final Object obj) {
+	private ObjectType checkType(final Object obj) {
 		if (obj.getClass() == String.class) {
-			return STRING_TYPE;
+			return ObjectType.STRING;
 		} else if (obj.getClass() == Integer.class) {
-			return INT_TYPE;
+			return ObjectType.INTEGER;
 		} else if ((obj.getClass() == Double.class) || (obj.getClass() == Float.class)) {
-			return FLOAT_TYPE;
+			return ObjectType.REAL;
 		} else if (obj.getClass() == Boolean.class) {
-			return BOOLEAN_TYPE;
+			return ObjectType.BOOLEAN;
 		} else
 			return null;
 	}
@@ -885,20 +1037,20 @@ public class XGMMLWriter {
 	 *
 	 * @param dimType -
 	 *            byte as described in MultiHashMapDefinition
-	 * @return String
+	 * @return the type pointed to by this dim
 	 */
-	private String getType(final byte dimType) {
+	private ObjectType getType(final byte dimType) {
 		if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN)
-			return BOOLEAN_TYPE;
+			return ObjectType.BOOLEAN;
 
 		if (dimType == MultiHashMapDefinition.TYPE_FLOATING_POINT)
-			return FLOAT_TYPE;
+			return ObjectType.REAL;
 
 		if (dimType == MultiHashMapDefinition.TYPE_INTEGER)
-			return INT_TYPE;
+			return ObjectType.INTEGER;
 
 		if (dimType == MultiHashMapDefinition.TYPE_STRING)
-			return STRING_TYPE;
+			return ObjectType.STRING;
 
 		// houston we have a problem
 		return null;
@@ -912,5 +1064,30 @@ public class XGMMLWriter {
 	 */
 	private String quote(String str) {
 		return "\""+str+"\"";
+	}
+
+	/**
+	 * Determines if object has key in multihashmap
+	 *
+	 * @param id -
+	 *            node, edge, network id
+	 * @param attributes -
+	 *            CyAttributes ref
+	 * @param attributeName -
+	 *            attribute name
+	 *
+	 * @return boolean
+	 */
+	private boolean objectHasKey(String id, CyAttributes attributes, String attributeName) {
+		MultiHashMap mmap = attributes.getMultiHashMap();
+
+		for (Iterator keysIt = mmap.getObjectKeys(attributeName); keysIt.hasNext();) {
+			String thisKey = (String) keysIt.next();
+
+			if ((thisKey != null) && thisKey.equals(id)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

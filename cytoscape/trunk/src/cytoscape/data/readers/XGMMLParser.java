@@ -227,6 +227,8 @@ class XGMMLParser extends DefaultHandler {
 		// Special handling for edge handles
 		{ParseState.EDGEHANDLE, "att", ParseState.EDGEBEND, new handleEdgeHandleDone()},
 		{ParseState.EDGEBEND, "att", ParseState.EDGEBEND, new handleEdgeHandleList()},
+		// Special handling for complex attributes
+		{ParseState.COMPLEXATT, "att", ParseState.COMPLEXATT, new handleComplexAttributeDone()},
 		{ParseState.GRAPH, "graph", ParseState.NONE, new handleGraphDone()},
 	};
 
@@ -1072,6 +1074,21 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	class handleComplexAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
+			// Are at the top?
+				// Yes, get the name of the attribute and the number of keys
+				// Define the complex attribute (multiHashMap)
+				// No, get our depth
+				// Are at the leaf?
+					// Yes, get the data
+					// No, get the next key
+					// Increment our depth
+			return current;
+		}
+	}
+
+	class handleComplexAttributeDone implements Handler {
+		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
+			// Decrement our depth -- when we get to 0, we're done
 			return current;
 		}
 	}
