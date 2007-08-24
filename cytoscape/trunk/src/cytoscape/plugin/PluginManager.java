@@ -720,7 +720,7 @@ public class PluginManager {
 			} else if (!f.exists()) {
 				// If the file doesn't exists, assume
 				// that it's a resource plugin.
-				System.out.println(" - classpath: " + f.getAbsolutePath());
+				System.out.println(" - classpath: " + currentPlugin);
 				resourcePlugins.add(currentPlugin);
 			} else if (f.isDirectory()) {
 				// If the file is a directory, load
