@@ -42,17 +42,6 @@ import cytoscape.CytoscapeInit;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.generated2.Date;
-import cytoscape.generated2.Description;
-import cytoscape.generated2.Format;
-import cytoscape.generated2.Identifier;
-import cytoscape.generated2.ObjectFactory;
-import cytoscape.generated2.RdfDescription;
-import cytoscape.generated2.RdfRDF;
-import cytoscape.generated2.Source;
-import cytoscape.generated2.Title;
-import cytoscape.generated2.Type;
-
 import java.net.URISyntaxException;
 
 import java.text.DateFormat;
@@ -62,10 +51,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-
 
 /**
  * Manipulates network metadata for loading and saving.<br>
@@ -91,7 +76,6 @@ public class MetadataParser {
 	private static final String DEF_FORMAT = "Cytoscape-XGMML";
 	private String metadataLabel;
 	private CyNetwork network;
-	private RdfRDF metadata;
 	private CyAttributes networkAttributes;
 	private Map rdfAsMap;
 
@@ -194,45 +178,6 @@ public class MetadataParser {
 	}
 
 	/**
-	 * Get metadata as an RDF object
-	 *
-	 * @return Network metadata in RdfRDF object
-	 * @throws JAXBException
-	 */
-	public RdfRDF getMetadata() throws JAXBException {
-		final ObjectFactory objFactory = new ObjectFactory();
-		metadata = objFactory.createRdfRDF();
-
-		RdfDescription dc = objFactory.createRdfDescription();
-
-		// Set "about" for RDF
-		dc.setAbout(DEF_URI);
-
-		if ((rdfAsMap == null) || (rdfAsMap.keySet().size() == 0)) {
-			rdfAsMap = makeNewMetadataMap();
-		}
-
-		Set labels = rdfAsMap.keySet();
-		Object value = null;
-		String key = null;
-
-		Iterator it = labels.iterator();
-
-		while (it.hasNext()) {
-			key = (String) it.next();
-			value = rdfAsMap.get(key);
-			dc.getDcmes().add(getJAXBElement(key.trim(), value));
-		}
-
-		metadata.getDescription().add(dc);
-
-		// Put the data in CyAttributes
-		networkAttributes.setMapAttribute(network.getIdentifier(), metadataLabel, rdfAsMap);
-
-		return metadata;
-	}
-
-	/**
 	 * Get Network Metadata as Map object
 	 *
 	 * @return
@@ -244,91 +189,6 @@ public class MetadataParser {
 		}
 
 		return rdfAsMap;
-	}
-
-	/**
-	 * Set data to JAXB-generated objects
-	 *
-	 * @param label
-	 * @param value
-	 * @return
-	 * @throws JAXBException
-	 */
-	private JAXBElement getJAXBElement(String label, Object value) throws JAXBException {
-		final ObjectFactory objF = new ObjectFactory();
-		final MetadataEntries entry = MetadataEntries.valueOf(label.toUpperCase());
-
-		if (entry == null) {
-			return null;
-		}
-
-		switch (entry) {
-			case DATE:
-
-				Date dt = objF.createDate();
-				dt.setContent(value.toString());
-
-				JAXBElement<Date> dtElement = objF.createDate(dt);
-
-				return dtElement;
-
-			case TITLE:
-
-				Title tl = objF.createTitle();
-				tl.setContent(value.toString());
-
-				JAXBElement<Title> tlElement = objF.createTitle(tl);
-
-				return tlElement;
-
-			case IDENTIFIER:
-
-				Identifier id = objF.createIdentifier();
-				id.setContent(value.toString());
-
-				JAXBElement<Identifier> idElement = objF.createIdentifier(id);
-
-				return idElement;
-
-			case DESCRIPTION:
-
-				Description dsc = objF.createDescription();
-				dsc.setContent(value.toString());
-
-				JAXBElement<Description> dscElement = objF.createDescription(dsc);
-
-				return dscElement;
-
-			case SOURCE:
-
-				Source src = objF.createSource();
-				src.setContent(value.toString());
-
-				JAXBElement<Source> srcElement = objF.createSource(src);
-
-				return srcElement;
-
-			case TYPE:
-
-				Type type = objF.createType();
-				type.setContent(value.toString());
-
-				JAXBElement<Type> typeElement = objF.createType(type);
-
-				return typeElement;
-
-			case FORMAT:
-
-				Format fmt = objF.createFormat();
-				fmt.setContent(value.toString());
-
-				JAXBElement<Format> fmtElement = objF.createFormat(fmt);
-
-				return fmtElement;
-
-			default:
-				return null;
-		}
 	}
 
 	/**
@@ -348,60 +208,5 @@ public class MetadataParser {
 		metadata.put(entryName.toString(), value);
 		networkAttributes.setMapAttribute(network.getIdentifier(), metadataLabel, metadata);
 		rdfAsMap = metadata;
-	}
-
-	/**
-	 * Set Network Attribute called "Network Metadata" as a Map by using given
-	 * JAXB object.<br>
-	 *
-	 * @param newMetadata
-	 */
-	public void setMetadata(RdfRDF newMetadata) {
-		RdfDescription dc = newMetadata.getDescription().get(0);
-
-		for (JAXBElement entry : dc.getDcmes()) {
-			MetadataEntries type = MetadataEntries.valueOf(entry.getName().getLocalPart()
-			                                                    .toUpperCase());
-
-			switch (type) {
-				case DATE:
-					setMetadata(type, ((Date) entry.getValue()).getContent());
-
-					break;
-
-				case TITLE:
-					setMetadata(type, ((Title) entry.getValue()).getContent());
-
-					break;
-
-				case IDENTIFIER:
-					setMetadata(type, ((Identifier) entry.getValue()).getContent());
-
-					break;
-
-				case DESCRIPTION:
-					setMetadata(type, ((Description) entry.getValue()).getContent());
-
-					break;
-
-				case SOURCE:
-					setMetadata(type, ((Source) entry.getValue()).getContent());
-
-					break;
-
-				case TYPE:
-					setMetadata(type, ((Type) entry.getValue()).getContent());
-
-					break;
-
-				case FORMAT:
-					setMetadata(type, ((Format) entry.getValue()).getContent());
-
-					break;
-
-				default:
-					break;
-			}
-		}
 	}
 }
