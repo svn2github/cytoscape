@@ -71,6 +71,7 @@ CREATE TABLE plugin_version (
   release_date date default NULL,
   release_note text,
   release_note_url varchar(100) default NULL,
+  minimum_java_version varchar(10),
   comment text,
   jar_url varchar(100) default NULL,
   source_url varchar(100) default NULL,
@@ -91,3 +92,12 @@ CREATE TABLE usagelog (
   PRIMARY KEY  (log_auto_id)
 );
 
+
+CREATE TABLE contacts (
+  contact_auto_id int not null auto_increment,
+  name varchar(99),
+  email varchar(99),
+  plugin_version_id int,   
+  sysdat date default NULL,
+  PRIMARY KEY  (contact_auto_id)
+);
