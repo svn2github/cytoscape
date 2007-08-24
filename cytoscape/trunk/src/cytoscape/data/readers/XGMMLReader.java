@@ -344,7 +344,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		if (vsbSwitch != null && vsbSwitch.equals("off"))
 			buildStyle = false;
 
-		VisualStyleCreator graphStyle = new VisualStyleCreator(parser.getNetworkName(), !buildStyle);
+		VisualStyleBuilder graphStyle = new VisualStyleBuilder(parser.getNetworkName(), !buildStyle);
 
 		// Set background clolor
 		if (parser.getBackgroundColor() != null) {
@@ -368,7 +368,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            GINY's graph view object for the current network.
 	 * @param graphStyle the visual style creator object
 	 */
-	private void layoutNodes(final GraphView myView, final VisualStyleCreator graphStyle) {
+	private void layoutNodes(final GraphView myView, final VisualStyleBuilder graphStyle) {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
@@ -402,7 +402,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void layoutNodeGraphics(final Attributes graphics, 
 	                                final NodeView nodeView,
-	                                final VisualStyleCreator graphStyle) {
+	                                final VisualStyleBuilder graphStyle) {
 
 		// The identifier of this node
 		String nodeID = nodeView.getNode().getIdentifier();
@@ -429,34 +429,34 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (h != 0.0) {
 			// nodeView.setHeight(h);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, new Double(h));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, ""+h);
 		}
 		if (w != 0.0) {
 			// nodeView.setWidth(w);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, new Double(w));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, ""+w);
 		}
 
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// Set color
 		if (XGMMLParser.getAttribute(graphics,"fill") != null) {
-			Color fillColor = XGMMLParser.getColorAttribute(graphics, "fill");
+			String fillColor = XGMMLParser.getAttribute(graphics, "fill");
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FILL_COLOR, fillColor);
 			// nodeView.setUnselectedPaint(fillColor);
 		}
 
 		// Set border line color
 		if (XGMMLParser.getAttribute(graphics,"outline") != null) {
-			Color outlineColor = XGMMLParser.getColorAttribute(graphics, "outline");
+			String outlineColor = XGMMLParser.getAttribute(graphics, "outline");
 			// nodeView.setBorderPaint(outlineColor);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_BORDER_COLOR, outlineColor);
 		}
 
 		// Set border line width
 		if (XGMMLParser.getAttribute(graphics,"width") != null) {
-			float lineWidth = (float)XGMMLParser.getDoubleAttribute(graphics,"width");
+			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
 			// nodeView.setBorderWidth(lineWidth);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINE_WIDTH, new Double(lineWidth));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINE_WIDTH, lineWidth);
 		}
 
 		if (XGMMLParser.getAttributeNS(graphics,"nodeTransparency",CY_NAMESPACE) != null) {
@@ -464,54 +464,30 @@ public class XGMMLReader extends AbstractGraphReader {
 			float opacity = (float)Double.parseDouble(opString)*255;
 			// Opacity is saved as a float from 0-1, but internally we use 0-255
 			// nodeView.setTransparency(opacity);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_OPACITY, new Float(opacity));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_OPACITY, ""+opacity);
 		}
 
 		if (XGMMLParser.getAttributeNS(graphics, "opacity", CY_NAMESPACE) != null) {
 			String opString = XGMMLParser.getAttributeNS(graphics,"opacity", CY_NAMESPACE);
 			float opacity = (float)Double.parseDouble(opString);
 			// nodeView.setTransparency(opacity);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_OPACITY, new Float(opacity));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_OPACITY, opString);
 		}
 
 		// These are saved in the exported XGMML, but it's not clear how they get set
 		if (XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE) != null) {
 			String nodeLabelFont = XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_FACE, 
-			                       VisualPropertyType.NODE_FONT_FACE.getValueParser().
-			                             parseStringValue(nodeLabelFont));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
 		}
 
 		if (XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE) != null) {
 			String borderLineType = XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINETYPE, 
-			                       VisualPropertyType.NODE_LINETYPE.getValueParser().
-			                             parseStringValue(borderLineType));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINETYPE, borderLineType);
 		}
 
 		String type = XGMMLParser.getAttribute(graphics,"type");
 		if (type != null) {
-			/*
-			if (type.equals(ELLIPSE) || type.equals(VELLIPSIS) || type.equals(HELLIPSIS)
-			    || type.equals(CIRCLE)) {
-				nodeView.setShape(NodeView.ELLIPSE);
-			} else if (type.equals(RECTANGLE) || type.equals(BOX)) {
-				nodeView.setShape(NodeView.RECTANGLE);
-			} else if (type.equals(DIAMOND)) {
-				nodeView.setShape(NodeView.DIAMOND);
-			} else if (type.equals(HEXAGON) || type.equals(PENTAGON)) {
-				nodeView.setShape(NodeView.HEXAGON);
-			} else if (type.equals(OCTAGON)) {
-				nodeView.setShape(NodeView.OCTAGON);
-			} else if (type.equals(PARALELLOGRAM) || type.equals(RHOMBUS)) {
-				nodeView.setShape(NodeView.PARALELLOGRAM);
-			} else if (type.equals(TRIANGLE)) {
-				nodeView.setShape(NodeView.TRIANGLE);
-			}
-			*/
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,
-			                                 VisualPropertyType.NODE_SHAPE.getValueParser().
-			                                    parseStringValue(type));
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,type);
 		}
 	}
 
@@ -522,7 +498,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *            GINY's graph view object for the current network.
 	 * @param graphStyle the visual style creator object
 	 */
-	private void layoutEdges(final GraphView myView, final VisualStyleCreator graphStyle) {
+	private void layoutEdges(final GraphView myView, final VisualStyleBuilder graphStyle) {
 		String label = null;
 		int tempid = 0;
 		EdgeView view = null;
@@ -548,7 +524,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	private void layoutEdgeGraphics(final Attributes graphics, 
 	                                final EdgeView edgeView,
-	                                final VisualStyleCreator graphStyle) {
+	                                final VisualStyleBuilder graphStyle) {
 	/*
 		System.out.print("LayoutEdgeGraphics: ");
 		for (int i = 0; i < graphics.getLength(); i++) {
@@ -560,13 +536,13 @@ public class XGMMLReader extends AbstractGraphReader {
 		String edgeID = edgeView.getEdge().getIdentifier();
 
 		if (XGMMLParser.getAttribute(graphics,"width") != null) {
-			float lineWidth = (float)XGMMLParser.getDoubleAttribute(graphics,"width");
+			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
 			// edgeView.setStrokeWidth(lineWidth);
-			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_WIDTH, new Double(lineWidth));
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_WIDTH, lineWidth);
 		}
 
 		if (XGMMLParser.getAttribute(graphics,"fill") != null) {
-			Color edgeColor = XGMMLParser.getColorAttribute(graphics, "fill");
+			String edgeColor = XGMMLParser.getAttribute(graphics, "fill");
 			// edgeView.setUnselectedPaint(edgeColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_COLOR, edgeColor);
 		}
@@ -575,34 +551,31 @@ public class XGMMLReader extends AbstractGraphReader {
 			Integer arrowType = XGMMLParser.getIntegerAttribute(graphics,"sourceArrow");
 			String arrowName = ArrowShape.getArrowShape(arrowType).getName();
 			// edgeView.setSourceEdgeEnd(arrowType);
-			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW, 
-			                        VisualPropertyType.EDGE_SRCARROW.getValueParser().parseStringValue(arrowName));
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW, arrowName);
 		}
 
 		if (XGMMLParser.getAttribute(graphics,"targetArrow") != null) {
 			Integer arrowType = XGMMLParser.getIntegerAttribute(graphics,"targetArrow");
 			String arrowName = ArrowShape.getArrowShape(arrowType).getName();
 			// edgeView.setTargetEdgeEnd(arrowType);
-			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW, 
-			                        VisualPropertyType.EDGE_TGTARROW.getValueParser().parseStringValue(arrowName));
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW, arrowName);
 		}
 
 		if (XGMMLParser.getAttribute(graphics,"sourceArrowColor") != null) {
-			Color arrowColor = XGMMLParser.getColorAttribute(graphics, "sourceArrowColor");
+			String arrowColor = XGMMLParser.getAttribute(graphics, "sourceArrowColor");
 			// edgeView.setSourceEdgeEndPaint(arrowColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_COLOR, arrowColor);
 		}
 
 		if (XGMMLParser.getAttribute(graphics,"targetArrowColor") != null) {
-			Color arrowColor = XGMMLParser.getColorAttribute(graphics, "targetArrowColor");
+			String arrowColor = XGMMLParser.getAttribute(graphics, "targetArrowColor");
 			// edgeView.setTargetEdgeEndPaint(arrowColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_COLOR, arrowColor);
 		}
 
 		if (XGMMLParser.getAttribute(graphics,"edgeLineType") != null) {
 			String value = XGMMLParser.getAttribute(graphics, "edgeLineType");
-			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_STYLE, 
-			                        VisualPropertyType.EDGE_LINE_STYLE.getValueParser().parseStringValue(value));
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_STYLE, value);
 		}
 
 		if (XGMMLParser.getAttribute(graphics,"curved") != null) {

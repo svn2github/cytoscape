@@ -58,6 +58,16 @@ public class Misc {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Color parseRGBText(String text) {
+		// Start by seeing if this is a hex representation
+		if (text.startsWith("#")) {
+			try {
+				Color c = Color.decode(text);
+				return c;
+			} catch (NumberFormatException e) {
+				return Color.black;
+			}
+		}
+
 		StringTokenizer strtok = new StringTokenizer(text, ",");
 
 		if (strtok.countTokens() != 3) {

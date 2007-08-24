@@ -46,26 +46,58 @@ import java.util.*;
 import java.awt.Color;
 
 /**
- * 
+ * Based on the graph/node/edge view information, build new Visual Style.
+ *
+ * This class accepts style properties and adds hidden Cytoscape attributes that
+ * will be used to actually create the style.
  */
-public class VisualStyleCreator {
+public class VisualStyleBuilder {
 
 	Map<VisualPropertyType,Map<Object,Object>> valueMaps;
 	Map<VisualPropertyType,Map<String,Object>> idMaps;
 	String name;
 	boolean addOverride = false;
 
-	public VisualStyleCreator(String name) {
+	/**
+	 * Build a new VisualStyleBuilder object whose output style will be called "name".
+	 * 
+	 * @param name the name of the visual style that will be created.
+	 */
+	public VisualStyleBuilder(String name) {
 		this.name = name;
 		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
 	}
 
-	public VisualStyleCreator(String name, boolean addOvAttr) {
+	/**
+	 * Build a new VisualStyleBuilder object whose output style will be called "name" based
+	 * on JAXB Graphics objects.  This constructor is no longer used and is not supported.
+	 * 
+	 * @param newName the name of the visual style that will be created.
+	 * @param nodeGraphics the map of node to JAXB Graphics object
+	 * @param edgeGraphics the map of edge to JAXB Graphics object
+	 * @param globalGraphics the map of network to JAXB Graphics object
+	 * @deprecated this should no longer be used and is not functional.  Use VisualStyleBuilder(String)
+	 * instead and then call addProperty for each value
+	 */
+	public VisualStyleBuilder(String newName, Map nodeGraphics, Map edgeGraphics, Map globalGraphics) {
+		this.name = newName;
+	}
+
+	/**
+	 * Build a new VisualStyleBuilder object whose output style will be called "name".
+	 * 
+	 * @param name the name of the visual style that will be created.
+	 * @param addOvAttr adds override attributes for each style set
+	 */
+	public VisualStyleBuilder(String name, boolean addOvAttr) {
 		this.name = name;
 		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
 		this.addOverride = addOvAttr;
 	}
 
+	/**
+	 * Actually build the style using the provided properties
+	 */
 	public void buildStyle() {
 		// First, get our current style information. 
 		VisualMappingManager vm = Cytoscape.getVisualMappingManager();
@@ -104,8 +136,17 @@ public class VisualStyleCreator {
 		return "vizmap:"+name + " " + type.toString();
 	}
 
-	public void addProperty(String id, VisualPropertyType type, Object value) {
+	/**
+	 * This method actually adds a property to be considered for inclusion into
+	 * the resulting style.
+	 *
+	 * @param id the id of the node or edge
+	 * @param type the type of the property
+	 * @param desc the property value
+	 */
+	public void addProperty(String id, VisualPropertyType type, String desc) {
 		CyAttributes attrs;
+		Object value = type.getValueParser().parseStringValue(desc);
 		if (value == null)
 			return;
 		if ( type.isNodeProp() )
