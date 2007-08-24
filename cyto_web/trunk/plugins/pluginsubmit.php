@@ -1,4 +1,20 @@
 <?php
+function getUniqueID($connection) {
+
+	$retValue = -1;
+	$dbQuery = "select max(unique_id) as current_max from plugin_list";	
+	// Run the query
+	if (!($result = @ mysql_query($dbQuery, $connection)))
+		showerror();
+
+	if (@ mysql_num_rows($result) != 0) {
+			$the_row = @ mysql_fetch_array($result);
+			$current_max = $the_row['current_max'];
+			$retValue = $current_max + 1; 
+	}
+
+	return $retValue;
+}
 
 
 // mode = 'new', Data is submited by user
@@ -104,7 +120,9 @@ if (($tried == NULL) && ($mode == 'edit')) {
 	$license = $db_license;
 	$license_required = $db_license_required;
 	$comment = $db_comment;
-	
+	$contactName = $db_contactName;
+	$contactEmail = $db_contactEmail;
+
 	$pluginProps['pluginCategory'] = $db_category;
 	$pluginProps['pluginName'] = $db_name;
 	$pluginProps['pluginDescription'] = $db_description;
@@ -183,14 +201,15 @@ if ($tried != NULL && $tried == 'yes') {
 	if (($mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
 		$validated = false;
 ?>
-		Error: A jar/zip file is required.<br>
+		<br><strong>Error: A jar/zip file is required.</strong><br>
 		<?php
+
 
 	}
 	elseif (($mode == 'edit') && empty ($_FILES['filePlugin']['name'])) {
 		//keep the existing file as is.
 		include 'getplugindatafromdb.inc';
-		$pluginProps = $db_pluginProps;		
+		$pluginProps = $db_pluginProps;
 	} else {
 		// get plugin properties from the jar/zip file uploaded
 		include "pluginPropsUtil.inc";
@@ -309,10 +328,12 @@ if (!($tried && $validated)) {
 </table>
 <p align="center">
 <?php
+
 	if ($mode == 'new') {
 ?>
 <input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
 <?php
+
 	} else
 		if ($mode == 'edit') {
 ?>	
@@ -512,10 +533,34 @@ else
 			if (!(@ mysql_query($query, $connection)))
 				showerror();
 		}
-		?>
+
+		// query to update table contacts
+		$query5_prefix = 'update contacts set ';
+		$query5_suffix = ' where plugin_version_id = ' . $versionID;
+
+		$query5 = $query5_prefix;
+
+		if ($contactName != $db_contactName) {
+			$query5 .= 'name ="' . $contactName . '",';
+		}
+		if ($contactEmail != $db_contactEmail) {
+			$query5 .= 'email ="' . $contactEmail . '",';
+		}
+
+		if ($query5 != $query5_prefix) {
+			$query5 .= 'sysdat =' . 'now()';
+		}
+
+		// Run the querys to update table contacts
+		if ($query5 != $query5_prefix) {
+			if (!(@ mysql_query($query5 . $query5_suffix, $connection)))
+				showerror();
+		}
+?>
 		Database is updated successfully!
 		<p>Go back to <a href="pluginadmin.php">Plugin adminstration page</a></p>
 		<?php
+
 
 		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
 		//system("./run_generate_plugin_xml.csh");
@@ -582,8 +627,9 @@ else
 		} else {
 			//This is a new plugin, add a row in the table plugin_list
 
-			$plugin_unique_id = -1;
-
+			//$plugin_unique_id = -1;
+			$plugin_unique_id = getUniqueID($connection);
+			
 			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
 			'(0, "' . $pluginProps['pluginName'] . '", "' . $plugin_unique_id . '", "' . addslashes($pluginProps['pluginDescription']) . '", "' . $license . '", "' . $license_required . '", "' . $pluginProps['projectURL'] . '",' .
 			$category_id . ',now())';
@@ -632,20 +678,27 @@ else
 			if (!(@ mysql_query($dbQuery, $connection)))
 				showerror();
 		}
-		
-		// Save contact name and email into table "contacts"
-		echo "contactName =",$contactName,"<br>";
-		echo "contactEmail =",$contactEmail,"<br>";
-		
-		
+
+		// insert a row into contacts table
+
+		//echo "contactName =",$contactName,"<br>";
+		//echo "contactEmail =",$contactEmail,"<br>";
+
+		$dbQuery = 'INSERT INTO contacts VALUES (0, "' . addslashes($contactName) . '", "' . $contactEmail . '",' . $version_auto_id . ', now())';
+
+		// Run the query
+		if (!(@ mysql_query($dbQuery, $connection)))
+			showerror();
 ?>
 	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If your-mail address is provided, you will get confirmation via e-mail.
 	<p>Go back to <a href="index.php">Back to cytoscape plugin page</a></p>
 	<?php
 
+
 		// Send a confirmation e-mail to user
 		// Also cc to cytostaff,  new plugin is uploaded
-		//sendConfirmartionEmail($contactName, $contactEmail);
+		include "sendConfirmationEmail.inc";
+		sendConfirmartionEmail($contactName, $contactEmail, $pluginProps['pluginName']);
 
 	} // end of form processing
 }
