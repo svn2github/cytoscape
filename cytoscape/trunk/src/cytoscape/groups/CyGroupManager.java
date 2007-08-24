@@ -220,7 +220,12 @@ public class CyGroupManager {
 		// Do we already have a group by this name?
 		if (findGroup(groupNode.getIdentifier()) != null) return null;
 		// Create the group
-		CyGroup group = new CyGroupImpl(groupNode, nodeList);
+		CyGroup group = null;
+		if (nodeList != null)
+			group = new CyGroupImpl(groupNode, nodeList);
+		else
+			group = new CyGroupImpl(groupNode);
+
 		groupMap.put(group.getGroupNode(), group);
 
 		// See if this groupNode has a state attribute
@@ -348,7 +353,13 @@ public class CyGroupManager {
 			groupViewerMap.get(v).add(group);
 
 			if (notify) {
-				v.groupCreated(group, myView);
+				// Make sure we have a view before we notify
+				CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+				if (myView != null) {
+					v.groupCreated(group, myView);
+				} else if (currentView != null) {
+					v.groupCreated(group, currentView);
+				}
 				notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_MODIFIED);
 			}
 		}
