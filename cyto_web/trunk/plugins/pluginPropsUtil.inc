@@ -1,9 +1,9 @@
 <?php
 function validatePluginProps($pluginProps) {
 	$retVal = true;
-	if (count($pluginProps) == 0) {
+	if ($pluginProps == NULL || count($pluginProps) == 0) {
 ?>
-		Error: plugin.props in the jar/zip file is either non-existence or empty.<br>
+		<strong>Error: plugin.props in the jar/zip file is either non-existence or empty.</strong><br>
 		<?php
 
 
@@ -13,7 +13,7 @@ function validatePluginProps($pluginProps) {
 	if (!array_key_exists('pluginName', $pluginProps)) {
 		$retVal = false;
 ?>
-		Error in plugin.prop: pluginName is required.<br>
+		<strong>Error in plugin.prop: pluginName is required.</strong><br>
 		<?php
 
 
@@ -21,7 +21,7 @@ function validatePluginProps($pluginProps) {
 	if (!array_key_exists('pluginVersion', $pluginProps)) {
 		$retVal = false;
 ?>
-		Error in plugin.prop: PluginVersion is required.<br>
+		<strong>Error in plugin.prop: PluginVersion is required.</strong><br>
 		<?php
 
 
@@ -29,7 +29,7 @@ function validatePluginProps($pluginProps) {
 	if (!array_key_exists('pluginDescription', $pluginProps)) {
 		$retVal = false;
 ?>
-		Error in plugin.prop: pluginDescription is required.<br>
+		<strong>Error in plugin.prop: pluginDescription is required.</strong><br>
 		<?php
 
 
@@ -37,31 +37,57 @@ function validatePluginProps($pluginProps) {
 	if (!array_key_exists('pluginCategory', $pluginProps)) {
 		$retVal = false;
 ?>
-		Error in plugin.prop: pluginCategory is required.<br>
+		<strong>Error in plugin.prop: pluginCategory is required.</strong><br>
 		<?php
 
 
 	}
+	else {
+		if (!((strnatcasecmp($pluginProps['pluginCategory'], 'Core') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Analysis') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Network and Attribute I/O') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Network Inference') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Functional Enrichment') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Communication/Scripting') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Other') == 0)))
+		{
+			$retVal = false;
+			?>
+		<strong>Error in plugin.prop: pluginCategory must be one of the categories listed at <a href = "http://cytoscape.org/plugins25/index.php">Cytoscape plugin web site</a>.</strong><br>
+		<?php
+			
+		}
+		
+	}
+	
 	if (!array_key_exists('cytoscapeVersion', $pluginProps)) {
 		$retVal = false;
 ?>
-		Error in plugin.prop: cytoscapeVersion is required.<br>
+		<strong>Error in plugin.prop: cytoscapeVersion is required.</strong><br>
 		<?php
 
 
 	}
+	
+	//If release Date is not provided, set it to today (system date).
+	/*
 	if (!array_key_exists('releaseDate', $pluginProps)) {
-		$retVal = false;
-?>
-		Error in plugin.prop: releaseDate is required.<br>
-		<?php
-
+		//$pluginProps['releaseDate'] = date('Y').'-'.date('m').'-'.date('d');
+		$retVal = true;
 
 	} else {
 		//releaseDate = $year.'-'.$month.'-'.$day;
-
 	}
+	*/
+	
+	if ($retVal == false) {
+	?>	
+                <br>Please check the definition of Cytoscape plugin propertiies at <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial">Cytoscape wiki</a> for detail. </p>
+                <br><br>
 
+	<?php
+	}
+	
 	//return false;
 	return $retVal;
 }
@@ -70,6 +96,13 @@ function getReleaseDateFromStr($releaseDateStr) {
 	// The releaseDateStr will have the format like "May 1, 2007"
 	// The return value will be have the format like "2007-5-1"
 	// If the input string is invlalid date Str, return null
+
+
+	// If release is not given, set it to today
+	if (trim($releaseDateStr) == "") {
+		return date('Y').'-'.date('m').'-'.date('d'); 		
+	}
+
 
 	$elements = sscanf($releaseDateStr, "%s%d,%d");
 
@@ -145,6 +178,8 @@ function getAuthorInstArray($authorInstStr) {
 
 //Get the plugin properties from a Jar/Zip file
 function getPluginProps($zipFileName) {
+	$pluginProps = NULL;
+
 	$zip = zip_open($zipFileName);
 	if ($zip) {
 		while ($zip_entry = zip_read($zip)) {
@@ -202,6 +237,12 @@ function getPluginProps($zipFileName) {
 							$pluginProps['releaseDate'] = getReleaseDateFromStr(trim(substr($cur_line, $pos +1)));
 						}
 					}
+					
+					//If release Date is not provided, set it to today (system date).
+					if (!array_key_exists('releaseDate', $pluginProps)) {
+						$pluginProps['releaseDate'] = date('Y').'-'.date('m').'-'.date('d');					
+					}
+					
 					//Not defined yet, may need it, in the future
 					$pluginProps['minimumJavaVersion'] = '0.0';
 					zip_entry_close($zip_entry);
