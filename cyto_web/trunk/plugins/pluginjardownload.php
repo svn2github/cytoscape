@@ -20,9 +20,10 @@ function updateUsageLog($connection, $plugin_file_id) {
 
         $remote_ip_address= $_SERVER['REMOTE_ADDR'];
         $remote_host = gethostbyaddr($remote_ip_address);
+        $refer_page = $_SERVER['HTTP_REFERER'];
 
         // populate the usagelog table
-        $dbQuery = 'insert into usagelog values (0, "'.$plugin_version_id. '","'.$remote_host.'","'.$remote_ip_address.'"'.',now())';
+        $dbQuery = 'insert into usagelog values (0, "'.$plugin_version_id. '","'.$remote_host.'","'.$remote_ip_address.'","'.$refer_page.'"'.',now())';
 
         // Run the query
         if (!($result = @ mysql_query($dbQuery,$connection)))
