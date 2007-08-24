@@ -112,12 +112,14 @@ if (!($tried)) {
 	}
 	$author_ids = substr($author_ids, 0, strlen($author_ids)-1); //remove the last ','	
 
-   	//construct the query to delete from tables (authors, plugin_author, plugin_files, plugin_version and plugin_list)
-    $query1 = 'delete from authors where author_auto_id IN ('.$author_ids.')';
-	// Run the query
-	if (!($result = @ mysql_query($query1, $connection)))
-		showerror();	
-    
+	if (trim($author_ids)!="") {		
+	   	//construct the query to delete from tables (authors, plugin_author, plugin_files, plugin_version and plugin_list)
+	    $query1 = 'delete from authors where author_auto_id IN ('.$author_ids.')';
+		// Run the query
+		if (!($result = @ mysql_query($query1, $connection)))
+			showerror();	
+	}
+
     $query2 = 'delete from plugin_author where plugin_version_id ='.$versionID;
     // Run the query
 	if (!($result = @ mysql_query($query2, $connection)))
@@ -149,6 +151,11 @@ if (!($tried)) {
 		if (!($result = @ mysql_query($query, $connection)))
 			showerror();
 	}
+	
+   $query7 = 'delete from contacts where plugin_version_id ='.$versionID;
+    // Run the query
+	if (!($result = @ mysql_query($query7, $connection)))
+		showerror();	
 	
 	// delete successful, redirect to admin page	
 	?>
