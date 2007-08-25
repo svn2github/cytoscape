@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Fri May 11 16:37:58 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Mon Jul 23 19:36:05 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,10 @@
 *
 * Revisions:
 *
+* Thu Jul 19 13:29:22 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed use of _initialized and simplified to assume CytoscapeEditor
+*  is always loaded before any other editor. Removed
+*  unneeded definitions of  getPluginInfoObject() and describe().
 * Fri May 11 16:37:23 2007 (Michael L. Creech) creech@w235krbza760
 *  Updated VERSION to 2.50 and added getPluginInfoObject() for Cytoscape 2.5.
 * Fri Dec 15 10:08:07 2006 (Michael L. Creech) creech@w235krbza760
@@ -36,7 +40,6 @@ package cytoscape.editor;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
 
 
 /**
@@ -47,10 +50,10 @@ import cytoscape.plugin.PluginInfo;
  *
  */
 public class CytoscapeEditorPlugin extends CytoscapePlugin {
-    // MLC 12/11/06:
-    private static boolean _initialized = false;
-    // MLC 05/11/07:
-    private static final double VERSION = 2.501;
+    // MLC 07/20/07:
+    // private static boolean _initialized = false;
+    // MLC 07/20/07:
+    private static final double VERSION = 2.51;
 
 	/**
 	 * Creates a new CytoscapeEditorPlugin object.
@@ -62,54 +65,52 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		// CytoscapeEditorManager.setRunningEditorFramework(true);
 		// CytoscapeEditorManager.log("Setting up CytoscapeEditor");
 		// mpa.initializeCytoscapeEditor();
+	    // MLC 07/23/07:
+	    CytoscapeEditorManager.setLoggingEnabled (false);
 		initializeCytoscapeEditor();
 
 		// MLC 07/24/06 END.
 	}
 
-    // MLC 05/10/07 BEGIN:
-    // overrides CytoscapePlugin.getPluginInfoObject():
-    public PluginInfo getPluginInfoObject() {
-        PluginInfo info = new PluginInfo();
-        info.setName("CytoscapeEditor");
-        info.setDescription("Add nodes and edges to a Cytoscape Network.");
-//        info.setCategory(PluginInfo.Category.CORE);
-//        info.setPluginVersion("2.5.01");
-        info.setCytoscapeVersion("2.5");
-        // info.setProjectUrl("http://www.cytoscape.org/download_agilent_literature_search_v2.5.php?file=litsearch_v2.4");
-        info.addAuthor("Allan Kuchinsky", "Agilent Labs");
-        info.addAuthor("Michael Creech", "Blue Oak Software");
-        return info;
-    }
-    // MLC 05/10/07 END.
+    // MLC 07/20/07 BEGIN:
+    //    // overrides CytoscapePlugin.getPluginInfoObject():
+    //    public PluginInfo getPluginInfoObject() {
+    //        PluginInfo info = new PluginInfo();
+    //        info.setName("CytoscapeEditor");
+    //        info.setDescription("Add nodes and edges to a Cytoscape Network.");
+    ////        info.setCategory(PluginInfo.Category.CORE);
+    ////        info.setPluginVersion("2.5.01");
+    //        info.setCytoscapeVersion("2.5");
+    //        // info.setProjectUrl("http://www.cytoscape.org/download_agilent_literature_search_v2.5.php?file=litsearch_v2.4");
+    //        info.addAuthor("Allan Kuchinsky", "Agilent Labs");
+    //        info.addAuthor("Michael Creech", "Blue Oak Software");
+    //        return info;
+    //    }
+    // MLC 07/20/07 END.
 
-	// MLC 07/24/06 BEGIN:
-	/**
-	 * Overrides CytoscapePlugin.describe():
-	 */
-	public String describe() {
-		return "Add nodes and edges to a Cytoscape Network. ";
-	}
+    // MLC 07/20/07 BEGIN:
+
+    //	/**
+    //	 * Overrides CytoscapePlugin.describe():
+    //	 */
+    //	public String describe() {
+    //		return "Add nodes and edges to a Cytoscape Network. ";
+    //	}
 
 	/**
 	 * sets various flags and registers various editors with the CytoscapeEditorManager
 	 *
 	 */
 
-	// MLC 12/11/06 BEGIN:
-	// private void initializeCytoscapeEditor() {
-	public static void initializeCytoscapeEditor() {
-		if (_initialized) {
-			return;
-		}
-
-		// MLC 12/11/06 END.
-		// MLC 07/24/06:
-		CytoscapeEditorManager.setRunningEditorFramework(true);
-
-		CytoscapeEditorManager.setEditingEnabled(false);
-
-		CytoscapeEditorManager.initialize();
+        private void initializeCytoscapeEditor() {
+	// public static void initializeCytoscapeEditor() {
+	    //if (_initialized) {
+	    // return;
+	    // }
+	    // CytoscapeEditorManager.setRunningEditorFramework(true);
+	    // CytoscapeEditorManager.setEditingEnabled(true);
+	    // MLC 07/20/07 END.
+	    CytoscapeEditorManager.initialize();
 
 		// add default palette-based editor
 		CytoscapeEditorManager.register(CytoscapeEditorManager.DEFAULT_EDITOR_TYPE,
@@ -158,8 +159,8 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		                                                                // CytoscapeInit.getDefaultVisualStyle()));
 		                                                                // MLC 08/06/06:
 		CytoscapeInit.getProperties().getProperty("defaultVisualStyle")));
-		// MLC 12/11/06:
-		_initialized = true;
+		// MLC 07/20/07:
+		// _initialized = true;
 	}
 
 	// MLC 07/24/06 BEGIN:
