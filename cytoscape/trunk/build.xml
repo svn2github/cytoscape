@@ -475,10 +475,10 @@
 	     allows it reflect on the jar file and find other tests. -->
 			<classpath>
 				<fileset dir="${basedir}">
-					<include name="**/*.jar" />
+					<include name="*.jar" />
 				</fileset>
 				<fileset dir="${lib.dir}">
-					<include name="**/*.jar" />
+					<include name="*.jar" />
 				</fileset>
 			</classpath>
 			<formatter type="plain" usefile="true" />
