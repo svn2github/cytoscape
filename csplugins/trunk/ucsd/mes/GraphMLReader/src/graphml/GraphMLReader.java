@@ -48,6 +48,7 @@ import javax.xml.stream.XMLStreamConstants;
 
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.AbstractGraphReader;
+import cytoscape.data.readers.VisualStyleBuilder;
 
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
@@ -64,7 +65,7 @@ public class GraphMLReader extends AbstractGraphReader {
 
 	private int[] edgeInds;
 	private int[] nodeInds;
-	private VisualStyleCreator styleCreator;
+	private VisualStyleBuilder styleCreator;
 
 	public GraphMLReader(String fileName) {
 		super(fileName);
@@ -73,7 +74,7 @@ public class GraphMLReader extends AbstractGraphReader {
 		edgeInds = null;
 		nodeInds = null;
 		
-		styleCreator = new VisualStyleCreator(fileName);
+		styleCreator = new VisualStyleBuilder(fileName);
 	}
 
 	public int[] getNodeIndicesArray() {
@@ -107,34 +108,57 @@ public class GraphMLReader extends AbstractGraphReader {
 
 				// create edge
 				if ( reader.getLocalName().equals("edge") ) {
-					String src = reader.getAttributeValue(0);
-					String trg = reader.getAttributeValue(1);
+					String src = reader.getAttributeValue(null,"source");
+					String trg = reader.getAttributeValue(null,"target");
 					String id = CyEdge.createIdentifier(src, "xx", trg); 
 					CyEdge edge = Cytoscape.getCyEdge(src,id,trg,"xx");
 					edges.add( edge );
 
+				// yfiles specific	
+				} else if ( reader.getLocalName().equals("LineStyle") ) {
+					String color = reader.getAttributeValue(null,"color");
+					String id = edges.get(edges.size()-1).getIdentifier();
+					styleCreator.addProperty( id, VisualPropertyType.EDGE_COLOR, color);
+
+				// yfiles specific	
+				} else if ( reader.getLocalName().equals("Arrows") ) {
+					String src = reader.getAttributeValue(null,"source");
+					if ( src.equals("standard") )
+						src = "ARROW";
+					String trg = reader.getAttributeValue(null,"target");
+					if ( trg.equals("standard") )
+						trg = "ARROW";
+					String id = edges.get(edges.size()-1).getIdentifier();
+					styleCreator.addProperty( id, VisualPropertyType.EDGE_SRCARROW_SHAPE, src);
+					styleCreator.addProperty( id, VisualPropertyType.EDGE_TGTARROW_SHAPE, trg);
+
 				// create node
 				} else if ( reader.getLocalName().equals("node") ) {
-					String nodeName = reader.getAttributeValue(0);
+					String nodeName = reader.getAttributeValue(null,"id");
 					CyNode node = Cytoscape.getCyNode(nodeName, true);
 					nodes.add( node );
 
+				// yfiles specific	
 				} else if ( reader.getLocalName().equals("Shape") ) {
-					String shape = reader.getAttributeValue(0);
-					System.out.println("read shape: " + shape);
+					String shape = reader.getAttributeValue(null,"type");
 					String id = nodes.get(nodes.size()-1).getIdentifier();
-					styleCreator.addProperty( id, VisualPropertyType.NODE_SHAPE, 
-					                                VisualPropertyType.NODE_SHAPE.getValueParser().
-													  parseStringValue(shape) );
+					styleCreator.addProperty( id, VisualPropertyType.NODE_SHAPE, shape);
 					
+				// yfiles specific	
 				} else if ( reader.getLocalName().equals("Fill") ) {
-					String color = reader.getAttributeValue(0);
-					System.out.println("read color: " + color);
+					String color = reader.getAttributeValue(null,"color");
 					String id = nodes.get(nodes.size()-1).getIdentifier();
-					styleCreator.addProperty( id, VisualPropertyType.NODE_FILL_COLOR, 
-												new Color(Integer.parseInt(color.substring(1,color.length()-1),16)));
-					                                
+					styleCreator.addProperty( id, VisualPropertyType.NODE_FILL_COLOR, color);
+
+				// yfiles specific	
+				} else if ( reader.getLocalName().equals("NodeLabel") ) {
+					String labelColor = reader.getAttributeValue(null,"textColor");
+					String label = reader.getElementText();
+					String id = nodes.get(nodes.size()-1).getIdentifier();
+					styleCreator.addProperty( id, VisualPropertyType.NODE_LABEL_COLOR, labelColor);
+					styleCreator.addProperty( id, VisualPropertyType.NODE_LABEL, label);
 				}
+
                 break;
 
             case XMLStreamConstants.END_DOCUMENT :
