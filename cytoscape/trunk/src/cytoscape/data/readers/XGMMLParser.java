@@ -45,6 +45,8 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroup;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntEnumerator;
 
@@ -56,6 +58,7 @@ import java.util.Stack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -160,6 +163,18 @@ class XGMMLParser extends DefaultHandler {
 	/* Attribute values */
 	private ParseState attState = ParseState.NONE;
 	private String currentAttributeID = null;
+	private CyAttributes currentAttributes = null;
+	private	String objectTarget = null;
+
+	/* Complex attribute data */
+	private int level = 0;
+	private int numKeys = 0;
+	private Map complexMap[] = null;
+	private Object complexKey[] = null;
+	private byte[] attributeDefinition = null;
+	private byte valueType; 
+	private boolean complexAttributeDefined = false;
+	private MultiHashMap mhm = null;
 
 	/* Edge handle list */
 	private List<String> handleList = null;
@@ -303,7 +318,17 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	static Object getTypedAttributeValue(ObjectType type, Attributes atts) {
 		String value = atts.getValue("value");
+		return getTypedValue(type, value);
+	}
 
+	/**
+	 * Return the typed value for the passed value.
+	 *
+	 * @param type the ObjectType of the value
+	 * @param value the value to type
+	 * @return the typed value
+	 */
+	static Object getTypedValue(ObjectType type, String value) {
 		switch(type) {
 		case BOOLEAN:
 			if (value != null)
@@ -619,7 +644,7 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleNetworkAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+			currentAttributes = Cytoscape.getNetworkAttributes();
 			attState = current;
 			ParseState nextState = current;
 			// Look for "special" network attributes
@@ -634,7 +659,8 @@ class XGMMLParser extends DefaultHandler {
 			} else if (getAttributeValue(atts, "GRAPH_VIEW_CENTER_Y") != null) {
 				graphCenterY = getDoubleAttributeValue(atts, "GRAPH_VIEW_CENTER_Y");
 			} else {
-				nextState = handleAttribute(atts, netAttributes, networkName);
+				objectTarget = networkName;
+				nextState = handleAttribute(atts, currentAttributes, networkName);
 			}
 
 			// System.out.println("Network attribute: "+printAttribute(atts));
@@ -698,8 +724,10 @@ class XGMMLParser extends DefaultHandler {
 				((AttributesImpl)nodeGraphicsMap.get(currentNode)).addAttribute("", "", name, "string", value);
 			}
 
-			ParseState nextState = handleAttribute(atts, Cytoscape.getNodeAttributes(),
-			                                       currentNode.getIdentifier());
+			currentAttributes = Cytoscape.getNodeAttributes();
+			objectTarget = currentNode.getIdentifier();
+
+			ParseState nextState = handleAttribute(atts, currentAttributes, objectTarget);
 			if (nextState != ParseState.NONE)
 				return nextState;
 			return current;
@@ -784,8 +812,10 @@ class XGMMLParser extends DefaultHandler {
 				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).addAttribute("", "", name, "string", value);
 			}
 			*/
-			ParseState nextState = handleAttribute(atts, Cytoscape.getEdgeAttributes(),
-			                                       currentEdge.getIdentifier());
+			currentAttributes = Cytoscape.getEdgeAttributes();
+			objectTarget = currentEdge.getIdentifier();
+			
+			ParseState nextState = handleAttribute(atts, currentAttributes, objectTarget);
 			if (nextState != ParseState.NONE)
 				return nextState;
 			return current;
@@ -918,7 +948,7 @@ class XGMMLParser extends DefaultHandler {
 				if (getAttribute(atts, "y") != null) {
 					edgeBendY = getAttribute(atts, "y");
 				}
-				System.out.println("x="+edgeBendX+" y="+edgeBendY);
+				// System.out.println("x="+edgeBendX+" y="+edgeBendY);
 				if (edgeBendX != null && edgeBendY != null) {
 					if (handleList == null) handleList = new ArrayList();
 					handleList.add(edgeBendX+","+edgeBendY);
@@ -970,23 +1000,10 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleListAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			String name = atts.getValue("name");
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
-			String id = null;
-			CyAttributes attributes = null;
 
-			if (attState == ParseState.NODEATT) {
-				attributes = Cytoscape.getNodeAttributes();
-				id = currentNode.getIdentifier();
-			} else if (attState == ParseState.EDGEATT) {
-				attributes = Cytoscape.getEdgeAttributes();
-				id = currentEdge.getIdentifier();
-			} else if (attState == ParseState.NETATT) {
-				attributes = Cytoscape.getNetworkAttributes();
-				id = networkName;
-			}
-			List listAttribute = attributes.getListAttribute(id, currentAttributeID);
+			List listAttribute = currentAttributes.getListAttribute(objectTarget, currentAttributeID);
 			if (listAttribute == null) listAttribute = new ArrayList();
 
 			switch (objType) {
@@ -996,7 +1013,7 @@ class XGMMLParser extends DefaultHandler {
 			case STRING:
 				listAttribute.add(obj);
 			}
-			attributes.setListAttribute(id, currentAttributeID, listAttribute);
+			currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttribute);
 			return current;
 		}
 	}
@@ -1006,20 +1023,8 @@ class XGMMLParser extends DefaultHandler {
 			String name = atts.getValue("name");
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
-			String id = null;
-			CyAttributes attributes = null;
 
-			if (attState == ParseState.NODEATT) {
-				attributes = Cytoscape.getNodeAttributes();
-				id = currentNode.getIdentifier();
-			} else if (attState == ParseState.EDGEATT) {
-				attributes = Cytoscape.getEdgeAttributes();
-				id = currentEdge.getIdentifier();
-			} else if (attState == ParseState.NETATT) {
-				attributes = Cytoscape.getNetworkAttributes();
-				id = networkName;
-			}
-			Map mapAttribute = attributes.getMapAttribute(id, currentAttributeID);
+			Map mapAttribute = currentAttributes.getMapAttribute(objectTarget, currentAttributeID);
 			if (mapAttribute == null) mapAttribute = new HashMap();
 
 			switch (objType) {
@@ -1029,7 +1034,7 @@ class XGMMLParser extends DefaultHandler {
 			case STRING:
 				mapAttribute.put(name, obj);
 			}
-			attributes.setMapAttribute(id, currentAttributeID, mapAttribute);
+			currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttribute);
 			return current;
 		}
 	}
@@ -1074,21 +1079,56 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	class handleComplexAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// Are at the top?
-				// Yes, get the name of the attribute and the number of keys
-				// Define the complex attribute (multiHashMap)
-				// No, get our depth
-				// Are at the leaf?
-					// Yes, get the data
-					// No, get the next key
-					// Increment our depth
+			// We can't create the complex attribute until we know what the definition is, but
+			// since a complex attribute is really nothing more than a HashMap with a String
+			// key and Map values, we can create it on the fly.
+
+			// Get our attributes
+			ObjectType type = getType(atts.getValue("type"));
+			String value = atts.getValue("value");
+			// System.out.println("Complex attribute: "+currentAttributeID+" level "+level+" value="+atts.getValue("value"));
+
+			if (level == numKeys) {
+				complexMap[level-1].put(complexKey[level-1], getTypedValue(type, value));
+				valueType = getMultHashMapType(type);
+				// See if we've defined the attribute already
+				if (!multihashmapdefExists(currentAttributes, currentAttributeID)) {
+					defineComplexAttribute(currentAttributeID, currentAttributes, attributeDefinition);
+				}
+				// Now define set the attribute
+				mhm.setAttributeValue(objectTarget, currentAttributeID, 
+				                      getTypedValue(type, value), complexKey);
+			} else if (level == 0) {
+				if (complexMap[level] == null) {
+					complexMap[level] = new HashMap();
+				}
+				complexKey[level] = getTypedValue(type, atts.getValue("name"));
+				attributeDefinition[level] = getMultHashMapType(type);
+			} else {
+				if (complexMap[level] == null) {
+					complexMap[level] = new HashMap();
+				}
+				complexMap[level-1].put(complexKey[level-1], complexMap[level]);
+				complexKey[level] = getTypedValue(type, atts.getValue("name"));
+				attributeDefinition[level] = getMultHashMapType(type);
+			}
+			level++;
+
 			return current;
 		}
 	}
 
 	class handleComplexAttributeDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// Decrement our depth -- when we get to 0, we're done
+			if (level == 0) {
+				// We are done, and have read in all of our attributes
+				// System.out.println("Complex attribute "+currentAttributeID+" ComplexMap["+level+"] = "+complexMap[level]);
+			} else if (level < numKeys) {
+				complexMap[level] = null;
+				complexKey[level] = null;
+			}
+			// Decrement our depth
+			level--;
 			return current;
 		}
 	}
@@ -1200,10 +1240,88 @@ class XGMMLParser extends DefaultHandler {
 			currentAttributeID = name;
 			return ParseState.MAPATT;
 		case COMPLEX:
+			currentAttributeID = name;
+			// If this is a complex attribute, we know that the value attribute
+			// is an integer
+			numKeys = Integer.parseInt(atts.getValue("value"));
+			complexMap = new HashMap[numKeys];
+			complexKey = new Object[numKeys];
+			attributeDefinition = new byte[numKeys];
+			mhm = currentAttributes.getMultiHashMap();
+			level = 0;
 			return ParseState.COMPLEXATT;
 		}
 		return ParseState.NONE;
 	}
+
+	/**
+	 * Determines if attribute name already exists in multihashmap def.
+	 *
+	 * @param attributes -
+	 *            CyAttributes ref
+	 * @param attributeName -
+	 *            attribute name
+	 *
+	 * @return boolean
+	 */
+	private boolean multihashmapdefExists(CyAttributes attributes, String attributeName) {
+		MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
+
+		for (Iterator defIt = mhmd.getDefinedAttributes(); defIt.hasNext();) {
+			String thisDef = (String) defIt.next();
+
+			if ((thisDef != null) && thisDef.equals(attributeName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Defines a cyattribute for the complex attribute based on its keyspace.
+	 *
+	 * @param attributeName -
+	 *            attribute name
+	 * @param attributes -
+	 *            CyAttributes to load
+	 * @param attributeDefinition -
+	 *            byte[] which stores attribute key space definition
+	 * @param numKeys -
+	 *            the number of keys to discover
+	 */
+	private void defineComplexAttribute(final String attributeName, final CyAttributes attributes,
+	                                    byte[] attributeDefinition) {
+		// if necessary, init attribute definition
+		MultiHashMapDefinition mhmd = attributes.getMultiHashMapDefinition();
+
+		mhmd.defineAttribute(attributeName, valueType, attributeDefinition);
+	}
+
+	/**
+	 * Given an ObjectType, method returns a MultiHashMapDefinition byte
+	 * corresponding to its type.
+	 *
+	 * @param objectType - the type
+	 *            
+	 * @return - byte
+	 */
+	private byte getMultHashMapType(final ObjectType objectType) {
+		switch(objectType) {
+		case BOOLEAN:
+			return MultiHashMapDefinition.TYPE_BOOLEAN;
+		case STRING:
+ 			return MultiHashMapDefinition.TYPE_STRING;
+		case INTEGER:
+			return MultiHashMapDefinition.TYPE_INTEGER;
+		case REAL:
+			return MultiHashMapDefinition.TYPE_FLOATING_POINT;
+		}
+
+		// outta here
+		return -1;
+	}
+
+
 
 	private CyNode createUniqueNode (String label, String id) throws SAXException {
 		if (id != null) {

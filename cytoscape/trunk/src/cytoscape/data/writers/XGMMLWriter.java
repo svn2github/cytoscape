@@ -915,7 +915,9 @@ public class XGMMLWriter {
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
-			writeElement("<att name="+quote(name)+" type="+quote(type.toString()));
+			writeElement("<att type="+quote(type.toString()));
+			if (name != null)
+				writer.write(" name="+quote(name));
 			if (value != null)
 				writer.write(" value="+quote(value.toString()));
 			if (end)
