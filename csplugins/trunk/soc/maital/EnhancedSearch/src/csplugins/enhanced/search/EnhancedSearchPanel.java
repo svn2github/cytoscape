@@ -49,6 +49,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
@@ -154,18 +159,19 @@ public class EnhancedSearchPanel extends JPanel {
 	 * @return JTextField Object.
 	 */
 	private JTextField createSearchField() {
-
-		// Define search field
+		
 		searchField = new JTextField(30);
-		searchField.setEnabled(false);
-		searchField.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
 		Dimension size = new Dimension(1, 30);
 		searchField.setPreferredSize(size);
+//		searchField.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		searchField.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
+
+		searchField.setEnabled(false);
 		searchField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				String query = getQuery();
-				System.out.println(query);
-				if (!query.isEmpty()) {
+				System.out.println("query: " + query);
+				if (query.length() > 0) {
 					final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
 
 					IndexAndSearchTask task = new IndexAndSearchTask(
@@ -215,7 +221,8 @@ public class EnhancedSearchPanel extends JPanel {
 
 	public String getQuery() {
 		String query = searchField.getText();
-		query.trim();
+		query = query.trim();
+
 		return query;
 	}
 }
