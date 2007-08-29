@@ -477,6 +477,8 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	Color getBackgroundColor() {
+		if (backgroundColor == null) 
+			return null;
 		return new Color(Integer.parseInt(backgroundColor.substring(1), 16));
 	}
 
@@ -485,6 +487,8 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	Point2D getGraphViewCenter() {
+		if (graphCenterX == 0.0 && graphCenterY == 0.0) 
+			return null;
 		return new Point2D.Double(graphCenterX, graphCenterY);
 	}
 
