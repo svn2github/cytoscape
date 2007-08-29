@@ -30,25 +30,6 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.editor.CytoscapeEditor;
-import cytoscape.editor.CytoscapeEditorFactory;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.InvalidEditorException;
-
-import cytoscape.editor.actions.DeleteAction;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
 
@@ -58,6 +39,20 @@ import java.beans.PropertyChangeListener;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorFactory;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.editor.InvalidEditorException;
+import cytoscape.editor.actions.DeleteAction;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 
 /**
@@ -79,6 +74,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 	// MLC 12/27/06:
 	private DeleteAction _deleteAction;
+	
 
 	// MLC 12/27/06:
 	/**
@@ -152,11 +148,15 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 			updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
 
 			// If no networks exist, create an empty network.
+			CytoscapeEditorManager.log("Number networks = " + Cytoscape.getNetworkSet().size());
 			if ( Cytoscape.getNetworkSet().size() == 0 ) {
 				CyNetwork newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
 				CyNetworkView newView = Cytoscape.createNetworkView(newNet);
+				CytoscapeEditorManager.log("created a new network view: " + newView);
 				CytoscapeEditorManager.setEditorForView(newView, CytoscapeEditorManager.getCurrentEditor());
-			}
+				CytoscapeEditorManager.setupNewNetworkView(newView);
+				CytoscapeEditorManager.setEventHandlerForView(newView);			
+				}
 		}
 	}
 
@@ -283,7 +283,14 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		// AJK: 06/15/06: enable editing once Cytoscape has been initialized
 		else if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			CytoscapeEditorManager.setEditingEnabled(true);
-		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+			
+		} 
+		else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED))
+		{
+			CytoscapeEditorManager.setNetworkViewBeingCreated(true);
+		}
+		
+		else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
 			CytoscapeEditorManager.log("NETWORK_VIEW_FOCUSED: " + e.getNewValue());
 			CytoscapeEditorManager.log("From old network view: " + e.getOldValue());
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
@@ -323,8 +330,21 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 					CytoscapeEditorManager.log("Building network view for: " + view
 					                           + " using editor " + cyEditor);
 					CytoscapeEditorManager.setupNewNetworkView(view);
+					// AJK: 08/28/07 
+					CytoscapeEditorManager.setNetworkViewBeingCreated(false);
 				}
 			}
+			// AJK: 08/28/07 BEGIN
+			//    check for case where we have a network view being created and there already
+			//    is a network
+			else if (CytoscapeEditorManager.isNetworkViewBeingCreated())
+			{
+				CytoscapeEditorManager.setupNewNetworkView(view);
+				// AJK: 08/28/07 
+				CytoscapeEditorManager.setNetworkViewBeingCreated(false);			
+			}
+			// AJK: 08/28/07 END
+			
 		}
 	}
 

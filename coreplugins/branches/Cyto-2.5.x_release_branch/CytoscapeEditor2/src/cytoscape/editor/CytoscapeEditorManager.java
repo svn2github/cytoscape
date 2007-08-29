@@ -255,6 +255,12 @@ public abstract class CytoscapeEditorManager {
 	// AJK: 12/06/06: flag for "logging" diagnostic output
 	private static boolean loggingEnabled = false;
 
+	// AJK: 08/07/07 need to distinguish when we are creating a new network view 
+	//   so that an editor can be set up for the new view
+    private static boolean networkViewBeingCreated = false;	
+	
+
+	
 	/**
 	 * initial setup of controls, menu items, undo/redo actions, and keyboard
 	 * accelerators
@@ -1066,6 +1072,16 @@ public abstract class CytoscapeEditorManager {
 		if (isLoggingEnabled()) {
 			System.out.println(msg);
 		}
+	}
+
+
+	public static boolean isNetworkViewBeingCreated() {
+		return networkViewBeingCreated;
+	}
+
+
+	public static void setNetworkViewBeingCreated(boolean networkViewBeingCreated) {
+		CytoscapeEditorManager.networkViewBeingCreated = networkViewBeingCreated;
 	}
 
 	// AJK: 12/06/06
