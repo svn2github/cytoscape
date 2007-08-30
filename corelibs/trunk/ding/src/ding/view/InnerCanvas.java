@@ -312,8 +312,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param g DOCUMENT ME!
 	 */
 	public void print(Graphics g) {
-		final Image img = new BufferedImage(getWidth(), getHeight(),
-											BufferedImage.TYPE_INT_ARGB);
+		final Image img = new ImageImposter(g, getWidth(), getHeight());
 
 		// set color alpha based on opacity setting
 		int alpha = (m_isOpaque) ? 255 : 0;
@@ -326,8 +325,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
 		}
-
-		g.drawImage(img, 0, 0, null);
 	}
 
 	private int m_currMouseButton = 0;
