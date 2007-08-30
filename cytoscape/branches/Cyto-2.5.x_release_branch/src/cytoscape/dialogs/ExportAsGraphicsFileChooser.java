@@ -121,6 +121,26 @@ public class ExportAsGraphicsFileChooser extends JDialog
 		okButton.setEnabled(false);
 	}
 
+	protected void updateExtension()
+	{
+		if (selectedFile == null)
+			return;
+
+		// Strip away the extension
+		String name = selectedFile.getName();
+		int extensionIndex = name.lastIndexOf('.');
+		if (extensionIndex != -1)
+			name = name.substring(0, extensionIndex);
+		
+		// Figure out what extension to append
+		CyFileFilter filter = (CyFileFilter) formatComboBox.getSelectedItem();
+		String newExtension = (String) filter.getExtensionSet().iterator().next();
+		
+		selectedFile = new File(selectedFile.getParent(), name + "." + newExtension);
+		filePathField.setText(selectedFile.getPath());
+		okButton.setEnabled(true);
+	}
+
 	private class ChooseFileAction implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -152,7 +172,7 @@ public class ExportAsGraphicsFileChooser extends JDialog
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			removeFile();
+			updateExtension();
 		}
 	}
 }
