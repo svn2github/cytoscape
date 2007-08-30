@@ -16,7 +16,6 @@ function getUniqueID($connection) {
 	return $retValue;
 }
 
-
 // mode = 'new', Data is submited by user
 // mode = 'edit', Cytostaff edit the data in CyPluginDB
 $mode = 'new'; // by default it is 'new'
@@ -55,7 +54,6 @@ if ($mode == 'new') {
 	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 	<style type="text/css">
 <!--
-.style3 {color: #FF0066}
 .style4 {color: #FF0000}
 -->
     </style>
@@ -212,7 +210,7 @@ if ($tried != NULL && $tried == 'yes') {
 		$pluginProps = $db_pluginProps;
 	} else {
 		// get plugin properties from the jar/zip file uploaded
-		include "pluginPropsUtil.inc";
+		include "./pluginPropsUtil.inc";
 		$pluginProps = getPluginProps($fileUpload['tmp_name']);
 
 		$validated = validatePluginProps($pluginProps);
@@ -222,6 +220,11 @@ if ($tried != NULL && $tried == 'yes') {
 
 // if the mode is 'new' (i.e. submit from user), check if the plugin already existed
 if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
+
+	if (isPluginVersionExists($connection, $pluginProps)) {
+		$validated = false;
+	}
+	/*	
 	$query = 'SELECT version_auto_id FROM categories, plugin_list, plugin_version' .
 	' WHERE categories.category_id = plugin_list.category_id ' .
 	'       and plugin_list.plugin_auto_id = plugin_version.plugin_id ' .
@@ -236,11 +239,12 @@ if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 	if (@ mysql_num_rows($result) != 0) {
 		$validated = false;
 ?>
-			Error: The version of this plugin already existed.<br>
+			<strong>Error:</strong> <span class="style4">This version of this plugin already exists.</span><br>
 			<?php
 
 
 	}
+	*/
 }
 /////////////////////////////////  Form definition //////////////////////////
 
@@ -563,7 +567,7 @@ else
 
 
 		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
-		//system("./run_generate_plugin_xml.csh");
+		system("./run_generate_plugin_xml.csh");
 	}
 	// End of case for 'edit' mode
 
