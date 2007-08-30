@@ -58,8 +58,8 @@
 	$db_pluginProps['pluginCategoryID'] = $first_row['catID'];
 	$db_pluginProps['pluginName'] = $first_row['pluginName'];
 	$db_pluginProps['pluginDescription'] = stripslashes($first_row['pluginDescription']);
-	$db_pluginProps['pluginVersion'] = $db_version = $first_row['pluginVersion'];
-	$db_pluginProps['releaseDate'] = $db_releaseDate = $first_row['releaseDate'];
+	$db_pluginProps['pluginVersion'] = $first_row['pluginVersion'];
+	$db_pluginProps['releaseDate'] = $first_row['releaseDate'];
 	$db_pluginProps['projectURL'] = $first_row['projectURL'];
 	$db_pluginProps['cytoscapeVersion'] = $first_row['cyVersion'];
 	
@@ -100,6 +100,19 @@
 	$db_authInst['insts'] = $db_affiliations;
 
 	$db_pluginProps['pluginAuthorsInstitutions'] = $db_authInst;
+	
+	// Get contact from DB
+	$query = 'select * from contacts where plugin_version_id =' . $versionID;
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+		
+	$contact_row = @ mysql_fetch_array($result);
+	$db_contactName = $contact_row['name'];
+	$db_contactEmail = $contact_row['email'];
+	
+	$db_pluginProps2['contactName'] = $contact_row['name'];
+	$db_pluginProps2['contactEmail'] = $contact_row['email'];
 	
 	//StripSlashes for the names and affiliations, names may contain "" or ''	
 	// they should be striped somewhere, not here
