@@ -1,0 +1,296 @@
+ADJACENT EDGES TEST:
+
+  Testing:
+    RootGraph.getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+
+  Importance:
+    Getting touching edges lists for a node is very similar to getting
+    node neighbors.  Both operations are the foundation of depth first
+    and breadth first graph searching.  Therefore, good performance
+    of this method is extremely important.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  For every node
+    in the RootGraph, getAdjacentEdgeIndicesArray() is called on that
+    node.  Because getAdjacentEdgeIndicesArray() takes three boolean
+    input parameters defining which adjacent edges we're looking for,
+    this test over all nodes should be repeated eight times, each time
+    with a different set of boolean input parameters.  However, four of
+    these boolean combinations cause the Luna implementation of
+    RootGraph to throw NullPointerException in getAdjacentEdges().
+    Therefore, this test is only repeated 4 times, each with a different
+    set of boolean inputs:
+      iteration 1: getAdjacentEdgeIndicesArray(int, true, true, true)
+      iteration 2: getAdjacentEdgeIndicesArray(int, true, false, true)
+      iteration 3: getAdjacentEdgeIndicesArray(int, false, false, false)
+      iteration 4: getAdjacentEdgeIndicesArray(int, false, false, false)
+    This test measures the total time taken in
+    getAdjacentEdgeIndicesArray().  The time measure does not include
+    time to instantiate the RootGraph and populate it with nodes and
+    edges.
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    and 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+       7 nodes,      20 edges           |      2 |      4 |
+     100 nodes,     500 edges           |      7 |     54 |
+     100 nodes,   10000 edges           |     12 |    106 |
+    1000 nodes,   20000 edges           |     35 |   1518 |
+    1000 nodes,   39998 edges           |     55 |   2134 |
+    2000 nodes,   20000 edges           |     39 |   5072 |
+    4000 nodes,   20000 edges           |     40 |  21382 |
+    8000 nodes,   20000 edges           |     54 |  84766 |
+   16000 nodes,   20000 edges           |    115 | 337343 |
+   39999 nodes,   39999 edges           |    128 |2107868 |
+   16000 nodes,  100000 edges           |    165 |   FAIL |
+   50000 nodes,  400000 edges           |    615 |   FAIL |
+  100000 nodes, 1000000 edges           |   1443 |   FAIL |
+  --------------------------------------+--------+--------+
+
+  Afterthoughts:
+    The implementation could be really sped up if the interface
+    changes: instead of returning an array of integers, return
+    an iteration over integers.  This would prevent a lot of
+    unnecessary array allocation.
+
+
+=======================================================================
+CONNECTING EDGES TEST:
+
+  Testing: A deprecated method:
+    RootGraph.getEdgeIndicesArray(int, int, boolean, boolean)
+
+  Importance:
+    This method has been deprecated -- it is suggested to use
+    getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
+    I can't think of an important algorithm that requires the operation
+    of getting all edges connecting two nodes.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  For every pair
+    of nodes whose order of creation was i, i+1, in the RootGraph,
+    getEdgeIndicesArray() is called on that pair.  Because
+    getEdgeIndicesArray() takes two boolean input parameters, this test
+    is be repeated four times, each time with a different set of
+    boolean input parameters.  This test measures the total time taken
+    in getEdgeIndicesArray().  The time measure does not include
+    time to instantiate the RootGraph and populate it with nodes and
+    edges.
+
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    and 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+       7 nodes,      20 edges           |      4 |      3 |
+     100 nodes,     500 edges           |     16 |     16 |
+     100 nodes,   10000 edges           |     25 |      6 |
+    1000 nodes,   20000 edges           |     65 |     68 |
+    1000 nodes,   39998 edges           |     99 |     13 |
+    2000 nodes,   20000 edges           |     64 |     79 |
+    4000 nodes,   20000 edges           |     76 |     20 |
+    8000 nodes,   20000 edges           |    103 |     26 |
+   16000 nodes,   20000 edges           |    115 |     37 |
+   39999 nodes,   39999 edges           |    235 |    218 |
+   16000 nodes,  100000 edges           |    295 |   FAIL |
+   50000 nodes,  400000 edges           |   1091 |   FAIL |
+  100000 nodes, 1000000 edges           |   2625 |   FAIL |
+  --------------------------------------+--------+--------+
+
+  Afterthoughts:
+    This method was deprecated for a good reason -- it's not used
+    by algorithms and it's not worth optimizing.  In the Fing
+    implementation, this method iterates over all edges touching one
+    of the nodes, choosing those edges which also touch the other node.
+    Therefore, the time complexity of this method is linear with respect
+    to the number of edges touching one of the input nodes.  It's
+    possible to arrange the adjacent edge lists into tree-like
+    structures in order to optimize this operation; this idea was
+    discussed, and then it was decided to use plain old linked lists
+    of adjacent edges in favor of trees, for the sake of simplicity of
+    implementation.
+
+
+=======================================================================
+NODE NEIGHBORS TEST:
+
+  Testing: A deprecated method:
+    RootGraph.neighborsList(Node)
+
+  Importance:
+    This method has been deprecated -- it is suggested to use
+    getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
+    This method (or the one that returns adjacent edges) is typically
+    used in graph depth-first and breadth-first search algorithms; a
+    complete search of a graph would essentially call neighborsList()
+    on every node exactly once by the time the search algorithm
+    finished.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  For every node
+    in the RootGraph, neighborsList() is called on that node.
+    This test measures the total time taken in neighborsList().  The
+    time measure does not include time to instantiate the RootGraph and
+    populate it with nodes and edges.
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    and 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+       7 nodes,      20 edges           |      3 |      2 |
+     100 nodes,     500 edges           |     16 |     24 |
+     100 nodes,   10000 edges           |     33 |     17 |
+    1000 nodes,   20000 edges           |     69 |    370 |
+    1000 nodes,   39998 edges           |    108 |    388 |
+    2000 nodes,   20000 edges           |     76 |   1397 |
+    4000 nodes,   20000 edges           |     78 |   6514 |
+    8000 nodes,   20000 edges           |     90 |  27266 |
+   16000 nodes,   20000 edges           |    150 | 111672 |
+   39999 nodes,   39999 edges           |    178 | 693433 |
+   16000 nodes,  100000 edges           |    302 |   FAIL |
+   50000 nodes,  400000 edges           |   1198 |   FAIL |
+  100000 nodes, 1000000 edges           |   3024 |   FAIL |
+  --------------------------------------+--------+--------+
+
+
+=======================================================================
+CONNECTING WEB TEST:
+
+  Testing:
+    RootGraph.getConnectingEdgeIndicesArray(int[])
+
+  Importance:
+    This method is related to creating GraphPerspective objects (sub-
+    graphs).  Given a set of nodes in an original graph, find all
+    edges whose source and target are in this set (the subgraph
+    "induced" by this set of nodes).
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  Select half of
+    the nodes in this RootGraph, and call
+    getConnectingEdgeIndicesArray() on this set.  Repeat 100 times,
+    each time choosing a different set containing exactly half of all
+    nodes.  This test measures the total time taken in
+    getConnectingEdgeIndicesArray().  The time measure does not include
+    time to instantiate the RootGraph and populate it with nodes and
+    edges.
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    where 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+     200 nodes,    1000 edges           |     67 |    210 |
+     200 nodes,    5000 edges           |    200 |    295 |
+     200 nodes,   10000 edges           |    380 |    420 |
+     200 nodes,   39999 edges           |   1800 |   1130 |
+    1000 nodes,   10000 edges           |    480 |   5000 |
+    1000 nodes,   20000 edges           |    950 |   5000 |
+    1000 nodes,   39998 edges           |   2100 |   5500 |
+    2000 nodes,   20000 edges           |   1000 |  17600 |
+    4000 nodes,   20000 edges           |   1150 |  68611 |
+    8000 nodes,   20000 edges           |   1250 | 304403 |
+   16000 nodes,   20000 edges           |   1700 |1419768 |
+   16000 nodes,  100000 edges           |   7012 |   FAIL |
+   50000 nodes,  400000 edges           |  29665 |   FAIL |
+  100000 nodes, 1000000 edges           |  80313 |   FAIL |
+  --------------------------------------+--------+--------+
+
+  Afterthoughts:
+    The getConnectingEdgeIndicesArray() method returns a newly-
+    allocated array of integers containing edge indices.  Therefore,
+    with each call to this method a rather large array must be
+    allocated.  Performance could be improved if an iterator were
+    returned instead of an int array in the API definition.
+
+
+=======================================================================
+ADD REMOVE TEST:
+
+  Testing:
+    RootGraph.createNode()
+    RootGraph.createEdge(int, int, boolean)
+    RootGraph.removeNode(int)
+    RootGraph.getNodeCount()
+    RootGraph.getEdgeCount()
+
+  Importance:
+    In Cytoscape, RootGraph nodes are only created, never removed.  I
+    know this because in the Luna implementation, removal of nodes is
+    broken -- it doesn't do anything.  Edges may or may not be removed
+    from a RootGraph in Cytoscape (I'm not sure).  The speed at which
+    graphs are created is important because a user will have to wait
+    at least that long for a network to load in Cytoscape.  However,
+    because I'm unable to delete nodes from Luna's implementation of
+    RootGraph, a head-to-head performance test comparison between
+    Fing and Luna is impossible.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  The timer
+    starts here - after the RootGraph is created.  The timed test
+    consists of removing all nodes from the RootGraph (which, as a
+    documented and expected side-effect, removes all edges from the
+    RootGraph).  A quick test is performed to ensure that no nodes or
+    edges remain in the RootGraph.  The test then reconstructs the
+    RootGraph as it originally was when the timed test began.  A quick
+    test is performed to ensure that the correct number of nodes and
+    edges exists in the RootGraph at this point.  This
+    deconstruction/reconstruction is repeated 10 times.  The timer stops
+    after the 10th reconstruction.
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    where 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+     200 nodes,    1000 edges           |     83 |   FAIL |
+    1000 nodes,   10000 edges           |    236 |   FAIL |
+    2000 nodes,   20000 edges           |    513 |   FAIL |
+   16000 nodes,  100000 edges           |   3650 |   FAIL |
+   50000 nodes,  400000 edges           |  15343 |   FAIL |
+  100000 nodes, 1000000 edges           |  42494 |   FAIL |
+  --------------------------------------+--------+--------+
