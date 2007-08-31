@@ -4,14 +4,15 @@
 	$valid_user = "cytostaff";
 	$valid_pass = "N0desEdges";
 
-	$user = $_SERVER['PHP_AUTH_USER'];
-	$pass = $_SERVER['PHP_AUTH_PW'];
+	$user = "";
+	$pass = "";
+	if (isset ($_SERVER['PHP_AUTH_USER'])) {
+		$user = $_SERVER['PHP_AUTH_USER'];
+		$pass = $_SERVER['PHP_AUTH_PW'];
+	}
 
-	if (isset($user) && isset($pass)) {
-		
-		if (($user == $valid_user) && ($pass == $valid_pass)) {
-			$auth_ok = 1;
-		}
+	if (($user == $valid_user) && ($pass == $valid_pass)) {
+		$auth_ok = 1;
 	}
 
 	if (!$auth_ok) {
