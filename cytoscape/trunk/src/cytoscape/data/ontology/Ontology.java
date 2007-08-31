@@ -42,10 +42,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.data.ontology.readers.OBOTags;
-import static cytoscape.data.readers.MetadataEntries.DESCRIPTION;
-import static cytoscape.data.readers.MetadataEntries.FORMAT;
-import static cytoscape.data.readers.MetadataEntries.TITLE;
-import static cytoscape.data.readers.MetadataEntries.TYPE;
+import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
 
 import giny.model.Node;
@@ -173,16 +170,16 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 		 * Setup metadata & graph (network) attributes
 		 */
 		metaParser = new MetadataParser(ontologyGraph);
-		metaParser.setMetadata(TITLE, name);
-		metaParser.setMetadata(FORMAT, OBO_FORMAT);
-		metaParser.setMetadata(TYPE, DATA_TYPE);
+		metaParser.setMetadata(MetadataEntries.TITLE, name);
+		metaParser.setMetadata(MetadataEntries.FORMAT, OBO_FORMAT);
+		metaParser.setMetadata(MetadataEntries.TYPE, DATA_TYPE);
 
 		if (curator != null) {
 			ontologyAttr.setAttribute(ontologyGraph.getIdentifier(), CURATOR, curator);
 		}
 
 		if (description != null) {
-			metaParser.setMetadata(DESCRIPTION, description);
+			metaParser.setMetadata(MetadataEntries.DESCRIPTION, description);
 		}
 	}
 
@@ -314,7 +311,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	    throws AlreadyExistsException, ChangeVetoException, IllegalArgumentException {
 		Node newNode = Cytoscape.getCyNode(name, true);
 		ontologyGraph.addNode(newNode);
-		termAttr.setAttribute(name, DESCRIPTION.toString(), description);
+		termAttr.setAttribute(name, MetadataEntries.DESCRIPTION.toString(), description);
 
 		Term newTerm = new OntologyTerm(name, this.name, description);
 
@@ -396,7 +393,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 * @return  DOCUMENT ME!
 	 */
 	public String getDescription() {
-		return metaParser.getMetadataMap().get(DESCRIPTION.toString()).toString();
+		return metaParser.getMetadataMap().get(MetadataEntries.DESCRIPTION.toString()).toString();
 	}
 
 	/**
