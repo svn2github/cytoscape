@@ -2,7 +2,7 @@
 // Send a confirmation e-mail to user
 // Also send e-mails to notify cytostaff that new plugin is uploaded
 	
-function sendConfirmartionEmail($pluginName, $email) {
+function sendConfirmartionEmail($yourName, $email, $pluginName) {
 		
 	include 'cytostaff_emails.inc';
 
@@ -13,9 +13,9 @@ function sendConfirmartionEmail($pluginName, $email) {
         	$bcc = $bcc . $cytostaff_emails[$i] . " ";
 	}
 	$subject = "Your plugin -- " . $pluginName;
-	$body = "Thank you for submitting " . $pluginName . " to Cytoscape. " .
+	$body = $yourName.",\n\nThank you for submitting " . $pluginName . " to Cytoscape. " .
         	"Cytoscape staff will review your plugin and publish it on the Cytoscape website." .
-        	"\nCytoscape team";
+        	"\n\nCytoscape team";
 
 	$headers = "From: " . $from . "\r\n"; 
 	if ($bcc != "") {
@@ -28,9 +28,8 @@ function sendConfirmartionEmail($pluginName, $email) {
         	$body = $body . "\n\nNote: User did not provide an e-mail address!";
 	}
 
-
 	if (mail($to, $subject, $body, $headers)) {
-  		echo("<p>Confirmation e-mail was sent!</p>");
+  		//echo("<p>Confirmation e-mail was sent!</p>");
  	} else {
   		echo("<p>Failed to send a confirmation e-mail...</p>");
  	}
