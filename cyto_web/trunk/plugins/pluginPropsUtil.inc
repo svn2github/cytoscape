@@ -1,4 +1,32 @@
 <?php
+
+function isPluginVersionExists($connection, $pluginProps) {
+
+	$query = 'SELECT version_auto_id FROM categories, plugin_list, plugin_version' .
+	' WHERE categories.category_id = plugin_list.category_id ' .
+	'       and plugin_list.plugin_auto_id = plugin_version.plugin_id ' .
+	'       and categories.name ="' . $pluginProps['pluginCategory'] . "\" " .
+	'		and plugin_list.name = "' . $pluginProps['pluginName'] . "\" " .
+	'		and plugin_version.version = "' . $pluginProps['pluginVersion'] . "\"";
+
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+
+	if (@ mysql_num_rows($result) != 0) {
+		$retValue = true;
+?>
+			<strong>Error:</strong> <span class="style4">This version of this plugin already exists.</span><br>
+			<?php
+	}
+	else {
+		$retValue = false;
+	}
+
+	return $retValue;
+}
+
+
 function validatePluginProps($pluginProps) {
 	$retVal = true;
 	if ($pluginProps == NULL || count($pluginProps) == 0) {
