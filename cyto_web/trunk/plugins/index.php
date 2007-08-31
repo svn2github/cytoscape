@@ -135,9 +135,9 @@
 
 	echo 
 	"<p>" .
-	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://cytoscape.org/pluginTutorial.php\">" .
-	"\nCytoscape Plugin Tutorial</a>, and the <a href=\"http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html\">" .
-	"\nCytoscape Plugin Writer Documentation</a>.  We also maintain a list of <a href=\"http://cytoscape.org/plugins1.php\">" .
+	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial\">" .
+	"\nCytoscape Plugin Tutorial</a>" .
+	"\n.  We also maintain a list of <a href=\"http://cytoscape.org/plugins1.php\">" .
 	"\nCytoscape 1.1 Plugins</a>. " .
 	"\n</p>" .
 	"\n<p><big><b>PlugIn License Policy:</b></big>" .
