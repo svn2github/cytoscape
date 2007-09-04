@@ -57,10 +57,10 @@ public class ActivePathFinderParameters {
 	
 	// ---------------------------------------------------------------------------------------
 	public ActivePathFinderParameters() {
-	    expressionAttrs.add("gal1RGsig");
-	    run = true;
-	    exit = true;
-	    save = true;
+	    //    expressionAttrs.add("gal1RGsig");
+	    //run = true;
+	    //exit = true;
+	    //save = true;
 	} // default ctor
 
 	// ---------------------------------------------------------------------------------------
