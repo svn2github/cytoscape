@@ -9,6 +9,8 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,7 +49,8 @@ import cytoscape.util.FileUtil;
  *
  * @author kono
  */
-public class ImportNetworkDialog extends JDialog implements java.awt.event.ActionListener {
+public class ImportNetworkDialog extends JDialog 
+	                               implements ActionListener,FocusListener {
 	private boolean status;
 	private File[] networkFiles;
 	private Bookmarks theBookmarks = null; // get it from session
@@ -192,6 +195,7 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 		
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
+		networkFileTextField.addFocusListener(this);
 
 		selectButton.setText("Select");
 
@@ -346,6 +350,11 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 	}
 
 	private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// See if the user just typed in the desired file
+		if (networkFiles == null && networkFileTextField.getText() != null) {
+			networkFiles = new File[1];
+			networkFiles[0] = new File(networkFileTextField.getText());
+		}
 		status = true;
 		this.dispose();
 	}
@@ -411,6 +420,32 @@ public class ImportNetworkDialog extends JDialog implements java.awt.event.Actio
 			createURLimportTask(e);
 		}
 	}
+
+	/**
+	 * Listen for focus events in the text field.  Mostly, this is used to
+	 * clear the text field for alternative input, but we only want to do
+	 * this when the content of the text field is our instruction text
+	 *
+	 * @param e the FocusEvent
+	 */
+	public void focusGained(FocusEvent e) { 
+		// Get get the text from the text field
+		String text = networkFileTextField.getText();
+		// If it's our initial text, erase it.
+		if (text.equals("Please select a network file...")) {
+			networkFileTextField.setText("");
+			// We assume that the user is going to type in a filename.  If so,
+			// we want to set the import button to be the default
+			getRootPane().setDefaultButton(importButton);
+		}
+	}
+
+	/**
+	 * Listen for focus lost events in the text field.  These are ignored.
+	 *
+	 * @param e the FocusEvent
+	 */
+	public void focusLost(FocusEvent e) { };
 
 	private void createURLimportTask(java.awt.event.ActionEvent e) {
 		String theURLstr = bookmarkEditor.getURLstr().trim();
