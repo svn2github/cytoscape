@@ -100,24 +100,28 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		HashMap expressionMap = generateExpressionMap();
 		// run the path finding algorithm
 	 ActivePathsFinder apf = null;
-  if(randomize){
-    apf = new ActivePathsFinder(expressionMap, attrNames,
-				  cyNetwork, apfParams, null, parentUI);
-  }else{
-    apf = new ActivePathsFinder(expressionMap, attrNames,
-				  cyNetwork, apfParams, mainFrame, parentUI);
-		}
-  activePaths = apf.findActivePaths();
-
-		tableDialog = null;
-		if (apfParams.getExit()) {
-			System.exit(0);
-		}
-		if (showTable) {
-			showConditionsVsPathwaysTable();
-		}
+	 if(randomize){
+	     apf = new ActivePathsFinder(expressionMap, attrNames,
+					 cyNetwork, apfParams, null, parentUI);
+	 }else{
+	     apf = new ActivePathsFinder(expressionMap, attrNames,
+					 cyNetwork, apfParams, mainFrame, parentUI);
+	 }
+	 activePaths = apf.findActivePaths();
+	 
+	 tableDialog = null;
+	 if (showTable) {
+	     showConditionsVsPathwaysTable();
+	 }
+	 if(apfParams.getSave()){
+		    tableDialog.saveState(apfParams.getOutputFile());
+	 }
+	 if(apfParams.getExit()){
+	     System.exit(0);
+	 }
+	 
 	}
-
+    
 	/**
 	 * Returns the best scoring path from the last run. This is mostly used by
 	 * the score distribution when calculating the distribution

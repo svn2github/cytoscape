@@ -47,14 +47,20 @@ public class ActivePathFinderParameters {
 	int maxThreads = 1;
 	boolean greedySearch = true;
 	boolean enableFiltering = true;
-	boolean run = false;
-	List<String> expressionAttrs = new ArrayList<String>();
-	List<String> possibleExpressionAttrs = new ArrayList<String>();
+        boolean run = false;
+        boolean save = false;
+    String outputFile = "output.txt";
+   	List<String> expressionAttrs = new ArrayList<String>();
+    	List<String> possibleExpressionAttrs = new ArrayList<String>();
 
 	//boolean enableSpokePenalty = false;
 	
 	// ---------------------------------------------------------------------------------------
 	public ActivePathFinderParameters() {
+	    expressionAttrs.add("gal1RGsig");
+	    run = true;
+	    exit = true;
+	    save = true;
 	} // default ctor
 
 	// ---------------------------------------------------------------------------------------
@@ -103,6 +109,8 @@ public class ActivePathFinderParameters {
 		this.isDefault = false;
 		this.maxThreads = oldAPFP.getMaxThreads();
 		this.exit = oldAPFP.getExit();
+		this.save = oldAPFP.getSave();
+		this.outputFile = oldAPFP.getOutputFile();
 		this.greedySearch = oldAPFP.getGreedySearch();
 		this.overlapThreshold = oldAPFP.getOverlapThreshold();
 		this.enableFiltering = oldAPFP.getEnableFiltering();
@@ -142,9 +150,27 @@ public class ActivePathFinderParameters {
 	public boolean getExit() {
 		return exit;
 	}
+
+        public boolean getSave(){
+	    return save;
+	}
+
+        public void setSave(boolean flag){
+	    this.save = flag;
+        }
+
+        public String getOutputFile(){
+	    return outputFile;
+        }
+    
+        public void setOutputFile(String file){
+	    this.outputFile = file;
+        }
+    
 	public boolean getSearchFromNodes() {
 		return searchFromNodes;
 	}
+
 	public void setSearchFromNodes(boolean newValue) {
 		searchFromNodes = newValue;
 		this.isDefault = false;

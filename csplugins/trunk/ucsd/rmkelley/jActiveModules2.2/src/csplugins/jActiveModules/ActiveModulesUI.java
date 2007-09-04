@@ -62,14 +62,17 @@ public class ActiveModulesUI extends CytoscapePlugin {
     Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( Cytoscape.ATTRIBUTES_CHANGED, acl );
     Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( acl );
     xHandler = new ThreadExceptionHandler();
-    if (apfParams.getRun()) {
-      activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams, this);
-      Thread t = new Thread(activePaths);
-      // Since this is cmdline, there is no sense in using the ThreadExceptionHandler.
-      t.start();
-    }
+    Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
   }
 
+    public void propertyChange(PropertyChangeEvent evt){
+	if(evt.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED && apfParams.getRun()){
+	    System.err.println("Cytoscape is now initialized, suck on it bitches.");
+	     activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams, this);
+	     Thread t = new Thread(activePaths);
+	     t.start();
+	}
+    }
   /**
    * Action to allow the user to change the current options
    * for running jActiveModules, wiht a gui interface

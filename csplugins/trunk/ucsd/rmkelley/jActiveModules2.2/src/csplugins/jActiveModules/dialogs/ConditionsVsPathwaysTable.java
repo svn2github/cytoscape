@@ -99,15 +99,15 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		add(scrollpane, c);
 
 		JPanel buttonPanel = new JPanel();
-		/*
+		
 		final JButton saveButton = new JButton("Save");
-		saveButton.setEnabled(false);
+		saveButton.setEnabled(true);
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				ConditionsVsPathwaysTable.this.saveState();
 			}
 		});
-		*/
+		
 
 		final CyNetwork parentNetwork = Cytoscape.getCurrentNetwork();
 
@@ -157,6 +157,7 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		});
 		buttonPanel.add(dismissButton, BorderLayout.CENTER);
 		buttonPanel.add(createNetworkButton, BorderLayout.CENTER);
+		//buttonPanel.add(saveButton, BorderLayout.CENTER);
 		buttonPanel.add(saveScoreDistributions, BorderLayout.CENTER);
 
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -172,7 +173,7 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		return activePaths;
 	}
 
-	/*
+	
 	public void saveState(String filename) {
 		try {
 			FileWriter fileWriter = new FileWriter(filename);
@@ -210,7 +211,7 @@ public class ConditionsVsPathwaysTable extends JPanel {
 			saveState(name);
 		}
 	}
-	*/
+	
 
 } // class ConditionsVsPathwaysTable
 
