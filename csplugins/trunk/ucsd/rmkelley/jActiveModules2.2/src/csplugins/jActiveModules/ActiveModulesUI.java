@@ -67,8 +67,8 @@ public class ActiveModulesUI extends CytoscapePlugin {
 
     public void propertyChange(PropertyChangeEvent evt){
 	if(evt.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED && apfParams.getRun()){
-	    System.err.println("Cytoscape is now initialized, suck on it bitches.");
 	     activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams, this);
+	     activePaths.randomize = apfParams.getRandomizeExpression();
 	     Thread t = new Thread(activePaths);
 	     t.start();
 	}

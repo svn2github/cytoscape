@@ -49,7 +49,8 @@ public class ActivePathFinderParameters {
 	boolean enableFiltering = true;
         boolean run = false;
         boolean save = false;
-    String outputFile = "output.txt";
+        boolean randomizeExpression = false;
+        String outputFile = "output.txt";
    	List<String> expressionAttrs = new ArrayList<String>();
     	List<String> possibleExpressionAttrs = new ArrayList<String>();
 
@@ -61,6 +62,7 @@ public class ActivePathFinderParameters {
 	    //run = true;
 	    //exit = true;
 	    //save = true;
+	    //randomizeExpression = true;
 	} // default ctor
 
 	// ---------------------------------------------------------------------------------------
@@ -116,6 +118,7 @@ public class ActivePathFinderParameters {
 		this.enableFiltering = oldAPFP.getEnableFiltering();
 		this.enableMaxDepth = oldAPFP.getEnableMaxDepth();
 		this.run = oldAPFP.getRun();
+		this.randomizeExpression = oldAPFP.getRandomizeExpression();
 		setExpressionAttributes(oldAPFP.getExpressionAttributes());
 		
 	} // copy ctor
@@ -151,6 +154,13 @@ public class ActivePathFinderParameters {
 		return exit;
 	}
 
+    public boolean getRandomizeExpression(){
+	return randomizeExpression;
+    }
+
+    public void setRandomizeExpression(boolean flag){
+	this.randomizeExpression = flag;
+    }
         public boolean getSave(){
 	    return save;
 	}
