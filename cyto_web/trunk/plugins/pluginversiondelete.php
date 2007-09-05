@@ -161,6 +161,8 @@ if (!($tried)) {
 	?>
 	The plugin is deleted. <a href="pluginadmin.php">Back to plugin administration page</a>
 	<?php 	  	
+		// re-run the script "generate_plugin_xml.pl" to update plugins.xml file
+		system("./run_generate_plugin_xml.csh");
 }
 ?>
 <p>
