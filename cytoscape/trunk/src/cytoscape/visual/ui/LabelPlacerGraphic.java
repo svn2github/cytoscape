@@ -119,6 +119,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	// used to label box and node
 	private Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.1f);
 	private Color transparentBlue = new Color(0.0f, 0.0f, 1.0f, 0.1f);
+	private Color transparentMagenta = new Color(0.0f, 0.0f, 1.0f, 0.05f);
 
 	// used to determine the render level of detail
 	private boolean renderDetail;
@@ -137,6 +138,8 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	private int lowStrokeWidth = 1;
 	private Stroke detailStroke = new BasicStroke(detailStrokeWidth);
 	private Stroke lowStroke = new BasicStroke(lowStrokeWidth);
+
+	private double gravityDistance = 20;
 
 	/**
 	 * A gui for placing a label relative to a node. Draws the graphic
@@ -167,6 +170,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 		setPreferredSize(new Dimension(xy, xy));
 		setBackground(Color.white);
+
 
 		addMouseListener(new MouseClickHandler());
 		addMouseMotionListener(new MouseDragHandler());
@@ -252,10 +256,15 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 			// draw the node box points
 			g.setColor(Color.black);
+			int gd = (int)((gravityDistance * 2)+(dot/2));
 
 			for (int i = 0; i < npoints.length; i++)
-				for (int j = 0; j < npoints.length; j++)
+				for (int j = 0; j < npoints.length; j++) {
+					g.setColor(transparentMagenta);
+					g.fillOval(npoints[i] - (gd / 2), npoints[j] - (gd / 2), gd, gd);
+					g.setColor(Color.black);
 					g.fillOval(npoints[i] - (dot / 2), npoints[j] - (dot / 2), dot, dot);
+				}
 		}
 
 		// draw the base box if any offsets are used
@@ -413,6 +422,8 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		yPos -= yClickOffset;
 
 		double best = Double.POSITIVE_INFINITY;
+		double offX = 0.0;
+		double offY = 0.0;
 
 		// loop over each point in the node box
 		for (int i = 0; i < npoints.length; i++) {
@@ -433,17 +444,33 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 							bestLabelY = b;
 							bestNodeX = i;
 							bestNodeY = j;
+							offX = labelPoint.getX() - nodePoint.getX(); 
+							offY = labelPoint.getY() - nodePoint.getY();
 						}
 					}
 				}
 			}
 		}
 
-		xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
-		yPos = npoints[bestNodeY] - lypoints[bestLabelY];
+		// sets the labelPosition object that will be fired
+		if ( best > gravityDistance ) {
+			lp.setOffsetX(offX);
+			lp.setOffsetY(offY);
+		} else {
+			lp.setOffsetX(0.0);
+			lp.setOffsetY(0.0);
+		}
 
 		lp.setLabelAnchor(bestLabelX + (3 * bestLabelY));
 		lp.setTargetAnchor(bestNodeX + (3 * bestNodeY));
+
+
+		// sets the values used for rendering the graphic
+		xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
+		yPos = npoints[bestNodeY] - lypoints[bestLabelY];
+		xOffset = (int) (lp.getOffsetX() * offsetRatio);
+		yOffset = (int) (lp.getOffsetY() * offsetRatio);
+
 
 		firePropertyChange("LABEL_POSITION_CHANGED", null, lp);
 	}
