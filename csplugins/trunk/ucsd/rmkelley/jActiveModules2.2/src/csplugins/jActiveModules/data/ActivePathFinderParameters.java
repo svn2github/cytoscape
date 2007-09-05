@@ -27,6 +27,7 @@ public class ActivePathFinderParameters {
 	double initialTemperature = 1.0;
 	double finalTemperature = 0.01;
 	int totalIterations = 2500;
+    int randomIterations = 100;
 	int numberOfPaths = 5;
 	int displayInterval = 500;
 	int pseudoRandomSeed = Math.abs((int) System.currentTimeMillis());
@@ -123,6 +124,9 @@ public class ActivePathFinderParameters {
 		else if(name.endsWith("randomizeExpression")){
 		    randomizeExpression = Boolean.valueOf(property);
 		}
+		else if(name.endsWith("randomIterations")){
+		    randomIterations = Integer.valueOf(property);
+		}
 		else{
 		    System.err.println("Unrecognized option "+name);
 		}
@@ -183,6 +187,7 @@ public class ActivePathFinderParameters {
 		this.enableMaxDepth = oldAPFP.getEnableMaxDepth();
 		this.run = oldAPFP.getRun();
 		this.randomizeExpression = oldAPFP.getRandomizeExpression();
+		this.randomIterations = oldAPFP.getRandomIterations();
 		setExpressionAttributes(oldAPFP.getExpressionAttributes());
 		
 	} // copy ctor
@@ -285,6 +290,14 @@ public class ActivePathFinderParameters {
 		finalTemperature = newValue;
 		this.isDefault = false;
 	}
+
+    public int getRandomIterations() {
+	return randomIterations;
+    }
+
+    public void setRandomIterations(int value) {
+	this.randomIterations = value;
+	    }
 	public int getTotalIterations() {
 		return totalIterations;
 	}

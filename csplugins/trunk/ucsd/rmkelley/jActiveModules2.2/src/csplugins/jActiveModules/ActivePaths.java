@@ -113,10 +113,10 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		if (showTable) {
 		    showConditionsVsPathwaysTable();
 		}
-		if(apfParams.getSave()){
+		if(apfParams.getSave() && !apfParams.getRandomizeExpression()){
 		    tableDialog.saveState(apfParams.getOutputFile());
 		}
-		if(apfParams.getExit()){
+		if(apfParams.getExit() && !apfParams.getRandomizeExpression()){
 		    System.exit(0);
 		}
 		

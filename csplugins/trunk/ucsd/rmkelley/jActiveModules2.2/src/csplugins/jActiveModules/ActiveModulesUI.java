@@ -69,38 +69,40 @@ public class ActiveModulesUI extends CytoscapePlugin {
 
     public void propertyChange(PropertyChangeEvent evt){
 	if(evt.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED && apfParams.getRun()){
-	    System.err.println("greedy search is "+apfParams.getGreedySearch());
-	     activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams, this);
-	     activePaths.randomize = apfParams.getRandomizeExpression();
-	     Thread t = new Thread(activePaths);
-	     t.start();
+	    if(apfParams.getRandomizeExpression()){
+		startRandomizeAndRun(Cytoscape.getCurrentNetwork());
+	    }
+	    else{
+		activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams, this);
+		Thread t = new Thread(activePaths);
+		t.start();
+	    }
 	}
     }
-  /**
-   * Action to allow the user to change the current options
-   * for running jActiveModules, wiht a gui interface
-   */
-  protected class SetParametersAction extends AbstractAction {
-    private ActivePathsParametersPopupDialog paramsDialog = null;
+    /**
+     * Action to allow the user to change the current options
+     * for running jActiveModules, wiht a gui interface
+     */
+    protected class SetParametersAction extends AbstractAction {
+	private ActivePathsParametersPopupDialog paramsDialog = null;
     
-    public SetParametersAction(){
-      super("jActiveModules");
-    }
-
-    public void actionPerformed(ActionEvent e){
-      if (apfParams.getPossibleExpressionAttributes().size() == 0)
-      {
-        JOptionPane.showMessageDialog(
-	  Cytoscape.getDesktop(),
-	  "Cannot start jActiveModules:\n" +
-	  "There are no node attributes of type float.",
-	  "jActiveModules",
-	  JOptionPane.ERROR_MESSAGE
-	);
-	return;
-      }
-      CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-      if (paramsDialog == null)
+	public SetParametersAction(){
+	    super("jActiveModules");
+	}
+	
+	public void actionPerformed(ActionEvent e){
+	    if (apfParams.getPossibleExpressionAttributes().size() == 0){
+		JOptionPane.showMessageDialog(
+					      Cytoscape.getDesktop(),
+					      "Cannot start jActiveModules:\n" +
+					      "There are no node attributes of type float.",
+					      "jActiveModules",
+					      JOptionPane.ERROR_MESSAGE
+					      );
+		return;
+	    }
+	    CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+	    if (paramsDialog == null)
       {
         paramsDialog = new ActivePathsParametersPopupDialog 
 	  (Cytoscape.getDesktop(), "Find Active Modules Parameters", apfParams, ActiveModulesUI.this);
