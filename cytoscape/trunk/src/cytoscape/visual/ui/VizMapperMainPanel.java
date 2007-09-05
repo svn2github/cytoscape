@@ -765,8 +765,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		lastVSName = vsName;
 
-		//		vmm.getNetworkView().setVisualStyle(vsName);
-		//vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
 
 		if (redraw) {
@@ -1817,7 +1815,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Got global siginal
 		 */
 
-		//System.out.println("GLOBAL Signal: " + e.getPropertyName());
+//		System.out.println("GLOBAL Signal: " + e.getPropertyName());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
 
@@ -1842,12 +1840,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		           && (e.getSource().getClass() == NetworkPanel.class)) {
-			final VisualStyle vs = vmm.getNetworkView().getVisualStyle();
 
+			final VisualStyle vs = vmm.getNetworkView().getVisualStyle();
+			
 			if (vs != null) {
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-
+				
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
+					// Do nothing here.  Redaraw will be handled by Desktop.
 					//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 				} else {
 					switchVS(vs.getName(), false);
