@@ -26,7 +26,6 @@ public class ActivePathFinderParameters {
 
 	double initialTemperature = 1.0;
 	double finalTemperature = 0.01;
-	double hubAdjustment = 0;
 	int totalIterations = 2500;
 	int numberOfPaths = 5;
 	int displayInterval = 500;
@@ -36,9 +35,7 @@ public class ActivePathFinderParameters {
 	int searchDepth = 1;
 	int maxDepth = 2;
 	boolean enableMaxDepth = true;
-	double overlapThreshold = 0.8;
 	boolean toQuench = true;
-	boolean edgesNotNodes = false;
 	boolean toUseMCFile = false;
 	boolean mcBoolean = true;
 	String mcFileName = "";
@@ -48,16 +45,12 @@ public class ActivePathFinderParameters {
 	boolean exit = false;
 	int maxThreads = 1;
 	boolean greedySearch = true;
-	boolean enableFiltering = true;
         boolean run = false;
         boolean save = false;
         boolean randomizeExpression = false;
         String outputFile = "output.txt";
    	List<String> expressionAttrs = new ArrayList<String>();
     	List<String> possibleExpressionAttrs = new ArrayList<String>();
-
-	//boolean enableSpokePenalty = false;
-	
 	// ---------------------------------------------------------------------------------------
     public ActivePathFinderParameters(Properties properties){
 	for (Enumeration e = properties.propertyNames() ; e.hasMoreElements() ;) {
@@ -69,9 +62,6 @@ public class ActivePathFinderParameters {
 		}
 		else if(name.endsWith("finalTemperature")){
 		    finalTemperature = Double.valueOf(property);
-		}
-		else if(name.endsWith("hubAdjustment")){
-		    hubAdjustment = Double.valueOf(property);
 		}
 		else if(name.endsWith("totalIterations")){
 		    totalIterations = Integer.valueOf(property);
@@ -130,6 +120,9 @@ public class ActivePathFinderParameters {
 			expressionAttrs.add(splat[idx]);
 		    }
 		}
+		else if(name.endsWith("randomizeExpression")){
+		    randomizeExpression = Boolean.valueOf(property);
+		}
 		else{
 		    System.err.println("Unrecognized option "+name);
 		}
@@ -138,12 +131,7 @@ public class ActivePathFinderParameters {
 	}
     }
 	public ActivePathFinderParameters() {
-	    //    expressionAttrs.add("gal1RGsig");
-	    //run = true;
-	    //exit = true;
-	    //save = true;
-	    //randomizeExpression = true;
-	} // default ctor
+	}
 
 	// ---------------------------------------------------------------------------------------
 	/*
@@ -173,7 +161,6 @@ public class ActivePathFinderParameters {
 	public void setParams(ActivePathFinderParameters oldAPFP) {
 		this.initialTemperature = oldAPFP.getInitialTemperature();
 		this.finalTemperature = oldAPFP.getFinalTemperature();
-		this.hubAdjustment = oldAPFP.getHubAdjustment();
 		this.totalIterations = oldAPFP.getTotalIterations();
 		this.numberOfPaths = oldAPFP.getNumberOfPaths();
 		this.displayInterval = oldAPFP.getDisplayInterval();
@@ -182,7 +169,6 @@ public class ActivePathFinderParameters {
 		this.searchDepth = oldAPFP.getSearchDepth();
 		this.maxDepth = oldAPFP.getMaxDepth();
 		this.toQuench = oldAPFP.getToQuench();
-		this.edgesNotNodes = oldAPFP.getEdgesNotNodes();
 		this.toUseMCFile = oldAPFP.getToUseMCFile();
 		this.mcBoolean = oldAPFP.getMCboolean();
 		this.mcFileName = oldAPFP.getMcFileName();
@@ -194,8 +180,6 @@ public class ActivePathFinderParameters {
 		this.save = oldAPFP.getSave();
 		this.outputFile = oldAPFP.getOutputFile();
 		this.greedySearch = oldAPFP.getGreedySearch();
-		this.overlapThreshold = oldAPFP.getOverlapThreshold();
-		this.enableFiltering = oldAPFP.getEnableFiltering();
 		this.enableMaxDepth = oldAPFP.getEnableMaxDepth();
 		this.run = oldAPFP.getRun();
 		this.randomizeExpression = oldAPFP.getRandomizeExpression();
@@ -218,15 +202,8 @@ public class ActivePathFinderParameters {
 	public void setEnableMaxDepth(boolean newValue){
 		this.enableMaxDepth = newValue;
 	}
-	public boolean getEnableFiltering(){
-		return this.enableFiltering;
-	}
 	
-	public void setEnableFiltering(boolean newValue){
-		this.enableFiltering = newValue;
-	}
-	
-	public void setExit(boolean flag) {
+    	public void setExit(boolean flag) {
 		exit = flag;
 	}
 
@@ -266,19 +243,7 @@ public class ActivePathFinderParameters {
 		this.isDefault = false;
 	}
 
-	public double getOverlapThreshold() {
-		return overlapThreshold;
-	}
-
-	public void setOverlapThreshold(double newValue) {
-		if (newValue < 0 || newValue > 1) {
-			throw new IllegalArgumentException("Invalid overlap value: "
-					+ newValue);
-		}
-		this.overlapThreshold = newValue;
-	}
-
-	public boolean getRegionalBoolean() {
+   	public boolean getRegionalBoolean() {
 		return regionalBoolean;
 	}
 	public void setRegionalBoolean(boolean newValue) {
@@ -372,24 +337,14 @@ public class ActivePathFinderParameters {
 		minHubSize = newValue;
 		this.isDefault = false;
 	}
-	public double getHubAdjustment() {
-		return hubAdjustment;
-	}
-	public void setHubAdjustment(double newValue) {
-		hubAdjustment = newValue;
-		this.isDefault = false;
-	}
-	public boolean getToQuench() {
+ 
+   	public boolean getToQuench() {
 		return toQuench;
 	}
 	public void setToQuench(boolean newValue) {
 		toQuench = newValue;
 		this.isDefault = false;
 	}
-	public boolean getEdgesNotNodes() {
-		return edgesNotNodes;
-	}
-	
 
 	public boolean getGreedySearch() {
 		return greedySearch;
@@ -468,10 +423,8 @@ public class ActivePathFinderParameters {
 		sb.append("          number of paths: " + numberOfPaths + "\n");
 		sb.append("         display interval: " + displayInterval + "\n");
 		sb.append("         minimum hub size: " + minHubSize + "\n");
-		sb.append("       hub penalty factor: " + hubAdjustment + "\n");
 		sb.append("              random seed: " + randomSeed + "\n");
 		sb.append("                   quench: " + toQuench + "\n");
-		sb.append("          edges not nodes: " + edgesNotNodes + "\n");
 		sb.append("            use MC at all: " + mcBoolean + "\n");
 		sb.append("                 MC file?: " + toUseMCFile + "\n");
 		sb.append("              MC filename: " + mcFileName + "\n");
