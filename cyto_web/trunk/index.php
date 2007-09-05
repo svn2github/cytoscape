@@ -39,7 +39,16 @@
 		<!>
 		<div id="content">
 			<div class="item">
-				<h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5.0</h2>
+				<h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5.1</h2>
+				<div class="paragraph">
+				A point release to address a variety of bugs in the 2.5.0 release.
+				</div>
+			</div>
+		</div>
+
+		<div id="content">
+			<div class="item">
+				<h2>&nbsp;&nbsp;Cytoscape 2.5.0</h2>
 				<a href="screenshots/2_5_ss1.png"><img src="screenshots/2_5_ss1_thumb.png" alt="Cytoscape 2.5 Screenshot" align="left" border="0"> </a>
 				<div class="paragraph">
 					(Updated 7/23/2007) <br>
