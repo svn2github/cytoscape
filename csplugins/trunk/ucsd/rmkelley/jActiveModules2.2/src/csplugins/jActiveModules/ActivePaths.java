@@ -95,31 +95,31 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 
 	public void run() {
-		System.gc();
+	    System.gc();
 		long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
 		// run the path finding algorithm
-	 ActivePathsFinder apf = null;
-	 if(randomize){
-	     apf = new ActivePathsFinder(expressionMap, attrNames,
-					 cyNetwork, apfParams, null, parentUI);
-	 }else{
-	     apf = new ActivePathsFinder(expressionMap, attrNames,
-					 cyNetwork, apfParams, mainFrame, parentUI);
-	 }
-	 activePaths = apf.findActivePaths();
-	 
-	 tableDialog = null;
-	 if (showTable) {
-	     showConditionsVsPathwaysTable();
-	 }
-	 if(apfParams.getSave()){
+		ActivePathsFinder apf = null;
+		if(randomize){
+		    apf = new ActivePathsFinder(expressionMap, attrNames,
+						cyNetwork, apfParams, null, parentUI);
+		}else{
+		    apf = new ActivePathsFinder(expressionMap, attrNames,
+						cyNetwork, apfParams, mainFrame, parentUI);
+		}
+		activePaths = apf.findActivePaths();
+		
+		tableDialog = null;
+		if (showTable) {
+		    showConditionsVsPathwaysTable();
+		}
+		if(apfParams.getSave()){
 		    tableDialog.saveState(apfParams.getOutputFile());
-	 }
-	 if(apfParams.getExit()){
-	     System.exit(0);
-	 }
-	 
+		}
+		if(apfParams.getExit()){
+		    System.exit(0);
+		}
+		
 	}
     
 	/**

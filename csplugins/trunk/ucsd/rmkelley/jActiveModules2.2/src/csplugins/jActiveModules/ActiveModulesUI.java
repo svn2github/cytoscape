@@ -55,9 +55,11 @@ public class ActiveModulesUI extends CytoscapePlugin {
 
     /* check for command line arguments to run right away */
     //String [] args = CytoscapeInit.getArgs();
-    ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(null);
-    apfParams = parser.getActivePathFinderParameters();
-	apfParams.reloadExpressionAttributes();
+    //ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(null);
+
+    //apfParams = parser.getActivePathFinderParameters();
+    apfParams = new ActivePathFinderParameters(CytoscapeInit.getProperties());
+    apfParams.reloadExpressionAttributes();
     AttrChangeListener acl = new AttrChangeListener();
     Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( Cytoscape.ATTRIBUTES_CHANGED, acl );
     Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener( acl );
@@ -67,6 +69,7 @@ public class ActiveModulesUI extends CytoscapePlugin {
 
     public void propertyChange(PropertyChangeEvent evt){
 	if(evt.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED && apfParams.getRun()){
+	    System.err.println("greedy search is "+apfParams.getGreedySearch());
 	     activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams, this);
 	     activePaths.randomize = apfParams.getRandomizeExpression();
 	     Thread t = new Thread(activePaths);

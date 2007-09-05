@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Enumeration;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
@@ -57,6 +59,84 @@ public class ActivePathFinderParameters {
 	//boolean enableSpokePenalty = false;
 	
 	// ---------------------------------------------------------------------------------------
+    public ActivePathFinderParameters(Properties properties){
+	for (Enumeration e = properties.propertyNames() ; e.hasMoreElements() ;) {
+	    String name = (String)e.nextElement();
+	    if(name.startsWith("AP")){
+		String property = properties.getProperty(name);
+		if(name.endsWith("initialTemperature")){
+		    initialTemperature = Double.valueOf(property);
+		}
+		else if(name.endsWith("finalTemperature")){
+		    finalTemperature = Double.valueOf(property);
+		}
+		else if(name.endsWith("hubAdjustment")){
+		    hubAdjustment = Double.valueOf(property);
+		}
+		else if(name.endsWith("totalIterations")){
+		    totalIterations = Integer.valueOf(property);
+		}
+		else if(name.endsWith("numberPaths")){
+		    numberOfPaths = Integer.valueOf(property);
+		}
+		else if(name.endsWith("displayInterval")){
+		    displayInterval = Integer.valueOf(property);
+		}
+		else if(name.endsWith("hubSize")){
+		    minHubSize = Integer.valueOf(property);
+		}
+		else if(name.endsWith("randomSeed")){
+		    randomSeed = Integer.valueOf(property);
+		}
+		else if(name.endsWith("searchDepth")){
+		    searchDepth = Integer.valueOf(property);
+		}
+		else if(name.endsWith("maxDepth")){
+		    maxDepth = Integer.valueOf(property);
+		}
+		else if(name.endsWith("quench")){
+		    toQuench = Boolean.valueOf(property);
+		}
+		else if(name.endsWith("mcBoolean")){
+		    mcBoolean = Boolean.valueOf(property);
+		}
+		else if(name.endsWith("mcFileName")){
+		    mcFileName = property;
+		}
+		else if(name.endsWith("regional")){
+		    regionalBoolean = Boolean.valueOf(property);
+		}
+		else if(name.endsWith("exit")){
+		    exit = Boolean.valueOf(property);
+		}
+		else if(name.endsWith("run")){
+		    run = Boolean.valueOf(property);
+		}
+		else if(name.endsWith("save")){
+		    save = Boolean.valueOf(property);
+		}
+		else if(name.endsWith("maxThreads")){
+		    maxThreads = Integer.valueOf(property);
+		}
+		else if(name.endsWith("anneal")){
+		    greedySearch = !Boolean.valueOf(property);
+		}
+		else if(name.endsWith("outputFile")){
+		    outputFile = property;
+		}
+		else if(name.endsWith("expression")){
+		    String [] splat = property.split(",");
+		    for(int idx=0;idx < splat.length; idx += 1){
+			expressionAttrs.add(splat[idx]);
+		    }
+		}
+		else{
+		    System.err.println("Unrecognized option "+name);
+		}
+	    }
+
+	}
+    }
 	public ActivePathFinderParameters() {
 	    //    expressionAttrs.add("gal1RGsig");
 	    //run = true;
