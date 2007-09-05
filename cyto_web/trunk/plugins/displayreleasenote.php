@@ -7,17 +7,11 @@
 	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 </head>
 <body bgcolor="#ffffff">
-<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
-	<tbody>
-		<tr>
-			<td width="10">&nbsp;
-			</td>
-			<td valign="bottom">
-				<h1>Cytoscape 2.x Plugins Release Note</h1>
-			</td>
-		</tr>
-	</tbody>
-</table>
+
+<div id="topbar">
+        <div class="title">Cytoscape 2.x Plugins Release Note</div>
+</div>
+
 <?php include "../nav.php"; ?>
 
 <?php
