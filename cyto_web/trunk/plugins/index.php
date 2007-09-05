@@ -45,7 +45,7 @@
 </div>
 <?php include "../nav.php"; ?>
 <div align="left">
-  <p align="right"><a href="pluginsubmit.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
+  <p align="right"><a href="contact_us.php">Contact us </a>&nbsp;&nbsp;<a href="pluginsubmit.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
 </div>
 <span class="style2">
   <div id="indent">
