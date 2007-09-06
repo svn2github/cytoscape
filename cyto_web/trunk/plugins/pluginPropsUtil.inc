@@ -278,22 +278,63 @@ function getPluginProps($zipFileName) {
 				break;
 			}
 		} // end while loop
-
 		zip_close($zip);
-
-		return $pluginProps;
-
-	} // end of getPluginProps()
-
-}
-/* test code
-$pluginProps = getPluginProps("groupTool.jar");
-echo "Array size = ", count($pluginProps), "\n";
+	} 
+	else {
+		//failed to open the zip file
+	}
+	return $pluginProps;
 	
-$keys = array_keys($pluginProps);
+}// end of getPluginProps()
+
+//Get the contents of MANIFEST file from a Jar/Zip file
+// Then check if any line start with "Cytoscape-Plugin"
+function validateManifestFile($zipFileName) {
+	$retValue = false;
+	echo "retValue ====== ", $retValue;
+	$zip = zip_open($zipFileName);
+	if ($zip) {
+		while ($zip_entry = zip_read($zip)) {
+			$cur_file_name = zip_entry_name($zip_entry);
+
+			if (substr_count($cur_file_name, "MANIFEST.MF") > 0) {	
+				// This is the MANIFEST.MF file 
+				if (zip_entry_open($zip, $zip_entry, "r")) {
+					$buf = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+
+					$all_Lines = explode("\n", $buf);
+					
+					echo "Manifest lineCount = ",count($all_Lines),"<br>";
+					
+					for ($i = 0; $i < count($all_Lines); $i++) {
+						$cur_line = $all_Lines[$i];
+						echo "line $i = ",$cur_line, "<br>";
+						if ((!empty($cur_line))&& stristr($cur_line,'Cytoscape-Plugin') == $cur_line) {
+							//echo "MANIFEST.MF: Found attribute Cytoscape-Plugin<br>";
+							$retValue = true;
+							break;
+						}	
+					}
+				}
+				break;
+			}
+		} //while loop
+		zip_close($zip);
+	}
+	else {
+		//failed to open the zip file
+	}
+
+	if ($retValue == false) {
+	?>
+	<br>Error: MANIFEST.MF is either non-existence or the attribute Cytoscape-Plugin is not defined.	
+                <br>Please check the definition of Cytoscape plugin MANIFEST.MF at <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial">Cytoscape wiki</a> for detail. </p>
+                <br><br>
+
+	<?php
+	}
 	
-foreach ($keys as $key) {
-	echo $key, '--', $pluginProps[$key],"\n";
-}
-*/
+	return $retValue;
+} // end of validateManifestFile()
+
 ?> 
