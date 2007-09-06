@@ -129,7 +129,7 @@ public abstract class SearchThread extends Thread{
    *the a vector of newComponents that have been
    *created. It also removes the component that
    *is no longer valid from newPaths.
-   * @param A vector of nodes that were just removed
+   * @param removed vector of nodes that were just removed
    * @return A vector of newly created components
    */
   protected Vector update_remove(Vector removed){
@@ -186,7 +186,7 @@ public abstract class SearchThread extends Thread{
    *This can either be removal or reinsertion, depending on the 
    *current state of the node. If the node is to be reinserted,
    *it will also reinsert any possible associated edges
-   * @param The node to be toggled.
+   * @param toggle The node to be toggled.
    */
   protected void toggleNode(Node toggle){
     //If the graph contains the node, remove it

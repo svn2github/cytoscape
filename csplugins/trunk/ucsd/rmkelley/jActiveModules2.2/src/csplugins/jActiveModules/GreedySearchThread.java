@@ -167,12 +167,13 @@ public class GreedySearchThread extends Thread {
 	 * like the elephant.
 	 * 
 	 * @param depth
-	 *            The remaining depth allowed for this greed search
+	 *            The remaining depth allowed for this greed search.
 	 * @param component
-	 *            The current component we are branching from
-	 * @param neighborhood
-	 *            The set of all nodes in the neighborhood of component
-	 *            (distance 1)
+	 *            The current component we are branching from.
+	 * @param lastAdded
+	 *            The last node added.
+	 * @param removableNodes
+	 *            Nodes that can be removed. 
 	 */
 	private boolean runGreedySearchRecursive(int depth, Component component,
 			Node lastAdded, HashSet removableNodes) {

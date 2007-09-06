@@ -172,7 +172,7 @@ public class ParamStatistics implements Serializable{
   /**
    *Empirical determiation of the best smoothing window size
    *to use for mean
-   * @param the number of iterations used in determining mean?
+   * @param iter the number of iterations used in determining mean?
    */
   private int smoothing_window_size_mean(int iter) {
     // this is an empirically determined function.

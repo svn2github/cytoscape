@@ -26,6 +26,8 @@ public class ActivePathFinderParameters {
 
 	double initialTemperature = 1.0;
 	double finalTemperature = 0.01;
+	double hubAdjustment = 0;
+	double overlapThreshold = 0.8;
 	int totalIterations = 2500;
     int randomIterations = 100;
 	int numberOfPaths = 5;
@@ -63,6 +65,9 @@ public class ActivePathFinderParameters {
 		}
 		else if(name.endsWith("finalTemperature")){
 		    finalTemperature = Double.valueOf(property);
+		}
+		else if(name.endsWith("hubAdjustment")){
+		    hubAdjustment = Double.valueOf(property);
 		}
 		else if(name.endsWith("totalIterations")){
 		    totalIterations = Integer.valueOf(property);
@@ -127,6 +132,9 @@ public class ActivePathFinderParameters {
 		else if(name.endsWith("randomIterations")){
 		    randomIterations = Integer.valueOf(property);
 		}
+		else if(name.endsWith("overlapThreshold")){
+		    overlapThreshold = Double.valueOf(property);
+		}
 		else{
 		    System.err.println("Unrecognized option "+name);
 		}
@@ -165,6 +173,7 @@ public class ActivePathFinderParameters {
 	public void setParams(ActivePathFinderParameters oldAPFP) {
 		this.initialTemperature = oldAPFP.getInitialTemperature();
 		this.finalTemperature = oldAPFP.getFinalTemperature();
+		this.hubAdjustment = oldAPFP.getHubAdjustment();
 		this.totalIterations = oldAPFP.getTotalIterations();
 		this.numberOfPaths = oldAPFP.getNumberOfPaths();
 		this.displayInterval = oldAPFP.getDisplayInterval();
@@ -188,6 +197,7 @@ public class ActivePathFinderParameters {
 		this.run = oldAPFP.getRun();
 		this.randomizeExpression = oldAPFP.getRandomizeExpression();
 		this.randomIterations = oldAPFP.getRandomIterations();
+		this.overlapThreshold = oldAPFP.getOverlapThreshold();
 		setExpressionAttributes(oldAPFP.getExpressionAttributes());
 		
 	} // copy ctor
@@ -290,6 +300,13 @@ public class ActivePathFinderParameters {
 		finalTemperature = newValue;
 		this.isDefault = false;
 	}
+	public double getHubAdjustment() {
+		return hubAdjustment;
+	}
+	public void setHubAdjustment(double newValue) {
+		hubAdjustment = newValue;
+		this.isDefault = false;
+	}
 
     public int getRandomIterations() {
 	return randomIterations;
@@ -375,6 +392,17 @@ public class ActivePathFinderParameters {
 		this.maxThreads = maxThreads;
 	}
 
+	public double getOverlapThreshold() {
+		return overlapThreshold;
+	}
+
+	public void setOverlapThreshold(double newValue) {
+		if (newValue < 0 || newValue > 1) {
+			throw new IllegalArgumentException("Invalid overlap value: " + newValue);
+		}
+		this.overlapThreshold = newValue;
+	}
+
 	public void reloadExpressionAttributes() {
 
 		possibleExpressionAttrs.clear();
@@ -432,6 +460,7 @@ public class ActivePathFinderParameters {
 
 		sb.append("      initial temperature: " + initialTemperature + "\n");
 		sb.append("        final temperature: " + finalTemperature + "\n");
+		sb.append("           hub adjustment: " + hubAdjustment + "\n");
 		sb.append("         total iterations: " + totalIterations + "\n");
 		sb.append("          number of paths: " + numberOfPaths + "\n");
 		sb.append("         display interval: " + displayInterval + "\n");
@@ -446,6 +475,7 @@ public class ActivePathFinderParameters {
 		sb.append("                max depth: " + maxDepth + "\n");
 		sb.append("        search from nodes: " + searchFromNodes + "\n");
 		sb.append("              max threads: " + maxThreads + "\n");
+		sb.append("        overlap threshold: " + overlapThreshold + "\n");
 		return sb.toString();
 
 	} // toString

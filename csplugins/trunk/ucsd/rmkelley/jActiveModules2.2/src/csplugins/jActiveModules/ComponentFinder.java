@@ -47,7 +47,7 @@ public class ComponentFinder{
 
   /**
    * Return a vector of components reachable from these nodes.
-   * @param The nodes which we base our search off of
+   * @param nodes The nodes which we base our search off of
    */
   public Vector getComponents(List nodes){
     Vector result = new Vector();

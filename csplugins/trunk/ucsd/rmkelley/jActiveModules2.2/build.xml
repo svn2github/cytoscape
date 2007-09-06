@@ -57,7 +57,7 @@
 
         <!-- Target to create the javadoc information -->
         <target name="doc" depends="prepare">
-          <javadoc destdir="${doc.dir}" Private="yes">
+          <javadoc destdir="${doc.dir}" Private="yes" classpathref="classpath">
             <fileset dir="${src.dir}" defaultexcludes="no"/>
           </javadoc>
        </target>
@@ -69,6 +69,7 @@
                 <javac debug="Yes" 
 			srcdir="${src.dir}" 
 			destdir="${build.classes}"
+			deprecation="yes"
 			excludes="**/bak/**">
 			<classpath refid="classpath"/>
 		</javac>

@@ -37,7 +37,6 @@ public class QuenchingSearchThread extends SearchThread{
      *(something like node chooser). The quenching is seeded of the 
      * components currently in oldPaths (components found in the simulated
      * annealing run)
-     * @return A vector of Components found after quenching
      */
     public void run(){
 	//are we still quenching?

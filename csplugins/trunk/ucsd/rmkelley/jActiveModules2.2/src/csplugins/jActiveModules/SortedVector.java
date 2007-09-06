@@ -18,7 +18,6 @@ public class SortedVector extends Vector{
      * Insert an object into an already sorted
      * vector in sorted order
      * @param o object to be inserted
-     * @return result of calling Vector.add
      */
     public void sortedAdd(Object o){
 	int insert_point = Collections.binarySearch(this,o);
