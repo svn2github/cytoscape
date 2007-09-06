@@ -48,8 +48,6 @@ import cytoscape.view.*;
 
 import giny.model.*;
 
-import giny.util.*;
-
 import giny.view.*;
 
 import org.jgraph.JGraph;
