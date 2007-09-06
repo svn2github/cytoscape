@@ -36,6 +36,24 @@
  */
 package cytoscape.view;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+
+import cytoscape.util.undo.CyUndo;
+
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.VizMapUI;
+import cytoscape.visual.ui.VizMapperMainPanel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -43,12 +61,15 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.HashMap;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -62,20 +83,6 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
-import cytoscape.util.undo.CyUndo;
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapUI;
-import cytoscape.visual.ui.VizMapperMainPanel;
 
 
 /**
@@ -140,14 +147,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
 	 */
 	public static final int EXTERNAL_VIEW = 2;
-	
 	private static final String SMALL_ICON = "images/c16.png";
-	
-	
 
 	// --------------------//
 	// Member varaibles
-
 	protected VisualStyle defaultVisualStyle;
 
 	/**
@@ -185,11 +188,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * Provides Operations for Mapping Data Attributes of CyNetworks to
 	 * CyNetworkViews
 	 */
-	protected VisualMappingManager vizMapper;
+	protected VisualMappingManager vmm;
 
 	/**
 	 * user interface to the {@link VisualMappingManager VisualMappingManager}
-	 * {@link #vizMapper vizMapper}.
+	 * {@link #vmm vizMapper}.
 	 *
 	 *  @deprecated Use VizMapperMainPanel instead.
 	 */
@@ -200,7 +203,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * New VizMapper UI
 	 */
 	protected VizMapperMainPanel vizmapperUI;
-	
+
 	/**
 	 * Current network and view.
 	 */
@@ -231,14 +234,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// This is the index of the box in the toolbar. We use this so that we can
 	// add and remove the stylebox from the same place.
 	protected int styleBoxIndex = -1;
-	
+
 	//
 	// Overview Window;
 	//
 	private BirdsEyeViewHandler bevh;
 
 	/**
-	 * @deprecated view_type is no longer used.  Use the other CytoscapeDesktop() instead. 
+	 * @deprecated view_type is no longer used.  Use the other CytoscapeDesktop() instead.
 	 * Will be gone August 1008.
 	 */
 	public CytoscapeDesktop(int view_type) {
@@ -258,7 +261,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
-
 		networkViewManager = new NetworkViewManager(this);
 
 		bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane());
@@ -266,8 +268,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(bevh);
 
 		networkPanel = new NetworkPanel(this);
-		networkPanel.setNavigator( bevh.getBirdsEyeView() );
-
+		networkPanel.setNavigator(bevh.getBirdsEyeView());
 
 		cyMenus = new CyMenus();
 
@@ -328,7 +329,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// Set up the VizMapper
 		//setupVizMapper();
-		
 		getVizMapperUI();
 
 		// don't automatically close window. Let Cytoscape.exit(returnVal)
@@ -341,7 +341,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 					Cytoscape.exit(returnVal);
 				}
 			});
-
 
 		// show the Desktop
 		setContentPane(main_panel);
@@ -452,15 +451,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return  DOCUMENT ME!
 	 */
 	public VizMapperMainPanel getVizMapperUI() {
-		if(vizmapperUI == null) {
-			this.vizMapper = Cytoscape.getVisualMappingManager();
+		if (vizmapperUI == null) {
+			this.vmm = Cytoscape.getVisualMappingManager();
 			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
 		}
+
 		return vizmapperUI;
 	}
-
 
 	/**
 	 * Create the VizMapper and the UI for it.
@@ -470,15 +469,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	@Deprecated
 	public void setupVizMapper() {
-		this.vizMapper = Cytoscape.getVisualMappingManager();
+		this.vmm = Cytoscape.getVisualMappingManager();
 
 		// create the VizMapUI
-		vizMapUI = new VizMapUI(vizMapper, this);
+		vizMapUI = new VizMapUI(vmm, this);
 		vizMapUI.setName("vizMapUI");
 
 		// In order for the VizMapper to run when the StyleSelector is
 		// run, it needs to listen to the selector.
-		vizMapper.addChangeListener(vizMapUI.getStyleSelector());
+		vmm.addChangeListener(vizMapUI.getStyleSelector());
 
 		// Add the StyleSelector to the ToolBar
 		// TODO: maybe put this somewhere else to make it easier to make
@@ -512,20 +511,18 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return the OLD VisualStyle
 	 */
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		
-//
-//				VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
-//				                                              .getSelectedItem();
-//		
-				vizMapper.setVisualStyle(style);
-				//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
-		
-				return null;
+		//
+		//				VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
+		//				                                              .getSelectedItem();
+		//		
+		vmm.setVisualStyle(style);
+
+		//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
+		return null;
 	}
 
 	protected void updateFocus(String network_id) {
-
-		final VisualStyle old_style = Cytoscape.getVisualMappingManager().getVisualStyle();
+		final VisualStyle old_style = vmm.getVisualStyle();
 		final CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
 
 		if (old_view != null) {
@@ -539,23 +536,26 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		if (Cytoscape.setCurrentNetworkView(network_id)) {
 			// deal with the new Network
 			final CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
-			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
+
+			//			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
+			VisualStyle new_style = new_view.getVisualStyle();
+
 			Boolean vizmap_enabled = ((Boolean) new_view.getClientData(VIZMAP_ENABLED));
 
 			if (new_style == null)
-				new_style = defaultVisualStyle;
+				new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
 
 			if (vizmap_enabled == null)
-				vizmap_enabled = new Boolean(true);
+				vizmap_enabled = true;
 
-			vizMapper.setNetworkView(new_view);
+			vmm.setNetworkView(new_view);
 
-			if (new_style != null) {
-				vizMapper.setVisualStyle(new_style);
+			if (new_style.getName().equals(old_style.getName()) == false) {
+				vmm.setVisualStyle(new_style);
+				
+				// Is this necessary?
+				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			}
-			
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-//			vizMapper.getNetworkView().redrawGraph(false, true);
 		}
 	}
 
@@ -789,11 +789,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public NetworkViewManager getNetworkViewManager() {
 		return this.networkViewManager;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
 		return this.bevh;
 	}
-	
 
 	/**
 	 *  DOCUMENT ME!

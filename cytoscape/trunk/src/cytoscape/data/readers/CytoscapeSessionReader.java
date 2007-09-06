@@ -640,14 +640,15 @@ public class CytoscapeSessionReader {
 				String vsName = childNet.getVisualStyle();
 				if (vsName == null)
 					vsName = "default";
-				
-				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-				Cytoscape.getVisualMappingManager().applyAppearances();
-				Cytoscape.createNetworkView(new_network, new_network.getTitle(),
+
+				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
                         reader.getLayoutAlgorithm());
-				
-				curNetView = Cytoscape.getNetworkView(new_network.getIdentifier());
+
 				curNetView.setVisualStyle(vsName);
+				
+				Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
+				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+				curNetView.redrawGraph(false, true);
 
 				reader.doPostProcessing(new_network);
 				// Set hidden nodes + edges
