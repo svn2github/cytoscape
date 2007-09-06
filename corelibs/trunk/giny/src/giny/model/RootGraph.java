@@ -773,7 +773,7 @@ public interface RootGraph {
    * guaranteed to remain the same throughout the lifetime of the Node and its
    * RootGraph.  Node indices are always <= -1, and are not guaranteed to be
    * contiguous.  This method simply returns node.getRootGraphIndex() after
-   * checking that it is in this ColtRootGraph.<p>
+   * checking that it is in this RootGraph.<p>
    * TECHNICAL DETAIL: The Node input parameter should be an object
    * that was previously returned by a method of this RootGraph or by
    * a method of another component that this RootGraph system defines.
@@ -801,7 +801,7 @@ public interface RootGraph {
    * guaranteed to remain the same throughout the lifetime of the Edge and its
    * RootGraph.  Edge indices are always <= -1, and are not guaranteed to be
    * contiguous.  This method simply returns edge.getRootGraphIndex() after
-   * checking that it is in this ColtRootGraph.<p>
+   * checking that it is in this RootGraph.<p>
    * TECHNICAL DETAIL: The Edge input parameter should be an object
    * that was previously returned by a method of this RootGraph or by
    * a method of another component that this RootGraph system defines.

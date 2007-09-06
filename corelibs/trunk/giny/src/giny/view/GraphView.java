@@ -367,10 +367,6 @@ public static int NODE_X_POSITION = 0;
                                   Object[] args,
                                   ClassLoader loader );
 
-  //----------------------------------------//
-  // Implemented by ColtGraphViewModel
-  //----------------------------------------//
-
    /**
    * Set All Data For a NOde
    * <B>Big Bold Faced Warning</B> <BR>
