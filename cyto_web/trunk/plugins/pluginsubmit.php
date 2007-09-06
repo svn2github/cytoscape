@@ -212,8 +212,7 @@ if ($tried != NULL && $tried == 'yes') {
 		// get plugin properties from the jar/zip file uploaded
 		include "./pluginPropsUtil.inc";
 		$pluginProps = getPluginProps($fileUpload['tmp_name']);
-
-		$validated = validatePluginProps($pluginProps);
+		$validated = (validatePluginProps($pluginProps) && validateManifestFile($fileUpload['tmp_name']));		
 	}
 }
 //////// End of form validation ////////////////////
@@ -224,27 +223,6 @@ if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 	if (isPluginVersionExists($connection, $pluginProps)) {
 		$validated = false;
 	}
-	/*	
-	$query = 'SELECT version_auto_id FROM categories, plugin_list, plugin_version' .
-	' WHERE categories.category_id = plugin_list.category_id ' .
-	'       and plugin_list.plugin_auto_id = plugin_version.plugin_id ' .
-	'       and categories.name ="' . $pluginProps['pluginCategory'] . "\" " .
-	'		and plugin_list.name = "' . $pluginProps['pluginName'] . "\" " .
-	'		and plugin_version.version = "' . $pluginProps['pluginVersion'] . "\"";
-
-	// Run the query
-	if (!($result = @ mysql_query($query, $connection)))
-		showerror();
-
-	if (@ mysql_num_rows($result) != 0) {
-		$validated = false;
-?>
-			<strong>Error:</strong> <span class="style4">This version of this plugin already exists.</span><br>
-			<?php
-
-
-	}
-	*/
 }
 /////////////////////////////////  Form definition //////////////////////////
 
