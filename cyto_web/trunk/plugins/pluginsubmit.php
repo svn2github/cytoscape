@@ -193,6 +193,13 @@ $validated = true;
 
 if ($tried != NULL && $tried == 'yes') {
 
+	if (($mode == 'new') && empty ($_POST['tfContactEmail'])) {
+		$validated = false;
+?>
+		<br><strong>Error: E-mail is a required field.</strong><br>
+		<?php
+	}
+
 	//if mode == 'new', A jar/zip file is required
 	//if mode == 'edit', if a jar/zip file is not provided,
 	//the existing file will not be updated. 
@@ -251,7 +258,7 @@ if (!($tried && $validated)) {
     <td><table width="660" border="0">
       <tr>
         <td width="420"><div align="center"> Name</div></td>
-        <td width="230"><div align="center">e-mail (not made public) </div></td>
+        <td width="230"><div align="center"><span class="style4">*</span>e-mail (not made public) </div></td>
       </tr>
       <tr>
         <td><label>
