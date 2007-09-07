@@ -2392,12 +2392,15 @@ public final class GraphGraphics {
 			final EdgeAnchors anchors, final float x1, final float y1,
 			final double curveFactor) {
 		final int numAnchors = anchors.numAnchors();
+		// add the start point to the edge points buffer
 		m_edgePtsBuff[0] = x0;
 		m_edgePtsBuff[1] = y0;
 		m_edgePtsCount = 1;
 
 		int anchorInx = 0;
 
+		// finds the first anchor point other than the start point and
+		// add it to the edge points buffer
 		while (anchorInx < numAnchors) {
 			anchors.getAnchor(anchorInx++, m_floatBuff, 0);
 
@@ -2410,6 +2413,7 @@ public final class GraphGraphics {
 			}
 		}
 
+		// now fill edge points buffer with all subsequent anchors
 		while (anchorInx < numAnchors) {
 			anchors.getAnchor(anchorInx++, m_floatBuff, 0);
 			// Duplicate anchors are allowed.
@@ -2418,29 +2422,38 @@ public final class GraphGraphics {
 			m_edgePtsCount++;
 		}
 
+		// now add the end point to the buffer
 		m_edgePtsBuff[m_edgePtsCount * 2] = x1;
 		m_edgePtsBuff[(m_edgePtsCount * 2) + 1] = y1;
 		m_edgePtsCount++;
 
+		// remove duplicate end points from edge buffer
 		while (m_edgePtsCount > 1) {
-			if ((m_edgePtsBuff[(m_edgePtsCount * 2) - 2] == m_edgePtsBuff[(m_edgePtsCount * 2) - 4]) // eecond-to-last
-					// X coord.
-					&& (m_edgePtsBuff[(m_edgePtsCount * 2) - 1] == m_edgePtsBuff[(m_edgePtsCount * 2) - 3])) { // second-to-last
-				// Y coord.
+			// second-to-last X coord and  second-to-last Y coord.
+			if ((m_edgePtsBuff[(m_edgePtsCount * 2) - 2] == m_edgePtsBuff[(m_edgePtsCount * 2) - 4]) 
+					&& (m_edgePtsBuff[(m_edgePtsCount * 2) - 1] == m_edgePtsBuff[(m_edgePtsCount * 2) - 3])) { 
 				m_edgePtsCount--;
 			} else {
 				break;
 			}
 		}
 
+		// no anchors, just a straight line to draw 
 		if (m_edgePtsCount < 3) {
 			return false;
 		}
 
+		//
+		// ok, now we're drawing a curve
+		//
+
 		final int edgePtsCount = m_edgePtsCount;
 
-		{ // First set the three points related to point 1.
+		// First set the three control points related to point 1.
+		// 6 represents the offset in the buffer.
+		{ 
 			m_edgePtsCount--;
+			// set first control point
 			m_edgePtsBuff[(m_edgePtsCount * 6) - 2] = m_edgePtsBuff[m_edgePtsCount * 2];
 			m_edgePtsBuff[(m_edgePtsCount * 6) - 1] = m_edgePtsBuff[(m_edgePtsCount * 2) + 1];
 
@@ -2449,18 +2462,25 @@ public final class GraphGraphics {
 			double dy = m_edgePtsBuff[(m_edgePtsCount * 2) - 1]
 					- m_edgePtsBuff[(m_edgePtsCount * 2) + 1];
 			double len = Math.sqrt((dx * dx) + (dy * dy));
+			// Normalized.
 			dx /= len;
-			dy /= len; // Normalized.
+			dy /= len; 
+
+			// set second control point
 			m_edgePtsBuff[(m_edgePtsCount * 6) - 4] = m_edgePtsBuff[(m_edgePtsCount * 6) - 2]
 					+ (dx * arrow1Size * getT(arrow1Type));
 			m_edgePtsBuff[(m_edgePtsCount * 6) - 3] = m_edgePtsBuff[(m_edgePtsCount * 6) - 1]
 					+ (dy * arrow1Size * getT(arrow1Type));
 
+			// one candidate point is offset by the arrow (candX1) and 
+			// the other is offset by the curvefactor (candX2)
 			double candX1 = m_edgePtsBuff[(m_edgePtsCount * 6) - 4]
 					+ (dx * 2.0d * arrow1Size);
 			double candX2 = m_edgePtsBuff[(m_edgePtsCount * 6) - 4]
 					+ (curveFactor * (m_edgePtsBuff[(m_edgePtsCount * 2) - 2] - m_edgePtsBuff[(m_edgePtsCount * 6) - 4]));
 
+			// set third control point X coord
+			// choose the candidate with max offset
 			if (Math.abs(candX1 - m_edgePtsBuff[m_edgePtsCount * 2]) > Math
 					.abs(candX2 - m_edgePtsBuff[m_edgePtsCount * 2])) {
 				m_edgePtsBuff[(m_edgePtsCount * 6) - 6] = candX1;
@@ -2468,11 +2488,15 @@ public final class GraphGraphics {
 				m_edgePtsBuff[(m_edgePtsCount * 6) - 6] = candX2;
 			}
 
+			// one candidate point is offset by the arrow (candY1) and 
+			// the other is offset by the curvefactor (candY2)
 			double candY1 = m_edgePtsBuff[(m_edgePtsCount * 6) - 3]
 					+ (dy * 2.0d * arrow1Size);
 			double candY2 = m_edgePtsBuff[(m_edgePtsCount * 6) - 3]
 					+ (curveFactor * (m_edgePtsBuff[(m_edgePtsCount * 2) - 1] - m_edgePtsBuff[(m_edgePtsCount * 6) - 3]));
 
+			// set third control point Y coord
+			// choose the candidate with max offset
 			if (Math.abs(candY1 - m_edgePtsBuff[(m_edgePtsCount * 2) + 1]) > Math
 					.abs(candY2 - m_edgePtsBuff[(m_edgePtsCount * 2) + 1])) {
 				m_edgePtsBuff[(m_edgePtsCount * 6) - 5] = candY1;
@@ -2481,7 +2505,7 @@ public final class GraphGraphics {
 			}
 		}
 
-		// Next set all edge anchor information.
+		// Next set the control point for each edge anchor. 
 		while (m_edgePtsCount > 2) {
 			m_edgePtsCount--;
 
@@ -2499,13 +2523,14 @@ public final class GraphGraphics {
 					+ ((m_edgePtsBuff[(m_edgePtsCount * 2) - 1] - midY) * curveFactor);
 		}
 
-		{ // Last set the three points related to point 0.
+		{ // Last set the three control points related to point 0.
 
 			double dx = m_edgePtsBuff[2] - m_edgePtsBuff[0];
 			double dy = m_edgePtsBuff[3] - m_edgePtsBuff[1];
 			double len = Math.sqrt((dx * dx) + (dy * dy));
+			// Normalized.
 			dx /= len;
-			dy /= len; // Normalized.
+			dy /= len; 
 
 			double segStartX = m_edgePtsBuff[0]
 					+ (dx * arrow0Size * getT(arrow0Type));
