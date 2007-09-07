@@ -31,7 +31,7 @@ function validatePluginProps($pluginProps) {
 	$retVal = true;
 	if ($pluginProps == NULL || count($pluginProps) == 0) {
 ?>
-		<strong>Error: plugin.props in the jar/zip file is either non-existence or empty.</strong><br>
+		<strong>Error: plugin.props in the jar/zip file is missing or empty.</strong><br>
 		<?php
 		return false;
 	}
@@ -47,7 +47,7 @@ function validatePluginProps($pluginProps) {
 	else if (strpos($pluginProps['pluginName'],' ')>0) {
 		$retVal = false;
 ?>
-		<strong>Error in plugin.prop: white space should not be part of the plugin name.</strong><br>
+		<strong>Error in plugin.prop: white space is not allowed in the plugin name.</strong><br>
 		<?php
 		
 	}
@@ -62,7 +62,7 @@ function validatePluginProps($pluginProps) {
 			$retVal = false;
 			
 ?>
-		<strong>Error in plugin.prop: plugin version must be double type.</strong><br>
+		<strong>Error in plugin.prop: plugin version must be double type, two numbers seperated by a dot (.).</strong><br>
 		<?php
 
 		}
@@ -111,18 +111,16 @@ function validatePluginProps($pluginProps) {
 
 
 	}
-	
 	//If release Date is not provided, set it to today (system date).
-	/*
 	if (!array_key_exists('releaseDate', $pluginProps)) {
-		//$pluginProps['releaseDate'] = date('Y').'-'.date('m').'-'.date('d');
-		$retVal = true;
-
-	} else {
-		//releaseDate = $year.'-'.$month.'-'.$day;
+		$pluginProps['releaseDate'] = date('Y').'-'.date('m').'-'.date('d');		
+	} elseif ($pluginProps['releaseDate']=='invalidDate') {
+			$retVal = false;
+			?>
+		<strong>Error in plugin.prop: Invalid release date.</strong><br>
+		<?php
 	}
-	*/
-	
+		
 	if ($retVal == false) {
 	?>	
                 <br>Please check the definition of Cytoscape plugin propertiies at <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial">Cytoscape wiki</a> for detail. </p>
@@ -131,7 +129,6 @@ function validatePluginProps($pluginProps) {
 	<?php
 	}
 	
-	//return false;
 	return $retVal;
 }
 
@@ -139,13 +136,6 @@ function getReleaseDateFromStr($releaseDateStr) {
 	// The releaseDateStr will have the format like "May 1, 2007"
 	// The return value will be have the format like "2007-5-1"
 	// If the input string is invlalid date Str, return null
-
-
-	// If release is not given, set it to today
-	if (trim($releaseDateStr) == "") {
-		return date('Y').'-'.date('m').'-'.date('d'); 		
-	}
-
 
 	$elements = sscanf($releaseDateStr, "%s%d,%d");
 
@@ -193,7 +183,10 @@ function getReleaseDateFromStr($releaseDateStr) {
 	elseif (strnatcasecmp($month, "December") == 0) {
 		$month = '12';
 	}
-
+	else {
+		return 'invalidDate';
+	}
+	
 	return $year . '-' . $month . '-' . $day;
 } // End of function getReleaseDateFromStr()
 
@@ -305,6 +298,7 @@ function getPluginProps($zipFileName) {
 //Get the contents of MANIFEST file from a Jar/Zip file
 // Then check if any line start with "Cytoscape-Plugin"
 function validateManifestFile($zipFileName) {
+	
 	$retValue = false;
 	$zip = zip_open($zipFileName);
 	if ($zip) {
@@ -344,7 +338,7 @@ function validateManifestFile($zipFileName) {
 
 	<?php
 	}
-	
+
 	return $retValue;
 } // end of validateManifestFile()
 
