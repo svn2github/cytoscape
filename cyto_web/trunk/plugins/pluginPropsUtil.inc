@@ -33,8 +33,6 @@ function validatePluginProps($pluginProps) {
 ?>
 		<strong>Error: plugin.props in the jar/zip file is either non-existence or empty.</strong><br>
 		<?php
-
-
 		return false;
 	}
 
@@ -46,14 +44,31 @@ function validatePluginProps($pluginProps) {
 
 
 	}
+	else if (strpos($pluginProps['pluginName'],' ')>0) {
+		$retVal = false;
+?>
+		<strong>Error in plugin.prop: white space should not be part of the plugin name.</strong><br>
+		<?php
+		
+	}
 	if (!array_key_exists('pluginVersion', $pluginProps)) {
 		$retVal = false;
 ?>
 		<strong>Error in plugin.prop: PluginVersion is required.</strong><br>
 		<?php
-
-
 	}
+	else {
+		if (!preg_match('/^[0-9]+\.[0-9]+$/', $pluginProps['pluginVersion'])) {	
+			$retVal = false;
+			
+?>
+		<strong>Error in plugin.prop: plugin version must be double type.</strong><br>
+		<?php
+
+		}
+	}
+	
+	
 	if (!array_key_exists('pluginDescription', $pluginProps)) {
 		$retVal = false;
 ?>
@@ -291,7 +306,6 @@ function getPluginProps($zipFileName) {
 // Then check if any line start with "Cytoscape-Plugin"
 function validateManifestFile($zipFileName) {
 	$retValue = false;
-	echo "retValue ====== ", $retValue;
 	$zip = zip_open($zipFileName);
 	if ($zip) {
 		while ($zip_entry = zip_read($zip)) {
@@ -304,11 +318,8 @@ function validateManifestFile($zipFileName) {
 
 					$all_Lines = explode("\n", $buf);
 					
-					echo "Manifest lineCount = ",count($all_Lines),"<br>";
-					
 					for ($i = 0; $i < count($all_Lines); $i++) {
 						$cur_line = $all_Lines[$i];
-						echo "line $i = ",$cur_line, "<br>";
 						if ((!empty($cur_line))&& stristr($cur_line,'Cytoscape-Plugin') == $cur_line) {
 							//echo "MANIFEST.MF: Found attribute Cytoscape-Plugin<br>";
 							$retValue = true;
@@ -327,7 +338,7 @@ function validateManifestFile($zipFileName) {
 
 	if ($retValue == false) {
 	?>
-	<br>Error: MANIFEST.MF is either non-existence or the attribute Cytoscape-Plugin is not defined.	
+	<br><b>Error</b>: MANIFEST.MF is either missing or the attribute Cytoscape-Plugin is not defined.	
                 <br>Please check the definition of Cytoscape plugin MANIFEST.MF at <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial">Cytoscape wiki</a> for detail. </p>
                 <br><br>
 
