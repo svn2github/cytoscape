@@ -1,0 +1,282 @@
+<!-- =================================================================== -->
+<!-- NCBI Entrez User Interface plugin (ncbiUI.jar) build file     
+			08/29/2007 Written by Keiichiro Ono (kono@ucsd.edu)       -->
+<!-- =================================================================== -->
+
+<project name="ncbiUI" default="ncbiUI" basedir=".">
+
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init-ncbiUI">
+		<tstamp />
+		<property name="ncbiUI.Name" value="NCBI Entrez Web Service Client UI Plugin" />
+		<property name="ncbiUI.name" value="ncbiUI" />
+		<property name="ncbiUI.version" value="0.5" />
+		<property name="ncbiUI.year" value="200" />
+
+		<echo message="Building ${ncbiUI.name} version ${ncbiUI.version}." />
+
+		<!-- Inheritable properties -->
+		<property name="debug" value="on" />
+		<property name="optimize" value="off" />
+		<property name="deprecation" value="on" />
+		<property name="nowarn" value="true" />
+		<property name="fork" value="false" />
+		<property name="ncbiUI.root.dir" value="." />
+
+		<!-- You need to modify this line to point to Cytoscape directory.  -->
+		<property name="cytoscape.dir" value="${ncbiUI.root.dir}/../FRESH4" />
+
+		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
+		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.5.0" />
+
+		<!-- JUnit report directory -->
+		<property name="junit.report.dir" value="${ncbiUI.root.dir}/junit-reports" />
+
+		<path id="project.class.path">
+			<pathelement path="${java.class.path}/" />
+		</path>
+
+		<!-- Define the directories -->
+		<property name="ncbiUI.root.dir" value="./" />
+		<property name="ncbiUI.src.dir" value="${ncbiUI.root.dir}/src" />
+		<property name="ncbiUI.lib.dir" value="${ncbiUI.root.dir}/lib" />
+		<property name="ncbiUI.tests.dir" value="${ncbiUI.root.dir}/tests" />
+		<property name="ncbiUI.classes.dir" value="${ncbiUI.root.dir}/classes" />
+		<property name="ncbiUI.testclasses.dir" value="${ncbiUI.root.dir}/testClasses" />
+		<property name="ncbiUI.javadoc.dir" value="${javadoc.dir}/ncbiUI" />
+		<property name="ncbiUI.resources.dir" value="${ncbiUI.root.dir}/resources" />
+		<property name="ncbiUI.manifest.dir" value="${ncbiUI.root.dir}/manifest" />
+		<property name="ncbiUI.packages" value="ncbiUI.*" />
+		<!-- Subdirectory for test reports -->
+		<property name="ncbiUI.tests.reports.dir" value="${ncbiUI.root.dir}/reports/tests" />
+
+		<!-- Define the condition for compilation -->
+		<property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar" />
+
+		<condition property="cytoscape.present">
+			<and>
+				<available file="${cytoscape.jar}" />
+			</and>
+		</condition>
+
+		<!-- Define excludes for ncbiUI compile and javadoc -->
+		<property name="ncbiUI.excludes" value="**/notyet/*" />
+		<property name="ncbiUI.tests.excludes" value="**/notyet/*" />
+		<property name="ncbiUI.packages.excludes" value="**.test.*,**.notyet.*" />
+
+		<path id="ncbiUI.project.class.path">
+			<pathelement location="${ncbiUI.classes.dir}" />
+			<pathelement path="${ncbiUI.root.dir}/ncbiUITests.jar/" />
+			<fileset dir="${ncbiUI.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			
+			<fileset dir="${cytoscape.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}/build-libs">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Clean up, get back to original state                                -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init-ncbiUI">
+		<delete dir="${ncbiUI.classes.dir}" />
+		<delete dir="${ncbiUI.testclasses.dir}" />
+		<delete dir="${ncbiUI.tests.reports.dir}"/>
+		<delete file="ncbiUI.jar" />
+		<delete file="${ncbiUI.lib.dir}/ncbiUI.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the ncbiUI project                                           -->
+	<!-- =================================================================== -->
+	<target name="compile-ncbiUI" depends="init-ncbiUI">
+
+		<echo message=" COMPILE ncbiUI " />
+
+		<mkdir dir="${ncbiUI.classes.dir}" />
+		<javac srcdir="${ncbiUI.src.dir}" excludes="${ncbiUI.excludes}" classpathref="ncbiUI.project.class.path" destdir="${ncbiUI.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the ncbiUI.jar file                                           -->
+	<!-- =================================================================== -->
+	<target name="ncbiUI" depends="compile-ncbiUI">
+		<!-- copy over images -->
+		<copy todir="${ncbiUI.classes.dir}/images">
+			<fileset dir="${ncbiUI.root.dir}/images" />
+		</copy>
+		<copy todir="${ncbiUI.classes.dir}/resource">
+					<fileset dir="${ncbiUI.root.dir}/resource" />
+		</copy>
+		<copy todir="${ncbiUI.classes.dir}/edu/ucsd/bioeng/coreplugin/ncbiUI" 
+			file="${ncbiUI.manifest.dir}/plugin.props"/>
+
+		<unjar dest="${ncbiUI.classes.dir}">
+			<fileset dir="${ncbiUI.lib.dir}">
+				<include name="*.jar" />
+
+				<exclude name="ncbiUI.jar" />
+				<exclude name="ncbiUITest.jar" />
+				<exclude name="ncbiws.jar" />
+				
+			</fileset>
+			
+		</unjar>
+		<jar destfile="ncbiUI.jar" manifest="${ncbiUI.manifest.dir}/ncbiUI.manifest">
+			<fileset dir="${ncbiUI.classes.dir}" includes="**" />
+			<fileset dir="${ncbiUI.root.dir}/lib" includes="resources/**" />
+		</jar>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- release                                             -->
+	<!-- =================================================================== -->
+	<target name="release" depends="testAll">
+		<copy todir="${ncbiUI.lib.dir}" file="ncbiUI.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the ncbiUI tests                                             -->
+	<!-- =================================================================== -->
+	<target name="compile-tests" depends="ncbiUI">
+		<mkdir dir="${ncbiUI.testclasses.dir}" />
+		<javac srcdir="${ncbiUI.tests.dir}" includes="**/*" classpathref="ncbiUI.project.class.path" destdir="${ncbiUI.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the ncbiUITests.jar file                                     -->
+	<!-- =================================================================== -->
+	<target name="tests" depends="compile-tests">
+		<jar jarfile="ncbiUITests.jar" basedir="${ncbiUI.testclasses.dir}" includes="**/*" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Build all jars                                                      -->
+	<!-- =================================================================== -->
+	<target name="all" depends="ncbiUI" />
+
+	<!-- =================================================================== -->
+	<!-- Run the Plugin                                                      -->
+	<!-- =================================================================== -->
+	<target name="run" depends="ncbiUI">
+		<java classname="cytoscape.cytoscape" classpathref="ncbiUI.project.class.path" fork="true" />
+		<arg line="-p ${ncbiUI.lib.dir}/ncbiUI.jar" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Runs the tests in ncbiUITests.jar                                    -->
+	<!-- =================================================================== -->
+	<target name="runtests" depends="tests">
+		<mkdir dir="${ncbiUI.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" dir="${ncbiUI.classes.dir}" maxmemory="1G">
+			<formatter type="plain" usefile="true" />
+			<classpath refid="ncbiUI.project.class.path" />
+			<!-- The junit task doesn't support 'if' so we test for JUnit here -->
+			<batchtest fork="yes" todir="${ncbiUI.tests.reports.dir}" if="junit.present">
+				<fileset dir="${ncbiUI.classes.dir}" includes="**/test/*" excludes="${ncbiUI.tests.excludes}" />
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Run all of the Swing Unit Tests                       -->
+	<!-- ======================================================= -->
+	<target name="test-swing" depends="ncbiUI" >
+		<mkdir dir="${ncbiUI.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
+			
+			<classpath>
+				<fileset dir="${ncbiUI.root.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${ncbiUI.root.dir}/lib">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}/build-libs">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${ncbiUI.root.dir}/testClasses">
+									<include name="**/*" />
+				</fileset>
+			</classpath>
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${ncbiUI.tests.reports.dir}"  >
+				<fileset dir="${ncbiUI.tests.dir}" includes="**/*TestSwing.java" />
+			</batchtest>
+
+		</junit>
+		<junitreport todir="${ncbiUI.tests.reports.dir}">
+			<fileset dir="${ncbiUI.tests.reports.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${ncbiUI.tests.reports.dir}" />
+		</junitreport>
+
+
+		<fail message="JUnit Tests failed! Check ${ncbiUI.tests.reports.dir}/index.html for details." if="junit.test.failure" />
+
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Runs all test cases.                                    -->
+	<!-- =================================================================== -->
+	<target name="testAll" depends="tests">
+		<echo>
+	            ***********************************************
+	            Running all unit tests individually. 
+	            ***********************************************
+		</echo>
+		<mkdir dir="${junit.report.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+			<classpath refid="ncbiUI.project.class.path" />
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${junit.report.dir}" filtertrace="no">
+				<fileset dir="${ncbiUI.tests.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+		<delete file="ncbiUITests.jar" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Creates the API documentation                                       -->
+	<!-- =================================================================== -->
+	<target name="docs" depends="init-ncbiUI">
+		<mkdir dir="${ncbiUI.javadoc.dir}" />
+		<javadoc packagenames="${ncbiUI.packages}" excludepackagenames="${ncbiUI.packages.excludes}" sourcepath="${ncbiUI.src.dir}" destdir="${ncbiUI.javadoc.dir}" classpathref="ncbiUI.project.class.path" author="true" version="true" use="true" splitindex="true" noindex="false" windowtitle="${ncbiUI.Name} API" doctitle="${ncbiUI.Name}" />
+	</target>
+
+</project>
+
+<!-- End of file -->
