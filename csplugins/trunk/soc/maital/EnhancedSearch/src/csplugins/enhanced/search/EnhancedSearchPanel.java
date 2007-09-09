@@ -49,11 +49,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
-
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
@@ -170,7 +165,6 @@ public class EnhancedSearchPanel extends JPanel {
 		searchField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				String query = getQuery();
-				System.out.println("query: " + query);
 				if (query.length() > 0) {
 					final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
 
@@ -200,6 +194,8 @@ public class EnhancedSearchPanel extends JPanel {
 				+ "activate search functionality.");
 		// Set Max Size of TextField to match preferred size
 		searchField.setMaximumSize(searchField.getPreferredSize());
+
+		
 
 		return searchField;
 	}

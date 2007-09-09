@@ -35,27 +35,30 @@
 
 package csplugins.enhanced.search;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Iterator;
+
+import csplugins.quickfind.util.CyAttributesUtil;
+import csplugins.enhanced.search.util.EnhancedSearchUtils;
+import csplugins.enhanced.search.util.NumberUtils;
 
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.NumberTools;
 
-import csplugins.quickfind.util.CyAttributesUtil;
-import csplugins.enhanced.search.util.EnhancedSearchUtils;
 
 public class EnhancedSearchIndex {
 
-	public static final String INDEX_FIELD = "Identifier";
+	public static final String INDEX_FIELD = "id";
 
 	public static final int MAX_FIELD_LENGTH = 50000;
 
@@ -128,36 +131,59 @@ public class EnhancedSearchIndex {
 		for (int i = 0; i < attrNameArray.length; i++) {
 			String attrName = attrNameArray[i];
 
-			String[] valueList = CyAttributesUtil.getAttributeValues(
-					attributes, identifier, attrName);
-
-			// Some attributes don't have values at all; Some attributes have
-			// several values.
-			// Create a document for each value.
-			if (valueList != null) {
+			boolean hasAttribute = attributes.hasAttribute(identifier, attrName);
+			if (hasAttribute) {
 
 				// Handle whitespace characters and case in attribute names
-				attrName = EnhancedSearchUtils.replaceWhitespace(attrName);
-				attrName = attrName.toLowerCase();
+				String attrIndexingName = EnhancedSearchUtils
+						.replaceWhitespace(attrName);
+				attrIndexingName = attrIndexingName.toLowerCase();
 
-				for (int j = 0; j < valueList.length; j++) {
-					String attrValue = valueList[j];
+				byte valueType = attributes.getType(attrName);
 
-					byte valueType = attributes.getType(attrName);
-					if (valueType == CyAttributes.TYPE_FLOATING
-							|| valueType == CyAttributes.TYPE_INTEGER
-							|| valueType == CyAttributes.TYPE_BOOLEAN) {
-						// Add Document objects
-						// doc.add(new Field(attrName, new
-						// StringReader(attrValue)));
-						doc.add(new Field(attrName, attrValue, Field.Store.NO,
-								Field.Index.UN_TOKENIZED));
-					} else {
-						// Add Document objects
-						doc.add(new Field(attrName, attrValue, Field.Store.NO,
-								Field.Index.TOKENIZED));
+				if (valueType == CyAttributes.TYPE_BOOLEAN) {
+					String attrValue = attributes.getBooleanAttribute(
+							identifier, attrName).toString();
+					doc.add(new Field(attrIndexingName, attrValue,
+							Field.Store.NO, Field.Index.UN_TOKENIZED));
 
+				} else if (valueType == CyAttributes.TYPE_INTEGER) {
+					String attrValue = NumberTools.longToString(attributes.getIntegerAttribute(
+							identifier, attrName));
+					doc.add(new Field(attrIndexingName, attrValue,
+							Field.Store.NO, Field.Index.UN_TOKENIZED));
+				
+				} else if (valueType == CyAttributes.TYPE_FLOATING) {
+					String attrValue = NumberUtils.double2sortableStr(attributes.getDoubleAttribute(
+							identifier, attrName));
+					doc.add(new Field(attrIndexingName, attrValue,
+							Field.Store.NO, Field.Index.UN_TOKENIZED));
+				
+				} else if (valueType == CyAttributes.TYPE_STRING) {
+					String attrValue = attributes.getStringAttribute(
+							identifier, attrName);
+					doc.add(new Field(attrIndexingName, attrValue,
+							Field.Store.NO, Field.Index.TOKENIZED));
+
+				} else if (valueType == CyAttributes.TYPE_SIMPLE_LIST
+						|| valueType == CyAttributes.TYPE_SIMPLE_MAP) {
+
+					// Attributes of types TYPE_SIMPLE_LIST and TYPE_SIMPLE_MAP
+					// may have several values.
+					// Create a document for each value.
+					String[] valueList = CyAttributesUtil.getAttributeValues(
+							attributes, identifier, attrName);
+					if (valueList != null) {
+
+						for (int j = 0; j < valueList.length; j++) {
+							String attrValue = valueList[j];
+
+							doc.add(new Field(attrIndexingName, attrValue,
+									Field.Store.NO, Field.Index.TOKENIZED));
+						}
 					}
+				} else if (valueType == CyAttributes.TYPE_COMPLEX) {
+					// Do not index this field
 				}
 			}
 

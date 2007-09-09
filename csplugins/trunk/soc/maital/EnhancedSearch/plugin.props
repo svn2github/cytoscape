@@ -19,7 +19,7 @@ pluginVersion=1.0
 cytoscapeVersion=2.5
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=None
+pluginCategory=Analysis
 
 # -- The following properties are OPTIONAL -- #
 

@@ -50,8 +50,6 @@ import cytoscape.task.TaskMonitor;
 
 public class IndexAndSearchTask implements Task {
 
-	public static final String INDEX_FIELD = "Identifier";
-
 	private CyNetwork network;
 
 	private String query;
@@ -116,8 +114,6 @@ public class IndexAndSearchTask implements Task {
 		Iterator it = hits.iterator();
 		int numCompleted = 0;
 		while (it.hasNext() && !interrupted) {
-			// Document doc = hits.doc(i);
-			// String currID = doc.get(INDEX_FIELD);
 			String currID = (String) it.next();
 			CyNode currNode = Cytoscape.getCyNode(currID, false);
 			if (currNode != null) {

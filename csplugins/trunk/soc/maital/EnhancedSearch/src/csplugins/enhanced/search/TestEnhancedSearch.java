@@ -180,12 +180,12 @@ public class TestEnhancedSearch extends TestCase {
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 369, hitCount);
 
-		query = "weight:[-0.95 TO -1]";
+		query = "weight:[-1 TO -0.95]";
 		queryHandler.executeQuery(query); // 30
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 30, hitCount);
 
-		query = "weight:[0.95 TO 1] OR weight:[-0.95 TO -1]";
+		query = "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]";
 		queryHandler.executeQuery(query); // 399
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 399, hitCount);

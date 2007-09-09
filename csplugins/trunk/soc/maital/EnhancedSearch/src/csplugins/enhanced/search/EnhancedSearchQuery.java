@@ -39,9 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -49,9 +47,9 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
+import csplugins.enhanced.search.util.CustomMultiFieldQueryParser;
+import csplugins.enhanced.search.util.AttributeFields;
 
 public class EnhancedSearchQuery {
 
@@ -65,33 +63,19 @@ public class EnhancedSearchQuery {
 		idx = index;
 	}
 
-	public void executeQuery (String queryString) {
+	public void executeQuery(String queryString) {
 		try {
 
 			// Define attribute fields in which the search is to be carried on
-			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-			String[] nodeAttrNameArray = nodeAttributes.getAttributeNames();
-			String[] edgeAttNameArray = edgeAttributes.getAttributeNames();
-			int numOfNodeAttributes = nodeAttrNameArray.length;
-			int numOfEdgeAttributes = edgeAttNameArray.length;
-			String[] fields = new String [numOfNodeAttributes + numOfEdgeAttributes];
-			System.arraycopy(nodeAttrNameArray, 0, fields, 0, numOfNodeAttributes);
-			System.arraycopy(edgeAttNameArray, 0, fields, numOfNodeAttributes, numOfEdgeAttributes);
-			
-			// Handle whitespace characters and case in attribute names
-			for (int i = 1; i < fields.length; i++) {
-				fields[i] = EnhancedSearchUtils
-						.replaceWhitespace(fields[i]);
-				fields[i] = fields[i].toLowerCase();
-			}
+			AttributeFields attFields = new AttributeFields();
 
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
 			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);
-			search(searcher, queryString, fields);
+			System.out.println("Query - " + queryString);
+			search(searcher, queryString, attFields);
 			searcher.close();
-			
+
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -99,15 +83,16 @@ public class EnhancedSearchQuery {
 
 	/**
 	 * Searches for the given query string. By default (without specifying
-	 * attributeName), search is carried out on all attribute fields.
-	 * This functionality is enabled with the use of MultiFieldQueryParser.
+	 * attributeName), search is carried out on all attribute fields. This
+	 * functionality is enabled with the use of MultiFieldQueryParser.
 	 */
-	private void search(Searcher searcher, String queryString, String[] fields)
+	private void search(Searcher searcher, String queryString, AttributeFields attFields)
 			throws IOException {
 
 		// Build a Query object.
-		QueryParser queryParser = new MultiFieldQueryParser(fields,
-				new StandardAnalyzer());
+		// CustomMultiFieldQueryParser is used to support range queries on numerical attribute fields.
+		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer());
+
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
@@ -121,10 +106,16 @@ public class EnhancedSearchQuery {
 			System.out.println("Invalid query '" + queryString + "'");
 			String message = pe.getMessage();
 			System.out.println(message);
-		}
+		} catch (Exception e) {
+			// Other types of exception may occure
+			System.out.println("Error during execution of query '" + queryString + "'");
+			String message = e.getMessage();
+			System.out.println(message);
+		}			
 	}
 
-	// hitCollector object may be null if this method is called before executeQuery
+	// hitCollector object may be null if this method is called before
+	// executeQuery
 	public int getHitCount() {
 		if (hitCollector != null) {
 			return hitCollector.getHitCount();
@@ -133,7 +124,8 @@ public class EnhancedSearchQuery {
 		}
 	}
 
-	// hitCollector object may be null if this method is called before ExecuteQuery
+	// hitCollector object may be null if this method is called before
+	// ExecuteQuery
 	public ArrayList<String> getHits() {
 		if (hitCollector != null) {
 			return hitCollector.getHits();
@@ -141,13 +133,13 @@ public class EnhancedSearchQuery {
 			return null;
 		}
 	}
-	
+
 }
 
 
 class IdentifiersCollector extends HitCollector {
 
-	public static final String INDEX_FIELD = "Identifier";
+	public static final String INDEX_FIELD = "id";
 
 	private Searcher searcher;
 
@@ -166,7 +158,7 @@ class IdentifiersCollector extends HitCollector {
 			ioe.printStackTrace();
 		}
 	}
-	
+
 	public int getHitCount() {
 		return hitsIdentifiers.size();
 	}
@@ -175,5 +167,4 @@ class IdentifiersCollector extends HitCollector {
 		return hitsIdentifiers;
 	}
 
-	
 }
