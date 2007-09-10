@@ -1,6 +1,5 @@
 package gpml;
 
-import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -16,11 +15,13 @@ import ding.view.ViewportChangeListener;
 
 public abstract class Annotation extends JComponent implements ViewportChangeListener {
 		PathwayElement pwElm;
+		
 		protected BufferedImage image;
 		protected DGraphView view;
-				
-		public Annotation(PathwayElement o, DGraphView view) {
-			pwElm = o;
+		private double scaleFactor = 1;
+		
+		public Annotation(PathwayElement pwElm, DGraphView view) {
+			this.pwElm = pwElm;
 			this.view = view;
 			
 			setBounds(getVOutline().getBounds());
@@ -81,6 +82,8 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 			else 			return s;
 		}
 		
+		protected double getCurrentScaleFactor() { return scaleFactor; }
+		
 		public void viewportChanged(int w, int h, double newXCenter, double newYCenter, double newScaleFactor) {
 			InnerCanvas canvas = view.getCanvas();
 			
@@ -93,5 +96,6 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 			Rectangle b = outline.getBounds();
 			Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
 			setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor, b.height * newScaleFactor);
+			scaleFactor = newScaleFactor;
 		}
 }

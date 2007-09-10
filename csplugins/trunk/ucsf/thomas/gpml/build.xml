@@ -7,7 +7,7 @@
 	<property name="lib.dir" value="lib"/>
 	<property name="pathvisio.dir" value="${lib.dir}/pathvisio"/>
 	<property name="pathvisio.class.dir" value="class.pathvisio"/>
-	<property name="cytoscape.dir" value="/home/thomas/cytoscape-v2.5.0"/>
+	<property name="cytoscape.dir" value="/home/thomas/programs/cytoscape-v2.5.1"/>
 	<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 	
 	<path id="class.path">
@@ -51,6 +51,7 @@
 			<fileset dir="${class.dir}" includes="**/*.xsd"/>	
 			<fileset dir="${pathvisio.class.dir}">
 				<include name="org/pathvisio/model/*.class"/>
+				<include name="org/pathvisio/view/*.class"/>
 				<include name="org/pathvisio/view/swing/*.class"/>
 				<include name="org/pathvisio/debug/Logger.class"/>
 				<include name="org/pathvisio/debug/StopWatch.class"/>

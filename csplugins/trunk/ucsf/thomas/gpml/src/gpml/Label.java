@@ -14,8 +14,8 @@ import ding.view.DGraphView;
 
 public class Label extends Annotation {
 
-	public Label(PathwayElement o, DGraphView view) {
-		super(o, view);
+	public Label(PathwayElement pwElm, DGraphView view) {
+		super(pwElm, view);
 	}
 
 	public Shape getVOutline() {

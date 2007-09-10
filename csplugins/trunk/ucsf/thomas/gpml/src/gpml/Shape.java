@@ -1,23 +1,26 @@
 package gpml;
 
 
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import org.pathvisio.model.LineStyle;
 import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.ShapeType;
+import org.pathvisio.view.ShapeRegistry;
 
 import ding.view.DGraphView;
 import ding.view.ViewportChangeListener;
 
 public class Shape extends Annotation implements ViewportChangeListener {	
 	
-	public Shape(PathwayElement o, DGraphView view) {
-		super(o, view);
+	public Shape(PathwayElement pwElm, DGraphView view) {
+		super(pwElm, view);
 	}
 
 	public Rectangle2D.Double getVRectangle() {
@@ -43,12 +46,7 @@ public class Shape extends Annotation implements ViewportChangeListener {
 	}
 		
 	public void paint(Graphics g) {
-		//Relative to yourself
-		if(image == null) return;
-		
-		Graphics2D image2D = image.createGraphics();
-		
-		Composite origComposite = image2D.getComposite();
+		Graphics2D g2d = (Graphics2D)g.create();
 		
 		//Rectangle b = relativeToBounds(getUnrotatedBounds()).getBounds();
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle())).getBounds();
@@ -64,41 +62,58 @@ public class Shape extends Annotation implements ViewportChangeListener {
 		int cx = x + w/2;
 		int cy = y + h/2;
 						
-		image2D.rotate(pwElm.getRotation(), cx, cy);
-		
-		switch(pwElm.getShapeType()) {
-		case OVAL:
-			image2D.setColor(linecolor);
-			image2D.drawOval(x, y, w, h);
-			if(!pwElm.isTransparent()) {
-				image2D.setColor(fillcolor);
-				image2D.fillOval(x, y, w, h);
-			}
-			break;
-		case ARC:
-			image2D.setColor(linecolor);
-			image2D.drawArc(x, y, w, h, 0, -180);
-			break;
-		case BRACE:
-			image2D.setColor(linecolor);
-			image2D.drawLine (cx + h/2, cy, cx + w/2 - h/2, cy); //line on the right
-			image2D.drawLine (cx - h/2, cy, cx - w/2 + h/2, cy); //line on the left
-			image2D.drawArc (cx - w/2, cy, h, h, -180, -90); //arc on the left
-			image2D.drawArc (cx - h, cy - h,	h, h, -90, 90); //left arc in the middle
-			image2D.drawArc (cx, cy - h, h, h, -90, -90); //right arc in the middle
-			image2D.drawArc (cx + w/2 - h, cy, h, h, 0, 90); //arc on the right
-			break;
-		default:
-			image2D.setColor(linecolor);
-			image2D.drawRect(x, y, w, h);
-			if(!pwElm.isTransparent()) {
-				image2D.setColor(fillcolor);
-				image2D.fillRect(x, y, w, h);
-			}
-			break;
+		java.awt.Shape s = null;
+
+		if (pwElm.getShapeType() == null)
+		{
+			s = ShapeRegistry.getShape ("Default", x, y, w, h);
 		}
+		else
+		{
+			s = ShapeRegistry.getShape (
+					pwElm.getShapeType().getName(),
+					x, y, w, h);
+		}
+
+		AffineTransform t = new AffineTransform();
+		t.rotate(pwElm.getRotation(), cx, cy);
+		s = t.createTransformedShape(s);
 		
-		image2D.setComposite(origComposite);
-		((Graphics2D) g).drawImage(image, null, 0, 0);
+		if (pwElm.getShapeType() == ShapeType.BRACE ||
+				pwElm.getShapeType() == ShapeType.ARC)
+			{
+				// don't fill arcs or braces
+				// TODO: this exception should disappear in the future,
+				// when we've made sure all pathways on wikipathways have
+				// transparent arcs and braces
+			}
+			else
+			{
+				// fill the rest
+				if(!pwElm.isTransparent())
+				{
+					g2d.setColor(fillcolor);
+					g2d.fill(s);
+				}
+			}
+
+			g2d.setColor(linecolor);
+			int ls = pwElm.getLineStyle();
+			if (ls == LineStyle.SOLID)
+			{
+				g2d.setStroke(new BasicStroke());
+			}
+			else if (ls == LineStyle.DASHED)
+			{ 
+				g2d.setStroke	(new BasicStroke (
+					  1, 
+					  BasicStroke.CAP_SQUARE,
+					  BasicStroke.JOIN_MITER, 
+					  10, new float[] {4, 4}, 0));
+			}
+			
+			g2d.draw(s);
 	}
+	
+	
 }
