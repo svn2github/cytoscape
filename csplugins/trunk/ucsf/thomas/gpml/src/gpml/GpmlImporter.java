@@ -85,20 +85,31 @@ public class GpmlImporter extends CytoscapePlugin implements PhoebeCanvasDropLis
 				int[] edges = converter.getEdgeIndicesArray();
 				
 				//Get the current network, or create a new one, if none is available
+				boolean newNetwork = false;
 				CyNetwork network = Cytoscape.getCurrentNetwork();
-				if(network == null) {
+				if(newNetwork = network == null) {
 					String title = converter.getPathway().getMappInfo().getMapInfoName();
 					network = Cytoscape.createNetwork(title == null ? "new network" : title, false);
 				}
 				
 				//Add all nodes and edges to the network
-				for(int nd : nodes) network.addNode(nd);
+				for(int nd : nodes) {
+					network.addNode(nd);
+				}
 				for(int ed : edges) network.addEdge(ed);
 				
-				CyNetworkView view = Cytoscape.createNetworkView(network);
-				Cytoscape.setCurrentNetworkView(view.getIdentifier());
+				CyNetworkView view = null;
+				if(newNetwork) {
+					view = Cytoscape.createNetworkView(network);
+					Cytoscape.firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUS,
+                            null, view.getIdentifier()); 
+				} else {
+					view = Cytoscape.getCurrentNetworkView();
+				}
 				converter.layout(view);
 				view.updateView();
+				
+				converter.layout(Cytoscape.getCurrentNetworkView());
 				
 			} catch(Exception ex) {
 				Logger.log.error("Unable to process pasted data", ex);

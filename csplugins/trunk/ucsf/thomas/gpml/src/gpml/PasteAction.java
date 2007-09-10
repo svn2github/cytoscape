@@ -21,7 +21,7 @@ public class PasteAction extends CytoscapeAction implements FlavorListener {
 	}
 	
 	protected void initialize() {
-		
+		putValue(NAME, "Paste GPML");
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl V"));
 	}
 	public String getPreferredMenu() {
