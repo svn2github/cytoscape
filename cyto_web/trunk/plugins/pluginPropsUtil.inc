@@ -214,6 +214,7 @@ function getAuthorInstArray($authorInstStr) {
 
 //Get the plugin properties from a Jar/Zip file
 function getPluginProps($zipFileName) {
+	
 	$pluginProps = NULL;
 
 	$zip = zip_open($zipFileName);
@@ -246,14 +247,38 @@ function getPluginProps($zipFileName) {
 						}
 						if (stristr($cur_line, 'pluginDescription') == $lines[$i]) {
 							$pos = strpos($cur_line, "="); // find first "="
-							$pluginProps['pluginDescription'] = trim(substr($cur_line, $pos +1));
+							$desText = trim(substr($cur_line, $pos +1));
+
+							$supportMultilineDes = false;							
+							// Begin of multiple-line description
+							if ($supportMultilineDes) {								
+								$i=$i+1;
+								while ($i < count($lines)) {
+									
+									$cur_line = $lines[$i];
+	
+									if (!(stristr($cur_line, 'pluginVersion') == $lines[$i])) {
+										$desText = $desText.$cur_line;
+										$i=$i+1;
+									}
+									else { 
+										// reach the end of description text
+										$i=$i-1;
+										break;
+									}
+								}
+							}
+							// End of multiple-line description
+																		
+							$pluginProps['pluginDescription'] = $desText;
+							
 						}
 						if (stristr($cur_line, 'pluginVersion') == $lines[$i]) {
 							$pos = strpos($cur_line, "="); // find first "="
 							$pluginProps['pluginVersion'] = trim(substr($cur_line, $pos +1));
 						}
 						if (stristr($cur_line, 'cytoscapeVersion') == $lines[$i]) {
-							$pos = strpos($cur_line, "="); // find first "="
+								$pos = strpos($cur_line, "="); // find first "="
 							$pluginProps['cytoscapeVersion'] = trim(substr($cur_line, $pos +1));
 						}
 						if (stristr($cur_line, 'pluginCategory') == $lines[$i]) {
@@ -298,7 +323,6 @@ function getPluginProps($zipFileName) {
 //Get the contents of MANIFEST file from a Jar/Zip file
 // Then check if any line start with "Cytoscape-Plugin"
 function validateManifestFile($zipFileName) {
-	
 	$retValue = false;
 	$zip = zip_open($zipFileName);
 	if ($zip) {
