@@ -255,8 +255,8 @@ public class XGMMLWriter {
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
 		networkAttNames = networkAttributes.getAttributeNames();
-		// Create our indent string (240 blanks);
-		for (int i = 0; i < 10; i++) 
+		// Create our indent string (480 blanks);
+		for (int i = 0; i < 20; i++) 
 			indentString += "                        ";
 	}
 
@@ -312,6 +312,8 @@ public class XGMMLWriter {
 		depth--;
 		// Wwrite final tag
 		writeElement("</graph>\n");
+
+		writer.flush();
 	}
 
 	/**
@@ -947,7 +949,10 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeElement(String line) throws IOException {
-		writer.write(indentString.substring(0, depth*2)+line);
+		while ( depth*2 > indentString.length()-1 ) 
+			indentString = indentString + "                        ";
+		writer.write(indentString,0,depth*2);
+		writer.write(line);
 	}
 
 	/**
