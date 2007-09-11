@@ -9,6 +9,7 @@ import oiler.util.IntIntHashMap;
 
 /**
  * A mutable linked-list implementation of <tt>Graph</tt>.
+ * This class is <i>not</i> thread-safe.
  *
  * <p>
  * <b>Note:</b> Time complexities are given in Big-Oh notation.
@@ -18,7 +19,7 @@ import oiler.util.IntIntHashMap;
  *
  * @author Samad Lotia
  */
-public class LinkedListGraph<N,E> implements Graph<N,E>
+public class LinkedListGraph<N,E> implements Graph<N,E>, Cloneable
 {
 	protected final ArrayList<LinkedListNode<N,E>> nodes = new ArrayList<LinkedListNode<N,E>>();
 	protected final ArrayList<LinkedListEdge<E>>   edges = new ArrayList<LinkedListEdge<E>>();
@@ -85,6 +86,15 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		}
 	}
 
+	/**
+	 * Returns a copy of the graph. It does not copy
+	 * the node or edge objects.
+	 */
+	public LinkedListGraph<N,E> clone()
+	{
+		return new LinkedListGraph<N,E>(this);
+	}
+
 	public double score()
 	{
 		return score;
@@ -93,6 +103,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 	public void setScore(double score)
 	{
 		this.score = score;
+		modifications++;
 	}
 
 	protected final LinkedListEdge<E> edgeAtIndex(final int edgeIndex)
@@ -177,6 +188,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		// Add the edge to the graph
 		edges.add(newEdge);
 		edgeCount++;
+		modifications++;
 
 		return newEdgeIndex;
 	}
@@ -193,6 +205,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		final int nodeIndex = nodes.size();
 		nodes.add(node);
 		nodeCount++;
+		modifications++;
 		
 		return nodeIndex;
 	}
@@ -306,6 +319,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 			removeDirectedEdge(edge, true, true);
 		else
 			removeUndirectedEdge(edge, true, true);
+		modifications++;
 	}
 
 	/**
@@ -348,6 +362,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		// Delete the node
 		nodes.set(nodeIndex, null);
 		nodeCount--;
+		modifications++;
 	}
 	
 	/**
@@ -381,6 +396,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		if (edge == null)
 			throw new InvalidIndexException("edgeIndex", edgeIndex);
 		edge.edgeObj = edgeObj;
+		modifications++;
 	}
 
 	public void setNodeObject(final int nodeIndex, final N nodeObj)
@@ -389,6 +405,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		if (node == null)
 			throw new InvalidIndexException("nodeIndex", nodeIndex);
 		node.nodeObj = nodeObj;
+		modifications++;
 	}
 
 	/**
@@ -563,6 +580,21 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		return degree;
 	}
 
+	/**
+	 * Returns adjacent nodes connected by the default edge type.
+	 * <p>The iterator is <i>fail-fast</i>, as it will throw
+	 * <code>ConcurrentModificationException</code> when
+	 * <code>next()</code> is called if the graph was modified.</p>
+	 *
+	 * @throws ConcurrentModificationException if the graph was modified
+	 *         during the iteration.
+	 * @throws NoSuchElementException if <code>next()</code> was called
+	 *         if <code>hasNext()</code> is returning false.
+	 *
+	 * <p>Note: The iterator returned may return the same node
+	 * more than once if there are multiple edges connecting
+	 * <code>nodeIndex</code> to the another node.</p>
+	 */
 	public IntIterator adjacentNodes(final int nodeIndex)
 	{
 		return adjacentNodes(nodeIndex, defaultEdgeType());
@@ -570,6 +602,14 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 
 	/**
 	 * Returns adjacent nodes.
+	 * <p>The iterator is <i>fail-fast</i>, as it will throw
+	 * <code>ConcurrentModificationException</code> when
+	 * <code>next()</code> is called if the graph was modified.</p>
+	 *
+	 * @throws ConcurrentModificationException if the graph was modified
+	 *         during the iteration.
+	 * @throws NoSuchElementException if <code>next()</code> was called
+	 *         if <code>hasNext()</code> is returning false.
 	 *
 	 * <p>Note: The iterator returned may return the same node
 	 * more than once if there are multiple edges connecting
@@ -596,11 +636,33 @@ public class LinkedListGraph<N,E> implements Graph<N,E>
 		}
 	}
 
+	/**
+	 * Returns adjacent edges connected by the default edge type.
+	 * <p>The iterator is <i>fail-fast</i>, as it will throw
+	 * <code>ConcurrentModificationException</code> when
+	 * <code>next()</code> is called if the graph was modified.</p>
+	 *
+	 * @throws ConcurrentModificationException if the graph was modified
+	 *         during the iteration.
+	 * @throws NoSuchElementException if <code>next()</code> was called
+	 *         if <code>hasNext()</code> is returning false.
+	 */
 	public IntIterator adjacentEdges(final int nodeIndex)
 	{
 		return adjacentEdges(nodeIndex, defaultEdgeType());
 	}
 
+	/**
+	 * Returns adjacent edges.
+	 * <p>The iterator is <i>fail-fast</i>, as it will throw
+	 * <code>ConcurrentModificationException</code> when
+	 * <code>next()</code> is called if the graph was modified.</p>
+	 *
+	 * @throws ConcurrentModificationException if the graph was modified
+	 *         during the iteration.
+	 * @throws NoSuchElementException if <code>next()</code> was called
+	 *         if <code>hasNext()</code> is returning false.
+	 */
 	public IntIterator adjacentEdges(final int nodeIndex, final byte edgeType)
 	{
 		return new AdjEdgesIterator(nodeIndex, edgeType);
