@@ -1,0 +1,567 @@
+%------------------------------------------------------------------------------
+%
+%                              TUTORIAL.latex
+% This tutorial is written in LaTeX. To generate the tutorial in
+% PDF format, issue the following command:
+%
+%    pdflatex TUTORIAL.latex
+%
+%------------------------------------------------------------------------------
+
+\documentclass{article}
+\usepackage[all]{xy}
+\usepackage{graphics}
+\begin{document}
+
+\title{The Oiler Tutorial}
+\author{Samad Lotia}
+\date{\today}
+\maketitle
+\newpage
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Introduction}
+
+Oiler, a pun on the name Leonhard Euler, is a high-performance Java library
+for operating with mathematical graph objects. While programming with Oiler
+requires a higher learning curve than other graph libraries,
+its performance is better and memory consumption is lower.
+
+Oiler's performance gains and memory consumption
+reduction lies within its leveraging of Java's primitive types, especially
+the type \verb|int|, over objects to manipulate the graph. Because of
+this, Oiler trades a lower learning curve for a higher performing graph
+library.
+
+Oiler provides the ability to generically define the type of objects to be
+associated with nodes and edges. Any kind of object can be used to store
+information about nodes and edges. Objects associated with each node
+and edge can be quickly retrieved and updated as needed.
+
+The purpose of this document is to serve as a tutorial for Oiler's
+features. It assumes familiarity with Java, object-oriented programming
+terminology, Java's generic programming features, and Java's built-in data
+structures in the \verb|java.util| package.
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Getting Started}
+\begin{description}
+\item[Compiling]
+To compile Oiler, issue \verb|ant jar| in the \verb|oiler| directory.
+
+\begin{verbatim}
+[~]
+$ cd oiler/
+
+[~/oiler]
+$ ls
+build.xml  lib  src  tests  TUTORIAL.latex
+
+[~/oiler]
+$ ant jar
+...
+BUILD SUCCESSFUL
+Total time: 2 seconds
+\end{verbatim}
+
+The file \verb|oiler.jar| contains the entire Oiler library. Make sure
+to include this file in the Java class-path to compile and execute programs
+using Oiler.
+
+\item[Java Docs] To produce the Java Docs for the Oiler library, issue the
+\verb|ant docs| command in the \verb|oiler| directory. The Java Docs is a
+reference for all of Oiler's classes, interfaces, and methods.
+
+\begin{verbatim}
+[~/oiler]
+$ ant docs
+...
+BUILD SUCCESSFUL
+Total time: 3 seconds
+\end{verbatim}
+
+The file \verb|docs/index.html| is the starting point for the Java Docs.
+
+\end{description}
+
+
+\section{A first Graph}
+
+In the first example, a simple graph is created.
+
+\begin{figure}[hbp]
+\caption{A simple graph}
+\begin{displaymath}
+\xymatrix
+{
+	A \ar[r]^{0.1}	&	B \ar[d]^{2.2} \\
+	D \ar[u]^{0.5}	&	C \ar[l]^{1.0}
+}
+\end{displaymath}
+\end{figure}
+
+In the simple graph, nodes are \verb|String|s (``A,'' ``B,'' ``C,'' and ``D'')
+and edges are \verb|Double|s (0.1, 0.5, 2.2, and 1.0). The definition of the
+graph object looks like this:
+
+\begin{verbatim}
+Graph<String,Double> graph
+\end{verbatim}
+
+In the above snippet, the first generic type parameter of \verb|Graph|
+is \verb|String|, and it is the object type associated with nodes.
+The second generic type parameter is \verb|Double|, and it is
+the object type associated with edges.
+
+One can easily use different node or edge types instead of
+\verb|String|s or \verb|Double|s.
+
+\begin{figure}[hbp]
+\caption{A graph with different node and edge types}
+\begin{displaymath}
+\xymatrix
+{
+	1 \ar[r]^{W}	&	2 \ar[d]^{X} \\
+	3 \ar[u]^{Y}	&	4 \ar[l]^{Z}
+}
+\end{displaymath}
+\end{figure}
+
+Looking at the graph with different node and edge types, the node type is
+\verb|Integer|, and the edge type is \verb|String|. The graph's definition 
+looks like this:
+
+\begin{verbatim}
+Graph<Integer,String> anotherGraph
+\end{verbatim}
+
+\verb|Graph|'s first generic parameter is \verb|Integer|, representing
+nodes, and the second generic parameter is \verb|String|, representing
+edges.
+
+Returning back to the simple graph example,
+the next step is to instantiate the graph with the \verb|LinkedListGraph|
+implementation:
+
+\begin{verbatim}
+Graph<String,Double> graph = new LinkedListGraph<String,Double>();
+\end{verbatim}
+
+\verb|graph| is an empty graph without any nodes or edges. Now that there
+is an instance of the graph, it is possible to add nodes:
+
+\begin{verbatim}
+int nodeA = graph.addNode("A");
+int nodeB = graph.addNode("B");
+int nodeC = graph.addNode("C");
+int nodeD = graph.addNode("D");
+\end{verbatim}
+
+Notice \verb|addNode()| returns an \verb|int|. As stated in the Introduction,
+Oiler's performance derives from using primitive data types like \verb|int|.
+Oiler represents all of its nodes as an \verb|int|. These \verb|int|s are
+called ``node indices,'' and they are a way to ask the graph about its nodes.
+Each node in the graph has a unique node index. Because each node index
+is unique, testing whether two nodes are the same is simple:
+
+\begin{verbatim}
+nodeX == nodeY
+\end{verbatim}
+
+Edges also have edge indices that are unique to the graph.
+The following code demonstrates creating the edges for the graph.
+
+\begin{verbatim}
+int edge0 = graph.addEdge(nodeA, nodeB, 0.1, Graph.DIRECTED_EDGE);
+int edge1 = graph.addEdge(nodeB, nodeC, 2.2, Graph.DIRECTED_EDGE);
+int edge2 = graph.addEdge(nodeC, nodeD, 1.0, Graph.DIRECTED_EDGE);
+int edge3 = graph.addEdge(nodeD, nodeA, 0.5, Graph.DIRECTED_EDGE);
+\end{verbatim}
+
+\verb|addEdge()| has three more parameters than \verb|addNode()|.
+The parameters of \verb|addEdge()| are:
+
+\begin{description}
+\item[1st parameter] The source node of the edge.
+\item[2nd parameter] The target node of the edge.
+\item[3rd parameter] The edge object.
+\item[4th parameter] The edge type. This will be discussed in depth later.
+\end{description}
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Node and Edge Objects}
+
+When nodes and edges were created, its associated objects were passed in.
+When node A was created, the object \verb|"A"| was passed in to the
+\verb|addNode()| method. When edge 3 was created, the object
+\verb|new Double(0.1)| was passed in to the \verb|addEdge()| method.
+(Java implicitly added the \verb|new Double| part; this is called ``type
+boxing.'')
+
+The methods \verb|edgeObject()| and \verb|nodeObject()| retrieve objects
+associated with edges and nodes. The following example demonstrates its usage:
+
+\begin{verbatim}
+System.out.println("Node A's object: " + graph.nodeObject(nodeA));
+System.out.println("Node B's object: " + graph.nodeObject(nodeB));
+System.out.println("Node C's object: " + graph.nodeObject(nodeC));
+System.out.println("Node D's object: " + graph.nodeObject(nodeD));
+
+System.out.println("Edge 0's object: " + graph.edgeObject(edge0));
+System.out.println("Edge 1's object: " + graph.edgeObject(edge1));
+System.out.println("Edge 2's object: " + graph.edgeObject(edge2));
+System.out.println("Edge 3's object: " + graph.edgeObject(edge3));
+\end{verbatim}
+
+The output of the program is:
+
+\begin{verbatim}
+Node A's object: A
+Node B's object: B
+Node C's object: C
+Node D's object: D
+Edge 0's object: 0.1
+Edge 1's object: 2.2
+Edge 2's object: 1.0
+Edge 3's object: 0.5
+\end{verbatim}
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Edge Types}
+
+Oiler supports graphs with both undirected and directed edges. In the example
+above where edges were created, the \verb|Graph.DIRECTED_EDGE| parameter
+was passed in. This told Oiler to create a directed edge.
+\verb|Graph.UNDIRECTED_EDGE| could have also been passed in to the
+\verb|addEdge()| method. To demonstrate Oiler's mixed edge capabilities,
+a mixed graph will be created.
+
+\begin{figure}[htp]
+\caption[A mixed graph]{A mixed graph. Lines with a single arrow represent
+directed edges. Lines with double arrows represent undirected edges.}
+\begin{displaymath}
+\xymatrix
+{
+  &&                           A \ar@/_/@{->}[dll]|{0.5}
+                                 \ar@/^/@{<-}[dll]|{2.0} &&                           \\
+  B \ar@/_/@{<->}[rrrr]|{1.7}  &&                        && C \ar@/^/@{<-}[ull]|{-1.1}
+                                                              \ar@/_/@{<->}[ull]|{7.6}
+}
+\end{displaymath}
+\end{figure}
+
+The mixed graph can be represented in Oiler as:
+
+\begin{verbatim}
+Graph<String,Double> graph2 = new LinkedListGraph<String,Double>();
+int nodeA = graph2.addNode("A");
+int nodeB = graph2.addNode("B");
+int nodeC = graph2.addNode("C");
+int edge0 = graph2.addEdge(nodeA, nodeB, 0.5, Graph.DIRECTED_EDGE);
+int edge1 = graph2.addEdge(nodeB, nodeA, 2.0, Graph.DIRECTED_EDGE);
+int edge2 = graph2.addEdge(nodeA, nodeC, 7.6, Graph.UNDIRECTED_EDGE);
+int edge3 = graph2.addEdge(nodeA, nodeC, -1.1, Graph.DIRECTED_EDGE);
+int edge4 = graph2.addEdge(nodeB, nodeC, 1.7, Graph.UNDIRECTED_EDGE);
+\end{verbatim}
+
+For directed edges, switching the source node with the target
+node when the edge is created changes its direction. In the following
+snippet, the direction of the edge is reversed:
+
+\begin{verbatim}
+int edge0 = graph2.addEdge(nodeB, nodeA, 0.5, Graph.DIRECTED_EDGE);
+\end{verbatim}
+
+Switching the source and target nodes for undirected edges does not effect
+its directionality. (By definition, undirected edges lack directionality.)
+Creating \verb|edge2| like this has no effect
+on the direction of the edge:
+
+\begin{verbatim}
+int edge2 = graph2.addEdge(nodeC, nodeA, 7.6, Graph.UNDIRECTED_EDGE);
+\end{verbatim}
+
+Determining the edge type is done with the \verb|edgeType()| method.
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Querying the Graph}
+\subsection{A word about IntIterator}
+
+Many classes store a collection of elements. A list represents an ordered
+collection of elements. A set represents an unordered and unrepeating
+collection of elements.
+
+\begin{figure}[htb!]
+\centering
+\includegraphics{tank.eps}
+\caption{A collection of elements. A tank stores water, and a faucet
+``retrieves'' the contents of the tank. One can use a faucet without knowing
+where the water comes from or how. An iterator is like a faucent, as
+it retieves the contents of a collection of elements. One can use an iterator
+without knowing where the elements come from or how.}
+\end{figure}
+
+Iterators can look at a collection without needing to know what
+kind of class stores the collection.
+Iterators are important in the Oiler library, as they are the primary means by
+which one can determine the nodes and edges in a graph, and what nodes and edges
+are adjacent to a specific node.
+
+The \verb|IntIterator| interface, provided by the \verb|oiler.util| package,
+is important for querying the graph. It is analogous to the \verb|Iterator|
+interface of the \verb|java.util| package. The \verb|IntIterator| interface
+has the following methods:
+\begin{description}
+\item[next()] Returns the next \verb|int| in the collection.
+\item[hasNext()] Returns true if there are more \verb|int|s left in the
+collection.
+\item[numRemaining()] Returns the number of \verb|int|s left in the collection.
+\end{description}
+
+\subsection{Obtaining all the nodes and edges in the graph}
+
+Obtaining all the nodes and edges in the graph can be done with the
+\verb|nodes()| and \verb|edges()| methods. These methods both return
+\verb|IntIterator|s. The following example demonstrates its usage:
+
+\begin{verbatim}
+IntIterator nodes = graph2.nodes();
+while (nodes.hasNext())
+{
+  int node = nodes.next();
+  System.out.println("Got node " + graph2.nodeObject(node));
+}
+
+IntIterator edges = graph2.edges();
+while (edges.hasNext())
+{
+  int edge = edges.next();
+  System.out.println("Got edge " + graph2.edgeObject(edge));
+}
+\end{verbatim}
+
+The output of the program looks something like this:
+
+\begin{verbatim}
+Got node A
+Got node B
+Got node C
+Got edge 0.5
+Got edge 2.0
+Got edge 1.7
+Got edge 7.6
+Got edge -1.1
+\end{verbatim}
+
+The order of the nodes and edges \verb|IntIterator| returns is completely
+arbitrary.
+
+\subsection{Finding adjacent nodes and edges}
+Determining adjacent nodes and edges is done through the
+\verb|adjacentNodes()| and \verb|adjacentEdges()| methods. The following
+example demonstrates \verb|adjacentEdges()|'s usage:
+
+\begin{verbatim}
+IntIterator adjEdges = graph2.adjacentEdges(nodeA, Graph.INCOMING_EDGE);
+while (adjEdges.hasNext())
+{
+  int edge = adjEdges.next();
+  System.out.println("Incoming edge of nodeA: " + graph2.edgeObject(edge));
+}
+\end{verbatim}
+
+In the above snippet, \verb|adjEdges| will only return the edge with
+weight 2.0. This edge is the only one that is directed and
+is incoming to A.
+
+Here is another example of \verb|adjacentEdges()|:
+
+\begin{verbatim}
+IntIterator adjEdges = graph2.adjacentEdges(nodeA, Graph.OUTGOING_EDGE);
+\end{verbatim}
+
+\verb|adjEdges| returns edges with weight 0.5 and -1.1. These edges are the
+only edges that are directed and outgoing. The second parameter specifies
+the type of edge to inspect.
+
+The following example's \verb|adjEdges| returns all directed edges
+adjacent to A:
+
+\begin{verbatim}
+IntIterator adjEdges = graph2.adjacentEdges(nodeA, Graph.DIRECTED_EDGE);
+\end{verbatim}
+
+The following example's \verb|adjEdges| returns only undirected edges
+adjacent to A:
+
+\begin{verbatim}
+IntIterator adjEdges = graph2.adjacentEdges(nodeA, Graph.UNDIRECTED_EDGE);
+\end{verbatim}
+
+
+The next example's \verb|adjEdges| returns all edges, directed or undirected,
+adjacent to A:
+
+\begin{verbatim}
+IntIterator adjEdges = graph2.adjacentEdges(nodeA, Graph.ANY_EDGE);
+\end{verbatim}
+
+The second parameter can be bitwise or'ed together. The following example
+demonstrates inspecting only incoming and undirected edges:
+
+\begin{verbatim}
+IntIterator adjEdges = graph2.adjacentEdges(nodeA,
+                       Graph.INCOMING_EDGE | Graph.UNDIRECTED_EDGE);
+\end{verbatim}
+
+The second parameter is optional. If the second parameter is omitted,
+Oiler calls the \verb|defaultEdgeType()| method and fills its value
+for the second parameter.
+
+\verb|adjacentNodes()| behaves the same way \verb|adjacentEdges()| does,
+except it returns indices of nodes at the other end of the edge. It can
+return the same node multiple times if there are multiple edges connecting
+the same nodes.
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Using Oiler's Data Structures}
+
+Java supplies many data structures in the \verb|java.util| package.
+A major obstacle with these data structures is they cannot store
+primitive data types like \verb|int|. To accomodate this obstacle,
+Oiler provides several classes for storing \verb|int|s.
+
+\subsection{IntArray}
+
+\verb|IntArray| is a class that has a resizeable array of \verb|int|s.
+This class behaves very similarly to \verb|java.util.ArrayList|.
+The principle methods are \verb|add()|, \verb|get()|, and \verb|set()|.
+The following example demonstrates the flexibility of \verb|IntArray|:
+
+\begin{verbatim}
+IntArray array = new IntArray();
+// The author's birthday
+array.add(7);
+array.add(26);
+array.add(1985);
+System.out.println("The array has " + array.size() + " elements");
+for (int i = 0; i < array.size(); i++)
+  System.out.println("The int at position " + i + " is " + array.get(i));
+
+// The Fibonacci sequence
+array.set(0, 0);
+array.set(1, 1);
+array.set(2, 1);
+array.set(3, 2);
+array.set(4, 3);
+array.set(5, 5);
+array.set(6, 8);
+array.set(7, 13);
+System.out.println("The array has " + array.size() + " elements");
+for (int i = 0; i < array.size(); i++)
+  System.out.println("The int at position " + i + " is " + array.get(i));
+\end{verbatim}
+
+The output of the above snippet is:
+
+\begin{verbatim}
+The array has 3 elements
+The int at position 0 is 7
+The int at position 1 is 26
+The int at position 2 is 1985
+The array has 8 elements
+The int at position 0 is 0
+The int at position 1 is 1
+The int at position 2 is 1
+The int at position 3 is 2
+The int at position 4 is 3
+The int at position 5 is 5
+The int at position 6 is 8
+The int at position 7 is 13
+\end{verbatim}
+
+\subsection{IntHashSet}
+
+This class stores a set of \verb|int|s. It is behaves similarly to
+\verb|java.util.HashSet|. Its principle methods are \verb|add()|, which
+adds \verb|int|s to the set, and \verb|iterator()|, which returns
+an iterator for all the \verb|int| in the set.
+The following example demonstrates its usage:
+
+\begin{verbatim}
+IntSet set = new IntHashSet();
+set.add(0);
+set.add(1); // Adding 1 for the first time
+set.add(1); // Adding 1 for the second time
+set.add(2);
+set.add(3);
+
+System.out.println("The set has " + set.size() + " elements");
+System.out.print("The set contains: "
+IntIterator iterator = set.iterator();
+while (iterator.hasNext())
+  System.out.print(iterator.next() + " ");
+System.out.println();
+\end{verbatim}
+
+The output of the above example is:
+
+\begin{verbatim}
+The set has 4 elements
+The set contains: 0 1 2 3
+\end{verbatim}
+
+Notice 1 was printed only once. This is because every \verb|int| in the
+set is unique. Adding 1 the second time had no effect on the set.
+
+\subsection{IntIntHashMap}
+
+This class stores a map, where the keys and values of the map are
+\verb|int|s.
+It behaves similarly to \verb|java.util.HashMap|.
+Its principle methods are \verb|put()|, which inserts
+a key-value pair into the map, and \verb|get()|, which returns the
+value associated with a key.
+The following example demonstrates using this class:
+
+\begin{verbatim}
+IntIntMap map = new IntIntHashMap();
+// The Fibonacci sequence
+map.put(8, 21);
+map.put(5, 5);
+map.put(9, 33);
+map.put(7, 13);
+map.put(6, 8);
+map.put(10, 54);
+System.out.println("The 5th number in the Fibonacci sequence: " + map.get(5));
+System.out.println("The 6th number in the Fibonacci sequence: " + map.get(6));
+System.out.println("The 7th number in the Fibonacci sequence: " + map.get(7));
+System.out.println("The 8th number in the Fibonacci sequence: " + map.get(8));
+System.out.println("The 9th number in the Fibonacci sequence: " + map.get(9));
+System.out.println("The 10th number in the Fibonacci sequence: " + map.get(10));
+\end{verbatim}
+
+The output of the above example is:
+
+\begin{verbatim}
+The 5th number in the Fibonacci sequence: 5
+The 6th number in the Fibonacci sequence: 8
+The 7th number in the Fibonacci sequence: 13
+The 8th number in the Fibonacci sequence: 21
+The 9th number in the Fibonacci sequence: 33
+The 10th number in the Fibonacci sequence: 54
+\end{verbatim}
+
+\end{document}

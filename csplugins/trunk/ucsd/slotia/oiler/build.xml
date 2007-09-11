@@ -1,0 +1,113 @@
+<!--
+  ** build.xml - ant build file
+  ** Written by Samad Lotia
+  -->
+
+<project name="oiler" default="jar" basedir=".">
+
+  <!-- ===================================================================	-->
+  <!-- Properties								-->
+  <!-- ===================================================================	-->
+
+  <!-- Existing directory structure -->
+  <property name="root.dir"			location="."/>
+  <property name="docs.dir"			location="${root.dir}/docs"/>
+  <property name="lib.dir"			location="${root.dir}/lib"/>
+  <property name="main.src.dir"			location="${root.dir}/src"/>
+  <property name="tests.src.dir"		location="${root.dir}/tests"/>
+  
+  <!-- Buildfile products -->
+  <property name="build.dir"			location="${root.dir}/build"/>
+  <property name="main.build.dir"		location="${build.dir}/main"/>
+  <property name="main.jar.manifest"		location="${build.dir}/project.manifest"/>
+  <property name="main.jar"			location="${root.dir}/oiler.jar"/>
+  <property name="tests.build.dir"		location="${build.dir}/tests"/>
+  <property name="test-results.dir"		location="${root.dir}/test-results"/>
+
+  <!-- Classpaths -->
+  <path id="main.classpath">
+  </path>
+
+  <path id="tests.classpath">
+    <pathelement path="${tests.build.dir}"/>
+    <pathelement path="${main.build.dir}"/>
+    <pathelement path="${lib.dir}/junit-4.3.1.jar"/>
+  </path>
+  
+  <!-- ===================================================================	-->
+  <!-- compile									-->
+  <!-- ===================================================================	-->
+
+  <target name="compile" description="compile project's class files"> 
+    <mkdir dir="${main.build.dir}"/>
+    <javac srcdir="${main.src.dir}" destdir="${main.build.dir}" debug="yes" classpathref="main.classpath"/>
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- jar									-->
+  <!-- ===================================================================	-->
+
+  <target name="jar" depends="compile" description="package class and manifest files into a jar"> 
+    <manifest file="${main.jar.manifest}">
+      <attribute name="Main-Class" value="Main"/>
+    </manifest>
+    <jar jarfile="${main.jar}" basedir="${main.build.dir}" manifest="${main.jar.manifest}"/>
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- compile-tests								-->
+  <!-- ===================================================================	-->
+
+  <target name="compile-tests" depends="compile" description="compile all project's tests">
+    <mkdir dir="${tests.build.dir}"/>
+    <javac srcdir="${tests.src.dir}" destdir="${tests.build.dir}" debug="yes" classpathref="tests.classpath"/>
+  </target>
+  
+  <!-- ===================================================================	-->
+  <!-- run-tests								-->
+  <!-- ===================================================================	-->
+
+  <target name="run-tests" depends="compile-tests" description="run all project's tests">
+    <mkdir dir="${test-results.dir}"/>
+    <junit printsummary="yes" haltonfailure="no">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="true"/>
+      <batchtest fork="yes" todir="${test-results.dir}">
+        <fileset dir="${tests.src.dir}" includes="**/*.java"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- docs									-->
+  <!-- ===================================================================	-->
+
+  <target name="docs" description="produce javadocs">
+    <mkdir dir="${docs.dir}"/>
+    <javadoc sourcepath="${main.src.dir}"
+             destdir="${docs.dir}"
+	     packagenames="oiler.*"
+	     classpathref="main.classpath"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false" />
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- clean 									-->
+  <!-- ===================================================================	-->
+  <target name="clean" description="remove all buildfile products">
+  
+    <delete dir="${main.build.dir}"/>
+    <delete dir="${main.jar.manifest}"/>
+    <delete dir="${tests.build.dir}"/>
+    <delete dir="${build.dir}"/>
+    <delete dir="${test-results.dir}"/>
+    <delete file="${main.jar}"/>
+    <delete dir="${docs.dir}"/>
+    
+  </target>
+
+</project>
