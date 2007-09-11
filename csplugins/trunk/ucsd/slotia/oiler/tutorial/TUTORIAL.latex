@@ -59,7 +59,7 @@ $ cd oiler/
 
 [~/oiler]
 $ ls
-build.xml  lib  src  tests  TUTORIAL.latex
+build.xml  lib  src  tests  tutorial
 
 [~/oiler]
 $ ant jar
@@ -166,7 +166,7 @@ Oiler's performance derives from using primitive data types like \verb|int|.
 Oiler represents all of its nodes as an \verb|int|. These \verb|int|s are
 called ``node indices,'' and they are a way to ask the graph about its nodes.
 Each node in the graph has a unique node index. Because each node index
-is unique, testing whether two nodes are the same is simple:
+is unique, testing whether two nodes are the same can be done as follows:
 
 \begin{verbatim}
 nodeX == nodeY
@@ -306,12 +306,12 @@ collection of elements.
 \includegraphics{tank.eps}
 \caption{A collection of elements. A tank stores water, and a faucet
 ``retrieves'' the contents of the tank. One can use a faucet without knowing
-where the water comes from or how. An iterator is like a faucent, as
+where the water comes from or how. An iterator is like a faucet, as
 it retieves the contents of a collection of elements. One can use an iterator
 without knowing where the elements come from or how.}
 \end{figure}
 
-Iterators can look at a collection without needing to know what
+Iterators look at a collection without needing to know what
 kind of class stores the collection.
 Iterators are important in the Oiler library, as they are the primary means by
 which one can determine the nodes and edges in a graph, and what nodes and edges
