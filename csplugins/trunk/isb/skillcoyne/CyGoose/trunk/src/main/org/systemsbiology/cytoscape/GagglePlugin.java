@@ -12,7 +12,8 @@ import java.rmi.RemoteException;
 import java.net.MalformedURLException;
 
 import org.systemsbiology.cytoscape.CyGoose;
-import org.systemsbiology.cytoscape.dialog.GooseDialog;
+import org.systemsbiology.cytoscape.dialog.GooseDialog2;
+import org.systemsbiology.cytoscape.dialog.GooseDialog2.GooseButton;
 import org.systemsbiology.cytoscape.CyBroadcast;
 
 import org.systemsbiology.gaggle.boss.Boss;
@@ -26,7 +27,7 @@ import java.util.Iterator;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.CytoPanel;
-
+import cytoscape.layout.*;
 import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeVersion;
@@ -44,7 +45,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	private RenameThread renameGoose;
 	
 	private static Boss gaggleBoss;
-	private static GooseDialog gDialog;
+	private static GooseDialog2 gDialog;
 	private static CyBroadcast broadcast;
 	private static boolean pluginInitialized = false;
 	
@@ -65,7 +66,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		myGaggleName += " v." + CytoscapeVersion.version;
 		
 		networkGeese = new HashMap<String, CyGoose>();
-		gDialog = new GooseDialog();
+		gDialog = new GooseDialog2();
 		
 		CytoPanel GoosePanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
 		GoosePanel.add("CyGoose", null, gDialog, "Gaggle Goose");
@@ -85,6 +86,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		catch (Exception E)
 			{ // TODO add error message text area to goose panel and stop popping error box up
 			registered = false;
+			this.gDialog.displayMessage("Not connected to Gaggle Boss");
 			//GagglePlugin.showDialogBox("Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE);
 			System.err.println(E.getMessage());
 			//E.printStackTrace();
@@ -98,8 +100,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	
 	private String getTargetGoose()
 		{
-		int targetGooseIndex = this.gDialog.getGooseBox().getSelectedIndex();
-		String targetGooseName = (String) this.gDialog.getGooseBox().getSelectedItem();
+		int targetGooseIndex = this.gDialog.getGooseChooser().getSelectedIndex();
+		String targetGooseName = (String) this.gDialog.getGooseChooser().getSelectedItem();
 		print("Target index: "+targetGooseIndex+"  Target item: "+targetGooseName);
 		return targetGooseName;
 		}
@@ -113,9 +115,9 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		CurrentNet.setTitle(myGaggleName);
 		CyGoose NewGoose = this.createNewGoose(CurrentNet);
 		networkGeese.put(CurrentNet.getIdentifier(), NewGoose);
-		MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+		MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
 
-		Cytoscape.getDesktop().setTitle("Goose: " + NewGoose.getName());
+		Cytoscape.getDesktop().setTitle(NewGoose.getName());
 		}
 	
 	// Network created: create goose  Network destroyed: remove goose
@@ -134,7 +136,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       	{
 	      CyGoose NewGoose = createNewGoose(net);
 				networkGeese.put(net.getIdentifier(), NewGoose);
-	      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+	      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
       	}
       catch (RemoteException E)
       	{
@@ -157,7 +159,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       	Name = OldGoose.getName();
 				gaggleBoss.remove( OldGoose.getName() ); 
 				UnicastRemoteObject.unexportObject(OldGoose, true);
-				gDialog.getGooseBox().removeItem( OldGoose.getName() );
+				gDialog.getGooseChooser().removeItem( OldGoose.getName() );
       	}
       catch (RemoteException E)
       	{
@@ -171,16 +173,17 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	/*
 	 * Exports and registers the goose with the Boss
 	 */
-	private void registerGoose(Goose G) throws RemoteException
+	private void registerGoose(CyGoose goose) throws RemoteException
 		{
 		String RegisteredName = null;
 		
-		try { UnicastRemoteObject.exportObject(G, 0); }
+		try { UnicastRemoteObject.exportObject(goose, 0); }
 		catch (RemoteException e)
 			{
 			e.printStackTrace();
 			String ErrorMsg = "Cytoscape failed to export remote object.";
-			gDialog.getMessageLabel().setText(ErrorMsg);
+			gDialog.displayMessage(ErrorMsg);
+			
 			//GagglePlugin.showDialogBox(ErrorMsg, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		
@@ -199,9 +202,22 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 //		System.setProperty("java.rmi.server.codebase", FilePath);
 //		System.out.println( "CLASSPATH: " + System.getProperty("java.class.path"));
 //		System.out.println("RMI CODEBASE: " + System.getProperty("java.rmi.server.codebase"));
-		RegisteredName = gaggleBoss.register(G);
-		G.setName(RegisteredName);
-		gDialog.getRegisterButton().setEnabled(false); 
+
+		RegisteredName = gaggleBoss.register(goose);
+		goose.setName(RegisteredName);
+		Cytoscape.getNetwork(goose.getNetworkId()).setTitle(RegisteredName);
+
+		//  Update UI.  Must be done via SwingUtilities,
+		// or it won't work.
+		final String networkId = goose.getNetworkId();
+		javax.swing.SwingUtilities.invokeLater(new Runnable() 
+			{
+			public void run() 
+				{
+		    Cytoscape.getDesktop().getNetworkPanel().updateTitle(Cytoscape.getNetwork(networkId));
+		    }
+		});
+		gDialog.enableButton(GooseButton.REGISTER, false);
 		}
 	
 	/*
@@ -223,7 +239,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	
 	private void registerAction()
 		{
-		gDialog.getRegisterButton().addActionListener( new ActionListener()
+		gDialog.addButtonAction(GooseButton.REGISTER, new ActionListener()
 			{
 			public void actionPerformed(ActionEvent event)
 				{
@@ -252,13 +268,13 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	 */
 	private void updateAction()
 		{ 
-		gDialog.getUpdateButton().addActionListener(new ActionListener()
+		gDialog.addButtonAction(GooseButton.UPDATE, new ActionListener()
 			{
 				public void actionPerformed(ActionEvent event)
 					{
 					System.out.println("--- update action ----");
 					checkNameChange();
-					MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+					MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
 					}
 			});
 		}
@@ -303,11 +319,11 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 						
 						// HACK!!! Delete goose, re-register 
 						gaggleBoss.remove( Goose.getName() ); 
-						gDialog.getGooseBox().removeItem( Goose.getName() );
+						gDialog.getGooseChooser().removeItem( Goose.getName() );
 						UnicastRemoteObject.unexportObject(Goose, true);
 						
 						networkGeese.put(Network.getIdentifier(), createNewGoose(Network));
-			      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+			      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
 						}
 					catch (RemoteException re)
 						{ re.printStackTrace(); }
@@ -319,7 +335,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	      	{
 		      CyGoose NewGoose = this.createNewGoose(Network);
 					networkGeese.put(Network.getIdentifier(), NewGoose);
-		      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+		      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
 	      	}
 	      catch (RemoteException E)
 	      	{
@@ -335,8 +351,17 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 	private void addButtonActions()
 		{
 		System.out.println("add button actions");
+		
+		java.util.Collection<CyLayoutAlgorithm> Layouts = CyLayouts.getAllLayouts();
+		gDialog.getLayoutChooser().addItem("Default");
+		for (CyLayoutAlgorithm current : Layouts)
+			{
+			gDialog.getLayoutChooser().addItem(current.getName());
+			}
+		
+		
 		/* broadcast name list to other goose (geese) */
-		gDialog.getListButton().addActionListener(new ActionListener()
+		gDialog.addButtonAction(GooseButton.LIST, new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -356,7 +381,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       });
 
     /* broadcast a network to other goose (geese) */
-    gDialog.getNetButton().addActionListener(new ActionListener()
+    gDialog.addButtonAction(GooseButton.NETWORK, new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -377,7 +402,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       });
 
     /* broadcast data matrix to other goose (geese) */
-    gDialog.getMatrixButton().addActionListener(new ActionListener()
+    gDialog.addButtonAction(GooseButton.MATRIX, new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -397,7 +422,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       });
 
     /* broadcast HashMap to other goose (geese) */
-    gDialog.getMapButton().addActionListener(new ActionListener()
+    gDialog.addButtonAction(GooseButton.MAP, new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
           {
@@ -477,11 +502,11 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 							
 							// HACK!!! Delete goose, re-register 
 							gaggleBoss.remove( Goose.getName() ); 
-							gDialog.getGooseBox().removeItem( Goose.getName() );
+							gDialog.getGooseChooser().removeItem( Goose.getName() );
 							UnicastRemoteObject.unexportObject(Goose, true);
 							
 							networkGeese.put(Network.getIdentifier(), createNewGoose(Network));
-				      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+				      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
 							}
 						catch (RemoteException re)
 							{ re.printStackTrace(); }
@@ -493,7 +518,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 		      	{
 			      CyGoose NewGoose = createNewGoose(Network);
 						networkGeese.put(Network.getIdentifier(), NewGoose);
-			      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
+			      MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseChooser(), null, null);
 		      	}
 		      catch (RemoteException E)
 		      	{

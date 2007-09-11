@@ -5,6 +5,7 @@ package org.systemsbiology.cytoscape.dialog;
 
 import java.awt.Color;
 import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JToolBar;
 import javax.swing.JTextArea;
 
+import org.systemsbiology.cytoscape.dialog.GooseDialog2.GooseButton;
 
 /**
  * @author skillcoy
@@ -21,19 +23,17 @@ import javax.swing.JTextArea;
 public class GooseDialog extends JPanel
 	{
 	private JComboBox gooseChooser;
-
+	private JComboBox layoutChooser;
 	private JButton registerButton;
 	private JButton updateButton;
 	private JButton setIdButton;
 	private JButton showButton;
 	private JButton hideButton;
-	private JButton bcastListButton;
-	private JButton bcastNetButton;
-	private JButton bcastMatrixButton;
-	private JButton bcastHashMapButton;
-
+	private JButton listButton;
+	private JButton networkButton;
+	private JButton matrixButton;
+	private JButton mapButton;
 	private JTextArea messageArea;
-
 	private JLabel messageLabel;
 
 	public GooseDialog()
@@ -41,72 +41,102 @@ public class GooseDialog extends JPanel
 		createDialog();
 		}
 
-	/*
-	 *  TODO would be cleaner to just have a method to add an action to a button I think
-	 */
-
-	public JComboBox getGooseBox()
+	public enum GooseButton
 		{
-		return gooseChooser;
+		REGISTER("Register"), UPDATE("Update"), SHOW("Show"), HIDE("Hide"), MAP(
+				"Map"), MATRIX("Matrix"), NETWORK("Network"), LIST("List");
+
+		private String buttonName;
+
+		private GooseButton(String name)
+			{
+			buttonName = name;
+			}
+
 		}
 
-	public JButton getIdButton()
+	public void displayMessage(String msg)
 		{
-		return setIdButton;
+		this.messageArea.setText(msg);
 		}
 
-	public JButton getRegisterButton()
+	public void addButtonAction(GooseButton gb, ActionListener l)
 		{
-		return registerButton;
+		javax.swing.JButton button = null;
+		switch (gb)
+			{
+			case REGISTER:
+			button = this.registerButton;
+			break;
+			case UPDATE:
+			button = this.updateButton;
+			break;
+			case SHOW:
+			button = this.showButton;
+			break;
+			case HIDE:
+			button = this.hideButton;
+			break;
+			case MAP:
+			button = this.mapButton;
+			break;
+			case MATRIX:
+			button = this.matrixButton;
+			break;
+			case NETWORK:
+			button = this.networkButton;
+			break;
+			case LIST:
+			button = this.listButton;
+			break;
+			}
+		button.addActionListener(l);
 		}
 
-	public JButton getUpdateButton()
+	public void enableButton(GooseButton gb, boolean enabled)
 		{
-		return updateButton;
+		javax.swing.JButton button = null;
+		switch (gb)
+			{
+			case REGISTER:
+			button = this.registerButton;
+			break;
+			case UPDATE:
+			button = this.updateButton;
+			break;
+			case SHOW:
+			button = this.showButton;
+			break;
+			case HIDE:
+			button = this.hideButton;
+			break;
+			case MAP:
+			button = this.mapButton;
+			break;
+			case MATRIX:
+			button = this.matrixButton;
+			break;
+			case NETWORK:
+			button = this.networkButton;
+			break;
+			case LIST:
+			button = this.listButton;
+			break;
+			}
+		button.setEnabled(enabled);
 		}
 
-	public JButton getShowButton()
+	public javax.swing.JComboBox getGooseChooser()
 		{
-		return showButton;
+		return this.gooseChooser;
 		}
 
-	public JButton getHideButton()
+	public javax.swing.JComboBox getLayoutChooser()
 		{
-		return hideButton;
+		return this.layoutChooser;
 		}
 
-	public JButton getListButton()
-		{
-		return bcastListButton;
-		}
 
-	public JButton getNetButton()
-		{
-		return bcastNetButton;
-		}
-
-	public JButton getMatrixButton()
-		{
-		return bcastMatrixButton;
-		}
-
-	public JButton getMapButton()
-		{
-		return bcastHashMapButton;
-		}
-
-	public JTextArea getMessageArea()
-		{
-		return messageArea;
-		}
-
-	public JLabel getMessageLabel()
-		{
-		return messageLabel;
-		}
-
-	
-	
 	private Box getDisplayControlPanel()
 		{
 		Box DisplayControl = Box.createVerticalBox();
@@ -116,16 +146,17 @@ public class GooseDialog extends JPanel
 		gooseChooser.addItem("Boss");
 
 		JPanel ButtonPanel = new JPanel();
-		
+
 		registerButton = new JButton("Register");
-		registerButton.setToolTipText("Register with the Boss"); // currently not in use
+		registerButton.setToolTipText("Register with the Boss"); // currently not
+                                                              // in use
 		ButtonPanel.add(registerButton);
-		
+
 		// update button to re-populate boss and all active geese
 		updateButton = new JButton("Update");
 		updateButton.setToolTipText("Update goose list");
 		ButtonPanel.add(updateButton);
-		
+
 		// Show selected goose
 		showButton = new JButton(" Show ");
 		showButton.setToolTipText("Show selected goose");
@@ -134,9 +165,9 @@ public class GooseDialog extends JPanel
 		// Hide selected goose
 		hideButton = new JButton(" Hide ");
 		hideButton.setToolTipText("Hide selected goose");
-		//DisplayControl.add(hideButton);
+		// DisplayControl.add(hideButton);
 		ButtonPanel.add(hideButton);
-		
+
 		DisplayControl.add(gooseChooser);
 		DisplayControl.add(ButtonPanel);
 
@@ -151,7 +182,7 @@ public class GooseDialog extends JPanel
 		BroadcastPanel.add(createMatrixButton());
 		BroadcastPanel.add(createNetworkButton());
 		BroadcastPanel.add(createListButton());
-		
+
 		return BroadcastPanel;
 		}
 
@@ -168,37 +199,37 @@ public class GooseDialog extends JPanel
 	private JButton createMapButton()
 		{
 		// Broadcast HashMap
-		bcastHashMapButton = new JButton("Map");
-		bcastHashMapButton.setToolTipText("Broadcast HashMap");
-		bcastHashMapButton.setForeground(Color.CYAN);
-		return bcastHashMapButton;
+		mapButton = new JButton("Map");
+		mapButton.setToolTipText("Broadcast HashMap");
+		mapButton.setForeground(Color.CYAN);
+		return mapButton;
 		}
 
 	private JButton createMatrixButton()
 		{
 		// Broadcast DataMatrix
-		bcastMatrixButton = new JButton("Matrix");
-		bcastMatrixButton.setToolTipText("Broadcast Matrix");
-		bcastMatrixButton.setForeground(Color.BLUE);
-		return bcastMatrixButton;
+		matrixButton = new JButton("Matrix");
+		matrixButton.setToolTipText("Broadcast Matrix");
+		matrixButton.setForeground(Color.BLUE);
+		return matrixButton;
 		}
 
 	private JButton createNetworkButton()
 		{
 		// Broadcast network
-		bcastNetButton = new JButton("Net");
-		bcastNetButton.setToolTipText("Broadcast Selected Network");
-		bcastNetButton.setForeground(Color.RED);
-		return bcastNetButton;
+		networkButton = new JButton("Net");
+		networkButton.setToolTipText("Broadcast Selected Network");
+		networkButton.setForeground(Color.RED);
+		return networkButton;
 		}
 
 	private JButton createListButton()
 		{
 		// Broadcast name list
-		bcastListButton = new JButton("List");
-		bcastListButton.setToolTipText("Broadcast Selected Name List");
-		bcastListButton.setForeground(Color.MAGENTA);
-		return bcastListButton;
+		listButton = new JButton("List");
+		listButton.setToolTipText("Broadcast Selected Name List");
+		listButton.setForeground(Color.MAGENTA);
+		return listButton;
 		}
 
 	private JTextArea createMessageArea()
@@ -217,14 +248,21 @@ public class GooseDialog extends JPanel
 		Blank.setSize(5, 30);
 
 		JPanel ConnectDisplayPane = new JPanel(new BorderLayout());
-		ConnectDisplayPane.add( new JToolBar().add(getDisplayControlPanel()), BorderLayout.NORTH);
+		ConnectDisplayPane.add(new JToolBar().add(getDisplayControlPanel()),
+				BorderLayout.NORTH);
 		ConnectDisplayPane.add(Blank, BorderLayout.SOUTH);
 
 		JPanel Broadcast = new JPanel(new BorderLayout());
-		Broadcast.add( Blank, BorderLayout.NORTH);
-		Broadcast.add( new JLabel("Broadcast Data:"), BorderLayout.CENTER );
-		Broadcast.add( new JToolBar().add(getBroadcastPanel()), BorderLayout.SOUTH);
+		Broadcast.add(Blank, BorderLayout.NORTH);
+		Broadcast.add(new JLabel("Broadcast Data:"), BorderLayout.CENTER);
+		Broadcast.add(new JToolBar().add(getBroadcastPanel()), BorderLayout.SOUTH);
 
+		JPanel CyLayouts = new JPanel(new BorderLayout());
+		CyLayouts.add(Blank, BorderLayout.NORTH);
+		CyLayouts.add(new JLabel("Select Default Layout:"), BorderLayout.CENTER);
+		this.layoutChooser = new JComboBox();
+		CyLayouts.add(this.layoutChooser, BorderLayout.SOUTH);
+		
 		JPanel MessageDisplay = new JPanel(new BorderLayout());
 		messageLabel = new JLabel("Current Data Type:");
 		MessageDisplay.add(Blank, BorderLayout.NORTH);
@@ -233,14 +271,10 @@ public class GooseDialog extends JPanel
 
 		GaggleToolBar.add(ConnectDisplayPane, BorderLayout.NORTH);
 		GaggleToolBar.add(Broadcast, BorderLayout.CENTER);
+		GaggleToolBar.add(CyLayouts, BorderLayout.SOUTH);
 		GaggleToolBar.add(MessageDisplay, BorderLayout.SOUTH);
 
 		add(GaggleToolBar);
 		}
 
-
-	
 	}
-
-
-
