@@ -37,7 +37,7 @@
 
 Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br>
 <br>
-<a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="images/attention.gif"><b>&nbsp;Registration</b></a><b> now open!!!</b>
+<a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="images/attention.gif"><b>&nbsp;Registration</b></a><b> now open!!!</b> Symposium fee only &euro;40 
 <br>
 <br>
 This year's Public Symposium entitled 

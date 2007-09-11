@@ -214,7 +214,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td><p>17:00-(...) </p></td>
   <td colspan="3"><p>Hackathon Extension 
   	<br>Night out in Amsterdam for attendees of Day 2 
-  	<br>Pub crawl guided by Piet</p></td>
+  	<br>City tour guided by Piet</p></td>
  </tr>
  <tr>
   <td><p>19:00-(...) </p></td>
