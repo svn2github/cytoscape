@@ -771,7 +771,7 @@ public class XGMMLWriter {
 
 				writeAttributeXML(key, checkType(val), val.toString(), true);
 			}
-			depth++;
+			depth--;
 			writeAttributeXML(null, null, null, true);
 		}
 		// process complex map
