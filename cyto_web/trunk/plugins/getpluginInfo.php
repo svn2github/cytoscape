@@ -49,7 +49,7 @@ function getAuthorInfo($connection, $plugin_version_id) {
 
 		if ($author_row["affiliation"] != NULL) {
 			if (!empty ($author_row["affiliationURL"])) {
-				$authorInfoPage .= ' <a href="' . $author_row["affiliationURL"] . '">' . $author_row["affiliation"] . '<a> ';
+				$authorInfoPage .= ' <a href="' . $author_row["affiliationURL"] . '">' . $author_row["affiliation"] . '</a> ';
 			} else {
 				$authorInfoPage .= stripslashes($author_row["affiliation"]);
 			}
