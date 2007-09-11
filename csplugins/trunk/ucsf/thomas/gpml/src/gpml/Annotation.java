@@ -1,9 +1,11 @@
 package gpml;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
@@ -16,7 +18,6 @@ import ding.view.ViewportChangeListener;
 public abstract class Annotation extends JComponent implements ViewportChangeListener {
 		PathwayElement pwElm;
 		
-		protected BufferedImage image;
 		protected DGraphView view;
 		private double scaleFactor = 1;
 		
@@ -58,14 +59,14 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 			setBounds((int)x, (int)y, (int)width, (int)height);
 		}
 		
-		public void setBounds(int x, int y, int width, int height) {
-			super.setBounds(x, y, width, height);
-
-			if ((width > 0) && (height > 0)) {
-				image = new BufferedImage(width,
-						height, BufferedImage.TYPE_INT_ARGB);
-			}
+		public final void paint(Graphics g) {
+			Graphics2D g2d = (Graphics2D)g.create();
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			doPaint(g2d);
 		}
+		
+		protected abstract void doPaint(Graphics2D g2d);
 		
 		protected java.awt.Shape relativeToBounds(java.awt.Shape s) {
 			Rectangle r = getBounds();

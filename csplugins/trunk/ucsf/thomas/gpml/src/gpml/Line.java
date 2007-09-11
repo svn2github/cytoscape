@@ -41,9 +41,7 @@ public class Line extends Annotation {
 		return outline;
 	}
 	
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g.create();
-		
+	public void doPaint(Graphics2D g2d) {
 		Color c = pwElm.getColor();
 		g2d.setColor(c);
 		

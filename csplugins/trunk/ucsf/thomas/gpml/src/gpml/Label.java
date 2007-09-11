@@ -32,21 +32,14 @@ public class Label extends Annotation {
 		return new Font(pwElm.getFontName(), style, (int)GpmlImporter.mToV(pwElm.getMFontSize() * scaleFactor));
 	}
 
-	public void paint(Graphics g) {
-		if(image == null) return;
-		
-		Graphics2D image2D = image.createGraphics();
-				
-		Composite origComposite = image2D.getComposite();
-
+	public void doPaint(Graphics2D g2d) {
 		Rectangle b = getBounds();
-		image2D.setFont(getVFont());
-		image2D.setColor(pwElm.getColor());
+		g2d.setFont(getVFont());
+		g2d.setColor(pwElm.getColor());
 		
-		image2D.drawString(pwElm.getTextLabel(), 0, b.height / 2);
+		g2d.drawString(pwElm.getTextLabel(), 0, b.height / 2);
 		
-		image2D.setComposite(origComposite);
-		((Graphics2D) g).drawImage(image, null, 0, 0);
+		g2d.dispose();
 	}
 	
 	double scaleFactor = 1;

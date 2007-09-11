@@ -45,9 +45,7 @@ public class Shape extends Annotation implements ViewportChangeListener {
 		return f.createTransformedShape(outline).getBounds();
 	}
 		
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g.create();
-		
+	public void doPaint(Graphics2D g2d) {
 		//Rectangle b = relativeToBounds(getUnrotatedBounds()).getBounds();
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle())).getBounds();
 		
