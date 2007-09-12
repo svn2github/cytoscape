@@ -36,7 +36,8 @@ public class LinkedListGraph<N,E> implements Graph<N,E>, Cloneable
 	}
 
 	/**
-	 * Construct a graph so that it is a copy of <code>other</code>
+	 * Construct a graph so that it is a copy of <code>other</code>.
+	 * @param other the graph to copy
 	 */
 	public LinkedListGraph(final Graph<N,E> other)
 	{
