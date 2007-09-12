@@ -44,6 +44,7 @@ import cytoscape.data.readers.BookmarkReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import java.net.URL;
 
@@ -281,9 +282,8 @@ public abstract class BookmarksUtil {
 		return true;
 	}
 
-	// Write the bookmarks object into a file
 	/**
-	 *  DOCUMENT ME!
+	 *  Write the bookmarks object into a file
 	 *
 	 * @param pBookmarks DOCUMENT ME!
 	 * @param pFile DOCUMENT ME!
@@ -295,29 +295,42 @@ public abstract class BookmarksUtil {
 
 		try {
 			fos = new FileOutputStream(pFile);
+			saveBookmark(pBookmarks,fos);
 
-			JAXBContext jc = JAXBContext.newInstance(bookmarkPackageName);
-			Marshaller m = jc.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-			m.marshal(pBookmarks, fos);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-
-			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
-
 			return false;
 		} finally {
 			if (fos != null) {
 				try {
 					fos.close();
 				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
 
+		return true;
+	}
+
+	/**
+	 *  Write the bookmarks object into an outputstream
+	 *
+	 * @param pBookmarks DOCUMENT ME!
+	 * @param os DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static boolean saveBookmark(Bookmarks pBookmarks, OutputStream os) {
+		try {
+			JAXBContext jc = JAXBContext.newInstance(bookmarkPackageName);
+			Marshaller m = jc.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			m.marshal(pBookmarks, os);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} 
 		return true;
 	}
 

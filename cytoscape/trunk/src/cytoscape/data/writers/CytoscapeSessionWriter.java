@@ -74,7 +74,6 @@ import cytoscape.generated.Server;
 import cytoscape.generated.SessionState;
 
 import cytoscape.util.BookmarksUtil;
-import cytoscape.util.ZipUtil;
 
 import cytoscape.util.swing.JTreeTable;
 
@@ -95,7 +94,9 @@ import java.awt.Component;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.io.IOException;
 
 import java.math.BigInteger;
@@ -113,6 +114,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
@@ -182,12 +186,7 @@ public class CytoscapeSessionWriter {
 	// This file was created from "cysession.schema"
 	private final String packageName = "cytoscape.generated";
 
-	// Zip utility to compress/decompress multiple files
-	private ZipUtil zipUtil;
-
 	// Property files
-	private File vizProp;
-	private File cyProp;
 	Properties prop;
 
 	// Root of the network tree
@@ -212,8 +211,9 @@ public class CytoscapeSessionWriter {
 	private Cytopanels cps;
 	private Plugins plugins;
 	private String sessionDirName;
-	private String tmpDirName;
+	private String sessionDir;
 	private Map viewMap = Cytoscape.getNetworkViewMap();
+	private ZipOutputStream zos; 
 
 	/**
 	 * Constructor.
@@ -223,12 +223,11 @@ public class CytoscapeSessionWriter {
 	 */
 	public CytoscapeSessionWriter(String sessionName) {
 		this.sessionFileName = sessionName;
-		this.tmpDirName = System.getProperty("java.io.tmpdir")
-		                  + System.getProperty("file.separator");
 
 		// For now, session ID is time and date
 		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-		sessionDirName = "CytoscapeSession-" + df.format(new Date());
+		sessionDirName = "CytoscapeSession-" + df.format(new Date()); 
+		sessionDir = sessionDirName + "/"; 
 
 		// Get all networks in the session
 		networks = Cytoscape.getNetworkSet();
@@ -242,67 +241,22 @@ public class CytoscapeSessionWriter {
 	 *
 	 */
 	public void writeSessionToDisk() throws Exception {
-		// Notify plugins to save states
-		HashMap<String, List<File>> pluginFileListMap = new HashMap<String, List<File>>();
+		
+		zos = new ZipOutputStream(new FileOutputStream(sessionFileName)); 
 
-		Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE, pluginFileListMap, null);
+		for (CyNetwork network : networks)
+			zipNetwork(network);
+		zipCySession();
+		zipVizmapProps();
+		zipCytoscapeProps();
+		zipBookmarks();
+		zipFileListMap();
 
-		/*
-		 * Total number of files (besides pluginStateFiles) in the zip archive
-		 * will be number of networks + property files + bookmarks file
-		 */
-		targetFileNames = new String[networks.size() + SETTING_FILE_COUNT];
+		zos.close();
 
-		/*
-		 * First, write all network files as XGMML
-		 */
-		int fileCounter = SETTING_FILE_COUNT;
-		String xgmmlFileName = null;
-		CyNetworkView view = null;
-
-		for (CyNetwork network : networks) {
-			// Get Current Network and View
-			view = Cytoscape.getNetworkView(network.getIdentifier());
-
-			xgmmlFileName = network.getTitle() + XGMML_EXT;
-
-			xgmmlFileName = getValidFileName(xgmmlFileName);
-			targetFileNames[fileCounter] = xgmmlFileName;
-			fileCounter++;
-
-			makeXGMML(xgmmlFileName, network, view);
-		}
-
-		// 
-		// Next, create CySession file to save states.
-		//
-		createCySession(sessionDirName);
-
-		// Prepare bookmarks for saving
-		bookmarks = Cytoscape.getBookmarks();
-		BookmarksUtil.saveBookmark(bookmarks, new File(tmpDirName + BOOKMARKS_FILE));
-
-		// Prepare property files for saving
-		preparePropFiles();
-
-		targetFileNames[0] = VIZMAP_FILE;
-		targetFileNames[1] = CYPROP_FILE;
-		targetFileNames[2] = BOOKMARKS_FILE;
-		targetFileNames[3] = CYSESSION_FILE_NAME;
-
-		// Zip the session into a .cys file.
-		zipUtil = new ZipUtil(sessionFileName, targetFileNames, sessionDirName, tmpDirName);
-		zipUtil.setPluginFileMap(pluginFileListMap);
-		/*
-		 * Compress the files. Change the compression level if necessary.
-		 */
-		zipUtil.compressFast(1, true);
-
-		/*
-		 * Fire signal
-		 */
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
 	}
+
 
 	/**
 	 * Utility to replace invalid chars in the XGMML file name.<br>
@@ -373,76 +327,84 @@ public class CytoscapeSessionWriter {
 	}
 
 	/**
-	 * Prepare .props files.
-	 *
+	 * Writes the vizmap.props file to the session zip.
 	 */
-	private void preparePropFiles() {
-		// Prepare vizmap properties file
+	private void zipVizmapProps() throws IOException {
+
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
-		vizProp = new File(tmpDirName + VIZMAP_FILE);
-		CalculatorIO.storeCatalog(catalog, vizProp);
+		zos.putNextEntry(new ZipEntry(sessionDir + VIZMAP_FILE) );
 
-		// Prepare cytoscape properties file
-		FileOutputStream output = null;
+		Writer writer = new OutputStreamWriter( zos );
+		CalculatorIO.storeCatalog(catalog, writer);
 
-		try {
-			cyProp = new File(tmpDirName + CYPROP_FILE);
-			output = new FileOutputStream(cyProp);
-			prop = CytoscapeInit.getProperties();
-			prop.store(output, "Cytoscape Property File");
-		} catch (Exception ex) {
-			System.out.println("session_cytoscape.props Write error");
-			ex.printStackTrace();
-		} finally {
-			if (output != null) {
-				try {
-					output.close();
-					output = null;
-				} catch (IOException ioe) {
-				}
-			}
-		}
+		zos.closeEntry();
 	}
 
 	/**
-	 * Determine file location of the prop files
+	 * Writes the cytoscape.props file to the session zip.
+	 */
+	private void zipCytoscapeProps() throws IOException {
+	
+		zos.putNextEntry(new ZipEntry(sessionDir + CYPROP_FILE) );
+
+		CytoscapeInit.getProperties().store(zos, "Cytoscape Property File");
+
+		zos.closeEntry();
+	}
+
+	/**
+	 * Writes the bookmarks.xml file to the session zip.
+	 */
+	private void zipBookmarks() throws IOException, JAXBException {
+
+		zos.putNextEntry(new ZipEntry(sessionDir + BOOKMARKS_FILE) );
+
+		bookmarks = Cytoscape.getBookmarks();
+		BookmarksUtil.saveBookmark(bookmarks, zos);
+
+		zos.closeEntry();
+	}
+
+	/**
+	 * Writes a network file to the session zip. 
 	 *
 	 * @throws URISyntaxException
 	 * @throws JAXBException
-	 * @throws FactoryConfigurationError
 	 * @throws XMLStreamException
 	 */
-	private void makeXGMML(final String xgmmlFile, final CyNetwork network, final CyNetworkView view)
+	private void zipNetwork(final CyNetwork network)
 	    throws IOException, JAXBException, URISyntaxException {
+
+		String xgmmlFile = getValidFileName( network.getTitle() + XGMML_EXT );
+		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+
+		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
+		Writer writer = new OutputStreamWriter(zos);
+
 		// Write the XGMML file *without* our graphics attributes
 		// We'll let the Vizmapper handle those
 		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
-		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(tmpDirName + xgmmlFile));
+		xgmmlWriter.write(writer);
 
-		try {
-			xgmmlWriter.write(fileWriter);
-		} finally {
-			if (fileWriter != null) {
-				fileWriter.close();
-				fileWriter = null;
-				xgmmlWriter = null;
-			}
-		}
+		zos.closeEntry();
+
+		writer = null;
+		xgmmlWriter = null;
 	}
 
 	/**
 	 * Create cysession.xml file.
 	 *
-	 * @param sessionName
 	 * @throws Exception
 	 */
-	private void createCySession(String sessionName) throws Exception {
+	private void zipCySession() throws Exception {
 		final JAXBContext jc = JAXBContext.newInstance(packageName, this.getClass().getClassLoader());
 
 		initObjectsForDataBinding();
-		session.setId(sessionName);
+		session.setId(sessionDirName);
+
 		// Document version. Maybe used in the future.
 		session.setDocumentVersion(cysessionVersion);
 
@@ -454,16 +416,54 @@ public class CytoscapeSessionWriter {
 		m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 		              new NamespacePrefixMapperForCysession());
 
-		// FileOutputStream fos = null;
-		BufferedWriter writer = new BufferedWriter(new FileWriter(tmpDirName + CYSESSION_FILE_NAME));
+		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
-		try {
-			m.marshal(session, writer);
-		} finally {
-			writer.close();
-			writer = null;
-			m = null;
-			session = null;
+		m.marshal(session, zos);
+
+		zos.closeEntry();
+		m = null;
+		session = null;
+	}
+
+	/**
+	 * Writes any files from plugins to the session file.
+	 *
+	 * @throws IOException
+	 */
+	private void zipFileListMap() throws IOException {
+
+		// fire an event to tell plugins we're ready to save!
+		Map<String, List<File>> pluginFileMap = new HashMap<String, List<File>>();
+		Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE, pluginFileMap, null);
+
+		// now write any files to the zip files
+		if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
+			byte[] buf = new byte[5000];
+			Set<String> pluginSet = pluginFileMap.keySet();
+		
+			for (String pluginName : pluginSet) {
+				List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
+		
+				if ((theFileList == null) || (theFileList.size() == 0))
+					continue;
+	
+				for (File theFile : theFileList) {
+					if ((theFile == null) || (!theFile.exists()))
+						continue;
+	
+					zos.putNextEntry(new ZipEntry( sessionDir + "plugins/" + pluginName + 
+					                               "/" + theFile.getName() ) );
+
+					// copy the file contents to the zip output stream
+					FileInputStream fileIS = new FileInputStream(theFile);
+					int numRead = 0;
+			        while ((numRead = fileIS.read(buf)) > -1)
+		            	zos.write(buf, 0, numRead);
+					fileIS.close();
+
+					zos.closeEntry();
+				}
+			}
 		}
 	}
 

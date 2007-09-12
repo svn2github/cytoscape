@@ -63,7 +63,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.Writer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -123,6 +123,22 @@ public class CalculatorIO {
 	 * calculators are reasonably human-readable.
 	 */
 	public static void storeCatalog(CalculatorCatalog catalog, File outFile) {
+		try {
+			final Writer writer = new FileWriter(outFile);
+			storeCatalog(catalog,writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Writes the contents of a CalculatorCatalog to the specified writer as a
+	 * properties file. This method sorts the lines of text produced by the
+	 * store method of Properties, so that the properties descriptions of the
+	 * calculators are reasonably human-readable.
+	 */
+	public static void storeCatalog(CalculatorCatalog catalog, Writer writer) {
 		// construct the header comment for the file
 		final String lineSep = System.getProperty("line.separator");
 		final StringBuffer header = new StringBuffer();
@@ -135,21 +151,16 @@ public class CalculatorIO {
 		header.append("# Please make sure you know what you are doing before");
 		header.append(" modifying this file by hand.").append(lineSep);
 		
-		final BufferedWriter writer;
 		final BufferedReader reader;
 		final ByteArrayOutputStream buffer;
 
 		try {
-			// writer that writes final version to file;
-			// created now so that we crash early if the file is unwritable
-			writer = new BufferedWriter(new FileWriter(outFile));
 
 			// get a Properties description of the catalog
 			final Properties props = getProperties(catalog);
 
 			// and dump it to a buffer of bytes
 			buffer = new ByteArrayOutputStream();
-
 			props.store(buffer, header.toString());
 
 			// convert the bytes to a String we can read from
@@ -181,15 +192,16 @@ public class CalculatorIO {
 			// and write to file
 			for (String theLine : headerLines) {
 				writer.write(theLine, 0, theLine.length());
-				writer.newLine();
+				writer.write(lineSep);
 			}
 
 			for (String theLine : lines) {
 				writer.write(theLine, 0, theLine.length());
-				writer.newLine();
+				writer.write(lineSep);
 			}
 
-			writer.close();
+			writer.flush();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
