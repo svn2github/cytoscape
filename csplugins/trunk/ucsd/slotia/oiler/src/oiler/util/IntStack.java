@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
  * Stack with <code>int</code>s for elements.
  * @author Samad Lotia
  */
-public class IntStack
+public class IntStack implements IntIterable
 {
 	protected int pointer = -1;
 	protected IntArray array;
@@ -78,5 +78,33 @@ public class IntStack
 		if (pointer < 0)
 			throw new NoSuchElementException();
 		return array.get(pointer--);
+	}
+
+	public IntIterator iterator()
+	{
+		return array.iterator();
+	}
+
+	/**
+	 * Returns the distance of <code>element</code> to
+	 * the top of the stack.
+	 * If the stack contains more than one <code>element</code>,
+	 * it will return the element whose distance is the smallest.
+	 */
+	public int search(final int element)
+	{
+		final int index = array.lastIndexOf(element);
+		if (index < 0)
+			return -1;
+		else
+			return array.size() - index - 1;
+	}
+
+	/**
+	 * Returns true if the element is in the stack.
+	 */
+	public boolean contains(final int element)
+	{
+		return (array.lastIndexOf(element) != -1);
 	}
 }
