@@ -659,7 +659,7 @@ else
 		$authorCount = count($pluginProps['pluginAuthorsInstitutions']['names']);
 
 		for ($i = 0; $i < $authorCount; $i++) {
-			$dbQuery = 'INSERT INTO authors VALUES (0, "' . addslashes($pluginProps['pluginAuthorsInstitutions']['names'][$i]) . '", "' . 'null' . '","' . $pluginProps['pluginAuthorsInstitutions']['insts'][$i] . '","' . 'null' . '")';
+			$dbQuery = 'INSERT INTO authors VALUES (0, "' . addslashes($pluginProps['pluginAuthorsInstitutions']['names'][$i]) . '", "' . '' . '","' . $pluginProps['pluginAuthorsInstitutions']['insts'][$i] . '","' . '' . '")';
 
 			// Run the query
 			if (!(@ mysql_query($dbQuery, $connection)))
