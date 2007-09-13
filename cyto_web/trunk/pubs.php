@@ -14,6 +14,18 @@
 
 <? include "nav.php"; ?>
 <div id="indent">
+	<p>
+			<b>Proc. Natl. Acad. Sci (PNAS) 2007</b>
+			<br>
+			Tan K, Shlomi T, Feizi, H, Ideker T, and Sharan R.
+			<br>
+			Transcriptional regulation of protein complexes within and across species.
+			<br>
+			[<A HREF="http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17227853&ordinalpos=2&itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum"/>Abstract</A>]
+			[<A HREF="http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=17227853">Full Text</A>]
+			[<A HREF="http://www.pubmedcentral.nih.gov/picrender.fcgi?artid=1783126&blobtype=pdf">PDF</A>]
+			<br>
+	<p>	
 
 	<p>
 			<b>Nature Nov. 2005</b>
