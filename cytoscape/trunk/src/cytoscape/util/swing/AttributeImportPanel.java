@@ -39,6 +39,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -56,7 +58,7 @@ import javax.swing.JPanel;
  *  @version 0.5
  *
  */
-public abstract class AttributeImportPanel extends JPanel {
+public abstract class AttributeImportPanel extends JPanel implements PropertyChangeListener {
 	/**
 	 * Will be caught by parent object (usually a dialog.)
 	 */
@@ -90,6 +92,8 @@ public abstract class AttributeImportPanel extends JPanel {
 
 		initComponents();
 		setAttributes();
+		
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	protected void initComponents() {
@@ -322,6 +326,7 @@ public abstract class AttributeImportPanel extends JPanel {
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		final String[] names = nodeAttr.getAttributeNames();
 
+		attributeComboBox.removeAllItems();
 		attributeComboBox.addItem("ID");
 
 		for (String name : names) {
@@ -330,7 +335,13 @@ public abstract class AttributeImportPanel extends JPanel {
 			}
 		}
 	}
-
+	
+	public void propertyChange(PropertyChangeEvent e) {
+		if(e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+			setAttributes();
+		}
+	}
+	
 	// Swing components.  Maybe accessed from child classes.
 	protected javax.swing.JComboBox attributeComboBox;
 	protected javax.swing.JLabel attributeLabel;
