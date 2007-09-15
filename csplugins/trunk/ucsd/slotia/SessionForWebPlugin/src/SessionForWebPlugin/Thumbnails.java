@@ -21,7 +21,7 @@ public class Thumbnails
 			graphics.setColor(Color.LIGHT_GRAY);
 			graphics.fillRect(0, 0, thumbnail.getWidth(), thumbnail.getHeight());
 			graphics.setColor(Color.BLACK);
-			String message = "Network does not have view";
+			String message = "No Thumbnail Available";
 			int messageWidth = graphics.getFontMetrics().stringWidth(message);
 			int messageHeight = graphics.getFont().getSize();
 			graphics.drawString(message,

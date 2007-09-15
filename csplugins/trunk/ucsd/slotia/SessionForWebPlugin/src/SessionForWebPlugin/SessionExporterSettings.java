@@ -1,5 +1,8 @@
 package SessionForWebPlugin;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class SessionExporterSettings
 {
 	public static final byte DESTINATION_DIRECTORY       = 0;
@@ -10,6 +13,7 @@ public class SessionExporterSettings
 	public static final String FORMAT_PNG                = "png";
 	public static final String FORMAT_JPG                = "jpg";
 	
+	public List<String> networks	    = new ArrayList<String>();
 	public byte	destination         = DESTINATION_DIRECTORY;
 	public int	numNetworksPerRow   = 3;
 	public boolean	doSeparateIntoPages = false;

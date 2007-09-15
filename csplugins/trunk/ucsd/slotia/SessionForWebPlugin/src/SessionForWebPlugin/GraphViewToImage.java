@@ -2,6 +2,7 @@ package SessionForWebPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
@@ -15,12 +16,13 @@ import cytoscape.render.stateful.GraphLOD;
 
 public class GraphViewToImage
 {
-	public static BufferedImage convert(DGraphView view, SessionExporterSettings settings)
+	public static Dimension getImageDimensions(DGraphView view, SessionExporterSettings settings)
 	{
 		if (view == null)
 			return null;
-		ImageLOD imageLOD = new ImageLOD();
 		Rectangle2D.Double graphBounds = graphBounds(view);
+		if (graphBounds == null)
+			return null;
 
 		double zoom = settings.imageZoom;
 		int width = (int) (graphBounds.width * zoom);
@@ -40,16 +42,49 @@ public class GraphViewToImage
 				width = (int) (graphBounds.width * zoom);
 			}
 		}
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Dimension result = new Dimension();
+		result.setSize(width, height);
+		return result;
+	}
+	
+	public static BufferedImage convert(DGraphView view, SessionExporterSettings settings)
+	{
+		if (view == null)
+			return null;
+		Rectangle2D.Double graphBounds = graphBounds(view);
+		Dimension imageDimensions = getImageDimensions(view, settings);
+
+		System.gc();
+		BufferedImage image = null;
+		try
+		{
+			image = new BufferedImage((int) imageDimensions.getWidth(), (int) imageDimensions.getHeight(), BufferedImage.TYPE_INT_RGB);
+		}
+		catch(OutOfMemoryError e)
+		{
+			outOfMemoryError();
+			return null;
+		}
 						
 		double centerX = graphBounds.x + graphBounds.width / 2.0d;
 		double centerY = graphBounds.y + graphBounds.height / 2.0d;
+		double zoom = ((double) imageDimensions.getWidth()) / graphBounds.width;
 		Paint background = view.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS).getBackground();
+		ImageLOD imageLOD = new ImageLOD();
 		imageLOD.setParentLOD(view.getGraphLOD());
 		view.drawSnapshot(image, imageLOD, background,
 				centerX, centerY, zoom - zoom / 10.0);
 
 		return image;
+	}
+
+	private static void outOfMemoryError()
+	{
+		System.gc();
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			"Could not export network because there was not enough memory.",
+			"Session for Web",
+			JOptionPane.ERROR_MESSAGE);
 	}
 
 	private static Rectangle2D.Double graphBounds(DGraphView graphView)

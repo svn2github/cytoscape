@@ -30,10 +30,10 @@
   <property name="project.jar.manifest"		location="${manifest.dir}/project.manifest"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../../../../cytoscape"/>
+  <property name="cytoscape.root.dir"		location="../../cytoscape-2.5"/>
   <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
   <!-- Cytoscape directories and files needed for installing -->
-  <property name="cytoscape.distro.dir"		location="${cytoscape.root.dir}/build/cytoscape-v2.4.1"/>
+  <property name="cytoscape.distro.dir"		location="${cytoscape.root.dir}/build/cytoscape-v2.5.1"/>
   <property name="cytoscape.distro.plugins.dir"	location="${cytoscape.distro.dir}/plugins"/>
 
   <!-- Project jar properties -->
@@ -81,7 +81,9 @@
   <target	name="jar"
   		depends="compile,manifest"
 		description="package all class files into a jar">
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/SessionForWebPlugin"/>
+    <copy file="${resources.dir}/plugin.props" todir="${build.dir}"/>
+    <copy file="${resources.dir}/SessionForWeb.png" todir="${build.dir}/SessionForWebPlugin"/>
+    <copy file="${resources.dir}/StatusMsgs.properties" todir="${build.dir}"/>
     <jar	jarfile="${project.jar}"
     		basedir="${build.dir}"
     		manifest="${project.jar.manifest}"/>

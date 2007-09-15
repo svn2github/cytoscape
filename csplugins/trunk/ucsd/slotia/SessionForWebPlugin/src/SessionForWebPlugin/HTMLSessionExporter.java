@@ -191,23 +191,6 @@ public class HTMLSessionExporter
 			}
 
 			/**
-			 * Creates a map where network titles map to network IDs.
-			 */
-			private Map<String,String> networkTitleToIDMap()
-			{
-				Map<String,String> map = new HashMap<String,String>();
-				Iterator iterator = Cytoscape.getNetworkSet().iterator();
-				while (iterator.hasNext())
-				{
-					CyNetwork network = (CyNetwork) iterator.next();
-					String networkID = network.getIdentifier();
-					String networkTitle = network.getTitle();
-					map.put(networkTitle, networkID);
-				}
-				return map;
-			}
-
-			/**
 			 * Groups a list of network IDs together based on visual style.
 			 * @return A map where visual styles map to network IDs
 			 */
@@ -231,7 +214,7 @@ public class HTMLSessionExporter
 			 */
 			private List<String> networkIDs()
 			{
-				Map<String,String> networkTitleToIDMap = networkTitleToIDMap();
+				Map<String,String> networkTitleToIDMap = SessionForWebPlugin.networkTitleToIDMap();
 				List<String> networkIDs = new ArrayList<String>();
 
 				if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_AS_IS)
@@ -243,7 +226,11 @@ public class HTMLSessionExporter
 				{
 					Set<String> networkTitles = new TreeSet<String>(networkTitleToIDMap.keySet());
 					for (String networkTitle : networkTitles)
-						networkIDs.add(networkTitleToIDMap.get(networkTitle));
+					{
+						String networkID = networkTitleToIDMap.get(networkTitle);
+						if (settings.networks.contains(networkID))
+							networkIDs.add(networkID);
+					}
 				}
 				else if (settings.sortImages == SessionExporterSettings.SORT_IMAGES_BY_VISUAL_STYLE)
 				{
@@ -252,7 +239,8 @@ public class HTMLSessionExporter
 					networkIDs.clear();
 					for (VisualStyle vizStyle : vizStyleToIDsMap.keySet())
 						for (String networkID : vizStyleToIDsMap.get(vizStyle))
-							networkIDs.add(networkID);
+							if (settings.networks.contains(networkID))
+								networkIDs.add(networkID);
 				}
 				return networkIDs;
 			}
@@ -262,9 +250,12 @@ public class HTMLSessionExporter
 			 */
 			private void searchTreeModel(List<String> networkIDs, Map<String,String> networkTitleToIDMap, TreeModel model, Object node)
 			{
-				// Breadth first search
 				if (node != model.getRoot())
-					networkIDs.add(networkTitleToIDMap.get(node.toString()));
+				{
+					String networkID = networkTitleToIDMap.get(node.toString());
+					if (settings.networks.contains(networkID))
+						networkIDs.add(networkID);
+				}
 				for (int i = 0; i < model.getChildCount(node); i++)
 					searchTreeModel(networkIDs, networkTitleToIDMap, model, model.getChild(node, i));
 			}

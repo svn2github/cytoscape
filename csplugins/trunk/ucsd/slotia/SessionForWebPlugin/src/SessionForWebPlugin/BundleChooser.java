@@ -28,7 +28,7 @@ public class BundleChooser
 					int choice = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
 							"\"" + getSelectedFile() + "\" already exists.\n\n" +
 							"Do you want to replace it?",
-							"Save Cytoscape Session To",
+							"Save Session To",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE,
 							null,
@@ -47,13 +47,13 @@ public class BundleChooser
 
 		if (settings.destination == SessionExporterSettings.DESTINATION_DIRECTORY)
 		{
-			fileChooser.setDialogTitle("Save Cytoscape Session To Directory");
+			fileChooser.setDialogTitle("Save Session To Directory");
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fileChooser.setAcceptAllFileFilterUsed(false);
 		}
 		else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE)
 		{
-			fileChooser.setDialogTitle("Save Cytoscape Session To Zip Archive");
+			fileChooser.setDialogTitle("Save Session To Zip Archive");
 			fileChooser.setSelectedFile(new File("bundle.zip"));
 			FileFilter zipFilter = new FileFilter()
 			{
@@ -86,7 +86,7 @@ public class BundleChooser
 				{
 					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 						"Failed to create \"" + fileChooser.getSelectedFile() + "\".",
-						"Save Cytoscape Session To",
+						"Save Session To",
 						JOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -97,7 +97,7 @@ public class BundleChooser
 					"Failed to create \"" + fileChooser.getSelectedFile() + "\" because of " +
 					"insufficient security permissions.\n\n" +
 					"Security error: " + e.getMessage(),
-					"Save Cytoscape Session To",
+					"Save Session To",
 					JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
@@ -116,7 +116,7 @@ public class BundleChooser
 		{
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 				"Failed to create the bundle \"" + selectedFile.toString() + "\".\n\n" +
-				"Error message: " + e.getMessage(), "Session to Web", JOptionPane.ERROR_MESSAGE);
+				"Error message: " + e.getMessage(), "Session for Web", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		return bundle;
