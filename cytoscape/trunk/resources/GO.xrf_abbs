@@ -926,8 +926,7 @@ url_syntax: http://www.expasy.ch/cgi-bin/prosite-search-ac?
 url_example: http://www.expasy.ch/cgi-bin/prosite-search-ac?PS00365
 
 abbreviation: protein_id
-database: The protein identifier shared by DDBJ/EMBL-bank/GenBank nucleotide
-sequence databases
+database: The protein identifier shared by DDBJ/EMBL-bank/GenBank nucleotide sequence databases
 object: Identifier
 example_id: protein_id:CAA71991
 
@@ -1388,3 +1387,13 @@ example_id: ZFIN:ZDB-GENE-990415-103
 generic_url: http://zfin.org/
 url_syntax: http://zfin.org/cgi-bin/ZFIN_jump?record=
 url_example: http://zfin.org/cgi-bin/ZFIN_jump?record=ZDB-GENE-990415-103
+
+abbreviation: Google
+database: Google keyword search
+generic_url: http://www.google.com/
+url_syntax: http://www.google.com/search?hl=en&q=
+
+abbreviation: Ask
+database: Ask.com
+generic_url: http://www.ask.com/
+url_syntax: http://www.ask.com/web?q=
