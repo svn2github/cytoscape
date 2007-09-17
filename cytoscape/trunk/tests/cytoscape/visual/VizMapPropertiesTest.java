@@ -81,97 +81,97 @@ public class VizMapPropertiesTest extends TestCase {
 
 		CalculatorIO.loadCalculators(props, catalog);
 
-		Collection nodeColorCalcs = catalog.getNodeColorCalculators();
+		Collection nodeColorCalcs = catalog.getCalculators(VisualPropertyType.NODE_FILL_COLOR);
 		System.out.println("nodeColorCalcs.size() = " + nodeColorCalcs.size());
-		checkCalculator(catalog.getNodeColorCalculator("RedGreen"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FILL_COLOR,"RedGreen"));
 		System.out.println();
 
-		Collection nodeLineTypeCalcs = catalog.getNodeLineTypeCalculators();
+		Collection nodeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.NODE_LINETYPE);
 		System.out.println("nodeLineTypeCalcs.size() = " + nodeLineTypeCalcs.size());
 		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
-		assertNull(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
+		assertNull(catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, "BasicDiscrete"));
 		
 		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicContinuous"));
-		assertNull(catalog.getNodeLineTypeCalculator("BasicContinuous"));
+		assertNull(catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, "BasicContinuous"));
 		System.out.println();
 
-		Collection nodeShapeCalcs = catalog.getNodeShapeCalculators();
+		Collection nodeShapeCalcs = catalog.getCalculators(VisualPropertyType.NODE_SHAPE);
 		System.out.println("nodeShapeCalcs.size() = " + nodeShapeCalcs.size());
-		checkCalculator(catalog.getNodeShapeCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeShapeCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_SHAPE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_SHAPE, "BasicContinuous"));
 		System.out.println();
 
-		Collection nodeSizeCalcs = catalog.getNodeSizeCalculators();
+		Collection nodeSizeCalcs = catalog.getCalculators(VisualPropertyType.NODE_SIZE);
 		System.out.println("nodeSizeCalcs.size() = " + nodeSizeCalcs.size());
-		checkCalculator(catalog.getNodeSizeCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeSizeCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_SIZE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_SIZE, "BasicContinuous"));
 		System.out.println();
 
-		Collection nodeLabelCalcs = catalog.getNodeLabelCalculators();
+		Collection nodeLabelCalcs = catalog.getCalculators(VisualPropertyType.NODE_LABEL);
 		System.out.println("nodeLabelCalcs.size() = " + nodeLabelCalcs.size());
-		checkCalculator(catalog.getNodeLabelCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeLabelCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_LABEL, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_LABEL, "BasicContinuous"));
 		System.out.println();
 
-		Collection nodeToolTipCalcs = catalog.getNodeToolTipCalculators();
+		Collection nodeToolTipCalcs = catalog.getCalculators(VisualPropertyType.NODE_TOOLTIP);
 		System.out.println("nodeToolTipCalcs.size() = " + nodeToolTipCalcs.size());
-		checkCalculator(catalog.getNodeToolTipCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeToolTipCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_TOOLTIP, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_TOOLTIP, "BasicContinuous"));
 		System.out.println();
 
-		Collection nodeFontFaceCalcs = catalog.getNodeFontFaceCalculators();
+		Collection nodeFontFaceCalcs = catalog.getCalculators(VisualPropertyType.NODE_FONT_FACE);
 		System.out.println("nodeFontFaceCalcs.size() = " + nodeFontFaceCalcs.size());
-		checkCalculator(catalog.getNodeFontFaceCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeFontFaceCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_FACE,"BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_FACE,"BasicContinuous"));
 		System.out.println();
 
-		Collection nodeFontSizeCalcs = catalog.getNodeFontSizeCalculators();
+		Collection nodeFontSizeCalcs = catalog.getCalculators(VisualPropertyType.NODE_FONT_SIZE);
 		System.out.println("nodeFontSizeCalcs.size() = " + nodeFontSizeCalcs.size());
-		checkCalculator(catalog.getNodeFontSizeCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getNodeFontSizeCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_SIZE,"BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_SIZE,"BasicContinuous"));
 		System.out.println();
 
-		Collection edgeColorCalcs = catalog.getEdgeColorCalculators();
+		Collection edgeColorCalcs = catalog.getCalculators(VisualPropertyType.EDGE_COLOR);
 		System.out.println("edgeColorCalcs.size() = " + edgeColorCalcs.size());
-		checkCalculator(catalog.getEdgeColorCalculator("BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_COLOR, "BasicDiscrete"));
 		System.out.println();
 
-		Collection edgeLineTypeCalcs = catalog.getEdgeLineTypeCalculators();
+		Collection edgeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.EDGE_LINETYPE);
 		System.out.println("edgeLineTypeCalcs.size() = " + edgeLineTypeCalcs.size());
 		assertEquals(0, edgeLineTypeCalcs.size());
 //		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicDiscrete"));
 //		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
 		System.out.println();
 
-		Collection edgeArrowCalcs = catalog.getEdgeArrowCalculators();
+		Collection edgeArrowCalcs = catalog.getCalculators(VisualPropertyType.EDGE_SRCARROW);
 		System.out.println("edgeArrowCalcs.size() = " + edgeArrowCalcs.size());
-		checkCalculator(catalog.getEdgeArrowCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getEdgeArrowCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_SRCARROW, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TGTARROW, "BasicContinuous"));
 		System.out.println();
 
-		Collection edgeLabelCalcs = catalog.getEdgeLabelCalculators();
+		Collection edgeLabelCalcs = catalog.getCalculators(VisualPropertyType.EDGE_LABEL);
 		System.out.println("edgeLabelCalcs.size() = " + edgeLabelCalcs.size());
-		checkCalculator(catalog.getEdgeLabelCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getEdgeLabelCalculator("BasicContinuous"));
-		checkCalculator(catalog.getEdgeLabelCalculator("testPassThrough"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_LABEL, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_LABEL, "BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_LABEL, "testPassThrough"));
 		System.out.println();
 
-		Collection edgeToolTipCalcs = catalog.getEdgeToolTipCalculators();
+		Collection edgeToolTipCalcs = catalog.getCalculators(VisualPropertyType.EDGE_TOOLTIP);
 		System.out.println("edgeToolTipCalcs.size() = " + edgeToolTipCalcs.size());
-		checkCalculator(catalog.getEdgeToolTipCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getEdgeToolTipCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TOOLTIP,"BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TOOLTIP,"BasicContinuous"));
 		System.out.println();
 
-		Collection edgeFontFaceCalcs = catalog.getEdgeFontFaceCalculators();
+		Collection edgeFontFaceCalcs = catalog.getCalculators(VisualPropertyType.EDGE_FONT_FACE);
 		System.out.println("edgeFontFaceCalcs.size() = " + edgeFontFaceCalcs.size());
-		checkCalculator(catalog.getEdgeFontFaceCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getEdgeFontFaceCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_FACE,"BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_FACE,"BasicContinuous"));
 		System.out.println();
 
-		Collection edgeFontSizeCalcs = catalog.getEdgeFontSizeCalculators();
+		Collection edgeFontSizeCalcs = catalog.getCalculators(VisualPropertyType.EDGE_FONT_SIZE);
 		System.out.println("edgeFontSizeCalcs.size() = " + edgeFontSizeCalcs.size());
-		checkCalculator(catalog.getEdgeFontSizeCalculator("BasicDiscrete"));
-		checkCalculator(catalog.getEdgeFontSizeCalculator("BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_SIZE,"BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_SIZE,"BasicContinuous"));
 		System.out.println();
 
 		Iterator vizStyles = catalog.getVisualStyles().iterator();
