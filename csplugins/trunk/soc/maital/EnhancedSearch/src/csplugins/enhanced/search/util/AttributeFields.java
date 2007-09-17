@@ -65,9 +65,6 @@ public class AttributeFields {
 
 	private void initFields() {
 
-		// Maital: change this.
-		// Include handling of ID fields (nodes and edges).
-
 		// Define attribute fields in which the search is to be carried on
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
