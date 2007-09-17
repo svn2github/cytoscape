@@ -71,7 +71,7 @@ public class CyStringPropertyEditor extends StringPropertyEditor {
 					Object val = null;
 
 					try {
-						getM = e.getOppositeComponent().getClass().getMethod("getSelectedRow", null);
+						getM = e.getOppositeComponent().getClass().getMethod("getSelectedRow", new Class[] {});
 					} catch (SecurityException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -81,7 +81,7 @@ public class CyStringPropertyEditor extends StringPropertyEditor {
 					}
 
 					try {
-						val = getM.invoke(e.getOppositeComponent(), null);
+						val = getM.invoke(e.getOppositeComponent(), new Object[] {});
 					} catch (IllegalArgumentException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
