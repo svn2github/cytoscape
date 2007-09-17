@@ -1,5 +1,5 @@
-!version: $Revision: 2.121 $
-!date: $Date: 2006/08/04 13:50:48 $
+!version: $Revision: 2.150 $
+!date: $Date: 2007/09/14 15:45:34 $
 !
 !Gene Ontology
 !Abbreviations for cross-referenced databases.
@@ -46,6 +46,14 @@ object: AGRICOLA call number
 example_id: AGRICOLA_NAL:TP248.2 P76 v.14
 generic_url: http://agricola.nal.usda.gov/
 
+abbreviation: AraCyc
+database: AraCyc metabolic pathway database for Arabidopsis thaliana
+object: Identifier
+example_id: AraCyc:PWYQT-62
+generic_url: http://www.arabidopsis.org/biocyc/index.jsp
+url_syntax: http://www.arabidopsis.org:1555/ARA/NEW-IMAGE?type=NIL&object=
+url_example: http://www.arabidopsis.org:1555/ARA/NEW-IMAGE?type=NIL&object=PWYQT-62
+
 abbreviation: BIOMD
 database: BioModels Database
 object: Accession
@@ -69,6 +77,18 @@ generic_url: http://www.brenda.uni-koeln.de/
 url_syntax: http://www.brenda.uni-koeln.de/php/result_flat.php4?ecno=
 url_example: http://www.brenda.uni-koeln.de/php/result_flat.php4?ecno=4.2.1.3
 
+abbreviation: Broad
+database: Broad Institute
+generic_url: http://www.broad.mit.edu/
+
+abbreviation: Broad_MGG
+database: Magnaporthe grisea Database at the Broad Institute
+object: Locus
+example_id: Broad_MGG:MGG_05132.5
+generic_url: http://www.broad.mit.edu/annotation/genome/magnaporthe_grisea/Home.html
+url_syntax: http://www.broad.mit.edu/annotation/genome/magnaporthe_grisea/GeneLocus.html?sp=S
+url_example: http://www.broad.mit.edu/annotation/genome/magnaporthe_grisea/GeneLocus.html?sp=SMGG_05132
+
 ! Note that CBS examples are not in the traditional accession number style because the entities in question are not entries in a database, and don't have accession numbers
 
 abbreviation: CBS
@@ -83,6 +103,16 @@ example_id: CBS:NetOGlyc
 example_id: CBS:NetNGlyc
 generic_url: http://www.cbs.dtu.dk/
 url_example: http://www.cbs.dtu.dk/services/TMHMM/
+
+! note: CDD contact person is Rob Edwards (RobE@thefig.info); BRC: NMPDR
+
+abbreviation: CDD
+database: Conserved Domain Database at NCBI
+object: Identifier
+example_id: CDD:34222
+generic_url: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=cdd
+url_syntax: http://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=
+url_example: http://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=34222
 
 ! note: The CGD is a synonym for the CGDID
 
@@ -172,10 +202,11 @@ generic_url: http://www.ncbi.nlm.nih.gov/COG/
 url_syntax: http://www.ncbi.nlm.nih.gov/COG/new/release/coglist.cgi?pathw=
 url_example: http://www.ncbi.nlm.nih.gov/COG/new/release/coglist.cgi?pathw=14
 
-abbreviation: DDB
+abbreviation: Dictybase
 database: DictyBase
 object: Accession ID
-example_id: DDB:DDB0001836
+example_id: dictyBase:DDB0001836
+synonym: DDB
 generic_url: http://dictybase.org
 url_syntax: http://dictybase.org/db/cgi-bin/gene_page.pl?dictybaseid=
 url_example: http://dictybase.org/db/cgi-bin/gene_page.pl?dictybaseid=DDB0001836
@@ -196,13 +227,14 @@ generic_url: http://dictybase.org
 url_syntax: http://dictybase.org/db/cgi-bin/dictyBase/reference/reference.pl?refNo=
 url_example: http://dictybase.org/db/cgi-bin/dictyBase/reference/reference.pl?refNo=10157
 
-! note: the resolver at dx.doi.org generates the correct URL for a given DOI
+! note: the resolver at dx.doi.org generates the correct URL for a given DOI; e.g. the first example URL will be resolved into the second.
 
 abbreviation: DOI
 database: Digital Object Identifier
 object: Identifier
 example_id: DOI:10.1016/S0963-9969(99)00021-6
 generic_url: http://www.doi.org/
+url_example: http://www.doi.org/DOI:10.1016/S0963-9969(99)00021-6
 url_example: http://www.sciencedirect.com/science?_ob=ArticleURL&_udi=B6T6V-3W9CY4V-1&_coverDate=08%2F31%2F1998&_alid=431609009&_rdoc=1&_fmt=&_orig=search&_qd=1&_cdi=5040&_sort=d&view=c&_acct=C000042238&_version=1&_urlVersion=0&_userid=776054&md5=f57d8c0672e06c6c46a1acbd7e8a2fc6
 
 abbreviation: EC
@@ -219,6 +251,14 @@ generic_url: http://www.ecoli-york.org/
 url_syntax: http://www.biolws1.york.ac.uk/echobase/Gene.cfm?recordID=
 url_example: http://www.biolws1.york.ac.uk/echobase/Gene.cfm?recordID=EB0231
 
+abbreviation: ECK
+database: The EcoGene Database of Escherichia coli Sequence and Function
+object: ECK accession number (E. coli K-12 gene identifier)
+example_id: ECK:ECK3746
+generic_url: http://www.ecogene.org/
+url_syntax: http://www.ecogene.org/geneInfo.php?eck_id=
+url_example: http://www.ecogene.org/geneInfo.php?eck_id=ECK3746
+
 abbreviation: EcoCyc
 database: The Encyclopedia of E. coli metabolism
 object: Pathway identifier
@@ -228,17 +268,20 @@ url_syntax: http://biocyc.org/ECOLI/NEW-IMAGE?type=PATHWAY&object=
 url_example: http://biocyc.org/ECOLI/NEW-IMAGE?type=PATHWAY&object=P2-PWY
 
 abbreviation: ECOGENE
-database: CGSC: E.coli Genetic Stock Center
+database: The EcoGene Database of Escherichia coli Sequence and Function
 object: EcoGene Accession Number
 example_id: ECOGENE:EG10818
-generic_url: http://cgsc.biology.yale.edu/
-url_example: http://cgsc.biology.yale.edu/cgi-bin/sybgw/cgsc/Site/315
+generic_url: http://www.ecogene.org/
+url_syntax: http://www.ecogene.org/geneInfo.php?eg_id=
+url_example: http://www.ecogene.org/geneInfo.php?eg_id=EG10818
+
+! note: to construct URLs, use EcoGene accessions or ECK accession numbers
 
 abbreviation: ECOGENE_G
-database: CGSC: E.coli Genetic Stock Center
+database: The EcoGene Database of Escherichia coli Sequence and Function
 object: EcoGene Primary Gene Name
 example_id: ECOGENE_G:deoC
-generic_url: http://cgsc.biology.yale.edu/
+generic_url: http://www.ecogene.org/
 
 abbreviation: EMBL
 database: International Nucleotide Sequence Database Collaboration, comprising EMBL-EBI International Nucleotide Sequence Data Library (EMBL-Bank), DNA DataBank of Japan (DDBJ), and NCBI GenBank
@@ -351,22 +394,15 @@ generic_url: http://genprotec.mbl.edu/
 
 abbreviation: GermOnline
 database: GermOnline
-object: Identifier
-example_id: GermOnline:140116
 generic_url: http://www.germonline.org/
-url_syntax: http://germonline.unibas.ch/gene_page.php?orf_id=
-url_syntax: http://germonline.yeastgenome.org/gene_page.php?orf_id=
-url_syntax: http://germonline.biochem.s.u-tokyo.ac.jp/gene_page.php?orf_id=
-url_example: http://germonline.unibas.ch/gene_page.php?orf_id=140116
-url_example: http://germonline.yeastgenome.org/gene_page.php?orf_id=140116
-url_example: http://germonline.biochem.s.u-tokyo.ac.jp/gene_page.php?orf_id=140116
 
 abbreviation: GO
 database: Gene Ontology Database
 object: Identifier
-example_id: GO:0046703
-generic_url: http://godatabase.org/cgi-bin/go.cgi?query=
-url_syntax: http://godatabase.org/cgi-bin/go.cgi?query=
+example_id: GO:0004352
+generic_url: http://amigo.geneontology.org/cgi-bin/amigo/go.cgi
+url_syntax: http://amigo.geneontology.org/cgi-bin/amigo/go.cgi?action=query&view=query&search_constraint=terms&query=GO ID
+url_example: http://amigo.geneontology.org/cgi-bin/amigo/go.cgi?action=query&view=query&search_constraint=terms&query=GO:0004352
 
 ! note: generic_url and url_example for GO_REF to be filled in when available
 
@@ -374,8 +410,6 @@ abbreviation: GO_REF
 database: Gene Ontology Database references
 object: Accession (for reference)
 example_id: GO_REF:0000001
-generic_url:
-url_example:
 
 abbreviation: GOA
 database: GO Annotation at EBI
@@ -387,63 +421,78 @@ generic_url: http://www.geneontology.org/
 
 abbreviation: GR
 database: Gramene: A Comparative Mapping Resource for Grains
-object: Protein
-example_id: GR:P93436
+object: Identifier (any)
+example_id: GR:sd1
 generic_url: http://www.gramene.org/
-url_syntax: http://www.gramene.org/perl/protein_search?acc=Accession number 
-url_example: http://www.gramene.org/perl/protein_search?acc=P93436 
+url_syntax: http://www.gramene.org/db/searches/browser?search_type=All&RGN=on&query=
+url_example: http://www.gramene.org/db/searches/browser?search_type=All&RGN=on&query=sd1
 
-abbreviation: GR_MUT
+abbreviation: GR_GENE
 database: Gramene: A Comparative Mapping Resource for Grains
-object: Mutant
-example_id: GR_MUT:659
+object: Gene identifier
+synonym: GR_gene
+example_id: GR_GENE:GR:0060198
 generic_url: http://www.gramene.org/
-url_syntax: http://www.gramene.org/db/mutant/search_mutant?id=ID number
-url_example: http://www.gramene.org/db/mutant/search_mutant?id=GR:0060198
+url_syntax: http://www.gramene.org/db/genes/search_gene?acc=ID
+url_example: http://www.gramene.org/db/genes/search_gene?acc=GR:0060198
 
-abbreviation: GR_protein
+abbreviation: GR_PROTEIN
 database: Gramene: A Comparative Mapping Resource for Grains
 object: Protein identifier
-example_id: GR_protein:110916
+synonym: GR_protein
+example_id: GR_PROTEIN:Q6VSV0
 generic_url: http://www.gramene.org/
-url_syntax: http://www.gramene.org/db/protein/protein_search?protein_id=
-url_example: http://www.gramene.org/db/protein/protein_search?protein_id=110916
+url_syntax: http://www.gramene.org/db/protein/protein_search?acc=
+url_example: http://www.gramene.org/db/protein/protein_search?acc=Q6VSV0
+
+abbreviation: GR_QTL
+database: Gramene: A Comparative Mapping Resource for Grains
+object: QTL identifier
+example_id: GR_QTL:CQU7
+generic_url: http://www.gramene.org/
+url_syntax: http://www.gramene.org/db/qtl/qtl_display?qtl_accession_id=
+url_example: http://www.gramene.org/db/qtl/qtl_display?qtl_accession_id=CQU7
 
 abbreviation: GR_REF
 database: Gramene: A Comparative Mapping Resource for Grains
 object: Reference
 example_id: GR_REF:659
 generic_url: http://www.gramene.org/
-url_syntax: http://www.gramene.org/perl/pub_search?ref_id=ID number
-url_example: http://www.gramene.org/perl/pub_search?ref_id=659
+url_syntax: http://www.gramene.org/db/literature/pub_search?ref_id=
+url_example: http://www.gramene.org/db/literature/pub_search?ref_id=659
 
 abbreviation: H-invDB
 database: H-invitational Database
 generic_url: http://www.h-invitational.jp/
+
+! note: the normal site for the AIST mirror, www.jbirc.aist.go.jp, is reporting a problem, and has been temporarily replaced by the jbirc.jbic.or.jp URLs. When the problem is resolved, the old URLS can be restored.
+! url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Detail.pl?acc_id=
+! url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Detail.pl?acc_id=AK093149
 
 abbreviation: H-invDB_cDNA
 database: H-invitational Database
 object: Accession
 example_id: H-invDB_cDNA:AK093148
 generic_url: http://www.h-invitational.jp/
-url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Detail.pl?acc_id=
+url_syntax: http://jbirc.jbic.or.jp/hinv/soup/pub_Detail.pl?acc_id=
 url_syntax: http://www.h-invdb.jbic.or.jp/soup/pub_Detail.pl?acc_id=
-url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Detail.pl?acc_id=
-url_example: http://www.jbirc.aist.go.jp/hinv/soup/pub_Detail.pl?acc_id=AK093149
+url_syntax: http://hinvdb.ddbj.nig.ac.jp/soup/pub_Detail.pl?acc_id=AK093149
+url_example: http://jbirc.jbic.or.jp/hinv/soup/pub_Detail.pl?acc_id=AK093149
 url_example: http://www.h-invdb.jbic.or.jp/soup/pub_Detail.pl?acc_id=AK093149
-url_example: http://www.jbirc.aist.go.jp/hinv/soup/pub_Detail.pl?acc_id=AK093149
+
+! url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Locus.pl?locus_id=
 
 abbreviation: H-invDB_locus
 database: H-invitational Database
 object: Cluster identifier
 example_id: H-invDB_locus:HIX0014446
 generic_url: http://www.h-invitational.jp/
-url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Locus.pl?locus_id=
+url_syntax: http://jbirc.jbic.or.jp/hinv/soup/pub_Locus.pl?locus_id=
 url_syntax: http://www.h-invdb.jbic.or.jp/soup/pub_Locus.pl?locus_id=
-url_syntax: http://www.jbirc.aist.go.jp/hinv/soup/pub_Locus.pl?locus_id=
-url_example: http://www.jbirc.aist.go.jp/hinv/soup/pub_Locus.pl?locus_id=HIX0014446
+url_syntax: http://hinvdb.ddbj.nig.ac.jp/soup/pub_Locus.pl?locus_id=
+url_example: http://jbirc.jbic.or.jp/hinv/soup/pub_Locus.pl?locus_id=HIX0014446
 url_example: http://www.h-invdb.jbic.or.jp/soup/pub_Locus.pl?locus_id=HIX0014446
-url_example: http://www.jbirc.aist.go.jp/hinv/soup/pub_Locus.pl?locus_id=HIX0014446
+url_example: http://hinvdb.ddbj.nig.ac.jp/soup/pub_Locus.pl?locus_id=HIX0014446
 
 abbreviation: HAMAP
 database: High-quality Automated and Manual Annotation of microbial Proteomes
@@ -455,14 +504,35 @@ url_example: http://us.expasy.org/unirules/MF_00031
 
 abbreviation: HGNC
 database: HUGO Gene Nomenclature Committee
-object: Gene symbol
-example_id: HGNC:HNRPK
+object: Identifier
+example_id: HGNC:29
 generic_url: http://www.gene.ucl.ac.uk/nomenclature/
-url_example: http://www.gene.ucl.ac.uk/cgi-bin/nomenclature/searchgenes.pl?field=symbol&anchor=begins&match=HNRPK&symbol_search=Search&page_size=25&limit=1000&.cgifields=limit&.cgifields=page_size
+url_syntax: http://www.gene.ucl.ac.uk/nomenclature/data/get_data.php?hgnc_id=
+url_example: http://www.gene.ucl.ac.uk/nomenclature/data/get_data.php?hgnc_id=HGNC:29
+
+! note: HGNC:id is preferred over HGNC_gene, because gene symbols are liable to change, resulting in broken links.
+
+abbreviation: HGNC_gene
+database: HUGO Gene Nomenclature Committee
+object: Gene symbol
+example_id: HGNC_gene:ABCA1
+generic_url: http://www.gene.ucl.ac.uk/nomenclature/
+url_syntax: http://www.gene.ucl.ac.uk/nomenclature/data/get_data.php?app_sym=
+url_example: http://www.gene.ucl.ac.uk/nomenclature/data/get_data.php?app_sym=ABCA1
 
 abbreviation: HUGO
 database: Human Genome Organisation
 generic_url: http://www.hugo-international.org/
+
+! note: IMG contact person is Rob Edwards (RobE@thefig.info); BRC: NMPDR
+
+abbreviation: IMG
+database: Integrated Microbial Genomes; JGI web site for genome annotation
+object: Identifier
+example_id: IMG:640008772
+generic_url: http://img.jgi.doe.gov
+url_syntax: http://img.jgi.doe.gov/cgi-bin/pub/main.cgi?section=GeneDetail&page=geneDetail&gene_oid=
+url_example: http://img.jgi.doe.gov/cgi-bin/pub/main.cgi?section=GeneDetail&page=geneDetail&gene_oid=640008772
 
 abbreviation: IMGT_HLA
 database: Immunogenetics database, human MHC
@@ -522,6 +592,8 @@ example_id: IUPHAR:2.1.CBD
 abbreviation: KEGG
 database: Kyoto Encyclopedia of Genes and Genomes
 generic_url: http://www.genome.ad.jp/kegg/
+url_syntax: http://www.genome.ad.jp/dbget-bin/www_bget?
+url_example: http://www.genome.ad.jp/dbget-bin/www_bget?ec:1.1.1.1
 
 abbreviation: KEGG_PATHWAY
 database: KEGG Pathways Database
@@ -551,13 +623,9 @@ generic_url: http://www.genome.ad.jp/kegg/docs/upd_ligand.html#COMPOUND
 url_example: http://www.genome.ad.jp/dbget-bin/www_bget?ec:1.1.1.1
 url_example: http://www.genome.ad.jp/dbget-bin/www_bget?cpd:C00577
 
-abbreviation: LocusID
-database: NCBI LocusLink ID
-object: Identifier
-example_id: LocusID:3195
-generic_url: http://www.ncbi.nlm.nih.gov/
-url_syntax: http://www.ncbi.nlm.nih.gov:80/LocusLink/LocRpt.cgi?l=
-url_example: http://www.ncbi.nlm.nih.gov:80/LocusLink/LocRpt.cgi?l=3195
+abbreviation: LOCSVMpsi
+database: LOCSVMPSI: subcellular localization for eukayotic proteins based on SVM and PSI-BLAST
+generic_url: http://bioinformatics.ustc.edu.cn/locsvmpsi/locsvmpsi.php
 
 abbreviation: MA
 database: Adult Mouse Anatomical Dictionary; part of Gene Expression Database
@@ -612,7 +680,7 @@ url_example: http://www.nlm.nih.gov/cgi/mesh/2005/MB_cgi?mode=&term=mitosis
 
 abbreviation: MetaCyc
 database: The Metabolic Encyclopedia of metabolic and other pathways
-object: Pathway identifier
+object: Identifier (pathway or reaction)
 example_id: MetaCyc:GLUTDEG-PWY
 generic_url: http://metacyc.org/
 url_syntax: http://biocyc.org/META/NEW-IMAGE?type=NIL&object=
@@ -668,18 +736,28 @@ generic_url: http://www.chem.qmw.ac.uk/iubmb/
 abbreviation: NCBI
 database: National Center for Biotechnology Information, Bethesda
 object: Prefix
-example_id: NCBI_gi
 generic_url: http://www.ncbi.nlm.nih.gov/
+
+! note: LocusID was the abbreviation for LocusLink, which has been superseded by NCBI_Gene (aka Entrez Gene)
+
+abbreviation: NCBI_Gene
+database: NCBI Gene
+object: Identifier
+synonym: LocusID
+example: NCBI_Gene:4771
+generic_url: http://www.ncbi.nlm.nih.gov/
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=gene&dopt=full_report&list_uids=
+url_example: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=gene&dopt=full_report&list_uids=4771
 
 abbreviation: NCBI_gi
 database: NCBI databases
 object: Identifier
 example: NCBI_gi:10727410
 generic_url: http://www.ncbi.nlm.nih.gov/
-url_syntax: http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=nucleotide&dopt=GenBank&list_uids=
-url_syntax: http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=protein&dopt=GenBank&list_uids=
-url_example: http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=nucleotide&dopt=GenBank&list_uids=10727410
-url_example: http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=protein&dopt=GenBank&list_uids=30580598
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=nucleotide&dopt=GenBank&list_uids=
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=protein&dopt=GenBank&list_uids=
+url_example: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=nucleotide&dopt=GenBank&list_uids=10727410
+url_example: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=protein&dopt=GenBank&list_uids=30580598
 
 abbreviation: NCBI_GP
 database: NCBI GenPept
@@ -695,7 +773,6 @@ object: mRNA identifier
 synonym: RefSeq
 example_id: NCBI_NM:123456
 generic_url: http://www.ncbi.nlm.nih.gov/
-url_syntax:
 
 abbreviation: NCBI_NP
 database: NCBI RefSeq
@@ -703,15 +780,24 @@ object: Protein identifier
 synonym: RefSeq
 example_id: NCBI_NP:123456
 generic_url: http://www.ncbi.nlm.nih.gov/
-url_syntax:
+
+abbreviation: NMPDR
+database: National Microbial Pathogen Data Resource
+object: Identifier
+example_id: NMPDR:fig|306254.1.peg.183
+generic_url: http://www.nmpdr.org
+url_syntax: http://www.nmpdr.org/linkin.cgi?id=
+url_example: http://www.nmpdr.org/linkin.cgi?id=fig|306254.1.peg.183
+
+! note: NCBI uses the synonym MIM for OMIM
 
 abbreviation: OMIM
 database: Mendelian Inheritance in Man
 object: Identifier
-synonym: MIM [used by NCBI]
+synonym: MIM
 example_id: OMIM:190198
-generic_url: http://www3.ncbi.nlm.nih.gov/Omim/searchomim.html
-url_syntax: http://www3.ncbi.nlm.nih.gov/htbin-post/Omim/dispmim?
+generic_url: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=OMIM
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/dispomim.cgi?id=
 url_example: http://www3.ncbi.nlm.nih.gov/htbin-post/Omim/dispmim?190198
 
 abbreviation: PAMGO
@@ -722,13 +808,18 @@ abbreviation: PANTHER
 database: Protein ANalysis THrough Evolutionary Relationships Classification System
 generic_url: http://www.pantherdb.org/
 
+abbreviation: PATO
+database: Phenotypic quality ontology
+object: Identifier
+example_id: PATO:0001420
+generic_url: http://www.bioontology.org/wiki/index.php/PATO:Main_Page
+
 abbreviation: PDB
 database: Protein Data Bank
 object: Identifier
 example_id: PDB:1A4U
 generic_url: http://msd.ebi.ac.uk/
 generic_url: http://www.rcsb.org/pdb/
-url_syntax:
 url_example: http://www.rcsb.org/pdb/cgi/explore.cgi?pid=223051005992697&pdbId=1A4U
 
 abbreviation: Pfam
@@ -759,6 +850,10 @@ generic_url: http://www.pharmgkb.org
 url_syntax: http://www.pharmgkb.org/do/serve?objId=
 url_example: http://www.pharmgkb.org/do/serve?objId=PA267
 
+abbreviation: PINC
+database: Proteome Inc.; represents GO annotations created in 2001 for NCBI and extracted into GOA from EntrezGene
+generic_url: http://www.proteome.com/
+
 abbreviation: PIR
 database: Protein Information Resource
 object: Accession number
@@ -766,10 +861,6 @@ example_id: PIR:I49499
 generic_url: http://pir.georgetown.edu/
 url_syntax: http://pir.georgetown.edu/cgi-bin/pirwww/nbrfget?uid=
 url_example: http://pir.georgetown.edu/cgi-bin/pirwww/nbrfget?uid=I49499
-
-abbreviation: PINC
-database: Proteome Inc.; represents GO annotations created in 2001 for NCBI and extracted into GOA from EntrezGene
-generic_url: http://www.proteome.com/
 
 abbreviation: PIRSF
 database: PIR Superfamily Classification System
@@ -783,10 +874,11 @@ abbreviation: PMID
 database: PubMed
 object: Identifier
 synonym: PUBMED
+synonym: PubMed
 example_id: PMID:4208797
 generic_url: http://www.ncbi.nlm.nih.gov/PubMed/
-url_syntax: http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Abstract&list_uids=
-url_example: http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Abstract&list_uids=4208797
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Abstract&list_uids=
+url_example: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Abstract&list_uids=4208797
 
 abbreviation: PO
 database: Plant Ontology Consortium Database
@@ -807,8 +899,6 @@ generic_url: ftp://ftp.sanger.ac.uk/pub/yeast/pombe/Protein_data/
 
 abbreviation: PPI
 database: The Pseudomonas syringae community annotation project
-object:
-example_id:
 generic_url: http://genome.pseudomonas-syringae.org/
 
 abbreviation: PRINTS
@@ -836,7 +926,8 @@ url_syntax: http://www.expasy.ch/cgi-bin/prosite-search-ac?
 url_example: http://www.expasy.ch/cgi-bin/prosite-search-ac?PS00365
 
 abbreviation: protein_id
-database: The protein identifier shared by DDBJ/EMBL-bank/GenBank nucleotide sequence databases
+database: The protein identifier shared by DDBJ/EMBL-bank/GenBank nucleotide
+sequence databases
 object: Identifier
 example_id: protein_id:CAA71991
 
@@ -871,6 +962,10 @@ url_example: http://www.ebi.ac.uk/ontology-lookup/?termId=MOD:00219
 abbreviation: PSORT
 database: PSORT protein subcellular localization databases and prediction tools for bacteria
 generic_url: http://www.psort.org/
+
+abbreviation: pTARGET 
+database: pTARGET Prediction server for protein subcellular localization
+generic_url: http://bioinformatics.albany.edu/~ptarget/
 
 abbreviation: PubChem_BioAssay
 database: NCBI PubChem database of bioassay records
@@ -912,6 +1007,24 @@ generic_url: http://rebase.neb.com/rebase/rebase.html
 url_syntax: http://rebase.neb.com/rebase/enz/
 url_example: http://rebase.neb.com/rebase/enz/EcoRI.html
 
+! note: RefSeq contact person is Guy Plunkett III (guy@genome.wisc.edu); BRC: ERIC
+
+abbreviation: RefSeq_NA
+database: RefSeq (Nucleic Acid)
+object: Identifier
+example_id: RefSeq_NA:NC_000913
+generic_url: http://www.ncbi.nlm.nih.gov/RefSeq/
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=Nucleotide&cmd=search&term=
+url_example: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=Nucleotide&cmd=search&term=NC_000913
+
+abbreviation: RefSeq_Prot
+database: RefSeq (Protein)
+object: Identifier
+example_id: RefSeq_Prot:YP_498627
+generic_url: http://www.ncbi.nlm.nih.gov/RefSeq/
+url_syntax: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=Protein&cmd=search&term=
+url_example: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=Protein&cmd=search&term=YP_498627
+
 abbreviation: RESID
 database: RESID Database of Protein Modifications
 object: Identifier
@@ -927,6 +1040,11 @@ generic_url: http://rgd.mcw.edu/
 url_syntax: http://rgd.mcw.edu/tools/genes/genes_view.cgi?id=
 url_example: http://rgd.mcw.edu/tools/genes/genes_view.cgi?id=2340
 
+abbreviation: RI
+database: Roslin Institute
+synonym: Roslin_Institute
+generic_url: http://www.roslin.ac.uk/
+
 abbreviation: RNAmods
 database: The RNA Modification Database
 object: Identifier
@@ -938,6 +1056,14 @@ url_example: http://medlib.med.utah.edu/cgi-bin/rnashow.cgi?037
 abbreviation: Sanger
 database: The Wellcome Trust Sanger Institute
 generic_url: http://www.sanger.ac.uk/
+
+abbreviation: SEED
+database: The SEED; The Project to Annotate the First 1000 Sequenced Genomes, Develop Detailed Metabolic Reconstructions, and Construct the Corresponding Stoichiometric Matrices
+object: Identifier
+example_id: SEED:fig|83331.1.peg.1
+generic_url: http://www.theseed.org
+url_syntax: http://www.theseed.org/linkin.cgi?id=
+url_example: http://www.theseed.org/linkin.cgi?id=fig|83331.1.peg.1
 
 ! note: The SGD is a synonym for the SGDID
 
@@ -955,7 +1081,7 @@ url_example: http://db.yeastgenome.org/cgi-bin/locus.pl?dbid=S000006169
 abbreviation: SGD_LOCUS
 database: Saccharomyces Genome Database
 object: Gene name (gene symbol in mammalian nomenclature)
-example_id: SGD_LOCUS:GAL4 or SGD_LOCUS:YEL001C
+example_id: SGD_LOCUS:GAL4
 generic_url: http://www.yeastgenome.org/
 url_syntax: http://db.yeastgenome.org/cgi-bin/locus.pl?locus=
 url_example: http://db.yeastgenome.org/cgi-bin/locus.pl?locus=GAL4
@@ -985,7 +1111,7 @@ abbreviation: SO
 database: Sequence Ontology
 object: Identifier
 example_id: SO:0000195
-generic_url: http://song.sourceforge.net/
+generic_url: http://sequenceontology.org/
 url_syntax: http://song.sourceforge.net/SOterm_tables.html#
 url_example: http://song.sourceforge.net/SOterm_tables.html#SO:0000195
 
@@ -996,6 +1122,10 @@ example_id: SP_KW:KW-0812
 generic_url: http://www.expasy.org/cgi-bin/keywlist.pl
 url_syntax: http://www.expasy.org/cgi-bin/get-entries?
 url_example: http://www.expasy.org/cgi-bin/get-entries?KW=KW-0812
+
+abbreviation: SP_SL
+database: UniProt Subcellular Location vocabulary
+object: Identifier
 
 abbreviation: SUBTILIST
 database: Bacillus subtilis Genome Sequence Project
@@ -1013,7 +1143,7 @@ url_syntax:
 abbreviation: Swiss-Prot
 database: UniProtKB/Swiss-Prot, a curated protein sequence database which provides a high level of annotation and a minimal level of redundancy
 object: Accession number
-example_id: UniProt:P51587
+example_id: Swiss-Prot:P51587
 generic_url: http://www.uniprot.org
 url_syntax: http://www.ebi.uniprot.org/entry/
 url_example: http://www.ebi.uniprot.org/entry/P51587
@@ -1050,7 +1180,7 @@ generic_url: http://www.ciliate.org/
 abbreviation: TGD_LOCUS
 database: Tetrahymena Genome Database
 object: Gene name (gene symbol in mammalian nomenclature)
-example_id: TGD_LOCUS:PDD1 or TGD_LOCUS:U66363
+example_id: TGD_LOCUS:PDD1
 generic_url: http://www.ciliate.org/
 url_syntax: http://db.ciliate.org/cgi-bin/locus.pl?locus=
 url_example: http://db.ciliate.org/cgi-bin/locus.pl?locus=PDD1
@@ -1075,7 +1205,7 @@ example_id: TIGR_Ath1:At3g01440
 generic_url: http://www.tigr.org/tdb/e2k1/ath1/ath1.shtml
 url_syntax: http://www.tigr.org/tigr-scripts/euk_manatee/shared/ORF_infopage.cgi?db=ath1&orf=
 url_example: http://www.tigr.org/tigr-scripts/euk_manatee/shared/ORF_infopage.cgi?db=ath1&orf=At3g01440
- 
+
 abbreviation: TIGR_CMR
 database: The Institute for Genomic Research, Comprehensive Microbial Resource
 object: Locus
@@ -1107,7 +1237,7 @@ example_id: TIGR_Pfa1:PFB0010w
 generic_url: http://www.tigr.org/tdb/e2k1/pfa1/pfa1.shtml
 url_syntax: http://www.tigr.org/tigr-scripts/euk_manatee/shared/ORF_infopage.cgi?db=pfa1&orf=
 url_example: http://www.tigr.org/tigr-scripts/euk_manatee/shared/ORF_infopage.cgi?db=pfa1&orf=PFB0010w
- 
+
 abbreviation: TIGR_REF
 database: The Institute for Genomic Research
 object: reference locator
@@ -1159,22 +1289,22 @@ url_example: http://www.ebi.uniprot.org/entry/O31124
 abbreviation: UM-BBD
 database: The University of Minnesota Biocatalysis/Biodegradation Database
 object: Prefix
-generic_url: http://umbbd.ahc.umn.edu/index.html
+generic_url: http://umbbd.msi.umn.edu/
 
 abbreviation: UM-BBD_enzymeID
 database: The University of Minnesota Biocatalysis/Biodegradation Database
 object: Enzyme identifier
 example_id: UM-BBD_enzymeID:e0413
-generic_url: http://umbbd.ahc.umn.edu/index.html
-url_syntax: http://umbbd.ahc.umn.edu:8015/umbbd/servlet/pageservlet?ptype=ep&enzymeID=
-url_example: http://umbbd.ahc.umn.edu:8015/umbbd/servlet/pageservlet?ptype=ep&enzymeID=e0413
+generic_url: http://umbbd.msi.umn.edu/
+url_syntax: http://umbbd.msi.umn.edu/servlets/pageservlet?ptype=ep&enzymeID=
+url_example: http://umbbd.msi.umn.edu/servlets/pageservlet?ptype=ep&enzymeID=e0230
 
 abbreviation: UM-BBD_pathwayID
 database: The University of Minnesota Biocatalysis/Biodegradation Database
 object: Pathway identifier
 example_id: UM-BBD_pathwayID:acr
-generic_url: http://umbbd.ahc.umn.edu/index.html
-url_example: http://umbbd.ahc.umn.edu/acr/acr_map.html
+generic_url: http://umbbd.msi.umn.edu/
+url_example: http://umbbd.msi.umn.edu/acr/acr_map.html
 
 ! note: UniParc supersedes REMTREMBL; the latter is no longer maintained
 
@@ -1258,13 +1388,3 @@ example_id: ZFIN:ZDB-GENE-990415-103
 generic_url: http://zfin.org/
 url_syntax: http://zfin.org/cgi-bin/ZFIN_jump?record=
 url_example: http://zfin.org/cgi-bin/ZFIN_jump?record=ZDB-GENE-990415-103
-
-abbreviation: Google
-database: Google keyword search
-generic_url: http://www.google.com/
-url_syntax: http://www.google.com/search?hl=en&q=
-
-abbreviation: Ask
-database: Ask.com
-generic_url: http://www.ask.com/
-url_syntax: http://www.ask.com/web?q=
