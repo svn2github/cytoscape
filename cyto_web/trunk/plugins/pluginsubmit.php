@@ -67,7 +67,6 @@ if ($mode == 'new') {
   
 <?php
 
-
 $tried = NULL;
 if (isset ($_POST['tried'])) {
 	$tried = 'yes';
@@ -105,6 +104,9 @@ $contactEmail = NULL;
 
 // Case for 'edit', pull data out of DB for the given versionID
 if (($tried == NULL) && ($mode == 'edit')) {
+
+  ?><a href="pluginInfoEdit.php?versionid=<?php echo $versionID; ?>">Edit plugin info</a> <?php
+
 
 	include 'getplugindatafromdb.inc';
 
@@ -242,7 +244,7 @@ if ($tried != NULL && $tried == 'yes' && $validated && $mode == 'new') {
 
 if (!($tried && $validated)) {
 ?>
-</p>
+
 <blockquote>
   <p><SPAN id="_ctl3_LabelRequired">	Fields denoted   by an (<span class="style4">*</span>) are required.</SPAN></p>
 </blockquote>
