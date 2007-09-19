@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage[all]{xy}
+\begin{document}
+
+\title{The modlab Framework}
+\author{Samad Lotia}
+\maketitle
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Introduction}
+
+An issue with module searching programs is the difficulty in changing
+certain aspects of the program---specifically, the search algorithm, the scoring
+algorithm, the randomizing algorithm, and the module filtering algorithms.
+The programs do not necessarily enforce separation between these algorithms.
+It is not always easy to modify these programs and a add novel
+algorithm due to the entanglement of these aspects. Moreover, looking at
+the source code for a module searching program, it can be arduous to determine
+which piece of the code performs the search, the scoring, etc.
+
+The modlab
+(``\emph{mod}ule'' + ``\emph{lab}oratory'' = ``\emph{modlab}'')
+framework addresses these problems by forcing
+module searching programs to adhere to the object-oriented programming
+principle of modularity. It separates these aspects of the program into
+separate software modules that can be easily interchanged without affecting
+other aspects of the program. The programmer is then free to quickly
+prototype and test a new algorithm.
+
+The modlab framework does not offer much
+functionality. For instance, most of the classes in the framework are just
+interfaces. The only functionality modlab provides is a class that
+calculates the real trial and random trials concurrently to improve the
+overall performance of the program; this functionality is only optional.
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{General Process}
+
+The first step is to read in a network. The second step is to search the network
+for modules and score them. The modules obtained from the second step is called
+the \emph{real trial}. The third step is to randomize the network then
+search and score the randomized network; modules obtained from a randomized
+network is called a \emph{randomized trial}. The network is repeatedly
+randomized to obtain multiple randomized trials. In the forth step, modules
+from the real trial are filtered out by analyzing
+modules from randomized trials. The goal is remove statistically insignificant
+modules. The final step outputs the filtered modules.
+
+\begin{displaymath}
+\xymatrix
+{
+& *+\txt{Read in network} \ar@/_/[ddl] \ar@/^/[dr] & \\
+& & *+\txt{Randomize network} \ar@/^/[dd] \\
+*+\txt{Search for and score modules} \ar@/_/[ddr] & & \\
+& & *+\txt{Search for and score modules} \ar@/^/[dl] \\
+& *+\txt{Filter modules} \ar[d] & \\
+& *+\txt{Output modules} & \\
+}
+\end{displaymath}
+
+\begin{description}
+
+\item[Randomize network] Randomizes the network before being searched. The
+modules returned from a search of a randomized network are called a
+\emph{randomized trial}. The randomizations must be independent of the order
+given by the input network.
+
+\item[Search for and score modules] Searches a network for modules and
+scores them accordingly. It returns the modules found.
+
+\item[Filter modules] Filters out statistically insignificant modules
+from the real trial by analyzing randomized trials.
+
+\end{description}
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+
+\section{Proposed API}
+
+The modlab framework provides a way to concurrently execute real and
+random trials through the SearchExecutor class. Because not all programs
+need this functionality, the modlab framework provides two ways to use it.
+The first way is without SearchExecutor, and the other way is with
+SearchExecutor.
+
+\subsection{Without SearchExecutor}
+\begin{displaymath}
+\xymatrix
+{
+& & \txt{\emph{Network}} \ar[d] \\
+& & \ar[dl] \ar[dr] \\
+& \txt{Score $\longleftrightarrow$ Search} \ar[d] & & \txt{Randomize} \ar[d] \\
+& \txt{\emph{Real trial}} \ar[d] & & \txt{Search $\longleftrightarrow$ Score} \ar[d] \\
+& \ar[dr] & & \txt{\emph{Random trials}} \ar[dl] & \\
+& & \ar[d] & & \\
+& & \txt{Filter} \ar[d] \\
+& & \txt{\emph{Modules}}
+}
+\end{displaymath}
+
+\subsection{With SearchExecutor}
+\begin{displaymath}
+\xymatrix
+{
+& & \txt{\emph{Network}} \ar[dd] \\
+\save []+<1.2cm,0.4cm>*\txt{SearchExecutor} \restore
+\save [].[ddddddrrrr]*\frm{--} \restore & & & & \\
+& & \ar[dl] \ar[dr] \\
+& \txt{Score $\longleftrightarrow$ Search} \ar[d] & & \txt{Randomize} \ar[d] \\
+& \txt{\emph{Real trial}} \ar[d] & & \txt{Search $\longleftrightarrow$ Score} \ar[d] \\
+& \ar[dr] & & \txt{\emph{Random trials}} \ar[dl] & \\
+& & \ar[dd] & & \\
+& & & & \\
+& & \txt{Filter} \ar[d] \\
+& & \txt{\emph{Modules}}
+}
+\end{displaymath}
+
+\subsection{Class Description}
+
+\begin{description}
+
+\item[Search] A searching algorithm.
+It calls \emph{Score} to score the network as needed.
+
+\item[Score] A scoring algorithm executed by \emph{Search}.
+
+\item[Randomize] An algorithm that randomizes the network. This should be
+executed before the network is searched during a random trial.
+
+\item[Filter] Filters a list of modules and returns all modules that passed
+the filter.
+
+\item[SearchExecutor] Concurrently calculates the real and random trials by
+executing the search algorithm. It requires a network to search, the search
+algorithm provided by \emph{Search}, the scoring algorithm provided by
+\emph{Scpre}, a randomizing algorithm for the random trials provided by
+\emph{Random}, the number of random trials to run, and the
+number of threads to calculate the trials concurrently. 
+Programs that do not require this functionality are not expected to use
+this class.
+
+\end{description}
+
+\end{document}
