@@ -82,7 +82,27 @@ public class IntStack implements IntIterable
 
 	public IntIterator iterator()
 	{
-		return array.iterator();
+		return new IntIterator()
+		{
+			int index = 0;
+
+			public boolean hasNext()
+			{
+				return (index <= pointer);
+			}
+
+			public int numRemaining()
+			{
+				return (pointer + 1 - index);
+			}
+
+			public int next()
+			{
+				if (index > pointer)
+					throw new NoSuchElementException();
+				return array.get(index++);
+			}
+		};
 	}
 
 	/**
