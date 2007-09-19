@@ -8,6 +8,20 @@ import oiler.util.IntHashSet;
 /**
  * Breadth first search algorithm.
  *
+ * <p>Example:</p>
+ * <p><pre>
+ * Graph&lt;String,Double&gt; graph = ...;
+ * BreathFirst&lt;String,Double&gt; myBFS = new BreadthFirst&lt;String,Double&gt;()
+ * {
+ *   public boolean encounteredNode(Graph&lt;String,Double&gt; graph, int node, int fromNode, int depth)
+ *   {
+ *     System.out.println("Node " + graph.nodeObject(node) + " from " + graph.nodeObject(fromNode) + " at depth " + depth);
+ *     return true;
+ *   }
+ * };
+ * myBFS.search(graph);
+ * </pre></p>
+ *
  * @author Samad Lotia
  */
 public abstract class BreadthFirst<N,E>
