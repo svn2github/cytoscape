@@ -181,8 +181,10 @@ public class CompatibilityGraph extends BasicGraph<CompatibilityNode<String, Dou
 
 			int z = nodeBase.getIndex(g);
 			if ( z != nodeBranch.getIndex(g) ) 
-				throw ( new Exception("compat node index error " + " base: " + z + 
-				                      " branch: " + nodeBranch.getIndex(g) ) );
+				throw ( new Exception("compat node index error   base: " + z + 
+				                      " branch: " + nodeBranch.getIndex(g) + " base node: " + 
+									  base + " branch node: " + branch + 
+									  " -- make sure node names are unique between input files!") );
 
 			distance[z] = g.getDistance(base, branch);
 
