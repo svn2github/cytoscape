@@ -24,6 +24,11 @@ public class SearchExecutor
 		public Graph<N,E> duplicate(Graph<N,E> g);
 	}
 
+	public interface ProgressMonitor
+	{
+		public void setPercentCompleted(double percent);
+	}
+
 	protected enum Trial { REAL, RANDOM }
 
 	/**
@@ -67,8 +72,20 @@ public class SearchExecutor
 							final Duplicate<N,E> duplicate,
 							final int numOfRandomTrials)
 	{
+		return execute(network, search, score, randomize, duplicate, null, numOfRandomTrials);
+	}
+
+	public static <N,E> List<List<Graph<N,E>>> execute(
+							final Graph<N,E> network,
+							final Search<N,E> search,
+							final Score<N,E> score,
+							final Randomize<N,E> randomize,
+							final Duplicate<N,E> duplicate,
+							final ProgressMonitor monitor,
+							final int numOfRandomTrials)
+	{
 		final int numOfThreads = Runtime.getRuntime().availableProcessors();
-		return execute(network, search, score, randomize, duplicate, numOfRandomTrials, numOfThreads);
+		return execute(network, search, score, randomize, duplicate, monitor, numOfRandomTrials, numOfThreads);
 	}
 	
 	/**
@@ -110,6 +127,7 @@ public class SearchExecutor
 							final Score<N,E> score,
 							final Randomize<N,E> randomize,
 							final Duplicate<N,E> duplicate,
+							final ProgressMonitor monitor,
 							final int numOfRandomTrials,
 							final int numOfThreads)
 	{
@@ -126,32 +144,38 @@ public class SearchExecutor
 		Thread[] threads = new Thread[numOfThreads];
 		for (int i = 0; i < numOfThreads; i++)
 		{
-			threads[i] = new SearchThread<N,E>(duplicate.duplicate(network), search, score, randomize, trials, workQueue);
+			threads[i] = new SearchThread<N,E>(duplicate.duplicate(network), search, score, randomize, trials, workQueue, monitor);
 			threads[i].start();
 		}
+
+		if (monitor != null) monitor.setPercentCompleted(0.0);
 
 		// Wait for the threads to finish
 		for (int i = 0; i < numOfThreads; i++)
 			try { threads[i].join(); } catch (InterruptedException e) {}
 		
+		if (monitor != null) monitor.setPercentCompleted(1.0);
+
 		return trials;
 	}
 
 	private static class SearchThread<N,E> extends Thread
 	{
-		protected Graph<N,E> network;
-		protected Search<N,E> search;
-		protected Score<N,E> score;
-		protected Randomize<N,E> randomize;
-		protected BlockingQueue<Trial> workQueue;
-		protected List<List<Graph<N,E>>> trials;
+		Graph<N,E> network;
+		Search<N,E> search;
+		Score<N,E> score;
+		Randomize<N,E> randomize;
+		BlockingQueue<Trial> workQueue;
+		List<List<Graph<N,E>>> trials;
+		ProgressMonitor monitor;
 		
 		public SearchThread(	final Graph<N,E> network,
 					final Search<N,E> search,
 					final Score<N,E> score,
 					final Randomize<N,E> randomize,
 					final List<List<Graph<N,E>>> trials,
-					final BlockingQueue<Trial> workQueue)
+					final BlockingQueue<Trial> workQueue,
+					final ProgressMonitor monitor)
 		{
 			this.network = network;
 			this.search = search;
@@ -159,6 +183,7 @@ public class SearchExecutor
 			this.randomize = randomize;
 			this.trials = trials;
 			this.workQueue = workQueue;
+			this.monitor = monitor;
 		}
 		
 		public void run()
@@ -186,6 +211,14 @@ public class SearchExecutor
 					synchronized(trials) { trials.add(trial); }
 				else if (work == Trial.REAL)
 					synchronized(trials) { trials.add(0, trial); }
+				
+				if (monitor != null)
+				{
+					synchronized(monitor)
+					{
+						monitor.setPercentCompleted((double) workQueue.remainingCapacity() / (workQueue.size() + workQueue.remainingCapacity()));
+					}
+				}
 			}
 		}
 	}
