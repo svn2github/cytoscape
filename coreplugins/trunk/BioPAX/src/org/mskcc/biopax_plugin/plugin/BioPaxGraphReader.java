@@ -103,7 +103,10 @@ public class BioPaxGraphReader implements GraphReader {
 			MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil, null);
 			mapper.doMapping();
 			nodeIndices = mapper.getNodeIndices();
-			edgeIndices = mapper.getEdgeIndices();
+            if (nodeIndices.length ==0) {
+                throw new IOException ("Pathway is empty!  Please check the BioPAX source file.");
+            }
+            edgeIndices = mapper.getEdgeIndices();
 		} catch (JDOMException e) {
 			throw new IOException(e.getMessage());
 		}
