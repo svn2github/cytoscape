@@ -19,107 +19,73 @@ public class SearchExecutor
 {
 	protected SearchExecutor() {}
 
+	/**
+	 * An interface for classes that duplicate
+	 * graphs for each thread in SearchExecutor.
+	 */
 	public interface Duplicate<N,E>
 	{
 		public Graph<N,E> duplicate(Graph<N,E> g);
 	}
 
+	/**
+	 * An interface for classes that monitor
+	 * the progress of a search.
+	 */
 	public interface ProgressMonitor
 	{
 		public void setPercentCompleted(double percent);
 	}
-
-	protected enum Trial { REAL, RANDOM }
-
-	/**
-	 * Executes a search in multiple threads.
-	 *
-	 * <p>Real and random trials are executed concurrently
-	 * for better performance. The number of threads
-	 * SearchExecutor will use is the number of CPUs
-	 * available to Java.</p>
-	 *
-	 * <p>The network passed in MUST
-	 * implement the <code>clone()</code> method!</p>
-	 *
-	 * @param network The network to search. The network
-	 *        passed in MUST implement the
-	 *        <code>clone()</code> method!
-	 * @param search The searching algorithm to use.
-	 *        SearchExecutor will ensure the
-	 *        network passed to the search
-	 *        algorithm will be unique to the
-	 *        thread calling the search algorithm.
-	 * @param score The scoring algorithm to use.
-	 * @param randomize The randomizing algorithm to use
-	 *        before starting the search algorithm for
-	 *        a random trial.
-	 *        SearchExecutor will ensure the
-	 *        network passed to the randomizing
-	 *        algorithm will be unique to the
-	 *        thread calling the randomizing algorithm.
-	 * @param numOfRandomTrials The number of random
-	 *        trials to execute.
-	 * @return The trials produced by the search
-	 *         algorithm. The first trial (at index 0)
-	 *         in the list is always the real trial.
-	 */
-	public static <N,E> List<List<Graph<N,E>>> execute(
-							final Graph<N,E> network,
-							final Search<N,E> search,
-							final Score<N,E> score,
-							final Randomize<N,E> randomize,
-							final Duplicate<N,E> duplicate,
-							final int numOfRandomTrials)
-	{
-		return execute(network, search, score, randomize, duplicate, null, numOfRandomTrials);
-	}
-
-	public static <N,E> List<List<Graph<N,E>>> execute(
-							final Graph<N,E> network,
-							final Search<N,E> search,
-							final Score<N,E> score,
-							final Randomize<N,E> randomize,
-							final Duplicate<N,E> duplicate,
-							final ProgressMonitor monitor,
-							final int numOfRandomTrials)
-	{
-		final int numOfThreads = Runtime.getRuntime().availableProcessors();
-		return execute(network, search, score, randomize, duplicate, monitor, numOfRandomTrials, numOfThreads);
-	}
 	
+	private enum Trial { REAL, RANDOM }
+
 	/**
 	 * Executes a search in multiple threads.
 	 *
 	 * <p>Real and random trials are executed concurrently
 	 * for better performance.</p>
 	 *
-	 * <p>The network passed in MUST
-	 * implement the <code>clone()</code> method!</p>
-	 *
-	 * @param network The network to search. The network
-	 *        passed in MUST implement the
-	 *        <code>clone()</code> method!
+	 * @param network The network to search.
 	 * @param search The searching algorithm to use.
-	 *        SearchExecutor will ensure the
-	 *        network passed to the search
-	 *        algorithm will be unique to the
-	 *        thread calling the search algorithm.
+	 *  If <code>duplicate</code> is not null, SearchExecutor
+	 *  will create a unique network instance, and it will
+	 *  pass the unique instance to <code>search</code>.
+	 *  <i>WARNING!</i> If the network passed in to
+	 *  <code>search</code> is retained, it will most likely
+	 *  be modified by a randomization later on.
+	 *  Thus, the network instance will become undefined
+	 *  in the future. If <code>search</code> retains
+	 *  the network passed in, <b>MAKE SURE</b>
+	 *  retained instances of the network are handled correctly!
 	 * @param score The scoring algorithm to use.
 	 * @param randomize The randomizing algorithm to use
-	 *        before starting the search algorithm for
-	 *        a random trial.
-	 *        SearchExecutor will ensure the
-	 *        network passed to the randomizing
-	 *        algorithm will be unique to the
-	 *        thread calling the randomizing algorithm.
+	 *  before starting the search algorithm for a random trial.
+	 *  The network passed in may be the original network
+	 *  or it may have been previously randomized.
+	 *  If <code>duplicate</code> is not null, SearchExecutor
+	 *  will create a unique network instance, and it will
+	 *  pass the unique instance to <code>randomize</code>.
+	 * @param duplicate A class that can duplicate
+	 *  a network. SearchExecutor can create a unique
+	 *  instance of the network for each thread.
+	 *  If there are unique instances of the network for
+	 *  each thread, a thread can randomize the network
+	 *  and search the network without affecting
+	 *  randomizations and searches of other threads.
+	 *  If this functionality is not needed, pass in null.
+	 * @param monitor Monitors the progress
+	 *  of a search. Pass in null if this functionality
+	 *  is not needed.
 	 * @param numOfRandomTrials The number of random
-	 *        trials to execute.
+	 *  trials to execute.
 	 * @param numOfThreads The number of threads
-	 *        to execute the search concurrently.
+	 *  to execute the search concurrently.
 	 * @return The trials produced by the search
-	 *         algorithm. The first trial (at index 0)
-	 *         in the list is always the real trial.
+	 *  algorithm. The first trial (at index 0)
+	 *  in the list is always the real trial.
+	 * @throws IllegalArgumentException if <code>search</code>
+	 *  or <code>randomize</code> is null, or if
+	 *  <code>numOfThreads</code> is less than 1.
 	 */
 	public static <N,E> List<List<Graph<N,E>>> execute(
 							final Graph<N,E> network,
@@ -131,6 +97,13 @@ public class SearchExecutor
 							final int numOfRandomTrials,
 							final int numOfThreads)
 	{
+		if (search == null)
+			throw new IllegalArgumentException("search == null");
+		if (randomize == null)
+			throw new IllegalArgumentException("randomize == null");
+		if (numOfThreads < 1)
+			throw new IllegalArgumentException("numOfThreads < 1");
+
 		// Setup trials
 		final List<List<Graph<N,E>>> trials = new ArrayList<List<Graph<N,E>>>(numOfRandomTrials + 1);
 
@@ -144,7 +117,10 @@ public class SearchExecutor
 		Thread[] threads = new Thread[numOfThreads];
 		for (int i = 0; i < numOfThreads; i++)
 		{
-			threads[i] = new SearchThread<N,E>(duplicate.duplicate(network), search, score, randomize, trials, workQueue, monitor);
+			Graph<N,E> newNetwork = network;
+			if (duplicate != null)
+				newNetwork = duplicate.duplicate(network);
+			threads[i] = new SearchThread<N,E>(newNetwork, search, score, randomize, trials, workQueue, monitor);
 			threads[i].start();
 		}
 
