@@ -31,21 +31,17 @@
   <div class="item">
   <div class="top">
    <h2>Cytoscape Public Symposium and Developers Retreat</h2>
-   <h3>November 6-9, 2007</h3>
-   <h3>Academic Medical Center, University of Amsterdam, Netherlands</h3>
+   <h3>November 6-9, 2007 - Academic Medical Center, University of Amsterdam, Netherlands</h3>
   </div>
-
+<br>
 Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br>
 <br>
 <a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="images/attention.gif"><b>&nbsp;Registration</b></a><b> now open!!!</b> Symposium fee only &euro;40 
 <br>
 <br>
-This year's Public Symposium entitled 
-<a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>,
- will be held in vibrant, historic Amsterdam on November 8<sup>th</sup>, 2007. 'Floating' on a web of canals, 
- with its unique combination of old-world charm and cosmopolitan culture, Amsterdam is one of the most popular 
- European cities for international visitors. 
-We already have a formidable list of confirmed speakers, among them:
+For this year's Public Symposium entitled 
+<a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>
+we have a formidable list of confirmed speakers, among them:
 <p>
 <ul>
 <li>Keynote speaker:
@@ -53,8 +49,8 @@ We already have a formidable list of confirmed speakers, among them:
 President of the <a href="http://www.systemsbiology.org" target="_blank">Institute of Systems Biology</a>. Winner of the Lasker and Kyoto prizes.
 </li>
 <li>
-<b>Chris Sander</b>; Memorial Sloane-Kettering Cancer Center, New York, USA.<br>
-Director of the Computational Biology Center of the <a href="http://www.mskcc.org" target="_blank">Memorial Sloane-Kettering Cancer Center</a>.
+<b>Chris Sander</b>; Memorial Sloan-Kettering Cancer Center, New York, USA.<br>
+Director of the <a href="http://cbio.mskcc.org/" target="_blank">Computational Biology Center at the MSKCC</a>.
 </li>
 <li>
 <b>Ewan Birney</b>; European Bioinformatics Institute/Ensembl, Cambridge, UK.<br> 

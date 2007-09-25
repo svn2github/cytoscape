@@ -51,27 +51,27 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
 <br>
 <table class="programme">
  <tr>
-  <td class="subheader" width="15%">Monday</td>
+  <td class="subheader" width="15%">1: Monday</td>
   <td class="subheader" width="15%"><a href="#nov_5">November 5th</a></td>
   <td class="subheader" width="70%"><strong>Arrivals Day (development team, organization)</strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">Tuesday</td>
+  <td class="subheader" width="15%">2: Tuesday</td>
   <td class="subheader" width="15%"><a href="#nov_6">November 6th</a></td>
   <td class="subheader" width="70%"><strong>Software Development Discussions</strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">Wednesday</td>
+  <td class="subheader" width="15%">3: Wednesday</td>
   <td class="subheader" width="15%"><a href="#nov_7">November 7th</a></td>
   <td class="subheader" width="70%"><strong><big>Tutorials and Application Showcase day</big></strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">Thursday</td>
+  <td class="subheader" width="15%">4: Thursday</td>
   <td class="subheader" width="15%"><a href="#nov_8">November 8th</a></td>
   <td class="subheader" width="70%"><strong>Public Symposium<br><big>Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</big></strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">Friday</td>
+  <td class="subheader" width="15%">5: Friday</td>
   <td class="subheader" width="15%"><a href="#nov_9">November 9th</a></td>
   <td class="subheader" width="70%"><strong>Cytoscape Development Planning</strong></td>
  </tr>
@@ -82,17 +82,23 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  <h2>Detailed Programme</h2>
 </div>
 
-<h3><a name="nov_5">Arrivals Day</a></h3>
+<br>
+<h3>Day 1: <a name="nov_5">Arrivals Day</a></h3>
+<br>
 
 <table class="programme">
  <tr>
-  <td class="tableheader_narrow"> Monday 
-  	<br>November 5th  </td>
-  <td class="tableheader_wide"> Arrivals Day (development team and organization) </td>
+  <td class="tableheader_narrow"> <p>Monday 
+  	<br>November 5th  </p></td>
+  <td class="tableheader_wide"><p> Arrivals Day (development team and organization) </p></td>
  </tr>
  <tr>
-  <td class="subheader">Where</td>
-  <td class="subheader">Amsterdam old city center</td>
+  <td class="subheader"><p>Where</p></td>
+  <td class="subheader"><p>Amsterdam old city center</p></td>
+ </tr>
+ <tr>
+  <td><p>08:00-12:00</p></td>
+  <td><p>Development team discussion breakfast</p></td>
  </tr>
  <tr>
   <td><p>17:00-19:00</p></td>
@@ -108,7 +114,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </table>
  
 <br>
-<h3><a name="nov_6">Software Development Discussions</a></h3>
+<h3>Day 2: <a name="nov_6">Software Development Discussions</a></h3>
 <br>
 
  <table class="programme">
@@ -119,7 +125,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   	<br>Suggested Attendees - Cytoscape (plugin-)developers, Scientific Advisory Board(SAB), Cytoscape Board of Directors and other interested parties </p></td>
  </tr>
  <tr>
-  <td class="subheader">Where</td>
+  <td class="subheader"><p>Where</p></td>
   <td class="subheader"><p>AMC Lecture room L 01-225 </p>
   </td>
  </tr>
@@ -160,7 +166,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </table>
  
 <br>
-<h3><a name="nov_7">Application showcase and hands-on tutorial sessions</a></h3>
+<h3>Day 3: <a name="nov_7">Application showcase and hands-on tutorial sessions</a></h3>
 <br>
 
  <table class="programme">
@@ -171,7 +177,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <br>and Cytoscape developers hackathon</p></td>
  </tr>
  <tr>
-  <td class="subheader">Where</td>
+  <td class="subheader"><p>Where</p></td>
   <td class="subheader" colspan="3"><p>AMC Lecture rooms L 01-255, K 01-123 and -122;  parallel sessions </p></td>
  </tr>
  <tr>
@@ -223,7 +229,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </table>
  
 <br>
- <h3><a name="nov_8">Public Symposium</a></h3>
+ <h3>Day 4: <a name="nov_8">Public Symposium</a></h3>
 <br>
 
  <table class="programme">
@@ -233,7 +239,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td class="tableheader_wide"><p>Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</p></td>
  </tr>
  <tr>
-  <td class="subheader">Where</td>
+  <td class="subheader"><p>Where</p></td>
   <td class="subheader"><p>AMC Conference Room 1 </p></td>
  </tr>
  <tr>
@@ -266,7 +272,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>13:15-14:15 </p></td>
-  <td><p>Lunch (separate Cytoscape Board lunch)</p></td>
+  <td><p>Lunch (separate Cytoscape Board Meeting at lunch)</p></td>
  </tr>
  <tr>
   <td><p>14:15-15:00 </p></td>
@@ -308,7 +314,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </table>
  
 <br>
-<h3><a name="nov_9">Cytoscape Development Planning</a></h3>
+<h3>Day 5: <a name="nov_9">Cytoscape Development Planning</a></h3>
 <br>
 
  <table class="programme">
@@ -319,7 +325,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   	<br>Suggested Attendees - Cytoscape (plugin-)developers, Scientific Advisory Board, Cytoscape Board of Directors and other interested parties </p></td>
  </tr>
  <tr>
-  <td class="subheader">Where</td>
+  <td class="subheader"><p>Where</p></td>
   <td class="subheader"><p>AMC Lecture rooms L 01-252 </p></td>
  </tr>
  <tr>

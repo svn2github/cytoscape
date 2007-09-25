@@ -5,7 +5,7 @@ The Cytoscape developers retreat and symposium is hosted by:
 <tbody>
  <tr>
   <td align="center" valign="middle">
-   <a href="http://www.humangenetics-amc.nl" target="_blank"><img border="0" align="middle" alt="AMC" height="60" width="111" src="images/amc_logo60_100.png"></a>   
+   <a href="http://www.humangenetics-amc.nl" target="_blank"><img border="0" align="middle" alt="AMC" height="50" width="93" src="images/amc_logo50_93.png"></a>   
   </td>
  </tr>
 </tbody>

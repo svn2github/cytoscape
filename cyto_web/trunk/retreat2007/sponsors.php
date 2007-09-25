@@ -75,6 +75,15 @@ The retreat is generously supported by partners from both government and industr
  <tr>
   <td valign="middle">
    <br>
+   <a href="http://www.astrazeneca.com" target="_blank"><img border="0" align="middle" alt="AstraZeneca" height="119" width="292" src="images/astrazeneca_logo_292_119.jpg"></a>
+  </td>
+  <td>
+  <p>AstraZeneca is one of the world's leading pharmaceutical companies</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign="middle">
+   <br>
    <a href="http://www.humangenetics-amc.nl" target="_blank"><img border="0" align="middle" alt="AMC" height="60" width="111" src="images/amc_logo60_100.png"></a>   
   </td>
   <td>
