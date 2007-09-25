@@ -34,6 +34,21 @@ if (!($connection = @ mysql_pconnect($dbServer, $dbUser, $dbPass)))
 if (!mysql_select_db($dbName, $connection))
    showerror();
 
+// Get the distinct IP addresses 
+$query0 = 'select count(distinct ip_address) as userCount from usagelog';
+// Run the query
+if (!($tmpArray= @ mysql_query ($query0, $connection)))
+   showerror();
+$tmp_row = @ mysql_fetch_array($tmpArray);
+$tmpCountArray[] = $tmp_row["userCount"];
+$distinctUsers =$tmpCountArray[0]; 
+
+?>
+<p>&nbsp;</p>
+<p align="left">Since the release of Cytoscape 2.5 (July 2007), there are  <?php echo $distinctUsers; ?> users (distinct IP addresses) downloaded plugins from this site.</p>
+<?php
+
+
 $oneDayAgo = strtotime ( '-1 day' , strtotime ( date("y-m-d") ) ) ; 
 $date_1dayago = date ( 'Y-m-j' , $oneDayAgo);
 
@@ -106,11 +121,11 @@ for ($i= 0; $i<count($plugunNameArray); $i++) {
 	    <td><div align="right"><?php echo $totalCount; ?></div></td>
 	    <td><div align="right"><?php  echo $totalCountLast30days; ?></div></td>
 	    <td><div align="right"><?php  echo $totalCountToday; ?></div></td>
-	  </tr>
+  </tr>
 <?php
 }
 ?>
- </table>
+</table>
 <p>&nbsp; </p>
 
 <?php include "../footer.php"; ?>
