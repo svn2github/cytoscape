@@ -46,7 +46,7 @@ import java.net.URL;
 /**
  * @author skillcoy Object describes a plugin
  */
-public class PluginInfo {
+public class PluginInfo extends DownloadableInfo {
 	/**
 	 * Jar and Zip files currently supported
 	 * 
@@ -125,7 +125,7 @@ public class PluginInfo {
 	 *            to find a new version of the plugin at the given project url.
 	 */
 	public PluginInfo(String UniqueID) {
-		uniqueID = UniqueID;
+		super(UniqueID);
 		init();
 	}
 
@@ -138,7 +138,7 @@ public class PluginInfo {
 		authors = new ArrayList<AuthorInfo>();
 		setName("Unknown");
 		setDescription("No description");
-		setPluginVersion(0.1);
+		setObjectVersion(0.1);
 		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
 		setPluginClassName("");
@@ -150,17 +150,17 @@ public class PluginInfo {
 	 * 
 	 * @param name
 	 */
-	public void setName(String name) {
-		pluginName = name;
-	}
+//	public void setName(String name) {
+//		pluginName = name;
+//	}
 
 	/**
 	 * Sets the release date of a plugin.  Displayed to users;
 	 * @param date
 	 */
-	public void setReleaseDate(String date) {
-		releaseDate = date;
-	}
+//	public void setReleaseDate(String date) {
+//		releaseDate = date;
+//	}
 	
 	/**
 	 * Sets the plugin class name. Used for tracking plugins.
@@ -176,9 +176,9 @@ public class PluginInfo {
 	 * 
 	 * @param description
 	 */
-	public void setDescription(String description) {
-		pluginDescription = description;
-	}
+//	public void setDescription(String description) {
+//		pluginDescription = description;
+//	}
 
 	/**
 	 * Sets the version of the plugin. Defaults to 0.1
@@ -189,13 +189,14 @@ public class PluginInfo {
 	 * 				If the string version is of a format other than \d+.\d+
 	 */
 	public void setPluginVersion(double Version) throws NumberFormatException {
-		String version = Double.toString(Version);
-		if (versionOk(version, true)) {
-			pluginVersion = version;
-		} else {
-			throw new NumberFormatException(
-					"Bad plugin version '" + version + "'. Plugin version numbers must be in the format: \\d+.\\d+");
-		}
+		this.setObjectVersion(Version);
+//		String version = Double.toString(Version);
+//		if (versionOk(version, true)) {
+//			pluginVersion = version;
+//		} else {
+//			throw new NumberFormatException(
+//					"Bad plugin version '" + version + "'. Plugin version numbers must be in the format: \\d+.\\d+");
+//		}
 	}
 
 	/**
@@ -203,15 +204,15 @@ public class PluginInfo {
 	 * 
 	 * @param version
 	 */
-	public void setCytoscapeVersion(String version)
-			throws NumberFormatException {
-		if (versionOk(version, false)) {
-			cytoscapeVersion = version;
-		} else {
-			throw new NumberFormatException(
-					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
-		}
-	}
+//	public void setCytoscapeVersion(String version)
+//			throws NumberFormatException {
+//		if (versionOk(version, false)) {
+//			cytoscapeVersion = version;
+//		} else {
+//			throw new NumberFormatException(
+//					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
+//		}
+//	}
 
 	/**
 	 * pluginUrl this plugin was downloaded from. It is presumed this can be
@@ -237,7 +238,8 @@ public class PluginInfo {
 	 * @param url
 	 */
 	protected void setDownloadUrl(String url) {
-		downloadUrl = url;
+		//downloadUrl = url;
+		this.setDownloadableURL(url);
 	}
 	
 	/**
@@ -331,6 +333,7 @@ public class PluginInfo {
 	}
 
 	// this just checks the plugin version and the cytoscape version
+/*
 	private boolean versionOk(String version, boolean plugin) {
 		// \d+.\+d ok
 		String Match = versionMatch;
@@ -374,6 +377,7 @@ public class PluginInfo {
 
 		return true;
 	}
+*/
 
 	/**
 	 * This is meant to only get set by the PluginManager.  It can only
@@ -406,9 +410,9 @@ public class PluginInfo {
 		return installLocation;
 	}
 	
-	public String getReleaseDate() {
-		return releaseDate;
-	}
+//	public String getReleaseDate() {
+//		return releaseDate;
+//	}
 	
 	/**
 	 * @return The text of the license for this plugin if available.
@@ -432,9 +436,9 @@ public class PluginInfo {
 	/**
 	 * @return The unique id for this object.
 	 */
-	public String getID() {
-		return uniqueID;
-	}
+//	public String getID() {
+//		return uniqueID;
+//	}
 
 	/**
 	 * @return FileType of file type for plugin. PluginInfo.JAR or
@@ -447,9 +451,9 @@ public class PluginInfo {
 	/**
 	 * @return pluginName of plugin
 	 */
-	public String getName() {
-		return pluginName;
-	}
+//	public String getName() {
+//		return pluginName;
+//	}
 
 	/**
 	 * @return Java class name
@@ -468,23 +472,24 @@ public class PluginInfo {
 	/**
 	 * @return Plugin pluginDescription.
 	 */
-	public String getDescription() {
-		return pluginDescription;
-	}
+//	public String getDescription() {
+//		return pluginDescription;
+//	}
 
 	/**
 	 * @return Plugin version.
 	 */
 	public String getPluginVersion() {
-		return pluginVersion;
+		//return pluginVersion;
+		return this.getObjectVersion();
 	}
 
 	/**
 	 * @return Compatible Cytoscape version
 	 */
-	public String getCytoscapeVersion() {
-		return cytoscapeVersion;
-	}
+//	public String getCytoscapeVersion() {
+//		return cytoscapeVersion;
+//	}
 
 	/**
 	 * @return Url to download plugin from
@@ -506,7 +511,8 @@ public class PluginInfo {
 	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
 	 */
 	public String getDownloadUrl()  {
-		return downloadUrl;
+		//return downloadUrl;
+		return this.getDownloadableURL();
 	}
 	
 	/**
@@ -539,21 +545,22 @@ public class PluginInfo {
 	 * @return true if given version is newer
 	 */
 	public boolean isNewerPluginVersion(PluginInfo New) {
-		String[] CurrentVersion = getPluginVersion().split(versionSplit);
-		String[] NewVersion = New.getPluginVersion().split(versionSplit);
-		
-		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
-		int NewMajor = Integer.valueOf(NewVersion[0]).intValue();
-		
-		int CurrentMinor = Integer.valueOf(CurrentVersion[1]).intValue();
-		int NewMinor = Integer.valueOf(NewVersion[1]).intValue();
-		
-		if ( (CurrentMajor > NewMajor ||
-			 (CurrentMajor == NewMajor && CurrentMinor >= NewMinor)) ) {
-			return false;
-		}
-			
-		return true;
+		return this.isNewerObjectVersion(New);
+//		String[] CurrentVersion = getPluginVersion().split(versionSplit);
+//		String[] NewVersion = New.getPluginVersion().split(versionSplit);
+//		
+//		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
+//		int NewMajor = Integer.valueOf(NewVersion[0]).intValue();
+//		
+//		int CurrentMinor = Integer.valueOf(CurrentVersion[1]).intValue();
+//		int NewMinor = Integer.valueOf(NewVersion[1]).intValue();
+//		
+//		if ( (CurrentMajor > NewMajor ||
+//			 (CurrentMajor == NewMajor && CurrentMinor >= NewMinor)) ) {
+//			return false;
+//		}
+//			
+//		return true;
 	}
 
 	/**
@@ -562,19 +569,19 @@ public class PluginInfo {
 	 *         version major.minor (bugfix is only checked if the plugin
 	 *         specifies a bugfix version)
 	 */
-	public boolean isCytoscapeVersionCurrent() {
-		String[] CyVersion = cytoscape.CytoscapeVersion.version
-				.split(versionSplit);
-		String[] PlVersion = getCytoscapeVersion().split(versionSplit);
-
-		for (int i = 0; i < PlVersion.length; i++) {
-			if (Integer.valueOf(CyVersion[i]).intValue() != Integer.valueOf(
-					PlVersion[i]).intValue())
-				return false;
-		}
-
-		return true;
-	}
+//	public boolean isCytoscapeVersionCurrent() {
+//		String[] CyVersion = cytoscape.CytoscapeVersion.version
+//				.split(versionSplit);
+//		String[] PlVersion = getCytoscapeVersion().split(versionSplit);
+//
+//		for (int i = 0; i < PlVersion.length; i++) {
+//			if (Integer.valueOf(CyVersion[i]).intValue() != Integer.valueOf(
+//					PlVersion[i]).intValue())
+//				return false;
+//		}
+//
+//		return true;
+//	}
 
 	// yea, it's ugly...styles taken from cytoscape website
 	public String htmlOutput() {

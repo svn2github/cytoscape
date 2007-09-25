@@ -177,9 +177,31 @@
 				</author>
 			</authorlist>
 		</plugin>
-		
-
-
 	</pluginlist>
+
+	<themes>
+		<theme>
+			<uniqueID>goodThemeTest123</uniqueID>
+			<name> Good Test Theme </name>
+			<description> This is just a test theme. </description>
+			<themeVersion> 0.5 </themeVersion>
+			<cytoscapeVersions>
+			  <version> 2.5 </version>
+			</cytoscapeVersions>
+			
+			<pluginList>
+				<plugin>
+					<uniqueID> </uniqueID>
+					<pluginVersion> </pluginVersion>
+				</plugin>
+				<plugin>
+					<uniqueID> </uniqueID>
+					<pluginVersion> </pluginVersion>
+				</plugin>
+			</pluginList>
+			
+		</theme>
+	</themes>
+
 
 </project>
