@@ -80,7 +80,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
                                         PropertyChangeListener {
 
 	public static final String viewerName = "metaNode";
-	public static final double VERSION = 1.0;
+	public static final double VERSION = 1.01;
 	public static final int NONE = 0;
 	public static final int COLLAPSE = 1;
 	public static final int EXPAND = 2;

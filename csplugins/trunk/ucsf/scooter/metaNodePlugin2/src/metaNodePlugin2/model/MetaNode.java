@@ -64,7 +64,7 @@ import cytoscape.groups.CyGroupViewer;
 // our imports
 import metaNodePlugin2.MetaNodePlugin2;
 
-import csplugins.layout.Profile;
+// import csplugins.layout.Profile;
 
 /**
  * The MetaNode class provides a wrapper for a CyGroup that
@@ -424,23 +424,23 @@ public class MetaNode {
 			return;
 
 		if (DEBUG) System.out.println("collapsing "+groupNode);
-		Profile prf = new Profile();
-		prf.start();
+		// Profile prf = new Profile();
+		// prf.start();
 
 		// Initialize
 		update(view);
-		prf.done("collapse: Update=");
+		// prf.done("collapse: Update=");
 
 		this.multipleEdges = multipleEdges;
 		this.recursive = recursive;
 
 		// Add the group node in the center of where the member nodes were
 		restoreNode(groupNode, hideNodes(recursive, multipleEdges));
-		prf.done("collapse: RestoreNode=");
+		// prf.done("collapse: RestoreNode=");
 
 		// Create our meta edges
 		createMetaEdges();
-		prf.done("collapse: createMetaEdges=");
+		// prf.done("collapse: createMetaEdges=");
 
 		// Set our state
 		metaGroup.setState(MetaNodePlugin2.COLLAPSED);
@@ -449,7 +449,7 @@ public class MetaNode {
 		// If we're supposed to, update the display
 		if (updateNetwork)
 			updateDisplay();
-		prf.done("collapse: updateDisplay=");
+		// prf.done("collapse: updateDisplay=");
 	}
 
 	/**
