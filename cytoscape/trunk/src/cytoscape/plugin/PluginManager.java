@@ -48,6 +48,8 @@ import cytoscape.task.util.TaskManager;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -788,8 +790,16 @@ public class PluginManager {
 		duplicateClasses = new ArrayList<String>();
 		duplicateLoadError = false;
 		
+		for (URL url : urls) {
+			try {
+				addClassPath(url);
+			} catch (Exception e) {
+				throw new IOException("Classloader Error.");
+			}
+		}
+		
 		// the creation of the class loader automatically loads the plugins
-		classLoader = new URLClassLoader(urls, Cytoscape.class.getClassLoader());
+		classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		
 		
 		// iterate through the given jar files and find classes that are
@@ -1003,6 +1013,21 @@ public class PluginManager {
 			Value = m.getMainAttributes().getValue("Cytoscape-Plugin");
 		}
 		return Value;
+	}
+	
+	/**
+	 * This will be used to add plugin jars' URL to the System Loader's classpath.
+	 * 
+	 * @param url
+	 * @throws NoSuchMethodException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	private void addClassPath(URL url)
+	    throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
+		method.setAccessible(true);
+		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
 	}
 
 	private class InquireTask implements cytoscape.task.Task {
