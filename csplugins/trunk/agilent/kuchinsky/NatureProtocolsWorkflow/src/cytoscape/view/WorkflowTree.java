@@ -140,6 +140,11 @@ public class WorkflowTree extends JPanel
         treeView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         treeView.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
+        // from Ben Gross
+        treeView.setBorder
+        (new javax.swing.border.MatteBorder(15,15,15,15, java.awt.Color.white));
+
+        
 		// set scrollpane size:
 		// width - a little bigger than longest string in tree
 		// height - we are really only concerned with width, set height to anything
