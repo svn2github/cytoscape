@@ -69,34 +69,6 @@ public class NatureProtocolsWorkflowPanel extends CytoscapePlugin {
 		 *
 		 * @param e DOCUMENT ME!
 		 */
-//		public void actionPerformed(ActionEvent e) {
-//	        JPanel pane = new JPanel();
-//	        pane.setMinimumSize(new Dimension (250, 200));
-////	        pane.add( BorderLayout.LINE_START, new WorkflowTree());
-//	        pane.add( BorderLayout.NORTH, new WorkflowTree());
-//
-//	        
-//	        
-//	        //	        pane.setPreferredSize(new Dimension (new Dimension (2 * Cytoscape.getDesktop().getNetworkPanel().getWidth(),
-////	        		Cytoscape.getDesktop().getNetworkPanel().getHeight())));
-////	        pane.setAlignmentX(Component.CENTER_ALIGNMENT);
-//	     
-//	        CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-//	    
-//	     
-//	        
-////	        System.out.println ("EAST Cytopanel is: " + cytoPanel);
-////	        System.out.println ("State of EAST CYTOPANEL is: " + cytoPanel.getState());
-//	        cytoPanel.setState(CytoPanelState.DOCK);
-////	        System.out.println ("after DOCK command, State of EAST CYTOPANEL is: " + cytoPanel.getState());
-//	        
-//	        cytoPanel.add("Nature Protocols Workflow", pane);
-//	        
-//	        Object parent = ((Component) cytoPanel).getParent();
-//	        System.out.println ("Parent of Cytopanel = " + parent);
-//	       			
-//			
-//		}
 		
 
 		public void actionPerformed(ActionEvent e) {

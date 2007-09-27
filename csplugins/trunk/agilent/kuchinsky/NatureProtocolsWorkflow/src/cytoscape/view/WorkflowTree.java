@@ -76,47 +76,6 @@ public class WorkflowTree extends JPanel
     private static final String TABLE_ATTRIBUTES = "Attributes from Table";
     
 
-//    public WorkflowTree () {
-//    	super(new BorderLayout());
-//    	
-//    	//Create the nodes.
-//        this.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        DefaultMutableTreeNode top =
-//            new DefaultMutableTreeNode(NATURE_PROTOCOLS);
-//        createNodes(top);
-//
-//        //Create a tree that allows one selection at a time.
-//        tree = new JTree(top);
-//       
-//        tree.getSelectionModel().setSelectionMode
-//                (TreeSelectionModel.SINGLE_TREE_SELECTION);
-//
-//        //Listen for when the selection changes.
-//        tree.addTreeSelectionListener(this);
-//        
-//
-//        if (playWithLineStyle) {
-//           tree.putClientProperty("JTree.lineStyle", lineStyle);
-//        }
-//        
-//        tree.setPreferredSize(new Dimension (new Dimension (400,
-//        		Cytoscape.getDesktop().getNetworkPanel().getHeight())));
-//     
-//
-//        //Create the scroll pane and add the tree to it. 
-//        JScrollPane treeView = new JScrollPane(tree);
-//
-//        treeView.setPreferredSize(new Dimension (new Dimension (250,
-//        		Cytoscape.getDesktop().getNetworkPanel().getHeight())));
-//        treeView.setMinimumSize(new Dimension (new Dimension (250,
-//        		Cytoscape.getDesktop().getNetworkPanel().getHeight())));
-//        treeView.setAlignmentX(Component.RIGHT_ALIGNMENT);
-//        
-//
-//        //Add the split pane to this panel.
-//        add(treeView, BorderLayout.NORTH);
-//
-//    }
 
     /**
      * from Ben Gross
