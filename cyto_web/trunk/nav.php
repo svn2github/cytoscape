@@ -37,6 +37,11 @@
 					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">
 						Bug Tracker
 					</a>
+					|
+					<a href="http://cytoscape.org/cgi-bin/moin.cgi/user_faq">
+						FAQ
+					</a>
+					
 				</h1>
 			</td>
 		</tr>
