@@ -104,13 +104,6 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td><p>17:00-19:00</p></td>
   <td><p>Meet and greet for development team and organization and other eary arrivals</p></td>
  </tr>
- <tr>
-  <td><p>19:00 -(...)</p>
-  </td>
-  <td>
-  <p>Dinner </p>
-  </td>
- </tr>
  </table>
  
 <br>
@@ -126,7 +119,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader"><p>AMC Lecture room L 01-225 </p>
+  <td class="subheader"><p>AMC Lecture room L 01-252 </p>
   </td>
  </tr>
  <tr>
@@ -178,7 +171,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader" colspan="3"><p>AMC Lecture rooms L 01-255, K 01-123 and -122;  parallel sessions </p></td>
+  <td class="subheader" colspan="3"><p>AMC Lecture rooms L 01-252, K 01-123 and -122;  parallel sessions </p></td>
  </tr>
  <tr>
   <td><p>09:30-11:00 </p></td>
