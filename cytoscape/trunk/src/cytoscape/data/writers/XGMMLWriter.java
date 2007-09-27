@@ -682,6 +682,8 @@ public class XGMMLWriter {
 		if (handles.size() == 0) {
 			writer.write("/>\n");
 			return;
+		} else {
+			writer.write(">\n");
 		}
 
 		depth++;
@@ -690,7 +692,7 @@ public class XGMMLWriter {
 		for (Point2D handle: handles) {
 			String x = Double.toString(handle.getX());
 			String y = Double.toString(handle.getY());
-			writeElement("<att name=\"handle\" x=\""+x+"\" y=\""+y+"\" />");
+			writeElement("<att name=\"handle\" x=\""+x+"\" y=\""+y+"\" />\n");
 		}
 		depth--;
 		writeElement("</att>\n");
@@ -1070,6 +1072,22 @@ public class XGMMLWriter {
 	 * @return the quoted string
 	 */
 	private String quote(String str) {
+		// Find and replace any "magic" characters
+		if (str.contains("&")) {
+			str = str.replaceAll("&", "&amp;");
+		}
+		if (str.contains("\"")) {
+			str = str.replaceAll("\"", "&quot;");
+		}
+		if (str.contains("'")) {
+			str = str.replaceAll("\'", "&apos;");
+		}
+		if (str.contains("<")) {
+			str = str.replaceAll("<", "&lt;");
+		}
+		if (str.contains(">")) {
+			str = str.replaceAll(">", "&gt;");
+		}
 		return "\""+str+"\"";
 	}
 
