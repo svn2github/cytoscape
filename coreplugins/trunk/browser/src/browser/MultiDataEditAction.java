@@ -147,25 +147,6 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			data.setMapAttribute(id, att, (Map) object);
 	}
 
-	// Extract attribute value
-	private Object getAttributeValue(String id, String att) {
-		attType = data.getType(att);
-
-		if (attType == CyAttributes.TYPE_INTEGER)
-			return data.getIntegerAttribute(id, att);
-		else if (attType == CyAttributes.TYPE_FLOATING)
-			return data.getDoubleAttribute(id, att);
-		else if (attType == CyAttributes.TYPE_BOOLEAN)
-			return data.getBooleanAttribute(id, att);
-		else if (attType == CyAttributes.TYPE_STRING)
-			return data.getStringAttribute(id, att);
-		else if (attType == CyAttributes.TYPE_SIMPLE_LIST)
-			return data.getListAttribute(id, att);
-		else if (attType == CyAttributes.TYPE_SIMPLE_MAP)
-			return data.getMapAttribute(id, att);
-
-		return null;
-	}
 
 	// put back the new_values
 	/**
@@ -280,7 +261,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
-			Object value = getAttributeValue(go.getIdentifier(), attributeFrom);
+			Object value = data.getAttribute(go.getIdentifier(), attributeFrom);
 			new_values.add(value);
 			setAttributeValue(go.getIdentifier(), attributeTo, value);
 			old_values.add(null);
@@ -299,7 +280,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
-			old_values.add(getAttributeValue(go.getIdentifier(), attributeTo));
+			old_values.add(data.getAttribute(go.getIdentifier(), attributeTo));
 			data.getMultiHashMap().removeAllAttributeValues(go.getIdentifier(), attributeTo);
 
 			new_values.add(null);
@@ -326,7 +307,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			Double d = (Double) getAttributeValue(go.getIdentifier(), attributeTo);
+			Double d = (Double) data.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(d);
 
 			double new_v;
@@ -359,7 +340,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			Integer d = (Integer) getAttributeValue(go.getIdentifier(), attributeTo);
+			Integer d = (Integer) data.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(d);
 
 			int new_v;
@@ -396,7 +377,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			String s = (String) getAttributeValue(go.getIdentifier(), attributeTo);
+			String s = (String) data.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(s);
 
 			String new_v;
@@ -422,7 +403,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			GraphObject go = (GraphObject) i.next();
 
 			// get the current value and set the old_value to it
-			Boolean b = (Boolean) getAttributeValue(go.getIdentifier(), attributeTo);
+			Boolean b = (Boolean) data.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(b);
 			setAttributeValue(go.getIdentifier(), attributeTo, input);
 			new_values.add(input);
