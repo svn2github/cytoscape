@@ -177,7 +177,7 @@ public class ImportHandler {
 	 * @param url -- the URL string
 	 * @return GraphReader capable of reading the specified URL.
 	 */
-	public GraphReader getReader(URL url) throws IOException {
+	public GraphReader getReader(URL url) {
 		// check if fileType is available
 		CyFileFilter cff;
 
@@ -185,10 +185,15 @@ public class ImportHandler {
 		Proxy pProxyServer = ProxyHandler.getProxyServer();
 		URLConnection conn = null;
 
-		if (pProxyServer == null)
-			conn = url.openConnection();
-		else
-			conn = url.openConnection(pProxyServer);
+		try {
+			if (pProxyServer == null)
+				conn = url.openConnection();
+			else
+				conn = url.openConnection(pProxyServer);
+		} catch (IOException ioe) {
+			System.out.println("Unable to open "+url);
+			return null;
+		}
 		// Ensure we are reading the real content from url,
 		// and not some out-of-date cached content:
 		conn.setUseCaches(false);

@@ -133,31 +133,43 @@ public class LoadNetworkTask implements Task {
 	private String name;
 
 	private LoadNetworkTask(URL u) {
+		name = u.toString();
 		try {
 			reader = Cytoscape.getImportHandler().getReader(u);
-			System.out.println("Reader: "+reader);
 			uri = u.toURI();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			uri = null;
-		} catch (IOException e) {
-			e.printStackTrace();
-			reader = null;
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+			                              "Unable to connect to URL "+name+": "+e.getMessage(),
+			                              "URL Syntax Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		} 
+		if (reader == null) {
+			uri = null;
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+			                              "Unable to connect to URL "+name, 
+			                              "URL Connect Error", JOptionPane.ERROR_MESSAGE);
 		}
-
-		name = u.toString();
 	}
 
 	private LoadNetworkTask(File file) {
 		reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
 		uri = file.toURI();
 		name = file.getName();
+		if (reader == null) {
+			uri = null;
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+			                              "Unable to open file "+name, 
+			                              "File Open Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run() {
+		if (reader == null) return;
+
 		taskMonitor.setStatus("Reading in Network Data...");
 
 		try {
