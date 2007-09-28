@@ -515,6 +515,18 @@ public interface CyAttributes {
 	public String getStringAttribute(String id, String attributeName) throws ClassCastException;
 
 	/**
+	 * Gets an Object value at the specified id/attributeName. This is a convenience
+	 * method for those situations when attribute type isn't relevant.  You should
+	 * NOT use this method and cast the result to the type of attribute.  Instead,
+	 * just call the appropriate get*Attribute method.
+	 *
+	 * @param id            unique identifier.
+	 * @param attributeName attribute name.
+	 * @return Object, or null if no id/attributeName pair is found.
+	 */
+	public Object getAttribute(String id, String attributeName);
+
+	/**
 	 * Gets the data type of the specified attribute.
 	 *
 	 * @param attributeName Attribute Name.

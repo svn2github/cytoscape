@@ -436,6 +436,27 @@ public class CyAttributesImpl implements CyAttributes {
 	}
 
 	/**
+	 * Gets an Object value at the specified id/attributeName. This is a convenience
+	 * method for those situations when attribute type isn't relevant.  You should
+	 * NOT use this method and cast the result to the type of attribute.  Instead,
+	 * just call the appropriate get*Attribute method.
+	 *
+	 * @param id            unique identifier.
+	 * @param attributeName attribute name.
+	 * @return Object, or null if no id/attributeName pair is found.
+	 */
+	public Object getAttribute(String id, String attributeName) {
+		final byte type = mmapDef.getAttributeValueType(attributeName);
+
+		if (type < 0) {
+			return null;
+		}
+
+		return mmap.getAttributeValue(id, attributeName, null);
+	}
+	
+
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param attributeName DOCUMENT ME!
