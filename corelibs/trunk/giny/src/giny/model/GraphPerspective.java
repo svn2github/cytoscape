@@ -394,21 +394,13 @@ public interface GraphPerspective {
    public GraphPerspective createGraphPerspective ( Filter filter ) ;
  
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
-   *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
-   *   if there exists an edge [directed or undirected] E such that A is E's target and
-   *   B is E's source, or
-   *   A is E's source and B is E's target; this method then returns a non-repeating list
-   *   of all nodes N in this
-   *   GraphPerspective such that N is a "node neighbor" of node, the input parameter.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+   * @deprecated Use neighborsArray(int) instead;
+   * @see #neighborsArray(int)
    */
    public List neighborsList ( Node node ) ;
 
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
+   *   Please note that the definition
    *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
    *   if there exists an edge [directed or undirected] E such that A is E's target and
    *   B is E's source, or
@@ -416,53 +408,53 @@ public interface GraphPerspective {
    *   of indices of all nodes N in this
    *   GraphPerspective such that N is a "node neighbor" of the node at specified index,
    *   or null if no node at specified index exists in this GraphPerspective.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+   *   @param node_index The node whose neighbors you're looking for.
    */
   public int[] neighborsArray ( int node_index );
   
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
+   *   Please note that the definition
    *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
    *   if there exists an edge [directed or undirected] E such that A is E's target and
    *   B is E's source, or A is E's source and B is E's target; this method then returns
    *   true if and only if a_node is a "node neighbor" of another_node in this
    *   GraphPerspective.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+   * @param a_node Source node.
+   * @param another_node Possible target node.
    */
   public boolean isNeighbor ( Node a_node, Node another_node ) ;
   
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
+   *   Please note that the definition
    *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
    *   if there exists an edge [directed or undirected] E such that A is E's target and
    *   B is E's source, or A is E's source and B is E's target; this method then returns
    *   true if and only if node at index a_node_index is a "node neighbor" of node at
    *   index another_node_index in this GraphPerspective.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+   * @param a_node_index Source node index.
+   * @param another_node_index Possible target node index.
    */
    public boolean isNeighbor ( int a_node_index, int another_node_index ) ;
  
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways: this method returns true if and only if
+   *   This method returns true if and only if
    *   either 1) there exists a directed edge E in this GraphPerspective such that the from
    *   node specified is E's source node and the target node specified is E's target node
    *   or 2) there exists an undirected edge E in this GraphPerspective such that E's
    *   endpoints are the from and to nodes specified.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+   * @param from Source node.
+   * @param to Possible target node.
    */
   public boolean edgeExists ( Node from, Node to ) ;
  
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways: this method returns true if and only if
+   *   This method returns true if and only if
    *   either 1) there exists a directed edge E in this GraphPerspective such that
    *   from_node_index is E's source node's index and to_node_index is E's target node's
    *   index or 2) there exists an undirected edge E in this GraphPerspective such that E's
    *   endpoint nodes have indices from_node_index and to_node_index.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
+   * @param from_node_index Source node index.
+   * @param to_node_index Possible target node index.
    */
   public boolean edgeExists ( int from_node_index, int to_node_index ) ;
  
@@ -479,8 +471,6 @@ public interface GraphPerspective {
    * @return the number of Edges from the <tt>from</tt> Node to the 
    * <tt>to</tt> Node; returns -1 if either the <tt>from</tt> or the
    * <tt>to</tt> Node is not in this GraphPerspective.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int getEdgeCount (Node from,
                            Node to,
@@ -502,8 +492,6 @@ public interface GraphPerspective {
    * @return the number of Edges from the Node with index <tt>from_index</tt>
    * to the Node with index <tt>to_index</tt>; returns -1 if either one of the two
    * specified nodes is not in this GraphPerspective.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int getEdgeCount ( int from_node_index,
                             int to_node_index,
