@@ -40,6 +40,8 @@ import cytoscape.CyNetwork;
 
 import cytoscape.data.CyAttributes;
 
+import cytoscape.task.TaskMonitor;
+
 import cytoscape.layout.CyLayoutAlgorithm;
 
 import giny.model.RootGraph;
@@ -101,4 +103,10 @@ public interface GraphReader {
 	 * @return network name.
 	 */
 	public String getNetworkName();
+
+	/**
+ 	 * Sets the task monitor
+ 	 * @param monitor the task monitor to use
+ 	 */
+	public void setTaskMonitor(TaskMonitor monitor);
 }

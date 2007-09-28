@@ -44,6 +44,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
 
+import java.net.URL;
+import java.net.URLConnection;
+
 import javax.swing.filechooser.FileFilter;
 
 
@@ -64,6 +67,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	private String description = null;
 	private String fullDescription = null;
 	private boolean useExtensionsInDescription = true;
+	private Hashtable contentTypes = null;
 	protected GraphReader reader = null;
 	protected String fileNature = "UNKNOWN";
 
@@ -222,6 +226,29 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	}
 
 	/**
+ 	 * Returns true if this class is capable of processing the specified URL
+ 	 *
+ 	 * @param url the URL
+ 	 * @param contentType the content-type of the URL
+ 	 *
+ 	 */
+	public boolean accept(URL url, String contentType) {
+		// Check for matching content type
+		if ((contentType != null) && (contentTypes != null) && 
+		    (contentTypes.get(contentType) != null)) {
+			return true;
+		}
+		
+		// No content-type match -- try for an extnsion match
+		String extension = getExtension(url.getFile());
+		if ((extension != null) && (filters.get(extension) != null)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Return the extension portion of the file's name.
 	 *
 	 * @see #getExtension
@@ -275,6 +302,26 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 
 		filters.put(extension.toLowerCase(), this);
 		fullDescription = null;
+	}
+
+	/**
+	 * Adds a content-type to filter against.
+	 * <p/>
+	 * For example: the following code will create a filter that filters
+	 * out all streams except those that are of type "text/xgmml+xml" 
+	 * and "text/xgmml":
+	 * <p/>
+	 * ExampleFileFilter filter = new ExampleFileFilter();
+	 * filter.addContentType("text/xgmml+xml");
+	 * filter.addContentType("text/xgmml");
+	 * <p/>
+	 */
+	public void addContentType(String type) {
+		if (contentTypes == null) {
+			contentTypes = new Hashtable(5);
+		}
+
+		contentTypes.put(type.toLowerCase(), this);
 	}
 
 	/**
@@ -377,6 +424,13 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 * Returns the reader.  This should be overridden by file type subclasses.
 	 */
 	public GraphReader getReader(String fileName) {
+		return null;
+	}
+
+	/**
+	 * Returns the reader.  This should be overridden by file type subclasses.
+	 */
+	public GraphReader getReader(URL url, URLConnection conn) {
 		return null;
 	}
 

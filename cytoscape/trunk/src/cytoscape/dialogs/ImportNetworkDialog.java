@@ -351,10 +351,11 @@ public class ImportNetworkDialog extends JDialog
 
 	private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// See if the user just typed in the desired file
-		if (networkFiles == null && networkFileTextField.getText() != null) {
+		if (!isRemote() && networkFiles == null && networkFileTextField.getText() != null) {
 			networkFiles = new File[1];
 			networkFiles[0] = new File(networkFileTextField.getText());
 		}
+
 		status = true;
 		this.dispose();
 	}
@@ -409,7 +410,9 @@ public class ImportNetworkDialog extends JDialog
 				} else // case for remote import
 				 {
 					//doURLimport(e);
-					createURLimportTask(e);
+					//createURLimportTask(e);
+					URLstr = bookmarkEditor.getURLstr().trim();
+					importButtonActionPerformed(e);
 				}
 			} else if (_btn == cancelButton) {
 				cancelButtonActionPerformed(e);
@@ -417,7 +420,9 @@ public class ImportNetworkDialog extends JDialog
 		}
 
 		if (_actionObject instanceof JTextField) {
-			createURLimportTask(e);
+			// createURLimportTask(e);
+			URLstr = bookmarkEditor.getURLstr().trim();
+			importButtonActionPerformed(e);
 		}
 	}
 
@@ -509,11 +514,16 @@ public class ImportNetworkDialog extends JDialog
 
 	private void doURLimport(URL url, java.awt.event.ActionEvent e, TaskMonitor taskMonitor) {
 		cytoscape.data.ImportHandler theHandler = Cytoscape.getImportHandler();
-
-		File tmpFile = null;
+		cytoscape.data.readers.GraphReader reader = null;
 
 		try {
-			tmpFile = theHandler.downloadFromURL(url, taskMonitor);
+			reader = theHandler.getReader(url);
+			if (reader == null )
+				return;
+
+			reader.setTaskMonitor(taskMonitor);
+			reader.read();
+
 		} catch (MalformedURLException e1) {
 			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
 			                              JOptionPane.INFORMATION_MESSAGE);
@@ -529,15 +539,6 @@ public class ImportNetworkDialog extends JDialog
 			JOptionPane.showMessageDialog(this, "Failed to download from URL!", "Warning",
 			                              JOptionPane.INFORMATION_MESSAGE);
 		}
-
-		if (tmpFile == null) {
-			return;
-		}
-
-		networkFiles = new File[1];
-		networkFiles[0] = tmpFile;
-
-		importButtonActionPerformed(e);
 	}
 
 	class LocalRemoteListener implements java.awt.event.ActionListener {

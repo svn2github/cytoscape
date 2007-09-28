@@ -59,6 +59,7 @@ import cytoscape.init.CyInitParams;
 import cytoscape.task.TaskMonitor;
 
 import cytoscape.util.PercentUtil;
+import cytoscape.util.FileUtil;
 
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.CalculatorCatalog;
@@ -92,6 +93,7 @@ import java.awt.geom.Point2D;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.io.InputStream;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -229,6 +231,9 @@ public class GMLReader extends AbstractGraphReader {
 	HashMap<String,String> edgeArrow;
 	HashMap edgeShape;
 
+	// The InputStream
+	InputStream inputStream = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -236,7 +241,28 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public GMLReader(String filename) {
 		this(filename, null);
+		inputStream = FileUtil.getInputStream(filename);
 	}
+
+	/**
+	 * Constructor.<br>
+	 * This is usually used for remote file loading.
+	 *
+	 * @param is
+	 *            Input stream of GML file,
+	 *
+	 */
+	public GMLReader(InputStream is, String name) {
+		super(name);
+
+		// Set new style name
+		styleName = createVSName();
+		initializeHash();
+		initStyle();
+
+		this.inputStream = is;
+	}
+
 
 	/**
 	 * Constructor.
@@ -246,6 +272,7 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public GMLReader(String filename, TaskMonitor taskMonitor) {
 		super(filename);
+		inputStream = FileUtil.getInputStream(filename);
 
 		// Set new style name
 		styleName = createVSName();
@@ -258,17 +285,27 @@ public class GMLReader extends AbstractGraphReader {
 		}
 	}
 
+	/**
+ 	 * Sets the task monitor we want to use
+ 	 *
+ 	 * @param monitor the TaskMonitor to use
+ 	 */
+	public void setTaskMonitor(TaskMonitor monitor) {
+		this.taskMonitor = monitor;
+		percentUtil = new PercentUtil(3);
+	}
+
 	private String createVSName() {
 		// Create new style name
-		String target = null;
+		// String target = null;
 
-		File fileTest = new File(fileName);
-		target = fileTest.getName();
-		System.out.println("Target GML file is " + target);
+		// File fileTest = new File(fileName);
+		// target = fileTest.getName();
+		System.out.println("Target GML file is " + fileName);
 
 		mapSuffix = " for " + fileName;
 
-		return target.concat("_GML_style");
+		return fileName.concat("_GML_style");
 	}
 
 	private void initializeHash() {
@@ -661,7 +698,7 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public void read() {
 		try {
-			keyVals = (new GMLParser(fileName)).parseList();
+			keyVals = (new GMLParser(inputStream)).parseList();
 		} catch (Exception io) {
 			io.printStackTrace();
 

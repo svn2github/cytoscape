@@ -170,34 +170,45 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			return;
 		}
 
-		final File[] files = fd.getFiles();
-		boolean skipMessage = false;
-
-		if ((files != null) && (files.length != 0)) {
-			if (files.length != 1) {
-				skipMessage = true;
+		if (fd.isRemote()) {
+			String URLstr = fd.getURLStr();
+			System.out.println("URL: "+URLstr);
+			try {
+				LoadNetworkTask.loadURL(new URL(URLstr), false);
+			} catch (MalformedURLException e3) {
+				JOptionPane.showMessageDialog(fd, "URL error!", "Warning",
+			 	                             JOptionPane.INFORMATION_MESSAGE);
 			}
+		} else {
+			final File[] files = fd.getFiles();
+			boolean skipMessage = false;
 
-			List<String> messages = new ArrayList<String>();
-			messages.add("Successfully loaded the following files:");
-			messages.add(" ");
-
-			for (int i = 0; i < files.length; i++) {
-				if (fd.isRemote() == true) {
-					messages.add(fd.getURLStr());
-				} else {
-					messages.add(files[i].getName());
+			if ((files != null) && (files.length != 0)) {
+				if (files.length != 1) {
+					skipMessage = true;
 				}
 
-				LoadNetworkTask.loadFile(files[i], skipMessage);
-			}
+				List<String> messages = new ArrayList<String>();
+				messages.add("Successfully loaded the following files:");
+				messages.add(" ");
 
-			if (files.length != 1) {
-				JOptionPane messagePane = new JOptionPane();
-				messagePane.setLocation(Cytoscape.getDesktop().getLocationOnScreen());
-				messagePane.showMessageDialog(Cytoscape.getDesktop(), messages.toArray(),
-				                              "Multiple Network Files Loaded",
-				                              JOptionPane.INFORMATION_MESSAGE);
+				for (int i = 0; i < files.length; i++) {
+					if (fd.isRemote() == true) {
+						messages.add(fd.getURLStr());
+					} else {
+						messages.add(files[i].getName());
+					}
+	
+					LoadNetworkTask.loadFile(files[i], skipMessage);
+				}
+	
+				if (files.length != 1) {
+					JOptionPane messagePane = new JOptionPane();
+					messagePane.setLocation(Cytoscape.getDesktop().getLocationOnScreen());
+					messagePane.showMessageDialog(Cytoscape.getDesktop(), messages.toArray(),
+					                              "Multiple Network Files Loaded",
+					                              JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		}
 	}

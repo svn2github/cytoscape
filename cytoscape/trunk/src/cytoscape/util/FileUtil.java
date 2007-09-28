@@ -336,15 +336,8 @@ public abstract class FileUtil {
 	 */
 	public static String getInputString(String filename) {
 		try {
-			String lineSep = System.getProperty("line.separator");
-			StringBuffer sb = new StringBuffer();
-			String line = null;
-			BufferedReader br = new BufferedReader(new InputStreamReader(getInputStream(filename)));
-
-			while ((line = br.readLine()) != null)
-				sb.append(line + lineSep);
-
-			return sb.toString();
+			InputStream stream = getInputStream(filename);
+			return getInputString(stream);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -352,5 +345,24 @@ public abstract class FileUtil {
 		System.out.println("couldn't create string from '" + filename + "'");
 
 		return null;
+	}
+
+	/**
+	 *
+	 * @param inputStream 
+	 *		An InputStream
+	 *
+	 * @return  The contents of the given file as a string.
+	 */
+	public static String getInputString(InputStream inputStream) throws IOException {
+		String lineSep = System.getProperty("line.separator");
+		StringBuffer sb = new StringBuffer();
+		String line = null;
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+		while ((line = br.readLine()) != null)
+			sb.append(line + lineSep);
+
+		return sb.toString();
 	}
 }

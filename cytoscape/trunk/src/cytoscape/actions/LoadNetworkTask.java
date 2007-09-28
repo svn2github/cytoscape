@@ -133,13 +133,16 @@ public class LoadNetworkTask implements Task {
 	private String name;
 
 	private LoadNetworkTask(URL u) {
-		reader = Cytoscape.getImportHandler().getReader(u);
-
 		try {
+			reader = Cytoscape.getImportHandler().getReader(u);
+			System.out.println("Reader: "+reader);
 			uri = u.toURI();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			uri = null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			reader = null;
 		}
 
 		name = u.toString();

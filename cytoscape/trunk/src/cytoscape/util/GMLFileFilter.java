@@ -39,6 +39,8 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GraphReader;
 
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * FileFilter for Reading in GML Files.
@@ -47,7 +49,7 @@ import cytoscape.data.readers.GraphReader;
  */
 public class GMLFileFilter extends CyFileFilter {
 	/**
-	 * XGMML Files are Graphs.
+	 * GML Files are Graphs.
 	 */
 	private static String fileNature = ImportHandler.GRAPH_NATURE;
 
@@ -55,6 +57,11 @@ public class GMLFileFilter extends CyFileFilter {
 	 * File Extensions.
 	 */
 	private static String fileExtension = "gml";
+
+	/**
+	 * Content Types
+	 */
+	private static String[] contentTypes = { "text/gml", "text/gml+xml" };
 
 	/**
 	 * Filter Description.
@@ -76,6 +83,22 @@ public class GMLFileFilter extends CyFileFilter {
 	public GraphReader getReader(String fileName) {
 		reader = new GMLReader(fileName);
 
+		return reader;
+	}
+
+	/**
+	 * Gets Graph Reader.
+	 * @param fileName File name.
+	 * @return GraphReader Object.
+	 */
+	public GraphReader getReader(URL url, URLConnection conn) {
+		try {
+			// Get the input stream
+			reader = new GMLReader(conn.getInputStream(), url.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			reader = null;
+		}
 		return reader;
 	}
 }

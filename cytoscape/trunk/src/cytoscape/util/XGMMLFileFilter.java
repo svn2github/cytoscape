@@ -41,7 +41,10 @@ import cytoscape.data.readers.XGMMLReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * FileFilter for Reading in XGMML Files.
@@ -60,6 +63,11 @@ public class XGMMLFileFilter extends CyFileFilter {
 	private static String[] fileExtensions = { "xgmml", "xml" };
 
 	/**
+	 * Content Types
+	 */
+	private static String[] contentTypes = { "text/xgmml", "text/xgmml+xml" };
+
+	/**
 	 * Filter Description.
 	 */
 	private static String description = "XGMML files";
@@ -69,6 +77,10 @@ public class XGMMLFileFilter extends CyFileFilter {
 	 */
 	public XGMMLFileFilter() {
 		super(fileExtensions, description, fileNature);
+
+		// Add our content types
+		for (int i = 0; i < contentTypes.length; i++)
+			addContentType(contentTypes[i]);
 	}
 
 	/**
@@ -79,6 +91,22 @@ public class XGMMLFileFilter extends CyFileFilter {
 	public GraphReader getReader(String fileName) {
 		reader = new XGMMLReader(fileName);
 
+		return reader;
+	}
+
+	/**
+	 * Gets Graph Reader.
+	 * @param fileName File name.
+	 * @return GraphReader Object.
+	 */
+	public GraphReader getReader(URL url, URLConnection conn) {
+		try {
+			// Get the input stream
+			reader = new XGMMLReader(conn.getInputStream(), url.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			reader = null;
+		}
 		return reader;
 	}
 

@@ -39,6 +39,8 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * FileFilter for Reading in Cytoscape SIF Files.
@@ -55,6 +57,11 @@ public class SIFFileFilter extends CyFileFilter {
 	 * File Extension.
 	 */
 	private static String fileExtension = "sif";
+
+	/**
+	 * Content Types
+	 */
+	private static String[] contentTypes = { "text/sif" };
 
 	/**
 	 * Filter Description.
@@ -76,6 +83,22 @@ public class SIFFileFilter extends CyFileFilter {
 	public GraphReader getReader(String fileName) {
 		reader = new InteractionsReader(fileName);
 
+		return reader;
+	}
+
+	/**
+	 * Gets Graph Reader.
+	 * @param fileName File name.
+	 * @return GraphReader Object.
+	 */
+	public GraphReader getReader(URL url, URLConnection conn) {
+		try {
+			// Get the input stream
+			reader = new InteractionsReader(conn.getInputStream(), url.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			reader = null;
+		}
 		return reader;
 	}
 }

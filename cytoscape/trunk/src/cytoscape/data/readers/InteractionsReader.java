@@ -65,6 +65,7 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -93,6 +94,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	private boolean is_zip = false;
 	private IntArrayList node_indices;
 	private OpenIntIntHashMap edges;
+	private InputStream inputStream;
 
 	/**
 	 * Creates an interaction reader based on a string consisting of data that has
@@ -116,6 +118,7 @@ public class InteractionsReader extends AbstractGraphReader {
 	 */
 	public InteractionsReader(String filename) {
 		this(filename, null);
+		this.inputStream = FileUtil.getInputStream(filename);
 	}
 
 	/**
@@ -126,6 +129,30 @@ public class InteractionsReader extends AbstractGraphReader {
 	 */
 	public InteractionsReader(String filename, TaskMonitor monitor) {
 		super(filename);
+		this.taskMonitor = monitor;
+		this.inputStream = FileUtil.getInputStream(filename);
+	}
+
+	/**
+	 * Constructor.<br>
+	 * This is usually used for remote file loading.
+	 *
+	 * @param is
+	 *            Input stream of GML file,
+	 *
+	 */
+	public InteractionsReader(InputStream is, String name) {
+		super(name);
+
+		this.inputStream = is;
+	}
+
+	/**
+ 	 * Sets the task monitor we want to use
+ 	 *
+ 	 * @param monitor the TaskMonitor to use
+ 	 */
+	public void setTaskMonitor(TaskMonitor monitor) {
 		this.taskMonitor = monitor;
 	}
 
@@ -163,7 +190,7 @@ public class InteractionsReader extends AbstractGraphReader {
 		String rawText;
 
 		if (!is_zip) {
-			rawText = FileUtil.getInputString(fileName);
+			rawText = FileUtil.getInputString(inputStream);
 		} else {
 			rawText = zip_entry;
 		}

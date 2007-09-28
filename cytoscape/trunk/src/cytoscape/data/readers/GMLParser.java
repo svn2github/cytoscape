@@ -42,6 +42,7 @@ import java.io.FileReader;
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
@@ -111,8 +112,14 @@ public class GMLParser {
 	 * Make a stream tokenizer out of the given this file and read in the file
 	 */
 	public GMLParser(String file) throws IOException, Exception {
-		tokenizer = new StreamTokenizer(new FilterNewlineReader(new InputStreamReader(FileUtil
-		                                                                                                           .getInputStream(file))));
+		this(FileUtil.getInputStream(file));
+	}
+
+	/**
+	 * Make a stream tokenizer out of the given this file and read in the file
+	 */
+	public GMLParser(InputStream stream) throws IOException, Exception {
+		tokenizer = new StreamTokenizer(new FilterNewlineReader(new InputStreamReader(stream)));
 
 		tokenizer.resetSyntax();
 		tokenizer.commentChar('#');

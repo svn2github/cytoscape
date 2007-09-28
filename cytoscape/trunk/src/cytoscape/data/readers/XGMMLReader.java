@@ -182,6 +182,21 @@ public class XGMMLReader extends AbstractGraphReader {
 	}
 
 	/**
+	 * Constructor.<br>
+	 * This is usually used for remote file loading.
+	 *
+	 * @param is
+	 *            Input stream of XGMML file,
+	 *
+	 */
+	public XGMMLReader(InputStream is, String name) {
+		super(name);
+
+		this.networkStream = is;
+		initialize();
+	}
+
+	/**
 	 * Creates a new XGMMLReader object.
 	 *
 	 * @param fileName  DOCUMENT ME!
@@ -193,6 +208,16 @@ public class XGMMLReader extends AbstractGraphReader {
 		percentUtil = new PercentUtil(3);
 		networkStream = FileUtil.getInputStream(fileName, monitor);
 		initialize();
+	}
+
+	/**
+ 	 * Sets the task monitor we want to use
+ 	 *
+ 	 * @param monitor the TaskMonitor to use
+ 	 */
+	public void setTaskMonitor(TaskMonitor monitor) {
+		this.taskMonitor = monitor;
+		percentUtil = new PercentUtil(3);
 	}
 
 	private void initialize() {

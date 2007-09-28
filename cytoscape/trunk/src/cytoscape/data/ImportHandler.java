@@ -174,21 +174,39 @@ public class ImportHandler {
 	/**
 	 * Gets the GraphReader that is capable of reading URL.
 	 *
-	 * @param u -- the URL string
+	 * @param url -- the URL string
 	 * @return GraphReader capable of reading the specified URL.
 	 */
-	public GraphReader getReader(URL u) {
-		File tmpFile = null;
+	public GraphReader getReader(URL url) throws IOException {
+		// check if fileType is available
+		CyFileFilter cff;
 
-		try {
-			tmpFile = downloadFromURL(u, null);
-		} catch (Exception e) {
-			System.out.println("Failed to downloadFromURL");
-		}
+		// Open up the connection
+		Proxy pProxyServer = ProxyHandler.getProxyServer();
+		URLConnection conn = null;
 
-		if (tmpFile != null) {
-			return getReader(tmpFile.getAbsolutePath());
+		if (pProxyServer == null)
+			conn = url.openConnection();
+		else
+			conn = url.openConnection(pProxyServer);
+		// Ensure we are reading the real content from url,
+		// and not some out-of-date cached content:
+		conn.setUseCaches(false);
+
+		// Get the content-type
+		String contentType = conn.getContentType();
+
+		System.out.println("Content-type: "+contentType);
+
+		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
+			cff = (CyFileFilter) it.next();
+
+			if (cff.accept(url, contentType)) {
+				System.out.println("Found reader: "+cff.getDescription());
+				return cff.getReader(url, conn);
+			}
 		}
+		System.out.println("No reader for: "+url.toString());
 
 		return null;
 	}
