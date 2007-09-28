@@ -103,10 +103,4 @@ public interface GraphReader {
 	 * @return network name.
 	 */
 	public String getNetworkName();
-
-	/**
- 	 * Sets the task monitor
- 	 * @param monitor the task monitor to use
- 	 */
-	public void setTaskMonitor(TaskMonitor monitor);
 }

@@ -196,17 +196,46 @@ public class ImportHandler {
 		// Get the content-type
 		String contentType = conn.getContentType();
 
-		System.out.println("Content-type: "+contentType);
+		// System.out.println("Content-type: "+contentType);
+
+		int cend = contentType.indexOf(';');
+		if (cend >= 0)
+			contentType = contentType.substring(0, cend);
 
 		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
 			cff = (CyFileFilter) it.next();
 
 			if (cff.accept(url, contentType)) {
-				System.out.println("Found reader: "+cff.getDescription());
-				return cff.getReader(url, conn);
+				// System.out.println("Found reader: "+cff.getDescription());
+				GraphReader reader = cff.getReader(url, conn);
+				// Does the reader support the url,connection constructor?
+				if (reader != null) {
+					// Yes, return it
+					return reader;
+				}
+				// No, see if we can find another one that does
 			}
 		}
-		System.out.println("No reader for: "+url.toString());
+		
+		// If the content type is text/plain or text/html or text/xml
+		// then write a temp file and handle things that way
+		if (contentType.contains("text/html") ||
+		    contentType.contains("text/plain") ||
+		    contentType.contains("text/xml")) {
+			File tmpFile = null;
+
+			try {
+				tmpFile = downloadFromURL(url, null);
+			} catch (Exception e) {
+				System.out.println("Failed to download from URL: "+url);
+			}
+
+			if (tmpFile != null) {
+				return getReader(tmpFile.getAbsolutePath());
+			}
+		}
+
+		// System.out.println("No reader for: "+url.toString());
 
 		return null;
 	}

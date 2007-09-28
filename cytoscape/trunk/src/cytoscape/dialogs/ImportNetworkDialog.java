@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.lang.reflect.Method;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -521,7 +522,17 @@ public class ImportNetworkDialog extends JDialog
 			if (reader == null )
 				return;
 
-			reader.setTaskMonitor(taskMonitor);
+			// See if the reader supports setTaskMonitor.  We need to use reflection
+			// to provide backwards comptibility for those readers that do not inherit 
+			// from AbstractGraphReader
+			Method[] mlist = reader.getClass().getDeclaredMethods();
+			for (int i = 0; i < mlist.length; i++) {
+				Method m = mlist[i];
+				if (m.getName().equals("setTaskMonitor")) {
+					m.invoke(reader, taskMonitor);
+					break;
+				}
+			}
 			reader.read();
 
 		} catch (MalformedURLException e1) {
