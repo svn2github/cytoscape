@@ -37,35 +37,176 @@
 package cytoscape.filters;
 
 import java.util.Vector;
-import cytoscape.filters.util.FilterUtil;;
+//import cytoscape.filters.util.FilterUtil;
 
-/**
- * 
-  */
-public class CompositeFilter implements Cloneable {
-	
+import java.util.*;
+
+import csplugins.quickfind.util.QuickFind;
+
+public class CompositeFilter implements CyFilter {
+
+	private List<CyFilter> children;
+	private boolean negation;
+	//Relation relation;
 	private String name;
+	private BitSet node_bits, edge_bits;
+	private boolean childChanged;
+	private CyFilter parent;
+	private String depthString;
 	private String description;
-	private AdvancedSetting advancedSetting = new AdvancedSetting();
-	private Vector<AtomicFilter> atomicFilterVect = new Vector<AtomicFilter>();
+	private AdvancedSetting advancedSetting = null;
 
-	public CompositeFilter(AdvancedSetting pAdvancedSetting, Vector<AtomicFilter> pCustomFilterVect) {
-		advancedSetting = pAdvancedSetting;
-		atomicFilterVect = pCustomFilterVect;
-	}
-
-	//Create an empty CompositeFilter
-	public CompositeFilter() {
-		advancedSetting = new AdvancedSetting();
-		atomicFilterVect = new Vector<AtomicFilter>();
-	}
-
-	//Create an empty CompositeFilter
-	public CompositeFilter(String pName) {
-		advancedSetting = new AdvancedSetting();
-		atomicFilterVect = new Vector<AtomicFilter>();
+	public CompositeFilter(String pName, AdvancedSetting pSetting) {
 		name = pName;
+		advancedSetting = pSetting;
+		if (pSetting == null) {
+			advancedSetting = new AdvancedSetting();
+		}
+		children = new LinkedList<CyFilter>();
+
+		// so we calculate the first time through
+		childChanged = true;
 	}
+
+	//Create an empty CompositeFilter, with default Relation.AND
+	public CompositeFilter(String pName) {
+		name = pName;
+		advancedSetting = new AdvancedSetting();
+		children = new LinkedList<CyFilter>();
+	}
+	
+	public CompositeFilter(String pName, Relation pRelation) {
+		name = pName;
+		advancedSetting = new AdvancedSetting();
+		advancedSetting.setRelation(pRelation);
+		children = new LinkedList<CyFilter>();
+	}
+
+	public boolean passesFilter(Object obj) {
+		return false;
+	}
+	
+	public void setNegation(boolean pNegation) {
+		negation = pNegation;
+	}
+	public boolean getNegation() {
+		return negation;
+	}
+	
+	public BitSet getEdgeBits() {
+		System.out.println("CompositeFilter.getEdgeBits not implemented");
+		return null;
+	}
+	
+	public BitSet getNodeBits() {
+		// only recalculate the bits if the child has actually changed
+		if ( !childChanged ) 
+			return node_bits;
+
+		//System.out.println(depthString + " " + name + " recalculate");
+		
+		// if there are no children, just return an empty bitset
+		if ( children.size() <= 0 ) {
+			node_bits = new BitSet();
+			return node_bits;
+		}
+
+		// set the initial bits to a clone of the first child
+		if (children.get(0) instanceof AtomicFilter) {
+			AtomicFilter n_atomic = (AtomicFilter) children.get(0);
+			node_bits = (BitSet) n_atomic.getBits().clone();			
+		}
+
+		// now perform the requested relation with each subsequent child
+		for ( int i = 1; i < children.size(); i++ ) {
+			CyFilter n = children.get(i);
+			if ( advancedSetting.getRelation() == Relation.AND ) {	
+				if (n instanceof AtomicFilter) {
+					AtomicFilter n_atomic = (AtomicFilter) n;
+					if (n_atomic.index_type == QuickFind.INDEX_NODES) {
+						node_bits.and(n_atomic.getBits());						
+					}
+					else { //QuickFind.INDEX_EDGES
+						return new BitSet();
+					}
+				}
+				else if (n instanceof CompositeFilter) {
+					CompositeFilter n_composite = (CompositeFilter) n;
+					node_bits.and(n_composite.getNodeBits());					
+				}
+			} else if ( advancedSetting.getRelation() == Relation.OR ) {
+				if (n instanceof AtomicFilter) {
+					AtomicFilter n_atomic = (AtomicFilter) n;
+					if (n_atomic.index_type == QuickFind.INDEX_NODES) {
+						node_bits.or(n_atomic.getBits());
+					}
+					else { //QuickFind.INDEX_EDGES
+						// do nothing
+					}
+				}
+				else if (n instanceof CompositeFilter) {
+					CompositeFilter n_composite = (CompositeFilter) n;
+					node_bits.or(n_composite.getNodeBits());					
+				}
+			} else if ( advancedSetting.getRelation() == Relation.XOR ) {
+				System.out.println("CompositeFilter: Relation.XOR: not implemented");
+				//node_bits.xor(n.getBits());
+			} else if ( advancedSetting.getRelation() == Relation.NAND ) {
+				System.out.println("CompositeFilter: Relation.NAND: not implemented");
+				//node_bits.andNot(n.getBits());
+			}
+		}
+
+		// record that we've calculated the bits
+		childChanged = false;
+
+		return node_bits;
+	}
+
+	public void removeChild( CyFilter pChild ) {
+		
+		children.remove(pChild);		
+		childChanged();		
+	}
+
+	public void addChild( CyFilter pChild ) {
+		children.add( pChild );
+
+		// so the the child can communicate with us 
+		// (i.e. so we know when the child changes)
+		pChild.setParent(this);
+
+		// to force this class to recalculate and to
+		// notify parents
+		childChanged();
+	}
+
+	// called by any children
+	public void childChanged() {
+		childChanged = true;
+		// pass the message on to the parent
+		if ( parent != null )
+			parent.childChanged();
+	}
+
+	public void setParent(CyFilter f) {
+		parent = f;
+	}
+
+	public void print(int depth) {
+        StringBuffer sb = new StringBuffer();
+        for ( int i = 0; i < depth; i++ )
+	            sb.append("  ");
+		depthString = sb.toString();
+
+		System.out.println(depthString + name + "  " + advancedSetting.getRelation() ); 
+		for ( CyFilter c : children )
+			c.print(depth + 1);
+		//System.out.println(depthString +  getBits() );
+		if ( depth == 0 )
+			System.out.println();
+	}
+	
 
 	public String getName() {
 		return name;
@@ -74,7 +215,7 @@ public class CompositeFilter implements Cloneable {
 	public void setName(String pName) {
 		name = pName;
 	}
-		
+
 	public String getDescription() {
 		return description;
 	}
@@ -83,6 +224,14 @@ public class CompositeFilter implements Cloneable {
 		description = pDescription;
 	}
 
+	public Relation getRelation() {
+		return advancedSetting.getRelation();
+	}
+
+	public void setRelation(Relation pRelation) {
+		advancedSetting.setRelation(pRelation);
+	}
+	
 	public AdvancedSetting getAdvancedSetting() {
 		return advancedSetting;
 	}
@@ -91,56 +240,28 @@ public class CompositeFilter implements Cloneable {
 		advancedSetting = pAdvancedSetting;
 	}
 
-	
-	public Vector<AtomicFilter> getAtomicFilterVect()
-	{
-		return atomicFilterVect;
-	}
-	
-	public void addAtomicFilter(AtomicFilter pAtomicFilter)
-	{
-		atomicFilterVect.add(pAtomicFilter);
-	}
-	
-	public void removeAtomicFilter(AtomicFilter pAtomicFilter)
-	{
-		atomicFilterVect.remove(pAtomicFilter);
-	}
-
-	public void removeAtomicFilterAt(int index)
-	{
-		atomicFilterVect.remove(index);
-	}
-	
 	/**
 	 * @return the string represention of this Filter.
 	 */
 	public String toString()
 	{
-		String retStr ="Filter_name = " + name + "\n";
-		retStr       += "Description = " + description + "\n";
-		retStr       += advancedSetting.toString();
-		for (int i=0; i<atomicFilterVect.size(); i++ ) {
-			AtomicFilter theAtomicFilter = atomicFilterVect.elementAt(i);
-			if (theAtomicFilter instanceof StringFilter) {
-				StringFilter theStringFilter = (StringFilter)theAtomicFilter;
-				try {
-					retStr += "\nCustomSetting.StringFilter = " + theStringFilter.toString();					
-				}
-				catch (Exception e) { 
-					//If StringFilter is not initialized, ignore it
-				}
+		String retStr = "\n<Composite>\n";
+
+		retStr = retStr + "AdvancedSetting:" + advancedSetting.toString() + "\n";
+		retStr = retStr + "Negation:" + negation + "\n";
+
+		for (int i=0; i< children.size(); i++) {
+
+			if (children.get(i) instanceof AtomicFilter) {
+				AtomicFilter atomicFilter = (AtomicFilter)children.get(i);
+				retStr = retStr + atomicFilter.toString()+"\n";
 			}
-			else if (theAtomicFilter instanceof NumericFilter) {
-				NumericFilter theNumericFilter = (NumericFilter)theAtomicFilter;
-				try {
-					retStr += "\nCustomSetting.NumericFilter = " + theNumericFilter.toString();									
-				}
-				catch (Exception e) { 
-					//If NumericFilter is not initialized, ignore it
-				}
+			else  {// it is a CompositeFilter
+				retStr = retStr + "CompositeFilter" + children.get(i).getName()+"\n";
 			}
 		}
+		retStr += "</Composite>\n";
+
 		return retStr;
 	}
 
@@ -162,13 +283,7 @@ public class CompositeFilter implements Cloneable {
 	 * CompositeFilter may be cloned.
 	 */
 	public Object clone() {
-		String filterStr = this.toString();
-		Vector<String> filterStrVect = new Vector<String>();
-		String[] filterStrArray = filterStr.split("\n");
-		for (int i=0; i<filterStrArray.length; i++ ) {
-			filterStrVect.add(filterStrArray[i]);
-		}
-		return FilterUtil.createFilterFromString(filterStrVect);
+		return null;
 	}	
 
-} // COmpositeFilter
+}
