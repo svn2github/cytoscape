@@ -9,6 +9,7 @@ public class AdvancedSetting {
 	private boolean source=true, target=true; // interactionType
 	private boolean relationAND = true;
 	private boolean relationOR = false;
+	private Relation relation = Relation.AND;
 		
 	public String toString() {
 		String retStr = "";
@@ -72,6 +73,17 @@ public class AdvancedSetting {
 
 		return retStr;
 	}
+
+	public Relation getRelation()
+	{
+		return relation;
+	}
+	
+	public void setRelation(Relation pRelation)
+	{
+		relation = pRelation;
+	}
+
 	
 	// util
 	public boolean isSessionChecked()
