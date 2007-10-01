@@ -126,8 +126,13 @@ public class VisualStyleBuilder {
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
-		VisualStyle graphStyle = new VisualStyle(name + "style", nac, eac, gac);
+		String styleName = name+" style";
+		VisualStyle graphStyle = new VisualStyle(styleName, nac, eac, gac);
 
+		// Remove this in case we've already loaded this network once
+		catalog.removeVisualStyle(styleName);
+
+		// Now, attempt to add it
 		catalog.addVisualStyle(graphStyle);
 		vizmapper.setVisualStyle(graphStyle);
 	}

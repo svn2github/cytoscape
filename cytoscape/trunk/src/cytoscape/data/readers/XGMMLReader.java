@@ -88,6 +88,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualMappingManager;
 import ding.view.DGraphView;
 
 import java.lang.management.ManagementFactory;
@@ -674,5 +675,8 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (center != null)
 			((DGraphView) view).setCenter(center.getX(), center.getY());
+
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		vizmapper.applyAppearances();
 	}
 }
