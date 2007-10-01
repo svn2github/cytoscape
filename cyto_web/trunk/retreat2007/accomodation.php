@@ -52,7 +52,7 @@
   </tr>
   <tr>
   <td valign="top"><p><a href="http://www.nh-hotels.com/nh/en/hotels/the-netherlands/amsterdam/nh-doelen.html?action=search" target="_blank">Doelen hotel</a>
-  <br>Approx rates: single/double<br>&euro;100 / &euro;120</p>
+  <br>Approx rates: single/double<br>&euro;180 / &euro;2000</p>
   </td>
   <td align="right"><img border="0" align="middle" alt="Doelen hotel" height="170" width="120" src="images/photos/doelen_120_170.jpg"></td>
   </tr>

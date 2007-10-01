@@ -53,8 +53,8 @@ President of the <a href="http://www.systemsbiology.org" target="_blank">Institu
 Director of the <a href="http://cbio.mskcc.org/" target="_blank">Computational Biology Center at the MSKCC</a>.
 </li>
 <li>
-<b>Ewan Birney</b>; European Bioinformatics Institute/Ensembl, Cambridge, UK.<br> 
-Head of the <a href="http://www.ebi.ac.uk/" target="_blank">European Bioinformatics Institute/Ensembl</a> project.
+<b>Ewan Birney</b>; European Bioinformatics Institute, Cambridge, UK.<br> 
+Head of the <a href="http://www.ebi.ac.uk/" target="_blank">European Bioinformatics Institute's Ensembl project</a>.
 </li>
 <li>
 <b>Ruedi Aebersold</b>; Swiss Federal Institute of Technology, Zurich, Switzerland.<br> 
