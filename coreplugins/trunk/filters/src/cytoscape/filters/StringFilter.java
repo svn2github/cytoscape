@@ -36,12 +36,13 @@
 
 package cytoscape.filters;
 
-
-import java.beans.*;
-
+import giny.model.Node;
+import giny.model.Edge;
 import java.util.*;
-
-
+import csplugins.widgets.autocomplete.index.Hit;
+import csplugins.widgets.autocomplete.index.TextIndex;
+import cytoscape.Cytoscape;
+import csplugins.quickfind.util.QuickFind;
 
 /**
  * This is a Cytoscape specific filter that will pass nodes if
@@ -49,22 +50,8 @@ import java.util.*;
  */
 public class StringFilter extends AtomicFilter {
 
-	public String getSearchStr() {
-		if (searchValues == null) return null;
-		return searchValues[0];
-	}
-	
-	public void setSearchStr(String pSearchStr) {
-		searchValues = new String[2];
-		searchValues[0] = pSearchStr;
-	}
-	
-	/**
-	 * @return the name of this Filter and the search string (keyword).
-	 */
-	public String toString() {
-		return attributeName + ","+searchValues[0];
-	}
+	private String searchStr = null;
+	private TextIndex textIndex = null;
 
 	//---------------------------------------//
 	// Constructor
@@ -75,21 +62,104 @@ public class StringFilter extends AtomicFilter {
 	 *
 	 * @param desc  DOCUMENT ME!
 	 */
-	public StringFilter(String pAttributeName) {
-		super(pAttributeName,null);
+	public StringFilter(String pName, String pControllingAttribute, String pSearchStr) {
+		super(pName, pControllingAttribute);
+		//controllingAttribute = pControllingAttribute;
+		searchStr = pSearchStr;
 	}
 
-	public StringFilter(String pAttributeName, String[] pSearchValues) {
-		super(pAttributeName,pSearchValues);
-	}
-
-	public StringFilter(String pAttributeName, String pSearchString) {
-		super(pAttributeName,null);
-		searchValues = new String[2];
-		searchValues[0] = pSearchString;
+	public String getSearchStr() {
+		return searchStr;
 	}
 	
-	public StringFilter clone() {
-		return new StringFilter(attributeName, searchValues);
+	public void setSearchStr(String pSearchStr) {
+		searchStr = pSearchStr;
 	}
+
+	public TextIndex getTextIndex() {
+		return textIndex;
+	}
+	
+	public void setTextIndex(TextIndex pTextIndex) {
+		textIndex = pTextIndex;
+	}
+
+
+	public boolean passesFilter(Object obj) {
+		return false;
+	}
+
+	/**
+	 * Caculate the bitSet based on the existing TextIndex and search string.
+	 * The size of the bitSet is the number of nodes in the given network,
+	 * All bits are initially set to false, those with hits are set to true.
+	 * @param none.
+	 * @return bitSet Object.
+	 */	
+	
+	public void apply() {
+		
+		if (network == null) {
+			network = Cytoscape.getCurrentNetwork();					
+		}
+		
+		List<Node> nodes_list = null;
+		List<Edge> edges_list=null;
+
+		if (index_type == QuickFind.INDEX_NODES) {
+			nodes_list = network.nodesList();
+			objectCount = nodes_list.size();
+		}
+		else if (index_type == QuickFind.INDEX_EDGES) {
+			edges_list = network.edgesList();
+			objectCount = edges_list.size();
+		}
+		else {
+			System.out.println("StringFilter: Index_type is undefined.");
+			return;
+		}
+		
+		bits = new BitSet(objectCount); // all the bits are false at very beginning
+
+		Hit[] hits = textIndex.getHits(searchStr, Integer.MAX_VALUE);
+
+		if (hits.length == 0) {
+			return;
+		}
+		Hit hit0 = hits[0];
+
+		Object[] hit_objs = hit0.getAssociatedObjects();
+
+		int index=-1;
+		if (index_type == QuickFind.INDEX_NODES) {
+			for (Object obj : hit_objs) {
+				index = nodes_list.lastIndexOf((Node) obj);	
+				bits.set(index, true);
+			}
+		} else if (index_type == QuickFind.INDEX_EDGES){
+			for (Object obj : hit_objs) {
+				index = edges_list.lastIndexOf((Edge) obj);
+				bits.set(index, true);
+			}
+		}
+		
+		if (negation) {
+			bits.flip(0, objectCount);
+		}
+	}
+		
+	/**
+	 * @return the name of this Filter and the search string (keyword).
+	 */
+	public String toString() {
+		return "StringFilter="+name+":"+controllingAttribute+":" + negation+ ":"+searchStr+":"+index_type;
+	}
+
+	public StringFilter clone() {
+		StringFilter newStringFilter = new StringFilter("copy_of_"+name, controllingAttribute, searchStr);
+		newStringFilter.setNegation(negation);
+		return newStringFilter;
+	}
+
+	
 }
