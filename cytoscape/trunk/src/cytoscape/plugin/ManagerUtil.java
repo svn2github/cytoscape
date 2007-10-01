@@ -58,15 +58,15 @@ public class ManagerUtil {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public static Map<String, List<PluginInfo>> sortByCategory(
-			List<PluginInfo> Plugins) {
-		Map<String, List<PluginInfo>> Categories = new java.util.HashMap<String, List<PluginInfo>>();
+	public static Map<String, List<DownloadableInfo>> sortByCategory(
+			List<DownloadableInfo> Plugins) {
+		Map<String, List<DownloadableInfo>> Categories = new java.util.HashMap<String, List<DownloadableInfo>>();
 
-		for (PluginInfo Current : Plugins) {
+		for (DownloadableInfo Current : Plugins) {
 			if (Categories.containsKey(Current.getCategory())) {
 				Categories.get(Current.getCategory()).add(Current);
 			} else {
-				List<PluginInfo> List = new java.util.ArrayList<PluginInfo>();
+				List<DownloadableInfo> List = new java.util.ArrayList<DownloadableInfo>();
 				List.add(Current);
 				Collections.sort(List, NAME_ORDER);
 				Categories.put(Current.getCategory(), List);
@@ -115,19 +115,19 @@ public class ManagerUtil {
 	 * @param Current
 	 * @param Available
 	 */
-	public static List<PluginInfo> getUnique(List<PluginInfo> Current,
-			List<PluginInfo> Available) {
-		List<PluginInfo> UniqueAvail = new java.util.ArrayList<PluginInfo>(
+	public static List<DownloadableInfo> getUnique(List<DownloadableInfo> Current,
+			List<DownloadableInfo> Available) {
+		List<DownloadableInfo> UniqueAvail = new java.util.ArrayList<DownloadableInfo>(
 				Available);
 
 		if (Current == null) {
 			return Available;
 		}
 
-		for (PluginInfo infoAvail : Available) {
-			for (PluginInfo infoCur : Current) {
+		for (DownloadableInfo infoAvail : Available) {
+			for (DownloadableInfo infoCur : Current) {
 				if (infoCur.getID().equals(infoAvail.getID())
-					&& infoCur.getUrl().equals(infoAvail.getUrl())) {
+					&& infoCur.getObjectUrl().equals(infoAvail.getObjectUrl())) {
 					UniqueAvail.remove(infoAvail);
 				}
 
@@ -145,11 +145,18 @@ public class ManagerUtil {
 	 */
 	public static PluginInfo getInfoObject(Class pluginClass) {
 		PluginManager mgr = PluginManager.getPluginManager();
-		List<PluginInfo> Plugins = mgr.getPlugins(PluginStatus.CURRENT);
+		List<DownloadableInfo> Plugins = mgr.getDownloadables(PluginStatus.CURRENT);
 
-		for (PluginInfo Current : Plugins) {
-			if (Current.getPluginClassName().equals(pluginClass.getName())) {
-				return Current;
+		
+		for (DownloadableInfo Current : Plugins) {
+			PluginInfo CurrentPlugin = null;
+			if (!Current.getType().equals(DownloadableType.PLUGIN)) {
+				continue;
+			} else {
+				CurrentPlugin = (PluginInfo) Current;
+			}
+			if (CurrentPlugin.getPluginClassName().equals(pluginClass.getName())) {
+				return CurrentPlugin;
 			}
 		}
 		return null;
@@ -161,8 +168,8 @@ public class ManagerUtil {
 	}
 
 	// this doesn't appear to work as I would expect
-	private static final Comparator<PluginInfo> NAME_ORDER = new Comparator<PluginInfo>() {
-		public int compare(PluginInfo p1, PluginInfo p2) {
+	private static final Comparator<DownloadableInfo> NAME_ORDER = new Comparator<DownloadableInfo>() {
+		public int compare(DownloadableInfo p1, DownloadableInfo p2) {
 			int nameCmp = p2.getName().toLowerCase().compareTo(p1.getName().toLowerCase());
 			return nameCmp;
 		}

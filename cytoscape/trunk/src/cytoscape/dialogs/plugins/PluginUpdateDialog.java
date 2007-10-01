@@ -11,6 +11,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import cytoscape.Cytoscape;
+import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.DownloadableType;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 
@@ -82,15 +84,15 @@ public class PluginUpdateDialog extends JDialog implements
 	 * @param Plugins
 	 * @param Status
 	 */
-	public void addCategory(String CategoryName, PluginInfo CurrentPlugin,
-			List<PluginInfo> NewPlugins) {
+	public void addCategory(String CategoryName, DownloadableInfo CurrentPlugin,
+			List<DownloadableInfo> NewPlugins) {
 		TreeNode Category = new TreeNode(CategoryName, true);
 		treeModel.addNodeToParent(rootTreeNode, Category);
 
 		TreeNode CurrentPluginNode = new TreeNode(CurrentPlugin, true);
 		treeModel.addNodeToParent(Category, CurrentPluginNode);
 
-		for (PluginInfo New : NewPlugins) {
+		for (DownloadableInfo New : NewPlugins) {
 			treeModel.addNodeToParent(CurrentPluginNode, new TreeNode(New));
 		}
 	}
@@ -109,7 +111,7 @@ public class PluginUpdateDialog extends JDialog implements
 		Set<TreeNode> AllParents = new java.util.HashSet<TreeNode>();
 
 		javax.swing.tree.TreePath[] Paths = pluginTree.getSelectionPaths();
-		Map<PluginInfo, PluginInfo> UpdatableObjs = new java.util.HashMap<PluginInfo, PluginInfo>();
+		Map<DownloadableInfo, DownloadableInfo> UpdatableObjs = new java.util.HashMap<DownloadableInfo, DownloadableInfo>();
 
 		// first make sure each node only has one option picked
 		String Msg = "Please choose just one update option for the following plugins:\n";
@@ -135,7 +137,7 @@ public class PluginUpdateDialog extends JDialog implements
 		}
 
 		// run the update
-		List<PluginInfo[]> Updatable = getUpdateList(UpdatableObjs);
+		List<DownloadableInfo[]> Updatable = getUpdateList(UpdatableObjs);
 		createUpdateTask(Updatable);
 
 		setMessage("Update will complete when Cytoscape is restarted.");
@@ -157,7 +159,7 @@ public class PluginUpdateDialog extends JDialog implements
 			return;
 		}
 
-		Map<PluginInfo, PluginInfo> UpdateableObjs = new java.util.HashMap<PluginInfo, PluginInfo>();
+		Map<DownloadableInfo, DownloadableInfo> UpdateableObjs = new java.util.HashMap<DownloadableInfo, DownloadableInfo>();
 		Set<TreeNode> RemovableNodes = new java.util.HashSet<TreeNode>();
 
 		List<TreeNode> Leaves = recursiveReadTree(rootTreeNode);
@@ -165,11 +167,11 @@ public class PluginUpdateDialog extends JDialog implements
 			TreeNode Parent = Node.getParent();
 
 			if (Parent.getChildCount() > 1) { // multiple possible updates
-				PluginInfo LastInfoObj = null;
+				DownloadableInfo LastInfoObj = null;
 				for (TreeNode Sib : Parent.getChildren()) {
-					PluginInfo CurrentInfoObj = Sib.getObject();
+					DownloadableInfo CurrentInfoObj = Sib.getObject();
 					if (LastInfoObj == null
-							|| LastInfoObj.isNewerPluginVersion(CurrentInfoObj))
+							|| LastInfoObj.isNewerObjectVersion(CurrentInfoObj))
 						UpdateableObjs.put(Parent.getObject(), CurrentInfoObj);
 					LastInfoObj = CurrentInfoObj;
 				}
@@ -178,7 +180,7 @@ public class PluginUpdateDialog extends JDialog implements
 			}
 			RemovableNodes.add(Parent);
 		}
-		List<PluginInfo[]> ObjToUpdate = getUpdateList(UpdateableObjs);
+		List<DownloadableInfo[]> ObjToUpdate = getUpdateList(UpdateableObjs);
 		createUpdateTask(ObjToUpdate);
 
 		for (TreeNode Node : RemovableNodes) {
@@ -195,19 +197,20 @@ public class PluginUpdateDialog extends JDialog implements
 	 *            Key: Current plugin, Value: New plugin
 	 * @return List <PluginInfo[]{Old, New}>
 	 */
-	private List<PluginInfo[]> getUpdateList(
-			java.util.Map<PluginInfo, PluginInfo> PotentialUpdates) {
-		final List<PluginInfo[]> Updates = new java.util.ArrayList<PluginInfo[]>();
+	private List<DownloadableInfo[]> getUpdateList(
+			java.util.Map<DownloadableInfo, DownloadableInfo> PotentialUpdates) {
+		final List<DownloadableInfo[]> Updates = new java.util.ArrayList<DownloadableInfo[]>();
 
 		// display licenses, set up the list of objects to be updated
-		for (PluginInfo Original : PotentialUpdates.keySet()) {
-			final PluginInfo Old = Original;
-			final PluginInfo New = PotentialUpdates.get(Old);
+		for (DownloadableInfo Original : PotentialUpdates.keySet()) {
+			final PluginInfo Old = (PluginInfo) Original;
+			final PluginInfo New = (PluginInfo) PotentialUpdates.get(Old);
 
 			// display only if always required at update
-			if (New.isLicenseRequired() && New.getLicenseText() != null) {
+			if (New.getType().equals(DownloadableType.PLUGIN) && 
+					(New.isLicenseRequired() && New.getLicenseText() != null)) {
 				final LicenseDialog ld = new LicenseDialog();
-				ld.setPluginName(New.getName() + " v" + New.getPluginVersion());
+				ld.setPluginName(New.getName() + " v" + New.getObjectVersion());
 				ld.addLicenseText(New.getLicenseText());
 				ld.addListenerToFinish(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -217,7 +220,7 @@ public class PluginUpdateDialog extends JDialog implements
 				});
 				ld.setVisible(true);
 			} else {
-				Updates.add(new PluginInfo[] { Old, New });
+				Updates.add(new DownloadableInfo[] { Old, New });
 			}
 		}
 		return Updates;
@@ -343,7 +346,7 @@ public class PluginUpdateDialog extends JDialog implements
         pack();
     }// </editor-fold>                        
 
-	private void createUpdateTask(List<PluginInfo[]> UpdateObjs) {
+	private void createUpdateTask(List<DownloadableInfo[]> UpdateObjs) {
 		// Create Task
 		Task task = new PluginUpdateTask(UpdateObjs);
 
@@ -361,9 +364,9 @@ public class PluginUpdateDialog extends JDialog implements
 	private class PluginUpdateTask implements cytoscape.task.Task {
 		private cytoscape.task.TaskMonitor taskMonitor;
 
-		private List<PluginInfo[]> toUpdate;
+		private List<DownloadableInfo[]> toUpdate;
 
-		public PluginUpdateTask(List<PluginInfo[]> Updates) {
+		public PluginUpdateTask(List<DownloadableInfo[]> Updates) {
 			toUpdate = Updates;
 		}
 
@@ -376,9 +379,9 @@ public class PluginUpdateDialog extends JDialog implements
 
 			PluginManager Mgr = PluginManager.getPluginManager();
 
-			for (PluginInfo[] UpdatePair : toUpdate) {
+			for (DownloadableInfo[] UpdatePair : toUpdate) {
 				taskMonitor.setStatus("Updating " + UpdatePair[0].getName()
-						+ " to version " + UpdatePair[1].getPluginVersion());
+						+ " to version " + UpdatePair[1].getObjectVersion());
 				try {
 					Mgr.update(UpdatePair[0], UpdatePair[1], taskMonitor);
 				} catch (java.io.IOException ioe) {

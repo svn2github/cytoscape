@@ -53,9 +53,10 @@ import cytoscape.bookmarks.DataSource;
 import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.dialogs.plugins.PluginManageDialog.PluginInstallStatus;
 
+import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInquireAction;
-import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginStatus;
 
@@ -109,9 +110,8 @@ public class PluginManagerAction extends CytoscapeAction {
 			System.err.println("There was an error while reading the bookmarks file.");
 		}
 
-		List<PluginInfo> Current = Mgr.getPlugins(PluginStatus.CURRENT);
-		Map<String, List<PluginInfo>> InstalledInfo = ManagerUtil
-				.sortByCategory(Current);
+		List<DownloadableInfo> Current = Mgr.getDownloadables(PluginStatus.CURRENT);
+		Map<String, List<DownloadableInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);
 
 		for (String Category : InstalledInfo.keySet()) {
 			dialog.addCategory(Category, InstalledInfo.get(Category),
@@ -147,7 +147,7 @@ public class PluginManagerAction extends CytoscapeAction {
 			return "Attempting to connect to " + url;
 		}
 
-		public void inquireAction(List<PluginInfo> Results) {
+		public void inquireAction(List<DownloadableInfo> Results) {
 			PluginManager Mgr = PluginManager.getPluginManager();
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
@@ -162,9 +162,8 @@ public class PluginManagerAction extends CytoscapeAction {
 					dialog.setMessage(getException().getMessage());
 				}
 			} else {
-				List<PluginInfo> Unique = ManagerUtil.getUnique(Mgr.getPlugins(PluginStatus.CURRENT), Results);
-				Map<String, List<PluginInfo>> DownloadInfo = ManagerUtil
-						.sortByCategory(Unique);
+				List<DownloadableInfo> Unique = ManagerUtil.getUnique(Mgr.getDownloadables(PluginStatus.CURRENT), Results);
+				Map<String, List<DownloadableInfo>> DownloadInfo = ManagerUtil.sortByCategory(Unique);
 
 				for (String Category : DownloadInfo.keySet()) {
 					// get only the unique ones

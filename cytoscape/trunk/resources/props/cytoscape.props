@@ -15,6 +15,6 @@ maximizeViewOnCreate=false
 proxy.server=
 proxy.server.port=
 proxy.server.type=
-cytoscape.version.number=2.5
+cytoscape.version.number=2.6
 exportTextAsShape=true
 vizmapper.cntMapperUpperLimit=2000

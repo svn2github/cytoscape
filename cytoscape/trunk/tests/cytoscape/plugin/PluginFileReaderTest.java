@@ -3,55 +3,74 @@
  */
 package cytoscape.plugin;
 
+import cytoscape.CytoscapeVersion;
+
 import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.util.Calendar;
 import java.util.List;
+
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+
 
 /**
  * @author skillcoy
- *
+ * 
  */
 public class PluginFileReaderTest extends TestCase {
 
 	private String url;
+
 	private PluginFileReader reader;
-	private String fileName = "test_plugin.xml";
 
-
+	private File tempTestFile;
+	
 	private String getFileUrl() {
 		String FS = "/";
 		String UserDir = System.getProperty("user.dir");
-		UserDir = UserDir.replaceFirst("/", "");
-		return "file:///" + UserDir + FS + "testData"
-				+ FS + "plugins" + FS;
+		UserDir = UserDir.replaceFirst(FS, "");
+		return "file:///" + UserDir + FS + "testData" + FS + "plugins" + FS;
 	}
 
-	
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
-		url = getFileUrl() + fileName;
+		// transform the test files first to get the version numbers up to date
+		tempTestFile = PluginTestXML.transformXML("test_plugin.xml", getFileUrl());
+		url = "file:///" + tempTestFile.getAbsolutePath();
 		reader = new PluginFileReader(url);
 		assertNotNull(reader);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		tempTestFile.delete();
 	}
 
 	/**
-	 * Test method for {@link cytoscape.plugin.PluginFileReader#PluginFileReader(java.lang.String)}.
+	 * Test method for
+	 * {@link cytoscape.plugin.PluginFileReader#PluginFileReader(java.lang.String)}.
 	 */
 	public void testPluginFileReader() throws Exception {
 		assertNotNull(reader);
 	}
 
 	/**
-	 * Test method for {@link cytoscape.plugin.PluginFileReader#getProjectName()}.
+	 * Test method for
+	 * {@link cytoscape.plugin.PluginFileReader#getProjectName()}.
 	 */
 	public void testGetProjectName() {
 		assertNotNull(reader.getProjectName());
@@ -59,7 +78,8 @@ public class PluginFileReaderTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.plugin.PluginFileReader#getProjectDescription()}.
+	 * Test method for
+	 * {@link cytoscape.plugin.PluginFileReader#getProjectDescription()}.
 	 */
 	public void testGetProjectDescription() {
 		assertNotNull(reader.getProjectDescription());
@@ -86,7 +106,20 @@ public class PluginFileReaderTest extends TestCase {
 		List<PluginInfo> All = reader.getPlugins();
 		assertNotNull(All.get(0).getLicenseText());
 	}
-	
-	
-	
+
+	public void testGetThemes() {
+		assertNotNull(reader.getThemes());
+		assertEquals(reader.getThemes().size(), 2);
+		assertEquals(reader.getThemes().get(0).getPlugins().size(), 2);
+	}
+
+	// regression test, not all files will contain the <theme> tags
+	public void testReadFileMissingThemes() throws org.jdom.JDOMException,
+			java.io.IOException {
+		url = getFileUrl() + "test_plugin_no_themes.xml";
+		PluginFileReader readerNoThemes = new PluginFileReader(url);
+		assertNotNull(readerNoThemes.getThemes());
+		assertEquals(readerNoThemes.getThemes().size(), 0);
+	}
+
 }

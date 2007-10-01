@@ -11,6 +11,8 @@ import cytoscape.bookmarks.DataSource;
 
 import cytoscape.dialogs.preferences.BookmarkDialog;
 
+import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.DownloadableType;
 import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.ManagerUtil;
 import cytoscape.plugin.PluginInfo;
@@ -346,7 +348,7 @@ public class PluginUrlDialog extends JDialog {
 			return "Attempting to connect...";
 		}
 
-		public void inquireAction(List<PluginInfo> Results) {
+		public void inquireAction(List<DownloadableInfo> Results) {
 
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
@@ -361,10 +363,10 @@ public class PluginUrlDialog extends JDialog {
 			} else {
 
 				PluginManager Mgr = PluginManager.getPluginManager();
-				List<PluginInfo> UniqueAvailable = ManagerUtil.getUnique(Mgr
-						.getPlugins(PluginStatus.CURRENT), Results);
+				List<DownloadableInfo> UniqueAvailable = ManagerUtil.getUnique(Mgr
+						.getDownloadables(PluginStatus.CURRENT), Results);
 
-				Map<String, List<PluginInfo>> NewPlugins = ManagerUtil
+				Map<String, List<DownloadableInfo>> NewPlugins = ManagerUtil
 						.sortByCategory(UniqueAvailable);
 
 				if (NewPlugins.size() <= 0) {

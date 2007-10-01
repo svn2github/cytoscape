@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+
 /**
  * This class reads the plugin.props file that is expected to be in 
  * each plugin jar file and turns it into a PluginInfo object for

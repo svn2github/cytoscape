@@ -35,7 +35,7 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.CytoscapeInit;
+//import cytoscape.CytoscapeInit;
 import cytoscape.util.URLUtil;
 
 import java.util.ArrayList;
@@ -66,36 +66,16 @@ public class PluginInfo extends DownloadableInfo {
 			return typeText;
 		}
 	}
-	private String releaseDate;
+
 	private FileType fileType;
 
-	private String uniqueID;
-
 	private String pluginClassName;
-
-	private String pluginName;
 
 	private List<AuthorInfo> authors;
 
 	private License license;
 
-	private String pluginDescription;
-
-	private String pluginVersion;
-
-	private String cytoscapeVersion;
-
-	private String pluginUrl;
-
 	private String projectUrl;
-
-	private String downloadUrl;
-	
-	private String pluginCategory;
-
-	private String versionMatch = "^\\d+\\.\\d+";
-
-	private String versionSplit = "\\.";
 
 	private List<String> pluginFiles;
 
@@ -104,31 +84,48 @@ public class PluginInfo extends DownloadableInfo {
 	protected String enclosingJar;
 	
 	protected String installLocation;
-
+	
 	
 	/**
+	 * See {@link DownloadableInfo#DownloadableInfo()}
+	 * 
 	 * Initializes a PluginInfo object with the following defaults:
-	 * setName("Unknown"); setDescription("No pluginDescription");
-	 * setPluginVersion("0.1"); setCytoscapeVersion(
+	 * setName("Unknown"); setDescription("No description");
+	 * setObjectVersion("0.1"); setCytoscapeVersion(
 	 * cytoscape.cytoscapeVersion.version ); setCategory("Uncategorized");
-	 * setProjectUrl(CytoscapeInit.getProperties().getProperty("defaultPluginUrl"));
+	 * 
 	 */
 	public PluginInfo() {
 		init();
 	}
 
 	/**
-	 * See PluginInfo()
+	 * See {@link DownloadableInfo#DownloadableInfo(String)}
 	 * 
 	 * @param UniqueID
 	 *            Additionally this sets the unique identifier that will be used
-	 *            to find a new version of the plugin at the given project url.
+	 *            to find a new version of the plugin at the given download url.
 	 */
 	public PluginInfo(String UniqueID) {
 		super(UniqueID);
 		init();
 	}
 
+	/**
+	 * See {@link DownloadableInfo#DownloadableInfo(String)}
+	 * 
+	 * @param UniqueID
+	 * @param ParentObj
+	 *            Additionally this sets the unique identifier that will be used
+	 *            to find a new version of the plugin at the given download url and
+	 *            sets the parent downloadable object.
+	 */
+	public PluginInfo(String UniqueID, DownloadableInfo ParentObj) {
+		super(UniqueID, ParentObj);
+		init();
+	}
+		
+	
 	/*
 	 * Sets all the fields that are required to a default value in case it is
 	 * not called
@@ -144,43 +141,18 @@ public class PluginInfo extends DownloadableInfo {
 		setPluginClassName("");
 	}
 
-	/* SET */
-	/**
-	 * Sets name of plugin. This will be displayed to users.
-	 * 
-	 * @param name
-	 */
-//	public void setName(String name) {
-//		pluginName = name;
-//	}
-
-	/**
-	 * Sets the release date of a plugin.  Displayed to users;
-	 * @param date
-	 */
-//	public void setReleaseDate(String date) {
-//		releaseDate = date;
-//	}
-	
 	/**
 	 * Sets the plugin class name. Used for tracking plugins.
 	 * 
 	 * @param className
 	 */
-	protected void setPluginClassName(String className) {
+	public void setPluginClassName(String className) {
 		pluginClassName = className;
 	}
 
 	/**
-	 * Sets a description of the plugin. This will be displayed to users.
+	 * @deprecated See {@link DownloadableInfo#setObjectVersion(double)}} will be removed June 2008
 	 * 
-	 * @param description
-	 */
-//	public void setDescription(String description) {
-//		pluginDescription = description;
-//	}
-
-	/**
 	 * Sets the version of the plugin. Defaults to 0.1
 	 * 
 	 * @param version
@@ -190,37 +162,16 @@ public class PluginInfo extends DownloadableInfo {
 	 */
 	public void setPluginVersion(double Version) throws NumberFormatException {
 		this.setObjectVersion(Version);
-//		String version = Double.toString(Version);
-//		if (versionOk(version, true)) {
-//			pluginVersion = version;
-//		} else {
-//			throw new NumberFormatException(
-//					"Bad plugin version '" + version + "'. Plugin version numbers must be in the format: \\d+.\\d+");
-//		}
 	}
 
 	/**
-	 * Sets the Cytoscape version this plugin is compatible with.
-	 * 
-	 * @param version
-	 */
-//	public void setCytoscapeVersion(String version)
-//			throws NumberFormatException {
-//		if (versionOk(version, false)) {
-//			cytoscapeVersion = version;
-//		} else {
-//			throw new NumberFormatException(
-//					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
-//		}
-//	}
-
-	/**
+	 * @deprecated See {@link DownloadableInfo#setDownloadableURL(String)}} will be removed June 2008
 	 * pluginUrl this plugin was downloaded from. It is presumed this can be
 	 * used for update later.
 	 * @param url
 	 */
 	protected void setUrl(String url) {
-		pluginUrl = url;
+		this.setObjectUrl(url);
 	}
 
 	/**
@@ -232,13 +183,13 @@ public class PluginInfo extends DownloadableInfo {
 	}
 
 	/**
+	 * @deprecated See {@link DownloadableInfo#setObjectUrl(String)}} will be removed June 2008
 	 * URL for the xml file describing all plugins from any given project
 	 * (ex. http://cytoscape.org/plugins/plugin.xml)
 	 * 
 	 * @param url
 	 */
 	protected void setDownloadUrl(String url) {
-		//downloadUrl = url;
 		this.setDownloadableURL(url);
 	}
 	
@@ -260,24 +211,6 @@ public class PluginInfo extends DownloadableInfo {
 	 */
 	protected void setFileList(List<String> list) {
 		pluginFiles = list;
-	}
-
-	/**
-	 * Sets a category for the plugin. Defaults to "Uncategorized"
-	 * 
-	 * @param category
-	 */
-	public void setCategory(String category) {
-		pluginCategory = category;
-	}
-
-	/**
-	 * Sets the category for the plugin using the enum PluginInfo.Category
-	 * 
-	 * @param catName
-	 */
-	public void setCategory(Category catName) {
-		pluginCategory = catName.getCategoryText();
 	}
 
 	/**
@@ -332,52 +265,6 @@ public class PluginInfo extends DownloadableInfo {
 		licenseRequired = alwaysRequired;
 	}
 
-	// this just checks the plugin version and the cytoscape version
-/*
-	private boolean versionOk(String version, boolean plugin) {
-		// \d+.\+d ok
-		String Match = versionMatch;
-		String Split = versionSplit;
-
-		if (plugin) {
-			Match = Match + "$";
-		} else { // cytoscape version
-			Match = Match + "(\\.\\d+)?$";
-			Split = "\\.|-";
-		}
-
-		if (!version.matches(Match)) {
-			return false;
-		}
-
-		String[] SplitVersion = version.split(Split);
-
-		int max = 2;
-		if (!plugin) {
-			max = 3; // cytoscape version numbers
-			// if there's a fourth is must be alpha
-			if (SplitVersion.length == 4) {
-				if (!SplitVersion[3].matches("[a-z]+")) {
-					return false;
-				}
-			}
-		}
-
-		// can't be longer than the accepted version types
-		if (SplitVersion.length > max) {
-			return false;
-		}
-
-		// must be digets
-		for (int i = 0; i < max && i < SplitVersion.length; i++) {
-			if (!SplitVersion[i].matches("\\d+")) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-*/
 
 	/**
 	 * This is meant to only get set by the PluginManager.  It can only
@@ -398,7 +285,7 @@ public class PluginInfo extends DownloadableInfo {
 	public java.io.File getPluginDirectory() {
 		 java.io.File PluginDir = new java.io.File(
 				 PluginManager.getPluginManager().getPluginManageDirectory(),
-				 this.getName()+"-"+this.getPluginVersion());
+				 this.getName()+"-"+this.getObjectVersion());
 		return PluginDir;
 	}
 
@@ -409,10 +296,6 @@ public class PluginInfo extends DownloadableInfo {
 	public String getInstallLocation() {
 		return installLocation;
 	}
-	
-//	public String getReleaseDate() {
-//		return releaseDate;
-//	}
 	
 	/**
 	 * @return The text of the license for this plugin if available.
@@ -434,26 +317,12 @@ public class PluginInfo extends DownloadableInfo {
 	}
 
 	/**
-	 * @return The unique id for this object.
-	 */
-//	public String getID() {
-//		return uniqueID;
-//	}
-
-	/**
 	 * @return FileType of file type for plugin. PluginInfo.JAR or
 	 *         PluginInfo.ZIP
 	 */
 	public FileType getFileType() {
 		return fileType;
 	}
-
-	/**
-	 * @return pluginName of plugin
-	 */
-//	public String getName() {
-//		return pluginName;
-//	}
 
 	/**
 	 * @return Java class name
@@ -470,32 +339,19 @@ public class PluginInfo extends DownloadableInfo {
 	}
 
 	/**
-	 * @return Plugin pluginDescription.
-	 */
-//	public String getDescription() {
-//		return pluginDescription;
-//	}
-
-	/**
+	 * @deprecated See {@link DownloadableInfo#getObjectVersion()} will be removed June 2008
 	 * @return Plugin version.
 	 */
 	public String getPluginVersion() {
-		//return pluginVersion;
 		return this.getObjectVersion();
 	}
 
 	/**
-	 * @return Compatible Cytoscape version
-	 */
-//	public String getCytoscapeVersion() {
-//		return cytoscapeVersion;
-//	}
-
-	/**
+	 * @deprecated See {@link DownloadableInfo#getObjectUrl()}} will be removed June 2008
 	 * @return Url to download plugin from
 	 */
 	public String getUrl() {
-		return pluginUrl;
+		return this.getObjectUrl();
 	}
 
 	/**
@@ -507,21 +363,22 @@ public class PluginInfo extends DownloadableInfo {
 	}
 
 	/**
+	 * @deprecated See {@link DownloadableInfo#getDownloadableURL()}} will be removed June 2008
 	 * @return Url that returns the document of available plugins this plugin
 	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
 	 */
 	public String getDownloadUrl()  {
-		//return downloadUrl;
 		return this.getDownloadableURL();
 	}
 	
 	/**
-	 * @return Plugin category.
+	 * {@link DownloadableInfo#getType()}
 	 */
-	public String getCategory() {
-		return pluginCategory;
-	}
-
+	public DownloadableType getType()
+		{
+		return DownloadableType.PLUGIN;
+		}
+	
 	/**
 	 * @return List of files installed with this plugin (includes plugin jar
 	 *         file).
@@ -537,7 +394,19 @@ public class PluginInfo extends DownloadableInfo {
 		return getName() + " " + getPluginVersion();
 	}
 
+	// wonder if this will overwrite the Object.equals method...
+	public boolean equals(Object Obj) {
+		PluginInfo obj = (PluginInfo) Obj;
+		if (this.getID().equals(obj.getID()) &&
+			this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+			this.getObjectVersion().equals(obj.getObjectVersion()))
+			return true;
+		
+		return false;
+	}
+	
 	/**
+	 * @deprecated See {@link DownloadableInfo#isNewerObjectVersion(DownloadableInfo)}} will be removed June 2008
 	 * Compare the version of the object to the given object.
 	 * 
 	 * @param New
@@ -546,42 +415,7 @@ public class PluginInfo extends DownloadableInfo {
 	 */
 	public boolean isNewerPluginVersion(PluginInfo New) {
 		return this.isNewerObjectVersion(New);
-//		String[] CurrentVersion = getPluginVersion().split(versionSplit);
-//		String[] NewVersion = New.getPluginVersion().split(versionSplit);
-//		
-//		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
-//		int NewMajor = Integer.valueOf(NewVersion[0]).intValue();
-//		
-//		int CurrentMinor = Integer.valueOf(CurrentVersion[1]).intValue();
-//		int NewMinor = Integer.valueOf(NewVersion[1]).intValue();
-//		
-//		if ( (CurrentMajor > NewMajor ||
-//			 (CurrentMajor == NewMajor && CurrentMinor >= NewMinor)) ) {
-//			return false;
-//		}
-//			
-//		return true;
 	}
-
-	/**
-	 * 
-	 * @return true if the plugin is compatible with the current Cytoscape
-	 *         version major.minor (bugfix is only checked if the plugin
-	 *         specifies a bugfix version)
-	 */
-//	public boolean isCytoscapeVersionCurrent() {
-//		String[] CyVersion = cytoscape.CytoscapeVersion.version
-//				.split(versionSplit);
-//		String[] PlVersion = getCytoscapeVersion().split(versionSplit);
-//
-//		for (int i = 0; i < PlVersion.length; i++) {
-//			if (Integer.valueOf(CyVersion[i]).intValue() != Integer.valueOf(
-//					PlVersion[i]).intValue())
-//				return false;
-//		}
-//
-//		return true;
-//	}
 
 	// yea, it's ugly...styles taken from cytoscape website
 	public String htmlOutput() {

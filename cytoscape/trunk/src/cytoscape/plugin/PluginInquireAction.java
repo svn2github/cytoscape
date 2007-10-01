@@ -4,6 +4,7 @@
 package cytoscape.plugin;
 
 import java.util.List;
+
 import cytoscape.util.IndeterminateProgressBar;
 
 /**
@@ -70,7 +71,7 @@ public abstract class PluginInquireAction {
 	 * @param 
 	 * @throws Exception
 	 */
-	public abstract void inquireAction(List<PluginInfo> results);
+	public abstract void inquireAction(List<DownloadableInfo> results);
 	
 	
 }

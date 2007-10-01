@@ -3,13 +3,14 @@
  */
 package cytoscape.dialogs.plugins;
 
-import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.DownloadableInfo;
+
 import java.util.Vector;
 
 public class TreeNode {
 	private Vector<TreeNode> children;
 
-	private PluginInfo infoObj;
+	private DownloadableInfo infoObj;
 
 	private String title;
 
@@ -43,7 +44,7 @@ public class TreeNode {
 	 * 
 	 * @param obj
 	 */
-	public TreeNode(PluginInfo obj) {
+	public TreeNode(DownloadableInfo obj) {
 		init(obj.getName(), false);
 		addObject(obj);
 	}
@@ -55,7 +56,7 @@ public class TreeNode {
 	 * @param obj
 	 * @param allowsChildren
 	 */
-	public TreeNode(PluginInfo obj, boolean allowsChildren) {
+	public TreeNode(DownloadableInfo obj, boolean allowsChildren) {
 		init(obj.getName(), allowsChildren);
 		addObject(obj);
 	}
@@ -111,7 +112,7 @@ public class TreeNode {
 	 * 
 	 * @param info
 	 */
-	public void addObject(PluginInfo info) {
+	public void addObject(DownloadableInfo info) {
 		infoObj = info;
 	}
 
@@ -228,7 +229,7 @@ public class TreeNode {
 	 * 
 	 * @return PluginInfo
 	 */
-	public PluginInfo getObject() {
+	public DownloadableInfo getObject() {
 		return infoObj;
 	}
 

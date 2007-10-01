@@ -5,7 +5,8 @@ public enum Category {
 			"Network and Attribute I/O"), NETWORK_INFERENCE(
 			"Network Inference"), FUNCTIONAL_ENRICHMENT(
 			"Functional Enrichment"), COMMUNICATION_SCRIPTING(
-			"Communication/Scripting"), NONE("Uncategorized");
+			"Communication/Scripting"), NONE("Uncategorized"),
+			THEME("Theme");
 
 	private String catText;
 

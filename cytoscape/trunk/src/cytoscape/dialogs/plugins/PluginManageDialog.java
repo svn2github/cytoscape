@@ -5,6 +5,7 @@ package cytoscape.dialogs.plugins;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 
@@ -158,7 +159,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 *            PluginInstallStatus (currently installed or available for
 	 *            install)
 	 */
-	public void addCategory(String CategoryName, List<PluginInfo> Plugins,
+	public void addCategory(String CategoryName, List<DownloadableInfo> Plugins,
 			PluginInstallStatus Status) {
 		switch (Status) {
 		case INSTALLED:
@@ -175,7 +176,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	// add category to the set of plugins under given node
-	private void addCategory(String CategoryName, List<PluginInfo> Plugins,
+	private void addCategory(String CategoryName, List<DownloadableInfo> Plugins,
 			TreeNode node) {
 		TreeNode Category = new TreeNode(CategoryName, true);
 		/* if the tree is to update the model "add" method must be used, not
@@ -183,7 +184,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		//node.addChild(Category); 
 		treeModel.addNodeToParent(node, Category);
 
-		for (PluginInfo CurrentPlugin : Plugins) {
+		for (DownloadableInfo CurrentPlugin : Plugins) {
 			TreeNode PluginNode = new TreeNode(CurrentPlugin);	
 			//Category.addChild(PluginNode);
 			treeModel.addNodeToParent(Category, PluginNode);
@@ -242,7 +243,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			if (info.getLicenseText() != null) {
 				final LicenseDialog License = new LicenseDialog(this);
 				License.setPluginName(info.getName() + " v"
-						+ info.getPluginVersion());
+						+ info.getObjectVersion());
 				License.addLicenseText(info.getLicenseText());
 				License.addListenerToFinish(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -258,7 +259,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	private void updateCurrent(PluginInfo info) {
+	private void updateCurrent(DownloadableInfo info) {
 		boolean categoryMatched = false;
 
 		for (TreeNode Child : installedNode.getChildren()) {
@@ -269,7 +270,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 
 		if (!categoryMatched) {
-			List<PluginInfo> NewPlugin = new java.util.ArrayList<PluginInfo>();
+			List<DownloadableInfo> NewPlugin = new java.util.ArrayList<DownloadableInfo>();
 			NewPlugin.add(info);
 			addCategory(info.getCategory(), NewPlugin,
 					PluginInstallStatus.INSTALLED);
@@ -423,7 +424,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		jTaskConfig.displayCancelButton(true);
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
-		PluginInfo info = task.getDownloadedPlugin();
+		DownloadableInfo info = task.getDownloadedPlugin();
 		if (info != null) {
 			updateCurrent(info);
 			cleanTree(node);
@@ -454,7 +455,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	private class PluginInstallTask implements cytoscape.task.Task {
 		private cytoscape.task.TaskMonitor taskMonitor;
 
-		private PluginInfo pluginInfo;
+		private DownloadableInfo pluginInfo;
 
 		private TreeNode node;
 
@@ -473,29 +474,29 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				throw new IllegalStateException("Task Monitor is not set.");
 			}
 			taskMonitor.setStatus("Installing " + pluginInfo.getName() + " v"
-					+ pluginInfo.getPluginVersion());
+					+ pluginInfo.getObjectVersion());
 			taskMonitor.setPercentCompleted(-1);
 
 			PluginManager Mgr = PluginManager.getPluginManager();
 			try {
 				pluginInfo = Mgr.download(pluginInfo, taskMonitor);
 				taskMonitor.setStatus(pluginInfo.getName() + " v"
-						+ pluginInfo.getPluginVersion() + " complete.");
+						+ pluginInfo.getObjectVersion() + " complete.");
 
 				PluginManageDialog.this.setMessage(pluginInfo.getName()
 						+ " install complete.");
 
 				taskMonitor.setStatus(pluginInfo.getName() + " v"
-						+ pluginInfo.getPluginVersion() + " loading...");
+						+ pluginInfo.getObjectVersion() + " loading...");
 			
-				Mgr.loadPlugin(pluginInfo);
+				//Mgr.loadPlugin(pluginInfo);
 				Mgr.install(pluginInfo);
 
 			} catch (java.io.IOException ioe) {
 				taskMonitor
 						.setException(ioe, "Failed to download "
 								+ pluginInfo.getName() + " from "
-								+ pluginInfo.getUrl());
+								+ pluginInfo.getObjectUrl());
 				pluginInfo = null;
 			} catch (cytoscape.plugin.ManagerException me) {
 				pluginInfo = null;
@@ -503,16 +504,16 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			} catch (cytoscape.plugin.PluginException pe) {
 				pluginInfo = null;
 				taskMonitor.setException(pe, pe.getMessage());
-			} catch (ClassNotFoundException cne) {
-				pluginInfo = null;
-				taskMonitor.setException(cne, cne.getMessage());
+//			} catch (ClassNotFoundException cne) {
+//				pluginInfo = null;
+//				taskMonitor.setException(cne, cne.getMessage());
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
 			
 		}
 
-		public PluginInfo getDownloadedPlugin() {
+		public DownloadableInfo getDownloadedPlugin() {
 			return pluginInfo;
 		}
 

@@ -12,6 +12,7 @@ import cytoscape.util.CytoscapeAction;
 
 import cytoscape.dialogs.plugins.PluginUpdateDialog;
 
+import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.ManagerException;
@@ -39,19 +40,19 @@ public class PluginUpdateAction extends CytoscapeAction {
 			boolean updateFound = false;
 			PluginManager Mgr = PluginManager.getPluginManager();
 			// Find updates
-			for (PluginInfo Current : Mgr.getPlugins(PluginStatus.CURRENT)) {
+			for (DownloadableInfo Current : Mgr.getDownloadables(PluginStatus.CURRENT)) {
 
 			// Configure JTask Dialog Pop-Up Box
-			JTaskConfig jTaskConfig = new JTaskConfig();
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
-			jTaskConfig.displayCloseButton(false);
-			jTaskConfig.displayStatus(true);
-			jTaskConfig.setAutoDispose(true);
-			jTaskConfig.displayCancelButton(false);
+//			JTaskConfig jTaskConfig = new JTaskConfig();
+//			jTaskConfig.setOwner(Cytoscape.getDesktop());
+//			jTaskConfig.displayCloseButton(false);
+//			jTaskConfig.displayStatus(true);
+//			jTaskConfig.setAutoDispose(true);
+//			jTaskConfig.displayCancelButton(false);
 
 				
 				try {
-					List<PluginInfo> Updates = Mgr.findUpdates(Current, jTaskConfig);
+					List<DownloadableInfo> Updates = Mgr.findUpdates(Current);
 					if (Updates.size() > 0) {
 						Dialog.addCategory(Current.getCategory(), Current,
 								Updates);
@@ -60,13 +61,13 @@ public class PluginUpdateAction extends CytoscapeAction {
 				} catch (org.jdom.JDOMException jde) {
 					System.err.println("Failed to retrieve updates for "
 							+ Current.getName() + ", XML incorrect at "
-							+ Current.getDownloadUrl());
+							+ Current.getDownloadableURL());
 					System.err.println(jde.getMessage());
 					// jde.printStackTrace();
 				} catch (java.io.IOException ioe) {
 					System.err.println("Failed to read XML file for "
 							+ Current.getName() + " at "
-							+ Current.getDownloadUrl());
+							+ Current.getDownloadableURL());
 					ioe.printStackTrace();
 				}
 

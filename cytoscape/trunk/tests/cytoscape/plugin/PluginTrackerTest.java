@@ -49,13 +49,13 @@ public class PluginTrackerTest extends TestCase {
 		assertEquals(Doc.getRootElement().getName(), "CytoscapePlugin");
 		assertEquals(Doc.getRootElement().getChildren().size(), 3);
 		
-		assertNotNull(Doc.getRootElement().getChild("CurrentPlugins"));
-		assertNotNull(Doc.getRootElement().getChild("InstallPlugins"));
-		assertNotNull(Doc.getRootElement().getChild("DeletePlugins"));
+		assertNotNull(Doc.getRootElement().getChild(PluginStatus.CURRENT.getTagName()));
+		assertNotNull(Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName()));
+		assertNotNull(Doc.getRootElement().getChild(PluginStatus.DELETE.getTagName()));
 		
-		assertEquals(Doc.getRootElement().getChild("CurrentPlugins").getChildren().size(), 0);
-		assertEquals(Doc.getRootElement().getChild("InstallPlugins").getChildren().size(), 0);
-		assertEquals(Doc.getRootElement().getChild("DeletePlugins").getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.CURRENT.getTagName()).getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName()).getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.DELETE.getTagName()).getChildren().size(), 0);
 	}
 
 	/**
@@ -64,15 +64,15 @@ public class PluginTrackerTest extends TestCase {
 	public void testGetListByStatus() throws Exception {
 		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
 		
-		assertNotNull(tracker.getListByStatus(PluginStatus.CURRENT));
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		assertNotNull(tracker.getPluginListByStatus(PluginStatus.CURRENT));
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 
 		// lets just check with the xml doc itself to be sure
 		Document Doc = getDoc();
-		Element Current = Doc.getRootElement().getChild("CurrentPlugins");
+		Element Current = Doc.getRootElement().getChild(PluginStatus.CURRENT.getTagName());
 		assertEquals(Current.getChildren().size(), 1);
-		assertEquals(Doc.getRootElement().getChild("InstallPlugins").getChildren().size(), 0);
-		assertEquals(Doc.getRootElement().getChild("DeletePlugins").getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName()).getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.DELETE.getTagName()).getChildren().size(), 0);
 	}
 
 	/**
@@ -80,20 +80,20 @@ public class PluginTrackerTest extends TestCase {
 	 */
 	public void testAddPlugin() throws Exception {
 		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		PluginInfo obj = getInfoObj();
 		obj.setName("myInstallTest");
-		obj.setDownloadUrl("http://booya.com/foo.xml");
+		obj.setDownloadableURL("http://booya.com/foo.xml");
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
 		
-		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 		
 		// changing the name of the object will not change the object if
 		// the id/projurl stay the same
 		obj.setName("mySecondInstallTest");
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
-		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 		
 		// whole new object will get added though
 		PluginInfo newObj = new PluginInfo("this is my unique key for my new plugin");
@@ -101,64 +101,112 @@ public class PluginTrackerTest extends TestCase {
 		newObj.setProjectUrl("http://foobar.com/booya.xml");
 		newObj.setFiletype(PluginInfo.FileType.JAR);
 		tracker.addPlugin(newObj, PluginStatus.INSTALL);
-		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 2);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 2);
 		
 		// lets just check with the xml doc itself to be sure
 		Document Doc = getDoc();
-		Element Install = Doc.getRootElement().getChild("InstallPlugins");
+		Element Install = Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName());
 		assertEquals(Install.getChildren().size(), 2);
-		assertEquals(Doc.getRootElement().getChild("CurrentPlugins").getChildren().size(), 1);
-		assertEquals(Doc.getRootElement().getChild("DeletePlugins").getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.CURRENT.getTagName()).getChildren().size(), 1);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.DELETE.getTagName()).getChildren().size(), 0);
 	}
+	
+	/**
+	 * Test method for {@link cytoscape.plugin.PluginTracker#addTheme(ThemeInfo, PluginStatus)}
+	 * @throws Exception
+	 */
+	public void testAddTheme() throws Exception {
+		ThemeInfo themeObj = new ThemeInfo("themeTest123");
+		themeObj.setName("Test Theme");
+		themeObj.setDownloadableURL("http://booya.com/foo.xml");
+	
+		PluginInfo obj = getInfoObj();
+		obj.setName("myInstallTest");
+		obj.setDownloadableURL("http://booya.com/foo.xml");
+
+		themeObj.addPlugin(obj);
+		
+		tracker.addDownloadable(themeObj, PluginStatus.INSTALL);
+		
+		//tracker.addTheme(themeObj, PluginStatus.INSTALL);
+		
+		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 1);
+
+		Document Doc = getDoc();
+		Element Install = Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName());
+		assertEquals(Install.getChildren().size(), 1);
+		assertNotNull(Install.getChild(PluginXml.THEME.getTag()).getChild(PluginXml.PLUGIN_LIST.getTag()));
+	}
+	
+	
+	public void testRemoveTheme() throws Exception {
+		ThemeInfo themeObj = new ThemeInfo("themeTest123");
+		themeObj.setName("Test Theme");
+		themeObj.setDownloadableURL("http://booya.com/foo.xml");
+	
+		PluginInfo obj = getInfoObj();
+		obj.setName("myInstallTest");
+		obj.setDownloadableURL("http://booya.com/foo.xml");
+
+		themeObj.addPlugin(obj);
+		
+		tracker.addDownloadable(themeObj, PluginStatus.INSTALL);
+		//tracker.addTheme(themeObj, PluginStatus.INSTALL);
+		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 1);
+		
+		tracker.removeDownloadable(themeObj, PluginStatus.INSTALL);
+		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 0);
+	}
+	
 
 	public void testAddSamePlugin() throws Exception {
 		PluginInfo InfoObject = getInfoObj();
 		
 		tracker.addPlugin(InfoObject, PluginStatus.CURRENT);
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		String NewName = "DuplicatePluginTest";
 		InfoObject.setName(NewName);
 		tracker.addPlugin(InfoObject, PluginStatus.CURRENT);
 		
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
-		PluginInfo info = tracker.getListByStatus(PluginStatus.CURRENT).get(0);
+		DownloadableInfo info = tracker.getPluginListByStatus(PluginStatus.CURRENT).get(0);
 		
 		assertTrue(info.getName().equals(InfoObject.getName()));
 		
 		Document Doc = getDoc();
-		assertEquals(Doc.getRootElement().getChild("CurrentPlugins").getChild("plugin").getChildTextTrim("name"), NewName);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.CURRENT.getTagName()).getChild("plugin").getChildTextTrim("name"), NewName);
 	}
 	
 	
 	/**
-	 * Test method for {@link cytoscape.plugin.PluginTracker#removePlugin(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginTracker.PluginStatus)}.
+	 * Test method for {@link cytoscape.plugin.PluginTracker#removeDownloadable(cytoscape.plugin.DownloadableInfo, cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 */
 	public void testRemovePlugin() throws Exception {
 		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		PluginInfo obj = new PluginInfo("999");
 		obj.setName("myInstallTest");
-		obj.setDownloadUrl("http://foobar.org/y.xml");
+		obj.setDownloadableURL("http://foobar.org/y.xml");
 		obj.setCategory("Test");
 		obj.setFiletype(PluginInfo.FileType.JAR);
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
 		
-		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 
 		// won't change because this object wasn't an install object
-		tracker.removePlugin(getInfoObj(), PluginStatus.INSTALL);
-		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 1);
+		tracker.removeDownloadable(getInfoObj(), PluginStatus.INSTALL);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 
-		tracker.removePlugin(obj, PluginStatus.INSTALL);
-		assertEquals(tracker.getListByStatus(PluginStatus.INSTALL).size(), 0);
+		tracker.removeDownloadable(obj, PluginStatus.INSTALL);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 0);
 		
 		Document Doc = getDoc();
-		assertEquals(Doc.getRootElement().getChild("CurrentPlugins").getChildren().size(), 1);
-		assertEquals(Doc.getRootElement().getChild("InstallPlugins").getChildren().size(), 0);
-		assertEquals(Doc.getRootElement().getChild("DeletePlugins").getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.CURRENT.getTagName()).getChildren().size(), 1);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName()).getChildren().size(), 0);
+		assertEquals(Doc.getRootElement().getChild(PluginStatus.DELETE.getTagName()).getChildren().size(), 0);
 	}
 
 	// regression test
@@ -166,22 +214,22 @@ public class PluginTrackerTest extends TestCase {
 		PluginInfo objA = getInfoObj();
 		PluginInfo objB = new PluginInfo(objA.getID());
 		objB.setName("Different Test");
-		objB.setDownloadUrl("http://test.com/blue.xml");
+		objB.setDownloadableURL("http://test.com/blue.xml");
 		objB.setFiletype(PluginInfo.FileType.JAR);
 		objB.setPluginClassName("some.other.class.DifferentTest");
 		
 		
 		tracker.addPlugin(objA, PluginStatus.CURRENT);
 		tracker.addPlugin(objB, PluginStatus.CURRENT);
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 2);
-		List<PluginInfo> CurrentList = tracker.getListByStatus(PluginStatus.CURRENT);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 2);
+		List<PluginInfo> CurrentList = tracker.getPluginListByStatus(PluginStatus.CURRENT);
 		assertFalse(CurrentList.get(0).equals(CurrentList.get(1)));
 		
-		tracker.removePlugin(objA, PluginStatus.CURRENT);
-		assertEquals(tracker.getListByStatus(PluginStatus.CURRENT).size(), 1);
+		tracker.removeDownloadable(objA, PluginStatus.CURRENT);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		// check that the correct object was actually removed
-		PluginInfo Current = tracker.getListByStatus(PluginStatus.CURRENT).get(0);
+		PluginInfo Current = tracker.getPluginListByStatus(PluginStatus.CURRENT).get(0);
 		assertEquals(Current.getName(), objB.getName());
 	}
 	
@@ -202,7 +250,7 @@ public class PluginTrackerTest extends TestCase {
 		infoObj.setCategory("Test");
 		infoObj.setCytoscapeVersion("2.5");
 		infoObj.setPluginClassName("some.class.MyTest");
-		infoObj.setDownloadUrl("http://test.com/x.xml");
+		infoObj.setDownloadableURL("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);
 		return infoObj;
 	}
