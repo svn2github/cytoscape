@@ -36,47 +36,95 @@
 
 package cytoscape.filters;
 
+import java.util.*;
 
-/**
- * 
-  */
-public abstract class  AtomicFilter {
-	/**
-	 * 
-	 */
-	protected String attributeName = null;
-	protected String[] searchValues = new String[2];
+import cytoscape.CyNetwork;
+import csplugins.quickfind.util.QuickFind;
 
-	public String getAttributeName() {
-		return attributeName;
+public abstract class AtomicFilter implements CyFilter {
+
+	protected BitSet bits = null;
+	//protected BitSet edge_bits = null;
+
+	protected CyFilter parent;
+	protected String depthString;
+	
+	protected String name; // Name of the filter
+	protected String controllingAttribute = null;
+	protected boolean negation = false;
+	protected CyNetwork network = null;
+	protected int objectCount = 0;
+	
+	protected int index_type = QuickFind.INDEX_NODES;
+	
+	public AtomicFilter(String pFilterName, String pControllingAttribute) {
+		name = pFilterName;
+		controllingAttribute = pControllingAttribute;
+		//bits = b;
 	}
 
-	public void setAttributeName(String pAttributeName) {
-		attributeName = pAttributeName;
+	public void setIndexType(int pIndexType) {
+		index_type = pIndexType;
+	}
+
+	public int getIndexType() {
+		return index_type;
+	}
+
+	public BitSet getBits() {
+		apply();
+		return bits;
+	}
+
+	abstract public void apply(); 
+	abstract public String toString(); 
+	
+	public void setBits(BitSet b) {
+		bits = b;
+		parent.childChanged();
+	}
+
+	public void setParent(CyFilter p) {
+		parent = p;
+	}
+
+	// an atomic filter can't have any children, so this is a no-op
+	public void childChanged() {}; 
+
+	public void print(int depth) {
+		StringBuffer sb = new StringBuffer();
+		for ( int i = 0; i < depth; i++ )
+			sb.append("  ");
+		depthString = sb.toString();
+
+		System.out.println(depthString + name + " " + bits.toString() );
+		
+		if ( depth == 0 )
+			System.out.println();
 	}
 	
-	public String[] getSearchValues() {
-		return searchValues;
+	public void setNegation(boolean pNot) {
+		negation = pNot;
+	}
+	public boolean getNegation() {
+		return negation;
 	}
 
-	public void setSearchValues(String[] pSearchValues) {
-		searchValues = pSearchValues;
+	public String getName(){
+		return name;
+	}
+	public void setName(String pName){
+		name = pName;
 	}
 
-	public abstract String toString();
+	public String getControllingAttribute() {
+		return controllingAttribute;
+	}
 	
-	public abstract AtomicFilter clone();
-	//---------------------------------------//
-	// Constructor
-	//----------------------------------------//
-
-	/**
-	 * Creates a new AtomicFilter
-	 */
-	public AtomicFilter(String pAttributeName, String[] pSearchValues) {
-		attributeName = pAttributeName;
-		searchValues = pSearchValues;
+	public void setControllingAttribute(String pAttributeName) {
+		controllingAttribute = pAttributeName;
 	}
-
-
-} // AtomicFilter
+	public void setNetwork(CyNetwork pNetwork) {
+		network = pNetwork;
+	}
+}
