@@ -249,7 +249,7 @@ function getPluginProps($zipFileName) {
 							$pos = strpos($cur_line, "="); // find first "="
 							$desText = trim(substr($cur_line, $pos +1));
 
-							$supportMultilineDes = false;							
+							$supportMultilineDes = true;							
 							// Begin of multiple-line description
 							if ($supportMultilineDes) {								
 								$i=$i+1;
