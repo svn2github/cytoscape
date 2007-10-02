@@ -34,18 +34,15 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.util.URLUtil;
-
 import java.io.IOException;
-
 import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.util.URLUtil;
 
 
 /**
@@ -89,8 +86,10 @@ public class BookmarkReader {
 		//		final JAXBContext jaxbContext = JAXBContext.newInstance(
 		//				BOOKMARK_PACKAGE, this.getClass().getClassLoader());
 		//		
+		com.sun.xml.bind.v2.ContextFactory blah;
+		
 		final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE,
-		                                                        Cytoscape.class.getClassLoader());
+		                                                        JAXBContext.class.getClassLoader());
 
 		// Unmarshall the XGMML file
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

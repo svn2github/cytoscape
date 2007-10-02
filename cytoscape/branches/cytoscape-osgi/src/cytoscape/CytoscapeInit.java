@@ -421,7 +421,7 @@ public class CytoscapeInit {
 
 		try {
 			// load the props from the jar file
-			tryName = "cytoscape.jar";
+			tryName = "bundles/cytoscape.jar";
 
 			// This somewhat unusual way of getting the ClassLoader is because
 			// other methods don't work from WebStart.

@@ -36,37 +36,35 @@
 
 package cytoscape.plugin;
 
-import cytoscape.*;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.URLUtil;
-import cytoscape.util.ZipUtil;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
-
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.CytoscapeVersion;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
+import cytoscape.util.ZipUtil;
 
 /**
  * @author skillcoy
@@ -790,16 +788,17 @@ public class PluginManager {
 		duplicateClasses = new ArrayList<String>();
 		duplicateLoadError = false;
 		
-		for (URL url : urls) {
-			try {
-				addClassPath(url);
-			} catch (Exception e) {
-				throw new IOException("Classloader Error.");
-			}
-		}
-		
+//		for (URL url : urls) {
+//			try {
+//				addClassPath(url);
+//			} catch (Exception e) {
+//				throw new IOException("Classloader Error.");
+//			}
+//		}
+//		
 		// the creation of the class loader automatically loads the plugins
-		classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		//classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		classLoader = new URLClassLoader(urls,Cytoscape.class.getClassLoader());
 		
 		
 		// iterate through the given jar files and find classes that are
@@ -1027,7 +1026,7 @@ public class PluginManager {
 	    throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
 		method.setAccessible(true);
-		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
+		method.invoke(classLoader, new Object[] { url });
 	}
 
 	private class InquireTask implements cytoscape.task.Task {
