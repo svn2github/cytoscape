@@ -58,7 +58,7 @@ $date_30daysago = date ( 'Y-m-j' , $oneMonthAgo );
 $query1 = "select plugin_list.name as name, plugin_version.version as version, usagelog.plugin_version_id as plugin_version_id, count(log_auto_id) as totalCount".
 	" from usagelog, plugin_version, plugin_list".
 	" where usagelog.plugin_version_id = plugin_version.version_auto_id and plugin_list.plugin_auto_id = plugin_version.plugin_id ".
-	"group by usagelog.plugin_version_id order by plugin_list.category_id";
+	"group by usagelog.plugin_version_id order by plugin_list.category_id, plugin_list.name";
 
 // Run the query
 if (!($statArray= @ mysql_query ($query1, $connection)))
