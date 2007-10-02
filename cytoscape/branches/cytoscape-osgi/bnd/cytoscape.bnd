@@ -1,0 +1,2 @@
+Eclipse-RegisterBuddy = jaxb-api
+Bundle-Activator = cytoscape.plugin.HostActivator
