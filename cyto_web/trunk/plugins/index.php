@@ -135,10 +135,15 @@
 
 	echo 
 	"<p>" .
+	"\n<p><big><b>Writing Your Own Plugins</b></big>" .
+	"\n<p>" . 
 	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial\">" .
 	"\nCytoscape Plugin Tutorial</a>" .
-	"\n.  We also maintain a list of <a href=\"http://cytoscape.org/plugins1.php\">" .
-	"\nCytoscape 1.1 Plugins</a>. " .
+	"\n</p>" . 
+	"\n<p><big><b>Old Plugins</b></big>" .
+	"\n<p>" . 
+	"\nWe also maintain a list of older <a href=\"http://cytoscape.org/plugins2.php\">Cytoscape 2.x plugins</a> and <a href=\"http://cytoscape.org/plugins1.php\">" .
+	"\nCytoscape 1.x Plugins</a>. " .
 	"\n</p>" .
 	"\n<p><big><b>PlugIn License Policy:</b></big>" .
 	"\n<P>" .

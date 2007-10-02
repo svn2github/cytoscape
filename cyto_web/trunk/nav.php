@@ -14,7 +14,7 @@
 						Screenshots 
 					</a>
 					| 
-					<a href="http://cytoscape.org/plugins2.php">
+					<a href="http://cytoscape.org/plugins/index.php">
 						PlugIns 
 					</a>
 					| 
