@@ -337,10 +337,15 @@ public class Tunable {
 		}
 
 		for (int i = 0; i < attList.length; i++) {
+			// Is this attribute user visible?
+			if (!attributes.getUserVisible(attList[i]))
+				continue;
+
 			byte type = attributes.getType(attList[i]);
 
 			if (((flag & NUMERICATTRIBUTE) == 0)
-			    || ((type == CyAttributes.TYPE_FLOATING) || (type == CyAttributes.TYPE_INTEGER))) {
+			    || ((type == CyAttributes.TYPE_FLOATING) 
+			    || (type == CyAttributes.TYPE_INTEGER))) {
 				list.add(attList[i]);
 			}
 		}

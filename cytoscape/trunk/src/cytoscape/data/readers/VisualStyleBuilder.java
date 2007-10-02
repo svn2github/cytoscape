@@ -167,6 +167,7 @@ public class VisualStyleBuilder {
 				strValue = ((Color)value).getRed()+","+((Color)value).getGreen()+","+((Color)value).getBlue();
 			}
 			attrs.setAttribute(id, type.getBypassAttrName(), strValue);
+			attrs.setUserVisible(type.getBypassAttrName(), false);
 		}
 
 		if ( !valueMaps.containsKey(type) )

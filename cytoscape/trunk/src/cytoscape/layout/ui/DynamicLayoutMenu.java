@@ -163,6 +163,8 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		String[] attList = attributes.getAttributeNames();
 
 		for (int i = 0; i < attList.length; i++) {
+			if (!attributes.getUserVisible(attList[i]))
+				continue;
 			byte type = attributes.getType(attList[i]);
 
 			for (int t = 0; t < typeList.length; t++) {
