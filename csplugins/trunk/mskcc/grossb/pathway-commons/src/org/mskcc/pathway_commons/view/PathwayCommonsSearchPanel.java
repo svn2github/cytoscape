@@ -7,31 +7,41 @@ import com.jgoodies.looks.plastic.theme.SkyBlue;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.Vector;
+
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
+import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
 
 /**
  * Main GUI Panel for Searching Pathway Commons.
  *
  * @author Ethan Cerami.
  */
-public class PathwayCommonsSearchPanel extends JPanel {
+public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsWebApiListener {
     protected Document summaryDocument;
     protected Document matchingExcerptsDocument;
-    protected AbstractTableModel interactionTableModel;
-    protected AbstractTableModel pathwayTableModel;
-    protected ListModel peListModel;
+    protected DefaultTableModel interactionTableModel;
+    protected DefaultTableModel pathwayTableModel;
+    protected DefaultListModel peListModel;
     protected Document searchDocument;
     protected ComboBoxModel organismComboBoxModel;
+    protected PathwayCommonsWebApi webApi;
     private JButton searchButton;
 
     /**
      * Constructor.
      */
-    public PathwayCommonsSearchPanel() {
+    public PathwayCommonsSearchPanel(PathwayCommonsWebApi webApi) {
+        this.webApi = webApi;
 
         //  Set JGoodies Theme
         setLookAndFeel();
@@ -50,6 +60,29 @@ public class PathwayCommonsSearchPanel extends JPanel {
         //  Create Souther Panel:  Download
         JPanel downloadPanel = createDownloadPanel();
         this.add(downloadPanel, BorderLayout.SOUTH);
+
+        webApi.addApiListener(this);
+    }
+
+
+    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
+            int startIndex) {
+        peListModel.removeAllElements();
+        for (int i=0; i<interactionTableModel.getRowCount(); i++) {
+            interactionTableModel.removeRow(i);
+        }
+        for (int i=0; i<pathwayTableModel.getRowCount(); i++) {
+            pathwayTableModel.removeRow(i);
+        }
+        try {
+            summaryDocument.remove(0, summaryDocument.getLength());
+            matchingExcerptsDocument.remove(0, matchingExcerptsDocument.getLength());
+        } catch (BadLocationException e) {
+        }
+    }
+
+    public void searchCompletedForPhysicalEntities(PhysicalEntitySearchResponse peSearchResponse) {
+
     }
 
     /**
@@ -118,15 +151,14 @@ public class PathwayCommonsSearchPanel extends JPanel {
      * @return JScrollPane Object.
      */
     private JScrollPane createHitListPanel() {
-        JList list = new JList();
+        peListModel = new DefaultListModel();
+        peListModel.addElement("Protein 1");
+        peListModel.addElement("Protein 2");
+        peListModel.addElement("Protein 3");
+        peListModel.addElement("Protein 4");
+        
+        JList list = new JList(peListModel);
         list.setPrototypeCellValue("12345678901234567890");
-        Vector listData = new Vector();
-        listData.add("Protein 1");
-        listData.add("Protein 2");
-        listData.add("Protein 3");
-        listData.add("Protein 4");
-        peListModel = list.getModel();
-        list.setListData(listData);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBorder(new TitledBorder("Search Results"));
         return scrollPane;
@@ -165,6 +197,13 @@ public class PathwayCommonsSearchPanel extends JPanel {
         organismComboBox.setPrototypeDisplayValue("12345678901234567890");
         searchButton = new JButton("Go!");
         JButton helpButton = new JButton("Help");
+
+        //  Search Button Action
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                webApi.searchPhysicalEntities(searchField.getText(), -1, 1);
+            }
+        });
 
         panel.add(searchField);
         panel.add(Box.createRigidArea(new Dimension(5,0)));
@@ -275,7 +314,8 @@ public class PathwayCommonsSearchPanel extends JPanel {
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        PathwayCommonsSearchPanel form = new PathwayCommonsSearchPanel();
+        PathwayCommonsSearchPanel form = new PathwayCommonsSearchPanel(
+                new PathwayCommonsWebApi());
         frame.getContentPane().add(form);
         frame.pack();
         form.initFocus();
@@ -286,45 +326,28 @@ public class PathwayCommonsSearchPanel extends JPanel {
 /**
  * Interaction Table Model.
  */
-class InteractionTableModel extends AbstractTableModel {
-    Object[][] data = {
-        {"Reactome", "45", Boolean.FALSE},
-        {"MSKCC Cancer Cell Map", "12", Boolean.FALSE},
-        {"HPRD", "127", Boolean.FALSE}
-    };
+class InteractionTableModel extends DefaultTableModel {
+//    private Object[][] data = {
+//        {"Reactome", "45", Boolean.FALSE},
+//        {"MSKCC Cancer Cell Map", "12", Boolean.FALSE},
+//        {"HPRD", "127", Boolean.FALSE}
+//    };
 
-    String[] columnNames = {"Data Source",
-                            "Num Interactions", "Select"};
-
-    public int getColumnCount() {
-        return columnNames.length;
+    public InteractionTableModel () {
+        super();
+        Vector columnNames = new Vector();
+        columnNames.add("Data Source");
+        columnNames.add("Num Interactions");
+        columnNames.add("Select");
+        this.setColumnIdentifiers(columnNames);
     }
 
-    public int getRowCount() {
-        return data.length;
-    }
-
-    public String getColumnName(int col) {
-        return columnNames[col];
-    }
-
-    public Object getValueAt(int row, int col) {
-        return data[row][col];
-    }
-
-    public Class getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
-    }
     public boolean isCellEditable(int row, int col) {
         if (col == 2) {
             return true;
         } else {
             return false;
         }
-    }
-
-    public void setValueAt(Object value, int row, int col) {
-        data[row][col] = value;
     }
 }
 
@@ -333,33 +356,19 @@ class InteractionTableModel extends AbstractTableModel {
  *
  * @author Ethan Cerami
  */
-class PathwayTableModel extends AbstractTableModel {
-    Object[][] data = {
-        {"NCI-Nature", "BARD1 Signaling", Boolean.FALSE},
-        {"Reactome", "Cell Cycle Checkpoints", Boolean.FALSE},
-        {"Reactome", "Cell Cycle Mitotic", Boolean.FALSE}
-    };
+class PathwayTableModel extends DefaultTableModel {
+    //    private Object[][] data = {
+    //        {"NCI-Nature", "BARD1 Signaling", Boolean.FALSE},
+    //        {"Reactome", "Cell Cycle Checkpoints", Boolean.FALSE},
+    //        {"Reactome", "Cell Cycle Mitotic", Boolean.FALSE}
 
-    String[] columnNames = {"Data Source", "Pathway", "Select"};
-
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    public int getRowCount() {
-        return data.length;
-    }
-
-    public String getColumnName(int col) {
-        return columnNames[col];
-    }
-
-    public Object getValueAt(int row, int col) {
-        return data[row][col];
-    }
-
-    public Class getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
+    public PathwayTableModel () {
+        super();
+        Vector columnNames = new Vector();
+        columnNames.add("Data Source");
+        columnNames.add("Pathway");
+        columnNames.add("Select");
+        this.setColumnIdentifiers(columnNames);
     }
 
     public boolean isCellEditable(int row, int col) {
@@ -368,9 +377,5 @@ class PathwayTableModel extends AbstractTableModel {
         } else {
             return false;
         }
-    }
-
-    public void setValueAt(Object value, int row, int col) {
-        data[row][col] = value;
     }
 }
