@@ -246,39 +246,41 @@ public class CyMain implements CyInitParams {
 	}
 
 	protected void setupLookAndFeel() {
-//		try {
-//			if (LookUtils.IS_OS_WINDOWS) {
-//				/*
-//				 * For Windows: just use platform default look & feel.
-//				 */
-//				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-//			} else if (LookUtils.IS_OS_MAC) {
-//				/*
-//				 * For Mac: move menue bar to OS X default bar (next to Apple icon)
-//				 */
-//				System.setProperty("apple.laf.useScreenMenuBar", "true");
-//			} else {
-//				/*
-//				 * For Unix platforms, use JGoodies Looks
-//				 */
-//				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-//				//				UIManager.setLookAndFeel(new NimbusLookAndFeel());
-//				Plastic3DLookAndFeel.set3DEnabled(true);
-//				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
-//				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
-//				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
-//
-//				Options.setDefaultIconSize(new Dimension(18, 18));
-//				Options.setHiResGrayFilterEnabled(true);
-//				Options.setPopupDropShadowEnabled(true);
-//				Options.setUseSystemFonts(true);
-//
-//				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-//				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-//			}
-//		} catch (Exception e) {
-//			System.err.println("Can't set look & feel:" + e);
-//		}
+		try {
+			if (LookUtils.IS_OS_WINDOWS) {
+				/*
+				 * For Windows: just use platform default look & feel.
+				 */
+				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			} else if (LookUtils.IS_OS_MAC) {
+				/*
+				 * For Mac: move menue bar to OS X default bar (next to Apple icon)
+				 */
+				System.setProperty("apple.laf.useScreenMenuBar", "true");
+			} else {
+				/*
+				 * For Unix platforms, use JGoodies Looks
+				 */
+				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+				//				UIManager.setLookAndFeel(new NimbusLookAndFeel());
+				Plastic3DLookAndFeel.set3DEnabled(true);
+				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
+				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
+				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
+
+				UIManager.getDefaults().put("ClassLoader",Plastic3DLookAndFeel.class.getClassLoader());
+
+				Options.setDefaultIconSize(new Dimension(18, 18));
+				Options.setHiResGrayFilterEnabled(true);
+				Options.setPopupDropShadowEnabled(true);
+				Options.setUseSystemFonts(true);
+
+				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+			}
+		} catch (Exception e) {
+			System.err.println("Can't set look & feel:" + e);
+		}
 	}
 
 	protected void printHelp() {
