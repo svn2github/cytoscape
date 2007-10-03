@@ -10,11 +10,11 @@
     <!-- The directory containing source code -->
     <property name="src.dir" value="src"/>
 	<!-- The Cytoscape lib directory -->
-	<property name="cytoscape_lib_dir" value="../../../../../svn-repos/cytoscape/lib"/>
+	<property name="cytoscape_lib_dir" value="../../../../cytoscape/lib"/>
 	<!-- The Cytoscape jar directory -->
-	<property name="cytoscape_jar_dir" value="../../../../../svn-repos/cytoscape/"/>
+	<property name="cytoscape_jar_dir" value="../../../../cytoscape"/>
 	<!-- The Cytoscape plugin directory (core) -->
-	<property name="cytoscape_plugin_dir" value="../../../../../svn-repos/cytoscape/plugins/core"/>
+	<property name="cytoscape_plugin_dir" value="../../../../cytoscape/plugins/core"/>
     <!-- The directory containing the configuration files -->
     <property name="config.dir" value="config"/>
     <!-- Temporary build directories -->
