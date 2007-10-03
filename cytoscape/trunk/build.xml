@@ -142,13 +142,13 @@
 	<target name="bind" description="Run XJC to generate new packages.">
 
 		<xjc schema="${schema.dir}/${cysession.schema}" 
-		     target="${src.dir}" 
+					destdir="${src.dir}" 
 		     package="${package}">
 			<produces dir="${src.dir}/cytoscape/generated" 
 			          includes="* impl/*" />
 		</xjc>
 		<xjc schema="${schema.dir}/${xgmml.schema}" 
-		     target="${src.dir}" 
+					destdir="${src.dir}" 
 		     package="${package}2" 
 		     extension="true" 
 		     binding="${schema.dir}/binding.xjb">
@@ -157,7 +157,7 @@
 		</xjc>
 		
 		<xjc schema="${schema.dir}/${bookmark.schema}" 
-		     target="${src.dir}" 
+				destdir="${src.dir}" 
 		     package="cytoscape.bookmarks">
 			<arg value="-nv" />
 			<produces dir="${src.dir}/cytoscape/bookmarks" includes="* impl/*" />
