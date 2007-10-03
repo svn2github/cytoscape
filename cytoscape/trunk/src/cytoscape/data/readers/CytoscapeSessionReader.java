@@ -95,6 +95,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -615,8 +616,19 @@ public class CytoscapeSessionReader {
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
 			networkStream = (InputStream) jarConnection.getContent();
 
+			// Get the current state of the vsbSwitch
+			Properties prop = CytoscapeInit.getProperties();
+			String vsbSwitch = prop.getProperty("visualStyleBuilder");
+			// Since we're reading a session (which already has visual
+			// styles defined) force the vsbSwitch off
+			prop.setProperty("visualStyleBuilder", "off");
 			final XGMMLReader reader = new XGMMLReader(networkStream);
 			new_network = Cytoscape.createNetwork(reader, false, parent);
+			// Restore the original state of the vsbSwitch
+			if (vsbSwitch != null)
+				prop.setProperty("visualStyleBuilder", vsbSwitch);
+			else
+				prop.remove("visualStyleBuilder");
 
 			if ((taskMonitor != null) && (networkCounter >= 20)) {
 				netIndex++;
