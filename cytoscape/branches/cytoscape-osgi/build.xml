@@ -278,7 +278,7 @@
 		       source="1.5" 
 		       optimize="on" 
 		       includeAntRuntime="false" 
-		       deprecation="yes">
+		       deprecation="no">
 			<classpath refid="classpath" />
 			<include name="cytoscape/**" />
 			<src path="${src.dir}" />
