@@ -268,8 +268,6 @@ public class CyMain implements CyInitParams {
 				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
 				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
 
-				UIManager.getDefaults().put("ClassLoader",Plastic3DLookAndFeel.class.getClassLoader());
-
 				Options.setDefaultIconSize(new Dimension(18, 18));
 				Options.setHiResGrayFilterEnabled(true);
 				Options.setPopupDropShadowEnabled(true);
