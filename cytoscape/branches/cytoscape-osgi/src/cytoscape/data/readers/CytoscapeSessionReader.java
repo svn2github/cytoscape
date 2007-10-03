@@ -482,7 +482,7 @@ public class CytoscapeSessionReader {
 			InputStream is = URLUtil.getBasicInputStream(pBookmarksFileURL);
 
 			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
-			                                                        this.getClass().getClassLoader());
+			                                                        JAXBContext.class.getClassLoader());
 			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 			theBookmark = (Bookmarks) unmarshaller.unmarshal(is);
@@ -508,7 +508,7 @@ public class CytoscapeSessionReader {
 		// handles proxy servers and cached pages):
 		InputStream is = URLUtil.getBasicInputStream(cysessionFileURL);
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
-		                                                        PluginManager.getClassLoader());
+		                                                        JAXBContext.class.getClassLoader());
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 		session = (Cysession) unmarshaller.unmarshal(is);
