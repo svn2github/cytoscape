@@ -10,7 +10,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -46,6 +45,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     private JTable pathwayTable;
     private JButton searchButton;
     private PhysicalEntitySearchResponse peSearchResponse;
+    private JList peList;
 
     /**
      * Constructor.
@@ -76,18 +76,6 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
 
     public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex) {
-        peListModel.removeAllElements();
-        for (int i=0; i<interactionTableModel.getRowCount(); i++) {
-            interactionTableModel.removeRow(i);
-        }
-        for (int i=0; i<pathwayTableModel.getRowCount(); i++) {
-            pathwayTableModel.removeRow(i);
-        }
-        try {
-            summaryDocument.remove(0, summaryDocument.getLength());
-            matchingExcerptsDocument.remove(0, matchingExcerptsDocument.getLength());
-        } catch (BadLocationException e) {
-        }
     }
 
     public void searchCompletedForPhysicalEntities(PhysicalEntitySearchResponse peSearchResponse) {
@@ -99,6 +87,9 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         for (PhysicalEntitySummary peSummary: peSummaryList) {
             String name = peSummary.getName();
             peListModel.setElementAt(name, i++);
+        }
+        if (peSummaryList.size() > 0) {
+            peList.setSelectedIndex(0);
         }
     }
 
@@ -126,7 +117,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     private JSplitPane createSearchResultsPanel() {
 
         //  Create the Search Hits Panel
-        JScrollPane hitListPanel = createHitListPanel();
+        JPanel hitListPanel = createHitListPanel();
 
         //  Create the Search Details Panel
         JPanel detailsPanel = createSearchDetailsPanel();
@@ -143,23 +134,20 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
      */
     private JPanel createSearchDetailsPanel() {
         JPanel detailsPanel = new JPanel();
-        GridLayout gridLayout = new GridLayout (4,0);
+        GridLayout gridLayout = new GridLayout (2,0);
         detailsPanel.setLayout(gridLayout);
 
-        JTextArea summaryTextArea = createTextArea();
-        summaryDocument = summaryTextArea.getDocument();
         JTextArea matchingExcerptsTextArea = createTextArea();
         matchingExcerptsDocument = matchingExcerptsTextArea.getDocument();
 
-        JScrollPane summaryPane = encloseInJScrollPane("Summary", summaryTextArea);
-        JScrollPane matchingExceprtsPane = encloseInJScrollPane("Matching Excerpts",
-                matchingExcerptsTextArea);
+        //JScrollPane matchingExcerptsPane = encloseInJScrollPane("Matching Excerpts",
+        //        matchingExcerptsTextArea);
         JScrollPane interactionPane = createInteractionBundleTable();
         JScrollPane pathwayPane = createPathwayTable();
-        detailsPanel.add(summaryPane);
-        detailsPanel.add(matchingExceprtsPane);
         detailsPanel.add(interactionPane);
         detailsPanel.add(pathwayPane);
+        //detailsPanel.add(summaryPane);
+        //detailsPanel.add(matchingExcerptsPane);
         return detailsPanel;
     }
 
@@ -167,22 +155,27 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
      * Creates the Search Hits List Panel.
      * @return JScrollPane Object.
      */
-    private JScrollPane createHitListPanel() {
-        peListModel = new DefaultListModel();
-        peListModel.addElement("Protein 1");
-        peListModel.addElement("Protein 2");
-        peListModel.addElement("Protein 3");
-        peListModel.addElement("Protein 4");
-        
-        final JList list = new JList(peListModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setPrototypeCellValue("12345678901234567890");
-        JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setBorder(new TitledBorder("Search Results"));
+    private JPanel createHitListPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JTextArea summaryTextArea = createTextArea();
+        summaryDocument = summaryTextArea.getDocument();
+        JScrollPane summaryPane = encloseInJScrollPane("Summary", summaryTextArea);
 
-        list.addListSelectionListener(new ListSelectionListener() {
+        peListModel = new DefaultListModel();
+
+        peList = new JList(peListModel);
+        peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        peList.setPrototypeCellValue("12345678901234567890");
+        JScrollPane hitListPane = new JScrollPane(peList);
+        hitListPane.setBorder(new TitledBorder("Search Results"));
+
+        panel.add(hitListPane);
+        panel.add(summaryPane);
+
+        peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int selectedIndex = list.getSelectedIndex();
+                int selectedIndex = peList.getSelectedIndex();
 
                 if (PathwayCommonsSearchPanel.this.peSearchResponse != null) {
                     ArrayList<PhysicalEntitySummary> peList =
@@ -192,9 +185,12 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
                     ArrayList <PathwaySummary> pathwayList = pe.getPathwayList();
                     ArrayList <InteractionBundleSummary> interactionList =
                             pe.getInteractionBundleList();
-                    for (int i=0; i<pathwayTableModel.getRowCount(); i++) {
-                        pathwayTableModel.removeRow(i);
-                    }
+
+                    Vector dataVector = interactionTableModel.getDataVector();
+                    dataVector.removeAllElements();
+
+                    dataVector = pathwayTableModel.getDataVector();
+                    dataVector.removeAllElements();
 
                     if (pathwayList != null) {
                         pathwayTableModel.setRowCount(pathwayList.size());
@@ -224,7 +220,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
             }
         });
 
-        return scrollPane;
+        return panel;
     }
 
     /**
@@ -325,7 +321,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
                 + "ultrices. Aenean dignissim, dui id fringilla aliquam, dolor mauris "
                 + "tincidunt felis, id interdum nulla tortor vitae purus.";
         JTextArea textArea = new JTextArea (text);
-        textArea.setColumns(40);
+        textArea.setColumns(20);
         textArea.setRows(10);
         textArea.setEditable(false);
         textArea.setLineWrap(true);
