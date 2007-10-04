@@ -370,7 +370,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		if (vsbSwitch != null && vsbSwitch.equals("off"))
 			buildStyle = false;
 
-		VisualStyleBuilder graphStyle = new VisualStyleBuilder(parser.getNetworkName(), !buildStyle);
+		VisualStyleBuilder graphStyle = new VisualStyleBuilder(parser.getNetworkName(), false);
 
 		// Set background clolor
 		if (parser.getBackgroundColor() != null) {
