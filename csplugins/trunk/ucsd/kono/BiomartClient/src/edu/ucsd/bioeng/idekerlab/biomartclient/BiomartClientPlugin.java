@@ -50,6 +50,6 @@ public class BiomartClientPlugin extends CytoscapePlugin {
 	 */
 	public BiomartClientPlugin() throws Exception {
 		// Register this client to the manager.
-		WebServiceClientManager.registerClient(new BiomartClient());
+		WebServiceClientManager.registerClient(BiomartClient.getClient());
 	}
 }

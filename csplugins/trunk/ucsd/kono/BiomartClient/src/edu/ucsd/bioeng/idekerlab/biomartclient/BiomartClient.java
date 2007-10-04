@@ -34,14 +34,52 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
+import giny.model.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.ConfigurationException;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientImpl;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 
 /**
  *
  */
 public class BiomartClient extends WebServiceClientImpl {
 	private static final String DISPLAY_NAME = "Biomart Web Service Client";
-	private static final String SERVICE_NAME = "biomart";
+	private static final String CLIENT_ID = "biomart";
+	
+	private static WebServiceClient client = null;
+	
+	static {
+		try {
+			client = new BiomartClient();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 * @throws Exception 
+	 */
+	public static WebServiceClient getClient() throws Exception {
+		if(client == null) {
+			client = new BiomartClient();
+		}
+		return client;
+	}
 
 	/**
 	 * Creates a new Biomart Client object.
@@ -50,7 +88,152 @@ public class BiomartClient extends WebServiceClientImpl {
 	 * @throws ConfigurationException
 	 */
 	public BiomartClient() throws Exception {
-		super(SERVICE_NAME, DISPLAY_NAME);
+		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.ATTRIBUTE });
 		stub = new BiomartStub();
-	}		
+	}
+
+	@Override
+	public void executeService(CyWebServiceEvent e) {
+		if (e.getSource().equals(CLIENT_ID)) {
+			if (e.getEventType().equals(WSEventType.IMPORT_ATTRIBUTE)) {
+				importAttributes((AttributeImportQuery) e.getParameter());
+			}
+		}
+	}	
+	
+	
+	/**
+	 * Based on the query given, execute the data fetching.
+	 * 
+	 * @param query
+	 */
+	private void importAttributes(AttributeImportQuery query) {
+		
+		try {
+			List<String[]> result = ((BiomartStub)stub).sendQuery(query.getParameter().toString());
+			
+			if(((List<String[]>) result).size() == 1) {
+				String[] res = ((List<String[]>) result).get(0);
+				if(res[0].contains("Query ERROR")) {
+					Exception e = new Exception(res[0]);
+					
+					throw e;
+				}
+			}
+
+			mapping((List<String[]>) result, query.getKeyNameInWebService(), query.getKeyCyAttrName());
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	private static void mapping(List<String[]> result, String key, String keyAttrName) {
+		final String[] columnNames = result.get(0);
+		final int rowCount = result.size();
+		final int colSize = columnNames.length;
+		int keyPosition = 0;
+
+		for (int i = 0; i < colSize; i++) {
+			if (columnNames[i].equals(key)) {
+				keyPosition = i;
+				System.out.println("Key found!!!!!!!!!!!!" + i);
+			}
+		}
+
+		String[] entry;
+		String val;
+
+		List<List<Object>> listOfValList;
+		List<String> ids = null;
+
+		List<Object> testList;
+		String keyVal = null;
+
+		for (int i = 1; i < rowCount; i++) {
+			entry = result.get(i);
+
+			if (entry.length <= keyPosition) {
+				continue;
+			}
+
+			keyVal = entry[keyPosition];
+
+			for (int j = 0; j < entry.length; j++) {
+				val = entry[j];
+
+				if ((val != null) && (val.length() != 0) && (j != keyPosition)) {
+					listOfValList = new ArrayList<List<Object>>();
+
+					if (keyAttrName.equals("ID")) {
+
+						testList = Cytoscape.getNodeAttributes()
+                        .getListAttribute(keyVal, columnNames[j]);
+						if(testList != null) {
+							listOfValList.add(testList);
+						}
+					} else {
+						ids = CyAttributesUtils.getIDListFromAttributeValue(CyAttributesUtils.AttributeType.NODE,
+						                                                                 keyAttrName,
+						                                                                 keyVal);
+
+						for (String id : ids) {
+							listOfValList.add(Cytoscape.getNodeAttributes()
+							                           .getListAttribute(id, columnNames[j]));
+						}
+					}
+
+					if (listOfValList.size() == 0) {
+						List<Object> valList = new ArrayList<Object>();
+						listOfValList.add(valList);
+					}
+
+					int index = 0;
+					for (List<Object> valList : listOfValList) {
+						if (valList == null) {
+							valList = new ArrayList<Object>();
+						}
+
+						if (valList.contains(entry[j]) == false) {
+							valList.add(entry[j]);
+						}
+
+						if (keyAttrName.equals("ID")) {
+							Cytoscape.getNodeAttributes()
+						         .setListAttribute(keyVal, columnNames[j], valList);
+						} else {
+							Cytoscape.getNodeAttributes()
+					         .setListAttribute(ids.get(index), columnNames[j], valList);
+						}
+						index++;
+					}
+				}
+			}
+		}
+	}
+
+	private static String getIDFilterString() {
+		final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
+		final StringBuilder builder = new StringBuilder();
+
+		for (Node n : nodes) {
+			builder.append(n.getIdentifier());
+			builder.append(",");
+		}
+
+		String filterStr = builder.toString();
+		filterStr = filterStr.substring(0, filterStr.length() - 1);
+
+		System.out.println("Filter =====>>> " + filterStr);
+
+		return filterStr;
+	}
+	
+	
+	
+	
 }
