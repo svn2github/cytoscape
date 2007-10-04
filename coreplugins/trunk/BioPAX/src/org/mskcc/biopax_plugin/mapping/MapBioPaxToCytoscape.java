@@ -125,8 +125,11 @@ public class MapBioPaxToCytoscape {
 	private BioPaxCellularLocationMap cellularLocationAbbr = new BioPaxCellularLocationMap();
 	private BioPaxChemicalModificationMap chemicalModificationAbbr = new BioPaxChemicalModificationMap();
 
-	// created cynodes
-	private Map createdCyNodes;
+	// created cynodes - cyNodeId is key, cpath id is value
+	private Map<String, String> createdCyNodes;
+	
+	// complex cellular location wrapper - cyNodeId (of complex is key, NodeAttributesWrapper is value)
+	private Map<String, NodeAttributesWrapper> complexCellularLocationWrapperMap;
 
 	/**
 	 * Inner class to store a given nodes'
@@ -185,7 +188,8 @@ public class MapBioPaxToCytoscape {
 		this.bpConstants = new BioPaxConstants();
 		this.rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
 		this.warningList = new ArrayList();
-		this.createdCyNodes = new HashMap();
+		this.createdCyNodes = new HashMap<String,String>();
+		this.complexCellularLocationWrapperMap = new HashMap<String, NodeAttributesWrapper>();
 	}
 
 	/**
@@ -194,17 +198,21 @@ public class MapBioPaxToCytoscape {
 	 * @throws JDOMException Error Parsing XML via JDOM.
 	 */
 	public void doMapping() throws JDOMException {
-		// note:
-		// all complex and interaction members are
-		// created within respective map*Edges() routines
 
 		//  map interactions
+		// Note:
+		// this will now map complex nodes that participate in interactions.
+		// we assume that complexes do not live outside interactions
 		mapInteractionNodes();
 		mapInteractionEdges();
 
-		// map complex
-		mapComplexNodes();
-		mapComplexEdges();
+		// map all complex edges (for all complexes, attach members)
+		// this is an iterative loop since complex members may be
+		// complexes themselves
+		ArrayList<Element> complexElementList = getComplexElementList();
+		do {
+			complexElementList = mapComplexEdges(complexElementList);
+		} while (complexElementList.size() > 0);
 
 		// map attributes
 		MapNodeAttributes.doMapping(bpUtil, nodeList);
@@ -344,7 +352,7 @@ public class MapBioPaxToCytoscape {
 			//  set node attributes
 			setNodeAttributes(interactionNode, name, interactionElement.getName(), id, null);
 
-			// update our map - we are not interested in value
+			// update our map
 			createdCyNodes.put(id, id);
 
 			if (taskMonitor != null) {
@@ -412,7 +420,7 @@ public class MapBioPaxToCytoscape {
 			String id = BioPaxUtil.extractRdfId(e);
 
 			// have we already created this complex ?
-			if (createdCyNodes.containsKey(id)) {
+			if (createdCyNodes.containsValue(id)) {
 				continue;
 			}
 
@@ -432,7 +440,7 @@ public class MapBioPaxToCytoscape {
 			//  Set BioPAX Name, Type, ID
 			setNodeAttributes(node, name, e.getName(), id, null);
 
-			// update our map - we are not interested in value
+			// update our map
 			createdCyNodes.put(id, id);
 
 			if (taskMonitor != null) {
@@ -443,6 +451,7 @@ public class MapBioPaxToCytoscape {
 	}
 
 	private String getNodeName(String id, Element e) {
+
 		String nodeName = null;
 		List nameList = null;
 		Element nameElement = null;
@@ -506,42 +515,63 @@ public class MapBioPaxToCytoscape {
 		return str;
 	}
 
-	private void mapComplexEdges() {
-		//  Extract List of all Physical Entities
-		List peList = bpUtil.getPhysicalEntityList();
+	/**
+	 * Interates over complexElementList and connects members.  This routine will
+	 * modify and then return the complexElementList argument.  It removes complexes
+	 * that get processed during this call, and adds members which are complexes themselves.
+	 *
+	 * @param complexElementList ArrayList<Element>
+	 * @return ArrayList<Element>
+	 */
+	private ArrayList<Element> mapComplexEdges(ArrayList<Element> complexElementList) {
 
-		// edge attributes
-		CyAttributes attributes = Cytoscape.getEdgeAttributes();
+		// ref to node/edge attributes
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
-		for (int i = 0; i < peList.size(); i++) {
-			Element peElement = (Element) peList.get(i);
+		// need to clone the createdCyNodes map
+		Map<String, String> localCreatedCyNodes = (Map<String,String>)(((HashMap)createdCyNodes).clone());
 
-			if (peElement.getName().equals(BioPaxConstants.COMPLEX)) {
-				String sourceId = BioPaxUtil.extractRdfId(peElement);
-				CyNode sourceNode = Cytoscape.getCyNode(sourceId);
+		// need to clone the complex ElementList
+		ArrayList<Element> complexElementListClone = (ArrayList<Element>)(complexElementList.clone());
 
-				//  Get all Components.  There can be 0 or more
-				List componentList = rdfQuery.getNodes(peElement, "COMPONENTS/*/PHYSICAL-ENTITY/*");
+		// interate through all pe's
+		for (Element complexElement : complexElementListClone) {
 
-				for (int j = 0; j < componentList.size(); j++) {
-					Element partipantElement = (Element) componentList.get(j);
-					String targetId = BioPaxUtil.extractRdfId(partipantElement);
-					CyNode targetNode = getCyNode(peElement, partipantElement,
-					                              BioPaxConstants.COMPLEX);
+			// get source id
+			String complexCPathId = BioPaxUtil.extractRdfId(complexElement);
 
-					if (targetNode == null) {
-						return;
+			// iterate through all created nodes
+			// note: a complex can occur multiple times in createdNodes map
+			for (String cyNodeId : (Set<String>)localCreatedCyNodes.keySet()) {
+
+				// is this a complex that maps to the current complex (complexElement) ?
+				if (localCreatedCyNodes.get(cyNodeId).equals(complexCPathId)) {
+
+					// get Cynode for this complexElement
+					CyNode complexCyNode = Cytoscape.getCyNode(cyNodeId);
+					//  get all components.  There can be 0 or more
+					for (Element complexMemberElement : (List<Element>)rdfQuery.getNodes(complexElement, "COMPONENTS/*/PHYSICAL-ENTITY/*")) {
+						CyNode complexMemberCyNode = getComplexCyNode(complexElement, complexCyNode.getIdentifier(), complexMemberElement); 
+						if (complexMemberCyNode != null) {
+							// create edge, set attributes
+							Edge edge = Cytoscape.getCyEdge(complexCyNode, complexMemberCyNode, Semantics.INTERACTION,
+															CONTAINS, true);
+							edgeAttributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, CONTAINS);
+							edgeList.add(edge);
+							// if there was a complex, add it to complexElementList for processing next time
+							if (complexMemberElement.getName().equals(BioPaxConstants.COMPLEX)) {
+								complexElementList.add(complexMemberElement);
+							}
+						}
 					}
-
-					Edge edge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION,
-					                                CONTAINS, true);
-					// Cytoscape.setEdgeAttributeValue
-					// (edge, BIOPAX_EDGE_TYPE, CONTAINS);
-					attributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, CONTAINS);
-					edgeList.add(edge);
 				}
 			}
+			// remove the complex element we just processed
+			complexElementList.remove(complexElement);
 		}
+
+		// outta here
+		return complexElementList;
 	}
 
 	/**
@@ -714,6 +744,26 @@ public class MapBioPaxToCytoscape {
 	}
 
 	/**
+	 * Returns a list of complex elements, derived from bpUtil.getPhysicalEntityList().
+	 */
+	private ArrayList<Element> getComplexElementList() {
+
+		// list to return
+		ArrayList<Element> toReturn = new ArrayList<Element>();
+
+		for (Element complexElement : (List<Element>)bpUtil.getPhysicalEntityList()) {
+
+			// only interested in complexes
+			if (complexElement.getName().equals(BioPaxConstants.COMPLEX)) {
+				toReturn.add(complexElement);
+			}
+		}
+
+		// outta here
+		return toReturn;
+	}
+
+	/**
 	 * Creates required CyNodes given a binding element (complex or interaction).
 	 *
 	 * @param bindingElement Element
@@ -722,67 +772,48 @@ public class MapBioPaxToCytoscape {
 	 * @return CyNode
 	 */
 	private CyNode getCyNode(Element bindingElement, Element physicalEntity, String type) {
-		// we handle complexes & interactions differently than proteins
-		BioPaxConstants bpConstants = new BioPaxConstants();
-		boolean isComplexOrInteraction = (physicalEntity.getName().equals(BioPaxConstants.COMPLEX)
-		                                 || physicalEntity.getName()
-		                                                  .equals(BioPaxConstants.COMPLEX_ASSEMBLY)
-		                                 || bpConstants.isInteraction(physicalEntity.getName()));
+
+		// setup a few booleans used later on
+		boolean isComplex = physicalEntity.getName().equals(BioPaxConstants.COMPLEX);
+		boolean isInteraction = (physicalEntity.getName().equals(BioPaxConstants.COMPLEX_ASSEMBLY) ||
+		                         bpConstants.isInteraction(physicalEntity.getName()));
 
 		// extract id
 		String id = BioPaxUtil.extractRdfId(physicalEntity);
+		if ((id == null) || (id.length() == 0)) return null;
 
-		if ((id == null) || (id.length() == 0)) {
-			return null;
-		}
-
-		// if we have an interaction or complex,
-		// check and see if this was created via one of the map routines
-		if (isComplexOrInteraction) {
-			if (createdCyNodes.containsKey(id)) {
-				return Cytoscape.getCyNode(id);
-			}
+		// if we have an interaction, see if it was already created
+		if (isInteraction && createdCyNodes.containsKey(id)) {
+			return Cytoscape.getCyNode(id);
 		}
 
 		//  get node name
-		String nodeName = id;
-		nodeName = getNodeName(nodeName, physicalEntity);
+		String nodeName = getNodeName(id, physicalEntity);
+		nodeName = (nodeName == null) ? id : nodeName;
 
-		// create a node label & cynode id
-		String nodeLabel = new String(truncateLongStr(nodeName));
+		// create a node label & CyNode id
 		String cyNodeId = new String(id);
-		NodeAttributesWrapper chemicalModificationsWrapper = null;
+		String cyNodeLabel = new String(truncateLongStr(nodeName));
 		NodeAttributesWrapper cellularLocationsWrapper = null;
+		NodeAttributesWrapper chemicalModificationsWrapper = null;
 
-		if (!isComplexOrInteraction) {
-			// add chemical modification & cellular location to label
+		if (!isInteraction) {
+
+			// get chemical modification & cellular location attributes
 			chemicalModificationsWrapper = getInteractionChemicalModifications(bindingElement,
 			                                                                   physicalEntity, type);
-
-			String chemicalModification = (chemicalModificationsWrapper != null)
-			                              ? chemicalModificationsWrapper.getAbbreviationString()
-			                              : null;
 			cellularLocationsWrapper = getInteractionCellularLocations(bindingElement,
 			                                                           physicalEntity, type);
 
-			String cellularLocation = (cellularLocationsWrapper != null)
-			                          ? cellularLocationsWrapper.getAbbreviationString() : null;
-			nodeLabel += (((chemicalModification != null) && (chemicalModification.length() > 0))
-			              ? chemicalModification : "");
-			nodeLabel += (((cellularLocation != null) && (cellularLocation.length() > 0))
-			              ? ("\n(" + cellularLocation + ")") : "");
+			// add modifications to id & label
+			String modificationsString = getModificationsString(chemicalModificationsWrapper);
+			cyNodeId += modificationsString;
+			cyNodeLabel += modificationsString;
 
-			// add modifications to cynode id
-			cyNodeId += (((chemicalModification != null) && (chemicalModification.length() > 0))
-			             ? chemicalModification : "");
-			cyNodeId += (((cellularLocation != null) && (cellularLocation.length() > 0))
-			             ? ("(" + cellularLocation + ")") : "");
-		}
-
-		// if binding element is complex, lets also tack on complex id
-		if (type == BioPaxConstants.COMPLEX) {
-			String complexId = BioPaxUtil.extractRdfId(bindingElement);
-			cyNodeId += ("-" + complexId);
+			// add cellular location str to node id & label
+			String cellularLocationString = getCellularLocationString(cellularLocationsWrapper);
+			cyNodeId += cellularLocationString;
+			cyNodeLabel += (cellularLocationString.length() > 0) ? ("\n" + cellularLocationString) : "";
 		}
 
 		// have we seen this node before
@@ -797,53 +828,105 @@ public class MapBioPaxToCytoscape {
 
 		//  set node attributes
 		setNodeAttributes(node, nodeName, physicalEntity.getName(), id,
-		                  (isComplexOrInteraction) ? null : nodeLabel);
+		                  (isInteraction || isComplex) ? null : cyNodeLabel);
+		setChemicalModificationAttributes(cyNodeId, chemicalModificationsWrapper);
+		setCellularLocationAttributes(cyNodeId, cellularLocationsWrapper);
 
-		CyAttributes attributes = Cytoscape.getNodeAttributes();
-		Map modificationsMap = (chemicalModificationsWrapper != null)
-		                       ? chemicalModificationsWrapper.getMap() : null;
-
-		if (modificationsMap != null) {
-			//  As discussed with Ben on August 29, 2006:
-			//  We will now store chemical modifications in two places:
-			//  1.  a regular list of strings (to be used by the view details panel,
-			//  node attribute browser, and Quick Find.
-			//  2.  a multihashmap, of the following form:
-			//  chemical_modification --> modification(s) --> # of modifications.
-			//  this cannot be represented as a SimpleMap, and must be represented as
-			//  a multi-hashmap.  This second form is used primarily by the custom
-			//  rendering engine for, e.g. drawing number of phosphorylation sies.
-
-			//  Store List of Chemical Modifications Only
-			Set keySet = modificationsMap.keySet();
-			List list = new ArrayList();
-			list.addAll(keySet);
-			attributes.setListAttribute(cyNodeId,
-			                            MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, list);
-
-			//  Store Complete Map of Chemical Modifications --> # of Modifications
-			setMultiHashMap(cyNodeId, attributes,
-			                MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, modificationsMap);
-
-			if (modificationsMap.containsKey(BioPaxConstants.PHOSPHORYLATION_SITE)) {
-				attributes.setAttribute(cyNodeId, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-				                        BioPaxConstants.PROTEIN_PHOSPHORYLATED);
-			}
+		// if complex, save its cellular location wrapper -
+		// may be inherited by complex members later on
+		if (isComplex && cellularLocationsWrapper != null) {
+			complexCellularLocationWrapperMap.put(cyNodeId, cellularLocationsWrapper);
 		}
 
-		List cellularLocationsList = (cellularLocationsWrapper != null)
-		                             ? cellularLocationsWrapper.getList() : null;
-
-		if (cellularLocationsList != null) {
-			attributes.setListAttribute(cyNodeId, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
-			                            cellularLocationsList);
-		}
-
-		// update our map - we are not interested in value
-		createdCyNodes.put(cyNodeId, cyNodeId);
+		// update our created nodes map
+		createdCyNodes.put(cyNodeId, id);
 
 		// outta here
 		return node;
+	}
+
+	/**
+	 * Gets complex member node.
+	 *
+	 * @param complexElement Element
+	 * @param complexCyNodeId String
+	 * @param complexMemberElement Element
+	 * @return CyNode
+	 */
+	private CyNode getComplexCyNode(Element complexElement, String complexCyNodeId, Element complexMemberElement) {
+
+		// extract id
+		String complexMemberId = BioPaxUtil.extractRdfId(complexMemberElement);
+		if ((complexMemberId == null) || (complexMemberId.length() == 0)) return null;
+
+		// get node attributes
+		NodeAttributesWrapper cellularLocationsWrapper =
+			getInteractionCellularLocations(complexElement, complexMemberElement, BioPaxConstants.COMPLEX);
+		NodeAttributesWrapper chemicalModificationsWrapper =
+			getInteractionChemicalModifications(complexElement, complexMemberElement, BioPaxConstants.COMPLEX);
+
+		// get node name
+		String complexMemberNodeName = getNodeName(complexMemberId, complexMemberElement);
+		complexMemberNodeName = (complexMemberNodeName == null) ? complexMemberId : complexMemberNodeName;
+
+		// create node id & label strings
+		String complexMemberCyNodeId = new String(complexMemberId);
+		String complexMemberCyNodeLabel = new String(truncateLongStr(complexMemberNodeName));
+
+		// add modifications to id & label
+		// note: modifications do not get set on a complex, so if modifications string
+		// is null, we do not try to inherit complex modifications
+		String modificationsString = getModificationsString(chemicalModificationsWrapper);
+		complexMemberCyNodeId += modificationsString;
+		complexMemberCyNodeLabel += modificationsString;
+
+		// add cellular location str to node id & label
+		// if member cellular location string is null, attempt to inherit from complex
+		String cellularLocationString = getCellularLocationString(cellularLocationsWrapper);
+		if (cellularLocationString.length() == 0) {
+			cellularLocationsWrapper = complexCellularLocationWrapperMap.get(complexCyNodeId);
+			if (cellularLocationsWrapper != null) {
+				cellularLocationString = getCellularLocationString(cellularLocationsWrapper);
+			}
+		}
+		if (cellularLocationString.length() > 0) {
+			complexMemberCyNodeId += cellularLocationString;
+			complexMemberCyNodeLabel += "\n" + cellularLocationString;
+		}
+
+		// tack on complex id
+		String complexId = BioPaxUtil.extractRdfId(complexElement);
+		complexMemberCyNodeId += ("-" + complexId);
+
+		// have we seen this node before - this should not be the case
+		if (createdCyNodes.containsKey(complexMemberCyNodeId)) {
+			return Cytoscape.getCyNode(complexMemberCyNodeId);
+		}
+
+		// haven't seen this node before, lets create a new one
+		CyNode complexMemberCyNode = Cytoscape.getCyNode(complexMemberCyNodeId, true);
+		nodeList.add(complexMemberCyNode);
+		complexMemberCyNode.setIdentifier(complexMemberCyNodeId);
+
+		//  set node attributes
+		String complexMemberElementType = complexMemberElement.getName();
+		setNodeAttributes(complexMemberCyNode, complexMemberNodeName, complexMemberElementType,
+						  complexMemberId, complexMemberCyNodeLabel);
+		setChemicalModificationAttributes(complexMemberCyNodeId, chemicalModificationsWrapper);
+		setCellularLocationAttributes(complexMemberCyNodeId, cellularLocationsWrapper);
+
+		// if complex, save its cellular location wrapper -
+		// may be inherited by complex members later on
+		if (complexMemberElementType.equals(BioPaxConstants.COMPLEX) &&
+			cellularLocationsWrapper != null) {
+			complexCellularLocationWrapperMap.put(complexMemberCyNodeId, cellularLocationsWrapper);
+		}
+
+		// update our created nodes map
+		createdCyNodes.put(complexMemberCyNodeId, complexMemberId);
+
+		// outta here
+		return complexMemberCyNode;
 	}
 
 	/**
@@ -1060,7 +1143,42 @@ public class MapBioPaxToCytoscape {
 	}
 
 	/**
-	 * A helper function to set node attributes.
+	 * A helper function to get post-translational modifications string.
+	 */
+	private String getModificationsString(NodeAttributesWrapper chemicalModificationsWrapper) {
+
+		// check args
+		if (chemicalModificationsWrapper == null) return "";
+
+		// get chemical modifications
+		String chemicalModification = (chemicalModificationsWrapper != null)
+			? chemicalModificationsWrapper.getAbbreviationString()
+			: null;
+
+		// outta here
+		return (((chemicalModification != null) && (chemicalModification.length() > 0))
+				? chemicalModification : "");
+	}
+
+	/**
+	 * A helper function to get the cellular location as a string.
+	 */
+	private String getCellularLocationString(NodeAttributesWrapper cellularLocationsWrapper) {
+
+		// check args
+		if (cellularLocationsWrapper == null) return "";
+
+		// get cellular locations
+		String cellularLocation = (cellularLocationsWrapper != null)
+			? cellularLocationsWrapper.getAbbreviationString() : null;
+
+		// outta here
+		return ((cellularLocation != null) && (cellularLocation.length() > 0))
+				? ("(" + cellularLocation + ")") : "";
+	}
+
+	/**
+	 * A helper function to set common node attributes.
 	 */
 	private void setNodeAttributes(CyNode node, String name, String type, String id, String label) {
 		String nodeID = node.getIdentifier();
@@ -1086,6 +1204,64 @@ public class MapBioPaxToCytoscape {
 
 		if ((label != null) && (label.length() > 0)) {
 			attributes.setAttribute(nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, label);
+		}
+	}
+
+	/**
+	 * Helper function to insert newline into cellular location 
+
+	/**
+	 * A helper function to set chemical modification attributes
+	 */
+	private void setChemicalModificationAttributes(String cyNodeId, NodeAttributesWrapper chemicalModificationsWrapper) {
+		
+		Map modificationsMap = (chemicalModificationsWrapper != null)
+		                       ? chemicalModificationsWrapper.getMap() : null;
+
+		if (modificationsMap != null) {
+
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+			//  As discussed with Ben on August 29, 2006:
+			//  We will now store chemical modifications in two places:
+			//  1.  a regular list of strings (to be used by the view details panel,
+			//  node attribute browser, and Quick Find.
+			//  2.  a multihashmap, of the following form:
+			//  chemical_modification --> modification(s) --> # of modifications.
+			//  this cannot be represented as a SimpleMap, and must be represented as
+			//  a multi-hashmap.  This second form is used primarily by the custom
+			//  rendering engine for, e.g. drawing number of phosphorylation sies.
+
+			//  Store List of Chemical Modifications Only
+			Set keySet = modificationsMap.keySet();
+			List list = new ArrayList();
+			list.addAll(keySet);
+			nodeAttributes.setListAttribute(cyNodeId,
+			                            MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, list);
+
+			//  Store Complete Map of Chemical Modifications --> # of Modifications
+			setMultiHashMap(cyNodeId, nodeAttributes,
+			                MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, modificationsMap);
+
+			if (modificationsMap.containsKey(BioPaxConstants.PHOSPHORYLATION_SITE)) {
+				nodeAttributes.setAttribute(cyNodeId, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
+											BioPaxConstants.PROTEIN_PHOSPHORYLATED);
+			}
+		}
+	}
+
+	/**
+	 * A helper function to set cellular location attributes.
+	 */
+	private void setCellularLocationAttributes(String cyNodeId, NodeAttributesWrapper cellularLocationsWrapper) {
+
+		List cellularLocationsList = (cellularLocationsWrapper != null)
+		                             ? cellularLocationsWrapper.getList() : null;
+
+		if (cellularLocationsList != null) {
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			nodeAttributes.setListAttribute(cyNodeId, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
+											cellularLocationsList);
 		}
 	}
 
@@ -1119,4 +1295,6 @@ public class MapBioPaxToCytoscape {
 			mhmap.setAttributeValue(cyNodeId, attributeName, value.toString(), key);
 		}
 	}
+
+
 }
