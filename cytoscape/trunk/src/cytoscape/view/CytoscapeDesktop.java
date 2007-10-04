@@ -40,6 +40,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
 
+import cytoscape.data.webservice.ui.NetworkExpanderListener;
 import cytoscape.util.undo.CyUndo;
 
 import cytoscape.view.cytopanels.BiModalJSplitPane;
@@ -312,6 +313,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// add a listener for node bypass
 		Cytoscape.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
+		
+		Cytoscape.getSwingPropertyChangeSupport()
+        .addPropertyChangeListener(new NetworkExpanderListener());
 
 		// initialize Menus
 		cyMenus.initializeMenus();

@@ -2,21 +2,14 @@
 package cytoscape.layout;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 
 import cytoscape.data.CyAttributes;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.Color;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -36,17 +29,17 @@ import javax.swing.JTextField;
  * to be used as part of the LayoutSettingsDialog (see getPanel).
  */
 public class Tunable {
-	String name;
-	String desc;
-	int type = STRING;
-	int flag = 0;
-	;
-
-	Object value;
-	Object lowerBound;
-	Object upperBound;
-	JComponent inputField;
-	boolean valueChanged = true;
+	private String name;
+	private String desc;
+	private int type = STRING;
+	private int flag = 0;
+	private Object value;
+	private Object lowerBound;
+	private Object upperBound;
+	private JComponent inputField;
+	private boolean valueChanged = true;
+	
+	private boolean immutable = false;
 
 	/**
 	 * Types
@@ -106,13 +99,7 @@ public class Tunable {
 	 * @param value The initial (default) value of the Tunable
 	 */
 	public Tunable(String name, String desc, int type, Object value) {
-		this.name = name;
-		this.desc = desc;
-		this.type = type;
-		this.value = value;
-		this.lowerBound = null;
-		this.upperBound = null;
-		this.flag = 0;
+		this(name, desc, type, value, null, null, 0);
 	}
 
 	/**
@@ -132,13 +119,7 @@ public class Tunable {
 	 *             is a specific type for the attributes.
 	 */
 	public Tunable(String name, String desc, int type, Object value, int flag) {
-		this.name = name;
-		this.desc = desc;
-		this.type = type;
-		this.value = value;
-		this.lowerBound = null;
-		this.upperBound = null;
-		this.flag = flag;
+		this(name, desc, type, value, null, null, flag);
 	}
 
 	/**
@@ -153,7 +134,7 @@ public class Tunable {
 	 *             the component used for the LayoutSettingsDialog
 	 * @param value The initial (default) value of the Tunable.  This
 	 *             is a String in the case of an EDGEATTRIBUTE or
-	 *             NODEATTRIBUTE tunable, it is an Integer index 
+	 *             NODEATTRIBUTE tunable, it is an Integer index
 	 *             a LIST tunable.
 	 * @param lowerBound An Object that either represents the lower
 	 *             bounds of a numeric Tunable or an array of values
@@ -167,6 +148,11 @@ public class Tunable {
 	 */
 	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
 	               Object upperBound, int flag) {
+		this(name, desc, type, value, lowerBound, upperBound, flag, false);
+	}
+	
+	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
+            Object upperBound, int flag, boolean immutable) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -174,6 +160,7 @@ public class Tunable {
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
 		this.flag = flag;
+		this.immutable = immutable;
 	}
 
 	/**
@@ -312,10 +299,16 @@ public class Tunable {
 			inputField = getAttributePanel(edgeAttributes);
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == LIST) {
-			inputField = getListPanel((Object[])lowerBound);
+			inputField = getListPanel((Object[]) lowerBound);
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		}
 
+		// Added by kono
+		// This allow immutable value.
+		if(immutable) {
+			inputField.setEnabled(false);
+		}
+		inputField.setBackground(Color.white);
 		return tunablePanel;
 	}
 
@@ -328,8 +321,8 @@ public class Tunable {
 	 * @return a JComboBox with an entry for each attribute
 	 */
 	private JComboBox getAttributePanel(CyAttributes attributes) {
-		String[] attList = attributes.getAttributeNames();
-		ArrayList list = new ArrayList();
+		final String[] attList = attributes.getAttributeNames();
+		final List<Object> list = new ArrayList<Object>();
 
 		// See if we have any initial attributes (mapped into lowerBound)
 		if (lowerBound != null) {
@@ -365,10 +358,9 @@ public class Tunable {
 	 * @return a JComboBox with an entry for each item on the list
 	 */
 	private JComboBox getListPanel(Object[] list) {
-
 		// Set our current value as selected
 		JComboBox box = new JComboBox(list);
-		box.setSelectedIndex(((Integer)value).intValue());
+		box.setSelectedIndex(((Integer) value).intValue());
 
 		return box;
 	}
@@ -389,7 +381,7 @@ public class Tunable {
 			newValue = new Integer(((JTextField) inputField).getText());
 		} else if (type == BOOLEAN) {
 			newValue = new Boolean(((JCheckBox) inputField).isSelected());
-		} else if (type == LIST ) {
+		} else if (type == LIST) {
 			newValue = new Integer(((JComboBox) inputField).getSelectedIndex());
 		} else if ((type == NODEATTRIBUTE) || (type == EDGEATTRIBUTE)) {
 			newValue = (String) ((JComboBox) inputField).getSelectedItem();
