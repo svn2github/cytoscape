@@ -5,17 +5,39 @@ package org.mskcc.pathway_commons.web_service.model;
  *
  * @author Ethan Cerami
  */
-public interface NetworkSummary {
+public class NetworkSummary {
+    private String dataSourceName;
+    private long dataSourceId;
 
     /**
-     * Gets datasource name.
+     * Gets data source name.
      * @return data source name.
      */
-    public String getDataSourceName();
+    public String getDataSourceName() {
+        return this.dataSourceName;
+    }
 
     /**
-     * Gets datasource ID.
+     * Sets data source name.
+     * @param dataSourceName Data Source Name.
+     */
+    public void setDataSourceName (String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
+
+    /**
+     * Gets datas ource ID.
      * @return data source ID.
      */
-    public String getDataSourceId();
+    public long getDataSourceId() {
+        return dataSourceId;
+    }
+
+    /**
+     * Sets data source ID.
+     * @param id data source ID.
+     */
+    public void setDataSourceId(long id) {
+        this.dataSourceId = id;
+    }
 }

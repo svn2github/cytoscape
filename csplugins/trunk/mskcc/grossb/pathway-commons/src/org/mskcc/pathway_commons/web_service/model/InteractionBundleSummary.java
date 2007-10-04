@@ -5,12 +5,22 @@ package org.mskcc.pathway_commons.web_service.model;
  *
  * @author Ethan Cerami.
  */
-public interface InteractionBundleSummary extends NetworkSummary {
+public class InteractionBundleSummary extends NetworkSummary {
+    private int numInteractions;
 
     /**
      * Gets total number of interactions in the bundle.
      * @return total number of interactions in the bundle.
      */
-    public int getNumInteractions();
+    public int getNumInteractions() {
+        return numInteractions;
+    }
 
+    /**
+     * Sets the number of interactions.
+     * @param numInteractions number of interactions.
+     */
+    public void setNumInteractions (int numInteractions) {
+        this.numInteractions = numInteractions;
+    }
 }

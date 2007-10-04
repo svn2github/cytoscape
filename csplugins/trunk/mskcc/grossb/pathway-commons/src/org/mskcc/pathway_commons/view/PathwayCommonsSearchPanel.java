@@ -5,8 +5,9 @@ import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.theme.SkyBlue;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 import javax.swing.text.BadLocationException;
@@ -16,10 +17,17 @@ import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
+import java.util.ArrayList;
 
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
+import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySummary;
+import org.mskcc.pathway_commons.web_service.model.PathwaySummary;
+import org.mskcc.pathway_commons.web_service.model.InteractionBundleSummary;
+import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 /**
  * Main GUI Panel for Searching Pathway Commons.
@@ -35,7 +43,9 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     protected Document searchDocument;
     protected ComboBoxModel organismComboBoxModel;
     protected PathwayCommonsWebApi webApi;
+    private JTable pathwayTable;
     private JButton searchButton;
+    private PhysicalEntitySearchResponse peSearchResponse;
 
     /**
      * Constructor.
@@ -64,7 +74,6 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         webApi.addApiListener(this);
     }
 
-
     public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex) {
         peListModel.removeAllElements();
@@ -82,7 +91,15 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     }
 
     public void searchCompletedForPhysicalEntities(PhysicalEntitySearchResponse peSearchResponse) {
-
+        this.peSearchResponse = peSearchResponse;
+        ArrayList<PhysicalEntitySummary> peSummaryList =
+                peSearchResponse.getPhysicalEntitySummartList();
+        peListModel.setSize(peSummaryList.size());
+        int i = 0;
+        for (PhysicalEntitySummary peSummary: peSummaryList) {
+            String name = peSummary.getName();
+            peListModel.setElementAt(name, i++);
+        }
     }
 
     /**
@@ -157,10 +174,56 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         peListModel.addElement("Protein 3");
         peListModel.addElement("Protein 4");
         
-        JList list = new JList(peListModel);
+        final JList list = new JList(peListModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setPrototypeCellValue("12345678901234567890");
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBorder(new TitledBorder("Search Results"));
+
+        list.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                int selectedIndex = list.getSelectedIndex();
+
+                if (PathwayCommonsSearchPanel.this.peSearchResponse != null) {
+                    ArrayList<PhysicalEntitySummary> peList =
+                            PathwayCommonsSearchPanel.this.peSearchResponse.
+                                    getPhysicalEntitySummartList();
+                    PhysicalEntitySummary pe = peList.get(selectedIndex);
+                    ArrayList <PathwaySummary> pathwayList = pe.getPathwayList();
+                    ArrayList <InteractionBundleSummary> interactionList =
+                            pe.getInteractionBundleList();
+                    for (int i=0; i<pathwayTableModel.getRowCount(); i++) {
+                        pathwayTableModel.removeRow(i);
+                    }
+
+                    if (pathwayList != null) {
+                        pathwayTableModel.setRowCount(pathwayList.size());
+                        pathwayTableModel.setColumnCount(3);
+                        for (int i=0; i<pathwayList.size(); i++) {
+                            PathwaySummary pathway = pathwayList.get(i);
+                            pathwayTableModel.setValueAt(pathway.getDataSourceName(), i, 0);
+                            pathwayTableModel.setValueAt(pathway.getName(), i, 1);
+                            pathwayTableModel.setValueAt(Boolean.FALSE, i, 2);
+                        }
+                    }
+
+                    if (interactionList != null) {
+                        interactionTableModel.setRowCount(interactionList.size());
+                        interactionTableModel.setColumnCount(3);
+                        for (int i=0; i<interactionList.size(); i++) {
+                            InteractionBundleSummary interactionBundle = interactionList.get(i);
+                            interactionTableModel.setValueAt
+                                    (interactionBundle.getDataSourceName(), i, 0);
+                            interactionTableModel.setValueAt
+                                    (interactionBundle.getNumInteractions(), i, 1);
+                            interactionTableModel.setValueAt(Boolean.FALSE, i, 2);
+                        }
+                    }
+                }
+
+            }
+        });
+
         return scrollPane;
     }
 
@@ -195,15 +258,8 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setMaximumSize(new Dimension(200, 9999));
         organismComboBox.setPrototypeDisplayValue("12345678901234567890");
-        searchButton = new JButton("Go!");
         JButton helpButton = new JButton("Help");
-
-        //  Search Button Action
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                webApi.searchPhysicalEntities(searchField.getText(), -1, 1);
-            }
-        });
+        searchButton = createSearchButton(searchField);
 
         panel.add(searchField);
         panel.add(Box.createRigidArea(new Dimension(5,0)));
@@ -213,6 +269,25 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         panel.add(Box.createRigidArea(new Dimension(5,0)));
         panel.add(helpButton);
         return panel;
+    }
+
+    private JButton createSearchButton(final JTextField searchField) {
+        //  Search Button Action
+        searchButton = new JButton("Go!");
+
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
+                        (webApi, searchField.getText(), -1, 1);
+                JTaskConfig jTaskConfig = new JTaskConfig();
+                jTaskConfig.setAutoDispose(true);
+                jTaskConfig.displayCancelButton(false);
+                jTaskConfig.displayCloseButton(false);
+                //jTaskConfig.setOwner(Cytoscape.getDesktop());
+                TaskManager.executeTask(search, jTaskConfig);
+            }
+        });
+        return searchButton;
     }
 
     /**
@@ -277,10 +352,10 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
      */
     private JScrollPane createPathwayTable() {
         pathwayTableModel = new PathwayTableModel();
-        JTable table = new JTable(pathwayTableModel);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        JScrollPane scrollPane = new JScrollPane(table);
+        pathwayTable = new JTable(pathwayTableModel);
+        pathwayTable.setAutoCreateColumnsFromModel(true);
+        pathwayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(pathwayTable);
         scrollPane.setBorder(new TitledBorder("Pathways"));
         return scrollPane;
     }
@@ -327,11 +402,6 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
  * Interaction Table Model.
  */
 class InteractionTableModel extends DefaultTableModel {
-//    private Object[][] data = {
-//        {"Reactome", "45", Boolean.FALSE},
-//        {"MSKCC Cancer Cell Map", "12", Boolean.FALSE},
-//        {"HPRD", "127", Boolean.FALSE}
-//    };
 
     public InteractionTableModel () {
         super();
@@ -349,6 +419,14 @@ class InteractionTableModel extends DefaultTableModel {
             return false;
         }
     }
+
+    public Class getColumnClass(int columnIndex) {
+        if (columnIndex == 2) {
+            return Boolean.class;
+        } else {
+            return String.class;
+        }
+    }
 }
 
 /**
@@ -357,13 +435,9 @@ class InteractionTableModel extends DefaultTableModel {
  * @author Ethan Cerami
  */
 class PathwayTableModel extends DefaultTableModel {
-    //    private Object[][] data = {
-    //        {"NCI-Nature", "BARD1 Signaling", Boolean.FALSE},
-    //        {"Reactome", "Cell Cycle Checkpoints", Boolean.FALSE},
-    //        {"Reactome", "Cell Cycle Mitotic", Boolean.FALSE}
 
     public PathwayTableModel () {
-        super();
+        super ();
         Vector columnNames = new Vector();
         columnNames.add("Data Source");
         columnNames.add("Pathway");
@@ -376,6 +450,14 @@ class PathwayTableModel extends DefaultTableModel {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public Class getColumnClass(int columnIndex) {
+        if (columnIndex == 2) {
+            return Boolean.class;
+        } else {
+            return String.class;
         }
     }
 }
