@@ -46,5 +46,15 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	public void setParentNode(CyNode parentNode) {
 		this.parentNode = parentNode;
 	}
+	
+	protected void parseSplice (String nodeId)
+	{
+		ParseSplice parser = new ParceSplice (this, nodeId);
+	}
+	
+	protected void renderSplice (String nodeId)
+	{
+		// todo: write this sucker, Alex
+	}
 
 }
