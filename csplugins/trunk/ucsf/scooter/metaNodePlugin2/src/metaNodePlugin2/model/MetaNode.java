@@ -52,6 +52,7 @@ import cytoscape.CyNetwork;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CyNodeView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
@@ -400,7 +401,7 @@ public class MetaNode {
 	public void recollapse(boolean recursive, boolean multipleEdges, CyNetworkView view) {
 		// Override the defaults for networkView and network
 		update(view);
-		restoreNode(groupNode, null); // In case it was hidden by network loader
+
 		if (newEdgeMap == null)
 			createMetaEdges();
 
@@ -471,18 +472,20 @@ public class MetaNode {
 		// as any edges that were created by external applications
 		int [] edgeArray = network.getAdjacentEdgeIndicesArray(groupNode.getRootGraphIndex(),true,true,true);
 
-		if (DEBUG) System.out.println(groupNode.getIdentifier()+" has "+edgeArray.length+" edges");
+		if (edgeArray != null) {
+			if (DEBUG) System.out.println(groupNode.getIdentifier()+" has "+edgeArray.length+" edges");
 
-		// Now, go through a (hopefully) quick loop to add any edges we don't already have into
-		// our edge map
-		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
-			if (!isMetaEdge(edge)) {
-				// Not a meta edge.  This may be an additional edge that got created
-				// to our group node.  We want to add this to our outerEdge list
-				metaGroup.addOuterEdge(edge);
+			// Now, go through a (hopefully) quick loop to add any edges we don't already have into
+			// our edge map
+			for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
+				CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
+				if (!isMetaEdge(edge)) {
+					// Not a meta edge.  This may be an additional edge that got created
+					// to our group node.  We want to add this to our outerEdge list
+					metaGroup.addOuterEdge(edge);
+				}
+				hideEdge(edge);
 			}
-			hideEdge(edge);
 		}
 
 		// Add the nodes back in
@@ -597,6 +600,30 @@ public class MetaNode {
 		}
 		newEdgeMap.get(newEdge).add(edge);
 		metaEdgeMap.put(partner,newEdge);
+	}
+
+	/**
+ 	 * Create a new network from the currently collapsed group
+ 	 */
+	public void createNetworkFromGroup() {
+		// Get the list of nodes in the group
+		List<CyNode> nodes = metaGroup.getNodes();
+		List<CyEdge> edges = metaGroup.getInnerEdges();
+		CyNetwork new_net = Cytoscape.createNetwork(nodes, edges, 
+		                                            metaGroup.getGroupName(), 
+		                                            Cytoscape.getCurrentNetwork());
+		CyNetworkView new_view = Cytoscape.createNetworkView(new_net, "group");
+		// Now that we have a style, apply our position hints
+		for (CyNode node: nodes) {
+			double xValue = getXHintAttr(nodeAttributes, node.getIdentifier(), 0.0);
+			double yValue = getYHintAttr(nodeAttributes, node.getIdentifier(), 0.0);
+			NodeView v = new_view.getNodeView(node);
+			v.setXPosition(xValue);
+			v.setYPosition(yValue);
+		}
+		// Set the visual style
+		new_view.setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
+		new_view.fitContent();
 	}
 
 	/*****************************************************************
