@@ -895,8 +895,7 @@ public class MapBioPaxToCytoscape {
 		}
 
 		// tack on complex id
-		String complexId = BioPaxUtil.extractRdfId(complexElement);
-		complexMemberCyNodeId += ("-" + complexId);
+		complexMemberCyNodeId += ("-" + complexCyNodeId);
 
 		// have we seen this node before - this should not be the case
 		if (createdCyNodes.containsKey(complexMemberCyNodeId)) {
