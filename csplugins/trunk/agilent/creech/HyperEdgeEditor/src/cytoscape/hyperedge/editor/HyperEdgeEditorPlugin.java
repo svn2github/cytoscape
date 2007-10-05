@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Wed Jul 25 16:10:07 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Oct 04 18:41:07 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Thu Oct 04 18:37:13 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed to fix rendering and initial visual style used to display
+*  sample networks. Changed to version 2.56.
 * Wed Jul 25 16:09:57 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.55.
 * Mon Jul 16 15:06:17 2007 (Michael L. Creech) creech@w235krbza760
@@ -55,6 +58,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 
 import cytoscape.editor.CytoscapeEditorManager;
+
 import cytoscape.editor.actions.DeleteAction;
 
 import cytoscape.hyperedge.HyperEdge;
@@ -68,7 +72,10 @@ import cytoscape.hyperedge.impl.HyperEdgeImpl;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+
 import cytoscape.plugin.CytoscapePlugin;
+
+import cytoscape.util.CyNetworkViewUtil;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyMenus;
@@ -98,7 +105,7 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.55;
+    private static final Double VERSION = 2.56;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
@@ -134,12 +141,12 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
     }
 
     private void initializeHyperEdgeEditor() {
-	// MLC 07/20/07 BEGIN:
-	// ASSUME: CytoscapeEditor is always loaded before HyperEdgeEditor.
-	System.out.println ("BEGIN initializeHyperEdgeEditor");
-	//        // in case we are loaded before the CytoscapeEditor:
-	//        CytoscapeEditorPlugin.initializeCytoscapeEditor();
-	// MLC 07/20/07 END.
+        // MLC 07/20/07 BEGIN:
+        // ASSUME: CytoscapeEditor is always loaded before HyperEdgeEditor.
+        System.out.println("BEGIN initializeHyperEdgeEditor");
+        //        // in case we are loaded before the CytoscapeEditor:
+        //        CytoscapeEditorPlugin.initializeCytoscapeEditor();
+        // MLC 07/20/07 END.
         // MLC 05/17/07:
         // CytoscapeEditorManager.register("HyperEdgeEditor",
         // MLC 05/17/07:
@@ -158,9 +165,9 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
 
     // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
     private void fixUpCytoscapeDeleteMenu() {
-    	// MLC 07/20/07:
-    	// DeleteAction action = CytoscapeEditorManager.manager.getDeleteAction();
-    	// MLC 07/20/07:
+        // MLC 07/20/07:
+        // DeleteAction action = CytoscapeEditorManager.manager.getDeleteAction();
+        // MLC 07/20/07:
         DeleteAction action = CytoscapeEditorManager.getDeleteAction();
         // remove delete action item and replace with our version of it:
         Cytoscape.getDesktop().getCyMenus().getMenuBar().removeAction(action);
@@ -197,24 +204,29 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
             List<CyNetwork> networks = sn.createSampleNetworks();
 
             // BEGIN
-	    // MLC 07/16/07:
-            CyLayoutAlgorithm             myAlgor = CyLayouts.getLayout("force-directed");
+            // MLC 07/16/07:
+            CyLayoutAlgorithm myAlgor = CyLayouts.getLayout("force-directed");
+
             if (myAlgor == null) {
                 myAlgor = CyLayouts.getDefaultLayout();
             }
 
             // END
             for (CyNetwork net : networks) {
-                // Cytoscape.createNetworkView(net);
-                Cytoscape.createNetworkView(net,
-                                            net.getTitle(),
-                                            myAlgor);
-
-                // getVisualStyle() returns null:
-                // Change to BioChemicalReactionVisualStyle:
-                Cytoscape.getNetworkView(net.getIdentifier())
-                         .setVisualStyle(BioChemicalReactionVisualStyle.getVisualStyle()
-                                                                       .getName());
+                // MLC 10/04/07 BEGIN:
+                CyNetworkViewUtil.createNetworkView(net,
+                                                    net.getTitle(),
+                                                    myAlgor,
+                                                    BioChemicalReactionVisualStyle.getVisualStyle());
+                //                Cytoscape.createNetworkView(net,
+                //                                            net.getTitle(),
+                //                                            myAlgor);
+                //                // getVisualStyle() returns null:
+                //                // Change to BioChemicalReactionVisualStyle:
+                //                Cytoscape.getNetworkView(net.getIdentifier())
+                //                         .setVisualStyle(BioChemicalReactionVisualStyle.getVisualStyle()
+                //                                                                       .getName());
+                // MLC 10/04/07 END.
             }
         }
     }
