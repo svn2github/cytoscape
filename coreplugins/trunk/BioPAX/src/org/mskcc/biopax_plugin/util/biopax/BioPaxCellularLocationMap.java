@@ -58,6 +58,6 @@ public class BioPaxCellularLocationMap extends HashMap {
 		put("nucleus", "NU");
 		put("plasma membrane", "PM");
 		put("ribosome", "RI");
-		put ("transmembrane", "TM");
+		put("transmembrane", "TM");
 	}
 }
