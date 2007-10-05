@@ -125,9 +125,6 @@ class XGMMLParser extends DefaultHandler {
 	private	double graphZoom = 1.0;
 	private	double graphCenterX = 0.0;
 	private	double graphCenterY = 0.0;
-	private String nodeID = null;
-	private String edgeID = null;
-	private String groupID = null;
 
 	//
 	private double documentVersion = 1.0;
@@ -150,6 +147,10 @@ class XGMMLParser extends DefaultHandler {
 	private HashMap<String,CyNode> idMap = null;
 	/* Map of group nodes to children */
 	private HashMap<CyNode,List<CyNode>> groupMap = null;
+
+	// Groups might actually recurse on us, so we need to
+	// maintain a stack
+	private Stack<CyNode> groupStack = null;
 
 	/* Map of nodes to graphics information */
 	private HashMap<CyNode, Attributes> nodeGraphicsMap = null;
@@ -437,6 +438,7 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	XGMMLParser() {
 		stateStack = new Stack<ParseState>();
+		groupStack = new Stack<CyNode>();
 		nodeList = new ArrayList<CyNode>();
 		edgeList = new ArrayList<CyEdge>();
 		nodeLinks = new HashMap();
@@ -681,24 +683,12 @@ class XGMMLParser extends DefaultHandler {
 			String label = atts.getValue("label");
 			String href = atts.getValue(XLINK, "href");
 
-			// System.out.print("<node");
 			if (href != null) {
 				// System.out.print(" href=\""+href+"\"");
 				throw new SAXException("Can't have a node reference outside of a group");
-			} else {
-				if (id != null) {
-					nodeID = id;
-					// System.out.print(" id=\""+id+"\"");
-				}
-				if (label != null) {
-					if (id == null)
-						nodeID = label;
-					// System.out.print(" label=\""+label+"\"");
-				}
 			}
-			// System.out.println(">");
 			// Create the node
-			currentNode = createUniqueNode(label, nodeID);
+			currentNode = createUniqueNode(label, id);
 
 			return current;
 		}
@@ -772,8 +762,8 @@ class XGMMLParser extends DefaultHandler {
 			String label = atts.getValue("label");
 			String source = atts.getValue("source");
 			String target = atts.getValue("target");
-			String sourceAlias = source;
-			String targetAlias = target;
+			String sourceAlias = null;
+			String targetAlias = null;
 			String interaction = "pp";
 
 			// Parse out the interaction (if this is from Cytoscape)
@@ -817,7 +807,10 @@ class XGMMLParser extends DefaultHandler {
 			}
 			*/
 			currentAttributes = Cytoscape.getEdgeAttributes();
-			objectTarget = currentEdge.getIdentifier();
+			if (currentEdge != null)
+				objectTarget = currentEdge.getIdentifier();
+			else
+				objectTarget = null;
 			
 			ParseState nextState = handleAttribute(atts, currentAttributes, objectTarget);
 			if (nextState != ParseState.NONE)
@@ -854,7 +847,7 @@ class XGMMLParser extends DefaultHandler {
 	class handleGroup implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (groupMap == null) groupMap = new HashMap<CyNode, List<CyNode>>();
-			groupID = nodeID;
+			if (currentGroupNode != null) groupStack.push(currentGroupNode);
 			currentGroupNode = currentNode;
 			groupMap.put(currentGroupNode, new ArrayList<CyNode>());
 			return current;
@@ -998,6 +991,11 @@ class XGMMLParser extends DefaultHandler {
 	class handleGroupDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			// System.out.println("Group "+groupID+" done.");
+			currentNode = currentGroupNode;
+			if (!groupStack.empty())
+				currentGroupNode = groupStack.pop();
+			else
+				currentGroupNode = null;
 			return current;
 		}
 	}
@@ -1007,8 +1005,12 @@ class XGMMLParser extends DefaultHandler {
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
 
-			List listAttribute = currentAttributes.getListAttribute(objectTarget, currentAttributeID);
-			if (listAttribute == null) listAttribute = new ArrayList();
+			List listAttribute = null;
+			if (objectTarget != null) 
+				listAttribute = currentAttributes.getListAttribute(objectTarget, currentAttributeID);
+
+			if (listAttribute == null) 
+				listAttribute = new ArrayList();
 
 			switch (objType) {
 			case BOOLEAN:
@@ -1017,7 +1019,8 @@ class XGMMLParser extends DefaultHandler {
 			case STRING:
 				listAttribute.add(obj);
 			}
-			currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttribute);
+			if (objectTarget != null)
+				currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttribute);
 			return current;
 		}
 	}
@@ -1028,8 +1031,11 @@ class XGMMLParser extends DefaultHandler {
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
 
-			Map mapAttribute = currentAttributes.getMapAttribute(objectTarget, currentAttributeID);
-			if (mapAttribute == null) mapAttribute = new HashMap();
+			Map mapAttribute = null;
+			if (objectTarget != null) 
+				mapAttribute = currentAttributes.getMapAttribute(objectTarget, currentAttributeID);
+			if (mapAttribute == null) 
+				mapAttribute = new HashMap();
 
 			switch (objType) {
 			case BOOLEAN:
@@ -1038,7 +1044,8 @@ class XGMMLParser extends DefaultHandler {
 			case STRING:
 				mapAttribute.put(name, obj);
 			}
-			currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttribute);
+			if (objectTarget != null)
+				currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttribute);
 			return current;
 		}
 	}
@@ -1100,8 +1107,9 @@ class XGMMLParser extends DefaultHandler {
 					defineComplexAttribute(currentAttributeID, currentAttributes, attributeDefinition);
 				}
 				// Now define set the attribute
-				mhm.setAttributeValue(objectTarget, currentAttributeID, 
-				                      getTypedValue(type, value), complexKey);
+				if (objectTarget != null)
+					mhm.setAttributeValue(objectTarget, currentAttributeID, 
+				 	                      getTypedValue(type, value), complexKey);
 			} else if (level == 0) {
 				if (complexMap[level] == null) {
 					complexMap[level] = new HashMap();
@@ -1215,7 +1223,6 @@ class XGMMLParser extends DefaultHandler {
 	private ParseState handleAttribute(Attributes atts, 
 	                                   CyAttributes cyAtts,
 		                                 String id) {
-
 		String name = atts.getValue("name");
 		ObjectType objType = getType(atts.getValue("type"));
 		Object obj = getTypedAttributeValue(objType, atts);
@@ -1223,19 +1230,19 @@ class XGMMLParser extends DefaultHandler {
 		switch (objType) {
 		case BOOLEAN:
 			if (obj != null && name != null)
-				cyAtts.setAttribute(id, name, (Boolean)obj);
+				if (id != null) cyAtts.setAttribute(id, name, (Boolean)obj);
 			break;
 		case REAL:
 			if (obj != null && name != null)
-				cyAtts.setAttribute(id, name, (Double)obj);
+				if (id != null) cyAtts.setAttribute(id, name, (Double)obj);
 			break;
 		case INTEGER:
 			if (obj != null && name != null)
-				cyAtts.setAttribute(id, name, (Integer)obj);
+				if (id != null) cyAtts.setAttribute(id, name, (Integer)obj);
 			break;
 		case STRING:
 			if (obj != null && name != null)
-				cyAtts.setAttribute(id, name, (String)obj);
+				if (id != null) cyAtts.setAttribute(id, name, (String)obj);
 			break;
 		case LIST:
 			currentAttributeID = name;
@@ -1328,24 +1335,19 @@ class XGMMLParser extends DefaultHandler {
 
 
 	private CyNode createUniqueNode (String label, String id) throws SAXException {
-		if (id != null) {
-			nodeID = id;
-			// System.out.print(" id=\""+id+"\"");
-		}
 		if (label != null) {
 			if (id == null)
-				nodeID = label;
-			// System.out.print(" label=\""+label+"\"");
+				id = label;
+				// System.out.print(" label=\""+label+"\"");
 		}
-
 		// OK, now actually create it
 		CyNode node = Cytoscape.getCyNode(label, true);
 		// System.out.println("Created new node("+label+") id="+node.getRootGraphIndex());
 
 		// Add it our indices
 		nodeList.add(node);
-		// System.out.println("Adding node "+node.getIdentifier()+"("+nodeID+") to map");
-		idMap.put(nodeID, node);
+		// System.out.println("Adding node "+node.getIdentifier()+"("+id+") to map");
+		idMap.put(id, node);
 		return node;
 	}
 
@@ -1358,6 +1360,17 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	private CyEdge createEdge (String source, String target, String interaction, String label) {
+		// Make sure the target and destination nodes exist
+		if (Cytoscape.getCyNode(source, false) == null) {
+			System.out.println("Warning: skipping edge "+label);
+			System.out.println("         node "+source+" doesn't exist");
+			return null;
+		}
+		if (Cytoscape.getCyNode(target, false) == null) {
+			System.out.println("Warning: skipping edge "+label);
+			System.out.println("         node "+target+" doesn't exist");
+			return null;
+		}
 		CyEdge edge =  Cytoscape.getCyEdge(source, label, target, interaction);
 		edgeList.add(edge);
 		return edge;

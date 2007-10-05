@@ -219,9 +219,9 @@ public class XGMMLWriter {
 	private String[] networkAttNames = null;
 	private CyNetwork network;
 	private CyNetworkView networkView;
-	private ArrayList <CyNode>nodeList;
 	private ArrayList <CyGroup>groupList;
-	private HashMap <String, CyEdge> edgeMap;
+	private	HashMap <CyNode, CyNode>nodeMap;
+	private	HashMap <CyEdge, CyEdge>edgeMap;
 	private boolean noCytoscapeGraphics = false;
 
 	private int depth = 0; // XML depth
@@ -248,9 +248,9 @@ public class XGMMLWriter {
 		edgeAttributes = Cytoscape.getEdgeAttributes();
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
-		nodeList = new ArrayList<CyNode>();
 		groupList = new ArrayList<CyGroup>();
-		edgeMap = new HashMap<String, CyEdge>();
+		nodeMap = new HashMap<CyNode, CyNode>();
+		edgeMap = new HashMap<CyEdge, CyEdge>();
 
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
@@ -431,6 +431,9 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeNode(CyNode node, List<CyNode> groupList) throws IOException {
+		// Remember that we've seen this node
+		nodeMap.put(node, node);
+
 		// Output the node
 		writeElement("<node label="+quote(node.getIdentifier()));
 		writer.write(" id="+quote(Integer.toString(node.getRootGraphIndex()))+">\n");
@@ -455,7 +458,10 @@ public class XGMMLWriter {
 					CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
 					writeNode(childGroup.getGroupNode(), childGroup.getNodes());
 				} else {
-					writeElement("<node xlink:href=\"#"+childNode.getRootGraphIndex()+"\"/>\n");
+					if (nodeMap.containsKey(childNode))
+						writeElement("<node xlink:href=\"#"+childNode.getRootGraphIndex()+"\"/>\n");
+					else
+						writeNode(childNode, null);
 				}
 			}
 			depth--; writeElement("</graph>\n");
@@ -597,20 +603,25 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeEdges() throws IOException {
-
 		for (CyEdge curEdge: (List<CyEdge>)network.edgesList()) {
+			edgeMap.put(curEdge,curEdge);
 			writeEdge(curEdge);
-
-			// Is this edge in the edge map already?
-			if (edgeMap.containsKey(curEdge.getIdentifier())) {
-				// Yes, remove it
-				edgeMap.remove(curEdge.getIdentifier());
-			}
 		}
 
-		// The edges left should all be from collapsed group Nodes
-		for (String edge: edgeMap.keySet()) {
-			writeEdge(edgeMap.get(edge));
+		// Now add all of the group edges in case they're hidden
+		for (CyGroup group: groupList) {
+			for (CyEdge edge: group.getInnerEdges()) {
+				if (!edgeMap.containsKey(edge)) {
+					edgeMap.put(edge,edge);
+					writeEdge(edge);
+				}
+			}
+			for (CyEdge edge: group.getOuterEdges()) {
+				if (!edgeMap.containsKey(edge)) {
+					edgeMap.put(edge,edge);
+					writeEdge(edge);
+				}
+			}
 		}
 	}
 
@@ -625,6 +636,11 @@ public class XGMMLWriter {
 		// Write the edge 
 		String target = quote(Integer.toString(curEdge.getTarget().getRootGraphIndex()));
 		String source = quote(Integer.toString(curEdge.getSource().getRootGraphIndex()));
+
+		// Make sure these nodes exist
+		if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource()))
+			return;
+
 		writeElement("<edge label="+quote(curEdge.getIdentifier())+" source="+source+" target="+target+">\n");
 		depth++;
 
@@ -651,6 +667,9 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeEdgeGraphics(CyEdge edge, EdgeView edgeView) throws IOException {
+		if (edgeView == null) 
+			return;
+
 		writeElement("<graphics");
 		// Width
 		writeAttributePair("width", Integer.toString((int) edgeView.getStrokeWidth()));

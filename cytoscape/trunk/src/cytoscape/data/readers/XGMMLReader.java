@@ -656,8 +656,22 @@ public class XGMMLReader extends AbstractGraphReader {
 				// location information (if there is any) can be utilized by the group viewer.
 				// This means that it will be the responsibility of the group viewer to remove
 				// the node if they don't want it to be visible
-				// Set and notify the viewer
-				CyGroupManager.createGroup(groupNode, childList, viewer);
+
+				// Do we already have a view?
+				if (view == null || view == Cytoscape.getNullNetworkView()) {
+					// No, just create the group, but don't assign a viewer
+					CyGroupManager.createGroup(groupNode, childList, null);
+				} else {
+					// Yes, see if the group already exists
+					CyGroup newGroup = CyGroupManager.getCyGroup(groupNode);
+					if (newGroup == null) {
+						// No, OK so create it and pass down the viewer
+						CyGroupManager.createGroup(groupNode, childList, viewer);
+					} else {
+						// Yes, just set the viewer
+						CyGroupManager.setGroupViewer(newGroup, viewer, view, true);
+					}
+				}
 			}
 		}
 
