@@ -24,9 +24,11 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 import ViolinStrings.Strings;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.quickfind.util.QuickFind;
+import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
@@ -43,6 +45,7 @@ import cytoscape.filters.CompositeFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -56,6 +59,8 @@ import cytoscape.filters.StringFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -112,7 +117,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	
 	public FilterMainPanel() {
-			init();			
+			init();		
+			initTestData();
+			initTestFilters();
 	}
 
 	public Vector<CompositeFilter> getAllFilterVect() {
@@ -161,6 +168,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		initComponents();
 
 		addEventListeners();
+		
 	}
 
 	public void refreshFilterSelectCMB() {
@@ -177,7 +185,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	 * prefixed either with "node." or "edge.". Those attributes whose data type is neither
 	 * "String" nor "numeric" will be excluded
 	 */
-	private Vector<String> getCyAttributesList(String pType) {
+	private Vector<Object> getCyAttributesList(String pType) {
 		Vector<String> attributeList = new Vector<String>();
 		CyAttributes attributes = null;
 		
@@ -192,25 +200,31 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		String[] attributeNames = attributes.getAttributeNames();
 
 		if (attributeNames != null) {
-			//  Show all attributes, with type of String of Number
+			//  Show all attributes, with type of String or Number
 			for (int i = 0; i < attributeNames.length; i++) {
 				int type = attributes.getType(attributeNames[i]);
 
 				//  only show user visible attributes
-				//if (attributes.getUserVisible(attributeNames[i])) {
-					
-					//if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_STRING)) {
-						attributeList.add(pType+"."+attributeNames[i]);
-					//}
-					//if (type != CyAttributes.TYPE_COMPLEX) {
-					//}
-				//}
+				if (!attributes.getUserVisible(attributeNames[i])) {
+					System.out.println("Found visible attribute: "+ attributeNames[i]);
+					continue;
+				}
+				if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_STRING)||(type == CyAttributes.TYPE_SIMPLE_LIST)) {
+					attributeList.add(pType+"."+attributeNames[i]);
+				}
 			} //for loop
 		
 			//  Alphabetical sort
 			Collections.sort(attributeList);
 		}
-		return attributeList;
+
+		// type conversion
+		Vector<Object> retList = new Vector<Object>();
+
+		for (int i=0; i<attributeList.size(); i++) {
+			retList.add(attributeList.elementAt(i));
+		}
+		return retList;
 	}
 	
 	/*
@@ -317,9 +331,17 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	 * cuttrent selected filter
 	 */
 	private void updateCMBAttributes() {
-		Vector<String> attributeList = new Vector<String>();
+		
+		System.out.println("Entering updateCMBAttributes() ...");
+		
+		Vector<Object> attributeList = new Vector<Object>();
 
+		attributeList.add(" -- Attributes --");
 		CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+		boolean debug = true;
+		if (debug) {
+			selectedFilter = allFilterVect.elementAt(0);
+		}
 
 		if (selectedFilter == null) {
 			return;
@@ -328,24 +350,35 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				&& !selectedFilter.getAdvancedSetting().isEdgeChecked())
 		{
 			//System.out.println("Only Node is checked");
-			attributeList = getCyAttributesList("node");
+			attributeList.addAll(getCyAttributesList("node"));
+			//attributeList = getCyAttributesList("node");
 		}
 		else if (selectedFilter.getAdvancedSetting().isEdgeChecked()
 				&& !selectedFilter.getAdvancedSetting().isNodeChecked())
 		{
 			//System.out.println("Only Edge is checked");
-			attributeList = getCyAttributesList("edge");
+			attributeList.addAll(getCyAttributesList("edge"));
+			//attributeList = getCyAttributesList("edge");
 		}
 		else if (selectedFilter.getAdvancedSetting().isNodeChecked()
 				&& selectedFilter.getAdvancedSetting().isEdgeChecked())
 		{
 			//System.out.println("Both Node and edge are checked");
-			attributeList = getCyAttributesList("node");
+			attributeList.addAll(getCyAttributesList("node"));
+			//attributeList = getCyAttributesList("node");
 			attributeList.addAll(getCyAttributesList("edge"));
 		}
 		//else {
 		//	System.out.println("Neither Node nore edge is checked");
 		//}
+
+		attributeList.add(" -- Filters --");
+		
+		if (allFilterVect != null) {
+			for (int i=0; i<allFilterVect.size(); i++) {
+				attributeList.add(allFilterVect.elementAt(i));
+			}
+		}
 		
 		cmbAttributes.setModel(new DefaultComboBoxModel(attributeList));		
 	}
@@ -491,6 +524,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		gridBagConstraints.weighty = 1.0;
 		add(lbPlaceHolder_pnlFilterDefinition, gridBagConstraints);
 
+		// Set customized renderer for attributes/filter combobox
+		cmbAttributes.setRenderer(new AttributeFilterRenderer());
+
 	}// </editor-fold>
 
 	// Variables declaration - do not modify
@@ -569,12 +605,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (_btn == btnApplyFilter) {
 
 
-				//System.out.println("\nApplyButton is clicked!");
-				CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
+				System.out.println("\nApplyButton is clicked!");
+				updateCMBAttributes();
 				
-				if (theFilter == null) {
-					return;
-				}
+				//CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
+				
+				//if (theFilter == null) {
+				//	return;
+				//}
 				
 				//System.out.println("\nThe Filter to apply:\n" + theFilter.toString()+"\n");
 				//quickFind.selectRange(cyNetwork, lowValue, highValue);
@@ -583,7 +621,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				 // We have to run "Apply filter" in a seperate thread, becasue
 				 //we want to monitor the progress
-				FilterUtil.applyFilter(theFilter);
+				
+				//FilterUtil.applyFilter(theFilter);
 				
 				//ApplyFilterThread applyFilterThread = new ApplyFilterThread(theFilter);
 				//applyFilterThread.start();
@@ -777,6 +816,37 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		this.validate();
 		this.repaint();
 	}
+	
+	class AttributeFilterRenderer extends JLabel implements ListCellRenderer {
+		public AttributeFilterRenderer() {
+			setOpaque(true);
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			if (value != null) {
+				if (value instanceof String) {
+					setText((String)value);
+				}
+				else if (value instanceof CompositeFilter) {
+					CompositeFilter theFilter = (CompositeFilter) value;
+					setText(theFilter.getName());
+				}				
+			}
+			else { // value == null
+				setText(""); 
+			}
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+			return this;
+		}
+	}// AttributeRenderer
 
 	private void createNewFilter(String pFilterName) {
 		// Create an empty filter, add it to the current filter list
@@ -834,10 +904,134 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		JFrame theFrame = new JFrame();
 		FilterMainPanel theMainPanel = new FilterMainPanel();
 		theFrame.add(theMainPanel);
-
+		
 		theFrame.setPreferredSize(new java.awt.Dimension(330, 500));
 		theFrame.pack();
 		theFrame.setVisible(true);
 	}
 
+	//============================== for debug only ========================
+
+	private CyNode testNode1;
+	private CyNode testNode2;
+	private CyEdge testEdge;
+
+	private void initTestData() {
+		
+		System.out.println("Entering initTestData()...");
+		testNode1 = Cytoscape.getCyNode("testNode1", true);
+		testNode2 = Cytoscape.getCyNode("testNode2", true);
+		testEdge = Cytoscape.getCyEdge(testNode1.getIdentifier(), "Interaction Value",
+		                               testNode2.getIdentifier(), Semantics.INTERACTION);
+		addAttributes(testNode1);
+		addAttributes(testEdge);
+
+	}
+	
+	private void addAttributes(GraphObject go) {
+		String goID = go.getIdentifier();
+		CyAttributes attrs = null;
+
+		if (go instanceof CyNode) {
+			attrs = Cytoscape.getNodeAttributes();
+		} else if (go instanceof CyEdge) {
+			attrs = Cytoscape.getEdgeAttributes();
+		}
+
+		attrs.setAttribute(goID, "BooleanTest", new Boolean(true));
+		attrs.setAttribute(goID, "StringTest", "string test value");
+		attrs.setAttribute(goID, "IntegerTest", new Integer(6));
+		attrs.setAttribute(goID, "DoubleTest", new Double(5.0));
+
+		List<String> listTestValue = new ArrayList<String>();
+		listTestValue.add("list test value1");
+		listTestValue.add("list test value2");
+		attrs.setListAttribute(goID, "ListTest", listTestValue);
+
+		Map<String, String> mapTestValue = new HashMap<String, String>();
+		mapTestValue.put("map key1", "map key1 value");
+		mapTestValue.put("map key2", "map key2 value");
+		attrs.setMapAttribute(goID, "MapTest", mapTestValue);
+
+		// Now add a complex value to test:
+		addComplexAttributes(go, attrs);
+	}
+
+	private void addComplexAttributes(GraphObject go, CyAttributes attrs) {
+		String goID = go.getIdentifier();
+		MultiHashMap mmap = attrs.getMultiHashMap();
+		MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
+
+		if (mmapDef.getAttributeValueType("p-valuesTest") < 0) {
+			mmapDef.defineAttribute("p-valuesTest", // most specific values:
+			                        MultiHashMapDefinition.TYPE_FLOATING_POINT,
+			                        new byte[] {
+			                            MultiHashMapDefinition.TYPE_STRING,
+			                            MultiHashMapDefinition.TYPE_INTEGER
+			                        });
+		}
+
+		if (mmapDef.getAttributeValueType("TextSourceInfo") < 0) {
+			mmapDef.defineAttribute("TextSourceInfo", // most specific values:
+			                        MultiHashMapDefinition.TYPE_STRING,
+			                        new byte[] {
+			                            MultiHashMapDefinition.TYPE_STRING,
+			                            MultiHashMapDefinition.TYPE_INTEGER,
+			                            MultiHashMapDefinition.TYPE_INTEGER
+			                        });
+		}
+
+		PValues.clear();
+		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.5),
+		                       new Object[] { "Jojo", new Integer(0) });
+		PValues.add(new Double(0.5));
+		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
+		                       new Object[] { "Jojo", new Integer(1) });
+		PValues.add(new Double(0.6));
+		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
+		                       new Object[] { "Jojo", new Integer(2) });
+		PValues.add(new Double(0.6));
+		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.7),
+		                       new Object[] { "Harry", new Integer(0) });
+		PValues.add(new Double(0.7));
+		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
+		                       new Object[] { "Harry", new Integer(1) });
+		PValues.add(new Double(0.6));
+
+		TSIValues.clear();
+		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence1",
+		                       new Object[] { "url1", new Integer(0), new Integer(0) });
+		TSIValues.add("url1: sentence1");
+		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence2",
+		                       new Object[] { "url1", new Integer(0), new Integer(1) });
+		TSIValues.add("url1: sentence2");
+		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence3",
+		                       new Object[] { "url1", new Integer(0), new Integer(10) });
+		TSIValues.add("url1: sentence3");
+		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: publication 1",
+		                       new Object[] { "url1", new Integer(1), new Integer(0) });
+		TSIValues.add("url1: publication 1");
+		mmap.setAttributeValue(goID, "TextSourceInfo", "url2: sentence1",
+		                       new Object[] { "url2", new Integer(0), new Integer(6) });
+		TSIValues.add("url2: sentence1");
+		mmap.setAttributeValue(goID, "TextSourceInfo", "url2: publication 1",
+		                       new Object[] { "url2", new Integer(1), new Integer(0) });
+		TSIValues.add("url2: publication 1");
+	}
+	// track complex p-values:
+	private List<Double> PValues = new ArrayList<Double>();
+	private int numTSIs;
+
+	// track complex TextSourceInfo values:
+	private List<String> TSIValues = new ArrayList<String>();
+	private int numPValues;
+	private boolean initialized = false;
+
+	private void initTestFilters() {
+		allFilterVect = new Vector<CompositeFilter>();
+		CompositeFilter compositeFilter1 = new CompositeFilter("firstCompositeFilter");
+		CompositeFilter compositeFilter2 = new CompositeFilter("secondCompositeFilter");
+		allFilterVect.add(compositeFilter1);
+		allFilterVect.add(compositeFilter2);
+	}
 }
