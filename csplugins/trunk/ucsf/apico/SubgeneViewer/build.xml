@@ -11,12 +11,12 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="cytoroot.dir" value="../cytoscape2.5c"/>
+	<property name="cytoroot.dir" value="../cytoscape-2.5x_trunk"/>
 	
 	
-	<property name="release.dir" value="../cytoscape2.5c"/>
+	<property name="release.dir" value="../cytoscape-2.5x_trunk"/>
 
-	<property name="lib.dir" value = "../cytoscape2.5c/lib"/>
+	<property name="lib.dir" value = "../cytoscape-2.5x_trunk/lib"/>
 	
   	<!-- Temporary build directories -->
 
@@ -101,8 +101,8 @@
    		 
  		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape2.5c/plugins/core/"/>
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="/Applications/Cytoscape_v2.5.1/plugins"/>
-	</target>
+   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.5x_trunk/plugins/core/"/>
+ <!--  		<copy file="${build.dir}/${plugin.name}.jar" todir="/Applications/Cytoscape_v2.5.1/plugins"/>
+-->	</target>
 
 </project>

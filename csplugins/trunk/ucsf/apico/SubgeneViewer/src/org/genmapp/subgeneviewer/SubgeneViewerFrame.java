@@ -36,11 +36,14 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		_panel.setAutoscrolls(true);
 		_panel.setLayout(new BoxLayout(_panel, BoxLayout.Y_AXIS));
 		_scrollPane = new JScrollPane(_panel);
+
 		this.getContentPane().add(_scrollPane);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(475, 210);
 		this.setLocationRelativeTo(((DGraphView) Cytoscape
 				.getCurrentNetworkView()).getCanvas());
+		
+
 	}
 
 	public void addViewToFrame(Integer view_type) {
@@ -65,6 +68,8 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 			};
 			exonPanel.setBorder(new TitledBorder("Exon Structure Viewer"));
 			exonPanel.setOpaque(false);
+			
+			// todo: make this a calculated value
 			exonPanel.setPreferredSize(new Dimension(455, 140));
 			_panel.add(exonPanel);
 			_panel.validate();
