@@ -36,28 +36,24 @@
 
 package edu.ucsd.bioeng.idekerlab.biomartui.ui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import javax.swing.JDialog;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.swing.InfiniteProgressPanel;
 
 
 /**
  *
  */
-public class BiomartMainDialog extends JDialog implements PropertyChangeListener {
+public class BiomartMainDialog extends JDialog {
 	
 	private static BiomartMainDialog mainDialog = null;
-	
-	private static InfiniteProgressPanel glassPane = new InfiniteProgressPanel();
 	
 	/**
 	 *  DOCUMENT ME!
@@ -88,7 +84,6 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 
 		try {
 			BiomartNameMappingPanel panel = new BiomartNameMappingPanel();
-			panel.addPropertyChangeListener(this);
 			add(panel);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -110,24 +105,8 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		}
 		
 	}
-
-	public void propertyChange(PropertyChangeEvent e) {
-		
-		
-		if(e.getPropertyName().equals("CLOSE")) {
-			setVisible(false);
-		} else if(e.getPropertyName().equals("WAIT")) {
-			System.out.println("=================== SIG = " + e.getPropertyName());
-			
-			glassPane.start();
-		} else if(e.getPropertyName().equals("RESTART")) {
-			System.out.println("=================== SIG2 = " + e.getPropertyName());
-			glassPane.stop();
-		}
-		
-	}
 	
-	static class SetupUITask implements Task {
+	static class SetupUITask implements Task  {
 		
 		private TaskMonitor taskMonitor;
 
@@ -160,7 +139,6 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 			taskMonitor.setPercentCompleted(-1);
 			
 			mainDialog = new BiomartMainDialog();
-			mainDialog.setGlassPane(glassPane);
 			mainDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			mainDialog.setVisible(true);
 			taskMonitor.setPercentCompleted(100);
@@ -177,6 +155,11 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		 */
 		public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
 			this.taskMonitor = taskMonitor;
+		}
+
+		public void cancel() {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

@@ -54,13 +54,15 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.util.swing.AttributeImportPanel;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
@@ -72,7 +74,7 @@ import giny.model.Node;
  *
  */
 public class BiomartNameMappingPanel extends AttributeImportPanel implements PropertyChangeListener {
-	private static WebServiceClient mart = WebServiceClientManager.getClient("biomart");
+
 	private static final String ATTR_BASE_URL = "http://www.biomart.org/biomart/martservice?virtualschema=default&type=attributes&dataset=";
 	private static final String FILTER_BASE_URL = "http://www.biomart.org/biomart/martservice?virtualschema=default&type=filters&dataset=";
 	private static final Icon LOGO = new ImageIcon(BiomartNameMappingPanel.class.getResource("/images/logo_biomart2.png"));
@@ -86,15 +88,10 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		FILTER;
 	}
 
-	/**
-	 * Creates a new BiomartNameMappingPanel object.
-	 *
-	 * @throws IOException  DOCUMENT ME!
-	 */
-	public BiomartNameMappingPanel() throws IOException {
-		this(LOGO, "Biomart ID Mapping Utility");
-	}
 
+	public BiomartNameMappingPanel() throws IOException {
+		this(LOGO, "Biomart ID Mapping",  "Available attributes");
+	}
 	/**
 	 * Creates a new BiomartNameMappingPanel object.
 	 *
@@ -103,8 +100,8 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 	 *
 	 * @throws IOException  DOCUMENT ME!
 	 */
-	public BiomartNameMappingPanel(Icon logo, String title) throws IOException {
-		super(logo, title);
+	public BiomartNameMappingPanel(Icon logo, String title, String attrPanelLabel) throws IOException {
+		super(logo, title, attrPanelLabel);
 		initDataSources();
 	}
 
@@ -340,89 +337,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		//mart.execute("getDatabaseList", new Class[] {  }, new Object[] {  });
 	}
 
-	private static void mapping(List<String[]> result, String key, String keyAttrName) {
-		final String[] columnNames = result.get(0);
-		final int rowCount = result.size();
-		final int colSize = columnNames.length;
-		int keyPosition = 0;
-
-		for (int i = 0; i < colSize; i++) {
-			if (columnNames[i].equals(key)) {
-				keyPosition = i;
-				System.out.println("Key found!!!!!!!!!!!!" + i);
-			}
-		}
-
-		String[] entry;
-		String val;
-
-		List<List<Object>> listOfValList;
-		List<String> ids = null;
-
-		List<Object> testList;
-		String keyVal = null;
-
-		for (int i = 1; i < rowCount; i++) {
-			entry = result.get(i);
-
-			if (entry.length <= keyPosition) {
-				continue;
-			}
-
-			keyVal = entry[keyPosition];
-
-			for (int j = 0; j < entry.length; j++) {
-				val = entry[j];
-
-				if ((val != null) && (val.length() != 0) && (j != keyPosition)) {
-					listOfValList = new ArrayList<List<Object>>();
-
-					if (keyAttrName.equals("ID")) {
-
-						testList = Cytoscape.getNodeAttributes()
-                        .getListAttribute(keyVal, columnNames[j]);
-						if(testList != null) {
-							listOfValList.add(testList);
-						}
-					} else {
-						ids = CyAttributesUtils.getIDListFromAttributeValue(CyAttributesUtils.AttributeType.NODE,
-						                                                                 keyAttrName,
-						                                                                 keyVal);
-
-						for (String id : ids) {
-							listOfValList.add(Cytoscape.getNodeAttributes()
-							                           .getListAttribute(id, columnNames[j]));
-						}
-					}
-
-					if (listOfValList.size() == 0) {
-						List<Object> valList = new ArrayList<Object>();
-						listOfValList.add(valList);
-					}
-
-					int index = 0;
-					for (List<Object> valList : listOfValList) {
-						if (valList == null) {
-							valList = new ArrayList<Object>();
-						}
-
-						if (valList.contains(entry[j]) == false) {
-							valList.add(entry[j]);
-						}
-
-						if (keyAttrName.equals("ID")) {
-							Cytoscape.getNodeAttributes()
-						         .setListAttribute(keyVal, columnNames[j], valList);
-						} else {
-							Cytoscape.getNodeAttributes()
-					         .setListAttribute(ids.get(index), columnNames[j], valList);
-						}
-						index++;
-					}
-				}
-			}
-		}
-	}
+	
 
 	private static String getIDFilterString() {
 		final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
@@ -488,34 +403,16 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 			taskMonitor.setPercentCompleted(-1);
 
 			String query2 = XMLQueryBuilder.getQueryString(dataset, attrs, filters);
+			
+			AttributeImportQuery qObj = new AttributeImportQuery(query2, key, keyAttrName);
 
-			Object result;
+			WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(new CyWebServiceEvent("biomart", WSEventType.IMPORT_ATTRIBUTE, qObj));
+			
 
-			try {
-				result = mart.execute("sendQuery", new Class[] { String.class },
-				                      new Object[] { query2 });
-				
-				if(((List<String[]>) result).size() == 1) {
-					String[] res = ((List<String[]>) result).get(0);
-					if(res[0].contains("Query ERROR")) {
-						Exception e = new Exception(res[0]);
-						
-						taskMonitor.setException(e, "Query Failed!");
-						return;
-					}
-				}
-
-				mapping((List<String[]>) result, key, keyAttrName);
-
-				System.out.println("Res type = " + result.getClass());
-			} catch (Exception e) {
-				taskMonitor.setException(e, "Failed to import!");
-				e.printStackTrace();
-			}
 
 			taskMonitor.setPercentCompleted(100);
 			taskMonitor.setStatus("Attributes successfully loaded.");
-			firePropertyChange("CLOSE", null, null);
+
 		}
 
 		/**
