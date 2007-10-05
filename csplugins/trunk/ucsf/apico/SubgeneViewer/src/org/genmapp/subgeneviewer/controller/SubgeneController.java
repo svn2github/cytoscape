@@ -16,6 +16,12 @@ public class SubgeneController extends MouseAdapter {
 				&& (((DGraphView) Cytoscape.getCurrentNetworkView())
 						.getPickedNodeView(e.getPoint()) != null)) {
 			System.out.println("SGV: double click on node");
+
+			//todo: parse data for clicked node
+			
+			//todo: render network of objects in frame
+			
+			// temporary functions for demo
 			SubgeneViewerFrame frame = SubgeneViewerPlugin.get_frame();
 			chooseViews(frame);
 			frame.setVisible(true);
