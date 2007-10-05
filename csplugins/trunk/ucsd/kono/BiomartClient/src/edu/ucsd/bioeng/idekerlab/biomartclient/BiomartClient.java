@@ -120,8 +120,8 @@ public class BiomartClient extends WebServiceClientImpl {
 					throw e;
 				}
 			}
-
-			mapping((List<String[]>) result, query.getKeyNameInWebService(), query.getKeyCyAttrName());
+			System.out.println("--------------------Got result: " + result.size());
+			mapping((List<String[]>) result, query.getKeyCyAttrName(), query.getKeyNameInWebService());
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -138,7 +138,10 @@ public class BiomartClient extends WebServiceClientImpl {
 		final int colSize = columnNames.length;
 		int keyPosition = 0;
 
+		
+		
 		for (int i = 0; i < colSize; i++) {
+			System.out.println("Key = " + key +", colname = " + columnNames[i] + ", Key attr name = " + keyAttrName);
 			if (columnNames[i].equals(key)) {
 				keyPosition = i;
 				System.out.println("Key found!!!!!!!!!!!!" + i);
@@ -214,23 +217,6 @@ public class BiomartClient extends WebServiceClientImpl {
 				}
 			}
 		}
-	}
-
-	private static String getIDFilterString() {
-		final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
-		final StringBuilder builder = new StringBuilder();
-
-		for (Node n : nodes) {
-			builder.append(n.getIdentifier());
-			builder.append(",");
-		}
-
-		String filterStr = builder.toString();
-		filterStr = filterStr.substring(0, filterStr.length() - 1);
-
-		System.out.println("Filter =====>>> " + filterStr);
-
-		return filterStr;
 	}
 	
 	
