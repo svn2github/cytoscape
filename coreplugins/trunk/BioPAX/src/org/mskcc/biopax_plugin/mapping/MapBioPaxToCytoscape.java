@@ -910,15 +910,15 @@ public class MapBioPaxToCytoscape {
 
 		//  set node attributes
 		String complexMemberElementType = complexMemberElement.getName();
+		boolean isComplex = complexMemberElementType.equals(BioPaxConstants.COMPLEX);
 		setNodeAttributes(complexMemberCyNode, complexMemberNodeName, complexMemberElementType,
-						  complexMemberId, complexMemberCyNodeLabel);
+						  complexMemberId, (isComplex) ? "" : complexMemberCyNodeLabel);
 		setChemicalModificationAttributes(complexMemberCyNodeId, chemicalModificationsWrapper);
 		setCellularLocationAttributes(complexMemberCyNodeId, cellularLocationsWrapper);
 
 		// if complex, save its cellular location wrapper -
 		// may be inherited by complex members later on
-		if (complexMemberElementType.equals(BioPaxConstants.COMPLEX) &&
-			cellularLocationsWrapper != null) {
+		if (isComplex && cellularLocationsWrapper != null) {
 			complexCellularLocationWrapperMap.put(complexMemberCyNodeId, cellularLocationsWrapper);
 		}
 
