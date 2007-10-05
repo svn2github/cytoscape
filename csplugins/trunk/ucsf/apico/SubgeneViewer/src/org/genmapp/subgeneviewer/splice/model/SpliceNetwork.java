@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.genmapp.subgeneviewer.model.SubgeneNetwork;
-import org.genmapp.subgeneviewer.view.Block;
+import org.genmapp.subgeneviewer.splice.view.Block;
 
 public class SpliceNetwork extends SubgeneNetwork {
 
