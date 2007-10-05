@@ -102,8 +102,10 @@ public class BioPaxPlainEnglish {
 		map.put("extracellular", "Extracellular");
 		map.put("golgi apparatus", "Golgi Apparatus");
 		map.put("mitochondrion", "Mitochondrion");
+		map.put("nucleoplasm", "NP");
 		map.put("nucleus", "Nucleus");
 		map.put("plasma membrane", "Plasma Membrane");
 		map.put("ribosome", "Ribosome");
+		map.put("transmembrane", "TM");
 	}
 }
