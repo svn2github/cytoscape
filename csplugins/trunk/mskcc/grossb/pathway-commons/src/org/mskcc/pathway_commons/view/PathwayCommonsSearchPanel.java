@@ -100,8 +100,8 @@ public class PathwayCommonsSearchPanel extends JPanel {
     private JPanel createDownloadPanel () {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setBorder(new TitledBorder ("Download"));
-        JButton button = new JButton ("Download");
+        panel.setBorder(new TitledBorder ("Download Options"));
+        //JButton button = new JButton ("Download");
 
         Vector networkList = new Vector();
         networkList.add("Download all selected interactions / pathways to new network");
@@ -112,7 +112,7 @@ public class PathwayCommonsSearchPanel extends JPanel {
         panel.add(Box.createHorizontalGlue());
         panel.add(networkComboBox);
         panel.add(Box.createRigidArea(new Dimension(5,0)));
-        panel.add(button);
+        //panel.add(button);
         return panel;
     }
 

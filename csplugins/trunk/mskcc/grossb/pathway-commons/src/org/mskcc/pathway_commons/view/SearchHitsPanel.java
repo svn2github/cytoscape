@@ -1,8 +1,6 @@
 package org.mskcc.pathway_commons.view;
 
 import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySummary;
-import org.mskcc.pathway_commons.web_service.model.PathwaySummary;
-import org.mskcc.pathway_commons.web_service.model.InteractionBundleSummary;
 import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
@@ -15,7 +13,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.border.TitledBorder;
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Search Hits Panel.
@@ -87,7 +84,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
     /**
      * Listen for list selection events.
      * @param interactionTableModel InteractionTableModel.
-     * @param pathwayTableModel
+     * @param pathwayTableModel PathwayTableModel.
      */
     private void createListener(final DefaultTableModel interactionTableModel,
             final DefaultTableModel pathwayTableModel) {
@@ -96,7 +93,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
                 int selectedIndex = peList.getSelectedIndex();
                 SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
                 selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                        pathwayTableModel, interactionTableModel, summaryDocument);
+                        interactionTableModel, pathwayTableModel, summaryDocument);
             }
         });
     }

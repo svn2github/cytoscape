@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 
 /**
  * Search Details Panel.
@@ -14,12 +16,13 @@ class SearchDetailsPanel extends JPanel {
 
     /**
      * Constructor.
-     * @param interactionTableModel     InteractionTableModel Object.
-     * @param pathwayTableModel         PathwayTableModel Object.
+     *
+     * @param interactionTableModel InteractionTableModel Object.
+     * @param pathwayTableModel     PathwayTableModel Object.
      */
     public SearchDetailsPanel(DefaultTableModel interactionTableModel,
             DefaultTableModel pathwayTableModel) {
-        GridLayout gridLayout = new GridLayout (2,0);
+        GridLayout gridLayout = new GridLayout(2, 0);
         setLayout(gridLayout);
         JScrollPane interactionPane = createInteractionBundleTable(interactionTableModel);
         JScrollPane pathwayPane = createPathwayTable(pathwayTableModel);
@@ -29,26 +32,48 @@ class SearchDetailsPanel extends JPanel {
 
     /**
      * Creats the Interaction Bundle Table.
+     *
      * @return JScrollPane Object.
      */
     private JScrollPane createInteractionBundleTable(DefaultTableModel interactionTableModel) {
-        JTable table = new JTable(interactionTableModel);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(new TitledBorder("Interactions"));
+        final JTable interactionTable = new JTable(interactionTableModel);
+        interactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        interactionTable.addMouseListener(new MouseAdapter(){
+             public void mouseClicked(MouseEvent e){
+              if (e.getClickCount() == 2){
+                 int rows[] = interactionTable.getSelectedRows();
+                 JOptionPane.showMessageDialog(new JFrame(), "Downloading Interaction Bundle:  "
+                         + rows[0]);
+                 }
+              }
+         } );
+
+        JScrollPane scrollPane = new JScrollPane(interactionTable);
+        scrollPane.setBorder(new TitledBorder("Interactions (double click to download)"));
         return scrollPane;
     }
 
     /**
      * Creates the Pathway Table.
+     *
      * @return JScrollPane Object.
      */
     private JScrollPane createPathwayTable(DefaultTableModel pathwayTableModel) {
-        JTable pathwayTable = new JTable(pathwayTableModel);
+        final JTable pathwayTable = new JTable(pathwayTableModel);
         pathwayTable.setAutoCreateColumnsFromModel(true);
         pathwayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        pathwayTable.addMouseListener(new MouseAdapter(){
+             public void mouseClicked(MouseEvent e){
+              if (e.getClickCount() == 2){
+                 int rows[] = pathwayTable.getSelectedRows();
+                 JOptionPane.showMessageDialog(new JFrame(), "Downloading Pathway:  " + rows[0]);
+                 }
+              }
+         } );
         JScrollPane scrollPane = new JScrollPane(pathwayTable);
-        scrollPane.setBorder(new TitledBorder("Pathways"));
+        scrollPane.setBorder(new TitledBorder("Pathways (double-click to download)"));
         return scrollPane;
     }
 }

@@ -18,7 +18,7 @@ public class PathwayTableModel extends DefaultTableModel {
         Vector columnNames = new Vector();
         columnNames.add("Data Source");
         columnNames.add("Pathway");
-        columnNames.add("Select");
+        //columnNames.add("Select");
         this.setColumnIdentifiers(columnNames);
     }
 
@@ -29,11 +29,12 @@ public class PathwayTableModel extends DefaultTableModel {
      * @return true or false.
      */
     public boolean isCellEditable(int row, int col) {
-        if (col == 2) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
+//        if (col == 2) {
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
 
     /**
@@ -42,10 +43,11 @@ public class PathwayTableModel extends DefaultTableModel {
      * @return Class.
      */
     public Class getColumnClass(int columnIndex) {
-        if (columnIndex == 2) {
-            return Boolean.class;
-        } else {
-            return String.class;
-        }
+        return String.class;
+//        if (columnIndex == 2) {
+//            return Boolean.class;
+//        } else {
+//            return String.class;
+//        }
     }
 }

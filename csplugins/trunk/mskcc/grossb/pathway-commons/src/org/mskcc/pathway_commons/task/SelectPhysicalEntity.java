@@ -50,7 +50,7 @@ public class SelectPhysicalEntity {
                 if (organism != null) {
                     String speciesName = organism.getSpeciesName();
                     summaryDocumentModel.insertString(0, "[" +
-                            speciesName+"]\n\n", attrs);
+                            speciesName+ "]\n\n", attrs);
                 }
                 summaryDocumentModel.insertString(0, pe.getName()+"\n\n", attrs);
             } catch (BadLocationException e) {
@@ -73,14 +73,14 @@ public class SelectPhysicalEntity {
         dataVector.removeAllElements();
         if (interactionList != null) {
             interactionTableModel.setRowCount(interactionList.size());
-            interactionTableModel.setColumnCount(3);
+            interactionTableModel.setColumnCount(2);
             for (int i = 0; i < interactionList.size(); i++) {
                 InteractionBundleSummary interactionBundle = interactionList.get(i);
                 interactionTableModel.setValueAt
                         (interactionBundle.getDataSourceName(), i, 0);
                 interactionTableModel.setValueAt
                         (interactionBundle.getNumInteractions(), i, 1);
-                interactionTableModel.setValueAt(Boolean.FALSE, i, 2);
+                //interactionTableModel.setValueAt("Download", i, 2);
             }
         }
     }
@@ -98,12 +98,12 @@ public class SelectPhysicalEntity {
 
         if (pathwayList != null) {
             pathwayTableModel.setRowCount(pathwayList.size());
-            pathwayTableModel.setColumnCount(3);
+            pathwayTableModel.setColumnCount(2);
             for (int i = 0; i < pathwayList.size(); i++) {
                 PathwaySummary pathway = pathwayList.get(i);
                 pathwayTableModel.setValueAt(pathway.getDataSourceName(), i, 0);
                 pathwayTableModel.setValueAt(pathway.getName(), i, 1);
-                pathwayTableModel.setValueAt(Boolean.FALSE, i, 2);
+                //pathwayTableModel.setValueAt("Download", i, 2);
             }
         }
     }
