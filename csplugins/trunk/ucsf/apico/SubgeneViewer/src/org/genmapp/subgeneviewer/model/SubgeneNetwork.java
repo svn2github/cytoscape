@@ -3,7 +3,7 @@ package org.genmapp.subgeneviewer.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.genmapp.subgeneviewer.view.Region;
+import org.genmapp.subgeneviewer.splice.view.Region;
 
 import cytoscape.CyNetwork;
 
