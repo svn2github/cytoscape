@@ -1,13 +1,15 @@
 package org.mskcc.pathway_commons.task;
 
-import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySummary;
-import org.mskcc.pathway_commons.web_service.model.PathwaySummary;
-import org.mskcc.pathway_commons.web_service.model.InteractionBundleSummary;
-import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
+import org.mskcc.pathway_commons.web_service.model.*;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.Document;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.awt.*;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.
@@ -22,14 +24,37 @@ public class SelectPhysicalEntity {
      * @param selectedIndex             Selected Index.
      * @param interactionTableModel     Interaction Table Model.
      * @param pathwayTableModel         Pathway Table Model.
+     * @param summaryDocumentModel      Summary Document Model.
      */
     public void selectPhysicalEntity(PhysicalEntitySearchResponse peSearchResponse,
             int selectedIndex, DefaultTableModel interactionTableModel, DefaultTableModel
-            pathwayTableModel) {
+            pathwayTableModel, Document summaryDocumentModel) {
         if (peSearchResponse != null) {
             ArrayList<PhysicalEntitySummary> peList = peSearchResponse.
                     getPhysicalEntitySummartList();
             PhysicalEntitySummary pe = peList.get(selectedIndex);
+
+
+            try {
+                summaryDocumentModel.remove(0, summaryDocumentModel.getLength());
+            } catch (BadLocationException e) {
+            }
+            SimpleAttributeSet attrs = new SimpleAttributeSet();
+            //StyleConstants.setForeground(attrs, Color.BLACK);
+            //StyleConstants.setBold(attrs, true);
+            try {
+                if (pe.getDescription() != null) {
+                    summaryDocumentModel.insertString(0, pe.getDescription(), attrs);
+                }
+                Organism organism = pe.getOrganism();
+                if (organism != null) {
+                    String speciesName = organism.getSpeciesName();
+                    summaryDocumentModel.insertString(0, "[" +
+                            speciesName+"]\n\n", attrs);
+                }
+                summaryDocumentModel.insertString(0, pe.getName()+"\n\n", attrs);
+            } catch (BadLocationException e) {
+            }
             updatePathwayData(pe, pathwayTableModel);
             updateInteractionData(pe, interactionTableModel);
         }

@@ -6,6 +6,7 @@ import org.mskcc.pathway_commons.web_service.model.InteractionBundleSummary;
 import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
+import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,17 +23,18 @@ import java.util.Vector;
  * @author Ethan Cerami.
  */
 class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
-    DefaultListModel peListModel;
+    private DefaultListModel peListModel;
     private JList peList;
     private PhysicalEntitySearchResponse peSearchResponse;
+    private Document summaryDocument;
 
     public SearchHitsPanel(DefaultTableModel interactionTableModel, DefaultTableModel
             pathwayTableModel, PathwayCommonsWebApi webApi) {
         webApi.addApiListener(this);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        JTextArea summaryTextArea = createTextArea();
-        Document summaryDocument = summaryTextArea.getDocument();
-        JScrollPane summaryPane = encloseInJScrollPane("Summary", summaryTextArea);
+        JTextPane summaryTextPane = createTextArea();
+        summaryDocument = summaryTextPane.getDocument();
+        JScrollPane summaryPane = encloseInJScrollPane("Summary", summaryTextPane);
 
         peListModel = new DefaultListModel();
 
@@ -92,59 +94,21 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
         peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int selectedIndex = peList.getSelectedIndex();
-
-                if (SearchHitsPanel.this.peSearchResponse != null) {
-                    ArrayList<PhysicalEntitySummary> peList =
-                            SearchHitsPanel.this.peSearchResponse.
-                                    getPhysicalEntitySummartList();
-                    PhysicalEntitySummary pe = peList.get(selectedIndex);
-                    ArrayList <PathwaySummary> pathwayList = pe.getPathwayList();
-                    ArrayList <InteractionBundleSummary> interactionList =
-                            pe.getInteractionBundleList();
-
-                    Vector dataVector = interactionTableModel.getDataVector();
-                    dataVector.removeAllElements();
-
-                    dataVector = pathwayTableModel.getDataVector();
-                    dataVector.removeAllElements();
-
-                    if (pathwayList != null) {
-                        pathwayTableModel.setRowCount(pathwayList.size());
-                        pathwayTableModel.setColumnCount(3);
-                        for (int i=0; i<pathwayList.size(); i++) {
-                            PathwaySummary pathway = pathwayList.get(i);
-                            pathwayTableModel.setValueAt(pathway.getDataSourceName(), i, 0);
-                            pathwayTableModel.setValueAt(pathway.getName(), i, 1);
-                            pathwayTableModel.setValueAt(Boolean.FALSE, i, 2);
-                        }
-                    }
-
-                    if (interactionList != null) {
-                        interactionTableModel.setRowCount(interactionList.size());
-                        interactionTableModel.setColumnCount(3);
-                        for (int i=0; i<interactionList.size(); i++) {
-                            InteractionBundleSummary interactionBundle = interactionList.get(i);
-                            interactionTableModel.setValueAt
-                                    (interactionBundle.getDataSourceName(), i, 0);
-                            interactionTableModel.setValueAt
-                                    (interactionBundle.getNumInteractions(), i, 1);
-                            interactionTableModel.setValueAt(Boolean.FALSE, i, 2);
-                        }
-                    }
-                }
-
+                SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
+                selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
+                        pathwayTableModel, interactionTableModel, summaryDocument);
             }
         });
     }
 
     /**
-     * Encloses the specified JTextArea in a JScrollPane.
+     * Encloses the specified JTextPane in a JScrollPane.
      * @param title     Title of Area.
-     * @param textArea  JTextArea Object.
+     * @param textPane  JTextPane Object.
      * @return JScrollPane Object.
      */
-    private JScrollPane encloseInJScrollPane (String title, JTextArea textArea) {
-        JScrollPane scrollPane = new JScrollPane(textArea);
+    private JScrollPane encloseInJScrollPane (String title, JTextPane textPane) {
+        JScrollPane scrollPane = new JScrollPane(textPane);
         scrollPane.setBorder(new TitledBorder(title));
         return scrollPane;
     }
@@ -153,30 +117,9 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      * Creates a JTextArea with correct line wrap settings.
      * @return JTextArea Object.
      */
-    private JTextArea createTextArea () {
-        String text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
-                + "Pellentesque et arcu tincidunt massa interdum convallis. Nullam "
-                + "cursus elementum est. Aenean gravida massa vel odio. Duis felis "
-                + "purus, lobortis vitae, nonummy vitae, hendrerit in, neque. Etiam "
-                + "eget nisi ac massa tempor scelerisque. Duis vel nisl sed erat bibendum "
-                + "interdum. Aliquam quis est. Vivamus lacus risus, tempus a, euismod "
-                + "fermentum, semper in, ante. Aenean vulputate dui ac sem. Fusce ac "
-                + "urna nec ipsum vulputate dictum. Aenean eget neque vitae pede "
-                + "porttitor ultrices. Maecenas dapibus nibh ac leo. Aliquam bibendum "
-                + "accumsan massa.\n"
-                + "Sed sagittis turpis a velit. Nam pharetra vestibulum dolor. "
-                + "Donec accumsan. Nullam interdum pede a metus. Aenean lorem leo, "
-                + "aliquam eget, rutrum sed, elementum sit amet, magna. Vivamus aliquam"
-                + "enim at mauris. Maecenas congue tempor dui. Nam sit amet pede sed "
-                + "metus ullamcorper dignissim. Ut mollis odio vitae libero. Mauris "
-                + "ultrices. Aenean dignissim, dui id fringilla aliquam, dolor mauris "
-                + "tincidunt felis, id interdum nulla tortor vitae purus.";
-        JTextArea textArea = new JTextArea (text);
-        textArea.setColumns(20);
-        textArea.setRows(10);
-        textArea.setEditable(false);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        return textArea;
+    private JTextPane createTextArea () {
+        JTextPane textPane = new JTextPane ();
+        textPane.setEditable(false);
+        return textPane;
     }
 }

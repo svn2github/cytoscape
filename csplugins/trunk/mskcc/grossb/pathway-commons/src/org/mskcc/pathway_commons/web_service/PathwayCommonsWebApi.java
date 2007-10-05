@@ -52,6 +52,16 @@ public class PathwayCommonsWebApi {
             PhysicalEntitySummary pe = new PhysicalEntitySummary();
             pe.setName("Protein " + i);
 
+            Organism organism = new Organism();
+            organism.setCommonName("Human");
+            organism.setSpeciesName("Homo Sapiens");
+            pe.setOrganism(organism);
+
+            pe.setDescription("Vestibulum pharetra laoreet ante dictum dolor sed, "
+                + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
+                + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
+                + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
+
             ArrayList <PathwaySummary> pathwayList = new ArrayList<PathwaySummary>();
             for (int j=0; j<10; j++) {
                 PathwaySummary pathwaySummary = new PathwaySummary();
