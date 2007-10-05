@@ -36,11 +36,14 @@
 */
 package cytoscape.data;
 
-import cytoscape.data.CyAttributes;
+import cytoscape.Cytoscape;
 
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
+
+import giny.model.Edge;
+import giny.model.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +56,12 @@ import java.util.Map;
  *
  */
 public class CyAttributesUtils {
+	public static enum AttributeType {
+		NODE,
+		EDGE,
+		NETWORK;
+	}
+
 	/**
 	 * An AttributeFilter that produces all attributes--none are filtered out.
 	 */
@@ -532,6 +541,69 @@ public class CyAttributesUtils {
 		}
 
 		return names;
+	}
+
+	/**
+	 *  Get list of IDs associated with a specific attribute value.
+	 *
+	 * @param attr DOCUMENT ME!
+	 * @param attrName DOCUMENT ME!
+	 * @param attrValue DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static List<String> getIDListFromAttributeValue(AttributeType type, String attrName,
+	                                                       Object attrValue) {
+		final CyAttributes attr;
+		final List<String> ids = new ArrayList<String>();
+		final List<String> result = new ArrayList<String>();
+
+		// Extract ids
+		if (type == AttributeType.NODE) {
+			attr = Cytoscape.getNodeAttributes();
+			final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
+
+			for (Node node : nodes) {
+				ids.add(node.getIdentifier());
+			}
+		} else if (type == AttributeType.EDGE) {
+			attr = Cytoscape.getEdgeAttributes();
+			final List<Edge> edges = Cytoscape.getRootGraph().edgesList();
+
+			for (Edge edge : edges) {
+				ids.add(edge.getIdentifier());
+			}
+		} else {
+			attr = Cytoscape.getNetworkAttributes();
+		}
+
+		final byte attrDataType = attr.getType(attrName);
+
+		String value;
+
+		for (String id : ids) {
+			if (attrDataType == CyAttributes.TYPE_SIMPLE_LIST) {
+				List l = attr.getListAttribute(id, attrName);
+
+				if ((l != null) && (l.size() > 0)) {
+					for (Object obj : l) {
+						if ((obj != null) && obj.equals(attrValue)) {
+							result.add(id);
+
+							break;
+						}
+					}
+				}
+			} else if (attrDataType == CyAttributes.TYPE_STRING) {
+				value = attr.getStringAttribute(id, attrName);
+
+				if ((value != null) && value.equals(attrValue)) {
+					result.add(value);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**

@@ -54,9 +54,9 @@ public class CyWebServiceEvent extends EventObject {
 	private final Object parameter;
 	private final WSEventType nextMove; 
 
-	public CyWebServiceEvent(Object source) {
-		this((String) source, null, null);
-	}
+//	public CyWebServiceEvent(Object source) {
+//		this((String) source, null, null);
+//	}
 
 	public CyWebServiceEvent(String compatibleClient, WSEventType type, Object parameter) {
 		this(compatibleClient, type, parameter, null);
