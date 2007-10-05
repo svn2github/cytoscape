@@ -54,8 +54,10 @@ public class BioPaxCellularLocationMap extends HashMap {
 		put("extracellular", "EM");
 		put("golgi apparatus", "GA");
 		put("mitochondrion", "MI");
+		put("nucleoplasm", "NP");
 		put("nucleus", "NU");
 		put("plasma membrane", "PM");
 		put("ribosome", "RI");
+		put ("transmembrane", "TM");
 	}
 }
