@@ -14,4 +14,9 @@ public class SubgeneNetworkView {
 		this.cynetworkView = cynetworkView;
 	}
 	
+	public SubgeneNetworkView()
+	{
+		
+	}
+	
 }

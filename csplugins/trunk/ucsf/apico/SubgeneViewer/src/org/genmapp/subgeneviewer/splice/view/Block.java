@@ -11,6 +11,8 @@ public class Block extends SubgeneNodeView {
 	//todo: has a list of regions
 	List<Region> listOfRegions = new ArrayList<Region>();
 	
+	private String type; // intron or exon
+
 	SubgeneNetworkView networkView = null;   // pointer back to subgene NetworkView that created me
 	
 	public Block (SubgeneNetworkView NetworkView)
@@ -26,15 +28,26 @@ public class Block extends SubgeneNodeView {
 		this.networkView = NetworkView;
 	}
 	
-	public void addRegion (Region region)
+	public Region addRegion (String id)
 	{
+		Region region = new Region(this);
+		region.setId(id);
 		listOfRegions.add(region);
 		region.setBlock(this);
+		return region;
 	}
 	
 	public void removeRegion  (Region region)
 	{
 		listOfRegions.remove(region);
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

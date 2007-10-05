@@ -22,11 +22,17 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	
 	private CyNode parentNode = null;
 	
-	public void addBlock (Block block)
+
+	public Block addBlock (String id, String type)
 	{
+		Block block = new Block (this);
+		block.setId(id);
+		block.setType(type);
 		listOfBlocks.add(block);
 		block.setNetworkView(this);
+		return block;
 	}
+		
 	
 	public void removeBlock  (Block block)
 	{

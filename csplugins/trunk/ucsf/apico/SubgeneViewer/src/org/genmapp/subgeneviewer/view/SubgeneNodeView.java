@@ -7,11 +7,13 @@ import cytoscape.view.CyNodeView;
 public class SubgeneNodeView {
 	
 	// todo: needs a label
-	private String label;
+	private String id;
+	
 
 	private CyNodeView cynodeView;
 
 	private Rectangle bounds = null;
+	
 
 	public CyNodeView getCynodeView() {
 		return cynodeView;
@@ -43,12 +45,12 @@ public class SubgeneNodeView {
 		return bounds;
 	}
 
-	public String getLabel() {
-		return label;
+	public String getId() {
+		return id;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setId(String label) {
+		this.id = label;
 	}
 	
 }

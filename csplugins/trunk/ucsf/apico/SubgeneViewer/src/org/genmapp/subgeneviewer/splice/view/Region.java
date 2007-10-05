@@ -27,10 +27,13 @@ public class Region extends SubgeneNodeView {
 		this.block = block;
 	}
 	
-	public void addFeature (Feature feature)
+	public Feature addFeature (String id)
 	{
+		Feature feature = new Feature(this);
+		feature.setId(id);
 		listOfFeatures.add(feature);
 		feature.setRegion(this);
+		return feature;
 	}
 	
 	public void removeFeature  (Feature feature)
