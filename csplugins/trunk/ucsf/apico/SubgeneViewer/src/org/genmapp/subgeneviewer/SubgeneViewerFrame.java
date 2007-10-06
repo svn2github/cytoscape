@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
+import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
+
 import cytoscape.Cytoscape;
 import ding.view.DGraphView;
 
@@ -44,6 +46,11 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 				.getCurrentNetworkView()).getCanvas());
 		
 
+	}
+	
+	public void addView (SubgeneNetworkView view)
+	{
+		// todo: Alex, write this
 	}
 
 	public void addViewToFrame(Integer view_type) {

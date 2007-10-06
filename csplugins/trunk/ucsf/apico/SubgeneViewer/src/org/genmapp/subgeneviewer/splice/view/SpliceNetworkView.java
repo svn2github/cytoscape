@@ -3,6 +3,7 @@ package org.genmapp.subgeneviewer.splice.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.genmapp.subgeneviewer.readers.ParseSplice;
 import org.genmapp.subgeneviewer.splice.model.SpliceEvent;
 import org.genmapp.subgeneviewer.splice.model.StartSite;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
@@ -47,12 +48,12 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 		this.parentNode = parentNode;
 	}
 	
-	protected void parseSplice (String nodeId)
+	public void parseSplice (String nodeId)
 	{
-		ParseSplice parser = new ParceSplice (this, nodeId);
+		ParseSplice parser = new ParseSplice (this, nodeId);
 	}
 	
-	protected void renderSplice (String nodeId)
+	public void renderSplice (String nodeId)
 	{
 		// todo: write this sucker, Alex
 	}
