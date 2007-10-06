@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.genmapp.subgeneviewer.readers.ParseSplice;
-import org.genmapp.subgeneviewer.splice.model.SpliceEvent;
-import org.genmapp.subgeneviewer.splice.model.StartSite;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.CyNode;

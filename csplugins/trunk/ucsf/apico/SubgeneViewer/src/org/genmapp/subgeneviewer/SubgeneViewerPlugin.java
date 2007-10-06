@@ -15,12 +15,6 @@ import ding.view.DGraphView;
 public class SubgeneViewerPlugin extends CytoscapePlugin implements
 		PropertyChangeListener {
 
-
-	public static final int EXON_VIEW = 1;
-	public static final int SNP_VIEW = 2;
-	public static final int CHIP_VIEW = 3;
-	public static final int DOMAIN_VIEW = 4;
-
 	
 	private static SubgeneViewerFrame _frame = null;
 

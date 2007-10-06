@@ -1,4 +1,4 @@
-package org.genmapp.subgeneviewer.splice.model;
+package org.genmapp.subgeneviewer.splice.view;
 
 import org.genmapp.subgeneviewer.model.SubgeneNode;
 

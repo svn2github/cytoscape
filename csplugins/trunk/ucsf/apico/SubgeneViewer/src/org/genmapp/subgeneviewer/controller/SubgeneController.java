@@ -12,8 +12,15 @@ import cytoscape.Cytoscape;
 import ding.view.DGraphView;
 
 public class SubgeneController extends MouseAdapter {
+
+	public static final int EXON_VIEW = 1;
+	public static final int SNP_VIEW = 2;
+	public static final int CHIP_VIEW = 3;
+	public static final int DOMAIN_VIEW = 4;
+
+	// temp: default view type 
+	Integer viewType = EXON_VIEW;
 	
-	Integer viewType = SubgeneViewerPlugin.EXON_VIEW;
 	SubgeneNetworkView view = new SubgeneNetworkView();
 	String nodeId;
 
@@ -26,9 +33,14 @@ public class SubgeneController extends MouseAdapter {
 			nodeId = ((DGraphView) Cytoscape.getCurrentNetworkView())
 			.getPickedNodeView(e.getPoint()).getLabel().getText();
 			
+			// check database for available subgene views
+			
+			// check user preference for which available views to view
+			
+			//build views
 			switch (viewType)
 			{
-				case SubgeneViewerPlugin.EXON_VIEW:
+				case EXON_VIEW:
 				{
 					view = buildSpliceViewer(nodeId);
 					break;
@@ -60,7 +72,7 @@ public class SubgeneController extends MouseAdapter {
 		//todo: Store user preference for which available views to view
 		
 		//temp: choose EXON_VIEW for now
-		f.addViewToFrame(SubgeneViewerPlugin.EXON_VIEW);
+		f.addViewToFrame(EXON_VIEW);
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -76,6 +88,14 @@ public class SubgeneController extends MouseAdapter {
 	}
 
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	public Integer getViewType() {
+		return viewType;
+	}
+
+	public void setViewType(Integer viewType) {
+		this.viewType = viewType;
 	}
 
 }
