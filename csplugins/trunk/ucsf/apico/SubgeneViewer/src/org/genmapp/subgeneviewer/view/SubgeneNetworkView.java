@@ -1,18 +1,18 @@
 package org.genmapp.subgeneviewer.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
+import javax.swing.JPanel;
 
-public class SubgeneNetworkView {
-	private CyNetworkView cynetworkView;
-	
-	public CyNetworkView getCynetworkView() {
-		return cynetworkView;
-	}
+public class SubgeneNetworkView extends JPanel{
 
-	public void setCynetworkView(CyNetworkView cynetworkView) {
-		this.cynetworkView = cynetworkView;
-	}
+//	private CyNetworkView cynetworkView;
+//	
+//	public CyNetworkView getCynetworkView() {
+//		return cynetworkView;
+//	}
+//
+//	public void setCynetworkView(CyNetworkView cynetworkView) {
+//		this.cynetworkView = cynetworkView;
+//	}
 	
 	public SubgeneNetworkView()
 	{

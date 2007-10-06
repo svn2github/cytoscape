@@ -2,10 +2,12 @@ package org.genmapp.subgeneviewer.controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.genmapp.subgeneviewer.SubgeneViewerFrame;
 import org.genmapp.subgeneviewer.SubgeneViewerPlugin;
-import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
+import org.genmapp.subgeneviewer.splice.controller.SpliceController;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.Cytoscape;
@@ -14,66 +16,87 @@ import ding.view.DGraphView;
 public class SubgeneController extends MouseAdapter {
 
 	public static final int EXON_VIEW = 1;
+
 	public static final int SNP_VIEW = 2;
+
 	public static final int CHIP_VIEW = 3;
+
 	public static final int DOMAIN_VIEW = 4;
 
-	// temp: default view type 
-	Integer viewType = EXON_VIEW;
-	
-	SubgeneNetworkView view = new SubgeneNetworkView();
-	String nodeId;
+	// temp: default view type
+	private SubgeneNetworkView _view = new SubgeneNetworkView();
+
+	private List<Integer> _viewsInDatabase = new ArrayList<Integer>();
+
+	private List<Integer> _viewsToView = new ArrayList<Integer>();
+
+	private String _nodeId;
 
 	public void mousePressed(MouseEvent e) {
-		
+
 		if (e.getClickCount() >= 2
 				&& (((DGraphView) Cytoscape.getCurrentNetworkView())
 						.getPickedNodeView(e.getPoint()) != null)) {
-			// todo: get the id for the node that we are on
-			nodeId = ((DGraphView) Cytoscape.getCurrentNetworkView())
-			.getPickedNodeView(e.getPoint()).getLabel().getText();
-			
-			// check database for available subgene views
-			
-			// check user preference for which available views to view
-			
-			//build views
-			switch (viewType)
-			{
-				case EXON_VIEW:
-				{
-					view = buildSpliceViewer(nodeId);
-					break;
-				}
-			}
 
 			System.out.println("SGV: double click on node");
 
-			// temporary functions for demo
+			_nodeId = ((DGraphView) Cytoscape.getCurrentNetworkView())
+					.getPickedNodeView(e.getPoint()).getLabel().getText();
+
+			getViewsInDatabase(_nodeId);
+			getViewsToView();
+
 			SubgeneViewerFrame frame = SubgeneViewerPlugin.get_frame();
-//			chooseViews(frame);
-			frame.addView(view);
+
+			for (Integer viewType : _viewsToView) {
+				if (_viewsInDatabase.contains(viewType)) {
+
+					switch (viewType) {
+					case EXON_VIEW: {
+						_view = SpliceController.buildSpliceViewer(_nodeId);
+						break;
+					}
+					case SNP_VIEW: {
+						// todo
+					}
+					case CHIP_VIEW: {
+						// todo
+					}
+					case DOMAIN_VIEW: {
+						// todo
+					}
+					}
+					frame.addView(_view);
+				}
+			}
 			frame.setVisible(true);
 		}
 	}
-	
-	public SubgeneNetworkView buildSpliceViewer(String nodeId)
-	{
-		SpliceNetworkView spliceView = new SpliceNetworkView();
-		spliceView.parseSplice(nodeId);
-		spliceView.renderSplice(nodeId);
-		return spliceView;
-		
+
+	/**
+	 * Check database for available subgene views
+	 * 
+	 * @param nodeId
+	 */
+	public void getViewsInDatabase(String nodeId) {
+		// temp: check individual gene files for subgene info
+
+		// temp: assume test file is for every node that is clicked
+		_viewsInDatabase.add(EXON_VIEW);
 	}
 
-	private void chooseViews(SubgeneViewerFrame f) {
-		//todo: Check database to see which views have supporting data 
-		
-		//todo: Store user preference for which available views to view
-		
-		//temp: choose EXON_VIEW for now
-		f.addViewToFrame(EXON_VIEW);
+	/**
+	 * Check user preferences for which views to view
+	 */
+	public void getViewsToView() {
+		// temp: assume user only want to view EXON view
+		_viewsToView.add(EXON_VIEW);
 	}
+
+//	private void chooseViews(SubgeneViewerFrame f) {
+//		// temp: choose EXON_VIEW for now
+//		f.addViewToFrame(EXON_VIEW);
+//	}
 
 	public void mouseClicked(MouseEvent e) {
 	}
@@ -88,14 +111,6 @@ public class SubgeneController extends MouseAdapter {
 	}
 
 	public void mouseReleased(MouseEvent e) {
-	}
-
-	public Integer getViewType() {
-		return viewType;
-	}
-
-	public void setViewType(Integer viewType) {
-		this.viewType = viewType;
 	}
 
 }

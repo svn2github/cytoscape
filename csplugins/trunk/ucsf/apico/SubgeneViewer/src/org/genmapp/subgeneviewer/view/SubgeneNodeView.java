@@ -5,35 +5,33 @@ import java.awt.Rectangle;
 import cytoscape.view.CyNodeView;
 
 public class SubgeneNodeView {
-	
-	// todo: needs a label
-	private String id;
-	
 
-	private CyNodeView cynodeView;
+	private Integer _id;
 
-	private Rectangle bounds = null;
+	private CyNodeView _cynodeView;
+
+	private Rectangle _bounds = null;
 	
 
 	public CyNodeView getCynodeView() {
-		return cynodeView;
+		return _cynodeView;
 	}
 
 	public void setCynodeView(CyNodeView cynodeView) {
-		this.cynodeView = cynodeView;
+		_cynodeView = cynodeView;
 	}
 
 	public Rectangle getBounds() {
-		return bounds;
+		return _bounds;
 	}
 
 	public void setBounds(Rectangle bounds) {
-		this.bounds = bounds;
+		_bounds = bounds;
 	}
 	
 	public void setBounds(int x, int y, int width, int height)
 	{
-		this.bounds = new Rectangle(x, y, width, height);
+		_bounds = new Rectangle(x, y, width, height);
 	}
 	
 	/**
@@ -42,15 +40,15 @@ public class SubgeneNodeView {
 	 */
 	public Rectangle computeBounds()
 	{
-		return bounds;
+		return _bounds;
 	}
 
-	public String getId() {
-		return id;
+	public Integer getId() {
+		return _id;
 	}
 
-	public void setId(String label) {
-		this.id = label;
+	public void setId(Integer id) {
+		_id = id;
 	}
 	
 }

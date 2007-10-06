@@ -28,7 +28,7 @@ public class Block extends SubgeneNodeView {
 		this.networkView = NetworkView;
 	}
 	
-	public Region addRegion (String id)
+	public Region addRegion (Integer id)
 	{
 		Region region = new Region(this);
 		region.setId(id);

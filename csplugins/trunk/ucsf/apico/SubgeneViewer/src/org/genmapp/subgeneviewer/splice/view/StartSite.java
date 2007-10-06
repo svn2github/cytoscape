@@ -1,8 +1,22 @@
 package org.genmapp.subgeneviewer.splice.view;
 
-import org.genmapp.subgeneviewer.model.SubgeneNode;
+import org.genmapp.subgeneviewer.view.SubgeneNodeView;
 
-public class StartSite extends SubgeneNode {
+public class StartSite extends SubgeneNodeView {
 
-	//todo: reference a region
+	private Region region = null;
+	
+	public StartSite (Region region)
+	{
+		this.region = region;
+	}
+
+	public Region getRegion() {
+		return region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
 }
