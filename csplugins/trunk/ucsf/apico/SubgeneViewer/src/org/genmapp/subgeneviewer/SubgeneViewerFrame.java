@@ -65,38 +65,6 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 	
 	}
 
-//	public void addViewToFrame(Integer view_type) {
-//
-//		switch (view_type) {
-//		case 1: // add exon view
-//			if (_cnvList.size() >= 3) {
-//				System.out.println("SGV: Viewer MAX = 3 views");
-//				return;
-//			}
-//
-//
-//			icon = new ImageIcon(
-//					"/Applications/Cytoscape_v2.5.1/plugins/subgene_mock.jpg");
-//
-//			JPanel exonPanel = new JPanel() {
-//				protected void paintComponent(Graphics g) {
-//					g.drawImage(icon.getImage(), 5, 10, null);
-//					super.paintComponent(g);
-//				}
-//			};
-//			exonPanel.setBorder(new TitledBorder("Exon Structure Viewer"));
-//			exonPanel.setOpaque(false);
-//			
-//			// todo: make this a calculated value
-//			exonPanel.setPreferredSize(new Dimension(455, 140));
-//
-//		case 2: // add snp view
-//		case 3: // add Chip view
-//		case 4: // add protein domain view
-//		default: // this.add(Cytoscape.getCurrentNetworkView().getComponent());
-//		}
-//	}
-//
 	public void mouseDragged(MouseEvent e) {
 		// scroll when dragging
 		Rectangle r = new Rectangle(e.getX(), e.getY(), 1, 1);

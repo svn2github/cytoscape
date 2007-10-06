@@ -79,6 +79,7 @@ public class SubgeneController extends MouseAdapter {
 	 * @param nodeId
 	 */
 	public void getViewsInDatabase(String nodeId) {
+		_viewsInDatabase.clear();
 		// temp: check individual gene files for subgene info
 
 		// temp: assume test file is for every node that is clicked
@@ -89,14 +90,11 @@ public class SubgeneController extends MouseAdapter {
 	 * Check user preferences for which views to view
 	 */
 	public void getViewsToView() {
+		_viewsToView.clear();
 		// temp: assume user only want to view EXON view
 		_viewsToView.add(EXON_VIEW);
 	}
 
-//	private void chooseViews(SubgeneViewerFrame f) {
-//		// temp: choose EXON_VIEW for now
-//		f.addViewToFrame(EXON_VIEW);
-//	}
 
 	public void mouseClicked(MouseEvent e) {
 	}
