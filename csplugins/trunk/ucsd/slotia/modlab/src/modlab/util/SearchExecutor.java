@@ -29,12 +29,41 @@ public class SearchExecutor
 	}
 
 	/**
-	 * An interface for classes that monitor
-	 * the progress of a search.
+	 * A class that monitors
+	 * the progress of a search and for
+	 * prematurely halting a search.
 	 */
-	public interface ProgressMonitor
+	public static abstract class ProgressMonitor
 	{
-		public void setPercentCompleted(double percent);
+		boolean needsToHalt = false;
+
+		/**
+		 * When using SearchExecutor, one typically writes
+		 * an anonymous class that extends ProgressMonitor
+		 * and implements the setPercentCompleted() method.
+		 * This method will be called by SearchExecutor whenever
+		 * the search has progressed.
+		 */
+		public void setPercentCompleted(double percent)
+		{
+		}
+
+		/**
+		 * Call this method if the search needs to be prematurely halted.
+		 * search() will return null if the search was halted.
+		 */
+		public final void halt()
+		{
+			needsToHalt = true;
+		}
+
+		/**
+		 * Returns true if the search will halt.
+		 */
+		public final boolean needsToHalt()
+		{
+			return needsToHalt;
+		}
 	}
 	
 	private enum Trial { REAL, RANDOM }
@@ -81,7 +110,8 @@ public class SearchExecutor
 	 * @param numOfThreads The number of threads
 	 *  to execute the search concurrently.
 	 * @return The trials produced by the search
-	 *  algorithm. The first trial (at index 0)
+	 *  algorithm, or null if the search
+	 *  was prematurely terminated. The first trial (at index 0)
 	 *  in the list is always the real trial.
 	 * @throws IllegalArgumentException if <code>search</code>
 	 *  or <code>randomize</code> is null, or if
@@ -129,9 +159,11 @@ public class SearchExecutor
 		// Wait for the threads to finish
 		for (int i = 0; i < numOfThreads; i++)
 			try { threads[i].join(); } catch (InterruptedException e) {}
-		
-		if (monitor != null) monitor.setPercentCompleted(1.0);
 
+		// Return null if the search was prematurely halted
+		if (monitor != null && monitor.needsToHalt()) return null;
+
+		if (monitor != null) monitor.setPercentCompleted(1.0);
 		return trials;
 	}
 
@@ -166,6 +198,11 @@ public class SearchExecutor
 		{
 			while (true)
 			{
+				// Make sure we aren't told to halt
+				if (monitor != null)
+					if (monitor.needsToHalt())
+						break;
+
 				// Get some work
 				Trial work = workQueue.poll();
 				if (work == null)
