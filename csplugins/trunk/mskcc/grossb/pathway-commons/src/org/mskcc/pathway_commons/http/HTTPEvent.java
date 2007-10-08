@@ -32,6 +32,7 @@
 package org.mskcc.pathway_commons.http;
 
 // imports
+
 import java.util.EventObject;
 
 /**
@@ -39,46 +40,46 @@ import java.util.EventObject;
  */
 public class HTTPEvent extends EventObject {
 
-	/**
-	 * the request
-	 */
-	private String request;
+    /**
+     * the request
+     */
+    private String request;
 
-	/**
-	 * the response
-	 */
-	private String response;
+    /**
+     * the response
+     */
+    private String response;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param source Object
-	 * @param request String
-	 * @param response String
-	 */
-	public HTTPEvent(Object source, String request, String response) {
-		super (source);
+    /**
+     * Constructor.
+     *
+     * @param source   Object
+     * @param request  String
+     * @param response String
+     */
+    public HTTPEvent(Object source, String request, String response) {
+        super(source);
 
-		// init members
-		this.request = request;
-		this.response = response;
-	}
+        // init members
+        this.request = request;
+        this.response = response;
+    }
 
-	/**
-	 * Method to get the request.
-	 *
-	 * @return String
-	 */
-	public String getRequest() {
-		return request;
-	}
+    /**
+     * Method to get the request.
+     *
+     * @return String
+     */
+    public String getRequest() {
+        return request;
+    }
 
-	/**
-	 * Method to get the response.
-	 *
-	 * @return String
-	 */
-	public String getResponse() {
-		return response;
+    /**
+     * Method to get the response.
+     *
+     * @return String
+     */
+    public String getResponse() {
+        return response;
 	}
 }

@@ -1,20 +1,18 @@
 package org.mskcc.pathway_commons.view;
 
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 import javax.swing.*;
-import javax.swing.text.Document;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.util.Vector;
-
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 
 /**
  * Search Box Panel.
@@ -27,12 +25,13 @@ class SearchBoxPanel extends JPanel {
 
     /**
      * Constructor.
+     *
      * @param webApi PathwayCommmons Web API.
      */
-    public SearchBoxPanel (PathwayCommonsWebApi webApi) {
+    public SearchBoxPanel(PathwayCommonsWebApi webApi) {
         this.webApi = webApi;
         setBorder(new TitledBorder("Search Pathway Commons"));
-        BoxLayout boxLayout = new BoxLayout (this, BoxLayout.X_AXIS);
+        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(boxLayout);
         final JTextField searchField = createSearchField();
         JComboBox organismComboBox = createOrganismComboBox();
@@ -40,16 +39,17 @@ class SearchBoxPanel extends JPanel {
         searchButton = createSearchButton(searchField);
 
         add(searchField);
-        add(Box.createRigidArea(new Dimension(5,0)));
+        add(Box.createRigidArea(new Dimension(5, 0)));
         add(organismComboBox);
-        add(Box.createRigidArea(new Dimension(5,0)));
+        add(Box.createRigidArea(new Dimension(5, 0)));
         add(searchButton);
-        add(Box.createRigidArea(new Dimension(5,0)));
+        add(Box.createRigidArea(new Dimension(5, 0)));
         add(helpButton);
     }
 
     /**
      * Creates the Organism Combo Box.
+     *
      * @return JComboBox Object.
      */
     private JComboBox createOrganismComboBox() {
@@ -66,10 +66,11 @@ class SearchBoxPanel extends JPanel {
 
     /**
      * Creates the Search Field and associated listener(s)
+     *
      * @return JTextField Object.
      */
     private JTextField createSearchField() {
-        final JTextField searchField  = new JTextField(20);
+        final JTextField searchField = new JTextField(20);
         searchField.setText("Enter Protein Name or ID");
         searchField.setMaximumSize(new Dimension(200, 9999));
         searchField.addFocusListener(new FocusAdapter() {
@@ -85,6 +86,7 @@ class SearchBoxPanel extends JPanel {
 
     /**
      * Creates the Search Button and associated action listener.
+     *
      * @param searchField JTextField searchField
      * @return
      */
@@ -109,6 +111,6 @@ class SearchBoxPanel extends JPanel {
      * Initializes Focus to the Search Button.
      */
     public void initFocus() {
-        searchButton.requestFocusInWindow();        
+        searchButton.requestFocusInWindow();
     }
 }

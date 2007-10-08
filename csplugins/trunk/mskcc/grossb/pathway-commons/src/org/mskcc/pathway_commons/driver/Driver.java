@@ -32,6 +32,7 @@
 package org.mskcc.pathway_commons.driver;
 
 // imports
+
 import org.mskcc.pathway_commons.http.HTTPEvent;
 import org.mskcc.pathway_commons.http.HTTPServer;
 import org.mskcc.pathway_commons.http.HTTPServerListener;
@@ -43,26 +44,26 @@ import org.mskcc.pathway_commons.http.HTTPServerListener;
  */
 public class Driver implements HTTPServerListener {
 
-	/**
-	 * Our implementation of HTTPServerListener.
-	 *
-	 * @param event HTTPEvent
-	 */
-	public void httpEvent(HTTPEvent event) {
+    /**
+     * Our implementation of HTTPServerListener.
+     *
+     * @param event HTTPEvent
+     */
+    public void httpEvent(HTTPEvent event) {
 
-		System.out.println("request received: " + event.getRequest());
-	}
+        System.out.println("request received: " + event.getRequest());
+    }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		// create instance of driver
-		Driver driver = new Driver();
+        // create instance of driver
+        Driver driver = new Driver();
 
-		String debugProperty = System.getProperty("DEBUG");
-		Boolean debug  = (debugProperty != null && debugProperty.length() > 0) &&
-			new Boolean(debugProperty.toLowerCase());
+        String debugProperty = System.getProperty("DEBUG");
+        Boolean debug = (debugProperty != null && debugProperty.length() > 0) &&
+                new Boolean(debugProperty.toLowerCase());
 
-		// create server
-		new HTTPServer(HTTPServer.DEFAULT_PORT, driver, debug).start();
-	}
+        // create server
+        new HTTPServer(HTTPServer.DEFAULT_PORT, driver, debug).start();
+    }
 }

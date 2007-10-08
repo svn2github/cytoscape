@@ -32,19 +32,19 @@
 package org.mskcc.pathway_commons.cytoscape;
 
 // imports
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
-import cytoscape.util.undo.CyAbstractEdit;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.util.undo.CyAbstractEdit;
+import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An undoable edit used by org.mskcc.pathway_commons.MergeNetworkTask
@@ -52,99 +52,99 @@ import java.awt.geom.Point2D;
  */
 public class MergeNetworkEdit extends CyAbstractEdit {
 
-	/**
-	 * ref to CyNetwork that we are modifying
-	 */
-	private CyNetwork cyNetwork;
+    /**
+     * ref to CyNetwork that we are modifying
+     */
+    private CyNetwork cyNetwork;
 
-	/**
-	 * ref to map: node is key, value is node position
-	 */
-	private Map<CyNode, Point2D.Double> cyNodes;
+    /**
+     * ref to map: node is key, value is node position
+     */
+    private Map<CyNode, Point2D.Double> cyNodes;
 
-	/**
-	 * ref to edge set
-	 */
-	private Set<CyEdge> cyEdges;
+    /**
+     * ref to edge set
+     */
+    private Set<CyEdge> cyEdges;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param cyNetwork CyNetwork
-	 * @param cyNodes Set<CyNode>
-	 * @param cyEdges Set<CyEdge>
-	 */
-	public MergeNetworkEdit(CyNetwork cyNetwork, Set<CyNode> cyNodes, Set<CyEdge> cyEdges) {
-		super("Merge Network");
+    /**
+     * Constructor.
+     *
+     * @param cyNetwork CyNetwork
+     * @param cyNodes   Set<CyNode>
+     * @param cyEdges   Set<CyEdge>
+     */
+    public MergeNetworkEdit(CyNetwork cyNetwork, Set<CyNode> cyNodes, Set<CyEdge> cyEdges) {
+        super("Merge Network");
 
-		// check args
-		if (cyNetwork == null || cyNodes == null || cyEdges == null)
-			throw new IllegalArgumentException("network, nodes, or edges is null"); 
+        // check args
+        if (cyNetwork == null || cyNodes == null || cyEdges == null)
+            throw new IllegalArgumentException("network, nodes, or edges is null");
 
-		// init args
-		this.cyNetwork = cyNetwork;
-		this.cyEdges = cyEdges;
+        // init args
+        this.cyNetwork = cyNetwork;
+        this.cyEdges = cyEdges;
 
-		this.cyNodes = new HashMap<CyNode, Point2D.Double>();
-		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-		if (view != null || view != Cytoscape.getNullNetworkView()) {
-			for (CyNode cyNode : cyNodes) {
-				NodeView nv = view.getNodeView(cyNode);
-				Point2D.Double point = new Point2D.Double(nv.getXPosition(), nv.getYPosition());
-				this.cyNodes.put(cyNode, point);
-			}
-		}
-	}
+        this.cyNodes = new HashMap<CyNode, Point2D.Double>();
+        CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+        if (view != null || view != Cytoscape.getNullNetworkView()) {
+            for (CyNode cyNode : cyNodes) {
+                NodeView nv = view.getNodeView(cyNode);
+                Point2D.Double point = new Point2D.Double(nv.getXPosition(), nv.getYPosition());
+                this.cyNodes.put(cyNode, point);
+            }
+        }
+    }
 
-	/**
-	 * Method to undo this network merge
-	 */
-	public void undo() {
-		super.undo();
+    /**
+     * Method to undo this network merge
+     */
+    public void undo() {
+        super.undo();
 
-		// iterate through nodes and hide each one
-		for (CyNode cyNode : cyNodes.keySet()) {
-			cyNetwork.hideNode(cyNode);
-		}
-		
-		// iteracte through edges and hide each one
-		for (CyEdge cyEdge : cyEdges) {
-			cyNetwork.hideEdge(cyEdge);
-		}
+        // iterate through nodes and hide each one
+        for (CyNode cyNode : cyNodes.keySet()) {
+            cyNetwork.hideNode(cyNode);
+        }
 
-		// fire Cytoscape.NETWORK_MODIFIED
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNetwork);
-	}
+        // iteracte through edges and hide each one
+        for (CyEdge cyEdge : cyEdges) {
+            cyNetwork.hideEdge(cyEdge);
+        }
 
-	/**
-	 * Method to redo this network merge
-	 */
-	public void redo() {
-		super.redo();
+        // fire Cytoscape.NETWORK_MODIFIED
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNetwork);
+    }
 
-		// get ref to view
-		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+    /**
+     * Method to redo this network merge
+     */
+    public void redo() {
+        super.redo();
 
-		if (view != null || view != Cytoscape.getNullNetworkView()) {
+        // get ref to view
+        CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 
-			// iterate through nodes and restore each one (also set proper position)
-			for (CyNode cyNode : cyNodes.keySet()) {
-				cyNetwork.restoreNode(cyNode);
-				Point2D.Double point = cyNodes.get(cyNode);
-				NodeView nv = view.getNodeView(cyNode);
-				nv.setXPosition(point.getX());
-				nv.setYPosition(point.getY());
-			}
+        if (view != null || view != Cytoscape.getNullNetworkView()) {
 
-			// interate through edges and restore each one...
-			for (CyEdge cyEdge : cyEdges) {
-				cyNetwork.restoreEdge(cyEdge);
-			}
+            // iterate through nodes and restore each one (also set proper position)
+            for (CyNode cyNode : cyNodes.keySet()) {
+                cyNetwork.restoreNode(cyNode);
+                Point2D.Double point = cyNodes.get(cyNode);
+                NodeView nv = view.getNodeView(cyNode);
+                nv.setXPosition(point.getX());
+                nv.setYPosition(point.getY());
+            }
 
-			// do we perform layout here ?
-		}
+            // interate through edges and restore each one...
+            for (CyEdge cyEdge : cyEdges) {
+                cyNetwork.restoreEdge(cyEdge);
+            }
 
-		// fire Cytoscape.NETWORK_MODIFIED
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNetwork);
+            // do we perform layout here ?
+        }
+
+        // fire Cytoscape.NETWORK_MODIFIED
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNetwork);
 	}
 }

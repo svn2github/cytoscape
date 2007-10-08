@@ -32,40 +32,23 @@
 package org.mskcc.pathway_commons.view;
 
 // imports
-import org.mskcc.pathway_commons.util.NetworkUtil;
 
 import cytoscape.CyNetwork;
-
 import ding.view.NodeContextMenuListener;
+import org.mskcc.pathway_commons.util.NetworkUtil;
 
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Component;
-import java.awt.BorderLayout;
-import javax.swing.BoxLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JList;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JDialog;
-import javax.swing.JButton;
-import javax.swing.UIManager;
-import javax.swing.JTextArea;
-import javax.swing.ImageIcon;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class provides a gui that is displayed when a pathwaycommons.org
@@ -77,156 +60,156 @@ import java.net.URL;
  */
 public class MergeDialog extends JDialog {
 
-	/**
-	 * dialog width.
-	 */
-	private static final int DIALOG_WIDTH = 500;
+    /**
+     * dialog width.
+     */
+    private static final int DIALOG_WIDTH = 500;
 
-	/**
-	 * dialog height.
-	 */
-	private static final int DIALOG_HEIGHT = 350;
+    /**
+     * dialog height.
+     */
+    private static final int DIALOG_HEIGHT = 350;
 
-	/**
-	 * ref to the pathway commons request string (url)
-	 */
-	private String pathwayCommonsRequest;
+    /**
+     * ref to the pathway commons request string (url)
+     */
+    private String pathwayCommonsRequest;
 
-	/**
-	 * list of network titles -
-	 * the list box index is used as an index into this list to get the
-	 */
-	private String[] bpNetworkTitles;
+    /**
+     * list of network titles -
+     * the list box index is used as an index into this list to get the
+     */
+    private String[] bpNetworkTitles;
 
-	/**
-	 * map of network title to biopax networks
-	 */
-	private Map<String,CyNetwork>bpNetworkMap;
+    /**
+     * map of network title to biopax networks
+     */
+    private Map<String, CyNetwork> bpNetworkMap;
 
-	/**
-	 * currently selected network -
-	 * set when user chooses network from JList
-	 */
-	private CyNetwork currentlySelectedNetwork;
+    /**
+     * currently selected network -
+     * set when user chooses network from JList
+     */
+    private CyNetwork currentlySelectedNetwork;
 
-	/*
-	 * ref to network listener - for context menus
-	 */
-	NodeContextMenuListener nodeContextMenuListener;
+    /*
+      * ref to network listener - for context menus
+      */
+    NodeContextMenuListener nodeContextMenuListener;
 
-	/**
-	 * Merge network button - global so we can enable/disable as needed
-	 */
-	JButton mergeButton;
+    /**
+     * Merge network button - global so we can enable/disable as needed
+     */
+    JButton mergeButton;
 
     /**
      * Constructor.
      *
-	 * @param owner The frame in which the dialog is displayed.
-	 * @param title Title of the frame.
-	 * @param modal Is dialog modal or not.
-	 * @param pathwayCommonsRequest String
-     * @param bpNetworkSet Set<CyNetwork>.
-	 * @param nodeContextMenuListener NodeContextMenuListener
+     * @param owner                   The frame in which the dialog is displayed.
+     * @param title                   Title of the frame.
+     * @param modal                   Is dialog modal or not.
+     * @param pathwayCommonsRequest   String
+     * @param bpNetworkSet            Set<CyNetwork>.
+     * @param nodeContextMenuListener NodeContextMenuListener
      */
-	public MergeDialog(Frame owner,
-					   String title,
-					   boolean modal,
-					   String pathwayCommonsRequest,
-					   Set<CyNetwork> bpNetworkSet,
-					   NodeContextMenuListener nodeContextMenuListener) {
+    public MergeDialog(Frame owner,
+            String title,
+            boolean modal,
+            String pathwayCommonsRequest,
+            Set<CyNetwork> bpNetworkSet,
+            NodeContextMenuListener nodeContextMenuListener) {
 
-		// set our super class
-		super(owner, title, modal);
+        // set our super class
+        super(owner, title, modal);
 
-		// init members
-		this.pathwayCommonsRequest = pathwayCommonsRequest;
-		bpNetworkTitles = new String[bpNetworkSet.size()];
-		bpNetworkMap = new HashMap<String,CyNetwork>();
-		// here we link network titles to CyNetworks -
-		// this is required because we only have a network
-		// when a user selects it from the JList component
-		int lc = 0;
-		for (CyNetwork net : bpNetworkSet) {
-			String netTitle = net.getTitle();
-			bpNetworkTitles[lc++] = netTitle;
-			bpNetworkMap.put(netTitle, net);
-		}
-		this.nodeContextMenuListener = nodeContextMenuListener;
+        // init members
+        this.pathwayCommonsRequest = pathwayCommonsRequest;
+        bpNetworkTitles = new String[bpNetworkSet.size()];
+        bpNetworkMap = new HashMap<String, CyNetwork>();
+        // here we link network titles to CyNetworks -
+        // this is required because we only have a network
+        // when a user selects it from the JList component
+        int lc = 0;
+        for (CyNetwork net : bpNetworkSet) {
+            String netTitle = net.getTitle();
+            bpNetworkTitles[lc++] = netTitle;
+            bpNetworkMap.put(netTitle, net);
+        }
+        this.nodeContextMenuListener = nodeContextMenuListener;
 
-		// setup the gui
-		initUI();
+        // setup the gui
+        initUI();
 
-		// if only one network has been loadad, select it by default
-		if (bpNetworkTitles.length == 1) {
-			currentlySelectedNetwork = bpNetworkMap.get(bpNetworkTitles[0]);
-		}
-	}
-
-	/**
-	 * Sets up the UI.
-	 */
-    private void initUI() {
-
-		// the panel which will contain all widgets
-		JPanel dialogPanel = new JPanel();
-
-		// we will use box layout
-		dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.PAGE_AXIS));
-
-		// instructions label
-		JPanel infoPanel = initInfoPanel();
-
-		// network list
-		JPanel networkListPanel = initNetworkListPanel();
-
-		// panel for buttons
-		JPanel buttonsPanel = initButtonsPanel();
-
-		// add all components to the dialog panel
-		dialogPanel.add(infoPanel);
-		dialogPanel.add(networkListPanel);
-		dialogPanel.add(buttonsPanel);
-
-		// add panel to this dialog
-		setContentPane(dialogPanel);
-
-		// set dialog dimensions
-		setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
-
-		// we are not resizable
-		setResizable(false);
+        // if only one network has been loadad, select it by default
+        if (bpNetworkTitles.length == 1) {
+            currentlySelectedNetwork = bpNetworkMap.get(bpNetworkTitles[0]);
+        }
     }
 
-	/**
-	 * Sets up the infopanel panel.
-	 *
-	 * @return JPanel.
-	 */
+    /**
+     * Sets up the UI.
+     */
+    private void initUI() {
+
+        // the panel which will contain all widgets
+        JPanel dialogPanel = new JPanel();
+
+        // we will use box layout
+        dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.PAGE_AXIS));
+
+        // instructions label
+        JPanel infoPanel = initInfoPanel();
+
+        // network list
+        JPanel networkListPanel = initNetworkListPanel();
+
+        // panel for buttons
+        JPanel buttonsPanel = initButtonsPanel();
+
+        // add all components to the dialog panel
+        dialogPanel.add(infoPanel);
+        dialogPanel.add(networkListPanel);
+        dialogPanel.add(buttonsPanel);
+
+        // add panel to this dialog
+        setContentPane(dialogPanel);
+
+        // set dialog dimensions
+        setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
+
+        // we are not resizable
+        setResizable(false);
+    }
+
+    /**
+     * Sets up the infopanel panel.
+     *
+     * @return JPanel.
+     */
     private JPanel initInfoPanel() {
 
-		// panel we will return
-		JPanel infoPanel = new JPanel();
-		infoPanel.setBorder(new EmptyBorder(10,2,10,5)); // top, left, bottom, right
+        // panel we will return
+        JPanel infoPanel = new JPanel();
+        infoPanel.setBorder(new EmptyBorder(10, 2, 10, 5)); // top, left, bottom, right
 
-		// create text area to display message
-		JTextArea textArea = new JTextArea("A new network has just been downloaded from Pathway Commons." +
-										   "  You have the option to create a new network within Cytoscape" +
-										   " or merge the new network into an existing Cytoscape network.",
-										   3, 40);
-		textArea.setEditable(false);
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		textArea.setBackground((Color) UIManager.get("Label.background"));
-		textArea.setForeground((Color) UIManager.get("Label.foreground"));
-		textArea.setFont(new Font(null, Font.PLAIN, 13));
+        // create text area to display message
+        JTextArea textArea = new JTextArea("A new network has just been downloaded from Pathway Commons." +
+                "  You have the option to create a new network within Cytoscape" +
+                " or merge the new network into an existing Cytoscape network.",
+                3, 40);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setBackground((Color) UIManager.get("Label.background"));
+        textArea.setForeground((Color) UIManager.get("Label.foreground"));
+        textArea.setFont(new Font(null, Font.PLAIN, 13));
 
-		// add text area to panel
-		infoPanel.add(textArea, BorderLayout.CENTER);
+        // add text area to panel
+        infoPanel.add(textArea, BorderLayout.CENTER);
 
-		// outta here
-		return infoPanel;
-	}
+        // outta here
+        return infoPanel;
+    }
 
     /**
      * Set up the network set panel.
@@ -236,7 +219,7 @@ public class MergeDialog extends JDialog {
         // create the tree panel
         JPanel networkListPanel = new JPanel();
         networkListPanel.setLayout(new BorderLayout());
-		networkListPanel.setBorder(new TitledBorder("Available Networks"));
+        networkListPanel.setBorder(new TitledBorder("Available Networks"));
 
         // we start with a progress panel first
         JScrollPane networkListScrollPane = createNetworkListScrollPane();
@@ -244,8 +227,8 @@ public class MergeDialog extends JDialog {
         // add progress panel to the tree panel
         networkListPanel.add(networkListScrollPane, BorderLayout.CENTER);
 
-		// outta here
-		return networkListPanel;
+        // outta here
+        return networkListPanel;
     }
 
     /**
@@ -255,23 +238,23 @@ public class MergeDialog extends JDialog {
      */
     private JScrollPane createNetworkListScrollPane() {
 
-		// setup our list
-		final JList dataList = new JList(bpNetworkTitles);
-		dataList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		// if list contains only one item, select it by default
-		if (bpNetworkTitles.length == 1) dataList.setSelectedIndex(0);
-		dataList.setCellRenderer(new MyCellRenderer());
+        // setup our list
+        final JList dataList = new JList(bpNetworkTitles);
+        dataList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // if list contains only one item, select it by default
+        if (bpNetworkTitles.length == 1) dataList.setSelectedIndex(0);
+        dataList.setCellRenderer(new MyCellRenderer());
         dataList.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if (e.getValueIsAdjusting() == false) {
-					int selectedIndex = dataList.getSelectedIndex();
-					CyNetwork cyNetwork = bpNetworkMap.get(bpNetworkTitles[selectedIndex]);
-					if (cyNetwork != null) {
-						// a network has been selected, process
-						networkSelected(cyNetwork);
-					}
-				}
-			}
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting() == false) {
+                    int selectedIndex = dataList.getSelectedIndex();
+                    CyNetwork cyNetwork = bpNetworkMap.get(bpNetworkTitles[selectedIndex]);
+                    if (cyNetwork != null) {
+                        // a network has been selected, process
+                        networkSelected(cyNetwork);
+                    }
+                }
+            }
         });
 
         // setup the scroll pane
@@ -291,81 +274,81 @@ public class MergeDialog extends JDialog {
      * @param cyNetwork CyNetwork
      */
     private void networkSelected(CyNetwork cyNetwork) {
-		mergeButton.setEnabled(true);
+        mergeButton.setEnabled(true);
         currentlySelectedNetwork = cyNetwork;
     }
 
-	/**
-	 * Sets up the buttons panel.
-	 *
-	 * @return JPanel.
-	 */
+    /**
+     * Sets up the buttons panel.
+     *
+     * @return JPanel.
+     */
     private JPanel initButtonsPanel() {
 
-		// panel we will return
-		JPanel buttonsPanel = new JPanel();
+        // panel we will return
+        JPanel buttonsPanel = new JPanel();
 
-		// cancel button
-		JButton cancelButton = new JButton("Cancel");
+        // cancel button
+        JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-				dispose();
+                dispose();
             }
         });
 
-		// create button
-		JButton createButton = new JButton("Create New Network");
+        // create button
+        JButton createButton = new JButton("Create New Network");
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-				new NetworkUtil(pathwayCommonsRequest, null,
-								false,  nodeContextMenuListener).start();
-				setVisible(false);
-				dispose();
-            }
-        });
-
-		// merge button - disabled until user selects network to merge
-		mergeButton = new JButton ("Merge with Network");
-		mergeButton.setEnabled((bpNetworkTitles.length == 1));
-		mergeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-				new NetworkUtil(pathwayCommonsRequest, currentlySelectedNetwork,
-								true, nodeContextMenuListener).start();
+                new NetworkUtil(pathwayCommonsRequest, null,
+                        false, nodeContextMenuListener).start();
                 setVisible(false);
-				dispose();
+                dispose();
             }
         });
 
-		// add widgets to buttons panel
-		buttonsPanel.add(cancelButton);
-		buttonsPanel.add(createButton);
-		buttonsPanel.add(mergeButton);
+        // merge button - disabled until user selects network to merge
+        mergeButton = new JButton("Merge with Network");
+        mergeButton.setEnabled((bpNetworkTitles.length == 1));
+        mergeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new NetworkUtil(pathwayCommonsRequest, currentlySelectedNetwork,
+                        true, nodeContextMenuListener).start();
+                setVisible(false);
+                dispose();
+            }
+        });
 
-		// outta here
-		return buttonsPanel;
-	}
+        // add widgets to buttons panel
+        buttonsPanel.add(cancelButton);
+        buttonsPanel.add(createButton);
+        buttonsPanel.add(mergeButton);
+
+        // outta here
+        return buttonsPanel;
+    }
 
     /**
      * Inner Class which extends JLabel to paint cells within our network list
      */
-	class MyCellRenderer extends JLabel implements ListCellRenderer {
+    class MyCellRenderer extends JLabel implements ListCellRenderer {
 
-		/**
-		 * ref to selected icon
-		 */
-		final ImageIcon selectedIcon;
+        /**
+         * ref to selected icon
+         */
+        final ImageIcon selectedIcon;
 
-		/**
-		 * ref to unselected icon
-		 */
-		final ImageIcon unselectedIcon;
+        /**
+         * ref to unselected icon
+         */
+        final ImageIcon unselectedIcon;
 
-		/**
-		 * Constructor.
-		 */
-		public MyCellRenderer() {
-			URL url;
+        /**
+         * Constructor.
+         */
+        public MyCellRenderer() {
+            URL url;
 
             // store selected icon
             url = MergeDialog.class.getResource
@@ -376,36 +359,35 @@ public class MergeDialog extends JDialog {
             url = MergeDialog.class.getResource
                     ("resources/types.gif");
             unselectedIcon = new ImageIcon(url);
-		}
+        }
 
-		/**
-		 * Our implementation of getListCellRendererComponent.
-		 * We just reconfigure the JLabel each time we're called.
-		 * (taken from javadocs).
-		 *
-		 * @param list JList
-		 * @param value Object, value to display
-		 * @param index int, cell index
-		 * @param isSelected boolean, is the list selected
-		 * @param cellHasFocus boolean, the list and the cell have the focus
-		 */
-		public Component getListCellRendererComponent(JList list,
-													  Object value,
-													  int index,
-													  boolean isSelected,
-													  boolean cellHasFocus) {
-			setText(value.toString());
-			if (isSelected) {
-				setIcon(selectedIcon);
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
-			}
-			else {
-				setIcon(unselectedIcon);
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-			setEnabled(list.isEnabled());
+        /**
+         * Our implementation of getListCellRendererComponent.
+         * We just reconfigure the JLabel each time we're called.
+         * (taken from javadocs).
+         *
+         * @param list         JList
+         * @param value        Object, value to display
+         * @param index        int, cell index
+         * @param isSelected   boolean, is the list selected
+         * @param cellHasFocus boolean, the list and the cell have the focus
+         */
+        public Component getListCellRendererComponent(JList list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+            setText(value.toString());
+            if (isSelected) {
+                setIcon(selectedIcon);
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setIcon(unselectedIcon);
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setEnabled(list.isEnabled());
 			setFont(list.getFont());
 			setOpaque(true);
 			return this;

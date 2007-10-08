@@ -32,22 +32,22 @@
 package org.mskcc.pathway_commons.task;
 
 // imports
-import org.mskcc.pathway_commons.cytoscape.MergeNetworkEdit;
 
-import cytoscape.CyNode;
 import cytoscape.CyEdge;
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
-import cytoscape.data.readers.GraphReader;
+import org.mskcc.pathway_commons.cytoscape.MergeNetworkEdit;
 
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Task to merge a network.
@@ -56,143 +56,143 @@ import java.util.HashSet;
  */
 public class MergeNetworkTask implements Task {
 
-	/**
-	 * ref to pathwayCommonsURL
-	 */
-	private URL pathwayCommonsURL;
+    /**
+     * ref to pathwayCommonsURL
+     */
+    private URL pathwayCommonsURL;
 
-	/**
-	 * ref to cyNetwork
-	 */
-	private CyNetwork cyNetwork;
+    /**
+     * ref to cyNetwork
+     */
+    private CyNetwork cyNetwork;
 
-	/**
-	 * ref to our graph reader
-	 */
-	private GraphReader reader;
+    /**
+     * ref to our graph reader
+     */
+    private GraphReader reader;
 
-	/**
-	 * ref to the task monitor
-	 */
-	private TaskMonitor taskMonitor;
+    /**
+     * ref to the task monitor
+     */
+    private TaskMonitor taskMonitor;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param pathwayCommonsURL URL
-	 * @param cyNetwork CyNetwork
-	 */
-	public MergeNetworkTask(URL pathwayCommonsURL, CyNetwork cyNetwork) {
+    /**
+     * Constructor.
+     *
+     * @param pathwayCommonsURL URL
+     * @param cyNetwork         CyNetwork
+     */
+    public MergeNetworkTask(URL pathwayCommonsURL, CyNetwork cyNetwork) {
 
-		// init member vars
-		this.pathwayCommonsURL = pathwayCommonsURL;
-		this.cyNetwork = cyNetwork;
-		reader = Cytoscape.getImportHandler().getReader(pathwayCommonsURL);
-	}
+        // init member vars
+        this.pathwayCommonsURL = pathwayCommonsURL;
+        this.cyNetwork = cyNetwork;
+        reader = Cytoscape.getImportHandler().getReader(pathwayCommonsURL);
+    }
 
-	/**
-	 * Our implementation of Task.halt()
-	 */
-	public void halt() {
-		// Task can not currently be halted.
-	}
+    /**
+     * Our implementation of Task.halt()
+     */
+    public void halt() {
+        // Task can not currently be halted.
+    }
 
-	/**
-	 * Our implementation of Task.setTaskMonitor().
-	 *
-	 * @param taskMonitor TaskMonitor
-	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
-		this.taskMonitor = taskMonitor;
-	}
+    /**
+     * Our implementation of Task.setTaskMonitor().
+     *
+     * @param taskMonitor TaskMonitor
+     */
+    public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+        this.taskMonitor = taskMonitor;
+    }
 
-	/**
-	 * Our implementation of Task.getTitle.
-	 *
-	 * @return Task Title.
-	 */
-	public String getTitle() {
-		return "Pathway Commons Plugin - Merge Network";
-	}
+    /**
+     * Our implementation of Task.getTitle.
+     *
+     * @return Task Title.
+     */
+    public String getTitle() {
+        return "Pathway Commons Plugin - Merge Network";
+    }
 
-	/**
-	 * Our implementation of Task.run().
-	 */
-	public void run() {
+    /**
+     * Our implementation of Task.run().
+     */
+    public void run() {
 
-		try {
+        try {
 
-			// read the network from pathway commons
-			taskMonitor.setPercentCompleted(-1);
-			taskMonitor.setStatus("Reading in Network Data for pathwaycommons.org...");
-			reader.read();
+            // read the network from pathway commons
+            taskMonitor.setPercentCompleted(-1);
+            taskMonitor.setStatus("Reading in Network Data for pathwaycommons.org...");
+            reader.read();
 
-			// unselect all nodes / edges
-			cyNetwork.unselectAllNodes();
-			cyNetwork.unselectAllEdges();
+            // unselect all nodes / edges
+            cyNetwork.unselectAllNodes();
+            cyNetwork.unselectAllEdges();
 
-			// refs to capture new nodes and edgets
-			Set<CyNode> newNodes = new HashSet<CyNode>();
-			Set<CyEdge> newEdges = new HashSet<CyEdge>();
+            // refs to capture new nodes and edgets
+            Set<CyNode> newNodes = new HashSet<CyNode>();
+            Set<CyEdge> newEdges = new HashSet<CyEdge>();
 
-			// add new nodes and edges to existing network
-			// tbd: worry about networks that exceed # node/edge threshold
-			final int[] nodes = reader.getNodeIndicesArray();
-			final int[] edges = reader.getEdgeIndicesArray();
-			for (int node : nodes) {
-				cyNetwork.addNode(node);
-				newNodes.add((CyNode)Cytoscape.getRootGraph().getNode(node));
-			}
-			for (int edge : edges) {
-				cyNetwork.addEdge(edge);
-				newEdges.add((CyEdge)Cytoscape.getRootGraph().getEdge(edge));
-			}
+            // add new nodes and edges to existing network
+            // tbd: worry about networks that exceed # node/edge threshold
+            final int[] nodes = reader.getNodeIndicesArray();
+            final int[] edges = reader.getEdgeIndicesArray();
+            for (int node : nodes) {
+                cyNetwork.addNode(node);
+                newNodes.add((CyNode) Cytoscape.getRootGraph().getNode(node));
+            }
+            for (int edge : edges) {
+                cyNetwork.addEdge(edge);
+                newEdges.add((CyEdge) Cytoscape.getRootGraph().getEdge(edge));
+            }
 
-			// execute any post processing -
-			// in this case, biopax style is applied, network attributes set, etc
-			reader.doPostProcessing(cyNetwork);
+            // execute any post processing -
+            // in this case, biopax style is applied, network attributes set, etc
+            reader.doPostProcessing(cyNetwork);
 
-			// select nodes / edges
-			cyNetwork.setSelectedNodeState(newNodes, true);
-			cyNetwork.setSelectedEdgeState(newEdges, true);
+            // select nodes / edges
+            cyNetwork.setSelectedNodeState(newNodes, true);
+            cyNetwork.setSelectedEdgeState(newEdges, true);
 
-			// setup undo
-			CyUndo.getUndoableEditSupport().postEdit(new MergeNetworkEdit(cyNetwork, newNodes, newEdges));
+            // setup undo
+            CyUndo.getUndoableEditSupport().postEdit(new MergeNetworkEdit(cyNetwork, newNodes, newEdges));
 
-			// fire Cytoscape.NETWORK_MODIFIED - should be removed when undo support is back in
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNetwork);
+            // fire Cytoscape.NETWORK_MODIFIED - should be removed when undo support is back in
+            Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNetwork);
 
-			// update the task monitor
-			taskMonitor.setStatus(getMergeStatus(cyNetwork, nodes.length, edges.length));
-			taskMonitor.setPercentCompleted(100);
+            // update the task monitor
+            taskMonitor.setStatus(getMergeStatus(cyNetwork, nodes.length, edges.length));
+            taskMonitor.setPercentCompleted(100);
 
-		} catch (Exception e) {
-			taskMonitor.setException(e, "Unable to merge networks.");
-		}
-	}
+        } catch (Exception e) {
+            taskMonitor.setException(e, "Unable to merge networks.");
+        }
+    }
 
-	/**
-	 * Constructs merge status string.
-	 * (based on cytoscape.action.LoadNetworkTask.informUserOfGraphStats)
-	 *
-	 * @param cyNetwork CyNetwork
-	 * @param nodeCount int
-	 * @param edgeCount int
-	 * @return String
-	 */
-	private String getMergeStatus(CyNetwork cyNetwork, int nodeCount, int edgeCount) {
+    /**
+     * Constructs merge status string.
+     * (based on cytoscape.action.LoadNetworkTask.informUserOfGraphStats)
+     *
+     * @param cyNetwork CyNetwork
+     * @param nodeCount int
+     * @param edgeCount int
+     * @return String
+     */
+    private String getMergeStatus(CyNetwork cyNetwork, int nodeCount, int edgeCount) {
 
-		NumberFormat formatter = new DecimalFormat("#,###,###");
-		StringBuffer sb = new StringBuffer();
+        NumberFormat formatter = new DecimalFormat("#,###,###");
+        StringBuffer sb = new StringBuffer();
 
-		// construct status string
-		sb.append("Succesfully merged network from:  ");
-		sb.append(pathwayCommonsURL.toString() + ".\n");
-		sb.append(formatter.format(nodeCount) + " nodes and " + formatter.format(edgeCount) + " edges have been merged.");
-		sb.append("  The merged network contains a total of " + formatter.format(cyNetwork.getNodeCount()));
-		sb.append(" nodes and " + formatter.format(cyNetwork.getEdgeCount()) + " edges.");
+        // construct status string
+        sb.append("Succesfully merged network from:  ");
+        sb.append(pathwayCommonsURL.toString() + ".\n");
+        sb.append(formatter.format(nodeCount) + " nodes and " + formatter.format(edgeCount) + " edges have been merged.");
+        sb.append("  The merged network contains a total of " + formatter.format(cyNetwork.getNodeCount()));
+        sb.append(" nodes and " + formatter.format(cyNetwork.getEdgeCount()) + " edges.");
 
-		// outta here
-		return sb.toString();
+        // outta here
+        return sb.toString();
 	}
 }

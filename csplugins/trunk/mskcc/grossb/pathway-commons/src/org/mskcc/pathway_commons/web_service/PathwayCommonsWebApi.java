@@ -2,9 +2,9 @@ package org.mskcc.pathway_commons.web_service;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.math.BigInteger;
 
 /**
  * Class for accessing the Pathway Commons Web API.
@@ -12,21 +12,22 @@ import java.math.BigInteger;
  * @author Ethan Cerami
  */
 public class PathwayCommonsWebApi {
-    private ArrayList <PathwayCommonsWebApiListener> listeners =
-            new ArrayList <PathwayCommonsWebApiListener>();
+    private ArrayList<PathwayCommonsWebApiListener> listeners =
+            new ArrayList<PathwayCommonsWebApiListener>();
 
     /**
      * Searches Physical Entities in Pathway Commons.
-     * @param keyword           Keyword to search for.
-     * @param ncbiTaxonomyId    Organism filter (-1 to to search all organisms)
-     * @param startIndex        Start index into search results; used to perform pagination.
+     *
+     * @param keyword        Keyword to search for.
+     * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms)
+     * @param startIndex     Start index into search results; used to perform pagination.
      * @return
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex) {
 
         // Notify all listeners of start
-        for (int i=listeners.size() -1; i>=0; i--) {
+        for (int i = listeners.size() - 1; i >= 0; i--) {
             PathwayCommonsWebApiListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
@@ -40,7 +41,7 @@ public class PathwayCommonsWebApi {
         SearchResponseType searchResponse = createDummySearchResults();
 
         // Notify all listeners of end
-        for (int i=listeners.size() -1; i>=0; i--) {
+        for (int i = listeners.size() - 1; i >= 0; i--) {
             PathwayCommonsWebApiListener listener = listeners.get(i);
             listener.searchCompletedForPhysicalEntities(searchResponse);
         }
@@ -49,8 +50,8 @@ public class PathwayCommonsWebApi {
 
     private SearchResponseType createDummySearchResults() {
         SearchResponseType searchResponse = new SearchResponseType();
-        List <SearchHitType> searchHits = searchResponse.getSearchHit();
-        for (int i=0; i<10; i++) {
+        List<SearchHitType> searchHits = searchResponse.getSearchHit();
+        for (int i = 0; i < 10; i++) {
             SearchHitType searchHit = new SearchHitType();
             searchHit.setName("Protein " + i);
 
@@ -61,13 +62,13 @@ public class PathwayCommonsWebApi {
 
             List comments = searchHit.getComment();
             comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
-                + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
-                + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
-                + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
+                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
+                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
+                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
 
             PathwayListType pathwayListType = searchHit.getPathwayList();
-            List <PathwayType> pathwayList = pathwayListType.getPathway();
-            for (int j=0; j<10; j++) {
+            List<PathwayType> pathwayList = pathwayListType.getPathway();
+            for (int j = 0; j < 10; j++) {
                 PathwayType pathwaySummary = new PathwayType();
                 pathwaySummary.setName("Pathway " + j + "[" + i + "]");
                 pathwaySummary.setPrimaryId((long) j);
@@ -79,13 +80,13 @@ public class PathwayCommonsWebApi {
 
             InteractionBundleListType interactionBundleListType =
                     searchHit.getInteractionBundleList();
-            List <InteractionBundleType> interactionBundleList =
+            List<InteractionBundleType> interactionBundleList =
                     interactionBundleListType.getInteractionBundle();
-            for (int j=0; j<10; j++) {
+            for (int j = 0; j < 10; j++) {
                 InteractionBundleType interactionBundle = new InteractionBundleType();
                 DataSourceType dataSource = new DataSourceType();
                 dataSource.setName("Data Source " + j);
-                interactionBundle.setNumInteractions(BigInteger.valueOf(i*j));
+                interactionBundle.setNumInteractions(BigInteger.valueOf(i * j));
                 interactionBundleList.add(interactionBundle);
             }
             searchHits.add(searchHit);
@@ -95,6 +96,7 @@ public class PathwayCommonsWebApi {
 
     /**
      * Gets a list of all Organisms currently available within Pathway Commons.
+     *
      * @return
      */
     public ArrayList<OrganismType> getOrganismList() {
@@ -103,17 +105,19 @@ public class PathwayCommonsWebApi {
 
     /**
      * Gets the interaction bundle for a physical entity, from one data source.
+     *
      * @param internalPhysicalEntityId Internal ID for physical entity of interest.
-     * @param dataSourceId (-1 to get data from all sources).
-     * @param view (1=simple view, 2=complex view).
+     * @param dataSourceId             (-1 to get data from all sources).
+     * @param view                     (1=simple view, 2=complex view).
      * @return CyNetwork.
      */
-    public void getInteractionBundle (long internalPhysicalEntityId, int dataSourceId,
+    public void getInteractionBundle(long internalPhysicalEntityId, int dataSourceId,
             int view) {
     }
 
     /**
      * Gets the interaction bundle summaries for a physical entity
+     *
      * @param internalPhysicalEntityId Internal ID for physical entity of interest.
      * @return ArrayList of Interaction Bundle Summary Objects.
      */
@@ -124,35 +128,39 @@ public class PathwayCommonsWebApi {
 
     /**
      * Gets the specified pathway.
+     *
      * @param internalPathwayId Internal Pathway ID.
-     * @param view (1=simple view, 2=complex view).
+     * @param view              (1=simple view, 2=complex view).
      * @return
      */
-    public void getPathway (long internalPathwayId, int view) {
+    public void getPathway(long internalPathwayId, int view) {
 
     }
 
     /**
      * Registers a new listener.
+     *
      * @param listener PathwayCommonsWebApi Listener.
      */
-    public void addApiListener (PathwayCommonsWebApiListener listener) {
+    public void addApiListener(PathwayCommonsWebApiListener listener) {
         listeners.add(listener);
     }
 
     /**
      * Removes the specified listener.
+     *
      * @param listener PathwayCommonsWebApi Listener.
      */
-    public void removeApiListener (PathwayCommonsWebApiListener listener) {
+    public void removeApiListener(PathwayCommonsWebApiListener listener) {
         listeners.remove(listener);
     }
 
     /**
      * Gets the list of all registered listeners.
+     *
      * @return ArrayList of PathwayCommonsWebApiListener Objects.
      */
-    public ArrayList <PathwayCommonsWebApiListener> getListeners() {
+    public ArrayList<PathwayCommonsWebApiListener> getListeners() {
         return listeners;
     }
 }

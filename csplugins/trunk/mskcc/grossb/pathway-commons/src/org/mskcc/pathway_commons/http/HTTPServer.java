@@ -32,90 +32,92 @@
 package org.mskcc.pathway_commons.http;
 
 // import
-import java.net.Socket;
-import java.net.ServerSocket;
+
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
- * HTTPServer class provides a bare-bones 
- * server to listen for requests from pathwaycommons.org 
+ * HTTPServer class provides a bare-bones
+ * server to listen for requests from pathwaycommons.org
  * web pages.
- *
+ * <p/>
  * First version will be single-thread since
  * we assume only one browser w/pc is running.
  *
  * @author Benjamin Gross.
  */
 public class HTTPServer extends Thread {
-	
-	/**
-	 * default port
-	 */
-	public static final int DEFAULT_PORT = 27182;
 
-	/**
-	 * ref to port
-	 */
-	private int port;
+    /**
+     * default port
+     */
+    public static final int DEFAULT_PORT = 27182;
 
-	/**
-	 * debug flag
-	 */
-	private boolean debug;
+    /**
+     * ref to port
+     */
+    private int port;
 
-	/**
-	 * ref to server listener
-	 */
-	private HTTPServerListener listener;
+    /**
+     * debug flag
+     */
+    private boolean debug;
+
+    /**
+     * ref to server listener
+     */
+    private HTTPServerListener listener;
 
     /**
      * Constructor.
-	 *
-	 * @param port int
-	 * @param listener HTTServerListener
-	 * @param debug boolean
+     *
+     * @param port     int
+     * @param listener HTTServerListener
+     * @param debug    boolean
      */
-	public HTTPServer(int port, HTTPServerListener listener, boolean debug) {
+    public HTTPServer(int port, HTTPServerListener listener, boolean debug) {
 
-		// init members
-		this.port = port;
-		this.listener = listener;
-		this.debug = debug;
-	}
+        // init members
+        this.port = port;
+        this.listener = listener;
+        this.debug = debug;
+    }
 
-	/**
-	 * Our implementation of run.
-	 */
-	public void run() {
+    /**
+     * Our implementation of run.
+     */
+    public void run() {
 
-		// create new server socket
-		ServerSocket ssocket;
-		try {
-			if (debug) System.out.println("HTTPServer, creating server socket...");
-			ssocket = new ServerSocket(port);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+        // create new server socket
+        ServerSocket ssocket;
+        try {
+            if (debug) System.out.println("HTTPServer, creating server socket...");
+            ssocket = new ServerSocket(port);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
 
-		// run indefinitely
-		while (true) {
+        // run indefinitely
+        while (true) {
 
-			try {
+            try {
 
-				// block until connection is made
-				if (debug) System.out.println("HTTPServer, waiting for connection...");
-				Socket sock = ssocket.accept();
+                // block until connection is made
+                if (debug) System.out.println("HTTPServer, waiting for connection...");
+                Socket sock = ssocket.accept();
 
-				// connection made, create an new connection handler
-				if (debug) System.out.println("HTTPServer, instantiating new HTTPConnectionHandler");
-				new HTTPConnectionHandler(sock, listener, debug).start();
+                // connection made, create an new connection handler
+                if (debug)
+                    System.out.println("HTTPServer, instantiating new HTTPConnectionHandler");
+                new HTTPConnectionHandler(sock, listener, debug).start();
 
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				break;
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                break;
 			}
 		}
 	}

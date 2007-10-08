@@ -1,18 +1,17 @@
 package org.mskcc.pathway_commons.view;
 
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.theme.SkyBlue;
+import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Vector;
-
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
-import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 
 /**
  * Main GUI Panel for Searching Pathway Commons.
@@ -46,7 +45,7 @@ public class PathwayCommonsSearchPanel extends JPanel {
         setLayout(new BorderLayout());
 
         //  Create North Panel:  Search Box
-        searchBoxPanel = new SearchBoxPanel (webApi);
+        searchBoxPanel = new SearchBoxPanel(webApi);
         add(searchBoxPanel, BorderLayout.NORTH);
 
         //  Create Center Panel:  Search Results
@@ -72,11 +71,13 @@ public class PathwayCommonsSearchPanel extends JPanel {
         PlasticLookAndFeel.setPlasticTheme(new SkyBlue());
         try {
             UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /**
      * Creates the Search Results Split Pane.
+     *
      * @return JSplitPane Object.
      */
     private JSplitPane createSearchResultsPanel() {
@@ -95,12 +96,13 @@ public class PathwayCommonsSearchPanel extends JPanel {
 
     /**
      * Creates the Download Panel.
+     *
      * @return JPanel Object.
      */
-    private JPanel createDownloadPanel () {
+    private JPanel createDownloadPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setBorder(new TitledBorder ("Download Options"));
+        panel.setBorder(new TitledBorder("Download Options"));
         //JButton button = new JButton ("Download");
 
         Vector networkList = new Vector();
@@ -111,13 +113,14 @@ public class PathwayCommonsSearchPanel extends JPanel {
 
         panel.add(Box.createHorizontalGlue());
         panel.add(networkComboBox);
-        panel.add(Box.createRigidArea(new Dimension(5,0)));
+        panel.add(Box.createRigidArea(new Dimension(5, 0)));
         //panel.add(button);
         return panel;
     }
 
     /**
      * Main Method.  Used for debugging purposes only.
+     *
      * @param args Command Line Arguments.
      */
     public static void main(String[] args) {

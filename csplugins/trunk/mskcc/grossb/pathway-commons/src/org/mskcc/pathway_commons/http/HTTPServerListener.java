@@ -32,6 +32,7 @@
 package org.mskcc.pathway_commons.http;
 
 // imports
+
 import java.util.EventListener;
 
 /**
@@ -39,10 +40,10 @@ import java.util.EventListener;
  */
 public interface HTTPServerListener extends EventListener {
 
-	/**
-	 * Method called when a ProxyEvent has been received.
-	 *
-	 * @param event HTTPEvent
-	 */
-	public void httpEvent(HTTPEvent event);
+    /**
+     * Method called when a ProxyEvent has been received.
+     *
+     * @param event HTTPEvent
+     */
+    public void httpEvent(HTTPEvent event);
 }

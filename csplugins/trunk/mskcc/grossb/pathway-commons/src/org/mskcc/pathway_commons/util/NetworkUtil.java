@@ -32,22 +32,21 @@
 package org.mskcc.pathway_commons.util;
 
 // imports
-import org.mskcc.pathway_commons.task.MergeNetworkTask;
-import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.actions.LoadNetworkTask;
+import cytoscape.data.CyAttributes;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.actions.LoadNetworkTask;
-import cytoscape.task.util.TaskManager;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.data.CyAttributes;
-
 import ding.view.NodeContextMenuListener;
+import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
+import org.mskcc.pathway_commons.task.MergeNetworkTask;
 
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * This is a network utilities class.
@@ -56,40 +55,40 @@ import java.net.MalformedURLException;
  */
 public class NetworkUtil extends Thread {
 
-	/**
-	 * ref to NodeContextMenuListener
-	 */
-	NodeContextMenuListener nodeContextMenuListener;
+    /**
+     * ref to NodeContextMenuListener
+     */
+    NodeContextMenuListener nodeContextMenuListener;
 
-	/**
-	 * Stores web services url
-	 */
-	private String webServicesURL;
+    /**
+     * Stores web services url
+     */
+    private String webServicesURL;
 
-	/**
-	 * ref to pathwayCommonsURL
-	 */
-	private String pathwayCommonsRequest;
+    /**
+     * ref to pathwayCommonsURL
+     */
+    private String pathwayCommonsRequest;
 
-	/**
-	 * ref to cyNetwork
-	 */
-	private CyNetwork cyNetwork;
+    /**
+     * ref to cyNetwork
+     */
+    private CyNetwork cyNetwork;
 
-	/**
-	 * ref to cyNetworkTitle
-	 */
-	private String networkTitle;
+    /**
+     * ref to cyNetworkTitle
+     */
+    private String networkTitle;
 
-	/**
-	 * ref to data source set
-	 */
-	private String dataSources;
+    /**
+     * ref to data source set
+     */
+    private String dataSources;
 
-	/**
-	 * boolean indicated if we are merging
-	 */
-	private boolean merging;
+    /**
+     * boolean indicated if we are merging
+     */
+    private boolean merging;
 
     /**
      * Neighborhood title parameter.
@@ -101,161 +100,160 @@ public class NetworkUtil extends Thread {
      */
     private static final String DATA_SOURCE_ARG = "&data_source=";
 
-	/**
-	 * Constructor.
-	 *
-	 * @param pathwayCommonsRequest String
-	 * @param cyNetwork CyNetwork
-	 * @param merging boolean
-	 * @param nodeContextMenuListener NodeContextMenuListener
-	 */
-	public NetworkUtil(String pathwayCommonsRequest, CyNetwork cyNetwork,
-					   boolean merging, NodeContextMenuListener nodeContextMenuListener) {
+    /**
+     * Constructor.
+     *
+     * @param pathwayCommonsRequest   String
+     * @param cyNetwork               CyNetwork
+     * @param merging                 boolean
+     * @param nodeContextMenuListener NodeContextMenuListener
+     */
+    public NetworkUtil(String pathwayCommonsRequest, CyNetwork cyNetwork,
+            boolean merging, NodeContextMenuListener nodeContextMenuListener) {
 
-		// init member vars
-		parseRequest(pathwayCommonsRequest);
-		this.cyNetwork = cyNetwork;
-		this.merging = merging;
-		this.nodeContextMenuListener = nodeContextMenuListener;
-	}
+        // init member vars
+        parseRequest(pathwayCommonsRequest);
+        this.cyNetwork = cyNetwork;
+        this.merging = merging;
+        this.nodeContextMenuListener = nodeContextMenuListener;
+    }
 
-	/**
-	 * Our implementation of run.
-	 */
-	public void run() {
+    /**
+     * Our implementation of run.
+     */
+    public void run() {
 
-		try {
-			URL pathwayCommonsURL = new URL(pathwayCommonsRequest);
+        try {
+            URL pathwayCommonsURL = new URL(pathwayCommonsRequest);
 
-			// are we merging ?
-			if (merging) {
-				// start merge network task
-				TaskManager.executeTask(new MergeNetworkTask(pathwayCommonsURL, cyNetwork),
-										setupTask());
-				postProcess(cyNetwork, true);
-			}
-			else {
-				// the biopax graph reader is going to be called
-				// it will look for the network view title
-				// via system properties, so lets set it now
-				if (networkTitle != null && networkTitle.length() > 0) {
-					System.setProperty("biopax.network_view_title", networkTitle);
-				}
-				LoadNetworkTask.loadURL(pathwayCommonsURL, true);
-				postProcess(Cytoscape.getCurrentNetwork(), false);
-			}
-		}
-		catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-	}
+            // are we merging ?
+            if (merging) {
+                // start merge network task
+                TaskManager.executeTask(new MergeNetworkTask(pathwayCommonsURL, cyNetwork),
+                        setupTask());
+                postProcess(cyNetwork, true);
+            } else {
+                // the biopax graph reader is going to be called
+                // it will look for the network view title
+                // via system properties, so lets set it now
+                if (networkTitle != null && networkTitle.length() > 0) {
+                    System.setProperty("biopax.network_view_title", networkTitle);
+                }
+                LoadNetworkTask.loadURL(pathwayCommonsURL, true);
+                postProcess(Cytoscape.getCurrentNetwork(), false);
+            }
+        }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Method to process/parse the pathway commons request and
-	 * set proper member variables.
-	 *
-	 * @param pathwayCommonsRequest String
-	 */
-	private void parseRequest(String pathwayCommonsRequest) {
+    /**
+     * Method to process/parse the pathway commons request and
+     * set proper member variables.
+     *
+     * @param pathwayCommonsRequest String
+     */
+    private void parseRequest(String pathwayCommonsRequest) {
 
-		// web services url
-		int indexToStartOfPC = pathwayCommonsRequest.indexOf("/pc");
-		this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC + 3);
+        // web services url
+        int indexToStartOfPC = pathwayCommonsRequest.indexOf("/pc");
+        this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC + 3);
 
-		// extract title
-		this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
-											  pathwayCommonsRequest);
+        // extract title
+        this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
+                pathwayCommonsRequest);
 
-		// extract data sources
-		dataSources = extractRequestArg(DATA_SOURCE_ARG,
-										pathwayCommonsRequest);
+        // extract data sources
+        dataSources = extractRequestArg(DATA_SOURCE_ARG,
+                pathwayCommonsRequest);
 
-		// set request member
-		this.pathwayCommonsRequest = pathwayCommonsRequest;
-	}
+        // set request member
+        this.pathwayCommonsRequest = pathwayCommonsRequest;
+    }
 
-	/**
-	 * Extracts argument from pathway commons request (url).
-	 * Method removes argument from pathwayCommonsRequest arg,
-	 * and returns it as String.
-	 *
-	 * @param arg String - the argument to extract
-	 * @param pathwayCommonsRequest String
-	 * @return String
-	 */
-	private String extractRequestArg(String arg, String pathwayCommonsRequest) {
+    /**
+     * Extracts argument from pathway commons request (url).
+     * Method removes argument from pathwayCommonsRequest arg,
+     * and returns it as String.
+     *
+     * @param arg                   String - the argument to extract
+     * @param pathwayCommonsRequest String
+     * @return String
+     */
+    private String extractRequestArg(String arg, String pathwayCommonsRequest) {
 
-		// get index of argument
-		int indexOfArg = pathwayCommonsRequest.indexOf(arg);
+        // get index of argument
+        int indexOfArg = pathwayCommonsRequest.indexOf(arg);
 
-		// if arg is not in list, bail
-		if (indexOfArg == -1) return null;
+        // if arg is not in list, bail
+        if (indexOfArg == -1) return null;
 
-		int startIndexOfValue = indexOfArg+arg.length();
-		int endIndexOfValue = pathwayCommonsRequest.indexOf("&", startIndexOfValue);
-		String value = (endIndexOfValue == -1 ) ?
-			pathwayCommonsRequest.substring(startIndexOfValue) :
-			pathwayCommonsRequest.substring(startIndexOfValue, endIndexOfValue);
+        int startIndexOfValue = indexOfArg + arg.length();
+        int endIndexOfValue = pathwayCommonsRequest.indexOf("&", startIndexOfValue);
+        String value = (endIndexOfValue == -1) ?
+                pathwayCommonsRequest.substring(startIndexOfValue) :
+                pathwayCommonsRequest.substring(startIndexOfValue, endIndexOfValue);
 
-		// remove arg from request
-		pathwayCommonsRequest = (endIndexOfValue == -1) ?
-			pathwayCommonsRequest.substring(0, indexOfArg) :
-			pathwayCommonsRequest.substring(0, indexOfArg) +
-			pathwayCommonsRequest.substring(endIndexOfValue);
+        // remove arg from request
+        pathwayCommonsRequest = (endIndexOfValue == -1) ?
+                pathwayCommonsRequest.substring(0, indexOfArg) :
+                pathwayCommonsRequest.substring(0, indexOfArg) +
+                        pathwayCommonsRequest.substring(endIndexOfValue);
 
-		// outta here
-		return value;
-	}
+        // outta here
+        return value;
+    }
 
-	/**
-	 * Method to setup cytoscape task
-	 */
-	private JTaskConfig setupTask() {
+    /**
+     * Method to setup cytoscape task
+     */
+    private JTaskConfig setupTask() {
 
-		// configure JTask Dialog Pop-Up Box
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(true);
+        // configure JTask Dialog Pop-Up Box
+        JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(Cytoscape.getDesktop());
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(true);
 
-		// outta here
-		return jTaskConfig;
-	}
+        // outta here
+        return jTaskConfig;
+    }
 
-	/**
-	 * Method for any post processing of recently loaded network.
-	 *
-	 * @param cyNetwork CyNetwork
-	 * @param doLayout boolean
-	 */
-	private void postProcess(final CyNetwork cyNetwork, boolean doLayout) {
+    /**
+     * Method for any post processing of recently loaded network.
+     *
+     * @param cyNetwork CyNetwork
+     * @param doLayout  boolean
+     */
+    private void postProcess(final CyNetwork cyNetwork, boolean doLayout) {
 
-		// ref to view used below
-		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+        // ref to view used below
+        CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
 
-		// if do layout, do it
-		if (doLayout) {
-			LayoutUtil layoutUtil = new LayoutUtil();
-			layoutUtil.doLayout(view);
-			view.fitContent();
-		}
+        // if do layout, do it
+        if (doLayout) {
+            LayoutUtil layoutUtil = new LayoutUtil();
+            layoutUtil.doLayout(view);
+            view.fitContent();
+        }
 
-		// setup web services url to pc attribute  - used by nodeContextMenuListener
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-									   "biopax.web_services_url",
-									   webServicesURL);
+        // setup web services url to pc attribute  - used by nodeContextMenuListener
+        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+        networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                "biopax.web_services_url",
+                webServicesURL);
 
-		// setup data sources attribute - used by nodeContextMenuListener - remains encoded
-		networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-									   "biopax.data_sources",
-									   dataSources);
+        // setup data sources attribute - used by nodeContextMenuListener - remains encoded
+        networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                "biopax.data_sources",
+                dataSources);
 
-		// setup the context menu
-		//view.addNodeContextMenuListener(nodeContextMenuListener);
+        // setup the context menu
+        //view.addNodeContextMenuListener(nodeContextMenuListener);
 
-		// set focus current
-		Cytoscape.firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUS,
+        // set focus current
+        Cytoscape.firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 									 null, cyNetwork.getIdentifier());
 	}
 }

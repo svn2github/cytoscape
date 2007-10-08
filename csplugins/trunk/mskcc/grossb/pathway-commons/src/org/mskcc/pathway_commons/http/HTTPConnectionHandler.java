@@ -32,8 +32,9 @@
 package org.mskcc.pathway_commons.http;
 
 // import
-import java.net.Socket;
+
 import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Class which handles connections.
@@ -42,80 +43,84 @@ import java.io.IOException;
  */
 public class HTTPConnectionHandler extends Thread {
 
-	/**
-	 * web service url string constant
-	 */
-	public static final String WEB_SERVICE_URL = "/pc/webservice.do";
+    /**
+     * web service url string constant
+     */
+    public static final String WEB_SERVICE_URL = "/pc/webservice.do";
 
-	/**
-	 * ref to socket
-	 */
-	private Socket sock;
+    /**
+     * ref to socket
+     */
+    private Socket sock;
 
-	/**
-	 * ref to server listener
-	 */
-	private HTTPServerListener listener;
+    /**
+     * ref to server listener
+     */
+    private HTTPServerListener listener;
 
-	/**
-	 * debug flag
-	 */
-	private boolean debug;
+    /**
+     * debug flag
+     */
+    private boolean debug;
 
     /**
      * Constructor.
-	 *
-	 * @param sock Socket
-	 * @param listener HTTServerListener
-	 * @param debug boolean
+     *
+     * @param sock     Socket
+     * @param listener HTTServerListener
+     * @param debug    boolean
      */
-	public HTTPConnectionHandler(Socket sock, HTTPServerListener listener, boolean debug) {
+    public HTTPConnectionHandler(Socket sock, HTTPServerListener listener, boolean debug) {
 
-		// init our members
-		this.sock = sock;
-		this.listener = listener;
-		this.debug = debug;
-	}
+        // init our members
+        this.sock = sock;
+        this.listener = listener;
+        this.debug = debug;
+    }
 
-	/**
-	 * Our implementation of run
-	 */
-	public void run() {
+    /**
+     * Our implementation of run
+     */
+    public void run() {
 
-		try {
+        try {
 
-			// get the event object to pass on
-			String uri = HTTPReader.processRequest(sock);
-			HTTPEvent request = new HTTPEvent(this, uri, null);
-			if (debug) System.out.println("HTTPConnectionHandler, request received: " + request.getRequest());
+            // get the event object to pass on
+            String uri = HTTPReader.processRequest(sock);
+            HTTPEvent request = new HTTPEvent(this, uri, null);
+            if (debug)
+                System.out.println("HTTPConnectionHandler, request received: " + request.getRequest());
 
-			// only interested in pathway commons web service urls
-			if (request.getRequest().indexOf(WEB_SERVICE_URL) != -1) {
+            // only interested in pathway commons web service urls
+            if (request.getRequest().indexOf(WEB_SERVICE_URL) != -1) {
 
-				// send response back to client - before we process here
-				// note: callBack() is a javascript routine in webstart.js
-				// which will be execute immediately after web browser receives this request
-				HTTPEvent response = new HTTPEvent(this, null, "callBack();");
-				if (debug) System.out.println("HTTPConnectionHandler, sending response to web browser: " + response.getResponse());
-				HTTPWriter.processResponse(sock, response);
-				if (debug) System.out.println("HTTPConnectionHandler, closing socket...");
-				sock.close();
+                // send response back to client - before we process here
+                // note: callBack() is a javascript routine in webstart.js
+                // which will be execute immediately after web browser receives this request
+                HTTPEvent response = new HTTPEvent(this, null, "callBack();");
+                if (debug)
+                    System.out.println("HTTPConnectionHandler, sending response to web browser: " + response.getResponse());
+                HTTPWriter.processResponse(sock, response);
+                if (debug) System.out.println("HTTPConnectionHandler, closing socket...");
+                sock.close();
 
-				// pass on the event to our listener
-				if (debug) System.out.println("HTTPConnectionHandler, sending request to listener.");
-				listener.httpEvent(request);
-				if (debug) System.out.println("HTTPConnectionHandler, listener complete");
-			}
-			// nothing we are interested in, just close socket
-			else {
-				// outta here
-				if (debug) System.out.println("HTTPConnectionHandler, no work to be done, closing socket...");
-				sock.close();
-			}
+                // pass on the event to our listener
+                if (debug)
+                    System.out.println("HTTPConnectionHandler, sending request to listener.");
+                listener.httpEvent(request);
+                if (debug) System.out.println("HTTPConnectionHandler, listener complete");
+            }
+            // nothing we are interested in, just close socket
+            else {
+                // outta here
+                if (debug)
+                    System.out.println("HTTPConnectionHandler, no work to be done, closing socket...");
+                sock.close();
+            }
 
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
 		}
 	}
 }

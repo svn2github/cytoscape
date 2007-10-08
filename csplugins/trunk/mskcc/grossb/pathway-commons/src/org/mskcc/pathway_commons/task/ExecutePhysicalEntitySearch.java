@@ -1,8 +1,8 @@
 package org.mskcc.pathway_commons.task;
 
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 /**
  * Controller for Executing a Physical Entity Search.
@@ -18,12 +18,13 @@ public class ExecutePhysicalEntitySearch implements Task {
 
     /**
      * Constructor.
-     * @param webApi            Pathway Commons Web Api.
-     * @param keyword           Keyword
-     * @param ncbiTaxonomyId    NCBI Taxonomy ID.
-     * @param startIndex        Start Index.
+     *
+     * @param webApi         Pathway Commons Web Api.
+     * @param keyword        Keyword
+     * @param ncbiTaxonomyId NCBI Taxonomy ID.
+     * @param startIndex     Start Index.
      */
-    public ExecutePhysicalEntitySearch (PathwayCommonsWebApi webApi, String keyword,
+    public ExecutePhysicalEntitySearch(PathwayCommonsWebApi webApi, String keyword,
             int ncbiTaxonomyId, int startIndex) {
         this.webApi = webApi;
         this.keyword = keyword;
@@ -67,7 +68,7 @@ public class ExecutePhysicalEntitySearch implements Task {
 
             //  Execute the Search
             webApi.searchPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
-            
+
             // update the task monitor
             taskMonitor.setStatus("Done");
             taskMonitor.setPercentCompleted(100);

@@ -11,15 +11,17 @@ public interface PathwayCommonsWebApiListener {
 
     /**
      * Indicates that someone has initiated a search for physical entities.
-     * @param keyword           Keyword Term(s)
-     * @param ncbiTaxonomyId    NCBI Texonomy ID.
-     * @param startIndex        Start Index Value.
+     *
+     * @param keyword        Keyword Term(s)
+     * @param ncbiTaxonomyId NCBI Texonomy ID.
+     * @param startIndex     Start Index Value.
      */
     public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex);
 
     /**
      * Indicates that a search for physical entities has completed.
+     *
      * @param peSearchResponse Search Response Object.
      */
     public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse);

@@ -13,8 +13,8 @@ public class PathwayTableModel extends DefaultTableModel {
     /**
      * Constructor.
      */
-    public PathwayTableModel () {
-        super ();
+    public PathwayTableModel() {
+        super();
         Vector columnNames = new Vector();
         columnNames.add("Data Source");
         columnNames.add("Pathway");
@@ -24,6 +24,7 @@ public class PathwayTableModel extends DefaultTableModel {
 
     /**
      * Is the specified cell editable?
+     *
      * @param row row index.
      * @param col col index.
      * @return true or false.
@@ -39,6 +40,7 @@ public class PathwayTableModel extends DefaultTableModel {
 
     /**
      * Gets the column class.
+     *
      * @param columnIndex column index.
      * @return Class.
      */

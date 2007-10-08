@@ -32,9 +32,10 @@
 package org.mskcc.pathway_commons.http;
 
 // imports
-import java.net.Socket;
-import java.io.PrintWriter;
+
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 /**
  * This class writes to the http client.
@@ -43,32 +44,32 @@ import java.io.IOException;
  */
 public class HTTPWriter {
 
-	// some string constants
-	private static final String CRNL = "\r\n";
-	private static final String CONTENT_TYPE = "Content-Type: ";
-	private static final String HTTP_RESPONSE = "HTTP/1.1 200 OK";
-	private static final String CONTENT_LENGTH = "Content-Length: ";
-	private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
+    // some string constants
+    private static final String CRNL = "\r\n";
+    private static final String CONTENT_TYPE = "Content-Type: ";
+    private static final String HTTP_RESPONSE = "HTTP/1.1 200 OK";
+    private static final String CONTENT_LENGTH = "Content-Length: ";
+    private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
 
-	/**
-	 * Called to write client respones
-	 *
-	 * @param sock Socket
-	 * @param event HTTPEvent
-	 */
-	public static void processResponse(Socket sock, HTTPEvent event) throws IOException {
+    /**
+     * Called to write client respones
+     *
+     * @param sock  Socket
+     * @param event HTTPEvent
+     */
+    public static void processResponse(Socket sock, HTTPEvent event) throws IOException {
 
-		// setup print writer
-		PrintWriter printWriter = new PrintWriter(sock.getOutputStream());
+        // setup print writer
+        PrintWriter printWriter = new PrintWriter(sock.getOutputStream());
 
-		String response = event.getResponse();
+        String response = event.getResponse();
 
-		// write out the contents
-		printWriter.print(HTTP_RESPONSE + CRNL);
-		printWriter.print(CONTENT_TYPE + CONTENT_TYPE_TEXT_HTML + CRNL);
-		printWriter.print(CONTENT_LENGTH + response.length() + CRNL);
-		printWriter.print(CRNL);
-		printWriter.print(response);
-		printWriter.flush();
+        // write out the contents
+        printWriter.print(HTTP_RESPONSE + CRNL);
+        printWriter.print(CONTENT_TYPE + CONTENT_TYPE_TEXT_HTML + CRNL);
+        printWriter.print(CONTENT_LENGTH + response.length() + CRNL);
+        printWriter.print(CRNL);
+        printWriter.print(response);
+        printWriter.flush();
 	}
 }

@@ -32,10 +32,11 @@
 package org.mskcc.pathway_commons.http;
 
 // imports
-import java.net.Socket;
-import java.io.IOException;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.ArrayList;
 
 /**
@@ -45,47 +46,47 @@ import java.util.ArrayList;
  */
 public class HTTPReader {
 
-	// some string constants
-	private static final String SPACE = " ";
-	private static final String HTTP_PREFIX = "http://";
+    // some string constants
+    private static final String SPACE = " ";
+    private static final String HTTP_PREFIX = "http://";
 
-	/**
-	 * Called to handle incoming request.
-	 *
-	 * @param sock Socket
-	 */
-	public static String processRequest(Socket sock) throws IOException {
+    /**
+     * Called to handle incoming request.
+     *
+     * @param sock Socket
+     */
+    public static String processRequest(Socket sock) throws IOException {
 
-		// create buffered reader from socket
-		BufferedReader in =
-			new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        // create buffered reader from socket
+        BufferedReader in =
+                new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-		// init some vars
-		String s;
-		ArrayList<String> request = new ArrayList<String>();
+        // init some vars
+        String s;
+        ArrayList<String> request = new ArrayList<String>();
 
-		// grab the entire request
-		while ( (s=in.readLine()) != null && s.length() > 0) {
-			request.add(s);
-		}
+        // grab the entire request
+        while ((s = in.readLine()) != null && s.length() > 0) {
+            request.add(s);
+        }
 
-		// outta here - at this point we only care about the request line
-		return parseRequestLine(request.get(0));
-	}
+        // outta here - at this point we only care about the request line
+        return parseRequestLine(request.get(0));
+    }
 
-	/**
-	 * Parse request line from client browser.
-	 *
-	 * @param requestLine String
-	 */
-	private static String parseRequestLine(String requestLine) {
+    /**
+     * Parse request line from client browser.
+     *
+     * @param requestLine String
+     */
+    private static String parseRequestLine(String requestLine) {
 
-		// per rfc2616, request line in following format:
-		// request-line: Method SP Request-URI SP HTTP-Version CRLF
+        // per rfc2616, request line in following format:
+        // request-line: Method SP Request-URI SP HTTP-Version CRLF
 
-		// replace w/regex if we need to parse arguments
-		String uri =
-			requestLine.substring(requestLine.indexOf(SPACE)+2, requestLine.lastIndexOf(SPACE));
-		return HTTP_PREFIX + uri;
-	}
+        // replace w/regex if we need to parse arguments
+        String uri =
+                requestLine.substring(requestLine.indexOf(SPACE) + 2, requestLine.lastIndexOf(SPACE));
+        return HTTP_PREFIX + uri;
+    }
 }

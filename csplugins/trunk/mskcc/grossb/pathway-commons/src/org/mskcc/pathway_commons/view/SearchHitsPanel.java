@@ -1,17 +1,17 @@
 package org.mskcc.pathway_commons.view;
 
+import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
+import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
+import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
-import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
-import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
-import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.border.TitledBorder;
 import java.util.List;
 
 /**
@@ -48,9 +48,10 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
 
     /**
      * Indicates that user has initiated a phsyical entity search.
-     * @param keyword           Keyword.
-     * @param ncbiTaxonomyId    NCBI Taxonomy ID.
-     * @param startIndex        Start Index.
+     *
+     * @param keyword        Keyword.
+     * @param ncbiTaxonomyId NCBI Taxonomy ID.
+     * @param startIndex     Start Index.
      */
     public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex) {
@@ -59,6 +60,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
 
     /**
      * Indicates that a search for physical entities has just completed.
+     *
      * @param peSearchResponse PhysicalEntitySearchResponse Object.
      */
     public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
@@ -69,7 +71,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
         List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
         peListModel.setSize(searchHits.size());
         int i = 0;
-        for (SearchHitType searchHit: searchHits) {
+        for (SearchHitType searchHit : searchHits) {
             String name = searchHit.getName();
             peListModel.setElementAt(name, i++);
         }
@@ -82,8 +84,9 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
 
     /**
      * Listen for list selection events.
+     *
      * @param interactionTableModel InteractionTableModel.
-     * @param pathwayTableModel PathwayTableModel.
+     * @param pathwayTableModel     PathwayTableModel.
      */
     private void createListener(final DefaultTableModel interactionTableModel,
             final DefaultTableModel pathwayTableModel) {
@@ -99,11 +102,12 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
 
     /**
      * Encloses the specified JTextPane in a JScrollPane.
-     * @param title     Title of Area.
-     * @param textPane  JTextPane Object.
+     *
+     * @param title    Title of Area.
+     * @param textPane JTextPane Object.
      * @return JScrollPane Object.
      */
-    private JScrollPane encloseInJScrollPane (String title, JTextPane textPane) {
+    private JScrollPane encloseInJScrollPane(String title, JTextPane textPane) {
         JScrollPane scrollPane = new JScrollPane(textPane);
         scrollPane.setBorder(new TitledBorder(title));
         return scrollPane;
@@ -111,10 +115,11 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
 
     /**
      * Creates a JTextArea with correct line wrap settings.
+     *
      * @return JTextArea Object.
      */
-    private JTextPane createTextArea () {
-        JTextPane textPane = new JTextPane ();
+    private JTextPane createTextArea() {
+        JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
         return textPane;
     }

@@ -13,7 +13,7 @@ public class InteractionTableModel extends DefaultTableModel {
     /**
      * Constructor.
      */
-    public InteractionTableModel () {
+    public InteractionTableModel() {
         super();
         Vector columnNames = new Vector();
         columnNames.add("Data Source");
@@ -24,6 +24,7 @@ public class InteractionTableModel extends DefaultTableModel {
 
     /**
      * Is the specified cell editable?
+     *
      * @param row row index.
      * @param col col index.
      * @return true or false.
@@ -39,6 +40,7 @@ public class InteractionTableModel extends DefaultTableModel {
 
     /**
      * Gets the column class.
+     *
      * @param columnIndex column index.
      * @return Class.
      */

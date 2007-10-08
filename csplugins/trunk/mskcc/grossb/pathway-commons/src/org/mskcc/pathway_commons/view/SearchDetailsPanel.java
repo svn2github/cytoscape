@@ -1,11 +1,11 @@
 package org.mskcc.pathway_commons.view;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Search Details Panel.
@@ -37,25 +37,25 @@ class SearchDetailsPanel extends JPanel {
      */
     private JPanel createInteractionBundleTable(DefaultTableModel interactionTableModel) {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Interactions"));        
+        panel.setBorder(new TitledBorder("Interactions"));
         panel.setLayout(new BorderLayout());
         final JTable interactionTable = new JTable(interactionTableModel);
         interactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        interactionTable.addMouseListener(new MouseAdapter(){
-             public void mouseClicked(MouseEvent e){
-              if (e.getClickCount() == 2){
-                 int rows[] = interactionTable.getSelectedRows();
-                 JOptionPane.showMessageDialog(new JFrame(), "Downloading Interaction Bundle:  "
-                         + rows[0]);
-                 }
-              }
-         } );
+        interactionTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int rows[] = interactionTable.getSelectedRows();
+                    JOptionPane.showMessageDialog(new JFrame(), "Downloading Interaction Bundle:  "
+                            + rows[0]);
+                }
+            }
+        });
 
         JScrollPane scrollPane = new JScrollPane(interactionTable);
         JPanel internalPanel = new JPanel();
         internalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JButton downloadAll = new JButton ("Download All Interactions");
+        JButton downloadAll = new JButton("Download All Interactions");
         internalPanel.add(downloadAll);
         panel.add(internalPanel, BorderLayout.SOUTH);
         panel.add(scrollPane, BorderLayout.CENTER);
@@ -72,14 +72,14 @@ class SearchDetailsPanel extends JPanel {
         pathwayTable.setAutoCreateColumnsFromModel(true);
         pathwayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        pathwayTable.addMouseListener(new MouseAdapter(){
-             public void mouseClicked(MouseEvent e){
-              if (e.getClickCount() == 2){
-                 int rows[] = pathwayTable.getSelectedRows();
-                 JOptionPane.showMessageDialog(new JFrame(), "Downloading Pathway:  " + rows[0]);
-                 }
-              }
-         } );
+        pathwayTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int rows[] = pathwayTable.getSelectedRows();
+                    JOptionPane.showMessageDialog(new JFrame(), "Downloading Pathway:  " + rows[0]);
+                }
+            }
+        });
         JScrollPane scrollPane = new JScrollPane(pathwayTable);
         scrollPane.setBorder(new TitledBorder("Pathways (double-click to download)"));
         return scrollPane;
