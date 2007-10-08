@@ -3,6 +3,7 @@ package org.genmapp.subgeneviewer.splice.view;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -18,16 +19,29 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 
 	// todo: will have a list of blocks
 	List<Block> listOfBlocks = new ArrayList<Block>();
+	public Iterator<Block> getBlockInterator()
+	{
+		return listOfBlocks.iterator();
+	}
+	
 
 	// todo: will have a list of splice events
 	List<SpliceEvent> listOfSpliceEvents = new ArrayList<SpliceEvent>();
+	public Iterator<SpliceEvent> getSpliceEventInterator()
+	{
+		return listOfSpliceEvents.iterator();
+	}
 
 	// todo: list of start sites
 	List<StartSite> listOfStartSites = new ArrayList<StartSite>();
-
+	public Iterator<StartSite> getStartSiteInterator()
+	{
+		return listOfStartSites.iterator();
+	}
+	
 	private CyNode parentNode = null;
 
-	public Block addBlock(Integer id, String type) {
+	public Block addBlock(String id, String type) {
 		Block block = new Block(this);
 		block.setId(id);
 		block.setType(type);

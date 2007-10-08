@@ -1,6 +1,7 @@
 package org.genmapp.subgeneviewer.splice.view;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.genmapp.subgeneviewer.model.SubgeneNetwork;
@@ -11,7 +12,17 @@ public class Region extends SubgeneNodeView {
 
 	//todo: has a list features
 	List<Feature> listOfFeatures = new ArrayList<Feature>();
+	public Iterator<Feature> getFeatureInterator()
+	{
+		return listOfFeatures.iterator();
+	}
+	
 	List<SpliceEvent> listOfSpliceEvents = new ArrayList<SpliceEvent>();
+	public Iterator<SpliceEvent> getSpliceEventInterator()
+	{
+		return listOfSpliceEvents.iterator();
+	}
+	
 	boolean _containsStartSite = false;
 	
 	private Block _block = null;
@@ -29,12 +40,12 @@ public class Region extends SubgeneNodeView {
 		_block = block;
 	}
 	
-	public Feature addFeature (Integer id)
+	public Feature addFeature (String id)
 	{
 		return addFeature (id, null);
 	}
 	
-	public Feature addFeature (Integer id, String feature_id)
+	public Feature addFeature (String id, String feature_id)
 	{
 		Feature feature = new Feature(this);
 		feature.setId(id);

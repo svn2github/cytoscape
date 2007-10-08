@@ -1,6 +1,7 @@
 package org.genmapp.subgeneviewer.splice.view;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
@@ -10,6 +11,10 @@ public class Block extends SubgeneNodeView {
 
 	//todo: has a list of regions
 	List<Region> listOfRegions = new ArrayList<Region>();
+	public Iterator<Region> getRegionInterator()
+	{
+		return listOfRegions.iterator();
+	}
 	
 	private String type; // intron or exon
 
@@ -28,7 +33,7 @@ public class Block extends SubgeneNodeView {
 		this.networkView = NetworkView;
 	}
 	
-	public Region addRegion (Integer id)
+	public Region addRegion (String id)
 	{
 		Region region = new Region(this);
 		region.setId(id);

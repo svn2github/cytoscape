@@ -8,7 +8,7 @@ import cytoscape.CyNode;
 
 public class SubgeneNodeView {
 
-	private Integer _id;
+	private String _id;
 
 	private Rectangle _bounds = null;
 	
@@ -35,11 +35,11 @@ public class SubgeneNodeView {
 		return _bounds;
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return _id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		_id = id;
 	}
 	
