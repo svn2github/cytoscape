@@ -2,24 +2,16 @@ package org.genmapp.subgeneviewer.view;
 
 import java.awt.Rectangle;
 
-import cytoscape.view.CyNodeView;
+import cytoscape.CyNode;
+
+
 
 public class SubgeneNodeView {
 
 	private Integer _id;
 
-	private CyNodeView _cynodeView;
-
 	private Rectangle _bounds = null;
 	
-
-	public CyNodeView getCynodeView() {
-		return _cynodeView;
-	}
-
-	public void setCynodeView(CyNodeView cynodeView) {
-		_cynodeView = cynodeView;
-	}
 
 	public Rectangle getBounds() {
 		return _bounds;
