@@ -426,6 +426,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new SelectAllNodesAction());
 		addAction(new DeSelectAllNodesAction());
 		addAction(new SelectFirstNeighborsAction());
+		addAction(new SelectConnectedNodesAction());
 		addAction(new AlphabeticalSelectionAction());
 		addAction(new ListFromFileSelectionAction());
 
