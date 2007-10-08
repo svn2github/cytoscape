@@ -52,18 +52,30 @@
   </tr>
   <tr>
   <td valign="top"><p><a href="http://www.nh-hotels.com/nh/en/hotels/the-netherlands/amsterdam/nh-doelen.html?action=search" target="_blank">Doelen hotel</a>
-  <br>Approx rates: single/double<br>&euro;180 / &euro;2000</p>
+  <br>Approx rates: single/double<br>&euro;180 / &euro;200</p>
   </td>
   <td align="right"><img border="0" align="middle" alt="Doelen hotel" height="170" width="120" src="images/photos/doelen_120_170.jpg"></td>
   </tr>
   <tr>
-  <td colspan="2"><p><b>Cheap</b> (will be extended in due course)</td>
+  <td colspan="2"><p><b>Cheap - Middle</b> (will be extended in due course)</td>
   </tr>
   <tr>
   <td valign="top"><p><a href="http://www.hotelhortus.com/" target="_blank">Hortus hotel</a>
   <br>Approx rates: single/double<br>&euro;40 / &euro;60</p>
   </td>
   <td align="right"><img border="0" align="middle" alt="Hortus hotel" height="238" width="160" src="images/photos/hortus_160_238.jpg"></td>
+  </tr>
+  <tr>
+  <td valign="top"><p><a href="http://www.searchforhotels.com/amsterdam/sarphati-hotel/" target="_blank">Sarphati hotel</a>
+  <br>Approx rates: single/double<br>&euro;76 / &euro;95</p>
+  </td>
+  <td align="right"><img border="0" align="middle" alt="Sarphati hotel" height="262" width="175" src="images/photos/sarphati_175_262.jpg"></td>
+  </tr>
+  <tr>
+  <td valign="top"><p><a href="http://www.searchforhotels.com/amsterdam/season-star-hotel/" target="_blank">Season Star hotel</a>
+  <br>Approx rates: single/double<br>&euro;100 / &euro;120</p>
+  </td>
+  <td align="right"><img border="0" align="middle" alt="Season Star hotel" height="240" width="160" src="images/photos/season-star_160_240.jpg"></td>
   </tr>
   </table>
   

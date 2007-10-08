@@ -241,11 +241,11 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>09:30-10:15 </p></td>
-  <td><p>Keynote Speaker: <strong>Leroy Hood</strong></p></td>
+  <td><p><small><i>Keynote Speaker:</small></i> <strong>Leroy Hood</strong>: <small><b>Biological networks and disease</b></small></p></td>
  </tr>
  <tr>
   <td><p>10:15-10:45 </p></td>
-  <td><p><strong>Rogier Versteeg</strong></p></td>
+  <td><p><strong>Rogier Versteeg</strong>: <small><b>Oncogenic networks of cancer pathways in childhood cancer</b></small></p></td>
  </tr>
  <tr>
   <td><p>10:45-11:15 </p></td>
@@ -253,15 +253,15 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>11:15-12:00 </p></td>
-  <td><p><strong>Peter Sorger</strong></p></td>
+  <td><p><strong>Peter Sorger</strong>: <small><b>Modeling Mammalian Death and Survival Pathways</b></small></p></td>
  </tr>
  <tr>
   <td><p>12:00-12:30 </p></td>
-  <td><p><strong>Andrew Hopkins</strong></p></td>
+  <td><p><strong>Andrew Hopkins</strong>: <small><b>Network Pharmacology: chemical opportunities for systems biology</b></small></p></td>
  </tr>
  <tr>
   <td><p>12:30-13:15 </p></td>
-  <td><p><strong>Ewan Birney</strong></p></td>
+  <td><p><strong>Ewan Birney</strong>: <small><b>Reactome, Networks and Genomes</b></small></p></td>
  </tr>
  <tr>
   <td><p>13:15-14:15 </p></td>
@@ -269,16 +269,16 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>14:15-15:00 </p></td>
-  <td><p><strong>Ruedi Aebersold</strong></p></td>
+  <td><p><strong>Ruedi Aebersold</strong>: <small><b>Protein-centered networks in systems biology: Analysis and visualization</b></small></p></td>
  </tr>
  <tr>
   <td><p>15:00-15:30 </p></td>
-  <td><p><strong>Benno Schwikowski</strong></p></td>
+  <td><p><strong>Benno Schwikowski</strong>: <small><b>Computational tools increasing sensitivity and reliability of mass spec-based proteomics</b></small></p></td>
  </tr>
  <tr>
  <tr>
   <td><p>15:30-16:00 </p></td>
-  <td><p><strong>Jean-Daniel Fekete</strong></p></td>
+  <td><p><strong>Jean-Daniel Fekete</strong>: <small><b>Visualizing Dense Networks with Enhanced and Hybrid Matrices</b></small></p></td>
  </tr>
  <tr>
   <td><p>16:00-16:30 </p></td>
@@ -286,11 +286,11 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>16:30-17:15 </p></td>
-  <td><p><strong>Chris Sander</strong></p></td>
+  <td><p><strong>Chris Sander</strong>: <small><b>Systems Biology of Cancer Pathways: from Molecular Perturbations to Cellular Phenotypes</b></small></p></td>
  </tr>
  <tr>
   <td><p>17:15-17:45 </p></td>
-  <td><p><strong>Trey Ideker</strong></p></td>
+  <td><p><strong>Trey Ideker</strong>: <small><b>Gaining power in gene association studies with Cytoscape</b></small></p></td>
  </tr>
  <tr>
   <td><p>17:45-19:00 </p></td>
