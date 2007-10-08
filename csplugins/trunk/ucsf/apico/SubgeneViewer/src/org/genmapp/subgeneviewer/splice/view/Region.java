@@ -31,12 +31,20 @@ public class Region extends SubgeneNodeView {
 	
 	public Feature addFeature (Integer id)
 	{
+		return addFeature (id, null);
+	}
+	
+	public Feature addFeature (Integer id, String feature_id)
+	{
 		Feature feature = new Feature(this);
 		feature.setId(id);
+		feature.setFeature_id(feature_id);
 		listOfFeatures.add(feature);
 		feature.setRegion(this);
 		return feature;
 	}
+	
+	
 	
 	public void removeFeature  (Feature feature)
 	{

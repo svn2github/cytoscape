@@ -12,7 +12,14 @@ public class Feature extends SubgeneNodeView {
 	Region region = null;
 	
 	CyNode cyNode;
-	
+		
+	/**
+	 * label for the feature.  Will initially default to the nodeID passed in
+	 * N.B. -- the ParseSplice class should pass in feature_id from the file as
+	 * the value for the node_id.
+	 */
+	String feature_id;
+
 	public Feature (Region region)
 	{
 		this.region = region;
@@ -22,7 +29,10 @@ public class Feature extends SubgeneNodeView {
 	{
 		this.region = region;
 		this.cyNode = Cytoscape.getCyNode(nodeId, true);
+		this.feature_id = nodeId;
 	}
+	
+
 
 	public Region getRegion() {
 		return region;
@@ -39,4 +49,13 @@ public class Feature extends SubgeneNodeView {
 	public void setCyNode(CyNode cyNode) {
 		this.cyNode = cyNode;
 	}
+
+	public String getFeature_id() {
+		return feature_id;
+	}
+
+	public void setFeature_id(String feature_id) {
+		this.feature_id = feature_id;
+	}
+
 }
