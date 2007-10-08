@@ -24,7 +24,7 @@ class SearchDetailsPanel extends JPanel {
             DefaultTableModel pathwayTableModel) {
         GridLayout gridLayout = new GridLayout(2, 0);
         setLayout(gridLayout);
-        JScrollPane interactionPane = createInteractionBundleTable(interactionTableModel);
+        JPanel interactionPane = createInteractionBundleTable(interactionTableModel);
         JScrollPane pathwayPane = createPathwayTable(pathwayTableModel);
         add(pathwayPane);
         add(interactionPane);
@@ -35,7 +35,10 @@ class SearchDetailsPanel extends JPanel {
      *
      * @return JScrollPane Object.
      */
-    private JScrollPane createInteractionBundleTable(DefaultTableModel interactionTableModel) {
+    private JPanel createInteractionBundleTable(DefaultTableModel interactionTableModel) {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Interactions"));        
+        panel.setLayout(new BorderLayout());
         final JTable interactionTable = new JTable(interactionTableModel);
         interactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -50,8 +53,13 @@ class SearchDetailsPanel extends JPanel {
          } );
 
         JScrollPane scrollPane = new JScrollPane(interactionTable);
-        scrollPane.setBorder(new TitledBorder("Interactions (double click to download)"));
-        return scrollPane;
+        JPanel internalPanel = new JPanel();
+        internalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JButton downloadAll = new JButton ("Download All Interactions");
+        internalPanel.add(downloadAll);
+        panel.add(internalPanel, BorderLayout.SOUTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
     }
 
     /**
