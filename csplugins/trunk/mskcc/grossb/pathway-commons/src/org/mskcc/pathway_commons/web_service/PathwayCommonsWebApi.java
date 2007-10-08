@@ -66,8 +66,10 @@ public class PathwayCommonsWebApi {
                     + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
                     + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
 
-            PathwayListType pathwayListType = searchHit.getPathwayList();
-            List<PathwayType> pathwayList = pathwayListType.getPathway();
+            ObjectFactory factory = new ObjectFactory();
+            PathwayListType pathwayListType = factory.createPathwayListType();
+            List <PathwayType> pathwayList = pathwayListType.getPathway();
+            searchHit.setPathwayList(pathwayListType);
             for (int j = 0; j < 10; j++) {
                 PathwayType pathwaySummary = new PathwayType();
                 pathwaySummary.setName("Pathway " + j + "[" + i + "]");
@@ -79,13 +81,16 @@ public class PathwayCommonsWebApi {
             }
 
             InteractionBundleListType interactionBundleListType =
-                    searchHit.getInteractionBundleList();
+                    factory.createInteractionBundleListType();
             List<InteractionBundleType> interactionBundleList =
                     interactionBundleListType.getInteractionBundle();
+            searchHit.setInteractionBundleList(interactionBundleListType);
+            
             for (int j = 0; j < 10; j++) {
                 InteractionBundleType interactionBundle = new InteractionBundleType();
                 DataSourceType dataSource = new DataSourceType();
                 dataSource.setName("Data Source " + j);
+                interactionBundle.setDataSource(dataSource);
                 interactionBundle.setNumInteractions(BigInteger.valueOf(i * j));
                 interactionBundleList.add(interactionBundle);
             }
