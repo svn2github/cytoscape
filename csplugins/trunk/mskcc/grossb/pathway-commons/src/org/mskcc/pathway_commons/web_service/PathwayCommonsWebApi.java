@@ -1,8 +1,10 @@
 package org.mskcc.pathway_commons.web_service;
 
-import org.mskcc.pathway_commons.web_service.model.*;
+import org.mskcc.pathway_commons.schemas.search_response.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.math.BigInteger;
 
 /**
  * Class for accessing the Pathway Commons Web API.
@@ -20,7 +22,7 @@ public class PathwayCommonsWebApi {
      * @param startIndex        Start index into search results; used to perform pagination.
      * @return
      */
-    public PhysicalEntitySearchResponse searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
+    public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex) {
 
         // Notify all listeners of start
@@ -35,7 +37,7 @@ public class PathwayCommonsWebApi {
         }
 
         //  Some dummy code for now.
-        PhysicalEntitySearchResponse searchResponse = createDummySearchResults();
+        SearchResponseType searchResponse = createDummySearchResults();
 
         // Notify all listeners of end
         for (int i=listeners.size() -1; i>=0; i--) {
@@ -45,48 +47,49 @@ public class PathwayCommonsWebApi {
         return null;
     }
 
-    private PhysicalEntitySearchResponse createDummySearchResults() {
-        PhysicalEntitySearchResponse searchResponse = new PhysicalEntitySearchResponse();
-        ArrayList<PhysicalEntitySummary> peSummaryList = new ArrayList<PhysicalEntitySummary>();
+    private SearchResponseType createDummySearchResults() {
+        SearchResponseType searchResponse = new SearchResponseType();
+        List <SearchHitType> searchHits = searchResponse.getSearchHit();
         for (int i=0; i<10; i++) {
-            PhysicalEntitySummary pe = new PhysicalEntitySummary();
-            pe.setName("Protein " + i);
+            SearchHitType searchHit = new SearchHitType();
+            searchHit.setName("Protein " + i);
 
-            Organism organism = new Organism();
+            OrganismType organism = new OrganismType();
             organism.setCommonName("Human");
             organism.setSpeciesName("Homo Sapiens");
-            pe.setOrganism(organism);
+            searchHit.setOrganism(organism);
 
-            pe.setDescription("Vestibulum pharetra laoreet ante dictum dolor sed, "
+            List comments = searchHit.getComment();
+            comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
                 + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
                 + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
                 + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
 
-            ArrayList <PathwaySummary> pathwayList = new ArrayList<PathwaySummary>();
+            PathwayListType pathwayListType = searchHit.getPathwayList();
+            List <PathwayType> pathwayList = pathwayListType.getPathway();
             for (int j=0; j<10; j++) {
-                PathwaySummary pathwaySummary = new PathwaySummary();
+                PathwayType pathwaySummary = new PathwayType();
                 pathwaySummary.setName("Pathway " + j + "[" + i + "]");
-                pathwaySummary.setInternalId(j);
-                pathwaySummary.setDataSourceName("Data Source " + j);
-                pathwaySummary.setDataSourceId(j);
+                pathwaySummary.setPrimaryId((long) j);
+                DataSourceType dataSource = new DataSourceType();
+                dataSource.setName("Data Source " + j);
+                pathwaySummary.setDataSource(dataSource);
                 pathwayList.add(pathwaySummary);
             }
-            pe.setPathwayList(pathwayList);
 
-            ArrayList <InteractionBundleSummary> interactionBundleList =
-                    new ArrayList<InteractionBundleSummary>();
+            InteractionBundleListType interactionBundleListType =
+                    searchHit.getInteractionBundleList();
+            List <InteractionBundleType> interactionBundleList =
+                    interactionBundleListType.getInteractionBundle();
             for (int j=0; j<10; j++) {
-                InteractionBundleSummary interactionBundle = new InteractionBundleSummary();
-                interactionBundle.setDataSourceName("Data Source " + j + "[" + i + "]");
-                interactionBundle.setNumInteractions(i*j);
+                InteractionBundleType interactionBundle = new InteractionBundleType();
+                DataSourceType dataSource = new DataSourceType();
+                dataSource.setName("Data Source " + j);
+                interactionBundle.setNumInteractions(BigInteger.valueOf(i*j));
                 interactionBundleList.add(interactionBundle);
             }
-            pe.setInterationBundleList(interactionBundleList);
-
-            peSummaryList.add(pe);
-
+            searchHits.add(searchHit);
         }
-        searchResponse.setPhysicalEntitySummaryList(peSummaryList);
         return searchResponse;
     }
 
@@ -94,7 +97,7 @@ public class PathwayCommonsWebApi {
      * Gets a list of all Organisms currently available within Pathway Commons.
      * @return
      */
-    public ArrayList<Organism> getOrganismList() {
+    public ArrayList<OrganismType> getOrganismList() {
         return null;
     }
 
@@ -114,7 +117,7 @@ public class PathwayCommonsWebApi {
      * @param internalPhysicalEntityId Internal ID for physical entity of interest.
      * @return ArrayList of Interaction Bundle Summary Objects.
      */
-    public ArrayList<InteractionBundleSummary> getInteractionBundles
+    public ArrayList<InteractionBundleType> getInteractionBundles
             (long internalPhysicalEntityId) {
         return null;
     }

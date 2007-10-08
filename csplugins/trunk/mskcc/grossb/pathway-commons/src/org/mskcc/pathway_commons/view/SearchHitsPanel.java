@@ -1,10 +1,10 @@
 package org.mskcc.pathway_commons.view;
 
-import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySummary;
-import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
+import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
+import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,7 +12,7 @@ import javax.swing.text.Document;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.border.TitledBorder;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Search Hits Panel.
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
     private DefaultListModel peListModel;
     private JList peList;
-    private PhysicalEntitySearchResponse peSearchResponse;
+    private SearchResponseType peSearchResponse;
     private Document summaryDocument;
 
     public SearchHitsPanel(DefaultTableModel interactionTableModel, DefaultTableModel
@@ -61,22 +61,21 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      * Indicates that a search for physical entities has just completed.
      * @param peSearchResponse PhysicalEntitySearchResponse Object.
      */
-    public void searchCompletedForPhysicalEntities(PhysicalEntitySearchResponse peSearchResponse) {
+    public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
         //  store for later reference
         this.peSearchResponse = peSearchResponse;
 
         //  Populate the hit list
-        ArrayList<PhysicalEntitySummary> peSummaryList =
-                peSearchResponse.getPhysicalEntitySummartList();
-        peListModel.setSize(peSummaryList.size());
+        List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
+        peListModel.setSize(searchHits.size());
         int i = 0;
-        for (PhysicalEntitySummary peSummary: peSummaryList) {
-            String name = peSummary.getName();
+        for (SearchHitType searchHit: searchHits) {
+            String name = searchHit.getName();
             peListModel.setElementAt(name, i++);
         }
 
         //  Select the first item in the list
-        if (peSummaryList.size() > 0) {
+        if (searchHits.size() > 0) {
             peList.setSelectedIndex(0);
         }
     }

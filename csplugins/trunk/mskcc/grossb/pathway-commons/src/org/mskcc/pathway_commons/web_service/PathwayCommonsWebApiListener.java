@@ -1,6 +1,6 @@
 package org.mskcc.pathway_commons.web_service;
 
-import org.mskcc.pathway_commons.web_service.model.PhysicalEntitySearchResponse;
+import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 
 /**
  * Listener for listener to Requests made to the Pathway Commons API.
@@ -22,6 +22,5 @@ public interface PathwayCommonsWebApiListener {
      * Indicates that a search for physical entities has completed.
      * @param peSearchResponse Search Response Object.
      */
-    public void searchCompletedForPhysicalEntities(PhysicalEntitySearchResponse
-            peSearchResponse);
+    public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse);
 }

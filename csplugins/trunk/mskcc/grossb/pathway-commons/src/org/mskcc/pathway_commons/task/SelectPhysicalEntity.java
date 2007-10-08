@@ -1,15 +1,13 @@
 package org.mskcc.pathway_commons.task;
 
-import org.mskcc.pathway_commons.web_service.model.*;
+import org.mskcc.pathway_commons.schemas.search_response.*;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import java.util.ArrayList;
 import java.util.Vector;
-import java.awt.*;
+import java.util.List;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.
@@ -20,20 +18,18 @@ public class SelectPhysicalEntity {
 
     /**
      * Select the Phsyical Entity specified by the selected index.
-     * @param peSearchResponse          PhysicalEntitySearchResponse peSearchResponse.
+     * @param peSearchResponse          SearchResponseType peSearchResponse.
      * @param selectedIndex             Selected Index.
      * @param interactionTableModel     Interaction Table Model.
      * @param pathwayTableModel         Pathway Table Model.
      * @param summaryDocumentModel      Summary Document Model.
      */
-    public void selectPhysicalEntity(PhysicalEntitySearchResponse peSearchResponse,
+    public void selectPhysicalEntity(SearchResponseType peSearchResponse,
             int selectedIndex, DefaultTableModel interactionTableModel, DefaultTableModel
             pathwayTableModel, Document summaryDocumentModel) {
         if (peSearchResponse != null) {
-            ArrayList<PhysicalEntitySummary> peList = peSearchResponse.
-                    getPhysicalEntitySummartList();
-            PhysicalEntitySummary pe = peList.get(selectedIndex);
-
+            java.util.List <SearchHitType> searchHits = peSearchResponse.getSearchHit();
+            SearchHitType searchHit = searchHits.get(selectedIndex);
 
             try {
                 summaryDocumentModel.remove(0, summaryDocumentModel.getLength());
@@ -43,41 +39,44 @@ public class SelectPhysicalEntity {
             //StyleConstants.setForeground(attrs, Color.BLACK);
             //StyleConstants.setBold(attrs, true);
             try {
-                if (pe.getDescription() != null) {
-                    summaryDocumentModel.insertString(0, pe.getDescription(), attrs);
+                java.util.List <String> commentList = searchHit.getComment();
+                if (commentList != null) {
+                    for (int i=commentList.size()-1; i>=0; i--) {
+                        summaryDocumentModel.insertString(0, commentList.get(i), attrs);
+                    }
                 }
-                Organism organism = pe.getOrganism();
+                OrganismType organism = searchHit.getOrganism();
                 if (organism != null) {
                     String speciesName = organism.getSpeciesName();
                     summaryDocumentModel.insertString(0, "[" +
                             speciesName+ "]\n\n", attrs);
                 }
-                summaryDocumentModel.insertString(0, pe.getName()+"\n\n", attrs);
+                summaryDocumentModel.insertString(0, searchHit.getName()+"\n\n", attrs);
             } catch (BadLocationException e) {
             }
-            updatePathwayData(pe, pathwayTableModel);
-            updateInteractionData(pe, interactionTableModel);
+            updatePathwayData(searchHit, pathwayTableModel);
+            updateInteractionData(searchHit, interactionTableModel);
         }
     }
 
     /**
      * Updates Interaction Data.
-     * @param pe                        Physical Entity Summary Object.
+     * @param searchHit                 Search Hit Object.
      * @param interactionTableModel     Interaction Table Model.
      */
-    private void updateInteractionData(PhysicalEntitySummary pe, DefaultTableModel
+    private void updateInteractionData(SearchHitType searchHit, DefaultTableModel
             interactionTableModel) {
-        ArrayList<InteractionBundleSummary> interactionList =
-                pe.getInteractionBundleList();
+        List <InteractionBundleType> interactionBundleList =
+                searchHit.getInteractionBundleList().getInteractionBundle();
         Vector dataVector = interactionTableModel.getDataVector();
         dataVector.removeAllElements();
-        if (interactionList != null) {
-            interactionTableModel.setRowCount(interactionList.size());
+        if (interactionBundleList != null) {
+            interactionTableModel.setRowCount(interactionBundleList.size());
             interactionTableModel.setColumnCount(2);
-            for (int i = 0; i < interactionList.size(); i++) {
-                InteractionBundleSummary interactionBundle = interactionList.get(i);
+            for (int i = 0; i < interactionBundleList.size(); i++) {
+                InteractionBundleType interactionBundle = interactionBundleList.get(i);
                 interactionTableModel.setValueAt
-                        (interactionBundle.getDataSourceName(), i, 0);
+                        (interactionBundle.getDataSource().getName(), i, 0);
                 interactionTableModel.setValueAt
                         (interactionBundle.getNumInteractions(), i, 1);
                 //interactionTableModel.setValueAt("Download", i, 2);
@@ -87,12 +86,12 @@ public class SelectPhysicalEntity {
 
     /**
      * Updates Pathway Data.
-     * @param pe                    Physical Entity Summary Object.
+     * @param searchHit                    SearchHit Object.
      * @param pathwayTableModel     Pathway Table Model.
      */
-    private void updatePathwayData(PhysicalEntitySummary pe,
-            DefaultTableModel pathwayTableModel) {
-        ArrayList<PathwaySummary> pathwayList = pe.getPathwayList();
+    private void updatePathwayData(SearchHitType searchHit, DefaultTableModel pathwayTableModel) {
+        List<PathwayType> pathwayList = searchHit.getPathwayList().getPathway();
+
         Vector dataVector = pathwayTableModel.getDataVector();
         dataVector.removeAllElements();
 
@@ -100,8 +99,8 @@ public class SelectPhysicalEntity {
             pathwayTableModel.setRowCount(pathwayList.size());
             pathwayTableModel.setColumnCount(2);
             for (int i = 0; i < pathwayList.size(); i++) {
-                PathwaySummary pathway = pathwayList.get(i);
-                pathwayTableModel.setValueAt(pathway.getDataSourceName(), i, 0);
+                PathwayType pathway = pathwayList.get(i);
+                pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 0);
                 pathwayTableModel.setValueAt(pathway.getName(), i, 1);
                 //pathwayTableModel.setValueAt("Download", i, 2);
             }
