@@ -48,6 +48,9 @@
         <fileset dir="${cytoscape_lib_dir}">
              <include name="*.jar"/>
         </fileset>
+        <fileset dir="${cytoscape_lib_dir}/build-libs">
+             <include name="*.jar"/>
+        </fileset>
          <fileset dir="${cytoscape_jar_dir}">
              <include name="cytoscape.jar"/>
          </fileset>
@@ -56,13 +59,29 @@
         </fileset>
     </path>
 
+    <!-- For XJC compiler task -->
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+        <classpath refid="classpath" />
+    </taskdef>
+
     <!-- Target to create the build directories prior to compilation -->
     <target name="prepare">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.dir}/docs"/>
         <mkdir dir="${build.classes}"/>
         <mkdir dir="${jars.dir}"/>
-	<echo>"basedir ${basedir}"</echo>
+	    <echo>"basedir ${basedir}"</echo>
+    </target>
+
+    <!-- Generate package using XJC compiler            -->
+    <target name="bind" depends="prepare" description="Run XJC to generate new packages.">
+        <mkdir dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
+        <xjc schema="xml/SearchResponse.xsd"
+             target="${src.dir}"
+             package="org.mskcc.pathway_commons.schemas.search_response">
+            <produces dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
+            <arg value="-nv"/>
+        </xjc>
     </target>
 
     <!--  Target to clean out all directories -->
@@ -76,10 +95,11 @@
             <fileset dir="." includes="*.log"/>
             <fileset dir="." includes="*.gz"/>
         </delete>
+        <delete dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>        
     </target>
 
     <!--  Target to compile all code -->
-    <target depends="prepare" description="Compiles all source code."
+    <target depends="bind" description="Compiles all source code."
         name="compile">
         <javac debug="true" debuglevel="source,lines,var"
             destdir="${build.classes}" nowarn="on" srcdir="${src.dir}" deprecation="true">
