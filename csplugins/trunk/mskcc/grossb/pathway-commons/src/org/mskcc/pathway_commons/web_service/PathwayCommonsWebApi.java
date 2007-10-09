@@ -2,9 +2,14 @@ package org.mskcc.pathway_commons.web_service;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
 
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.StringReader;
 
 /**
  * Class for accessing the Pathway Commons Web API.
@@ -24,22 +29,44 @@ public class PathwayCommonsWebApi {
      * @return
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex) {
+            int startIndex) throws CPathException, EmptySetException {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
             PathwayCommonsWebApiListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-        }
+//
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//        }
 
         //  Some dummy code for now.
-        SearchResponseType searchResponse = createDummySearchResults();
+        CPathProtocol protocol = new CPathProtocol();
+        protocol.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
+        protocol.setFormat(CPathProtocol.FORMAT_XML);
+        protocol.setQuery(keyword);
+        String responseXml = protocol.connect();
+        System.out.println(responseXml);
+        StringReader reader = new StringReader(responseXml);
 
+        Class[] classes = new Class[2];
+        classes[0] = org.mskcc.pathway_commons.schemas.search_response.SearchResponseType.class;
+        classes[1] = org.mskcc.pathway_commons.schemas.search_response.ObjectFactory.class;
+
+        SearchResponseType searchResponse = null;
+        try {
+            JAXBContext jc = JAXBContext.newInstance(classes);
+            Unmarshaller u = jc.createUnmarshaller();
+            JAXBElement element = (JAXBElement) u.unmarshal(reader);
+            searchResponse = (SearchResponseType) element.getValue();
+        } catch(Throwable e){
+            e.printStackTrace();
+            throw new CPathException ("XML Error", e);
+        }
+
+        //SearchResponseType searchResponse = createDummySearchResults();
         // Notify all listeners of end
         for (int i = listeners.size() - 1; i >= 0; i--) {
             PathwayCommonsWebApiListener listener = listeners.get(i);
