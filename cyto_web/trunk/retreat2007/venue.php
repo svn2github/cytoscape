@@ -87,7 +87,7 @@
   hospital is paid parking (P0) (09.00-22.00 hrs): &euro; 1,00 for the first three hours, and &euro; 0,50 for every additional half 
   hour.<br>
   <br> 
-  On our <a href="travel_stay.php">Travel and Accomodation page</a> you will find more information on how to get to Amsterdam and where to find a place to stay. 
+  On our <a href="travel.php">Travel</a> and <a href="accomodation.php">Accomodation</a> page you will find more information on how to get to Amsterdam and where to find a place to stay. 
   More on the fascinating city of Amsterdam is on our <a href="amsterdam.php">Amsterdam page</a> 
   </p>  
   </td>

@@ -101,6 +101,10 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td><p>Development team discussion breakfast</p></td>
  </tr>
  <tr>
+  <td><p>12:00-17:00</p></td>
+  <td><p>Afternoon informal hackathon</p></td>
+ </tr>
+ <tr>
   <td><p>17:00-19:00</p></td>
   <td><p>Meet and greet for development team and organization and other eary arrivals</p></td>
  </tr>

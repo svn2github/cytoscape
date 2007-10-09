@@ -62,6 +62,9 @@
  The renovated <a href="http://www.jhm.nl/news.aspx?ID=35" target="_blank"> Jewish Historic Museum </a><br>
  For early arrivals; at November 3rd the yearly <a href="http://n8.nl/2007/" target="_blank"> Museum night </a>takes place<br>
 
+  <h4>Wireless</h4>
+  Find free wifi access points with the <a href="http://www.hotspotsvinden.nl/resultaat.php?name=&city=Amsterdam&provider=&type=&country=&price=Gratis&company=&region=&sortt=name&verfijn2=Vind%21" target="_blank"> Hotspot finder </a>.<br>
+  A recommended place from that site: <a href="http://www.debalie.nl/" target="_blank"> de Balie </a>takes place<br>
 
   
   </div>
