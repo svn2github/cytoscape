@@ -93,7 +93,7 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="num_interactions" type="xsd:string"/>
+            <xsd:element name="num_interactions" type="xsd:integer"/>
             <xsd:element name="data_source" type="DataSourceType"/>
         </xsd:sequence>        
     </xsd:complexType>
