@@ -41,9 +41,11 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
         JScrollPane hitListPane = new JScrollPane(peList);
         hitListPane.setBorder(new TitledBorder("Search Results"));
 
-        add(hitListPane);
-        add(summaryPane);
-        createListener(interactionTableModel, pathwayTableModel);
+        JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
+                summaryPane);
+        splitPane.setDividerLocation(300);
+        this.add(splitPane);
+        createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
     }
 
     /**
@@ -89,13 +91,13 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      * @param pathwayTableModel     PathwayTableModel.
      */
     private void createListener(final DefaultTableModel interactionTableModel,
-            final DefaultTableModel pathwayTableModel) {
+            final DefaultTableModel pathwayTableModel, final JTextPane summaryPane) {
         peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int selectedIndex = peList.getSelectedIndex();
                 SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
                 selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                        interactionTableModel, pathwayTableModel, summaryDocument);
+                        interactionTableModel, pathwayTableModel, summaryDocument, summaryPane);
             }
         });
     }
