@@ -51,6 +51,7 @@ public class PathwayCommonsSearchPanel extends JPanel {
         //  Create Center Panel:  Search Results
         JSplitPane splitPane = createSearchResultsPanel();
         add(splitPane, BorderLayout.CENTER);
+        splitPane.setDividerLocation(250);
 
         //  Create Southern Panel:  Download
         JPanel downloadPanel = createDownloadPanel();
