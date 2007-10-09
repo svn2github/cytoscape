@@ -8,6 +8,8 @@ import java.util.List;
 import org.genmapp.subgeneviewer.SubgeneViewerFrame;
 import org.genmapp.subgeneviewer.SubgeneViewerPlugin;
 import org.genmapp.subgeneviewer.splice.controller.SpliceController;
+import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
+import org.genmapp.subgeneviewer.text.Example_Exon_Structure_GenMAPP_CS;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.Cytoscape;
@@ -70,6 +72,13 @@ public class SubgeneController extends MouseAdapter {
 				}
 			}
 			frame.setVisible(true);
+		}
+		else if ((e.getClickCount() >= 2) && (e.isAltDown()) && (e.isControlDown()))
+		{
+			SpliceNetworkView spliceView = Example_Exon_Structure_GenMAPP_CS.
+			testSpliceNetworkView_E1_E4();
+			Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView
+			(spliceView);
 		}
 	}
 

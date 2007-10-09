@@ -79,7 +79,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 	 * prints out the input argument SpliceNetworkView contents
 	 * @param view
 	 */
-	public void dumpSpliceNetworkView(SpliceNetworkView view)
+	public static void dumpSpliceNetworkView(SpliceNetworkView view)
 	{
 		// first print out header line
 		System.out.println("feature_id\ttype\tblock\tregion\tfeature");
