@@ -6,8 +6,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.*;
 import java.util.List;
 import java.util.Vector;
+import java.awt.*;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.
@@ -27,7 +30,7 @@ public class SelectPhysicalEntity {
      */
     public void selectPhysicalEntity(SearchResponseType peSearchResponse,
             int selectedIndex, DefaultTableModel interactionTableModel, DefaultTableModel
-            pathwayTableModel, Document summaryDocumentModel) {
+            pathwayTableModel, Document summaryDocumentModel, JTextPane textPane) {
         if (peSearchResponse != null) {
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
             SearchHitType searchHit = searchHits.get(selectedIndex);
@@ -37,22 +40,26 @@ public class SelectPhysicalEntity {
             } catch (BadLocationException e) {
             }
             SimpleAttributeSet attrs = new SimpleAttributeSet();
-            //StyleConstants.setForeground(attrs, Color.BLACK);
-            //StyleConstants.setBold(attrs, true);
             try {
                 java.util.List<String> commentList = searchHit.getComment();
+                StringBuffer commentBuf = new StringBuffer();
                 if (commentList != null) {
                     for (int i = commentList.size() - 1; i >= 0; i--) {
-                        summaryDocumentModel.insertString(0, commentList.get(i), attrs);
+                        commentBuf.append(commentList.get(i) + "\n\n");
                     }
                 }
+                summaryDocumentModel.insertString(0, commentBuf.toString(), attrs);
                 OrganismType organism = searchHit.getOrganism();
+                StyleConstants.setForeground(attrs, Color.BLUE);
+                StyleConstants.setBold(attrs, true);
                 if (organism != null) {
                     String speciesName = organism.getSpeciesName();
                     summaryDocumentModel.insertString(0, "[" +
                             speciesName + "]\n\n", attrs);
                 }
-                summaryDocumentModel.insertString(0, searchHit.getName() + "\n\n", attrs);
+                StyleConstants.setFontSize(attrs, 18);
+                summaryDocumentModel.insertString(0, searchHit.getName() + "\n", attrs);
+                textPane.setCaretPosition(0);
             } catch (BadLocationException e) {
             }
             updatePathwayData(searchHit, pathwayTableModel);
