@@ -58,7 +58,7 @@ public abstract class AbstractIntList extends AbstractIntCollection implements I
 		if (index < 0)
 			return false;
 
-		remove(index);
+		removeAtIndex(index);
 		return true;
 	}
 
