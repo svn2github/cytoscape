@@ -1,0 +1,4 @@
+
+Logging and Preference services are available from OSGi.  Consider using those.
+
+There is also an event handling framework available.

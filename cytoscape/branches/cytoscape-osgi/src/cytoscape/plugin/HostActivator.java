@@ -42,6 +42,7 @@ import org.osgi.framework.BundleContext;
 
 import cytoscape.CyMain;
 import cytoscape.Cytoscape;
+import cytoscape.ServiceHandler;
 
 public class HostActivator implements BundleActivator
 {
@@ -58,6 +59,7 @@ public class HostActivator implements BundleActivator
         			String params = m_context.getProperty("cytoscape.old.params");
 
         			CyMain.main(params.split(" "));
+					ServiceHandler sh = new ServiceHandler(m_context);
         		} catch (Exception e) {
         			e.printStackTrace();
         		}

@@ -31,4 +31,6 @@ mv bnd/jaxb-api.bar $INSTALL/plugins/jaxb-api.jar
 $bnd wrap -properties bnd/jaxb-impl.bnd lib/jaxb-impl.jar
 mv bnd/jaxb-impl.bar $INSTALL/plugins/jaxb-impl.jar
 
+cp plugins/core/* $INSTALL/old_plugins
+
 echo "done"

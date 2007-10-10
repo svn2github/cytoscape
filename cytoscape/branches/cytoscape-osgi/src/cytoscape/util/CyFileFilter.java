@@ -60,7 +60,7 @@ import javax.swing.filechooser.FileFilter;
  * @author Larissa Kamenkovich
  * @author Brad Kohlenberg
  */
-public class CyFileFilter extends FileFilter implements FilenameFilter {
+public class CyFileFilter extends FileFilter implements GraphFileFilter, FilenameFilter {
 	private static String TYPE_UNKNOWN = "Type Unknown";
 	private static String HIDDEN_FILE = "Hidden File";
 	private Hashtable filters = null;

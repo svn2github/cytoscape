@@ -89,7 +89,8 @@ public class BookmarkReader {
 		com.sun.xml.bind.v2.ContextFactory blah;
 		
 		final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE,
-		                                                        JAXBContext.class.getClassLoader());
+		                                                        this.getClass().getClassLoader());
+		                                                       // JAXBContext.class.getClassLoader());
 
 		// Unmarshall the XGMML file
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
