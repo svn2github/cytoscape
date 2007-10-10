@@ -38,6 +38,7 @@ import java.util.ListIterator;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Collection;
 import java.awt.Dimension;
 
 // giny imports
@@ -152,6 +153,37 @@ public class MetaNode {
 	static public void removeMetaNode(MetaNode metaNode) {
 		removeMetaNode(metaNode.getCyGroup().getGroupNode());
 	}
+
+	/**
+ 	 * Expand all MetaNodes
+ 	 */
+	static public void expandAll() {
+		CyNetworkView nView = Cytoscape.getCurrentNetworkView();
+		Collection<MetaNode> metaNodes = metaMap.values();
+		for (MetaNode mNode: metaNodes) {
+			if (mNode.isCollapsed)
+				mNode.expand(true, nView, false);
+		}
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		vizmapper.applyAppearances();
+		nView.updateView();
+	}
+
+	/**
+ 	 * Collapse all MetaNodes
+ 	 */
+	static public void collapseAll() {
+		CyNetworkView nView = Cytoscape.getCurrentNetworkView();
+		Collection<MetaNode> metaNodes = metaMap.values();
+		for (MetaNode mNode: metaNodes) {
+			if (!mNode.isCollapsed)
+				mNode.collapse(true, true, false, nView);
+		}
+		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		vizmapper.applyAppearances();
+		nView.updateView();
+	}
+
 
 
 	/*****************************************************************
@@ -406,7 +438,7 @@ public class MetaNode {
 			createMetaEdges();
 
 		isCollapsed = true;
-		expand(recursive, view);
+		expand(recursive, view, true);
 		collapse(recursive, multipleEdges, false, view);
 	}
 	
@@ -458,8 +490,9 @@ public class MetaNode {
 	 *
 	 * @param recursive if 'true', this operation is recursive
 	 * @param view the CyNetworkView
+	 * @param update update the display?
 	 */
-	public void expand(boolean recursive, CyNetworkView view) {
+	public void expand(boolean recursive, CyNetworkView view, boolean update) {
 		if (!isCollapsed) 
 			return;
 
@@ -495,15 +528,17 @@ public class MetaNode {
 		// Remove the metaNode
 		network.hideNode(groupNode);
 
-		// update
-		updateDisplay();
+		if (update) {
+			// update
+			updateDisplay();
+		}
 
 		metaGroup.setState(MetaNodePlugin2.EXPANDED);
 		isCollapsed = false;
 
 		// Now, for any of our nodes that are metaNodes and were expanded when we
 		// collapsed, expand them to get them back into their original state
-		restoreMetaNodes();
+		restoreMetaNodes(true);
 	}
 
 	/**
@@ -766,13 +801,14 @@ public class MetaNode {
 
 	/**
 	 * Restore any metaNodes that we have that were expanded when we collapsed
+	 * @param update update the display?
 	 */
-	private void restoreMetaNodes () {
+	private void restoreMetaNodes (boolean update) {
 		if (childMetaNodes == null) return;
 
 		for (int i = childMetaNodes.size()-1; i >= 0; i--) {
 			MetaNode child = childMetaNodes.get(i);
-			child.expand(true, networkView);
+			child.expand(true, networkView, update);
 		}
 		childMetaNodes = null;
 	}

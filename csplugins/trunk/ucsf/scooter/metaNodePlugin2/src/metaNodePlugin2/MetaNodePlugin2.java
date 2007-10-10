@@ -89,6 +89,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		REMOVE("remove"),
 		ADD("add"),
 		DELETE("delete"),
+		EXPANDALL("expandAll"),
+		COLLAPSEALL("collapseAll"),
 		EXPANDNEW("expandNew");
 
 		private String name;
@@ -196,7 +198,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		MetaNode mn = MetaNode.getMetaNode(group);
 		// Expand the group
 		if (group.getState() == COLLAPSED) {
-			mn.expand(true, null);
+			mn.expand(true, null, true);
 		}
 		// Get rid of the MetaNode
 		MetaNode.removeMetaNode(mn);
@@ -324,6 +326,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				addMenuItem(m, Command.REMOVE, groupList, contextNode, "Remove metanode");
 				addMenuItem(m, Command.ADD, groupList, contextNode, "Add node to metanode");
 				addMenuItem(m, Command.DELETE, groupList, contextNode, "Remove node from metanode");
+				addMenuItem(m, Command.EXPANDALL, groupList, null, "Expand all metanodes");
+				addMenuItem(m, Command.COLLAPSEALL, groupList, null, "Collapse all metanodes");
 			}
 		}
 
@@ -346,7 +350,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 					menu.add(item);
 				}
 			} else if (contextNode == null) {
-				if (command != Command.ADD && command != Command.DELETE) {
+				if (command == Command.EXPANDALL || command == Command.COLLAPSEALL) {
+					addSubMenu(menu, label, command, null, null);
+				} else if (command == Command.EXPANDNEW) {
+			  	JMenu item = new JMenu(label+"(s) into new network");
+					if (addGroupMenu(item, command, groupList, contextNode))
+						menu.add(item);
+				} else if (command != Command.ADD && command != Command.DELETE) {
 			  	JMenu item = new JMenu(label);
 					if (addGroupMenu(item, command, groupList, contextNode))
 						menu.add(item);
@@ -535,6 +545,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				addToGroup(node);
 			} else if (command == Command.DELETE) {
 				removeFromGroup(node);
+			} else if (command == Command.EXPANDALL) {
+				expandAll();
+			} else if (command == Command.COLLAPSEALL) {
+				collapseAll();
 			}
 		}
 
@@ -626,7 +640,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 */
 		private void expand() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
-			mNode.expand(recursive, null);
+			mNode.expand(recursive, null, true);
 		}
 
 		/**
@@ -635,6 +649,20 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		private void createNetworkFromGroup() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
 			mNode.createNetworkFromGroup();
+		}
+
+		/**
+ 		 * Expand all metanodes
+ 		 */
+		private void expandAll() {
+			MetaNode.expandAll();
+		}
+
+		/**
+ 		 * Collapse all metanodes
+ 		 */
+		private void collapseAll() {
+			MetaNode.collapseAll();
 		}
 	}
 }
