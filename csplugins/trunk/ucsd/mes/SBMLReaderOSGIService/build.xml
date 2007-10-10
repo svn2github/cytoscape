@@ -1,12 +1,12 @@
 
-<project name="LayoutSaver" default="all" basedir=".">
+<project name="SBMLReader" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="LayoutSaver"/>
+    <property name="name" value="SBMLReader"/>
     <property name="version" value="1.0.1"/>
 
     <echo message="Building ${name} version ${version} ..."/>
@@ -19,7 +19,7 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
+    <property name="cytoscape.dir" value="../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="src.dir" value="${root.dir}/src"/>
@@ -39,10 +39,7 @@
         <include name="*.jar"/>
       </fileset>
       <fileset dir="${cytoscape.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
+        <include name="**/*.jar"/>
       </fileset>
     </path>
    
@@ -55,10 +52,7 @@
         <include name="*.jar"/>
       </fileset>
       <fileset dir="${cytoscape.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
+        <include name="**/*.jar"/>
       </fileset>
     </path>
 
@@ -107,10 +101,6 @@
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
-      <manifest>
-        <attribute name="Cytoscape-Plugin"
-	           value="layout.LayoutSaverPlugin"/>
-      </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>
   </target>
@@ -207,7 +197,7 @@
   <!-- =================================================================== -->
   <!-- Do everything                                                       --> 
   <!-- =================================================================== -->
-  <target name="all" depends="jar,docs,test" /> 
+  <target name="all" depends="jar,test,bnd" /> 
 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
@@ -220,6 +210,19 @@
     <delete file="${test.jar}"/>
     <echo message="Successfully ran clean task!"/>
   </target>
+
+  <target name="bnd"
+          depends="init">
+  	<taskdef resource="aQute/bnd/ant/taskdef.properties" 
+	         classpath="${cytoscape.lib.dir}/build-libs/bnd.jar"/>
+	<bndwrap>
+      <fileset dir="${root.dir}">
+        <include name="*.jar"/>
+      </fileset>
+	</bndwrap>
+	<move file="SBMLReader.bar" tofile="SBMLReader.jar"/>
+  </target>
+
 
 </project>
 
