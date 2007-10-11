@@ -8,10 +8,7 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.util.Vector;
 
 /**
@@ -22,6 +19,7 @@ import java.util.Vector;
 class SearchBoxPanel extends JPanel {
     private JButton searchButton;
     private PathwayCommonsWebApi webApi;
+    private static final String ENTER_TEXT = "Enter Protein Name or ID";
 
     /**
      * Constructor.
@@ -36,6 +34,7 @@ class SearchBoxPanel extends JPanel {
         final JTextField searchField = createSearchField();
         JComboBox organismComboBox = createOrganismComboBox();
         JButton helpButton = new JButton("Help");
+        helpButton.setToolTipText("Help");
         searchButton = createSearchButton(searchField);
 
         add(searchField);
@@ -59,6 +58,7 @@ class SearchBoxPanel extends JPanel {
         organismList.add("Mouse");
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
+        organismComboBox.setToolTipText("Select Organism");
         organismComboBox.setMaximumSize(new Dimension(200, 9999));
         organismComboBox.setPrototypeDisplayValue("12345678901234567890");
         return organismComboBox;
@@ -71,13 +71,22 @@ class SearchBoxPanel extends JPanel {
      */
     private JTextField createSearchField() {
         final JTextField searchField = new JTextField(20);
-        searchField.setText("Enter Protein Name or ID");
+        searchField.setText(ENTER_TEXT);
+        searchField.setToolTipText(ENTER_TEXT);
         searchField.setMaximumSize(new Dimension(200, 9999));
         searchField.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent focusEvent) {
                 if (searchField.getText() != null
                         && searchField.getText().startsWith("Enter")) {
                     searchField.setText("");
+                }
+            }
+        });
+        searchField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                if (keyCode == 10) {
+                    executeSearch(searchField.getText());
                 }
             }
         });
@@ -92,19 +101,31 @@ class SearchBoxPanel extends JPanel {
      */
     private JButton createSearchButton(final JTextField searchField) {
         searchButton = new JButton("Go!");
+        searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
-                        (webApi, searchField.getText(), -1, 1);
-                JTaskConfig jTaskConfig = new JTaskConfig();
-                jTaskConfig.setAutoDispose(true);
-                jTaskConfig.displayCancelButton(false);
-                jTaskConfig.displayCloseButton(false);
-                //jTaskConfig.setOwner(Cytoscape.getDesktop());
-                TaskManager.executeTask(search, jTaskConfig);
+                executeSearch(searchField.getText());
             }
         });
         return searchButton;
+    }
+
+    private void executeSearch(String keyword) {
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (keyword == null || keyword.trim().length() == 0
+                || keyword.startsWith(ENTER_TEXT)) {
+            JOptionPane.showMessageDialog(window, "Please enter a protein name or ID",
+                    "Search Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
+                    (webApi, keyword.trim(), -1, 1);
+            JTaskConfig jTaskConfig = new JTaskConfig();
+            jTaskConfig.setAutoDispose(true);
+            jTaskConfig.displayCancelButton(false);
+            jTaskConfig.displayCloseButton(false);
+            jTaskConfig.setOwner(window);
+            TaskManager.executeTask(search, jTaskConfig);
+        }
     }
 
     /**
