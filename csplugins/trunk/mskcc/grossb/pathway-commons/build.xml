@@ -77,7 +77,7 @@
     <target name="bind" depends="prepare" description="Run XJC to generate new packages.">
         <mkdir dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
         <xjc schema="xml/SearchResponse.xsd"
-             target="${src.dir}"
+             destdir="${src.dir}"
              package="org.mskcc.pathway_commons.schemas.search_response">
             <produces dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
             <arg value="-nv"/>
