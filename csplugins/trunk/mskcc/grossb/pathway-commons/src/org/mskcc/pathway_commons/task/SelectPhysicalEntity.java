@@ -1,6 +1,9 @@
 package org.mskcc.pathway_commons.task;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
+import org.mskcc.pathway_commons.view.SearchDetailsPanel;
+import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
@@ -12,12 +15,19 @@ import java.util.List;
 import java.util.Vector;
 import java.awt.*;
 
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.Cytoscape;
+
 /**
  * Indicates that the user has selected a physical entity from the list of search results.
  *
  * @author Ethan Cerami.
  */
 public class SelectPhysicalEntity {
+    private static boolean initialized = false;
+    private static SearchDetailsPanel detailsPanel;
 
     /**
      * Select the Phsyical Entity specified by the selected index.
@@ -29,9 +39,24 @@ public class SelectPhysicalEntity {
      * @param summaryDocumentModel  Summary Document Model.
      */
     public void selectPhysicalEntity(SearchResponseType peSearchResponse,
-            int selectedIndex, DefaultTableModel interactionTableModel, DefaultTableModel
+            int selectedIndex, InteractionTableModel interactionTableModel, PathwayTableModel
             pathwayTableModel, Document summaryDocumentModel, JTextPane textPane) {
         if (peSearchResponse != null) {
+
+            CytoscapeDesktop desktop = Cytoscape.getDesktop();
+            CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.SOUTH);
+            if (initialized == false) {
+                detailsPanel = new SearchDetailsPanel(interactionTableModel, pathwayTableModel);
+                cytoPanel.add("Pathway Commons Search Results", detailsPanel);
+                initialized = true;
+            }
+            CytoPanelState state = cytoPanel.getState();
+            if (state == CytoPanelState.HIDE) {
+                cytoPanel.setState(CytoPanelState.DOCK);
+            }
+            int index = cytoPanel.indexOfComponent(detailsPanel);
+            cytoPanel.setSelectedIndex(index);
+
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
             SearchHitType searchHit = searchHits.get(selectedIndex);
 
@@ -99,7 +124,7 @@ public class SelectPhysicalEntity {
      * @param searchHit         SearchHit Object.
      * @param pathwayTableModel Pathway Table Model.
      */
-    private void updatePathwayData(SearchHitType searchHit, DefaultTableModel pathwayTableModel) {
+    private void updatePathwayData(SearchHitType searchHit, PathwayTableModel pathwayTableModel) {
         List<PathwayType> pathwayList = searchHit.getPathwayList().getPathway();
 
         Vector dataVector = pathwayTableModel.getDataVector();
@@ -107,6 +132,7 @@ public class SelectPhysicalEntity {
 
         if (pathwayList != null) {
             pathwayTableModel.setRowCount(pathwayList.size());
+            pathwayTableModel.resetInternalIds(pathwayList.size());
             //  Only set the column count, if it is not already set.
             //  If we reset the column count, the user-modified column widths are lost.
             if (pathwayTableModel.getColumnCount() != 2) {
@@ -116,6 +142,7 @@ public class SelectPhysicalEntity {
                 PathwayType pathway = pathwayList.get(i);
                 pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 0);
                 pathwayTableModel.setValueAt(pathway.getName(), i, 1);
+                pathwayTableModel.setInternalId(i, pathway.getPrimaryId());
                 //pathwayTableModel.setValueAt("Download", i, 2);
             }
         }
