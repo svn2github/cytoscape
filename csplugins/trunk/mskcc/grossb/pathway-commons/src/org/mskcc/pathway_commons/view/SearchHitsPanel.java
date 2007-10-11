@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 import java.util.List;
+import java.awt.*;
 
 /**
  * Search Hits Panel.
@@ -24,12 +25,19 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
     private JList peList;
     private SearchResponseType peSearchResponse;
     private Document summaryDocument;
+    private String currentKeyword;
+    private JScrollPane hitListPane;
+    private DefaultTableModel interactionTableModel;
+    private DefaultTableModel pathwayTableModel;
+    private JTextPane summaryTextPane;
 
     public SearchHitsPanel(DefaultTableModel interactionTableModel, DefaultTableModel
             pathwayTableModel, PathwayCommonsWebApi webApi) {
+        this.interactionTableModel = interactionTableModel;
+        this.pathwayTableModel = pathwayTableModel;
         webApi.addApiListener(this);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        JTextPane summaryTextPane = createTextArea();
+        summaryTextPane = createTextArea();
         summaryDocument = summaryTextPane.getDocument();
         JScrollPane summaryPane = encloseInJScrollPane("Summary", summaryTextPane);
 
@@ -38,7 +46,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
         peList = new JList(peListModel);
         peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         peList.setPrototypeCellValue("12345678901234567890");
-        JScrollPane hitListPane = new JScrollPane(peList);
+        hitListPane = new JScrollPane(peList);
         hitListPane.setBorder(new TitledBorder("Search Results"));
 
         JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
@@ -57,7 +65,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      */
     public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
             int startIndex) {
-        //  Currently no-op
+        this.currentKeyword = keyword;
     }
 
     /**
@@ -65,22 +73,46 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      *
      * @param peSearchResponse PhysicalEntitySearchResponse Object.
      */
-    public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
-        //  store for later reference
-        this.peSearchResponse = peSearchResponse;
+    public void searchCompletedForPhysicalEntities(final SearchResponseType peSearchResponse) {
 
-        //  Populate the hit list
-        List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
-        peListModel.setSize(searchHits.size());
-        int i = 0;
-        for (SearchHitType searchHit : searchHits) {
-            String name = searchHit.getName();
-            peListModel.setElementAt(name, i++);
-        }
+        if (peSearchResponse.getTotalNumHits() > 0) {
+            //  store for later reference
+            this.peSearchResponse = peSearchResponse;
 
-        //  Select the first item in the list
-        if (searchHits.size() > 0) {
-            peList.setSelectedIndex(0);
+            //  Populate the hit list
+            List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
+            peListModel.setSize(searchHits.size());
+            int i = 0;
+            for (SearchHitType searchHit : searchHits) {
+                String name = searchHit.getName();
+                peListModel.setElementAt(name, i++);
+            }
+
+            //  Select the first item in the list
+            if (searchHits.size() > 0) {
+                peList.setSelectedIndex(0);
+                SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
+                selectTask.selectPhysicalEntity(peSearchResponse, 0,
+                        interactionTableModel, pathwayTableModel, summaryDocument, 
+                        summaryTextPane);
+            }
+
+            SwingUtilities.invokeLater(new Runnable(){
+                public void run() {
+                    hitListPane.setBorder(new TitledBorder
+                            ("Search Results [Num hits: "
+                            + peSearchResponse.getTotalNumHits() + "]"));
+                }
+            });
+
+        } else {
+            SwingUtilities.invokeLater(new Runnable(){
+                public void run() {
+                    Window window = SwingUtilities.getWindowAncestor(SearchHitsPanel.this);
+                    JOptionPane.showMessageDialog(window, "No matches found for:  "
+                            + currentKeyword, "Search Results", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
         }
     }
 
@@ -91,13 +123,15 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      * @param pathwayTableModel     PathwayTableModel.
      */
     private void createListener(final DefaultTableModel interactionTableModel,
-            final DefaultTableModel pathwayTableModel, final JTextPane summaryPane) {
+            final DefaultTableModel pathwayTableModel, final JTextPane textPane) {
         peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int selectedIndex = peList.getSelectedIndex();
-                SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
-                selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                        interactionTableModel, pathwayTableModel, summaryDocument, summaryPane);
+                if (selectedIndex >=0) {
+                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
+                    selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
+                            interactionTableModel, pathwayTableModel, summaryDocument, textPane);
+                }
             }
         });
     }
