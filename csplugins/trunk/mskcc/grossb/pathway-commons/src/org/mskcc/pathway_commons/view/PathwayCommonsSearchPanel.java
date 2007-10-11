@@ -19,8 +19,8 @@ import java.util.Vector;
  * @author Ethan Cerami.
  */
 public class PathwayCommonsSearchPanel extends JPanel {
-    protected DefaultTableModel interactionTableModel;
-    protected DefaultTableModel pathwayTableModel;
+    protected InteractionTableModel interactionTableModel;
+    protected PathwayTableModel pathwayTableModel;
     protected PathwayCommonsWebApi webApi;
     private JPanel searchBoxPanel;
 
