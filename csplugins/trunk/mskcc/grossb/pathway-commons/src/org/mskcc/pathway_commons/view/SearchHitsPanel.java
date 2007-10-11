@@ -5,6 +5,8 @@ import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
+import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -20,18 +22,18 @@ import java.awt.*;
  *
  * @author Ethan Cerami.
  */
-class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
+public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
     private DefaultListModel peListModel;
     private JList peList;
     private SearchResponseType peSearchResponse;
     private Document summaryDocument;
     private String currentKeyword;
     private JScrollPane hitListPane;
-    private DefaultTableModel interactionTableModel;
-    private DefaultTableModel pathwayTableModel;
+    private InteractionTableModel interactionTableModel;
+    private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
 
-    public SearchHitsPanel(DefaultTableModel interactionTableModel, DefaultTableModel
+    public SearchHitsPanel(InteractionTableModel interactionTableModel, PathwayTableModel
             pathwayTableModel, PathwayCommonsWebApi webApi) {
         this.interactionTableModel = interactionTableModel;
         this.pathwayTableModel = pathwayTableModel;
@@ -51,7 +53,7 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
 
         JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
                 summaryPane);
-        splitPane.setDividerLocation(300);
+        splitPane.setDividerLocation(200);
         this.add(splitPane);
         createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
     }
@@ -122,8 +124,8 @@ class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
      * @param interactionTableModel InteractionTableModel.
      * @param pathwayTableModel     PathwayTableModel.
      */
-    private void createListener(final DefaultTableModel interactionTableModel,
-            final DefaultTableModel pathwayTableModel, final JTextPane textPane) {
+    private void createListener(final InteractionTableModel interactionTableModel,
+            final PathwayTableModel pathwayTableModel, final JTextPane textPane) {
         peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int selectedIndex = peList.getSelectedIndex();
