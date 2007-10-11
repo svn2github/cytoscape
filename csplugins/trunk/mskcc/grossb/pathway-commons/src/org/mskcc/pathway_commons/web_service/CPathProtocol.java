@@ -36,7 +36,7 @@ public class CPathProtocol {
     /**
      * Format Argument.
      */
-    public static final String ARG_FORMAT = "format";
+    public static final String ARG_FORMAT = "output";
 
     /**
      * Organism Argument.
