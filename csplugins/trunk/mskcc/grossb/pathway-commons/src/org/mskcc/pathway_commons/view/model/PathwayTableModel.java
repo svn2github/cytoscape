@@ -2,6 +2,7 @@ package org.mskcc.pathway_commons.view.model;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * Pathway Table Model.
@@ -9,6 +10,7 @@ import java.util.Vector;
  * @author Ethan Cerami
  */
 public class PathwayTableModel extends DefaultTableModel {
+    ArrayList internalIdList = new ArrayList();
 
     /**
      * Constructor.
@@ -51,5 +53,17 @@ public class PathwayTableModel extends DefaultTableModel {
 //        } else {
 //            return String.class;
 //        }
+    }
+
+    public void resetInternalIds (int size) {
+        internalIdList = new ArrayList(size);
+    }
+
+    public void setInternalId (int index, long internalId) {
+        internalIdList.add(index, internalId);
+    }
+
+    public long getInternalId (int index) {
+        return (Long) internalIdList.get(index);
     }
 }
