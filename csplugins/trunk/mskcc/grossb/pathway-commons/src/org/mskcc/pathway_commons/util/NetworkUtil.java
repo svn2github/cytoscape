@@ -158,7 +158,9 @@ public class NetworkUtil extends Thread {
 
         // web services url
         int indexToStartOfPC = pathwayCommonsRequest.indexOf("/pc");
-        this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC + 3);
+        if (indexToStartOfPC > 0) {
+            this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC + 3);
+        }
 
         // extract title
         this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
@@ -240,14 +242,18 @@ public class NetworkUtil extends Thread {
 
         // setup web services url to pc attribute  - used by nodeContextMenuListener
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-        networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-                "biopax.web_services_url",
-                webServicesURL);
+        if (webServicesURL != null) {
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                    "biopax.web_services_url",
+                    webServicesURL);
+        }
 
         // setup data sources attribute - used by nodeContextMenuListener - remains encoded
-        networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+        if (dataSources != null) {
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
                 "biopax.data_sources",
                 dataSources);
+        }
 
         // setup the context menu
         //view.addNodeContextMenuListener(nodeContextMenuListener);
