@@ -107,7 +107,11 @@ public class SelectPhysicalEntity {
 
         if (pathwayList != null) {
             pathwayTableModel.setRowCount(pathwayList.size());
-            pathwayTableModel.setColumnCount(2);
+            //  Only set the column count, if it is not already set.
+            //  If we reset the column count, the user-modified column widths are lost.
+            if (pathwayTableModel.getColumnCount() != 2) {
+                pathwayTableModel.setColumnCount(2);
+            }
             for (int i = 0; i < pathwayList.size(); i++) {
                 PathwayType pathway = pathwayList.get(i);
                 pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 0);
