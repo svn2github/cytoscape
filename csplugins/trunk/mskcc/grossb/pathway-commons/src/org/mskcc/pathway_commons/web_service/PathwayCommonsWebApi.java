@@ -29,41 +29,38 @@ public class PathwayCommonsWebApi {
      * @return
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex) throws CPathException, EmptySetException {
+            int startIndex) throws CPathException {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
             PathwayCommonsWebApiListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
-//
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//        }
 
-        //  Some dummy code for now.
         CPathProtocol protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
         protocol.setFormat(CPathProtocol.FORMAT_XML);
         protocol.setQuery(keyword);
-        String responseXml = protocol.connect();
-        System.out.println(responseXml);
-        StringReader reader = new StringReader(responseXml);
 
-        Class[] classes = new Class[2];
-        classes[0] = org.mskcc.pathway_commons.schemas.search_response.SearchResponseType.class;
-        classes[1] = org.mskcc.pathway_commons.schemas.search_response.ObjectFactory.class;
-
-        SearchResponseType searchResponse = null;
+        SearchResponseType searchResponse;
         try {
-            JAXBContext jc = JAXBContext.newInstance(classes);
-            Unmarshaller u = jc.createUnmarshaller();
-            JAXBElement element = (JAXBElement) u.unmarshal(reader);
-            searchResponse = (SearchResponseType) element.getValue();
-        } catch(Throwable e){
-            e.printStackTrace();
-            throw new CPathException ("XML Error", e);
+            String responseXml = protocol.connect();
+            StringReader reader = new StringReader(responseXml);
+
+            Class[] classes = new Class[2];
+            classes[0] = org.mskcc.pathway_commons.schemas.search_response.SearchResponseType.class;
+            classes[1] = org.mskcc.pathway_commons.schemas.search_response.ObjectFactory.class;
+            try {
+                JAXBContext jc = JAXBContext.newInstance(classes);
+                Unmarshaller u = jc.createUnmarshaller();
+                JAXBElement element = (JAXBElement) u.unmarshal(reader);
+                searchResponse = (SearchResponseType) element.getValue();
+            } catch(Throwable e){
+                throw new CPathException ("XML Error", e);
+            }
+        } catch (EmptySetException e) {
+            searchResponse = new SearchResponseType();
+            searchResponse.setTotalNumHits((long) 0);
         }
 
         //SearchResponseType searchResponse = createDummySearchResults();
