@@ -16,7 +16,7 @@ import java.util.Vector;
  *
  * @author Ethan Cerami.
  */
-class SearchBoxPanel extends JPanel {
+public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
     private PathwayCommonsWebApi webApi;
     private static final String ENTER_TEXT = "Enter Protein Name or ID";
@@ -28,8 +28,8 @@ class SearchBoxPanel extends JPanel {
      */
     public SearchBoxPanel(PathwayCommonsWebApi webApi) {
         this.webApi = webApi;
-        setBorder(new TitledBorder("Search Pathway Commons"));
-        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.X_AXIS);
+        setBorder(new TitledBorder("Search"));
+        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
         final JTextField searchField = createSearchField();
         JComboBox organismComboBox = createOrganismComboBox();
@@ -41,9 +41,11 @@ class SearchBoxPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(5, 0)));
         add(organismComboBox);
         add(Box.createRigidArea(new Dimension(5, 0)));
-        add(searchButton);
-        add(Box.createRigidArea(new Dimension(5, 0)));
-        add(helpButton);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(searchButton);
+        buttonPanel.add(helpButton);
+        add(buttonPanel);
     }
 
     /**
