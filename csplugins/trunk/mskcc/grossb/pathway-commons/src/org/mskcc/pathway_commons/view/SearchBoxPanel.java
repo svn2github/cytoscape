@@ -7,6 +7,7 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -37,11 +38,13 @@ public class SearchBoxPanel extends JPanel {
         helpButton.setToolTipText("Help");
         searchButton = createSearchButton(searchField);
 
+        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(searchField);
-        add(Box.createRigidArea(new Dimension(5, 0)));
+        add(Box.createRigidArea(new Dimension(0, 5)));
+        organismComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(organismComboBox);
-        add(Box.createRigidArea(new Dimension(5, 0)));
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(searchButton);
         buttonPanel.add(helpButton);
@@ -57,7 +60,6 @@ public class SearchBoxPanel extends JPanel {
         //  Organism List is currently hard-coded.
         Vector organismList = new Vector();
         organismList.add("Human");
-        organismList.add("Mouse");
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setToolTipText("Select Organism");
@@ -72,7 +74,7 @@ public class SearchBoxPanel extends JPanel {
      * @return JTextField Object.
      */
     private JTextField createSearchField() {
-        final JTextField searchField = new JTextField(20);
+        final JTextField searchField = new JTextField(ENTER_TEXT.length());
         searchField.setText(ENTER_TEXT);
         searchField.setToolTipText(ENTER_TEXT);
         searchField.setMaximumSize(new Dimension(200, 9999));
