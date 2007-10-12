@@ -169,6 +169,11 @@ public class CompositeFilter implements CyFilter {
 		childChanged();		
 	}
 
+	public void removeChildAt( int pChildIndex ) {
+		children.remove(pChildIndex);		
+		childChanged();		
+	}
+
 	public void addChild( CyFilter pChild ) {
 		children.add( pChild );
 
@@ -206,7 +211,9 @@ public class CompositeFilter implements CyFilter {
 		if ( depth == 0 )
 			System.out.println();
 	}
-	
+	public List<CyFilter> getChildren() {
+		return children;		
+	}
 
 	public String getName() {
 		return name;
@@ -216,6 +223,7 @@ public class CompositeFilter implements CyFilter {
 		name = pName;
 	}
 
+	
 	public String getDescription() {
 		return description;
 	}
@@ -246,8 +254,9 @@ public class CompositeFilter implements CyFilter {
 	public String toString()
 	{
 		String retStr = "\n<Composite>\n";
-
-		retStr = retStr + "AdvancedSetting:" + advancedSetting.toString() + "\n";
+		
+		retStr = retStr + "name:" + name + "\n";
+		retStr = retStr + advancedSetting.toString() + "\n";
 		retStr = retStr + "Negation:" + negation + "\n";
 
 		for (int i=0; i< children.size(); i++) {
@@ -257,7 +266,7 @@ public class CompositeFilter implements CyFilter {
 				retStr = retStr + atomicFilter.toString()+"\n";
 			}
 			else  {// it is a CompositeFilter
-				retStr = retStr + "CompositeFilter" + children.get(i).getName()+"\n";
+				retStr = retStr + "CompositeFilter=" + children.get(i).getName()+"\n";
 			}
 		}
 		retStr += "</Composite>\n";
