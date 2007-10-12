@@ -43,20 +43,34 @@ public class CompositeFilterTest extends FilterTest {
 		TextIndex textIndex_pmid = (TextIndex) quickFind.getIndex(cyNetwork);
 
 		// Create a list of atomic filters
-		locationFilter = new StringFilter("stringFilter",LOCATION,"cy*");
-		locationFilter.setTextIndex(index_by_location);
+		locationFilter = new StringFilter();
+		locationFilter.setName("stringFilter");
+		locationFilter.setControllingAttribute(LOCATION);
+		locationFilter.setSearchStr("cy*");
+		locationFilter.setIndex(index_by_location);
 		locationFilter.setNetwork(cyNetwork);
 		
-		rankFilter = new NumericFilter<Integer>("rankFilter",RANK, 2, 3);
-		rankFilter.setNumberIndex(integerIndex_rank);
+		rankFilter = new NumericFilter<Integer>();
+		rankFilter.setName("rankFilter");
+		rankFilter.setControllingAttribute(RANK);
+		rankFilter.setLowBound(2);
+		rankFilter.setHighBound(3);
+		rankFilter.setIndex(integerIndex_rank);
 		rankFilter.setNetwork(cyNetwork);
 		
-		scoreFilter = 	new NumericFilter<Double>("scoreFilter",SCORE, 1.0, 5.0);
-		scoreFilter.setNumberIndex(doubleIndex_score);
+		scoreFilter = 	new NumericFilter<Double>();
+		scoreFilter.setName("scoreFilter");
+		scoreFilter.setControllingAttribute(SCORE);
+		scoreFilter.setLowBound(1.0);
+		scoreFilter.setHighBound(5.0);
+		scoreFilter.setIndex(doubleIndex_score);
 		scoreFilter.setNetwork(cyNetwork);
 
-		pmidFilter = new StringFilter("edgeFilter",PMID,"123");
-		pmidFilter.setTextIndex(textIndex_pmid);
+		pmidFilter = new StringFilter();
+		pmidFilter.setName("edgeFilter");
+		pmidFilter.setControllingAttribute(PMID);
+		pmidFilter.setSearchStr("123");
+		pmidFilter.setIndex(textIndex_pmid);
 		pmidFilter.setIndexType(QuickFind.INDEX_EDGES);
 		pmidFilter.setNetwork(cyNetwork);
 		
