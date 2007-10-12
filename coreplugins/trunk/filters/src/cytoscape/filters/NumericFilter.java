@@ -57,16 +57,9 @@ import csplugins.widgets.autocomplete.index.NumberIndex;
 public class NumericFilter<T extends Number> extends AtomicFilter {
 
 	private T lowBound, highBound;
-	private NumberIndex numberIndex = null;
+	//private NumberIndex numberIndex = null;
 
-	/**
-	 * Creates a new NumericFilter, parameterized with interger/float/double
-	 */
-	public NumericFilter(String pName, String pControllingAttribute, T pLowBound, T pUpBound) {
-		super(pName,pControllingAttribute);
-		//controllingAttribute = pControllingAttribute;
-		lowBound = pLowBound;
-		highBound = pUpBound;
+	public NumericFilter() {
 	}
 	
 	public boolean passesFilter(Object obj) {
@@ -84,23 +77,14 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 		lowBound = pLowBound;
 	}
 
-	public void setUpBound(T pUpBound){
-		highBound = pUpBound;
+	public void setHighBound(T pHighBound){
+		highBound = pHighBound;
 	}
 
 	public void setRange(T pLowBound, T pUpBound){
 		lowBound = pLowBound;
 		highBound = pUpBound;
 	}
-
-	public NumberIndex getNumberIndex() {
-		return numberIndex;
-	}
-	
-	public void setNumberIndex(NumberIndex pNumberIndex) {
-		numberIndex = pNumberIndex;
-	}
-
 	
 	public void apply() {
 		
@@ -127,6 +111,7 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 		bits = new BitSet(objectCount); // all the bits are false initially
 
 		//System.out.println(" NumberFilter.apply(): objectCount = " + objectCount);
+		NumberIndex numberIndex = (NumberIndex) quickFind_index;
 		List list = numberIndex.getRange(lowBound, highBound);
 
 		if (list.size() == 0) {
@@ -155,7 +140,7 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 	 * 
 	 */
 	public String toString() {
-		return "NumericFilter="+name+":"+controllingAttribute + ":" + negation+ ":"+lowBound+":" + highBound+ ":"+index_type;
+		return "NumericFilter="+controllingAttribute + ":" + negation+ ":"+lowBound+":" + highBound+ ":"+index_type;
 	}
 	
 	//public NumericFilter clone() {
