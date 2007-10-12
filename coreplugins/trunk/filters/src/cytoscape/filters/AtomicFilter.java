@@ -40,6 +40,8 @@ import java.util.*;
 
 import cytoscape.CyNetwork;
 import csplugins.quickfind.util.QuickFind;
+import csplugins.widgets.autocomplete.index.GenericIndex;
+
 
 public abstract class AtomicFilter implements CyFilter {
 
@@ -56,11 +58,30 @@ public abstract class AtomicFilter implements CyFilter {
 	protected int objectCount = 0;
 	
 	protected int index_type = QuickFind.INDEX_NODES;
+
+	protected GenericIndex quickFind_index = null;
+	public AtomicFilter() {
+	}
 	
-	public AtomicFilter(String pFilterName, String pControllingAttribute) {
-		name = pFilterName;
-		controllingAttribute = pControllingAttribute;
+	//public AtomicFilter(String pControllingAttribute, int pIndexType) {
+	//	controllingAttribute = pControllingAttribute;
+	//	index_type = pIndexType;
 		//bits = b;
+	//}
+
+	//public AtomicFilter(String pFilterName, String pControllingAttribute, int pIndexType) {
+	//	name = pFilterName;
+	//	controllingAttribute = pControllingAttribute;
+	//	index_type = pIndexType;
+		//bits = b;
+	//}
+
+	public GenericIndex getIndex() {
+		return quickFind_index;
+	}
+
+	public void setIndex(GenericIndex pIndex) {
+		quickFind_index = pIndex;
 	}
 
 	public void setIndexType(int pIndexType) {
