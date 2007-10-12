@@ -41,6 +41,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.CyFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,8 +119,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	
 	public FilterMainPanel() {
 			init();		
-			initTestData();
-			initTestFilters();
 	}
 
 	public Vector<CompositeFilter> getAllFilterVect() {
@@ -136,16 +135,16 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		{	
 			//refreshFilterSettingPanels();
 			refreshAttributeCMB();
-			updateIndexForWidget();
-			//replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
+			//updateIndexForWidget();
+			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
 		}
 	}
 
 	// triggerd by Cytoscape.ATTRIBUTES_CHANGED event
-	private void updateIndexForWidget() {
-		// After session load, the combobox will through nullpointer exception.
-		System.out.println("updateCMBIndex() is not implemented yet");
-	}
+	//private void updateIndexForWidget() {
+		// After session load, the combobox will throw null-pointer exception.
+		//System.out.println("updateCMBIndex() is not implemented yet");
+	//}
 	
 	private void init() {
 
@@ -204,9 +203,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			for (int i = 0; i < attributeNames.length; i++) {
 				int type = attributes.getType(attributeNames[i]);
 
-				//  only show user visible attributes
+				//  only show user visible attributes,with type = Number/String/List
 				if (!attributes.getUserVisible(attributeNames[i])) {
-					System.out.println("Found visible attribute: "+ attributeNames[i]);
 					continue;
 				}
 				if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_STRING)||(type == CyAttributes.TYPE_SIMPLE_LIST)) {
@@ -291,6 +289,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	public void initCMBSelectFilter(){
+		System.out.println("FilterMainPanel.initCMBSelectFilter() ...");
+		
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel(allFilterVect);
 		cmbSelectFilter.setModel(theModel);
 		cmbSelectFilter.setRenderer(new FilterRenderer());
@@ -311,8 +311,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		public void onComponentSelected(int componentIndex){
 
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
-				//System.out.println("Filter Panel is selected");
-				
+				System.out.println("Filter Panel is selected");
+
+				initTestData();
+				initTestFilters();
+
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 				if (cmbSelectFilter.getModel().getSize() == 0) {
 					// CMBSelectFilter will not be initialize until the Filer Panel is selected
@@ -336,16 +339,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		Vector<Object> attributeList = new Vector<Object>();
 
-		attributeList.add(" -- Attributes --");
+		attributeList.add("-- Attributes --");
 		CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
-		boolean debug = true;
-		if (debug) {
-			selectedFilter = allFilterVect.elementAt(0);
-		}
 
 		if (selectedFilter == null) {
 			return;
 		}
+
+		//boolean debug = true;
+		//if (debug) {
+		//	selectedFilter = allFilterVect.elementAt(0);
+		//}
+
 		if (selectedFilter.getAdvancedSetting().isNodeChecked() 
 				&& !selectedFilter.getAdvancedSetting().isEdgeChecked())
 		{
@@ -372,7 +377,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		//	System.out.println("Neither Node nore edge is checked");
 		//}
 
-		attributeList.add(" -- Filters --");
+		attributeList.add("-- Filters --");
 		
 		if (allFilterVect != null) {
 			for (int i=0; i<allFilterVect.size(); i++) {
@@ -480,7 +485,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
 		pnlFilterDefinition.add(btnAddFilterWidget, gridBagConstraints);
 
-		lbAttribute.setText("Attribute");
+		lbAttribute.setText("Attribute/Filter");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
@@ -569,6 +574,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getSource();
 		
+		System.out.println("Entering FilterMainPanel.itemStateChnaged() ...");
+		
 		if (source instanceof JComboBox) {
 			JComboBox cmb = (JComboBox) source;
 			if (cmb == cmbSelectFilter) {
@@ -604,9 +611,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 			if (_btn == btnApplyFilter) {
 
-
 				System.out.println("\nApplyButton is clicked!");
-				updateCMBAttributes();
+				
+				System.out.println("\nThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");
+				
+				System.out.println("The Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
+				
+				//initCMBSelectFilter(); // for debug only
+				//updateCMBAttributes(); // for debug only
 				
 				//CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
 				
@@ -629,10 +641,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			}
 			if (_btn == btnAddFilterWidget) {
 
+				System.out.println("\nFilterMainPanel: btnAddFilterWidget is clicked!");
+
 				CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 				FilterSettingPanel theSettingPanel = filter2SettingPanelMap.get(selectedFilter);
 
-				theSettingPanel.addFilterWidget((String)cmbAttributes.getSelectedItem());					
+				if (cmbAttributes.getSelectedItem() instanceof String) {
+					String selectItem = (String) cmbAttributes.getSelectedItem();
+					if (selectItem.equalsIgnoreCase("-- Filters --") ||selectItem.equalsIgnoreCase("-- Attributes --")) {
+						return;
+					}
+				}
+				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
 			}
 		} // JButton event
 
@@ -851,6 +871,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private void createNewFilter(String pFilterName) {
 		// Create an empty filter, add it to the current filter list
 		
+		System.out.println("Entering FilterMainPanel.createNewFilter() ...");
+		
 		CompositeFilter newFilter = new CompositeFilter(pFilterName);
 		allFilterVect.add(newFilter);
 		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter);
@@ -858,7 +880,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		// set the new filter in the combobox selected
 		cmbSelectFilter.setSelectedItem(newFilter);
+		cmbSelectFilter.repaint();
 		updateCMBAttributes();
+
+		System.out.println("Leaving FilterMainPanel.createNewFilter() ...");
 	}
 
 	class FilterRenderer extends JLabel implements ListCellRenderer {
@@ -884,7 +909,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			else { // value == null
 				setText(""); 
 			}
-
+/*
 			if (isSelected) {
 				setBackground(list.getSelectionBackground());
 				setForeground(list.getSelectionForeground());
@@ -892,6 +917,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				setBackground(list.getBackground());
 				setForeground(list.getForeground());
 			}
+*/
 			return this;
 		}
 	}// FilterRenderer
@@ -1029,6 +1055,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private void initTestFilters() {
 		allFilterVect = new Vector<CompositeFilter>();
+		
+		//StringFilter myStringFilter = new StringFilter("myStringFilter",LOCATION,"cy*");
+		//myStringFilter.setTextIndex(index_by_location);
+		//myStringFilter.setNetwork(cyNetwork);
+		
+		//NumericFilter myNumericFilter = new NumericFilter<Integer>("myNumericFilter",RANK, 2, 3);
+		//rankFilter.setNumberIndex(integerIndex_rank);
+		//rankFilter.setNetwork(cyNetwork);
+		
 		CompositeFilter compositeFilter1 = new CompositeFilter("firstCompositeFilter");
 		CompositeFilter compositeFilter2 = new CompositeFilter("secondCompositeFilter");
 		allFilterVect.add(compositeFilter1);
