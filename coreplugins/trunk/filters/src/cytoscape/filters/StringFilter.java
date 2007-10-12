@@ -62,11 +62,16 @@ public class StringFilter extends AtomicFilter {
 	 *
 	 * @param desc  DOCUMENT ME!
 	 */
-	public StringFilter(String pName, String pControllingAttribute, String pSearchStr) {
-		super(pName, pControllingAttribute);
-		//controllingAttribute = pControllingAttribute;
-		searchStr = pSearchStr;
+	
+	public StringFilter() {
+		super();
 	}
+	
+	//public StringFilter(String pName, String pControllingAttribute, String pSearchStr) {
+	//	super(pName, pControllingAttribute,QuickFind.INDEX_NODES);
+		//controllingAttribute = pControllingAttribute;
+	//	searchStr = pSearchStr;
+	//}
 
 	public String getSearchStr() {
 		return searchStr;
@@ -76,13 +81,13 @@ public class StringFilter extends AtomicFilter {
 		searchStr = pSearchStr;
 	}
 
-	public TextIndex getTextIndex() {
-		return textIndex;
-	}
+	//public TextIndex getTextIndex() {
+	//	return textIndex;
+	//}
 	
-	public void setTextIndex(TextIndex pTextIndex) {
-		textIndex = pTextIndex;
-	}
+	//public void setTextIndex(TextIndex pTextIndex) {
+	//	textIndex = pTextIndex;
+	//}
 
 
 	public boolean passesFilter(Object obj) {
@@ -152,14 +157,14 @@ public class StringFilter extends AtomicFilter {
 	 * @return the name of this Filter and the search string (keyword).
 	 */
 	public String toString() {
-		return "StringFilter="+name+":"+controllingAttribute+":" + negation+ ":"+searchStr+":"+index_type;
+		return "StringFilter="+controllingAttribute+":" + negation+ ":"+searchStr+":"+index_type;
 	}
-
+/*
 	public StringFilter clone() {
 		StringFilter newStringFilter = new StringFilter("copy_of_"+name, controllingAttribute, searchStr);
 		newStringFilter.setNegation(negation);
 		return newStringFilter;
 	}
-
+*/
 	
 }
