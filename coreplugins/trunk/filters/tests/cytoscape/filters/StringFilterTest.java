@@ -43,12 +43,18 @@ public class StringFilterTest extends FilterTest {
 		index_by_location = (TextIndex) quickFind.getIndex(cyNetwork);
 
 		// Created two StringFilter objects
-		theFirstFilter = new StringFilter("firstStringFilter", QuickFind.UNIQUE_IDENTIFIER, "rai*");
-		theFirstFilter.setTextIndex(index_by_UniqueIdentification);
+		theFirstFilter = new StringFilter();
+		theFirstFilter.setName("firstStringFilter");
+		theFirstFilter.setControllingAttribute(QuickFind.UNIQUE_IDENTIFIER);
+		theFirstFilter.setSearchStr("rai*");
+		theFirstFilter.setIndex(index_by_UniqueIdentification);
 		theFirstFilter.setNetwork(cyNetwork);
 
-		theSecondFilter = new StringFilter("secondStringFilter", LOCATION, "nu*");
-		theSecondFilter.setTextIndex(index_by_location);
+		theSecondFilter = new StringFilter();
+		theSecondFilter.setName("secondStringFilter");
+		theSecondFilter.setControllingAttribute(LOCATION);
+		theSecondFilter.setSearchStr("nu*");
+		theSecondFilter.setIndex(index_by_location);
 		theSecondFilter.setNetwork(cyNetwork);
 	}
 		
