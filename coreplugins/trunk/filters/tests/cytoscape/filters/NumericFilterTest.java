@@ -6,7 +6,7 @@ import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.test.quickfind.test.TaskMonitorBase;
 import csplugins.widgets.autocomplete.index.NumberIndex;
-import java.util.List;
+//import java.util.List;
 
 public class NumericFilterTest extends FilterTest {
 
@@ -31,12 +31,20 @@ public class NumericFilterTest extends FilterTest {
 		NumberIndex doubleIndex = (NumberIndex) quickFind.getIndex(cyNetwork);
 
 		//Create two numericFilter objects -- Integer or Double
-		theIntegerFilter = new NumericFilter<Integer>("integerFilter", RANK, 2,3);
-		theIntegerFilter.setNumberIndex(integetIndex);
+		theIntegerFilter = new NumericFilter<Integer>();
+		theIntegerFilter.setName("integerFilter");
+		theIntegerFilter.setControllingAttribute(RANK);
+		theIntegerFilter.setLowBound(2);
+		theIntegerFilter.setHighBound(3);
+		theIntegerFilter.setIndex(integetIndex);
 		theIntegerFilter.setNetwork(cyNetwork);
 
-		theDoubleFilter = new NumericFilter<Double>("doubleFilter", SCORE, 3.0,25.0);
-		theDoubleFilter.setNumberIndex(doubleIndex);
+		theDoubleFilter = new NumericFilter<Double>();
+		theDoubleFilter.setName("doubleFilter");
+		theDoubleFilter.setControllingAttribute(SCORE);
+		theDoubleFilter.setLowBound(3.0);
+		theDoubleFilter.setHighBound(25.0);
+		theDoubleFilter.setIndex(doubleIndex);
 		theDoubleFilter.setNetwork(cyNetwork);
 
 		//Expected values
