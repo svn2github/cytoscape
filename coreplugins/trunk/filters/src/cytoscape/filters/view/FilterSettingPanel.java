@@ -15,9 +15,12 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.filters.AtomicFilter;
 import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.CyFilter;
 import cytoscape.filters.StringFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.AdvancedSetting;
+import cytoscape.filters.Relation;
+import java.util.List;
 import java.util.Vector;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -30,22 +33,20 @@ import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
 import javax.swing.event.ChangeListener;
 
-import cytoscape.quickfind.util.QuickFindFactory;
-
-import cytoscape.quickfind.util.QuickFind;
-
-import cytoscape.widgets.autocomplete.view.TextIndexComboBox;
-import cytoscape.widgets.autocomplete.index.GenericIndex;
-import cytoscape.widgets.autocomplete.index.IndexFactory;
-import cytoscape.widgets.autocomplete.index.NumberIndex;
-import cytoscape.widgets.autocomplete.index.TextIndex;
-import cytoscape.widgets.autocomplete.view.ComboBoxFactory;
-import cytoscape.widgets.autocomplete.view.TextIndexComboBox;
-import cytoscape.widgets.autocomplete.index.Hit;
-import cytoscape.widgets.slider.JRangeSliderExtended;
+import csplugins.quickfind.util.QuickFind;
+import csplugins.quickfind.util.QuickFindFactory;
+import csplugins.widgets.autocomplete.view.TextIndexComboBox;
+import csplugins.widgets.autocomplete.index.GenericIndex;
+import csplugins.widgets.autocomplete.index.IndexFactory;
+import csplugins.widgets.autocomplete.index.NumberIndex;
+import csplugins.widgets.autocomplete.index.TextIndex;
+import csplugins.widgets.autocomplete.view.ComboBoxFactory;
+import csplugins.widgets.autocomplete.view.TextIndexComboBox;
+import csplugins.widgets.autocomplete.index.Hit;
+import csplugins.widgets.slider.JRangeSliderExtended;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.util.ui.JRangeSlider;
-import cytoscape.quickfind.test.quickfind.test.TaskMonitorBase;
+import csplugins.test.quickfind.test.TaskMonitorBase;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -82,33 +83,38 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	private void initCustomSetting() {
-		Vector theCustomFilterVect = theFilter.getAtomicFilterVect();
-		for (int i=0; i <theCustomFilterVect.size();i++) {
-			addCustomFilterWidget((AtomicFilter)theCustomFilterVect.elementAt(i), i);
+		List<CyFilter> theCustomFilterList = theFilter.getChildren();
+		boolean isLast = false;
+		for (int i=0; i <theCustomFilterList.size();i++) {
+			//if (i == (theCustomFilterList.size()-1)) {
+			//	isLast = true;
+			//}
+			addWidgetRow((CyFilter)theCustomFilterList.get(i),i*2);
 		}	
 		addBlankLabelToCustomPanel();
 		
 		//Restore initial values for RangerSliders 
 		//Note: rangerSlider can not be set to their initial value until they are visible on screen
-		restoreRangeSliderModel();
+		
+		//restoreRangeSliderModel();
 		this.validate();
 		//this.repaint();
 	}
 	
 	
 	private void restoreRangeSliderModel(){
-		Vector<AtomicFilter> theAtomicVect = theFilter.getAtomicFilterVect();
-		if (theAtomicVect == null)
+		List<CyFilter> theFilterList = theFilter.getChildren();
+		if (theFilterList == null)
 			return;
 
-		for (int i=0; i<theAtomicVect.size(); i++ ) {
+		for (int i=0; i<theFilterList.size(); i++ ) {
 			
-			if (theAtomicVect.elementAt(i) instanceof NumericFilter) {
-				if (theAtomicVect.elementAt(i) == null) {
+			if (theFilterList.get(i) instanceof NumericFilter) {
+				if (theFilterList.get(i) == null) {
 					return;
 				}
 				
-				NumericFilter theNumericFilter = (NumericFilter) theAtomicVect.elementAt(i);
+				NumericFilter theNumericFilter = (NumericFilter) theFilterList.get(i);
 				
 				int componentIndex = i*3 +1;
 				JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(componentIndex);
@@ -119,9 +125,9 @@ public class FilterSettingPanel extends JPanel {
 				
 				currentNetwork = Cytoscape.getCurrentNetwork();
 				
-				int indexType = getIndexTypeForAttribute(theNumericFilter.getAttributeName());
+				int indexType = theNumericFilter.getIndexType();
 				quickFind.reindexNetwork(currentNetwork, indexType, 
-						theNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
+						theNumericFilter.getControllingAttribute().substring(5), new TaskMonitorBase());
 
 				GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
 
@@ -136,8 +142,8 @@ public class FilterSettingPanel extends JPanel {
 					//System.out.println("\t here 1: " + theSlider.isShowing());
 
 					if (theSlider.isShowing()) {
-						rangeModel.setLowValue(theNumericFilter.getLowValue());
-						rangeModel.setHighValue(theNumericFilter.getHighValue());									
+						rangeModel.setLowValue(theNumericFilter.getLowBound());
+						rangeModel.setHighValue(theNumericFilter.getHighBound());									
 					}
 
 				}
@@ -149,6 +155,7 @@ public class FilterSettingPanel extends JPanel {
 
 	}
 	
+	/*
 	//Return value could be, QuickFind.INDEX_NODES,QuickFind.INDEX_EDGES, or -1 (unknown)  
 	private int getIndexTypeForAttribute(String pAttributeName) {
 		int indexType = -1;
@@ -163,39 +170,28 @@ public class FilterSettingPanel extends JPanel {
 
 		return indexType;
 	}
+	*/
 	
-	private TextIndexComboBox getTextIndexComboBox(AtomicFilter pAtomicFilter){
+	private TextIndexComboBox getTextIndexComboBox(StringFilter pFilter){
 		TextIndexComboBox comboBox = null;
 
-		//node or edge?
-		int indexType = getIndexTypeForAttribute(pAtomicFilter.getAttributeName());
-
 		try {
-			final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-
-			currentNetwork = Cytoscape.getCurrentNetwork();
-
-			quickFind.reindexNetwork(currentNetwork, indexType, pAtomicFilter.getAttributeName().substring(5), new TaskMonitorBase());
-
-			GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
-
-			TextIndex textIndex = (TextIndex) currentIndex;
-
-			comboBox = ComboBoxFactory.createTextIndexComboBox(textIndex, 2.0);
+			comboBox = ComboBoxFactory.createTextIndexComboBox((TextIndex)pFilter.getIndex(), 2.0);
 
 			//  Set Size of ComboBox Display, based on # of specific chars
 			comboBox.setPrototypeDisplayValue("01234567");
 
 			//  Set Max Size of ComboBox to match preferred size
 			comboBox.setMaximumSize(comboBox.getPreferredSize());
-
 		} catch (Exception e) {
-			System.out.println("Exception in TextIndexing: FilterSettingpanel.addCustomFilterWidget()");
+			System.out.println("Exception in FilterSettingpanel.getTextIndexComboBox()");
 		}
 
-		comboBox.setName(pAtomicFilter.getAttributeName());
+		comboBox.setName(pFilter.getControllingAttribute());
 		try {
-			comboBox.setSelectedItem(pAtomicFilter.getSearchValues()[0]);			
+			if (pFilter.getSearchStr() != null) {
+				comboBox.setSelectedItem(pFilter.getSearchStr());							
+			}
 		}
 		catch (Exception e) {
 		}
@@ -207,21 +203,22 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	
-	private JRangeSliderExtended createRangerSlider(NumericFilter pNumericFilter) {
-		
-		NumberIndex theIndex = createNumberIndex(pNumericFilter);
+	private JRangeSliderExtended getRangerSlider(NumericFilter pFilter) {
+		System.out.println("Exception in FilterSettingpanel.getRangerSlider()...");
+		//NumberIndex theIndex = createNumberIndex(pNumericFilter);
 
 		NumberRangeModel rangeModel = null;
-		if (theIndex == null) {
+		if (pFilter.getIndex() == null) {
 			rangeModel = new NumberRangeModel(0,0,0,0);			
 		}
 		else {
 			//Initialize the search values, lowValue and highValue	
-			pNumericFilter.setLowValue(theIndex.getMinimumValue().toString());
-			pNumericFilter.setHighValue(theIndex.getMaximumValue().toString());
+			NumberIndex tmpIndex = (NumberIndex) pFilter.getIndex();
+			pFilter.setLowBound(tmpIndex.getMinimumValue());
+			pFilter.setHighBound(tmpIndex.getMaximumValue());
 				
 			rangeModel = new NumberRangeModel
-						(theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMaximumValue());						
+						(tmpIndex.getMinimumValue(), tmpIndex.getMinimumValue(), tmpIndex.getMinimumValue(), tmpIndex.getMaximumValue());						
 		}
 		
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
@@ -232,142 +229,263 @@ public class FilterSettingPanel extends JPanel {
 
 		RangeSelectionListener rangeSelectionListener = new RangeSelectionListener(rangeSlider);
 		rangeSlider.addChangeListener(rangeSelectionListener);
-		rangeSlider.setName(pNumericFilter.getAttributeName());
+		rangeSlider.setName(pFilter.getControllingAttribute());
 					
 		return rangeSlider;
 	}
 	
 	
-	private void addCustomFilterWidget(AtomicFilter pAtomicFilter, int pGridY) {
-	
-		//System.out.println("FiltersettingPanel.addCustomFilterWidget() ... ");
-				
-		int indexType = getIndexTypeForAttribute(pAtomicFilter.getAttributeName());
+	private AtomicFilter getAtomicFilterFromStr(String pCtrlAttribute, int pIndexType) {
+		AtomicFilter retFilter = null;
+		
+		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+		//quickFind.addNetwork(cyNetwork, new TaskMonitorBase());
+		//index_by_UniqueIdentification = (TextIndex) quickFind.getIndex(cyNetwork);
+		
+		quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pIndexType, pCtrlAttribute, new TaskMonitorBase());
 
-		if (indexType == -1) { //indexType = Unknown, skip ...
-			return;
+		int attributeType = -1;
+		
+		if (pIndexType == QuickFind.INDEX_NODES) {
+			attributeType = Cytoscape.getNodeAttributes().getType(pCtrlAttribute);
+		}
+		else if (pIndexType == QuickFind.INDEX_EDGES) {
+			attributeType = Cytoscape.getEdgeAttributes().getType(pCtrlAttribute);
+		}
+		//
+		if ((attributeType == CyAttributes.TYPE_INTEGER)
+				||(attributeType == CyAttributes.TYPE_FLOATING)||(attributeType == CyAttributes.TYPE_BOOLEAN)) {
+				retFilter = new NumericFilter();
+				retFilter.setControllingAttribute(pCtrlAttribute);
+				retFilter.setIndexType(pIndexType);		
+
+				//NumberIndex index_by_thisAttr = (NumberIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+
+				retFilter.setIndex(quickFind.getIndex(Cytoscape.getCurrentNetwork()));
+				
+		}
+		else if ((attributeType == CyAttributes.TYPE_STRING)||(attributeType == CyAttributes.TYPE_SIMPLE_LIST)) {
+				retFilter = new StringFilter();	
+				retFilter.setControllingAttribute(pCtrlAttribute);
+				retFilter.setIndexType(pIndexType);
+				
+				System.out.println("FilterSettingPanel.getAtomicFilterFromStr() ...");		
+				
+				//TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+
+				retFilter.setIndex(quickFind.getIndex(Cytoscape.getCurrentNetwork()));
+		}
+		else {
+				System.out.println("AttributeType is not numeric/string/list!");
 		}
 
-		//Col 1 ---> a label to display the attribute Name
-		JLabel theLabel = new JLabel();
-        theLabel.setText(pAtomicFilter.getAttributeName().substring(5));
-
+		return retFilter;
+	}
+	
+	// Update the relation label after user click radio button "AND" or "OR" in AdvancedPanel
+	private void updateRelationLabel(){
+		Component[] allComponents = pnlCustomSettings.getComponents();
+		
+    	String relationStr = "AND";
+    	if (theFilter.getAdvancedSetting().getRelation()== Relation.OR) {
+    		relationStr = "OR";
+    	}
+    	
+    	for (int i=0; i<allComponents.length; i++) {
+			if (allComponents[i] instanceof JLabel) {
+				JLabel theLabel = (JLabel) allComponents[i]; 
+				String labelName = theLabel.getName();
+				if ((labelName != null) &&(labelName.equalsIgnoreCase("RelationLabel"))) {
+					theLabel.setText(relationStr);
+					theLabel.repaint();
+				}
+			}
+		}
+	}
+	
+	//user Clicked CheckBox_Not
+	private void updateNegationStatus(MouseEvent e) {
+		// Determine the child index in theFilter, 
+		// then update the negation value for that child filter
+		Object _actionObject = e.getSource();
+		
+		if (_actionObject instanceof JCheckBox) {
+			JCheckBox _chk = (JCheckBox) _actionObject;
+			int widgetGridY = (new Integer(_chk.getName())).intValue();
+			int childIndex =widgetGridY/2;
+			
+			CyFilter childFilter = theFilter.getChildren().get(childIndex);
+			childFilter.setNegation(_chk.isSelected());
+		}
+	}
+	
+	private void addWidgetRow(CyFilter pFilter, int pGridY) {
+		//System.out.println("Entering FilterSettingPanel: addWidgetRow_atomic() ...");
+		
+		//System.out.println("pFilter =" + pFilter.toString());
+		//System.out.println("pFilter.getControllingAttribute() = "+pFilter.getControllingAttribute());
+		//System.out.println("pGridY = "+ pGridY);
+		
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
-        gridBagConstraints.gridy = pGridY;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        pnlCustomSettings.add(theLabel, gridBagConstraints);
+        if (pGridY > 0) {
+        	// add a row to indicate the relationship between the widgets
+        	String relationStr = "AND";
+        	if (theFilter.getAdvancedSetting().getRelation()== Relation.OR) {
+        		relationStr = "OR";
+        	}
 
-		//Col 2 ---> the filter widget, either TextIndexComboBox or RangerSlider
+            //Col 2 ---> Label to indicate relationship between widgets
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 2;
+            gridBagConstraints.gridy = pGridY-1;
+            JLabel lbRelation = new JLabel(relationStr);
+            lbRelation.setName("RelationLabel");
+            pnlCustomSettings.add(lbRelation, gridBagConstraints);        	
+        }
+    
+        // Col 0 -- label with attributeName/Filter
+		JLabel theLabel_col0 = new JLabel();
+
+		if (pFilter instanceof AtomicFilter) {
+			AtomicFilter atomicFilter = (AtomicFilter) pFilter;
+			theLabel_col0.setText(atomicFilter.getControllingAttribute());
+		}
+		else {
+			theLabel_col0.setText("Filter");
+		}
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = pGridY;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        //gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        pnlCustomSettings.add(theLabel_col0, gridBagConstraints);
+    	
+		//Col 1 ---> chk box -- NOT
+        JCheckBox chkNot = new JCheckBox("Not");
+        chkNot.setName(Integer.toString(pGridY));
+        chkNot.setSelected(pFilter.getNegation());
+        chkNot.addMouseListener(
+                new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {         	
+                    	updateNegationStatus(e);
+                    }
+                }
+            );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = pGridY;
+        //gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        pnlCustomSettings.add(chkNot, gridBagConstraints);
+
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
-
-		if (pAtomicFilter instanceof StringFilter) {
-	        pnlCustomSettings.add(getTextIndexComboBox(pAtomicFilter), gridBagConstraints);		
+        //Col 2 ---> Widget if atomicfilter
+		if (pFilter instanceof StringFilter) {
+	        pnlCustomSettings.add(getTextIndexComboBox((StringFilter)pFilter), gridBagConstraints);		
 		}
-		else if (pAtomicFilter instanceof NumericFilter) {
-			JRangeSliderExtended theSlider = createRangerSlider((NumericFilter) pAtomicFilter);
+		else if (pFilter instanceof NumericFilter) {
+			JRangeSliderExtended theSlider = getRangerSlider((NumericFilter) pFilter);
 			pnlCustomSettings.add(theSlider, gridBagConstraints);						
 		}
-		
+		else {// CompositeFilter
+			gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
+	        //gridBagConstraints.weightx = 0.0;
+			//gridBagConstraints.anchor = java.awt.GridBagConstraints.
+	        pnlCustomSettings.add(new JLabel(pFilter.getName()), gridBagConstraints);		
+		}
+        gridBagConstraints.weightx = 0.0;
 		//Col 3 ---> label (a trash can) for delete of the row
         JLabel theDelLabel = new JLabel();
 
         theDelLabel.setIcon(delIcon);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = pGridY;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        //gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         pnlCustomSettings.add(theDelLabel, gridBagConstraints);
 		
         theDelLabel.setName(Integer.toString(pGridY));
         theDelLabel.addMouseListener(
                 new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {         	
-                    	removeAtomicFilter(e);
+                    	removeFilterWidget(e);
                     }
                 }
             );
-        
-		this.validate();
+    	
+        this.validate();
+
 	}
-
-	public void addFilterWidget(String pAttributeName){
-		// Create appropriate filter type, based on the attribute type
-
-		if (pAttributeName.startsWith("node.")) {
-			int attributeType = Cytoscape.getNodeAttributes().getType(pAttributeName.substring(5));
-			
-			if ((attributeType == CyAttributes.TYPE_INTEGER)
-				||(attributeType == CyAttributes.TYPE_FLOATING)) {
-				addFilterWidget(new NumericFilter(pAttributeName));				
-			}
-			else if (attributeType == CyAttributes.TYPE_STRING) {
-				addFilterWidget(new StringFilter(pAttributeName));
-			}
-			else {
-				System.out.println("AttributeType is neither numeric nor string!");
-			}
+	
+	public void addNewWidget(Object pObj) {
+		System.out.println("Entering FilterSettingPanel: addNewWidget(Object) ...");
+		
+		// The parameter pObj is the object selected from Attribute/Filter combobox
+		// It can be either (1) a string with prefix "node."/"edge." (2) a CompositeFilter object 
+		if (pObj instanceof CompositeFilter) {
+			addWidgetRow((CompositeFilter) pObj, theFilter.getChildren().size()*2);
+			// Update theFilter object		
+			theFilter.getChildren().add((CompositeFilter) pObj);
 		}
-		if (pAttributeName.startsWith("edge.")) {
+		else { //(pObj instanceof String)
+			String tmpObj = (String)pObj;
+			String ctrlAttribute = tmpObj.substring(5);
 
-			int attributeType = Cytoscape.getEdgeAttributes().getType(pAttributeName.substring(5));
-			
-			if ((attributeType == CyAttributes.TYPE_INTEGER)
-				||(attributeType == CyAttributes.TYPE_FLOATING)) {
-				addFilterWidget(new NumericFilter(pAttributeName));				
+			int indexType = QuickFind.INDEX_NODES;
+			if (tmpObj.startsWith("edge.")) {
+				indexType = QuickFind.INDEX_EDGES;
 			}
-			else if (attributeType == CyAttributes.TYPE_STRING) {
-				addFilterWidget(new StringFilter(pAttributeName));
-			}
-			else {
-				System.out.println("AttributeType is neither numeric nor string!");
-			}
-		}		
+			AtomicFilter newChildFilter = getAtomicFilterFromStr(ctrlAttribute, indexType);			
+			addWidgetRow(newChildFilter, theFilter.getChildren().size()*2);
+			// Update theFilter object		
+			theFilter.getChildren().add(newChildFilter);
+		}
 	}
 
 	
-	public void addFilterWidget(AtomicFilter pAtomicFilter) {
-		addCustomFilterWidget(pAtomicFilter,theFilter.getAtomicFilterVect().size());
-		// Update theFilter object		
-		theFilter.getAtomicFilterVect().add(pAtomicFilter);
-	}
-
-	
-	// Determine the row index of a component (TextIndexComboBox or RangeSlider) 
-	// in the customSetting panel
-	private int getWidgetRowIndex(Component pComponent) {
-		int widgetIndex = -1;
+	// Determine the child index in filter based on the row index of a component 
+	// (TextIndexComboBox or RangeSlider) in the customSetting panel
+	private int getChildIndexFromComponent(Component pComponent) {
+		int childIndex = -1;
 		int componentCount = pnlCustomSettings.getComponentCount();
 		for (int i = 0; i<componentCount; i++ ) {
 			Component theComponent = pnlCustomSettings.getComponent(i);
 			if (theComponent == pComponent){
-				widgetIndex = i/3; // There are three components for each row
+				if (i<5) {
+					childIndex =0;
+				}
+				else {
+					childIndex = (i-2)/5;
+				}
 				break;
 			}
 		}
-		return widgetIndex;
+		return childIndex;
 	}
 	
 	
 	// remove a GUI widget from the customeSetting panel 
-	private void removeAtomicFilter(MouseEvent e)
+	private void removeFilterWidget(MouseEvent e)
 	{
+		System.out.println("Entering FilterSettingPanel.removeFilterWidget()...");
+		
 		Object _actionObject = e.getSource();
 		
 		if (_actionObject instanceof JLabel) {
 			JLabel _lbl = (JLabel) _actionObject;
-			int widgetIndex = (new Integer(_lbl.getName())).intValue();
-			theFilter.removeAtomicFilterAt(widgetIndex);
+			int widgetGridY = (new Integer(_lbl.getName())).intValue();
+			int childIndex =widgetGridY /2;
+			
+			System.out.println("childIndex ="+childIndex);
+			
+			theFilter.removeChildAt(childIndex);
 
 			pnlCustomSettings.removeAll();			
-			
+
 			initCustomSetting();
 			
 			
-			restoreRangeSliderModel();
+			//restoreRangeSliderModel();
 			
 			//if (theSlider.isShowing()) {
 			//	rangeModel.setLowValue(theNumericFilter.getLowValue());
@@ -379,6 +497,7 @@ public class FilterSettingPanel extends JPanel {
 			//System.out.println("\trangeModel.getHighValue() =" + rangeModel.getHighValue());			
 			//this.revalidate();
 		}
+
 	}
 
 	
@@ -414,12 +533,12 @@ public class FilterSettingPanel extends JPanel {
 				Hit hit = (Hit) comboBox.getSelectedItem();
 
 				// Determine the row index of the TextIndexCombobox in the customSetting panel
-				int widgetIndex = getWidgetRowIndex(comboBox); 
+				int widgetIndex = getChildIndexFromComponent(comboBox); 
 								
 				//Update theFilter Object
-				Vector<AtomicFilter> theAtomicFilterVect = theFilter.getAtomicFilterVect();
+				List<CyFilter> theFilterlist = theFilter.getChildren();
 				
-				StringFilter theStringFilter = (StringFilter) theAtomicFilterVect.elementAt(widgetIndex);
+				StringFilter theStringFilter = (StringFilter) theFilterlist.get(widgetIndex);
 				theStringFilter.setSearchStr(hit.getKeyword());				
 			}
 		}
@@ -453,20 +572,16 @@ public class FilterSettingPanel extends JPanel {
 			//Update theFilter object if the slider is adjusted
 			//System.out.println("FilterSettingPanel.stateChanged() ...");
 			
-			Vector<AtomicFilter> theAtomicFilterVect = theFilter.getAtomicFilterVect();
+			List<CyFilter> theFilterList = theFilter.getChildren();
 			
 			try {
 				NumberRangeModel model = (NumberRangeModel) slider.getModel();
-				NumericFilter theNumericFilter = (NumericFilter) theAtomicFilterVect.
-				elementAt(getWidgetRowIndex(slider));
+				NumericFilter theNumericFilter = (NumericFilter) theFilterList.get(getChildIndexFromComponent(slider));
 					
 				//model.setMinValue(numberIndex.getMinimumValue());
 				//model.setMaxValue(numberIndex.getMaximumValue());
 								
-				String[] theSearchValues = new String[2];
-				theSearchValues[0] = model.getLowValue().toString();
-				theSearchValues[1] = model.getHighValue().toString();
-				theNumericFilter.setSearchValues(theSearchValues);
+				theNumericFilter.setRange((Number)model.getLowValue(), (Number)model.getHighValue());
 				
 				//model.setLowValue(theNumericFilter.getLowValue());
 				//model.setHighValue(theNumericFilter.getHighValue());								
@@ -483,9 +598,9 @@ public class FilterSettingPanel extends JPanel {
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();					
 		currentNetwork = Cytoscape.getCurrentNetwork();
 
-		int indexType = getIndexTypeForAttribute(pNumericFilter.getAttributeName());
+		int indexType = pNumericFilter.getIndexType();
 		quickFind.reindexNetwork(currentNetwork, indexType, 
-				pNumericFilter.getAttributeName().substring(5), new TaskMonitorBase());
+				pNumericFilter.getControllingAttribute().substring(5), new TaskMonitorBase());
 
 		GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
 		if (currentIndex == null|| !(currentIndex instanceof NumberIndex)) {
@@ -510,11 +625,15 @@ public class FilterSettingPanel extends JPanel {
 		chkGlobal.setSelected(theFilter.getAdvancedSetting().isGlobalChecked());
 		chkNode.setSelected(theFilter.getAdvancedSetting().isNodeChecked());
 		chkEdge.setSelected(theFilter.getAdvancedSetting().isEdgeChecked());
-		chkSource.setSelected(theFilter.getAdvancedSetting().isSourceChecked());
-		chkTarget.setSelected(theFilter.getAdvancedSetting().isTargetChecked());
 		
-		rbtAND.setSelected(theFilter.getAdvancedSetting().isANDSelected());
-		rbtOR.setSelected(theFilter.getAdvancedSetting().isORSelected());
+		if (theFilter.getAdvancedSetting().getRelation() == Relation.AND) {
+			rbtAND.setSelected(true);
+			rbtOR.setSelected(false);			
+		}
+		else { // Relation.OR
+			rbtAND.setSelected(false);
+			rbtOR.setSelected(true);						
+		}
 		
 		lbAdvancedIcon.setIcon(plusIcon);
 		lbAdvancedIcon.addMouseListener( new MouseAdapter() {
@@ -544,8 +663,8 @@ public class FilterSettingPanel extends JPanel {
 		chkGlobal.addItemListener(l);
 		chkNode.addItemListener(l);
 		chkEdge.addItemListener(l);
-		chkSource.addItemListener(l);
-		chkTarget.addItemListener(l);
+		//chkSource.addItemListener(l);
+		//chkTarget.addItemListener(l);
 		rbtAND.addItemListener(l);
 		rbtOR.addItemListener(l);
 		
@@ -582,31 +701,22 @@ public class FilterSettingPanel extends JPanel {
 					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());										
 					parentPanel.refreshAttributeCMB();
 				}
-				else if (theCheckBox == chkSource)
-				{
-					theFilter.getAdvancedSetting().setSource(chkSource.isSelected());										
-				}
-				else if (theCheckBox == chkTarget)
-				{
-					theFilter.getAdvancedSetting().setTarget(chkTarget.isSelected());										
-				}
 			}
 			if (soureObj instanceof javax.swing.JRadioButton) {
 				JRadioButton theRadioButton = (JRadioButton) soureObj;
 				
 				if (theRadioButton == rbtAND) {
-					//System.out.println("rbtAND.isSelected()" + rbtAND.isSelected());
-					
-					theFilter.getAdvancedSetting().setRelationAND(rbtAND.isSelected());	
+					theFilter.getAdvancedSetting().setRelation(Relation.AND);	
 				}
 				if (theRadioButton == rbtOR) {
-					//System.out.println("rbtOR.isSelected()" + rbtOR.isSelected());
-
-					theFilter.getAdvancedSetting().setRelationOR(rbtOR.isSelected());	
+					theFilter.getAdvancedSetting().setRelation(Relation.OR);	
 				}
+				updateRelationLabel();
 			}
 		}
 	}
+	
+	
 	/** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -628,9 +738,9 @@ public class FilterSettingPanel extends JPanel {
         jLabel7 = new javax.swing.JLabel();
         chkNode = new javax.swing.JCheckBox();
         chkEdge = new javax.swing.JCheckBox();
-        jLabel8 = new javax.swing.JLabel();
-        chkSource = new javax.swing.JCheckBox();
-        chkTarget = new javax.swing.JCheckBox();
+        //jLabel8 = new javax.swing.JLabel();
+        //chkSource = new javax.swing.JCheckBox();
+        //chkTarget = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         rbtAND = new javax.swing.JRadioButton();
         rbtOR = new javax.swing.JRadioButton();
@@ -714,13 +824,14 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         pnlAdvancedOptions.add(chkEdge, gridBagConstraints);
-
+        /*
         jLabel8.setText("Edge");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         pnlAdvancedOptions.add(jLabel8, gridBagConstraints);
+
 
         chkSource.setSelected(true);
         chkSource.setText("Source");
@@ -741,7 +852,7 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         pnlAdvancedOptions.add(chkTarget, gridBagConstraints);
-
+         */
         
         jLabel1.setText("Relation");
         gridBagConstraints = new java.awt.GridBagConstraints();
