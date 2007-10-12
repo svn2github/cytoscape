@@ -108,14 +108,18 @@ public class CytoscapeWrapper {
 			//      BioPaxDetailsWindow.getInstance();
 
 			//  cytoscape 2.2 code
-			BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-			CytoscapeDesktop desktop = Cytoscape.getDesktop();
-			CytoPanel cytoPanel = desktop.getCytoPanel(BioPaxContainer.CYTO_PANEL_LOCATION);
-			URL url = BioPaxDetailsPanel.class.getResource("resources/read_obj.gif");
-			Icon icon = new ImageIcon(url);
-			cytoPanel.add("BioPAX Extension", icon, bpContainer, "BioPAX Extension");
-			cytoPanel.setState(CytoPanelState.DOCK);
-			bioPaxUIInitialized = true;
-		}
-	}
+			final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+			final CytoscapeDesktop desktop = Cytoscape.getDesktop();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    CytoPanel cytoPanel = desktop.getCytoPanel(BioPaxContainer.CYTO_PANEL_LOCATION);
+                    URL url = BioPaxDetailsPanel.class.getResource("resources/read_obj.gif");
+                    Icon icon = new ImageIcon(url);
+                    cytoPanel.add("BioPAX Extension", icon, bpContainer, "BioPAX Extension");
+                    cytoPanel.setState(CytoPanelState.DOCK);
+                    bioPaxUIInitialized = true;
+                }
+            });
+        }
+    }
 }
