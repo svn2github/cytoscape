@@ -62,7 +62,7 @@ public class Region extends SubgeneNodeView {
 		listOfFeatures.remove(feature);
 	}
 
-	public SpliceEvent addSpliceEvent(Integer toBlock, Integer toRegion) {
+	public SpliceEvent addSpliceEvent(String toBlock, String toRegion) {
 		SpliceEvent spliceEvent = new SpliceEvent(this);
 		spliceEvent.setId(toBlock, toRegion);
 		listOfSpliceEvents.add(spliceEvent);

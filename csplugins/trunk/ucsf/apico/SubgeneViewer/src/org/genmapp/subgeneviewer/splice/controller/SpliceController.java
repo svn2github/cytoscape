@@ -2,6 +2,7 @@ package org.genmapp.subgeneviewer.splice.controller;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
 import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
+import org.genmapp.subgeneviewer.text.Example_Exon_Structure_GenMAPP_CS;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 public class SpliceController extends SubgeneController {
@@ -14,6 +15,7 @@ public class SpliceController extends SubgeneController {
 	public static SubgeneNetworkView buildSpliceViewer(String nodeId) {
 		SpliceNetworkView spliceView = new SpliceNetworkView();
 		spliceView.parseSplice(nodeId);
+		Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView(spliceView); 
 		spliceView.renderSplice(nodeId);
 		return spliceView;
 

@@ -5,8 +5,8 @@ import org.genmapp.subgeneviewer.view.SubgeneNodeView;
 public class SpliceEvent extends SubgeneNodeView {
 
 	private Region region = null;
-	private Integer _toBlock;
-	private Integer _toRegion;
+	private String _toBlock;
+	private String _toRegion;
 	
 	public SpliceEvent (Region region)
 	{
@@ -21,7 +21,7 @@ public class SpliceEvent extends SubgeneNodeView {
 		this.region = region;
 	}
 
-	public void setId(Integer toBlock, Integer toRegion){
+	public void setId(String toBlock, String toRegion){
 		_toBlock = toBlock;
 		_toRegion = toRegion;
 	}

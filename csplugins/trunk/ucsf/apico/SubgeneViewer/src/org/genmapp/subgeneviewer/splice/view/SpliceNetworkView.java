@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import org.genmapp.subgeneviewer.readers.ParseSplice;
+import org.genmapp.subgeneviewer.readers.FileParser;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.CyNode;
@@ -63,10 +63,12 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	}
 
 	public void parseSplice(String nodeId) {
-		ParseSplice parser = new ParseSplice(this, nodeId);
+		FileParser parser = new FileParser(this, nodeId, splice);
 	}
 
 	private static ImageIcon icon;
+	
+	String splice = "splice";
 	
 	public void renderSplice(String nodeId) {
 		// todo: write this sucker, Alex
