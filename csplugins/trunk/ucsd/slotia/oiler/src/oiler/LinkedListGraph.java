@@ -850,7 +850,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>, Cloneable
 		
 		if ((edgeType & Graph.UNDIRECTED_EDGE) != 0)
 		{
-			LinkedListEdge<E> edge = node.firstDirectedIncomingEdge;
+			LinkedListEdge<E> edge = node.firstUndirectedIncomingEdge;
 			while (edge != null)
 			{
 				final int neighbor = sourceIndex ^ edge.sourceIndex ^ edge.targetIndex;
@@ -859,7 +859,7 @@ public class LinkedListGraph<N,E> implements Graph<N,E>, Cloneable
 				edge = edge.nextIncomingEdge;
 			}
 			
-			edge = node.firstDirectedOutgoingEdge;
+			edge = node.firstUndirectedOutgoingEdge;
 			while (edge != null)
 			{
 				final int neighbor = sourceIndex ^ edge.sourceIndex ^ edge.targetIndex;
