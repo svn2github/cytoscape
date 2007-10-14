@@ -47,6 +47,28 @@ public class Block extends SubgeneNodeView {
 		listOfRegions.remove(region);
 	}
 
+	/**
+	 * get Region by ID 
+	 * currently iterates through list of Regions until it finds a match
+	 * this is inefficient but may not be an issue if lists are small
+	 * @param id
+	 */
+	public Region getRegion (String id)
+	{
+		Region myRegion = null;
+		Iterator<Region> it = this.getRegionInterator();
+		while (it.hasNext())
+		{
+			myRegion = it.next();
+			if (myRegion.getId().equals(id))
+			{
+				return myRegion;
+			}
+		}
+		return null;
+	}
+	
+	
 	public String getType() {
 		return type;
 	}

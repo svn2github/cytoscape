@@ -1,10 +1,6 @@
 package org.genmapp.subgeneviewer.splice.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.genmapp.subgeneviewer.model.SubgeneNetwork;
-import org.genmapp.subgeneviewer.splice.view.Block;
 
 public class SpliceNetwork extends SubgeneNetwork {
 

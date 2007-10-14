@@ -3,8 +3,6 @@ package org.genmapp.subgeneviewer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JFrame;
-
 import org.genmapp.subgeneviewer.controller.SubgeneController;
 
 import cytoscape.Cytoscape;

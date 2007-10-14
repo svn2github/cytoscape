@@ -1,7 +1,5 @@
 package org.genmapp.subgeneviewer.model;
 
-import java.awt.Rectangle;
-
 import cytoscape.CyNode;
 
 public class SubgeneNode {

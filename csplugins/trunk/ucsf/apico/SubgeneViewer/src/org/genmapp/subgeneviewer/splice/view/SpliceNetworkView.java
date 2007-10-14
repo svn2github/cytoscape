@@ -10,7 +10,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import org.genmapp.subgeneviewer.readers.FileParser;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.CyNode;
@@ -50,8 +49,45 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 		return block;
 	}
 
+	public SpliceEvent addSpliceEvent(String id) {
+		SpliceEvent spliceEvent = new SpliceEvent(this);
+		spliceEvent.setId(id);
+		listOfSpliceEvents.add(spliceEvent);
+		spliceEvent.setNetworkView(this);
+		return spliceEvent;
+	}
+
+	public StartSite addStartSite(String id) {
+		StartSite startSite = new StartSite(this);
+		startSite.setId(id);
+		listOfStartSites.add(startSite);
+		startSite.setNetworkView(this);
+		return startSite;
+	}
+
 	public void removeBlock(Block block) {
 		listOfBlocks.remove(block);
+	}
+	
+	/**
+	 * get block by ID 
+	 * currently iterates through list of blocks until it finds a match
+	 * this is inefficient but may not be an issue if lists are small
+	 * @param id
+	 */
+	public Block getBlock (String id)
+	{
+		Block myBlock = null;
+		Iterator<Block> it = this.getBlockInterator();
+		while (it.hasNext())
+		{
+			myBlock = it.next();
+			if (myBlock.getId().equals(id))
+			{
+				return myBlock;
+			}
+		}
+		return null;
 	}
 
 	public CyNode getParentNode() {

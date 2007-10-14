@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.genmapp.subgeneviewer.model.SubgeneNetwork;
-import org.genmapp.subgeneviewer.model.SubgeneNode;
 import org.genmapp.subgeneviewer.view.SubgeneNodeView;
 
 public class Region extends SubgeneNodeView {
@@ -62,6 +60,28 @@ public class Region extends SubgeneNodeView {
 		listOfFeatures.remove(feature);
 	}
 
+	/**
+	 * get Feature by ID 
+	 * currently iterates through list of Features until it finds a match
+	 * this is inefficient but may not be an issue if lists are small
+	 * @param id
+	 */
+	public Feature getFeature (String id)
+	{
+		Feature myFeature = null;
+		Iterator<Feature> it = this.getFeatureInterator();
+		while (it.hasNext())
+		{
+			myFeature = it.next();
+			if (myFeature.getId().equals(id))
+			{
+				return myFeature;
+			}
+		}
+		return null;
+	}	
+	
+	
 	public SpliceEvent addSpliceEvent(String toBlock, String toRegion) {
 		SpliceEvent spliceEvent = new SpliceEvent(this);
 		spliceEvent.setId(toBlock, toRegion);
