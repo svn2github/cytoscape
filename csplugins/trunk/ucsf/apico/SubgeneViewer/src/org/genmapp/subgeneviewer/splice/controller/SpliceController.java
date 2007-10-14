@@ -13,8 +13,11 @@ public class SpliceController extends SubgeneController {
 	 * @return
 	 */
 	public static SubgeneNetworkView buildSpliceViewer(String nodeId) {
-		SpliceNetworkView spliceView = new SpliceNetworkView();
+		// todo: make this a Mediator method, so that we can transition to
+		//       embedded database and remote server
+		SpliceNetworkView spliceView = new SpliceNetworkView();		
 		spliceView.parseSplice(nodeId);
+		
 		Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView(spliceView); 
 		spliceView.renderSplice(nodeId);
 		return spliceView;
