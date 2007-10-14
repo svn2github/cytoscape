@@ -16,9 +16,7 @@ public class SpliceEvent extends SubgeneNodeView {
 	SpliceNetworkView networkView = null;   // pointer back to Splice NetworkView that created me
 
 	// AJK: 10/14/07 defaults.  Should these be centralized?
-	private int _lineWidth = 2;
 	private int _height = 35;  // from what I can tell this should be about 1.5 * Feature height
-	private int _offset;
 	private Color _color = Color.blue;  // should this be configurable?  Where?
 	
 	
