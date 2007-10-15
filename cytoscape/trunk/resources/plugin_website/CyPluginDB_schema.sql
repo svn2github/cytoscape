@@ -66,7 +66,7 @@ CREATE TABLE plugin_version (
   version_auto_id int(11) NOT NULL auto_increment,
   plugin_id int(11) default NULL,
   plugin_file_id int(11) default NULL,
-  cy_version set('2.0','2.1','2.2','2.3','2.4','2.5') default NULL,
+  cy_version set('2.0','2.1','2.2','2.3','2.4','2.5','2.5.1','2.5.2','2.6','2.6.1','2.6.2') default NULL,
   version double default '0.1',
   release_date date default NULL,
   release_note text,
