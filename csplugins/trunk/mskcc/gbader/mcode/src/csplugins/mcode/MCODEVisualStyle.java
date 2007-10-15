@@ -3,10 +3,9 @@ package csplugins.mcode;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.GenericNodeColorCalculator;
-import cytoscape.visual.calculators.GenericNodeShapeCalculator;
-import cytoscape.visual.calculators.NodeColorCalculator;
-import cytoscape.visual.calculators.NodeShapeCalculator;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.mappings.*;
 
 import java.awt.*;
@@ -87,12 +86,12 @@ public class MCODEVisualStyle extends VisualStyle {
         discreteMapping.putMapValue("Unclustered",
                 new Byte(ShapeNodeRealizer.DIAMOND));
 
-        NodeShapeCalculator nodeShapeCalculator = new GenericNodeShapeCalculator("Seed and Cluster Status Calculator", discreteMapping);
-        nac.setNodeShapeCalculator(nodeShapeCalculator);
+        Calculator nodeShapeCalculator = new BasicCalculator("Seed and Cluster Status Calculator", discreteMapping, VisualPropertyType.NODE_SHAPE);
+        nac.setCalculator(nodeShapeCalculator);
     }
 
     private void createNodeColor(NodeAppearanceCalculator nac) {
-        nac.setDefaultNodeFillColor(Color.WHITE);
+        nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR, Color.WHITE);
         ContinuousMapping continuousMapping = new ContinuousMapping(Color.WHITE, ObjectMapping.NODE_MAPPING);
         continuousMapping.setControllingAttributeName("MCODE_Score", null, false);
 
@@ -117,8 +116,8 @@ public class MCODEVisualStyle extends VisualStyle {
         continuousMapping.addPoint(minValue, bv0);
         continuousMapping.addPoint(maxValue, bv2);
 
-        NodeColorCalculator nodeColorCalculator = new GenericNodeColorCalculator("MCODE Score Color Calculator", continuousMapping);
-        nac.setNodeFillColorCalculator(nodeColorCalculator);
+        Calculator nodeColorCalculator = new BasicCalculator("MCODE Score Color Calculator", continuousMapping, VisualPropertyType.NODE_FILL_COLOR);
+        nac.setCalculator(nodeColorCalculator);
     }
 
     public void setMaxValue(double maxValue) {

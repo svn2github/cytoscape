@@ -1,7 +1,7 @@
 package csplugins.mcode;
 
 import giny.model.GraphPerspective;
-import phoebe.PGraphView;
+import ding.view.DGraphView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ import java.util.HashMap;
 public class MCODECluster {
     private ArrayList alCluster = null;
     private GraphPerspective gpCluster = null;
-    private PGraphView pgView = null; //keeps track of layout so that layout process doesn't have to be repeated unecessarily
+    private DGraphView dgView = null; //keeps track of layout so that layout process doesn't have to be repeated unecessarily
     private Integer seedNode;
     private HashMap nodeSeenHashMap; //stores the nodes that have already been included in higher ranking clusters
     private double clusterScore;
@@ -74,12 +74,12 @@ public class MCODECluster {
         this.clusterName = clusterName;
     }
 
-    public PGraphView getPGView() {
-        return pgView;
+    public DGraphView getDGView() {
+        return dgView;
     }
 
-    public void setPGView(PGraphView pgView) {
-        this.pgView = pgView;
+    public void setDGView(DGraphView dgView) {
+        this.dgView = dgView;
     }
 
     public double getClusterScore() {

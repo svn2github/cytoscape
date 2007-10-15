@@ -39,6 +39,7 @@ package csplugins.mcode;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginInfo;
 
 import javax.swing.*;
 
@@ -113,13 +114,4 @@ public class MCODEPlugin extends CytoscapePlugin {
         
         menu.add(submenu);
     }                                     
-
-    /**
-     * Describes the plug in.
-     *
-     * @return short plug in description.
-     */
-    public String describe() {
-        return new String("Clusters a network using the MCODE algorithm.");
-    }
 }

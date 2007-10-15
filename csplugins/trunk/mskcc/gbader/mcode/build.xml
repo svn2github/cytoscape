@@ -10,9 +10,11 @@
 
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="src"/>
+  	<property name="resources.dir" value="resources"/>
+	<property name="cytoscape.dir" value="../../../../cytoscape"/>
 
     <!--  The directory containing library jar files -->
-	<property name="lib.dir" value="/Applications/Cytoscape_2.3.2/lib"/>
+	<property name="lib.dir" value="${cytoscape.dir}/lib"/>
 
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -27,7 +29,7 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>
-        <pathelement path="/Applications/Cytoscape_2.3.2/cytoscape.jar"/>
+        <pathelement path="${cytoscape.dir}/cytoscape.jar"/>
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
@@ -47,7 +49,7 @@
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare"
 		description="Compiles all PlugIn source code (Note: Expects to run from csplugins/mcode directory).">
-    		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
+    		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" source="1.4">
 			<include name="csplugins/**"/>
             <classpath refid="classpath"/>
 		</javac>
@@ -55,8 +57,13 @@
 
 	<!--  Create PlugIn Jar File -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/csplugins/mcode"/>
 	    <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
+			<manifest>
+			  <attribute name="Cytoscape-Plugin"
+			             value="csplugins.mcode.MCODEPlugin"/>
+			</manifest>
         </jar>
 	    <echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>

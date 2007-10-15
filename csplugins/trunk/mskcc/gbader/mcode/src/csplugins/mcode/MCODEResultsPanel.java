@@ -358,10 +358,10 @@ public class MCODEResultsPanel extends JPanel {
                     boolean layoutNecessary = false;
                     for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
                         nv = (NodeView) in.next();
-                        if (cluster.getPGView() != null && cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
+                        if (cluster.getDGView() != null && cluster.getDGView().getNodeView(nv.getNode().getRootGraphIndex()) != null) {
                             //If it does, then we take the layout position that was already generated for it
-                            nv.setXPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
-                            nv.setYPosition(cluster.getPGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
+                            nv.setXPosition(cluster.getDGView().getNodeView(nv.getNode().getRootGraphIndex()).getXPosition());
+                            nv.setYPosition(cluster.getDGView().getNodeView(nv.getNode().getRootGraphIndex()).getYPosition());
                         } else {
                             //this will likely never occur
                             //Otherwise, randomize node positions before layout so that they don't all layout in a line
@@ -964,7 +964,7 @@ public class MCODEResultsPanel extends JPanel {
          * Constructor for drawing graphs during exploration
          *
          * @param cluster Cluster to be drawn
-         * @param layoutNecessary True only if the cluster is expanding in size or lacks a PGView
+         * @param layoutNecessary True only if the cluster is expanding in size or lacks a DGView
          * @param trigger Reference to the slider size action
          * @param drawPlaceHolder Determines if the cluster should be drawn or a place holder in the case of big clusters
          */
