@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import org.genmapp.subgeneviewer.readers.FileParser;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.CyNode;
