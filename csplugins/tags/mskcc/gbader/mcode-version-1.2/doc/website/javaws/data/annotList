@@ -1,0 +1,5 @@
+ontology=jar://go.onto
+annotation=jar://bioproc.anno
+annotation=jar://cellcomp.anno
+annotation=jar://molfunc.anno
+synonyms=jar://yeast.syno

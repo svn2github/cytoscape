@@ -1,0 +1,3 @@
+props=jar://cytoscape.props
+vprops=jar://vizmap.props
+gml=jar://galFiltered.gml
