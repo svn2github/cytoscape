@@ -23,7 +23,7 @@ public class GraphWalker {
 	 * ---------------------
 	 * VGAP
 	 * ---------------------
-	 * Label Track               NodeHeight
+	 * Label Track               NodeHeight  
 	 * ----------------------
 	 * Block and Region Track    (2 * NodeHeight)
 	 * ----------------------
@@ -51,7 +51,7 @@ public class GraphWalker {
 	private static final int START_SITE_HEIGHT = NODE_HEIGHT;
 	private static final int SPLICE_EVENT_HEIGHT = NODE_HEIGHT;
 	private static final int LABEL_TRACK_HEIGHT = NODE_HEIGHT;
-	private static final int TITLE_LEGEND_HEIGHT = 3 * NODE_HEIGHT;
+	private static final int TITLE_LEGEND_HEIGHT = NODE_HEIGHT;
 
 	/**
 	 * perform a depth-first search of a SubgeneNetworkView and set bounds for all Blocks, Regions, Features

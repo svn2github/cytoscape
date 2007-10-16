@@ -46,7 +46,7 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 
 		this.getContentPane().add(_scrollPane);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setSize(475, 210);
+		this.setSize(800, 300);
 		this.setLocationRelativeTo(((DGraphView) Cytoscape
 				.getCurrentNetworkView()).getCanvas());
 		
