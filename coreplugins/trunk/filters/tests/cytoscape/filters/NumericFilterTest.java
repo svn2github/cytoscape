@@ -68,34 +68,34 @@ public class NumericFilterTest extends FilterTest {
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public void testIntegerFilter_getBits() {
+	public void testIntegerFilter_getNodeBits() {
 		// test NumericFilter<Integer>
 		theIntegerFilter.setNegation(false);
 		theIntegerFilter.apply();
 
-		assertEquals(expectedBitSet1.toString(), theIntegerFilter.getBits().toString());
+		assertEquals(expectedBitSet1.toString(), theIntegerFilter.getNodeBits().toString());
 	}
 	
-	public void testIntegerFilter_getBits_not() {
+	public void testIntegerFilter_getNodeBits_not() {
 		theIntegerFilter.setNegation(true);
 		theIntegerFilter.apply();
 
-		assertEquals(expectedBitSet1_not.toString(), theIntegerFilter.getBits().toString());
+		assertEquals(expectedBitSet1_not.toString(), theIntegerFilter.getNodeBits().toString());
 	}	
 	
-	public void testDoubleFilter_getBits() {
+	public void testDoubleFilter_getNodeBits() {
 		//test NumericFilter<Double>
 		theDoubleFilter.setNegation(false);	
 		theDoubleFilter.apply();
 
-		assertEquals(expectedBitSet2.toString(), theDoubleFilter.getBits().toString());
+		assertEquals(expectedBitSet2.toString(), theDoubleFilter.getNodeBits().toString());
 	}
 
-	public void testDoubleFilter_getBits_not() {
+	public void testDoubleFilter_getNodeBits_not() {
 		theDoubleFilter.setNegation(true);
 		theDoubleFilter.apply();
 
-		assertEquals(expectedBitSet2_not.toString(), theDoubleFilter.getBits().toString());
+		assertEquals(expectedBitSet2_not.toString(), theDoubleFilter.getNodeBits().toString());
 	}	
 	
 	// String representation of a filter 
