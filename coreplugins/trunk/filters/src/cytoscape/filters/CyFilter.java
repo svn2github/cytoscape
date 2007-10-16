@@ -37,16 +37,20 @@
 package cytoscape.filters;
 
 import java.util.*;
+
 import giny.filter.Filter;
 
 public interface CyFilter extends Filter{
-	//public BitSet getBits();
-	public void childChanged();
-	public void setParent(CyFilter f);
-	public void print(int depth);
+	public BitSet getNodeBits();
+	public BitSet getEdgeBits();
 
 	public void setNegation(boolean pNot);
 	public boolean getNegation();
 	public String getName();
 	public void setName(String pName);
+
+	public void childChanged();
+	public void setParent(CyFilter f);
+	public void print(int depth);
+
 }
