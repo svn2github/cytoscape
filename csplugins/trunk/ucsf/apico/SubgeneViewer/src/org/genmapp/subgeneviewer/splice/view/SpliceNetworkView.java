@@ -47,6 +47,7 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 		block.setType(type);
 		listOfBlocks.add(block);
 		block.setNetworkView(this);
+		this.add(block); // for repaint()
 		return block;
 	}
 
@@ -111,11 +112,14 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 		// todo: write this sucker, Alex
 		icon = new ImageIcon(
 				"/Applications/Cytoscape_v2.5.1/plugins/subgene_mock.jpg");
+		
+		RecursiveBoundsCalculator.calculateBounds(this);
 
 		JPanel exonPanel = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				g.drawImage(icon.getImage(), 5, 10, null);
 				super.paintComponent(g);
+				this.paintChildren(g);
 			}
 		};
 		exonPanel.setBorder(new TitledBorder("Exon Structure Viewer"));

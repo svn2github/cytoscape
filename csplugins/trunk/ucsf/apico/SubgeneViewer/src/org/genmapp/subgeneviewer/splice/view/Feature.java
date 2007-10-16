@@ -1,5 +1,7 @@
 package org.genmapp.subgeneviewer.splice.view;
 
+import java.awt.Graphics;
+
 import org.genmapp.subgeneviewer.view.SubgeneNodeView;
 
 import cytoscape.CyNode;
@@ -56,6 +58,12 @@ public class Feature extends SubgeneNodeView {
 
 	public void setFeature_id(String feature_id) {
 		this.feature_id = feature_id;
+	}
+	
+	public void paint (Graphics g)
+	{
+		super.paint(g);
+		g.drawString (this.getFeature_id(), this.getBounds().x, this.getBounds().y);
 	}
 
 }
