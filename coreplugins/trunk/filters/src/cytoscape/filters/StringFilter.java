@@ -51,7 +51,7 @@ import csplugins.quickfind.util.QuickFind;
 public class StringFilter extends AtomicFilter {
 
 	private String searchStr = null;
-	private TextIndex textIndex = null;
+	//private TextIndex textIndex = null;
 
 	//---------------------------------------//
 	// Constructor
@@ -67,12 +67,6 @@ public class StringFilter extends AtomicFilter {
 		super();
 	}
 	
-	//public StringFilter(String pName, String pControllingAttribute, String pSearchStr) {
-	//	super(pName, pControllingAttribute,QuickFind.INDEX_NODES);
-		//controllingAttribute = pControllingAttribute;
-	//	searchStr = pSearchStr;
-	//}
-
 	public String getSearchStr() {
 		return searchStr;
 	}
@@ -81,25 +75,12 @@ public class StringFilter extends AtomicFilter {
 		searchStr = pSearchStr;
 	}
 
-	//public TextIndex getTextIndex() {
-	//	return textIndex;
-	//}
-	
-	//public void setTextIndex(TextIndex pTextIndex) {
-	//	textIndex = pTextIndex;
-	//}
-
-
-	public boolean passesFilter(Object obj) {
-		return false;
-	}
-
 	/**
 	 * Caculate the bitSet based on the existing TextIndex and search string.
-	 * The size of the bitSet is the number of nodes in the given network,
+	 * The size of the bitSet is the number of nodes/edges in the given network,
 	 * All bits are initially set to false, those with hits are set to true.
 	 * @param none.
-	 * @return bitSet Object.
+	 * @return none.
 	 */	
 	
 	public void apply() {
@@ -111,22 +92,24 @@ public class StringFilter extends AtomicFilter {
 		List<Node> nodes_list = null;
 		List<Edge> edges_list=null;
 
+		int objectCount = -1;
 		if (index_type == QuickFind.INDEX_NODES) {
 			nodes_list = network.nodesList();
 			objectCount = nodes_list.size();
+			node_bits = new BitSet(objectCount); // all the bits are false at very beginning
 		}
 		else if (index_type == QuickFind.INDEX_EDGES) {
 			edges_list = network.edgesList();
 			objectCount = edges_list.size();
+			edge_bits = new BitSet(objectCount); // all the bits are false at very beginning			
 		}
 		else {
 			System.out.println("StringFilter: Index_type is undefined.");
 			return;
 		}
 		
-		bits = new BitSet(objectCount); // all the bits are false at very beginning
-
-		Hit[] hits = textIndex.getHits(searchStr, Integer.MAX_VALUE);
+		TextIndex theIndex = (TextIndex) quickFind_index;
+		Hit[] hits = theIndex.getHits(searchStr, Integer.MAX_VALUE);
 
 		if (hits.length == 0) {
 			return;
@@ -139,17 +122,22 @@ public class StringFilter extends AtomicFilter {
 		if (index_type == QuickFind.INDEX_NODES) {
 			for (Object obj : hit_objs) {
 				index = nodes_list.lastIndexOf((Node) obj);	
-				bits.set(index, true);
+				node_bits.set(index, true);
 			}
 		} else if (index_type == QuickFind.INDEX_EDGES){
 			for (Object obj : hit_objs) {
 				index = edges_list.lastIndexOf((Edge) obj);
-				bits.set(index, true);
+				edge_bits.set(index, true);
 			}
 		}
 		
 		if (negation) {
-			bits.flip(0, objectCount);
+			if (index_type == QuickFind.INDEX_NODES) {
+				node_bits.flip(0, objectCount);
+			}
+			if (index_type == QuickFind.INDEX_EDGES) {
+				edge_bits.flip(0, objectCount);
+			}
 		}
 	}
 		
