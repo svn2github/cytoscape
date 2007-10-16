@@ -85,6 +85,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -114,7 +116,8 @@ import javax.swing.TransferHandler;
  */
 public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotionListener,
                                                        java.awt.dnd.DropTargetListener,
-                                                       PhoebeCanvasDroppable, KeyListener {
+                                                       PhoebeCanvasDroppable, KeyListener,
+                                                       MouseWheelListener {
 	final double[] m_ptBuff = new double[2];
 	final float[] m_extentsBuff2 = new float[4];
 	final float[] m_floatBuff1 = new float[2];
@@ -195,6 +198,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		//m_printingTextAsShape[0] = true;
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addMouseWheelListener(this);
 		addKeyListener(this);
 		setFocusable(true);
 
@@ -1272,6 +1276,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	// AJK: 01/12/07 END
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+        int notches = e.getWheelRotation();
+        double factor = 1.0; 
+
+		// scroll up, zoom in
+        if (notches < 0) {
+			factor = 1.1;
+
+		// scroll down, zoom out
+        } else {
+			factor = 0.9;
+        }
+
+		synchronized (m_lock) {
+			m_scaleFactor = m_scaleFactor * factor;
+		}
+
+		m_view.m_viewportChanged = true;
+		repaint();
+	}
+
 
 	// AJK: 04/27/06 BEGIN
 	// for node context menus
