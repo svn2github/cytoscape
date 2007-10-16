@@ -39,15 +39,13 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 		return listOfStartSites.iterator();
 	}
 	
-	private CyNode parentNode = null;
-
 	public Block addBlock(String id, String type) {
 		Block block = new Block(this);
 		block.setId(id);
 		block.setType(type);
 		listOfBlocks.add(block);
 		block.setNetworkView(this);
-		this.add(block); // for repaint()
+//		this.add(block); // for repaint()
 		return block;
 	}
 
@@ -92,13 +90,6 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 		return null;
 	}
 
-	public CyNode getParentNode() {
-		return parentNode;
-	}
-
-	public void setParentNode(CyNode parentNode) {
-		this.parentNode = parentNode;
-	}
 
 	public void parseSplice(String nodeId) {
 		FileParser parser = new FileParser(this, nodeId, splice);
@@ -108,27 +99,40 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	
 	String splice = "splice";
 	
+	public void paint (Graphics g)
+	{
+//		super.paint(g);
+//		System.out.println ("Painting children for view: " + this);
+//		System.out.println ("For " + this.getComponentCount() + " children.");
+//		this.paintChildren(g);
+		GraphWalker.renderView(this);
+	}
+	
 	public void renderSplice(String nodeId) {
 		// todo: write this sucker, Alex
 		icon = new ImageIcon(
 				"/Applications/Cytoscape_v2.5.1/plugins/subgene_mock.jpg");
 		
-		RecursiveBoundsCalculator.calculateBounds(this);
+		GraphWalker.calculateBounds(this);
+//		this.repaint();
 
-		JPanel exonPanel = new JPanel() {
-			protected void paintComponent(Graphics g) {
-				g.drawImage(icon.getImage(), 5, 10, null);
-				super.paintComponent(g);
-				this.paintChildren(g);
-			}
-		};
-		exonPanel.setBorder(new TitledBorder("Exon Structure Viewer"));
-		exonPanel.setOpaque(false);
-
-		// todo: make this a calculated value
-		exonPanel.setPreferredSize(new Dimension(455, 140));
+//		JPanel exonPanel = new JPanel() {
+//			protected void paintComponent(Graphics g) {
+////				g.drawImage(icon.getImage(), 5, 10, null);
+//				super.paintComponent(g);
+//				this.paintChildren(g);
+//			}
+//		};
+//		exonPanel.setBorder(new TitledBorder("Exon Structure Viewer"));
+//		exonPanel.setOpaque(false);
+//
+//		// todo: make this a calculated value
+//		exonPanel.setPreferredSize(new Dimension(455, 140));
+//		
+//		this.add(exonPanel);
 		
-		this.add(exonPanel);
+		// need to paint myself
+//		this.repaint();
 
 	}
 

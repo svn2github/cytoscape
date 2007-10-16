@@ -1,5 +1,6 @@
 package org.genmapp.subgeneviewer.splice.view;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,11 +34,25 @@ public class Block extends SubgeneNodeView {
 		this.networkView = NetworkView;
 	}
 	
+	public void paint (Graphics g)
+	{
+		System.out.println ("painting block " + this);
+		super.paint(g);
+		Iterator<Region> regionIt = listOfRegions.iterator();
+		while (regionIt.hasNext())
+		{
+			Region region = regionIt.next();
+			region.paint(g);
+		}
+//		this.paintChildren(g);
+	}
+	
 	public Region addRegion (String id)
 	{
 		Region region = new Region(this);
 		region.setId(id);
 		listOfRegions.add(region);
+//		this.add(region);  // for repaint
 		region.setBlock(this);
 		return region;
 	}

@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
+import cytoscape.CyNode;
+
 public class SubgeneNetworkView extends JPanel{
 
 //	private CyNetworkView cynetworkView;
@@ -15,7 +17,16 @@ public class SubgeneNetworkView extends JPanel{
 //	public void setCynetworkView(CyNetworkView cynetworkView) {
 //		this.cynetworkView = cynetworkView;
 //	}
-	
+
+	private CyNode parentNode = null;
+	public CyNode getParentNode() {
+		return parentNode;
+	}
+
+	public void setParentNode(CyNode parentNode) {
+		this.parentNode = parentNode;
+	}
+
 	public SubgeneNetworkView()
 	{
 	

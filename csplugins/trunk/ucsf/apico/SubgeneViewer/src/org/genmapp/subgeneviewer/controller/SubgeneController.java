@@ -49,6 +49,7 @@ public class SubgeneController extends MouseAdapter {
 			getViewsToView();
 
 			SubgeneViewerFrame frame = SubgeneViewerPlugin.get_frame();
+			System.out.println("Built subgeneViewer frame " + frame);
 
 			for (Integer viewType : _viewsToView) {
 				if (_viewsInDatabase.contains(viewType)) {
@@ -56,6 +57,7 @@ public class SubgeneController extends MouseAdapter {
 					switch (viewType) {
 					case EXON_VIEW: {
 						_view = SpliceController.buildSpliceViewer(_nodeId);
+						System.out.println("added view: " + _view);
 						break;
 					}
 					case SNP_VIEW: {

@@ -1,6 +1,7 @@
 package org.genmapp.subgeneviewer.splice.view;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import org.genmapp.subgeneviewer.view.SubgeneNodeView;
 
@@ -63,6 +64,8 @@ public class Feature extends SubgeneNodeView {
 	public void paint (Graphics g)
 	{
 		super.paint(g);
+		Rectangle r = this.getBounds();
+		g.drawRect(r.x, r.y, r.width, r.height);
 		g.drawString (this.getFeature_id(), this.getBounds().x, this.getBounds().y);
 	}
 

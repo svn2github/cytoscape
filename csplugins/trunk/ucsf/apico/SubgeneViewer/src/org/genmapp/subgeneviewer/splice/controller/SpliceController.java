@@ -1,9 +1,12 @@
 package org.genmapp.subgeneviewer.splice.controller;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
+import org.genmapp.subgeneviewer.splice.view.GraphWalker;
 import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
 import org.genmapp.subgeneviewer.text.Example_Exon_Structure_GenMAPP_CS;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
+
+import cytoscape.Cytoscape;
 
 public class SpliceController extends SubgeneController {
 
@@ -15,11 +18,15 @@ public class SpliceController extends SubgeneController {
 	public static SubgeneNetworkView buildSpliceViewer(String nodeId) {
 		// todo: make this a Mediator method, so that we can transition to
 		//       embedded database and remote server
-		SpliceNetworkView spliceView = new SpliceNetworkView();		
+		SpliceNetworkView spliceView = new SpliceNetworkView();	
+		spliceView.setParentNode(Cytoscape.getCyNode(nodeId));
+		System.out.println("parent CyNode for splice view set to: " + 
+				spliceView.getParentNode());
 		spliceView.parseSplice(nodeId);
 		
 		Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView(spliceView); 
-		spliceView.renderSplice(nodeId);
+//		spliceView.renderSplice(nodeId);
+		GraphWalker.calculateBounds(spliceView);
 		return spliceView;
 
 	}

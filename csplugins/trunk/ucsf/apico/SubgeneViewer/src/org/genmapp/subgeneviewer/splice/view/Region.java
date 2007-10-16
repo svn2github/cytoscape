@@ -1,5 +1,7 @@
 package org.genmapp.subgeneviewer.splice.view;
 
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +52,7 @@ public class Region extends SubgeneNodeView {
 		feature.setFeature_id(feature_id);
 		listOfFeatures.add(feature);
 		feature.setRegion(this);
-		this.add(feature); // for repaint
+//		this.add(feature); // for repaint
 		return feature;
 	}
 	
@@ -82,6 +84,14 @@ public class Region extends SubgeneNodeView {
 		return null;
 	}	
 	
+	public void paint (Graphics g)
+	{
+		System.out.println ("now drawing from region: " + this);
+		Rectangle r = this.getBounds();
+		System.out.println("region bounds (Rectangle are: ) " + r);
+		g.drawRect(r.x, r.y, r.width, r.height);
+		this.paintChildren(g);
+	}
 	
 	public SpliceEvent addSpliceEvent(String toBlock, String toRegion) {
 		SpliceEvent spliceEvent = new SpliceEvent(this);
