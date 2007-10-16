@@ -35,7 +35,15 @@
   </div>
   <!-- This page content goes here -->
   <p>
-  No blocks are reserved here (all reserved blocks have expired), these are just recommended.
+  <h4>Reserved rooms</h4>
+  <table>
+  <tr>
+  <td width="10%"><a href="http://www.rai-hotelservice.com/compass/webdirect.cfm?code=ACRS07" target="_blank"><img border="0" align="middle" alt="Rai hotel service" height="53" width="117" src="images/rai_hotel_button_117_53.gif"></a></td>
+  <td width="90%"><p> reserves blocks of rooms till the start of the Symposium. </p></td>
+  </tr>
+  </table>  
+  <h4>More suggestions</h4>
+  No blocks are reserved here, these are just recommended.
   For more suggestions look <a href="http://www.searchforhotels.com/" target="_blank">here</a>. 
   You might also look at <a href="http://www.hotelscombined.com/Education_Support" target="_blank">HotelsCombined</a>. 
   All students and staff of any tertiary educational institutions worldwide such 

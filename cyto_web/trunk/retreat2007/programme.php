@@ -123,7 +123,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader"><p>AMC Lecture room L 01-252 </p>
+  <td class="subheader"><p>AMC Lecture room K 01-123 </p>
   </td>
  </tr>
  <tr>
@@ -175,7 +175,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader" colspan="3"><p>AMC Lecture rooms L 01-252, K 01-123 and -122;  parallel sessions </p></td>
+  <td class="subheader" colspan="3"><p>AMC Conference Hall (Collegezaal)2 and Lecture rooms K 01-123 and -122;  parallel sessions </p></td>
  </tr>
  <tr>
   <td><p>09:30-11:00 </p></td>
@@ -237,7 +237,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader"><p>AMC Conference Room 1 </p></td>
+  <td class="subheader"><p>AMC Conference Hall (Collegezaal) 1 </p></td>
  </tr>
  <tr>
   <td><p>09:15-09:30 </p></td>
@@ -323,7 +323,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader"><p>AMC Lecture rooms L 01-252 </p></td>
+  <td class="subheader"><p>AMC Lecture room K 01-123 </p></td>
  </tr>
  <tr>
   <td><p>9:30-10:30 </p></td>
