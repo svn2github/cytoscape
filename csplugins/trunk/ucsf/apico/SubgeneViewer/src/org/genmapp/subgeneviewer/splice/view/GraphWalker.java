@@ -92,7 +92,7 @@ public class GraphWalker {
 				{
 					feature = features.next();
 					featureXOffset = xOffset;
-					feature.setBounds(featureXOffset, featuresBoundsY, NODE_WIDTH, NODE_HEIGHT);
+					feature.setBounds(featureXOffset + (HGAP / 2), featuresBoundsY, NODE_WIDTH, NODE_HEIGHT);
 					xOffset += NODE_WIDTH + HGAP;
 				}
 				

@@ -47,7 +47,14 @@ public class Region extends SubgeneNodeView {
 	
 	public Feature addFeature (String id, String feature_id)
 	{
-		Feature feature = new Feature(this);
+		Feature feature = getFeature(id);
+		if (feature != null)
+		{
+			return feature;
+		}
+		
+		
+		feature = new Feature(this);
 		feature.setId(id);
 		feature.setFeature_id(feature_id);
 		listOfFeatures.add(feature);
@@ -84,14 +91,14 @@ public class Region extends SubgeneNodeView {
 		return null;
 	}	
 	
-	public void paint (Graphics g)
-	{
-		System.out.println ("now drawing from region: " + this);
-		Rectangle r = this.getBounds();
-		System.out.println("region bounds (Rectangle are: ) " + r);
-		g.drawRect(r.x, r.y, r.width, r.height);
-		this.paintChildren(g);
-	}
+//	public void paint (Graphics g)
+//	{
+//		System.out.println ("now drawing from region: " + this);
+//		Rectangle r = this.getBounds();
+//		System.out.println("region bounds (Rectangle are: ) " + r);
+//		g.drawRect(r.x, r.y, r.width, r.height);
+//		this.paintChildren(g);
+//	}
 	
 	public SpliceEvent addSpliceEvent(String toBlock, String toRegion) {
 		SpliceEvent spliceEvent = new SpliceEvent(this);

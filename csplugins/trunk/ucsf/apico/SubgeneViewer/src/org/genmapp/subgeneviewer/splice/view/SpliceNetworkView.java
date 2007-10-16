@@ -40,7 +40,13 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	}
 	
 	public Block addBlock(String id, String type) {
-		Block block = new Block(this);
+		Block block = getBlock(id);
+		if (block != null)
+		{
+			return block;
+			
+		}
+		block = new Block(this);
 		block.setId(id);
 		block.setType(type);
 		listOfBlocks.add(block);

@@ -34,22 +34,28 @@ public class Block extends SubgeneNodeView {
 		this.networkView = NetworkView;
 	}
 	
-	public void paint (Graphics g)
-	{
-		System.out.println ("painting block " + this);
-		super.paint(g);
-		Iterator<Region> regionIt = listOfRegions.iterator();
-		while (regionIt.hasNext())
-		{
-			Region region = regionIt.next();
-			region.paint(g);
-		}
-//		this.paintChildren(g);
-	}
+//	public void paint (Graphics g)
+//	{
+//		System.out.println ("painting block " + this);
+//		super.paint(g);
+//		Iterator<Region> regionIt = listOfRegions.iterator();
+//		while (regionIt.hasNext())
+//		{
+//			Region region = regionIt.next();
+//			region.paint(g);
+//		}
+////		this.paintChildren(g);
+//	}
 	
 	public Region addRegion (String id)
 	{
-		Region region = new Region(this);
+		Region region = getRegion(id);
+		if (region != null)
+		{
+			return region;
+		}
+			
+		region	= new Region(this);
 		region.setId(id);
 		listOfRegions.add(region);
 //		this.add(region);  // for repaint
