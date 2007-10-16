@@ -36,6 +36,9 @@
 
 package cytoscape.filters;
 
+import giny.model.Edge;
+import giny.model.Node;
+
 import java.util.*;
 
 import cytoscape.CyNetwork;
@@ -45,8 +48,8 @@ import csplugins.widgets.autocomplete.index.GenericIndex;
 
 public abstract class AtomicFilter implements CyFilter {
 
-	protected BitSet bits = null;
-	//protected BitSet edge_bits = null;
+	protected BitSet node_bits = null;
+	protected BitSet edge_bits = null;
 
 	protected CyFilter parent;
 	protected String depthString;
@@ -55,27 +58,14 @@ public abstract class AtomicFilter implements CyFilter {
 	protected String controllingAttribute = null;
 	protected boolean negation = false;
 	protected CyNetwork network = null;
-	protected int objectCount = 0;
 	
 	protected int index_type = QuickFind.INDEX_NODES;
 
 	protected GenericIndex quickFind_index = null;
+	
 	public AtomicFilter() {
 	}
 	
-	//public AtomicFilter(String pControllingAttribute, int pIndexType) {
-	//	controllingAttribute = pControllingAttribute;
-	//	index_type = pIndexType;
-		//bits = b;
-	//}
-
-	//public AtomicFilter(String pFilterName, String pControllingAttribute, int pIndexType) {
-	//	name = pFilterName;
-	//	controllingAttribute = pControllingAttribute;
-	//	index_type = pIndexType;
-		//bits = b;
-	//}
-
 	public GenericIndex getIndex() {
 		return quickFind_index;
 	}
@@ -92,16 +82,47 @@ public abstract class AtomicFilter implements CyFilter {
 		return index_type;
 	}
 
-	public BitSet getBits() {
+	public BitSet getNodeBits() {
 		apply();
-		return bits;
+		return node_bits;
+	}
+	
+	public BitSet getEdgeBits(){
+		apply();
+		return edge_bits;		
+	}
+	
+	public boolean passesFilter(Object obj) {
+		List<Node> nodes_list = null;
+		List<Edge> edges_list=null;
+
+		int index = -1;
+		if (obj instanceof Node) {
+			nodes_list = network.nodesList();
+			index = nodes_list.lastIndexOf((Node) obj);	
+			return node_bits.get(index);			
+		}
+		
+		if (obj instanceof Edge) {
+			edges_list = network.edgesList();
+			index = edges_list.lastIndexOf((Edge) obj);	
+			return edge_bits.get(index);			
+		}		
+		
+		return false;
 	}
 
+	
 	abstract public void apply(); 
 	abstract public String toString(); 
 	
-	public void setBits(BitSet b) {
-		bits = b;
+	public void setNodeBits(BitSet b) {
+		node_bits = b;
+		parent.childChanged();
+	}
+
+	public void setEdgeBits(BitSet b) {
+		edge_bits = b;
 		parent.childChanged();
 	}
 
@@ -118,7 +139,7 @@ public abstract class AtomicFilter implements CyFilter {
 			sb.append("  ");
 		depthString = sb.toString();
 
-		System.out.println(depthString + name + " " + bits.toString() );
+		//System.out.println(depthString + name + " " + bits.toString() );
 		
 		if ( depth == 0 )
 			System.out.println();
