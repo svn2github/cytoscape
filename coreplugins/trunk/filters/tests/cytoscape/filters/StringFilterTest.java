@@ -69,13 +69,13 @@ public class StringFilterTest extends FilterTest {
 		// Test case 1: indexed by "Unique Identifier"
 		theFirstFilter.setNegation(false);
 		theFirstFilter.apply();
-		assertEquals(expectedBitSet1.toString(), theFirstFilter.getBits().toString());
+		assertEquals(expectedBitSet1.toString(), theFirstFilter.getNodeBits().toString());
 
 		//Test case 2: indexed by "location"
 		theSecondFilter.setNegation(false);
 		theSecondFilter.apply();
 		
-		assertEquals(expectedBitSet2.toString(), theSecondFilter.getBits().toString());
+		assertEquals(expectedBitSet2.toString(), theSecondFilter.getNodeBits().toString());
 	}
 	
 	public void testGetBits_not() { 
@@ -83,21 +83,21 @@ public class StringFilterTest extends FilterTest {
 		theFirstFilter.setNegation(true);
 		theFirstFilter.apply();
 
-		assertEquals(expectedBitSet1_not.toString(), theFirstFilter.getBits().toString());
+		assertEquals(expectedBitSet1_not.toString(), theFirstFilter.getNodeBits().toString());
 
 		//Test case 2: indexed by "location"
 		theSecondFilter.setNegation(true);
 		theSecondFilter.apply();
 
-		assertEquals(expectedBitSet2_not.toString(), theSecondFilter.getBits().toString());
+		assertEquals(expectedBitSet2_not.toString(), theSecondFilter.getNodeBits().toString());
 	}
 
 	// String representation of a filter 
 	public void test_toString() { 
-		String theFirstFilter_expectStr = "StringFilter=firstStringFilter:Unique Identifier:false:rai*:"+QuickFind.INDEX_NODES;
+		String theFirstFilter_expectStr = "StringFilter=Unique Identifier:false:rai*:"+QuickFind.INDEX_NODES;
 		assertEquals(theFirstFilter_expectStr, theFirstFilter.toString());	
 		
-		String theSecondFilter_expectStr = "StringFilter=secondStringFilter:location:false:nu*:"+QuickFind.INDEX_NODES;
+		String theSecondFilter_expectStr = "StringFilter=location:false:nu*:"+QuickFind.INDEX_NODES;
 		assertEquals(theSecondFilter_expectStr, theSecondFilter.toString());			
 	}
 	
