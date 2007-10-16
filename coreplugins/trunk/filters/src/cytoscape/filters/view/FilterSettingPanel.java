@@ -230,11 +230,27 @@ public class FilterSettingPanel extends JPanel {
 		RangeSelectionListener rangeSelectionListener = new RangeSelectionListener(rangeSlider);
 		rangeSlider.addChangeListener(rangeSelectionListener);
 		rangeSlider.setName(pFilter.getControllingAttribute());
-					
+		
+		RangeSlideMouseAdapter l = new RangeSlideMouseAdapter(); 
+		rangeSlider.addMouseListener(l);
+		
 		return rangeSlider;
 	}
 	
-	
+	/**
+	 * Inner class Mouse listener for double click events on rangeSlider.
+	 */
+	public class RangeSlideMouseAdapter extends MouseAdapter
+	{
+		public void mouseClicked(MouseEvent pMouseEvent)
+		{
+			if (pMouseEvent.getClickCount() >= 2)
+			{
+				System.out.println("User double clickeded on rangeSlider");	
+			}
+		}
+	}
+
 	private AtomicFilter getAtomicFilterFromStr(String pCtrlAttribute, int pIndexType) {
 		AtomicFilter retFilter = null;
 		
@@ -315,9 +331,29 @@ public class FilterSettingPanel extends JPanel {
 			int childIndex =widgetGridY/2;
 			
 			CyFilter childFilter = theFilter.getChildren().get(childIndex);
-			childFilter.setNegation(_chk.isSelected());
+			if (childFilter instanceof CompositeFilter) {
+				System.out.println("Line 319 FilterSettingPanel.updateNegationStatus() Not for compositeFilter is clicked");
+				
+				CompositeFilter tmpFilter = (CompositeFilter)childFilter;
+				theFilter.setNotTable(tmpFilter, new Boolean(_chk.isSelected()));
+			}
+			else { // it is an AtomiCFilter
+				childFilter.setNegation(_chk.isSelected());				
+			}
+			
+			//Update the selection on screen
+			System.out.println("FilterSettingPanel.updateNegationStatus(): chkNot is clicked");		
+			doSelection();
 		}
 	}
+	
+	// select node/edge on current network based on the filter defined
+	private void doSelection() {
+		System.out.println("Entering FilterSettingPanel.doSelection()...");		
+		theFilter.doSelection();
+	}
+
+	
 	
 	private void addWidgetRow(CyFilter pFilter, int pGridY) {
 		//System.out.println("Entering FilterSettingPanel: addWidgetRow_atomic() ...");
@@ -423,9 +459,18 @@ public class FilterSettingPanel extends JPanel {
 		// The parameter pObj is the object selected from Attribute/Filter combobox
 		// It can be either (1) a string with prefix "node."/"edge." (2) a CompositeFilter object 
 		if (pObj instanceof CompositeFilter) {
+			if (pObj == theFilter) {
+				return; // Ignore if try to add self
+			}
 			addWidgetRow((CompositeFilter) pObj, theFilter.getChildren().size()*2);
-			// Update theFilter object		
+			// Update theFilter object	
 			theFilter.getChildren().add((CompositeFilter) pObj);
+			//CompositeFilter tmpFilter = (CompositeFilter) theFilter;
+
+			theFilter.getNotTable().put(pObj, new Boolean(false));
+			//Update the selection on screen
+			System.out.println("FilterSettingPanel. A compositeFilter is added as a child filter");	
+			doSelection();					
 		}
 		else { //(pObj instanceof String)
 			String tmpObj = (String)pObj;
@@ -541,6 +586,10 @@ public class FilterSettingPanel extends JPanel {
 				StringFilter theStringFilter = (StringFilter) theFilterlist.get(widgetIndex);
 				theStringFilter.setSearchStr(hit.getKeyword());				
 			}
+			
+			//Update the selection on screen
+			System.out.println("FilterSettingPanel. actionEvent from textIndexedComboBox...");	
+			doSelection();					
 		}
 	}
 
@@ -590,6 +639,10 @@ public class FilterSettingPanel extends JPanel {
 				//NullPointerException caught -- the slider is not initialized yet								
 				System.out.println("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
 			}	
+
+			//Update the selection on screen
+			System.out.println("FilterSettingPanel. rangerSlider changed Event received...");	
+			doSelection();					
 
 		}
 	}
@@ -667,7 +720,7 @@ public class FilterSettingPanel extends JPanel {
 		//chkTarget.addItemListener(l);
 		rbtAND.addItemListener(l);
 		rbtOR.addItemListener(l);
-		
+		chkNegation.addItemListener(l);
 		//By default, the AdvancedPanel is invisible
 		pnlAdvancedOptions.setVisible(false);
 		
@@ -701,6 +754,16 @@ public class FilterSettingPanel extends JPanel {
 					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());										
 					parentPanel.refreshAttributeCMB();
 				}
+				else if (theCheckBox == chkNegation)
+				{
+					theFilter.setNegation(chkNegation.isSelected());										
+				}	
+				
+				//Update the selection on screen
+				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
+					System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
+					doSelection();					
+				}
 			}
 			if (soureObj instanceof javax.swing.JRadioButton) {
 				JRadioButton theRadioButton = (JRadioButton) soureObj;
@@ -712,6 +775,10 @@ public class FilterSettingPanel extends JPanel {
 					theFilter.getAdvancedSetting().setRelation(Relation.OR);	
 				}
 				updateRelationLabel();
+
+				//Update the selection on screen
+				System.out.println("FilterSettingPanel. rbtAND/rbtOR is clicked");	
+				doSelection();					
 			}
 		}
 	}
@@ -744,6 +811,9 @@ public class FilterSettingPanel extends JPanel {
         jLabel1 = new javax.swing.JLabel();
         rbtAND = new javax.swing.JRadioButton();
         rbtOR = new javax.swing.JRadioButton();
+        lbNegation = new javax.swing.JLabel();
+        chkNegation = new javax.swing.JCheckBox();
+
         pnlCustomSettings = new javax.swing.JPanel();
         //lbSpaceHolder = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -892,6 +962,31 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(pnlAdvancedSettings, gridBagConstraints);
 
+        
+        lbNegation.setText("Negation");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 4;
+        pnlAdvancedOptions.add(lbNegation, gridBagConstraints);
+
+        chkNegation.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        chkNegation.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
+        pnlAdvancedOptions.add(chkNegation, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        pnlAdvancedSettings.add(pnlAdvancedOptions, gridBagConstraints);
+
+        
+        
+        
         pnlCustomSettings.setLayout(new java.awt.GridBagLayout());
 
         pnlCustomSettings.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -930,6 +1025,7 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox chkEdge;
     private javax.swing.JCheckBox chkGlobal;
+    private javax.swing.JCheckBox chkNegation;
     private javax.swing.JCheckBox chkNode;
     private javax.swing.JCheckBox chkSession;
     private javax.swing.JCheckBox chkSource;
@@ -948,7 +1044,7 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.JPanel pnlCustomSettings;
     private javax.swing.JRadioButton rbtAND;
     private javax.swing.JRadioButton rbtOR;
-
+    private javax.swing.JLabel lbNegation;
     // End of variables declaration
 
 
