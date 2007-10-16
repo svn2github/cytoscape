@@ -57,7 +57,6 @@ import csplugins.widgets.autocomplete.index.NumberIndex;
 public class NumericFilter<T extends Number> extends AtomicFilter {
 
 	private T lowBound, highBound;
-	//private NumberIndex numberIndex = null;
 
 	public NumericFilter() {
 	}
@@ -95,20 +94,22 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 		List<Node> nodes_list = null;
 		List<Edge> edges_list=null;
 
+		int objectCount = -1;
 		if (index_type == QuickFind.INDEX_NODES) {
 			nodes_list = network.nodesList();
 			objectCount = nodes_list.size();
+			node_bits = new BitSet(objectCount); // all the bits are false initially
 		}
 		else if (index_type == QuickFind.INDEX_EDGES) {
 			edges_list = network.edgesList();
 			objectCount = edges_list.size();
+			edge_bits = new BitSet(objectCount); // all the bits are false initially
 		}
 		else {
 			System.out.println("StringFilter: Index_type is undefined.");
 			return;
 		}
 
-		bits = new BitSet(objectCount); // all the bits are false initially
 
 		//System.out.println(" NumberFilter.apply(): objectCount = " + objectCount);
 		NumberIndex numberIndex = (NumberIndex) quickFind_index;
@@ -122,17 +123,22 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 		if (index_type == QuickFind.INDEX_NODES) {
 			for (Object obj : list) {
 				index = nodes_list.lastIndexOf((Node) obj);
-				bits.set(index, true);
+				node_bits.set(index, true);
 			}
 		} else if (index_type == QuickFind.INDEX_EDGES) {
 			for (Object obj : list) {
 				index = edges_list.lastIndexOf((Edge) obj);
-				bits.set(index, true);
+				edge_bits.set(index, true);
 			}
 		}		
 		
 		if (negation) {
-			bits.flip(0, objectCount);
+			if (index_type == QuickFind.INDEX_NODES) {
+				node_bits.flip(0, objectCount);
+			}
+			if (index_type == QuickFind.INDEX_EDGES) {
+				edge_bits.flip(0, objectCount);
+			}
 		}		
 	}
 
