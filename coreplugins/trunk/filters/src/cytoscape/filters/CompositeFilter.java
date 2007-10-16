@@ -36,10 +36,18 @@
 
 package cytoscape.filters;
 
-import java.util.Vector;
-//import cytoscape.filters.util.FilterUtil;
+import giny.model.Edge;
+import giny.model.Node;
 
-import java.util.*;
+import java.util.List;
+//import cytoscape.filters.util.FilterUtil;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.BitSet;
+import java.util.LinkedList;
 
 import csplugins.quickfind.util.QuickFind;
 
@@ -50,39 +58,98 @@ public class CompositeFilter implements CyFilter {
 	//Relation relation;
 	private String name;
 	private BitSet node_bits, edge_bits;
-	private boolean childChanged;
+	private boolean childChanged = true;// so we calculate the first time through
 	private CyFilter parent;
 	private String depthString;
 	private String description;
 	private AdvancedSetting advancedSetting = null;
+	//private int indexType = -1; //QuickFind.INDEX_NODES //QuickFind.INDEX_EDGES 
+	private CyNetwork network;
 
-	public CompositeFilter(String pName, AdvancedSetting pSetting) {
-		name = pName;
-		advancedSetting = pSetting;
-		if (pSetting == null) {
-			advancedSetting = new AdvancedSetting();
-		}
+	private Hashtable compositeNotTab = new Hashtable<CompositeFilter, Boolean>();
+	
+	public CompositeFilter() {
+		advancedSetting = new AdvancedSetting();
 		children = new LinkedList<CyFilter>();
-
-		// so we calculate the first time through
-		childChanged = true;
 	}
 
-	//Create an empty CompositeFilter, with default Relation.AND
 	public CompositeFilter(String pName) {
 		name = pName;
 		advancedSetting = new AdvancedSetting();
 		children = new LinkedList<CyFilter>();
 	}
 	
-	public CompositeFilter(String pName, Relation pRelation) {
-		name = pName;
-		advancedSetting = new AdvancedSetting();
-		advancedSetting.setRelation(pRelation);
-		children = new LinkedList<CyFilter>();
-	}
+	// do selection on given network
+	public void doSelection() {
+		System.out.println("CompositeFilter.doSelection() ...");
+		
+		if (network == null) {
+			network = Cytoscape.getCurrentNetwork(); 
+		}
 
+		network.unselectAllNodes();
+		network.unselectAllEdges();
+
+		final List<Node> nodes_list = network.nodesList();
+		final List<Edge> edges_list = network.edgesList();
+
+		if (advancedSetting.isNodeChecked()) {
+			// Select node only
+			final List<Node> passedNodes = new ArrayList<Node>();
+
+			Node node = null;
+			for (int i=0; i< nodes_list.size(); i++) {
+				int next_set_bit = node_bits.nextSetBit(i);
+				node = nodes_list.get(next_set_bit);
+				passedNodes.add(node);
+				i = next_set_bit;
+			}
+			network.setSelectedNodeState(passedNodes, true);
+		}
+		if (advancedSetting.isEdgeChecked()) {
+			// Select edge only
+			final List<Edge> passedEdges = new ArrayList<Edge>();
+
+			Edge edge = null;
+			for (int i=0; i< edges_list.size(); i++) {
+				int next_set_bit = edge_bits.nextSetBit(i);
+				edge = edges_list.get(next_set_bit);
+				passedEdges.add(edge);
+				i = next_set_bit;
+			}
+			network.setSelectedEdgeState(passedEdges, true);
+		}
+
+		Cytoscape.getCurrentNetworkView().updateView();
+	}
+	
+	
+	public Hashtable getNotTable() {
+		return compositeNotTab;
+	}
+	
+	public void setNotTable(CompositeFilter pFilter, boolean pNot) {
+		compositeNotTab.put(pFilter, new Boolean(pNot));
+	}
+	
 	public boolean passesFilter(Object obj) {
+		
+		List<Node> nodes_list = null;
+		List<Edge> edges_list=null;
+
+		int index = -1;
+		if (obj instanceof Node) {
+			nodes_list = network.nodesList();
+			index = nodes_list.lastIndexOf((Node) obj);	
+			return node_bits.get(index);			
+		}
+		
+		if (obj instanceof Edge) {
+			edges_list = network.edgesList();
+			index = edges_list.lastIndexOf((Edge) obj);	
+			return edge_bits.get(index);			
+		}
+		
 		return false;
 	}
 	
@@ -95,7 +162,7 @@ public class CompositeFilter implements CyFilter {
 	
 	public BitSet getEdgeBits() {
 		System.out.println("CompositeFilter.getEdgeBits not implemented");
-		return null;
+		return edge_bits;
 	}
 	
 	public BitSet getNodeBits() {
@@ -164,17 +231,22 @@ public class CompositeFilter implements CyFilter {
 	}
 
 	public void removeChild( CyFilter pChild ) {
-		
+		if (pChild instanceof CompositeFilter) {
+			compositeNotTab.remove(pChild);
+		}
 		children.remove(pChild);		
 		childChanged();		
 	}
 
 	public void removeChildAt( int pChildIndex ) {
+		if (children.get(pChildIndex) instanceof CompositeFilter) {
+			compositeNotTab.remove(children.get(pChildIndex));
+		}
 		children.remove(pChildIndex);		
 		childChanged();		
 	}
 
-	public void addChild( CyFilter pChild ) {
+	public void addChild( AtomicFilter pChild ) {
 		children.add( pChild );
 
 		// so the the child can communicate with us 
@@ -186,6 +258,20 @@ public class CompositeFilter implements CyFilter {
 		childChanged();
 	}
 
+	public void addChild( CompositeFilter pChild, boolean pNot ) {
+		children.add( pChild );
+		compositeNotTab.put(pChild, new Boolean(pNot));
+
+		// so the the child can communicate with us 
+		// (i.e. so we know when the child changes)
+		pChild.setParent(this);
+
+		// to force this class to recalculate and to
+		// notify parents
+		childChanged();
+	}
+
+	
 	// called by any children
 	public void childChanged() {
 		childChanged = true;
@@ -266,7 +352,8 @@ public class CompositeFilter implements CyFilter {
 				retStr = retStr + atomicFilter.toString()+"\n";
 			}
 			else  {// it is a CompositeFilter
-				retStr = retStr + "CompositeFilter=" + children.get(i).getName()+"\n";
+				CompositeFilter tmpFilter = (CompositeFilter)children.get(i);
+				retStr = retStr + "CompositeFilter=" + tmpFilter.getName()+ ":" + compositeNotTab.get(tmpFilter)+"\n";
 			}
 		}
 		retStr += "</Composite>\n";
@@ -292,6 +379,8 @@ public class CompositeFilter implements CyFilter {
 	 * CompositeFilter may be cloned.
 	 */
 	public Object clone() {
+		System.out.println("CompositeFilter.clone() not implemented yet");
+		
 		return null;
 	}	
 
