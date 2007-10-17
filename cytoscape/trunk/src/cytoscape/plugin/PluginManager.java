@@ -340,10 +340,12 @@ public class PluginManager {
 					.println(Plugin.getClass().getName()
 							+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
+			System.err.println("ERROR registering plugin: ");
 			e.printStackTrace();
 		} finally {
 			if (InfoObj == null) { // still null, create a default one
 				InfoObj = new PluginInfo();
+				InfoObj.setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 				InfoObj.setName(Plugin.getClass().getName());
 			}
 

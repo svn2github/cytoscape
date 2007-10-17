@@ -136,7 +136,7 @@ public class PluginInfo extends DownloadableInfo {
 		setName("Unknown");
 		setDescription("No description");
 		setObjectVersion(0.1);
-		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		//setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
 		setPluginClassName("");
 	}

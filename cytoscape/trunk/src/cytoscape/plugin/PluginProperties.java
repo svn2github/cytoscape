@@ -51,7 +51,14 @@ public class PluginProperties extends Properties {
 		
 	}
 
-	
+	/**
+	 * Used in testing only.
+	 * @param fileName
+	 */
+	PluginProperties(String fileName) throws IOException {
+		java.io.FileInputStream fis = new java.io.FileInputStream( new java.io.File(fileName) );
+		readPluginProperties(fis);
+	}
 	
 	/**
 	 * The plugin.props file is expected to be in the jar file under the package directory.  
@@ -126,7 +133,6 @@ public class PluginProperties extends Properties {
 		pi.setDescription(getProperty(PluginProperty.DESCRIPTION.getPropertyKey()));
 		pi.setCategory(getProperty(PluginProperty.CATEGORY.getPropertyKey()));
 		
-		pi.setCytoscapeVersion(getProperty(PluginProperty.CYTOSCAPE_VERSION.getPropertyKey()));
 		
 		// optional parameters
 		if (containsKey(PluginProperty.PROJECT_URL.getPropertyKey())) {
@@ -155,6 +161,21 @@ public class PluginProperties extends Properties {
 		if (containsKey(PluginProperty.RELEASE_DATE.getPropertyKey())) {
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}
+		
+		// on the off chance that someone did not install this via the PM this should be null if the version is not current
+		String [] AllCytoscapeVersions = getProperty(PluginProperty.CYTOSCAPE_VERSION.getPropertyKey()).split(","); 
+		boolean versionOk = false;
+		for (String v: AllCytoscapeVersions) {
+			v = v.trim();
+			System.out.println(v);
+			if (v.equals(cytoscape.CytoscapeVersion.version)) {
+				pi.setCytoscapeVersion(v);
+				versionOk = true;
+			}
+		}
+		if (!versionOk)
+			pi = null;
+		
 		return pi;
 	}
 

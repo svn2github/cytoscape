@@ -255,7 +255,7 @@ public abstract class DownloadableInfo {
 
 	// this just checks the downloadable object version and the cytoscape
 	// version
-	public boolean versionOk(String version, boolean downloadObj) {
+	boolean versionOk(String version, boolean downloadObj) {
 		// \d+.\+d ok
 		String Match = versionMatch;
 		String Split = versionSplit;
@@ -289,7 +289,7 @@ public abstract class DownloadableInfo {
 			return false;
 		}
 
-		// must be digets
+		// must be digits
 		for (int i = 0; i < max && i < SplitVersion.length; i++) {
 			if (!SplitVersion[i].matches("\\d+")) {
 				return false;

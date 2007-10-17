@@ -100,6 +100,7 @@ public class PluginTrackerTest extends TestCase {
 		newObj.setName("mySecondInstallTest");
 		newObj.setProjectUrl("http://foobar.com/booya.xml");
 		newObj.setFiletype(PluginInfo.FileType.JAR);
+		newObj.setCytoscapeVersion("2.5.1");
 		tracker.addPlugin(newObj, PluginStatus.INSTALL);
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 2);
 		
@@ -119,7 +120,8 @@ public class PluginTrackerTest extends TestCase {
 		ThemeInfo themeObj = new ThemeInfo("themeTest123");
 		themeObj.setName("Test Theme");
 		themeObj.setDownloadableURL("http://booya.com/foo.xml");
-	
+		themeObj.setCytoscapeVersion("2.5.1");
+		
 		PluginInfo obj = getInfoObj();
 		obj.setName("myInstallTest");
 		obj.setDownloadableURL("http://booya.com/foo.xml");
@@ -143,7 +145,8 @@ public class PluginTrackerTest extends TestCase {
 		ThemeInfo themeObj = new ThemeInfo("themeTest123");
 		themeObj.setName("Test Theme");
 		themeObj.setDownloadableURL("http://booya.com/foo.xml");
-	
+		themeObj.setCytoscapeVersion("2.5.1");
+		
 		PluginInfo obj = getInfoObj();
 		obj.setName("myInstallTest");
 		obj.setDownloadableURL("http://booya.com/foo.xml");
@@ -192,6 +195,7 @@ public class PluginTrackerTest extends TestCase {
 		obj.setDownloadableURL("http://foobar.org/y.xml");
 		obj.setCategory("Test");
 		obj.setFiletype(PluginInfo.FileType.JAR);
+		obj.setCytoscapeVersion("2.5.1");
 		tracker.addPlugin(obj, PluginStatus.INSTALL);
 		
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
@@ -217,7 +221,7 @@ public class PluginTrackerTest extends TestCase {
 		objB.setDownloadableURL("http://test.com/blue.xml");
 		objB.setFiletype(PluginInfo.FileType.JAR);
 		objB.setPluginClassName("some.other.class.DifferentTest");
-		
+		objB.setCytoscapeVersion(objA.getCytoscapeVersion());
 		
 		tracker.addPlugin(objA, PluginStatus.CURRENT);
 		tracker.addPlugin(objB, PluginStatus.CURRENT);
@@ -248,7 +252,7 @@ public class PluginTrackerTest extends TestCase {
 		PluginInfo infoObj = new PluginInfo("123");
 		infoObj.setName("myTest");
 		infoObj.setCategory("Test");
-		infoObj.setCytoscapeVersion("2.5");
+		infoObj.setCytoscapeVersion("2.5.1");
 		infoObj.setPluginClassName("some.class.MyTest");
 		infoObj.setDownloadableURL("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);

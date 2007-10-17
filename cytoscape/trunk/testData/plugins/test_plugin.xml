@@ -25,6 +25,7 @@ with current cytoscape release versions.
 			<pluginVersion>1.0</pluginVersion>
 
 			<cytoscapeVersions>
+				<version>2.3.3</version>
 				<version>2.4</version>
 				<version>current</version>
 			</cytoscapeVersions>

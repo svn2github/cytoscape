@@ -121,5 +121,7 @@ public class PluginFileReaderTest extends TestCase {
 		assertNotNull(readerNoThemes.getThemes());
 		assertEquals(readerNoThemes.getThemes().size(), 0);
 	}
+	
+	// regression test, make sure versions are working
 
 }

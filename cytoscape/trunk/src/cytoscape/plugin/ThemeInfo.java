@@ -43,7 +43,7 @@ public class ThemeInfo extends DownloadableInfo {
 		setName("Unknown");
 		setDescription("No description");
 		setObjectVersion(0.1);
-		setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		//setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.THEME);
 		themePlugins = new HashSet<PluginInfo>();
 	}
