@@ -4,10 +4,14 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -20,7 +24,7 @@ import java.util.Vector;
 public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
     private PathwayCommonsWebApi webApi;
-    private static final String ENTER_TEXT = "Enter Protein Name or ID";
+    private static final String ENTER_TEXT = "Enter Gene Name or ID";
 
     /**
      * Constructor.
@@ -29,7 +33,8 @@ public class SearchBoxPanel extends JPanel {
      */
     public SearchBoxPanel(PathwayCommonsWebApi webApi) {
         this.webApi = webApi;
-        setBorder(new TitledBorder("Search"));
+        TitledBorder border = UiUtils.createTitledBorder("Step 1:  Search");
+        setBorder(border);
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
         final JTextField searchField = createSearchField();
@@ -118,7 +123,7 @@ public class SearchBoxPanel extends JPanel {
         Window window = SwingUtilities.getWindowAncestor(this);
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
-            JOptionPane.showMessageDialog(window, "Please enter a protein name or ID",
+            JOptionPane.showMessageDialog(window, "Please enter a gene name or ID",
                     "Search Error", JOptionPane.ERROR_MESSAGE);
         } else {
             ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
