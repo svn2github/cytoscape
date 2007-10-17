@@ -4,14 +4,9 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -33,7 +28,7 @@ public class SearchBoxPanel extends JPanel {
      */
     public SearchBoxPanel(PathwayCommonsWebApi webApi) {
         this.webApi = webApi;
-        TitledBorder border = UiUtils.createTitledBorder("Step 1:  Search");
+        TitledBorder border = GuiUtils.createTitledBorder("Step 1:  Search");
         setBorder(border);
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
