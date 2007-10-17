@@ -37,11 +37,13 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 import org.mskcc.pathway_commons.http.HTTPServer;
 import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
 import org.mskcc.pathway_commons.util.NetworkListener;
 import org.mskcc.pathway_commons.view.SearchBoxPanel;
 import org.mskcc.pathway_commons.view.SearchHitsPanel;
+import org.mskcc.pathway_commons.view.PathwayCommonsSearchPanel;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
@@ -68,24 +70,17 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 
         // to catch network creation events - to setup context menu
         NetworkListener networkListener = new NetworkListener();
-        //Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(networkListener);
 
         // create our http server and start its thread
         new HTTPServer(HTTPServer.DEFAULT_PORT,
                 new MapPathwayCommonsToCytoscape(networkListener), debug).start();
 
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.WEST);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);
+        cytoPanelWest.setState(CytoPanelState.DOCK);
 
         PathwayCommonsWebApi webApi = new PathwayCommonsWebApi();
-        SearchBoxPanel searchBoxPanel = new SearchBoxPanel(webApi);
-        SearchHitsPanel searchHitsPanel = new SearchHitsPanel(new InteractionTableModel(),
-                new PathwayTableModel(), webApi);
-        panel.add(searchBoxPanel, BorderLayout.NORTH);
-        panel.add(searchHitsPanel, BorderLayout.CENTER);
-        cytoPanelWest.add("Pathway Commons", panel);
+        PathwayCommonsSearchPanel pcPanel = new PathwayCommonsSearchPanel(webApi);
+        cytoPanelWest.add("Pathway Commons", pcPanel);
     }
 }
