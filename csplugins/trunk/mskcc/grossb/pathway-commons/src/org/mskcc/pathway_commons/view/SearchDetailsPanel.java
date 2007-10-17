@@ -1,20 +1,12 @@
 package org.mskcc.pathway_commons.view;
 
-import cytoscape.actions.LoadNetworkTask;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URL;
-import java.net.MalformedURLException;
 
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
-import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.util.NetworkUtil;
@@ -36,10 +28,22 @@ public class SearchDetailsPanel extends JPanel {
             PathwayTableModel pathwayTableModel) {
         GridLayout gridLayout = new GridLayout(1, 0);
         setLayout(gridLayout);
-        JPanel interactionPane = createInteractionBundleTable(interactionTableModel);
-        JScrollPane pathwayPane = createPathwayTable(pathwayTableModel);
+        //JPanel interactionPane = createInteractionBundleTable(interactionTableModel);
+        JPanel pathwayPane = createPathwayPane(pathwayTableModel);
         add(pathwayPane);
         //add(interactionPane);
+    }
+
+    private JPanel createPathwayPane(PathwayTableModel pathwayTableModel) {
+        JPanel pathwayPane = new JPanel(new BorderLayout());
+        JScrollPane pathwayTable = createPathwayTable(pathwayTableModel);
+        pathwayPane.add(pathwayTable, BorderLayout.CENTER);
+        JLabel label = new JLabel ("> Double-click pathway to download.");
+        Font font = label.getFont();
+        Font newFont = new Font(font.getFamily(), Font.PLAIN, font.getSize()-2);
+        label.setFont(newFont);
+        pathwayPane.add(label, BorderLayout.SOUTH);
+        return pathwayPane;
     }
 
     /**
@@ -95,7 +99,8 @@ public class SearchDetailsPanel extends JPanel {
             }
         });
         JScrollPane scrollPane = new JScrollPane(pathwayTable);
-        scrollPane.setBorder(new TitledBorder("Pathways (double-click to download)"));
+        TitledBorder border = GuiUtils.createTitledBorder("Step 3:  Download");
+        scrollPane.setBorder(border);
         return scrollPane;
     }
 
