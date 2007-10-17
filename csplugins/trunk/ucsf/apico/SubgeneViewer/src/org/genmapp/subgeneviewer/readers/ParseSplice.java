@@ -5,6 +5,7 @@ import org.genmapp.subgeneviewer.splice.view.Feature;
 import org.genmapp.subgeneviewer.splice.view.Region;
 import org.genmapp.subgeneviewer.splice.view.SpliceEvent;
 import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
+import org.genmapp.subgeneviewer.splice.view.StartSite;
 
 public class ParseSplice implements LineParser{
 	
@@ -15,6 +16,7 @@ public class ParseSplice implements LineParser{
 	Region region;
 	Feature feature;
 	SpliceEvent spliceEvent;
+	StartSite startSite;
 	
 	public ParseSplice (SpliceNetworkView v, String nodeId, FileParser parser)
 	{
@@ -33,16 +35,21 @@ public class ParseSplice implements LineParser{
 		
 		feature = region.addFeature(temp[5], temp[1]);
 		
-		/*if (!(temp[6].equals(""))){
-			
+		
+		if ((temp.length > 7) && !(temp[6].trim().equals("")) && !(temp[7].trim().equals(""))){
+	
+			spliceEvent = region.addSpliceEvent(temp[6], temp[7]);
 			spliceEvent.setId(temp[6], temp[7]);
 			spliceEvent.setRegion(region);
-			region.addSpliceEvent(temp[6], temp[7]);
 		}
-		else{}*/
-		 
-	}
+
+		if ((temp.length > 8) && !(temp[8].trim().equals(""))){
+			
+			startSite = new StartSite(region);
+			region.containsStartSite(true);
+		}
 	
+}
 }
 
 
