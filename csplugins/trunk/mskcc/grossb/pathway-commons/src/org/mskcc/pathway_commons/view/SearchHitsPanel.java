@@ -12,7 +12,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 import java.util.List;
 import java.awt.*;
@@ -41,18 +40,18 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         summaryTextPane = createTextArea();
         summaryDocument = summaryTextPane.getDocument();
-        JScrollPane summaryPane = encloseInJScrollPane("Summary", summaryTextPane);
-
         peListModel = new DefaultListModel();
-
         peList = new JList(peListModel);
         peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         peList.setPrototypeCellValue("12345678901234567890");
         hitListPane = new JScrollPane(peList);
-        hitListPane.setBorder(new TitledBorder("Search Results"));
+        TitledBorder border = GuiUtils.createTitledBorder("Step 2:  Select Gene");
+        hitListPane.setBorder(border);
 
+        SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionTableModel,
+                pathwayTableModel);
         JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
-                summaryPane);
+                detailsPanel);
         splitPane.setDividerLocation(200);
         this.add(splitPane);
         createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
@@ -98,21 +97,13 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
                         interactionTableModel, pathwayTableModel, summaryDocument, 
                         summaryTextPane);
             }
-
-            SwingUtilities.invokeLater(new Runnable(){
-                public void run() {
-                    hitListPane.setBorder(new TitledBorder
-                            ("Search Results [Num hits: "
-                            + peSearchResponse.getTotalNumHits() + "]"));
-                }
-            });
-
         } else {
             SwingUtilities.invokeLater(new Runnable(){
                 public void run() {
                     Window window = SwingUtilities.getWindowAncestor(SearchHitsPanel.this);
                     JOptionPane.showMessageDialog(window, "No matches found for:  "
-                            + currentKeyword, "Search Results", JOptionPane.INFORMATION_MESSAGE);
+                            + currentKeyword, "Search Results",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             });
         }
