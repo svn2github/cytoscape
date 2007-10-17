@@ -27,7 +27,6 @@ import cytoscape.Cytoscape;
  */
 public class SelectPhysicalEntity {
     private static boolean initialized = false;
-    private static SearchDetailsPanel detailsPanel;
 
     /**
      * Select the Phsyical Entity specified by the selected index.
@@ -42,21 +41,6 @@ public class SelectPhysicalEntity {
             int selectedIndex, InteractionTableModel interactionTableModel, PathwayTableModel
             pathwayTableModel, Document summaryDocumentModel, JTextPane textPane) {
         if (peSearchResponse != null) {
-
-            CytoscapeDesktop desktop = Cytoscape.getDesktop();
-            CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.SOUTH);
-            if (initialized == false) {
-                detailsPanel = new SearchDetailsPanel(interactionTableModel, pathwayTableModel);
-                cytoPanel.add("Pathway Commons Search Results", detailsPanel);
-                initialized = true;
-            }
-            CytoPanelState state = cytoPanel.getState();
-            if (state == CytoPanelState.HIDE) {
-                cytoPanel.setState(CytoPanelState.DOCK);
-            }
-            int index = cytoPanel.indexOfComponent(detailsPanel);
-            cytoPanel.setSelectedIndex(index);
-
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
             SearchHitType searchHit = searchHits.get(selectedIndex);
 
@@ -113,7 +97,6 @@ public class SelectPhysicalEntity {
                         (interactionBundle.getDataSource().getName(), i, 0);
                 interactionTableModel.setValueAt
                         (interactionBundle.getNumInteractions(), i, 1);
-                //interactionTableModel.setValueAt("Download", i, 2);
             }
         }
     }
@@ -143,7 +126,6 @@ public class SelectPhysicalEntity {
                 pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 0);
                 pathwayTableModel.setValueAt(pathway.getName(), i, 1);
                 pathwayTableModel.setInternalId(i, pathway.getPrimaryId());
-                //pathwayTableModel.setValueAt("Download", i, 2);
             }
         }
     }
