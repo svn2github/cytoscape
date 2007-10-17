@@ -441,7 +441,7 @@
 		<copy file="${basedir}/resources/props/vizmap.props" 
 		      todir="${build.classes}" />
 
-	        <filter token="version" value="${version}"/>
+	        <filter token="version" value="${version.num}"/>
 		<copy file="${basedir}/resources/props/cytoscape.props" 
 		      todir="${build.classes}" 
 		      filtering="true"
