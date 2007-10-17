@@ -6,10 +6,15 @@ import com.jgoodies.looks.plastic.theme.SkyBlue;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
+import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 
 import javax.swing.*;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.BadLocationException;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Vector;
 
@@ -18,11 +23,13 @@ import java.util.Vector;
  *
  * @author Ethan Cerami.
  */
-public class PathwayCommonsSearchPanel extends JPanel {
+public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsWebApiListener {
     protected InteractionTableModel interactionTableModel;
     protected PathwayTableModel pathwayTableModel;
     protected PathwayCommonsWebApi webApi;
     private JPanel searchBoxPanel;
+    private JPanel searchHitsPanel = null;
+    private JPanel cards;
 
     /**
      * Constructor.
@@ -38,9 +45,6 @@ public class PathwayCommonsSearchPanel extends JPanel {
         interactionTableModel = new InteractionTableModel();
         pathwayTableModel = new PathwayTableModel();
 
-        //  Set JGoodies Theme
-        setLookAndFeel();
-
         //  Create main Border Layout
         setLayout(new BorderLayout());
 
@@ -48,32 +52,61 @@ public class PathwayCommonsSearchPanel extends JPanel {
         searchBoxPanel = new SearchBoxPanel(webApi);
         add(searchBoxPanel, BorderLayout.NORTH);
 
-        //  Create Center Panel:  Search Results
-        JSplitPane splitPane = createSearchResultsPanel();
-        add(splitPane, BorderLayout.CENTER);
-        splitPane.setDividerLocation(250);
+        cards = new JPanel(new CardLayout());
+        searchHitsPanel = createSearchResultsPanel();
 
-        //  Create Southern Panel:  Download
-        JPanel downloadPanel = createDownloadPanel();
-        this.add(downloadPanel, BorderLayout.SOUTH);
+        JPanel aboutPanel = createAboutPanel();
+        cards.add (aboutPanel, "ABOUT");
+        cards.add(searchHitsPanel, "HITS");
+        add(cards, BorderLayout.CENTER);
+        webApi.addApiListener(this);
+    }
+
+    private JPanel createAboutPanel() {
+        JPanel aboutPanel = new JPanel();
+        aboutPanel.setLayout(new BorderLayout());
+        TitledBorder border = GuiUtils.createTitledBorder("About");
+        aboutPanel.setBorder(border);
+        JTextPane textPane = new JTextPane();
+        textPane.setEditable(false);
+        Document doc = textPane.getDocument();
+        SimpleAttributeSet attrs = new SimpleAttributeSet();
+        try {
+            doc.remove(0, doc.getLength());
+            doc.insertString(0, " is a convenient point of access to biological pathway "
+                + "information collected from public pathway databases, which you can "
+                + "browse or search. \n\nPathways include biochemical reactions, complex "
+                + "assembly, transport and catalysis events, and physical interactions "
+                + "involving proteins, DNA, RNA, small molecules and complexes.", attrs);
+            StyleConstants.setBold(attrs, true);
+            doc.insertString(0, "Pathway Commons", attrs);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        aboutPanel.add(textPane, BorderLayout.CENTER);
+        return aboutPanel;
+    }
+
+    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
+            int startIndex) {
+    }
+
+    public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
+        if (!searchHitsPanel.isVisible()) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    CardLayout cl = (CardLayout)(cards.getLayout());
+                    cl.show(cards, "HITS");                }
+            });
+        }
     }
 
     /**
-     * Initialize the Focus.  Can only be called after component has been packed and displayed.
+     * Initialize the Focus.  Can only be called after component has been
+     * packed and displayed.
      */
     public void initFocus() {
         searchBoxPanel.requestFocusInWindow();
-    }
-
-    /**
-     * Sets the appropriate Look and Feel.
-     */
-    private void setLookAndFeel() {
-        PlasticLookAndFeel.setPlasticTheme(new SkyBlue());
-        try {
-            UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-        } catch (Exception e) {
-        }
     }
 
     /**
@@ -81,18 +114,10 @@ public class PathwayCommonsSearchPanel extends JPanel {
      *
      * @return JSplitPane Object.
      */
-    private JSplitPane createSearchResultsPanel() {
-
-        //  Create the Search Hits Panel
+    private JPanel createSearchResultsPanel() {
         JPanel hitListPanel = new SearchHitsPanel(this.interactionTableModel,
                 this.pathwayTableModel, webApi);
-
-        //  Create the Search Details Panel
-        JPanel detailsPanel = new SearchDetailsPanel(this.interactionTableModel,
-                this.pathwayTableModel);
-
-        //  Create the split pane
-        return new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, hitListPanel, detailsPanel);
+        return hitListPanel;
     }
 
     /**
@@ -115,7 +140,6 @@ public class PathwayCommonsSearchPanel extends JPanel {
         panel.add(Box.createHorizontalGlue());
         panel.add(networkComboBox);
         panel.add(Box.createRigidArea(new Dimension(5, 0)));
-        //panel.add(button);
         return panel;
     }
 
