@@ -50,6 +50,7 @@ public interface CyFilter extends Filter{
 	public void setName(String pName);
 
 	public void childChanged();
+	public CyFilter getParent();	
 	public void setParent(CyFilter f);
 	public void print(int depth);
 
