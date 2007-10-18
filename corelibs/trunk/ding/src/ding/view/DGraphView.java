@@ -2428,18 +2428,6 @@ public class DGraphView implements GraphView, Printable {
 		return ginyKeyShapes;
 	}
 
-	/**
-	 * Method to gain access to DNodeDetails object.
-	 * Used by (at least):
-	 * cytotoscape.view.FlagSelectionHandler.setNodeSelected()
-	 * to set node selection state (used later on by GraphRenderer.renderGraph())
-	 *
-	 * @return DNodeDetails
-	 */
-	public DNodeDetails getDNodeDetails() {
-		return m_nodeDetails;
-	}
-
 	private double checkZoom(double zoom, double orig) {
 		if ( zoom > 0 ) 
 			return zoom;
