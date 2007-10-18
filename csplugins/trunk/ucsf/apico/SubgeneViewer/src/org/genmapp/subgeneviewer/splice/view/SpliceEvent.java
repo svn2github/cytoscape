@@ -91,5 +91,21 @@ public class SpliceEvent extends SubgeneNodeView {
 	public void setNetworkView(SpliceNetworkView networkView) {
 		this.networkView = networkView;
 	}
+
+	public String get_toBlock() {
+		return _toBlock;
+	}
+
+	public void set_toBlock(String block) {
+		_toBlock = block;
+	}
+
+	public String get_toRegion() {
+		return _toRegion;
+	}
+
+	public void set_toRegion(String region) {
+		_toRegion = region;
+	}
 	
 }
