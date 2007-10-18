@@ -54,7 +54,7 @@ import java.util.HashMap;
  * Access to the methods of this class should be synchronized externally if
  * there is a threat of multiple threads.
  */
-class DNodeDetails extends IntermediateNodeDetails {
+public class DNodeDetails extends IntermediateNodeDetails {
 	final DGraphView m_view;
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
