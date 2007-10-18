@@ -125,6 +125,13 @@ public class NodeDetails {
 	public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
 	/**
+	 * Hashmap which records selected state of nodes - information used
+	 * by GraphRenderer.renderGraph() to render selected nodes on top of
+	 * unselected nodes.
+	 */
+	java.util.Map<Integer, Boolean> selectedMap = new java.util.HashMap<Integer, Boolean>();
+
+	/**
 	 * Instantiates node details with defaults.  Documentation on each method
 	 * describes defaults.  To override defaults, extend this class.
 	 */
@@ -428,5 +435,32 @@ public class NodeDetails {
 	 */
 	public float graphicOffsetVectorY(final int node, final int graphicInx) {
 		return 0.0f;
+	}
+
+	/**
+	 * Used to set selected state of given node.
+	 *
+	 * @param node Integer
+	 * @param selected Boolean
+	 */
+	public void setSelected(Integer node, Boolean selected) {
+		selectedMap.put(node, selected);
+	}
+
+	/**
+	 * Used to get selected state of given node.
+	 * If node does not exist in map, false is returned.
+	 *
+	 * Used in GraphRenderer.renderGraph() to 
+	 * provide rendering of selected nodes above
+	 * unselected nodes.
+	 * 
+	 * @return boolean
+	 */
+	public boolean getSelected(Integer node) {
+		if (selectedMap.get(node) != null) {
+			return selectedMap.get(node);
+		}
+		return false;
 	}
 }
