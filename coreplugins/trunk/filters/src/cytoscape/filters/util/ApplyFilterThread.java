@@ -52,8 +52,7 @@ import cytoscape.filters.StringFilter;
 
 import cytoscape.filters.view.FilterMainPanel;
 
-import cytoscape.quickfind.util.QuickFind;
-
+import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.CytoscapeAction;
 
 import giny.model.Edge;
@@ -119,7 +118,7 @@ class ApplyFilterThread extends Thread {
 			StringFilter theStringFilter = (StringFilter) pAtomicFilter;
 
 			String value = data.getStringAttribute(name,
-			                                       theStringFilter.getAttributeName().substring(5));
+			                                       theStringFilter.getControllingAttribute().substring(5));
 
 			if (value == null) {
 				return false;
@@ -146,21 +145,21 @@ class ApplyFilterThread extends Thread {
 
 			Number value;
 
-			if (data.getType(theNumericFilter.getAttributeName().substring(5)) == CyAttributes.TYPE_FLOATING)
+			if (data.getType(theNumericFilter.getControllingAttribute().substring(5)) == CyAttributes.TYPE_FLOATING)
 				value = (Number) data.getDoubleAttribute(name,
-				                                         theNumericFilter.getAttributeName()
+				                                         theNumericFilter.getControllingAttribute()
 				                                                         .substring(5));
 			else
 				value = (Number) data.getIntegerAttribute(name,
-				                                          theNumericFilter.getAttributeName()
+				                                          theNumericFilter.getControllingAttribute()
 				                                                          .substring(5));
 
 			if (value == null) {
 				return false;
 			}
 
-			Double lowValue = theNumericFilter.getLowValue();
-			Double highValue = theNumericFilter.getHighValue();
+			Double lowValue = (Double) theNumericFilter.getLowBound();
+			Double highValue = (Double) theNumericFilter.getHighBound();
 
 			//To correct the boundary values for lowValue and highValue
 			if (lowValue.doubleValue()>0.0) {
@@ -188,6 +187,7 @@ class ApplyFilterThread extends Thread {
 	}
 
 	private boolean passesCompositeFilter(Object pObject, CompositeFilter pFilter) {
+		/*
 		Vector<AtomicFilter> atomicFilterVect = pFilter.getAtomicFilterVect();
 
 		for (int i = 0; i < atomicFilterVect.size(); i++) {
@@ -209,6 +209,8 @@ class ApplyFilterThread extends Thread {
 
 			return false;
 		}
+		*/
+		return false;
 	}
 
 	protected void testObjects(CompositeFilter pCompositeFilter) {
