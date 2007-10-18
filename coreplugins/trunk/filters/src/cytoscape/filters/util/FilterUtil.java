@@ -20,13 +20,11 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.ImageIcon;
-
 import cytoscape.filters.StringFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.view.FilterMainPanel;
-import cytoscape.quickfind.util.QuickFind;
+import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.filters.AdvancedSetting;
@@ -37,9 +35,8 @@ public class FilterUtil {
 	public static Vector<CompositeFilter> getTestFilterVect() {
 		
 		Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
-
-		CompositeFilter filter1 = new CompositeFilter();
-		filter1.setName("My first filter");
+/*
+		CompositeFilter filter1 = new CompositeFilter("My first filter");
 		filter1.addAtomicFilter(new StringFilter("node.annotation.Date","20010124"));
 		
 		CompositeFilter filter2 = new CompositeFilter();
@@ -54,7 +51,7 @@ public class FilterUtil {
 		retVect.add(filter1);
 		retVect.add(filter2);
 		retVect.add(filter3);
-				
+*/				
 		return retVect;
 	}
 
@@ -80,7 +77,7 @@ public class FilterUtil {
 	}
 	
 	public static boolean isFilterNameDuplicated(Vector<CompositeFilter> pFilterVect, String pFilterName) {
-		
+		System.out.println("Entering FilterUtil.isFilterNameDuplicated() ...");
 		if (pFilterVect == null || pFilterVect.size() == 0)
 			return false;
 		
@@ -98,7 +95,9 @@ public class FilterUtil {
 		if (pFilterStrVect==null || pFilterStrVect.size() == 0) {
 			return null;
 		}
+		return null;
 		
+/*		
 		//System.out.println("createFilterFromString()\npFilterStrVect.toString() =\n" + pFilterStrVect.toString());
 		
 		CompositeFilter theFilter = new CompositeFilter();
@@ -182,6 +181,7 @@ public class FilterUtil {
 		}
 		
 		return theFilter;
+		*/
 	}
 
 }
