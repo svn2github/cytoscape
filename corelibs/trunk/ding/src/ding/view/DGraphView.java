@@ -101,6 +101,22 @@ public class DGraphView implements GraphView, Printable {
 	static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
 
 	/**
+	 * Enum to identify ding canvases - 
+	 * used in getCanvas(Canvas canvasId)
+	 */
+	public enum Canvas {
+		BACKGROUND_CANVAS,
+		NETWORK_CANVAS,
+		FOREGROUND_CANVAS;
+	}
+
+	public enum ShapeType {
+		NODE_SHAPE,
+		LINE_TYPE,
+		ARROW_SHAPE;
+	}
+
+	/**
 	 * Common object used for synchronization.
 	 */
 	final Object m_lock = new Object();
@@ -193,17 +209,17 @@ public class DGraphView implements GraphView, Printable {
 	final float m_defaultNodeYMax;
 
 	/**
-	 *
+	 * Ref to network canvas object.
 	 */
 	InnerCanvas m_networkCanvas;
 
 	/**
-	 *
+	 * Ref to background canvas object.
 	 */
 	ArbitraryGraphicsCanvas m_backgroundCanvas;
 
 	/**
-	 *
+	 * Ref to foreground canvas object.
 	 */
 	ArbitraryGraphicsCanvas m_foregroundCanvas;
 
@@ -2411,15 +2427,17 @@ public class DGraphView implements GraphView, Printable {
 
 		return ginyKeyShapes;
 	}
-	public enum Canvas {
-		BACKGROUND_CANVAS,
-		NETWORK_CANVAS,
-		FOREGROUND_CANVAS;
-	}
-	public enum ShapeType {
-		NODE_SHAPE,
-		LINE_TYPE,
-		ARROW_SHAPE;
+
+	/**
+	 * Method to gain access to DNodeDetails object.
+	 * Used by (at least):
+	 * cytotoscape.view.FlagSelectionHandler.setNodeSelected()
+	 * to set node selection state (used later on by GraphRenderer.renderGraph())
+	 *
+	 * @return DNodeDetails
+	 */
+	public DNodeDetails getDNodeDetails() {
+		return m_nodeDetails;
 	}
 
 	private double checkZoom(double zoom, double orig) {
