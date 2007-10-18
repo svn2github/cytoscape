@@ -81,7 +81,9 @@ public class CompositeFilter implements CyFilter {
 	
 	// do selection on given network
 	public void doSelection() {
-		System.out.println("CompositeFilter.doSelection() ...");
+		System.out.println("Entering CompositeFilter.doSelection() ...");
+		
+		apply();
 		
 		if (network == null) {
 			network = Cytoscape.getCurrentNetwork(); 
@@ -89,25 +91,30 @@ public class CompositeFilter implements CyFilter {
 
 		network.unselectAllNodes();
 		network.unselectAllEdges();
-
+		
 		final List<Node> nodes_list = network.nodesList();
 		final List<Edge> edges_list = network.edgesList();
 
-		if (advancedSetting.isNodeChecked()) {
-			// Select node only
+		if (advancedSetting.isNodeChecked()&& (node_bits != null)) {
+			// Select nodes
 			final List<Node> passedNodes = new ArrayList<Node>();
 
 			Node node = null;
-			for (int i=0; i< nodes_list.size(); i++) {
+
+			//System.out.println("node_bits.length() = "+node_bits.length());
+			
+			for (int i=0; i< node_bits.length(); i++) {
 				int next_set_bit = node_bits.nextSetBit(i);
+				
 				node = nodes_list.get(next_set_bit);
+								
 				passedNodes.add(node);
 				i = next_set_bit;
 			}
 			network.setSelectedNodeState(passedNodes, true);
 		}
-		if (advancedSetting.isEdgeChecked()) {
-			// Select edge only
+		if (advancedSetting.isEdgeChecked()&& (edge_bits != null)) {
+			// Select edges
 			final List<Edge> passedEdges = new ArrayList<Edge>();
 
 			Edge edge = null;
@@ -160,16 +167,24 @@ public class CompositeFilter implements CyFilter {
 		return negation;
 	}
 	
+	public void apply() {
+		getNodeBits();
+		getEdgeBits();
+	}
+	
 	public BitSet getEdgeBits() {
-		System.out.println("CompositeFilter.getEdgeBits not implemented");
+		System.out.println("CompositeFilter.getEdgeBits not implemented yet\n");
 		return edge_bits;
 	}
 	
 	public BitSet getNodeBits() {
 		// only recalculate the bits if the child has actually changed
+		System.out.println("Entering CompositeFilter.getNodeBits() ... ");	
+		System.out.println("\tchildChanged =  " + childChanged);	
+
 		if ( !childChanged ) 
 			return node_bits;
-
+		
 		//System.out.println(depthString + " " + name + " recalculate");
 		
 		// if there are no children, just return an empty bitset
@@ -179,49 +194,43 @@ public class CompositeFilter implements CyFilter {
 		}
 
 		// set the initial bits to a clone of the first child
-		if (children.get(0) instanceof AtomicFilter) {
-			AtomicFilter n_atomic = (AtomicFilter) children.get(0);
-			node_bits = (BitSet) n_atomic.getBits().clone();			
-		}
+		node_bits = (BitSet) children.get(0).getNodeBits().clone();			
 
 		// now perform the requested relation with each subsequent child
 		for ( int i = 1; i < children.size(); i++ ) {
 			CyFilter n = children.get(i);
 			if ( advancedSetting.getRelation() == Relation.AND ) {	
-				if (n instanceof AtomicFilter) {
-					AtomicFilter n_atomic = (AtomicFilter) n;
-					if (n_atomic.index_type == QuickFind.INDEX_NODES) {
-						node_bits.and(n_atomic.getBits());						
-					}
-					else { //QuickFind.INDEX_EDGES
-						return new BitSet();
-					}
+				if (n.getNodeBits() == null) {
+					return new BitSet();//all set to false
 				}
-				else if (n instanceof CompositeFilter) {
-					CompositeFilter n_composite = (CompositeFilter) n;
-					node_bits.and(n_composite.getNodeBits());					
+				if ((n instanceof CompositeFilter)&&(((Boolean)compositeNotTab.get(n)).booleanValue()==true)) {
+					BitSet tmpBitSet = (BitSet) n.getNodeBits().clone();
+					tmpBitSet.flip(0, network.getNodeCount());
+					node_bits.and(tmpBitSet);											
 				}
+				else {
+					node_bits.and(n.getNodeBits());											
+				}
+				
 			} else if ( advancedSetting.getRelation() == Relation.OR ) {
-				if (n instanceof AtomicFilter) {
-					AtomicFilter n_atomic = (AtomicFilter) n;
-					if (n_atomic.index_type == QuickFind.INDEX_NODES) {
-						node_bits.or(n_atomic.getBits());
+				if (n.getNodeBits() != null) {
+					if ((n instanceof CompositeFilter)&&(((Boolean)compositeNotTab.get(n)).booleanValue()==true)) {
+						BitSet tmpBitSet = (BitSet) n.getNodeBits().clone();
+						tmpBitSet.flip(0, network.getNodeCount());
+						node_bits.or(tmpBitSet);											
 					}
-					else { //QuickFind.INDEX_EDGES
-						// do nothing
+					else {
+						node_bits.or(n.getNodeBits());						
 					}
 				}
-				else if (n instanceof CompositeFilter) {
-					CompositeFilter n_composite = (CompositeFilter) n;
-					node_bits.or(n_composite.getNodeBits());					
-				}
-			} else if ( advancedSetting.getRelation() == Relation.XOR ) {
-				System.out.println("CompositeFilter: Relation.XOR: not implemented");
-				//node_bits.xor(n.getBits());
-			} else if ( advancedSetting.getRelation() == Relation.NAND ) {
-				System.out.println("CompositeFilter: Relation.NAND: not implemented");
-				//node_bits.andNot(n.getBits());
 			}
+			else { //advancedSetting.getRelation() == Relation.XOR|NOR 
+				System.out.println("CompositeFilter: Relation.XOR|NOR: not implemented yet");
+			} 
+		}
+
+		if (negation) {
+				node_bits.flip(0, network.getNodeCount());
 		}
 
 		// record that we've calculated the bits
@@ -278,6 +287,10 @@ public class CompositeFilter implements CyFilter {
 		// pass the message on to the parent
 		if ( parent != null )
 			parent.childChanged();
+	}
+
+	public CyFilter getParent() {
+		return parent;
 	}
 
 	public void setParent(CyFilter f) {
