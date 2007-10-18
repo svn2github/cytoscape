@@ -483,7 +483,7 @@ public class FilterSettingPanel extends JPanel {
 			AtomicFilter newChildFilter = getAtomicFilterFromStr(ctrlAttribute, indexType);			
 			addWidgetRow(newChildFilter, theFilter.getChildren().size()*2);
 			// Update theFilter object		
-			theFilter.getChildren().add(newChildFilter);
+			theFilter.addChild(newChildFilter);
 		}
 	}
 
@@ -542,7 +542,7 @@ public class FilterSettingPanel extends JPanel {
 			//System.out.println("\trangeModel.getHighValue() =" + rangeModel.getHighValue());			
 			//this.revalidate();
 		}
-
+		doSelection();
 	}
 
 	
@@ -584,7 +584,7 @@ public class FilterSettingPanel extends JPanel {
 				List<CyFilter> theFilterlist = theFilter.getChildren();
 				
 				StringFilter theStringFilter = (StringFilter) theFilterlist.get(widgetIndex);
-				theStringFilter.setSearchStr(hit.getKeyword());				
+				theStringFilter.setSearchStr(hit.getKeyword());	
 			}
 			
 			//Update the selection on screen
@@ -640,6 +640,7 @@ public class FilterSettingPanel extends JPanel {
 				System.out.println("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
 			}	
 
+			theFilter.childChanged();
 			//Update the selection on screen
 			System.out.println("FilterSettingPanel. rangerSlider changed Event received...");	
 			doSelection();					
@@ -762,6 +763,7 @@ public class FilterSettingPanel extends JPanel {
 				//Update the selection on screen
 				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
 					System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
+					theFilter.childChanged();//The setting is chnaged
 					doSelection();					
 				}
 			}
