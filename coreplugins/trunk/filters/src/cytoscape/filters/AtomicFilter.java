@@ -129,7 +129,10 @@ public abstract class AtomicFilter implements CyFilter {
 	public void setParent(CyFilter p) {
 		parent = p;
 	}
-
+	public CyFilter getParent() {
+		return parent;
+	}
+	
 	// an atomic filter can't have any children, so this is a no-op
 	public void childChanged() {}; 
 
@@ -147,6 +150,7 @@ public abstract class AtomicFilter implements CyFilter {
 	
 	public void setNegation(boolean pNot) {
 		negation = pNot;
+		getParent().childChanged();
 	}
 	public boolean getNegation() {
 		return negation;
