@@ -73,6 +73,7 @@ public class StringFilter extends AtomicFilter {
 	
 	public void setSearchStr(String pSearchStr) {
 		searchStr = pSearchStr;
+		getParent().childChanged();
 	}
 
 	/**
@@ -109,6 +110,9 @@ public class StringFilter extends AtomicFilter {
 		}
 		
 		TextIndex theIndex = (TextIndex) quickFind_index;
+		if (searchStr == null) {
+			return;
+		}
 		Hit[] hits = theIndex.getHits(searchStr, Integer.MAX_VALUE);
 
 		if (hits.length == 0) {
