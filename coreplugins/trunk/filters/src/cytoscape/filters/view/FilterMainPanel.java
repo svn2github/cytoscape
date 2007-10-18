@@ -119,6 +119,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	
 	public FilterMainPanel() {
 			init();		
+			//btnApplyFilter.setVisible(false);
+
 	}
 
 	public Vector<CompositeFilter> getAllFilterVect() {
@@ -225,6 +227,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		return retList;
 	}
 	
+	
 	/*
 	 * Hide the visible filterSettingPanel, if any, and show the new FilterSettingPanel for
 	 * the given filter.
@@ -313,7 +316,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
 				System.out.println("Filter Panel is selected");
 
-				initTestData();
+				//initTestData();
 				initTestFilters();
 
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
@@ -613,10 +616,17 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 				System.out.println("\nApplyButton is clicked!");
 				
-				System.out.println("\nThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");
+				System.out.println("\n\tThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");
 				
-				System.out.println("The Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
+				System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
+
+				CompositeFilter tmpFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 				
+				System.out.println("\tfilter.getNodebits().toString() = \n" + tmpFilter.getNodeBits().toString()+"\n");
+				//tmpFilter.apply();
+				//tmpFilter.doSelection();
+				//System.out.println(" After filter.doSelection()\n");
+
 				//initCMBSelectFilter(); // for debug only
 				//updateCMBAttributes(); // for debug only
 				
