@@ -60,6 +60,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         cards.add(searchHitsPanel, "HITS");
         add(cards, BorderLayout.CENTER);
         webApi.addApiListener(this);
+        this.setMinimumSize(new Dimension (300,40));
     }
 
     private JPanel createAboutPanel() {
