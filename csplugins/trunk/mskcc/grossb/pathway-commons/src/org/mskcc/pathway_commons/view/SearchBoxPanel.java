@@ -7,6 +7,7 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;

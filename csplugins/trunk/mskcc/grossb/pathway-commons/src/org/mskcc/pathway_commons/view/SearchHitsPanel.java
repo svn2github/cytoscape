@@ -7,6 +7,8 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -15,6 +17,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
 import java.util.List;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * Search Hits Panel.
@@ -27,34 +33,114 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private SearchResponseType peSearchResponse;
     private Document summaryDocument;
     private String currentKeyword;
-    private JScrollPane hitListPane;
     private InteractionTableModel interactionTableModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
+    private Popup popup;
+    private SummaryPanel summaryPanel;
 
+    /**
+     * Constructor.
+     * @param interactionTableModel     Interaction Table Model.
+     * @param pathwayTableModel         Pathway Table Model.
+     * @param webApi                    Pathway Commons Web API.
+     */
     public SearchHitsPanel(InteractionTableModel interactionTableModel, PathwayTableModel
             pathwayTableModel, PathwayCommonsWebApi webApi) {
         this.interactionTableModel = interactionTableModel;
         this.pathwayTableModel = pathwayTableModel;
         webApi.addApiListener(this);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        summaryTextPane = createTextArea();
-        summaryDocument = summaryTextPane.getDocument();
+
+        //  Create the Summary Panel, but don't show it yet
+        summaryPanel = new SummaryPanel();
+        summaryDocument = summaryPanel.getDocument();
+        summaryTextPane = summaryPanel.getTextPane();
+
+        //  Create the Hit List
         peListModel = new DefaultListModel();
-        peList = new JList(peListModel);
-        peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        peList.setPrototypeCellValue("12345678901234567890");
-        hitListPane = new JScrollPane(peList);
+        peList = createHitJList(peListModel);
+        JScrollPane hitListPane = new JScrollPane(peList);
         TitledBorder border = GuiUtils.createTitledBorder("Step 2:  Select Gene");
         hitListPane.setBorder(border);
 
+        //  Create Search Details Panel
         SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionTableModel,
                 pathwayTableModel);
+
+        //  Create the Split Pane
         JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
                 detailsPanel);
         splitPane.setDividerLocation(200);
         this.add(splitPane);
         createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
+    }
+
+    private JList createHitJList(DefaultListModel peListModel) {
+        JList peList = new JList(peListModel);
+        peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        peList.setPrototypeCellValue("12345678901234567890");
+
+        peList.addMouseListener(new MouseAdapter() {
+
+            /**
+             * Mouse has entered the JList.
+             * @param mouseEvent Mouse Event.
+             */
+            public void mouseEntered(MouseEvent mouseEvent) {
+                createPopup();
+            }
+
+            /**
+             * User pressed click within the JList.
+             * @param mouseEvent Mouse Event.
+             */
+            public void mouseClicked(MouseEvent mouseEvent) {
+                createPopup();
+            }
+
+            /**
+             * Mouse has existed the JList.
+             * @param mouseEvent Mouse Event.
+             */
+            public void mouseExited(MouseEvent mouseEvent) {
+                if (popup != null) {
+                    Timer timer = new Timer(1000, new ActionListener() {
+                        public void actionPerformed(ActionEvent actionEvent) {
+                            popup.hide();
+                            popup = null;
+                        }
+                    });
+                    timer.setRepeats(false);
+                    timer.start();
+                }
+            }
+        });
+
+
+        return peList;
+    }
+
+    private void createPopup() {
+        // If no pop-up exists, create one.
+        if (popup == null) {
+            PopupFactory popupFactory = PopupFactory.getSharedInstance();
+
+            //  Set the preferred size of the pop-up.
+            //  Set to same size at the HitList Panel
+            Dimension d = this.getSize();
+            summaryPanel.setPreferredSize(d);
+
+            //  Determine location of popup.
+            int MARGIN = 30;
+            int x = this.getLocationOnScreen().x
+                    - (int) (this.getSize().getWidth()) - MARGIN;
+            int y = this.getLocationOnScreen().y;
+
+            //  Create the popup
+            popup = popupFactory.getPopup(this, summaryPanel, x, y);
+            popup.show();
+        }
     }
 
     /**
