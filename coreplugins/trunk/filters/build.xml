@@ -24,7 +24,7 @@
     <property name="filters.root.dir" value="."/>
     <property name="filters.lib.dir" value="${filters.root.dir}/lib"/>
   	
-    <property name="cytoscape.dir" value="../cytoscape26"/>
+    <property name="cytoscape.dir" value="../../cytoscape"/>
   	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
   	
@@ -214,7 +214,7 @@
   <target name="clean" depends="init-filters">
     <delete dir="${filters.classes.dir}"/>
     <delete file="filters.jar"/>
-    <delete file="${filters.lib.dir}/filters.jar"/>
+    <delete dir="${filters.lib.dir}"/>
     <delete file="filters-tests.jar"/>
   </target>
 
