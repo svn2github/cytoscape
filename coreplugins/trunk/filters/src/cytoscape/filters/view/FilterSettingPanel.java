@@ -319,7 +319,7 @@ public class FilterSettingPanel extends JPanel {
 		}
 	}
 	
-	//user Clicked CheckBox_Not
+	//user Clicked CheckBox_Not left-side of the child filter
 	private void updateNegationStatus(MouseEvent e) {
 		// Determine the child index in theFilter, 
 		// then update the negation value for that child filter
@@ -332,24 +332,20 @@ public class FilterSettingPanel extends JPanel {
 			
 			CyFilter childFilter = theFilter.getChildren().get(childIndex);
 			if (childFilter instanceof CompositeFilter) {
-				System.out.println("Line 319 FilterSettingPanel.updateNegationStatus() Not for compositeFilter is clicked");
-				
 				CompositeFilter tmpFilter = (CompositeFilter)childFilter;
 				theFilter.setNotTable(tmpFilter, new Boolean(_chk.isSelected()));
 			}
 			else { // it is an AtomiCFilter
 				childFilter.setNegation(_chk.isSelected());				
 			}
-			
 			//Update the selection on screen
-			System.out.println("FilterSettingPanel.updateNegationStatus(): chkNot is clicked");		
 			doSelection();
 		}
 	}
 	
 	// select node/edge on current network based on the filter defined
 	private void doSelection() {
-		System.out.println("Entering FilterSettingPanel.doSelection()...");		
+		//System.out.println("Entering FilterSettingPanel.doSelection()...");		
 		theFilter.doSelection();
 	}
 
@@ -454,7 +450,7 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	public void addNewWidget(Object pObj) {
-		System.out.println("Entering FilterSettingPanel: addNewWidget(Object) ...");
+		//System.out.println("Entering FilterSettingPanel: addNewWidget(Object) ...");
 		
 		// The parameter pObj is the object selected from Attribute/Filter combobox
 		// It can be either (1) a string with prefix "node."/"edge." (2) a CompositeFilter object 
@@ -464,13 +460,7 @@ public class FilterSettingPanel extends JPanel {
 			}
 			addWidgetRow((CompositeFilter) pObj, theFilter.getChildren().size()*2);
 			// Update theFilter object	
-			theFilter.getChildren().add((CompositeFilter) pObj);
-			//CompositeFilter tmpFilter = (CompositeFilter) theFilter;
-
-			theFilter.getNotTable().put(pObj, new Boolean(false));
-			//Update the selection on screen
-			System.out.println("FilterSettingPanel. A compositeFilter is added as a child filter");	
-			doSelection();					
+			theFilter.addChild((CompositeFilter) pObj, new Boolean(false));
 		}
 		else { //(pObj instanceof String)
 			String tmpObj = (String)pObj;
@@ -485,6 +475,8 @@ public class FilterSettingPanel extends JPanel {
 			// Update theFilter object		
 			theFilter.addChild(newChildFilter);
 		}
+		//Update the selection on screen
+		doSelection();			
 	}
 
 	
@@ -512,7 +504,7 @@ public class FilterSettingPanel extends JPanel {
 	// remove a GUI widget from the customeSetting panel 
 	private void removeFilterWidget(MouseEvent e)
 	{
-		System.out.println("Entering FilterSettingPanel.removeFilterWidget()...");
+		//System.out.println("Entering FilterSettingPanel.removeFilterWidget()...");
 		
 		Object _actionObject = e.getSource();
 		
@@ -521,7 +513,7 @@ public class FilterSettingPanel extends JPanel {
 			int widgetGridY = (new Integer(_lbl.getName())).intValue();
 			int childIndex =widgetGridY /2;
 			
-			System.out.println("childIndex ="+childIndex);
+			//System.out.println("childIndex ="+childIndex);
 			
 			theFilter.removeChildAt(childIndex);
 
@@ -588,7 +580,7 @@ public class FilterSettingPanel extends JPanel {
 			}
 			
 			//Update the selection on screen
-			System.out.println("FilterSettingPanel. actionEvent from textIndexedComboBox...");	
+			//System.out.println("FilterSettingPanel. actionEvent from textIndexedComboBox...");	
 			doSelection();					
 		}
 	}
@@ -762,8 +754,8 @@ public class FilterSettingPanel extends JPanel {
 				
 				//Update the selection on screen
 				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
-					System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
-					theFilter.childChanged();//The setting is chnaged
+					//System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
+					theFilter.childChanged();//The setting is changed
 					doSelection();					
 				}
 			}
@@ -779,7 +771,8 @@ public class FilterSettingPanel extends JPanel {
 				updateRelationLabel();
 
 				//Update the selection on screen
-				System.out.println("FilterSettingPanel. rbtAND/rbtOR is clicked");	
+				//System.out.println("FilterSettingPanel. rbtAND/rbtOR is clicked");	
+				theFilter.childChanged();
 				doSelection();					
 			}
 		}
