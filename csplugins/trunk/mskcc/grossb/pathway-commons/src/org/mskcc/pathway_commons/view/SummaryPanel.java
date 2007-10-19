@@ -2,7 +2,6 @@ package org.mskcc.pathway_commons.view;
 
 import javax.swing.*;
 import javax.swing.text.Document;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
@@ -20,9 +19,10 @@ public class SummaryPanel extends JPanel {
      */
     public SummaryPanel() {
         this.setLayout(new BorderLayout());
+        this.setBorder(GuiUtils.createTitledBorder("Gene Summary"));
         textPane = createTextPane();
         doc = textPane.getDocument();
-        JScrollPane scrollPane = encloseInJScrollPane ("Gene Summary", textPane);
+        JScrollPane scrollPane = encloseInJScrollPane (textPane);
         this.add(scrollPane, BorderLayout.CENTER);
         this.setAlpha(0.0f);
     }
@@ -55,14 +55,11 @@ public class SummaryPanel extends JPanel {
     /**
      * Encloses the specified JTextPane in a JScrollPane.
      *
-     * @param title    Title of Area.
-     * @param textArea JTextArea Object.
+     * @param textPane JTextPane Object.
      * @return JScrollPane Object.
      */
-    private JScrollPane encloseInJScrollPane(String title, JTextPane textArea) {
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        Border titledBorder = GuiUtils.createTitledBorder(title);
-        scrollPane.setBorder(titledBorder);
+    private JScrollPane encloseInJScrollPane(JTextPane textPane) {
+        JScrollPane scrollPane = new JScrollPane(textPane);
         return scrollPane;
     }
 
