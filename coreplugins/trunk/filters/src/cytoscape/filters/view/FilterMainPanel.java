@@ -592,7 +592,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					this.btnAddFilterWidget.setEnabled(true);
 					this.btnApplyFilter.setEnabled(true);					
 				}
-				replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());				
+				replaceFilterSettingPanel(selectedFilter);
+				selectedFilter.doSelection();
 			}
 		}	
 	}
