@@ -2641,13 +2641,13 @@ NEXTPARENT:
 			*/
 			int[] cI = graph.componentIndex();
 			int x;
-			System.out.println("Node index:\n");
+//			System.out.println("Node index:\n");
 
-			for (x = 0; x < graph.getNodecount(); x++) {
-				System.out.println(Integer.toString(cI[x]));
-			}
+			//for (x = 0; x < graph.getNodecount(); x++) {
+			//	System.out.println(Integer.toString(cI[x]));
+			//}
 
-			System.out.println("Partitioning into components:\n");
+			//System.out.println("Partitioning into components:\n");
 
 			int[] renumber = new int[cI.length];
 			Graph[] component = graph.partition(cI, renumber);
@@ -2671,25 +2671,26 @@ NEXTPARENT:
 				                System.out.println("reduced component:\n");
 				                System.out.println(component[x].getReducedGraph());
 				*/
-				System.out.println("layer assignment:\n");
+//				System.out.println("layer assignment:\n");
 
 				Graph red = component[x].getReducedGraph();
 				int[] layer = red.getVertexLayers();
 				int y;
 
-				for (y = 0; y < layer.length; y++) {
-					System.out.println("" + y + " : " + layer[y]);
-				}
+//				for (y = 0; y < layer.length; y++) {
+//					System.out.println("" + y + " : " + layer[y]);
+//				}
 
-				System.out.println("horizontal position:\n");
+//				System.out.println("horizontal position:\n");
 
 				int[] horizontalPosition = red.getHorizontalPosition(layer);
 
-				for (y = 0; y < horizontalPosition.length; y++) {
-					System.out.println("" + y + " : " + horizontalPosition[y]);
-				}
+//				for (y = 0; y < horizontalPosition.length; y++) {
+//					System.out.println("" + y + " : " + horizontalPosition[y]);
+//				}
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			System.out.println("Error detected reading graph\nExiting\n");
 		}
 	}

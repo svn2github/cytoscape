@@ -460,7 +460,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			dummyStartForComp[x] = dummyStart;
 			dummy2Edge[x] = new HashMap<Integer, Edge>();
 
-			System.out.println(allEdges.length);
+			//System.out.println(allEdges.length);
 
 			for (int i = 0; i < allEdges.length; i++) {
 				int from = allEdges[i].getFrom();

@@ -100,14 +100,4 @@ public class LayoutPlugin extends CytoscapePlugin {
 		CyLayouts.addLayout(new JGraphLayoutWrapper(JGraphLayoutWrapper.TREE), "JGraph Layouts");
 	}
 
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setName("Automatic Layouts Plugin");
-		info.setDescription("This plugin includes the core layouts provided by Cytoscape.  It populates the 'Layout->Cytoscape Layouts' and 'Layout->JGraph Layouts' menues");
-		info.setCategory("Core");
-		info.setPluginVersion(1.0);
-		info.setProjectUrl("http://cytoscape.org/plugins_page/plugin_document.xml");
-		info.addAuthor("Scooter Morris", "UCSF");
-		return info;
-	}
 }

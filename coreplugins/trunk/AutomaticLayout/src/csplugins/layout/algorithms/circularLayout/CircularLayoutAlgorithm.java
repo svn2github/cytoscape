@@ -203,7 +203,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		posSet = new boolean[nodeView.length]; // all false
 		depthPosSet = new boolean[nodeView.length]; // all false
 
-		System.out.println("plain component:\n" + graph.getNodecount());
+		//System.out.println("plain component:\n" + graph.getNodecount());
 
 		Thread.yield();
 
@@ -636,8 +636,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		alreadySet.put(new Integer(toReturn[0]), new Boolean(true));
 
 		while (p < (icNodes.length - 1)) {
-			if ((p == x) && (p != 0))
-				System.out.println("p = " + p + " x = " + x + " count = " + icNodes.length);
+//			if ((p == x) && (p != 0))
+				//System.out.println("p = " + p + " x = " + x + " count = " + icNodes.length);
 
 			Iterator iter = edgesFrom[toReturn[p]].iterator();
 
@@ -848,7 +848,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 				startY = nodeView[nodeID].getOffset().getY();
 
 				//System.out.println("theAngle = " + theAngle + ", startAngle = " + startAngle + ", remStartAngle = " + remStartAngle + ", deltaAngle = " + deltaAngle);
-				System.out.println("min1Id = " + min1Id + ", min2Id" + min2Id + ", maxId" + maxId);
+				//System.out.println("min1Id = " + min1Id + ", min2Id" + min2Id + ", maxId" + maxId);
 				nodeView[min1Id].setOffset(startX + (Math.cos(remStartAngle) * r),
 				                           startY - (Math.sin(remStartAngle) * r));
 				nodeView[min2Id].setOffset(startX + (Math.cos(remStartAngle + deltaAngle) * r),
@@ -863,8 +863,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 				                          startY
 				                          - (Math.sin(remStartAngle
 				                                      - ((neighboursCount / 2) * deltaAngle)) * r));
-				System.out.println("Ugao za maxID "
-				                   + (remStartAngle - ((neighboursCount / 2) * deltaAngle)));
+				//System.out.println("Ugao za maxID "
+				 //                  + (remStartAngle - ((neighboursCount / 2) * deltaAngle)));
 			}
 
 			tmp = new HashMap<Integer, Integer>();
@@ -999,11 +999,11 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	                                    int[] outerPositionsOwners, int noOfPos,
 	                                    int innerCirclePos, double startX, double startY,
 	                                    double outerDeltaAngle, double outerRadius, int innerCSize) {
-		for (int j = 0; j < outerPositionsTaken.length; j++)
-			System.out.print(outerPositionsTaken[j] + " ");
+//		for (int j = 0; j < outerPositionsTaken.length; j++)
+//			System.out.print(outerPositionsTaken[j] + " ");
 
-		System.out.println("innerCircPos: " + innerCirclePos + ", noOfPos: " + noOfPos
-		                   + ", idealPos: " + idealPosition);
+//		System.out.println("innerCircPos: " + innerCirclePos + ", noOfPos: " + noOfPos
+//		                   + ", idealPos: " + idealPosition);
 
 		int startPos = idealPosition;
 
@@ -1049,7 +1049,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 			int j = i - 1;
 			int count = 0;
-			System.out.print(j + " ");
+			//System.out.print(j + " ");
 
 			if (((outerPositionsTaken[i % outerPositionsTaken.length] > innerCirclePos)
 			    && ((outerPositionsTaken[i % outerPositionsTaken.length] - innerCirclePos) < (0.7 * innerCSize)))
@@ -1059,13 +1059,13 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			}
 
 			while (count < (noOfPos - alreadyFound)) {
-				System.out.print(j + " ");
+				//System.out.print(j + " ");
 
 				if (outerPositionsTaken[(j + outerPositionsTaken.length) % outerPositionsTaken.length] == -1) {
 					// move all for one place left
 					//	System.out.print(" moving ");
 					if (outerPositionsOwners[(j + outerPositionsTaken.length) % outerPositionsTaken.length] == -2) {
-						System.out.println("BUUUUUUUUUUUUUUUUUUU");
+						//System.out.println("BUUUUUUUUUUUUUUUUUUU");
 
 						return -1;
 					}
