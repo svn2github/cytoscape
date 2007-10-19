@@ -1,7 +1,5 @@
 package org.mskcc.pathway_commons.view;
 
-import org.jdesktop.swingx.JXPanel;
-
 import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.border.Border;
@@ -65,7 +63,6 @@ public class SummaryPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(textArea);
         Border titledBorder = GuiUtils.createTitledBorder(title);
         scrollPane.setBorder(titledBorder);
-        scrollPane.setMaximumSize(new Dimension(200,400));
         return scrollPane;
     }
 
