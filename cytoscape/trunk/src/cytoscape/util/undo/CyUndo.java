@@ -44,6 +44,7 @@ import javax.swing.event.*;
 import javax.swing.undo.*;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.view.CytoscapeDesktop;
 
 import java.beans.PropertyChangeEvent;
@@ -61,7 +62,23 @@ public class CyUndo extends Undo {
 
 	static {
 		undoManager = getUndoManager();
+		undoManager.setLimit(getLimit());
 		new UndoMonitor();
+	}
+
+	private static int getLimit() {
+		int lim;
+		try { 
+			lim = Integer.parseInt( CytoscapeInit.getProperties().getProperty("undo.limit") );
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			lim = 10;
+		}
+
+		if ( lim < 0 )
+			lim = 10;
+
+		return lim;
 	}
 }
 

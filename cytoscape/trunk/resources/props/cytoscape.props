@@ -18,3 +18,4 @@ proxy.server.type=
 cytoscape.version.number=@version@
 exportTextAsShape=true
 vizmapper.cntMapperUpperLimit=2000
+undo.limit=10
