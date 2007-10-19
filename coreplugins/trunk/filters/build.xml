@@ -8,7 +8,6 @@
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init-filters">
-    <tstamp/>
     <property name="filters.Name" value="filters"/>
     <property name="filters.name" value="filters"/>
     <property name="filters.version" value="1.1"/>
@@ -28,7 +27,7 @@
     <property name="cytoscape.dir" value="../cytoscape26"/>
   	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
-
+  	
   	<path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
@@ -79,7 +78,7 @@
   <target name="compile-filters" depends="init-filters"  >
 
    <echo message=" COMPILE filters "/>
-
+    
     <mkdir dir="${filters.classes.dir}"/>
     <javac srcdir="${filters.src.dir}"
            excludes="${filters.excludes}"
@@ -100,22 +99,24 @@
   	<!--	<copy todir="${filters.classes.dir}/filters/images"> -->
   	<!--            <fileset dir="${filters.root.dir}/images"/> -->
   	<!-- </copy> -->
-	<copy todir="${filters.classes.dir}/filters" file="${filters.resources.dir}/plugin.props"/>
-    <jar destfile="filters.jar" manifest="${filters.manifest.dir}/filters.manifest">
+  	
+	<copy todir="${filters.classes.dir}/cytoscape/filters" file="${filters.resources.dir}/plugin.props"/>
+  	
+    <jar destfile="filters.jar">
+        <manifest>
+         <attribute name="Cytoscape-Plugin" value="cytoscape.filters.FilterPlugin"/>
+        </manifest>
+
       <fileset
         dir="${filters.classes.dir}"
         includes="**"/>
-      <fileset
-        dir="${filters.root.dir}/lib"
-        includes="resources/**"/>
-      <manifest>
-       <attribute name="Cytoscape-Plugin" value="cytoscape.filters.FilterPlugin"/>
-      </manifest>
+
     </jar>
-    <copy todir="${filters.lib.dir}" file="filters.jar"/>
   	
-  	<copy todir="${cytoscape.dir}/build/cytoscape-v2.6.0-alpha/plugins" file="filters.jar"/>
+    <copy todir="${filters.lib.dir}" file="filters.jar"/>
   	<copy todir="${cytoscape.plugin.dir}/core" file="filters.jar"/>
+
+  	<!--	<copy todir="${cytoscape.dir}/build/cytoscape-v2.6.0-alpha/plugins" file="filters.jar"/> -->
 
   </target>
 
