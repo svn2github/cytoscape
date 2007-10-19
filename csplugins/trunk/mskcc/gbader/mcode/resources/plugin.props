@@ -8,7 +8,7 @@ pluginName=MCODE
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Clusters a network using the MCODE algorithm.
+pluginDescription=MCODE finds clusters (highly interconnected regions) in a network. Clusters mean different things in different types of networks. For instance, clusters in a protein-protein interaction network are often protein complexes and parts of pathways, while clusters in a protein similarity network represent protein families.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=1.2
@@ -17,7 +17,7 @@ pluginVersion=1.2
 cytoscapeVersion=2.5
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Analysis Plugins
+pluginCategory=Analysis
 
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)

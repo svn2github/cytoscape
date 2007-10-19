@@ -80,7 +80,7 @@ public class MCODEResultsPanel extends JPanel {
     CyNetwork network;                     //Keep a record of the original input record for use in the
                                            //table row selection listener
     CyNetworkView networkView;             //Keep a record of this too, if it exists
-    MCODECollapsablePanel explorePanel;
+    MCODECollapsiblePanel explorePanel;
     JPanel[] exploreContent;
     MCODEParameterSet currentParamsCopy;
     int enumerationSelection = 0;          //Keep track of selected attribute for enumeration so it stays selected for all cluster explorations
@@ -167,7 +167,7 @@ public class MCODEResultsPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        explorePanel = new MCODECollapsablePanel("Explore");
+        explorePanel = new MCODECollapsiblePanel("Explore");
         explorePanel.setCollapsed(false);
         explorePanel.setVisible(false);
 

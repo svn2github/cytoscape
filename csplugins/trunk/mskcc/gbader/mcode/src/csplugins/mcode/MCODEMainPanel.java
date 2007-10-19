@@ -64,8 +64,8 @@ public class MCODEMainPanel extends JPanel {
     //on the scope that is selected.  For network scope, the user has the option of using a
     //benchmark or customizing the parameters while for the other scopes, benchmarks are not
     //appropriate.
-    MCODECollapsablePanel clusterFindingPanel;
-    MCODECollapsablePanel customizeClusterFindingPanel;
+    MCODECollapsiblePanel clusterFindingPanel;
+    MCODECollapsiblePanel customizeClusterFindingPanel;
     JPanel clusterFindingContent;
     JPanel customizeClusterFindingContent;
 
@@ -109,7 +109,7 @@ public class MCODEMainPanel extends JPanel {
 
         //create the three main panels: scope, advanced options, and bottom
         JPanel scopePanel = createScopePanel();
-        MCODECollapsablePanel advancedOptionsPanel = createAdvancedOptionsPanel();
+        MCODECollapsiblePanel advancedOptionsPanel = createAdvancedOptionsPanel();
         JPanel bottomPanel = createBottomPanel();
 
         //Since the advanced options panel is being added to the center of this border layout
@@ -166,14 +166,14 @@ public class MCODEMainPanel extends JPanel {
      *
      * @return collapsablePanel
      */
-    private MCODECollapsablePanel createAdvancedOptionsPanel() {
-        MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Advanced Options");
+    private MCODECollapsiblePanel createAdvancedOptionsPanel() {
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Advanced Options");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         //Network scoring collapsable panel
-        MCODECollapsablePanel networkScoringPanel = createNetworkScoringPanel();
+        MCODECollapsiblePanel networkScoringPanel = createNetworkScoringPanel();
 
         //Cluster finding collapsable panel
         clusterFindingPanel = createClusterFindingPanel();
@@ -181,8 +181,8 @@ public class MCODEMainPanel extends JPanel {
         panel.add(networkScoringPanel);
         panel.add(clusterFindingPanel);
 
-        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
-        return collapsablePanel;
+        collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
+        return collapsiblePanel;
     }
 
     /**
@@ -190,8 +190,8 @@ public class MCODEMainPanel extends JPanel {
      *
      * @return panel containing the network scoring parameter inputs
      */
-    private MCODECollapsablePanel createNetworkScoringPanel() {
-        MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Network Scoring");
+    private MCODECollapsiblePanel createNetworkScoringPanel() {
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Network Scoring");
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
@@ -249,8 +249,8 @@ public class MCODEMainPanel extends JPanel {
         panel.add(includeLoopsPanel);
         panel.add(degreeCutOffPanel);
 
-        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
-        return collapsablePanel;
+        collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
+        return collapsiblePanel;
     }
 
     /**
@@ -258,8 +258,8 @@ public class MCODEMainPanel extends JPanel {
      *
      * @return collapsablePanel
      */
-    private MCODECollapsablePanel createClusterFindingPanel() {
-        MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel("Cluster Finding");
+    private MCODECollapsiblePanel createClusterFindingPanel() {
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel("Cluster Finding");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -276,15 +276,15 @@ public class MCODEMainPanel extends JPanel {
         //customize parameters panel
         customizeClusterFindingPanel = createCustomizeClusterFindingPanel(customizeOption);
         //optimize parameters panel
-        MCODECollapsablePanel optimizeClusterFindingPanel = createOptimizeClusterFindingPanel(optimizeOption);
+        MCODECollapsiblePanel optimizeClusterFindingPanel = createOptimizeClusterFindingPanel(optimizeOption);
 
         panel.add(customizeClusterFindingPanel);
         panel.add(optimizeClusterFindingPanel);
         
         this.clusterFindingContent = panel;
         
-        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
-        return collapsablePanel;
+        collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
+        return collapsiblePanel;
     }
 
     /**
@@ -293,8 +293,8 @@ public class MCODEMainPanel extends JPanel {
      * @param component Any JComponent that may appear in the titled border of the panel
      * @return collapsablePanel
      */
-    private MCODECollapsablePanel createCustomizeClusterFindingPanel(JRadioButton component) {
-        MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
+    private MCODECollapsiblePanel createCustomizeClusterFindingPanel(JRadioButton component) {
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel(component);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -457,8 +457,8 @@ public class MCODEMainPanel extends JPanel {
 
         this.customizeClusterFindingContent = panel;
 
-        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
-        return collapsablePanel;
+        collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
+        return collapsiblePanel;
     }
 
     /**
@@ -466,10 +466,10 @@ public class MCODEMainPanel extends JPanel {
      *
      * @param component the radio button that appears in the titled border of the panel
      * @return A collapsable panel holding a file selection input
-     * @see MCODECollapsablePanel
+     * @see MCODECollapsiblePanel
      */
-    private MCODECollapsablePanel createOptimizeClusterFindingPanel(JRadioButton component) {
-        MCODECollapsablePanel collapsablePanel = new MCODECollapsablePanel(component);
+    private MCODECollapsiblePanel createOptimizeClusterFindingPanel(JRadioButton component) {
+        MCODECollapsiblePanel collapsiblePanel = new MCODECollapsiblePanel(component);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -489,8 +489,8 @@ public class MCODEMainPanel extends JPanel {
         panel.add(benchmarkStarterPanel);
         panel.add(fileChooserPanel);
 
-        collapsablePanel.getContentPane().add(panel, BorderLayout.NORTH);
-        return collapsablePanel;
+        collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
+        return collapsiblePanel;
     }
 
     /**

@@ -1,12 +1,11 @@
 package csplugins.mcode;
 
 import cytoscape.CyNetwork;
+import ding.view.DGraphView;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
 
 import javax.swing.*;
 import java.awt.*;
@@ -172,7 +171,17 @@ public class MCODEUtil {
             }
         }
 	
-		image = view.createImage(width,height,1.0); 
+		image = view.createImage(width,height,1.0); // This generates a white background, not desirable since cell selection has a blue background
+
+        /*
+        view.getCanvas().setSize(width, height);
+        view.fitContent();
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        final Graphics2D g = (Graphics2D) image.getGraphics();
+        //g.setColor((Color) view.getBackgroundPaint());
+        //g.fillRect(0, 0, width, height);
+        view.getCanvas().paint(g);
+        */
 
         double largestSide = view.getCanvas().getWidth();
         if (view.getCanvas().getHeight() > largestSide) {
