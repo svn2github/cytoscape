@@ -132,7 +132,7 @@ public class GradientNodeViewPlugin extends CytoscapePlugin {
 		        
 		        if (image != null)
 		        {
-		        	
+		        	// first do beveling
 		        	Graphics g = image.getGraphics();
 		        	g.setColor(((DGraphView) view).getCanvas(Canvas.BACKGROUND_CANVAS).getBackground());
 		            g.fillRect(0, 0, (int) rect.getWidth(), (int) rect.getHeight());
@@ -153,12 +153,14 @@ public class GradientNodeViewPlugin extends CytoscapePlugin {
 			            g.fillOval(0, 0, (int) dnv.getWidth() - 2 + 3, (int) dnv.getHeight() - 2);
 		        	}
 
-		        		        	
+		        	// now do the gradient fill	        	
 		            Color secondColor;
 		            Double random = Math.random();
-		            // map from green to red through black
+		            // map from green to red through black, THIS IS A TEMPORARY HACK
 		            secondColor = (random < 0.5) ? new Color (0, ((int) (255 * (1.0 - random ))), 0) :
 		            	new Color ((int) (255 *  random), 0, 0);
+		            
+		            
 		        	RoundGradientPaint rgp = new RoundGradientPaint((int) (dnv.getWidth() * 0.5), 
 		        			(int) (dnv.getHeight() * 0.5), Color.white,
 		        	        new Point2D.Double((int) (dnv.getWidth () * 0.6), 
