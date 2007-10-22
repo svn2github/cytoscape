@@ -380,18 +380,6 @@ public class PluginInfo extends DownloadableInfo {
 		return pluginFiles;
 	}
 
-
-	// wonder if this will overwrite the Object.equals method...
-	public boolean equals(Object Obj) {
-		PluginInfo obj = (PluginInfo) Obj;
-		if (this.getID().equals(obj.getID()) &&
-			this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
-			this.getObjectVersion().equals(obj.getObjectVersion()))
-			return true;
-		
-		return false;
-	}
-	
 	/**
 	 * @deprecated See {@link DownloadableInfo#isNewerObjectVersion(DownloadableInfo)}} will be removed June 2008
 	 * Compare the version of the object to the given object.

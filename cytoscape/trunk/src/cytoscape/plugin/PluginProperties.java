@@ -208,7 +208,7 @@ public class PluginProperties extends Properties {
 		 */
 		if (!versionOk) {
 			pi.setCategory(Category.OUTDATED);
-			String DescMsg = "<p><font color='red'><i>This plugin has not been verified to work with Cytoscape v" + 
+			String DescMsg = "<p><font color='red'><b>Cytoscape Version Warning:</b><br><i>This plugin has not been verified to work with Cytoscape v" + 
 				cytoscape.CytoscapeVersion.version + " .</i></font>";
 			pi.setDescription( pi.getDescription() + DescMsg );
 			pi.setCytoscapeVersion(RecentCyVersion);

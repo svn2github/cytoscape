@@ -36,7 +36,6 @@
 package cytoscape.plugin;
 
 import java.net.URL;
-
 import cytoscape.util.URLUtil;
 
 public abstract class DownloadableInfo {
@@ -308,6 +307,11 @@ public abstract class DownloadableInfo {
 		String[] CurrentVersion = this.getObjectVersion().split(versionSplit);
 		String[] NewVersion = New.getObjectVersion().split(versionSplit);
 
+		// make sure it's the same object first
+		if ( !(this.getID().equals(New.getID()) && this.getDownloadableURL().equals(New.getDownloadableURL())) ) {
+			return false;
+		}
+		
 		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
 		int NewMajor = Integer.valueOf(NewVersion[0]).intValue();
 
@@ -339,6 +343,32 @@ public abstract class DownloadableInfo {
 		return true;
 	}
 
+	
+	// wonder if this will overwrite the Object.equals method...
+	/**
+	 * Compare the two info objects.  If the ID, downloadable url and object version
+	 * are the same they are considered to be the same object.
+	 */
+	public boolean equals(Object Obj) {
+		DownloadableInfo obj = (DownloadableInfo) Obj;
+		if (this.getID().equals(obj.getID()) &&
+			this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+			this.getObjectVersion().equals(obj.getObjectVersion()))
+			return true;
+		
+		return false;
+	}
+
+	public boolean equalsDifferentObjectVersion(Object Obj) {
+		DownloadableInfo obj = (DownloadableInfo) Obj;
+		if (this.getID().equals(obj.getID()) &&
+			this.getDownloadableURL().equals(obj.getDownloadableURL()))
+			return true;
+
+		return false;
+	}
+	
+	
 	/**
 	 * @return Returns String of downloadable name and version
 	 * 		ex. MyPlugin v.1.0

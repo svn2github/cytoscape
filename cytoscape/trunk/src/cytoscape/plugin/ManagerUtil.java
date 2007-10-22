@@ -115,8 +115,10 @@ public class ManagerUtil {
 	 * @param Current
 	 * @param Available
 	 */
-	public static List<DownloadableInfo> getUnique(List<DownloadableInfo> Current,
-			List<DownloadableInfo> Available) {
+	public static List<DownloadableInfo> getUnique(
+			List<DownloadableInfo> Current, List<DownloadableInfo> Available) {
+			java.util.Set<DownloadableInfo> CurrentSet = new java.util.HashSet<DownloadableInfo>(Current);
+		
 		List<DownloadableInfo> UniqueAvail = new java.util.ArrayList<DownloadableInfo>(
 				Available);
 
@@ -126,9 +128,18 @@ public class ManagerUtil {
 
 		for (DownloadableInfo infoAvail : Available) {
 			for (DownloadableInfo infoCur : Current) {
-				if (infoCur.getID().equals(infoAvail.getID())
-					&& infoCur.getObjectUrl().equals(infoAvail.getObjectUrl())) {
-					UniqueAvail.remove(infoAvail);
+				if (!PluginManager.getPluginManager().usingWebstartManager()) {
+					if (infoCur.equalsDifferentObjectVersion(infoAvail)) {
+						UniqueAvail.remove(infoAvail);
+					}
+				} else { // in webstart
+					if ( infoCur.equalsDifferentObjectVersion(infoAvail) ||
+						infoCur.getName().equals(infoAvail.getName()) ) { 
+						infoAvail.setDescription( infoCur.getDescription() + 
+								"<p><font color='red'><i><b>Webstart Warning:</b><br>This plugin may be the same as a plugin loaded with the webstart bundle '" + 
+								infoCur.toString() + "' </i></font>");
+					}
+							
 				}
 
 			}
@@ -145,9 +156,9 @@ public class ManagerUtil {
 	 */
 	public static PluginInfo getInfoObject(Class pluginClass) {
 		PluginManager mgr = PluginManager.getPluginManager();
-		List<DownloadableInfo> Plugins = mgr.getDownloadables(PluginStatus.CURRENT);
+		List<DownloadableInfo> Plugins = mgr
+				.getDownloadables(PluginStatus.CURRENT);
 
-		
 		for (DownloadableInfo Current : Plugins) {
 			PluginInfo CurrentPlugin = null;
 			if (!Current.getType().equals(DownloadableType.PLUGIN)) {
@@ -155,7 +166,8 @@ public class ManagerUtil {
 			} else {
 				CurrentPlugin = (PluginInfo) Current;
 			}
-			if (CurrentPlugin.getPluginClassName().equals(pluginClass.getName())) {
+			if (CurrentPlugin.getPluginClassName()
+					.equals(pluginClass.getName())) {
 				return CurrentPlugin;
 			}
 		}
@@ -170,10 +182,10 @@ public class ManagerUtil {
 	// this doesn't appear to work as I would expect
 	private static final Comparator<DownloadableInfo> NAME_ORDER = new Comparator<DownloadableInfo>() {
 		public int compare(DownloadableInfo p1, DownloadableInfo p2) {
-			int nameCmp = p2.getName().toLowerCase().compareTo(p1.getName().toLowerCase());
+			int nameCmp = p2.getName().toLowerCase().compareTo(
+					p1.getName().toLowerCase());
 			return nameCmp;
 		}
 	};
-
 
 }
