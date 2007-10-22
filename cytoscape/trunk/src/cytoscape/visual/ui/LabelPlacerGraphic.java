@@ -102,7 +102,6 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 
 	// mouse drag state
 	private boolean beenDragged = false;
-	private boolean canDrag = false;
 	private boolean canOffsetDrag = false;
 
 	// click offset
@@ -262,18 +261,12 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 				for (int j = 0; j < npoints.length; j++) {
 					g.setColor(transparentMagenta);
 					g.fillOval(npoints[i] - (gd / 2), npoints[j] - (gd / 2), gd, gd);
-					g.setColor(Color.black);
+					if ((i == bestNodeX) && (j == bestNodeY) && !beenDragged)
+						g.setColor(Color.yellow);
+					else
+						g.setColor(Color.black);
 					g.fillOval(npoints[i] - (dot / 2), npoints[j] - (dot / 2), dot, dot);
 				}
-		}
-
-		// draw the base box if any offsets are used
-		if ((xOffset != 0) || (yOffset != 0)) {
-			g.setColor(Color.lightGray);
-			g.drawLine(xPos, yPos, xPos + lx, yPos);
-			g.drawLine(xPos + lx, yPos, xPos + lx, yPos + ly);
-			g.drawLine(xPos + lx, yPos + ly, xPos, yPos + ly);
-			g.drawLine(xPos, yPos + ly, xPos, yPos);
 		}
 
 		// draw the label box
@@ -331,7 +324,8 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 					if ((i == bestLabelX) && (j == bestLabelY) && !beenDragged)
 						g.setColor(Color.yellow);
 
-					g.fillOval((xPos + lxpoints[i]) - (dot / 2), (yPos + lypoints[j]) - (dot / 2),
+					g.fillOval((xPos + xOffset + lxpoints[i]) - (dot / 2), 
+					           (yPos + yOffset + lypoints[j]) - (dot / 2),
 					           dot, dot);
 
 					if ((i == bestLabelX) && (j == bestLabelY))
@@ -351,18 +345,12 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 			int x = e.getX();
 			int y = e.getY();
 
-			// click+drag within normal box
-			if ((x >= xPos) && (x <= (xPos + lx)) && (y >= yPos) && (y <= (yPos + ly))) {
-				canDrag = true;
+			// click+drag within box
+			if ((x >= (xPos + xOffset)) && (x <= (xPos + xOffset + lx)) && 
+			    (y >= (yPos + yOffset)) && (y <= (yPos + yOffset + ly))) {
+				canOffsetDrag = true;
 				xClickOffset = x - xPos;
 				yClickOffset = y - yPos;
-
-				// click+drag within offset box
-			} else if ((x >= (xPos + xOffset)) && (x <= (xPos + xOffset + lx))
-			           && (y >= (yPos + yOffset)) && (y <= (yPos + yOffset + ly))) {
-				canOffsetDrag = true;
-				xClickOffset = x - xPos + xOffset;
-				yClickOffset = y - yPos + yOffset;
 			}
 		}
 
@@ -371,19 +359,64 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		 */
 		public void mouseReleased(MouseEvent e) {
 			if (beenDragged) {
-				xPos = e.getX();
-				yPos = e.getY();
 
-				// adjust if drag happened in offset box
-				if (canOffsetDrag) {
-					xPos += xOffset;
-					yPos += yOffset;
+				int x = e.getX();
+				int y = e.getY();
+
+				// top right
+				xPos = x - xClickOffset + xOffset;
+				yPos = y - yClickOffset + yOffset;
+
+				double best = Double.POSITIVE_INFINITY;
+				double offX = 0;
+				double offY = 0;
+
+				// loop over each point in the node box
+				for (int i = 0; i < npoints.length; i++) {
+					for (int j = 0; j < npoints.length; j++) {
+						Point nodePoint = new Point(npoints[i] - (dot / 2), npoints[j] - (dot / 2));
+
+						// loop over each point in the label box
+						for (int a = 0; a < lxpoints.length; a++) {
+							for (int b = 0; b < lypoints.length; b++) {
+								Point labelPoint = new Point((xPos + lxpoints[a]) - (dot / 2),
+								                             (yPos + lypoints[b]) - (dot / 2));
+
+								double dist = labelPoint.distance((Point2D) nodePoint);
+		
+								if (dist < best) {
+									best = dist;
+									bestLabelX = a;
+									bestLabelY = b;
+									bestNodeX = i;
+									bestNodeY = j;
+									offX = labelPoint.getX() - nodePoint.getX();
+									offY = labelPoint.getY() - nodePoint.getY();
+								}
+							}
+						}
+					}
 				}
 
-				findClosestPoint();
+				xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
+				yPos = npoints[bestNodeY] - lypoints[bestLabelY];
+
+				if ( Math.sqrt(offX*offX + offY*offY) > gravityDistance ) {
+					xOffset = (int)offX;
+					yOffset = (int)offY;
+				} else {
+					xOffset = 0; 
+					yOffset = 0; 
+				}
+
+				lp.setOffsetX(xOffset);
+				lp.setOffsetY(yOffset);
+				lp.setLabelAnchor(bestLabelX + (3 * bestLabelY));
+				lp.setTargetAnchor(bestNodeX + (3 * bestNodeY));
+				firePropertyChange("LABEL_POSITION_CHANGED", null, lp);
+
 				repaint();
 				beenDragged = false;
-				canDrag = false;
 				canOffsetDrag = false;
 			}
 		}
@@ -395,16 +428,10 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		*/
 		public void mouseDragged(MouseEvent e) {
 			// dragging within normal box
-			if (canDrag) {
-				xPos = e.getX() - xClickOffset;
+			if (canOffsetDrag) {
+				xPos = e.getX() - xClickOffset; 
 				yPos = e.getY() - yClickOffset;
-				beenDragged = true;
-				repaint();
 
-				// dragging within offset box
-			} else if (canOffsetDrag) {
-				xPos = e.getX() - xClickOffset + xOffset;
-				yPos = e.getY() - yClickOffset + yOffset;
 				beenDragged = true;
 				repaint();
 			}
@@ -415,64 +442,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	 * Finds the points on the Label box and Node box that are closest.
 	 */
 	private void findClosestPoint() {
-		// These points need to be set back to the actual x/y positions of
-		// the label box so that it's the points that are being checked, and
-		// not the points + offset.
-		xPos -= xClickOffset;
-		yPos -= yClickOffset;
 
-		double best = Double.POSITIVE_INFINITY;
-		double offX = 0.0;
-		double offY = 0.0;
-
-		// loop over each point in the node box
-		for (int i = 0; i < npoints.length; i++) {
-			for (int j = 0; j < npoints.length; j++) {
-				Point nodePoint = new Point(npoints[i] - (dot / 2), npoints[j] - (dot / 2));
-
-				// loop over each point in the label box
-				for (int a = 0; a < lxpoints.length; a++) {
-					for (int b = 0; b < lypoints.length; b++) {
-						Point labelPoint = new Point((xPos + lxpoints[a]) - (dot / 2),
-						                             (yPos + lypoints[b]) - (dot / 2));
-
-						double dist = labelPoint.distance((Point2D) nodePoint);
-
-						if (dist < best) {
-							best = dist;
-							bestLabelX = a;
-							bestLabelY = b;
-							bestNodeX = i;
-							bestNodeY = j;
-							offX = labelPoint.getX() - nodePoint.getX(); 
-							offY = labelPoint.getY() - nodePoint.getY();
-						}
-					}
-				}
-			}
-		}
-
-		// sets the labelPosition object that will be fired
-		if ( best > gravityDistance ) {
-			lp.setOffsetX(offX);
-			lp.setOffsetY(offY);
-		} else {
-			lp.setOffsetX(0.0);
-			lp.setOffsetY(0.0);
-		}
-
-		lp.setLabelAnchor(bestLabelX + (3 * bestLabelY));
-		lp.setTargetAnchor(bestNodeX + (3 * bestNodeY));
-
-
-		// sets the values used for rendering the graphic
-		xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
-		yPos = npoints[bestNodeY] - lypoints[bestLabelY];
-		xOffset = (int) (lp.getOffsetX() * offsetRatio);
-		yOffset = (int) (lp.getOffsetY() * offsetRatio);
-
-
-		firePropertyChange("LABEL_POSITION_CHANGED", null, lp);
 	}
 
 	/**
