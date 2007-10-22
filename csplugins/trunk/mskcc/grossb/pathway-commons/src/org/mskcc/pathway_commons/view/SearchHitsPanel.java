@@ -7,8 +7,6 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -37,7 +35,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
     private Popup popup;
-    private SummaryPanel summaryPanel;
+    private PhysicalEntityDetailsFrame summaryPanel;
 
     /**
      * Constructor.
@@ -53,7 +51,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //  Create the Summary Panel, but don't show it yet
-        summaryPanel = new SummaryPanel();
+        summaryPanel = new PhysicalEntityDetailsFrame();
         summaryDocument = summaryPanel.getDocument();
         summaryTextPane = summaryPanel.getTextPane();
 
