@@ -1,4 +1,6 @@
-package gpml;
+package gpml.actions;
+
+import gpml.GpmlPlugin;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -13,17 +15,19 @@ import org.pathvisio.view.swing.PathwayTransferable;
 import cytoscape.util.CytoscapeAction;
 
 public class PasteAction extends CytoscapeAction implements FlavorListener {
-	GpmlImporter importer;
+	GpmlPlugin importer;
 	
-	public PasteAction(GpmlImporter importer) {
+	public PasteAction(GpmlPlugin importer) {
 		super();
-		this.importer = importer;
+		this.importer = importer;		
 	}
 	
 	protected void initialize() {
+		super.initialize();
 		putValue(NAME, "Paste GPML");
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl V"));
 	}
+	
 	public String getPreferredMenu() {
 		return "Edit";
 	}

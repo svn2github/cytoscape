@@ -36,9 +36,9 @@ import ding.view.DingCanvas;
 
 public class GpmlReader extends AbstractGraphReader {
 	GpmlConverter converter;
-	GpmlAttributeHandler gpmlHandler;
+	GpmlHandler gpmlHandler;
 	
-	public GpmlReader(String fileName, GpmlAttributeHandler gpmlHandler) {
+	public GpmlReader(String fileName, GpmlHandler gpmlHandler) {
 		super(fileName);
 		this.gpmlHandler = gpmlHandler;
 	}
@@ -49,6 +49,7 @@ public class GpmlReader extends AbstractGraphReader {
 			pathway.readFromXml(new File(fileName), true);
 			converter = new GpmlConverter(gpmlHandler, pathway);
 		} catch(Exception ex) {
+			ex.printStackTrace();
 			throw new IOException(ex.getMessage());
 		}
 	}

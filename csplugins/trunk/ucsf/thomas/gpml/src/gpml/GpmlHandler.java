@@ -1,17 +1,17 @@
 package gpml;
 
+import giny.model.Edge;
+import giny.model.Node;
+import giny.view.EdgeView;
 import giny.view.GraphView;
+import giny.view.NodeView;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.jdom.Attribute;
-import org.jdom.Element;
-import org.jdom.Namespace;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.GpmlFormat;
+import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 
 import cytoscape.CyEdge;
@@ -19,8 +19,6 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
@@ -30,19 +28,64 @@ import cytoscape.visual.VisualStyle;
  * @author thomas
  *
  */
-public class GpmlAttributeHandler {
+public class GpmlHandler {
 	CyAttributes nAttributes = Cytoscape.getNodeAttributes();
 	CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
 	
 	Map<String, GpmlNode> nodes =  new HashMap<String, GpmlNode>();
 	Map<String, GpmlEdge> edges = new HashMap<String, GpmlEdge>();
 	
+	AttributeMapper attributeMapper = new DefaultAttributeMapper();
+	
+	public void setAttributeMapper(AttributeMapper attributeMapper) {
+		this.attributeMapper = attributeMapper;
+	}
+	
+	public AttributeMapper getAttributeMapper() {
+		return attributeMapper;
+	}
+	
 	public GpmlNode getNode(String nodeId) {
 		return nodes.get(nodeId);
 	}
 	
+	public GpmlNode getNode(Node node) {
+		return getNode(node.getIdentifier());
+	}
+	
+	/**
+	 * Creates and adds a GpmlNode for the given NodeView, if it
+	 * doesn't exist yet
+	 * @param nview
+	 * @return The GpmlNode for the given NodeView
+	 */
+	public GpmlNode createNode(NodeView nview) {
+		String nid = nview.getNode().getIdentifier();
+		GpmlNode gn = nodes.get(nid);
+		if(gn == null) {
+			nodes.put(nid, gn = new GpmlNode(nview, getAttributeMapper()));
+		}
+		return gn;
+	}
+	
 	public GpmlEdge getEdge(String edgeId) {
 		return edges.get(edgeId);
+	}
+	
+	public GpmlEdge getEdge(Edge e) {
+		return getEdge(e.getIdentifier());
+	}
+	
+	public GpmlEdge createEdge(EdgeView eview) {
+		GraphView gview = eview.getGraphView();
+		String eid = eview.getEdge().getIdentifier();
+		GpmlEdge ge = edges.get(eid);
+		if(ge == null) {
+			GpmlNode gsource = createNode(gview.getNodeView(eview.getEdge().getSource()));
+			GpmlNode gtarget = createNode(gview.getNodeView(eview.getEdge().getTarget()));
+			edges.put(eid, ge = new GpmlEdge(eview, gsource, gtarget, getAttributeMapper()));
+		}
+		return ge;
 	}
 	
 	/**
@@ -51,9 +94,9 @@ public class GpmlAttributeHandler {
 	 * @param pwElm The GPML information
 	 */
 	public void addNode(CyNode n, PathwayElement pwElm) {
-		nodes.put(n.getIdentifier(), new GpmlNode(n, pwElm));
+		nodes.put(n.getIdentifier(), new GpmlNode(n, pwElm, getAttributeMapper()));
 	}
-
+	
 	/**
 	 * Unlink the GPML information from the given node
 	 * @param n
@@ -68,43 +111,11 @@ public class GpmlAttributeHandler {
 	 * @param pwElm The GPML information
 	 */
 	public void addEdge(CyEdge e, PathwayElement pwElm) {
-		edges.put(e.getIdentifier(), new GpmlEdge(e, pwElm));
+		GpmlNode gsource = getNode(e.getSource());
+		GpmlNode gtarget = getNode(e.getTarget());
+		edges.put(e.getIdentifier(), new GpmlEdge(e, pwElm, gsource, gtarget, getAttributeMapper()));
 	}
 	
-	/**
-	 * Transfer the GPML information to the given Cytoscape attributes
-	 * @param id		The identifier of the node to assign the attributes to
-	 * @param o		The PathwayElement that contains the GPML information
-	 * @param attr	The attributes to transfer the information to
-	 */
-	static void transferAttributes(String id, PathwayElement o, CyAttributes attr) {
-    	try {
-			Element e = GpmlFormat.createJdomElement(o, Namespace.getNamespace(""));
-			attr.setAttribute(id, "GpmlElement", e.getName());
-			transferAttributes(id, e, attr, null);
-    	} catch(Exception e) {
-			Logger.log.error("Unable to add attributes for " + o, e);
-		}	
-    }
-    
-    private static void transferAttributes(String id, Element e, CyAttributes attr, String key) {
-    	List attributes = e.getAttributes();
-    	for(int i = 0; i < attributes.size(); i++) {
-    		Attribute a = (Attribute)attributes.get(i);
-    		if(key == null) {
-    			attr.setAttribute(id, a.getName(), a.getValue());
-    		} else {
-        	    attr.setAttribute(id, key + '.' + a.getName(), a.getValue());
-    		}
-    	}
-
-    	List children = e.getChildren();
-    	for(int i = 0; i < children.size(); i++) {
-    		Element child = (Element)children.get(i);
-    		transferAttributes(id, child, attr, (key == null ? "" : key + '.') + child.getName());
-    	}
-    }
-    
     /**
      * Adds an annotation to the foreground canvas of the given view for
      * each node in the list that is linked to GPML information. An annotation wil not
@@ -121,12 +132,37 @@ public class GpmlAttributeHandler {
 			}
 		}
     }
-   
+    
+    /**
+     * Show or hide the annotations (non node/edge elements) on the annotation canvas
+     * of the given view
+     * @param view
+     * @param visible
+     */
+    public void showAnnotations(GraphView view, boolean visible) {
+    	for(GpmlNode gn : nodes.values()) {
+    		gn.showAnnotations(view, visible);
+    	}
+    }
+    
+    public Pathway createPathway(GraphView view) {
+    	Pathway pathway = new Pathway();
+    	pathway.getMappInfo().setMapInfoName(view.getIdentifier());
+    	for(GpmlNode gn : nodes.values()) {
+    		pathway.add(gn.getPathwayElement(view, attributeMapper));
+    	}
+    	for(GpmlEdge ge : edges.values()) {
+    		pathway.add(ge.getPathwayElement(view, attributeMapper));
+    	}
+    	return pathway;
+    }
+    
     public void applyGpmlVisualStyle() {
     	VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
     	CalculatorCatalog catalog = vmm.getCalculatorCatalog();
     	VisualStyle gpmlStyle = catalog.getVisualStyle("GPML");
     	if(gpmlStyle == null) { //Create the GPML visual style
+    		Logger.log.trace("VisualStyle: creating GPML style");
     		try {
 				gpmlStyle = (VisualStyle)vmm.getVisualStyle().clone();
 			} catch (CloneNotSupportedException e) {
@@ -136,8 +172,9 @@ public class GpmlAttributeHandler {
     		gpmlStyle.setNodeAppearanceCalculator(new GpmlNodeAppearanceCalculator(this));
     		gpmlStyle.setEdgeAppearanceCalculator(new GpmlEdgeAppearanceCalculator(this));
     		catalog.addVisualStyle(gpmlStyle);
+    	} else {
+    		Logger.log.trace("VisualStyle: reusing GPML style");
     	}
-    	
     	vmm.setVisualStyle(gpmlStyle);
     }
     
@@ -149,8 +186,11 @@ public class GpmlAttributeHandler {
     public void applyGpmlLayout(GraphView view, Collection<CyNode> nodeList) {
     	for(CyNode node : nodeList) {
     		GpmlNode gn = nodes.get(node.getIdentifier());
-    		if(gn == null) continue; //Not a GPML node
-    		gn.resetPosition(view);
+    		if(gn == null) {
+    			Logger.log.trace("Layout: skipping " + gn + ", not a GPML node");
+    			continue; //Not a GPML node
+    		}
+    		gn.resetToGpml(getAttributeMapper(), view);
     	}
 		view.updateView();	
     }

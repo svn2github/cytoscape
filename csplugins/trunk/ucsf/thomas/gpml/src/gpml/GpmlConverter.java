@@ -1,20 +1,15 @@
 package gpml;
 
 import giny.view.GraphView;
-import giny.view.NodeView;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jdom.Attribute;
-import org.jdom.Element;
-import org.jdom.Namespace;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.ConverterException;
 import org.pathvisio.model.GpmlFormat;
-import org.pathvisio.model.LineType;
 import org.pathvisio.model.ObjectType;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
@@ -24,9 +19,6 @@ import org.pathvisio.model.PathwayElement.MPoint;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
 
 public class GpmlConverter {
 	List<CyEdge> edges = new ArrayList<CyEdge>();
@@ -34,20 +26,20 @@ public class GpmlConverter {
 	HashMap<PathwayElement, CyNode> nodeMap = new HashMap<PathwayElement, CyNode>();
 	HashMap<PathwayElement, String[]> edgeMap = new HashMap<PathwayElement, String[]>();
 
-	GpmlAttributeHandler gpmlHandler;
+	GpmlHandler gpmlHandler;
 	Pathway pathway;
 		
-	private GpmlConverter(GpmlAttributeHandler h) {
+	private GpmlConverter(GpmlHandler h) {
 		gpmlHandler = h;
 	}
 	
-	public GpmlConverter(GpmlAttributeHandler gpmlHandler, Pathway p) {
+	public GpmlConverter(GpmlHandler gpmlHandler, Pathway p) {
 		this(gpmlHandler);
 		pathway = p;
 		convert();
 	}
 		
-	public GpmlConverter(GpmlAttributeHandler gpmlHandler, String gpml) throws ConverterException {
+	public GpmlConverter(GpmlHandler gpmlHandler, String gpml) throws ConverterException {
 		this(gpmlHandler);
 		pathway = new Pathway();
 		GpmlFormat.readFromXml(pathway, new StringReader(gpml), true);
@@ -66,6 +58,10 @@ public class GpmlConverter {
 	private void findNodes() {
 		nodeMap.clear();
 		for(PathwayElement o : pathway.getDataObjects()) {
+			int type = o.getObjectType();
+			if(type == ObjectType.LEGEND || type == ObjectType.INFOBOX || type == ObjectType.MAPPINFO) {
+				continue;
+			}
 			String id = o.getGraphId();
 			//Get an id if it's not already there
 			if(id == null) {
@@ -143,5 +139,6 @@ public class GpmlConverter {
 		gpmlHandler.addAnnotations(view, nodeMap.values());
 		gpmlHandler.applyGpmlLayout(view, nodeMap.values());
 		gpmlHandler.applyGpmlVisualStyle();
+		view.fitContent();
 	}
 }

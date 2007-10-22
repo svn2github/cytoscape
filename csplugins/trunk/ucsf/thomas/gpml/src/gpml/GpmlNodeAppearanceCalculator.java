@@ -13,9 +13,9 @@ import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
 
 public class GpmlNodeAppearanceCalculator extends NodeAppearanceCalculator {
-	GpmlAttributeHandler gpmlHandler;
+	GpmlHandler gpmlHandler;
 	
-	public GpmlNodeAppearanceCalculator(GpmlAttributeHandler gpmlHandler) {
+	public GpmlNodeAppearanceCalculator(GpmlHandler gpmlHandler) {
 		this.gpmlHandler = gpmlHandler;
 	}
 	
@@ -45,8 +45,8 @@ public class GpmlNodeAppearanceCalculator extends NodeAppearanceCalculator {
 			}
 			
 			//Node width/height
-			appr.set(VisualPropertyType.NODE_WIDTH, GpmlImporter.mToV(e.getMWidth()));
-			appr.set(VisualPropertyType.NODE_HEIGHT, GpmlImporter.mToV(e.getMHeight()));
+			appr.set(VisualPropertyType.NODE_WIDTH, GpmlPlugin.mToV(e.getMWidth()));
+			appr.set(VisualPropertyType.NODE_HEIGHT, GpmlPlugin.mToV(e.getMHeight()));
 		}
 	}
 		

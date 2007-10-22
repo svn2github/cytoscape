@@ -31,22 +31,22 @@ public abstract class Annotation extends JComponent implements ViewportChangeLis
 		}
 		
 		protected int getVLeft() {
-			return (int)GpmlImporter.mToV(pwElm.getMLeft());
+			return (int)GpmlPlugin.mToV(pwElm.getMLeft());
 		}
 		protected int getVTop() {
-			return (int)GpmlImporter.mToV(pwElm.getMTop());
+			return (int)GpmlPlugin.mToV(pwElm.getMTop());
 		}
 		protected int getVWidth() {
-			return (int)GpmlImporter.mToV(pwElm.getMWidth());
+			return (int)GpmlPlugin.mToV(pwElm.getMWidth());
 		}
 		protected int getVHeight() {
-			return (int)GpmlImporter.mToV(pwElm.getMHeight());
+			return (int)GpmlPlugin.mToV(pwElm.getMHeight());
 		}
 		protected double getVCenterX() {
-			return GpmlImporter.mToV(pwElm.getMCenterX());
+			return GpmlPlugin.mToV(pwElm.getMCenterX());
 		}
 		protected double getVCenterY() {
-			return GpmlImporter.mToV(pwElm.getMCenterY());
+			return GpmlPlugin.mToV(pwElm.getMCenterY());
 		}
 		
 		public abstract java.awt.Shape getVOutline();

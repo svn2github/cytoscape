@@ -15,9 +15,9 @@ import cytoscape.visual.LineStyle;
 import cytoscape.visual.VisualPropertyType;
 
 public class GpmlEdgeAppearanceCalculator extends EdgeAppearanceCalculator {
-	GpmlAttributeHandler gpmlHandler;
+	GpmlHandler gpmlHandler;
 	
-	public GpmlEdgeAppearanceCalculator(GpmlAttributeHandler gpmlHandler) {
+	public GpmlEdgeAppearanceCalculator(GpmlHandler gpmlHandler) {
 		this.gpmlHandler = gpmlHandler;
 	}
 	
@@ -29,7 +29,7 @@ public class GpmlEdgeAppearanceCalculator extends EdgeAppearanceCalculator {
 			PathwayElement e = ge.getPathwayElement();
 			
 			//Map arrow start/end
-			ArrowShape start =getArrowShape(e.getStartLineType());
+			ArrowShape start = getArrowShape(e.getStartLineType());
 			ArrowShape end = getArrowShape(e.getEndLineType());
 			
 			appr.set(VisualPropertyType.EDGE_SRCARROW_SHAPE, start);

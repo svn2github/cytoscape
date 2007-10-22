@@ -25,10 +25,10 @@ public class Line extends Annotation {
 		super(e, view);
 	}
 
-	protected double getVStartX() { return GpmlImporter.mToV((pwElm.getMStartX())); }
-	protected double getVStartY() { return GpmlImporter.mToV((pwElm.getMStartY())); }
-	protected double getVEndX() { return GpmlImporter.mToV((pwElm.getMEndX())); }
-	protected double getVEndY() { return GpmlImporter.mToV((pwElm.getMEndY())); }
+	protected double getVStartX() { return GpmlPlugin.mToV((pwElm.getMStartX())); }
+	protected double getVStartY() { return GpmlPlugin.mToV((pwElm.getMStartY())); }
+	protected double getVEndX() { return GpmlPlugin.mToV((pwElm.getMEndX())); }
+	protected double getVEndY() { return GpmlPlugin.mToV((pwElm.getMEndY())); }
 	
 	public Line2D getVLine() {
 		return new Line2D.Double(getVStartX(), getVStartY(), getVEndX(), getVEndY());
@@ -138,7 +138,7 @@ public class Line extends Annotation {
 			AffineTransform f = new AffineTransform();
 			f.rotate(Math.atan2 (ye - ys, xe - xs), xe, ye);
 			f.translate (xe, ye);
-			double scaleFactor = GpmlImporter.mToV(getCurrentScaleFactor());
+			double scaleFactor = GpmlPlugin.mToV(getCurrentScaleFactor());
 			f.scale (scaleFactor, scaleFactor);	   
 			Shape sh = f.createTransformedShape(h.getShape());
 			h = new ArrowShape (sh, h.getFillType());

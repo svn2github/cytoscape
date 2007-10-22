@@ -29,7 +29,7 @@ public class Label extends Annotation {
 	private Font getVFont() {
 		int style = pwElm.isBold() ? Font.BOLD : Font.PLAIN;
 		style |= pwElm.isItalic() ? Font.ITALIC : Font.PLAIN;
-		return new Font(pwElm.getFontName(), style, (int)GpmlImporter.mToV(pwElm.getMFontSize() * scaleFactor));
+		return new Font(pwElm.getFontName(), style, (int)GpmlPlugin.mToV(pwElm.getMFontSize() * scaleFactor));
 	}
 
 	public void doPaint(Graphics2D g2d) {

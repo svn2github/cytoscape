@@ -52,9 +52,9 @@ public class Shape extends Annotation implements ViewportChangeListener {
 		Color fillcolor = pwElm.getFillColor();
 		Color linecolor = pwElm.getColor();
 		
-		int sw = (int)getStrokeWidth();
-		int x = b.x;
-		int y = b.y;
+		int sw = (int)Math.ceil(getStrokeWidth());
+		int x = b.x + sw;
+		int y = b.y + sw;
 		int w = b.width - sw;
 		int h = b.height - sw;
 		int cx = x + w/2;
