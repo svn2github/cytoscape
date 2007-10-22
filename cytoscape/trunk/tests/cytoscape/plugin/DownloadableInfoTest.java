@@ -170,9 +170,9 @@ public class DownloadableInfoTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#isNewerObjectVersion(cytoscape.plugin.DownloadableInfo)}.
 	 */
 	public void testIsNewerObjectVersion() {
-		//di = new InfoObj("123");
+		di = new InfoObj("123");
 		di.setObjectVersion(1.0);
-		DownloadableInfo diNew = new InfoObj();
+		DownloadableInfo diNew = new InfoObj("123");
 		diNew.setObjectVersion(1.3);
 		
 		assertTrue(di.isNewerObjectVersion(diNew));

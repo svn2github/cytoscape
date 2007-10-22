@@ -47,7 +47,7 @@ public abstract class DownloadableInfo {
 
 	private String uniqueID;
 
-	private String name;
+	private String name = "";
 
 	private String description;
 
@@ -55,9 +55,9 @@ public abstract class DownloadableInfo {
 
 	private String cytoscapeVersion;
 
-	private String downloadURL;
+	private String downloadURL = "";
 
-	private String objURL;
+	private String objURL = "";
 
 	private String category;
 
