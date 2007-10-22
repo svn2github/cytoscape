@@ -165,12 +165,11 @@ public class PluginManagerAction extends CytoscapeAction {
 				}
 			} else {
 				List<DownloadableInfo> Unique = ManagerUtil.getUnique(Mgr.getDownloadables(PluginStatus.CURRENT), Results);
-				Map<String, List<DownloadableInfo>> DownloadInfo = ManagerUtil.sortByCategory(Unique);
+				Map<String, List<DownloadableInfo>> AvailableInfo = ManagerUtil.sortByCategory(Unique);
 				
-				
-				for (String Category : DownloadInfo.keySet()) {
+				for (String Category : AvailableInfo.keySet()) {
 					// get only the unique ones
-					dialog.addCategory(Category, DownloadInfo.get(Category),
+					dialog.addCategory(Category, AvailableInfo.get(Category),
 							PluginInstallStatus.AVAILABLE);
 				}
 			}

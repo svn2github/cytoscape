@@ -71,9 +71,9 @@ public class ManagerModel implements TreeModel {
 		nodesRemoved(Parent, ChildIndicies, Children);
 
 		// parent is empty, remove it from it's parent
-		if (Parent.getChildCount() == 0 && !Parent.equals(root)) {
-			recursiveRemoveNodeFromParent(Parent);
-		}
+//		if (Parent.getChildCount() == 0 && !Parent.equals(root)) {
+//			recursiveRemoveNodeFromParent(Parent);
+//		}
 	}
 
 	/**

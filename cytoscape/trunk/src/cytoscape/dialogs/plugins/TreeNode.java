@@ -244,6 +244,8 @@ public class TreeNode {
 	 * @return
 	 */
 	public int getLeafCount() {
+		if (this.getChildCount() <= 0) 
+			return 0;
 		return recursiveTotalLeafSize(this);
 	}
 

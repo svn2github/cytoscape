@@ -344,6 +344,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		treeModel = new ManagerModel(rootTreeNode);
 		treeModel.addNodeToParent(rootTreeNode, installedNode);
+		treeModel.addNodeToParent(rootTreeNode, availableNode);
 
 		pluginTree.setModel(treeModel);
 	}
