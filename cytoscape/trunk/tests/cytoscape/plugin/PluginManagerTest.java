@@ -187,6 +187,13 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
 		assertEquals(Current.size(), 1);
 		
+		assertEquals(Current.get(0).getType(), DownloadableType.THEME);
+		assertEquals( ((ThemeInfo)DownloadedObj).getPlugins().size(), 2 );
+		
+		ThemeInfo CurrentRecorded = (ThemeInfo) Current.get(0);
+		assertEquals(CurrentRecorded.getPlugins().size(), ((ThemeInfo)DownloadedObj).getPlugins().size());
+		
+		
 		mgr.delete(DownloadedObj);
 		mgr.delete();
 	}
@@ -231,7 +238,6 @@ public class PluginManagerTest extends TestCase {
 		PluginInfo TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl), "goodZIPPlugin777", "0.45");
 		
 		DownloadableInfo DownloadedObj = mgr.download(TestObj, null);
-		//TestObj = mgr.download(TestObj, null);
 		PluginInfo plugin = (PluginInfo) DownloadedObj;
 		
 		for (String f: plugin.getFileList()) {
@@ -525,6 +531,7 @@ public class PluginManagerTest extends TestCase {
 		throws java.io.IOException, org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 		
 		ThemeInfo GoodTheme = (ThemeInfo) getSpecificObj(mgr.inquire(testUrl), "goodThemeTest123", "0.5");
+		assertEquals(GoodTheme.getCategory(), Category.THEME.getCategoryText());
 		
 		DownloadableInfo GoodDL = mgr.download(GoodTheme);
 		assertNotNull(GoodDL);

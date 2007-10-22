@@ -130,10 +130,10 @@ public class PluginTrackerTest extends TestCase {
 		
 		tracker.addDownloadable(themeObj, PluginStatus.INSTALL);
 		
-		//tracker.addTheme(themeObj, PluginStatus.INSTALL);
-		
 		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 1);
-
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.INSTALL).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 0);
+		
 		Document Doc = getDoc();
 		Element Install = Doc.getRootElement().getChild(PluginStatus.INSTALL.getTagName());
 		assertEquals(Install.getChildren().size(), 1);
@@ -154,11 +154,16 @@ public class PluginTrackerTest extends TestCase {
 		themeObj.addPlugin(obj);
 		
 		tracker.addDownloadable(themeObj, PluginStatus.INSTALL);
-		//tracker.addTheme(themeObj, PluginStatus.INSTALL);
 		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 1);
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.INSTALL).size(), 1);
+		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 0);
+		
 		
 		tracker.removeDownloadable(themeObj, PluginStatus.INSTALL);
 		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 0);
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.INSTALL).size(), 0);
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.CURRENT).size(), 0);
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.DELETE).size(), 0);
 	}
 	
 

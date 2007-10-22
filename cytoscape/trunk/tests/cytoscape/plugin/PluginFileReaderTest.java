@@ -111,6 +111,9 @@ public class PluginFileReaderTest extends TestCase {
 		assertNotNull(reader.getThemes());
 		assertEquals(reader.getThemes().size(), 2);
 		assertEquals(reader.getThemes().get(0).getPlugins().size(), 2);
+		for (DownloadableInfo i: reader.getThemes()) {
+			assertEquals(i.getCategory(), Category.THEME.getCategoryText());
+		}
 	}
 
 	// regression test, not all files will contain the <theme> tags

@@ -206,6 +206,10 @@ public class DownloadableInfoTest extends TestCase {
 		public DownloadableType getType() {
 			return DownloadableType.PLUGIN;
 		}
+		
+		public String htmlOutput() {
+			return null;
+		}
 	}
 	
 }

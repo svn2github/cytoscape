@@ -35,7 +35,8 @@ public class PluginPropertiesTest extends TestCase {
 	 */
 	public void testNoMatchingCyVersion() throws cytoscape.plugin.ManagerException {
 		PluginInfo info = pp.fillPluginInfoObject(null);
-		assertNull(info);
+		assertEquals(info.getCategory(), Category.OUTDATED.getCategoryText());
+		assertEquals(info.getCytoscapeVersion(), "2.5");
 	}
 
 	public void testMatchingCyVersion() throws cytoscape.plugin.ManagerException {
