@@ -89,8 +89,8 @@ public class PluginManagerAction extends CytoscapeAction {
 				.getDesktop());
 		PluginManager Mgr = PluginManager.getPluginManager();
 
-		String DefaultUrl = "";
-		String DefaultTitle = "";
+		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
+		String DefaultTitle = "Cytoscape";
 
 		try {
 			Bookmarks theBookmarks = Cytoscape.getBookmarks();

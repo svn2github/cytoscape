@@ -19,3 +19,4 @@ proxy.server.type=
 cytoscape.version.number=2.5
 exportTextAsShape=true
 vizmapper.cntMapperUpperLimit=2000
+defaultPluginDownloadUrl=http://cytoscape.org/plugins/plugins.xml
