@@ -90,9 +90,8 @@ public class PluginManagerAction extends CytoscapeAction {
 				.getDesktop());
 		PluginManager Mgr = PluginManager.getPluginManager();
 
-		// TODO get default from the props file if no bookmark available
-		String DefaultUrl = "";
-		String DefaultTitle = "";
+		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
+		String DefaultTitle = "Cytoscape";
 
 		try {
 			Bookmarks theBookmarks = Cytoscape.getBookmarks();
@@ -120,7 +119,7 @@ public class PluginManagerAction extends CytoscapeAction {
 		}
 
 		cytoscape.task.Task task = new cytoscape.plugin.PluginManagerInquireTask(DefaultUrl, new ManagerAction(dialog, DefaultTitle, DefaultUrl));
-		//cytoscape.task.Task task = Mgr.getInquireTask(DefaultUrl, new ManagerAction(dialog, DefaultTitle, DefaultUrl));
+
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());

@@ -19,3 +19,4 @@ cytoscape.version.number=@version@
 exportTextAsShape=true
 vizmapper.cntMapperUpperLimit=2000
 undo.limit=10
+defaultPluginDownloadUrl=http://cytoscape.org/plugins/plugins.xml
