@@ -114,11 +114,13 @@ public class PluginFileReader {
 	protected List<ThemeInfo> getThemes() {
 		List<ThemeInfo> Themes = new ArrayList<ThemeInfo>();
 
-		Element ThemeList = document.getRootElement().getChild(PluginXml.THEME_LIST.getTag());
-		
+		Element ThemeList = document.getRootElement().getChild(
+				PluginXml.THEME_LIST.getTag());
+
 		if (ThemeList != null) {
-			Iterator<Element> themeI = ThemeList.getChildren(PluginXml.THEME.getTag()).iterator();
-			
+			Iterator<Element> themeI = ThemeList.getChildren(
+					PluginXml.THEME.getTag()).iterator();
+
 			while (themeI.hasNext()) {
 				Element CurrentTheme = themeI.next();
 				ThemeInfo Info = createThemeObject(CurrentTheme);
@@ -156,30 +158,38 @@ public class PluginFileReader {
 	}
 
 	protected ThemeInfo createThemeObject(Element CurrentTheme) {
-		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme, DownloadableType.THEME);
+		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme,
+				DownloadableType.THEME);
 
 		if (Info != null) {
 			/*
 			 * add plugins this is plugins from the current download location
 			 * only (others not yet supported)
 			 */
-			java.util.Map<String, List<PluginInfo>> Plugins = ManagerUtil.sortByID(getPlugins());
-			
-			
+			java.util.Map<String, List<PluginInfo>> Plugins = ManagerUtil
+					.sortByID(getPlugins());
+
 			Iterator<Element> themePluginI = CurrentTheme.getChild(
 					PluginXml.PLUGIN_LIST.getTag()).getChildren(
 					PluginXml.PLUGIN.getTag()).iterator();
+
+			// two ways to specify a plugin in a theme
 			while (themePluginI.hasNext()) {
 				Element ThemePlugin = themePluginI.next();
-				for (PluginInfo pluginInfo : Plugins.get(ThemePlugin
-						.getChildTextTrim(PluginXml.UNIQUE_ID.getTag()))) {
-					if (pluginInfo.getObjectVersion().equals(
-							ThemePlugin
-									.getChildTextTrim(PluginXml.PLUGIN_VERSION
-											.getTag()))) {
-						pluginInfo.setParent(Info);
-						Info.addPlugin(pluginInfo);
+
+				if (CurrentTheme.getChild(PluginXml.PLUGIN_LIST.getTag())
+						.getChildren().size() == 2) {
+
+					for (PluginInfo pluginInfo : Plugins.get(ThemePlugin.getChildTextTrim(PluginXml.UNIQUE_ID.getTag()))) {
+						if (pluginInfo.getObjectVersion().equals(ThemePlugin.getChildTextTrim(PluginXml.PLUGIN_VERSION.getTag()))) {
+							pluginInfo.setParent(Info);
+							Info.addPlugin(pluginInfo);
+						}
 					}
+				} else {
+					PluginInfo pluginInfo = this.createPluginObject(ThemePlugin);
+					pluginInfo.setParent(Info);
+					Info.addPlugin(pluginInfo);
 				}
 			}
 		}
@@ -244,7 +254,8 @@ public class PluginFileReader {
 		if (Info != null) {
 
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
-			Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
+			Info.setInstallLocation(CurrentPlugin
+					.getChildTextTrim(installLocTag));
 
 			// file type
 			PluginInfo.FileType Type = getType(CurrentPlugin);
