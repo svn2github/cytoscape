@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 
 import org.systemsbiology.cytoscape.dialog.CyAttrDialog;
-import org.systemsbiology.cytoscape.dialog.GooseDialog2;
+import org.systemsbiology.cytoscape.dialog.GooseDialog;
 
 import org.systemsbiology.gaggle.core.datatypes.DataMatrix;
 import org.systemsbiology.gaggle.core.datatypes.Namelist;
@@ -33,7 +33,7 @@ import cytoscape.data.Semantics;
  */
 public class CyBroadcast
 	{
-	private GooseDialog2 gDialog;
+	private GooseDialog gDialog;
 	private Boss gaggleBoss;
 
 	private String broadcastID = "ID";
@@ -50,7 +50,7 @@ public class CyBroadcast
 	/**
    * 
    */
-	public CyBroadcast(GooseDialog2 Dialog, Boss boss)
+	public CyBroadcast(GooseDialog Dialog, Boss boss)
 		{
 		this.gDialog = Dialog;
 		this.gaggleBoss = boss;

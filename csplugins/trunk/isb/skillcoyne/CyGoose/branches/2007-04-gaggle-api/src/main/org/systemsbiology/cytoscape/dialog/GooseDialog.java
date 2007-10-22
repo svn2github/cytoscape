@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 /**
  * @author skillcoy
  */
-public class GooseDialog2 extends javax.swing.JPanel {
+public class GooseDialog extends javax.swing.JPanel {
     public enum GooseButton {
         REGISTER("Register"), SHOW("Show"), HIDE("Hide"), MAP(
             "Map"), MATRIX("Matrix"), NETWORK("Network"), LIST("List");
@@ -21,7 +21,7 @@ public class GooseDialog2 extends javax.swing.JPanel {
     /**
      * Creates new form GooseDialog
      */
-    public GooseDialog2() {
+    public GooseDialog() {
         initComponents();
     }
 

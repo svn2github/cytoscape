@@ -11,8 +11,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.net.MalformedURLException;
 
-import org.systemsbiology.cytoscape.dialog.GooseDialog2;
-import org.systemsbiology.cytoscape.dialog.GooseDialog2.GooseButton;
+import org.systemsbiology.cytoscape.dialog.GooseDialog;
+import org.systemsbiology.cytoscape.dialog.GooseDialog.GooseButton;
 
 import org.systemsbiology.gaggle.core.Boss;
 import org.systemsbiology.gaggle.util.MiscUtil;
@@ -48,7 +48,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
     private static Boss gaggleBoss;
     private static boolean connectedToGaggle = false;
-    private static GooseDialog2 gDialog;
+    private static GooseDialog gDialog;
     private static CyBroadcast broadcast;
     private static boolean pluginInitialized = false;
 
@@ -75,7 +75,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         myGaggleName += " v." + CytoscapeVersion.version;
 
         networkGeese = new HashMap<String, CyGoose>();
-        gDialog = new GooseDialog2();
+        gDialog = new GooseDialog();
 
         CytoPanel GoosePanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
         GoosePanel.add("CyGoose", null, gDialog, "Gaggle Goose");

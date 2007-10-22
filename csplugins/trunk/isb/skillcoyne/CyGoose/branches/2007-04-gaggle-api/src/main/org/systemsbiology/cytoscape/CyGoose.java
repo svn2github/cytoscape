@@ -1,7 +1,7 @@
 package org.systemsbiology.cytoscape;
 
-import org.systemsbiology.cytoscape.dialog.GooseDialog2;
-import org.systemsbiology.cytoscape.dialog.GooseDialog2.GooseButton;
+import org.systemsbiology.cytoscape.dialog.GooseDialog;
+import org.systemsbiology.cytoscape.dialog.GooseDialog.GooseButton;
 import org.systemsbiology.cytoscape.visual.SeedMappings;
 import org.systemsbiology.cytoscape.script.*;
 import org.systemsbiology.gaggle.core.Goose;
@@ -71,7 +71,7 @@ public class CyGoose implements Goose {
     private String gooseNetId;
 
     private Boss gaggleBoss;
-    private GooseDialog2 gDialog;
+    private GooseDialog gDialog;
 
     private NodeAppearanceCalculator nac;
     private SeedMappings visualMap;
@@ -83,7 +83,7 @@ public class CyGoose implements Goose {
         System.out.println(S);
     }
 
-    public CyGoose(GooseDialog2 GD, Boss boss) {
+    public CyGoose(GooseDialog GD, Boss boss) {
         gaggleBoss = boss;
         gDialog = GD;
 
