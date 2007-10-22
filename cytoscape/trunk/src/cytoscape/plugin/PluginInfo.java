@@ -35,7 +35,6 @@
  */
 package cytoscape.plugin;
 
-//import cytoscape.CytoscapeInit;
 import cytoscape.util.URLUtil;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ import java.util.List;
 import java.net.URL;
 
 /**
- * @author skillcoy Object describes a plugin
+ * Object describes a plugin
  */
 public class PluginInfo extends DownloadableInfo {
 	/**
@@ -73,13 +72,9 @@ public class PluginInfo extends DownloadableInfo {
 
 	private List<AuthorInfo> authors;
 
-	private License license;
-
 	private String projectUrl;
 
 	private List<String> pluginFiles;
-
-	private boolean licenseRequired = false;
 
 	protected String enclosingJar;
 	
@@ -125,7 +120,6 @@ public class PluginInfo extends DownloadableInfo {
 		init();
 	}
 		
-	
 	/*
 	 * Sets all the fields that are required to a default value in case it is
 	 * not called
@@ -136,7 +130,6 @@ public class PluginInfo extends DownloadableInfo {
 		setName("Unknown");
 		setDescription("No description");
 		setObjectVersion(0.1);
-		//setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		setCategory(Category.NONE);
 		setPluginClassName("");
 	}
@@ -241,16 +234,18 @@ public class PluginInfo extends DownloadableInfo {
 	}
 	
 	/**
+	 * @deprecated See {@link DownloadableInfo#setLicense(String)} will be removed June 2008
 	 * Sets the license information for the plugin. Not required.
 	 * 
 	 * @param java.net.URL
 	 *            object where license can be downloaded from.
 	 */
 	public void setLicense(URL url) {
-		license = new License(url);
+		super.setLicense(url);
 	}
 
 	/**
+	 * @deprecated See {@link DownloadableInfo#setLicense(String, boolean)} will be removed June 2008
 	 * Sets the license information for the plugin. Not required.
 	 * 
 	 * @param Text
@@ -261,8 +256,7 @@ public class PluginInfo extends DownloadableInfo {
 	 *            (false)
 	 */
 	public void setLicense(String licenseText, boolean alwaysRequired) {
-		license = new License(licenseText);
-		licenseRequired = alwaysRequired;
+		super.setLicense(licenseText, alwaysRequired);
 	}
 
 
@@ -298,22 +292,21 @@ public class PluginInfo extends DownloadableInfo {
 	}
 	
 	/**
+	 * @deprecated See {@link cytoscape.plugin.DownloadableInfo#getLicenseText()} will be removed June 2008
 	 * @return The text of the license for this plugin if available.
 	 */
 	public String getLicenseText() {
-		if (license != null)
-			return license.getLicense();
-		else
-			return null;
+		return super.getLicenseText();
 	}
 
 	/**
+	 * @deprecated See {@link cytoscape.plugin.DownloadableInfo#isLicenseRequired()} will be removed June 2008
 	 * @return If the license is always required to be accepted for installs and
 	 *         updates this returns true. If it only is required at install time
 	 *         (never at update) returns false.
 	 */
 	public boolean isLicenseRequired() {
-		return licenseRequired;
+		return super.isLicenseRequired();
 	}
 
 	/**
@@ -343,7 +336,7 @@ public class PluginInfo extends DownloadableInfo {
 	 * @return Plugin version.
 	 */
 	public String getPluginVersion() {
-		return this.getObjectVersion();
+		return super.getObjectVersion();
 	}
 
 	/**
@@ -351,7 +344,7 @@ public class PluginInfo extends DownloadableInfo {
 	 * @return Url to download plugin from
 	 */
 	public String getUrl() {
-		return this.getObjectUrl();
+		return super.getObjectUrl();
 	}
 
 	/**
@@ -368,7 +361,7 @@ public class PluginInfo extends DownloadableInfo {
 	 *         came from.  Example http://cytoscape.org/plugins/all_plugins.xml
 	 */
 	public String getDownloadUrl()  {
-		return this.getDownloadableURL();
+		return super.getDownloadableURL();
 	}
 	
 	/**
@@ -387,12 +380,6 @@ public class PluginInfo extends DownloadableInfo {
 		return pluginFiles;
 	}
 
-	/**
-	 * @return Returns String of plugin name and version
-	 */
-	public String toString() {
-		return getName() + " " + getPluginVersion();
-	}
 
 	// wonder if this will overwrite the Object.equals method...
 	public boolean equals(Object Obj) {
@@ -414,28 +401,12 @@ public class PluginInfo extends DownloadableInfo {
 	 * @return true if given version is newer
 	 */
 	public boolean isNewerPluginVersion(PluginInfo New) {
-		return this.isNewerObjectVersion(New);
+		return super.isNewerObjectVersion(New);
 	}
 
-	// yea, it's ugly...styles taken from cytoscape website
 	public String htmlOutput() {
-		String Html = "<html><style type='text/css'>";
-		Html += "body,th,td,div,p,h1,h2,li,dt,dd ";
-		Html += "{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }";
-		Html += "body { margin: 0px; color: #333333; background-color: #ffffff; }";
-		Html += "#indent { padding-left: 30px; }";
-		Html += "ul {list-style-type: none}";
-		Html += "</style><body>";
-
-		Html += "<b>" + getName() + "</b><p>";
-		Html += "<b>Version:</b>&nbsp;" + getPluginVersion() + "<p>";
-		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
-		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
-
-		if (getReleaseDate() != null && getReleaseDate().length() > 0) {
-			Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
-		}
 		
+		String Html = this.basicHtmlOutput();
 		Html += "<b>Released By:</b><br><ul>";
 		for (AuthorInfo ai : getAuthors()) {
 			Html += "<li>" + ai.getAuthor() + ", " + ai.getInstitution()
@@ -450,7 +421,6 @@ public class PluginInfo extends DownloadableInfo {
 	/**
 	 * Describes an author for a given plugin.
 	 * 
-	 * @author skillcoy
 	 */
 	public class AuthorInfo {
 		private String authorName;
@@ -471,39 +441,5 @@ public class PluginInfo extends DownloadableInfo {
 		}
 	}
 
-	/**
-	 * Fetches and keeps a plugin license if one is available.
-	 */
-	public class License {
-		private java.net.URL url;
-
-		private String text;
-
-		public License(java.net.URL Url) {
-			url = Url;
-		}
-
-		public License(String LicenseText) {
-			text = LicenseText;
-		}
-
-		/**
-		 * Get the license text as a string. Will download from url if License
-		 * was not initialized with text string.
-		 * 
-		 * @return String
-		 */
-		public String getLicense() {
-			if (text == null) {
-				try {
-					text = URLUtil.download(url);
-				} catch (java.io.IOException E) {
-					E.printStackTrace();
-				}
-			}
-			return text;
-		}
-
-	}
 
 }

@@ -38,25 +38,76 @@ public class InstallableTheme implements Installable {
 	 * @see cytoscape.plugin.Installable#install()
 	 */
 	public boolean install() throws IOException, ManagerException {
-		return install(null);
+		return installToDir(null, null);
 	}
 
+	public boolean installToDir(File dir) throws IOException, ManagerException {
+		return installToDir(dir, null);
+	}
+	
+	public boolean installToDir(File dir, TaskMonitor taskMonitor) throws IOException, ManagerException {
+		File InstallDir = dir;
+		if (InstallDir == null)
+			InstallDir = getInstallDirectory();
+		
+		if (!InstallDir.exists())
+			InstallDir.mkdirs();
+
+		for (PluginInfo plugin: this.infoObj.getPlugins()) {
+			InstallablePlugin pi = new InstallablePlugin(plugin);
+			try {
+				pi.installToDir(InstallDir, taskMonitor);
+				this.infoObj.replacePlugin(plugin, pi.getInfoObj());
+			} catch (Exception me) {
+				// failed to install a plugin stop now and remove all of them
+				// throw exception that theme failed to install due to bad plugin
+				for (PluginInfo pInfo: infoObj.getPlugins()) {
+					if (pInfo.equals(plugin))
+						continue;
+					InstallablePlugin ipDelete = new InstallablePlugin(pInfo);
+					ipDelete.uninstall();
+				}
+				throw new ManagerException("Failed to install the theme '" + this.infoObj.toString() + "'", me);
+			}
+			
+		}
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see cytoscape.plugin.Installable#install(cytoscape.task.TaskMonitor)
 	 */
 	public boolean install(TaskMonitor taskMonitor) throws IOException,
 			ManagerException {
+		return installToDir(null, taskMonitor);
+// TODO if one of the plugins in a theme fails to install correctly all of the plugins should be removed
 
-		File InstallDir = getInstallDirectory();
-		if (!InstallDir.exists())
-			InstallDir.mkdirs();
-		
-		for (PluginInfo plugin: this.infoObj.getPlugins()) {
-			InstallablePlugin pi = new InstallablePlugin(plugin);
-			pi.install(taskMonitor);
-			this.infoObj.replacePlugin(plugin, pi.getInfoObj());
-		}
-		return true;
+//		// eventually a separate directory containing all of the theme plugins/files would be nice but with
+//		// the current method of loading them at start up it would be a pain to do
+	
+//		File InstallDir = getInstallDirectory();
+//		if (!InstallDir.exists())
+//			InstallDir.mkdirs();
+
+//		for (PluginInfo plugin: this.infoObj.getPlugins()) {
+//			InstallablePlugin pi = new InstallablePlugin(plugin);
+//			try {
+//				pi.install(taskMonitor);
+//				this.infoObj.replacePlugin(plugin, pi.getInfoObj());
+//			} catch (Exception me) {
+//				// failed to install a plugin stop now and remove all of them
+//				// throw exception that theme failed to install due to bad plugin
+//				for (PluginInfo pInfo: infoObj.getPlugins()) {
+//					if (pInfo.equals(plugin))
+//						continue;
+//					InstallablePlugin ipDelete = new InstallablePlugin(pInfo);
+//					ipDelete.uninstall();
+//				}
+//				throw new ManagerException("Failed to install the theme '" + this.infoObj.toString() + "'", me);
+//			}
+//			
+//		}
+//		return true;
 	}
 
 	/* (non-Javadoc)

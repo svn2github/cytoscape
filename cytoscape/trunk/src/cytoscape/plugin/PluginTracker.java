@@ -190,6 +190,7 @@ public class PluginTracker {
 		Element Theme = getMatchingInfoObj(obj, Status.getTagName());
 		if (Theme != null) {
 			// TODO update the theme element
+			System.err.println("Implement me!!!");
 		} else {
 			ThemeParent.addContent(createThemeContent(obj));
 			System.out.println("Adding theme " + obj.getName() + " status " + Status.name());
@@ -213,19 +214,6 @@ public class PluginTracker {
 		Element Plugin = getMatchingInfoObj(obj, Status.getTagName());
 		if (Plugin != null) {
 			// update the element
-
-			// add parent info, should be able to find it using the unique id
-			// and version
-//			if (obj.getParent() != null) {
-//				if (Plugin.getChild(PluginXml.PARENT_OBJ.getTag()) == null) {
-//					Plugin.addContent(createParent(obj));
-//				} else {
-//					Plugin.getChild(PluginXml.PARENT_OBJ.getTag()).getChild(PluginXml.PARENT_TYPE.getTag()).setText(obj.getParent().getType().value());
-//					Plugin.getChild(PluginXml.PARENT_OBJ.getTag()).getChild(PluginXml.UNIQUE_ID.getTag()).setText(obj.getParent().getID());
-//					Plugin.getChild(PluginXml.PARENT_OBJ.getTag()).getChild(PluginXml.VERSION.getTag()).setText(obj.getParent().getObjectVersion());
-//				}
-//			}
-		
 			if (!obj.getName().equals(obj.getPluginClassName())) {
 				Plugin.getChild(nameTag).setText(obj.getName());
 			}
@@ -372,7 +360,6 @@ public class PluginTracker {
 	// Not sure this is the right way to do this but for now...
 	private List<ThemeInfo> getThemeContent(Element ThemeParentTag) {
 		List<ThemeInfo> Content = new ArrayList<ThemeInfo>();
-		
 		List<Element> Themes = ThemeParentTag.getChildren(PluginXml.THEME.getTag());
 		for (Element CurrentTheme: Themes) {
 			ThemeInfo themeInfo = (ThemeInfo) createBasicObject(CurrentTheme, DownloadableType.THEME);
@@ -382,6 +369,7 @@ public class PluginTracker {
 			while (pluginI.hasNext()) {
 				PluginInfo pluginInfo = createPluginObject(pluginI.next());
 				pluginInfo.setParent(themeInfo);
+				themeInfo.addPlugin(pluginInfo);
 			}
 			Content.add(themeInfo);
 		}

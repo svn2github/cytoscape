@@ -198,12 +198,26 @@ public class CytoscapeInit {
 				// load from those listed on the command line
 				InstalledPlugins.addAll(initParams.getPlugins());
 				
-				// this is the directory where user-installed plugins should live
-				for (String f : mgr.getPluginManageDirectory().list()) {
-					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath()
-					                     + File.separator + f);
-				}
+				// Get all directories where plugins have been installed
+				// going to have to be a little smart...themes contain their plugins in subdirectories
+				List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
+				for (cytoscape.plugin.DownloadableInfo dInfo: MgrInstalledPlugins) {
 
+					if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
+						continue;
+					
+					switch (dInfo.getType()) {
+					case PLUGIN:
+						InstalledPlugins.add( ((cytoscape.plugin.PluginInfo) dInfo).getInstallLocation() );
+						break;
+					case THEME:
+						cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
+						for (cytoscape.plugin.PluginInfo plugin: tInfo.getPlugins()) {
+							InstalledPlugins.add(plugin.getInstallLocation());
+						}
+						break;
+					}
+				}
 				mgr.loadPlugins(InstalledPlugins);
 				
 			} catch (IOException ioe) {

@@ -1,8 +1,43 @@
-/**
- * 
+/*
+ File: DownloadableInfo.java 
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package cytoscape.plugin;
 
+import java.net.URL;
+
+import cytoscape.util.URLUtil;
 
 public abstract class DownloadableInfo {
 	protected String versionMatch = "^\\d+\\.\\d+";
@@ -27,6 +62,10 @@ public abstract class DownloadableInfo {
 
 	private String category;
 
+	private License license;
+
+	private boolean licenseRequired = false;
+
 	private DownloadableInfo parentObj = null;
 
 	public DownloadableInfo() {
@@ -42,6 +81,33 @@ public abstract class DownloadableInfo {
 	}
 
 	/* --- SET --- */
+	
+	/**
+	 * Sets the license information for the plugin. Not required.
+	 * 
+	 * @param java.net.URL
+	 *            object where license can be downloaded from.
+	 */
+	public void setLicense(URL url) {
+		license = new License(url);
+	}
+
+	/**
+	 * Sets the license information for the plugin. Not required.
+	 * 
+	 * @param Text
+	 *            string of license.
+	 * @param alwaysRequired
+	 *            If the user expects the license to be required for both
+	 *            install and update at all times (true) or only at install
+	 *            (false)
+	 */
+	public void setLicense(String licenseText, boolean alwaysRequired) {
+		license = new License(licenseText);
+		licenseRequired = alwaysRequired;
+	}
+	
+	
 	/**
 	 * @param Category
 	 *            Sets the category of the downloadable object.
@@ -134,6 +200,26 @@ public abstract class DownloadableInfo {
 
 	/* --- GET --- */
 
+	/**
+	 * @return The text of the license for this plugin if available.
+	 */
+	public String getLicenseText() {
+		if (license != null)
+			return license.getLicense();
+		else
+			return null;
+	}
+
+	/**
+	 * @return If the license is always required to be accepted for installs and
+	 *         updates this returns true. If it only is required at install time
+	 *         (never at update) returns false.
+	 */
+	public boolean isLicenseRequired() {
+		return licenseRequired;
+	}
+
+	
 	/**
 	 * Return the downloadable type of this object.
 	 */
@@ -253,6 +339,41 @@ public abstract class DownloadableInfo {
 		return true;
 	}
 
+	/**
+	 * @return Returns String of downloadable name and version
+	 * 		ex. MyPlugin v.1.0
+	 */
+	public String toString() {
+		return getName() + " v." + getObjectVersion();
+	}
+	
+	
+	public abstract String htmlOutput();
+	
+	// yea, it's ugly...styles taken from cytoscape website
+	protected String basicHtmlOutput() {
+		String Html = "<html><style type='text/css'>";
+		Html += "body,th,td,div,p,h1,h2,li,dt,dd ";
+		Html += "{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }";
+		Html += "body { margin: 0px; color: #333333; background-color: #ffffff; }";
+		Html += "#indent { padding-left: 30px; }";
+		Html += "ul {list-style-type: none}";
+		Html += "</style><body>";
+
+		Html += "<b>" + getName() + "</b><p>";
+		Html += "<b>Version:</b>&nbsp;" + getObjectVersion() + "<p>";
+		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
+		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
+
+		if (getReleaseDate() != null && getReleaseDate().length() > 0) {
+			Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
+		}
+		
+		return Html;
+	}
+
+	
+	
 	// this just checks the downloadable object version and the cytoscape
 	// version
 	boolean versionOk(String version, boolean downloadObj) {
@@ -299,4 +420,40 @@ public abstract class DownloadableInfo {
 		return true;
 	}
 
+	/**
+	 * Fetches and keeps a plugin license if one is available.
+	 */
+	protected class License {
+		private java.net.URL url;
+
+		private String text;
+
+		public License(java.net.URL Url) {
+			url = Url;
+		}
+
+		public License(String LicenseText) {
+			text = LicenseText;
+		}
+
+		/**
+		 * Get the license text as a string. Will download from url if License
+		 * was not initialized with text string.
+		 * 
+		 * @return String
+		 */
+		public String getLicense() {
+			if (text == null) {
+				try {
+					text = URLUtil.download(url);
+				} catch (java.io.IOException E) {
+					E.printStackTrace();
+				}
+			}
+			return text;
+		}
+
+	}
+
+	
 }

@@ -205,12 +205,13 @@ public class PluginFileReader {
 		Info.setDownloadableURL(downloadUrl);
 
 		// category
-		if (E.getChild(categoryTag) != null) {
-			Info.setCategory(E.getChildTextTrim(categoryTag));
-		} else {
-			Info.setCategory(Category.NONE);
+		if (Info.getCategory().equals(Category.NONE.getCategoryText())) {
+			if (E.getChild(categoryTag) != null) {
+				Info.setCategory(E.getChildTextTrim(categoryTag));
+			} else {
+				Info.setCategory(Category.NONE);
+			}
 		}
-
 		// object version
 		Info = addVersion(Info, E, Type);
 

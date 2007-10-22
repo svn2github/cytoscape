@@ -106,11 +106,11 @@ public class PluginProperties extends Properties {
 		}
 		
 		PluginInfo pi;
-		if (containsKey(PluginProperty.UNIQUE_ID)) {
+		if (containsKey(PluginProperty.UNIQUE_ID.getPropertyKey())) {
 			pi = new PluginInfo(getProperty(PluginProperty.UNIQUE_ID.getPropertyKey()));
 			if (info != null) {
-				pi.setUrl(info.getUrl());
-				pi.setDownloadUrl(info.getDownloadUrl());
+				pi.setObjectUrl(info.getObjectUrl());
+				pi.setDownloadableURL(info.getDownloadableURL());
 			}
 		} else if (info != null) {
 			pi = info;
@@ -123,11 +123,11 @@ public class PluginProperties extends Properties {
 		pi.setName(getProperty(PluginProperty.NAME.getPropertyKey()));
 
 		try {
-			pi.setPluginVersion( Double.valueOf(getProperty(PluginProperty.VERSION.getPropertyKey())) );
+			pi.setObjectVersion( Double.valueOf(getProperty(PluginProperty.VERSION.getPropertyKey())) );
 		} catch (java.lang.NumberFormatException ne) { // skip it or set it to a default value??
 			System.err.println(pi.getName() + " version is incorrectly formatted, format is: \\d+.\\d+. Version set to 0.1 to allow plugin to load");
 			ne.printStackTrace();
-			pi.setPluginVersion(0.1);
+			pi.setObjectVersion(0.1);
 		}
 		
 		pi.setDescription(getProperty(PluginProperty.DESCRIPTION.getPropertyKey()));
@@ -140,7 +140,7 @@ public class PluginProperties extends Properties {
 		}
 
 		if (containsKey(PluginProperty.DOWNLOAD_URL.getPropertyKey())) {
-			pi.setDownloadUrl(PluginProperty.DOWNLOAD_URL.getPropertyKey());
+			pi.setDownloadableURL(getProperty(PluginProperty.DOWNLOAD_URL.getPropertyKey()));
 		}
 		
 		if (containsKey(PluginProperty.AUTHORS.getPropertyKey())) {
@@ -162,19 +162,57 @@ public class PluginProperties extends Properties {
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}
 		
+		
+		
 		// on the off chance that someone did not install this via the PM this should be null if the version is not current
 		String [] AllCytoscapeVersions = getProperty(PluginProperty.CYTOSCAPE_VERSION.getPropertyKey()).split(","); 
 		boolean versionOk = false;
+		String RecentCyVersion = AllCytoscapeVersions[0];
+		String LastVersion = null;
+		
 		for (String v: AllCytoscapeVersions) {
 			v = v.trim();
-			System.out.println(v);
+			if (LastVersion == null)
+				LastVersion = v;
+		
+			String [] CurrentVersions = v.split(".");
+			String [] LastVersions = LastVersion.split(".");
+			
+			for (int i = 0; i < 3; i++) {
+				
+				int cv = 0;
+				int lv = 0;
+				
+				if (CurrentVersions.length == 3)
+					cv = Integer.valueOf(CurrentVersions[i]).intValue();
+				if (LastVersions.length == 3)
+					lv = Integer.valueOf(LastVersions[i]).intValue();
+					
+				if (cv > lv) {
+					RecentCyVersion = v;
+				}
+			}
+
 			if (v.equals(cytoscape.CytoscapeVersion.version)) {
 				pi.setCytoscapeVersion(v);
 				versionOk = true;
+				break;
 			}
+			LastVersion = v;
 		}
-		if (!versionOk)
-			pi = null;
+		/*
+		 * The only current usage of this method is in the PluginManager.register() method.  By
+		 * the time it gets to that point a plugin is already loaded (or has failed to load) and
+		 * we can't unload it.  Instead we'll add notes and change the category to make it clear
+		 * this may not be a good plugin.		
+		 */
+		if (!versionOk) {
+			pi.setCategory(Category.OUTDATED);
+			String DescMsg = "<p><font color='red'><i>This plugin has not been verified to work with Cytoscape v" + 
+				cytoscape.CytoscapeVersion.version + " .</i></font>";
+			pi.setDescription( pi.getDescription() + DescMsg );
+			pi.setCytoscapeVersion(RecentCyVersion);
+		}
 		
 		return pi;
 	}

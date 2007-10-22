@@ -268,14 +268,13 @@ public class PluginManager {
 	}
 
 	/**	  
-	 * Get a list of plugins by status. CURRENT: currently installed
-	 *             INSTALL: plugins to be installed DELETE: plugins to be
+	 * Get a list of downloadable objects by status. CURRENT: currently installed
+	 *             INSTALL: objects to be installed DELETE: objects to be
 	 *             deleted
 	 * 
 	 * @param Status
 	 * @return
 	 */
-
 	public List<DownloadableInfo> getDownloadables(PluginStatus Status) {
 		return pluginTracker.getDownloadableListByStatus(Status);
 	}
@@ -287,21 +286,12 @@ public class PluginManager {
 	 * @param Url
 	 * @return List of PluginInfo objects
 	 */
-//	public List<PluginInfo> inquire(String Url) throws IOException,
-//			org.jdom.JDOMException {
-//		List<PluginInfo> Plugins = null;
-//		PluginFileReader Reader = new PluginFileReader(Url);
-//		Plugins = Reader.getPlugins();
-//		return Plugins;
-//	}
-//	
 	public List<DownloadableInfo> inquire(String Url) throws IOException, org.jdom.JDOMException {
 		List<DownloadableInfo> infoObjs = null;
 		PluginFileReader Reader = new PluginFileReader(Url);
 		infoObjs = Reader.getDownloadables();
 		return infoObjs;
 	}
-	
 
 	/**
 	 * @deprecated Use {@link cytoscape.plugin.PluginManagerInquireTask} 
@@ -330,6 +320,7 @@ public class PluginManager {
 		PluginInfo InfoObj = ManagerUtil.getInfoObject(Plugin.getClass()); 
 
 		// try to get it from the file
+		// PROBLEM: what to do about a plugin that attempts to register itself and is not compatible with the current version?
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
 			InfoObj = pp.fillPluginInfoObject(InfoObj);
@@ -607,7 +598,23 @@ public class PluginManager {
 	 * Methods for loading plugins when Cytoscape starts up. These have been
 	 * moved from CytoscapeInit
 	 */
-
+	public void loadPlugin(DownloadableInfo i) throws MalformedURLException,
+	IOException, ClassNotFoundException, PluginException {
+		switch (i.getType()) {
+		case PLUGIN:
+			loadPlugin( (PluginInfo) i );
+			break;
+		case THEME:
+			ThemeInfo Info = (ThemeInfo) i;
+			for (PluginInfo p: Info.getPlugins()) 
+				loadPlugin(p);
+			break;
+		case FILE: // currently there is no FileInfo type
+			break;
+		}
+	}
+	
+	
 	/**
 	 * Load a single plugin based on the PluginInfo object given
 	 * 

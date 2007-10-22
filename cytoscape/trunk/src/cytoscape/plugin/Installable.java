@@ -17,6 +17,11 @@ public interface Installable {
 	
 	public boolean install(cytoscape.task.TaskMonitor taskMonitor) 
 		throws java.io.IOException, cytoscape.plugin.ManagerException;
+
+	public boolean installToDir(java.io.File dir) throws java.io.IOException, cytoscape.plugin.ManagerException;
+
+	public boolean installToDir(java.io.File dir, cytoscape.task.TaskMonitor taskMonitor) 
+		throws java.io.IOException, cytoscape.plugin.ManagerException;
 	
 	public boolean uninstall() throws cytoscape.plugin.ManagerException;
 	
