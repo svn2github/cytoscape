@@ -12,8 +12,8 @@ import javax.swing.event.TreeSelectionListener;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.DownloadableType;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginManager;
 
 import cytoscape.task.Task;
@@ -23,9 +23,6 @@ import cytoscape.task.util.TaskManager;
 
 // TODO clean out the tree for each updated plugin
 
-/**
- * @author skillcoy
- */
 public class PluginUpdateDialog extends JDialog implements
 		TreeSelectionListener {
 	private static String title = "Update Plugins";
@@ -203,18 +200,35 @@ public class PluginUpdateDialog extends JDialog implements
 
 		// display licenses, set up the list of objects to be updated
 		for (DownloadableInfo Original : PotentialUpdates.keySet()) {
-			final PluginInfo Old = (PluginInfo) Original;
-			final PluginInfo New = (PluginInfo) PotentialUpdates.get(Old);
-
+			final DownloadableInfo Old = (DownloadableInfo) Original;
+			final DownloadableInfo New = (DownloadableInfo) PotentialUpdates.get(Old);
+			final LicenseDialog ld = new LicenseDialog();
+			boolean showLicense = false;
 			// display only if always required at update
-			if (New.getType().equals(DownloadableType.PLUGIN) && 
-					(New.isLicenseRequired() && New.getLicenseText() != null)) {
-				final LicenseDialog ld = new LicenseDialog();
-				ld.setPluginName(New.getName() + " v" + New.getObjectVersion());
-				ld.addLicenseText(New.getLicenseText());
-				ld.addListenerToFinish(new java.awt.event.ActionListener() {
+			switch (New.getType()) {
+			case PLUGIN:
+				if (New.isLicenseRequired() && New.getLicenseText() != null) {
+					ld.addPlugin(New);
+					showLicense = true;
+				}
+				break;
+			case THEME:
+				ThemeInfo themeInfo = (ThemeInfo) New;
+				for (PluginInfo pInfo: themeInfo.getPlugins()) {
+					if (pInfo.isLicenseRequired() && pInfo.getLicenseText() != null) {
+						ld.addPlugin(pInfo);
+						showLicense = true;
+					}
+				}
+				break;
+			case FILE: // there is currently not a FileInfo object
+				break;
+			}
+			
+			if (showLicense) {
+				ld.addListenerToOk(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						Updates.add(new PluginInfo[] { Old, New });
+						Updates.add(new DownloadableInfo[] { Old, New });
 						ld.dispose();
 					}
 				});
@@ -414,27 +428,16 @@ public class PluginUpdateDialog extends JDialog implements
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton closeButton;
-
 	private javax.swing.JScrollPane infoScrollPane;
-
 	private javax.swing.JEditorPane infoTextPane;
-
 	private javax.swing.JSplitPane jSplitPane1;
-
 	private javax.swing.JLabel msgLabel;
-
 	private javax.swing.JTree pluginTree;
-
 	private javax.swing.JScrollPane treeScrollPane;
-
 	private javax.swing.JButton updateAllButton;
-
 	private javax.swing.JLabel updateLabel;
-
 	private javax.swing.JButton updateSelectedButton;
-
-	// End of variables declaration
 	private TreeNode rootTreeNode;
-
 	private ManagerModel treeModel;
+	// End of variables declaration
 }

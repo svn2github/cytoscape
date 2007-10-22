@@ -90,6 +90,7 @@ public class PluginManagerAction extends CytoscapeAction {
 				.getDesktop());
 		PluginManager Mgr = PluginManager.getPluginManager();
 
+		// TODO get default from the props file if no bookmark available
 		String DefaultUrl = "";
 		String DefaultTitle = "";
 
@@ -118,7 +119,8 @@ public class PluginManagerAction extends CytoscapeAction {
 					PluginInstallStatus.INSTALLED);
 		}
 
-		cytoscape.task.Task task = Mgr.getInquireTask(DefaultUrl, new ManagerAction(dialog, DefaultTitle, DefaultUrl));
+		cytoscape.task.Task task = new cytoscape.plugin.PluginManagerInquireTask(DefaultUrl, new ManagerAction(dialog, DefaultTitle, DefaultUrl));
+		//cytoscape.task.Task task = Mgr.getInquireTask(DefaultUrl, new ManagerAction(dialog, DefaultTitle, DefaultUrl));
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -164,7 +166,8 @@ public class PluginManagerAction extends CytoscapeAction {
 			} else {
 				List<DownloadableInfo> Unique = ManagerUtil.getUnique(Mgr.getDownloadables(PluginStatus.CURRENT), Results);
 				Map<String, List<DownloadableInfo>> DownloadInfo = ManagerUtil.sortByCategory(Unique);
-
+				
+				
 				for (String Category : DownloadInfo.keySet()) {
 					// get only the unique ones
 					dialog.addCategory(Category, DownloadInfo.get(Category),

@@ -1,11 +1,44 @@
-/**
- *
+/*
+ File: PluginManageDialog.java 
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package cytoscape.dialogs.plugins;
 
 import cytoscape.Cytoscape;
 
 import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 
@@ -22,9 +55,6 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-/**
- * @author skillcoy
- */
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
 
@@ -90,7 +120,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		if (Node.isLeaf()) {
 			// display any object selected
 			infoTextPane.setContentType("text/html");
-			infoTextPane.setText(((PluginInfo) Node.getObject()).htmlOutput());
+			infoTextPane.setText(((DownloadableInfo) Node.getObject()).htmlOutput());
 			infoTextPane.setCaretPosition(0);
 
 			if (Node.isNodeAncestor(installedNode)) {
@@ -140,11 +170,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		for (TreeNode child : AvailableNodes) {
 			treeModel.removeNodeFromParent(child);
 		}
-
 		// availableNode = new
 		// TreeNode(PluginInstallStatus.AVAILABLE.toString(), true);
 		// rootTreeNode.addChild(availableNode);
-
 	}
 
 	/**
@@ -154,7 +182,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 * @param CategoryName
 	 *            String category for this list of plugins
 	 * @param Plugins
-	 *            List of PluginInfo objects to be shown in the given category
+	 *            List of DownloadableInfo objects to be shown in the given category
 	 * @param Status
 	 *            PluginInstallStatus (currently installed or available for
 	 *            install)
@@ -186,7 +214,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		for (DownloadableInfo CurrentPlugin : Plugins) {
 			TreeNode PluginNode = new TreeNode(CurrentPlugin);	
-			//Category.addChild(PluginNode);
 			treeModel.addNodeToParent(Category, PluginNode);
 		}
 	}
@@ -204,7 +231,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		if (Node == null) {
 			return;
 		}
-		PluginInfo NodeInfo = (PluginInfo) Node.getObject();
+		DownloadableInfo NodeInfo = (DownloadableInfo) Node.getObject();
 		String ChangeMsg = "Changes will not take effect until you have restarted Cytoscape.";
 		String VerifyMsg = "";
 		if (NodeInfo.getCategory().equalsIgnoreCase("core")) {
@@ -228,7 +255,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	// install new plugin
+	// install new downloadable obj
 	private void installButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		final TreeNode node = (TreeNode) pluginTree
 				.getLastSelectedPathComponent();
@@ -238,27 +265,46 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 		Object nodeInfo = node.getObject();
 		if (node.isLeaf()) {
-			final PluginInfo info = (PluginInfo) nodeInfo;
+			boolean licenseRequired = false;
+			final LicenseDialog License = new LicenseDialog(this);
+			final DownloadableInfo infoObj = (DownloadableInfo) nodeInfo;
 
-			if (info.getLicenseText() != null) {
-				final LicenseDialog License = new LicenseDialog(this);
-				License.setPluginName(info.getName() + " v"
-						+ info.getObjectVersion());
-				License.addLicenseText(info.getLicenseText());
-				License.addListenerToFinish(new ActionListener() {
+			switch (infoObj.getType()) {
+			case PLUGIN:
+				if (infoObj.getLicenseText() != null) {
+					License.addPlugin(infoObj);
+					licenseRequired = true;
+				}
+				break;
+			case THEME:
+				ThemeInfo themeInfo = (ThemeInfo) infoObj;
+				for (PluginInfo pInfo: themeInfo.getPlugins()) {
+					if (pInfo.getLicenseText() != null) {
+						License.addPlugin(pInfo);
+						licenseRequired = true;
+					}
+				}
+				break;
+			case FILE: // currently nothing, there are no FileInfo objects right now 
+				break;
+			}
+			
+			if (licenseRequired) {
+				License.addListenerToOk(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						License.dispose();
-						createInstallTask(info, node);
-
+						createInstallTask(infoObj, node);
 					}
 				});
 				License.setVisible(true);
 			} else {
-				createInstallTask(info, node);
+				createInstallTask(infoObj, node);
 			}
 		}
 	}
 
+	
+	
 	private void updateCurrent(DownloadableInfo info) {
 		boolean categoryMatched = false;
 
@@ -411,9 +457,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 * during download/install ---
 	 */
 
-	private void createInstallTask(PluginInfo obj, TreeNode node) {
+	private void createInstallTask(DownloadableInfo obj, TreeNode node) {
 		// Create Task
-		PluginInstallTask task = new PluginInstallTask(obj, node);
+		InstallTask task = new InstallTask(obj, node);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
@@ -434,12 +480,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	private void cleanTree(TreeNode node) {
-		PluginInfo info = (PluginInfo) node.getObject();
+		DownloadableInfo info = (DownloadableInfo) node.getObject();
 		List<TreeNode> RemovableNodes = new java.util.ArrayList<TreeNode>();
 
 		for (int i = 0; i < node.getParent().getChildCount(); i++) {
 			TreeNode Child = (TreeNode) node.getParent().getChildAt(i);
-			PluginInfo childInfo = (PluginInfo) Child.getObject();
+			DownloadableInfo childInfo = (DownloadableInfo) Child.getObject();
 
 			if (childInfo.getID().equals(info.getID())
 					&& childInfo.getName().equals(info.getName())) {
@@ -452,20 +498,20 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	private class PluginInstallTask implements cytoscape.task.Task {
+	private class InstallTask implements cytoscape.task.Task {
 		private cytoscape.task.TaskMonitor taskMonitor;
 
-		private DownloadableInfo pluginInfo;
+		private DownloadableInfo infoObj;
 
 		private TreeNode node;
 
-		public PluginInstallTask(PluginInfo Info, TreeNode Node) throws java.lang.IllegalArgumentException {
+		public InstallTask(DownloadableInfo Info, TreeNode Node) throws java.lang.IllegalArgumentException {
 			String ErrorMsg = null;
 			if (Info == null) {
-				ErrorMsg = "PluginInfo object cannot be null\n";
+				ErrorMsg = "DownloadableInfo object cannot be null\n";
 				throw new java.lang.IllegalArgumentException(ErrorMsg);
 			}
-			pluginInfo = Info;
+			infoObj = Info;
 			node = Node;
 		}
 
@@ -473,40 +519,39 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			if (taskMonitor == null) {
 				throw new IllegalStateException("Task Monitor is not set.");
 			}
-			taskMonitor.setStatus("Installing " + pluginInfo.getName() + " v"
-					+ pluginInfo.getObjectVersion());
+			taskMonitor.setStatus("Installing " + infoObj.getName() + " v"
+					+ infoObj.getObjectVersion());
 			taskMonitor.setPercentCompleted(-1);
 
 			PluginManager Mgr = PluginManager.getPluginManager();
 			try {
-				pluginInfo = Mgr.download(pluginInfo, taskMonitor);
-				taskMonitor.setStatus(pluginInfo.getName() + " v"
-						+ pluginInfo.getObjectVersion() + " complete.");
+				infoObj = Mgr.download(infoObj, taskMonitor);
+				taskMonitor.setStatus(infoObj.getName() + " v"
+						+ infoObj.getObjectVersion() + " complete.");
 
-				PluginManageDialog.this.setMessage(pluginInfo.getName()
+				PluginManageDialog.this.setMessage(infoObj.getName()
 						+ " install complete.");
 
-				taskMonitor.setStatus(pluginInfo.getName() + " v"
-						+ pluginInfo.getObjectVersion() + " loading...");
+				taskMonitor.setStatus(infoObj.getName() + " v"
+						+ infoObj.getObjectVersion() + " loading...");
 			
-				//Mgr.loadPlugin(pluginInfo);
-				Mgr.install(pluginInfo);
-
+				Mgr.install(infoObj);
+				Mgr.loadPlugin(infoObj);
 			} catch (java.io.IOException ioe) {
 				taskMonitor
 						.setException(ioe, "Failed to download "
-								+ pluginInfo.getName() + " from "
-								+ pluginInfo.getObjectUrl());
-				pluginInfo = null;
+								+ infoObj.getName() + " from "
+								+ infoObj.getObjectUrl());
+				infoObj = null;
 			} catch (cytoscape.plugin.ManagerException me) {
-				pluginInfo = null;
+				infoObj = null;
 				taskMonitor.setException(me, me.getMessage());
 			} catch (cytoscape.plugin.PluginException pe) {
-				pluginInfo = null;
+				infoObj = null;
 				taskMonitor.setException(pe, pe.getMessage());
-//			} catch (ClassNotFoundException cne) {
-//				pluginInfo = null;
-//				taskMonitor.setException(cne, cne.getMessage());
+			} catch (ClassNotFoundException cne) {
+				infoObj = null;
+				taskMonitor.setException(cne, cne.getMessage());
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
@@ -514,7 +559,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 
 		public DownloadableInfo getDownloadedPlugin() {
-			return pluginInfo;
+			return infoObj;
 		}
 
 		public void halt() {
@@ -527,7 +572,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 
 		public String getTitle() {
-			return "Installing Cytoscape Plugin '" + pluginInfo.getName() + "'";
+			return "Installing Cytoscape Plugin '" + infoObj.getName() + "'";
 		}
 	}
 
@@ -560,6 +605,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	private TreeNode installedNode;
 
 	private TreeNode availableNode;
-
+	
 	private ManagerModel treeModel;
 }
