@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 10:41:18 2006
-* Modified:     Fri Jun 29 10:35:38 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Mon Oct 22 09:27:53 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Sun Oct 21 16:15:50 2007 (Michael L. Creech) creech@w235krbza760
+*  Various changes to use ArrowShape versus Arrows.
 * Thu May 17 07:37:53 2007 (Michael L. Creech) creech@w235krbza760
 *  Moved from cytoscape.editor.editors package to
 *  cytoscape.hyperedge.editor package.
@@ -244,7 +246,9 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //                                                                            null);
         Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac,
                                                                             new VisualPropertyType[] {
-                                                                                VisualPropertyType.EDGE_TGTARROW
+                                                                                // VisualPropertyType.EDGE_TGTARROW
+										// MLC 10/20/07:
+										VisualPropertyType.EDGE_TGTARROW_SHAPE
                                                                             },
                                                                             controllingAttribute,
                                                                             this,
@@ -269,7 +273,10 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
                                            // MLC 05/10/07:
                 // new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
                 // MLC 05/10/07:
-                new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW)),
+                // MLC 10/20/07:
+                // new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW)),
+                // MLC 10/20/07:
+                new CytoShapeIcon(arrowShapeToArrow((ArrowShape) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE))),
                                            // generateSmarterNameOfEntry(spi.getKey()));
                 spi.getKey(),
                                            getDefaultEdgePaletteItemDragCursorSetter());
@@ -277,6 +284,26 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         }
     }
 
+    // MLC 10/20/07 BEGIN:
+    private Arrow arrowShapeToArrow(ArrowShape as) {
+        if (as == ArrowShape.ARROW) {
+            return Arrow.ARROW;
+        } else if (as == ArrowShape.CIRCLE) {
+            return Arrow.CIRCLE;
+        } else if (as == ArrowShape.DELTA) {
+            return Arrow.DELTA;
+        } else if (as == ArrowShape.DIAMOND) {
+            return Arrow.DIAMOND;
+        } else if (as == ArrowShape.NONE) {
+            return Arrow.NONE;
+        } else if (as == ArrowShape.T) {
+            return Arrow.T;
+        }
+
+        return null;
+    }
+
+    // MLC 10/20/07 END.
     protected void generateNodePaletteEntries(String controllingAttribute) {
         NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager()
                                                 .getVisualStyle()
@@ -294,11 +321,11 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //                                                    VizMapUI.NODE_SHAPE,
         //                                                    VizMapUI.NODE_SIZE
         //                                                };
-        VisualPropertyType[]       calcsToUse = new VisualPropertyType[] {
-                                                    VisualPropertyType.NODE_FILL_COLOR,
-                                                    VisualPropertyType.NODE_SHAPE,
-                                                    VisualPropertyType.NODE_SIZE
-                                                };
+        VisualPropertyType[] calcsToUse = new VisualPropertyType[] {
+                                              VisualPropertyType.NODE_FILL_COLOR,
+                                              VisualPropertyType.NODE_SHAPE,
+                                              VisualPropertyType.NODE_SIZE
+                                          };
 
         // MLC 05/10/07 END.
         Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(nac,

@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 11:37:47 2006
-* Modified:     Fri Jul 13 08:55:42 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Sun Oct 21 16:21:09 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Sun Oct 21 16:20:52 2007 (Michael L. Creech) creech@w235krbza760
+*  Chnaged createTargetArrows() to deal with ArrowShapes vs Arrows.
 * Fri Jul 13 08:55:20 2007 (Michael L. Creech) creech@w235krbza760
 *  Added setup of edge tooltips in createEdgeTooltips().
 * Thu May 10 14:37:57 2007 (Michael L. Creech) creech@w235krbza760
@@ -46,7 +48,6 @@ import cytoscape.hyperedge.EdgeTypeMap;
 
 import cytoscape.hyperedge.impl.HyperEdgeImpl;
 
-import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -221,33 +222,45 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
         // the first argument to the DiscreteMapping constructor seems
         // to no longer define the default. The default appearance
         // from the EdgeAppearanceCalculator must be used instead:
-        DiscreteMapping discreteMapping = new DiscreteMapping(Arrow.NONE,
-                                                              Semantics.INTERACTION,
-                                                              ObjectMapping.EDGE_MAPPING);
-        discreteMapping.putMapValue(EdgeTypeMap.SUBSTRATE, Arrow.NONE);
+
         // MLC 05/10/07 BEGIN:
+        // DiscreteMapping discreteMapping = new DiscreteMapping(Arrow.NONE,
+	//                                                       Semantics.INTERACTION,
+	//                                                       ObjectMapping.EDGE_MAPPING);
+        //        discreteMapping.putMapValue(EdgeTypeMap.SUBSTRATE, Arrow.NONE);
         //        discreteMapping.putMapValue(EdgeTypeMap.PRODUCT, Arrow.BLACK_DELTA);
         //        discreteMapping.putMapValue(EdgeTypeMap.ACTIVATING_MEDIATOR,
         //                                    Arrow.BLACK_DELTA);
         //        discreteMapping.putMapValue(EdgeTypeMap.INHIBITING_MEDIATOR,
         //                                    Arrow.BLACK_T);
+	// MLC 11/20/07 BEGIN:
+        DiscreteMapping discreteMapping = new DiscreteMapping(ArrowShape.NONE,
+                                                              Semantics.INTERACTION,
+                                                              ObjectMapping.EDGE_MAPPING);
+        discreteMapping.putMapValue(EdgeTypeMap.SUBSTRATE, ArrowShape.NONE);
         discreteMapping.putMapValue(EdgeTypeMap.PRODUCT,
-                                    new Arrow(ArrowShape.DELTA, Color.BLACK));
+                                    ArrowShape.DELTA);
         discreteMapping.putMapValue(EdgeTypeMap.ACTIVATING_MEDIATOR,
-                                    new Arrow(ArrowShape.DELTA, Color.BLACK));
+                                    ArrowShape.DELTA);
         discreteMapping.putMapValue(EdgeTypeMap.INHIBITING_MEDIATOR,
-                                    new Arrow(ArrowShape.T, Color.BLACK));
+                                    ArrowShape.T);
 
         // MLC 05/10/07 END.
         // MLC 06/30/07 BEGIN:
         //        GenericEdgeTargetArrowCalculator edgeTargetArrowCalculator = new GenericEdgeTargetArrowCalculator("HyperEdge target arrows",
         //                                                                                                          discreteMapping);
         // eac.getDefaultAppearance().setTargetArrow(Arrow.NONE);
-        Calculator edgeTargetArrowCalculator = new BasicCalculator("HyperEdge target arrows",
+	//        Calculator edgeTargetArrowCalculator = new BasicCalculator("HyperEdge target arrows",
+	//                                                                   discreteMapping,
+	//                                                                   VisualPropertyType.EDGE_TGTARROW);
+        // eac.getDefaultAppearance()
+        //   .set(VisualPropertyType.EDGE_TGTARROW, Arrow.NONE);
+        Calculator edgeTargetArrowCalculator = new BasicCalculator("HyperEdge target arrows shape",
                                                                    discreteMapping,
-                                                                   VisualPropertyType.EDGE_TGTARROW);
+                                                                   VisualPropertyType.EDGE_TGTARROW_SHAPE);
         eac.getDefaultAppearance()
-           .set(VisualPropertyType.EDGE_TGTARROW, Arrow.NONE);
+           .set(VisualPropertyType.EDGE_TGTARROW_SHAPE, ArrowShape.NONE);
+	// MLC 10/20/07 END.
         // MLC 06/30/07 END.
         eac.setCalculator(edgeTargetArrowCalculator);
         // MLC 01/15/07:
