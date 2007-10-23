@@ -51,27 +51,27 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
 <br>
 <table class="programme">
  <tr>
-  <td class="subheader" width="15%">1: Monday</td>
+  <td class="subheader" width="15%">Monday</td>
   <td class="subheader" width="15%"><a href="#nov_5">November 5th</a></td>
   <td class="subheader" width="70%"><strong>Arrivals Day (development team, organization)</strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">2: Tuesday</td>
+  <td class="subheader" width="15%">1: Tuesday</td>
   <td class="subheader" width="15%"><a href="#nov_6">November 6th</a></td>
   <td class="subheader" width="70%"><strong>Software Development Discussions</strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">3: Wednesday</td>
+  <td class="subheader" width="15%">2: Wednesday</td>
   <td class="subheader" width="15%"><a href="#nov_7">November 7th</a></td>
   <td class="subheader" width="70%"><strong><big>Tutorials and Application Showcase day</big></strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">4: Thursday</td>
+  <td class="subheader" width="15%">3: Thursday</td>
   <td class="subheader" width="15%"><a href="#nov_8">November 8th</a></td>
   <td class="subheader" width="70%"><strong>Public Symposium<br><big>Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</big></strong></td>
  </tr>
  <tr>
-  <td class="subheader" width="15%">5: Friday</td>
+  <td class="subheader" width="15%">4: Friday</td>
   <td class="subheader" width="15%"><a href="#nov_9">November 9th</a></td>
   <td class="subheader" width="70%"><strong>Cytoscape Development Planning</strong></td>
  </tr>
@@ -83,7 +83,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
 </div>
 
 <br>
-<h3>Day 1: <a name="nov_5">Arrivals Day</a></h3>
+<h3><a name="nov_5">Arrivals Day</a></h3>
 <br>
 
 <table class="programme">
@@ -111,7 +111,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </table>
  
 <br>
-<h3>Day 2: <a name="nov_6">Software Development Discussions</a></h3>
+<h3>Day 1: <a name="nov_6">Software Development Discussions</a></h3>
 <br>
 
  <table class="programme">
@@ -128,42 +128,61 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>09:30-11:00</p></td>
-  <td><p>Defining issues and breakout groups</p></td>
+  <td><p>Overview programme<br>
+         2.6 Status + Release date<br>
+         2.7 Possibilities<br>
+  </p></td>
  </tr>
  <tr>
-  <td><p>11:00-11:30</p></td>
+  <td><p>11:00-11:15</p></td>
   <td><p>Coffee break</p></td>
  </tr>
  <tr>
-  <td><p>11:30-12:30</p></td>
-  <td><p>Hacking/Coding in breakout groups</p>
-  </td>
+  <td><p>11:15-13:00</p></td>
+  <td><p>3.0 Overview<br>
+       o Motivations<br>
+       o Current problems<br>
+       o Philosophical changes<br>
+   	3.0 Goals<br>
+	3.0 Timeline
+  </p></td>
  </tr>
  <tr>
-  <td><p>12:30-14:00 </p></td>
+  <td><p>13:00-13:30 </p></td>
   <td><p>Lunch </p></td>
  </tr>
  <tr>
   <td><p>14:00-15:30 </p></td>
-  <td><p>Hacking/Coding in breakout groups </p></td>
+  <td><p>Input process, RFC-s<br>
+	 Layering<br>
+      o Model changes<br>
+      o Event handling<br>
+	 Plugin Rearchitecture<br>
+      o OSGi<br>
+      o Present Plugin Proto-API<br>
+	Data Integration
+  </p></td>
  </tr>
  <tr>
-  <td><p>15:30-16:00 </p></td>
+  <td><p>15:30-15:15 </p></td>
   <td><p>Coffee and tea break </p></td>
  </tr>
  <tr>
-  <td><p>16:00-17:00 </p></td>
-  <td><p>Results session </p></td>
+  <td><p>15:15-17:30 </p></td>
+  <td><p>Workflow<br>
+	 Process/planning improvements<br>
+      o RFC-s<br>
+   </p></td>
  </tr>
  <tr>
-  <td><p>17:00-(...) </p></td>
+  <td><p>17:30-(...) </p></td>
   <td><p>Drinks and dinner for attendees of Day 1 
   	<br>Special surprise event!!!</p></td>
  </tr>
  </table>
  
 <br>
-<h3>Day 3: <a name="nov_7">Application showcase and hands-on tutorial sessions</a></h3>
+<h3>Day 2: <a name="nov_7">Application showcase and hands-on tutorial sessions</a></h3>
 <br>
 
  <table class="programme">
@@ -219,14 +238,10 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   	<br>Night out in Amsterdam for attendees of Day 2 
   	<br>City tour guided by Piet</p></td>
  </tr>
- <tr>
-  <td><p>19:00-(...) </p></td>
-  <td colspan="3"><p>Speakers dinner</p></td>
- </tr>
  </table>
  
 <br>
- <h3>Day 4: <a name="nov_8">Public Symposium</a></h3>
+ <h3>Day 3: <a name="nov_8">Public Symposium</a></h3>
 <br>
 
  <table class="programme">
@@ -311,7 +326,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </table>
  
 <br>
-<h3>Day 5: <a name="nov_9">Cytoscape Development Planning</a></h3>
+<h3>Day 4: <a name="nov_9">Cytoscape Development Planning</a></h3>
 <br>
 
  <table class="programme">
@@ -326,24 +341,24 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td class="subheader"><p>AMC Lecture room K 01-123 </p></td>
  </tr>
  <tr>
-  <td><p>9:30-10:30 </p></td>
-  <td><p>Cytoscape 2.5 rundown </p></td>
+  <td><p>9:30-11:00 </p></td>
+  <td><p>Programme dependent on Tuesday; updated during retreat </p></td>
  </tr>
  <tr>
-  <td><p>10:30-12:30</p></td>
-  <td><p>Organize Major Development Tasks and breakout groups </p></td>
+  <td><p>11:00-11:15</p></td>
+  <td><p>Coffee break </p></td>
  </tr>
  <tr>
-  <td><p>12:30-13:00</p></td>
-  <td><p>Working Lunch </p></td>
+  <td><p>11:15-13:00</p></td>
+  <td><p>Tba </p></td>
  </tr>
  <tr>
-  <td><p>13:00-15:00</p></td>
-  <td><p>Breakout groups Report </p></td>
+  <td><p>13:00-13:30</p></td>
+  <td><p>Lunch </p></td>
  </tr>
  <tr>
-  <td><p>13:00-15:00</p></td>
-  <td><p>Parallel session of members of Board of Directors and SAB to discuss vision </p></td>
+  <td><p>13:30-15:00</p></td>
+  <td><p>Tba</p></td>
  </tr>
  <tr>
   <td><p>15:00-17:00 </p></td>
