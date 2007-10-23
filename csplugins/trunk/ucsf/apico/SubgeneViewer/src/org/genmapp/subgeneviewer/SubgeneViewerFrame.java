@@ -64,12 +64,11 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		view.setOpaque(false);
 		view.setAutoscrolls(true);
 		view.setVisible(true);
-		Dimension minSize = new Dimension(800,300*_cnvList.size());
-//		view.setLayout(new BoxLayout(view, BoxLayout.Y_AXIS));
-		view.validate();
-		view.setMinimumSize(minSize);
+//		Dimension minSize = new Dimension(800,300*_cnvList.size());
+//		view.setLayout(new BoxLayout(
+		view.setPreferredSize(new Dimension(view.getBounds().width, view.getBounds().height));
 		_panel.add(view);
-		_panel.setMinimumSize(minSize);
+//		_panel.setPreferredSize(minSize);
 		_panel.validate();
 //		_scrollPane.add(view);
 		_scrollPane.validate();
