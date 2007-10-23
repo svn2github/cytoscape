@@ -1,7 +1,6 @@
 package org.genmapp.subgeneviewer;
 
-import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -15,8 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-import org.genmapp.subgeneviewer.splice.view.GraphWalker;
-import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.Cytoscape;
@@ -36,14 +33,14 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 
 		this.setTitle("Subgene Viewer");
 		
-		// AJK: 10/16/07: experiment with using view as JPanel, so as to not overpaint
 		_panel = new JPanel();
 		_panel.setBorder(new TitledBorder("Subgene Viewer"));
 		_panel.setOpaque(false);
 		_panel.setAutoscrolls(true);
 		_panel.setLayout(new BoxLayout(_panel, BoxLayout.Y_AXIS));
 		_scrollPane = new JScrollPane(_panel);
-
+		_scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		_scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		this.getContentPane().add(_scrollPane);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(800, 300);
@@ -63,34 +60,23 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		}
 		System.out.println("SGV: adding view to frame");
 
+		view.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
+		view.setOpaque(false);
+		view.setAutoscrolls(true);
+		view.setVisible(true);
+		Dimension minSize = new Dimension(800,300*_cnvList.size());
+//		view.setLayout(new BoxLayout(view, BoxLayout.Y_AXIS));
+		view.validate();
 		_panel.add(view);
+		_panel.setMinimumSize(minSize);
 		_panel.validate();
-		_panel.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
+//		_scrollPane.add(view);
 		_scrollPane.validate();
 		_cnvList.add(view);
-		view.setOpaque(true);
-		view.setVisible(true);
-		view.validate();
-		view.repaint();	
+//		view.repaint();	
+//		this.add(view);
 	}
 	
-	// AJK: 10/16/07 hack to see if we can't keep subgeneview from being overpainted
-	public void paint(Graphics g)
-	{
-		super.paint(g);
-		for (int i = 0; i < _panel.getComponentCount(); i++)
-		{
-			Component comp = _panel.getComponent(i);
-			// boo hoo, breaks encapsulation
-			if (comp instanceof SpliceNetworkView)
-			{
-				SpliceNetworkView netView = (SpliceNetworkView) comp;
-				System.out.println("Got splice view: " + netView);
-				GraphWalker.renderView(netView);
-			}
-		}
-	}
-
 	public void mouseDragged(MouseEvent e) {
 		// scroll when dragging
 		Rectangle r = new Rectangle(e.getX(), e.getY(), 1, 1);
