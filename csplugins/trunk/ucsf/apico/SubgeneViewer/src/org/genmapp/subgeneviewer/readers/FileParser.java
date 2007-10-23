@@ -23,7 +23,7 @@ public class FileParser {
 
 	BufferedReader _in;
 
-	String _fileName = "c:/java/code/SubgeneViewer/data/example-exon-structure-GenMAPP-CS.txt";
+	String _fileName = "/eclipse/cytoscape/SubgeneViewer2/data/example-exon-structure-GenMAPP-CS.txt";
 	
 	public FileParser(SpliceNetworkView v, String nodeId, String type) {
 		
