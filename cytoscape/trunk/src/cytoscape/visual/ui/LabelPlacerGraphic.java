@@ -138,7 +138,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 	private Stroke detailStroke = new BasicStroke(detailStrokeWidth);
 	private Stroke lowStroke = new BasicStroke(lowStrokeWidth);
 
-	private double gravityDistance = 20;
+	private double gravityDistance = 10;
 
 	/**
 	 * A gui for placing a label relative to a node. Draws the graphic
@@ -187,14 +187,14 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 		offsetRatio = (float) xy / (float) default_xy;
 
 		// dimensions for node box
-		nxy = (int) (0.4 * xy);
+		nxy = (int) (0.3 * xy);
 
 		// locations of node points
 		int[] tnpoints = { center - (nxy / 2), center, center + (nxy / 2) };
 		npoints = tnpoints;
 
 		// dimensions for label box
-		lx = (int) (0.24 * xy);
+		lx = (int) (0.4 * xy);
 		ly = (int) (0.1 * xy);
 
 		// locations for label points
@@ -401,7 +401,7 @@ public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener
 				xPos = npoints[bestNodeX] - lxpoints[bestLabelX];
 				yPos = npoints[bestNodeY] - lypoints[bestLabelY];
 
-				if ( Math.sqrt(offX*offX + offY*offY) > gravityDistance ) {
+				if ( Math.sqrt(offX*offX + offY*offY) > (gravityDistance+(dot/2)) ) {
 					xOffset = (int)offX;
 					yOffset = (int)offY;
 				} else {
