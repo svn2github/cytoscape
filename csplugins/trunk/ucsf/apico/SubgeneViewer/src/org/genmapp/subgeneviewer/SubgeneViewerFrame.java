@@ -39,8 +39,8 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		_panel.setAutoscrolls(true);
 		_panel.setLayout(new BoxLayout(_panel, BoxLayout.Y_AXIS));
 		_scrollPane = new JScrollPane(_panel);
-		_scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		_scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		_scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		_scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.getContentPane().add(_scrollPane);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(800, 300);
@@ -67,6 +67,7 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		Dimension minSize = new Dimension(800,300*_cnvList.size());
 //		view.setLayout(new BoxLayout(view, BoxLayout.Y_AXIS));
 		view.validate();
+		view.setMinimumSize(minSize);
 		_panel.add(view);
 		_panel.setMinimumSize(minSize);
 		_panel.validate();

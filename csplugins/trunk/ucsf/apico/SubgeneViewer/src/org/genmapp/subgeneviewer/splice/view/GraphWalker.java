@@ -64,7 +64,7 @@ public class GraphWalker {
 	public static void calculateBounds (SpliceNetworkView view)
 	{
 		// coordinate system runs from top of 
-		int xOffset = 0;
+		int xOffset = HGAP;
 		int blockBoundsY = VGAP + TITLE_LEGEND_HEIGHT + VGAP + LABEL_TRACK_HEIGHT + 
 		START_SITE_HEIGHT;
 		int featuresBoundsY = blockBoundsY + NODE_HEIGHT // for block

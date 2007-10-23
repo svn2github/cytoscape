@@ -107,7 +107,7 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	
 	public void paint (Graphics g)
 	{
-//		super.paint(g);
+		super.paint(g);
 //		System.out.println ("Painting children for view: " + this);
 //		System.out.println ("For " + this.getComponentCount() + " children.");
 //		this.paintChildren(g);
