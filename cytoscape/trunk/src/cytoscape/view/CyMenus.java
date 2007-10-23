@@ -434,6 +434,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new HideSelectedEdgesAction());
 		addAction(new UnHideSelectedEdgesAction());
 		addAction(new SelectAllEdgesAction());
+		addAction(new SelectAdjacentEdgesAction());
 		addAction(new DeSelectAllEdgesAction());
 		addAction(new BendSelectedEdgesAction());
 		addAction(new StraightenSelectedEdgesAction());
