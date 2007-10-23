@@ -51,6 +51,7 @@ import javax.swing.Action;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBoxMenuItem;
 
+import javax.swing.event.MenuEvent;
 
 /**
  *
@@ -100,11 +101,23 @@ public class CytoPanelAction extends CytoscapeAction {
 
 		if (curState == CytoPanelState.HIDE) {
 			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.DOCK);
-			putValue(Action.NAME, HIDE + " " + title);
+			//putValue(Action.NAME, HIDE + " " + title);
 
 		} else {
 			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.HIDE);
-			putValue(Action.NAME, SHOW + " " + title);
+			//putValue(Action.NAME, SHOW + " " + title);
 		}
 	} 
+
+	/**
+	 * This dynamically sets the title of the menu based on the state of the CytoPanel.
+	 */
+	public void menuSelected(MenuEvent me) {
+		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(position).getState();
+		if (curState == CytoPanelState.HIDE) {
+			putValue(Action.NAME, SHOW + " " + title);
+		} else {
+			putValue(Action.NAME, HIDE + " " + title);
+		}
+	}
 }
