@@ -203,6 +203,25 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
     }
 
+
+    public void onCytoscapeExit() {
+        System.out.println("in onCytoscapeExit");
+        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
+            String key = it.next();
+            CyGoose goose = networkGeese.get(key);
+            if (!goose.getNetworkId().equals("0")) {
+                try {
+                    gaggleBoss.unregister(goose.getName());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        System.out.println("leaving onCytoscapeExit()");
+    }
+
+
     /*
       * Exports and registers the goose with the Boss
       */
@@ -210,10 +229,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         String RegisteredName = null;
         System.out.println("in registerGoose()....");
 
-        /*
-        RmiGaggleConnector connector = new RmiGaggleConnector(goose);
-        new GooseShutdownHook(connector);
-        */
 
         try {
             UnicastRemoteObject.exportObject(goose, 0);
@@ -285,18 +300,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
         return ((Boss) Naming.lookup(uri));
 
-        /* todo dan make this work
-     RmiGaggleConnector connector = new RmiGaggleConnector(nonNetworkGoose);
-     new GooseShutdownHook(connector);
-        try {
-            connector.connectToGaggle();
-        } catch (Exception e) {
-            e.printStackTrace();
-            GagglePlugin.showDialogBox("Failed to connect to Boss!", "Warning", JOptionPane.WARNING_MESSAGE);
-
-        }
-        return connector.getBoss();
-        */
     }
 
     private void registerAction() {
@@ -335,7 +338,9 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         Goose.setName(Network.getTitle());
         RmiGaggleConnector connector = new RmiGaggleConnector(Goose);
         connector.addListener(this);
-        new GooseShutdownHook(connector);
+        if (Network.getIdentifier().equals("0")) {
+            new GooseShutdownHook(connector);
+        }
 
         try {
             connector.connectToGaggle();

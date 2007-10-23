@@ -225,6 +225,66 @@ public class CyGoose implements Goose {
 
     public void handleTuple(String string, GaggleTuple gaggleTuple) throws RemoteException {
         System.out.println("got a   tuple...");
+
+        String condition = (String)gaggleTuple.getMetadata().getSingleAt(0).getValue();
+        gDialog.displayDataType(condition);
+
+        CyNetwork net = Cytoscape.getNetwork(this.getNetworkId());
+        Cytoscape.getDesktop().setFocus(net.getIdentifier());
+        Cytoscape.getDesktop().toFront();
+
+        // if a user has anything previously selected it can obscure changes the
+        // movie makes
+        net.unselectAllNodes();
+        net.unselectAllEdges();
+
+        double upperValue = 0;
+        double lowerValue = 0;
+
+        
+        for (int i = 0; i < gaggleTuple.getData().getSingleList().size(); i++) {
+            Tuple tuple = (Tuple)gaggleTuple.getData().getSingleAt(i).getValue();
+            String node = (String)tuple.getSingleAt(0).getValue();
+            String attribute = (String)tuple.getSingleAt(1).getValue();
+            Object valueObject = tuple.getSingleAt(2).getValue();
+
+            CyNode selectNode = Cytoscape.getCyNode(node);
+            CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+
+
+            if (valueObject instanceof Double) {
+                Double value = (Double)valueObject;
+                if (Double.isInfinite(value)) {
+                    value = 0.0;
+                }
+                nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
+                if (i == 0) {
+                    upperValue = value;
+                    lowerValue = value;
+                } else {
+                    if (value > upperValue) upperValue = value;
+                    if (value < lowerValue) lowerValue = value;
+                }
+            } else if (valueObject instanceof Integer) {
+                Integer value = (Integer)valueObject;
+                nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
+                if (i == 0) {
+                    upperValue = value;
+                    lowerValue = value;
+                } else {
+                    if (value > upperValue) upperValue = value;
+                    if (value < lowerValue) lowerValue = value;
+                }
+// YIKES, WHAT ABOUT BOOLEANS?
+            } else if (valueObject instanceof String) {
+                String value = (String)valueObject;
+                nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
+            } else {
+                throw new RuntimeException("Got a movie frame of the wrong type!");
+            }
+        }
+
+        
     }
 
 
@@ -245,33 +305,33 @@ public class CyGoose implements Goose {
             throws RemoteException {
         gDialog.displayDataType(dataTitle);
 
-        HashMap<String, ArrayList> AttrMap = hashMap;
+        HashMap<String, ArrayList> attrMap = hashMap;
         print("********handleMap(String, String, HashMap) \"dataTitle\"***********");
-        CyNetwork Net = Cytoscape.getNetwork(this.getNetworkId());
-        Cytoscape.getDesktop().setFocus(Net.getIdentifier());
+        CyNetwork net = Cytoscape.getNetwork(this.getNetworkId());
+        Cytoscape.getDesktop().setFocus(net.getIdentifier());
         Cytoscape.getDesktop().toFront();
 
         // if a user has anything previously selected it can obscure changes the
         // movie makes
-        Net.unselectAllNodes();
-        Net.unselectAllEdges();
+        net.unselectAllNodes();
+        net.unselectAllEdges();
 
-        double UpperValue = 0;
-        double LowerValue = 0;
+        double upperValue = 0;
+        double lowerValue = 0;
 
         // iterate over the attribute hash, key=attribute name, value= attribute
         // values ArrayList
-        Iterator<String> attrKeyIter = AttrMap.keySet().iterator();
+        Iterator<String> attrKeyIter = attrMap.keySet().iterator();
         while (attrKeyIter.hasNext()) {
             String attrName = attrKeyIter.next();
 
-            ArrayList AttrVals = (ArrayList) AttrMap.get(attrName);
+            ArrayList attrVals = (ArrayList) attrMap.get(attrName);
 
             // check the array contains other arrays as expected
             // elements of ArrayLists: [array_of_node_names, array_of_values]
-            String[] NodeIds = (String[]) AttrVals.get(0);
+            String[] nodeIds = (String[]) attrVals.get(0);
 
-            Object nodeVals = AttrVals.get(1);
+            Object nodeVals = attrVals.get(1);
             Class nodeValsClass = nodeVals.getClass();
             if (!nodeValsClass.isArray()) {
                 System.err.println(this
@@ -283,48 +343,48 @@ public class CyGoose implements Goose {
             // STRING, BOOLEAN, or INT)
             String valType = nodeValsClass.getComponentType().getName();
 
-            for (int i = 0; i < NodeIds.length; i++) {
-                CyNode selectNode = Cytoscape.getCyNode(NodeIds[i]);
-                CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
+            for (int i = 0; i < nodeIds.length; i++) {
+                CyNode selectNode = Cytoscape.getCyNode(nodeIds[i]);
+                CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 
                 // I can seed mappings currently only for DOUBLE's or INT's as these are
                 // continuous mappings
                 if (selectNode != null) {
-                    NodeAtts.setAttribute(selectNode.getIdentifier(), Semantics.SPECIES,
+                    nodeAtts.setAttribute(selectNode.getIdentifier(), Semantics.SPECIES,
                             species);
 
                     // set all attributes from the map
                     if (valType.equals("double")) { // DOUBLE
-                        double[] Value = (double[]) AttrVals.get(1);
-                        NodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-                                new Double(Value[i]));
+                        double[] value = (double[]) attrVals.get(1);
+                        nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
+                                new Double(value[i]));
                         // first node we'll just set the values for a base
                         if (i == 0) {
-                            UpperValue = Value[i];
-                            LowerValue = Value[i];
+                            upperValue = value[i];
+                            lowerValue = value[i];
                         } else {
-                            if (Value[i] > UpperValue) UpperValue = Value[i];
-                            if (Value[i] < LowerValue) LowerValue = Value[i];
+                            if (value[i] > upperValue) upperValue = value[i];
+                            if (value[i] < lowerValue) lowerValue = value[i];
                         }
                     } else if (valType.equals("int")) { // INT
-                        int[] Value = (int[]) AttrVals.get(1);
-                        NodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-                                new Integer(Value[i]));
+                        int[] value = (int[]) attrVals.get(1);
+                        nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
+                                new Integer(value[i]));
                         if (i == 0) {
-                            UpperValue = Value[i];
-                            LowerValue = Value[i];
+                            upperValue = value[i];
+                            lowerValue = value[i];
                         } else {
-                            if (Value[i] > UpperValue) UpperValue = Value[i];
-                            if (Value[i] < LowerValue) LowerValue = Value[i];
+                            if (value[i] > upperValue) upperValue = value[i];
+                            if (value[i] < lowerValue) lowerValue = value[i];
                         }
                     } else if (valType.equals("boolean")) { // BOOLEAN
-                        boolean[] Value = (boolean[]) AttrVals.get(1);
-                        NodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-                                new Boolean(Value[i]));
+                        boolean[] value = (boolean[]) attrVals.get(1);
+                        nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
+                                new Boolean(value[i]));
                     } else if (valType.equals("java.lang.String")) { // STRING
-                        String[] Value = (String[]) AttrVals.get(1);
-                        NodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-                                Value[i]);
+                        String[] value = (String[]) attrVals.get(1);
+                        nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
+                                value[i]);
                     } else {
                         System.err.println(this
                                 + ".handleMap() error: incompatible attribute data type ("
@@ -333,13 +393,13 @@ public class CyGoose implements Goose {
                     }
                 }
             }
-            UpperValue = UpperValue + (UpperValue * 0.2);
-            LowerValue = LowerValue - (LowerValue * 0.2);
+            upperValue = upperValue + (upperValue * 0.2);
+            lowerValue = lowerValue - (lowerValue * 0.2);
 
-            visualMap.seedMappings(attrName, UpperValue, LowerValue);
+            visualMap.seedMappings(attrName, upperValue, lowerValue);
         }
         Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-        Cytoscape.getNetworkView(Net.getIdentifier()).redrawGraph(true, true);
+        Cytoscape.getNetworkView(net.getIdentifier()).redrawGraph(true, true);
     }
 
     /**
@@ -436,19 +496,24 @@ public class CyGoose implements Goose {
                 if (title == null) {
                     title = namelist.getSpecies();
                 }
-                CyNetwork NewNet = Cytoscape.createNetwork(title, false);
+                CyNetwork NewNet = Cytoscape.createNetwork(title, true);
                 for (String CurrentName : names) {
                     Node NewNode = (Node) Cytoscape.getCyNode(CurrentName, true);
-                    CyNet.addNode(NewNode);
-                    CyNet.setSelectedNodeState(NewNode, true);
+//                    CyNet.addNode(NewNode);
+//                    CyNet.setSelectedNodeState(NewNode, true);
+                    NewNet.addNode(NewNode);
+                    //CyNet.setSelectedNodeState(NewNode, true);
                 }
+                Cytoscape.getNetworkView(NewNet.getIdentifier()).applyLayout(CyLayouts.getDefaultLayout());
+                Cytoscape.getNetworkView(NewNet.getIdentifier()).redrawGraph(true,true);
             } else {
                 for (String CurrentName : names) {
                     CyNode SelectNode = Cytoscape.getCyNode(CurrentName);
-                    if ((SelectNode != null)) {
-                        CyNet.setSelectedNodeState((Node) SelectNode, true);
+                    if (SelectNode != null) {
+                        CyNet.setSelectedNodeState(SelectNode, true);
                     }
                 }
+                System.out.println("number of matching nodes: " + CyNet.getSelectedNodes().size());
 
                 if (CyNet.getSelectedNodes().size() <= 0) {
                     String Msg = "No matching nodes were found, please check that you are using the same ID's between geese";
