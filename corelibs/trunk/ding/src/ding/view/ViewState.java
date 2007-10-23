@@ -59,37 +59,67 @@ class ViewState {
 	protected Map<Edge, List> anchors;
 	protected Map<Edge, Integer> linetype;
 	protected DGraphView view;
+	protected ViewChangeEdit.SavedObjs savedObjs;
 
 	/**
 	 * @param v The view whose state we're recording.
 	 */
-	public ViewState(DGraphView v) {
+	public ViewState(DGraphView v, ViewChangeEdit.SavedObjs whatToSave) {
 		view = v;
-		points = new HashMap<Node, Point2D.Double>();
-		anchors = new HashMap<Edge, List>();
-		linetype = new HashMap<Edge, Integer>();
+		points = null;
+		anchors = null;
+		linetype = null;
+		savedObjs = whatToSave;
 
 		// record the state of the view
 		center = view.getCenter();
 		scaleFactor = view.getZoom();
-		points.clear();
 
 		// Use nodes as keys because they are less volatile than
 		// node views, which can disappear between when this edit
 		// is created and when it is used.
-		Iterator ni = view.getGraphPerspective().nodesIterator(); 
-		while (ni.hasNext()) {
-			Node n = (Node) ni.next();
-			NodeView nv = view.getNodeView(n);
-			points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
+		if (whatToSave == ViewChangeEdit.SavedObjs.ALL || whatToSave == ViewChangeEdit.SavedObjs.NODES) {
+			points = new HashMap<Node, Point2D.Double>();
+			for (Node n: (List<Node>)view.getGraphPerspective().nodesList()) {
+				NodeView nv = view.getNodeView(n);
+				points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
+			}
 		}
 
-		Iterator ei = view.getGraphPerspective().edgesIterator(); 
-		while (ei.hasNext()) {
-			Edge e = (Edge) ei.next();
-			EdgeView ev = view.getEdgeView(e);
-			anchors.put(e, ev.getBend().getHandles());
-			linetype.put(e, ev.getLineType());
+		if (whatToSave == ViewChangeEdit.SavedObjs.ALL || whatToSave == ViewChangeEdit.SavedObjs.EDGES) {
+			anchors = new HashMap<Edge, List>();
+			linetype = new HashMap<Edge, Integer>();
+			for (Edge e: (List<Edge>)view.getGraphPerspective().edgesList()) {
+				EdgeView ev = view.getEdgeView(e);
+				anchors.put(e, ev.getBend().getHandles());
+				linetype.put(e, ev.getLineType());
+			}
+		}
+
+		if (whatToSave == ViewChangeEdit.SavedObjs.SELECTED ||
+		    whatToSave == ViewChangeEdit.SavedObjs.SELECTED_NODES ) {
+			points = new HashMap<Node, Point2D.Double>();
+
+			Iterator<NodeView> nodeIter = view.getSelectedNodes().iterator();
+			while (nodeIter.hasNext()) {
+				NodeView nv = nodeIter.next();
+				Node n = nv.getNode();
+				points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
+			}
+		}
+
+		if (whatToSave == ViewChangeEdit.SavedObjs.SELECTED ||
+		    whatToSave == ViewChangeEdit.SavedObjs.SELECTED_EDGES ) {
+			anchors = new HashMap<Edge, List>();
+			linetype = new HashMap<Edge, Integer>();
+
+			Iterator<EdgeView> edgeIter = view.getSelectedEdges().iterator();
+			while (edgeIter.hasNext()) {
+				EdgeView ev = edgeIter.next();
+				Edge e = ev.getEdge();
+				anchors.put(e, ev.getBend().getHandles());
+				linetype.put(e, ev.getLineType());
+			}
 		}
 	}
 
@@ -117,13 +147,34 @@ class ViewState {
 			return false;
 		}
 
+		if ( savedObjs != vs.savedObjs) {
+			return false;
+		}
+
 		// Use nodes as keys because they are less volatile than views...
-		Iterator ni = view.getGraphPerspective().nodesIterator(); 
-		while (ni.hasNext()) {
-			Node n = (Node) ni.next();
-			NodeView nv = view.getNodeView(n);
-			if ( !points.get(n).equals( vs.points.get(n) ) ) {
+		if (points != null) {
+			if (vs.points == null || points.size() != vs.points.size()) {
 				return false;
+			}
+			for (Node n: points.keySet()) {
+				if ( !points.get(n).equals( vs.points.get(n) ) ) {
+					return false;
+				}
+			}
+		}
+
+		if (anchors != null) {
+			if (vs.anchors == null || anchors.size() != vs.anchors.size()) {
+				return false;
+			}
+			for (Edge e: anchors.keySet()) {
+				if ( !anchors.get(e).equals(vs.anchors.get(e))) {
+					return false;
+				}
+
+				if (!linetype.get(e).equals(vs.linetype.get(e))) {
+					return false;
+				}
 			}
 		}
 
@@ -137,26 +188,26 @@ class ViewState {
 	 */
 	public void apply() {
 
-		// Use nodes as keys because they are less volatile than views...
-		Iterator ni = view.getGraphPerspective().nodesIterator(); 
-		while (ni.hasNext()) {
-			Node n = (Node) ni.next();
-			NodeView nv = view.getNodeView(n);
-			Point2D.Double p = points.get(n);
-			nv.setXPosition(p.getX());
-			nv.setYPosition(p.getY());
+		if (points != null) {
+			// Use nodes as keys because they are less volatile than views...
+			for (Node n: points.keySet()) {
+				NodeView nv = view.getNodeView(n);
+				Point2D.Double p = points.get(n);
+				nv.setXPosition(p.getX());
+				nv.setYPosition(p.getY());
+			}
 		}
 
 		view.setZoom(scaleFactor);
 		view.setCenter(center.getX(), center.getY());
 		view.updateView();
 
-		Iterator ei = view.getGraphPerspective().edgesIterator(); 
-		while (ei.hasNext()) {
-			Edge e = (Edge) ei.next();
-			EdgeView ev = view.getEdgeView(e);
-			ev.getBend().setHandles( anchors.get(e) );
-			ev.setLineType( linetype.get(e).intValue() );
+		if (anchors != null) {
+			for (Edge e: anchors.keySet()) {
+				EdgeView ev = view.getEdgeView(e);
+				ev.getBend().setHandles( anchors.get(e) );
+				ev.setLineType( linetype.get(e).intValue() );
+			}
 		}
 	}
 }

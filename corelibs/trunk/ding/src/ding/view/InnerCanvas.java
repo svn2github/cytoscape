@@ -373,7 +373,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (e.isShiftDown() && isAnchorKeyDown(e))
 				return;
 
-			m_undoable_edit = new ViewChangeEdit(m_view, "Move");
+			// m_undoable_edit = new ViewChangeEdit(m_view, "Move");
+			m_undoable_edit = null;
 
 			m_currMouseButton = 1;
 			m_lastXMousePos = e.getX();
@@ -473,6 +474,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					if (isAnchorKeyDown(e)) {
 						final int edge = chosenAnchor >>> 6;
 						final int anchorInx = chosenAnchor & 0x0000003f;
+						//****** Save remove handle
+						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle");
 						((DEdgeView) m_view.getEdgeView(~edge)).removeHandle(anchorInx);
 						m_button1NodeDrag = false;
 					} else {
@@ -500,10 +503,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						m_ptBuff[0] = m_lastXMousePos;
 						m_ptBuff[1] = m_lastYMousePos;
 						m_view.xformComponentToNodeCoords(m_ptBuff);
-
+						//******* Store current handle list *********
+						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle");
 						final int chosenInx = ((DEdgeView) m_view.getEdgeView(chosenEdge))
-						                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
-						                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                (float) m_ptBuff[1]));
+																														.addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
+																														(float) m_ptBuff[1]));
 						m_view.m_selectedAnchors.insert(((~chosenEdge) << 6) | chosenInx);
 					}
 
@@ -588,12 +592,14 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			// something in the graph view.
 			repaint();
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
-			m_undoable_edit = new ViewChangeEdit(m_view,"Move");
+			//******** Save all node positions
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
 			m_currMouseButton = 2;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
 		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
-			m_undoable_edit = new ViewChangeEdit(m_view,"Move");
+			//******** Save all node positions
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
 			m_currMouseButton = 3;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
@@ -752,7 +758,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				}
 			}
 
-			m_undoable_edit.post();
+			if (m_undoable_edit != null)
+				m_undoable_edit.post();
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
 			if (m_currMouseButton == 2)
 				m_currMouseButton = 0;
@@ -774,6 +781,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public void mouseDragged(MouseEvent e) {
 		if (m_currMouseButton == 1) {
 			if (m_button1NodeDrag) {
+				//*****SAVE SELECTED NODE & EDGE POSITIONS******
+				if (m_undoable_edit == null) {
+					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move");
+				}
 				synchronized (m_lock) {
 					m_ptBuff[0] = m_lastXMousePos;
 					m_ptBuff[1] = m_lastYMousePos;

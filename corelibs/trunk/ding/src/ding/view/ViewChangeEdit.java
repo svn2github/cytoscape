@@ -67,20 +67,29 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 
 	private String m_label;
 
+	private SavedObjs m_savedObjs;
+
+	public static enum SavedObjs { ALL, SELECTED, NODES, EDGES, SELECTED_NODES, SELECTED_EDGES }
+
 	public ViewChangeEdit(DGraphView view,String label) {
+		this(view, SavedObjs.ALL, label);
+	}
+
+	public ViewChangeEdit(DGraphView view, SavedObjs saveObjs, String label) {
 		super();
 		m_view = view;
 		m_label = label;
+		m_savedObjs = saveObjs;
 
 		saveOldPositions();
 	}
 
 	protected void saveOldPositions() {
-		origState = new ViewState(m_view);
+		origState = new ViewState(m_view, m_savedObjs);
 	}
 
 	protected void saveNewPositions() {
-		newState = new ViewState(m_view);
+		newState = new ViewState(m_view, m_savedObjs);
 	}
 
 	public void post() {
