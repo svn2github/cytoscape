@@ -56,6 +56,7 @@ public class SubgeneController extends MouseAdapter {
 
 					switch (viewType) {
 					case EXON_VIEW: {
+						System.out.println("Adding view");
 						_view = SpliceController.buildSpliceViewer(_nodeId);
 						System.out.println("added view: " + _view);
 						break;
@@ -78,7 +79,7 @@ public class SubgeneController extends MouseAdapter {
 		else if ((e.getClickCount() >= 2) && (e.isAltDown()) && (e.isControlDown()))
 		{
 			SpliceNetworkView spliceView = Example_Exon_Structure_GenMAPP_CS.
-			testSpliceNetworkView_E1_E4();
+			testSpliceNetworkView(_nodeId);
 			Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView
 			(spliceView);
 		}

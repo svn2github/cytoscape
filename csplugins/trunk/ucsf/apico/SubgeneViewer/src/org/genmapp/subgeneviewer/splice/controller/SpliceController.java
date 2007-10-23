@@ -18,11 +18,13 @@ public class SpliceController extends SubgeneController {
 	public static SubgeneNetworkView buildSpliceViewer(String nodeId) {
 		// todo: make this a Mediator method, so that we can transition to
 		//       embedded database and remote server
-		SpliceNetworkView spliceView = new SpliceNetworkView();	
+		System.out.println("building splice viewer for node: "+nodeId); 
+		SpliceNetworkView spliceView = new SpliceNetworkView();
+		spliceView=Example_Exon_Structure_GenMAPP_CS.testSpliceNetworkView(nodeId); 
 		spliceView.setParentNode(Cytoscape.getCyNode(nodeId));
 		System.out.println("parent CyNode for splice view set to: " + 
 				spliceView.getParentNode());
-		spliceView.parseSplice(nodeId);
+		//spliceView.parseSplice(nodeId);
 		
 		Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView(spliceView); 
 //		spliceView.renderSplice(nodeId);
