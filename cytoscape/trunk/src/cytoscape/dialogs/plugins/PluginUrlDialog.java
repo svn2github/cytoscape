@@ -371,7 +371,7 @@ public class PluginUrlDialog extends JDialog {
 
 				if (NewPlugins.size() <= 0) {
 					dialog.setMessage("No plugins compatible with "
-							+ CytoscapeVersion.version
+							+ new CytoscapeVersion().getFullVersion()
 							+ " available from this site.");
 				} else {
 					dialog.setMessage("");
