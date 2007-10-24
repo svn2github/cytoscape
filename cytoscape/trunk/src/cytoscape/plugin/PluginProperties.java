@@ -162,8 +162,6 @@ public class PluginProperties extends Properties {
 			pi.setReleaseDate(getProperty(PluginProperty.RELEASE_DATE.getPropertyKey()));
 		}
 		
-		
-		
 		// on the off chance that someone did not install this via the PM this should be null if the version is not current
 		String [] AllCytoscapeVersions = getProperty(PluginProperty.CYTOSCAPE_VERSION.getPropertyKey()).split(","); 
 		boolean versionOk = false;
@@ -193,7 +191,7 @@ public class PluginProperties extends Properties {
 				}
 			}
 
-			if (v.equals(cytoscape.CytoscapeVersion.version)) {
+			if (v.equals(new cytoscape.CytoscapeVersion().getMajorVersion())) {
 				pi.setCytoscapeVersion(v);
 				versionOk = true;
 				break;
@@ -209,7 +207,7 @@ public class PluginProperties extends Properties {
 		if (!versionOk) {
 			pi.setCategory(Category.OUTDATED);
 			String DescMsg = "<p><font color='red'><b>Cytoscape Version Warning:</b><br><i>This plugin has not been verified to work with Cytoscape v" + 
-				cytoscape.CytoscapeVersion.version + " .</i></font>";
+				new cytoscape.CytoscapeVersion().getFullVersion() + " .</i></font>";
 			pi.setDescription( pi.getDescription() + DescMsg );
 			pi.setCytoscapeVersion(RecentCyVersion);
 		}
