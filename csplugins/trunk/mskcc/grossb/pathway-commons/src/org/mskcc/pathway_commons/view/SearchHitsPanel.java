@@ -8,6 +8,8 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 
+import cytoscape.Cytoscape;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -36,6 +38,9 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private JTextPane summaryTextPane;
     private Popup popup;
     private PhysicalEntityDetailsFrame summaryPanel;
+	private boolean createdPopup = false;
+	private JLayeredPane appLayeredPane;
+	private static int SUMMARY_PANEL_LAYER = 1; // be positive
 
     /**
      * Constructor.
@@ -47,6 +52,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
             pathwayTableModel, PathwayCommonsWebApi webApi) {
         this.interactionTableModel = interactionTableModel;
         this.pathwayTableModel = pathwayTableModel;
+		appLayeredPane = Cytoscape.getDesktop().getRootPane().getLayeredPane();
         webApi.addApiListener(this);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -102,11 +108,15 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
              * @param mouseEvent Mouse Event.
              */
             public void mouseExited(MouseEvent mouseEvent) {
-                if (popup != null) {
+                if (createdPopup) {
+					//if (popup != null) {
                     Timer timer = new Timer(1000, new ActionListener() {
                         public void actionPerformed(ActionEvent actionEvent) {
-                            popup.hide();
-                            popup = null;
+                            //popup.hide();
+                            //popup = null;
+							appLayeredPane.remove(summaryPanel);
+							appLayeredPane.repaint();
+							createdPopup = false;
                         }
                     });
                     timer.setRepeats(false);
@@ -119,8 +129,21 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         return peList;
     }
 
-    private void createPopup() {
+	private void createPopup() {
+		if (!createdPopup) {
+            int MARGIN = 30;
+			int x = this.getLocationOnScreen().x 
+				- (int) (this.getSize().getWidth()) - MARGIN;
+			int y = this.getLocationOnScreen().y;
+			summaryPanel.setBounds(x,y, this.getWidth(), (int)(this.getHeight()*.75));
+			appLayeredPane.add(summaryPanel, SUMMARY_PANEL_LAYER);
+			createdPopup = true;
+		}
+	}
+
+    private void createPopup2() {
         // If no pop-up exists, create one.
+
         if (popup == null) {
             PopupFactory popupFactory = PopupFactory.getSharedInstance();
 
@@ -132,13 +155,13 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
             //  Determine location of popup.
             int MARGIN = 30;
             int x = this.getLocationOnScreen().x
-                    - (int) (this.getSize().getWidth()) - MARGIN;
+			       - (int) (this.getSize().getWidth()) - MARGIN;
             int y = this.getLocationOnScreen().y;
 
             //  Create the popup
             popup = popupFactory.getPopup(this, summaryPanel, x, y);
             popup.show();
-        }
+		}
     }
 
     /**
