@@ -34,7 +34,8 @@
   </div>
 <br>  
 <p>
-This is a preliminary schedule; times and order of events are likely to change. The arrangement of days however, is fixed.
+Find a more detailed, printable version of the programme <a href="pdf/ProgrammeAndRoute.pdf"><b>here</b></a><br> 
+The website will be updated shortly with details accordingly. Speaker resumes and (plugin) abstracts will be added also<br> 
 <br>
 <br>
 The main event is the Public Symposium on November 8<sup>th</sup> entitled: <a href="#nov_8"><strong>Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</strong></a>. 
