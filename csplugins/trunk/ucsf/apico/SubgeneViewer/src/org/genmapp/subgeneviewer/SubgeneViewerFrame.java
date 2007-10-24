@@ -1,5 +1,6 @@
 package org.genmapp.subgeneviewer;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -61,12 +62,13 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		System.out.println("SGV: adding view to frame");
 
 		view.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
-		view.setOpaque(false);
+		view.setBackground(new Color(247,243,213));
+		view.setOpaque(true);
 		view.setAutoscrolls(true);
 		view.setVisible(true);
-//		Dimension minSize = new Dimension(800,300*_cnvList.size());
+		//		Dimension minSize = new Dimension(800,300*_cnvList.size());
 //		view.setLayout(new BoxLayout(
-		view.setPreferredSize(new Dimension(1000, 300));
+		view.setPreferredSize(new Dimension(1000, 200));
 		_panel.add(view);
 //		_panel.setPreferredSize(minSize);
 		_panel.validate();

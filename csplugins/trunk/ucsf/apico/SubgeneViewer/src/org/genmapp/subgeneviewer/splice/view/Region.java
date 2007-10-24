@@ -54,7 +54,7 @@ public class Region extends SubgeneNodeView {
 		}
 		
 		
-		feature = new Feature(this);
+		feature = new Feature(this, feature_id);
 		feature.setId(id);
 		feature.setFeature_id(feature_id);
 		listOfFeatures.add(feature);

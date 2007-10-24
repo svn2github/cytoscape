@@ -6,6 +6,10 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.Iterator;
 
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+
 public class GraphWalker {
 	
 
@@ -106,7 +110,7 @@ public class GraphWalker {
 					region
 							.setBounds(regionXOffset, blockBoundsY
 									+ (NODE_HEIGHT / 2) - 1, xOffset
-									- regionXOffset, 2); // 2-pixel line for
+									- regionXOffset, 1); // 2-pixel line for
 															// introns
 				} else if (type.trim().equals("e")) {
 					region.setBounds(regionXOffset, blockBoundsY
@@ -150,7 +154,7 @@ public class GraphWalker {
 		Rectangle rect;
 
 		g.setColor(Color.black);
-
+		
 		Iterator<Block> blocks = view.getBlockInterator();
 		while (blocks.hasNext()) {
 
@@ -161,6 +165,9 @@ public class GraphWalker {
 				rect = region.getBounds();
 				// System.out.println ("Drawing region: " + region.getId() +
 				// " in bounding box " + rect);
+				g.setColor(new Color(225,225,255));
+				g.fillRect(rect.x, rect.y, rect.width, rect.height);
+				g.setColor(Color.black);
 				g.drawRect(rect.x, rect.y, rect.width, rect.height);
 
 				Iterator<Feature> features = region.getFeatureInterator();
@@ -171,9 +178,25 @@ public class GraphWalker {
 					// +
 					// " in bounding box " + rect);
 					g.drawRect(rect.x, rect.y, rect.width, rect.height);
-
+					
+					//mapping color 
+					CyNode node = feature.getCyNode();
+					CyAttributes att = Cytoscape.getNodeAttributes();
+					System.out.println("returned node is "+node.getIdentifier());
+					int attR = att.getIntegerAttribute(node.getIdentifier(), "red").intValue();
+					int attG = att.getIntegerAttribute(node.getIdentifier(), "green").intValue();
+					int attB = att.getIntegerAttribute(node.getIdentifier(), "blue").intValue();
+					
+					 Color secondColor = new Color(attR, attG, attB);
+			         // map from green to red through black, THIS IS A TEMPORARY HACK
+					
+			         g.setColor(secondColor);
+			         g.fillRect(rect.x, rect.y, rect.width, rect.height);
+					
+					System.out.println("color is "+secondColor);
+					
 					// g.drawString(feature.getId(), rect.x + 1, rect.y + 1);
-					g.setColor(Color.blue);
+					g.setColor(Color.white);
 
 					g.drawString(feature.getFeature_id().trim(), rect.x + 3,
 							rect.y + g.getFont().getSize() + 3);
