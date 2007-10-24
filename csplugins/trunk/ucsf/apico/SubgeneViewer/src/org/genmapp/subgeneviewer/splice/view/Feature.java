@@ -39,19 +39,28 @@ public class Feature extends SubgeneNodeView {
 		// temp setting of color att
 		Double random = Math.random();
 		// map from green to red through black, THIS IS A TEMPORARY HACK
-		if (random < 0.5) {
+		if (random < 0.4) {
 		_att.setAttribute(cyNode.getIdentifier(), "red",
 				0);
 		_att.setAttribute(cyNode.getIdentifier(), "green",
 				(int) (255 * (1.0 - random)));
 		_att.setAttribute(cyNode.getIdentifier(), "blue",0);
 		}
-		else {
+		else if (random > 0.6){
+		
 			_att.setAttribute(cyNode.getIdentifier(), "red",
 					(int) (255 * random));
 			_att.setAttribute(cyNode.getIdentifier(), "green",
 					0);
 			_att.setAttribute(cyNode.getIdentifier(), "blue",0);
+			
+		}
+		else {
+			_att.setAttribute(cyNode.getIdentifier(), "red",
+					240);
+			_att.setAttribute(cyNode.getIdentifier(), "green",
+					240);
+			_att.setAttribute(cyNode.getIdentifier(), "blue",240);
 			
 		}
 
