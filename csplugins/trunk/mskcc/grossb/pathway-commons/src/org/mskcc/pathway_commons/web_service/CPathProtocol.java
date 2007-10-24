@@ -4,12 +4,13 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.net.URLEncoder;
+import java.net.*;
+
+import cytoscape.task.TaskMonitor;
 
 /**
  * Utility Class for Connecting to the cPath Web Service API.
@@ -148,6 +149,7 @@ public class CPathProtocol {
     private int startIndex;
     private String format;
     private String baseUrl;
+    private volatile GetMethod method;
 
     /**
      * Constructor.
@@ -213,33 +215,48 @@ public class CPathProtocol {
     }
 
     /**
+     * Abort the Request.
+     */
+    public void abort() {
+        if (method != null) {
+            method.abort();
+        }
+    }
+
+    /**
      * Connects to cPath Web Service API.
      *
      * @return XML Document.
      * @throws CPathException    Indicates Error connecting.
      * @throws EmptySetException All went all, but no results found.
      */
-    public String connect () throws CPathException, EmptySetException {
+    public String connect (TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
-            URL cPathUrl = new URL(liveUrl);
-            HttpURLConnection cPathConnection = (HttpURLConnection) cPathUrl.openConnection();
+
+            // Create an instance of HttpClient.
+            HttpClient client = new HttpClient();
+
+            // Create a method instance.
+            method = new GetMethod(liveUrl);
+
+            int statusCode = client.executeMethod(method);
+            long contentLength = method.getResponseContentLength();
 
             //  Check status code
-            int statusCode = cPathConnection.getResponseCode();
             checkHttpStatusCode(statusCode);
 
-            // Read all the text returned by the server
-            BufferedReader in = new BufferedReader(new InputStreamReader(cPathUrl.openStream()));
+            //  Read in Content
+            BufferedReader in = new BufferedReader (new InputStreamReader
+                    (method.getResponseBodyAsStream()));
             StringBuffer buf = new StringBuffer();
             String str;
             while ((str = in.readLine()) != null) {
                 buf.append(str + "\n");
             }
             in.close();
-
-            //  Check for errors
+            
             String content = buf.toString();
             if (content.toLowerCase().indexOf(XML_TAG) >= 0) {
                 //  Check for protocol errors.
@@ -249,29 +266,19 @@ public class CPathProtocol {
                     Document document = builder.build(reader);
                     checkForErrors(document);
                 }
-                return content;
+                return content.trim();
             } else {
                 return content.trim();
             }
         } catch (UnknownHostException e) {
-            String msg = "Network error occurred while tring to connect to "
-                    + "the cPath Web Service.  Could not find server:  "
-                    + e.getMessage()
-                    + ". Please check your server and network settings, "
-                    + "and try again.";
-            throw new CPathException(msg, e);
+            throw new CPathException(CPathException.ERROR_UNKNOWN_HOST, e);
+        } catch (SocketException e) {
+            //  Socket exception occurs when user manually cancels the request
+            throw new CPathException(CPathException.ERROR_CANCELED_BY_USER, e);
         } catch (IOException e) {
-            String msg = "Network error occurred while trying to "
-                    + "connect to the cPath Web Service.  "
-                    + "Please check your server and network settings, "
-                    + "and try again.";
-            throw new CPathException(msg, e);
+            throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
         } catch (JDOMException e) {
-            String msg = "Error occurred while trying to parse XML results "
-                    + "retrieved from the cPath Web Service.  "
-                    + "Please check your server and network settings, "
-                    + "and try again.";
-            throw new CPathException(msg, e);
+            throw new CPathException(CPathException.ERROR_XML_PARSING, e);
         }
     }
 
@@ -321,10 +328,7 @@ public class CPathProtocol {
     private void checkHttpStatusCode (int statusCode)
             throws CPathException {
         if (statusCode != 200) {
-            String msg = new String("Error Connecting to cPath "
-                    + "Web Service (Details:  HTTP Status Code:  "
-                    + statusCode + ")");
-            throw new CPathException(msg);
+            throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode);
         }
     }
 
@@ -338,11 +342,8 @@ public class CPathProtocol {
             if (errorCode.equals("460")) {
                 throw new EmptySetException();
             } else {
-                String msg = new String("Error Connecting to cPath "
-                        + "Web Service (Error Code:  " + errorCode
-                        + ", Error Message:  " + errorMsg
-                        + ")");
-                throw new CPathException(msg);
+                throw new CPathException(CPathException.ERROR_WEB_SERVICE_API, 
+                    "Error Code:  " + errorCode + ", Error Message:  " + errorMsg);
             }
         }
     }
