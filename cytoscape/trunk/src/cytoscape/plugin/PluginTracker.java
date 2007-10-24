@@ -291,8 +291,22 @@ public class PluginTracker {
 	 * @param Tag
 	 * @return
 	 */
+	// TODO this needs to go through both the pluginlist and the theme pluginlist
+	// may need different method or two different lists as the first list will actually 
+	// contain elements of the second (which is why there is an error)
 	protected Element getMatchingInfoObj(DownloadableInfo Obj, String Tag) {
 		List<Element> InfoObjs = trackerDoc.getRootElement().getChild(Tag).getChildren();
+		
+		Iterator<Element> themeI = trackerDoc.getRootElement().getChild(Tag).getChildren(PluginXml.THEME.getTag()).iterator();
+		while (themeI.hasNext()) {
+			Element Theme = themeI.next();
+			List<Element> ThemePluginObjs = Theme.getChild(PluginXml.PLUGIN_LIST.getTag()).getChildren();
+//			for (Element e: ThemePluginObjs) {
+//				System.out.println("--- " + e.getName());
+//				InfoObjs.add(e);
+//			}
+			//InfoObjs.addAll(ThemePluginObjs);
+		}
 		
 		for (Element Current: InfoObjs) {
 		if ( Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) && 
