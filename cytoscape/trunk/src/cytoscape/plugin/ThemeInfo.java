@@ -105,6 +105,13 @@ public class ThemeInfo extends DownloadableInfo {
 		this.themePlugins.clear();
 	}
 	
+	public String getInstallLocation() {
+		 java.io.File Dir = new java.io.File(
+				 PluginManager.getPluginManager().getPluginManageDirectory(),
+				 this.getName()+"-"+this.getObjectVersion());
+		return Dir.getAbsolutePath();
+	}
+	
 	public String htmlOutput() {
 		String Html = this.basicHtmlOutput();
 		
