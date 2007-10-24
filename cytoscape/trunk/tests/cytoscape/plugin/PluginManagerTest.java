@@ -24,10 +24,23 @@ public class PluginManagerTest extends TestCase {
 	private String getFileUrl() {
 		String FS = "/";
 		String UserDir = System.getProperty("user.dir");
+		if (System.getProperty("os.name").contains("Windows")) {
+			UserDir = UserDir.replaceFirst("\\w:", "");
+			UserDir = UserDir.replaceAll("\\\\", FS);
+		}
 		UserDir = UserDir.replaceFirst("/", "");
+		
 		return "file:///" + UserDir + FS + "testData" + FS + "plugins" + FS;
 	}
 
+	private String cleanFileUrl(String url) {
+		if (System.getProperty("os.name").contains("Windows")) {
+			url = url.replaceFirst("\\w:", "");
+		}
+		
+		return "file://" + url;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -35,19 +48,21 @@ public class PluginManagerTest extends TestCase {
 	 */
 	protected void setUp() throws java.io.IOException {
 		transformedXML = PluginTestXML.transformXML("test_plugin.xml", getFileUrl());
-		testUrl = "file://" + transformedXML.getAbsolutePath();
+		//testUrl = "file://" + transformedXML.getAbsolutePath();
+		testUrl = cleanFileUrl(transformedXML.getAbsolutePath());
 		//testUrl = getFileUrl() + "test_plugin.xml";
 		fileName = "test_tracker.xml";
 		File tmpDir = new File(CytoscapeInit.getConfigDirectory(), "test"); 
 		
-		tmpDownloadDir = new File(tmpDir, CytoscapeVersion.version);
+		tmpDownloadDir = new File(tmpDir, (new CytoscapeVersion()).getMajorVersion());
+		System.err.println(tmpDownloadDir.getAbsolutePath());
 		tmpDownloadDir.mkdirs();
 
 		PluginManager.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
 		tracker = new PluginTracker(tmpDownloadDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
 		
-		System.err.println("  " + tracker.getTrackerFile().getAbsolutePath());
+		//System.err.println("  " + tracker.getTrackerFile().getAbsolutePath());
 	}
 
 	/*
@@ -59,8 +74,11 @@ public class PluginManagerTest extends TestCase {
 		tracker.delete();
 		mgr.resetManager();
 		
+		
 		tmpDownloadDir.delete();
-		tmpDownloadDir.getParentFile().delete();
+		
+		tmpDownloadDir.getParentFile().delete(); 
+		
 		transformedXML.delete();
 		// make sure this isn't set, the webstart tests can set it themselves
 		System.setProperty("javawebstart.version", "");
@@ -327,7 +345,7 @@ public class PluginManagerTest extends TestCase {
 	 */
 	public void testDeletePlugin() throws java.io.IOException,
 			org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException  {
-
+System.err.println("-- " + mgr.getPluginManageDirectory().getAbsolutePath() ) ;
 		List<DownloadableInfo> Downloadables = mgr.inquire(testUrl);
 		
 		PluginInfo TestObj = (PluginInfo) Downloadables.get(0);
@@ -339,6 +357,8 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
 		mgr.install(Downloaded);
 
+		assertEquals(mgr.getPluginManageDirectory().list().length, 2);
+		
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
@@ -361,6 +381,9 @@ public class PluginManagerTest extends TestCase {
 		for (String FileName : Plugin.getFileList()) {
 			assertFalse((new File(FileName)).exists());
 		}
+		
+	// only the xml file should be left in this directory
+	assertEquals(mgr.getPluginManageDirectory().list().length, 1);
 	}
 
 	
@@ -377,6 +400,13 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
 		mgr.install(Downloaded);
+		
+		for (String x: mgr.getPluginManageDirectory().list()) {
+			System.out.println("**" + x);
+		}
+		
+		assertEquals(mgr.getPluginManageDirectory().list().length, 2);
+		
 		
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 0);
@@ -395,6 +425,9 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
+
+		// only the xml file should be left in this directory
+		assertEquals(mgr.getPluginManageDirectory().list().length, 1);
 	}
 	
 	
