@@ -331,7 +331,7 @@ public abstract class DownloadableInfo {
 	 *         specifies a bugfix version)
 	 */
 	public boolean isCytoscapeVersionCurrent() {
-		String[] CyVersion = cytoscape.CytoscapeVersion.version
+		String[] CyVersion = new cytoscape.CytoscapeVersion().getFullVersion()
 				.split(versionSplit);
 		String[] PlVersion = getCytoscapeVersion().split(versionSplit);
 
