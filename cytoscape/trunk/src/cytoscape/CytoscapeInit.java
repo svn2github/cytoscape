@@ -217,6 +217,10 @@ public class CytoscapeInit {
 						}
 						break;
 					}
+				// this is the directory where user-installed plugins should live
+//				for (String f : mgr.getPluginManageDirectory().list()) {
+//					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath()
+//					                     + File.separator + f);
 				}
 				mgr.loadPlugins(InstalledPlugins);
 				
@@ -363,7 +367,8 @@ public class CytoscapeInit {
 	 */
 	public static File getConfigVersionDirectory() {
 		File Parent = getConfigDirectory();
-		File VersionDir = new File(Parent, CytoscapeVersion.version);
+		
+		File VersionDir = new File(Parent, (new CytoscapeVersion()).getMajorVersion());
 		VersionDir.mkdir();
 
 		return VersionDir;
