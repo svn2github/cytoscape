@@ -4,12 +4,13 @@ import org.mskcc.pathway_commons.schemas.search_response.*;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.StringReader;
+
+import cytoscape.task.TaskMonitor;
 
 /**
  * Class for accessing the Pathway Commons Web API.
@@ -19,6 +20,7 @@ import java.io.StringReader;
 public class PathwayCommonsWebApi {
     private ArrayList<PathwayCommonsWebApiListener> listeners =
             new ArrayList<PathwayCommonsWebApiListener>();
+    private volatile CPathProtocol protocol;
 
     /**
      * Searches Physical Entities in Pathway Commons.
@@ -26,10 +28,10 @@ public class PathwayCommonsWebApi {
      * @param keyword        Keyword to search for.
      * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms)
      * @param startIndex     Start index into search results; used to perform pagination.
-     * @return
+     * @return SearchResponseType Object.
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex) throws CPathException {
+            int startIndex, TaskMonitor taskMonitor) throws CPathException {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
@@ -37,14 +39,14 @@ public class PathwayCommonsWebApi {
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
 
-        CPathProtocol protocol = new CPathProtocol();
+        protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
         protocol.setFormat(CPathProtocol.FORMAT_XML);
         protocol.setQuery(keyword);
 
         SearchResponseType searchResponse;
         try {
-            String responseXml = protocol.connect();
+            String responseXml = protocol.connect(taskMonitor);
             StringReader reader = new StringReader(responseXml);
 
             Class[] classes = new Class[2];
@@ -56,7 +58,7 @@ public class PathwayCommonsWebApi {
                 JAXBElement element = (JAXBElement) u.unmarshal(reader);
                 searchResponse = (SearchResponseType) element.getValue();
             } catch(Throwable e){
-                throw new CPathException ("XML Error", e);
+                throw new CPathException (CPathException.ERROR_XML_PARSING, e);
             }
         } catch (EmptySetException e) {
             searchResponse = new SearchResponseType();
@@ -70,6 +72,13 @@ public class PathwayCommonsWebApi {
             listener.searchCompletedForPhysicalEntities(searchResponse);
         }
         return null;
+    }
+
+    /**
+     * Abort the Request.
+     */
+    public void abort() {
+        protocol.abort();
     }
 
     private SearchResponseType createDummySearchResults() {
@@ -126,7 +135,7 @@ public class PathwayCommonsWebApi {
     /**
      * Gets a list of all Organisms currently available within Pathway Commons.
      *
-     * @return
+     * @return ArrayList of Organism Type Objects.
      */
     public ArrayList<OrganismType> getOrganismList() {
         return null;
@@ -138,7 +147,6 @@ public class PathwayCommonsWebApi {
      * @param internalPhysicalEntityId Internal ID for physical entity of interest.
      * @param dataSourceId             (-1 to get data from all sources).
      * @param view                     (1=simple view, 2=complex view).
-     * @return CyNetwork.
      */
     public void getInteractionBundle(long internalPhysicalEntityId, int dataSourceId,
             int view) {
