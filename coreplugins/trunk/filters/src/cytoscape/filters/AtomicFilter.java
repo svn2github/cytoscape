@@ -111,10 +111,6 @@ public abstract class AtomicFilter implements CyFilter {
 		
 		return false;
 	}
-
-	
-	abstract public void apply(); 
-	abstract public String toString(); 
 	
 	public void setNodeBits(BitSet b) {
 		node_bits = b;
