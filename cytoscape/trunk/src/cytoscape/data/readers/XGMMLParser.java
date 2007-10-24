@@ -770,7 +770,7 @@ class XGMMLParser extends DefaultHandler {
 			// parts[0] = source alias
 			// parts[1] = interaction
 			// parts[2] = target alias
-			String[] parts = label.split("()");
+			String[] parts = label.split("[()]");
 			if (parts.length == 3) {
 				sourceAlias = parts[0];
 				interaction = parts[1];
