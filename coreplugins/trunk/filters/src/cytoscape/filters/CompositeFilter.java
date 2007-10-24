@@ -368,19 +368,6 @@ public class CompositeFilter implements CyFilter {
 		parent = f;
 	}
 
-	public void print(int depth) {
-        StringBuffer sb = new StringBuffer();
-        for ( int i = 0; i < depth; i++ )
-	            sb.append("  ");
-		depthString = sb.toString();
-
-		System.out.println(depthString + name + "  " + advancedSetting.getRelation() ); 
-		for ( CyFilter c : children )
-			c.print(depth + 1);
-		//System.out.println(depthString +  getBits() );
-		if ( depth == 0 )
-			System.out.println();
-	}
 	public List<CyFilter> getChildren() {
 		return children;		
 	}
