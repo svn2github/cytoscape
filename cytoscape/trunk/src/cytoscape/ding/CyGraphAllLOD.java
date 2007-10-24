@@ -37,128 +37,27 @@
 package cytoscape.ding;
 
 import cytoscape.render.stateful.GraphLOD;
+import ding.view.PrintLOD;
 
 
 /**
- *
+ * CyGraphAllLOD is the level of detail (LOD) class used
+ * for the "Show Graphics Details" menu item.  It should
+ * be thought of as a "preview" for printing or exporting
+ * a network to some high-resolution graphical format (PDF,
+ * SVG, etc.).  Essentially, this extends PrintLOD, but to
+ * preserve some efficiency we override the textAsShape method
+ * to allow us to continue to use fonts.
  */
-public class CyGraphAllLOD extends GraphLOD {
+public class CyGraphAllLOD extends PrintLOD {
 	/**
-	 *  DOCUMENT ME!
+	 *  textAsShape is called to determine if the text
+	 *  labels should be converted from fonts to text
 	 *
-	 * @param visibleNodeCount DOCUMENT ME!
-	 * @param totalNodeCount DOCUMENT ME!
-	 * @param totalEdgeCount DOCUMENT ME!
+	 * @param renderNodeCount the number of nodes
+	 * @param renderEdgeCount the number of edges
 	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public byte renderEdges(int visibleNodeCount, int totalNodeCount, int totalEdgeCount) {
-		return 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean detail(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean nodeBorders(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean nodeLabels(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean customGraphics(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean edgeArrows(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean dashedEdges(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean edgeAnchors(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean edgeLabels(int renderNodeCount, int renderEdgeCount) {
-		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param renderNodeCount DOCUMENT ME!
-	 * @param renderEdgeCount DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @return  true if text should be converted to shapes, false otherwise
 	 */
 	public boolean textAsShape(int renderNodeCount, int renderEdgeCount) {
 		return false;
