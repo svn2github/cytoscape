@@ -26,7 +26,12 @@ public class PluginTestXML {
 	
 	private static String testFileDir() {
 		String FS = "/";
-		return System.getProperty("user.dir") + FS + "testData" + FS + "plugins" + FS;
+		String UserDir = System.getProperty("user.dir");
+		if (System.getProperty("os.name").contains("Windows")) {
+			UserDir = UserDir.replaceFirst("\\w:", "");
+			UserDir = UserDir.replaceAll("\\\\", FS);
+		}
+		return UserDir + FS + "testData" + FS + "plugins" + FS;
 	}
 
 	// get the xsl file as a stream
