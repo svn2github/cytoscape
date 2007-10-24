@@ -91,6 +91,8 @@ public class PluginManager {
 	private static URLClassLoader classLoader;
 
 	private static boolean usingWebstart;
+	
+	private static String cyVersion = new CytoscapeVersion().getMajorVersion();
 
 	/**
 	 * Replaces CytoscapeInit.getClassLoader()
@@ -163,8 +165,8 @@ public class PluginManager {
 	 */
 	public static void setPluginManageDirectory(String loc) {
 		tempDir = new File(loc);
-		if (!tempDir.getAbsolutePath().contains(CytoscapeVersion.version)) {
-			tempDir = new File(tempDir, CytoscapeVersion.version);
+		if (!tempDir.getAbsolutePath().contains(cyVersion)) {
+			tempDir = new File(tempDir, cyVersion);
 		}
 	}
 
@@ -218,7 +220,7 @@ public class PluginManager {
 				if (usingWebstartManager()) {
 					tempDir = new File(CytoscapeInit.getConfigDirectory(),
 							"webstart" + File.separator
-									+ CytoscapeVersion.version + File.separator
+									+ (new CytoscapeVersion()).getMajorVersion() + File.separator
 									+ "plugins");
 					;
 					this.removeWebstartInstalls();
@@ -336,7 +338,7 @@ public class PluginManager {
 		} finally {
 			if (InfoObj == null) { // still null, create a default one
 				InfoObj = new PluginInfo();
-				InfoObj.setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+				InfoObj.setCytoscapeVersion(cyVersion);
 				InfoObj.setName(Plugin.getClass().getName());
 			}
 
@@ -348,8 +350,9 @@ public class PluginManager {
 			InfoObj.setFiletype(PluginInfo.FileType.JAR);
 
 			initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
+			// TODO This causes a bug where theme plugins essentially get added to the current 
+			// list twice
 			pluginTracker.addDownloadable(InfoObj, PluginStatus.CURRENT);
-			// pluginTracker.addPlugin(InfoObj, PluginStatus.CURRENT);
 		}
 	}
 
@@ -646,13 +649,20 @@ public class PluginManager {
 	public void loadPlugins(List<String> p) throws MalformedURLException,
 			IOException, ClassNotFoundException, PluginException {
 
+		Set<String> PluginsSeen = new HashSet<String>();
+		
 		// Parse the plugin strings and determine whether they're urls,
 		// files, directories, class names, or manifest file names.
 		for (String currentPlugin : p) {
+			if (PluginsSeen.contains(currentPlugin))
+				continue;
+
 			File f = new File(currentPlugin);
 
 			// If the file name ends with .jar add it to the list as a url.
 			if (currentPlugin.endsWith(".jar")) {
+				PluginsSeen.add(f.getAbsolutePath());
+
 				// If the name doesn't match a url, turn it into one.
 				if (!currentPlugin.matches(FileUtil.urlPattern)) {
 					System.out.println(" - file: " + f.getAbsolutePath());
@@ -675,6 +685,7 @@ public class PluginManager {
 					if (!fileName.endsWith(".jar")) {
 						continue;
 					}
+					PluginsSeen.add(f.getAbsolutePath() + System.getProperty("file.separator") + fileName);
 					pluginURLs.add(jarURL(f.getAbsolutePath()
 							+ System.getProperty("file.separator") + fileName));
 				}
@@ -689,6 +700,7 @@ public class PluginManager {
 						.getProperty("line.separator"));
 				for (String pluginLoc : allLines) {
 					if (pluginLoc.endsWith(".jar")) {
+						PluginsSeen.add(pluginLoc);
 						if (pluginLoc.matches(FileUtil.urlPattern)) {
 							pluginURLs.add(jarURL(pluginLoc));
 						} else {
