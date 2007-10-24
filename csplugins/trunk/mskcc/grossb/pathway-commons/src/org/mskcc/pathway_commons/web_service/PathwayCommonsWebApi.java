@@ -46,19 +46,24 @@ public class PathwayCommonsWebApi {
 
         SearchResponseType searchResponse;
         try {
-            String responseXml = protocol.connect(taskMonitor);
-            StringReader reader = new StringReader(responseXml);
+            if (keyword.equalsIgnoreCase("dummy")) {
+                searchResponse = this.createDummySearchResults();
+                searchResponse.setTotalNumHits(10L);
+            } else {
+                String responseXml = protocol.connect(taskMonitor);
+                StringReader reader = new StringReader(responseXml);
 
-            Class[] classes = new Class[2];
-            classes[0] = org.mskcc.pathway_commons.schemas.search_response.SearchResponseType.class;
-            classes[1] = org.mskcc.pathway_commons.schemas.search_response.ObjectFactory.class;
-            try {
-                JAXBContext jc = JAXBContext.newInstance(classes);
-                Unmarshaller u = jc.createUnmarshaller();
-                JAXBElement element = (JAXBElement) u.unmarshal(reader);
-                searchResponse = (SearchResponseType) element.getValue();
-            } catch(Throwable e){
-                throw new CPathException (CPathException.ERROR_XML_PARSING, e);
+                Class[] classes = new Class[2];
+                classes[0] = org.mskcc.pathway_commons.schemas.search_response.SearchResponseType.class;
+                classes[1] = org.mskcc.pathway_commons.schemas.search_response.ObjectFactory.class;
+                try {
+                    JAXBContext jc = JAXBContext.newInstance(classes);
+                    Unmarshaller u = jc.createUnmarshaller();
+                    JAXBElement element = (JAXBElement) u.unmarshal(reader);
+                    searchResponse = (SearchResponseType) element.getValue();
+                } catch(Throwable e){
+                    throw new CPathException (CPathException.ERROR_XML_PARSING, e);
+                }
             }
         } catch (EmptySetException e) {
             searchResponse = new SearchResponseType();
