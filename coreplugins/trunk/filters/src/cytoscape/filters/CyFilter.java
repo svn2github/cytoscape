@@ -52,7 +52,6 @@ public interface CyFilter extends Filter{
 	public void childChanged();
 	public CyFilter getParent();	
 	public void setParent(CyFilter f);
-	public void print(int depth);
 	
 	public void apply();
 	public String toString();
