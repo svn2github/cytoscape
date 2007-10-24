@@ -7,6 +7,8 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import cytoscape.Cytoscape;
 
@@ -136,7 +138,13 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
 				- (int) (this.getSize().getWidth()) - MARGIN;
 			int y = this.getLocationOnScreen().y;
 			summaryPanel.setBounds(x,y, this.getWidth(), (int)(this.getHeight()*.75));
-			appLayeredPane.add(summaryPanel, SUMMARY_PANEL_LAYER);
+
+            appLayeredPane.add(summaryPanel, SUMMARY_PANEL_LAYER);
+
+            Animator animator = new Animator (750);
+            animator.addTarget(new PropertySetter(summaryPanel, "alpha", 0.0f, 1.0f));
+            animator.start();
+            
 			createdPopup = true;
 		}
 	}

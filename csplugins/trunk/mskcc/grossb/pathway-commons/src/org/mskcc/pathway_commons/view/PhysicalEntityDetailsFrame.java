@@ -1,5 +1,7 @@
 package org.mskcc.pathway_commons.view;
 
+import org.jdesktop.swingx.JXPanel;
+
 import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.border.EmptyBorder;
@@ -11,7 +13,7 @@ import java.awt.event.*;
  *
  * @author Ethan Cerami.
  */
-public class PhysicalEntityDetailsFrame extends JPanel {
+public class PhysicalEntityDetailsFrame extends JXPanel {
     private Document doc;
     private JTextPane textPane;
     private PopupDaemon daemon;
@@ -30,6 +32,8 @@ public class PhysicalEntityDetailsFrame extends JPanel {
         scrollPane.setBorder(GuiUtils.createTitledBorder("Gene Summary"));
         add(textPane, BorderLayout.CENTER);
         attachMouseListener(this, daemon);
+        setAlpha(0.0f);
+        this.setOpaque(false);
     }
 
     /**
@@ -99,6 +103,7 @@ public class PhysicalEntityDetailsFrame extends JPanel {
      */
     private JTextPane createTextPane() {
         JTextPane textPane = new JTextPane();
+        textPane.setText("Gene Summary....");
         textPane.setEditable(false);
         textPane.setBorder(new EmptyBorder(7,7,7,7));
         return textPane;
