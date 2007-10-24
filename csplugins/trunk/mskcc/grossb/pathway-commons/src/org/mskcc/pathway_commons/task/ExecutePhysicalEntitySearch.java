@@ -3,6 +3,7 @@ package org.mskcc.pathway_commons.task;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.CPathException;
 
 /**
  * Controller for Executing a Physical Entity Search.
@@ -33,10 +34,10 @@ public class ExecutePhysicalEntitySearch implements Task {
     }
 
     /**
-     * Our implementation of Task.halt()
+     * Our implementation of Task.abort()
      */
     public void halt() {
-        // Task can not currently be halted.
+        webApi.abort();
     }
 
     /**
@@ -54,7 +55,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Searching Pathway Commons";
+        return "Searching...";
     }
 
     /**
@@ -64,16 +65,18 @@ public class ExecutePhysicalEntitySearch implements Task {
         try {
             // read the network from pathway commons
             taskMonitor.setPercentCompleted(-1);
-            taskMonitor.setStatus("Searching Pathway Commons...");
+            taskMonitor.setStatus("Executing Search...");
 
             //  Execute the Search
-            webApi.searchPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
+            webApi.searchPhysicalEntities(keyword, ncbiTaxonomyId, startIndex, taskMonitor);
 
             // update the task monitor
             taskMonitor.setStatus("Done");
             taskMonitor.setPercentCompleted(100);
-        } catch (Exception e) {
-            taskMonitor.setException(e, "Error executing search.");
+        } catch (CPathException e) {
+            if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
+                taskMonitor.setException(e, e.getMessage());
+            }
         }
     }
 }
