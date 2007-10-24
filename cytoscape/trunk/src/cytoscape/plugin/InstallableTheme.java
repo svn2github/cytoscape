@@ -48,7 +48,7 @@ public class InstallableTheme implements Installable {
 	public boolean installToDir(File dir, TaskMonitor taskMonitor) throws IOException, ManagerException {
 		File InstallDir = dir;
 		if (InstallDir == null)
-			InstallDir = getInstallDirectory();
+			InstallDir = new File(this.infoObj.getInstallLocation());
 		
 		if (!InstallDir.exists())
 			InstallDir.mkdirs();
@@ -80,34 +80,6 @@ public class InstallableTheme implements Installable {
 	public boolean install(TaskMonitor taskMonitor) throws IOException,
 			ManagerException {
 		return installToDir(null, taskMonitor);
-// TODO if one of the plugins in a theme fails to install correctly all of the plugins should be removed
-
-//		// eventually a separate directory containing all of the theme plugins/files would be nice but with
-//		// the current method of loading them at start up it would be a pain to do
-	
-//		File InstallDir = getInstallDirectory();
-//		if (!InstallDir.exists())
-//			InstallDir.mkdirs();
-
-//		for (PluginInfo plugin: this.infoObj.getPlugins()) {
-//			InstallablePlugin pi = new InstallablePlugin(plugin);
-//			try {
-//				pi.install(taskMonitor);
-//				this.infoObj.replacePlugin(plugin, pi.getInfoObj());
-//			} catch (Exception me) {
-//				// failed to install a plugin stop now and remove all of them
-//				// throw exception that theme failed to install due to bad plugin
-//				for (PluginInfo pInfo: infoObj.getPlugins()) {
-//					if (pInfo.equals(plugin))
-//						continue;
-//					InstallablePlugin ipDelete = new InstallablePlugin(pInfo);
-//					ipDelete.uninstall();
-//				}
-//				throw new ManagerException("Failed to install the theme '" + this.infoObj.toString() + "'", me);
-//			}
-//			
-//		}
-//		return true;
 	}
 
 	/* (non-Javadoc)
@@ -120,14 +92,8 @@ public class InstallableTheme implements Installable {
 			if (!ins.uninstall())
 				deleteOk = false;
 		}
+		deleteOk = new File(infoObj.getInstallLocation()).delete();
 		return deleteOk;
-	}
-
-	private java.io.File getInstallDirectory() {
-		 java.io.File Dir = new java.io.File(
-				 PluginManager.getPluginManager().getPluginManageDirectory(),
-				 this.infoObj.getName()+"-"+this.infoObj.getObjectVersion());
-		return Dir;
 	}
 
 	/* (non-Javadoc)
