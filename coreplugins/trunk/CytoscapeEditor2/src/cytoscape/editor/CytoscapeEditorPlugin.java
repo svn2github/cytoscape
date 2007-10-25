@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Mon Jul 23 19:36:05 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Oct 25 13:30:35 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Thu Oct 25 13:30:25 2007 (Michael L. Creech) creech@w235krbza760
+*  Updated to version 2.52.
 * Thu Jul 19 13:29:22 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed use of _initialized and simplified to assume CytoscapeEditor
 *  is always loaded before any other editor. Removed
@@ -53,7 +55,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
     // MLC 07/20/07:
     // private static boolean _initialized = false;
     // MLC 07/20/07:
-    private static final double VERSION = 2.51;
+    private static final double VERSION = 2.52;
 
 	/**
 	 * Creates a new CytoscapeEditorPlugin object.

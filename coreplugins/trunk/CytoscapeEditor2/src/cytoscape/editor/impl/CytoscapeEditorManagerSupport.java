@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sat Jul 30 17:00:27 2005
-* Modified:     Wed May 09 13:59:52 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Oct 25 06:32:27 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Thu Oct 25 05:42:55 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed onComponentSelected() to not generate a bogus CyNetworkView
+*  but the desired CyNetworkView.
 * Wed May 09 13:59:45 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed several unneeded imports.
 * Wed Dec 27 09:04:18 2006 (Michael L. Creech) creech@w235krbza760
@@ -40,6 +43,7 @@ import cytoscape.editor.InvalidEditorException;
 
 import cytoscape.editor.actions.DeleteAction;
 
+import cytoscape.util.CyNetworkViewUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -77,10 +81,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	 *
 	 */
 
-	// MLC 12/27/06:
 	private DeleteAction _deleteAction;
 
-	// MLC 12/27/06:
 	/**
 	 * Creates a new CytoscapeEditorManagerSupport object.
 	 *
@@ -88,7 +90,6 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	 */
 	public CytoscapeEditorManagerSupport(DeleteAction dAction) {
 		super();
-		// MLC 12/27/06:
 		_deleteAction = dAction;
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
@@ -100,7 +101,6 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).addCytoPanelListener(this);
 	}
 
-	// MLC 12/27/06 BEGIN:
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -110,14 +110,15 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		return _deleteAction;
 	}
 
-	// MLC 12/27/06 END.
-
 	/**
 	 * respond to a ChangeEvent, typically this is caused by switching
 	 * visual styles
 	 */
 
 	// implements ChangeListener interface:
+        // TODO: Since this can be frequently called, this code should check
+        // if the current palette already reflects the current visual style before
+        // updateEditorPalette is called.
 	public void stateChanged(ChangeEvent e) {
 		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
@@ -153,8 +154,24 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 			// If no networks exist, create an empty network.
 			if ( Cytoscape.getNetworkSet().size() == 0 ) {
-				CyNetwork newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
-				CyNetworkView newView = Cytoscape.createNetworkView(newNet);
+			    // MLC 10/24/07 BEGIN:
+				// DON'T call the one argument createNetwork()--it will end up setting
+				// our current visual style to  "default" thru CytoscapeDesktop
+				// event listener:
+				// CyNetwork newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
+				// DON'T create a CyNetworkView:
+				 CyNetwork newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
+				 					   CytoscapeEditorManager.createUniqueNetworkName(),
+									   null,
+									   false);
+				// CyNetworkView newView = Cytoscape.createNetworkView(newNet);
+				// Now build the right view:
+				CyNetworkView newView = CyNetworkViewUtil.createNetworkView(newNet,
+											    newNet.getTitle(),
+											    null,
+											    // use the existing visual style:
+											    Cytoscape.getVisualMappingManager().getVisualStyle());
+				// MLC 10/24/07 END.
 				CytoscapeEditorManager.setEditorForView(newView, CytoscapeEditorManager.getCurrentEditor());
 			}
 		}
@@ -203,13 +220,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 			return;
 		}
 
-		// MLC 08/06/06 BEGIN:
 		// ASSUMES visual style name is the same as the editor!
 		// String editorType = style.getName();
 		String editorType = CytoscapeEditorManager.getEditorNameForVisualStyleName(style.getName());
 		CytoscapeEditorManager.log("got editor name for visual style: " + editorType);
 
-		// MLC 08/06/06 END.
 		CytoscapeEditor editorForStyle = null;
 
 		try {
@@ -231,8 +246,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 		if (editorForStyle != null) {
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			CytoscapeEditor editorForView = CytoscapeEditorManager.getEditorForView(Cytoscape
-			                                                                                                                                                                                                                                .getCurrentNetworkView());
+			CytoscapeEditor editorForView = CytoscapeEditorManager.getEditorForView(Cytoscape.getCurrentNetworkView());
 
 			CytoscapeEditorManager.log("Got editor for view: " + editorForView);
 
@@ -290,7 +304,6 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 			// AJK: 12/09/06 BEGIN
 			//   try to get editor for visual style
-			// MLC 12/27/06:
 			// VisualStyle vs = view.getVisualStyle();           
 			CytoscapeEditor cyEditor = CytoscapeEditorManager.getEditorForView(view);
 
@@ -312,14 +325,11 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 					return;
 				} else {
 					// at this point there is an editor but it is not assigned
-					// to this
-					// view
+					// to this view
 					// this is probably the case if we are loading a network,
-					// rather
-					// than creating a new one
+					// rather than creating a new one
 					// in this case, we need to setup the network view, which
-					// sets all
-					// the event handler, etc.
+					// sets all the event handler, etc.
 					CytoscapeEditorManager.log("Building network view for: " + view
 					                           + " using editor " + cyEditor);
 					CytoscapeEditorManager.setupNewNetworkView(view);

@@ -14,6 +14,7 @@ import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.util.CyNetworkViewUtil;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
@@ -62,11 +63,24 @@ public class NewNetworkAction extends CytoscapeAction {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), expDescript, title,
 			                              JOptionPane.PLAIN_MESSAGE);
 		} else {
-			CyNetwork _newNet = Cytoscape.createNetwork(CytoscapeEditorManager
-			                                                         .createUniqueNetworkName());
-
-			CyNetworkView newView = Cytoscape.createNetworkView(_newNet);
-
+		    // MLC 10/24/07 BEGIN:
+		    // DON'T call the one argument createNetwork()--it will end up setting
+		    // our current visual style to  "default" thru CytoscapeDesktop
+		    // event listener:
+		    // CyNetwork _newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
+		    // DON'T create a CyNetworkView:
+		    CyNetwork _newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
+							       CytoscapeEditorManager.createUniqueNetworkName(),
+							       null,
+							       false);
+		    // CyNetworkView newView = Cytoscape.createNetworkView(_newNet);
+		    // Now build the view using the current visual style:
+		    CyNetworkView newView = CyNetworkViewUtil.createNetworkView(_newNet,
+										_newNet.getTitle(),
+										null,
+										// use the existing visual style:
+										Cytoscape.getVisualMappingManager().getVisualStyle());
+		    // MLC 10/24/07 END.
 			CytoscapeEditorManager.setEditorForView(newView, cyEditor);
 
 			// AJK: 06/05/06 BEGIN
@@ -82,6 +96,9 @@ public class NewNetworkAction extends CytoscapeAction {
 			}
 
 			// AJK: 06/05/06 END
+			// MLC 10/25/07:
+			// don't layout, but apply visual style:
+			// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
 }

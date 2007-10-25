@@ -6,6 +6,26 @@
 
 <UL>
 
+<LI><STRONG>CytoscapeEditor, Version 2.52 (10/25/07)</STRONG>
+<OL>
+
+<LI>Changed File->New-Network->EmptyNetwork (NewNetworkAction) to not
+produce an extra (accidental) CyNetworkView and to set the visual
+style of the new network to be the VisualMappingManager's current
+visual style.
+
+<LI>Removed arrowhead on default "Directed Edge" edge palette entry in
+DefaultCytoscapeEditor.
+
+<LI>Fixed so that clicking on the Editor tab would correctly show the correct
+editor palette for a given visual style (for sublass editors).
+
+<LI>Changed call to buildVisualStyle() in
+CytoscapeEditorManager.initializeEditor() to occur before
+VisualMappingManager.setVisualStyle() is called.
+
+</OL>
+
 <LI><STRONG>CytoscapeEditor, Version 2.51 (07/23/07)</STRONG>
 <OL>
 <LI>Simplified CytoscapeEditor initialization with assumption that
@@ -115,4 +135,4 @@ CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
 
 </UL>
 <HR>
-<SMALL><EM>This page was last updated: 07/23/07</EM></SMALL>
+<SMALL><EM>This page was last updated: 10/25/07</EM></SMALL>

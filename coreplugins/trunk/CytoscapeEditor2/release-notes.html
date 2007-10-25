@@ -1,11 +1,39 @@
 <HTML>
 <HEAD>
-<TITLE>CytoscapeEditor Release Notes (version 2.51)</TITLE>
+<TITLE>CytoscapeEditor Release Notes (version 2.52)</TITLE>
 </HEAD>
 <BODY>
 
 
-<H1>CytoscapeEditor Release Notes (version 2.51)</H1>
+
+<H1>CytoscapeEditor Release Notes (version 2.52)</H1>
+<OL>
+
+<LI>Changed File->New-Network->EmptyNetwork (NewNetworkAction) to not
+produce an extra (accidental) CyNetworkView and to set the visual
+style of the new network to be the VisualMappingManager's current
+visual style.
+
+<P><LI>Removed arrowhead on default "Directed Edge" edge palette entry in
+DefaultCytoscapeEditor.
+
+<P><LI>Fixed so that clicking on the Editor tab would correctly show the correct
+editor palette for a given visual style (for sublass editors).
+
+<P>This required stopping the creation of a CyNetworkView in
+CytoscapeEditorManagerSupport.onComponentSelected() that would be set
+to the default visual style thereby resetting the editor palette for
+subclasses (like the HyperEdgeEditor).
+
+<P><LI>Changed call to buildVisualStyle() in
+CytoscapeEditorManager.initializeEditor() to occur before
+VisualMappingManager.setVisualStyle() is called.
+
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>CytoscapeEditor Release Notes (version 2.51)</H2>
 <OL>
 <LI>Simplified CytoscapeEditor initialization with assumption that
 the CytoscapeEditor is always loaded before any extension to
@@ -19,8 +47,6 @@ pointer check.
 <P><LI>Updated missed deprecated code reference to use new Cytoscape 2.5
     VizMap API.
 </OL>
-
-<H1>Prior Notes</H1>
 
 <H2>CytoscapeEditor Release Notes (version 2.50)</H2>
 <OL>
@@ -153,7 +179,7 @@ CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
 </OL>
 
 <HR>
-<SMALL><EM>This page was last updated: 07/23/07</EM></SMALL>
+<SMALL><EM>This page was last updated: 10/25/07</EM></SMALL>
 
 </BODY>
 </HTML>

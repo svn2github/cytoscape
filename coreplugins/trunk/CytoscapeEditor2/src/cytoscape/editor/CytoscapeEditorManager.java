@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue Jul 05 11:44:41 2005
-* Modified:     Mon Jul 23 19:25:16 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Oct 25 05:41:47 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,11 @@
 *
 * Revisions:
 *
+* Thu Oct 25 05:40:57 2007 (Michael L. Creech) creech@w235krbza760
+* Changed call to buildVisualStyle() in
+* CytoscapeEditorManager.initializeEditor() to occur before
+* VisualMappingManager.setVisualStyle() is called. Removed old MLC
+* comments.
 * Mon Jul 23 19:24:02 2007 (Michael L. Creech) creech@w235krbza760
 *  Fixed NPE bug in register() where CytoscapeEditorManager.log() statements
 *  were being called without null pointer check.
@@ -103,9 +108,6 @@ public abstract class CytoscapeEditorManager {
 	 * mouseEnter, via thickening the node border.
 	 */
 
-	// MLC 08/06/06:
-	// static float defaultBorderWidth = Float.NaN;
-	// MLC 08/06/06:
 	private static float defaultBorderWidth = Float.NaN;
 
 	/**
@@ -113,18 +115,14 @@ public abstract class CytoscapeEditorManager {
 	 * references, e.g. a Swing PropertyChangeListener
 	 */
 
-	// // MLC 12/27/06 - This should NOT be public--make a get method for it:
-	// public static CytoscapeEditorManagerSupport manager;
 	private static CytoscapeEditorManagerSupport manager;
 
 	/**
 	 * pointer to currently active editor
 	 */
 
-	// MLC 08/06/06:
 	private static CytoscapeEditor currentEditor = null;
 
-	// MLC 08/06/06:
 
 	/**
 	 * flag that tells whether the full multi-editor framework is enabled for
@@ -139,11 +137,7 @@ public abstract class CytoscapeEditorManager {
 	 * with this multi-editorframework
 	 */
 
-	// MLC 08/06/06:
 	private static boolean runningEditorFramework = false;
-
-	// MLC 08/06/06:
-	// protected static boolean runningEditorFramework = false;
 
 	/**
 	 * flag that tells whether an editor setup is in process used to consume
@@ -156,11 +150,9 @@ public abstract class CytoscapeEditorManager {
 	 * map that associates a network view with its editor
 	 */
 
-	// MLC 08/06/06:
 	private static Map<CyNetworkView, CytoscapeEditor> editorViewMap = new HashMap<CyNetworkView, CytoscapeEditor>();
 
 
-	// MLC 08/06/06:
 	private static boolean editingEnabled = false;
 
 
@@ -168,7 +160,6 @@ public abstract class CytoscapeEditorManager {
 	 * palette from which shapes are dropped onto the canvas to form Nodes and Edges
 	 */
 
-	// MLC 08/06/06:
 	private static ShapePalette currentShapePalette;
 
 
@@ -176,7 +167,6 @@ public abstract class CytoscapeEditorManager {
 	 * associates a view with its NetworkEditEventAdapter
 	 */
 
-	// MLC 08/06/06:
 	private static Map<CyNetworkView, NetworkEditEventAdapter> viewNetworkEditEventAdapterMap = new HashMap<CyNetworkView, NetworkEditEventAdapter>();
 
 
@@ -184,7 +174,6 @@ public abstract class CytoscapeEditorManager {
 	 * associate a CyNetworkView with a ShapePalette
 	 */
 
-	// MLC 08/06/06:
 	private static Map<CyNetworkView, ShapePalette> viewShapePaletteMap = new HashMap<CyNetworkView, ShapePalette>();
 
 
@@ -249,8 +238,6 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static final String CYTOSCAPE_EDITOR = "cytoscape.editor";
 
-        // MLC 07/20/07:
-        // private static boolean _initialized = false;
 
 	// AJK: 12/06/06: flag for "logging" diagnostic output
 	private static boolean loggingEnabled = false;
@@ -260,17 +247,13 @@ public abstract class CytoscapeEditorManager {
 	 * accelerators
 	 *
 	 */
-        // MLC 07/20/07 BEGIN:
-        // public static void initialize() {
         protected static void initialize() {
 	    CytoscapeEditorManager.setRunningEditorFramework(true);
 	    CytoscapeEditorManager.setEditingEnabled(true);
-	    // MLC 07/20/07 END.
 	    DeleteAction delete = new DeleteAction();
 	    manager = new CytoscapeEditorManagerSupport(delete);
 	    System.out.println ("CEM. initialize, manager delete action = " +
 				manager.getDeleteAction());
-	    // MLC 12/27/06 END.
 	    NewNetworkAction newNetwork = new NewNetworkAction("Empty Network",
 							       CytoscapeEditorFactory.INSTANCE);
 	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New");
@@ -278,15 +261,11 @@ public abstract class CytoscapeEditorManager {
 	    
 	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New").setEnabled(true);
 	    
-	    // MLC 12/27/06:
-	    // DeleteAction delete = new DeleteAction();
 	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit");
 	    Cytoscape.getDesktop().getCyMenus().addAction(delete);
 	    
 	    ShapePalette shapePalette = new ShapePalette();
 	    Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Editor", shapePalette);
-	    // MLC 07/20/07:
-	    // _initialized = true;
 	}
 
 
@@ -299,9 +278,6 @@ public abstract class CytoscapeEditorManager {
 	 * @return the editor that is built
 	 */
 
-	// MLC 08/06/06:
-	// public static CytoscapeEditor initializeEditor (String editorName, String networkEditAdapterName)
-	// MLC 08/06/06:
 	private static CytoscapeEditor initializeEditor(String editorName,
 	                                                String networkEditAdapterName,
 	                                                String visualStyleName) {
@@ -320,6 +296,9 @@ public abstract class CytoscapeEditorManager {
 			                                                           networkEditAdapterName);
 			cyEditor.setNetworkEditEventAdapter(event);
 
+			// MLC 10/24/07:
+			cyEditor.buildVisualStyle();
+
 			if ((visualStyleName != null)
 			    && (!(visualStyleName.equals(CytoscapeEditorManager.ANY_VISUAL_STYLE)))) {
 				VisualMappingManager manager = Cytoscape.getVisualMappingManager();
@@ -334,7 +313,8 @@ public abstract class CytoscapeEditorManager {
 			// AJK: 09/19/05 END
 			CytoscapeEditorManager.setCurrentEditor(cyEditor);
 
-			cyEditor.buildVisualStyle();
+			// MLC 10/24/07:
+			// cyEditor.buildVisualStyle();
 
 			CytoscapeEditorManager.setSettingUpEditor(false);
 
@@ -484,13 +464,8 @@ public abstract class CytoscapeEditorManager {
 	public static void register(String editorName, String networkEditAdapterName,
 	                            String controllingNodeAttribute, String controllingEdgeAttribute,
 	                            String visualStyleName) {
-	    // MLC 07/19/07 BEGIN:
 	    // ASSUME: We have been initialized() before register() is ever called.
 	    System.out.println ("BEGIN CEM.register()");
-	    // if (!_initialized) {
-	    //    initialize();
-	    // }
-	    // MLC 07/19/07 END.
 	        CytoscapeEditorManager.log("Putting " + visualStyleName + " --> " + editorName);
 		visualStyleNameToEditorNameMap.put(visualStyleName, editorName);
 
@@ -498,14 +473,12 @@ public abstract class CytoscapeEditorManager {
 		                                                                   networkEditAdapterName,
 		                                                                   visualStyleName);
 
-		// MLC 07/24/06 END.
 		if (cyEditor != null) {
 			CytoscapeEditorManager.log("setting controlling attributes for editor " + cyEditor);
 			CytoscapeEditorManager.log("to " + controllingNodeAttribute + " and "
 			                           + controllingEdgeAttribute);
 			cyEditor.setControllingNodeAttribute(controllingNodeAttribute);
 			cyEditor.setControllingEdgeAttribute(controllingEdgeAttribute);
-			// MLC 07/23/07 BEGIN:
 			CytoscapeEditorManager.log("now controlling attributes for editor " + cyEditor);
 			CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute() + " and "
 						   + cyEditor.getControllingEdgeAttribute());
@@ -513,10 +486,8 @@ public abstract class CytoscapeEditorManager {
 		//		CytoscapeEditorManager.log("now controlling attributes for editor " + cyEditor);
 		//		CytoscapeEditorManager.log("are " + cyEditor.getControllingNodeAttribute() + " and "
 		//		                           + cyEditor.getControllingEdgeAttribute());
-		// MLC 07/23/07 END.
 	}
 
-	// MLC 08/06/06 BEGIN:
 	/**
 	 * Return the List of the names of editors associated with a given
 	 * visual style.  Usually this list has one element, however
@@ -527,8 +498,6 @@ public abstract class CytoscapeEditorManager {
 		// AJK: 12/09/06: bug fix.  return editor for ANY_VISUAL_STYLE if no style is found
 		return (String) visualStyleNameToEditorNameMap.get(visualStyleName);
 	}
-
-	// MLC 08/06/06 END.
 
 	/**
 	 * Handles the logistics of setting up a New Network view.
@@ -561,13 +530,8 @@ public abstract class CytoscapeEditorManager {
 			event = CytoscapeEditorFactory.INSTANCE.getNetworkEditEventAdapter(cyEditor);
 			CytoscapeEditorManager.setViewNetworkEditEventAdapter(newView, event);
 			canvas.addPhoebeCanvasDropListener(event);
-			// MLC 08/06/06 BEGIN:
-			// nodeAttribs.getMultiHashMap().addDataListener(event);
-			// edgeAttribs.getMultiHashMap().addDataListener(event);
 			Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(event);
 			Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(event);
-
-			// MLC 08/06/06 END.
 		}
 
 		canvas.setEnabled(true);
@@ -846,7 +810,6 @@ public abstract class CytoscapeEditorManager {
 		return currentEditor;
 	}
 
-    // MLC 07/20/07 BEGIN:
     /**
      * Return the DeleteAction associated with this CytoscapeEditorManager.
      */
@@ -854,7 +817,6 @@ public abstract class CytoscapeEditorManager {
 	public static DeleteAction getDeleteAction() {
 	    return manager.getDeleteAction();
 	}
-    // MLC 07/20/07 END.
 
 	/**
 	 * @param currentEditor
