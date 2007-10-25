@@ -19,17 +19,17 @@ public abstract class GpmlNetworkElement<T> {
 	
 	protected PathwayElement pwElmOrig; 	//Original patwhay element
 							  			//Saves the state after importing
-	protected PathwayElement pwElmCy;		//Pathway element used to synchronize with
+	private PathwayElement pwElmCy;		//Pathway element used to synchronize with
 										//corresponding Cytoscape element
 	
 	public GpmlNetworkElement(T parent, PathwayElement pwElm) {
 		this(parent, pwElm, null);
-		pwElmCy = pwElmOrig;
 	}
 		
 	protected GpmlNetworkElement(T parent, PathwayElement pwElm, AttributeMapper attributeMapper) {
 		this.parent = parent;
 		this.pwElmOrig = pwElm;
+		pwElmCy = pwElmOrig.copy();
 		if(attributeMapper != null) resetToGpml(attributeMapper);
 	}
 		
@@ -57,10 +57,14 @@ public abstract class GpmlNetworkElement<T> {
 		return pwElmCy;
 	}
 	
+	protected PathwayElement getPwElmCy() {
+		return pwElmCy;
+	}
+	
 	public T getParent() {
 		return parent;
 	}
-	
+		
 	public abstract String getParentIdentifier();
 	
 	public abstract CyAttributes getCyAttributes();
@@ -69,7 +73,7 @@ public abstract class GpmlNetworkElement<T> {
 		Logger.log.trace("Updating " + this + " from cytoscape");
 		if(attributeMapper != null) {
 			Logger.log.trace("Transfer attributes");
-			attributeMapper.attributesToProperties(getParentIdentifier(), pwElmCy, getCyAttributes());
+			attributeMapper.attributesToProperties(getParentIdentifier(), getPwElmCy(), getCyAttributes());
 		}
 	}
 	

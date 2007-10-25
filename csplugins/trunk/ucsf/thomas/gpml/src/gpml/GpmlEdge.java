@@ -73,10 +73,10 @@ public class GpmlEdge extends GpmlNetworkElement<CyEdge> {
 		PathwayElement psource = source.getPathwayElement(view, attributeMapper);
 		PathwayElement ptarget = target.getPathwayElement(view, attributeMapper);
 
-		pwElmCy.setStartGraphRef(psource.getGraphId());
-		pwElmCy.setEndGraphRef(ptarget.getGraphId());
+		getPwElmCy().setStartGraphRef(psource.getGraphId());
+		getPwElmCy().setEndGraphRef(ptarget.getGraphId());
 				
-		fixCoordinates(pwElmCy, psource, ptarget);
+		fixCoordinates(getPwElmCy(), psource, ptarget);
 	}
 	
 	private Point findBorder(PathwayElement pwElm, double angle) {

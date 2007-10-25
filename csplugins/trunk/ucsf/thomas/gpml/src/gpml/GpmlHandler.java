@@ -32,8 +32,10 @@ public class GpmlHandler {
 	CyAttributes nAttributes = Cytoscape.getNodeAttributes();
 	CyAttributes eAttributes = Cytoscape.getEdgeAttributes();
 	
+	//String is node/edge identifier, which equals GPML's graphId
 	Map<String, GpmlNode> nodes =  new HashMap<String, GpmlNode>();
 	Map<String, GpmlEdge> edges = new HashMap<String, GpmlEdge>();
+	Map<String, GpmlNetworkElement<?>> elements = new HashMap<String, GpmlNetworkElement<?>>();
 	
 	AttributeMapper attributeMapper = new DefaultAttributeMapper();
 	
@@ -43,6 +45,14 @@ public class GpmlHandler {
 	
 	public AttributeMapper getAttributeMapper() {
 		return attributeMapper;
+	}
+	
+	public Collection<GpmlNode> getNodes() {
+		return nodes.values();
+	}
+	
+	public GpmlNetworkElement<?> getNetworkElement(String id) {
+		return elements.get(id);
 	}
 	
 	public GpmlNode getNode(String nodeId) {
@@ -63,9 +73,27 @@ public class GpmlHandler {
 		String nid = nview.getNode().getIdentifier();
 		GpmlNode gn = nodes.get(nid);
 		if(gn == null) {
-			nodes.put(nid, gn = new GpmlNode(nview, getAttributeMapper()));
+			addNode(gn = new GpmlNode(nview, getAttributeMapper()));
 		}
 		return gn;
+	}
+	
+	private void addNetworkElement(GpmlNetworkElement<?> elm) {
+		elements.put(elm.getParentIdentifier(), elm);
+	}
+	
+	private void unlinkNetworkElement(String id) {
+		elements.remove(id);
+	}
+	
+	private void addNode(GpmlNode gn) {
+		nodes.put(gn.getParentIdentifier(), gn);
+		addNetworkElement(gn);
+	}
+	
+	private void addEdge(GpmlEdge ge) {
+		edges.put(ge.getParentIdentifier(), ge);
+		addNetworkElement(ge);
 	}
 	
 	public GpmlEdge getEdge(String edgeId) {
@@ -83,7 +111,8 @@ public class GpmlHandler {
 		if(ge == null) {
 			GpmlNode gsource = createNode(gview.getNodeView(eview.getEdge().getSource()));
 			GpmlNode gtarget = createNode(gview.getNodeView(eview.getEdge().getTarget()));
-			edges.put(eid, ge = new GpmlEdge(eview, gsource, gtarget, getAttributeMapper()));
+			addEdge(ge = new GpmlEdge(eview, gsource, gtarget, getAttributeMapper()));
+			
 		}
 		return ge;
 	}
@@ -94,7 +123,7 @@ public class GpmlHandler {
 	 * @param pwElm The GPML information
 	 */
 	public void addNode(CyNode n, PathwayElement pwElm) {
-		nodes.put(n.getIdentifier(), new GpmlNode(n, pwElm, getAttributeMapper()));
+		addNode(new GpmlNode(n, pwElm, getAttributeMapper()));
 	}
 	
 	/**
@@ -103,6 +132,7 @@ public class GpmlHandler {
 	 */
 	public void unlinkNode(CyNode n) {
 		nodes.remove(n.getIdentifier());
+		unlinkNetworkElement(n.getIdentifier());
 	}
 		
 	/**
@@ -113,7 +143,7 @@ public class GpmlHandler {
 	public void addEdge(CyEdge e, PathwayElement pwElm) {
 		GpmlNode gsource = getNode(e.getSource());
 		GpmlNode gtarget = getNode(e.getTarget());
-		edges.put(e.getIdentifier(), new GpmlEdge(e, pwElm, gsource, gtarget, getAttributeMapper()));
+		addEdge(new GpmlEdge(e, pwElm, gsource, gtarget, getAttributeMapper()));
 	}
 	
     /**
@@ -148,10 +178,7 @@ public class GpmlHandler {
     public Pathway createPathway(GraphView view) {
     	Pathway pathway = new Pathway();
     	pathway.getMappInfo().setMapInfoName(view.getIdentifier());
-    	for(GpmlNode gn : nodes.values()) {
-    		pathway.add(gn.getPathwayElement(view, attributeMapper));
-    	}
-    	for(GpmlEdge ge : edges.values()) {
+    	for(GpmlNetworkElement<?> ge : elements.values()) {
     		pathway.add(ge.getPathwayElement(view, attributeMapper));
     	}
     	return pathway;

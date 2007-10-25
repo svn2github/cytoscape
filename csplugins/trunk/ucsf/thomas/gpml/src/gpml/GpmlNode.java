@@ -11,8 +11,8 @@ import org.pathvisio.model.PathwayElement;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.actions.GinyUtils;
 import cytoscape.data.CyAttributes;
+import cytoscape.groups.CyGroupManager;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
@@ -33,6 +33,10 @@ public class GpmlNode extends GpmlNetworkElement<CyNode> {
 	 */
 	public GpmlNode(CyNode parent, PathwayElement pwElm, AttributeMapper attributeMapper) {
 		super(parent, pwElm, attributeMapper);
+		String id = pwElm.getGraphId();
+		if(id == null) {
+			id = Integer.toHexString(parent.getRootGraphIndex());
+		}
 	}
 	
 	/**
@@ -41,12 +45,15 @@ public class GpmlNode extends GpmlNetworkElement<CyNode> {
 	 * @param parent
 	 */
 	public GpmlNode(NodeView view, AttributeMapper attributeMapper) {
-		super((CyNode)view.getNode(), new PathwayElement(ObjectType.DATANODE));
-		pwElmOrig = new PathwayElement(ObjectType.DATANODE);
+		super((CyNode)view.getNode(), new PathwayElement(
+				CyGroupManager.isaGroup((CyNode)view.getNode()) ? 
+						ObjectType.GROUP : ObjectType.DATANODE));
 		pwElmOrig.setTextLabel(parent.getIdentifier());
 		pwElmOrig.setInitialSize();
-		pwElmOrig.setGraphId(Integer.toHexString(view.getNode().getRootGraphIndex()));
-		
+		//Set graphid to rootgraph index
+		String id = Integer.toHexString(getParent().getRootGraphIndex());
+		pwElmOrig.setGraphId(id);
+		getParent().setIdentifier(id);
 		resetToGpml(attributeMapper);
 	}
 	
@@ -112,8 +119,10 @@ public class GpmlNode extends GpmlNetworkElement<CyNode> {
 	
 	private void savePosition(GraphView view) {
 		NodeView nv = (NodeView)view.getNodeView(parent);
-		pwElmCy.setMCenterX(GpmlPlugin.vToM(nv.getXPosition()));
-		pwElmCy.setMCenterY(GpmlPlugin.vToM(nv.getYPosition()));
+		if(nv != null) { //View could be null, in case of hidden node
+			getPwElmCy().setMCenterX(GpmlPlugin.vToM(nv.getXPosition()));
+			getPwElmCy().setMCenterY(GpmlPlugin.vToM(nv.getYPosition()));
+		}
 	}
 
 	public CyAttributes getCyAttributes() {
