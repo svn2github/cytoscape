@@ -1,19 +1,12 @@
 package org.genmapp.subgeneviewer.splice.view;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
 import org.genmapp.subgeneviewer.readers.FileParser;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
-
-import cytoscape.CyNode;
 
 public class SpliceNetworkView extends SubgeneNetworkView {
 
@@ -100,8 +93,6 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	public void parseSplice(String nodeId) {
 		FileParser parser = new FileParser(this, nodeId, splice);
 	}
-
-	private static ImageIcon icon;
 	
 	String splice = "splice";
 	
@@ -115,31 +106,8 @@ public class SpliceNetworkView extends SubgeneNetworkView {
 	}
 	
 	public void renderSplice(String nodeId) {
-		// todo: write this sucker, Alex
-		icon = new ImageIcon(
-				"/Applications/Cytoscape_v2.5.1/plugins/subgene_mock.jpg");
 		
 		GraphWalker.calculateBounds(this);
-//		this.repaint();
-
-//		JPanel exonPanel = new JPanel() {
-//			protected void paintComponent(Graphics g) {
-////				g.drawImage(icon.getImage(), 5, 10, null);
-//				super.paintComponent(g);
-//				this.paintChildren(g);
-//			}
-//		};
-//		exonPanel.setBorder(new TitledBorder("Exon Structure Viewer"));
-//		exonPanel.setOpaque(false);
-//
-//		// todo: make this a calculated value
-//		exonPanel.setPreferredSize(new Dimension(455, 140));
-//		
-//		this.add(exonPanel);
-		
-		// need to paint myself
-//		this.repaint();
-
 	}
 
 }
