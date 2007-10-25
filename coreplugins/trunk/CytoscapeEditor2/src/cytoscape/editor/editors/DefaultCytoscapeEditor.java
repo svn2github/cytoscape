@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun Oct 04 05:35:56 2005
-* Modified:     Fri Jun 29 09:24:44 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Oct 25 05:24:18 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -162,8 +162,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 
 		if (!spEntries.hasNext()) {
 			shapePalette.addShape(controllingAttribute, "DirectedEdge",
-			                      new CytoShapeIcon(Arrow.DELTA), "Directed Edge",
-			                      // MLC 12/16/06:
+					      // MLC 10/24/07:
+			                      // new CytoShapeIcon(Arrow.DELTA), "Directed Edge",
+					      // MLC 10/24/07:
+			                      new CytoShapeIcon(Arrow.NONE), "Directed Edge",
 			_edgeCursorSetter);
 		} else {
 			while (spEntries.hasNext()) {

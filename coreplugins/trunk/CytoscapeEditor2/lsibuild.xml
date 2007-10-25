@@ -98,7 +98,7 @@
 		</jar>
 		<echo message="${plugin.loc} is now complete." />
 		<antcall target="release-plugin-to-cytoscape" />
-		<antcall target="release-plugin-to-genespring" />
+		<!-- <antcall target="release-plugin-to-genespring" /> -->
 	</target>
 
 	<target name="release-plugin-to-cytoscape" depends="check-cytohome" if="release-to-repository" description="copy plugin jar to cytoscape, when desired (based on repository.release property).">
