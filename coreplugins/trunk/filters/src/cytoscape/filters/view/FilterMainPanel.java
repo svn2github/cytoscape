@@ -42,6 +42,7 @@ import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.CyFilter;
+import cytoscape.filters.TopologyFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +76,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private static JPopupMenu optionMenu;
 
 	private static JMenuItem newFilterMenuItem;
-
+	private static JMenuItem newTopologyFilterMenuItem;
 	private static JMenuItem renameFilterMenuItem;
 
 	private static JMenuItem deleteFilterMenuItem;
@@ -262,13 +263,28 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			gridBagConstraints.weighty = 1.0;
 			gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 			
-			pnlFilterDefinition.add(currentFilterSettingPanel, gridBagConstraints);
+			if (pNewFilter instanceof TopologyFilter) {
+				lbAttribute.setVisible(false);
+				btnAddFilterWidget.setVisible(false);
+				cmbAttributes.setVisible(false);	
+				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+						.createTitledBorder("Topology Filter Definition"));
+			}
+			else {
+				lbAttribute.setVisible(true);
+				btnAddFilterWidget.setVisible(true);
+				cmbAttributes.setVisible(true);								
+				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+						.createTitledBorder("Filter Definition"));
 
-			pnlFilterDefinition.setVisible(true);
-			currentFilterSettingPanel.setVisible(true);
-			lbPlaceHolder_pnlFilterDefinition.setVisible(false); 
+			}
+		pnlFilterDefinition.add(currentFilterSettingPanel, gridBagConstraints);
+
+		pnlFilterDefinition.setVisible(true);
+		currentFilterSettingPanel.setVisible(true);
+		lbPlaceHolder_pnlFilterDefinition.setVisible(false); 				
 			
-			this.repaint();
+		this.repaint();
 	}
 	
 	
@@ -279,6 +295,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		btnAddFilterWidget.addActionListener(this);
 
 		newFilterMenuItem.addActionListener(this);
+		newTopologyFilterMenuItem.addActionListener(this);
 		deleteFilterMenuItem.addActionListener(this);
 		renameFilterMenuItem.addActionListener(this);
 		duplicateFilterMenuItem.addActionListener(this);
@@ -401,6 +418,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		 */
 		newFilterMenuItem = new JMenuItem("Create new filter...");
 		newFilterMenuItem.setIcon(addIcon);
+		
+		newTopologyFilterMenuItem = new JMenuItem("Create new topology filter...");
+		//topologyFilterMenuItem.setIcon(addIcon);
 
 		deleteFilterMenuItem = new JMenuItem("Delete filter...");
 		deleteFilterMenuItem.setIcon(delIcon);
@@ -413,6 +433,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		optionMenu = new JPopupMenu();
 		optionMenu.add(newFilterMenuItem);
+		optionMenu.add(newTopologyFilterMenuItem);
 		optionMenu.add(deleteFilterMenuItem);
 		optionMenu.add(renameFilterMenuItem);
 		optionMenu.add(duplicateFilterMenuItem);
@@ -669,7 +690,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		if (_actionObject instanceof JMenuItem) {
 			JMenuItem _menuItem = (JMenuItem) _actionObject;
-			if (_menuItem == newFilterMenuItem) {
+			if (_menuItem == newFilterMenuItem || _menuItem == newTopologyFilterMenuItem) {
+				boolean isTopoFilter = false;
+				if (_menuItem == newTopologyFilterMenuItem) {
+					isTopoFilter = true;
+				}
+
 				String newFilterName = "";
 				while (true) {
 					newFilterName = javax.swing.JOptionPane.showInputDialog(
@@ -704,7 +730,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 				if ((newFilterName != null)
 						&& (!newFilterName.trim().equals(""))) {
-					createNewFilter(newFilterName);
+					createNewFilter(newFilterName, isTopoFilter);
 					
 					//System.out.println("FilterMainPanel.firePropertyChange() -- NEW_FILTER_CREATED");
 					//pcs.firePropertyChange("NEW_FILTER_CREATED", "", "");
@@ -879,21 +905,35 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 	}// AttributeRenderer
 
-	private void createNewFilter(String pFilterName) {
+	private void createNewFilter(String pFilterName, boolean isTopoFilter) {
 		// Create an empty filter, add it to the current filter list
 		
 		System.out.println("Entering FilterMainPanel.createNewFilter() ...");
+		CompositeFilter newFilter = null;
 		
-		CompositeFilter newFilter = new CompositeFilter(pFilterName);
+		if (isTopoFilter) {
+			System.out.println("\tCreate a topology filter");
+
+			newFilter =  new TopologyFilter();
+			newFilter.setName(pFilterName);			
+		}
+		else {
+			newFilter = new CompositeFilter(pFilterName);
+		}
+		
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this,
+				newFilter);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
-		
+
 		// set the new filter in the combobox selected
 		cmbSelectFilter.setSelectedItem(newFilter);
 		cmbSelectFilter.repaint();
-		updateCMBAttributes();
 
+		if (!isTopoFilter) {
+			updateCMBAttributes();
+		}
+		
 		System.out.println("Leaving FilterMainPanel.createNewFilter() ...");
 	}
 
