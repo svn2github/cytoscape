@@ -30,31 +30,64 @@ import cytoscape.data.CyAttributes;
 import cytoscape.filters.AdvancedSetting;
 
 public class FilterUtil {
-
+	
 	// For test only
 	public static Vector<CompositeFilter> getTestFilterVect() {
 		
 		Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
-/*
-		CompositeFilter filter1 = new CompositeFilter("My first filter");
-		filter1.addAtomicFilter(new StringFilter("node.annotation.Date","20010124"));
-		
-		CompositeFilter filter2 = new CompositeFilter();
-		filter2.addAtomicFilter(new NumericFilter("node.gal80Rsig",0.2,0.57));
-		filter2.setName("My second filter");
-
-		CompositeFilter filter3 = new CompositeFilter();
-		filter3.addAtomicFilter(new NumericFilter("AttNameEEE",1.5,3.8));
-		filter3.addAtomicFilter(new StringFilter("AttNameFFF","SearchStrFFF"));
-		filter3.setName("My third filter");
-
-		retVect.add(filter1);
-		retVect.add(filter2);
-		retVect.add(filter3);
-*/				
 		return retVect;
 	}
+	
+	// do selection on given network
+	public static void doSelection(CompositeFilter pFilter) {
+		System.out.println("Entering FilterUtil.doSelection() ...");
+		
+		pFilter.apply();
+		
+		CyNetwork network = Cytoscape.getCurrentNetwork(); 
 
+		network.unselectAllNodes();
+		network.unselectAllEdges();
+		
+		final List<Node> nodes_list = network.nodesList();
+		final List<Edge> edges_list = network.edgesList();
+
+		if (pFilter.getAdvancedSetting().isNodeChecked()&& (pFilter.getNodeBits() != null)) {
+			// Select nodes
+			final List<Node> passedNodes = new ArrayList<Node>();
+
+			Node node = null;
+
+			for (int i=0; i< pFilter.getNodeBits().length(); i++) {
+				int next_set_bit = pFilter.getNodeBits().nextSetBit(i);
+				
+				node = nodes_list.get(next_set_bit);
+								
+				passedNodes.add(node);
+				i = next_set_bit;
+			}
+			network.setSelectedNodeState(passedNodes, true);
+		}
+		if (pFilter.getAdvancedSetting().isEdgeChecked()&& (pFilter.getEdgeBits() != null)) {
+			// Select edges
+			final List<Edge> passedEdges = new ArrayList<Edge>();
+
+			Edge edge = null;
+			for (int i=0; i< edges_list.size(); i++) {
+				int next_set_bit = pFilter.getEdgeBits().nextSetBit(i);
+				if (next_set_bit == -1) {
+					break;
+				}
+				edge = edges_list.get(next_set_bit);
+				passedEdges.add(edge);
+				i = next_set_bit;
+			}
+			network.setSelectedEdgeState(passedEdges, true);
+		}
+
+		Cytoscape.getCurrentNetworkView().updateView();
+	}
+	
 	
 	public static void applyFilter(CompositeFilter pFilter) {
 		ApplyFilterThread applyFilterThread = new ApplyFilterThread(pFilter);
