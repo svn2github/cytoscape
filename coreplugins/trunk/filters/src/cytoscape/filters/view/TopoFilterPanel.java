@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -33,11 +35,11 @@ import cytoscape.view.cytopanels.CytoPanelListener;
  * @author Peng
  *
  */
-public class TopoFilterPanel extends JPanel implements ActionListener, ItemListener{
+public class TopoFilterPanel extends JPanel implements ActionListener, ItemListener {
 
 	private Vector<CompositeFilter> allFilterVect = null;
 	private TopologyFilter theFilter;
-
+ 
     /** Creates new form TopoFilterPanel */
     public TopoFilterPanel(TopologyFilter pFilter, Vector<CompositeFilter> pAllFilterVect) {
     	allFilterVect = pAllFilterVect;
@@ -48,17 +50,17 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		cmbPassFilter.setModel(theModel);
 		cmbPassFilter.setRenderer(new FilterRenderer());
 		
-		addEventListeners();
-    }
-    
-	private void addEventListeners() {
-
+		//add EventListeners
 		tfDistance.addActionListener(this);
 		tfMinNeighbors.addActionListener(this);
 
+		MyKeyListener l = new MyKeyListener();
+		tfDistance.addKeyListener(l);
+		tfMinNeighbors.addKeyListener(l);
+		
 		cmbPassFilter.addItemListener(this);
-	}
-
+    }
+    
 	
 	
 	public void actionPerformed(ActionEvent e) {
@@ -85,10 +87,12 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getSource();
 		
-		System.out.println("Entering TopoFIlterPanel.itemStateChnaged() ...");
+		System.out.println("Entering TopoFilterPanel.itemStateChnaged() ...");
 		
 		if (source instanceof JComboBox) {
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
+			
+			System.out.println("theFilter = "+ theFilter.toString());
 		}
 	}
 	
@@ -200,8 +204,13 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			if (value != null) {
-				CompositeFilter theFilter = (CompositeFilter) value;
-				setText(theFilter.getName());
+				if (value == theFilter) {
+					setText(""); 
+				}
+				else {
+					CompositeFilter tmpFilter = (CompositeFilter) value;
+					setText(tmpFilter.getName());					
+				}
 			}
 			else { // value == null
 				setText(""); 
@@ -211,4 +220,26 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		}
 	}// FilterRenderer
 
+	class MyKeyListener extends KeyAdapter {
+		
+		public void keyReleased(KeyEvent e)  {
+			Object _actionObject = e.getSource();
+
+			if (tfMinNeighbors.getText().trim().equalsIgnoreCase("") || 
+					tfDistance.getText().trim().equalsIgnoreCase("")) {
+				return;
+			}	
+			if (_actionObject instanceof JTextField) {
+				JTextField _tfObj = (JTextField) _actionObject;
+				if (_tfObj == tfMinNeighbors) {
+					int _neighbors = (new Integer(tfMinNeighbors.getText())).intValue();
+					theFilter.setMinNeighbors(_neighbors);
+				}
+				else if (_tfObj == tfDistance) {
+					int _distance = (new Integer(tfDistance.getText())).intValue();
+					theFilter.setDistance(_distance);				
+				}
+			}
+		}
+	}
 }
