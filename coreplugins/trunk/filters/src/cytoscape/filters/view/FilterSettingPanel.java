@@ -21,6 +21,8 @@ import cytoscape.filters.StringFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.Relation;
+import cytoscape.filters.util.FilterUtil;
+
 import java.util.List;
 import java.util.Vector;
 import java.awt.Dimension;
@@ -364,15 +366,15 @@ public class FilterSettingPanel extends JPanel {
 				childFilter.setNegation(_chk.isSelected());				
 			}
 			//Update the selection on screen
-			doSelection();
+			FilterUtil.doSelection(theFilter);
 		}
 	}
 	
 	// select node/edge on current network based on the filter defined
-	private void doSelection() {
+	//private void doSelection() {
 		//System.out.println("Entering FilterSettingPanel.doSelection()...");		
-		theFilter.doSelection();
-	}
+	//	theFilter.doSelection();
+	//}
 
 	
 	
@@ -501,7 +503,7 @@ public class FilterSettingPanel extends JPanel {
 			theFilter.addChild(newChildFilter);
 		}
 		//Update the selection on screen
-		doSelection();			
+		FilterUtil.doSelection(theFilter);			
 	}
 
 	
@@ -559,7 +561,7 @@ public class FilterSettingPanel extends JPanel {
 			//System.out.println("\trangeModel.getHighValue() =" + rangeModel.getHighValue());			
 			//this.revalidate();
 		}
-		doSelection();
+		FilterUtil.doSelection(theFilter);
 	}
 
 	
@@ -606,7 +608,7 @@ public class FilterSettingPanel extends JPanel {
 			
 			//Update the selection on screen
 			//System.out.println("FilterSettingPanel. actionEvent from textIndexedComboBox...");	
-			doSelection();					
+			FilterUtil.doSelection(theFilter);				
 		}
 	}
 
@@ -660,7 +662,7 @@ public class FilterSettingPanel extends JPanel {
 			theFilter.childChanged();
 			//Update the selection on screen
 			System.out.println("FilterSettingPanel. rangerSlider changed Event received...");	
-			doSelection();					
+			FilterUtil.doSelection(theFilter);				
 
 		}
 	}
@@ -781,7 +783,7 @@ public class FilterSettingPanel extends JPanel {
 				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
 					//System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
 					theFilter.childChanged();//The setting is changed
-					doSelection();					
+					FilterUtil.doSelection(theFilter);				
 				}
 			}
 			if (soureObj instanceof javax.swing.JRadioButton) {
@@ -798,7 +800,7 @@ public class FilterSettingPanel extends JPanel {
 				//Update the selection on screen
 				//System.out.println("FilterSettingPanel. rbtAND/rbtOR is clicked");	
 				theFilter.childChanged();
-				doSelection();					
+				FilterUtil.doSelection(theFilter);				
 			}
 		}
 	}
