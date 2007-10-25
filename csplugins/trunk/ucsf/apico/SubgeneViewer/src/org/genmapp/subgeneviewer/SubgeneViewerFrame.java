@@ -62,21 +62,14 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		System.out.println("SGV: adding view to frame");
 
 		view.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
-		view.setBackground(new Color(247,243,213));
-		view.setOpaque(true);
+		//view.setBackground(new Color(247,243,213));
+		view.setOpaque(false);
 		view.setAutoscrolls(true);
 		view.setVisible(true);
-		//		Dimension minSize = new Dimension(800,300*_cnvList.size());
-//		view.setLayout(new BoxLayout(
-		view.setPreferredSize(new Dimension(1000, 200));
 		_panel.add(view);
-//		_panel.setPreferredSize(minSize);
 		_panel.validate();
-//		_scrollPane.add(view);
 		_scrollPane.validate();
 		_cnvList.add(view);
-//		view.repaint();	
-//		this.add(view);
 	}
 	
 	public void mouseDragged(MouseEvent e) {
