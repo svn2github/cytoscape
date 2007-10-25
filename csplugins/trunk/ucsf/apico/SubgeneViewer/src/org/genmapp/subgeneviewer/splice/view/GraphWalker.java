@@ -1,6 +1,7 @@
 package org.genmapp.subgeneviewer.splice.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -35,6 +36,10 @@ public class GraphWalker {
 	 */
 	// todo: empirically use defaults for now, but drive this from Vizmapper
 	// later
+	private static final int PANEL_HEIGHT = 80;
+
+	private static final int PANEL_WIDTH = 80;
+
 	private static final int NODE_HEIGHT = 20;
 
 	private static final int NODE_WIDTH = 40;
@@ -54,10 +59,12 @@ public class GraphWalker {
 	private static final int TITLE_LEGEND_HEIGHT = NODE_HEIGHT;
 
 	private static final int FLAG_WIDTH = 10; // width of bounding box for
-												// triangle of flag on StartSite
+
+	// triangle of flag on StartSite
 
 	private static final int FLAG_HEIGHT = 10; // height of bounding box for
-												// triangle of flag on StartSite
+
+	// triangle of flag on StartSite
 
 	/**
 	 * perform a depth-first search of a SubgeneNetworkView and set bounds for
@@ -97,6 +104,9 @@ public class GraphWalker {
 					featureXOffset = xOffset;
 					feature.setBounds(featureXOffset + (HGAP / 2),
 							featuresBoundsY, NODE_WIDTH, NODE_HEIGHT);
+					if (view.getPreferredSize().getWidth() < featureXOffset + (HGAP / 2) + PANEL_WIDTH){
+					view.setPreferredSize(new Dimension(featureXOffset + (HGAP / 2)+ PANEL_WIDTH, featuresBoundsY + PANEL_HEIGHT));
+					}
 					xOffset += NODE_WIDTH + HGAP;
 				}
 
@@ -179,8 +189,8 @@ public class GraphWalker {
 					// mapping color
 					CyNode node = feature.getCyNode();
 					CyAttributes att = Cytoscape.getNodeAttributes();
-					System.out.println("returned node is "
-							+ node.getIdentifier());
+					// System.out.println("returned node is "
+					// + node.getIdentifier());
 					int attR = att.getIntegerAttribute(node.getIdentifier(),
 							"red").intValue();
 					int attG = att.getIntegerAttribute(node.getIdentifier(),
@@ -195,7 +205,7 @@ public class GraphWalker {
 					g.setColor(secondColor);
 					g.fillRect(rect.x, rect.y, rect.width, rect.height);
 
-					System.out.println("color is " + secondColor);
+					// System.out.println("color is " + secondColor);
 
 					// g.drawString(feature.getId(), rect.x + 1, rect.y + 1);
 					if (attR + attG + attB > 500) {
@@ -257,9 +267,9 @@ public class GraphWalker {
 
 					int startX = regionBounds.x;
 					int startY = regionBounds.y - START_SITE_HEIGHT; // draw
-																		// flag
-																		// above
-																		// region
+					// flag
+					// above
+					// region
 					int endY = regionBounds.y;
 
 					g.setColor(Color.red);
