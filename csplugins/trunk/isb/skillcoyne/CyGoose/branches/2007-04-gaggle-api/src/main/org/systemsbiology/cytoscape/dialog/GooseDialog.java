@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
  */
 public class GooseDialog extends javax.swing.JPanel {
     public enum GooseButton {
-        REGISTER("Register"), SHOW("Show"), HIDE("Hide"), MAP(
-            "Map"), MATRIX("Matrix"), NETWORK("Network"), LIST("List");
+        REGISTER("Register"), SHOW("Show"), HIDE("Hide"), TUPLE(
+            "Tuple"), MATRIX("Matrix"), NETWORK("Network"), LIST("List");
 
         private String buttonName;
 
@@ -46,8 +46,8 @@ public class GooseDialog extends javax.swing.JPanel {
             case HIDE:
                 button = this.hideButton;
                 break;
-            case MAP:
-                button = this.mapButton;
+            case TUPLE:
+                button = this.tupleButton;
                 break;
             case MATRIX:
                 button = this.matrixButton;
@@ -74,8 +74,8 @@ public class GooseDialog extends javax.swing.JPanel {
             case HIDE:
                 button = this.hideButton;
                 break;
-            case MAP:
-                button = this.mapButton;
+            case TUPLE:
+                button = this.tupleButton;
                 break;
             case MATRIX:
                 button = this.matrixButton;
@@ -113,7 +113,7 @@ public class GooseDialog extends javax.swing.JPanel {
         hideButton = new javax.swing.JButton();
         broadcastPanel = new javax.swing.JPanel();
         broadcastLabel = new javax.swing.JLabel();
-        mapButton = new javax.swing.JButton();
+        tupleButton = new javax.swing.JButton();
         matrixButton = new javax.swing.JButton();
         networkButton = new javax.swing.JButton();
         listButton = new javax.swing.JButton();
@@ -176,9 +176,9 @@ public class GooseDialog extends javax.swing.JPanel {
 
         broadcastLabel.setText("Broadcast Data");
 
-        mapButton.setText("Map");
-        mapButton.setToolTipText("Broadcast HashMap ");
-        mapButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tupleButton.setText("Tuple");
+        tupleButton.setToolTipText("Broadcast Tuple ");
+        tupleButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         matrixButton.setText("Matrix");
         matrixButton.setToolTipText("Broadcast Matrix");
@@ -200,7 +200,7 @@ public class GooseDialog extends javax.swing.JPanel {
                         .add(broadcastPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                 .add(broadcastLabel)
                                 .add(broadcastPanelLayout.createSequentialGroup()
-                                .add(mapButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 41, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(tupleButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 41, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(matrixButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -216,7 +216,7 @@ public class GooseDialog extends javax.swing.JPanel {
                         .add(broadcastLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(broadcastPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(mapButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(tupleButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(matrixButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(networkButton)
                                 .add(listButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -327,7 +327,7 @@ public class GooseDialog extends javax.swing.JPanel {
     private javax.swing.JLabel layoutLabel;
     private javax.swing.JPanel layoutPanel;
     private javax.swing.JButton listButton;
-    private javax.swing.JButton mapButton;
+    private javax.swing.JButton tupleButton;
     private javax.swing.JButton matrixButton;
     private javax.swing.JLabel messageLabel;
     private javax.swing.JTextPane messageText;

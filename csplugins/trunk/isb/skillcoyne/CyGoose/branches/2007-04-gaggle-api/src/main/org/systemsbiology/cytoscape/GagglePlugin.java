@@ -481,7 +481,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         });
 
         /* broadcast HashMap to other goose (geese) */
-        gDialog.addButtonAction(GooseButton.MAP, new ActionListener() {
+        gDialog.addButtonAction(GooseButton.TUPLE, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
                     CyNetwork Network = Cytoscape.getCurrentNetwork();

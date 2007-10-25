@@ -224,8 +224,6 @@ public class CyGoose implements Goose {
     }
 
     public void handleTuple(String string, GaggleTuple gaggleTuple) throws RemoteException {
-        System.out.println("got a   tuple...");
-
         String condition = (String)gaggleTuple.getMetadata().getSingleAt(0).getValue();
         gDialog.displayDataType(condition);
 
@@ -248,8 +246,9 @@ public class CyGoose implements Goose {
             String attribute = (String)tuple.getSingleAt(1).getValue();
             Object valueObject = tuple.getSingleAt(2).getValue();
 
+
             CyNode selectNode = Cytoscape.getCyNode(node);
-            CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+            CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // does this need to be in this scope?
 
 
             if (valueObject instanceof Double) {
@@ -275,16 +274,19 @@ public class CyGoose implements Goose {
                     if (value > upperValue) upperValue = value;
                     if (value < lowerValue) lowerValue = value;
                 }
-// YIKES, WHAT ABOUT BOOLEANS?
             } else if (valueObject instanceof String) {
                 String value = (String)valueObject;
                 nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
             } else {
                 throw new RuntimeException("Got a movie frame of the wrong type!");
             }
-        }
+            upperValue = upperValue + (upperValue * 0.2);
+            lowerValue = lowerValue - (lowerValue * 0.2);
 
-        
+            visualMap.seedMappings(attribute, upperValue, lowerValue);
+        }
+        Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+        Cytoscape.getNetworkView(net.getIdentifier()).redrawGraph(true, true);
     }
 
 

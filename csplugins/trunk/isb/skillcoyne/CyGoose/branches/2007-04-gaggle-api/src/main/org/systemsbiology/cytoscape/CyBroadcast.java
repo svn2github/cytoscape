@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.systemsbiology.cytoscape;
 
@@ -7,16 +7,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.rmi.RemoteException;
+import java.io.Serializable;
 
 import javax.swing.JOptionPane;
 
 import org.systemsbiology.cytoscape.dialog.CyAttrDialog;
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
 
-import org.systemsbiology.gaggle.core.datatypes.DataMatrix;
-import org.systemsbiology.gaggle.core.datatypes.Namelist;
-import org.systemsbiology.gaggle.core.datatypes.Network;
-import org.systemsbiology.gaggle.core.datatypes.Interaction;
+import org.systemsbiology.gaggle.core.datatypes.*;
 import org.systemsbiology.gaggle.core.Boss;
 
 import cytoscape.CyEdge;
@@ -29,470 +28,501 @@ import cytoscape.data.Semantics;
 
 /**
  * @author skillcoy
- * 
  */
-public class CyBroadcast
-	{
-	private GooseDialog gDialog;
-	private Boss gaggleBoss;
+public class CyBroadcast {
+    private GooseDialog gDialog;
+    private Boss gaggleBoss;
 
-	private String broadcastID = "ID";
+    private String broadcastID = "ID";
 
-	// text strings for popup dialog boxes
-	private String broadcastStr = "The following checked attributes will be captured for broadcast.\n"
-			+ "Click \"OK\" to proceed or \"Cancel\" to cancel transaction.";
+    // text strings for popup dialog boxes
+    private String broadcastStr = "The following checked attributes will be captured for broadcast.\n"
+            + "Click \"OK\" to proceed or \"Cancel\" to cancel transaction.";
 
-	private static void print(String S)
-		{
-		System.out.println(S);
-		}
+    private static void print(String S) {
+        System.out.println(S);
+    }
 
-	/**
-   * 
-   */
-	public CyBroadcast(GooseDialog Dialog, Boss boss)
-		{
-		this.gDialog = Dialog;
-		this.gaggleBoss = boss;
-		}
+    /**
+     *
+     */
+    public CyBroadcast(GooseDialog Dialog, Boss boss) {
+        this.gDialog = Dialog;
+        this.gaggleBoss = boss;
+    }
 
-	// very basically for the moment we will only broadcast by ID
-	public void broadcastNameList(CyGoose Goose, String TargetGoose)
-		{
-		print("broadcastNameList");
-		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
-			{
-			GagglePlugin.showDialogBox("No nodes were selected for list broadcast.",
-					"Warning", JOptionPane.WARNING_MESSAGE);
-			return;
-			}
+    // very basically for the moment we will only broadcast by ID
+    public void broadcastNameList(CyGoose Goose, String TargetGoose) {
+        print("broadcastNameList");
+        if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0) {
+            GagglePlugin.showDialogBox("No nodes were selected for list broadcast.",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		Set<CyNode> SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
-				.getSelectedNodes();
-		Iterator<CyNode> NodesIter = SelectedNodes.iterator();
+        Set<CyNode> SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
+                .getSelectedNodes();
+        Iterator<CyNode> NodesIter = SelectedNodes.iterator();
 
-		// warning: no nodes are selected for broadcast
-		if (SelectedNodes.size() == 0)
-			{
-			GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
-					JOptionPane.WARNING_MESSAGE);
-			return;
-			}
+        // warning: no nodes are selected for broadcast
+        if (SelectedNodes.size() == 0) {
+            GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		String[] NodeIds = new String[SelectedNodes.size()];
-		// TODO: get species
-		String Species = null;
+        String[] NodeIds = new String[SelectedNodes.size()];
+        // TODO: get species
+        String Species = null;
 
-		// CyNode Node;
-		for (int i = 0; i < SelectedNodes.size(); i++)
-			{
-			CyNode Node = NodesIter.next();
-			NodeIds[i] = Node.getIdentifier();
-			}
+        // CyNode Node;
+        for (int i = 0; i < SelectedNodes.size(); i++) {
+            CyNode Node = NodesIter.next();
+            NodeIds[i] = Node.getIdentifier();
+        }
 
-            Namelist namelist = new Namelist();
-            namelist.setSpecies(Species);
-            namelist.setNames(NodeIds);
+        Namelist namelist = new Namelist();
+        namelist.setSpecies(Species);
+        namelist.setNames(NodeIds);
 
-            try
-			{
-			gaggleBoss.broadcastNamelist(Goose.getName(), TargetGoose,  namelist);
-			}
-		catch (Exception E)
-			{
-			GagglePlugin.showDialogBox("Failed to broadcast list of names to "
-					+ TargetGoose, "Error", JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
-			}
-		}
+        try {
+            gaggleBoss.broadcastNamelist(Goose.getName(), TargetGoose, namelist);
+        }
+        catch (Exception E) {
+            GagglePlugin.showDialogBox("Failed to broadcast list of names to "
+                    + TargetGoose, "Error", JOptionPane.ERROR_MESSAGE);
+            E.printStackTrace();
+        }
+    }
 
-	// broadcasts hash of selected attributes
-	public void broadcastHashMap(CyGoose Goose, String TargetGoose)
-		{
-		print("broadcastHashMap");
+    public void broadcastTuple(CyGoose goose, String targetGoose) {
+        GaggleTuple gaggleTuple = new GaggleTuple();
+        String conditionName = "condition name...";
+        gaggleTuple.getMetadata().addSingle(new Single(conditionName));
 
-		Set<CyNode> SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
-				.getSelectedNodes();
+        gaggleTuple.setSpecies("platypus");
 
-		// warning: no nodes are selected for broadcast
-		if (SelectedNodes.size() == 0)
-			{
-			GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
-					JOptionPane.WARNING_MESSAGE);
-			return;
-			}
+        double[] values = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
+        String[] rowNames = {"one", "two", "three", "four",
+                "five", "six", "seven", "eight"};
 
-		// pass string of attribute names
-		String[] AllAttrNames = Cytoscape.getNodeAttributes().getAttributeNames();
 
-		final CyGoose goose = Goose;
-		final String target = TargetGoose;
+        for (int i = 0; i < rowNames.length; i++) {
+            Tuple tuple = new Tuple();
+            tuple.addSingle(new Single(null, rowNames[i]));
+            tuple.addSingle(new Single(null, "log10 ratios"));
+            tuple.addSingle(new Single(null, values[i]));
+            gaggleTuple.getData().addSingle(new Single(tuple));
+        }
 
-		// confirmAttrSelection(AllAttrNames, "HashMap");
-		AttrSelectAction okAction = new AttrSelectAction()
-			{
-				public void takeAction(String[] selectAttr)
-					{
-					broadcastHashMap(selectAttr, goose, target);
-					}
-			};
+        try {
+            gaggleBoss.broadcastTuple(goose.getName(), targetGoose, gaggleTuple);
+        } catch (RemoteException e) {
+            GagglePlugin.showDialogBox("Failed to broadcast map to " + targetGoose,
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
-		CyAttrDialog dialog = new CyAttrDialog(AllAttrNames, okAction,
-				CyAttrDialog.MULTIPLE_SELECT);
-		dialog.setDialogText(broadcastStr);
-		dialog.preSelectCheckBox(AllAttrNames);
-		dialog.buildDialogWin();
-		}
+    }
 
-	private void broadcastHashMap(String[] attrNames, CyGoose Goose,
-			String TargetGoose)
-		{
-		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
-			{
-			GagglePlugin.showDialogBox("No nodes were selected for map broadcast.",
-					"Warning", JOptionPane.WARNING_MESSAGE);
-			return;
-			}
+    // broadcasts hash of selected attributes
+    public void broadcastHashMap(CyGoose Goose, String TargetGoose) {
+        print("broadcastHashMap");
 
-		Set selectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
-				.getSelectedNodes();
-		Iterator nodeIter = selectedNodes.iterator();
+        Set<CyNode> SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
+                .getSelectedNodes();
 
-		// create a string of node names
-		String[] nodeArr = new String[selectedNodes.size()];
-		// CyNode node;
-		for (int i = 0; (i < selectedNodes.size()) && nodeIter.hasNext(); i++)
-			{
-			CyNode CurrentNode = (CyNode) nodeIter.next();
-			nodeArr[i] = CurrentNode.getIdentifier();
-			}
+        // warning: no nodes are selected for broadcast
+        if (SelectedNodes.size() == 0) {
+            GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		HashMap map = new HashMap();
-		for (int i = 0; i < attrNames.length; i++)
-			{
-			String attr = attrNames[i];
-			ArrayList namesAndValues = new ArrayList();
-			switch (Cytoscape.getNodeAttributes().getType(attr))
-				{
-				case CyAttributes.TYPE_INTEGER:
-				int[] intValues = new int[nodeArr.length];
-				for (int j = 0; j < nodeArr.length; j++)
-					intValues[j] = Cytoscape.getNodeAttributes().getIntegerAttribute(
-							nodeArr[j], attr).intValue();
-				// create HashMap
-				namesAndValues.add(nodeArr);
-				namesAndValues.add(intValues);
-				break;
-				case CyAttributes.TYPE_FLOATING:
-				double[] dbValues = new double[nodeArr.length];
-				for (int j = 0; j < nodeArr.length; j++)
-					dbValues[j] = Cytoscape.getNodeAttributes().getDoubleAttribute(
-							nodeArr[j], attr).doubleValue();
-				// create HashMap
-				namesAndValues.add(nodeArr);
-				namesAndValues.add(dbValues);
-				break;
-				case CyAttributes.TYPE_BOOLEAN:
-				boolean[] boolValues = new boolean[nodeArr.length];
-				for (int j = 0; j < nodeArr.length; j++)
-					boolValues[j] = Cytoscape.getNodeAttributes().getBooleanAttribute(
-							nodeArr[j], attr).booleanValue();
-				// create HashMap
-				namesAndValues.add(nodeArr);
-				namesAndValues.add(boolValues);
-				break;
-				case CyAttributes.TYPE_STRING:
-				String[] strValues = new String[nodeArr.length];
-				for (int j = 0; j < nodeArr.length; j++)
-					strValues[j] = Cytoscape.getNodeAttributes().getStringAttribute(
-							nodeArr[j], attr);
-				// create HashMap
-				namesAndValues.add(nodeArr);
-				namesAndValues.add(strValues);
-				break;
-				}
-			map.put(attr, namesAndValues);
-			}
+        // pass string of attribute names
+        String[] AllAttrNames = Cytoscape.getNodeAttributes().getAttributeNames();
 
-		// String species = CytoscapeInit.getDefaultSpeciesName();
-		String species = getSpecies(nodeArr[0]);
-		String dataTitle = "";
+        final CyGoose goose = Goose;
+        final String target = TargetGoose;
 
-		try
-			{
-                // todo dan fix w/tuples
-            //this.gaggleBoss.broadcast(Goose.getName(), TargetGoose, species,
-			//		dataTitle, map);
-			}
-		catch (Exception E)
-			{
-			GagglePlugin.showDialogBox("Failed to broadcast map to " + TargetGoose,
-					"Error", JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
-			}
-		}
+        // confirmAttrSelection(AllAttrNames, "HashMap");
+        AttrSelectAction okAction = new AttrSelectAction() {
+            public void takeAction(String[] selectAttr) {
+                broadcastHashMap(selectAttr, goose, target);
+            }
+        };
 
-	public void broadcastDataMatrix(CyGoose Goose, String TargetGoose)
-		{
-		print("broadcastDataMatrix");
+        CyAttrDialog dialog = new CyAttrDialog(AllAttrNames, okAction,
+                CyAttrDialog.MULTIPLE_SELECT);
+        dialog.setDialogText(broadcastStr);
+        dialog.preSelectCheckBox(AllAttrNames);
+        dialog.buildDialogWin();
+    }
 
-		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
-			{
-			GagglePlugin.showDialogBox(
-					"No nodes were selected for Data Matrix broadcast.", "Warning",
-					JOptionPane.WARNING_MESSAGE);
-			return;
-			}
+    private void broadcastHashMap(String[] attrNames, CyGoose goose,
+                                  String targetGoose) {
+        if (Cytoscape.getNetwork(goose.getNetworkId()).getSelectedNodes().size() <= 0) {
+            GagglePlugin.showDialogBox("No nodes were selected for tuple broadcast.",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		Set SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
-				.getSelectedNodes();
+        GaggleTuple gaggleTuple = new GaggleTuple();
+        //gaggleTuple.setSpecies(Cytoscape.get); // todo add a way to specify species  - possibly:
+        /*
+        add a dropdown or ui item that allows you to either type in a species
+        or pick from all of the values of attributes named 'species' in the current network
+        (or in all networks?)
 
-		// warning: no nodes are selected for broadcast
-		if (SelectedNodes.size() == 0)
-			{
-			GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
-					JOptionPane.WARNING_MESSAGE);
-			return;
-			}
+        the existing way might be ok for now (see getSpecies())
+         */
 
-		// create an array of experiment conditions (columnTitles in DataMatrix)
-		ArrayList<String> condNamesArrList = new ArrayList<String>();
-		String[] attributeNames = Cytoscape.getNodeAttributes().getAttributeNames();
+        Set selectedNodes = Cytoscape.getNetwork(goose.getNetworkId())
+                .getSelectedNodes();
+        Iterator nodeIter = selectedNodes.iterator();
 
-		for (String CurrentAttr : attributeNames)
-			{
-			// assume all DOUBLE type attributes are expression data
-			if (Cytoscape.getNodeAttributes().getType(CurrentAttr) == CyAttributes.TYPE_FLOATING)
-				condNamesArrList.add(CurrentAttr);
-			}
+        // create a string array of node names
+        String[] nodeArr = new String[selectedNodes.size()];
+        for (int i = 0; (i < selectedNodes.size()) && nodeIter.hasNext(); i++) {
+            CyNode currentNode = (CyNode) nodeIter.next();
+            nodeArr[i] = currentNode.getIdentifier();
+        }
 
-		// move everything from ArrayList to a String array
-		String[] condNames = new String[condNamesArrList.size()];
-		condNamesArrList.toArray(condNames);
+        Tuple dataTuple = new Tuple();
+        Tuple metadata = new Tuple();
+        metadata.addSingle(new Single("condition", "static"));
+        gaggleTuple.setMetadata(metadata);
 
-		final CyGoose goose = Goose;
-		final String target = TargetGoose;
+        for (String attr : attrNames) {
+            switch (Cytoscape.getNodeAttributes().getType(attr)) {
+                case CyAttributes.TYPE_INTEGER:
+                    for (String nodeName : nodeArr) {
+                        Tuple row = new Tuple();
+                        row.addSingle(new Single(nodeName));
+                        row.addSingle(new Single(attr));
+                        row.addSingle(new Single(Cytoscape.getNodeAttributes().getIntegerAttribute(nodeName, attr)));
+                        dataTuple.addSingle(new Single(row));
+                    }
+                    break;
+                case CyAttributes.TYPE_FLOATING:
+                    for (String nodeName : nodeArr) {
+                        Tuple row = new Tuple();
+                        row.addSingle(new Single(nodeName));
+                        row.addSingle(new Single(attr));
+                        row.addSingle(new Single(Cytoscape.getNodeAttributes().getDoubleAttribute(nodeName, attr)));
+                        dataTuple.addSingle(new Single(row));
+                    }
+                    break;
+                case CyAttributes.TYPE_STRING:
+                    for (String nodeName : nodeArr) {
+                        Tuple row = new Tuple();
+                        row.addSingle(new Single(nodeName));
+                        row.addSingle(new Single(attr));
+                        row.addSingle(new Single(Cytoscape.getNodeAttributes().getStringAttribute(nodeName, attr)));
+                        dataTuple.addSingle(new Single(row));
+                    }
+                    break;
+            }
+        }
 
-		// dialog for user to select attributes for broadcast
-		AttrSelectAction okAction = new AttrSelectAction()
-			{
-				public void takeAction(String[] selectAttr)
-					{
-					broadcastDataMatrix(selectAttr, goose, target);
-					}
-			};
 
-		if (condNames.length > 0)
-			{
-			CyAttrDialog dialog = new CyAttrDialog(condNames, okAction,
-					CyAttrDialog.MULTIPLE_SELECT);
-			dialog.setDialogText(broadcastStr);
-			dialog.preSelectCheckBox(condNames);
-			dialog.buildDialogWin();
-			}
-		else
-			{
-			GagglePlugin.showDialogBox(
-					"The selected nodes do not have numerical attributes for a matrix",
-					"Warning", JOptionPane.WARNING_MESSAGE);
-			}
-		}
+        HashMap map = new HashMap();
+        for (int i = 0; i < attrNames.length; i++) {
+            String attr = attrNames[i];
+            ArrayList namesAndValues = new ArrayList();
+            switch (Cytoscape.getNodeAttributes().getType(attr)) {
+                case CyAttributes.TYPE_INTEGER:
+                    int[] intValues = new int[nodeArr.length];
+                    for (int j = 0; j < nodeArr.length; j++)
+                        intValues[j] = Cytoscape.getNodeAttributes().getIntegerAttribute(
+                                nodeArr[j], attr).intValue();
+                    // create HashMap
+                    namesAndValues.add(nodeArr);
+                    namesAndValues.add(intValues);
+                    break;
+                case CyAttributes.TYPE_FLOATING:
+                    double[] dbValues = new double[nodeArr.length];
+                    for (int j = 0; j < nodeArr.length; j++)
+                        dbValues[j] = Cytoscape.getNodeAttributes().getDoubleAttribute(
+                                nodeArr[j], attr).doubleValue();
+                    // create HashMap
+                    namesAndValues.add(nodeArr);
+                    namesAndValues.add(dbValues);
+                    break;
+                case CyAttributes.TYPE_BOOLEAN:
+                    boolean[] boolValues = new boolean[nodeArr.length];
+                    for (int j = 0; j < nodeArr.length; j++)
+                        boolValues[j] = Cytoscape.getNodeAttributes().getBooleanAttribute(
+                                nodeArr[j], attr).booleanValue();
+                    // create HashMap
+                    namesAndValues.add(nodeArr);
+                    namesAndValues.add(boolValues);
+                    break;
+                case CyAttributes.TYPE_STRING:
+                    String[] strValues = new String[nodeArr.length];
+                    for (int j = 0; j < nodeArr.length; j++)
+                        strValues[j] = Cytoscape.getNodeAttributes().getStringAttribute(
+                                nodeArr[j], attr);
+                    // create HashMap
+                    namesAndValues.add(nodeArr);
+                    namesAndValues.add(strValues);
+                    break;
+            }
+            map.put(attr, namesAndValues);
+        }
 
-	private void broadcastDataMatrix(String[] condNames, CyGoose Goose,
-			String TargetGoose)
-		{
-		if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0)
-			{
-			GagglePlugin.showDialogBox(
-					"No nodes were selected for Data Matrix broadcast.", "Warning",
-					JOptionPane.WARNING_MESSAGE);
-			return;
-			}
 
-		Set selectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
-				.getSelectedNodes();
-		Iterator selectedNodesIter = selectedNodes.iterator();
+        gaggleTuple.setData(dataTuple);
+        gaggleTuple.setSpecies(getSpecies(nodeArr[0])); // todo, find a better way (see above)
+        gaggleTuple.setName(""); //why?
 
-		DataMatrix matrix = new DataMatrix();
-		// initialize DataMatrix
-		matrix.setColumnTitles(condNames);
-		// matrix.setSpecies(getSpecies());
+        try {
+            // todo dan fix w/tuples
+            broadcastTuple(goose, targetGoose); // bogus call
+            gaggleBoss.broadcastTuple(goose.getName(), targetGoose, gaggleTuple);
+            //this.gaggleBoss.broadcast(goose.getName(), targetGoose, species,
+            //		dataTitle, map);
+        }
+        catch (Exception E) {
+            GagglePlugin.showDialogBox("Failed to broadcast map to " + targetGoose,
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            E.printStackTrace();
+        }
+    }
 
-		// loop through all flagged nodes and construct a DataMatrix with
-		// row=columnNames & column=condNames
-		while (selectedNodesIter.hasNext())
-			{
-			double[] condVals = new double[condNames.length];
-			CyNode CurrentSelectedNode = (CyNode) selectedNodesIter.next();
-			String NodeId = CurrentSelectedNode.getIdentifier();
-			for (int i = 0; i < condNames.length; i++)
-				{
-				try
-					{
-					Double val = Cytoscape.getNodeAttributes().getDoubleAttribute(NodeId,
-							condNames[i]);
-					if (val != null) condVals[i] = val.doubleValue();
-					}
-				catch (Exception ex)
-					{
-					System.out
-							.println("broadcastDataMatrix() error: incompatible data type for "
-									+ condNames[i]);
-					}
-				}
-			// use other attribute to identify node if selected by user
 
-			if (!broadcastID.equals(CyAttrDialog.DEFAULT_NODE_ID)) // again..."ID" ==
-                                                              // "ID" WHY??
-				{
-				NodeId = Cytoscape.getNodeAttributes().getStringAttribute(NodeId,
-						broadcastID);
+    public void broadcastDataMatrix(CyGoose Goose, String TargetGoose) {
+        print("broadcastDataMatrix");
 
-				// skip any node that is null // shouldn't this happen before?
-				if (NodeId == null) continue;
-				}
-			// add new row to DataMatrix
-			matrix.addRow(NodeId, condVals);
-			matrix.setSpecies(getSpecies(NodeId)); // er...does this set the species
-                                              // every time 'round? what if the
-                                              // species is different from one
-                                              // node to another?
-			}
+        if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0) {
+            GagglePlugin.showDialogBox(
+                    "No nodes were selected for Data Matrix broadcast.", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		try
-			{
-			this.gaggleBoss.broadcastMatrix(Goose.getName(), TargetGoose, matrix);
-			}
-		catch (Exception E)
-			{
-			GagglePlugin.showDialogBox(
-					"Failed to broadcast matrix to " + TargetGoose, "Error",
-					JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
-			}
-		}
+        Set SelectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
+                .getSelectedNodes();
 
-	public void broadcastNetwork(CyGoose Goose, String TargetGoose)
-		{
-		print("broadcastNetwork " + Cytoscape.getNetwork(Goose.getNetworkId()).getIdentifier());
+        // warning: no nodes are selected for broadcast
+        if (SelectedNodes.size() == 0) {
+            GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		Network GaggleNetwork = new Network();
-		String Species = "";
+        // create an array of experiment conditions (columnTitles in DataMatrix)
+        ArrayList<String> condNamesArrList = new ArrayList<String>();
+        String[] attributeNames = Cytoscape.getNodeAttributes().getAttributeNames();
 
-		Iterator<CyNode> NodesIter = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().iterator();
-		while (NodesIter.hasNext())
-			{
-			CyNode CurrentSelectedNode = NodesIter.next();
-			GaggleNetwork.add(CurrentSelectedNode.getIdentifier());
-			}
+        for (String CurrentAttr : attributeNames) {
+            // assume all DOUBLE type attributes are expression data
+            if (Cytoscape.getNodeAttributes().getType(CurrentAttr) == CyAttributes.TYPE_FLOATING)
+                condNamesArrList.add(CurrentAttr);
+        }
 
-		Iterator<CyEdge> EdgesIter = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedEdges().iterator();
-		CyAttributes EdgeAtts = Cytoscape.getEdgeAttributes();
-		while (EdgesIter.hasNext())
-			{
-			CyEdge CurrentSelectedEdge = EdgesIter.next();
-			
-			CyNode SourceNode = (CyNode) CurrentSelectedEdge.getSource();
-			CyNode TargetNode = (CyNode) CurrentSelectedEdge.getTarget();
+        // move everything from ArrayList to a String array
+        String[] condNames = new String[condNamesArrList.size()];
+        condNamesArrList.toArray(condNames);
 
-			// create a new GaggleInteraction for broadcast
-			String InteractionType = EdgeAtts.getStringAttribute(CurrentSelectedEdge.getIdentifier(), Semantics.INTERACTION);
-			Interaction GaggleInteraction = new Interaction(
-					SourceNode.getIdentifier(), TargetNode.getIdentifier(),
-					InteractionType, CurrentSelectedEdge.isDirected());
-			GaggleNetwork.add(GaggleInteraction);
+        final CyGoose goose = Goose;
+        final String target = TargetGoose;
 
-			// again if there's more than one species we'll only get the last one!!!
-			Species = getSpecies(SourceNode.getIdentifier());
-			}
-		
-		GaggleNetwork = addAttributes(GaggleNetwork);
-		GaggleNetwork.setSpecies(Species);
-		try
-			{
-			this.gaggleBoss.broadcastNetwork(Goose.getName(), TargetGoose,
-					GaggleNetwork);
-			}
-		catch (Exception E)
-			{
-			E.printStackTrace();
-			}
-		}
+        // dialog for user to select attributes for broadcast
+        AttrSelectAction okAction = new AttrSelectAction() {
+            public void takeAction(String[] selectAttr) {
+                broadcastDataMatrix(selectAttr, goose, target);
+            }
+        };
 
-	
-	private Network addAttributes(Network gaggleNet)
-		{
-		for (String id : gaggleNet.getNodes())
-			{
-			gaggleNet = addAttributes(id, Cytoscape.getNodeAttributes(), gaggleNet, NetworkObject.NODE);
-			}
-		
-		for (Interaction interaction: gaggleNet.getInteractions())
-			gaggleNet = addAttributes(interaction.toString(), Cytoscape.getEdgeAttributes(), gaggleNet, NetworkObject.EDGE);
-		
-		return gaggleNet;
-		}
-	
-	
-	// try the "species" attribute first; if not found, use DefaultSpeciesName
-	private String getSpecies(String NodeId)
-		{
-		String Species = "";
+        if (condNames.length > 0) {
+            CyAttrDialog dialog = new CyAttrDialog(condNames, okAction,
+                    CyAttrDialog.MULTIPLE_SELECT);
+            dialog.setDialogText(broadcastStr);
+            dialog.preSelectCheckBox(condNames);
+            dialog.buildDialogWin();
+        } else {
+            GagglePlugin.showDialogBox(
+                    "The selected nodes do not have numerical attributes for a matrix",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
-		Species = Cytoscape.getNodeAttributes().getStringAttribute(NodeId,
-				Semantics.SPECIES);
-		if (Species == null)
-			Species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+    private void broadcastDataMatrix(String[] condNames, CyGoose Goose,
+                                     String TargetGoose) {
+        if (Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().size() <= 0) {
+            GagglePlugin.showDialogBox(
+                    "No nodes were selected for Data Matrix broadcast.", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-		return Species;
-		}
+        Set selectedNodes = Cytoscape.getNetwork(Goose.getNetworkId())
+                .getSelectedNodes();
+        Iterator selectedNodesIter = selectedNodes.iterator();
 
-	
-	// add attributes to the node/edge
-	private Network addAttributes(String Identifier, CyAttributes cyAtts, Network gaggleNet, NetworkObject obj)
-		{
-		
-		for (String AttributeName : cyAtts.getAttributeNames())
-			{
-			Object Value = "";
-			if (!cyAtts.getUserVisible(AttributeName))
-				{
-				continue; // don't think we should pass on hidden attributes, they aren't useful to the user 
-				}
-				
-			switch (cyAtts.getType(AttributeName))
-				{
-				case CyAttributes.TYPE_BOOLEAN:
-					Value = cyAtts.getBooleanAttribute(Identifier, AttributeName);
-				break;
-				
-				case CyAttributes.TYPE_INTEGER:
-					Value = cyAtts.getIntegerAttribute(Identifier, AttributeName);
-				break;
-				
-				case CyAttributes.TYPE_STRING:
-					Value = cyAtts .getStringAttribute(Identifier, AttributeName);
-				break;
-				
-				case CyAttributes.TYPE_FLOATING:
-					Value = cyAtts.getDoubleAttribute(Identifier, AttributeName);
-				break;
-				};
-			if (Value == null) Value = "";
-			switch (obj)
-				{
-				case NODE:
-					gaggleNet.addNodeAttribute(Identifier, AttributeName, Value);
-				break;
-				
-				case EDGE:
-					gaggleNet.addEdgeAttribute(Identifier, AttributeName, Value);
-				break;
-				}
-			}
-		
-		return gaggleNet;
-		}
-	
+        DataMatrix matrix = new DataMatrix();
+        // initialize DataMatrix
+        matrix.setColumnTitles(condNames);
+        // matrix.setSpecies(getSpecies());
 
-	}
+        // loop through all flagged nodes and construct a DataMatrix with
+        // row=columnNames & column=condNames
+        while (selectedNodesIter.hasNext()) {
+            double[] condVals = new double[condNames.length];
+            CyNode CurrentSelectedNode = (CyNode) selectedNodesIter.next();
+            String NodeId = CurrentSelectedNode.getIdentifier();
+            for (int i = 0; i < condNames.length; i++) {
+                try {
+                    Double val = Cytoscape.getNodeAttributes().getDoubleAttribute(NodeId,
+                            condNames[i]);
+                    if (val != null) condVals[i] = val.doubleValue();
+                }
+                catch (Exception ex) {
+                    System.out
+                            .println("broadcastDataMatrix() error: incompatible data type for "
+                                    + condNames[i]);
+                }
+            }
+            // use other attribute to identify node if selected by user
+
+            if (!broadcastID.equals(CyAttrDialog.DEFAULT_NODE_ID)) // again..."ID" ==
+            // "ID" WHY??
+            {
+                NodeId = Cytoscape.getNodeAttributes().getStringAttribute(NodeId,
+                        broadcastID);
+
+                // skip any node that is null // shouldn't this happen before?
+                if (NodeId == null) continue;
+            }
+            // add new row to DataMatrix
+            matrix.addRow(NodeId, condVals);
+            matrix.setSpecies(getSpecies(NodeId)); // er...does this set the species
+            // every time 'round? what if the
+            // species is different from one
+            // node to another?
+        }
+
+        try {
+            this.gaggleBoss.broadcastMatrix(Goose.getName(), TargetGoose, matrix);
+        }
+        catch (Exception E) {
+            GagglePlugin.showDialogBox(
+                    "Failed to broadcast matrix to " + TargetGoose, "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            E.printStackTrace();
+        }
+    }
+
+    public void broadcastNetwork(CyGoose Goose, String TargetGoose) {
+        print("broadcastNetwork " + Cytoscape.getNetwork(Goose.getNetworkId()).getIdentifier());
+
+        Network GaggleNetwork = new Network();
+        String Species = "";
+
+        Iterator<CyNode> NodesIter = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedNodes().iterator();
+        while (NodesIter.hasNext()) {
+            CyNode CurrentSelectedNode = NodesIter.next();
+            GaggleNetwork.add(CurrentSelectedNode.getIdentifier());
+        }
+
+        Iterator<CyEdge> EdgesIter = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedEdges().iterator();
+        CyAttributes EdgeAtts = Cytoscape.getEdgeAttributes();
+        while (EdgesIter.hasNext()) {
+            CyEdge CurrentSelectedEdge = EdgesIter.next();
+
+            CyNode SourceNode = (CyNode) CurrentSelectedEdge.getSource();
+            CyNode TargetNode = (CyNode) CurrentSelectedEdge.getTarget();
+
+            // create a new GaggleInteraction for broadcast
+            String InteractionType = EdgeAtts.getStringAttribute(CurrentSelectedEdge.getIdentifier(), Semantics.INTERACTION);
+            Interaction GaggleInteraction = new Interaction(
+                    SourceNode.getIdentifier(), TargetNode.getIdentifier(),
+                    InteractionType, CurrentSelectedEdge.isDirected());
+            GaggleNetwork.add(GaggleInteraction);
+
+            // again if there's more than one species we'll only get the last one!!!
+            Species = getSpecies(SourceNode.getIdentifier());
+        }
+
+        GaggleNetwork = addAttributes(GaggleNetwork);
+        GaggleNetwork.setSpecies(Species);
+        try {
+            this.gaggleBoss.broadcastNetwork(Goose.getName(), TargetGoose,
+                    GaggleNetwork);
+        }
+        catch (Exception E) {
+            E.printStackTrace();
+        }
+    }
+
+
+    private Network addAttributes(Network gaggleNet) {
+        for (String id : gaggleNet.getNodes()) {
+            gaggleNet = addAttributes(id, Cytoscape.getNodeAttributes(), gaggleNet, NetworkObject.NODE);
+        }
+
+        for (Interaction interaction : gaggleNet.getInteractions())
+            gaggleNet = addAttributes(interaction.toString(), Cytoscape.getEdgeAttributes(), gaggleNet, NetworkObject.EDGE);
+
+        return gaggleNet;
+    }
+
+
+    // try the "species" attribute first; if not found, use DefaultSpeciesName
+    private String getSpecies(String NodeId) {
+        String Species = "";
+
+        Species = Cytoscape.getNodeAttributes().getStringAttribute(NodeId,
+                Semantics.SPECIES);
+        if (Species == null)
+            Species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+
+        return Species;
+    }
+
+
+    // add attributes to the node/edge
+    private Network addAttributes(String Identifier, CyAttributes cyAtts, Network gaggleNet, NetworkObject obj) {
+
+        for (String AttributeName : cyAtts.getAttributeNames()) {
+            Object Value = "";
+            if (!cyAtts.getUserVisible(AttributeName)) {
+                continue; // don't think we should pass on hidden attributes, they aren't useful to the user
+            }
+
+            switch (cyAtts.getType(AttributeName)) {
+                case CyAttributes.TYPE_BOOLEAN:
+                    Value = cyAtts.getBooleanAttribute(Identifier, AttributeName);
+                    break;
+
+                case CyAttributes.TYPE_INTEGER:
+                    Value = cyAtts.getIntegerAttribute(Identifier, AttributeName);
+                    break;
+
+                case CyAttributes.TYPE_STRING:
+                    Value = cyAtts.getStringAttribute(Identifier, AttributeName);
+                    break;
+
+                case CyAttributes.TYPE_FLOATING:
+                    Value = cyAtts.getDoubleAttribute(Identifier, AttributeName);
+                    break;
+            }
+            ;
+            if (Value == null) Value = "";
+            switch (obj) {
+                case NODE:
+                    gaggleNet.addNodeAttribute(Identifier, AttributeName, Value);
+                    break;
+
+                case EDGE:
+                    gaggleNet.addEdgeAttribute(Identifier, AttributeName, Value);
+                    break;
+            }
+        }
+
+        return gaggleNet;
+    }
+
+
+}
