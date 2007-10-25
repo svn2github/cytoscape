@@ -138,7 +138,7 @@ public class EnhancedSearchIndex {
 				String attrIndexingName = EnhancedSearchUtils
 						.replaceWhitespace(attrName);
 				attrIndexingName = attrIndexingName.toLowerCase();
-
+				
 				byte valueType = attributes.getType(attrName);
 
 				if (valueType == CyAttributes.TYPE_BOOLEAN) {

@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -31,64 +32,62 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 
 package csplugins.enhanced.search;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import cytoscape.CyNetwork;
 
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.store.RAMDirectory;
 
-import csplugins.enhanced.search.util.EnhancedSearchUtils;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeToolBar;
 
-public class EnhancedSearch {
+public class EnhancedSearchImpl implements EnhancedSearch {
 
-	private EnhancedSearchPanel enhancedSearchToolBar;
-	
-	public EnhancedSearch() {
-//		initListeners();
-		initToolBar();
-	}
-	
-	
+	private HashMap networkIndexMap = new HashMap();
+	private HashMap networkIndexStatusMap = new HashMap();
+	private CyNetwork network;
+
 	/**
-	 * Initializes All Cytoscape Listeners.
-	 
-	private void initListeners() {
-		// to catch network create/destroy/focus events
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-
-//		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-//		quickFind.addQuickFindListener(this);
-	}
-*/
-	
-	/**
-	 * Initalizes Tool Bar.
+	 * Creates a new EnhancedSearchImpl object.
+	 *
+	 * @param network  DOCUMENT ME!
 	 */
-	private void initToolBar() {
-		
-		CytoscapeToolBar cytoscapeToolBar = Cytoscape.getDesktop()
-		.getCyMenus().getToolBar();
-		enhancedSearchToolBar = new EnhancedSearchPanel();
-
-		cytoscapeToolBar.add(enhancedSearchToolBar);
-		cytoscapeToolBar.validate();
-		
+	public EnhancedSearchImpl(CyNetwork network) {
+		this.network = network;
 	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network DOCUMENT ME!
+	 */
+	public synchronized void removeNetworkIndex(CyNetwork network) {
+		networkIndexMap.remove(network);
+		networkIndexStatusMap.remove(network);
+	}
+
+	public synchronized RAMDirectory getNetworkIndex(CyNetwork network) {
+		return (RAMDirectory) networkIndexMap.get(network);
+	}
+
+	public synchronized String getNetworkIndexStatus(CyNetwork network) {
+		return (String) networkIndexStatusMap.get(network);
+	}
+
+	public synchronized void setNetworkIndex(CyNetwork network, RAMDirectory index) {
+		networkIndexMap.put(network, index);
+		networkIndexStatusMap.put(network, INDEX_SET);
+	}
+
+	public synchronized void setNetworkIndexStatus(CyNetwork network, String status) {
+		if (status == INDEX_SET || status == REINDEX) {
+			networkIndexStatusMap.put(network, status);
+		} else {
+			System.out.println("Invalid status '" + status + "'");
+		}
+	}	
+
 	
 }

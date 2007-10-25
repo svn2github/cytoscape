@@ -35,12 +35,125 @@
 
 package csplugins.enhanced.search;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Set;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeToolBar;
 
-public class EnhancedSearchPlugin extends CytoscapePlugin {
+public class EnhancedSearchPlugin extends CytoscapePlugin implements
+		PropertyChangeListener {
 
-	// Creates a new EnhancedSearchPlugin object.
+	private EnhancedSearchPanel enhancedSearchToolBar;
+
 	public EnhancedSearchPlugin() {
-		EnhancedSearch plugin = new EnhancedSearch();
+		initListeners();
+		initToolBar();
 	}
+
+	/**
+	 * Initializes All Cytoscape Listeners.
+	 */
+	private void initListeners() {
+		// to catch network create/destroy events
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(this);
+
+		// to catch network modified events
+		NetworkModifiedListener networkModifiedListener = new NetworkModifiedListener();
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
+				networkModifiedListener);
+	}
+
+	/**
+	 * Initalizes Tool Bar.
+	 */
+	private void initToolBar() {
+
+		CytoscapeToolBar cytoscapeToolBar = Cytoscape.getDesktop().getCyMenus()
+				.getToolBar();
+		enhancedSearchToolBar = new EnhancedSearchPanel();
+
+		cytoscapeToolBar.add(enhancedSearchToolBar);
+		cytoscapeToolBar.validate();
+
+	}
+
+	/**
+	 * Property change listener - to get network cretae/destroy events.
+	 * 
+	 * @param event
+	 *            PropertyChangeEvent
+	 */
+	public void propertyChange(PropertyChangeEvent event) {
+		final EnhancedSearch enhancedSearch = EnhancedSearchFactory
+				.getGlobalEnhancedSearchInstance();
+
+		if (event.getPropertyName() != null) {
+			if (event.getPropertyName().equals(Cytoscape.NETWORK_CREATED)) {
+				enhancedSearchToolBar.enableAllEnhancedSearchButtons();
+			} else if (event.getPropertyName().equals(
+					Cytoscape.NETWORK_DESTROYED)) {
+				String networkID = event.getNewValue().toString();
+				CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
+				enhancedSearch.removeNetworkIndex(cyNetwork);
+/**
+				final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
+				if (currNetwork == Cytoscape.getNullNetwork()) {
+					enhancedSearchToolBar.disableAllEnhancedSearchButtons();
+				}
+*/
+				// If there was only one network, and it was destroyed, disable Enhanced Search
+				Set networkSet = Cytoscape.getNetworkSet();
+				if (networkSet.size() == 1) {
+					enhancedSearchToolBar.disableAllEnhancedSearchButtons();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Determine if any network is loaded. If not, disable enhanced search.
+	 * EnhancedSearch is intentially enabled on networks with no view, to allow
+	 * search on large networks without the need to create a view.
+	 */
+	private void isNetworkLoaded(EnhancedSearch enhancedSearch) {
+		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+
+		if (currentNetwork != null) {
+			enhancedSearchToolBar.enableAllEnhancedSearchButtons();
+		} else {
+			enhancedSearchToolBar.disableAllEnhancedSearchButtons();
+		}
+	}
+
+}
+
+class NetworkModifiedListener implements PropertyChangeListener {
+
+	/**
+	 * Property change listener - to get network modified events.
+	 * 
+	 * @param event
+	 *            PropertyChangeEvent
+	 */
+	public void propertyChange(PropertyChangeEvent event) {
+		final EnhancedSearch enhancedSearch = EnhancedSearchFactory
+				.getGlobalEnhancedSearchInstance();
+
+		if (event.getPropertyName() != null) {
+			if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
+
+				// Mark that re-indexing of the network is needed.
+				// In future versions: update the network's index.
+				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+				enhancedSearch.setNetworkIndexStatus(cyNetwork,
+						EnhancedSearch.REINDEX);
+			}
+		}
+	}
+
 }

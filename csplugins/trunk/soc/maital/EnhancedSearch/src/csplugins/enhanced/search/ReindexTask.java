@@ -35,24 +35,15 @@
 
 package csplugins.enhanced.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
-
 import org.apache.lucene.store.RAMDirectory;
 
-import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
-public class IndexAndSearchTask implements Task {
+public class ReindexTask implements Task {
 
 	private CyNetwork network;
-
-	private String query;
 
 	private TaskMonitor taskMonitor;
 
@@ -63,92 +54,33 @@ public class IndexAndSearchTask implements Task {
 	 * 
 	 * @param network
 	 *            Network to execute query on.
-	 * @param query
-	 *            Query string.
 	 */
-	IndexAndSearchTask(CyNetwork network, String query) {
+	ReindexTask(CyNetwork network) {
 		this.network = network;
-		this.query = query;
 	}
 
 	/**
-	 * Executes Task: IndexAndSearch
+	 * Executes Task: Reindex
 	 */
 	public void run() {
 
 		final EnhancedSearch enhancedSearch = EnhancedSearchFactory
-		.getGlobalEnhancedSearchInstance();
-		
+				.getGlobalEnhancedSearchInstance();
+
 		// Index the given network or use existing index
 		RAMDirectory idx = null;
-		
-		String status = enhancedSearch.getNetworkIndexStatus(network);
-		if (status == EnhancedSearch.INDEX_SET) {
-			idx = enhancedSearch.getNetworkIndex(network);
-		} else {
-			taskMonitor.setStatus("Indexing network");
-			EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
-			idx = indexHandler.getIndex();
-			enhancedSearch.setNetworkIndex(network, idx);
 
-			if (interrupted) {
-				return;
-			}
-		}
-		
-
-		// Execute query
-		taskMonitor.setStatus("Executing query");
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
-		queryHandler.executeQuery(query);
+		taskMonitor.setStatus("Re-indexing network");
+		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
+		idx = indexHandler.getIndex();
+		enhancedSearch.setNetworkIndex(network, idx);
 
 		if (interrupted) {
 			return;
 		}
 
-		// Display results
-		Cytoscape.getCurrentNetwork().unselectAllNodes();
-		Cytoscape.getCurrentNetwork().unselectAllEdges();
-		Cytoscape.getCurrentNetworkView().updateView();
-
-		int hitCount = queryHandler.getHitCount();
-		if (hitCount == 0) {
-			System.out.println("No hits. ");
-			return;
-		}
-		System.out.println("There are " + hitCount + " hits.");
-		taskMonitor.setStatus("Displaying " + hitCount + " hits");
-		ArrayList<String> hits = queryHandler.getHits();
-
-		List<CyNode> nodeList = new ArrayList<CyNode>();
-		List<CyEdge> edgeList = new ArrayList<CyEdge>();
-
-		Iterator it = hits.iterator();
-		int numCompleted = 0;
-		while (it.hasNext() && !interrupted) {
-			String currID = (String) it.next();
-			CyNode currNode = Cytoscape.getCyNode(currID, false);
-			if (currNode != null) {
-				nodeList.add(currNode);
-			} else {
-				CyEdge currEdge = Cytoscape.getRootGraph().getEdge(currID);
-				if (currEdge != null) {
-					edgeList.add(currEdge);
-				} else {
-					System.out.println("Unknown identifier " + (currID));
-				}
-			}
-
-			int percentCompleted = (numCompleted * 100 / hitCount);
-			taskMonitor.setPercentCompleted(percentCompleted);
-
-			numCompleted++;
-		}
-
-		// Refresh view to show selected nodes and edges
-		network.setSelectedNodeState(nodeList, true);
-		network.setSelectedEdgeState(edgeList, true);
-		Cytoscape.getCurrentNetworkView().updateView();
+		taskMonitor.setPercentCompleted(100);
+		taskMonitor.setStatus("Network re-indexed successfuly");
 
 	}
 
@@ -178,7 +110,7 @@ public class IndexAndSearchTask implements Task {
 	 * @return Title of Task.
 	 */
 	public String getTitle() {
-		return "Searching the network";
+		return "Re-indexing network";
 	}
 
 }

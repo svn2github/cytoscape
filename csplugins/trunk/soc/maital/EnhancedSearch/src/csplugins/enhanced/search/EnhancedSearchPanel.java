@@ -56,6 +56,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import csplugins.enhanced.search.IndexAndSearchTask;
+import csplugins.enhanced.search.ReindexTask;
 
 public class EnhancedSearchPanel extends JPanel {
 
@@ -65,9 +66,13 @@ public class EnhancedSearchPanel extends JPanel {
 
 	private JButton clearButton;
 
+	private JButton reindexButton;
+
 	private static final String ENHANCED_SEARCH_STRING = "EnhancedSearch:  ";
 
 	private static final String CLEAR_STRING = "Clear";
+
+	private static final String REINDEX_STRING = "Re-index";
 
 	/**
 	 * Constructor.
@@ -79,44 +84,35 @@ public class EnhancedSearchPanel extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
 		clearButton = createClearButton();
+		reindexButton = createReindexButton();
 		searchField = createSearchField();
 		label = createEnhancedSearchLabel();
 
 		add(label);
 		add(searchField);
 		add(clearButton);
+		add(reindexButton);
 
 		// Add Right Buffer, to prevent config button from occassionally
 		// being partially obscured.
 		add(Box.createHorizontalStrut(5));
 
-		enableAllEnhancedSearchButtons();
-	}
-
-	/**
-	 * No Network Current Available.
-	 */
-	public void noNetworkLoaded() {
-		disableAllEnhancedSearchButtons();
-		searchField.setToolTipText("Please select or load a network");
-	}
-
-	/**
-	 * Indexing Operating in Progress.
-	 */
-	public void queryInProgress() {
-		disableAllEnhancedSearchButtons();
-		searchField.setToolTipText("Query in progress. Please wait...");
+		// Enable EnhancedSearch if a network is loaded
+		final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
+		if (currNetwork != Cytoscape.getNullNetwork()) {
+			enableAllEnhancedSearchButtons();
+		}
 	}
 
 	/**
 	 * Disables all Enhanced Search Buttons.
 	 */
-	private void disableAllEnhancedSearchButtons() {
+	public void disableAllEnhancedSearchButtons() {
 		searchField.setText("");
 		searchField.setEnabled(false);
 		searchField.setVisible(true);
 		clearButton.setEnabled(false);
+		reindexButton.setEnabled(false);
 	}
 
 	/**
@@ -126,6 +122,7 @@ public class EnhancedSearchPanel extends JPanel {
 		searchField.setToolTipText("Enter search string");
 		searchField.setEnabled(true);
 		clearButton.setEnabled(true);
+		reindexButton.setEnabled(true);
 	}
 
 	/**
@@ -149,16 +146,52 @@ public class EnhancedSearchPanel extends JPanel {
 	}
 
 	/**
+	 * Creates Reindex Button.
+	 * 
+	 * @return JButton Object.
+	 */
+	private JButton createReindexButton() {
+		JButton button = new JButton(REINDEX_STRING);
+		button.setToolTipText("Re-index current network");
+		button.setEnabled(false);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
+
+				ReindexTask task = new ReindexTask(currNetwork);
+				JTaskConfig config = new JTaskConfig();
+				config.setAutoDispose(false);
+				config.displayStatus(true);
+				config.displayTimeElapsed(true);
+				config.displayCloseButton(true);
+				config.setOwner(Cytoscape.getDesktop());
+				config.setModal(true);
+
+				// Execute Task via TaskManager
+				// This automatically pops-open a JTask Dialog Box.
+				// This method will block until the JTask Dialog Box is
+				// disposed.
+				TaskManager.executeTask(task, config);
+
+				searchField.requestFocus();
+			}
+		});
+		button.setBorderPainted(false);
+
+		return button;
+	}
+
+	/**
 	 * Creates Search Field
 	 * 
 	 * @return JTextField Object.
 	 */
 	private JTextField createSearchField() {
-		
+
 		searchField = new JTextField(30);
 		Dimension size = new Dimension(1, 30);
 		searchField.setPreferredSize(size);
-//		searchField.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		// searchField.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 		searchField.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
 
 		searchField.setEnabled(false);
@@ -194,8 +227,6 @@ public class EnhancedSearchPanel extends JPanel {
 				+ "activate search functionality.");
 		// Set Max Size of TextField to match preferred size
 		searchField.setMaximumSize(searchField.getPreferredSize());
-
-		
 
 		return searchField;
 	}
