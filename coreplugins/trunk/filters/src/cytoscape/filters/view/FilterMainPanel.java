@@ -119,7 +119,26 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	
 	public FilterMainPanel() {
-			init();		
+		//Initialize the option menu with menuItems
+		setupOptionMenu();
+
+		optionButton = new DropDownMenuButton(new AbstractAction() {
+			public void actionPerformed(ActionEvent ae) {
+				DropDownMenuButton b = (DropDownMenuButton) ae.getSource();
+				optionMenu.show(b, 0, b.getHeight());
+			}
+		});
+
+		optionButton.setToolTipText("Options...");
+		optionButton.setIcon(optionIcon);
+		optionButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+		optionButton.setComponentPopupMenu(optionMenu);
+
+		//Initialize the UI components 
+		initComponents();
+
+		addEventListeners();
+	
 			//btnApplyFilter.setVisible(false);
 
 	}
@@ -149,30 +168,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		//System.out.println("updateCMBIndex() is not implemented yet");
 	//}
 	
-	private void init() {
-
-		//Initialize the option menu with menuItems
-		setupOptionMenu();
-
-		optionButton = new DropDownMenuButton(new AbstractAction() {
-			public void actionPerformed(ActionEvent ae) {
-				DropDownMenuButton b = (DropDownMenuButton) ae.getSource();
-				optionMenu.show(b, 0, b.getHeight());
-			}
-		});
-
-		optionButton.setToolTipText("Options...");
-		optionButton.setIcon(optionIcon);
-		optionButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-		optionButton.setComponentPopupMenu(optionMenu);
-
-		//Initialize the UI components 
-		initComponents();
-
-		addEventListeners();
-		
-	}
-
 	public void refreshFilterSelectCMB() {
 		this.cmbSelectFilter.repaint();
 	}
@@ -249,7 +244,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		currentFilterSettingPanel = filter2SettingPanelMap.get(pNewFilter);
 
 		if (currentFilterSettingPanel == null) {
-			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter);
+			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter, allFilterVect);
 			//Update the HashMap
 			filter2SettingPanelMap.put(pNewFilter, currentFilterSettingPanel);			
 		}
@@ -339,7 +334,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 				if (cmbSelectFilter.getModel().getSize() == 0) {
 					// CMBSelectFilter will not be initialize until the Filer Panel is selected
-					initCMBSelectFilter();					
+					initCMBSelectFilter();		
 				}
 
 				updateCMBAttributes();
@@ -640,7 +635,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				System.out.println("\n\tThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");
 				
-				System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
+				System.out.println("\tThe Filter to apply is \n\t\t" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 
 				CompositeFilter tmpFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 				
@@ -814,7 +809,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		newFilter.setName(newFilterName);
 		
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, allFilterVect);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 		
 		// set the new filter in the combobox selected
@@ -922,8 +917,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 		
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this,
-				newFilter);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this,newFilter, allFilterVect);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 
 		// set the new filter in the combobox selected
@@ -1117,7 +1111,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		CompositeFilter compositeFilter1 = new CompositeFilter("firstCompositeFilter");
 		CompositeFilter compositeFilter2 = new CompositeFilter("secondCompositeFilter");
+		CompositeFilter topoFilter = new TopologyFilter("ThirdTopoFilter");
+		allFilterVect.add(topoFilter);
 		allFilterVect.add(compositeFilter1);
 		allFilterVect.add(compositeFilter2);
+
 	}
 }
