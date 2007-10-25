@@ -50,20 +50,19 @@ import java.util.LinkedList;
 
 public class CompositeFilter implements CyFilter {
 
-	private List<CyFilter> children;
-	private boolean negation;
+	protected List<CyFilter> children;
+	protected boolean negation;
 	//Relation relation;
 	private String name;
 	private BitSet node_bits, edge_bits;
-	private boolean childChanged = true;// so we calculate the first time through
-	private CyFilter parent;
-	private String depthString;
+	protected boolean childChanged = true;// so we calculate the first time through
+	protected CyFilter parent;
 	private String description;
 	private AdvancedSetting advancedSetting = null;
 	//private int indexType = -1; //QuickFind.INDEX_NODES //QuickFind.INDEX_EDGES 
-	private CyNetwork network;
+	protected CyNetwork network;
 
-	private Hashtable compositeNotTab = new Hashtable<CompositeFilter, Boolean>();
+	protected Hashtable compositeNotTab = new Hashtable<CompositeFilter, Boolean>();
 	
 	public CompositeFilter() {
 		advancedSetting = new AdvancedSetting();
@@ -75,59 +74,7 @@ public class CompositeFilter implements CyFilter {
 		advancedSetting = new AdvancedSetting();
 		children = new LinkedList<CyFilter>();
 	}
-	
-	// do selection on given network
-	public void doSelection() {
-		System.out.println("Entering CompositeFilter.doSelection() ...");
 		
-		apply();
-		
-		if (network == null) {
-			network = Cytoscape.getCurrentNetwork(); 
-		}
-
-		network.unselectAllNodes();
-		network.unselectAllEdges();
-		
-		final List<Node> nodes_list = network.nodesList();
-		final List<Edge> edges_list = network.edgesList();
-
-		if (advancedSetting.isNodeChecked()&& (node_bits != null)) {
-			// Select nodes
-			final List<Node> passedNodes = new ArrayList<Node>();
-
-			Node node = null;
-
-			for (int i=0; i< node_bits.length(); i++) {
-				int next_set_bit = node_bits.nextSetBit(i);
-				
-				node = nodes_list.get(next_set_bit);
-								
-				passedNodes.add(node);
-				i = next_set_bit;
-			}
-			network.setSelectedNodeState(passedNodes, true);
-		}
-		if (advancedSetting.isEdgeChecked()&& (edge_bits != null)) {
-			// Select edges
-			final List<Edge> passedEdges = new ArrayList<Edge>();
-
-			Edge edge = null;
-			for (int i=0; i< edges_list.size(); i++) {
-				int next_set_bit = edge_bits.nextSetBit(i);
-				if (next_set_bit == -1) {
-					break;
-				}
-				edge = edges_list.get(next_set_bit);
-				passedEdges.add(edge);
-				i = next_set_bit;
-			}
-			network.setSelectedEdgeState(passedEdges, true);
-		}
-
-		Cytoscape.getCurrentNetworkView().updateView();
-	}
-	
 	
 	public Hashtable getNotTable() {
 		return compositeNotTab;
