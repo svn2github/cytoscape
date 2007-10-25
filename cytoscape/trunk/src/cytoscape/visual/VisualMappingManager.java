@@ -185,13 +185,15 @@ public class VisualMappingManager extends SubjectBase {
 
     /**
      * Sets a new visual style, and returns the old style. Also fires an event
-     * to attached listeners.
+     * to attached listeners only if the visual style changes.
      *
-     * If the argument is null, no change is made, an error message is passed to
-     * the logger, and null is returned.
+     * If the argument is null, the previous visual style is simply returned.
      */
     public VisualStyle setVisualStyle(VisualStyle vs) {
-        if (vs != null) {
+	// MLC 10/24/07:
+        // if (vs != null) {
+	// MLC 10/24/07:
+        if ((vs != null) && (vs != visualStyle)) {
             VisualStyle tmp = visualStyle;
             visualStyle = vs;
             this.fireStateChanged();
