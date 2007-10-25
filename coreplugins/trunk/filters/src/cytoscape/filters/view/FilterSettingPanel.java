@@ -72,10 +72,12 @@ public class FilterSettingPanel extends JPanel {
 	private FilterMainPanel parentPanel;
 	private CyNetwork currentNetwork = null;
 
-	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj) {
+	private Vector<CompositeFilter> allFilterVect = null;
+	
+	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj, Vector<CompositeFilter> pAllFilterVect) {
 		theFilter = (CompositeFilter) pFilterObj;
 		parentPanel = pParent;
-		
+		allFilterVect = pAllFilterVect;
 		initComponents();
 		
 		initAdvancedSetting();
@@ -87,11 +89,19 @@ public class FilterSettingPanel extends JPanel {
 
 			java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 	        gridBagConstraints.gridy = 2;
+	        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			pnlCustomSettings.add(new JLabel("Test topo"), gridBagConstraints);
+			TopoFilterPanel topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, allFilterVect);
+			pnlCustomSettings.add(topoPanel, gridBagConstraints);
 			addBlankLabelToCustomPanel();
 
+			// Hide un-used components in AdvancedPanel
+			lbRelation.setVisible(false);
+			rbtAND.setVisible(false);
+			rbtOR.setVisible(false);
+			
 			this.validate();
 		}
 
@@ -818,7 +828,7 @@ public class FilterSettingPanel extends JPanel {
         //jLabel8 = new javax.swing.JLabel();
         //chkSource = new javax.swing.JCheckBox();
         //chkTarget = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
+        lbRelation = new javax.swing.JLabel();
         rbtAND = new javax.swing.JRadioButton();
         rbtOR = new javax.swing.JRadioButton();
         lbNegation = new javax.swing.JLabel();
@@ -934,11 +944,11 @@ public class FilterSettingPanel extends JPanel {
         pnlAdvancedOptions.add(chkTarget, gridBagConstraints);
          */
         
-        jLabel1.setText("Relation");
+        lbRelation.setText("Relation");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 3;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-        pnlAdvancedOptions.add(jLabel1, gridBagConstraints);
+        pnlAdvancedOptions.add(lbRelation, gridBagConstraints);
 
         rbtAND.setSelected(true);
         rbtAND.setText("AND");
@@ -1040,7 +1050,7 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.JCheckBox chkSession;
     private javax.swing.JCheckBox chkSource;
     private javax.swing.JCheckBox chkTarget;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel lbRelation;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
