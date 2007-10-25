@@ -67,6 +67,12 @@ public class StringFilter extends AtomicFilter {
 		super();
 	}
 	
+	public StringFilter(String pCtrlAttri, int pIndexType, TextIndex pIndex) {
+		controllingAttribute = pCtrlAttri;
+		index_type = pIndexType;
+		quickFind_index = pIndex;
+	}
+	
 	public String getSearchStr() {
 		return searchStr;
 	}
