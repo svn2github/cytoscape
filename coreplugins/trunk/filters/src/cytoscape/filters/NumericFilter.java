@@ -60,7 +60,13 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 
 	public NumericFilter() {
 	}
-	
+
+	public NumericFilter(String pCtrlAttri, int pIndexType, NumberIndex pIndex) {
+		controllingAttribute = pCtrlAttri;
+		index_type = pIndexType;
+		quickFind_index = pIndex;
+	}
+
 	public boolean passesFilter(Object obj) {
 		return false;
 	}
