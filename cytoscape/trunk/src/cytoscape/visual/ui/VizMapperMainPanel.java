@@ -71,8 +71,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -3527,39 +3525,75 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return ids;
 	}
 
-	/**
-	 * Listening to change event.
-	 */
-	public void stateChanged(ChangeEvent e) {
-		final String selectedName = (String) vsNameComboBox.getSelectedItem();
-		final String currentName = vmm.getVisualStyle().getName();
+    //	/**
+    //	 * Listening to change event.
+    //	 */
+    //	public void stateChanged(ChangeEvent e) {
+    //		final String selectedName = (String) vsNameComboBox.getSelectedItem();
+    //		final String currentName = vmm.getVisualStyle().getName();
+    //
+    //		if ((selectedName == null) || (currentName == null)) {
+    //			return;
+    //		}
+    //
+    //		if (selectedName.equals(currentName) == false) {
+    //			// Check it is exist or not.
+    //			final int itemCount = vsNameComboBox.getItemCount();
+    //			boolean found = false;
+    //
+    //			for (int i = 0; i < itemCount; i++) {
+    //				if (vsNameComboBox.getItemAt(i).equals(currentName)) {
+    //					found = true;
+    //
+    //					break;
+    //				}
+    //			}
+    //
+    //			if (found == false) {
+    //				vsNameComboBox.addItem(currentName);
+    //				vsNameComboBox.setSelectedItem(currentName);
+    //				switchVS(currentName);
+    //
+    //				return;
+    //			}
+    //		}
+    //	}
 
-		if ((selectedName == null) || (currentName == null)) {
-			return;
-		}
+    // implements ChangeListener
+    // catch changes to the VisualMappingManager current visual style and
+    // reflect them:
+    public void stateChanged(ChangeEvent e) {
+        final String selectedName = (String) vsNameComboBox.getSelectedItem();
+        final String currentName = vmm.getVisualStyle().getName();
 
-		if (selectedName.equals(currentName) == false) {
-			// Check it is exist or not.
-			final int itemCount = vsNameComboBox.getItemCount();
-			boolean found = false;
+        if ((selectedName == null) || (currentName == null) ||
+            (selectedName.equals(currentName))) {
+            return;
+        }
 
-			for (int i = 0; i < itemCount; i++) {
-				if (vsNameComboBox.getItemAt(i).equals(currentName)) {
-					found = true;
+        // We need to update the combo box and switch visual styles.	
+        // Now check if we need to add a new item:
+        if (!findVSName(currentName)) {
+            vsNameComboBox.addItem(currentName);
+        }
 
-					break;
-				}
-			}
+        vsNameComboBox.setSelectedItem(currentName);
+        switchVS(currentName);
+    }
 
-			if (found == false) {
-				vsNameComboBox.addItem(currentName);
-				vsNameComboBox.setSelectedItem(currentName);
-				switchVS(currentName);
+    // return true iff 'match' is found as a name within the
+    // vsNameComboBox.
+    private boolean findVSName(String match) {
+        for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
+            if (vsNameComboBox.getItemAt(i).equals(match)) {
+                return true;
+            }
+        }
 
-				return;
-			}
-		}
-	}
+        return false;
+    }
+
+
 
 	/**
 	 *  DOCUMENT ME!
