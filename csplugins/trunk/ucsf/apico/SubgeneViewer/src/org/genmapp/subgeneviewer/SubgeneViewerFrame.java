@@ -1,7 +1,5 @@
 package org.genmapp.subgeneviewer;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -36,8 +34,7 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		
 		_panel = new JPanel();
 		_panel.setBorder(new TitledBorder("Subgene Viewer"));
-		_panel.setOpaque(false);
-		_panel.setAutoscrolls(true);
+		_panel.setOpaque(true);
 		_panel.setLayout(new BoxLayout(_panel, BoxLayout.Y_AXIS));
 		_scrollPane = new JScrollPane(_panel);
 		_scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -54,7 +51,6 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 	
 	public void addView (SubgeneNetworkView view)
 	{
-		// todo: Alex, write this
 		if (_cnvList.size() >= 3) {
 			System.out.println("SGV: Viewer MAX = 3 views");
 			return;
@@ -63,12 +59,9 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 
 		view.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
 		//view.setBackground(new Color(247,243,213));
-		view.setOpaque(false);
-		view.setAutoscrolls(true);
-		view.setVisible(true);
+		view.setOpaque(true);
 		_panel.add(view);
-		_panel.validate();
-		_scrollPane.validate();
+		view.repaint();
 		_cnvList.add(view);
 	}
 	

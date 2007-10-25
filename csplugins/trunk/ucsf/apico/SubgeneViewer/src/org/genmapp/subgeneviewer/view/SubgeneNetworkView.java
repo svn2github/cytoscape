@@ -31,7 +31,7 @@ public class SubgeneNetworkView extends JPanel{
 	{
 	
 	}
-
+	
 	/**
 	 * get bounding box of a Block, Region, or Feature
 	 * 
