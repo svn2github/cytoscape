@@ -609,7 +609,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					this.btnApplyFilter.setEnabled(true);					
 				}
 				replaceFilterSettingPanel(selectedFilter);
-				selectedFilter.doSelection();
+				FilterUtil.doSelection(selectedFilter);
 			}
 		}	
 	}
@@ -637,9 +637,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				System.out.println("\tThe Filter to apply is \n\t\t" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 
-				CompositeFilter tmpFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
 				
-				System.out.println("\tfilter.getNodebits().toString() = \n" + tmpFilter.getNodeBits().toString()+"\n");
+				//CompositeFilter tmpFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+				
+				//System.out.println("\tfilter.getNodebits().toString() = \n" + tmpFilter.getNodeBits().toString()+"\n");
 				//tmpFilter.apply();
 				//tmpFilter.doSelection();
 				//System.out.println(" After filter.doSelection()\n");
