@@ -50,8 +50,6 @@ public class TopologyFilter extends CompositeFilter {
 
 	protected BitSet node_bits = null;
 	protected BitSet edge_bits = null;
-
-	protected CyFilter parent;
 	
 	protected String name; // Name of the filter
 
@@ -60,9 +58,7 @@ public class TopologyFilter extends CompositeFilter {
 	
 	protected int minNeighbors = 1;
 	protected int withinDistance = 1;
-	
 	protected CompositeFilter passFilter = null;
-	
 	
 	public TopologyFilter() {
 	}
@@ -73,6 +69,7 @@ public class TopologyFilter extends CompositeFilter {
 
 	public void setPassFilter(CompositeFilter pFilter) {
 		passFilter = pFilter;
+		childChanged = true;
 	}
 
 	public CompositeFilter getPassFilter() {
@@ -81,6 +78,7 @@ public class TopologyFilter extends CompositeFilter {
 
 	public void setMinNeighbors(int pNeighbors) {
 		minNeighbors = pNeighbors;
+		childChanged = true;
 	}
 
 	public int getMinNeighbors() {
@@ -89,6 +87,7 @@ public class TopologyFilter extends CompositeFilter {
 
 	public void setDistance(int pDistance) {
 		withinDistance = pDistance;
+		childChanged = true;
 	}
 
 	public int getDistance() {
@@ -105,48 +104,35 @@ public class TopologyFilter extends CompositeFilter {
 		return edge_bits;		
 	}
 	
-	public boolean passesFilter(Object obj) {
-		List<Node> nodes_list = null;
-		List<Edge> edges_list=null;
-
-		int index = -1;
-		if (obj instanceof Node) {
-			nodes_list = network.nodesList();
-			index = nodes_list.lastIndexOf((Node) obj);	
-			return node_bits.get(index);			
-		}
-		
-		if (obj instanceof Edge) {
-			edges_list = network.edgesList();
-			index = edges_list.lastIndexOf((Edge) obj);	
-			return edge_bits.get(index);			
-		}		
-		
-		return false;
-	}
-
 	
 	public void apply() {
-		System.out.println("TopologyFilter.apply()");
+		if ( !childChanged ) 
+			return;
+
+		System.out.println("Entering TopologyFilter.apply() ... ");
+		System.out.println("\tThe topo filter to apply is : " + toString());
+		System.out.println("\tTopologyFilter.apply() not implemented yet ...");
+		
+		childChanged = false;
 	}
 	
 	public String toString() {
 		if (passFilter == null) {
-			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":null";						
+			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":null:"+ negation;						
 		}
 		else {
-			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":" + passFilter.getName();			
+			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":" + passFilter.getName() + ":"+ negation;			
 		}
 	}
 	
 	public void setNodeBits(BitSet b) {
 		node_bits = b;
-		parent.childChanged();
+		//parent.childChanged();
 	}
 
 	public void setEdgeBits(BitSet b) {
 		edge_bits = b;
-		parent.childChanged();
+		//parent.childChanged();
 	}
 
 	public void setParent(CyFilter p) {
@@ -155,13 +141,10 @@ public class TopologyFilter extends CompositeFilter {
 	public CyFilter getParent() {
 		return parent;
 	}
-	
-	// an atomic filter can't have any children, so this is a no-op
-	public void childChanged() {}; 
-	
+		
 	public void setNegation(boolean pNot) {
 		negation = pNot;
-		getParent().childChanged();
+		//getParent().childChanged();
 	}
 	public boolean getNegation() {
 		return negation;
