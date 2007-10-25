@@ -62,6 +62,8 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		view.setOpaque(true);
 		_panel.add(view);
 		view.repaint();
+		_scrollPane.repaint();
+		this.repaint();
 		_cnvList.add(view);
 	}
 	
