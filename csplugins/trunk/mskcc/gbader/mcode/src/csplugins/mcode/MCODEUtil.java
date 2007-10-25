@@ -170,18 +170,14 @@ public class MCODEUtil {
                 return null;
             }
         }
-	
-		image = view.createImage(width,height,1.0); // This generates a white background, not desirable since cell selection has a blue background
 
-        /*
         view.getCanvas().setSize(width, height);
         view.fitContent();
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         final Graphics2D g = (Graphics2D) image.getGraphics();
-        //g.setColor((Color) view.getBackgroundPaint());
-        //g.fillRect(0, 0, width, height);
         view.getCanvas().paint(g);
-        */
+
+        image = view.getCanvas(DGraphView.Canvas.NETWORK_CANVAS).getImage();
 
         double largestSide = view.getCanvas().getWidth();
         if (view.getCanvas().getHeight() > largestSide) {
