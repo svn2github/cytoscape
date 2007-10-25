@@ -52,34 +52,47 @@ public class TopologyFilter extends CompositeFilter {
 	protected BitSet edge_bits = null;
 
 	protected CyFilter parent;
-	protected String depthString;
 	
 	protected String name; // Name of the filter
-	protected String controllingAttribute = null;
+
 	protected boolean negation = false;
 	protected CyNetwork network = null;
 	
-	protected int index_type = QuickFind.INDEX_NODES;
-
-	protected GenericIndex quickFind_index = null;
+	protected int minNeighbors = 1;
+	protected int withinDistance = 1;
+	
+	protected CompositeFilter passFilter = null;
+	
 	
 	public TopologyFilter() {
 	}
-	
-	public GenericIndex getIndex() {
-		return quickFind_index;
+
+	public TopologyFilter(String pName) {
+		name = pName;
 	}
 
-	public void setIndex(GenericIndex pIndex) {
-		quickFind_index = pIndex;
+	public void setPassFilter(CompositeFilter pFilter) {
+		passFilter = pFilter;
 	}
 
-	public void setIndexType(int pIndexType) {
-		index_type = pIndexType;
+	public CompositeFilter getPassFilter() {
+		return passFilter;
 	}
 
-	public int getIndexType() {
-		return index_type;
+	public void setMinNeighbors(int pNeighbors) {
+		minNeighbors = pNeighbors;
+	}
+
+	public int getMinNeighbors() {
+		return minNeighbors;
+	}
+
+	public void setDistance(int pDistance) {
+		withinDistance = pDistance;
+	}
+
+	public int getDistance() {
+		return withinDistance;
 	}
 
 	public BitSet getNodeBits() {
@@ -118,7 +131,12 @@ public class TopologyFilter extends CompositeFilter {
 	}
 	
 	public String toString() {
-		return "TopologyFilter.toString() ... not implemented yet";
+		if (passFilter == null) {
+			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":null";						
+		}
+		else {
+			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":" + passFilter.getName();			
+		}
 	}
 	
 	public void setNodeBits(BitSet b) {
@@ -156,13 +174,6 @@ public class TopologyFilter extends CompositeFilter {
 		name = pName;
 	}
 
-	public String getControllingAttribute() {
-		return controllingAttribute;
-	}
-	
-	public void setControllingAttribute(String pAttributeName) {
-		controllingAttribute = pAttributeName;
-	}
 	public void setNetwork(CyNetwork pNetwork) {
 		network = pNetwork;
 	}
