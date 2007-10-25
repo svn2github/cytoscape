@@ -16,6 +16,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.filters.AtomicFilter;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.CyFilter;
+import cytoscape.filters.TopologyFilter;
 import cytoscape.filters.StringFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.AdvancedSetting;
@@ -79,7 +80,21 @@ public class FilterSettingPanel extends JPanel {
 		
 		initAdvancedSetting();
 		
-		initCustomSetting();		
+		initCustomSetting();	
+		
+		if (pFilterObj instanceof TopologyFilter) {
+			System.out.println("FilterSettingPanl: it is a topologyFilter");
+
+			java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+	        gridBagConstraints.gridy = 2;
+
+			pnlCustomSettings.removeAll();
+			pnlCustomSettings.add(new JLabel("Test topo"), gridBagConstraints);
+			addBlankLabelToCustomPanel();
+
+			this.validate();
+		}
+
 	}
 	
 	private void initCustomSetting() {
