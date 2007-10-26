@@ -75,7 +75,7 @@ public class ExecutePhysicalEntitySearch implements Task {
             taskMonitor.setPercentCompleted(100);
         } catch (CPathException e) {
             if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
-                taskMonitor.setException(e, e.getMessage());
+                taskMonitor.setException(e, e.getMessage(), e.getRecoveryTip());
             }
         }
     }
