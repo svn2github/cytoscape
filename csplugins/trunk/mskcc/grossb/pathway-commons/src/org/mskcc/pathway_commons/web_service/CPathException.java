@@ -37,7 +37,12 @@ public class CPathException extends Exception {
     public final static int ERROR_HTTP = 6;
 
     private int errorCode;
+    private String errorMessage;
     private String errorDetail;
+    private String recoveryTip;
+
+    private final static String NETWORK_RECOVERY_TIP
+            = "Please check your network settings and try again.";
 
     /**
 	 * Constructor.
@@ -47,11 +52,13 @@ public class CPathException extends Exception {
 	public CPathException(int errorCode, Throwable t) {
         super(t);
         this.errorCode = errorCode;
-	}
+        setErrorMessages(errorCode);
+    }
 
     public CPathException (int errorCode, String errorDetail) {
         this.errorDetail = errorDetail;
         this.errorCode = errorCode;
+        setErrorMessages(errorCode);
     }
 
     /**
@@ -67,37 +74,49 @@ public class CPathException extends Exception {
      * @return Error Message.
      */
     public String getMessage() {
-        String msg = null;
+        return errorMessage;
+    }
+
+    /**
+     * Gets the Recovery Tip.
+     * @return Recovery Tip.
+     */
+    public String getRecoveryTip() {
+        return recoveryTip;
+    }
+
+    private void setErrorMessages(int errorCode) {
         switch (errorCode) {
             case ERROR_CANCELED_BY_USER:
-                msg =  "Canceled by user.";
+                errorMessage =  "Canceled by user.";
                 break;
             case ERROR_UNKNOWN_HOST:
-                msg = "Network error occurred while tring to connect to "
-                        + "remote web service.  Please check your server and network settings, "
-                        + "and try again.";
+                errorMessage = "Network error occurred while tring to connect to "
+                        + "remote web service.";
+                recoveryTip = NETWORK_RECOVERY_TIP;
                 break;
             case ERROR_NETWORK_IO:
-                msg = "Network error occurred while tring to connect to "
-                        + "remote web service.  Please check your server and network settings, "
-                        + "and try again.";
+                errorMessage = "Network error occurred while tring to connect to "
+                        + "remote web service.";
+                recoveryTip = NETWORK_RECOVERY_TIP;
                 break;
             case ERROR_XML_PARSING:
-                msg = "Error occurred while trying to parse XML results "
-                    + "retrieved from remote web service.  "
-                    + "Please check your server and network settings, "
-                    + "and try again.";
+                errorMessage = "Error occurred while trying to parse XML results "
+                    + "retrieved from remote web service.";
                 break;
             case ERROR_HTTP:
-                 msg = "Network error occurred while trying to connect to "
-                        + "remote web service.  (Details:   " + errorDetail + ")";
+                 errorMessage = "Network error occurred while trying to connect to "
+                        + "remote web service.";
+                if (errorDetail != null) {
+                    recoveryTip = errorDetail + ".";
+                }
                 break;
             case ERROR_WEB_SERVICE_API:
-                msg = "Error occurred while trying to connect to remote web service.  "
-                        + "(Details:  " + errorDetail + ")";
+                errorMessage = "Error occurred while trying to connect to remote web service.  ";
+                if (errorDetail != null) {
+                    recoveryTip = errorDetail + ".";
+                }
                 break;
-
         }
-        return msg;
     }
 }
