@@ -96,6 +96,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		public void setPercentCompleted(int percent) {}
 		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException {}
 		public void setException(Throwable t, String userErrorMessage) {}
+  	        public void setException(Throwable t, String userErrorMessage, String recoveryTip) {}
 		public void setStatus(String message) throws IllegalThreadStateException, NullPointerException {}
 	};
 
