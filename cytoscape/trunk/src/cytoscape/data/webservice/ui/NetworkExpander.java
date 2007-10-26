@@ -18,8 +18,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
@@ -39,10 +41,16 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 	
 	private JMenu menu;
 	
+	private String defLayout;
+	
 
 	public NetworkExpander() {
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+		defLayout = CytoscapeInit.getProperties().getProperty("expanderDefaultLayout");
+		if(defLayout == null) {
+			defLayout = "force-directed";
+		}
 		
 		clientMap = new HashMap<String, String>();
 		final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
@@ -112,7 +120,8 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 					CyWebServiceEvent evt2 = new CyWebServiceEvent(evt.getOldValue().toString(), WSEventType.EXPAND_NETWORK, ((DatabaseSearchResult)resultObj).getResult()); 
 					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
 				}
-		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)){
+		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED) && evt.getSource() instanceof NetworkImportWebServiceClient){
+			
 			String message[] = {
 					"Neighbours loaded.",
 					"Do you want to layout the network now?"
@@ -120,11 +129,15 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message, "Expansion complete", JOptionPane.YES_NO_OPTION
 				);
 				if (value == JOptionPane.YES_OPTION) {
-//					TaskManager.executeTask( new LayoutTask(CyLayouts.getLayout("force-directed"), Cytoscape.getCurrentNetworkView()), LayoutTask.getDefaultTaskConfig() );
-					CyLayouts.getLayout("force-directed").doLayout();
+					CyLayouts.getLayout(defLayout).doLayout();
 				}
-			
 
+		} else if(evt.getPropertyName().equals(Cytoscape.PREFERENCES_UPDATED)) {
+			defLayout = CytoscapeInit.getProperties().getProperty("expanderDefaultLayout");
+			if(defLayout == null) {
+				defLayout = "force-directed";
+			}
+			
 		}
 		
 	}
@@ -168,9 +181,13 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 			// this even will load the file
 			WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
 			taskMonitor.setPercentCompleted(100);
-			Cytoscape.getCurrentNetworkView().setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
 			
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetwork().getIdentifier());
+			
+			String curNetID = Cytoscape.getCurrentNetwork().getIdentifier();
+			
+			Cytoscape.getNetworkView(curNetID).setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+			Cytoscape.getNetworkView(curNetID).redrawGraph(false, true);
 			
 		}
 

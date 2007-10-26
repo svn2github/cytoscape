@@ -48,6 +48,9 @@ import java.beans.PropertyChangeListener;
  *
  */
 public class NetworkExpanderListener implements PropertyChangeListener {
+
+	private NetworkExpander expander = null;
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -56,7 +59,11 @@ public class NetworkExpanderListener implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
 		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(new NetworkExpander());
+			if(expander == null) {
+				expander = new NetworkExpander();
+			}
+			
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(expander);
 		}
 	}
 }

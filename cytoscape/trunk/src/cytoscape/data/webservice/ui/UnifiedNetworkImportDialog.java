@@ -431,6 +431,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 			if ((value != null) || (value.length() != 0)) {
 				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 				cyNetwork.setTitle(value);
+				Cytoscape.getCurrentNetwork().setTitle(value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 				final VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
