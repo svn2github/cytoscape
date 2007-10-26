@@ -35,6 +35,7 @@ package org.mskcc.pathway_commons.view;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.Robot;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Composite;
@@ -96,15 +97,18 @@ public class PopupPanel extends JPanel {
 	 */
 	private Robot m_robot;
 
+	private Color m_border_color;
+
 	/**
 	 * Constructor.
 	 */
-	public PopupPanel(JComponent owner, JComponent component) {
+	public PopupPanel(JComponent owner, JComponent component, Color border_color) {
 
 		// init member vars
 		m_owner = owner;
 		m_popupPanel = this;
 		m_wrapped_component = component;
+		m_border_color = border_color;
 		try {
 			m_robot = new Robot();
 		}
@@ -115,7 +119,6 @@ public class PopupPanel extends JPanel {
 		// follow lines are needed to properly render component
 		// underneath curtain - for cool fade-in effect
 		setLayout(new BorderLayout());
-		setBorder(new LineBorder(java.awt.Color.black));
 		add(m_wrapped_component, BorderLayout.CENTER);
 		setVisible(false);
 
@@ -138,6 +141,15 @@ public class PopupPanel extends JPanel {
 	 */
 	public void setOpacity(int opacity) {
 		m_opacity = opacity;
+	}
+
+	/**
+	 * Set border of this component, given opacity level.
+	 */
+	public void setBorder(int opacity) {
+		Color newColor = new Color(m_border_color.getRed(), m_border_color.getGreen(),
+								   m_border_color.getBlue(), (float)(opacity/255.0));
+		setBorder(new LineBorder(newColor));
 	}
 
 	/**
@@ -171,8 +183,7 @@ public class PopupPanel extends JPanel {
 
 			// the draw "curtain" into it at proper alpha value
 			Composite origComposite = image2D.getComposite();
-			float currentAlpha = (float)(m_opacity/255.0);
-			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, currentAlpha);
+			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(m_opacity/255.0));
 			image2D.setComposite(newComposite);
 			image2D.drawImage(m_curtain_image, 0,0,null);
 			image2D.setComposite(origComposite);
@@ -214,15 +225,21 @@ public class PopupPanel extends JPanel {
 	class FaderTask extends TimerTask {
 		private boolean fadeIn;
 		private int popupOpacity;
+		private int borderOpacity;
 		public FaderTask(boolean fadeIn) {
 			this.fadeIn = fadeIn;
 			popupOpacity = (fadeIn) ? 255 : 0;
+			borderOpacity = (fadeIn) ? 0 : 255;
 		}
 		public void run() {
 			popupOpacity = (fadeIn) ? popupOpacity - 5 : popupOpacity + 5;
 			if (popupOpacity > 255) popupOpacity = 255;
 			if (popupOpacity < 0) popupOpacity = 0;
 			m_popupPanel.setOpacity(popupOpacity);
+			borderOpacity = (fadeIn) ? borderOpacity + 5 : borderOpacity - 5;
+			if (borderOpacity > 255) borderOpacity = 255;
+			if (borderOpacity < 0) borderOpacity = 0;
+			m_popupPanel.setBorder(borderOpacity);
 			if (fadeIn && popupOpacity <= 0) {
 				m_timer.cancel();
 			}
