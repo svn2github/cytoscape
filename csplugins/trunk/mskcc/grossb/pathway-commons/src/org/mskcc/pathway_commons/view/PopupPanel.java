@@ -130,7 +130,7 @@ public class PopupPanel extends JPanel {
 	 */
 	public void setCurtain(int x, int y, int width, int height) {
 
-		m_curtain_image = m_robot.createScreenCapture(new Rectangle(x, y+44, width, height));
+		m_curtain_image = m_robot.createScreenCapture(new Rectangle(x, y, width, height));
 	}
 
 	/**
