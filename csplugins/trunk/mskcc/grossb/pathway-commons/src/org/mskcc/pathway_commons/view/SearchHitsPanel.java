@@ -7,8 +7,6 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import cytoscape.Cytoscape;
 
@@ -38,11 +36,9 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private InteractionTableModel interactionTableModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
-    private Popup popup;
     private PhysicalEntityDetailsFrame summaryPanel;
-	private boolean createdPopup = false;
+	private PopupPanel popup;
 	private JLayeredPane appLayeredPane;
-	private static int SUMMARY_PANEL_LAYER = 1; // be positive
 
     /**
      * Constructor.
@@ -63,6 +59,10 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         summaryDocument = summaryPanel.getDocument();
         summaryTextPane = summaryPanel.getTextPane();
 
+		// create popup windown
+		popup = new PopupPanel(appLayeredPane, summaryPanel);
+		appLayeredPane.add(popup, appLayeredPane.getIndexOf(this) + 1);
+
         //  Create the Hit List
         peListModel = new DefaultListModel();
         peList = createHitJList(peListModel);
@@ -81,6 +81,21 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         this.add(splitPane);
         createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
     }
+
+	/**
+	 * Our implementation of setBounds().  Required to affect
+	 * popup window position and/or transition effect if this 
+	 * panel's bounds change.
+	 */
+	public void setBounds(int x, int y, int width, int height) {
+		super.setBounds(x,y,width, height);
+
+		if (getX() != x || getY() != y || getWidth() != width || getHeight() != height) {
+			if (popup.isVisible()) {
+				popup.cancelTransition();
+			}
+		}
+	}
 
     private JList createHitJList(DefaultListModel peListModel) {
         JList peList = new JList(peListModel);
@@ -110,17 +125,12 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
              * @param mouseEvent Mouse Event.
              */
             public void mouseExited(MouseEvent mouseEvent) {
-                if (createdPopup) {
-					//if (popup != null) {
+				if (popup.isVisible()) {
                     Timer timer = new Timer(1000, new ActionListener() {
                         public void actionPerformed(ActionEvent actionEvent) {
-                            //popup.hide();
-                            //popup = null;
-							appLayeredPane.remove(summaryPanel);
-							appLayeredPane.repaint();
-							createdPopup = false;
+							popup.fadeOut();
                         }
-                    });
+						});
                     timer.setRepeats(false);
                     timer.start();
                 }
@@ -132,45 +142,19 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     }
 
 	private void createPopup() {
-		if (!createdPopup) {
-            int MARGIN = 30;
-			int x = this.getLocationOnScreen().x 
-				- (int) (this.getSize().getWidth()) - MARGIN;
-			int y = this.getLocationOnScreen().y;
-			summaryPanel.setBounds(x,y, this.getWidth(), (int)(this.getHeight()*.75));
 
-            appLayeredPane.add(summaryPanel, SUMMARY_PANEL_LAYER);
+		if (!popup.isVisible()) {
+			int MARGIN = 30;
+			int popupWIDTH = (int)this.getSize().getWidth();
+			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
+			int popupX = this.getLocationOnScreen().x - popupWIDTH - MARGIN;
+			int popupY = this.getLocationOnScreen().y;
 
-            Animator animator = new Animator (750);
-            animator.addTarget(new PropertySetter(summaryPanel, "alpha", 0.0f, 1.0f));
-            animator.start();
-            
-			createdPopup = true;
+			popup.setCurtain(popupX, popupY, popupWIDTH, popupHEIGHT);
+			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
+			popup.fadeIn();
 		}
 	}
-
-    private void createPopup2() {
-        // If no pop-up exists, create one.
-
-        if (popup == null) {
-            PopupFactory popupFactory = PopupFactory.getSharedInstance();
-
-            //  Set the preferred size of the pop-up.
-            //  Set to same size at the HitList Panel
-            Dimension d = this.getSize();
-            summaryPanel.setPreferredSize(d);
-
-            //  Determine location of popup.
-            int MARGIN = 30;
-            int x = this.getLocationOnScreen().x
-			       - (int) (this.getSize().getWidth()) - MARGIN;
-            int y = this.getLocationOnScreen().y;
-
-            //  Create the popup
-            popup = popupFactory.getPopup(this, summaryPanel, x, y);
-            popup.show();
-		}
-    }
 
     /**
      * Indicates that user has initiated a phsyical entity search.
@@ -210,7 +194,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
                 SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
                 selectTask.selectPhysicalEntity(peSearchResponse, 0,
                         interactionTableModel, pathwayTableModel, summaryDocument, 
-                        summaryTextPane);
+												summaryTextPane, appLayeredPane);
             }
         } else {
             SwingUtilities.invokeLater(new Runnable(){
@@ -238,7 +222,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
                 if (selectedIndex >=0) {
                     SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
                     selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                            interactionTableModel, pathwayTableModel, summaryDocument, textPane);
+													interactionTableModel, pathwayTableModel, summaryDocument, textPane, appLayeredPane);
                 }
             }
         });
