@@ -149,8 +149,9 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
 			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
 			int popupX = this.getLocationOnScreen().x - popupWIDTH - MARGIN;
 			int popupY = this.getLocationOnScreen().y;
+			int desktopInsets = Cytoscape.getDesktop().getInsets().top * 2;
 
-			popup.setCurtain(popupX, popupY, popupWIDTH, popupHEIGHT);
+			popup.setCurtain(popupX, popupY+desktopInsets, popupWIDTH, popupHEIGHT);
 			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
 			popup.fadeIn();
 		}
