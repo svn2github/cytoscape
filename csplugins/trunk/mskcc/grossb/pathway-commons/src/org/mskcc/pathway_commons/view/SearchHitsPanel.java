@@ -88,13 +88,13 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
 	 * panel's bounds change.
 	 */
 	public void setBounds(int x, int y, int width, int height) {
-		super.setBounds(x,y,width, height);
 
 		if (getX() != x || getY() != y || getWidth() != width || getHeight() != height) {
 			if (popup.isVisible()) {
 				popup.cancelTransition();
 			}
 		}
+		super.setBounds(x,y,width, height);
 	}
 
     private JList createHitJList(DefaultListModel peListModel) {
