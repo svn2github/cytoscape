@@ -36,12 +36,15 @@
 
 package cytoscape.task.ui;
 
+import cytoscape.task.util.StringWrap;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -62,7 +65,12 @@ public class JErrorPanel extends JPanel {
 	 */
 	private String userErrorMessage;
 
-	/**
+    /**
+     * Hint to user as to how to fix the error.
+     */
+    private String tip;
+
+    /**
 	 * Flag to Show/Hide Error Details.
 	 */
 	private boolean showDetails = false;
@@ -81,7 +89,7 @@ public class JErrorPanel extends JPanel {
 	 * JDialog Owner.
 	 */
 	private JDialog owner;
-	private static final String SHOW_TEXT = "Show Error Details";
+    private static final String SHOW_TEXT = "Show Error Details";
 	private static final String HIDE_TEXT = "Hide Error Details";
 
 	/**
@@ -103,6 +111,25 @@ public class JErrorPanel extends JPanel {
 	}
 
 	/**
+	 * Private Constructor.
+	 *
+	 * @param owner            Window owner.
+	 * @param t                Throwable Object. May be null.
+	 * @param userErrorMessage User Readable Error Message. May be null.
+     * @param tip              Tip for user on how to recover from the error.  May be null.
+	 */
+	JErrorPanel(JDialog owner, Throwable t, String userErrorMessage, String tip) {
+		if (owner == null) {
+			throw new IllegalArgumentException("owner parameter is null.");
+		}
+		this.owner = owner;
+		this.t = t;
+		this.userErrorMessage = userErrorMessage;
+        this.tip = tip;
+        initUI();
+	}
+
+    /**
 	 * Initializes UI.
 	 */
 	private void initUI() {
@@ -130,33 +157,31 @@ public class JErrorPanel extends JPanel {
 	private JPanel createNorthPanel() {
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		panel.setLayout(new BorderLayout());
 
 		if (userErrorMessage == null) {
 			userErrorMessage = new String("An Error Has Occurred.  " + "Please try again.");
 		}
 
 		//  Add an Error Icon
-		//      Icon icon = UIManager.getIcon("OptionPane.errorIcon");
-		//      JLabel l = new JLabel(icon);
-		//      l.setAlignmentY(Component.TOP_ALIGNMENT);
-		//      panel.add(l);
-
-		//      Create Left Margin
-		//      panel.add(Box.createHorizontalStrut(10));
+        Icon icon = UIManager.getIcon("OptionPane.errorIcon");
+        JLabel l = new JLabel(icon);
+        l.setVerticalAlignment(SwingConstants.TOP);
+        panel.add(l, BorderLayout.WEST);
 
 		//  Add Error Message with Custom Font Properties
-		JLabel errorLabel = new JLabel(StringUtils.truncateOrPadString("Error:  "
-		                                                               + userErrorMessage));
-		errorLabel.setForeground(Color.BLUE);
+        JPanel textPanel = new JPanel();
+        textPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        JTextArea errorArea = createErrorTextArea(userErrorMessage);
+        textPanel.add(errorArea);
+        if (tip != null) {
+            JTextArea tipArea = createTipTextArea(tip);
+            textPanel.add(tipArea);
+        }
+        panel.add(textPanel, BorderLayout.CENTER);
 
-		Font font = errorLabel.getFont();
-		errorLabel.setFont(new Font(font.getFamily(), Font.BOLD, font.getSize()));
-		errorLabel.setAlignmentY(Component.TOP_ALIGNMENT);
-		errorLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		panel.add(errorLabel);
-
-		//  Conditionally Add Details Button
+        //  Conditionally Add Details Button
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(2, 1));
 		buttonPanel.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -169,13 +194,40 @@ public class JErrorPanel extends JPanel {
 					owner.dispose();
 				}
 			});
-		buttonPanel.add(closeButton);
-		panel.add(buttonPanel);
+        buttonPanel.add(closeButton);
+        JPanel enclosingPanel = new JPanel();
+        enclosingPanel.add(buttonPanel);
+        enclosingPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        panel.add(enclosingPanel, BorderLayout.EAST);
 
 		return panel;
 	}
 
-	/**
+    private JTextArea createErrorTextArea(String msg) {
+        msg = StringWrap.wrap(msg, 50, "\n", false);
+        JTextArea errorArea = new JTextArea(msg);
+        errorArea.setEditable(false);
+        errorArea.setOpaque(false);
+
+        Font font = errorArea.getFont();
+        errorArea.setFont(new Font(font.getFamily(), Font.BOLD, font.getSize()-1));
+        errorArea.setBorder(new EmptyBorder(10, 10, 0, 10));
+        return errorArea;
+    }
+
+    private JTextArea createTipTextArea(String tip) {
+        tip = StringWrap.wrap(tip, 50, "\n", false);
+        JTextArea tipArea = new JTextArea(tip);
+        tipArea.setEditable(false);
+        tipArea.setOpaque(false);
+
+        Font font = tipArea.getFont();
+        tipArea.setFont(new Font(font.getFamily(), Font.PLAIN, font.getSize()));
+        tipArea.setBorder(new EmptyBorder(10, 10, 10, 10));
+        return tipArea;
+    }
+
+    /**
 	 * Creates Center Panel with Error Details.
 	 *
 	 * @return JScrollPane Object.
@@ -263,4 +315,23 @@ public class JErrorPanel extends JPanel {
 			panel.add(detailsButton);
 		}
 	}
+
+    public static void main(String[] args) {
+        NullPointerException e = new NullPointerException();
+        final JDialog dialog = new JDialog();
+        JErrorPanel errorPanel = new JErrorPanel(dialog, e,
+                "Network error occurred while tring to connect to remote web service.",
+                "Please check your network settings, and try again.");
+        dialog.getContentPane().add(errorPanel, BorderLayout.CENTER);
+
+        //  Repack and validate the owner
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                dialog.pack();
+                dialog.pack();
+                dialog.setVisible(true);
+            }
+        });
+
+    }
 }
