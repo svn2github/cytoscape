@@ -84,7 +84,7 @@
  		</jar>
  		<echo message="${lib.loc} is now complete." />
  		<antcall target="release-plugin-to-cytoscape" />
- 		<antcall target="release-plugin-to-genespring" />
+ 		<!-- <antcall target="release-plugin-to-genespring" /> -->
  	</target>
 
 	<!-- we must do a 'clean' because we don't want to jar up any
