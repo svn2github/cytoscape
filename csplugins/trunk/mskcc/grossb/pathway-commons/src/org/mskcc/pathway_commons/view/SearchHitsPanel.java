@@ -60,7 +60,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         summaryTextPane = summaryPanel.getTextPane();
 
 		// create popup windown
-		popup = new PopupPanel(appLayeredPane, summaryPanel);
+		popup = new PopupPanel(appLayeredPane, summaryPanel, Color.black);
 		appLayeredPane.add(popup, appLayeredPane.getIndexOf(this) + 1);
 
         //  Create the Hit List
