@@ -32,9 +32,8 @@
 package org.mskcc.pathway_commons.view;
 
 // imports
-import javax.swing.JPanel;
-import javax.swing.JComponent;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.Robot;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -43,9 +42,11 @@ import java.awt.Graphics2D;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.AlphaComposite;
+import javax.swing.border.LineBorder;
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.swing.JPanel;
+import javax.swing.JComponent;
+
 
 /**
  * Popup Panel to show protein/pathway/interaction info.
@@ -91,6 +92,11 @@ public class PopupPanel extends JPanel {
 	private Timer m_timer;
 
 	/**
+	 * robot used to capture screen
+	 */
+	private Robot m_robot;
+
+	/**
 	 * Constructor.
 	 */
 	public PopupPanel(JComponent owner, JComponent component) {
@@ -99,10 +105,17 @@ public class PopupPanel extends JPanel {
 		m_owner = owner;
 		m_popupPanel = this;
 		m_wrapped_component = component;
+		try {
+			m_robot = new Robot();
+		}
+		catch (AWTException e) {
+			e.printStackTrace();
+		}		
 
 		// follow lines are needed to properly render component
 		// underneath curtain - for cool fade-in effect
 		setLayout(new BorderLayout());
+		setBorder(new LineBorder(java.awt.Color.black));
 		add(m_wrapped_component, BorderLayout.CENTER);
 		setVisible(false);
 
@@ -117,15 +130,7 @@ public class PopupPanel extends JPanel {
 	 */
 	public void setCurtain(int x, int y, int width, int height) {
 
-		Robot robot = null;
-		try {
-			robot = new Robot();
-		}
-		catch (AWTException e) {
-			e.printStackTrace();
-		}		
-
-		m_curtain_image = robot.createScreenCapture(new Rectangle(x, y+44, width, height));
+		m_curtain_image = m_robot.createScreenCapture(new Rectangle(x, y+44, width, height));
 	}
 
 	/**
@@ -144,7 +149,7 @@ public class PopupPanel extends JPanel {
 		super.setBounds(x, y, width, height);
 
 		// if our bounds have changed, create a new image with new size
-		if ((width > 0) && (height > 0) && m_this_panel_image == null) {
+		if ((width > 0) && (height > 0)) {
 			m_wrapped_component.setBounds(x, y, width, height);
 			m_this_panel_image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		}
