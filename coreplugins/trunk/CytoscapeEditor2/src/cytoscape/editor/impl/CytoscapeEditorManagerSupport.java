@@ -120,6 +120,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
         // if the current palette already reflects the current visual style before
         // updateEditorPalette is called.
 	public void stateChanged(ChangeEvent e) {
+		CytoscapeEditorManager.log("Got State change: " +
+				e.toString());
 		if (!CytoscapeEditorManager.isEditingEnabled()) {
 			return;
 		}
@@ -149,6 +151,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	public void onComponentSelected(int componentIndex) {
 		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
 
+		CytoscapeEditorManager.log("CytoPanel component selected: " + idx);
 		if (componentIndex == idx) {
 			updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
 
@@ -173,6 +176,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 											    Cytoscape.getVisualMappingManager().getVisualStyle());
 				// MLC 10/24/07 END.
 				CytoscapeEditorManager.setEditorForView(newView, CytoscapeEditorManager.getCurrentEditor());
+			    // AJK: 10/25/2007 if we have a new view then we need to set it up with event handler
+				CytoscapeEditorManager.setupNewNetworkView(newView);
 			}
 		}
 	}
@@ -299,19 +304,29 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 			CytoscapeEditorManager.setEditingEnabled(true);
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
 			CytoscapeEditorManager.log("NETWORK_VIEW_FOCUSED: " + e.getNewValue());
-			CytoscapeEditorManager.log("From old network view: " + e.getOldValue());
+			CytoscapeEditorManager.log("From older network view: " + e.getOldValue());
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			CytoscapeEditorManager.log("Current network view = " + view);
+			
+			view = Cytoscape.getNetworkView(e.getNewValue().toString());
+			CytoscapeEditorManager.log("Current network view = " + view);
 
 			// AJK: 12/09/06 BEGIN
 			//   try to get editor for visual style
 			// VisualStyle vs = view.getVisualStyle();           
 			CytoscapeEditor cyEditor = CytoscapeEditorManager.getEditorForView(view);
+			System.out.println("Editor for this view is: " + cyEditor);
 
 			if (cyEditor == null) {
 				try {
 					CytoscapeEditorManager.log("looking for default editor");
 					cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(CytoscapeEditorManager.DEFAULT_EDITOR_TYPE);
 					CytoscapeEditorManager.log("got default editor: " + cyEditor);
+					// AJK: 10/25/07 need to update editor palette because we have a new edito
+					//   but this may cause two update palettes when we have first new network
+					//   will that matter?
+					updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
+
 				} catch (InvalidEditorException ex) {
 				}
 			}

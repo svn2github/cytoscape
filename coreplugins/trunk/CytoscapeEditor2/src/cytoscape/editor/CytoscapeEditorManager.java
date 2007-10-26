@@ -237,6 +237,8 @@ public abstract class CytoscapeEditorManager {
 	 * AJK: 06/19/06 CytoscapeEditor class descriptor -- for checking against NETWORK_MODIFIED events
 	 */
 	public static final String CYTOSCAPE_EDITOR = "cytoscape.editor";
+	
+	
 
 
 	// AJK: 12/06/06: flag for "logging" diagnostic output
