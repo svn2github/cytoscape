@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Thu Oct 04 18:41:07 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Oct 25 19:00:42 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,10 @@
 *
 * Revisions:
 *
+* Thu Oct 25 16:05:12 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.57. Added HESessionLoadedMonitor that
+*  ensures that the BioChemicalReaction Visual Style is set up after loading
+*  a session that might wipe out this visual style.
 * Thu Oct 04 18:37:13 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to fix rendering and initial visual style used to display
 *  sample networks. Changed to version 2.56.
@@ -105,7 +109,7 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.56;
+    private static final Double VERSION = 2.57;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
@@ -159,8 +163,21 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
 
         CyMenus cms = Cytoscape.getDesktop().getCyMenus();
         cms.addAction(new ShowSampleNetworksAction());
+
+        // MLC 10/24/07 BEGIN:
+        //        Cytoscape.getSwingPropertyChangeSupport()
+        //                 .addPropertyChangeListener(new PopupMenuMonitor());;
+        PopupMenuMonitor pmm = new PopupMenuMonitor();
         Cytoscape.getSwingPropertyChangeSupport()
-                 .addPropertyChangeListener(new PopupMenuMonitor());
+                 .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED,
+                                            pmm);
+
+        Cytoscape.getSwingPropertyChangeSupport()
+                 .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_DESTROYED,
+                                            pmm);
+        Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED,
+                                                                            new HEESessionLoadedMonitor());
+        // MLC 10/24/07 END.
     }
 
     // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
@@ -231,6 +248,13 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
         }
     }
 
+    private class HEESessionLoadedMonitor implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent e) {
+            // ensure we always have this style--even if the session loaded doesn't have it:
+            BioChemicalReactionVisualStyle.getVisualStyle().setupVisualStyle(false, false);
+        }
+    }
+
     private class PopupMenuMonitor implements PropertyChangeListener,
                                               // EdgeContextMenuListener,
     NodeContextMenuListener {
@@ -239,7 +263,8 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
         public void propertyChange(PropertyChangeEvent e) {
             if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
                 addPopupMenusToNetworkView(Cytoscape.getCurrentNetworkView());
-            } else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
+            } else {
+                // must be CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
                 removePopupMenusFromNetworkView(Cytoscape.getCurrentNetworkView());
             }
         }

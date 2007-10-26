@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 11:28:16 2006
-* Modified:     Thu Jun 28 17:00:42 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Oct 24 13:34:47 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Oct 24 13:34:37 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed some debugging output.
 * Tue Jan 16 09:20:14 2007 (Michael L. Creech) creech@w235krbza760
 *  Commented out some debugging statements.
 ********************************************************************************
@@ -146,8 +148,6 @@ public class HyperEdgeEditEventHandler extends PaletteNetworkEditEventHandler {
             // special use for HyperEdgeEditor.
             // Finish Edge Creation
             finishEdge(nextPoint, ev);
-            // MLC 06/29/07 DEBUG:
-            System.out.println ("FINISHED MOUSEPRESSED");
         } else {
             super.mousePressed(e);
         }
@@ -167,9 +167,6 @@ public class HyperEdgeEditEventHandler extends PaletteNetworkEditEventHandler {
                                                                   getEdgeAttributeName(),
                                                                   getEdgeAttributeValue(),
                                                                   netView);
-        // MLC 06/29/07 DEBUG:
-        System.out.println ("BEFORE COMPLETEFINISHEDGE");
         completeFinishEdge();
-        System.out.println ("AFTER COMPLETEFINISHEDGE");
     }
 }
