@@ -243,33 +243,49 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 		if (!haltRequested) {
 			this.errorOccurred = true;
 			stopTimer();
-
-			//  Update the UI
-			SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						//  Hide All Existing UI Components
-						Container c = getContentPane();
-						closeButton.setVisible(false);
-						cancelButton.setVisible(false);
-						progressPanel.setVisible(false);
-
-						//  Create Error Panel
-						JPanel errorPanel = new JErrorPanel(JTask.this, t, userErrorMessage);
-						c.add(errorPanel, BorderLayout.CENTER);
-						config.setAutoDispose(false);
-						pack();
-						setTitle("An Error Has Occurred");
-
-						//  Make sure JTask is actually visible
-						if (!JTask.this.isShowing()) {
-							JTask.this.setVisible(true);
-						}
-					}
-				});
-		}
+            showErrorPanel(t, userErrorMessage, null);
+        }
 	}
 
-	/**
+	public void setException(Throwable t, String userErrorMessage, String recoveryTip)
+	    throws IllegalThreadStateException {
+        //  Ignore events if user has requested to halt task.
+        if (!haltRequested) {
+            this.errorOccurred = true;
+            stopTimer();
+            showErrorPanel(t, userErrorMessage, recoveryTip);
+        }
+    }
+
+
+    private void showErrorPanel(final Throwable t, final String userErrorMessage,
+            final String recoveryTip) {
+        //  Update the UI
+        SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    //  Hide All Existing UI Components
+                    Container c = getContentPane();
+                    closeButton.setVisible(false);
+                    cancelButton.setVisible(false);
+                    progressPanel.setVisible(false);
+
+                    //  Create Error Panel
+                    JPanel errorPanel = new JErrorPanel(JTask.this, t, userErrorMessage,
+                            recoveryTip);
+                    c.add(errorPanel, BorderLayout.CENTER);
+                    config.setAutoDispose(false);
+                    pack();
+                    setTitle("An Error Has Occurred");
+
+                    //  Make sure JTask is actually visible
+                    if (!JTask.this.isShowing()) {
+                        JTask.this.setVisible(true);
+                    }
+                }
+            });
+    }
+
+    /**
 	 * Indicates that the worker task is done processing.
 	 */
 	public void setDone() {
