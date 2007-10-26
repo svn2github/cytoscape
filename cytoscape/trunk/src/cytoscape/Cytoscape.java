@@ -1589,6 +1589,9 @@ public abstract class Cytoscape {
 
 		view.fitContent();
 
+		// AJK: 10/25/07 make sure we redraw a new network view so that visual style is applied
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+
 		return view;
 	}
 
