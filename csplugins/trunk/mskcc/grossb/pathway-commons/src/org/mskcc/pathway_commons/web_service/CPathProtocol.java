@@ -5,6 +5,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.io.*;
@@ -150,6 +151,7 @@ public class CPathProtocol {
     private String format;
     private String baseUrl;
     private volatile GetMethod method;
+    private boolean cancelledByUser = false;
 
     /**
      * Constructor.
@@ -219,6 +221,7 @@ public class CPathProtocol {
      */
     public void abort() {
         if (method != null) {
+            cancelledByUser = true;
             method.abort();
         }
     }
@@ -273,8 +276,11 @@ public class CPathProtocol {
         } catch (UnknownHostException e) {
             throw new CPathException(CPathException.ERROR_UNKNOWN_HOST, e);
         } catch (SocketException e) {
-            //  Socket exception occurs when user manually cancels the request
-            throw new CPathException(CPathException.ERROR_CANCELED_BY_USER, e);
+            if (cancelledByUser) {
+                throw new CPathException(CPathException.ERROR_CANCELED_BY_USER, e);
+            } else {
+                throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
+            }
         } catch (IOException e) {
             throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
         } catch (JDOMException e) {
@@ -328,7 +334,8 @@ public class CPathProtocol {
     private void checkHttpStatusCode (int statusCode)
             throws CPathException {
         if (statusCode != 200) {
-            throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode);
+            throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
+                + ":  " + HttpStatus.getStatusText(statusCode));
         }
     }
 
@@ -343,7 +350,7 @@ public class CPathProtocol {
                 throw new EmptySetException();
             } else {
                 throw new CPathException(CPathException.ERROR_WEB_SERVICE_API, 
-                    "Error Code:  " + errorCode + ", Error Message:  " + errorMsg);
+                    "Error Code:  " + errorCode + ", " + errorMsg);
             }
         }
     }
