@@ -37,6 +37,7 @@ package edu.ucsd.bioeng.idekerlab.intactplugin;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -236,13 +237,13 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 				n2 = Cytoscape.getCyNode(b.getIdentifiers().get(0).getIdentifier(), true);
 
 				if ((a.getOrganism() != null) && (a.getOrganism().getIdentifiers() != null)
-				    && (a.getOrganism().getIdentifiers().get(0) != null)) {
+				    && (a.getOrganism().getIdentifiers().size() > 0)) {
 					attr.setAttribute(n1.getIdentifier(), "species",
 					                  a.getOrganism().getIdentifiers().get(0).getText());
 				}
 
 				if ((b.getOrganism() != null) && (b.getOrganism().getIdentifiers() != null)
-				    && (b.getOrganism().getIdentifiers().get(0) != null)) {
+				    && (b.getOrganism().getIdentifiers().size() > 0)) {
 					attr.setAttribute(n2.getIdentifier(), "species",
 					                  b.getOrganism().getIdentifiers().get(0).getText());
 				}
@@ -294,7 +295,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 			}
 
 			if (net == null) {
-				Cytoscape.createNetwork(nodes, edges, "IntAct: ", null);
+				CyNetwork newNet = Cytoscape.createNetwork(nodes, edges, "IntAct: ", null);
 				Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
 			} else {
 				for (Node node : nodes) {
@@ -306,7 +307,8 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 				}
 
 				net.setSelectedNodeState(nodes, true);
-				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
+				final PropertyChangeEvent pce = new PropertyChangeEvent(this, Cytoscape.NETWORK_MODIFIED, null, null);
+				Cytoscape.getPropertyChangeSupport().firePropertyChange(pce);
 			}
 
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
