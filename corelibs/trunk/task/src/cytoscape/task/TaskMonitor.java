@@ -126,6 +126,30 @@ public interface TaskMonitor {
 	    throws IllegalThreadStateException;
 
 	/**
+	 * Indicates to a parent application that a task has encountered an error
+	 * while processing.
+	 * <P>
+	 * This method provides a convenient mechanism for reporting errors
+	 * back to the end-user.
+	 * <P>
+	 * This method is used to report non-recoverable fatal errors,
+	 * and must be called at the very end of a run() method (for example,
+	 * in a catch block).
+	 *
+	 * @param t                an exception that occurred while processing of
+	 *                         the task.
+	 * @param userErrorMessage a user-presentable error message describing the
+	 *                         nature of the exception; may be
+	 *                         <code>null</code>.
+     * @param recoveryTip          a use-presentable tip on how to recover from the error.
+	 * @throws IllegalThreadStateException <code>TaskMonitor</code> can only
+	 *                                     be be called from the thread that
+	 *                                     invokes the task <code>run()</code>.
+	 */
+	public void setException(Throwable t, String userErrorMessage, String recoveryTip)
+	    throws IllegalThreadStateException;
+
+    /**
 	 * This is a hook for a child process to report to its parent application
 	 * a short one-line text description (not exceeding, say, 60 characters,
 	 * even though that is not enforced) of the current phase of processing.
