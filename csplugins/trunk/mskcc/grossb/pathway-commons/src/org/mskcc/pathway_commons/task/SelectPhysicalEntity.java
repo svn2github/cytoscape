@@ -36,10 +36,11 @@ public class SelectPhysicalEntity {
      * @param interactionTableModel Interaction Table Model.
      * @param pathwayTableModel     Pathway Table Model.
      * @param summaryDocumentModel  Summary Document Model.
+	 * @param owner Owner of this 
      */
     public void selectPhysicalEntity(SearchResponseType peSearchResponse,
             int selectedIndex, InteractionTableModel interactionTableModel, PathwayTableModel
-            pathwayTableModel, Document summaryDocumentModel, JTextPane textPane) {
+									 pathwayTableModel, Document summaryDocumentModel, JTextPane textPane, JComponent textPaneOwner) {
         if (peSearchResponse != null) {
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
             SearchHitType searchHit = searchHits.get(selectedIndex);
@@ -73,6 +74,7 @@ public class SelectPhysicalEntity {
             }
             updatePathwayData(searchHit, pathwayTableModel);
             updateInteractionData(searchHit, interactionTableModel);
+			textPaneOwner.repaint();
         }
     }
 
