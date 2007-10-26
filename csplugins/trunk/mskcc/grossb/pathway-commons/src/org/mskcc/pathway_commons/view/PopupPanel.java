@@ -125,7 +125,7 @@ public class PopupPanel extends JPanel {
 			e.printStackTrace();
 		}		
 
-		m_curtain_image = robot.createScreenCapture(new Rectangle(x, y, width, height));
+		m_curtain_image = robot.createScreenCapture(new Rectangle(x, y+44, width, height));
 	}
 
 	/**
