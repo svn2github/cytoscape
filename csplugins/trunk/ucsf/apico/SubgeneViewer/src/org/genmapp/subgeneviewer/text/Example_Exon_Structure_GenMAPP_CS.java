@@ -36,6 +36,9 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			block = netView.addBlock(_id, "e");
 			region = block.addRegion(new String("1"));
 			feature = region.addFeature(_id, "E1");
+			// red color
+			feature.setColor(240, 0, 50);
+			//System.out.println("Color for "+feature+" is "+feature.getColor());
 			
 			// Start site
 			startSite = new StartSite(region);
@@ -53,6 +56,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			block = netView.addBlock(_id, "I");
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String("1"), "I1");
+			feature.setColor(240, 0, 50);
 			
 			// E2
 			_id = new String("3");
@@ -60,6 +64,9 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			region = block.addRegion(new String("1"));
 			
 			feature = region.addFeature(new String ("1"), "E2");
+			
+			//red color
+			feature.setColor(240, 150, 130);
 			
 			// Splice Events
 			toBlock = new String("5");
@@ -81,11 +88,17 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String("1"), "I2");
 			
+			// green color
+			feature.setColor(100, 80, 70);
+			
 			// E3
 			_id = new String("5");
 			block = netView.addBlock(_id, "e");
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String ("1"), "E3");
+			
+			//green color
+			feature.setColor(90, 110, 70);
 		
 //			//Splice Events
 //			toBlock = new String("7");
@@ -99,12 +112,18 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			block = netView.addBlock(_id, "I");
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String ("1"), "I3");
+			
+			//green color
+			feature.setColor(90, 110, 70);
 
 			// E4
 			_id = new String("7");
 			block = netView.addBlock(_id, "e");
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String ("1"), "E4");
+			
+			//red color
+			feature.setColor(240, 150, 130);
 		
 //			// Splice Events
 //			toBlock = new String("9");
@@ -119,11 +138,17 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String ("1"), "I4");
 			
+			//green color
+			feature.setColor(90, 110, 70);
+			
 			// E5
 			_id = new String("9");
 			block = netView.addBlock(_id, "e");
 			region = block.addRegion(new String ("1"));
 			feature = region.addFeature(new String ("1"), "E5");
+			
+			//red color
+			feature.setColor(180, 30, 60);
 		
 		}
 		
@@ -162,12 +187,12 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			startSite = new StartSite(region);
 			region.containsStartSite(true);
 			
-			// Splice Events
-			toBlock = new String("5");
-			toRegion = new String("1");
-			spliceEvent = region.addSpliceEvent(toBlock, toRegion);
-			spliceEvent.setRegion(region);
-			spliceEvent.setId(toBlock, toRegion);
+//			// Splice Events
+//			toBlock = new String("5");
+//			toRegion = new String("1");
+//			spliceEvent = region.addSpliceEvent(toBlock, toRegion);
+//			spliceEvent.setRegion(region);
+//			spliceEvent.setId(toBlock, toRegion);
 			
 			feature = region.addFeature(new String ("1"), "E2");
 			

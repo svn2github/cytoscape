@@ -20,6 +20,14 @@ public class Feature extends SubgeneNodeView {
 	CyNode cyNode;
 
 	CyAttributes _att = Cytoscape.getNodeAttributes();
+	
+	Color color;
+	
+	int red;
+	
+	int green;
+	
+	int blue;
 
 	/**
 	 * label for the feature. Will initially default to the nodeID passed in
@@ -98,6 +106,17 @@ public class Feature extends SubgeneNodeView {
 		g.drawRect(r.x, r.y, r.width, r.height);
 		g.drawString(this.getFeature_id(), this.getBounds().x,
 				this.getBounds().y);
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(int r, int g, int b) {
+		this.red = r;
+		this.green = g;
+		this.blue = b;
+		this.color = new Color(red, green, blue);
 	}
 
 }
