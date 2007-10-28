@@ -45,32 +45,34 @@ public class Feature extends SubgeneNodeView {
 		this.cyNode = Cytoscape.getCyNode(nodeId, true);
 
 		// temp setting of color att
-		Double random = Math.random();
-		// map from green to red through black, THIS IS A TEMPORARY HACK
-		if (random < 0.2) {
-		_att.setAttribute(cyNode.getIdentifier(), "red",
-				0);
-		_att.setAttribute(cyNode.getIdentifier(), "green",
-				(int) (255 * (1.0 - random)));
-		_att.setAttribute(cyNode.getIdentifier(), "blue",0);
-		}
-		else if (random > 0.8){
+//		_att.setAttribute(cyNode.getIdentifier(), "color", this.color.toString());
 		
-			_att.setAttribute(cyNode.getIdentifier(), "red",
-					(int) (255 * random));
-			_att.setAttribute(cyNode.getIdentifier(), "green",
-					0);
-			_att.setAttribute(cyNode.getIdentifier(), "blue",0);
-			
-		}
-		else {
-			_att.setAttribute(cyNode.getIdentifier(), "red",
-					240);
-			_att.setAttribute(cyNode.getIdentifier(), "green",
-					240);
-			_att.setAttribute(cyNode.getIdentifier(), "blue",240);
-			
-		}
+//		Double random = Math.random();
+//		// map from green to red through black, THIS IS A TEMPORARY HACK
+//		if (random < 0.2) {
+//		_att.setAttribute(cyNode.getIdentifier(), "red",
+//				0);
+//		_att.setAttribute(cyNode.getIdentifier(), "green",
+//				(int) (255 * (1.0 - random)));
+//		_att.setAttribute(cyNode.getIdentifier(), "blue",0);
+//		}
+//		else if (random > 0.8){
+//		
+//			_att.setAttribute(cyNode.getIdentifier(), "red",
+//					(int) (255 * random));
+//			_att.setAttribute(cyNode.getIdentifier(), "green",
+//					0);
+//			_att.setAttribute(cyNode.getIdentifier(), "blue",0);
+//			
+//		}
+//		else {
+//			_att.setAttribute(cyNode.getIdentifier(), "red",
+//					240);
+//			_att.setAttribute(cyNode.getIdentifier(), "green",
+//					240);
+//			_att.setAttribute(cyNode.getIdentifier(), "blue",240);
+//			
+//		}
 
 		// System.out.println("node is "+ cyNode);
 		this.feature_id = nodeId;
@@ -109,6 +111,9 @@ public class Feature extends SubgeneNodeView {
 	}
 
 	public Color getColor() {
+		if (color == null){
+			this.color = new Color(255,255,255);
+		}
 		return color;
 	}
 

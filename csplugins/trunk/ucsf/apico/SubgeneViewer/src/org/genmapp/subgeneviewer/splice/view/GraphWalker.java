@@ -187,28 +187,26 @@ public class GraphWalker {
 					g.drawRect(rect.x, rect.y, rect.width, rect.height);
 
 					// mapping color
-					CyNode node = feature.getCyNode();
-					CyAttributes att = Cytoscape.getNodeAttributes();
-					// System.out.println("returned node is "
-					// + node.getIdentifier());
-					int attR = att.getIntegerAttribute(node.getIdentifier(),
-							"red").intValue();
-					int attG = att.getIntegerAttribute(node.getIdentifier(),
-							"green").intValue();
-					int attB = att.getIntegerAttribute(node.getIdentifier(),
-							"blue").intValue();
+//					CyNode node = feature.getCyNode();
+//					CyAttributes att = Cytoscape.getNodeAttributes();
+//					// System.out.println("returned node is "
+//					// + node.getIdentifier());
+//					int attR = att.getIntegerAttribute(node.getIdentifier(),
+//							"red").intValue();
+//					int attG = att.getIntegerAttribute(node.getIdentifier(),
+//							"green").intValue();
+//					int attB = att.getIntegerAttribute(node.getIdentifier(),
+//							"blue").intValue();
 
-					Color secondColor = new Color(attR, attG, attB);
+					Color secondColor = feature.getColor();
 					// map from green to red through black, THIS IS A TEMPORARY
 					// HACK
 
 					g.setColor(secondColor);
 					g.fillRect(rect.x, rect.y, rect.width, rect.height);
 
-					// System.out.println("color is " + secondColor);
-
 					// g.drawString(feature.getId(), rect.x + 1, rect.y + 1);
-					if (attR + attG + attB > 500) {
+					if ((feature.getColor().getRed()+feature.getColor().getGreen()+feature.getColor().getBlue()) > 500) {
 						g.setColor(Color.black);
 					} else {
 						g.setColor(Color.white);
