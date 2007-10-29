@@ -22,13 +22,11 @@ public class PhysicalEntityDetailsPanel extends JPanel {
     public PhysicalEntityDetailsPanel() {
         daemon = new PopupDaemon(this, 1000);
         this.setLayout(new BorderLayout());
-//        this.setUndecorated(true);
-//        this.setResizable(false);
         textPane = createTextPane();
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
         scrollPane.setBorder(GuiUtils.createTitledBorder("Gene Summary"));
-        add(textPane, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
         attachMouseListener(this, daemon);
     }
 
