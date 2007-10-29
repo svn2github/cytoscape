@@ -104,6 +104,16 @@ public class PathwayCommonsWebApi {
                     + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
                     + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
 
+            comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
+                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
+                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
+                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
+
+            comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
+                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
+                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
+                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
+            
             ObjectFactory factory = new ObjectFactory();
             PathwayListType pathwayListType = factory.createPathwayListType();
             List <PathwayType> pathwayList = pathwayListType.getPathway();
