@@ -45,69 +45,56 @@ public class SelectPhysicalEntity {
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
             SearchHitType searchHit = searchHits.get(selectedIndex);
 
-            try {
-                summaryDocumentModel.remove(0, summaryDocumentModel.getLength());
-            } catch (BadLocationException e) {
+            StringBuffer html = new StringBuffer();
+            html.append("<html>");
+
+            html.append ("<h2>" + searchHit.getName() + "</h2>");
+
+            OrganismType organism = searchHit.getOrganism();
+            if (organism != null) {
+                String speciesName = organism.getSpeciesName();
+                html.append ("<B>" + speciesName + "</B><BR>");
             }
-            SimpleAttributeSet attrs = new SimpleAttributeSet();
-            try {
-                java.util.List<String> commentList = searchHit.getComment();
-                StringBuffer commentBuf = new StringBuffer();
-                if (commentList != null) {
-                    for (int i = commentList.size() - 1; i >= 0; i--) {
-                        commentBuf.append(commentList.get(i) + "\n\n");
-                    }
-                    summaryDocumentModel.insertString(0, commentBuf.toString(), attrs);
-                    StyleConstants.setBold(attrs, true);
-                    summaryDocumentModel.insertString(0, "Description:\n\n", attrs);
-                    StyleConstants.setBold(attrs, false);
-                }
 
-                //  Next, add XRefs
-                List <XRefType> xrefList = searchHit.getXref();
-                StringBuffer xrefBuffer = new StringBuffer();
-                if (xrefList != null && xrefList.size() > 0) {
-                    for (XRefType xref:  xrefList) {
-                        xrefBuffer.append("  - " + xref.getDb() + ":  " + xref.getId() + "\n");
-                    }
-                    xrefBuffer.append("\n");
-                    summaryDocumentModel.insertString(0, xrefBuffer.toString(), attrs);
-                    StyleConstants.setBold(attrs, true);
-                    summaryDocumentModel.insertString(0, "Links:\n\n", attrs);
-                    StyleConstants.setBold(attrs, false);
-                }
-
-                //  Next, add synonyms
-                List <String> synList = searchHit.getSynonym();
-                StringBuffer synBuffer = new StringBuffer();
-                if (synList != null && synList.size() > 0) {
-                    for (String synonym:  synList) {
-                        if (!synonym.equalsIgnoreCase(searchHit.getName())) {
-                            synBuffer.append("  - " + synonym + "\n");
-                        }
-                    }
-                    if (synBuffer.length() > 0) {
-                        synBuffer.append("\n");
-                        summaryDocumentModel.insertString(0, synBuffer.toString(), attrs);
-                        StyleConstants.setBold(attrs, true);
-                        summaryDocumentModel.insertString(0, "Synonyms:\n\n", attrs);
-                        StyleConstants.setBold(attrs, false);
+            //  Next, add synonyms
+            List <String> synList = searchHit.getSynonym();
+            if (synList != null && synList.size() > 0) {
+                html.append("<BR><B>Synonyms:</B><BR>");
+                for (String synonym:  synList) {
+                    if (!synonym.equalsIgnoreCase(searchHit.getName())) {
+                        html.append("<BR> - " + synonym);
                     }
                 }
-
-                OrganismType organism = searchHit.getOrganism();
-                StyleConstants.setForeground(attrs, Color.BLUE);
-                StyleConstants.setBold(attrs, true);
-                if (organism != null) {
-                    String speciesName = organism.getSpeciesName();
-                    summaryDocumentModel.insertString(0, "[" +
-                            speciesName + "]\n\n", attrs);
-                }
-                StyleConstants.setFontSize(attrs, 18);
-                summaryDocumentModel.insertString(0, searchHit.getName() + "\n", attrs);
-                textPane.setCaretPosition(0);
-            } catch (BadLocationException e) {
+                html.append("<BR>");
             }
+
+            //  Next, add XRefs
+            List <XRefType> xrefList = searchHit.getXref();
+            if (xrefList != null && xrefList.size() > 0) {
+                html.append("<BR><B>Links:</B><BR>");
+                for (XRefType xref:  xrefList) {
+                    String url = xref.getUrl();
+                    if (url != null && url.length() > 0) {
+                        html.append("<BR>  - <a href=\"" + url + "\">" + xref.getDb() + ":  "
+                                + xref.getId() + "</a>") ;
+                    } else {
+                        html.append("<BR>  - " + xref.getDb() + ":  " + xref.getId());
+                    }
+                }
+            }
+
+            java.util.List<String> commentList = searchHit.getComment();
+            if (commentList != null) {
+                html.append("<BR><BR><B>Description:</B><BR>");
+                for (int i = commentList.size() - 1; i >= 0; i--) {
+                    html.append("<BR>- " + commentList.get(i));
+                }
+            }
+
+            html.append ("</html>");
+            System.out.println(html.toString());
+            textPane.setText(html.toString());
+            textPane.setCaretPosition(0);
             updatePathwayData(searchHit, pathwayTableModel);
             updateInteractionData(searchHit, interactionTableModel);
 			textPaneOwner.repaint();
