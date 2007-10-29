@@ -122,6 +122,7 @@ public class BiomartClient extends WebServiceClientImpl {
 			}
 			System.out.println("--------------------Got result: " + result.size());
 			mapping((List<String[]>) result, query.getKeyCyAttrName(), query.getKeyNameInWebService());
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
