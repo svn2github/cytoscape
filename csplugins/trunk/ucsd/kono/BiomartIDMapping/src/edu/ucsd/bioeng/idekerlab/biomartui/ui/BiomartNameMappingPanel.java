@@ -46,14 +46,19 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.webservice.AttributeImportQuery;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.WebServiceClientManager;
@@ -102,6 +107,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 	 */
 	public BiomartNameMappingPanel(Icon logo, String title, String attrPanelLabel) throws IOException {
 		super(logo, title, attrPanelLabel);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		initDataSources();
 	}
 
@@ -308,7 +314,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 
 		// For name mapping, just use ID list filter for query.
 		filters = new Filter[1];
-		filters[0] = new Filter(filterName, getIDFilterString());
+		filters[0] = new Filter(filterName, getIDFilterString(keyAttrName));
 
 		String keyInHeader = null;
 
@@ -339,13 +345,32 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 
 	
 
-	private static String getIDFilterString() {
+	private static String getIDFilterString(String keyAttrName) {
 		final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
 		final StringBuilder builder = new StringBuilder();
 
-		for (Node n : nodes) {
-			builder.append(n.getIdentifier());
-			builder.append(",");
+		if (keyAttrName.equals("ID")) {
+			for (Node n : nodes) {
+				builder.append(n.getIdentifier());
+				builder.append(",");
+			}
+		} else {
+			// Use Attributes for mapping
+			final CyAttributes attrs = Cytoscape.getNodeAttributes();
+			Map mapAttrs = CyAttributesUtils.getAttribute(keyAttrName, attrs);
+
+			if ((mapAttrs == null) || (mapAttrs.size() == 0))
+				return null;
+
+			//			List acceptedClasses = Arrays.asList(mapping.getAcceptedDataClasses());
+			//			Class mapAttrClass = CyAttributesUtils.getClass(attrName, attrs);
+			//
+			//			if ((mapAttrClass == null) || !(acceptedClasses.contains(mapAttrClass)))
+			//				return null;
+			for(String key: loadKeySet(mapAttrs)) {
+				builder.append(key);
+				builder.append(",");
+			}
 		}
 
 		String filterStr = builder.toString();
@@ -356,6 +381,33 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		return filterStr;
 	}
 
+	private static Set<String> loadKeySet(final Map mapAttrs) {
+		final Set<String> mappedKeys = new TreeSet<String>();
+
+		final Iterator keyIter = mapAttrs.values().iterator();
+
+		Object o = null;
+
+		while (keyIter.hasNext()) {
+			o = keyIter.next();
+
+			if (o instanceof List) {
+				List list = (List) o;
+
+				for (int i = 0; i < list.size(); i++) {
+					Object vo = list.get(i);
+
+					if (!mappedKeys.contains(vo))
+						mappedKeys.add(vo.toString());
+				}
+			} else {
+				if (!mappedKeys.contains(o))
+					mappedKeys.add(o.toString());
+			}
+		}
+
+		return mappedKeys;
+	}
 	@Override
 	protected void importAttributes() {
 		// Build Query
@@ -428,7 +480,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 	}
 
 	public void propertyChange(PropertyChangeEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }
