@@ -36,7 +36,7 @@ public class SeedMappings
 			{
 			// this way if it's already present we will only have gone through the calculators to determine that once
 			MappedAttributes.add(Attribute);
-			System.out.println(" *** " + Attribute + " is mapped to a calculator, skipping seed");
+			//System.out.println(" *** " + Attribute + " is mapped to a calculator, skipping seed");
 
 			return; 
 			}

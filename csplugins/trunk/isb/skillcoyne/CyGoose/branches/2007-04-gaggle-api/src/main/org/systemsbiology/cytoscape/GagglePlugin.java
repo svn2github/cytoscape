@@ -6,10 +6,8 @@ package org.systemsbiology.cytoscape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.rmi.Naming;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
-import java.net.MalformedURLException;
 
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
 import org.systemsbiology.cytoscape.dialog.GooseDialog.GooseButton;
@@ -22,8 +20,7 @@ import org.systemsbiology.gaggle.geese.common.GaggleConnectionListener;
 
 import javax.swing.JOptionPane;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.CytoPanel;
@@ -52,8 +49,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
     private static CyBroadcast broadcast;
     private static boolean pluginInitialized = false;
 
-
-    protected static String myGaggleName = "Cytoscape";
+    private static String ORIGINAL_GOOSE_NAME;
+    protected static String myGaggleName;
     // keeps track of all the network ids key = network id  value = goose
     private static HashMap<String, CyGoose> networkGeese;
 
@@ -72,7 +69,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
         Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-        myGaggleName += " v." + CytoscapeVersion.version;
+        ORIGINAL_GOOSE_NAME = "Cytoscape" + " v." + CytoscapeVersion.version;
+        myGaggleName = ORIGINAL_GOOSE_NAME;
 
         networkGeese = new HashMap<String, CyGoose>();
         gDialog = new GooseDialog();
@@ -81,7 +79,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         GoosePanel.add("CyGoose", null, gDialog, "Gaggle Goose");
         GoosePanel.setSelectedIndex(GoosePanel.indexOfComponent(gDialog));
 
-        //registerAction();
+        //connectAction();
 
         try {
             //gaggleBoss = rmiConnect();
@@ -103,6 +101,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         broadcast = new CyBroadcast(gDialog, gaggleBoss);
         this.addButtonActions();
         pluginInitialized = true;
+        connectAction();
     }
 
 
@@ -129,6 +128,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
     public void setConnected(boolean connected, Boss boss) {
         gaggleBoss = boss;
         connectedToGaggle = connected;
+        gDialog.setConnectButtonStatus(connected);
         if (connectedToGaggle) {
             gDialog.displayMessage("Connected To Gaggle Boss");
             if (gDialog.getGooseChooser() != null && defaultGoose != null) {
@@ -206,6 +206,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
     public void onCytoscapeExit() {
         System.out.println("in onCytoscapeExit");
+
         for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
             String key = it.next();
             CyGoose goose = networkGeese.get(key);
@@ -213,6 +214,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 try {
                     gaggleBoss.unregister(goose.getName());
                 } catch (RemoteException e) {
+                    System.out.println("Error disconnecting from gaggle, goose may have already been disconnected by user.");
                     e.printStackTrace();
                 }
             }
@@ -225,6 +227,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
     /*
       * Exports and registers the goose with the Boss
       */
+/*
     private void registerGoose(CyGoose goose) throws RemoteException {
         String RegisteredName = null;
         System.out.println("in registerGoose()....");
@@ -258,14 +261,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         RegisteredName = gaggleBoss.register(goose);
         goose.setName(RegisteredName);
 
-        /*
-        try {
-            connector.connectToGaggle();
-        } catch (Exception e) {
-            GagglePlugin.showDialogBox("Failed to connect to gaggle", "Warning", JOptionPane.WARNING_MESSAGE);
-            e.printStackTrace();
-        }
-        */
 
         Cytoscape.getNetwork(goose.getNetworkId()).setTitle(goose.getName());
 
@@ -282,40 +277,49 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 Cytoscape.getDesktop().getNetworkPanel().updateTitle(Cytoscape.getNetwork(networkId));
             }
         });
-        gDialog.enableButton(GooseButton.REGISTER, false);
+        gDialog.enableButton(GooseButton.CONNECT, false);
     }
+*/
 
-    /*
-      * Creates the boss via the rmi connection
-      */
-    private Boss rmiConnect() throws RemoteException, java.rmi.NotBoundException, MalformedURLException {
-        String serviceName = "gaggle";
-        String hostname = "localhost";
 
-        String osName = System.getProperty("os.name");
-        print("OS name: " + osName);
-
-        String uri = "rmi://" + hostname + "/" + serviceName;
-        print("Rmi uri: " + uri);
-
-        return ((Boss) Naming.lookup(uri));
-
-    }
-
-    private void registerAction() {
-        gDialog.addButtonAction(GooseButton.REGISTER, new ActionListener() {
+    private void connectAction() {
+        System.out.println("in connectAction");
+        gDialog.addButtonAction(GooseButton.CONNECT, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                System.out.println("in connectAction's listener");
                 try {
-                    //gaggleBoss = rmiConnect();
-                    createDefaultGoose();
-                    registered = true;
-//					renameGoose.run();
-                    // todo want to be able to update all the networks/geese here since user
-                    // may have opened some prior to connection
+                    if (event.getActionCommand().equals("connect")) {
+                        // reconnect all geese
+                        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
+                            String gooseNetworkId = it.next();
+                            CyGoose goose = networkGeese.get(gooseNetworkId);
+                            String newName = gaggleBoss.register(goose);
+                            if (gooseNetworkId.equals("0")) {
+                                Cytoscape.getDesktop().setTitle(newName);
+                            } else {
+                                CyNetwork cyNet = Cytoscape.getNetwork(gooseNetworkId);
+                                System.out.println("old name: " + cyNet.getTitle());
+                                cyNet.setTitle(newName);
+                                System.out.println("new name is: " + cyNet.getIdentifier());
+                            }
+                        }
+                        gDialog.setConnectButtonStatus(true);
+                    } else if (event.getActionCommand().equals("disconnect")) {
+                        // disconnect all geese
+                        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
+                            String gooseNetworkId = it.next();
+                            CyGoose goose = networkGeese.get(gooseNetworkId);
+                            gaggleBoss.unregister(goose.getName());
+                        }
+                        gDialog.setConnectButtonStatus(false);
+                        myGaggleName = ORIGINAL_GOOSE_NAME;
+                        defaultGoose.setName(ORIGINAL_GOOSE_NAME);
+                        Cytoscape.getDesktop().setTitle(ORIGINAL_GOOSE_NAME);
+                    }
+
                 }
                 catch (Exception E) {  // TODO quit popping box up, add error message bar to goose panel
-                    registered = false;
-                    GagglePlugin.showDialogBox("Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE);
+                    GagglePlugin.showDialogBox("Failed to communicate with Gaggle", "Error", JOptionPane.ERROR_MESSAGE);
                     E.printStackTrace();
                 }
             }

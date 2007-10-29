@@ -1,5 +1,6 @@
 package org.systemsbiology.cytoscape.dialog;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 
 /**
@@ -7,7 +8,7 @@ import java.awt.event.ActionListener;
  */
 public class GooseDialog extends javax.swing.JPanel {
     public enum GooseButton {
-        REGISTER("Register"), SHOW("Show"), HIDE("Hide"), TUPLE(
+        CONNECT("Connect"), SHOW("Show"), HIDE("Hide"), TUPLE(
             "Tuple"), MATRIX("Matrix"), NETWORK("Network"), LIST("List");
 
         private String buttonName;
@@ -37,8 +38,8 @@ public class GooseDialog extends javax.swing.JPanel {
     public void addButtonAction(GooseButton gb, ActionListener l) {
         javax.swing.JButton button = null;
         switch (gb) {
-            case REGISTER:
-                button = this.registerButton;
+            case CONNECT:
+                button = this.connectButton;
                 break;
             case SHOW:
                 button = this.showButton;
@@ -65,8 +66,8 @@ public class GooseDialog extends javax.swing.JPanel {
     public void enableButton(GooseButton gb, boolean enabled) {
         javax.swing.JButton button = null;
         switch (gb) {
-            case REGISTER:
-                button = this.registerButton;
+            case CONNECT:
+                button = this.connectButton;
                 break;
             case SHOW:
                 button = this.showButton;
@@ -98,6 +99,22 @@ public class GooseDialog extends javax.swing.JPanel {
         return this.layoutComboBox;
     }
 
+    public JButton getConnectButton() {
+        return this.connectButton;
+    }
+
+    public void setConnectButtonStatus(boolean connected) {
+        if (connected) {
+            connectButton.setText("Disconnect");
+            connectButton.setToolTipText("Disconnect from Gaggle");
+            connectButton.setActionCommand("disconnect");
+        } else {
+            connectButton.setText("Connect");
+            connectButton.setToolTipText("Connect to Gaggle");
+            connectButton.setActionCommand("connect");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,8 +124,8 @@ public class GooseDialog extends javax.swing.JPanel {
     private void initComponents() {
         gooseControlPanel = new javax.swing.JPanel();
         gooseComboBox = new javax.swing.JComboBox();
-        registerButton = new javax.swing.JButton();
-        //updateButton = new javax.swing.JButton();
+        connectButton = new javax.swing.JButton();
+        connectButton.setEnabled(false); // todo make connect/disconnect work in a reasonable way
         showButton = new javax.swing.JButton();
         hideButton = new javax.swing.JButton();
         broadcastPanel = new javax.swing.JPanel();
@@ -130,9 +147,10 @@ public class GooseDialog extends javax.swing.JPanel {
         gooseComboBox.setToolTipText("List of Geese currently connected to Gaggle");
         gooseComboBox.setMinimumSize(new java.awt.Dimension(80, 27));
 
-        registerButton.setText("Register");
-        registerButton.setToolTipText("Register Cytoscape with Gaggle");
-        registerButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        connectButton.setText("Connect");
+        //connectButton.setToolTipText("Connect to Gaggle");
+        connectButton.setToolTipText("Temporarily Disabled");
+        connectButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         //updateButton.setText("Update");
         //updateButton.setToolTipText("Update list of Geese");
@@ -153,7 +171,7 @@ public class GooseDialog extends javax.swing.JPanel {
                         .add(gooseControlPanelLayout.createSequentialGroup()
                         .add(gooseControlPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                 .add(gooseControlPanelLayout.createSequentialGroup()
-                                        .add(registerButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(connectButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                         .add(showButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 43, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -168,7 +186,7 @@ public class GooseDialog extends javax.swing.JPanel {
                         .add(gooseComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(gooseControlPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(registerButton)
+                                .add(connectButton)
                                 .add(showButton)
                                 .add(hideButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -332,7 +350,7 @@ public class GooseDialog extends javax.swing.JPanel {
     private javax.swing.JLabel messageLabel;
     private javax.swing.JTextPane messageText;
     private javax.swing.JButton networkButton;
-    private javax.swing.JButton registerButton;
+    private javax.swing.JButton connectButton;
     private javax.swing.JButton showButton;
     private javax.swing.JPanel textPanel;
 //	private javax.swing.JButton updateButton;
