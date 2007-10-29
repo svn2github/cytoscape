@@ -189,7 +189,7 @@ public class PopupPanel extends JPanel {
 			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(m_opacity/255.0));
 
 			image2D.setComposite(newComposite);
-			image2D.drawImage(m_curtain_image, 0,0,null);
+			image2D.drawImage(m_curtain_image, 0, 0, null);
 			image2D.setComposite(origComposite);
 
 			// now draw our image into swing device context
@@ -211,6 +211,7 @@ public class PopupPanel extends JPanel {
 	 */
 	public void fadeOut() {
 		setVisible(true);
+		m_wrapped_component.setVisible(false);
 		m_timer = new java.util.Timer(true);
 		m_timer.scheduleAtFixedRate(new FaderTask(false), 10, 10);
 	}
@@ -246,6 +247,7 @@ public class PopupPanel extends JPanel {
 			m_popupPanel.setBorder(borderOpacity);
 			if (fadeIn && popupOpacity <= 0) {
 				m_timer.cancel();
+				m_wrapped_component.setVisible(true);
 			}
 			else if (!fadeIn && popupOpacity >= 255) {
 				m_timer.cancel();
