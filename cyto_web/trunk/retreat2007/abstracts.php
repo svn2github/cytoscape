@@ -346,7 +346,7 @@ Trained as a mathematician and computer scientist (Ph.D. Univ. Bonn, Germany), a
  </table>
  
 <br>
-<h3><a name="benno">Jean-Daniel Fekete</a></h3>
+<h3><a name="fekete">Jean-Daniel Fekete</a></h3>
 <br>
 
 <table class="programme">

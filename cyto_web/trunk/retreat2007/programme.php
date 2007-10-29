@@ -35,8 +35,7 @@
 <br>  
 <p>
 Find a more detailed, printable version of the programme <a href="pdf/ProgrammeAndRoute.pdf"><b>here</b></a><br> 
-The website will be updated shortly with details accordingly. Speaker resumes and (plugin) abstracts will be added also<br> 
-<br>
+Click on the names of the Speakers to find their resumes and abstracts of their talks.<br> 
 <br>
 The main event is the Public Symposium on November 8<sup>th</sup> entitled: <a href="#nov_8"><strong>Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</strong></a>. 
 Preceding the symposium is a <a href="#nov_7"><strong>Tutorials and Application Showcase day</strong></a> (November 7<sup>th</sup>) that will be filled with hands-on training sessions and demonstrations of plugin developers.
@@ -95,11 +94,11 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader"><p>Amsterdam old city center</p></td>
+  <td class="subheader"><p>Amsterdam old city center </p></td>
  </tr>
  <tr>
-  <td><p>08:00-12:00</p></td>
-  <td><p>Development team discussion breakfast</p></td>
+  <td><p>09:00-12:00</p></td>
+  <td><p>Potential Development team discussion breakfast</p></td>
  </tr>
  <tr>
   <td><p>12:00-17:00</p></td>
@@ -107,7 +106,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>17:00-19:00</p></td>
-  <td><p>Meet and greet for development team and organization and other eary arrivals</p></td>
+  <td><p>Meet and greet for development team and organization and other eary arrivals in <a href="http://www.diningcity.nl//cafedejaren/en/index.html">Cafe de Jaren</a> (next to Doelen Hotel)</p></td>
  </tr>
  </table>
  
@@ -119,7 +118,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  <tr>
   <td class="tableheader_narrow"><p>Tuesday 
   	<br>November 6th</p></td>
-  <td class="tableheader_wide"><p>Software Development Discussions (to be specified)
+  <td class="tableheader_wide"><p>Software Development Discussions
   	<br>Suggested Attendees - Cytoscape (plugin-)developers, Scientific Advisory Board(SAB), Cytoscape Board of Directors and other interested parties </p></td>
  </tr>
  <tr>
@@ -128,7 +127,11 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   </td>
  </tr>
  <tr>
-  <td><p>09:30-11:00</p></td>
+  <td><p>0845:-09:15</p></td>
+  <td><p>Welcome - Registration - Coffee</p></td>
+ </tr>
+ <tr>
+  <td><p>09:15-11:00</p></td>
   <td><p>Overview programme<br>
          2.6 Status + Release date<br>
          2.7 Possibilities<br>
@@ -169,14 +172,14 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td><p>Coffee and tea break </p></td>
  </tr>
  <tr>
-  <td><p>15:15-17:30 </p></td>
+  <td><p>15:15-18:00 </p></td>
   <td><p>Workflow<br>
 	 Process/planning improvements<br>
       o RFC-s<br>
    </p></td>
  </tr>
  <tr>
-  <td><p>17:30-(...) </p></td>
+  <td><p>19:00-(...) </p></td>
   <td><p>Drinks and dinner for attendees of Day 1 
   	<br>Special surprise event!!!</p></td>
  </tr>
@@ -195,54 +198,88 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td class="subheader"><p>Where</p></td>
-  <td class="subheader" colspan="3"><p>AMC Conference Hall (Collegezaal)2 and Lecture rooms K 01-123 and -122;  parallel sessions </p></td>
+  <td class="subheader"><p>Lecture rooms K 01-123</p></td>
+  <td class="subheader"><p>AMC Conference Hall (Collegezaal)2</p></td>
+  <td class="subheader"><p>Lecture rooms K 01-122</p></td>
+ </tr>
+ <tr>
+  <td class="subheader"><p>Tracks (parallel)</p></td>
+  <td class="subheader"><p><b>I Tutorials</b></p></td>
+  <td class="subheader"><p><b>II Plugins and Application showcase</b></p></td>
+  <td class="subheader"><p><b>III Hackathon/Developers tutorials</b></p></td>
+ </tr>
+ <tr>
+  <td><p>08:45-09:00 </p></td>
+  <td colspan="3"><p>Welcome - Registration - Coffee</p></td>
  </tr>
  <tr>
   <td><p>09:30-11:00 </p></td>
-  <td><p>Application showcase I</p></td>
-  <td><p>Hands-on tutorial session I</p></td>
-  <td><p>Hackathon Session for Cytoscape Developers I</p></td>
+  <td><p>Tutorial Session I</p></td>
+  <td><p>
+o Mario Albrecht:NetworkAnalyzer<br>
+o Dorothea Emig: DomainGraph, BiLayout<br>
+o Ben Hitz: SgdInteractionsPlugin<br>
+o Maital Ashkenazi: EnhancedSearch<br>
+o Willem Ligtenberg: Reconn<br>
+o Aaron Barsky: Cerebral<br>
+  </p></td>
+  <td><p>Kei Ono - Mike Smoot: Vizmapper</p></td>
  </tr>
  <tr>
-  <td><p>11:00-11:30 </p></td>
+  <td><p>11:00-11:20 </p></td>
   <td colspan="3"><p>Coffee break </p></td>
  </tr>
  <tr>
-  <td><p>11:30-12:30 </p></td>
-  <td><p>Application showcase II</p></td>
-  <td><p>Hands-on tutorial session II</p></td>
-  <td><p>Hackathon Session for Cytoscape Developers II</p></td>
+  <td><p>11:20-13:15 </p></td>
+  <td><p>Tutorial Session II</p></td>
+  <td><p>
+o Sabry Razick: Bioscape<br>
+o Eugene Rakhmatulin: Metacore<br>
+o Thomas Kelder: GPML-plugin<br>
+o Evrim Itir Karac: Molecular Interaction Maps<br>
+o Yves Deville: BioEdge<br>
+  </p></td>
+  <td><p>Scooter Morris: CyGroups, Layout</p></td>
  </tr>
  <tr>
-  <td><p>12:30-14:00 </p></td>
+  <td><p>13:15-13:45</p></td>
   <td colspan="3"><p>Lunch </p></td>
  </tr>
  <tr>
-  <td><p>14:00-15:30 </p></td>
-  <td><p>Application showcase III</p></td>
-  <td><p>Hands-on tutorial session III</p></td>
-  <td><p>Hackathon Session for Cytoscape Developers III</p></td>
+  <td><p>13:45-15:45</p></td>
+  <td><p>Tutorial Session III</p></td>
+  <td><p>
+o Robert Kincaid: VistaClara<br>
+o Alan Kuchinsky: Literature Search; Hyperedges; Workflow<br>
+o Alex Pico: BubbleRouter<br>
+o Christoph Schwarz: Vispara<br>
+o Steven Maere: BinGO<br>
+  </p></td>
+  <td><p>Kei Ono: Webservices API</p></td>
  </tr>
  <tr>
-  <td><p>15:30-16:00 </p></td>
+  <td><p>15:45-16:00 </p></td>
   <td colspan="3"><p>Coffee and tea break </p></td>
  </tr>
  <tr>
-  <td><p>16:00-17:00 </p></td>
-  <td><p>Application showcase IV</p></td>
-  <td><p>Hands-on tutorial session IV</p></td>
-  <td><p>Hackathon Session for Cytoscape Developers IV</p></td>
+  <td><p>16:00-18:00 </p></td>
+  <td><p>Tutorial Session IV</p></td>
+  <td><p>
+o Gary Bader: PathwayCommons; GoSlimmer; Thematic Map<br>
+o July Dickerson: MetNet tools<br>
+o Matthias Reimann: EagleVista<br>
+o Scooter Morris: CyGroups; StructureViz; SFLDLoader<br>
+  </p></td>
+  <td><p>Breakout/Hackathon sessions</p></td>
  </tr>
  <tr>
-  <td><p>17:00-(...) </p></td>
-  <td colspan="3"><p>Hackathon Extension 
-  	<br>Night out in Amsterdam for attendees of Day 2 
-  	<br>City tour guided by Piet</p></td>
+  <td><p>19:00-(...) </p></td>
+  <td colspan="3"><p><br>Guided City tour through Amsterdam</p></td>
  </tr>
  </table>
  
 <br>
- <h3>Day 3: <a name="nov_8">Public Symposium</a></h3>
+ <h3>Day 3: <a name="nov_8">Public Symposium (click on name for abstract and resume)</a></h3>
 <br>
 
  <table class="programme">
@@ -256,16 +293,20 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td class="subheader"><p>AMC Conference Hall (Collegezaal) 1 </p></td>
  </tr>
  <tr>
+  <td><p>08:45-09:15 </p></td>
+  <td><p>Welcome - Registration - Coffee</p></td>
+ </tr>
+ <tr>
   <td><p>09:15-09:30 </p></td>
   <td><p>Opening by chair <strong>Trey Ideker</strong></p></td>
  </tr>
  <tr>
   <td><p>09:30-10:15 </p></td>
-  <td><p><small><i>Keynote Speaker:</small></i> <strong>Leroy Hood</strong>: <small><b>Biological networks and disease</b></small></p></td>
+  <td><p><small><i>Keynote Speaker:</small></i> <strong><a href="abstracts.php#hood">Leroy Hood</a></strong>: <small><b>Biological networks and disease</b></small></p></td>
  </tr>
  <tr>
   <td><p>10:15-10:45 </p></td>
-  <td><p><strong>Andrew Hopkins</strong>: <small><b>Network Pharmacology: chemical opportunities for systems biology</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#hopkins">Andrew Hopkins</a></strong>: <small><b>Network Pharmacology: chemical opportunities for systems biology</b></small></p></td>
  </tr>
  <tr>
   <td><p>10:45-11:15 </p></td>
@@ -273,15 +314,15 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>11:15-11:45 </p></td>
-  <td><p><strong>Rogier Versteeg</strong>: <small><b>Oncogenic networks of cancer pathways in childhood cancer</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#versteeg">Rogier Versteeg</a></strong>: <small><b>Oncogenic networks of cancer pathways in childhood cancer</b></small></p></td>
  </tr>
  <tr>
   <td><p>11:45-12:30 </p></td>
-  <td><p><strong>Chris Sander</strong>: <small><b>Systems Biology of Cancer Pathways: from Molecular Perturbations to Cellular Phenotypes</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#sander">Chris Sander</a></strong>: <small><b>Systems Biology of Cancer Pathways: from Molecular Perturbations to Cellular Phenotypes</b></small></p></td>
  </tr>
  <tr>
   <td><p>12:30-13:15 </p></td>
-  <td><p><strong>Peter Sorger</strong>: <small><b>Modeling Mammalian Death and Survival Pathways</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#sorger">Peter Sorger</a></strong>: <small><b>Modeling Mammalian Death and Survival Pathways</b></small></p></td>
  </tr>
  <tr>
   <td><p>13:15-14:15 </p></td>
@@ -289,16 +330,16 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>14:15-15:00 </p></td>
-  <td><p><strong>Ruedi Aebersold</strong>: <small><b>Protein-centered networks in systems biology: Analysis and visualization</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#aebersold">Ruedi Aebersold</a></strong>: <small><b>Protein-centered networks in systems biology: Analysis and visualization</b></small></p></td>
  </tr>
  <tr>
   <td><p>15:00-15:30 </p></td>
-  <td><p><strong>Benno Schwikowski</strong>: <small><b>Computational tools increasing sensitivity and reliability of mass spec-based proteomics</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#benno">Benno Schwikowski</a></strong>: <small><b>Computational tools increasing sensitivity and reliability of mass spec-based proteomics</b></small></p></td>
  </tr>
  <tr>
  <tr>
   <td><p>15:30-16:00 </p></td>
-  <td><p><strong>Jean-Daniel Fekete</strong>: <small><b>Visualizing Dense Networks with Enhanced and Hybrid Matrices</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#fekete">Jean-Daniel Fekete</a></strong>: <small><b>Visualizing Dense Networks with Enhanced and Hybrid Matrices</b></small></p></td>
  </tr>
  <tr>
   <td><p>16:00-16:30 </p></td>
@@ -306,23 +347,19 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>16:30-17:15 </p></td>
-  <td><p><strong>Ewan Birney</strong>: <small><b>Reactome, Networks and Genomes</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#birney">Ewan Birney</a></strong>: <small><b>Reactome, Networks and Genomes</b></small></p></td>
  </tr>
  <tr>
   <td><p>17:15-17:45 </p></td>
-  <td><p><strong>Trey Ideker</strong>: <small><b>Gaining power in gene association studies with Cytoscape</b></small></p></td>
+  <td><p><strong><a href="abstracts.php#trey">Trey Ideker</a></strong>: <small><b>Gaining power in gene association studies with Cytoscape</b></small></p></td>
  </tr>
  <tr>
   <td><p>17:45-19:00 </p></td>
   <td><p>Drinks reception</p></td>
  </tr>
  <tr>
-  <td><p>18:00-19:00 </p></td>
-  <td><p>SAB &amp; Board of Directors meeting</p></td>
- </tr>
- <tr>
   <td><p>19:30-(...) </p></td>
-  <td><p>Dinner for speakers, organization, SAB/Board , Development team </p></td>
+  <td><p>Dinner for invited guests: Speakers, Organization, SAB/Board , Development team </p></td>
  </tr>
  </table>
  
@@ -373,7 +410,6 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
   <td><p>18:45-(...) </p></td>
   <td><p> Night out in Amsterdam for attendees of Day 4 
   	<br>A museum night at the van Gogh
-  	<br>Bike tour guided by Piet</p></td>
  </tr>
 </table>
 
