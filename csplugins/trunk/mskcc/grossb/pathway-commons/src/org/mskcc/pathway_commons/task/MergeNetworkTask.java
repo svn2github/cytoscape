@@ -173,7 +173,7 @@ public class MergeNetworkTask implements Task {
 
     /**
      * Constructs merge status string.
-     * (based on cytoscape.action.LoadNetworkTask.informUserOfGraphStats)
+     * (based on cytoscape.action.LoadNetworkFromUrlTask.informUserOfGraphStats)
      *
      * @param cyNetwork CyNetwork
      * @param nodeCount int
