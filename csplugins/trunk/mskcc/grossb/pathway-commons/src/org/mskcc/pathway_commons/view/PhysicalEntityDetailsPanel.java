@@ -11,7 +11,7 @@ import java.awt.event.*;
  *
  * @author Ethan Cerami.
  */
-public class PhysicalEntityDetailsFrame extends JPanel {
+public class PhysicalEntityDetailsPanel extends JPanel {
     private Document doc;
     private JTextPane textPane;
     private PopupDaemon daemon;
@@ -19,7 +19,7 @@ public class PhysicalEntityDetailsFrame extends JPanel {
     /**
      * Constructor.
      */
-    public PhysicalEntityDetailsFrame() {
+    public PhysicalEntityDetailsPanel() {
         daemon = new PopupDaemon(this, 1000);
         this.setLayout(new BorderLayout());
 //        this.setUndecorated(true);
@@ -36,7 +36,7 @@ public class PhysicalEntityDetailsFrame extends JPanel {
      * Attaches appropriate mouse listeners.
      * @param daemon PopupDaemon Object.
      */
-    private void attachMouseListener(PhysicalEntityDetailsFrame detailsFrame,
+    private void attachMouseListener(PhysicalEntityDetailsPanel detailsPanel,
             final PopupDaemon daemon) {
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
@@ -112,16 +112,16 @@ public class PhysicalEntityDetailsFrame extends JPanel {
  */
 class PopupDaemon implements ActionListener {
     private Timer timer;
-    private PhysicalEntityDetailsFrame detailsFrame;
+    private PhysicalEntityDetailsPanel detailsPanel;
 
     /**
      * Constructor.
      *
-     * @param detailsFrame PhysicalEntityDetailsFrame Object.
+     * @param detailsPanel PhysicalEntityDetailsPanel Object.
      * @param delay  Delay until pop-up window is hidden.
      */
-    public PopupDaemon(PhysicalEntityDetailsFrame detailsFrame, int delay) {
-        this.detailsFrame = detailsFrame;
+    public PopupDaemon(PhysicalEntityDetailsPanel detailsPanel, int delay) {
+        this.detailsPanel = detailsPanel;
         timer = new Timer(delay, this);
         timer.setRepeats(false);
     }
@@ -144,6 +144,6 @@ class PopupDaemon implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         System.out.println("HIDE");
-        detailsFrame.setVisible(false);
+        detailsPanel.setVisible(false);
     }
 }

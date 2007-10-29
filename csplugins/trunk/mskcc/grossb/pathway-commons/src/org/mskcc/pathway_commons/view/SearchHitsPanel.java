@@ -36,7 +36,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private InteractionTableModel interactionTableModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
-    private PhysicalEntityDetailsFrame summaryPanel;
+    private PhysicalEntityDetailsPanel summaryPanel;
 	private PopupPanel popup;
 	private JLayeredPane appLayeredPane;
 
@@ -55,7 +55,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //  Create the Summary Panel, but don't show it yet
-        summaryPanel = new PhysicalEntityDetailsFrame();
+        summaryPanel = new PhysicalEntityDetailsPanel();
         summaryDocument = summaryPanel.getDocument();
         summaryTextPane = summaryPanel.getTextPane();
 
