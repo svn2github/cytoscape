@@ -1,6 +1,8 @@
 package org.mskcc.pathway_commons.view;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.Document;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -99,6 +101,14 @@ public class PhysicalEntityDetailsPanel extends JPanel {
         JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
         textPane.setBorder(new EmptyBorder(7,7,7,7));
+        textPane.setContentType("text/html");
+        textPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        textPane.addHyperlinkListener(new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
+                System.out.println("URL:  " + hyperlinkEvent.getURL());
+            }
+        });
+
         return textPane;
     }
 }
