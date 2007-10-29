@@ -98,6 +98,23 @@ public class PathwayCommonsWebApi {
             organism.setSpeciesName("Homo Sapiens");
             searchHit.setOrganism(organism);
 
+            List synList = new ArrayList();
+            synList.add("Synonym 1");
+            synList.add("Synonym 2");
+            synList.add("Synonym 3");
+            synList.add("Synonym 4");
+            searchHit.getSynonym().addAll(synList);
+
+            List <XRefType> xrefList = new ArrayList();
+            for (int j=0; j<3; j++) {
+                XRefType xref = new XRefType();
+                xref.setDb("Database_" + j);
+                xref.setId("ID_" + j);
+                xref.setUrl("http://www.yahoo.com");
+                xrefList.add(xref);
+            }
+            searchHit.getXref().addAll(xrefList);
+
             List comments = searchHit.getComment();
             comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
                     + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
