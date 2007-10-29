@@ -44,6 +44,7 @@ import cytoscape.view.CytoscapeDesktop;
 import ding.view.NodeContextMenuListener;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.pathway_commons.task.MergeNetworkTask;
+import org.mskcc.pathway_commons.task.LoadNetworkFromUrlTask;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -139,7 +140,7 @@ public class NetworkUtil extends Thread {
                 if (networkTitle != null && networkTitle.length() > 0) {
                     System.setProperty("biopax.network_view_title", networkTitle);
                 }
-                LoadNetworkTask.loadURL(pathwayCommonsURL, true);
+                LoadNetworkFromUrlTask.loadURL(pathwayCommonsURL, true);
                 postProcess(Cytoscape.getCurrentNetwork(), false);
             }
         }
