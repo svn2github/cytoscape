@@ -34,11 +34,13 @@ package org.mskcc.pathway_commons.view;
 // imports
 import java.util.Timer;
 import java.util.TimerTask;
+import java.awt.Robot;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.AlphaComposite;
 import javax.swing.border.LineBorder;
@@ -54,6 +56,12 @@ import javax.swing.JComponent;
  * @author Benjamin Gross
  */
 public class PopupPanel extends JPanel {
+
+	/**
+	 * opacity dec/inc step
+	 */
+	private static int OPACITY_STEP = 10;
+
 	
 	/**
 	 * ref to ourself - used by animation timer
@@ -86,6 +94,21 @@ public class PopupPanel extends JPanel {
 	private Color m_border_color;
 
 	/**
+	 * robot used to capture screen
+	 */
+	private Robot m_robot;
+
+	/**
+	 * image that we fade into or fade out from.
+	 */
+	private BufferedImage m_curtain_image;
+
+	/**
+	 * image that we used to draw into.
+	 */
+	private BufferedImage m_this_panel_image;
+
+	/**
 	 * Constructor.
 	 */
 	public PopupPanel(JComponent owner, JComponent component, Color border_color) {
@@ -95,6 +118,12 @@ public class PopupPanel extends JPanel {
 		m_popupPanel = this;
 		m_wrapped_component = component;
 		m_border_color = border_color;
+		try {
+			m_robot = new Robot();
+		}
+		catch (AWTException e) {
+			e.printStackTrace();
+		}		
 
 		// follow lines are needed to properly render component
 		// underneath curtain - for cool fade-in effect
@@ -105,6 +134,15 @@ public class PopupPanel extends JPanel {
 		// if we don't do the follow, swing will render 
 		// the component opaque automatically
 		m_wrapped_component.setVisible(false);
+	}
+
+	/**
+	 * Performs a screen capture of the desktop at
+	 * specified coordinates and uses it as "curtain" for fade in/out.
+	 */
+	public void setCurtain(int x, int y, int width, int height) {
+
+		m_curtain_image = m_robot.createScreenCapture(new Rectangle(x, y, width, height));
 	}
 
 	/**
@@ -129,6 +167,7 @@ public class PopupPanel extends JPanel {
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
 		m_wrapped_component.setBounds(x, y, width, height);
+		m_this_panel_image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
 	/**
@@ -136,14 +175,26 @@ public class PopupPanel extends JPanel {
 	 */
 	public void paintComponent(Graphics g) {
 
-		Graphics2D image2D = (Graphics2D)g;
+		// only paint if we have an image
+		if (m_this_panel_image != null) {
 
-		// the draw wrapper component into the swing context at proper alpha value
-		Composite origComposite = image2D.getComposite();
-		Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(m_opacity/255.0));
-		image2D.setComposite(newComposite);
-		m_wrapped_component.paint((Graphics)image2D);
-		image2D.setComposite(origComposite);
+			// get this component's image context
+			Graphics2D image2D = ((BufferedImage) m_this_panel_image).createGraphics();
+
+			// draw wrapped component into it
+			m_wrapped_component.paint((Graphics)image2D);
+
+			// the draw "curtain" into it at proper alpha value
+			Composite origComposite = image2D.getComposite();
+			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(m_opacity/255.0));
+
+			image2D.setComposite(newComposite);
+			image2D.drawImage(m_curtain_image, 0,0,null);
+			image2D.setComposite(origComposite);
+
+			// now draw our image into swing device context
+			g.drawImage(m_this_panel_image, 0, 0, null);
+		}
 	}
 
 	/**
@@ -178,20 +229,25 @@ public class PopupPanel extends JPanel {
 	class FaderTask extends TimerTask {
 		private boolean fadeIn;
 		private int popupOpacity;
+		private int borderOpacity;
 		public FaderTask(boolean fadeIn) {
 			this.fadeIn = fadeIn;
-			popupOpacity = (fadeIn) ? 0: 255;
+			popupOpacity = (fadeIn) ? 255 : 0;
+			borderOpacity = (fadeIn) ? 0 : 255;
 		}
 		public void run() {
-			popupOpacity = (fadeIn) ? popupOpacity + 10 : popupOpacity - 10;
+			popupOpacity = (fadeIn) ? popupOpacity - PopupPanel.OPACITY_STEP : popupOpacity + PopupPanel.OPACITY_STEP;
 			if (popupOpacity > 255) popupOpacity = 255;
 			if (popupOpacity < 0) popupOpacity = 0;
 			m_popupPanel.setOpacity(popupOpacity);
-			m_popupPanel.setBorder(popupOpacity);
-			if (fadeIn && popupOpacity >= 255) {
+			borderOpacity = (fadeIn) ? borderOpacity + PopupPanel.OPACITY_STEP : borderOpacity - PopupPanel.OPACITY_STEP;
+			if (borderOpacity > 255) borderOpacity = 255;
+			if (borderOpacity < 0) borderOpacity = 0;
+			m_popupPanel.setBorder(borderOpacity);
+			if (fadeIn && popupOpacity <= 0) {
 				m_timer.cancel();
 			}
-			else if (!fadeIn && popupOpacity <= 0) {
+			else if (!fadeIn && popupOpacity >= 255) {
 				m_timer.cancel();
 				m_popupPanel.setVisible(false);
 			}
