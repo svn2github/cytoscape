@@ -119,7 +119,7 @@ public class PopupPanel extends JPanel {
 	 */
 	public void setBorder(int opacity) {
 		Color newColor = new Color(m_border_color.getRed(), m_border_color.getGreen(),
-								   m_border_color.getBlue(), (float)(opacity/255.0));
+								   m_border_color.getBlue(), opacity);
 		setBorder(new LineBorder(newColor));
 	}
 
@@ -183,7 +183,7 @@ public class PopupPanel extends JPanel {
 			popupOpacity = (fadeIn) ? 0: 255;
 		}
 		public void run() {
-			popupOpacity = (fadeIn) ? popupOpacity + 5 : popupOpacity - 5;
+			popupOpacity = (fadeIn) ? popupOpacity + 10 : popupOpacity - 10;
 			if (popupOpacity > 255) popupOpacity = 255;
 			if (popupOpacity < 0) popupOpacity = 0;
 			m_popupPanel.setOpacity(popupOpacity);
