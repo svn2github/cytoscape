@@ -479,8 +479,11 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		}
 	}
 
-	public void propertyChange(PropertyChangeEvent arg0) {
-		
+	public void propertyChange(PropertyChangeEvent e) {
+		if(e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+			System.out.println("#########Updating attr list!");
+			setAttributes();
+		}
 		
 	}
 }
