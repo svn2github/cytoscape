@@ -26,9 +26,9 @@ pluginCategory=Scripting/Communication
 # -- The following properties are OPTIONAL -- #
 
 # List of authors, each author(s) and institution must be on a separate line
-pluginAuthorsIntsitutions=Sarah Killcoyne:Institute for Systems Biology;Dan Teenenbaum:Institute for Systems Biology;John Lin, Kevin Drew and Richard Bonneau:NYU Bonneau Lab
+pluginAuthorsIntsitutions=Sarah Killcoyne:Institute for Systems Biology;Dan Tenenbaum:Institute for Systems Biology;John Lin, Kevin Drew and Richard Bonneau:NYU Bonneau Lab
 
-releaseDate=July 2, 2007
+releaseDate=October 29, 2007
 
 
 
