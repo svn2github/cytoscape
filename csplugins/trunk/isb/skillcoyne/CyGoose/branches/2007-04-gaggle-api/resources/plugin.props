@@ -7,7 +7,7 @@
 pluginName=CyGoose
 
 # Description used to give users information about the plugin such as what it does
-pluginDescription=The CyGoose Cytoscape Plugin gives any network in Cytoscape full access to the Gaggle.<br> 
+pluginDescription=The CyGoose Cytoscape Plugin gives any network in Cytoscape full access to the Gaggle.<br>As of version 2.6 of the plugin, it works with the current (2007-04) revision of the Gaggle API.<br>
 The Gaggle is a tool to create a data exploration and analysis environment. Other geese (independent threads/tools which Cytoscape can now interact with through the Gaggle Boss) 
 can be found at <a href="http://gaggle.systemsbiology.org/docs/geese/">http://gaggle.systemsbiology.org/docs/geese/</a>.<p><i>This plugin works with the Gaggle released 2005-11</i>
 <p><b>Known bug:</b> This goose does not work with a local install of Cytoscape on a Windows machine. It will work with Mac or Linux and as a webstart on Mac/Linux/Windows.
@@ -26,7 +26,7 @@ pluginCategory=Scripting/Communication
 # -- The following properties are OPTIONAL -- #
 
 # List of authors, each author(s) and institution must be on a separate line
-pluginAuthorsIntsitutions=Sarah Killcoyne:Institute for Systems Biology;John Lin, Kevin Drew and Richard Bonneau:NYU Bonneau Lab
+pluginAuthorsIntsitutions=Sarah Killcoyne:Institute for Systems Biology;Dan Teenenbaum:Institute for Systems Biology;John Lin, Kevin Drew and Richard Bonneau:NYU Bonneau Lab
 
 releaseDate=July 2, 2007
 
