@@ -57,8 +57,44 @@ public class SelectPhysicalEntity {
                     for (int i = commentList.size() - 1; i >= 0; i--) {
                         commentBuf.append(commentList.get(i) + "\n\n");
                     }
+                    summaryDocumentModel.insertString(0, commentBuf.toString(), attrs);
+                    StyleConstants.setBold(attrs, true);
+                    summaryDocumentModel.insertString(0, "Description:\n\n", attrs);
+                    StyleConstants.setBold(attrs, false);
                 }
-                summaryDocumentModel.insertString(0, commentBuf.toString(), attrs);
+
+                //  Next, add XRefs
+                List <XRefType> xrefList = searchHit.getXref();
+                StringBuffer xrefBuffer = new StringBuffer();
+                if (xrefList != null && xrefList.size() > 0) {
+                    for (XRefType xref:  xrefList) {
+                        xrefBuffer.append("  - " + xref.getDb() + ":  " + xref.getId() + "\n");
+                    }
+                    xrefBuffer.append("\n");
+                    summaryDocumentModel.insertString(0, xrefBuffer.toString(), attrs);
+                    StyleConstants.setBold(attrs, true);
+                    summaryDocumentModel.insertString(0, "Links:\n\n", attrs);
+                    StyleConstants.setBold(attrs, false);
+                }
+
+                //  Next, add synonyms
+                List <String> synList = searchHit.getSynonym();
+                StringBuffer synBuffer = new StringBuffer();
+                if (synList != null && synList.size() > 0) {
+                    for (String synonym:  synList) {
+                        if (!synonym.equalsIgnoreCase(searchHit.getName())) {
+                            synBuffer.append("  - " + synonym + "\n");
+                        }
+                    }
+                    if (synBuffer.length() > 0) {
+                        synBuffer.append("\n");
+                        summaryDocumentModel.insertString(0, synBuffer.toString(), attrs);
+                        StyleConstants.setBold(attrs, true);
+                        summaryDocumentModel.insertString(0, "Synonyms:\n\n", attrs);
+                        StyleConstants.setBold(attrs, false);
+                    }
+                }
+
                 OrganismType organism = searchHit.getOrganism();
                 StyleConstants.setForeground(attrs, Color.BLUE);
                 StyleConstants.setBold(attrs, true);
