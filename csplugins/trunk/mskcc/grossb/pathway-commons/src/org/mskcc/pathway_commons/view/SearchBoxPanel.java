@@ -6,8 +6,6 @@ import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -29,10 +27,12 @@ public class SearchBoxPanel extends JPanel {
      */
     public SearchBoxPanel(PathwayCommonsWebApi webApi) {
         this.webApi = webApi;
-        TitledBorder border = GuiUtils.createTitledBorder("Step 1:  Search");
-        setBorder(border);
+        GradientHeader header = new GradientHeader("Step 1:  Search");
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
+        add (header);
+        add (Box.createVerticalStrut(5));
         final JTextField searchField = createSearchField();
         JComboBox organismComboBox = createOrganismComboBox();
         JButton helpButton = new JButton("Help");
