@@ -46,7 +46,6 @@ public class GradientHeader extends JPanel {
         //  Paint the background
         g2.setPaint(p);
         g2.fillRect(0, 0, getWidth(), getHeight());
-        System.out.println(getWidth() + ": " + p);
 
         //  Restore the state
         g2.setPaint(oldPaint);
