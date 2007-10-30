@@ -7,6 +7,8 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import cytoscape.Cytoscape;
 
@@ -36,8 +38,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private InteractionTableModel interactionTableModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
-    private PhysicalEntityDetailsPanel summaryPanel;
-	private PopupPanel popup;
+    private PhysicalEntityDetailsPanel detailsPanel;
 	private JLayeredPane appLayeredPane;
 
     /**
@@ -55,20 +56,20 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //  Create the Summary Panel, but don't show it yet
-        summaryPanel = new PhysicalEntityDetailsPanel();
-        summaryDocument = summaryPanel.getDocument();
-        summaryTextPane = summaryPanel.getTextPane();
+        detailsPanel = new PhysicalEntityDetailsPanel();
+        summaryDocument = detailsPanel.getDocument();
+        summaryTextPane = detailsPanel.getTextPane();
 
-		// create popup windown
-		popup = new PopupPanel(appLayeredPane, summaryPanel, Color.black);
-		appLayeredPane.add(popup, appLayeredPane.getIndexOf(this) + 1);
+		// create popup window
+		appLayeredPane.add(detailsPanel, appLayeredPane.getIndexOf(this) + 1);
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
         peList = createHitJList(peListModel);
         JScrollPane hitListPane = new JScrollPane(peList);
-        TitledBorder border = GuiUtils.createTitledBorder("Step 2:  Select Gene");
-        hitListPane.setBorder(border);
+        GradientHeader header = new GradientHeader("Step 2:  Select Gene");
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(header);
 
         //  Create Search Details Panel
         SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionTableModel,
@@ -78,24 +79,10 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
                 detailsPanel);
         splitPane.setDividerLocation(200);
+        splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
         createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
     }
-
-	/**
-	 * Our implementation of setBounds().  Required to affect
-	 * popup window position and/or transition effect if this 
-	 * panel's bounds change.
-	 */
-	public void setBounds(int x, int y, int width, int height) {
-
-		if (getX() != x || getY() != y || getWidth() != width || getHeight() != height) {
-			if (popup.isVisible()) {
-				popup.cancelTransition();
-			}
-		}
-		super.setBounds(x,y,width, height);
-	}
 
     private JList createHitJList(DefaultListModel peListModel) {
         JList peList = new JList(peListModel);
@@ -125,10 +112,10 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
              * @param mouseEvent Mouse Event.
              */
             public void mouseExited(MouseEvent mouseEvent) {
-				if (popup.isVisible()) {
+				if (detailsPanel.isVisible()) {
                     Timer timer = new Timer(1000, new ActionListener() {
                         public void actionPerformed(ActionEvent actionEvent) {
-							popup.fadeOut();
+							detailsPanel.setVisible(false);
                         }
 						});
                     timer.setRepeats(false);
@@ -142,20 +129,25 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     }
 
 	private void createPopup() {
-
-		if (!popup.isVisible()) {
-			int MARGIN = 30;
+        if (!detailsPanel.isVisible()) {
+            int MARGIN = 30;
 			int popupWIDTH = (int)this.getSize().getWidth();
 			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
 			int desktopLocationX = Cytoscape.getDesktop().getLocationOnScreen().x;
 			int desktopLocationY = Cytoscape.getDesktop().getLocationOnScreen().y;
-			int desktopInsets = Cytoscape.getDesktop().getInsets().top + Cytoscape.getDesktop().getInsets().bottom;
+			int desktopInsets = Cytoscape.getDesktop().getInsets().top
+                    + Cytoscape.getDesktop().getInsets().bottom;
 			int popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
 			int popupY = getLocationOnScreen().y - desktopLocationY;
-            popup.setCurtain(popupX+desktopLocationX, popupY+desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
-			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
-			popup.fadeIn();
-		}
+            //popup.setCurtain(popupX+desktopLocationX, popupY
+            // +desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
+			detailsPanel.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
+            detailsPanel.setVisible(true);
+
+            Animator animator = new Animator (300);
+            animator.addTarget(new PropertySetter(detailsPanel, "alpha", 0.0f, 1.0f));
+            animator.start();
+        }
 	}
 
     /**
@@ -224,33 +216,10 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
                 if (selectedIndex >=0) {
                     SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
                     selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-													interactionTableModel, pathwayTableModel, summaryDocument, textPane, appLayeredPane);
+                        interactionTableModel, pathwayTableModel, summaryDocument,
+                            textPane, appLayeredPane);
                 }
             }
         });
-    }
-
-    /**
-     * Encloses the specified JTextPane in a JScrollPane.
-     *
-     * @param title    Title of Area.
-     * @param textPane JTextPane Object.
-     * @return JScrollPane Object.
-     */
-    private JScrollPane encloseInJScrollPane(String title, JTextPane textPane) {
-        JScrollPane scrollPane = new JScrollPane(textPane);
-        scrollPane.setBorder(new TitledBorder(title));
-        return scrollPane;
-    }
-
-    /**
-     * Creates a JTextArea with correct line wrap settings.
-     *
-     * @return JTextArea Object.
-     */
-    private JTextPane createTextArea() {
-        JTextPane textPane = new JTextPane();
-        textPane.setEditable(false);
-        return textPane;
     }
 }
