@@ -36,6 +36,10 @@ public class SearchDetailsPanel extends JPanel {
 
     private JPanel createPathwayPane(PathwayTableModel pathwayTableModel) {
         JPanel pathwayPane = new JPanel(new BorderLayout());
+
+        GradientHeader header = new GradientHeader("Step 3:  Download");
+        pathwayPane.add(header, BorderLayout.NORTH);
+
         JScrollPane pathwayTable = createPathwayTable(pathwayTableModel);
         pathwayPane.add(pathwayTable, BorderLayout.CENTER);
         JLabel label = new JLabel ("> Double-click pathway to download.");
@@ -99,8 +103,6 @@ public class SearchDetailsPanel extends JPanel {
             }
         });
         JScrollPane scrollPane = new JScrollPane(pathwayTable);
-        TitledBorder border = GuiUtils.createTitledBorder("Step 3:  Download");
-        scrollPane.setBorder(border);
         return scrollPane;
     }
 
