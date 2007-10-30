@@ -209,6 +209,10 @@ p {
  border: 1px solid #CCE6FF;
 }
 
+#content .item table.programme td{
+ vertical-align: top;
+}
+
 #content .item td.tableheader_narrow {
  background-color: #FFEEAA;
  font-weight: bold;

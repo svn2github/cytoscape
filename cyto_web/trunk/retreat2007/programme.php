@@ -34,8 +34,10 @@
   </div>
 <br>  
 <p>
-Find a more detailed, printable version of the programme <a href="pdf/ProgrammeAndRoute.pdf"><b>here</b></a><br> 
+Find a printable pdf version of the detailed programme and directions here:</p> <a href="pdf/ProgrammeAndRoute.pdf"><img border="0" alt="pdf" align="top" height="19" width="20" src="images/pdf_20_19.jpg"></a>
+<p>
 Click on the names of the Speakers to find their resumes and abstracts of their talks.<br> 
+The plugin names are also hyperlinked to their descriptions
 <br>
 The main event is the Public Symposium on November 8<sup>th</sup> entitled: <a href="#nov_8"><strong>Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</strong></a>. 
 Preceding the symposium is a <a href="#nov_7"><strong>Tutorials and Application Showcase day</strong></a> (November 7<sup>th</sup>) that will be filled with hands-on training sessions and demonstrations of plugin developers.
@@ -205,25 +207,28 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  <tr>
   <td class="subheader"><p>Tracks (parallel)</p></td>
   <td class="subheader"><p><b>I Tutorials</b></p></td>
-  <td class="subheader"><p><b>II Plugins and Application showcase</b></p></td>
+  <td class="subheader"><p><b>II Plugins and Application showcase<br> Chair: <i>Gary Bader</i></b></p></td>
   <td class="subheader"><p><b>III Hackathon/Developers tutorials</b></p></td>
  </tr>
  <tr>
-  <td><p>08:45-09:00 </p></td>
+  <td><p>08:45-09:15 </p></td>
   <td colspan="3"><p>Welcome - Registration - Coffee</p></td>
  </tr>
  <tr>
+  <td><p>09:15-09:30 </p></td>
+  <td colspan="3"><p>Chairman's Welcome: <i>Gary Bader</i></p></td>
+ </tr>
+ <tr>
   <td><p>09:30-11:00 </p></td>
-  <td><p>Tutorial Session I</p></td>
+  <td><p><a href="tutorials.php#cyto">Tutorial Session I</a></p></td>
   <td><p>
-o Mario Albrecht:NetworkAnalyzer<br>
-o Dorothea Emig: DomainGraph, BiLayout<br>
-o Ben Hitz: SgdInteractionsPlugin<br>
-o Maital Ashkenazi: EnhancedSearch<br>
-o Willem Ligtenberg: Reconn<br>
-o Aaron Barsky: Cerebral<br>
+o Mario Albrecht: <a href="applications.php#albrecht">NetworkAnalyzer</a><br>
+o Dorothea Emig: <a href="applications.php#albrecht">DomainGraph, BiLayout</a><br>
+o Ben Hitz: <a href="applications.php#hitz">SgdInteractionsPlugin</a><br>
+o Maital Ashkenazi: <a href="applications.php#ashkenazi">EnhancedSearch</a><br>
+o Willem Ligtenberg: <a href="applications.php#ligtenberg">Reconn</a><br>
   </p></td>
-  <td><p>Kei Ono - Mike Smoot: Vizmapper</p></td>
+  <td><p>Kei Ono - Mike Smoot: <a href="tutorials.php#dev">Vizmapper</a></p></td>
  </tr>
  <tr>
   <td><p>11:00-11:20 </p></td>
@@ -231,15 +236,15 @@ o Aaron Barsky: Cerebral<br>
  </tr>
  <tr>
   <td><p>11:20-13:15 </p></td>
-  <td><p>Tutorial Session II</p></td>
+  <td><p><a href="tutorials.php#cyto">Tutorial Session II</a></p></td>
   <td><p>
-o Sabry Razick: Bioscape<br>
-o Eugene Rakhmatulin: Metacore<br>
-o Thomas Kelder: GPML-plugin<br>
-o Evrim Itir Karac: Molecular Interaction Maps<br>
-o Yves Deville: BioEdge<br>
+o Aaron Barsky: <a href="applications.php#barsky">Cerebral</a><br>
+o Sabry Razick: <a href="applications.php#razick">Bioscape</a><br>
+o Eugene Rakhmatulin: <a href="applications.php#rakhmatulin">Metacore</a><br>
+o Thomas Kelder: <a href="applications.php#kelder">GPML-plugin</a><br>
+o Evrim Itir Karac: <a href="applications.php#karac">Molecular Interaction Maps</a><br>
   </p></td>
-  <td><p>Scooter Morris: CyGroups, Layout</p></td>
+  <td><p>Scooter Morris: <a href="tutorials.php#dev">CyGroups, Layout</a></p></td>
  </tr>
  <tr>
   <td><p>13:15-13:45</p></td>
@@ -247,15 +252,15 @@ o Yves Deville: BioEdge<br>
  </tr>
  <tr>
   <td><p>13:45-15:45</p></td>
-  <td><p>Tutorial Session III</p></td>
+  <td><p><a href="tutorials.php#cyto">Tutorial Session III</a></p></td>
   <td><p>
-o Robert Kincaid: VistaClara<br>
-o Alan Kuchinsky: Literature Search; Hyperedges; Workflow<br>
-o Alex Pico: BubbleRouter<br>
-o Christoph Schwarz: Vispara<br>
-o Steven Maere: BinGO<br>
+o Yves Deville: <a href="applications.php#deville">BioEdge</a><br>
+o Robert Kincaid: <a href="applications.php#kincaid">VistaClara</a><br>
+o Alan Kuchinsky: <a href="applications.php#kuchinsky">Literature search, Hyperedges, Workflow</a><br>
+o Alex Pico: <a href="applications.php#pico">BubbleRouter</a><br>
+o Christoph Schwarz: <a href="applications.php#schwarz">Vispara</a><br>
   </p></td>
-  <td><p>Kei Ono: Webservices API</p></td>
+  <td><p>Kei Ono: <a href="tutorials.php#dev">Webservices API</a></p></td>
  </tr>
  <tr>
   <td><p>15:45-16:00 </p></td>
@@ -263,12 +268,13 @@ o Steven Maere: BinGO<br>
  </tr>
  <tr>
   <td><p>16:00-18:00 </p></td>
-  <td><p>Tutorial Session IV</p></td>
+  <td><p><a href="tutorials.php#cyto">Tutorial Session IV</a></p></td>
   <td><p>
-o Gary Bader: PathwayCommons; GoSlimmer; Thematic Map<br>
-o July Dickerson: MetNet tools<br>
-o Matthias Reimann: EagleVista<br>
-o Scooter Morris: CyGroups; StructureViz; SFLDLoader<br>
+o Steven Maere: <a href="applications.php#maere">BinGO</a><br>
+o Gary Bader: <a href="applications.php#bader">PathwayCommons, GoSlimmer, Thematic Maps</a><br>
+o July Dickerson: <a href="applications.php#dickerson">MetNet tools</a><br>
+o Matthias Reimann: <a href="applications.php#reimann">EagleVista</a><br>
+o Scooter Morris: <a href="applications.php#morris">CyGroups, StructureViz, SFLDLoader</a><br>
   </p></td>
   <td><p>Breakout/Hackathon sessions</p></td>
  </tr>

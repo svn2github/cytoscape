@@ -35,7 +35,8 @@
   </div>
 <br>
 Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br>
-<br>Find a printable pdf version of the detailed programme and directions <a href="pdf/ProgrammeAndRoute.pdf"><b>here</b></a> 
+<br>Find a printable pdf version of the detailed programme and directions here:
+<a href="pdf/ProgrammeAndRoute.pdf"><img border="0" align="top" alt="pdf" height="19" width="20" src="images/pdf_20_19.jpg"></a> 
 <br>
 <br>
 <a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="images/attention.gif"><b>&nbsp;Registration</b></a><b> for Symposium still open!!!</b> Symposium fee only &euro;40<br>
@@ -80,8 +81,9 @@ Head of knowledge discovery at <a href="http://www.pfizer.com" target="_blank">P
 </li>
 </ul>
 </p>
+Abstracts of their talks and resumes of the Speakers can be found <a href="abstracts.php"><b>here</b></a><br>
 In addition, the Cytoscape community organizes a developers retreat each year to establish a roadmap 
-for Cytoscape development. Attendees of the symposium may also be interested in Demo Day and Cytoscape Tutorials on Nov 8th.
+for Cytoscape development. Attendees of the symposium may also be interested in Demo Day and Cytoscape Tutorials on Nov 7th.
 <br> 
 
 The goal of the retreat is threefold:
