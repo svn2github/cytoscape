@@ -1,15 +1,13 @@
 package org.genmapp.subgeneviewer.splice.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.util.Iterator;
-
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 
 public class GraphWalker {
 
@@ -157,7 +155,8 @@ public class GraphWalker {
 		Block block;
 		Region region;
 		Feature feature;
-		Graphics g = view.getGraphics();
+		Graphics2D g = (Graphics2D) view.getGraphics();
+		Stroke normal = g.getStroke(); //store default stroke
 		Rectangle rect;
 
 		g.setColor(Color.black);
@@ -248,12 +247,26 @@ public class GraphWalker {
 					g.setColor(Color.blue);
 
 					// draw the lines.
-					// consider using Graphics2D so that we have control over
-					// width of line
+					
+					//for a dashed line
+//					final  float dash1[] = {10.0f};
+//				    final  BasicStroke dashed = new BasicStroke(1.0f, 
+//				                                          BasicStroke.CAP_BUTT, 
+//				                                          BasicStroke.JOIN_MITER, 
+//				                                          10.0f, dash1, 0.0f);
+					//for a thin line
+					final BasicStroke thin = new BasicStroke(0.5f);
+					
+					g.setStroke(thin);
+
 					g.drawLine(startX, startY, ((startX + endX) / 2), startY
 							+ NODE_HEIGHT);
 					g.drawLine(((startX + endX) / 2), startY + NODE_HEIGHT,
 							endX, endY);
+					
+					//reset stroke
+					g.setStroke(normal);
+
 				}
 
 				// now render Start Site, at this region
