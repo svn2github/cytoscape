@@ -8,20 +8,15 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
-
 import cytoscape.Cytoscape;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
 import java.util.List;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.net.URL;
