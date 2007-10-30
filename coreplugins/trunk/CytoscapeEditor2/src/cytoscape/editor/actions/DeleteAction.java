@@ -177,8 +177,10 @@ public class DeleteAction extends CytoscapeAction {
         }
 
         java.util.Set nodes = n.getSelectedNodes();
+        java.util.Set edges = n.getSelectedEdges();
 
-        if ( nodes != null && nodes.size() > 0 )
+        if ( ( nodes != null && nodes.size() > 0 ) || 
+		     ( edges != null && edges.size() > 0 ) )
             setEnabled(true);
         else
             setEnabled(false);
