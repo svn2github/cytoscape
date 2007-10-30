@@ -149,21 +149,15 @@ public class FilterPlugin extends CytoscapePlugin {
 	 */
 	public void onCytoscapeExit() {
 		// Save global filter to "filters.prop"
-		filterIO.saveGlobalPropFile(CytoscapeInit.getConfigFile("filters.props"), allFilterVect);
+		filterIO.saveGlobalPropFile(CytoscapeInit.getConfigFile("filters.props"));
 	}
 
 	public void restoreInitState() {
 		File global_filter_file = CytoscapeInit.getConfigFile("filters.props");
 
-		Vector<CompositeFilter> restoredFilters =filterIO.getFilterVectFromPropFile(global_filter_file);
+		int[] loadCount = filterIO.getFilterVectFromPropFile(global_filter_file);
 		
-		if (restoredFilters != null && restoredFilters.size()>0) {
-			allFilterVect.addAll(restoredFilters);			
-		}
-
-		if (restoredFilters != null) {
-			System.out.println("FilterPlugin: load " + restoredFilters.size() + " filters from filters.prop");			
-		}
+		System.out.println("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");		
 	}
 
 	// override the following two methods to save state.
@@ -174,7 +168,7 @@ public class FilterPlugin extends CytoscapePlugin {
 	 *            DOCUMENT ME!
 	 */
 	public void restoreSessionState(List<File> pStateFileList) {
-		filterIO.restoreSessionState(pStateFileList, allFilterVect);	
+		filterIO.restoreSessionState(pStateFileList);	
 	}
 
 	/**
@@ -184,6 +178,6 @@ public class FilterPlugin extends CytoscapePlugin {
 	 *            DOCUMENT ME!
 	 */
 	public void saveSessionStateFiles(List<File> pFileList) {
-		filterIO.saveSessionStateFiles(pFileList, allFilterVect);
+		filterIO.saveSessionStateFiles(pFileList);
 	}
 }
