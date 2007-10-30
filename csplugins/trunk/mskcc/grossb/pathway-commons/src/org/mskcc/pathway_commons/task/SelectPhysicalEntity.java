@@ -53,41 +53,48 @@ public class SelectPhysicalEntity {
             OrganismType organism = searchHit.getOrganism();
             if (organism != null) {
                 String speciesName = organism.getSpeciesName();
-                html.append ("<B>" + speciesName + "</B><BR>");
+                html.append ("<H3>" + speciesName + "</H3>");
             }
 
             //  Next, add synonyms
             List <String> synList = searchHit.getSynonym();
+            StringBuffer synBuffer = new StringBuffer();
             if (synList != null && synList.size() > 0) {
-                html.append("<BR><B>Synonyms:</B><BR>");
                 for (String synonym:  synList) {
                     if (!synonym.equalsIgnoreCase(searchHit.getName())) {
-                        html.append("<BR> - " + synonym);
+                        synBuffer.append("<LI>- " + synonym + "</LI>");
                     }
                 }
-                html.append("<BR>");
+                if (synBuffer.length() > 0) {
+                    html.append("<B>Synonyms:</B><BR>");
+                    html.append("<UL>");
+                    html.append(synBuffer.toString());
+                    html.append("</UL>");
+                }
             }
 
             //  Next, add XRefs
             List <XRefType> xrefList = searchHit.getXref();
             if (xrefList != null && xrefList.size() > 0) {
                 html.append("<BR><B>Links:</B><BR>");
+                html.append("<UL>");
                 for (XRefType xref:  xrefList) {
                     String url = xref.getUrl();
                     if (url != null && url.length() > 0) {
-                        html.append("<BR>  - <a href=\"" + url + "\">" + xref.getDb() + ":  "
-                                + xref.getId() + "</a>") ;
+                        html.append("<LI>- <a href=\"" + url + "\">" + xref.getDb() + ":  "
+                                + xref.getId() + "</a></LI>") ;
                     } else {
-                        html.append("<BR>  - " + xref.getDb() + ":  " + xref.getId());
+                        html.append("<LI>- " + xref.getDb() + ":  " + xref.getId() + "</LI>");
                     }
                 }
+                html.append("</UL>");
             }
 
             java.util.List<String> commentList = searchHit.getComment();
             if (commentList != null) {
-                html.append("<BR><BR><B>Description:</B><BR>");
+                html.append("<BR><B>Description:</B>");
                 for (int i = commentList.size() - 1; i >= 0; i--) {
-                    html.append("<BR>- " + commentList.get(i));
+                    html.append("<BR>" + commentList.get(i) + "<BR>");
                 }
             }
 
