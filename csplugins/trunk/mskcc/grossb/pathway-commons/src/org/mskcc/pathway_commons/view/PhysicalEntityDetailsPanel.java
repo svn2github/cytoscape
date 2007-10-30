@@ -1,5 +1,7 @@
 package org.mskcc.pathway_commons.view;
 
+import org.jdesktop.swingx.JXPanel;
+
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
@@ -13,7 +15,7 @@ import java.awt.event.*;
  *
  * @author Ethan Cerami.
  */
-public class PhysicalEntityDetailsPanel extends JPanel {
+public class PhysicalEntityDetailsPanel extends JXPanel {
     private Document doc;
     private JTextPane textPane;
     private PopupDaemon daemon;
@@ -27,7 +29,11 @@ public class PhysicalEntityDetailsPanel extends JPanel {
         textPane = createTextPane();
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
-        scrollPane.setBorder(GuiUtils.createTitledBorder("Gene Summary"));
+
+        GradientHeader header = new GradientHeader("Gene Summary");
+        add (header, BorderLayout.NORTH);
+        this.setAlpha(0.0f);
+        this.setVisible(false);
         add(scrollPane, BorderLayout.CENTER);
         attachMouseListener(this, daemon);
     }
@@ -152,6 +158,6 @@ class PopupDaemon implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         System.out.println("HIDE");
-        detailsPanel.setVisible(false);
+        //detailsPanel.setVisible(false);
     }
 }
