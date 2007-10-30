@@ -21,13 +21,11 @@ import java.net.URL;
 public class PhysicalEntityDetailsPanel extends JXPanel {
     private Document doc;
     private JTextPane textPane;
-    private PopupDaemon daemon;
 
     /**
      * Constructor.
      */
     public PhysicalEntityDetailsPanel() {
-        daemon = new PopupDaemon(this, 1000);
         this.setLayout(new BorderLayout());
         textPane = createTextPane();
         doc = textPane.getDocument();
@@ -50,40 +48,6 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
         this.setAlpha(0.0f);
         this.setVisible(false);
         add(scrollPane, BorderLayout.CENTER);
-        attachMouseListener(this, daemon);
-    }
-
-    /**
-     * Attaches appropriate mouse listeners.
-     * @param daemon PopupDaemon Object.
-     */
-    private void attachMouseListener(PhysicalEntityDetailsPanel detailsPanel,
-            final PopupDaemon daemon) {
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-
-            /**
-             * When mouse enters frame, stop daemon.  Frame will persist.
-             * @param mouseEvent MouseEvent Object.
-             */
-            public void mouseEntered(MouseEvent mouseEvent) {
-                System.out.println("Mouse entered");
-                //daemon.stop();
-            }
-
-
-            public void mousePressed(MouseEvent mouseEvent) {
-                System.out.println("Mouse pressed");
-            }
-
-            /**
-             * When mouse exits frame, restart deamon.  Frame will disappear after XX milliseconds.
-             * @param mouseEvent Mouse Event Object.
-             */
-            public void mouseExited(MouseEvent mouseEvent) {
-                System.out.println("Mouse exited");
-                //daemon.restart();
-            }
-        };
     }
 
     /**
@@ -142,48 +106,5 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
         htmlEditorKit.setStyleSheet(styleSheet);
         textPane.setEditorKit(htmlEditorKit);
         return textPane;
-    }
-}
-
-/**
- * Daemon Thread to automatically hide Pop-up Window after xxx milliseconds.
- *
- * @author Ethan Cerami
- */
-class PopupDaemon implements ActionListener {
-    private Timer timer;
-    private PhysicalEntityDetailsPanel detailsPanel;
-
-    /**
-     * Constructor.
-     *
-     * @param detailsPanel PhysicalEntityDetailsPanel Object.
-     * @param delay  Delay until pop-up window is hidden.
-     */
-    public PopupDaemon(PhysicalEntityDetailsPanel detailsPanel, int delay) {
-        this.detailsPanel = detailsPanel;
-        timer = new Timer(delay, this);
-        timer.setRepeats(false);
-    }
-
-    /**
-     * Restart timer.
-     */
-    public void restart() {
-        timer.restart();
-    }
-
-    public void stop() {
-        timer.stop();
-    }
-
-    /**
-     * Timer Event:  Hide popup now.
-     *
-     * @param e ActionEvent Object.
-     */
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("HIDE");
-        //detailsPanel.setVisible(false);
     }
 }
