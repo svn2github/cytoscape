@@ -114,11 +114,11 @@ public class CompositeFilter implements CyFilter {
 	}
 	
 	private void calculateNodeBitSet() {
-		System.out.println("Entering CompositeFilter.calculatNodeBits() ... ");	
+		//System.out.println("Entering CompositeFilter.calculatNodeBits() ... ");	
 	
 		// set the initial bits to a clone of the first child
 		if (children.get(0).getNodeBits() == null) {
-			node_bits = new BitSet();	
+			node_bits = new BitSet(network.getNodeCount());	
 		}
 		else {
 			node_bits = (BitSet) children.get(0).getNodeBits().clone();						
@@ -165,7 +165,7 @@ public class CompositeFilter implements CyFilter {
 	
 	
 	private void calculateEdgeBitSet() {
-		System.out.println("Entering CompositeFilter.calculatEdgeBits() ... ");	
+		//System.out.println("Entering CompositeFilter.calculatEdgeBits() ... ");	
 				
 		// if there are no children, just return an empty bitset
 		if ( children.size() <= 0 ) {
@@ -221,8 +221,8 @@ public class CompositeFilter implements CyFilter {
 	
 	public void apply() {
 
-		System.out.println("Entering CompositeFilter.apply() ... ");	
-		System.out.println("\tchildChanged =  " + childChanged);	
+		//System.out.println("Entering CompositeFilter.apply() ... ");	
+		//System.out.println("\tchildChanged =  " + childChanged);	
 		
 		// only recalculate the bits if the child has actually changed
 		if ( !childChanged ) 
@@ -357,11 +357,11 @@ public class CompositeFilter implements CyFilter {
 	 */
 	public String toString()
 	{
-		String retStr = "\n<Composite>\n";
+		String retStr = "<Composite>\n";
 		
-		retStr = retStr + "name:" + name + "\n";
+		retStr = retStr + "name=" + name + "\n";
 		retStr = retStr + advancedSetting.toString() + "\n";
-		retStr = retStr + "Negation:" + negation + "\n";
+		retStr = retStr + "Negation=" + negation + "\n";
 
 		for (int i=0; i< children.size(); i++) {
 
@@ -374,7 +374,7 @@ public class CompositeFilter implements CyFilter {
 				retStr = retStr + "CompositeFilter=" + tmpFilter.getName()+ ":" + compositeNotTab.get(tmpFilter)+"\n";
 			}
 		}
-		retStr += "</Composite>\n";
+		retStr += "</Composite>";
 
 		return retStr;
 	}
