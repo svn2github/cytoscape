@@ -79,7 +79,9 @@ public class StringFilter extends AtomicFilter {
 	
 	public void setSearchStr(String pSearchStr) {
 		searchStr = pSearchStr;
-		getParent().childChanged();
+		if (getParent() != null) {
+			getParent().childChanged();			
+		}
 	}
 
 	/**
