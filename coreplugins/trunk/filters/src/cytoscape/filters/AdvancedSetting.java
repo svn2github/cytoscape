@@ -6,38 +6,55 @@ public class AdvancedSetting {
 	// default settings
 	private boolean session = true, global=false; //scope
 	private boolean node=true, edge=true; // selectionType
+	private boolean source=true, target=true; // EdgeType
 	private Relation relation = Relation.AND;
 		
 	public String toString() {
 		String retStr = "<AdvancedSetting>\n";
-		retStr += "scope.global = ";
+		retStr += "scope.global=";
 		if (global) {
 			retStr += "true\n";
 		}
 		else {
 			retStr += "false\n";
 		}
-		retStr += "scope.session = ";
+		retStr += "scope.session=";
 		if (session) {
 			retStr += "true\n";
 		}
 		else {
 			retStr += "false\n";
 		}
-		retStr += "selection.node = ";
+		retStr += "selection.node=";
 		if (node) {
 			retStr += "true\n";
 		}
 		else {
 			retStr += "false\n";
 		}
-		retStr += "selection.edge = ";
+		retStr += "selection.edge=";
 		if (edge) {
 			retStr += "true\n";
 		}
 		else {
 			retStr += "false\n";
 		}
+		
+		retStr += "edge.source=";
+		if (source) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+		retStr += "edge.target=";
+		if (target) {
+			retStr += "true\n";
+		}
+		else {
+			retStr += "false\n";
+		}
+
 		retStr += "Relation="+relation+ "\n";
 		retStr += "</AdvancedSetting>";
 		return retStr;
@@ -87,4 +104,23 @@ public class AdvancedSetting {
 	{
 		edge = pEdge;
 	}
+	public void setSource(boolean pSource)
+	{
+		source = pSource;
+	}
+	public void setTarget(boolean pTarget)
+	{
+		target = pTarget;
+	}
+	
+	public boolean isSourceChecked()
+	{
+		return source;
+	}
+	public boolean isTargetChecked()
+	{
+		return target;
+	}
+	
+	
 }//End of Advanced settings
