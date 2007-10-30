@@ -59,6 +59,9 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		tfMinNeighbors.addKeyListener(l);
 		
 		cmbPassFilter.addItemListener(this);
+		
+		//Make sure bits will be calculated for the first time
+		pFilter.childChanged();
     }
     
 	
