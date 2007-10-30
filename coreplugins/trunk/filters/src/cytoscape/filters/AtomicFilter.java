@@ -131,22 +131,12 @@ public abstract class AtomicFilter implements CyFilter {
 	
 	// an atomic filter can't have any children, so this is a no-op
 	public void childChanged() {}; 
-
-	public void print(int depth) {
-		StringBuffer sb = new StringBuffer();
-		for ( int i = 0; i < depth; i++ )
-			sb.append("  ");
-		depthString = sb.toString();
-
-		//System.out.println(depthString + name + " " + bits.toString() );
-		
-		if ( depth == 0 )
-			System.out.println();
-	}
 	
 	public void setNegation(boolean pNot) {
 		negation = pNot;
-		getParent().childChanged();
+		if (getParent() != null) {
+			getParent().childChanged();			
+		}
 	}
 	public boolean getNegation() {
 		return negation;
