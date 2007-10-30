@@ -3,6 +3,7 @@ package org.mskcc.pathway_commons.view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.net.URL;
 
 /**
  * Gradient Header Panel.
@@ -16,7 +17,7 @@ public class GradientHeader extends JPanel {
      * @param header Header Title.
      */
     public GradientHeader(String header) {
-        this.setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.setLayout(new BorderLayout());
         JLabel label = new JLabel(header);
         label.setBorder(new EmptyBorder(0,0,0,0));
         Font font = label.getFont();
@@ -24,8 +25,27 @@ public class GradientHeader extends JPanel {
         label.setFont(newFont);
         label.setForeground(new Color(102,51,51));
         label.setOpaque(false);
-        this.add (label);
-        this.setBorder (new EmptyBorder(0,0,0,0));
+        this.add (label, BorderLayout.WEST);
+        this.setBorder (new EmptyBorder(5,5,5,5));
+    }
+
+    /**
+     * Constructor.
+     * @param header Header Title.
+     */
+    public GradientHeader(String header, JButton button) {
+        button.setBorder(new EmptyBorder (0,0,0,0));
+        this.setLayout(new BorderLayout());
+        JLabel label = new JLabel(header);
+        label.setBorder(new EmptyBorder(0,0,0,0));
+        Font font = label.getFont();
+        Font newFont = new Font (font.getFamily(), Font.BOLD, font.getSize()+1);
+        label.setFont(newFont);
+        label.setForeground(new Color(102,51,51));
+        label.setOpaque(false);
+        this.add (label, BorderLayout.WEST);
+        this.add (button, BorderLayout.EAST);
+        this.setBorder (new EmptyBorder(5,5,5,5));
     }
 
     /**
