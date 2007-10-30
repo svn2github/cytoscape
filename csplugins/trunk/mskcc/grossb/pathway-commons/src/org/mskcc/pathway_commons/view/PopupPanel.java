@@ -89,11 +89,6 @@ public class PopupPanel extends JPanel {
 	private Timer m_timer;
 
 	/**
-	 * ref to our border color
-	 */
-	private Color m_border_color;
-
-	/**
 	 * robot used to capture screen
 	 */
 	private Robot m_robot;
@@ -111,13 +106,12 @@ public class PopupPanel extends JPanel {
 	/**
 	 * Constructor.
 	 */
-	public PopupPanel(JComponent owner, JComponent component, Color border_color) {
+	public PopupPanel(JComponent owner, JComponent component) {
 
 		// init member vars
 		m_owner = owner;
 		m_popupPanel = this;
 		m_wrapped_component = component;
-		m_border_color = border_color;
 		try {
 			m_robot = new Robot();
 		}
@@ -150,15 +144,6 @@ public class PopupPanel extends JPanel {
 	 */
 	public void setOpacity(int opacity) {
 		m_opacity = opacity;
-	}
-
-	/**
-	 * Set border of this component, given opacity level.
-	 */
-	public void setBorder(int opacity) {
-		Color newColor = new Color(m_border_color.getRed(), m_border_color.getGreen(),
-								   m_border_color.getBlue(), opacity);
-		setBorder(new LineBorder(newColor));
 	}
 
 	/**
@@ -230,21 +215,15 @@ public class PopupPanel extends JPanel {
 	class FaderTask extends TimerTask {
 		private boolean fadeIn;
 		private int popupOpacity;
-		private int borderOpacity;
 		public FaderTask(boolean fadeIn) {
 			this.fadeIn = fadeIn;
 			popupOpacity = (fadeIn) ? 255 : 0;
-			borderOpacity = (fadeIn) ? 0 : 255;
 		}
 		public void run() {
 			popupOpacity = (fadeIn) ? popupOpacity - PopupPanel.OPACITY_STEP : popupOpacity + PopupPanel.OPACITY_STEP;
 			if (popupOpacity > 255) popupOpacity = 255;
 			if (popupOpacity < 0) popupOpacity = 0;
 			m_popupPanel.setOpacity(popupOpacity);
-			borderOpacity = (fadeIn) ? borderOpacity + PopupPanel.OPACITY_STEP : borderOpacity - PopupPanel.OPACITY_STEP;
-			if (borderOpacity > 255) borderOpacity = 255;
-			if (borderOpacity < 0) borderOpacity = 0;
-			m_popupPanel.setBorder(borderOpacity);
 			if (fadeIn && popupOpacity <= 0) {
 				m_timer.cancel();
 				m_wrapped_component.setVisible(true);
