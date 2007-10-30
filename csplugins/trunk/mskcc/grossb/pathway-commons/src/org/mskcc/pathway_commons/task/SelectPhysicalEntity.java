@@ -90,16 +90,16 @@ public class SelectPhysicalEntity {
                 html.append("</UL>");
             }
 
-            java.util.List<String> commentList = searchHit.getComment();
-            if (commentList != null) {
-                html.append("<BR><B>Description:</B>");
-                for (int i = commentList.size() - 1; i >= 0; i--) {
-                    html.append("<BR>" + commentList.get(i) + "<BR>");
-                }
-            }
+            //  Temporarily commented out
+            //java.util.List<String> commentList = searchHit.getComment();
+            //if (commentList != null) {
+            //    html.append("<BR><B>Description:</B>");
+            //    for (int i = commentList.size() - 1; i >= 0; i--) {
+            //        html.append("<BR>" + commentList.get(i) + "<BR>");
+            //   }
+            //}
 
             html.append ("</html>");
-            System.out.println(html.toString());
             textPane.setText(html.toString());
             textPane.setCaretPosition(0);
             updatePathwayData(searchHit, pathwayTableModel);
