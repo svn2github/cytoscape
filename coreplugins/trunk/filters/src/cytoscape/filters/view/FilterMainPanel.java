@@ -118,7 +118,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	
-	public FilterMainPanel() {
+	public FilterMainPanel(Vector<CompositeFilter> pAllFilterVect) {
+		allFilterVect = pAllFilterVect;
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
 
@@ -143,13 +144,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	}
 
-	public Vector<CompositeFilter> getAllFilterVect() {
-		return allFilterVect;
-	}
+	//public Vector<CompositeFilter> getAllFilterVect() {
+	//	return allFilterVect;
+	//}
 	
-	public void setAllFilterVect(Vector<CompositeFilter> pAllFilterVect) {
-		allFilterVect = pAllFilterVect;
-	}
+	//public void setAllFilterVect(Vector<CompositeFilter> pAllFilterVect) {
+	//	allFilterVect = pAllFilterVect;
+	//}
 
 	// Listen to ATTRIBUTES_CHNAGED event
 	public void propertyChange(PropertyChangeEvent e) {
@@ -161,12 +162,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
 		}
 	}
-
-	// triggerd by Cytoscape.ATTRIBUTES_CHANGED event
-	//private void updateIndexForWidget() {
-		// After session load, the combobox will throw null-pointer exception.
-		//System.out.println("updateCMBIndex() is not implemented yet");
-	//}
 	
 	public void refreshFilterSelectCMB() {
 		this.cmbSelectFilter.repaint();
@@ -305,7 +300,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	public void initCMBSelectFilter(){
 		System.out.println("FilterMainPanel.initCMBSelectFilter() ...");
-		
+		//if (allFilterVect == null) {
+		//	allFilterVect = new Vector<CompositeFilter>();
+		//}
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel(allFilterVect);
 		cmbSelectFilter.setModel(theModel);
 		cmbSelectFilter.setRenderer(new FilterRenderer());
@@ -329,7 +326,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				System.out.println("Filter Panel is selected");
 
 				//initTestData();
-				initTestFilters();
+				//initTestFilters();
 
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 				if (cmbSelectFilter.getModel().getSize() == 0) {
@@ -610,6 +607,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				}
 				replaceFilterSettingPanel(selectedFilter);
 				FilterUtil.doSelection(selectedFilter);
+				refreshAttributeCMB();
 			}
 		}	
 	}
@@ -884,7 +882,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				}
 				else if (value instanceof CompositeFilter) {
 					CompositeFilter theFilter = (CompositeFilter) value;
-					setText(theFilter.getName());
+					CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+					if (value == selectedFilter) {// ignore self
+						setText("");						
+					}
+					else {
+						setText(theFilter.getName());
+					}
 				}				
 			}
 			else { // value == null
@@ -969,139 +973,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 	}// FilterRenderer
 
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		JFrame theFrame = new JFrame();
-		FilterMainPanel theMainPanel = new FilterMainPanel();
-		theFrame.add(theMainPanel);
-		
-		theFrame.setPreferredSize(new java.awt.Dimension(330, 500));
-		theFrame.pack();
-		theFrame.setVisible(true);
-	}
-
 	//============================== for debug only ========================
 
-	private CyNode testNode1;
-	private CyNode testNode2;
-	private CyEdge testEdge;
-
-	private void initTestData() {
-		
-		System.out.println("Entering initTestData()...");
-		testNode1 = Cytoscape.getCyNode("testNode1", true);
-		testNode2 = Cytoscape.getCyNode("testNode2", true);
-		testEdge = Cytoscape.getCyEdge(testNode1.getIdentifier(), "Interaction Value",
-		                               testNode2.getIdentifier(), Semantics.INTERACTION);
-		addAttributes(testNode1);
-		addAttributes(testEdge);
-
-	}
-	
-	private void addAttributes(GraphObject go) {
-		String goID = go.getIdentifier();
-		CyAttributes attrs = null;
-
-		if (go instanceof CyNode) {
-			attrs = Cytoscape.getNodeAttributes();
-		} else if (go instanceof CyEdge) {
-			attrs = Cytoscape.getEdgeAttributes();
-		}
-
-		attrs.setAttribute(goID, "BooleanTest", new Boolean(true));
-		attrs.setAttribute(goID, "StringTest", "string test value");
-		attrs.setAttribute(goID, "IntegerTest", new Integer(6));
-		attrs.setAttribute(goID, "DoubleTest", new Double(5.0));
-
-		List<String> listTestValue = new ArrayList<String>();
-		listTestValue.add("list test value1");
-		listTestValue.add("list test value2");
-		attrs.setListAttribute(goID, "ListTest", listTestValue);
-
-		Map<String, String> mapTestValue = new HashMap<String, String>();
-		mapTestValue.put("map key1", "map key1 value");
-		mapTestValue.put("map key2", "map key2 value");
-		attrs.setMapAttribute(goID, "MapTest", mapTestValue);
-
-		// Now add a complex value to test:
-		addComplexAttributes(go, attrs);
-	}
-
-	private void addComplexAttributes(GraphObject go, CyAttributes attrs) {
-		String goID = go.getIdentifier();
-		MultiHashMap mmap = attrs.getMultiHashMap();
-		MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
-
-		if (mmapDef.getAttributeValueType("p-valuesTest") < 0) {
-			mmapDef.defineAttribute("p-valuesTest", // most specific values:
-			                        MultiHashMapDefinition.TYPE_FLOATING_POINT,
-			                        new byte[] {
-			                            MultiHashMapDefinition.TYPE_STRING,
-			                            MultiHashMapDefinition.TYPE_INTEGER
-			                        });
-		}
-
-		if (mmapDef.getAttributeValueType("TextSourceInfo") < 0) {
-			mmapDef.defineAttribute("TextSourceInfo", // most specific values:
-			                        MultiHashMapDefinition.TYPE_STRING,
-			                        new byte[] {
-			                            MultiHashMapDefinition.TYPE_STRING,
-			                            MultiHashMapDefinition.TYPE_INTEGER,
-			                            MultiHashMapDefinition.TYPE_INTEGER
-			                        });
-		}
-
-		PValues.clear();
-		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.5),
-		                       new Object[] { "Jojo", new Integer(0) });
-		PValues.add(new Double(0.5));
-		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
-		                       new Object[] { "Jojo", new Integer(1) });
-		PValues.add(new Double(0.6));
-		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
-		                       new Object[] { "Jojo", new Integer(2) });
-		PValues.add(new Double(0.6));
-		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.7),
-		                       new Object[] { "Harry", new Integer(0) });
-		PValues.add(new Double(0.7));
-		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
-		                       new Object[] { "Harry", new Integer(1) });
-		PValues.add(new Double(0.6));
-
-		TSIValues.clear();
-		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence1",
-		                       new Object[] { "url1", new Integer(0), new Integer(0) });
-		TSIValues.add("url1: sentence1");
-		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence2",
-		                       new Object[] { "url1", new Integer(0), new Integer(1) });
-		TSIValues.add("url1: sentence2");
-		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence3",
-		                       new Object[] { "url1", new Integer(0), new Integer(10) });
-		TSIValues.add("url1: sentence3");
-		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: publication 1",
-		                       new Object[] { "url1", new Integer(1), new Integer(0) });
-		TSIValues.add("url1: publication 1");
-		mmap.setAttributeValue(goID, "TextSourceInfo", "url2: sentence1",
-		                       new Object[] { "url2", new Integer(0), new Integer(6) });
-		TSIValues.add("url2: sentence1");
-		mmap.setAttributeValue(goID, "TextSourceInfo", "url2: publication 1",
-		                       new Object[] { "url2", new Integer(1), new Integer(0) });
-		TSIValues.add("url2: publication 1");
-	}
-	// track complex p-values:
-	private List<Double> PValues = new ArrayList<Double>();
-	private int numTSIs;
-
-	// track complex TextSourceInfo values:
-	private List<String> TSIValues = new ArrayList<String>();
-	private int numPValues;
-	private boolean initialized = false;
-
 	private void initTestFilters() {
-		allFilterVect = new Vector<CompositeFilter>();
+		//allFilterVect = new Vector<CompositeFilter>();
 		
 		//StringFilter myStringFilter = new StringFilter("myStringFilter",LOCATION,"cy*");
 		//myStringFilter.setTextIndex(index_by_location);
@@ -1114,9 +989,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		CompositeFilter compositeFilter1 = new CompositeFilter("firstCompositeFilter");
 		CompositeFilter compositeFilter2 = new CompositeFilter("secondCompositeFilter");
 		CompositeFilter topoFilter = new TopologyFilter("ThirdTopoFilter");
-		allFilterVect.add(topoFilter);
+
 		allFilterVect.add(compositeFilter1);
 		allFilterVect.add(compositeFilter2);
+		allFilterVect.add(topoFilter);
 
 	}
 }
