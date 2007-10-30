@@ -11,6 +11,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 
 /**
  * Summary Panel.
@@ -32,7 +33,19 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
 
-        GradientHeader header = new GradientHeader("Gene Summary");
+        URL url = GradientHeader.class.getResource ("resources/stock_toggle-graphics-16.png");
+        ImageIcon detailsIcon = new ImageIcon(url);
+        JButton button = new JButton (detailsIcon);
+        button.setToolTipText("Hide Gene Details");
+        button.setOpaque(false);
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                setVisible(false);
+            }
+        });
+        GradientHeader header = new GradientHeader("Gene Details", button);
+
         add (header, BorderLayout.NORTH);
         this.setAlpha(0.0f);
         this.setVisible(false);
