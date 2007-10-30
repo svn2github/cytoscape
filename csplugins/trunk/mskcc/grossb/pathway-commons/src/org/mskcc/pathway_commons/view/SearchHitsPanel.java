@@ -178,7 +178,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
                 public void run() {
                     Window window = SwingUtilities.getWindowAncestor(SearchHitsPanel.this);
                     JOptionPane.showMessageDialog(window, "No matches found for:  "
-                            + currentKeyword, "Search Results",
+                            + currentKeyword + ".  Please try again.", "Search Results",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             });

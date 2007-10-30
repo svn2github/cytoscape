@@ -4,6 +4,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.CPathException;
+import org.mskcc.pathway_commons.web_service.EmptySetException;
 
 /**
  * Controller for Executing a Physical Entity Search.
@@ -73,6 +74,9 @@ public class ExecutePhysicalEntitySearch implements Task {
             // update the task monitor
             taskMonitor.setStatus("Done");
             taskMonitor.setPercentCompleted(100);
+        } catch (EmptySetException e) {
+            taskMonitor.setException(e, "No matches found for:  " + keyword + ".",
+                    "Please try a different search term and try again.");
         } catch (CPathException e) {
             if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
                 taskMonitor.setException(e, e.getMessage(), e.getRecoveryTip());

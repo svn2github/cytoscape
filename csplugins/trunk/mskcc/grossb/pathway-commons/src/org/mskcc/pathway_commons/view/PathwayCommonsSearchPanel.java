@@ -91,12 +91,14 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     }
 
     public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
-        if (!searchHitsPanel.isVisible()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    CardLayout cl = (CardLayout)(cards.getLayout());
-                    cl.show(cards, "HITS");                }
-            });
+        if (peSearchResponse.getTotalNumHits() > 0) {
+            if (!searchHitsPanel.isVisible()) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        CardLayout cl = (CardLayout)(cards.getLayout());
+                        cl.show(cards, "HITS");                }
+                });
+            }
         }
     }
 
