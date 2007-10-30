@@ -70,13 +70,14 @@ public class SelectPhysicalEntity {
                     html.append("<UL>");
                     html.append(synBuffer.toString());
                     html.append("</UL>");
+                    html.append("<BR>");
                 }
             }
 
             //  Next, add XRefs
             List <XRefType> xrefList = searchHit.getXref();
             if (xrefList != null && xrefList.size() > 0) {
-                html.append("<BR><B>Links:</B><BR>");
+                html.append("<B>Links:</B><BR>");
                 html.append("<UL>");
                 for (XRefType xref:  xrefList) {
                     String url = xref.getUrl();
