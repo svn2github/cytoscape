@@ -16,7 +16,7 @@ pluginDescription=Information about the plugin that will be displayed to users.<
 pluginVersion=1.0
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
-cytoscapeVersion=2.5, 2.4.3
+cytoscapeVersion=2.4, 2.3.3
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Scripting/Communication
