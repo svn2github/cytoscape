@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.Document;
+import javax.swing.text.html.StyleSheet;
+import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -115,6 +117,17 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
             }
         });
 
+        StyleSheet styleSheet = new StyleSheet();
+        styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
+                + "margin-bottom:3px}");
+        styleSheet.addRule("h3 {color: #663333; font-size: 105%; font-weight: bold;"
+                + "margin-bottom:7px}");
+        styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
+                + "padding-left: 1em;	text-indent: -1em;}");
+        styleSheet.addRule("b {color: #66333; font-weight: bold;}");
+        HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
+        htmlEditorKit.setStyleSheet(styleSheet);
+        textPane.setEditorKit(htmlEditorKit);
         return textPane;
     }
 }
