@@ -118,7 +118,6 @@ public class SearchDetailsPanel extends JPanel {
         protocol.setQuery(Long.toString(internalId));
         protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
         String uri = protocol.getURI();
-        System.out.println("Connecting to:  " + uri);
         NetworkUtil networkUtil = new NetworkUtil(uri, null, false, null);
         networkUtil.start();
     }

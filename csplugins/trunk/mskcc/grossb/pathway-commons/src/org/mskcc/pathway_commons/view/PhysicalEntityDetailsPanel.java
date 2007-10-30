@@ -13,6 +13,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+import cytoscape.util.OpenBrowser;
+
 /**
  * Summary Panel.
  *
@@ -90,7 +92,9 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
         textPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         textPane.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
-                System.out.println("URL:  " + hyperlinkEvent.getURL());
+                if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    OpenBrowser.openURL(hyperlinkEvent.getURL().toString());
+                }
             }
         });
 
@@ -102,6 +106,7 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
         styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
                 + "padding-left: 1em;	text-indent: -1em;}");
         styleSheet.addRule("b {color: #66333; font-weight: bold;}");
+        styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
         HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
         htmlEditorKit.setStyleSheet(styleSheet);
         textPane.setEditorKit(htmlEditorKit);

@@ -36,11 +36,11 @@ public class SelectPhysicalEntity {
      * @param interactionTableModel Interaction Table Model.
      * @param pathwayTableModel     Pathway Table Model.
      * @param summaryDocumentModel  Summary Document Model.
-	 * @param owner Owner of this 
      */
     public void selectPhysicalEntity(SearchResponseType peSearchResponse,
             int selectedIndex, InteractionTableModel interactionTableModel, PathwayTableModel
-									 pathwayTableModel, Document summaryDocumentModel, JTextPane textPane, JComponent textPaneOwner) {
+									 pathwayTableModel, Document summaryDocumentModel,
+            JTextPane textPane, JComponent textPaneOwner) {
         if (peSearchResponse != null) {
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
             SearchHitType searchHit = searchHits.get(selectedIndex);
@@ -81,7 +81,8 @@ public class SelectPhysicalEntity {
                 for (XRefType xref:  xrefList) {
                     String url = xref.getUrl();
                     if (url != null && url.length() > 0) {
-                        html.append("<LI>- <a href=\"" + url + "\">" + xref.getDb() + ":  "
+                        html.append("<LI>- <a class=\"link\" href=\"" + url + "\">"
+                                + xref.getDb() + ":  "
                                 + xref.getId() + "</a></LI>") ;
                     } else {
                         html.append("<LI>- " + xref.getDb() + ":  " + xref.getId() + "</LI>");
