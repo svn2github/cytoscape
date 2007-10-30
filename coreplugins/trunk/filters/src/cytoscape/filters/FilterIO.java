@@ -11,22 +11,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import cytoscape.CytoscapeInit;
 import cytoscape.filters.util.FilterUtil;
+import cytoscape.filters.FilterPlugin;
+
 
 public class FilterIO {
 
 	// Read the filter property file and construct the filter objects
 	// based on the string representation of each filter
-	public Vector<CompositeFilter> getFilterVectFromPropFile(File pPropFile) {
-		Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
+	public int[] getFilterVectFromPropFile(File pPropFile) {
+		//Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
+
+		int addCount = 0;
+		int totalCount = 0;
+		int retValue[] = new int[2];
+		retValue[0] = totalCount;
+		retValue[1] = addCount;
 
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(pPropFile));
 
 			String oneLine = in.readLine();
 
-			if (oneLine == null) {
-				return null;
+			if (oneLine == null) {				
+				return retValue;
 			}
 			double filterVersion = 0.0;
 			if (oneLine.trim().startsWith("FilterVersion")) {
@@ -36,7 +45,7 @@ public class FilterIO {
 			
 			// Ignore filters from the old version
 			if (filterVersion <0.2) {
-				return null;
+				return retValue;
 			}			
 			
 			while (oneLine != null) {
@@ -54,14 +63,13 @@ public class FilterIO {
 						}
 						filterStrVect.add(oneLine);
 					} // inner while loop
-
-					CompositeFilter aFilter = getFilterFromStrVect(filterStrVect); 
-	
-					if (aFilter != null) {
-						retVect.add(aFilter);
-					}
 					
-					//System.out.println("aFilter = \n" + aFilter.toString());
+					totalCount++;	
+					CompositeFilter aFilter = getFilterFromStrVect(filterStrVect); 
+					if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
+						FilterPlugin.getAllFilterVect().add(aFilter);
+						addCount++;
+					}					
 				}
 				
 				oneLine = in.readLine();
@@ -73,7 +81,9 @@ public class FilterIO {
 			ex.printStackTrace();
 		}
 		
-		return retVect;
+		retValue[0] = totalCount;
+		retValue[1] = addCount;
+		return retValue;
 	}
 
 	private AdvancedSetting getAdvancedSettingFromStrVect(Vector<String> pAdvSettingStrVect) {
@@ -130,7 +140,7 @@ public class FilterIO {
 	
 	
 	private CompositeFilter getFilterFromStrVect(Vector<String> pFilterStrVect){
-
+		
 		Vector<String> advSettingStrVect = new Vector<String>();
 		Vector<String> filterStrVect = new Vector<String>();
 
@@ -180,7 +190,6 @@ public class FilterIO {
 				_strFilter.setIndexType((new Integer(_values[3])).intValue());
 				retFilter.addChild(_strFilter);
 			}
-
 			if (line.startsWith("NumericFilter=")) {
 				String[] _values = line.substring(14).split(":");
 				//controllingAttribute + ":" + negation+ ":"+lowBound+":" + highBound+ ":"+index_type;
@@ -219,9 +228,10 @@ public class FilterIO {
 
 				String name = _values[0].trim();
 				String notValue = _values[1].trim();
-				
+
 				// get the reference CompositeFilter
 				CompositeFilter cmpFilter = null;
+				
 				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
 					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
 						cmpFilter = FilterPlugin.getAllFilterVect().elementAt(j);
@@ -257,14 +267,12 @@ public class FilterIO {
 	}
 	
 	
-	public void saveGlobalPropFile(File pPropFile, Vector<CompositeFilter> pAllFilterVect) {
-		System.out.println("FilterIO.saveGlobalPropFile() ...");
-		System.out.println("\tpAllFilterVect.size() =" + pAllFilterVect.size());
+	public void saveGlobalPropFile(File pPropFile) {
 		
 		// Because one filter may depend on the other, CompositeFilters must 
 		// be sorted in the order of depthLevel before save
-		Object [] sortedFilters = getSortedCompositeFilter(pAllFilterVect);
-		Object[] globalFilters = getGlobalFilters(sortedFilters);
+		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());
+		Object[] globalFilters = getFiltersByScope(sortedFilters, "global");
 		
 		if (globalFilters == null || globalFilters.length == 0) {
 			return;
@@ -287,42 +295,57 @@ public class FilterIO {
 	}
 	
 	
-	private Object[] getGlobalFilters(Object[] pFilters) {
+	private Object[] getFiltersByScope(Object[] pFilters, String pScope) {
 		if (pFilters == null || pFilters.length == 0) {
 			return null;
 		}
-		ArrayList<CompositeFilter> globalFilterList = new ArrayList<CompositeFilter>();
+		ArrayList<CompositeFilter> retFilterList = new ArrayList<CompositeFilter>();
 		for (int i = 0; i < pFilters.length; i++) {
 			CompositeFilter theFilter = (CompositeFilter) pFilters[i];
 			AdvancedSetting advSetting = theFilter.getAdvancedSetting();
-			if (advSetting.isGlobalChecked()) {
-				globalFilterList.add(theFilter);
+			
+			if (pScope.equalsIgnoreCase("global")) {
+				if (advSetting.isGlobalChecked()) {
+					retFilterList.add(theFilter);
+				}
+			}
+			if (pScope.equalsIgnoreCase("session")) {
+				if (advSetting.isSessionChecked()) {
+					retFilterList.add(theFilter);
+				}
 			}
 		}
-		return globalFilterList.toArray();
+		return retFilterList.toArray();
 	}
 	
-	public void saveSessionStateFiles(List<File> pFileList, Vector<CompositeFilter> pAllFilterVect){
+	public void saveSessionStateFiles(List<File> pFileList){
+				
+		// Because one filter may depend on the other, CompositeFilters must 
+		// be sorted in the order of depthLevel before save
+		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());
+		Object[] sessionFilters = getFiltersByScope(sortedFilters, "session");
+		
+		if (sessionFilters == null || sessionFilters.length == 0) {
+			return;
+		}
+		
 		// Create an empty file on system temp directory
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		System.out.println("java.io.tmpdir: [" + tmpDir + "]");
 
 		File session_filter_file = new File(tmpDir, "session_filters.props");
 
+		//
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(
-					session_filter_file));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(session_filter_file));
 
-			for (int i = 0; i < pAllFilterVect.size(); i++) {
-				CompositeFilter theFilter = (CompositeFilter) pAllFilterVect.elementAt(i);
-				AdvancedSetting advSetting = theFilter.getAdvancedSetting();
-
-				if (advSetting.isSessionChecked()) {
-					writer.write(theFilter.toString());
-					writer.newLine();
-				}
+			writer.write("FilterVersion=0.2\n");			
+			
+			for (int i = 0; i < sessionFilters.length; i++) {
+				CompositeFilter theFilter = (CompositeFilter) sessionFilters[i];
+				writer.write(theFilter.toString());
+				writer.newLine();
 			}
-
 			writer.close();
 		} catch (Exception ex) {
 			System.out.println("Session filter Write error");
@@ -330,58 +353,27 @@ public class FilterIO {
 		}
 
 		pFileList.add(session_filter_file);
-
 	}
 	
 	
-	public void restoreSessionState(List<File> pStateFileList, Vector<CompositeFilter> pAllFilterVect) {
+	public void restoreSessionState(List<File> pStateFileList) {
 		if ((pStateFileList == null) || (pStateFileList.size() == 0)) {
 			System.out.println("\tNo previous filter state to restore.");
-
 			return;
 		}
-
+		
 		try {
 			File session_filter_file = pStateFileList.get(0);
 
-			Vector<CompositeFilter> sessionFilterVect = getFilterVectFromPropFile(session_filter_file);
-
-			System.out.println("\tLoad " + sessionFilterVect.size()
-					+ " session filters");
-
-			int currentFilterCount = pAllFilterVect.size();
-			System.out.println("\tcurrentFilterCount=" + currentFilterCount);
-
-			for (int i = 0; i < sessionFilterVect.size(); i++) {
-				// Exclude duplicated filter
-				boolean isDuplicated = false;
-
-				for (int j = 0; j < currentFilterCount; j++) {
-					if (sessionFilterVect.elementAt(i).toString()
-							.equalsIgnoreCase(
-									pAllFilterVect.elementAt(j).toString())) {
-						isDuplicated = true;
-
-						break;
-					}
-				}
-
-				if (isDuplicated) {
-					continue;
-				}
-
-				pAllFilterVect.add(sessionFilterVect.elementAt(i));
-			}
-
-			System.out.println("\t"
-							+ ((currentFilterCount + sessionFilterVect.size()) - pAllFilterVect.size())
-							+ " duplicated filters are not added");
+			int[] loadCounts = getFilterVectFromPropFile(session_filter_file);
+			System.out.println("\tLoad " + loadCounts[1] + " session filters");
+			System.out.println("\t\t" + (loadCounts[0]-loadCounts[1]) + " duplicated filters are not loaded");
 		} catch (Throwable ee) {
 			System.out.println("Failed to restore Filters from session!");
 		}
-
 	}
 
+	
 	// Determine the nest level of the given CompositeFilter
 	private int getTreeDepth(CompositeFilter pFilter, int pDepthLevel){
 		List<CyFilter> childrenList = pFilter.getChildren();
