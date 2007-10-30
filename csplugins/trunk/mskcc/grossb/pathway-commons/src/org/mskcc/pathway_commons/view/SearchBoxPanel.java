@@ -4,6 +4,8 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,8 @@ public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
     private PathwayCommonsWebApi webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
+    private Animator animator;
+    private PulsatingBorder pulsatingBorder;
 
     /**
      * Constructor.
@@ -34,6 +38,17 @@ public class SearchBoxPanel extends JPanel {
         add (header);
         add (Box.createVerticalStrut(5));
         final JTextField searchField = createSearchField();
+
+        pulsatingBorder = new PulsatingBorder (searchField);
+        searchField.setBorder (BorderFactory.createCompoundBorder(searchField.getBorder(),
+                pulsatingBorder));
+
+        PropertySetter setter = new PropertySetter (pulsatingBorder, "thickness",
+                0.0f, 1.0f);
+        animator = new Animator (900, Animator.INFINITE,
+                Animator.RepeatBehavior.REVERSE, setter);
+        animator.start();
+        
         JComboBox organismComboBox = createOrganismComboBox();
         JButton helpButton = new JButton("Help");
         helpButton.setToolTipText("Help");
@@ -124,6 +139,10 @@ public class SearchBoxPanel extends JPanel {
         } else {
             ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
                     (webApi, keyword.trim(), -1, 1);
+            if (animator.isRunning()) {
+                pulsatingBorder.setThickness(0);
+                animator.stop();
+            }
             JTaskConfig jTaskConfig = new JTaskConfig();
             jTaskConfig.setAutoDispose(true);
             jTaskConfig.displayCancelButton(true);
