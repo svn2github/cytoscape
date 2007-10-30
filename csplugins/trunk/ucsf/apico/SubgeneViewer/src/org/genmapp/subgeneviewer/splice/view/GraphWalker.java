@@ -232,7 +232,7 @@ public class GraphWalker {
 					}
 
 					int startX = regionBounds.x + regionBounds.width;
-					int startY = regionBounds.y + regionBounds.height;
+					int startY = regionBounds.y - regionBounds.height;
 
 					System.out.println("Getting bounds for region: " + toRegion
 							+ " with name: " + regionString);
@@ -242,7 +242,7 @@ public class GraphWalker {
 					}
 
 					int endX = toRegionBounds.x;
-					int endY = toRegionBounds.y + toRegionBounds.height;
+					int endY = toRegionBounds.y - toRegionBounds.height;
 
 					g.setColor(Color.blue);
 
@@ -260,8 +260,8 @@ public class GraphWalker {
 					g.setStroke(thin);
 
 					g.drawLine(startX, startY, ((startX + endX) / 2), startY
-							+ NODE_HEIGHT);
-					g.drawLine(((startX + endX) / 2), startY + NODE_HEIGHT,
+							- NODE_HEIGHT);
+					g.drawLine(((startX + endX) / 2), startY - NODE_HEIGHT,
 							endX, endY);
 					
 					//reset stroke
