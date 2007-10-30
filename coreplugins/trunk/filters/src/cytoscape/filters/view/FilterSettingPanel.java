@@ -736,8 +736,8 @@ public class FilterSettingPanel extends JPanel {
 		chkGlobal.addItemListener(l);
 		chkNode.addItemListener(l);
 		chkEdge.addItemListener(l);
-		//chkSource.addItemListener(l);
-		//chkTarget.addItemListener(l);
+		chkSource.addItemListener(l);
+		chkTarget.addItemListener(l);
 		rbtAND.addItemListener(l);
 		rbtOR.addItemListener(l);
 		chkNegation.addItemListener(l);
@@ -771,14 +771,40 @@ public class FilterSettingPanel extends JPanel {
 				}
 				else if (theCheckBox == chkEdge)
 				{
-					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());										
+					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());	
+					if (!chkEdge.isSelected()) {
+						chkSource.setSelected(false);
+						chkTarget.setSelected(false);
+					}
 					parentPanel.refreshAttributeCMB();
 				}
+				else if (theCheckBox == chkSource)
+				{
+					theFilter.getAdvancedSetting().setSource(chkSource.isSelected());										
+					parentPanel.refreshAttributeCMB();
+				}	
+				else if (theCheckBox == chkTarget)
+				{
+					theFilter.getAdvancedSetting().setTarget(chkTarget.isSelected());										
+					parentPanel.refreshAttributeCMB();
+				}					
 				else if (theCheckBox == chkNegation)
 				{
 					theFilter.setNegation(chkNegation.isSelected());										
 				}	
 				
+				if (theCheckBox == chkSource || theCheckBox == chkTarget) {
+					System.out.println("chkSource or theCheckBox is checked");
+					if (!chkSource.isSelected() || !chkTarget.isSelected()) {
+						chkNode.setSelected(false);
+						chkEdge.setSelected(true);
+						theFilter.getAdvancedSetting().setNode(false);
+						theFilter.getAdvancedSetting().setEdge(true);
+					}
+					if (!chkSource.isSelected() && !chkTarget.isSelected()) {
+						chkEdge.setSelected(false);
+					}
+				}
 				//Update the selection on screen
 				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
 					//System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
@@ -827,9 +853,16 @@ public class FilterSettingPanel extends JPanel {
         jLabel7 = new javax.swing.JLabel();
         chkNode = new javax.swing.JCheckBox();
         chkEdge = new javax.swing.JCheckBox();
-        //jLabel8 = new javax.swing.JLabel();
-        //chkSource = new javax.swing.JCheckBox();
-        //chkTarget = new javax.swing.JCheckBox();
+        
+        jLabel8 = new javax.swing.JLabel();
+        chkSource = new javax.swing.JCheckBox();
+        chkTarget = new javax.swing.JCheckBox();
+        
+        // hide source/target row
+        jLabel8.setVisible(false);
+        chkSource.setVisible(false);
+        chkTarget.setVisible(false);
+        
         lbRelation = new javax.swing.JLabel();
         rbtAND = new javax.swing.JRadioButton();
         rbtOR = new javax.swing.JRadioButton();
@@ -916,7 +949,7 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         pnlAdvancedOptions.add(chkEdge, gridBagConstraints);
-        /*
+        
         jLabel8.setText("Edge");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
@@ -944,12 +977,13 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         pnlAdvancedOptions.add(chkTarget, gridBagConstraints);
-         */
+        
         
         lbRelation.setText("Relation");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
         pnlAdvancedOptions.add(lbRelation, gridBagConstraints);
 
         rbtAND.setSelected(true);
