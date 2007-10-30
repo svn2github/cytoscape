@@ -1,8 +1,5 @@
 package org.mskcc.pathway_commons.view;
 
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-import com.jgoodies.looks.plastic.theme.SkyBlue;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
@@ -66,8 +63,9 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     private JPanel createAboutPanel() {
         JPanel aboutPanel = new JPanel();
         aboutPanel.setLayout(new BorderLayout());
-        TitledBorder border = GuiUtils.createTitledBorder("About");
-        aboutPanel.setBorder(border);
+        GradientHeader header = new GradientHeader("About");
+
+        aboutPanel.add(header, BorderLayout.NORTH);
         JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
         Document doc = textPane.getDocument();
