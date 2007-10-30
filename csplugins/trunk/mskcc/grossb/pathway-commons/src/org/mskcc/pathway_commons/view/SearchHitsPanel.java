@@ -8,6 +8,7 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import cytoscape.Cytoscape;
@@ -23,6 +24,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 
 /**
  * Search Hits Panel.
@@ -40,6 +42,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private JTextPane summaryTextPane;
     private PhysicalEntityDetailsPanel detailsPanel;
 	private JLayeredPane appLayeredPane;
+    private JButton detailsButton;
 
     /**
      * Constructor.
@@ -67,7 +70,9 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         peListModel = new DefaultListModel();
         peList = createHitJList(peListModel);
         JScrollPane hitListPane = new JScrollPane(peList);
-        GradientHeader header = new GradientHeader("Step 2:  Select Gene");
+
+        detailsButton = createDetailsButton();
+        GradientHeader header = new GradientHeader("Step 2:  Select Gene", detailsButton);
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(header);
 
@@ -84,69 +89,47 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
     }
 
+    private JButton createDetailsButton() {
+        URL url = GradientHeader.class.getResource ("resources/stock_zoom-16.png");
+        ImageIcon detailsIcon = new ImageIcon(url);
+        JButton button = new JButton (detailsIcon);
+        button.setToolTipText("View Gene Details");
+        button.setOpaque(false);
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                togglePopup();
+            }
+        });
+
+        return button;
+    }
+
     private JList createHitJList(DefaultListModel peListModel) {
         JList peList = new JList(peListModel);
         peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         peList.setPrototypeCellValue("12345678901234567890");
-
-        peList.addMouseListener(new MouseAdapter() {
-
-            /**
-             * Mouse has entered the JList.
-             * @param mouseEvent Mouse Event.
-             */
-            public void mouseEntered(MouseEvent mouseEvent) {
-                createPopup();
-            }
-
-            /**
-             * User pressed click within the JList.
-             * @param mouseEvent Mouse Event.
-             */
-            public void mouseClicked(MouseEvent mouseEvent) {
-                createPopup();
-            }
-
-            /**
-             * Mouse has existed the JList.
-             * @param mouseEvent Mouse Event.
-             */
-            public void mouseExited(MouseEvent mouseEvent) {
-				if (detailsPanel.isVisible()) {
-                    Timer timer = new Timer(1000, new ActionListener() {
-                        public void actionPerformed(ActionEvent actionEvent) {
-							detailsPanel.setVisible(false);
-                        }
-						});
-                    timer.setRepeats(false);
-                    timer.start();
-                }
-            }
-        });
-
-
         return peList;
     }
 
-	private void createPopup() {
+	private void togglePopup() {
         if (!detailsPanel.isVisible()) {
             int MARGIN = 30;
 			int popupWIDTH = (int)this.getSize().getWidth();
-			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
+			int popupHEIGHT = (int)(this.getSize().getHeight() * .50);
 			int desktopLocationX = Cytoscape.getDesktop().getLocationOnScreen().x;
 			int desktopLocationY = Cytoscape.getDesktop().getLocationOnScreen().y;
-			int desktopInsets = Cytoscape.getDesktop().getInsets().top
-                    + Cytoscape.getDesktop().getInsets().bottom;
 			int popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
 			int popupY = getLocationOnScreen().y - desktopLocationY;
-            //popup.setCurtain(popupX+desktopLocationX, popupY
-            // +desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
 			detailsPanel.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
             detailsPanel.setVisible(true);
+            detailsButton.setToolTipText("Hide Gene Details");
 
             Animator animator = new Animator (300);
             animator.addTarget(new PropertySetter(detailsPanel, "alpha", 0.0f, 1.0f));
             animator.start();
+        } else {
+            detailsPanel.setVisible(false);
         }
 	}
 
