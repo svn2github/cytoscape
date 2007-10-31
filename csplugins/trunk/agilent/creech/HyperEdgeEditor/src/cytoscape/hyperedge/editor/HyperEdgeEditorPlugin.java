@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Thu Oct 25 19:00:42 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Oct 31 10:09:36 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Oct 31 10:09:22 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.58.
 * Thu Oct 25 16:05:12 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.57. Added HESessionLoadedMonitor that
 *  ensures that the BioChemicalReaction Visual Style is set up after loading
@@ -109,7 +111,7 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.57;
+    private static final Double VERSION = 2.58;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();

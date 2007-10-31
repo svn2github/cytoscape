@@ -15,7 +15,7 @@ pluginDescription=Add, remove, and modify HyperEdges in a Cytoscape Network.
 # Plugin version number, this must be two numbers separated by a
 # decimlal.  Ex. 0.2, 14.03
 
-pluginVersion=2.57
+pluginVersion=2.58
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6
