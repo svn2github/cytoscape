@@ -23,6 +23,9 @@ import org.w3c.dom.Node;
 public class BiomartStub {
 	
 	private static final String BASE_URL = "http://www.biomart.org/biomart/martservice?";
+	
+//	private static final String BASE_URL = "http://banon.cshl.edu:5555/biomart/martservice?";
+	
 	private URL url;
 	private URLConnection uc;
 	
@@ -57,7 +60,7 @@ public class BiomartStub {
 				
 			
 				System.out.println("--------------------------------");
-				System.out.println("Reply from Biomart: " + nd.getNodeName());
+				System.out.println("############# New Reply from Biomart: " + nd.getNodeName());
 				NamedNodeMap attrs = nd.getAttributes();
 				for(int i=0; i<attrs.getLength(); i++) {
 					System.out.println("---> " + attrs.item(i).getNodeName() + " = " + attrs.item(i).getNodeValue());
