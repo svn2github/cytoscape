@@ -80,8 +80,11 @@ import giny.model.Node;
  */
 public class BiomartNameMappingPanel extends AttributeImportPanel implements PropertyChangeListener {
 
-	private static final String ATTR_BASE_URL = "http://www.biomart.org/biomart/martservice?virtualschema=default&type=attributes&dataset=";
-	private static final String FILTER_BASE_URL = "http://www.biomart.org/biomart/martservice?virtualschema=default&type=filters&dataset=";
+	private static String BASE_URL1 = "http://banon.cshl.edu:5555/biomart/martservice";
+	private static String BASE_URL2 = "http://www.biomart.org/biomart/martservice";
+	
+	private static final String ATTR_BASE_URL = BASE_URL2 + "?virtualschema=default&type=attributes&dataset=";
+	private static final String FILTER_BASE_URL = BASE_URL2 + "?virtualschema=default&type=filters&dataset=";
 	private static final Icon LOGO = new ImageIcon(BiomartNameMappingPanel.class.getResource("/images/logo_biomart2.png"));
 	private Map<String, String> datasourceMap;
 	private Map<String, Map<String, String>> attributeMap;
@@ -138,6 +141,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 
 			String[] dbparts = trimed.split("\\t");
 
+			
 			URL url = new URL(dbparts[1]);
 			URLConnection uc = url.openConnection();
 			InputStream is = uc.getInputStream();
@@ -260,11 +264,11 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 			attrList.repaint();
 		} else if (type.equals(SourceType.FILTER)) {
 			while ((s = reader.readLine()) != null) {
-				//				System.out.println("Filter---> " + s);
+				System.out.println("##########Filter---> " + s);
 				parts = s.split("\\t");
 
 				if ((parts.length > 1)
-				    && (parts[1].endsWith("ID(s)") || parts[1].endsWith("Accession(s)"))
+				    && (parts[1].endsWith("ID(s)") || parts[1].endsWith("Accession(s)") || parts[1].contains("IDs"))
 				    && (parts[0].startsWith("with_") == false)) {
 					System.out.println(parts[1]);
 					this.attributeTypeComboBox.addItem(parts[1]);
