@@ -110,6 +110,12 @@ public class PathwayCommonsWebApi {
             }
             searchHit.getXref().addAll(xrefList);
 
+            List extracts = searchHit.getExcerpt();
+            extracts.add ("Vestibulum pharetra <B>laoreet ante</B> dictum dolor sed, "
+                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
+                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
+                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
+
             List comments = searchHit.getComment();
             comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
                     + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "

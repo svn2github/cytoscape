@@ -66,7 +66,7 @@ public class SelectPhysicalEntity {
                     }
                 }
                 if (synBuffer.length() > 0) {
-                    html.append("<B>Synonyms:</B><BR>");
+                    html.append("<h4>Synonyms:</h4>");
                     html.append("<UL>");
                     html.append(synBuffer.toString());
                     html.append("</UL>");
@@ -77,7 +77,7 @@ public class SelectPhysicalEntity {
             //  Next, add XRefs
             List <XRefType> xrefList = searchHit.getXref();
             if (xrefList != null && xrefList.size() > 0) {
-                html.append("<B>Links:</B><BR>");
+                html.append("<H4>Links:</H4>");
                 html.append("<UL>");
                 for (XRefType xref:  xrefList) {
                     String url = xref.getUrl();
@@ -90,6 +90,22 @@ public class SelectPhysicalEntity {
                     }
                 }
                 html.append("</UL>");
+            }
+
+            List <String> excerptList = searchHit.getExcerpt();
+            if (excerptList != null && excerptList.size() > 0) {
+                String primeExcerpt = null;
+                for (String excerpt:  excerptList) {
+                    if (primeExcerpt == null || excerpt.length() > primeExcerpt.length()) {
+                        if (!excerpt.equalsIgnoreCase(searchHit.getName())) {
+                            primeExcerpt = excerpt;
+                        }
+                    }
+                }
+                if (primeExcerpt != null) {
+                    html.append("<BR><H4>Matching Excerpt(s):</H4>");
+                    html.append("<span class='excerpt'>" + primeExcerpt + "</span><BR>") ;
+                }
             }
 
             //  Temporarily commented out

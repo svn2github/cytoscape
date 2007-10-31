@@ -103,8 +103,10 @@ public class PhysicalEntityDetailsPanel extends JPanel {
                 + "margin-bottom:7px}");
         styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
                 + "padding-left: 1em;	text-indent: -1em;}");
-        styleSheet.addRule("b {color: #66333; font-weight: bold;}");
+        styleSheet.addRule("h4 {color: #66333; font-weight: bold; margin-bottom:3px;}");
+        styleSheet.addRule("b {background-color: #FFFF00;}");
         styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
+        styleSheet.addRule(".excerpt {font-size: 90%;}");
         HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
         htmlEditorKit.setStyleSheet(styleSheet);
         textPane.setEditorKit(htmlEditorKit);
