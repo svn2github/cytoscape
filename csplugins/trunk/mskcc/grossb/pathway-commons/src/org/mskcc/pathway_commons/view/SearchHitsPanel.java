@@ -7,8 +7,6 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionTableModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import cytoscape.Cytoscape;
 
 import javax.swing.*;
@@ -38,6 +36,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private PhysicalEntityDetailsPanel detailsPanel;
 	private JLayeredPane appLayeredPane;
     private JButton detailsButton;
+	private PopupPanel popup;
 
     /**
      * Constructor.
@@ -54,12 +53,13 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //  Create the Summary Panel, but don't show it yet
-        detailsPanel = new PhysicalEntityDetailsPanel();
+        detailsPanel = new PhysicalEntityDetailsPanel(this);
         summaryDocument = detailsPanel.getDocument();
         summaryTextPane = detailsPanel.getTextPane();
 
 		// create popup window
-		appLayeredPane.add(detailsPanel, appLayeredPane.getIndexOf(this) + 1);
+		popup = new PopupPanel(appLayeredPane, detailsPanel);
+		appLayeredPane.add(popup, new Integer(appLayeredPane.getIndexOf(this) + 1));
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
@@ -107,24 +107,39 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         return peList;
     }
 
-	private void togglePopup() {
-        if (!detailsPanel.isVisible()) {
-            int MARGIN = 30;
-			int popupWIDTH = (int)this.getSize().getWidth();
-			int popupHEIGHT = (int)(this.getSize().getHeight() * .50);
-			int desktopLocationX = Cytoscape.getDesktop().getLocationOnScreen().x;
-			int desktopLocationY = Cytoscape.getDesktop().getLocationOnScreen().y;
-			int popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
-			int popupY = getLocationOnScreen().y - desktopLocationY;
-			detailsPanel.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
-            detailsPanel.setVisible(true);
+	/**
+	 * Our implementation of setBounds().  Required to affect
+	 * popup window position and/or transition effect if this 
+	 * panel's bounds change.
+	 */
+	public void setBounds(int x, int y, int width, int height) {
+
+		if (getX() != x || getY() != y || getWidth() != width || getHeight() != height) {
+			if (popup.isVisible()) {
+				popup.cancelTransition();
+			}
+		}
+		super.setBounds(x,y,width, height);
+	}
+
+	public void togglePopup() {
+        if (!popup.isVisible()) {
             detailsButton.setToolTipText("Hide Gene Details");
 
-            Animator animator = new Animator (300);
-            animator.addTarget(new PropertySetter(detailsPanel, "alpha", 0.0f, 1.0f));
-            animator.start();
+			int MARGIN = 30;
+			int popupWIDTH = (int)this.getSize().getWidth();
+			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
+			int desktopLocationX = Cytoscape.getDesktop().getLocationOnScreen().x;
+			int desktopLocationY = Cytoscape.getDesktop().getLocationOnScreen().y;
+			int desktopInsets = Cytoscape.getDesktop().getInsets().top + Cytoscape.getDesktop().getInsets().bottom;
+			int popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
+			int popupY = getLocationOnScreen().y - desktopLocationY;
+			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
+            popup.setCurtain(popupX+desktopLocationX, popupY+desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
+			popup.fadeIn();
         } else {
-            detailsPanel.setVisible(false);
+			detailsButton.setToolTipText("View Gene Details");
+			popup.fadeOut();
         }
 	}
 
