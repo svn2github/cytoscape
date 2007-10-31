@@ -37,7 +37,6 @@
 package edu.ucsd.bioeng.idekerlab.ncbiclient;
 
 import cytoscape.data.webservice.WebServiceClientManager;
-
 import cytoscape.plugin.CytoscapePlugin;
 
 
@@ -52,6 +51,6 @@ public class NCBIClientPlugin extends CytoscapePlugin {
 	 */
 	public NCBIClientPlugin() throws Exception {
 		// Register this client to the manager.
-		WebServiceClientManager.registerClient(new NCBIClient());
+		WebServiceClientManager.registerClient(NCBIClient.getClient());
 	}
 }
