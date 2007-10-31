@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sat Jul 30 17:00:27 2005
-* Modified:     Thu Oct 25 06:32:27 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Oct 30 11:00:53 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,11 @@
 *
 * Revisions:
 *
+* Tue Oct 30 10:58:16 2007 (Michael L. Creech) creech@w235krbza760
+*  Fixed bug in propertyChange() for NETWORK_VIEW_FOCUSED where
+*  palette was being redrawn when the Editor tab wasn't
+*  selected. Added isEditorInOperation().  Changed
+*  updateEditorPalette() to be private.
 * Thu Oct 25 05:42:55 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed onComponentSelected() to not generate a bogus CyNetworkView
 *  but the desired CyNetworkView.
@@ -129,18 +134,31 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		// AJK: 06/10/06 BEGIN
 		// don't do any work building editor palette if editor tab is not
 		// selected in CytoPanel
-		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
-
-		if (idx != Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex()) {
-			return;
+		// MLC 10/30/07 BEGIN:
+		if (!isEditorInOperation ()) {
+		    return;
 		}
-
+		//		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
+		//		if (idx != Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex()) {
+		//			return;
+		// }
+		// MLC 10/30/07 END.
 		VisualMappingManager VMM = (VisualMappingManager) e.getSource();
 
 		if (VMM != null) {
 			updateEditorPalette(VMM.getVisualStyle());
 		}
 	}
+
+    // MLC 10/30/07 BEGIN:
+    private boolean isEditorInOperation (int tabIdx) {
+	int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
+	return (idx == tabIdx);
+    }
+    private boolean isEditorInOperation () {
+	return isEditorInOperation (Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex());
+    }
+    // MLC 10/30/07 END.
 
 	/**
 	 * respond to selection of a CytoPanels component, in particular respond to
@@ -149,10 +167,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 	// implements CytoPanelListener interface:
 	public void onComponentSelected(int componentIndex) {
-		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
-
-		CytoscapeEditorManager.log("CytoPanel component selected: " + idx);
-		if (componentIndex == idx) {
+	    // MLC 10/30/07 BEGIN:
+	    //		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
+	    //
+	    //		CytoscapeEditorManager.log("CytoPanel component selected: " + idx);
+	    //		if (componentIndex == idx) {
+	    if (isEditorInOperation (componentIndex)) {
+	    // MLC 10/30/07 END.
 			updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
 
 			// If no networks exist, create an empty network.
@@ -217,7 +238,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	 * sets up editor and visual style and builds the ShapePalette
 	 * @param style
 	 */
-	public void updateEditorPalette(VisualStyle style) {
+	// public void updateEditorPalette(VisualStyle style) {
+	private void updateEditorPalette(VisualStyle style) {
 		// AJK: 06/16/06 only update palette after CYTOSCAPE_INITIALIZED
 		CytoscapeEditorManager.log("setting up editor for visual style: " + style);
 
@@ -325,8 +347,12 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 					// AJK: 10/25/07 need to update editor palette because we have a new edito
 					//   but this may cause two update palettes when we have first new network
 					//   will that matter?
-					updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
-
+					// MLC 10/30/07 BEGIN:
+					// only redraw the palette when we are on the Editor tab:
+					if (isEditorInOperation ()) {
+					    updateEditorPalette(Cytoscape.getVisualMappingManager().getVisualStyle());
+					}
+					// MLC 10/30/07 END.
 				} catch (InvalidEditorException ex) {
 				}
 			}

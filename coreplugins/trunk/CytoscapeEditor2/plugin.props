@@ -11,10 +11,10 @@ pluginName=CytoscapeEditor
 pluginDescription=Provides basic ability to edit nodes and edges in a network.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=2.5
+pluginVersion=2.53
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5
+cytoscapeVersion=2.5,2.6
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Core
@@ -25,7 +25,7 @@ pluginCategory=Core
 pluginAuthorsIntsitutions=Allan Kuchinsky:Agilent Technologies;Michael Creech:Blue Oak Software
 
 # Date this plugin/plugin version was released
-releaseDate=July 3, 2007
+releaseDate=Oct 30, 2007
 
 # -- The following properties should be set ONLY BY CORE PLUGINS -- #
 downloadURL=http://cytoscape.org/plugins/plugins.xml
