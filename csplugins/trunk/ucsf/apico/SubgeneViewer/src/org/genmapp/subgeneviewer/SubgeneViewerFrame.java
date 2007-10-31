@@ -1,6 +1,8 @@
 package org.genmapp.subgeneviewer;
 
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,13 +23,36 @@ import ding.view.DGraphView;
 
 public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 
+/** Frame contents  
+  ----------------------------------- Frame ---
+  | -------------------------- _scrollPane -- |
+  |	| ---------------------- _panel -- ==== | |
+  |	| |  ---------------- view ---   |  /\  | |
+  |	| |  | Gene A				 |   |  ||  | |
+  |	| |  |   <exon structure>    |   |  ||  | |
+  |	| |  |   <data features>     |   |  ||  | |
+  |	| |  -------------------------   |  ||  | |
+  |	|								 |  ||  | |
+  |	| |  ---------------- view ---   |  ||  | |
+  |	| |  | Gene B			  	 |   |  ||  | |
+  |	| |  |   <exon structure>    |   |  ||  | |
+  |	| |  |   <data features>     |   |  ||  | |
+  |	| |  -------------------------   |  \/  | |
+  |	| -------------------------------- ==== | |						
+  |	----------------------------------------- |
+  ---------------------------------------------
+*/	
 	private static List<JPanel> _cnvList = new ArrayList<JPanel>();
 
 	private static JScrollPane _scrollPane;
 
 	private static JPanel _panel;
 
+	private static JPanel _buttonPanel;
+
 	private static ImageIcon icon;
+
+	JButton close = new JButton("X");
 
 	public SubgeneViewerFrame() {
 
@@ -57,6 +83,16 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 		}
 		System.out.println("SGV: adding view to frame");
 
+		//close button per view
+//		view.add(close);
+//		close.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				SubgeneNetworkView view2 = e.getSource();
+//				_panel.remove(view);
+//				view.setVisible(false);
+//			}});
+		
+		
 		view.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
 		//view.setBackground(new Color(247,243,213));
 		view.setOpaque(true);
