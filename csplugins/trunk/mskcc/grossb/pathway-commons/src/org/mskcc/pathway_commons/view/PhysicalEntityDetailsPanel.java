@@ -1,7 +1,5 @@
 package org.mskcc.pathway_commons.view;
 
-import org.jdesktop.swingx.JXPanel;
-
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
@@ -20,15 +18,17 @@ import cytoscape.util.OpenBrowser;
  *
  * @author Ethan Cerami.
  */
-public class PhysicalEntityDetailsPanel extends JXPanel {
+public class PhysicalEntityDetailsPanel extends JPanel {
     private Document doc;
     private JTextPane textPane;
+	private SearchHitsPanel searchHitsPanel; // ref to parent
 
     /**
      * Constructor.
      */
-    public PhysicalEntityDetailsPanel() {
+    public PhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
         this.setLayout(new BorderLayout());
+		this.searchHitsPanel = searchHitsPanel;
         textPane = createTextPane();
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
@@ -41,14 +41,12 @@ public class PhysicalEntityDetailsPanel extends JXPanel {
 
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                setVisible(false);
+				PhysicalEntityDetailsPanel.this.searchHitsPanel.togglePopup(); // amazing syntax!!
             }
         });
         GradientHeader header = new GradientHeader("Gene Details", button);
 
         add (header, BorderLayout.NORTH);
-        this.setAlpha(0.0f);
-        this.setVisible(false);
         add(scrollPane, BorderLayout.CENTER);
     }
 
