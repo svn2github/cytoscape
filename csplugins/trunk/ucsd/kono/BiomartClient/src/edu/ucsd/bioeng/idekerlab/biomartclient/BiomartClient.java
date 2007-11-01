@@ -121,6 +121,9 @@ public class BiomartClient extends WebServiceClientImpl {
 				}
 			}
 			System.out.println("--------------------Got result: " + result.size());
+			
+			
+			
 			mapping((List<String[]>) result, query.getKeyCyAttrName(), query.getKeyNameInWebService());
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		
@@ -197,6 +200,7 @@ public class BiomartClient extends WebServiceClientImpl {
 					}
 
 					int index = 0;
+					
 					for (List<Object> valList : listOfValList) {
 						if (valList == null) {
 							valList = new ArrayList<Object>();
@@ -209,9 +213,13 @@ public class BiomartClient extends WebServiceClientImpl {
 						if (keyAttrName.equals("ID")) {
 							Cytoscape.getNodeAttributes()
 						         .setListAttribute(keyVal, columnNames[j], valList);
+							Cytoscape.getNodeAttributes()
+					         .setAttribute(keyVal, columnNames[j]+"-TOP", valList.get(0).toString());
 						} else {
 							Cytoscape.getNodeAttributes()
 					         .setListAttribute(ids.get(index), columnNames[j], valList);
+							Cytoscape.getNodeAttributes()
+					         .setAttribute(ids.get(index), columnNames[j]+"-TOP", valList.get(0).toString());
 						}
 						index++;
 					}
