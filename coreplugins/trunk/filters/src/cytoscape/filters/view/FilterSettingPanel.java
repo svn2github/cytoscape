@@ -193,7 +193,7 @@ public class FilterSettingPanel extends JPanel {
 		return true;
 	}
 	
-/*
+
 	private int getAttributeDataType(String pAttribute, int pType) {
 		int attributeType = CyAttributes.TYPE_UNDEFINED;
 		if (pType == QuickFind.INDEX_NODES) {
@@ -205,7 +205,7 @@ public class FilterSettingPanel extends JPanel {
 
 		return attributeType;
 	}
-*/
+
 	
 	private JComboBox getTextIndexComboBox(StringFilter pFilter){
 		TextIndexComboBox comboBox = null;
@@ -258,7 +258,7 @@ public class FilterSettingPanel extends JPanel {
 	
 	
 	private JRangeSliderExtended getRangerSlider(NumericFilter pFilter) {
-		System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
+		//System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
 		NumberIndex theIndex = createNumberIndex(pFilter);
 
 		if (theIndex != null) {
@@ -270,27 +270,36 @@ public class FilterSettingPanel extends JPanel {
 			rangeModel = new NumberRangeModel(0,0,0,0);			
 		}
 		else {
-			//Initialize the search values, lowValue and highValue	
-			//int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
-			//if (dataType == CyAttributes.TYPE_FLOATING) {}
-			//pFilter.setLowBound(theIndex.getMinimumValue());
-			//pFilter.setHighBound(theIndex.getMaximumValue());
-				
-			
-			System.out.println("\tlow = " + pFilter.getLowBound());
-			System.out.println("\tHigh = " + pFilter.getHighBound());
-			System.out.println("\tMin = " + theIndex.getMinimumValue());
-			System.out.println("\tMax = " + theIndex.getMaximumValue());
-			
-			rangeModel = new NumberRangeModel
-						(pFilter.getLowBound(), pFilter.getHighBound(), theIndex.getMinimumValue(), theIndex.getMaximumValue());						
-						//(theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMaximumValue());						
+			//System.out.println("\n\tlow = " + pFilter.getLowBound());
+			//System.out.println("\tHigh = " + pFilter.getHighBound());
+			//System.out.println("\tMin = " + theIndex.getMinimumValue());
+			//System.out.println("\tMax = " + theIndex.getMaximumValue());
 
+			if (pFilter.getLowBound() == null) {
+				pFilter.setLowBound(theIndex.getMinimumValue());
+			}
+			if (pFilter.getHighBound() == null) {
+				pFilter.setHighBound(theIndex.getMaximumValue());
+			}
+
+			//Initialize the search values, lowValue and highValue	
+			int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
+			if (dataType == CyAttributes.TYPE_FLOATING) {
+				//System.out.println("\ndataType = Double");
+								
+				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
+						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
+			}
+			else if (dataType == CyAttributes.TYPE_INTEGER) {
+				//System.out.println("\ndataType = INTEGER");
+				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
+						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
+			}
 		}
 		
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
-	                JRangeSlider.LEFTRIGHT_TOPBOTTOM);		
-				
+                JRangeSlider.LEFTRIGHT_TOPBOTTOM);		
+		
 		rangeSlider.setMinimumSize(new Dimension(100,20));
 		rangeSlider.setPreferredSize(new Dimension(100,20));
 
@@ -748,7 +757,7 @@ public class FilterSettingPanel extends JPanel {
 
 			theFilter.childChanged();
 			//Update the selection on screen
-			System.out.println("FilterSettingPanel. rangerSlider changed Event received...");	
+			//System.out.println("FilterSettingPanel. rangerSlider changed Event received...");	
 			FilterUtil.doSelection(theFilter);				
 
 		}
