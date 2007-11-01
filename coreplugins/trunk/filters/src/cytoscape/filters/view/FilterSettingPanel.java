@@ -22,6 +22,7 @@ import cytoscape.filters.NumericFilter;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.Relation;
 import cytoscape.filters.util.FilterUtil;
+import cytoscape.filters.FilterPlugin;
 
 import java.util.List;
 import java.util.Vector;
@@ -34,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.event.ChangeListener;
 
 import csplugins.quickfind.util.QuickFind;
@@ -74,12 +76,9 @@ public class FilterSettingPanel extends JPanel {
 	private FilterMainPanel parentPanel;
 	private CyNetwork currentNetwork = null;
 
-	private Vector<CompositeFilter> allFilterVect = null;
-	
-	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj, Vector<CompositeFilter> pAllFilterVect) {
+	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj) {
 		theFilter = (CompositeFilter) pFilterObj;
 		parentPanel = pParent;
-		allFilterVect = pAllFilterVect;
 		initComponents();
 		
 		initAdvancedSetting();
@@ -95,7 +94,7 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			TopoFilterPanel topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, allFilterVect);
+			TopoFilterPanel topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, FilterPlugin.getAllFilterVect());
 			pnlCustomSettings.add(topoPanel, gridBagConstraints);
 			addBlankLabelToCustomPanel();
 
@@ -113,9 +112,6 @@ public class FilterSettingPanel extends JPanel {
 		List<CyFilter> theCustomFilterList = theFilter.getChildren();
 		boolean isLast = false;
 		for (int i=0; i <theCustomFilterList.size();i++) {
-			//if (i == (theCustomFilterList.size()-1)) {
-			//	isLast = true;
-			//}
 			addWidgetRow((CyFilter)theCustomFilterList.get(i),i*2);
 		}	
 		addBlankLabelToCustomPanel();
@@ -125,10 +121,10 @@ public class FilterSettingPanel extends JPanel {
 		
 		//restoreRangeSliderModel();
 		this.validate();
-		//this.repaint();
+		this.repaint();
 	}
 	
-	
+	/*
 	private void restoreRangeSliderModel(){
 		List<CyFilter> theFilterList = theFilter.getChildren();
 		if (theFilterList == null)
@@ -179,73 +175,117 @@ public class FilterSettingPanel extends JPanel {
 				}			
 			}// for loop
 		}
-
-	}
-	
-	/*
-	//Return value could be, QuickFind.INDEX_NODES,QuickFind.INDEX_EDGES, or -1 (unknown)  
-	private int getIndexTypeForAttribute(String pAttributeName) {
-		int indexType = -1;
-		if (pAttributeName.startsWith("node.")){
-			indexType = QuickFind.INDEX_NODES;
-			//System.out.println("indexType = QuickFind.INDEX_NODES");
-		}
-		else if (pAttributeName.startsWith("edge.")){
-			indexType = QuickFind.INDEX_EDGES;	
-			//System.out.println("indexType = QuickFind.INDEX_EDGES");
-		}
-
-		return indexType;
 	}
 	*/
 	
-	private TextIndexComboBox getTextIndexComboBox(StringFilter pFilter){
+	private boolean hasSuchAttribute(String pAttribute, int pType) {
+		int attributeType = CyAttributes.TYPE_UNDEFINED;
+		if (pType == QuickFind.INDEX_NODES) {
+			attributeType = Cytoscape.getNodeAttributes().getType(pAttribute);
+		}
+		else if (pType == QuickFind.INDEX_EDGES) {
+			attributeType = Cytoscape.getEdgeAttributes().getType(pAttribute);					
+		}
+		
+		if (attributeType == CyAttributes.TYPE_UNDEFINED)  {
+			return false;
+		}
+		return true;
+	}
+	
+/*
+	private int getAttributeDataType(String pAttribute, int pType) {
+		int attributeType = CyAttributes.TYPE_UNDEFINED;
+		if (pType == QuickFind.INDEX_NODES) {
+			attributeType = Cytoscape.getNodeAttributes().getType(pAttribute);
+		}
+		else if (pType == QuickFind.INDEX_EDGES) {
+			attributeType = Cytoscape.getEdgeAttributes().getType(pAttribute);					
+		}
+
+		return attributeType;
+	}
+*/
+	
+	private JComboBox getTextIndexComboBox(StringFilter pFilter){
 		TextIndexComboBox comboBox = null;
 
-		try {
-			comboBox = ComboBoxFactory.createTextIndexComboBox((TextIndex)pFilter.getIndex(), 2.0);
+		try {			
+			// If index doesnot exist, check if there is such attribute
+			if ((pFilter.getIndex() == null)&& hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())){
+				//	The attribute exists, create an index
+				final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+				quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
+				pFilter.getControllingAttribute(), new TaskMonitorBase());					
+				TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+				
+				pFilter.setIndex(index_by_thisAttr);					
+			}
+			else {// no such attribute
+				JComboBox tmpCombo;
+				if (pFilter.getSearchStr() != null) {
+					Object[] objList = {pFilter.getSearchStr()};
+					tmpCombo = new JComboBox(objList);
+				}
+				else {
+					tmpCombo = new JComboBox();
+				}
+				tmpCombo.setEnabled(false);
+				return tmpCombo;				
+			}
+			
+			comboBox = ComboBoxFactory.createTextIndexComboBox((TextIndex)pFilter.getIndex(), 2.0);				
 
 			//  Set Size of ComboBox Display, based on # of specific chars
 			comboBox.setPrototypeDisplayValue("01234567");
 
 			//  Set Max Size of ComboBox to match preferred size
-			comboBox.setMaximumSize(comboBox.getPreferredSize());
-		} catch (Exception e) {
-			System.out.println("Exception in FilterSettingpanel.getTextIndexComboBox()");
-		}
-
-		comboBox.setName(pFilter.getControllingAttribute());
-		try {
+			comboBox.setMaximumSize(comboBox.getPreferredSize());			
+			comboBox.setName(pFilter.getControllingAttribute());
+			
 			if (pFilter.getSearchStr() != null) {
 				comboBox.setSelectedItem(pFilter.getSearchStr());							
 			}
-		}
-		catch (Exception e) {
-		}
 
-		ActionListener listener = new UserSelectionListener(comboBox);
-		comboBox.addFinalSelectionListener(listener);
+			ActionListener listener = new UserSelectionListener(comboBox);
+			comboBox.addFinalSelectionListener(listener);
+		} catch (Exception e) {
+			System.out.println("Exception in FilterSettingpanel.getTextIndexComboBox()");
+		}
 
 		return comboBox;
 	}
 	
 	
 	private JRangeSliderExtended getRangerSlider(NumericFilter pFilter) {
-		System.out.println("Exception in FilterSettingpanel.getRangerSlider()...");
-		//NumberIndex theIndex = createNumberIndex(pNumericFilter);
+		System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
+		NumberIndex theIndex = createNumberIndex(pFilter);
 
+		if (theIndex != null) {
+			pFilter.setIndex(theIndex);
+		}
+		
 		NumberRangeModel rangeModel = null;
-		if (pFilter.getIndex() == null) {
+		if (theIndex == null) {
 			rangeModel = new NumberRangeModel(0,0,0,0);			
 		}
 		else {
 			//Initialize the search values, lowValue and highValue	
-			NumberIndex tmpIndex = (NumberIndex) pFilter.getIndex();
-			pFilter.setLowBound(tmpIndex.getMinimumValue());
-			pFilter.setHighBound(tmpIndex.getMaximumValue());
+			//int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
+			//if (dataType == CyAttributes.TYPE_FLOATING) {}
+			//pFilter.setLowBound(theIndex.getMinimumValue());
+			//pFilter.setHighBound(theIndex.getMaximumValue());
 				
+			
+			System.out.println("\tlow = " + pFilter.getLowBound());
+			System.out.println("\tHigh = " + pFilter.getHighBound());
+			System.out.println("\tMin = " + theIndex.getMinimumValue());
+			System.out.println("\tMax = " + theIndex.getMaximumValue());
+			
 			rangeModel = new NumberRangeModel
-						(tmpIndex.getMinimumValue(), tmpIndex.getMinimumValue(), tmpIndex.getMinimumValue(), tmpIndex.getMaximumValue());						
+						(pFilter.getLowBound(), pFilter.getHighBound(), theIndex.getMinimumValue(), theIndex.getMaximumValue());						
+						//(theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMinimumValue(), theIndex.getMaximumValue());						
+
 		}
 		
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
@@ -263,6 +303,57 @@ public class FilterSettingPanel extends JPanel {
 		
 		return rangeSlider;
 	}
+	
+	
+	public boolean hasNullIndexChildFilter() {
+		List<CyFilter> children = theFilter.getChildren();
+		if ((children == null)||(children.size() == 0)) {
+			return false;
+		}
+		for (int i=0; i<children.size(); i++) {
+			CyFilter child = children.get(i);
+			if (child instanceof AtomicFilter) {
+				AtomicFilter aFilter = (AtomicFilter) child;
+				if (aFilter.getIndex() == null)
+					return true;
+			}
+		}
+	
+		return false;
+	}
+/*	
+	//The method may be triggered by event of Cytoscape.ATTRIBUTES_CHANGED
+	public void refreshIndicesForWidgets(){
+
+		// Check if each widget has associatd index, if not, try to create one
+		List<CyFilter> children = theFilter.getChildren();
+		if ((children == null)||(children.size() == 0)) {
+			return;
+		}
+		
+		for (int i=0; i<children.size(); i++) {
+			CyFilter child = children.get(i);
+			if (child instanceof StringFilter) {
+				//JComboBox theComboBox = (JComboBox) pnlCustomSettings.getComponent(i*5+2);
+
+				if (pnlCustomSettings.getComponent(i*5+2) instanceof TextIndexComboBox) {
+					// This component already had index
+					continue;
+				}
+				else {//This is just a comboBox try to create a index for it
+					JComboBox theComboBox = getTextIndexComboBox((StringFilter) child);
+					if (theComboBox instanceof TextIndexComboBox) {
+						// created a TextIndexComboBox successfully
+						TextIndexComboBox aIndexBox = (TextIndexComboBox) theComboBox; 
+						StringFilter aFilter = (StringFilter) child;
+						aFilter.setIndex(aIndexBox.getTextIndex());
+						
+					}
+				}			
+			}
+		}		
+	}
+*/	
 	
 	/**
 	 * Inner class Mouse listener for double click events on rangeSlider.
@@ -379,11 +470,6 @@ public class FilterSettingPanel extends JPanel {
 	
 	
 	private void addWidgetRow(CyFilter pFilter, int pGridY) {
-		//System.out.println("Entering FilterSettingPanel: addWidgetRow_atomic() ...");
-		
-		//System.out.println("pFilter =" + pFilter.toString());
-		//System.out.println("pFilter.getControllingAttribute() = "+pFilter.getControllingAttribute());
-		//System.out.println("pGridY = "+ pGridY);
 		
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
@@ -439,9 +525,10 @@ public class FilterSettingPanel extends JPanel {
 
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        //Col 2 ---> Widget if atomicfilter
+        //Col 2 ---> Widget if atomicFilter
 		if (pFilter instanceof StringFilter) {
-	        pnlCustomSettings.add(getTextIndexComboBox((StringFilter)pFilter), gridBagConstraints);		
+			JComboBox aBox = getTextIndexComboBox((StringFilter)pFilter);
+	        pnlCustomSettings.add(aBox, gridBagConstraints);		
 		}
 		else if (pFilter instanceof NumericFilter) {
 			JRangeSliderExtended theSlider = getRangerSlider((NumericFilter) pFilter);
@@ -673,7 +760,7 @@ public class FilterSettingPanel extends JPanel {
 
 		int indexType = pNumericFilter.getIndexType();
 		quickFind.reindexNetwork(currentNetwork, indexType, 
-				pNumericFilter.getControllingAttribute().substring(5), new TaskMonitorBase());
+				pNumericFilter.getControllingAttribute(), new TaskMonitorBase());
 
 		GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
 		if (currentIndex == null|| !(currentIndex instanceof NumberIndex)) {
@@ -1040,9 +1127,6 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         pnlAdvancedSettings.add(pnlAdvancedOptions, gridBagConstraints);
 
-        
-        
-        
         pnlCustomSettings.setLayout(new java.awt.GridBagLayout());
 
         pnlCustomSettings.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -1102,8 +1186,4 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.JRadioButton rbtOR;
     private javax.swing.JLabel lbNegation;
     // End of variables declaration
-
-
-	
-
 }
