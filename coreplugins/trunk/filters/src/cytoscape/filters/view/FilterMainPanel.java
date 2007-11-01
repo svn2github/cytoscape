@@ -47,6 +47,7 @@ import cytoscape.filters.TopologyFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Vector;
 import java.awt.event.ItemListener;
@@ -156,13 +157,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
 		{	
-			//refreshFilterSettingPanels();
 			refreshAttributeCMB();
-			//updateIndexForWidget();
-			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
+			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());					
 		}
 	}
-	
+
+
 	public void refreshFilterSelectCMB() {
 		this.cmbSelectFilter.repaint();
 	}
@@ -237,9 +237,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 
 		currentFilterSettingPanel = filter2SettingPanelMap.get(pNewFilter);
-
-		if (currentFilterSettingPanel == null) {
-			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter, allFilterVect);
+		
+		if (currentFilterSettingPanel == null || currentFilterSettingPanel.hasNullIndexChildFilter()) {
+			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter);
 			//Update the HashMap
 			filter2SettingPanelMap.put(pNewFilter, currentFilterSettingPanel);			
 		}
@@ -325,9 +325,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
 				System.out.println("Filter Panel is selected");
 
-				//initTestData();
-				//initTestFilters();
-
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 				if (cmbSelectFilter.getModel().getSize() == 0) {
 					// CMBSelectFilter will not be initialize until the Filer Panel is selected
@@ -357,11 +354,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (selectedFilter == null) {
 			return;
 		}
-
-		//boolean debug = true;
-		//if (debug) {
-		//	selectedFilter = allFilterVect.elementAt(0);
-		//}
 
 		if (selectedFilter.getAdvancedSetting().isNodeChecked() 
 				&& !selectedFilter.getAdvancedSetting().isEdgeChecked())
@@ -711,7 +703,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 					
 					if (cytoscape.filters.util.FilterUtil
-							.isFilterNameDuplicated(allFilterVect, newFilterName)) {
+							.isFilterNameDuplicated(newFilterName)) {
 						Object[] options = { "OK" };
 						JOptionPane.showOptionDialog(this,
 								"Filter name already existed!", "Warning",
@@ -792,7 +784,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			}
 			
 			if (cytoscape.filters.util.FilterUtil
-					.isFilterNameDuplicated(allFilterVect, newFilterName)) {
+					.isFilterNameDuplicated(newFilterName)) {
 				Object[] options = { "OK" };
 				JOptionPane.showOptionDialog(this,
 						"Filter name already existed!", "Warning",
@@ -809,7 +801,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		newFilter.setName(newFilterName);
 		
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, allFilterVect);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 		
 		// set the new filter in the combobox selected
@@ -838,7 +830,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			}
 			
 			if (cytoscape.filters.util.FilterUtil
-					.isFilterNameDuplicated(allFilterVect, newFilterName)) {
+					.isFilterNameDuplicated(newFilterName)) {
 				Object[] options = { "OK" };
 				JOptionPane.showOptionDialog(this,
 						"Filter name already existed!", "Warning",
@@ -923,7 +915,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 		
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this,newFilter, allFilterVect);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this,newFilter);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 
 		// set the new filter in the combobox selected
@@ -972,27 +964,4 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			return this;
 		}
 	}// FilterRenderer
-
-	//============================== for debug only ========================
-
-	private void initTestFilters() {
-		//allFilterVect = new Vector<CompositeFilter>();
-		
-		//StringFilter myStringFilter = new StringFilter("myStringFilter",LOCATION,"cy*");
-		//myStringFilter.setTextIndex(index_by_location);
-		//myStringFilter.setNetwork(cyNetwork);
-		
-		//NumericFilter myNumericFilter = new NumericFilter<Integer>("myNumericFilter",RANK, 2, 3);
-		//rankFilter.setNumberIndex(integerIndex_rank);
-		//rankFilter.setNetwork(cyNetwork);
-		
-		CompositeFilter compositeFilter1 = new CompositeFilter("firstCompositeFilter");
-		CompositeFilter compositeFilter2 = new CompositeFilter("secondCompositeFilter");
-		CompositeFilter topoFilter = new TopologyFilter("ThirdTopoFilter");
-
-		allFilterVect.add(compositeFilter1);
-		allFilterVect.add(compositeFilter2);
-		allFilterVect.add(topoFilter);
-
-	}
 }
