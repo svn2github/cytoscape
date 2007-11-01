@@ -405,12 +405,12 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		if (evt.getPropertyName().equals("SEARCH_RESULT") && (resultObject != null)
 		    && ((DatabaseSearchResult) resultObject).getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
 			System.out.println("Got search result from: " + evt.getSource() + ", Num result = "
-			                   + evt.getNewValue() + ", Source name = " + evt.getOldValue());
+			                   + ((DatabaseSearchResult) resultObject).getResultSize() + ", Source name = " + evt.getOldValue());
 
 			String[] message = {
 			                       ((DatabaseSearchResult) resultObject).getResultSize()
-			                       + " interactions found in " + selectedClientID,
-			                       "Do you want to create new network from these interactions?"
+			                       + " records found in " + selectedClientID,
+			                       "Do you want to create new network from the search result?"
 			                   };
 			int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
 			                                          "Import network", JOptionPane.YES_NO_OPTION);
@@ -434,9 +434,12 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 				Cytoscape.getCurrentNetwork().setTitle(value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
-				final VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
+				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
 				                                                                                                                                                                                                                                                                                                                                                                                                                                    .getClient(selectedClientID))
 				                          .getDefaultVisualStyle();
+				if(style == null) {
+					style = Cytoscape.getVisualMappingManager().getVisualStyle();
+				}
 				VisualStyle testStyle = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 				                                 .getVisualStyle(style.getName());
 
