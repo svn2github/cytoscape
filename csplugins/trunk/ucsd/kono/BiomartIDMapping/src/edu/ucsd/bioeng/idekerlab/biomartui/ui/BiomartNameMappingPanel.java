@@ -337,7 +337,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		final JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(false);
 
@@ -449,6 +449,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		 */
 		public void halt() {
 			// TODO Auto-generated method stub
+			System.out.println("HALT@@@@@@@@@@@@");
 		}
 
 		/**

@@ -36,6 +36,8 @@
 
 package edu.ucsd.bioeng.idekerlab.biomartui.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import javax.swing.JDialog;
@@ -51,7 +53,7 @@ import cytoscape.task.util.TaskManager;
 /**
  *
  */
-public class BiomartMainDialog extends JDialog {
+public class BiomartMainDialog extends JDialog implements PropertyChangeListener {
 	
 	private static BiomartMainDialog mainDialog = null;
 	
@@ -84,6 +86,7 @@ public class BiomartMainDialog extends JDialog {
 
 		try {
 			BiomartNameMappingPanel panel = new BiomartNameMappingPanel();
+			panel.addPropertyChangeListener(this);
 			add(panel);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -160,6 +163,13 @@ public class BiomartMainDialog extends JDialog {
 		public void cancel() {
 			// TODO Auto-generated method stub
 			
+		}
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		if(evt.getPropertyName().equals("CLOSE")) {
+			dispose();
 		}
 	}
 
