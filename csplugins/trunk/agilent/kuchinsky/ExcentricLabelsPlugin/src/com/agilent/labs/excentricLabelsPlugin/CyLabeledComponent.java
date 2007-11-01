@@ -1,5 +1,14 @@
 package com.agilent.labs.excentricLabelsPlugin;
 
+import giny.view.NodeView;
+import infovis.visualization.magicLens.LabeledComponent;
+
+import java.awt.geom.Rectangle2D;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.swing.JComponent;
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.render.stateful.GraphRenderer;
@@ -7,13 +16,6 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntStack;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
-import giny.view.NodeView;
-import infovis.visualization.magicLens.LabeledComponent;
-
-import javax.swing.*;
-import java.awt.geom.Rectangle2D;
-import java.util.HashSet;
-import java.util.Set;
 
 
 /**

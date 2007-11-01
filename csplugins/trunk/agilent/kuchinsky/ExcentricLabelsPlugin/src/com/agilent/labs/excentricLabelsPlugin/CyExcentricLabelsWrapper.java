@@ -2,9 +2,13 @@ package com.agilent.labs.excentricLabelsPlugin;
 
 import infovis.visualization.magicLens.ExcentricLabels;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 /**
  * AJK: 07/22/06 substitute for Visualization because I can't seem to be able to add

@@ -2,19 +2,23 @@ package com.agilent.labs.excentricLabelsPlugin;
 
 import infovis.visualization.magicLens.ExcentricLabels;
 
-import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.Vector;
+import java.awt.event.ActionListener;
 import java.util.Collections;
-import java.util.ArrayList;
+import java.util.Vector;
 
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 

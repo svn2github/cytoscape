@@ -6,16 +6,12 @@ import infovis.visualization.magicLens.LabeledComponent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.AffineTransform;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
 import cytoscape.view.CyNetworkView;
-
-import javax.swing.*;
-
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
 

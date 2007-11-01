@@ -1,5 +1,18 @@
 package com.agilent.labs.excentricLabelsPlugin;
 
+import infovis.visualization.magicLens.DefaultExcentricLabels;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeToolBar;
@@ -9,15 +22,6 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.view.cytopanels.CytoPanel;
 import ding.view.DGraphView;
-import infovis.visualization.magicLens.DefaultExcentricLabels;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
-import java.awt.event.ComponentEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -130,6 +134,9 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
             });
             wrapper.getExcentric().setLens(foregroundCanvas.getWidth() / 2,
                     foregroundCanvas.getHeight() / 2);
+            // AJK: 11/01/07 only enable the excentric labels when the config button is explicitly pressed
+            excentric.setEnabled(false);
+
 
         }
     }
@@ -146,5 +153,7 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
         }
         int index = cytoPanelSouth.indexOfComponent(configPanel);
         cytoPanelSouth.setSelectedIndex(index);
+        // AJK: 11/01/07 enable the excentric labels when this button is explicitly pressed
+        excentric.setEnabled(true);
     }
 }

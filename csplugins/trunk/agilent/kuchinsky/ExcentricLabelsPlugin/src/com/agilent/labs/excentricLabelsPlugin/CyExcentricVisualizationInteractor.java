@@ -34,9 +34,15 @@ public class CyExcentricVisualizationInteractor extends
         final ExcentricLabels excentric = wrapper.getExcentric();
         insideTimer = new Timer(1000, new ActionListener() {
             public void actionPerformed (ActionEvent e) {
-                System.out.println("Showing Excentric Labels");
-                excentric.setVisible(true);
-                excentric.setEnabled(true);
+            	// AJK: 11/01/07 only show excentric labels if explicitly turned on
+            	if (excentric.isEnabled())
+            	{
+                    System.out.println("Showing Excentric Labels for: " + excentric);
+                    excentric.setVisible(true);                		
+            	}
+//                System.out.println("Showing Excentric Labels");
+//                excentric.setVisible(true);
+//                excentric.setEnabled(true);
             }
         });
         insideTimer.setRepeats(false);
@@ -90,6 +96,9 @@ public class CyExcentricVisualizationInteractor extends
     public void mouseClicked (MouseEvent e) {
         if (wrapper.getExcentric().isVisible()) {
             wrapper.getExcentric().setVisible(false);
+            // AJK: 11/01/07 disable excentric label
+            System.out.println("disabling excentric: " + wrapper.getExcentric());
+            wrapper.getExcentric().setEnabled(false);
             insideTimer.restart();
         }
         redispatchMouseEvent(e);
@@ -112,6 +121,9 @@ public class CyExcentricVisualizationInteractor extends
     public void mousePressed (MouseEvent e) {
         if (wrapper.getExcentric().isVisible()) {
             wrapper.getExcentric().setVisible(false);
+            // AJK: 11/01/07 disable excentric label
+            System.out.println("disabling excentric: " + wrapper.getExcentric());
+            wrapper.getExcentric().setEnabled(false);
             insideTimer.restart();
         } else {
             redispatchMouseEvent(e);
