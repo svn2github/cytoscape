@@ -210,18 +210,13 @@ public class FilterSettingPanel extends JPanel {
 	private JComboBox getTextIndexComboBox(StringFilter pFilter){
 		TextIndexComboBox comboBox = null;
 
-		try {			
-			// If index doesnot exist, check if there is such attribute
-			if ((pFilter.getIndex() == null)&& hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())){
-				//	The attribute exists, create an index
-				final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-				quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
-				pFilter.getControllingAttribute(), new TaskMonitorBase());					
-				TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
-				
-				pFilter.setIndex(index_by_thisAttr);					
-			}
-			else {// no such attribute
+		System.out.println("Entering FilterSettingPanel.getTextIndexComboBox() ...");
+		System.out.println("\tpFilter.toString=" + pFilter.toString());
+		try {		
+
+			// If index doesnot exist, check if there is such attribute or 
+			if (!hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())) {
+				// no such attribute
 				JComboBox tmpCombo;
 				if (pFilter.getSearchStr() != null) {
 					Object[] objList = {pFilter.getSearchStr()};
@@ -233,6 +228,16 @@ public class FilterSettingPanel extends JPanel {
 				tmpCombo.setEnabled(false);
 				return tmpCombo;				
 			}
+			
+					
+					//	The attribute exists, create an index
+					final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+					quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
+					pFilter.getControllingAttribute(), new TaskMonitorBase());					
+					TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+					
+					pFilter.setIndex(index_by_thisAttr);					
+			
 			
 			comboBox = ComboBoxFactory.createTextIndexComboBox((TextIndex)pFilter.getIndex(), 2.0);				
 
