@@ -273,6 +273,21 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			region.setColor(109,109,200);
 			feature = region.addFeature("1", "E5");
 			feature.setColor(163, 163, 163);
+	
+			
+			// Splice Events
+			toBlock = "11";
+			toRegion = "1";
+			spliceEvent = region.addSpliceEvent(toBlock, toRegion);
+			spliceEvent.setRegion(region);
+			spliceEvent.setId(toBlock, toRegion);
+
+			// Splice Events
+			toBlock = "11";
+			toRegion = "2";
+			spliceEvent = region.addSpliceEvent(toBlock, toRegion);
+			spliceEvent.setRegion(region);
+			spliceEvent.setId(toBlock, toRegion);
 			
 //			// Splice Events
 //			toBlock = "11");
@@ -299,7 +314,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E6
 			block = netView.addBlock("11", "e");
 			region = block.addRegion("1");
-			region.setColor(109,109,200);
+			region.setColor(209,209,255);
 			feature = region.addFeature("1", "E6.1");
 			feature.setColor(163, 163, 163);
 			
@@ -311,7 +326,9 @@ public class Example_Exon_Structure_GenMAPP_CS {
 //			spliceEvent.setId(toBlock, toRegion);
 			
 			// E6-1
-			feature = region.addFeature("2", "E6.2");
+			region = block.addRegion("2");
+			region.setColor(109,109,200);
+			feature = region.addFeature("1", "E6.2");
 			feature.setColor(163, 163, 163);
 			
 			// I6
