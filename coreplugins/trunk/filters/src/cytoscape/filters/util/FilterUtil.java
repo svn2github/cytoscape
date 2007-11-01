@@ -41,10 +41,10 @@ public class FilterUtil {
 	
 	// do selection on given network
 	public static void doSelection(CompositeFilter pFilter) {
-		System.out.println("Entering FilterUtil.doSelection() ...");
+		//System.out.println("Entering FilterUtil.doSelection() ...");
 		
-		return;
-		/*
+		//return;
+		
 		pFilter.apply();
 		
 		CyNetwork network = Cytoscape.getCurrentNetwork(); 
@@ -89,7 +89,7 @@ public class FilterUtil {
 		}
 
 		Cytoscape.getCurrentNetworkView().updateView();
-		*/
+		
 	}
 	
 	
@@ -114,7 +114,6 @@ public class FilterUtil {
 	}
 	
 	public static boolean isFilterNameDuplicated(String pFilterName) {
-		System.out.println("Entering FilterUtil.isFilterNameDuplicated() ...");
 		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0)
 			return false;
 		
