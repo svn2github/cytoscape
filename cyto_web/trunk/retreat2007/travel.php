@@ -63,6 +63,8 @@
   <h4>Public Transport</h4>
   Public transport in Amsterdam, operated by the <a href="http://www.gvb.nl/english/default.asp" target="_blank">GVB</a>, Connexxion, Arriva, and Nederlandse 
   Spoorwegen, consists of numerous bus, metro and tram lines. An overview of maps is <a href="http://www.gvb.nl/english/travellers/maps/index.html" target="_blank">here</a>
+  In all public transport you can use the "strip-ticket"; the ins and outs of which are described at <a href="http://www.gvb.nl/english/travellers/ticketsandfares/strip-ticket.html" target="_blank">the gvb site</a>.
+  Apart from the metro stations they are available at post offices, Albert Heijn supermarkets and most tobacconists in Amsterdam.
   
 
   <h4>Taxis</h4>
