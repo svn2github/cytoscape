@@ -75,8 +75,9 @@ public class GraphWalker {
 		int xOffset = HGAP;
 		int blockBoundsY = VGAP + TITLE_LEGEND_HEIGHT + VGAP
 				+ LABEL_TRACK_HEIGHT + START_SITE_HEIGHT;
-		int featuresBoundsY = blockBoundsY + NODE_HEIGHT // for block
+		int featuresBoundsY = blockBoundsY + 2*NODE_HEIGHT // for block
 			 + LABEL_TRACK_HEIGHT;
+		
 		Block block;
 		Region region;
 		Feature feature;
@@ -86,61 +87,56 @@ public class GraphWalker {
 
 		Iterator<Block> blocks = view.getBlockInterator();
 		while (blocks.hasNext()) {
-
 			block = blocks.next();
 			blockXOffset = xOffset;
 			String type = block.getType();
-
+			
 			Iterator<Region> regions = block.getRegionInterator();
 			while (regions.hasNext()) {
 				region = regions.next();
 				regionXOffset = xOffset;
-
 				Iterator<Feature> features = region.getFeatureInterator();
 				while (features.hasNext()) {
 					feature = features.next();
 					featureXOffset = xOffset;
-					feature.setBounds(featureXOffset + (HGAP / 2),
+					feature.setBounds(featureXOffset + (HGAP/2),
 							featuresBoundsY, NODE_WIDTH, NODE_HEIGHT);
 					if (view.getPreferredSize().getWidth() < featureXOffset + (HGAP / 2) + PANEL_WIDTH){
 					view.setPreferredSize(new Dimension(featureXOffset + (HGAP / 2)+ PANEL_WIDTH, featuresBoundsY + PANEL_HEIGHT));
 					}
 					xOffset += NODE_WIDTH + HGAP;
 				}
-
+				
 				// regions sit within and subdivide blocks
 				// System.out.println("setting bounds for region: " + region);
 				// System.out.println("of block type: " + type);
+				
+				// Set bounds for regions
+				
 				if (type.trim().equals("I")) {
-					region
-							.setBounds(regionXOffset, blockBoundsY
-									+ (NODE_HEIGHT / 2) - 1, xOffset
-									- regionXOffset, 1); // 2-pixel line for
-					// introns
+			
+					region.setBounds(regionXOffset, blockBoundsY+ (NODE_HEIGHT / 2) - 1, 
+							xOffset - regionXOffset, 1); // 2-pixel line for introns
 				} else if (type.trim().equals("e")) {
-					region.setBounds(regionXOffset, blockBoundsY
-							+ (NODE_HEIGHT / 4), xOffset - regionXOffset,
-							NODE_HEIGHT / 2); // block/region height is half
-					// of a feature's height
+					region.setBounds(regionXOffset, blockBoundsY + (NODE_HEIGHT / 4), 
+							xOffset - regionXOffset, NODE_HEIGHT / 2); // block/region height is half of a feature's height
 				}
+				
 				// System.out.println("set bounds for region: " + region);
 				// System.out.println("= bounds: " + region.getBounds());
-
 			}
 
+			// Set bounds for blocks
+			
 			if (type.trim().equals("I")) {
 				block.setBounds(blockXOffset, blockBoundsY + (NODE_HEIGHT / 2)
-						- 1, xOffset - blockXOffset, 2); // 2-pixel line for
-				// introns
+						- 1, xOffset - blockXOffset, 2); // 2-pixel line for introns
+				
 			} else if (type.trim().equals("e")) {
-				block.setBounds(regionXOffset,
-						blockBoundsY + (NODE_HEIGHT / 4), xOffset
-								- blockXOffset, NODE_HEIGHT / 2); // block/region
-				// height is
-				// half of a
-				// feature's
-				// height
+				block.setBounds(regionXOffset, blockBoundsY + (NODE_HEIGHT / 4), 
+						xOffset - blockXOffset, NODE_HEIGHT / 2); // block/region height is half of a feature's height
 			}
+		
 		}
 
 	}
@@ -160,12 +156,21 @@ public class GraphWalker {
 		Rectangle rect;
 
 		g.setColor(Color.black);
+		
+		g.drawString("Gene Structure", 5,
+				VGAP + TITLE_LEGEND_HEIGHT + VGAP + LABEL_TRACK_HEIGHT);
+		g.setColor(Color.black);
+			
+		g.drawString("Feature Data", 5,
+				VGAP + TITLE_LEGEND_HEIGHT + VGAP + LABEL_TRACK_HEIGHT + BLOCK_HEIGHT + 3*NODE_HEIGHT);
+	
 
 		Iterator<Block> blocks = view.getBlockInterator();
 		while (blocks.hasNext()) {
 
 			block = blocks.next();
 			Iterator<Region> regions = block.getRegionInterator();
+			
 			while (regions.hasNext()) {
 				region = regions.next();
 				rect = region.getBounds();
