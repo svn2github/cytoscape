@@ -1,5 +1,6 @@
 package org.genmapp.subgeneviewer.splice.view;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -26,6 +27,14 @@ public class Region extends SubgeneNodeView {
 	boolean _containsStartSite = false;
 	
 	private Block _block = null;
+	
+	Color color;
+	
+	int red;
+	
+	int green;
+	
+	int blue;
 
 	public Region (Block block)
 	{
@@ -115,6 +124,20 @@ public class Region extends SubgeneNodeView {
 
 	public void containsStartSite(boolean containsStartSite) {
 		this._containsStartSite = containsStartSite;
+	}
+	
+	public Color getColor() {
+		if (color == null){
+			this.color = new Color(255,255,255);
+		}
+		return color;
+	}
+
+	public void setColor(int r, int g, int b) {
+		this.red = r;
+		this.green = g;
+		this.blue = b;
+		this.color = new Color(red, green, blue);
 	}
 
 }

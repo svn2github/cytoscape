@@ -171,10 +171,32 @@ public class GraphWalker {
 				rect = region.getBounds();
 				// System.out.println ("Drawing region: " + region.getId() +
 				// " in bounding box " + rect);
-				g.setColor(new Color(225, 225, 255));
+				
+				Color regionColor = region.getColor();
+				g.setColor(regionColor);
+				
+//				if ((region.getColor().getRed()+region.getColor().getGreen()+region.getColor().getBlue()) > 500) {
+//					g.setColor(Color.black);
+//				} else {
+//					g.setColor(Color.white);
+//				}
+				
+				//g.setColor(new Color(225, 225, 255));
 				g.fillRect(rect.x, rect.y, rect.width, rect.height);
 				g.setColor(Color.black);
 				g.drawRect(rect.x, rect.y, rect.width, rect.height);
+				
+				//Color secondRegionColor = region.getColor();
+				// map from green to red through black, THIS IS A TEMPORARY
+				// HACK
+
+				//g.setColor(secondRegionColor);
+				
+//				if ((region.getColor().getRed()+region.getColor().getGreen()+region.getColor().getBlue()) > 500) {
+//					g.setColor(Color.black);
+//				} else {
+//					g.setColor(Color.white);
+//				}
 
 				Iterator<Feature> features = region.getFeatureInterator();
 				while (features.hasNext()) {

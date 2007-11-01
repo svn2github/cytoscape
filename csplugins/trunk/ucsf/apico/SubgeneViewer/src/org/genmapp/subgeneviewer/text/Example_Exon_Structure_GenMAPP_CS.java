@@ -34,6 +34,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E1
 			block = netView.addBlock("1", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E1");
 			feature.setColor(163, 163, 163);
 			
@@ -51,12 +52,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I1
 			block = netView.addBlock("2", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I1");
 			feature.setColor(163, 163, 163);
 			
 			// E2
 			block = netView.addBlock("3", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E2");
 			feature.setColor(163, 163, 163);
 			
@@ -77,12 +80,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I2
 			block = netView.addBlock("4", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I2");
 			feature.setColor(163, 163, 163);
 			
 			// E3
 			block = netView.addBlock("5", "e");
 			region = block.addRegion("1");
+			region.setColor(225, 225, 255);
 			feature = region.addFeature("1", "E3");
 			feature.setColor(0, 188, 0);
 		
@@ -96,12 +101,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I3
 			block = netView.addBlock("6", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I3");
 			feature.setColor(163, 163, 163);
 
 			// E4
 			block = netView.addBlock("7", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E4");
 			feature.setColor(163, 163, 163);
 		
@@ -115,12 +122,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I4
 			block = netView.addBlock("8", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I4");
 			feature.setColor(163, 163, 163);
 			
 			// E5
 			block = netView.addBlock("9", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E5");
 			feature.setColor(163, 163, 163);
 		
@@ -132,6 +141,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E1
 			block = netView.addBlock("1", "e");
 			region = block.addRegion("1");
+			region.setColor(225, 225, 255);
 			feature = region.addFeature("1", "E1");
 			feature.setColor(0, 255, 0);
 			
@@ -146,22 +156,25 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			spliceEvent.setRegion(region);
 			spliceEvent.setId(toBlock, toRegion);
 			
-//			// I1
-//			"2");
-//			block = netView.addBlock(_id, "I");
-//			region = block.addRegion("1");
-//			feature = region.addFeature("1"), "I1");
-//			feature.setColor(0, 0, 255);
-			
+
 			// I1
 			block = netView.addBlock("2", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I1");
 			feature.setColor(163, 163, 163);
 			
 			// E2
+
 			block = netView.addBlock("3", "e");
 			region = block.addRegion("1");
+			region.setColor(225, 225, 255);
+			feature = region.addFeature(new String ("1"), "E2");
+			feature.setColor(255, 0, 0);
+
+			block = netView.addBlock("3", "e");
+			region = block.addRegion("1");
+
 			
 			// Start site
 			startSite = new StartSite(region);
@@ -174,9 +187,11 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			spliceEvent.setRegion(region);
 			spliceEvent.setId(toBlock, toRegion);
 			
+
 			feature = region.addFeature("1", "E2");
 			feature.setColor(214, 0, 0);
 			
+
 			// E2-1
 			feature = region.addFeature("2", "E2-1");
 			feature.setColor(240, 0, 0);
@@ -197,6 +212,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I2
 			block = netView.addBlock("4", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I2");
 			feature.setColor(163, 163, 163);
 			
@@ -207,6 +223,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E3
 			block = netView.addBlock("5", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E3");
 			feature.setColor(163, 163, 163);
 			
@@ -227,6 +244,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I3
 			block = netView.addBlock("6", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I3");
 			feature.setColor(163, 163, 163);
 			
@@ -237,6 +255,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E4
 			block = netView.addBlock("7", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E4");
 			feature.setColor(163, 163, 163);
 			
@@ -250,12 +269,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I4
 			block = netView.addBlock("8", "I");
 			region = block.addRegion("1");
+			region.setColor(0, 0, 255);
 			feature = region.addFeature("1", "I4");
 			feature.setColor(163, 163, 163);
 			
 			// E5
 			block = netView.addBlock("9", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E5");
 			feature.setColor(163, 163, 163);
 			
@@ -269,6 +290,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I5
 			block = netView.addBlock("10", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I5");
 			feature.setColor(163, 163, 163);
 			
@@ -283,6 +305,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E6
 			block = netView.addBlock("11", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E6");
 			feature.setColor(163, 163, 163);
 			
@@ -300,6 +323,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I6
 			block = netView.addBlock("12", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I6");
 			feature.setColor(163, 163, 163);
 			
@@ -330,6 +354,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E7
 			block = netView.addBlock("13", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E7");
 			feature.setColor(163, 163, 163);
 			
@@ -343,12 +368,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I7
 			block = netView.addBlock("14", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I7");
 			feature.setColor(163, 163, 163);
 			
 			// E8
 			block = netView.addBlock("15", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E8");
 			feature.setColor(163, 163, 163);
 			
@@ -362,12 +389,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I8
 			block = netView.addBlock("16", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I8");
 			feature.setColor(163, 163, 163);
 			
 			// E9
 			block = netView.addBlock("17", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E9");
 			feature.setColor(0, 184, 0);
 			
@@ -381,12 +410,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I9
 			block = netView.addBlock("18", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I9");
 			feature.setColor(163, 163, 163);
 			
 			// E10
 			block = netView.addBlock("19", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E10");
 			feature.setColor(163, 163, 163);
 			
@@ -400,12 +431,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I10
 			block = netView.addBlock("20", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I10");
 			feature.setColor(163, 163, 163);
 			
 			// E11
 			block = netView.addBlock("21", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E11");
 			feature.setColor(163, 163, 163);
 			
@@ -419,6 +452,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I11
 			block = netView.addBlock("22", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I11");
 			feature.setColor(203, 0, 0);
 			
@@ -433,6 +467,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E12
 			block = netView.addBlock("23", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E12");
 			feature.setColor(163, 163, 163);
 			
@@ -446,12 +481,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I12
 			block = netView.addBlock("24", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I12");
 			feature.setColor(163, 163, 163);
 			
 			// E13
 			block = netView.addBlock("25", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E13");
 			feature.setColor(163, 163, 163);
 			
@@ -465,12 +502,14 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I13
 			block = netView.addBlock("26", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I13");
 			feature.setColor(163, 163, 163);
 			
 			// E14
 			block = netView.addBlock("27", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E14");
 			feature.setColor(163, 163, 163);
 			
@@ -484,6 +523,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// I14
 			block = netView.addBlock("28", "I");
 			region = block.addRegion("1");
+			region.setColor(255, 255, 255);
 			feature = region.addFeature("1", "I14");
 			feature.setColor(163, 163, 163);
 			
@@ -530,6 +570,7 @@ public class Example_Exon_Structure_GenMAPP_CS {
 			// E15
 			block = netView.addBlock("29", "e");
 			region = block.addRegion("1");
+			region.setColor(0, 51, 102);
 			feature = region.addFeature("1", "E15");
 			feature.setColor(163, 163, 163);
 			
