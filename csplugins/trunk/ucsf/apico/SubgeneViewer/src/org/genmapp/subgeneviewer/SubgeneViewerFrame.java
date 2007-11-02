@@ -75,7 +75,7 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 	
 
 	
-	public void addView (SubgeneNetworkView view)
+	public void addView (SubgeneNetworkView view, String title)
 	{
 		if (_cnvList.size() >= 3) {
 			System.out.println("SGV: Viewer MAX = 3 views");
@@ -93,7 +93,7 @@ public class SubgeneViewerFrame extends JFrame implements MouseMotionListener {
 //			}});
 		
 		
-		view.setBorder(new TitledBorder(view.getParentNode().getIdentifier()));
+		view.setBorder(new TitledBorder(title));
 		//view.setBackground(new Color(247,243,213));
 		view.setOpaque(true);
 		_panel.add(view);

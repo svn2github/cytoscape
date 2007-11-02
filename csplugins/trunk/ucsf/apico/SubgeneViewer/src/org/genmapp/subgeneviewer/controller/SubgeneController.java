@@ -1,5 +1,7 @@
 package org.genmapp.subgeneviewer.controller;
 
+import giny.model.Node;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import org.genmapp.subgeneviewer.text.Example_Exon_Structure_GenMAPP_CS;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 
 public class SubgeneController extends MouseAdapter {
@@ -34,6 +37,8 @@ public class SubgeneController extends MouseAdapter {
 
 	private String _nodeId;
 
+	private String _nodeLabel;
+
 	public void mousePressed(MouseEvent e) {
 
 		if (e.getClickCount() >= 2
@@ -42,10 +47,12 @@ public class SubgeneController extends MouseAdapter {
 
 			System.out.println("SGV: double click on node");
 
-			_nodeId = ((DGraphView) Cytoscape.getCurrentNetworkView())
+			_nodeLabel = ((DGraphView) Cytoscape.getCurrentNetworkView())
 					.getPickedNodeView(e.getPoint()).getLabel().getText();
-
-			getViewsInDatabase(_nodeId);
+			
+			_nodeId = ((DGraphView) Cytoscape.getCurrentNetworkView()).getPickedNodeView(e.getPoint()).getNode().getIdentifier();
+			
+			getViewsInDatabase(_nodeLabel);
 			getViewsToView();
 
 			SubgeneViewerFrame frame = SubgeneViewerPlugin.get_frame();
@@ -57,7 +64,7 @@ public class SubgeneController extends MouseAdapter {
 					switch (viewType) {
 					case EXON_VIEW: {
 						System.out.println("Adding view");
-						_view = SpliceController.buildSpliceViewer(_nodeId);
+						_view = SpliceController.buildSpliceViewer(_nodeLabel, _nodeId);
 						System.out.println("added view: " + _view);
 						break;
 					}
@@ -71,7 +78,7 @@ public class SubgeneController extends MouseAdapter {
 						// todo
 					}
 					}
-					frame.addView(_view);
+					frame.addView(_view, _nodeLabel);
 				}
 			}
 			frame.setVisible(true);
@@ -79,7 +86,7 @@ public class SubgeneController extends MouseAdapter {
 		else if ((e.getClickCount() >= 2) && (e.isAltDown()) && (e.isControlDown()))
 		{
 			SpliceNetworkView spliceView = Example_Exon_Structure_GenMAPP_CS.
-			testSpliceNetworkView(_nodeId);
+			testSpliceNetworkView(_nodeLabel);
 			Example_Exon_Structure_GenMAPP_CS.dumpSpliceNetworkView
 			(spliceView);
 		}
