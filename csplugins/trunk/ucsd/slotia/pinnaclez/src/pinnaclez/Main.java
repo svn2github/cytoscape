@@ -234,7 +234,27 @@ public class Main
 		// Stage 4: Output
 		//
 
-		output.println("Start\tModule Score\tST1 PValue\tST2 PValue\tST3 PValue\tGenes");
+		output.println("# INPUT");
+		output.println("#   INPUT FILES");
+		output.println("#     Class file:   " + classFilePath);
+		output.println("#     Matrix file:  " + matrixFilePath);
+		output.println("#     Network file: " + networkFilePath);
+		output.println("#   SCORING AND TRIALS");
+		output.println("#     Score model:      " + (scoreModel == ScoreModel.MI ? "MI" : "T"));
+		output.println("#     Number of trials: " + numOfTrials);
+		output.println("#   SEARCH PARAMETERS");
+		output.println("#     Max module size: " + maxModuleSize);
+		output.println("#     Max radius:      " + maxRadius);
+		output.println("#     Max node degree: " + maxNodeDegree);
+		output.println("#     Min improvement: " + minImprovement);
+		output.println("#   STATISTICAL TESTS");
+		output.println("#     ST1 P-value cutoff: " + ST1PValCutoff);
+		output.println("#     ST2 P-value cutoff: " + ST2PValCutoff);
+		output.println("#     ST3 P-value cutoff: " + ST3PValCutoff);
+		output.println("#     ST3 randomizations: " + numOfST3Randomizations);
+		output.println("#");
+		output.println("# OUTPUT");
+		output.println("# Start\tModule Score\tST1 PValue\tST2 PValue\tST3 PValue\tGenes");
 		for(Graph<Activity,String> module : modules)
 		{
 			final IntIterator iterator = module.nodes();
