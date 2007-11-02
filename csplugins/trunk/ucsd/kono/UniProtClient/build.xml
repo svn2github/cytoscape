@@ -1,0 +1,276 @@
+<!-- =================================================================== -->
+<!-- UniProt Web Service Client plugin (uniprotClient.jar) build file     
+			08/29/2007 Written by Keiichiro Ono (kono@ucsd.edu)       -->
+<!-- =================================================================== -->
+
+<project name="uniprotClient" default="uniprotClient" basedir=".">
+
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init-uniprotClient">
+		<tstamp />
+		<property name="uniprotClient.Name" value="UniProt Web Service Client Plugin" />
+		<property name="uniprotClient.name" value="uniprotClient" />
+		<property name="uniprotClient.version" value="0.5" />
+		<property name="uniprotClient.year" value="200" />
+
+		<echo message="Building ${uniprotClient.name} version ${uniprotClient.version}." />
+
+		<!-- Inheritable properties -->
+		<property name="debug" value="on" />
+		<property name="optimize" value="off" />
+		<property name="deprecation" value="on" />
+		<property name="nowarn" value="true" />
+		<property name="fork" value="false" />
+		<property name="uniprotClient.root.dir" value="." />
+
+		<!-- You need to modify this line to point to Cytoscape directory.  -->
+		<property name="cytoscape.dir" value="${uniprotClient.root.dir}/../FRESH4" />
+
+		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
+		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.5.0" />
+
+		<!-- JUnit report directory -->
+		<property name="junit.report.dir" value="${uniprotClient.root.dir}/junit-reports" />
+
+		<path id="project.class.path">
+			<pathelement path="${java.class.path}/" />
+		</path>
+
+		<!-- Define the directories -->
+		<property name="uniprotClient.root.dir" value="./" />
+		<property name="uniprotClient.src.dir" value="${uniprotClient.root.dir}/src" />
+		<property name="uniprotClient.lib.dir" value="${uniprotClient.root.dir}/lib" />
+		<property name="uniprotClient.tests.dir" value="${uniprotClient.root.dir}/tests" />
+		<property name="uniprotClient.classes.dir" value="${uniprotClient.root.dir}/classes" />
+		<property name="uniprotClient.testclasses.dir" value="${uniprotClient.root.dir}/testClasses" />
+		<property name="uniprotClient.javadoc.dir" value="${javadoc.dir}/uniprotClient" />
+		<property name="uniprotClient.resources.dir" value="${uniprotClient.root.dir}/resources" />
+		<property name="uniprotClient.manifest.dir" value="${uniprotClient.root.dir}/manifest" />
+		<property name="uniprotClient.packages" value="uniprotClient.*" />
+		<!-- Subdirectory for test reports -->
+		<property name="uniprotClient.tests.reports.dir" value="${uniprotClient.root.dir}/reports/tests" />
+
+		<!-- Define the condition for compilation -->
+		<property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar" />
+
+		<condition property="cytoscape.present">
+			<and>
+				<available file="${cytoscape.jar}" />
+			</and>
+		</condition>
+
+		<!-- Define excludes for uniprotClient compile and javadoc -->
+		<property name="uniprotClient.excludes" value="**/notyet/*" />
+		<property name="uniprotClient.tests.excludes" value="**/notyet/*" />
+		<property name="uniprotClient.packages.excludes" value="**.test.*,**.notyet.*" />
+
+		<path id="uniprotClient.project.class.path">
+			<pathelement location="${uniprotClient.classes.dir}" />
+			<pathelement path="${uniprotClient.root.dir}/uniprotClientTests.jar/" />
+			<fileset dir="${uniprotClient.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${cytoscape.lib.dir}/build-libs">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Clean up, get back to original state                                -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init-uniprotClient">
+		<delete dir="${uniprotClient.classes.dir}" />
+		<delete dir="${uniprotClient.testclasses.dir}" />
+		<delete dir="${uniprotClient.tests.reports.dir}" />
+		<delete file="uniprotClient.jar" />
+		<delete file="${uniprotClient.lib.dir}/uniprotClient.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the uniprotClient project                                           -->
+	<!-- =================================================================== -->
+	<target name="compile-uniprotClient" depends="init-uniprotClient">
+
+		<echo message=" COMPILE uniprotClient " />
+
+		<mkdir dir="${uniprotClient.classes.dir}" />
+		<javac srcdir="${uniprotClient.src.dir}" excludes="${uniprotClient.excludes}" classpathref="uniprotClient.project.class.path" destdir="${uniprotClient.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the uniprotClient.jar file                                           -->
+	<!-- =================================================================== -->
+	<target name="uniprotClient" depends="compile-uniprotClient">
+		<!-- copy over images -->
+		<copy todir="${uniprotClient.classes.dir}/images">
+			<fileset dir="${uniprotClient.root.dir}/images" />
+		</copy>
+
+		<copy todir="${uniprotClient.classes.dir}/edu/ucsd/bioeng/coreplugin/uniprotClient" file="${uniprotClient.manifest.dir}/plugin.props" />
+
+		<unjar dest="${uniprotClient.classes.dir}">
+			<fileset dir="${uniprotClient.lib.dir}">
+				<include name="*.jar" />
+
+				<exclude name="uniprotClient.jar" />
+				<exclude name="uniprotClientTest.jar" />
+			</fileset>
+		</unjar>
+
+		<jar destfile="uniprotClient.jar" manifest="${uniprotClient.manifest.dir}/uniprotClient.manifest">
+			<fileset dir="${uniprotClient.classes.dir}" includes="**" />
+			<fileset dir="${uniprotClient.root.dir}/lib" includes="resources/**" />
+		</jar>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- release                                             -->
+	<!-- =================================================================== -->
+	<target name="release" depends="testAll">
+		<copy todir="${uniprotClient.lib.dir}" file="uniprotClient.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the uniprotClient tests                                             -->
+	<!-- =================================================================== -->
+	<target name="compile-tests" depends="uniprotClient">
+		<mkdir dir="${uniprotClient.testclasses.dir}" />
+		<javac srcdir="${uniprotClient.tests.dir}" includes="**/*" classpathref="uniprotClient.project.class.path" destdir="${uniprotClient.testclasses.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the uniprotClientTests.jar file                                     -->
+	<!-- =================================================================== -->
+	<target name="tests" depends="compile-tests">
+		<jar jarfile="uniprotClientTests.jar" basedir="${uniprotClient.testclasses.dir}" includes="**/*" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Build all jars                                                      -->
+	<!-- =================================================================== -->
+	<target name="all" depends="uniprotClient" />
+
+	<!-- =================================================================== -->
+	<!-- Run the Plugin                                                      -->
+	<!-- =================================================================== -->
+	<target name="run" depends="uniprotClient">
+		<java classname="cytoscape.cytoscape" classpathref="uniprotClient.project.class.path" fork="true" />
+		<arg line="-p ${uniprotClient.lib.dir}/uniprotClient.jar" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Runs the tests in uniprotClientTests.jar                                    -->
+	<!-- =================================================================== -->
+	<target name="runtests" depends="tests">
+		<mkdir dir="${uniprotClient.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" dir="${uniprotClient.classes.dir}" maxmemory="1G">
+			<formatter type="plain" usefile="true" />
+			<classpath refid="uniprotClient.project.class.path" />
+			<!-- The junit task doesn't support 'if' so we test for JUnit here -->
+			<batchtest fork="yes" todir="${uniprotClient.tests.reports.dir}" if="junit.present">
+				<fileset dir="${uniprotClient.classes.dir}" includes="**/test/*" excludes="${uniprotClient.tests.excludes}" />
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- ======================================================= -->
+	<!-- Run all of the Swing Unit Tests                       -->
+	<!-- ======================================================= -->
+	<target name="test-swing" depends="uniprotClient">
+		<mkdir dir="${uniprotClient.tests.reports.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
+
+			<classpath>
+				<fileset dir="${uniprotClient.root.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${uniprotClient.root.dir}/lib">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.lib.dir}/build-libs">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${cytoscape.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${uniprotClient.root.dir}/testClasses">
+					<include name="**/*" />
+				</fileset>
+			</classpath>
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${uniprotClient.tests.reports.dir}">
+				<fileset dir="${uniprotClient.tests.dir}" includes="**/*TestSwing.java" />
+			</batchtest>
+
+		</junit>
+		<junitreport todir="${uniprotClient.tests.reports.dir}">
+			<fileset dir="${uniprotClient.tests.reports.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${uniprotClient.tests.reports.dir}" />
+		</junitreport>
+
+
+		<fail message="JUnit Tests failed! Check ${uniprotClient.tests.reports.dir}/index.html for details." if="junit.test.failure" />
+
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Runs all test cases.                                    -->
+	<!-- =================================================================== -->
+	<target name="testAll" depends="tests">
+		<echo>
+	            ***********************************************
+	            Running all unit tests individually. 
+	            ***********************************************
+		</echo>
+		<mkdir dir="${junit.report.dir}" />
+		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+			<classpath refid="uniprotClient.project.class.path" />
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${junit.report.dir}" filtertrace="no">
+				<fileset dir="${uniprotClient.tests.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+		<delete file="uniprotClientTests.jar" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Creates the API documentation                                       -->
+	<!-- =================================================================== -->
+	<target name="docs" depends="init-uniprotClient">
+		<mkdir dir="${uniprotClient.javadoc.dir}" />
+		<javadoc packagenames="${uniprotClient.packages}" excludepackagenames="${uniprotClient.packages.excludes}" sourcepath="${uniprotClient.src.dir}" destdir="${uniprotClient.javadoc.dir}" classpathref="uniprotClient.project.class.path" author="true" version="true" use="true" splitindex="true" noindex="false" windowtitle="${uniprotClient.Name} API" doctitle="${uniprotClient.Name}" />
+	</target>
+
+</project>
+
+<!-- End of file -->
