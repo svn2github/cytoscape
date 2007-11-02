@@ -97,6 +97,10 @@ public final class ProgressUIControl implements TaskMonitor {
 		m_monitorHook.setException(t, userErrorMessage);
 	}
 
+	public void setException(Throwable t, String userErrorMessage, String str1) {
+		m_monitorHook.setException(t, userErrorMessage);
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

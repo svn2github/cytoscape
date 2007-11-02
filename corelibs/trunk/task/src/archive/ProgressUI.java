@@ -180,6 +180,10 @@ public final class ProgressUI {
 					throw new IllegalStateException("not yet implemented");
 				}
 
+				public void setException (Throwable t, String s1, String s2) {
+					throw new IllegalStateException("not yet implemented");
+				}
+
 				/**
 				 *  DOCUMENT ME!
 				 *
