@@ -131,6 +131,7 @@
 				<exclude name="ncbiUI.jar" />
 				<exclude name="ncbiUITest.jar" />
 				<exclude name="ncbiws.jar" />
+				<exclude name="ncbiClient.jar" />
 				
 			</fileset>
 			
