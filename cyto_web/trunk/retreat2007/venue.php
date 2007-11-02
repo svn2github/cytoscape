@@ -55,11 +55,10 @@
 
   <h3>Route Description</h3>
 
-  <h4>Subway</h4>
+  <h4><a name="amc_subway">Subway</a></h4>
   <p>
-  This is by far the easiest way to reach the AMC; from subway stop <b>Holendrecht</b> it is a 250 meter (covered) walk to the main entrance of the AMC.
-  In the AMC you will be directed to the proper location of the event.
-  Take line <b>50</b> (Isolatorweg – Gein) or line <b>54</b> (Central Station – Gein) direction <b>Gein</b>, get off at Holendrecht.<br>
+  This is by far the easiest way to get there. You'll have to stamp 4 strips on your stripticket from Amsterdam City Center (see travel section; <a href="travel.php#public">getting around</a> )<br>
+  Take line <b>50 (Isolatorweg – Gein</b>) or line <b>54 (Central Station – Gein)</b> to <b>Gein</b>, get off at <b>Holendrecht</b>. From there it is a 250 meter (covered) walk to the main entrance of the AMC or you can follow the yellow signs "Faculteit" to go directly to the faculty buildings J and K where the retreat will be held. From both entrances the exact location of the rooms will be signposted.
   <br>
   &rarr;Download the <a href="pdf/AMC_Metro.pdf" target="_blank">Subway map(pdf), indicating Holendrecht</a>
   </p>  

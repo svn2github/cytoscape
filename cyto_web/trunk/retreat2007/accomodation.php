@@ -52,11 +52,16 @@
   <br>
   <table>
   <tr>
-  <td colspan="2"><p><b>Charming</b> (will be extended in due course)</p></td>
+  <td colspan="2"><p><b><a name="doelen">Charming</a></b> </p></td>
   </tr>
   <tr>
   <td valign="top"><p><a href="http://www.nh-hotels.com/nh/en/hotels/the-netherlands/amsterdam/nh-doelen.html?action=search" target="_blank">Doelen hotel</a>
-  <br>Approx rates: single/double<br>&euro;180 / &euro;200</p>
+  <br>Approx rates: single/double<br>&euro;180 / &euro;200
+  <br>From the airport <a href="http://www.iamsterdam.com/visiting_exploring/getting_there_around/schiphol_airport_by" target="_blank">take the train to Amsterdam Centraal Station</a>
+  <br>From there take the subway; any direction from this endpoint will pass by the Waterlooplein station where you'll have to get off.<br>
+  Take the exit Waterlooplein you'll end up right next to the "Stopera" (Acronym for STadhuis = City Hall and Opera) <a href="http://maps.google.com/maps?f=q&hl=en&geocode=&time=&date=&ttype=&q=Nieuwe+Doelenstraat+24,+1012+Amsterdam,+Amsterdam+(Noord-Holland),+Netherlands&sll=52.578019,4.949341&sspn=0.694326,1.867676&ie=UTF8&ll=52.370097,4.895782&spn=0.0109,0.029182&z=15&iwloc=addr&om=1" target="_blank">View Map</a>
+  <br>You will have to go to the other side of the building: either left or right; cross the bridge to enter the Staalstraat, at the end of that cross the next bridge, go left and you're in the Nieuwe Doelenstraat where the Hotel is located.
+  </p>
   </td>
   <td align="right"><img border="0" align="middle" alt="Doelen hotel" height="170" width="120" src="images/photos/doelen_120_170.jpg"></td>
   </tr>

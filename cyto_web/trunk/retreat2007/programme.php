@@ -108,7 +108,7 @@ These are targeted at the core-development team of Cytoscape and (plugin-)develo
  </tr>
  <tr>
   <td><p>17:00-19:00</p></td>
-  <td><p>Meet and greet for development team and organization and other eary arrivals in <a href="http://www.diningcity.nl//cafedejaren/en/index.html">Cafe de Jaren</a> (next to Doelen Hotel)</p></td>
+  <td><p>Meet and greet for development team and organization and other eary arrivals in <a href="http://www.diningcity.nl//cafedejaren/en/index.html" target="_blank">Cafe de Jaren</a> (next to Doelen Hotel)<br><a href="http://maps.google.com/maps?f=q&amp;hl=en&amp;geocode=&amp;time=&amp;date=&amp;ttype=&amp;q=cafe+de+jaren+amsterdam&amp;sll=37.0625,-95.677068&amp;sspn=29.025693,59.765625&amp;ie=UTF8&amp;ll=52.374551,4.899559&amp;spn=0.00545,0.014591&amp;z=14&amp;om=1&amp;source=embed" style="color:#0000FF;text-align:left" target="_blank">View Map</a></p></td>
  </tr>
  </table>
  

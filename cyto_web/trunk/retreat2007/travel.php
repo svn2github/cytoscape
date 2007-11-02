@@ -51,7 +51,7 @@
   station. From the station there are regular services with destinations in Belgium, France, Germany and Switzerland.
 
   <h3>Getting around</h3>
-  <h4>Bike</h4>
+  <h4><a name="bike">Bike</a></h4>
   Amsterdam seems to be built for bikes, which are probably one of the most convenient and fun ways to get around 
   the compact city with its narrow streets. Nearly half of all traffic movements in Amsterdam are by bike, 
   so it makes sense that you should join in by renting a bike.
@@ -60,11 +60,11 @@
   <li><a href="http://www.amsterdam.info/transport/bike-rentals/" target="_blank">A list of more bike rentals</a></li>
   </ul>
 
-  <h4>Public Transport</h4>
+  <h4><a name="public">Public Transport</a></h4>
   Public transport in Amsterdam, operated by the <a href="http://www.gvb.nl/english/default.asp" target="_blank">GVB</a>, Connexxion, Arriva, and Nederlandse 
-  Spoorwegen, consists of numerous bus, metro and tram lines. An overview of maps is <a href="http://www.gvb.nl/english/travellers/maps/index.html" target="_blank">here</a>
+  Spoorwegen, consists of numerous bus, metro and tram lines. An overview of maps is <a href="http://www.gvb.nl/english/travellers/maps/index.html" target="_blank">here</a> <br>
   In all public transport you can use the "strip-ticket"; the ins and outs of which are described at <a href="http://www.gvb.nl/english/travellers/ticketsandfares/strip-ticket.html" target="_blank">the gvb site</a>.
-  Apart from the metro stations they are available at post offices, Albert Heijn supermarkets and most tobacconists in Amsterdam.
+  Apart from the metro stations they are available at post offices, Albert Heijn supermarkets and most tobacconists in Amsterdam.<br>
   
 
   <h4>Taxis</h4>
