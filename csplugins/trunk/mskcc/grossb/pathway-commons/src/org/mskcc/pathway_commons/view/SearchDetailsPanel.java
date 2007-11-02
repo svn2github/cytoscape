@@ -37,7 +37,7 @@ public class SearchDetailsPanel extends JPanel {
     private JPanel createPathwayPane(PathwayTableModel pathwayTableModel) {
         JPanel pathwayPane = new JPanel(new BorderLayout());
 
-        GradientHeader header = new GradientHeader("Step 3:  Download");
+        GradientHeader header = new GradientHeader("Step 3:  Select Pathway");
         pathwayPane.add(header, BorderLayout.NORTH);
 
         JScrollPane pathwayTable = createPathwayTable(pathwayTableModel);
