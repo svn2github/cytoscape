@@ -74,13 +74,13 @@
         <mkdir dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
         <mkdir dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
         <xjc schema="schemas/MIF1.xsd"
-             target="${src.dir}"
+             destdir="${src.dir}"
              package="org.cytoscape.coreplugin.psi_mi.schema.mi1">
             <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi1"/>
             <arg value="-nv"/>
         </xjc>
         <xjc schema="schemas/MIF25.xsd"
-             target="${src.dir}"
+             destdir="${src.dir}"
              package="org.cytoscape.coreplugin.psi_mi.schema.mi25">
             <produces dir="${src.dir}/org/cytoscape/coreplugin/psi_mi/schema/mi25"/>
             <arg value="-nv"/>
