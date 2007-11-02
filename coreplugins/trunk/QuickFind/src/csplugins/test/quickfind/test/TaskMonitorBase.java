@@ -79,6 +79,17 @@ public class TaskMonitorBase implements TaskMonitor {
 	public void setException(Throwable throwable, String string) throws IllegalThreadStateException {
 	}
 
+	/**	
+	* Sets Exception:  no-op.
+	*
+	* @param throwable Throwable Object.
+	* @param str1 Human readable error message.
+ 	* @param str2 Recovery Tip.
+	*/
+	public void setException(Throwable throwable, String str1, String str2)
+		throws IllegalThreadStateException {
+	}
+
 	/**
 	 * Sets Status:  no-op.
 	 *
