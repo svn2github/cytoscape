@@ -8,6 +8,7 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -55,7 +56,17 @@ public class SearchBoxPanel extends JPanel {
         searchButton = createSearchButton(searchField);
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel label = new JLabel ("Example searches:  TP53, BRCA1, or SRY.");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Font font = label.getFont();
+        Font newFont = new Font (font.getFamily(), font.getStyle(), font.getSize()-2);
+        label.setFont(newFont);
+        label.setBorder(new EmptyBorder(5,3,3,3));
+
         add(searchField);
+        add (label);
+
         add(Box.createRigidArea(new Dimension(0, 5)));
         organismComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(organismComboBox);
