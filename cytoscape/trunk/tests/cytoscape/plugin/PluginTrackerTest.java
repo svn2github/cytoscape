@@ -62,7 +62,7 @@ public class PluginTrackerTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.PluginTracker#getListByStatus(cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 */
 	public void testGetListByStatus() throws Exception {
-		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
+		tracker.addDownloadable(getInfoObj(), PluginStatus.CURRENT);
 		
 		assertNotNull(tracker.getPluginListByStatus(PluginStatus.CURRENT));
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
@@ -79,20 +79,21 @@ public class PluginTrackerTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.PluginTracker#addPlugin(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 */
 	public void testAddPlugin() throws Exception {
-		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
+		tracker.addDownloadable(getInfoObj(), PluginStatus.CURRENT);
+
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		PluginInfo obj = getInfoObj();
 		obj.setName("myInstallTest");
 		obj.setDownloadableURL("http://booya.com/foo.xml");
-		tracker.addPlugin(obj, PluginStatus.INSTALL);
+		tracker.addDownloadable(obj, PluginStatus.INSTALL);
 		
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 		
 		// changing the name of the object will not change the object if
 		// the id/projurl stay the same
 		obj.setName("mySecondInstallTest");
-		tracker.addPlugin(obj, PluginStatus.INSTALL);
+		tracker.addDownloadable(obj, PluginStatus.INSTALL);
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 		
 		// whole new object will get added though
@@ -101,7 +102,7 @@ public class PluginTrackerTest extends TestCase {
 		newObj.setProjectUrl("http://foobar.com/booya.xml");
 		newObj.setFiletype(PluginInfo.FileType.JAR);
 		newObj.setCytoscapeVersion("2.5.1");
-		tracker.addPlugin(newObj, PluginStatus.INSTALL);
+		tracker.addDownloadable(newObj, PluginStatus.INSTALL);
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 2);
 		
 		// lets just check with the xml doc itself to be sure
@@ -158,7 +159,6 @@ public class PluginTrackerTest extends TestCase {
 		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.INSTALL).size(), 1);
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 0);
 		
-		
 		tracker.removeDownloadable(themeObj, PluginStatus.INSTALL);
 		assertEquals(tracker.getThemeListByStatus(PluginStatus.INSTALL).size(), 0);
 		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.INSTALL).size(), 0);
@@ -170,12 +170,13 @@ public class PluginTrackerTest extends TestCase {
 	public void testAddSamePlugin() throws Exception {
 		PluginInfo InfoObject = getInfoObj();
 		
-		tracker.addPlugin(InfoObject, PluginStatus.CURRENT);
+		tracker.addDownloadable(InfoObject, PluginStatus.CURRENT);
+
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		String NewName = "DuplicatePluginTest";
 		InfoObject.setName(NewName);
-		tracker.addPlugin(InfoObject, PluginStatus.CURRENT);
+		tracker.addDownloadable(InfoObject, PluginStatus.CURRENT);
 		
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
@@ -192,7 +193,8 @@ public class PluginTrackerTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.PluginTracker#removeDownloadable(cytoscape.plugin.DownloadableInfo, cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 */
 	public void testRemovePlugin() throws Exception {
-		tracker.addPlugin(getInfoObj(), PluginStatus.CURRENT);
+		tracker.addDownloadable(getInfoObj(), PluginStatus.CURRENT);
+
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 1);
 		
 		PluginInfo obj = new PluginInfo("999");
@@ -201,7 +203,7 @@ public class PluginTrackerTest extends TestCase {
 		obj.setCategory("Test");
 		obj.setFiletype(PluginInfo.FileType.JAR);
 		obj.setCytoscapeVersion("2.5.1");
-		tracker.addPlugin(obj, PluginStatus.INSTALL);
+		tracker.addDownloadable(obj, PluginStatus.INSTALL);
 		
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.INSTALL).size(), 1);
 
@@ -228,8 +230,8 @@ public class PluginTrackerTest extends TestCase {
 		objB.setPluginClassName("some.other.class.DifferentTest");
 		objB.setCytoscapeVersion(objA.getCytoscapeVersion());
 		
-		tracker.addPlugin(objA, PluginStatus.CURRENT);
-		tracker.addPlugin(objB, PluginStatus.CURRENT);
+		tracker.addDownloadable(objA, PluginStatus.CURRENT);
+		tracker.addDownloadable(objB, PluginStatus.CURRENT);
 		assertEquals(tracker.getPluginListByStatus(PluginStatus.CURRENT).size(), 2);
 		List<PluginInfo> CurrentList = tracker.getPluginListByStatus(PluginStatus.CURRENT);
 		assertFalse(CurrentList.get(0).equals(CurrentList.get(1)));

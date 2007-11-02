@@ -319,13 +319,57 @@ public class PluginManager {
 	protected void register(CytoscapePlugin Plugin, JarFile Jar) {
 		System.out.println("Registering " + Plugin.toString());
 
-		PluginInfo InfoObj = ManagerUtil.getInfoObject(Plugin.getClass()); 
+		DownloadableInfo InfoObj = ManagerUtil.getInfoObject(Plugin.getClass());
+		if (InfoObj != null && InfoObj.getType().equals(DownloadableType.THEME)) {
+			this.registerTheme(Plugin, Jar, (ThemeInfo) InfoObj);
+		} else {
+			this.registerPlugin(Plugin, Jar, (PluginInfo) InfoObj, true);
+		}
+//		PluginInfo PluginObj = null;
+//		
+//		// try to get it from the file
+//		// XXX PROBLEM: what to do about a plugin that attempts to register itself and is not compatible with the current version?
+//		try {
+//			PluginProperties pp = new PluginProperties(Plugin);
+//			PluginObj = pp.fillPluginInfoObject(InfoObj);
+//
+//		} catch (IOException ioe) {
+//			System.err.println("ERROR registering plugin: " + ioe.getMessage());
+//			System.err
+//					.println(Plugin.getClass().getName()
+//							+ " loaded but not registered, this will not affect the operation of the plugin");
+//		} catch (Exception e) {
+//			System.err.println("ERROR registering plugin: ");
+//			e.printStackTrace();
+//		} finally {
+//			if (PluginObj == null) { // still null, create a default one
+//				PluginObj = new PluginInfo();
+//				PluginObj.setCytoscapeVersion(cyVersion);
+//				PluginObj.setName(Plugin.getClass().getName());
+//			}
+//
+//			PluginObj.setPluginClassName(Plugin.getClass().getName());
+//			if (!usingWebstart && Jar != null) {
+//				PluginObj.setInstallLocation(Jar.getName());
+//				PluginObj.addFileName(Jar.getName());
+//			}
+//			PluginObj.setFiletype(PluginInfo.FileType.JAR);
+//
+//			initializedPlugins.put( PluginObj.getPluginClassName(), PluginObj);
+//			// TODO This causes a bug where theme plugins essentially get added to the current 
+//			// list twice
+//			if (InfoObj != null && !InfoObj.getType().equals(DownloadableType.THEME)) 
+//				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
+//		}
+	}
 
+	private PluginInfo registerPlugin(CytoscapePlugin Plugin, JarFile Jar, PluginInfo PluginObj, boolean addToTracker) {
 		// try to get it from the file
-		// PROBLEM: what to do about a plugin that attempts to register itself and is not compatible with the current version?
+		// XXX PROBLEM: what to do about a plugin that attempts to register itself and is not compatible with the current version?
+		System.err.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
-			InfoObj = pp.fillPluginInfoObject(InfoObj);
+			PluginObj = pp.fillPluginInfoObject(PluginObj);
 
 		} catch (IOException ioe) {
 			System.err.println("ERROR registering plugin: " + ioe.getMessage());
@@ -336,26 +380,44 @@ public class PluginManager {
 			System.err.println("ERROR registering plugin: ");
 			e.printStackTrace();
 		} finally {
-			if (InfoObj == null) { // still null, create a default one
-				InfoObj = new PluginInfo();
-				InfoObj.setCytoscapeVersion(cyVersion);
-				InfoObj.setName(Plugin.getClass().getName());
+			if (PluginObj == null) { // still null, create a default one
+				PluginObj = new PluginInfo();
+				PluginObj.setCytoscapeVersion(cyVersion);
+				PluginObj.setName(Plugin.getClass().getName());
 			}
 
-			InfoObj.setPluginClassName(Plugin.getClass().getName());
+			PluginObj.setPluginClassName(Plugin.getClass().getName());
 			if (!usingWebstart && Jar != null) {
-				InfoObj.setInstallLocation(Jar.getName());
-				InfoObj.addFileName(Jar.getName());
+				PluginObj.setInstallLocation(Jar.getName());
+				PluginObj.addFileName(Jar.getName());
 			}
-			InfoObj.setFiletype(PluginInfo.FileType.JAR);
+			PluginObj.setFiletype(PluginInfo.FileType.JAR);
 
-			initializedPlugins.put(InfoObj.getPluginClassName(), InfoObj);
+			initializedPlugins.put( PluginObj.getPluginClassName(), PluginObj);
 			// TODO This causes a bug where theme plugins essentially get added to the current 
 			// list twice
-			pluginTracker.addDownloadable(InfoObj, PluginStatus.CURRENT);
+			if (addToTracker) {
+				System.out.println("--- Registering PLUGIN " + PluginObj.getName());
+				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
+			}
 		}
+		return PluginObj;
 	}
-
+	
+	
+	private void registerTheme(CytoscapePlugin Plugin, JarFile Jar, ThemeInfo ThemeObj) {
+		System.out.println("--- Registering THEME " + ThemeObj.getName());
+		for (PluginInfo plugin: ThemeObj.getPlugins()) {
+			if (plugin.getPluginClassName().equals(Plugin.getClass().getName())) {
+				System.out.println(plugin.getName());
+				PluginInfo updatedPlugin = registerPlugin(Plugin, Jar, plugin, false);
+				ThemeObj.replacePlugin(plugin, updatedPlugin);
+			}
+		}
+		pluginTracker.addDownloadable(ThemeObj, PluginStatus.CURRENT);
+	}
+	
+	
 	// TODO would be better to fix how initializedPlugins are tracked...
 	private void cleanCurrentList() {
 		List<DownloadableInfo> CurrentList = this

@@ -148,27 +148,30 @@ public class ManagerUtil {
 	}
 
 	/**
-	 * Takes a Class object for a CytoscapePlugin and returns the PluginInfo
+	 * Takes a Class object for a CytoscapePlugin and returns the DownloadableInfo
 	 * object associated
 	 * 
 	 * @param pluginClass
-	 * @return PluginInfo object
+	 * @return DownloadableInfo object
 	 */
-	public static PluginInfo getInfoObject(Class pluginClass) {
+	public static DownloadableInfo getInfoObject(Class pluginClass) {
 		PluginManager mgr = PluginManager.getPluginManager();
-		List<DownloadableInfo> Plugins = mgr
+		
+		List<DownloadableInfo> Downloadables = mgr
 				.getDownloadables(PluginStatus.CURRENT);
 
-		for (DownloadableInfo Current : Plugins) {
-			PluginInfo CurrentPlugin = null;
-			if (!Current.getType().equals(DownloadableType.PLUGIN)) {
-				continue;
+		for (DownloadableInfo Current : Downloadables) {
+			
+			if (Current.getType().equals(DownloadableType.THEME)) {
+				ThemeInfo t = (ThemeInfo) Current;
+				for (PluginInfo p: t.getPlugins()) {
+					if (p.getPluginClassName().equals(pluginClass.getName()))
+						return t; // return the theme that contains the plugin
+				}
 			} else {
-				CurrentPlugin = (PluginInfo) Current;
-			}
-			if (CurrentPlugin.getPluginClassName()
-					.equals(pluginClass.getName())) {
-				return CurrentPlugin;
+				PluginInfo p = (PluginInfo) Current;
+				if (p.getPluginClassName().equals(pluginClass.getName()))
+					return p;
 			}
 		}
 		return null;

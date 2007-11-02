@@ -36,8 +36,6 @@
 
 package cytoscape.plugin;
 
-import cytoscape.CytoscapeInit;
-
 import cytoscape.plugin.PluginInfo.AuthorInfo;
 
 import org.jdom.Document;
@@ -55,14 +53,10 @@ import java.io.FileWriter;
 import java.util.*;
 
 
-/**
- * @author skillcoy
- * 
- */
 public class PluginTracker {
 	private Document trackerDoc;
 	private File installFile;
-
+	private HashMap<String, Element> infoObjMap;
 	/**
 	 * Used for testing
 	 * 
@@ -114,16 +108,17 @@ public class PluginTracker {
 			trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
 			write();
 		}
+		this.createPluginTable();
 	}
 
-	/**
-	 * @deprecated Use {@link PluginTracker#getPluginListByStatus(PluginStatus)}
-	 * @param Status
-	 * @return
-	 */
-	protected List<PluginInfo> getListByStatus(PluginStatus Status) {
-		return getPluginContent(trackerDoc.getRootElement().getChild(Status.getTagName()));
-	}
+//	/**
+//	 * @deprecated Use {@link PluginTracker#getPluginListByStatus(PluginStatus)}
+//	 * @param Status
+//	 * @return
+//	 */
+//	protected List<PluginInfo> getListByStatus(PluginStatus Status) {
+//		return getPluginContent(trackerDoc.getRootElement().getChild(Status.getTagName()));
+//	}
 	
 	/**
 	 * Gets a list of plugins by their status. CURRENT: currently installed
@@ -177,7 +172,6 @@ public class PluginTracker {
 	}
 	
 	/**
-	 * @deprecated
 	 * Adds the given ThemeInof object to the list of themes sharing the given
 	 * status.
 	 * 
@@ -187,81 +181,139 @@ public class PluginTracker {
 	private void addTheme(ThemeInfo obj, PluginStatus Status) {
 		Element ThemeParent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		
-		Element Theme = getMatchingInfoObj(obj, Status.getTagName());
+		Element Theme = getMatchingInfoObj(obj, Status);
+		//Element Theme = getMatchingInfoObj(obj, Status.getTagName());
 		if (Theme != null) {
-			// TODO update the theme element
-			System.err.println("Implement me!!!");
+			Theme = updateBasicElement(obj, Theme);
+			Theme.getChild(PluginXml.PLUGIN_LIST.getTag()).removeChildren(PluginXml.PLUGIN.getTag());
+
+			for (PluginInfo plugin: obj.getPlugins()) {
+				Element ThemePlugin = getMatchingInfoObj(plugin, Status); // XXX not sure this will get the right element
+				ThemePlugin = updatePluginElement(plugin, ThemePlugin);
+				Theme.getChild(PluginXml.PLUGIN_LIST.getTag()).addContent(ThemePlugin);
+			}
 		} else {
-			ThemeParent.addContent(createThemeContent(obj));
+			Theme = createThemeContent(obj);
+			ThemeParent.addContent(Theme);
+			this.infoObjMap.put(infoMapKey(obj, Status), Theme);
 			System.out.println("Adding theme " + obj.getName() + " status " + Status.name());
 		}
 		write();
 	}
 	
+	private Element updateBasicElement(DownloadableInfo obj, Element element) {
+		if (!obj.getCategory().equals(Category.NONE.getCategoryText())) {
+			element.getChild(categoryTag).setText(obj.getCategory());
+		}
+		element.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
+		element.getChild(descTag).setText(obj.getDescription());
+		element.getChild(pluginVersTag).setText(obj.getObjectVersion());
+		
+		if (element.getChild(PluginXml.RELEASE_DATE.getTag()) != null) { 
+			element.getChild(PluginXml.RELEASE_DATE.getTag()).setText(obj.getReleaseDate());
+		} else {
+			Element ReleaseDate = new Element(PluginXml.RELEASE_DATE.getTag());
+			element.addContent( ReleaseDate.setText(obj.getReleaseDate()) );
+		}
+		return element;
+	}
+
+	
+	private Element updatePluginElement(PluginInfo obj, Element Plugin) {
+		if (!obj.getName().equals(obj.getPluginClassName())) {
+			Plugin.getChild(nameTag).setText(obj.getName());
+		}
+		Plugin = updateBasicElement(obj, Plugin);
+		Plugin.getChild(installLocTag).setText(obj.getInstallLocation());
+		
+		if (obj.getPluginClassName() != null) {
+			Plugin.getChild(classTag).setText(obj.getPluginClassName());
+		}
+
+		Plugin.removeChild(authorListTag);
+		Element Authors = new Element(authorListTag);
+		for(AuthorInfo ai: obj.getAuthors()) {
+			Element Author = new Element(authorTag);
+			Author.addContent( new Element(nameTag).setText(ai.getAuthor()) );
+			Author.addContent( new Element(instTag).setText(ai.getInstitution()) );
+			Authors.addContent(Author);
+		}
+		Plugin.addContent(Authors);
+
+		return Plugin;
+	}
 	
 	/**
-	 * @deprecated
 	 * Adds the given PluginInfo object to the list of plugins sharing the given
 	 * status.
 	 * 
 	 * @param obj
 	 * @param Status
 	 */
-	protected void addPlugin(PluginInfo obj, PluginStatus Status) {
+	private void addPlugin(PluginInfo obj, PluginStatus Status) {
 		Element PluginParent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		
-		// Element Plugin = getMatchingPlugin(obj, Status.getTagName());
-		Element Plugin = getMatchingInfoObj(obj, Status.getTagName());
+		Element Plugin = getMatchingInfoObj(obj, Status);
 		if (Plugin != null) {
+			updatePluginElement(obj, Plugin);
 			// update the element
-			if (!obj.getName().equals(obj.getPluginClassName())) {
-				Plugin.getChild(nameTag).setText(obj.getName());
-			}
-			if (!obj.getCategory().equals(Category.NONE.getCategoryText())) {
-				Plugin.getChild(categoryTag).setText(obj.getCategory());
-			}
-			
-			Plugin.getChild(installLocTag).setText(obj.getInstallLocation());
-			Plugin.getChild(descTag).setText(obj.getDescription());
-			Plugin.getChild(pluginVersTag).setText(obj.getObjectVersion());
-			Plugin.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
-			
-			if (obj.getPluginClassName() != null) {
-				Plugin.getChild(classTag).setText(obj.getPluginClassName());
-			}
-
-			if (Plugin.getChild(PluginXml.RELEASE_DATE.getTag()) != null) {
-				Plugin.getChild(PluginXml.RELEASE_DATE.getTag()).setText(obj.getReleaseDate());
-			} else {
-				Element ReleaseDate = new Element(PluginXml.RELEASE_DATE.getTag());
-				Plugin.addContent( ReleaseDate.setText(obj.getReleaseDate()) );
-			}
-			
-			
-			Plugin.removeChild(authorListTag);
-			Element Authors = new Element(authorListTag);
-			for(AuthorInfo ai: obj.getAuthors()) {
-				Element Author = new Element(authorTag);
-				Author.addContent( new Element(nameTag).setText(ai.getAuthor()) );
-				Author.addContent( new Element(instTag).setText(ai.getInstitution()) );
-				Authors.addContent(Author);
-			}
-			Plugin.addContent(Authors);
+//			if (!obj.getName().equals(obj.getPluginClassName())) {
+//				Plugin.getChild(nameTag).setText(obj.getName());
+//			}
+//			Plugin = updateBasicElement(obj, Plugin);
+//			
+////			if (!obj.getCategory().equals(Category.NONE.getCategoryText())) {
+////				Plugin.getChild(categoryTag).setText(obj.getCategory());
+////			}
+//			
+//			Plugin.getChild(installLocTag).setText(obj.getInstallLocation());
+////			Plugin.getChild(descTag).setText(obj.getDescription());
+////			Plugin.getChild(pluginVersTag).setText(obj.getObjectVersion());
+////			Plugin.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
+//			
+//			if (obj.getPluginClassName() != null) {
+//				Plugin.getChild(classTag).setText(obj.getPluginClassName());
+//			}
+//
+////			if (Plugin.getChild(PluginXml.RELEASE_DATE.getTag()) != null) {
+////				Plugin.getChild(PluginXml.RELEASE_DATE.getTag()).setText(obj.getReleaseDate());
+////			} else {
+////				Element ReleaseDate = new Element(PluginXml.RELEASE_DATE.getTag());
+////				Plugin.addContent( ReleaseDate.setText(obj.getReleaseDate()) );
+////			}
+//			
+//			
+//			Plugin.removeChild(authorListTag);
+//			Element Authors = new Element(authorListTag);
+//			for(AuthorInfo ai: obj.getAuthors()) {
+//				Element Author = new Element(authorTag);
+//				Author.addContent( new Element(nameTag).setText(ai.getAuthor()) );
+//				Author.addContent( new Element(instTag).setText(ai.getInstitution()) );
+//				Authors.addContent(Author);
+//			}
+//			Plugin.addContent(Authors);
+			infoObjMap.put(this.infoMapKey(obj, Status), Plugin);
 		} else {
-			PluginParent.addContent(createPluginContent(obj));
+			Element NewPlugin = createPluginContent(obj);
+			PluginParent.addContent(NewPlugin);
+			infoObjMap.put(this.infoMapKey(obj, Status), NewPlugin);
 			System.out.println("Adding plugin " + obj.getName() + " status " + Status.name());
+//			PluginParent.addContent(createPluginContent(obj));
+//			System.out.println("Adding plugin " + obj.getName() + " status " + Status.name());
 		}
 		write();
 	}
 
+	
+	
 	/**
 	 * @deprecated
 	 * @param obj
 	 * @param Status
 	 */
-	protected void removePlugin(PluginInfo obj, PluginStatus Status) {
-		this.removeDownloadable(obj, Status);
-	}
+//	protected void removePlugin(PluginInfo obj, PluginStatus Status) {
+//		this.removeDownloadable(obj, Status);
+//	}
 	
 	/**
 	 * Removes the given DownloadableInfo object from the list of plugins/themes sharing the
@@ -273,9 +325,18 @@ public class PluginTracker {
 	protected void removeDownloadable(DownloadableInfo obj, PluginStatus Status) {
 		Element Parent = trackerDoc.getRootElement().getChild(Status.getTagName());
 		
-		Element InfoObj = this.getMatchingInfoObj(obj, Status.getTagName());
+		Element InfoObj = this.getMatchingInfoObj(obj, Status);
+		//Element InfoObj = this.getMatchingInfoObj(obj, Status.getTagName());
 		if (InfoObj != null) {
 			Parent.removeContent(InfoObj);
+			infoObjMap.remove( this.infoMapKey(obj, Status) );
+			
+			if (obj.getType().equals(DownloadableType.THEME)) {
+				ThemeInfo theme = (ThemeInfo) obj;
+				for (PluginInfo themePlugin: theme.getPlugins()) {
+					infoObjMap.remove( this.infoMapKey(themePlugin, Status) );
+				}
+			}
 			System.out.println("Removing plugin/theme " + obj.getName() + " status " + Status.name());
 			write();
 		}
@@ -294,27 +355,70 @@ public class PluginTracker {
 	// TODO this needs to go through both the pluginlist and the theme pluginlist
 	// may need different method or two different lists as the first list will actually 
 	// contain elements of the second (which is why there is an error)
-	protected Element getMatchingInfoObj(DownloadableInfo Obj, String Tag) {
-		List<Element> InfoObjs = trackerDoc.getRootElement().getChild(Tag).getChildren();
-		
-		Iterator<Element> themeI = trackerDoc.getRootElement().getChild(Tag).getChildren(PluginXml.THEME.getTag()).iterator();
-		while (themeI.hasNext()) {
-			Element Theme = themeI.next();
-			List<Element> ThemePluginObjs = Theme.getChild(PluginXml.PLUGIN_LIST.getTag()).getChildren();
-//			for (Element e: ThemePluginObjs) {
-//				System.out.println("--- " + e.getName());
-//				InfoObjs.add(e);
-//			}
-			//InfoObjs.addAll(ThemePluginObjs);
-		}
-		
-		for (Element Current: InfoObjs) {
-		if ( Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) && 
-				 Current.getChildTextTrim(downloadUrlTag).equals(Obj.getDownloadableURL()) )
-			return Current;
-		}
-		return null;
+	protected Element getMatchingInfoObj(DownloadableInfo Obj, PluginStatus Status) {
+		String Key = this.infoMapKey(Obj, Status);
+		return this.infoObjMap.get(Key);
 	}
+
+//	protected Element getMatchingInfoObj(DownloadableInfo Obj, String Tag) {
+//		List<Element> InfoObjs = trackerDoc.getRootElement().getChild(Tag).getChildren();
+//		
+//		Iterator<Element> themeI = trackerDoc.getRootElement().getChild(Tag).getChildren(PluginXml.THEME.getTag()).iterator();
+//		while (themeI.hasNext()) {
+//			Element Theme = themeI.next();
+//			List<Element> ThemePluginObjs = Theme.getChild(PluginXml.PLUGIN_LIST.getTag()).getChildren();
+////			for (Element e: ThemePluginObjs) {
+////				System.out.println("--- " + e.getName());
+////				InfoObjs.add(e);
+////			}
+//			//InfoObjs.addAll(ThemePluginObjs);
+//		}
+//		
+//		for (Element Current: InfoObjs) {
+//		if ( Current.getChildTextTrim(uniqueIdTag).equals(Obj.getID()) && 
+//				 Current.getChildTextTrim(downloadUrlTag).equals(Obj.getDownloadableURL()) )
+//			return Current;
+//		}
+//		return null;
+//	}
+	
+	private void createPluginTable() {
+		this.infoObjMap = new java.util.HashMap<String, Element>();
+		for (PluginStatus ps: PluginStatus.values()) {
+			Iterator<Element> iter = trackerDoc.getRootElement().getChild(ps.getTagName()).getChildren().iterator();
+
+			while (iter.hasNext()) {
+				Element el = iter.next();
+				if (el.getName().equals(PluginXml.THEME.getTag())) {
+					// make sure the theme gets added
+					infoObjMap.put(infoMapKey(el, ps), el);
+					
+					Iterator<Element> ptIter = el.getChild(PluginXml.PLUGIN_LIST.getTag()).getChildren(PluginXml.PLUGIN.getTag()).iterator();
+					while (ptIter.hasNext()) {
+						Element pEl = ptIter.next();
+						String key = this.infoMapKey(pEl, ps);
+						// all theme plugins should be added too
+						infoObjMap.put(key, pEl);
+					}
+				} else if (el.getName().equals(PluginXml.PLUGIN.getTag())) {
+					String key = this.infoMapKey(el, ps); 
+					infoObjMap.put(key, el);
+				} else {
+					System.out.println("er....??");
+				}
+			}
+		}
+	}
+	
+	private String infoMapKey(DownloadableInfo Obj, PluginStatus Status) {
+		return Obj.getID() + "_" + Obj.getDownloadableURL() + "_" + Status.getTagName();
+	}
+
+	private String infoMapKey(Element el, PluginStatus Status) {
+		return  el.getChildTextTrim(uniqueIdTag) + "_" + el.getChildTextTrim(downloadUrlTag) + "_" +
+			Status.getTagName();
+	}
+
 	
 	/**
 	 * Writes doc to file
@@ -375,9 +479,11 @@ public class PluginTracker {
 	private List<ThemeInfo> getThemeContent(Element ThemeParentTag) {
 		List<ThemeInfo> Content = new ArrayList<ThemeInfo>();
 		List<Element> Themes = ThemeParentTag.getChildren(PluginXml.THEME.getTag());
+		
 		for (Element CurrentTheme: Themes) {
 			ThemeInfo themeInfo = (ThemeInfo) createBasicObject(CurrentTheme, DownloadableType.THEME);
 			themeInfo.setObjectVersion( Double.valueOf(CurrentTheme.getChildTextTrim(PluginXml.THEME_VERSION.getTag())) );
+			
 			// add plugins
 			Iterator<Element> pluginI = CurrentTheme.getChild(PluginXml.PLUGIN_LIST.getTag()).getChildren(PluginXml.PLUGIN.getTag()).iterator();
 			while (pluginI.hasNext()) {

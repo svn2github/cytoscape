@@ -100,7 +100,7 @@ public class PluginProperties extends Properties {
 	 * @return
 	 * @throws ManagerException
 	 */
-	public PluginInfo fillPluginInfoObject(PluginInfo info) throws ManagerException {
+	public PluginInfo fillPluginInfoObject(DownloadableInfo info) throws ManagerException {
 		if (!expectedPropertiesPresent()) {
 			throw new ManagerException("Required properties are missing from plugins.props file: " + errorMsg);
 		}
@@ -113,7 +113,7 @@ public class PluginProperties extends Properties {
 				pi.setDownloadableURL(info.getDownloadableURL());
 			}
 		} else if (info != null) {
-			pi = info;
+			pi = (PluginInfo) info;
 			pi.clearAuthorList();
 		} else {
 			pi = new PluginInfo();
