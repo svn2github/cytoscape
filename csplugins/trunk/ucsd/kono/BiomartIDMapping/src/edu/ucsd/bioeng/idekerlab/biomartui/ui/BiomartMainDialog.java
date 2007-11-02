@@ -56,6 +56,7 @@ import cytoscape.task.util.TaskManager;
 public class BiomartMainDialog extends JDialog implements PropertyChangeListener {
 	
 	private static BiomartMainDialog mainDialog = null;
+
 	
 	/**
 	 *  DOCUMENT ME!
@@ -82,7 +83,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 
 	private BiomartMainDialog() {
 		super(Cytoscape.getDesktop(), false);
-		setTitle("Web Service Clients");
+		setTitle("Biomart Web Service Client");
 
 		try {
 			BiomartNameMappingPanel panel = new BiomartNameMappingPanel();
@@ -93,19 +94,6 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 			e.printStackTrace();
 		}
 		pack();
-		
-	}
-	
-	public static void importID() {
-		
-		try {
-
-			
-			
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 	}
 	

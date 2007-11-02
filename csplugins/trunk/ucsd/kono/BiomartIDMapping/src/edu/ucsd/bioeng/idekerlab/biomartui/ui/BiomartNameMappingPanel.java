@@ -95,8 +95,18 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		ATTRIBUTE,
 		FILTER;
 	}
-
-
+	
+	private static final Map<String, String> reactomeMap = new HashMap<String, String>();
+	
+	// Reactome uses different naming system, so conversion is necessary...
+	static {	
+		reactomeMap.put("referencemolecule_chebi_id_list", "referencedatabase_chebi");
+		reactomeMap.put("referencednasequence_kegg_id_list", "referencedatabase_kegg_gene");
+		reactomeMap.put("referencednasequence_entrez_id_list", "referencedatabase_entrez_gene");
+		reactomeMap.put("referencepeptidesequence_uniprot_id_list","referencedatabase_uniprot");
+	}
+	
+	
 	public BiomartNameMappingPanel() throws IOException {
 		this(LOGO, "Biomart ID Mapping",  "Available attributes");
 	}
@@ -250,12 +260,12 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 				if (parts.length > 1) {
 					System.out.println(parts[1]);
 
-					if (parts[1].endsWith("ID") || parts[1].toUpperCase().startsWith("AFFY") 
-							|| parts[1].toUpperCase().contains("SYMBOL") || parts[1].toUpperCase().contains("ACCESSION")) {
+//					if (parts[1].endsWith("ID") || parts[1].toUpperCase().startsWith("AFFY") 
+//							|| parts[1].toUpperCase().contains("SYMBOL") || parts[1].toUpperCase().contains("ACCESSION")) {
 						model.addElement(parts[1]);
 						singleMap.put(parts[1], parts[0]);
 						order.add(parts[1]);
-					}
+//					}
 				}
 			}
 
@@ -270,6 +280,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 				if ((parts.length > 1)
 				    && (parts[1].endsWith("ID(s)") || parts[1].endsWith("Accession(s)") || parts[1].contains("IDs"))
 				    && (parts[0].startsWith("with_") == false)) {
+					
 					System.out.println(parts[1]);
 					this.attributeTypeComboBox.addItem(parts[1]);
 					singleMap.put(parts[1], parts[0]);
@@ -304,7 +315,12 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 
 		// This is the mapping key
 		String filterName = fMap.get(attributeTypeComboBox.getSelectedItem());
-		attrs[0] = new Attribute(filterName);
+		
+		if(this.databaseComboBox.getSelectedItem().toString().startsWith("REACTOME")) {
+			attrs[0] = new Attribute(reactomeMap.get(filterName));
+		} else {
+			attrs[0] = new Attribute(filterName);
+		}
 		System.out.println("======ATTR Key = " + attrs[0].getName());
 
 		for (int i = 1; i <= selectedAttr.length; i++) {
@@ -450,6 +466,7 @@ public class BiomartNameMappingPanel extends AttributeImportPanel implements Pro
 		public void halt() {
 			// TODO Auto-generated method stub
 			System.out.println("HALT@@@@@@@@@@@@");
+			return;
 		}
 
 		/**

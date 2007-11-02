@@ -6,3 +6,4 @@ GRAMENE (CSHL)	http://www.biomart.org/biomart/martservice?type=datasets&mart=ENS
 RGD GENES (MCW)	http://www.biomart.org/biomart/martservice?type=datasets&mart=rgd_mart
 PANCREATIC EXPRESSION DATABASE (INSTITUTE OF CANCER)	http://www.biomart.org/biomart/martservice?type=datasets&mart=Pancreatic_Expression
 WORMBASE (CSHL)	http://www.biomart.org/biomart/martservice?type=datasets&mart=wormbase176
+REACTOME	http://banon.cshl.edu:5555/biomart/martservice?type=datasets&mart=REACTOME
