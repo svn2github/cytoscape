@@ -44,6 +44,9 @@ public class CPathException extends Exception {
     private final static String NETWORK_RECOVERY_TIP
             = "Please check your network settings and try again.";
 
+    private final static String SERVER_ERROR_RECOVERY_TIP
+            = "Please try a different search term, or try again later.";
+
     /**
 	 * Constructor.
      * @param errorCode Error Code.
@@ -107,15 +110,11 @@ public class CPathException extends Exception {
             case ERROR_HTTP:
                  errorMessage = "Network error occurred while trying to connect to "
                         + "remote web service.";
-                if (errorDetail != null) {
-                    recoveryTip = errorDetail + ".";
-                }
+                recoveryTip = SERVER_ERROR_RECOVERY_TIP;
                 break;
             case ERROR_WEB_SERVICE_API:
                 errorMessage = "Error occurred while trying to connect to remote web service.  ";
-                if (errorDetail != null) {
-                    recoveryTip = errorDetail + ".";
-                }
+                recoveryTip = SERVER_ERROR_RECOVERY_TIP;
                 break;
         }
     }
