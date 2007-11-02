@@ -135,9 +135,7 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
             wrapper.getExcentric().setLens(foregroundCanvas.getWidth() / 2,
                     foregroundCanvas.getHeight() / 2);
             // AJK: 11/01/07 only enable the excentric labels when the config button is explicitly pressed
-            excentric.setEnabled(false);
-
-
+            wrapper.getExcentric().setEnabled(false);
         }
     }
 
@@ -155,5 +153,6 @@ public class ExcentricLabelsPlugin extends CytoscapePlugin {
         cytoPanelSouth.setSelectedIndex(index);
         // AJK: 11/01/07 enable the excentric labels when this button is explicitly pressed
         excentric.setEnabled(true);
+        excentric.setVisible(true);
     }
 }
