@@ -149,6 +149,9 @@ public final class SpringEmbeddedLayouter2 implements Task {
 			public void setException(Throwable t, String foo) {
 			}
 
+			public void setException(Throwable t, String foo1, String foo2) {
+			}
+
 			public void setStatus(String message) {
 			}
 		});
