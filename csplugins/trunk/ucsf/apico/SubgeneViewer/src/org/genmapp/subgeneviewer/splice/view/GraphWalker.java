@@ -282,14 +282,14 @@ public class GraphWalker {
 //				                                          BasicStroke.JOIN_MITER, 
 //				                                          10.0f, dash1, 0.0f);
 					//for a thin line
-					final BasicStroke thin = new BasicStroke(0.5f);
+					final BasicStroke thin = new BasicStroke(1.0f);
 					
 					g.setStroke(thin);
 
-					g.drawLine(startX, startY, ((startX + endX) / 2), startY
-							- NODE_HEIGHT);
-					g.drawLine(((startX + endX) / 2), startY - NODE_HEIGHT,
-							endX, endY);
+					g.draw(new java.awt.geom.Line2D.Double(startX, startY, ((startX + endX) / 2), startY
+							- NODE_HEIGHT));
+					g.draw(new java.awt.geom.Line2D.Double(((startX + endX) / 2), startY - NODE_HEIGHT,
+							endX, endY));
 					
 					//reset stroke
 					g.setStroke(normal);
