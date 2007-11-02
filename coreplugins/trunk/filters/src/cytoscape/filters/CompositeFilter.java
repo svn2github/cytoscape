@@ -116,6 +116,9 @@ public class CompositeFilter implements CyFilter {
 	private void calculateNodeBitSet() {
 		//System.out.println("Entering CompositeFilter.calculatNodeBits() ... ");	
 	
+		if (network == null) {
+			network = Cytoscape.getCurrentNetwork();
+		}
 		// set the initial bits to a clone of the first child
 		if (children.get(0).getNodeBits() == null) {
 			node_bits = new BitSet(network.getNodeCount());	
@@ -133,7 +136,7 @@ public class CompositeFilter implements CyFilter {
 					return;
 				}
 				if ((n instanceof CompositeFilter)&&(((Boolean)compositeNotTab.get(n)).booleanValue()==true)) {
-					BitSet tmpBitSet = (BitSet) n.getNodeBits().clone();
+					BitSet tmpBitSet = (BitSet) n.getNodeBits().clone();					
 					tmpBitSet.flip(0, network.getNodeCount());
 					node_bits.and(tmpBitSet);											
 				}
