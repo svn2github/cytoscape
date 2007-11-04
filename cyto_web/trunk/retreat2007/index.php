@@ -39,8 +39,9 @@ Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br
 <a href="pdf/ProgrammeAndRoute.pdf"><img border="0" align="top" alt="pdf" height="19" width="20" src="images/pdf_20_19.jpg"></a> 
 <br>
 <br>
-<a href="registration.php"><img border="0" align="middle" alt="attention" height="20" width="20" src="images/attention.gif"><b>&nbsp;Registration</b></a><b> for Symposium still open!!!</b> Symposium fee only &euro;40<br>
-Application Showcase almost fully booked; Developers' retreat days are full.<br>
+<a href="retreat2007/registration.php"><b>Registration closes on Monday November 5<sup>th</sup> at 16:00 GMT!!!</b></a><br>
+<b>On site registration remains possible</b><br>
+Symposium almost fully booked; Developers' retreat days are full.<br>
 <br>
 For this year's Public Symposium entitled 
 <a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>
