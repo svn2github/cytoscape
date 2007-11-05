@@ -104,7 +104,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 *
 	 * @throws Exception All Exceptions.
 	 */
-	public void atestComplexMapping() throws Exception {
+	public void testComplexMapping() throws Exception {
 		FileReader fileReader = new FileReader("testData/biopax_complex.owl");
 		BioPaxUtil bpUtil = new BioPaxUtil(fileReader);
 
@@ -113,7 +113,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
 		CyNetwork cyNetwork = createNetwork("network1", mapper);
 		int nodeCount = cyNetwork.getNodeCount();
-		assertEquals(0, nodeCount);
+		assertEquals(3, nodeCount);
 
 		//  First, find the Target Complex:  CPATH-126.
 		int targetNodeIndex = 0;
