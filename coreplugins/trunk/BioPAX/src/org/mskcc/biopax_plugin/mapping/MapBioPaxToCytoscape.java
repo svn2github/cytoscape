@@ -199,20 +199,13 @@ public class MapBioPaxToCytoscape {
 	 */
 	public void doMapping() throws JDOMException {
 
-		//  map interactions
-		// Note:
-		// this will now map complex nodes that participate in interactions.
-		// we assume that complexes do not live outside interactions
+		// map interactions
+		// note: this will now map complex nodes that participate in interactions.
 		mapInteractionNodes();
 		mapInteractionEdges();
 
-		// map all complex edges (for all complexes, attach members)
-		// this is an iterative loop since complex members may be
-		// complexes themselves
-		ArrayList<Element> complexElementList = getComplexElementList();
-		do {
-			complexElementList = mapComplexEdges(complexElementList);
-		} while (complexElementList.size() > 0);
+		// process all complexes
+		mapComplexes();
 
 		// map attributes
 		MapNodeAttributes.doMapping(bpUtil, nodeList);
@@ -513,6 +506,43 @@ public class MapBioPaxToCytoscape {
 		}
 
 		return str;
+	}
+
+	/**
+	 * Creates complexs nodes (for complexs outside of interactions).  
+	 *  Maps complex edges for all complexes (attach members),
+	 */
+	private void mapComplexes() {
+
+		// create complex edges/attach members for complexes that are part of interactions
+		// (nodes created in mapInteractionNodes)
+		ArrayList<Element> complexElementList = getComplexElementList();
+		if (complexElementList.size() > 0) {
+			do {
+				complexElementList = mapComplexEdges(complexElementList);
+			} while (complexElementList.size() > 0);
+		}
+
+		// now we need to process complexes that are not part of interactions
+		complexElementList = getComplexElementList();
+		ArrayList<Element> complexElementListClone = (ArrayList<Element>)(complexElementList.clone());
+		Map<String, String> localCreatedCyNodes = (Map<String,String>)(((HashMap)createdCyNodes).clone());
+		for (Element complexElement : complexElementListClone) {
+			String complexCPathId = BioPaxUtil.extractRdfId(complexElement);
+			if (localCreatedCyNodes.containsValue(complexCPathId)) {
+				// a cynode for this complex has already een created, remove from complex element list
+				complexElementList.remove(complexElement);
+			}
+			else {
+				// a cynode has not been created for this complex, do it now
+				getCyNode(complexElement, complexElement, BioPaxConstants.COMPLEX);
+			}
+		}
+		if (complexElementList.size() > 0) {
+			do {
+				complexElementList = mapComplexEdges(complexElementList);
+			} while (complexElementList.size() > 0);
+		}
 	}
 
 	/**
