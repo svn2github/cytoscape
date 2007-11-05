@@ -140,13 +140,23 @@
         <delete dir="${jars.dir}"/>
         <mkdir dir="${jars.dir}"/>
 
+        <!-- Unjar Third Party Libs -->
+        <mkdir dir="temp"/>
+        <unjar dest="${temp.dir}">
+            <fileset dir="lib">
+                <include name="*.jar"/>
+            </fileset>
+        </unjar>
+
         <!--  Create PathwayCommons Jar -->
         <jar destfile="${jars.dir}/${project_jar}">
             <fileset dir="${build.classes}"/>
-	    <manifest>
+            <fileset dir="${temp.dir}"/>
+        <manifest>
 	    	<attribute name="Cytoscape-Plugin" value="org.mskcc.pathway_commons.plugin.PathwayCommonsPlugin"/>
 	    </manifest>
         </jar>
+        <delete dir="${temp.dir}"/>
     </target>
 
     <!--  Target to Run CheckStyle on all Source Code -->
