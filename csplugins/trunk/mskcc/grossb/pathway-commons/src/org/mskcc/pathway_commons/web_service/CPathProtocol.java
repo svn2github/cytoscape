@@ -81,10 +81,15 @@ public class CPathProtocol {
     public static final String CURRENT_VERSION = "2.0";
 
     /**
-     * Get Interactions By Keyword.
+     * Get Records By Keyword.
      */
     public static final String COMMAND_GET_BY_KEYWORD =
             "get_by_keyword";
+
+    /**
+     * Gets Parent Summaries.
+     */
+    public static final String COMMAND_GET_PARENT_SUMMMARIES = "get_parent_summaries";
 
     /**
      * Get Interactions By Interactor Name / Xref.

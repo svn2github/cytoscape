@@ -2,10 +2,11 @@ package org.mskcc.pathway_commons.view;
 
 import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
+import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
-import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import cytoscape.Cytoscape;
 
@@ -14,6 +15,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
 import java.util.List;
+import java.util.HashMap;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -30,23 +32,24 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     private SearchResponseType peSearchResponse;
     private Document summaryDocument;
     private String currentKeyword;
-    private InteractionTableModel interactionTableModel;
+    private InteractionBundleModel interactionBundleModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
     private PhysicalEntityDetailsPanel detailsPanel;
 	private JLayeredPane appLayeredPane;
     private JButton detailsButton;
 	private PopupPanel popup;
+    private HashMap <Long, SummaryResponseType> parentSummaryMap;
 
     /**
      * Constructor.
-     * @param interactionTableModel     Interaction Table Model.
+     * @param interactionBundleModel     Interaction Table Model.
      * @param pathwayTableModel         Pathway Table Model.
      * @param webApi                    Pathway Commons Web API.
      */
-    public SearchHitsPanel(InteractionTableModel interactionTableModel, PathwayTableModel
+    public SearchHitsPanel(InteractionBundleModel interactionBundleModel, PathwayTableModel
             pathwayTableModel, PathwayCommonsWebApi webApi) {
-        this.interactionTableModel = interactionTableModel;
+        this.interactionBundleModel = interactionBundleModel;
         this.pathwayTableModel = pathwayTableModel;
 		appLayeredPane = Cytoscape.getDesktop().getRootPane().getLayeredPane();
         webApi.addApiListener(this);
@@ -72,7 +75,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         add(header);
 
         //  Create Search Details Panel
-        SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionTableModel,
+        SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionBundleModel,
                 pathwayTableModel);
 
         //  Create the Split Pane
@@ -81,7 +84,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         splitPane.setDividerLocation(200);
         splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
-        createListener(interactionTableModel, pathwayTableModel, summaryTextPane);
+        createListener(interactionBundleModel, pathwayTableModel, summaryTextPane);
     }
 
     private JButton createDetailsButton() {
@@ -163,6 +166,10 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     public void searchCompletedForPhysicalEntities(final SearchResponseType peSearchResponse) {
 
         if (peSearchResponse.getTotalNumHits() > 0) {
+
+            //  Reset parent summary map
+            parentSummaryMap = new HashMap<Long, SummaryResponseType>();
+            
             //  store for later reference
             this.peSearchResponse = peSearchResponse;
 
@@ -173,15 +180,6 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
             for (SearchHitType searchHit : searchHits) {
                 String name = searchHit.getName();
                 peListModel.setElementAt(name, i++);
-            }
-
-            //  Select the first item in the list
-            if (searchHits.size() > 0) {
-                peList.setSelectedIndex(0);
-                SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
-                selectTask.selectPhysicalEntity(peSearchResponse, 0,
-                        interactionTableModel, pathwayTableModel, summaryDocument, 
-												summaryTextPane, appLayeredPane);
             }
         } else {
             SwingUtilities.invokeLater(new Runnable(){
@@ -195,21 +193,46 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         }
     }
 
+    public void requestInitiatedForParentSummaries(long primaryId) {
+        //  Currently no-op
+    }
+
+    public void requestCompletedForParentSummaries(long primaryId,
+            SummaryResponseType summaryResponse) {
+        //  Store parent summaries for later reference
+        parentSummaryMap.put(primaryId, summaryResponse);
+
+        //  If we have just received parent summaries for the first search hit, select it.
+        if (peSearchResponse != null) {
+            List <SearchHitType> searchHits = peSearchResponse.getSearchHit();
+            if (searchHits.size() > 0) {
+                SearchHitType searchHit = searchHits.get(0);
+                if (primaryId == searchHit.getPrimaryId()) {
+                    peList.setSelectedIndex(0);
+                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentSummaryMap);
+                    selectTask.selectPhysicalEntity(peSearchResponse, 0,
+                            interactionBundleModel, pathwayTableModel, summaryDocument,
+                                                    summaryTextPane, appLayeredPane);
+                }
+            }
+        }
+    }
+
     /**
      * Listen for list selection events.
      *
-     * @param interactionTableModel InteractionTableModel.
+     * @param interactionBundleModel InteractionBundleModel.
      * @param pathwayTableModel     PathwayTableModel.
      */
-    private void createListener(final InteractionTableModel interactionTableModel,
+    private void createListener(final InteractionBundleModel interactionBundleModel,
             final PathwayTableModel pathwayTableModel, final JTextPane textPane) {
         peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int selectedIndex = peList.getSelectedIndex();
                 if (selectedIndex >=0) {
-                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity();
+                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentSummaryMap);
                     selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                        interactionTableModel, pathwayTableModel, summaryDocument,
+                            interactionBundleModel, pathwayTableModel, summaryDocument,
                             textPane, appLayeredPane);
                 }
             }

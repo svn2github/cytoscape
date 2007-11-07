@@ -28,6 +28,7 @@ public class CPathProperties {
 		} else {
 			//  hard-coded default
 			return "http://localhost:8080/cpath/webservice.do";
-		}
+           //return "http://awabi.cbio.mskcc.org/pc-demo/webservice.do";
+        }
 	}
 }

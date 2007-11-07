@@ -156,6 +156,7 @@ public class SearchBoxPanel extends JPanel {
             }
             JTaskConfig jTaskConfig = new JTaskConfig();
             jTaskConfig.setAutoDispose(true);
+            jTaskConfig.displayStatus(true);
             jTaskConfig.displayCancelButton(true);
             jTaskConfig.displayCloseButton(false);
             jTaskConfig.setOwner(window);

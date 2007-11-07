@@ -1,24 +1,16 @@
 package org.mskcc.pathway_commons.task;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
-import org.mskcc.pathway_commons.view.SearchDetailsPanel;
-import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
+import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import javax.swing.*;
 import java.util.List;
 import java.util.Vector;
-import java.awt.*;
-
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.Cytoscape;
+import java.util.HashMap;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.
@@ -26,20 +18,29 @@ import cytoscape.Cytoscape;
  * @author Ethan Cerami.
  */
 public class SelectPhysicalEntity {
-    private static boolean initialized = false;
+    private HashMap<Long, SummaryResponseType> parentSummaryMap;
+
+    /**
+     * Constructor.
+     *
+     * @param parentSummaryMap  Parent Summary Map.
+     */
+    public SelectPhysicalEntity (HashMap<Long, SummaryResponseType> parentSummaryMap) {
+        this.parentSummaryMap = parentSummaryMap;
+    }
 
     /**
      * Select the Phsyical Entity specified by the selected index.
      *
      * @param peSearchResponse      SearchResponseType peSearchResponse.
      * @param selectedIndex         Selected Index.
-     * @param interactionTableModel Interaction Table Model.
+     * @param interactionBundleModel Interaction Table Model.
      * @param pathwayTableModel     Pathway Table Model.
      * @param summaryDocumentModel  Summary Document Model.
      */
     public void selectPhysicalEntity(SearchResponseType peSearchResponse,
-            int selectedIndex, InteractionTableModel interactionTableModel, PathwayTableModel
-									 pathwayTableModel, Document summaryDocumentModel,
+            int selectedIndex, InteractionBundleModel interactionBundleModel, PathwayTableModel
+            pathwayTableModel, Document summaryDocumentModel,
             JTextPane textPane, JComponent textPaneOwner) {
         if (peSearchResponse != null) {
             java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
@@ -121,7 +122,7 @@ public class SelectPhysicalEntity {
             textPane.setText(html.toString());
             textPane.setCaretPosition(0);
             updatePathwayData(searchHit, pathwayTableModel);
-            updateInteractionData(searchHit, interactionTableModel);
+            updateInteractionData(searchHit, interactionBundleModel);
 			textPaneOwner.repaint();
         }
     }
@@ -130,24 +131,13 @@ public class SelectPhysicalEntity {
      * Updates Interaction Data.
      *
      * @param searchHit             Search Hit Object.
-     * @param interactionTableModel Interaction Table Model.
+     * @param interactionBundleModel Interaction Bundle Model.
      */
-    private void updateInteractionData(SearchHitType searchHit, DefaultTableModel
-            interactionTableModel) {
-        List<InteractionBundleType> interactionBundleList =
-                searchHit.getInteractionBundleList().getInteractionBundle();
-        Vector dataVector = interactionTableModel.getDataVector();
-        dataVector.removeAllElements();
-        if (interactionBundleList != null) {
-            interactionTableModel.setRowCount(interactionBundleList.size());
-            interactionTableModel.setColumnCount(2);
-            for (int i = 0; i < interactionBundleList.size(); i++) {
-                InteractionBundleType interactionBundle = interactionBundleList.get(i);
-                interactionTableModel.setValueAt
-                        (interactionBundle.getDataSource().getName(), i, 0);
-                interactionTableModel.setValueAt
-                        (interactionBundle.getNumInteractions(), i, 1);
-            }
+    private void updateInteractionData(SearchHitType searchHit, InteractionBundleModel
+            interactionBundleModel) {
+        SummaryResponseType parentSummary = parentSummaryMap.get(searchHit.getPrimaryId());
+        if (parentSummary != null) {
+            interactionBundleModel.setNumInteractions(parentSummary.getRecord().size());
         }
     }
 

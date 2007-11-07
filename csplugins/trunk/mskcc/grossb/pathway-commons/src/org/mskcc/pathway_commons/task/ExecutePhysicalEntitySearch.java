@@ -5,6 +5,10 @@ import cytoscape.task.TaskMonitor;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.CPathException;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
+import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
+import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
+
+import java.util.List;
 
 /**
  * Controller for Executing a Physical Entity Search.
@@ -56,7 +60,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Searching...";
+        return "Searching Pathway Commons...";
     }
 
     /**
@@ -66,10 +70,23 @@ public class ExecutePhysicalEntitySearch implements Task {
         try {
             // read the network from pathway commons
             taskMonitor.setPercentCompleted(-1);
-            taskMonitor.setStatus("Executing Search...");
+            taskMonitor.setStatus("Executing Search");
 
             //  Execute the Search
-            webApi.searchPhysicalEntities(keyword, ncbiTaxonomyId, startIndex, taskMonitor);
+            SearchResponseType searchResponse = webApi.searchPhysicalEntities(keyword,
+                    ncbiTaxonomyId, startIndex, taskMonitor);
+            List<SearchHitType> searchHits = searchResponse.getSearchHit();
+
+            int numHits = searchHits.size();
+            int numRetrieved = 1;
+            taskMonitor.setPercentCompleted(1);
+            for (SearchHitType hit:  searchHits) {
+                taskMonitor.setStatus("Retrieving interaction details for:  " +
+                    hit.getName());
+                webApi.getParentSummaries(hit.getPrimaryId(), taskMonitor);
+                int percentComplete = (int) (100 * (numRetrieved++ / (float) numHits));
+                taskMonitor.setPercentCompleted(percentComplete);
+            }
 
             // update the task monitor
             taskMonitor.setStatus("Done");

@@ -1,10 +1,11 @@
 package org.mskcc.pathway_commons.view;
 
-import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
+import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 
 import javax.swing.*;
 import javax.swing.text.Document;
@@ -21,7 +22,7 @@ import java.util.Vector;
  * @author Ethan Cerami.
  */
 public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsWebApiListener {
-    protected InteractionTableModel interactionTableModel;
+    protected InteractionBundleModel interactionBundleModel;
     protected PathwayTableModel pathwayTableModel;
     protected PathwayCommonsWebApi webApi;
     private JPanel searchBoxPanel;
@@ -39,7 +40,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         this.webApi = webApi;
 
         //  Create shared model classes
-        interactionTableModel = new InteractionTableModel();
+        interactionBundleModel = new InteractionBundleModel();
         pathwayTableModel = new PathwayTableModel();
 
         //  Create main Border Layout
@@ -102,6 +103,15 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
         }
     }
 
+    public void requestInitiatedForParentSummaries(long primaryId) {
+        //  Currently no-op
+    }
+
+    public void requestCompletedForParentSummaries(long primaryId,
+            SummaryResponseType summaryResponse) {
+        //  Currently no-op
+    }
+
     /**
      * Initialize the Focus.  Can only be called after component has been
      * packed and displayed.
@@ -116,7 +126,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
      * @return JSplitPane Object.
      */
     private JPanel createSearchResultsPanel() {
-        JPanel hitListPanel = new SearchHitsPanel(this.interactionTableModel,
+        JPanel hitListPanel = new SearchHitsPanel(this.interactionBundleModel,
                 this.pathwayTableModel, webApi);
         return hitListPanel;
     }

@@ -1,6 +1,7 @@
 package org.mskcc.pathway_commons.web_service;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
+import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBContext;
@@ -71,7 +72,54 @@ public class PathwayCommonsWebApi {
             PathwayCommonsWebApiListener listener = listeners.get(i);
             listener.searchCompletedForPhysicalEntities(searchResponse);
         }
-        return null;
+        return searchResponse;
+    }
+
+    /**
+     * Gets parent summaries for specified record.
+     *
+     * @param primaryId     Primary ID of Record.
+     * @param taskMonitor   Task Monitor Object.
+     * @return SummaryResponse Object.
+     * @throws CPathException       CPath Error.
+     * @throws EmptySetException    Empty Set Error.
+     */
+    public SummaryResponseType getParentSummaries (long primaryId, TaskMonitor taskMonitor)
+            throws CPathException, EmptySetException {
+        // Notify all listeners of start
+        for (int i = listeners.size() - 1; i >= 0; i--) {
+            PathwayCommonsWebApiListener listener = listeners.get(i);
+            listener.requestInitiatedForParentSummaries(primaryId);
+        }
+
+        protocol = new CPathProtocol();
+        protocol.setCommand(CPathProtocol.COMMAND_GET_PARENT_SUMMMARIES);
+        protocol.setFormat(CPathProtocol.FORMAT_XML);
+
+        protocol.setQuery(Long.toString(primaryId));
+
+        SummaryResponseType summaryResponse;
+        String responseXml = protocol.connect(taskMonitor);
+        StringReader reader = new StringReader(responseXml);
+
+        Class[] classes = new Class[2];
+        classes[0] = org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType.class;
+        classes[1] = org.mskcc.pathway_commons.schemas.summary_response.ObjectFactory.class;
+        try {
+            JAXBContext jc = JAXBContext.newInstance(classes);
+            Unmarshaller u = jc.createUnmarshaller();
+            JAXBElement element = (JAXBElement) u.unmarshal(reader);
+            summaryResponse = (SummaryResponseType) element.getValue();
+        } catch(Throwable e){
+            throw new CPathException (CPathException.ERROR_XML_PARSING, e);
+        }
+
+        // Notify all listeners of end
+        for (int i = listeners.size() - 1; i >= 0; i--) {
+            PathwayCommonsWebApiListener listener = listeners.get(i);
+            listener.requestCompletedForParentSummaries(primaryId, summaryResponse);
+        }
+        return summaryResponse;
     }
 
     /**
@@ -172,39 +220,6 @@ public class PathwayCommonsWebApi {
      */
     public ArrayList<OrganismType> getOrganismList() {
         return null;
-    }
-
-    /**
-     * Gets the interaction bundle for a physical entity, from one data source.
-     *
-     * @param internalPhysicalEntityId Internal ID for physical entity of interest.
-     * @param dataSourceId             (-1 to get data from all sources).
-     * @param view                     (1=simple view, 2=complex view).
-     */
-    public void getInteractionBundle(long internalPhysicalEntityId, int dataSourceId,
-            int view) {
-    }
-
-    /**
-     * Gets the interaction bundle summaries for a physical entity
-     *
-     * @param internalPhysicalEntityId Internal ID for physical entity of interest.
-     * @return ArrayList of Interaction Bundle Summary Objects.
-     */
-    public ArrayList<InteractionBundleType> getInteractionBundles
-            (long internalPhysicalEntityId) {
-        return null;
-    }
-
-    /**
-     * Gets the specified pathway.
-     *
-     * @param internalPathwayId Internal Pathway ID.
-     * @param view              (1=simple view, 2=complex view).
-     * @return
-     */
-    public void getPathway(long internalPathwayId, int view) {
-
     }
 
     /**

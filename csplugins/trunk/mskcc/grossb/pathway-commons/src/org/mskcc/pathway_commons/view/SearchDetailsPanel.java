@@ -1,13 +1,15 @@
 package org.mskcc.pathway_commons.view;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Observer;
+import java.util.Observable;
 
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
-import org.mskcc.pathway_commons.view.model.InteractionTableModel;
+import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.util.NetworkUtil;
 
@@ -21,25 +23,25 @@ public class SearchDetailsPanel extends JPanel {
     /**
      * Constructor.
      *
-     * @param interactionTableModel InteractionTableModel Object.
+     * @param interactionBundleModel InteractionBundleModel Object.
      * @param pathwayTableModel     PathwayTableModel Object.
      */
-    public SearchDetailsPanel(InteractionTableModel interactionTableModel,
+    public SearchDetailsPanel(InteractionBundleModel interactionBundleModel,
             PathwayTableModel pathwayTableModel) {
-        GridLayout gridLayout = new GridLayout(1, 0);
-        setLayout(gridLayout);
-        //JPanel interactionPane = createInteractionBundleTable(interactionTableModel);
+        GradientHeader header = new GradientHeader("Step 3:  Select Network(s)");
+        setLayout(new BorderLayout());
+        this.add(header, BorderLayout.NORTH);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        JPanel interactionPanel = createInteractionBundlePanel(interactionBundleModel);
         JPanel pathwayPane = createPathwayPane(pathwayTableModel);
-        add(pathwayPane);
-        //add(interactionPane);
+        tabbedPane.add("Pathways", pathwayPane);
+        tabbedPane.add("Interaction Networks", interactionPanel);
+        add(tabbedPane, BorderLayout.CENTER);
     }
 
     private JPanel createPathwayPane(PathwayTableModel pathwayTableModel) {
         JPanel pathwayPane = new JPanel(new BorderLayout());
-
-        GradientHeader header = new GradientHeader("Step 3:  Select Pathway");
-        pathwayPane.add(header, BorderLayout.NORTH);
-
         JScrollPane pathwayTable = createPathwayTable(pathwayTableModel);
         pathwayPane.add(pathwayTable, BorderLayout.CENTER);
         JLabel label = new JLabel ("> Double-click pathway to download.");
@@ -55,30 +57,20 @@ public class SearchDetailsPanel extends JPanel {
      *
      * @return JScrollPane Object.
      */
-    private JPanel createInteractionBundleTable(InteractionTableModel interactionTableModel) {
+    private JPanel createInteractionBundlePanel(final InteractionBundleModel
+            interactionBundleModel) {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Interactions"));
         panel.setLayout(new BorderLayout());
-        final JTable interactionTable = new JTable(interactionTableModel);
-        interactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        final JLabel label = new JLabel ("Number of Interactions:  N/A");
+        label.setBorder(new EmptyBorder(5,5,5,5));
+        panel.add(label, BorderLayout.NORTH);
 
-        interactionTable.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int rows[] = interactionTable.getSelectedRows();
-                    JOptionPane.showMessageDialog(new JFrame(), "Downloading Interaction Bundle:  "
-                            + rows[0]);
-                }
+        interactionBundleModel.addObserver(new Observer() {
+            public void update(Observable observable, Object object) {
+                label.setText("Number of Interactions:  "
+                        + interactionBundleModel.getNumInteractions());
             }
         });
-
-        JScrollPane scrollPane = new JScrollPane(interactionTable);
-        JPanel internalPanel = new JPanel();
-        internalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JButton downloadAll = new JButton("Download All Interactions");
-        internalPanel.add(downloadAll);
-        panel.add(internalPanel, BorderLayout.SOUTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
     }
 
