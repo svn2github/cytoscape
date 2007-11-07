@@ -11,6 +11,8 @@ import java.util.Observable;
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.mskcc.pathway_commons.view.tree.CheckNode;
+import org.mskcc.pathway_commons.view.tree.JTreeWithCheckNodes;
 import org.mskcc.pathway_commons.util.NetworkUtil;
 
 /**
@@ -64,6 +66,28 @@ public class SearchDetailsPanel extends JPanel {
         final JLabel label = new JLabel ("Number of Interactions:  N/A");
         label.setBorder(new EmptyBorder(5,5,5,5));
         panel.add(label, BorderLayout.NORTH);
+
+        String[] strs = {"Filters (optional)",                  // 0
+                     "Filter by Data Source",                   // 1
+                     "Reactome (4)",                            // 2
+                     "Cancer Cell Map (5)",                     // 3
+                     "Filter by Interaction Type",              // 4
+                     "Protein-Protein Interactions (43)",       // 5
+                     "Other (52)"};                             // 6
+
+        CheckNode[] nodes = new CheckNode[strs.length];
+        for (int i=0;i<strs.length;i++) {
+          nodes[i] = new CheckNode(strs[i]);
+        }
+        nodes[0].add(nodes[1]);
+        nodes[1].add(nodes[2]);
+        nodes[1].add(nodes[3]);
+        nodes[0].add(nodes[4]);
+        nodes[3].setSelected(true);
+        nodes[4].add(nodes[5]);
+        nodes[4].add(nodes[6]);
+        JTreeWithCheckNodes tree = new JTreeWithCheckNodes( nodes[0] );
+        panel.add(tree, BorderLayout.CENTER);
 
         interactionBundleModel.addObserver(new Observer() {
             public void update(Observable observable, Object object) {
