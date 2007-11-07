@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+            Pathway Commons Web API:  Summary Response.
+        </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:element name="summary_response" type="SummaryResponseType"/>
+    
+    <xsd:complexType name="SummaryResponseType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Encapsulates summaries of BioPAX Records.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+                <xsd:element name="record" type="RecordType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="RecordType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Summarizes a single BioPAX Record.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Record name.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Record description.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="type" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        BioPAX Record type.  For example:  pathway, biochemicalReaction, or physicalEntity.  
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="data_source" type="DataSourceType"/>
+            <xsd:sequence>
+                <xsd:element name="experimental_evidence" type="ExperimentalEvidenceType" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence> 
+        </xsd:sequence>
+        <xsd:attribute name="primary_id" type="xsd:long">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    Internal ID.  Use this ID to request additional information regarding the record.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    
+    <xsd:complexType name="DataSourceType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Data source information.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Data source name.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="primary_id" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    Primary ID for data source.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ExperimentalEvidenceType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Encapsulates experimental evidence.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="term" type="xsd:string"/>
+            <xsd:element name="xref" type="XRefType" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="XRefType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Encapsulates an XREF.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="db" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="id" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="url" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>        
+    </xsd:complexType>
+ </xsd:schema>
