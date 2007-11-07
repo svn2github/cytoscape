@@ -85,6 +85,13 @@
             <produces dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
             <arg value="-nv"/>
         </xjc>
+        <mkdir dir="${src.dir}/org/mskcc/pathway_commons/schemas/summary_response"/>
+        <xjc schema="xml/SummaryResponse.xsd"
+             destdir="${src.dir}"
+             package="org.mskcc.pathway_commons.schemas.summary_response">
+            <produces dir="${src.dir}/org/mskcc/pathway_commons/schemas/summary_response"/>
+            <arg value="-nv"/>
+        </xjc>
     </target>
 
     <!--  Target to clean out all directories -->
@@ -98,7 +105,8 @@
             <fileset dir="." includes="*.log"/>
             <fileset dir="." includes="*.gz"/>
         </delete>
-        <delete dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>        
+        <delete dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
+        <delete dir="${src.dir}/org/mskcc/pathway_commons/schemas/summary_response"/>
     </target>
 
     <!--  Target to compile all code -->
