@@ -1,16 +1,19 @@
 package org.mskcc.pathway_commons.view;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Observer;
-import java.util.Observable;
+import java.util.*;
 
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.mskcc.pathway_commons.view.model.RecordList;
 import org.mskcc.pathway_commons.view.tree.CheckNode;
 import org.mskcc.pathway_commons.view.tree.JTreeWithCheckNodes;
 import org.mskcc.pathway_commons.util.NetworkUtil;
@@ -21,6 +24,8 @@ import org.mskcc.pathway_commons.util.NetworkUtil;
  * @author Ethan Cerami.
  */
 public class SearchDetailsPanel extends JPanel {
+    private CheckNode dataSourceFilter;
+    private CheckNode interactionTypeFilter;
 
     /**
      * Constructor.
@@ -67,32 +72,69 @@ public class SearchDetailsPanel extends JPanel {
         label.setBorder(new EmptyBorder(5,5,5,5));
         panel.add(label, BorderLayout.NORTH);
 
-        String[] strs = {"Filters (optional)",                  // 0
-                     "Filter by Data Source",                   // 1
-                     "Reactome (4)",                            // 2
-                     "Cancer Cell Map (5)",                     // 3
-                     "Filter by Interaction Type",              // 4
-                     "Protein-Protein Interactions (43)",       // 5
-                     "Other (52)"};                             // 6
+        final CheckNode rootNode = new CheckNode("Filters (optional)");
+        final JTreeWithCheckNodes tree = new JTreeWithCheckNodes(rootNode);
 
-        CheckNode[] nodes = new CheckNode[strs.length];
-        for (int i=0;i<strs.length;i++) {
-          nodes[i] = new CheckNode(strs[i]);
-        }
-        nodes[0].add(nodes[1]);
-        nodes[1].add(nodes[2]);
-        nodes[1].add(nodes[3]);
-        nodes[0].add(nodes[4]);
-        nodes[3].setSelected(true);
-        nodes[4].add(nodes[5]);
-        nodes[4].add(nodes[6]);
-        JTreeWithCheckNodes tree = new JTreeWithCheckNodes( nodes[0] );
-        panel.add(tree, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane (tree);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         interactionBundleModel.addObserver(new Observer() {
             public void update(Observable observable, Object object) {
-                label.setText("Number of Interactions:  "
-                        + interactionBundleModel.getNumInteractions());
+                RecordList recordList = interactionBundleModel.getRecordList();
+                label.setText("Number of Interactions:  "+ recordList.getNumRecords());
+
+                TreeMap<String, Integer> dataSourceMap = recordList.getDataSourceMap();
+                TreeMap<String, Integer> entityTypeMap = recordList.getEntityTypeMap();
+
+                //  Store current expansion states
+                boolean dataSourceFilterExpanded = false;
+                if (dataSourceFilter != null) {
+                    TreePath path = new TreePath (dataSourceFilter.getPath());
+                    dataSourceFilterExpanded = tree.isExpanded(path);
+                }
+                boolean interactionTypeFilterExpanded = false;
+                if (interactionTypeFilter != null) {
+                    TreePath path = new TreePath (interactionTypeFilter.getPath());
+                    interactionTypeFilterExpanded = tree.isExpanded(path);
+                }
+
+                //  Remove all children
+                rootNode.removeAllChildren();
+                
+                //  Create Data Source Filter
+                if (dataSourceMap.size() > 0) {
+                    dataSourceFilter = new CheckNode ("Filter by Data Source");
+                    rootNode.add(dataSourceFilter);
+                    for (String key:  dataSourceMap.keySet()) {
+                        CheckNode dataSourceNode = new CheckNode(key + ": "
+                            + dataSourceMap.get(key), false, true);
+                        dataSourceFilter.add(dataSourceNode);
+                    }
+                    dataSourceFilter.setSelected(true);
+                }
+
+                //  Create Entity Type Filter
+                if (entityTypeMap.size() > 0) {
+                    interactionTypeFilter = new CheckNode ("Filter by Interaction Type");
+                    rootNode.add(interactionTypeFilter);
+                    for (String key:  entityTypeMap.keySet()) {
+                        CheckNode dataSourceNode = new CheckNode(key + ": "
+                            + entityTypeMap.get(key), false, true);
+                        interactionTypeFilter.add(dataSourceNode);
+                    }
+                }
+                DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+                tree.setModel(treeModel);
+
+                //  Restore expansion state.
+                if (dataSourceFilterExpanded) {
+                    TreePath path = new TreePath (dataSourceFilter.getPath());
+                    tree.expandPath(path);
+                }
+                if (interactionTypeFilterExpanded) {
+                    TreePath path = new TreePath (interactionTypeFilter.getPath());
+                    tree.expandPath(path);
+                }
             }
         });
         return panel;
