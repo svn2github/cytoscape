@@ -8,6 +8,7 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.mskcc.pathway_commons.view.model.RecordList;
 import cytoscape.Cytoscape;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
 	private JLayeredPane appLayeredPane;
     private JButton detailsButton;
 	private PopupPanel popup;
-    private HashMap <Long, SummaryResponseType> parentSummaryMap;
+    private HashMap <Long, RecordList> parentRecordsMap;
 
     /**
      * Constructor.
@@ -168,7 +169,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         if (peSearchResponse.getTotalNumHits() > 0) {
 
             //  Reset parent summary map
-            parentSummaryMap = new HashMap<Long, SummaryResponseType>();
+            parentRecordsMap = new HashMap<Long, RecordList>();
             
             //  store for later reference
             this.peSearchResponse = peSearchResponse;
@@ -200,7 +201,9 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
     public void requestCompletedForParentSummaries(long primaryId,
             SummaryResponseType summaryResponse) {
         //  Store parent summaries for later reference
-        parentSummaryMap.put(primaryId, summaryResponse);
+
+        RecordList recordList = new RecordList(summaryResponse);
+        parentRecordsMap.put(primaryId, recordList);
 
         //  If we have just received parent summaries for the first search hit, select it.
         if (peSearchResponse != null) {
@@ -209,7 +212,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
                 SearchHitType searchHit = searchHits.get(0);
                 if (primaryId == searchHit.getPrimaryId()) {
                     peList.setSelectedIndex(0);
-                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentSummaryMap);
+                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentRecordsMap);
                     selectTask.selectPhysicalEntity(peSearchResponse, 0,
                             interactionBundleModel, pathwayTableModel, summaryDocument,
                                                     summaryTextPane, appLayeredPane);
@@ -229,11 +232,14 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         peList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int selectedIndex = peList.getSelectedIndex();
-                if (selectedIndex >=0) {
-                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentSummaryMap);
-                    selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                            interactionBundleModel, pathwayTableModel, summaryDocument,
-                            textPane, appLayeredPane);
+                //  Ignore the "unselect" event.
+                if (!listSelectionEvent.getValueIsAdjusting()) {
+                    if (selectedIndex >=0) {
+                        SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentRecordsMap);
+                        selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
+                                interactionBundleModel, pathwayTableModel, summaryDocument,
+                                textPane, appLayeredPane);
+                    }
                 }
             }
         });
