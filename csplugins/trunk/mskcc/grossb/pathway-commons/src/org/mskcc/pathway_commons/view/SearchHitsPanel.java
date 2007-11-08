@@ -82,7 +82,7 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
         //  Create the Split Pane
         JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
                 detailsPanel);
-        splitPane.setDividerLocation(200);
+        splitPane.setDividerLocation(100);
         splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
         createListener(interactionBundleModel, pathwayTableModel, summaryTextPane);
