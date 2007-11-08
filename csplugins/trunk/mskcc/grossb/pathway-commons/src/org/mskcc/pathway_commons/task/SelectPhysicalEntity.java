@@ -4,6 +4,7 @@ import org.mskcc.pathway_commons.schemas.search_response.*;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.mskcc.pathway_commons.view.model.RecordList;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
@@ -18,15 +19,15 @@ import java.util.HashMap;
  * @author Ethan Cerami.
  */
 public class SelectPhysicalEntity {
-    private HashMap<Long, SummaryResponseType> parentSummaryMap;
+    private HashMap<Long, RecordList> parentRecordsMap;
 
     /**
      * Constructor.
      *
-     * @param parentSummaryMap  Parent Summary Map.
+     * @param parentRecordsMap  RecordList.
      */
-    public SelectPhysicalEntity (HashMap<Long, SummaryResponseType> parentSummaryMap) {
-        this.parentSummaryMap = parentSummaryMap;
+    public SelectPhysicalEntity (HashMap<Long, RecordList> parentRecordsMap) {
+        this.parentRecordsMap = parentRecordsMap;
     }
 
     /**
@@ -135,9 +136,9 @@ public class SelectPhysicalEntity {
      */
     private void updateInteractionData(SearchHitType searchHit, InteractionBundleModel
             interactionBundleModel) {
-        SummaryResponseType parentSummary = parentSummaryMap.get(searchHit.getPrimaryId());
-        if (parentSummary != null) {
-            interactionBundleModel.setNumInteractions(parentSummary.getRecord().size());
+        RecordList recordList = parentRecordsMap.get(searchHit.getPrimaryId());
+        if (recordList != null) {
+            interactionBundleModel.setRecordList(recordList);
         }
     }
 
