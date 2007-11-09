@@ -68,7 +68,7 @@ public class RecordList {
         if (recordList != null) {
             for (RecordType record:  recordList) {
                 catalogDataSource(record.getDataSource());
-                catalogInteractionType(record.getType());
+                catalogInteractionType(record);
                 //  TODO:  additional catalogs, as needed.
             }
         }
@@ -85,10 +85,12 @@ public class RecordList {
         dataSourceMap.put(name, count);
     }
 
-    private void catalogInteractionType(String type) {
+    private void catalogInteractionType(RecordType record) {
+        String type = record.getType();
         BioPaxEntityTypeMap map = BioPaxEntityTypeMap.getInstance();
         if (map.containsKey(type)) {
             type = (String) map.get(type);
+            record.setType(type);
         }
         Integer count = interactionTypeMap.get(type);
         if (count != null) {

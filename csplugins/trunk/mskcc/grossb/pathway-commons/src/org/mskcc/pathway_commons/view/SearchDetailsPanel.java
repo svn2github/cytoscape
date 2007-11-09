@@ -8,7 +8,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.*;
+import java.util.List;
 
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
@@ -17,6 +20,11 @@ import org.mskcc.pathway_commons.view.model.RecordList;
 import org.mskcc.pathway_commons.view.tree.CheckNode;
 import org.mskcc.pathway_commons.view.tree.JTreeWithCheckNodes;
 import org.mskcc.pathway_commons.util.NetworkUtil;
+import org.mskcc.pathway_commons.filters.ChainedFilter;
+import org.mskcc.pathway_commons.filters.DataSourceFilter;
+import org.mskcc.pathway_commons.filters.EntityTypeFilter;
+import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
+import cytoscape.Cytoscape;
 
 /**
  * Search Details Panel.
@@ -26,6 +34,7 @@ import org.mskcc.pathway_commons.util.NetworkUtil;
 public class SearchDetailsPanel extends JPanel {
     private CheckNode dataSourceFilter;
     private CheckNode interactionTypeFilter;
+    private InteractionBundleModel interactionBundleModel;
 
     /**
      * Constructor.
@@ -35,6 +44,7 @@ public class SearchDetailsPanel extends JPanel {
      */
     public SearchDetailsPanel(InteractionBundleModel interactionBundleModel,
             PathwayTableModel pathwayTableModel) {
+        this.interactionBundleModel = interactionBundleModel;
         GradientHeader header = new GradientHeader("Step 3:  Select Network(s)");
         setLayout(new BorderLayout());
         this.add(header, BorderLayout.NORTH);
@@ -106,8 +116,9 @@ public class SearchDetailsPanel extends JPanel {
                     dataSourceFilter = new CheckNode ("Filter by Data Source");
                     rootNode.add(dataSourceFilter);
                     for (String key:  dataSourceMap.keySet()) {
-                        CheckNode dataSourceNode = new CheckNode(key + ": "
-                            + dataSourceMap.get(key), false, true);
+                        CategoryCount categoryCount = new CategoryCount(key,
+                                dataSourceMap.get(key));
+                        CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
                         dataSourceFilter.add(dataSourceNode);
                     }
                     dataSourceFilter.setSelected(true);
@@ -118,8 +129,9 @@ public class SearchDetailsPanel extends JPanel {
                     interactionTypeFilter = new CheckNode ("Filter by Interaction Type");
                     rootNode.add(interactionTypeFilter);
                     for (String key:  entityTypeMap.keySet()) {
-                        CheckNode dataSourceNode = new CheckNode(key + ": "
-                            + entityTypeMap.get(key), false, true);
+                        CategoryCount categoryCount = new CategoryCount(key,
+                                entityTypeMap.get(key));
+                        CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
                         interactionTypeFilter.add(dataSourceNode);
                     }
                 }
@@ -137,7 +149,82 @@ public class SearchDetailsPanel extends JPanel {
                 }
             }
         });
+
+        JPanel footer = new JPanel();
+        footer.setLayout(new FlowLayout(FlowLayout.LEFT));
+        createInteractionDownloadButton(footer);
+        panel.add(footer, BorderLayout.SOUTH);
         return panel;
+    }
+
+    private void createInteractionDownloadButton(JPanel footer) {
+        JButton button = new JButton ("Download Interactions");
+        button.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent actionEvent) {
+                Set <String> dataSourceSet = new HashSet<String>();
+                Set <String> entityTypeSet = new HashSet<String>();
+                int childCount = dataSourceFilter.getChildCount();
+                for (int i=0; i< childCount; i++) {
+                    CheckNode checkNode = (CheckNode) dataSourceFilter.getChildAt(i);
+                    CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
+                    String dataSource = categoryCount.getCategoryName();
+                    if (checkNode.isSelected()) {
+                        dataSourceSet.add(dataSource);
+                    }
+                }
+                childCount = interactionTypeFilter.getChildCount();
+                for (int i=0; i< childCount; i++) {
+                    CheckNode checkNode = (CheckNode) interactionTypeFilter.getChildAt(i);
+                    CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
+                    String entityType = categoryCount.getCategoryName();
+                    if (checkNode.isSelected()) {
+                        entityTypeSet.add(entityType);
+                    }
+                }
+                ChainedFilter chainedFilter = new ChainedFilter();
+                DataSourceFilter dataSourceFilter = new DataSourceFilter(dataSourceSet);
+                EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
+                chainedFilter.addFilter(dataSourceFilter);
+                chainedFilter.addFilter(entityTypeFilter);
+                try {
+                    List<RecordType> passedRecordList =  chainedFilter.filter
+                            (interactionBundleModel.getRecordList().
+                            getSummaryResponse().getRecord());
+                    if (passedRecordList.size() == 0) {
+                        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                                "Your current filter settings result in 0 matching interactions.  "
+                                + "\nPlease check your filter settings and try again.",
+                                "No matches.", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JFrame frame = new JFrame();
+                        Container contentPane = frame.getContentPane();
+                        contentPane.setLayout(new BorderLayout());
+                        GradientHeader header = new GradientHeader ("I will now fetch the following "
+                                + passedRecordList.size()
+                                + " records:  ");
+                        contentPane.add(header, BorderLayout.NORTH);
+                        StringBuffer buf = new StringBuffer();
+                        for (RecordType type:  passedRecordList) {
+                            buf.append (type.getPrimaryId() + ":  " + type.getName() + "\n");
+                        }
+                        JTextArea textArea = new JTextArea();
+                        textArea.setRows(10);
+                        textArea.setColumns(50);
+                        textArea.setEditable(false);
+                        textArea.setText(buf.toString());
+                        JScrollPane scrollPane = new JScrollPane (textArea);
+                        scrollPane.setBorder (new EmptyBorder (5,5,5,5));
+                        contentPane.add(scrollPane, BorderLayout.CENTER);
+                        frame.pack();
+                        frame.setLocationRelativeTo(Cytoscape.getDesktop());
+                        frame.setVisible(true);
+                    }
+                } catch (NullPointerException e) {
+                }
+            }
+        });
+        footer.add(button);
     }
 
     /**
@@ -178,5 +265,27 @@ public class SearchDetailsPanel extends JPanel {
         String uri = protocol.getURI();
         NetworkUtil networkUtil = new NetworkUtil(uri, null, false, null);
         networkUtil.start();
+    }
+}
+
+class CategoryCount {
+    private String categoryName;
+    private int count;
+
+    public CategoryCount (String categoryName, int count) {
+        this.categoryName = categoryName;
+        this.count = count;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public String toString() {
+        return categoryName + ":  " + count;
     }
 }
