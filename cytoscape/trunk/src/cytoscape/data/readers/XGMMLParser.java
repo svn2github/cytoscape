@@ -401,6 +401,22 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	/**
+	 * Return the integer attribute value for the attribute indicated by "key".  If
+	 * no such attribute exists, return null.
+	 *
+	 * @param atts the attributes
+	 * @param key the specific attribute to get
+	 * @param ns the namespace for the attribute we're interested in
+	 * @return the value for "key" or null if no such attribute exists
+	 */
+	static int getIntegerAttributeNS(Attributes atts, String key, String ns) {
+		String attribute = atts.getValue(ns, key);
+		if (attribute == null)
+			return 0;
+		return (new Integer(attribute)).intValue();
+	}
+
+	/**
 	 * Return the double attribute value for the attribute indicated by "key".  If
 	 * no such attribute exists, return null.
 	 *
@@ -412,6 +428,22 @@ class XGMMLParser extends DefaultHandler {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return 0.0;
+		return (new Double(attribute)).doubleValue();
+	}
+
+	/**
+	 * Return the double attribute value for the attribute indicated by "key".  If
+	 * no such attribute exists, return null.
+	 *
+	 * @param atts the attributes
+	 * @param key the specific attribute to get
+	 * @param ns the namespace for the attribute we're interested in
+	 * @return the value for "key" or null if no such attribute exists
+	 */
+	static double getDoubleAttributeNS(Attributes atts, String key, String ns) {
+		String attribute = atts.getValue(ns, key);
+		if (attribute == null)
+			return 0;
 		return (new Double(attribute)).doubleValue();
 	}
 
@@ -749,7 +781,7 @@ class XGMMLParser extends DefaultHandler {
 					&& !name.equals("cytoscapeNodeGraphicsAttributes")) {
 					// Add this as a graphics attribute to the end of our list
 					((AttributesImpl)nodeGraphicsMap.get(currentNode)).
-						addAttribute("", "", name, "string",atts.getValue("value"));
+						addAttribute("", "", "cy:"+name, "string",atts.getValue("value"));
 				}
 			}
 			return current;
@@ -821,6 +853,7 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleEdgeGraphics implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
+			// System.out.println("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
 			if (tag.equals("graphics")) {
 				if (edgeGraphicsMap.containsKey(currentEdge)) {
 					addAttributes(edgeGraphicsMap.get(currentEdge),atts);
@@ -837,7 +870,7 @@ class XGMMLParser extends DefaultHandler {
 					         && !name.equals("cytoscapeEdgeGraphicsAttributes")) {
 					// Add this as a graphics attribute to the end of our list
 					((AttributesImpl)edgeGraphicsMap.get(currentEdge)).
-						addAttribute("", "", name, "string",atts.getValue("value"));
+						addAttribute("", "", "cy:"+name, "string",atts.getValue("value"));
 				}
 			}
 			return current;
@@ -1205,6 +1238,14 @@ class XGMMLParser extends DefaultHandler {
 			RDFFormat = currentCData;
 			return current;
 		}
+	}
+
+	public static String printAttributes(Attributes atts) {
+		String str = " ";
+		for (int i = 0; i < atts.getLength(); i++) {
+			str += atts.getLocalName(i)+": "+atts.getValue(i)+", ";
+		}
+		return str;
 	}
 
 	/********************************************************************

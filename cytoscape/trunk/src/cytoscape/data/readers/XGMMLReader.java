@@ -518,7 +518,10 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		String type = XGMMLParser.getAttribute(graphics,"type");
 		if (buildStyle && type != null) {
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,type);
+			if (type.equals("rhombus"))
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,"parallelogram");
+			else
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,type);
 		}
 	}
 
@@ -582,39 +585,41 @@ public class XGMMLReader extends AbstractGraphReader {
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_COLOR, edgeColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"sourceArrow") != null) {
-			Integer arrowType = XGMMLParser.getIntegerAttribute(graphics,"sourceArrow");
-			String arrowName = ArrowShape.getArrowShape(arrowType).getName();
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"sourceArrow", CY_NAMESPACE) != null) {
+			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics,"sourceArrow", CY_NAMESPACE);
+			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
+			String arrowName = shape.getName();
 			// edgeView.setSourceEdgeEnd(arrowType);
-			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW, arrowName);
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"targetArrow") != null) {
-			Integer arrowType = XGMMLParser.getIntegerAttribute(graphics,"targetArrow");
-			String arrowName = ArrowShape.getArrowShape(arrowType).getName();
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"targetArrow", CY_NAMESPACE) != null) {
+			Integer arrowType = XGMMLParser.getIntegerAttributeNS(graphics,"targetArrow", CY_NAMESPACE);
+			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
+			String arrowName = shape.getName();
 			// edgeView.setTargetEdgeEnd(arrowType);
-			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW, arrowName);
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"sourceArrowColor") != null) {
-			String arrowColor = XGMMLParser.getAttribute(graphics, "sourceArrowColor");
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"sourceArrowColor", CY_NAMESPACE) != null) {
+			String arrowColor = XGMMLParser.getAttributeNS(graphics, "sourceArrowColor", CY_NAMESPACE);
 			// edgeView.setSourceEdgeEndPaint(arrowColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_SRCARROW_COLOR, arrowColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"targetArrowColor") != null) {
-			String arrowColor = XGMMLParser.getAttribute(graphics, "targetArrowColor");
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"targetArrowColor", CY_NAMESPACE) != null) {
+			String arrowColor = XGMMLParser.getAttributeNS(graphics, "targetArrowColor", CY_NAMESPACE);
 			// edgeView.setTargetEdgeEndPaint(arrowColor);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_TGTARROW_COLOR, arrowColor);
 		}
 
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"edgeLineType") != null) {
-			String value = XGMMLParser.getAttribute(graphics, "edgeLineType");
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"edgeLineType", CY_NAMESPACE) != null) {
+			String value = XGMMLParser.getAttributeNS(graphics, "edgeLineType", CY_NAMESPACE);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_STYLE, value);
 		}
 
-		if (XGMMLParser.getAttribute(graphics,"curved") != null) {
-			String value = XGMMLParser.getAttribute(graphics, "curved");
+		if (XGMMLParser.getAttributeNS(graphics,"curved", CY_NAMESPACE) != null) {
+			String value = XGMMLParser.getAttributeNS(graphics, "curved", CY_NAMESPACE);
 			if (value.equals("STRAIGHT_LINES")) {
 				edgeView.setLineType(EdgeView.STRAIGHT_LINES);
 			} else if (value.equals("CURVED_LINES")) {

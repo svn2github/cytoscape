@@ -105,7 +105,7 @@ enum GraphicsType {
   OCTAGON("octagon"),
   ELLIPSE("ellipse"),
   DIAMOND("diamond"),
-  PARALELLOGRAM("paralellogram");
+  PARALLELOGRAM("parallelogram");
   private final String value;
 
   GraphicsType(String v) {
@@ -506,7 +506,11 @@ public class XGMMLWriter {
 
 		writeElement("<graphics");
 		// Node shape
-		writeAttributePair("type",number2shape(nodeView.getShape()));
+		GraphicsType shape = number2shape(nodeView.getShape());
+		if (shape == GraphicsType.PARALLELOGRAM)
+			writeAttributePair("type",GraphicsType.RHOMBUS);
+		else
+			writeAttributePair("type",shape);
 
 		// Node size and position
 		writeAttributePair("h",Double.toString(nodeView.getHeight()));
@@ -1001,7 +1005,7 @@ public class XGMMLWriter {
 				return GraphicsType.OCTAGON;
 
 			case NodeView.PARALELLOGRAM:
-				return GraphicsType.PARALELLOGRAM;
+				return GraphicsType.PARALLELOGRAM;
 
 			case NodeView.TRIANGLE:
 				return GraphicsType.TRIANGLE;

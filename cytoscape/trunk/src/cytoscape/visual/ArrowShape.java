@@ -135,10 +135,14 @@ public enum ArrowShape {
 		} catch (IllegalArgumentException e) { }
 		
 		// if string doesn't match, then try other possible GINY names 
-		for (ArrowShape shape : values()) 
-			for (String possibleName : shape.getPossibleGinyNames()) 
+		for (ArrowShape shape : values())  {
+			if (shape.shapeName.equals(text) || shape.ginyShapeName.equals(text))
+				return shape;
+			for (String possibleName : shape.getPossibleGinyNames()) {
 				if ( possibleName.equals(text) ) 
 					return shape;
+			}
+		}
 
 		return NONE;
 	}
