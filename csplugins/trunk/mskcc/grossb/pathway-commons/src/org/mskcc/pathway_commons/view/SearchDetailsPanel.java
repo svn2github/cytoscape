@@ -197,54 +197,8 @@ public class SearchDetailsPanel extends JPanel {
                                 + "\nPlease check your filter settings and try again.",
                                 "No matches.", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        final JFrame frame = new JFrame();
-                        Container contentPane = frame.getContentPane();
-                        contentPane.setLayout(new BorderLayout());
-                        GradientHeader header = new GradientHeader ("I will now fetch the following "
-                                + passedRecordList.size()
-                                + " records:  ");
-                        contentPane.add(header, BorderLayout.NORTH);
-                        StringBuffer buf = new StringBuffer();
-                        final long ids[] = new long[passedRecordList.size()];
-                        int i=0;
-                        for (RecordType type:  passedRecordList) {
-                            buf.append (type.getPrimaryId() + ":  " + type.getName() + "\n");
-                            ids[i++] = type.getPrimaryId();
-                        }
-                        JTextArea textArea = new JTextArea();
-                        textArea.setRows(10);
-                        textArea.setColumns(50);
-                        textArea.setEditable(false);
-                        textArea.setText(buf.toString());
-                        JScrollPane scrollPane = new JScrollPane (textArea);
-                        scrollPane.setBorder (new EmptyBorder (5,5,5,5));
-                        contentPane.add(scrollPane, BorderLayout.CENTER);
-
-
-                        JButton okButton = new JButton ("OK");
-                        okButton.addActionListener(new ActionListener() {
-
-                            public void actionPerformed(ActionEvent actionEvent) {
-                                downloadInteractions(ids);    
-                            }
-                        });
-
-                        JButton cancelButton = new JButton ("Cancel");
-                        cancelButton.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent actionEvent) {
-                                frame.setVisible(false);
-                                frame.dispose();
-                            }
-                        });
-
-                        JPanel buttonPanel = new JPanel();
-                        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-                        buttonPanel.add(okButton);
-                        buttonPanel.add(cancelButton);
-                        contentPane.add(buttonPanel, BorderLayout.SOUTH);
-                        frame.pack();
-                        frame.setLocationRelativeTo(Cytoscape.getDesktop());
-                        frame.setVisible(true);
+                        DownloadDetails detailsFrame = new DownloadDetails(passedRecordList);
+                        detailsFrame.setVisible(true);
                     }
                 } catch (NullPointerException e) {
                 }
@@ -289,24 +243,6 @@ public class SearchDetailsPanel extends JPanel {
         protocol.setQuery(Long.toString(internalId));
         protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
         String uri = protocol.getURI();
-        NetworkUtil networkUtil = new NetworkUtil(uri, null, false, null);
-        networkUtil.start();
-    }
-
-    /**
-     * Downloads a single pathway in a new thread.
-     */
-    private void downloadInteractions(long ids[]) {
-        CPathProtocol protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
-        StringBuffer q = new StringBuffer();
-        for (int i=0; i<ids.length; i++) {
-            q.append (Long.toString(ids[i])+",");
-        }
-        protocol.setQuery(q.toString());
-        protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
-        String uri = protocol.getURI();
-        System.out.println ("Connecting to:  " + uri);
         NetworkUtil networkUtil = new NetworkUtil(uri, null, false, null);
         networkUtil.start();
     }
