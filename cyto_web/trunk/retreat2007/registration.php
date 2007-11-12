@@ -31,14 +31,10 @@
   <div id="content">
   <div class="item">
   <div class="top">
-   <h2>Registration (takes some seconds to load)</h2>
+   <h2>Registration has closed</h2>
    <br>
-  </div>  
-  <iframe src="https://www.eventsinteractive.com/amc/getdemo.ei?id=353&s=_2BO0YVN42" height="500" width="100%" frameborder="0">
-  Your browser does not support inline frames. 
-  Click <a href="https://www.eventsinteractive.com/amc/getdemo.ei?id=353&s=_2BO0YVN42" target="_blank">here </A> 
-  to go to the registration page.
-  </iframe>
+  </div>
+  See you at next year's retreat.  
   </div>
   </div>
   </div>

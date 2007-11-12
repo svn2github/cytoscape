@@ -27,11 +27,6 @@
             <?= $latest_version ?>
             ! </a></h2>
 				<a href="<?= $latest_release_notes_link ?>"><?= $latest_version ?> Release Notes &raquo; </a>
-				<h2><a href="retreat2007/index.php">Announcing Cytoscape Retreat 2007</a></h2>
-				<a href="retreat2007/registration.php"><b>Registration closes on Monday November 5<sup>th</sup> at 16:00 GMT!!!</b></a><br>
-				<b>On site registration remains possible</b><br>
-				<a href="retreat2007/index.php">Now first time in Europe!!! <b>Amsterdam - Netherlands &raquo;</b></a><br>
-				<b>November 6<sup>th</sup>-9<sup>th</sup> 2007</b><br>
 				</p></div>
 		</div>
 		<? include "nav.php"; ?><? include "detailed_nav.php"; ?>

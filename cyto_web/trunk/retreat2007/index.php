@@ -34,18 +34,24 @@
    <h3>November 6-9, 2007 - Academic Medical Center, University of Amsterdam, Netherlands</h3>
   </div>
 <br>
-Welcome to the 5th annual Cytoscape Public Symposium and Developers' Retreat.<br>
-<br>Find a printable pdf version of the detailed programme and directions here:
-<a href="pdf/ProgrammeAndRoute.pdf"><img border="0" align="top" alt="pdf" height="19" width="20" src="images/pdf_20_19.jpg"></a> 
+November 6-9 saw the largest ever annual Cytoscape Public Symposium hosted for
+the first time in Europe by the Human Genetics Department of the Academic Medical
+Center in Amsterdam. With over 300 attendees the Symposium was fully booked. The Application Showcase
+the day before the Symposium draw an attendance of 150 working their way through separate tracks of application showcases, tutorials
+and developers coding sessions.
+<br> 
+<br>
+We're now gathering the presentations and tutorials that were given during the retreat and we will do our best
+to make these available through this website. Keep an eye on the announcement/discuss maillists for that.
+The conference booklet will be made available also.
 <br>
 <br>
-<a href="retreat2007/registration.php"><b>Registration closes on Monday November 5<sup>th</sup> at 16:00 GMT!!!</b></a><br>
-<b>On site registration remains possible</b><br>
-Symposium almost fully booked; Developers' retreat days are full.<br>
+Hope to see you all at next year's retreat that will be held in Toronto, July 2008. 
 <br>
-For this year's Public Symposium entitled 
+<br>
+The Public Symposium entitled 
 <a href="programme.php#nov_8">Integrative Bioinformatics: At the cutting edge of network analysis and biological data integration</a>
-we have a formidable list of confirmed speakers, among them:
+had a formidable list of speakers, among them:
 <p>
 <ul>
 <li>Keynote speaker:
