@@ -54,6 +54,7 @@ public class InstallablePlugin implements Installable {
 	public boolean installToDir(File dir, cytoscape.task.TaskMonitor taskMonitor) 
 		throws java.io.IOException,cytoscape.plugin.ManagerException {
 		
+		
 		File PluginDir = dir;
 		if (PluginDir == null) 
 			PluginDir = infoObj.getPluginDirectory();
@@ -111,57 +112,8 @@ public class InstallablePlugin implements Installable {
 	
 	public boolean install(cytoscape.task.TaskMonitor taskMonitor)
 			throws java.io.IOException, cytoscape.plugin.ManagerException {
-		//File PluginDir = infoObj.getPluginDirectory();
 
 		return installToDir(null, taskMonitor);
-		
-//		if (!PluginDir.exists()) {
-//			PluginDir.mkdirs();
-//		}
-//
-//		File Download = new File(PluginDir, createFileName(infoObj));
-//		URLUtil.download(infoObj.getObjectUrl(), Download, taskMonitor);
-//
-//		try {
-//			String ClassName = getPluginClass(Download.getAbsolutePath(),
-//					infoObj.getFileType());
-//
-//			if (ClassName != null) {
-//				infoObj.setPluginClassName(ClassName);
-//			} else {
-//				Download.delete();
-//				Download.getParentFile().delete();
-//				ManagerException E = new ManagerException(
-//						infoObj.getName()
-//								+ " does not define the attribute 'Cytoscape-Plugin' in the jar manifest file.\n"
-//								+ "This plugin cannot be auto-installed.  Please install manually or contact the plugin author.");
-//				throw E;
-//			}
-//		} catch (IOException ioe) {
-//			Download.delete();
-//			Download.getParentFile().delete();
-//			throw ioe;
-//		}
-//
-//		switch (infoObj.getFileType()) {
-//		case JAR: // do nothing, it's installed
-//			break;
-//		case ZIP:
-//			try {
-//				List<String> UnzippedFiles = ZipUtil.unzip(Download
-//						.getAbsolutePath(), Download.getParent(), taskMonitor);
-//				infoObj.setFileList(UnzippedFiles);
-//			} catch (IOException ioe) {
-//				Download.delete();
-//				throw ioe;
-//			}
-//			break;
-//		}
-//
-//		infoObj.setInstallLocation(PluginDir.getAbsolutePath());
-//		infoObj.addFileName(Download.getAbsolutePath());
-//
-//		return true;
 	}
 
 	/*
