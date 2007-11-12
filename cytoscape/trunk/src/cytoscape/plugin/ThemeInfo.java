@@ -101,6 +101,14 @@ public class ThemeInfo extends DownloadableInfo {
 		return new ArrayList<PluginInfo>(themePlugins);
 	}
 
+	public boolean containsPlugin(PluginInfo plugin) {
+		for (PluginInfo pi: themePlugins) {
+			if (pi.equalsDifferentObjectVersion(plugin))
+				return true;
+		}
+		return false;
+	}
+	
 	public void clearPluginList() {
 		this.themePlugins.clear();
 	}
