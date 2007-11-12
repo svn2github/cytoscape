@@ -29,7 +29,6 @@ public class PluginManagerTest extends TestCase {
 			UserDir = UserDir.replaceAll("\\\\", FS);
 		}
 		UserDir = UserDir.replaceFirst("/", "");
-		
 		return "file:///" + UserDir + FS + "testData" + FS + "plugins" + FS;
 	}
 
@@ -37,7 +36,6 @@ public class PluginManagerTest extends TestCase {
 		if (System.getProperty("os.name").contains("Windows")) {
 			url = url.replaceFirst("\\w:", "");
 		}
-		
 		return "file://" + url;
 	}
 	
@@ -48,9 +46,7 @@ public class PluginManagerTest extends TestCase {
 	 */
 	protected void setUp() throws java.io.IOException {
 		transformedXML = PluginTestXML.transformXML("test_plugin.xml", getFileUrl());
-		//testUrl = "file://" + transformedXML.getAbsolutePath();
 		testUrl = cleanFileUrl(transformedXML.getAbsolutePath());
-		//testUrl = getFileUrl() + "test_plugin.xml";
 		fileName = "test_tracker.xml";
 		File tmpDir = new File(CytoscapeInit.getConfigDirectory(), "test"); 
 		
@@ -61,8 +57,6 @@ public class PluginManagerTest extends TestCase {
 		PluginManager.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
 		tracker = new PluginTracker(tmpDownloadDir, fileName);
 		mgr = PluginManager.getPluginManager(tracker);
-		
-		//System.err.println("  " + tracker.getTrackerFile().getAbsolutePath());
 	}
 
 	/*
@@ -73,12 +67,8 @@ public class PluginManagerTest extends TestCase {
 	protected void tearDown() {
 		tracker.delete();
 		mgr.resetManager();
-		
-		
 		tmpDownloadDir.delete();
-		
 		tmpDownloadDir.getParentFile().delete(); 
-		
 		transformedXML.delete();
 		// make sure this isn't set, the webstart tests can set it themselves
 		System.setProperty("javawebstart.version", "");
@@ -123,11 +113,9 @@ public class PluginManagerTest extends TestCase {
 		
 		PluginManager.setPluginManageDirectory(wsTmpDir.getAbsolutePath());
 		PluginManager wsMgr = PluginManager.getPluginManager();
-
 		assertNotNull(wsMgr);
 
 		PluginInfo TestObj = (PluginInfo) getSpecificObj(wsMgr.inquire(testUrl), "goodJarPlugin123", "1.0");
-		
 		DownloadableInfo DLTestObj = wsMgr.download(TestObj);
 		assertNotNull(DLTestObj);
 		
@@ -210,7 +198,6 @@ public class PluginManagerTest extends TestCase {
 		
 		ThemeInfo CurrentRecorded = (ThemeInfo) Current.get(0);
 		assertEquals(CurrentRecorded.getPlugins().size(), ((ThemeInfo)DownloadedObj).getPlugins().size());
-		
 		
 		mgr.delete(DownloadedObj);
 		mgr.delete();
@@ -345,7 +332,6 @@ public class PluginManagerTest extends TestCase {
 	 */
 	public void testDeletePlugin() throws java.io.IOException,
 			org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException  {
-System.err.println("-- " + mgr.getPluginManageDirectory().getAbsolutePath() ) ;
 		List<DownloadableInfo> Downloadables = mgr.inquire(testUrl);
 		
 		PluginInfo TestObj = (PluginInfo) Downloadables.get(0);
@@ -406,7 +392,6 @@ System.err.println("-- " + mgr.getPluginManageDirectory().getAbsolutePath() ) ;
 		}
 		
 		assertEquals(mgr.getPluginManageDirectory().list().length, 2);
-		
 		
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 0);
@@ -517,12 +502,10 @@ System.err.println("-- " + mgr.getPluginManageDirectory().getAbsolutePath() ) ;
 	 * {@link cytoscape.plugin.PluginManager#update(cytoscape.plugin.PluginInfo, cytoscape.plugin.PluginInfo)}.
 	 */
 	public void testUpdatePlugin() throws Exception {
-
 		PluginInfo GoodJar = (PluginInfo) getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 		assertNotNull(mgr.download(GoodJar, null));
 		mgr.install(GoodJar);
-
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 1);
 
 		List<DownloadableInfo> Updatable = mgr.findUpdates(mgr.getDownloadables(
@@ -587,9 +570,7 @@ System.err.println("-- " + mgr.getPluginManageDirectory().getAbsolutePath() ) ;
 			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 		PluginInfo GoodJar = (PluginInfo) getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
-
 		DownloadableInfo GoodDL = mgr.download(GoodJar);
-
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 1);
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 0);
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
@@ -622,12 +603,42 @@ System.err.println("-- " + mgr.getPluginManageDirectory().getAbsolutePath() ) ;
 		}
 	}
 
+	/**
+	 * This test will test the download of duplicate plugins/themes and the download of plugins
+	 * that are already loaded in a theme.
+	 * 
+	 * @throws Exception
+	 */
+	public void testDuplicates() throws Exception {
+		ThemeInfo GoodTheme = (ThemeInfo) getSpecificObj(mgr.inquire(testUrl), "goodThemeTest123", "0.5");
+
+		DownloadableInfo ThemeDL = mgr.download(GoodTheme);
+		assertNotNull(ThemeDL);
+		GoodTheme = (ThemeInfo) ThemeDL;
+		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 1);
+
+		PluginInfo GoodPlugin = (PluginInfo) getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "2.1");
+		try {
+			DownloadableInfo PluginDL = mgr.download(GoodPlugin);
+		} catch (ManagerException me) {
+			// this is the expected result
+		}
+		// should not set a plugin to install if it's already there in a theme
+		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 1);
+
+		mgr.install();
+		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 0);
+		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 1);
+		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
+
+	}
+	
+	
 	
 	private ThemeInfo setUpCorrectUrls(ThemeInfo info) {
 		for (PluginInfo plugin: info.getPlugins()) {
 			plugin.setObjectUrl(getFileUrl() + plugin.getObjectUrl());
 		}
-		
 		return info;
 	}
 	
