@@ -645,6 +645,31 @@ public class PluginManager {
 	public DownloadableInfo download(DownloadableInfo Obj,
 			TaskMonitor taskMonitor) throws IOException, ManagerException {
 
+		// run a check for plugins in a theme
+		List<DownloadableInfo> CurrentAndInstalled = new ArrayList<DownloadableInfo>();
+		CurrentAndInstalled.addAll(	this.getDownloadables(PluginStatus.CURRENT) );
+		CurrentAndInstalled.addAll(	this.getDownloadables(PluginStatus.INSTALL) );
+		for (DownloadableInfo info: CurrentAndInstalled) {
+			switch (Obj.getType()) {
+			case THEME: // check for other themes that include the same plugins
+				if (info.getType().equals(DownloadableType.THEME)) { 
+					ThemeInfo Theme = (ThemeInfo) Obj;
+					for (PluginInfo plugin: Theme.getPlugins()) {
+						if ( ((ThemeInfo) info).containsPlugin(plugin) ) {
+							throw new ManagerException(Obj.getName() + " cannot be downloaded, it includes plugins that are installed in the theme '" + info.getName() + "'" );
+						}
+					}
+				}
+				break;
+			case PLUGIN: // check for themes that include this plugin
+				if (info.getType().equals(DownloadableType.THEME) &&
+					((ThemeInfo) info).containsPlugin( (PluginInfo) Obj) ) {
+						throw new ManagerException(Obj.getName() + " cannot be downloaded, the theme '" + info.getName() + "' includes a version of this plugin");
+				}
+				break;
+			}
+		}
+		
 		Installable installable = null;
 		switch (Obj.getType()) {
 		case PLUGIN:
