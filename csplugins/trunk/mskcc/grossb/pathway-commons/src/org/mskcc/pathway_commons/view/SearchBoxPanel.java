@@ -9,9 +9,13 @@ import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
+import java.net.URL;
 
 /**
  * Search Box Panel.
@@ -51,13 +55,11 @@ public class SearchBoxPanel extends JPanel {
         animator.start();
         
         JComboBox organismComboBox = createOrganismComboBox();
-        JButton helpButton = new JButton("Help");
-        helpButton.setToolTipText("Help");
         searchButton = createSearchButton(searchField);
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel label = new JLabel ("Example searches:  TP53, BRCA1, or SRY.");
+        JLabel label = new JLabel ("Examples:  TP53, BRCA1, or SRY.");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         Font font = label.getFont();
         Font newFont = new Font (font.getFamily(), font.getStyle(), font.getSize()-2);
@@ -67,14 +69,14 @@ public class SearchBoxPanel extends JPanel {
         add(searchField);
         add (label);
 
-        add(Box.createRigidArea(new Dimension(0, 5)));
-        organismComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(organismComboBox);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        searchButton.setBorder(new EmptyBorder (0,6,7,0));
+        searchButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        organismComboBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        buttonPanel.add(organismComboBox);
         buttonPanel.add(searchButton);
-        buttonPanel.add(helpButton);
         add(buttonPanel);
     }
 
@@ -91,7 +93,7 @@ public class SearchBoxPanel extends JPanel {
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setToolTipText("Select Organism");
         organismComboBox.setMaximumSize(new Dimension(200, 9999));
-        organismComboBox.setPrototypeDisplayValue("12345678901234567890");
+        organismComboBox.setPrototypeDisplayValue("12345678901234567");
         return organismComboBox;
     }
 
@@ -131,7 +133,9 @@ public class SearchBoxPanel extends JPanel {
      * @return
      */
     private JButton createSearchButton(final JTextField searchField) {
-        searchButton = new JButton("Go!");
+        URL url = GradientHeader.class.getResource("resources/run_tool.gif");
+        ImageIcon icon = new ImageIcon(url);
+        searchButton = new JButton(icon);
         searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -145,7 +149,7 @@ public class SearchBoxPanel extends JPanel {
         Window window = SwingUtilities.getWindowAncestor(this);
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
-            JOptionPane.showMessageDialog(window, "Please enter a gene name or ID",
+            JOptionPane.showMessageDialog(window, "Please enter a Gene Name or ID.",
                     "Search Error", JOptionPane.ERROR_MESSAGE);
         } else {
             ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
