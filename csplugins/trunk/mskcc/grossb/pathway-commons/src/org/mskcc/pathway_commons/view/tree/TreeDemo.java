@@ -1,6 +1,7 @@
 package org.mskcc.pathway_commons.view.tree;
 
 import org.mskcc.pathway_commons.view.tree.CheckNode;
+import org.mskcc.pathway_commons.view.CollapsablePanel;
 
 import java.util.*;
 import java.awt.*;
@@ -50,7 +51,10 @@ public class TreeDemo extends JFrame {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(button, BorderLayout.SOUTH);
 
-    getContentPane().add(sp,    BorderLayout.CENTER);
+    CollapsablePanel filterPanel = new CollapsablePanel("Filters (Optional)");
+    filterPanel.getContentPane().add(sp);
+
+    getContentPane().add(filterPanel,    BorderLayout.CENTER);
     getContentPane().add(panel, BorderLayout.EAST);
     getContentPane().add(textPanel, BorderLayout.SOUTH);
   }

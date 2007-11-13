@@ -50,7 +50,7 @@ public class SearchDetailsPanel extends JPanel {
         this.add(header, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        JPanel interactionPanel = createInteractionBundlePanel(interactionBundleModel);
+        JScrollPane interactionPanel = createInteractionBundlePanel(interactionBundleModel);
         JPanel pathwayPane = createPathwayPane(pathwayTableModel);
         tabbedPane.add("Pathways", pathwayPane);
         tabbedPane.add("Interaction Networks", interactionPanel);
@@ -74,20 +74,41 @@ public class SearchDetailsPanel extends JPanel {
      *
      * @return JScrollPane Object.
      */
-    private JPanel createInteractionBundlePanel(final InteractionBundleModel
+    private JScrollPane createInteractionBundlePanel(final InteractionBundleModel
             interactionBundleModel) {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
         final JLabel label = new JLabel ("Number of Interactions:  N/A");
-        label.setBorder(new EmptyBorder(5,5,5,5));
-        panel.add(label, BorderLayout.NORTH);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Font font = label.getFont();
+        Font newFont = new Font (font.getFamily(), Font.BOLD,  font.getSize());
+        label.setFont(newFont);
+        label.setBorder(new EmptyBorder(5,10,5,5));
+        panel.add(label);
 
-        final CheckNode rootNode = new CheckNode("Filters (optional)");
+        final CheckNode rootNode = new CheckNode("All Filters");
         final JTreeWithCheckNodes tree = new JTreeWithCheckNodes(rootNode);
+        tree.setOpaque(false);
 
-        JScrollPane scrollPane = new JScrollPane (tree);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        CollapsablePanel filterPanel = new CollapsablePanel("Filters (Optional)");
+        filterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        filterPanel.getContentPane().add(tree);
 
+        panel.add(filterPanel);
+        addObserver(interactionBundleModel, label, tree, rootNode);
+
+        JPanel footer = new JPanel();
+        footer.setAlignmentX(Component.LEFT_ALIGNMENT);
+        footer.setLayout(new FlowLayout(FlowLayout.LEFT));
+        createInteractionDownloadButton(footer);
+        panel.add(footer);
+        JScrollPane scrollPane = new JScrollPane (panel);
+        return scrollPane;
+    }
+
+    private void addObserver(final InteractionBundleModel interactionBundleModel,
+            final JLabel label, final JTreeWithCheckNodes tree, final CheckNode rootNode) {
         interactionBundleModel.addObserver(new Observer() {
             public void update(Observable observable, Object object) {
                 RecordList recordList = interactionBundleModel.getRecordList();
@@ -110,7 +131,7 @@ public class SearchDetailsPanel extends JPanel {
 
                 //  Remove all children
                 rootNode.removeAllChildren();
-                
+
                 //  Create Data Source Filter
                 if (dataSourceMap.size() > 0) {
                     dataSourceFilter = new CheckNode ("Filter by Data Source");
@@ -149,12 +170,6 @@ public class SearchDetailsPanel extends JPanel {
                 }
             }
         });
-
-        JPanel footer = new JPanel();
-        footer.setLayout(new FlowLayout(FlowLayout.LEFT));
-        createInteractionDownloadButton(footer);
-        panel.add(footer, BorderLayout.SOUTH);
-        return panel;
     }
 
     private void createInteractionDownloadButton(JPanel footer) {
