@@ -153,6 +153,22 @@ public class GMLReaderTest extends TestCase {
 		assertEquals("edge count", 19, edgeArray.length);
 	}
 
+	/** 
+	 * This gml file was causing an exception to be thrown
+	 * because the outline_width attribute was a Double and
+	 * not a String.
+	 */
+	public void testBug1565() throws Exception {
+		GMLReader reader = new GMLReader("testData/bug1565.gml");
+		reader.read();
+
+		int[] nodeArray = reader.getNodeIndicesArray();
+		int[] edgeArray = reader.getEdgeIndicesArray();
+
+		assertEquals("node count", 71, nodeArray.length);
+		assertEquals("edge count", 95, edgeArray.length);
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

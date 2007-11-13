@@ -222,7 +222,7 @@ public class GMLReader extends AbstractGraphReader {
 	HashMap nodeCol;
 
 	// Hashes for node & edge attributes
-	HashMap<String,Float> nodeBWidth;
+	HashMap<String,Double> nodeBWidth;
 
 	// Hashes for node & edge attributes
 	HashMap nodeBCol;
@@ -314,7 +314,7 @@ public class GMLReader extends AbstractGraphReader {
 		nodeH = new HashMap();
 		nodeShape = new HashMap<String,NodeShape>();
 		nodeCol = new HashMap();
-		nodeBWidth = new HashMap<String,Float>();
+		nodeBWidth = new HashMap<String,Double>();
 		nodeBCol = new HashMap();
 		edgeCol = new HashMap();
 		edgeWidth = new HashMap<String,Float>();
@@ -404,9 +404,9 @@ public class GMLReader extends AbstractGraphReader {
 			nodeColorMapping.putMapValue(key, c);
 		}
 
-		Calculator nodeColorCalculator = new BasicCalculator("GML Node Color"
-		                                                                    + mapSuffix,
-		                                                                    nodeColorMapping, VisualPropertyType.NODE_FILL_COLOR);
+		Calculator nodeColorCalculator = new BasicCalculator("GML Node Color" + mapSuffix,
+		                                                      nodeColorMapping, 
+		                                                      VisualPropertyType.NODE_FILL_COLOR);
 		nac.setCalculator(nodeColorCalculator);
 
 		//
@@ -433,15 +433,15 @@ public class GMLReader extends AbstractGraphReader {
 		}
 
 		Calculator nodeBorderColorCalculator = new BasicCalculator("GML Node Border Color"
-		                                                                            + mapSuffix,
-		                                                                            nodeBorderColorMapping,
-																					VisualPropertyType.NODE_BORDER_COLOR);
+		                                                           + mapSuffix,
+		                                                           nodeBorderColorMapping,
+		                                                           VisualPropertyType.NODE_BORDER_COLOR);
 		nac.setCalculator(nodeBorderColorCalculator);
 
 		//
 		// Set the size of the nodes
 		//
-		Double defaultWidth = new Double(nac.getDefaultAppearance().getWidth());
+		Double defaultWidth = (Double)nac.getDefaultAppearance().get(VisualPropertyType.NODE_WIDTH);
 
 		// First, set the width of the node
 		DiscreteMapping nodeWMapping = new DiscreteMapping(defaultWidth, ObjectMapping.NODE_MAPPING);
@@ -462,12 +462,12 @@ public class GMLReader extends AbstractGraphReader {
 		}
 
 		Calculator nodeSizeCalculatorW = new BasicCalculator("GML Node Width"
-		                                                                + mapSuffix, nodeWMapping,
-																		VisualPropertyType.NODE_WIDTH);
+		                                                     + mapSuffix, nodeWMapping,
+		                                                     VisualPropertyType.NODE_WIDTH);
 		nac.setCalculator(nodeSizeCalculatorW);
 
 		// Then set the height
-		Double defaultHeight = new Double(nac.getDefaultAppearance().getHeight());
+		Double defaultHeight = (Double)nac.getDefaultAppearance().get(VisualPropertyType.NODE_HEIGHT);
 
 		DiscreteMapping nodeHMapping = new DiscreteMapping(defaultHeight, ObjectMapping.NODE_MAPPING);
 		nodeHMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), true);
@@ -486,8 +486,8 @@ public class GMLReader extends AbstractGraphReader {
 		}
 
 		Calculator nodeSizeCalculatorH = new BasicCalculator("GML Node Height"
-		                                                                 + mapSuffix, nodeHMapping,
-																		 VisualPropertyType.NODE_HEIGHT);
+		                                                      + mapSuffix, nodeHMapping,
+		                                                     VisualPropertyType.NODE_HEIGHT);
 		nac.setCalculator(nodeSizeCalculatorH);
 
 
@@ -507,7 +507,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		for (int i = 0; i < node_names.size(); i++) {
 			String key = (String) node_names.get(i);
-			Float value = new Float(1.0f); 
+			Double value = new Double(1.0); 
 
 			if (nodeBWidth.containsKey(key) == true) {
 				value = nodeBWidth.get(key);
@@ -516,10 +516,9 @@ public class GMLReader extends AbstractGraphReader {
 			nodeBorderWidthMapping.putMapValue(key, value);
 		}
 
-		Calculator nodeBoderWidthCalculator = new BasicCalculator("GML Node Border"
-		                                                                       + mapSuffix,
-		                                                                       nodeBorderWidthMapping,
-																			   VisualPropertyType.NODE_LINE_WIDTH);
+		Calculator nodeBoderWidthCalculator = new BasicCalculator("GML Node Border" + mapSuffix,
+		                                                          nodeBorderWidthMapping,
+		                                                          VisualPropertyType.NODE_LINE_WIDTH);
 		nac.setCalculator(nodeBoderWidthCalculator);
 	}
 
@@ -534,7 +533,7 @@ public class GMLReader extends AbstractGraphReader {
 		// Set the color of the edges and arrows.
 		// Arrows are the same color as edges.
 		//
-		Color defcol = eac.getDefaultAppearance().getColor();
+		Color defcol = (Color)eac.getDefaultAppearance().get(VisualPropertyType.EDGE_COLOR);
 
 		DiscreteMapping edgeColorMapping = new DiscreteMapping(defcol, ObjectMapping.EDGE_MAPPING);
 		edgeColorMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), false);
@@ -556,24 +555,21 @@ public class GMLReader extends AbstractGraphReader {
 			tgtArrowColorMapping.putMapValue(key, c);
 		}
 
-		Calculator edgeColorCalculator = new BasicCalculator("GML Edge Color"
-		                                                                + mapSuffix,
-		                                                                edgeColorMapping,
-																		VisualPropertyType.EDGE_COLOR);
+		Calculator edgeColorCalculator = new BasicCalculator("GML Edge Color" + mapSuffix,
+		                                                     edgeColorMapping,
+		                                                     VisualPropertyType.EDGE_COLOR);
 		eac.setCalculator(edgeColorCalculator);
 
-		Calculator srcArrowColorCalculator = new BasicCalculator(
-		                                                               "GML Edge Source Arrow Color"
-		                                                                + mapSuffix,
-		                                                                srcArrowColorMapping,
-																		VisualPropertyType.EDGE_SRCARROW_COLOR);
+		Calculator srcArrowColorCalculator = new BasicCalculator("GML Edge Source Arrow Color"
+		                                                          + mapSuffix,
+		                                                          srcArrowColorMapping,
+		                                                          VisualPropertyType.EDGE_SRCARROW_COLOR);
 		eac.setCalculator(srcArrowColorCalculator);
 
-		Calculator tgtArrowColorCalculator = new BasicCalculator(
-		                                                               "GML Edge Target Arrow Color"
-		                                                                + mapSuffix,
-		                                                                tgtArrowColorMapping,
-																		VisualPropertyType.EDGE_TGTARROW_COLOR);
+		Calculator tgtArrowColorCalculator = new BasicCalculator("GML Edge Target Arrow Color"
+		                                                         + mapSuffix,
+		                                                         tgtArrowColorMapping,
+		                                                         VisualPropertyType.EDGE_TGTARROW_COLOR);
 		eac.setCalculator(tgtArrowColorCalculator);
 
 		// 
@@ -595,10 +591,9 @@ public class GMLReader extends AbstractGraphReader {
 			edgeLineWidthMapping.putMapValue(key, value);
 		}
 
-		Calculator edgeLineWidthCalculator = new BasicCalculator("GML Line Type"
-		                                                                      + mapSuffix,
-		                                                                      edgeLineWidthMapping,
-																			  VisualPropertyType.EDGE_LINE_WIDTH);
+		Calculator edgeLineWidthCalculator = new BasicCalculator("GML Line Type" + mapSuffix,
+		                                                         edgeLineWidthMapping,
+		                                                         VisualPropertyType.EDGE_LINE_WIDTH);
 		eac.setCalculator(edgeLineWidthCalculator);
 
 		// 
@@ -644,13 +639,13 @@ public class GMLReader extends AbstractGraphReader {
 
 			// Alternative syntax: source and target with 0 || 1
 			Calculator edgeSourceArrowCalculator = new BasicCalculator("GML Source Arrow Type"
-			                                                                            + mapSuffix,
-			                                                                            edgeSourceArrowMapping, 
-																						VisualPropertyType.EDGE_SRCARROW_SHAPE);
+			                                                           + mapSuffix,
+			                                                           edgeSourceArrowMapping, 
+			                                                           VisualPropertyType.EDGE_SRCARROW_SHAPE);
 			Calculator edgeTargetArrowCalculator = new BasicCalculator("GML Target Arrow Type"
-			                                                                            + mapSuffix,
-			                                                                            edgeTargetArrowMapping, 
-																						VisualPropertyType.EDGE_TGTARROW_SHAPE);
+			                                                           + mapSuffix,
+			                                                            edgeTargetArrowMapping, 
+			                                                           VisualPropertyType.EDGE_TGTARROW_SHAPE);
 			eac.setCalculator(edgeTargetArrowCalculator);
 			eac.setCalculator(edgeSourceArrowCalculator);
 		}
@@ -1268,7 +1263,7 @@ public class GMLReader extends AbstractGraphReader {
 			} else if (keyVal.key.equals(OUTLINE)) {
 				nodeBCol.put(nodeName, keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE_WIDTH)) {
-				nodeBWidth.put(nodeName, new Float((String)(keyVal.value)));
+				nodeBWidth.put(nodeName, (Double)keyVal.value);
 			} else if (keyVal.key.equals(TYPE)) {
 				String type = (String) keyVal.value;
 
