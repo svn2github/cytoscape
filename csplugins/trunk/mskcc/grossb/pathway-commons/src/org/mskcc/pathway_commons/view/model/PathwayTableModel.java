@@ -18,8 +18,8 @@ public class PathwayTableModel extends DefaultTableModel {
     public PathwayTableModel() {
         super();
         Vector columnNames = new Vector();
-        columnNames.add("Data Source");
         columnNames.add("Pathway");
+        columnNames.add("Data Source");
         //columnNames.add("Select");
         this.setColumnIdentifiers(columnNames);
     }

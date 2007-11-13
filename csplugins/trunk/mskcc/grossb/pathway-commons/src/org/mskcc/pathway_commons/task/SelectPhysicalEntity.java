@@ -164,8 +164,8 @@ public class SelectPhysicalEntity {
             }
             for (int i = 0; i < pathwayList.size(); i++) {
                 PathwayType pathway = pathwayList.get(i);
-                pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 0);
-                pathwayTableModel.setValueAt(pathway.getName(), i, 1);
+                pathwayTableModel.setValueAt(pathway.getName(), i, 0);
+                pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 1);
                 pathwayTableModel.setInternalId(i, pathway.getPrimaryId());
             }
         }
