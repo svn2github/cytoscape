@@ -52,6 +52,10 @@ public class SearchDetailsPanel extends JPanel {
         JTabbedPane tabbedPane = new JTabbedPane();
         JScrollPane interactionPanel = createInteractionBundlePanel(interactionBundleModel);
         JPanel pathwayPane = createPathwayPane(pathwayTableModel);
+        Font font = tabbedPane.getFont();
+        Font newFont = new Font (font.getFamily(), Font.PLAIN, font.getSize()-2);
+        tabbedPane.setFont(newFont);
+
         tabbedPane.add("Pathways", pathwayPane);
         tabbedPane.add("Interaction Networks", interactionPanel);
         add(tabbedPane, BorderLayout.CENTER);

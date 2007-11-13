@@ -21,12 +21,12 @@ public class GradientHeader extends JPanel {
         JLabel label = new JLabel(header);
         label.setBorder(new EmptyBorder(0,0,0,0));
         Font font = label.getFont();
-        Font newFont = new Font (font.getFamily(), Font.BOLD, font.getSize()+1);
+        Font newFont = new Font (font.getFamily(), Font.BOLD, font.getSize()-1);
         label.setFont(newFont);
         label.setForeground(new Color(102,51,51));
         label.setOpaque(false);
         this.add (label, BorderLayout.WEST);
-        this.setBorder (new EmptyBorder(5,5,5,5));
+        this.setBorder (new EmptyBorder(2,2,2,2));
     }
 
     /**
@@ -39,13 +39,13 @@ public class GradientHeader extends JPanel {
         JLabel label = new JLabel(header);
         label.setBorder(new EmptyBorder(0,0,0,0));
         Font font = label.getFont();
-        Font newFont = new Font (font.getFamily(), Font.BOLD, font.getSize()+1);
+        Font newFont = new Font (font.getFamily(), Font.BOLD, font.getSize()-1);
         label.setFont(newFont);
         label.setForeground(new Color(102,51,51));
         label.setOpaque(false);
         this.add (label, BorderLayout.WEST);
         this.add (button, BorderLayout.EAST);
-        this.setBorder (new EmptyBorder(5,5,5,5));
+        this.setBorder (new EmptyBorder(2,2,2,2));
     }
 
     /**
