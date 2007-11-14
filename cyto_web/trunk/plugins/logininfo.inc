@@ -2,7 +2,7 @@
 	$auth_ok = 0;
 
 	$valid_user = "cytostaff";
-	$valid_pass = "N0desEdges";
+	$valid_pass = "XXXXXX";
 
 	$user = "";
 	$pass = "";
