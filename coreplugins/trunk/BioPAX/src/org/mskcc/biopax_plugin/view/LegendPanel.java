@@ -51,16 +51,13 @@ public class LegendPanel extends JPanel {
 	/**
 	 * Constructor.
 	 *
-	 * @param bgColor Background Color.
 	 */
-	public LegendPanel(Color bgColor) {
-		this.setBackground(bgColor);
+	public LegendPanel() {
 		this.setLayout(new BorderLayout());
 
 		JTextPane textPane = new JTextPane();
 		textPane.setEditable(false);
 		textPane.setContentType("text/html");
-		textPane.setBackground(BioPaxDetailsPanel.BG_COLOR);
 
 		URL legendUrl = LegendPanel.class.getResource("resources/legend.html");
 		StringBuffer temp = new StringBuffer();
