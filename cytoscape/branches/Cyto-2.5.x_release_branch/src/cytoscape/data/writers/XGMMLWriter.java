@@ -525,7 +525,7 @@ public class XGMMLWriter {
 			attr.setType(ObjectType.fromValue(STRING_TYPE));
 
 			if (sAttr != null) {
-				sAttr = sAttr.replace("\n", "\\n");
+				sAttr = quoteXML(sAttr);
 				attr.setValue(sAttr);
 			} else if (attributeName == "nodeType") {
 				attr.setValue(NORMAL);
@@ -1502,6 +1502,38 @@ public class XGMMLWriter {
 
 			graph.getAtt().add(attr);
 		}
+	}
+
+	/**
+ 	 * This method ensures that the output string is appropriately
+ 	 * quoted for XML output.  This includes handling newlines, as
+ 	 * well as special XML characters.
+ 	 *
+ 	 *  @param str the string to quote
+ 	 *  @return the quoted string
+ 	 */
+
+  private String quoteXML(String str) {
+    // Find and replace any "magic" characters
+    if (str.contains("\n")) {
+			str = str.replaceAll("\n","\\n");
+		}
+    if (str.contains("&")) {
+  	  str = str.replaceAll("&", "&amp;");
+    }
+    if (str.contains("\"")) {
+   	 str = str.replaceAll("\"", "&quot;");
+    }
+    if (str.contains("'")) {
+   	 str = str.replaceAll("\'", "&apos;");
+    }
+    if (str.contains("<")) {
+   	 str = str.replaceAll("<", "&lt;");
+    }
+    if (str.contains(">")) {
+   	 str = str.replaceAll(">", "&gt;");
+    }
+    return str;
 	}
 }
 

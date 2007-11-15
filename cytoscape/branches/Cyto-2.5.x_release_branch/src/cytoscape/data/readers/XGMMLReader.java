@@ -515,7 +515,16 @@ public class XGMMLReader extends AbstractGraphReader {
 				itrValue = interaction.getValue();
 
 				if (itrValue == null) {
+					// We don't have a value for interaction -- parse it
+					// out from the edge label
 					itrValue = "unknown";
+					String label = edge.getLabel();
+					if (label == null) 
+						break;
+
+					String[] parts = label.split("[()]");
+					if (parts.length == 3)
+						itrValue = parts[1];
 				}
 
 				break;
