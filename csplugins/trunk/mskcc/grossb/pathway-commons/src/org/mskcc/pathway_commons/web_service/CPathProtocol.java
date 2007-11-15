@@ -6,6 +6,9 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.util.EncodingUtil;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.io.*;
@@ -148,6 +151,9 @@ public class CPathProtocol {
      */
     private static final String XML_TAG = "xml";
 
+    /*** Default initial size of the response buffer if content length is unknown. */
+    private static final int DEFAULT_INITIAL_BUFFER_SIZE = 4*1024; // 4 kB
+
     private String command;
     private String query;
     private int taxonomyId;
@@ -157,6 +163,7 @@ public class CPathProtocol {
     private String baseUrl;
     private volatile GetMethod method;
     private boolean cancelledByUser = false;
+    private static boolean debug = false;
 
     /**
      * Constructor.
@@ -250,22 +257,29 @@ public class CPathProtocol {
             method = new GetMethod(liveUrl);
 
             int statusCode = client.executeMethod(method);
-            long contentLength = method.getResponseContentLength();
 
             //  Check status code
             checkHttpStatusCode(statusCode);
 
             //  Read in Content
-            BufferedReader in = new BufferedReader (new InputStreamReader
-                    (method.getResponseBodyAsStream()));
-            StringBuffer buf = new StringBuffer();
-            String str;
-            while ((str = in.readLine()) != null) {
-                buf.append(str + "\n");
+            InputStream instream = method.getResponseBodyAsStream();
+            long contentLength = method.getResponseContentLength();
+            if (contentLength > 0) {
+                taskMonitor.setPercentCompleted(0);
             }
-            in.close();
-            
-            String content = buf.toString();
+
+            ByteArrayOutputStream outstream = new ByteArrayOutputStream(
+                    contentLength > 0 ? (int) contentLength : DEFAULT_INITIAL_BUFFER_SIZE);
+            byte[] buffer = new byte[4096];
+            int len;
+            int totalBytes = 0;
+            while ((len = instream.read(buffer)) > 0) {
+                outstream.write(buffer, 0, len);
+                totalBytes = updatePercentComplete(contentLength, len, totalBytes, taskMonitor);
+            }
+            instream.close();
+
+            String content = new String(outstream.toByteArray());
             if (content.toLowerCase().indexOf(XML_TAG) >= 0) {
                 //  Check for protocol errors.
                 if (content.indexOf("<error>") >=0) {
@@ -291,6 +305,24 @@ public class CPathProtocol {
         } catch (JDOMException e) {
             throw new CPathException(CPathException.ERROR_XML_PARSING, e);
         }
+    }
+
+    private int updatePercentComplete(long contentLength, int len, int totalBytes,
+            TaskMonitor taskMonitor) {
+        if (contentLength > 0) {
+            totalBytes += len;
+            int percentComplete = (int) (100.0 * (totalBytes / (double) contentLength));
+            taskMonitor.setPercentCompleted(percentComplete);
+            if (debug) {
+                System.out.println ("Percent complete:  " + percentComplete);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return totalBytes;
     }
 
     /**
