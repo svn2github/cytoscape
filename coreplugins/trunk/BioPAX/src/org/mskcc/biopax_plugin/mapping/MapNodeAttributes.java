@@ -689,13 +689,9 @@ public class MapNodeAttributes {
 
 			for (int i = 0; i < xrefList.size(); i++) {
 				ExternalLink link = (ExternalLink) xrefList.get(i);
-				temp.append("- ");
+				temp.append("<LI>- ");
 				temp.append(ExternalLinkUtil.createLink(link.getDbName(), link.getId()));
-
-				if (i < (xrefList.size() - 1)) {
-					// we should think about how to delimit items
-					temp.append("<BR>");
-				}
+                temp.append("</LI>");
 			}
 
 			return temp.toString();
