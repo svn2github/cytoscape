@@ -291,6 +291,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		duplicateFilterMenuItem.addActionListener(this);
 
 		cmbSelectFilter.addItemListener(this);
+		cmbAttributes.addItemListener(this);
 		
 		CytoPanelListener l = new MyCytoPanelListener();
 		cytoPanelWest.addCytoPanelListener(l);
@@ -488,6 +489,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		pnlFilterDefinition.add(cmbAttributes, gridBagConstraints);
 
 		btnAddFilterWidget.setText("Add");
+		btnAddFilterWidget.setEnabled(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
@@ -582,7 +584,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getSource();
 		
-		System.out.println("Entering FilterMainPanel.itemStateChnaged() ...");
+		//System.out.println("Entering FilterMainPanel.itemStateChnaged() ...");
 		
 		if (source instanceof JComboBox) {
 			JComboBox cmb = (JComboBox) source;
@@ -600,6 +602,16 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				replaceFilterSettingPanel(selectedFilter);
 				FilterUtil.doSelection(selectedFilter);
 				refreshAttributeCMB();
+			}
+			else if (cmb == cmbAttributes) {
+				String selectItem = (String) cmbAttributes.getSelectedItem();
+				// Disable the Add button if "--Attribute--" or "-- Filter ---" is selected
+				if (selectItem.equalsIgnoreCase("-- Filters --") ||selectItem.equalsIgnoreCase("-- Attributes --")) {
+					btnAddFilterWidget.setEnabled(false);
+				}
+				else {
+					btnAddFilterWidget.setEnabled(true);
+				}
 			}
 		}	
 	}
