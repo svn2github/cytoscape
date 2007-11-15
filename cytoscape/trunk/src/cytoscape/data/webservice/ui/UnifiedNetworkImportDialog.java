@@ -269,6 +269,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		final JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(false);
 
@@ -377,7 +378,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		}
 
 		public void halt() {
-			// TODO Auto-generated method stub
+			
 		}
 
 		public void run() {

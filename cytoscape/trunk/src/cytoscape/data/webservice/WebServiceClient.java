@@ -94,17 +94,4 @@ public interface WebServiceClient {
 	 */
 	public List<Method> getAllServices();
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param methodName DOCUMENT ME!
-	 * @param parameterTypes DOCUMENT ME!
-	 * @param parameters DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
-	public Object execute(String methodName, Class[] parameterTypes, Object[] parameters)
-	    throws Exception;
 }

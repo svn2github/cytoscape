@@ -50,5 +50,5 @@ public interface CyWebServiceEventListener extends EventListener {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void executeService(CyWebServiceEvent e);
+	public void executeService(CyWebServiceEvent e) throws Exception;
 }

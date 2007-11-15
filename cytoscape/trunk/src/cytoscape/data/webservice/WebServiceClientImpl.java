@@ -219,5 +219,5 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public abstract void executeService(CyWebServiceEvent e);
+	public abstract void executeService(CyWebServiceEvent e) throws Exception;
 }
