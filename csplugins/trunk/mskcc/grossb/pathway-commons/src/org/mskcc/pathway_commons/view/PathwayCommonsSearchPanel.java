@@ -132,29 +132,6 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     }
 
     /**
-     * Creates the Download Panel.
-     *
-     * @return JPanel Object.
-     */
-    private JPanel createDownloadPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setBorder(new TitledBorder("Download Options"));
-        //JButton button = new JButton ("Download");
-
-        Vector networkList = new Vector();
-        networkList.add("Download all selected interactions / pathways to new network");
-        networkList.add("Download and merge with:  BRCA1 Network");
-        JComboBox networkComboBox = new JComboBox(networkList);
-        networkComboBox.setMaximumSize(new Dimension(400, 9999));
-
-        panel.add(Box.createHorizontalGlue());
-        panel.add(networkComboBox);
-        panel.add(Box.createRigidArea(new Dimension(5, 0)));
-        return panel;
-    }
-
-    /**
      * Main Method.  Used for debugging purposes only.
      *
      * @param args Command Line Arguments.
@@ -162,7 +139,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         PathwayCommonsSearchPanel form = new PathwayCommonsSearchPanel(
-                new PathwayCommonsWebApi());
+                PathwayCommonsWebApi.getInstance());
         frame.getContentPane().add(form);
         frame.pack();
         form.initFocus();
