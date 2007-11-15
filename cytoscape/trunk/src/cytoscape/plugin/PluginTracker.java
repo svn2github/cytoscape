@@ -111,15 +111,6 @@ public class PluginTracker {
 		this.createPluginTable();
 	}
 
-//	/**
-//	 * @deprecated Use {@link PluginTracker#getPluginListByStatus(PluginStatus)}
-//	 * @param Status
-//	 * @return
-//	 */
-//	protected List<PluginInfo> getListByStatus(PluginStatus Status) {
-//		return getPluginContent(trackerDoc.getRootElement().getChild(Status.getTagName()));
-//	}
-	
 	/**
 	 * Gets a list of plugins by their status. CURRENT: currently installed
 	 * DELETED: to be deleted INSTALL: to be installed
@@ -207,7 +198,13 @@ public class PluginTracker {
 		}
 		element.getChild(cytoVersTag).setText(obj.getCytoscapeVersion());
 		element.getChild(descTag).setText(obj.getDescription());
-		element.getChild(pluginVersTag).setText(obj.getObjectVersion());
+
+		if (element.getChild(pluginVersTag) != null) {
+			element.getChild(pluginVersTag).setText(obj.getObjectVersion());
+		} else {
+			Element PluginVersion = new Element(pluginVersTag);
+			element.addContent( PluginVersion.setText(obj.getObjectVersion()) );
+		}
 		
 		if (element.getChild(PluginXml.RELEASE_DATE.getTag()) != null) { 
 			element.getChild(PluginXml.RELEASE_DATE.getTag()).setText(obj.getReleaseDate());

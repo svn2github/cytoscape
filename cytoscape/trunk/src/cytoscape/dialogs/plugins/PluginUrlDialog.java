@@ -6,19 +6,20 @@ package cytoscape.dialogs.plugins;
 import cytoscape.*;
 
 import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.Category;
+//import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 
 import cytoscape.dialogs.preferences.BookmarkDialog;
 
 import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.DownloadableType;
-import cytoscape.plugin.ManagerException;
+//import cytoscape.plugin.DownloadableType;
+//import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.PluginInfo;
+//import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInquireAction;
 import cytoscape.plugin.PluginStatus;
+import cytoscape.plugin.PluginManagerInquireTask;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -28,7 +29,7 @@ import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
 import java.awt.Component;
-import java.awt.Dimension;
+//import java.awt.Dimension;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -106,9 +107,7 @@ public class PluginUrlDialog extends JDialog {
 		parentDialog.switchDownloadSites();
 		dispose();
 
-		PluginManager Mgr = PluginManager.getPluginManager();
-		
-		cytoscape.task.Task task = Mgr.getInquireTask
+		cytoscape.task.Task task = new PluginManagerInquireTask
 			(SelectedSite.getHref(), new UrlAction(parentDialog, SelectedSite.getHref()));
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();

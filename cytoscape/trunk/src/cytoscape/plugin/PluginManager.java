@@ -91,7 +91,7 @@ public class PluginManager {
 	private static URLClassLoader classLoader;
 
 	private static boolean usingWebstart;
-	
+
 	private static String cyVersion = new CytoscapeVersion().getMajorVersion();
 
 	/**
@@ -219,8 +219,10 @@ public class PluginManager {
 			if (tempDir == null) {
 				if (usingWebstartManager()) {
 					tempDir = new File(CytoscapeInit.getConfigDirectory(),
-							"webstart" + File.separator
-									+ (new CytoscapeVersion()).getMajorVersion() + File.separator
+							"webstart"
+									+ File.separator
+									+ (new CytoscapeVersion())
+											.getMajorVersion() + File.separator
 									+ "plugins");
 					;
 					this.removeWebstartInstalls();
@@ -256,23 +258,8 @@ public class PluginManager {
 	}
 
 	/**
-	 * @deprecated Use {@link PluginManager#getDownloadables(PluginStatus)} will be removed June 2008 
-	 * 
-	 * Get a list of plugins by status. CURRENT: currently installed
-	 *             INSTALL: plugins to be installed DELETE: plugins to be
-	 *             deleted
-	 * 
-	 * @param Status
-	 * @return
-	 */
-	public List<PluginInfo> getPlugins(PluginStatus Status) {
-		return pluginTracker.getPluginListByStatus(Status);
-	}
-
-	/**	  
-	 * Get a list of downloadable objects by status. CURRENT: currently installed
-	 *             INSTALL: objects to be installed DELETE: objects to be
-	 *             deleted
+	 * Get a list of downloadable objects by status. CURRENT: currently
+	 * installed INSTALL: objects to be installed DELETE: objects to be deleted
 	 * 
 	 * @param Status
 	 * @return
@@ -288,26 +275,14 @@ public class PluginManager {
 	 * @param Url
 	 * @return List of PluginInfo objects
 	 */
-	public List<DownloadableInfo> inquire(String Url) throws IOException, org.jdom.JDOMException {
+	public List<DownloadableInfo> inquire(String Url) throws IOException,
+			org.jdom.JDOMException {
 		List<DownloadableInfo> infoObjs = null;
 		PluginFileReader Reader = new PluginFileReader(Url);
 		infoObjs = Reader.getDownloadables();
 		return infoObjs;
 	}
 
-	/**
-	 * @deprecated Use {@link cytoscape.plugin.PluginManagerInquireTask} 
-	 * Creates a Task for inquiring through a site about plugins.
-	 * 
-	 * @param Url
-	 *            Plugin site to connect to
-	 * @param Action
-	 *            Code to run on the results of the inquiry
-	 * @return
-	 */
-	public InquireTask getInquireTask(String Url, PluginInquireAction Action) {
-		return new InquireTask(Url, Action);
-	}
 
 	/**
 	 * Registers a currently installed plugin with tracking object. Only useful
@@ -325,48 +300,15 @@ public class PluginManager {
 		} else {
 			this.registerPlugin(Plugin, Jar, (PluginInfo) InfoObj, true);
 		}
-//		PluginInfo PluginObj = null;
-//		
-//		// try to get it from the file
-//		// XXX PROBLEM: what to do about a plugin that attempts to register itself and is not compatible with the current version?
-//		try {
-//			PluginProperties pp = new PluginProperties(Plugin);
-//			PluginObj = pp.fillPluginInfoObject(InfoObj);
-//
-//		} catch (IOException ioe) {
-//			System.err.println("ERROR registering plugin: " + ioe.getMessage());
-//			System.err
-//					.println(Plugin.getClass().getName()
-//							+ " loaded but not registered, this will not affect the operation of the plugin");
-//		} catch (Exception e) {
-//			System.err.println("ERROR registering plugin: ");
-//			e.printStackTrace();
-//		} finally {
-//			if (PluginObj == null) { // still null, create a default one
-//				PluginObj = new PluginInfo();
-//				PluginObj.setCytoscapeVersion(cyVersion);
-//				PluginObj.setName(Plugin.getClass().getName());
-//			}
-//
-//			PluginObj.setPluginClassName(Plugin.getClass().getName());
-//			if (!usingWebstart && Jar != null) {
-//				PluginObj.setInstallLocation(Jar.getName());
-//				PluginObj.addFileName(Jar.getName());
-//			}
-//			PluginObj.setFiletype(PluginInfo.FileType.JAR);
-//
-//			initializedPlugins.put( PluginObj.getPluginClassName(), PluginObj);
-//			// TODO This causes a bug where theme plugins essentially get added to the current 
-//			// list twice
-//			if (InfoObj != null && !InfoObj.getType().equals(DownloadableType.THEME)) 
-//				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
-//		}
 	}
 
-	private PluginInfo registerPlugin(CytoscapePlugin Plugin, JarFile Jar, PluginInfo PluginObj, boolean addToTracker) {
+	private PluginInfo registerPlugin(CytoscapePlugin Plugin, JarFile Jar,
+			PluginInfo PluginObj, boolean addToTracker) {
 		// try to get it from the file
-		// XXX PROBLEM: what to do about a plugin that attempts to register itself and is not compatible with the current version?
-		System.err.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
+		// XXX PROBLEM: what to do about a plugin that attempts to register
+		// itself and is not compatible with the current version?
+		System.err.println("     Registering " + Plugin.getClass().getName()
+				+ " " + Jar.getName());
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
 			PluginObj = pp.fillPluginInfoObject(PluginObj);
@@ -384,6 +326,7 @@ public class PluginManager {
 				PluginObj = new PluginInfo();
 				PluginObj.setCytoscapeVersion(cyVersion);
 				PluginObj.setName(Plugin.getClass().getName());
+				PluginObj.setObjectVersion(0.1);
 			}
 
 			PluginObj.setPluginClassName(Plugin.getClass().getName());
@@ -393,9 +336,9 @@ public class PluginManager {
 			}
 			PluginObj.setFiletype(PluginInfo.FileType.JAR);
 
-			initializedPlugins.put( PluginObj.getPluginClassName(), PluginObj);
-			// TODO This causes a bug where theme plugins essentially get added to the current 
-			// list twice
+			initializedPlugins.put(PluginObj.getPluginClassName(), PluginObj);
+			// TODO This causes a bug where theme plugins essentially get added
+			// to the current list twice
 			if (addToTracker) {
 				System.out.println("--- Registering PLUGIN " + PluginObj.getName());
 				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
@@ -403,11 +346,11 @@ public class PluginManager {
 		}
 		return PluginObj;
 	}
-	
-	
-	private void registerTheme(CytoscapePlugin Plugin, JarFile Jar, ThemeInfo ThemeObj) {
+
+	private void registerTheme(CytoscapePlugin Plugin, JarFile Jar,
+			ThemeInfo ThemeObj) {
 		System.out.println("--- Registering THEME " + ThemeObj.getName());
-		for (PluginInfo plugin: ThemeObj.getPlugins()) {
+		for (PluginInfo plugin : ThemeObj.getPlugins()) {
 			if (plugin.getPluginClassName().equals(Plugin.getClass().getName())) {
 				System.out.println(plugin.getName());
 				PluginInfo updatedPlugin = registerPlugin(Plugin, Jar, plugin, false);
@@ -416,8 +359,7 @@ public class PluginManager {
 		}
 		pluginTracker.addDownloadable(ThemeObj, PluginStatus.CURRENT);
 	}
-	
-	
+
 	// TODO would be better to fix how initializedPlugins are tracked...
 	private void cleanCurrentList() {
 		List<DownloadableInfo> CurrentList = this
@@ -451,9 +393,9 @@ public class PluginManager {
 	public void install(DownloadableInfo obj) {
 		pluginTracker.removeDownloadable(obj, PluginStatus.INSTALL);
 		pluginTracker.addDownloadable(obj, PluginStatus.CURRENT);
-		
+
 		// mark all webstart-installed plugins for deletion
-		if (usingWebstartManager()) { 
+		if (usingWebstartManager()) {
 			pluginTracker.addDownloadable(obj, PluginStatus.DELETE);
 		}
 	}
@@ -496,8 +438,10 @@ public class PluginManager {
 
 			try {
 				if (ins.uninstall()) {
-					pluginTracker.removeDownloadable(infoObj, PluginStatus.DELETE);
-					pluginTracker.removeDownloadable(infoObj, PluginStatus.CURRENT);
+					pluginTracker.removeDownloadable(infoObj,
+							PluginStatus.DELETE);
+					pluginTracker.removeDownloadable(infoObj,
+							PluginStatus.CURRENT);
 				} // TODO um.....XXXX
 			} catch (ManagerException me) {
 				deleteError = true;
@@ -505,7 +449,7 @@ public class PluginManager {
 						+ infoObj.getObjectVersion() + "\n";
 				me.printStackTrace();
 			}
-			
+
 			if (deleteError) {
 				throw new ManagerException(ErrorMsg);
 			}
@@ -612,7 +556,7 @@ public class PluginManager {
 		}
 
 		ins.update(newObj, taskMonitor);
-		
+
 		pluginTracker.addDownloadable(currentObj, PluginStatus.DELETE);
 		pluginTracker.addDownloadable(newObj, PluginStatus.INSTALL);
 	}
@@ -647,36 +591,42 @@ public class PluginManager {
 
 		// run a check for plugins in a theme
 		List<DownloadableInfo> CurrentAndInstalled = new ArrayList<DownloadableInfo>();
-		CurrentAndInstalled.addAll(	this.getDownloadables(PluginStatus.CURRENT) );
-		CurrentAndInstalled.addAll(	this.getDownloadables(PluginStatus.INSTALL) );
-		for (DownloadableInfo info: CurrentAndInstalled) {
+		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.CURRENT));
+		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.INSTALL));
+		for (DownloadableInfo info : CurrentAndInstalled) {
 			switch (Obj.getType()) {
 			case THEME: // check for other themes that include the same plugins
-				if (info.getType().equals(DownloadableType.THEME)) { 
+				if (info.getType().equals(DownloadableType.THEME)) {
 					ThemeInfo Theme = (ThemeInfo) Obj;
-					for (PluginInfo plugin: Theme.getPlugins()) {
-						if ( ((ThemeInfo) info).containsPlugin(plugin) ) {
-							throw new ManagerException(Obj.getName() + " cannot be downloaded, it includes plugins that are installed in the theme '" + info.getName() + "'" );
+					for (PluginInfo plugin : Theme.getPlugins()) {
+						if (((ThemeInfo) info).containsPlugin(plugin)) {
+							throw new ManagerException(
+									Obj.getName()
+											+ " cannot be downloaded, it includes plugins that are installed in the theme '"
+											+ info.getName() + "'");
 						}
 					}
 				}
 				break;
 			case PLUGIN: // check for themes that include this plugin
-				if (info.getType().equals(DownloadableType.THEME) &&
-					((ThemeInfo) info).containsPlugin( (PluginInfo) Obj) ) {
-						throw new ManagerException(Obj.getName() + " cannot be downloaded, the theme '" + info.getName() + "' includes a version of this plugin");
+				if (info.getType().equals(DownloadableType.THEME)
+						&& ((ThemeInfo) info).containsPlugin((PluginInfo) Obj)) {
+					throw new ManagerException(Obj.getName()
+							+ " cannot be downloaded, the theme '"
+							+ info.getName()
+							+ "' includes a version of this plugin");
 				}
 				break;
 			}
 		}
-		
+
 		Installable installable = null;
 		switch (Obj.getType()) {
 		case PLUGIN:
 			installable = new InstallablePlugin((PluginInfo) Obj);
 			break;
 		case THEME:
-			installable = new InstallableTheme( (ThemeInfo) Obj );
+			installable = new InstallableTheme((ThemeInfo) Obj);
 			break;
 		}
 		installable.install(taskMonitor);
@@ -689,22 +639,21 @@ public class PluginManager {
 	 * moved from CytoscapeInit
 	 */
 	public void loadPlugin(DownloadableInfo i) throws MalformedURLException,
-	IOException, ClassNotFoundException, PluginException {
+			IOException, ClassNotFoundException, PluginException {
 		switch (i.getType()) {
 		case PLUGIN:
-			loadPlugin( (PluginInfo) i );
+			loadPlugin((PluginInfo) i);
 			break;
 		case THEME:
 			ThemeInfo Info = (ThemeInfo) i;
-			for (PluginInfo p: Info.getPlugins()) 
+			for (PluginInfo p : Info.getPlugins())
 				loadPlugin(p);
 			break;
 		case FILE: // currently there is no FileInfo type
 			break;
 		}
 	}
-	
-	
+
 	/**
 	 * Load a single plugin based on the PluginInfo object given
 	 * 
@@ -737,7 +686,7 @@ public class PluginManager {
 			IOException, ClassNotFoundException, PluginException {
 
 		Set<String> PluginsSeen = new HashSet<String>();
-		
+
 		// Parse the plugin strings and determine whether they're urls,
 		// files, directories, class names, or manifest file names.
 		for (String currentPlugin : p) {
@@ -772,7 +721,8 @@ public class PluginManager {
 					if (!fileName.endsWith(".jar")) {
 						continue;
 					}
-					PluginsSeen.add(f.getAbsolutePath() + System.getProperty("file.separator") + fileName);
+					PluginsSeen.add(f.getAbsolutePath()
+							+ System.getProperty("file.separator") + fileName);
 					pluginURLs.add(jarURL(f.getAbsolutePath()
 							+ System.getProperty("file.separator") + fileName));
 				}
@@ -1069,8 +1019,8 @@ public class PluginManager {
 	}
 
 	/**
-	 * @deprecated Use {@link cytoscape.plugin.PluginManagerInquireTask} 
-	 * will be removed June 2008
+	 * @deprecated Use {@link cytoscape.plugin.PluginManagerInquireTask} will be
+	 *             removed June 2008
 	 */
 	private class InquireTask implements cytoscape.task.Task {
 
