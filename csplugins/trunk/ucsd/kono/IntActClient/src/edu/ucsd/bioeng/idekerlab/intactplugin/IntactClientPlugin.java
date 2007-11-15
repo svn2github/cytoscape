@@ -47,7 +47,7 @@ import cytoscape.plugin.CytoscapePlugin;
  */
 public class IntactClientPlugin extends CytoscapePlugin {
 	/**
-	 * Creates a new NCBIClientPlugin object.
+	 * Register IntAct client to the web service client manager
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
