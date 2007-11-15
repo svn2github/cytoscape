@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.List;
 
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.view.model.RecordList;
@@ -24,7 +25,10 @@ import org.mskcc.pathway_commons.filters.ChainedFilter;
 import org.mskcc.pathway_commons.filters.DataSourceFilter;
 import org.mskcc.pathway_commons.filters.EntityTypeFilter;
 import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
+import org.mskcc.pathway_commons.task.ExecuteGetRecordByCPathId;
 import cytoscape.Cytoscape;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 /**
  * Search Details Panel.
@@ -216,7 +220,8 @@ public class SearchDetailsPanel extends JPanel {
                                 + "\nPlease check your filter settings and try again.",
                                 "No matches.", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        DownloadDetails detailsFrame = new DownloadDetails(passedRecordList);
+                        DownloadDetails detailsFrame = new DownloadDetails(passedRecordList,
+                                interactionBundleModel.getPhysicalEntityName());
                         detailsFrame.setVisible(true);
                     }
                 } catch (NullPointerException e) {
@@ -257,13 +262,19 @@ public class SearchDetailsPanel extends JPanel {
      */
     private void downloadPathway(int[] rows, PathwayTableModel pathwayTableModel) {
         long internalId = pathwayTableModel.getInternalId(rows[0]);
-        CPathProtocol protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
-        protocol.setQuery(Long.toString(internalId));
-        protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
-        String uri = protocol.getURI();
-        NetworkUtil networkUtil = new NetworkUtil(uri, null, false, null);
-        networkUtil.start();
+        String title = pathwayTableModel.getValueAt(rows[0], 0)
+                + " (" + pathwayTableModel.getValueAt(rows[0], 1) + ")";
+        long ids[] = new long[1];
+        ids[0] = internalId;
+
+        PathwayCommonsWebApi webApi = PathwayCommonsWebApi.getInstance();
+        ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, title);
+        JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(Cytoscape.getDesktop());
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(true);
+        jTaskConfig.displayCancelButton(true);
+        TaskManager.executeTask(task, jTaskConfig);
     }
 }
 
