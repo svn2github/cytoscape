@@ -57,7 +57,7 @@ public class BioPaxContainer extends JPanel {
 	/**
 	 * CytoPanel Location of this Panel
 	 */
-	public static final int CYTO_PANEL_LOCATION = SwingConstants.SOUTH;
+	public static final int CYTO_PANEL_LOCATION = SwingConstants.EAST;
 	private JTabbedPane tabbedPane;
 	private BioPaxDetailsPanel bpDetailsPanel;
 	private NetworkListener networkListener;
@@ -79,12 +79,12 @@ public class BioPaxContainer extends JPanel {
 		bpDetailsPanel = new BioPaxDetailsPanel();
 		tabbedPane.addTab("Node Details", icon1, bpDetailsPanel,
 		                  "Select a node to view complete node details");
-		tabbedPane.addTab("Visual Legend", icon2, new LegendPanel(BioPaxDetailsPanel.BG_COLOR),
+		tabbedPane.addTab("Visual Legend", icon2, new LegendPanel(),
 		                  "View Visual Legend");
 		tabbedPane.addTab("About", icon3,
-		                  new AboutPanel("BioPAX Extension", BioPaxPlugIn.VERSION_MAJOR_NUM,
-		                                 BioPaxPlugIn.VERSION_MINOR_NUM, BioPaxDetailsPanel.BG_COLOR),
-		                  "About the BioPAX Extension");
+		                  new AboutPanel("BioPAX Plugin", BioPaxPlugIn.VERSION_MAJOR_NUM,
+		                                 BioPaxPlugIn.VERSION_MINOR_NUM),
+		                  "About the BioPAX Plugin");
 		this.setLayout(new BorderLayout());
 		this.add(tabbedPane);
 		this.networkListener = new NetworkListener(bpDetailsPanel);
