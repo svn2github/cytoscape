@@ -1,9 +1,13 @@
 package org.mskcc.pathway_commons.view;
 
 import cytoscape.Cytoscape;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
 import org.mskcc.pathway_commons.web_service.CPathProtocol;
+import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.util.NetworkUtil;
+import org.mskcc.pathway_commons.task.ExecuteGetRecordByCPathId;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -20,7 +24,13 @@ import java.util.Vector;
  */
 public class DownloadDetails extends JDialog {
 
-    public DownloadDetails(java.util.List<RecordType> passedRecordList) {
+    /**
+     * Constructor.
+     * @param passedRecordList      List of Records that Passed over Filter.
+     * @param peName                Name of Physical Entity.
+     */
+    public DownloadDetails(java.util.List<RecordType> passedRecordList,
+            String peName) {
         super();
         this.setTitle("Download Confirmation");
         this.setModal(true);
@@ -60,7 +70,7 @@ public class DownloadDetails extends JDialog {
         scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel buttonPanel = createButtonPanel(ids, this);
+        JPanel buttonPanel = createButtonPanel(ids, peName, this);
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
         pack();
         setLocationRelativeTo(Cytoscape.getDesktop());
@@ -69,14 +79,15 @@ public class DownloadDetails extends JDialog {
     /**
      * Button Panel.
      */
-    private JPanel createButtonPanel(final long[] ids, final JDialog dialog) {
+    private JPanel createButtonPanel(final long[] ids, final String peName,
+            final JDialog dialog) {
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent actionEvent) {
                 dialog.setVisible(false);
                 dialog.dispose();
-                downloadInteractions(ids);
+                downloadInteractions(ids, peName);
             }
         });
 
@@ -96,22 +107,19 @@ public class DownloadDetails extends JDialog {
     }
 
     /**
-     * Downloads a single pathway in a new thread.
+     * Downloads interaction bundles in a new thread.
      */
-    private void downloadInteractions(long ids[]) {
-        CPathProtocol protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
-        StringBuffer q = new StringBuffer();
-        for (int i=0; i<ids.length; i++) {
-            q.append (Long.toString(ids[i])+",");
-        }
-        protocol.setQuery(q.toString());
-        protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
-        String uri = protocol.getURI();
-        System.out.println ("Connecting to:  " + uri);
-        NetworkUtil networkUtil = new NetworkUtil(uri, null, false, null);
-        networkUtil.start();
-    }    
+    private void downloadInteractions(long ids[], String peName) {
+        String networkTitle = peName + ":  Network";
+        PathwayCommonsWebApi webApi = PathwayCommonsWebApi.getInstance();
+        ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, networkTitle);
+        JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(Cytoscape.getDesktop());
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(true);
+        jTaskConfig.displayCancelButton(true);
+        TaskManager.executeTask(task, jTaskConfig);
+    }
 }
 
 class NonEditableTableModel extends DefaultTableModel {
@@ -124,11 +132,11 @@ class NonEditableTableModel extends DefaultTableModel {
     }
 
     /**
-     * Is the specified cell editable?
+     * Is the specified cell editable?  Never!
      *
      * @param row row index.
      * @param col col index.
-     * @return true or false.
+     * @return false.
      */
     public boolean isCellEditable(int row, int col) {
         return false;
