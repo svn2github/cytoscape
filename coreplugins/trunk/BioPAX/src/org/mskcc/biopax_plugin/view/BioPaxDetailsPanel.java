@@ -53,6 +53,7 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.ParagraphView;
+import javax.swing.text.html.StyleSheet;
 
 
 /**
@@ -62,17 +63,11 @@ import javax.swing.text.html.ParagraphView;
  */
 public class BioPaxDetailsPanel extends JPanel {
 	/**
-	 * Background Color.
-	 */
-	public static final Color BG_COLOR = new Color(236, 233, 216);
-
-	/**
 	 * Foreground Color.
 	 */
 	public static final Color FG_COLOR = new Color(75, 75, 75);
 	private JScrollPane scrollPane;
 	private JTextPane textPane;
-	private Font defaultFont;
 	private CyAttributes nodeAttributes;
 
 	/**
@@ -80,15 +75,15 @@ public class BioPaxDetailsPanel extends JPanel {
 	 */
 	public BioPaxDetailsPanel() {
 		JLabel label = new JLabel();
-		defaultFont = label.getFont();
 		textPane = new JTextPane();
 
 		//  Set Editor Kit that is capable of handling long words
 		MyEditorKit kit = new MyEditorKit();
 		textPane.setEditorKit(kit);
 
-		textPane.setBackground(BG_COLOR);
-		textPane.setContentType("text/html");
+        textPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        textPane.setBorder(new EmptyBorder (5,5,5,5));
+        textPane.setContentType("text/html");
 		textPane.setEditable(false);
 		textPane.addHyperlinkListener(new LaunchExternalBrowser(this));
 		resetText();
@@ -96,7 +91,6 @@ public class BioPaxDetailsPanel extends JPanel {
 		scrollPane = new JScrollPane(textPane);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBackground(BG_COLOR);
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		this.setLayout(new BorderLayout());
 		this.add(scrollPane, BorderLayout.CENTER);
@@ -113,9 +107,7 @@ public class BioPaxDetailsPanel extends JPanel {
 	public void resetText() {
 		StringBuffer temp = new StringBuffer();
 		temp.append("<HTML><BODY>");
-		temp.append("<FONT FACE=\"" + defaultFont.getFontName() + "\">");
 		temp.append("Select a node to view details...");
-		temp.append("</FONT>");
 		temp.append("</BODY></HTML>");
 		textPane.setText(temp.toString());
 	}
@@ -128,9 +120,7 @@ public class BioPaxDetailsPanel extends JPanel {
 	public void resetText(String text) {
 		StringBuffer temp = new StringBuffer();
 		temp.append("<HTML><BODY>");
-		temp.append("<FONT FACE=\"" + defaultFont.getFontName() + "\">");
 		temp.append(text);
-		temp.append("</FONT>");
 		temp.append("</BODY></HTML>");
 		textPane.setText(temp.toString());
 	}
@@ -143,77 +133,44 @@ public class BioPaxDetailsPanel extends JPanel {
 	public void showDetails(String nodeID) {
 		String stringRef;
 
-		StringBuffer buf = new StringBuffer("<HTML><BODY BGCOLOR=LIGHTGRAY>");
-		buf.append("<TABLE WIDTH=100% CELLPADDING=5 CELLSPACING=5>" + "<TR BGCOLOR='ECE9D8'><TD>");
+		StringBuffer buf = new StringBuffer("<HTML>");
 
-		// pathway membership
-		addPathwayMembership(nodeID, buf);
+        // name, shortname
+        stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_NAME);
 
-		// type
-		addType(nodeID, buf);
+        String shortName = nodeAttributes.getStringAttribute(nodeID,
+            MapNodeAttributes.BIOPAX_SHORT_NAME);
 
+        if ((shortName != null) && (shortName.length() > 0) && !stringRef.equals(shortName)) {
+            buf.append("<h2>" + shortName + "</h2>");
+        } else {
+            if (stringRef != null) {
+                buf.append("<h2>" + stringRef + "</h2>");
+            }
+        }
+
+        addType(nodeID, buf);
+
+        // organism
+        stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ORGANISM_NAME);
+        if (stringRef != null) {
+            buf.append("<h3>" + stringRef + "</h3>");
+        }
+
+        // synonyms
+        addAttributeList(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, "Synonyms:", buf);
+        
 		// cellular location
 		addAttributeList(nodeID, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
-		                 "Cellular Location(s)", buf);
-
-		// node label
-		stringRef = nodeAttributes.getStringAttribute(nodeID,
-		                                              BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-		addField("Label", stringRef, buf);
-
-		// name, shortname
-		stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_NAME);
-
-		String shortName = nodeAttributes.getStringAttribute(nodeID,
-		                                                     MapNodeAttributes.BIOPAX_SHORT_NAME);
-
-		if ((shortName != null) && (shortName.length() > 0) && !stringRef.equals(shortName)) {
-			addField("Short Name", shortName, buf);
-			addField("Name", stringRef, buf);
-		} else {
-			addField("Name", stringRef, buf);
-		}
+		                 "Cellular Location(s):", buf);
 
 		// chemical modification
 		addAttributeList(nodeID, MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST,
-		                 "Chemical Modifications", buf);
+		                 "Chemical Modifications:", buf);
 
-		// synonyms
-		addAttributeList(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, "Synonyms", buf);
+		// links
+		addLinks(nodeID, buf);
 
-		// organism
-		stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ORGANISM_NAME);
-		addField("Organism", stringRef, buf);
-
-		// comment
-		stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_COMMENT);
-		addField("Comment", stringRef, buf);
-
-		// publication references
-		addPublicationXRefs(nodeID, buf);
-
-		// unification references
-		addUnificationReferences(nodeID, buf);
-
-		// relationship references
-		addRelationshipReferences(nodeID, buf);
-
-		// availability
-		stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_AVAILABILITY);
-		addField("Availability", stringRef, buf);
-
-		// data source
-		addDataSource(nodeID, buf);
-
-		// ihop links
-		addIHOPLinks(nodeID, buf);
-
-		// identifier
-		//stringRef = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID);
-		//addField("Identifier", stringRef, buf);
-
-		// close up the table
-		buf.append("</TD></TR></TABLE>");
 		buf.append("</BODY></HTML>");
 		textPane.setText(buf.toString());
 		textPane.setCaretPosition(0);
@@ -226,112 +183,79 @@ public class BioPaxDetailsPanel extends JPanel {
 			JFrame parentFrame = (BioPaxWindow) parent;
 			parentFrame.setVisible(true);
 		}
-	}
+    }
 
-	private void addPathwayMembership(String nodeID, StringBuffer buf) {
-		String pathwayMembership = nodeAttributes.getStringAttribute(nodeID,
-		                                                             MapNodeAttributes.BIOPAX_PATHWAY_NAME);
+    private void addType(String nodeID, StringBuffer buf) {
+        String type = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE);
+        if (type != null && !type.equalsIgnoreCase("Protein")) {
+            buf.append("<h3>" + type + "</h3>");
+        }
+    }
 
-		if (pathwayMembership != null) {
-			appendHeader("Pathway", buf);
-			appendData(pathwayMembership, buf, true);
-		}
-	}
+    private void addLinks(String nodeID, StringBuffer buf) {
+		String xrefs1 = nodeAttributes.getStringAttribute(nodeID,
+            MapNodeAttributes.BIOPAX_UNIFICATION_REFERENCES);
+        String xrefs2 = nodeAttributes.getStringAttribute(nodeID,
+            MapNodeAttributes.BIOPAX_RELATIONSHIP_REFERENCES);
 
-	private void addType(String nodeID, StringBuffer buf) {
-		String type = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE);
-		addField("Type", type, buf);
-	}
-
-	private void addDataSource(String nodeID, StringBuffer buf) {
-		String dataSources = nodeAttributes.getStringAttribute(nodeID,
-		                                                       MapNodeAttributes.BIOPAX_DATA_SOURCES);
-
-		if (dataSources != null) {
-			appendHeader("Data Sources", buf);
-			appendData(dataSources, buf, true);
-		}
-	}
-
-	private void addPublicationXRefs(String nodeID, StringBuffer buf) {
-		String xrefs = nodeAttributes.getStringAttribute(nodeID,
-		                                                 MapNodeAttributes.BIOPAX_PUBLICATION_REFERENCES);
-
-		if (xrefs != null) {
-			appendHeader("Publication References", buf);
-			appendData(xrefs, buf, true);
-		}
-	}
-
-	private void addUnificationReferences(String nodeID, StringBuffer buf) {
-		String xrefs = nodeAttributes.getStringAttribute(nodeID,
-		                                                 MapNodeAttributes.BIOPAX_UNIFICATION_REFERENCES);
-
-		if (xrefs != null) {
-			appendHeader("Unification References", buf);
-			appendData(xrefs, buf, true);
-		}
-	}
-
-	private void addRelationshipReferences(String nodeID, StringBuffer buf) {
-		String xrefs = nodeAttributes.getStringAttribute(nodeID,
-		                                                 MapNodeAttributes.BIOPAX_RELATIONSHIP_REFERENCES);
-
-		if (xrefs != null) {
-			appendHeader("Relationship References", buf);
-			appendData(xrefs, buf, true);
-		}
+		if (xrefs1 != null || xrefs2 != null) {
+			appendHeader("Links:", buf);
+            buf.append("<UL>");
+            if (xrefs1 != null) {
+                appendData(xrefs1, buf, false);
+            }
+            if (xrefs2 != null) {
+                appendData(xrefs2, buf, false);
+            }
+            addIHOPLinks(nodeID, buf);
+            buf.append("</UL>");
+        }
 	}
 
 	private void addAttributeList(String nodeID, String attribute, String label, StringBuffer buf) {
-		String displayString = null;
+		StringBuffer displayString = new StringBuffer();
 		List list = nodeAttributes.getListAttribute(nodeID, attribute);
 
-		if (list != null) {
-			for (int lc = 0; lc < list.size(); lc++) {
+        if (list != null) {
+            int len = list.size();
+            boolean tooMany = false;
+            if (len > 7) {
+                len = 7;
+                tooMany = true;
+            }
+            for (int lc = 0; lc < len; lc++) {
 				String listItem = (String) list.get(lc);
 
 				if ((listItem != null) && (listItem.length() > 0)) {
-					displayString = (displayString == null) ? "" : displayString;
-
 					String plainEnglish = BioPaxPlainEnglish.getTypeInPlainEnglish(listItem);
-					displayString += ("- " + ((plainEnglish != null) ? plainEnglish : listItem));
-
-					if (lc < (list.size() - 1)) {
-						displayString += "<BR>";
-					}
+                    displayString.append("<LI> - " + ((plainEnglish != null)
+                            ? plainEnglish : listItem));
+                    displayString.append("</LI>"); 
 				}
 			}
-		}
+            if (tooMany) {
+                displayString.append("<LI>  ...</LI>");
+            }
+        }
 
-		// do we have a string to display ?
-		if (displayString != null) {
+        // do we have a string to display ?
+		if (displayString.length() > 0) {
 			appendHeader(label, buf);
-			appendData(displayString, buf, true);
-		}
-	}
-
-	private void addField(String header, String value, StringBuffer buf) {
-		if (value != null) {
-			appendHeader(header, buf);
-			appendData(value, buf, true);
-		}
+            buf.append ("<UL>");
+            appendData(displayString.toString(), buf, false);
+            buf.append ("</UL>");
+            buf.append ("<br>");
+        }
 	}
 
 	private void appendHeader(String header, StringBuffer buf) {
-		buf.append("<FONT COLOR=4B4B4B FACE=\"" + defaultFont.getFontName() + "\">");
+		buf.append("<h4>");
 		buf.append(header);
-		buf.append("</FONT>");
+		buf.append("</h4>");
 	}
 
 	private void appendData(String data, StringBuffer buf, boolean appendBr) {
-		buf.append("<TABLE WIDTH=95% CELLSPACING=3 CELLPADDING=3>");
-		buf.append("<TR BGCOLOR=#FFFFFF><TD>");
-		buf.append("<FONT FACE=\"" + defaultFont.getFontName() + "\">");
 		buf.append(data);
-		buf.append("</FONT>");
-		buf.append("</TD></TR></TABLE>");
-
 		if (appendBr) {
 			buf.append("<BR>");
 		}
@@ -339,10 +263,10 @@ public class BioPaxDetailsPanel extends JPanel {
 
 	private void addIHOPLinks(String nodeID, StringBuffer buf) {
 		String ihopLinks = nodeAttributes.getStringAttribute(nodeID,
-		                                                     MapNodeAttributes.BIOPAX_IHOP_LINKS);
+                     MapNodeAttributes.BIOPAX_IHOP_LINKS);
 
 		if (ihopLinks != null) {
-			appendData(ihopLinks, buf, true);
+			appendData(ihopLinks, buf, false);
 		}
 	}
 }
@@ -367,7 +291,23 @@ public class BioPaxDetailsPanel extends JPanel {
  * @author Joust Team.
  */
 class MyEditorKit extends HTMLEditorKit {
-	/**
+
+    public MyEditorKit() {
+        StyleSheet styleSheet = new StyleSheet();
+        styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
+                + "margin-bottom:3px}");
+        styleSheet.addRule("h3 {color: #663333; font-size: 105%; font-weight: bold;"
+                + "margin-bottom:7px}");
+        styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
+                + "padding-left: 1em;	text-indent: -1em;}");
+        styleSheet.addRule("h4 {color: #66333; font-weight: bold; margin-bottom:3px;}");
+        styleSheet.addRule("b {background-color: #FFFF00;}");
+        styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
+        styleSheet.addRule(".excerpt {font-size: 90%;}");
+        this.setStyleSheet(styleSheet);
+    }
+
+    /**
 	 * Gets the ViewFactor Object.
 	 *
 	 * @return View Factor Object.
