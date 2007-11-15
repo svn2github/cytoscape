@@ -110,7 +110,7 @@ public class SelectPhysicalEntity {
                 }
             }
 
-            //  Temporarily commented out
+            //  Temporarily removed comments.
             //java.util.List<String> commentList = searchHit.getComment();
             //if (commentList != null) {
             //    html.append("<BR><B>Description:</B>");
@@ -139,6 +139,7 @@ public class SelectPhysicalEntity {
         RecordList recordList = parentRecordsMap.get(searchHit.getPrimaryId());
         if (recordList != null) {
             interactionBundleModel.setRecordList(recordList);
+            interactionBundleModel.setPhysicalEntityName(searchHit.getName());
         }
     }
 
