@@ -118,7 +118,7 @@
 			<fileset dir="${intactClient.root.dir}/images" />
 		</copy>
 
-		<copy todir="${intactClient.classes.dir}/edu/ucsd/bioeng/coreplugin/intactClient" file="${intactClient.manifest.dir}/plugin.props" />
+		<copy todir="${intactClient.classes.dir}/edu/ucsd/bioeng/idekerlab/intactclient" file="${intactClient.manifest.dir}/plugin.props" />
 
 		<unjar dest="${intactClient.classes.dir}">
 			<fileset dir="${intactClient.lib.dir}">
