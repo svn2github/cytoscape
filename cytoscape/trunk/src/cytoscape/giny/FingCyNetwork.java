@@ -51,7 +51,11 @@ import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.RootGraph;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
+
+import javax.swing.event.SwingPropertyChangeSupport;
 
 
 /**
@@ -128,9 +132,16 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 
 	/**
 	 * Can Change
+	 * Throws a PropertyChangeEvent if the title has changed with a CyNetworkTitleChange object that contains the network id and the name.
 	 */
 	public void setTitle(String new_id) {
-		title = new_id;
+		if (title == null) {
+			title = new_id;
+		} else if (!title.equals(new_id)) { // new title is different from the old one
+			CyNetworkTitleChange OldTitle = new CyNetworkTitleChange(this.getIdentifier(), title);
+			title = new_id;
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_TITLE_MODIFIED, OldTitle, new CyNetworkTitleChange(this.getIdentifier(), new_id) );
+		}
 	}
 
 	/**
@@ -697,4 +708,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 
 		return true;
 	}
+
+
 }

@@ -196,6 +196,8 @@ public abstract class Cytoscape {
 	 */
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 
+	public static final String NETWORK_TITLE_MODIFIED = "NETWORK_TITLE_MODIFIED";
+	
 	/**
 	 *
 	 */
