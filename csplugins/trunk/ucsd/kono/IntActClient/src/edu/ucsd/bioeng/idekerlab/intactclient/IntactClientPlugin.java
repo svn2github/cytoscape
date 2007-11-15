@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.idekerlab.intactclient;
 
 import cytoscape.data.webservice.WebServiceClientManager;
@@ -42,8 +40,11 @@ import cytoscape.plugin.CytoscapePlugin;
 
 
 /**
- * Intact Web Service Client.<br>
- * 
+ * Intact Web Service Client Plugin.<br>
+ *
+ * @author kono
+ * @version 0.5
+ * @since Cytoscape 2.6
  */
 public class IntactClientPlugin extends CytoscapePlugin {
 	/**
