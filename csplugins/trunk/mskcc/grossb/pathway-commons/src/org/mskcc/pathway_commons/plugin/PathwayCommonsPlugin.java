@@ -73,7 +73,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         final CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);
 
-        PathwayCommonsWebApi webApi = new PathwayCommonsWebApi();
+        PathwayCommonsWebApi webApi = PathwayCommonsWebApi.getInstance();
         final PathwayCommonsSearchPanel pcPanel = new PathwayCommonsSearchPanel(webApi);
 
         SwingUtilities.invokeLater(new Runnable() {
