@@ -10,11 +10,13 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.util.EncodingUtil;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.mskcc.pathway_commons.http.HTTPConnectionHandler;
 
 import java.io.*;
 import java.net.*;
 
 import cytoscape.task.TaskMonitor;
+import cytoscape.util.ProxyHandler;
 
 /**
  * Utility Class for Connecting to the cPath Web Service API.
@@ -252,6 +254,7 @@ public class CPathProtocol {
 
             // Create an instance of HttpClient.
             HttpClient client = new HttpClient();
+            setProxyInfo(client);
 
             // Create a method instance.
             method = new GetMethod(liveUrl);
@@ -304,6 +307,40 @@ public class CPathProtocol {
             throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
         } catch (JDOMException e) {
             throw new CPathException(CPathException.ERROR_XML_PARSING, e);
+        }
+    }
+
+    /**
+     * Sets Proxy Information (if set).
+     */
+    private void setProxyInfo(HttpClient client) {
+        Proxy proxyServer = ProxyHandler.getProxyServer();
+
+        //  The java.net.Proxy object does not provide getters for host and port.
+        //  So, we have to hack it by using the toString() method.
+        
+        //  Note to self for future reference: I was able to test all this code
+        //  by downloading and installing Privoxy, a local HTTP proxy,
+        //  available at:  http://www.privoxy.org/.  Once it was running, I used the
+        //  following props in ~/.cytoscape/cytoscape.props:
+        //  proxy.server=127.0.0.1
+        //  proxy.server.port=8118
+        //  proxy.server.type=HTTP
+        if (proxyServer != null) {
+            String proxyAddress = proxyServer.toString();
+            //System.out.println(proxyAddress);
+            String[] addressComponents = proxyAddress.split("@");
+            if (addressComponents.length == 2) {
+                String parts[] = addressComponents[1].split(":");
+                if (parts.length == 2) {
+                    String host = parts[0].trim();
+                    host = host.replaceAll("/", "");
+                    String port = parts[1].trim();
+                    //System.out.println ("host: " + host);
+                    //System.out.println("port:  " + port);
+                    client.getHostConfiguration().setProxy(host, Integer.parseInt(port));
+                }
+            }
         }
     }
 
