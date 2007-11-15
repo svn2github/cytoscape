@@ -177,7 +177,6 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 
 		// Loop through the result and extract the interactions.
 		for (IntActBinaryInteraction bin : binaryInteractions) {
-			System.out.println(bin.toString());
 
 			n1 = Cytoscape.getCyNode(extractNodeEntry(bin.getInteractorA()), true);
 			n2 = Cytoscape.getCyNode(extractNodeEntry(bin.getInteractorB()), true);
