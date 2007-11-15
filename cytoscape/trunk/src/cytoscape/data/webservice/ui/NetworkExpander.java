@@ -104,7 +104,6 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		System.out.println("@@@@@@@@@GOT EVENT------------------> " + evt.getPropertyName());
 		
 		Object resultObj = evt.getNewValue();
 		if(evt.getPropertyName().equals("SEARCH_RESULT") && ((DatabaseSearchResult)resultObj).getNextMove().equals(WSEventType.EXPAND_NETWORK)) {
@@ -118,7 +117,12 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 				);
 				if (value == JOptionPane.YES_OPTION) {
 					CyWebServiceEvent evt2 = new CyWebServiceEvent(evt.getOldValue().toString(), WSEventType.EXPAND_NETWORK, ((DatabaseSearchResult)resultObj).getResult()); 
-					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
+					try {
+						WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED) && evt.getSource() instanceof NetworkImportWebServiceClient){
 			
@@ -179,7 +183,12 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 			taskMonitor.setStatus("Loading neighbours...");
 			taskMonitor.setPercentCompleted(-1);
 			// this even will load the file
-			WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
+			try {
+				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
+			} catch (Exception e) {
+				taskMonitor.setException(e, "Failed to load neighbours.");
+				return;
+			}
 			taskMonitor.setPercentCompleted(100);
 			
 			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetwork().getIdentifier());

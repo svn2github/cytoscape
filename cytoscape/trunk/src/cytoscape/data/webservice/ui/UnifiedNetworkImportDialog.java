@@ -385,7 +385,12 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 			taskMonitor.setStatus("Loading interactions from " + serviceName);
 			taskMonitor.setPercentCompleted(-1);
 			// this even will load the file
-			WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
+			try {
+				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
+			} catch (Exception e) {
+				taskMonitor.setException(e, "Failed to load network from web service.");
+				return;
+			}
 			taskMonitor.setPercentCompleted(100);
 			taskMonitor.setStatus("Network successfully loaded.");
 		}
@@ -421,7 +426,12 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 				                                               WSEventType.IMPORT_NETWORK,
 				                                               ((DatabaseSearchResult) resultObject)
 				                                               .getResult());
-				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
+				try {
+					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			String[] message = { "Network loaded.", "Please enter name for new network:" };

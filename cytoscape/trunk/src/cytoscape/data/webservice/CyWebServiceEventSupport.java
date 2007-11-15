@@ -74,8 +74,9 @@ public class CyWebServiceEventSupport {
 	 *  DOCUMENT ME!
 	 *
 	 * @param evt DOCUMENT ME!
+	 * @throws Exception 
 	 */
-	public void fireCyWebServiceEvent(CyWebServiceEvent evt) {
+	public void fireCyWebServiceEvent(CyWebServiceEvent evt) throws Exception {
 		Vector<CyWebServiceEventListener> elements = (Vector<CyWebServiceEventListener>) listenerVec
 		                                                                        .clone();
 
