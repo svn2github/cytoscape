@@ -19,9 +19,27 @@ import cytoscape.task.TaskMonitor;
  * @author Ethan Cerami
  */
 public class PathwayCommonsWebApi {
-    private ArrayList<PathwayCommonsWebApiListener> listeners =
+    private static ArrayList<PathwayCommonsWebApiListener> listeners =
             new ArrayList<PathwayCommonsWebApiListener>();
     private volatile CPathProtocol protocol;
+    private static PathwayCommonsWebApi webApi;
+
+    /**
+     * Gets Singelton instance of Pathway Commons Web API.
+     * @return
+     */
+    public static PathwayCommonsWebApi getInstance() {
+        if (webApi == null) {
+            webApi = new PathwayCommonsWebApi();
+        }
+        return webApi;
+    }
+
+    /**
+     * Private Constructor.
+     */
+    private PathwayCommonsWebApi() {
+    }
 
     /**
      * Searches Physical Entities in Pathway Commons.
@@ -120,6 +138,28 @@ public class PathwayCommonsWebApi {
             listener.requestCompletedForParentSummaries(primaryId, summaryResponse);
         }
         return summaryResponse;
+    }
+
+    /**
+     * Gets One or more records by Primary ID.
+     * @param ids               Array of Primary IDs.
+     * @param taskMonitor       Task Monitor Object.
+     * @return  BioPAX XML String.
+     * @throws CPathException       CPath Error.
+     * @throws EmptySetException    Empty Set Error.
+     */
+    public String getRecordsByIds(long[] ids, TaskMonitor taskMonitor) throws
+        CPathException, EmptySetException {
+        protocol = new CPathProtocol();
+        protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
+        protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
+        StringBuffer q = new StringBuffer();
+        for (int i=0; i<ids.length; i++) {
+            q.append (Long.toString(ids[i])+",");
+        }
+        protocol.setQuery(q.toString());
+        String xml = protocol.connect(taskMonitor);
+        return xml;
     }
 
     /**
