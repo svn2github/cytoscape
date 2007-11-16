@@ -26,6 +26,7 @@ import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.layout.*;
 import cytoscape.CyNetwork;
+import cytoscape.CyNetworkTitleChange;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeVersion;
 
@@ -38,7 +39,7 @@ import java.beans.PropertyChangeEvent;
 public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListener, GaggleConnectionListener,
         GooseListChangedListener {
     private boolean registered;
-    private RenameThread renameGoose;
+//    private RenameThread renameGoose;
 
     private CyGoose nonNetworkGoose;
     private CyGoose defaultGoose;
@@ -63,10 +64,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         if (pluginInitialized) {
             return;
         }
-        System.out.println("!!!!!!!!!!!!!!!!!~~~~~~~~~~~~");
-//		renameGoose = new RenameThread();
-
-
         Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
         ORIGINAL_GOOSE_NAME = "Cytoscape" + " v." + CytoscapeVersion.version;
@@ -88,7 +85,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
             gDialog.displayMessage("Connected To Gaggle Boss");
 
             registered = true;
-//			renameGoose.run();
         }
         catch (Exception E) { // TODO add error message text area to goose panel and stop popping error box up
             registered = false;
@@ -160,13 +156,33 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         Cytoscape.getDesktop().setTitle(defaultGoose.getName());
     }
 
-    // Network created: create goose  Network destroyed: remove goose
+    // Network created: create goose  Network destroyed: remove goose Network title changed: change the goose name??
     public void propertyChange(PropertyChangeEvent Event) {
         // nothing has been registered, don't try to handle events
         if (!registered) return;
 
-        // register a goose
-        if (Event.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+        if (Event.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) { // change the goose name
+        	System.out.println("===== EVENT " + Event.getPropertyName() + "======");
+        	CyNetworkTitleChange OldTitle = (CyNetworkTitleChange) Event.getOldValue();
+        	CyNetworkTitleChange NewTitle = (CyNetworkTitleChange) Event.getNewValue();
+        	
+        	// this should always be true but if somehow it ain't....
+        	if (!OldTitle.getNetworkIdentifier().equals(NewTitle.getNetworkIdentifier())) {
+        		System.err.println("ERROR: " + Cytoscape.NETWORK_TITLE_MODIFIED + " event does not refer to the same networks!");
+        		return;
+        	} else {
+        		CyGoose goose = this.networkGeese.get(NewTitle.getNetworkIdentifier());
+        		if (goose != null && !goose.getName().equals(NewTitle.getNetworkTitle())) {
+        			try {
+        				String NewGooseName = this.gaggleBoss.renameGoose(goose.getName(), NewTitle.getNetworkTitle());
+        				Cytoscape.getNetwork(goose.getNetworkId()).setTitle(NewGooseName);
+        			} catch (RemoteException re) {
+        				re.printStackTrace();
+        			}
+        		}
+        	}
+        	
+        } else if (Event.getPropertyName() == Cytoscape.NETWORK_CREATED) { // register a goose
             String netId = Event.getNewValue().toString();
             CyNetwork net = Cytoscape.getNetwork(netId);
 
@@ -179,11 +195,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 GagglePlugin.showDialogBox("Failed to create a new Goose for network " + net.getTitle(), "Error", JOptionPane.ERROR_MESSAGE);
                 E.printStackTrace();
             }
-
-
-        }
-        // remove a goose
-        if (Event.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+        } else if (Event.getPropertyName() == Cytoscape.NETWORK_DESTROYED) { // remove a goose
             String netId = Event.getNewValue().toString();
             CyNetwork net = Cytoscape.getNetwork(netId);
 
@@ -200,12 +212,10 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 E.printStackTrace();
             }
         }
-
     }
 
-
     public void onCytoscapeExit() {
-        System.out.println("in onCytoscapeExit");
+        System.out.println("GagglePlugin in onCytoscapeExit()");
 
         for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
             String key = it.next();
@@ -336,7 +346,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
     private CyGoose createNewGoose(CyNetwork Network) throws RemoteException {
         System.out.println("initial network name: " + Network.getTitle());
-
         CyGoose Goose = new CyGoose(gDialog, gaggleBoss);
         Goose.setNetworkId(Network.getIdentifier());
         Goose.setName(Network.getTitle());
@@ -355,74 +364,9 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         System.out.println("goose name after registration: " + Goose.getName());
         Network.setTitle(Goose.getName());
         gaggleBoss = connector.getBoss();
-/*
-            final String networkId = Network.getIdentifier();
-            javax.swing.SwingUtilities.invokeLater(new Runnable()
-                {
-                public void run()
-                    {
-                        System.out.println("called from createNewGoose");
-                        System.out.println("in thread, network id = " + networkId);
-                        System.out.println("is desktop null? " + (Cytoscape.getDesktop() == null));
-                        System.out.println("is networkpanel null? " + (Cytoscape.getDesktop().getNetworkPanel() == null));
-                        System.out.println("is network null? " + (Cytoscape.getNetwork(networkId)== null));
-                Cytoscape.getDesktop().getNetworkPanel().updateTitle(Cytoscape.getNetwork(networkId));
-                }
-            });
-*/
 
         //registerGoose(Goose);
         return Goose;
-    }
-
-
-    private void checkNameChange() {
-        System.out.println("checkNameChange()");
-
-        Iterator<CyNetwork> NetIter = Cytoscape.getNetworkSet().iterator();
-        while (NetIter.hasNext()) {
-            CyNetwork Network = NetIter.next();
-            if (networkGeese.containsKey(Network.getIdentifier())) {
-                // check the name of the goose somehow
-                CyGoose Goose = networkGeese.get(Network.getIdentifier());
-                System.out.println("*** Goose:" + Goose.getName() + " Network:" + Network.getTitle());
-
-                // Network name has changed
-                //if (!Goose.getName().matches("^"+Network.getTitle()+"\\(" + Network.getIdentifier() + "\\)(-\\d+)?"))
-                if (!Goose.getName().matches("^" + Network.getTitle() + "(-\\d+)?")) {
-                    System.out.println("Renaming goose, net id: " + Network.getIdentifier());
-                    try {
-//						Goose.setName( gaggleBoss.renameGoose(Goose.getName(), createGooseName(Network.getTitle()))); 
-//						MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
-//						networkGeese.put(Network.getIdentifier(), Goose);
-
-                        // HACK!!! Delete goose, re-register
-                        gaggleBoss.unregister(Goose.getName());
-                        gDialog.getGooseChooser().removeItem(Goose.getName());
-                        UnicastRemoteObject.unexportObject(Goose, true);
-
-                        networkGeese.put(Network.getIdentifier(), createNewGoose(Network));
-                        //todo dan is this right?
-                        MiscUtil.updateGooseChooser(gDialog.getGooseChooser(), "ADummyString", Goose.getActiveGooseNames());
-                    }
-                    catch (RemoteException re) {
-                        re.printStackTrace();
-                    }
-                }
-            } else {
-                try {
-                    CyGoose NewGoose = this.createNewGoose(Network);
-                    networkGeese.put(Network.getIdentifier(), NewGoose);
-                    //todo dan is this right
-                    MiscUtil.updateGooseChooser(gDialog.getGooseChooser(), "ADummyString", NewGoose.getActiveGooseNames());
-                }
-                catch (RemoteException E) {
-                    GagglePlugin.showDialogBox("Failed to create a new Goose for network " + Network.getTitle(), "Error", JOptionPane.ERROR_MESSAGE);
-                    E.printStackTrace();
-                }
-
-            }
-        }
     }
 
 
@@ -508,83 +452,5 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, title, msgType);
     }
 
-    private class RenameThread extends Thread {
-        RenameRunnable rr;
-
-        public RenameThread() {
-            rr = new RenameRunnable();
-        }
-
-        public void run() {
-            while (registered) {
-                rr.run();
-                try {
-                    this.wait(1000);
-                }
-                catch (Exception E) {
-                    E.printStackTrace();
-                    System.exit(0);
-                }
-            }
-        }
-    }
-
-    private class RenameRunnable implements Runnable {
-        public void run() {
-            checkNameChange();
-        }
-
-
-        private void checkNameChange() {
-            System.out.println("checkNameChange()");
-
-            Iterator<CyNetwork> NetIter = Cytoscape.getNetworkSet().iterator();
-            while (NetIter.hasNext()) {
-                CyNetwork Network = NetIter.next();
-                if (networkGeese.containsKey(Network.getIdentifier())) {
-                    // check the name of the goose somehow
-                    CyGoose Goose = networkGeese.get(Network.getIdentifier());
-                    System.out.println("*** Goose:" + Goose.getName() + " Network:" + Network.getTitle());
-
-                    // Network name has changed
-                    //if (!Goose.getName().matches("^"+Network.getTitle()+"\\(" + Network.getIdentifier() + "\\)(-\\d+)?"))
-                    if (!Goose.getName().matches("^" + Network.getTitle() + "(-\\d+)?")) {
-                        System.out.println("Renaming goose, net id: " + Network.getIdentifier());
-                        try {
-//							Goose.setName( gaggleBoss.renameGoose(Goose.getName(), createGooseName(Network.getTitle()))); 
-//							MiscUtil.updateGooseChooser(gaggleBoss, gDialog.getGooseBox(), null, null);
-//							networkGeese.put(Network.getIdentifier(), Goose);
-
-                            // HACK!!! Delete goose, re-register
-                            gaggleBoss.unregister(Goose.getName());
-                            gDialog.getGooseChooser().removeItem(Goose.getName());
-                            //todo dan still need this? UnicastRemoteObject.unexportObject(Goose, true);
-
-                            networkGeese.put(Network.getIdentifier(), createNewGoose(Network));
-                            // todo dan is this right
-                            MiscUtil.updateGooseChooser(gDialog.getGooseChooser(), "ADummyString", Goose.getActiveGooseNames());
-                        }
-                        catch (RemoteException re) {
-                            re.printStackTrace();
-                        }
-                    }
-                } else {
-                    try {
-                        CyGoose NewGoose = createNewGoose(Network);
-                        networkGeese.put(Network.getIdentifier(), NewGoose);
-                        // todo dan is this right?
-                        MiscUtil.updateGooseChooser(gDialog.getGooseChooser(), "ADummyString", NewGoose.getActiveGooseNames());
-                    }
-                    catch (RemoteException E) {
-                        GagglePlugin.showDialogBox("Failed to create a new Goose for network " + Network.getTitle(), "Error", JOptionPane.ERROR_MESSAGE);
-                        E.printStackTrace();
-                    }
-
-                }
-            }
-        }
-
-
-    }
 
 }
