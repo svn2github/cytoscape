@@ -1,6 +1,5 @@
 package cytoscape.filters.view;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -13,12 +12,15 @@ import javax.swing.JOptionPane;
 public class EditRangeDialog extends JDialog implements ActionListener {
 
 	private Vector<String> boundValueVect;
+	private String dataType = "int";
 	
     /** Creates new form EditRangeDialog */
-    public EditRangeDialog(Component parent, boolean modal, String pCtrlAttribute, Vector<String> pBoundsVect) {
-        //super(parent, modal);
+    public EditRangeDialog(javax.swing.JFrame parent, boolean modal, String pCtrlAttribute, Vector<String> pBoundsVect, String pDataType) {
+        super(parent, modal);
         initComponents();
         setTitle("Edit range for "+ pCtrlAttribute);
+        
+        dataType = pDataType;
         
         String message = lbPleaseEnterBoundValues.getText()+ " (" + pBoundsVect.elementAt(2).toString()+ "~" +pBoundsVect.elementAt(3).toString() + "):";
         lbPleaseEnterBoundValues.setText(message);
@@ -42,9 +44,32 @@ public class EditRangeDialog extends JDialog implements ActionListener {
     	// User inputs must be (1) numbers (2) lowBound < highBound 
     	String lowBoundStr = tfLowBound.getText().trim();
     	String highBoundStr = tfHighBound.getText().trim();
-    	
 
-    	
+		if (dataType.equalsIgnoreCase("int")) {			
+	    	try {
+	    		int lowBound = Integer.parseInt(lowBoundStr);
+	    		int highBound = Integer.parseInt(highBoundStr);
+	    		if (lowBound > highBound) {
+	    			return false;
+	    		}	 
+	    	} 
+	    	catch (NumberFormatException nfe) {
+	    			return false;
+	    	}
+		}
+		else {
+	    	try {
+	    		double lowBound = Double.parseDouble(lowBoundStr);
+	    		double highBound = Double.parseDouble(highBoundStr);
+	    		if (lowBound > highBound) {
+	    			return false;
+	    		}	 	    		
+	    	} 
+	    	catch (NumberFormatException nfe) {
+	    			return false;
+	    	}
+		}
+		    	
     	return true;
     }
     
@@ -68,8 +93,9 @@ public class EditRangeDialog extends JDialog implements ActionListener {
 				boundValueVect.set(0, tfLowBound.getText().trim());
 				boundValueVect.set(1, tfHighBound.getText().trim());
 			} 
-			//else if (_btn == btnCancel) {
-			//}
+			else if (_btn == btnCancel) {
+				// do nothing
+			}
 		}
 		this.dispose();
 	}
@@ -156,7 +182,7 @@ public class EditRangeDialog extends JDialog implements ActionListener {
             	_boundsVect.add("-0.1");
             	_boundsVect.add("2.0");
             	
-            	EditRangeDialog theDialog =new EditRangeDialog(new javax.swing.JFrame(), true, "Degree", _boundsVect);
+            	EditRangeDialog theDialog =new EditRangeDialog(new javax.swing.JFrame(), true, "Degree", _boundsVect, "int");
             	
                 theDialog.setVisible(true);
             }
@@ -173,8 +199,4 @@ public class EditRangeDialog extends JDialog implements ActionListener {
     private javax.swing.JTextField tfHighBound;
     private javax.swing.JTextField tfLowBound;
     // End of variables declaration                   
-
-	
-	
-	
 }
