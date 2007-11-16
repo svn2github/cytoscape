@@ -23,6 +23,7 @@ import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.Relation;
 import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.FilterPlugin;
+import cytoscape.filters.view.EditRangeDialog;
 
 import java.util.List;
 import java.util.Vector;
@@ -110,73 +111,16 @@ public class FilterSettingPanel extends JPanel {
 	
 	private void initCustomSetting() {
 		List<CyFilter> theCustomFilterList = theFilter.getChildren();
-		boolean isLast = false;
+
 		for (int i=0; i <theCustomFilterList.size();i++) {
 			addWidgetRow((CyFilter)theCustomFilterList.get(i),i*2);
 		}	
 		addBlankLabelToCustomPanel();
 		
-		//Restore initial values for RangerSliders 
-		//Note: rangerSlider can not be set to their initial value until they are visible on screen
-		
-		//restoreRangeSliderModel();
 		this.validate();
 		this.repaint();
 	}
 	
-	/*
-	private void restoreRangeSliderModel(){
-		List<CyFilter> theFilterList = theFilter.getChildren();
-		if (theFilterList == null)
-			return;
-
-		for (int i=0; i<theFilterList.size(); i++ ) {
-			
-			if (theFilterList.get(i) instanceof NumericFilter) {
-				if (theFilterList.get(i) == null) {
-					return;
-				}
-				
-				NumericFilter theNumericFilter = (NumericFilter) theFilterList.get(i);
-				
-				int componentIndex = i*3 +1;
-				JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(componentIndex);
-
-				NumberRangeModel rangeModel = (NumberRangeModel) theSlider.getModel();
-								
-				final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-				
-				currentNetwork = Cytoscape.getCurrentNetwork();
-				
-				int indexType = theNumericFilter.getIndexType();
-				quickFind.reindexNetwork(currentNetwork, indexType, 
-						theNumericFilter.getControllingAttribute().substring(5), new TaskMonitorBase());
-
-				GenericIndex currentIndex = quickFind.getIndex(currentNetwork);
-
-				//System.out.println("FilterSettingPanel.restoreRangeSliderModel()...");
-				//System.out.println("\tInstance of NumericFilter: componentIndex = "+ componentIndex + "\n");
-				try {
-					NumberIndex numberIndex = (NumberIndex) currentIndex;
-					
-					rangeModel.setMinValue(numberIndex.getMinimumValue());
-					rangeModel.setMaxValue(numberIndex.getMaximumValue());
-
-					//System.out.println("\t here 1: " + theSlider.isShowing());
-
-					if (theSlider.isShowing()) {
-						rangeModel.setLowValue(theNumericFilter.getLowBound());
-						rangeModel.setHighValue(theNumericFilter.getHighBound());									
-					}
-
-				}
-				catch (Exception e) {					
-					System.out.println("Exception caught: The slider is shown on screen: " + theSlider.isShowing());
-				}			
-			}// for loop
-		}
-	}
-	*/
 	
 	private boolean hasSuchAttribute(String pAttribute, int pType) {
 		int attributeType = CyAttributes.TYPE_UNDEFINED;
@@ -263,11 +207,16 @@ public class FilterSettingPanel extends JPanel {
 	
 	
 	private JRangeSliderExtended getRangerSlider(NumericFilter pFilter) {
-		//System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
+		System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
+		
 		NumberIndex theIndex = createNumberIndex(pFilter);
 
 		if (theIndex != null) {
+			System.out.println("theIndex != null");
 			pFilter.setIndex(theIndex);
+		}
+		else {
+			System.out.println("theIndex == null");
 		}
 		
 		NumberRangeModel rangeModel = null;
@@ -280,23 +229,40 @@ public class FilterSettingPanel extends JPanel {
 			//System.out.println("\tMin = " + theIndex.getMinimumValue());
 			//System.out.println("\tMax = " + theIndex.getMaximumValue());
 
+			int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
+			//Initialize the search values, lowBound and highBound	
+
 			if (pFilter.getLowBound() == null) {
 				pFilter.setLowBound(theIndex.getMinimumValue());
 			}
 			if (pFilter.getHighBound() == null) {
 				pFilter.setHighBound(theIndex.getMaximumValue());
 			}
-
-			//Initialize the search values, lowValue and highValue	
-			int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
+			
 			if (dataType == CyAttributes.TYPE_FLOATING) {
-				//System.out.println("\ndataType = Double");
+				System.out.println("\ndataType = FLOATING");
 								
-				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
-						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
+				
+				//System.out.println(pFilter.getLowBound());
+				
+				Double lowB = (Double)pFilter.getLowBound();
+				Double highB = (Double)pFilter.getHighBound();
+				Double min = (Double)theIndex.getMinimumValue();
+				Double max = (Double)theIndex.getMaximumValue();
+
+				rangeModel = new NumberRangeModel(lowB.doubleValue(),highB.doubleValue(),min.doubleValue(),max.doubleValue());
+				
+				System.out.println(rangeModel.getLowValue());
+				System.out.println(rangeModel.getHighValue());
+				System.out.println(rangeModel.getMinValue());
+				System.out.println(rangeModel.getMaxValue());
+					
+				
+				//rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
+				//		theIndex.getMinimumValue(),theIndex.getMaximumValue());		
 			}
 			else if (dataType == CyAttributes.TYPE_INTEGER) {
-				//System.out.println("\ndataType = INTEGER");
+				System.out.println("\ndataType = INTEGER");
 				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
 						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
 			}
@@ -378,7 +344,34 @@ public class FilterSettingPanel extends JPanel {
 		{
 			if (pMouseEvent.getClickCount() >= 2)
 			{
-				System.out.println("User double clickeded on rangeSlider");	
+				Object srcObj = pMouseEvent.getSource();
+				if (srcObj instanceof JRangeSliderExtended) {
+					JRangeSliderExtended theSlider = (JRangeSliderExtended) srcObj; 
+					NumberRangeModel model = (NumberRangeModel) theSlider.getModel();
+					
+					Vector<String> boundVect = new Vector<String>();
+					boundVect.add((String)model.getLowValue().toString());
+					boundVect.add(model.getHighValue().toString());
+					boundVect.add(model.getMinValue().toString());
+					boundVect.add(model.getMaxValue().toString());
+										
+					if (model.getLowValue().getClass().getName().equalsIgnoreCase("java.lang.Integer")) {
+		            	EditRangeDialog theDialog = new EditRangeDialog(new javax.swing.JFrame(), true, theSlider.getName(), boundVect, "int");
+		            	theDialog.setLocation(theSlider.getLocationOnScreen());
+		            	theDialog.setVisible(true);
+		                //if lowBound < min, set it to min
+		                //if highBound > max, set it to max
+		            	// ????
+
+						model.setValueRange(new Integer(boundVect.elementAt(0)),new Integer(boundVect.elementAt(1)), (Integer) model.getMinValue(), (Integer) model.getMaxValue());						
+					}
+					else {
+		            	EditRangeDialog theDialog = new EditRangeDialog(new javax.swing.JFrame(), true, theSlider.getName(), boundVect, "double");												
+		            	theDialog.setLocation(theSlider.getLocationOnScreen());
+		            	theDialog.setVisible(true);
+		            	model.setValueRange(new Double(boundVect.elementAt(0)),new Double(boundVect.elementAt(1)), (Double) model.getMinValue(), (Double) model.getMaxValue());
+					}	                
+				}
 			}
 		}
 	}
@@ -474,13 +467,6 @@ public class FilterSettingPanel extends JPanel {
 			FilterUtil.doSelection(theFilter);
 		}
 	}
-	
-	// select node/edge on current network based on the filter defined
-	//private void doSelection() {
-		//System.out.println("Entering FilterSettingPanel.doSelection()...");		
-	//	theFilter.doSelection();
-	//}
-
 	
 	
 	private void addWidgetRow(CyFilter pFilter, int pGridY) {
