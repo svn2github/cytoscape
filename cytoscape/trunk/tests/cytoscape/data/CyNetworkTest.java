@@ -36,20 +36,26 @@
 */
 package cytoscape.data;
 
+import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.CyNetworkTitleChange;
 import cytoscape.CyNetworkAdapter;
 import cytoscape.CyNetworkEvent;
 import cytoscape.CyNetworkListener;
 
-import cytoscape.data.ExpressionData;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
-import giny.model.*;
+import junit.framework.TestCase;
 
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.*;
+//import cytoscape.data.ExpressionData;
+//
+//import giny.model.*;
+//
+//
+//import java.io.*;
+//
+//import java.util.*;
 
 
 /**
@@ -95,17 +101,17 @@ public class CyNetworkTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testBasic() throws Exception {
-	}
-
-	{
-		//     System.out.println ("testBasic");
-
-		//     CyNetwork defaultNetwork = Cytoscape.createNetwork();
-		//     assertTrue( defaultNetwork.getExpressionData() == null );
-
-		//     ExpressionData startData = new ExpressionData("testData/gal1.10x20.mRNA");
-		//     CyNetwork network = new CyNetwork(rootGraph, nodeAttributes,
-		//                                       edgeAttributes, startData);
+	
+		     CyNetwork defaultNetwork = Cytoscape.createNetwork("My Network");
+		     assertNotNull(defaultNetwork);
+		     assertEquals(defaultNetwork.getIdentifier(), "1");
+		     assertEquals(defaultNetwork.getNodeCount(), 0);
+		     assertEquals(defaultNetwork.getEdgeCount(), 0);
+		     assertNotNull(defaultNetwork.getRootGraph());
+		     
+//		     ExpressionData startData = new ExpressionData("testData/gal1.10x20.mRNA");
+//		     CyNetwork network = new CyNetwork(rootGraph, nodeAttributes,
+//		                                       edgeAttributes, startData);
 
 		//     assertTrue( network.getRootGraph() == rootGraph );
 		//     assertTrue( network.getGraphPerspective() != null );
@@ -208,15 +214,16 @@ public class CyNetworkTest extends TestCase {
 		//     assertTrue( nullEdgeAttributes.getCanonicalName(e2).equals("YBL026W (pp) YOR127C") );
 	}
 
+	
+	
+	
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testListeners() throws Exception {
-	}
-
-	{
 		//     String callerID = "CyNetworkTest.testListeners";
 		//     CyNetwork network = new CyNetwork();
 		//     network.addCyNetworkListener(listener);
@@ -268,12 +275,33 @@ public class CyNetworkTest extends TestCase {
 		//     assertTrue(stillThere == false);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 */
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(new TestSuite(CyNetworkTest.class));
+	public void testSetTitleEvent() {
+		String InitialTitle = "My Network";
+		String NewTitle = "Foobar";
+		CyNetwork network = Cytoscape.createNetwork(InitialTitle);
+		TitleListener tl =  new TitleListener();
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(tl);
+		network.setTitle(NewTitle);
+		PropertyChangeEvent event = tl.getEvent();
+		assertEquals(event.getPropertyName(), Cytoscape.NETWORK_TITLE_MODIFIED);
+		assertEquals( ((CyNetworkTitleChange)event.getOldValue()).getNetworkIdentifier(), 
+					  ((CyNetworkTitleChange)event.getNewValue()).getNetworkIdentifier());
+		assertEquals( ((CyNetworkTitleChange)event.getOldValue()).getNetworkTitle(), InitialTitle);
+		assertEquals(  ((CyNetworkTitleChange)event.getNewValue()).getNetworkTitle(), NewTitle);
+
 	}
+	
+	// use only for testSetTitleEvent()
+	public class TitleListener implements PropertyChangeListener {
+		private PropertyChangeEvent pcEvent;
+		
+		public void propertyChange(PropertyChangeEvent event) {
+			pcEvent = event;
+		}
+		
+		public PropertyChangeEvent getEvent() {
+			return pcEvent;
+		}
+	}
+	
 }
