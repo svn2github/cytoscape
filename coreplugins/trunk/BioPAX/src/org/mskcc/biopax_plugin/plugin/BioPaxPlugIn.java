@@ -53,7 +53,7 @@ public class BioPaxPlugIn extends CytoscapePlugin {
 	/**
 	 * Version Minor Number.
 	 */
-	public static final int VERSION_MINOR_NUM = 5;
+	public static final int VERSION_MINOR_NUM = 6;
 
     /**
      * Name of Plugin.
