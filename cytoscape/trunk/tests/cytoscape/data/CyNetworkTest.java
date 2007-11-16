@@ -104,7 +104,7 @@ public class CyNetworkTest extends TestCase {
 	
 		     CyNetwork defaultNetwork = Cytoscape.createNetwork("My Network");
 		     assertNotNull(defaultNetwork);
-		     assertEquals(defaultNetwork.getIdentifier(), "1");
+		     assertNotNull(defaultNetwork.getIdentifier());
 		     assertEquals(defaultNetwork.getNodeCount(), 0);
 		     assertEquals(defaultNetwork.getEdgeCount(), 0);
 		     assertNotNull(defaultNetwork.getRootGraph());
