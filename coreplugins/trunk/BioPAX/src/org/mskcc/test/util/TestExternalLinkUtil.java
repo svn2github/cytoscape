@@ -73,7 +73,7 @@ public class TestExternalLinkUtil extends TestCase {
 	 */
 	public void testExternalLinks() {
 		String url = ExternalLinkUtil.createLink("SWP", "ABC123");
-		assertEquals("<A HREF=\"http://www.pir.uniprot.org/cgi-bin/upEntry?"
+		assertEquals("<A class=\"link\" HREF=\"http://www.pir.uniprot.org/cgi-bin/upEntry?"
 		             + "id=ABC123\">SWP:  ABC123</A>", url);
 	}
 
@@ -108,7 +108,7 @@ public class TestExternalLinkUtil extends TestCase {
 
 		//  Very a Sample HREF Link to IHOP
 		String html = ExternalLinkUtil.createIHOPLink(BioPaxConstants.PROTEIN, synList, dbList, 9606);
-		assertTrue(html.startsWith("<A HREF=\"http://www.ihop-net.org/UniPub/iHOP/in?syns_1"));
+		assertTrue(html.startsWith("<A class=\"link\" HREF=\"http://www.ihop-net.org/UniPub/iHOP/in?syns_1"));
 
 		//  Try using Synonyms + XRefs not supported by IHOP
 		//  Should result in link with synonyms only.
