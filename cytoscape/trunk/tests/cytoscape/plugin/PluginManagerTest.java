@@ -165,7 +165,7 @@ public class PluginManagerTest extends TestCase {
 
 		Url = testUrl;
 		assertNotNull(mgr.inquire(Url));
-		assertEquals(mgr.inquire(Url).size(), 8);
+		assertEquals(mgr.inquire(Url).size(), 9);
 	}
 
 	/**
@@ -371,7 +371,6 @@ public class PluginManagerTest extends TestCase {
 	// only the xml file should be left in this directory
 	assertEquals(mgr.getPluginManageDirectory().list().length, 1);
 	}
-
 	
 	public void testDeleteTheme() throws java.io.IOException,
 	org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException  {
@@ -415,7 +414,7 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getPluginManageDirectory().list().length, 1);
 	}
 	
-	
+
 	public void testFindThemeUpdates() throws java.io.IOException,
 	org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
 	
@@ -634,7 +633,28 @@ public class PluginManagerTest extends TestCase {
 	}
 	
 	
+	public void testLoadIndication() throws Exception {
+		PluginInfo TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl),
+				"mcode_1", "1.0");
+
+		DownloadableInfo DownloadedObj = mgr.download(TestObj, null);
+		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 1);
+		mgr.install(DownloadedObj);
+		
+		try {
+			mgr.loadPlugin(DownloadedObj);
+		} catch (PluginException pe) {
+			// good
+			assertNotNull(pe);
+		} catch (ClassNotFoundException cne) {
+			fail("Expected " + PluginException.class.getName());
+		}
+
+	}
 	
+	
+	
+	/*--------------------------------------------------------------------*/
 	private ThemeInfo setUpCorrectUrls(ThemeInfo info) {
 		for (PluginInfo plugin: info.getPlugins()) {
 			plugin.setObjectUrl(getFileUrl() + plugin.getObjectUrl());
