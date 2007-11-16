@@ -34,8 +34,6 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
-import giny.model.Node;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,22 +49,23 @@ import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 
 /**
- *
+ * Biomart Web Service Client.
+ * 
+ * @author kono
+ * @version 0.6
+ * @since Cytoscape 2.6
+ * 
  */
 public class BiomartClient extends WebServiceClientImpl {
+
+	// Client name
 	private static final String DISPLAY_NAME = "Biomart Web Service Client";
+	
+	// Client ID
 	private static final String CLIENT_ID = "biomart";
 	
-	private static WebServiceClient client = null;
-	
-	static {
-		try {
-			client = new BiomartClient();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	// Actual biomart client.
+	private static WebServiceClient client;
 
 	/**
 	 *  DOCUMENT ME!
@@ -92,8 +91,11 @@ public class BiomartClient extends WebServiceClientImpl {
 		stub = new BiomartStub();
 	}
 
+	/**
+	 * Execute service based on events.
+	 */
 	@Override
-	public void executeService(CyWebServiceEvent e) {
+	public void executeService(CyWebServiceEvent e) throws Exception {
 		if (e.getSource().equals(CLIENT_ID)) {
 			if (e.getEventType().equals(WSEventType.IMPORT_ATTRIBUTE)) {
 				importAttributes((AttributeImportQuery) e.getParameter());
@@ -106,10 +108,10 @@ public class BiomartClient extends WebServiceClientImpl {
 	 * Based on the query given, execute the data fetching.
 	 * 
 	 * @param query
+	 * @throws Exception 
 	 */
-	private void importAttributes(AttributeImportQuery query) {
+	private void importAttributes(AttributeImportQuery query) throws Exception {
 		
-		try {
 			List<String[]> result = ((BiomartStub)stub).sendQuery(query.getParameter().toString());
 			
 			if(((List<String[]>) result).size() == 1) {
@@ -120,23 +122,12 @@ public class BiomartClient extends WebServiceClientImpl {
 					throw e;
 				}
 			}
-			System.out.println("--------------------Got result: " + result.size());
-			
-			
-			
+	
 			mapping((List<String[]>) result, query.getKeyCyAttrName(), query.getKeyNameInWebService());
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
 	}
 	
-	private static void mapping(List<String[]> result, String key, String keyAttrName) {
+	private void mapping(List<String[]> result, String key, String keyAttrName) {
 		final String[] columnNames = result.get(0);
 		final int rowCount = result.size();
 		final int colSize = columnNames.length;

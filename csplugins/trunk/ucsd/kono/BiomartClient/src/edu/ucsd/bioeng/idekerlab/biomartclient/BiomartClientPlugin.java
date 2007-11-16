@@ -41,7 +41,7 @@ import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
- *
+ * Biomart web service client plugin.
  */
 public class BiomartClientPlugin extends CytoscapePlugin {
 	/**
