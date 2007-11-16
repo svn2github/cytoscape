@@ -97,7 +97,7 @@
 	</target>
 	
 	<target name="localCopy" depends="jar" description="Copy to local Cytoscape">
-		<copy file="${build.dir}/${jar.file}" toDir="${cytoscape.dir}/plugins"/>
+		<copy file="${build.dir}/${jar.file}" toDir="${cytoscape.dir}/plugins/core"/>
 	</target>
 	
 </project>
