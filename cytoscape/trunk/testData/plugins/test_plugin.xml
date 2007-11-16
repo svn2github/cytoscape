@@ -15,7 +15,6 @@ with current cytoscape release versions.
 		For testing these will be concatenated with file:///user_dir/url
 		Do NOT set up your xml file with partial urls
 		 -->
-		 	
 		<plugin>
 			<uniqueID>goodJarPlugin123</uniqueID>
 			<name>Good Jar</name>
@@ -182,6 +181,32 @@ with current cytoscape release versions.
 				</author>
 			</authorlist>
 		</plugin>
+		
+			<plugin>
+				<uniqueID>mcode_1</uniqueID>
+				<name>MCODE</name>
+				<description>
+					Broken version of MCODE to test bug 0001553 
+				</description>
+				<pluginVersion>1.0</pluginVersion>
+
+				<cytoscapeVersions>
+					<version>2.5</version>
+					<version>current</version>
+				</cytoscapeVersions>
+
+				<filetype>jar</filetype>
+				<category>Test</category>
+				<url>MCODE_broken.jar</url>
+				<authorlist>
+					<author>
+						<name>Jane Doe</name>
+						<institution>UW</institution>
+					</author>
+				</authorlist>
+			</plugin>
+
+		
 	</pluginlist>
 
 	<themes>
@@ -252,8 +277,6 @@ with current cytoscape release versions.
 			</pluginlist>
 			
 		</theme>
-
-
 
 	</themes>
 
