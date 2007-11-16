@@ -105,7 +105,7 @@ public class ExternalLinkUtil {
 		StringBuffer buf = new StringBuffer();
 
 		if (url != null) {
-			buf.append("<A HREF=\"" + url + "\">" + dbName + ":  " + id + "</A>");
+			buf.append("<A class=\"link\" HREF=\"" + url + "\">" + dbName + ":  " + id + "</A>");
 		} else {
 			buf.append(dbName + ":  " + id);
 		}
@@ -254,8 +254,7 @@ public class ExternalLinkUtil {
 
 		if (url != null) {
 			StringBuffer buf = new StringBuffer();
-			buf.append("<A HREF=\"" + url + "\">" + "Search IHOP</A>:  (Information Hyperlinked "
-			           + "Over Proteins)");
+			buf.append("<A class=\"link\" HREF=\"" + url + "\">" + "Search iHOP</A>");
 
 			return buf.toString();
 		} else {
