@@ -47,13 +47,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
  * A CytoscapePlugin is the new "Global" plugin. A CytoscapePlugin constructor
  * does not have any arguments, since it is Network agnostic. Instead all access
  * to the Cytoscape Data Structures is handled throught the static methods
  * provided by cytoscape.Cytoscape.
- *
+ * 
  * It is encouraged, but not mandatory, for plugins to override the
  * {@link #describe describe} method to state what the plugin does and how it
  * should be used.
@@ -65,18 +64,19 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 * constructor.
 	 */
 	public CytoscapePlugin() {
-		Cytoscape.getPropertyChangeSupport()
-		         .addPropertyChangeListener(Cytoscape.SAVE_PLUGIN_STATE, this);
-		Cytoscape.getPropertyChangeSupport()
-		         .addPropertyChangeListener(Cytoscape.RESTORE_PLUGIN_STATE, this);
-		Cytoscape.getPropertyChangeSupport()
-        .addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
+				Cytoscape.SAVE_PLUGIN_STATE, this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
+				Cytoscape.RESTORE_PLUGIN_STATE, this);
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
+				Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
 	/**
-	 * DEPRECATED This method will be removed in Dec 2007 
-	 * please use the getPluginInfoObject() method and
-	 * call setDescription on the PluginInfo object returned.
+	 * DEPRECATED This method will be removed in Dec 2007 please use the
+	 * getPluginInfoObject() method and call setDescription on the PluginInfo
+	 * object returned.
+	 * 
 	 * @deprecated
 	 * @return description of plugin
 	 */
@@ -125,11 +125,14 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	/**
 	 * Attempts to instantiate a plugin of the class argument.
-	 * @return The object, if it was not successfully constructed object will be null
+	 * 
+	 * @return The object, if it was not successfully constructed object will be
+	 *         null
 	 * @return true if the plugin was successfulyl constructed, false otherwise
 	 */
-	public static Object loadPlugin(Class pluginClass) throws InstantiationException,
-		IllegalAccessException {
+	public static Object loadPlugin(Class pluginClass)
+			throws InstantiationException, IllegalAccessException,
+			PluginException {
 
 		if (pluginClass == null) {
 			return false;
@@ -139,34 +142,32 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 		try {
 			object = pluginClass.newInstance();
-		// We want to catch everything possible.  Errors will cause the entire
-		// cytoscape app to crash, which a plugin should not do.
+			// We want to catch everything possible. Errors will cause the
+			// entire
+			// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
+			object = null;
+			System.err.println("Instantiation has failed for: " + pluginClass);
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any
-			// exception that occurs during the creation of that new instance. Here,
-			// we need to catch whatever other exceptions might be thrown --
+			// exception that occurs during the creation of that new instance.
+			// Here, we need to catch whatever other exceptions might be thrown --
 			// for example, attempting to load an older plugin that looks
 			// for the class cytoscape.CyWindow, which is no longer defined,
 			// propagates a ClassNotFoundException (which, if we don't
 			// catch causes the application to crash).
-			System.err.println("Unchecked '" + e.getClass().getName()
-			                   + "'exception while attempting to load plugin.");
-			System.err.println("This may happen when loading a plugin written for a different "
-			                   + "version of Cytoscape than this one, or if the plugin is dependent "
-			                   + "on another plugin that isn't available. Consult the documentation "
-			                   + "for the plugin or contact the plugin author for more information.");
-			System.err.println(e);
-			e.printStackTrace();
-			object = null;
-		}
+			String ErrorMsg = "Unchecked '" + e.getClass().getName() + "'exception while attempting to load plugin.\n"
+					+ "This may happen when loading a plugin written for a different "
+					+ "version of Cytoscape than this one, or if the plugin is dependent "
+					+ "on another plugin that isn't available. Consult the documentation "
+					+ "for the plugin or contact the plugin author for more information.";
 
-		if (object == null) {
-			System.err.println("Instantiation has failed for: " + pluginClass);
-		} else {
-			System.out.println("Successfully loaded: " + pluginClass);
-		}
-
+			//System.err.println(ErrorMsg);
+			// System.err.println(e);
+			// e.printStackTrace();
+			throw new PluginException(ErrorMsg, e);
+		} 
+		System.out.println("Successfully loaded: " + pluginClass);
 		return object;
 	}
 
@@ -174,7 +175,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
@@ -192,7 +193,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			if (newfiles.size() > 0) {
 				pluginFileListMap.put(pluginName, newfiles);
 			}
-		} else if (e.getPropertyName().equalsIgnoreCase(Cytoscape.RESTORE_PLUGIN_STATE)) {
+		} else if (e.getPropertyName().equalsIgnoreCase(
+				Cytoscape.RESTORE_PLUGIN_STATE)) {
 			pluginFileListMap = (HashMap<String, List<File>>) e.getOldValue();
 
 			if (pluginFileListMap.containsKey(pluginName)) {
@@ -202,21 +204,20 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 					restoreSessionState(theFileList);
 				}
 			}
-		}
-		else if (e.getPropertyName().equalsIgnoreCase(Cytoscape.CYTOSCAPE_EXIT)) {
+		} else if (e.getPropertyName().equalsIgnoreCase(
+				Cytoscape.CYTOSCAPE_EXIT)) {
 			onCytoscapeExit();
 		}
 	}
 
-	
-	public void onCytoscapeExit(){
-		
+	public void onCytoscapeExit() {
+
 	}
-	
+
 	// override the following two methods to save state.
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param pStateFileList
 	 *            DOCUMENT ME!
 	 */
@@ -225,7 +226,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param pFileList
 	 *            DOCUMENT ME!
 	 */

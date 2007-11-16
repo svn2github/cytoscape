@@ -661,17 +661,31 @@ public class PluginManager {
 	 * @throws MalformedURLException
 	 */
 	public void loadPlugin(PluginInfo p) throws MalformedURLException,
-			IOException, ClassNotFoundException, PluginException {
+			IOException, PluginException {
 		List<URL> ToLoad = new ArrayList<URL>();
-
+		
 		for (String FileName : p.getFileList()) {
 			if (FileName.endsWith(".jar")) {
 				ToLoad.add(jarURL(FileName));
 			}
 		}
 		// don't need to register if we have the info object
-		loadURLPlugins(ToLoad, false);
+		InstallablePlugin insp = new InstallablePlugin(p);
+		try {
+			loadURLPlugins(ToLoad, false);
+		} catch (IOException ioe) {
+			insp.uninstall();
+			pluginTracker.removeDownloadable(p, PluginStatus.CURRENT);
+			throw ioe;			
+		} catch (PluginException pe) {
+			insp.uninstall();
+			pluginTracker.removeDownloadable(p, PluginStatus.CURRENT);
+			throw(pe);
+		}
+		
 		if (duplicateLoadError) {
+			insp.uninstall();
+			pluginTracker.removeDownloadable(p, PluginStatus.CURRENT);
 			throwDuplicateError();
 		}
 
@@ -772,7 +786,7 @@ public class PluginManager {
 	 * that are CytoscapePlugins
 	 */
 	private void loadURLPlugins(List<URL> pluginUrls, boolean register)
-			throws IOException {
+			throws IOException, PluginException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
@@ -870,7 +884,7 @@ public class PluginManager {
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
 	// used by jars that do
 	private void loadResourcePlugins(List<String> resourcePlugins)
-			throws ClassNotFoundException {
+			throws ClassNotFoundException, PluginException {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
 			System.out.println("");
@@ -885,7 +899,7 @@ public class PluginManager {
 		System.out.println("");
 	}
 
-	private void loadPlugin(Class plugin, JarFile jar, boolean register) {
+	private void loadPlugin(Class plugin, JarFile jar, boolean register) throws PluginException {
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 				&& !loadedPlugins.contains(plugin.getName())) {
 			try {

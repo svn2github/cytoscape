@@ -477,6 +477,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			cleanTree(node);
 		} else {
 			// somehow disable the node??
+			
 		}
 	}
 
@@ -539,20 +540,26 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				Mgr.install(infoObj);
 				Mgr.loadPlugin(infoObj);
 			} catch (java.io.IOException ioe) {
-				taskMonitor
-						.setException(ioe, "Failed to download "
+				taskMonitor.setException(ioe, "Failed to download "
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl());
 				infoObj = null;
+				ioe.printStackTrace();
 			} catch (cytoscape.plugin.ManagerException me) {
-				infoObj = null;
+				PluginManageDialog.this.setMessage("Failed to install " + infoObj.toString());
 				taskMonitor.setException(me, me.getMessage());
+				infoObj = null;
+				me.printStackTrace();
 			} catch (cytoscape.plugin.PluginException pe) {
+				PluginManageDialog.this.setMessage("Failed to install " + infoObj.toString());
 				infoObj = null;
 				taskMonitor.setException(pe, pe.getMessage());
+				pe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
-				infoObj = null;
 				taskMonitor.setException(cne, cne.getMessage());
+				PluginManageDialog.this.setMessage("Failed to install " + infoObj.toString());
+				infoObj = null;
+				cne.printStackTrace();
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
@@ -575,6 +582,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		public String getTitle() {
 			return "Installing Cytoscape Plugin '" + infoObj.getName() + "'";
 		}
+		
 	}
 
 	// Variables declaration - do not modify
