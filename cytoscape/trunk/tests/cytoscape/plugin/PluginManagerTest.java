@@ -643,9 +643,11 @@ public class PluginManagerTest extends TestCase {
 		
 		try {
 			mgr.loadPlugin(DownloadedObj);
-		} catch (Exception e) {
+		} catch (PluginException pe) {
 			// good
-			assertNotNull(e);
+			assertNotNull(pe);
+		} catch (ClassNotFoundException cne) {
+			fail(cne.getMessage());
 		}
 
 	}
