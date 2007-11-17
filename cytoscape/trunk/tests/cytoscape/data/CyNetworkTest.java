@@ -154,7 +154,6 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * XXX
 	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedEdgeState(java.util.Collection, boolean)}.
 	 */
 	public void testSetSelectedEdgeStateCollectionBoolean() {
@@ -164,7 +163,7 @@ public class CyNetworkTest extends TestCase {
 		assertEquals(edges.size(), 2);
 		
 		network.setSelectedEdgeState(edges, true);
-		//assertEquals(network.getSelectedEdges().size(), edges.size());
+		assertEquals(network.getSelectedEdges().size(), edges.size());
 	}
 
 	/**
@@ -262,13 +261,12 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * XXX
 	 * Test method for {@link cytoscape.giny.CyNetwork#removeNode(int, boolean)}.
 	 */
 	public void testRemoveNode() {
 		CyNode node = Cytoscape.getCyNode("1");
 		assertNotNull(node);
-		//assertFalse(network.removeNode(node.getRootGraphIndex(), true));
+		assertTrue(network.removeNode(node.getRootGraphIndex(), true));
 	}
 
 
@@ -291,13 +289,12 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * XXX
 	 * Test method for {@link cytoscape.giny.CyNetwork#removeEdge(int, boolean)}.
 	 */
 	public void testRemoveEdge() {
 		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("2"), Semantics.INTERACTION, "test", true);
 		assertNotNull(edge);
-		//assertFalse(network.removeEdge(edge.getRootGraphIndex(), true));
+		assertTrue(network.removeEdge(edge.getRootGraphIndex(), true));
 	}
 
 
