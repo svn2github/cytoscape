@@ -157,13 +157,15 @@ public class CyNetworkTest extends TestCase {
 	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedEdgeState(java.util.Collection, boolean)}.
 	 */
 	public void testSetSelectedEdgeStateCollectionBoolean() {
+		network.unselectAllNodes();
+		network.unselectAllEdges();
 		network.setSelectedNodeState(this.getNodes(3), true);
 		java.util.Set<CyNode> selectedNodes = network.getSelectedNodes();
 		java.util.Collection<CyEdge> edges = this.getEdges(selectedNodes);
-		assertEquals(edges.size(), 2);
+		assertEquals(2, edges.size());
 		
 		network.setSelectedEdgeState(edges, true);
-		assertEquals(network.getSelectedEdges().size(), edges.size());
+		assertEquals(2, network.getSelectedEdges().size());
 	}
 
 	/**
