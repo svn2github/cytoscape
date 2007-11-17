@@ -1,279 +1,305 @@
-/*
-  File: CyNetworkTest.java
-
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
-
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+/**
+ * 
+ */
 package cytoscape.data;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.CyNetworkTitleChange;
-import cytoscape.CyNetworkAdapter;
-import cytoscape.CyNetworkEvent;
-import cytoscape.CyNetworkListener;
-
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import cytoscape.*;
+import cytoscape.data.Semantics;
 import junit.framework.TestCase;
 
-//import cytoscape.data.ExpressionData;
-//
-//import giny.model.*;
-//
-//
-//import java.io.*;
-//
-//import java.util.*;
-
-
-/**
- *
- */
 public class CyNetworkTest extends TestCase {
-	private CyNetworkEvent currentEvent = null;
-	private CyNetworkListener listener;
+	private String title = "My Network";
+	private CyNetwork network;
+	private int defaultNodeSetSize = 10;
 
-	/**
-	 * Creates a new CyNetworkTest object.
-	 *
-	 * @param name  DOCUMENT ME!
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public CyNetworkTest(String name) {
-		super(name);
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		java.util.Collection<CyNode> nodes = this.getNodes(defaultNodeSetSize);
+		java.util.Collection<CyEdge> edges = this.getEdges(nodes);
+		network = Cytoscape.createNetwork(nodes, edges, title);
+		//network = Cytoscape.createNetwork(title);
+	}
+
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		Cytoscape.destroyNetwork(network);
+	}
+
+	public void testCreateNetwork() {
+		//CyNetwork net = new CyNetwork(new CytoscapeFingRootGraph(), );
+		assertNotNull(network);
+		assertEquals(network.getNodeCount(), defaultNodeSetSize);
+		assertEquals(network.getEdgeCount(), defaultNodeSetSize-1);
+		System.err.println("Should be creating the network the way it's done in Fing!");
+	}
+	
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#getTitle()}.
+	 */
+	public void testGetTitle() {
+		assertEquals(network.getTitle(), title);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * Test method for {@link cytoscape.giny.CyNetwork#setTitle(java.lang.String)}.
 	 */
-	public void setUp() throws Exception {
-		listener = new CyNetworkAdapter() {
-				public void onCyNetworkEvent(CyNetworkEvent event) {
-					currentEvent = event;
-				}
-			};
+	public void testSetTitle() {
+		network.setTitle("foobar");
+		assertEquals(network.getTitle(), "foobar");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * Test method for {@link cytoscape.giny.CyNetwork#getIdentifier()}.
 	 */
-	public void tearDown() throws Exception {
+	public void testGetIdentifier() {
+		assertNotNull(network.getIdentifier());
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * Test method for {@link cytoscape.giny.CyNetwork#setIdentifier(java.lang.String)}.
 	 */
-	public void testBasic() throws Exception {
-	
-		     CyNetwork defaultNetwork = Cytoscape.createNetwork("My Network");
-		     assertNotNull(defaultNetwork);
-		     assertNotNull(defaultNetwork.getIdentifier());
-		     assertEquals(defaultNetwork.getNodeCount(), 0);
-		     assertEquals(defaultNetwork.getEdgeCount(), 0);
-		     assertNotNull(defaultNetwork.getRootGraph());
-		     
-//		     ExpressionData startData = new ExpressionData("testData/gal1.10x20.mRNA");
-//		     CyNetwork network = new CyNetwork(rootGraph, nodeAttributes,
-//		                                       edgeAttributes, startData);
-
-		//     assertTrue( network.getRootGraph() == rootGraph );
-		//     assertTrue( network.getGraphPerspective() != null );
-		//     assertTrue( network.getGraphPerspective().getRootGraph() == rootGraph );
-		//     assertTrue( Cytoscape.getNodeNetworkData() == nodeAttributes );
-		//     assertTrue( network.getEdgeAttributes() == edgeAttributes );
-		//     assertTrue( network.getExpressionData() == startData );
-		//     assertTrue( network.getNeedsLayout() == false );
-		//     network.setNeedsLayout(true);
-		//     assertTrue( network.getNeedsLayout() == true );
-		//     network.setNeedsLayout(false);
-		//     assertTrue( network.getNeedsLayout() == false );
-
-		//     GraphPerspective newPerspective = GinyFactory.createGraphPerspective(rootGraph);
-		//     network.setGraphPerspective(newPerspective);
-		//     assertTrue( network.getGraphPerspective() == newPerspective );
-		//     network.setNodeAttributes(newNodeAttributes);
-		//     assertTrue( Cytoscape.getNodeNetworkData() == newNodeAttributes );
-		//     network.setEdgeAttributes(newEdgeAttributes);
-		//     assertTrue( network.getEdgeAttributes() == newEdgeAttributes );
-		//     ExpressionData expData = new ExpressionData("testData/gal1.22x5.mRNA");
-		//     network.setExpressionData(expData);
-		//     assertTrue( network.getExpressionData() == expData );
-
-		//     CyNetwork gpNetwork = new CyNetwork(newPerspective, nodeAttributes,
-		//                                         edgeAttributes, startData);
-		//     assertTrue( gpNetwork.getRootGraph() == rootGraph );
-		//     assertTrue( gpNetwork.getGraphPerspective() == newPerspective );
-		//     assertTrue( gpNetwork.getNodeAttributes() == nodeAttributes );
-		//     assertTrue( gpNetwork.getEdgeAttributes() == edgeAttributes );
-		//     assertTrue( gpNetwork.getExpressionData() == startData );
-		//     assertTrue( gpNetwork.getNeedsLayout() == false );
-
-		//     CyNetwork gpNetwork2 = new CyNetwork(newPerspective, nodeAttributes,
-		//                                          edgeAttributes);
-		//     assertTrue( gpNetwork2.getRootGraph() == rootGraph );
-		//     assertTrue( gpNetwork2.getGraphPerspective() == newPerspective );
-		//     assertTrue( gpNetwork2.getNodeAttributes() == nodeAttributes );
-		//     assertTrue( gpNetwork2.getEdgeAttributes() == edgeAttributes );
-		//     assertTrue( gpNetwork2.getExpressionData() == null );
-		//     assertTrue( gpNetwork2.getNeedsLayout() == false );
-
-		//     CyNetwork noExpNetwork = new CyNetwork(rootGraph, nodeAttributes, edgeAttributes);
-		//     assertTrue( noExpNetwork.getRootGraph() == rootGraph );
-		//     assertTrue( noExpNetwork.getGraphPerspective() != null );
-		//     assertTrue( noExpNetwork.getGraphPerspective().getRootGraph() == rootGraph );
-		//     assertTrue( noExpNetwork.getNodeAttributes() == nodeAttributes );
-		//     assertTrue( noExpNetwork.getEdgeAttributes() == edgeAttributes );
-		//     assertTrue( noExpNetwork.getExpressionData() == null );
-		//     assertTrue( noExpNetwork.getNeedsLayout() == false );
-		//     //test setting new graph, removing old attributes
-		//     RootGraph newGraph = GinyFactory.createRootGraph();
-		//     CyNetwork newNetwork = new CyNetwork(newGraph, newNodeAttributes, newEdgeAttributes);
-		//     newNetwork.setNeedsLayout(true);
-		//     noExpNetwork.setNewGraphFrom(newNetwork, true);
-		//     assertTrue( noExpNetwork.getRootGraph() == newGraph );
-		//     assertTrue( noExpNetwork.getGraphPerspective() != null );
-		//     assertTrue( noExpNetwork.getGraphPerspective().getRootGraph() == newGraph );
-		//     assertTrue( noExpNetwork.getNodeAttributes() == newNodeAttributes );
-		//     assertTrue( noExpNetwork.getEdgeAttributes() == newEdgeAttributes );
-		//     assertTrue( noExpNetwork.getNeedsLayout() == true );
-
-		//     CyNetwork nullNetwork = new CyNetwork((RootGraph)null, null, null, null);
-		//     assertTrue(nullNetwork.getRootGraph() != null);
-		//     assertTrue(nullNetwork.getGraphPerspective() != null);
-		//     assertTrue(nullNetwork.getNodeAttributes() != null);
-		//     assertTrue(nullNetwork.getEdgeAttributes() != null);
-		//     assertTrue(nullNetwork.getExpressionData() == null);
-		//     //test setting new graph, preserving old attributes
-		//     //first install some attributes so we can do the test
-		//     Node n1 = rootGraph.getNode( rootGraph.createNode() );
-		//     nullNodeAttributes.addNameMapping("YGR074W", n1);
-		//     Node n2 = newGraph.getNode( newGraph.createNode() );
-		//     newNodeAttributes.addNameMapping("YBR043C", n2);
-		//     Node n3 = rootGraph.getNode( rootGraph.createNode() );
-		//     Node n4 = newGraph.getNode( newGraph.createNode() );
-		//     Edge e1 = rootGraph.getEdge( rootGraph.createEdge(n1, n3) );
-		//     nullEdgeAttributes.addNameMapping("YDR277C (pp) YDL124W", e1);
-		//     Edge e2 = newGraph.getEdge( newGraph.createEdge(n2, n4) );
-		//     newEdgeAttributes.addNameMapping("YBL026W (pp) YOR127C", e2);
-		//     nullNodeAttributes.readAttributesFromFile("testData/galFiltered.nodeAttrs1");
-		//     nullEdgeAttributes.readAttributesFromFile("testData/galFiltered.edgeAttrs1");
-		//     newNodeAttributes.readAttributesFromFile("testData/galFiltered.nodeAttrs2");
-		//     newEdgeAttributes.readAttributesFromFile("testData/galFiltered.edgeAttrs2");
-		//     nullNetwork.setNeedsLayout(true);
-		//     newNetwork.setNeedsLayout(false);
-		//     //now do the test
-		//     nullNetwork.setNewGraphFrom(newNetwork, false);
-		//     assertTrue( nullNetwork.getRootGraph() == newGraph );
-		//     assertTrue( nullNetwork.getNeedsLayout() == false );
-		//     assertTrue( nullNetwork.getNodeAttributes() == nullNodeAttributes );
-		//     assertTrue( nullNetwork.getEdgeAttributes() == nullEdgeAttributes );
-		//     assertTrue( nullNodeAttributes.hasAttribute("TestNodeAttribute1") );
-		//     assertTrue( nullNodeAttributes.hasAttribute("TestNodeAttribute2") );
-		//     assertTrue( nullEdgeAttributes.hasAttribute("TestEdgeAttributes1") );
-		//     assertTrue( nullEdgeAttributes.hasAttribute("TestEdgeAttributes2") );
-		//     assertTrue( nullNodeAttributes.getCanonicalName(n1).equals("YGR074W") );
-		//     assertTrue( nullNodeAttributes.getCanonicalName(n2).equals("YBR043C") );
-		//     assertTrue( nullEdgeAttributes.getCanonicalName(e1).equals("YDR277C (pp) YDL124W") );
-		//     assertTrue( nullEdgeAttributes.getCanonicalName(e2).equals("YBL026W (pp) YOR127C") );
+	public void testSetIdentifier() {
+		String id = "12345";
+		network.setIdentifier(id);
+		assertEquals(network.getIdentifier(), id);
 	}
 
-	
-	
-	
-	
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * Test method for {@link cytoscape.giny.CyNetwork#appendNetwork(cytoscape.CyNetwork)}.
 	 */
-	public void testListeners() throws Exception {
-		//     String callerID = "CyNetworkTest.testListeners";
-		//     CyNetwork network = new CyNetwork();
-		//     network.addCyNetworkListener(listener);
-
-		//     network.beginActivity(callerID); //this should fire a begin event
-		//     assertTrue(network.isStateClear() == false);
-		//     assertTrue(currentEvent != null);
-		//     assertTrue(currentEvent.getNetwork() == network);
-		//     assertTrue(currentEvent.getType() == CyNetworkEvent.BEGIN);
-		//     currentEvent = null;
-		//     network.beginActivity(callerID); //this shouldn't fire an event
-		//     assertTrue(network.isStateClear() == false);
-		//     assertTrue(currentEvent == null);
-		//     network.endActivity(callerID);  //this shouldn't fire an event
-		//     assertTrue(network.isStateClear() == false);
-		//     assertTrue(currentEvent == null);
-		//     network.endActivity(callerID);  //this should fire a matching end event
-		//     assertTrue(network.isStateClear() == true);
-		//     assertTrue(currentEvent != null);
-		//     assertTrue(currentEvent.getNetwork() == network);
-		//     assertTrue(currentEvent.getType() == CyNetworkEvent.END);
-		//     currentEvent = null;
-		//     network.endActivity(callerID); //this unmatched call should do nothing
-		//     assertTrue(network.isStateClear() == true);
-		//     assertTrue(currentEvent == null);
-		//     network.forceClear(callerID); //again should do nothing
-		//     assertTrue(network.isStateClear() == true);
-		//     assertTrue(currentEvent == null);
-
-		//     network.beginActivity(callerID); //should fire a begin event
-		//     assertTrue(network.isStateClear() == false);
-		//     assertTrue(currentEvent != null);
-		//     assertTrue(currentEvent.getNetwork() == network);
-		//     assertTrue(currentEvent.getType() == CyNetworkEvent.BEGIN);
-		//     currentEvent = null;
-		//     network.forceClear(callerID); //should force an end event
-		//     assertTrue(network.isStateClear() == true);
-		//     assertTrue(currentEvent != null);
-		//     assertTrue(currentEvent.getNetwork() == network);
-		//     assertTrue(currentEvent.getType() == CyNetworkEvent.END);
-
-		//     Set allListeners = network.getCyNetworkListeners();
-		//     assertTrue(allListeners.size() == 1);
-		//     assertTrue(allListeners.iterator().next() == listener);
-		//     boolean wasThere = network.removeCyNetworkListener(listener);
-		//     assertTrue(wasThere == true);
-		//     assertTrue(network.getCyNetworkListeners().size() == 0);
-		//     boolean stillThere = network.removeCyNetworkListener(listener);
-		//     assertTrue(stillThere == false);
+	public void testAppendNetwork() {
+		java.util.Collection<CyNode> nodes = new java.util.ArrayList<CyNode>();
+		nodes.add( Cytoscape.getCyNode("foobar", true) );
+		nodes.add( Cytoscape.getCyNode("blat", true) );
+		nodes.add( Cytoscape.getCyNode("some name", true) );
+		java.util.Collection<CyEdge> edges = this.getEdges(nodes);
+		
+		CyNetwork appNet = Cytoscape.createNetwork(nodes, edges, "My network");
+		assertNotNull(appNet);
+		assertNotSame(appNet, network);
+		
+		network.appendNetwork(appNet);
+		
+		assertEquals(network.getNodeCount(), this.defaultNodeSetSize+3);
+		assertEquals(network.getEdgeCount(), this.defaultNodeSetSize+1);
 	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#selectAllNodes()}.
+	 */
+	public void testSelectAllNodes() {
+		network.selectAllNodes();
+		assertNotNull(network.getSelectedNodes());
+		assertEquals(network.getSelectedNodes().size(), network.getNodeCount());
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#selectAllEdges()}.
+	 */
+	public void testSelectAllEdges() {
+		network.selectAllEdges();
+		assertNotNull(network.getSelectedEdges());
+		assertEquals(network.getSelectedEdges().size(), network.getEdgeCount());
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#unselectAllNodes()}.
+	 */
+	public void testUnselectAllNodes() {
+		network.selectAllNodes();
+		assertNotNull(network.getSelectedNodes());
+		assertEquals(network.getSelectedNodes().size(), network.getNodeCount());
+
+		network.unselectAllNodes();
+		assertEquals(network.getSelectedNodes().size(), 0);
+		
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#unselectAllEdges()}.
+	 */
+	public void testUnselectAllEdges() {
+		network.selectAllEdges();
+		assertNotNull(network.getSelectedEdges());
+		assertEquals(network.getSelectedEdges().size(), network.getEdgeCount());
+
+		network.unselectAllEdges();
+		assertEquals(network.getSelectedEdges().size(), 0);
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedNodeState(java.util.Collection, boolean)}.
+	 */
+	public void testSetSelectedNodeStateCollectionBoolean() {
+		network.setSelectedNodeState(this.getNodes(3), true);
+		assertEquals(network.getSelectedNodes().size(), 3);
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedNodeState(giny.model.Node, boolean)}.
+	 */
+	public void testSetSelectedNodeStateNodeBoolean() {
+		network.setSelectedNodeState(Cytoscape.getCyNode("1"), true);
+		assertEquals(network.getSelectedNodes().size(), 1);
+	}
+
+	/**
+	 * XXX
+	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedEdgeState(java.util.Collection, boolean)}.
+	 */
+	public void testSetSelectedEdgeStateCollectionBoolean() {
+		network.setSelectedNodeState(this.getNodes(3), true);
+		java.util.Set<CyNode> selectedNodes = network.getSelectedNodes();
+		java.util.Collection<CyEdge> edges = this.getEdges(selectedNodes);
+		assertEquals(edges.size(), 2);
+		
+		network.setSelectedEdgeState(edges, true);
+		//assertEquals(network.getSelectedEdges().size(), edges.size());
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedEdgeState(giny.model.Edge, boolean)}.
+	 */
+	public void testSetSelectedEdgeStateEdgeBoolean() {
+		network.setSelectedNodeState(this.getNodes(2), true);
+		java.util.Set<CyNode> selectedNodes = network.getSelectedNodes();
+		
+		assertEquals(this.getEdges(selectedNodes).size(), 1);
+		java.util.Iterator<CyEdge> edgeI = this.getEdges(selectedNodes).iterator();
+		while (edgeI.hasNext()) {
+			CyEdge edge = edgeI.next();
+			network.setSelectedEdgeState(edge, true);
+		}
+		assertEquals(network.getSelectedEdges().size(), 1);
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#isSelected(giny.model.Node)}.
+	 */
+	public void testIsSelectedNode() {
+		CyNode node = Cytoscape.getCyNode("1");
+		network.setSelectedNodeState(node, true);
+		assertTrue(network.isSelected(node));
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#isSelected(giny.model.Edge)}.
+	 */
+	public void testIsSelectedEdge() {
+		CyNode node_1 = Cytoscape.getCyNode("1");
+		CyNode node_2 = Cytoscape.getCyNode("2");
+		
+		CyEdge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, "test", false);
+		assertNotNull(edge);
+		
+		network.setSelectedEdgeState(edge, true);
+		assertTrue(network.isSelected(edge));
+		
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#getSelectedNodes()}.
+	 */
+	public void testGetSelectedNodes() {
+		network.selectAllNodes();
+		assertNotNull(network.getSelectedNodes());
+		assertEquals(network.getSelectedNodes().size(), this.defaultNodeSetSize);
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#getSelectedEdges()}.
+	 */
+	public void testGetSelectedEdges() {
+		network.selectAllEdges();
+		assertNotNull(network.getSelectedEdges());
+		assertEquals(network.getSelectedEdges().size(), this.defaultNodeSetSize-1);
+	}
+
+
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#addCyNetworkListener(cytoscape.CyNetworkListener)}
+	 * and {@link cytoscape.giny.CyNetwork#getCyNetworkListeners()}
+	 * and and {@link cytoscape.giny.CyNetwork#removeCyNetworkListener(cytoscape.CyNetworkListener}
+	 */
+	public void testCyNetworkListener() {
+		CyNetworkListener listener = new CyNetworkAdapter() {
+			public void onCyNetworkEvent(CyNetworkEvent event) {
+			}
+		};
+		network.addCyNetworkListener(listener);
+		assertEquals(network.getCyNetworkListeners().size(), 1);
+		assertTrue(network.removeCyNetworkListener(listener));
+	}
+
+	/**
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#addNode(int)}.
+	 */
+	public void testAddNodeInt() {
+		CyNode newNode = Cytoscape.getCyNode("123", true);
+		assertNotNull(network.addNode(newNode.getRootGraphIndex()));
+		assertTrue(network.containsNode(newNode));
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#addNode(giny.model.Node)}.
+	 */
+	public void testAddNodeNode() {
+		CyNode newNode = Cytoscape.getCyNode("321", true);
+		assertNotNull(network.addNode(newNode));
+		assertTrue(network.containsNode(newNode));
+	}
+
+	/**
+	 * XXX
+	 * Test method for {@link cytoscape.giny.CyNetwork#removeNode(int, boolean)}.
+	 */
+	public void testRemoveNode() {
+		CyNode node = Cytoscape.getCyNode("1");
+		assertNotNull(node);
+		//assertFalse(network.removeNode(node.getRootGraphIndex(), true));
+	}
+
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#addEdge(int)}.
+	 */
+	public void testAddEdgeInt() {
+		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("4"), Semantics.INTERACTION, "test", true);
+		assertNotNull(edge);
+		assertNotNull(network.addEdge(edge.getRootGraphIndex()));
+	}
+
+	/**
+	 * Test method for {@link cytoscape.giny.CyNetwork#addEdge(giny.model.Edge)}.
+	 */
+	public void testAddEdgeEdge() {
+		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("4"), Semantics.INTERACTION, "test", true);
+		assertNotNull(edge);
+		assertNotNull(network.addEdge(edge));
+	}
+
+	/**
+	 * XXX
+	 * Test method for {@link cytoscape.giny.CyNetwork#removeEdge(int, boolean)}.
+	 */
+	public void testRemoveEdge() {
+		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("2"), Semantics.INTERACTION, "test", true);
+		assertNotNull(edge);
+		//assertFalse(network.removeEdge(edge.getRootGraphIndex(), true));
+	}
+
 
 	public void testSetTitleEvent() {
 		String InitialTitle = "My Network";
@@ -291,8 +317,9 @@ public class CyNetworkTest extends TestCase {
 
 	}
 	
+	/* ----------------------------------------------------------------- */
 	// use only for testSetTitleEvent()
-	public class TitleListener implements PropertyChangeListener {
+	private class TitleListener implements PropertyChangeListener {
 		private PropertyChangeEvent pcEvent;
 		
 		public void propertyChange(PropertyChangeEvent event) {
@@ -303,5 +330,30 @@ public class CyNetworkTest extends TestCase {
 			return pcEvent;
 		}
 	}
+
+	
+	private java.util.Collection<CyNode> getNodes(int size) {
+		java.util.List<CyNode> Nodes = new java.util.ArrayList<CyNode>();
+		for (int i=0; i<size; i++) {
+			Nodes.add(Cytoscape.getCyNode(Integer.toString(i), true));	
+		}
+		return Nodes;
+	}
+
+	private java.util.Collection<CyEdge> getEdges(java.util.Collection<CyNode> Nodes) {
+		java.util.List<CyEdge> Edges = new java.util.ArrayList<CyEdge>();
+		
+		java.util.Iterator<CyNode> nodeI = Nodes.iterator();
+		CyNode LastNode = null;
+		while (nodeI.hasNext()) {
+			CyNode Node = nodeI.next();
+			if (LastNode != null) 
+				Edges.add(Cytoscape.getCyEdge(LastNode, Node, Semantics.INTERACTION, "test", true));
+
+			LastNode = Node;
+		}
+		return Edges;
+	}
+
 	
 }
