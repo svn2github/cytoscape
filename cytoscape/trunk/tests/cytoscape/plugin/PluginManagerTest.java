@@ -633,7 +633,7 @@ public class PluginManagerTest extends TestCase {
 	}
 	
 	
-	public void testLoadIndication() throws Exception {
+	public void testLoadIndication() throws java.io.IOException, org.jdom.JDOMException, ManagerException {
 		PluginInfo TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl),
 				"mcode_1", "1.0");
 
@@ -643,11 +643,9 @@ public class PluginManagerTest extends TestCase {
 		
 		try {
 			mgr.loadPlugin(DownloadedObj);
-		} catch (PluginException pe) {
+		} catch (Exception e) {
 			// good
-			assertNotNull(pe);
-		} catch (ClassNotFoundException cne) {
-			fail("Expected " + PluginException.class.getName());
+			assertNotNull(e);
 		}
 
 	}
