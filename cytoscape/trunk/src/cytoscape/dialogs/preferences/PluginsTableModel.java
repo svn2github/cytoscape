@@ -93,7 +93,7 @@ public class PluginsTableModel extends AbstractTableModel {
 
 		// now (non-redundantly) include plugins specified on the command line
 		if (!pluginsFromCommandLineLoadedAndSaved) {
-			Set plugins = CytoscapeInit.getPluginURLs();
+			Set plugins = new HashSet(cytoscape.plugin.PluginManager.getPluginURLs());
 			Iterator iterator = plugins.iterator();
 
 			while (iterator.hasNext()) {
