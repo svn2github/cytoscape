@@ -95,27 +95,21 @@ public class PluginManager {
 	private static String cyVersion = new CytoscapeVersion().getMajorVersion();
 
 	/**
-	 * Replaces CytoscapeInit.getClassLoader()
-	 * 
-	 * @return URLClassLoader used to load plugins.
+	 * @return URLClassLoader used to load plugins at startup.
 	 */
 	public static URLClassLoader getClassLoader() {
 		return classLoader;
 	}
 
 	/**
-	 * Replaces CytoscapeInit.getResourcePlugins()
-	 * 
-	 * @return Set<String> of resource plugins
+	 * @return Set<String> of resource plugins from startup
 	 */
 	public static List<String> getResourcePlugins() {
 		return resourcePlugins;
 	}
 
 	/**
-	 * Replaces CytoscapeInit.getPluginURLs()
-	 * 
-	 * @return Set<URL> of plugin URL's
+	 * @return Set<URL> of plugin URL's from startup
 	 */
 	public static List<java.net.URL> getPluginURLs() {
 		return pluginURLs;
@@ -411,7 +405,7 @@ public class PluginManager {
 
 	/**
 	 * Takes all objects on the "to-delete" list and deletes them. This can only
-	 * occur at start up, CytoscapeInit should be the only class to call this.
+	 * occur at start up.
 	 * 
 	 * @throws ManagerException
 	 *             If all files fail to delete
@@ -634,8 +628,7 @@ public class PluginManager {
 	}
 
 	/*
-	 * Methods for loading plugins when Cytoscape starts up. These have been
-	 * moved from CytoscapeInit
+	 * Methods for loading plugins when Cytoscape starts up. 
 	 */
 	public void loadPlugin(DownloadableInfo i) throws MalformedURLException,
 			IOException, ClassNotFoundException, PluginException {
@@ -964,8 +957,8 @@ public class PluginManager {
 
 	/*
 	 * Iterate through all class files, return the subclass of CytoscapePlugin.
-	 * Similar to CytoscapeInit, however only plugins with manifest files that
-	 * describe the class of the CytoscapePlugin are valid.
+	 * Only plugins with manifest files that describe the class of the 
+	 * CytoscapePlugin are valid.
 	 */
 	private String getPluginClass(String FileName, PluginInfo.FileType Type)
 			throws IOException {

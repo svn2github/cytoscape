@@ -288,47 +288,6 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 *  DEPRECATED
-	 * @deprecated Will be removed December 2007.
-	 * Use {@link PluginManager#getClassLoader()} instead.
-	 * @return  DOCUMENT ME!
-	 */
-	public static URLClassLoader getClassLoader() {
-		return PluginManager.getClassLoader();
-
-		//return classLoader;
-	}
-
-	/**
-	 * DEPRECATED
-	 * @deprecated Will be removed December 2007.
-	 * Use {@link PluginManager#getPluginURLs()} instead.
-	 * @return  DOCUMENT ME!
-	 */
-	public static Set getPluginURLs() {
-		return new java.util.HashSet<java.net.URL>(PluginManager.getPluginURLs());
-	}
-
-	/**
-	 * DEPRECATED
-	 * @deprecated Will be removed December 2007.
-	 * Use {@link PluginManager#getResourcePlugins()} instead.
-	 * @return  DOCUMENT ME!
-	 */
-	public static Set getResourcePlugins() {
-		return new java.util.HashSet<String>(PluginManager.getResourcePlugins());
-	}
-
-	/**
-	 *  DEPRECATED
-	 * @deprecated Will be removed December 2007. 
-	 *   Will not be replaced by a public method, PluginManager handles all loading now.
-	 */
-	public void loadPlugin(Class plugin, String PluginJarFile) {
-		System.err.println("This method will not load plugins and should never be called, see PluginManager loadPlugins()");
-	}
-
-	/**
 	 * @return the most recently used directory
 	 */
 	public static File getMRUD() {
