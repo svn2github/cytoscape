@@ -141,17 +141,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		addEventListeners();
 	
-			//btnApplyFilter.setVisible(false);
-
+		//btnApplyFilter.setVisible(false);
 	}
 
-	//public Vector<CompositeFilter> getAllFilterVect() {
-	//	return allFilterVect;
-	//}
-	
-	//public void setAllFilterVect(Vector<CompositeFilter> pAllFilterVect) {
-	//	allFilterVect = pAllFilterVect;
-	//}
 
 	// Listen to ATTRIBUTES_CHNAGED event
 	public void propertyChange(PropertyChangeEvent e) {
@@ -195,7 +187,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			//  Show all attributes, with type of String or Number
 			for (int i = 0; i < attributeNames.length; i++) {
 				int type = attributes.getType(attributeNames[i]);
-
+				
 				//  only show user visible attributes,with type = Number/String/List
 				if (!attributes.getUserVisible(attributeNames[i])) {
 					continue;
@@ -405,7 +397,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		newFilterMenuItem.setIcon(addIcon);
 		
 		newTopologyFilterMenuItem = new JMenuItem("Create new topology filter...");
-		//topologyFilterMenuItem.setIcon(addIcon);
+		newTopologyFilterMenuItem.setIcon(addIcon);
 
 		deleteFilterMenuItem = new JMenuItem("Delete filter...");
 		deleteFilterMenuItem.setIcon(delIcon);
@@ -600,6 +592,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					this.btnApplyFilter.setEnabled(true);					
 				}
 				replaceFilterSettingPanel(selectedFilter);
+				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter) {
+					// do not apply TopologyFilter automatically
+					return;
+				}
 				FilterUtil.doSelection(selectedFilter);
 				refreshAttributeCMB();
 			}
@@ -639,6 +635,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				System.out.println("\tThe Filter to apply is \n\t\t" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 
+				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter) {
+					System.out.println("\nTopologyFiler is selected!");
+					//TopologyFilter topoFilter = (TopologyFilter) cmbSelectFilter.getSelectedItem();
+				}
+				
 				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
 				
 				//CompositeFilter tmpFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
