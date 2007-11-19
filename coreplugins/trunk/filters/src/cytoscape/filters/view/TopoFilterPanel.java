@@ -10,7 +10,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.JTextField;
@@ -30,6 +32,8 @@ import cytoscape.filters.TopologyFilter;
 import cytoscape.filters.view.FilterMainPanel.FilterRenderer;
 import cytoscape.filters.view.FilterMainPanel.MyCytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.filters.FilterPlugin;
+
 
 /**
  * @author Peng
@@ -37,17 +41,22 @@ import cytoscape.view.cytopanels.CytoPanelListener;
  */
 public class TopoFilterPanel extends JPanel implements ActionListener, ItemListener {
 
-	private Vector<CompositeFilter> allFilterVect = null;
+	//private Vector<CompositeFilter> allFilterVect = null;
 	private TopologyFilter theFilter;
  
     /** Creates new form TopoFilterPanel */
-    public TopoFilterPanel(TopologyFilter pFilter, Vector<CompositeFilter> pAllFilterVect) {
-    	allFilterVect = pAllFilterVect;
+    public TopoFilterPanel(TopologyFilter pFilter) {
     	theFilter = pFilter;
         initComponents();
-        
-		DefaultComboBoxModel theModel = new DefaultComboBoxModel(allFilterVect);
-		cmbPassFilter.setModel(theModel);
+
+        buildCMBmodel();
+
+        if (theFilter.getPassFilter() == null) {
+			cmbPassFilter.setSelectedIndex(0);			
+		}
+		else {
+			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
+		}
 		cmbPassFilter.setRenderer(new FilterRenderer());
 		
 		//add EventListeners
@@ -59,12 +68,38 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		tfMinNeighbors.addKeyListener(l);
 		
 		cmbPassFilter.addItemListener(this);
-		
+				
 		//Make sure bits will be calculated for the first time
 		pFilter.childChanged();
     }
     
+    public void addParentPanelListener() {
+		// Listen for the visible event from FilterSettingPanel
+    	// To syn Filters in cmbPassFilter
+		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
+		this.getParent().getParent().addComponentListener(cmpAdpt);
+    }
+    
+    //Each time, the FilterSettingPanel become visible, rebuild the model for the cmbPassFilter
+	class MyComponentAdapter extends ComponentAdapter {
+		public void componentShown(ComponentEvent e) {
+			buildCMBmodel();
+		}
+	}
 	
+	private void buildCMBmodel() {
+        // Create an empty filter, add to the top of the filter list in the combobox
+		CompositeFilter emptyFilter = new CompositeFilter("None");
+
+		Vector<CompositeFilter> tmpVect = new Vector<CompositeFilter>();
+		tmpVect.add(emptyFilter);
+		tmpVect.addAll(FilterPlugin.getAllFilterVect());
+		
+		DefaultComboBoxModel theModel = new DefaultComboBoxModel(tmpVect);
+		
+		cmbPassFilter.setModel(theModel);
+
+	}
 	
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
@@ -90,7 +125,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getSource();
 		
-		System.out.println("Entering TopoFilterPanel.itemStateChnaged() ...");
+		System.out.println("Entering TopoFilterPanel.itemStateChanged() ...");
 		
 		if (source instanceof JComboBox) {
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
@@ -210,6 +245,9 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 				if (value == theFilter) {
 					setText(""); 
 				}
+				//else if (value.toString().equalsIgnoreCase("None")) {
+				//	setText("None");
+				//}
 				else {
 					CompositeFilter tmpFilter = (CompositeFilter) value;
 					setText(tmpFilter.getName());					
@@ -235,6 +273,16 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 			if (_actionObject instanceof JTextField) {
 				JTextField _tfObj = (JTextField) _actionObject;
 				if (_tfObj == tfMinNeighbors) {
+
+					//Validate the data 
+					//try {
+			    	//	Integer.parseInt(tfMinNeighbors.getText());
+			    	//} 
+			    	//catch (NumberFormatException nfe) {			    		
+					//	JOptionPane.showMessageDialog((Component)e.getSource(), "Invalid values", "Warning", JOptionPane.ERROR_MESSAGE);
+			    	//	return;
+			    	//}
+
 					int _neighbors = (new Integer(tfMinNeighbors.getText())).intValue();
 					theFilter.setMinNeighbors(_neighbors);
 				}
