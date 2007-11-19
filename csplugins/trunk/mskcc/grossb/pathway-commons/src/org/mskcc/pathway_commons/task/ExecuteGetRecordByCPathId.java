@@ -5,7 +5,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.readers.GraphReader;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
 import org.mskcc.pathway_commons.web_service.CPathException;
 import org.mskcc.pathway_commons.util.PluginProperties;
@@ -20,7 +20,7 @@ import java.io.IOException;
  * @author Ethan Cerami.
  */
 public class ExecuteGetRecordByCPathId implements Task {
-    private PathwayCommonsWebApi webApi;
+    private cPathWebApi webApi;
     private TaskMonitor taskMonitor;
     private long ids[];
     private String networkTitle;
@@ -28,10 +28,10 @@ public class ExecuteGetRecordByCPathId implements Task {
     /**
      * Constructor.
      *
-     * @param webApi         Pathway Commons Web Api.
+     * @param webApi         cPath Web Api.
      * @param ids            Array of CPath IDs.
      */
-    public ExecuteGetRecordByCPathId(PathwayCommonsWebApi webApi, long ids[], String networkTitle) {
+    public ExecuteGetRecordByCPathId(cPathWebApi webApi, long ids[], String networkTitle) {
         this.webApi = webApi;
         this.ids = ids;
         this.networkTitle = networkTitle;

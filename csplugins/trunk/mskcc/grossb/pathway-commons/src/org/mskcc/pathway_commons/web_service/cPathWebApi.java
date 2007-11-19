@@ -6,7 +6,6 @@ import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.StringReader;
@@ -14,23 +13,23 @@ import java.io.StringReader;
 import cytoscape.task.TaskMonitor;
 
 /**
- * Class for accessing the Pathway Commons Web API.
+ * Class for accessing the cPath Web API.
  *
  * @author Ethan Cerami
  */
-public class PathwayCommonsWebApi {
-    private static ArrayList<PathwayCommonsWebApiListener> listeners =
-            new ArrayList<PathwayCommonsWebApiListener>();
+public class cPathWebApi {
+    private static ArrayList<cPathWebApiListener> listeners =
+            new ArrayList<cPathWebApiListener>();
     private volatile CPathProtocol protocol;
-    private static PathwayCommonsWebApi webApi;
+    private static cPathWebApi webApi;
 
     /**
-     * Gets Singelton instance of Pathway Commons Web API.
-     * @return
+     * Gets Singelton instance of CPath Web API.
+     * @return cPathWebApi Object.
      */
-    public static PathwayCommonsWebApi getInstance() {
+    public static cPathWebApi getInstance() {
         if (webApi == null) {
-            webApi = new PathwayCommonsWebApi();
+            webApi = new cPathWebApi();
         }
         return webApi;
     }
@@ -38,11 +37,11 @@ public class PathwayCommonsWebApi {
     /**
      * Private Constructor.
      */
-    private PathwayCommonsWebApi() {
+    private cPathWebApi() {
     }
 
     /**
-     * Searches Physical Entities in Pathway Commons.
+     * Searches Physical Entities in cPath Instance.
      *
      * @param keyword        Keyword to search for.
      * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms)
@@ -54,7 +53,7 @@ public class PathwayCommonsWebApi {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            PathwayCommonsWebApiListener listener = listeners.get(i);
+            cPathWebApiListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
 
@@ -87,7 +86,7 @@ public class PathwayCommonsWebApi {
         //SearchResponseType searchResponse = createDummySearchResults();
         // Notify all listeners of end
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            PathwayCommonsWebApiListener listener = listeners.get(i);
+            cPathWebApiListener listener = listeners.get(i);
             listener.searchCompletedForPhysicalEntities(searchResponse);
         }
         return searchResponse;
@@ -106,7 +105,7 @@ public class PathwayCommonsWebApi {
             throws CPathException, EmptySetException {
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            PathwayCommonsWebApiListener listener = listeners.get(i);
+            cPathWebApiListener listener = listeners.get(i);
             listener.requestInitiatedForParentSummaries(primaryId);
         }
 
@@ -134,7 +133,7 @@ public class PathwayCommonsWebApi {
 
         // Notify all listeners of end
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            PathwayCommonsWebApiListener listener = listeners.get(i);
+            cPathWebApiListener listener = listeners.get(i);
             listener.requestCompletedForParentSummaries(primaryId, summaryResponse);
         }
         return summaryResponse;
@@ -223,7 +222,7 @@ public class PathwayCommonsWebApi {
     }
 
     /**
-     * Gets a list of all Organisms currently available within Pathway Commons.
+     * Gets a list of all Organisms currently available within cPath instance.
      *
      * @return ArrayList of Organism Type Objects.
      */
@@ -234,27 +233,27 @@ public class PathwayCommonsWebApi {
     /**
      * Registers a new listener.
      *
-     * @param listener PathwayCommonsWebApi Listener.
+     * @param listener cPathWebApi Listener.
      */
-    public void addApiListener(PathwayCommonsWebApiListener listener) {
+    public void addApiListener(cPathWebApiListener listener) {
         listeners.add(listener);
     }
 
     /**
      * Removes the specified listener.
      *
-     * @param listener PathwayCommonsWebApi Listener.
+     * @param listener cPathWebApi Listener.
      */
-    public void removeApiListener(PathwayCommonsWebApiListener listener) {
+    public void removeApiListener(cPathWebApiListener listener) {
         listeners.remove(listener);
     }
 
     /**
      * Gets the list of all registered listeners.
      *
-     * @return ArrayList of PathwayCommonsWebApiListener Objects.
+     * @return ArrayList of cPathWebApiListener Objects.
      */
-    public ArrayList<PathwayCommonsWebApiListener> getListeners() {
+    public ArrayList<cPathWebApiListener> getListeners() {
         return listeners;
     }
 }

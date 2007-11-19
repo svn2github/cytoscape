@@ -4,7 +4,7 @@ import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.task.ExecuteGetRecordByCPathId;
 
 import javax.swing.*;
@@ -109,7 +109,7 @@ public class DownloadDetails extends JDialog {
      */
     private void downloadInteractions(long ids[], String peName) {
         String networkTitle = peName + ":  Network";
-        PathwayCommonsWebApi webApi = PathwayCommonsWebApi.getInstance();
+        cPathWebApi webApi = cPathWebApi.getInstance();
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, networkTitle);
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());

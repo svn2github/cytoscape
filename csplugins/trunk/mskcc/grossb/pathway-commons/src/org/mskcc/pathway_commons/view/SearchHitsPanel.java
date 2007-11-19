@@ -4,8 +4,8 @@ import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApiListener;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.view.model.RecordList;
@@ -27,7 +27,7 @@ import java.net.URL;
  *
  * @author Ethan Cerami.
  */
-public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListener {
+public class SearchHitsPanel extends JPanel implements cPathWebApiListener {
     private DefaultListModel peListModel;
     private JList peList;
     private SearchResponseType peSearchResponse;
@@ -44,12 +44,12 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
 
     /**
      * Constructor.
-     * @param interactionBundleModel     Interaction Table Model.
+     * @param interactionBundleModel    Interaction Table Model.
      * @param pathwayTableModel         Pathway Table Model.
-     * @param webApi                    Pathway Commons Web API.
+     * @param webApi                    cPath Web API.
      */
     public SearchHitsPanel(InteractionBundleModel interactionBundleModel, PathwayTableModel
-            pathwayTableModel, PathwayCommonsWebApi webApi) {
+            pathwayTableModel, cPathWebApi webApi) {
         this.interactionBundleModel = interactionBundleModel;
         this.pathwayTableModel = pathwayTableModel;
 		appLayeredPane = Cytoscape.getDesktop().getRootPane().getLayeredPane();

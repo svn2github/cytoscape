@@ -72,9 +72,9 @@ public class MergeDialog extends JDialog {
     private static final int DIALOG_HEIGHT = 350;
 
     /**
-     * ref to the pathway commons request string (url)
+     * ref to the cpath request string (url)
      */
-    private String pathwayCommonsRequest;
+    private String cpathRequest;
 
     /**
      * list of network titles -
@@ -124,7 +124,7 @@ public class MergeDialog extends JDialog {
         super(owner, title, modal);
 
         // init members
-        this.pathwayCommonsRequest = pathwayCommonsRequest;
+        this.cpathRequest = pathwayCommonsRequest;
         bpNetworkTitles = new String[bpNetworkSet.size()];
         bpNetworkMap = new HashMap<String, CyNetwork>();
         // here we link network titles to CyNetworks -
@@ -303,7 +303,7 @@ public class MergeDialog extends JDialog {
         JButton createButton = new JButton("Create New Network");
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new NetworkUtil(pathwayCommonsRequest, null,
+                new NetworkUtil(cpathRequest, null,
                         false, nodeContextMenuListener).start();
                 setVisible(false);
                 dispose();
@@ -315,7 +315,7 @@ public class MergeDialog extends JDialog {
         mergeButton.setEnabled((bpNetworkTitles.length == 1));
         mergeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new NetworkUtil(pathwayCommonsRequest, currentlySelectedNetwork,
+                new NetworkUtil(cpathRequest, currentlySelectedNetwork,
                         true, nodeContextMenuListener).start();
                 setVisible(false);
                 dispose();

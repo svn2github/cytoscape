@@ -4,11 +4,11 @@ import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 
 /**
- * Listener for listener to Requests made to the Pathway Commons API.
+ * Listener for listener to Requests made to the cPath Web API.
  *
  * @author Ethan Cerami
  */
-public interface PathwayCommonsWebApiListener {
+public interface cPathWebApiListener {
 
     /**
      * Indicates that someone has initiated a search for physical entities.

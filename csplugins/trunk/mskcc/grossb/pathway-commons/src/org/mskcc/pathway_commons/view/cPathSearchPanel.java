@@ -2,8 +2,8 @@ package org.mskcc.pathway_commons.view;
 
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApiListener;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.mskcc.pathway_commons.util.PluginProperties;
@@ -13,19 +13,17 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.BadLocationException;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.util.Vector;
 
 /**
  * Main GUI Panel for Searching a cPath Instance.
  *
  * @author Ethan Cerami.
  */
-public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsWebApiListener {
+public class cPathSearchPanel extends JPanel implements cPathWebApiListener {
     protected InteractionBundleModel interactionBundleModel;
     protected PathwayTableModel pathwayTableModel;
-    protected PathwayCommonsWebApi webApi;
+    protected cPathWebApi webApi;
     private JPanel searchBoxPanel;
     private JPanel searchHitsPanel = null;
     private JPanel cards;
@@ -35,7 +33,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
      *
      * @param webApi PathwayCommons Web API.
      */
-    public PathwayCommonsSearchPanel(PathwayCommonsWebApi webApi) {
+    public cPathSearchPanel(cPathWebApi webApi) {
 
         //  Store the web API model
         this.webApi = webApi;
@@ -139,8 +137,8 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        PathwayCommonsSearchPanel form = new PathwayCommonsSearchPanel(
-                PathwayCommonsWebApi.getInstance());
+        cPathSearchPanel form = new cPathSearchPanel(
+                cPathWebApi.getInstance());
         frame.getContentPane().add(form);
         frame.pack();
         form.initFocus();

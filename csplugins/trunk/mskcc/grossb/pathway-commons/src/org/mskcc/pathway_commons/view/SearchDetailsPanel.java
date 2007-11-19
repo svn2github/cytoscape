@@ -2,7 +2,6 @@ package org.mskcc.pathway_commons.view;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -13,8 +12,7 @@ import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
 
-import org.mskcc.pathway_commons.web_service.CPathProtocol;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
 import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.view.model.RecordList;
@@ -266,7 +264,7 @@ public class SearchDetailsPanel extends JPanel {
         long ids[] = new long[1];
         ids[0] = internalId;
 
-        PathwayCommonsWebApi webApi = PathwayCommonsWebApi.getInstance();
+        cPathWebApi webApi = cPathWebApi.getInstance();
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, title);
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());

@@ -123,7 +123,7 @@ public class MergeNetworkTask implements Task {
 
         try {
 
-            // read the network from pathway commons
+            // read the network from cpath instance
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Reading in Network Data from "
                     + PluginProperties.getNameOfCPathInstance()  + "...");

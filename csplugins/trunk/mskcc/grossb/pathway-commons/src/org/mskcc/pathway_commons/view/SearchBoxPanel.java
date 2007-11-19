@@ -3,15 +3,12 @@ package org.mskcc.pathway_commons.view;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -24,7 +21,7 @@ import java.net.URL;
  */
 public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
-    private PathwayCommonsWebApi webApi;
+    private cPathWebApi webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
     private Animator animator;
     private PulsatingBorder pulsatingBorder;
@@ -34,7 +31,7 @@ public class SearchBoxPanel extends JPanel {
      *
      * @param webApi PathwayCommmons Web API.
      */
-    public SearchBoxPanel(PathwayCommonsWebApi webApi) {
+    public SearchBoxPanel(cPathWebApi webApi) {
         this.webApi = webApi;
         GradientHeader header = new GradientHeader("Step 1:  Search");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);

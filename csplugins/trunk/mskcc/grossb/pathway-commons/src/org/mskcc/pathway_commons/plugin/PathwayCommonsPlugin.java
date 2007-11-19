@@ -42,8 +42,8 @@ import org.mskcc.pathway_commons.http.HTTPServer;
 import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
 import org.mskcc.pathway_commons.util.NetworkListener;
 import org.mskcc.pathway_commons.util.PluginProperties;
-import org.mskcc.pathway_commons.view.PathwayCommonsSearchPanel;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.view.cPathSearchPanel;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
 
 import javax.swing.*;
 
@@ -74,8 +74,8 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         final CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);
 
-        PathwayCommonsWebApi webApi = PathwayCommonsWebApi.getInstance();
-        final PathwayCommonsSearchPanel pcPanel = new PathwayCommonsSearchPanel(webApi);
+        cPathWebApi webApi = cPathWebApi.getInstance();
+        final cPathSearchPanel pcPanel = new cPathSearchPanel(webApi);
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

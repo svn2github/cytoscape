@@ -2,7 +2,7 @@ package org.mskcc.pathway_commons.task;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
+import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.web_service.CPathException;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author Ethan Cerami.
  */
 public class ExecutePhysicalEntitySearch implements Task {
-    private PathwayCommonsWebApi webApi;
+    private cPathWebApi webApi;
     private String keyword;
     private int ncbiTaxonomyId;
     private int startIndex;
@@ -26,12 +26,12 @@ public class ExecutePhysicalEntitySearch implements Task {
     /**
      * Constructor.
      *
-     * @param webApi         Pathway Commons Web Api.
+     * @param webApi         cPath Web Api.
      * @param keyword        Keyword
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
      * @param startIndex     Start Index.
      */
-    public ExecutePhysicalEntitySearch(PathwayCommonsWebApi webApi, String keyword,
+    public ExecutePhysicalEntitySearch(cPathWebApi webApi, String keyword,
             int ncbiTaxonomyId, int startIndex) {
         this.webApi = webApi;
         this.keyword = keyword;
