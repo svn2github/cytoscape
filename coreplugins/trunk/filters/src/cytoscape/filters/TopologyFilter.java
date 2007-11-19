@@ -42,6 +42,7 @@ import giny.model.Node;
 import java.util.*;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 
@@ -60,6 +61,7 @@ public class TopologyFilter extends CompositeFilter {
 	protected int withinDistance = 1;
 	protected CompositeFilter passFilter = null;
 	
+	private String objectType = "node"; 
 	public TopologyFilter() {
 	}
 
@@ -106,15 +108,127 @@ public class TopologyFilter extends CompositeFilter {
 	
 	
 	public void apply() {
+		System.out.println("Entering TopologyFilter.apply() ... ");
+		System.out.println("\tThe topo filter to apply is : " + toString());
+
 		if ( !childChanged ) 
 			return;
 
-		System.out.println("Entering TopologyFilter.apply() ... ");
-		System.out.println("\tThe topo filter to apply is : " + toString());
-		System.out.println("\tTopologyFilter.apply() not implemented yet ...");
+		network = Cytoscape.getCurrentNetwork();					
+
+		//Make sure the pass filter is current
+		if (!passFilter.getName().equalsIgnoreCase("None")) {
+			passFilter.apply();			
+		}	
+
+		List<Node> nodes_list = null;
+		List<Edge> edges_list=null;
+
+		int objectCount = -1;
 		
+		if (objectType.equalsIgnoreCase("node")) {
+			nodes_list = network.nodesList();
+			objectCount = nodes_list.size();
+			node_bits = new BitSet(objectCount); // all the bits are false at very beginning
+
+			// Print debug info
+			//BitSet passSet = passFilter.getNodeBits();
+			//for (int i=0; i<objectCount; i++) {
+			//	System.out.println("\t"+nodes_list.get(i).getIdentifier() +" passSet["+ i+ "] =" + passSet.get(i));
+			//}
+			
+			for (int i=0; i<objectCount; i++) {
+				if (isHit(nodes_list.get(i))) {
+					node_bits.set(i);
+					System.out.println("\tPass");
+				}
+				else {
+					System.out.println("\tNo Pass");
+				}
+			}
+		}
+		else if (objectType.equalsIgnoreCase("edge")) {
+			edges_list = network.edgesList();
+			objectCount = edges_list.size();
+			edge_bits = new BitSet(objectCount); // all the bits are false at very beginning			
+
+			for (int i=0; i<objectCount; i++) {
+				if (isHit(edges_list.get(i))) {
+					edge_bits.set(i);
+				}
+			}
+		}
+		else {
+			System.out.println("TopologyFilter: objectType is undefined.");
+			return;
+		}
+
+		if (negation) {
+			if (objectType.equalsIgnoreCase("node")) {
+				node_bits.flip(0, objectCount);
+			}
+			if (objectType.equalsIgnoreCase("edge")) {
+				edge_bits.flip(0, objectCount);
+			}
+		}
+
 		childChanged = false;
+
 	}
+
+	private boolean isHit(Object pObj) {
+		System.out.println("Entering isHit() for pObj = " + ((Node)pObj).getIdentifier());
+
+		// Get all the neighbors for pNode that pass the given filter
+		HashSet neighborSet = new HashSet();
+		getNeighbors(pObj, neighborSet, withinDistance);
+		
+		//Exclude self from the neighbor
+		if (neighborSet.contains(pObj)) {
+			neighborSet.remove(pObj);
+		}
+
+		// remove all the neighbors that do not pass the given filter
+		if (!passFilter.getName().equalsIgnoreCase("None")) {
+			Object [] nodeArray = neighborSet.toArray();
+			for (int i=0; i< nodeArray.length; i++) {
+				int nodeIndex = network.nodesList().indexOf(nodeArray[i]);
+				
+				if (!passFilter.getNodeBits().get(nodeIndex)) {
+					neighborSet.remove(nodeArray[i]);
+				}
+			}			
+		}
+		
+		if (neighborSet.size() < minNeighbors) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// Get all the neighbors for pNode within pDistance
+	private void getNeighbors(Object pObj, HashSet pNeighborSet, int pDistance) {
+		if (pDistance == 0) {
+			if (!pNeighborSet.contains(pObj)) {
+				pNeighborSet.add(pObj);
+			}
+			return;
+		}
+		
+		List neighbors = network.neighborsList((Node)pObj);
+		
+		Iterator nodeIt = neighbors.iterator();
+		while (nodeIt.hasNext()) {
+			Node nextNode = (Node) nodeIt.next();
+			
+			if (!pNeighborSet.contains(nextNode)) {
+				pNeighborSet.add(nextNode);
+			}
+			getNeighbors(nextNode, pNeighborSet, pDistance-1);
+		}
+	}
+	
 	
 	public String toString() {
 		if (passFilter == null) {
