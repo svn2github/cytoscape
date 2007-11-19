@@ -91,7 +91,7 @@ public class HTTPConnectionHandler extends Thread {
             if (debug)
                 System.out.println("HTTPConnectionHandler, request received: " + request.getRequest());
 
-            // only interested in pathway commons web service urls
+            // only interested in cpath web service urls
             if (request.getRequest().indexOf(WEB_SERVICE_URL) != -1) {
 
                 // send response back to client - before we process here

@@ -42,6 +42,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
 import org.mskcc.pathway_commons.cytoscape.MergeNetworkEdit;
+import org.mskcc.pathway_commons.util.PluginProperties;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -112,7 +113,7 @@ public class MergeNetworkTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Pathway Commons Plugin - Merge Network";
+        return PluginProperties.getNameOfCPathInstance() + " Plugin - Merge Network";
     }
 
     /**
@@ -124,7 +125,8 @@ public class MergeNetworkTask implements Task {
 
             // read the network from pathway commons
             taskMonitor.setPercentCompleted(-1);
-            taskMonitor.setStatus("Reading in Network Data for pathwaycommons.org...");
+            taskMonitor.setStatus("Reading in Network Data from "
+                    + PluginProperties.getNameOfCPathInstance()  + "...");
             reader.read();
 
             // unselect all nodes / edges

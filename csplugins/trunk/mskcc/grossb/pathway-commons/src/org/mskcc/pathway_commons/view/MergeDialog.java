@@ -36,6 +36,7 @@ package org.mskcc.pathway_commons.view;
 import cytoscape.CyNetwork;
 import ding.view.NodeContextMenuListener;
 import org.mskcc.pathway_commons.util.NetworkUtil;
+import org.mskcc.pathway_commons.util.PluginProperties;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -193,8 +194,9 @@ public class MergeDialog extends JDialog {
         infoPanel.setBorder(new EmptyBorder(10, 2, 10, 5)); // top, left, bottom, right
 
         // create text area to display message
-        JTextArea textArea = new JTextArea("A new network has just been downloaded from Pathway Commons." +
-                "  You have the option to create a new network within Cytoscape" +
+        JTextArea textArea = new JTextArea("A new network has just been downloaded from " +
+                PluginProperties.getNameOfCPathInstance() +
+                ".  You have the option to create a new network within Cytoscape" +
                 " or merge the new network into an existing Cytoscape network.",
                 3, 40);
         textArea.setEditable(false);

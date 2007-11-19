@@ -43,6 +43,7 @@ import org.mskcc.pathway_commons.http.HTTPConnectionHandler;
 import org.mskcc.pathway_commons.http.HTTPEvent;
 import org.mskcc.pathway_commons.http.HTTPServerListener;
 import org.mskcc.pathway_commons.util.NetworkUtil;
+import org.mskcc.pathway_commons.util.PluginProperties;
 import org.mskcc.pathway_commons.view.MergeDialog;
 
 import java.net.Proxy;
@@ -153,7 +154,7 @@ public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
     private void loadMergeDialog(String pathwayCommonsRequest, Set<CyNetwork> bpNetworkSet) {
 
         MergeDialog dialog = new MergeDialog(Cytoscape.getDesktop(),
-                "Pathway Commons Network Merge",
+                PluginProperties.getNameOfCPathInstance() + "Network Merge",
                 true,
                 pathwayCommonsRequest,
                 bpNetworkSet,

@@ -41,13 +41,14 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import org.mskcc.pathway_commons.http.HTTPServer;
 import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
 import org.mskcc.pathway_commons.util.NetworkListener;
+import org.mskcc.pathway_commons.util.PluginProperties;
 import org.mskcc.pathway_commons.view.PathwayCommonsSearchPanel;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 
 import javax.swing.*;
 
 /**
- * The pathway commons plugin class.  It gets called by Cytoscape's plugin manager
+ * The cPath plugin class.  It gets called by Cytoscape's plugin manager
  * to install inself.  The main job of this guy is to instantiate our http server.
  *
  * @author Benjamin Gross.
@@ -78,7 +79,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cytoPanelWest.add("Pathway Commons", pcPanel);
+                cytoPanelWest.add(PluginProperties.getNameOfCPathInstance(), pcPanel);
                 cytoPanelWest.setState(CytoPanelState.DOCK);
             }
         });

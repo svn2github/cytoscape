@@ -3,10 +3,8 @@ package org.mskcc.pathway_commons.view;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
-import org.mskcc.pathway_commons.web_service.CPathProtocol;
+import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
-import org.mskcc.pathway_commons.util.NetworkUtil;
 import org.mskcc.pathway_commons.task.ExecuteGetRecordByCPathId;
 
 import javax.swing.*;
@@ -29,7 +27,7 @@ public class DownloadDetails extends JDialog {
      * @param passedRecordList      List of Records that Passed over Filter.
      * @param peName                Name of Physical Entity.
      */
-    public DownloadDetails(java.util.List<RecordType> passedRecordList,
+    public DownloadDetails(java.util.List<BasicRecordType> passedRecordList,
             String peName) {
         super();
         this.setTitle("Download Confirmation");
@@ -56,9 +54,9 @@ public class DownloadDetails extends JDialog {
 
         final long ids[] = new long[passedRecordList.size()];
         int i = 0;
-        for (RecordType record : passedRecordList) {
+        for (BasicRecordType record : passedRecordList) {
             tableModel.setValueAt(record.getName(), i, 0);
-            tableModel.setValueAt(record.getType(), i, 1);
+            tableModel.setValueAt(record.getEntityType(), i, 1);
             if (record.getDataSource() != null) {
                 tableModel.setValueAt(record.getDataSource().getName(), i, 2);
             } else {

@@ -6,7 +6,8 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.CPathException;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
-import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
+import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
+import org.mskcc.pathway_commons.util.PluginProperties;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Searching Pathway Commons...";
+        return "Searching " + PluginProperties.getNameOfCPathInstance() + "...";
     }
 
     /**
@@ -68,19 +69,19 @@ public class ExecutePhysicalEntitySearch implements Task {
      */
     public void run() {
         try {
-            // read the network from pathway commons
+            // read the network from cpath instance
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Executing Search");
 
             //  Execute the Search
             SearchResponseType searchResponse = webApi.searchPhysicalEntities(keyword,
                     ncbiTaxonomyId, startIndex, taskMonitor);
-            List<SearchHitType> searchHits = searchResponse.getSearchHit();
+            List<ExtendedRecordType> searchHits = searchResponse.getSearchHit();
 
             int numHits = searchHits.size();
             int numRetrieved = 1;
             taskMonitor.setPercentCompleted(1);
-            for (SearchHitType hit:  searchHits) {
+            for (ExtendedRecordType hit:  searchHits) {
                 taskMonitor.setStatus("Retrieving interaction details for:  " +
                     hit.getName());
                 webApi.getParentSummaries(hit.getPrimaryId(), taskMonitor);

@@ -8,11 +8,8 @@ import cytoscape.data.readers.GraphReader;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
 import org.mskcc.pathway_commons.web_service.CPathException;
-import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
-import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
+import org.mskcc.pathway_commons.util.PluginProperties;
 
-import javax.swing.*;
-import java.util.List;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -62,7 +59,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Retrieving Records from Pathway Commons...";
+        return "Retrieving Records from " + PluginProperties.getNameOfCPathInstance() +"...";
     }
 
     /**
@@ -70,7 +67,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      */
     public void run() {
         try {
-            // read the network from pathway commons
+            // read the network from cpath instance
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Retrieving Records");
 

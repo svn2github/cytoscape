@@ -20,11 +20,10 @@ import org.mskcc.pathway_commons.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.view.model.RecordList;
 import org.mskcc.pathway_commons.view.tree.CheckNode;
 import org.mskcc.pathway_commons.view.tree.JTreeWithCheckNodes;
-import org.mskcc.pathway_commons.util.NetworkUtil;
 import org.mskcc.pathway_commons.filters.ChainedFilter;
 import org.mskcc.pathway_commons.filters.DataSourceFilter;
 import org.mskcc.pathway_commons.filters.EntityTypeFilter;
-import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
+import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 import org.mskcc.pathway_commons.task.ExecuteGetRecordByCPathId;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
@@ -211,7 +210,7 @@ public class SearchDetailsPanel extends JPanel {
                 chainedFilter.addFilter(dataSourceFilter);
                 chainedFilter.addFilter(entityTypeFilter);
                 try {
-                    List<RecordType> passedRecordList =  chainedFilter.filter
+                    List<BasicRecordType> passedRecordList =  chainedFilter.filter
                             (interactionBundleModel.getRecordList().
                             getSummaryResponse().getRecord());
                     if (passedRecordList.size() == 0) {

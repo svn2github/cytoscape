@@ -44,8 +44,8 @@ public class SelectPhysicalEntity {
             pathwayTableModel, Document summaryDocumentModel,
             JTextPane textPane, JComponent textPaneOwner) {
         if (peSearchResponse != null) {
-            java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
-            SearchHitType searchHit = searchHits.get(selectedIndex);
+            java.util.List<ExtendedRecordType> searchHits = peSearchResponse.getSearchHit();
+            ExtendedRecordType searchHit = searchHits.get(selectedIndex);
 
             StringBuffer html = new StringBuffer();
             html.append("<html>");
@@ -134,7 +134,7 @@ public class SelectPhysicalEntity {
      * @param searchHit             Search Hit Object.
      * @param interactionBundleModel Interaction Bundle Model.
      */
-    private void updateInteractionData(SearchHitType searchHit, InteractionBundleModel
+    private void updateInteractionData(ExtendedRecordType searchHit, InteractionBundleModel
             interactionBundleModel) {
         RecordList recordList = parentRecordsMap.get(searchHit.getPrimaryId());
         if (recordList != null) {
@@ -149,7 +149,8 @@ public class SelectPhysicalEntity {
      * @param searchHit         SearchHit Object.
      * @param pathwayTableModel Pathway Table Model.
      */
-    private void updatePathwayData(SearchHitType searchHit, PathwayTableModel pathwayTableModel) {
+    private void updatePathwayData(ExtendedRecordType searchHit, PathwayTableModel
+            pathwayTableModel) {
         List<PathwayType> pathwayList = searchHit.getPathwayList().getPathway();
 
         Vector dataVector = pathwayTableModel.getDataVector();

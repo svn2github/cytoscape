@@ -38,7 +38,7 @@ import org.mskcc.pathway_commons.http.HTTPServer;
 import org.mskcc.pathway_commons.http.HTTPServerListener;
 
 /**
- * Driver class for Pathway Commons Plugin components.
+ * Driver class for cPath Plugin components.
  *
  * @author Benjamin Gross
  */

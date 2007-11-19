@@ -1,6 +1,6 @@
 package org.mskcc.pathway_commons.filters;
 
-import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
+import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class ChainedFilter implements Filter {
      * @param recordList List of RecordType Objects.
      * @return List of RecordType Objects.
      */    
-    public List<RecordType> filter(List<RecordType> recordList) {
+    public List<BasicRecordType> filter(List<BasicRecordType> recordList) {
         for (Filter filter:  filterList) {
             recordList = filter.filter(recordList);
         }

@@ -150,7 +150,7 @@ public class NetworkUtil extends Thread {
     }
 
     /**
-     * Method to process/parse the pathway commons request and
+     * Method to process/parse the cpath request and
      * set proper member variables.
      *
      * @param pathwayCommonsRequest String
@@ -176,7 +176,7 @@ public class NetworkUtil extends Thread {
     }
 
     /**
-     * Extracts argument from pathway commons request (url).
+     * Extracts argument from cpath request (url).
      * Method removes argument from pathwayCommonsRequest arg,
      * and returns it as String.
      *

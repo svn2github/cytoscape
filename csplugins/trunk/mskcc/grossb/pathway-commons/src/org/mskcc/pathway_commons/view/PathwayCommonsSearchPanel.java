@@ -6,6 +6,7 @@ import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApi;
 import org.mskcc.pathway_commons.web_service.PathwayCommonsWebApiListener;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
+import org.mskcc.pathway_commons.util.PluginProperties;
 
 import javax.swing.*;
 import javax.swing.text.Document;
@@ -17,7 +18,7 @@ import java.awt.*;
 import java.util.Vector;
 
 /**
- * Main GUI Panel for Searching Pathway Commons.
+ * Main GUI Panel for Searching a cPath Instance.
  *
  * @author Ethan Cerami.
  */
@@ -79,7 +80,7 @@ public class PathwayCommonsSearchPanel extends JPanel implements PathwayCommonsW
                 + "assembly, transport and catalysis events, and physical interactions "
                 + "involving proteins, DNA, RNA, small molecules and complexes.", attrs);
             StyleConstants.setBold(attrs, true);
-            doc.insertString(0, "Pathway Commons", attrs);
+            doc.insertString(0, PluginProperties.getNameOfCPathInstance(), attrs);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }

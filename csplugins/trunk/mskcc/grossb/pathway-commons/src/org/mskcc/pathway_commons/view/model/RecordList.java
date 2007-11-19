@@ -1,7 +1,7 @@
 package org.mskcc.pathway_commons.view.model;
 
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
-import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
+import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 import org.mskcc.pathway_commons.schemas.summary_response.DataSourceType;
 import org.mskcc.pathway_commons.util.BioPaxEntityTypeMap;
 
@@ -64,9 +64,9 @@ public class RecordList {
     }
 
     private void catalogInteractions() {
-        List<RecordType> recordList = summaryResponse.getRecord();
+        List<BasicRecordType> recordList = summaryResponse.getRecord();
         if (recordList != null) {
-            for (RecordType record:  recordList) {
+            for (BasicRecordType record:  recordList) {
                 catalogDataSource(record.getDataSource());
                 catalogInteractionType(record);
                 //  TODO:  additional catalogs, as needed.
@@ -85,12 +85,12 @@ public class RecordList {
         dataSourceMap.put(name, count);
     }
 
-    private void catalogInteractionType(RecordType record) {
-        String type = record.getType();
+    private void catalogInteractionType(BasicRecordType record) {
+        String type = record.getEntityType();
         BioPaxEntityTypeMap map = BioPaxEntityTypeMap.getInstance();
         if (map.containsKey(type)) {
             type = (String) map.get(type);
-            record.setType(type);
+            record.setEntityType(type);
         }
         Integer count = interactionTypeMap.get(type);
         if (count != null) {

@@ -171,9 +171,9 @@ public class PathwayCommonsWebApi {
 
     private SearchResponseType createDummySearchResults() {
         SearchResponseType searchResponse = new SearchResponseType();
-        List<SearchHitType> searchHits = searchResponse.getSearchHit();
+        List<ExtendedRecordType> searchHits = searchResponse.getSearchHit();
         for (int i = 0; i < 10; i++) {
-            SearchHitType searchHit = new SearchHitType();
+            ExtendedRecordType searchHit = new ExtendedRecordType();
             searchHit.setName("Protein " + i);
 
             OrganismType organism = new OrganismType();
@@ -204,22 +204,6 @@ public class PathwayCommonsWebApi {
                     + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
                     + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
 
-            List comments = searchHit.getComment();
-            comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
-                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
-                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
-                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
-
-            comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
-                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
-                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
-                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
-
-            comments.add("Vestibulum pharetra laoreet ante dictum dolor sed, "
-                    + "elementum egestas nunc nullam, pede mauris mattis, eros nam, elit "
-                    + "aliquam lorem vestibulum duis a tortor. Adipiscing elit habitant justo, "
-                    + "nonummy nunc wisi eros, dictum eget orci placerat metus vehicula eu.");
-            
             ObjectFactory factory = new ObjectFactory();
             PathwayListType pathwayListType = factory.createPathwayListType();
             List <PathwayType> pathwayList = pathwayListType.getPathway();
@@ -232,21 +216,6 @@ public class PathwayCommonsWebApi {
                 dataSource.setName("Data Source " + j);
                 pathwaySummary.setDataSource(dataSource);
                 pathwayList.add(pathwaySummary);
-            }
-
-            InteractionBundleListType interactionBundleListType =
-                    factory.createInteractionBundleListType();
-            List<InteractionBundleType> interactionBundleList =
-                    interactionBundleListType.getInteractionBundle();
-            searchHit.setInteractionBundleList(interactionBundleListType);
-            
-            for (int j = 0; j < 10; j++) {
-                InteractionBundleType interactionBundle = new InteractionBundleType();
-                DataSourceType dataSource = new DataSourceType();
-                dataSource.setName("Data Source " + j);
-                interactionBundle.setDataSource(dataSource);
-                interactionBundle.setNumInteractions(BigInteger.valueOf(i * j));
-                interactionBundleList.add(interactionBundle);
             }
             searchHits.add(searchHit);
         }

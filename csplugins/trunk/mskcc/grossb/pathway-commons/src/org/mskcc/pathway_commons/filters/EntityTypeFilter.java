@@ -1,6 +1,6 @@
 package org.mskcc.pathway_commons.filters;
 
-import org.mskcc.pathway_commons.schemas.summary_response.RecordType;
+import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 import org.mskcc.pathway_commons.util.BioPaxEntityTypeMap;
 
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ public class EntityTypeFilter implements Filter {
      * @param recordList List of RecordType Objects.
      * @return List of RecordType Objects.
      */
-    public List<RecordType> filter(List<RecordType> recordList) {
+    public List<BasicRecordType> filter(List<BasicRecordType> recordList) {
         BioPaxEntityTypeMap bpMap = BioPaxEntityTypeMap.getInstance();
-        ArrayList<RecordType> passedList = new ArrayList<RecordType>();
-        for (RecordType record : recordList) {
-            String type = record.getType();
+        ArrayList<BasicRecordType> passedList = new ArrayList<BasicRecordType>();
+        for (BasicRecordType record : recordList) {
+            String type = record.getEntityType();
             if (type != null) {
                 if (bpMap.containsKey(type)) {
                     type = (String) bpMap.get(type);

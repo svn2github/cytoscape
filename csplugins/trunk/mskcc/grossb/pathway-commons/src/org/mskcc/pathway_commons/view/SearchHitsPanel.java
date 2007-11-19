@@ -1,6 +1,6 @@
 package org.mskcc.pathway_commons.view;
 
-import org.mskcc.pathway_commons.schemas.search_response.SearchHitType;
+import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.mskcc.pathway_commons.task.SelectPhysicalEntity;
@@ -175,10 +175,10 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
             this.peSearchResponse = peSearchResponse;
 
             //  Populate the hit list
-            List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
+            List<ExtendedRecordType> searchHits = peSearchResponse.getSearchHit();
             peListModel.setSize(searchHits.size());
             int i = 0;
-            for (SearchHitType searchHit : searchHits) {
+            for (ExtendedRecordType searchHit : searchHits) {
                 String name = searchHit.getName();
                 peListModel.setElementAt(name, i++);
             }
@@ -207,9 +207,9 @@ public class SearchHitsPanel extends JPanel implements PathwayCommonsWebApiListe
 
         //  If we have just received parent summaries for the first search hit, select it.
         if (peSearchResponse != null) {
-            List <SearchHitType> searchHits = peSearchResponse.getSearchHit();
+            List <ExtendedRecordType> searchHits = peSearchResponse.getSearchHit();
             if (searchHits.size() > 0) {
-                SearchHitType searchHit = searchHits.get(0);
+                ExtendedRecordType searchHit = searchHits.get(0);
                 if (primaryId == searchHit.getPrimaryId()) {
                     peList.setSelectedIndex(0);
                     SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentRecordsMap);
