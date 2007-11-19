@@ -95,8 +95,10 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			TopoFilterPanel topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, FilterPlugin.getAllFilterVect());
+			TopoFilterPanel topoPanel = new TopoFilterPanel((TopologyFilter)theFilter);
 			pnlCustomSettings.add(topoPanel, gridBagConstraints);
+			topoPanel.addParentPanelListener();
+			
 			addBlankLabelToCustomPanel();
 
 			// Hide un-used components in AdvancedPanel
