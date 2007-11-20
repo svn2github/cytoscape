@@ -2,7 +2,6 @@ package org.cytoscape.coreplugin.cpath2.view;
 
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
-import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;

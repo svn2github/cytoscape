@@ -42,7 +42,6 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
 import org.cytoscape.coreplugin.cpath2.cytoscape.MergeNetworkEdit;
-import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import java.net.URL;

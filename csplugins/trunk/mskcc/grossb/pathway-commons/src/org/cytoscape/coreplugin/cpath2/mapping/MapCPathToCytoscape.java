@@ -42,7 +42,6 @@ import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.cytoscape.coreplugin.cpath2.http.HTTPConnectionHandler;
 import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
-import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
 import org.cytoscape.coreplugin.cpath2.view.MergeDialog;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;

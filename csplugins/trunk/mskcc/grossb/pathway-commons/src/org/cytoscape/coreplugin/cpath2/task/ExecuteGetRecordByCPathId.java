@@ -5,7 +5,6 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.readers.GraphReader;
-import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathException;

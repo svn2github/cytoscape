@@ -36,7 +36,6 @@ package org.cytoscape.coreplugin.cpath2.view;
 import cytoscape.CyNetwork;
 import ding.view.NodeContextMenuListener;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
-import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import javax.swing.*;

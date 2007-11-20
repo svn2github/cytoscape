@@ -2,7 +2,6 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
