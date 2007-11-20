@@ -5,7 +5,7 @@ import cytoscape.task.TaskMonitor;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathException;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
 
@@ -95,8 +95,8 @@ public class ExecutePhysicalEntitySearch implements Task {
         } catch (EmptySetException e) {
             taskMonitor.setException(e, "No matches found for:  " + keyword + ".",
                     "Please try a different search term and try again.");
-        } catch (CPathException e) {
-            if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
+        } catch (cPathException e) {
+            if (e.getErrorCode() != cPathException.ERROR_CANCELED_BY_USER) {
                 taskMonitor.setException(e, e.getMessage(), e.getRecoveryTip());
             }
         }

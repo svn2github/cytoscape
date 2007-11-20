@@ -21,7 +21,7 @@ import java.net.URLEncoder;
  *
  * @author Ethan Cerami
  */
-public class CPathProtocol {
+public class cPathProtocol {
 
     /**
      * The CPath Web Service Path.
@@ -168,8 +168,8 @@ public class CPathProtocol {
     /**
      * Constructor.
      */
-    public CPathProtocol () {
-        this.baseUrl = CPathProperties.getCPathUrl();
+    public cPathProtocol() {
+        this.baseUrl = cPathProperties.getCPathUrl();
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
     }
@@ -242,10 +242,10 @@ public class CPathProtocol {
      * Connects to cPath Web Service API.
      *
      * @return XML Document.
-     * @throws CPathException    Indicates Error connecting.
+     * @throws cPathException    Indicates Error connecting.
      * @throws EmptySetException All went all, but no results found.
      */
-    public String connect (TaskMonitor taskMonitor) throws CPathException, EmptySetException {
+    public String connect (TaskMonitor taskMonitor) throws cPathException, EmptySetException {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
@@ -294,17 +294,17 @@ public class CPathProtocol {
                 return content.trim();
             }
         } catch (UnknownHostException e) {
-            throw new CPathException(CPathException.ERROR_UNKNOWN_HOST, e);
+            throw new cPathException(cPathException.ERROR_UNKNOWN_HOST, e);
         } catch (SocketException e) {
             if (cancelledByUser) {
-                throw new CPathException(CPathException.ERROR_CANCELED_BY_USER, e);
+                throw new cPathException(cPathException.ERROR_CANCELED_BY_USER, e);
             } else {
-                throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
+                throw new cPathException(cPathException.ERROR_NETWORK_IO, e);
             }
         } catch (IOException e) {
-            throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
+            throw new cPathException(cPathException.ERROR_NETWORK_IO, e);
         } catch (JDOMException e) {
-            throw new CPathException(CPathException.ERROR_XML_PARSING, e);
+            throw new cPathException(cPathException.ERROR_XML_PARSING, e);
         }
     }
 
@@ -396,7 +396,7 @@ public class CPathProtocol {
         nvps[0] = new NameValuePair(ARG_COMMAND, command);
         nvps[1] = new NameValuePair(ARG_QUERY, query);
         nvps[2] = new NameValuePair(ARG_FORMAT, format);
-        nvps[3] = new NameValuePair(ARG_VERSION, CPathProtocol.CURRENT_VERSION);
+        nvps[3] = new NameValuePair(ARG_VERSION, CURRENT_VERSION);
         nvps[4] = new NameValuePair(ARG_MAX_HITS, Integer.toString(maxHits));
         nvps[5] = new NameValuePair(ARG_START_INDEX,
                 Integer.toString(startIndex));
@@ -404,15 +404,15 @@ public class CPathProtocol {
     }
 
     private void checkHttpStatusCode (int statusCode)
-            throws CPathException {
+            throws cPathException {
         if (statusCode != 200) {
-            throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
+            throw new cPathException(cPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
                 + ":  " + HttpStatus.getStatusText(statusCode));
         }
     }
 
     private void checkForErrors (Document document)
-            throws CPathException, EmptySetException {
+            throws cPathException, EmptySetException {
         Element element = document.getRootElement();
         String name = element.getName();
         if (name.equals("error")) {
@@ -421,7 +421,7 @@ public class CPathProtocol {
             if (errorCode.equals("460")) {
                 throw new EmptySetException();
             } else {
-                throw new CPathException(CPathException.ERROR_WEB_SERVICE_API,
+                throw new cPathException(cPathException.ERROR_WEB_SERVICE_API,
                     "Error Code:  " + errorCode + ", " + errorMsg);
             }
         }

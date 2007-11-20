@@ -8,7 +8,7 @@ import cytoscape.data.readers.GraphReader;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -109,8 +109,8 @@ public class ExecuteGetRecordByCPathId implements Task {
         } catch (EmptySetException e) {
             taskMonitor.setException(e, "No matches found for your request.  ",
                     "Please try again.");
-        } catch (CPathException e) {
-            if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
+        } catch (cPathException e) {
+            if (e.getErrorCode() != cPathException.ERROR_CANCELED_BY_USER) {
                 taskMonitor.setException(e, e.getMessage(), e.getRecoveryTip());
             }
         }

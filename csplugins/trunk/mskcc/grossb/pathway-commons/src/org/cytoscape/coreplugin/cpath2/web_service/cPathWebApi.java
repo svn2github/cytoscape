@@ -19,7 +19,7 @@ import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseT
 public class cPathWebApi {
     private static ArrayList<cPathWebApiListener> listeners =
             new ArrayList<cPathWebApiListener>();
-    private volatile CPathProtocol protocol;
+    private volatile cPathProtocol protocol;
     private static cPathWebApi webApi;
 
     /**
@@ -48,7 +48,7 @@ public class cPathWebApi {
      * @return SearchResponseType Object.
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex, TaskMonitor taskMonitor) throws CPathException, EmptySetException {
+            int startIndex, TaskMonitor taskMonitor) throws cPathException, EmptySetException {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
@@ -56,9 +56,9 @@ public class cPathWebApi {
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
 
-        protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
-        protocol.setFormat(CPathProtocol.FORMAT_XML);
+        protocol = new cPathProtocol();
+        protocol.setCommand(cPathProtocol.COMMAND_GET_BY_KEYWORD);
+        protocol.setFormat(cPathProtocol.FORMAT_XML);
         protocol.setQuery(keyword);
 
         SearchResponseType searchResponse;
@@ -78,7 +78,7 @@ public class cPathWebApi {
                 JAXBElement element = (JAXBElement) u.unmarshal(reader);
                 searchResponse = (SearchResponseType) element.getValue();
             } catch(Throwable e){
-                throw new CPathException (CPathException.ERROR_XML_PARSING, e);
+                throw new cPathException(cPathException.ERROR_XML_PARSING, e);
             }
         }
 
@@ -97,20 +97,20 @@ public class cPathWebApi {
      * @param primaryId     Primary ID of Record.
      * @param taskMonitor   Task Monitor Object.
      * @return SummaryResponse Object.
-     * @throws CPathException       CPath Error.
+     * @throws cPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
     public SummaryResponseType getParentSummaries (long primaryId, TaskMonitor taskMonitor)
-            throws CPathException, EmptySetException {
+            throws cPathException, EmptySetException {
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
             cPathWebApiListener listener = listeners.get(i);
             listener.requestInitiatedForParentSummaries(primaryId);
         }
 
-        protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_PARENT_SUMMMARIES);
-        protocol.setFormat(CPathProtocol.FORMAT_XML);
+        protocol = new cPathProtocol();
+        protocol.setCommand(cPathProtocol.COMMAND_GET_PARENT_SUMMMARIES);
+        protocol.setFormat(cPathProtocol.FORMAT_XML);
 
         protocol.setQuery(Long.toString(primaryId));
 
@@ -127,7 +127,7 @@ public class cPathWebApi {
             JAXBElement element = (JAXBElement) u.unmarshal(reader);
             summaryResponse = (SummaryResponseType) element.getValue();
         } catch(Throwable e){
-            throw new CPathException (CPathException.ERROR_XML_PARSING, e);
+            throw new cPathException(cPathException.ERROR_XML_PARSING, e);
         }
 
         // Notify all listeners of end
@@ -143,14 +143,14 @@ public class cPathWebApi {
      * @param ids               Array of Primary IDs.
      * @param taskMonitor       Task Monitor Object.
      * @return  BioPAX XML String.
-     * @throws CPathException       CPath Error.
+     * @throws cPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
     public String getRecordsByIds(long[] ids, TaskMonitor taskMonitor) throws
-        CPathException, EmptySetException {
-        protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
-        protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
+            cPathException, EmptySetException {
+        protocol = new cPathProtocol();
+        protocol.setCommand(cPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
+        protocol.setFormat(cPathProtocol.FORMAT_BIOPAX);
         StringBuffer q = new StringBuffer();
         for (int i=0; i<ids.length; i++) {
             q.append (Long.toString(ids[i])+",");

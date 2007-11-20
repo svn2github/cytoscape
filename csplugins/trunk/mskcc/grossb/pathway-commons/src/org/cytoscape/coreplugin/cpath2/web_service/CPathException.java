@@ -5,7 +5,7 @@ package org.cytoscape.coreplugin.cpath2.web_service;
  *
  * @author Ethan Cerami.
  */
-public class CPathException extends Exception {
+public class cPathException extends Exception {
     /**
      * Error:  Canceled by User.
      */
@@ -52,13 +52,13 @@ public class CPathException extends Exception {
      * @param errorCode Error Code.
 	 * @param t Root throwable.
 	 */
-	public CPathException(int errorCode, Throwable t) {
+	public cPathException(int errorCode, Throwable t) {
         super(t);
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
     }
 
-    public CPathException (int errorCode, String errorDetail) {
+    public cPathException(int errorCode, String errorDetail) {
         this.errorDetail = errorDetail;
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
