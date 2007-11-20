@@ -85,7 +85,7 @@ public class BioPaxDetailsPanel extends JPanel {
         textPane.setBorder(new EmptyBorder (5,5,5,5));
         textPane.setContentType("text/html");
 		textPane.setEditable(false);
-		textPane.addHyperlinkListener(new LaunchExternalBrowser(this));
+		textPane.addHyperlinkListener(new LaunchExternalBrowser());
 		resetText();
 
 		scrollPane = new JScrollPane(textPane);
