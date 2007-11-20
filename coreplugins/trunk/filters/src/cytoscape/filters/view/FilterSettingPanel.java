@@ -62,8 +62,6 @@ import javax.swing.event.ChangeEvent;
 import java.awt.Component;
 import javax.swing.JRadioButton;
 
-
-
 public class FilterSettingPanel extends JPanel {
 	
 	private static final ImageIcon plusIcon = new ImageIcon(
@@ -76,6 +74,7 @@ public class FilterSettingPanel extends JPanel {
 	private CompositeFilter theFilter;
 	private FilterMainPanel parentPanel;
 	private CyNetwork currentNetwork = null;
+	private TopoFilterPanel topoPanel = null;
 
 	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj) {
 		theFilter = (CompositeFilter) pFilterObj;
@@ -95,9 +94,9 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			TopoFilterPanel topoPanel = new TopoFilterPanel((TopologyFilter)theFilter);
+			topoPanel = new TopoFilterPanel((TopologyFilter)theFilter);
 			pnlCustomSettings.add(topoPanel, gridBagConstraints);
-			topoPanel.addParentPanelListener();
+			topoPanel.addParentPanelListener(); // Update passFilterCOM when shown
 			
 			addBlankLabelToCustomPanel();
 
@@ -108,8 +107,8 @@ public class FilterSettingPanel extends JPanel {
 			
 			this.validate();
 		}
-
 	}
+	
 	
 	private void initCustomSetting() {
 		List<CyFilter> theCustomFilterList = theFilter.getChildren();
@@ -148,7 +147,6 @@ public class FilterSettingPanel extends JPanel {
 		else if (pType == QuickFind.INDEX_EDGES) {
 			attributeType = Cytoscape.getEdgeAttributes().getType(pAttribute);					
 		}
-
 		return attributeType;
 	}
 
@@ -156,10 +154,7 @@ public class FilterSettingPanel extends JPanel {
 	private JComboBox getTextIndexComboBox(StringFilter pFilter){
 		TextIndexComboBox comboBox = null;
 
-		System.out.println("Entering FilterSettingPanel.getTextIndexComboBox() ...");
-		System.out.println("\tpFilter.toString=" + pFilter.toString());
 		try {		
-
 			// If index doesnot exist, check if there is such attribute or 
 			if (!hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())) {
 				// no such attribute
@@ -174,16 +169,13 @@ public class FilterSettingPanel extends JPanel {
 				tmpCombo.setEnabled(false);
 				return tmpCombo;				
 			}
-			
-					
-					//	The attribute exists, create an index
-					final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-					quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
+			//	The attribute exists, create an index
+			final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+			quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
 					pFilter.getControllingAttribute(), new TaskMonitorBase());					
-					TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
-					
-					pFilter.setIndex(index_by_thisAttr);					
-			
+			TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+
+			pFilter.setIndex(index_by_thisAttr);					
 			
 			comboBox = ComboBoxFactory.createTextIndexComboBox((TextIndex)pFilter.getIndex(), 2.0);				
 
@@ -226,10 +218,6 @@ public class FilterSettingPanel extends JPanel {
 			rangeModel = new NumberRangeModel(0,0,0,0);			
 		}
 		else {
-			//System.out.println("\n\tlow = " + pFilter.getLowBound());
-			//System.out.println("\tHigh = " + pFilter.getHighBound());
-			//System.out.println("\tMin = " + theIndex.getMinimumValue());
-			//System.out.println("\tMax = " + theIndex.getMaximumValue());
 
 			int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
 			//Initialize the search values, lowBound and highBound	
@@ -242,29 +230,17 @@ public class FilterSettingPanel extends JPanel {
 			}
 			
 			if (dataType == CyAttributes.TYPE_FLOATING) {
-				System.out.println("\ndataType = FLOATING");
-								
-				
-				//System.out.println(pFilter.getLowBound());
+				//System.out.println("\ndataType = FLOATING");
 				
 				Double lowB = (Double)pFilter.getLowBound();
 				Double highB = (Double)pFilter.getHighBound();
 				Double min = (Double)theIndex.getMinimumValue();
 				Double max = (Double)theIndex.getMaximumValue();
 
-				rangeModel = new NumberRangeModel(lowB.doubleValue(),highB.doubleValue(),min.doubleValue(),max.doubleValue());
-				
-				System.out.println(rangeModel.getLowValue());
-				System.out.println(rangeModel.getHighValue());
-				System.out.println(rangeModel.getMinValue());
-				System.out.println(rangeModel.getMaxValue());
-					
-				
-				//rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
-				//		theIndex.getMinimumValue(),theIndex.getMaximumValue());		
+				rangeModel = new NumberRangeModel(lowB.doubleValue(),highB.doubleValue(),min.doubleValue(),max.doubleValue());				
 			}
 			else if (dataType == CyAttributes.TYPE_INTEGER) {
-				System.out.println("\ndataType = INTEGER");
+				//System.out.println("\ndataType = INTEGER");
 				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
 						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
 			}
@@ -328,8 +304,7 @@ public class FilterSettingPanel extends JPanel {
 						// created a TextIndexComboBox successfully
 						TextIndexComboBox aIndexBox = (TextIndexComboBox) theComboBox; 
 						StringFilter aFilter = (StringFilter) child;
-						aFilter.setIndex(aIndexBox.getTextIndex());
-						
+						aFilter.setIndex(aIndexBox.getTextIndex());					
 					}
 				}			
 			}
@@ -629,26 +604,9 @@ public class FilterSettingPanel extends JPanel {
 			int widgetGridY = (new Integer(_lbl.getName())).intValue();
 			int childIndex =widgetGridY /2;
 			
-			//System.out.println("childIndex ="+childIndex);
-			
 			theFilter.removeChildAt(childIndex);
-
 			pnlCustomSettings.removeAll();			
-
 			initCustomSetting();
-			
-			
-			//restoreRangeSliderModel();
-			
-			//if (theSlider.isShowing()) {
-			//	rangeModel.setLowValue(theNumericFilter.getLowValue());
-			//	rangeModel.setHighValue(theNumericFilter.getHighValue());									
-			//}
-
-			//System.out.println("\t here 2: " + theSlider.isShowing());
-			//System.out.println("\trangeModel.getLowValue() =" + rangeModel.getLowValue());			
-			//System.out.println("\trangeModel.getHighValue() =" + rangeModel.getHighValue());			
-			//this.revalidate();
 		}
 		FilterUtil.doSelection(theFilter);
 	}
@@ -855,17 +813,46 @@ public class FilterSettingPanel extends JPanel {
 				}
 				else if (theCheckBox == chkNode)
 				{
-					theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
-					parentPanel.refreshAttributeCMB();
+					// In case of TopologyFilter, change the behavior of Node/Edge to radio button
+					if (theFilter instanceof TopologyFilter) {
+						theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
+						theFilter.getAdvancedSetting().setEdge(!chkNode.isSelected());
+						chkEdge.setSelected(!chkNode.isSelected());
+						if (chkNode.isSelected()) {
+							topoPanel.updateSelectionLabel("Node");							
+						}
+						else {
+							topoPanel.updateSelectionLabel("Edge");
+						}
+					}
+					else {
+						theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
+						parentPanel.refreshAttributeCMB();						
+					}
 				}
 				else if (theCheckBox == chkEdge)
 				{
-					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());	
-					if (!chkEdge.isSelected()) {
-						chkSource.setSelected(false);
-						chkTarget.setSelected(false);
+					// In case of TopologyFilter, change the behavior of Node/Edge to radio button
+					if (theFilter instanceof TopologyFilter) {
+						theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());
+						theFilter.getAdvancedSetting().setNode(!chkEdge.isSelected());
+						chkNode.setSelected(!chkEdge.isSelected());
+						if (chkNode.isSelected()) {
+							topoPanel.updateSelectionLabel("Node");							
+						}
+						else {
+							topoPanel.updateSelectionLabel("Edge");
+						}
 					}
-					parentPanel.refreshAttributeCMB();
+					else {
+						theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());	
+						parentPanel.refreshAttributeCMB();						
+					}
+					
+					//if (!chkEdge.isSelected()) {
+					//	chkSource.setSelected(false);
+					//	chkTarget.setSelected(false);
+					//}
 				}
 				else if (theCheckBox == chkSource)
 				{
@@ -881,7 +868,7 @@ public class FilterSettingPanel extends JPanel {
 				{
 					theFilter.setNegation(chkNegation.isSelected());										
 				}	
-				
+				/*
 				if (theCheckBox == chkSource || theCheckBox == chkTarget) {
 					System.out.println("chkSource or theCheckBox is checked");
 					if (!chkSource.isSelected() || !chkTarget.isSelected()) {
@@ -894,11 +881,18 @@ public class FilterSettingPanel extends JPanel {
 						chkEdge.setSelected(false);
 					}
 				}
+				*/
 				//Update the selection on screen
 				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
 					//System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
-					theFilter.childChanged();//The setting is changed
-					FilterUtil.doSelection(theFilter);				
+					
+					if (theFilter instanceof TopologyFilter) {
+						// Do not apply Filter if TopologyFilter	
+					}
+					else {
+						theFilter.childChanged();//The setting is changed
+						FilterUtil.doSelection(theFilter);										
+					}
 				}
 			}
 			if (soureObj instanceof javax.swing.JRadioButton) {
