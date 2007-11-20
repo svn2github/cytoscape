@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <!-- build.xml - Build file for Cytoscape Pathway Commons Plug In -->
 <project  default="all" name="Cytoscape Pathway Commons PlugIn">
     <!-- Project Name -->
@@ -6,7 +7,6 @@
     <!-- Version Numbers -->
     <property name="version" value="1_0"/>
     <!--  Define Check Style Task -->
-    <taskdef resource="checkstyletask.properties"/>
     <!-- The directory containing source code -->
     <property name="src.dir" value="src"/>
 	<!-- The Cytoscape lib directory -->
@@ -78,18 +78,18 @@
 
     <!-- Generate package using XJC compiler            -->
     <target name="bind" depends="prepare" description="Run XJC to generate new packages.">
-        <mkdir dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
+        <mkdir dir="${src.dir}/org/cytoscape/coreplugin/cpath2/schemas/search_response"/>
         <xjc schema="xml/SearchResponse.xsd"
              destdir="${src.dir}"
-             package="org.mskcc.pathway_commons.schemas.search_response">
-            <produces dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
+             package="org.cytoscape.coreplugin.cpath2.schemas.search_response">
+            <produces dir="${src.dir}/org/cytoscape/coreplugin/cpath2/schemas/search_response"/>
             <arg value="-nv"/>
         </xjc>
-        <mkdir dir="${src.dir}/org/mskcc/pathway_commons/schemas/summary_response"/>
+        <mkdir dir="${src.dir}/org/cytoscape/coreplugin/cpath2/schemas/summary_response"/>
         <xjc schema="xml/SummaryResponse.xsd"
              destdir="${src.dir}"
-             package="org.mskcc.pathway_commons.schemas.summary_response">
-            <produces dir="${src.dir}/org/mskcc/pathway_commons/schemas/summary_response"/>
+             package="org.cytoscape.coreplugin.cpath2.schemas.summary_response">
+            <produces dir="${src.dir}/org/cytoscape/coreplugin/cpath2/schemas/summary_response"/>
             <arg value="-nv"/>
         </xjc>
     </target>
@@ -105,8 +105,8 @@
             <fileset dir="." includes="*.log"/>
             <fileset dir="." includes="*.gz"/>
         </delete>
-        <delete dir="${src.dir}/org/mskcc/pathway_commons/schemas/search_response"/>
-        <delete dir="${src.dir}/org/mskcc/pathway_commons/schemas/summary_response"/>
+        <delete dir="${src.dir}/org/cytoscape/coreplugin/cpath2schemas/search_response"/>
+        <delete dir="${src.dir}org/cytoscape/coreplugin/cpath2/schemas/summary_response"/>
     </target>
 
     <!--  Target to compile all code -->
@@ -161,7 +161,7 @@
             <fileset dir="${build.classes}"/>
             <fileset dir="${temp.dir}"/>
         <manifest>
-	    	<attribute name="Cytoscape-Plugin" value="org.mskcc.pathway_commons.plugin.PathwayCommonsPlugin"/>
+	    	<attribute name="Cytoscape-Plugin" value="org.cytoscape.coreplugin.cpath2.plugin.PathwayCommonsPlugin"/>
 	    </manifest>
         </jar>
         <delete dir="${temp.dir}"/>
@@ -175,18 +175,6 @@
                 <include name="**/*.java"/>
             </fileset>
         </checkstyle>
-    </target>
-
-    <!--  Target to Run All JUnit Tests -->
-    <target depends="compile" description="Runs all JUnit Tests" name="test">
-        <delete dir="${junit.dir}"/>
-        <mkdir dir="${junit.dir}"/>
-        <mkdir dir="${junit.dir}/reports"/>
-        <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
-            <formatter type="plain" usefile="false"/>
-            <test name="org.mskcc.test.AllTest"/>
-            <classpath refid="classpath"/>
-        </junit>
     </target>
 
     <!--  Builds and tests everything -->
