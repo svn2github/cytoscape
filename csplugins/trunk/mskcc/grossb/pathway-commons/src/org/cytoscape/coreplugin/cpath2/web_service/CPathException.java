@@ -5,7 +5,7 @@ package org.cytoscape.coreplugin.cpath2.web_service;
  *
  * @author Ethan Cerami.
  */
-public class cPathException extends Exception {
+public class CPathException extends Exception {
     /**
      * Error:  Canceled by User.
      */

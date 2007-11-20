@@ -8,7 +8,7 @@ import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseT
  *
  * @author Ethan Cerami
  */
-public interface cPathWebApiListener {
+public interface CPathWebServiceListener {
 
     /**
      * Indicates that someone has initiated a search for physical entities.

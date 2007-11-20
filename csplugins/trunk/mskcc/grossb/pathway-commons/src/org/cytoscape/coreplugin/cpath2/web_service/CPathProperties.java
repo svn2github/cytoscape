@@ -8,7 +8,7 @@ import java.util.Properties;
  *
  * @author Ethan Cerami.
  */
-public class cPathProperties {
+public class CPathProperties {
 	/**
 	 * Property:  CPath Read Location.
 	 */

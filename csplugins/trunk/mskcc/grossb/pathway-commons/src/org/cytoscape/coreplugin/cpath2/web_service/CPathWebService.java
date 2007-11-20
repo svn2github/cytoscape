@@ -16,19 +16,19 @@ import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseT
  *
  * @author Ethan Cerami
  */
-public class cPathWebApi {
-    private static ArrayList<cPathWebApiListener> listeners =
-            new ArrayList<cPathWebApiListener>();
+public class CPathWebService {
+    private static ArrayList<CPathWebServiceListener> listeners =
+            new ArrayList<CPathWebServiceListener>();
     private volatile cPathProtocol protocol;
-    private static cPathWebApi webApi;
+    private static CPathWebService webApi;
 
     /**
      * Gets Singelton instance of CPath Web API.
-     * @return cPathWebApi Object.
+     * @return CPathWebService Object.
      */
-    public static cPathWebApi getInstance() {
+    public static CPathWebService getInstance() {
         if (webApi == null) {
-            webApi = new cPathWebApi();
+            webApi = new CPathWebService();
         }
         return webApi;
     }
@@ -36,7 +36,7 @@ public class cPathWebApi {
     /**
      * Private Constructor.
      */
-    private cPathWebApi() {
+    private CPathWebService() {
     }
 
     /**
@@ -52,7 +52,7 @@ public class cPathWebApi {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            cPathWebApiListener listener = listeners.get(i);
+            CPathWebServiceListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
         }
 
@@ -85,7 +85,7 @@ public class cPathWebApi {
         //SearchResponseType searchResponse = createDummySearchResults();
         // Notify all listeners of end
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            cPathWebApiListener listener = listeners.get(i);
+            CPathWebServiceListener listener = listeners.get(i);
             listener.searchCompletedForPhysicalEntities(searchResponse);
         }
         return searchResponse;
@@ -104,7 +104,7 @@ public class cPathWebApi {
             throws cPathException, EmptySetException {
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            cPathWebApiListener listener = listeners.get(i);
+            CPathWebServiceListener listener = listeners.get(i);
             listener.requestInitiatedForParentSummaries(primaryId);
         }
 
@@ -132,7 +132,7 @@ public class cPathWebApi {
 
         // Notify all listeners of end
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            cPathWebApiListener listener = listeners.get(i);
+            CPathWebServiceListener listener = listeners.get(i);
             listener.requestCompletedForParentSummaries(primaryId, summaryResponse);
         }
         return summaryResponse;
@@ -232,27 +232,27 @@ public class cPathWebApi {
     /**
      * Registers a new listener.
      *
-     * @param listener cPathWebApi Listener.
+     * @param listener CPathWebService Listener.
      */
-    public void addApiListener(cPathWebApiListener listener) {
+    public void addApiListener(CPathWebServiceListener listener) {
         listeners.add(listener);
     }
 
     /**
      * Removes the specified listener.
      *
-     * @param listener cPathWebApi Listener.
+     * @param listener CPathWebService Listener.
      */
-    public void removeApiListener(cPathWebApiListener listener) {
+    public void removeApiListener(CPathWebServiceListener listener) {
         listeners.remove(listener);
     }
 
     /**
      * Gets the list of all registered listeners.
      *
-     * @return ArrayList of cPathWebApiListener Objects.
+     * @return ArrayList of CPathWebServiceListener Objects.
      */
-    public ArrayList<cPathWebApiListener> getListeners() {
+    public ArrayList<CPathWebServiceListener> getListeners() {
         return listeners;
     }
 }
