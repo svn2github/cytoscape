@@ -52,13 +52,13 @@ public class CPathException extends Exception {
      * @param errorCode Error Code.
 	 * @param t Root throwable.
 	 */
-	public cPathException(int errorCode, Throwable t) {
+	public CPathException(int errorCode, Throwable t) {
         super(t);
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
     }
 
-    public cPathException(int errorCode, String errorDetail) {
+    public CPathException(int errorCode, String errorDetail) {
         this.errorDetail = errorDetail;
         this.errorCode = errorCode;
         setErrorMessages(errorCode);

@@ -21,7 +21,7 @@ import java.net.URLEncoder;
  *
  * @author Ethan Cerami
  */
-public class cPathProtocol {
+public class CPathProtocol {
 
     /**
      * The CPath Web Service Path.
@@ -168,8 +168,8 @@ public class cPathProtocol {
     /**
      * Constructor.
      */
-    public cPathProtocol() {
-        this.baseUrl = cPathProperties.getCPathUrl();
+    public CPathProtocol() {
+        this.baseUrl = CPathProperties.getCPathUrl();
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
     }
@@ -242,10 +242,10 @@ public class cPathProtocol {
      * Connects to cPath Web Service API.
      *
      * @return XML Document.
-     * @throws cPathException    Indicates Error connecting.
+     * @throws CPathException    Indicates Error connecting.
      * @throws EmptySetException All went all, but no results found.
      */
-    public String connect (TaskMonitor taskMonitor) throws cPathException, EmptySetException {
+    public String connect (TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
@@ -294,17 +294,17 @@ public class cPathProtocol {
                 return content.trim();
             }
         } catch (UnknownHostException e) {
-            throw new cPathException(cPathException.ERROR_UNKNOWN_HOST, e);
+            throw new CPathException(CPathException.ERROR_UNKNOWN_HOST, e);
         } catch (SocketException e) {
             if (cancelledByUser) {
-                throw new cPathException(cPathException.ERROR_CANCELED_BY_USER, e);
+                throw new CPathException(CPathException.ERROR_CANCELED_BY_USER, e);
             } else {
-                throw new cPathException(cPathException.ERROR_NETWORK_IO, e);
+                throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
             }
         } catch (IOException e) {
-            throw new cPathException(cPathException.ERROR_NETWORK_IO, e);
+            throw new CPathException(CPathException.ERROR_NETWORK_IO, e);
         } catch (JDOMException e) {
-            throw new cPathException(cPathException.ERROR_XML_PARSING, e);
+            throw new CPathException(CPathException.ERROR_XML_PARSING, e);
         }
     }
 
@@ -404,15 +404,15 @@ public class cPathProtocol {
     }
 
     private void checkHttpStatusCode (int statusCode)
-            throws cPathException {
+            throws CPathException {
         if (statusCode != 200) {
-            throw new cPathException(cPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
+            throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
                 + ":  " + HttpStatus.getStatusText(statusCode));
         }
     }
 
     private void checkForErrors (Document document)
-            throws cPathException, EmptySetException {
+            throws CPathException, EmptySetException {
         Element element = document.getRootElement();
         String name = element.getName();
         if (name.equals("error")) {
@@ -421,7 +421,7 @@ public class cPathProtocol {
             if (errorCode.equals("460")) {
                 throw new EmptySetException();
             } else {
-                throw new cPathException(cPathException.ERROR_WEB_SERVICE_API,
+                throw new CPathException(CPathException.ERROR_WEB_SERVICE_API,
                     "Error Code:  " + errorCode + ", " + errorMsg);
             }
         }
