@@ -4,8 +4,8 @@ import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApiListener;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
@@ -27,7 +27,7 @@ import java.net.URL;
  *
  * @author Ethan Cerami.
  */
-public class SearchHitsPanel extends JPanel implements cPathWebApiListener {
+public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
     private DefaultListModel peListModel;
     private JList peList;
     private SearchResponseType peSearchResponse;
@@ -49,7 +49,7 @@ public class SearchHitsPanel extends JPanel implements cPathWebApiListener {
      * @param webApi                    cPath Web API.
      */
     public SearchHitsPanel(InteractionBundleModel interactionBundleModel, PathwayTableModel
-            pathwayTableModel, cPathWebApi webApi) {
+            pathwayTableModel, CPathWebService webApi) {
         this.interactionBundleModel = interactionBundleModel;
         this.pathwayTableModel = pathwayTableModel;
 		appLayeredPane = Cytoscape.getDesktop().getRootPane().getLayeredPane();

@@ -22,7 +22,7 @@ import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
 import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -264,7 +264,7 @@ public class SearchDetailsPanel extends JPanel {
         long ids[] = new long[1];
         ids[0] = internalId;
 
-        cPathWebApi webApi = cPathWebApi.getInstance();
+        CPathWebService webApi = CPathWebService.getInstance();
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, title);
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());

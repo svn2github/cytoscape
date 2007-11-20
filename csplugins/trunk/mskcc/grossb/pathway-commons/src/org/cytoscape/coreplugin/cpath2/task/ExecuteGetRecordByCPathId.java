@@ -6,7 +6,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.readers.GraphReader;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.coreplugin.cpath2.web_service.cPathException;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  * @author Ethan Cerami.
  */
 public class ExecuteGetRecordByCPathId implements Task {
-    private cPathWebApi webApi;
+    private CPathWebService webApi;
     private TaskMonitor taskMonitor;
     private long ids[];
     private String networkTitle;
@@ -31,7 +31,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @param webApi         cPath Web Api.
      * @param ids            Array of CPath IDs.
      */
-    public ExecuteGetRecordByCPathId(cPathWebApi webApi, long ids[], String networkTitle) {
+    public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], String networkTitle) {
         this.webApi = webApi;
         this.ids = ids;
         this.networkTitle = networkTitle;

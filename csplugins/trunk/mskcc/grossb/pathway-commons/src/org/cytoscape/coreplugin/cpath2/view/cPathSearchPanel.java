@@ -3,8 +3,8 @@ package org.cytoscape.coreplugin.cpath2.view;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApiListener;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
@@ -20,10 +20,10 @@ import java.awt.*;
  *
  * @author Ethan Cerami.
  */
-public class cPathSearchPanel extends JPanel implements cPathWebApiListener {
+public class cPathSearchPanel extends JPanel implements CPathWebServiceListener {
     protected InteractionBundleModel interactionBundleModel;
     protected PathwayTableModel pathwayTableModel;
-    protected cPathWebApi webApi;
+    protected CPathWebService webApi;
     private JPanel searchBoxPanel;
     private JPanel searchHitsPanel = null;
     private JPanel cards;
@@ -33,7 +33,7 @@ public class cPathSearchPanel extends JPanel implements cPathWebApiListener {
      *
      * @param webApi PathwayCommons Web API.
      */
-    public cPathSearchPanel(cPathWebApi webApi) {
+    public cPathSearchPanel(CPathWebService webApi) {
 
         //  Store the web API model
         this.webApi = webApi;
@@ -138,7 +138,7 @@ public class cPathSearchPanel extends JPanel implements cPathWebApiListener {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         cPathSearchPanel form = new cPathSearchPanel(
-                cPathWebApi.getInstance());
+                CPathWebService.getInstance());
         frame.getContentPane().add(form);
         frame.pack();
         form.initFocus();

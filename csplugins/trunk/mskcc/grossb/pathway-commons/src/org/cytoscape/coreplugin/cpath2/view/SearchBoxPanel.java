@@ -3,7 +3,7 @@ package org.cytoscape.coreplugin.cpath2.view;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;
 
@@ -21,7 +21,7 @@ import java.net.URL;
  */
 public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
-    private cPathWebApi webApi;
+    private CPathWebService webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
     private Animator animator;
     private PulsatingBorder pulsatingBorder;
@@ -31,7 +31,7 @@ public class SearchBoxPanel extends JPanel {
      *
      * @param webApi PathwayCommmons Web API.
      */
-    public SearchBoxPanel(cPathWebApi webApi) {
+    public SearchBoxPanel(CPathWebService webApi) {
         this.webApi = webApi;
         GradientHeader header = new GradientHeader("Step 1:  Search");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);

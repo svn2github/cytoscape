@@ -42,7 +42,7 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.cytoscape.coreplugin.cpath2.mapping.MapPathwayCommonsToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 
 import javax.swing.*;
@@ -74,7 +74,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         final CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);
 
-        cPathWebApi webApi = cPathWebApi.getInstance();
+        CPathWebService webApi = CPathWebService.getInstance();
         final cPathSearchPanel pcPanel = new cPathSearchPanel(webApi);
 
         SwingUtilities.invokeLater(new Runnable() {

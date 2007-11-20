@@ -2,7 +2,7 @@ package org.cytoscape.coreplugin.cpath2.view;
 
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -110,7 +110,7 @@ public class DownloadDetails extends JDialog {
      */
     private void downloadInteractions(long ids[], String peName) {
         String networkTitle = peName + ":  Network";
-        cPathWebApi webApi = cPathWebApi.getInstance();
+        CPathWebService webApi = CPathWebService.getInstance();
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, networkTitle);
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());

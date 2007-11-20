@@ -3,7 +3,7 @@ package org.cytoscape.coreplugin.cpath2.task;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.coreplugin.cpath2.web_service.cPathException;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author Ethan Cerami.
  */
 public class ExecutePhysicalEntitySearch implements Task {
-    private cPathWebApi webApi;
+    private CPathWebService webApi;
     private String keyword;
     private int ncbiTaxonomyId;
     private int startIndex;
@@ -31,7 +31,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
      * @param startIndex     Start Index.
      */
-    public ExecutePhysicalEntitySearch(cPathWebApi webApi, String keyword,
+    public ExecutePhysicalEntitySearch(CPathWebService webApi, String keyword,
             int ncbiTaxonomyId, int startIndex) {
         this.webApi = webApi;
         this.keyword = keyword;
