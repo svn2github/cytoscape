@@ -53,12 +53,12 @@ public class CompositeFilter implements CyFilter {
 	protected List<CyFilter> children;
 	protected boolean negation;
 	//Relation relation;
-	private String name;
-	private BitSet node_bits, edge_bits;
+	protected String name;
+	protected BitSet node_bits, edge_bits;
 	protected boolean childChanged = true;// so we calculate the first time through
 	protected CyFilter parent;
-	private String description;
-	private AdvancedSetting advancedSetting = null;
+	protected String description;
+	protected AdvancedSetting advancedSetting = null;
 	//private int indexType = -1; //QuickFind.INDEX_NODES //QuickFind.INDEX_EDGES 
 	protected CyNetwork network;
 
