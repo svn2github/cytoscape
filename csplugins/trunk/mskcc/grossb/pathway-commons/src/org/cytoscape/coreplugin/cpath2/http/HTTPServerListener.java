@@ -1,4 +1,4 @@
-// $Id: HTTPWriter.java,v 1.4 2007/04/20 15:49:36 grossb Exp $
+// $Id: HTTPServerListener.java,v 1.4 2007/04/20 15:50:13 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2007 Memorial Sloan-Kettering Cancer Center.
  **
@@ -29,47 +29,21 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package org.mskcc.pathway_commons.http;
+package org.cytoscape.coreplugin.cpath2.http;
 
 // imports
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.util.EventListener;
 
 /**
- * This class writes to the http client.
- *
- * @author Benjamin Gross.
+ * Interface implemented by class which is interested in pathwaycommons.org events.
  */
-public class HTTPWriter {
-
-    // some string constants
-    private static final String CRNL = "\r\n";
-    private static final String CONTENT_TYPE = "Content-Type: ";
-    private static final String HTTP_RESPONSE = "HTTP/1.1 200 OK";
-    private static final String CONTENT_LENGTH = "Content-Length: ";
-    private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
+public interface HTTPServerListener extends EventListener {
 
     /**
-     * Called to write client respones
+     * Method called when a ProxyEvent has been received.
      *
-     * @param sock  Socket
      * @param event HTTPEvent
      */
-    public static void processResponse(Socket sock, HTTPEvent event) throws IOException {
-
-        // setup print writer
-        PrintWriter printWriter = new PrintWriter(sock.getOutputStream());
-
-        String response = event.getResponse();
-
-        // write out the contents
-        printWriter.print(HTTP_RESPONSE + CRNL);
-        printWriter.print(CONTENT_TYPE + CONTENT_TYPE_TEXT_HTML + CRNL);
-        printWriter.print(CONTENT_LENGTH + response.length() + CRNL);
-        printWriter.print(CRNL);
-        printWriter.print(response);
-        printWriter.flush();
-	}
+    public void httpEvent(HTTPEvent event);
 }

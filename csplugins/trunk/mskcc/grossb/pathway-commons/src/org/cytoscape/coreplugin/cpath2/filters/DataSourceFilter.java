@@ -1,27 +1,27 @@
-package org.mskcc.pathway_commons.filters;
+package org.cytoscape.coreplugin.cpath2.filters;
 
+import org.mskcc.pathway_commons.schemas.summary_response.DataSourceType;
 import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
-import org.mskcc.pathway_commons.util.BioPaxEntityTypeMap;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 /**
- * EntityType Filter.
+ * Data Source Filter.
  *
  * @author Ethan Cerami
  */
-public class EntityTypeFilter implements Filter {
-    Set<String> entityTypeSet;
+public class DataSourceFilter implements Filter {
+    Set<String> dataSourceSet;
 
     /**
      * Constructor.
      *
-     * @param entityTypeSet Set of Entity Types we want to keep.
+     * @param dataSourceSet Set of Data Sources we want to keep.
      */
-    public EntityTypeFilter(Set<String> entityTypeSet) {
-        this.entityTypeSet = entityTypeSet;
+    public DataSourceFilter(Set<String> dataSourceSet) {
+        this.dataSourceSet = dataSourceSet;
     }
 
     /**
@@ -32,16 +32,15 @@ public class EntityTypeFilter implements Filter {
      * @return List of RecordType Objects.
      */
     public List<BasicRecordType> filter(List<BasicRecordType> recordList) {
-        BioPaxEntityTypeMap bpMap = BioPaxEntityTypeMap.getInstance();
         ArrayList<BasicRecordType> passedList = new ArrayList<BasicRecordType>();
         for (BasicRecordType record : recordList) {
-            String type = record.getEntityType();
-            if (type != null) {
-                if (bpMap.containsKey(type)) {
-                    type = (String) bpMap.get(type);
-                }
-                if (entityTypeSet.contains(type)) {
-                    passedList.add(record);
+            DataSourceType dataSource = record.getDataSource();
+            if (dataSource != null) {
+                String dataSourceName = dataSource.getName();
+                if (dataSourceName != null) {
+                    if (dataSourceSet.contains(dataSourceName)) {
+                        passedList.add(record);
+                    }
                 }
             }
         }

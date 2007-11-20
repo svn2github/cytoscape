@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.filters;
+package org.cytoscape.coreplugin.cpath2.filters;
 
 import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 

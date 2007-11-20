@@ -1,4 +1,4 @@
-// $Id: HTTPServerListener.java,v 1.4 2007/04/20 15:50:13 grossb Exp $
+// $Id: HTTPEvent.java,v 1.2 2007/04/20 15:50:40 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2007 Memorial Sloan-Kettering Cancer Center.
  **
@@ -29,21 +29,57 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package org.mskcc.pathway_commons.http;
+package org.cytoscape.coreplugin.cpath2.http;
 
 // imports
 
-import java.util.EventListener;
+import java.util.EventObject;
 
 /**
- * Interface implemented by class which is interested in pathwaycommons.org events.
+ * A proxy event object.
  */
-public interface HTTPServerListener extends EventListener {
+public class HTTPEvent extends EventObject {
 
     /**
-     * Method called when a ProxyEvent has been received.
-     *
-     * @param event HTTPEvent
+     * the request
      */
-    public void httpEvent(HTTPEvent event);
+    private String request;
+
+    /**
+     * the response
+     */
+    private String response;
+
+    /**
+     * Constructor.
+     *
+     * @param source   Object
+     * @param request  String
+     * @param response String
+     */
+    public HTTPEvent(Object source, String request, String response) {
+        super(source);
+
+        // init members
+        this.request = request;
+        this.response = response;
+    }
+
+    /**
+     * Method to get the request.
+     *
+     * @return String
+     */
+    public String getRequest() {
+        return request;
+    }
+
+    /**
+     * Method to get the response.
+     *
+     * @return String
+     */
+    public String getResponse() {
+        return response;
+	}
 }

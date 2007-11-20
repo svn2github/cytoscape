@@ -38,7 +38,7 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
-import org.mskcc.pathway_commons.http.HTTPServer;
+import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
 import org.mskcc.pathway_commons.util.NetworkListener;
 import org.mskcc.pathway_commons.util.PluginProperties;

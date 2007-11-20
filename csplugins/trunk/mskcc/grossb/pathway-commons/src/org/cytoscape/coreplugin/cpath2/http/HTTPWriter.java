@@ -1,4 +1,4 @@
-// $Id: HTTPEvent.java,v 1.2 2007/04/20 15:50:40 grossb Exp $
+// $Id: HTTPWriter.java,v 1.4 2007/04/20 15:49:36 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2007 Memorial Sloan-Kettering Cancer Center.
  **
@@ -29,57 +29,47 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package org.mskcc.pathway_commons.http;
+package org.cytoscape.coreplugin.cpath2.http;
 
 // imports
 
-import java.util.EventObject;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 /**
- * A proxy event object.
+ * This class writes to the http client.
+ *
+ * @author Benjamin Gross.
  */
-public class HTTPEvent extends EventObject {
+public class HTTPWriter {
+
+    // some string constants
+    private static final String CRNL = "\r\n";
+    private static final String CONTENT_TYPE = "Content-Type: ";
+    private static final String HTTP_RESPONSE = "HTTP/1.1 200 OK";
+    private static final String CONTENT_LENGTH = "Content-Length: ";
+    private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
 
     /**
-     * the request
-     */
-    private String request;
-
-    /**
-     * the response
-     */
-    private String response;
-
-    /**
-     * Constructor.
+     * Called to write client respones
      *
-     * @param source   Object
-     * @param request  String
-     * @param response String
+     * @param sock  Socket
+     * @param event HTTPEvent
      */
-    public HTTPEvent(Object source, String request, String response) {
-        super(source);
+    public static void processResponse(Socket sock, HTTPEvent event) throws IOException {
 
-        // init members
-        this.request = request;
-        this.response = response;
-    }
+        // setup print writer
+        PrintWriter printWriter = new PrintWriter(sock.getOutputStream());
 
-    /**
-     * Method to get the request.
-     *
-     * @return String
-     */
-    public String getRequest() {
-        return request;
-    }
+        String response = event.getResponse();
 
-    /**
-     * Method to get the response.
-     *
-     * @return String
-     */
-    public String getResponse() {
-        return response;
+        // write out the contents
+        printWriter.print(HTTP_RESPONSE + CRNL);
+        printWriter.print(CONTENT_TYPE + CONTENT_TYPE_TEXT_HTML + CRNL);
+        printWriter.print(CONTENT_LENGTH + response.length() + CRNL);
+        printWriter.print(CRNL);
+        printWriter.print(response);
+        printWriter.flush();
 	}
 }

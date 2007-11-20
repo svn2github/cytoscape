@@ -33,9 +33,9 @@ package org.cytoscape.coreplugin.cpath2.driver;
 
 // imports
 
-import org.mskcc.pathway_commons.http.HTTPEvent;
-import org.mskcc.pathway_commons.http.HTTPServer;
-import org.mskcc.pathway_commons.http.HTTPServerListener;
+import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
+import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
+import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
 
 /**
  * Driver class for cPath Plugin components.
