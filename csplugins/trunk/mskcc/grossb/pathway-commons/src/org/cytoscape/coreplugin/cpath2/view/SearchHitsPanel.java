@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
 
 import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;

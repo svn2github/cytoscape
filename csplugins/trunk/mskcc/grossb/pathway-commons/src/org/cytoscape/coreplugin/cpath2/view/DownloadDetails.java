@@ -1,19 +1,20 @@
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
+
+import org.mskcc.pathway_commons.view.GradientHeader;
+import org.mskcc.pathway_commons.view.NonEditableTableModel;
+import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.util.Vector;
 
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
-import org.mskcc.pathway_commons.web_service.cPathWebApi;
-import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
 
 /**
  * Download Details Frame.

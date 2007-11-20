@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
 
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;

@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

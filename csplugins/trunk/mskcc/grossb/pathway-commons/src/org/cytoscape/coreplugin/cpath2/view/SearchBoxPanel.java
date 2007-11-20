@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;

@@ -29,13 +29,12 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
 
 // imports
 import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.Robot;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Composite;
@@ -43,7 +42,6 @@ import java.awt.Graphics2D;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.AlphaComposite;
-import javax.swing.border.LineBorder;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.JComponent;

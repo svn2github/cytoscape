@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.view;
+package org.cytoscape.coreplugin.cpath2.view;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
@@ -275,24 +275,3 @@ public class SearchDetailsPanel extends JPanel {
     }
 }
 
-class CategoryCount {
-    private String categoryName;
-    private int count;
-
-    public CategoryCount (String categoryName, int count) {
-        this.categoryName = categoryName;
-        this.count = count;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public String toString() {
-        return categoryName + ":  " + count;
-    }
-}
