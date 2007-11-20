@@ -74,7 +74,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
     }
     
     public void addParentPanelListener() {
-		// Listen for the visible event from FilterSettingPanel
+		// Listen to the visible event from FilterSettingPanel
     	// To syn Filters in cmbPassFilter
 		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
 		this.getParent().getParent().addComponentListener(cmpAdpt);
@@ -85,6 +85,18 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		public void componentShown(ComponentEvent e) {
 			buildCMBmodel();
 		}
+	}
+	
+	// Update date the info label based on the chkNode/Edge
+	public void updateSelectionLabel(String pNodeEdge) {
+		if (pNodeEdge.equalsIgnoreCase("Node")) {
+			lbSelectNodeEdge.setText("Select Node");			
+		}
+		else {
+			lbSelectNodeEdge.setText("Select Edge");
+		}
+		lbSelectNodeEdge.validate();
+		theFilter.childChanged();
 	}
 	
 	private void buildCMBmodel() {
@@ -155,7 +167,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
         setLayout(new java.awt.GridBagLayout());
 
-        lbSelectNodeEdge.setText("Select node/edge");
+        lbSelectNodeEdge.setText("Select node");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
         add(lbSelectNodeEdge, gridBagConstraints);
