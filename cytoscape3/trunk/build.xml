@@ -1,0 +1,185 @@
+<!--
+This is a basic build file meant only to get Cytoscape to compile,
+it is temporary and will be replaced by maven ASAP (see the pom.xml files 
+in each module directory).
+-->
+
+<project name="Cytoscape" default="" basedir=".">
+	<!-- Properties -->
+	
+	<!-- source directories -->
+	<property name="model.src.dir" 
+		location="${basedir}/cytoscape/model/src/main/java" />
+	<property name="io.src.dir" 
+		location="${basedir}/cytoscape/io/src/main/java" />
+	<property name="view.src.dir" 
+		location="${basedir}/cytoscape/view/src/main/java" />
+	<property name="command.src.dir" 
+		location="${basedir}/cytoscape/command/src/main/java" />
+	<property name="application.src.dir" 
+		location="${basedir}/cytoscape/application/src/main/java" />
+
+	<property name="build.dir" location="${basedir}/build" />
+	<property name="classes.dir" location="${build.dir}/classes" />
+	<property name="lib.dir" location="${basedir}/cytoscape/lib" />
+	<!-- The directory containing library jar files only for -->
+	<!-- testing and building. These files should not be in the -->
+	<!-- release lib directory.  -->
+	<property name="buildlib.dir" value="${lib.dir}/build-libs" />
+
+	<!-- The XML Schema Directory used by JAXB -->
+	<property name="schema.dir" value="${basedir}/resources/schema" />
+
+	<!-- XML Schema files used by JAXB -->
+	<property name="xgmml.schema" value="xgmml.xsd" />
+	<property name="cysession.schema" value="cysession.xsd" />
+	<property name="bookmark.schema" value="bookmarks.xsd" />
+
+	<!-- generated source names -->
+	<property name="generated.path.name" value="org/cytoscape/application/generated" />
+	<property name="bookmarks.path.name" value="org/cytoscape/application/bookmarks" />
+	
+	<property name="generated.package.name" 
+		value="${application.src.dir}/${generated.path.name}" />
+	<property name="generated.class" 
+		value="org.cytoscape.application.generated" />
+	
+	<property name="generated2.package.name"
+		value="${generated.package.name}2" />
+	<property name="generated2.class"
+		value="${generated.package.class}2" />
+
+	<property name="bookmarks.package.name"
+		value="${application.src.dir}/${bookmarks.path.name}" />
+	<property name="bookmarks.class"
+		value="org.cytoscape.application.bookmarks" />
+	
+	<!-- Classpath with all lib JAR Files -->
+	<path id="classpath">
+		<pathelement path="${build.classes}" />
+
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${buildlib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+<!--		<fileset dir="${basedir}/extra-jars"/> -->
+
+	</path>
+
+	<!-- ======================================================= -->
+	<!-- For XJC compiler task -->
+	<!-- ======================================================= -->
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		<classpath refid="classpath" />
+	</taskdef>
+
+	
+	<!-- ======================================================= -->
+	<!-- Generate package using XJC compiler            -->
+	<!-- ======================================================= -->
+	<target name="bind" description="Run XJC to generate new packages.">
+
+		<xjc schema="${schema.dir}/${cysession.schema}" 
+					destdir="${application.src.dir}" 
+		     package="${package}">
+			<produces dir="${generated.package.name}" 
+			          includes="* impl/*" />
+		</xjc>
+		<xjc schema="${schema.dir}/${xgmml.schema}" 
+					destdir="${application.src.dir}" 
+		     package="${generated2.package.name}" 
+		     extension="true" 
+		     binding="${schema.dir}/binding.xjb">
+			<arg value="-nv" />
+			<produces dir="${generated2.package.name}" includes="* impl/*" />
+		</xjc>
+		
+		<xjc schema="${schema.dir}/${bookmark.schema}" 
+				destdir="${application.src.dir}" 
+		     package="${bookmarks.class}">
+			<arg value="-nv" />
+			<produces dir="${bookmarks.package.name}" includes="* impl/*" />
+		</xjc>
+		
+		<!-- copy prop file into build dir -->
+		<echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
+		<copy todir="${build.classes}/${generated.path.name}">
+			<fileset dir="${application.src.dir}/${generated.path.name}" 
+				includes="*.properties" />
+		</copy>
+		<copy todir="${build.classes}/${generated.path.name}2">
+			<fileset dir="${application.src.dir}/${generated.path.name}2" 
+				includes="*.properties" />
+		</copy>
+		<copy todir="${build.classes}/${bookmarks.path.name}">
+			<fileset dir="${application.src.dir}/${bookmarks.path.name}" 
+				includes="*.properties" />
+		</copy>
+	</target>
+
+	
+	<target name="clean-generated" description="Delete XJC generated packages.">
+		<!-- Clean up generated packages -->
+		<delete dir="${generated.package.name}" />
+		<delete dir="${generated2.package.name}" />
+		<delete dir="${bookmarks.package.name}" />
+	</target>
+
+	<target name="clean" depends="clean-generated" 
+		description="Cleans all generated source and the build directory">
+		<delete dir="${build.dir}" />
+	</target>
+	
+	
+	<target name="init" description="Set up build directories">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+	</target>
+	
+	<!-- ======================================================= -->
+	<!-- Compile Cytoscape                                       -->
+	<!-- ======================================================= -->
+	<!--  Target to compile all code -->
+	<target name="compile" 
+	        depends="init, bind" 
+		description="Compiles all source code.">
+		<javac 
+		       destdir="${build.classes}" 
+		       nowarn="off" 
+		       debug="true" 
+		       source="1.5" 
+		       optimize="on" 
+		       includeAntRuntime="false" 
+		       deprecation="yes">
+			<classpath refid="classpath" />
+			<include name="cytoscape/**" />
+
+			<src path="${model.src.dir}" />
+			<src path="${io.src.dir}" />
+			<src path="${view.src.dir}" />
+			<src path="${command.src.dir}" />
+			<src path="${application.src.dir}" />
+
+			<compilerarg line="-Xmaxwarns 10000" />
+		</javac>
+
+		<!-- Run RMIC for BioDataServer -->
+		<rmic classname="cytoscape.data.servers.BioDataServerRmi" 
+		      base="${build.classes}" 
+		      classpathref="classpath" />
+
+		<!-- copy resources/ directory to build area -->
+<!--
+		<echo>Copying resources/ directory to build</echo>
+		<copy todir="${build.classes}/cytoscape/resources">
+			<fileset dir="${basedir}/resources" />
+			<fileset file="${basedir}/resources/props/tax_report.txt" />
+		</copy>
+-->
+	</target>
+
+	
+
+</project>
