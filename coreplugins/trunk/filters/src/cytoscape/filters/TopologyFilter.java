@@ -48,20 +48,11 @@ import csplugins.widgets.autocomplete.index.GenericIndex;
 
 
 public class TopologyFilter extends CompositeFilter {
-
-	protected BitSet node_bits = null;
-	protected BitSet edge_bits = null;
 	
-	protected String name; // Name of the filter
-
-	protected boolean negation = false;
-	protected CyNetwork network = null;
+	private int minNeighbors = 1;
+	private int withinDistance = 1;
+	private CompositeFilter passFilter = null;
 	
-	protected int minNeighbors = 1;
-	protected int withinDistance = 1;
-	protected CompositeFilter passFilter = null;
-	
-	private String objectType = "node"; 
 	public TopologyFilter() {
 	}
 
@@ -109,7 +100,7 @@ public class TopologyFilter extends CompositeFilter {
 	
 	public void apply() {
 		System.out.println("Entering TopologyFilter.apply() ... ");
-		System.out.println("\tThe topo filter to apply is : " + toString());
+		//System.out.println("\tThe topo filter to apply is : " + toString());
 
 		if ( !childChanged ) 
 			return;
@@ -117,6 +108,10 @@ public class TopologyFilter extends CompositeFilter {
 		network = Cytoscape.getCurrentNetwork();					
 
 		//Make sure the pass filter is current
+		if (passFilter == null) {
+			passFilter = new TopologyFilter("None");
+		}
+		
 		if (!passFilter.getName().equalsIgnoreCase("None")) {
 			passFilter.apply();			
 		}	
@@ -126,28 +121,18 @@ public class TopologyFilter extends CompositeFilter {
 
 		int objectCount = -1;
 		
-		if (objectType.equalsIgnoreCase("node")) {
+		if (advancedSetting.isNodeChecked()) {
 			nodes_list = network.nodesList();
 			objectCount = nodes_list.size();
 			node_bits = new BitSet(objectCount); // all the bits are false at very beginning
-
-			// Print debug info
-			//BitSet passSet = passFilter.getNodeBits();
-			//for (int i=0; i<objectCount; i++) {
-			//	System.out.println("\t"+nodes_list.get(i).getIdentifier() +" passSet["+ i+ "] =" + passSet.get(i));
-			//}
 			
 			for (int i=0; i<objectCount; i++) {
 				if (isHit(nodes_list.get(i))) {
 					node_bits.set(i);
-					System.out.println("\tPass");
-				}
-				else {
-					System.out.println("\tNo Pass");
 				}
 			}
 		}
-		else if (objectType.equalsIgnoreCase("edge")) {
+		else if (advancedSetting.isEdgeChecked()) {
 			edges_list = network.edgesList();
 			objectCount = edges_list.size();
 			edge_bits = new BitSet(objectCount); // all the bits are false at very beginning			
@@ -164,20 +149,20 @@ public class TopologyFilter extends CompositeFilter {
 		}
 
 		if (negation) {
-			if (objectType.equalsIgnoreCase("node")) {
+			if (advancedSetting.isNodeChecked()) {
 				node_bits.flip(0, objectCount);
 			}
-			if (objectType.equalsIgnoreCase("edge")) {
+			if (advancedSetting.isEdgeChecked()) {
 				edge_bits.flip(0, objectCount);
 			}
 		}
 
 		childChanged = false;
-
 	}
 
+	
 	private boolean isHit(Object pObj) {
-		System.out.println("Entering isHit() for pObj = " + ((Node)pObj).getIdentifier());
+		//System.out.println("Entering isHit() for pObj = " + ((Node)pObj).getIdentifier());
 
 		// Get all the neighbors for pNode that pass the given filter
 		HashSet neighborSet = new HashSet();
@@ -231,12 +216,25 @@ public class TopologyFilter extends CompositeFilter {
 	
 	
 	public String toString() {
+		String retStr = "<TopologyFilter>\n";
+		
+		retStr = retStr + "name=" + name + "\n";
+		retStr = retStr + advancedSetting.toString() + "\n";
+		retStr = retStr + "Negation=" + negation + "\n";
+		retStr = retStr + "minNeighbors=" + minNeighbors + "\n";
+		retStr = retStr + "withinDistance=" + withinDistance + "\n";
+
 		if (passFilter == null) {
-			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":null:"+ negation;						
+			retStr += "passFilter=null\n";			
 		}
 		else {
-			return "TopologyFilter:"+ name+ ":"+ minNeighbors + ":" + withinDistance + ":" + passFilter.getName() + ":"+ negation;			
+			retStr += "passFilter=" + passFilter.getName()+"\n";						
 		}
+		
+		retStr += "</TopologyFiler>";
+
+		return retStr;
+		
 	}
 	
 	public void setNodeBits(BitSet b) {
