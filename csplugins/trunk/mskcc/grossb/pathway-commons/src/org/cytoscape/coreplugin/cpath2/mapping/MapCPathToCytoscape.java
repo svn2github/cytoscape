@@ -82,7 +82,7 @@ public class MapCPathToCytoscape implements HTTPServerListener {
     public void httpEvent(HTTPEvent event) {
 
         // get the request/url
-        String pathwayCommonsRequest = event.getRequest();
+        String cpathRequest = event.getRequest();
 
         // swap in proxy server if necessary
         Proxy proxyServer = ProxyHandler.getProxyServer();
@@ -95,9 +95,9 @@ public class MapCPathToCytoscape implements HTTPServerListener {
                 if (addressComponents[0] != null && addressComponents[0].length() > 0 &&
                         addressComponents[1] != null && addressComponents[1].length() > 0) {
                     String newURL = addressComponents[0].trim() + ":/" + addressComponents[1].trim();
-                    int indexOfWebService = pathwayCommonsRequest.indexOf(HTTPConnectionHandler.WEB_SERVICE_URL);
+                    int indexOfWebService = cpathRequest.indexOf(HTTPConnectionHandler.WEB_SERVICE_URL);
                     if (indexOfWebService > -1) {
-                        pathwayCommonsRequest = newURL + pathwayCommonsRequest.substring(indexOfWebService);
+                        cpathRequest = newURL + cpathRequest.substring(indexOfWebService);
                     }
                 }
             }
@@ -107,11 +107,11 @@ public class MapCPathToCytoscape implements HTTPServerListener {
 
         // if no other networks are loaded, we can just load it up
         if (bpNetworkSet.size() == 0) {
-            new NetworkUtil(pathwayCommonsRequest, null, false, nodeContextMenuListener).start();
+            new NetworkUtil(cpathRequest, null, false, nodeContextMenuListener).start();
         }
         // other networks list, give user option to merge
         else {
-            loadMergeDialog(pathwayCommonsRequest, bpNetworkSet);
+            loadMergeDialog(cpathRequest, bpNetworkSet);
         }
     }
 
@@ -148,15 +148,15 @@ public class MapCPathToCytoscape implements HTTPServerListener {
     /**
      * Loads the merge dialog.
      *
-     * @param pathwayCommonsRequest String
+     * @param cpathRequest String
      * @param bpNetworkSet          Set<CyNetwork>
      */
-    private void loadMergeDialog(String pathwayCommonsRequest, Set<CyNetwork> bpNetworkSet) {
+    private void loadMergeDialog(String cpathRequest, Set<CyNetwork> bpNetworkSet) {
 
         MergeDialog dialog = new MergeDialog(Cytoscape.getDesktop(),
                 PluginProperties.getNameOfCPathInstance() + "Network Merge",
                 true,
-                pathwayCommonsRequest,
+                cpathRequest,
                 bpNetworkSet,
                 nodeContextMenuListener);
         dialog.setLocationRelativeTo(Cytoscape.getDesktop());

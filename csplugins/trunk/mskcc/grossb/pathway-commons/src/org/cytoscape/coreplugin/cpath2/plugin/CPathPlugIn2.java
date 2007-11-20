@@ -1,4 +1,4 @@
-// $Id: PathwayCommonsPlugin.java,v 1.8 2007/04/27 19:18:48 grossb Exp $
+// $Id: CPathPlugIn2.java,v 1.8 2007/04/27 19:18:48 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2007 Memorial Sloan-Kettering Cancer Center.
  **
@@ -53,12 +53,12 @@ import javax.swing.*;
  *
  * @author Benjamin Gross.
  */
-public class PathwayCommonsPlugin extends CytoscapePlugin {
+public class CPathPlugIn2 extends CytoscapePlugin {
 
     /**
      * Constructor.
      */
-    public PathwayCommonsPlugin() {
+    public CPathPlugIn2() {
 
         String debugProperty = System.getProperty("DEBUG");
         Boolean debug = (debugProperty != null && debugProperty.length() > 0) &&
