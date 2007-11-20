@@ -7,7 +7,7 @@ import org.mskcc.pathway_commons.web_service.CPathException;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
-import org.mskcc.pathway_commons.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 
 import java.util.List;
 

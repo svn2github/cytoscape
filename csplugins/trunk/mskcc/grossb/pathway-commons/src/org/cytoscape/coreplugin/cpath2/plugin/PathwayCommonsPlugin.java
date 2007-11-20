@@ -40,8 +40,8 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.cytoscape.coreplugin.cpath2.mapping.MapPathwayCommonsToCytoscape;
-import org.mskcc.pathway_commons.util.NetworkListener;
-import org.mskcc.pathway_commons.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
+import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.mskcc.pathway_commons.view.cPathSearchPanel;
 import org.mskcc.pathway_commons.web_service.cPathWebApi;
 

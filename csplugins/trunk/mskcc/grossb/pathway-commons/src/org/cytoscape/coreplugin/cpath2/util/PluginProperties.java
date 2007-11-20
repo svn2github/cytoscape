@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.util;
+package org.cytoscape.coreplugin.cpath2.util;
 
 public class PluginProperties {
 

@@ -6,7 +6,7 @@ import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.web_service.cPathWebApiListener;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
-import org.mskcc.pathway_commons.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 
 import javax.swing.*;
 import javax.swing.text.Document;

@@ -35,8 +35,8 @@ package org.mskcc.pathway_commons.view;
 
 import cytoscape.CyNetwork;
 import ding.view.NodeContextMenuListener;
-import org.mskcc.pathway_commons.util.NetworkUtil;
-import org.mskcc.pathway_commons.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
+import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

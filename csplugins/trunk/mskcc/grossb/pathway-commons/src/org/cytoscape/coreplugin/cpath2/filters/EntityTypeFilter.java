@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.filters;
 
 import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
-import org.mskcc.pathway_commons.util.BioPaxEntityTypeMap;
+import org.cytoscape.coreplugin.cpath2.util.BioPaxEntityTypeMap;
 
 import java.util.ArrayList;
 import java.util.List;

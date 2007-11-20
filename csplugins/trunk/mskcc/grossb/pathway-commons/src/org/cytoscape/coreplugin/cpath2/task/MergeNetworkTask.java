@@ -42,7 +42,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
 import org.cytoscape.coreplugin.cpath2.cytoscape.MergeNetworkEdit;
-import org.mskcc.pathway_commons.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 
 import java.net.URL;
 import java.text.DecimalFormat;

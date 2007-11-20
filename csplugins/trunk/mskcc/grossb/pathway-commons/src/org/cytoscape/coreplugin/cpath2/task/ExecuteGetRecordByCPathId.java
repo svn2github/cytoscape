@@ -8,7 +8,7 @@ import cytoscape.data.readers.GraphReader;
 import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.web_service.EmptySetException;
 import org.mskcc.pathway_commons.web_service.CPathException;
-import org.mskcc.pathway_commons.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -3,7 +3,7 @@ package org.mskcc.pathway_commons.view.model;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
 import org.mskcc.pathway_commons.schemas.summary_response.DataSourceType;
-import org.mskcc.pathway_commons.util.BioPaxEntityTypeMap;
+import org.cytoscape.coreplugin.cpath2.util.BioPaxEntityTypeMap;
 
 import java.util.List;
 import java.util.TreeMap;
