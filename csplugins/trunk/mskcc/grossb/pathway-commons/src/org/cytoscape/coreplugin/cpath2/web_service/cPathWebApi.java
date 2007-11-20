@@ -1,8 +1,5 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
-import org.mskcc.pathway_commons.schemas.search_response.*;
-import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
-
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -11,6 +8,8 @@ import java.util.List;
 import java.io.StringReader;
 
 import cytoscape.task.TaskMonitor;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.*;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
 /**
  * Class for accessing the cPath Web API.
@@ -71,8 +70,8 @@ public class cPathWebApi {
             StringReader reader = new StringReader(responseXml);
 
             Class[] classes = new Class[2];
-            classes[0] = org.mskcc.pathway_commons.schemas.search_response.SearchResponseType.class;
-            classes[1] = org.mskcc.pathway_commons.schemas.search_response.ObjectFactory.class;
+            classes[0] = org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType.class;
+            classes[1] = org.cytoscape.coreplugin.cpath2.schemas.search_response.ObjectFactory.class;
             try {
                 JAXBContext jc = JAXBContext.newInstance(classes);
                 Unmarshaller u = jc.createUnmarshaller();
@@ -120,8 +119,8 @@ public class cPathWebApi {
         StringReader reader = new StringReader(responseXml);
 
         Class[] classes = new Class[2];
-        classes[0] = org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType.class;
-        classes[1] = org.mskcc.pathway_commons.schemas.summary_response.ObjectFactory.class;
+        classes[0] = org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType.class;
+        classes[1] = org.cytoscape.coreplugin.cpath2.schemas.summary_response.ObjectFactory.class;
         try {
             JAXBContext jc = JAXBContext.newInstance(classes);
             Unmarshaller u = jc.createUnmarshaller();

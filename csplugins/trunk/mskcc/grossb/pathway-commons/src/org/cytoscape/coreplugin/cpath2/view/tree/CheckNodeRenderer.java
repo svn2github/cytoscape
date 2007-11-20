@@ -1,7 +1,6 @@
 package org.cytoscape.coreplugin.cpath2.view.tree;
 
-import org.mskcc.pathway_commons.view.tree.CustomNodePanel;
-import org.mskcc.pathway_commons.view.GradientHeader;
+import org.cytoscape.coreplugin.cpath2.view.GradientHeader;
 
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.*;

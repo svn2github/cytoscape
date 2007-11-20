@@ -1,8 +1,8 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
-import org.mskcc.pathway_commons.view.GradientHeader;
-import org.mskcc.pathway_commons.view.NonEditableTableModel;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

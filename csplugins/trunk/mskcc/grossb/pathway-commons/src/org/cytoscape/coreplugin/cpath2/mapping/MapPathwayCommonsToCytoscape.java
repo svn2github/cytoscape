@@ -44,7 +44,7 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
-import org.mskcc.pathway_commons.view.MergeDialog;
+import org.cytoscape.coreplugin.cpath2.view.MergeDialog;
 
 import java.net.Proxy;
 import java.util.HashSet;

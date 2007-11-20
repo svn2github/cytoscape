@@ -2,12 +2,12 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.mskcc.pathway_commons.web_service.cPathWebApi;
-import org.mskcc.pathway_commons.web_service.CPathException;
-import org.mskcc.pathway_commons.web_service.EmptySetException;
-import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
-import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
 
 import java.util.List;
 

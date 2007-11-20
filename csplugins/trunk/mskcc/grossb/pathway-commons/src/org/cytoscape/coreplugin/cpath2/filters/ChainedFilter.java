@@ -1,6 +1,6 @@
 package org.cytoscape.coreplugin.cpath2.filters;
 
-import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 
 import java.util.List;
 import java.util.ArrayList;

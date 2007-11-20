@@ -2,11 +2,11 @@ package org.cytoscape.coreplugin.cpath2.view;
 
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
-import org.mskcc.pathway_commons.web_service.cPathWebApi;
-import org.mskcc.pathway_commons.web_service.cPathWebApiListener;
-import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
-import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApiListener;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
 import javax.swing.*;
 import javax.swing.text.Document;

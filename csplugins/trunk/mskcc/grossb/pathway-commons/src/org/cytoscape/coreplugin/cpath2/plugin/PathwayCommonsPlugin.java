@@ -42,8 +42,8 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.cytoscape.coreplugin.cpath2.mapping.MapPathwayCommonsToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
-import org.mskcc.pathway_commons.view.cPathSearchPanel;
-import org.mskcc.pathway_commons.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 
 import javax.swing.*;
 

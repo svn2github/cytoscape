@@ -5,10 +5,10 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.readers.GraphReader;
-import org.mskcc.pathway_commons.web_service.cPathWebApi;
-import org.mskcc.pathway_commons.web_service.EmptySetException;
-import org.mskcc.pathway_commons.web_service.CPathException;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.cPathWebApi;
+import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
 
 import java.io.File;
 import java.io.FileWriter;

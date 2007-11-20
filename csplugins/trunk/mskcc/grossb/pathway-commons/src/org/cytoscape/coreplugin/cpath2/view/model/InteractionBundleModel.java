@@ -1,7 +1,5 @@
 package org.cytoscape.coreplugin.cpath2.view.model;
 
-import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
-
 import java.util.Observable;
 
 /**

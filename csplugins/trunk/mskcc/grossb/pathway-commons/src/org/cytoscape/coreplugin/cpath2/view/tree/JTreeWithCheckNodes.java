@@ -1,7 +1,5 @@
 package org.cytoscape.coreplugin.cpath2.view.tree;
 
-import org.mskcc.pathway_commons.view.tree.NodeSelectionListener;
-
 import javax.swing.*;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;

@@ -1,8 +1,6 @@
 package org.cytoscape.coreplugin.cpath2.view.tree;
 
-import org.mskcc.pathway_commons.view.tree.CheckNode;
-import org.cytoscape.coreplugin.cpath2.view.tree.JTreeWithCheckNodes;
-import org.mskcc.pathway_commons.view.CollapsablePanel;
+import org.cytoscape.coreplugin.cpath2.view.CollapsablePanel;
 
 import java.util.*;
 import java.awt.*;

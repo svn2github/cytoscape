@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
-import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
-import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
 /**
  * Listener for listener to Requests made to the cPath Web API.
