@@ -921,6 +921,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			System.out.println("\tCreate a topology filter");
 
 			newFilter =  new TopologyFilter();
+			newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
 		}
 		else {
