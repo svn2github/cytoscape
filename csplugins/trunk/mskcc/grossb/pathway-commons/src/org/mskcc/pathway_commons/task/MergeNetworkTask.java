@@ -41,7 +41,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
-import org.mskcc.pathway_commons.cytoscape.MergeNetworkEdit;
+import org.cytoscape.coreplugin.cpath2.cytoscape.MergeNetworkEdit;
 import org.mskcc.pathway_commons.util.PluginProperties;
 
 import java.net.URL;
