@@ -29,7 +29,7 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package org.mskcc.pathway_commons.plugin;
+package org.cytoscape.coreplugin.cpath2.plugin;
 
 // imports
 
@@ -39,7 +39,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
-import org.mskcc.pathway_commons.mapping.MapPathwayCommonsToCytoscape;
+import org.cytoscape.coreplugin.cpath2.mapping.MapPathwayCommonsToCytoscape;
 import org.mskcc.pathway_commons.util.NetworkListener;
 import org.mskcc.pathway_commons.util.PluginProperties;
 import org.mskcc.pathway_commons.view.cPathSearchPanel;

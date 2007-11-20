@@ -2,7 +2,7 @@ package org.mskcc.pathway_commons.view;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.mskcc.pathway_commons.task.ExecutePhysicalEntitySearch;
+import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
 import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;

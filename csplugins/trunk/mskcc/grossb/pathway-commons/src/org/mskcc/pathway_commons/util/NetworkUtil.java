@@ -35,7 +35,6 @@ package org.mskcc.pathway_commons.util;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.actions.LoadNetworkTask;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -43,8 +42,8 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.NodeContextMenuListener;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
-import org.mskcc.pathway_commons.task.MergeNetworkTask;
-import org.mskcc.pathway_commons.task.LoadNetworkFromUrlTask;
+import org.cytoscape.coreplugin.cpath2.task.MergeNetworkTask;
+import org.cytoscape.coreplugin.cpath2.task.LoadNetworkFromUrlTask;
 
 import java.net.MalformedURLException;
 import java.net.URL;

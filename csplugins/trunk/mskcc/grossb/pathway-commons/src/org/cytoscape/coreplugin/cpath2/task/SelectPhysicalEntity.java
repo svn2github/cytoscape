@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.task;
+package org.cytoscape.coreplugin.cpath2.task;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;

@@ -22,7 +22,7 @@ import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
 import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
 import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
 import org.mskcc.pathway_commons.schemas.summary_response.BasicRecordType;
-import org.mskcc.pathway_commons.task.ExecuteGetRecordByCPathId;
+import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;

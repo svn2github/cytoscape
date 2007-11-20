@@ -38,7 +38,7 @@
 // $Revision: 8703 $
 // $Date: 2006-11-06 23:17:02 -0800 (Mon, 06 Nov 2006) $
 // $Author: pwang $
-package org.mskcc.pathway_commons.task;
+package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -53,10 +53,8 @@ import cytoscape.task.ui.JTaskConfig;
 
 import cytoscape.task.util.TaskManager;
 
-import java.io.File;
 import java.io.IOException;
 
-import java.net.URI;
 import java.net.URL;
 
 import java.text.DecimalFormat;

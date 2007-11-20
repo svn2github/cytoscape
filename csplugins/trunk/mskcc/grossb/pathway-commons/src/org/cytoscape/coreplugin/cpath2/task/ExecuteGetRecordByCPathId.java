@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.task;
+package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
