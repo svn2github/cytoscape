@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<!-- build.xml - Build file for Cytoscape Pathway Commons Plug In -->
-<project  default="all" name="Cytoscape Pathway Commons PlugIn">
+<!-- build.xml - Build file for Cytoscape cPath2 Plug In -->
+<project  default="all" name="Cytoscape cPath 2 PlugIn">
     <!-- Project Name -->
-    <property name="project_name" value="pathway_commons"/>
+    <property name="project_name" value="cpath2"/>
     <!-- Version Numbers -->
     <property name="version" value="1_0"/>
     <!--  Define Check Style Task -->
@@ -125,8 +125,8 @@
         </copy>
     </target>
 
-    <!--  Target to Run Cytoscape with PathwayCommons PlugIn -->
-    <target depends="jar" description="Runs Cytoscape with PathwayCommons Data."
+    <!--  Target to Run Cytoscape with CPath2 Plugin -->
+    <target depends="jar" description="Runs Cytoscape with cPath2 Plugin."
         name="run">
         <copy todir="${plugins.dir}">
             <fileset dir="${jars.dir}">
@@ -156,7 +156,7 @@
             </fileset>
         </unjar>
 
-        <!--  Create PathwayCommons Jar -->
+        <!--  Create cPath2 Jar -->
         <jar destfile="${jars.dir}/${project_jar}">
             <fileset dir="${build.classes}"/>
             <fileset dir="${temp.dir}"/>
