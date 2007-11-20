@@ -48,16 +48,6 @@ import javax.swing.event.HyperlinkListener;
  * @author Ethan Cerami.
  */
 public class LaunchExternalBrowser implements HyperlinkListener {
-	private BioPaxDetailsPanel detailsPanel;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param detailsPanel BioPAX Details Panel.
-	 */
-	public LaunchExternalBrowser(BioPaxDetailsPanel detailsPanel) {
-		this.detailsPanel = detailsPanel;
-	}
 
 	/**
 	 * User has clicked on a HyperLink.
