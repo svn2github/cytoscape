@@ -1,4 +1,4 @@
-package org.mskcc.pathway_commons.web_service;
+package org.cytoscape.coreplugin.cpath2.web_service;
 
 /**
  * Indicates Error Connecting to cPath.
