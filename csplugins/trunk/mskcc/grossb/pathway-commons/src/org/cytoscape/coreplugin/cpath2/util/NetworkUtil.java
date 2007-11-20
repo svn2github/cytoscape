@@ -66,9 +66,9 @@ public class NetworkUtil extends Thread {
     private String webServicesURL;
 
     /**
-     * ref to pathwayCommonsURL
+     * ref to cPathRequst
      */
-    private String pathwayCommonsRequest;
+    private String cPathRequest;
 
     /**
      * ref to cyNetwork
@@ -103,16 +103,16 @@ public class NetworkUtil extends Thread {
     /**
      * Constructor.
      *
-     * @param pathwayCommonsRequest   String
+     * @param cpathRequest   String
      * @param cyNetwork               CyNetwork
      * @param merging                 boolean
      * @param nodeContextMenuListener NodeContextMenuListener
      */
-    public NetworkUtil(String pathwayCommonsRequest, CyNetwork cyNetwork,
+    public NetworkUtil(String cpathRequest, CyNetwork cyNetwork,
             boolean merging, NodeContextMenuListener nodeContextMenuListener) {
 
         // init member vars
-        parseRequest(pathwayCommonsRequest);
+        parseRequest(cpathRequest);
         this.cyNetwork = cyNetwork;
         this.merging = merging;
         this.nodeContextMenuListener = nodeContextMenuListener;
@@ -124,12 +124,12 @@ public class NetworkUtil extends Thread {
     public void run() {
 
         try {
-            URL pathwayCommonsURL = new URL(pathwayCommonsRequest);
+            URL cpathURL = new URL(cPathRequest);
 
             // are we merging ?
             if (merging) {
                 // start merge network task
-                TaskManager.executeTask(new MergeNetworkTask(pathwayCommonsURL, cyNetwork),
+                TaskManager.executeTask(new MergeNetworkTask(cpathURL, cyNetwork),
                         setupTask());
                 postProcess(cyNetwork, true);
             } else {
@@ -139,7 +139,7 @@ public class NetworkUtil extends Thread {
                 if (networkTitle != null && networkTitle.length() > 0) {
                     System.setProperty("biopax.network_view_title", networkTitle);
                 }
-                LoadNetworkFromUrlTask.loadURL(pathwayCommonsURL, true);
+                LoadNetworkFromUrlTask.loadURL(cpathURL, true);
                 postProcess(Cytoscape.getCurrentNetwork(), false);
             }
         }
@@ -152,56 +152,56 @@ public class NetworkUtil extends Thread {
      * Method to process/parse the cpath request and
      * set proper member variables.
      *
-     * @param pathwayCommonsRequest String
+     * @param cpathRequest String
      */
-    private void parseRequest(String pathwayCommonsRequest) {
+    private void parseRequest(String cpathRequest) {
 
         // web services url
-        int indexToStartOfPC = pathwayCommonsRequest.indexOf("/pc");
+        int indexToStartOfPC = cpathRequest.indexOf("/pc");
         if (indexToStartOfPC > 0) {
-            this.webServicesURL = pathwayCommonsRequest.substring(7, indexToStartOfPC + 3);
+            this.webServicesURL = cpathRequest.substring(7, indexToStartOfPC + 3);
         }
 
         // extract title
         this.networkTitle = extractRequestArg(NEIGHBORHOOD_TITLE_ARG,
-                pathwayCommonsRequest);
+                cpathRequest);
 
         // extract data sources
         dataSources = extractRequestArg(DATA_SOURCE_ARG,
-                pathwayCommonsRequest);
+                cpathRequest);
 
         // set request member
-        this.pathwayCommonsRequest = pathwayCommonsRequest;
+        this.cPathRequest = cpathRequest;
     }
 
     /**
      * Extracts argument from cpath request (url).
-     * Method removes argument from pathwayCommonsRequest arg,
+     * Method removes argument from cPathRequest arg,
      * and returns it as String.
      *
      * @param arg                   String - the argument to extract
-     * @param pathwayCommonsRequest String
+     * @param cpathRequest String
      * @return String
      */
-    private String extractRequestArg(String arg, String pathwayCommonsRequest) {
+    private String extractRequestArg(String arg, String cpathRequest) {
 
         // get index of argument
-        int indexOfArg = pathwayCommonsRequest.indexOf(arg);
+        int indexOfArg = cpathRequest.indexOf(arg);
 
         // if arg is not in list, bail
         if (indexOfArg == -1) return null;
 
         int startIndexOfValue = indexOfArg + arg.length();
-        int endIndexOfValue = pathwayCommonsRequest.indexOf("&", startIndexOfValue);
+        int endIndexOfValue = cpathRequest.indexOf("&", startIndexOfValue);
         String value = (endIndexOfValue == -1) ?
-                pathwayCommonsRequest.substring(startIndexOfValue) :
-                pathwayCommonsRequest.substring(startIndexOfValue, endIndexOfValue);
+                cpathRequest.substring(startIndexOfValue) :
+                cpathRequest.substring(startIndexOfValue, endIndexOfValue);
 
         // remove arg from request
-        pathwayCommonsRequest = (endIndexOfValue == -1) ?
-                pathwayCommonsRequest.substring(0, indexOfArg) :
-                pathwayCommonsRequest.substring(0, indexOfArg) +
-                        pathwayCommonsRequest.substring(endIndexOfValue);
+        cpathRequest = (endIndexOfValue == -1) ?
+                cpathRequest.substring(0, indexOfArg) :
+                cpathRequest.substring(0, indexOfArg) +
+                        cpathRequest.substring(endIndexOfValue);
 
         // outta here
         return value;

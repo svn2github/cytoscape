@@ -29,7 +29,7 @@ public class SearchBoxPanel extends JPanel {
     /**
      * Constructor.
      *
-     * @param webApi PathwayCommmons Web API.
+     * @param webApi CPath Web Service Object.
      */
     public SearchBoxPanel(CPathWebService webApi) {
         this.webApi = webApi;

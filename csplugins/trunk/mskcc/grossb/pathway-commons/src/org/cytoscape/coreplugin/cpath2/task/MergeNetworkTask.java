@@ -58,9 +58,9 @@ import java.util.Set;
 public class MergeNetworkTask implements Task {
 
     /**
-     * ref to pathwayCommonsURL
+     * ref to cpathInstanceURL
      */
-    private URL pathwayCommonsURL;
+    private URL cpathInstanceURL;
 
     /**
      * ref to cyNetwork
@@ -80,15 +80,15 @@ public class MergeNetworkTask implements Task {
     /**
      * Constructor.
      *
-     * @param pathwayCommonsURL URL
+     * @param cpathURL URL
      * @param cyNetwork         CyNetwork
      */
-    public MergeNetworkTask(URL pathwayCommonsURL, CyNetwork cyNetwork) {
+    public MergeNetworkTask(URL cpathURL, CyNetwork cyNetwork) {
 
         // init member vars
-        this.pathwayCommonsURL = pathwayCommonsURL;
+        this.cpathInstanceURL = cpathURL;
         this.cyNetwork = cyNetwork;
-        reader = Cytoscape.getImportHandler().getReader(pathwayCommonsURL);
+        reader = Cytoscape.getImportHandler().getReader(cpathURL);
     }
 
     /**
@@ -189,7 +189,7 @@ public class MergeNetworkTask implements Task {
 
         // construct status string
         sb.append("Succesfully merged network from:  ");
-        sb.append(pathwayCommonsURL.toString() + ".\n");
+        sb.append(cpathInstanceURL.toString() + ".\n");
         sb.append(formatter.format(nodeCount) + " nodes and " + formatter.format(edgeCount) + " edges have been merged.");
         sb.append("  The merged network contains a total of " + formatter.format(cyNetwork.getNodeCount()));
         sb.append(" nodes and " + formatter.format(cyNetwork.getEdgeCount()) + " edges.");

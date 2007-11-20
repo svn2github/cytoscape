@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class provides a gui that is displayed when a pathwaycommons.org
+ * This class provides a gui that is displayed when a cPath instance
  * request is received.  The gui will allow a user to create a new network
  * or merge the current request into an existing network.  If more than one
  * network exists, the user will choose which network to merge into from a list.
@@ -109,14 +109,14 @@ public class MergeDialog extends JDialog {
      * @param owner                   The frame in which the dialog is displayed.
      * @param title                   Title of the frame.
      * @param modal                   Is dialog modal or not.
-     * @param pathwayCommonsRequest   String
+     * @param cPathRequest            String
      * @param bpNetworkSet            Set<CyNetwork>.
      * @param nodeContextMenuListener NodeContextMenuListener
      */
     public MergeDialog(Frame owner,
             String title,
             boolean modal,
-            String pathwayCommonsRequest,
+            String cPathRequest,
             Set<CyNetwork> bpNetworkSet,
             NodeContextMenuListener nodeContextMenuListener) {
 
@@ -124,7 +124,7 @@ public class MergeDialog extends JDialog {
         super(owner, title, modal);
 
         // init members
-        this.cpathRequest = pathwayCommonsRequest;
+        this.cpathRequest = cPathRequest;
         bpNetworkTitles = new String[bpNetworkSet.size()];
         bpNetworkMap = new HashMap<String, CyNetwork>();
         // here we link network titles to CyNetworks -
