@@ -1,7 +1,7 @@
 package org.mskcc.pathway_commons.view;
 
-import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
-import org.mskcc.pathway_commons.view.model.PathwayTableModel;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.web_service.cPathWebApiListener;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;

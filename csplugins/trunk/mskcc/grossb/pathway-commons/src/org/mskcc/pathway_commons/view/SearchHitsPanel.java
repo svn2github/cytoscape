@@ -4,11 +4,11 @@ import org.mskcc.pathway_commons.schemas.search_response.ExtendedRecordType;
 import org.mskcc.pathway_commons.schemas.search_response.SearchResponseType;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.mskcc.pathway_commons.web_service.cPathWebApi;
 import org.mskcc.pathway_commons.web_service.cPathWebApiListener;
-import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
-import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.mskcc.pathway_commons.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
 import cytoscape.Cytoscape;
 
 import javax.swing.*;

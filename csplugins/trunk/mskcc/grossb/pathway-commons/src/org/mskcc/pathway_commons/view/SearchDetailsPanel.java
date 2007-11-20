@@ -13,11 +13,11 @@ import java.util.*;
 import java.util.List;
 
 import org.mskcc.pathway_commons.web_service.cPathWebApi;
-import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
-import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.mskcc.pathway_commons.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
+import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
 import org.mskcc.pathway_commons.view.tree.CheckNode;
-import org.mskcc.pathway_commons.view.tree.JTreeWithCheckNodes;
+import org.cytoscape.coreplugin.cpath2.view.tree.JTreeWithCheckNodes;
 import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
 import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
 import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;

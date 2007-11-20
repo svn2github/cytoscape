@@ -2,11 +2,10 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 import org.mskcc.pathway_commons.schemas.search_response.*;
 import org.mskcc.pathway_commons.schemas.summary_response.SummaryResponseType;
-import org.mskcc.pathway_commons.view.model.InteractionBundleModel;
-import org.mskcc.pathway_commons.view.model.PathwayTableModel;
-import org.mskcc.pathway_commons.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 import javax.swing.*;
 import java.util.List;
