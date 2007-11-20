@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An undoable edit used by org.mskcc.pathway_commons.MergeNetworkTask
+ * An undoable edit used by MergeNetworkTask
  * to provide undo/redo support.  Code based on cytoscape.editor.AddNodeEdit
  */
 public class MergeNetworkEdit extends CyAbstractEdit {

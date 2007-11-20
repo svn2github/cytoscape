@@ -1,4 +1,4 @@
-// $Id: MapPathwayCommonsToCytoscape.java,v 1.3 2007/04/20 15:48:50 grossb Exp $
+// $Id: MapCPathToCytoscape.java,v 1.3 2007/04/20 15:48:50 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2007 Memorial Sloan-Kettering Cancer Center.
  **
@@ -56,7 +56,7 @@ import java.util.Set;
  *
  * @author Benjamin Gross.
  */
-public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
+public class MapCPathToCytoscape implements HTTPServerListener {
 
     /*
       * ref to network listener - for context menus
@@ -68,7 +68,7 @@ public class MapPathwayCommonsToCytoscape implements HTTPServerListener {
      *
      * @param nodeContextMenuListener NodeContextMenuListener
      */
-    public MapPathwayCommonsToCytoscape(NodeContextMenuListener nodeContextMenuListener) {
+    public MapCPathToCytoscape(NodeContextMenuListener nodeContextMenuListener) {
 
         // init member vars
         this.nodeContextMenuListener = nodeContextMenuListener;

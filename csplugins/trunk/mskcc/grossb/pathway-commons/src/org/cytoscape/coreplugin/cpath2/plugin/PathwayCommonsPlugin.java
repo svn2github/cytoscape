@@ -39,7 +39,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
-import org.cytoscape.coreplugin.cpath2.mapping.MapPathwayCommonsToCytoscape;
+import org.cytoscape.coreplugin.cpath2.mapping.MapCPathToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
@@ -69,7 +69,7 @@ public class PathwayCommonsPlugin extends CytoscapePlugin {
 
         // create our http server and start its thread
         new HTTPServer(HTTPServer.DEFAULT_PORT,
-                new MapPathwayCommonsToCytoscape(networkListener), debug).start();
+                new MapCPathToCytoscape(networkListener), debug).start();
 
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         final CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);

@@ -36,7 +36,7 @@ package org.cytoscape.coreplugin.cpath2.http;
 import java.util.EventListener;
 
 /**
- * Interface implemented by class which is interested in pathwaycommons.org events.
+ * Interface implemented by class which is interested in cPath instance events.
  */
 public interface HTTPServerListener extends EventListener {
 

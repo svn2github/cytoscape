@@ -39,7 +39,7 @@ import java.net.Socket;
 
 /**
  * HTTPServer class provides a bare-bones
- * server to listen for requests from pathwaycommons.org
+ * server to listen for requests from cPath instance.
  * web pages.
  * <p/>
  * First version will be single-thread since
