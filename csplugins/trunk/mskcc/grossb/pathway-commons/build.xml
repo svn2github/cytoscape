@@ -161,7 +161,7 @@
             <fileset dir="${build.classes}"/>
             <fileset dir="${temp.dir}"/>
         <manifest>
-	    	<attribute name="Cytoscape-Plugin" value="org.cytoscape.coreplugin.cpath2.plugin.PathwayCommonsPlugin"/>
+	    	<attribute name="Cytoscape-Plugin" value="org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2"/>
 	    </manifest>
         </jar>
         <delete dir="${temp.dir}"/>
