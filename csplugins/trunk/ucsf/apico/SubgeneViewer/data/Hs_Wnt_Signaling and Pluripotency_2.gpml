@@ -1,0 +1,863 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Pathway xmlns="http://genmapp.org/GPML/2007" Name="Wnt Signaling Pathway and Pluripotency" Data-Source="GenMAPP 2.0" Version="20061219" Author="Nathan Salomonis and Michael Lieberman" Maintainer="GenMAPP.org" Email="genmapp@gladstone.ucsf.edu" Copyright="2007, Gladstone Institutes" Last-Modified="10/10/07" Organism="Homo sapiens">
+  <Comment Source="GenMAPP notes"></Comment>
+  <Comment Source="GenMAPP remarks"></Comment>
+  <Graphics BoardWidth="17869.5" BoardHeight="14850.0" WindowWidth="14364.0" WindowHeight="11910.0" />
+  <DataNode TextLabel="WNT1" Type="GeneProduct" GraphId="bcf">
+    <Graphics Color="000000" CenterX="700.0" CenterY="1550.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7471" />
+  </DataNode>
+  <DataNode TextLabel="WNT2" Type="GeneProduct" GraphId="cee">
+    <Graphics Color="000000" CenterX="700.0" CenterY="1850.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7472" />
+  </DataNode>
+  <DataNode TextLabel="WNT2B" Type="GeneProduct" GraphId="c87">
+    <Graphics Color="000000" CenterX="700.0" CenterY="2150.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7482" />
+  </DataNode>
+  <DataNode TextLabel="WNT3" Type="GeneProduct" GraphId="f74">
+    <Graphics Color="000000" CenterX="700.0" CenterY="2450.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7473" />
+  </DataNode>
+  <DataNode TextLabel="WNT3A" Type="GeneProduct" GraphId="bf4">
+    <Graphics Color="000000" CenterX="700.0" CenterY="2750.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="89780" />
+  </DataNode>
+  <DataNode TextLabel="WNT4" Type="GeneProduct" GraphId="dec">
+    <Graphics Color="000000" CenterX="700.0" CenterY="3050.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="54361" />
+  </DataNode>
+  <DataNode TextLabel="WNT5A" Type="GeneProduct" GraphId="a8d">
+    <Graphics Color="000000" CenterX="700.0" CenterY="3350.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7474" />
+  </DataNode>
+  <DataNode TextLabel="WNT5B" Type="GeneProduct" GraphId="ba9">
+    <Graphics Color="000000" CenterX="700.0" CenterY="3650.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="81029" />
+  </DataNode>
+  <DataNode TextLabel="WNT6" Type="GeneProduct" GraphId="e96">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="1550.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7475" />
+  </DataNode>
+  <DataNode TextLabel="WNT7A" Type="GeneProduct" GraphId="c40">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="1850.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7476" />
+  </DataNode>
+  <DataNode TextLabel="WNT7B" Type="GeneProduct" GraphId="beb">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="2150.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7477" />
+  </DataNode>
+  <DataNode TextLabel="WNT10A" Type="GeneProduct" GraphId="f4a">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="2450.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="80326" />
+  </DataNode>
+  <DataNode TextLabel="WNT10B" Type="GeneProduct" GraphId="b70">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="2750.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7480" />
+  </DataNode>
+  <DataNode TextLabel="WNT11" Type="GeneProduct" GraphId="aad">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="3050.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7481" />
+  </DataNode>
+  <DataNode TextLabel="WNT9B" Type="GeneProduct" GraphId="e56">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="3350.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7484" />
+  </DataNode>
+  <DataNode TextLabel="WNT16" Type="GeneProduct" GraphId="ad7">
+    <Graphics Color="000000" CenterX="1950.0" CenterY="3650.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="51384" />
+  </DataNode>
+  <DataNode TextLabel="LDLR" Type="GeneProduct" GraphId="b99">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="4500.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="3949" />
+  </DataNode>
+  <DataNode TextLabel="LRP5" Type="GeneProduct" GraphId="e64">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="4800.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="4041" />
+  </DataNode>
+  <DataNode TextLabel="FZD1" Type="GeneProduct" GraphId="a7e">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="1200.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8321" />
+  </DataNode>
+  <DataNode TextLabel="FZD2" Type="GeneProduct" GraphId="d91">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="1500.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="2535" />
+  </DataNode>
+  <DataNode TextLabel="FZD3" Type="GeneProduct" GraphId="cbf">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="1800.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7976" />
+  </DataNode>
+  <DataNode TextLabel="FZD4" Type="GeneProduct" GraphId="ad5">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="2100.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8322" />
+  </DataNode>
+  <DataNode TextLabel="FZD5" Type="GeneProduct" GraphId="de8">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="2400.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7855" />
+  </DataNode>
+  <DataNode TextLabel="FZD6" Type="GeneProduct" GraphId="d7e">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="2700.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8323" />
+  </DataNode>
+  <DataNode TextLabel="FZD7" Type="GeneProduct" GraphId="ab7">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="3000.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8324" />
+  </DataNode>
+  <DataNode TextLabel="FZD8" Type="GeneProduct" GraphId="b28">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="3300.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8325" />
+  </DataNode>
+  <DataNode TextLabel="FZD9" Type="GeneProduct" GraphId="fa7">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="3600.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8326" />
+  </DataNode>
+  <DataNode TextLabel="PRKCA" Type="GeneProduct" GraphId="c6e">
+    <Graphics Color="000000" CenterX="7150.0" CenterY="1300.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5578" />
+  </DataNode>
+  <DataNode TextLabel="PRKCB1" Type="GeneProduct" GraphId="aa3">
+    <Graphics Color="000000" CenterX="7150.0" CenterY="1600.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5579" />
+  </DataNode>
+  <DataNode TextLabel="Prkcc" Type="GeneProduct" BackpageHead="Prkcc" GraphId="d6a">
+    <Graphics Color="000000" CenterX="7150.0" CenterY="1900.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="" />
+  </DataNode>
+  <DataNode TextLabel="PRKCD" Type="GeneProduct" GraphId="eac">
+    <Graphics Color="000000" CenterX="7150.0" CenterY="2200.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5580" />
+  </DataNode>
+  <DataNode TextLabel="PRKCE" Type="GeneProduct" GraphId="fa6">
+    <Graphics Color="000000" CenterX="7150.0" CenterY="2500.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5581" />
+  </DataNode>
+  <DataNode TextLabel="PRKCI" Type="GeneProduct" GraphId="fae">
+    <Graphics Color="000000" CenterX="8350.0" CenterY="1300.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5584" />
+  </DataNode>
+  <DataNode TextLabel="PRKCH" Type="GeneProduct" GraphId="ce8">
+    <Graphics Color="000000" CenterX="8350.0" CenterY="1600.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5583" />
+  </DataNode>
+  <DataNode TextLabel="PRKD1" Type="GeneProduct" GraphId="ced">
+    <Graphics Color="000000" CenterX="8350.0" CenterY="1900.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5587" />
+  </DataNode>
+  <DataNode TextLabel="PRKCQ" Type="GeneProduct" GraphId="a5c">
+    <Graphics Color="000000" CenterX="8350.0" CenterY="2200.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5588" />
+  </DataNode>
+  <DataNode TextLabel="PRKCZ" Type="GeneProduct" GraphId="d6f">
+    <Graphics Color="000000" CenterX="8350.0" CenterY="2500.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5590" />
+  </DataNode>
+  <DataNode TextLabel="DVL1" Type="GeneProduct" GraphId="acb">
+    <Graphics Color="000000" CenterX="7750.0" CenterY="3050.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1855" />
+  </DataNode>
+  <DataNode TextLabel="DVL2" Type="GeneProduct" GraphId="a66">
+    <Graphics Color="000000" CenterX="7750.0" CenterY="3350.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1856" />
+  </DataNode>
+  <DataNode TextLabel="DVL3" Type="GeneProduct" GraphId="c12">
+    <Graphics Color="000000" CenterX="7750.0" CenterY="3650.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1857" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R5E" Type="GeneProduct" GraphId="dfd">
+    <Graphics Color="000000" CenterX="6500.0" CenterY="4300.0" Width="1008.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5529" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R5C" Type="GeneProduct" GraphId="ca6">
+    <Graphics Color="000000" CenterX="6500.0" CenterY="4600.0" Width="1008.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5527" />
+  </DataNode>
+  <DataNode TextLabel="CSNK1E" Type="GeneProduct" GraphId="f6d">
+    <Graphics Color="000000" CenterX="6600.0" CenterY="5800.0" Width="1008.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1454" />
+  </DataNode>
+  <DataNode TextLabel="AXIN1" Type="GeneProduct" GraphId="dc6">
+    <Graphics Color="000000" CenterX="7750.0" CenterY="5150.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8312" />
+  </DataNode>
+  <DataNode TextLabel="FRAT1" Type="GeneProduct" GraphId="b47">
+    <Graphics Color="000000" CenterX="8950.0" CenterY="4700.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="10023" />
+  </DataNode>
+  <DataNode TextLabel="GSK3B" Type="GeneProduct" GraphId="b46">
+    <Graphics Color="000000" CenterX="8600.0" CenterY="6050.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="2932" />
+  </DataNode>
+  <DataNode TextLabel="CTNNB1" Type="GeneProduct" GraphId="bac">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="7200.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1499" />
+  </DataNode>
+  <DataNode TextLabel="RHOA" Type="GeneProduct" GraphId="fdd">
+    <Graphics Color="000000" CenterX="10050.0" CenterY="3650.0" Width="1008.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="387" />
+  </DataNode>
+  <DataNode TextLabel="RACGAP1" Type="GeneProduct" GraphId="f43">
+    <Graphics Color="000000" CenterX="10050.0" CenterY="3950.0" Width="1050.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="29127" />
+  </DataNode>
+  <DataNode TextLabel="MAPK9" Type="GeneProduct" GraphId="c30">
+    <Graphics Color="000000" CenterX="11800.0" CenterY="3650.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5601" />
+  </DataNode>
+  <DataNode TextLabel="MAPK10" Type="GeneProduct" GraphId="ea0">
+    <Graphics Color="000000" CenterX="11800.0" CenterY="3950.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5602" />
+  </DataNode>
+  <DataNode TextLabel="FBXW2" Type="GeneProduct" GraphId="cf0">
+    <Graphics Color="000000" CenterX="13400.0" CenterY="7550.0" Width="1100.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="26190" />
+  </DataNode>
+  <DataNode TextLabel="PAFAH1B1" Type="GeneProduct" GraphId="d03">
+    <Graphics Color="000000" CenterX="13400.0" CenterY="7850.0" Width="1125.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5048" />
+  </DataNode>
+  <DataNode TextLabel="TCF1" Type="GeneProduct" GraphId="d63">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="8650.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="6927" />
+  </DataNode>
+  <DataNode TextLabel="MYC" Type="GeneProduct" GraphId="b8f">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="9700.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="4609" />
+  </DataNode>
+  <DataNode TextLabel="CCND1" Type="GeneProduct" GraphId="f1b">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="10000.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="595" />
+  </DataNode>
+  <DataNode TextLabel="CCND2" Type="GeneProduct" GraphId="c08">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="10300.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="894" />
+  </DataNode>
+  <DataNode TextLabel="CCND3" Type="GeneProduct" GraphId="dde">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="10600.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="896" />
+  </DataNode>
+  <DataNode TextLabel="FOSL1" Type="GeneProduct" GraphId="b0a">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="10900.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="8061" />
+  </DataNode>
+  <DataNode TextLabel="JUN" Type="GeneProduct" GraphId="e1d">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="11200.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="3725" />
+  </DataNode>
+  <DataNode TextLabel="MMP7" Type="GeneProduct" BackpageHead="MMP7" GraphId="c26">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="11500.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="4316" />
+  </DataNode>
+  <DataNode TextLabel="TCF2" Type="GeneProduct" GraphId="caa">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="8950.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="6928" />
+  </DataNode>
+  <DataNode TextLabel="TCF7L1" Type="GeneProduct" GraphId="ad6">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="9250.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="83439" />
+  </DataNode>
+  <DataNode TextLabel="TCF4" Type="GeneProduct" GraphId="a84">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="9550.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="6925" />
+  </DataNode>
+  <DataNode TextLabel="LEF1" Type="GeneProduct" GraphId="c9e">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="9850.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="51176" />
+  </DataNode>
+  <DataNode TextLabel="NANOG" Type="GeneProduct" GraphId="f8b">
+    <Graphics Color="000000" CenterX="8750.0" CenterY="9250.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="79923" />
+  </DataNode>
+  <DataNode TextLabel="NLK" Type="GeneProduct" BackpageHead="NLK" GraphId="d3c">
+    <Graphics Color="000000" CenterX="5400.0" CenterY="8350.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="51701" />
+  </DataNode>
+  <DataNode TextLabel="APC" Type="GeneProduct" GraphId="dfa">
+    <Graphics Color="000000" CenterX="8600.0" CenterY="6350.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="324" />
+  </DataNode>
+  <DataNode TextLabel="CTBP1" Type="GeneProduct" GraphId="b5a">
+    <Graphics Color="000000" CenterX="8750.0" CenterY="8350.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1487" />
+  </DataNode>
+  <DataNode TextLabel="Groucho" Type="GeneProduct" BackpageHead="Groucho" GraphId="ad4">
+    <Graphics Color="000000" CenterX="8750.0" CenterY="8650.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="" />
+  </DataNode>
+  <DataNode TextLabel="MAP3K7" Type="GeneProduct" GraphId="b3f">
+    <Graphics Color="000000" CenterX="5400.0" CenterY="6600.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="6885" />
+  </DataNode>
+  <DataNode TextLabel="LRP6" Type="GeneProduct" GraphId="a8f">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="5100.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="4040" />
+  </DataNode>
+  <DataNode TextLabel="ZBTB33" Type="GeneProduct" GraphId="f8a">
+    <Graphics Color="000000" CenterX="11800.0" CenterY="10900.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="10009" />
+  </DataNode>
+  <DataNode TextLabel="CTNND1" Type="GeneProduct" GraphId="e72">
+    <Graphics Color="000000" CenterX="11800.0" CenterY="10100.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1500" />
+  </DataNode>
+  <DataNode TextLabel="PLAU" Type="GeneProduct" GraphId="cd8">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="11800.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5328" />
+  </DataNode>
+  <DataNode TextLabel="WNT11" Type="GeneProduct" BackpageHead="WNT11" GraphId="bea">
+    <Comment Source="GenMAPP remarks">Non-canonical Wnt signaling enhances differentiation of human circulating progenitor cells to cardiomyogenic cells. PMID: 15701629</Comment>
+    <Graphics Color="000000" CenterX="11800.0" CenterY="11850.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="7481" />
+  </DataNode>
+  <DataNode TextLabel="CTBP2" Type="GeneProduct" BackpageHead="CTBP2" GraphId="ab8">
+    <Graphics Color="000000" CenterX="8750.0" CenterY="8050.0" Width="924.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1488" />
+  </DataNode>
+  <DataNode TextLabel="CD44" Type="GeneProduct" GraphId="ff2">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="12100.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="960" />
+  </DataNode>
+  <DataNode TextLabel="PPARD" Type="GeneProduct" GraphId="d21">
+    <Graphics Color="000000" CenterX="9950.0" CenterY="12400.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5467" />
+  </DataNode>
+  <DataNode TextLabel="CBP" Type="GeneProduct" BackpageHead="CBP" GraphId="aca">
+    <Graphics Color="000000" CenterX="5750.0" CenterY="11100.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="1387" />
+  </DataNode>
+  <DataNode TextLabel="P300" Type="GeneProduct" BackpageHead="P300" GraphId="e4b">
+    <Graphics Color="000000" CenterX="8000.0" CenterY="11100.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="2033" />
+  </DataNode>
+  <DataNode TextLabel="NKD1" Type="GeneProduct" BackpageHead="NKD1" GraphId="f94">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="10850.0" Width="700.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="85407" />
+  </DataNode>
+  <DataNode TextLabel="NKD2" Type="GeneProduct" BackpageHead="NKD2" GraphId="ca7">
+    <Graphics Color="000000" CenterX="6950.0" CenterY="10550.0" Width="700.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="85409" />
+  </DataNode>
+  <DataNode TextLabel="POU5F1" Type="GeneProduct" GraphId="eea">
+    <Graphics Color="000000" CenterX="3300.0" CenterY="11350.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="POU5F1" />
+  </DataNode>
+  <DataNode TextLabel="SOX2" Type="GeneProduct" BackpageHead="SOX2" GraphId="cd0">
+    <Graphics Color="000000" CenterX="3300.0" CenterY="11650.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="SOX2" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R4" Type="GeneProduct" BackpageHead="PPP2R4" GraphId="ee1">
+    <Graphics Color="000000" CenterX="7600.0" CenterY="12150.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R4" />
+  </DataNode>
+  <DataNode TextLabel="PPM1J" Type="GeneProduct" GraphId="b82">
+    <Graphics Color="000000" CenterX="7600.0" CenterY="13050.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPM1J" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R3B" Type="GeneProduct" BackpageHead="PPP2R3B" GraphId="d1a">
+    <Graphics Color="000000" CenterX="7600.0" CenterY="11850.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R3B" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R1B" Type="GeneProduct" GraphId="a79">
+    <Graphics Color="000000" CenterX="6200.0" CenterY="12150.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R1B" />
+  </DataNode>
+  <DataNode TextLabel="PPP2CA" Type="GeneProduct" GraphId="ac0">
+    <Graphics Color="000000" CenterX="7600.0" CenterY="12450.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2CA" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R2B" Type="GeneProduct" GraphId="dac">
+    <Graphics Color="000000" CenterX="6200.0" CenterY="12750.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R2B" />
+  </DataNode>
+  <DataNode TextLabel="PPP2CB" Type="GeneProduct" GraphId="abb">
+    <Graphics Color="000000" CenterX="7600.0" CenterY="12750.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2CB" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R2C" Type="GeneProduct" GraphId="a9d">
+    <Graphics Color="000000" CenterX="6200.0" CenterY="13050.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R2C" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R1A" Type="GeneProduct" GraphId="d5d">
+    <Graphics Color="000000" CenterX="6200.0" CenterY="11850.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R1A" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R2A" Type="GeneProduct" GraphId="a4a">
+    <Graphics Color="000000" CenterX="6200.0" CenterY="12450.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="PPP2R2A" />
+  </DataNode>
+  <DataNode TextLabel="PPP2R3A" Type="GeneProduct" BackpageHead="PPP2R3A" GraphId="b0c">
+    <Graphics Color="000000" CenterX="6200.0" CenterY="13350.0" Width="1000.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="5523" />
+  </DataNode>
+  <DataNode TextLabel="NFYA" Type="GeneProduct" GraphId="c50">
+    <Graphics Color="000000" CenterX="8400.0" CenterY="9850.0" Width="900.0" Height="300.0" />
+    <Xref Database="Ensembl" ID="NFYA" />
+  </DataNode>
+  <DataNode TextLabel="Gene" Type="GeneProduct" GraphId="f3d">
+    <Graphics Color="000000" CenterX="7750.0" CenterY="4850.0" Width="900.0" Height="300.0" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="FZD10" Type="GeneProduct" BackpageHead="FZD10" GraphId="b3a">
+    <Graphics Color="000000" CenterX="4300.0" CenterY="3900.0" Width="900.0" Height="300.0" />
+    <Xref Database="Entrez Gene" ID="FZD10" />
+  </DataNode>
+  <DataNode TextLabel="FAKE" Type="Unknown" GraphId="e91">
+    <Graphics Color="000000" CenterX="4575.0" CenterY="12525.0" Width="1200.0" Height="300.0" />
+    <Xref Database="Other" ID="FAKE" />
+  </DataNode>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="5200.0" y="2800.0" />
+      <Point x="7000.0" y="3250.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="8700.0" y="3200.0" />
+      <Point x="9550.0" y="2750.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8650.0" y="3350.0" />
+      <Point x="9450.0" y="3750.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11000.0" y="3800.0" />
+      <Point x="11300.0" y="3800.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="12400.0" y="3800.0" />
+      <Point x="13000.0" y="3800.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="7000.0" y="3800.0" />
+      <Point x="6650.0" y="4100.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="6700.0" y="4550.0" />
+      <Point x="7100.0" y="4950.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="7750.0" y="3500.0" />
+      <Point x="7750.0" y="4500.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="7950.0" y="3600.0" />
+      <Point x="8700.0" y="4350.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8000.0" y="5350.0" />
+      <Point x="8450.0" y="5800.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8300.0" y="5650.0" />
+      <Point x="8000.0" y="5350.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8900.0" y="4900.0" />
+      <Point x="8300.0" y="5500.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="6750.0" y="5750.0" />
+      <Point x="7200.0" y="5300.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="9700.0" y="6850.0" />
+      <Point x="9750.0" y="7050.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="4700.0" y="7550.0" />
+      <Point x="10450.0" y="7550.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="4850.0" y="7700.0" />
+      <Point x="10350.0" y="7700.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="10800.0" y="7300.0" />
+      <Point x="12000.0" y="8500.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="10450.0" y="7550.0" />
+      <Point x="12550.0" y="9650.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="10350.0" y="7700.0" />
+      <Point x="12450.0" y="9800.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11950.0" y="7700.0" />
+      <Point x="11600.0" y="7350.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11950.0" y="7700.0" />
+      <Point x="12650.0" y="7700.0" />
+    </Graphics>
+  </Line>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="5250.0" y="4300.0" />
+      <Point x="7000.0" y="3500.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="7450.0" y="9250.0" />
+      <Point x="8200.0" y="9250.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="5200.0" y="8350.0" />
+      <Point x="6350.0" y="8350.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="0000ff">
+      <Point x="9950.0" y="12550.0" />
+      <Point x="9950.0" y="13100.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="12600.0" y="9000.0" />
+      <Point x="12900.0" y="9300.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="5400.0" y="6750.0" />
+      <Point x="5400.0" y="8150.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="4200.0" y="650.0" />
+      <Point x="4200.0" y="7450.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="4400.0" y="650.0" />
+      <Point x="4400.0" y="7450.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="2850.0" y="2550.0" />
+      <Point x="3500.0" y="2550.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line Style="Broken">
+    <Graphics Color="000000">
+      <Point x="5250.0" y="2350.0" />
+      <Point x="6450.0" y="1950.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11050.0" y="11500.0" />
+      <Point x="10700.0" y="11500.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11800.0" y="10000.0" />
+      <Point x="11800.0" y="10650.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11800.0" y="10950.0" />
+      <Point x="11800.0" y="11650.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8100.0" y="8350.0" />
+      <Point x="7500.0" y="8350.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="0000ff">
+      <Point x="8650.0" y="11500.0" />
+      <Point x="7350.0" y="10200.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="6950.0" y="7400.0" />
+      <Point x="6950.0" y="8150.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="0000ff">
+      <Point x="8750.0" y="11500.0" />
+      <Point x="9250.0" y="11500.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="11050.0" y="11500.0" />
+      <Point x="11500.0" y="11050.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="ff0000">
+      <Point x="5200.0" y="11500.0" />
+      <Point x="6500.0" y="10200.0" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="ff0000">
+      <Point x="5250.0" y="11500.0" />
+      <Point x="3850.0" y="11500.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="ff0000">
+      <Point x="7450.0" y="11050.0" />
+      <Point x="6300.0" y="11050.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="0000ff">
+      <Point x="6550.0" y="11200.0" />
+      <Point x="7250.0" y="11200.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="ff0000">
+      <Point x="3300.0" y="11900.0" />
+      <Point x="3300.0" y="13100.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="ff0000">
+      <Point x="5200.0" y="13350.0" />
+      <Point x="5600.0" y="13350.0" ArrowHead="TBar" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8150.0" y="10150.0" />
+      <Point x="7900.0" y="10400.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="000000">
+      <Point x="8050.0" y="10250.0" />
+      <Point x="8250.0" y="10050.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="ff0000">
+      <Point x="12800.0" y="10200.0" />
+      <Point x="13800.0" y="10200.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Line>
+    <Graphics Color="0000ff">
+      <Point x="12800.0" y="10450.0" />
+      <Point x="13800.0" y="10450.0" ArrowHead="Arrow" />
+    </Graphics>
+  </Line>
+  <Label TextLabel="Apoptosis" GraphId="ae3">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000080" CenterX="13700.0" CenterY="3800.0" Width="1250.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="Cytoskeleton" GraphId="eec">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000080" CenterX="10400.0" CenterY="2650.0" Width="1595.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="Phosphorylated" GraphId="f86">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="10250.0" CenterY="7200.0" Width="1565.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="b" GraphId="cfc">
+    <Graphics FontName="Symbol" FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="11150.0" CenterY="7200.0" Width="200.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="-Catenin" GraphId="e95">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="11650.0" CenterY="7200.0" Width="875.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Nucleus" GraphId="baf">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000000" CenterX="10350.0" CenterY="8400.0" Width="1025.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="TR: Transcriptional Regulation" GraphId="e50">
+    <Graphics FontWeight="Bold" FontSize="180" Color="00ff00" CenterX="11950.0" CenterY="2050.0" Width="3590.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="-Catenin" GraphId="e8d">
+    <Graphics FontWeight="Bold" FontSize="135" Color="0000ff" CenterX="12750.0" CenterY="8900.0" Width="785.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="b" GraphId="d4f">
+    <Graphics FontName="Symbol" FontWeight="Bold" FontSize="135" Color="0000ff" CenterX="12300.0" CenterY="8900.0" Width="200.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="Recruitment to Unknown" GraphId="c77">
+    <Graphics FontWeight="Bold" FontStyle="Italic" FontSize="135" Color="000000" CenterX="13700.0" CenterY="6950.0" Width="2210.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="Ubiquitin Conjugating Enzyme" GraphId="e5c">
+    <Graphics FontWeight="Bold" FontStyle="Italic" FontSize="135" Color="000000" CenterX="13700.0" CenterY="7200.0" Width="2645.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="Ubiquitin Tagged" GraphId="e1f">
+    <Graphics FontWeight="Bold" FontSize="135" Color="0000ff" CenterX="12650.0" CenterY="8700.0" Width="1490.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="Frizzled Ligands" GraphId="c25">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000000" CenterX="1350.0" CenterY="1150.0" Width="1985.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="26S Proteasome Degradation" GraphId="f97">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000080" CenterX="14350.0" CenterY="9500.0" Width="3425.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="+p" GraphId="a29">
+    <Graphics FontWeight="Bold" FontSize="150" Color="000000" CenterX="9850.0" CenterY="6650.0" Width="320.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Differentiation" GraphId="b6c">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000080" CenterX="9950.0" CenterY="13250.0" Width="1685.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="TR" GraphId="ee8">
+    <Graphics FontWeight="Bold" FontSize="135" Color="00ff00" CenterX="8700.0" CenterY="11500.0" Width="305.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="TR" GraphId="e76">
+    <Graphics FontWeight="Bold" FontSize="135" Color="00ff00" CenterX="7850.0" CenterY="9250.0" Width="305.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="Stabilized" GraphId="f67">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="6500.0" CenterY="6900.0" Width="1040.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="-Catenin" GraphId="cc6">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="7650.0" CenterY="6900.0" Width="875.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="b" GraphId="e07">
+    <Graphics FontName="Symbol" FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="7150.0" CenterY="6900.0" Width="200.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="+p" GraphId="e52">
+    <Graphics FontWeight="Bold" FontSize="150" Color="000000" CenterX="6100.0" CenterY="8500.0" Width="320.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="+p" GraphId="fe8">
+    <Graphics FontWeight="Bold" FontSize="150" Color="000000" CenterX="5200.0" CenterY="7850.0" Width="320.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Wnt Receptors" GraphId="db3">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000000" CenterX="4350.0" CenterY="850.0" Width="1775.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="Protein Kinase C" GraphId="e87">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000000" CenterX="7750.0" CenterY="950.0" Width="2000.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="TR" GraphId="efd">
+    <Graphics FontWeight="Bold" FontSize="135" Color="00ff00" CenterX="11800.0" CenterY="11250.0" Width="305.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="Tcf/Lef-1" GraphId="e8f">
+    <Graphics FontWeight="Bold" FontSize="150" Color="ff00ff" CenterX="6950.0" CenterY="8350.0" Width="890.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Tcf/Lef-1" GraphId="c51">
+    <Graphics FontWeight="Bold" FontSize="150" Color="ff00ff" CenterX="8000.0" CenterY="10550.0" Width="890.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="b" GraphId="fdc">
+    <Graphics FontName="Symbol" FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="7600.0" CenterY="10800.0" Width="200.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Catenin" GraphId="ef1">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="8050.0" CenterY="10800.0" Width="815.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="TR" GraphId="d2b">
+    <Graphics FontWeight="Bold" FontSize="135" Color="00ff00" CenterX="5300.0" CenterY="11500.0" Width="305.0" Height="225.0" />
+  </Label>
+  <Label TextLabel="b" GraphId="c10">
+    <Graphics FontName="Symbol" FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="5350.0" CenterY="10800.0" Width="200.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Catenin" GraphId="f23">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="5800.0" CenterY="10800.0" Width="815.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Tcf/Lef-1" GraphId="ad2">
+    <Graphics FontWeight="Bold" FontSize="150" Color="ff00ff" CenterX="5750.0" CenterY="10550.0" Width="890.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Pluripotency" GraphId="cda">
+    <Graphics FontWeight="Bold" FontSize="180" Color="000080" CenterX="3300.0" CenterY="13250.0" Width="1535.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="PP2A" GraphId="b39">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="6950.0" CenterY="11450.0" Width="590.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="IQ1" GraphId="efa">
+    <Graphics FontWeight="Bold" FontSize="180" Color="ff0000" CenterX="5050.0" CenterY="13350.0" Width="455.0" Height="285.0" />
+  </Label>
+  <Label TextLabel="Promotes Pluripotency" GraphId="bdd">
+    <Graphics FontWeight="Bold" FontSize="150" Color="ff0000" CenterX="15000.0" CenterY="10200.0" Width="2240.0" Height="240.0" />
+  </Label>
+  <Label TextLabel="Promotes Differentiation" GraphId="b2d">
+    <Graphics FontWeight="Bold" FontSize="150" Color="0000ff" CenterX="15050.0" CenterY="10450.0" Width="2390.0" Height="240.0" />
+  </Label>
+  <Shape Type="Arc" GraphId="bd2">
+    <Graphics FillColor="Transparent" Color="000000" CenterX="8600.0" CenterY="6950.0" Width="2200.0" Height="1300.0" Rotation="3.141593" />
+  </Shape>
+  <Shape Type="Brace" GraphId="ee5">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="10950.0" CenterY="3800.0" Width="800.0" Height="130.0" Rotation="1.5707963267948966" />
+  </Shape>
+  <Shape Type="Brace" GraphId="bcb">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="12700.0" CenterY="7700.0" Width="601.0" Height="130.0" Rotation="4.71238898038469" />
+  </Shape>
+  <Shape Type="Brace" GraphId="e15">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="7050.0" CenterY="3350.0" Width="1000.0" Height="130.0" Rotation="4.71238898038469" />
+  </Shape>
+  <Shape Type="Brace" GraphId="ea6">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="8650.0" CenterY="3350.0" Width="1000.0" Height="130.0" Rotation="1.5707963267948966" />
+  </Shape>
+  <Shape Type="Brace" GraphId="e49">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="2800.0" CenterY="2550.0" Width="2548.667" Height="130.0" Rotation="1.5707963267948966" />
+  </Shape>
+  <Shape Type="Brace" GraphId="ccd">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="5250.0" CenterY="4800.0" Width="1000.0" Height="130.0" Rotation="1.5707963267948966" />
+  </Shape>
+  <Shape Type="Brace" GraphId="ae7">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="6500.0" CenterY="1900.0" Width="1600.667" Height="130.0" Rotation="4.71238898038469" />
+  </Shape>
+  <Shape Type="Brace" GraphId="d01">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="9300.0" CenterY="11050.0" Width="3000.0" Height="130.0" Rotation="4.71238898038469" />
+  </Shape>
+  <Shape Type="Brace" GraphId="cb9">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="8100.0" CenterY="8350.0" Width="900.0" Height="130.0" Rotation="4.71238898038469" />
+  </Shape>
+  <Shape Type="Brace" GraphId="b53">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="6950.0" CenterY="10200.0" Width="900.0" Height="130.0" Rotation="3.141592653589793" />
+  </Shape>
+  <Shape Type="Brace" GraphId="dad">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="6900.0" CenterY="11550.0" Width="2500.0" Height="130.0" Rotation="0.0" />
+  </Shape>
+  <Shape Type="Brace" GraphId="e4e">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="3600.0" CenterY="2550.0" Width="3000.0" Height="130.0" Rotation="4.71238898038469" />
+  </Shape>
+  <Shape Type="Brace" GraphId="a37">
+    <Graphics FillColor="Transparent" Color="9f9f9f" CenterX="5250.0" CenterY="2550.0" Width="3000.0" Height="130.0" Rotation="1.5707963267948966" />
+  </Shape>
+  <InfoBox CenterX="10200.0" CenterY="700.0" />
+  <Legend CenterX="125.0" CenterY="5725.0" />
+</Pathway>
+
