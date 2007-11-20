@@ -67,6 +67,7 @@ import groupTool.ui.GroupTableModel;
 public class GroupToolDialog extends JDialog 
                              implements ActionListener, 
                                         CellEditorListener, 
+                                        ListSelectionListener,
                                         CyGroupChangeListener {
 
 	// Dialog components
@@ -74,6 +75,7 @@ public class GroupToolDialog extends JDialog
 	private JTable groupTable;
 	private JPanel buttonBox;
 	private JButton createButton;
+	private JButton deleteButton;
 	private JButton createByAttributesButton;
 	private JButton clearButton;
 	private JButton clearAllButton;
@@ -116,7 +118,8 @@ public class GroupToolDialog extends JDialog
 		setUpViewerRenderer(groupTable, groupTable.getColumnModel().getColumn(4));
 		groupTable.setCellSelectionEnabled(true);
 		ListSelectionModel lsm = groupTable.getSelectionModel();
-		lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		lsm.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lsm.addListSelectionListener(this);
 
 		JScrollPane scrollPane = new JScrollPane(groupTable);
 		groupTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -134,6 +137,11 @@ public class GroupToolDialog extends JDialog
 		createButton.setEnabled(true);
 		createButton.addActionListener(this);
 
+		deleteButton = new JButton("Delete");
+		deleteButton.setActionCommand("delete");
+		deleteButton.setEnabled(false);
+		deleteButton.addActionListener(this);
+
 		createByAttributesButton = new JButton("Create By Attributes");
 		createByAttributesButton.setActionCommand("createByAttributes");
 		createByAttributesButton.setEnabled(true);
@@ -141,12 +149,12 @@ public class GroupToolDialog extends JDialog
 
 		selectButton = new JButton("Select");
 		selectButton.setActionCommand("select");
-		selectButton.setEnabled(true);
+		selectButton.setEnabled(false);
 		selectButton.addActionListener(this);
 
 		clearButton = new JButton("Clear");
 		clearButton.setActionCommand("clear");
-		clearButton.setEnabled(true);
+		clearButton.setEnabled(false);
 		clearButton.addActionListener(this);
 
 		clearAllButton = new JButton("Clear All");
@@ -155,12 +163,14 @@ public class GroupToolDialog extends JDialog
 		clearAllButton.addActionListener(this);
 
 		buttonBox.add(createButton);
+		buttonBox.add(deleteButton);
 		buttonBox.add(createByAttributesButton);
 		buttonBox.add(selectButton);
 		buttonBox.add(clearButton);
 		buttonBox.add(clearAllButton);
 		buttonBox.add(doneButton);
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		buttonBox.setMaximumSize(new Dimension(1000,45));
 		
 		dataPanel.add(buttonBox);
 		setContentPane(dataPanel);
@@ -180,8 +190,15 @@ public class GroupToolDialog extends JDialog
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this group");
 			if (groupName == null) return;
 			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, null);
+		} else if ("delete".equals(e.getActionCommand())) {
+			int rows[] = groupTable.getSelectedRows();
+			for (int row = 0; row < rows.length; row++) {
+				String groupName = (String) groupTable.getValueAt(row, 0);
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group == null) continue;
+				CyGroupManager.removeGroup(group);
+			}
 		} else if ("createByAttributes".equals(e.getActionCommand())) {
-			System.out.println("createByAttribute");
 			// Get the list of group viewers
 			CreateByAttributeDialog d = new CreateByAttributeDialog(Cytoscape.getDesktop());
 			d.pack();
@@ -189,25 +206,30 @@ public class GroupToolDialog extends JDialog
 			d.setVisible(true);
 		} else if ("select".equals(e.getActionCommand()) 
 		           || "clear".equals(e.getActionCommand())) {
-			int row = groupTable.getSelectedRow();
-			if (row == -1) return;
-			int col = groupTable.getSelectedColumn();
-			String groupName = (String) groupTable.getValueAt(row, 0);
-			CyGroup group = CyGroupManager.findGroup(groupName);
-			if (group == null) return;
+			int rows[] = groupTable.getSelectedRows();
+			if (rows == null) return;
+			int cols[] = groupTable.getSelectedColumns();
+			for (int row = 0; row < rows.length; row++) {
+				String groupName = (String) groupTable.getValueAt(row, 0);
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group == null) continue;
 
-			boolean state = true;
-			if ("clear".equals(e.getActionCommand())) 
-				state = false;
+				boolean state = true;
+				for (int col = 0; col < cols.length; col++) {
 
-			if (col == 1 || col == 0) {
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getGroupNode(), state);
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), state);
+					if ("clear".equals(e.getActionCommand())) 
+						state = false;
+
+					if (col == 1 || col == 0) {
+						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getGroupNode(), state);
+						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), state);
+					}
+					if (col == 2 || col == 0)
+						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getInnerEdges(), state);
+					if (col == 3 || col == 0)
+						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getOuterEdges(), state);
+				}
 			}
-			if (col == 2 || col == 0)
-				Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getInnerEdges(), state);
-			if (col == 3 || col == 0)
-				Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getOuterEdges(), state);
 			Cytoscape.getCurrentNetworkView().updateView();
 		} else if ("clearall".equals(e.getActionCommand())) {
 			Cytoscape.getCurrentNetwork().unselectAllEdges();
@@ -234,7 +256,7 @@ public class GroupToolDialog extends JDialog
 	public void editingStopped(ChangeEvent e) {
 		int row = groupTable.getSelectedRow();
 		int col = groupTable.getSelectedColumn();
-		if (row == -1 || col == -1) return;
+		if (row == -1 || col != 4) return;
 
 		DefaultCellEditor editor = (DefaultCellEditor)e.getSource();
 		String viewerName = (String) editor.getCellEditorValue();
@@ -244,6 +266,19 @@ public class GroupToolDialog extends JDialog
 
 		// Set the new viewer
 		CyGroupManager.setGroupViewer(group, viewerName, Cytoscape.getCurrentNetworkView(), true);
+	}
+
+	public void valueChanged (ListSelectionEvent e) {
+		if (e.getValueIsAdjusting()) return;
+		if (groupTable.getSelectedRowCount() > 0) {
+			clearButton.setEnabled(true);
+			selectButton.setEnabled(true);
+			deleteButton.setEnabled(true);
+		} else {
+			clearButton.setEnabled(false);
+			selectButton.setEnabled(false);
+			deleteButton.setEnabled(false);
+		}
 	}
 
 	public void groupChanged (CyGroup group, CyGroupChangeListener.ChangeType change) {

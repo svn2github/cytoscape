@@ -200,7 +200,15 @@ public class CreateByAttributeDialog extends JDialog
 			while (groupIter.hasNext()) {
 				String groupName = groupIter.next();
 				List<CyNode>nodeList = nodeMap.get(groupName);
-				CyGroup group = CyGroupManager.createGroup(groupName, nodeList, viewer);
+				// See if this group already exists
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group != null) {
+					// It does -- remove it
+					CyGroupManager.removeGroup(group);
+				}
+
+				group = CyGroupManager.createGroup(groupName, nodeList, viewer);
+				nodeAttributes.setAttribute(groupName, attribute, groupName);
 				CyGroupViewer groupViewer = CyGroupManager.getGroupViewer(viewer);
 				groupViewer.groupCreated(group);
 			}
