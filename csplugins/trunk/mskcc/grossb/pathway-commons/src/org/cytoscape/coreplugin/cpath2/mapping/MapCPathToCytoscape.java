@@ -45,6 +45,7 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
 import org.cytoscape.coreplugin.cpath2.view.MergeDialog;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import java.net.Proxy;
 import java.util.HashSet;
@@ -154,7 +155,7 @@ public class MapCPathToCytoscape implements HTTPServerListener {
     private void loadMergeDialog(String cpathRequest, Set<CyNetwork> bpNetworkSet) {
 
         MergeDialog dialog = new MergeDialog(Cytoscape.getDesktop(),
-                PluginProperties.getNameOfCPathInstance() + "Network Merge",
+                CPathProperties.getCPathServerName() + "Network Merge",
                 true,
                 cpathRequest,
                 bpNetworkSet,

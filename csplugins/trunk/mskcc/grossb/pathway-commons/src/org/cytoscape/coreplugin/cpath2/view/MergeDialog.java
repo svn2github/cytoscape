@@ -37,6 +37,7 @@ import cytoscape.CyNetwork;
 import ding.view.NodeContextMenuListener;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -195,7 +196,7 @@ public class MergeDialog extends JDialog {
 
         // create text area to display message
         JTextArea textArea = new JTextArea("A new network has just been downloaded from " +
-                PluginProperties.getNameOfCPathInstance() +
+                CPathProperties.getCPathServerName() +
                 ".  You have the option to create a new network within Cytoscape" +
                 " or merge the new network into an existing Cytoscape network.",
                 3, 40);

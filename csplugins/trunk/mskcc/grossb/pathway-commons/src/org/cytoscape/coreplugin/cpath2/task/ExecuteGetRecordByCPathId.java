@@ -9,6 +9,7 @@ import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -59,7 +60,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Retrieving Records from " + PluginProperties.getNameOfCPathInstance() +"...";
+        return "Retrieving Records from " + CPathProperties.getCPathServerName() +"...";
     }
 
     /**

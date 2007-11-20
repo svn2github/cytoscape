@@ -43,6 +43,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
 import org.cytoscape.coreplugin.cpath2.cytoscape.MergeNetworkEdit;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -113,7 +114,7 @@ public class MergeNetworkTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return PluginProperties.getNameOfCPathInstance() + " Plugin - Merge Network";
+        return CPathProperties.getCPathServerName() + " Plugin - Merge Network";
     }
 
     /**
@@ -126,7 +127,7 @@ public class MergeNetworkTask implements Task {
             // read the network from cpath instance
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Reading in Network Data from "
-                    + PluginProperties.getNameOfCPathInstance()  + "...");
+                    + CPathProperties.getCPathServerName()  + "...");
             reader.read();
 
             // unselect all nodes / edges

@@ -43,6 +43,7 @@ import org.cytoscape.coreplugin.cpath2.mapping.MapCPathToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 
 import javax.swing.*;
@@ -79,7 +80,7 @@ public class CPathPlugIn2 extends CytoscapePlugin {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cytoPanelWest.add(PluginProperties.getNameOfCPathInstance(), pcPanel);
+                cytoPanelWest.add(CPathProperties.getCPathServerName(), pcPanel);
                 cytoPanelWest.setState(CytoPanelState.DOCK);
             }
         });

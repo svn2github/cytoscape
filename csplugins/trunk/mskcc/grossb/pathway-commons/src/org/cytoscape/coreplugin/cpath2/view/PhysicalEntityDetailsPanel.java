@@ -29,7 +29,7 @@ public class PhysicalEntityDetailsPanel extends JPanel {
     public PhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
         this.setLayout(new BorderLayout());
 		this.searchHitsPanel = searchHitsPanel;
-        textPane = createTextPane();
+        textPane = createHtmlTextPane();
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
 
@@ -82,7 +82,7 @@ public class PhysicalEntityDetailsPanel extends JPanel {
      *
      * @return JTextPane Object.
      */
-    private JTextPane createTextPane() {
+    public static JTextPane createHtmlTextPane() {
         JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
         textPane.setBorder(new EmptyBorder(7,7,7,7));
@@ -105,6 +105,7 @@ public class PhysicalEntityDetailsPanel extends JPanel {
                 + "padding-left: 1em;	text-indent: -1em;}");
         styleSheet.addRule("h4 {color: #66333; font-weight: bold; margin-bottom:3px;}");
         styleSheet.addRule("b {background-color: #FFFF00;}");
+        styleSheet.addRule(".bold {font-weight:bold;}");
         styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
         styleSheet.addRule(".excerpt {font-size: 90%;}");
         HTMLEditorKit htmlEditorKit = new HTMLEditorKit();

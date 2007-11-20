@@ -5,6 +5,7 @@ import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.util.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
@@ -66,22 +67,8 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
         GradientHeader header = new GradientHeader("About");
 
         aboutPanel.add(header, BorderLayout.NORTH);
-        JTextPane textPane = new JTextPane();
-        textPane.setEditable(false);
-        Document doc = textPane.getDocument();
-        SimpleAttributeSet attrs = new SimpleAttributeSet();
-        try {
-            doc.remove(0, doc.getLength());
-            doc.insertString(0, " is a convenient point of access to biological pathway "
-                + "information collected from public pathway databases, which you can "
-                + "browse or search. \n\nPathways include biochemical reactions, complex "
-                + "assembly, transport and catalysis events, and physical interactions "
-                + "involving proteins, DNA, RNA, small molecules and complexes.", attrs);
-            StyleConstants.setBold(attrs, true);
-            doc.insertString(0, PluginProperties.getNameOfCPathInstance(), attrs);
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
+        JTextPane textPane = PhysicalEntityDetailsPanel.createHtmlTextPane();
+        textPane.setText(CPathProperties.getCPathBlurb());
         aboutPanel.add(textPane, BorderLayout.CENTER);
         return aboutPanel;
     }
