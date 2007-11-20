@@ -31,7 +31,7 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
     /**
      * Constructor.
      *
-     * @param webApi PathwayCommons Web API.
+     * @param webApi CPathWebService API.
      */
     public cPathSearchPanel(CPathWebService webApi) {
 

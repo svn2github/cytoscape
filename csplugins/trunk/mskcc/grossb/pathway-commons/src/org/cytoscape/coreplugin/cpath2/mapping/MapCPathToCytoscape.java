@@ -51,7 +51,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class listens for requests from patwaycommons.org
+ * This class listens for requests from cPath instance
  * and maps the requests into Cytoscape tasks.
  *
  * @author Benjamin Gross.
