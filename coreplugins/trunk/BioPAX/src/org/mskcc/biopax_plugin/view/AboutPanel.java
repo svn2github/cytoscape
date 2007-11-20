@@ -34,6 +34,7 @@ package org.mskcc.biopax_plugin.view;
 import cytoscape.CytoscapeInit;
 
 import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
+import org.mskcc.biopax_plugin.action.LaunchExternalBrowser;
 
 import java.awt.*;
 
@@ -63,8 +64,9 @@ public class AboutPanel extends JPanel {
         textPane.setBorder(new EmptyBorder(5,5,5,5));
         textPane.setEditable(false);
 		textPane.setContentType("text/html");
+        textPane.addHyperlinkListener(new LaunchExternalBrowser());
 
-		StringBuffer temp = new StringBuffer();
+        StringBuffer temp = new StringBuffer();
 		temp.append("<HTML><BODY>");
         temp.append("<h2>");
         temp.append(title + ", Version:  " + majorVersion + ". " + minorVersion);
