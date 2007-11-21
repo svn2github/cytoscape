@@ -52,7 +52,6 @@ public abstract class AtomicFilter implements CyFilter {
 	protected BitSet edge_bits = null;
 
 	protected CyFilter parent;
-	protected String depthString;
 	
 	protected String name; // Name of the filter
 	protected String controllingAttribute = null;
@@ -93,19 +92,17 @@ public abstract class AtomicFilter implements CyFilter {
 	}
 	
 	public boolean passesFilter(Object obj) {
-		List<Node> nodes_list = null;
-		List<Edge> edges_list=null;
-
+		
 		int index = -1;
 		if (obj instanceof Node) {
-			nodes_list = network.nodesList();
-			index = nodes_list.lastIndexOf((Node) obj);	
+			List<Node> nodes_list = network.nodesList();
+			index = nodes_list.indexOf((Node) obj);	
 			return node_bits.get(index);			
 		}
 		
 		if (obj instanceof Edge) {
-			edges_list = network.edgesList();
-			index = edges_list.lastIndexOf((Edge) obj);	
+			List<Edge> edges_list = network.edgesList();
+			index = edges_list.indexOf((Edge) obj);	
 			return edge_bits.get(index);			
 		}		
 		
