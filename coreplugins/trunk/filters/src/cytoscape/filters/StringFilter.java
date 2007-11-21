@@ -43,6 +43,7 @@ import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.Cytoscape;
 import csplugins.quickfind.util.QuickFind;
+import cytoscape.filters.util.FilterUtil;
 
 /**
  * This is a Cytoscape specific filter that will pass nodes if
@@ -101,6 +102,7 @@ public class StringFilter extends AtomicFilter {
 		List<Node> nodes_list = null;
 		List<Edge> edges_list=null;
 
+		// Initialize the bitset
 		int objectCount = -1;
 		if (index_type == QuickFind.INDEX_NODES) {
 			nodes_list = network.nodesList();
@@ -117,10 +119,16 @@ public class StringFilter extends AtomicFilter {
 			return;
 		}
 		
-		TextIndex theIndex = (TextIndex) quickFind_index;
-		if (searchStr == null) {
+		if (searchStr == null || network == null || !FilterUtil.hasSuchAttribute(controllingAttribute,index_type)) {
 			return;
 		}
+		
+		//If quickFind_index does not exist, build the Index
+		if (quickFind_index == null) {
+			quickFind_index = FilterUtil.getQuickFindIndex(controllingAttribute, network, index_type);
+		}
+		
+		TextIndex theIndex = (TextIndex) quickFind_index;
 		Hit[] hits = theIndex.getHits(searchStr, Integer.MAX_VALUE);
 
 		if (hits.length == 0) {
