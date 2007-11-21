@@ -337,7 +337,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 			//   try to get editor for visual style
 			// VisualStyle vs = view.getVisualStyle();           
 			CytoscapeEditor cyEditor = CytoscapeEditorManager.getEditorForView(view);
-			System.out.println("Editor for this view is: " + cyEditor);
+			CytoscapeEditorManager.log("Editor for this view is: " + cyEditor);
 
 			if (cyEditor == null) {
 				try {

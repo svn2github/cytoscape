@@ -70,7 +70,7 @@ public class CytoscapeEditorPlugin extends CytoscapePlugin {
 		// CytoscapeEditorManager.log("Setting up CytoscapeEditor");
 		// mpa.initializeCytoscapeEditor();
 	    // MLC 07/23/07:
-	    CytoscapeEditorManager.setLoggingEnabled (true);
+	    //CytoscapeEditorManager.setLoggingEnabled(true);
 		initializeCytoscapeEditor();
 
 		// MLC 07/24/06 END.
