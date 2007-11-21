@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 
 import javax.swing.InputMap;
 import javax.swing.JMenuItem;
@@ -283,6 +284,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void addNetwork(String network_id, String parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
+			//System.out.println("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).getTitle(),
 			                                           network_id);
 			Cytoscape.getNetwork(network_id).addSelectEventListener(this);
@@ -294,15 +296,17 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 				root.add(dmtn);
 			}
 
+			// fires valueChanged
 			treeTable.getTree().collapsePath(new TreePath(new TreeNode[] { root }));
-			treeTable.getTree().updateUI();
 
+			treeTable.getTree().updateUI();
 			TreePath path = new TreePath(dmtn.getPath());
 			treeTable.getTree().expandPath(path);
 			treeTable.getTree().scrollPathToVisible(path);
 			treeTable.doLayout();
-
-			focusNetworkNode(network_id);
+		
+			// shouldn't need this because valueChanged is fired above
+			//focusNetworkNode(network_id);
 		}
 	}
 
@@ -312,12 +316,14 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param network_id DOCUMENT ME!
 	 */
 	public void focusNetworkNode(String network_id) {
+		//System.out.println("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
+			// fires valueChanged if the network isn't already selected
 			treeTable.getTree().getSelectionModel().setSelectionPath(new TreePath(node.getPath()));
 			treeTable.getTree().scrollPathToVisible(new TreePath(node.getPath()));
-		}
+		} 
 	}
 
 	/**
@@ -342,30 +348,52 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param network_id DOCUMENT ME!
+	 * @deprecated No longer used.  If you need to fire focus, call CytoscapeDesktop.setFocus().
+	 * will be removed 11/2008.
 	 */
+	@Deprecated
 	public void fireFocus(String network_id) {
-		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
-		                                               null, network_id));
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * This method highlights a network in the NetworkPanel. 
 	 *
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		NetworkTreeNode node = (NetworkTreeNode) treeTable.getTree().getLastSelectedPathComponent();
+		// System.out.println("NetworkPanel: VALUE changed -  " + e.getSource().toString()); 
+		JTree mtree = treeTable.getTree();
 
-		if (node == null)
+		// sets the "current" network based on last node in the tree selected
+		NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
+		if ( node == null || node.getUserObject() == null ) {
+			// System.out.println("NetworkPanel: null node - returning");
 			return;
+		}
 
-		if (node.getUserObject() == null)
-			return;
+		// only fire NETWORK_VIEW_FOCUS events if a view actually exists for this network
+		if ( Cytoscape.viewExists( (String) node.getNetworkID() ) ) {
+			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
+		                                                   null, (String) node.getNetworkID()));
 
-		fireFocus((String) node.getNetworkID());
+			// creates a list of all selected networks 
+			List<String> networkList = new LinkedList<String>();
+			try {
+				for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
+					NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
+					if ( n != null && n.getUserObject() != null )
+						networkList.add( n.getNetworkID() );
+				}
+			} catch (Exception ex) { 
+				ex.printStackTrace();
+			}
+
+			if ( networkList.size() > 0 ) {
+				// System.out.println("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
+				pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
+			                                                   null, networkList));
+			} 
+		} 
 	}
 
 	/**
@@ -379,7 +407,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			removeNetwork((String) e.getNewValue());
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
-			focusNetworkNode((String) e.getNewValue());
+			if ( e.getSource() != this )
+				focusNetworkNode((String) e.getNewValue());
 		}
 	}
 

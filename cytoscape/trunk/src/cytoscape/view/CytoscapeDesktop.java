@@ -67,6 +67,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
@@ -97,6 +98,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * Default Desktop Size (slitly wider than 2.4 and before for new UI)
 	 */
 	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 700);
+
+	/**
+	 *
+	 */
+	public static final String NETWORK_VIEWS_SELECTED = "NETWORK_VIEWS_SELECTED";
 
 	/**
 	 *
@@ -276,13 +282,13 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// Listener Setup
 		// ----------------------------------------
 		// |----------|
-		// | CyMenus |
+		// | CyMenus  |
 		// |----------|
 		// |
 		// |
-		// |-----| |---------| |------| |-------|
-		// | N P |------| Desktop |----| NVM |--| Views |
-		// |-----| |---------| |------| |-------|
+		// |-----|      |---------|    |------|  |-------|
+		// | N P |------| Desktop |----| NVM  |--| Views |
+		// |-----|      |---------|    |------|  |-------|
 		// |
 		// |
 		// |-----------|
@@ -604,21 +610,21 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			getGraphViewController().addGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
-
-			networkPanel.focusNetworkNode(((CyNetworkView) e.getNewValue()).getIdentifier());
-			networkPanel.fireFocus(((CyNetworkView) e.getNewValue()).getIdentifier());
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
-			//updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED)
+		} else if (e.getPropertyName() == NETWORK_VIEWS_SELECTED) {
+			Cytoscape.setSelectedNetworkViews( (List<String>)(e.getNewValue()) );
+			Cytoscape.setSelectedNetworks( (List<String>)(e.getNewValue()) );
+			pcs.firePropertyChange(e);
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
-		else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 

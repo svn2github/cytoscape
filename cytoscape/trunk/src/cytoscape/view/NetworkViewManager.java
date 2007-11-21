@@ -170,6 +170,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	 * Fire Events when a Managed Network View gets the Focus.
 	 */
 	public void internalFrameActivated(InternalFrameEvent e) {
+		// System.out.println("NetworkViewManager: internalFrameActivated "); 
 		String network_id = componentMap.get(e.getInternalFrame());
 
 		if (network_id == null) {
@@ -253,8 +254,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			unsetFocus(); // in case the newly focused network doesn't have a view
 			setFocus(network_id);
 
-			// AJK: 01/14/07 BEGIN
-			//    hack to add transfer handlers to canvas
+			// hack to add transfer handlers to canvas
 			InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
 
 			if (this.getDesktopPane() != null) {
@@ -293,7 +293,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				System.out.println("Couldn't unset focus for internal frame.");
+				System.out.println("NetworkViewManager: Couldn't unset focus for internal frame.");
 			}
 		}
 	}
@@ -307,6 +307,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			try {
 				networkViewMap.get(network_id).setIcon(false);
 				networkViewMap.get(network_id).show();
+				// fires internalFrameActivated
 				networkViewMap.get(network_id).setSelected(true);
 			} catch (Exception e) {
 				System.err.println("Network View unable to be focused");
@@ -371,7 +372,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
 		componentMap.put(iframe, view.getNetwork().getIdentifier());
-
+		
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
 		                   view.getNetwork().getIdentifier());
 	}

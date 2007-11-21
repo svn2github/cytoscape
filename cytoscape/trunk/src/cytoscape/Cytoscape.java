@@ -92,6 +92,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -388,6 +389,16 @@ public abstract class Cytoscape {
 	private static ImportHandler importHandler = new ImportHandler();
 
 	/**
+	 * The list analog to the currentNetworkViewID
+	 */
+	protected static List<CyNetworkView> selectedNetworkViews;
+
+	/**
+	 * The list analog to the currentNetworkID
+	 */
+	protected static List<CyNetwork> selectedNetworks;
+
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -465,9 +476,7 @@ public abstract class Cytoscape {
 		final String msg = "Do you want to save your session?";
 		int networkCount = Cytoscape.getNetworkSet().size();
 
-		/*
-		 * If there is no network, just quit.
-		 */
+		// If there is no network, just quit.
 		if (networkCount == 0) {
 			return true;
 		}
@@ -827,11 +836,83 @@ public abstract class Cytoscape {
 		    || !(getNetworkViewMap().containsKey(currentNetworkViewID)))
 			return nullNetworkView;
 
-		// System.out.println( "Cytoscape returning current network view:
-		// "+currentNetworkViewID );
 		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(currentNetworkViewID);
 
 		return nview;
+	}
+
+	/**
+	 * Returns the list of currently selected networks.
+	 */
+	public static List<CyNetworkView> getSelectedNetworkViews() {
+		if ( selectedNetworkViews == null ) {
+			selectedNetworkViews = new LinkedList<CyNetworkView>();
+			selectedNetworkViews.add( getCurrentNetworkView() );
+		}
+
+		return selectedNetworkViews;
+	}
+
+	/**
+	 * Sets the selected network views.
+	 */
+	public static void setSelectedNetworkViews(final List<String> viewIDs) {
+
+		List<CyNetworkView> views = getSelectedNetworkViews();
+
+		views.clear();
+
+		if ( viewIDs == null ) 
+			return;
+
+		for ( String id : viewIDs ) {
+			CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(id);
+			if ( nview != null ) {
+				views.add( nview );
+			}
+		}
+
+		CyNetworkView cv = getCurrentNetworkView();
+		if ( !views.contains( cv ) ) {
+			views.add( cv );
+		}
+	}
+
+	/**
+	 * Returns the list of selected networks.
+	 */
+	public static List<CyNetwork> getSelectedNetworks() {
+		if ( selectedNetworks == null ) {
+			selectedNetworks = new LinkedList<CyNetwork>();
+			selectedNetworks.add( getCurrentNetwork() );
+		}
+
+		return selectedNetworks;
+	}
+
+	/**
+	 * Sets the list of selected networks.
+	 */
+	public static void setSelectedNetworks(final List<String> ids) {
+
+		List<CyNetwork> nets = getSelectedNetworks();
+
+		nets.clear();
+
+		if ( ids == null )
+			return;
+
+		for ( String id : ids ) {
+			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
+			if ( n != null ) {
+				nets.add( n );
+			}
+		}
+
+		CyNetwork cn = getCurrentNetwork();
+		if ( !nets.contains( cn ) ) {
+			nets.add( cn );
+		}
 	}
 
 	/**
@@ -849,11 +930,9 @@ public abstract class Cytoscape {
 	 * @deprecated This will be removed Feb 2007.
 	 */
 	public static void setCurrentNetwork(String id) {
-		if (getNetworkMap().containsKey(id))
+		if (getNetworkMap().containsKey(id)) {
 			currentNetworkID = id;
-
-		// System.out.println( "Currentnetworkid is: "+currentNetworkID+ " set
-		// from : "+id );
+		}
 	}
 
 	/**
@@ -920,6 +999,8 @@ public abstract class Cytoscape {
 	public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
 		if ((network == null) || (network == nullNetwork))
 			return;
+
+		getSelectedNetworks().remove(network);
 
 		String networkId = network.getIdentifier();
 
@@ -1013,8 +1094,8 @@ public abstract class Cytoscape {
 		if ((view == null) || (view == nullNetworkView))
 			return;
 
-		// System.out.println( "destroying: "+view.getIdentifier()+" :
-		// "+getNetworkViewMap().get( view.getIdentifier() ) );
+		getSelectedNetworkViews().remove(view);
+
 		String viewID = view.getIdentifier();
 
 		getNetworkViewMap().remove(viewID);
@@ -1034,8 +1115,6 @@ public abstract class Cytoscape {
 			}
 		}
 
-		// System.out.println( "gone from hash: "+view.getIdentifier()+" :
-		// "+getNetworkViewMap().get( view.getIdentifier() ) );
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
@@ -1591,6 +1670,8 @@ public abstract class Cytoscape {
 
 		view.fitContent();
 
+		getVisualMappingManager().setNetworkView(view);
+
 		// AJK: 10/25/07 make sure we redraw a new network view so that visual style is applied
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
@@ -1606,7 +1687,6 @@ public abstract class Cytoscape {
 	 */
 	public static void firePropertyChange(String property_type, Object old_value, Object new_value) {
 		PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type, old_value, new_value);
-		// System.out.println("Cytoscape FIRING : " + property_type);
 		getSwingPropertyChangeSupport().firePropertyChange(e);
 		getPropertyChangeSupport().firePropertyChange(e);
 	}
