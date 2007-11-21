@@ -100,12 +100,13 @@ public class TopologyFilter extends CompositeFilter {
 	
 	public void apply() {
 		System.out.println("Entering TopologyFilter.apply() ... ");
-		//System.out.println("\tThe topo filter to apply is : " + toString());
 
 		if ( !childChanged ) 
 			return;
 
-		network = Cytoscape.getCurrentNetwork();					
+		if (network == null) {
+			network = Cytoscape.getCurrentNetwork();								
+		}
 
 		//Make sure the pass filter is current
 		if (passFilter == null) {
@@ -162,8 +163,6 @@ public class TopologyFilter extends CompositeFilter {
 
 	
 	private boolean isHit(Object pObj) {
-		//System.out.println("Entering isHit() for pObj = " + ((Node)pObj).getIdentifier());
-
 		// Get all the neighbors for pNode that pass the given filter
 		HashSet neighborSet = new HashSet();
 		getNeighbors(pObj, neighborSet, withinDistance);
@@ -178,13 +177,12 @@ public class TopologyFilter extends CompositeFilter {
 			Object [] nodeArray = neighborSet.toArray();
 			for (int i=0; i< nodeArray.length; i++) {
 				int nodeIndex = network.nodesList().indexOf(nodeArray[i]);
-				
+
 				if (!passFilter.getNodeBits().get(nodeIndex)) {
 					neighborSet.remove(nodeArray[i]);
 				}
-			}			
+			}							
 		}
-		
 		if (neighborSet.size() < minNeighbors) {
 			return false;
 		}
@@ -202,11 +200,11 @@ public class TopologyFilter extends CompositeFilter {
 		}
 		
 		List neighbors = network.neighborsList((Node)pObj);
-		
+
 		Iterator nodeIt = neighbors.iterator();
 		while (nodeIt.hasNext()) {
 			Node nextNode = (Node) nodeIt.next();
-			
+
 			if (!pNeighborSet.contains(nextNode)) {
 				pNeighborSet.add(nextNode);
 			}
