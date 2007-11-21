@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,13 +32,11 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,11 +45,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -65,6 +65,10 @@ public class BiomartStub {
 	private String baseURL = "http://www.biomart.org/biomart/martservice?";
 	private URL url;
 	private URLConnection uc;
+	private Map<String, Map<String, String>> databases = null;
+
+	// Key is datasource, value is database name.
+	private Map<String, String> datasourceMap = new HashMap<String, String>();
 
 	/**
 	 * Creates a new BiomartStub object.
@@ -78,51 +82,68 @@ public class BiomartStub {
 	 * @param baseURL  DOCUMENT ME!
 	 */
 	public BiomartStub(String baseURL) {
-		this.baseURL = baseURL;
+		this.baseURL = baseURL + "?";
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param baseURL DOCUMENT ME!
+	 */
+	public void setBaseURL(String baseURL) {
+		this.baseURL = baseURL + "?";
+	}
+
+	/**
+	 *  Get the registry information from the base URL.
+	 *
+	 * @return  Map of registry information.  Key value is "name" field.
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public List<String> getDatabaseList() throws Exception {
-		List<String> databases = new ArrayList<String>();
+	public Map<String, Map<String, String>> getRegistry() throws Exception {
+		// If already loaded, just return it.
+		if (databases != null)
+			return databases;
 
+		// Initialize database map.
+		databases = new HashMap<String, Map<String, String>>();
+
+		// Prepare URL for the registry status
 		final String reg = "type=registry";
 		final URL targetURL = new URL(baseURL + reg);
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-
+		// Get the result as XML document.
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilder builder = factory.newDocumentBuilder();
 		InputStream is = targetURL.openStream();
+		final Document registry = builder.parse(is);
 
-		Document doc = builder.parse(is);
+		// Extract each datasource
+		NodeList locations = registry.getElementsByTagName("MartURLLocation");
+		int locSize = locations.getLength();
+		NamedNodeMap attrList;
+		int attrLen;
+		String dbID;
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String s;
+		for (int i = 0; i < locSize; i++) {
+			attrList = locations.item(i).getAttributes();
+			attrLen = attrList.getLength();
 
-		Element root = doc.getDocumentElement();
+			// First, get the key value
+			dbID = attrList.getNamedItem("name").getNodeValue();
 
-		for (Node nd = root.getFirstChild(); nd != null; nd = nd.getNextSibling()) {
-			if (nd.getNodeType() == Node.ELEMENT_NODE) {
-				System.out.println("--------------------------------");
-				System.out.println("############# New Reply from Biomart: " + nd.getNodeName());
+			Map<String, String> entry = new HashMap<String, String>();
 
-				NamedNodeMap attrs = nd.getAttributes();
-
-				for (int i = 0; i < attrs.getLength(); i++) {
-					System.out.println("---> " + attrs.item(i).getNodeName() + " = "
-					                   + attrs.item(i).getNodeValue());
-				}
-
-				System.out.println("--------------------------------");
+			for (int j = 0; j < attrLen; j++) {
+				entry.put(attrList.item(j).getNodeName(), attrList.item(j).getNodeValue());
 			}
+
+			databases.put(dbID, entry);
 		}
 
-		reader.close();
+		is.close();
+		is = null;
 
 		return databases;
 	}
@@ -136,49 +157,157 @@ public class BiomartStub {
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public List<String> getAvailableDatasets(final String martName) throws Exception {
-		List<String> databases = new ArrayList<String>();
+	public Map<String, String> getAvailableDatasets(final String martName)
+	    throws Exception {
+		final Map<String, String> datasources = new HashMap<String, String>();
 
-		final String reg = "type=datasets&mart=" + martName;
-		final URL targetURL = new URL(baseURL + reg);
+		Map<String, String> detail = databases.get(martName);
 
-		InputStream is = targetURL.openStream();
+		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
+		                + detail.get("path") + "?type=datasets&mart=" + detail.get("name");
+		System.out.println("DB name = " + martName + ", Target URL = " + urlStr + "\n");
+
+		URL url = new URL(urlStr);
+		URLConnection uc = url.openConnection();
+		InputStream is = uc.getInputStream();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String s;
-
-		String[] parts;
-
-		while ((s = reader.readLine()) != null) {
-			parts = s.split("\\t");
-
-			if (parts.length > 1) {
-				databases.add(parts[1]);
-			}
-		}
-
-		reader.close();
-
-		return databases;
-	}
-
-	private List buildList(BufferedReader reader) throws IOException {
-		List result = new ArrayList();
-
 		String s;
 
 		while ((s = reader.readLine()) != null) {
 			String[] parts = s.split("\\t");
 
-			for (String p : parts) {
-				System.out.println("Reply: " + p);
-				result.add(p);
+			if ((parts.length > 4) && parts[3].equals("1")) {
+				datasources.put(parts[1], parts[2]);
+				datasourceMap.put(parts[1], martName);
 			}
 		}
 
+		is.close();
 		reader.close();
+		reader = null;
+		is = null;
 
-		return result;
+		return datasources;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param datasetName DOCUMENT ME!
+	 * @param getAll DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @throws IOException DOCUMENT ME!
+	 */
+	public Map<String, String> getFilters(String datasetName, boolean getAll)
+	    throws IOException {
+		Map<String, String> filters = new HashMap<String, String>();
+
+		String martName = datasourceMap.get(datasetName);
+		Map<String, String> detail = databases.get(martName);
+
+		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
+		                + detail.get("path") + "?virtualschema="
+		                + detail.get("serverVirtualSchema") + "&type=filters&dataset="
+		                + datasetName;
+		System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
+
+		URL url = new URL(urlStr);
+		URLConnection uc = url.openConnection();
+		InputStream is = uc.getInputStream();
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		String s;
+
+		while ((s = reader.readLine()) != null) {
+			String[] parts = s.split("\\t");
+
+			if ((parts.length > 1)) {
+				if (getAll) {
+					filters.put(parts[1], parts[0]);
+				} else if ((parts[1].endsWith("ID(s)") || parts[1].endsWith("Accession(s)")
+				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false)) {
+					filters.put(parts[1], parts[0]);
+					System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
+				}
+			}
+		}
+
+		is.close();
+		reader.close();
+		reader = null;
+		is = null;
+
+		return filters;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param datasetName DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @throws IOException DOCUMENT ME!
+	 */
+	public Map<String, String[]> getAttributes(String datasetName) throws Exception {
+		Map<String, String[]> attributes = new HashMap<String, String[]>();
+
+		String martName = datasourceMap.get(datasetName);
+		Map<String, String> detail = databases.get(martName);
+
+		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
+		                + detail.get("path") + "?virtualschema="
+		                + detail.get("serverVirtualSchema") + "&type=attributes&dataset="
+		                + datasetName;
+		System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
+
+		URL url = new URL(urlStr);
+		URLConnection uc = url.openConnection();
+		InputStream is = uc.getInputStream();
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		String s;
+
+		String[] attrInfo;
+
+		while ((s = reader.readLine()) != null) {
+			String[] parts = s.split("\\t");
+			attrInfo = new String[3];
+
+			if (parts.length == 0)
+				continue;
+
+			if (parts.length == 4) {
+				// Display name of this attribute.
+				attrInfo[0] = parts[1];
+				attrInfo[1] = parts[2];
+				attrInfo[2] = parts[3];
+			} else if (parts.length > 1) {
+				attrInfo[0] = parts[1];
+			}
+
+			attributes.put(parts[0], attrInfo);
+
+			for (String e : parts) {
+				System.out.print("(" + e + "), ");
+			}
+
+			for (String e : attrInfo) {
+				System.out.print("[" + e + "], ");
+			}
+
+			System.out.println("");
+		}
+
+		is.close();
+		reader.close();
+		reader = null;
+		is = null;
+
+		return attributes;
 	}
 
 	/**

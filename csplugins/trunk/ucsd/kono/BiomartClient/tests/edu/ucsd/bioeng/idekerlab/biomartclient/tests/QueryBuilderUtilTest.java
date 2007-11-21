@@ -1,6 +1,7 @@
 package edu.ucsd.bioeng.idekerlab.biomartclient.tests;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.QueryBuilderUtil;
@@ -23,18 +24,18 @@ public class QueryBuilderUtilTest extends TestCase {
 	
 	public void testGetAllAliases() throws Exception {
 		List<String[]> res = stub.sendQuery(QueryBuilderUtil.getAllAliases(null));
-		for(String[] r: res) {
-			for(String c:r) {
-				System.out.print("===" + c);
-			}
-			System.out.println("");
-		}
+//		for(String[] r: res) {
+//			for(String c:r) {
+//				System.out.print("===" + c);
+//			}
+//			System.out.println("");
+//		}
 		
-		List<String> ds = stub.getAvailableDatasets("ensembl");
+		Map<String, String> ds = stub.getAvailableDatasets("ensembl");
 		int count = 1;
-		for(String e: ds) {
+		for(String e: ds.keySet()) {
 			if(e.endsWith("gene_ensembl")) {
-				System.out.println("Datasource " + count + " = " + e);
+				System.out.println("Datasource " + count + " = " + e + "-" + ds.get(e));
 				count++;
 			}
 			

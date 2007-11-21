@@ -47,6 +47,8 @@ import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientImpl;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.layout.Tunable;
+import cytoscape.util.ModulePropertiesImpl;
 
 /**
  * Biomart Web Service Client.
@@ -66,6 +68,9 @@ public class BiomartClient extends WebServiceClientImpl {
 	
 	// Actual biomart client.
 	private static WebServiceClient client;
+	
+	// Biomart base URL
+	private static final String BASE_URL = "http://www.biomart.org/biomart/martservice";
 
 	/**
 	 *  DOCUMENT ME!
@@ -88,7 +93,22 @@ public class BiomartClient extends WebServiceClientImpl {
 	 */
 	public BiomartClient() throws Exception {
 		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.ATTRIBUTE });
-		stub = new BiomartStub();
+		stub = new BiomartStub(BASE_URL);
+		
+		// Set properties
+		props = new ModulePropertiesImpl(clientID, "wsc");
+
+//		props.add(new Tunable("max_interactions", "Maximum number of records", Tunable.INTEGER,
+//		                      new Integer(1000)));
+
+		//props.add(new Tunable("search_depth", "Search depth", Tunable.INTEGER, new Integer(0)));
+		props.add(new Tunable("import_all", "Import all available entries",
+		                      Tunable.BOOLEAN, new Boolean(false)));
+		
+		props.add(new Tunable("show_all_filter", "Show all available filters",
+                Tunable.BOOLEAN, new Boolean(false)));
+		props.add(new Tunable("base_url", "Biomart Base URL",
+                Tunable.STRING, BASE_URL ));
 	}
 
 	/**

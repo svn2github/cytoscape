@@ -243,7 +243,7 @@
 	            ***********************************************
 		</echo>
 		<mkdir dir="${junit.report.dir}" />
-		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+		<junit printsummary="withOutAndErr" showoutput="yes" haltonfailure="no" maxmemory="512m">
 			<classpath refid="biomartClient.project.class.path" />
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />

@@ -1,6 +1,7 @@
 package edu.ucsd.bioeng.idekerlab.biomartclient.tests;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
@@ -22,16 +23,22 @@ public class BiomartStubTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testGetDatabaseList() throws Exception {
-		assertNotNull(stub.getDatabaseList());
+	public void testGetRegistry() throws Exception {
+		System.out.println("============ Test biomart registry ============");
+		Map<String, Map<String, String>> reg = stub.getRegistry();
+		
+		// Number of datasources.  This number can be changed!
+		assertEquals(reg.keySet().size(), 22);
+
+		System.out.println("============ Test biomart registry Done! ============");
 	}
 	
 	public void testGetAvailableDatasets() throws Exception {
-		stub.getAvailableDatasets("ensembl");
+		//stub.getAvailableDatasets("ensembl");
 	}
 	
 	public void testGetAvailableAttributes() throws Exception {
-		stub.getAvailableAttributes("oanatinus_gene_ensembl");
+		//stub.getAvailableAttributes("oanatinus_gene_ensembl");
 	}
 	
 	
@@ -51,14 +58,14 @@ public class BiomartStubTest extends TestCase {
 		filters[0] = new Filter("entrezgene", "852394");
 		String query2 = XMLQueryBuilder.getQueryString(dataset, attrs, filters);
 		
-		List<String[]> res = stub.sendQuery(query2);
-		
-		for(String[] line: res) {
-			for(String entry: line) {
-				System.out.print(entry + "\t");
-			}
-			System.out.println("");
-		}
+//		List<String[]> res = stub.sendQuery(query2);
+//		
+//		for(String[] line: res) {
+//			for(String entry: line) {
+//				System.out.print(entry + "\t");
+//			}
+//			System.out.println("");
+//		}
 	
 	}
 
