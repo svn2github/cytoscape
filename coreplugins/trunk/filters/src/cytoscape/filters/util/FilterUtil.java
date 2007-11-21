@@ -2,48 +2,23 @@ package cytoscape.filters.util;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.AtomicFilter;
-import ViolinStrings.Strings;
 import giny.model.Edge;
 import giny.model.Node;
-
-import java.beans.PropertyChangeEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ImageIcon;
-import cytoscape.filters.StringFilter;
-import cytoscape.filters.NumericFilter;
-import cytoscape.filters.view.FilterMainPanel;
 import csplugins.quickfind.util.QuickFind;
-import cytoscape.util.CytoscapeAction;
+import csplugins.quickfind.util.QuickFindFactory;
+import csplugins.test.quickfind.test.TaskMonitorBase;
 import cytoscape.data.CyAttributes;
-import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.FilterPlugin;
+import csplugins.widgets.autocomplete.index.GenericIndex;
 
 public class FilterUtil {
-	
-	// For test only
-	public static Vector<CompositeFilter> getTestFilterVect() {
 		
-		Vector<CompositeFilter> retVect = new Vector<CompositeFilter>();
-		return retVect;
-	}
-	
 	// do selection on given network
 	public static void doSelection(CompositeFilter pFilter) {
 		//System.out.println("Entering FilterUtil.doSelection() ...");
-		
-		//return;
 		
 		pFilter.apply();
 		
@@ -87,31 +62,9 @@ public class FilterUtil {
 			}
 			network.setSelectedEdgeState(passedEdges, true);
 		}
-
-		Cytoscape.getCurrentNetworkView().updateView();
-		
+		Cytoscape.getCurrentNetworkView().updateView();		
 	}
 	
-	
-	public static void applyFilter(CompositeFilter pFilter) {
-		ApplyFilterThread applyFilterThread = new ApplyFilterThread(pFilter);
-		applyFilterThread.start();
-	}
-	
-	public static CyAttributes getCyAttributes(String pIndexType) {
-		CyAttributes attributes = null;
-
-		if (pIndexType.equalsIgnoreCase("node")) {
-			attributes = Cytoscape.getNodeAttributes();
-		} else if (pIndexType.equalsIgnoreCase("edge")) {
-			attributes = Cytoscape.getEdgeAttributes();
-		}
-		else { //QuickFind.INDEX_ALL_ATTRIBUTES
-			attributes = null;
-		}
-
-		return attributes;
-	}
 	
 	public static boolean isFilterNameDuplicated(String pFilterName) {
 		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0)
@@ -125,6 +78,31 @@ public class FilterUtil {
 		}
 		return false;
 	}
+	
+	
+	public static GenericIndex getQuickFindIndex(String pCtrlAttribute, CyNetwork pNetwork, int pIndexType) {
+		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+		quickFind.reindexNetwork(pNetwork, pIndexType, pCtrlAttribute, new TaskMonitorBase());
+		
+		return quickFind.getIndex(pNetwork);		
+	}
+	
+	
+	public static boolean hasSuchAttribute(String pAttribute, int pType) {
+		int attributeType = CyAttributes.TYPE_UNDEFINED;
+		if (pType == QuickFind.INDEX_NODES) {
+			attributeType = Cytoscape.getNodeAttributes().getType(pAttribute);
+		}
+		else if (pType == QuickFind.INDEX_EDGES) {
+			attributeType = Cytoscape.getEdgeAttributes().getType(pAttribute);					
+		}
+		
+		if (attributeType == CyAttributes.TYPE_UNDEFINED)  {
+			return false;
+		}
+		return true;
+	}
+
 }
 
 
