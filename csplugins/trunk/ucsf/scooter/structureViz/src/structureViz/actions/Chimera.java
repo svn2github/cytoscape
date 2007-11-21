@@ -481,6 +481,27 @@ public class Chimera {
 	}
 
 	/**
+	 * Return the list of depiction presets available from within Chimera.
+	 * Chimera will return the list as a series of lines with the format:
+	 *	Preset type number "description"
+	 *
+	 * @return list of presets
+	 */
+	public List getPresets() {
+		ArrayList<String>presetList = new ArrayList<String>();
+		Iterator<String> presetIter = this.commandReply ("preset list");
+		while (presetIter.hasNext()) {
+			String preset = presetIter.next();
+			preset = preset.substring(7); // Skip over the "Preset"
+			preset = preset.replaceFirst("\"", "(");
+			preset = preset.replaceFirst("\"", ")");
+			// string now looks like: type number (description)
+			presetList.add(preset);
+		}
+		return presetList;
+	}
+
+	/**
 	 * Return the list of ChimeraModels currently open
 	 *
 	 * @return List of ChimeraModel's

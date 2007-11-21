@@ -388,6 +388,15 @@ public class ModelNavigatorDialog
 			alignMenu.setEnabled(true);
 		else
 			alignMenu.setEnabled(false);
+		JMenu clashMenu = new JMenu("Clash Detection");
+		addMenuItem(clashMenu, "Find Clashes", COMMAND, "findclash sel");
+		addMenuItem(clashMenu, "Clear Clash", COMMAND, "~findclash");
+		chimeraMenu.add(clashMenu);
+
+		JMenu presetMenu = new JMenu("Presets");
+		if (buildPresetMenu(presetMenu))
+			chimeraMenu.add(presetMenu);
+
 		addMenuItem(chimeraMenu, "Exit", EXIT, null);
 		menuBar.add(chimeraMenu);
 
@@ -465,6 +474,32 @@ public class ModelNavigatorDialog
 		return menuItem;
 	}
 
+	/**
+	 * Build the preset menu by inquiring the list of available presets
+	 * from Chimera
+	 *
+	 * @param menu the menu to add the preset items to
+	 * @return false if there are no presets
+	 */
+	private boolean buildPresetMenu(JMenu menu) {
+		List<String>presetList = chimeraObject.getPresets();
+		if (presetList == null || presetList.size() == 0)
+			return false;
+
+		// OK, now we have the list, create the menu list
+		for (String label: presetList) {
+			String [] com = label.split("[(]");
+			JMenuItem menuItem = new JMenuItem(label);
+			{
+				String command = "preset apply "+com[0];
+				MenuActionListener va = new MenuActionListener(COMMAND, command);
+				menuItem.addActionListener(va);
+			}
+			menu.add(menuItem);
+		}
+		return true;
+	}
+
 	// Embedded classes
 
 	/**
@@ -494,6 +529,7 @@ public class ModelNavigatorDialog
 		 */
 		public void actionPerformed(ActionEvent ev) {
 			if (type == COMMAND) {
+				// System.out.println("Command: "+command);
 				chimeraObject.select(command);
 			} else if (type == CLEAR) {
 				chimeraObject.select("~select");

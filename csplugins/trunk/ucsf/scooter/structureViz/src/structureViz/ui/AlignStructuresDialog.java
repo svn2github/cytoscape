@@ -155,6 +155,7 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		titleBorder.setTitlePosition(TitledBorder.TOP);
 
 		refBox.setBorder(titleBorder);
+		refBox.setMaximumSize(new Dimension(1000,80));
 		dataPanel.add(refBox);
 
 		// Create the results table
@@ -181,6 +182,7 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		checkBoxes.setBorder(new CompoundBorder(
 									BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
 									new EmptyBorder(10,10,10,10)));
+		checkBoxes.setMaximumSize(new Dimension(1000,80));
 		dataPanel.add(checkBoxes);
 
 		// Create the button box
@@ -196,6 +198,7 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 		buttonBox.add(doneButton);
 		buttonBox.add(alignButton);
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		buttonBox.setMaximumSize(new Dimension(1000,35));
 		
 		dataPanel.add(buttonBox);
 		setContentPane(dataPanel);
