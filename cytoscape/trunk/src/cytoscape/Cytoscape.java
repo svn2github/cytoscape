@@ -927,7 +927,6 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated This will be removed Feb 2007.
 	 */
 	public static void setCurrentNetwork(String id) {
 		if (getNetworkMap().containsKey(id)) {
@@ -936,7 +935,6 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @deprecated This will be removed Feb 2007.
 	 * @return true if there is network view, false if not
 	 */
 	public static boolean setCurrentNetworkView(String id) {
