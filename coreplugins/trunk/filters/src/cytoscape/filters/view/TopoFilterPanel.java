@@ -87,17 +87,6 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		}
 	}
 	
-	// Update date the info label based on the chkNode/Edge
-	public void updateSelectionLabel(String pNodeEdge) {
-		if (pNodeEdge.equalsIgnoreCase("Node")) {
-			lbSelectNodeEdge.setText("Select Node");			
-		}
-		else {
-			lbSelectNodeEdge.setText("Select Edge");
-		}
-		lbSelectNodeEdge.validate();
-		theFilter.childChanged();
-	}
 	
 	private void buildCMBmodel() {
         // Create an empty filter, add to the top of the filter list in the combobox
