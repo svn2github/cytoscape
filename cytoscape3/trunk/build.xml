@@ -20,7 +20,7 @@ in each module directory).
 		location="${basedir}/cytoscape/application/src/main/java" />
 
 	<property name="build.dir" location="${basedir}/build" />
-	<property name="classes.dir" location="${build.dir}/classes" />
+	<property name="build.classes" location="${build.dir}/classes" />
 	<property name="lib.dir" location="${basedir}/cytoscape/lib" />
 	<!-- The directory containing library jar files only for -->
 	<!-- testing and building. These files should not be in the -->
@@ -65,9 +65,17 @@ in each module directory).
 			<include name="**/*.jar" />
 		</fileset>
 <!--		<fileset dir="${basedir}/extra-jars"/> -->
-
 	</path>
 
+	
+		<!-- Outputs Current compilation classpath -->
+		<target name="show.classpath" description="output the current classpath">
+			<property name="temp" refid="classpath" />
+			<echo message="Classpath:  ${temp}" />
+		</target>
+
+	
+	
 	<!-- ======================================================= -->
 	<!-- For XJC compiler task -->
 	<!-- ======================================================= -->
@@ -104,7 +112,11 @@ in each module directory).
 		</xjc>
 		
 		<!-- copy prop file into build dir -->
-		<echo>Copying jaxb.properties from ${src.dir}/cytoscape/generated to build dir...</echo>
+		<echo>Copying jaxb.properties to "${build.classes}" from:
+		${generated.package.name}
+		${generated2.package.name}
+		${bookmarks.package.name}
+		</echo>
 		<copy todir="${build.classes}/${generated.path.name}">
 			<fileset dir="${application.src.dir}/${generated.path.name}" 
 				includes="*.properties" />
@@ -135,7 +147,7 @@ in each module directory).
 	
 	<target name="init" description="Set up build directories">
 		<mkdir dir="${build.dir}"/>
-		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${build.classes}"/>
 	</target>
 	
 	<!-- ======================================================= -->
@@ -146,7 +158,7 @@ in each module directory).
 	        depends="init, bind" 
 		description="Compiles all source code.">
 		<javac 
-		       destdir="${classes.dir}" 
+		       destdir="${build.classes}" 
 		       nowarn="off" 
 		       debug="true" 
 		       source="1.5" 
@@ -165,21 +177,15 @@ in each module directory).
 			<compilerarg line="-Xmaxwarns 10000" />
 		</javac>
 
-		<!-- Run RMIC for BioDataServer -->
-		<rmic classname="org.cytoscape.io.attribute.server.BioDataServerRmi" 
-		      base="${classes.dir}" 
-		      classpathref="classpath" />
-
-		<!-- copy resources/ directory to build area -->
-<!--
-		<echo>Copying resources/ directory to build</echo>
-		<copy todir="${build.classes}/cytoscape/resources">
-			<fileset dir="${basedir}/resources" />
-			<fileset file="${basedir}/resources/props/tax_report.txt" />
-		</copy>
--->
+		<antcall target="rmic" />
 	</target>
 
+	<target name="rmic" description="Run RMIC for BioDataServer">
+		<rmic classname="org.cytoscape.io.attribute.server.BioDataServerRmi" 
+		      base="${build.classes}" 
+		      classpathref="classpath" />
+	</target>
+	
 	
 
 </project>
