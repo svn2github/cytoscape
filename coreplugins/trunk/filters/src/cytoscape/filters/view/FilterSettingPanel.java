@@ -104,6 +104,8 @@ public class FilterSettingPanel extends JPanel {
 			lbRelation.setVisible(false);
 			rbtAND.setVisible(false);
 			rbtOR.setVisible(false);
+			chkEdge.setVisible(false);
+			chkNode.setEnabled(false);
 			
 			this.validate();
 		}
@@ -120,22 +122,6 @@ public class FilterSettingPanel extends JPanel {
 		
 		this.validate();
 		this.repaint();
-	}
-	
-	
-	private boolean hasSuchAttribute(String pAttribute, int pType) {
-		int attributeType = CyAttributes.TYPE_UNDEFINED;
-		if (pType == QuickFind.INDEX_NODES) {
-			attributeType = Cytoscape.getNodeAttributes().getType(pAttribute);
-		}
-		else if (pType == QuickFind.INDEX_EDGES) {
-			attributeType = Cytoscape.getEdgeAttributes().getType(pAttribute);					
-		}
-		
-		if (attributeType == CyAttributes.TYPE_UNDEFINED)  {
-			return false;
-		}
-		return true;
 	}
 	
 
@@ -156,7 +142,7 @@ public class FilterSettingPanel extends JPanel {
 
 		try {		
 			// If index doesnot exist, check if there is such attribute or 
-			if (!hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())) {
+			if (!FilterUtil.hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())) {
 				// no such attribute
 				JComboBox tmpCombo;
 				if (pFilter.getSearchStr() != null) {
@@ -813,6 +799,7 @@ public class FilterSettingPanel extends JPanel {
 				}
 				else if (theCheckBox == chkNode)
 				{
+					/*
 					// In case of TopologyFilter, change the behavior of Node/Edge to radio button
 					if (theFilter instanceof TopologyFilter) {
 						theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
@@ -826,12 +813,14 @@ public class FilterSettingPanel extends JPanel {
 						}
 					}
 					else {
+					*/
 						theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
 						parentPanel.refreshAttributeCMB();						
-					}
+					//}
 				}
 				else if (theCheckBox == chkEdge)
 				{
+					/*
 					// In case of TopologyFilter, change the behavior of Node/Edge to radio button
 					if (theFilter instanceof TopologyFilter) {
 						theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());
@@ -845,9 +834,10 @@ public class FilterSettingPanel extends JPanel {
 						}
 					}
 					else {
+					*/
 						theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());	
 						parentPanel.refreshAttributeCMB();						
-					}
+					//}
 					
 					//if (!chkEdge.isSelected()) {
 					//	chkSource.setSelected(false);
@@ -884,13 +874,13 @@ public class FilterSettingPanel extends JPanel {
 				*/
 				//Update the selection on screen
 				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
-					//System.out.println("FilterSettingPanel. chkNode/chkEdge/chkNegation/ is clicked");	
+					
+					theFilter.childChanged();//The setting is changed
 					
 					if (theFilter instanceof TopologyFilter) {
 						// Do not apply Filter if TopologyFilter	
 					}
-					else {
-						theFilter.childChanged();//The setting is changed
+					else {						
 						FilterUtil.doSelection(theFilter);										
 					}
 				}
