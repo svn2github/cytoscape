@@ -15,7 +15,6 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;

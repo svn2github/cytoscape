@@ -3,30 +3,25 @@
  */
 package cytoscape.plugin;
 
-public enum DownloadableType
-	{
+public enum DownloadableType {
 	PLUGIN("plugin"), THEME("theme"), FILE("file");
 
 	private String type;
-
-	private DownloadableType(String Type)
-		{
+	
+	private DownloadableType(String Type) {
 		type = Type;
-		}
+	}
 
-	public String value()
-		{
+	public String value() {
 		return type;
-		}
+	}
 
 	public static DownloadableType getStatus(String value)
-			throws InvalidDownloadable
-		{
-		for (DownloadableType type : values())
-			{
-			if (type.value().equals(value)) { return type; }
-			}
-		throw new InvalidDownloadable("'" + value + "' is not a valid downloadable object.");
+			throws InvalidDownloadable {
+		for (DownloadableType type : values()) {
+			if (type.value().equals(value)) return type;
 		}
-
+		throw new InvalidDownloadable("'" + value + "' is not a valid downloadable object.");
 	}
+
+}

@@ -36,6 +36,7 @@
 package cytoscape.plugin;
 
 import java.net.URL;
+
 import cytoscape.util.URLUtil;
 
 public abstract class DownloadableInfo {
@@ -218,7 +219,8 @@ public abstract class DownloadableInfo {
 		return licenseRequired;
 	}
 
-	
+	public abstract Installable getInstallable();
+		
 	/**
 	 * Return the downloadable type of this object.
 	 */

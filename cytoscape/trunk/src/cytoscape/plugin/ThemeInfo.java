@@ -74,6 +74,10 @@ public class ThemeInfo extends DownloadableInfo {
 		themePlugins = new HashSet<PluginInfo>();
 	}
 
+	public Installable getInstallable() {
+		return new InstallableTheme(this);
+	}
+	
 	/**
 	 * See {@link DownloadableInfo#getType()}
 	 */

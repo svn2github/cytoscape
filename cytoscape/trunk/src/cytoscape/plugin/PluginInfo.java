@@ -364,13 +364,16 @@ public class PluginInfo extends DownloadableInfo {
 		return super.getDownloadableURL();
 	}
 	
+	public Installable getInstallable() {
+		return new InstallablePlugin(this);
+	}
+	
 	/**
 	 * {@link DownloadableInfo#getType()}
 	 */
-	public DownloadableType getType()
-		{
+	public DownloadableType getType() {
 		return DownloadableType.PLUGIN;
-		}
+	}
 	
 	/**
 	 * @return List of files installed with this plugin (includes plugin jar

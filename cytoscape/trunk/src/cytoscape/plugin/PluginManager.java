@@ -419,15 +419,7 @@ public class PluginManager {
 				.getDownloadableListByStatus(PluginStatus.DELETE);
 
 		for (DownloadableInfo infoObj : ToDelete) {
-			Installable ins = null;
-			switch (infoObj.getType()) {
-			case PLUGIN:
-				ins = new InstallablePlugin((PluginInfo) infoObj);
-				break;
-			case THEME:
-				ins = new InstallableTheme((ThemeInfo) infoObj);
-				break;
-			}
+			Installable ins = infoObj.getInstallable();
 
 			try {
 				if (ins.uninstall()) {
@@ -482,16 +474,7 @@ public class PluginManager {
 	 */
 	public List<DownloadableInfo> findUpdates(DownloadableInfo Info)
 			throws IOException, org.jdom.JDOMException {
-		Installable ins = null;
-		switch (Info.getType()) {
-		case PLUGIN:
-			ins = new InstallablePlugin((PluginInfo) Info);
-			break;
-		case THEME:
-			ins = new InstallableTheme((ThemeInfo) Info);
-			break;
-		}
-		return ins.findUpdates();
+		return Info.getInstallable().findUpdates();
 	}
 
 	/**
@@ -537,18 +520,7 @@ public class PluginManager {
 			throw new ManagerException(
 					"Cannot update an object of one download type to an object of a different download type");
 		}
-
-		Installable ins = null;
-		switch (currentObj.getType()) {
-		case PLUGIN:
-			ins = new InstallablePlugin((PluginInfo) currentObj);
-			break;
-		case THEME:
-			ins = new InstallableTheme((ThemeInfo) currentObj);
-			break;
-		}
-
-		ins.update(newObj, taskMonitor);
+		currentObj.getInstallable().update(newObj, taskMonitor);
 
 		pluginTracker.addDownloadable(currentObj, PluginStatus.DELETE);
 		pluginTracker.addDownloadable(newObj, PluginStatus.INSTALL);
@@ -593,10 +565,9 @@ public class PluginManager {
 					ThemeInfo Theme = (ThemeInfo) Obj;
 					for (PluginInfo plugin : Theme.getPlugins()) {
 						if (((ThemeInfo) info).containsPlugin(plugin)) {
-							throw new ManagerException(
-									Obj.getName()
-											+ " cannot be downloaded, it includes plugins that are installed in the theme '"
-											+ info.getName() + "'");
+							throw new ManagerException(Obj.getName()
+								+ " cannot be downloaded, it includes plugins that are installed in the theme '"
+								+ info.getName() + "'");
 						}
 					}
 				}
@@ -613,15 +584,7 @@ public class PluginManager {
 			}
 		}
 
-		Installable installable = null;
-		switch (Obj.getType()) {
-		case PLUGIN:
-			installable = new InstallablePlugin((PluginInfo) Obj);
-			break;
-		case THEME:
-			installable = new InstallableTheme((ThemeInfo) Obj);
-			break;
-		}
+		Installable installable = Obj.getInstallable();
 		installable.install(taskMonitor);
 		pluginTracker.addDownloadable(Obj, PluginStatus.INSTALL);
 		return installable.getInfoObj();
@@ -1022,58 +985,6 @@ public class PluginManager {
 				new Class[] { URL.class });
 		method.setAccessible(true);
 		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
-	}
-
-	/**
-	 * @deprecated Use {@link cytoscape.plugin.PluginManagerInquireTask} will be
-	 *             removed June 2008
-	 */
-	private class InquireTask implements cytoscape.task.Task {
-
-		private String url;
-
-		private PluginInquireAction actionObj;
-
-		private cytoscape.task.TaskMonitor taskMonitor;
-
-		public InquireTask(String Url, PluginInquireAction Obj) {
-			url = Url;
-			actionObj = Obj;
-		}
-
-		public void setTaskMonitor(TaskMonitor monitor)
-				throws IllegalThreadStateException {
-			taskMonitor = monitor;
-		}
-
-		public void halt() {
-			// not implemented
-		}
-
-		public String getTitle() {
-			return "Attempting to connect to " + url;
-		}
-
-		public void run() {
-			List<DownloadableInfo> Results = null;
-
-			taskMonitor.setStatus(actionObj.getProgressBarMessage());
-			taskMonitor.setPercentCompleted(-1);
-
-			try {
-				Results = PluginManager.this.inquire(url);
-			} catch (Exception e) {
-
-				if (e.getClass().equals(java.lang.NullPointerException.class)) {
-					e = new org.jdom.JDOMException(
-							"XML was incorrectly formed", e);
-				}
-				actionObj.setExceptionThrown(e);
-			} finally {
-				taskMonitor.setPercentCompleted(100);
-				actionObj.inquireAction(Results);
-			}
-		}
 	}
 
 }
