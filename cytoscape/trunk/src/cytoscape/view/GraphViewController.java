@@ -54,9 +54,8 @@ import java.util.*;
 
 
 /**
- *@deprecated Nothing in the core uses this, so don't start.  Will be gone Nov 2008.
+ *
  */
-@Deprecated
 public class GraphViewController implements giny.model.GraphPerspectiveChangeListener {
 	protected Map graphViewToHandler; // a map of GraphViews to GraphViewHandlers
 	protected Map gpToGv; // a map of GraphPerspectives to GraphViews

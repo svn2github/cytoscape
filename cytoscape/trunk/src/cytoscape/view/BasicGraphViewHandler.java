@@ -36,7 +36,6 @@
 */
 
 /**
- * @deprecated Nothing in the core uses this, so don't start.  Will be gone Nov 2008.
  * @author Iliana Avila-Campillo <iavila@systemsbiology.org>
  * @version %I%, %G%
  * @since 2.0
@@ -61,7 +60,6 @@ import java.util.*;
  * A basic <code>GraphViewHandler</code> that simply reflects <code>GraphPerspective</code>
  * changes on a given <code>GraphView</code>
  */
-@Deprecated
 public class BasicGraphViewHandler implements GraphViewHandler {
 	/**
 	 * Constructor
