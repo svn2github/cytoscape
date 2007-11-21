@@ -223,9 +223,6 @@ public class CompositeFilter implements CyFilter {
 	}
 	
 	public void apply() {
-
-		//System.out.println("Entering CompositeFilter.apply() ... ");	
-		//System.out.println("\tchildChanged =  " + childChanged);	
 		
 		// only recalculate the bits if the child has actually changed
 		if ( !childChanged ) 
