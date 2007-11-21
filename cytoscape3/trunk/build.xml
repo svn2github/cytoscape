@@ -83,13 +83,13 @@ in each module directory).
 
 		<xjc schema="${schema.dir}/${cysession.schema}" 
 					destdir="${application.src.dir}" 
-		     package="${package}">
+		     package="${generated.class}">
 			<produces dir="${generated.package.name}" 
 			          includes="* impl/*" />
 		</xjc>
 		<xjc schema="${schema.dir}/${xgmml.schema}" 
 					destdir="${application.src.dir}" 
-		     package="${generated2.package.name}" 
+		     package="${generated.class}2" 
 		     extension="true" 
 		     binding="${schema.dir}/binding.xjb">
 			<arg value="-nv" />
@@ -146,7 +146,7 @@ in each module directory).
 	        depends="init, bind" 
 		description="Compiles all source code.">
 		<javac 
-		       destdir="${build.classes}" 
+		       destdir="${classes.dir}" 
 		       nowarn="off" 
 		       debug="true" 
 		       source="1.5" 
@@ -166,8 +166,8 @@ in each module directory).
 		</javac>
 
 		<!-- Run RMIC for BioDataServer -->
-		<rmic classname="cytoscape.data.servers.BioDataServerRmi" 
-		      base="${build.classes}" 
+		<rmic classname="org.cytoscape.io.attribute.server.BioDataServerRmi" 
+		      base="${classes.dir}" 
 		      classpathref="classpath" />
 
 		<!-- copy resources/ directory to build area -->
