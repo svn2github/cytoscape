@@ -210,6 +210,10 @@ public class DownloadableInfoTest extends TestCase {
 		public String htmlOutput() {
 			return null;
 		}
+
+		public Installable getInstallable() {
+			return null;
+		}
 	}
 	
 }
