@@ -48,10 +48,12 @@ import giny.view.GraphView;
 
 
 /**
+ * @deprecated Nothing in the core uses this, so don't start.  Will be gone Nov 2008.
  * This interface represents an object that handles a change in a
  * <code>giny.mode.GraphPerspective</code> by updating one of its
  * <code>giny.view.GraphView</code>s.
  */
+@Deprecated
 public interface GraphViewHandler {
 	/**
 	 * Handles the event as desired by updating the given <code>giny.view.GraphView</code>.
