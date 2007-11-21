@@ -33,28 +33,48 @@
 package SFLDLoader.ui;
 
 // System imports
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.*;
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.text.Position;
-import javax.swing.border.*;
-import javax.swing.WindowConstants.*;
+import java.util.List;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import java.net.URL;
 
 // Cytoscape imports
-import cytoscape.*;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.actions.LoadNetworkTask;
 
 // SFLDLoader imports
 import SFLDLoader.model.*;
+
 
 /**
  * The SFLDQueryDialog provides the user interface for SFLDLoader.  The
@@ -73,21 +93,29 @@ import SFLDLoader.model.*;
  * 
  */
 
-public class SFLDQueryDialog extends JDialog implements ActionListener {
+public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeListener {
 	// Dialog components
 	private JTable queryTable;
 	private	JPanel infoTextPanel;
+	private	JPanel settingsPanel;
 	private JPanel buttonBox;
 	private JPanel tableFrame;
 	private JButton loadNetworkButton;
 	private JButton closeButton;
 	private TitledBorder descTitleBorder;
+	private TitledBorder settingsTitleBorder;
+	private JSlider slider;
+	private JEditorPane sliderLabel;
 	private BrowseTableModel tableModel;
 	private List<Superfamily> superfamilies;
 	private Superfamily selSuper = null;
-	private Subgroup selSubgroup = null;
-	private Family selFamily = null;
+	private List<Subgroup> selSubgroups = null;
+	private List<Family> selFamilies = null;
 	private String URLBase = null;
+	private String backgroundColor = null;
+
+	static final int MAX_CUTOFF = 2;
+	static final int MIN_CUTOFF = -150;
 
 	public SFLDQueryDialog(List<Superfamily> superfamilies, String URLBase) {
 		super();	// Create the dialog
@@ -118,7 +146,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		queryTable.setColumnSelectionAllowed(false);
 		queryTable.setCellSelectionEnabled(true);
 		queryTable.setShowHorizontalLines(false);
-		queryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		queryTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		queryTable.setDefaultRenderer(Superfamily.class, new SuperFamilyRenderer());
 		queryTable.setDefaultRenderer(Subgroup.class, new SubgroupRenderer());
 		queryTable.setDefaultRenderer(Family.class, new FamilyRenderer());
@@ -159,6 +187,27 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		infoTextPanel.setBorder(descTitleBorder);
 		browsePanel.add(infoTextPanel);
 
+		// Add our settings panel.
+		settingsPanel = new JPanel();
+		slider = new JSlider(MIN_CUTOFF, MAX_CUTOFF, MAX_CUTOFF);
+		slider.setLabelTable(getLabels());
+		slider.setPaintLabels(true);
+		slider.setPreferredSize(new Dimension(600, 40));
+		slider.addChangeListener(this);
+		settingsPanel.add(slider);
+
+		sliderLabel = new JEditorPane("text/html",createLabel(MAX_CUTOFF));
+		sliderLabel.setEditable(false);
+		settingsPanel.add(sliderLabel);
+
+		// Border it
+		Border settingsBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		settingsTitleBorder = BorderFactory.createTitledBorder(descBorder, "Blast E-Value Cutoff");
+		settingsTitleBorder.setTitlePosition(TitledBorder.LEFT);
+		settingsTitleBorder.setTitlePosition(TitledBorder.TOP);
+		settingsPanel.setBorder(settingsTitleBorder);
+		browsePanel.add(settingsPanel);
+
 		// Last component -- our button box
     JPanel buttonBox = new JPanel();
     JButton doneButton = new JButton("Done");
@@ -172,6 +221,8 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
     buttonBox.add(doneButton);
     buttonBox.add(loadNetworkButton);
     buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		buttonBox.setMinimumSize(new Dimension(700, 43));
+		buttonBox.setMaximumSize(new Dimension(1000, 43));
     browsePanel.add(buttonBox);
     setContentPane(browsePanel);
 	}
@@ -186,16 +237,25 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		else if ("load".equals(e.getActionCommand())) {
 			// Get the currently selected item
 			int id = 0;
+
 			String loadURL = URLBase+"?query=pairs&scores=pairwise_blast&level=";
-			if (selFamily != null) {
-				id = selFamily.getId();
-				loadURL = loadURL+"family&id="+id;
-			} else if (selSubgroup != null) {
-				id = selSubgroup.getId();
-				if (id < 0) {
-					loadURL = loadURL+"family&id="+(-id);
-				} else {
-					loadURL = loadURL+"subgroup&id="+id;
+			if (selFamilies != null && selFamilies.size() > 0) {
+				loadURL = loadURL+"family&id=";
+				for (int i = 0; i < selFamilies.size(); i++) {
+					id = selFamilies.get(i).getId();
+					if (i > 0)
+						loadURL = loadURL+","+id;
+					else
+						loadURL = loadURL+id;
+				}
+			} else if (selSubgroups != null && selSubgroups.size() > 0) {
+				loadURL = loadURL+"subgroup&id=";
+				for (int i = 0; i < selSubgroups.size(); i++) {
+					id = selSubgroups.get(i).getId();
+					if (i > 0)
+						loadURL = loadURL+","+id;
+					else
+						loadURL = loadURL+id;
 				}
 			} else if (selSuper != null) {
 				id = selSuper.getId();
@@ -203,8 +263,11 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 			} else {
 				return;
 			}
+
+			loadURL = loadURL+"&cutoff=1e"+slider.getValue();
 			// Load it
 			try {
+				System.out.println("Calling loadURL("+loadURL+")");
 				LoadNetworkTask.loadURL(new URL(loadURL), false);
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
@@ -212,26 +275,37 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		}
 	}
 
+	public void stateChanged(ChangeEvent e) {
+		// Get the value
+		int val = slider.getValue();
+
+		// Update the label
+		sliderLabel.setText(createLabel(val));
+	}
+
 	public void getDescription(Object group) {
 		String URI = URLBase+"?query=description&";
-		if (group.getClass() == Superfamily.class) {
+		if (group != null && group.getClass() == Superfamily.class) {
 			Superfamily sf = (Superfamily)group;
 			URI = URI + "level=superfamily&id="+sf.getId();
-		} else if (group.getClass() == Subgroup.class) {
+		} else if (group != null && group.getClass() == Subgroup.class) {
 			Subgroup sg = (Subgroup)group;
 			if (sg.getId() < 0) {
 				URI = URI + "level=family&id="+(-sg.getId());
 			} else {
 				URI = URI + "level=subgroup&id="+sg.getId();
 			}
-		} else if (group.getClass() == Family.class) {
+		} else if (group != null && group.getClass() == Family.class) {
 			Family fam = (Family)group;
 			URI = URI + "level=family&id="+fam.getId();
 		}
 		infoTextPanel.removeAll();
 		JEditorPane description = null;
 		try {
-			description = new JEditorPane(URI);
+			if (group == null) 
+				description = new JEditorPane("text/plain",null);
+			else
+				description = new JEditorPane(URI);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -245,6 +319,27 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 		infoTextPanel.repaint();
 	}
 			
+	private Hashtable<Integer,Component> getLabels() {
+		Hashtable <Integer, Component> labelTable = new Hashtable(100);
+		JEditorPane label1 = new JEditorPane("text/html", createLabel(MIN_CUTOFF));
+		label1.setEditable(false);
+		labelTable.put(new Integer(MIN_CUTOFF), label1);
+
+		JEditorPane label2 = new JEditorPane("text/html", createLabel(MAX_CUTOFF));
+		label2.setEditable(false);
+		labelTable.put(new Integer(MAX_CUTOFF), label2);
+		return labelTable;
+	}
+
+	private String createLabel(int val) {
+		if (backgroundColor == null) {
+			Color bg = settingsPanel.getBackground();
+			backgroundColor = "\"#"+Integer.toHexString(bg.getRed())
+			                       +Integer.toHexString(bg.getGreen())
+			                       +Integer.toHexString(bg.getBlue())+"\"";
+		}
+		return "<html bgcolor="+backgroundColor+">1x10<sup>"+val+"</sup></html>";
+	}
 
 	public class BrowseTableModel extends AbstractTableModel 
 	                              implements ListSelectionListener {
@@ -262,8 +357,8 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 			int count = superfamilies.size();
 			if (selSuper != null)
 				count = Math.max(count, selSuper.getSubgroupCount());
-			if (selSubgroup != null)
-				count = Math.max(count, selSubgroup.getFamilyCount());
+			if (selSubgroups != null && selSubgroups.size() == 1)
+				count = Math.max(count, selSubgroups.get(0).getFamilyCount());
 			return count;
 		}
 
@@ -326,8 +421,11 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 				return superfamilies.get(row);
 			} else if (col == 1 && selSuper != null && row < selSuper.getSubgroupCount()) {
 				return selSuper.getSubgroup(row);
-			} else if (col == 2 && selSubgroup != null && row < selSubgroup.getFamilyCount()) {
-				return selSubgroup.getFamily(row);
+			} else if (col == 2 
+			           && selSubgroups != null 
+			           && selSubgroups.size() == 1 
+			           && row < selSubgroups.get(0).getFamilyCount()) {
+				return selSubgroups.get(0).getFamily(row);
 			}
 			return null;
 		}
@@ -352,26 +450,64 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 			} else {
 				// Figure out what is selected
 				int selectedCol = queryTable.getSelectedColumn();
-				int selectedRow = queryTable.getSelectedRow();
+				int[] selectedRows = queryTable.getSelectedRows();
 				// Update the text field for this item
 				// Fill out next column over (if appropriate)
 				if (selectedCol == 0) {
-					selSuper = superfamilies.get(selectedRow);
+					selSuper = superfamilies.get(selectedRows[0]);
+					selSubgroups = new ArrayList<Subgroup>();
+					lsm.clearSelection();
 					descTitleBorder.setTitle("Description of superfamily "+selSuper.getName());
 					getDescription(selSuper);
-					selSubgroup = null;
-					selFamily = null;
 					fireTableDataChanged();
 				} else if (selectedCol == 1 && selSuper != null) {
-					selSubgroup = selSuper.getSubgroup(selectedRow);
-					getDescription(selSubgroup);
-					descTitleBorder.setTitle("Description of subgroup "+selSubgroup.getName());
-					selFamily = null;
+					// Handle subgroup selection
+					selFamilies = new ArrayList<Family>();
+					if (selectedRows.length == 1) {
+						Subgroup sg = selSuper.getSubgroup(selectedRows[0]);
+						if (selSubgroups.size() > 1 && selSubgroups.contains(sg)) {
+							// Deselect
+							selSubgroups.remove(sg);
+						} else {
+							selSubgroups.add(sg);
+						}
+					} else {
+						for (int i = 0; i < selectedRows.length; i++) {
+							selSubgroups.add(selSuper.getSubgroup(selectedRows[i]));
+						}
+					}
+					if (selSubgroups.size() == 1 && selFamilies.size() == 0) {
+						getDescription(selSubgroups.get(0));
+						descTitleBorder.setTitle("Description of subgroup "+selSubgroups.get(0).getName());
+					} else {
+						descTitleBorder.setTitle("Multiple subgroups");
+						getDescription(null);
+					}
 					fireTableDataChanged();
-				} else if (selectedCol == 2 && selSubgroup != null) {
-					selFamily = selSubgroup.getFamily(selectedRow);
-					getDescription(selFamily);
-					descTitleBorder.setTitle("Description of family "+selFamily.getName());
+				} else if (selectedCol == 2 && selSubgroups != null && selSubgroups.size() == 1) {
+					// Handle family selection
+					Subgroup selSubgroup = selSubgroups.get(0);
+					if (selectedRows.length == 1) {
+						Family fam = selSubgroup.getFamily(selectedRows[0]);
+						if (selFamilies.size() > 1 && selFamilies.contains(fam)) {
+							// Deselect
+							selFamilies.add(fam);
+						} else {
+							selFamilies.add(fam);
+						}
+					} else {
+						for (int i = 0; i < selectedRows.length; i++) {
+							selFamilies.add(selSubgroup.getFamily(selectedRows[i]));
+						}
+					}
+
+					if (selFamilies.size() == 1) {
+						getDescription(selFamilies.get(0));
+						descTitleBorder.setTitle("Description of family "+selFamilies.get(0).getName());
+					} else {
+						descTitleBorder.setTitle("Multiple families");
+						getDescription(null);
+					}
 				}
 				loadNetworkButton.setEnabled(true);
 				repaint();
@@ -380,16 +516,24 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 	}
 
 	public class SuperFamilyRenderer extends DefaultTableCellRenderer {
+		public SuperFamilyRenderer() {
+			super();
+			setOpaque(true);
+		}
+
 		public Component getTableCellRendererComponent(JTable table, Object value,
 		                                               boolean isSelected, boolean hasFocus,
 		                                               int row, int col) {
 			if (value != null) {
 				Superfamily superfamily = (Superfamily) value;
 				String label = null;
-				if (isSelected || superfamily == selSuper)
-					label = "<html><b>"+superfamily.getName()+"</b>   --></html>";
-				else
+				if (isSelected || superfamily == selSuper) {
+					label = "<html><b>"+superfamily.getName()+"</b>    &#8594;</html>";
+					setBackground(table.getSelectionBackground());
+				} else {
 					label = "<html>" + superfamily.getName()+"</html>";
+					setBackground(table.getBackground());
+				}
 
 				Component cell = super.getTableCellRendererComponent(table, label, 
 				                                                     isSelected, hasFocus,
@@ -401,16 +545,27 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 	}
 
 	public class SubgroupRenderer extends DefaultTableCellRenderer {
+		public SubgroupRenderer() {
+			super();
+			setOpaque(true);
+		}
+
 		public Component getTableCellRendererComponent(JTable table, Object value,
 		                                               boolean isSelected, boolean hasFocus,
 		                                               int row, int col) {
 			if (value != null) {
 				Subgroup subgroup = (Subgroup) value;
 				String label = null;
-				if (isSelected || subgroup == selSubgroup)
-					label = "<html><b>"+subgroup.getName()+"</b>   --></html>";
-				else
+				if (isSelected || (selSubgroups != null && selSubgroups.contains(subgroup))) {
+					setBackground(table.getSelectionBackground());
+					if (selSubgroups != null && selSubgroups.size() == 1) {
+						label = "<html><b>"+subgroup.getName()+"</b>   &#8594;</html>";
+					} else
+						label = "<html><b>"+subgroup.getName()+"</b></html>";
+				} else {
 					label = "<html>" + subgroup.getName()+"</html>";
+					setBackground(table.getBackground());
+				}
 
 				Component cell = super.getTableCellRendererComponent(table, label, 
 				                                                     isSelected, hasFocus,
@@ -422,16 +577,21 @@ public class SFLDQueryDialog extends JDialog implements ActionListener {
 	}
 
 	public class FamilyRenderer extends DefaultTableCellRenderer {
+		public FamilyRenderer() {super();}
+
 		public Component getTableCellRendererComponent(JTable table, Object value,
 		                                               boolean isSelected, boolean hasFocus,
 		                                               int row, int col) {
 			if (value != null) {
 				Family family = (Family) value;
 				String label = null;
-				if (isSelected || family == selFamily)
+				if (isSelected || (selFamilies != null && selFamilies.contains(family))) {
+					setBackground(table.getSelectionBackground());
 					label = "<html><b>"+family.getName()+"</b></html>";
-				else
+				} else {
 					label = "<html>" + family.getName()+"</html>";
+					setBackground(table.getBackground());
+				}
 
 				Component cell = super.getTableCellRendererComponent(table, label, 
 				                                                     isSelected, hasFocus,
