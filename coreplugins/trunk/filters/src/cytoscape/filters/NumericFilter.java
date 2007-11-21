@@ -45,6 +45,7 @@ import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.filters.util.FilterUtil;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.NumberIndex;
 
@@ -116,6 +117,14 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 			return;
 		}
 
+		if (lowBound == null || highBound == null || network == null || !FilterUtil.hasSuchAttribute(controllingAttribute,index_type)) {
+			return;
+		}
+		
+		//If quickFind_index does not exist, build the Index
+		if (quickFind_index == null) {
+			quickFind_index = FilterUtil.getQuickFindIndex(controllingAttribute, network, index_type);
+		}
 
 		//System.out.println(" NumberFilter.apply(): objectCount = " + objectCount);
 		NumberIndex numberIndex = (NumberIndex) quickFind_index;
