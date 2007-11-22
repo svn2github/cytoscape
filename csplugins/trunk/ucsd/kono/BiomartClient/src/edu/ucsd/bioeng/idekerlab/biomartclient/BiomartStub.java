@@ -34,21 +34,14 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +49,10 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -70,21 +67,63 @@ public class BiomartStub {
 	// Key is datasource, value is database name.
 	private Map<String, String> datasourceMap = new HashMap<String, String>();
 
+	
+	private Map<String, Map<String, String>> filterConversionMap;
 	/**
 	 * Creates a new BiomartStub object.
+	 * @throws IOException 
 	 */
-	public BiomartStub() {
+	public BiomartStub() throws IOException {
+		this(null);
 	}
 
 	/**
 	 * Creates a new BiomartStub object from given URL.
 	 *
 	 * @param baseURL  DOCUMENT ME!
+	 * @throws IOException 
 	 */
-	public BiomartStub(String baseURL) {
-		this.baseURL = baseURL + "?";
+	public BiomartStub(String baseURL) throws IOException {
+		if(baseURL != null) {
+			this.baseURL = baseURL + "?";
+		}
+		loadConversionFile();
 	}
 
+	private void loadConversionFile() throws IOException {
+		filterConversionMap = new HashMap<String, Map<String, String>>();
+		InputStreamReader inFile;
+
+		inFile = new InputStreamReader(this.getClass().getResource("/resource/filterconversion.txt")
+		                                   .openStream());
+
+		BufferedReader inBuffer = new BufferedReader(inFile);
+
+		String line;
+		String trimed;
+		String oldName = null;
+		Map<String, String> oneEntry = new HashMap<String, String>();
+		while ((line = inBuffer.readLine()) != null) {
+			trimed = line.trim();
+			System.out.println("Filter Conversion-------------> " + trimed);
+			String[] dbparts = trimed.split("\\t");
+			if(dbparts[0].equals(oldName) == false) {
+				oneEntry = new HashMap<String, String>();
+				oldName = dbparts[0];
+				filterConversionMap.put(oldName, oneEntry);
+			}
+			oneEntry.put(dbparts[1], dbparts[2]);
+			
+		}
+	}
+	
+	public String toAttributeName(String dbName, String filterID) {
+		if(filterConversionMap.get(dbName) == null) {
+			return null;
+		} else {
+			return filterConversionMap.get(dbName).get(filterID);
+		}
+	}
 	/**
 	 *  DOCUMENT ME!
 	 *
