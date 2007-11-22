@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.idekerlab.biomartui;
 
 import java.awt.event.ActionEvent;
@@ -49,21 +47,25 @@ import edu.ucsd.bioeng.idekerlab.biomartui.ui.BiomartMainDialog;
 
 /**
  * GUI for attribute import/ID mapping function for Biomart.
+ * 
+ * @author kono
+ * @version 0.5
+ * @since Cytoscape 2.6
+ * 
  */
 public class BiomartUIPlugin extends CytoscapePlugin {
 	/**
-	 * Creates a new BiomartUIPlugin object.
+	 * Creates a new UI and register it to plugin menu.
 	 */
 	public BiomartUIPlugin() {
 		final JMenu menu = new JMenu("Import Attributes from Biomart");
 
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(menu);
 
-		menu.add(new JMenuItem(new AbstractAction("ID Mapping...") {
+		menu.add(new JMenuItem(new AbstractAction("ID Mapping and Annotations...") {
 				public void actionPerformed(ActionEvent e) {
 					BiomartMainDialog.showUI();
 				}
 			}));
-		
 	}
 }
