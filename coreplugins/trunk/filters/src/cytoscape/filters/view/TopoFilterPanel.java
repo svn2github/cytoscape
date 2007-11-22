@@ -51,19 +51,6 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
         buildCMBmodel();
 
-        tfMinNeighbors.setText(new Integer(pFilter.getMinNeighbors()).toString());        	
-        tfDistance.setText(new Integer(pFilter.getDistance()).toString());
-        
-        System.out.println("TopoFilterPanel: passFilter = " + theFilter.getPassFilter().getName());
-        
-        if (theFilter.getPassFilter() == null) {
-        	cmbPassFilter.setSelectedIndex(0);			
-		}
-		else {
-            System.out.println("TopoFilterPanel: passFilter != null");
-
-			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
-		}
 		cmbPassFilter.setRenderer(new FilterRenderer());
 		
 		//add EventListeners
@@ -78,6 +65,10 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 				
 		//Make sure bits will be calculated for the first time
 		pFilter.childChanged();
+
+		// Recovery initial values if any
+        tfMinNeighbors.setText(new Integer(pFilter.getMinNeighbors()).toString());        	
+        tfDistance.setText(new Integer(pFilter.getDistance()).toString());
     }
     
     public void addParentPanelListener() {
@@ -106,8 +97,12 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel(tmpVect);
 		
 		cmbPassFilter.setModel(theModel);
-
+        if (theFilter.getPassFilter() != null) {
+        	cmbPassFilter.setSelectedIndex(0);			
+			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
+		}
 	}
+
 	
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
@@ -126,7 +121,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 				theFilter.setDistance(_distance);				
 			}
 		}
-		System.out.println(theFilter.toString());
+		System.out.println(theFilter.getName());
 		
 	}
 	
@@ -138,7 +133,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		if (source instanceof JComboBox) {
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
 			
-			System.out.println("theFilter = "+ theFilter.toString());
+			System.out.println("theFilter = "+ theFilter.getName());
 		}
 	}
 	
