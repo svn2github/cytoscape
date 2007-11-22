@@ -128,12 +128,12 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getSource();
 		
-		System.out.println("Entering TopoFilterPanel.itemStateChanged() ...");
+		//System.out.println("Entering TopoFilterPanel.itemStateChanged() ...");
 		
 		if (source instanceof JComboBox) {
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
-			
-			System.out.println("theFilter = "+ theFilter.getName());
+			theFilter.childChanged();
+			//System.out.println("theFilter = "+ theFilter.getName());
 		}
 	}
 	
