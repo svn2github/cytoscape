@@ -55,16 +55,19 @@ public class FilterIO {
 					continue;
 				}
 
-				if (oneLine.trim().startsWith("<Composite>")) {
+				if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")) {
 					Vector<String> filterStrVect = new Vector<String>();
+					filterStrVect.add(oneLine);
 					while ((oneLine = in.readLine()) != null) {
-						if (oneLine.trim().startsWith("</Composite>")) {
+						if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")) {
+							filterStrVect.add(oneLine);
 							break;
 						}
 						filterStrVect.add(oneLine);
 					} // inner while loop
 					
-					totalCount++;	
+					totalCount++;
+					
 					CompositeFilter aFilter = getFilterFromStrVect(filterStrVect); 
 					if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
 						FilterPlugin.getAllFilterVect().add(aFilter);
@@ -141,6 +144,14 @@ public class FilterIO {
 	
 	private CompositeFilter getFilterFromStrVect(Vector<String> pFilterStrVect){
 		
+		System.out.println("FilterIO.getFilterFromStrVect() ...\n");
+		System.out.println("pFilterStrVect = \n"+ pFilterStrVect.toString()+"\n");
+		boolean isTopologyFilter = false;
+		
+		if (((String)pFilterStrVect.elementAt(0)).startsWith("<TopologyFilter>")) {
+			isTopologyFilter = true;
+		}
+		
 		Vector<String> advSettingStrVect = new Vector<String>();
 		Vector<String> filterStrVect = new Vector<String>();
 
@@ -160,11 +171,19 @@ public class FilterIO {
 		}
 		advSettingStrVect.addAll(pFilterStrVect.subList(startIndex+1, endIndex));
 
-		filterStrVect.addAll(pFilterStrVect.subList(0, startIndex));
+		filterStrVect.addAll(pFilterStrVect.subList(1, startIndex));
 		filterStrVect.addAll(pFilterStrVect.subList(endIndex+1, pFilterStrVect.size()));
 				
 		CompositeFilter retFilter = new CompositeFilter();
 		retFilter.setAdvancedSetting(getAdvancedSettingFromStrVect(advSettingStrVect));
+		
+		if (isTopologyFilter) {
+			retFilter = new TopologyFilter();
+			retFilter.setAdvancedSetting(getAdvancedSettingFromStrVect(advSettingStrVect));
+			getTopologyFilterFromStrVect((TopologyFilter)retFilter, filterStrVect);
+			return retFilter;
+		}
+		
 		
 		for (int i=0; i<filterStrVect.size(); i++ ) {
 			line = filterStrVect.elementAt(i) ;
@@ -267,11 +286,61 @@ public class FilterIO {
 	}
 	
 	
+	private void getTopologyFilterFromStrVect(TopologyFilter pFilter, Vector<String> pFilterStrVect){
+		System.out.println("\nFilterIO.getTopologyFilterFromStrVect() ...\n");
+
+		String line = null;
+		for (int i=0; i<pFilterStrVect.size(); i++ ) {
+			line = pFilterStrVect.elementAt(i) ;
+
+			if (line.startsWith("name=")) {
+				String name =line.substring(5).trim();
+				pFilter.setName(name);
+			}
+			if (line.startsWith("Negation=true")) {
+				pFilter.setNegation(true);
+			}
+			if (line.startsWith("Negation=false")) {
+				pFilter.setNegation(false);
+			}
+			
+			if (line.startsWith("minNeighbors=")) {
+				String minNeighbors = line.substring(13);
+				int minN = new Integer(minNeighbors).intValue();
+				pFilter.setMinNeighbors(minN);
+			}
+			if (line.startsWith("withinDistance=")) {
+				String withinDistance = line.substring(15);
+				int distance = new Integer(withinDistance).intValue();
+				pFilter.setDistance(distance);
+			}
+			if (line.startsWith("passFilter=")) {
+				String name = line.substring(11).trim();
+				// get the reference CompositeFilter
+				CompositeFilter cmpFilter = null;
+				
+				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
+					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
+						cmpFilter = FilterPlugin.getAllFilterVect().elementAt(j);
+						break;
+					}
+				}
+				if (cmpFilter !=null) {
+					pFilter.setPassFilter(cmpFilter);					
+				}
+			}			
+		}	
+		System.out.println("\n\nLeaving FilterIO.getTopologyFilterFromStrVect() ...\n");
+		System.out.println("\nRecovered topo filter is :" + pFilter.toString()+ "\n\n");
+
+	}
+	
+	
 	public void saveGlobalPropFile(File pPropFile) {
 		
 		// Because one filter may depend on the other, CompositeFilters must 
 		// be sorted in the order of depthLevel before save
-		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());
+		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());		
 		Object[] globalFilters = getFiltersByScope(sortedFilters, "global");
 		
 		if (globalFilters == null || globalFilters.length == 0) {
@@ -404,10 +473,31 @@ public class FilterIO {
 		if (pAllFilterVect == null || pAllFilterVect.size() == 0) {
 			return null;
 		}
+ 
+		//Seperate TopologyFilter from other CompositeFilter
+		Vector<TopologyFilter> topoFilterVect = new Vector<TopologyFilter>();
+		Vector<CompositeFilter> otherFilterVect = new Vector<CompositeFilter>();
+		for (int i=0; i<pAllFilterVect.size(); i++ ) {
+			if (pAllFilterVect.elementAt(i) instanceof TopologyFilter) {
+				topoFilterVect.add((TopologyFilter)pAllFilterVect.elementAt(i));
+			}
+			else {
+				otherFilterVect.add((CompositeFilter)pAllFilterVect.elementAt(i));
+			}
+		}
+				
+		//TopologyFilters depend on other compositeFilter, they should follow other compositeFilter
+		Object[] sortedFilters = otherFilterVect.toArray();
+		Arrays.sort(sortedFilters, (new CompositeFilterCmp<CompositeFilter>()));		
 		
-		Object[] sortedFilters = pAllFilterVect.toArray();
-		Arrays.sort(sortedFilters, (new CompositeFilterCmp<CompositeFilter>()));
-		return sortedFilters;
+		Vector<CompositeFilter> sortedFilterVect = new Vector<CompositeFilter>();
+		for (int i=0; i<sortedFilters.length; i++) {
+			sortedFilterVect.add((CompositeFilter)sortedFilters[i]);
+		}
+		
+		sortedFilterVect.addAll(topoFilterVect);
+		
+		return sortedFilterVect.toArray();
 	}
 	
 	class CompositeFilterCmp<T> implements Comparator {
