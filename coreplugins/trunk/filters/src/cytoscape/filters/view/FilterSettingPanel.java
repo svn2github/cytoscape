@@ -731,6 +731,7 @@ public class FilterSettingPanel extends JPanel {
 		chkGlobal.setSelected(theFilter.getAdvancedSetting().isGlobalChecked());
 		chkNode.setSelected(theFilter.getAdvancedSetting().isNodeChecked());
 		chkEdge.setSelected(theFilter.getAdvancedSetting().isEdgeChecked());
+		chkNegation.setSelected(theFilter.getNegation());
 		
 		if (theFilter.getAdvancedSetting().getRelation() == Relation.AND) {
 			rbtAND.setSelected(true);
