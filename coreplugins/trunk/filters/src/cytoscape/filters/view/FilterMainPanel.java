@@ -594,6 +594,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				replaceFilterSettingPanel(selectedFilter);
 				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter) {
 					// do not apply TopologyFilter automatically
+					if (Cytoscape.getCurrentNetwork() != null) {
+						Cytoscape.getCurrentNetwork().unselectAllNodes();						
+					}
 					return;
 				}
 				FilterUtil.doSelection(selectedFilter);
@@ -694,6 +697,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				boolean isTopoFilter = false;
 				if (_menuItem == newTopologyFilterMenuItem) {
 					isTopoFilter = true;
+					if (Cytoscape.getCurrentNetwork() != null) {
+						Cytoscape.getCurrentNetwork().unselectAllNodes();						
+					}
 				}
 
 				String newFilterName = "";
