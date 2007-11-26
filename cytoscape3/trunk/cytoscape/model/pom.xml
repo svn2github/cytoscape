@@ -16,20 +16,9 @@
       <scope>test</scope>
     </dependency>
 
-<!-- These should actually be checked out an built from the svn repository -->
-<!--
-	  <dependency>
-	    <groupId>giny</groupId>
-      <artifactId>giny</artifactId>
-      <version> ?? </version>
-	  </dependency>
-
-	  <dependency>
-	    <groupId>fing</groupId>
-      <artifactId>fing</artifactId>
-      <version> ?? </version>
-	  </dependency>
--->
-
   </dependencies>
+
+
+	
+
 </project>
