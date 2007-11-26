@@ -7,6 +7,39 @@
   <version>1.0-SNAPSHOT</version>
   <name>Cytoscape App</name>
   <url>http://maven.apache.org</url>
+
+	<organization>
+    <name>Cytoscape</name>
+    <url>http://cytoscape.org</url>
+  </organization>
+
+	<licenses>
+	  <license>
+	    <name>GNU Lesser General Public License</name>
+	    <url>http://www.gnu.org/licenses/lgpl.html</url>
+	    <distribution>repo</distribution>
+	    <comments>LGPL</comments>
+	  </license>
+	</licenses>
+
+	<issueManagement>
+    <system>Mantis</system>
+    <url>http://cbio.mskcc.org/cytoscape/bugs/main_page.php</url>
+	</issueManagement>
+
+  <!-- not sure how this part works yet, can you use it to get code checked out?? -->  
+  <scm>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/cytoscape3/trunk</connection>
+    <developerConnection>scm:svn:http://chianti.ucsd.edu/svn/cytoscape3/trunk</developerConnection>
+    <tag>HEAD</tag>
+    <url>http://chianti.ucsd.edu/svn/cytoscape3/trunk</url>
+  </scm>
+  
+  <!-- requires maven 2.0.4 ? -->
+  <prerequisites>
+    <maven>2.0.4</maven>
+  </prerequisites>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
