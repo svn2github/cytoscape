@@ -18,7 +18,7 @@ $news_option = "atom";
 #  If set to false, we assume a local test server set-up
 
 #################################################
-$in_production = false;
+$in_production = true;
 
 #################################################
 #  Base URL(s)
