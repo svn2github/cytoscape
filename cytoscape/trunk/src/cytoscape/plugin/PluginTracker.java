@@ -462,7 +462,8 @@ public class PluginTracker {
 		
 		Info.setName(e.getChildTextTrim(nameTag));
 		Info.setDescription(e.getChildTextTrim(descTag));
-		Info.setCytoscapeVersion(e.getChildTextTrim(cytoVersTag));
+		Info.addCytoscapeVersion(e.getChildTextTrim(cytoVersTag));
+		//Info.setCytoscapeVersion(e.getChildTextTrim(cytoVersTag));
 		Info.setCategory(e.getChildTextTrim(categoryTag));
 		Info.setObjectUrl(e.getChildTextTrim(urlTag));
 		Info.setDownloadableURL(e.getChildTextTrim(downloadUrlTag));

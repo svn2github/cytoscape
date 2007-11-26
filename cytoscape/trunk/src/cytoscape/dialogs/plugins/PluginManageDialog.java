@@ -48,6 +48,7 @@ import cytoscape.task.util.TaskManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 
 import java.util.List;
 
@@ -89,6 +90,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	private String baseSiteLabel = "Plugins available for download from: ";
 
+	public PluginManageDialog() {
+		this.setTitle("Manage Plugins");
+		initComponents();
+		initTree();
+	}
+
 	public PluginManageDialog(javax.swing.JDialog owner) {
 		super(owner, "Manage Plugins");
 		setLocationRelativeTo(owner);
@@ -120,24 +127,35 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		if (Node.isLeaf()) {
 			// display any object selected
 			infoTextPane.setContentType("text/html");
-			infoTextPane.setText(((DownloadableInfo) Node.getObject()).htmlOutput());
+			infoTextPane.setText(((DownloadableInfo) Node.getObject())
+					.htmlOutput());
 			infoTextPane.setCaretPosition(0);
 
 			if (Node.isNodeAncestor(installedNode)) {
-				deleteButton.setEnabled(true);
-				installButton.setEnabled(false);
+				installDeleteButton.setText("Delete");
+				if (PluginManager.usingWebstartManager()) {
+					installDeleteButton.setEnabled(false);
+					setMessage("Delete is unavailable when using Web Start");
+				} else {
+					installDeleteButton.setEnabled(true);
+				}
+//				deleteButton.setEnabled(true);
+//				installButton.setEnabled(false);
 			} else if (Node.isNodeAncestor(availableNode)) {
-				deleteButton.setEnabled(false);
-				installButton.setEnabled(true);
+				installDeleteButton.setText("Install");
+				installDeleteButton.setEnabled(true);
+//				deleteButton.setEnabled(false);
+//				installButton.setEnabled(true);
 			}
 		} else {
-			deleteButton.setEnabled(false);
-			installButton.setEnabled(false);
+			installDeleteButton.setEnabled(false);
+//			deleteButton.setEnabled(false);
+//			installButton.setEnabled(false);
 		}
-		if (PluginManager.usingWebstartManager()) {
-			deleteButton.setEnabled(false);
-			setMessage("Delete is unavailable when using Web Start");
-		}
+//		if (PluginManager.usingWebstartManager()) {
+//			deleteButton.setEnabled(false);
+//			setMessage("Delete is unavailable when using Web Start");
+//		}
 
 	}
 
@@ -170,9 +188,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		for (TreeNode child : AvailableNodes) {
 			treeModel.removeNodeFromParent(child);
 		}
-		// availableNode = new
-		// TreeNode(PluginInstallStatus.AVAILABLE.toString(), true);
-		// rootTreeNode.addChild(availableNode);
 	}
 
 	/**
@@ -182,13 +197,14 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 * @param CategoryName
 	 *            String category for this list of plugins
 	 * @param Plugins
-	 *            List of DownloadableInfo objects to be shown in the given category
+	 *            List of DownloadableInfo objects to be shown in the given
+	 *            category
 	 * @param Status
 	 *            PluginInstallStatus (currently installed or available for
 	 *            install)
 	 */
-	public void addCategory(String CategoryName, List<DownloadableInfo> Plugins,
-			PluginInstallStatus Status) {
+	public void addCategory(String CategoryName,
+			List<DownloadableInfo> Plugins, PluginInstallStatus Status) {
 		switch (Status) {
 		case INSTALLED:
 			addCategory(CategoryName, Plugins, installedNode);
@@ -201,21 +217,37 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			}
 			break;
 		}
+		
+		 javax.swing.ToolTipManager.sharedInstance().registerComponent(pluginTree);
+		 javax.swing.ImageIcon warningIcon = createImageIcon("/cytoscape/images/misc/alert-red2.gif", "Warning");
+		 javax.swing.ImageIcon okIcon = createImageIcon("/cytoscape/images/misc/check-mark.gif", "Ok");
+		 if (warningIcon != null) {
+			treeRenderer = new TreeCellRenderer(warningIcon, okIcon);
+	        pluginTree.setCellRenderer(treeRenderer);
+	    }
 	}
 
 	// add category to the set of plugins under given node
-	private void addCategory(String CategoryName, List<DownloadableInfo> Plugins,
-			TreeNode node) {
+	private void addCategory(String CategoryName,
+			List<DownloadableInfo> Plugins, TreeNode node) {
 		TreeNode Category = new TreeNode(CategoryName, true);
-		/* if the tree is to update the model "add" method must be used, not
-		   sure if the TreeNode could be changed to handle this properly? */
-		//node.addChild(Category); 
-		treeModel.addNodeToParent(node, Category);
 
 		for (DownloadableInfo CurrentPlugin : Plugins) {
-			TreeNode PluginNode = new TreeNode(CurrentPlugin);	
-			treeModel.addNodeToParent(Category, PluginNode);
+			TreeNode PluginNode = new TreeNode(CurrentPlugin);
+
+			if (node.equals(availableNode) && !CurrentPlugin.isCytoscapeVersionCurrent()) {
+				java.util.List<TreeNode> hiddenCat = hiddenNodes.get(Category);
+				if (hiddenCat == null)
+					hiddenCat = new java.util.ArrayList<TreeNode>();
+				
+				hiddenCat.add(PluginNode);
+				hiddenNodes.put(Category, hiddenCat);
+			} else {
+				treeModel.addNodeToParent(Category, PluginNode);
+			}
 		}
+		if (Category.getChildCount() > 0)
+			treeModel.addNodeToParent(node, Category);
 	}
 
 	// change site url
@@ -224,6 +256,32 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		dialog.setVisible(true);
 	}
 
+    private void versionCheckItemStateChanged(java.awt.event.ItemEvent evt) {                                              
+
+		if (evt.getStateChange() == ItemEvent.SELECTED) {
+			for (TreeNode Category: hiddenNodes.keySet()) {
+				for (TreeNode Plugin: hiddenNodes.get(Category)) {
+					treeModel.addNodeToParent(Category, Plugin);
+				}
+				treeModel.addNodeToParent(availableNode, Category);				
+			}
+		} else if (evt.getStateChange() == ItemEvent.DESELECTED) {
+			for (TreeNode Category: hiddenNodes.keySet()) {
+				treeModel.removeNodesFromParent(hiddenNodes.get(Category));
+				treeModel.removeNodeFromParent(Category);
+			}
+			
+		}
+    }                                             
+    
+    private void installDeleteButtonActionPerformed(ActionEvent evt) {
+    	if (installDeleteButton.getText().equals("Delete")) {
+    		deleteButtonActionPerformed(evt);
+    	} else if (installDeleteButton.getText().equals("Install")) {
+    		installButtonActionPerformed(evt);
+    	}
+    }
+	
 	// delete event
 	private void deleteButtonActionPerformed(ActionEvent evt) {
 		TreeNode Node = (TreeNode) pluginTree.getLastSelectedPathComponent();
@@ -278,17 +336,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				break;
 			case THEME:
 				ThemeInfo themeInfo = (ThemeInfo) infoObj;
-				for (PluginInfo pInfo: themeInfo.getPlugins()) {
+				for (PluginInfo pInfo : themeInfo.getPlugins()) {
 					if (pInfo.getLicenseText() != null) {
 						License.addPlugin(pInfo);
 						licenseRequired = true;
 					}
 				}
 				break;
-			case FILE: // currently nothing, there are no FileInfo objects right now 
+			case FILE: // currently nothing, there are no FileInfo objects
+				// right now
 				break;
 			}
-			
+
 			if (licenseRequired) {
 				License.addListenerToOk(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -303,8 +362,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	
-	
 	private void updateCurrent(DownloadableInfo info) {
 		boolean categoryMatched = false;
 
@@ -347,9 +404,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		treeModel.addNodeToParent(rootTreeNode, availableNode);
 
 		pluginTree.setModel(treeModel);
+		hiddenNodes = new java.util.HashMap<TreeNode, java.util.List<TreeNode>>();
 	}
 
-	// initialize the dialog box & components
+
+    
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -363,11 +423,13 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         treeScrollPane = new javax.swing.JScrollPane();
         pluginTree = new javax.swing.JTree();
         availablePluginsLabel = new javax.swing.JLabel();
-        changeSiteButton = new javax.swing.JButton();
-        installButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
         msgLabel = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
+        installDeleteButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
+        sitePanel = new javax.swing.JPanel();
+        changeSiteButton = new javax.swing.JButton();
+        versionCheck = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         jSplitPane1.setDividerLocation(250);
@@ -383,24 +445,14 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         availablePluginsLabel.setText("Plugins available for download from:");
         availablePluginsLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        changeSiteButton.setText("Change Download Site");
-        changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeSiteButtonActionPerformed(evt);
-            }
-        });
+        msgLabel.setForeground(new java.awt.Color(204, 0, 51));
+        msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        installButton.setText("Install");
-        installButton.addActionListener(new java.awt.event.ActionListener() {
+        installDeleteButton.setText("Install");
+        installDeleteButton.setEnabled(false);
+        installDeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                installButtonActionPerformed(evt);
-            }
-        });
-
-        deleteButton.setText("Delete");
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
+                installDeleteButtonActionPerformed(evt);
             }
         });
 
@@ -411,48 +463,108 @@ public class PluginManageDialog extends javax.swing.JDialog implements
             }
         });
 
-        msgLabel.setForeground(new java.awt.Color(204, 0, 51));
-        msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        org.jdesktop.layout.GroupLayout buttonPanelLayout = new org.jdesktop.layout.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(installDeleteButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(closeButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(installDeleteButton)
+                    .add(closeButton))
+                .addContainerGap(8, Short.MAX_VALUE))
+        );
+
+        changeSiteButton.setText("Change Download Site");
+        changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeSiteButtonActionPerformed(evt);
+            }
+        });
+
+        versionCheck.setText("Show Outdated Plugins");
+        versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        versionCheck.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                versionCheckItemStateChanged(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout sitePanelLayout = new org.jdesktop.layout.GroupLayout(sitePanel);
+        sitePanel.setLayout(sitePanelLayout);
+        sitePanelLayout.setHorizontalGroup(
+            sitePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(sitePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, changeSiteButton)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, versionCheck))
+        );
+        sitePanelLayout.setVerticalGroup(
+            sitePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(sitePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(changeSiteButton)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(versionCheck, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(43, 43, 43)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, msgLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, availablePluginsLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(changeSiteButton)
-                        .add(18, 18, 18)
-                        .add(installButton)
-                        .add(18, 18, 18)
-                        .add(deleteButton)
-                        .add(22, 22, 22)
-                        .add(closeButton))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE))
-                .add(41, 41, 41))
+                        .add(194, 194, 194)
+                        .add(msgLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                        .add(52, 52, 52)
+                        .add(buttonPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(availablePluginsLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                        .add(191, 191, 191)
+                        .add(sitePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(74, 74, 74))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(availablePluginsLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(16, 16, 16)
+                        .add(availablePluginsLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                        .add(41, 41, 41))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(sitePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(msgLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(changeSiteButton)
-                    .add(installButton)
-                    .add(deleteButton)
-                    .add(closeButton))
-                .addContainerGap())
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(msgLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                        .add(35, 35, 35))
+                    .add(layout.createSequentialGroup()
+                        .add(buttonPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         pack();
     }// </editor-fold>                        
+	
+	
+	
 	/*
 	 * --- create the tasks and task monitors to show the user what's going on
 	 * during download/install ---
@@ -476,8 +588,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			updateCurrent(info);
 			cleanTree(node);
 		} else {
-			// somehow disable the node??
-			
+			// TODO somehow disable the node??
 		}
 	}
 
@@ -500,6 +611,54 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
+	public static void main(String[] args) {
+		PluginManageDialog pd = new PluginManageDialog();
+		List<DownloadableInfo> Plugins = new java.util.ArrayList<DownloadableInfo>();
+		
+		PluginInfo infoC = new PluginInfo("1", "A Plugin");
+		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		Plugins.add(infoC);
+		
+		infoC = new PluginInfo("2", "B Plugin");
+		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		Plugins.add(infoC);
+		
+		infoC = new PluginInfo("3", "C");
+		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		Plugins.add(infoC);
+		
+		pd.addCategory(cytoscape.plugin.Category.NONE.toString(), Plugins,
+				PluginInstallStatus.AVAILABLE);
+
+		List<DownloadableInfo> Outdated = new java.util.ArrayList<DownloadableInfo>();
+		
+		PluginInfo infoOD = new PluginInfo("11", "CyGoose");
+		infoOD.addCytoscapeVersion("2.3");
+		Outdated.add(infoOD);
+		
+		infoOD = new PluginInfo("12", "Y");
+		infoOD.addCytoscapeVersion("2.3");
+		Outdated.add(infoOD);
+
+		pd.addCategory("Outdated", Outdated, PluginInstallStatus.AVAILABLE);
+
+		pd.setVisible(true);
+	}
+
+	
+	/** Returns an ImageIcon, or null if the path was invalid. */
+	private javax.swing.ImageIcon createImageIcon(String path,
+			String description) {
+		java.net.URL imgURL = getClass().getResource(path);
+		if (imgURL != null) {
+			return new javax.swing.ImageIcon(imgURL, description);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
+	}
+
+	
 	private class InstallTask implements cytoscape.task.Task {
 		private cytoscape.task.TaskMonitor taskMonitor;
 
@@ -507,7 +666,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		private TreeNode node;
 
-		public InstallTask(DownloadableInfo Info, TreeNode Node) throws java.lang.IllegalArgumentException {
+		public InstallTask(DownloadableInfo Info, TreeNode Node)
+				throws java.lang.IllegalArgumentException {
 			String ErrorMsg = null;
 			if (Info == null) {
 				ErrorMsg = "DownloadableInfo object cannot be null\n";
@@ -536,34 +696,38 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 				taskMonitor.setStatus(infoObj.getName() + " v"
 						+ infoObj.getObjectVersion() + " loading...");
-			
+
 				Mgr.install(infoObj);
 				Mgr.loadPlugin(infoObj);
 			} catch (java.io.IOException ioe) {
-				taskMonitor.setException(ioe, "Failed to download "
+				taskMonitor
+						.setException(ioe, "Failed to download "
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl());
 				infoObj = null;
 				ioe.printStackTrace();
 			} catch (cytoscape.plugin.ManagerException me) {
-				PluginManageDialog.this.setMessage("Failed to install " + infoObj.toString());
+				PluginManageDialog.this.setMessage("Failed to install "
+						+ infoObj.toString());
 				taskMonitor.setException(me, me.getMessage());
 				infoObj = null;
 				me.printStackTrace();
 			} catch (cytoscape.plugin.PluginException pe) {
-				PluginManageDialog.this.setMessage("Failed to install " + infoObj.toString());
+				PluginManageDialog.this.setMessage("Failed to install "
+						+ infoObj.toString());
 				infoObj = null;
 				taskMonitor.setException(pe, pe.getMessage());
 				pe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
 				taskMonitor.setException(cne, cne.getMessage());
-				PluginManageDialog.this.setMessage("Failed to install " + infoObj.toString());
+				PluginManageDialog.this.setMessage("Failed to install "
+						+ infoObj.toString());
 				infoObj = null;
 				cne.printStackTrace();
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
-			
+
 		}
 
 		public DownloadableInfo getDownloadedPlugin() {
@@ -582,8 +746,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		public String getTitle() {
 			return "Installing Cytoscape Plugin '" + infoObj.getName() + "'";
 		}
-		
+
 	}
+
 
 	// Variables declaration - do not modify
 	private javax.swing.JLabel availablePluginsLabel;
@@ -592,9 +757,15 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	private javax.swing.JButton closeButton;
 
-	private javax.swing.JButton deleteButton;
+	private javax.swing.JButton installDeleteButton;
 
-	private javax.swing.JButton installButton;
+    private javax.swing.JPanel buttonPanel;
+
+    private javax.swing.JPanel sitePanel;
+
+//	private javax.swing.JButton deleteButton;
+//	
+//	private javax.swing.JButton installButton;
 
 	private javax.swing.JScrollPane infoScrollPane;
 
@@ -608,12 +779,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	private javax.swing.JScrollPane treeScrollPane;
 
-	// End of variables declaration
+	private javax.swing.JCheckBox versionCheck;
+
 	private TreeNode rootTreeNode;
 
 	private TreeNode installedNode;
 
 	private TreeNode availableNode;
-	
+
 	private ManagerModel treeModel;
+
+	private TreeCellRenderer treeRenderer;
+	
+	private java.util.HashMap<TreeNode, java.util.List<TreeNode>> hiddenNodes;
 }

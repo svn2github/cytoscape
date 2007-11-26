@@ -49,6 +49,8 @@ public class TreeNode {
 	private TreeNode parent;
 
 	private boolean childAllowed;
+	
+	private boolean visible;
 
 	/**
 	 * Creates a TreeNode with given title, no parent and allows children.
@@ -99,6 +101,14 @@ public class TreeNode {
 		childAllowed = childrenOk;
 	}
 
+	public void setVisible(boolean vis) {
+		visible = vis;
+	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+	
 	/**
 	 * Returns true if this node has no children or does not allow them.
 	 * 
@@ -187,7 +197,8 @@ public class TreeNode {
 	 */
 	public void addChildren(TreeNode[] children) {
 		for (TreeNode c : children) {
-			addChild(c);
+			if (c.isVisible())
+				addChild(c);
 		}
 	}
 

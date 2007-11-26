@@ -106,6 +106,12 @@ public class PluginInfo extends DownloadableInfo {
 		init();
 	}
 
+	public PluginInfo(String UniqueID, String Name) {
+		super(UniqueID);
+		init();
+		this.setName(Name);
+	}
+	
 	/**
 	 * See {@link DownloadableInfo#DownloadableInfo(String)}
 	 * 

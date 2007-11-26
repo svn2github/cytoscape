@@ -165,7 +165,7 @@ public class PluginManagerTest extends TestCase {
 
 		Url = testUrl;
 		assertNotNull(mgr.inquire(Url));
-		assertEquals(mgr.inquire(Url).size(), 9);
+		assertEquals(mgr.inquire(Url).size(), 10);
 	}
 
 	/**
@@ -684,7 +684,8 @@ public class PluginManagerTest extends TestCase {
 			Info.setName("myPlugin");
 			Info.setDescription("None");
 			Info.setObjectVersion(1.23);
-			Info.setCytoscapeVersion("2.5");
+			Info.addCytoscapeVersion("2.5");
+			//Info.setCytoscapeVersion("2.5");
 			Info.setCategory("Test");
 			return Info;
 		}

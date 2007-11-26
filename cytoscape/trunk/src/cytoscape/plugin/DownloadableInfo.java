@@ -38,6 +38,8 @@ package cytoscape.plugin;
 import java.net.URL;
 
 import cytoscape.util.URLUtil;
+import java.util.Set;
+import java.util.HashSet;
 
 public abstract class DownloadableInfo {
 	protected String versionMatch = "^\\d+\\.\\d+";
@@ -66,18 +68,23 @@ public abstract class DownloadableInfo {
 
 	private boolean licenseRequired = false;
 
+	private Set<String> compatibleCyVersions; 
+	
 	private DownloadableInfo parentObj = null;
 
 	public DownloadableInfo() {
+		compatibleCyVersions = new HashSet<String>();
 	}
 
 	public DownloadableInfo(String ID) {
 		this.uniqueID = ID;
+		compatibleCyVersions = new HashSet<String>();
 	}
 
 	public DownloadableInfo(String ID, DownloadableInfo ParentObj) {
 		this.uniqueID = ID;
 		this.parentObj = ParentObj;
+		compatibleCyVersions = new HashSet<String>();
 	}
 
 	/* --- SET --- */
@@ -162,16 +169,36 @@ public abstract class DownloadableInfo {
 	 * @param cyVersion
 	 *            Sets the Cytoscape version this object is compatible with.
 	 */
-	public void setCytoscapeVersion(String cyVersion)
-			throws NumberFormatException {
+//	public void setCytoscapeVersion(String cyVersion)
+//			throws NumberFormatException {
+//		if (versionOk(cyVersion, false)) {
+//			this.cytoscapeVersion = cyVersion;
+//		} else {
+//			throw new NumberFormatException(
+//					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
+//		}
+//	}
+
+	
+	/**
+	 * Contains a list of all the Cytoscape versions this object
+	 * is compatible with.
+	 * 
+	 * @param cyVersion
+	 * @throws NumberFormatException
+	 */
+	public void addCytoscapeVersion(String cyVersion) throws NumberFormatException {	
 		if (versionOk(cyVersion, false)) {
-			this.cytoscapeVersion = cyVersion;
+			compatibleCyVersions.add(cyVersion);
 		} else {
 			throw new NumberFormatException(
 					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
 		}
+		
+		
+		
+		
 	}
-
 	/**
 	 * @param version
 	 *            Sets the version of this object.
@@ -281,9 +308,32 @@ public abstract class DownloadableInfo {
 	 * @return Compatible Cytocape version of this object.
 	 */
 	public String getCytoscapeVersion() {
-		return this.cytoscapeVersion;
+		String CurrentVersion = null;
+		for (String v: this.compatibleCyVersions) {
+			if (CurrentVersion != null)
+				CurrentVersion = compareCyVersions(v, CurrentVersion);
+			else 
+				CurrentVersion = v;
+		}
+		return CurrentVersion;
+		//return this.cytoscapeVersion;
 	}
 
+	/**
+	 * @return All compatible Cytoscape versions.
+	 */
+	public java.util.List<String> getCytoscapeVersions() {
+		return new java.util.ArrayList<String>(this.compatibleCyVersions);
+	}
+	
+//	public boolean isCytoscapeVersionCompatible(String cyVersion) {
+//		return compatibleCyVersions.contains(cyVersion);
+//	}
+	
+	public boolean containsVersion(String cyVersion) {
+		return compatibleCyVersions.contains(cyVersion);
+	}
+	
 	/**
 	 * @return Release date for this object.
 	 */
@@ -395,7 +445,14 @@ public abstract class DownloadableInfo {
 		Html += "<b>" + getName() + "</b><p>";
 		Html += "<b>Version:</b>&nbsp;" + getObjectVersion() + "<p>";
 		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
-		Html += "<b>Description:</b><br>" + getDescription() + "<p>";
+		Html += "<b>Description:</b><br>" + getDescription();
+		
+		if (!isCytoscapeVersionCurrent()) {
+			Html += "<br><b>Verified with the following Cytoscape versions:</b> " + getCytoscapeVersions().toString() + "<br>";
+			Html += "<font color='red'><i>" + toString() + " is not verfied to work in the current version (" 
+				+ cytoscape.CytoscapeVersion.version + ") of Cytoscape.</i></font>";
+		}
+		Html += "<p>";
 
 		if (getReleaseDate() != null && getReleaseDate().length() > 0) {
 			Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
@@ -404,7 +461,39 @@ public abstract class DownloadableInfo {
 		return Html;
 	}
 
-	
+	/**
+	 * Return the most recent of the two versions.
+	 * @param arg0
+	 * @param arg1
+	 * @return
+	 */
+	String compareCyVersions(String arg0, String arg1) {
+		String MostRecentVersion = null;
+		int max = 3;
+		
+		String[] SplitVersionA = arg0.split(versionSplit);
+		String[] SplitVersionB = arg1.split(versionSplit);
+		
+		for (int i=0; i<max; i++) {
+			int a = 0;
+			int b = 0;
+			
+			if (i == (max-1)) {
+				System.out.println("A length: " + SplitVersionA.length + " B length: " + SplitVersionB.length);
+				a = (SplitVersionA.length == max)? Integer.valueOf(SplitVersionA[i]) : 0;
+				b = (SplitVersionB.length == max)? Integer.valueOf(SplitVersionB[i]) : 0;
+			} else {
+				a = Integer.valueOf(SplitVersionA[i]);
+				b = Integer.valueOf(SplitVersionB[i]);
+			}
+		
+			if (a != b) {
+				MostRecentVersion = (a > b)? arg0: arg1;
+				break;
+			}
+		}
+		return MostRecentVersion;
+	}
 	
 	// this just checks the downloadable object version and the cytoscape
 	// version

@@ -54,6 +54,12 @@ public class ManagerModel implements TreeModel {
 		root = Root;
 	}
 
+	
+	public void removeNodesFromParent(java.util.List<TreeNode> children) {
+		for (TreeNode child: children) 
+			recursiveRemoveNodeFromParent(child);
+	}
+	
 	/**
 	 * Removes given node from it's parent.
 	 * 

@@ -317,7 +317,8 @@ public class PluginManager {
 		} finally {
 			if (PluginObj == null) { // still null, create a default one
 				PluginObj = new PluginInfo();
-				PluginObj.setCytoscapeVersion(cyVersion);
+				PluginObj.addCytoscapeVersion(cyVersion);
+				//PluginObj.setCytoscapeVersion(cyVersion);
 				PluginObj.setName(Plugin.getClass().getName());
 				PluginObj.setObjectVersion(0.1);
 			}
@@ -617,7 +618,7 @@ public class PluginManager {
 	 * @throws MalformedURLException
 	 */
 	public void loadPlugin(PluginInfo p) throws MalformedURLException,
-			IOException, PluginException {
+			IOException, PluginException, ClassNotFoundException {
 		List<URL> ToLoad = new ArrayList<URL>();
 		
 		for (String FileName : p.getFileList()) {
@@ -742,7 +743,7 @@ public class PluginManager {
 	 * that are CytoscapePlugins
 	 */
 	private void loadURLPlugins(List<URL> pluginUrls, boolean register)
-			throws IOException, PluginException {
+			throws IOException, PluginException, ClassNotFoundException {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
@@ -885,25 +886,22 @@ public class PluginManager {
 	 * @param name
 	 *            the name of the putative plugin class
 	 */
-	private Class getPluginClass(String name) {
-		Class c = null;
-
-		try {
-			c = classLoader.loadClass(name);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-
-			return null;
-		} catch (NoClassDefFoundError e) {
-			e.printStackTrace();
-
-			return null;
-		}
+	private Class getPluginClass(String name) throws ClassNotFoundException, NoClassDefFoundError {
+		Class c = classLoader.loadClass(name);
+//		try {
+//			c = classLoader.loadClass(name);
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//			return null;
+//		} catch (NoClassDefFoundError e) {
+//			e.printStackTrace();
+//
+//			return null;
+//		}
 
 		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;
 		else
-
 			return null;
 	}
 

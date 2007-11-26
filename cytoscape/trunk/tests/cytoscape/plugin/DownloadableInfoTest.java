@@ -124,10 +124,18 @@ public class DownloadableInfoTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#setCytoscapeVersion(java.lang.String)}.
 	 */
 	public void testCytoscapeVersion() {
-		di.setCytoscapeVersion("2.5");
+		cytoscape.CytoscapeVersion.version = "2.5";
+
+		di.addCytoscapeVersion("2.5");
+		di.addCytoscapeVersion("2.3");
+		assertTrue(di.containsVersion("2.5"));
+		assertTrue(di.containsVersion("2.3"));
+		
 		assertEquals(di.getCytoscapeVersion(), "2.5");
 		
-		di.setCytoscapeVersion("2.5.6");
+		cytoscape.CytoscapeVersion.version = "2.5.6";
+		di.addCytoscapeVersion("2.5.6");
+		assertTrue(di.containsVersion("2.5.6"));
 		assertEquals(di.getCytoscapeVersion(), "2.5.6");
 	}
 
@@ -182,10 +190,10 @@ public class DownloadableInfoTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#isCytoscapeVersionCurrent()}.
 	 */
 	public void testIsCytoscapeVersionCurrent() {
-		di.setCytoscapeVersion("2.1");
+		di.addCytoscapeVersion("2.1");
 		assertFalse(di.isCytoscapeVersionCurrent());
 		
-		di.setCytoscapeVersion(cytoscape.CytoscapeVersion.version);
+		di.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		assertTrue(di.isCytoscapeVersionCurrent());
 	}
 

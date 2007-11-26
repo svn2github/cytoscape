@@ -133,7 +133,7 @@ public class PluginFileReader {
 	}
 
 	/**
-	 * @deprecated Use getDownloadables() This gets the PluginInfo objects as
+	 * Use getDownloadables() This gets the PluginInfo objects as
 	 *             set up in the xml document.
 	 * 
 	 * @return The list of PluginInfo objects specified by the xml document.
@@ -200,7 +200,7 @@ public class PluginFileReader {
 			DownloadableType Type) {
 		DownloadableInfo Info = null;
 		String Id = E.getChildTextTrim(uniqueID);
-		switch (Type) {
+		switch (Type) { // TODO sort this type stuff out (no more switches)
 		case PLUGIN:
 			Info = new PluginInfo(Id);
 			Info.setObjectUrl(E.getChildTextTrim(urlTag));
@@ -231,13 +231,15 @@ public class PluginFileReader {
 				PluginXml.VERSION.getTag()).iterator();
 		while (versionI.hasNext()) {
 			Element Version = versionI.next();
-			Info.setCytoscapeVersion(Version.getTextTrim());
-
-			if (Info != null && Info.isCytoscapeVersionCurrent()) {
-				return Info;
-			}
+			//Info.setCytoscapeVersion(Version.getTextTrim());
+			Info.addCytoscapeVersion(Version.getTextTrim());
+			
+//			if (Info != null && Info.isCytoscapeVersionCurrent()) {
+//				return Info;
+//			}
 		}
-		return null;
+		return Info;
+//		return null;
 	}
 
 	/**
@@ -254,8 +256,7 @@ public class PluginFileReader {
 		if (Info != null) {
 
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
-			Info.setInstallLocation(CurrentPlugin
-					.getChildTextTrim(installLocTag));
+			Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
 
 			// file type
 			PluginInfo.FileType Type = getType(CurrentPlugin);

@@ -75,6 +75,10 @@ public class PluginManagerInquireTask implements Task {
 
 		try {
 			Results = PluginManager.getPluginManager().inquire(url);
+		} catch (org.jdom.JDOMException jde) {
+			actionObj.setExceptionThrown(jde);
+		} catch (java.io.IOException ioe) {
+			actionObj.setExceptionThrown(ioe);
 		} catch (Exception e) {
 
 			if (e.getClass().equals(java.lang.NullPointerException.class)) {

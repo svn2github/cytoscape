@@ -170,33 +170,34 @@ public class PluginProperties extends Properties {
 		
 		for (String v: AllCytoscapeVersions) {
 			v = v.trim();
-			if (LastVersion == null)
-				LastVersion = v;
-		
-			String [] CurrentVersions = v.split(".");
-			String [] LastVersions = LastVersion.split(".");
-			
-			for (int i = 0; i < 3; i++) {
-				
-				int cv = 0;
-				int lv = 0;
-				
-				if (CurrentVersions.length == 3)
-					cv = Integer.valueOf(CurrentVersions[i]).intValue();
-				if (LastVersions.length == 3)
-					lv = Integer.valueOf(LastVersions[i]).intValue();
-					
-				if (cv > lv) {
-					RecentCyVersion = v;
-				}
-			}
-
-			if (v.equals(new cytoscape.CytoscapeVersion().getMajorVersion())) {
-				pi.setCytoscapeVersion(v);
-				versionOk = true;
-				break;
-			}
-			LastVersion = v;
+			pi.addCytoscapeVersion(v);
+//			if (LastVersion == null)
+//				LastVersion = v;
+//		
+//			String [] CurrentVersions = v.split(".");
+//			String [] LastVersions = LastVersion.split(".");
+//			
+//			for (int i = 0; i < 3; i++) {
+//				
+//				int cv = 0;
+//				int lv = 0;
+//				
+//				if (CurrentVersions.length == 3)
+//					cv = Integer.valueOf(CurrentVersions[i]).intValue();
+//				if (LastVersions.length == 3)
+//					lv = Integer.valueOf(LastVersions[i]).intValue();
+//					
+//				if (cv > lv) {
+//					RecentCyVersion = v;
+//				}
+//			}
+//
+//			if (v.equals(new cytoscape.CytoscapeVersion().getMajorVersion())) {
+//				pi.setCytoscapeVersion(v);
+//				versionOk = true;
+//				break;
+//			}
+//			LastVersion = v;
 		}
 		/*
 		 * The only current usage of this method is in the PluginManager.register() method.  By
@@ -204,12 +205,15 @@ public class PluginProperties extends Properties {
 		 * we can't unload it.  Instead we'll add notes and change the category to make it clear
 		 * this may not be a good plugin.		
 		 */
-		if (!versionOk) {
-			pi.setCategory(Category.OUTDATED);
-			String DescMsg = "<p><font color='red'><b>Cytoscape Version Warning:</b><br><i>This plugin has not been verified to work with Cytoscape v" + 
-				new cytoscape.CytoscapeVersion().getFullVersion() + " .</i></font>";
-			pi.setDescription( pi.getDescription() + DescMsg );
-			pi.setCytoscapeVersion(RecentCyVersion);
+		if (!pi.isCytoscapeVersionCurrent()) {
+		
+		//if (!versionOk) {
+			//pi.setCategory(Category.OUTDATED);
+			// TODO add this as a default message in the downloadable object html
+//			String DescMsg = "<p><font color='red'><b>Cytoscape Version Warning:</b><br><i>This plugin has not been verified to work with Cytoscape v" + 
+//				new cytoscape.CytoscapeVersion().getFullVersion() + " .</i></font>";
+//			pi.setDescription( pi.getDescription() + DescMsg );
+			//pi.setCytoscapeVersion(RecentCyVersion);
 		}
 		
 		return pi;
