@@ -124,6 +124,15 @@ public class HyperLinkOut extends JMenu {
 		JMenuItem dbLink;
 		String fullName;
 
+		JMenuItem directLink = new JMenuItem("Open as URL");
+		directLink.setToolTipText(value);
+		directLink.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					OpenBrowser.openURL(value);
+				}
+			});
+		this.add(directLink);
+		
 		JMenu cat;
 
 		for (String category : structure.keySet()) {
