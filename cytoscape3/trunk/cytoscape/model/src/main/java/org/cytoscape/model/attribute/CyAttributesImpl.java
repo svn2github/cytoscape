@@ -37,7 +37,7 @@
 package org.cytoscape.model.attribute;
 
 // XXX Remove this dependency!
-import org.cytoscape.io.util.CountedIterator;
+import cytoscape.random.CountedIterator;
 
 import java.util.*;
 

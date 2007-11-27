@@ -54,7 +54,7 @@ import org.cytoscape.model.network.CyNode;
 // XXX Remove these dependencies!!
 import org.cytoscape.application.init.CytoscapeInit;
 import org.cytoscape.application.util.Cytoscape;
-import org.cytoscape.io.util.CountedIterator;
+import cytoscape.random.CountedIterator;
 import org.cytoscape.io.attribute.server.BioDataServer;
 
 

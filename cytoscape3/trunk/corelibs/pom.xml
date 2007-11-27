@@ -43,5 +43,6 @@
 	<module>graph.dynamic</module>
 	<module>graph.fixed</module>
 	<module>util.intr</module>
+	<module>random</module>
   </modules>
 </project>

@@ -39,7 +39,7 @@ package org.cytoscape.model.attribute;
 import org.cytoscape.model.attribute.event.MultiHashMapListener;
 
 // XXX Remove this dependency!
-import org.cytoscape.io.util.CountedIterator;
+import cytoscape.random.CountedIterator;
 
 
 /**

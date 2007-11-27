@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // XXX Remove this dependency!
-import org.cytoscape.io.util.CountedIterator;
+import cytoscape.random.CountedIterator;
 
 
 /**
