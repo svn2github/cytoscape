@@ -1,5 +1,5 @@
 /*
-  File: StringParser.java
+  File: ContinuousMappingPoint.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,39 +36,76 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 10980 $
+// $Date: 2007-07-17 10:16:16 -0700 (Tue, 17 Jul 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
+
+import org.cytoscape.application.widget.vizmap.mapping.BoundaryRangeValues;
 
 
-//----------------------------------------------------------------------------
 /**
- * Implements the ValueParser interface for String return values, by
- * simply returning the supplied argument.
+ * Encapsulates a ContinuousMapping Point with a single point value
+ * and associated BoundaryRangeValues.
+ *
  */
-public class StringParser
-    implements ValueParser {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Object parseStringValue(String value) {
-        return parseString(value);
-    }
+public class ContinuousMappingPoint implements Cloneable {
+	private double value;
+	private BoundaryRangeValues range;
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public String parseString(String value) {
-        return value;
-    }
+	/**
+	 * Constructor.
+	 * @param value double.
+	 * @param range BoundaryRangeValues object.
+	 */
+	public ContinuousMappingPoint(double value, BoundaryRangeValues range) {
+		this.value = value;
+		this.range = range;
+	}
+
+	/**
+	 * Gets Point Value.
+	 * @return double value.
+	 */
+	public double getValue() {
+		return value;
+	}
+
+	/**
+	 * Sets Point Value.
+	 * @param value double value.
+	 */
+	public void setValue(double value) {
+		this.value = value;
+	}
+
+	/**
+	 * Gets BoundaryRangeValues.
+	 * @return BoundaryRangeValues Object.
+	 */
+	public BoundaryRangeValues getRange() {
+		return range;
+	}
+
+	/**
+	 * Sets BoundaryRangeValues.
+	 * @param range BoundaryRangeValues Object.
+	 */
+	public void setRange(BoundaryRangeValues range) {
+		this.range = range;
+	}
+
+	/**
+	 * Clones the object. (Deep Copy)
+	 * @return Cloned Object.
+	 */
+	public Object clone() {
+		final BoundaryRangeValues newRange = new BoundaryRangeValues();
+		newRange.lesserValue = range.lesserValue;
+		newRange.equalValue = range.equalValue;
+		newRange.greaterValue = range.greaterValue;
+
+		return new ContinuousMappingPoint(value, newRange);
+	}
 }

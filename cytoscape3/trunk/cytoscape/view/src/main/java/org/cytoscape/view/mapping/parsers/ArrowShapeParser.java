@@ -1,4 +1,4 @@
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 import org.cytoscape.application.widget.vizmap.shape.ArrowShape;
 

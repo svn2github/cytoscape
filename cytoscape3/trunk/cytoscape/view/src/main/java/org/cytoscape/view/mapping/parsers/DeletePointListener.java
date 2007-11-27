@@ -1,5 +1,5 @@
 /*
- File: LineTypeParser.java
+ File: DeletePointListener.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,46 +36,70 @@
  */
 
 //----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 11413 $
+// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
-//----------------------------------------------------------------------------
-import org.cytoscape.application.widget.vizmap.shape.LineType;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import org.cytoscape.view.mapping.ContinuousMapping;
 
 
-//import cytoscape.util.Misc;
-//----------------------------------------------------------------------------
 /**
- * Parses a String into a yFiles LineType object.
+ * Listens for User Request to Delete Existing Point.
  */
-public class LineTypeParser
-    implements ValueParser {
+public class DeletePointListener
+    implements ActionListener {
+    @Deprecated
+    private ContinuousUI ui;
+    private ContinuousMapping cm;
+    private int index = -1; // Index Value in Point List.
+
     /**
-     * DOCUMENT ME!
+     * Deprecated.  Use DeletePointListener(ContinuousMapping cm, int i)
+     * instead.
      *
-     * @param value
-     *            DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * @param ui
+     *            ContinuousUI Object.
+     * @param cm
+     *            ContinuousMapping Object.
+     *            
+     * @deprecated Will be removed 5/2008
      */
-    public Object parseStringValue(String value) {
-        return parseLineType(value);
+    @Deprecated
+    public DeletePointListener(ContinuousUI ui, ContinuousMapping cm, int i) {
+        this.ui = ui;
+        this.cm = cm;
+        index = i;
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates a new DeletePointListener object.
      *
-     * @param value
-     *            DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * @param cm DOCUMENT ME!
+     * @param i DOCUMENT ME!
      */
-    public LineType parseLineType(String value) {
-        // return Misc.parseLineTypeText(value);
-        return LineType.parseLineTypeText(value);
+    public DeletePointListener(ContinuousMapping cm) {
+        this.cm = cm;
+    }
+
+    /**
+     * User Initiated Action.
+     *
+     * @param e
+     *            Action Event.
+     */
+    public void actionPerformed(ActionEvent e) {
+        if ((index < 0) || (index >= cm.getPointCount()))
+            return;
+
+        cm.removePoint(index);
+
+        // Will be removed once old ui is deleted.
+        ui.resetUI();
     }
 }

@@ -1,5 +1,5 @@
 /*
-  File: LabelPositionParser.java
+  File: ValueParser.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,35 +34,24 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.application.widget.vizmap.parsers;
 
-import org.cytoscape.application.widget.vizmap.shape.LabelPosition;
+//----------------------------------------------------------------------------
+// $Revision: 10002 $
+// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Author: kono $
+//----------------------------------------------------------------------------
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
+//----------------------------------------------------------------------------
 /**
- * Parses a String into a LabelPosition object.
+ * Interface to classes that parse a String value into a particular class
+ * of object.
  */
-public class LabelPositionParser
-    implements ValueParser {
+public interface ValueParser {
     /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
+     * Parse the argument into an onject. Returns null if the String is
+     * not parsable.
      */
-    public Object parseStringValue(String value) {
-        return parseLabelPosition(value);
-    }
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public LabelPosition parseLabelPosition(String value) {
-        return LabelPosition.parse(value);
-    }
+    Object parseStringValue(String value);
 }

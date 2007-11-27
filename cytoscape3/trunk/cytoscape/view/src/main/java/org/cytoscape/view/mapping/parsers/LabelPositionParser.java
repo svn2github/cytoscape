@@ -1,5 +1,5 @@
 /*
-  File: LineStyleParser.java
+  File: LabelPositionParser.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,26 +34,15 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package main.java.org.cytoscape.view.mapping.parsers;
 
-//----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
-// $Author: kono $
-//----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+import org.cytoscape.application.widget.vizmap.shape.LabelPosition;
 
 
-//----------------------------------------------------------------------------
-import org.cytoscape.application.widget.vizmap.shape.LineStyle;
-
-
-//----------------------------------------------------------------------------
 /**
- * Parses a String into a yFiles shape, which is represented by a byte
- * identifier. The return value here is a Byte object wrapping the
- * primitive byte identifier.
+ * Parses a String into a LabelPosition object.
  */
-public class LineStyleParser
+public class LabelPositionParser
     implements ValueParser {
     /**
      *  DOCUMENT ME!
@@ -63,7 +52,7 @@ public class LineStyleParser
      * @return  DOCUMENT ME!
      */
     public Object parseStringValue(String value) {
-        return parseLineStyle(value); 
+        return parseLabelPosition(value);
     }
 
     /**
@@ -73,7 +62,7 @@ public class LineStyleParser
      *
      * @return  DOCUMENT ME!
      */
-    public LineStyle parseLineStyle(String value) {
-        return LineStyle.parse(value); 
+    public LabelPosition parseLabelPosition(String value) {
+        return LabelPosition.parse(value);
     }
 }

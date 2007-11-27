@@ -1,5 +1,5 @@
 /*
-  File: FontParser.java
+  File: NodeShapeParser.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,24 +36,25 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 10002 $
-// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Revision: 11413 $
+// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
 //----------------------------------------------------------------------------
-import java.awt.Font;
-
-import org.cytoscape.application.util.Misc;
+import org.cytoscape.application.widget.vizmap.shape.NodeShape;
+import org.cytoscape.view.ShapeNodeRealizer;
 
 
 //----------------------------------------------------------------------------
 /**
- * Parses a String into a Font object.
+ * Parses a String into a yFiles shape, which is represented by a byte
+ * identifier. The return value here is a Byte object wrapping the
+ * primitive byte identifier.
  */
-public class FontParser
+public class NodeShapeParser
     implements ValueParser {
     /**
      *  DOCUMENT ME!
@@ -63,7 +64,7 @@ public class FontParser
      * @return  DOCUMENT ME!
      */
     public Object parseStringValue(String value) {
-        return parseFont(value);
+        return parseNodeShapeEnum(value);
     }
 
     /**
@@ -72,58 +73,49 @@ public class FontParser
      * @param value DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
      */
-    public Font parseFont(String value) {
-        //this algorithm could be moved into the Misc class with the
-        //other parsing methods
-        if (value == null)
-            return null;
+    @Deprecated
+    public Byte parseNodeShape(String value) {
+        return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
+    }
 
-        //find index of first comma character
-        int comma1 = value.indexOf(",");
+    /**
+     * DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public NodeShape parseNodeShapeEnum(String value) {
+        return NodeShape.parseNodeShapeText(value);
+    }
 
-        //return null if not found, or found at beginning or end of string
-        if ((comma1 < 1) || (comma1 >= (value.length() - 1)))
-            return null;
+    /**
+     * DOCUMENT ME!
+     *
+     * @param shape DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    public static boolean isValidShape(NodeShape shape) {
+        return NodeShape.isValidShape(shape);
+    }
 
-        //find the second comma character
-        int comma2 = value.indexOf(",", comma1 + 1);
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param shape DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     * 
+     * @deprecated Will be removed 5/2008
+     */
+    @Deprecated
+    public static boolean isValidShape(byte shape) {
+        final NodeShape nShape = ShapeNodeRealizer.getNodeShape(shape);
 
-        //return null if not found, or found immediately after the first
-        //comma, or at end of string
-        if ((comma2 == -1) || (comma2 == (comma1 + 1)) ||
-                (comma2 >= (value.length() - 1)))
-            return null;
-
-        //extract the fields
-        String name = value.substring(0, comma1);
-        String typeString = value.substring(comma1 + 1, comma2);
-        String sizeString = value.substring(
-                comma2 + 1,
-                value.length());
-
-        //parse the strings
-        int type = Font.PLAIN;
-
-        if (typeString.equalsIgnoreCase("bold"))
-            type = Font.BOLD;
-        else if (typeString.equalsIgnoreCase("italic"))
-            type = Font.ITALIC;
-        else if (typeString.equalsIgnoreCase("bold|italic"))
-            type = Font.BOLD | Font.ITALIC;
-        else if (typeString.equalsIgnoreCase("italic|bold"))
-            type = Font.ITALIC | Font.BOLD; //presumably the same as above
-
-        int size = 0;
-
-        try {
-            size = Integer.parseInt(sizeString);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-
-        Font f = new Font(name, type, size);
-
-        return f;
+        return NodeShape.isValidShape(nShape);
     }
 }

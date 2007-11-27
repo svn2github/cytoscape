@@ -1,5 +1,5 @@
 /*
-  File: ValueParser.java
+  File: LineStyleParser.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -40,18 +40,40 @@
 // $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
+
+
+//----------------------------------------------------------------------------
+import org.cytoscape.application.widget.vizmap.shape.LineStyle;
 
 
 //----------------------------------------------------------------------------
 /**
- * Interface to classes that parse a String value into a particular class
- * of object.
+ * Parses a String into a yFiles shape, which is represented by a byte
+ * identifier. The return value here is a Byte object wrapping the
+ * primitive byte identifier.
  */
-public interface ValueParser {
+public class LineStyleParser
+    implements ValueParser {
     /**
-     * Parse the argument into an onject. Returns null if the String is
-     * not parsable.
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
      */
-    Object parseStringValue(String value);
+    public Object parseStringValue(String value) {
+        return parseLineStyle(value); 
+    }
+
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param value DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public LineStyle parseLineStyle(String value) {
+        return LineStyle.parse(value); 
+    }
 }

@@ -1,5 +1,5 @@
 /*
-  File: DoubleParser.java
+  File: FontParser.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -40,14 +40,20 @@
 // $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
+
+
+//----------------------------------------------------------------------------
+import java.awt.Font;
+
+import org.cytoscape.application.util.Misc;
 
 
 //----------------------------------------------------------------------------
 /**
- * Parses a String into a Double object.
+ * Parses a String into a Font object.
  */
-public class DoubleParser
+public class FontParser
     implements ValueParser {
     /**
      *  DOCUMENT ME!
@@ -57,7 +63,7 @@ public class DoubleParser
      * @return  DOCUMENT ME!
      */
     public Object parseStringValue(String value) {
-        return parseDouble(value);
+        return parseFont(value);
     }
 
     /**
@@ -67,15 +73,57 @@ public class DoubleParser
      *
      * @return  DOCUMENT ME!
      */
-    public Double parseDouble(String value) {
-        double d = Double.NaN;
+    public Font parseFont(String value) {
+        //this algorithm could be moved into the Misc class with the
+        //other parsing methods
+        if (value == null)
+            return null;
+
+        //find index of first comma character
+        int comma1 = value.indexOf(",");
+
+        //return null if not found, or found at beginning or end of string
+        if ((comma1 < 1) || (comma1 >= (value.length() - 1)))
+            return null;
+
+        //find the second comma character
+        int comma2 = value.indexOf(",", comma1 + 1);
+
+        //return null if not found, or found immediately after the first
+        //comma, or at end of string
+        if ((comma2 == -1) || (comma2 == (comma1 + 1)) ||
+                (comma2 >= (value.length() - 1)))
+            return null;
+
+        //extract the fields
+        String name = value.substring(0, comma1);
+        String typeString = value.substring(comma1 + 1, comma2);
+        String sizeString = value.substring(
+                comma2 + 1,
+                value.length());
+
+        //parse the strings
+        int type = Font.PLAIN;
+
+        if (typeString.equalsIgnoreCase("bold"))
+            type = Font.BOLD;
+        else if (typeString.equalsIgnoreCase("italic"))
+            type = Font.ITALIC;
+        else if (typeString.equalsIgnoreCase("bold|italic"))
+            type = Font.BOLD | Font.ITALIC;
+        else if (typeString.equalsIgnoreCase("italic|bold"))
+            type = Font.ITALIC | Font.BOLD; //presumably the same as above
+
+        int size = 0;
 
         try {
-            d = Double.parseDouble(value);
-
-            return new Double(d);
+            size = Integer.parseInt(sizeString);
         } catch (NumberFormatException e) {
             return null;
         }
+
+        Font f = new Font(name, type, size);
+
+        return f;
     }
 }

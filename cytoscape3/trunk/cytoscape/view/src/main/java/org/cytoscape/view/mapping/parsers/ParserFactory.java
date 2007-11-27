@@ -1,5 +1,5 @@
 /*
-  File: NodeShapeParser.java
+  File: ParserFactory.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,86 +36,70 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 11413 $
-// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
-// $Author: kono $
+// $Revision: 8333 $
+// $Date: 2006-09-25 19:37:03 -0700 (Mon, 25 Sep 2006) $
+// $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
-//----------------------------------------------------------------------------
+import java.awt.Color;
+import java.awt.Font;
+
+import org.cytoscape.application.widget.vizmap.shape.Arrow;
+import org.cytoscape.application.widget.vizmap.shape.LabelPosition;
+import org.cytoscape.application.widget.vizmap.shape.LineType;
 import org.cytoscape.application.widget.vizmap.shape.NodeShape;
-import org.cytoscape.view.ShapeNodeRealizer;
 
 
-//----------------------------------------------------------------------------
 /**
- * Parses a String into a yFiles shape, which is represented by a byte
- * identifier. The return value here is a Byte object wrapping the
- * primitive byte identifier.
+ * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
  */
-public class NodeShapeParser
-    implements ValueParser {
+public class ParserFactory {
     /**
      *  DOCUMENT ME!
      *
-     * @param value DOCUMENT ME!
+     * @param o DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+ 	 * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
      */
-    public Object parseStringValue(String value) {
-        return parseNodeShapeEnum(value);
-    }
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public Byte parseNodeShape(String value) {
-        return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public NodeShape parseNodeShapeEnum(String value) {
-        return NodeShape.parseNodeShapeText(value);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param shape DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static boolean isValidShape(NodeShape shape) {
-        return NodeShape.isValidShape(shape);
+    public static ValueParser getParser(Object o) {
+        return getParser(o.getClass());
     }
 
     /**
      *  DOCUMENT ME!
      *
-     * @param shape DOCUMENT ME!
+     * @param c DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
+ 	 * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
      */
-    @Deprecated
-    public static boolean isValidShape(byte shape) {
-        final NodeShape nShape = ShapeNodeRealizer.getNodeShape(shape);
+    public static ValueParser getParser(Class c) {
+        ValueParser parser = null;
 
-        return NodeShape.isValidShape(nShape);
+        if (c.isAssignableFrom(String.class))
+            parser = new StringParser();
+        else if (c.isAssignableFrom(Font.class))
+            parser = new FontParser();
+        else if (c.isAssignableFrom(Double.class))
+            parser = new DoubleParser();
+        else if (c.isAssignableFrom(Arrow.class))
+            parser = new ArrowParser();
+        else if (c.isAssignableFrom(LineType.class))
+            parser = new LineTypeParser();
+        else if (c.isAssignableFrom(Byte.class) ||
+                c.isAssignableFrom(NodeShape.class))
+            parser = new NodeShapeParser();
+        else if (c.isAssignableFrom(LabelPosition.class))
+            parser = new LabelPositionParser();
+        else if (c.isAssignableFrom(Color.class))
+            parser = new ColorParser();
+        else
+            System.err.println("couldn't construct parser for class: " +
+                c.toString());
+
+        return parser;
     }
 }

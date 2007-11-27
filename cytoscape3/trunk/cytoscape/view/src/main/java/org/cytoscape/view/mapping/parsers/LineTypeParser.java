@@ -1,5 +1,5 @@
 /*
- File: ArrowParser.java
+ File: LineTypeParser.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -40,19 +40,19 @@
 // $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
 //----------------------------------------------------------------------------
-import org.cytoscape.application.widget.vizmap.shape.Arrow;
+import org.cytoscape.application.widget.vizmap.shape.LineType;
 
 
 //import cytoscape.util.Misc;
 //----------------------------------------------------------------------------
 /**
- * Parses a String into a yFiles Arrow object.
+ * Parses a String into a yFiles LineType object.
  */
-public class ArrowParser
+public class LineTypeParser
     implements ValueParser {
     /**
      * DOCUMENT ME!
@@ -63,7 +63,7 @@ public class ArrowParser
      * @return DOCUMENT ME!
      */
     public Object parseStringValue(String value) {
-        return parseArrow(value);
+        return parseLineType(value);
     }
 
     /**
@@ -74,7 +74,8 @@ public class ArrowParser
      *
      * @return DOCUMENT ME!
      */
-    public Arrow parseArrow(String value) {
-        return Arrow.parseArrowText(value);
+    public LineType parseLineType(String value) {
+        // return Misc.parseLineTypeText(value);
+        return LineType.parseLineTypeText(value);
     }
 }

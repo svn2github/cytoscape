@@ -1,5 +1,5 @@
 /*
- File: DeletePointListener.java
+ File: ArrowParser.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,70 +36,45 @@
  */
 
 //----------------------------------------------------------------------------
-// $Revision: 11413 $
-// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
+// $Revision: 10002 $
+// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import org.cytoscape.view.mapping.ContinuousMapping;
+//----------------------------------------------------------------------------
+import org.cytoscape.application.widget.vizmap.shape.Arrow;
 
 
+//import cytoscape.util.Misc;
+//----------------------------------------------------------------------------
 /**
- * Listens for User Request to Delete Existing Point.
+ * Parses a String into a yFiles Arrow object.
  */
-public class DeletePointListener
-    implements ActionListener {
-    @Deprecated
-    private ContinuousUI ui;
-    private ContinuousMapping cm;
-    private int index = -1; // Index Value in Point List.
-
+public class ArrowParser
+    implements ValueParser {
     /**
-     * Deprecated.  Use DeletePointListener(ContinuousMapping cm, int i)
-     * instead.
+     * DOCUMENT ME!
      *
-     * @param ui
-     *            ContinuousUI Object.
-     * @param cm
-     *            ContinuousMapping Object.
-     *            
-     * @deprecated Will be removed 5/2008
+     * @param value
+     *            DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
      */
-    @Deprecated
-    public DeletePointListener(ContinuousUI ui, ContinuousMapping cm, int i) {
-        this.ui = ui;
-        this.cm = cm;
-        index = i;
+    public Object parseStringValue(String value) {
+        return parseArrow(value);
     }
 
     /**
-     * Creates a new DeletePointListener object.
+     * DOCUMENT ME!
      *
-     * @param cm DOCUMENT ME!
-     * @param i DOCUMENT ME!
-     */
-    public DeletePointListener(ContinuousMapping cm) {
-        this.cm = cm;
-    }
-
-    /**
-     * User Initiated Action.
+     * @param value
+     *            DOCUMENT ME!
      *
-     * @param e
-     *            Action Event.
+     * @return DOCUMENT ME!
      */
-    public void actionPerformed(ActionEvent e) {
-        if ((index < 0) || (index >= cm.getPointCount()))
-            return;
-
-        cm.removePoint(index);
-
-        // Will be removed once old ui is deleted.
-        ui.resetUI();
+    public Arrow parseArrow(String value) {
+        return Arrow.parseArrowText(value);
     }
 }

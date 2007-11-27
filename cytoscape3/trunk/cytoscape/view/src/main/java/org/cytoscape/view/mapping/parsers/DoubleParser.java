@@ -1,5 +1,5 @@
 /*
-  File: ParserFactory.java
+  File: DoubleParser.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,70 +36,46 @@
 */
 
 //----------------------------------------------------------------------------
-// $Revision: 8333 $
-// $Date: 2006-09-25 19:37:03 -0700 (Mon, 25 Sep 2006) $
-// $Author: mes $
+// $Revision: 10002 $
+// $Date: 2007-04-17 19:05:54 -0700 (Tue, 17 Apr 2007) $
+// $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
-import java.awt.Color;
-import java.awt.Font;
-
-import org.cytoscape.application.widget.vizmap.shape.Arrow;
-import org.cytoscape.application.widget.vizmap.shape.LabelPosition;
-import org.cytoscape.application.widget.vizmap.shape.LineType;
-import org.cytoscape.application.widget.vizmap.shape.NodeShape;
-
-
+//----------------------------------------------------------------------------
 /**
- * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
+ * Parses a String into a Double object.
  */
-public class ParserFactory {
+public class DoubleParser
+    implements ValueParser {
     /**
      *  DOCUMENT ME!
      *
-     * @param o DOCUMENT ME!
+     * @param value DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
- 	 * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
      */
-    public static ValueParser getParser(Object o) {
-        return getParser(o.getClass());
+    public Object parseStringValue(String value) {
+        return parseDouble(value);
     }
 
     /**
      *  DOCUMENT ME!
      *
-     * @param c DOCUMENT ME!
+     * @param value DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
- 	 * @deprecated Use VisualPropertyType.getValueParser() instead. Will be removed 5/2008.
      */
-    public static ValueParser getParser(Class c) {
-        ValueParser parser = null;
+    public Double parseDouble(String value) {
+        double d = Double.NaN;
 
-        if (c.isAssignableFrom(String.class))
-            parser = new StringParser();
-        else if (c.isAssignableFrom(Font.class))
-            parser = new FontParser();
-        else if (c.isAssignableFrom(Double.class))
-            parser = new DoubleParser();
-        else if (c.isAssignableFrom(Arrow.class))
-            parser = new ArrowParser();
-        else if (c.isAssignableFrom(LineType.class))
-            parser = new LineTypeParser();
-        else if (c.isAssignableFrom(Byte.class) ||
-                c.isAssignableFrom(NodeShape.class))
-            parser = new NodeShapeParser();
-        else if (c.isAssignableFrom(LabelPosition.class))
-            parser = new LabelPositionParser();
-        else if (c.isAssignableFrom(Color.class))
-            parser = new ColorParser();
-        else
-            System.err.println("couldn't construct parser for class: " +
-                c.toString());
+        try {
+            d = Double.parseDouble(value);
 
-        return parser;
+            return new Double(d);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

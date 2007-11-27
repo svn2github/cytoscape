@@ -40,7 +40,7 @@
 // $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.parsers;
+package main.java.org.cytoscape.view.mapping.parsers;
 
 
 import java.awt.event.ActionEvent;
