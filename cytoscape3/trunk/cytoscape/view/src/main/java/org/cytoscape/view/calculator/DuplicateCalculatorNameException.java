@@ -1,5 +1,5 @@
 /*
- File: BasicCalculator.java
+ File: DuplicateCalculatorNameException.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,61 +36,26 @@
  */
 
 //------------------------------------------------------------------------------
-// $Revision: 9996 $
-// $Date: 2007-04-17 18:47:27 -0700 (Tue, 17 Apr 2007) $
-// $Author: kono $
+// $Revision: 9565 $
+// $Date: 2007-02-13 11:36:50 -0800 (Tue, 13 Feb 2007) $
+// $Author: mes $
 //------------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.calculator;
+package main.java.org.cytoscape.view.calculator;
 
 
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.visual.mappings.ObjectMapping;
-
-
-import java.util.Map;
-import java.util.Properties;
-
-import org.cytoscape.application.util.Cytoscape;
-import org.cytoscape.application.widget.vizmap.parsers.ValueParser;
-import org.cytoscape.model.network.CyNetwork;
-
-
-
+//------------------------------------------------------------------------------
 /**
- * BasicCalculator implements some UI features for calculators lower in the
- * object tree.
+ * This Exception is thrown when one attempts to add a Calculator to a
+ * CalculatorCatalog that already has a Calculator of the same name and
+ * interface type.
  */
-public class BasicCalculator extends AbstractCalculator {
-
-    /**
-     * Creates a new BasicCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param m DOCUMENT ME!
-     * @param type DOCUMENT ME!
-     */
-    public BasicCalculator(String name, ObjectMapping m, VisualPropertyType type) {
-        super(name, m, type);
-    }
-
-    /**
-     * Creates a new BasicCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param props DOCUMENT ME!
-     * @param baseKey DOCUMENT ME!
-     * @param parser DOCUMENT ME!
-     * @param type DOCUMENT ME!
-     */
-    public BasicCalculator(String name, Properties props, String baseKey, VisualPropertyType type) {
-        super(name,
-              MappingFactory.newMapping(props, baseKey + ".mapping", type.getValueParser(),
-                                        type.getVisualProperty().getDefaultAppearanceObject(), 
-				                        type.isNodeProp()?
-										    ObjectMapping.NODE_MAPPING:
-											ObjectMapping.EDGE_MAPPING),
-               type);
-    }
+public class DuplicateCalculatorNameException extends RuntimeException {
+	/**
+	 * Creates a new DuplicateCalculatorNameException object.
+	 *
+	 * @param s  DOCUMENT ME!
+	 */
+	public DuplicateCalculatorNameException(String s) {
+		super(s);
+	}
 }

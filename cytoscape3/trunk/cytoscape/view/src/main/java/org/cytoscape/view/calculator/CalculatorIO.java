@@ -40,7 +40,7 @@
 // $Date: 2007-09-17 16:43:04 -0700 (Mon, 17 Sep 2007) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.calculator;
+package main.java.org.cytoscape.view.calculator;
 
 
 //----------------------------------------------------------------------------

@@ -40,7 +40,7 @@
 // $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
 // $Author: kono $
 //------------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.calculator;
+package main.java.org.cytoscape.view.calculator;
 
 
 import cytoscape.data.CyAttributesUtils;
@@ -613,7 +613,7 @@ public abstract class AbstractCalculator implements Calculator {
 
 		final String nodeID = obj.getIdentifier();
 		final Map attrBundle = getAttrBundle(nodeID);
-		attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
+		attrBundle.put(main.java.org.cytoscape.view.calculator.ID, obj.getIdentifier());
 
 		return getMapping(0).calculateRangeValue(attrBundle);
 	}

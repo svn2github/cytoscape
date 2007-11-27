@@ -40,7 +40,7 @@
 // $Date: 2007-09-17 16:43:04 -0700 (Mon, 17 Sep 2007) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.calculator;
+package main.java.org.cytoscape.view.calculator;
 
 
 //----------------------------------------------------------------------------
@@ -550,7 +550,7 @@ public class CalculatorCatalog {
 		Calculator nlc = getCalculator(NODE_LABEL, label);
 
 		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
+			PassThroughMapping m = new PassThroughMapping("", main.java.org.cytoscape.view.calculator.ID);
 			nlc = new BasicCalculator(label, m, NODE_LABEL);
 		}
 

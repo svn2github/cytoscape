@@ -1,5 +1,5 @@
 /*
- File: DuplicateCalculatorNameException.java
+ File: EdgeCalculator.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,26 +36,62 @@
  */
 
 //------------------------------------------------------------------------------
-// $Revision: 9565 $
-// $Date: 2007-02-13 11:36:50 -0800 (Tue, 13 Feb 2007) $
-// $Author: mes $
+// $Revision: 11413 $
+// $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
+// $Author: kono $
 //------------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.calculator;
+package main.java.org.cytoscape.view.calculator;
+
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.mappings.MappingFactory;
+import cytoscape.visual.mappings.ObjectMapping;
+
+
+//------------------------------------------------------------------------------
+import java.util.Map;
+import java.util.Properties;
+
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
+import org.cytoscape.application.util.Cytoscape;
+import org.cytoscape.application.widget.vizmap.parsers.ValueParser;
+import org.cytoscape.model.network.CyNetwork;
 
 
 //------------------------------------------------------------------------------
 /**
- * This Exception is thrown when one attempts to add a Calculator to a
- * CalculatorCatalog that already has a Calculator of the same name and
- * interface type.
+ * EdgeCalculator implements some UI features for calculators lower in the
+ * object tree.
  */
-public class DuplicateCalculatorNameException extends RuntimeException {
-	/**
-	 * Creates a new DuplicateCalculatorNameException object.
-	 *
-	 * @param s  DOCUMENT ME!
-	 */
-	public DuplicateCalculatorNameException(String s) {
-		super(s);
-	}
+public class EdgeCalculator extends BasicCalculator {
+
+    /**
+     * Creates a new EdgeCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param m DOCUMENT ME!
+     * @param c DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     */
+    public EdgeCalculator(String name, ObjectMapping m, Class c, VisualPropertyType type) {
+        super(name, m, type);
+    }
+
+
+    /**
+     * Creates a new EdgeCalculator object.
+     *
+     * @param name DOCUMENT ME!
+     * @param props DOCUMENT ME!
+     * @param baseKey DOCUMENT ME!
+     * @param parser DOCUMENT ME!
+     * @param defObj DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     */
+    public EdgeCalculator(String name, Properties props, String baseKey, ValueParser parser, Object defObj, VisualPropertyType type) {
+        super(name,props,baseKey,type);
+    }
 }
