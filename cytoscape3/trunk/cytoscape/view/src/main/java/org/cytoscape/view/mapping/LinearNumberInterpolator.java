@@ -1,5 +1,5 @@
 /*
-  File: FlatInterpolator.java
+  File: LinearNumberInterpolator.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,53 +35,23 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//FlatInterpolator.java
+//LinearNumberInterpolator.java
 
 //----------------------------------------------------------------------------
 // $Revision: 10005 $
 // $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.mapping;
+package main.java.org.cytoscape.view.mapping;
 
 
 //----------------------------------------------------------------------------
 /**
- * This simple Interpolator returns the value at either the lower or upper
- * boundary of the domain. Note that no check is made whether the supplied
- * domainValue is actually within the boundaries.
+ * This subclass of NumberInterpolator further assumes a linear interpolation,
+ * and calculates the fractional distance of the target domain value from
+ * the lower boundary value for the convenience of subclasses.
  */
-public class FlatInterpolator
-    implements Interpolator {
-    /**
-     *
-     */
-    public static final Integer LOWER = new Integer(0);
-
-    /**
-     *
-     */
-    public static final Integer UPPER = new Integer(1);
-    private boolean useLower;
-
-    /**
-     * The default FlatInterpolator returns the range value at the lower boundary.
-     */
-    public FlatInterpolator() {
-        useLower = true;
-    }
-
-    /**
-     * Constructs a FlatInterpolator which returns the range value at the lower
-     * boundary unless the argument 'mode' is equal to FlatInterpolator.UPPER.
-     */
-    public FlatInterpolator(Integer mode) {
-        if (mode.equals(this.UPPER))
-            useLower = false;
-        else
-            useLower = true;
-    }
-
+abstract public class LinearNumberInterpolator extends NumberInterpolator {
     /**
      *  DOCUMENT ME!
      *
@@ -93,8 +63,25 @@ public class FlatInterpolator
      *
      * @return  DOCUMENT ME!
      */
-    public Object getRangeValue(Object lowerDomain, Object lowerRange,
-        Object upperDomain, Object upperRange, Object domainValue) {
-        return ((useLower) ? lowerRange : upperRange);
+    public Object getRangeValue(double lowerDomain, Object lowerRange,
+        double upperDomain, Object upperRange, double domainValue) {
+        if (lowerDomain == upperDomain)
+            return lowerRange;
+
+        double frac = (domainValue - lowerDomain) / (upperDomain - lowerDomain);
+
+        return getRangeValue(frac, lowerRange, upperRange);
     }
+
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param frac DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    abstract public Object getRangeValue(double frac, Object lowerRange,
+        Object upperRange);
 }

@@ -40,7 +40,7 @@
 // $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.mapping;
+package main.java.org.cytoscape.view.mapping;
 
 
 import java.lang.reflect.Constructor;

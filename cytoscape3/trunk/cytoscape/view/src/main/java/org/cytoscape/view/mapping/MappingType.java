@@ -1,4 +1,4 @@
-package org.cytoscape.application.widget.vizmap.mapping;
+package main.java.org.cytoscape.view.mapping;
 
 
 /**

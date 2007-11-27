@@ -1,5 +1,5 @@
 /*
-  File: LinearNumberToColorInterpolator.java
+  File: LinearNumberToNumberInterpolator.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,25 +35,28 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//LinearNumberToColorInterpolator.java
-package org.cytoscape.application.widget.vizmap.mapping;
+//LinearNumberToNumberInterpolator.java
 
-import java.awt.Color;
+//----------------------------------------------------------------------------
+// $Revision: 10005 $
+// $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
+// $Author: kono $
+//----------------------------------------------------------------------------
+package main.java.org.cytoscape.view.mapping;
 
 
+//----------------------------------------------------------------------------
 /**
- * The class provides a linear interpolation between color values. The
- * (red,green,blue,alpha) values of the returned color are linearly
- * interpolated from the associated values of the lower and upper colors,
- * according the the fractional distance frac from the lower value.
+ * The class assumes that the supplied range objects are Numbers, and returns a
+ * linearly interplated value according to the value of frac.
  *
- * If either object argument is not a Color, null is returned.
+ * If either object argument is not a Number, null is returned.
  */
-public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
+public class LinearNumberToNumberInterpolator extends LinearNumberInterpolator {
     /**
-     * Creates a new LinearNumberToColorInterpolator object.
+     * Creates a new LinearNumberToNumberInterpolator object.
      */
-    public LinearNumberToColorInterpolator() {
+    public LinearNumberToNumberInterpolator() {
     }
 
     /**
@@ -67,25 +70,17 @@ public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
      */
     public Object getRangeValue(double frac, Object lowerRange,
         Object upperRange) {
-        if (!(lowerRange instanceof Color))
+        if (!(lowerRange instanceof Number))
             return null;
 
-        if (!(upperRange instanceof Color))
+        if (!(upperRange instanceof Number))
             return null;
 
-        Color lowerColor = (Color) lowerRange;
-        Color upperColor = (Color) upperRange;
+        double lowerVal = ((Number) lowerRange).doubleValue();
+        double upperVal = ((Number) upperRange).doubleValue();
 
-        double red = lowerColor.getRed() +
-            (frac * (upperColor.getRed() - lowerColor.getRed()));
-        double green = lowerColor.getGreen() +
-            (frac * (upperColor.getGreen() - lowerColor.getGreen()));
-        double blue = lowerColor.getBlue() +
-            (frac * (upperColor.getBlue() - lowerColor.getBlue()));
-        double alpha = lowerColor.getAlpha() +
-            (frac * (upperColor.getAlpha() - lowerColor.getAlpha()));
+        double returnVal = (frac * upperVal) + ((1.0 - frac) * lowerVal);
 
-        return new Color((int) Math.round(red), (int) Math.round(green),
-            (int) Math.round(blue), (int) Math.round(alpha));
+        return new Double(returnVal);
     }
 }

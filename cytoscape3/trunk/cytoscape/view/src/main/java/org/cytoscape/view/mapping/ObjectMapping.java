@@ -40,7 +40,7 @@
 // $Date: 2007-05-23 14:30:29 -0700 (Wed, 23 May 2007) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap;
+package main.java.org.cytoscape.view.mapping;
 
 
 import cytoscape.visual.VisualPropertyType;

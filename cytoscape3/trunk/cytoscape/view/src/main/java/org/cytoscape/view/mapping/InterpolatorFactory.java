@@ -1,5 +1,5 @@
 /*
-  File: NumberInterpolator.java
+  File: InterpolatorFactory.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,69 +35,69 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//NumberInterpolator.java
-
 //----------------------------------------------------------------------------
 // $Revision: 9736 $
 // $Date: 2007-03-19 17:25:45 -0700 (Mon, 19 Mar 2007) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.mapping;
+package main.java.org.cytoscape.view.mapping;
+
+
+//----------------------------------------------------------------------------
+import java.util.Properties;
 
 
 //----------------------------------------------------------------------------
 /**
- * This partial implementation of Interpolator assumes that the domain
- * values are some kind of number, and extracts the values into ordinary
- * doubles for the convenience of subclasses. If any argument is null, or
- * if any of the domain values is not an instance of Number, null is returned.
+ * Provides static factory methods for constructing known interpolators from
+ * a recognized name, for example from a properties object.
  */
-abstract public class NumberInterpolator implements Interpolator {
+public class InterpolatorFactory {
 	/**
-	 *  DOCUMENT ME!
+	 * Attempt to construct one of the standard interpolators. The argument
+	 * should be the simple class name of a known interpolator (i.e., no
+	 * package information).
 	 *
-	 * @param lowerDomain DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperDomain DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 * @param domainValue DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
 	 */
-	public Object getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
-	                            Object upperRange, Object domainValue) {
-		if ((lowerRange == null) || (upperRange == null)) {
+	public static Interpolator newInterpolator(String typeName) {
+		if (typeName == null) {
+			String s = "InterpolatorFactory: no Interpolator class specified";
+			System.err.println(s);
+
+			return null;
+		} else if (typeName.equals("LinearNumberToColorInterpolator")) {
+			return new LinearNumberToColorInterpolator();
+		} else if (typeName.equals("LinearNumberToNumberInterpolator")) {
+			return new LinearNumberToNumberInterpolator();
+		} else if (typeName.equals("FlatInterpolator")) {
+			return new FlatInterpolator();
+		} else {
+			String s = "InterpolatorFactory: unknown Interpolator type: " + typeName;
+			System.err.println(s);
+
 			return null;
 		}
-
-		if ((lowerDomain == null) || !(lowerDomain instanceof Number)) {
-			return null;
-		}
-
-		if ((upperDomain == null) || !(upperDomain instanceof Number)) {
-			return null;
-		}
-
-		if ((domainValue == null) || !(domainValue instanceof Number)) {
-			return null;
-		}
-
-		return getRangeValue(((Number) lowerDomain).doubleValue(), lowerRange,
-		                     ((Number) upperDomain).doubleValue(), upperRange,
-		                     ((Number) domainValue).doubleValue());
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param lowerDomain DOCUMENT ME!
-	 * @param lowerRange DOCUMENT ME!
-	 * @param upperDomain DOCUMENT ME!
-	 * @param upperRange DOCUMENT ME!
-	 * @param domainValue DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Given an Interpolator, returns an identifying name as recognized
+	 * by the newInterpolator method. null will be returned if the argument
+	 * is null or of an unrecognized class type.
 	 */
-	abstract public Object getRangeValue(double lowerDomain, Object lowerRange, double upperDomain,
-	                                     Object upperRange, double domainValue);
+	public static String getName(Interpolator fInt) {
+		if (fInt == null) {
+			return null;
+		} else if (fInt instanceof LinearNumberToColorInterpolator) {
+			return new String("LinearNumberToColorInterpolator");
+		} else if (fInt instanceof LinearNumberToNumberInterpolator) {
+			return new String("LinearNumberToNumberInterpolator");
+		} else if (fInt instanceof FlatInterpolator) {
+			return new String("FlatInterpolator");
+		} else {
+			String c = fInt.getClass().getName();
+			System.err.println("Unknown Interpolator type: " + c);
+
+			return null;
+		}
+	}
 }

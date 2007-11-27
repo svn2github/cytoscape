@@ -40,7 +40,7 @@
 // $Date: 2007-07-18 12:06:43 -0700 (Wed, 18 Jul 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap;
+package main.java.org.cytoscape.view.mapping;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +50,12 @@ import java.util.TreeMap;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
+
+import main.java.org.cytoscape.application.widget.vizmap.DiscreteLegend;
+import main.java.org.cytoscape.application.widget.vizmap.DiscreteMappingReader;
+import main.java.org.cytoscape.application.widget.vizmap.DiscreteMappingWriter;
+import main.java.org.cytoscape.application.widget.vizmap.DiscreteRangeCalculator;
+import main.java.org.cytoscape.application.widget.vizmap.DiscreteUI;
 
 import org.cytoscape.application.widget.vizmap.parsers.ValueParser;
 import org.cytoscape.model.network.CyNetwork;
