@@ -11,7 +11,7 @@ pluginName=Multilevel Layout Plugin
 pluginDescription=Generates a nice layout for the graph using a multilevel framework introduced by C. Walshaw (2003).
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.2
+pluginVersion=0.3
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.5

@@ -34,7 +34,6 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
-import cytoscape.task.TaskMonitor;
 
 /**
  * Class executing the multilevel layout algorithm originally
@@ -52,29 +51,16 @@ import cytoscape.task.TaskMonitor;
  * @author Pekka Salmela
  */
 
-public class MultilevelLayout extends AbstractLayout{
+public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	
-	/**
-	 * Container used to store node positions. 
-	 */
 	private NodePositionManager posManager;
-	
-	/**
-	 * The level on which the layout algorithm is currently working on.
-	 */
 	private double level;
-	
-	/**
-	 * The task monitor that we report to
-	 */
-	protected TaskMonitor taskMonitor;
-	
-	/**
-	 * A flag telling us if the user has requested a cancel.
-	 */
 	protected boolean cancel = false;
 
-	public MultilevelLayout(){
+	/**
+	 * Constructor.
+	 */
+	public MultilevelLayoutAlgorithm(){
 		super();
 	}
 	  
@@ -85,17 +71,9 @@ public class MultilevelLayout extends AbstractLayout{
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
-		layout();
+		executeLayout();
 		networkView.fitContent();
 		networkView.updateView();
-	}
-	  
-	/**
-	 * Sets the task monitor to be used.
-	 * @param t Task monitor to be used.
-	 */
-	public void setTaskMonitor(TaskMonitor t) {
-			this.taskMonitor = t;
 	}
 	
 	/**
@@ -122,7 +100,7 @@ public class MultilevelLayout extends AbstractLayout{
 	 *
 	 */
 	@SuppressWarnings("unchecked")
-	private void layout(){
+	private void executeLayout(){
 		long start = System.currentTimeMillis();
 		
 		CyNetwork origNetwork = networkView.getNetwork();
@@ -301,8 +279,17 @@ public class MultilevelLayout extends AbstractLayout{
 		
 		System.out.println("Calculating the layout took " + ((System.currentTimeMillis() -start)/1000.0) + " seconds.");
 		
+		CyAttributes nodesAttributes = Cytoscape.getNodeAttributes();
+		nodesAttributes.deleteAttribute("ml_previous");
+		nodesAttributes.deleteAttribute("ml_ancestor1");
+		nodesAttributes.deleteAttribute("ml_ancestor2");
+		nodesAttributes.deleteAttribute("ml_weight");
+		nodesAttributes.deleteAttribute("mllp_partition");
+        
 		taskMonitor.setPercentCompleted(100);	
 		taskMonitor.setStatus("Layout complete");
+		System.gc();
+		System.out.println("Stop MultiLevelPlugin");
 	}
 	
 	/**
@@ -372,12 +359,39 @@ public class MultilevelLayout extends AbstractLayout{
 		else return -1.0;
 	}
 
+	/**
+	 * Return the short-hand name of this algorithm
+	 *
+	 * @return  short-hand name
+	 */
+	public String getName() {
+		return "multilevel-layout";
+	}
+
+	/**
+	 *  Return the user-visible name of this layout
+	 *
+	 * @return  user visible name
+	 */
 	public String toString() {
 		return "Multilevel Layout";
 	}
 
-	public String getName() {
-		return "multilevel";
+	/**
+	 *  Return true if we support performing our layout on a 
+	 * limited set of nodes
+	 *
+	 * @return  true if we support selected-only layout
+	 */
+	public boolean supportsSelectedOnly() {
+		return false;
+	}	
+	
+	public byte[] supportsNodeAttributes() {
+		return null;
 	}
-
+	
+	public byte[] supportsEdgeAttributes() {
+		return null;
+	}
 }

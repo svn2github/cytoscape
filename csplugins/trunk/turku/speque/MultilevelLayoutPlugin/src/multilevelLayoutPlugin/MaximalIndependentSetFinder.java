@@ -141,9 +141,9 @@ public class MaximalIndependentSetFinder {
 						if (nodesAttributes.getIntegerAttribute(pair2.getIdentifier(), "ml_weight") != null)
 						pair2Weight = nodesAttributes.getIntegerAttribute(pair2.getIdentifier(), "ml_weight");
 						//orginal method by Walshaw:
-						//if (nWeight < pair2Weight) pair2 = n;
+						if (nWeight < pair2Weight) pair2 = n;
 						//Pekka's new method:
-						if (nWeight + next.getDegree(n) < pair2Weight + next.getDegree(pair2)) pair2 = n;
+						//if (nWeight + next.getDegree(n) < pair2Weight + next.getDegree(pair2)) pair2 = n;
 						
 					}
 				}
