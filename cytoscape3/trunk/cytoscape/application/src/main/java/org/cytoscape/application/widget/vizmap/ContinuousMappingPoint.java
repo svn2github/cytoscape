@@ -40,7 +40,7 @@
 // $Date: 2007-07-17 10:16:16 -0700 (Tue, 17 Jul 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package main.java.org.cytoscape.view.mapping.parsers;
+package main.java.org.cytoscape.application.widget.vizmap;
 
 import org.cytoscape.application.widget.vizmap.mapping.BoundaryRangeValues;
 

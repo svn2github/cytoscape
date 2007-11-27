@@ -46,6 +46,9 @@ package main.java.org.cytoscape.view.mapping.parsers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import main.java.org.cytoscape.application.widget.vizmap.ContinuousMappingPoint;
+import main.java.org.cytoscape.application.widget.vizmap.ContinuousUI;
+
 import org.cytoscape.application.widget.vizmap.mapping.BoundaryRangeValues;
 import org.cytoscape.view.mapping.ContinuousMapping;
 

@@ -40,13 +40,15 @@
 // $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package main.java.org.cytoscape.view.mapping.parsers;
+package main.java.org.cytoscape.application.widget.vizmap;
 
 
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
+
+import main.java.org.cytoscape.view.mapping.parsers.ObjectToString;
 
 import org.cytoscape.application.widget.vizmap.mapping.BoundaryRangeValues;
 import org.cytoscape.application.widget.vizmap.mapping.Interpolator;

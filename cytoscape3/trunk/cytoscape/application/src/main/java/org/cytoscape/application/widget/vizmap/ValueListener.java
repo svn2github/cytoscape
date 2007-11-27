@@ -40,7 +40,7 @@
 // $Date: 2007-04-23 16:42:35 -0700 (Mon, 23 Apr 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package main.java.org.cytoscape.view.mapping.parsers;
+package main.java.org.cytoscape.application.widget.vizmap;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

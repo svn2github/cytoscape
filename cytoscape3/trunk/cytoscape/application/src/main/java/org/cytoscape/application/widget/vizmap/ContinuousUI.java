@@ -40,7 +40,7 @@
 // $Date: 2007-08-16 10:54:49 -0700 (Thu, 16 Aug 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package main.java.org.cytoscape.view.mapping.parsers;
+package main.java.org.cytoscape.application.widget.vizmap;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -55,6 +55,8 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import main.java.org.cytoscape.view.mapping.parsers.AddPointListener;
 
 import org.cytoscape.application.dialog.GridBagGroup;
 import org.cytoscape.application.dialog.MiscGB;
