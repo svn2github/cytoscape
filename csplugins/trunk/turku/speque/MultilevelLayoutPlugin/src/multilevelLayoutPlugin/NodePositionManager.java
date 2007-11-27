@@ -113,6 +113,7 @@ public class NodePositionManager {
 	 * @return X-coordinate of the node with the given root graph index.
 	 */
 	public double getX(int id) throws NullPointerException{
+		if (!positions.containsKey(new Integer(id))) System.out.println("Wtf, ei löytynyt nodea ID:llä" + id);
 		return positions.get(new Integer(id)).getX();
 	}
 	

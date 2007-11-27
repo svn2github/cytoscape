@@ -43,7 +43,7 @@ public class MultilevelConfig {
 	public static double T = 0.9;
 	
 	/**
-	 * Parameter used to control the tolerance below which algorithm is conidered to be converged..
+	 * Parameter used to control the tolerance below which algorithm is concidered to be converged..
 	 */
 	public static double tolerance = 0.01;
 	

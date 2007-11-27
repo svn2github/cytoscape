@@ -47,6 +47,4 @@ public class MultilevelLayoutPlugin extends CytoscapePlugin {
         Cytoscape.getDesktop().getCyMenus().addAction(action);*/
 		CyLayouts.addLayout(new MultilevelLayoutAlgorithm(), "Multilevel Layout");
 	}
-
- 
 }

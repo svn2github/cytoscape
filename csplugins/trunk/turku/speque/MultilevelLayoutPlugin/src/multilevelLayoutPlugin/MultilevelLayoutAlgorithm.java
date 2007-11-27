@@ -24,10 +24,15 @@ package multilevelLayoutPlugin;
 import giny.model.Node;
 import giny.view.NodeView;
 
+import java.awt.GridLayout;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.JPanel;
+
 import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -56,12 +61,67 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	private NodePositionManager posManager;
 	private double level;
 	protected boolean cancel = false;
+	private LayoutProperties layoutProperties = null;
 
 	/**
 	 * Constructor.
 	 */
 	public MultilevelLayoutAlgorithm(){
 		super();
+		layoutProperties = new LayoutProperties(getName());
+		layoutProperties.add(new Tunable("repForceMultiplier",
+				"<html>Constant multiplier used in calculation of repulsive forces. <p>Default value 0.2, suggested value 0.1 - 0.9.</html>",
+				Tunable.DOUBLE, new Double(0.2)));
+		layoutProperties.add(new Tunable("tolMultiplier",
+                "<html>Parameter used to control the tolerance below which algorithm is concidered to be converged. <p>Default value 0.01, suggested value 0.01 - 0.09.</html>",
+                Tunable.DOUBLE, new Double(0.01)));
+		layoutProperties.add(new Tunable("clusteringOption",
+                "Flag indicating if clustering option should be used during layout calculation.",
+                Tunable.BOOLEAN, new Boolean(false)));
+
+		// We've now set all of our tunables, so we can read the property 
+		// file now and adjust as appropriate
+		layoutProperties.initializeProperties();
+
+		// Finally, update everything.  We need to do this to update
+		// any of our values based on what we read from the property file
+		updateSettings(true);
+	}
+	
+	/**
+	 * External interface to update our settings
+	 */
+	public void updateSettings() {
+		updateSettings(true);
+	}
+
+	/**
+	 * Signal that we want to update our internal settings
+	 *
+	 * @param force force the settings to be updated, if true
+	 */
+	public void updateSettings(boolean force) {
+		layoutProperties.updateValues();
+		Tunable t1 = layoutProperties.get("repForceMultiplier");
+		if ((t1 != null) && (t1.valueChanged() || force))
+			MultilevelConfig.C = ((Double) t1.getValue()).doubleValue();
+		Tunable t2 = layoutProperties.get("tolMultiplier");
+		if ((t2 != null) && (t2.valueChanged() || force))
+			MultilevelConfig.tolerance = ((Double) t2.getValue()).doubleValue();
+		Tunable t3 = layoutProperties.get("clusteringOption");
+		if ((t3 != null) && (t3.valueChanged() || force))
+			MultilevelConfig.clusteringEnabled = ((Boolean) t3.getValue()).booleanValue();
+	}
+
+	/**
+	 * Revert our settings back to the original.
+	 */
+	public void revertSettings() {
+		layoutProperties.revertProperties();
+	}
+
+	public LayoutProperties getSettings() {
+		return layoutProperties;
 	}
 	  
 	/**
@@ -112,7 +172,6 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 		
 		taskMonitor.setStatus("Finding independent sets...");
 		taskMonitor.setPercentCompleted(5);
-		
 		double nodesSoFar = 0.0; 
 		
 		for(CyNetwork cn : components){
@@ -348,6 +407,17 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	     result.addAll(pivotList);
 	     result.addAll(quickSortNetworks(less));
 	     return result;
+	}
+	
+	/**
+	 * Returns a JPanel to be used as part of the Settings dialog for this layout
+	 * algorithm.
+	 *
+	 */
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0,1));
+		panel.add(layoutProperties.getTunablePanel());
+		return panel;
 	}
 	
 	/**
