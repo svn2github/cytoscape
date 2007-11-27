@@ -24,7 +24,6 @@ public class CyNetworkTest extends TestCase {
 		java.util.Collection<CyNode> nodes = this.getNodes(defaultNodeSetSize);
 		java.util.Collection<CyEdge> edges = this.getEdges(nodes);
 		network = Cytoscape.createNetwork(nodes, edges, title);
-		//network = Cytoscape.createNetwork(title);
 	}
 
 	/* (non-Javadoc)
@@ -159,13 +158,24 @@ public class CyNetworkTest extends TestCase {
 	public void testSetSelectedEdgeStateCollectionBoolean() {
 		network.unselectAllNodes();
 		network.unselectAllEdges();
+		
 		network.setSelectedNodeState(this.getNodes(3), true);
 		java.util.Set<CyNode> selectedNodes = network.getSelectedNodes();
+		
+		for (CyNode node: selectedNodes) {
+			assertTrue(network.containsNode(node));
+		}
+		
 		java.util.Collection<CyEdge> edges = this.getEdges(selectedNodes);
 		assertEquals(2, edges.size());
 		
+		// XXX Why does this fix the getSelected edges test???
+		for (CyEdge edge: edges) {
+			assertTrue(network.containsEdge(edge));
+		}
+		
 		network.setSelectedEdgeState(edges, true);
-		assertEquals(2, network.getSelectedEdges().size());
+		assertEquals(edges.size(), network.getSelectedEdges().size());
 	}
 
 	/**
