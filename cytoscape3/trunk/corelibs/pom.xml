@@ -43,7 +43,15 @@
 		<module>graph.fixed</module>
 		<module>fing</module>
 		<module>geom.spacial</module>
+		<module>geom.rtree</module>
 		<module>random</module>
+		<module>undo.support</module>
+		<module>task</module>
+		<module>render.immed</module>
+		<module>render.stateful</module>
+		<module>render.export</module>
+		<module>phoebe.dnd</module>
+		<module>ding</module>
 	</modules>
 
 	<build>
