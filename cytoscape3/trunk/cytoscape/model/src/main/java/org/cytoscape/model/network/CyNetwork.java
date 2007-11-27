@@ -55,7 +55,7 @@ import java.util.Set;
  * <br>
  * A CyNetwork can create Nodes or Edges.&nbsp; Any Nodes or Edges that wish to
  * be added to a CyNetwork firt need to be created in <span style="font-style:
- * italic;">Cytoscape.</span>&nbsp; <br>
+ * italic;">CyNetworkManager.</span>&nbsp; <br>
  * <br>
  * The methods that are defined by CyNetwork mostly deal with data integration
  * and flagging of nodes/edges.&nbsp; All methods that deal with graph traversal

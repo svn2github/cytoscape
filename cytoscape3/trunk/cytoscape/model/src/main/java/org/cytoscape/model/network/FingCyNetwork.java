@@ -53,7 +53,7 @@ import cytoscape.util.intr.*;
 /**
  * XXX Need to remove this dependency!
  */
-import org.cytoscape.application.util.Cytoscape;
+import org.cytoscape.model.CyNetworkManager;
 
 
 /**
@@ -138,7 +138,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 		} else if (!title.equals(new_id)) { // new title is different from the old one
 			CyNetworkTitleChange OldTitle = new CyNetworkTitleChange(this.getIdentifier(), title);
 			title = new_id;
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_TITLE_MODIFIED, OldTitle, new CyNetworkTitleChange(this.getIdentifier(), new_id) );
+			CyNetworkManager.firePropertyChange(CyNetworkManager.NETWORK_TITLE_MODIFIED, OldTitle, new CyNetworkTitleChange(this.getIdentifier(), new_id) );
 		}
 	}
 
@@ -364,7 +364,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 */
 	public Object getNodeAttributeValue(int node, String attribute) {
 		final String canonName = getNode(node).getIdentifier();
-		final CyAttributes attrs = Cytoscape.getNodeAttributes();
+		final CyAttributes attrs = CyNetworkManager.getNodeAttributes();
 		final byte cyType = attrs.getType(attribute);
 
 		if (cyType == CyAttributes.TYPE_BOOLEAN) {
@@ -397,7 +397,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 */
 	public Object getEdgeAttributeValue(int edge, String attribute) {
 		final String canonName = getEdge(edge).getIdentifier();
-		final CyAttributes attrs = Cytoscape.getEdgeAttributes();
+		final CyAttributes attrs = CyNetworkManager.getEdgeAttributes();
 		final byte cyType = attrs.getType(attribute);
 
 		if (cyType == CyAttributes.TYPE_BOOLEAN) {
@@ -422,7 +422,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * XXX Can't use the Cytoscape class anymore
 	 */
 	public String[] getNodeAttributesList() {
-		return Cytoscape.getNodeAttributes().getAttributeNames();
+		return CyNetworkManager.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -430,7 +430,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * XXX Can't use the Cytoscape class anymore
 	 */
 	public String[] getNodeAttributesList(Node[] nodes) {
-		return Cytoscape.getNodeAttributes().getAttributeNames();
+		return CyNetworkManager.getNodeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -438,7 +438,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * XXX Can't use the Cytoscape class anymore
 	 */
 	public String[] getEdgeAttributesList() {
-		return Cytoscape.getEdgeAttributes().getAttributeNames();
+		return CyNetworkManager.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -446,7 +446,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * XXX Can't use the Cytoscape class anymore
 	 */
 	public String[] getNodeAttributesList(Edge[] edges) {
-		return Cytoscape.getEdgeAttributes().getAttributeNames();
+		return CyNetworkManager.getEdgeAttributes().getAttributeNames();
 	}
 
 	/**
@@ -466,7 +466,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 */
 	public boolean setNodeAttributeValue(int node, String attribute, Object value) {
 		final String canonName = getNode(node).getIdentifier();
-		final CyAttributes attrs = Cytoscape.getNodeAttributes();
+		final CyAttributes attrs = CyNetworkManager.getNodeAttributes();
 
 		if (value instanceof Boolean) {
 			attrs.setAttribute(canonName, attribute, (Boolean) value);
@@ -510,7 +510,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 */
 	public boolean setEdgeAttributeValue(int edge, String attribute, Object value) {
 		final String canonName = getEdge(edge).getIdentifier();
-		final CyAttributes attrs = Cytoscape.getEdgeAttributes();
+		final CyAttributes attrs = CyNetworkManager.getEdgeAttributes();
 
 		if (value instanceof Boolean) {
 			attrs.setAttribute(canonName, attribute, (Boolean) value);
@@ -546,7 +546,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * XXX Can't use the Cytoscape class anymore
 	 */
 	public void deleteNodeAttribute(String attribute) {
-		Cytoscape.getNodeAttributes().deleteAttribute(attribute);
+		CyNetworkManager.getNodeAttributes().deleteAttribute(attribute);
 	}
 
 	/**
@@ -554,7 +554,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * XXX Can't use the Cytoscape class anymore
 	 */
 	public void deleteEdgeAttribute(String attribute) {
-		Cytoscape.getEdgeAttributes().deleteAttribute(attribute);
+		CyNetworkManager.getEdgeAttributes().deleteAttribute(attribute);
 	}
 
 	//------------------------------//
@@ -619,7 +619,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * @return the Cytoscape index of the created node
 	 */
 	public int createNode() {
-		return restoreNode(Cytoscape.getRootGraph().createNode());
+		return restoreNode(CyNetworkManager.getRootGraph().createNode());
 	}
 
 	/**
@@ -676,7 +676,7 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 * @return the Cytoscape index of the created edge
 	 */
 	public int createEdge(int source, int target, boolean directed) {
-		return restoreEdge(Cytoscape.getRootGraph().createEdge(source, target, directed));
+		return restoreEdge(CyNetworkManager.getRootGraph().createEdge(source, target, directed));
 	}
 
 	/**

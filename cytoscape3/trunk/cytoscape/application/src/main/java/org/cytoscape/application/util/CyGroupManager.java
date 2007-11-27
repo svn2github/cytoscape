@@ -35,7 +35,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.model.network;
+package org.cytoscape.application.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,7 +51,7 @@ import org.cytoscape.model.network.event.CyGroupChangeListener;
  */
 import org.cytoscape.view.network.CyGroupViewer;
 import org.cytoscape.view.network.CyNetworkView;
-import org.cytoscape.application.util.Cytoscape;
+import org.cytoscape.model.CyNetworkManager;
 
 
 /**
@@ -234,7 +234,7 @@ public class CyGroupManager {
 		groupMap.put(group.getGroupNode(), group);
 
 		// See if this groupNode has a state attribute
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		CyAttributes nodeAttributes = CyNetworkManager.getNodeAttributes();
 		try {
 			int state = nodeAttributes.getIntegerAttribute(groupNode.getIdentifier(), CyGroup.GROUP_STATE_ATTR);
 			group.setState(state);
@@ -287,7 +287,7 @@ public class CyGroupManager {
 				node.removeFromGroup(group);
 			}
 
-			CyNetwork network = Cytoscape.getCurrentNetwork();
+			CyNetwork network = CyNetworkManager.getCurrentNetwork();
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 			// Remove the group node form the network
 			// RootGraph rg = groupNode.getRootGraph();
@@ -359,7 +359,7 @@ public class CyGroupManager {
 
 			if (notify) {
 				// Make sure we have a view before we notify
-				CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+				CyNetworkView currentView = CyNetworkManager.getCurrentNetworkView();
 				if (myView != null) {
 					v.groupCreated(group, myView);
 				} else if (currentView != null) {

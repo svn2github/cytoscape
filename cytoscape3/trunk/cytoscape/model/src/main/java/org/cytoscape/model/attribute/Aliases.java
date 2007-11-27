@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.cytoscape.application.util.Cytoscape;
+import org.cytoscape.model.CyNetworkManager;
 
 
 
@@ -90,17 +90,17 @@ public class Aliases {
 
 		switch (objectType) {
 			case NODE:
-				attributes = Cytoscape.getNodeAttributes();
+				attributes = CyNetworkManager.getNodeAttributes();
 
 				break;
 
 			case EDGE:
-				attributes = Cytoscape.getEdgeAttributes();
+				attributes = CyNetworkManager.getEdgeAttributes();
 
 				break;
 
 			case NETWORK:
-				attributes = Cytoscape.getNetworkAttributes();
+				attributes = CyNetworkManager.getNetworkAttributes();
 
 				break;
 
@@ -205,7 +205,7 @@ public class Aliases {
 
 		switch (objectType) {
 			case NODE:
-				it = Cytoscape.getRootGraph().nodesIterator();
+				it = CyNetworkManager.getRootGraph().nodesIterator();
 
 				while (it.hasNext()) {
 					id = ((Node) it.next()).getIdentifier();
@@ -220,7 +220,7 @@ public class Aliases {
 				break;
 
 			case EDGE:
-				it = Cytoscape.getRootGraph().edgesIterator();
+				it = CyNetworkManager.getRootGraph().edgesIterator();
 
 				while (it.hasNext()) {
 					id = ((Edge) it.next()).getIdentifier();
@@ -235,7 +235,7 @@ public class Aliases {
 				break;
 
 			case NETWORK:
-				it = Cytoscape.getNetworkSet().iterator();
+				it = CyNetworkManager.getNetworkSet().iterator();
 
 				while (it.hasNext()) {
 					id = ((Node) it.next()).getIdentifier();

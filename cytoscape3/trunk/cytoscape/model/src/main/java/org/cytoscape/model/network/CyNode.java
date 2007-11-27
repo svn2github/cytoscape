@@ -203,7 +203,9 @@ public class CyNode implements giny.model.Node {
 	 * @return 'true' if this node is a group
 	 */
 	public boolean isaGroup() {
-		return CyGroupManager.isaGroup(this);
+		// TODO:  the previous code looked like:
+		//return CyGroupManager.isaGroup(this);
+		return true; 
 	}
 
 	/**

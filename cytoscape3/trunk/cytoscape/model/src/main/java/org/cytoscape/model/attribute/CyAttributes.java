@@ -41,7 +41,7 @@ import java.util.Map;
 
 
 /**
- * CyAttributes provides access to node and edge attributes within Cytoscape.
+ * CyAttributes provides access to node and edge attributes within CyNetworkManager.
  * <P>
  * CyAttributes is a replacement for {@link GraphObjAttributes}, which will be
  * officially removed from the Cytoscape core in September, 2006.
@@ -54,8 +54,8 @@ import java.util.Map;
  * There are two sets of global attributes, one for nodes, and one for edges.
  * To access these global attributes, use:
  * <UL>
- * <LI>{@link org.cytoscape.application.util.Cytoscape#getNodeAttributes()}
- * <LI>{@link org.cytoscape.application.util.Cytoscape#getEdgeAttributes()}
+ * <LI>{@link org.cytoscape.model.CyNetworkManager#getNodeAttributes()}
+ * <LI>{@link org.cytoscape.model.CyNetworkManager#getEdgeAttributes()}
  * </UL>
  * <h3>Unique Identifiers:</h3>
  * CyAttributes uses unique identifiers to attach attributes to specific

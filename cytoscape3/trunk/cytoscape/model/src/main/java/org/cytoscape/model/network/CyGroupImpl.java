@@ -49,7 +49,7 @@ import java.util.List;
 import org.cytoscape.model.attribute.CyAttributes;
 
 // XXX Remove this dependency!
-import org.cytoscape.application.util.Cytoscape;
+import org.cytoscape.model.CyNetworkManager;
 
 
 /**
@@ -130,7 +130,7 @@ public class CyGroupImpl implements CyGroup {
 	 */
 	protected CyGroupImpl(String groupName) {
 		this();
-		this.groupNode = Cytoscape.getCyNode(groupName, true);
+		this.groupNode = CyNetworkManager.getCyNode(groupName, true);
 		this.groupName = groupName;
 	}
 
@@ -277,7 +277,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param state the state to set
 	 */
 	public void setState(int state) {
-		CyAttributes attributes = Cytoscape.getNodeAttributes();
+		CyAttributes attributes = CyNetworkManager.getNodeAttributes();
 		this.groupState = state;
 		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
 		attributes.setUserVisible(GROUP_STATE_ATTR, false);
@@ -328,7 +328,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param viewerName name of the viewer for the group
 	 */
 	protected void setViewer(String viewerName) {
-		CyAttributes attributes = Cytoscape.getNodeAttributes();
+		CyAttributes attributes = CyNetworkManager.getNodeAttributes();
 		this.viewer = viewerName;
 
 		if (this.viewer != null) {
@@ -410,7 +410,7 @@ public class CyGroupImpl implements CyGroup {
 	private void addNodeToGroup ( CyNode node ) {
 		// Put this node in our map
 		nodeMap.put(node, node);
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = CyNetworkManager.getCurrentNetwork();
 		List <CyEdge>edgeList = null;
 
 		if (nodeToEdgeMap.containsKey(node)) {
