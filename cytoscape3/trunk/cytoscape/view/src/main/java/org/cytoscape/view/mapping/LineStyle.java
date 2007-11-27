@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.application.widget.vizmap.shape;
+package main.java.org.cytoscape.view.mapping;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;

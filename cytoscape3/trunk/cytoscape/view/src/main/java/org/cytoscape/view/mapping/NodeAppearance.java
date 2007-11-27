@@ -40,7 +40,7 @@
 // $Date: 2007-06-21 11:35:22 -0700 (Thu, 21 Jun 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.shape;
+package main.java.org.cytoscape.view.mapping;
 
 import static org.cytoscape.application.widget.vizmap.shape.VisualPropertyType.NODE_BORDER_COLOR;
 import static org.cytoscape.application.widget.vizmap.shape.VisualPropertyType.NODE_FILL_COLOR;

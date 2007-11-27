@@ -40,7 +40,7 @@
 // $Date: 2007-06-21 12:39:58 -0700 (Thu, 21 Jun 2007) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.application.widget.vizmap.shape;
+package main.java.org.cytoscape.view.mapping;
 
 
 
