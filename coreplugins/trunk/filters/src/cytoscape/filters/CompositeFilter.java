@@ -76,6 +76,9 @@ public class CompositeFilter implements CyFilter {
 	}
 		
 	public void setNetwork(CyNetwork pNetwork) {
+		if (network != null && network == pNetwork) {
+			return;
+		}
 		network = pNetwork;
 		// Set network for all the children
 		if (children == null || children.size() == 0){
