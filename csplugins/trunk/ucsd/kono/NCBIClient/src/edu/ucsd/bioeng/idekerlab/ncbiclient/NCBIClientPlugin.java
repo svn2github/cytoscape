@@ -41,13 +41,11 @@ import cytoscape.plugin.CytoscapePlugin;
 
 
 /**
- *
+ * NCBI Entrez Web Service Client
  */
 public class NCBIClientPlugin extends CytoscapePlugin {
 	/**
-	 * Creates a new NCBIClientPlugin object.
-	 *
-	 * @throws Exception  DOCUMENT ME!
+	 * Register NCBIClientPlugin to the Web Service Client Manager.
 	 */
 	public NCBIClientPlugin() throws Exception {
 		// Register this client to the manager.
