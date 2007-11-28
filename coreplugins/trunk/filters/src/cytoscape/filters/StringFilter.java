@@ -41,6 +41,7 @@ import giny.model.Edge;
 import java.util.*;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import csplugins.quickfind.util.QuickFind;
 import cytoscape.filters.util.FilterUtil;
@@ -52,7 +53,6 @@ import cytoscape.filters.util.FilterUtil;
 public class StringFilter extends AtomicFilter {
 
 	private String searchStr = null;
-	//private TextIndex textIndex = null;
 
 	//---------------------------------------//
 	// Constructor
@@ -94,11 +94,7 @@ public class StringFilter extends AtomicFilter {
 	 */	
 	
 	public void apply() {
-		
-		if (network == null) {
-			network = Cytoscape.getCurrentNetwork();					
-		}
-		
+
 		List<Node> nodes_list = null;
 		List<Edge> edges_list=null;
 
@@ -124,9 +120,9 @@ public class StringFilter extends AtomicFilter {
 		}
 		
 		//If quickFind_index does not exist, build the Index
-		if (quickFind_index == null) {
-			quickFind_index = FilterUtil.getQuickFindIndex(controllingAttribute, network, index_type);
-		}
+		//if (quickFind_index == null) {
+		quickFind_index = FilterUtil.getQuickFindIndex(controllingAttribute, network, index_type);
+		//}
 		
 		TextIndex theIndex = (TextIndex) quickFind_index;
 		Hit[] hits = theIndex.getHits(searchStr, Integer.MAX_VALUE);
@@ -141,12 +137,12 @@ public class StringFilter extends AtomicFilter {
 		int index=-1;
 		if (index_type == QuickFind.INDEX_NODES) {
 			for (Object obj : hit_objs) {
-				index = nodes_list.lastIndexOf((Node) obj);	
+				index = nodes_list.indexOf((Node) obj);	
 				node_bits.set(index, true);
 			}
 		} else if (index_type == QuickFind.INDEX_EDGES){
 			for (Object obj : hit_objs) {
-				index = edges_list.lastIndexOf((Edge) obj);
+				index = edges_list.indexOf((Edge) obj);
 				edge_bits.set(index, true);
 			}
 		}
