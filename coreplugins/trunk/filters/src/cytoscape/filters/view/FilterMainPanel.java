@@ -28,6 +28,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
 import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.cytopanels.CytoPanelImp;
@@ -145,12 +146,32 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 
-	// Listen to ATTRIBUTES_CHNAGED event
+	// Listen to ATTRIBUTES_CHNAGED and NETWORK_VIEW_FOCUSED event
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
 		{	
 			refreshAttributeCMB();
 			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());					
+		}
+		if (e.getPropertyName().equalsIgnoreCase(CytoscapeDesktop.NETWORK_VIEW_FOCUSED))
+		{	
+			// If FilterPanel is not selected, do nothing
+			if (cmbSelectFilter.getSelectedItem() == null) {
+				return;
+			}
+			
+			System.out.println("\n\nFilterMainPanel: NETWORK_VIEW_FOCUSED event is received.");
+			System.out.println("\tCytoscape.getCurrentNetwork().getIdentifier()=" + Cytoscape.getCurrentNetwork().getIdentifier()+ "\n");
+
+			// If currentNetwork does not change, do nothing
+			CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+			if (selectedFilter.getNetwork() == Cytoscape.getCurrentNetwork()) {
+				return;
+			}
+			else { // Change the network for the selected Filter 
+				System.out.println("\tChange the network for the selected filter.\n");				
+				selectedFilter.setNetwork(Cytoscape.getCurrentNetwork());
+			}
 		}
 	}
 
@@ -289,6 +310,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cytoPanelWest.addCytoPanelListener(l);
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 
 	public void initCMBSelectFilter(){
@@ -633,46 +655,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (_btn == btnApplyFilter) {
 
 				System.out.println("\nApplyButton is clicked!");
-				
-				System.out.println("\n\tThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");
-				
-				System.out.println("\tThe Filter to apply is \n\t\t" + cmbSelectFilter.getSelectedItem().toString()+"\n");
-
-				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter) {
-					System.out.println("\nTopologyFiler is selected!");
-					//TopologyFilter topoFilter = (TopologyFilter) cmbSelectFilter.getSelectedItem();
-				}
+				System.out.println("\tThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");				
+				System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				
 				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
-				
-				//CompositeFilter tmpFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
-				
-				//System.out.println("\tfilter.getNodebits().toString() = \n" + tmpFilter.getNodeBits().toString()+"\n");
-				//tmpFilter.apply();
-				//tmpFilter.doSelection();
-				//System.out.println(" After filter.doSelection()\n");
-
-				//initCMBSelectFilter(); // for debug only
-				//updateCMBAttributes(); // for debug only
-				
-				//CompositeFilter theFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();
-				
-				//if (theFilter == null) {
-				//	return;
-				//}
-				
-				//System.out.println("\nThe Filter to apply:\n" + theFilter.toString()+"\n");
-				//quickFind.selectRange(cyNetwork, lowValue, highValue);
-				//QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-				//quickFind.selectHit(currentNetwork, hit);
-				
-				 // We have to run "Apply filter" in a seperate thread, becasue
-				 //we want to monitor the progress
-				
-				//FilterUtil.applyFilter(theFilter);
-				
-				//ApplyFilterThread applyFilterThread = new ApplyFilterThread(theFilter);
-				//applyFilterThread.start();
 			}
 			if (_btn == btnAddFilterWidget) {
 
