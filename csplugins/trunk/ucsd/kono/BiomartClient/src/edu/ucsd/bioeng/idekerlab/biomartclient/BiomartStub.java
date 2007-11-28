@@ -266,7 +266,7 @@ public class BiomartStub {
 			if ((parts.length > 1)) {
 				if (getAll) {
 					filters.put(parts[1], parts[0]);
-				} else if ((parts[1].endsWith("ID(s)") || parts[1].endsWith("Accession(s)")
+				} else if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
 				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false)) {
 					filters.put(parts[1], parts[0]);
 					System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
