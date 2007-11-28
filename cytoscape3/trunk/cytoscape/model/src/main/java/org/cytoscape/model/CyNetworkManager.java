@@ -46,11 +46,6 @@ import giny.model.Node;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
+// XXX is this really required?
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import org.cytoscape.model.attribute.CyAttributes;
@@ -900,5 +895,8 @@ public abstract class CyNetworkManager {
 		setCurrentSessionFileName(null);
 	}
 
+	
+	
+	
 
 }
