@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<project>
+  <parent>
+    <artifactId>corelibs</artifactId>
+    <groupId>cytoscape</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cytoscape</groupId>
+  <artifactId>cruft-obo</artifactId>
+  <name>cruft-obo</name>
+  <version>1.0-SNAPSHOT</version>
+  <url>http://maven.apache.org</url>
+</project>
