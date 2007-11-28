@@ -159,19 +159,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (cmbSelectFilter.getSelectedItem() == null) {
 				return;
 			}
-			
-			System.out.println("\n\nFilterMainPanel: NETWORK_VIEW_FOCUSED event is received.");
-			System.out.println("\tCytoscape.getCurrentNetwork().getIdentifier()=" + Cytoscape.getCurrentNetwork().getIdentifier()+ "\n");
-
-			// If currentNetwork does not change, do nothing
+			//Refresh indices for UI widgets after network switch			
 			CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
-			if (selectedFilter.getNetwork() == Cytoscape.getCurrentNetwork()) {
-				return;
-			}
-			else { // Change the network for the selected Filter 
-				System.out.println("\tChange the network for the selected filter.\n");				
-				selectedFilter.setNetwork(Cytoscape.getCurrentNetwork());
-			}
+			selectedFilter.setNetwork(Cytoscape.getCurrentNetwork());
+			FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(selectedFilter);
+			theSettingPanel.refreshIndicesForWidgets();
 		}
 	}
 
