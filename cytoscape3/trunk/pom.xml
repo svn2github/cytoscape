@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This pom can be used to build the entire project (almost) but currently it's mostly here
+for Eclipse users to correctly enable the maven2 plugin
+-->
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cytoscape</groupId>
+  <artifactId>Cytoscape3Refactor</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.1</version>
+  <description>Cytoscape refactor project</description>
+
+	
+	<modules>
+		<module>corelibs</module>
+		<module>cytoscape</module>
+	</modules>
+	
+	
+</project>
