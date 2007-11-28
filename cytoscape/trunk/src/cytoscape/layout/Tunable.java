@@ -301,6 +301,10 @@ public class Tunable {
 		} else if (type == LIST) {
 			inputField = getListPanel((Object[]) lowerBound);
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
+		} else if (type == STRING) {
+			JTextField field = new JTextField(value.toString(), 20);
+			field.setHorizontalAlignment(JTextField.RIGHT);
+			inputField = field;
 		}
 
 		// Added by kono
