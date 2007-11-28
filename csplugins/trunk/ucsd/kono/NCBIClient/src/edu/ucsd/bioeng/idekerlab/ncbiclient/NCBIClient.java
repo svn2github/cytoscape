@@ -116,9 +116,13 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		}
 	}
 
+	// Display name for this Client
 	private static final String DISPLAY_NAME = "NCBI Entrez EUtilities Web Service Client";
+	
+	// Client's ID
 	private static final String CLIENT_ID = "ncbi_entrez";
-	private static NCBIClient client;
+	
+	private static final NCBIClient client;
 	private static final String DEF_ITR_TYPE = "pp";
 	private CopyOnWriteArrayList<Node> nodeList;
 	private CopyOnWriteArrayList<Edge> edgeList;
