@@ -56,7 +56,6 @@ import org.cytoscape.model.network.CyNetwork;
 
 // XXX Remove dependencies
 import org.cytoscape.application.util.CyNetworkNaming;
-import org.cytoscape.application.util.Cytoscape;
 import org.cytoscape.view.network.CyLayoutAlgorithm;
 import org.cytoscape.view.network.CyLayouts;
 import org.cytoscape.view.network.CyNetworkView;

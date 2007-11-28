@@ -52,11 +52,12 @@ package org.cytoscape.io.network.reader;
 //core libs?
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
+
 import cytoscape.task.TaskMonitor;
+
 import giny.model.Edge;
 import giny.model.Node;
 import giny.model.RootGraph;
-
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;

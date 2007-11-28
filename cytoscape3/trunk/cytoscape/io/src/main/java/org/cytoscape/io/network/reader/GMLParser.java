@@ -52,9 +52,10 @@ import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
+import org.cytoscape.io.util.FileUtil;
+
 // XXX Remove dependencies
-import org.cytoscape.application.util.FileUtil;
-import org.cytoscape.application.util.KeyValue;
+//import org.cytoscape.application.util.KeyValue;
 
 
 /**
