@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<!-- All of the subprojects in corelibs need the groupId 'org.cytoscape' to allow the parent pom to install all of them-->
-	<groupId>org.cytoscape</groupId>
+	<groupId>cytoscape</groupId>
 	<artifactId>corelibs</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -52,7 +53,8 @@
 		<module>render.export</module>
 		<module>phoebe.dnd</module>
 		<module>ding</module>
-	</modules>
+    <module>cruft-obo</module>
+  </modules>
 
 	<build>
 		<plugins>
