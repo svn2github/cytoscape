@@ -37,6 +37,7 @@
 package cytoscape.filters;
 
 import java.util.*;
+import cytoscape.CyNetwork;
 
 import giny.filter.Filter;
 
@@ -49,6 +50,9 @@ public interface CyFilter extends Filter{
 	public String getName();
 	public void setName(String pName);
 
+	public void setNetwork(CyNetwork pNetwork);
+	public CyNetwork getNetwork();
+	
 	public void childChanged();
 	public CyFilter getParent();	
 	public void setParent(CyFilter f);
