@@ -22,7 +22,7 @@ public class FilterUtil {
 		
 		pFilter.apply();
 		
-		CyNetwork network = Cytoscape.getCurrentNetwork(); 
+		CyNetwork network = pFilter.getNetwork();
 
 		network.unselectAllNodes();
 		network.unselectAllEdges();
