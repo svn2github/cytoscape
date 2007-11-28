@@ -93,11 +93,7 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 	}
 	
 	public void apply() {
-		
-		if (network == null) {
-			network = Cytoscape.getCurrentNetwork();					
-		}
-		
+				
 		List<Node> nodes_list = null;
 		List<Edge> edges_list=null;
 
@@ -122,9 +118,9 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 		}
 		
 		//If quickFind_index does not exist, build the Index
-		if (quickFind_index == null) {
-			quickFind_index = FilterUtil.getQuickFindIndex(controllingAttribute, network, index_type);
-		}
+		//if (quickFind_index == null) {
+		quickFind_index = FilterUtil.getQuickFindIndex(controllingAttribute, network, index_type);
+		//}
 
 		//System.out.println(" NumberFilter.apply(): objectCount = " + objectCount);
 		NumberIndex numberIndex = (NumberIndex) quickFind_index;
