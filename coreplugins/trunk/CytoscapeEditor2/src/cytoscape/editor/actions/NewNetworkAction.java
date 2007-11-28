@@ -14,7 +14,6 @@ import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.util.CyNetworkViewUtil;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
@@ -75,7 +74,7 @@ public class NewNetworkAction extends CytoscapeAction {
 							       false);
 		    // CyNetworkView newView = Cytoscape.createNetworkView(_newNet);
 		    // Now build the view using the current visual style:
-		    CyNetworkView newView = CyNetworkViewUtil.createNetworkView(_newNet,
+		    CyNetworkView newView = Cytoscape.createNetworkView(_newNet,
 										_newNet.getTitle(),
 										null,
 										// use the existing visual style:

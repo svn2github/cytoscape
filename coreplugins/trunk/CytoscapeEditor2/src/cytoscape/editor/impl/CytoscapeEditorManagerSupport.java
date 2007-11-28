@@ -48,7 +48,6 @@ import cytoscape.editor.InvalidEditorException;
 
 import cytoscape.editor.actions.DeleteAction;
 
-import cytoscape.util.CyNetworkViewUtil;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -190,7 +189,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 									   false);
 				// CyNetworkView newView = Cytoscape.createNetworkView(newNet);
 				// Now build the right view:
-				CyNetworkView newView = CyNetworkViewUtil.createNetworkView(newNet,
+				CyNetworkView newView = Cytoscape.createNetworkView(newNet,
 											    newNet.getTitle(),
 											    null,
 											    // use the existing visual style:
