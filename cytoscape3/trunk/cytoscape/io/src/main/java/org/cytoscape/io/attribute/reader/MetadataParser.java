@@ -36,22 +36,17 @@
  */
 package org.cytoscape.io.attribute.reader;
 
-
-
 import java.net.URISyntaxException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
-import org.cytoscape.application.init.CytoscapeInit;
-import org.cytoscape.application.util.Cytoscape;
 import org.cytoscape.model.attribute.CyAttributes;
 import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 
 /**
  * Manipulates network metadata for loading and saving.<br>
@@ -101,26 +96,42 @@ public class MetadataParser {
 	public MetadataParser(CyNetwork network, String metadataLabel) {
 		this.metadataLabel = metadataLabel;
 		this.network = network;
-		networkAttributes = Cytoscape.getNetworkAttributes();
+		networkAttributes = CyNetworkManager.getNetworkAttributes();
 
 		// Extract Network Metadata from CyAttributes
 		rdfAsMap = networkAttributes.getMapAttribute(network.getIdentifier(), metadataLabel);
 	}
 
 	/**
+	 * See makeNewMetadataMap(java.util.Properties props)
+	 * @return
+	 */
+	public Map<String, String> makeNewMetadataMap() {
+		return this.makeNewMetadataMap(null);
+	}
+	
+	/**
 	 * Build new metadata RDF structure based on given network information.
 	 *
 	 * Data items in "defaultLabels" will be created and inserted into RDF
 	 * structure.
+	 * 
+	 * @param props
+	 * 		Properties object for default metadata source, type and format
 	 */
-	public Map<String, String> makeNewMetadataMap() {
+	public Map<String, String> makeNewMetadataMap(java.util.Properties props) {
 		Map<String, String> dataMap = new HashMap<String, String>();
 
-		// Extract default values from property
-		String defSource = CytoscapeInit.getProperties().getProperty("defaultMetadata.source");
-		String defType = CytoscapeInit.getProperties().getProperty("defaultMetadata.type");
-		String defFormat = CytoscapeInit.getProperties().getProperty("defaultMetadata.format");
+		String defSource = null; 
+		String defType = null;
+		String defFormat = null;
 
+		if (props != null) {
+			defSource = props.getProperty("defaultMetadata.source");
+			defType = props.getProperty("defaultMetadata.type");
+			defFormat = props.getProperty("defaultMetadata.format");
+		}
+		
 		MetadataEntries[] entries = MetadataEntries.values();
 
 		for (int i = 0; i < entries.length; i++) {

@@ -34,18 +34,15 @@
 */
 package org.cytoscape.io.attribute.reader.go;
 
-
-import org.cytoscape.io.attribute.reader.ontology.*;
-import org.cytoscape.io.attribute.reader.obo.*;
-
+import org.cytoscape.io.attribute.server.DataServer;
+import org.cytoscape.io.attribute.reader.MetadataEntries;
 import org.cytoscape.io.attribute.reader.db.DBReference;
+import org.cytoscape.io.attribute.reader.obo.OBOTags;
 import org.cytoscape.io.attribute.reader.obo.OBOOntology;
+
 import org.cytoscape.model.attribute.CyAttributes;
 import org.cytoscape.model.network.CyNetwork;
-
-
-// XXX Remove this dependency
-import org.cytoscape.application.util.Cytoscape;
+import org.cytoscape.model.CyNetworkManager;
 
 import org.biojava.ontology.Term;
 
@@ -63,7 +60,7 @@ import java.util.List;
  *
  */
 public class GeneOntology extends OBOOntology {
-	private CyAttributes goTermAttributes = Cytoscape.getNodeAttributes();
+	private CyAttributes goTermAttributes = CyNetworkManager.getNodeAttributes();
 	public enum GOAspect {
 		BIOLOGICAL_PROCESS("P"),
 		CELLULAR_COMPONENT("C"),
@@ -83,9 +80,9 @@ public class GeneOntology extends OBOOntology {
 	    throws URISyntaxException, MalformedURLException {
 		super(name, curator, description, dag);
 
-		final DBReference reference = Cytoscape.getOntologyServer().getCrossReferences()
+		final DBReference reference = DataServer.getOntologyServer().getCrossReferences()
 		                                       .getDBReference("GOC");
-		metaParser.setMetadata(SOURCE, reference.getGenericURL().toString());
+		metaParser.setMetadata(MetadataEntries.SOURCE, reference.getGenericURL().toString());
 	}
 
 	/**
@@ -102,13 +99,13 @@ public class GeneOntology extends OBOOntology {
 
 	public GOTerm getGOTerm(String goID) {
 		return new GOTerm(goID,
-		                  Cytoscape.getNodeAttributes()
+		                  CyNetworkManager.getNodeAttributes()
 		                           .getStringAttribute(goID,
-		                                               OBOTags.getPrefix() + "." + NAME.toString()),
+		                                               OBOTags.getPrefix() + "." + OBOTags.NAME.toString()),
 		                  name,
 		                  goTermAttributes.getStringAttribute(goID,
 		                                                      OBOTags.getPrefix() + "."
-		                                                      + DEF.toString()));
+		                                                      + OBOTags.DEF.toString()));
 	}
 
 	/**
@@ -122,7 +119,7 @@ public class GeneOntology extends OBOOntology {
 	public GOAspect getAspect(String goID) {
 		final String nameSpace = goTermAttributes.getStringAttribute(goID,
 		                                                             OBOTags.getPrefix() + "."
-		                                                             + NAMESPACE.toString());
+		                                                             + OBOTags.NAMESPACE.toString());
 
 		if (nameSpace == null) {
 			return null;

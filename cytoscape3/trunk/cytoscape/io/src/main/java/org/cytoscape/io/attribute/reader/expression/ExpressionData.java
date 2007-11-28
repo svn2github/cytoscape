@@ -44,25 +44,27 @@
 //--------------------------------------------------------------------
 package org.cytoscape.io.attribute.reader.expression;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.Serializable;
 
-//--------------------------------------------------------------------
+import java.util.Vector;
+import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Iterator;
 
-//import cytoscape.data.mRNAMeasurement;
-
-// core libs
 import cytoscape.task.TaskMonitor;
 
-
-import java.io.*;
-
-import java.util.*;
-
-import org.cytoscape.application.util.Cytoscape;
-import org.cytoscape.application.util.FileUtil;
-import org.cytoscape.io.network.writer.TextFileReader;
-import org.cytoscape.io.network.writer.TextJarReader;
+import org.cytoscape.io.util.FileUtil;
 import org.cytoscape.model.attribute.CyAttributes;
 import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetworkManager;
+//import org.cytoscape.io.network.writer.TextFileReader;
+//import org.cytoscape.io.network.writer.TextJarReader;
 
 
 //--------------------------------------------------------------------
@@ -494,25 +496,25 @@ public class ExpressionData implements Serializable {
 
 	private Object getAttributeValue(byte type, String id, String att) {
 		if (type == CyAttributes.TYPE_INTEGER)
-			return Cytoscape.getNodeAttributes().getIntegerAttribute(id, att);
+			return CyNetworkManager.getNodeAttributes().getIntegerAttribute(id, att);
 		else if (type == CyAttributes.TYPE_FLOATING)
-			return Cytoscape.getNodeAttributes().getDoubleAttribute(id, att);
+			return CyNetworkManager.getNodeAttributes().getDoubleAttribute(id, att);
 		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return Cytoscape.getNodeAttributes().getBooleanAttribute(id, att);
+			return CyNetworkManager.getNodeAttributes().getBooleanAttribute(id, att);
 		else if (type == CyAttributes.TYPE_STRING)
-			return Cytoscape.getNodeAttributes().getStringAttribute(id, att);
+			return CyNetworkManager.getNodeAttributes().getStringAttribute(id, att);
 		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return Cytoscape.getNodeAttributes().getListAttribute(id, att);
+			return CyNetworkManager.getNodeAttributes().getListAttribute(id, att);
 		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return Cytoscape.getNodeAttributes().getMapAttribute(id, att);
+			return CyNetworkManager.getNodeAttributes().getMapAttribute(id, att);
 
 		return null;
 	}
 
 	private Hashtable getAttributeToIdList(String keyAttributeName) {
 		Hashtable attributeToIdList = new Hashtable();
-		List allNodes = Cytoscape.getCyNodesList();
-		byte attributeType = Cytoscape.getNodeAttributes().getType(keyAttributeName);
+		List allNodes = CyNetworkManager.getCyNodesList();
+		byte attributeType = CyNetworkManager.getNodeAttributes().getType(keyAttributeName);
 
 		for (Iterator ii = allNodes.iterator(); ii.hasNext();) {
 			CyNode node = (CyNode) ii.next();

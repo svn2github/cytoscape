@@ -34,10 +34,6 @@
 */
 package org.cytoscape.io.attribute.reader.obo;
 
-import org.cytoscape.io.attribute.reader.*;
-
-// core lib
-import giny.model.Node;
 
 import org.biojava.ontology.AlreadyExistsException;
 import org.biojava.ontology.OntologyOps;
@@ -47,11 +43,6 @@ import org.biojava.ontology.Variable;
 import org.biojava.utils.AbstractChangeable;
 import org.biojava.utils.ChangeVetoException;
 
-import org.cytoscape.model.attribute.CyAttributes;
-import org.cytoscape.model.attribute.Semantics;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-
 import java.net.URISyntaxException;
 
 import java.util.HashSet;
@@ -59,8 +50,17 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-// XXX Remove this dependency
-import org.cytoscape.application.util.Cytoscape;
+import giny.model.Node;
+
+import org.cytoscape.io.attribute.reader.*;
+
+import org.cytoscape.model.attribute.CyAttributes;
+import org.cytoscape.model.attribute.Semantics;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetworkManager;
+
+//import org.cytoscape.application.util.Cytoscape;
 
 
 /**
@@ -142,8 +142,8 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	 */
 	public OBOOntology(final String name, final String curator, final String description,
 	                final CyNetwork dag) {
-		ontologyAttr = Cytoscape.getNetworkAttributes();
-		termAttr = Cytoscape.getNodeAttributes();
+		ontologyAttr = CyNetworkManager.getNetworkAttributes();
+		termAttr = CyNetworkManager.getNodeAttributes();
 
 		this.name = name;
 
@@ -156,7 +156,7 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 			};
 
 		if (dag == null) {
-			this.ontologyGraph = Cytoscape.createNetwork(this.name);
+			this.ontologyGraph = CyNetworkManager.createNetwork(this.name);
 		} else {
 			this.ontologyGraph = dag;
 		}
@@ -205,7 +205,7 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	 * @param newTerm
 	 */
 	public void add(OBOOntologyTerm newTerm) {
-		Node newOntologyTerm = Cytoscape.getCyNode(newTerm.getName(), true);
+		Node newOntologyTerm = CyNetworkManager.getCyNode(newTerm.getName(), true);
 		ontologyGraph.addNode(newOntologyTerm);
 		termAttr.setAttribute(newOntologyTerm.getIdentifier(), OBOTags.DEF.toString(),
 		                      newTerm.getDescription());
@@ -245,7 +245,7 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	 * @return true if the term is in the DAG.
 	 */
 	public boolean containsTerm(String id) {
-		CyNode testNode = Cytoscape.getCyNode(id, false);
+		CyNode testNode = CyNetworkManager.getCyNode(id, false);
 
 		if (testNode == null) {
 			return false;
@@ -287,8 +287,8 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	 *
 	 */
 	public boolean containsTriple(Term subject, Term object, Term predicate) {
-		Node source = Cytoscape.getCyNode(subject.getName());
-		Node target = Cytoscape.getCyNode(object.getName());
+		Node source = CyNetworkManager.getCyNode(subject.getName());
+		Node target = CyNetworkManager.getCyNode(object.getName());
 
 		String interaction = predicate.getName();
 
@@ -296,7 +296,7 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 			return false;
 		}
 
-		if (Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, false) != null) {
+		if (CyNetworkManager.getCyEdge(source, target, Semantics.INTERACTION, interaction, false) != null) {
 			return true;
 		} else {
 			return false;
@@ -308,7 +308,7 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	 */
 	public Term createTerm(String name, String description)
 	    throws AlreadyExistsException, ChangeVetoException, IllegalArgumentException {
-		Node newNode = Cytoscape.getCyNode(name, true);
+		Node newNode = CyNetworkManager.getCyNode(name, true);
 		ontologyGraph.addNode(newNode);
 		termAttr.setAttribute(name, MetadataEntries.DESCRIPTION.toString(), description);
 
@@ -353,10 +353,10 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	public Triple createTriple(Term subject, Term object, Term predicate, String name,
 	                           String description)
 	    throws AlreadyExistsException, ChangeVetoException {
-		Triple newTriple = new cytoscape.data.ontology.Triple(subject, object, predicate, name,
+		Triple newTriple = new org.cytoscape.io.util.Triple(subject, object, predicate, name,
 		                                                      description);
 
-		//Cytoscape.getCyEdge(subject.getName(), object.getName(), null, predicate.getName());
+		//CyNetworkManager.getCyEdge(subject.getName(), object.getName(), null, predicate.getName());
 		return newTriple;
 	}
 
@@ -382,7 +382,7 @@ public class OBOOntology extends AbstractChangeable implements org.biojava.ontol
 	 * Delete a term from DAG (CyNetwork)
 	 */
 	public void deleteTerm(Term arg0) throws ChangeVetoException {
-		ontologyGraph.removeNode(Cytoscape.getRootGraph().getNode(arg0.getName()).getRootGraphIndex(),
+		ontologyGraph.removeNode(CyNetworkManager.getRootGraph().getNode(arg0.getName()).getRootGraphIndex(),
 		                         true);
 	}
 

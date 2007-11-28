@@ -43,7 +43,22 @@
 // -----------------------------------------------------------------------------------------
 package org.cytoscape.io.attribute.server;
 
-// core lib
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import java.net.URL;
+
+import java.rmi.Naming;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+
 import cytoscape.cruft.obo.BiologicalProcessAnnotationReader;
 import cytoscape.cruft.obo.CellularComponentAnnotationReader;
 import cytoscape.cruft.obo.MolecularFunctionAnnotationReader;
@@ -65,24 +80,10 @@ import org.cytoscape.io.network.writer.TextHttpReader;
 import org.cytoscape.io.network.writer.TextJarReader;
 import org.cytoscape.io.util.URLUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.net.URL;
-
-import java.rmi.Naming;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 
 // XXX Remove dependency
-import org.cytoscape.application.init.CytoscapeInit;
+//import org.cytoscape.application.init.CytoscapeInit;
 
 
 // ----------------------------------------------------------------------------------------
