@@ -57,6 +57,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CyNetworkView;
 
 import javax.swing.event.ChangeEvent;
 import java.awt.Component;
@@ -156,12 +157,12 @@ public class FilterSettingPanel extends JPanel {
 				return tmpCombo;				
 			}
 			//	The attribute exists, create an index
-			final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-			quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
-					pFilter.getControllingAttribute(), new TaskMonitorBase());					
-			TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+			//final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+			//quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
+			//		pFilter.getControllingAttribute(), new TaskMonitorBase());					
+			//TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
 
-			pFilter.setIndex(index_by_thisAttr);					
+			pFilter.setIndex(createTextIndex(pFilter));					
 			
 			comboBox = ComboBoxFactory.createTextIndexComboBox((TextIndex)pFilter.getIndex(), 2.0);				
 
@@ -265,38 +266,63 @@ public class FilterSettingPanel extends JPanel {
 	
 		return false;
 	}
-/*	
-	//The method may be triggered by event of Cytoscape.ATTRIBUTES_CHANGED
+	
+	
+	//  Refresh indices for widget after nertwork switch
+	// The method may be triggered by event of NETWORK_VIEW_FOCUSED
 	public void refreshIndicesForWidgets(){
 
+		System.out.println("FilterSettingPanel.refreshIndicesForWidgets()...");
+		
 		// Check if each widget has associatd index, if not, try to create one
 		List<CyFilter> children = theFilter.getChildren();
 		if ((children == null)||(children.size() == 0)) {
 			return;
 		}
 		
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		
 		for (int i=0; i<children.size(); i++) {
 			CyFilter child = children.get(i);
 			if (child instanceof StringFilter) {
-				//JComboBox theComboBox = (JComboBox) pnlCustomSettings.getComponent(i*5+2);
-
 				if (pnlCustomSettings.getComponent(i*5+2) instanceof TextIndexComboBox) {
-					// This component already had index
-					continue;
-				}
-				else {//This is just a comboBox try to create a index for it
-					JComboBox theComboBox = getTextIndexComboBox((StringFilter) child);
-					if (theComboBox instanceof TextIndexComboBox) {
-						// created a TextIndexComboBox successfully
-						TextIndexComboBox aIndexBox = (TextIndexComboBox) theComboBox; 
-						StringFilter aFilter = (StringFilter) child;
-						aFilter.setIndex(aIndexBox.getTextIndex());					
+					TextIndexComboBox theBox = (TextIndexComboBox) pnlCustomSettings.getComponent(i*5+2);
+					if (network != null) {
+						CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
+
+						if (networkView != Cytoscape.getNullNetworkView()) {
+							TextIndex textIndex = createTextIndex((StringFilter) child);;
+							if (textIndex != null) {
+								theBox.setTextIndex(textIndex);
+								StringFilter aFilter = (StringFilter) child;
+								aFilter.setIndex(textIndex);					
+							}
+						}
 					}
-				}			
+				}
 			}
-		}		
+			if (child instanceof NumericFilter) {
+				if (pnlCustomSettings.getComponent(i*5+2) instanceof JRangeSliderExtended) {
+					JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(i*5+2);
+					if (network != null) {
+						CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
+
+						if (networkView != Cytoscape.getNullNetworkView()) {
+							NumberIndex numIndex = createNumberIndex((NumericFilter) child);;
+							if (numIndex != null) {
+								NumberRangeModel rangeModel = (NumberRangeModel) theSlider.getModel();
+								rangeModel.setMinValue(numIndex.getMinimumValue());
+								rangeModel.setMaxValue(numIndex.getMaximumValue());
+
+								NumericFilter aFilter = (NumericFilter) child;
+								aFilter.setIndex(numIndex);					
+							}
+						}
+					}
+				}
+			}		
+		}
 	}
-*/	
 	
 	/**
 	 * Inner class Mouse listener for double click events on rangeSlider.
@@ -555,7 +581,6 @@ public class FilterSettingPanel extends JPanel {
 		//Update the selection on screen
 		FilterUtil.doSelection(theFilter);			
 	}
-
 	
 	// Determine the child index in filter based on the row index of a component 
 	// (TextIndexComboBox or RangeSlider) in the customSetting panel
@@ -640,7 +665,6 @@ public class FilterSettingPanel extends JPanel {
 			}
 			
 			//Update the selection on screen
-			//System.out.println("FilterSettingPanel. actionEvent from textIndexedComboBox...");	
 			FilterUtil.doSelection(theFilter);				
 		}
 	}
@@ -671,21 +695,13 @@ public class FilterSettingPanel extends JPanel {
 		public void stateChanged(ChangeEvent e) {
 
 			//Update theFilter object if the slider is adjusted
-			//System.out.println("FilterSettingPanel.stateChanged() ...");
-			
 			List<CyFilter> theFilterList = theFilter.getChildren();
 			
 			try {
 				NumberRangeModel model = (NumberRangeModel) slider.getModel();
 				NumericFilter theNumericFilter = (NumericFilter) theFilterList.get(getChildIndexFromComponent(slider));
-					
-				//model.setMinValue(numberIndex.getMinimumValue());
-				//model.setMaxValue(numberIndex.getMaximumValue());
-								
-				theNumericFilter.setRange((Number)model.getLowValue(), (Number)model.getHighValue());
-				
-				//model.setLowValue(theNumericFilter.getLowValue());
-				//model.setHighValue(theNumericFilter.getHighValue());								
+
+				theNumericFilter.setRange((Number)model.getLowValue(), (Number)model.getHighValue());				
 			}
 			catch (Exception ex) {
 				//NullPointerException caught -- the slider is not initialized yet								
@@ -694,12 +710,19 @@ public class FilterSettingPanel extends JPanel {
 
 			theFilter.childChanged();
 			//Update the selection on screen
-			//System.out.println("FilterSettingPanel. rangerSlider changed Event received...");	
 			FilterUtil.doSelection(theFilter);				
-
 		}
 	}
-		
+	
+	
+	private TextIndex createTextIndex(StringFilter pFilter) {
+		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
+		quickFind.reindexNetwork(Cytoscape.getCurrentNetwork(), pFilter.getIndexType(),
+				pFilter.getControllingAttribute(), new TaskMonitorBase());					
+		return (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
+	}
+	
+	
 	private NumberIndex createNumberIndex(NumericFilter pNumericFilter) {
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();					
 		currentNetwork = Cytoscape.getCurrentNetwork();
