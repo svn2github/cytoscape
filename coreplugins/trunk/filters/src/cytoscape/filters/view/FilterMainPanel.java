@@ -159,6 +159,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (cmbSelectFilter.getSelectedItem() == null) {
 				return;
 			}
+						
 			//Refresh indices for UI widgets after network switch			
 			CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 			selectedFilter.setNetwork(Cytoscape.getCurrentNetwork());
@@ -911,6 +912,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		else {
 			newFilter = new CompositeFilter(pFilterName);
 		}
+		
+		newFilter.setNetwork(Cytoscape.getCurrentNetwork());
 		
 		allFilterVect.add(newFilter);
 		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this,newFilter);
