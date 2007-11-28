@@ -178,10 +178,15 @@ public class NCBIGenePanel extends AttributeImportPanel {
 			taskMonitor.setStatus("Importing annotation from Entrez Gene.\n\nIt may take a while.\nPlease wait...");
 			taskMonitor.setPercentCompleted(-1);
 
-			
-			AttributeImportQuery qObj = new AttributeImportQuery(null, key, keyAttrName);
+			final Object[] selectedAttr = attrList.getSelectedValues();
+		
+			AttributeImportQuery qObj = new AttributeImportQuery(selectedAttr, key, keyAttrName);
 
-			WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(new CyWebServiceEvent("ncbi_entrez", WSEventType.IMPORT_ATTRIBUTE, qObj));
+			try {
+				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(new CyWebServiceEvent("ncbi_entrez", WSEventType.IMPORT_ATTRIBUTE, qObj));
+			} catch (Exception e) {
+				taskMonitor.setException(e, "Could not load attributes from NCBI.");
+			}
 
 			taskMonitor.setPercentCompleted(100);
 			taskMonitor.setStatus("Attributes successfully loaded.");
