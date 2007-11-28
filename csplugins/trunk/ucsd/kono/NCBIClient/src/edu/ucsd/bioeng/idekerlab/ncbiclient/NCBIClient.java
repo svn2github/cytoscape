@@ -62,9 +62,7 @@ import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceSoap;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.EFetchRequest;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.EFetchResult;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.EntrezgeneType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.Entrezgene_sourceType;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneCommentaryType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneCommentary_commentType;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneRefType;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.PubType;
 import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchRequest;
@@ -106,6 +104,16 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		public String getName() {
 			return name;
 		}
+
+		public static AnnotationCategory getValue(String dispName) {
+			for (AnnotationCategory ann : values()) {
+				if (ann.name.equals(dispName)) {
+					return ann;
+				}
+			}
+
+			return null;
+		}
 	}
 
 	private static final String DISPLAY_NAME = "NCBI Entrez EUtilities Web Service Client";
@@ -116,6 +124,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	private CopyOnWriteArrayList<Edge> edgeList;
 	private Map<String[], Object> nodeAttrMap = new ConcurrentHashMap<String[], Object>();
 	private Map<String[], Object> edgeAttrMap = new ConcurrentHashMap<String[], Object>();
+	private List<AnnotationCategory> selectedAnn = new ArrayList<AnnotationCategory>();
 
 	static {
 		try {
@@ -190,12 +199,12 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 			if (e.getNextMove() != null) {
 				Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-				                             new DatabaseSearchResult(resSize,
-				                                                      result, e.getNextMove()));
+				                             new DatabaseSearchResult(resSize, result,
+				                                                      e.getNextMove()));
 			} else {
 				Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
 				                             new DatabaseSearchResult(Integer.getInteger(result
-				                                                                                                                                                                                      .getCount()),
+				                                                                                                                                                                                               .getCount()),
 				                                                      result,
 				                                                      WSEventType.IMPORT_NETWORK));
 			}
@@ -208,6 +217,20 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	private void importAnnotations(Object parameter) {
 		if (parameter instanceof AttributeImportQuery == false) {
 			return;
+		}
+
+		final Object[] selectedAttr = (Object[]) ((AttributeImportQuery) parameter).getParameter();
+
+		AnnotationCategory ann;
+		selectedAnn = new ArrayList<AnnotationCategory>();
+
+		for (Object name : selectedAttr) {
+			System.out.println("---> Selected: " + name);
+			ann = AnnotationCategory.getValue(name.toString());
+
+			if (ann != null) {
+				selectedAnn.add(ann);
+			}
 		}
 
 		final String keyAttrName = ((AttributeImportQuery) parameter).getKeyCyAttrName();
@@ -248,6 +271,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 					nodeAttr.setAttribute(key[0], key[1], attrVal.toString());
 				}
 			}
+
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
@@ -478,89 +502,90 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 				EFetchResult res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
 
-				if ((res == null) || res.getEntrezgeneSet() == null || res.getEntrezgeneSet().getEntrezgene(0) == null ||
-						res.getEntrezgeneSet().getEntrezgene().length < 1) {
+				if ((res == null) || (res.getEntrezgeneSet() == null)
+				    || (res.getEntrezgeneSet().getEntrezgene(0) == null)
+				    || (res.getEntrezgeneSet().getEntrezgene().length < 1)) {
 					return;
 				}
 
 				EntrezgeneType entry = res.getEntrezgeneSet().getEntrezgene(0);
 
 				// Species
-				String species = entry.getEntrezgene_source().getBioSource().getBioSource_org().getOrgRef().getOrgRef_taxname();
+				String species = entry.getEntrezgene_source().getBioSource().getBioSource_org()
+				                      .getOrgRef().getOrgRef_taxname();
 				String[] sp = new String[] { entrezID, "Speices" };
 				edgeAttrMap.put(sp, species);
-				
+
 				// Prot. info
 				List<String> proteinInfo = new ArrayList<String>();
-				String[] pNames = entry.getEntrezgene_prot().getProtRef().getProtRef_name().getProtRef_name_E();
-				for(String name: pNames) {
+				String[] pNames = entry.getEntrezgene_prot().getProtRef().getProtRef_name()
+				                       .getProtRef_name_E();
+
+				for (String name : pNames) {
 					proteinInfo.add(name);
 				}
-				
+
 				String[] pn = new String[] { entrezID, "General protein information" };
 				edgeAttrMap.put(pn, proteinInfo);
-				
+
 				// General info
 				GeneRefType geneRef = entry.getEntrezgene_gene().getGeneRef();
 
 				try {
 					String officialSymbol = geneRef.getGeneRef_locus();
-					
 
 					String[] os = new String[] { entrezID, "Official Symbol" };
 					edgeAttrMap.put(os, officialSymbol);
-
-					
 				} catch (NullPointerException npe) {
 				}
-				
+
 				try {
-					
 					String desc = geneRef.getGeneRef_desc();
-					
+
 					String[] ds = new String[] { entrezID, "Description" };
 					edgeAttrMap.put(ds, desc);
-
 				} catch (NullPointerException npe) {
 				}
 
 				try {
-					
 					String summary = entry.getEntrezgene_summary();
-
-					
 
 					String[] sm = new String[] { entrezID, "Summary" };
 					edgeAttrMap.put(sm, summary);
 				} catch (NullPointerException npe) {
 				}
-				
-				// Pathway
-				GeneCommentaryType[] commentary = entry.getEntrezgene_comments().getGeneCommentary();
-				
-				for(GeneCommentaryType comment: commentary) {
-					if ((comment.getGeneCommentary_heading() != null)
-							&& comment.getGeneCommentary_heading().equals("Pathways")) {
-						final GeneCommentaryType[] pathways = comment.getGeneCommentary_comment().getGeneCommentary();
-						
-						List<String> pathwayNames = new ArrayList<String>();
-						List<String> pathwayLinks = new ArrayList<String>();
-						
-						for(GeneCommentaryType p: pathways) {
-							String pName = p.getGeneCommentary_text();
-							String pLink = p.getGeneCommentary_source().getOtherSource(0).getOtherSource_url();
-							pathwayNames.add(pName);
-							pathwayLinks.add(pLink);
-						}
-						
-						String[] pwn = new String[] { entrezID, "Pathway" };
-						edgeAttrMap.put(pwn, pathwayNames);
 
-						String[] pwl = new String[] { entrezID, "Pathway Link" };
-						edgeAttrMap.put(pwl, pathwayLinks);
-						
+				// Pathway
+				if (selectedAnn.contains(AnnotationCategory.PATHWAY)) {
+					GeneCommentaryType[] commentary = entry.getEntrezgene_comments()
+					                                       .getGeneCommentary();
+
+					for (GeneCommentaryType comment : commentary) {
+						if ((comment.getGeneCommentary_heading() != null)
+						    && comment.getGeneCommentary_heading().equals("Pathways")) {
+							final GeneCommentaryType[] pathways = comment.getGeneCommentary_comment()
+							                                             .getGeneCommentary();
+
+							List<String> pathwayNames = new ArrayList<String>();
+							List<String> pathwayLinks = new ArrayList<String>();
+
+							for (GeneCommentaryType p : pathways) {
+								String pName = p.getGeneCommentary_text();
+								String pLink = p.getGeneCommentary_source().getOtherSource(0)
+								                .getOtherSource_url();
+								pathwayNames.add(pName);
+								pathwayLinks.add(pLink);
+							}
+
+							String[] pwn = new String[] { entrezID, "Pathway" };
+							edgeAttrMap.put(pwn, pathwayNames);
+
+							String[] pwl = new String[] { entrezID, "Pathway Link" };
+							edgeAttrMap.put(pwl, pathwayLinks);
+						}
 					}
 				}
+
 				// Link
 
 				//					for (GeneCommentaryType g : gc) {
