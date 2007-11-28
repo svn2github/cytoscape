@@ -99,14 +99,8 @@ public class TopologyFilter extends CompositeFilter {
 	
 	
 	public void apply() {
-		System.out.println("Entering TopologyFilter.apply() ... ");
-
 		if ( !childChanged ) 
 			return;
-
-		if (network == null) {
-			network = Cytoscape.getCurrentNetwork();								
-		}
 
 		//Make sure the pass filter is current
 		if (passFilter == null) {
@@ -114,6 +108,7 @@ public class TopologyFilter extends CompositeFilter {
 		}
 		
 		if (!passFilter.getName().equalsIgnoreCase("None")) {
+			passFilter.setNetwork(network);
 			passFilter.apply();			
 		}	
 
@@ -268,6 +263,14 @@ public class TopologyFilter extends CompositeFilter {
 	}
 
 	public void setNetwork(CyNetwork pNetwork) {
+		if (network != null && network == pNetwork) {
+			return;
+		}
 		network = pNetwork;
+		if (passFilter != null) {
+			passFilter.setNetwork(network);			
+		}
+
+		childChanged();
 	}
 }
