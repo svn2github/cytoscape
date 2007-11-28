@@ -65,6 +65,15 @@ public abstract class AtomicFilter implements CyFilter {
 	public AtomicFilter() {
 	}
 	
+	public void setNetwork(CyNetwork pNetwork) {
+		network = pNetwork;
+	}
+
+	public CyNetwork getNetwork() {
+		return network;
+	}
+
+	
 	public GenericIndex getIndex() {
 		return quickFind_index;
 	}
@@ -152,8 +161,5 @@ public abstract class AtomicFilter implements CyFilter {
 	
 	public void setControllingAttribute(String pAttributeName) {
 		controllingAttribute = pAttributeName;
-	}
-	public void setNetwork(CyNetwork pNetwork) {
-		network = pNetwork;
 	}
 }
