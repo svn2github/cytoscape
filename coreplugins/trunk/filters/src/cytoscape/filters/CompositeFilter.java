@@ -75,7 +75,23 @@ public class CompositeFilter implements CyFilter {
 		children = new LinkedList<CyFilter>();
 	}
 		
+	public void setNetwork(CyNetwork pNetwork) {
+		network = pNetwork;
+		// Set network for all the children
+		if (children == null || children.size() == 0){
+			return;
+		}
+		for (int i=0; i< children.size(); i++) {
+			children.get(i).setNetwork(pNetwork);
+			children.get(i).childChanged();
+		}
+		childChanged();
+	}
 	
+	public CyNetwork getNetwork(){
+		return network;
+	}
+
 	public Hashtable getNotTable() {
 		return compositeNotTab;
 	}
@@ -116,9 +132,6 @@ public class CompositeFilter implements CyFilter {
 	private void calculateNodeBitSet() {
 		//System.out.println("Entering CompositeFilter.calculatNodeBits() ... ");	
 	
-		if (network == null) {
-			network = Cytoscape.getCurrentNetwork();
-		}
 		// set the initial bits to a clone of the first child
 		if (children.get(0).getNodeBits() == null) {
 			node_bits = new BitSet(network.getNodeCount());	
@@ -223,15 +236,21 @@ public class CompositeFilter implements CyFilter {
 	}
 	
 	public void apply() {
+		if (network == null) {
+			setNetwork(Cytoscape.getCurrentNetwork());			
+		}
 		
+		//System.out.println("CompositeFilter.apply() ....");
+		//System.out.println("\tNetwork.getIdentifier() = " + network.getIdentifier());
+
 		// only recalculate the bits if the child has actually changed
 		if ( !childChanged ) 
 			return;
-		
+				
 		// if there are no children, just create empty bitSet
 		if ( children.size() <= 0 ) {
-			node_bits = new BitSet();
-			edge_bits = new BitSet();
+			node_bits = new BitSet(network.getNodeCount());
+			edge_bits = new BitSet(network.getEdgeCount());
 			return;
 		}
 
@@ -274,6 +293,7 @@ public class CompositeFilter implements CyFilter {
 	}
 
 	public void addChild( AtomicFilter pChild ) {
+		pChild.setNetwork(network);
 		children.add( pChild );
 
 		// so the the child can communicate with us 
@@ -286,6 +306,7 @@ public class CompositeFilter implements CyFilter {
 	}
 
 	public void addChild( CompositeFilter pChild, boolean pNot ) {
+		pChild.setNetwork(network);
 		children.add( pChild );
 		compositeNotTab.put(pChild, new Boolean(pNot));
 
