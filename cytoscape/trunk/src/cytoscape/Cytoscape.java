@@ -72,6 +72,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 import giny.model.Edge;
 import giny.model.Node;
@@ -1609,7 +1610,7 @@ public abstract class Cytoscape {
 	 *            the network to create a view of
 	 */
 	public static CyNetworkView createNetworkView(CyNetwork network) {
-		return createNetworkView(network, network.getTitle(), null);
+		return createNetworkView(network, network.getTitle(), null, null);
 	}
 
 	/**
@@ -1623,7 +1624,7 @@ public abstract class Cytoscape {
 	 *            the title to use for the view
 	 */
 	public static CyNetworkView createNetworkView(CyNetwork network, String title) {
-		return createNetworkView(network, title, null);
+		return createNetworkView(network, title, null, null);
 	}
 
 	/**
@@ -1639,42 +1640,63 @@ public abstract class Cytoscape {
 	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
 	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
+		return createNetworkView(network,title,layout,null);
+	}
+
+
+	/**
+	 * Creates a CyNetworkView that is placed placed in a given visual style
+	 * and rendered with a given layout algorithm.
+	 * The CyNetworkView will become the current view and have focus.
+	 *
+	 * @param network
+	 *            the network to create a view of
+	 * @param title
+	 *            the title to use for the view
+	 * @param layout
+	 *            the CyLayoutAlgorithm to use for layout. If null, will
+	 *            use the default layout (CyLayouts.getDefaultLayout()).
+	 * @param vs the VisualStyle in which to render this new network. If null,
+	 *           the default visual style will be used.
+	 */
+	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout,
+	                                              VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
 
-		if (viewExists(network.getIdentifier())) {
+		if (Cytoscape.viewExists(network.getIdentifier())) {
 			return getNetworkView(network.getIdentifier());
 		}
 
 		final DingNetworkView view = new DingNetworkView(network, title);
 		view.setGraphLOD(new CyGraphLOD());
-
 		view.setIdentifier(network.getIdentifier());
-		getNetworkViewMap().put(network.getIdentifier(), view);
 		view.setTitle(network.getTitle());
+		getNetworkViewMap().put(network.getIdentifier(), view);
+		setSelectionMode(Cytoscape.getSelectionMode(), view);
 
-		setSelectionMode(currentSelectionMode, view);
+		if (vs != null) {
+			view.setVisualStyle(vs.getName());
+			VMM.setVisualStyle(vs);
+			VMM.setNetworkView(view);
+		}
 
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
 		}
 
-		// This needs to be fired before we call doLayout so that the network
-		// and view are properly linked
-		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 
 		layout.doLayout(view);
 
 		view.fitContent();
 
-		getVisualMappingManager().setNetworkView(view);
-
-		// AJK: 10/25/07 make sure we redraw a new network view so that visual style is applied
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		view.redrawGraph(false, true);
 
 		return view;
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
