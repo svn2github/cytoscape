@@ -1,0 +1,506 @@
+NEDERLAND
+
+BiGCaT Bioinformatics BMT-TU/e & UM
+P.O. Box 616 
+UNS50 Box18
+NL-6200 MD Maastricht
+The Netherlands
+
+Universiteit Maastricht, Faculty of General Sciences,
+Department of Computer Science,
+P.O. Box 616, 6200 MD Maastricht, The Netherlands.
+
+Biomodeling and Informatics (secretariat)
+W-hoog 2.106 (WH 2.106)
+PO Box 513
+NL-5600 MB Eindhoven - the Netherlands
+
+Molecular Information Technologies, Organon, Oss 
+Postbus 20
+5340 BH  Oss
+The Netherlands
+
+UMCN - St Radboud
+Afdeling Antropogenetica / 855
+Postbus 9101
+6500 HB Nijmegen
+
+CMBI 260
+NCMLS, Radboud University Nijmegen Medical Centre
+PO Box 9101
+6500 HB Nijmegen
+
+Dept. of Cell Biology
+Erasmus MC
+Faculty building
+Dr. Molewaterplein 50
+3015 GE Rotterdam
+PO Box 2040
+3000 CA Rotterdam
+
+Biosemantics Group Rotterdam
+Departments of Medical Informatics
+Erasmus MC - University Medical Center Rotterdam
+P.O. Box 1738, NL-3000 DR Rotterdam, the Netherlands
+
+Erasmus Center for Bioinformatics
+Dr.Molewaterplein 50
+3015 GE Rotterdam
+The Netherlands
+
+Wageningen UR Biometris
+P.O. Box 100 	
+6700 AC Wageningen, The Netherlands
+
+Centre for BioSystems Genomics
+PO Box 98
+6700 AB WAGENINGEN
+THE NETHERLANDS
+
+Laboratory of Plant Breeding
+PO box 386
+Droevendaalsesteeg 1
+6708PB Wageningen,
+The Netherlands
+
+Plant Research International
+P.O. Box 16
+6700 AA Wageningen
+The Netherlands
+
+Laboratory of Bioinformatics
+Wageningen University
+P.O. Box 8128, 6700 ET Wageningen 
+
+Bioinformatics Group 
+Information and Communication Theory Group
+Department of Mediametics
+Faculty of Information Technology and Systems
+Delft University of Technology
+Mekelweg 4
+2628 CD Delft
+The Netherlands
+
+Delft University of Technology (TU-Delft)
+Faculty of Electrical Engineering, Mathematics, and Computer Science (EEMCS)
+Information and Communication Theory group (ICT)
+P.O. Box 5031
+2600 GA, Delft, The Netherlands
+
+Kluyver Centre for Genomics of Industrial Fermentation
+Management Office
+Julianalaan 67
+2628 BC Delft
+The Netherlands 
+
+Bioinformatics and Statistics
+Division of Molecular Biology
+Netherlands Cancer Institute
+Plesmanlaan 121
+1066CX Amsterdam
+The Netherlands
+
+Department of Biotechnology
+Julianalaan 67
+2628 BC Delft
+The Netherlands
+
+Netherlands Proteomics Centre
+Sorbonnelaan 16
+NL 3584 CA Utrecht
+
+Hubrecht Institute
+Uppsalalaan 8
+3584 CT Utrecht
+The Netherlands
+
+Sectie Metabole Ziekten
+UMC-Utrecht
+Afdeling Metabole en Endocriene Ziekten
+Huispostnr: KC-02.069.1
+Postbus 85090
+3508 AB Utrecht 
+
+Department of Physiological Chemistry
+Internal Post STR 2.201
+PO Box 85060
+3508 AB Utrecht
+The Netherlands
+
+Dept. of Information and Computing Sciences
+Utrecht University
+P.O. Box 80.089
+3508 TB Utrecht
+The Netherlands
+
+Bioinformatics Group
+Utrecht University
+Padualaan 8
+3584 CH Utrecht
+
+IBIVU
+Vrije Universiteit
+De Boelelaan 1081A
+1081 HV Amsterdam
+The Netherlands
+
+SARA Amsterdam
+Postbus 94613
+1090 GP Amsterdam
+
+MicroArray Department UvA
+Kruislaan 318
+Building I, room B120
+1098 SM Amsterdam
+
+FOM Institute for Atomic and Molecular Physics [AMOLF]
+P.O.Box 41883
+1009 DB Amsterdam
+The Netherlands
+
+Centrum voor Wiskunde en Informatica
+P.O. Box 94079, NL-1090 GB Amsterdam
+
+Swammerdam Institute for Life Sciences
+Biosystems Data Analysis
+Nieuwe Achtergracht 166
+1018 WV Amsterdam
+The Netherlands
+
+The Netherlands Cancer Institute
+Plesmanlaan 121
+1066 CX  Amsterdam
+The Netherlands
+
+Department of Computer Science
+Vrije Universiteit
+Faculty of Sciences
+De Boelelaan 1081
+1081 HV Amsterdam
+The Netherlands
+
+Prof.dr.ir. A Nijholt
+Universiteit Twente
+Postbus 217
+7500 AE Enschede
+
+Prof.dr. FMG de Jong
+Universiteit Twente
+Postbus 217
+7500 AE Enschede
+
+Dr. PE van der Vet
+Universiteit Twente
+Postbus 217
+7500 AE Enschede
+
+Groningen Bioinformatics Centre
+University of Groningen
+Kerklaan 30
+9751 NN Haren
+The Netherlands 
+
+Department of Genetics
+Groningen Biomolecular Sciences and Biotechnology Institute (GBB)
+Rijksuniversiteit Groningen
+Kerklaan 30
+9751 NN  Haren
+the Netherlands 
+
+University of Groningen
+GBB Coordinating Office
+P.O. Box 14
+9750 AA  HAREN
+The Netherlands
+
+INTERNATIONAAL
+
+Center for Biological Sequence Analysis
+BioCentrum-DTU
+Technical University of Denmark
+Kemitorvet, Building 208
+DK-2800 Lyngby
+Denmark
+	
+The Bioinformatics Centre
+Department of Molecular Biology
+University of Copenhagen
+Ole Maaloes Vej 5
+2200 Copenhagen N
+Denmark
+
+Center for Applied Bioinformatics
+Faculty of Life Sciences
+University of Copenhagen
+Thorvaldsensvej 40, DK-1871 Frederiksberg C, Denmark
+
+Research Centre Foulum
+Postbox 50
+DK-8830 
+Denmark
+
+BiRC - Bioinformatics Research Center
+University of Aarhus
+Høegh-Guldbergs Gade 10, Building 1090
+DK-8000 Århus C
+Denmark
+
+Department of Bioinformatics, Medical Faculty, 
+Georg August University Göttingen, 
+Goldschmidtstrasse 1, 37077 Göttingen, 
+Germany,
+
+Max Planck Institute for Informatics, 
+Computational Biology and Applied Algorithmics, 
+Stuhlsatzenhausweg 85, 66123 Saarbrücken, 
+Germany,
+
+RZPD Deutsches Ressourcenzentrum für Genomforschung GmbH, 
+Heubnerweg 6, 14059 Berlin, 
+Germany
+
+European Molecular Biology Laboratory (EMBL),
+Structural and Computational Biology Programme,
+Meyerhofstraße 1, 69117 Heidelberg,
+Germany,
+
+Fraunhofer Institute for Algorithms and Scientific Computing (formerly GMD),
+Schloss Birlinghoven, 53754 Sankt Augustin, 
+Germany,
+
+Institute of Biochemistry, 
+University of Cologne, 
+Zuelpicher Straße 47, 50674 Cologne, 
+Germany,
+
+Department of Molecular Biophysics, German Cancer Research Center (DKFZ), 
+Im Neuenheimer Feld 280, 69120 Heidelberg, 
+Germany,
+
+Genome Analysis Department, German Biotechnology Research Center (GBF), 
+Mascheroder Weg 1, 38124 Braunschweig, 
+Germany,
+
+Department of Bioinformatics, Max Delbrück Center for Molecular Medicine (MDC), 
+Robert-Roessle-Str. 10, 13125 Berlin, 
+Germany,
+
+Institute for Bioinformatics (MIPS-IBI), National Research Center for Environment and Health (GSF), 
+Ingolstädter Landstraße 1, 85764 Neuherberg/Munich, 
+Germany,
+
+School of Crystallography
+Birkbeck College
+University of London
+Malet Street
+London WC1E 7HX
+United Kingdom
+
+Cranfield Health
+Cranfield University
+Silsoe
+Bedfordshire  MK45 4DT
+United Kingdom
+
+Oxford Bioinformatics Programme
+Peter Medawar Building
+South Parks Road
+Oxford
+OX1 3SY
+United Kingdom
+
+School Of Contemporary Sciences
+University of Abertay Dundee
+Bell Street
+Dundee
+DD1 1HG
+United Kingdom
+
+Dr Ros Le Feuvre
+Research Business Manager
+Faculty of Life Sciences
+The University of Manchester
+Michael Smith Building
+Oxford Road
+Manchester
+M13 9PT
+United Kingdom
+
+Biostatistics and Bioinformatics Unit
+University of Wales College of Medicine
+Heath Park
+Cardiff
+CF14 4NX
+United Kingdom
+
+Graduate School of Biomedical and Life Sciences,
+Bower Building,
+Glasgow University
+Glasgow G12 8QQ,
+Scotland, United Kingdom
+
+Biology Education Centre
+Norbyvägen 14
+SE-752 36 Uppsala, Sweden
+
+Bergen Center for Computational Science
+Høyteknologisenteret
+Thormøhlensgate 55
+N-5008 Bergen
+Norway.
+
+Bielefeld University
+Faculty of Technology
+Bioinformatics Department
+PO Box 10 01 31
+D-33501 Bielefeld
+Germany
+
+University of Bielefeld
+Faculty of Technology
+Biomathematics Group
+P.O.-Box 10 01 31
+33501 Bielefeld
+Germany
+
+University of Tübingen
+Wilhelm-Schickard-Institute for Computer Science
+Dept. Computer Architecture
+Sand 1
+D-72076 Tübingen
+Germany
+
+Helsinki Institute for Information Technology (HIIT)
+Basic Research Unit (BRU)
+Department of Computer Science
+P.O.Box 68 (Gustaf Hällströmin katu 2b)
+FIN-00014 University of Helsinki
+Finland 
+
+Department of Mathematics and Statistics
+P.O.Box 68 (Gustaf Hällströmin katu 2b)
+FIN-00014 University of Helsinki
+Finland 
+
+Institut Pasteur
+25,28 rue du Docteur Roux
+75724 Paris CEDEX 15 - FRANCE
+
+Institut de Pharmacologie et de Biologie Structurale, CNRS
+205 route de Narbonne, 31077, Toulouse Cedex
+France
+
+LIFL - Bâtiment M3
+Université des Sciences et Technologies de Lille
+59655 Villeneuve d'Ascq Cedex
+France
+
+K.U.Leuven, ESAT/SCD
+Kasteelpark Arenberg 10
+bus 2446
+B-3001 Leuven-Heverlee
+Belgium
+
+Swiss Institute of Bioinformatics
+Biozentrum - University of Basel
+Klingelbergstrasse 50-70
+4056 Basel
+Switzerland 
+
+Swiss Institute of Bioinformatics
+chemin des Boveresses 155
+1066 Epalinges
+Switzerland 
+
+Swiss Institute of Bioinformatics
+CMU - Rue Michel-Servet 1
+1211 Genève 4
+Switzerland 
+
+Swiss Institute of Bioinformatics
+Central Administration
+Quartier Sorge - Batiment Genopode
+1015 Lausanne
+Switzerland 
+
+Institute for Genomics and Bioinformatics
+Graz University of Technology
+Petersgasse 14, 8010 Graz, 
+Austria
+
+EMBL - European Bioinformatics Institute
+Wellcome Trust Genome Campus
+Hinxton
+Cambridge
+CB10 1SD
+United Kingdom
+
+Centro Nacional de Investigaciones Oncologicas
+C/ Melchor Fernandez Almagro, 3, 
+E-28029 Madrid
+Spain
+
+Centro de Regulacion Genomica (CRG)
+Unidad de Investigacion en Informatica Biomedica (GRIB)
+Pg. Maritim de la Barceloneta, 37-49
+08003 Barcelona, Spain
+
+Centro Nacional de Investigaciones Oncologicas
+C/ Melchor Fernandez Almagro, 3, E-28029 Madrid
+Spain
+
+Centro de Investigacion Principe Felipe
+Unidad de Bioinformatica
+Avda. Autopista del Saler 16,
+Camino de las Moreras
+46013 Valencia
+Spain
+
+Parc Cientific de Barcelona
+Unitat de Modelitzacio i Bioinformatica
+Josep Samitier, 1-5
+08028 Barcelona, Spain
+
+Universidad de Malaga
+Dep. Arquitectura de Computadores
+ETSI de Informatica, Campus de Teatinos
+29071 Malaga
+Spain
+
+Barcelona Supercomputing Center (BSC)
+Centro Nacional de Supercomputacion (CNS)
+Campus Nord de la UPC, Edificio Torre Girona.
+C\ Jordi Girona, 31
+08034 Barcelona
+Spain
+
+BioComputing Unit
+Centro Nacional de Biotecnologia CSIC
+Campus Universidad Autonoma
+28049 Madrid
+
+Universidad Pompeu Fabra (UPF)
+Unidad de Investigacion en Informatica Biomedica (GRIB)
+Pg. Maritim de la Barceloneta, 37-49
+08003 Barcelona, Spain
+
+Bioinformatics Group,
+Institute of Molecular Pathology
+Dr. Bohr-Gasse 7, 1030 Vienna, Austria
+
+Center for Integrative Bioinformatics,
+Max F. Perutz Laboratories
+Dr. Bohr-Gasse 9, 1030 Vienna, Austria
+
+Institute for Theoretical Chemistry,
+University of Vienna
+Währingerstrasse 17, 1090 Vienna, Austria
+	
+Department for Biomolecular Structural Chemistry,
+University of Vienna,
+Campus Vienna Biocenter 5, Rennweg 95b,
+1030 Vienna, Austria
+	
+University for Health Sciences,
+Medical Informatics and Technology,
+Eduard Wallnoefer Centre 1, 6060 Hall in Tyrol, Austria

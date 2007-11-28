@@ -1,0 +1,161 @@
+== Scenario ==
+All long term milestones have passed; we're now working from the detailed scenario (excel sheet below); will be continuously updated
+See for passed milestones below: [[#Passed Milestones]]
+==== Docs ====
+ *Detailed Programme: attachment:DetailedScenarioRetreat_v1.xls
+ *SpeakerPack: attachment:SpeakerPack.doc
+ *Testsite: http://www.humangenetics-amc.nl/test/CytoWebRedux/retreat2007/index.php
+
+Speaker Details can be found here:''' CytoRetreat2007SpeakerDetails '''
+
+'''''Milestone 7'': '''''Two weeks before D-day''
+
+''Date'': __October 22 - 2007__
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Create speaker pack: attachment:SpeakerPack.doc||Guy||done||
+||Arrange lunches for dev-team  ||Monique ||done||
+||Reserve lunch for board  ||Monique ||done||
+||Check congress rooms / facilities  ||Piet ||done||
+||Approach journalists of science pages of dutch newspapers||Piet || ||
+||Inform the AMC congress organization/catering about estimated attendance(10th oct +/- 200 estimate; 26th exact numbers || || done||
+||Check demo presenters about their presentation ||Guy ||done||
+||Arrange wireless facilities; Rob Verkerk arranges wireless; make appointment||Piet ||In progress ||
+||Ask the Movies / Walking tour for evening 7th (evening program day 3)||Piet/Monique ||done ||
+||Arrange van Gogh for (evening program day 5) ||Piet/Monique ||done||
+||Arrange someone to collect speakers from airport(?) || || ||
+||Create list for conf dinner ||Piet || done||
+||Send invitations for conf dinner to guests(mail) ||Piet/Guy ||done ||
+||Find gifts for speakers developers (Mug, shirt, jenever, )||Piet/Monique ||done ||
+||Order gifts for speakers developers ||Piet || done||
+||Update site: pdfs program/directions/maps + speaker abstracts + plugin descr  ||Piet || done||
+||Test teleconf tool Unilever in L01-252 || || ||
+||Test wireless in rooms || || ||
+||Arrange drinks etc in SAB-Board meeting room L01-252 || ||done ||
+||Arrange drinks etc for after Dev sessions || || done||
+|| || || ||
+
+'''''Milestone 8'': '''''One week before D-day; Final announcement''
+
+''Date'': __October 29 - 2007__
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Send list of speakers info to congress registration; include days attending ||Piet || done||
+||Send list of AMC aides to congress registration; include days attending: require badges ||Piet || done||
+||Create an exact timetable scenario for the retreat days || || done||
+||Inform AMC aides about what to do || || done||
+|| || || ||
+
+'''''Milestone 9'': '''''Arrival organization''
+
+''Date'': __November 3 - 2007__
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Arrange welcoming notes in hotels (at least for speakers); include programme, maps, transport tickets || || ||
+||Copy program, abstract book (?) || || done||
+||Arrange direction signs || || done||
+
+'''''Milestone 10'':'''''Start retreat''
+
+''Date'': __November 5 - 2007__
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Print scenario for organization (incl phone-nrs etc) || || ||
+||Flowers in congress room || || ||
+
+----
+====Passed Milestones====
+
+Finished issues per May 30 2007:
+
+ * Organization team (todo make link to page)
+ * Set dates
+ * Arranged congress-rooms
+ * Confirmed speakers (6 out of 8)
+ * First draft of retreat site (http://www.humangenetics-amc.nl/test/CytoWebRedux/retreat2007/index.php)
+ * Budget
+ * Draft announcements, posters, sponsor request letters (todo attach docs)
+ * First sponsors (for sponsor checklist see: attachment:Potential_Sponsors.xls)
+'''''Milestone 1'': '''''First announcement''-> FINISHED
+
+''Date'': __July 2 - 2007__ (postponed from June 11 - 2007)
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Set up account ||Annette,Guy (Louis) ||Done ||
+||Send invoice to Janette Jones (Unilever HPC) ||Piet ||Louis is sending ||
+||Send invoice to Unilever SEAC ||Guy/Piet ||Louis is sending ||
+||Send invoice to Agilent ||Annette/Piet ||Louis is sending ||
+||Finish website ||Piet || Done ||
+||Compile mail-lists ||Piet/Annette/Guy  ||Done ||
+||Mail Benno and Andreas Beyer for mail-lists ||Piet ||Done ||
+||Prepare internal announcement AMC (yellow pages) ||Piet ||Done ||
+
+'''''Milestone 2'': ''''' Second announcement; opening registration ''-> FINISHED
+
+''Date'': __August 13 - 2007__ (postponed from July 9/26 - 2007)
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Decide on congress fee -> return order to Gijs van den Broek ||Piet/Guy ||Done; have Rogier sign ||
+||Fill out form for registration site (send back to Vanessa de Groot) attachment:RegistrationCommentsForm.doc||Piet ||Done ||
+||Registration site complete (note: special diets(?)) ||Piet/Gijs ||Done ||
+||Create/send opening registration pdf ||Piet ||Done ||
+||Ask Trey as Master of Ceremony||Guy ||Done ||
+||Include Google maps to site ||Piet ||Done ||
+||Check invoices sent to Unilever/Agilent ||Annette ||Done ||
+||Pre-reserve hotel rooms at the Doelen ||Piet ||Done ||
+||Pre-reserve hotel rooms(Rai Reservation Hotel link) for last-minute deciders ||Monique ||Done ||
+||Arrange announcement posters for ISMB Vienna (Note: before July 20th)||Piet ||Done ||
+||Finalize social program||All ||Done ||
+||Get speakers for demo/training session programme ||Guy ||Done: Guy, Andrew, Yvette(?) ||
+
+'''''Milestone 3'': '''''Third announcement; program complete''
+
+''Date'': __October 1 - 2007__ postponed from September 12
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Draft a programme/abstract book include plan AMC ||Piet ||Done ||
+||Add to site: things todo links; amsterdam pass; restaurant suggestions ||Piet ||Done ||
+||Add 'nice'/cheap hotel links ||Monique/Piet ||Done ||
+||Include link to retreat site on other sites (suggestions Gary, University Hospitals)|| || ||
+||Titles/Abstracts from speakers ||Guy ||Done ||
+||Approach plugin developers for presentation ([[#Probable Plugin Demos]]) ||Piet ||Done now 17! ||
+||Reserve for conference dinner ||Monique ||Done ||
+||Reserve for boat-trip (and catering) ||Monique ||Done ||
+||Find abstract/paper document case for attendees ||Piet/Monique ||Done ||
+||Ask someone for opening congress; Louise Gunnink; president AMC?||Piet/Rogier || ||
+||Arrange welcome in Amsterdam City Hall ||Piet ||Skipped||
+||Create presskit on retreat||Annette ||In progress: Cytoscape QandA ||
+||Include link to newssites: Bioinform/Genomeweb (depends on presskit)||Annette || ||
+||Brighten site with images (http://www.amsterdamimage.com/main.php)||Piet || ||
+||Create program poster ||Piet/Eelco ||Done ||
+||List Dutch institutes; spread posters ||Piet ||Done ||
+||Spread posters over local institutes in Amsterdam ||Piet ||Done ||
+||Setup draft version of dev-retreat days programme; ask feedback of Mike/Trey ||Mike ||Done ||
+||Decide upon facilities for the demo/training session programme ||Piet/Guy ||Done ||
+||Send invoice to NBIC ||Piet ||Done (Louis has info) ||
+||Send additional sponsor letters to dutch organizations||Piet ||Skipped ||
+
+'''''Milestone 4'': '''''One month till D-Day''
+
+''Date'': __October 5 - 2007__
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Arrange guest-maps from Amsterdam  ||Piet ||Ordered ||
+||Get reprints of Nature protocols paper (to hand out in Attendee package) ||Annette(?) ||Skipped ||
+||Order abstract/paper document case for attendees ||Piet ||Done ||
+|| || || ||
+
+'''''Milestone 6'': '''''Three weeks till D-day''
+
+''Date'': __October 15 - 2007__
+||||||<style="text-align: center;">'''Issues to complete''' ||
+||'''Issue''' ||'''Who''' ||'''Check''' ||
+||Deadline for programme/abstract book include plan AMC ||Piet ||Done ||
+||Inform plugin presenters about their presentation ||Piet ||Done ||
+||Resumes on speakers for site/announcement pdf||Guy ||Done ||
+||Check wireless in congress hall (phone Ad: 8158805)||Piet ||Done ||
+||Send list of Exempt fee people to congress registration ||Piet ||done ||
+||Arrange someone to take care of technicalities during retreat  ||Piet ||From AmcHumangenetics; Done ||
+||Arrange someone in charge of emergencies ||Piet ||Done ||
+||Call de Jaren for meet and greet (evening program day 1)||Piet/Monique ||Done ||
+|| || || ||
