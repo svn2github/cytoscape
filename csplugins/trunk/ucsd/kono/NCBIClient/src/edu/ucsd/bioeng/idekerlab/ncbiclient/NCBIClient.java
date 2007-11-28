@@ -122,7 +122,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	// Client's ID
 	private static final String CLIENT_ID = "ncbi_entrez";
 	
-	private static final NCBIClient client;
+	private static NCBIClient client;
 	private static final String DEF_ITR_TYPE = "pp";
 	private CopyOnWriteArrayList<Node> nodeList;
 	private CopyOnWriteArrayList<Edge> edgeList;
