@@ -26,7 +26,7 @@
  *  local variables.
  ********************************************************************************
  */
-package cytoscape.editor.actions;
+package cytoscape.actions;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
@@ -44,8 +44,6 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.editor.CytoscapeEditorManager;
-import cytoscape.editor.DeleteEdit;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
@@ -85,10 +83,11 @@ public class DeleteAction extends CytoscapeAction {
 
 	public DeleteAction(GraphObject obj) {
 		super(ACTION_TITLE);
+		System.out.println("starting delete action");
 		setPreferredMenu("Edit");
-		setPreferredIndex(Cytoscape.getDesktop().getCyMenus().getEditMenu().getItemCount() - 2);
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
+		System.out.println("ending delete action");
 	}
 
 
@@ -100,12 +99,8 @@ public class DeleteAction extends CytoscapeAction {
 
 		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
 		CyNetwork cyNet = myView.getNetwork();
-		// MLC 05/11/07 BEGIN:
-		// List edgeViews = myView.getSelectedEdges();
-		// List nodeViews = myView.getSelectedNodes();
 		List<EdgeView> edgeViews = myView.getSelectedEdges();
 		List<NodeView> nodeViews = myView.getSelectedNodes();
-		// MLC 05/11/07 END.
 		CyNode cyNode;
 		CyEdge cyEdge;
 		NodeView nv;
@@ -165,8 +160,7 @@ public class DeleteAction extends CytoscapeAction {
 		cyNet.hideEdges(edgeInd);
 		cyNet.hideNodes(nodeInd);
 
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
-		                             CytoscapeEditorManager.CYTOSCAPE_EDITOR, cyNet);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
 	}
 
     public void menuSelected(MenuEvent me) {

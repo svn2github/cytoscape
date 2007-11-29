@@ -357,6 +357,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new NewWindowSelectedNodesOnlyAction());
 		addAction(new NewWindowSelectedNodesEdgesAction());
 		addAction(new CloneGraphInNewWindowAction());
+		addAction(new NewNetworkAction());
 
 		addAction(new OpenSessionAction(),1);
 		addAction(new SaveSessionAction("Save"),2);
@@ -405,6 +406,10 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new CreateNetworkViewAction());
 		addAction(new DestroyNetworkViewAction());
 		addAction(new DestroyNetworkAction());
+
+		editMenu.add(new JSeparator());
+
+		addAction(new DeleteAction());
 		
 		editMenu.add(new JSeparator());
 

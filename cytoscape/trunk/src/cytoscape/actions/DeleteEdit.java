@@ -1,5 +1,5 @@
 
-package cytoscape.editor;
+package cytoscape.actions;
 
 import giny.view.NodeView;
 import cytoscape.CyNetwork;
@@ -11,9 +11,8 @@ import cytoscape.view.CyNetworkView;
 /**
  * An undoable edit that will undo and redo deletion of nodes and edges.
  */ 
-public class DeleteEdit extends CyAbstractEdit {
+class DeleteEdit extends CyAbstractEdit {
 
-	// MLC 05/09/07:
 	private static final long serialVersionUID = -1164181258019250610L;
 	int[] nodes;
 	int[] edges;
@@ -21,7 +20,7 @@ public class DeleteEdit extends CyAbstractEdit {
 	double[] yPos;
 	CyNetwork net;
 
-	public DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd) {
+	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd) {
 		super("Delete");
 		if ( net == null )
 			throw new IllegalArgumentException("network is null");
@@ -53,8 +52,7 @@ public class DeleteEdit extends CyAbstractEdit {
 
 		net.hideEdges(edges);
 		net.hideNodes(nodes);
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
-                                     CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
 	}
 
 	public void undo() {
@@ -70,7 +68,6 @@ public class DeleteEdit extends CyAbstractEdit {
 				nv.setOffset( xPos[i], yPos[i] );
 			}
 		}
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
-                                     CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 	}
 }
