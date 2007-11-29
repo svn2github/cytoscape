@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 11:37:47 2006
-* Modified:     Sun Oct 21 16:21:09 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Nov 29 08:37:40 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Thu Nov 01 13:54:53 2007 (Michael L. Creech) creech@w235krbza760
+*  Fixed DuplicateCalculatorNameException in primSetupStyle under
+*  certain conditions when loading a session.
 * Sun Oct 21 16:20:52 2007 (Michael L. Creech) creech@w235krbza760
 *  Chnaged createTargetArrows() to deal with ArrowShapes vs Arrows.
 * Fri Jul 13 08:55:20 2007 (Michael L. Creech) creech@w235krbza760
@@ -48,6 +51,7 @@ import cytoscape.hyperedge.EdgeTypeMap;
 
 import cytoscape.hyperedge.impl.HyperEdgeImpl;
 
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
@@ -75,6 +79,9 @@ import java.awt.Color;
  * @author Michael L. Creech
  *
  */
+// TODO: This is a mess and needs to be simplified and refactored. Remove local
+//       caching of the style instance (_bcrVisualStyle).
+
 public class BioChemicalReactionVisualStyle extends VisualStyle {
     public static final String BIOCHEMICAL_REACTION_VISUAL_STYLE = "BioChemicalReaction";
 
@@ -117,7 +124,6 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
      * BioChemicalReaction visual style already exists, we use it.
      * Otherwise, we create a new one.
      */
-
     //    public VisualStyle createVizMapper() {
     public BioChemicalReactionVisualStyle setupVisualStyle(boolean forceRedefine,
                                                            boolean setAsCurrentVisualStyle) {
@@ -156,9 +162,14 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
                 (setAsCurrentVisualStyle)) {
                 // Change the current visual style 
                 Cytoscape.getDesktop().setVisualStyle(foundVisualStyle);
-            }
-        }
-
+		// MLC 11/04/07 BEGIN:
+		CyNetworkView netView = Cytoscape.getCurrentNetworkView();
+		if (netView != null) {
+		    netView.setVisualStyle(this.getName());
+		}
+		// MLC 11/04/07 END.
+	    }
+	}
         return _bcrVisualStyle;
     }
 
@@ -176,7 +187,9 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
         //  in order for it to be written out to vizmap.props upon user exit
         // MLC 01/15/07:
         // HEUtils.log("Adding visual style " + this + " to catalog " + catalog);
-        catalog.addVisualStyle(this);
+        if (catalog.getVisualStyle(this.getName()) == null) {
+            catalog.addVisualStyle(this);
+        }
 
         // Cytoscape.getDesktop().setVisualStyle(this);
     }
@@ -207,7 +220,7 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
         createNodeColor(nac);
         createTargetArrows(eac);
         // MLC 07/13/07 BEGIN:
-        createEdgeTooltips (eac);
+        createEdgeTooltips(eac);
         // MLC 07/13/07 END.
         _bcrVisualStyle.setNodeAppearanceCalculator(nac);
         _bcrVisualStyle.setEdgeAppearanceCalculator(eac);
@@ -225,21 +238,20 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
 
         // MLC 05/10/07 BEGIN:
         // DiscreteMapping discreteMapping = new DiscreteMapping(Arrow.NONE,
-	//                                                       Semantics.INTERACTION,
-	//                                                       ObjectMapping.EDGE_MAPPING);
+        //                                                       Semantics.INTERACTION,
+        //                                                       ObjectMapping.EDGE_MAPPING);
         //        discreteMapping.putMapValue(EdgeTypeMap.SUBSTRATE, Arrow.NONE);
         //        discreteMapping.putMapValue(EdgeTypeMap.PRODUCT, Arrow.BLACK_DELTA);
         //        discreteMapping.putMapValue(EdgeTypeMap.ACTIVATING_MEDIATOR,
         //                                    Arrow.BLACK_DELTA);
         //        discreteMapping.putMapValue(EdgeTypeMap.INHIBITING_MEDIATOR,
         //                                    Arrow.BLACK_T);
-	// MLC 11/20/07 BEGIN:
+        // MLC 11/20/07 BEGIN:
         DiscreteMapping discreteMapping = new DiscreteMapping(ArrowShape.NONE,
                                                               Semantics.INTERACTION,
                                                               ObjectMapping.EDGE_MAPPING);
         discreteMapping.putMapValue(EdgeTypeMap.SUBSTRATE, ArrowShape.NONE);
-        discreteMapping.putMapValue(EdgeTypeMap.PRODUCT,
-                                    ArrowShape.DELTA);
+        discreteMapping.putMapValue(EdgeTypeMap.PRODUCT, ArrowShape.DELTA);
         discreteMapping.putMapValue(EdgeTypeMap.ACTIVATING_MEDIATOR,
                                     ArrowShape.DELTA);
         discreteMapping.putMapValue(EdgeTypeMap.INHIBITING_MEDIATOR,
@@ -250,9 +262,9 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
         //        GenericEdgeTargetArrowCalculator edgeTargetArrowCalculator = new GenericEdgeTargetArrowCalculator("HyperEdge target arrows",
         //                                                                                                          discreteMapping);
         // eac.getDefaultAppearance().setTargetArrow(Arrow.NONE);
-	//        Calculator edgeTargetArrowCalculator = new BasicCalculator("HyperEdge target arrows",
-	//                                                                   discreteMapping,
-	//                                                                   VisualPropertyType.EDGE_TGTARROW);
+        //        Calculator edgeTargetArrowCalculator = new BasicCalculator("HyperEdge target arrows",
+        //                                                                   discreteMapping,
+        //                                                                   VisualPropertyType.EDGE_TGTARROW);
         // eac.getDefaultAppearance()
         //   .set(VisualPropertyType.EDGE_TGTARROW, Arrow.NONE);
         Calculator edgeTargetArrowCalculator = new BasicCalculator("HyperEdge target arrows shape",
@@ -260,7 +272,7 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
                                                                    VisualPropertyType.EDGE_TGTARROW_SHAPE);
         eac.getDefaultAppearance()
            .set(VisualPropertyType.EDGE_TGTARROW_SHAPE, ArrowShape.NONE);
-	// MLC 10/20/07 END.
+        // MLC 10/20/07 END.
         // MLC 06/30/07 END.
         eac.setCalculator(edgeTargetArrowCalculator);
         // MLC 01/15/07:
@@ -272,21 +284,21 @@ public class BioChemicalReactionVisualStyle extends VisualStyle {
     /**
      * creates a passthrough mapping for Edge tooltip.
      */
-
     private void createEdgeTooltips(EdgeAppearanceCalculator eac) {
-	PassThroughMapping passThroughMapping = new PassThroughMapping("",
-								       ObjectMapping.EDGE_MAPPING);
-	
-	// Cytoscape produces canonicalName attributes that start as the value
-	// of the edge IDs:
-	passThroughMapping.setControllingAttributeName
-            (Semantics.CANONICAL_NAME, null, false);
-	
-	Calculator edgeTooltipCalculator = new BasicCalculator("Edge Tooltip",
-							       passThroughMapping,
-							       VisualPropertyType.EDGE_TOOLTIP);
-	eac.setCalculator(edgeTooltipCalculator);
+        PassThroughMapping passThroughMapping = new PassThroughMapping("",
+                                                                       ObjectMapping.EDGE_MAPPING);
+
+        // Cytoscape produces canonicalName attributes that start as the value
+        // of the edge IDs:
+        passThroughMapping.setControllingAttributeName(Semantics.CANONICAL_NAME,
+                                                       null, false);
+
+        Calculator edgeTooltipCalculator = new BasicCalculator("Edge Tooltip",
+                                                               passThroughMapping,
+                                                               VisualPropertyType.EDGE_TOOLTIP);
+        eac.setCalculator(edgeTooltipCalculator);
     }
+
     // MLC 07/13/07 END.
 
     /**
