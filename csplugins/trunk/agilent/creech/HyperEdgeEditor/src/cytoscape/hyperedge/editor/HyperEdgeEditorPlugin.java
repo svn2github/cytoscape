@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Wed Oct 31 10:09:36 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Nov 29 09:05:08 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,13 @@
 *
 * Revisions:
 *
+* Thu Nov 29 08:59:46 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.59. Changed to use new 4 arg Cytoscape.createNetworkView().
+* Sun Nov 04 13:35:10 2007 (Michael L. Creech) creech@w235krbza760
+*  Changed addNodeContextMenuItems() to only enable HyperEdge
+*  operations when you right-click on a connector node in a CyNetworkView
+*  and that connector node belongs to a HyperEdge that is a member
+*  of the CyNetwork of this CyNetworkView.
 * Wed Oct 31 10:09:22 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.58.
 * Thu Oct 25 16:05:12 2007 (Michael L. Creech) creech@w235krbza760
@@ -69,6 +76,7 @@ import cytoscape.editor.actions.DeleteAction;
 
 import cytoscape.hyperedge.HyperEdge;
 import cytoscape.hyperedge.HyperEdgeFactory;
+import cytoscape.hyperedge.HyperEdgeManager;
 
 import cytoscape.hyperedge.editor.actions.DeleteHyperEdgeAction;
 import cytoscape.hyperedge.editor.actions.HyperEdgeDeleteAction;
@@ -81,7 +89,6 @@ import cytoscape.layout.CyLayouts;
 
 import cytoscape.plugin.CytoscapePlugin;
 
-import cytoscape.util.CyNetworkViewUtil;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyMenus;
@@ -111,20 +118,11 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.58;
+    private static final Double VERSION = 2.59;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
     }
-
-    // MLC 07/23/07 BEGIN:
-    //    /**
-    //     * Overrides CytoscapePlugin.describe():
-    //     */
-    //    public String describe() {
-    //        return "Add, remove, and modify HyperEdges in a Cytoscape Network.";
-    //    }
-    // MLC 07/23/07 END>
 
     // MLC 07/03/07 BEGIN:
     //    // overrides CytoscapePlugin.getPluginInfoObject():
@@ -147,15 +145,8 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
     }
 
     private void initializeHyperEdgeEditor() {
-        // MLC 07/20/07 BEGIN:
         // ASSUME: CytoscapeEditor is always loaded before HyperEdgeEditor.
         System.out.println("BEGIN initializeHyperEdgeEditor");
-        //        // in case we are loaded before the CytoscapeEditor:
-        //        CytoscapeEditorPlugin.initializeCytoscapeEditor();
-        // MLC 07/20/07 END.
-        // MLC 05/17/07:
-        // CytoscapeEditorManager.register("HyperEdgeEditor",
-        // MLC 05/17/07:
         CytoscapeEditorManager.register("cytoscape.hyperedge.editor.HyperEdgeEditor",
                                         "cytoscape.hyperedge.editor.event.HyperEdgeEditEventHandler",
                                         HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME,
@@ -166,9 +157,6 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
         CyMenus cms = Cytoscape.getDesktop().getCyMenus();
         cms.addAction(new ShowSampleNetworksAction());
 
-        // MLC 10/24/07 BEGIN:
-        //        Cytoscape.getSwingPropertyChangeSupport()
-        //                 .addPropertyChangeListener(new PopupMenuMonitor());;
         PopupMenuMonitor pmm = new PopupMenuMonitor();
         Cytoscape.getSwingPropertyChangeSupport()
                  .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED,
@@ -179,14 +167,10 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
                                             pmm);
         Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED,
                                                                             new HEESessionLoadedMonitor());
-        // MLC 10/24/07 END.
     }
 
     // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
     private void fixUpCytoscapeDeleteMenu() {
-        // MLC 07/20/07:
-        // DeleteAction action = CytoscapeEditorManager.manager.getDeleteAction();
-        // MLC 07/20/07:
         DeleteAction action = CytoscapeEditorManager.getDeleteAction();
         // remove delete action item and replace with our version of it:
         Cytoscape.getDesktop().getCyMenus().getMenuBar().removeAction(action);
@@ -214,38 +198,28 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
         public void actionPerformed(ActionEvent ae) {
             SampleNetworks sn = new SampleNetworks();
 
-            // MLC 09/26/06 BEGIN:
-            // sn.createSampleNetworks();
             // (re)define the BioChemicalReactionVisualStyle:
             BioChemicalReactionVisualStyle.getVisualStyle()
                                           .setupVisualStyle(false, true);
 
-            List<CyNetwork> networks = sn.createSampleNetworks();
-
-            // BEGIN
-            // MLC 07/16/07:
+            List<CyNetwork>   networks = sn.createSampleNetworks();
             CyLayoutAlgorithm myAlgor = CyLayouts.getLayout("force-directed");
 
             if (myAlgor == null) {
                 myAlgor = CyLayouts.getDefaultLayout();
             }
 
-            // END
             for (CyNetwork net : networks) {
-                // MLC 10/04/07 BEGIN:
-                CyNetworkViewUtil.createNetworkView(net,
-                                                    net.getTitle(),
-                                                    myAlgor,
-                                                    BioChemicalReactionVisualStyle.getVisualStyle());
-                //                Cytoscape.createNetworkView(net,
-                //                                            net.getTitle(),
-                //                                            myAlgor);
-                //                // getVisualStyle() returns null:
-                //                // Change to BioChemicalReactionVisualStyle:
-                //                Cytoscape.getNetworkView(net.getIdentifier())
-                //                         .setVisualStyle(BioChemicalReactionVisualStyle.getVisualStyle()
-                //                                                                       .getName());
-                // MLC 10/04/07 END.
+                // MLC 11/29/07 BEGIN:
+                //                CyNetworkViewUtil.createNetworkView(net,
+                //                                                    net.getTitle(),
+                //                                                    myAlgor,
+                //                                                    BioChemicalReactionVisualStyle.getVisualStyle());
+                Cytoscape.createNetworkView(net,
+                                            net.getTitle(),
+                                            myAlgor,
+                                            BioChemicalReactionVisualStyle.getVisualStyle());
+                // MLC 11/29/07 END.
             }
         }
     }
@@ -253,14 +227,15 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
     private class HEESessionLoadedMonitor implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent e) {
             // ensure we always have this style--even if the session loaded doesn't have it:
-            BioChemicalReactionVisualStyle.getVisualStyle().setupVisualStyle(false, false);
+            BioChemicalReactionVisualStyle.getVisualStyle()
+                                          .setupVisualStyle(false, false);
         }
     }
 
     private class PopupMenuMonitor implements PropertyChangeListener,
                                               // EdgeContextMenuListener,
     NodeContextMenuListener {
-        static final public String TOOLTIP_DISABLED = "<HTML>enabled when a HyperEdge ConnectorNode is selected</HTML>";
+        static final public String TOOLTIP_DISABLED = "<HTML>enabled when a HyperEdge ConnectorNode is selected that exists in this view</HTML>";
 
         public void propertyChange(PropertyChangeEvent e) {
             if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
@@ -289,9 +264,20 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
             CyNetwork net = (CyNetwork) (view.getGraphView()
                                              .getGraphPerspective());
 
-            HyperEdge he = HyperEdgeFactory.INSTANCE.getHyperEdgeManager()
-                                                    .getHyperEdgeForConnectorNode(node);
+            // MLC 11/04/07 BEGIN:
+            HyperEdgeManager heMan = HyperEdgeFactory.INSTANCE.getHyperEdgeManager();
 
+            // HyperEdge he = HyperEdgeFactory.INSTANCE.getHyperEdgeManager()
+            //                                        .getHyperEdgeForConnectorNode(node);
+            HyperEdge he = heMan.getHyperEdgeForConnectorNode(node);
+
+            if (!heMan.isConnectorNode(node, net)) {
+                // the HyperEdge must belong to the network we are
+                // popping up the menu in:
+                he = null;
+            }
+
+            // MLC 11/04/07 END.
             menu.add(addNodeMenuItems(he, net));
         }
 
