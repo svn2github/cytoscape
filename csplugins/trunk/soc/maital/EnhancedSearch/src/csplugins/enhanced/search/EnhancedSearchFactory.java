@@ -39,15 +39,15 @@ package csplugins.enhanced.search;
 import cytoscape.Cytoscape;
 
 /**
- * Factory for Creating QuickFind Classes.
+ * Factory for Creating EnhancedSearch Classes.
  */
 public class EnhancedSearchFactory {
 	private static EnhancedSearch enhancedSearch;
 
 	/**
-	 * Gets instance of Global QuickFind Singleton.
+	 * Gets instance of Global EnhancedSearch Singleton.
 	 *
-	 * @return Global QuickFind Class.
+	 * @return Global EnhancedSearch Class.
 	 */
 	public static EnhancedSearch getGlobalEnhancedSearchInstance() {
 		if (enhancedSearch == null) {
