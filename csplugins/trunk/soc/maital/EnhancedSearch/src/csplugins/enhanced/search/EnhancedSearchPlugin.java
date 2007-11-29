@@ -55,7 +55,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 	}
 
 	/**
-	 * Initializes All Cytoscape Listeners.
+	 * Initialize all Cytoscape listeners.
 	 */
 	private void initListeners() {
 		// to catch network create/destroy events
@@ -69,7 +69,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 	}
 
 	/**
-	 * Initalizes Tool Bar.
+	 * Initialize the Tool Bar.
 	 */
 	private void initToolBar() {
 
@@ -83,10 +83,9 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 	}
 
 	/**
-	 * Property change listener - to get network cretae/destroy events.
+	 * Property change listener - to get network create/destroy events.
 	 * 
-	 * @param event
-	 *            PropertyChangeEvent
+	 * @param event PropertyChangeEvent
 	 */
 	public void propertyChange(PropertyChangeEvent event) {
 		final EnhancedSearch enhancedSearch = EnhancedSearchFactory
@@ -100,12 +99,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 				String networkID = event.getNewValue().toString();
 				CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
 				enhancedSearch.removeNetworkIndex(cyNetwork);
-/**
-				final CyNetwork currNetwork = Cytoscape.getCurrentNetwork();
-				if (currNetwork == Cytoscape.getNullNetwork()) {
-					enhancedSearchToolBar.disableAllEnhancedSearchButtons();
-				}
-*/
+
 				// If there was only one network, and it was destroyed, disable Enhanced Search
 				Set networkSet = Cytoscape.getNetworkSet();
 				if (networkSet.size() == 1) {
@@ -117,7 +111,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 
 	/**
 	 * Determine if any network is loaded. If not, disable enhanced search.
-	 * EnhancedSearch is intentially enabled on networks with no view, to allow
+	 * EnhancedSearch is intentionally enabled on networks with no view, to allow
 	 * search on large networks without the need to create a view.
 	 */
 	private void isNetworkLoaded(EnhancedSearch enhancedSearch) {
