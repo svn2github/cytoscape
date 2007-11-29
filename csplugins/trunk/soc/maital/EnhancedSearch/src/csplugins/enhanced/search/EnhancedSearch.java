@@ -46,49 +46,42 @@ public interface EnhancedSearch {
 	String REINDEX = "REINDEX";
 
 	/**
-	 * Removes the specified network from the global index. <p/> To free up
-	 * memory, this method should be called whenever a network is destroyed.
+	 * Removes the specified network from the global index. To free up memory,
+	 * this method should be called whenever a network is destroyed.
 	 * 
-	 * @param network
-	 *            CyNetwork Object.
+	 * @param network 		CyNetwork object
 	 */
 	void removeNetworkIndex(CyNetwork network);
 
 	/**
 	 * Gets the index associated with the specified network.
 	 * 
-	 * @param network
-	 *            Cytoscape Network.
-	 * @return RAMDirectory Object.
+	 * @param network 		CyNetwork object
+	 * @return 				the index for this network
 	 */
 	RAMDirectory getNetworkIndex(CyNetwork network);
 
 	/**
-	 * Gets the indexing statis of a specified network.
+	 * Gets the indexing status of a specified network.
 	 * 
-	 * @param network
-	 *            Cytoscape Network.
-	 * @return status String Object.
+	 * @param network 		CyNetwork object
+	 * @return				network indexing status
 	 */
 	String getNetworkIndexStatus(CyNetwork network);
 
 	/**
 	 * Sets the index for the specified network.
 	 * 
-	 * @param network
-	 *            Cytoscape Network.
-	 * @param RAMDirectory
-	 *            Object.
+	 * @param network 		CyNetwork object
+	 * @param index 		the index that suits this network
 	 */
 	void setNetworkIndex(CyNetwork network, RAMDirectory index);
 
 	/**
 	 * Sets the indexing status of the specified network.
 	 * 
-	 * @param network
-	 *            Cytoscape Network.
-	 * @param status
-	 *            String Object.
+	 * @param network		CyNetwork object
+	 * @param status		the indexing status required for this network
 	 */
 	void setNetworkIndexStatus(CyNetwork network, String status);
 
