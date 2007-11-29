@@ -46,8 +46,6 @@ import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
 
-import cytoscape.editor.actions.DeleteAction;
-
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -85,16 +83,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	 *
 	 */
 
-	private DeleteAction _deleteAction;
 
 	/**
 	 * Creates a new CytoscapeEditorManagerSupport object.
 	 *
-	 * @param dAction  DOCUMENT ME!
 	 */
-	public CytoscapeEditorManagerSupport(DeleteAction dAction) {
+	public CytoscapeEditorManagerSupport() {
 		super();
-		_deleteAction = dAction;
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -103,16 +98,10 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 
 		Cytoscape.getVisualMappingManager().addChangeListener(this);
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).addCytoPanelListener(this);
+
+		new NewEmptyNetworkListener();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public DeleteAction getDeleteAction() {
-		return _deleteAction;
-	}
 
 	/**
 	 * respond to a ChangeEvent, typically this is caused by switching

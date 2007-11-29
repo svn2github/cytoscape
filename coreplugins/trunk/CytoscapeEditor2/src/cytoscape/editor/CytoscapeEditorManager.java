@@ -60,8 +60,6 @@ import cern.colt.list.IntArrayList;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.editor.actions.DeleteAction;
-import cytoscape.editor.actions.NewNetworkAction;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
@@ -252,20 +250,7 @@ public abstract class CytoscapeEditorManager {
         protected static void initialize() {
 	    CytoscapeEditorManager.setRunningEditorFramework(true);
 	    CytoscapeEditorManager.setEditingEnabled(true);
-	    DeleteAction delete = new DeleteAction();
-	    manager = new CytoscapeEditorManagerSupport(delete);
-	    System.out.println ("CEM. initialize, manager delete action = " +
-				manager.getDeleteAction());
-	    NewNetworkAction newNetwork = new NewNetworkAction("Empty Network",
-							       CytoscapeEditorFactory.INSTANCE);
-	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New");
-	    Cytoscape.getDesktop().getCyMenus().addAction(newNetwork);
-	    
-	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.New").setEnabled(true);
-	    
-	    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Edit");
-	    Cytoscape.getDesktop().getCyMenus().addAction(delete);
-	    
+	    manager = new CytoscapeEditorManagerSupport();
 	    ShapePalette shapePalette = new ShapePalette();
 	    Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Editor", shapePalette);
 	}
@@ -810,14 +795,6 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static CytoscapeEditor getCurrentEditor() {
 		return currentEditor;
-	}
-
-    /**
-     * Return the DeleteAction associated with this CytoscapeEditorManager.
-     */
-     
-	public static DeleteAction getDeleteAction() {
-	    return manager.getDeleteAction();
 	}
 
 	/**
