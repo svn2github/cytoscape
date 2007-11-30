@@ -44,6 +44,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutTask;
 
+import cytoscape.view.CyNetworkView;
+
 import cytoscape.task.util.TaskManager;
 
 import giny.model.Node;
@@ -114,8 +116,10 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		// Clear any previous entries
 		this.removeAll();
 
-		// First, do we support selectedOnly?
+		// Base the menu structure only on the current network. 
 		CyNetwork network = Cytoscape.getCurrentNetwork();
+
+		// First, do we support selectedOnly?
 		selectedNodes = network.getSelectedNodes();
 
 		if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
@@ -128,12 +132,15 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			// Add edge attributes menus
 			addEdgeAttributeMenus(this, false);
 		} else {
-			// Execute!
-			layout.setSelectedOnly(false);
-			layout.setLayoutAttribute(null);
-			
-			TaskManager.executeTask( new LayoutTask(layout, Cytoscape.getCurrentNetworkView()), 
-			                         LayoutTask.getDefaultTaskConfig() );
+
+			// No special menus, so make sure we layout all selected
+			List<CyNetworkView> views = Cytoscape.getSelectedNetworkViews();
+			for ( CyNetworkView view: views ) {
+				layout.setSelectedOnly(false);
+				layout.setLayoutAttribute(null);
+				TaskManager.executeTask( new LayoutTask(layout, view),
+				                         LayoutTask.getDefaultTaskConfig() );
+			}
 		}
 	}
 
@@ -208,31 +215,36 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			if (layout.supportsSelectedOnly()) {
-				layout.setSelectedOnly(selectedOnly);
 
-				if (selectedOnly && (selectedNodes.size() > 0)) {
-					// Lock all unselected nodes
-					Iterator nodeViews = Cytoscape.getCurrentNetworkView().getNodeViewsIterator();
+			List<CyNetworkView> views = Cytoscape.getSelectedNetworkViews();
 
-					while (nodeViews.hasNext()) {
-						NodeView nv = (NodeView) nodeViews.next();
-						Node node = nv.getNode();
+			for ( CyNetworkView netView : views ) {
 
-						if (!selectedNodes.contains(node))
-							layout.lockNode(nv);
+				if (layout.supportsSelectedOnly()) {
+					layout.setSelectedOnly(selectedOnly);
+
+					if (selectedOnly && (selectedNodes.size() > 0)) {
+						// Lock all unselected nodes
+						Iterator nodeViews = netView.getNodeViewsIterator();
+
+						while (nodeViews.hasNext()) {
+							NodeView nv = (NodeView) nodeViews.next();
+							Node node = nv.getNode();
+	
+							if (!selectedNodes.contains(node))
+								layout.lockNode(nv);
+						}
 					}
 				}
-			}
 
-			if ((layout.supportsNodeAttributes() != null)
-			    || (layout.supportsEdgeAttributes() != null)) {
-				layout.setLayoutAttribute(e.getActionCommand());
-			}
+				if ((layout.supportsNodeAttributes() != null)
+				    || (layout.supportsEdgeAttributes() != null)) {
+					layout.setLayoutAttribute(e.getActionCommand());
+				}
 
-			// layout.doLayout(Cytoscape.getCurrentNetworkView());
-			TaskManager.executeTask( new LayoutTask(layout, Cytoscape.getCurrentNetworkView()), 
-			                         LayoutTask.getDefaultTaskConfig() );
+				TaskManager.executeTask( new LayoutTask(layout, netView), 
+				                         LayoutTask.getDefaultTaskConfig() );
+			}
 		}
 	}
 }
