@@ -95,10 +95,6 @@
   <!-- Creates the filters.jar file                                           -->
   <!-- =================================================================== -->
   <target name="filters" depends="compile-filters"  >
-  	<!-- copy over images -->
-  	<!--	<copy todir="${filters.classes.dir}/filters/images"> -->
-  	<!--            <fileset dir="${filters.root.dir}/images"/> -->
-  	<!-- </copy> -->
   	
 	<copy todir="${filters.classes.dir}/cytoscape/filters" file="${filters.resources.dir}/plugin.props"/>
   	
@@ -114,9 +110,6 @@
     </jar>
   	
     <copy todir="${filters.lib.dir}" file="filters.jar"/>
-  	<copy todir="${cytoscape.plugin.dir}/core" file="filters.jar"/>
-
-  	<!--	<copy todir="${cytoscape.dir}/build/cytoscape-v2.6.0-alpha/plugins" file="filters.jar"/> -->
 
   </target>
 
