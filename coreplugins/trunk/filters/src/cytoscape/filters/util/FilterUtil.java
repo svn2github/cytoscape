@@ -103,6 +103,12 @@ public class FilterUtil {
 		return true;
 	}
 
+	// This is used in old version, will remove soon
+	public static void applyFilter(CompositeFilter pFilter) {
+		ApplyFilterThread applyFilterThread = new ApplyFilterThread(pFilter);
+		applyFilterThread.start();
+	}
+
 }
 
 
