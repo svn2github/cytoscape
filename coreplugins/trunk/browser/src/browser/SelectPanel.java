@@ -261,7 +261,8 @@ public class SelectPanel extends JPanel implements PropertyChangeListener, Actio
 		if (e.getSource() == filterBox) {
 			//System.out.println("\tShowing all that Pass Filter: " + filter.getName());
 			CompositeFilter filter = (CompositeFilter) filterBox.getSelectedItem();
-			FilterUtil.applyFilter(filter);			
+			//To fix with the new filter
+			//FilterUtil.applyFilter(filter);			
 		}
 
 		if (e.getSource() == networkBox) {
