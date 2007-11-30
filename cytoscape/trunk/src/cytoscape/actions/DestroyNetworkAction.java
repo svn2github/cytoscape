@@ -75,12 +75,16 @@ public class DestroyNetworkAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		destroyCurrentNetwork();
+		java.util.List<CyNetwork> l = Cytoscape.getSelectedNetworks();
+		for ( CyNetwork n : l )
+			Cytoscape.destroyNetwork(n);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * @deprecated Use Cytoscape.destroyNetwork(Cytoscape.getCurrentNetwork()) instead.
+	 * Will be gone 11/2008.
 	 */
+	@Deprecated
 	public static void destroyCurrentNetwork() {
 		Cytoscape.destroyNetwork(Cytoscape.getCurrentNetwork());
 	}

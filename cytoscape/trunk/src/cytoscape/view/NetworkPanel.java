@@ -381,7 +381,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			try {
 				for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
 					NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
-					if ( n != null && n.getUserObject() != null )
+					if ( n != null && n.getUserObject() != null && mtree.isRowSelected(i) )
 						networkList.add( n.getNetworkID() );
 				}
 			} catch (Exception ex) { 
