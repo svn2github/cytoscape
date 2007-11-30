@@ -632,7 +632,7 @@ public class PluginManagerTest extends TestCase {
 
 	}
 	
-	
+/*	
 	public void testLoadIndication() throws java.io.IOException, org.jdom.JDOMException, ManagerException {
 		PluginInfo TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl),
 				"mcode_1", "1.0");
@@ -652,7 +652,7 @@ public class PluginManagerTest extends TestCase {
 
 	}
 	
-	
+*/	
 	
 	/*--------------------------------------------------------------------*/
 	private ThemeInfo setUpCorrectUrls(ThemeInfo info) {
