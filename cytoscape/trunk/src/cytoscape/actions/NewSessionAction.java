@@ -64,24 +64,21 @@ public class NewSessionAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		int currentNetworkCount = Cytoscape.getNetworkSet().size();
 
-		if (currentNetworkCount != 0) {
-			// Show warning
-			String warning = "Current session will be lost.\nDo you want to continue?";
+		// Show warning
+		String warning = "Current session (all networks/attributes) will be lost.\nDo you want to continue?";
 
-			int result = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), warning, "Caution!",
-			                                           JOptionPane.YES_NO_OPTION,
-			                                           JOptionPane.WARNING_MESSAGE, null);
+		int result = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), warning, "Caution!",
+		                                           JOptionPane.YES_NO_OPTION,
+		                                           JOptionPane.WARNING_MESSAGE, null);
 
-			if (result == JOptionPane.YES_OPTION) {
-				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
-				Cytoscape.createNewSession();
-				Cytoscape.getDesktop().setTitle("Cytoscape Desktop (New Session)");
-				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
-			} else {
-				return;
-			}
+		if (result == JOptionPane.YES_OPTION) {
+			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
+			Cytoscape.createNewSession();
+			Cytoscape.getDesktop().setTitle("Cytoscape Desktop (New Session)");
+			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
+		} else {
+			return;
 		}
 	}
 }
