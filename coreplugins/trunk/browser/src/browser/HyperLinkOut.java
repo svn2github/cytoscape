@@ -108,6 +108,7 @@ public class HyperLinkOut extends JMenu {
 		bio.add("SGD");
 		bio.add("GO");
 		bio.add("MGD");
+		bio.add("Reactome");
 		def.put("Biological Databases", bio);
 
 		return def;
