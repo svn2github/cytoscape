@@ -153,14 +153,7 @@ public class VisualStyle implements Cloneable {
 	 * with a new, unique name before adding it to a CalculatorCatalog.
 	 */
 	public VisualStyle(VisualStyle toCopy) {
-		if (toCopy == null)
-			return;
-
-		setName(toCopy.getName());
-		setNodeAppearanceCalculator(new NodeAppearanceCalculator(toCopy.getNodeAppearanceCalculator()));
-		setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(toCopy.getEdgeAppearanceCalculator()));
-		setGlobalAppearanceCalculator(new GlobalAppearanceCalculator(toCopy
-		                                                                                                                                                       .getGlobalAppearanceCalculator()));
+		this(toCopy, toCopy.getName());
 	}
 
 	/**
@@ -172,19 +165,24 @@ public class VisualStyle implements Cloneable {
 	 * @throws NullPointerException if the second argument is null
 	 */
 	public VisualStyle(VisualStyle toCopy, String newName) {
+		if (toCopy == null)
+			return;
+		
 		if (newName == null) {
 			String s = "Unexpected null name in VisualStyle constructor";
 			throw new NullPointerException(s);
 		}
 
-		setName(newName);
+		setName(toCopy.getName());
+		setNodeAppearanceCalculator((NodeAppearanceCalculator)toCopy.getNodeAppearanceCalculator().clone());
+		setEdgeAppearanceCalculator((EdgeAppearanceCalculator)toCopy.getEdgeAppearanceCalculator().clone());
+		try {
+			setGlobalAppearanceCalculator((GlobalAppearanceCalculator)toCopy.getGlobalAppearanceCalculator().clone());
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		if (toCopy == null)
-			return;
-
-		setNodeAppearanceCalculator(new NodeAppearanceCalculator(toCopy.getNodeAppearanceCalculator()));
-		setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(toCopy.getEdgeAppearanceCalculator()));
-		setGlobalAppearanceCalculator(new GlobalAppearanceCalculator(toCopy.getGlobalAppearanceCalculator()));
 	}
 
 	/**
