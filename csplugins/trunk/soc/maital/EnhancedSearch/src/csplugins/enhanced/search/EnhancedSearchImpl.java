@@ -43,10 +43,19 @@ import cytoscape.CyNetwork;
 import org.apache.lucene.store.RAMDirectory;
 
 
+/**
+ * This object keeps the indexes of each network loaded in Cytoscape,
+ * and the indexing status of each network.
+ * It supplies methods to get and set indexes and indexing status for a given network.
+*/
 public class EnhancedSearchImpl implements EnhancedSearch {
 
+	// Keeps the index for each network
 	private HashMap networkIndexMap = new HashMap();
+
+	// Keeps indexing status of each network
 	private HashMap networkIndexStatusMap = new HashMap();
+
 	private CyNetwork network;
 
 	/**
