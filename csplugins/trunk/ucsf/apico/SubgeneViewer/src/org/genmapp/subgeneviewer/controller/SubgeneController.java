@@ -55,9 +55,6 @@ public class SubgeneController extends MouseAdapter {
 			getViewsInDatabase(_nodeLabel);
 			getViewsToView();
 
-			SubgeneViewerFrame frame = SubgeneViewerPlugin.get_frame();
-			System.out.println("Built subgeneViewer frame " + frame);
-
 			for (Integer viewType : _viewsToView) {
 				if (_viewsInDatabase.contains(viewType)) {
 
@@ -78,10 +75,12 @@ public class SubgeneController extends MouseAdapter {
 						// todo
 					}
 					}
-					frame.addView(_view, _nodeLabel);
+					SubgeneViewerFrame frame = new SubgeneViewerFrame(_view, _nodeLabel);
+					frame.setVisible(true);
+					System.out.println("Built subgeneViewer frame " + frame);
 				}
 			}
-			frame.setVisible(true);
+//			frame.setVisible(true);
 		}
 		else if ((e.getClickCount() >= 2) && (e.isAltDown()) && (e.isControlDown()))
 		{
