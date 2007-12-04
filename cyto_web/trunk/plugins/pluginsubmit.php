@@ -1,24 +1,14 @@
 <?php
-function getUniqueID($connection) {
 
-	$retValue = -1;
-	$dbQuery = "select max(unique_id) as current_max from plugin_list";	
-	// Run the query
-	if (!($result = @ mysql_query($dbQuery, $connection)))
-		showerror();
-
-	if (@ mysql_num_rows($result) != 0) {
-			$the_row = @ mysql_fetch_array($result);
-			$current_max = $the_row['current_max'];
-			$retValue = $current_max + 1; 
-	}
-
-	return $retValue;
-}
+include "getPluginUniqueID.inc";
 
 // mode = 'new', Data is submited by user
 // mode = 'edit', Cytostaff edit the data in CyPluginDB
 $mode = 'new'; // by default it is 'new'
+
+// This page accept both zip/jar file, if jar file, validate its property
+// If zip file, just load as is
+$isZipFile = false;
 
 // If versionid is provided through URL, it is in edit mode
 $versionID = NULL; // used for edit mode only
@@ -142,47 +132,7 @@ if (($tried == NULL) && ($mode == 'edit')) {
 // Remember the form data. If form validation failed, these data will
 // be used to fill the refreshed form. If pass, they will be saved into
 // database
-
-if (isset ($_FILES['filePlugin'])) {
-	$fileUpload = $_FILES['filePlugin'];
-}
-
-if (isset ($_POST['taReleaseNote'])) {
-	$releaseNote = addslashes($_POST['taReleaseNote']);
-}
-
-if (isset ($_POST['tfReleaseNoteURL'])) {
-	$releaseNoteURL = $_POST['tfReleaseNoteURL'];
-}
-
-if (isset ($_POST['tfSourceURL'])) {
-	$sourceURL = $_POST['tfSourceURL'];
-}
-
-if (isset ($_POST['taReference'])) {
-	$reference = addslashes($_POST['taReference']);
-}
-
-if (isset ($_POST['taLicense'])) {
-	$license = addslashes($_POST['taLicense']);
-}
-if (isset ($_POST['chkLicense_required'])) {
-	$license_required_checked = "checked";
-	$license_required = "yes";
-} else {
-	$license_required = "no";
-}
-if (isset ($_POST['taComment'])) {
-	$comment = addslashes($_POST['taComment']);
-}
-
-//Contact
-if (isset ($_POST['tfContactName'])) {
-	$contactName = addslashes($_POST['tfContactName']);
-}
-if (isset ($_POST['tfContactEmail'])) {
-	$contactEmail = addslashes($_POST['tfContactEmail']);
-}
+include "formUserInput_remember.inc";
 
 // Detect the action button clicked
 $submitAction = NULL;
@@ -195,42 +145,21 @@ $validated = true;
 
 if ($tried != NULL && $tried == 'yes') {
 
-	if (($mode == 'new') && empty ($_POST['tfContactEmail'])) {
-		$validated = false;
-?>
-		<br><strong>Error: E-mail is a required field.</strong><br>
-		<?php
-	}
-	else {
-			if(!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $_POST['tfContactEmail'])) {
-				$validated = false;
-	?>
-			<br><strong>Error: Invalid email address.</strong><br>
-			<?php
-			}
-	}
-	//if mode == 'new', A jar/zip file is required
-	//if mode == 'edit', if a jar/zip file is not provided,
-	//the existing file will not be updated. 
-	if (($mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
-		$validated = false;
-?>
-		<br><strong>Error: A jar/zip file is required.</strong><br>
-		<?php
-
-
-	}
-	elseif (($mode == 'edit') && empty ($_FILES['filePlugin']['name'])) {
+	// mode = 'new'
+	include 'formUserInput_validation.inc';	
+	
+	if (($mode == 'edit') && empty ($_FILES['filePlugin']['name'])) {
 		//keep the existing file as is.
 		include 'getplugindatafromdb.inc';
 		$pluginProps = $db_pluginProps;
 	} else {
-		// get plugin properties from the jar/zip file uploaded
+		// if it is a jar file, get plugin properties from the jar file uploaded
 		include "./pluginPropsUtil.inc";
 		$pluginProps = getPluginProps($fileUpload['tmp_name']);
 		$validated = (validatePluginProps($pluginProps) && validateManifestFile($fileUpload['tmp_name']));		
-	}
+	}	
 }
+
 //////// End of form validation ////////////////////
 
 // if the mode is 'new' (i.e. submit from user), check if the plugin already existed
@@ -248,82 +177,13 @@ if (!($tried && $validated)) {
 <blockquote>
   <p><SPAN id="_ctl3_LabelRequired">	Fields denoted   by an (<span class="style4">*</span>) are required.</SPAN></p>
 </blockquote>
-<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="submitplugin" id="submitplugin">
-  <table width="878" border="0">
-  <tr>
-    <td width="208"><div align="right"></div></td>
-    <td width="660"><label><?php if ($mode == 'edit') {echo 'If no file is selected, the existing one will be kept as is.'; } ?></label></td>
-  </tr>
-  <tr>
-    <td><div align="right"><span class="style4">*</span>Jar/Zip File </div></td>
-    <td><input name="filePlugin" type="file" id="filePlugin" size="80" /></td>
-  </tr>
-  <tr>
-    <td><div align="right"></div></td>
-    <td><label></label></td>
-  </tr>
-  <tr>
-    <td><div align="right">Contact</div></td>
-    <td><table width="660" border="0">
-      <tr>
-        <td width="420"><div align="center"> Name</div></td>
-        <td width="230"><div align="center"><span class="style4">*</span>e-mail (not made public) </div></td>
-      </tr>
-      <tr>
-        <td><label>
-          <input name="tfContactName" type="text" id="tfContactName" size="70" value ="<?php echo htmlentities(stripslashes($contactName)) ?>" />
-        </label></td>
-        <td><input name="tfContactEmail" type="text" id="tfContactEmail" size="30" value ="<?php echo $contactEmail ?>" /></td>
-        </tr>
-    </table></td>
-  </tr>
 
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td><div align="right">Release note</div></td>
-    <td><label>
-      <textarea name="taReleaseNote" cols="80" rows="3" id="taReleaseNote" ><?php echo $releaseNote ?></textarea>
-    </label></td>
-  </tr>
-  <tr>
-    <td><div align="right">Release note URL</div></td>
-    <td><input name="tfReleaseNoteURL" type="text" id="tfReleaseNoteURL" value ="<?php echo $releaseNoteURL ?>" size="80"></td>
-  </tr>
-  <tr>
-    <td><div align="right">Source URL</div></td>
-    <td><input name="tfSourceURL" type="text" id="tfSourceURL" value ="<?php echo $sourceURL ?>" size="80"></td>
-  </tr>
-  <tr>
-    <td><div align="right">Reference</div></td>
-    <td><textarea name="taReference" cols="80" rows="3" id="taReference"><?php echo $reference; ?></textarea></td>
-  </tr>
-  <tr>
-    <td><div align="right">License</div></td>
-    <td><label>
-      <textarea name="taLicense" cols="80" rows="3" id="taLicense"><?php echo $license ?></textarea>
-    </label></td>
-  </tr>
-  <tr>
-    <td><div align="right">License required</div></td>
-    <td><label>
-      <input type="checkbox" name="chkLicense_required" id="chkLicense_required" value="checkbox" <?php echo $license_required_checked ?> />
-    </label>	</td>
-  </tr>
-  <tr>
-    <td><div align="right">Comment</div></td>
-    <td><label>
-      <textarea name="taComment" cols="80" rows="2" id="taComment"><?php echo $comment; ?></textarea>
-    </label></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td><input name="tried" type="hidden" id="tried" value="yes">
-      <input name="versionID" type="hidden" id="versionID" value="<?php echo $versionID; ?>"></td>
-  </tr>
-</table>
+<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="submitplugin" id="submitplugin">
+
+<?php
+include "formUserInput.inc";
+?>
+
 <p align="center">
 <?php
 
@@ -360,17 +220,18 @@ else
 	////////////////////////// form processing /////////////////////////
 	// if mode = 'new', takes the details of the plugin from user and adds them to the tables of our CyPluginDB, with status = 'new'.
 	// if mode = 'Edit', update the plugin info in CyPluginDB, change status based on button pressed.
+{
 
-	{
-	// Get the category_id
-	$query = 'SELECT category_id FROM categories WHERE name = "' . $pluginProps['pluginCategory'] . '"';
-	// Run the query
-	if (!($result = @ mysql_query($query, $connection)))
-		showerror();
-
-	$the_row = @ mysql_fetch_array($result);
-	$category_id = $the_row['category_id'];
-
+		// Get the category_id
+		$query = 'SELECT category_id FROM categories WHERE name = "' . $pluginProps['pluginCategory'] . '"';
+		// Run the query
+		if (!($result = @ mysql_query($query, $connection)))
+			showerror();
+	
+		$the_row = @ mysql_fetch_array($result);
+		$category_id = $the_row['category_id'];		
+	
+	
 	// In case of edit, do updating
 	if ($mode == 'edit') {
 		//If Jar/Zip File is provided and validated, update everything
@@ -566,139 +427,15 @@ else
 	// End of case for 'edit' mode
 
 	if ($mode == 'new') {
+//exit("<br>Exit here line 587");
 
 		//$submitAction == 'Submit', accept data submited from user
 		//process the data and Save the data into DB.
 
-		//Load the Jar file to DB
-		$plugin_file_auto_id = NULL;
+		include "uploadNewPluginData.inc";
 
-		if ($fileUpload['name'] != NULL) {
-			//echo "A file is selected";`
-			$md5 = md5_file($fileUpload['tmp_name']);
-			$fileUpload_type = $fileUpload['type'];
-			$fileUpload_name = $fileUpload['name'];
-
-			$fileHandle = fopen($fileUpload['tmp_name'], "r");
-			$fileContent = fread($fileHandle, $fileUpload['size']);
-			$fileContent = addslashes($fileContent);
-
-			$dbQuery = "INSERT INTO plugin_files VALUES ";
-			$dbQuery .= "(0, '$fileContent', '$fileUpload_type', '$fileUpload_name', '$md5')";
-			//echo "<br>dbQuery = " . $dbQuery . "<br>";
-			// Run the query
-			if (!(@ mysql_query($dbQuery, $connection)))
-				showerror();
-
-			echo "<br><b>File uploaded successfully</b><br>";
-			$plugin_file_auto_id = mysql_insert_id($connection);
-		}
-
-		$plugin_auto_id = NULL;
-		//Check if there is an old version of this plugin in DB
-		$dbQuery = 'SELECT plugin_auto_id FROM plugin_list ' .
-		'         WHERE plugin_list.name = "' . $pluginProps['pluginName'] . '" and category_id =' . $category_id;
-
-		// Run the query
-		if (!($result = @ mysql_query($dbQuery, $connection)))
-			showerror();
-
-		if (@ mysql_num_rows($result) != 0) {
-			//There is an old version in the DB, update the row in the table plugin_list
-
-			$the_row = @ mysql_fetch_array($result);
-			$plugin_auto_id = $the_row['plugin_auto_id'];
-			//echo "There is an old version of this plugin in the DB, plugin_auto_id =" . $plugin_auto_id . "<br>";
-
-			// Update the table "plugin_list"  
-			$dbQuery = 'UPDATE plugin_list ' .
-			'SET description = "' . $pluginProps['pluginDescription'] . '",' .
-			'project_url ="' . $pluginProps['projectURL'] . '",' .
-			'license ="' . $license . '",' .
-			'license_required ="' . $license_required . '" ' .
-			'WHERE plugin_auto_id = ' . $plugin_auto_id;
-
-			// Run the query
-			if (!($result = @ mysql_query($dbQuery, $connection)))
-				showerror();
-
-		} else {
-			//This is a new plugin, add a row in the table plugin_list
-
-			//$plugin_unique_id = -1;
-			$plugin_unique_id = getUniqueID($connection);
-			
-			$dbQuery = 'INSERT INTO plugin_list VALUES ' .
-			'(0, "' . $pluginProps['pluginName'] . '", "' . $plugin_unique_id . '", "' . addslashes($pluginProps['pluginDescription']) . '", "' . $license . '", "' . $license_required . '", "' . $pluginProps['projectURL'] . '",' .
-			$category_id . ',now())';
-
-			// Run the query
-			if (!($result = @ mysql_query($dbQuery, $connection)))
-				showerror();
-
-			$plugin_auto_id = mysql_insert_id($connection);
-		}
-
-		// Insert a row into table plugin_version
-		$status = 'new';
-		$dbQuery = 'INSERT INTO plugin_version VALUES (0, ' . $plugin_auto_id . ', ';
-		if ($plugin_file_auto_id == NULL) {
-			$dbQuery .= 'NULL';
-		} else {
-			$dbQuery .= $plugin_file_auto_id;
-		}
-		$dbQuery .= ',"' . $pluginProps['pluginVersion'] . '",\'' .
-		$pluginProps['releaseDate'] . '\',"' . $releaseNote . '","' . $releaseNoteURL . '","' . $pluginProps['minimumJavaVersion'] . '","' . $comment . '","' . $jarURL . '","' .
-		$sourceURL . '","' . $pluginProps['cytoscapeVersion'] . '","' . $status . '","' . $reference . '", now())';
-
-		// Run the query
-		if (!(@ mysql_query($dbQuery, $connection)))
-			showerror();
-
-		$version_auto_id = mysql_insert_id($connection);
-		// insert rows into author tables (authors and plugin_author)
-
-		$authorCount = count($pluginProps['pluginAuthorsInstitutions']['names']);
-
-		for ($i = 0; $i < $authorCount; $i++) {
-			$dbQuery = 'INSERT INTO authors VALUES (0, "' . addslashes($pluginProps['pluginAuthorsInstitutions']['names'][$i]) . '", "' . '' . '","' . $pluginProps['pluginAuthorsInstitutions']['insts'][$i] . '","' . '' . '")';
-
-			// Run the query
-			if (!(@ mysql_query($dbQuery, $connection)))
-				showerror();
-
-			$author_auto_id = mysql_insert_id($connection);
-
-			$authorship_seq = $i;
-			$dbQuery = 'INSERT INTO plugin_author VALUES (' . $version_auto_id . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
-
-			// Run the query
-			if (!(@ mysql_query($dbQuery, $connection)))
-				showerror();
-		}
-
-		// insert a row into contacts table
-
-		//echo "contactName =",$contactName,"<br>";
-		//echo "contactEmail =",$contactEmail,"<br>";
-
-		$dbQuery = 'INSERT INTO contacts VALUES (0, "' . addslashes($contactName) . '", "' . $contactEmail . '",' . $version_auto_id . ', now())';
-
-		// Run the query
-		if (!(@ mysql_query($dbQuery, $connection)))
-			showerror();
-?>
-	Thank you for submitting your plugin to Cytoscape. Cytoscape staff will review the data  and publish it on the cytoscape website. If your-mail address is provided, you will get confirmation via e-mail.
-	<p>Go back to <a href="index.php">Back to cytoscape plugin page</a></p>
-	<?php
-
-
-		// Send a confirmation e-mail to user
-		// Also cc to cytostaff,  new plugin is uploaded
-		include "sendConfirmationEmail.inc";
-		sendConfirmartionEmail($contactName, $contactEmail, $pluginProps['pluginName']);
-
-	} // end of form processing
+	} 
+	// end of form processing
 }
 ?>
 
