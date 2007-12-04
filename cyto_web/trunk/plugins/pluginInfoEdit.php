@@ -37,7 +37,7 @@ if (isset ($_POST['versionID'])) { // hidden field
 <?php include "../nav.php"; ?>
   
 <?php
-
+$mode = 'edit';
 $tried = NULL;
 if (isset ($_POST['tried'])) {
 	$tried = 'yes';
@@ -128,6 +128,9 @@ if ($tried == NULL) {
 // Remember the form data. If form validation failed, these data will
 // be used to fill the refreshed form. If pass, they will be saved into
 // database
+include "formPluginInfo_remember.inc";
+
+/*
 if (isset ($_POST['tfName'])) {
 	$name = $_POST['tfName'];
 }
@@ -234,13 +237,17 @@ if (isset ($_POST['tfAffiliation1'])) {
 if (isset ($_POST['tfAffiliationURL1'])) {
 	$affiliationURLs[1] = $_POST['tfAffiliationURL1'];
 }
-
+*/
 
 //////////////////////// Form validation ////////////////////////
 $validated = true;
 
-if ($tried != NULL && $tried == 'yes') {
 
+
+if ($tried != NULL && $tried == 'yes') {
+	include "formPluginInfo_validation.inc";
+	
+/*
 	if (empty ($_POST['tfName'])) {
 		$validated = false;
 ?>
@@ -301,7 +308,7 @@ if ($tried != NULL && $tried == 'yes') {
 
 		}
 	}
-
+*/
 } // End of form validation
 
 
@@ -314,7 +321,11 @@ if (!($tried && $validated)) {
   <p><SPAN id="_ctl3_LabelRequired">	Fields denoted   by an (<span class="style4">*</span>) are required.</SPAN></p>
 </blockquote>
 <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="submitplugin" id="submitplugin">
-  <table width="878" border="0">
+
+<?php
+include "formPluginInfo.inc";
+/* 
+ <table width="878" border="0">
   <tr>
     <td width="208"><div align="right" ><span class="style3">*</span>Plugin name</div></td>
     <td width="660"><input name="tfName" type="text" value ="<?php echo $name ?>" size="40" /></td>
@@ -457,6 +468,9 @@ if (!($tried && $validated)) {
       <input name="versionID" type="hidden" id="versionID" value="<?php echo $versionID; ?>"></td>
   </tr>
 </table>
+*/
+?>
+
 <p align="center">
   <p align="center">
 	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save" />
