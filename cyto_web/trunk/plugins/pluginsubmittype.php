@@ -29,11 +29,11 @@
 <table width="960" height="102" border="0">
   <tr>
     <th width="101" ><a href="pluginsubmit.php">Jar file</a></th>
-    <td width="849" ><div align="left">-- a single jar file with plugins.prop, which will be validated</div></td>
+    <td width="849" ><div align="left">A single <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial"> properly formatted plugin jar</a>. We will read (and validate) the plugin metadata (name, description, version, etc.) from the jar.</div></td>
   </tr>
   <tr>
     <th scope="row"><a href="pluginsubmitzip.php">Zip file</a></th>
-    <td>-- a file with extension .zip, which may contain other jar files as libraries. It will be loaded as is.</td>
+    <td>A file with extension .zip, which should contain the plugin jar and any other necessary data.  The file will be loaded as is and you will need to enter the plugin metadata.</td>
   </tr>
 </table>
 
