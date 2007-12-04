@@ -111,6 +111,15 @@ function validatePluginProps($pluginProps) {
 
 
 	}
+	else {
+		if ($pluginProps['cytoscapeVersion'] == null || $pluginProps['cytoscapeVersion'] == "") {
+		$retVal = false;
+?>
+		<strong>Error in plugin.prop: cytoscapeVersion is required.</strong><br>
+		<?php
+		}
+	}
+
 	//If release Date is not provided, set it to today (system date).
 	if (!array_key_exists('releaseDate', $pluginProps)) {
 		$pluginProps['releaseDate'] = date('Y').'-'.date('m').'-'.date('d');		
