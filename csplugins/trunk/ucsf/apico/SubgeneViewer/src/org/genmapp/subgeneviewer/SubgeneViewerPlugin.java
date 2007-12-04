@@ -37,16 +37,16 @@ public class SubgeneViewerPlugin extends CytoscapePlugin implements
 		}
 	}
 
-	public static SubgeneViewerFrame get_frame() {
-		if (_frame == null) {
-			try {
-				_frame = new SubgeneViewerFrame();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return _frame;
-	}
+//	public static SubgeneViewerFrame get_frame() {
+//		if (_frame == null) {
+//			try {
+//				_frame = new SubgeneViewerFrame();
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		return _frame;
+//	}
 
 }
