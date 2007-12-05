@@ -177,7 +177,7 @@ public class CyGoose implements Goose {
 		for (int i = 0; (i < Selected.length) && (NodeIter.hasNext()); i++) {
 			CyNode CurrentNode = NodeIter.next();
 			Selected[i] = CurrentNode.getIdentifier(); // this could change
-														// based on
+			// based on
 			// the broadcastId but
 			// currently not implemented
 		}
@@ -252,10 +252,10 @@ public class CyGoose implements Goose {
 
 			CyNode selectNode = Cytoscape.getCyNode(node);
 			CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // does this
-																	// need to
-																	// be in
-																	// this
-																	// scope?
+			// need to
+			// be in
+			// this
+			// scope?
 
 			if (valueObject instanceof Double) {
 				Double value = (Double) valueObject;
@@ -307,10 +307,6 @@ public class CyGoose implements Goose {
 	// this method is called for the "movies" from the DMV
 	// TODO: check that the attribute being used is part of a
 	// NodeAppearanceCalculator
-	// TODO: setup some default calculators for color/shape/size in cases where
-	// an
-	// attribute is not matched so a movie
-	// will do something regardless
 	/**
 	 * @param species
 	 * @param dataTitle
@@ -441,19 +437,33 @@ public class CyGoose implements Goose {
 		String[] GeneNames = matrix.getRowTitles();
 		String[] ConditionNames = matrix.getColumnTitles();
 
-		for (int row = 0; row < GeneNames.length; row++) {
-			String NodeId = GeneNames[row];
+		List<CyEdge> EdgeList = Cytoscape.getCyEdgesList();
 
-			CyNode SelectNode = Cytoscape.getCyNode(NodeId);
+		for (int row = 0; row < GeneNames.length; row++) {
+			String Id = GeneNames[row];
+
+			CyNode SelectNode = Cytoscape.getCyNode(Id);
+			CyEdge SelectEdge = null;
+			for (CyEdge edge : EdgeList) {
+				if (edge.getIdentifier().equals(Id))
+					SelectEdge = edge;
+			}
+
+			CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
+			CyAttributes EdgeAtts = Cytoscape.getEdgeAttributes();
 
 			if (SelectNode != null) {
-				CyAttributes NodeAtts = Cytoscape.getNodeAttributes();
 				Net.setSelectedNodeState((Node) SelectNode, true);
+			}
+			if (SelectEdge != null) {
+				Net.setSelectedEdgeState((Edge) SelectEdge, true);
+			}
+			// set all experimental conditions as node attributes
+			for (int col = 0; col < ConditionNames.length; col++) {
+				Double condVal = new Double(matrix.get(row, col));
+				String attributeName = ConditionNames[col];
 
-				// set all experimental conditions as node attributes
-				for (int col = 0; col < ConditionNames.length; col++) {
-					Double condVal = new Double(matrix.get(row, col));
-					String attributeName = ConditionNames[col];
+				if (SelectNode != null) {
 					if ((NodeAtts.hasAttribute(SelectNode.getIdentifier(),
 							attributeName))
 							&& (NodeAtts.getType(attributeName) != CyAttributes.TYPE_FLOATING))
@@ -463,7 +473,18 @@ public class CyGoose implements Goose {
 						NodeAtts.setAttribute(SelectNode.getIdentifier(),
 								attributeName, condVal);
 				}
+				if (SelectEdge != null) {
+					if ((EdgeAtts.hasAttribute(SelectEdge.getIdentifier(),
+							attributeName))
+							&& (EdgeAtts.getType(attributeName) != CyAttributes.TYPE_FLOATING))
+						print("handleMatrix() Warning: \"" + attributeName
+								+ "\" is not of TYPE_FLOATING");
+					else
+						EdgeAtts.setAttribute(SelectEdge.getIdentifier(),
+								attributeName, condVal);
+				}
 			}
+
 		}
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		// refresh network to flag selected nodes
@@ -527,10 +548,7 @@ public class CyGoose implements Goose {
 				for (String CurrentName : names) {
 					Node NewNode = (Node) Cytoscape
 							.getCyNode(CurrentName, true);
-					// CyNet.addNode(NewNode);
-					// CyNet.setSelectedNodeState(NewNode, true);
 					NewNet.addNode(NewNode);
-					// CyNet.setSelectedNodeState(NewNode, true);
 				}
 				Cytoscape.getNetworkView(NewNet.getIdentifier()).applyLayout(
 						CyLayouts.getDefaultLayout());
@@ -542,16 +560,27 @@ public class CyGoose implements Goose {
 					if (SelectNode != null) {
 						CyNet.setSelectedNodeState(SelectNode, true);
 					}
+
+					// this means either nodes or edges can match...there's no
+					// way to tell what a namelist holds
+					List<CyEdge> EdgesList = Cytoscape.getCyEdgesList();
+					for (CyEdge edge : EdgesList) {
+						if (edge.getIdentifier().equals(CurrentName))
+							CyNet.setSelectedEdgeState(edge, true);
+					}
+
 				}
 				System.out.println("number of matching nodes: "
 						+ CyNet.getSelectedNodes().size());
+				System.out.println("number of matching edges: "
+						+ CyNet.getSelectedEdges().size());
 
-				if (CyNet.getSelectedNodes().size() <= 0) {
-					String Msg = "No matching nodes were found, please check that you are using the same ID's between geese";
+				if (CyNet.getSelectedNodes().size() <= 0
+						&& CyNet.getSelectedEdges().size() <= 0) {
+					String Msg = "No matching nodes/edges were found, please check that you are using the same ID's between geese";
 					print(Msg);
 				}
 			}
-
 			// refresh network to flag selected nodes
 			Cytoscape.getDesktop().setFocus(CyNet.getIdentifier());
 		}
