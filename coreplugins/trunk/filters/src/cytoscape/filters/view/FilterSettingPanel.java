@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -17,6 +15,7 @@ import cytoscape.filters.AtomicFilter;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.CyFilter;
 import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.InteractionFilter;
 import cytoscape.filters.StringFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.AdvancedSetting;
@@ -76,6 +75,7 @@ public class FilterSettingPanel extends JPanel {
 	private FilterMainPanel parentPanel;
 	private CyNetwork currentNetwork = null;
 	private TopoFilterPanel topoPanel = null;
+	private InteractionFilterPanel interactionPanel = null;
 
 	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj) {
 		theFilter = (CompositeFilter) pFilterObj;
@@ -110,6 +110,34 @@ public class FilterSettingPanel extends JPanel {
 			
 			this.validate();
 		}
+		
+		if (pFilterObj instanceof InteractionFilter) {
+			System.out.println("FilterSettingPanl: it is a InteractionFilter");
+
+			java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+	        gridBagConstraints.gridy = 2;
+	        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	        gridBagConstraints.weightx = 1.0;
+
+			pnlCustomSettings.removeAll();
+			interactionPanel = new InteractionFilterPanel((InteractionFilter)theFilter);
+			pnlCustomSettings.add(interactionPanel, gridBagConstraints);
+			interactionPanel.addParentPanelListener(); // Update passFilterCOM when shown
+			
+			addBlankLabelToCustomPanel();
+
+			// Hide un-used components in AdvancedPanel
+			lbRelation.setVisible(false);
+			rbtAND.setVisible(false);
+			rbtOR.setVisible(false);
+			lbSelect.setVisible(false);			
+			chkEdge.setVisible(false);
+			chkNode.setVisible(false);
+			
+			this.validate();
+		}
+		
+		
 	}
 	
 	
@@ -901,8 +929,8 @@ public class FilterSettingPanel extends JPanel {
 					
 					theFilter.childChanged();//The setting is changed
 					
-					if (theFilter instanceof TopologyFilter) {
-						// Do not apply Filter if TopologyFilter	
+					if (theFilter instanceof TopologyFilter || theFilter instanceof InteractionFilter) {
+						// Do not apply Filter if TopologyFilter or InteractionFilter	
 					}
 					else {						
 						FilterUtil.doSelection(theFilter);										
@@ -947,7 +975,7 @@ public class FilterSettingPanel extends JPanel {
         jLabel6 = new javax.swing.JLabel();
         chkSession = new javax.swing.JCheckBox();
         chkGlobal = new javax.swing.JCheckBox();
-        jLabel7 = new javax.swing.JLabel();
+        lbSelect = new javax.swing.JLabel();
         chkNode = new javax.swing.JCheckBox();
         chkEdge = new javax.swing.JCheckBox();
         
@@ -1021,11 +1049,11 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
         pnlAdvancedOptions.add(chkGlobal, gridBagConstraints);
 
-        jLabel7.setText("Select");
+        lbSelect.setText("Select");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        pnlAdvancedOptions.add(jLabel7, gridBagConstraints);
+        pnlAdvancedOptions.add(lbSelect, gridBagConstraints);
 
         chkNode.setSelected(true);
         chkNode.setText("Node");
@@ -1182,7 +1210,7 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.JCheckBox chkTarget;
     private javax.swing.JLabel lbRelation;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lbSelect;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lbAdvanced;
