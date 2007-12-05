@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
@@ -44,6 +43,9 @@ import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.CyFilter;
 import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.InteractionFilter;
+import cytoscape.filters.NodeInteractionFilter;
+import cytoscape.filters.EdgeInteractionFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +81,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private static JMenuItem newFilterMenuItem;
 	private static JMenuItem newTopologyFilterMenuItem;
+	private static JMenuItem newNodeInteractionFilterMenuItem;
+	private static JMenuItem newEdgeInteractionFilterMenuItem;
+	
 	private static JMenuItem renameFilterMenuItem;
 
 	private static JMenuItem deleteFilterMenuItem;
@@ -266,6 +271,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
 						.createTitledBorder("Topology Filter Definition"));
 			}
+			else if (pNewFilter instanceof InteractionFilter) {
+				lbAttribute.setVisible(false);
+				btnAddFilterWidget.setVisible(false);
+				cmbAttributes.setVisible(false);	
+				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+						.createTitledBorder("Interaction Filter Definition"));				
+			}
 			else {
 				lbAttribute.setVisible(true);
 				btnAddFilterWidget.setVisible(true);
@@ -292,6 +304,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		newFilterMenuItem.addActionListener(this);
 		newTopologyFilterMenuItem.addActionListener(this);
+		newNodeInteractionFilterMenuItem.addActionListener(this);
+		newEdgeInteractionFilterMenuItem.addActionListener(this);
+
 		deleteFilterMenuItem.addActionListener(this);
 		renameFilterMenuItem.addActionListener(this);
 		duplicateFilterMenuItem.addActionListener(this);
@@ -414,6 +429,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		newTopologyFilterMenuItem = new JMenuItem("Create new topology filter...");
 		newTopologyFilterMenuItem.setIcon(addIcon);
 
+		newNodeInteractionFilterMenuItem = new JMenuItem("Create new NodeInteraction filter...");
+		newNodeInteractionFilterMenuItem.setIcon(addIcon);
+
+		newEdgeInteractionFilterMenuItem = new JMenuItem("Create new EdgeInteraction filter...");
+		newEdgeInteractionFilterMenuItem.setIcon(addIcon);
+
 		deleteFilterMenuItem = new JMenuItem("Delete filter...");
 		deleteFilterMenuItem.setIcon(delIcon);
 
@@ -422,10 +443,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		duplicateFilterMenuItem = new JMenuItem("Copy existing filter...");
 		duplicateFilterMenuItem.setIcon(duplicateIcon);
+		// Hide copy icon for now, we may need it in the future
+		duplicateFilterMenuItem.setVisible(false);
 
 		optionMenu = new JPopupMenu();
 		optionMenu.add(newFilterMenuItem);
 		optionMenu.add(newTopologyFilterMenuItem);
+		optionMenu.add(newNodeInteractionFilterMenuItem);
+		optionMenu.add(newEdgeInteractionFilterMenuItem);
 		optionMenu.add(deleteFilterMenuItem);
 		optionMenu.add(renameFilterMenuItem);
 		optionMenu.add(duplicateFilterMenuItem);
@@ -607,13 +632,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					this.btnApplyFilter.setEnabled(true);					
 				}
 				replaceFilterSettingPanel(selectedFilter);
-				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter) {
-					// do not apply TopologyFilter automatically
+				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter || cmbSelectFilter.getSelectedItem() instanceof InteractionFilter) {
+					// do not apply TopologyFilter or InteractionFilter automatically
 					if (Cytoscape.getCurrentNetwork() != null) {
 						Cytoscape.getCurrentNetwork().unselectAllNodes();						
 					}
 					return;
-				}
+				}				
 				FilterUtil.doSelection(selectedFilter);
 				refreshAttributeCMB();
 			}
@@ -672,15 +697,30 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		if (_actionObject instanceof JMenuItem) {
 			JMenuItem _menuItem = (JMenuItem) _actionObject;
-			if (_menuItem == newFilterMenuItem || _menuItem == newTopologyFilterMenuItem) {
-				boolean isTopoFilter = false;
+			if (_menuItem == newFilterMenuItem || _menuItem == newTopologyFilterMenuItem 
+					|| _menuItem == newNodeInteractionFilterMenuItem || _menuItem == newEdgeInteractionFilterMenuItem) {
+				String filterType = "Composite";
+				//boolean isTopoFilter = false;
+				//boolean isInteractionFilter = false;
 				if (_menuItem == newTopologyFilterMenuItem) {
-					isTopoFilter = true;
+					filterType = "Topology";
 					if (Cytoscape.getCurrentNetwork() != null) {
 						Cytoscape.getCurrentNetwork().unselectAllNodes();						
 					}
 				}
-
+				if (_menuItem == newNodeInteractionFilterMenuItem) {
+					filterType = "NodeInteraction";
+					if (Cytoscape.getCurrentNetwork() != null) {
+						Cytoscape.getCurrentNetwork().unselectAllNodes();						
+					}
+				}
+				if (_menuItem == newEdgeInteractionFilterMenuItem) {
+					filterType = "EdgeInteraction";
+					if (Cytoscape.getCurrentNetwork() != null) {
+						Cytoscape.getCurrentNetwork().unselectAllNodes();						
+					}
+				}
+				
 				String newFilterName = "";
 				while (true) {
 					newFilterName = javax.swing.JOptionPane.showInputDialog(
@@ -715,7 +755,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 				if ((newFilterName != null)
 						&& (!newFilterName.trim().equals(""))) {
-					createNewFilter(newFilterName, isTopoFilter);
+					createNewFilter(newFilterName, filterType);
 					
 					//System.out.println("FilterMainPanel.firePropertyChange() -- NEW_FILTER_CREATED");
 					//pcs.firePropertyChange("NEW_FILTER_CREATED", "", "");
@@ -896,19 +936,33 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 	}// AttributeRenderer
 
-	private void createNewFilter(String pFilterName, boolean isTopoFilter) {
+	private void createNewFilter(String pFilterName, String pFilterType) {
 		// Create an empty filter, add it to the current filter list
 		
 		System.out.println("Entering FilterMainPanel.createNewFilter() ...");
 		CompositeFilter newFilter = null;
 		
-		if (isTopoFilter) {
+		if (pFilterType.equalsIgnoreCase("Topology")) {
 			System.out.println("\tCreate a topology filter");
 
 			newFilter =  new TopologyFilter();
 			newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
 		}
+		else if (pFilterType.equalsIgnoreCase("NodeInteraction")) {
+			System.out.println("\tCreate an NodeInteraction filter");
+
+			newFilter =  new NodeInteractionFilter();
+			//newFilter.getAdvancedSetting().setEdge(false);
+			newFilter.setName(pFilterName);			
+		}		
+		else if (pFilterType.equalsIgnoreCase("EdgeInteraction")) {
+			System.out.println("\tCreate an EdgeInteraction filter");
+
+			newFilter =  new EdgeInteractionFilter();
+			//newFilter.getAdvancedSetting().setEdge(false);
+			newFilter.setName(pFilterName);			
+		}		
 		else {
 			newFilter = new CompositeFilter(pFilterName);
 		}
@@ -923,7 +977,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cmbSelectFilter.setSelectedItem(newFilter);
 		cmbSelectFilter.repaint();
 
-		if (!isTopoFilter) {
+		if (pFilterType.equalsIgnoreCase("Composite")) {
 			updateCMBAttributes();
 		}
 		
