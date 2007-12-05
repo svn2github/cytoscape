@@ -241,19 +241,23 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	public void layoutPartion(LayoutPartition partition) {
 		data = Cytoscape.getNodeAttributes();
 
-		int count = partition.nodeCount();
+		// just add the unlocked nodes
+		List<LayoutNode> nodes = new ArrayList<LayoutNode>();
+		for ( LayoutNode ln : partition.getNodeList() ) {
+			if ( !ln.isLocked() ) {
+				nodes.add(ln);
+			}
+		}
+
+		int count = nodes.size(); 
 		int r = (int) Math.sqrt(count);
 		r *= spacing;
-
-		// nodesList is deprecated, so we need to create our own so
-		// that we can hand it off to the sort routine
-		List<LayoutNode> nodes = partition.getNodeList();
 
 		if (this.attribute != null)
 			Collections.sort(nodes, new AttributeComparator());
 
 		// Compute angle step
-		double phi = (2 * Math.PI) / nodes.size();
+		double phi = (2 * Math.PI) / count; 
 
 		partition.resetNodes(); // We want to figure out our mins & maxes anew
 		                        // Arrange vertices in a circle

@@ -58,23 +58,21 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 	 * @param partition DOCUMENT ME!
 	 */
 	public void layoutPartion(LayoutPartition partition) {
-		// get an iterator over all of the nodes
-		Iterator nodeIter = partition.nodeIterator();
 
-		// create a new array that is the Nodes corresponding to the node indices
-		LayoutNode[] sortedNodes = new LayoutNode[partition.nodeCount()];
-		int i = 0;
-
-		while (nodeIter.hasNext()) {
-			sortedNodes[i++] = (LayoutNode) nodeIter.next();
-		}
-
+    // just add the unlocked nodes
+    List<LayoutNode> nodes = new ArrayList<LayoutNode>();
+    for ( LayoutNode ln : partition.getNodeList() ) {
+      if ( !ln.isLocked() ) {
+        nodes.add(ln);
+      }
+    }
+	
 		if (canceled)
 			return;
 
 		// sort the Nodes based on the degree
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		Arrays.sort(sortedNodes,
+		Collections.sort(nodes,
 		            new Comparator<LayoutNode>() {
 				public int compare(LayoutNode o1, LayoutNode o2) {
 					final Node node1 = o1.getNode();
@@ -95,12 +93,12 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 			return;
 
 		// place each Node in a circle
-		int r = 100 * (int) Math.sqrt(sortedNodes.length);
-		double phi = (2 * Math.PI) / sortedNodes.length;
+		int r = 100 * (int) Math.sqrt(nodes.size());
+		double phi = (2 * Math.PI) / nodes.size();
 		partition.resetNodes(); // We want to figure out our mins & maxes anew
 
-		for (i = 0; i < sortedNodes.length; i++) {
-			LayoutNode node = sortedNodes[i];
+		for (int i = 0; i < nodes.size(); i++) {
+			LayoutNode node = nodes.get(i);
 			node.setX(r + (r * Math.sin(i * phi)));
 			node.setY(r + (r * Math.cos(i * phi)));
 			partition.moveNodeToLocation(node);
