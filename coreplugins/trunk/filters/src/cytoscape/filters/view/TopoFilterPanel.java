@@ -158,7 +158,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
         setLayout(new java.awt.GridBagLayout());
 
-        lbSelectNodeEdge.setText("Select node");
+        lbSelectNodeEdge.setText("Select nodes");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
         add(lbSelectNodeEdge, gridBagConstraints);
@@ -199,7 +199,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
         add(tfDistance, gridBagConstraints);
 
-        lbThatPassTheFilter.setText("that pass the filter");
+        lbThatPassTheFilter.setText("and the nodes pass the filter");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
