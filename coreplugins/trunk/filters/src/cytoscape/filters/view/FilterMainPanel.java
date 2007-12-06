@@ -35,10 +35,15 @@ import cytoscape.view.cytopanels.CytoPanelState;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.event.SwingPropertyChangeSupport;
 
+import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.util.FilterUtil;
+import cytoscape.filters.view.TopoFilterPanel.MyComponentAdapter;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.CyFilter;
@@ -148,6 +153,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		addEventListeners();
 	
 		//btnApplyFilter.setVisible(false);
+		
+		//Update the status of interactionMenuItems if this panel become visible
+		MyComponentAdapter cmpAdpt = new MyComponentAdapter();
+		addComponentListener(cmpAdpt);
 	}
 
 
@@ -431,10 +440,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		newNodeInteractionFilterMenuItem = new JMenuItem("Create new NodeInteraction filter...");
 		newNodeInteractionFilterMenuItem.setIcon(addIcon);
+		newNodeInteractionFilterMenuItem.setEnabled(false);
 
 		newEdgeInteractionFilterMenuItem = new JMenuItem("Create new EdgeInteraction filter...");
 		newEdgeInteractionFilterMenuItem.setIcon(addIcon);
-
+		newEdgeInteractionFilterMenuItem.setEnabled(false);
+		
 		deleteFilterMenuItem = new JMenuItem("Delete filter...");
 		deleteFilterMenuItem.setIcon(delIcon);
 
@@ -694,7 +705,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
 			}
 		} // JButton event
-
+		
 		if (_actionObject instanceof JMenuItem) {
 			JMenuItem _menuItem = (JMenuItem) _actionObject;
 			if (_menuItem == newFilterMenuItem || _menuItem == newTopologyFilterMenuItem 
@@ -799,6 +810,27 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				pcs.firePropertyChange(evt);
 			}
 		} // JMenuItem event
+		
+		updateInteractionMenuItemStatus();
+	}
+
+	private void updateInteractionMenuItemStatus() {
+		//Disable interactionMenuItem if there is no other filters to depend on
+		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0) {
+			newNodeInteractionFilterMenuItem.setEnabled(false);
+			newEdgeInteractionFilterMenuItem.setEnabled(false);
+		}
+		else {
+			newNodeInteractionFilterMenuItem.setEnabled(true);
+			newEdgeInteractionFilterMenuItem.setEnabled(true);
+		}	
+	}
+	
+    //Each time, the FilterMainPanel become visible, update the status of InteractionMaenuItems
+	class MyComponentAdapter extends ComponentAdapter {
+		public void componentShown(ComponentEvent e) {
+			updateInteractionMenuItemStatus();
+		}
 	}
 
 	private void duplicateFilter(){
