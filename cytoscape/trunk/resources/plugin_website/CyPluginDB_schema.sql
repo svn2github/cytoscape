@@ -101,3 +101,33 @@ CREATE TABLE contacts (
   sysdat date default NULL,
   PRIMARY KEY  (contact_auto_id)
 );
+
+CREATE TABLE theme_list (
+  theme_auto_id int(11) NOT NULL auto_increment,
+  name varchar(100) NOT NULL,
+  unique_id int,
+  description text,
+  sysdat date,
+  PRIMARY KEY (theme_auto_id)
+);
+
+ 
+
+CREATE TABLE theme_version (
+  version_auto_id int(11) NOT NULL auto_increment,
+  theme_id int(11) NOT NULL,
+  cy_version set('2.6','2.7 ','2.8') default NULL,
+  version double default '0.1',
+  release_date date default NULL,
+  sysdat date default NULL,
+  PRIMARY KEY   (version_auto_id)
+);
+
+ 
+
+CREATE TABLE theme_plugin (
+  theme_plugin_auto_id int(11) NOT NULL auto_increment,
+  theme_version_id int(11),
+  plugin_version_id int(11),
+  theme_only ENUM('true', 'false')
+);
