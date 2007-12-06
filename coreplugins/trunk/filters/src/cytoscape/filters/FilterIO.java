@@ -55,11 +55,13 @@ public class FilterIO {
 					continue;
 				}
 
-				if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")) {
+				if (oneLine.trim().startsWith("<Composite>")||oneLine.trim().startsWith("<TopologyFilter>")
+						||oneLine.trim().startsWith("<InteractionFilter>")) {
 					Vector<String> filterStrVect = new Vector<String>();
 					filterStrVect.add(oneLine);
 					while ((oneLine = in.readLine()) != null) {
-						if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")) {
+						if (oneLine.trim().startsWith("</Composite>")||oneLine.trim().startsWith("</TopologyFilter>")
+								||oneLine.trim().startsWith("</InteractionFilter>")) {
 							filterStrVect.add(oneLine);
 							break;
 						}
@@ -147,9 +149,13 @@ public class FilterIO {
 		System.out.println("FilterIO.getFilterFromStrVect() ...\n");
 		System.out.println("pFilterStrVect = \n"+ pFilterStrVect.toString()+"\n");
 		boolean isTopologyFilter = false;
+		boolean isInteractionFilter = false;
 		
 		if (((String)pFilterStrVect.elementAt(0)).startsWith("<TopologyFilter>")) {
 			isTopologyFilter = true;
+		}
+		if (((String)pFilterStrVect.elementAt(0)).startsWith("<InteractionFilter>")) {
+			isInteractionFilter = true;
 		}
 		
 		Vector<String> advSettingStrVect = new Vector<String>();
@@ -181,6 +187,13 @@ public class FilterIO {
 			retFilter = new TopologyFilter();
 			retFilter.setAdvancedSetting(getAdvancedSettingFromStrVect(advSettingStrVect));
 			getTopologyFilterFromStrVect((TopologyFilter)retFilter, filterStrVect);
+			return retFilter;
+		}
+		
+		if (isInteractionFilter) {
+			retFilter = new InteractionFilter();
+			retFilter.setAdvancedSetting(getAdvancedSettingFromStrVect(advSettingStrVect));
+			getInteractionFilterFromStrVect((InteractionFilter)retFilter, filterStrVect);
 			return retFilter;
 		}
 		
@@ -280,6 +293,25 @@ public class FilterIO {
 					retFilter.addChild(topoFilter, (new Boolean(notValue)).booleanValue());					
 				}
 			}
+			if (line.startsWith("InteractionFilter=")) {
+				//e.g. InteractionFilter=AAA:true
+				String[] _values = line.substring(15).split(":");
+
+				String name = _values[0].trim();
+				String notValue = _values[1].trim();
+				
+				// get the reference InteractionFilter
+				InteractionFilter interactionFilter = null;
+				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
+					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
+						interactionFilter = (InteractionFilter) FilterPlugin.getAllFilterVect().elementAt(j);
+						break;
+					}
+				}
+				if (interactionFilter !=null) {
+					retFilter.addChild(interactionFilter, (new Boolean(notValue)).booleanValue());					
+				}
+			}
 		}
 		
 		return retFilter;
@@ -287,7 +319,7 @@ public class FilterIO {
 	
 	
 	private void getTopologyFilterFromStrVect(TopologyFilter pFilter, Vector<String> pFilterStrVect){
-		System.out.println("\nFilterIO.getTopologyFilterFromStrVect() ...\n");
+		//System.out.println("\nFilterIO.getTopologyFilterFromStrVect() ...\n");
 
 		String line = null;
 		for (int i=0; i<pFilterStrVect.size(); i++ ) {
@@ -330,9 +362,52 @@ public class FilterIO {
 				}
 			}			
 		}	
-		System.out.println("\n\nLeaving FilterIO.getTopologyFilterFromStrVect() ...\n");
-		System.out.println("\nRecovered topo filter is :" + pFilter.toString()+ "\n\n");
+		//System.out.println("\n\nLeaving FilterIO.getTopologyFilterFromStrVect() ...\n");
+		//System.out.println("\nRecovered topo filter is :" + pFilter.toString()+ "\n\n");
+	}
+	
+	
+	private void getInteractionFilterFromStrVect(InteractionFilter pFilter, Vector<String> pFilterStrVect){
+		System.out.println("\nFilterIO.getInteractionFilterFromStrVect() ...\n");
 
+		String line = null;
+		for (int i=0; i<pFilterStrVect.size(); i++ ) {
+			line = pFilterStrVect.elementAt(i) ;
+
+			if (line.startsWith("name=")) {
+				String name =line.substring(5).trim();
+				pFilter.setName(name);
+			}
+			if (line.startsWith("Negation=true")) {
+				pFilter.setNegation(true);
+			}
+			if (line.startsWith("Negation=false")) {
+				pFilter.setNegation(false);
+			}
+			
+			if (line.startsWith("nodeType=")) {
+				String nodeTypeStr = line.substring(9);
+				int nodeType = new Integer(nodeTypeStr).intValue();
+				pFilter.setNodeType(nodeType);
+			}
+			if (line.startsWith("passFilter=")) {
+				String name = line.substring(11).trim();
+				// get the reference CompositeFilter
+				CompositeFilter cmpFilter = null;
+				
+				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
+					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
+						cmpFilter = FilterPlugin.getAllFilterVect().elementAt(j);
+						break;
+					}
+				}
+				if (cmpFilter !=null) {
+					pFilter.setPassFilter(cmpFilter);					
+				}
+			}			
+		}	
+		System.out.println("\n\nLeaving FilterIO.getInteractionFilterFromStrVect() ...\n");
+		System.out.println("\nRecovered interaction filter is :" + pFilter.toString()+ "\n\n");		
 	}
 	
 	
