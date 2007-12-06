@@ -50,6 +50,15 @@ my $AllPlugins = $dbh->selectall_hashref
 foreach my $id (keys %$AllPlugins)
 	{ addPlugin(%{$AllPlugins->{$id}}); }
 
+#my $ThemeList = $Doc->createElement("themes");
+#$Root->appendChild($ThemeList);
+#my $AllThemes = $dbh->selectall_hashref
+#	("SELECT * FROM theme_list", 'theme_auto_id');
+#foreach my $id (keys %$AllThemes)
+#	{ addTheme(%{$AllThemes->{$id}}); }
+
+
+
 # format the xml in some basic manner, doesn't seem to be a nice lib for pretty formatting of xml
 #my $Xml = $Doc->toString();
 my $Xml = $Root->toString();
@@ -62,13 +71,48 @@ close(XMLOUT);
 
 
 # ------------ FUNCTIONS --------------- #
+sub createBasicElement
+	{
+	my %args = @_;
+		
+	my $Element = $Doc->createElement($args->{"elementName"});
+
+	# create a unique id for the theme, can't change from one version to another
+	my $Id = $Doc->createElement("uniqueID");
+	$Id->appendChild($Doc->createTextNode($args{'unique_id'}));
+	$Element->appendChild($Id);
+
+	my $Name = $Doc->createElement("name");
+	$Name->appendChild($Doc->createTextNode($args{'name'})); 
+	$Element->appendChild($PluginName);
+	
+	my $Desc = $Doc->createElement("description");
+	$args{'description'} = stripBadHex($args{'description'});
+	$Desc->appendChild($Doc->createCDATASection($args{'description'}));
+	$Element->appendChild($PluginDesc);
+	
+	return $Element;
+	}
+
+sub addTheme
+	{
+	my %args = @_;
+	$args{"elementName"} = "theme";
+
+	my $ThemeElement = createBasicElement(%args)
+	
+	# add versions
+	}
+	
+# Create the xml for a single plugin
 sub addPlugin
 	{
 	my %args = @_;
 
 	my $PluginElement = $Doc->createElement("plugin");
 
-	# create a unique id, this can't change from one version of a plugin to another! Name and auto_id should work
+	# create a unique id, this can't change from one version of a plugin to another! 
+	# Name and auto_id should work
 	my $Id = $Doc->createElement("uniqueID");
 	$Id->appendChild($Doc->createTextNode($args{'unique_id'}));
 	$PluginElement->appendChild($Id);
