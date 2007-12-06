@@ -1,11 +1,12 @@
 /*$Id$*/
 package linkout;
 
-import ding.view.*;
+import ding.view.EdgeContextMenuListener;
 
-import giny.view.*;
+import giny.view.EdgeView;
 
-import javax.swing.*;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 
 /**
@@ -35,6 +36,8 @@ public class LinkOutEdgeContextMenuListener implements EdgeContextMenuListener {
 			menu = new JPopupMenu();
 		}
 
+		menu.add(new JSeparator());
 		menu.add(lo.addLinks(edgeView));
+		menu.add(new JSeparator());
 	}
 }

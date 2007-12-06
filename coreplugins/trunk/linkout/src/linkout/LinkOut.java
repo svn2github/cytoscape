@@ -1,29 +1,36 @@
 /*$Id$*/
 package linkout;
 
-import cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
 
-import cytoscape.util.*;
+import cytoscape.util.OpenBrowser;
 
 import giny.model.Edge;
 import giny.model.Node;
 
-import giny.view.*;
+import giny.view.EdgeView;
+import giny.view.NodeView;
 
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
 
-import java.io.*;
-
-import java.net.URL;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -45,9 +52,10 @@ import javax.swing.*;
 */
 public class LinkOut {
 	//keyword that marks properties that should be added to LinkOut
-	private final String nodeMarker = "nodelinkouturl.";
-	private final String edgeMarker = "edgelinkouturl.";
+	private static final String nodeMarker = "nodelinkouturl.";
+	private static final String edgeMarker = "edgelinkouturl.";
 	private Properties props;
+	private static final Font TITLE_FONT = new Font("sans-serif", Font.BOLD, 14);
 
 	//null constractor
 	/**
@@ -64,10 +72,14 @@ public class LinkOut {
 	public JMenuItem addLinks(NodeView node) {
 		System.out.println("linkout.addLinks called with node "
 		                   + ((NodeView) node).getLabel().getText());
-		//System.out.println("linkout.addLinks called with node "+node.getClass().getName());
 		readProperties();
 
-		JMenu top_menu = new JMenu("LinkOut");
+		final JMenu top_menu = new JMenu("LinkOut");
+		final JMenuItem source = new JMenuItem("Database");
+		source.setBackground(Color.white);
+		source.setFont(TITLE_FONT);
+		source.setEnabled(false);
+		top_menu.add(source);
 
 		//iterate through properties list
 		try {
@@ -87,9 +99,6 @@ public class LinkOut {
 					url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
 					      + "http://www.cytoscape.org/";
 				}
-
-				//add Node label to the URL
-				String nodelabel;
 
 				final NodeView mynode = (NodeView) node;
 
@@ -149,9 +158,9 @@ public class LinkOut {
 	 */
 	private String subsAttrs(String url, CyAttributes attrs, String graphObjId, String idKeyword,
 	                         String prefix) {
-
 		Set<String> validAttrs = new HashSet<String>();
-		for (String attrName : attrs.getAttributeNames() ) {
+
+		for (String attrName : attrs.getAttributeNames()) {
 			if (attrs.hasAttribute(graphObjId, attrName)) {
 				validAttrs.add(prefix + attrName);
 			}
@@ -160,13 +169,13 @@ public class LinkOut {
 		// Replace %ATTRIBUTE.NAME% mark with the value of the attribute
 		final String REGEX = "%.*%";
 		Pattern pat = Pattern.compile(REGEX);
-		Matcher mat = pat.matcher(url); 
+		Matcher mat = pat.matcher(url);
 
 		while (mat.find()) {
 			String attrName = url.substring(mat.start() + 1, mat.end() - 1);
 
 			// backwards compatibility, old keywords were %ID%, %ID1%, %ID2%.
-			if (attrName.equals(idKeyword)) { 
+			if (attrName.equals(idKeyword)) {
 				String attrValue = graphObjId;
 				url = url.replace("%" + idKeyword + "%", attrValue);
 				mat = pat.matcher(url);
@@ -206,6 +215,7 @@ public class LinkOut {
 		if (value != null)
 			return value.toString();
 		else
+
 			return "N/A";
 	}
 
@@ -309,15 +319,15 @@ public class LinkOut {
 
 			return;
 
-		//if its a JMenuItem and this is the last key then there
-		//is a duplicate of keys in the file. i.e two url with the exact same manu path
+			//if its a JMenuItem and this is the last key then there
+			//is a duplicate of keys in the file. i.e two url with the exact same manu path
 		} else if (jmi instanceof JMenuItem && (keys.size() == 1)) {
 			System.out.println("Duplicate URL specified for " + (String) keys.get(0));
 
 			return;
 
-		//if not null create a new JMenu  with current key
-		// remove key from the keys ArrayList and call generateLinks
+			//if not null create a new JMenu  with current key
+			// remove key from the keys ArrayList and call generateLinks
 		} else if (jmi == null) {
 			JMenu new_jm = new JMenu((String) keys.get(0));
 
@@ -327,7 +337,7 @@ public class LinkOut {
 
 			return;
 
-		//Remove key from top of the list and call generateLinks with new JMenu
+			//Remove key from top of the list and call generateLinks with new JMenu
 		} else {
 			keys.remove(0);
 

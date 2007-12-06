@@ -1,13 +1,12 @@
 /*$Id: LinkOutContextMenuListener.java,v 1.1 2006/06/14 18:12:46 mes Exp $*/
 package linkout;
 
-import ding.view.*;
+import ding.view.NodeContextMenuListener;
 
 import giny.view.NodeView;
 
-import java.awt.*;
-
-import javax.swing.*;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 
 /**
@@ -34,6 +33,8 @@ public class LinkOutNodeContextMenuListener implements NodeContextMenuListener {
 			menu = new JPopupMenu();
 		}
 
+		menu.add(new JSeparator());
 		menu.add(lo.addLinks(nodeView));
+		menu.add(new JSeparator());
 	}
 }
