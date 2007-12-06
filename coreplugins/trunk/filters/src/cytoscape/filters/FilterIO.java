@@ -146,8 +146,6 @@ public class FilterIO {
 	
 	private CompositeFilter getFilterFromStrVect(Vector<String> pFilterStrVect){
 		
-		System.out.println("FilterIO.getFilterFromStrVect() ...\n");
-		System.out.println("pFilterStrVect = \n"+ pFilterStrVect.toString()+"\n");
 		boolean isTopologyFilter = false;
 		boolean isInteractionFilter = false;
 		
@@ -368,7 +366,6 @@ public class FilterIO {
 	
 	
 	private void getInteractionFilterFromStrVect(InteractionFilter pFilter, Vector<String> pFilterStrVect){
-		System.out.println("\nFilterIO.getInteractionFilterFromStrVect() ...\n");
 
 		String line = null;
 		for (int i=0; i<pFilterStrVect.size(); i++ ) {
@@ -406,8 +403,6 @@ public class FilterIO {
 				}
 			}			
 		}	
-		System.out.println("\n\nLeaving FilterIO.getInteractionFilterFromStrVect() ...\n");
-		System.out.println("\nRecovered interaction filter is :" + pFilter.toString()+ "\n\n");		
 	}
 	
 	
