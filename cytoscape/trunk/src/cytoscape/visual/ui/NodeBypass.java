@@ -68,6 +68,8 @@ class NodeBypass extends VizMapBypass {
         JMenu menu = new JMenu("Visual Mapping Bypass");
         menu.add(new JLabel("Change Node Visualization"));
         menu.addSeparator();
+		// horrible, horrible hack
+		BypassHack.setCurrentObject( n );
 
 		for ( VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList() ) 
        		addMenuItem(menu, type);

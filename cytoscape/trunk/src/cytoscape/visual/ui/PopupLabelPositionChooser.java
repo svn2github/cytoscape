@@ -37,8 +37,13 @@
 package cytoscape.visual.ui;
 
 import cytoscape.visual.LabelPosition;
+import cytoscape.Cytoscape;
+import cytoscape.visual.parsers.ObjectToString;
+import cytoscape.visual.VisualPropertyType;
 
 import giny.view.Label;
+import giny.model.GraphObject;
+
 
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -162,7 +167,17 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 	public void propertyChange(PropertyChangeEvent e) {
 		String type = e.getPropertyName();
 
-		if (type.equals("LABEL_POSITION_CHANGED"))
+		if (type.equals("LABEL_POSITION_CHANGED")) {
 			newlp = (LabelPosition) e.getNewValue();
+
+			// horrible, horrible hack
+			GraphObject go = BypassHack.getCurrentObject();
+			if ( go != null ) {
+				String val = ObjectToString.getStringValue(newlp);
+				Cytoscape.getNodeAttributes().setAttribute(go.getIdentifier(), 
+				                   VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
+				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			}
+		}
 	}
 }

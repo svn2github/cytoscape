@@ -1,7 +1,8 @@
-/*
- File: EdgeBypass.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ File: BypassHack.java 
+
+ Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -36,53 +37,31 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
+import giny.model.GraphObject; 
 
-import cytoscape.data.CyAttributes;
+/**
+ * ARgh.  This is a horrible, horrible hack that allows LabelPosition to
+ * be set dynamically for vizmap bypass as you drag the icon around in
+ * the label position dialog.  This class provides access to the current
+ * node (or edge) that has had it's context menu clicked.  This class allows
+ * the dialog to get the node then set the bypass value as things move rather
+ * than waiting for the user to click OK. This could be used by other 
+ * VisualPropertyTypes in a similar fashion, but currently isn't.
+ * <b>This code should NEVER propagate to newer versions of Cytoscape!!!</b>
+ * This should be handled in a completely different way in the future.
+ */
+class BypassHack {
+	private static GraphObject curr = null;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
+	static void setCurrentObject(GraphObject o) {
+		curr = o;
+	}
 
-import giny.model.Edge;
+	static GraphObject getCurrentObject() {
+		return curr;
+	}
 
-import java.awt.Color;
-import java.awt.Font;
-
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-import java.util.List;
-import java.util.ArrayList;
-
-class EdgeBypass extends VizMapBypass {
-    JMenuItem addMenu(Edge e) {
-        graphObj = e;
-        attrs = Cytoscape.getEdgeAttributes();
-
-        JMenu menu = new JMenu("Visual Mapping Bypass");
-        menu.add(new JLabel("Change Edge Visualization"));
-        menu.addSeparator();
-		// horrible, horrible hack
-		BypassHack.setCurrentObject( e );
-
-		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() ) 
-			addMenuItem(menu, type);
-
-        addResetAllMenuItem(menu);
-
-        return menu;
-    }
-
-    protected List<String> getBypassNames() {
-		List<String> l = new ArrayList<String>();
-
-		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() )
-			l.add( type.getBypassAttrName() );
-		
-		return l;
-    }
+	static void finished() {
+		curr = null;
+	}
 }
