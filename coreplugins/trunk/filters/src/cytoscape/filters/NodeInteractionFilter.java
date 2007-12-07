@@ -36,27 +36,103 @@
 
 package cytoscape.filters;
 
-import giny.model.Edge;
 import giny.model.Node;
-
 import java.util.*;
-
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import csplugins.quickfind.util.QuickFind;
-import csplugins.widgets.autocomplete.index.GenericIndex;
 
 
 public class NodeInteractionFilter extends InteractionFilter {
 	
 	public NodeInteractionFilter() {
+		//Set selection for node
 		advancedSetting.setNode(true);
 		advancedSetting.setEdge(false);
 	}
 
 	public NodeInteractionFilter(String pName) {
 		name = pName;
+		//	Set selection for node
 		advancedSetting.setNode(true);
 		advancedSetting.setEdge(false);
+	}
+		
+	
+	public void apply() {
+		if ( !childChanged ) 
+			return;
+
+		if (network == null) {
+			setNetwork(Cytoscape.getCurrentNetwork());
+		}
+		
+		if (network == null) {
+			return;
+		}
+		
+		//Make sure the pass filter is current
+		if (passFilter == null) {
+			passFilter = new CompositeFilter("None");
+		}
+		
+		if (!passFilter.getName().equalsIgnoreCase("None")) {
+			passFilter.setNetwork(network);
+			passFilter.apply();			
+		}	
+
+		List<Node> nodes_list = null;
+
+		// NodeInteractionFilter will select node only
+		nodes_list = network.nodesList();
+		int objectCount = nodes_list.size();
+		node_bits = new BitSet(objectCount); // all the bits are false at very beginning
+			
+		for (int i=0; i<objectCount; i++) {
+			if (isHit((Node)nodes_list.get(i))) {
+				node_bits.set(i);
+			}
+		}
+			
+		if (negation) {
+			node_bits.flip(0, objectCount);
+		}
+
+		childChanged = false;
+	}
+
+
+	private boolean isHit(Node pNode) {
+		
+		// Get the list of relevant edges for this node
+		List adjacentEdges = null;
+		
+		if (nodeType == NODE_SOURCE) {
+			adjacentEdges = network.getAdjacentEdgesList(pNode, true, false, true);
+		}
+		else if (nodeType == NODE_TARGET) {
+			adjacentEdges = network.getAdjacentEdgesList(pNode, true, true, false);
+		}
+		else if (nodeType == NODE_SOURCE_TARGET) {
+			adjacentEdges = network.getAdjacentEdgesList(pNode, true, true, true);
+		}
+		else { //nodeType == NODE_UNDEFINED --Neither source or target is selected
+			return false;
+		}
+		
+		if (adjacentEdges == null || adjacentEdges.size() == 0) {
+			return false;
+		}
+				
+		BitSet passFilter_edgeBits = passFilter.getEdgeBits();
+
+		int edgeIndex = -1;
+		for (int i=0; i < adjacentEdges.size(); i++) {
+			edgeIndex = network.edgesList().indexOf(adjacentEdges.get(i));
+		
+			if (passFilter_edgeBits.get(edgeIndex) == true) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
