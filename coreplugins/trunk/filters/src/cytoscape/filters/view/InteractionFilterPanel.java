@@ -1,8 +1,6 @@
 package cytoscape.filters.view;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
@@ -20,12 +18,10 @@ import javax.swing.ListCellRenderer;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.InteractionFilter;
-import cytoscape.filters.NodeInteractionFilter;
+//import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.EdgeInteractionFilter;
 
-import cytoscape.filters.view.TopoFilterPanel.MyComponentAdapter;
-
-public class InteractionFilterPanel extends JPanel implements ActionListener, ItemListener{
+public class InteractionFilterPanel extends JPanel implements ItemListener{
 
 	private InteractionFilter theFilter;
 
@@ -93,29 +89,7 @@ public class InteractionFilterPanel extends JPanel implements ActionListener, It
 		}
 	}
     
-    
-	public void actionPerformed(ActionEvent e) {
-		Object _actionObject = e.getSource();
-		
-		System.out.println("Entering InteractionFilterPanel.actionPerformed() ...");
-
-		/*
-		// handle Button events
-		if (_actionObject instanceof JTextField) {
-			JTextField _tfObj = (JTextField) _actionObject;
-			if (_tfObj == tfMinNeighbors) {
-				int _neighbors = (new Integer(tfMinNeighbors.getText())).intValue();
-				theFilter.setMinNeighbors(_neighbors);
-			}
-			else if (_tfObj == tfDistance) {
-				int _distance = (new Integer(tfDistance.getText())).intValue();
-				theFilter.setDistance(_distance);				
-			}
-		}
-		System.out.println(theFilter.getName());
-		*/
-	}
-	
+    	
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getSource();		
 		//System.out.println("Entering InteractionFilterPanel.itemStateChanged() ...");
@@ -134,8 +108,8 @@ public class InteractionFilterPanel extends JPanel implements ActionListener, It
 		
 		if (source instanceof JComboBox) {
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
-			theFilter.childChanged();
 		}
+		theFilter.childChanged();
 	}
 
 	
