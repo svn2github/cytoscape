@@ -189,8 +189,15 @@ public class FilterIO {
 		}
 		
 		if (isInteractionFilter) {
-			retFilter = new InteractionFilter();
-			retFilter.setAdvancedSetting(getAdvancedSettingFromStrVect(advSettingStrVect));
+			AdvancedSetting advSetting = getAdvancedSettingFromStrVect(advSettingStrVect);
+			if (advSetting.isNodeChecked()) {
+				retFilter = new NodeInteractionFilter();
+			}
+			else {//advSetting.isEdgeChecked() == true
+				retFilter = new EdgeInteractionFilter();				
+			}
+			
+			retFilter.setAdvancedSetting(advSetting);
 			getInteractionFilterFromStrVect((InteractionFilter)retFilter, filterStrVect);
 			return retFilter;
 		}
