@@ -50,13 +50,91 @@ import csplugins.widgets.autocomplete.index.GenericIndex;
 public class EdgeInteractionFilter extends InteractionFilter {
 	
 	public EdgeInteractionFilter() {
+		//Set selection for edge
 		advancedSetting.setNode(false);
 		advancedSetting.setEdge(true);
 	}
 
+	
 	public EdgeInteractionFilter(String pName) {
 		name = pName;
+		//Set selection for edge
 		advancedSetting.setNode(false);
 		advancedSetting.setEdge(true);
+	}
+	
+	
+	public void apply() {
+		if ( !childChanged ) 
+			return;
+
+		if (network == null) {
+			setNetwork(Cytoscape.getCurrentNetwork());
+		}
+		
+		if (network == null) {
+			return;
+		}
+		
+		//Make sure the pass filter is current
+		if (passFilter == null) {
+			passFilter = new CompositeFilter("None");
+		}
+		
+		if (!passFilter.getName().equalsIgnoreCase("None")) {
+			passFilter.setNetwork(network);
+			passFilter.apply();			
+		}	
+		BitSet passFilter_nodeBits = passFilter.getNodeBits();
+
+		List<Edge> edges_list = null;
+
+		// EdgeInteractionFilter will select edge only
+		edges_list = network.edgesList();
+		int objectCount = edges_list.size();
+		edge_bits = new BitSet(objectCount); // all the bits are false at very beginning
+			
+		for (int i=0; i<objectCount; i++) {
+			if (isHit((Edge)edges_list.get(i), passFilter_nodeBits)) {
+				edge_bits.set(i);
+			}
+		}
+			
+		if (negation) {
+			edge_bits.flip(0, objectCount);
+		}
+
+		childChanged = false;
+	}
+
+
+	private boolean isHit(Edge pEdge, BitSet pPassFilter_nodeBits) {
+		
+		// Get the list of relevant nodes for this edge
+		List<Node> adjacentNodes = new ArrayList<Node>();
+		
+		if (nodeType == NODE_SOURCE) {
+			adjacentNodes.add(pEdge.getSource());
+		}
+		else if (nodeType == NODE_TARGET) {
+			adjacentNodes.add(pEdge.getTarget());
+		}
+		else if (nodeType == NODE_SOURCE_TARGET) {
+			adjacentNodes.add(pEdge.getSource());
+			adjacentNodes.add(pEdge.getTarget());		}
+		else { //nodeType == NODE_UNDEFINED --Neither source or target is selected
+			return false;
+		}
+						
+		int nodeIndex = -1;
+		for (int i=0; i < adjacentNodes.size(); i++) {
+			nodeIndex = network.nodesList().indexOf(adjacentNodes.get(i));
+		
+			if (pPassFilter_nodeBits.get(nodeIndex) == true) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
