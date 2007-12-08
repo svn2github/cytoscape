@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,9 +32,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package browser;
 
+import static browser.DataObjectType.EDGES;
+import static browser.DataObjectType.NETWORK;
+import static browser.DataObjectType.NODES;
+
+import browser.ui.CyAttributeBrowserTable;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
@@ -44,6 +47,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapListener;
 
 import cytoscape.view.CyNetworkView;
+
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 
@@ -76,23 +80,21 @@ import javax.swing.table.DefaultTableModel;
  * @author kono
  * @author xmas
  */
-public class DataTableModel extends DefaultTableModel implements SortTableModel,
-                                                                 MultiHashMapListener {
+public class DataTableModel extends DefaultTableModel implements SortTableModel {
 	// Property for this browser. One for each panel.
 	private Properties props;
 	private CyAttributes data;
 	private List<GraphObject> graphObjects;
 	private List<Object> attributeNames;
-	
 	private GlobalAppearanceCalculator gac;
 	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String LS = System.getProperty("line.separator");
 	private static final Boolean DEFAULT_FLAG = new Boolean(false);
-	private int objectType = DataTable.NODES;
+	private DataObjectType objectType = NODES;
 
 	/*
 	 * Selected nodes & edges color
@@ -171,20 +173,25 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	private void initialize() {
 		props = new Properties();
 		props.setProperty("colorSwitch", "off");
-		setSelectedColor(JSortTable.SELECTED_NODE);
-		setSelectedColor(JSortTable.SELECTED_EDGE);
+		setSelectedColor(CyAttributeBrowserTable.SELECTED_NODE);
+		setSelectedColor(CyAttributeBrowserTable.SELECTED_EDGE);
 	}
 
-	protected void setSelectedColor(final int type) {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param type DOCUMENT ME!
+	 */
+	public void setSelectedColor(final int type) {
 		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
 
 		switch (type) {
-			case JSortTable.SELECTED_NODE:
+			case CyAttributeBrowserTable.SELECTED_NODE:
 				selectedNodeColor = gac.getDefaultNodeSelectionColor();
 
 				break;
 
-			case JSortTable.SELECTED_EDGE:
+			case CyAttributeBrowserTable.SELECTED_EDGE:
 				selectedEdgeColor = gac.getDefaultEdgeSelectionColor();
 
 				break;
@@ -194,17 +201,24 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		}
 	}
 
-	protected Color getSelectedColor(final int type) {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param type DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Color getSelectedColor(final int type) {
 		Color newColor;
 		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
-		
+
 		switch (type) {
-			case JSortTable.SELECTED_NODE:
+			case CyAttributeBrowserTable.SELECTED_NODE:
 				newColor = gac.getDefaultNodeSelectionColor();
 
 				break;
 
-			case JSortTable.SELECTED_EDGE:
+			case CyAttributeBrowserTable.SELECTED_EDGE:
 				newColor = gac.getDefaultEdgeSelectionColor();
 
 				break;
@@ -243,18 +257,18 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 * @param attributeNames DOCUMENT ME!
 	 * @param objectType DOCUMENT ME!
 	 */
-	public void setTableData(CyAttributes data, List<GraphObject> graph_objects, List<Object> attributeNames,
-	                         int objectType) {
+	public void setTableData(CyAttributes data, List<GraphObject> graph_objects,
+	                         List<Object> attributeNames, DataObjectType type) {
 		this.data = data;
 		this.graphObjects = graph_objects;
 		this.attributeNames = attributeNames;
-		this.objectType = objectType;
-		data.getMultiHashMap().addDataListener(this);
+		this.objectType = type;
+//		data.getMultiHashMap().addDataListener(this);
 
-		if (objectType == DataTable.NETWORK) {
+		if (objectType == NETWORK) {
 			setNetworkTable();
 		} else {
-			setTable();
+			setTableData();
 		}
 	}
 
@@ -281,9 +295,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 *  DOCUMENT ME!
 	 */
 	public void resetSelectionFlags() {
-		if (this.objectType != DataTable.NETWORK) {
-
-			for(GraphObject gObj: graphObjects) {
+		if (this.objectType != NETWORK) {
+			for (GraphObject gObj : graphObjects) {
 				internalSelection.put(gObj.getIdentifier(), DEFAULT_FLAG);
 			}
 		}
@@ -308,8 +321,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		this.graphObjects = graph_objects;
 		this.attributeNames = attributes;
 
-		if (this.objectType != DataTable.NETWORK) {
-			setTable();
+		if (this.objectType != NETWORK) {
+			setTableData();
 		} else {
 			setNetworkTable();
 		}
@@ -323,8 +336,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	public void setTableDataAttributes(final List<Object> attributes) {
 		this.attributeNames = attributes;
 
-		if (this.objectType != DataTable.NETWORK) {
-			setTable();
+		if (this.objectType != NETWORK) {
+			setTableData();
 		} else {
 			setNetworkTable();
 		}
@@ -338,8 +351,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	public void setTableDataObjects(final List graph_objects) {
 		this.graphObjects = graph_objects;
 
-		if (this.objectType != DataTable.NETWORK) {
-			setTable();
+		if (this.objectType != NETWORK) {
+			setTableData();
 		} else {
 			setNetworkTable();
 		}
@@ -350,8 +363,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	 *
 	 * @param ot DOCUMENT ME!
 	 */
-	public void setObjectType(final int ot) {
-		objectType = ot;
+	public void setObjectType(final DataObjectType type) {
+		objectType = type;
 	}
 
 	protected void setNetworkTable() {
@@ -385,7 +398,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 
 		Object[][] data_vector = new Object[networkCount][att_length];
 		Object[] column_names = new Object[att_length];
-		column_names[0] = DataTable.ID;
+		column_names[0] = AttributeBrowser.ID;
 
 		internalSelection = new HashMap();
 
@@ -424,37 +437,31 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		setDataVector(data_vector, column_names);
 	}
 
-
 	// Fill the cells in the table
 	// *** need to add an argument to copy edge attribute name correctly.
 	//
-	protected void setTable() {
+	public void setTableData() {
+		
 		internalSelection = new HashMap<String, Boolean>();
 
-		Node targetNode;
-		Edge targetEdge;
 		NodeView nv;
 		EdgeView edgeView;
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
-		for(GraphObject obj: graphObjects) {
 
-			internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
+		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
+			for (GraphObject obj : graphObjects) {
+				internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
 
-			if (objectType == DataTable.NODES) {
-				targetNode = obj.getRootGraph().getNode(obj.getRootGraphIndex());
-
-				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					nv = netView.getNodeView(targetNode);
+				if (objectType == NODES) {
+					//				targetNode = obj.getRootGraph().getNode(obj.getRootGraphIndex());
+					nv = netView.getNodeView((Node) obj);
 
 					if (nv != null) {
 						nv.setSelectedPaint(selectedNodeColor);
 					}
-				}
-			} else if (objectType == DataTable.EDGES) {
-				targetEdge = obj.getRootGraph().getEdge(obj.getRootGraphIndex());
-
-				if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					edgeView = netView.getEdgeView(targetEdge);
+				} else if (objectType == EDGES) {
+					//				targetEdge = obj.getRootGraph().getEdge(obj.getRootGraphIndex());
+					edgeView = netView.getEdgeView((Edge) obj);
 
 					if (edgeView != null) {
 						edgeView.setSelectedPaint(selectedEdgeColor);
@@ -464,20 +471,22 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		}
 
 		final List<Object> tempAttrNames = new ArrayList<Object>();
-		for(Object name: attributeNames) {
-			if(Arrays.asList(data.getAttributeNames()).contains(name)) {
+
+		for (Object name : attributeNames) {
+			if (Arrays.asList(data.getAttributeNames()).contains(name)) {
 				tempAttrNames.add(name);
 			}
 		}
+
 		attributeNames = tempAttrNames;
-		
+
 		final int att_length = attributeNames.size() + 1;
 		final int go_length = graphObjects.size();
 
 		final Object[][] data_vector = new Object[go_length][att_length];
 		final Object[] column_names = new Object[att_length];
 
-		column_names[0] = DataTable.ID;
+		column_names[0] = AttributeBrowser.ID;
 
 		for (int j = 0; j < go_length; ++j) {
 			data_vector[j][0] = graphObjects.get(j).getIdentifier();
@@ -487,18 +496,22 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 		final int attrSize = attributeNames.size();
 		String attributeName;
 		byte type;
-		for (int i1 = 0; i1 < attrSize; ++i1) {
 
+		for (int i1 = 0; i1 < attrSize; ++i1) {
 			column_names[i1 + 1] = attributeNames.get(i1);
 			attributeName = (String) attributeNames.get(i1);
 			type = data.getType(attributeName);
 
 			for (int j = 0; j < go_length; ++j) {
-				data_vector[j][i1 + 1] = getAttributeValue(type, graphObjects.get(j).getIdentifier(), attributeName);;
+				data_vector[j][i1 + 1] = getAttributeValue(type,
+				                                           graphObjects.get(j).getIdentifier(),
+				                                           attributeName);
+				;
 			}
 		}
 
 		setDataVector(data_vector, column_names);
+		Cytoscape.getSwingPropertyChangeSupport().firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
 	}
 
 	/**
@@ -565,52 +578,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param objectKey DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param keyIntoValue DOCUMENT ME!
-	 * @param oldAttributeValue DOCUMENT ME!
-	 * @param newAttributeValue DOCUMENT ME!
-	 */
-	public void attributeValueAssigned(java.lang.String objectKey, java.lang.String attributeName,
-	                                   java.lang.Object[] keyIntoValue,
-	                                   java.lang.Object oldAttributeValue,
-	                                   java.lang.Object newAttributeValue) {
-		// System.out.println( "attributeValueAssigned" );
-		// setTable();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param objectKey DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param keyIntoValue DOCUMENT ME!
-	 * @param attributeValue DOCUMENT ME!
-	 */
-	public void attributeValueRemoved(java.lang.String objectKey, java.lang.String attributeName,
-	                                  java.lang.Object[] keyIntoValue,
-	                                  java.lang.Object attributeValue) {
-		
-		
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param objectKey DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 */
-	public void allAttributeValuesRemoved(java.lang.String objectKey, java.lang.String attributeName) {
-		// setTable();
-	}
-
-	/*
-	 * The following section is an implementation of
-	 * JSortTable
-	 */
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @param col DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -672,7 +639,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		DataEditAction edit = null;
 
-		if (this.objectType != DataTable.NETWORK) {
+		if (this.objectType != NETWORK) {
 			edit = new DataEditAction(this, (String) getValueAt(rowIndex, 0),
 			                          (String) attributeNames.get(columnIndex - 1), null,
 			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
@@ -682,6 +649,11 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel,
 			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
 		}
 
+		if(edit.isValid()) {
+			Vector rowVector = (Vector)dataVector.elementAt(rowIndex);
+	        rowVector.setElementAt(aValue, columnIndex);
+	        fireTableCellUpdated(rowIndex, columnIndex);
+		}
 		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
 }

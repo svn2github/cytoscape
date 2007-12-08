@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,8 +32,9 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package browser;
+
+import static browser.DataObjectType.*;
 
 import cytoscape.Cytoscape;
 
@@ -42,7 +42,6 @@ import cytoscape.data.CyAttributes;
 
 import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
-
 
 /**
  *
@@ -53,8 +52,9 @@ public class DataEditAction extends AbstractUndoableEdit {
 	final Object old_value;
 	final Object new_value;
 	final String[] keys;
-	final int objectType;
-	final DataTableModel table;
+	final DataObjectType objectType;
+	final DataTableModel tableModel;
+	boolean valid = false;
 
 	/**
 	 * Creates a new DataEditAction object.
@@ -68,8 +68,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @param graphObjectType  DOCUMENT ME!
 	 */
 	public DataEditAction(DataTableModel table, String object, String attribute, String[] keys,
-	                      Object old_value, Object new_value, int graphObjectType) {
-		this.table = table;
+	                      Object old_value, Object new_value, DataObjectType graphObjectType) {
+		this.tableModel = table;
 		this.object = object;
 		this.attribute = attribute;
 		this.keys = keys;
@@ -111,7 +111,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 	// Mod. by kono (11/10/2005)
 	// Error check routine added.
 	//
-	private void setAttributeValue(CyAttributes data, String id, String att, Object object) {
+	private void setAttributeValue(String id, String att, Object object) {
+		final CyAttributes data = objectType.getAssociatedAttribute();
 		String errMessage = null;
 
 		// Change object to String
@@ -129,6 +130,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 				errMessage = "Attribute " + att
 				             + " should be an integer (or the number is too big/small).";
 				showErrorWindow(errMessage);
+
+				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_FLOATING) {
 			Double newDblVal = new Double(0);
@@ -140,6 +143,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 				errMessage = "Attribute " + att
 				             + " should be a floating point number (or the number is too big/small).";
 				showErrorWindow(errMessage);
+
+				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_BOOLEAN) {
 			Boolean newBoolVal = new Boolean(false);
@@ -150,6 +155,8 @@ public class DataEditAction extends AbstractUndoableEdit {
 			} catch (Exception e) {
 				errMessage = "Attribute " + att + " should be a boolean value (true/false).";
 				showErrorWindow(errMessage);
+
+				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
 			data.setAttribute(id, att, strObject);
@@ -157,13 +164,19 @@ public class DataEditAction extends AbstractUndoableEdit {
 			errMessage = "List editing is not supported in this version.";
 			showErrorWindow(errMessage);
 
+			return;
+
 			// data.setAttributeList(id, att, (List) object);
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_MAP) {
 			errMessage = "Map editing is not supported in this version.";
 			showErrorWindow(errMessage);
 
+			return;
+
 			// data.setAttributeMap(id, att, (Map) object);
 		}
+
+		valid = true;
 	}
 
 	// Pop-up window for error message
@@ -179,52 +192,28 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 *  DOCUMENT ME!
 	 */
 	public void redo() {
-		CyAttributes data;
-
-		if (objectType == DataTable.NODES) {
-			// node
-			data = Cytoscape.getNodeAttributes();
-		} else if (objectType == DataTable.EDGES) {
-			// edge
-			data = Cytoscape.getEdgeAttributes();
-		} else {
-			// This is a network attr.
-			data = Cytoscape.getNetworkAttributes();
-		}
-
-		setAttributeValue(data, object, attribute, new_value);
-
-		if (objectType != DataTable.NETWORK) {
-			table.setTable();
-		} else {
-			table.setNetworkTable();
-		}
+		setAttributeValue(object, attribute, new_value);
 	}
 
-	// this sets the old value
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void undo() {
-		CyAttributes data;
+		setAttributeValue(object, attribute, old_value);
 
-		if (objectType == DataTable.NODES) {
-			// node
-			data = Cytoscape.getNodeAttributes();
-		} else if (objectType == DataTable.EDGES) {
-			// edge
-			data = Cytoscape.getEdgeAttributes();
+		if (objectType != NETWORK) {
+			tableModel.setTableData();
 		} else {
-			// Network attr
-			data = Cytoscape.getNetworkAttributes();
+			tableModel.setNetworkTable();
 		}
+	}
 
-		setAttributeValue(data, object, attribute, old_value);
-
-		if (objectType != DataTable.NETWORK) {
-			table.setTable();
-		} else {
-			table.setNetworkTable();
-		}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean isValid() {
+		return valid;
 	}
 }

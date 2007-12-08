@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package browser;
 
 import cytoscape.data.CyAttributes;
@@ -70,17 +68,15 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		this.attributes = data;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
 		sortAtttributes();
-
 	}
 
-	protected void sortAtttributes() {
+	public void sortAtttributes() {
 		attributeNames = CyAttributesUtils.getVisibleAttributeNames(attributes);
 		Collections.sort(attributeNames);
 		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0,
 		                                  attributeNames.size()));
 	}
 
-	// implements ListModel
 	/**
 	 *  DOCUMENT ME!
 	 *

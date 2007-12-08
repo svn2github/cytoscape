@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,56 +33,45 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package browser;
 
-import static browser.DataObjectType.EDGES;
-import static browser.DataObjectType.NETWORK;
-import static browser.DataObjectType.NODES;
+import cytoscape.Cytoscape;
 
-import java.awt.Component;
+import cytoscape.data.CyAttributes;
+public enum DataObjectType {
+	NODES("Node"),
+	EDGES("Edge"),
+	NETWORK("Network");
 
-import cytoscape.plugin.CytoscapePlugin;
+	private String dispName;
 
-
-/**
- * Attribute browser's main class.<br>
- *
- * @version 0.9
- * @since 2.2
- * @author xmas kono
- *
- */
-public class AttributeBrowserPlugin extends CytoscapePlugin {
-	
-	private static final AttributeBrowser nodeAttributeBrowser;
-	private static final AttributeBrowser edgeAttributeBrowser;
-	private static final AttributeBrowser networkAttributeBrowser;
-	
-	static {
-		nodeAttributeBrowser = AttributeBrowser.getBrowser(NODES);
-		edgeAttributeBrowser = AttributeBrowser.getBrowser(EDGES);
-		networkAttributeBrowser = AttributeBrowser.getBrowser(NETWORK);
+	private DataObjectType(String dispName) {
+		this.dispName = dispName;
 	}
-	
+
 	/**
-	 * Constructor for this plugin.
-	 * Call 3 tables, nodes, edges and network.<br>
-	 *  The DataTable class actually creates all CytoPanels.<br>
-	 *  Filter functions are implemented in Advanced Window.
+	 *  DOCUMENT ME!
 	 *
+	 * @return  DOCUMENT ME!
 	 */
-	public AttributeBrowserPlugin() {
-		// Do nothing.
+	public String getDislayName() {
+		return dispName;
 	}
-	
-	public static void addMenuItem(final DataObjectType targetType, final Component menuItem) {
-		if(targetType == NODES) {
-			nodeAttributeBrowser.addMenuItem(menuItem);
-		} else if(targetType == EDGES) {
-			edgeAttributeBrowser.addMenuItem(menuItem);
-		} else {
-			networkAttributeBrowser.addMenuItem(menuItem);
-		}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyAttributes getAssociatedAttribute() {
+		if (this == NODES)
+			return Cytoscape.getNodeAttributes();
+		else if (this == EDGES)
+			return Cytoscape.getEdgeAttributes();
+		else if (this == NETWORK)
+			return Cytoscape.getNetworkAttributes();
+
+		return null;
 	}
-	
 }

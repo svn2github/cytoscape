@@ -27,7 +27,7 @@ import javax.swing.table.TableModel;
 
 
 /**
- * 
+ *
   */
 public interface SortTableModel extends TableModel {
 	/**
