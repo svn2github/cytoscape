@@ -1190,6 +1190,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_EDGE);
 			tableModel.setTableDataObjects(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
 			                                                                   .getSelectedEdges()));
+		
+			this.setColumnModel(cmodel);
 		}
 
 		ColumnResizer.adjustColumnPreferredWidths(this);
