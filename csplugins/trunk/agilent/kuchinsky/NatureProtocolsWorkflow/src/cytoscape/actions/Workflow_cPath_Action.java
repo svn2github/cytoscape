@@ -20,10 +20,19 @@ public class Workflow_cPath_Action extends WorkflowPanelAction {
 
 	private String menuItemText;
 
+	
 	public Workflow_cPath_Action(String name) {
 		super(name);
 	}
-
+	
+	public String getToolTipText()
+	{
+		return new String("<html> query, retrieve and visualize interactions from the " + 
+				"cPath database.</html>"
+				);
+		
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 
 		Component[] pluginsMenuItems = Cytoscape.getDesktop().getCyMenus()

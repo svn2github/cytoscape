@@ -37,6 +37,13 @@ public class WorkflowImportNetworkFromTableAction extends WorkflowPanelAction {
 
 	}
 
+	public String getToolTipText()
+	{
+		return new String("<html> Import a network from a table. <br>" + 
+				" Table can be delimited text or Excel spreadsheet.</html>"
+				);
+		
+	}
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";
 

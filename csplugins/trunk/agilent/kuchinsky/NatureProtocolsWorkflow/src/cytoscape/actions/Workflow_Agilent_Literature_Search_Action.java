@@ -19,6 +19,14 @@ public class Workflow_Agilent_Literature_Search_Action extends WorkflowPanelActi
 		super(name);
 	}
 	
+	public String getToolTipText()
+	{
+		return new String("<html> query, retrieve and visualize assocations from the " + 
+				"scientific literature.</html>"
+				);
+		
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		Component[] pluginsMenuItems = Cytoscape.getDesktop().getCyMenus().getOperationsMenu().getMenuComponents();
