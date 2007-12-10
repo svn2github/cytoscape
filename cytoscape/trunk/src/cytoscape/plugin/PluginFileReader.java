@@ -160,7 +160,7 @@ public class PluginFileReader {
 	protected ThemeInfo createThemeObject(Element CurrentTheme) {
 		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme,
 				DownloadableType.THEME);
-
+System.err.println("creating THEME object");
 		if (Info != null) {
 			/*
 			 * add plugins this is plugins from the current download location
@@ -177,9 +177,7 @@ public class PluginFileReader {
 			while (themePluginI.hasNext()) {
 				Element ThemePlugin = themePluginI.next();
 
-				if (CurrentTheme.getChild(PluginXml.PLUGIN_LIST.getTag())
-						.getChildren().size() == 2) {
-
+				if (ThemePlugin.getChildren().size() == 2) {
 					for (PluginInfo pluginInfo : Plugins.get(ThemePlugin.getChildTextTrim(PluginXml.UNIQUE_ID.getTag()))) {
 						if (pluginInfo.getObjectVersion().equals(ThemePlugin.getChildTextTrim(PluginXml.PLUGIN_VERSION.getTag()))) {
 							pluginInfo.setParent(Info);
@@ -198,6 +196,7 @@ public class PluginFileReader {
 
 	private DownloadableInfo createBasicInfoObject(Element E,
 			DownloadableType Type) {
+		
 		DownloadableInfo Info = null;
 		String Id = E.getChildTextTrim(uniqueID);
 		switch (Type) { // TODO sort this type stuff out (no more switches)
@@ -213,6 +212,8 @@ public class PluginFileReader {
 		Info.setName(E.getChildTextTrim(nameTag));
 		Info.setDescription(E.getChildTextTrim(descTag));
 		Info.setDownloadableURL(downloadUrl);
+		
+		System.out.println("   " + Info.toString() + " " + Info.getID());
 
 		// category
 		if (Info.getCategory().equals(Category.NONE.getCategoryText())) {
@@ -231,15 +232,9 @@ public class PluginFileReader {
 				PluginXml.VERSION.getTag()).iterator();
 		while (versionI.hasNext()) {
 			Element Version = versionI.next();
-			//Info.setCytoscapeVersion(Version.getTextTrim());
 			Info.addCytoscapeVersion(Version.getTextTrim());
-			
-//			if (Info != null && Info.isCytoscapeVersionCurrent()) {
-//				return Info;
-//			}
 		}
 		return Info;
-//		return null;
 	}
 
 	/**
@@ -253,6 +248,7 @@ public class PluginFileReader {
 	protected PluginInfo createPluginObject(Element CurrentPlugin) {
 		PluginInfo Info = (PluginInfo) createBasicInfoObject(CurrentPlugin,
 				DownloadableType.PLUGIN);
+		System.err.println("creating plugin object");
 		if (Info != null) {
 
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
@@ -326,12 +322,15 @@ public class PluginFileReader {
 
 	// get the authors, add to info object
 	private PluginInfo addAuthors(PluginInfo obj, Element Plugin) {
-		Iterator<Element> authI = Plugin.getChild(authorListTag).getChildren(
-				authorTag).iterator();
-		while (authI.hasNext()) {
-			Element CurrentAuthor = authI.next();
-			obj.addAuthor(CurrentAuthor.getChildTextTrim(nameTag),
-					CurrentAuthor.getChildTextTrim(instTag));
+		if (Plugin.getChild(authorListTag) != null) {
+			List<Element> Authors = Plugin.getChild(authorListTag).getChildren(authorTag);
+			//Iterator<Element> authI = Plugin.getChild(authorListTag).getChildren(authorTag).iterator();
+			for (Element CurrentAuthor: Authors) {
+			//while (authI.hasNext()) {
+				//Element CurrentAuthor = authI.next();
+				obj.addAuthor(CurrentAuthor.getChildTextTrim(nameTag),
+						CurrentAuthor.getChildTextTrim(instTag));
+			}
 		}
 		return obj;
 	}
