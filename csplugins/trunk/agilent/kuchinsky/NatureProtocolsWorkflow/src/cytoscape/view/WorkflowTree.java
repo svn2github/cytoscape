@@ -17,6 +17,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.actions.WorkflowAbstractAction;
 import cytoscape.actions.WorkflowExportAsGraphicsAction;
 import cytoscape.actions.WorkflowImportNetworkFromFileAction;
 import cytoscape.actions.WorkflowImportNetworkFromTableAction;
@@ -25,6 +26,7 @@ import cytoscape.actions.WorkflowImport_Edge_Attributes_Action;
 import cytoscape.actions.WorkflowImport_Expression_Matrix_Action;
 import cytoscape.actions.WorkflowImport_Node_Attributes_Action;
 import cytoscape.actions.WorkflowImport_Table_Attributes_Action;
+import cytoscape.actions.WorkflowLinkToArticleAction;
 import cytoscape.actions.WorkflowPanelAction;
 import cytoscape.actions.Workflow_Agilent_Literature_Search_Action;
 import cytoscape.actions.Workflow_BiNGO_Action;
@@ -76,6 +78,10 @@ public class WorkflowTree extends JPanel
     private static final String NODE_ATTRIBUTES = "Node Attributes";
     private static final String EDGE_ATTRIBUTES = "Edge Attributes";
     private static final String TABLE_ATTRIBUTES = "Attributes from Table";
+    
+    private static final String OVERVIEW = "Overview";
+    private static final String ABSTRACT = "Abstract";
+    private static final String LINK_TO_ARTICLE = "Link to publication";
     
 
 
@@ -165,6 +171,16 @@ public class WorkflowTree extends JPanel
         DefaultMutableTreeNode category = null;
         DefaultMutableTreeNode tool = null;
         DefaultMutableTreeNode subTool = null;
+        
+        category = new DefaultMutableTreeNode (OVERVIEW);
+        top.add(category);
+        tool = new DefaultMutableTreeNode(new WorkflowAbstractAction(ABSTRACT)); 
+        category.add(tool);
+        tool = new DefaultMutableTreeNode(new WorkflowLinkToArticleAction(LINK_TO_ARTICLE)); 
+        category.add(tool);
+        
+        
+       
 
         category = new DefaultMutableTreeNode(IMPORT);
         top.add(category);
