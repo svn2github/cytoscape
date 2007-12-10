@@ -17,9 +17,9 @@
 	
 <!-- 	<property name="lib.dir" value="${cytoroot.dir}/cytoscape-2.1/lib"/>  -->
 	
-	<property name="release.dir" value="../cytoscape-2.5.1_branch"/>
+	<property name="release.dir" value="../cytoscape-2.6_trunk"/>
 
-	<property name="lib.dir" value = "../cytoscape-2.5.1_branch/lib"/>
+	<property name="lib.dir" value = "../cytoscape-2.6_trunk/lib"/>
 	
   	<!-- Temporary build directories -->
 
@@ -111,7 +111,7 @@
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.5.1_branch/plugins/extras"/>
+   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape-2.6_trunk/plugins/extras"/>
 
 	</target>
 

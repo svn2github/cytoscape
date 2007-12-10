@@ -22,6 +22,15 @@ public class WorkflowPanelAction extends CytoscapeAction {
 		return _name;
 	}
 	
+	/**
+	 * Should be overriden by all extending classes
+	 * @return
+	 */
+	public String getToolTipText()
+	{
+		return null;
+	}
+	
 	
 	/**
 	 * ActionPerformed should be overriden by all extending classes

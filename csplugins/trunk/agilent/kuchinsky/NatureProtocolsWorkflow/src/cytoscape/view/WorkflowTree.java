@@ -8,9 +8,11 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import cytoscape.CyNetwork;
@@ -93,6 +95,12 @@ public class WorkflowTree extends JPanel
 		if (playWithLineStyle) {
 			tree.putClientProperty("JTree.lineStyle", lineStyle);
 		}
+		
+		//...where the tree is initialized:
+	    //Enable tool tips.
+	    ToolTipManager.sharedInstance().registerComponent(tree);
+        tree.setCellRenderer(new MyRenderer());
+	 
 
 		// scrollpane for tree
 		JScrollPane treeView = new JScrollPane(tree);
@@ -215,7 +223,11 @@ public class WorkflowTree extends JPanel
         category.add(tool);
         tool = new DefaultMutableTreeNode(new Workflow_jActiveModules_Action(ANALYZE_JACTIVE_MODULES));
         category.add(tool);
+        
+        
         tool = new DefaultMutableTreeNode(new Workflow_BiNGO_Action(ANALYZE_BINGO));
+        
+        
         category.add(tool);
         tool = new DefaultMutableTreeNode(new Workflow_Filters_Action(ANALYZE_FILTERS));
         category.add(tool);
@@ -227,4 +239,59 @@ public class WorkflowTree extends JPanel
         tool = new DefaultMutableTreeNode(new WorkflowPanelAction(PUBLISH_EXPORT_SESSION));
         category.add(tool);
     }
+    
+    
+    /**
+     * specialized renderer for dealing with tooltips
+     * @author ajk
+     *
+     */
+    class MyRenderer extends DefaultTreeCellRenderer {
+ 
+        public MyRenderer() {
+        }
+
+        public Component getTreeCellRendererComponent(
+                            JTree tree,
+                            Object value,
+                            boolean sel,
+                            boolean expanded,
+                            boolean leaf,
+                            int row,
+                            boolean hasFocus) {
+
+            super.getTreeCellRendererComponent(
+                            tree, value, sel,
+                            expanded, leaf, row,
+                            hasFocus);
+            this.setToolTipText(computeTooltipText(value));
+            return this;
+        }
+        
+        protected String computeTooltipText(Object value) {
+        	String tooltipText = null;
+            DefaultMutableTreeNode node =
+                    (DefaultMutableTreeNode)value;
+            
+           
+            if (node.getUserObject() instanceof WorkflowPanelAction)
+            {
+                
+                WorkflowPanelAction action = (WorkflowPanelAction) node.getUserObject();
+//                System.out.println ("Getting tooltip text for: " + action);
+//                
+//                System.out.println ("Returning tooltip text: " + action.getToolTipText());
+                return action.getToolTipText();
+            }
+            else
+            {
+//            	return new String("tooltip goes here");
+            	return null;
+            }
+ 
+            
+        }
+
+    }
+    
 }
