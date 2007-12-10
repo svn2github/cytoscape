@@ -3,7 +3,7 @@
 # Call generate_plugin_xml.pl -help for information on usage. 
 
 use strict;
-use warnings;
+#use warnings;
 
 use Data::Dumper;
 use XML::DOM;
@@ -15,7 +15,22 @@ use constant CYTOSCAPE_URL => "http://cytoscape.org";
 use constant DATABASE_NAME => "cyplugindb";
 use constant PLUGIN_DL_SCRIPT => "pluginjardownload.php";
 
+
 #Globals
+my %xmlEl = (
+	'id' => "uniqueID",
+	'name' => "name",
+	'desc' => "description",
+	'license' => "license",
+	'cy_vers' => "cytoscapeVersions",
+	'version' => "version",
+	'pl_vers' => "pluginVersion",
+	'th_vers' => "themeVersion",
+	'plugin_list' => "pluginlist",
+	'theme_list' => "themes",
+	'url' => "url"
+);
+
 my $dbh;
 my ($BaseUrl, $XmlFileLoc, $HttpLoc, $Host, $UserName, $PassWord, $Help);
 
@@ -42,22 +57,39 @@ my $Root = $Doc->createElement("project");
 $Doc->appendChild($Root);
 addProjectInfo();
 
-my $PluginList = $Doc->createElement("pluginlist");
-$Root->appendChild($PluginList);
-
-my $AllPlugins = $dbh->selectall_hashref
-	("SELECT * FROM plugin_list", 'plugin_auto_id');
-foreach my $id (keys %$AllPlugins)
-	{ addPlugin(%{$AllPlugins->{$id}}); }
-
-#my $ThemeList = $Doc->createElement("themes");
-#$Root->appendChild($ThemeList);
-#my $AllThemes = $dbh->selectall_hashref
-#	("SELECT * FROM theme_list", 'theme_auto_id');
-#foreach my $id (keys %$AllThemes)
-#	{ addTheme(%{$AllThemes->{$id}}); }
 
 
+
+# --- create the plugin list --- #
+
+my $PluginListEl = $Doc->createElement($xmlEl{'plugin_list'});
+
+my $Plugins = retrievePlugins();
+foreach my $plugin (@$Plugins) 
+	{
+	my $Plugin = createPluginNode(@$plugin);
+	$PluginListEl->appendChild($Plugin) if $Plugin;
+	}
+$Root->appendChild($PluginListEl);
+
+# --- create the themes --- #
+my $ThemeListEl = $Doc->createElement($xmlEl{'theme_list'});
+
+my $themeSql = qq(
+SELECT DISTINCT L.theme_auto_id, L.name, L.unique_id, L.description, 
+	V.version_auto_id, V.cy_version, V.version, V.release_date
+FROM theme_list L
+  INNER JOIN theme_version V
+    ON L.theme_auto_id = V.theme_id
+);
+
+my $Themes = $dbh->selectall_arrayref($themeSql);
+foreach my $theme (@$Themes)
+	{
+	my $Theme = createThemeNode(@$theme);
+	$ThemeListEl->appendChild($Theme) if $Theme;
+	}
+$Root->appendChild($ThemeListEl);
 
 # format the xml in some basic manner, doesn't seem to be a nice lib for pretty formatting of xml
 #my $Xml = $Doc->toString();
@@ -70,142 +102,262 @@ print XMLOUT $Xml;
 close(XMLOUT);
 
 
-# ------------ FUNCTIONS --------------- #
-sub createBasicElement
+
+# -------------------- SUBS --------------------- #
+
+sub retrievePlugins
 	{
-	my %args = @_;
-		
-	my $Element = $Doc->createElement($args->{"elementName"});
+	my %args = @_; 
 
-	# create a unique id for the theme, can't change from one version to another
-	my $Id = $Doc->createElement("uniqueID");
-	$Id->appendChild($Doc->createTextNode($args{'unique_id'}));
-	$Element->appendChild($Id);
+	my $ThemeOnly = $args{'theme_only'};
+	my $PluginVersionId = $args{'plugin_vers_id'};
 
-	my $Name = $Doc->createElement("name");
-	$Name->appendChild($Doc->createTextNode($args{'name'})); 
-	$Element->appendChild($PluginName);
-	
-	my $Desc = $Doc->createElement("description");
-	$args{'description'} = stripBadHex($args{'description'});
-	$Desc->appendChild($Doc->createCDATASection($args{'description'}));
-	$Element->appendChild($PluginDesc);
-	
-	return $Element;
+	my $pluginSql = qq(
+SELECT DISTINCT L.plugin_auto_id, L.name, L.unique_id, L.description, L.license, L.license_required,
+C.name, V.version, V.release_date, V.cy_version, V.plugin_file_id, V.version_auto_id, V.theme_only
+FROM plugin_list L
+  INNER JOIN plugin_version V
+    ON L.plugin_auto_id = V.plugin_id
+  INNER JOIN categories C 
+    ON L.category_id = C.category_id
+WHERE V.status = 'published' 
+); 
+
+	$pluginSql .= "AND V.theme_only = 'no' " if (!$ThemeOnly || $ThemeOnly eq 'no');
+	$pluginSql .= "AND V.version_auto_id = $PluginVersionId " if ($PluginVersionId);
+	$pluginSql .= "ORDER BY L.name";
+
+	return $dbh->selectall_arrayref($pluginSql);
 	}
 
-sub addTheme
+# set up the <project> element and the global info for the xml doc
+sub addProjectInfo
 	{
-	my %args = @_;
-	$args{"elementName"} = "theme";
-
-	my $ThemeElement = createBasicElement(%args)
+	my $Name = $Doc->createElement($xmlEl{'name'});
+	$Name->appendChild($Doc->createTextNode("Cytoscape Plugins"));
 	
-	# add versions
+	my $Desc = $Doc->createElement($xmlEl{'desc'});
+	$Desc->appendChild($Doc->createTextNode("These plugins have been submitted to Cytoscape by their authors, 
+		they may have their own licensing requirements.  Please contact the plugin authors with any questions."));
+	
+	my $ProjUrl = $Doc->createElement($xmlEl{'url'});
+	$ProjUrl->appendChild($Doc->createTextNode(CYTOSCAPE_URL));
+	
+	$Root->appendChild($Name);
+	$Root->appendChild($Desc);
+	$Root->appendChild($ProjUrl);
+	}
+
+sub createIdNode
+	{
+	my $Id = shift;
+	my $IdEl = $Doc->createElement($xmlEl{'id'});
+	$IdEl->appendChild($Doc->createTextNode($Id));
+	return $IdEl;
+	}
+
+sub createNameNode
+	{
+	my $Name = shift;
+	my $NameEl = $Doc->createElement($xmlEl{'name'});
+	$NameEl->appendChild($Doc->createTextNode($Name));
+	return $NameEl;
+	}
+
+sub createDescNode
+	{
+	my $Desc = shift;
+	my $DescEl = $Doc->createElement($xmlEl{'desc'});
+	$DescEl->appendChild($Doc->createTextNode( stripBadHex($Desc) ));
+	return $DescEl;
 	}
 	
-# Create the xml for a single plugin
-sub addPlugin
+sub createCyVersionNode
 	{
-	my %args = @_;
-
-	my $PluginElement = $Doc->createElement("plugin");
-
-	# create a unique id, this can't change from one version of a plugin to another! 
-	# Name and auto_id should work
-	my $Id = $Doc->createElement("uniqueID");
-	$Id->appendChild($Doc->createTextNode($args{'unique_id'}));
-	$PluginElement->appendChild($Id);
-
-	my $PluginName = $Doc->createElement("name");
-	$PluginName->appendChild($Doc->createTextNode($args{'name'})); 
-	$PluginElement->appendChild($PluginName);
+	my $CyVersion = shift;
+	my $CyVersionsEl = $Doc->createElement($xmlEl{'cy_vers'});
+	my @cyVersions = split(/,/, $CyVersion);
 	
-	my $PluginDesc = $Doc->createElement("description");
-	$args{'description'} = stripBadHex($args{'description'});
-	$PluginDesc->appendChild($Doc->createCDATASection($args{'description'}));
-	$PluginElement->appendChild($PluginDesc);
-
-	# add the license if requried	
-	if ($args{'license_required'} =~ /yes/i)
-		{
-		my $License = $Doc->createElement("license");
-		my $LicenseText = $Doc->createElement("text");
-
-		# these are bad hex chars, illegal for xml
-		$args{'license'} = stripBadHex($args{'license'});
-
-		$LicenseText->appendChild($Doc->createCDATASection($args{'license'}));
-		$License->appendChild($LicenseText);
-		$PluginElement->appendChild($License);
+	foreach my $v (@cyVersions)
+		{ 
+		my $VersionEl = $Doc->createElement($xmlEl{'version'});
+		$VersionEl->appendChild($Doc->createTextNode($v));
+		$CyVersionsEl->appendChild($VersionEl);
 		}
-
-	# add a category
-	my ($CategoryName) = $dbh->selectrow_array("SELECT name FROM categories WHERE category_id = ".$args{'category_id'});
-	my $Category = $Doc->createElement("category");
-	$Category->appendChild($Doc->createTextNode($CategoryName));
-	$PluginElement->appendChild($Category);
-
-	addVersions($args{'plugin_auto_id'}, $PluginElement);
+		
+	return $CyVersionsEl;
 	}
 
-# create the <plugin> element for each version of the plugin
-sub addVersions
+sub createReleaseDateNode
 	{
-	my $PluginId = shift || die "Missing plugin id";	
-	my $VersionPlugin = shift || die "Missing required plugin element";
+	my $ReleaseDate = shift;
+	my $RelDateEl = $Doc->createElement('release_date');
+	$RelDateEl->appendChild($Doc->createTextNode($ReleaseDate));
+	return $RelDateEl;	
+	}
 
-	my $VersionOk = 0;
+sub createVersionNode
+	{
+	my $VersionElName = shift;
+	my $Version = shift;
 	
-	# get all possible versions
-	# Note: only pull out those versions whose status is "published", exclude those with status "new", i.e. pending to be curated by CytoStaff
-	my $Versions = $dbh->selectall_hashref
-		("SELECT cy_version, version, plugin_file_id, version_auto_id  
-			FROM plugin_version 
-			WHERE plugin_id = $PluginId and status = 'published'", 'version_auto_id');
+	my $VersEl = $Doc->createElement($VersionElName);
+	$VersEl->appendChild($Doc->createTextNode($Version));
+	return $VersEl;
+	}
 
-	my $CytoVersion = $Doc->createElement("cytoscapeVersions");
-	foreach my $vid (keys %$Versions)
+sub createThemeNode
+	{
+	my @theme = @_;
+	
+	my ($ThemeAutoId, $Name, $UniqueId, $Description, 
+	    $ThemeVersionId, $CyVersion, $ThemeVersion, $ReleaseDate) = @theme;
+	    
+	my $ThemeEl = $Doc->createElement('theme');
+	
+	$ThemeEl->appendChild( createIdNode($UniqueId) );
+	$ThemeEl->appendChild( createNameNode($Name) );
+	$ThemeEl->appendChild( createDescNode($Description) );
+	$ThemeEl->appendChild( createCyVersionNode($CyVersion) );
+	
+	my $ThemeVersEl = $Doc->createElement($xmlEl{'th_vers'});
+	$ThemeVersEl->appendChild($Doc->createTextNode($ThemeVersion));
+	$ThemeEl->appendChild($ThemeVersEl);
+	
+	# get plugin ids
+	my $PluginIds = $dbh->selectcol_arrayref
+		("SELECT plugin_version_id FROM theme_plugin 
+			WHERE theme_version_id = $ThemeVersionId");
+
+	my $PluginListEl = $Doc->createElement($xmlEl{'plugin_list'});
+
+	# add plugins
+	foreach my $pluginId (@$PluginIds)
 		{
-		foreach my $cyVers (split /,/, $Versions->{$vid}->{'cy_version'}) 
+		my $Plugins = retrievePlugins('theme_only' => 1, 'plugin_vers_id' => $pluginId);
+		foreach my $plugin (@$Plugins)
 			{
-			my $Version = $Doc->createElement("version");	
-			$Version->appendChild($Doc->createTextNode($cyVers));
-		
-			$CytoVersion->appendChild($Version);
-			}
-		$VersionPlugin->appendChild($CytoVersion);
+			my $PluginEl = undef;
 
-		
-		my $PluginVersionNum = $Doc->createElement("pluginVersion");
-		$PluginVersionNum->appendChild($Doc->createTextNode($Versions->{$vid}->{'version'}));
-		$VersionPlugin->appendChild($PluginVersionNum);		
-
-		# add all authors for this version	
-		if (addAuthors($vid, $VersionPlugin) == 1) { $VersionOk = 1; }
-		else 
-			{ 
-			$VersionOk = 0;
-			warn "Failed to add authors to version $vid\n";
-			} 
-		
-		if (addFileInfo($Versions->{$vid}->{'plugin_file_id'}, $VersionPlugin) == 1)
-			{ $VersionOk = 1; }
-		else 
-			{ 
-			$VersionOk = 0; 
-			warn "Failed to add file information to version $vid\n";
+			if ($plugin->[12] eq 'yes')
+				{
+				$PluginEl = createPluginNode(@$Plugins);
+				}
+			else # create the short hand version
+				{
+	#			<plugin>
+	#				<uniqueID>goodZIPPlugin777</uniqueID>
+	#				<pluginVersion>0.45</pluginVersion>
+	#			</plugin>
+				$PluginEl = $Doc->createElement('plugin');
+				$PluginEl->appendChild( createIdNode( $plugin->[2] ) );
+				$PluginEl->appendChild( createVersionNode($xmlEl{'pl_vers'}, $plugin->[7]) );
+				} 
+			$PluginListEl->appendChild($PluginEl) if $PluginEl;		
 			}
-		
-		$PluginList->appendChild($VersionPlugin) if ($VersionOk);
+		}
+	$ThemeEl->appendChild($PluginListEl);
+	return $ThemeEl;
+	}
+
+sub createPluginNode
+	{
+	my @plugin = @_;
+	my ($PluginAutoId, $PluginName, $UniqueId, $Description, 
+			$License, $LicenseReq, $Category, $PluginVersion, 
+			$ReleaseDate, $CyVersion, $PluginFileId, 
+			$PluginVersionId, $ThemeOnly) = @plugin;
+
+	my $PluginEl = $Doc->createElement('plugin');
+	
+	$PluginEl->appendChild( createIdNode($UniqueId) );
+	$PluginEl->appendChild( createNameNode($PluginName) );
+	$PluginEl->appendChild( createDescNode($Description) );
+
+	my $CategoryEl = $Doc->createElement('category');
+	$CategoryEl->appendChild($Doc->createTextNode($Category));
+	$PluginEl->appendChild($CategoryEl);
+
+	$PluginEl->appendChild( createVersionNode($xmlEl{'pl_vers'}, $PluginVersion) );
+	$PluginEl->appendChild( createCyVersionNode($CyVersion) );
+	
+	if ($LicenseReq eq 'yes')
+		{
+		my $LicenseEl = $Doc->createElement($xmlEl{'license'});
+		my $LicenseTextEl = $Doc->createElement('text') ;
+		$LicenseEl->appendChild($LicenseTextEl);
+		my $TextNode = $Doc->createTextNode( stripBadHex($License) );
+		$LicenseTextEl->appendChild($TextNode);
+		$PluginEl->appendChild($LicenseEl);
+		}
+	
+	$PluginEl->appendChild( createReleaseDateNode($ReleaseDate) );
+
+	# add authors
+	my $Authors = addAuthors($PluginVersionId);
+	$PluginEl->appendChild($Authors) if $Authors;
+	
+	# file type / download url
+	my $FileUrl = $BaseUrl . "/" . PLUGIN_DL_SCRIPT . "?id=$PluginFileId"; 
+	my $PluginUlrEl = $Doc->createElement('url');
+	$PluginUlrEl->appendChild($Doc->createTextNode($FileUrl));
+	$PluginEl->appendChild($PluginUlrEl);
+	
+	my $FileTag = addFileInfo($PluginFileId);
+
+	if ($FileTag)
+		{
+		$PluginEl->appendChild(addFileInfo($PluginFileId));
+		return $PluginEl;	
+		}
+	else
+		{
+		return undef;
 		}
 	}
+	
+	
+sub addAuthors
+	{
+	my $PluginVersionId = shift || return 0;
+	
+	my $AuthorList = $Doc->createElement('authorlist');
+	
+	my $sql = "SELECT names, affiliation FROM plugin_author 
+							INNER JOIN authors
+								ON author_auto_id = author_id
+							WHERE plugin_version_id = $PluginVersionId
+							ORDER BY authorship_seq";
+	my $Authors = $dbh->selectall_arrayref($sql);
+	
+	if (@$Authors == 0)
+		{
+		warn "No authors found for plugin_version_id $PluginVersionId";
+		return 0;
+		}
+	
+	foreach my $author (@$Authors)
+		{
+		my $AuthorElement = $Doc->createElement('author');
+		my $Name = $Doc->createElement('name');
+		$Name->appendChild($Doc->createTextNode($author->[0]));
+		$AuthorElement->appendChild($Name);
+		
+		my $Inst = $Doc->createElement('institution');
+		$Inst->appendChild($Doc->createTextNode($author->[1]));
+		$AuthorElement->appendChild($Inst);
+		
+		$AuthorList->appendChild($AuthorElement);
+		}
+	return $AuthorList;
+	}
+
+
 
 # add the <filetype> and <url> elements to each <plugin>
 sub addFileInfo
 	{
 	my $PluginFileId = shift || return 0;
-	my $PluginElement = shift || die "Missing required plugin element";
 
 	my ($FileType, $FileName) = $dbh->selectrow_array
 		("SELECT file_type, file_name 
@@ -229,74 +381,20 @@ sub addFileInfo
 		elsif (isZip($FileType))
 			{ $FileType = "zip"; }
 		}
-	 #print "$PluginFileId: $FileType : $FileName\n";
-
-		
-	$PluginFileType->appendChild($Doc->createTextNode($FileType));
-	$PluginElement->appendChild($PluginFileType);
-	
-	my $FileUrl = $BaseUrl . "/" . PLUGIN_DL_SCRIPT . "?id=$PluginFileId"; 
-
-	my $PluginUrl = $Doc->createElement("url");
-	$PluginUrl->appendChild($Doc->createTextNode($FileUrl));
-	$PluginElement->appendChild($PluginUrl);
-	
-	return 1;
+	$PluginFileType->appendChild( $Doc->createTextNode($FileType) );
+	return $PluginFileType;
 	}
+	
 
-# add the <authorlist> element and get each author to add to the <plugin>
-sub addAuthors
+# these are illegal for xml
+sub stripBadHex
 	{
-	my $PluginVersionId = shift || return 0;
-	my $PluginElement = shift || die "Missing required plugin element";
-	
-	my $AuthorList = $Doc->createElement('authorlist');
-	$PluginElement->appendChild($AuthorList);
-	
-	my $sql = "SELECT names, affiliation FROM plugin_author 
-							INNER JOIN authors
-								ON author_auto_id = author_id
-							WHERE plugin_version_id = $PluginVersionId
-							ORDER BY authorship_seq";
-	my $Authors = $dbh->selectall_arrayref($sql);
-	
-	return 0 if (@$Authors == 0);
-	
-	foreach my $author (@$Authors)
-		{
-		my $AuthorElement = $Doc->createElement('author');
-		my $Name = $Doc->createElement('name');
-		$Name->appendChild($Doc->createTextNode($author->[0]));
-		$AuthorElement->appendChild($Name);
-		
-		my $Inst = $Doc->createElement('institution');
-		$Inst->appendChild($Doc->createTextNode($author->[1]));
-		$AuthorElement->appendChild($Inst);
-		
-		$AuthorList->appendChild($AuthorElement);
-		}
-	return 1;
+	my $str = shift;# || warn "No string passed to stripBadHex method";
+	$str =~ s/\x0b|\x0c|\x0d|\x0e|\x0f//g;
+	$str =~ s/([\x00-\x7f])[\x80-\xbf]/$1/g; 
+	return $str;
 	}
-
-# set up the <project> element and the global info for the xml doc
-sub addProjectInfo
-	{
-	my $Name = $Doc->createElement("name");
-	$Name->appendChild($Doc->createTextNode("Cytoscape Plugins"));
 	
-	my $Desc = $Doc->createElement("description");
-	$Desc->appendChild($Doc->createTextNode("These plugins have been submitted to Cytoscape by their authors, 
-		they may have their own licensing requirements.  Please contact the plugin authors with any questions."));
-	
-	my $ProjUrl = $Doc->createElement("url");
-	$ProjUrl->appendChild($Doc->createTextNode(CYTOSCAPE_URL));
-	
-	$Root->appendChild($Name);
-	$Root->appendChild($Desc);
-	$Root->appendChild($ProjUrl);
-	}
-
-
 sub isZip
 	{
 	# application/x-zip-compressed
@@ -311,14 +409,7 @@ sub isJar
 	$Type =~ /^application\/x-[jar|java\-archive]/ ? return 1: return 0;
 	}
 
-# these are illegal for xml
-sub stripBadHex
-	{
-	my $str = shift || warn "No string passed to strip hex from";
-	$str =~ s/\x0b|\x0c|\x0d|\x0e|\x0f//g;
-	$str =~ s/([\x00-\x7f])[\x80-\xbf]/$1/g; 
-	return $str;
-	}
+
 
 # connect to database
 sub dbConnect
@@ -328,7 +419,7 @@ sub dbConnect
 	$dbh = DBI->connect($DSN, $UserName, $PassWord, \%attr);
 	}
 
-
+# check usage
 sub usage
 	{
 	my $Msg = shift;
@@ -352,3 +443,4 @@ Usage: $0 -loc <some dir> -host <db host> -user <db user name> -passwd <db passw
 
 
 
+	

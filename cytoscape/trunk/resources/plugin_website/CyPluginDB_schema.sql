@@ -77,6 +77,7 @@ CREATE TABLE plugin_version (
   source_url varchar(100) default NULL,
   status varchar(20) default NULL,
   reference text,
+  theme_only ENUM('yes', 'no') DEFAULT 'no',
   sysdat date default NULL,
   PRIMARY KEY  (version_auto_id)
 );
@@ -129,5 +130,5 @@ CREATE TABLE theme_plugin (
   theme_plugin_auto_id int(11) NOT NULL auto_increment,
   theme_version_id int(11),
   plugin_version_id int(11),
-  theme_only ENUM('true', 'false')
+  PRIMARY KEY (theme_plugin_auto_id)
 );
