@@ -36,6 +36,14 @@ public class WorkflowImportNetworkFromFileAction extends WorkflowPanelAction {
 		super(myString);
 
 	}
+	
+	public String getToolTipText()
+	{
+		return new String("<html> Import a network from a local file. <br>" + 
+				" Cytoscape can import SIF, BioPAX (.owl), GML, SBML, XGMML formats.</html>"
+				);
+		
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";
