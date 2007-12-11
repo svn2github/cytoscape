@@ -80,7 +80,10 @@ public class FilterPlugin extends CytoscapePlugin {
 
 	private static Vector<CompositeFilter> allFilterVect = null;
 	private FilterIO filterIO = new FilterIO();
-
+	
+	public static final String DYNAMIC_FILTER_THRESHOLD = "dynamicFilterThreshold";
+	public static final int DEFAULT_DYNAMIC_FILTER_THRESHOLD = 1000;
+	   
 	// Used to pass values to other plugin, the BrowserPlugin
 	public static Vector<CompositeFilter> getAllFilterVect() {
 		if (allFilterVect == null) {
@@ -139,8 +142,8 @@ public class FilterPlugin extends CytoscapePlugin {
 		cytoPanelWest.add("Filters", filterMainPanel);
 
 		// The following two lines are for debug only
-		int indexInCytoPanel = cytoPanelWest.indexOfComponent("Filters");
-		cytoPanelWest.setSelectedIndex(indexInCytoPanel);
+		//int indexInCytoPanel = cytoPanelWest.indexOfComponent("Filters");
+		//cytoPanelWest.setSelectedIndex(indexInCytoPanel);
 	}
 
 
