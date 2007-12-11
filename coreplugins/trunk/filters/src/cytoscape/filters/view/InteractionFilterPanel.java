@@ -20,6 +20,7 @@ import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.InteractionFilter;
 //import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.EdgeInteractionFilter;
+import cytoscape.filters.util.FilterUtil;
 
 public class InteractionFilterPanel extends JPanel implements ItemListener{
 
@@ -110,6 +111,11 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
 		}
 		theFilter.childChanged();
+		
+		// If network size is less than pre-defined threshold, apply theFilter automatically 
+		if (FilterUtil.isDynamicFilter(theFilter)) {
+			FilterUtil.doSelection(theFilter);					
+		}
 	}
 
 	
