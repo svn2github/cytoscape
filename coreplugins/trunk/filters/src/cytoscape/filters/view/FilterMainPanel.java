@@ -1,38 +1,25 @@
 package cytoscape.filters.view;
 
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-import ViolinStrings.Strings;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
-import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -43,35 +30,20 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.util.FilterUtil;
-import cytoscape.filters.view.TopoFilterPanel.MyComponentAdapter;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.CyFilter;
 import cytoscape.filters.TopologyFilter;
 import cytoscape.filters.InteractionFilter;
 import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.EdgeInteractionFilter;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
 import java.util.Vector;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.util.HashMap;
-import cytoscape.filters.AtomicFilter;
-import cytoscape.filters.StringFilter;
-import cytoscape.filters.NumericFilter;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -371,12 +343,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	/*
-	 * Update the attriuute list in the attribute combobox based on the settings in the 
+	 * Update the attribute list in the attribute combobox based on the settings in the 
 	 * cuttrent selected filter
 	 */
 	private void updateCMBAttributes() {
-		
-		System.out.println("Entering updateCMBAttributes() ...");
 		
 		Vector<Object> attributeList = new Vector<Object>();
 
@@ -643,14 +613,21 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					this.btnApplyFilter.setEnabled(true);					
 				}
 				replaceFilterSettingPanel(selectedFilter);
+
+				if (Cytoscape.getCurrentNetwork() != null) {
+					Cytoscape.getCurrentNetwork().unselectAllNodes();						
+				}
+
 				if (cmbSelectFilter.getSelectedItem() instanceof TopologyFilter || cmbSelectFilter.getSelectedItem() instanceof InteractionFilter) {
 					// do not apply TopologyFilter or InteractionFilter automatically
-					if (Cytoscape.getCurrentNetwork() != null) {
-						Cytoscape.getCurrentNetwork().unselectAllNodes();						
-					}
 					return;
-				}				
-				FilterUtil.doSelection(selectedFilter);
+				}	
+								
+				// If network size is greater than pre-defined threshold, don't apply it automatically 
+				if (FilterUtil.isDynamicFilter(selectedFilter)) {
+					FilterUtil.doSelection(selectedFilter);					
+				}
+				
 				refreshAttributeCMB();
 			}
 			else if (cmb == cmbAttributes) {
@@ -682,17 +659,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			JButton _btn = (JButton) _actionObject;
 
 			if (_btn == btnApplyFilter) {
-
+				//ApplyButton is clicked!
 				System.out.println("\nApplyButton is clicked!");
-				System.out.println("\tThere are " + allFilterVect.size() + " comositeFilter in allFilterVect\n");				
-				System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
+				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				
 				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
 			}
 			if (_btn == btnAddFilterWidget) {
-
-				System.out.println("\nFilterMainPanel: btnAddFilterWidget is clicked!");
-
+				//btnAddFilterWidget is clicked!
 				CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 				FilterSettingPanel theSettingPanel = filter2SettingPanelMap.get(selectedFilter);
 
