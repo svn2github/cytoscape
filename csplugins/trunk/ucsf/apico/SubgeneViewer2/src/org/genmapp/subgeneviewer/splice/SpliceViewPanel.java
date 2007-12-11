@@ -62,7 +62,7 @@ public class SpliceViewPanel extends JPanel {
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
-	public DefaultViewPanel() {
+	public void DefaultViewPanel() {
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()

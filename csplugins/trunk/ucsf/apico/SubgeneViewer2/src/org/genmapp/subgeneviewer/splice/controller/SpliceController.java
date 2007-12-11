@@ -1,24 +1,12 @@
 package org.genmapp.subgeneviewer.splice.controller;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
-import org.genmapp.subgeneviewer.splice.view.GraphWalker;
-import org.genmapp.subgeneviewer.splice.view.SpliceNetworkView;
-import org.genmapp.subgeneviewer.text.Example_Exon_Structure_GenMAPP_CS;
-import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
+import org.genmapp.subgeneviewer.splice.SpliceViewPanel;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.ding.DingNetworkView;
-import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
 /**
@@ -71,7 +59,6 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 		//TODO: do data check
 		return true;
 	}
-	protected SpliceViewPanel = mainPanel;
 	
 	/**
 	 * 
