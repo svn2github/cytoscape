@@ -34,17 +34,42 @@
 */
 package browser.ui;
 
+import browser.AttributeBrowser;
+import browser.AttributeModel;
+import browser.DataObjectType;
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
+
+import browser.DataTableModel;
+
+import cytoscape.Cytoscape;
+
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+
+import cytoscape.dialogs.NetworkMetaDataDialog;
+
+import cytoscape.util.swing.CheckBoxJList;
+
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -62,22 +87,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
-
-import browser.AttributeBrowser;
-import browser.AttributeModel;
-import browser.DataObjectType;
-import browser.DataTableModel;
-import cytoscape.Cytoscape;
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.dialogs.NetworkMetaDataDialog;
-import cytoscape.util.swing.CheckBoxJList;
-
 
 /**
  * Define toolbar for Attribute Browser.
@@ -87,14 +96,15 @@ import cytoscape.util.swing.CheckBoxJList;
  * @author kono
  *
  */
-public class AttributeBrowserToolBar extends JPanel implements PropertyChangeListener,
-                                                               PopupMenuListener {
-	private CyAttributes attributes;
+public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener {
+	private final CyAttributes attributes;
 	private DataTableModel tableModel;
-	private DataObjectType objectType;
-	private AttributeModel model;
+	private final DataObjectType objectType;
+	private AttributeModel attrModel;
 	private String attributeType = null;
-	private Object[] selectedAttrNames = null;
+
+	//	private Object[] selectedAttrNames = null;
+	private final List<String> orderedCol;
 
 	/*
 	 * GUI components
@@ -127,15 +137,16 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 	 * @param graphObjectType  DOCUMENT ME!
 	 */
 	public AttributeBrowserToolBar(final DataTableModel tableModel, final AttributeModel a_model,
+	                               final List<String> orderedCol,
 	                               final DataObjectType graphObjectType) {
 		super();
 		this.tableModel = tableModel;
 		this.attributes = graphObjectType.getAssociatedAttribute();
 		this.objectType = graphObjectType;
-		this.model = a_model;
+		this.attrModel = a_model;
+		this.orderedCol = orderedCol;
 
-		initialize(a_model);
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+		initialize();
 	}
 
 	/**
@@ -143,13 +154,13 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 	 *
 	 * @return void
 	 */
-	private void initialize(final AttributeModel a_model) {
+	private void initialize() {
 		this.setLayout(new BorderLayout());
 
 		this.setPreferredSize(new java.awt.Dimension(210, 29));
 		this.add(getJToolBar(), java.awt.BorderLayout.CENTER);
 
-		getAttributeSelectionPopupMenu(a_model);
+		getAttributeSelectionPopupMenu();
 		getJPopupMenu1();
 
 		// modPanel will be added to JDialog for attribute modification
@@ -188,10 +199,10 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 	 *
 	 * @return javax.swing.JPopupMenu
 	 */
-	private JPopupMenu getAttributeSelectionPopupMenu(AttributeModel a_model) {
+	private JPopupMenu getAttributeSelectionPopupMenu() {
 		if (attributeSelectionPopupMenu == null) {
 			attributeSelectionPopupMenu = new JPopupMenu();
-			attributeSelectionPopupMenu.add(getJScrollPane(model));
+			attributeSelectionPopupMenu.add(getJScrollPane());
 			attributeSelectionPopupMenu.addPopupMenuListener(this);
 		}
 
@@ -203,11 +214,11 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 	 *
 	 * @return javax.swing.JScrollPane
 	 */
-	private JScrollPane getJScrollPane(AttributeModel a_model) {
+	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
 			jScrollPane.setPreferredSize(new Dimension(300, 200));
-			jScrollPane.setViewportView(getSelectedAttributeList(model));
+			jScrollPane.setViewportView(getSelectedAttributeList());
 		}
 
 		return jScrollPane;
@@ -486,8 +497,7 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 
 			selectButton.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-
-
+						attributeList.setSelectedItems(orderedCol);
 						attributeSelectionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				});
@@ -505,10 +515,7 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 			importButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			importButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-						// TODO Auto-generated Event stub mouseClicked()
 						importAttributes();
-
-						// jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				});
 		}
@@ -589,7 +596,7 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 			deleteAttributeButton.setBorder(null);
 			deleteAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			deleteAttributeButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getResource("images/stock_delete.png")));
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getResource("images/stock_delete.png")));
 			deleteAttributeButton.setToolTipText("Delete Attributes...");
 
 			// Create pop-up window for deletion
@@ -613,22 +620,40 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 		dDialog.pack();
 		dDialog.setLocationRelativeTo(jToolBar);
 		dDialog.setVisible(true);
-		model.sortAtttributes();
+		attrModel.sortAtttributes();
 
-		propertyChange(null);
+		final List<String> atNames = new ArrayList<String>();
+		for(String attName: attributes.getAttributeNames()) {
+			atNames.add(attName);
+		}
+		final List<String> toBeRemoved = new ArrayList<String>();
+		for(String colName: orderedCol) {
+			if(atNames.contains(colName) == false) {
+				toBeRemoved.add(colName);
+			}
+		}
+		
+		for(String rem: toBeRemoved) {
+			orderedCol.remove(rem);
+		}
+
+		tableModel.setTableData(null, orderedCol);
+		Cytoscape.getSwingPropertyChangeSupport()
+        .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+		
 	}
+	
 
 	/**
 	 * This method initializes jList1
 	 *
 	 * @return javax.swing.JList
 	 */
-	private JList getSelectedAttributeList(final AttributeModel a_model) {
+	private JList getSelectedAttributeList() {
 		if (attributeList == null) {
 			attributeList = new CheckBoxJList();
-			attributeList.setModel(model);
+			attributeList.setModel(attrModel);
 			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			attributeList.addPropertyChangeListener(this);
 			attributeList.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						if (SwingUtilities.isRightMouseButton(e)) {
@@ -675,7 +700,7 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 			createNewAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			createNewAttributeButton.setToolTipText("Create New Attribute");
 			createNewAttributeButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getResource("images/stock_new.png")));
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getResource("images/stock_new.png")));
 			createNewAttributeButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
 						jPopupMenu1.show(e.getComponent(), e.getX(), e.getY());
@@ -721,9 +746,7 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 		}
 
 		if (name != null) {
-			Object[] selectedVals = attributeList.getSelectedValues();
-
-			final String testVal = "test";
+			final String testVal = "dummy";
 
 			if (type.equals("String")) {
 				attributes.setAttribute(testVal, name, new String());
@@ -739,44 +762,12 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 
 			attributes.deleteAttribute(testVal, name);
 
-			updateSelectedListItems(name, selectedVals);
+			// Update list selection
+			orderedCol.add(name);
 			Cytoscape.getSwingPropertyChangeSupport()
 			         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-		}
-	}
 
-	private void updateSelectedListItems(final Object newEntry, final Object[] selectedVals) {
-		final List<Object> selectedList = Arrays.asList(selectedVals);
-		final Object[] selectedObjects = new Object[selectedVals.length + 1];
-
-		final int listSize = attributeList.getModel().getSize();
-		final ListModel lModel = attributeList.getModel();
-		Object listItem = null;
-		int count = 0;
-
-		for (int i = 0; i < listSize; i++) {
-			listItem = lModel.getElementAt(i);
-
-			if (selectedList.contains(listItem) && (listItem.equals(newEntry) == false)) {
-				selectedObjects[count] = listItem;
-				count++;
-			}
-		}
-
-		selectedObjects[selectedObjects.length - 1] = newEntry;
-
-		selectedAttrNames = selectedObjects;
-		tableModel.setTableDataAttributes(Arrays.asList(selectedAttrNames));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param evt DOCUMENT ME!
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		if ((evt == null) || evt.getPropertyName().equals(CheckBoxJList.LIST_UPDATED)) {
-			selectedAttrNames = attributeList.getSelectedValues();
+			tableModel.setTableData(null, orderedCol);
 		}
 	}
 
@@ -797,7 +788,14 @@ public class AttributeBrowserToolBar extends JPanel implements PropertyChangeLis
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// Update actual table
 		try {
-			tableModel.setTableDataAttributes(Arrays.asList(selectedAttrNames));
+			final Object[] selected = attributeList.getSelectedValues();
+			orderedCol.clear();
+
+			for (Object colName : selected) {
+				orderedCol.add(colName.toString());
+			}
+
+			tableModel.setTableData(null, orderedCol);
 		} catch (Exception ex) {
 			attributeList.clearSelection();
 		}
