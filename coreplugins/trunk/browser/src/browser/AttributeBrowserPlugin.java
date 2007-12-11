@@ -39,6 +39,8 @@ import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
 
 import java.awt.Component;
+import java.io.File;
+import java.util.List;
 
 import cytoscape.plugin.CytoscapePlugin;
 
@@ -84,4 +86,20 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 		}
 	}
 	
+	public void onCytoscapeExit() {
+		
+	}
+	
+	public void restoreInitState() {
+		
+	}
+	
+	
+	public void restoreSessionState(List<File> pStateFileList) {
+		
+	}
+	
+	public void saveSessionStateFiles(List<File> pFileList) {
+		
+	}
 }

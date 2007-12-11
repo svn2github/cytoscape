@@ -408,6 +408,10 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			// get the current value and set the old_value to it
 			s = (String) attrData.getAttribute(go.getIdentifier(), attributeTo);
 			old_values.add(s);
+			
+			if(s == null && action != SET) {
+				continue;
+			}
 
 			if (action == SET)
 				new_v = input;

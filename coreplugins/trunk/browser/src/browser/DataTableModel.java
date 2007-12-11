@@ -39,17 +39,16 @@ import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
 
 import browser.ui.CyAttributeBrowserTable;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
-
-import cytoscape.data.attr.MultiHashMapListener;
+import cytoscape.data.CyAttributesUtils;
 
 import cytoscape.view.CyNetworkView;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
 
 import giny.model.Edge;
 import giny.model.GraphObject;
@@ -61,7 +60,6 @@ import giny.view.NodeView;
 import java.awt.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,20 +79,29 @@ import javax.swing.table.DefaultTableModel;
  * @author xmas
  */
 public class DataTableModel extends DefaultTableModel implements SortTableModel {
-	// Property for this browser. One for each panel.
-	private Properties props;
-	private CyAttributes data;
-	private List<GraphObject> graphObjects;
-	private List<Object> attributeNames;
-	private GlobalAppearanceCalculator gac;
-	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-
 	/**
 	 *
 	 */
 	public static final String LS = System.getProperty("line.separator");
-	private static final Boolean DEFAULT_FLAG = new Boolean(false);
-	private DataObjectType objectType = NODES;
+	private static final Boolean DEFAULT_FLAG = false;
+
+	// Property for this browser. One for each panel.
+	private Properties props;
+
+	// Type of the object
+	private final DataObjectType objectType;
+
+	// Target CyAttributes
+	private final CyAttributes data;
+
+	// Currently selected data objects
+	private List<GraphObject> graphObjects;
+
+	// Ordered list of attribute names shown as column names.
+	private List<String> attributeNames;
+	private final GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager()
+	                                                        .getVisualStyle()
+	                                                        .getGlobalAppearanceCalculator();
 
 	/*
 	 * Selected nodes & edges color
@@ -107,70 +114,28 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 	/**
 	 * Creates a new DataTableModel object.
+	 *
+	 * @param attributeNames  DOCUMENT ME!
+	 * @param type  DOCUMENT ME!
 	 */
-	public DataTableModel() {
-		initialize();
+	public DataTableModel(final List<String> attributeNames, final DataObjectType type) {
+		this(null, attributeNames, type);
 	}
 
 	/**
 	 * Creates a new DataTableModel object.
 	 *
-	 * @param rows  DOCUMENT ME!
-	 * @param cols  DOCUMENT ME!
+	 * @param graph_objects  DOCUMENT ME!
+	 * @param attributeNames  DOCUMENT ME!
+	 * @param type  DOCUMENT ME!
 	 */
-	public DataTableModel(int rows, int cols) {
-		super(rows, cols);
-		initialize();
-	}
+	public DataTableModel(final List<GraphObject> graph_objects, List<String> attributeNames,
+	                      DataObjectType type) {
+		this.data = type.getAssociatedAttribute();
+		this.graphObjects = graph_objects;
+		this.attributeNames = attributeNames;
+		this.objectType = type;
 
-	/**
-	 * Creates a new DataTableModel object.
-	 *
-	 * @param data  DOCUMENT ME!
-	 * @param names  DOCUMENT ME!
-	 */
-	public DataTableModel(Object[][] data, Object[] names) {
-		super(data, names);
-		initialize();
-	}
-
-	/**
-	 * Creates a new DataTableModel object.
-	 *
-	 * @param names  DOCUMENT ME!
-	 * @param rows  DOCUMENT ME!
-	 */
-	public DataTableModel(Object[] names, int rows) {
-		super(names, rows);
-		initialize();
-	}
-
-	/**
-	 * Creates a new DataTableModel object.
-	 *
-	 * @param names  DOCUMENT ME!
-	 * @param rows  DOCUMENT ME!
-	 */
-	public DataTableModel(Vector names, int rows) {
-		super(names, rows);
-		initialize();
-	}
-
-	/**
-	 * Creates a new DataTableModel object.
-	 *
-	 * @param data  DOCUMENT ME!
-	 * @param names  DOCUMENT ME!
-	 */
-	public DataTableModel(Vector data, Vector names) {
-		super(data, names);
-		initialize();
-	}
-
-	/*
-	 * Initialize properties for Browser Plugin.
-	 */
-	private void initialize() {
 		props = new Properties();
 		props.setProperty("colorSwitch", "off");
 		setSelectedColor(CyAttributeBrowserTable.SELECTED_NODE);
@@ -183,8 +148,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param type DOCUMENT ME!
 	 */
 	public void setSelectedColor(final int type) {
-		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
-
 		switch (type) {
 			case CyAttributeBrowserTable.SELECTED_NODE:
 				selectedNodeColor = gac.getDefaultNodeSelectionColor();
@@ -209,8 +172,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public Color getSelectedColor(final int type) {
-		Color newColor;
-		gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
+		final Color newColor;
 
 		switch (type) {
 			case CyAttributeBrowserTable.SELECTED_NODE:
@@ -248,38 +210,24 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		}
 	}
 
-	// Accept CyAttributes and create table
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param data DOCUMENT ME!
-	 * @param graph_objects DOCUMENT ME!
-	 * @param attributeNames DOCUMENT ME!
-	 * @param objectType DOCUMENT ME!
-	 */
-	public void setTableData(CyAttributes data, List<GraphObject> graph_objects,
-	                         List<Object> attributeNames, DataObjectType type) {
-		this.data = data;
-		this.graphObjects = graph_objects;
-		this.attributeNames = attributeNames;
-		this.objectType = type;
-//		data.getMultiHashMap().addDataListener(this);
-
-		if (objectType == NETWORK) {
-			setNetworkTable();
-		} else {
-			setTableData();
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Map getSelectionArray() {
-		return internalSelection;
-	}
+	//	// Accept CyAttributes and create table
+	//	/**
+	//	 *  DOCUMENT ME!
+	//	 *
+	//	 * @param data DOCUMENT ME!
+	//	 * @param graph_objects DOCUMENT ME!
+	//	 * @param attributeNames DOCUMENT ME!
+	//	 * @param objectType DOCUMENT ME!
+	//	 */
+	//	public void setTableData(List<String> attributeNames) {
+	//		this.attributeNames = attributeNames;
+	//
+	//		if (objectType == NETWORK) {
+	//			setNetworkTable();
+	//		} else {
+	//			setTableData();
+	//		}
+	//	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -317,54 +265,20 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param graph_objects DOCUMENT ME!
 	 * @param attributes DOCUMENT ME!
 	 */
-	public void setTableData(List graph_objects, List<Object> attributes) {
-		this.graphObjects = graph_objects;
-		this.attributeNames = attributes;
+	public void setTableData(List cellData, List<String> attributes) {
+		if (attributes != null) {
+			this.attributeNames = attributes;
+		}
 
-		if (this.objectType != NETWORK) {
+		if (cellData != null) {
+			graphObjects = cellData;
+		}
+
+		if (objectType != NETWORK) {
 			setTableData();
 		} else {
 			setNetworkTable();
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attributes DOCUMENT ME!
-	 */
-	public void setTableDataAttributes(final List<Object> attributes) {
-		this.attributeNames = attributes;
-
-		if (this.objectType != NETWORK) {
-			setTableData();
-		} else {
-			setNetworkTable();
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param graph_objects DOCUMENT ME!
-	 */
-	public void setTableDataObjects(final List graph_objects) {
-		this.graphObjects = graph_objects;
-
-		if (this.objectType != NETWORK) {
-			setTableData();
-		} else {
-			setNetworkTable();
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param ot DOCUMENT ME!
-	 */
-	public void setObjectType(final DataObjectType type) {
-		objectType = type;
 	}
 
 	protected void setNetworkTable() {
@@ -437,10 +351,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		setDataVector(data_vector, column_names);
 	}
 
-	// Fill the cells in the table
-	// *** need to add an argument to copy edge attribute name correctly.
-	//
+	/**
+	 *  Method to frill out table cells.
+	 */
 	public void setTableData() {
+		
+		if(graphObjects == null) return;
 		
 		internalSelection = new HashMap<String, Boolean>();
 
@@ -453,14 +369,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
 
 				if (objectType == NODES) {
-					//				targetNode = obj.getRootGraph().getNode(obj.getRootGraphIndex());
 					nv = netView.getNodeView((Node) obj);
 
 					if (nv != null) {
 						nv.setSelectedPaint(selectedNodeColor);
 					}
 				} else if (objectType == EDGES) {
-					//				targetEdge = obj.getRootGraph().getEdge(obj.getRootGraphIndex());
 					edgeView = netView.getEdgeView((Edge) obj);
 
 					if (edgeView != null) {
@@ -470,48 +384,76 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			}
 		}
 
-		final List<Object> tempAttrNames = new ArrayList<Object>();
+		// Selected attributes + ID
+		final int att_length = attributeNames.size();
 
-		for (Object name : attributeNames) {
-			if (Arrays.asList(data.getAttributeNames()).contains(name)) {
-				tempAttrNames.add(name);
-			}
-		}
-
-		attributeNames = tempAttrNames;
-
-		final int att_length = attributeNames.size() + 1;
+		// Number of selected objects.
 		final int go_length = graphObjects.size();
 
-		final Object[][] data_vector = new Object[go_length][att_length];
-		final Object[] column_names = new Object[att_length];
+		Object[][] data_vector;
+		Object[] column_names;
 
-		column_names[0] = AttributeBrowser.ID;
-
-		for (int j = 0; j < go_length; ++j) {
-			data_vector[j][0] = graphObjects.get(j).getIdentifier();
-		}
-
-		// Set actual data
-		final int attrSize = attributeNames.size();
 		String attributeName;
 		byte type;
 
-		for (int i1 = 0; i1 < attrSize; ++i1) {
-			column_names[i1 + 1] = attributeNames.get(i1);
-			attributeName = (String) attributeNames.get(i1);
-			type = data.getType(attributeName);
+		// ID only.
+		if (att_length == 0) {
+			data_vector = new Object[go_length][1];
+			column_names = new Object[1];
+			column_names[0] = AttributeBrowser.ID;
 
-			for (int j = 0; j < go_length; ++j) {
-				data_vector[j][i1 + 1] = getAttributeValue(type,
-				                                           graphObjects.get(j).getIdentifier(),
-				                                           attributeName);
-				;
+			for (int j = 0; j < go_length; ++j)
+				data_vector[j][0] = graphObjects.get(j).getIdentifier();
+
+			setDataVector(data_vector, column_names);
+			Cytoscape.getSwingPropertyChangeSupport()
+			         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+
+			return;
+		} else if (attributeNames.contains(AttributeBrowser.ID) == false) {
+			data_vector = new Object[go_length][att_length + 1];
+			column_names = new Object[att_length + 1];
+
+			column_names[0] = AttributeBrowser.ID;
+
+			for (int j = 0; j < go_length; ++j)
+				data_vector[j][0] = graphObjects.get(j).getIdentifier();
+
+			for (int i1 = 0; i1 < att_length; ++i1) {
+				column_names[i1 + 1] = attributeNames.get(i1);
+				attributeName = attributeNames.get(i1);
+				type = data.getType(attributeName);
+
+				for (int j = 0; j < go_length; ++j) {
+					data_vector[j][i1 + 1] = getAttributeValue(type,
+					                                           graphObjects.get(j).getIdentifier(),
+					                                           attributeName);
+				}
+			}
+		} else {
+			data_vector = new Object[go_length][att_length];
+			column_names = new Object[att_length];
+
+			for (int i1 = 0; i1 < att_length; ++i1) {
+				column_names[i1] = attributeNames.get(i1);
+				attributeName = (String) attributeNames.get(i1);
+				type = data.getType(attributeName);
+
+				for (int j = 0; j < go_length; ++j) {
+					if (attributeName.equals(AttributeBrowser.ID)) {
+						data_vector[j][i1] = graphObjects.get(j).getIdentifier();
+					} else
+						data_vector[j][i1] = getAttributeValue(type,
+						                                       graphObjects.get(j).getIdentifier(),
+						                                       attributeName);
+				}
 			}
 		}
 
 		setDataVector(data_vector, column_names);
-		Cytoscape.getSwingPropertyChangeSupport().firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+		
+		Cytoscape.getSwingPropertyChangeSupport()
+		         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
 	}
 
 	/**
@@ -557,22 +499,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public Class getObjectTypeAt(String colName) {
-		byte type = data.getType(colName);
-
-		if (type == CyAttributes.TYPE_INTEGER)
-			return Integer.class;
-		else if (type == CyAttributes.TYPE_FLOATING)
-			return Double.class;
-		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return Boolean.class;
-		else if (type == CyAttributes.TYPE_STRING)
-			return String.class;
-		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return List.class;
-		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return Map.class;
-
-		return null;
+		return CyAttributesUtils.getClass(colName, data);
 	}
 
 	/**
@@ -639,9 +566,19 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		DataEditAction edit = null;
 
+		// Find key
+		int keyIndex = -1;
+		for(int i=0; i<attributeNames.size(); i++) {
+			if(attributeNames.get(i).equals(AttributeBrowser.ID)) {
+				keyIndex = i;
+				break;
+			}
+		}
+		if(keyIndex == -1) return;
+		
 		if (this.objectType != NETWORK) {
-			edit = new DataEditAction(this, (String) getValueAt(rowIndex, 0),
-			                          (String) attributeNames.get(columnIndex - 1), null,
+			edit = new DataEditAction(this, getValueAt(rowIndex, keyIndex).toString(),
+			                          attributeNames.get(columnIndex), null,
 			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
 		} else {
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
@@ -649,11 +586,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
 		}
 
-		if(edit.isValid()) {
-			Vector rowVector = (Vector)dataVector.elementAt(rowIndex);
-	        rowVector.setElementAt(aValue, columnIndex);
-	        fireTableCellUpdated(rowIndex, columnIndex);
+		if (edit.isValid()) {
+			Vector rowVector = (Vector) dataVector.elementAt(rowIndex);
+			rowVector.setElementAt(aValue, columnIndex);
+			fireTableCellUpdated(rowIndex, columnIndex);
 		}
+
 		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
 }

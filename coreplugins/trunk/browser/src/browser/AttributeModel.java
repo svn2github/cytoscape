@@ -55,7 +55,7 @@ import javax.swing.event.ListDataListener;
  */
 public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDefinitionListener {
 	private Vector listeners = new Vector();
-	private CyAttributes attributes;
+	private final CyAttributes attributes;
 	private List<String> attributeNames;
 	private Object selection = null;
 
@@ -70,6 +70,9 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		sortAtttributes();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void sortAtttributes() {
 		attributeNames = CyAttributesUtils.getVisibleAttributeNames(attributes);
 		Collections.sort(attributeNames);

@@ -48,7 +48,7 @@ import javax.swing.undo.AbstractUndoableEdit;
  */
 public class DataEditAction extends AbstractUndoableEdit {
 	final String object;
-	final String attribute;
+	final String attrName;
 	final Object old_value;
 	final Object new_value;
 	final String[] keys;
@@ -61,17 +61,17 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 *
 	 * @param table  DOCUMENT ME!
 	 * @param object  DOCUMENT ME!
-	 * @param attribute  DOCUMENT ME!
+	 * @param attrName  DOCUMENT ME!
 	 * @param keys  DOCUMENT ME!
 	 * @param old_value  DOCUMENT ME!
 	 * @param new_value  DOCUMENT ME!
 	 * @param graphObjectType  DOCUMENT ME!
 	 */
-	public DataEditAction(DataTableModel table, String object, String attribute, String[] keys,
+	public DataEditAction(DataTableModel table, String object, String attrName, String[] keys,
 	                      Object old_value, Object new_value, DataObjectType graphObjectType) {
 		this.tableModel = table;
 		this.object = object;
-		this.attribute = attribute;
+		this.attrName = attrName;
 		this.keys = keys;
 		this.old_value = old_value;
 		this.new_value = new_value;
@@ -86,7 +86,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getPresentationName() {
-		return object + " attribute " + attribute + " changed.";
+		return object + " attribute " + attrName + " changed.";
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getRedoPresentationName() {
-		return "Redo: " + object + ":" + attribute + " to:" + new_value + " from " + old_value;
+		return "Redo: " + object + ":" + attrName + " to:" + new_value + " from " + old_value;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getUndoPresentationName() {
-		return "Undo: " + object + ":" + attribute + " back to:" + old_value + " from " + new_value;
+		return "Undo: " + object + ":" + attrName + " back to:" + old_value + " from " + new_value;
 	}
 
 	// Set value based on the data type.
@@ -192,14 +192,14 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 *  DOCUMENT ME!
 	 */
 	public void redo() {
-		setAttributeValue(object, attribute, new_value);
+		setAttributeValue(object, attrName, new_value);
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void undo() {
-		setAttributeValue(object, attribute, old_value);
+		setAttributeValue(object, attrName, old_value);
 
 		if (objectType != NETWORK) {
 			tableModel.setTableData();
