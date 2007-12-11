@@ -481,7 +481,7 @@ public class FilterSettingPanel extends JPanel {
 				childFilter.setNegation(_chk.isSelected());				
 			}
 			//Update the selection on screen
-			FilterUtil.doSelection(theFilter);
+			doSelection();
 		}
 	}
 	
@@ -607,7 +607,7 @@ public class FilterSettingPanel extends JPanel {
 			theFilter.addChild(newChildFilter);
 		}
 		//Update the selection on screen
-		FilterUtil.doSelection(theFilter);			
+		doSelection();
 	}
 	
 	// Determine the child index in filter based on the row index of a component 
@@ -630,6 +630,12 @@ public class FilterSettingPanel extends JPanel {
 		return childIndex;
 	}
 	
+	private void doSelection() {
+		// If network size is greater than pre-defined threshold, don't apply theFilter automatically 
+		if (FilterUtil.isDynamicFilter(theFilter)) {
+			FilterUtil.doSelection(theFilter);			
+		}		
+	}
 	
 	// remove a GUI widget from the customeSetting panel 
 	private void removeFilterWidget(MouseEvent e)
@@ -647,7 +653,7 @@ public class FilterSettingPanel extends JPanel {
 			pnlCustomSettings.removeAll();			
 			initCustomSetting();
 		}
-		FilterUtil.doSelection(theFilter);
+		doSelection();
 	}
 
 	
@@ -693,7 +699,7 @@ public class FilterSettingPanel extends JPanel {
 			}
 			
 			//Update the selection on screen
-			FilterUtil.doSelection(theFilter);				
+			doSelection();
 		}
 	}
 
@@ -738,7 +744,7 @@ public class FilterSettingPanel extends JPanel {
 
 			theFilter.childChanged();
 			//Update the selection on screen
-			FilterUtil.doSelection(theFilter);				
+			doSelection();
 		}
 	}
 	
@@ -933,7 +939,7 @@ public class FilterSettingPanel extends JPanel {
 						// Do not apply Filter if TopologyFilter or InteractionFilter	
 					}
 					else {						
-						FilterUtil.doSelection(theFilter);										
+						doSelection();										
 					}
 				}
 			}
@@ -951,7 +957,7 @@ public class FilterSettingPanel extends JPanel {
 				//Update the selection on screen
 				//System.out.println("FilterSettingPanel. rbtAND/rbtOR is clicked");	
 				theFilter.childChanged();
-				FilterUtil.doSelection(theFilter);				
+				doSelection();				
 			}
 		}
 	}
