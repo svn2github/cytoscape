@@ -23,44 +23,12 @@
  */
 package browser.ui;
 
-import browser.AttributeBrowser;
-import browser.DataObjectType;
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
-
-import browser.DataTableModel;
-import browser.SortTableModel;
-
-import browser.util.HyperLinkOut;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
-import cytoscape.data.Semantics;
-
-import cytoscape.dialogs.NetworkMetaDataDialog;
-
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-import cytoscape.util.OpenBrowser;
-
-import cytoscape.util.swing.ColumnResizer;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
-
 import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -77,24 +45,20 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
@@ -110,10 +74,30 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
+
+import browser.AttributeBrowser;
+import browser.DataObjectType;
+import browser.DataTableModel;
+import browser.SortTableModel;
+import browser.util.HyperLinkOut;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
+import cytoscape.data.Semantics;
+import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+import cytoscape.util.OpenBrowser;
+import cytoscape.util.swing.ColumnResizer;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.VisualMappingManager;
 
 
 /**
@@ -140,7 +124,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public static final int REV_SELECTED_NODE = 2;
 
 	/**
-	 *
 	 */
 	public static final int SELECTED_EDGE = 3;
 
@@ -705,43 +688,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					setSelectedColor(SELECTED_EDGE);
 					setSelectedColor(REV_SELECTED_EDGE);
 
-					System.out.println("------------ Release called! -------------");
 					resetObjectColor(idLocation);
 					paintNodesAndEdges(idLocation);
 
-					//					for (int idx = 0; idx < rowsSelected.length; idx++) {
-					//						selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
-					//
-					//						if (objectType == DataTable.NODES) {
-					//							// Flip the internal flag
-					//							((DataTableModel) dataModel).setSelectionArray(selectedName, true);
-					//
-					//							Node selectedNode = Cytoscape.getCyNode(selectedName);
-					//
-					//							if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					//								NodeView nv = Cytoscape.getCurrentNetworkView()
-					//								                       .getNodeView(selectedNode);
-					//
-					//								if (nv != null) {
-					//									nv.setSelectedPaint(reverseSelectedNodeColor);
-					//								}
-					//							}
-					//						} else if (objectType == DataTable.EDGES) {
-					//							
-					//							Edge selectedEdge = getEdge(selectedName);
-					//
-					//							if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-					//								EdgeView ev = Cytoscape.getCurrentNetworkView()
-					//								                       .getEdgeView(selectedEdge);
-					//
-					//								if (ev != null) {
-					//									ev.setSelectedPaint(reverseSelectedEdgeColor);
-					//								}
-					//							}
-					//						} else {
-					//							// For network, do nothing.
-					//						}
-					//					}
 					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 						Cytoscape.getCurrentNetworkView().updateView();
 					}
@@ -1188,10 +1137,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		setSelectedColor(REV_SELECTED_NODE);
 		setSelectedColor(SELECTED_EDGE);
 		setSelectedColor(REV_SELECTED_EDGE);
-
-		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-		}
 	}
 
 	/**
