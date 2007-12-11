@@ -388,10 +388,6 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExportVizmapAction());
 		addAction(new ExportAsGraphicsAction());
 
-		fileMenu.add(new JSeparator());
-		addAction(new WebServiceManagerAction());
-		fileMenu.add(new JSeparator());
-
 		addAction(new PrintAction());
 		addAction(new ExitAction());
 
