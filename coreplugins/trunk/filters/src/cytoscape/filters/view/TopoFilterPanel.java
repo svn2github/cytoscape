@@ -29,6 +29,7 @@ import cytoscape.Cytoscape;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.view.FilterMainPanel.FilterRenderer;
 import cytoscape.filters.view.FilterMainPanel.MyCytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelListener;
@@ -133,7 +134,11 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		if (source instanceof JComboBox) {
 			theFilter.setPassFilter((CompositeFilter) cmbPassFilter.getSelectedItem());
 			theFilter.childChanged();
-			//System.out.println("theFilter = "+ theFilter.getName());
+
+			// If network size is less than pre-defined threshold, apply theFilter automatically 
+			if (FilterUtil.isDynamicFilter(theFilter)) {
+				FilterUtil.doSelection(theFilter);					
+			}
 		}
 	}
 	
