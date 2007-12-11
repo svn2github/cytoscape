@@ -41,8 +41,8 @@ public class SpliceViewPanel extends JPanel {
 	private Component canvas = null;
 
 	static {
-		source = Cytoscape.getCyNode("E1.1");
-		target = Cytoscape.getCyNode("E2.1");
+		source = Cytoscape.getCyNode("Source");
+		target = Cytoscape.getCyNode("Target");
 		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
 		                           "interaction");
 
