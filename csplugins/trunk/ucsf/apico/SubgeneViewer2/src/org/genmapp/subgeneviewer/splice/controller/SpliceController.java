@@ -1,21 +1,13 @@
 package org.genmapp.subgeneviewer.splice.controller;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
 import org.genmapp.subgeneviewer.splice.SpliceViewBuilder;
 import org.genmapp.subgeneviewer.splice.SpliceViewPanel;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import ding.view.DGraphView;
 
@@ -27,7 +19,7 @@ import ding.view.DGraphView;
  */
 public class SpliceController extends MouseAdapter implements SubgeneController {
 
-	private String _nodeId;
+	private static String _nodeId;
 
 	private String _nodeLabel;
 
@@ -143,6 +135,14 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	}
 
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	public static String get_nodeId() {
+		return _nodeId;
+	}
+
+	public void set_nodeId(String id) {
+		_nodeId = id;
 	}
 
 }

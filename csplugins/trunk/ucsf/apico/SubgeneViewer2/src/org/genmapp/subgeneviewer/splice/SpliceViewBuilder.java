@@ -41,6 +41,7 @@ public class SpliceViewBuilder extends JDialog {
 	 */
 	public SpliceViewBuilder(Frame parent, boolean modal) {
 		super(parent, modal);
+		System.out.println("SpliceViewBuilder check!");
 		initComponents();
 
 		this.addComponentListener(new ComponentAdapter() {
