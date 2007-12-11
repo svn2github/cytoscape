@@ -935,12 +935,12 @@ public class FilterSettingPanel extends JPanel {
 					
 					theFilter.childChanged();//The setting is changed
 					
-					if (theFilter instanceof TopologyFilter || theFilter instanceof InteractionFilter) {
+					//if (theFilter instanceof TopologyFilter || theFilter instanceof InteractionFilter) {
 						// Do not apply Filter if TopologyFilter or InteractionFilter	
-					}
-					else {						
+					//}
+					//else {						
 						doSelection();										
-					}
+					//}
 				}
 			}
 			if (soureObj instanceof javax.swing.JRadioButton) {
