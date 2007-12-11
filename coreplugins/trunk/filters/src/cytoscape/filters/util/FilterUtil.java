@@ -2,6 +2,7 @@ package cytoscape.filters.util;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.filters.CompositeFilter;
 import giny.model.Edge;
 import giny.model.Node;
@@ -103,12 +104,54 @@ public class FilterUtil {
 		return true;
 	}
 
-	// This is used in old version, will remove soon
+	// This is used in old version, for backward compatible
 	public static void applyFilter(CompositeFilter pFilter) {
-		ApplyFilterThread applyFilterThread = new ApplyFilterThread(pFilter);
-		applyFilterThread.start();
+		doSelection(pFilter);
 	}
 
+	// If a network size (node count and edge count) is less than DYNAMIC_FILTER_THRESHOLD, return true
+	// Otherwise, return false
+	public static boolean isDynamicFilter(CompositeFilter pFilter) {
+		CyNetwork theNetwork = pFilter.getNetwork();
+
+		if (theNetwork == null) {
+			return false;
+		}
+		
+		int nodeCount = theNetwork.getNodeCount();
+		int edgeCount = theNetwork.getEdgeCount();
+
+		int dynamicFilterThresholdValue = -1; 
+		String dynamicFilterThreshold = CytoscapeInit.getProperties().getProperty(FilterPlugin.DYNAMIC_FILTER_THRESHOLD);
+		if (dynamicFilterThreshold == null) { // threshold not defined, use the default value
+			dynamicFilterThresholdValue = FilterPlugin.DEFAULT_DYNAMIC_FILTER_THRESHOLD;
+		}
+		else {
+			dynamicFilterThresholdValue = (new Integer(dynamicFilterThreshold)).intValue();
+		}
+		
+		if (pFilter.getAdvancedSetting().isNodeChecked() && pFilter.getAdvancedSetting().isEdgeChecked()) {
+			// Select both nodes and edges
+			if (nodeCount > dynamicFilterThresholdValue || edgeCount > dynamicFilterThresholdValue) {
+				return false;
+			}
+			return true;
+		}
+		else if (pFilter.getAdvancedSetting().isNodeChecked()) {
+			//Select node only
+			if (nodeCount < dynamicFilterThresholdValue) {
+				return true;
+			}
+		}
+		else if (pFilter.getAdvancedSetting().isEdgeChecked()){
+			// select edge only
+			if (edgeCount < dynamicFilterThresholdValue) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
 
 
