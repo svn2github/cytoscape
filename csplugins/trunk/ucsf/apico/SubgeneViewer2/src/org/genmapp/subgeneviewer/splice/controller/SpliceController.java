@@ -32,35 +32,6 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	private String _nodeId;
 
 	private String _nodeLabel;
-	private static final int PADDING = 20;
-	private CyNetworkView view;
-	private CyNetworkView oldView;
-	private static CyNetwork dummyNet;
-	private Color background;
-
-	/*
-	 * Dummy graph component
-	 */
-	private static final CyNode source;
-	private static final CyNode target;
-	private static final CyEdge edge;
-	private Component canvas = null;
-
-	static {
-		source = Cytoscape.getCyNode("Source");
-		target = Cytoscape.getCyNode("Target");
-		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
-		                           "interaction");
-
-		List nodes = new ArrayList();
-		List edges = new ArrayList();
-		nodes.add(source);
-		nodes.add(target);
-		edges.add(edge);
-
-		dummyNet = Cytoscape.getRootGraph().createNetwork(nodes, edges);
-		dummyNet.setTitle("Default Appearance");
-	}
 
 	/**
 	 * When user double-clicks on a node, the node's ID and label are retrieved
@@ -100,51 +71,13 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 		//TODO: do data check
 		return true;
 	}
-
+	protected SpliceViewPanel = mainPanel;
+	
 	/**
 	 * 
 	 */
 	public void spliceViewBuilder() {
-
-		/**
-		 * Creates a new NodeFullDetailView object.
-		 */
-		public DefaultViewPanel() {
-			oldView = Cytoscape.getVisualMappingManager().getNetworkView();
-
-			background = Cytoscape.getVisualMappingManager().getVisualStyle()
-			                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
-			this.setBackground(background);
-		}
-
-		protected void updateBackgroungColor(final Color newColor) {
-			background = newColor;
-			this.setBackground(background);
-			repaint();
-		}
-
-		/**
-		 * DOCUMENT ME!
-		 *
-		 * @return DOCUMENT ME!
-		 */
-		public Component getCanvas() {
-			return canvas;
-		}
-
-		/**
-		 * Create dummy network
-		 */
-		protected void createDummyNetworkView() {
-			view = new DingNetworkView(dummyNet, "Default Appearence");
-
-			view.setIdentifier(dummyNet.getIdentifier());
-			view.setTitle(dummyNet.getTitle());
-
-			view.getNodeView(source).setOffset(0, 0);
-			view.getNodeView(target).setOffset(150, 10);
-			Cytoscape.getVisualMappingManager().setNetworkView(view);
-		}
+		new SpliceViewPanel();
 
 	}
 
