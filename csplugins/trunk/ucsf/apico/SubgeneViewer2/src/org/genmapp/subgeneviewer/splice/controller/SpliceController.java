@@ -13,10 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
+import org.genmapp.subgeneviewer.splice.SpliceViewBuilder;
 import org.genmapp.subgeneviewer.splice.SpliceViewPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ui.DefaultAppearenceBuilder;
 import ding.view.DGraphView;
 
 /**
@@ -72,7 +72,7 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 
 	private JPanel defaultAppearencePanel = new JPanel();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
-	private String visualStyle = "Default";
+	private String visualStyle = "GenMAPP";
 	final String focus = Cytoscape.getCurrentNetwork().getIdentifier();
 
 	/**
@@ -87,15 +87,15 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 		defaultAppearencePanel.setLayout(new BoxLayout(defaultAppearencePanel, BoxLayout.Y_AXIS));
 		
 		final SpliceViewPanel panel = 
-			(SpliceViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop());
-//		createDefaultImage(visualStyle, (DGraphView) panel.getView(),
-//		                   defaultAppearencePanel.getSize());
-//		setDefaultPanel(defaultImageManager.get(visualStyle));
-//		
-//		Cytoscape.getDesktop().setFocus(focus);
+			(SpliceViewPanel) SpliceViewBuilder.showDialog(Cytoscape.getDesktop());
+		createDefaultImage(visualStyle, (DGraphView) panel.getView(),
+		                   defaultAppearencePanel.getSize());
+		setDefaultPanel(defaultImageManager.get(visualStyle));
+		
+		Cytoscape.getDesktop().setFocus(focus);
 		Cytoscape.getDesktop().repaint();
 
-//		SpliceViewBuilder.getSpliceView(visualStyle);
+		SpliceViewBuilder.getSpliceView(visualStyle);
 
 	}
 	
