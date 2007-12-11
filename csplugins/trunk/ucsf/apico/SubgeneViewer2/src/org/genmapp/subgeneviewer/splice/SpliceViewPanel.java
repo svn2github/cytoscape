@@ -29,6 +29,7 @@ import ding.view.DGraphView;
 * @author kono
  */
 public class SpliceViewPanel extends JPanel {
+	
 	private static final int PADDING = 20;
 	private CyNetworkView view;
 	private CyNetworkView oldView;
@@ -62,7 +63,8 @@ public class SpliceViewPanel extends JPanel {
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
-	public void DefaultViewPanel() {
+	public void SpliceViewPanel() {
+
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()
