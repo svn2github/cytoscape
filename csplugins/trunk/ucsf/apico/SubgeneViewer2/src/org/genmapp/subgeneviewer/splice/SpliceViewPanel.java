@@ -22,11 +22,7 @@ import ding.view.DGraphView;
 
 
 /**
-* Panel to show the default properties visually (as graphics).
-*
-* @version 0.6
-* @since Cytoscape 2.5
-* @author kono
+ * 
  */
 public class SpliceViewPanel extends JPanel {
 	
@@ -45,8 +41,8 @@ public class SpliceViewPanel extends JPanel {
 	private Component canvas = null;
 
 	static {
-		source = Cytoscape.getCyNode("Source");
-		target = Cytoscape.getCyNode("Target");
+		source = Cytoscape.getCyNode("E1.1");
+		target = Cytoscape.getCyNode("E2.1");
 		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
 		                           "interaction");
 
