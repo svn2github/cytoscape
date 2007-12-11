@@ -58,7 +58,7 @@ import javax.swing.table.TableColumnModel;
  *
  */
 public class ColumnResizer {
-	private static final int DEFLMAX_WIDTH = 250;
+	private static final int DEFLMAX_WIDTH = 280;
 
 	/**
 	 *  DOCUMENT ME!

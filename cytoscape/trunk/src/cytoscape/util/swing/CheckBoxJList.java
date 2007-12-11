@@ -40,6 +40,7 @@ import java.awt.Component;
 import java.awt.Font;
 
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
@@ -64,8 +65,9 @@ import javax.swing.event.ListSelectionListener;
  * </p>
  */
 public class CheckBoxJList extends JList implements ListSelectionListener {
-	private static Color SELECTED_COLOR = new Color(0, 100, 250, 250);
-	private static Color NORMAL_COLOR = new Color(100, 100, 100, 140);
+	private static final Color SELECTED_COLOR = new Color(0, 100, 250, 250);
+	private static final Color NORMAL_COLOR = new Color(100, 100, 100, 170);
+	
 	private static Color listBackground;
 	private static final Font NORMAL_FONT = new Font("SansSerif", Font.PLAIN, 12);
 	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
@@ -87,6 +89,26 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 		setCellRenderer(new CheckBoxListCellRenderer());
 		addListSelectionListener(this);
 	}
+	
+	public void setSelectedItems(List<String> selected) {
+		ListSelectionListener[] listeners = this.getListSelectionListeners();
+		for(ListSelectionListener l :listeners) {
+			removeListSelectionListener(l);
+		}
+		getSelectionModel().clearSelection();
+		selectionCache.clear();
+		
+		for(int i=0; i<this.getModel().getSize(); i++) {
+			if(selected.contains(getModel().getElementAt(i))) {
+				getSelectionModel().addSelectionInterval(i, i);
+				selectionCache.add(i);
+			}
+		}
+		
+		for(ListSelectionListener l :listeners) {
+			addListSelectionListener(l);
+		}
+	}
 
 	// ListSelectionListener implementation
 	/**
@@ -95,6 +117,7 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 	 * @param lse DOCUMENT ME!
 	 */
 	public void valueChanged(ListSelectionEvent lse) {
+		
 		if (!lse.getValueIsAdjusting()) {
 			removeListSelectionListener(this);
 
@@ -166,8 +189,7 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 				defaultComp.setForeground(NORMAL_COLOR);
 			}
 
-			Component[] comps = getComponents();
-
+			final Component[] comps = getComponents();
 			final int length = comps.length;
 
 			for (int i = 0; i < length; i++) {
