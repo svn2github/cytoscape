@@ -1,0 +1,21 @@
+<project>
+	<parent>
+		<groupId>stub</groupId>
+		<artifactId>MVC_Stub</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>stub</groupId>
+  <artifactId>view_model</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>view_model</name>
+  <url>http://maven.apache.org</url>
+	<dependencies>
+    <dependency>
+      <groupId>stub</groupId>
+      <artifactId>model</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+	</dependencies>
+</project>
