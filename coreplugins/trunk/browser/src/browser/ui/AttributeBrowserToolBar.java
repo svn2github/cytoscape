@@ -104,7 +104,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private String attributeType = null;
 
 	//	private Object[] selectedAttrNames = null;
-	private final List<String> orderedCol;
+	private List<String> orderedCol;
 
 	/*
 	 * GUI components
@@ -167,14 +167,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		modDialog = new ModDialog(tableModel, objectType);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getSelectedAttribute() {
-		return attributeList.getSelectedValue().toString();
-	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -788,17 +780,26 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// Update actual table
 		try {
-			final Object[] selected = attributeList.getSelectedValues();
-			orderedCol.clear();
-
-			for (Object colName : selected) {
-				orderedCol.add(colName.toString());
-			}
+			getUpdatedSelectedList();
 
 			tableModel.setTableData(null, orderedCol);
 		} catch (Exception ex) {
 			attributeList.clearSelection();
 		}
+	}
+	
+	public List<String> getUpdatedSelectedList() {
+		final Object[] selected = attributeList.getSelectedValues();
+		orderedCol.clear();
+		
+		for (Object colName : selected)
+			orderedCol.add(colName.toString());
+		return orderedCol;
+	}
+	
+	public void updateList(List<String> newSelection) {
+		orderedCol = newSelection;
+		attributeList.setSelectedItems(orderedCol);
 	}
 
 	/**

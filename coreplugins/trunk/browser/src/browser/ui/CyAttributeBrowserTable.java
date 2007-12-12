@@ -1305,7 +1305,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 
 		if (value instanceof List == false && value instanceof Map == false ) {
 			html.append(value.toString());
-		} else {
+		} else if(value instanceof List) {
 			html.append("<ul leftmargin=\"0\">");
 
 			for (Object item : (List<Object>) value) {
