@@ -121,7 +121,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 	private final AttributeBrowserToolBar attributeBrowserToolBar;
 
 	// Will be used to keep track of column order.
-	private final List<String> orderedColumn;
+	private List<String> orderedColumn;
 
 	// Index number for the panels
 	int attributePanelIndex;
@@ -266,8 +266,18 @@ public class AttributeBrowser implements TableColumnModelListener {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<String> getSelectedItems() {
+	public List<String> getSelectedAttributes() {
+		orderedColumn.clear();
+		for(int i=0; i<attributeTable.getColumnModel().getColumnCount(); i++) {
+			orderedColumn.add(attributeTable.getColumnModel().getColumn(i).getHeaderValue().toString());
+		}
 		return orderedColumn;
+	}
+	
+	public void setSelectedAttributes(List<String> selected) {
+		orderedColumn = selected;
+		attributeBrowserToolBar.updateList(selected);
+		tableModel.setTableData(null, orderedColumn);
 	}
 	
 	/**
