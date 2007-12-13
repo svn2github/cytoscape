@@ -255,36 +255,55 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	private void prefPopupInit() throws Exception {
-		Box outerBox = Box.createVerticalBox();
-		outerBox.setBorder(BorderFactory.createEmptyBorder(10, 10, 8, 10));
 
-		Box propsTableBox = Box.createVerticalBox();
+		java.awt.GridBagConstraints gridBagConstraints;
+
+		JPanel outerPanel = new JPanel(new java.awt.GridBagLayout());
+		
+		JPanel propsTablePanel = new JPanel(new java.awt.GridBagLayout());
+		propsTablePanel.setBorder(BorderFactory.createTitledBorder("Properties"));
+		
 		propsTablePane.setBorder(BorderFactory.createEmptyBorder(2, 9, 4, 9));
 		propsTablePane.getViewport().add(prefsTable, null);
 		prefsTable.setPreferredScrollableViewportSize(new Dimension(400, 200));
-		propsTableBox.add(propsTablePane);
-		propsTableBox.add(Box.createVerticalStrut(5));
-		propsTableBox.add(propBtnPane);
-		propsTableBox.setBorder(BorderFactory.createTitledBorder("Properties"));
-		outerBox.add(propsTableBox);
-		outerBox.add(Box.createVerticalStrut(10));
+		
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        propsTablePanel.add(propsTablePane, gridBagConstraints);
 
-		outerBox.add(Box.createVerticalStrut(10));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        propsTablePanel.add(propBtnPane, gridBagConstraints);
+		
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        outerPanel.add(propsTablePanel, gridBagConstraints);
+		
 
 		JTextArea textArea = new JTextArea("NOTE: Changes to these properties are used in the current session ONLY unless otherwise specified below.");
 
-		textArea.setBackground(outerBox.getBackground());
+		textArea.setBackground(outerPanel.getBackground());
 		textArea.setEditable(false);
 		textArea.setDragEnabled(false);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
-		outerBox.add(textArea);
 
-		outerBox.add(Box.createVerticalStrut(10));
-
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        outerPanel.add(textArea, gridBagConstraints);
+		
 		Box vizmapBox = Box.createVerticalBox();
 		vizmapBox.setBorder(BorderFactory.createTitledBorder("Default Visual Styles"));
-		vizmapText.setBackground(outerBox.getBackground());
+		vizmapText.setBackground(outerPanel.getBackground());
 		vizmapText.setEditable(false);
 		vizmapText.setDragEnabled(false);
 		vizmapText.setLineWrap(true);
@@ -293,13 +312,16 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		vizmapBox.add(Box.createVerticalStrut(5));
 		vizmapPane.add(saveVizmapBtn);
 		vizmapBox.add(vizmapPane);
-		outerBox.add(vizmapBox);
 
-		outerBox.add(Box.createVerticalStrut(10));
-
+		gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        outerPanel.add(vizmapBox, gridBagConstraints);
+		
 		Box cyPropsBox = Box.createVerticalBox();
 		cyPropsBox.setBorder(BorderFactory.createTitledBorder("Default Cytoscape Properties"));
-		cyPropsText.setBackground(outerBox.getBackground());
+		cyPropsText.setBackground(outerPanel.getBackground());
 		cyPropsText.setEditable(false);
 		cyPropsText.setDragEnabled(false);
 		cyPropsText.setLineWrap(true);
@@ -308,12 +330,20 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		cyPropsBox.add(Box.createVerticalStrut(5));
 		cyPropsPane.add(saveCyPropsBtn);
 		cyPropsBox.add(cyPropsPane);
-		outerBox.add(cyPropsBox);
 
-		outerBox.add(Box.createVerticalStrut(8));
-		outerBox.add(okButtonPane);
-
-		this.getContentPane().add(outerBox, BorderLayout.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        outerPanel.add(cyPropsBox, gridBagConstraints);
+		
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        outerPanel.add(okButtonPane, gridBagConstraints);
+        
+		this.getContentPane().add(outerPanel, BorderLayout.CENTER);
 	}
 
 	class AddPropertyListener implements ActionListener {
