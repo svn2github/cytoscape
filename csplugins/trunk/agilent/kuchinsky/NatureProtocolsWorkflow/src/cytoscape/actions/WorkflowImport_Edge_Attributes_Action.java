@@ -35,6 +35,14 @@ public class WorkflowImport_Edge_Attributes_Action extends WorkflowPanelAction {
 		super(myString);
 
 	}
+	
+	public String getToolTipText()
+	{
+		return new String ("<html> Add arbitrary edge information to Cytoscape as edge attributes.<br>" + 
+				"This could include, for example, annotation data on a  <br>" + 
+				"protein-protein interaction. </html>");
+	}
+
 
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";

@@ -35,6 +35,15 @@ public class WorkflowImport_Annotation_Action extends WorkflowPanelAction {
 		super(myString);
 
 	}
+	
+	public String getToolTipText() 
+	{
+		return new String (
+				"<html>Import Gene Ontology and Gene Association Files<br> " + 
+				" Cytoscape has a list of URLs for commonly used ontology data and a complete <br>" + 
+				" set of Gene Association files. </html>"
+				);
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";

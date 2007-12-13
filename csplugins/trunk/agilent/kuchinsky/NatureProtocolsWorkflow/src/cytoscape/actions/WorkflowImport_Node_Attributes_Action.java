@@ -35,6 +35,13 @@ public class WorkflowImport_Node_Attributes_Action extends WorkflowPanelAction {
 		super(myString);
 
 	}
+	
+	public String getToolTipText()
+	{
+		return new String ("<html> Add arbitrary node information to Cytoscape as node attributes.<br>" + 
+				"This could include, for example, annotation data on a gene or confidence values <br>" + 
+				"in a protein-protein interaction. </html>");
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";
