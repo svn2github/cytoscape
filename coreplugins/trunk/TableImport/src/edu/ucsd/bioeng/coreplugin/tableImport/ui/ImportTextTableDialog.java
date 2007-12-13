@@ -339,7 +339,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				final Vector vec = (Vector) evt.getNewValue();
 				final String name = (String) vec.get(1);
 				final Integer column = (Integer) vec.get(0);
+				
+				// Update cell in the attribute table
 				updateAliasTableCell(name, column);
+				
+				// Update Primary Key combo box
+				updatePrimaryKeyComboBox();
 			}
 		} else if (evt.getPropertyName().equals(SHEET_CHANGED)) {
 			/*

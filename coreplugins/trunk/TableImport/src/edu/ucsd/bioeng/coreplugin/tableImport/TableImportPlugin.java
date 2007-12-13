@@ -37,23 +37,17 @@
 package edu.ucsd.bioeng.coreplugin.tableImport;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.plugin.CytoscapePlugin;
-
 import cytoscape.view.CyMenus;
-import cytoscape.view.CytoscapeDesktop;
-
 import edu.ucsd.bioeng.coreplugin.tableImport.actions.ImportAnnotationAndOntologyAction;
 import edu.ucsd.bioeng.coreplugin.tableImport.actions.ImportAttributeTableAction;
 import edu.ucsd.bioeng.coreplugin.tableImport.actions.ImportNetworkTableAction;
-
-import javax.swing.JSeparator;
 
 
 /**
  * Main class for Table Import plugin.
  *
- * @version 0.5
+ * @version 0.6
  * @since Cytoscape 2.4
  * @author Keiichiro Ono
  *
@@ -64,12 +58,10 @@ public class TableImportPlugin extends CytoscapePlugin {
 	 *
 	 */
 	public TableImportPlugin() {
-		/*
-		 * Add menu items.
-		 */
-		final CytoscapeDesktop desktop = Cytoscape.getDesktop();
-		final CyMenus cyMenus = desktop.getCyMenus();
-
+		
+		final CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
+		
+		// Register each menu item
 		cyMenus.addAction(new ImportNetworkTableAction(), 1);
 		cyMenus.addAction(new ImportAttributeTableAction(), 5);
 		cyMenus.addAction(new ImportAnnotationAndOntologyAction(), 7);
