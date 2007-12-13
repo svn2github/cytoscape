@@ -42,6 +42,8 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author kono
@@ -174,8 +176,8 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 
 		listDelimiterLabel.setText("List delimiter is:");
 
-		listDelimiterComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-		                                                                        PIPE.toString(),
+		listDelimiterComboBox.setModel(new DefaultComboBoxModel(new String[] {
+		                                                                        "|",
 		                                                                        COLON.toString(),
 		                                                                        SLASH.toString(),
 		                                                                        BACKSLASH.toString(),
@@ -474,7 +476,10 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 	 */
 	public String getListDelimiterType() {
 		if (listDelimiterRadioButton.isSelected()) {
-			return listDelimiterComboBox.getSelectedItem().toString();
+			if(listDelimiterComboBox.getSelectedItem().toString().equals("|")) {
+				return PIPE.toString();
+			} else
+				return listDelimiterComboBox.getSelectedItem().toString();
 		} else {
 			return otherTextField.getText().trim();
 		}
