@@ -139,24 +139,13 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				} else {
 					installDeleteButton.setEnabled(true);
 				}
-//				deleteButton.setEnabled(true);
-//				installButton.setEnabled(false);
 			} else if (Node.isNodeAncestor(availableNode)) {
 				installDeleteButton.setText("Install");
 				installDeleteButton.setEnabled(true);
-//				deleteButton.setEnabled(false);
-//				installButton.setEnabled(true);
 			}
 		} else {
 			installDeleteButton.setEnabled(false);
-//			deleteButton.setEnabled(false);
-//			installButton.setEnabled(false);
 		}
-//		if (PluginManager.usingWebstartManager()) {
-//			deleteButton.setEnabled(false);
-//			setMessage("Delete is unavailable when using Web Start");
-//		}
-
 	}
 
 	/**
@@ -183,6 +172,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 * list in order to create a new one.
 	 */
 	public void switchDownloadSites() {
+		hiddenNodes.clear();
 		java.util.Vector<TreeNode> AvailableNodes = new java.util.Vector<TreeNode>(
 				availableNode.getChildren());
 		for (TreeNode child : AvailableNodes) {
@@ -242,6 +232,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				
 				hiddenCat.add(PluginNode);
 				hiddenNodes.put(Category, hiddenCat);
+				if (versionCheck.isSelected())
+					treeModel.addNodeToParent(Category, PluginNode);
 			} else {
 				treeModel.addNodeToParent(Category, PluginNode);
 			}
@@ -256,6 +248,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		dialog.setVisible(true);
 	}
 
+	// allow for outdated versions
     private void versionCheckItemStateChanged(java.awt.event.ItemEvent evt) {                                              
 
 		if (evt.getStateChange() == ItemEvent.SELECTED) {
