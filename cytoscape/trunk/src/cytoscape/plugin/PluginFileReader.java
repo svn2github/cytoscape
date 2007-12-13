@@ -160,7 +160,7 @@ public class PluginFileReader {
 	protected ThemeInfo createThemeObject(Element CurrentTheme) {
 		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme,
 				DownloadableType.THEME);
-System.err.println("creating THEME object");
+
 		if (Info != null) {
 			/*
 			 * add plugins this is plugins from the current download location
@@ -213,8 +213,6 @@ System.err.println("creating THEME object");
 		Info.setDescription(E.getChildTextTrim(descTag));
 		Info.setDownloadableURL(downloadUrl);
 		
-		System.out.println("   " + Info.toString() + " " + Info.getID());
-
 		// category
 		if (Info.getCategory().equals(Category.NONE.getCategoryText())) {
 			if (E.getChild(categoryTag) != null) {
@@ -248,9 +246,7 @@ System.err.println("creating THEME object");
 	protected PluginInfo createPluginObject(Element CurrentPlugin) {
 		PluginInfo Info = (PluginInfo) createBasicInfoObject(CurrentPlugin,
 				DownloadableType.PLUGIN);
-		System.err.println("creating plugin object");
 		if (Info != null) {
-
 			Info.setProjectUrl(CurrentPlugin.getChildTextTrim(projUrlTag));
 			Info.setInstallLocation(CurrentPlugin.getChildTextTrim(installLocTag));
 
