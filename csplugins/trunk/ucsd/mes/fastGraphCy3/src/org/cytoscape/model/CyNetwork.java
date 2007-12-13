@@ -21,6 +21,9 @@ public interface CyNetwork {
 	public boolean contains( CyEdge edge );
 	public boolean contains( CyNode from, CyNode to );
 
+	public CyNode getNode(int index);
+	public CyEdge getEdge(int index);
+
 	public List<CyNode> getNeighborList( CyNode node, byte edgeType );
 	public List<CyEdge> getAdjacentEdgeList( CyNode node, byte edgeType );
 	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, byte edgeType );

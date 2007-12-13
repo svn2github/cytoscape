@@ -244,4 +244,17 @@ public class CyNetworkImpl implements CyNetwork {
 		return edges;
 	}
 
+	public CyNode getNode(int index) {
+		if ( index < 0 || index >= nodeList.size() )
+			return null;
+		else 
+			return nodeList.get(index);
+	}
+
+	public CyEdge getEdge(int index) {
+		if ( index < 0 || index >= edgeList.size() )
+			return null;
+		else 
+			return edgeList.get(index);
+	}
 }

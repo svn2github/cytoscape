@@ -669,6 +669,30 @@ public class CyNetworkTest extends TestCase {
 		assertTrue("contains edge 4",l.contains(e4));
 	}
 
+	public void testGetNode() {
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = net.addNode();
+
+		assertEquals("nodes are equivalent",n1,net.getNode( n1.getIndex() ));
+		assertEquals("nodes are equivalent",n2,net.getNode( n2.getIndex() ));
+		assertEquals("nodes are equivalent",n3,net.getNode( n3.getIndex() ));
+		assertNull("node is null ",net.getNode(72));
+	}
+
+	public void testGetEdge() {
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = net.addNode();
+
+		CyEdge e1 = net.addEdge(n1,n2,true);
+		CyEdge e2 = net.addEdge(n2,n3,true);
+
+		assertEquals("edges are equivalent",e1,net.getEdge( e1.getIndex() ));
+		assertEquals("edges are equivalent",e2,net.getEdge( e2.getIndex() ));
+		assertNull("edge is null ",net.getEdge(72));
+	}
+
 	private class DummyCyNode implements CyNode {
 		int ind;
 		DummyCyNode( int x ) {
