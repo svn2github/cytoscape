@@ -159,6 +159,7 @@ import ding.view.DGraphView;
  * <li>Visual Mapping Browser
  * </ul>
  *
+ *
  * @version 0.5
  * @since Cytoscape 2.5
  * @author Keiichiro Ono
