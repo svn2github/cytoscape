@@ -75,10 +75,10 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 
 	private void buildCMBmodel() {
         // Create an empty filter, add to the top of the filter list in the combobox
-		CompositeFilter emptyFilter = new CompositeFilter("None");
+		//CompositeFilter emptyFilter = new CompositeFilter("None");
 
 		Vector<CompositeFilter> tmpVect = new Vector<CompositeFilter>();
-		tmpVect.add(emptyFilter);
+		//tmpVect.add(emptyFilter);
 		tmpVect.addAll(FilterPlugin.getAllFilterVect());
 		
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel(tmpVect);
