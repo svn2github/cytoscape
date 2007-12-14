@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Thu Nov 29 09:05:08 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Mon Dec 03 14:26:49 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -72,7 +72,8 @@ import cytoscape.data.Semantics;
 
 import cytoscape.editor.CytoscapeEditorManager;
 
-import cytoscape.editor.actions.DeleteAction;
+// MLC 12/03/07:
+// import cytoscape.editor.actions.DeleteAction;
 
 import cytoscape.hyperedge.HyperEdge;
 import cytoscape.hyperedge.HyperEdgeFactory;
@@ -152,7 +153,10 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
                                         HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME,
                                         Semantics.INTERACTION,
                                         BioChemicalReactionVisualStyle.BIOCHEMICAL_REACTION_VISUAL_STYLE);
-        fixUpCytoscapeDeleteMenu();
+	// MLC 12/03/07 BEGIN:
+	// Temporarily stop fixup so we can test loading with other plugins:
+        // fixUpCytoscapeDeleteMenu();
+	// MLC 12/03/07 END.
 
         CyMenus cms = Cytoscape.getDesktop().getCyMenus();
         cms.addAction(new ShowSampleNetworksAction());
@@ -169,14 +173,16 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
                                                                             new HEESessionLoadedMonitor());
     }
 
-    // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
-    private void fixUpCytoscapeDeleteMenu() {
-        DeleteAction action = CytoscapeEditorManager.getDeleteAction();
-        // remove delete action item and replace with our version of it:
-        Cytoscape.getDesktop().getCyMenus().getMenuBar().removeAction(action);
-        Cytoscape.getDesktop().getCyMenus()
-                 .addAction(new HyperEdgeDeleteAction());
-    }
+// MLC 12/03/07 BEGIN:
+//    // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
+//    private void fixUpCytoscapeDeleteMenu() {
+//        DeleteAction action = CytoscapeEditorManager.getDeleteAction();
+//        // remove delete action item and replace with our version of it:
+//        Cytoscape.getDesktop().getCyMenus().getMenuBar().removeAction(action);
+//        Cytoscape.getDesktop().getCyMenus()
+//                 .addAction(new HyperEdgeDeleteAction());
+//    }
+// MLC 12/03/07 END.
 
     public class ShowSampleNetworksAction extends CytoscapeAction {
         /**
