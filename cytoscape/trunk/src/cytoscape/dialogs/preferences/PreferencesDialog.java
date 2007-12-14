@@ -121,7 +121,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 			System.out.println(" - New value is " + e.getNewValue());
 
 			String propName = null;
-
+ 
 			if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getOldValue())
 			    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getNewValue())) {
 				propName = "defaultSpeciesName";
