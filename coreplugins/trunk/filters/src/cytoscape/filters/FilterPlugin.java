@@ -34,70 +34,40 @@
  */
 package cytoscape.filters;
 
-import cytoscape.*;
-
-import cytoscape.data.*;
-
-import cytoscape.filters.util.FilterUtil;
-
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.filters.view.FilterMainPanel;
-
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
-
 import cytoscape.util.*;
-
-import cytoscape.view.*;
-
 import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import java.awt.event.*;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 /**
  * 
  */
 public class FilterPlugin extends CytoscapePlugin {
-	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
-			.getCytoPanel(SwingConstants.WEST);
-
-	private static FilterMainPanel filterMainPanel = null;
 
 	private static Vector<CompositeFilter> allFilterVect = null;
 	private FilterIO filterIO = new FilterIO();
 	
 	public static final String DYNAMIC_FILTER_THRESHOLD = "dynamicFilterThreshold";
 	public static final int DEFAULT_DYNAMIC_FILTER_THRESHOLD = 1000;
-	   
-	// Used to pass values to other plugin, the BrowserPlugin
+
+	// Other plugin can turn on/off the FilterEvent
+	public static boolean shouldFireFilterEvent = false;
+
+	// Other plugin can get a handler to all the filters defined
 	public static Vector<CompositeFilter> getAllFilterVect() {
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();
 		}
 		return allFilterVect;
 	}
-	public static FilterMainPanel getFilterMainPanel() {
-		if (filterMainPanel == null) {
-			filterMainPanel = new FilterMainPanel(getAllFilterVect());
-		}
-		return filterMainPanel;
-	}
-
+	
 	/**
 	 * Creates a new FilterPlugin object.
 	 * 
@@ -126,20 +96,19 @@ public class FilterPlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction(
 				(CytoscapeAction) toolbarAction);
 
-		// initialize the filterMainPanel and add it to the CytoPanelWEST, i.e.
-		// the control (management) panel
 
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();
 		}
-
-		if (filterMainPanel == null) {
-			filterMainPanel = new FilterMainPanel(allFilterVect);
-		}
 		
 		restoreInitState();
-		
-		cytoPanelWest.add("Filters", filterMainPanel);
+
+		// initialize the filterMainPanel and add it to the CytoPanelWEST, i.e.
+		// the control (management) panel
+		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
+		.getCytoPanel(SwingConstants.WEST);
+
+		cytoPanelWest.add("Filters", new FilterMainPanel(allFilterVect));
 
 		// The following two lines are for debug only
 		//int indexInCytoPanel = cytoPanelWest.indexOfComponent("Filters");
