@@ -26,7 +26,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.util.FilterUtil;
@@ -96,10 +95,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 
 	
-	private SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
-	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-		return pcs;
-	}
+	//private SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
+	//public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
+	//	return pcs;
+	//}
 
 	
 	public FilterMainPanel(Vector<CompositeFilter> pAllFilterVect) {
@@ -744,9 +743,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					
 					//System.out.println("FilterMainPanel.firePropertyChange() -- NEW_FILTER_CREATED");
 					//pcs.firePropertyChange("NEW_FILTER_CREATED", "", "");
-					PropertyChangeEvent evt = new PropertyChangeEvent(this, "NEW_FILTER_CREATED", null, null);
-					pcs.firePropertyChange(evt);
-					
+					if (FilterPlugin.shouldFireFilterEvent) {
+						PropertyChangeEvent evt = new PropertyChangeEvent(this, "NEW_FILTER_CREATED", null, null);
+						Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);						
+					}
 				}
 			} else if (_menuItem == deleteFilterMenuItem) {
 				CompositeFilter theSelectedFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();	
@@ -764,24 +764,30 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					return;
 				}
 				deleteFilter(theSelectedFilter);
-				PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DELETED", null, null);
-				pcs.firePropertyChange(evt);
+				if (FilterPlugin.shouldFireFilterEvent) {
+					PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DELETED", null, null);
+					Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);
+				}
 			} else if (_menuItem == renameFilterMenuItem) {
 				CompositeFilter theSelectedFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();				
 				if (theSelectedFilter == null) {
 					return;
 				}
 				renameFilter();
-				PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_RENAMED", null, null);
-				pcs.firePropertyChange(evt);
+				if (FilterPlugin.shouldFireFilterEvent) {
+					PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_RENAMED", null, null);
+					Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);
+				}
 			} else if (_menuItem == duplicateFilterMenuItem) {
 				CompositeFilter theSelectedFilter = (CompositeFilter)cmbSelectFilter.getSelectedItem();				
 				if (theSelectedFilter == null) {
 					return;
 				}
 				duplicateFilter();
-				PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DUPLICATED", null, null);
-				pcs.firePropertyChange(evt);
+				if (FilterPlugin.shouldFireFilterEvent) {
+					PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DUPLICATED", null, null);
+					Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);
+				}
 			}
 		} // JMenuItem event
 		
