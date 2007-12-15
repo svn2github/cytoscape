@@ -34,11 +34,46 @@
 */
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.bookmarks.Attribute;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.bookmarks.DataSource;
+
+import cytoscape.data.CyAttributes;
+
+import cytoscape.data.readers.GraphReader;
+
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
+
+import cytoscape.util.swing.ColumnResizer;
+import cytoscape.util.swing.JStatusBar;
+
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.GO_ID;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationTags.TAXON;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.PIPE;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
+import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.EDGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.NETWORK;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.NODE;
@@ -59,6 +94,15 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSe
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.STRING_ICON;
 
+import giny.model.Edge;
+import giny.model.Node;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import org.jdesktop.layout.GroupLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
@@ -68,14 +112,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -106,44 +154,12 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+
 import javax.xml.bind.JAXBException;
-
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.jdesktop.layout.GroupLayout;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Attribute;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.DataSource;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-import cytoscape.util.URLUtil;
-import cytoscape.util.swing.JStatusBar;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeAndOntologyMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.AttributeMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.DefaultAttributeTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelAttributeSheetReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.ExcelNetworkSheetReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.GeneAssociationReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableMappingParameters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.NetworkTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.OntologyAnnotationReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
-import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
-import giny.model.Edge;
-import giny.model.Node;
 
 
 /**
+ * Main UI for Table Import.
  *
  * @author kono
  */
@@ -245,6 +261,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private boolean[] importFlag;
 	private CyAttributes selectedAttributes;
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+	private File[] inputFiles;
 
 	/**
 	 * Creates new form ImportAttributesDialog
@@ -328,7 +345,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				curTable.setDefaultRenderer(Object.class,
 				                            new AliasTableRenderer(attributeDataTypes,
 				                                                   primaryKeyComboBox
-				                                                                                                                                                                                                                                                                                                                                          .getSelectedIndex()));
+				                                                                                                                                                                                                                                                                                                                                            .getSelectedIndex()));
 				curTable.repaint();
 			}
 		} else if (evt.getPropertyName().equals(ATTRIBUTE_NAME_CHANGED)) {
@@ -339,10 +356,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				final Vector vec = (Vector) evt.getNewValue();
 				final String name = (String) vec.get(1);
 				final Integer column = (Integer) vec.get(0);
-				
+
 				// Update cell in the attribute table
 				updateAliasTableCell(name, column);
-				
+
 				// Update Primary Key combo box
 				updatePrimaryKeyComboBox();
 			}
@@ -386,7 +403,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private void initComponents() {
 		statusBar = new JStatusBar();
 
-		importAllCheckBox = new JCheckBox("Import everything without checking matches (Gene Association only)");
+		importAllCheckBox = new JCheckBox("Import everything (Key is always ID)");
+		importAllCheckBox.addActionListener(new ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					importAllCheckBoxActionPerformed(evt);
+				}
+			});
 
 		importTypeButtonGroup = new ButtonGroup();
 
@@ -769,7 +791,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 			attributeFileLabel.setText("Input File");
 			attributeFileLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
-			selectAttributeFileButton.setText("Select File");
+			selectAttributeFileButton.setText("Select File(s)");
 			selectAttributeFileButton.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
@@ -1452,10 +1474,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		pack();
 	} // </editor-fold>
 
+	/**
+	 * Update UI based on the primary key selection.
+	 * @param evt
+	 */
 	private void primaryKeyComboBoxActionPerformed(ActionEvent evt) {
-		if (dialogType == NETWORK_IMPORT) {
+		// Not necessary in Network Import.
+		if (dialogType == NETWORK_IMPORT)
 			return;
-		}
 
 		keyInFile = primaryKeyComboBox.getSelectedIndex();
 
@@ -1488,9 +1514,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			aliasScrollPane.setViewportView(curTable);
 			curTable.repaint();
 		}
+
+		// Update table view
+		ColumnResizer.adjustColumnPreferredWidths(previewPanel.getPreviewTable());
+		previewPanel.getPreviewTable().repaint();
 	}
 
 	private void helpButtonActionPerformed(ActionEvent evt) {
+		// Quick help should be implemented!
 	}
 
 	private void otherTextFieldActionPerformed(KeyEvent evt) throws IOException {
@@ -1529,6 +1560,20 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		}
 
 		pack();
+	}
+
+	/**
+	 * If Import All selected, ID combo box should be set to ID
+	 * @param evt
+	 */
+	private void importAllCheckBoxActionPerformed(ActionEvent evt) {
+		if (importAllCheckBox.isSelected()) {
+			// Lock key to ID
+			mappingAttributeComboBox.setSelectedItem(ID);
+			mappingAttributeComboBox.setEnabled(false);
+		} else {
+			mappingAttributeComboBox.setEnabled(true);
+		}
 	}
 
 	private void nodeKeyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1580,14 +1625,17 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			// Restore row
 			String currentName = null;
 			Object headerVal = null;
+
 			for (int i = 0; i < columnHeaders.length; i++) {
 				headerVal = previewPanel.getPreviewTable().getColumnModel().getColumn(i)
-                .getHeaderValue();
-				if(headerVal == null) {
+				                        .getHeaderValue();
+
+				if (headerVal == null) {
 					currentName = "";
 				} else {
 					currentName = headerVal.toString();
 				}
+
 				previewPanel.getPreviewTable().getColumnModel().getColumn(i)
 				            .setHeaderValue(columnHeaders[i]);
 				columnHeaders[i] = currentName;
@@ -1633,7 +1681,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		final String commentChar = commentLineTextField.getText();
 
-		
 		/*
 		 * Get import flags
 		 */
@@ -1645,37 +1692,39 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			                                                                 .getCellRenderer(0, i))
 			                .getImportFlag(i);
 		}
-		
+
 		/*
 		 * Get Attribute Names
 		 */
-		
 		final String[] attributeNames;
 		final List<String> attrNameList = new ArrayList<String>();
-		
+
 		Object curName = null;
 
 		for (int i = 0; i < colCount; i++) {
 			curName = previewPanel.getPreviewTable().getColumnModel().getColumn(i).getHeaderValue();
 
 			if (attrNameList.contains(curName)) {
-				
 				int dupIndex = 0;
-				for(int idx = 0; idx<attrNameList.size(); idx++) {
-					if(curName.equals(attrNameList.get(idx))) {
+
+				for (int idx = 0; idx < attrNameList.size(); idx++) {
+					if (curName.equals(attrNameList.get(idx))) {
 						dupIndex = idx;
+
 						break;
 					}
 				}
-				if(importFlag[i] && importFlag[dupIndex]) {
+
+				if (importFlag[i] && importFlag[dupIndex]) {
 					final JLabel label = new JLabel("Duplicate Attribute Name Found: " + curName);
 					label.setForeground(Color.RED);
 					JOptionPane.showMessageDialog(this, label);
+
 					return;
 				}
 			}
 
-			if(curName == null) {
+			if (curName == null) {
 				attrNameList.add("Column " + i);
 			} else {
 				attrNameList.add(curName.toString());
@@ -1683,8 +1732,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		}
 
 		attributeNames = attrNameList.toArray(new String[0]);
-
-		
 
 		/*
 		 * Get attribute data types
@@ -1802,7 +1849,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				 * Now, load & map annotation.
 				 */
 				final String annotationSource = annotationUrlMap.get(annotationComboBox
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getSelectedItem());
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getSelectedItem());
 
 				if (previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
 					/*
@@ -1857,9 +1904,16 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				 */
 
 				// Extract URL from the text table.
-				final URL networkSource = new URL(targetDataSourceTextField.getText());
-				final String networkName;
+				/*
+				 * Now multiple files are supported.
+				 */
+				URL[] sources = new URL[inputFiles.length];
 
+				for (int i = 0; i < sources.length; i++) {
+					sources[i] = inputFiles[i].toURL();
+				}
+
+				//final URL networkSource = new URL(targetDataSourceTextField.getText());
 				final int sourceColumnIndex = networkImportPanel.getSourceIndex();
 				final int targetColumnIndex = networkImportPanel.getTargetIndex();
 
@@ -1878,36 +1932,58 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				                                                                            interactionColumnIndex,
 				                                                                            defaultInteraction);
 
-				final NetworkTableReader reader;
+				NetworkTableReader reader;
+				String networkName;
+				boolean multi = true;
 
-				if (networkSource.toString().endsWith(EXCEL_EXT)) {
-					// Extract name from the sheet name.
-					final POIFSFileSystem excelIn = new POIFSFileSystem(networkSource.openStream());
-					HSSFWorkbook wb = new HSSFWorkbook(excelIn);
-					HSSFSheet sheet = wb.getSheetAt(0);
-					networkName = wb.getSheetName(0);
+				if (sources.length == 1)
+					multi = false;
 
-					reader = new ExcelNetworkSheetReader(networkName, sheet, nmp, startLineNumber);
-				} else {
-					// Get name from URL.
-					if ((commentChar != null) && (commentChar.length() != 0)
-					    && attrNameCheckBox.isSelected()) {
-						startLineNumber++;
+				for (int i = 0; i < sources.length; i++) {
+					if (sources[i].toString().endsWith(EXCEL_EXT)) {
+						// Extract name from the sheet name.
+						final POIFSFileSystem excelIn = new POIFSFileSystem(sources[i].openStream());
+						HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+						HSSFSheet sheet = wb.getSheetAt(0);
+						networkName = wb.getSheetName(0);
+
+						reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
+						                                     startLineNumber);
+					} else {
+						// Get name from URL.
+						if ((commentChar != null) && (commentChar.length() != 0)
+						    && attrNameCheckBox.isSelected()) {
+							startLineNumber++;
+						}
+
+						final String[] parts = sources[i].toString().split("/");
+						networkName = parts[parts.length - 1];
+						reader = new NetworkTableReader(networkName, sources[i], nmp,
+						                                startLineNumber, commentChar);
 					}
 
-					final String[] parts = networkSource.toString().split("/");
-					networkName = parts[parts.length - 1];
-					reader = new NetworkTableReader(networkName, networkSource, nmp,
-					                                startLineNumber, commentChar);
+					loadNetwork(networkName, reader, sources[i], multi);
 				}
 
-				loadNetwork(networkName, reader, networkSource);
+				if (multi) {
+					StringBuilder builder = new StringBuilder();
+					builder.append("The following networks are loaded:\n\n");
+
+					for (File f : inputFiles) {
+						builder.append(f.getName() + "\n");
+					}
+
+					JOptionPane.showMessageDialog(this, builder.toString(),
+					                              "Multiple Networks Loaded",
+					                              JOptionPane.INFORMATION_MESSAGE);
+				}
 
 				break;
 
 			default:
 				return;
 		}
+
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 		dispose();
@@ -1984,27 +2060,48 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 	private void selectAttributeFileButtonActionPerformed(java.awt.event.ActionEvent evt)
 	    throws IOException {
-		File sourceUrl = FileUtil.getFile("Select local file", FileUtil.LOAD,
-		                                  new CyFileFilter[] {  });
+		final File[] multiSource = FileUtil.getFiles("Select local file", FileUtil.LOAD,
+		                                             new CyFileFilter[] {  });
 
-		if (sourceUrl != null) {
-			targetDataSourceTextField.setText(sourceUrl.toURL().toString());
+		if ((multiSource == null) || (multiSource[0] == null))
+			return;
 
-			final URL sourceURL = new URL(targetDataSourceTextField.getText());
+		// Pick the first one and show preview.
+		this.inputFiles = multiSource;
 
-			readAnnotationForPreview(sourceURL, checkDelimiter());
-			
-			if(previewPanel.getPreviewTable() == null) {
-				JLabel label = new JLabel("File is broken or empty!");
-			    label.setForeground(Color.RED);
-			    JOptionPane.showMessageDialog(this, label);
-			    return;
-			}
-			
-			columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
-			attrNameCheckBox.setEnabled(true);
-			attrNameCheckBox.setSelected(false);
+		final File sourceFile = multiSource[0];
+
+		targetDataSourceTextField.setText(sourceFile.toURL().toString());
+
+		// Set tooltip as HTML
+		StringBuilder builder = new StringBuilder();
+		builder.append("<html><body><strong text=\"red\">File(s) to be imported</strong><ul>");
+
+		for (int i = 0; i < multiSource.length; i++) {
+			builder.append("<li>" + multiSource[i].getName() + "</li>");
 		}
+
+		builder.append("</ul></body></html>");
+		targetDataSourceTextField.setToolTipText(builder.toString());
+
+		final URL sourceURL = new URL(targetDataSourceTextField.getText());
+
+		readAnnotationForPreview(sourceURL, checkDelimiter());
+
+		if (previewPanel.getPreviewTable() == null) {
+			JLabel label = new JLabel("File is broken or empty!");
+			label.setForeground(Color.RED);
+			JOptionPane.showMessageDialog(this, label);
+
+			return;
+		}
+
+		columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
+		attrNameCheckBox.setEnabled(true);
+		attrNameCheckBox.setSelected(false);
+
+		ColumnResizer.adjustColumnPreferredWidths(previewPanel.getPreviewTable());
+		previewPanel.getPreviewTable().repaint();
 	}
 
 	private void delimiterCheckBoxActionPerformed(ActionEvent evt) throws IOException {
@@ -2110,7 +2207,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			setTitle("Import Annotation File");
 			titleLabel.setText("Import Attribute from Table");
 			annotationAndOntologyImportPanel.setVisible(false);
-			importAllCheckBox.setVisible(false);
+			importAllCheckBox.setVisible(true);
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			setTitle("Import Ontology Data and Annotations");
 			titleLabel.setText("Import Ontology and Annotation");
@@ -2381,10 +2478,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize, commentChar,
 		                             startLine - 1);
 
-		if(previewPanel.getPreviewTable() == null) {
+		if (previewPanel.getPreviewTable() == null) {
 			return;
 		}
-		
+
 		listDataTypes = previewPanel.getCurrentListDataTypes();
 
 		/*
@@ -2468,7 +2565,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		pack();
 		repaint();
-		
+
 		reloadButton.setEnabled(true);
 		startRowSpinner.setEnabled(true);
 		startRowLabel.setEnabled(true);
@@ -2809,9 +2906,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		final TableCellRenderer rend;
 
 		if (type == FileTypes.GENE_ASSOCIATION_FILE) {
-			
 			keyInFile = this.primaryKeyComboBox.getSelectedIndex();
-			
+
 			int ontologyCol = this.ontologyInAnnotationComboBox.getSelectedIndex();
 			List<Integer> gaAlias = new ArrayList<Integer>();
 
@@ -2824,7 +2920,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			}
 
 			gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
-			
+
 			rend = new AttributePreviewTableCellRenderer(keyInFile, gaAlias, ontologyCol,
 			                                             TAXON.getPosition(), null, listDelimiter);
 		} else {
@@ -2906,7 +3002,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		TaskManager.executeTask(task, jTaskConfig);
 	}
 
-	private void loadNetwork(final String networkName, final GraphReader reader, final URL source) {
+	private void loadNetwork(final String networkName, final GraphReader reader, final URL source,
+	                         boolean multi) {
 		// Create LoadNetwork Task
 		ImportNetworkTask task = new ImportNetworkTask(reader, source);
 
@@ -2915,7 +3012,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
+
+		if (multi)
+			jTaskConfig.setAutoDispose(true);
+		else
+			jTaskConfig.setAutoDispose(false);
 
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
@@ -3445,7 +3546,7 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 		} else if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
 		           && (index < attributeDataTypes.size())) {
 			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes.get(list
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getSelectedIndex())));
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 .getSelectedIndex())));
 		}
 
 		return this;
