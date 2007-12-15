@@ -87,7 +87,7 @@ public class SpliceViewBuilder extends JDialog {
 	}
 
 	private static void buildDefaultViewDialog(Frame component) {
-		dab = new SpliceViewBuilder(component, true);
+		dab = new SpliceViewBuilder(component, false);
 		dab.mainView.createDummyNetworkView();
 	}
 

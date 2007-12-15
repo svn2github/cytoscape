@@ -22,28 +22,31 @@ import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
-
 /**
  * 
  */
 public class SpliceViewPanel extends JPanel {
-	
+
 	private static final int PADDING = 20;
+
 	private CyNetworkView view;
+
 	private CyNetworkView oldView;
+
 	private static CyNetwork dummyNet;
+
 	private Color background;
 
 	/*
 	 * Dummy graph component
 	 */
-	private static  CyNode node;
-	private static List nodes = new ArrayList();
-//	private static final CyNode source;
-//	private static final CyNode target;
-//	private static final CyEdge edge;
-	private Component canvas = null;
+	private static CyNode node;
 
+	private static List<CyNode> nodes = new ArrayList<CyNode>();
+
+	private static List edges = new ArrayList();
+
+	private Component canvas = null;
 
 	/**
 	 * Creates a new NodeFullDetailView object.
@@ -51,24 +54,14 @@ public class SpliceViewPanel extends JPanel {
 	public SpliceViewPanel() {
 		String nodeId = SpliceController.get_nodeId();
 		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-		List<String> featureList = nodeAttribs.getListAttribute(nodeId, "SubgeneViewer_Regions");
+		List<String> featureList = nodeAttribs.getListAttribute(nodeId,
+				"SubgeneViewer_Regions");
+
 		nodes.clear();
-		
-		for (String featureId:featureList){
+		for (String featureId : featureList) {
 			node = Cytoscape.getCyNode(featureId, true);
 			nodes.add(node);
 		}
-		
-//		source = Cytoscape.getCyNode("Source");
-//		target = Cytoscape.getCyNode("Target");
-//		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
-//		                           "interaction");
-
-		
-		List edges = new ArrayList();
-//		nodes.add(source);
-//		nodes.add(target);
-//		edges.add(edge);
 
 		dummyNet = Cytoscape.getRootGraph().createNetwork(nodes, edges);
 		dummyNet.setTitle(nodeId);
@@ -76,7 +69,7 @@ public class SpliceViewPanel extends JPanel {
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
+				.getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
 	}
 
@@ -88,7 +81,7 @@ public class SpliceViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Component getCanvas() {
@@ -99,42 +92,27 @@ public class SpliceViewPanel extends JPanel {
 
 	private static final int NODE_WIDTH = 40;
 
-	private static final int START_SITE_HEIGHT = NODE_HEIGHT;
-
-
-	private static final int LABEL_TRACK_HEIGHT = NODE_HEIGHT;
-
-	private static final int TITLE_LEGEND_HEIGHT = NODE_HEIGHT;
-
 	private static final int VGAP = NODE_HEIGHT / 2;
 
 	private static final int HGAP = NODE_WIDTH / 2;
 
-
 	int xOffset = HGAP;
-	int featureXOffset = xOffset;
-	int blockBoundsY = VGAP + TITLE_LEGEND_HEIGHT + VGAP
-	+ LABEL_TRACK_HEIGHT + START_SITE_HEIGHT;
-	int featuresBoundsY = blockBoundsY + 2*NODE_HEIGHT // for block
-	 + LABEL_TRACK_HEIGHT;
 
 	/**
 	 * Create dummy network
 	 */
 	protected void createDummyNetworkView() {
-		System.out.println("dummyNet check:" + dummyNet);
 		view = new SubgeneNetworkView(dummyNet, "Default Appearence");
 
 		view.setIdentifier(dummyNet.getIdentifier());
 		view.setTitle(dummyNet.getTitle());
 
-		for (Object node: nodes){
+		for (Object node : nodes) {
 			NodeView nodeView = view.getNodeView((CyNode) node);
-			nodeView.setOffset(xOffset + HGAP/2 + 1.0, VGAP + 1.0);
+			nodeView.setOffset(xOffset + HGAP / 2 + 1.0, VGAP + 1.0);
 			xOffset += HGAP + NODE_WIDTH;
-			}
-//		view.getNodeView(source).setOffset(0, 0);
-//		view.getNodeView(target).setOffset(150, 10);
+		}
+
 		Cytoscape.getVisualMappingManager().setNetworkView(view);
 	}
 
@@ -154,17 +132,18 @@ public class SpliceViewPanel extends JPanel {
 	protected void updateView() {
 		if (view != null) {
 			Cytoscape.getVisualMappingManager().setNetworkView(view);
-			view.setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+			view.setVisualStyle(Cytoscape.getVisualMappingManager()
+					.getVisualStyle().getName());
 
 			final Dimension panelSize = this.getSize();
-			((DGraphView) view).getCanvas()
-			 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,
-			                        (int) panelSize.getHeight() - PADDING));
+			((DGraphView) view).getCanvas().setSize(
+					new Dimension((int) panelSize.getWidth() - PADDING,
+							(int) panelSize.getHeight() - PADDING));
 			view.fitContent();
 			canvas = (view.getComponent());
 
-//			for (MouseListener listener : canvas.getMouseListeners())
-//				canvas.removeMouseListener(listener);
+			// for (MouseListener listener : canvas.getMouseListeners())
+			// canvas.removeMouseListener(listener);
 
 			this.removeAll();
 			this.add(canvas);
@@ -180,7 +159,7 @@ public class SpliceViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getView() {

@@ -2,6 +2,7 @@ package org.genmapp.subgeneviewer.splice.controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
 import org.genmapp.subgeneviewer.splice.SpliceViewBuilder;
@@ -9,6 +10,7 @@ import org.genmapp.subgeneviewer.splice.SpliceViewPanel;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 
 /**
@@ -47,9 +49,9 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 			if (dataReady) {
 				System.out.println("Building splice view");
 				buildSpliceView();
-			}
-			else {
-				System.out.println("Insufficient exon structure data for this gene");
+			} else {
+				System.out
+						.println("Insufficient exon structure data for this gene");
 			}
 		}
 	}
@@ -58,70 +60,34 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	 * Verifies integrity of data at server or loaded as node attributes
 	 */
 	public boolean exonDataCheck() {
-		//TODO: do data check
-		return true;
+		// TODO: do data check
+		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+		if (nodeAttribs.hasAttribute(_nodeId, "SubgeneViewer_Regions")) {
+			List<String> featureList = nodeAttribs.getListAttribute(_nodeId,
+					"SubgeneViewer_Regions");
+			if (featureList.isEmpty()) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
 	}
-
-//	private JPanel defaultAppearencePanel = new JPanel();
-//	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
-//	private String visualStyle = "GenMAPP";
-//	final String focus = Cytoscape.getCurrentNetwork().getIdentifier();
 
 	/**
 	 * 
 	 */
 	public void buildSpliceView() {
 
-//		defaultAppearencePanel.setMinimumSize(new Dimension(500, 200));
-//		defaultAppearencePanel.setPreferredSize(new Dimension(800, 300));
-//		defaultAppearencePanel.setSize(defaultAppearencePanel.getPreferredSize());
-//		defaultAppearencePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-//		defaultAppearencePanel.setLayout(new BoxLayout(defaultAppearencePanel, BoxLayout.Y_AXIS));
-		
-		final SpliceViewPanel panel = 
-			(SpliceViewPanel) SpliceViewBuilder.showDialog(Cytoscape.getDesktop());
-//		createDefaultImage(visualStyle, (DGraphView) panel.getView(),
-//		                   defaultAppearencePanel.getSize());
-//		setDefaultPanel(defaultImageManager.get(visualStyle));
-		
-//		Cytoscape.getDesktop().setFocus(focus);
+		final SpliceViewPanel panel = (SpliceViewPanel) SpliceViewBuilder
+				.showDialog(Cytoscape.getDesktop());
 		Cytoscape.getDesktop().repaint();
 
-//		SpliceViewBuilder.getSpliceView(visualStyle);
+		// SpliceViewBuilder.getSpliceView(visualStyle);
 
 	}
-	
-//	/**
-//	 * Create image of a default dummy network and save in a Map object.
-//	 *
-//	 * @param vsName
-//	 * @param view
-//	 * @param size
-//	 */
-//	private void createDefaultImage(String vsName, DGraphView view, Dimension size) {
-//
-//		defaultAppearencePanel.setLayout(new BorderLayout());
-//
-//		final Image image = view.createImage((int)size.getWidth(), (int)size.getHeight(), 0.9);
-//
-//		defaultImageManager.put(vsName, image);
-//	}
-//	private void setDefaultPanel(final Image defImage) {
-//		if (defImage == null) {
-//			return;
-//		}
-//
-//		defaultAppearencePanel.removeAll();
 
-//		final JButton defaultImageButton = new JButton();
-//		defaultImageButton.setUI(new BlueishButtonUI());
-//
-//		defaultImageButton.setIcon(new ImageIcon(defImage));
-//		//defaultImageButton.setBackground(bgColor);
-//		defaultAppearencePanel.add(defaultImageButton, BorderLayout.CENTER);
-//		defaultImageButton.addMouseListener(new DefaultMouseListener());
-//	}
-	
 	public void mouseClicked(MouseEvent e) {
 	}
 
