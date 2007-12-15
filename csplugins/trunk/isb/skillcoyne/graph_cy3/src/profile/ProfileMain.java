@@ -18,7 +18,7 @@ public class ProfileMain {
 	public static void main(String[] args) {
 
 		// create 10k nodes and do what exactly??
-		CyNetwork network = new Network();
+		CyNetwork network = new CyNetworkImpl("test");
 
 		
 		CyNode[] connectingNodes = new CyNode[5];
@@ -48,7 +48,7 @@ public class ProfileMain {
 
 		int totalEdges = 0;
 		for (CyNode n: network.getNodes()) {
-			totalEdges += n.getEdges().size();
+			totalEdges += n.getAdjacentEdges().size();
 		}
 		
 		System.out.println("" + totalEdges);
