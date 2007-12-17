@@ -611,11 +611,12 @@ public class CytoscapeSessionReader {
 		for (int i = 0; i < numChildren; i++) {
 			child = children.get(i);
 			childNet = netMap.get(child.getId());
-
-			targetNetworkURL = (URL) networkURLs.get(sessionID + "/" + childNet.getFilename());
+            String targetNwUrlName = sessionID + "/" + childNet.getFilename();
+			targetNetworkURL = (URL) networkURLs.get(targetNwUrlName);
+            // handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
+            if (targetNetworkURL == null) throw new IOException("Session file corrupt: Filename " + childNet.getFilename() + " does not correspond to a network of that name in session file");
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
 			networkStream = (InputStream) jarConnection.getContent();
-
 			// Get the current state of the vsbSwitch
 			Properties prop = CytoscapeInit.getProperties();
 			String vsbSwitch = prop.getProperty("visualStyleBuilder");
