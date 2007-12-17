@@ -69,7 +69,8 @@ public class CyNetworkImpl implements CyNetwork {
 			throw new RuntimeException("Input nodes are not part of network " + getIdentifier());
 		}
 		int edgeIndex = dg.edgeCreate(source.getIndex(), target.getIndex(), directed);
-		CyEdge edge = source.connectTo(target, directed, edgeIndex); // how important is the actual index to an edge...?
+		CyEdge edge = source.connectTo(target, directed); // how important is the actual index to an edge...?
+		edge.setIndex(edgeIndex);
 		
 		if ( edgeIndex == edges.size() )
 			edges.add( edge );

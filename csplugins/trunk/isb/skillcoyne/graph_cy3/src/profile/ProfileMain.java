@@ -16,7 +16,8 @@ public class ProfileMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		java.util.Calendar cal = java.util.Calendar.getInstance();
+		System.out.println(cal.getTimeInMillis());
 		// create 10k nodes and do what exactly??
 		CyNetwork network = new CyNetworkImpl("test");
 
@@ -52,6 +53,10 @@ public class ProfileMain {
 		}
 		
 		System.out.println("" + totalEdges);
+		
+		java.util.Calendar cal2 = java.util.Calendar.getInstance();
+		System.out.println(cal2.getTimeInMillis());
+
 	}
 
 }

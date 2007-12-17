@@ -9,6 +9,7 @@ package org.cytoscape.model;
  */
 public interface CyEdge {
 	
+	public void setIndex(int index);
 	public int getIndex();
 
 	public CyNode getSource();

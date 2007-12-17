@@ -3,6 +3,7 @@
  */
 package org.cytoscape.model.impl;
 
+import org.cytoscape.model.*;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,6 +20,7 @@ public class CyNodeImpl implements CyNode {
 	private int index;
 	private Vector<CyEdge> edges;
 	private boolean visited = false;
+	private CyNetwork parent;
 	private Attribute nodeAtts;
 	
 	CyNodeImpl(int nodeIndex) {
@@ -29,8 +31,8 @@ public class CyNodeImpl implements CyNode {
 	/* (non-Javadoc)
 	 * @see org.cytoscape.model.CyNode#connectTo(org.cytoscape.model.CyNode, boolean)
 	 */
-	public CyEdge connectTo(CyNode target, boolean directed, int index) {
-		CyEdge e = new CyEdgeImpl(this, target, directed, index);
+	public CyEdge connectTo(CyNode target, boolean directed) {
+		CyEdge e = new CyEdgeImpl(this, target, directed);
 		return e;
 	}
 

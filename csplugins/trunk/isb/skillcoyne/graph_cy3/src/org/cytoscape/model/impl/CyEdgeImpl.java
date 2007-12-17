@@ -18,10 +18,24 @@ public class CyEdgeImpl implements CyEdge {
 	private CyNode target;
 	private boolean directed;
 	
+	
 	CyEdgeImpl(CyNode sourceNode, CyNode targetNode, boolean dir, int edgeIndex) {
 		source = sourceNode;
 		target = targetNode;
 		directed = dir;
+		index = edgeIndex;
+	}
+
+	CyEdgeImpl(CyNode sourceNode, CyNode targetNode, boolean dir) {
+		source = sourceNode;
+		target = targetNode;
+		directed = dir;
+		index = -1;
+	}
+
+	
+	public void setIndex(int edgeIndex) {
+		index = edgeIndex;
 	}
 	
 	public int getIndex() {
