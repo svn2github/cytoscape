@@ -5,7 +5,7 @@ package org.cytoscape.model.impl;
 
 import java.util.*;
 
-import org.cytoscape.model.Attribute;
+import org.cytoscape.model.AttributeHolder;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -179,7 +179,7 @@ public class CyNetworkImpl implements CyNetwork {
 	 * 
 	 * @see org.cytoscape.model.CyNetwork#setAttributes(org.cytoscape.model.Attribute)
 	 */
-	public void setAttributes(Attribute att) {
+	public void setAttributes(AttributeHolder att) {
 		// TODO Auto-generated method stub
 	}
 
@@ -188,7 +188,7 @@ public class CyNetworkImpl implements CyNetwork {
 	 * 
 	 * @see org.cytoscape.model.CyNetwork#getAttributes()
 	 */
-	public Attribute getAttributes() {
+	public AttributeHolder getAttributes() {
 		// TODO Auto-generated method stub
 		return null;
 	}

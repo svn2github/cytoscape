@@ -7,7 +7,7 @@ import org.cytoscape.model.*;
 import java.util.List;
 import java.util.Vector;
 
-import org.cytoscape.model.Attribute;
+import org.cytoscape.model.AttributeHolder;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 
@@ -21,7 +21,7 @@ public class CyNodeImpl implements CyNode {
 	private Vector<CyEdge> edges;
 	private boolean visited = false;
 	private CyNetwork parent;
-	private Attribute nodeAtts;
+	private AttributeHolder nodeAtts;
 	
 	CyNodeImpl(int nodeIndex) {
 		index = nodeIndex;
@@ -39,7 +39,7 @@ public class CyNodeImpl implements CyNode {
 	/* (non-Javadoc)
 	 * @see org.cytoscape.model.CyNode#getAttributes()
 	 */
-	public Attribute getAttributes() {
+	public AttributeHolder getAttributes() {
 		return nodeAtts;
 	}
 
@@ -87,7 +87,7 @@ public class CyNodeImpl implements CyNode {
 	/* (non-Javadoc)
 	 * @see org.cytoscape.model.CyNode#setAttributes(org.cytoscape.model.Attribute)
 	 */
-	public void setAttributes(Attribute nodeAtt) {
+	public void setAttributes(AttributeHolder nodeAtt) {
 		nodeAtts = nodeAtt;
 	}
 

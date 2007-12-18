@@ -3,7 +3,7 @@
  */
 package org.cytoscape.model.impl;
 
-import org.cytoscape.model.Attribute;
+import org.cytoscape.model.AttributeHolder;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 
@@ -45,7 +45,7 @@ public class CyEdgeImpl implements CyEdge {
 	/* (non-Javadoc)
 	 * @see org.cytoscape.model.CyEdge#getAttributes()
 	 */
-	public Attribute getAttributes() {
+	public AttributeHolder getAttributes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -79,7 +79,7 @@ public class CyEdgeImpl implements CyEdge {
 	/* (non-Javadoc)
 	 * @see org.cytoscape.model.CyEdge#setAttributes(org.cytoscape.model.Attribute)
 	 */
-	public void setAttributes(Attribute edgeAtt) {
+	public void setAttributes(AttributeHolder edgeAtt) {
 		// TODO Auto-generated method stub
 	}
 
