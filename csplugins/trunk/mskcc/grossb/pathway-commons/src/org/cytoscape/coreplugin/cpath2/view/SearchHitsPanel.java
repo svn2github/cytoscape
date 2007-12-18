@@ -63,7 +63,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
 
 		// create popup window
 		popup = new PopupPanel(appLayeredPane, detailsPanel);
-		appLayeredPane.add(popup, new Integer(appLayeredPane.getIndexOf(this) + 1));
+		appLayeredPane.add(popup, JLayeredPane.POPUP_LAYER);
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
