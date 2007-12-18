@@ -17,10 +17,10 @@ public interface Network {
 	public String getName();
 	
 	// adding/removing nodes or edges 
-	public Node addNode();
+	public Node addNode(Attribute nodeAtts);
 	public void removeNode(Node node);
 	
-	public Edge addEdge(Object source, Object targets, Attribute edgeDirection);
+	public Edge addEdge(Object source, Object targets, Attribute edgeAtts);
 	public void removeEdge(Edge edge);
 	
 	// does the network have these objects
@@ -39,7 +39,7 @@ public interface Network {
 	public AttributeHolder getAttributeHolder();
 	
 	// for subgraphs? these I'm not so sure about
-	public Network clone();
+	public Object clone();
 	public Network getParentNetwork();
 	public NodeGroup createGroup(Collection<Node> nodes);
 }
