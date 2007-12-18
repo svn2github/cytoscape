@@ -1,5 +1,8 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
+import cytoscape.Cytoscape;
+import cytoscape.view.cytopanels.*;
+
 import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
@@ -9,7 +12,6 @@ import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
-import cytoscape.Cytoscape;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -27,7 +29,7 @@ import java.net.URL;
  *
  * @author Ethan Cerami.
  */
-public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
+public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, CytoPanelListener {
     private DefaultListModel peListModel;
     private JList peList;
     private SearchResponseType peSearchResponse;
@@ -41,6 +43,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
     private JButton detailsButton;
 	private PopupPanel popup;
     private HashMap <Long, RecordList> parentRecordsMap;
+	private CytoPanelState cytoPanelState;
 
     /**
      * Constructor.
@@ -86,6 +89,11 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
         splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
         createListener(interactionBundleModel, pathwayTableModel, summaryTextPane);
+
+		// listener for cytopanel events
+		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+		cytoPanel.addCytoPanelListener(this);
+		cytoPanelState = cytoPanel.getState();
     }
 
     private JButton createDetailsButton() {
@@ -136,8 +144,16 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
 			int desktopLocationX = Cytoscape.getDesktop().getLocationOnScreen().x;
 			int desktopLocationY = Cytoscape.getDesktop().getLocationOnScreen().y;
 			int desktopInsets = Cytoscape.getDesktop().getInsets().top + Cytoscape.getDesktop().getInsets().bottom;
-			int popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
-			int popupY = getLocationOnScreen().y - desktopLocationY;
+			int popupX;
+			int popupY;
+			if (cytoPanelState == CytoPanelState.DOCK) {
+				popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
+				popupY = getLocationOnScreen().y - desktopLocationY;
+			}
+			else {
+				popupX = desktopLocationX + Cytoscape.getDesktop().getWidth() / 2 - popupWIDTH / 2;
+				popupY = desktopLocationY + Cytoscape.getDesktop().getHeight() / 2 - popupHEIGHT / 2;
+			}
 			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
             popup.setCurtain(popupX+desktopLocationX, popupY+desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
 			popup.fadeIn();
@@ -244,4 +260,38 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener {
             }
         });
     }
+
+	//
+	// cytopanel listener implementation
+	//
+
+	/**
+	 * Notifies the listener on a change in the CytoPanel state.
+	 *
+	 * @param newState The new CytoPanel state - see CytoPanelState class.
+	 */
+	public void onStateChange(CytoPanelState newState) {
+		cytoPanelState = newState;
+	}
+
+	/**
+	 * Notifies the listener when a new component on the CytoPanel is selected.
+	 *
+	 * @param componentIndex The index of the component selected.
+	 */
+	public void onComponentSelected(int componentIndex) {}
+
+	/**
+	 * Notifies the listener when a component is added to the CytoPanel.
+	 *
+	 * @param count The number of components on the CytoPanel after the add.
+	 */
+	public void onComponentAdded(int count) {}
+
+	/**
+	 * Notifies the listener when a component is removed from the CytoPanel.
+	 *
+	 * @param count The number of components on the CytoPanel after the remove.
+	 */
+	public void onComponentRemoved(int count) {}
 }
