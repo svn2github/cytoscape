@@ -175,7 +175,7 @@ public class NetworkImpl implements Network {
 		else
 			throw new RuntimeException("bad new node index: " + nodeIndex + " max size: " + nodes.size());
 
-		node.getAttributeHolder().addAttribute(nodeAtts);
+		//node.getAttributeHolder().addAttribute(nodeAtts);
 		return node;
 	}
 
