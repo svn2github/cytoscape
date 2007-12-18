@@ -46,7 +46,7 @@ public class HTTPConnectionHandler extends Thread {
     /**
      * web service url string constant
      */
-    public static final String WEB_SERVICE_URL = "/pc/webservice.do";
+    public static final String WEB_SERVICE_URL = "webservice.do";
 
     /**
      * ref to socket
