@@ -48,8 +48,18 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
 		// we become gradient header mouse listener - see comment below
 		header.addMouseListener(this);
 
+		// ok button
+		JButton okButton = new JButton("Ok");
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+				PhysicalEntityDetailsPanel.this.searchHitsPanel.togglePopup(); // amazing syntax!!
+            }
+        });
+
         add (header, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        add(okButton, BorderLayout.SOUTH);
+		
     }
 
 	// kill mouse events - fixes bug where user can 
