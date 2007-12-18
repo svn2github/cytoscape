@@ -43,6 +43,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
 	private JLayeredPane appLayeredPane;
     private JButton detailsButton;
 	private PopupPanel popup;
+	private ModalPanel modalPanel;
     private HashMap <Long, RecordList> parentRecordsMap;
 	private CytoPanelState cytoPanelState;
 
@@ -66,8 +67,10 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         summaryTextPane = detailsPanel.getTextPane();
 
 		// create popup window
-		popup = new PopupPanel(appLayeredPane, detailsPanel);
-		appLayeredPane.add(popup, JLayeredPane.POPUP_LAYER);
+		modalPanel = new ModalPanel();
+		popup = new PopupPanel(appLayeredPane, detailsPanel, modalPanel);
+		appLayeredPane.add(modalPanel, JLayeredPane.POPUP_LAYER);
+		appLayeredPane.add(popup, JLayeredPane.DRAG_LAYER);
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
@@ -156,6 +159,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
 				popupX = desktopLocationX + desktop.getWidth() / 2 - popupWIDTH / 2;
 				popupY = desktopLocationY + desktop.getHeight() / 2 - popupHEIGHT / 2;
 			}
+			modalPanel.setBounds(0, 0, desktop.getWidth(), desktop.getHeight());
 			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
             popup.setCurtain(popupX+desktopLocationX, popupY+desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
 			popup.fadeIn();
