@@ -53,7 +53,7 @@ public class ModalPanel extends JPanel implements MouseListener {
 	/**
 	 * ref to color
 	 */
-	private static Color m_backgroundColor;
+	private static Color m_backgroundColor = Color.gray;
 
 	/**
 	 * image that we used to draw into.
@@ -64,7 +64,6 @@ public class ModalPanel extends JPanel implements MouseListener {
 	 * Constructor.
 	 */
 	public ModalPanel() {
-		m_backgroundColor = new Color(0, 0, 0, 0);
 		addMouseListener(this);
 		setVisible(false);
 	}
@@ -85,14 +84,22 @@ public class ModalPanel extends JPanel implements MouseListener {
 		// only paint if we have an image
 		if (m_img != null) {
 
-			// get this component's image context
-			Graphics2D image2D = ((BufferedImage) m_img).createGraphics();
+			// we need a g2d ref
+			Graphics2D g2d = (Graphics2D)g;
 
-			// first clear the image
-			clearImage(image2D);
+			// clear our image
+			clearImage(((BufferedImage) m_img).createGraphics());
 
-			// now draw our image into swing device context
-			g.drawImage(m_img, 0, 0, null);
+			// setup composite
+			Composite origComposite = g2d.getComposite();
+			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.025);
+
+			// draw
+			g2d.setComposite(newComposite);
+			g2d.drawImage(m_img, 0, 0, null);
+
+			// restore composite
+			g2d.setComposite(origComposite);
 		}
 	}
 
