@@ -18,7 +18,7 @@ import cytoscape.util.OpenBrowser;
  *
  * @author Ethan Cerami.
  */
-public class PhysicalEntityDetailsPanel extends JPanel {
+public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener {
     private Document doc;
     private JTextPane textPane;
 	private SearchHitsPanel searchHitsPanel; // ref to parent
@@ -45,10 +45,20 @@ public class PhysicalEntityDetailsPanel extends JPanel {
             }
         });
         GradientHeader header = new GradientHeader("Gene Details", button);
+		// we become gradient header mouse listener - see comment below
+		header.addMouseListener(this);
 
         add (header, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
+
+	// kill mouse events - fixes bug where user can 
+	// click on gradient header and select things underneath
+	public void mouseClicked(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
 
     /**
      * Gets the summary document model.
