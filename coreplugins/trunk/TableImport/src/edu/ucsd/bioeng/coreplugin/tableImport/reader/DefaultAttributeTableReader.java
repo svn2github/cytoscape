@@ -75,6 +75,9 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 */
 	private final int startLineNumber;
 	private String commentChar = null;
+	
+	// If this is on, import everything using ID as the key.
+	private boolean importAll = false;
 
 	/**
 	 * Constructor.<br>
@@ -147,11 +150,17 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 */
 	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping,
 	                                   final int startLineNumber, final String commentChar) {
+		this(source, mapping, startLineNumber, commentChar, false);
+	}
+	
+	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping,
+            final int startLineNumber, final String commentChar, boolean importAll) {
 		this.source = source;
 		this.mapping = mapping;
 		this.startLineNumber = startLineNumber;
 		this.parser = new AttributeLineParser(mapping);
 		this.commentChar = commentChar;
+		this.importAll = importAll;
 	}
 
 	/**
@@ -192,7 +201,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 				parts = line.split(mapping.getDelimiterRegEx());
 				// If key dos not exists, ignore the line.
 				if(parts.length>=mapping.getKeyIndex()+1) {
-					parser.parseEntry(parts);
+					if(importAll) {
+						parser.parseAll(parts);
+					} else
+						parser.parseEntry(parts);
 					globalCounter++;
 				}
 			}

@@ -71,6 +71,26 @@ public class AttributeLineParser {
 	public AttributeLineParser(AttributeMappingParameters mapping) {
 		this.mapping = mapping;
 	}
+	
+	// Import everything.
+	public void parseAll(String[] parts) {
+		// Get key
+		final String primaryKey = parts[mapping.getKeyIndex()].trim();
+		final int partsLen = parts.length;
+		
+		for (int i = 0; i < partsLen; i++) {
+			if ((i != mapping.getKeyIndex()) && !mapping.getAliasIndexList().contains(i)
+			    && mapping.getImportFlag()[i]) {
+				if (parts[i] == null) {
+					continue;
+				} else if (mapping.getObjectType() == ObjectType.NETWORK) {
+					//mapAttribute(targetNetworkID, parts[i].trim(), i);
+				} else {
+					mapAttribute(primaryKey, parts[i].trim(), i);
+				} 
+			}
+		}
+	}
 
 	/**
 	 * Takes an array of entries, which is one line of text file, and maps them

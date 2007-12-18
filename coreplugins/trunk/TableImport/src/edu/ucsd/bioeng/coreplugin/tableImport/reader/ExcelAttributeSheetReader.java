@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import cytoscape.data.CyAttributes;
@@ -66,8 +64,8 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	private final AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
 	private final int startLineNumber;
-	
 	private int globalCounter = 0;
+	private boolean importAll = false;
 
 	/**
 	 * Constructor.<br>
@@ -80,10 +78,25 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	public ExcelAttributeSheetReader(final HSSFSheet sheet,
 	                                 final AttributeMappingParameters mapping,
 	                                 final int startLineNumber) {
+		this(sheet, mapping, startLineNumber, false);
+	}
+
+	/**
+	 * Creates a new ExcelAttributeSheetReader object.
+	 *
+	 * @param sheet  DOCUMENT ME!
+	 * @param mapping  DOCUMENT ME!
+	 * @param startLineNumber  DOCUMENT ME!
+	 * @param importAll  DOCUMENT ME!
+	 */
+	public ExcelAttributeSheetReader(final HSSFSheet sheet,
+	                                 final AttributeMappingParameters mapping,
+	                                 final int startLineNumber, boolean importAll) {
 		this.sheet = sheet;
 		this.mapping = mapping;
 		this.startLineNumber = startLineNumber;
 		this.parser = new AttributeLineParser(mapping);
+		this.importAll = importAll;
 	}
 
 	/**
@@ -107,7 +120,11 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 
 		while ((row = sheet.getRow(rowCount)) != null) {
 			cellsInOneRow = createElementStringArray(row);
-			parser.parseEntry(cellsInOneRow);
+			if(importAll)
+				parser.parseAll(cellsInOneRow);
+			else
+				parser.parseEntry(cellsInOneRow);
+			
 			rowCount++;
 			globalCounter++;
 		}
@@ -161,13 +178,15 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 		final Map<String, Object> invalid = parser.getInvalidMap();
 		sb.append(globalCounter + " entries are loaded and mapped onto\n");
 		sb.append(mapping.getObjectType().toString() + " attributes.");
-		
-		if(invalid.size() != 0) {
+
+		if (invalid.size() != 0) {
 			sb.append("\n\nThe following enties are invalid and not imported:\n");
-			for(String key: invalid.keySet()) {
+
+			for (String key : invalid.keySet()) {
 				sb.append(key + " = " + invalid.get(key) + "\n");
 			}
 		}
+
 		return sb.toString();
 	}
 }
