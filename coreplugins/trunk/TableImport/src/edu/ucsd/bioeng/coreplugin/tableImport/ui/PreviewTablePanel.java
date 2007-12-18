@@ -723,9 +723,8 @@ public class PreviewTablePanel extends JPanel {
 		// for (int j = 0; j < newModel.getColumnCount(); j++) {
 		// dataTypes[j] = CyAttributes.TYPE_STRING;
 		// }
-		/*
-		 * Setting table properties
-		 */
+		
+		// Setting table properties	 
 		newTable.setCellSelectionEnabled(false);
 		newTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		newTable.setDefaultEditor(Object.class, null);
