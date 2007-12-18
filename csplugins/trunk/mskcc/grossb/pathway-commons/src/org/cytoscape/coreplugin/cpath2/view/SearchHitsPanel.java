@@ -2,6 +2,7 @@ package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.*;
+import cytoscape.view.CytoscapeDesktop;
 
 import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
@@ -139,20 +140,21 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
             detailsButton.setToolTipText("Hide Gene Details");
 
 			int MARGIN = 30;
+			int popupX; int popupY;
 			int popupWIDTH = (int)this.getSize().getWidth();
 			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
-			int desktopLocationX = Cytoscape.getDesktop().getLocationOnScreen().x;
-			int desktopLocationY = Cytoscape.getDesktop().getLocationOnScreen().y;
-			int desktopInsets = Cytoscape.getDesktop().getInsets().top + Cytoscape.getDesktop().getInsets().bottom;
-			int popupX;
-			int popupY;
+			CytoscapeDesktop desktop = Cytoscape.getDesktop();
+			int desktopLocationX = desktop.getLocationOnScreen().x;
+			int desktopLocationY = desktop.getLocationOnScreen().y;
+			int desktopInsets = desktop.getInsets().top + desktop.getInsets().bottom;
+			// set popup location - based on cytopanel state
 			if (cytoPanelState == CytoPanelState.DOCK) {
 				popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
 				popupY = getLocationOnScreen().y - desktopLocationY;
 			}
 			else {
-				popupX = desktopLocationX + Cytoscape.getDesktop().getWidth() / 2 - popupWIDTH / 2;
-				popupY = desktopLocationY + Cytoscape.getDesktop().getHeight() / 2 - popupHEIGHT / 2;
+				popupX = desktopLocationX + desktop.getWidth() / 2 - popupWIDTH / 2;
+				popupY = desktopLocationY + desktop.getHeight() / 2 - popupHEIGHT / 2;
 			}
 			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
             popup.setCurtain(popupX+desktopLocationX, popupY+desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
