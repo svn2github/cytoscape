@@ -80,6 +80,11 @@ public class PopupPanel extends JPanel {
 	 * component that contains content we fade-in/out to
 	 */
 	private JComponent m_wrapped_component;
+
+	/**
+	 * modal panel
+	 */
+	private JComponent m_modal_panel;
 	
 	/**
 	 * timer used for animations.
@@ -104,12 +109,13 @@ public class PopupPanel extends JPanel {
 	/**
 	 * Constructor.
 	 */
-	public PopupPanel(JComponent owner, JComponent component) {
+	public PopupPanel(JComponent owner, JComponent component, JComponent modalPanel) {
 
 		// init member vars
 		m_owner = owner;
 		m_popupPanel = this;
 		m_wrapped_component = component;
+		m_modal_panel = modalPanel;
 		try {
 			m_robot = new Robot();
 		}
@@ -122,6 +128,7 @@ public class PopupPanel extends JPanel {
 		setLayout(new BorderLayout());
 		add(m_wrapped_component, BorderLayout.CENTER);
 		setVisible(false);
+		m_modal_panel.setVisible(false);
 
 		// if we don't do the follow, swing will render 
 		// the component opaque automatically
@@ -185,6 +192,7 @@ public class PopupPanel extends JPanel {
 	 */
 	public void fadeIn() {
 		setVisible(true);
+		m_modal_panel.setVisible(true);
 		m_timer = new java.util.Timer(true);
 		m_timer.scheduleAtFixedRate(new FaderTask(true), 10, 10);
 	}
@@ -194,6 +202,7 @@ public class PopupPanel extends JPanel {
 	 */
 	public void fadeOut() {
 		setVisible(true);
+		m_modal_panel.setVisible(false);
 		m_wrapped_component.setVisible(false);
 		m_timer = new java.util.Timer(true);
 		m_timer.scheduleAtFixedRate(new FaderTask(false), 10, 10);
@@ -205,6 +214,7 @@ public class PopupPanel extends JPanel {
 	public void cancelTransition() {
 		m_timer.cancel();
 		setVisible(false);
+		m_modal_panel.setVisible(false);
 	}
 
 	/**
