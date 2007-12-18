@@ -173,6 +173,8 @@ public class CytoscapeSessionReader {
 	private float networkCounter = 0;
 	private float netIndex = 0;
 
+	private long start;
+
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
 	 *
@@ -324,7 +326,8 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 */
 	public void read() throws IOException, JAXBException {
-		final long start = System.currentTimeMillis();
+		// final long start = System.currentTimeMillis();
+		start = System.currentTimeMillis();
 
 		// This is a hack.
 		// We need a new event to tell other components/plugins that core starts loading
@@ -337,30 +340,38 @@ public class CytoscapeSessionReader {
 		         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 
 		unzipSessionFromURL();
+		System.out.println("unzipSessionFromURL: " + (System.currentTimeMillis() - start) + " msec.");
 
 		if (session.getSessionState().getDesktop() != null) {
 			restoreDesktopState();
+			System.out.println("restoreDesktopState: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
 		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
+			System.out.println("restoreOntologyServerStatus: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
 		// Restore listeners for VizMapper and Bird's Eye View.
 		Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+		System.out.println("restore VizMapper listeners: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
+		System.out.println("Fire session loaded: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+		System.out.println("fire attrs and network loaded: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// Send signal to plugins
 		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE, pluginFileListMap, null);
+		System.out.println("fire restore_plugin_state: " + (System.currentTimeMillis() - start) + " msec.");
 		deleteTmpPluginFiles();
+		System.out.println("deleteTmpPluginFiles: " + (System.currentTimeMillis() - start) + " msec.");
 
 		System.out.println("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
 	}
@@ -391,6 +402,7 @@ public class CytoscapeSessionReader {
 	 */
 	private void unzipSessionFromURL() throws IOException, JAXBException {
 		extractEntry();
+		System.out.println("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
 
 		/*
 		 * Check the contents.  If broken/invalid, throw exception.
@@ -407,6 +419,7 @@ public class CytoscapeSessionReader {
 		if (bookmarksFileURL != null) {
 			bookmarks = getBookmarksFromZip(bookmarksFileURL);
 			Cytoscape.setBookmarks(bookmarks);
+			System.out.println("getBookmarksFromZip: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
 		// restore cytoscape properties
@@ -416,9 +429,11 @@ public class CytoscapeSessionReader {
 		// handles proxy servers and cached pages):
 		CytoscapeInit.getProperties().load(URLUtil.getBasicInputStream(cytoscapePropsURL));
 		loadCySession();
+		System.out.println("loadCySession: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// restore plugin state files
 		restorePlugnStateFilesFromZip();
+		System.out.println("restorePlugnStateFilesFromZip: " + (System.currentTimeMillis() - start) + " msec.");
 	}
 
 	private void restorePlugnStateFilesFromZip() {
@@ -540,6 +555,8 @@ public class CytoscapeSessionReader {
 			}
 		}
 
+		System.out.println("unmarshal: " + (System.currentTimeMillis() - start) + " msec.");
+
 		/*
 		 * Session ID is the name of folder which contains everything for this
 		 * session.
@@ -611,10 +628,13 @@ public class CytoscapeSessionReader {
 		for (int i = 0; i < numChildren; i++) {
 			child = children.get(i);
 			childNet = netMap.get(child.getId());
-            String targetNwUrlName = sessionID + "/" + childNet.getFilename();
+			String targetNwUrlName = sessionID + "/" + childNet.getFilename();
 			targetNetworkURL = (URL) networkURLs.get(targetNwUrlName);
-            // handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
-            if (targetNetworkURL == null) throw new IOException("Session file corrupt: Filename " + childNet.getFilename() + " does not correspond to a network of that name in session file");
+			// handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
+			if (targetNetworkURL == null) throw new IOException("Session file corrupt: Filename " + childNet.getFilename() + " does not correspond to a network of that name in session file");
+			if (targetNetworkURL == null) {
+				throw new IOException("Can't find network file: "+sessionID + "/" + childNet.getFilename()+" in session!");
+			}
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
 			networkStream = (InputStream) jarConnection.getContent();
 			// Get the current state of the vsbSwitch
@@ -625,6 +645,7 @@ public class CytoscapeSessionReader {
 			prop.setProperty("visualStyleBuilder", "off");
 			final XGMMLReader reader = new XGMMLReader(networkStream);
 			new_network = Cytoscape.createNetwork(reader, false, parent);
+			System.out.println("XGMMLReader "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 			// Restore the original state of the vsbSwitch
 			if (vsbSwitch != null)
 				prop.setProperty("visualStyleBuilder", vsbSwitch);
@@ -656,14 +677,18 @@ public class CytoscapeSessionReader {
 
 				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
                         reader.getLayoutAlgorithm());
+				System.out.println("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 
 				curNetView.setVisualStyle(vsName);
 				
 				Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
 				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-				curNetView.redrawGraph(false, true);
+				System.out.println("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+				// curNetView.redrawGraph(false, true);
+				System.out.println("redrawGraph "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 
 				reader.doPostProcessing(new_network);
+				System.out.println("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 				// Set hidden nodes + edges
 				setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
 				setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());

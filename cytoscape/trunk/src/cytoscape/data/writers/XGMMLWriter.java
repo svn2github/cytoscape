@@ -105,7 +105,8 @@ enum GraphicsType {
   OCTAGON("octagon"),
   ELLIPSE("ellipse"),
   DIAMOND("diamond"),
-  PARALLELOGRAM("parallelogram");
+  PARALLELOGRAM("parallelogram"),
+  ROUNDED_RECTANGLE("rounded_rectangle");
   private final String value;
 
   GraphicsType(String v) {
@@ -994,6 +995,9 @@ public class XGMMLWriter {
 
 			case NodeView.RECTANGLE:
 				return GraphicsType.RECTANGLE;
+
+			case NodeView.ROUNDED_RECTANGLE:
+				return GraphicsType.ROUNDED_RECTANGLE;
 
 			case NodeView.DIAMOND:
 				return GraphicsType.DIAMOND;

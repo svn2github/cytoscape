@@ -212,6 +212,7 @@ class XGMMLParser extends DefaultHandler {
 		// Hanlde possible group
 		{ParseState.NODEATT, "graph", ParseState.GROUP, new handleGroup()},
 		{ParseState.GROUP, "node", ParseState.NODE, new handleGroupNode()},
+		{ParseState.GROUP, "edge", ParseState.EDGE, new handleEdge()},
 		// Handle our edges
 		{ParseState.GRAPH, "edge", ParseState.EDGE, new handleEdge()},
 		{ParseState.EDGE, "att", ParseState.EDGEATT, new handleEdgeAttribute()},
@@ -883,6 +884,7 @@ class XGMMLParser extends DefaultHandler {
 			if (currentGroupNode != null) groupStack.push(currentGroupNode);
 			currentGroupNode = currentNode;
 			groupMap.put(currentGroupNode, new ArrayList<CyNode>());
+			// System.out.println("Found group: "+currentNode);
 			return current;
 		}
 	}
@@ -1023,8 +1025,8 @@ class XGMMLParser extends DefaultHandler {
 	}
 	class handleGroupDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// System.out.println("Group "+groupID+" done.");
 			currentNode = currentGroupNode;
+			// System.out.println("Group "+currentNode+" done.");
 			if (!groupStack.empty())
 				currentGroupNode = groupStack.pop();
 			else
