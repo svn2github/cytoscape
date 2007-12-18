@@ -18,8 +18,8 @@ public interface CyNode {
 	public List<CyEdge> getAdjacentEdges();
 	public List<CyNode> getNeighbors();
 	
-	public void setAttributes(Attribute nodeAtt);
-	public Attribute getAttributes();
+	public void setAttributes(AttributeHolder nodeAtt);
+	public AttributeHolder getAttributes();
 	
 	public boolean hasBeenVisited();
 	public void visited(boolean visit);

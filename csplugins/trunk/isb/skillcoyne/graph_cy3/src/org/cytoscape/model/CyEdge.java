@@ -19,6 +19,6 @@ public interface CyEdge {
 	
 	public boolean isDirected();
 	
-	public void setAttributes(Attribute edgeAtt);
-	public Attribute getAttributes();
+	public void setAttributes(AttributeHolder edgeAtt);
+	public AttributeHolder getAttributes();
 }

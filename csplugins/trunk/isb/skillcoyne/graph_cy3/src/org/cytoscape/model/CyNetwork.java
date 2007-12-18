@@ -28,7 +28,7 @@ public interface CyNetwork {
 	public List<CyNode> getNeighbors(CyNode node);
 	public List<CyEdge> getAdjacentEdges(CyNode node);
 	
-	public void setAttributes(Attribute att);
-	public Attribute getAttributes();
+	public void setAttributes(AttributeHolder att);
+	public AttributeHolder getAttributes();
 	
 }
