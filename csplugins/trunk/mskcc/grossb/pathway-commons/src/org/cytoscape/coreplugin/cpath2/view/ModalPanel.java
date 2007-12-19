@@ -53,7 +53,7 @@ public class ModalPanel extends JPanel implements MouseListener {
 	/**
 	 * ref to color
 	 */
-	private static Color m_backgroundColor = Color.gray;
+	private static Color m_backgroundColor = Color.DARK_GRAY;
 
 	/**
 	 * image that we used to draw into.
@@ -92,7 +92,7 @@ public class ModalPanel extends JPanel implements MouseListener {
 
 			// setup composite
 			Composite origComposite = g2d.getComposite();
-			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.040);
+			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.050);
 
 			// draw
 			g2d.setComposite(newComposite);
