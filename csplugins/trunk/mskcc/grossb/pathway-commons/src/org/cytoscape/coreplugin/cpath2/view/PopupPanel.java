@@ -138,7 +138,6 @@ public class PopupPanel extends JPanel {
 		setLayout(new BorderLayout());
 		add(m_wrapped_component, BorderLayout.CENTER);
 		setVisible(false);
-		m_modal_panel.setVisible(false);
 
 		// if we don't do the follow, swing will render 
 		// the component opaque automatically
@@ -202,7 +201,6 @@ public class PopupPanel extends JPanel {
 	 */
 	public void fadeIn() {
 		setVisible(true);
-		m_modal_panel.setVisible(true);
 		m_timer = new java.util.Timer(true);
 		m_animation_time = TOTAL_ANIMATION_TIME;
 		m_timer.scheduleAtFixedRate(new FaderTask(true), 10, ANIMATION_STEP);
@@ -213,8 +211,8 @@ public class PopupPanel extends JPanel {
 	 */
 	public void fadeOut() {
 		setVisible(true);
-		m_modal_panel.setVisible(false);
 		m_wrapped_component.setVisible(false);
+		m_modal_panel.setVisible(false);
 		m_timer = new java.util.Timer(true);
 		m_animation_time = 0;
 		m_timer.scheduleAtFixedRate(new FaderTask(false), 10, ANIMATION_STEP);
@@ -245,6 +243,7 @@ public class PopupPanel extends JPanel {
 			if (fadeIn && m_animation_time <= 0) {
 				m_timer.cancel();
 				m_wrapped_component.setVisible(true);
+				m_modal_panel.setVisible(true);
 			}
 			else if (!fadeIn && m_animation_time >= TOTAL_ANIMATION_TIME) {
 				m_timer.cancel();
