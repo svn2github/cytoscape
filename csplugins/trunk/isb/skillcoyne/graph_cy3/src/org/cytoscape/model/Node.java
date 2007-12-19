@@ -5,14 +5,11 @@ package org.cytoscape.model;
 
 import java.util.*;
 
-/**
- * @author skillcoy
- *
- */
 public interface Node {
 
-	public Edge[] getAdjacentEdges();
 	public Node[] getNeighbors();
+	public Edge[] getAdjacentEdges();
+	public Edge[] getConnectingEdges(Node connectedNode);
 	
 	// attributes
 	public AttributeHolder getAttributeHolder();
