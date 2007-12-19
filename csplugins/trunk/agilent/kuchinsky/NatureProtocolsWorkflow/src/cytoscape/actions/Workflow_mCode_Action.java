@@ -24,6 +24,14 @@ public class Workflow_mCode_Action extends WorkflowPanelAction {
 		super(name);
 	}
 	
+	public String getToolTipText()
+	{
+		return new String("<html> find clusters (highly interconnected regions) in this network.</html>"
+				);
+		
+	}	
+		
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		if (Cytoscape.getCurrentNetwork() == Cytoscape.getNullNetwork())

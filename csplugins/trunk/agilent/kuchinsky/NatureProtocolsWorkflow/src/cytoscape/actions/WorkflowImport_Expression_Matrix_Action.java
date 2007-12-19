@@ -35,6 +35,11 @@ public class WorkflowImport_Expression_Matrix_Action extends WorkflowPanelAction
 		super(myString);
 
 	}
+	
+	public String getToolTipText (){
+		return new String("<html>Import gene expression data according to the following format: " +
+	"<p><em>Identifier [CommonName] value1 value2 ... valueN [pval1 pval2 ... pvalN]</em></html>");		
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";

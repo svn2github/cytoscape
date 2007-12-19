@@ -20,6 +20,13 @@ public class Workflow_jActiveModules_Action extends WorkflowPanelAction {
 		super(name);
 	}
 	
+	public String getToolTipText()
+	{
+		return new String("<html> search this network for co-regulated subnetworks.</html>"
+				);
+		
+	}	
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		if (Cytoscape.getCurrentNetwork() == Cytoscape.getNullNetwork())

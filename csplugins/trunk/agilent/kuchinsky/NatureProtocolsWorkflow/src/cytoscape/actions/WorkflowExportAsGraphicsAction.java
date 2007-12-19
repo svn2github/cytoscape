@@ -15,6 +15,13 @@ public class WorkflowExportAsGraphicsAction extends WorkflowPanelAction {
 	{
 		super(name);
 	}
+
+	public String getToolTipText()
+	{
+		return new String("<html> Export this network view as PDF, SVG, JPG, PNG, or BMP graphics.</html>"
+				);
+		
+	}
 	
 	public void actionPerformed(ActionEvent e)
 	{

@@ -29,7 +29,20 @@ public class WorkflowAbstractAction extends WorkflowPanelAction {
 "<li> Identifying putative complexes and functional modules, and </li> " + 
 "<li> Identifying enriched Gene Ontology annotations in the network. </li></ol>" +
 "These steps provide a broad sample of the types " +
-"of analyses performed by Cytoscape.<html>");
+"of analyses performed by Cytoscape." + 
+"<p><p> This protocol is described in detail in the following article: " + 
+"<br> Cline, M. <em>et al</em>, " +
+"<strong>Integration of biological networks and gene expression " + 
+"<br>data using Cytoscape, </strong>" + 
+//"<br> Melissa S Cline, Michael Smoot, Ethan Cerami, Allan Kuchinsky, Nerius Landys, Chris Workman, " + 
+//"<br> Rowan Christmas, Iliana Avila-Campilo, Michael Creech, Benjamin Gross, Kristina Hanspers, " + 
+//"<br> Ruth Isserlin, Ryan Kelley, Sarah Killcoyne, Samad Lotia, Steven Maere, John Morris, " + 
+//"<br> Keiichiro Ono, Vuk Pavlovic, Alexander R Pico, Aditya Vailaya, Peng-Liang Wang, Annette Adler, " +
+//"<br> Bruce R Conklin, Leroy Hood, Martin Kuiper, Chris Sander, Ilya Schmulevich, Benno Schwikowski, " + 
+//"<br> Guy J Warner, Trey Ideker & Gary D Bader" +    
+"<em>Nature Protocols</em>, 2, 2366 - 2382 (2007)" +
+"<br>Published online: 27 September 2007, " + 
+"doi:10.1038/nprot.2007.324<html>");
 	}	
 
 }

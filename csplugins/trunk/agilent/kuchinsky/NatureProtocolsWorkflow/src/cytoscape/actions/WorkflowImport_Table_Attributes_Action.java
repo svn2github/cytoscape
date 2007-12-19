@@ -35,6 +35,11 @@ public class WorkflowImport_Table_Attributes_Action extends WorkflowPanelAction 
 		super(myString);
 
 	}
+	
+	public String getToolTipText()
+	{
+		return new String("Import node and edge information from a delimited text file or MS Excel worksheet.");
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		String menuItemText = "";

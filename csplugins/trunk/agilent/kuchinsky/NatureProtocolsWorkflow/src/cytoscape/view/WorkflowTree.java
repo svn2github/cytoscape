@@ -198,14 +198,14 @@ public class WorkflowTree extends JPanel
         category.add(tool);
         
         
-        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(IMPORT_FROM_PATHWAY_COMMONS));
-   
-        category.add(tool);
-        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(IMPORT_FROM_INACT));
-        category.add(tool);
-        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(IMPORT_FROM_DIP));       
-        category.add(tool);
-      
+//        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(IMPORT_FROM_PATHWAY_COMMONS));
+//   
+//        category.add(tool);
+//        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(IMPORT_FROM_INACT));
+//        category.add(tool);
+//        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(IMPORT_FROM_DIP));       
+//        category.add(tool);
+//      
         
         
         category = new DefaultMutableTreeNode(DATA);
@@ -230,9 +230,9 @@ public class WorkflowTree extends JPanel
         
         tool = new DefaultMutableTreeNode(new WorkflowImport_Expression_Matrix_Action(DATA_EXPRESSION));
         category.add(tool);
-        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(DATA_SYNONYMS));
-        category.add(tool);
-        
+//        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(DATA_SYNONYMS));
+//        category.add(tool);
+//        
         category = new DefaultMutableTreeNode(ANALYZE);
         top.add(category);
         tool = new DefaultMutableTreeNode(new Workflow_mCode_Action(ANALYZE_MCODE));
@@ -252,8 +252,8 @@ public class WorkflowTree extends JPanel
         top.add(category);
         tool = new DefaultMutableTreeNode(new WorkflowExportAsGraphicsAction(PUBLISH_EXPORT_GRAPHICS));
         category.add(tool);
-        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(PUBLISH_EXPORT_SESSION));
-        category.add(tool);
+//        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(PUBLISH_EXPORT_SESSION));
+//        category.add(tool);
     }
     
     

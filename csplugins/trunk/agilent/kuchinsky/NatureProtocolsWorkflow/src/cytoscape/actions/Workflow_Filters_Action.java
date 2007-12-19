@@ -19,6 +19,13 @@ public class Workflow_Filters_Action extends WorkflowPanelAction {
 		super(name);
 	}
 	
+	public String getToolTipText()
+	{
+		return new String("<html> select nodes and edges based upon their attribute values.</html>"
+				);
+		
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		Component[] pluginsMenuItems = Cytoscape.getDesktop().getCyMenus().getSelectMenu().getMenuComponents();
