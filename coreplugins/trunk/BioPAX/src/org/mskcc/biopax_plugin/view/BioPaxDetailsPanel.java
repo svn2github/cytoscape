@@ -50,10 +50,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.ParagraphView;
-import javax.swing.text.html.StyleSheet;
+import javax.swing.text.html.*;
 
 
 /**
@@ -80,6 +77,7 @@ public class BioPaxDetailsPanel extends JPanel {
 		//  Set Editor Kit that is capable of handling long words
 		MyEditorKit kit = new MyEditorKit();
 		textPane.setEditorKit(kit);
+        modifyStyleSheetForSingleDocument(textPane);
 
         textPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         textPane.setBorder(new EmptyBorder (5,5,5,5));
@@ -101,7 +99,21 @@ public class BioPaxDetailsPanel extends JPanel {
 		nodeAttributes = Cytoscape.getNodeAttributes();
 	}
 
-	/**
+    private void modifyStyleSheetForSingleDocument(JTextPane textPane) {
+        HTMLDocument htmlDoc = (HTMLDocument) textPane.getDocument();
+        StyleSheet styleSheet = htmlDoc.getStyleSheet();
+        styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
+                + "margin-bottom:3px}");
+        styleSheet.addRule("h3 {color: #663333; font-size: 105%; font-weight: bold;"
+                + "margin-bottom:7px}");
+        styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
+                + "padding-left: 1em;	text-indent: -1em;}");
+        styleSheet.addRule("h4 {color: #66333; font-weight: bold; margin-bottom:3px;}");
+        styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
+        styleSheet.addRule(".excerpt {font-size: 90%;}");
+    }
+
+    /**
 	 * Resets the Text to "Select a node to view details...";
 	 */
 	public void resetText() {
@@ -291,21 +303,6 @@ public class BioPaxDetailsPanel extends JPanel {
  * @author Joust Team.
  */
 class MyEditorKit extends HTMLEditorKit {
-
-    public MyEditorKit() {
-        StyleSheet styleSheet = new StyleSheet();
-        styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
-                + "margin-bottom:3px}");
-        styleSheet.addRule("h3 {color: #663333; font-size: 105%; font-weight: bold;"
-                + "margin-bottom:7px}");
-        styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
-                + "padding-left: 1em;	text-indent: -1em;}");
-        styleSheet.addRule("h4 {color: #66333; font-weight: bold; margin-bottom:3px;}");
-        styleSheet.addRule("b {background-color: #FFFF00;}");
-        styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
-        styleSheet.addRule(".excerpt {font-size: 90%;}");
-        this.setStyleSheet(styleSheet);
-    }
 
     /**
 	 * Gets the ViewFactor Object.
