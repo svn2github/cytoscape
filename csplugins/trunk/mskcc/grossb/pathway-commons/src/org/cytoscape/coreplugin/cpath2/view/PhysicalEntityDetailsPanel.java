@@ -58,7 +58,10 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
 
         add (header, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
-        add(okButton, BorderLayout.SOUTH);
+        JPanel okPanel = new JPanel();
+        okPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        okPanel.add(okButton);
+        add(okPanel, BorderLayout.SOUTH);
 		
     }
 
