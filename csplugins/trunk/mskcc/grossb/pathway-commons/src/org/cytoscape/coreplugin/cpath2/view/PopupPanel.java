@@ -56,10 +56,14 @@ import javax.swing.JComponent;
 public class PopupPanel extends JPanel {
 
 	/**
-	 * opacity dec/inc step
+	 * total animation time in ms
 	 */
-	private static int OPACITY_STEP = 10;
+	private static int TOTAL_ANIMATION_TIME = 300;
 
+	/**
+	 * animation step in ms
+	 */
+	private static int ANIMATION_STEP = TOTAL_ANIMATION_TIME / 10;
 	
 	/**
 	 * ref to ourself - used by animation timer
@@ -69,7 +73,7 @@ public class PopupPanel extends JPanel {
 	/**
 	 * current level of opacity
 	 */
-	private int m_opacity;
+	private float m_opacity;
 
 	/**
 	 * our owner - used by animation timer
@@ -90,6 +94,12 @@ public class PopupPanel extends JPanel {
 	 * timer used for animations.
 	 */
 	private Timer m_timer;
+
+	/**
+	 * animation time in ms
+	 */
+	private long m_animation_time;
+
 
 	/**
 	 * robot used to capture screen
@@ -147,7 +157,7 @@ public class PopupPanel extends JPanel {
 	/**
 	 * Set opacity level of component - used for transitions.
 	 */
-	public void setOpacity(int opacity) {
+	public void setOpacity(float opacity) {
 		m_opacity = opacity;
 	}
 
@@ -176,7 +186,7 @@ public class PopupPanel extends JPanel {
 
 			// the draw "curtain" into it at proper alpha value
 			Composite origComposite = image2D.getComposite();
-			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(m_opacity/255.0));
+			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, m_opacity);
 
 			image2D.setComposite(newComposite);
 			image2D.drawImage(m_curtain_image, 0, 0, null);
@@ -194,7 +204,8 @@ public class PopupPanel extends JPanel {
 		setVisible(true);
 		m_modal_panel.setVisible(true);
 		m_timer = new java.util.Timer(true);
-		m_timer.scheduleAtFixedRate(new FaderTask(true), 10, 10);
+		m_animation_time = TOTAL_ANIMATION_TIME;
+		m_timer.scheduleAtFixedRate(new FaderTask(true), 10, ANIMATION_STEP);
 	}
 
 	/**
@@ -205,7 +216,8 @@ public class PopupPanel extends JPanel {
 		m_modal_panel.setVisible(false);
 		m_wrapped_component.setVisible(false);
 		m_timer = new java.util.Timer(true);
-		m_timer.scheduleAtFixedRate(new FaderTask(false), 10, 10);
+		m_animation_time = 0;
+		m_timer.scheduleAtFixedRate(new FaderTask(false), 10, ANIMATION_STEP);
 	}
 
 	/**
@@ -222,21 +234,19 @@ public class PopupPanel extends JPanel {
 	 */
 	class FaderTask extends TimerTask {
 		private boolean fadeIn;
-		private int popupOpacity;
 		public FaderTask(boolean fadeIn) {
 			this.fadeIn = fadeIn;
-			popupOpacity = (fadeIn) ? 255 : 0;
 		}
 		public void run() {
-			popupOpacity = (fadeIn) ? popupOpacity - PopupPanel.OPACITY_STEP : popupOpacity + PopupPanel.OPACITY_STEP;
-			if (popupOpacity > 255) popupOpacity = 255;
-			if (popupOpacity < 0) popupOpacity = 0;
-			m_popupPanel.setOpacity(popupOpacity);
-			if (fadeIn && popupOpacity <= 0) {
+			m_animation_time = (fadeIn)  ? m_animation_time - ANIMATION_STEP : m_animation_time + ANIMATION_STEP;
+			if (m_animation_time < 0) m_animation_time = 0;
+			if (m_animation_time > TOTAL_ANIMATION_TIME) m_animation_time = TOTAL_ANIMATION_TIME;
+			m_opacity = (float)m_animation_time / TOTAL_ANIMATION_TIME;
+			if (fadeIn && m_animation_time <= 0) {
 				m_timer.cancel();
 				m_wrapped_component.setVisible(true);
 			}
-			else if (!fadeIn && popupOpacity >= 255) {
+			else if (!fadeIn && m_animation_time >= TOTAL_ANIMATION_TIME) {
 				m_timer.cancel();
 				m_popupPanel.setVisible(false);
 			}
