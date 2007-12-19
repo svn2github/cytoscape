@@ -92,7 +92,7 @@ public class ModalPanel extends JPanel implements MouseListener {
 
 			// setup composite
 			Composite origComposite = g2d.getComposite();
-			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.025);
+			Composite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.040);
 
 			// draw
 			g2d.setComposite(newComposite);
