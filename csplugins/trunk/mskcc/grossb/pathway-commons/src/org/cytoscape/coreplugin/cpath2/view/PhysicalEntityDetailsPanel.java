@@ -6,6 +6,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.StyleSheet;
 import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -119,7 +120,8 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
             }
         });
 
-        StyleSheet styleSheet = new StyleSheet();
+        HTMLDocument htmlDoc = (HTMLDocument) textPane.getDocument();
+        StyleSheet styleSheet = htmlDoc.getStyleSheet();
         styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
                 + "margin-bottom:3px}");
         styleSheet.addRule("h3 {color: #663333; font-size: 105%; font-weight: bold;"
@@ -131,9 +133,6 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
         styleSheet.addRule(".bold {font-weight:bold;}");
         styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
         styleSheet.addRule(".excerpt {font-size: 90%;}");
-        HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
-        htmlEditorKit.setStyleSheet(styleSheet);
-        textPane.setEditorKit(htmlEditorKit);
         return textPane;
     }
 }
