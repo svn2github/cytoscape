@@ -123,6 +123,10 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+
+        <!-- Copy plugin.props -->
+        <copy todir="${build.classes}/org/cytoscape/coreplugin/cpath2/plugin"
+                file="plugin.props"/>
     </target>
 
     <!--  Target to Run Cytoscape with CPath2 Plugin -->
