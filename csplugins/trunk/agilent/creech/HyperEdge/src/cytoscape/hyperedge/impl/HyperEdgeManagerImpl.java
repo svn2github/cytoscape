@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Sep 16 17:13:31 2005
-* Modified:     Thu Oct 25 16:03:06 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Dec 19 14:25:03 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Wed Dec 19 14:23:47 2007 (Michael L. Creech) creech@w235krbza760
+*  Added actually deleting connectorNodes on the delayed deletion
+*  list whenever NETWORK_MODIFIED events are fired.
 * Thu Oct 25 16:02:47 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.57
 * Fri Oct 05 03:49:24 2007 (Michael L. Creech) creech@w235krbza760
@@ -242,6 +245,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
                                                                             new HENetworkCreatedUpdater());
         Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED,
                                                                             new HENetworkDestroyedUpdater());
+	// MLC 12/18/07 BEGIN:
+        Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_MODIFIED,
+                                                                            new HENetworkModifiedUpdater());	
+	// MLC 12/18/07 END.
         //        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
     }
 
@@ -1797,6 +1804,23 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             }
         }
     }
+
+    // MLC 12/18/07 BEGIN:
+    // We use network modification as a convenient
+    // time to clean off ConnectorNodes on the delayed hiding map.
+    // We have no easy way to test if the modification was a deletion,
+    // so we just do it for all modifications. This implies
+    // hideConnectorNodes() must be an efficient operation.
+    private class HENetworkModifiedUpdater implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent e) {
+            CyNetwork net = (CyNetwork)e.getNewValue(); 
+            HEUtils.log("NETWORK MODIFIED " + net.getIdentifier());
+	    hideConnectorNodes(net);
+        }
+    }
+
+    // MLC 12/18/07 END.
+
 
     // Handle removal of CyEdges from CyNetworks:
     private class GraphObjsHiddenUpdater
