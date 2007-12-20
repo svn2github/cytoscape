@@ -1,9 +1,5 @@
-#plugin.props
-
 # This props file should be filled out and included in the plugin jar file.  This props file will be used
 # to put information into the Plugin Manager about the plugin
-
-# -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users, white space within name is not allowed
 pluginName=PathwayCommons
@@ -21,8 +17,6 @@ cytoscapeVersion=2.6
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Connectivity
 
-# -- The following properties are OPTIONAL -- #
-
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
 projectURL=http://www.pathwaycommons.org
 
@@ -32,3 +26,8 @@ pluginAuthorsIntsitutions=Ethan Cerami, Benjamin Gross, Chris Sander:Memorial Sl
 
 # Date this plugin/plugin version was released
 releaseDate=January 1, 2008
+
+# Change these properties if you want to point the plugin to a different cPath server.
+cpath2.server_name=Mouse Interaction Database
+cpath2.server_url=http://awabi.cbio.mskcc.org/pc-demo/webservice.do
+cpath2.server_blurb=The Mouse Interaction Database is... blah, blah, blah....
