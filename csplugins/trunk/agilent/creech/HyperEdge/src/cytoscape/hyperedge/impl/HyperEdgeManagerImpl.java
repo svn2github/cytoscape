@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Sep 16 17:13:31 2005
-* Modified:     Wed Dec 19 14:25:03 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Dec 20 10:22:06 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -154,10 +154,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // used for fine-grained synchronization:
     private final static Boolean          INTERSECTION_LOCK   = new Boolean(true);
     private static final HyperEdgeManager INSTANCE            = new HyperEdgeManagerImpl();
-    private static final Double           VERSION_NUMBER      = 2.57;
+    private static final Double           VERSION_NUMBER      = 2.58;
     private static final String           VERSION             = "HyperEdge Version " +
                                                                 VERSION_NUMBER +
-                                                                ", 25-Oct-07";
+                                                                ", 20-Dec-07";
     private static transient ListenerList _new_listener_store = new ListenerList();
 
     // Used for setting and reading _internalRemoval:
