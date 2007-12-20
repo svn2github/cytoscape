@@ -15,7 +15,7 @@ pluginVersion=2.0
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
-pluginCategory=Connectivity
+pluginCategory=Network and Attribute I/O
 
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
 projectURL=http://www.pathwaycommons.org
@@ -29,5 +29,5 @@ releaseDate=January 1, 2008
 
 # Change these properties if you want to point the plugin to a different cPath server.
 #cpath2.server_name=Mouse Interaction Database
-#cpath2.server_url=http://awabi.cbio.mskcc.org/pc-demo/webservice.do
+cpath2.server_url=http://awabi.cbio.mskcc.org/pc/webservice.do
 #cpath2.server_blurb=The Mouse Interaction Database is... blah, blah, blah....
