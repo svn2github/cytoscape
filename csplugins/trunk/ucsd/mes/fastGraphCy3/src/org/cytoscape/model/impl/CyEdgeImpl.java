@@ -4,14 +4,15 @@ package org.cytoscape.model.impl;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 
-class CyEdgeImpl implements CyEdge {
+class CyEdgeImpl extends GraphObjImpl implements CyEdge {
 
-	private CyNode source;
-	private CyNode target;
-	private int index;
-	private boolean directed;
+	final private CyNode source;
+	final private CyNode target;
+	final private int index;
+	final private boolean directed;
 
 	CyEdgeImpl(CyNode src, CyNode tgt, boolean dir, int ind) {
+		super();
 		source = src;
 		target = tgt;
 		directed = dir;

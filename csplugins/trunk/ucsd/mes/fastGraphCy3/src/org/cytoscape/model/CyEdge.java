@@ -1,7 +1,7 @@
 
 package org.cytoscape.model;
 
-public interface CyEdge {
+public interface CyEdge extends GraphObject {
 	public int getIndex();
 	public CyNode getSource();
 	public CyNode getTarget();

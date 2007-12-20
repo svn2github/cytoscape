@@ -24,14 +24,8 @@ public interface CyNetwork {
 	public CyNode getNode(int index);
 	public CyEdge getEdge(int index);
 
-	public List<CyNode> getNeighborList( CyNode node, byte edgeType );
-	public List<CyEdge> getAdjacentEdgeList( CyNode node, byte edgeType );
-	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, byte edgeType );
+	public List<CyNode> getNeighborList( CyNode node, EdgeType edgeType );
+	public List<CyEdge> getAdjacentEdgeList( CyNode node, EdgeType edgeType );
+	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, EdgeType edgeType );
 
-    public static final byte NO_EDGE        = 0;
-	public static final byte UNDIRECTED_EDGE    = (1 << 0);
-	public static final byte INCOMING_EDGE      = (1 << 1);
-	public static final byte OUTGOING_EDGE      = (1 << 2);
-	public static final byte DIRECTED_EDGE      = INCOMING_EDGE | OUTGOING_EDGE;
-	public static final byte ANY_EDGE       = UNDIRECTED_EDGE | DIRECTED_EDGE;
 }

@@ -373,25 +373,25 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e2 = net.addEdge(n2,n3,false);
 
 		// one neighbor
-		List<CyNode> l = net.getNeighborList(n1,CyNetwork.ANY_EDGE);
+		List<CyNode> l = net.getNeighborList(n1,EdgeType.ANY_EDGE);
 		assertEquals("one neighbor",1,l.size());
 		assertTrue("contains node 2",l.contains(n2));
 
 		// two neighbors
-		l = net.getNeighborList(n2,CyNetwork.ANY_EDGE);
+		l = net.getNeighborList(n2,EdgeType.ANY_EDGE);
 		assertEquals("two neighbors",2,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 3",l.contains(n3));
 		assertFalse("contains node 4",l.contains(n4));
 
 		// no neighbors
-		l = net.getNeighborList(n4,CyNetwork.ANY_EDGE);
+		l = net.getNeighborList(n4,EdgeType.ANY_EDGE);
 		assertEquals("no neighbors",0,l.size());
 
 		// whoa!  what about self edges?
 		// TODO
 		CyEdge e3 = net.addEdge(n4,n4,false);
-		l = net.getNeighborList(n4,CyNetwork.ANY_EDGE);
+		l = net.getNeighborList(n4,EdgeType.ANY_EDGE);
 		assertEquals("one neighbor?",1,l.size());
 	}
 
@@ -407,30 +407,30 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e3 = net.addEdge(n4,n2,false);
 		CyEdge e4 = net.addEdge(n4,n1,false);
 
-		List<CyNode> l = net.getNeighborList(n1,CyNetwork.UNDIRECTED_EDGE);
+		List<CyNode> l = net.getNeighborList(n1,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("node 1 neighbors",2,l.size());
 		assertTrue("contains node 2",l.contains(n2));
 		assertTrue("contains node 4",l.contains(n4));
 	
-		l = net.getNeighborList(n2,CyNetwork.UNDIRECTED_EDGE);
+		l = net.getNeighborList(n2,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("node 2 neighbors",3,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 3",l.contains(n3));
 		assertTrue("contains node 4",l.contains(n4));
 
-		l = net.getNeighborList(n2,CyNetwork.ANY_EDGE);
+		l = net.getNeighborList(n2,EdgeType.ANY_EDGE);
 		assertEquals("node 2 neighbors",3,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 3",l.contains(n3));
 		assertTrue("contains node 4",l.contains(n4));
 
-		l = net.getNeighborList(n2,CyNetwork.INCOMING_EDGE);
+		l = net.getNeighborList(n2,EdgeType.INCOMING_EDGE);
 		assertEquals("node 2 neighbors",0,l.size());
 
-		l = net.getNeighborList(n2,CyNetwork.OUTGOING_EDGE);
+		l = net.getNeighborList(n2,EdgeType.OUTGOING_EDGE);
 		assertEquals("node 2 neighbors",0,l.size());
 
-		l = net.getNeighborList(n2,CyNetwork.DIRECTED_EDGE);
+		l = net.getNeighborList(n2,EdgeType.DIRECTED_EDGE);
 		assertEquals("node 2 neighbors",0,l.size());
 	}
 
@@ -447,35 +447,35 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e4 = net.addEdge(n4,n1,true);
 		CyEdge e5 = net.addEdge(n5,n2,false);
 
-		List<CyNode> l = net.getNeighborList(n1,CyNetwork.DIRECTED_EDGE);
+		List<CyNode> l = net.getNeighborList(n1,EdgeType.DIRECTED_EDGE);
 		assertEquals("node 1 neighbors directed",2,l.size());
 		assertTrue("contains node 2",l.contains(n2));
 		assertTrue("contains node 4",l.contains(n4));
 	
-		l = net.getNeighborList(n1,CyNetwork.INCOMING_EDGE);
+		l = net.getNeighborList(n1,EdgeType.INCOMING_EDGE);
 		assertEquals("node 1 neighbors incoming",1,l.size());
 		assertTrue("contains node 4",l.contains(n4));
 
-		l = net.getNeighborList(n1,CyNetwork.OUTGOING_EDGE);
+		l = net.getNeighborList(n1,EdgeType.OUTGOING_EDGE);
 		assertEquals("node 1 neighbors outgoing",1,l.size());
 		assertTrue("contains node 2",l.contains(n2));
 
-		l = net.getNeighborList(n2,CyNetwork.UNDIRECTED_EDGE);
+		l = net.getNeighborList(n2,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("node 2 neighbors undirected",1,l.size());
 		assertTrue("contains node 5",l.contains(n5));
 
-		l = net.getNeighborList(n2,CyNetwork.DIRECTED_EDGE);
+		l = net.getNeighborList(n2,EdgeType.DIRECTED_EDGE);
 		assertEquals("node 2 neighbors directed",3,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 3",l.contains(n3));
 		assertTrue("contains node 4",l.contains(n4));
 
-		l = net.getNeighborList(n2,CyNetwork.INCOMING_EDGE);
+		l = net.getNeighborList(n2,EdgeType.INCOMING_EDGE);
 		assertEquals("node 2 neighbors incoming",2,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 4",l.contains(n4));
 
-		l = net.getNeighborList(n2,CyNetwork.OUTGOING_EDGE);
+		l = net.getNeighborList(n2,EdgeType.OUTGOING_EDGE);
 		assertEquals("node 2 neighbors outgoing",1,l.size());
 		assertTrue("contains node 3",l.contains(n3));
 	}
@@ -490,24 +490,24 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e2 = net.addEdge(n2,n3,false);
 
 		// one edge
-		List<CyEdge> l = net.getAdjacentEdgeList(n1,CyNetwork.ANY_EDGE);
+		List<CyEdge> l = net.getAdjacentEdgeList(n1,EdgeType.ANY_EDGE);
 		assertEquals("one adjacent edge",1,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 
 		// two edge
-		l = net.getAdjacentEdgeList(n2,CyNetwork.ANY_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.ANY_EDGE);
 		assertEquals("two adjacent edges",2,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 2",l.contains(e2));
 
 		// no adjacent edges
-		l = net.getAdjacentEdgeList(n4,CyNetwork.ANY_EDGE);
+		l = net.getAdjacentEdgeList(n4,EdgeType.ANY_EDGE);
 		assertEquals("no edges",0,l.size());
 
 		// whoa!  what about self edges?
 		// TODO
 		CyEdge e3 = net.addEdge(n4,n4,false);
-		l = net.getAdjacentEdgeList(n4,CyNetwork.ANY_EDGE);
+		l = net.getAdjacentEdgeList(n4,EdgeType.ANY_EDGE);
 		assertEquals("one adjacent edge?",1,l.size());
 	}
 
@@ -523,30 +523,30 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e3 = net.addEdge(n4,n2,false);
 		CyEdge e4 = net.addEdge(n4,n1,false);
 
-		List<CyEdge> l = net.getAdjacentEdgeList(n1,CyNetwork.UNDIRECTED_EDGE);
+		List<CyEdge> l = net.getAdjacentEdgeList(n1,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("node 1 adjacent edges",2,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 4",l.contains(e4));
 	
-		l = net.getAdjacentEdgeList(n2,CyNetwork.UNDIRECTED_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("node 2 adjacent edges",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 2",l.contains(e2));
 		assertTrue("contains edge 3",l.contains(e3));
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.ANY_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.ANY_EDGE);
 		assertEquals("node 2 adjacent edges",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 2",l.contains(e2));
 		assertTrue("contains edge 3",l.contains(e3));
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.INCOMING_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.INCOMING_EDGE);
 		assertEquals("node 2 adjacent edges",0,l.size());
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.OUTGOING_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.OUTGOING_EDGE);
 		assertEquals("node 2 adjacent edges",0,l.size());
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.DIRECTED_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.DIRECTED_EDGE);
 		assertEquals("node 2 adjacent edges",0,l.size());
 	}
 
@@ -563,35 +563,35 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e4 = net.addEdge(n4,n1,true);
 		CyEdge e5 = net.addEdge(n5,n2,false);
 
-		List<CyEdge> l = net.getAdjacentEdgeList(n1,CyNetwork.DIRECTED_EDGE);
+		List<CyEdge> l = net.getAdjacentEdgeList(n1,EdgeType.DIRECTED_EDGE);
 		assertEquals("node 1 adjacent edges directed",2,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 4",l.contains(e4));
 	
-		l = net.getAdjacentEdgeList(n1,CyNetwork.INCOMING_EDGE);
+		l = net.getAdjacentEdgeList(n1,EdgeType.INCOMING_EDGE);
 		assertEquals("node 1 adjacent edges incoming",1,l.size());
 		assertTrue("contains edge 4",l.contains(e4));
 
-		l = net.getAdjacentEdgeList(n1,CyNetwork.OUTGOING_EDGE);
+		l = net.getAdjacentEdgeList(n1,EdgeType.OUTGOING_EDGE);
 		assertEquals("node 1 adjacent edges outgoing",1,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.UNDIRECTED_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("node 2 adjacent edges undirected",1,l.size());
 		assertTrue("contains edge 5",l.contains(e5));
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.DIRECTED_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.DIRECTED_EDGE);
 		assertEquals("node 2 adjacent edges directed",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 2",l.contains(e2));
 		assertTrue("contains edge 3",l.contains(e3));
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.INCOMING_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.INCOMING_EDGE);
 		assertEquals("node 2 adjacent edges incoming",2,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 3",l.contains(e3));
 
-		l = net.getAdjacentEdgeList(n2,CyNetwork.OUTGOING_EDGE);
+		l = net.getAdjacentEdgeList(n2,EdgeType.OUTGOING_EDGE);
 		assertEquals("node 2 adjacent edges outgoing",1,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 	}
@@ -607,20 +607,20 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e4 = net.addEdge(n1,n2,false);
 
 		// between node 1 and 2
-		List<CyEdge> l = net.getConnectingEdgeList(n1,n2,CyNetwork.ANY_EDGE);
+		List<CyEdge> l = net.getConnectingEdgeList(n1,n2,EdgeType.ANY_EDGE);
 		assertEquals("connecting edges",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 3",l.contains(e1));
 		assertTrue("contains edge 4",l.contains(e4));
 
 		// between node 2 and 3
-		l = net.getConnectingEdgeList(n3,n2,CyNetwork.ANY_EDGE);
+		l = net.getConnectingEdgeList(n3,n2,EdgeType.ANY_EDGE);
 		assertEquals("connecting edges",1,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 
 		// between node 2 and 3 after adding an edge
 		CyEdge e5 = net.addEdge(n3,n2,false);
-		l = net.getConnectingEdgeList(n2,n3,CyNetwork.ANY_EDGE);
+		l = net.getConnectingEdgeList(n2,n3,EdgeType.ANY_EDGE);
 		assertEquals("connecting edges",2,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 		assertTrue("contains edge 5",l.contains(e5));
@@ -628,7 +628,7 @@ public class CyNetworkTest extends TestCase {
 		// between node 2 and 3 after deleting an edge
 		boolean rem5 = net.removeEdge(e5);
 		assertTrue("removed successfully",rem5);
-		l = net.getConnectingEdgeList(n2,n3,CyNetwork.ANY_EDGE);
+		l = net.getConnectingEdgeList(n2,n3,EdgeType.ANY_EDGE);
 		assertEquals("connecting edges",1,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 	}
@@ -644,7 +644,7 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e4 = net.addEdge(n1,n2,true);
 
 		// between node 1 and 2
-		List<CyEdge> l = net.getConnectingEdgeList(n1,n2,CyNetwork.UNDIRECTED_EDGE);
+		List<CyEdge> l = net.getConnectingEdgeList(n1,n2,EdgeType.UNDIRECTED_EDGE);
 		assertEquals("connecting edges",2,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 3",l.contains(e3));
@@ -662,7 +662,7 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e5 = net.addEdge(n2,n1,false);
 
 		// between node 1 and 2
-		List<CyEdge> l = net.getConnectingEdgeList(n1,n2,CyNetwork.DIRECTED_EDGE);
+		List<CyEdge> l = net.getConnectingEdgeList(n1,n2,EdgeType.DIRECTED_EDGE);
 		assertEquals("connecting edges",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 3",l.contains(e3));
@@ -693,17 +693,34 @@ public class CyNetworkTest extends TestCase {
 		assertNull("edge is null ",net.getEdge(72));
 	}
 
-	private class DummyCyNode implements CyNode {
+	private static int suidBase = 0;
+	private class SUID implements GraphObject {
+		int suid;
+		SUID() {
+			suid = suidBase++; 
+		}
+
+		public int getSUID() {
+			return suid;
+		}
+	}
+
+	private class DummyCyNode extends SUID implements CyNode {
 		int ind;
 		DummyCyNode( int x ) {
+			super();
 			ind = x;
 		}
 		public int getIndex() {
 			return ind;
 		}
+
+		public List<CyNode> getNeighborList( EdgeType edgeType ) { return null; }
+		public List<CyEdge> getAdjacentEdgeList( EdgeType edgeType ) { return null; }
+		public List<CyEdge> getConnectingEdgeList( CyNode target, EdgeType edgeType ) { return null; }
 	}
 
-	private class DummyCyEdge implements CyEdge {
+	private class DummyCyEdge extends SUID implements CyEdge {
 	
 		CyNode source;
 		CyNode target;
@@ -711,6 +728,7 @@ public class CyNetworkTest extends TestCase {
 		boolean directed;
 
 		DummyCyEdge(CyNode src, CyNode tgt, boolean dir, int ind) {
+			super();
 			source = src;
 			target = tgt;
 			directed = dir;

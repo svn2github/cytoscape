@@ -23,7 +23,7 @@
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="tests.dir" value="${root.dir}/tests"/>
     <property name="build.dir" value="${root.dir}/build"/>
-    <property name="javadoc.dir" value="${root.dir}/API"/>
+    <property name="javadoc.dir" value="${build.dir}/API"/>
     <property name="log.dir" value="${build.dir}/logs" />
     <property name="junit.report.dir" value="${log.dir}/junit-reports" />
 
@@ -54,6 +54,15 @@
         <available file="${tests.dir}" />
       </and>
     </condition>
+
+    <pathconvert property="manifest.classpath.string"
+                 pathsep=" ">
+      <path refid="project.class.path"/>
+        <chainedmapper>
+          <flattenmapper/>
+          <globmapper from="*" to="lib/*" handledirsep="yes"/>
+        </chainedmapper>
+    </pathconvert>
 
   </target>
 
@@ -88,6 +97,11 @@
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
+        <manifest>
+          <attribute name="Main-Class" value="org.cytoscape.Main"/>
+          <attribute name="Class-Path" value="${manifest.classpath.string}"/>
+        </manifest>
+
     </jar>
     <echo message="Successfully ran jar task!"/>
   </target>

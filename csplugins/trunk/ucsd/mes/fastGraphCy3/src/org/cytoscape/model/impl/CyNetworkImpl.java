@@ -4,6 +4,7 @@ package org.cytoscape.model.impl;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.RuntimeException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
@@ -14,32 +15,37 @@ import cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.EdgeType;
 
 public class CyNetworkImpl implements CyNetwork {
 
-	private String id;
-	private DynamicGraph dg;
-	private ArrayList<CyNode> nodeList; 
-	private ArrayList<CyEdge> edgeList; 
-	private int nodeCount;
-	private int edgeCount;
+	final private String id;
+	final private DynamicGraph dg;
+	final private ArrayList<CyNode> nodeList; 
+	final private ArrayList<CyEdge> edgeList; 
+	final private AtomicInteger nodeCount;
+	final private AtomicInteger edgeCount;
 
-	public CyNetworkImpl(String ident) {
+	final static private int OUT = 0;
+	final static private int IN = 1;
+	final static private int UN = 2;
+
+	public CyNetworkImpl(final String ident) {
 		id = ident;
 		dg = DynamicGraphFactory.instantiateDynamicGraph();
 		nodeList = new ArrayList<CyNode>();
 		edgeList = new ArrayList<CyEdge>();
-		nodeCount = 0;
-		edgeCount = 0;
+		nodeCount = new AtomicInteger(0);
+		edgeCount = new AtomicInteger(0);
 	}
 		
 	public String getIdentifier() {
 		return id;
 	}
 
-	public CyNode addNode() {
+	public synchronized CyNode addNode() {
 		int newNodeInd = dg.nodeCreate();	
-		CyNode newNode = new CyNodeImpl(newNodeInd);
+		CyNode newNode = new CyNodeImpl(this,newNodeInd);
 		if ( newNodeInd == nodeList.size() )
 			nodeList.add( newNode );
 		else if ( newNodeInd < nodeList.size() && newNodeInd >= 0 )
@@ -47,15 +53,15 @@ public class CyNetworkImpl implements CyNetwork {
 		else
 			throw new RuntimeException("bad new int index: " + newNodeInd + " max size: " + nodeList.size());
 
-		nodeCount++;
+		nodeCount.incrementAndGet();
 		return newNode;
 	}
 
-	public boolean removeNode(CyNode node) {
+	public synchronized boolean removeNode(final CyNode node) {
 		if ( !contains(node) ) 
 			return false;
 
-		List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,CyNetwork.ANY_EDGE);
+		List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
 		for ( CyEdge etr : edgesToRemove ) {
 			boolean removeSuccess = removeEdge(etr);
 			if ( !removeSuccess )
@@ -66,13 +72,13 @@ public class CyNetworkImpl implements CyNetwork {
 		boolean rem = dg.nodeRemove(remInd);
 		if ( rem ) {
 			nodeList.set(remInd, null);
-			nodeCount--;
+			nodeCount.decrementAndGet();
 		}
 		
 		return rem;
 	}
 
-	public CyEdge addEdge(CyNode source, CyNode target, boolean isDirected) {
+	public synchronized CyEdge addEdge(final CyNode source, final CyNode target, final boolean isDirected) {
 		if ( !contains(source) || !contains(target) ) 
 			throw new RuntimeException("invalid input nodes");
 
@@ -86,12 +92,12 @@ public class CyNetworkImpl implements CyNetwork {
 		else
 			throw new RuntimeException("bad new int index: " + newEdgeInd + " max size: " + edgeList.size());
 
-		edgeCount++;
+		edgeCount.incrementAndGet();
 		return newEdge;
 	}
 
 
-	public boolean removeEdge(CyEdge edge) {
+	public synchronized boolean removeEdge(final CyEdge edge) {
 		if ( !contains(edge) ) 
 			return false;
 
@@ -99,23 +105,23 @@ public class CyNetworkImpl implements CyNetwork {
 		boolean rem = dg.edgeRemove(remInd);
 		if ( rem ) {
 			edgeList.set(remInd, null);
-			edgeCount--;
+			edgeCount.decrementAndGet();
 		}
 		
 		return rem;
 	}
 
-	public int getNodeCount() {
-		return nodeCount;
+	public synchronized int getNodeCount() {
+		return nodeCount.get();
 	}
 
-	public int getEdgeCount() {
-		return edgeCount;
+	public synchronized int getEdgeCount() {
+		return edgeCount.get();
 	}
 
-	public List<CyNode> getNodeList() {
-		ArrayList<CyNode> nl = new ArrayList<CyNode>();
-		IntEnumerator it = dg.nodes();
+	public synchronized List<CyNode> getNodeList() {
+		final ArrayList<CyNode> nl = new ArrayList<CyNode>();
+		final IntEnumerator it = dg.nodes();
 
 		while ( it.numRemaining() > 0 ) {
 			CyNode n = nodeList.get( it.nextInt() );
@@ -127,9 +133,9 @@ public class CyNetworkImpl implements CyNetwork {
 		return nl;
 	}
 
-	public List<CyEdge> getEdgeList() {
-		ArrayList<CyEdge> el = new ArrayList<CyEdge>();
-		IntEnumerator it = dg.edges();
+	public synchronized List<CyEdge> getEdgeList() {
+		final ArrayList<CyEdge> el = new ArrayList<CyEdge>();
+		final IntEnumerator it = dg.edges();
 
 		while ( it.numRemaining() > 0 ) {
 			CyEdge e = edgeList.get( it.nextInt() );
@@ -141,14 +147,14 @@ public class CyNetworkImpl implements CyNetwork {
 		return el;
 	}
 
-	public boolean contains( CyNode node ) {
+	public synchronized boolean contains( final CyNode node ) {
 		if ( node == null )
 			return false;
 
 		return dg.nodeExists( node.getIndex() );
 	}
 
-	public boolean contains( CyEdge edge ) {
+	public synchronized boolean contains( final CyEdge edge ) {
 		if ( edge == null )
 			return false;
 
@@ -158,11 +164,11 @@ public class CyNetworkImpl implements CyNetwork {
 			return true;
 	}
 
-	public boolean contains( CyNode from, CyNode to ) {
+	public synchronized boolean contains( final CyNode from, final CyNode to ) {
 		if ( !contains(from) || !contains(to) )
 			return false;
 	
-		IntIterator it = dg.edgesConnecting(from.getIndex(),to.getIndex(),true,true,true);
+		final IntIterator it = dg.edgesConnecting(from.getIndex(),to.getIndex(),true,true,true);
 
 		if ( it == null )
 			return false;
@@ -170,91 +176,109 @@ public class CyNetworkImpl implements CyNetwork {
 		return it.hasNext();
 	}
 
-	public List<CyNode> getNeighborList( CyNode node, byte edgeType ) {
-		if ( !contains(node) )
-			throw new RuntimeException("bad node");
-		
+	public List<CyNode> getNeighborList( final CyNode node, final EdgeType edgeType ) {
+
+		boolean[] et = convertEdgeType(edgeType);
+
+		final IntEnumerator it; 
 		ArrayList<CyNode> nodes = new ArrayList<CyNode>();
 
-		boolean incoming = (edgeType & CyNetwork.INCOMING_EDGE) == CyNetwork.INCOMING_EDGE;
-		boolean outgoing = (edgeType & CyNetwork.OUTGOING_EDGE) == CyNetwork.OUTGOING_EDGE;
-		boolean undirected = (edgeType & CyNetwork.UNDIRECTED_EDGE) == CyNetwork.UNDIRECTED_EDGE;
+		synchronized(this) {
+			if ( !contains(node) )
+				throw new RuntimeException("bad node");
+		
+			it = dg.edgesAdjacent(node.getIndex(),et[OUT],et[IN],et[UN]);
 
-		IntEnumerator it = dg.edgesAdjacent(node.getIndex(),outgoing,incoming,undirected);
+			while ( it != null && it.numRemaining() > 0 ) {
+				int edgeInd = it.nextInt();
+				int neighbor = node.getIndex() ^ dg.edgeSource(edgeInd) ^ dg.edgeTarget(edgeInd);
+				if ( neighbor < 0 || neighbor >= nodeList.size() )
+					throw new RuntimeException("bad neighbor");
+				CyNode n = nodeList.get(neighbor);
+				if ( n == null )
+					throw new RuntimeException("null neighbor");
 
-		while ( it != null && it.numRemaining() > 0 ) {
-			int edgeInd = it.nextInt();
-			int neighbor = node.getIndex() ^ dg.edgeSource(edgeInd) ^ dg.edgeTarget(edgeInd);
-			if ( neighbor < 0 || neighbor >= nodeList.size() )
-				throw new RuntimeException("bad neighbor");
-			CyNode n = nodeList.get(neighbor);
-			if ( n == null )
-				throw new RuntimeException("null neighbor");
-
-			nodes.add(n);
+				nodes.add(n);
+			}
 		}
 
 		return nodes;
 	}
 
-	public List<CyEdge> getAdjacentEdgeList( CyNode node, byte edgeType ) {
-		if ( !contains(node) )
-			throw new RuntimeException("bad nodes");
+	public List<CyEdge> getAdjacentEdgeList( final CyNode node, final EdgeType edgeType ) {
+		boolean[] et = convertEdgeType(edgeType);
 
 		ArrayList<CyEdge> edges = new ArrayList<CyEdge>();
+		final IntEnumerator it; 
 
-		boolean incoming = (edgeType & CyNetwork.INCOMING_EDGE) == CyNetwork.INCOMING_EDGE;
-		boolean outgoing = (edgeType & CyNetwork.OUTGOING_EDGE) == CyNetwork.OUTGOING_EDGE;
-		boolean undirected = (edgeType & CyNetwork.UNDIRECTED_EDGE) == CyNetwork.UNDIRECTED_EDGE;
+		synchronized(this) {
+			if ( !contains(node) )
+				throw new RuntimeException("bad nodes");
 
-		IntEnumerator it = dg.edgesAdjacent(node.getIndex(),outgoing,incoming,undirected);
+			it = dg.edgesAdjacent(node.getIndex(),et[OUT],et[IN],et[UN]);
 
-		while ( it != null && it.numRemaining() > 0 ) {
-			int edgeInd = it.nextInt();
-			CyEdge e = edgeList.get(edgeInd);
-			if ( e == null )
-				throw new RuntimeException("Iterator and List out of sync");
-			edges.add(e);
+			while ( it != null && it.numRemaining() > 0 ) {
+				int edgeInd = it.nextInt();
+				CyEdge e = edgeList.get(edgeInd);
+				if ( e == null )
+					throw new RuntimeException("Iterator and List out of sync");
+				edges.add(e);
+			}
 		}
 
 		return edges;
 	}
 
-	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, byte edgeType ) {
-		if ( !contains(source) || !contains(target) )
-			throw new RuntimeException("bad nodes");
+	public List<CyEdge> getConnectingEdgeList( final CyNode source, final CyNode target, 
+	                                           final EdgeType edgeType ) {
+		boolean[] et = convertEdgeType(edgeType);
 
 		ArrayList<CyEdge> edges = new ArrayList<CyEdge>();
+		final IntIterator it;
 
-		boolean incoming = (edgeType & CyNetwork.INCOMING_EDGE) == CyNetwork.INCOMING_EDGE;
-		boolean outgoing = (edgeType & CyNetwork.OUTGOING_EDGE) == CyNetwork.OUTGOING_EDGE;
-		boolean undirected = (edgeType & CyNetwork.UNDIRECTED_EDGE) == CyNetwork.UNDIRECTED_EDGE;
+		synchronized(this) {
+			if ( !contains(source) || !contains(target) )
+				throw new RuntimeException("bad nodes");
 
-		IntIterator it = dg.edgesConnecting(source.getIndex(),target.getIndex(),
-		                                       outgoing,incoming,undirected);
+			it = dg.edgesConnecting(source.getIndex(),target.getIndex(),et[OUT],et[IN],et[UN]);
 
-		while ( it != null && it.hasNext() ) {
-			int edgeInd = it.nextInt();
-			CyEdge e = edgeList.get(edgeInd);
-			if ( e == null )
-				throw new RuntimeException("Iterator and List out of sync");
-			edges.add(e);
+			while ( it != null && it.hasNext() ) {
+				int edgeInd = it.nextInt();
+				CyEdge e = edgeList.get(edgeInd);
+				if ( e == null )
+					throw new RuntimeException("Iterator and List out of sync");
+				edges.add(e);
+			}
 		}
 
 		return edges;
 	}
 
-	public CyNode getNode(int index) {
+	public synchronized CyNode getNode(final int index) {
 		if ( index < 0 || index >= nodeList.size() )
 			return null;
 		else 
 			return nodeList.get(index);
 	}
 
-	public CyEdge getEdge(int index) {
+	public synchronized CyEdge getEdge(final int index) {
 		if ( index < 0 || index >= edgeList.size() )
 			return null;
 		else 
 			return edgeList.get(index);
+	}
+
+	private boolean[] convertEdgeType(final EdgeType e) {
+
+		if ( e == EdgeType.UNDIRECTED_EDGE )
+			return new boolean[] { false, false, true }; 
+		else if ( e == EdgeType.DIRECTED_EDGE )
+			return new boolean[] { true, true, false }; 
+		else if ( e == EdgeType.INCOMING_EDGE )
+			return new boolean[] { false, true, false }; 
+		else if ( e == EdgeType.OUTGOING_EDGE )
+			return new boolean[] { true, false, false }; 
+		else // ANY_EDGE
+			return new boolean[] { true, true, true }; 
 	}
 }
