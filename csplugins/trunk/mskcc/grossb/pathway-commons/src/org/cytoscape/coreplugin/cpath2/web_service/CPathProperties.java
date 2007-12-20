@@ -1,6 +1,8 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.plugin.PluginProperties;
+
 import java.util.Properties;
 
 /**
@@ -12,7 +14,7 @@ public class CPathProperties {
 	/**
 	 * Property:  CPath2 Read Location.
 	 */
-	public static final String CPATH_URL = new String("cpath2.url");
+	public static final String CPATH_URL = new String("cpath2.server_url");
 
     /**
      * Property:  CPath2 Server Name.
@@ -24,22 +26,57 @@ public class CPathProperties {
      */
     public static final String CPATH_INSTANCE_BLURB = new String ("cpath2.server_blurb");
 
+    private static CPathProperties cpathProperties;
+    private static String cPathUrl;
+    private static String serverName;
+    private static String blurb;
+
+    /**
+     * Gets singleton instance of cPath Properties.
+     * @return CPathProperties class.
+     */
+    public static CPathProperties getInstance() {
+        if (cpathProperties == null) {
+               cpathProperties = new CPathProperties();
+        }
+        return cpathProperties;
+    }
+
+    private CPathProperties () {
+        //  no-op; private constructor;
+    }
+
+    public void initProperties (PluginProperties pluginProperties) {
+        cPathUrl = pluginProperties.getProperty(CPATH_URL);
+
+        if (cPathUrl == null) {
+            cPathUrl = "http://localhost:8080/cpath/webservice.do";
+           //return "http://awabi.cbio.mskcc.org/pc-demo/webservice.do";
+        }
+
+        serverName = pluginProperties.getProperty(CPATH_INSTANCE_BNAME);
+        if (serverName == null) {
+            serverName = "Pathway Commons";
+        }
+
+        blurb = pluginProperties.getProperty(CPATH_INSTANCE_BLURB);
+        if (blurb == null) {
+            blurb = "<span class='bold'>Pathway Commons</span> is a convenient point of access " +
+                "to biological pathway " +
+                "information collected from public pathway databases, which you can " +
+                "browse or search. <BR><BR>Pathways include biochemical reactions, complex " +
+                "assembly, transport and catalysis events, and physical interactions " +
+                "involving proteins, DNA, RNA, small molecules and complexes.";
+        }
+    }
+
     /**
 	 * Gets URL for cPath Web Service API.
 	 *
 	 * @return cPath URL.
 	 */
-	public static String getCPathUrl() {
-		Properties properties = CytoscapeInit.getProperties();
-		String url = properties.getProperty(CPATH_URL);
-
-		if (url != null) {
-			return url;
-		} else {
-			//  hard-coded default
-			return "http://localhost:8080/cpath/webservice.do";
-           //return "http://awabi.cbio.mskcc.org/pc-demo/webservice.do";
-        }
+	public String getCPathUrl() {
+        return cPathUrl;
 	}
 
     /**
@@ -47,16 +84,8 @@ public class CPathProperties {
 	 *
 	 * @return cPath URL.
 	 */
-	public static String getCPathServerName() {
-		Properties properties = CytoscapeInit.getProperties();
-		String serverName = properties.getProperty(CPATH_INSTANCE_BNAME);
-
-		if (serverName != null) {
-			return serverName;
-		} else {
-			//  hard-coded default
-			return "Pathway Commons";
-        }
+	public String getCPathServerName() {
+		return serverName;
 	}
 
     /**
@@ -64,20 +93,7 @@ public class CPathProperties {
 	 *
 	 * @return cPath URL.
 	 */
-	public static String getCPathBlurb() {
-		Properties properties = CytoscapeInit.getProperties();
-		String blurb = properties.getProperty(CPATH_INSTANCE_BLURB);
-
-		if (blurb != null) {
-			return blurb;
-		} else {
-			//  hard-coded default
-			return "<span class='bold'>Pathway Commons</span> is a convenient point of access " +
-                "to biological pathway " +
-                "information collected from public pathway databases, which you can " +
-                "browse or search. <BR><BR>Pathways include biochemical reactions, complex " +
-                "assembly, transport and catalysis events, and physical interactions " +
-                "involving proteins, DNA, RNA, small molecules and complexes.";
-        }
+	public String getCPathBlurb() {
+		return blurb;
 	}
 }

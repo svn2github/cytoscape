@@ -59,7 +59,8 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Retrieving Records from " + CPathProperties.getCPathServerName() +"...";
+        return "Retrieving Records from "
+                + CPathProperties.getInstance().getCPathServerName() +"...";
     }
 
     /**

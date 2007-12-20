@@ -154,7 +154,7 @@ public class MapCPathToCytoscape implements HTTPServerListener {
     private void loadMergeDialog(String cpathRequest, Set<CyNetwork> bpNetworkSet) {
 
         MergeDialog dialog = new MergeDialog(Cytoscape.getDesktop(),
-                CPathProperties.getCPathServerName() + "Network Merge",
+                CPathProperties.getInstance().getCPathServerName() + "Network Merge",
                 true,
                 cpathRequest,
                 bpNetworkSet,

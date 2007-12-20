@@ -34,6 +34,7 @@ package org.cytoscape.coreplugin.cpath2.plugin;
 // imports
 
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.plugin.PluginProperties;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
@@ -46,6 +47,7 @@ import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 
 import javax.swing.*;
+import java.io.IOException;
 
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager
@@ -58,11 +60,12 @@ public class CPathPlugIn2 extends CytoscapePlugin {
     /**
      * Constructor.
      */
-    public CPathPlugIn2() {
+    public CPathPlugIn2() throws IOException {
 
         String debugProperty = System.getProperty("DEBUG");
         Boolean debug = (debugProperty != null && debugProperty.length() > 0) &&
                 new Boolean(debugProperty.toLowerCase());
+        initProperties();
 
         // to catch network creation events - to setup context menu
         NetworkListener networkListener = new NetworkListener();
@@ -79,9 +82,15 @@ public class CPathPlugIn2 extends CytoscapePlugin {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cytoPanelWest.add(CPathProperties.getCPathServerName(), pcPanel);
+                cytoPanelWest.add(CPathProperties.getInstance().getCPathServerName(), pcPanel);
                 cytoPanelWest.setState(CytoPanelState.DOCK);
             }
         });
+    }
+
+    private void initProperties() throws IOException {
+        PluginProperties pluginProperties = new PluginProperties(this);
+        CPathProperties cpathProperties = CPathProperties.getInstance();
+        cpathProperties.initProperties(pluginProperties);
     }
 }

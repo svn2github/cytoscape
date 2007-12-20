@@ -169,7 +169,7 @@ public class CPathProtocol {
      * Constructor.
      */
     public CPathProtocol() {
-        this.baseUrl = CPathProperties.getCPathUrl();
+        this.baseUrl = CPathProperties.getInstance().getCPathUrl();
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
     }

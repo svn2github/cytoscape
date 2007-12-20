@@ -61,7 +61,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Searching " + CPathProperties.getCPathServerName() + "...";
+        return "Searching " + CPathProperties.getInstance().getCPathServerName() + "...";
     }
 
     /**

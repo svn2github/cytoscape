@@ -67,7 +67,7 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
 
         aboutPanel.add(header, BorderLayout.NORTH);
         JTextPane textPane = PhysicalEntityDetailsPanel.createHtmlTextPane();
-        textPane.setText(CPathProperties.getCPathBlurb());
+        textPane.setText(CPathProperties.getInstance().getCPathBlurb());
         aboutPanel.add(textPane, BorderLayout.CENTER);
         return aboutPanel;
     }

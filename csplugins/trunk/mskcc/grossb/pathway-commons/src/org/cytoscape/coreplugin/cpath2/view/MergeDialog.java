@@ -195,7 +195,7 @@ public class MergeDialog extends JDialog {
 
         // create text area to display message
         JTextArea textArea = new JTextArea("A new network has just been downloaded from " +
-                CPathProperties.getCPathServerName() +
+                CPathProperties.getInstance().getCPathServerName() +
                 ".  You have the option to create a new network within Cytoscape" +
                 " or merge the new network into an existing Cytoscape network.",
                 3, 40);

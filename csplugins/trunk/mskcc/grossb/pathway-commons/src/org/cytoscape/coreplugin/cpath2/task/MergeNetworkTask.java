@@ -113,7 +113,7 @@ public class MergeNetworkTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return CPathProperties.getCPathServerName() + " Plugin - Merge Network";
+        return CPathProperties.getInstance().getCPathServerName() + " Plugin - Merge Network";
     }
 
     /**
@@ -126,7 +126,7 @@ public class MergeNetworkTask implements Task {
             // read the network from cpath instance
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Reading in Network Data from "
-                    + CPathProperties.getCPathServerName()  + "...");
+                    + CPathProperties.getInstance().getCPathServerName()  + "...");
             reader.read();
 
             // unselect all nodes / edges
