@@ -892,7 +892,10 @@
 	<!-- release.                                                --> 
 	<!-- ======================================================= -->
 	<target name="dist"
-	        depends="zip_release,install-bundles,source">
+	        depends="zip_release,doc,install-bundles,source">
+	  <copy toDir="${dist.dir}/javadoc">
+			<fileset dir="${javadoc.dir}" includes="*"/>
+ 	  </copy>
 	</target>
 
 
