@@ -34,14 +34,20 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,28 +56,24 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-
 
 /**
  *
  */
 public class BiomartStub {
 	private String baseURL = "http://www.biomart.org/biomart/martservice?";
+	private static final String RESOURCE = "/resource/filterconversion.txt";
 	private URL url;
 	private URLConnection uc;
 	private Map<String, Map<String, String>> databases = null;
 
 	// Key is datasource, value is database name.
 	private Map<String, String> datasourceMap = new HashMap<String, String>();
-
-	
 	private Map<String, Map<String, String>> filterConversionMap;
+
 	/**
 	 * Creates a new BiomartStub object.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public BiomartStub() throws IOException {
 		this(null);
@@ -81,21 +83,22 @@ public class BiomartStub {
 	 * Creates a new BiomartStub object from given URL.
 	 *
 	 * @param baseURL  DOCUMENT ME!
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public BiomartStub(String baseURL) throws IOException {
-		if(baseURL != null) {
+		if (baseURL != null) {
 			this.baseURL = baseURL + "?";
 		}
+
 		loadConversionFile();
 	}
 
 	private void loadConversionFile() throws IOException {
 		filterConversionMap = new HashMap<String, Map<String, String>>();
+
 		InputStreamReader inFile;
 
-		inFile = new InputStreamReader(this.getClass().getResource("/resource/filterconversion.txt")
-		                                   .openStream());
+		inFile = new InputStreamReader(this.getClass().getResource(RESOURCE).openStream());
 
 		BufferedReader inBuffer = new BufferedReader(inFile);
 
@@ -103,27 +106,39 @@ public class BiomartStub {
 		String trimed;
 		String oldName = null;
 		Map<String, String> oneEntry = new HashMap<String, String>();
+
+		String[] dbparts;
+
 		while ((line = inBuffer.readLine()) != null) {
 			trimed = line.trim();
-			System.out.println("Filter Conversion-------------> " + trimed);
-			String[] dbparts = trimed.split("\\t");
-			if(dbparts[0].equals(oldName) == false) {
+			dbparts = trimed.split("\\t");
+
+			if (dbparts[0].equals(oldName) == false) {
 				oneEntry = new HashMap<String, String>();
 				oldName = dbparts[0];
 				filterConversionMap.put(oldName, oneEntry);
 			}
+
 			oneEntry.put(dbparts[1], dbparts[2]);
-			
 		}
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param dbName DOCUMENT ME!
+	 * @param filterID DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String toAttributeName(String dbName, String filterID) {
-		if(filterConversionMap.get(dbName) == null) {
+		if (filterConversionMap.get(dbName) == null) {
 			return null;
 		} else {
 			return filterConversionMap.get(dbName).get(filterID);
 		}
 	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -213,8 +228,10 @@ public class BiomartStub {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
 
+		String[] parts;
+
 		while ((s = reader.readLine()) != null) {
-			String[] parts = s.split("\\t");
+			parts = s.split("\\t");
 
 			if ((parts.length > 4) && parts[3].equals("1")) {
 				datasources.put(parts[1], parts[2]);
@@ -260,14 +277,16 @@ public class BiomartStub {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
 
+		String[] parts;
+
 		while ((s = reader.readLine()) != null) {
-			String[] parts = s.split("\\t");
+			parts = s.split("\\t");
 
 			if ((parts.length > 1)) {
 				if (getAll) {
 					filters.put(parts[1], parts[0]);
 				} else if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
-				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false)) {
+				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false) && (parts[0].endsWith("-2") == false)) {
 					filters.put(parts[1], parts[0]);
 					System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
 				}
@@ -312,8 +331,10 @@ public class BiomartStub {
 
 		String[] attrInfo;
 
+		String[] parts;
+
 		while ((s = reader.readLine()) != null) {
-			String[] parts = s.split("\\t");
+			parts = s.split("\\t");
 			attrInfo = new String[3];
 
 			if (parts.length == 0)
@@ -350,46 +371,7 @@ public class BiomartStub {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param datasetName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
-	public String getAvailableAttributes(final String datasetName) throws Exception {
-		List<String> databases = new ArrayList<String>();
-
-		final String reg = "type=attributes&dataset=" + datasetName;
-		final URL targetURL = new URL(baseURL + reg);
-
-		InputStream is = targetURL.openStream();
-
-		StringBuilder builder = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String s;
-
-		while ((s = reader.readLine()) != null) {
-			System.out.println("--------------------------------");
-
-			String[] parts = s.split("\\t");
-
-			for (String p : parts) {
-				System.out.println("Attr: " + p);
-			}
-
-			builder.append(s);
-			System.out.println("--------------------------------");
-		}
-
-		reader.close();
-
-		return builder.toString();
-	}
-
-	/**
-	 *  DOCUMENT ME!
+	 *  Send the XML query to Biomart, and get the result as table.
 	 *
 	 * @param xmlQuery DOCUMENT ME!
 	 *
@@ -398,52 +380,40 @@ public class BiomartStub {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public List<String[]> sendQuery(String xmlQuery) throws Exception {
-		try {
-			url = new URL(baseURL);
+		url = new URL(baseURL);
+		uc = url.openConnection();
+		uc.setDoOutput(true);
+		uc.setRequestProperty("User-Agent", "Java URLConnection");
 
-			uc = url.openConnection();
-			uc.setDoOutput(true);
+		OutputStream os = uc.getOutputStream();
 
-			uc.setRequestProperty("User-Agent", "Java URLConnection");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// ヘッダを設定
-		OutputStream os = uc.getOutputStream(); //POST用のOutputStreamを取得
-
-		String postStr = "query=" + xmlQuery; //POSTするデータ
+		final String postStr = "query=" + xmlQuery;
 		PrintStream ps = new PrintStream(os);
-		ps.print(postStr); //データをPOSTする
-		ps.close();
 
-		InputStream is = uc.getInputStream();
+		// Post the data
+		ps.print(postStr);
+		ps.close();
+		ps = null;
+
+		final InputStream is = uc.getInputStream();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
-
-		StringBuilder builder = new StringBuilder();
-
 		s = reader.readLine();
-		System.out.println("Header: " + s);
+		System.out.println("Returned Table Header: " + s);
 
 		String[] parts = s.split("\\t");
 		final List<String[]> result = new ArrayList<String[]>();
 		result.add(parts);
 
 		while ((s = reader.readLine()) != null) {
-			//System.out.println("--------------------------------");
 			parts = s.split("\\t");
-			//			for(String p: parts) {
-			//				//System.out.println("Reply from Biomart: " + p);
-			//			}
 			result.add(parts);
-
-			//System.out.println("--------------------------------");
 		}
 
+		is.close();
 		reader.close();
+		reader = null;
 
 		return result;
 	}
