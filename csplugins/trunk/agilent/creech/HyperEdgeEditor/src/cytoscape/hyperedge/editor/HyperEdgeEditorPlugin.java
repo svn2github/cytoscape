@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Mon Dec 03 14:26:49 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Dec 20 10:22:32 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Dec 19 14:17:20 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed use of fixUpCytoscapeDeleteMenu().
 * Thu Nov 29 08:59:46 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.59. Changed to use new 4 arg Cytoscape.createNetworkView().
 * Sun Nov 04 13:35:10 2007 (Michael L. Creech) creech@w235krbza760
@@ -72,15 +74,13 @@ import cytoscape.data.Semantics;
 
 import cytoscape.editor.CytoscapeEditorManager;
 
-// MLC 12/03/07:
-// import cytoscape.editor.actions.DeleteAction;
-
 import cytoscape.hyperedge.HyperEdge;
 import cytoscape.hyperedge.HyperEdgeFactory;
 import cytoscape.hyperedge.HyperEdgeManager;
 
 import cytoscape.hyperedge.editor.actions.DeleteHyperEdgeAction;
-import cytoscape.hyperedge.editor.actions.HyperEdgeDeleteAction;
+// MLC 12/18/07:
+// import cytoscape.hyperedge.editor.actions.HyperEdgeDeleteAction;
 import cytoscape.hyperedge.editor.actions.SelectHyperEdgeAction;
 
 import cytoscape.hyperedge.impl.HyperEdgeImpl;
@@ -119,7 +119,7 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.59;
+    private static final Double VERSION = 2.60;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
@@ -153,10 +153,8 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
                                         HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME,
                                         Semantics.INTERACTION,
                                         BioChemicalReactionVisualStyle.BIOCHEMICAL_REACTION_VISUAL_STYLE);
-	// MLC 12/03/07 BEGIN:
-	// Temporarily stop fixup so we can test loading with other plugins:
+	// MLC 12/18/07:
         // fixUpCytoscapeDeleteMenu();
-	// MLC 12/03/07 END.
 
         CyMenus cms = Cytoscape.getDesktop().getCyMenus();
         cms.addAction(new ShowSampleNetworksAction());
@@ -173,16 +171,16 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
                                                                             new HEESessionLoadedMonitor());
     }
 
-// MLC 12/03/07 BEGIN:
-//    // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
-//    private void fixUpCytoscapeDeleteMenu() {
-//        DeleteAction action = CytoscapeEditorManager.getDeleteAction();
-//        // remove delete action item and replace with our version of it:
-//        Cytoscape.getDesktop().getCyMenus().getMenuBar().removeAction(action);
-//        Cytoscape.getDesktop().getCyMenus()
-//                 .addAction(new HyperEdgeDeleteAction());
-//    }
-// MLC 12/03/07 END.
+    // MLC 12/18/07 BEGIN:
+    //    // replace CytoscapeEditor DeleteAction with HyperEdgeEditorDeleteAction:
+    //    private void fixUpCytoscapeDeleteMenu() {
+    //        DeleteAction action = CytoscapeEditorManager.getDeleteAction();
+    //        // remove delete action item and replace with our version of it:
+    //        Cytoscape.getDesktop().getCyMenus().getMenuBar().removeAction(action);
+    //        Cytoscape.getDesktop().getCyMenus()
+    //                 .addAction(new HyperEdgeDeleteAction());
+    //    }
+    // MLC 12/18/07 END.
 
     public class ShowSampleNetworksAction extends CytoscapeAction {
         /**
