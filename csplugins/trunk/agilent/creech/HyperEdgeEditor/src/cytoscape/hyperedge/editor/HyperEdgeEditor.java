@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 10:41:18 2006
-* Modified:     Mon Oct 22 09:27:53 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Dec 19 14:26:54 2007 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Dec 19 14:25:53 2007 (Michael L. Creech) creech@w235krbza760
+*  Removed addNodeContextMenuItems() and addEdgeContextMenuItems().
 * Sun Oct 21 16:15:50 2007 (Michael L. Creech) creech@w235krbza760
 *  Various changes to use ArrowShape versus Arrows.
 * Thu May 17 07:37:53 2007 (Michael L. Creech) creech@w235krbza760
@@ -80,7 +82,8 @@ import cytoscape.hyperedge.HyperEdge;
 import cytoscape.hyperedge.HyperEdgeFactory;
 import cytoscape.hyperedge.HyperEdgeManager;
 
-import cytoscape.hyperedge.editor.actions.HyperEdgeDeleteAction;
+// MLC 12/18/07:
+// import cytoscape.hyperedge.editor.actions.HyperEdgeDeleteAction;
 import cytoscape.hyperedge.editor.actions.SelectHyperEdgeAction;
 
 import cytoscape.hyperedge.impl.HyperEdgeImpl;
@@ -120,7 +123,6 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 
 
 /**
@@ -799,19 +801,21 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //        super.initializeControls(null);
     }
 
-    // This can be removed if/when HyperEdges are added to the Cytoscape core.
-    // overrides BasicCytoscapeEditor.addNodeContextMenuItems():
-    public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-        removeExistingDeleteMenuItemIfNecessary(menu);
-        menu.add(new HyperEdgeDeleteAction(nodeView.getNode()));
-    }
-
-    // This can be removed if/when HyperEdges are added to the Cytoscape core.
-    // overrides BasicCytoscapeEditor.addEdgeContextMenuItems():
-    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-        removeExistingDeleteMenuItemIfNecessary(menu);
-        menu.add(new HyperEdgeDeleteAction(edgeView.getEdge()));
-    }
+    // MLC 12/18/07 BEGIN:
+    //    // This can be removed if/when HyperEdges are added to the Cytoscape core.
+    //    // overrides BasicCytoscapeEditor.addNodeContextMenuItems():
+    //    public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+    //        removeExistingDeleteMenuItemIfNecessary(menu);
+    //        menu.add(new HyperEdgeDeleteAction(nodeView.getNode()));
+    //    }
+    //
+    //    // This can be removed if/when HyperEdges are added to the Cytoscape core.
+    //    // overrides BasicCytoscapeEditor.addEdgeContextMenuItems():
+    //    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+    //        removeExistingDeleteMenuItemIfNecessary(menu);
+    //        menu.add(new HyperEdgeDeleteAction(edgeView.getEdge()));
+    //    }
+    // MLC 12/18/07 END.
 
     /**
      * Ensure that a given node id has no existing node.
