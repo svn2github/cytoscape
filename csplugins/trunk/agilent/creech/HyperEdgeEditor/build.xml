@@ -12,7 +12,7 @@
  	<property name="build.classes.dir" value="${build.dir}/classes"/>
 	<property name="apidocs.dir" location="${build.dir}/api-docs" />
 
-	<property name="cytoscape.dir" value="../cytoscape-2.5"/>
+	<property name="cytoscape.dir" value="../cytoscape-2.6"/>
 	<property name="cytoscape.lib.dir" value = "${cytoscape.dir}/lib"/>
 	<property name="cytoscape.plugin.dir" value = "${cytoscape.dir}/plugins/core"/>
 

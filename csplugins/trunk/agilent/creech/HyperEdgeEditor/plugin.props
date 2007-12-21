@@ -15,7 +15,7 @@ pluginDescription=Add, remove, and modify HyperEdges in a Cytoscape Network.
 # Plugin version number, this must be two numbers separated by a
 # decimlal.  Ex. 0.2, 14.03
 
-pluginVersion=2.59
+pluginVersion=2.60
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6
@@ -37,4 +37,4 @@ pluginCategory=Functional Enrichment
 pluginAuthorsIntsitutions=Allan Kuchinsky and Aditya Vailaya:Agilent Labs;Michael Creech:Blue Oak Software
 
 # Date this plugin/plugin version was released
-releaseDate=July 16, 2007
+releaseDate=Dec 20, 2007
