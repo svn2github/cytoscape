@@ -1814,7 +1814,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     private class HENetworkModifiedUpdater implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent e) {
             CyNetwork net = (CyNetwork)e.getNewValue(); 
-            HEUtils.log("NETWORK MODIFIED " + net.getIdentifier());
+            // HEUtils.log("NETWORK MODIFIED " + net.getIdentifier());
 	    hideConnectorNodes(net);
         }
     }
