@@ -32,7 +32,7 @@ public class CommandHandler
 
 	
 	public static void clearSelection(String netId)
-		{
+		{// TODO stop unhiding, add a showAll
 		GinyUtils.unHideAll(Cytoscape.getNetworkView(netId));
 		
 		Cytoscape.getNetwork(netId).unselectAllNodes();

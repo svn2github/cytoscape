@@ -39,9 +39,8 @@ import java.beans.PropertyChangeEvent;
 public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListener, GaggleConnectionListener,
         GooseListChangedListener {
     private boolean registered;
-//    private RenameThread renameGoose;
 
-    private CyGoose nonNetworkGoose;
+    //private CyGoose nonNetworkGoose;
     private CyGoose defaultGoose;
 
     private static Boss gaggleBoss;
@@ -75,11 +74,10 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         CytoPanel GoosePanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
         GoosePanel.add("CyGoose", null, gDialog, "Gaggle Goose");
         GoosePanel.setSelectedIndex(GoosePanel.indexOfComponent(gDialog));
-
-        //connectAction();
+        
+ //       connectAction();
 
         try {
-            //gaggleBoss = rmiConnect();
             // this gives an initial goose that is cytoscape with a null network
             createDefaultGoose();
             gDialog.displayMessage("Connected To Gaggle Boss");
@@ -90,8 +88,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
             registered = false;
             this.gDialog.displayMessage("Not connected to Gaggle Boss");
             //GagglePlugin.showDialogBox("Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE);
-            System.err.println(E.getMessage());
-            //E.printStackTrace();
+//            System.err.println(E.getMessage());
+            E.printStackTrace();
         }
 
         broadcast = new CyBroadcast(gDialog, gaggleBoss);
@@ -146,10 +144,9 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         defaultGoose = this.createNewGoose(CurrentNet);
         defaultGoose.addGooseListChangedListener(this);
 
-
         networkGeese.put(CurrentNet.getIdentifier(), defaultGoose);
         System.out.println("size of active names: " + defaultGoose.getActiveGooseNames().length);
-        // todo dan - do we want name of main cytoscape goose to appear in chooser?
+
         MiscUtil.updateGooseChooser(gDialog.getGooseChooser(), defaultGoose.getName(), defaultGoose.getActiveGooseNames());
         gDialog.getGooseChooser().setSelectedIndex(0);
 
@@ -228,68 +225,9 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                     e.printStackTrace();
                 }
             }
-
         }
         System.out.println("leaving onCytoscapeExit()");
     }
-
-
-    /*
-      * Exports and registers the goose with the Boss
-      */
-/*
-    private void registerGoose(CyGoose goose) throws RemoteException {
-        String RegisteredName = null;
-        System.out.println("in registerGoose()....");
-
-
-        try {
-            UnicastRemoteObject.exportObject(goose, 0);
-        }
-        catch (RemoteException e) {
-            e.printStackTrace();
-            String ErrorMsg = "Cytoscape failed to export remote object.";
-            gDialog.displayMessage(ErrorMsg);
-
-            //GagglePlugin.showDialogBox(ErrorMsg, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        String FilePath = null;
-        java.util.Iterator pI = cytoscape.CytoscapeInit.getPluginURLs().iterator();
-        while (pI.hasNext()) {
-            java.net.URL url = (java.net.URL) pI.next();
-            if (url.getPath().contains("CyGoose.jar")) {
-                FilePath = url.getPath();
-                FilePath = FilePath.replace("/", System.getProperty("file.separator"));
-                FilePath = FilePath.replaceFirst("file:", "");
-            }
-        }
-//		System.setProperty("java.rmi.server.codebase", FilePath);
-//		System.out.println( "CLASSPATH: " + System.getProperty("java.class.path"));
-//		System.out.println("RMI CODEBASE: " + System.getProperty("java.rmi.server.codebase"));
-
-        RegisteredName = gaggleBoss.register(goose);
-        goose.setName(RegisteredName);
-
-
-        Cytoscape.getNetwork(goose.getNetworkId()).setTitle(goose.getName());
-
-        //  Update UI.  Must be done via SwingUtilities,
-        // or it won't work.
-        final String networkId = goose.getNetworkId();
-        System.out.println("network id = " + goose.getNetworkId());
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                System.out.println("in thread, network id = " + networkId);
-                System.out.println("is desktop null? " + Cytoscape.getDesktop() == null);
-                System.out.println("is networkpanel null? " + Cytoscape.getDesktop().getNetworkPanel() == null);
-                System.out.println("is network null? " + Cytoscape.getNetwork(networkId) == null);
-                Cytoscape.getDesktop().getNetworkPanel().updateTitle(Cytoscape.getNetwork(networkId));
-            }
-        });
-        gDialog.enableButton(GooseButton.CONNECT, false);
-    }
-*/
 
 
     private void connectAction() {
@@ -344,9 +282,9 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       * Creates a new goose for the given network
       */
 
-    private CyGoose createNewGoose(CyNetwork Network) throws RemoteException {
+    private CyGoose createNewGoose(CyNetwork Network) throws RemoteException, IllegalArgumentException {
         System.out.println("initial network name: " + Network.getTitle());
-        CyGoose Goose = new CyGoose(gDialog, gaggleBoss);
+        CyGoose Goose = new CyGoose(gDialog);//, gaggleBoss);
         Goose.setNetworkId(Network.getIdentifier());
         Goose.setName(Network.getTitle());
         RmiGaggleConnector connector = new RmiGaggleConnector(Goose);
@@ -364,8 +302,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         System.out.println("goose name after registration: " + Goose.getName());
         Network.setTitle(Goose.getName());
         gaggleBoss = connector.getBoss();
+        Goose.setBoss(gaggleBoss);
 
-        //registerGoose(Goose);
         return Goose;
     }
 
@@ -436,7 +374,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                     CyGoose Goose = networkGeese.get(Network.getIdentifier());
                     String TargetGoose = getTargetGoose();
 
-                    broadcast.broadcastHashMap(Goose, TargetGoose);
+                    broadcast.broadcastTuple(Goose, TargetGoose);
                 }
                 catch (Exception ex) {
                     ex.printStackTrace();

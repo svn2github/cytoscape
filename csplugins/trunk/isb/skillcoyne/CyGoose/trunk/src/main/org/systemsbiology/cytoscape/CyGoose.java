@@ -2,6 +2,9 @@ package org.systemsbiology.cytoscape;
 
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
 import org.systemsbiology.cytoscape.dialog.GooseDialog.GooseButton;
+import org.systemsbiology.cytoscape.task.HandleNetworkTask;
+//import org.systemsbiology.cytoscape.Attributes;
+
 import org.systemsbiology.cytoscape.visual.SeedMappings;
 import org.systemsbiology.cytoscape.script.*;
 import org.systemsbiology.gaggle.core.Goose;
@@ -20,10 +23,13 @@ import javax.swing.JComboBox;
 import cytoscape.*;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
-import cytoscape.data.Semantics;
+
+//import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
+
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
+
 
 import giny.model.Node;
 import giny.model.Edge;
@@ -76,27 +82,20 @@ public class CyGoose implements Goose
 		System.out.println(S);
 		}
 
-	public CyGoose(GooseDialog GD, Boss boss)
+	public CyGoose(GooseDialog GD)//, Boss boss)
 		{
-		gaggleBoss = boss;
 		gDialog = GD;
-		// deals with evertying but the broadcast actions
+		// deals with everything but the broadcast actions
 		addButtonActions();
-		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager()
-				.getVisualStyle();
+		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
 		nac = CurrentStyle.getNodeAppearanceCalculator();
 		visualMap = new SeedMappings(nac);
 		}
-
-	// Deselect all nodes/edges.
-	// TODO: There is no button for this on the gaggle toolbar for cytoscape
-	// no reason to do this as Cytoscape already provides means
-//	public void clearSelections() throws RemoteException
-//		{
-//		CyNetwork Net = Cytoscape.getNetwork(this.getNetworkId());
-//		Net.unselectAllNodes();
-//		Net.unselectAllEdges();
-//		}
+	
+	public void setBoss(Boss boss) 
+		{
+		this.gaggleBoss = boss;
+		}
 
 	public void addGooseListChangedListener(GooseListChangedListener listener)
 		{
@@ -253,6 +252,7 @@ public class CyGoose implements Goose
 		net.unselectAllEdges();
 		double upperValue = 0;
 		double lowerValue = 0;
+		boolean seedableValue = false;
 		for (int i = 0; i < gaggleTuple.getData().getSingleList().size(); i++)
 			{
 			Tuple tuple = (Tuple) gaggleTuple.getData().getSingleAt(i).getValue();
@@ -275,14 +275,18 @@ public class CyGoose implements Goose
 			CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); 
 			CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
 			/* does this need to be in this scope? */
+			System.out.println("Tuple value type: " + valueObject.getClass().getName() + " " + valueObject);
+			
 			if (valueObject instanceof Double)
 				{
 				Double value = (Double) valueObject;
 				if (Double.isInfinite(value))
 					value = 0.0;
 
-				if (selectNode != null)
+				if (selectNode != null) 
+					{
 					nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
+					}
 				if (selectEdge != null)
 					edgeAtts.setAttribute(selectEdge.getIdentifier(), attribute, value);
 				
@@ -296,12 +300,15 @@ public class CyGoose implements Goose
 					if (value > upperValue) upperValue = value;
 					if (value < lowerValue) lowerValue = value;
 					}
+				seedableValue = true;
 				}
 			else if (valueObject instanceof Integer)
 				{
 				Integer value = (Integer) valueObject;
-				if (selectNode != null)
+				if (selectNode != null) 
+					{
 					nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
+					}
 				if (selectEdge != null)
 					edgeAtts.setAttribute(selectEdge.getIdentifier(), attribute, value);
 				if (i == 0)
@@ -314,6 +321,7 @@ public class CyGoose implements Goose
 					if (value > upperValue) upperValue = value;
 					if (value < lowerValue) lowerValue = value;
 					}
+				seedableValue = true;
 				}
 			else if (valueObject instanceof String)
 				{
@@ -322,141 +330,25 @@ public class CyGoose implements Goose
 					nodeAtts.setAttribute(selectNode.getIdentifier(), attribute, value);
 				if (selectEdge != null)
 					edgeAtts.setAttribute(selectEdge.getIdentifier(), attribute, value);
+				seedableValue = false;
 				}
 			else
 				{
 				throw new RuntimeException("Got a movie frame of the wrong type!");
 				}
-			upperValue = upperValue + (upperValue * 0.2);
-			lowerValue = lowerValue - (lowerValue * 0.2);
+			
+			if (seedableValue) // don't try it if the value wasn't a number!
+				{
+				upperValue = upperValue + (upperValue * 0.2);
+				lowerValue = lowerValue - (lowerValue * 0.2);
+				}
 			visualMap.seedMappings(attribute, upperValue, lowerValue);
 			}
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.getNetworkView(net.getIdentifier()).redrawGraph(true, true);
 		}
 
-	// adds attributes to an existing network
-	// this method is called for the "movies" from the DMV
-	// TODO: check that the attribute being used is part of a
-	// NodeAppearanceCalculator
-	/**
-	 * @param species
-	 * @param dataTitle
-	 * @param hashMap
-	 *          Takes the attributes from the hashMap and adds them to the network
-	 *          goose and displayes the dataTitle in the message area on the
-	 *          CyGoose tab.
-	 */
-/*
-	public void handleMap(String species, String dataTitle, HashMap hashMap)
-			throws RemoteException
-		{
-		gDialog.displayDataType(dataTitle);
-		HashMap<String, ArrayList> attrMap = hashMap;
-		print("********handleMap(String, String, HashMap) \"dataTitle\"***********");
-		CyNetwork net = Cytoscape.getNetwork(this.getNetworkId());
-		Cytoscape.getDesktop().setFocus(net.getIdentifier());
-		Cytoscape.getDesktop().toFront();
-		// if a user has anything previously selected it can obscure changes the
-		// movie makes
-		net.unselectAllNodes();
-		net.unselectAllEdges();
-		double upperValue = 0;
-		double lowerValue = 0;
-		// iterate over the attribute hash, key=attribute name, value= attribute
-		// values ArrayList
-		Iterator<String> attrKeyIter = attrMap.keySet().iterator();
-		while (attrKeyIter.hasNext())
-			{
-			String attrName = attrKeyIter.next();
-			ArrayList attrVals = (ArrayList) attrMap.get(attrName);
-			// check the array contains other arrays as expected
-			// elements of ArrayLists: [array_of_node_names, array_of_values]
-			String[] nodeIds = (String[]) attrVals.get(0);
-			Object nodeVals = attrVals.get(1);
-			Class nodeValsClass = nodeVals.getClass();
-			if (!nodeValsClass.isArray())
-				{
-				System.err.println(this
-						+ ".handleMap() error: expecting an array of values!");
-				return;
-				}
-			// determine the data type of attribute in hashMap (should be
-			// DOUBLE, STRING, BOOLEAN, or INT)
-			String valType = nodeValsClass.getComponentType().getName();
-			for (int i = 0; i < nodeIds.length; i++)
-				{
-				CyNode selectNode = Cytoscape.getCyNode(nodeIds[i]);
-				CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-				// I can seed mappings currently only for DOUBLE's or INT's as
-				// these are continuous mappings
-				if (selectNode != null)
-					{
-					nodeAtts.setAttribute(selectNode.getIdentifier(), Semantics.SPECIES,
-							species);
-					// set all attributes from the map
-					if (valType.equals("double"))
-						{ // DOUBLE
-						double[] value = (double[]) attrVals.get(1);
-						nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-								new Double(value[i]));
-						// first node we'll just set the values for a base
-						if (i == 0)
-							{
-							upperValue = value[i];
-							lowerValue = value[i];
-							}
-						else
-							{
-							if (value[i] > upperValue) upperValue = value[i];
-							if (value[i] < lowerValue) lowerValue = value[i];
-							}
-						}
-					else if (valType.equals("int"))
-						{ // INT
-						int[] value = (int[]) attrVals.get(1);
-						nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-								new Integer(value[i]));
-						if (i == 0)
-							{
-							upperValue = value[i];
-							lowerValue = value[i];
-							}
-						else
-							{
-							if (value[i] > upperValue) upperValue = value[i];
-							if (value[i] < lowerValue) lowerValue = value[i];
-							}
-						}
-					else if (valType.equals("boolean"))
-						{ // BOOLEAN
-						boolean[] value = (boolean[]) attrVals.get(1);
-						nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-								new Boolean(value[i]));
-						}
-					else if (valType.equals("java.lang.String"))
-						{ // STRING
-						String[] value = (String[]) attrVals.get(1);
-						nodeAtts.setAttribute(selectNode.getIdentifier(), attrName,
-								value[i]);
-						}
-					else
-						{
-						System.err.println(this
-								+ ".handleMap() error: incompatible attribute data type ("
-								+ valType + ")");
-						return;
-						}
-					}
-				}
-			upperValue = upperValue + (upperValue * 0.2);
-			lowerValue = lowerValue - (lowerValue * 0.2);
-			visualMap.seedMappings(attrName, upperValue, lowerValue);
-			}
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-		Cytoscape.getNetworkView(net.getIdentifier()).redrawGraph(true, true);
-		}
-*/
+
 	/**
 	 * @param source
 	 * @param matrix
@@ -471,6 +363,7 @@ public class CyGoose implements Goose
 		String[] GeneNames = matrix.getRowTitles();
 		String[] ConditionNames = matrix.getColumnTitles();
 		List<CyEdge> EdgeList = Cytoscape.getCyEdgesList();
+
 		for (int row = 0; row < GeneNames.length; row++)
 			{
 			String Id = GeneNames[row];
@@ -547,6 +440,7 @@ public class CyGoose implements Goose
 		Cytoscape.getDesktop().setFocus(this.getNetworkId());
 		}
 
+	// TODO don't assume it's only a node name list, handle edges too!
 	/**
 	 * @param source
 	 * @param namelist
@@ -577,9 +471,10 @@ public class CyGoose implements Goose
 		// }
 		else
 			{
-			CyNetwork CyNet = Cytoscape.getNetwork(this.getNetworkId());
 			if (this.getNetworkId() == null || this.getNetworkId().equals("0"))
 				{
+				if (Cytoscape.getNetworkSet().size() <= 0)
+					{
 				System.out.println("  --Null network");
 				String title = namelist.getName();
 				if (title == null)
@@ -596,48 +491,59 @@ public class CyGoose implements Goose
 						CyLayouts.getDefaultLayout());
 				Cytoscape.getNetworkView(NewNet.getIdentifier())
 						.redrawGraph(true, true);
+					}
+				else // handle on all networks
+					{
+					for (Object cyNetwork: Cytoscape.getNetworkSet())
+						selectNodesEdges( (CyNetwork) cyNetwork, names );
+					}
 				}
+			
 			else
 				{
-				for (String CurrentName : names)
-					{
-					CyNode SelectNode = Cytoscape.getCyNode(CurrentName);
-					if (SelectNode != null)
-						{
-						CyNet.setSelectedNodeState(SelectNode, true);
-						}
-					// this means either nodes or edges can match...there's no
-					// way to tell what a namelist holds however if the first
-					// one in the name list is not an edge it won't look again
-					boolean edgeFound = true;
-					List<CyEdge> EdgesList = Cytoscape.getCyEdgesList();
-					for (CyEdge edge : EdgesList)
-						{
-						if (!edgeFound) break;
-						if (edge.getIdentifier().equals(CurrentName))
-							{
-							CyNet.setSelectedEdgeState(edge, true);
-							break;
-							}
-						else edgeFound = false;
-						}
-					}
-				System.out.println("number of matching nodes: "
-						+ CyNet.getSelectedNodes().size());
-				System.out.println("number of matching edges: "
-						+ CyNet.getSelectedEdges().size());
-				if (CyNet.getSelectedNodes().size() <= 0
-						&& CyNet.getSelectedEdges().size() <= 0)
-					{
-					String Msg = "No matching nodes/edges were found, please check that you are using the same ID's between geese";
-					print(Msg);
-					}
+				selectNodesEdges(Cytoscape.getNetwork(this.getNetworkId()), names);
 				}
-			// refresh network to flag selected nodes
-			Cytoscape.getDesktop().setFocus(CyNet.getIdentifier());
 			}
 		}
 
+	private void selectNodesEdges(CyNetwork CyNet, String[] names)
+		{
+		for (String CurrentName : names)
+			{
+			CyNode SelectNode = Cytoscape.getCyNode(CurrentName);
+			if (SelectNode != null)
+				{
+				CyNet.setSelectedNodeState(SelectNode, true);
+				}
+			/* this means either nodes or edges can match...there's no
+			 * way to tell what a namelist holds however if the first
+			 * one in the name list is not an edge it won't look again
+			*/
+			List<CyEdge> EdgesList = Cytoscape.getCyEdgesList();
+			for (CyEdge edge : EdgesList)
+				{
+				if (edge.getIdentifier().equals(CurrentName))
+					{
+					CyNet.setSelectedEdgeState(edge, true);
+					break;
+					}
+				}
+			}
+		System.out.println("number of matching nodes: "
+				+ CyNet.getSelectedNodes().size());
+		System.out.println("number of matching edges: "
+				+ CyNet.getSelectedEdges().size());
+		if (CyNet.getSelectedNodes().size() <= 0
+				&& CyNet.getSelectedEdges().size() <= 0)
+			{
+			String Msg = "No matching nodes/edges were found, please check that you are using the same ID's between geese";
+			print(Msg);
+			}
+
+		// refresh network to flag selected nodes
+		Cytoscape.getDesktop().setFocus(CyNet.getIdentifier());
+		}
+	
 	/**
 	 * @param source
 	 * @param gNetwork
@@ -658,13 +564,11 @@ public class CyGoose implements Goose
 		if (this.getNetworkId() == null || this.getNetworkId().equals("0"))
 			{
 			System.out.println("  --Null network");
-			String title = gNetwork.getName();
-			if (title == null)
-				{
-				title = gNetwork.getSpecies();
-				}
+			String title = (gNetwork.getSpecies() == null) ? gNetwork.getName() : gNetwork.getSpecies() + " " + gNetwork.getName();
 			CyNetwork NewNet = Cytoscape.createNetwork(title, false);
-			handleNetwork(gNetwork, NewNet, false);
+			
+			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, NewNet);
+
 			// basic layout
 			CyLayoutAlgorithm Layout = CyLayouts.getDefaultLayout();
 			String LayoutName = (String) gDialog.getLayoutChooser().getSelectedItem();
@@ -676,108 +580,11 @@ public class CyGoose implements Goose
 		else
 			{
 			System.out.println("  --Network " + this.getNetworkId());
-			handleNetwork(gNetwork, Cytoscape.getNetwork(this.getNetworkId()), true);
+			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, Cytoscape.getNetwork(this.getNetworkId()));
 			NetworkId = getNetworkId();
 			}
 		// refresh network to flag selected nodes
 		Cytoscape.getDesktop().setFocus(NetworkId);
-		}
-
-	/**
-	 * @param GaggleNet
-	 * @param CyNet
-	 * @param SelectNodes
-	 * @throws RemoteException
-	 *           Create a network from the gaggle network either de novo (if null
-	 *           network is handling) or add to the network goose and select added
-	 *           nodes.
-	 */
-	public void handleNetwork(Network GaggleNet, CyNetwork CyNet,
-			boolean SelectNodes) throws RemoteException
-		{
-		Collection<Node> srcCollection = new ArrayList<Node>();
-		Collection<Node> targetCollection = new ArrayList<Node>();
-		Collection<Edge> edgeCollection = new ArrayList<Edge>();
-		for (String NodeName : GaggleNet.getNodes())
-			{
-			Node NewNode = (Node) Cytoscape.getCyNode(NodeName, true);
-			CyNet.addNode(NewNode);
-			CyNet.setSelectedNodeState(NewNode, SelectNodes);
-			}
-		addAttributes(GaggleNet, NetworkObject.NODE);
-		for (Interaction CurrentInteraction : GaggleNet.getInteractions())
-			{
-			// Interaction CurrentInteraction = GaggleInteractions[i];
-			String srcNodeName = CurrentInteraction.getSource();
-			String targetNodeName = CurrentInteraction.getTarget();
-			String interactionType = CurrentInteraction.getType();
-			// flag source node (create new node if it doesn't exist)
-			Node srcNode = (Node) Cytoscape.getCyNode(srcNodeName, true);
-			CyNet.addNode(srcNode);
-			srcCollection.add(srcNode);
-			// flag target node (create new node if it doesn't exist)
-			Node targetNode = (Node) Cytoscape.getCyNode(targetNodeName, true);
-			CyNet.addNode(targetNode);
-			targetCollection.add(targetNode);
-			// flag edge (create a new edge if it's not found)
-			Edge selectEdge = (Edge) Cytoscape.getCyEdge(srcNode, targetNode,
-					Semantics.INTERACTION, interactionType, true);
-			// add newly created edge to current network
-			if (!CyNet.containsEdge(selectEdge)) CyNet.addEdge(selectEdge);
-			edgeCollection.add(selectEdge);
-			}
-		addAttributes(GaggleNet, NetworkObject.EDGE);
-		// flag all selected nodes & edges
-		if (SelectNodes)
-			{
-			CyNet.setSelectedNodeState(srcCollection, true);
-			CyNet.setSelectedNodeState(targetCollection, true);
-			CyNet.setSelectedEdgeState(edgeCollection, true);
-			}
-		}
-
-	// TODO handle both node and edge atts from gaggle network
-	private void addAttributes(Network gNet, NetworkObject obj)
-		{
-		System.out.println("Adding attributes");
-		switch (obj)
-			{
-			case NODE:
-				System.out.println("Adding NODE attributes");
-				for (String att : gNet.getNodeAttributeNames())
-					{
-					HashMap<String, Object> Attributes = gNet.getNodeAttributes(att);
-					for (String nodeName : Attributes.keySet())
-						setAttribute(Cytoscape.getNodeAttributes(), nodeName, att,
-								Attributes.get(nodeName));
-					}
-				break;
-			case EDGE:
-				System.out.println("Adding EDGE attributes");
-				for (String att : gNet.getEdgeAttributeNames())
-					{
-					HashMap<String, Object> Attributes = gNet.getEdgeAttributes(att);
-					for (String edgeName : Attributes.keySet())
-						setAttribute(Cytoscape.getEdgeAttributes(), edgeName, att,
-								Attributes.get(edgeName));
-					}
-				break;
-			};
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-		}
-
-	private void setAttribute(CyAttributes cyAtts, String networkObjId,
-			String attributeName, Object attributeValue)
-		{
-		// System.out.println("Setting attribute name '" + attributeName + "' to
-		// '"
-		// + attributeValue + "' on network object '" + networkObjId + "'");
-		if (attributeValue.getClass().equals(java.lang.String.class)) cyAtts
-				.setAttribute(networkObjId, attributeName, (String) attributeValue);
-		else if (attributeValue.getClass().equals(Integer.class)) cyAtts
-				.setAttribute(networkObjId, attributeName, (Integer) attributeValue);
-		else if (attributeValue.getClass().equals(Double.class)) cyAtts
-				.setAttribute(networkObjId, attributeName, (Double) attributeValue);
 		}
 
 	// no point in this one
@@ -801,8 +608,7 @@ public class CyGoose implements Goose
 		}
 
 	// I think this is used to choose the identifier to broadcast/handle nodes
-	// by,
-	// currently not used
+	// by, currently not used
 	public void setBroadcastId()
 		{
 		broadcastId = "ID";
