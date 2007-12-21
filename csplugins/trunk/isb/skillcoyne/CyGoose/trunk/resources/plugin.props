@@ -15,10 +15,10 @@ can be found at <a href="http://gaggle.systemsbiology.org/docs/geese/">http://ga
 
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=2.6
+pluginVersion=2.61
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5
+cytoscapeVersion=2.5, 2.6
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Communication/Scripting
