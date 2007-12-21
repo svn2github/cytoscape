@@ -21,14 +21,11 @@
 
 package multilevelLayoutPlugin;
 
-
 import cytoscape.layout.CyLayouts;
 import cytoscape.plugin.CytoscapePlugin;
 
 /**
  * The main class of this plugin. 
- * It is used to create a menu entry for launhing the plugin and 
- * creating a thread for running the layout calculation. 
  * 
  * @author Pekka Salmela
  *
@@ -39,12 +36,6 @@ public class MultilevelLayoutPlugin extends CytoscapePlugin {
 	 * Class constructor.
 	 */
 	public MultilevelLayoutPlugin() {
-/*		//create a new action to respond to menu activation
-        MultilevelLayoutSelectionAction action = new MultilevelLayoutSelectionAction();
-        //set the preferred menu
-        action.setPreferredMenu("Plugins");
-        //and add it to the menus
-        Cytoscape.getDesktop().getCyMenus().addAction(action);*/
 		CyLayouts.addLayout(new MultilevelLayoutAlgorithm(), "Multilevel Layout");
 	}
 }

@@ -70,13 +70,16 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 		super();
 		layoutProperties = new LayoutProperties(getName());
 		layoutProperties.add(new Tunable("repForceMultiplier",
-				"<html>Constant multiplier used in calculation of repulsive forces. <p>Default value 0.2, suggested value 0.1 - 0.9.</html>",
+				"<html>Constant multiplier used in calculation of repulsive forces. " +
+				"<p>Default value 0.2, suggested value 0.1 - 0.9.</html>",
 				Tunable.DOUBLE, new Double(0.2)));
 		layoutProperties.add(new Tunable("tolMultiplier",
-                "<html>Parameter used to control the tolerance below which algorithm is concidered to be converged. <p>Default value 0.01, suggested value 0.01 - 0.09.</html>",
+                "<html>Parameter used to control the tolerance below which algorithm is concidered to be converged. " +
+                "<p>Default value 0.01, suggested value 0.01 - 0.09.</html>",
                 Tunable.DOUBLE, new Double(0.01)));
 		layoutProperties.add(new Tunable("clusteringOption",
-                "Flag indicating if clustering option should be used during layout calculation.",
+                "<html>Flag indicating if clustering option should be used during layout calculation. " +
+                "<p>Not used by default.</html>",
                 Tunable.BOOLEAN, new Boolean(false)));
 
 		// We've now set all of our tunables, so we can read the property 
@@ -135,19 +138,10 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 		networkView.fitContent();
 		networkView.updateView();
 	}
-	
-	/**
-	 * Tells the algorithm it should be aborted.
-	 *  
-	 */
-	public void setCancel() {
-		this.cancel = true;
-	}
 		
 	/**
 	 * Call all of the initialization code.  Called from
 	 * <code>AbstractLayout.initialize()</code>.
-	 * 
 	 */
 	protected void initialize_local() {
 		posManager = new NodePositionManager(networkView.getNetwork().getNodeCount());
@@ -155,9 +149,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	}
 		
 	/**
-	 * Execute layout algorithm for the graph given when 
-	 * calling the constructor method.  
-	 *
+	 * Execute layout algorithm. 
 	 */
 	@SuppressWarnings("unchecked")
 	private void executeLayout(){
@@ -224,7 +216,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 				//if currentNetwork is not set, then this is the first level
 				if(currentNetwork == null){
 					currentNetwork = networkSet.lastElement();
-					double max = 10.0/(Math.pow(Math.sqrt(4.0/7.0), level+1.0));
+					double max = 5.0/(Math.pow(Math.sqrt(4.0/7.0), level+1.0));
 					Iterator<CyNode> iter = currentNetwork.nodesIterator();
 					CyNode n = iter.next();
 					posManager.addNode(n.getRootGraphIndex(), max, 0.0);
@@ -463,5 +455,13 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	
 	public byte[] supportsEdgeAttributes() {
 		return null;
+	}
+	
+	/**
+	 * Tells the algorithm it should be aborted.
+	 *  
+	 */
+	public void setCancel() {
+		this.cancel = true;
 	}
 }
