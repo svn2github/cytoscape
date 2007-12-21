@@ -34,9 +34,38 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartui.ui;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.WebServiceClientManager;
+
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
+import cytoscape.util.swing.AttributeImportPanel;
+
+import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.XMLQueryBuilder;
+
+import giny.model.Node;
+
 import java.awt.event.ActionEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,37 +79,16 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.webservice.AttributeImportQuery;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.util.swing.AttributeImportPanel;
-import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.XMLQueryBuilder;
-import giny.model.Node;
-
 
 /**
  *
  */
 public class BiomartAttrMappingPanel extends AttributeImportPanel implements PropertyChangeListener {
-
 	private static final Icon LOGO = new ImageIcon(BiomartAttrMappingPanel.class.getResource("/images/logo_biomart2.png"));
 	private Map<String, String> datasourceMap;
 	private Map<String, Map<String, String[]>> attributeMap;
 	private Map<String, List<String>> attributeListOrder;
 	private Map<String, Map<String, String>> attrNameMap;
-	
 	private Map<String, Map<String, String>> filterMap;
 	private enum SourceType {
 		DATABASE,
@@ -125,8 +133,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		attributeMap = new HashMap<String, Map<String, String[]>>();
 		attributeListOrder = new HashMap<String, List<String>>();
 		filterMap = new HashMap<String, Map<String, String>>();
-		attrNameMap = new HashMap<String, Map<String,String>>();
-		
+		attrNameMap = new HashMap<String, Map<String, String>>();
+
 		loadDBList();
 		loadFilter();
 	}
@@ -141,10 +149,12 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 			Map<String, String> detail = reg.get(databaseName);
 
 			// Add the datasource if its visible
-			if (detail.get("visible").equals("1") && databaseFilter.contains(databaseName) == false) {
+			if (detail.get("visible").equals("1")
+			    && (databaseFilter.contains(databaseName) == false)) {
 				String dispName = detail.get("displayName");
 
 				datasources = stub.getAvailableDatasets(databaseName);
+
 				for (String key : datasources.keySet()) {
 					dsList.add(dispName + " - " + datasources.get(key));
 					datasourceMap.put(dispName + " - " + datasources.get(key), key);
@@ -202,51 +212,58 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 				model.addElement(dispAttrName);
 			}
 		} else {
-			
-				fetchData(selectedDBName, SourceType.ATTRIBUTE);
-			
+			fetchData(selectedDBName, SourceType.ATTRIBUTE);
 		}
 	}
 
 	private void fetchData(final String datasourceName, SourceType type) throws Exception {
-
 		Map<String, String> returnValMap = new HashMap<String, String>();
 		final List<String> order = new ArrayList<String>();
 		final String selectedDB = databaseComboBox.getSelectedItem().toString();
 		final String selectedDBName = datasourceMap.get(selectedDB);
 
 		if (type.equals(SourceType.ATTRIBUTE)) {
-
 			Map<String, String[]> attributeVals = stub.getAttributes(datasourceName);
 			Map<String, String> names = new HashMap<String, String>();
 			attributeMap.put(selectedDBName, attributeVals);
 			model.removeAllElements();
+
 			String[] entry;
 			String dispNameWithCategory;
- 			for(String attr: attributeVals.keySet()) {
+
+			for (String attr : attributeVals.keySet()) {
 				entry = attributeVals.get(attr);
- 				
- 				dispNameWithCategory = entry[0] + "\t  (" + attr + ")";
- 				
-				names.put(dispNameWithCategory, attr);
-				order.add(dispNameWithCategory);
+
+				if ((entry != null) && (entry[0] != null)) {
+					if ((entry.length > 2) && (entry[2] != null))
+						dispNameWithCategory = entry[2] + ": \t" + entry[0] + "\t  (" + attr + ")";
+					else
+						dispNameWithCategory = " \t" + entry[0] + "\t  (" + attr + ")";
+
+					names.put(dispNameWithCategory, attr);
+					order.add(dispNameWithCategory);
+				}
 			}
- 			this.attrNameMap.put(selectedDBName, names);
+
+			this.attrNameMap.put(selectedDBName, names);
 			Collections.sort(order);
-			for(String attrName: order) {
+
+			for (String attrName : order) {
 				model.addElement(attrName);
 			}
+
 			attributeListOrder.put(selectedDBName, order);
 			attrList.repaint();
 		} else if (type.equals(SourceType.FILTER)) {
 			returnValMap = stub.getFilters(datasourceName, false);
 			filterMap.put(selectedDBName, returnValMap);
-			List<String> filterNames =  new ArrayList<String>(returnValMap.keySet());
+
+			List<String> filterNames = new ArrayList<String>(returnValMap.keySet());
 			Collections.sort(filterNames);
-			for(String filter: filterNames)
+
+			for (String filter : filterNames)
 				attributeTypeComboBox.addItem(filter);
 		}
-
 	}
 
 	protected void importButtonActionPerformed(ActionEvent evt) {
@@ -271,17 +288,17 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		// This is the mapping key
 		String filterName = fMap.get(attributeTypeComboBox.getSelectedItem());
-		String dbName = this.databaseComboBox.getSelectedItem().toString(); 
+		String dbName = this.databaseComboBox.getSelectedItem().toString();
 		System.out.println("FilterName -----------------> " + filterName);
-		
+
 		// Database-specific modification.
 		// This is not the best way, but cannot provide universal solution.
 		if (dbName.contains("REACTOME")) {
 			attrs[0] = new Attribute(stub.toAttributeName("REACTOME", filterName));
-		} else if( dbName.contains("UNIPROT")) {
+		} else if (dbName.contains("UNIPROT")) {
 			System.out.println("UNIPROT found");
 			attrs[0] = new Attribute(stub.toAttributeName("UNIPROT", filterName));
-		} else if(dbName.contains("HOMOLOGY")) {
+		} else if (dbName.contains("HOMOLOGY")) {
 			String newName = filterName.replace("_id", "_stable_id");
 			newName = newName.replace("_ensembl", "");
 			attrs[0] = new Attribute(newName);
@@ -302,14 +319,14 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		// For name mapping, just use ID list filter for query.
 		filters = new Filter[1];
-		
+
 		filters[0] = new Filter(filterName, getIDFilterString(keyAttrName));
 
 		String keyInHeader = null;
 
 		for (String key : attrMap.keySet()) {
 			if (attrMap.get(key).equals(filterName)) {
-				keyInHeader = key.split("\\t")[0];
+				keyInHeader = key.split("\\t")[1];
 				System.out.println("Key in header = " + keyInHeader);
 			}
 		}

@@ -102,7 +102,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		tabs.addTab("Query", panel);
 		tabs.addTab("Options", tPanel);
 		
-		//tabs.addTab("PICR", new PICRPanel());
+		tabs.addTab("PICR", new PICRPanel());
 		
 		add(tabs);
 
