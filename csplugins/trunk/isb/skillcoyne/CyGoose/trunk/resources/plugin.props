@@ -13,6 +13,16 @@ can be found at <a href="http://gaggle.systemsbiology.org/docs/geese/">http://ga
 <p><b>Known bug:</b> This goose does not work with a local install of Cytoscape on a Windows machine. It will work with Mac or Linux and as a webstart on Mac/Linux/Windows.
 <br>We are working on this and will release a fix as soon as we can.
 
+<b>News:</b>
+This version now works with a local install of Cytoscape on Windows XP (Vista has not been tested).
+
+New Features:<ul>
+<li>Broadcasts will send both edge and name lists now
+<li>CyGoose handles incoming broadcasts that contain edge names
+<li>Namelist broadcasts sent to the default goose (ie. not to a specific network) will be handled by all available network geese
+</ul>
+
+
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=2.61

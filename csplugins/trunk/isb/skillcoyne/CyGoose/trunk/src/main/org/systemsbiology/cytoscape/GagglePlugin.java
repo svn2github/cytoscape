@@ -23,10 +23,12 @@ import javax.swing.JOptionPane;
 import java.util.*;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.layout.*;
 import cytoscape.CyNetwork;
 import cytoscape.CyNetworkTitleChange;
+import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeVersion;
 
@@ -39,10 +41,8 @@ import java.beans.PropertyChangeEvent;
 public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListener, GaggleConnectionListener,
         GooseListChangedListener {
     private boolean registered;
-
-    //private CyGoose nonNetworkGoose;
     private CyGoose defaultGoose;
-
+    
     private static Boss gaggleBoss;
     private static boolean connectedToGaggle = false;
     private static GooseDialog gDialog;
@@ -53,7 +53,8 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
     protected static String myGaggleName;
     // keeps track of all the network ids key = network id  value = goose
     private static HashMap<String, CyGoose> networkGeese;
-
+    private static Set<String> species;
+    
     private static void print(String S) {
         System.out.println(S);
     }
@@ -71,9 +72,10 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         networkGeese = new HashMap<String, CyGoose>();
         gDialog = new GooseDialog();
 
-        CytoPanel GoosePanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
-        GoosePanel.add("CyGoose", null, gDialog, "Gaggle Goose");
-        GoosePanel.setSelectedIndex(GoosePanel.indexOfComponent(gDialog));
+        CytoPanel GooseCyPanel = Cytoscape.getDesktop().getCytoPanel(javax.swing.SwingConstants.WEST);
+        GooseCyPanel.add("CyGoose", gDialog);
+        //GooseCyPanel.add("CyGoose", null, gDialog, "Gaggle Goose");
+        GooseCyPanel.setSelectedIndex(GooseCyPanel.indexOfComponent(gDialog));
         
  //       connectAction();
 
@@ -304,19 +306,25 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         gaggleBoss = connector.getBoss();
         Goose.setBoss(gaggleBoss);
 
+
+        
+        
         return Goose;
     }
 
 
     private void addButtonActions() {
         System.out.println("add button actions");
-
+        // layouts
         java.util.Collection<CyLayoutAlgorithm> Layouts = CyLayouts.getAllLayouts();
         gDialog.getLayoutChooser().addItem("Default");
         for (CyLayoutAlgorithm current : Layouts) {
             gDialog.getLayoutChooser().addItem(current.getName());
         }
 
+        gDialog.setSpeciesText(
+        		CytoscapeInit.getProperties().getProperty("defaultSpeciesName") );
+        
         /* broadcast name list to other goose (geese) */
         gDialog.addButtonAction(GooseButton.LIST, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -381,8 +389,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 }
             }
         });
-
-
     }
 
 

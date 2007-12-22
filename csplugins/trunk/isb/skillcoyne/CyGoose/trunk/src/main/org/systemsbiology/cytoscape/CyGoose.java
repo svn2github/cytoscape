@@ -564,7 +564,14 @@ public class CyGoose implements Goose
 		if (this.getNetworkId() == null || this.getNetworkId().equals("0"))
 			{
 			System.out.println("  --Null network");
-			String title = (gNetwork.getSpecies() == null) ? gNetwork.getName() : gNetwork.getSpecies() + " " + gNetwork.getName();
+			String title = source + " goose";
+			
+			if ( gNetwork.getSpecies() != null || !gNetwork.getSpecies().equalsIgnoreCase("unknown") ) 
+				title = gNetwork.getSpecies();
+			if (gNetwork.getName() != null)
+				title = title + " " + gNetwork.getName();
+			else title = source + " " + title;
+			
 			CyNetwork NewNet = Cytoscape.createNetwork(title, false);
 			
 			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, NewNet);

@@ -61,26 +61,29 @@ public class CyBroadcast {
                 .getSelectedNodes();
         Iterator<CyNode> NodesIter = SelectedNodes.iterator();
 
+        Set<CyEdge> SelectedEdges = Cytoscape.getNetwork(Goose.getNetworkId()).getSelectedEdges();
+        Iterator<CyEdge> EdgesIter = SelectedEdges.iterator();
+        
         // warning: no nodes are selected for broadcast
-        if (SelectedNodes.size() == 0) {
-            GagglePlugin.showDialogBox("No nodes selected for broadcast.", "Warning",
+        if (SelectedNodes.size() == 0 && SelectedEdges.size() == 0) {
+            GagglePlugin.showDialogBox("No nodes or edges selected for broadcast.", "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String[] NodeIds = new String[SelectedNodes.size()];
-        // TODO: get species
+        // TODO: get species XXX
         String Species = null;
 
-        // CyNode Node;
-        for (int i = 0; i < SelectedNodes.size(); i++) {
-            CyNode Node = NodesIter.next();
-            NodeIds[i] = Node.getIdentifier();
-        }
-
+        ArrayList<String> SelectedIds = new ArrayList<String>();
+        while (NodesIter.hasNext()) 
+        	SelectedIds.add(NodesIter.next().getIdentifier());
+        while (EdgesIter.hasNext()) 
+        	SelectedIds.add(EdgesIter.next().getIdentifier());
+        
+        String Ids[] = new String[SelectedIds.size()];
         Namelist namelist = new Namelist();
         namelist.setSpecies(Species);
-        namelist.setNames(NodeIds);
+        namelist.setNames(SelectedIds.toArray(Ids));
 
         try {
             gaggleBoss.broadcastNamelist(Goose.getName(), TargetGoose, namelist);
@@ -92,6 +95,7 @@ public class CyBroadcast {
         }
     }
 
+    // TODO broadcast edge attributes as well
     // broadcasts hash of selected attributes
     public void broadcastTuple(CyGoose Goose, String TargetGoose) {
         print("broadcastTuple");
@@ -126,6 +130,7 @@ public class CyBroadcast {
         dialog.buildDialogWin();
     }
 
+    
     private void broadcastTuple(String[] attrNames, CyGoose goose,
                                   String targetGoose) {
         if (Cytoscape.getNetwork(goose.getNetworkId()).getSelectedNodes().size() <= 0) {
@@ -196,7 +201,8 @@ public class CyBroadcast {
         }
 
         gaggleTuple.setData(dataTuple);
-        gaggleTuple.setSpecies(getSpecies(nodeArr[0])); // todo, find a better way (see above)
+        gaggleTuple.setSpecies( this.gDialog.getSpecies() );
+        //gaggleTuple.setSpecies(getSpecies(nodeArr[0])); // todo, find a better way (see above)
         gaggleTuple.setName(""); //why?
 
         try {
@@ -211,6 +217,7 @@ public class CyBroadcast {
     }
 
 
+    // TODO handle edges as well
     public void broadcastDataMatrix(CyGoose Goose, String TargetGoose) {
         print("broadcastDataMatrix");
 
@@ -313,7 +320,8 @@ public class CyBroadcast {
             }
             // add new row to DataMatrix
             matrix.addRow(NodeId, condVals);
-            matrix.setSpecies(getSpecies(NodeId)); // XXX er...does this set the species
+            matrix.setSpecies( this.gDialog.getSpecies() );
+            //matrix.setSpecies(getSpecies(NodeId)); // XXX er...does this set the species
             // every time 'round? what if the
             // species is different from one
             // node to another?
@@ -358,7 +366,8 @@ public class CyBroadcast {
             GaggleNetwork.add(GaggleInteraction);
 
             // again if there's more than one species we'll only get the last one!!!
-            Species = getSpecies(SourceNode.getIdentifier());
+            Species = this.gDialog.getSpecies();
+            //Species = getSpecies(SourceNode.getIdentifier());
         }
 
         GaggleNetwork = addAttributes(GaggleNetwork);
@@ -386,16 +395,16 @@ public class CyBroadcast {
 
 
     // try the "species" attribute first; if not found, use DefaultSpeciesName
-    private String getSpecies(String NodeId) {
-        String Species = "";
-
-        Species = Cytoscape.getNodeAttributes().getStringAttribute(NodeId,
-                Semantics.SPECIES);
-        if (Species == null)
-            Species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-
-        return Species;
-    }
+//    private String getSpecies(String NodeId) {
+//        String Species = "";
+//
+//        Species = Cytoscape.getNodeAttributes().getStringAttribute(NodeId,
+//                Semantics.SPECIES);
+//        if (Species == null)
+//            Species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
+//
+//        return Species;
+//    }
 
 
     // add attributes to the node/edge
