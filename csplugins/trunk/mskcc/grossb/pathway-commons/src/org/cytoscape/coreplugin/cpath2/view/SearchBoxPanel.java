@@ -69,10 +69,10 @@ public class SearchBoxPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        searchButton.setBorder(new EmptyBorder (0,6,7,0));
+        //searchButton.setBorder(new EmptyBorder (0,6,7,0));
         searchButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         organismComboBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        buttonPanel.add(organismComboBox);
+        //buttonPanel.add(organismComboBox);
         buttonPanel.add(searchButton);
         add(buttonPanel);
     }
@@ -132,7 +132,8 @@ public class SearchBoxPanel extends JPanel {
     private JButton createSearchButton(final JTextField searchField) {
         URL url = GradientHeader.class.getResource("resources/run_tool.gif");
         ImageIcon icon = new ImageIcon(url);
-        searchButton = new JButton(icon);
+        //searchButton = new JButton(icon);
+        searchButton = new JButton("Search");
         searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
