@@ -70,7 +70,6 @@ public class SelectPhysicalEntity {
                     html.append("<UL>");
                     html.append(synBuffer.toString());
                     html.append("</UL>");
-                    html.append("<BR>");
                 }
             }
 
@@ -103,7 +102,7 @@ public class SelectPhysicalEntity {
                     }
                 }
                 if (primeExcerpt != null) {
-                    html.append("<BR><H4>Matching Excerpt(s):</H4>");
+                    html.append("<H4>Matching Excerpt(s):</H4>");
                     html.append("<span class='excerpt'>" + primeExcerpt + "</span><BR>") ;
                 }
             }
