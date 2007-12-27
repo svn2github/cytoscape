@@ -59,8 +59,8 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Retrieving Records from "
-                + CPathProperties.getInstance().getCPathServerName() +"...";
+        return "Retrieving " + networkTitle + " from "
+            + CPathProperties.getInstance().getCPathServerName() +"...";
     }
 
     /**
@@ -70,7 +70,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         try {
             // read the network from cpath instance
             taskMonitor.setPercentCompleted(-1);
-            taskMonitor.setStatus("Retrieving Records");
+            taskMonitor.setStatus("Retrieving " + networkTitle + ".");
 
             //  Get BioPAX XML
             String xml = webApi.getRecordsByIds(ids, taskMonitor);
@@ -92,6 +92,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             }
             GraphReader reader = Cytoscape.getImportHandler().getReader(tmpFile.getAbsolutePath());
             taskMonitor.setStatus("Creating Cytoscape Network...");
+            taskMonitor.setPercentCompleted(-1);
             CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
             Object[] ret_val = new Object[2];
