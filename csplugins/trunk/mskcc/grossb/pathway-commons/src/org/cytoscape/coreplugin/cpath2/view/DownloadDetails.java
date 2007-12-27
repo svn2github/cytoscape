@@ -56,12 +56,15 @@ public class DownloadDetails extends JDialog {
         final long ids[] = new long[passedRecordList.size()];
         int i = 0;
         for (BasicRecordType record : passedRecordList) {
+            if (record.getName().equalsIgnoreCase("N/A")) {
+                record.setName("---");
+            }
             tableModel.setValueAt(record.getName(), i, 0);
             tableModel.setValueAt(record.getEntityType(), i, 1);
             if (record.getDataSource() != null) {
                 tableModel.setValueAt(record.getDataSource().getName(), i, 2);
             } else {
-                tableModel.setValueAt("N/A", i, 3);
+                tableModel.setValueAt("---", i, 3);
             }
             ids[i++] = record.getPrimaryId();
         }
