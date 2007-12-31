@@ -27,10 +27,6 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
 public class SpliceViewBuilder extends JDialog {
 	private static SpliceViewBuilder dab = null;
 
-	private final NodeAppearanceCalculator nac = Cytoscape
-			.getVisualMappingManager().getVisualStyle()
-			.getNodeAppearanceCalculator();
-
 	/**
 	 * Creates a new SpliceViewBuilder object.
 	 * 
@@ -66,22 +62,6 @@ public class SpliceViewBuilder extends JDialog {
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
-
-		return dab.getPanel();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public static JPanel getSpliceView(String vsName) {
-		buildDefaultViewDialog(null);
-		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager()
-				.getVisualStyle().getGlobalAppearanceCalculator()
-				.getDefaultBackgroundColor());
-		dab.mainView.updateView();
 
 		return dab.getPanel();
 	}

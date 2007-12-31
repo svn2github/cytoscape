@@ -62,9 +62,9 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	public boolean exonDataCheck() {
 		// TODO: do data check
 		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-		if (nodeAttribs.hasAttribute(_nodeId, "SubgeneViewer_Regions")) {
+		if (nodeAttribs.hasAttribute(_nodeId, "sgv_structure")) {
 			List<String> featureList = nodeAttribs.getListAttribute(_nodeId,
-					"SubgeneViewer_Regions");
+					"sgv_structure");
 			if (featureList.isEmpty()) {
 				return false;
 			} else {
