@@ -133,7 +133,9 @@ public class SpliceViewBuilder extends JDialog {
 		closeButton.setText("Close");
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+//				mainView.clean();
 				dispose();
+				
 			}
 		});
 

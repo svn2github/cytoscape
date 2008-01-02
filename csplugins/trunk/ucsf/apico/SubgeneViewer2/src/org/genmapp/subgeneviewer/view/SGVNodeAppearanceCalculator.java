@@ -1,4 +1,4 @@
-package org.genmapp.subgeneviewer.splice;
+package org.genmapp.subgeneviewer.view;
 
 
 import giny.model.Node;
@@ -17,6 +17,9 @@ import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
 
 public class SGVNodeAppearanceCalculator extends NodeAppearanceCalculator {
+	
+	public static int FEATURE_NODE_WIDTH = 50;
+	public static int FEATURE_NODE_HEIGHT = 25;
 	
 	public SGVNodeAppearanceCalculator() {
 
@@ -37,8 +40,8 @@ public class SGVNodeAppearanceCalculator extends NodeAppearanceCalculator {
 			//Node shape
 			setNodeSizeLocked(false);
 			appr.set(VisualPropertyType.NODE_SHAPE, NodeShape.ROUND_RECT);
-			appr.set(VisualPropertyType.NODE_WIDTH, 50);
-			appr.set(VisualPropertyType.NODE_HEIGHT, 25);
+			appr.set(VisualPropertyType.NODE_WIDTH, FEATURE_NODE_WIDTH);
+			appr.set(VisualPropertyType.NODE_HEIGHT, FEATURE_NODE_HEIGHT);
 			
 			//Node colors
 			Color stroke = new Color(0,0,0);
