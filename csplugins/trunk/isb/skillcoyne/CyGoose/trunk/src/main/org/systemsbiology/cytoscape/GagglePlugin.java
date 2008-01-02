@@ -23,11 +23,11 @@ import javax.swing.JOptionPane;
 import java.util.*;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+//import cytoscape.data.CyAttributes;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.layout.*;
 import cytoscape.CyNetwork;
-import cytoscape.CyNetworkTitleChange;
+//import cytoscape.CyNetworkTitleChange;
 import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeVersion;
@@ -162,25 +162,31 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
         if (Event.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) { // change the goose name
         	System.out.println("===== EVENT " + Event.getPropertyName() + "======");
-        	CyNetworkTitleChange OldTitle = (CyNetworkTitleChange) Event.getOldValue();
-        	CyNetworkTitleChange NewTitle = (CyNetworkTitleChange) Event.getNewValue();
-        	
-        	// this should always be true but if somehow it ain't....
-        	if (!OldTitle.getNetworkIdentifier().equals(NewTitle.getNetworkIdentifier())) {
-        		System.err.println("ERROR: " + Cytoscape.NETWORK_TITLE_MODIFIED + " event does not refer to the same networks!");
-        		return;
-        	} else {
-        		CyGoose goose = this.networkGeese.get(NewTitle.getNetworkIdentifier());
-        		if (goose != null && !goose.getName().equals(NewTitle.getNetworkTitle())) {
-        			try {
-        				String NewGooseName = this.gaggleBoss.renameGoose(goose.getName(), NewTitle.getNetworkTitle());
-        				Cytoscape.getNetwork(goose.getNetworkId()).setTitle(NewGooseName);
-        			} catch (RemoteException re) {
-        				re.printStackTrace();
-        			}
-        		}
+        	try { // this allows the goose to work in 2.5 as well
+        		Class titleChange = Class.forName("cytoscape.CyNetworkTitleChange");
+
+        		cytoscape.CyNetworkTitleChange OldTitle = (cytoscape.CyNetworkTitleChange) Event.getOldValue();
+        		cytoscape.CyNetworkTitleChange NewTitle = (cytoscape.CyNetworkTitleChange) Event.getNewValue();
+          	
+          	// this should always be true but if somehow it ain't....
+          	if (!OldTitle.getNetworkIdentifier().equals(NewTitle.getNetworkIdentifier())) {
+          		System.err.println("ERROR: " + Cytoscape.NETWORK_TITLE_MODIFIED + " event does not refer to the same networks!");
+          		return;
+          	} else {
+          		CyGoose goose = this.networkGeese.get(NewTitle.getNetworkIdentifier());
+          		if (goose != null && !goose.getName().equals(NewTitle.getNetworkTitle())) {
+          			try {
+          				String NewGooseName = this.gaggleBoss.renameGoose(goose.getName(), NewTitle.getNetworkTitle());
+          				Cytoscape.getNetwork(goose.getNetworkId()).setTitle(NewGooseName);
+          			} catch (RemoteException re) {
+          				re.printStackTrace();
+          			}
+          		}
+          	}
+
+        	} catch (java.lang.ClassNotFoundException cnf) {
+        		System.err.println("Caught a ClassNotFoundException for cytoscape.CyNetworkTitleChange");
         	}
-        	
         } else if (Event.getPropertyName() == Cytoscape.NETWORK_CREATED) { // register a goose
             String netId = Event.getNewValue().toString();
             CyNetwork net = Cytoscape.getNetwork(netId);
