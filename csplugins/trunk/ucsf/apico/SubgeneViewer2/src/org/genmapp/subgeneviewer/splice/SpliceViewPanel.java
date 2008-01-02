@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import org.genmapp.subgeneviewer.splice.controller.SpliceController;
+import org.genmapp.subgeneviewer.splice.model.SpliceEvent;
 import org.genmapp.subgeneviewer.splice.model.SpliceRegion;
 import org.genmapp.subgeneviewer.view.SGVNodeAppearanceCalculator;
 import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
@@ -51,8 +52,6 @@ public class SpliceViewPanel extends JPanel {
 	private static List<CyNode> features = new ArrayList<CyNode>();
 
 	private static List<String> featureList = new ArrayList<String>();
-
-	private static List<SpliceRegion> regionList = new ArrayList<SpliceRegion>();
 
 	private static SpliceRegion _region;
 
@@ -141,8 +140,8 @@ public class SpliceViewPanel extends JPanel {
 	}
 
 	/**
-	 * Collect structure attributes from parent node, create Region objects, set
-	 * properties
+	 * Collect structure attributes from parent node, create Region objects,
+	 * pass Region properties
 	 */
 	public void processStructure() {
 		List<String> structureMetaList = nodeAttribs.getListAttribute(nodeId,
@@ -168,26 +167,13 @@ public class SpliceViewPanel extends JPanel {
 			SpliceRegion region = new SpliceRegion(region_name, view,
 					structureAtts[1], structureAtts[2], units, constitutive,
 					start, structureAtts[6]);
-			
-//			region.setId(structureAtts[1]);
-//			region.setType(structureAtts[2]);
-//			region.setUnits(units); // units wide
-//			region.setConstitutive(constitutive);
-//			region.setContainsStartSite(start);
-//			region.setAnnotation(structureAtts[6]);
 
-			// Add to list of region objects
-			regionList.add(region);
-
-			// Add region to canvas
-			// DGraphView dview = (DGraphView) view;
-			// DingCanvas aLayer = dview
-			// .getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-			// aLayer.add(region);
-			// view.setZoom(dview.getZoom() * 0.99999999999999999d);
-			// view.updateView();
-
-			// region.repaint();
+			// region.setId(structureAtts[1]);
+			// region.setType(structureAtts[2]);
+			// region.setUnits(units); // units wide
+			// region.setConstitutive(constitutive);
+			// region.setContainsStartSite(start);
+			// region.setAnnotation(structureAtts[6]);
 
 		}
 
@@ -198,7 +184,17 @@ public class SpliceViewPanel extends JPanel {
 	 * regions
 	 */
 	public void processSplicing() {
-		// TODO
+		List<String> spliceMetaList = nodeAttribs.getListAttribute(nodeId,
+				"sgv_splice");
+		for (String spliceList : spliceMetaList) {
+
+			// Split list of attributes per event
+			String[] spliceAtts = spliceList.split(":");
+
+			// Create Splice Events and set properties
+			SpliceEvent event = new SpliceEvent(spliceAtts[0], spliceAtts[1], view);
+		
+		}
 	}
 
 	/**
@@ -208,19 +204,19 @@ public class SpliceViewPanel extends JPanel {
 		return canvas;
 	}
 
-	private static final int NODE_HEIGHT = SGVNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
+	public static final int NODE_HEIGHT = SGVNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
 
-	private static final int NODE_WIDTH = SGVNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
+	public static final int NODE_WIDTH = SGVNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 
-	private static final int VGAP = NODE_HEIGHT / 2;
+	public static final int VGAP = NODE_HEIGHT / 2;
 
-	private static final int BLOCK_HEIGHT = NODE_HEIGHT / 2;
+	public static final int BLOCK_HEIGHT = NODE_HEIGHT / 2;
 
-	private static final int HGAP = NODE_WIDTH / 2;
+	public static final int HGAP = NODE_WIDTH / 2;
 
-	private static final int LABEL_TRACK_HEIGHT = NODE_HEIGHT;
+	public static final int LABEL_TRACK_HEIGHT = NODE_HEIGHT;
 
-	private static final int TITLE_LEGEND_HEIGHT = NODE_HEIGHT;
+	public static final int TITLE_LEGEND_HEIGHT = NODE_HEIGHT;
 
 	int xOffset = HGAP;
 
@@ -234,7 +230,7 @@ public class SpliceViewPanel extends JPanel {
 
 		for (Object f : features) {
 			NodeView nv = view.getNodeView((CyNode) f);
-			nv.setOffset(xOffset + HGAP / 2 , VGAP );
+			nv.setOffset(xOffset + HGAP / 2, VGAP);
 			xOffset += HGAP + NODE_WIDTH;
 		}
 
@@ -247,12 +243,10 @@ public class SpliceViewPanel extends JPanel {
 		// test
 		DingCanvas aLayer = ((DGraphView) view)
 				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-		System.out.println("canvas_fore: " + aLayer);
-		DingCanvas bLayer = ((DGraphView) view)
-				.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-		System.out.println("canvas_back: " + bLayer);
-		DingCanvas cLayer = ((DGraphView) view).getCanvas();
-		System.out.println("canvas_inner: " + cLayer);
+		System.out.println("subgeneviewer_fore: " + aLayer);
+		DingCanvas bLayer = ((DGraphView) Cytoscape.getCurrentNetworkView())
+				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+		System.out.println("network_fore: " + bLayer);
 
 		// renderView();
 	}

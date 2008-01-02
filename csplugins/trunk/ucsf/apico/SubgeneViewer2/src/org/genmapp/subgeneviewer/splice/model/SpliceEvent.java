@@ -1,5 +1,6 @@
 package org.genmapp.subgeneviewer.splice.model;
 
+
 import giny.view.NodeView;
 
 import java.awt.BasicStroke;
@@ -9,7 +10,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -23,7 +23,7 @@ import ding.view.DingCanvas;
 import ding.view.ViewportChangeListener;
 
 @SuppressWarnings("serial")
-public class SpliceRegion extends JComponent implements ViewportChangeListener {
+public class SpliceEvent extends JComponent implements ViewportChangeListener {
 
 	private double x1 = Double.NaN;
 
@@ -46,7 +46,11 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 	 */
 	private BufferedImage image;
 
-	public static List<SpliceRegion> regionList = new ArrayList<SpliceRegion>();
+	/**
+	 * list of nodes associated with a layout region based on
+	 * regionAttributeValue
+	 */
+	private List<NodeView> nodeViews;
 
 	private CyNetworkView myView;
 
@@ -65,23 +69,13 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 
 	private int viewportHeight;
 
-	private String _region_id; // pure region id (e.g., E1.1)
+	private String _splice_from; 
 
-	private String _region_name; // unique combo of feature_label + region_id
-
-	private Color _fillColor = Color.white;
-
-	private String _type;
+	private String _splice_to;
 
 	private int _units; // width in units of feature nodes
 
-	private boolean _containsStartSite;
-
-	private boolean _isConstitutive;
-
 	private String _annotation;
-
-	private NodeView featureNodeView;
 
 	/**
 	 * Constructs an object to graphically represent the exon, intron or
@@ -96,38 +90,26 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 	 * @param start
 	 * @param annotation
 	 */
-	public SpliceRegion(String name, CyNetworkView view, String id,
-			String type, int units, boolean constitutive, boolean start,
-			String annotation) {
-
+	public SpliceEvent(String from, String to, CyNetworkView view) {
 		super();
-		_region_name = name;
-		_region_id = id;
-		_type = type;
-		_units = units;
-		_isConstitutive = constitutive;
-		_containsStartSite = start;
-		_annotation = annotation;
-
+		_splice_from = from;
+		_splice_to = to;
 		myView = view;
+		
+		SpliceRegion region_from = getRegionById(_splice_from);
+		SpliceRegion region_to = getRegionById(_splice_to);
+		
+		double from_x = region_from.getBounds().getMaxX();
+		double from_y = region_from.getBounds().getMinY();
+		double to_x = region_to.getBounds().getMinX();
+		double to_y = region_to.getBounds().getMinY();
 
-		CyNode cn = Cytoscape.getCyNode(name);
-		NodeView nv = myView.getNodeView(cn);
-		this.featureNodeView = nv;
-
-		double featureNodeWidth = featureNodeView.getWidth();
-		double featureNodeHeight = featureNodeView.getHeight();
-
-		double x = featureNodeView.getXPosition() - (featureNodeWidth / 2);
-		double y = featureNodeView.getYPosition() - (featureNodeHeight * 2);
-		double w = featureNodeWidth * 4 * _units;
-		double h = featureNodeHeight * 2;
+		double h = 50;
+		double w = to_x - from_x +4;
+		double x = from_x  -2;
+		double y = from_y - h;
 
 		setBounds(x, y, w, h, true);
-	
-		if (this._isConstitutive) {
-			this._fillColor = Color.blue;
-		}
 
 		((DGraphView) myView).addViewportChangeListener(this);
 		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
@@ -138,9 +120,22 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 
 		// hack
 		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
-
-		// Add to list of region objects
-		regionList.add(this);
+	}
+	
+	/**
+	 * Convoluted code to get Region by id for processing Splice Events
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public SpliceRegion getRegionById(String id) {
+		SpliceRegion match = null;
+		for (SpliceRegion region : SpliceRegion.regionList) {
+			if (region.getId().equalsIgnoreCase(id)) {
+				match = region;
+			}
+		}
+		return match;
 	}
 
 	/**
@@ -251,7 +246,22 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * /** Our implementation of ViewportChangeListener.
+	 * @return Returns the nodeViews.
+	 */
+	public List<NodeView> getNodeViews() {
+		return nodeViews;
+	}
+
+	/**
+	 * @param list
+	 *            The nodeViews to set.
+	 */
+	public void setNodeViews(List<NodeView> list) {
+		this.nodeViews = list;
+	}
+
+	/**
+	 * Our implementation of ViewportChangeListener.
 	 */
 	public void resetViewportMappings() {
 		viewportSet = false;
@@ -330,6 +340,7 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 				true);
 	}
 
+
 	public void setBounds(double x, double y, double width, double height,
 			boolean fromNode) {
 
@@ -407,41 +418,35 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 		if (image != null) {
 
 			// set visable edge/rim color
-			Color drawColor = Color.black;
+			Color drawColor = Color.red;
 
 			// image to draw
 			Graphics2D image2D = image.createGraphics();
 
-			image2D.setPaint(_fillColor);
-
-			if (_type.equalsIgnoreCase("e")) { // exon
-				image2D.fillRect(0, 0, image.getWidth(null), image
-						.getHeight(null));
-				image2D.setPaint(drawColor);
-				image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
-						.getHeight(null) - 1, true);
-			} else if (_type.equalsIgnoreCase("i")) { // intron
+//			image2D.setPaint(_fillColor);
+//
+//				image2D.fillRect(0, 0, image.getWidth(null), image
+//						.getHeight(null));
 				image2D.setPaint(drawColor);
 				// image2D.fillRect(0, image.getHeight()/2 - 1,
 				// image.getWidth(null), image.getHeight()/2 +1);
-				image2D.setStroke(new BasicStroke(1.5f));
-				image2D.drawLine(0, image.getHeight() / 2,
-						image.getWidth(null), image.getHeight() / 2);
-			} else { // untranslated
-				image2D.setPaint(drawColor);
-				// image2D.drawRect(0, 0, image.getWidth(null), 1);
-				image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
-						BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
-				image2D.drawLine(0, image.getHeight() / 2,
-						image.getWidth(null), image.getHeight() / 2);
-			}
+				image2D.setStroke(new BasicStroke(1.0f));
+				image2D.drawLine(0, image.getHeight(),
+						image.getWidth(null)/2, 0);
+				image2D.drawLine(image.getWidth(null)/2, 0,
+						image.getWidth(null), image.getHeight());
+//				image2D.setPaint(drawColor);
+//				// image2D.drawRect(0, 0, image.getWidth(null), 1);
+//				image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
+//						BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
+//				image2D.drawLine(0, image.getHeight() / 2,
+//						image.getWidth(null), image.getHeight() / 2);
 
 			((Graphics2D) g).drawImage(image, null, 0, 0);
 
 		}
-
+		
 	}
-
 
 	public void setMyView(CyNetworkView view) {
 		this.myView = view;
@@ -456,43 +461,6 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 	}
 
 	// Copied from original Region class
-
-	public String getName() {
-		return _region_name;
-	}
-
-	public String getId() {
-		return _region_id;
-	}
-
-	public void setId(String id) {
-		_region_id = id;
-	}
-
-	public boolean isContainsStartSite() {
-		return _containsStartSite;
-	}
-
-	public void setContainsStartSite(boolean containsStartSite) {
-		this._containsStartSite = containsStartSite;
-	}
-
-	public boolean isConstitutive() {
-		return _isConstitutive;
-	}
-
-	public void setConstitutive(boolean isConstitutive) {
-		this._isConstitutive = isConstitutive;
-	}
-
-	public String getType() {
-		return _type;
-	}
-
-	public void setType(String type) {
-		this._type = type;
-	}
-
 	public int getUnits() {
 		return _units;
 	}
