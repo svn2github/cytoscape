@@ -58,12 +58,12 @@ public class PopupPanel extends JPanel {
 	/**
 	 * total animation time in ms
 	 */
-	private static int TOTAL_ANIMATION_TIME = 300;
+	private static int TOTAL_ANIMATION_TIME = 150;
 
 	/**
 	 * animation step in ms
 	 */
-	private static int ANIMATION_STEP = TOTAL_ANIMATION_TIME / 10;
+	private static int ANIMATION_STEP = TOTAL_ANIMATION_TIME / 5;
 	
 	/**
 	 * ref to ourself - used by animation timer
