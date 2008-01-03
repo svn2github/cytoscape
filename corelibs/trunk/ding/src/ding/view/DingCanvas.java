@@ -122,8 +122,6 @@ public abstract class DingCanvas extends JComponent {
 
 	/**
 	 * Method used to print canvas without using image imposter.
-	 *
-	 * @return Image
 	 */
 	public void printNoImposter(Graphics g) {
 		print(g);
