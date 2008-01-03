@@ -40,6 +40,7 @@ import java.awt.Color;
 
 // imports
 import java.awt.Image;
+import java.awt.Graphics;
 
 import javax.swing.JComponent;
 
@@ -116,5 +117,12 @@ public abstract class DingCanvas extends JComponent {
 	 */
 	public Image getImage() {
 		return m_img;
+	}
+
+	/**
+	 * Method used to print canvas without using image imposter.
+	 */
+	public void printNoImposter(Graphics g) {
+		print(g);
 	}
 }

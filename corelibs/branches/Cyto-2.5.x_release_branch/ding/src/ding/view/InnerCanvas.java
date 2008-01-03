@@ -327,6 +327,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
+	/**
+	 * Print routine which corrects bug 1471/1495
+	 *
+	 * @param g DOCUMENT ME!
+	 */
+	public void printNoImposter(Graphics g) {
+		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+		// set color alpha based on opacity setting
+		int alpha = (m_isOpaque) ? 255 : 0;
+		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
+										  m_backgroundColor.getBlue(), alpha);
+
+		synchronized (m_lock) {
+			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			                          m_view.m_printLOD, m_view.m_nodeDetails,
+			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
+			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
+		}
+		g.drawImage(img, 0, 0, null);
+	}
+
 	private int m_currMouseButton = 0;
 	private int m_lastXMousePos = 0;
 	private int m_lastYMousePos = 0;
