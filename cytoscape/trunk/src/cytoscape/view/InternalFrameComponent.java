@@ -185,6 +185,15 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	}
 
 	/**
+	 * This method is used by BitmapExporter to export network as graphics (png, jpg, bmp)
+	 */
+	public void printNoImposter(Graphics g) {
+		backgroundCanvas.print(g);
+		networkCanvas.printNoImposter(g);
+		foregroundCanvas.print(g);
+	}
+
+	/**
 	 * Places the canvas on the layeredPane in the following manner:
 	 * top - bottom: foreground, network, background
 	 */
