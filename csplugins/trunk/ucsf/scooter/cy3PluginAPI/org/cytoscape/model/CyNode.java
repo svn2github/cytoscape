@@ -1,8 +1,6 @@
 package org.cytoscape.model;
 
 import java.util.List;
-import java.util.Set;
-
 
 /**
  * A CyNode is the primary data object used in Cytoscape.
@@ -36,18 +34,21 @@ public interface CyNode extends CyModelObject {
 	/**
 	 * Return the list of nodes that are neighbor to this node
 	 *
+	 * @param set the set of edges to consider
+	 * @param edgeType a (possibly null) edge type to restrict the list to
 	 * @return list of nodes
 	 */
-	public List<CyNode> getNeighborList();
+	public List<CyNode> getNeighborList(EdgeSet set, String edgeType);
 
 	/**
 	 * Get the list of edges that connect this node to another node
 	 *
 	 * @param neighborNode the neighbor node to look at
+	 * @param edgeType a (possibly null) edge type to restrict the list to
 	 * @param set the set of edges to return
 	 * @return the list of connecting edges
 	 */
-	public List<CyEdge> getConnectingEdgeList(CyNode neighborNode, EdgeSet set);
+	public List<CyEdge> getConnectingEdgeList(CyNode neighborNode, String edgeType, EdgeSet set);
 
 	/**
 	 * Get the degree of this node

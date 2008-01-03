@@ -1,8 +1,6 @@
 package org.cytoscape.model;
 
 import java.util.List;
-import java.util.Set;
-import java.util.Collection;
 
 /**
  * A CyNetwork is a collection of nodes and the edges that connect
@@ -164,4 +162,21 @@ public interface CyNetwork extends CyModelObject {
 	 * @return list of groups that are part of this network
 	 */
 	public List<CyGroup>getGroupList();
+
+	/**
+	 * Return the CyNode for a given identifier
+	 *
+	 * @param nodeID the node identifier
+	 * @return the CyNode, if that identifier exists in this network
+	 */
+	public CyNode getCyNode(int nodeID);
+
+	/**
+	 * Return the CyEdge for a given identifier
+	 *
+	 * @param edgeID the edge identifier
+	 * @return the CyEdge, if that identifier exists in this network
+	 */
+	public CyEdge getCyEdge(int edgeID);
+
 }
