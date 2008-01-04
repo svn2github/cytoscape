@@ -59,6 +59,20 @@ public interface CyNode extends CyModelObject {
 	public int getDegree(EdgeSet set);
 
 	/**
+	 * Return our degree based on incoming edges
+	 *
+	 * @return node degree based on the number incoming edges
+	 */
+	public int getInDegree();
+
+	/**
+	 * Return our degree based on outgoing edges
+	 *
+	 * @return node degree based on the number outgoing edges
+	 */
+	public int getOutDegree();
+
+	/**
 	 * Return true if the neighborNode is a neighbor of this node
 	 *
 	 * @param neighborNode the node to test against

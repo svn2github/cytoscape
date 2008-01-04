@@ -46,6 +46,13 @@ public interface CyNetwork extends CyModelObject {
 	public CyNode removeNode(CyNode node);
 
 	/**
+	 * Remove a list of nodes from this network
+	 *
+	 * @param nodeList the list of nodes to be removed
+	 */
+	public void removeNodeList(List<CyNode> nodeList);
+
+	/**
 	 * Return true if the given CyNode is in this CyNetwork
 	 *
 	 * @param node the node to check
@@ -73,6 +80,13 @@ public interface CyNetwork extends CyModelObject {
 	 * @return the removed edge
 	 */
 	public CyEdge removeEdge(CyEdge edge);
+
+	/**
+	 * Remove a list of edges from this network
+	 *
+	 * @param edgeList the list of edges to be removed
+	 */
+	public void removeEdgeList(List<CyEdge> edgeList);
 
 	/**
 	 * Return true if the given CyEdge is in this CyNetwork
@@ -108,30 +122,6 @@ public interface CyNetwork extends CyModelObject {
 	 * @return number of edges in this network
 	 */
 	public int getEdgeCount();
-
-	/**
-	 * Return the degree of a node
-	 *
-	 * @param node the node to get the degree of
-	 * @return node degree based on all edges
-	 */
-	public int getDegree(CyNode node);
-
-	/**
-	 * Return the degree of a node based on incoming edges
-	 *
-	 * @param node the node to get the degree of
-	 * @return node degree based on the number incoming edges
-	 */
-	public int getInDegree(CyNode node);
-
-	/**
-	 * Return the degree of a node based on outgoing edges
-	 *
-	 * @param node the node to get the degree of
-	 * @return node degree based on the number outgoing edges
-	 */
-	public int getOutDegree(CyNode node);
 
 	/**
 	 * Return true if the two nodes are neighbors in this network.

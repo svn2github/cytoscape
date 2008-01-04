@@ -85,7 +85,10 @@ public interface CyGroup extends CyModelObject {
 	public int getState();
 
 	/**
-	 * Get the viewer responsible for viewing the group.
+	 * Get the viewer responsible for viewing the group.  
+	 * <<Issue: A case can be made to move this out of the CyGroup 
+	 * object and have it only live in the view package.  This might 
+	 * complicate serialization, but it could be cleaner in some ways.>>
 	 *
 	 * @return the name of the viewer
 	 */
