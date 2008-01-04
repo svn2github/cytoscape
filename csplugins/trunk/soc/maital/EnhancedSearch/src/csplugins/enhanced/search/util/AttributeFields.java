@@ -38,6 +38,11 @@ package csplugins.enhanced.search.util;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
+/**
+ * This object will serve as input to the CustomMultiFieldQueryParser.
+ * It contains attribute fields names and their types.
+ * This way CustomMultiFieldQueryParser can recognise numeric attribute fields.
+ */
 public class AttributeFields {
 	
 	public static final String INDEX_FIELD = "id";
@@ -50,19 +55,13 @@ public class AttributeFields {
 		initFields();
 	}
 
-	public byte getType(String attrName) {
-		for (int i = 0; i < fields.length; i++) {
-			if (fields[i].equals(attrName)) {
-				return types[i];
-			}
-		}
-		return CyAttributes.TYPE_UNDEFINED;
-	}
-
-	public String[] getFields() {
-		return fields;
-	}
-
+	/**
+	 * Initialize this object with attribute fields names and their type.
+	 * Eventually, fields[i] will hold attribute field name and types[i] will hold its type.
+	 * fields[] and types[] contain both node and edge attributes.
+	 * ID (INDEX_FIELD) is treated as another attribute of type string.
+	 * There are probably better ways to do this, but there you go :)
+	 */
 	private void initFields() {
 
 		// Define attribute fields in which the search is to be carried on
@@ -73,11 +72,13 @@ public class AttributeFields {
 		int numOfNodeAttributes = nodeAttrNameArray.length;
 		int numOfEdgeAttributes = edgeAttrNameArray.length;
 
-		// The last two methods didn't return ID as one of the fields.
+		// Node IDs and edge IDs are both indexed with INDEX_FIELD.
+		// The last two methods didn't return INDEX_FIELD as one of the fields.
 		// To allow search on ID field, we add it manually.
 		fields = new String[numOfNodeAttributes + numOfEdgeAttributes + 1];
 		fields[0] = INDEX_FIELD;
-		
+
+		// Now add node and edge attribute names to fields[]
 		System.arraycopy(nodeAttrNameArray, 0, fields, 1, numOfNodeAttributes);
 		System.arraycopy(edgeAttrNameArray, 0, fields, numOfNodeAttributes +1,
 				numOfEdgeAttributes);
@@ -95,10 +96,11 @@ public class AttributeFields {
 					.getType(edgeAttrNameArray[i]);
 		}
 
-		// ... And add type STRING for the ID field
+		// ... And add type STRING for the INDEX_FIELD
 		types = new byte[numOfNodeAttributes + numOfEdgeAttributes + 1];
 		types[0] = CyAttributes.TYPE_STRING;
 		
+		// Now add node and edge attribute types to types[]
 		System.arraycopy(nodeAttrValueTypes, 0, types, 1, numOfNodeAttributes);
 		System.arraycopy(edgeAttrValueTypes, 0, types, numOfNodeAttributes + 1,
 				numOfEdgeAttributes);
@@ -109,6 +111,26 @@ public class AttributeFields {
 			fields[i] = fields[i].toLowerCase();
 		}
 
+	}
+
+
+	/**
+	 * Get list of fields
+	 */
+	public String[] getFields() {
+		return fields;
+	}
+
+	/**
+	 * Get the type of a given field
+	 */
+	public byte getType(String attrName) {
+		for (int i = 0; i < fields.length; i++) {
+			if (fields[i].equals(attrName)) {
+				return types[i];
+			}
+		}
+		return CyAttributes.TYPE_UNDEFINED;
 	}
 
 }

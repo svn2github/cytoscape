@@ -99,7 +99,7 @@ public class EnhancedSearchQuery {
 			hitCollector = new IdentifiersCollector(searcher);
 			searcher.search(query, hitCollector);
 		} catch (ParseException pe) {
-			// Parse exceptions occure when colon appear in the query in an
+			// Parse exceptions occur when colon appear in the query in an
 			// unexpected location, e.g. when attribute or value are
 			// missing in the query. In such case, the hitCollector
 			// variable will be null.
@@ -107,7 +107,7 @@ public class EnhancedSearchQuery {
 			String message = pe.getMessage();
 			System.out.println(message);
 		} catch (Exception e) {
-			// Other types of exception may occure
+			// Other types of exception may occur
 			System.out.println("Error during execution of query '" + queryString + "'");
 			String message = e.getMessage();
 			System.out.println(message);

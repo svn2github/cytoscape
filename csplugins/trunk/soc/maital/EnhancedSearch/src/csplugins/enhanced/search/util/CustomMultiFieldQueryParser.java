@@ -50,6 +50,12 @@ import csplugins.enhanced.search.util.NumberUtils;
 import cytoscape.data.CyAttributes;
 
 
+/**
+ * This custom MultiFieldQueryParser is used to parse queries containing numerical values.
+ * Lucene treats all attribute field values as strings. During indexing, numerical values were transformed
+ * into structured strings preserving their numerical sorting order. Now, numerical values in query
+ * should also be transformed so they can be properly compared to the values stored in the index.
+ */
 public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 
 	private AttributeFields attrFields;
@@ -63,9 +69,6 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 	protected Query getFieldQuery(String field, String queryText)
 			throws ParseException {
 		
-//		System.out.println("Custom getFieldQuery. Field: " + field + ", Out of " + fields.length + " fields. TYPE: " + attrFields.getType(field) + 
-//			 ". queryText: " + queryText);
-
 		if (attrFields.getType(field) == CyAttributes.TYPE_INTEGER) {
 			try {
 				int num1 = Integer.parseInt(queryText);
@@ -73,7 +76,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 						.longToString(num1));
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
-				// searched in each one of the fields. This exception occures
+				// searched in each one of the fields. This exception occurs
 				// when trying to convert non-numeric queryText into numeric.
 				// throw new ParseException(e.getMessage());
 			}
@@ -90,7 +93,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 						.double2sortableStr(num1)), true);
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
-				// searched in each one of the fields. This exception occures
+				// searched in each one of the fields. This exception occurs
 				// when trying to format String to numerical.
 				// throw new ParseException(e.getMessage());
 			}

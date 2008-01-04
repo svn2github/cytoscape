@@ -91,7 +91,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 			// Network creation events
 			if (event.getPropertyName().equals(Cytoscape.NETWORK_CREATED)) {
 				// Creation of a new networks enables Enhancedsearch
-				enhancedSearchToolBar.enableAllEnhancedSearchButtons();
+				enhancedSearchToolBar.enableESP();
 			}
 
 			// Network destroy events
@@ -105,7 +105,7 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 				// If there was only one network, and it was destroyed, disable Enhanced Search
 				Set networkSet = Cytoscape.getNetworkSet();
 				if (networkSet.size() == 1) {
-					enhancedSearchToolBar.disableAllEnhancedSearchButtons();
+					enhancedSearchToolBar.disableESP();
 				}
 			}
 			
@@ -113,9 +113,18 @@ public class EnhancedSearchPlugin extends CytoscapePlugin implements
 			else if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
 
 					// Mark that re-indexing of the network is needed.
-					// In future versions: update the network's index.
+					// In future versions (with Lucene 2.3): update the network's index.
 					final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-					enhancedSearch.setNetworkIndexStatus(cyNetwork,EnhancedSearch.REINDEX);
+					enhancedSearch.setNetworkIndexStatus(cyNetwork, EnhancedSearch.REINDEX);
+				}
+
+			// Attributes Changed events
+			else if (event.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
+
+					// Mark that re-indexing of the network is needed.
+					// In future versions (with Lucene 2.3): update the network's index.
+					final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+					enhancedSearch.setNetworkIndexStatus(cyNetwork, EnhancedSearch.REINDEX);
 				}
 
 		}
