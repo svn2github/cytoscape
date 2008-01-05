@@ -33,34 +33,24 @@
 package clusterMaker;
 
 // System imports
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import java.util.List;
-import java.util.*;
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-
-// giny imports
-import giny.view.NodeView;
-import ding.view.*;
 
 // Cytoscape imports
-import cytoscape.*;
+import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNetworkView;
-import cytoscape.data.CyAttributes;
-import cytoscape.util.CytoscapeAction;
 
 // clusterMaker imports
+import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.HierarchicalCluster;
+// import clusterMaker.algorithms.MCLCluster;
+// import clusterMaker.algorithms.KMeansCluster;
+// import clusterMaker.algorithms.SOMCluster;
 
 /**
  * The ClusterMaker class provides the primary interface to the
@@ -74,9 +64,12 @@ public class ClusterMaker extends CytoscapePlugin {
    */
   public ClusterMaker() {
 
-		JMenu menu = new JMenu("Cluster Tools");
-		menu.addMenuListener(new ClusterMakerMenuListener());
-
+		JMenu menu = new JMenu("Cluster");
+		addClusterAlgorithm(menu, new HierarchicalCluster());
+		// addClusterAlgorithm(new MCLCLuster());
+		// addClusterAlgorithm(new KMeansCluster());
+		// addClusterAlgorithm(new SOMCluster());
+		
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
@@ -85,75 +78,29 @@ public class ClusterMaker extends CytoscapePlugin {
   }
 
 	/**
-	 * The StructureMakerMenuListener provides the interface to the clusterMaker
-	 * plugin menu.
-	 */
-	public class ClusterMakerMenuListener implements MenuListener {
-		private ClusterMakerCommandListener staticHandle;
-
-		/**
-		 * Create the StructureMaker menu listener
-		 *
-		 */
-		ClusterMakerMenuListener() {
-			this.staticHandle = new ClusterMakerCommandListener(0, null);
-		}
-
-	  public void menuCanceled (MenuEvent e) {};
-		public void menuDeselected (MenuEvent e) {};
-
-		/**
-		 * Process the selected menu
-		 *
-		 * @param e the MenuEvent for the selected menu
-		 */
-		public void menuSelected (MenuEvent e)
-		{
-			JMenu m = (JMenu)e.getSource();
-			// Clear the menu
-			Component[] subMenus = m.getMenuComponents();
-			for (int i = 0; i < subMenus.length; i++) { m.remove(subMenus[i]); }
-
-			// Add our menu items
-			{
-			}
-		}
-
-
-		/**
-		 * Add a submenu item to an existing menu
-		 *
-		 * @param menu the JMenu to add the new submenu to
-		 * @param label the label for the submenu
-		 * @param command the command to execute when selected
-		 * @param userData data associated with the menu
-		 */
-		private void addSubMenu(JMenu menu, String label, int command, Object userData) {
-			ClusterMakerCommandListener l = new ClusterMakerCommandListener(command, userData);
-			JMenuItem item = new JMenuItem(label);
-			item.addActionListener(l);
-		  menu.add(item);
-		}
+ 	 * addClusterAlgorithm does some basic inquiry of the algorithm to see what it
+ 	 * supports and constructs the appropriate menu, taking into account whether
+ 	 * the algorithm supports edge as well as node attributes, and whether the algorithm
+ 	 * can be restricted to selected edges/nodes only.
+ 	 *
+ 	 * @param menu the top-level menu we're going to attach to
+ 	 * @param algorithm the cluster algorithm itself
+ 	 */  
+	private void addClusterAlgorithm(JMenu menu, ClusterAlgorithm algorithm) {
 	}
-	
-  /**
-   * This class gets attached to the menu item.
-   */
-  static class ClusterMakerCommandListener implements ActionListener {
-  	private static final long serialVersionUID = 1;
-		private int command;
-		private Object userData = null; // Either a Structure or an ArrayList
 
-		ClusterMakerCommandListener(int command, Object userData) {
-			this.command = command;
-			this.userData = userData;
-		}
-
-    /**
-     * This method is called when the user selects the menu item.
-     */
-    public void actionPerformed(ActionEvent ae) {
-			String label = ae.getActionCommand();
-		}
-  }
+	/**
+	 * Add a submenu item to an existing menu
+	 *
+	 * @param menu the JMenu to add the new submenu to
+	 * @param label the label for the submenu
+		 * @param command the command to execute when selected
+	 * @param userData data associated with the menu
+	 */
+	private void addSubMenu(JMenu menu, String label, int command, Object userData) {
+		// ClusterMakerCommandListener l = new ClusterMakerCommandListener(command, userData);
+		JMenuItem item = new JMenuItem(label);
+		// item.addActionListener(l);
+	  menu.add(item);
+	}
 }

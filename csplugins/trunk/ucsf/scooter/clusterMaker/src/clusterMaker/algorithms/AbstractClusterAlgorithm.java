@@ -38,56 +38,57 @@ import javax.swing.JPanel;
 
 // clusterMaker imports
 
-public interface ClusterAlgorithm {
+public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 
-	/**
- 	 * Get the short name of this algorithm
- 	 *
- 	 * @return short-hand name for algorithm
- 	 */
-	public String getShortName();
+	/************************************************************************
+ 	 * Abstract inteface -- override these methods!                         *
+	 ***********************************************************************/
 
-	/**
- 	 * Get the name of this algorithm
- 	 *
- 	 * @return name for algorithm
- 	 */
-	public String getName();
+	public abstract String getShortName();
+	public abstract String getName();
+	public abstract JPanel getSettingsPanel();
+	public abstract void revertSettings();
+	public abstract void updateSettings();
+	public abstract ClusterProperties getSettings();
+	public abstract String cluster();
 
-	/**
- 	 * Get the settings panel for this algorithm
- 	 *
- 	 * @return settings panel
- 	 */
-	public JPanel getSettingsPanel();
+	public String toString() { return getName(); }
 
-	/**
-	 * This method is used to ask the algorithm to revert its settings
-	 * to some previous state.  It is called from the settings dialog
-	 * when the user presses the "Cancel" button.
-	 *
-	 * NOTE: ClusterAlgorithmBase implements this on behalf of all its subclasses
-	 * by using Java Preferences.
-	 */
-	public void revertSettings();
+	
+	public static double[][] distanceMatrix(Matrix matrix, DistanceMetric metric) {
+		double[][] result = new double[matrix.nRows()][matrix.nColumns()];
+		for (int row = 1; row < matrix.nRows(); row++) {
+			for (int column = 0; column < row; column++) {
+				result[row][column] = metric.getMetric(matrix, matrix, matrix.getWeights(), row, column);
+			}
+		}
+		return result;
+	}
 
-  /**
-	 * This method is used to ask the algorithm to get its settings
-	 * from the settings dialog.  It is called from the settings dialog
-	 * when the user presses the "Done" or the "Execute" buttons.
-	 *
-	 * NOTE: ClusterAlgorithmBase implements this on behalf of all its subclasses
-	 * by using Java Preferences.
-	 */
-	public void updateSettings();
+	public static double mean(Double[] vector) {
+	double result = 0.0;
+		for (int i = 0; i < vector.length; i++) {
+			result += vector[i].doubleValue();
+		}
+		return (result/(double)vector.length);
+	}
 
-  /**
-	 * This method is used to ask the algorithm to get all of its tunables
-	 * and return them to the caller.
-	 *
-	 * @return the cluster properties for this algorithm
-	 *
-	 */
-	public ClusterProperties getSettings();
-
+	// Inefficient, but simple approach to finding the median
+	public static double median(Double[] vector) {
+		// Clone the input vector
+		Double[] vectorCopy = new Double[vector.length];
+		for (int i = 0; i < vector.length; i++) {
+			vectorCopy[i] = new Double(vector[i].doubleValue());
+		}
+	
+		// sort it
+		Arrays.sort(vectorCopy);
+	
+		// Get the median
+		int mid = vector.length/2;
+		if (vector.length%2 == 1) {
+			return (vectorCopy[mid].doubleValue());
+		}
+		return ((vectorCopy[mid-1].doubleValue()+vectorCopy[mid].doubleValue()) / 2);
+	}
 }

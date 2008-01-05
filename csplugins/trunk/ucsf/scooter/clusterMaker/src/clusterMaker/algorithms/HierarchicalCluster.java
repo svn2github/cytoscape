@@ -37,10 +37,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Comparator;
+import javax.swing.JPanel;
 
 // clusterMaker imports
 
-public class HierarchicalCluster extends ClusterAlgorithm {
+public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public enum ClusterMethod {
 		SINGLE_LINKAGE("pairwise single-linkage"),
 		MAXIMUM_LINKAGE("parwise maximum-linkage"),
@@ -58,8 +59,17 @@ public class HierarchicalCluster extends ClusterAlgorithm {
 		}
 	}
 
-	public void cluster(String weightAttribute, ClusterMethod method, 
-	                    DistanceMetric metric, boolean transpose) {
+	public String getShortName() {return "hierarchical";};
+	public String getName() {return "Hierarchical cluster";};
+	public JPanel getSettingsPanel() {return null;}
+	public void revertSettings() {}
+	public void updateSettings() {}
+	public ClusterProperties getSettings() {return null;} 
+
+	public String cluster() {return null;}
+
+	public String cluster(String weightAttribute, ClusterMethod method, 
+	                      DistanceMetric metric, boolean transpose) {
 
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
@@ -134,6 +144,7 @@ public class HierarchicalCluster extends ClusterAlgorithm {
 		// Now sort based on tree structure
 
 		// Update the network attribute "HierarchicalCluster" and make it hidden
+		return "Complete";
 	}
 
 	private TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, 
