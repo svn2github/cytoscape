@@ -59,33 +59,12 @@ public interface CyNode extends CyModelObject {
 	public int getDegree(EdgeSet set);
 
 	/**
-	 * Return our degree based on incoming edges
-	 *
-	 * @return node degree based on the number incoming edges
-	 */
-	public int getInDegree();
-
-	/**
-	 * Return our degree based on outgoing edges
-	 *
-	 * @return node degree based on the number outgoing edges
-	 */
-	public int getOutDegree();
-
-	/**
 	 * Return true if the neighborNode is a neighbor of this node
 	 *
 	 * @param neighborNode the node to test against
 	 * @return true if this node is a neighbor of neighborNode 
 	 */
 	public boolean isNeighbor(CyNode neighborNode);
-
-	/**
-	 * Add this node to a group
-	 *
-	 * @param group the group to add this to
-	 */
-	public void addToGroup(CyGroup group);
 
 	/**
 	 * Get the groups this node is a member of
@@ -95,24 +74,9 @@ public interface CyNode extends CyModelObject {
 	public List<CyGroup> getGroupList();
 
 	/**
-	 * Return true if the node is in the group
-	 *
-	 * @param group the group to check
-	 * @return true if node is in group
-	 */
-	public boolean inGroup(CyGroup group);
-
-	/**
 	 * Is this node actually a group node?
 	 *
 	 * @return true if this node is group node
 	 */
 	public boolean isaGroup();
-
-	/**
-	 * Remove this node from a group
-	 *
-	 * @param group the group to this node from
-	 */
-	public void removeFromGroup(CyGroup group);
 }

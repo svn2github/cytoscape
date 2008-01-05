@@ -1,7 +1,5 @@
 package org.cytoscape.model;
 
-import java.util.Set;
-
 /**
  * CyEdge is the object that represents the connection
  * between two (or more) nodes
@@ -21,7 +19,7 @@ public interface CyEdge extends CyModelObject {
 	 *
 	 * @return edge target
 	 */
-	public Set<CyNode> getTargets();
+	public CyNode getTarget();
 
 	/**
 	 * Return the edge type.  This is usually indicative of the
@@ -37,6 +35,13 @@ public interface CyEdge extends CyModelObject {
 	 * @return true if this edge is directed
 	 */
 	public boolean isDirected();
+
+	/**
+	 * Return whether this edge is a hyperedge or not
+	 *
+	 * @return true if this edge is a hyperedge (multiple sources or tagets)
+	 */
+	public boolean isHyperedge();
 
 	/**
 	 * Set this edge to be directed or not

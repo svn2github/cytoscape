@@ -2,7 +2,7 @@ package org.cytoscape.model;
 
 import java.util.List;
 
-public interface CyGroup extends CyModelObject {
+public interface CyGroup extends CyNode {
 
 	/**
 	 * Add a new inner edge to this group.  An inner
@@ -47,14 +47,6 @@ public interface CyGroup extends CyModelObject {
 	 * @return the group name
 	 */
 	public String getGroupName();
-
-
-	/**
-	 * Return the node that is used to represent this group.
-	 *
-	 * @return the node that represents this group
-	 */
-	public CyNode getGroupNode();
 
 	/**
 	 * Get the list of inner edges for this group
