@@ -244,6 +244,44 @@ public class Tunable {
 	}
 
 	/**
+	 * Method to set the lowerBound for this Tunable.  This might be used to change a Tunable
+	 * based on changes in the plugin environment.
+	 *
+	 * @param lowerBound the new lowerBound for the tunable
+	 */
+	public void setLowerBound(Object lowerBound) {
+		this.lowerBound = lowerBound;
+	}
+
+	/**
+	 * Method to get the lowerBound for this Tunable.
+	 *
+	 * @return the lowerBound the tunable
+	 */
+	public Object getLowerBound() {
+		return this.lowerBound;
+	}
+
+	/**
+	 * Method to set the upperBound for this Tunable.  This might be used to change a Tunable
+	 * based on changes in the plugin environment.
+	 *
+	 * @param upperBound the new upperBound for the tunable
+	 */
+	public void setUpperBound(Object upperBound) {
+		this.upperBound = upperBound;
+	}
+
+	/**
+	 * Method to get the upperBound for this Tunable.
+	 *
+	 * @return the upperBound the tunable
+	 */
+	public Object getUpperBound() {
+		return this.upperBound;
+	}
+
+	/**
 	 * Method to return a string representation of this Tunable,
 	 * which is essentially its name.
 	 *
