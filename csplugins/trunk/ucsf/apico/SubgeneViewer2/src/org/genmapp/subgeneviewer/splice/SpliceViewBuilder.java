@@ -3,6 +3,7 @@ package org.genmapp.subgeneviewer.splice;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,15 +11,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.Point2D;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.swingx.JXPanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 /**
@@ -60,6 +62,7 @@ public class SpliceViewBuilder extends JDialog {
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(500, 200);
 		dab.mainView.updateView();
+		dab.layoutComponents();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
 
@@ -81,11 +84,11 @@ public class SpliceViewBuilder extends JDialog {
 	private void initComponents() {
 		jXPanel1 = new org.jdesktop.swingx.JXPanel();
 		mainView = new SpliceViewPanel();
-		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
-		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
-		nodeScrollPane = new javax.swing.JScrollPane();
-		edgeScrollPane = new javax.swing.JScrollPane();
-		globalScrollPane = new javax.swing.JScrollPane();
+	}
+	
+	public void layoutComponents() {
+		globalScrollPane = new javax.swing.JScrollPane(mainView);
+		
 		closeButton = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -93,138 +96,58 @@ public class SpliceViewBuilder extends JDialog {
 		mainView.setBorder(new javax.swing.border.LineBorder(
 				java.awt.Color.darkGray, 1, true));
 
-		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(
+		GroupLayout jXPanel2Layout = new GroupLayout(
 				mainView);
 		mainView.setLayout(jXPanel2Layout);
 		jXPanel2Layout.setHorizontalGroup(jXPanel2Layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(0, 300,
-				Short.MAX_VALUE));
+				GroupLayout.LEADING).add(mainView.getPanelWidth(), mainView.getPanelWidth(), Short.MAX_VALUE));
 		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(0, 237,
-				Short.MAX_VALUE));
-
-		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(
-				new Point2D.Double(.2d, 0), new Color(Color.gray.getRed(),
-						Color.gray.getGreen(), Color.gray.getBlue(), 100),
-				new Point2D.Double(.8d, 0), Color.WHITE));
-		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
-		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
-		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
-		defaultObjectTabbedPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
-
-		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
-		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
-		defaultObjectTabbedPane.addTab("Global", globalScrollPane);
-
-		org.jdesktop.layout.GroupLayout jXTitledPanel1Layout = new org.jdesktop.layout.GroupLayout(
-				jXTitledPanel1.getContentContainer());
-		jXTitledPanel1.getContentContainer().setLayout(jXTitledPanel1Layout);
-		jXTitledPanel1Layout.setHorizontalGroup(jXTitledPanel1Layout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(defaultObjectTabbedPane,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250,
-						Short.MAX_VALUE));
-		jXTitledPanel1Layout.setVerticalGroup(jXTitledPanel1Layout
-				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(defaultObjectTabbedPane,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 243,
-						Short.MAX_VALUE));
+				GroupLayout.LEADING).add(mainView.getPanelHeight(), mainView.getPanelHeight(), mainView.getPanelHeight()));
+		
+//		globalScrollPane.setPreferredSize(((DGraphView) mainView.getView()).getCanvas().getSize());
+//		globalScrollPane.setPreferredSize(new Dimension(mainView.getPanelWidth(), mainView.getPanelHeight()));	
+		globalScrollPane.setPreferredSize(new Dimension(500, mainView.getPanelHeight()));
+		
 
 		closeButton.setText("Close");
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				mainView.clean();
+				// mainView.clean();
 				dispose();
-				
+
 			}
 		});
 
-		org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(
+		GroupLayout jXPanel1Layout = new GroupLayout(
 				jXPanel1);
 		jXPanel1.setLayout(jXPanel1Layout);
-		jXPanel1Layout
-				.setHorizontalGroup(jXPanel1Layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								jXPanel1Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												jXPanel1Layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																jXPanel1Layout
-																		.createSequentialGroup()
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				closeButton))
-														.add(
-																mainView))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(12,
-												12, 12)));
-		jXPanel1Layout
-				.setVerticalGroup(jXPanel1Layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								org.jdesktop.layout.GroupLayout.TRAILING,
-								jXPanel1Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												jXPanel1Layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.TRAILING)
-														
-														.add(
-																jXPanel1Layout
-																		.createSequentialGroup()
-																		.add(
-																				mainView)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				jXPanel1Layout
-																						.createParallelGroup(
-																								org.jdesktop.layout.GroupLayout.BASELINE)
-																							.add(
-																								closeButton))))
-										.addContainerGap()));
+		jXPanel1Layout.setAutocreateContainerGaps(true);
+		jXPanel1Layout.setAutocreateGaps(true);
+		jXPanel1Layout.setHorizontalGroup(jXPanel1Layout.createParallelGroup(GroupLayout.CENTER)
+				.add(globalScrollPane).add(closeButton));
+		jXPanel1Layout.setVerticalGroup(jXPanel1Layout.createSequentialGroup()
+				.add(globalScrollPane).add(closeButton));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
+		GroupLayout layout = new GroupLayout(
 				getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(jXPanel1,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+				GroupLayout.LEADING).add(jXPanel1,
+				GroupLayout.DEFAULT_SIZE,
+				GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 		layout.setVerticalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(jXPanel1,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+				GroupLayout.LEADING).add(jXPanel1,
+				GroupLayout.DEFAULT_SIZE,
+				GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 		pack();
 	} // </editor-fold>
 
 	// Variables declaration - do not modify
-	private javax.swing.JButton closeButton;
+	private JButton closeButton;
 
-	private javax.swing.JScrollPane nodeScrollPane;
+	private JScrollPane globalScrollPane;
 
-	private javax.swing.JScrollPane edgeScrollPane;
-
-	private javax.swing.JScrollPane globalScrollPane;
-
-	private javax.swing.JTabbedPane defaultObjectTabbedPane;
-
-	private org.jdesktop.swingx.JXPanel jXPanel1;
-
-	// private org.jdesktop.swingx.JXPanel jXPanel2;
-	private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
+	private JXPanel jXPanel1;
 
 	// End of variables declaration
 	protected SpliceViewPanel mainView;
@@ -234,64 +157,64 @@ public class SpliceViewBuilder extends JDialog {
 		return mainView;
 	}
 
-//	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
-//		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
-//				14);
-//
-//		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
-//
-//		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
-//
-//		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 150);
-//
-//		private final List<Icon> icons;
-//
-//		public VisualPropCellRenderer(List<Icon> icons) {
-//			this.icons = icons;
-//			setOpaque(true);
-//		}
-//
-//		public Component getListCellRendererComponent(JList list, Object value,
-//				int index, boolean isSelected, boolean cellHasFocus) {
-//			final VisualPropertyIcon icon;
-//
-//			if (icons.size() > index) {
-//				icon = (VisualPropertyIcon) icons.get(index);
-//			} else
-//				icon = null;
-//
-//			setText(value.toString());
-//			setIcon(icon);
-//			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
-//
-//			this.setVerticalTextPosition(SwingConstants.CENTER);
-//			this.setVerticalAlignment(SwingConstants.CENTER);
-//			this.setIconTextGap(55);
-//
-//			if (value instanceof VisualPropertyType
-//					&& (((VisualPropertyType) value).getDataType() == String.class)) {
-//				final Object defVal = ((VisualPropertyType) value)
-//						.getDefault(Cytoscape.getVisualMappingManager()
-//								.getVisualStyle());
-//
-//				if (defVal != null) {
-//					this.setToolTipText((String) defVal);
-//				}
-//			}
-//
-//			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
-//			setForeground(isSelected ? SELECTED_FONT_COLOR : list
-//					.getForeground());
-//
-//			if (icon != null) {
-//				setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
-//			}
-//
-//			this.setBorder(new DropShadowBorder());
-//
-//			return this;
-//		}
-//	}
+	// class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
+	// private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
+	// 14);
+	//
+	// private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
+	//
+	// private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
+	//
+	// private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 150);
+	//
+	// private final List<Icon> icons;
+	//
+	// public VisualPropCellRenderer(List<Icon> icons) {
+	// this.icons = icons;
+	// setOpaque(true);
+	// }
+	//
+	// public Component getListCellRendererComponent(JList list, Object value,
+	// int index, boolean isSelected, boolean cellHasFocus) {
+	// final VisualPropertyIcon icon;
+	//
+	// if (icons.size() > index) {
+	// icon = (VisualPropertyIcon) icons.get(index);
+	// } else
+	// icon = null;
+	//
+	// setText(value.toString());
+	// setIcon(icon);
+	// setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
+	//
+	// this.setVerticalTextPosition(SwingConstants.CENTER);
+	// this.setVerticalAlignment(SwingConstants.CENTER);
+	// this.setIconTextGap(55);
+	//
+	// if (value instanceof VisualPropertyType
+	// && (((VisualPropertyType) value).getDataType() == String.class)) {
+	// final Object defVal = ((VisualPropertyType) value)
+	// .getDefault(Cytoscape.getVisualMappingManager()
+	// .getVisualStyle());
+	//
+	// if (defVal != null) {
+	// this.setToolTipText((String) defVal);
+	// }
+	// }
+	//
+	// setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
+	// setForeground(isSelected ? SELECTED_FONT_COLOR : list
+	// .getForeground());
+	//
+	// if (icon != null) {
+	// setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
+	// }
+	//
+	// this.setBorder(new DropShadowBorder());
+	//
+	// return this;
+	// }
+	// }
 
 	/*
 	 * Draw global color icon

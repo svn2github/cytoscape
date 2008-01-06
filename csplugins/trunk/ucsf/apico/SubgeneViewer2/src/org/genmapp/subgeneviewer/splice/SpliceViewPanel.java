@@ -57,13 +57,21 @@ public class SpliceViewPanel extends JPanel {
 
 	private static List edges = new ArrayList();
 
+	private int panelHeight = 150;
+
+	private int panelWidth = 200; // set to cummulative feature node
+											// layout
+
 	private Component canvas = null;
+
+	private Component canvas2 = null;
 
 	/**
 	 * Processes feature, structure and splice attributes.
 	 */
 	public SpliceViewPanel() {
 
+		
 		// Get parent node identifier
 		nodeId = SpliceController.get_nodeId();
 
@@ -163,10 +171,20 @@ public class SpliceViewPanel extends JPanel {
 				start = true;
 			}
 
-			// Create Region and set properties
+			// Create Region with properties
 			SpliceRegion region = new SpliceRegion(region_name, view,
 					structureAtts[1], structureAtts[2], units, constitutive,
 					start, structureAtts[6]);
+
+			// Add Region to Canvas
+			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+			// DGraphView dview = (DGraphView) view;
+			DingCanvas aLayer = dview
+					.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+			aLayer.add(region);
+
+			// hack
+			dview.setZoom(dview.getZoom() * 0.99999999999999999d);
 
 			// region.setId(structureAtts[1]);
 			// region.setType(structureAtts[2]);
@@ -174,7 +192,6 @@ public class SpliceViewPanel extends JPanel {
 			// region.setConstitutive(constitutive);
 			// region.setContainsStartSite(start);
 			// region.setAnnotation(structureAtts[6]);
-
 		}
 
 	}
@@ -192,8 +209,20 @@ public class SpliceViewPanel extends JPanel {
 			String[] spliceAtts = spliceList.split(":");
 
 			// Create Splice Events and set properties
-			SpliceEvent event = new SpliceEvent(spliceAtts[0], spliceAtts[1], view);
-		
+			SpliceEvent event = new SpliceEvent(spliceAtts[0], spliceAtts[1],
+					view);
+			
+			//Add Splice Events to canvas
+			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+			// DGraphView dview = (DGraphView) view;
+			DingCanvas aLayer = dview
+					.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+			aLayer.add(event);
+
+			// hack
+			dview.setZoom(dview.getZoom() * 0.99999999999999999d);
+
+
 		}
 	}
 
@@ -227,12 +256,18 @@ public class SpliceViewPanel extends JPanel {
 		view = new SubgeneNetworkView(dummyNet, dummyNet.getTitle());
 		view.setIdentifier(dummyNet.getIdentifier());
 		// view.setTitle(dummyNet.getTitle());
-
+		
+		xOffset = HGAP;
+		//fudge factor?!
+		double initialOffset = -37.5 * features.size();
+		
 		for (Object f : features) {
 			NodeView nv = view.getNodeView((CyNode) f);
-			nv.setOffset(xOffset + HGAP / 2, VGAP);
+			nv.setOffset(initialOffset + xOffset + HGAP / 2, VGAP);
 			xOffset += HGAP + NODE_WIDTH;
 		}
+
+		this.setPanelWidth(xOffset);
 
 		processStructure();
 
@@ -373,8 +408,14 @@ public class SpliceViewPanel extends JPanel {
 			((DGraphView) view).getCanvas().setSize(
 					new Dimension((int) panelSize.getWidth() - PADDING,
 							(int) panelSize.getHeight() - PADDING));
-			view.fitContent();
-			canvas = (view.getComponent());
+//			((DGraphView) view).getCanvas().setSize(
+//					new Dimension(this.getPanelWidth() - PADDING,
+//							this.getPanelHeight() - PADDING));
+
+			// view.fitContent();
+			canvas = (((DGraphView) view).getCanvas());
+			// canvas = (view.getComponent());
+			
 
 			// for (MouseListener listener : canvas.getMouseListeners())
 			// canvas.removeMouseListener(listener);
@@ -399,4 +440,33 @@ public class SpliceViewPanel extends JPanel {
 	public GraphView getView() {
 		return view;
 	}
+
+	/**
+	 * @return the panelHeight
+	 */
+	public  int getPanelHeight() {
+		return panelHeight;
+	}
+
+	/**
+	 * @param panelHeight the panelHeight to set
+	 */
+	public void setPanelHeight(int panelHeight) {
+		this.panelHeight = panelHeight;
+	}
+
+	/**
+	 * @return the panelWidth
+	 */
+	public  int getPanelWidth() {
+		return panelWidth;
+	}
+
+	/**
+	 * @param panelWidth the panelWidth to set
+	 */
+	public  void setPanelWidth(int panelWidth) {
+		this.panelWidth = panelWidth;
+	}
+
 }

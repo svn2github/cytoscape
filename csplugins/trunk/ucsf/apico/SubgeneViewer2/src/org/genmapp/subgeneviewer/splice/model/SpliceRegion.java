@@ -130,14 +130,15 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 		}
 
 		((DGraphView) myView).addViewportChangeListener(this);
-		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-		// DGraphView dview = (DGraphView) view;
-		DingCanvas aLayer = dview
-				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-		aLayer.add(this);
-
-		// hack
-		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
+		
+//		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+//		// DGraphView dview = (DGraphView) myView;
+//		DingCanvas aLayer = dview
+//				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
+//		aLayer.add(this);
+//
+//		// hack
+//		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
 
 		// Add to list of region objects
 		regionList.add(this);
