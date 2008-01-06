@@ -20,6 +20,7 @@ import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
@@ -313,80 +314,6 @@ public class SpliceViewPanel extends JPanel {
 		// view.setVisualStyle("SGV");
 	}
 
-	// /**
-	// * perform a depth-first search of a SubgeneNetworkView and render all
-	// * Blocks, Regions, Features, Splice Events, and Start sites
-	// *
-	// * @param view
-	// */
-	// public void renderView() {
-	// // Graphics2D g = (Graphics2D) view.getComponent().getGraphics();
-	// // Graphics2D g = (Graphics2D) ((DGraphView)
-	// view).getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS).getGraphics();
-	// // DingCanvas backgroundLayer = ((DGraphView)
-	// view).getCanvas(DGraphView.Canvas.NETWORK_CANVAS);
-	// // DingCanvas backgroundLayer = view
-	// // .getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-	// // backgroundLayer.add(_thisRegion);
-	//		
-	// DGraphView dview = (DGraphView) view;
-	// //DingCanvas aLayer =
-	// dview.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-	// DingCanvas aLayer = dview.getCanvas();
-	//		
-	// // Stroke normal = g.getStroke(); // store default stroke
-	// // Rectangle rect;
-	// //
-	// // g.setColor(Color.black);
-	// //
-	// // g.drawString("Gene Structure", 5, VGAP + TITLE_LEGEND_HEIGHT + VGAP
-	// // + LABEL_TRACK_HEIGHT);
-	// // g.setColor(Color.black);
-	// //
-	// // g.drawString("Feature Data", 5, VGAP + TITLE_LEGEND_HEIGHT + VGAP
-	// // + LABEL_TRACK_HEIGHT + BLOCK_HEIGHT + 3 * NODE_HEIGHT);
-	//
-	// for (String feature_name : featureList) {
-	// for (SpliceRegion2 region : regionList){
-	// String region_name = region.getName();
-	// if (region_name.equalsIgnoreCase(feature_name)){
-	// System.out.println("match!");
-	// _region = region;
-	//					
-	// //test
-	// aLayer.add(_region);
-	// aLayer.repaint();
-	//
-	//
-	// // backgroundLayer.add(region);
-	//
-	// // rect = region.getBounds();
-	// // System.out.println ("Drawing region: " + region.getId() +
-	// // " in bounding box " + rect);
-	//
-	// // Color regionColor = region.getColor();
-	// // g.setColor(regionColor);
-	// //
-	// // // if
-	// // //
-	// ((region.getColor().getRed()+region.getColor().getGreen()+region.getColor().getBlue())
-	// // // > 500) {
-	// // // g.setColor(Color.black);
-	// // // } else {
-	// // // g.setColor(Color.white);
-	// // // }
-	// //
-	// // // g.setColor(new Color(225, 225, 255));
-	// // g.fillRect(rect.x, rect.y, rect.width, rect.height);
-	// // g.setColor(Color.black);
-	// // g.drawRect(rect.x, rect.y, rect.width, rect.height);
-	// // // this.repaint();
-	//
-	// }
-	// }
-	// }
-	// }
-
 	/**
 	 * DOCUMENT ME!
 	 */
@@ -408,14 +335,12 @@ public class SpliceViewPanel extends JPanel {
 			((DGraphView) view).getCanvas().setSize(
 					new Dimension((int) panelSize.getWidth() - PADDING,
 							(int) panelSize.getHeight() - PADDING));
-//			((DGraphView) view).getCanvas().setSize(
-//					new Dimension(this.getPanelWidth() - PADDING,
-//							this.getPanelHeight() - PADDING));
-
 			// view.fitContent();
 			canvas = (((DGraphView) view).getCanvas());
 			// canvas = (view.getComponent());
 			
+			//Force LOD (!? doesn't work on sgv window!?)
+			CytoscapeInit.getProperties().setProperty("render.nodeLabelThreshold", "200");
 
 			// for (MouseListener listener : canvas.getMouseListeners())
 			// canvas.removeMouseListener(listener);

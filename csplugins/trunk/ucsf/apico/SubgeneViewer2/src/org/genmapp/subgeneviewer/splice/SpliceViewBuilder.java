@@ -88,7 +88,6 @@ public class SpliceViewBuilder extends JDialog {
 	
 	public void layoutComponents() {
 		globalScrollPane = new javax.swing.JScrollPane(mainView);
-		
 		closeButton = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -100,13 +99,13 @@ public class SpliceViewBuilder extends JDialog {
 				mainView);
 		mainView.setLayout(jXPanel2Layout);
 		jXPanel2Layout.setHorizontalGroup(jXPanel2Layout.createParallelGroup(
-				GroupLayout.LEADING).add(mainView.getPanelWidth(), mainView.getPanelWidth(), Short.MAX_VALUE));
+				GroupLayout.LEADING).add(0, mainView.getPanelWidth(), Short.MAX_VALUE));
 		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(
-				GroupLayout.LEADING).add(mainView.getPanelHeight(), mainView.getPanelHeight(), mainView.getPanelHeight()));
+				GroupLayout.LEADING).add(0, mainView.getPanelHeight(), Short.MAX_VALUE));
 		
 //		globalScrollPane.setPreferredSize(((DGraphView) mainView.getView()).getCanvas().getSize());
 //		globalScrollPane.setPreferredSize(new Dimension(mainView.getPanelWidth(), mainView.getPanelHeight()));	
-		globalScrollPane.setPreferredSize(new Dimension(500, mainView.getPanelHeight()));
+		globalScrollPane.setPreferredSize(new Dimension(500, mainView.getPanelHeight() + 25));
 		
 
 		closeButton.setText("Close");
