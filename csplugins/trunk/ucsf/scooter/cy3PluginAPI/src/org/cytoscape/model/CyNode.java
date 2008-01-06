@@ -7,6 +7,15 @@ import java.util.List;
  */
 public interface CyNode extends CyModelObject {
 	public static enum EdgeSet {EDGESET_ANY, EDGESET_INCOMING, EDGESET_OUTGOING};
+	public static enum NodeFlag {
+		ISAGROUP(0x1),
+		HOUSEKEEPING(0x2);
+		int flag;
+		NodeFlag(int flag) {
+			this.flag = flag;
+		}
+		public int getFlag() { return flag; }
+	}
 
 	/**
 	 * Return the list of edges connected to this node
@@ -32,7 +41,8 @@ public interface CyNode extends CyModelObject {
 	public CyEdge removeEdge(CyEdge edge);
 
 	/**
-	 * Return the list of nodes that are neighbor to this node
+	 * Return the list of nodes that are neighbor to this node.  This routine should
+	 * be smart enough to take into account HyperEdges.
 	 *
 	 * @param set the set of edges to consider
 	 * @param edgeType a (possibly null) edge type to restrict the list to
@@ -51,7 +61,7 @@ public interface CyNode extends CyModelObject {
 	public List<CyEdge> getConnectingEdgeList(CyNode neighborNode, String edgeType, EdgeSet set);
 
 	/**
-	 * Get the degree of this node
+	 * Get the degree of this node, taking into account HyperEdges
 	 *
 	 * @param set the set of edges to examine
 	 * @return the degree
@@ -59,7 +69,8 @@ public interface CyNode extends CyModelObject {
 	public int getDegree(EdgeSet set);
 
 	/**
-	 * Return true if the neighborNode is a neighbor of this node
+	 * Return true if the neighborNode is a neighbor of this node, taking 
+	 * into account HyperEdges
 	 *
 	 * @param neighborNode the node to test against
 	 * @return true if this node is a neighbor of neighborNode 
@@ -74,9 +85,23 @@ public interface CyNode extends CyModelObject {
 	public List<CyGroup> getGroupList();
 
 	/**
-	 * Is this node actually a group node?
+	 * Set a flag on this node
 	 *
-	 * @return true if this node is group node
+	 * @param flag the flag to set
 	 */
-	public boolean isaGroup();
+	public void setFlag(NodeFlag flag);
+
+	/**
+	 * Clear a flag on this node
+	 *
+	 * @param flag the flag to clear
+	 */
+	public void clearFlag(NodeFlag flag);
+
+	/**
+	 * Test a flag on this node
+	 *
+	 * @param flag the flag to test
+	 */
+	public boolean testFlag(NodeFlag flag);
 }

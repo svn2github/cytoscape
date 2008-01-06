@@ -103,11 +103,45 @@ public interface CyNetwork extends CyModelObject {
 	public List<CyNode>getNodeList();
 
 	/**
+	 * Return the list of nodes that match the specified attribute.  This
+	 * is here for efficiency reasons, so that we can get a subset of
+	 * the current nodes without having to create CyNodes for each one.
+	 *
+	 * @param attribute the attribute to search
+	 * @param value the value to use for the match
+	 * @param match how to evaluate the match.  match could be one of
+	 *              &lt;,&gt;,&lt;=,&gt;=,!=,==,hasValue,hasKey, or ~=.  
+	 *              '~=' is only used for STRING attributes to indicate 
+	 *              that 'value' is a regular expression.
+	 *              hasValue can be used for LIST attributes
+	 *              hasKey can be used for MAP attributes
+	 * @return list of nodes that match
+	 */
+	public List<CyNode>getNodesByAttribute(String attribute, Object value, String match);
+
+	/**
 	 * Return the list of edges that are part of this network
 	 *
 	 * @return list of edges
 	 */
 	public List<CyEdge>getEdgeList();
+
+	/**
+	 * Return the list of edges that match the specified attribute.  This
+	 * is here for efficiency reasons, so that we can get a subset of
+	 * the current edges without having to create CyEdges for each one.
+	 *
+	 * @param attribute the attribute to search
+	 * @param value the value to use for the match
+	 * @param match how to evaluate the match.  match could be one of
+	 *              &lt;,&gt;,&lt;=,&gt;=,!=,==,hasValue,hasKey, or ~=.  
+	 *              '~=' is only used for STRING attributes to indicate 
+	 *              that 'value' is a regular expression.
+	 *              hasValue can be used for LIST attributes
+	 *              hasKey can be used for MAP attributes
+	 * @return list of edges that match
+	 */
+	public List<CyEdge>getEdgesByAttribute(String attribute, Object value, String match);
 
 	/**
 	 * Return the number of nodes that are part of this network

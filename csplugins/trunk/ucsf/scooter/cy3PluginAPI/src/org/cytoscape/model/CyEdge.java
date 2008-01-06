@@ -5,7 +5,15 @@ package org.cytoscape.model;
  * between two (or more) nodes
  */
 public interface CyEdge extends CyModelObject {
-	public static enum EdgeDirection {EDGE_UNDIRECTED, EDGE_DIRECTED};
+	public static enum EdgeFlag {
+		DIRECTED(1),
+		ISHYPEREDGE(2);
+		int flag;
+		EdgeFlag(int flag) {
+			this.flag = flag;
+		}
+		public int getFlag() { return flag; }
+	}
 
 	/**
 	 * Return the source of this edge
@@ -30,23 +38,23 @@ public interface CyEdge extends CyModelObject {
 	public String getEdgeType();
 
 	/**
-	 * Return whether this edge is directed or not
+	 * Set a flag on this edge
 	 *
-	 * @return true if this edge is directed
+	 * @param flag the flag to set
 	 */
-	public boolean isDirected();
+	public void setFlag(EdgeFlag flag);
 
 	/**
-	 * Return whether this edge is a hyperedge or not
+	 * Clear a flag on this edge
 	 *
-	 * @return true if this edge is a hyperedge (multiple sources or tagets)
+	 * @param flag the flag to clear
 	 */
-	public boolean isHyperedge();
+	public void clearFlag(EdgeFlag flag);
 
 	/**
-	 * Set this edge to be directed or not
+	 * Test a flag on this edge
 	 *
-	 * @param direction EDGE_DIRECTED if this is a directed edge
+	 * @param flag the flag to test
 	 */
-	public void setDirected(EdgeDirection directed);
+	public boolean testFlag(EdgeFlag flag);
 }
