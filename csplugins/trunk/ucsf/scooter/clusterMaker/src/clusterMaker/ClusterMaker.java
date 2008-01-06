@@ -33,6 +33,7 @@
 package clusterMaker;
 
 // System imports
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JMenu;
@@ -46,6 +47,7 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 
 // clusterMaker imports
+import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.HierarchicalCluster;
 // import clusterMaker.algorithms.MCLCluster;
@@ -87,6 +89,9 @@ public class ClusterMaker extends CytoscapePlugin {
  	 * @param algorithm the cluster algorithm itself
  	 */  
 	private void addClusterAlgorithm(JMenu menu, ClusterAlgorithm algorithm) {
+		JMenuItem item = new JMenuItem(algorithm.getName());
+		item.addActionListener(new ClusterMakerCommandListener(algorithm));
+		menu.add(item);
 	}
 
 	/**
@@ -94,7 +99,7 @@ public class ClusterMaker extends CytoscapePlugin {
 	 *
 	 * @param menu the JMenu to add the new submenu to
 	 * @param label the label for the submenu
-		 * @param command the command to execute when selected
+	 * @param command the command to execute when selected
 	 * @param userData data associated with the menu
 	 */
 	private void addSubMenu(JMenu menu, String label, int command, Object userData) {
@@ -102,5 +107,23 @@ public class ClusterMaker extends CytoscapePlugin {
 		JMenuItem item = new JMenuItem(label);
 		// item.addActionListener(l);
 	  menu.add(item);
+	}
+
+	/**
+	 * Inner class to handle commands
+	 */
+	class ClusterMakerCommandListener implements ActionListener {
+		ClusterAlgorithm alg;
+
+		public ClusterMakerCommandListener(ClusterAlgorithm algorithm) {
+			this.alg = algorithm;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			// Create the dialog
+			ClusterSettingsDialog settingsDialog = new ClusterSettingsDialog(alg);
+			// Pop it up
+			settingsDialog.actionPerformed(e);
+		}
 	}
 }

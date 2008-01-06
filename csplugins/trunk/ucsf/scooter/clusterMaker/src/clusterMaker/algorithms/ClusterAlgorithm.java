@@ -32,6 +32,8 @@
  */
 package clusterMaker.algorithms;
 
+import cytoscape.task.TaskMonitor;
+
 import java.util.Arrays;
 import java.lang.Math;
 import javax.swing.JPanel;
@@ -89,5 +91,18 @@ public interface ClusterAlgorithm {
 	 *
 	 */
 	public ClusterProperties getSettings();
+
+	/**
+	 * This method is used to signal a running cluster algorithm to stop
+	 *
+	 */
+	public void halt();
+
+	/**
+	 * This is the main interface to trigger a cluster to compute
+	 *
+	 * @param monitor a TaskMonitor
+	 */
+	public void doCluster(TaskMonitor monitor);
 
 }

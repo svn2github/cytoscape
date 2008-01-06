@@ -32,43 +32,136 @@
  */
 package clusterMaker.algorithms;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.awt.GridLayout;
 import javax.swing.JPanel;
+
+// Cytoscape imports
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.layout.Tunable;
+import cytoscape.task.TaskMonitor;
 
 // clusterMaker imports
 
 public class HierarchicalCluster extends AbstractClusterAlgorithm {
-	public enum ClusterMethod {
-		SINGLE_LINKAGE("pairwise single-linkage"),
-		MAXIMUM_LINKAGE("parwise maximum-linkage"),
-		AVERAGE_LINKAGE("parwise average-linkage"),
-		CENTROID_LINKAGE("parwise centroid-linkage");
-	
-		private String keyword;
-	
-		ClusterMethod(String keyword) {
-			this.keyword = keyword;
-		}
-	
-		public String toString() {
-			return this.keyword;
-		}
+	/**
+	 * Linkage types
+	 */
+	ClusterMethod[] linkageTypes = { ClusterMethod.AVERAGE_LINKAGE,
+	                                 ClusterMethod.SINGLE_LINKAGE,
+	                                 ClusterMethod.MAXIMUM_LINKAGE,
+	                                 ClusterMethod.CENTROID_LINKAGE };
+
+	DistanceMetric[] distanceTypes = { DistanceMetric.EUCLIDEAN,
+	                                   DistanceMetric.CITYBLOCK,
+	                                   DistanceMetric.CORRELATION,
+	                                   DistanceMetric.ABS_CORRELATION,
+	                                   DistanceMetric.UNCENTERED_CORRELATION,
+	                                   DistanceMetric.ABS_UNCENTERED_CORRELATION,
+	                                   DistanceMetric.SPEARMANS_RANK,
+	                                   DistanceMetric.KENDALLS_TAU };
+	String[] attributeArray = new String[1];
+
+	ClusterMethod clusterMethod =  ClusterMethod.AVERAGE_LINKAGE;
+	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
+	boolean transposeMatrix = false;
+	String dataAttribute = null;
+	TaskMonitor monitor = null;
+
+	public HierarchicalCluster() {
+		super();
+		initializeProperties();
 	}
 
 	public String getShortName() {return "hierarchical";};
 	public String getName() {return "Hierarchical cluster";};
-	public JPanel getSettingsPanel() {return null;}
-	public void revertSettings() {}
-	public void updateSettings() {}
-	public ClusterProperties getSettings() {return null;} 
 
-	public String cluster() {return null;}
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0,1));
 
-	public String cluster(String weightAttribute, ClusterMethod method, 
+		// Everytime we ask for the panel, we want to update our attributes
+		Tunable attributeTunable = clusterProperties.get("attribute");
+		attributeArray = getAllAttributes();
+		attributeTunable.setLowerBound((Object)attributeArray);
+
+		panel.add(clusterProperties.getTunablePanel());
+
+		return panel;
+	}
+
+	protected void initializeProperties() {
+		super.initializeProperties();
+
+		/**
+		 * Tuning values
+		 */
+
+		// The linkage to use
+		clusterProperties.add(new Tunable("linkage",
+		                                  "Linkage",
+		                                  Tunable.LIST, new Integer(0),
+		                                  (Object)linkageTypes, (Object)null, 0));
+
+		// The distance metric to use
+		clusterProperties.add(new Tunable("dMetric",
+		                                  "Distance Metric",
+		                                  Tunable.LIST, new Integer(0),
+		                                  (Object)distanceTypes, (Object)null, 0));
+
+		// The attribute to use to get the weights
+		attributeArray = getAllAttributes();
+
+		clusterProperties.add(new Tunable("attribute",
+		                                  "Attribute to use to get the data values",
+		                                  Tunable.LIST, new Integer(0),
+		                                  (Object)attributeArray, (Object)null, 0));
+
+		// Whether or not to transpose the matrix
+		clusterProperties.add(new Tunable("transposeMatrix",
+		                                  "Transpose matrix (if using node attributes)",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		clusterProperties.initializeProperties();
+		updateSettings(true);
+	}
+
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	public void updateSettings(boolean force) {
+		clusterProperties.updateValues();
+		super.updateSettings(force);
+
+		Tunable t = clusterProperties.get("linkage");
+		if ((t != null) && (t.valueChanged() || force))
+			clusterMethod = linkageTypes[((Integer) t.getValue()).intValue()];
+
+		t = clusterProperties.get("dMetric");
+		if ((t != null) && (t.valueChanged() || force))
+			distanceMetric = distanceTypes[((Integer) t.getValue()).intValue()];
+
+		t = clusterProperties.get("transposeMatrix");
+		if ((t != null) && (t.valueChanged() || force))
+			transposeMatrix = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("attribute");
+		if ((t != null) && (t.valueChanged() || force))
+			dataAttribute = attributeArray[((Integer) t.getValue()).intValue()];
+	}
+
+	public void doCluster(TaskMonitor monitor) {
+		this.monitor = monitor;
+		// Sanity check all of our settings
+		// OK, go for it!
+		String summary = cluster(dataAttribute, distanceMetric, transposeMatrix);
+	}
+
+	public String cluster(String weightAttribute, 
 	                      DistanceMetric metric, boolean transpose) {
 
 		String keyword = "GENE";
@@ -81,7 +174,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		matrix.setUniformWeights();
 
 		// Cluster
-		TreeNode[] nodeList = treeCluster(matrix, metric, method);
+		TreeNode[] nodeList = treeCluster(matrix, metric);
 
 		if (metric == DistanceMetric.EUCLIDEAN || metric == DistanceMetric.CITYBLOCK) {
 			// Normalize distances to between 0 and 1
@@ -147,26 +240,29 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		return "Complete";
 	}
 
-	private TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, 
-	                               ClusterMethod method) {
+	private TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric) { 
 
 		double[][] distanceMatrix = distanceMatrix(matrix, metric);
 		TreeNode[] result = null;
 
-		switch (method) {
+		switch (clusterMethod) {
 			case SINGLE_LINKAGE:
+				System.out.println("Calculating single linkage hierarchical cluster");
 				result = pslCluster(matrix, distanceMatrix, metric);
 				break;
 
 			case MAXIMUM_LINKAGE:
+				System.out.println("Calculating maximum linkage hierarchical cluster");
 				result = pmlcluster(matrix.nRows(), distanceMatrix);
 				break;
 
 			case AVERAGE_LINKAGE:
+				System.out.println("Calculating average linkage hierarchical cluster");
 				result = palcluster(matrix.nRows(), distanceMatrix);
 				break;
 
 			case CENTROID_LINKAGE:
+				System.out.println("Calculating centroid linkage hierarchical cluster");
 				result = pclcluster(matrix, distanceMatrix, metric);
 				break;
 		}
@@ -239,6 +335,27 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		return null;
 	}
 
+	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
+	                              String prefix) {
+		String[] names = attributes.getAttributeNames();
+		for (int i = 0; i < names.length; i++) {
+			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
+			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
+				attributeList.add(prefix+names[i]);
+			}
+		}
+	}
+
+	private String[] getAllAttributes() {
+		// Create the list by combining node and edge attributes into a single list
+		List<String> attributeList = new ArrayList<String>();
+		attributeList.add("-- select attribute --");
+		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
+		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
+		return attributeList.toArray(attributeArray);
+	}
+		
+
 	class TreeNode {
 		int left;
 		int right;
@@ -262,6 +379,23 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 
 		int getRight() { return this.right; }
 		void setRight(int right) { this.right = right; }
+	}
+
+	enum ClusterMethod {
+		SINGLE_LINKAGE("pairwise single-linkage"),
+		MAXIMUM_LINKAGE("pairwise maximum-linkage"),
+		AVERAGE_LINKAGE("pairwise average-linkage"),
+		CENTROID_LINKAGE("pairwise centroid-linkage");
+	
+		private String keyword;
+	
+		ClusterMethod(String keyword) {
+			this.keyword = keyword;
+		}
+	
+		public String toString() {
+			return this.keyword;
+		}
 	}
 
 	class NodeComparator implements Comparator<TreeNode> {

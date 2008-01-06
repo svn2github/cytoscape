@@ -32,6 +32,9 @@
  */
 package clusterMaker.algorithms;
 
+import cytoscape.layout.Tunable;
+import cytoscape.task.TaskMonitor;
+
 import java.util.Arrays;
 import java.lang.Math;
 import javax.swing.JPanel;
@@ -39,34 +42,66 @@ import javax.swing.JPanel;
 // clusterMaker imports
 
 public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
+	// Common class values
+	ClusterProperties clusterProperties = null;
+	boolean debug = false;
+	boolean canceled = false;
+
+	public AbstractClusterAlgorithm() {
+		clusterProperties = new ClusterProperties(getShortName());
+	}
 
 	/************************************************************************
- 	 * Abstract inteface -- override these methods!                         *
+	 * Abstract inteface -- override these methods!                         *
 	 ***********************************************************************/
 
 	public abstract String getShortName();
 	public abstract String getName();
-	public abstract JPanel getSettingsPanel();
-	public abstract void revertSettings();
 	public abstract void updateSettings();
-	public abstract ClusterProperties getSettings();
-	public abstract String cluster();
+	public abstract JPanel getSettingsPanel();
+	public abstract void doCluster(TaskMonitor monitor);
+
+	/************************************************************************
+	 * Convenience routines                                                 *
+	 ***********************************************************************/
+
+	protected void initializeProperties() {
+		clusterProperties.add(new Tunable("debug", "Enable debugging", 
+		                                   Tunable.BOOLEAN, new Boolean(false), 
+                                       Tunable.NOINPUT));
+	}
+
+	public void updateSettings(boolean force) {
+		Tunable t = clusterProperties.get("debug");
+		if ((t != null) && (t.valueChanged() || force))
+			debug = ((Boolean) t.getValue()).booleanValue();
+	}
+
+	public void revertSettings() {
+		clusterProperties.revertProperties();
+	}
+
+	public ClusterProperties getSettings() {
+		return clusterProperties;
+	}
 
 	public String toString() { return getName(); }
 
+	public void halt() { canceled = true; }
 	
 	public static double[][] distanceMatrix(Matrix matrix, DistanceMetric metric) {
 		double[][] result = new double[matrix.nRows()][matrix.nColumns()];
 		for (int row = 1; row < matrix.nRows(); row++) {
 			for (int column = 0; column < row; column++) {
-				result[row][column] = metric.getMetric(matrix, matrix, matrix.getWeights(), row, column);
+				result[row][column] = 
+				   metric.getMetric(matrix, matrix, matrix.getWeights(), row, column);
 			}
 		}
 		return result;
 	}
 
 	public static double mean(Double[] vector) {
-	double result = 0.0;
+		double result = 0.0;
 		for (int i = 0; i < vector.length; i++) {
 			result += vector[i].doubleValue();
 		}
