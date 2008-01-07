@@ -66,15 +66,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param v DOCUMENT ME!
-	 */
-	public void setSelectedOnly(boolean v) {
-		selectedOnly = v;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @param percent The percentage of completion for this partition
 	 */
 	protected void setTaskStatus(int percent) {
@@ -95,10 +86,19 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	public void construct() {
 		initialize();
 
-		// We allow for the possiblity of subclasses to initialize our
-		// list
-		if (partitionList == null)
+		// Depending on whether we are partitioned or not,
+		// we use different initialization.  Note that if the user only wants
+		// to lay out selected nodes, partitioning becomes a very bad idea!
+		if (selectedOnly) {
+			// We still use the partition abstraction, even if we're
+			// not partitioning.  This makes the code further down
+			// much cleaner
+			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, null);
+			partitionList = new ArrayList(1);
+			partitionList.add(partition);
+		} else {
 			partitionList = LayoutPartition.partition(network, networkView, selectedOnly, null);
+		}
 
 		total_nodes = network.getNodeCount();
 		current_start = 0;
