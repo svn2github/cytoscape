@@ -147,16 +147,22 @@ public class GpmlConverter {
 	
 	//Add a group node
 	private CyNode addGroup(PathwayElement group) {
-		CyGroup cyGroup = CyGroupManager.createGroup(group.getGroupId(), null);
+		CyGroup cyGroup = CyGroupManager.findGroup(group.getGroupId());
+		if(cyGroup == null) {
+			cyGroup = CyGroupManager.createGroup(group.getGroupId(), null);
+		}
 		CyNode gn = cyGroup.getGroupNode();
 		return gn;
 	}
 	
 	//Add all nodes to the group
 	private void processGroups() {
+		//Not for now
 		for(PathwayElement pwElm : pathway.getDataObjects()) {
 			if(pwElm.getObjectType() == ObjectType.GROUP) {
-				GpmlNode gpmlNode = gpmlHandler.getNode(pwElm.getGraphId());
+				
+				//lala
+				GpmlNode gpmlNode = gpmlHandler.getNode(pwElm.getGroupId());
 				CyGroup cyGroup = CyGroupManager.getCyGroup(gpmlNode.getParent());
 				if(cyGroup == null) {
 					Logger.log.warn("Couldn't create group: CyGroupManager returned null");

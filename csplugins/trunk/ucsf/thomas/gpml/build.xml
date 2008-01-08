@@ -45,10 +45,13 @@
 			<fileset dir="${pathvisio.dir}" includes="*.jar"/>
 		</unjar>
 
+		<copy file="plugin.props" todir="${build.dir}/gpml/" />
+		
 		<jar jarfile="${plugin.name}.jar">
 			<fileset dir="${build.dir}" includes="**/*.class"/>	
 			<fileset dir="${class.dir}" includes="**/*.class"/>
-			<fileset dir="${class.dir}" includes="**/*.xsd"/>	
+			<fileset dir="${class.dir}" includes="**/*.xsd"/>
+			<fileset dir="${class.dir}" includes="**/*.props"/>	
 			<fileset dir="${pathvisio.class.dir}">
 				<include name="org/pathvisio/model/*.class"/>
 				<include name="org/pathvisio/view/*.class"/>
@@ -57,7 +60,7 @@
 				<include name="org/pathvisio/debug/StopWatch.class"/>
 			</fileset>
 			<manifest>
-				<attribute name="Cytoscape-Plugin" value="gpml.GpmlImporter"/>
+				<attribute name="Cytoscape-Plugin" value="gpml.GpmlPlugin"/>
 			</manifest>
 		</jar>
 			

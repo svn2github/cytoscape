@@ -45,17 +45,7 @@ import ding.view.InnerCanvas;
 
 public class GpmlPlugin extends CytoscapePlugin implements PhoebeCanvasDropListener, PropertyChangeListener {
 	GpmlHandler gpmlHandler;
-		
-	public PluginInfo getPluginInfoObject() {
-		PluginInfo info = new PluginInfo();
-		info.setDescription("This plugin allows you to import pathways in the GPML format");
-		info.setName("GPML importer");
-		info.addAuthor("Thomas Kelder", "University of Maastricht, BiGCaT Bioinformatics");
-		info.setProjectUrl("http://wikipathways.org");
-		info.setPluginVersion(0.2);
-		return info;
-	}
-		
+				
     public GpmlPlugin() {
     	Logger.log.setLogLevel(true, true, true, true, true, true);
     	gpmlHandler = new GpmlHandler();

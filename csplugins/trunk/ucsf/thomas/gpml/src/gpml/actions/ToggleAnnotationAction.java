@@ -23,7 +23,7 @@ public class ToggleAnnotationAction extends CytoscapeAction {
 	}
 	
 	protected void initialize() {
-		putValue(NAME, "Toggle annotations");
+		putValue(NAME, "Toggle GPML annotations");
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl H"));
 		super.initialize();
 	}
@@ -37,7 +37,7 @@ public class ToggleAnnotationAction extends CytoscapeAction {
 	}
 	
 	public boolean isInToolBar() {
-		return true;
+		return false;
 	}
 	
 	public void menuSelected(MenuEvent e) {
