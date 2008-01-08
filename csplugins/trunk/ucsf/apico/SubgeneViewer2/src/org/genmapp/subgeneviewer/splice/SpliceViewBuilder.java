@@ -63,7 +63,6 @@ public class SpliceViewBuilder extends JDialog {
 		dab.setSize(500, 200);
 		dab.mainView.updateView();
 		dab.layoutComponents();
-		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
 
 		return dab.getPanel();
@@ -156,65 +155,7 @@ public class SpliceViewBuilder extends JDialog {
 		return mainView;
 	}
 
-	// class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
-	// private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
-	// 14);
-	//
-	// private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
-	//
-	// private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
-	//
-	// private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 150);
-	//
-	// private final List<Icon> icons;
-	//
-	// public VisualPropCellRenderer(List<Icon> icons) {
-	// this.icons = icons;
-	// setOpaque(true);
-	// }
-	//
-	// public Component getListCellRendererComponent(JList list, Object value,
-	// int index, boolean isSelected, boolean cellHasFocus) {
-	// final VisualPropertyIcon icon;
-	//
-	// if (icons.size() > index) {
-	// icon = (VisualPropertyIcon) icons.get(index);
-	// } else
-	// icon = null;
-	//
-	// setText(value.toString());
-	// setIcon(icon);
-	// setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
-	//
-	// this.setVerticalTextPosition(SwingConstants.CENTER);
-	// this.setVerticalAlignment(SwingConstants.CENTER);
-	// this.setIconTextGap(55);
-	//
-	// if (value instanceof VisualPropertyType
-	// && (((VisualPropertyType) value).getDataType() == String.class)) {
-	// final Object defVal = ((VisualPropertyType) value)
-	// .getDefault(Cytoscape.getVisualMappingManager()
-	// .getVisualStyle());
-	//
-	// if (defVal != null) {
-	// this.setToolTipText((String) defVal);
-	// }
-	// }
-	//
-	// setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
-	// setForeground(isSelected ? SELECTED_FONT_COLOR : list
-	// .getForeground());
-	//
-	// if (icon != null) {
-	// setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
-	// }
-	//
-	// this.setBorder(new DropShadowBorder());
-	//
-	// return this;
-	// }
-	// }
-
+	
 	/*
 	 * Draw global color icon
 	 */

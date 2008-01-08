@@ -80,8 +80,7 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	 */
 	public void buildSpliceView() {
 
-		final SpliceViewPanel panel = (SpliceViewPanel) SpliceViewBuilder
-				.showDialog(Cytoscape.getDesktop());
+		SpliceViewBuilder.showDialog(Cytoscape.getDesktop());
 		Cytoscape.getDesktop().repaint();
 
 		// SpliceViewBuilder.getSpliceView(visualStyle);

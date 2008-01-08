@@ -179,7 +179,7 @@ public class SpliceViewPanel extends JPanel {
 
 			// Add Region to Canvas
 			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-			// DGraphView dview = (DGraphView) view;
+			//DGraphView dview = (DGraphView) view;
 			DingCanvas aLayer = dview
 					.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
 			aLayer.add(region);
@@ -337,6 +337,7 @@ public class SpliceViewPanel extends JPanel {
 							(int) panelSize.getHeight() - PADDING));
 			// view.fitContent();
 			canvas = (((DGraphView) view).getCanvas());
+			//canvas2 = (((DGraphView) view).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS));
 			// canvas = (view.getComponent());
 			
 			//Force LOD (!? doesn't work on sgv window!?)
@@ -347,8 +348,10 @@ public class SpliceViewPanel extends JPanel {
 
 			this.removeAll();
 			this.add(canvas);
+			//this.add(canvas2);
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
+			//canvas2.setLocation(PADDING / 2, PADDING / 2);
 			Cytoscape.getVisualMappingManager().applyAppearances();
 
 			if ((background != null) && (canvas != null)) {
