@@ -161,11 +161,15 @@ public class SelectPhysicalEntity {
             if (pathwayTableModel.getColumnCount() != 2) {
                 pathwayTableModel.setColumnCount(2);
             }
-            for (int i = 0; i < pathwayList.size(); i++) {
-                PathwayType pathway = pathwayList.get(i);
-                pathwayTableModel.setValueAt(pathway.getName(), i, 0);
-                pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 1);
-                pathwayTableModel.setInternalId(i, pathway.getPrimaryId());
+            if (pathwayList.size() == 0) {
+                pathwayTableModel.setValueAt("No pathways found.", 0, 0);    
+            } else {
+                for (int i = 0; i < pathwayList.size(); i++) {
+                    PathwayType pathway = pathwayList.get(i);
+                    pathwayTableModel.setValueAt(pathway.getName(), i, 0);
+                    pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 1);
+                    pathwayTableModel.setInternalId(i, pathway.getPrimaryId());
+                }
             }
         }
     }
