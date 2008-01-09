@@ -248,6 +248,7 @@ public class CPathProtocol {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
+            // System.out.println("Connect:  " + liveUrl);
 
             // Create an instance of HttpClient.
             HttpClient client = new HttpClient();
