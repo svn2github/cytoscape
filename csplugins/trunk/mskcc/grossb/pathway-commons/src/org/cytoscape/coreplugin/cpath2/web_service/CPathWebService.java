@@ -58,6 +58,7 @@ public class CPathWebService {
 
         protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_SEARCH);
+        protocol.setOrganism(ncbiTaxonomyId);
         protocol.setFormat(CPathProtocol.FORMAT_XML);
         protocol.setQuery(keyword);
 
