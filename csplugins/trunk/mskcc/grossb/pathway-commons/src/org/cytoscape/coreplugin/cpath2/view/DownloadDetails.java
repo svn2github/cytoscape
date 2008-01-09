@@ -31,11 +31,11 @@ public class DownloadDetails extends JDialog {
     public DownloadDetails(java.util.List<BasicRecordType> passedRecordList,
             String peName) {
         super();
-        this.setTitle("Download Confirmation");
+        this.setTitle("Retrieval Confirmation");
         this.setModal(true);
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
-        GradientHeader header = new GradientHeader("Confirm Download: "+ passedRecordList.size()
+        GradientHeader header = new GradientHeader("Confirm Retrieval: "+ passedRecordList.size()
                 + " records");
         contentPane.add(header, BorderLayout.NORTH);
 

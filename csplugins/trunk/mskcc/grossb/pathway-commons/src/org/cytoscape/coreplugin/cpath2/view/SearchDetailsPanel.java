@@ -66,7 +66,7 @@ public class SearchDetailsPanel extends JPanel {
         JPanel pathwayPane = new JPanel(new BorderLayout());
         JScrollPane pathwayTable = createPathwayTable(pathwayTableModel);
         pathwayPane.add(pathwayTable, BorderLayout.CENTER);
-        JLabel label = new JLabel ("> Double-click pathway to download.");
+        JLabel label = new JLabel ("> Double-click pathway to retrieve.");
         Font font = label.getFont();
         Font newFont = new Font(font.getFamily(), Font.PLAIN, font.getSize()-2);
         label.setFont(newFont);
@@ -178,7 +178,7 @@ public class SearchDetailsPanel extends JPanel {
     }
 
     private void createInteractionDownloadButton(JPanel footer) {
-        JButton button = new JButton ("Download Interactions");
+        JButton button = new JButton ("Retrieve Interactions");
         button.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent actionEvent) {
