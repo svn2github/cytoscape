@@ -1,39 +1,39 @@
 /*
-  File: NetworkViewManager.java
+ File: NetworkViewManager.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
 
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
 
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 package cytoscape.view;
 
 import cytoscape.CyNetwork;
@@ -66,21 +66,26 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-
 /**
- *
+ * 
  */
-public class NetworkViewManager implements PropertyChangeListener, InternalFrameListener,
-                                           WindowFocusListener, ChangeListener {
+public class NetworkViewManager implements PropertyChangeListener,
+		InternalFrameListener, WindowFocusListener, ChangeListener {
 	private JDesktopPane desktopPane;
-	private Map<String,JInternalFrame> networkViewMap;
+
+	private Map<String, JInternalFrame> networkViewMap;
+
 	private Map<JInternalFrame, String> componentMap;
+
 	private Map<String, InternalFrameComponent> internalFrameComponentMap;
+
 	protected CytoscapeDesktop cytoscapeDesktop;
-	protected SwingPropertyChangeSupport pcs; 
+
+	protected SwingPropertyChangeSupport pcs;
 
 	/**
-	 * @deprecated view_type is no longer used. Use the other constructor. Will be removed Aug 2008.
+	 * @deprecated view_type is no longer used. Use the other constructor. Will
+	 *             be removed Aug 2008.
 	 */
 	public NetworkViewManager(CytoscapeDesktop desktop, int view_type) {
 		this(desktop);
@@ -88,8 +93,9 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 	/**
 	 * Creates a new NetworkViewManager object.
-	 *
-	 * @param desktop  DOCUMENT ME!
+	 * 
+	 * @param desktop
+	 *            DOCUMENT ME!
 	 */
 	public NetworkViewManager(CytoscapeDesktop desktop) {
 		this.cytoscapeDesktop = desktop;
@@ -97,17 +103,18 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		pcs = new SwingPropertyChangeSupport(this);
 
 		// add Help hooks
-		cytoscapeDesktop.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
+		cytoscapeDesktop.getHelpBroker().enableHelp(desktopPane,
+				"network-view-manager", null);
 
-		networkViewMap = new HashMap<String,JInternalFrame>();
-		componentMap = new HashMap<JInternalFrame,String>();
-		internalFrameComponentMap = new HashMap<String,InternalFrameComponent>();
+		networkViewMap = new HashMap<String, JInternalFrame>();
+		componentMap = new HashMap<JInternalFrame, String>();
+		internalFrameComponentMap = new HashMap<String, InternalFrameComponent>();
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
 		return pcs;
@@ -121,26 +128,28 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public JDesktopPane getDesktopPane() {
 		return desktopPane;
 	}
 
 	/**
-	 * Given a CyNetwork, returns the InternalFrameComponent that wraps it.
-	 *
-	 * @param view CyNetworkView
+	 * Given a CyNetworkView, returns the InternalFrameComponent that wraps it.
+	 * 
+	 * @param view
+	 *            CyNetworkView
 	 * @return InternalFrameComponent
 	 * @throws IllegalArgumentException
 	 */
 	public InternalFrameComponent getInternalFrameComponent(CyNetworkView view)
-	    throws IllegalArgumentException {
+			throws IllegalArgumentException {
 		// check args
 		if (view == null) {
-			throw new IllegalArgumentException("NetworkViewManager.getInternalFrameComponent(), argument is null");
+			throw new IllegalArgumentException(
+					"NetworkViewManager.getInternalFrameComponent(), argument is null");
 		}
 
 		// outta here
@@ -148,9 +157,30 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param network DOCUMENT ME!
+	 * Given a CyNetworkView, returns the internal frame.
+	 * 
+	 * @param view
+	 *            CyNetworkView
+	 * @return InternalFrameComponent
+	 * @throws IllegalArgumentException
+	 */
+	public JInternalFrame getInternalFrame(CyNetworkView view)
+			throws IllegalArgumentException {
+		// check args
+		if (view == null) {
+			throw new IllegalArgumentException(
+					"NetworkViewManager.getInternalFrame(), argument is null");
+		}
+
+		// outta here
+		return networkViewMap.get(view.getIdentifier());
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param network
+	 *            DOCUMENT ME!
 	 */
 	public void updateNetworkTitle(CyNetwork network) {
 		JInternalFrame frame = networkViewMap.get(network.getIdentifier());
@@ -159,9 +189,9 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		frame.repaint();
 	}
 
-
 	/**
-	 * @deprecated Will no longer support ChangeListener.  Will be removed August 2008.
+	 * @deprecated Will no longer support ChangeListener. Will be removed August
+	 *             2008.
 	 */
 	public void stateChanged(ChangeEvent e) {
 	}
@@ -170,14 +200,15 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	 * Fire Events when a Managed Network View gets the Focus.
 	 */
 	public void internalFrameActivated(InternalFrameEvent e) {
-		// System.out.println("NetworkViewManager: internalFrameActivated "); 
+		// System.out.println("NetworkViewManager: internalFrameActivated ");
 		String network_id = componentMap.get(e.getInternalFrame());
 
 		if (network_id == null) {
 			return;
 		}
 
-		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, network_id);
+		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
+				network_id);
 	}
 
 	/**
@@ -188,62 +219,69 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void internalFrameClosed(InternalFrameEvent e) {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void internalFrameClosing(InternalFrameEvent e) {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void internalFrameDeactivated(InternalFrameEvent e) {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void internalFrameDeiconified(InternalFrameEvent e) {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void internalFrameIconified(InternalFrameEvent e) {
 	}
 
 	/**
-	 * @deprecated Will no longer support WindowFocusListener.  Will be removed August 2008.
+	 * @deprecated Will no longer support WindowFocusListener. Will be removed
+	 *             August 2008.
 	 */
 	public void windowGainedFocus(WindowEvent e) {
 	}
 
 	/**
-	 * @deprecated Will no longer support WindowFocusListener.  Will be removed August 2008.
+	 * @deprecated Will no longer support WindowFocusListener. Will be removed
+	 *             August 2008.
 	 */
 	public void windowLostFocus(WindowEvent e) {
 	}
 
 	/**
-	 * This handles all of the incoming PropertyChangeEvents.  If you are going to have
-	 * multiple NetworkViewManagers, then this method should be extended such that the
-	 * desired behaviour is achieved, assuming of course that you want your
-	 * NetworkViewManagers to behave differently.
+	 * This handles all of the incoming PropertyChangeEvents. If you are going
+	 * to have multiple NetworkViewManagers, then this method should be extended
+	 * such that the desired behaviour is achieved, assuming of course that you
+	 * want your NetworkViewManagers to behave differently.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 
@@ -251,15 +289,17 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
 			String network_id = (String) e.getNewValue();
 			e = null;
-			unsetFocus(); // in case the newly focused network doesn't have a view
+			unsetFocus(); // in case the newly focused network doesn't have a
+							// view
 			setFocus(network_id);
 
 			// hack to add transfer handlers to canvas
-			InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+			InnerCanvas canvas = ((DGraphView) Cytoscape
+					.getCurrentNetworkView()).getCanvas();
 
 			if (this.getDesktopPane() != null) {
 				canvas.addTransferComponent(this.getDesktopPane());
-			} 
+			}
 		}
 
 		// handle putting a newly created CyNetworkView into a Container
@@ -280,27 +320,30 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	/**
 	 * Fires a PropertyChangeEvent
 	 */
-	public void firePropertyChange(String property_type, Object old_value, Object new_value) {
-		pcs.firePropertyChange(new PropertyChangeEvent(this, property_type, old_value, new_value));
+	public void firePropertyChange(String property_type, Object old_value,
+			Object new_value) {
+		pcs.firePropertyChange(new PropertyChangeEvent(this, property_type,
+				old_value, new_value));
 	}
 
 	/**
-	 * Used to unset the focus of all the views. This is for the situation
-	 * when a network is focused but the network doesn't have a view.
+	 * Used to unset the focus of all the views. This is for the situation when
+	 * a network is focused but the network doesn't have a view.
 	 */
 	protected void unsetFocus() {
-		for (JInternalFrame f : networkViewMap.values() ) {
+		for (JInternalFrame f : networkViewMap.values()) {
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				System.out.println("NetworkViewManager: Couldn't unset focus for internal frame.");
+				System.out
+						.println("NetworkViewManager: Couldn't unset focus for internal frame.");
 			}
 		}
 	}
 
 	/**
-	 * Sets the focus of the passed network, if possible
-	 * The Network ID corresponds to the CyNetworkView.getNetwork().getIdentifier()
+	 * Sets the focus of the passed network, if possible The Network ID
+	 * corresponds to the CyNetworkView.getNetwork().getIdentifier()
 	 */
 	protected void setFocus(String network_id) {
 		if (networkViewMap.containsKey(network_id)) {
@@ -326,7 +369,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 	/**
-	 * Contains a CyNetworkView. 
+	 * Contains a CyNetworkView.
 	 */
 	protected void createContainer(final CyNetworkView view) {
 		if (networkViewMap.containsKey(view.getNetwork().getIdentifier())) {
@@ -334,23 +377,27 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			return;
 		}
 
-		// create a new InternalFrame and put the CyNetworkViews Component into it
-		JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true, true, true);
+		// create a new InternalFrame and put the CyNetworkViews Component into
+		// it
+		JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true,
+				true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
-				public void internalFrameClosing(InternalFrameEvent e) {
-					Cytoscape.destroyNetworkView(view);
-				}
-			});
+			public void internalFrameClosing(InternalFrameEvent e) {
+				Cytoscape.destroyNetworkView(view);
+			}
+		});
 		desktopPane.add(iframe);
 
 		// code added to support layered canvas for each CyNetworkView
 		if (view instanceof DGraphView) {
-			InternalFrameComponent internalFrameComp = new InternalFrameComponent(iframe.getLayeredPane(),
-				                                                                      (DGraphView) view);
+			InternalFrameComponent internalFrameComp = new InternalFrameComponent(
+					iframe.getLayeredPane(), (DGraphView) view);
 			iframe.setContentPane(internalFrameComp);
-			internalFrameComponentMap.put(view.getNetwork().getIdentifier(), internalFrameComp);
+			internalFrameComponentMap.put(view.getNetwork().getIdentifier(),
+					internalFrameComp);
 		} else {
-			System.out.println("NetworkViewManager.createContainer() - DGraphView not found!");
+			System.out
+					.println("NetworkViewManager.createContainer() - DGraphView not found!");
 			iframe.getContentPane().add(view.getComponent());
 		}
 
@@ -359,7 +406,8 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		// maximize the frame if the specified property is set
 		try {
-			String max = CytoscapeInit.getProperties().getProperty("maximizeViewOnCreate");
+			String max = CytoscapeInit.getProperties().getProperty(
+					"maximizeViewOnCreate");
 
 			if ((max != null) && Boolean.parseBoolean(max))
 				iframe.setMaximum(true);
@@ -372,8 +420,8 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
 		componentMap.put(iframe, view.getNetwork().getIdentifier());
-		
-		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
-		                   view.getNetwork().getIdentifier());
+
+		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, view
+				.getNetwork().getIdentifier());
 	}
 }
