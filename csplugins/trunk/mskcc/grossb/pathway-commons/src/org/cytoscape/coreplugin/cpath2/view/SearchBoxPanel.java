@@ -9,6 +9,8 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -58,7 +60,21 @@ public class SearchBoxPanel extends JPanel {
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel label = new JLabel ("Examples:  TP53, BRCA1, or SRY.");
+        JEditorPane label = new JEditorPane ("text/html", "Examples:  <a href='TP53'>TP53</a>, " +
+                "<a href='BRCA1'>BRCA1</a>, or <a href='SRY'>SRY</a>.");
+        label.setEditable(false);
+        label.setOpaque(false);
+        label.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        label.addHyperlinkListener(new HyperlinkListener() {
+
+            // Update search box with activated example.
+            public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
+                if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    searchField.setText(hyperlinkEvent.getDescription());
+                }
+            }
+        });
+        
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         Font font = label.getFont();
         Font newFont = new Font (font.getFamily(), font.getStyle(), font.getSize()-2);
