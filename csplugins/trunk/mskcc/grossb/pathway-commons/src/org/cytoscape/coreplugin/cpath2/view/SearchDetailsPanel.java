@@ -301,20 +301,24 @@ public class SearchDetailsPanel extends JPanel {
      * @param pathwayTableModel     Pathway Table Model.
      */
     private void downloadPathway(int[] rows, PathwayTableModel pathwayTableModel) {
-        long internalId = pathwayTableModel.getInternalId(rows[0]);
-        String title = pathwayTableModel.getValueAt(rows[0], 0)
-                + " (" + pathwayTableModel.getValueAt(rows[0], 1) + ")";
-        long ids[] = new long[1];
-        ids[0] = internalId;
+        try {
+            long internalId = pathwayTableModel.getInternalId(rows[0]);
+            String title = pathwayTableModel.getValueAt(rows[0], 0)
+                    + " (" + pathwayTableModel.getValueAt(rows[0], 1) + ")";
+            long ids[] = new long[1];
+            ids[0] = internalId;
 
-        CPathWebService webApi = CPathWebService.getInstance();
-        ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, title);
-        JTaskConfig jTaskConfig = new JTaskConfig();
-        jTaskConfig.setOwner(Cytoscape.getDesktop());
-        jTaskConfig.displayStatus(true);
-        jTaskConfig.setAutoDispose(true);
-        jTaskConfig.displayCancelButton(true);
-        TaskManager.executeTask(task, jTaskConfig);
+            CPathWebService webApi = CPathWebService.getInstance();
+            ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, title);
+            JTaskConfig jTaskConfig = new JTaskConfig();
+            jTaskConfig.setOwner(Cytoscape.getDesktop());
+            jTaskConfig.displayStatus(true);
+            jTaskConfig.setAutoDispose(true);
+            jTaskConfig.displayCancelButton(true);
+            TaskManager.executeTask(task, jTaskConfig);
+        } catch (IndexOutOfBoundsException e) {
+            //  Ignore
+        }
     }
 }
 
