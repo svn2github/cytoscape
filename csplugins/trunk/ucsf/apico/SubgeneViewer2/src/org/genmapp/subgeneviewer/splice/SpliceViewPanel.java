@@ -9,19 +9,20 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 import org.genmapp.subgeneviewer.splice.controller.SpliceController;
 import org.genmapp.subgeneviewer.splice.model.SpliceEvent;
 import org.genmapp.subgeneviewer.splice.model.SpliceRegion;
 import org.genmapp.subgeneviewer.view.SGVNodeAppearanceCalculator;
-import org.genmapp.subgeneviewer.view.SubgeneNetworkView;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
@@ -36,7 +37,7 @@ public class SpliceViewPanel extends JPanel {
 
 	private static final int PADDING = 20;
 
-	private CyNetworkView view;
+	private DingNetworkView view;
 
 	private CyNetworkView oldView;
 
@@ -61,7 +62,8 @@ public class SpliceViewPanel extends JPanel {
 	private int panelHeight = 150;
 
 	private int panelWidth = 200; // set to cummulative feature node
-											// layout
+
+	// layout
 
 	private Component canvas = null;
 
@@ -72,7 +74,6 @@ public class SpliceViewPanel extends JPanel {
 	 */
 	public SpliceViewPanel() {
 
-		
 		// Get parent node identifier
 		nodeId = SpliceController.get_nodeId();
 
@@ -135,9 +136,11 @@ public class SpliceViewPanel extends JPanel {
 
 		}
 
-		dummyNet = Cytoscape.getRootGraph().createNetwork(features, edges);
+		// dummyNet = Cytoscape.getRootGraph().createNetwork(features, edges);
+		dummyNet = Cytoscape.createNetwork(features, edges, nodeId);
 		dummyNet.setTitle(nodeId);
-		// Cytoscape.getCurrentNetwork().appendNetwork(dummyNet);
+
+		// ALLAN
 
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
@@ -178,8 +181,9 @@ public class SpliceViewPanel extends JPanel {
 					start, structureAtts[6]);
 
 			// Add Region to Canvas
-			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-			//DGraphView dview = (DGraphView) view;
+			// DGraphView dview = (DGraphView)
+			// Cytoscape.getCurrentNetworkView();
+			DGraphView dview = (DGraphView) view;
 			DingCanvas aLayer = dview
 					.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
 			aLayer.add(region);
@@ -212,8 +216,8 @@ public class SpliceViewPanel extends JPanel {
 			// Create Splice Events and set properties
 			SpliceEvent event = new SpliceEvent(spliceAtts[0], spliceAtts[1],
 					view);
-			
-			//Add Splice Events to canvas
+
+			// Add Splice Events to canvas
 			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
 			// DGraphView dview = (DGraphView) view;
 			DingCanvas aLayer = dview
@@ -222,7 +226,6 @@ public class SpliceViewPanel extends JPanel {
 
 			// hack
 			dview.setZoom(dview.getZoom() * 0.99999999999999999d);
-
 
 		}
 	}
@@ -250,21 +253,21 @@ public class SpliceViewPanel extends JPanel {
 
 	int xOffset = HGAP;
 
+	int yOffset = 120;
+
 	/**
 	 * Create dummy network
 	 */
 	protected void createDummyNetworkView() {
-		view = new SubgeneNetworkView(dummyNet, dummyNet.getTitle());
-		view.setIdentifier(dummyNet.getIdentifier());
-		// view.setTitle(dummyNet.getTitle());
-		
+		view = (DingNetworkView) Cytoscape.getCurrentNetworkView();
+
 		xOffset = HGAP;
-		//fudge factor?!
-		double initialOffset = -37.5 * features.size();
-		
+		// fudge factor?!
+		// double initialOffset = -37.5 * features.size();
+
 		for (Object f : features) {
 			NodeView nv = view.getNodeView((CyNode) f);
-			nv.setOffset(initialOffset + xOffset + HGAP / 2, VGAP);
+			nv.setOffset(xOffset + HGAP / 2, yOffset);
 			xOffset += HGAP + NODE_WIDTH;
 		}
 
@@ -276,15 +279,12 @@ public class SpliceViewPanel extends JPanel {
 
 		applySGVVisualStyle();
 
-		// test
-		DingCanvas aLayer = ((DGraphView) view)
-				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-		System.out.println("subgeneviewer_fore: " + aLayer);
-		DingCanvas bLayer = ((DGraphView) Cytoscape.getCurrentNetworkView())
-				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-		System.out.println("network_fore: " + bLayer);
+		Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame(
+				Cytoscape.getCurrentNetworkView()).setBounds(0, 0, 500, 200);
 
-		// renderView();
+//		System.out.println("JIF:"
+//				+ Cytoscape.getDesktop().getNetworkViewManager()
+//						.getInternalFrame(Cytoscape.getCurrentNetworkView()));
 	}
 
 	/**
@@ -309,9 +309,9 @@ public class SpliceViewPanel extends JPanel {
 		background = new Color(250, 240, 160);
 		this.setBackground(background);
 
-		// vmm.setNetworkView(view);
+		view.setVisualStyle("SGV");
+		vmm.setNetworkView(view);
 		vmm.setVisualStyle(sgvStyle);
-		// view.setVisualStyle("SGV");
 	}
 
 	/**
@@ -336,22 +336,26 @@ public class SpliceViewPanel extends JPanel {
 					new Dimension((int) panelSize.getWidth() - PADDING,
 							(int) panelSize.getHeight() - PADDING));
 			// view.fitContent();
+
 			canvas = (((DGraphView) view).getCanvas());
-			//canvas2 = (((DGraphView) view).getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS));
-			// canvas = (view.getComponent());
-			
-			//Force LOD (!? doesn't work on sgv window!?)
-			CytoscapeInit.getProperties().setProperty("render.nodeLabelThreshold", "200");
+			canvas2 = (((DGraphView) view)
+					.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS));
+			canvas = (view.getComponent());
+
+			// Force LOD (!? doesn't work on sgv window!?)
+			CytoscapeInit.getProperties().setProperty(
+					"render.nodeLabelThreshold", "200");
 
 			// for (MouseListener listener : canvas.getMouseListeners())
 			// canvas.removeMouseListener(listener);
 
-			this.removeAll();
-			this.add(canvas);
-			//this.add(canvas2);
+			// this.removeAll();
+			// this.add(canvas);
+			// this.add(canvas2);
 
-			canvas.setLocation(PADDING / 2, PADDING / 2);
-			//canvas2.setLocation(PADDING / 2, PADDING / 2);
+			// canvas.setLocation(PADDING / 2, PADDING / 2);
+			// canvas2.setLocation(PADDING / 2, PADDING / 2);
+
 			Cytoscape.getVisualMappingManager().applyAppearances();
 
 			if ((background != null) && (canvas != null)) {
@@ -372,12 +376,13 @@ public class SpliceViewPanel extends JPanel {
 	/**
 	 * @return the panelHeight
 	 */
-	public  int getPanelHeight() {
+	public int getPanelHeight() {
 		return panelHeight;
 	}
 
 	/**
-	 * @param panelHeight the panelHeight to set
+	 * @param panelHeight
+	 *            the panelHeight to set
 	 */
 	public void setPanelHeight(int panelHeight) {
 		this.panelHeight = panelHeight;
@@ -386,14 +391,15 @@ public class SpliceViewPanel extends JPanel {
 	/**
 	 * @return the panelWidth
 	 */
-	public  int getPanelWidth() {
+	public int getPanelWidth() {
 		return panelWidth;
 	}
 
 	/**
-	 * @param panelWidth the panelWidth to set
+	 * @param panelWidth
+	 *            the panelWidth to set
 	 */
-	public  void setPanelWidth(int panelWidth) {
+	public void setPanelWidth(int panelWidth) {
 		this.panelWidth = panelWidth;
 	}
 

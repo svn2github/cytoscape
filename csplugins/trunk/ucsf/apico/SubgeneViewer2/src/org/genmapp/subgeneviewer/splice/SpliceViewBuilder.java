@@ -38,7 +38,7 @@ public class SpliceViewBuilder extends JDialog {
 	 *            DOCUMENT ME!
 	 */
 	public SpliceViewBuilder(Frame parent, boolean modal) {
-		super(parent, modal);
+		//super(parent, modal);
 		System.out.println("SpliceViewBuilder check!");
 		initComponents();
 
@@ -63,7 +63,7 @@ public class SpliceViewBuilder extends JDialog {
 		dab.setSize(500, 200);
 		dab.mainView.updateView();
 		dab.layoutComponents();
-		dab.setVisible(true);
+		dab.setVisible(false);
 
 		return dab.getPanel();
 	}

@@ -118,10 +118,11 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 		double featureNodeWidth = featureNodeView.getWidth();
 		double featureNodeHeight = featureNodeView.getHeight();
 
-		double x = featureNodeView.getXPosition() - (featureNodeWidth / 2);
+		double x = featureNodeView.getXPosition() - (featureNodeWidth * .75);
 		double y = featureNodeView.getYPosition() - (featureNodeHeight * 2);
-		double w = featureNodeWidth * 4 * _units;
-		double h = featureNodeHeight * 2;
+		
+		double w = (featureNodeWidth * 1.5) + (featureNodeWidth * (_units - 1) * 1.35) ;
+		double h = featureNodeHeight ;
 
 		setBounds(x, y, w, h, true);
 	

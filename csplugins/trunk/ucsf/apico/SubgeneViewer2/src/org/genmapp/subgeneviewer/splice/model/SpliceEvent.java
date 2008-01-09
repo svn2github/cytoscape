@@ -104,8 +104,8 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 		double to_x = region_to.getBounds().getMinX();
 
 		double h = 50;
-		double w = to_x - from_x +4;
-		double x = from_x  -2;
+		double w = to_x - from_x ;
+		double x = from_x  ;
 		double y = from_y - h;
 
 		setBounds(x, y, w, h, true);
