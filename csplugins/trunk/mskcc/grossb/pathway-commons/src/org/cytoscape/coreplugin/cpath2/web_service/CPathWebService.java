@@ -57,7 +57,7 @@ public class CPathWebService {
         }
 
         protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_BY_KEYWORD);
+        protocol.setCommand(CPathProtocol.COMMAND_SEARCH);
         protocol.setFormat(CPathProtocol.FORMAT_XML);
         protocol.setQuery(keyword);
 
@@ -109,7 +109,7 @@ public class CPathWebService {
         }
 
         protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_PARENT_SUMMMARIES);
+        protocol.setCommand(CPathProtocol.COMMAND_GET_PARENTS);
         protocol.setFormat(CPathProtocol.FORMAT_XML);
 
         protocol.setQuery(Long.toString(primaryId));
