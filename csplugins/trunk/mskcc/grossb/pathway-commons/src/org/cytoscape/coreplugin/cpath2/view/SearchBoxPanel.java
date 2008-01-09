@@ -87,6 +87,7 @@ public class SearchBoxPanel extends JPanel {
     private JComboBox createOrganismComboBox() {
         //  Organism List is currently hard-coded.
         Vector organismList = new Vector();
+        organismList.add(new Organism("All Organisms", -1));
         organismList.add(new Organism("Human", 9606));
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
