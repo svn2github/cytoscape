@@ -4,6 +4,7 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.view.model.Organism;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;
 
@@ -72,7 +73,7 @@ public class SearchBoxPanel extends JPanel {
         //searchButton.setBorder(new EmptyBorder (0,6,7,0));
         searchButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         organismComboBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        //buttonPanel.add(organismComboBox);
+        buttonPanel.add(organismComboBox);
         buttonPanel.add(searchButton);
         add(buttonPanel);
     }
@@ -85,7 +86,7 @@ public class SearchBoxPanel extends JPanel {
     private JComboBox createOrganismComboBox() {
         //  Organism List is currently hard-coded.
         Vector organismList = new Vector();
-        organismList.add("Human");
+        organismList.add(new Organism("Human", 9606));
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setToolTipText("Select Organism");
