@@ -26,6 +26,7 @@ public class SearchBoxPanel extends JPanel {
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
     private Animator animator;
     private PulsatingBorder pulsatingBorder;
+    private JComboBox organismComboBox;
 
     /**
      * Constructor.
@@ -52,7 +53,7 @@ public class SearchBoxPanel extends JPanel {
                 Animator.RepeatBehavior.REVERSE, setter);
         animator.start();
         
-        JComboBox organismComboBox = createOrganismComboBox();
+        organismComboBox = createOrganismComboBox();
         searchButton = createSearchButton(searchField);
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -117,7 +118,8 @@ public class SearchBoxPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
                 if (keyCode == 10) {
-                    executeSearch(searchField.getText());
+                    Organism organism = (Organism) organismComboBox.getSelectedItem();
+                    executeSearch(searchField.getText(), organism.getNcbiTaxonomyId());
                 }
             }
         });
@@ -138,13 +140,14 @@ public class SearchBoxPanel extends JPanel {
         searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                executeSearch(searchField.getText());
+                Organism organism = (Organism) organismComboBox.getSelectedItem();
+                executeSearch(searchField.getText(), organism.getNcbiTaxonomyId());
             }
         });
         return searchButton;
     }
 
-    private void executeSearch(String keyword) {
+    private void executeSearch(String keyword, int ncbiTaxonomyId) {
         Window window = SwingUtilities.getWindowAncestor(this);
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
@@ -152,7 +155,7 @@ public class SearchBoxPanel extends JPanel {
                     "Search Error", JOptionPane.ERROR_MESSAGE);
         } else {
             ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
-                    (webApi, keyword.trim(), -1, 1);
+                    (webApi, keyword.trim(), ncbiTaxonomyId, 1);
             if (animator.isRunning()) {
                 pulsatingBorder.setThickness(0);
                 animator.stop();
