@@ -1,6 +1,8 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.border.EmptyBorder;
@@ -36,6 +38,8 @@ public class SearchDetailsPanel extends JPanel {
     private CheckNode dataSourceFilter;
     private CheckNode interactionTypeFilter;
     private InteractionBundleModel interactionBundleModel;
+    private JLabel matchingInteractionsLabel;
+    private JButton retrieveButton;
 
     /**
      * Constructor.
@@ -84,13 +88,13 @@ public class SearchDetailsPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        final JLabel label = new JLabel ("Number of Interactions:  N/A");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        Font font = label.getFont();
+        matchingInteractionsLabel = new JLabel ("Matching Interactions:  N/A");
+        matchingInteractionsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Font font = matchingInteractionsLabel.getFont();
         Font newFont = new Font (font.getFamily(), Font.BOLD,  font.getSize());
-        label.setFont(newFont);
-        label.setBorder(new EmptyBorder(5,10,5,5));
-        panel.add(label);
+        matchingInteractionsLabel.setFont(newFont);
+        matchingInteractionsLabel.setBorder(new EmptyBorder(5,10,5,5));
+        panel.add(matchingInteractionsLabel);
 
         final CheckNode rootNode = new CheckNode("All Filters");
         final JTreeWithCheckNodes tree = new JTreeWithCheckNodes(rootNode);
@@ -101,7 +105,7 @@ public class SearchDetailsPanel extends JPanel {
         filterPanel.getContentPane().add(tree);
 
         panel.add(filterPanel);
-        addObserver(interactionBundleModel, label, tree, rootNode);
+        addObserver(interactionBundleModel, matchingInteractionsLabel, tree, rootNode);
 
         JPanel footer = new JPanel();
         footer.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -113,11 +117,13 @@ public class SearchDetailsPanel extends JPanel {
     }
 
     private void addObserver(final InteractionBundleModel interactionBundleModel,
-            final JLabel label, final JTreeWithCheckNodes tree, final CheckNode rootNode) {
+            final JLabel matchingInteractionsLabel, final JTreeWithCheckNodes tree,
+            final CheckNode rootNode) {
         interactionBundleModel.addObserver(new Observer() {
             public void update(Observable observable, Object object) {
                 RecordList recordList = interactionBundleModel.getRecordList();
-                label.setText("Number of Interactions:  "+ recordList.getNumRecords());
+                matchingInteractionsLabel.setText("Matching Interactions:  "
+                        + recordList.getNumRecords());
 
                 TreeMap<String, Integer> dataSourceMap = recordList.getDataSourceMap();
                 TreeMap<String, Integer> entityTypeMap = recordList.getEntityTypeMap();
@@ -163,6 +169,37 @@ public class SearchDetailsPanel extends JPanel {
                 }
                 DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
                 tree.setModel(treeModel);
+                treeModel.addTreeModelListener(new TreeModelListener() {
+
+                    /**
+                     * Respond to user check node selections.
+                     * @param treeModelEvent Tree Model Event Object.
+                     */
+                    public void treeNodesChanged(TreeModelEvent treeModelEvent) {
+                        List<BasicRecordType> passedRecordList =  executeFilter();
+                        if (passedRecordList != null) {
+                            matchingInteractionsLabel.setText("Matching Interactions:  "
+                                + passedRecordList.size());
+                            if (passedRecordList.size() > 0) {
+                                retrieveButton.setEnabled(true);
+                            } else {
+                                retrieveButton.setEnabled(false);
+                            }
+                        }
+                    }
+
+                    public void treeNodesInserted(TreeModelEvent treeModelEvent) {
+                        //  no-op
+                    }
+
+                    public void treeNodesRemoved(TreeModelEvent treeModelEvent) {
+                        //  no-op
+                    }
+
+                    public void treeStructureChanged(TreeModelEvent treeModelEvent) {
+                        //  no-op
+                    }
+                });
 
                 //  Restore expansion state.
                 if (dataSourceFilterExpanded) {
@@ -178,39 +215,11 @@ public class SearchDetailsPanel extends JPanel {
     }
 
     private void createInteractionDownloadButton(JPanel footer) {
-        JButton button = new JButton ("Retrieve Interactions");
-        button.addActionListener(new ActionListener() {
+        retrieveButton = new JButton ("Retrieve Interactions");
+        retrieveButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent actionEvent) {
-                Set <String> dataSourceSet = new HashSet<String>();
-                Set <String> entityTypeSet = new HashSet<String>();
-                int childCount = dataSourceFilter.getChildCount();
-                for (int i=0; i< childCount; i++) {
-                    CheckNode checkNode = (CheckNode) dataSourceFilter.getChildAt(i);
-                    CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
-                    String dataSource = categoryCount.getCategoryName();
-                    if (checkNode.isSelected()) {
-                        dataSourceSet.add(dataSource);
-                    }
-                }
-                childCount = interactionTypeFilter.getChildCount();
-                for (int i=0; i< childCount; i++) {
-                    CheckNode checkNode = (CheckNode) interactionTypeFilter.getChildAt(i);
-                    CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
-                    String entityType = categoryCount.getCategoryName();
-                    if (checkNode.isSelected()) {
-                        entityTypeSet.add(entityType);
-                    }
-                }
-                ChainedFilter chainedFilter = new ChainedFilter();
-                DataSourceFilter dataSourceFilter = new DataSourceFilter(dataSourceSet);
-                EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
-                chainedFilter.addFilter(dataSourceFilter);
-                chainedFilter.addFilter(entityTypeFilter);
-                try {
-                    List<BasicRecordType> passedRecordList =  chainedFilter.filter
-                            (interactionBundleModel.getRecordList().
-                            getSummaryResponse().getRecord());
+                List<BasicRecordType> passedRecordList =  executeFilter();
                     if (passedRecordList.size() == 0) {
                         JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                                 "Your current filter settings result in 0 matching interactions.  "
@@ -221,11 +230,45 @@ public class SearchDetailsPanel extends JPanel {
                                 interactionBundleModel.getPhysicalEntityName());
                         detailsFrame.setVisible(true);
                     }
-                } catch (NullPointerException e) {
-                }
             }
         });
-        footer.add(button);
+        footer.add(retrieveButton);
+    }
+
+    private List<BasicRecordType> executeFilter() {
+        Set <String> dataSourceSet = new HashSet<String>();
+        Set <String> entityTypeSet = new HashSet<String>();
+        int childCount = dataSourceFilter.getChildCount();
+        for (int i=0; i< childCount; i++) {
+            CheckNode checkNode = (CheckNode) dataSourceFilter.getChildAt(i);
+            CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
+            String dataSource = categoryCount.getCategoryName();
+            if (checkNode.isSelected()) {
+                dataSourceSet.add(dataSource);
+            }
+        }
+        childCount = interactionTypeFilter.getChildCount();
+        for (int i=0; i< childCount; i++) {
+            CheckNode checkNode = (CheckNode) interactionTypeFilter.getChildAt(i);
+            CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
+            String entityType = categoryCount.getCategoryName();
+            if (checkNode.isSelected()) {
+                entityTypeSet.add(entityType);
+            }
+        }
+        ChainedFilter chainedFilter = new ChainedFilter();
+        DataSourceFilter dataSourceFilter = new DataSourceFilter(dataSourceSet);
+        EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
+        chainedFilter.addFilter(dataSourceFilter);
+        chainedFilter.addFilter(entityTypeFilter);
+        List<BasicRecordType> passedRecordList;
+        try {
+            passedRecordList =  chainedFilter.filter (interactionBundleModel.getRecordList().
+                    getSummaryResponse().getRecord());
+        } catch (NullPointerException e) {
+            passedRecordList = null;
+        }
+        return passedRecordList;
     }
 
     /**
