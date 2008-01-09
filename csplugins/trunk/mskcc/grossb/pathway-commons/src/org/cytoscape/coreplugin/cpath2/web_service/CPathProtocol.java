@@ -86,13 +86,12 @@ public class CPathProtocol {
     /**
      * Get Records By Keyword.
      */
-    public static final String COMMAND_GET_BY_KEYWORD =
-            "get_by_keyword";
+    public static final String COMMAND_SEARCH ="search";
 
     /**
      * Gets Parent Summaries.
      */
-    public static final String COMMAND_GET_PARENT_SUMMMARIES = "get_parent_summaries";
+    public static final String COMMAND_GET_PARENTS = "get_parents";
 
     /**
      * Get Interactions By Interactor Name / Xref.
