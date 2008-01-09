@@ -107,12 +107,12 @@ public class QuickFindConfigDialog extends JDialog {
 	/**
 	 * Apply Text.
 	 */
-	private static final String BUTTON_INDEX_TEXT = "Index Network";
+	private static final String BUTTON_INDEX_TEXT = "Apply";
 
 	/**
 	 * Reindex Text.
 	 */
-	private static final String BUTTON_REINDEX_TEXT = "Reindex Network";
+	private static final String BUTTON_REINDEX_TEXT = "Apply";
 
 	/**
 	 * Apply Button.
@@ -374,13 +374,13 @@ public class QuickFindConfigDialog extends JDialog {
 
 	private JPanel createNodeEdgePanel() {
 		JPanel nodeEdgePanel = new JPanel();
-		nodeEdgePanel.setBorder(new TitledBorder("Select Index Type:"));
+		nodeEdgePanel.setBorder(new TitledBorder("Search:"));
 		nodeEdgePanel.setLayout(new BoxLayout(nodeEdgePanel, BoxLayout.X_AXIS));
 
-		JRadioButton nodeButton = new JRadioButton("Index Nodes");
+		JRadioButton nodeButton = new JRadioButton("Nodes");
 		nodeButton.setActionCommand(Integer.toString(QuickFind.INDEX_NODES));
 
-		JRadioButton edgeButton = new JRadioButton("Index Edges");
+		JRadioButton edgeButton = new JRadioButton("Edges");
 		edgeButton.setActionCommand(Integer.toString(QuickFind.INDEX_EDGES));
 
 		if (indexType == QuickFind.INDEX_NODES) {
@@ -445,10 +445,6 @@ public class QuickFindConfigDialog extends JDialog {
 
 		attributePanel.setBorder(new TitledBorder("Select Attribute:"));
 		attributePanel.setLayout(new BoxLayout(attributePanel, BoxLayout.X_AXIS));
-
-		JLabel label = new JLabel("Search on Attribute:  ");
-		label.setBorder(new EmptyBorder(5, 5, 5, 5));
-		attributePanel.add(label);
 
 		//  Create ComboBox
 		Vector attributeList = createAttributeList();
