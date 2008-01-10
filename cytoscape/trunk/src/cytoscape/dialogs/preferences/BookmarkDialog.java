@@ -102,6 +102,29 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		this.setLocationRelativeTo(pParent);
 	}
 
+	/**
+	 * Creates new BookmarkDialog, set the selection on the given category
+	 *
+	 * @throws IOException
+	 * @throws JAXBException
+	 */
+	public BookmarkDialog(JFrame pParent, String pCategoryName) throws JAXBException, IOException {
+		this(pParent);
+
+		Dimension winSize = this.getSize();
+		
+		// Set the given category the selected item in comboBox
+		for (int i=0; i< cmbCategory.getItemCount(); i++) {
+			if (cmbCategory.getItemAt(i).toString().equalsIgnoreCase(pCategoryName)) {
+				cmbCategory.setSelectedIndex(i);
+				this.setPreferredSize(winSize);
+				this.pack();
+				break;
+			}
+		}
+	}
+		
+	
 	// Variables declaration - do not modify
 	private javax.swing.JButton btnAddBookmark;
 	private javax.swing.JButton btnDeleteBookmark;
