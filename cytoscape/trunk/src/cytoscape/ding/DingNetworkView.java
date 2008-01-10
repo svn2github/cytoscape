@@ -166,12 +166,9 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param vizmap DOCUMENT ME!
 	 */
 	public void redrawGraph(boolean layout, boolean vizmap) {
-		// For testing
-		//			Exception ex = new Exception();
-		//			System.out.println("Redraw called@@@@@@@@@ Network = " + this.title);
-		//			ex.printStackTrace();
-		//		}
-		Cytoscape.getVisualMappingManager().applyAppearances();
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		vmm.setNetworkView(this);
+		vmm.applyAppearances();
 		updateView();
 	}
 
