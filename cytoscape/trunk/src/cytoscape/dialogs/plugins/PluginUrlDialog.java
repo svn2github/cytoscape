@@ -126,7 +126,7 @@ public class PluginUrlDialog extends JDialog {
 	// add - opens the bookmarks dialog to add a new download site
 	private void addSiteHandler(java.awt.event.ActionEvent evt) {
 		try {
-			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop());
+			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop(), "plugins");
 
 			// for some reason the windowStateListener wasn't getting the event
 			// so I have to use this one
