@@ -120,6 +120,7 @@ CREATE TABLE theme_version (
   cy_version set('2.6','2.7 ','2.8') default NULL,
   version double default '0.1',
   release_date date default NULL,
+  status varchar(20) default NULL,
   sysdat date default NULL,
   PRIMARY KEY   (version_auto_id)
 );
