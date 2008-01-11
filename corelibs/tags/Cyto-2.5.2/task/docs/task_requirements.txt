@@ -1,0 +1,219 @@
+Requirements Document:  Task Framework
+======================================
+
+About this Document:
+--------------------
+This document describes requirements for a Cytoscape task framework.  
+The document does *not* include any implementation details, as we want 
+to get the requirements right before we finalize any implementation 
+details.  A separate document will define implementation/architecture 
+details, and will be defined shortly.
+
+This document is checked into cvs under:  csplugins/common/task/docs/
+task_requirements.txt.
+
+For changes or suggestions, email Ethan:  cerami@cbio.mskcc.org.
+
+Background: 
+----------- 
+In Cytoscape 2.0, several user-initiated tasks take a long time to 
+complete and provide no visual feedback of progress.  Examples include 
+loading large networks, loading expression data, laying out 
+large networks, saving large networks, etc.
+
+The major goal of Cytoscape 2.1 is to improve the overall performance
+of Cytoscape.  This includes improving perceived performance:
+
+  Often the subjective speed of your application has little to do with
+  how quickly it actually executes its code. To the user, an     
+  application that starts up rapidly, repaints quickly, and provides
+  continuous feedback feels "snappier" than an application that just
+  "hangs up" while it churns through its work. [1]
+
+Cytoscape 2.0 frequently does appear to just "hang up" while it churns
+through work, and we now want to provide visual feedback and progress 
+bars for all long-running tasks.
+
+To that end, we want to build a common framework for creating
+long-term tasks within Cytoscape, and build a common UI element for
+monitoring the progress of those tasks.
+
+Current Status of Implementation:
+---------------------------------
+Both Nerius and Ethan independently developed working task frameworks 
+several months ago.  About a month ago, Nerius merged many of Ethan's 
+suggestions into his framework.  A first draft of the newly merged 
+framework is available in cvs at:  csplugins/common/task/.
+
+Goals: 
+------ 
+1.  Build a core task framework that can be used by all long-running 
+tasks in Cytoscape.
+2.  Build a common UI component that can display progress of a single
+task running in Cytoscape.
+3.  Keep everything as simple as possible so that it is relatively
+easy to retrofit existing tasks into the new task framework, and core
+developers and plugin developers can easily create new tasks.
+4.  Modify all potentially long-running tasks in Cytoscape to use the
+new task framework and the new UI component (full list is defined 
+below).
+5.  Create package javadocs that are readable and easy to follow. 
+Include a sample demo_task.java so that developers can easily see a 
+real example.
+5.  Include JUnit Tests for the complete framework.
+6.  Advertise the existence of this package so that core developers
+and plugin writers know that it exists.  This might simply mean a
+short "how-to" document to be published to the cytoscape.org web site.
+
+Requirements for the Core Task Framework:
+-----------------------------------------
+
+Description:  Core framework for creating tasks.   We define a task as 
+any process that takes some time to complete, and can be potentially 
+halted/interrupted by the end-user. 
+
+0.  For maximum reusability, task framework should be completely
+independent of Cytoscape.
+1.  Core package should have no swing/UI code whatsoever.  Tasks could 
+in theory be run within a regular UI application, or even as a web 
+service.
+2.  Task framework should be as simple as possible so that we can
+easily retrofit existing tasks, and developers can easily create new 
+tasks.  For example, API should be minimal so that new tasks can be 
+created without having to implement 10 methods.
+3.  Task framework should support the notion of interruptability.  For
+example, a long-running task should be interruptable by the end-user.
+4.  Task framework should have an simple facility for propagating
+error messages to the end-user.
+
+Requirements for the UI Component of the Task Framework:
+--------------------------------------------------------
+
+Description:  A common UI Component, e.g. TaskMonitorUI that displays 
+the progress of one specific task.
+
+0.  For maximum reusability, task framework should be completely
+independent of Cytoscape.
+1.  UI component can display a determinate or an indeterminate 
+progress bar.
+(For example, some tasks are determinate, e.g. layout 1000 nodes,
+whereas some tasks are indeterminate, e.g. make a network call to a
+remote database.)
+2.  For determinate tasks, can display progress from 0..100%.
+3.  Optional, depending on Task:  Can display a task description, e.g.
+"Layout out Network".
+4.  Optional, depending on Task:  Can display a text message
+indicating current step of work, e.g. "Adding Nodes to Network".
+5.  Optional, depending on Task:  Can display estimated time
+remaining.  (Very useful for those tasks that require a very long
+time to complete.)
+6.  Optional, depending on Task:  Can display total time elapsed.    
+(Very useful for those tasks that require a very long time to
+complete.)
+7.  Optional, depending on Task:  a cancel button for cancelling the
+long term task.
+8.  For very short tasks, e.g. those under 500 ms, we should delay the 
+display of the UI component.  For example, if a user initiates the 
+layout of a small network, and the layout  only takes 200 ms, the user 
+should not see the flicker of a progress bar.
+9.  Might be nice to support a verbose v. compact version of the UI 
+component.  Verbose mode would provide all information, compact mode 
+would be suitable for putting in a status bar (or some other small 
+space).  If so, a user might be able to switch between compact and 
+verbose e.g. by clicking on a "plus" symbol to expand the task and get 
+more details about it.  [Requested by Gary Bader].
+10.  UI Component should support two modal options:  a) stick around 
+after the task is done, or b)  be removed automatically after the 
+task is complete.  [Requested by Gary Bader].
+
+Proposed Package Names:
+-----------------------
+cytoscape.task
+cytoscape.task.ui
+
+Priority List of Cytoscape Tasks that Require Visual Feedback:
+--------------------------------------------------------------
+
+These tasks are high priority for retrofitting into the new task
+framework.
+
+A important caveat from Nerius:  We can't simply fork all long-running 
+tasks in Cytoscape as separate threads.  In theory, any spawned thread 
+should not make a single call to AWT or Swing code (directly or 
+indirectly).  This basically means that all long-running tasks will 
+need to be completely re-architected, which is tough work.
+
+1.  File:  Load
+	a.  Graph
+	b.  Node Attributes
+	c.  Edge Attributes
+	d.  Expression Matrix File
+
+2.  Save:
+	a.  Graph as GML
+	b.  Graph as Interactions
+	c.  Node Attributes
+	d.  Edge Attributes
+
+3.  Export View as...
+
+4.  Layout:
+	a.  All Layouts, including Y-Files Layouts
+
+5.  Apply Visual Style
+
+6.  Ryan's Filters PlugIn
+
+Q & A
+------
+These are questions I got from Gary Bader.  I will add others as they 
+arise.
+
+Question 1:   Will the task framework handle the threading details to
+run the task in a new thread, or will this still be up to the 
+developer to deal with? 
+
+   Answer.  Not sure yet.  However, we may assume that all tasks run
+   in a separate thread and require that tasks extend 
+   java.lang.Runnable.  Sample code for starting a new task might look
+   like this:
+
+   Task task = new SampleTask(...);
+   TaskMonitorUI monitor = new TaskMonitorUI(task, ...);
+   task.start(); 
+
+Question 2:  I assume the application developer decides what to do 
+when a task is cancelled i.e. use work done so far (e.g. useful for 
+layouts) or discard all work done so far and user would have to start 
+from the beginning (e.g. when you cancel file copying in Windows)
+
+   Answer:  Yes, each task can implement a method like, interrupt() or 
+   halt().  But, the task is responsible for interpreting (or    
+   ignoring) how to handle such a request.
+
+Question 3:  How will tasks that fail in their own thread be dealt 
+with e.g. if a thread throws an exception or runs out of memory and 
+just stops?  You could imagine the UI would have a color system, green 
+for running OK, blue for done and red for failed or cancelled (all 
+pale colors).
+
+   Answer:  Not sure.  One option is that all exceptions within a 
+   task are automatically captured, and reported back to the calling 
+   thread.  The UI Component could then throw open a common error 
+   dialog box. 
+
+Future Ideas, for later versions of Cytoscape
+---------------------------------------------
+1.  Do we want the feature of being able to pause tasks?  I
+don't think this is necessary, just a possibility that comes to mind.
+[Suggested by Gary Bader.]
+
+2.  It also might be nice to be able to pause and resume tasks across 
+sessions of Cytoscape, i.e. to be able to save intermediate results 
+when exiting Cytoscape.  Not all kinds of tasks will be structured in 
+the right way to accommodate this kind of behavior, though.
+[Suggested by Allan Kuchinsky.]
+
+References:
+-----------
+[1]  http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vbcon98/html/vbconoptimizingperceivedspeed.asp
