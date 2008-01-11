@@ -40,6 +40,8 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 	private double nodeW1;
 
 	private double nodeH1;
+	
+	public static int spliceHeight = 50;
 
 	/**
 	 * ref to our buffered region
@@ -103,7 +105,7 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 		double from_y = region_from.getBounds().getMinY();
 		double to_x = region_to.getBounds().getMinX();
 
-		double h = 50;
+		double h = (double) spliceHeight;
 		double w = to_x - from_x + 2;
 		double x = from_x  - 1;
 		double y = from_y - h + 0.25;
@@ -111,14 +113,6 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 		setBounds(x, y, w, h, true);
 
 		((DGraphView) myView).addViewportChangeListener(this);
-//		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-//		// DGraphView dview = (DGraphView) view;
-//		DingCanvas aLayer = dview
-//				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-//		aLayer.add(this);
-//
-//		// hack
-//		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
 	}
 	
 	/**

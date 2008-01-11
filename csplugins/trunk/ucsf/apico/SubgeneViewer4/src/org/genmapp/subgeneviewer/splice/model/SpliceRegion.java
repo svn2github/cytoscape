@@ -83,6 +83,14 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 	private String _annotation;
 
 	private NodeView featureNodeView;
+	
+	private static final int NODE_HEIGHT = SGVNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
+
+	private static final int NODE_WIDTH = SGVNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
+	
+	public static double REGION_HEIGHT = NODE_HEIGHT * 0.75;
+
+	public static int VGAP = NODE_HEIGHT *2;
 
 	/**
 	 * Constructs an object to graphically represent the exon, intron or
@@ -116,16 +124,11 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 		NodeView nv = myView.getNodeView(cn);
 		this.featureNodeView = nv;
 
-//		double featureNodeWidth = featureNodeView.getWidth();
-//		double featureNodeHeight = featureNodeView.getHeight();
-		double featureNodeWidth = SGVNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
-		double featureNodeHeight = SGVNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
-
-		double x = featureNodeView.getXPosition() - (featureNodeWidth * .80);
-		double y = featureNodeView.getYPosition() - (featureNodeHeight * 2);
+		double x = featureNodeView.getXPosition() - (NODE_WIDTH * .80);
+		double y = featureNodeView.getYPosition() - VGAP;
 		
-		double w = (featureNodeWidth * 1.6) + (featureNodeWidth * (_units - 1) * 1.5) ;
-		double h = featureNodeHeight * .75 ;
+		double w = (NODE_WIDTH * 1.6) + (NODE_WIDTH * (_units - 1) * 1.5) ;
+		double h = REGION_HEIGHT;
 		
 		setBounds(x, y, w, h, true);
 	
@@ -135,15 +138,6 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 
 		((DGraphView) myView).addViewportChangeListener(this);
 		
-//		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-//		// DGraphView dview = (DGraphView) myView;
-//		DingCanvas aLayer = dview
-//				.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
-//		aLayer.add(this);
-//
-//		// hack
-//		dview.setZoom(dview.getZoom() * 0.99999999999999999d);
-
 		// Add to list of region objects
 		regionList.add(this);
 	}

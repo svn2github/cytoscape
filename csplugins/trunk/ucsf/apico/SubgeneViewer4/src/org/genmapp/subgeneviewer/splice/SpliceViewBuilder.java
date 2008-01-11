@@ -55,7 +55,10 @@ public abstract class SpliceViewBuilder {
 
 	private static int xOffset = HGAP;
 
-	private static int yOffset = 120;
+	private static int windowHeight = 200;
+
+	private static int yOffset = (int) (windowHeight / 2 + NODE_HEIGHT
+			+ SpliceRegion.REGION_HEIGHT + SpliceRegion.VGAP + SpliceEvent.spliceHeight);
 
 	/**
 	 * Processes feature, structure and splice attributes and creates a network
@@ -93,7 +96,8 @@ public abstract class SpliceViewBuilder {
 
 			// Create CyNode: Concatenate feature_label and region_id to
 			// generate a unique node identifier.Use feature_label for display.
-			String feature_name = featureAtts[0] + "_" + featureAtts[1] + "_" + featureAtts[2];
+			String feature_name = featureAtts[0] + "_" + featureAtts[1] + "_"
+					+ featureAtts[2];
 			feature = Cytoscape.getCyNode(feature_name, true);
 
 			// Set label
@@ -117,8 +121,7 @@ public abstract class SpliceViewBuilder {
 					"Affy_probeset", featureAtts[2]);
 			Cytoscape.getNodeAttributes().setAttributeDescription(
 					"Affy_probeset", "Affymetrix probeset identifiers");
-			Cytoscape.getNodeAttributes()
-					.setUserVisible("Affy_probeset", true);
+			Cytoscape.getNodeAttributes().setUserVisible("Affy_probeset", true);
 			Cytoscape.getNodeAttributes().setUserEditable("Affy_probeset",
 					false);
 
@@ -130,8 +133,10 @@ public abstract class SpliceViewBuilder {
 		dummyNet = Cytoscape.createNetwork(features, edges, nodeLabel);
 		dummyNet.setTitle(nodeLabel);
 		myView = Cytoscape.getCurrentNetworkView();
-//		Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame(myView)
-//		.setBounds(0, 0, 500, 200);
+
+		// Sets size of SGV window. ONLY WORKS WITH Cytoscape v2.6!
+		Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame(myView)
+				.setBounds(0, 0, 500, windowHeight);
 
 		// layout feature nodes
 		for (Object f : features) {
@@ -155,7 +160,8 @@ public abstract class SpliceViewBuilder {
 			String[] structureAtts = structureList.split(":");
 
 			// Transform attribute data types
-			String region_name = structureAtts[0] + "_" + structureAtts[1] + "_" + structureAtts[2];
+			String region_name = structureAtts[0] + "_" + structureAtts[1]
+					+ "_" + structureAtts[2];
 			int units = Integer.parseInt(structureAtts[4]);
 			boolean constitutive = false;
 			boolean start = false;
@@ -176,7 +182,6 @@ public abstract class SpliceViewBuilder {
 			DingCanvas aLayer = dview
 					.getCanvas(DGraphView.Canvas.FOREGROUND_CANVAS);
 			aLayer.add(region);
-			
 
 			// hack
 			dview.setZoom(dview.getZoom() * 0.99999999999999999d);
@@ -234,10 +239,10 @@ public abstract class SpliceViewBuilder {
 		vmm.setNetworkView(myView);
 		vmm.setVisualStyle(sgvStyle);
 		myView.setVisualStyle("SGV");
-		
+
 		Cytoscape.getVisualMappingManager().setNetworkView(myView);
 		Cytoscape.getVisualMappingManager().applyAppearances();
-		
+
 	}
 
 }
