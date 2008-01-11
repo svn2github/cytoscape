@@ -47,8 +47,13 @@ public class DownloadDetails extends JDialog {
         tableModel.setColumnIdentifiers(headerList);
         tableModel.setRowCount(passedRecordList.size());
         JTable table = new JTable(tableModel);
+
+        //  Adjust width / height of viewport;  fixes bug #1620.
         Dimension d = table.getPreferredSize();
         d.width = d.width * 2;
+        if (d.height > 200) {
+            d.height = 200;
+        }
         table.setPreferredScrollableViewportSize(d);
         table.setAutoCreateColumnsFromModel(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
