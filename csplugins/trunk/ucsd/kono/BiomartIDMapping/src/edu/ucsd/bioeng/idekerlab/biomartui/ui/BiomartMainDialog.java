@@ -37,7 +37,9 @@ package edu.ucsd.bioeng.idekerlab.biomartui.ui;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.webservice.WebServiceClientManager;
+
 import cytoscape.layout.Tunable;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
@@ -48,7 +50,6 @@ import cytoscape.task.util.TaskManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -89,21 +90,23 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		super(Cytoscape.getDesktop(), false);
 		setTitle("Biomart Web Service Client");
 
-		
 		// Create a tabbed pane
 		JTabbedPane tabs = new JTabbedPane();
-		List<Tunable> tunables = WebServiceClientManager.getClient("biomart").getProps().getTunables();
+		List<Tunable> tunables = WebServiceClientManager.getClient("biomart").getProps()
+		                                                .getTunables();
 		JPanel tPanel = new JPanel();
-		for(Tunable t:tunables) {
+
+		for (Tunable t : tunables) {
 			tPanel.add(t.getPanel());
 		}
+
 		BiomartAttrMappingPanel panel = new BiomartAttrMappingPanel();
 		panel.addPropertyChangeListener(this);
 		tabs.addTab("Query", panel);
 		tabs.addTab("Options", tPanel);
-		
+
 		tabs.addTab("PICR", new PICRPanel());
-		
+
 		add(tabs);
 
 		pack();
@@ -144,6 +147,7 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 			} catch (Exception e) {
 				taskMonitor.setException(e, "Failed to initialize the Biomart dialog.");
 			}
+
 			mainDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			mainDialog.setVisible(true);
 			taskMonitor.setPercentCompleted(100);
