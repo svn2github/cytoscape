@@ -256,7 +256,6 @@ public class BioPaxDetailsPanel extends JPanel {
             buf.append ("<UL>");
             appendData(displayString.toString(), buf, false);
             buf.append ("</UL>");
-            buf.append ("<br>");
         }
 	}
 
