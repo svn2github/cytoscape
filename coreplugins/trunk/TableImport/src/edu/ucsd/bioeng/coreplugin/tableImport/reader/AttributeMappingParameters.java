@@ -99,7 +99,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	 * @param keyIndex  DOCUMENT ME!
 	 * @param mappingAttribute  DOCUMENT ME!
 	 * @param aliasIndex  DOCUMENT ME!
-	 * @param attributeNames  DOCUMENT ME!
+	 * @param attrNames  DOCUMENT ME!
 	 * @param attributeTypes  DOCUMENT ME!
 	 * @param listAttributeTypes  DOCUMENT ME!
 	 * @param importFlag  DOCUMENT ME!
@@ -111,12 +111,12 @@ public class AttributeMappingParameters implements MappingParameter {
 	                                  final String listDelimiter, final int keyIndex,
 	                                  final String mappingAttribute,
 	                                  final List<Integer> aliasIndex,
-	                                  final String[] attributeNames, Byte[] attributeTypes,
+	                                  final String[] attrNames, Byte[] attributeTypes,
 	                                  Byte[] listAttributeTypes, boolean[] importFlag)
 	    throws Exception {
 		this.listAttributeTypes = listAttributeTypes;
 
-		if (attributeNames == null) {
+		if (attrNames == null) {
 			throw new Exception("attributeNames should not be null.");
 		}
 
@@ -124,7 +124,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		 * Error check: Key column number should be smaller than actual number
 		 * of columns in the text table.
 		 */
-		if (attributeNames.length < keyIndex) {
+		if (attrNames.length < keyIndex) {
 			throw new IOException("Key is out of range.");
 		}
 
@@ -133,7 +133,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		 */
 		this.objectType = objectType;
 		this.keyIndex = keyIndex;
-		this.attributeNames = attributeNames;
+		this.attributeNames = attrNames;
 
 		if (this.objectType == NETWORK) {
 			networkTitle2ID = new HashMap<String, String>();
@@ -185,9 +185,9 @@ public class AttributeMappingParameters implements MappingParameter {
 		 * If not specified, import everything as String attributes.
 		 */
 		if (attributeTypes == null) {
-			this.attributeTypes = new Byte[attributeNames.length];
+			this.attributeTypes = new Byte[attrNames.length];
 
-			for (int i = 0; i < attributeNames.length; i++) {
+			for (int i = 0; i < attrNames.length; i++) {
 				this.attributeTypes[i] = CyAttributes.TYPE_STRING;
 			}
 		} else {
@@ -198,7 +198,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		 * If not specified, import everything.
 		 */
 		if (importFlag == null) {
-			this.importFlag = new boolean[attributeNames.length];
+			this.importFlag = new boolean[attrNames.length];
 
 			for (int i = 0; i < this.importFlag.length; i++) {
 				this.importFlag[i] = true;

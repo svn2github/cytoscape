@@ -71,13 +71,18 @@ public class AttributeLineParser {
 	public AttributeLineParser(AttributeMappingParameters mapping) {
 		this.mapping = mapping;
 	}
-	
+
 	// Import everything.
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param parts DOCUMENT ME!
+	 */
 	public void parseAll(String[] parts) {
 		// Get key
 		final String primaryKey = parts[mapping.getKeyIndex()].trim();
 		final int partsLen = parts.length;
-		
+
 		for (int i = 0; i < partsLen; i++) {
 			if ((i != mapping.getKeyIndex()) && !mapping.getAliasIndexList().contains(i)
 			    && mapping.getImportFlag()[i]) {
@@ -87,7 +92,7 @@ public class AttributeLineParser {
 					//mapAttribute(targetNetworkID, parts[i].trim(), i);
 				} else {
 					mapAttribute(primaryKey, parts[i].trim(), i);
-				} 
+				}
 			}
 		}
 	}
@@ -188,8 +193,6 @@ public class AttributeLineParser {
 					if (node == null) {
 						return;
 					}
-				} else {
-					break;
 				}
 
 				break;
@@ -264,7 +267,7 @@ public class AttributeLineParser {
 					mapAttribute(targetNetworkID, parts[i].trim(), i);
 				}
 				/*
-				 * Frist, check the node exists or not with the primary key
+				 * First, check the node exists or not with the primary key
 				 */
 				else if (altKey == null) {
 					mapAttribute(primaryKey, parts[i].trim(), i);
@@ -277,17 +280,10 @@ public class AttributeLineParser {
 		/*
 		 * Finally, add aliases and primary key.
 		 */
-		if (altKey == null) {
-			mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
-			mapping.getAttributes()
-			       .setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
-			                     primaryKey);
-		} else {
-			mapping.getAlias().add(altKey, new ArrayList<String>(aliasSet));
-			mapping.getAttributes()
-			       .setAttribute(altKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
-			                     primaryKey);
-		}
+		mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
+		mapping.getAttributes()
+		       .setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
+		                     parts[mapping.getKeyIndex()]);
 
 		/*
 		 * Add primary key as an attribute
@@ -304,10 +300,14 @@ public class AttributeLineParser {
 	private void mapAttribute(final String key, final String entry, final int index) {
 		final Byte type = mapping.getAttributeTypes()[index];
 
+//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
+//		                   + entry);
+
 		switch (type) {
 			case CyAttributes.TYPE_BOOLEAN:
 
 				Boolean newBool;
+
 				try {
 					newBool = new Boolean(entry);
 					mapping.getAttributes()
@@ -387,7 +387,7 @@ public class AttributeLineParser {
 				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
 		}
 	}
-	
+
 	protected Map getInvalidMap() {
 		return invalid;
 	}

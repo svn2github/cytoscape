@@ -176,10 +176,9 @@ public class AttributePreviewTableCellRenderer extends DefaultTableCellRenderer 
 
 		this.species = species;
 
-		if (importFlag != null) {
+		if (importFlag != null)
 			this.importFlag = importFlag;
-		}
-
+		
 		if (listDelimiter == null) {
 			this.listDelimiter = DEF_LIST_DELIMITER;
 		} else {

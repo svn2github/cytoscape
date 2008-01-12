@@ -996,21 +996,14 @@ public class PreviewTablePanel extends JPanel {
 				}
 			}
 
-			if (maxIndex == 0) {
+			if (maxIndex == 0)
 				dataType[i] = CyAttributes.TYPE_BOOLEAN;
-				System.out.print(i + " Boolean, ");
-			} else if (maxIndex == 1) {
+			else if (maxIndex == 1)
 				dataType[i] = CyAttributes.TYPE_INTEGER;
-				System.out.print(i + " Int, ");
-			} else if (maxIndex == 2) {
+			else if (maxIndex == 2)
 				dataType[i] = CyAttributes.TYPE_FLOATING;
-				System.out.print(i + " Float, ");
-			} else {
+			else
 				dataType[i] = CyAttributes.TYPE_STRING;
-				System.out.print(i + " String, ");
-			}
-
-			System.out.println("");
 		}
 
 		dataTypeMap.put(tableName, dataType);

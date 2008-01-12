@@ -1484,8 +1484,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		if (dialogType == NETWORK_IMPORT)
 			return;
 
+		// Update primary key index.
 		keyInFile = primaryKeyComboBox.getSelectedIndex();
 
+		// Update 
 		previewPanel.getPreviewTable()
 		            .setDefaultRenderer(Object.class, getRenderer(previewPanel.getFileType()));
 
@@ -1578,8 +1580,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void nodeKeyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		keyInFile = mappingAttributeComboBox.getSelectedIndex();
-
 		previewPanel.getPreviewTable()
 		            .setDefaultRenderer(Object.class, getRenderer(previewPanel.getFileType()));
 
@@ -1685,7 +1685,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		 * Get import flags
 		 */
 		final int colCount = previewPanel.getPreviewTable().getColumnModel().getColumnCount();
-		final boolean[] importFlag = new boolean[colCount];
+		importFlag = new boolean[colCount];
 
 		for (int i = 0; i < colCount; i++) {
 			importFlag[i] = ((AttributePreviewTableCellRenderer) previewPanel.getPreviewTable()
@@ -1797,6 +1797,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				// Extract URL from the text table.
 				final URL source = new URL(targetDataSourceTextField.getText());
 
+				// Make sure primary key index is up-to-date.
+				keyInFile = primaryKeyComboBox.getSelectedIndex();
+				
+				int idx=0;
+				for(String name: attributeNames) {
+					System.out.println(name + " = " + importFlag[idx] + ", type = " + attributeTypes[idx]);
+					idx++;
+				}
+				
 				// Build mapping parameter object.
 				final AttributeMappingParameters mapping = new AttributeMappingParameters(objType,
 				                                                                          checkDelimiter(),
@@ -2068,7 +2077,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		ontologyTextField.setText(ontologyComboBox.getSelectedItem().toString());
 	}
 
-	private void selectAttributeFileButtonActionPerformed(java.awt.event.ActionEvent evt)
+	private void selectAttributeFileButtonActionPerformed(ActionEvent evt)
 	    throws IOException {
 		final File[] multiSource = FileUtil.getFiles("Select local file", FileUtil.LOAD,
 		                                             new CyFileFilter[] {  });
@@ -2490,6 +2499,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		if (previewPanel.getPreviewTable() == null) {
 			return;
+		}
+		
+		// Initialize import flags.
+		final int colSize = previewPanel.getPreviewTable().getColumnCount();
+		importFlag = new boolean[colSize];
+		for(int i=0; i<colSize; i++) {
+			importFlag[i] = true;
 		}
 
 		listDataTypes = previewPanel.getCurrentListDataTypes();
@@ -2932,12 +2948,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
 
 			rend = new AttributePreviewTableCellRenderer(keyInFile, gaAlias, ontologyCol,
-			                                             TAXON.getPosition(), null, listDelimiter);
+			                                             TAXON.getPosition(), importFlag, listDelimiter);
 		} else {
 			rend = new AttributePreviewTableCellRenderer(keyInFile, new ArrayList<Integer>(),
 			                                             AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
 			                                             AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST,
-			                                             null, listDelimiter);
+			                                             importFlag, listDelimiter);
 		}
 
 		return rend;
