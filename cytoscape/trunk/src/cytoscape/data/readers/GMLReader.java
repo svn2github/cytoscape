@@ -52,8 +52,6 @@ import cytoscape.data.Semantics;
 import cytoscape.layout.LayoutAdapter;
 import cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.dialogs.VisualStyleBuilderDialog;
-
 import cytoscape.init.CyInitParams;
 
 import cytoscape.task.TaskMonitor;
@@ -82,7 +80,6 @@ import cytoscape.visual.mappings.PassThroughMapping;
 // -----------------------------------------------------------------------------------------
 import giny.model.Edge;
 import giny.model.Node;
-import giny.model.RootGraph;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;
@@ -91,7 +88,6 @@ import giny.view.NodeView;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.io.InputStream;
 
@@ -173,6 +169,8 @@ public class GMLReader extends AbstractGraphReader {
 	protected static String CREATOR = "Creator";
 	private String mapSuffix;
 	private Color DEF_COLOR = new Color(153, 153, 255);
+
+	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
 
 	// Entries in the file
 	List keyVals;
@@ -341,7 +339,9 @@ public class GMLReader extends AbstractGraphReader {
 	 *  DOCUMENT ME!
 	 *
 	 * @param vizmapper DOCUMENT ME!
+	 * @deprecated Will be removed 1/2009
 	 */
+	@Deprecated
 	public void setNodeMaps(VisualMappingManager vizmapper) {
 		//
 		// Set label for the nodes. (Uses "label" tag in the GML file)
@@ -527,7 +527,9 @@ public class GMLReader extends AbstractGraphReader {
 	 *  DOCUMENT ME!
 	 *
 	 * @param vizmapper DOCUMENT ME!
+	 * @deprecated Will be removed 1/2009
 	 */
+	@Deprecated
 	public void setEdgeMaps(VisualMappingManager vizmapper) {
 		//
 		// Set the color of the edges and arrows.
@@ -657,7 +659,9 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param mapSuffix DOCUMENT ME!
 	 * @param VSName DOCUMENT ME!
+	 * @deprecated Will be removed 1/2009
 	 */
+	@Deprecated
 	public void applyMaps(String mapSuffix, String VSName) {
 		// CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
@@ -1500,6 +1504,7 @@ public class GMLReader extends AbstractGraphReader {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
 
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1513,9 +1518,21 @@ public class GMLReader extends AbstractGraphReader {
 
 		if ((init.getMode() == CyInitParams.GUI)
 		    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-			VisualStyleBuilderDialog vsd = new VisualStyleBuilderDialog(net.getTitle(), this,
-			                                                            Cytoscape.getDesktop(), true);
-			vsd.setVisible(true);
+
+			// Build VS based on the Cytoscape property -- "visualStyleBuilder"
+			if (vsbSwitch != null && vsbSwitch.equals("off")) {
+				return;
+			}
+            
+			// Build Visual style
+			VisualStyleBuilder graphStyle = new VisualStyleBuilder(getNetworkName(), false);
+
+			graphStyle.buildStyle();
+			
+			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		}
 	}
+
+	
+	
 }
