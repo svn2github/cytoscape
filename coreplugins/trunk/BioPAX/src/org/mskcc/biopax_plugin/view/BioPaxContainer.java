@@ -39,6 +39,11 @@ import java.awt.*;
 import java.net.URL;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent;
+
+import cytoscape.Cytoscape;
 
 
 /**
@@ -62,32 +67,50 @@ public class BioPaxContainer extends JPanel {
 	private BioPaxDetailsPanel bpDetailsPanel;
 	private NetworkListener networkListener;
 	private static BioPaxContainer bioPaxContainer;
+    private JFrame legendFrame;
 
-	/**
+    /**
 	 * Private Constructor.
 	 */
 	private BioPaxContainer() {
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+        final JPanel cards = new JPanel(new CardLayout());
 
-		URL url1 = BioPaxDetailsPanel.class.getResource("resources/glasses.gif");
-		Icon icon1 = new ImageIcon(url1);
-		URL url2 = BioPaxDetailsPanel.class.getResource("resources/legend.gif");
-		Icon icon2 = new ImageIcon(url2);
-		URL url3 = BioPaxDetailsPanel.class.getResource("resources/info.gif");
-		Icon icon3 = new ImageIcon(url3);
+        bpDetailsPanel = new BioPaxDetailsPanel();
+        LegendPanel legendPanel = new LegendPanel();
 
-		bpDetailsPanel = new BioPaxDetailsPanel();
-		tabbedPane.addTab("Node Details", icon1, bpDetailsPanel,
-		                  "Select a node to view complete node details");
-		tabbedPane.addTab("Visual Legend", icon2, new LegendPanel(),
-		                  "View Visual Legend");
-		tabbedPane.addTab("About", icon3,
-		                  new AboutPanel("BioPAX Plugin", BioPaxPlugIn.VERSION_MAJOR_NUM,
-		                                 BioPaxPlugIn.VERSION_MINOR_NUM),
-		                  "About the BioPAX Plugin");
+        cards.add (bpDetailsPanel, "DETAILS");
+        cards.add (legendPanel, "LEGEND");
+        
 		this.setLayout(new BorderLayout());
-		this.add(tabbedPane);
-		this.networkListener = new NetworkListener(bpDetailsPanel);
+		this.add(cards, BorderLayout.CENTER);
+
+        final JEditorPane label = new JEditorPane ("text/html", "<a href='LEGEND'>Visual Legend</a>");
+        label.setEditable(false);
+        label.setOpaque(false);
+        label.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        label.addHyperlinkListener(new HyperlinkListener() {
+
+            public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
+                if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    String name = hyperlinkEvent.getDescription();
+                    CardLayout cl = (CardLayout)(cards.getLayout());
+                    cl.show(cards, name);
+                    if (name.equalsIgnoreCase("LEGEND")) {
+                        label.setText("<a href='DETAILS'>View Details</a>");
+                    } else {
+                        label.setText("<a href='LEGEND'>Visual Legend</a>");
+                    }
+                }
+            }
+        });
+
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Font font = label.getFont();
+        Font newFont = new Font (font.getFamily(), font.getStyle(), font.getSize()-2);
+        label.setFont(newFont);
+        label.setBorder(new EmptyBorder(5,3,3,3));
+        this.add(label, BorderLayout.SOUTH);
+        this.networkListener = new NetworkListener(bpDetailsPanel);
 	}
 
 	/**
