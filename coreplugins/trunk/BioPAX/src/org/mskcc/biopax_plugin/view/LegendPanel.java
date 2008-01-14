@@ -58,8 +58,9 @@ public class LegendPanel extends JPanel {
 		JTextPane textPane = new JTextPane();
 		textPane.setEditable(false);
 		textPane.setContentType("text/html");
+        textPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
 
-		URL legendUrl = LegendPanel.class.getResource("resources/legend.html");
+        URL legendUrl = LegendPanel.class.getResource("resources/legend.html");
 		StringBuffer temp = new StringBuffer();
 		temp.append("<HTML><BODY>");
 
