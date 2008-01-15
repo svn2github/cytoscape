@@ -171,7 +171,8 @@ public class GMLReader extends AbstractGraphReader {
 	private Color DEF_COLOR = new Color(153, 153, 255);
 
 	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
-
+	private VisualStyleBuilder graphStyle = null;
+	
 	// Entries in the file
 	List keyVals;
 
@@ -293,6 +294,7 @@ public class GMLReader extends AbstractGraphReader {
 		percentUtil = new PercentUtil(3);
 	}
 
+
 	private String createVSName() {
 		// Create new style name
 		// String target = null;
@@ -326,12 +328,16 @@ public class GMLReader extends AbstractGraphReader {
 	// Initialize variables for the new style created from GML
 	//
 	private void initStyle() {
+		
 		nac = new NodeAppearanceCalculator();
 		eac = new EdgeAppearanceCalculator();
 		gac = new GlobalAppearanceCalculator();
 
 		// Unlock the size object, then we can modify the both width and height.
 		nac.setNodeSizeLocked(false);
+        
+		// 
+		graphStyle = new VisualStyleBuilder(getNetworkName(), false);
 	}
 
 	// Create maps for the node attribute and set it as a Visual Style.
@@ -1259,15 +1265,20 @@ public class GMLReader extends AbstractGraphReader {
 			if (keyVal.key.equals(X) || keyVal.key.equals(Y)) {
 				// Do nothing.
 			} else if (keyVal.key.equals(H)) {
-				nodeH.put(nodeName, keyVal.value);
+				nodeH.put(nodeName, keyVal.value);								
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, ""+keyVal.value);
 			} else if (keyVal.key.equals(W)) {
 				nodeW.put(nodeName, keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_WIDTH, ""+keyVal.value);
 			} else if (keyVal.key.equals(FILL)) {
 				nodeCol.put(nodeName, keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_FILL_COLOR, ""+keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE)) {
 				nodeBCol.put(nodeName, keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_BORDER_COLOR, ""+keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE_WIDTH)) {
 				nodeBWidth.put(nodeName, (Double)keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_LINE_WIDTH, ""+keyVal.value);
 			} else if (keyVal.key.equals(TYPE)) {
 				String type = (String) keyVal.value;
 
@@ -1286,6 +1297,8 @@ public class GMLReader extends AbstractGraphReader {
 				} else if (type.equals(TRIANGLE)) {
 					nodeShape.put(nodeName, NodeShape.TRIANGLE);
 				}
+				
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_SHAPE,type);
 			}
 		}
 	}
@@ -1306,15 +1319,26 @@ public class GMLReader extends AbstractGraphReader {
 				// at this point of time...
 			} else if (keyVal.key.equals(WIDTH)) {
 				edgeWidth.put(edgeName, new Float(((Number) keyVal.value).floatValue()));
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_LINE_WIDTH, new String(keyVal.value.toString()));
 			} else if (keyVal.key.equals(FILL)) {
 				edgeCol.put(edgeName, (String) keyVal.value);
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_COLOR, new String(keyVal.value.toString()));
 			} else if (keyVal.key.equals(ARROW)) {
 				edgeArrow.put(edgeName, (String) keyVal.value);
+				if (keyVal.value.toString().equalsIgnoreCase("last")) {
+					System.out.println("VisualPropertyType.EDGE_TGTARROW_SHAPE");
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, keyVal.value.toString());
+				}
+				else { // first?
+					System.out.println("VisualPropertyType.EDGE_SRCARROW_SHAPE");
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, keyVal.value.toString());					
+				}				
 			} else if (keyVal.key.equals(TYPE)) {
 				value = (String) keyVal.value;
 
 				if (value.equals(STRAIGHT_LINES)) {
 					edgeShape.put(edgeName, (String) keyVal.value);
+
 				} else if (value.equals(CURVED_LINES)) {
 					// edgeView.setLineType(EdgeView.CURVED_LINES);
 				}
@@ -1524,12 +1548,7 @@ public class GMLReader extends AbstractGraphReader {
 				return;
 			}
             
-			// Build Visual style
-			VisualStyleBuilder graphStyle = new VisualStyleBuilder(getNetworkName(), false);
-
-			graphStyle.buildStyle();
-			
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			graphStyle.buildStyle();	
 		}
 	}
 
