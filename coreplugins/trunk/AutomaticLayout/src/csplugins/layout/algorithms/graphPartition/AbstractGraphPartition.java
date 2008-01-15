@@ -10,6 +10,7 @@ import csplugins.layout.LayoutPartition;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 
 import cytoscape.layout.AbstractLayout;
 
@@ -96,8 +97,20 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, null);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
+		} else if (staticNodes != null && staticNodes.size() > 0) {
+			// Someone has programmatically locked a set of nodes -- construct
+			// the list of unlocked nodes
+			List<CyNode> unlockedNodes = new ArrayList();
+			for (CyNode node: (List<CyNode>)network.nodesList()) {
+				if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
+					unlockedNodes.add(node);
+				}
+			}
+			LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, null);
+			partitionList = new ArrayList(1);
+			partitionList.add(partition);
 		} else {
-			partitionList = LayoutPartition.partition(network, networkView, selectedOnly, null);
+			partitionList = LayoutPartition.partition(network, networkView, false, null);
 		}
 
 		total_nodes = network.getNodeCount();

@@ -512,12 +512,25 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		// Depending on whether we are partitioned or not,
 		// we use different initialization.  Note that if the user only wants
 		// to lay out selected nodes, partitioning becomes a very bad idea!
-		if (!partitionGraph || selectedOnly) {
+		if (!partitionGraph || selectedOnly || (staticNodes != null && staticNodes.size() > 0)) {
 			// We still use the partition abstraction, even if we're
 			// not partitioning.  This makes the code further down
 			// much cleaner
-			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly,
-			                                                edgeAttribute);
+			LayoutPartition partition = null;
+			if (selectedOnly || !partitionGraph) {
+				partition = new LayoutPartition(network, networkView, selectedOnly,
+			                                  edgeAttribute);
+			} else {
+      	// Someone has programmatically locked a set of nodes -- construct
+      	// the list of unlocked nodes
+      	List<CyNode> unlockedNodes = new ArrayList();
+      	for (CyNode node: (List<CyNode>)network.nodesList()) {
+      		if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
+      			unlockedNodes.add(node);
+      		}
+      	}
+      	partition = new LayoutPartition(network, networkView, unlockedNodes, null);
+			}
 			partitionList = new ArrayList<LayoutPartition>(1);
 			partitionList.add(partition);
 		} else {

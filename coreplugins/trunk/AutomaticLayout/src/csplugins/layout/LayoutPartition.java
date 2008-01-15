@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.Set;
+import java.util.Collection;
 
 
 /**
@@ -130,12 +131,37 @@ public class LayoutPartition {
 	 *
 	 * @param network the CyNetwork to include
 	 * @param networkView the CyNetworkView to use
+	 * @param nodeSet the nodes to be considered
+	 * @param edgeAttribute a String that contains the name of the attribute to use
+	 *                      for edge weighting
+	 */
+	public LayoutPartition(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
+	                       String edgeAttribute) {
+		initialize(network,networkView,nodeSet,edgeAttribute);
+	}
+
+
+	/**
+	 * LayoutPartition: use this constructor to create a LayoutPartition that
+	 * includes the entire network.
+	 *
+	 * @param network the CyNetwork to include
+	 * @param networkView the CyNetworkView to use
 	 * @param selectedOnly if true, only include selected nodes in the partition
 	 * @param edgeAttribute a String that contains the name of the attribute to use
 	 *                      for edge weighting
 	 */
 	public LayoutPartition(CyNetwork network, CyNetworkView networkView, boolean selectedOnly,
 	                       String edgeAttribute) {
+		if (selectedOnly) {
+			initialize(network,networkView,(Collection<CyNode>)network.getSelectedNodes(),edgeAttribute);
+		} else {
+			initialize(network,networkView,network.nodesList(),edgeAttribute);
+		}
+	}
+
+	protected void initialize(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
+	                          String edgeAttribute) {
 		// Initialize
 		nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
 		edgeList = new ArrayList<LayoutEdge>(network.getEdgeCount());
@@ -148,7 +174,7 @@ public class LayoutPartition {
 		LayoutPartition.resetEdges();
 
 		// Now, walk the iterators and fill in the values
-		nodeListInitialize(network, networkView, selectedOnly);
+		nodeListInitialize(network, networkView, nodeSet);
 		edgeListInitialize(network, networkView, edgeAttribute);
 		trimToSize();
 		partitionNumber = 1;
@@ -218,10 +244,7 @@ public class LayoutPartition {
 		// Reset our min and max values
 		resetNodes();
 
-		Iterator iter = nodeList.iterator();
-
-		while (iter.hasNext()) {
-			LayoutNode node = (LayoutNode) iter.next();
+		for (LayoutNode node: nodeList) {
 
 			if (!node.isLocked()) {
 				double x = random.nextDouble() * width;
@@ -257,12 +280,7 @@ public class LayoutPartition {
 	 * difficult to record source and target until it has completed.
 	 */
 	public void fixEdges() {
-		Iterator edgeIter = edgeList.iterator();
-
-		while (edgeIter.hasNext()) {
-			// Get the "layout edge"
-			LayoutEdge lEdge = (LayoutEdge) edgeIter.next();
-
+		for (LayoutEdge lEdge: edgeList) {
 			// Get the underlying edge
 			CyEdge edge = lEdge.getEdge();
 			CyNode target = (CyNode) edge.getTarget();
@@ -284,13 +302,14 @@ public class LayoutPartition {
 	public void calculateEdgeWeights() {
 		// Normalize the weights to between 0 and 1
 		boolean logWeights = false;
-		ListIterator iter = edgeList.listIterator();
-
 		if (Math.abs(maxLogWeight - minLogWeight) > 3)
 			logWeights = true;
 
+		// Use a ListIterator so that we can modify the list
+		// as we go
+		ListIterator<LayoutEdge>iter = edgeList.listIterator();
 		while (iter.hasNext()) {
-			LayoutEdge edge = (LayoutEdge) iter.next();
+			LayoutEdge edge = iter.next();
 
 			// System.out.println("Edge "+edge.getEdge().getIdentifier()+" has weight "+edge.getWeight());
 			double weight = edge.getWeight();
@@ -494,13 +513,11 @@ public class LayoutPartition {
 	 * @param yoffset the amount to offset in the Y direction
 	 */
 	public void offset(double xoffset, double yoffset) {
-		Iterator nodeIter = nodeIterator();
 		double myMinX = this.minX;
 		double myMinY = this.minY;
 		resetNodes();
 
-		while (nodeIter.hasNext()) {
-			LayoutNode node = (LayoutNode) nodeIter.next();
+		for (LayoutNode node: nodeList) {
 			node.increment(xoffset - myMinX, yoffset - myMinY);
 			moveNodeToLocation(node);
 		}
@@ -540,22 +557,16 @@ public class LayoutPartition {
 	 * Private routines
 	 */
 	private void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
-	                                boolean selectedOnly) {
+	                                Collection<CyNode> nodeSet) {
 		int nodeIndex = 0;
 		this.nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
 
-		Set selectedNodes = null;
-		Iterator iter = networkView.getNodeViewsIterator();
-
-		if (selectedOnly) {
-			selectedNodes = ((CyNetwork) network).getSelectedNodes();
-		}
-
+		Iterator<NodeView>iter = networkView.getNodeViewsIterator();
 		while (iter.hasNext()) {
 			NodeView nv = (NodeView) iter.next();
 			CyNode node = (CyNode) nv.getNode();
 
-			if ((selectedNodes != null) && !selectedNodes.contains(node)) {
+			if (!nodeSet.contains(node)) {
 				addNode(nv, true);
 			} else {
 				addNode(nv, false);
@@ -642,12 +653,34 @@ public class LayoutPartition {
 	 *
 	 * @param network the CyNetwork containing the graph
 	 * @param networkView the CyNetworkView representing the graph
-	 * @param selectedOnly should we consider only selected nodes?
+	 * @param selectedOnly only consider selected nodes
 	 * @param edgeAttribute the attribute to use for edge weighting
 	 * @return a List of LayoutPartitions
 	 */
 	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
 	                             boolean selectedOnly, String edgeAttribute) {
+
+		if (selectedOnly) {
+			return partition(network,networkView,network.getSelectedNodes(),edgeAttribute);
+		}
+
+		return partition(network,networkView,network.nodesList(),edgeAttribute);
+
+	}
+
+	/**
+	 * Partition the graph -- this builds the LayoutEdge and LayoutNode
+	 * arrays as a byproduct.  The algorithm for this was taken from
+	 * algorithms/graphPartition/SGraphPartition.java.
+	 *
+	 * @param network the CyNetwork containing the graph
+	 * @param networkView the CyNetworkView representing the graph
+	 * @param nodeSet the set of nodes to consider
+	 * @param edgeAttribute the attribute to use for edge weighting
+	 * @return a List of LayoutPartitions
+	 */
+	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
+	                             Collection<CyNode> nodeSet, String edgeAttribute) {
 		ArrayList<LayoutPartition> partitions = new ArrayList<LayoutPartition>();
 
 		nodesSeenMap = new IntIntHash();
@@ -670,24 +703,13 @@ public class LayoutPartition {
 		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
 		LayoutPartition.resetEdges();
 
-		Iterator edgeIter = network.edgesIterator();
-
-		while (edgeIter.hasNext()) {
-			int edge = ((CyEdge) edgeIter.next()).getRootGraphIndex();
-			edgesSeenMap.put(-edge, m_NODE_HAS_NOT_BEEN_SEEN);
+		for (CyEdge edge: (List<CyEdge>)network.edgesList()) {
+			int edgeIndex = edge.getRootGraphIndex();
+			edgesSeenMap.put(-edgeIndex, m_NODE_HAS_NOT_BEEN_SEEN);
 		}
 
-		// OK, now get new iterators and traverse the graph
-		Iterator nodeIter = null;
-
-		if (selectedOnly) {
-			nodeIter = ((CyNetwork) network).getSelectedNodes().iterator();
-		} else {
-			nodeIter = network.nodesIterator();
-		}
-
-		while (nodeIter.hasNext()) {
-			CyNode node = (CyNode) nodeIter.next();
+		// OK, now traverse the graph
+		for (CyNode node: nodeSet) {
 			int nodeIndex = node.getRootGraphIndex();
 
 			// Have we seen this already?
