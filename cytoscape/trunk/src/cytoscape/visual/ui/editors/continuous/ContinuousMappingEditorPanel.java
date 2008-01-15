@@ -445,7 +445,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	private javax.swing.JLabel pivotLabel;
 	private javax.swing.JPanel rangeEditorPanel;
 	private javax.swing.JPanel rangeSettingPanel;
-	protected org.jdesktop.swingx.JXMultiThumbSlider slider;
+	protected JXMultiThumbSlider slider;
 	protected javax.swing.JSpinner valueSpinner;
 	private javax.swing.JLabel visualPropertyLabel;
 	protected JXMultiThumbSlider rotaryEncoder;
