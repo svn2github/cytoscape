@@ -191,5 +191,6 @@ public class LegendDialog extends JDialog {
 	private void export() {
 		ExportDialog export = new ExportDialog();
 		export.showExportDialog(parent, "Export legend as ...", jPanel1, "export");
+		dispose();
 	}
 }
