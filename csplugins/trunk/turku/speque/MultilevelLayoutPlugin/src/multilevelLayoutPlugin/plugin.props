@@ -4,14 +4,15 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=Multilevel Layout Plugin
+pluginName=MultilevelLayoutPlugin
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Generates a nice layout for the graph using a multilevel framework introduced by C. Walshaw (2003).
+pluginDescription=The plug-in generates network layouts using the multilevel node placement framework introduced by C. Walshaw (2003). The multilevel approach is relative fast and it provides visually pleasant layouts also for larger networks.
+
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.4
+pluginVersion=0.41
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.5
@@ -21,4 +22,4 @@ pluginCategory=Other
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsInstitutions=Pekka Salmela:Turku University
+pluginAuthorsInstitutions=Pekka Salmela:University of Turku, Finland; Olli S. Nevalainen:University of Turku, Finland; Tero aittokallio:University of Turku, Finland
