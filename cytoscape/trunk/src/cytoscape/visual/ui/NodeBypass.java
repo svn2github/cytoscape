@@ -36,57 +36,46 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-
 import giny.model.Node;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import java.util.List;
-import java.util.ArrayList;
-
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualPropertyType;
 
 
 class NodeBypass extends VizMapBypass {
-    JMenuItem addMenu(Node n) {
-        graphObj = n;
-        attrs = Cytoscape.getNodeAttributes();
+	JMenuItem addMenu(Node n) {
+		graphObj = n;
+		attrs = Cytoscape.getNodeAttributes();
 
-        JMenu menu = new JMenu("Visual Mapping Bypass");
-        menu.add(new JLabel("Change Node Visualization"));
-        menu.addSeparator();
+		JMenu menu = new JMenu("Visual Mapping Bypass");
+		menu.add(new JLabel("Change Node Visualization"));
+		menu.addSeparator();
 		// horrible, horrible hack
-		BypassHack.setCurrentObject( n );
+		BypassHack.setCurrentObject(n);
 
-		for ( VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList() ) 
-       		addMenuItem(menu, type);
+		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+			addMenuItem(menu, type);
 
-        menu.addSeparator();
+		menu.addSeparator();
 
-        addResetAllMenuItem(menu);
+		addResetAllMenuItem(menu);
 
-        return menu;
-    }
+		return menu;
+	}
 
-    protected List<String> getBypassNames() {
+	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for ( VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList() ) 
-			l.add( type.getBypassAttrName() );
-			
-        return l;
-    }
+		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+			l.add(type.getBypassAttrName());
+
+		return l;
+	}
 }
