@@ -960,7 +960,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		String[] nameArray = nameString.split(",");
 		ArrayList<Object> name = new ArrayList<Object>();
 		for (int j = 0; j < (nameArray.length - 1); j++) { // skip viewID
-			name.add(nameArray[j]);
+			name.add(nameArray[j].trim());
 		}
 		Iterator<Node> nodes = myView.getNetwork().nodesIterator();
 		List<NodeView> nv = new ArrayList<NodeView>();
