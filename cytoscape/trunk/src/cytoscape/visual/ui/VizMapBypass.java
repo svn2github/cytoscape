@@ -36,34 +36,22 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.util.CyColorChooser;
-
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-
-import cytoscape.visual.parsers.ObjectToString;
-
 import giny.model.GraphObject;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.parsers.ObjectToString;
 
 
 /**
@@ -111,9 +99,10 @@ abstract class VizMapBypass {
 	}
 
 	protected void addMenuItem(JMenu menu, final VisualPropertyType type) {
-		JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
+		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
 				public void actionPerformed(ActionEvent e) {
-					Object obj = null; 
+					Object obj = null;
+
 					try {
 						obj = type.showDiscreteEditor();
 					} catch (Exception ex) {
@@ -132,8 +121,20 @@ abstract class VizMapBypass {
 			});
 
 		menu.add(jmi);
+		
+		// Check node size lock state 
+		if(type.equals(VisualPropertyType.NODE_SIZE)) {
+			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
+				jmi.setEnabled(false);
+			}
+		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
+			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
+				jmi.setEnabled(false);
+			}
+		}
 
-		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(), type.getBypassAttrName());
+		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
+		                                             type.getBypassAttrName());
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);
