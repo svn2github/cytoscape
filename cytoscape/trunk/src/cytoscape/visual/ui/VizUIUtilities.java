@@ -58,7 +58,10 @@ import cytoscape.visual.calculators.Calculator;
  *
  * These methods are package-protected because the UI is designed to make sure
  * that the arguments passed to these methods are appropriate.
+ * 
+ * Deprecated.  Use new VizMapper UI.
  */
+@Deprecated
 public class VizUIUtilities {
     /**
      * Gets the current default value for the visual attribute specified by the
