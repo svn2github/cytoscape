@@ -64,6 +64,28 @@
   // Include the function to display the info for each plugin
   include 'getpluginInfo.php';
 
+
+  function getPluginIDSet($connection, $query)
+  {
+  		// Run the query
+        if (!($result = @ mysql_query ($query, $connection))) 
+            showerror();
+
+		$plugin_id_set = '';   
+		if (@ mysql_num_rows($result) != 0) 
+		{
+			while($result_row = @ mysql_fetch_array($result))
+			 {	    
+			     $plugin_id_set = $plugin_id_set.$result_row["plugin_id"].',';
+			 }
+		}   
+   
+   		if ($plugin_id_set != '') {
+   		  $plugin_id_set = substr($plugin_id_set, 0, strlen($plugin_id_set)-1); //remove the last ','   				
+   		}
+   		return $plugin_id_set;
+  }
+
   // Connect to the MySQL DBMS
   if (!($connection = @ mysql_pconnect($dbServer, $dbUser, $dbPass))) 
      showerror();
@@ -71,6 +93,7 @@
   // Use the CyPluginDB database
   if (!mysql_select_db($dbName, $connection))
      showerror();
+
 
   $query = "SELECT * FROM categories";
   
@@ -83,6 +106,11 @@
 		 
   echo  "\n\n<A href=\"#\" onClick=\"expandTree('tree1'); return false;\">Expand All</A>&nbsp;&nbsp;&nbsp;".
 		"\n<A href=\"#\" onClick=\"collapseTree('tree1'); return false;\">Collapse All</A>&nbsp;&nbsp;&nbsp";
+
+  $query = 'SELECT distinct(plugin_id) FROM plugin_version WHERE plugin_file_id is not null'; 
+  $plugin_id_set = getPluginIDSet($connection, $query);
+  $query = 'SELECT distinct(plugin_id) FROM plugin_version WHERE plugin_file_id is null'; 
+  $plugin_url_id_set = getPluginIDSet($connection, $query);
             	  
   // build an expandable tree
   if (@ mysql_num_rows($categories) != 0) 
@@ -91,14 +119,18 @@
        while($category_row = @ mysql_fetch_array($categories))
        {
      	  $categoryName = $category_row["name"]; 
+     	  if ($categoryName == 'Core') {
+     	  	continue;
+     	  }
      	  $categoryDescription = $category_row["description"];
     	  $categoryID = $category_row["category_id"]; 
      	  echo "\n\t<li>";
    		  echo "<span class=\"style3\"><B>",$categoryName,"</B></span>&nbsp;&nbsp;--&nbsp;&nbsp;",$categoryDescription;
    		  //echo $categoryName;
    
+   
    		  //Get the plugin list for the category
-     	  $query = 'SELECT * FROM plugin_list WHERE category_id =' . $categoryID;
+     	  $query = 'SELECT * FROM plugin_list WHERE category_id =' . $categoryID.' and plugin_auto_id IN ('.$plugin_id_set.')';
  
   		  // Run the query
           if (!($pluginList = @ mysql_query ($query, $connection))) 
@@ -117,7 +149,7 @@
 			          // add plugin info
 			          echo "\n\t\t\t<ul>";
 			          echo "\n\t\t\t\t<li>";
-			          echo getPluginInfoPage($connection, $pluginList_row);
+			          echo getPluginInfoPage($connection, $pluginList_row, false);// urlOnly = false
 			          echo "\n\t\t\t\t</li>";
 			          echo "\n\t\t\t</ul>";
 			          
@@ -132,6 +164,66 @@
        
        echo "\n</ul>"; 
   }
+
+  echo "The following section just lists plugin description and project URL only. Cytoscape does not host their Zip/Jar files. " .
+  		"Therefore they will not appear at the Cytoscape plugin manager. Users should download them manualy by following the project " .
+  		"URLs listed here, if they are interested.<br>";
+  echo  "<br><A href=\"#\" onClick=\"expandTree('tree2'); return false;\">Expand All</A>&nbsp;&nbsp;&nbsp;".
+		"\n<A href=\"#\" onClick=\"collapseTree('tree2'); return false;\">Collapse All</A>&nbsp;&nbsp;&nbsp";
+ 
+  mysql_data_seek($categories,0);
+  if (@ mysql_num_rows($categories) != 0) 
+  {
+       echo "\n\n<ul class=\"mktree\" ", "id=\"tree2\">";
+       while($category_row = @ mysql_fetch_array($categories))
+       {
+     	  $categoryName = $category_row["name"]; 
+     	  if ($categoryName == 'Core') {
+     	  	continue;
+     	  }
+     	  $categoryDescription = $category_row["description"];
+    	  $categoryID = $category_row["category_id"]; 
+     	  echo "\n\t<li>";
+   		  echo "<span class=\"style3\"><B>",$categoryName,"</B></span>&nbsp;&nbsp;--&nbsp;&nbsp;",$categoryDescription;
+   		  //echo $categoryName;
+   
+   
+   		  //Get the plugin list for the category
+     	  $query = 'SELECT * FROM plugin_list WHERE category_id =' . $categoryID.' and plugin_auto_id IN ('.$plugin_url_id_set.')';
+ 
+  		  // Run the query
+          if (!($pluginList = @ mysql_query ($query, $connection))) 
+              showerror();
+             
+              // Did we get back any rows?
+			  if (@ mysql_num_rows($pluginList) != 0) 
+			  {
+			       echo "\n\t\t<ul>";
+			       while($pluginList_row = @ mysql_fetch_array($pluginList))
+			       {	    
+			       	  $pluginID = $pluginList_row["plugin_auto_id"];
+			          echo "\n\t\t\t<li>";
+			          echo "\n\t\t\t\t",$pluginList_row["name"];
+			          
+			          // add plugin info
+			          echo "\n\t\t\t<ul>";
+			          echo "\n\t\t\t\t<li>";
+			          echo getPluginInfoPage($connection, $pluginList_row, true); // urlOnly = true
+			          echo "\n\t\t\t\t</li>";
+			          echo "\n\t\t\t</ul>";
+			          
+			          echo "\n\t\t\t</li>";
+			       }  
+			       echo "\n\t\t</ul>";
+			  }
+             	   
+     	  echo "\n\t</li>";
+
+       }  // while loop
+       
+       echo "\n</ul>"; 
+  }
+
 
 	echo 
 	"<p>" .
