@@ -27,7 +27,6 @@ public class LicenseDialog extends javax.swing.JDialog {
         initComponents();
         listSetup();
     }
-    
 
     public LicenseDialog(javax.swing.JFrame owner) {
 		super(owner, title, true);
@@ -36,7 +35,6 @@ public class LicenseDialog extends javax.swing.JDialog {
         listSetup();
     }
 
-    
     private void listSetup() {
         listModel = new LicenseListModel();
         pluginList.setCellRenderer(new LicenseListCellRenderer());
@@ -50,6 +48,11 @@ public class LicenseDialog extends javax.swing.JDialog {
     	listModel.addElement(obj);
     }
     
+    public void selectDefault() {
+    	pluginList.setSelectedIndex(0);
+  	DownloadableInfo infoObj = (DownloadableInfo) pluginList.getSelectedValue();
+  	setLicenseText(infoObj.getLicenseText());
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -176,24 +179,24 @@ public class LicenseDialog extends javax.swing.JDialog {
     private void radioStateChanged(javax.swing.event.ChangeEvent evt) {                                          
     	javax.swing.JRadioButton radioButton = (javax.swing.JRadioButton) evt.getSource();
     	if (radioButton.equals(declineRadio)) {
-			this.acceptRadio.setSelected(false);
-			this.okButton.setEnabled(false);
+				this.acceptRadio.setSelected(false);
+				this.okButton.setEnabled(false);
     	} 
     	if (radioButton.equals(acceptRadio)) {
-			this.declineRadio.setSelected(false);
-			this.okButton.setEnabled(true);
+				this.declineRadio.setSelected(false);
+				this.okButton.setEnabled(true);
     	}
     }                                         
 
     // a listener has to be added in order to decide what to do after 'ok'
-	public void addListenerToOk(java.awt.event.ActionListener listener) {
-		okButton.addActionListener(listener);
-	}
+    public void addListenerToOk(java.awt.event.ActionListener listener) {
+			okButton.addActionListener(listener);
+    }
 
     
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         
-		System.out.println("FINISHED");
-		dispose(); 
+			System.out.println("FINISHED");
+			dispose(); 
     }                                        
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
@@ -208,24 +211,23 @@ public class LicenseDialog extends javax.swing.JDialog {
     	setLicenseText(infoObj.getLicenseText());
 
     	acceptRadio.setEnabled(true);
-        declineRadio.setEnabled(true);
-
+      declineRadio.setEnabled(true);
     }                                       
     
     private void setLicenseText(String licenseText) {
-		licensePanel.setContentType("text/html");
-		String Html = "<html><style type='text/css'>";
-		Html += "body,th,td,div,p,h1,h2,li,dt,dd ";
-		Html += "{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }";
-		Html += "body { margin: 0px; color: #333333; background-color: #ffffff; }";
-		Html += "#indent { padding-left: 30px; }";
-		Html += "ul {list-style-type: none}";
-		Html += "</style><body>";
-		Html += licenseText;
-		Html += "</body></html>";
-		licensePanel.setText(Html);
-		licensePanel.setEditable(false);
-		licensePanel.setCaretPosition(0);
+			licensePanel.setContentType("text/html");
+			String Html = "<html><style type='text/css'>";
+			Html += "body,th,td,div,p,h1,h2,li,dt,dd ";
+			Html += "{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }";
+			Html += "body { margin: 0px; color: #333333; background-color: #ffffff; }";
+			Html += "#indent { padding-left: 30px; }";
+			Html += "ul {list-style-type: none}";
+			Html += "</style><body>";
+			Html += licenseText;
+			Html += "</body></html>";
+			licensePanel.setText(Html);
+			licensePanel.setEditable(false);
+			licensePanel.setCaretPosition(0);
     }
     
     
@@ -249,14 +251,13 @@ public class LicenseDialog extends javax.swing.JDialog {
     class LicenseListModel extends javax.swing.AbstractListModel {
     	
     	private java.util.List<DownloadableInfo> licenseObjs;
-    	
     	public LicenseListModel() {
     		super();
     		licenseObjs = new java.util.ArrayList<DownloadableInfo>();
     	}
     	
     	public void addElement(DownloadableInfo obj) {
-    		licenseObjs.add(obj);
+    			licenseObjs.add(obj);
     	}
     	
     	public void removeElement(int index) {
@@ -289,26 +290,26 @@ public class LicenseDialog extends javax.swing.JDialog {
 			return this;
 		}
 	}
+/*
+	public static void main(String[] args) {
+		LicenseDialog ld = new LicenseDialog();
+		
+		DownloadableInfo di_a = new cytoscape.plugin.PluginInfo();
+		di_a.setName("Foobar");
+		di_a.addCytoscapeVersion("2.6");
+		di_a.setLicense("This is just some text", true);
 
-//	public static void main(String[] args) {
-//		LicenseDialog ld = new LicenseDialog();
-//		
-//		DownloadableInfo di_a = new cytoscape.plugin.PluginInfo();
-//		di_a.setName("Foobar");
-//		di_a.setCytoscapeVersion("2.6");
-//		di_a.setLicense("This is just some text", true);
-//
-//		DownloadableInfo di_b = new cytoscape.plugin.PluginInfo();
-//		di_b.setName("Booya");
-//		di_b.setCytoscapeVersion("2.6");
-//		di_b.setLicense("Hi there!", true);
-//
-//		
-//		ld.addPlugin(di_a);
-//		ld.addPlugin(di_b);
-//		
-//		ld.setVisible(true);
-//	}
+		DownloadableInfo di_b = new cytoscape.plugin.PluginInfo();
+		di_b.setName("Booya");
+		di_b.addCytoscapeVersion("2.6");
+		di_b.setLicense("Hi there!", true);
 
+		
+		ld.addPlugin(di_a);
+		ld.addPlugin(di_b);
+		ld.selectDefault();
+		ld.setVisible(true);
+	}
+*/
 
 }

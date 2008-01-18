@@ -348,6 +348,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 						createInstallTask(infoObj, node);
 					}
 				});
+				License.selectDefault();
 				License.setVisible(true);
 			} else {
 				createInstallTask(infoObj, node);

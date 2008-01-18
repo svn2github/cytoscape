@@ -232,6 +232,7 @@ public class PluginUpdateDialog extends JDialog implements
 						ld.dispose();
 					}
 				});
+				ld.selectDefault();
 				ld.setVisible(true);
 			} else {
 				Updates.add(new DownloadableInfo[] { Old, New });
