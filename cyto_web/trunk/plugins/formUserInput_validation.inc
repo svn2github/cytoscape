@@ -17,10 +17,29 @@
 			<?php
 			}
 	}
-	//if mode == 'new', A jar/zip file is required
-	//if mode == 'edit', if a jar/zip file is not provided,
-	//the existing file will not be updated. 
-	if (($mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
+	
+	if (isset($isPluginURLSubmission) && ($isPluginURLSubmission) ) {
+		//echo "isPluginURLSubmission == true<br>";
+		if (empty($projectURL)) {
+		$validated = false;
+?>
+		<strong>Error: Project URL is required.</strong>
+		<?php
+			
+		}
+		if (empty($cyVersion)) {
+		$validated = false;
+?>
+		<strong>Error: Cytoscape version is required.</strong>
+		<?php
+			
+		}
+	}
+	else if (($mode == 'new') && empty ($_FILES['filePlugin']['name'])) {
+		//if mode == 'new', A jar/zip file is required
+		//if mode == 'edit', if a jar/zip file is not provided,
+		// the existing file will not be updated. 
+
 		$validated = false;
 ?>
 		<strong>Error: A jar/zip file is required.</strong>
