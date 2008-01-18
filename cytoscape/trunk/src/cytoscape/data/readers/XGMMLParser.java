@@ -1287,14 +1287,27 @@ class XGMMLParser extends DefaultHandler {
 			if (obj != null && name != null)
 				if (id != null) cyAtts.setAttribute(id, name, (String)obj);
 			break;
+
+		// We need to be *very* careful.  Because we duplicate attributes for
+		// each network we write out, we wind up reading and processing each
+		// attribute multiple times, once for each network.  This isn't a problem
+		// for "base" attributes, but is a significant problem for attributes
+		// like LIST and MAP where we add to the attribute as we parse.  So, we
+		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			currentAttributeID = name;
+			if (id != null && cyAtts.hasAttribute(id, name))
+				cyAtts.deleteAttribute(id,name);
 			return ParseState.LISTATT;
 		case MAP:
 			currentAttributeID = name;
+			if (id != null && cyAtts.hasAttribute(id, name))
+				cyAtts.deleteAttribute(id,name);
 			return ParseState.MAPATT;
 		case COMPLEX:
 			currentAttributeID = name;
+			if (id != null && cyAtts.hasAttribute(id, name))
+				cyAtts.deleteAttribute(id, name);
 			// If this is a complex attribute, we know that the value attribute
 			// is an integer
 			numKeys = Integer.parseInt(atts.getValue("value"));
