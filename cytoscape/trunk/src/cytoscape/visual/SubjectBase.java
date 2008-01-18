@@ -53,44 +53,44 @@ import javax.swing.event.ChangeListener;
  * be a good place to refactor in the future.
  */
 public abstract class SubjectBase {
-    /**
-     * An Array List of All Observers who want to be notified of changes.
-     */
-    protected List<ChangeListener> observers = new ArrayList<ChangeListener>();
+	/**
+	 * An Array List of All Observers who want to be notified of changes.
+	 */
+	protected final List<ChangeListener> observers = new ArrayList<ChangeListener>();
 
-    /**
-     * Add a ChangeListener. When the state underlying the calculator changes,
-     * all ChangeListeners will be notified.
-     *
-     * @param listener
-     *            ChangeListener to add
-     */
-    public void addChangeListener(ChangeListener listener) {
-        this.observers.add(listener);
-    }
+	/**
+	 * Add a ChangeListener. When the state underlying the calculator changes,
+	 * all ChangeListeners will be notified.
+	 *
+	 * @param listener
+	 *            ChangeListener to add
+	 */
+	public void addChangeListener(ChangeListener listener) {
+		observers.add(listener);
+	}
 
-    /**
-     * Remove a ChangeListener from the calcaultor. When the state underlying
-     * the calculator changes, all ChangeListeners will be notified.
-     *
-     * @param listener
-     *            ChangeListener to add
-     */
-    public void removeChangeListener(ChangeListener listener) {
-        this.observers.remove(listener);
-    }
+	/**
+	 * Remove a ChangeListener from the calcaultor. When the state underlying
+	 * the calculator changes, all ChangeListeners will be notified.
+	 *
+	 * @param listener
+	 *            ChangeListener to add
+	 */
+	public void removeChangeListener(ChangeListener listener) {
+		observers.remove(listener);
+	}
 
-    /**
-     * Notifies all listeners that have registered interest for notification on
-     * this event type.
-     */
-    public void fireStateChanged() {
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = this.observers.size() - 1; i >= 0; i--) {
-            final ChangeListener listener = this.observers.get(i);
-            final ChangeEvent changeEvent = new ChangeEvent(this);
-            listener.stateChanged(changeEvent);
-        }
-    }
+	/**
+	 * Notifies all listeners that have registered interest for notification on
+	 * this event type.
+	 */
+	public void fireStateChanged() {
+		// Process the listeners last to first, notifying
+		// those that are interested in this event
+		for (int i = observers.size() - 1; i >= 0; i--) {
+			final ChangeListener listener = observers.get(i);
+			final ChangeEvent changeEvent = new ChangeEvent(this);
+			listener.stateChanged(changeEvent);
+		}
+	}
 }
