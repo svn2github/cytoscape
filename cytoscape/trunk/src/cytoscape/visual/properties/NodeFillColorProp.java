@@ -93,7 +93,7 @@ public class NodeFillColorProp extends AbstractVisualProperty {
 	 * @param o DOCUMENT ME!
 	 */
 	public void applyToNodeView(NodeView nv, Object o) {
-		if ((o == null) || (nv == null))
+		if ((o == null) || (nv == null) || o instanceof Color == false)
 			return;
 
 		if (!((Color) o).equals(nv.getUnselectedPaint()))
