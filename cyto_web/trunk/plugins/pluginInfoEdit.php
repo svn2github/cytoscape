@@ -71,6 +71,7 @@ $Cy2p2_checked = NULL;
 $Cy2p3_checked = NULL;
 $Cy2p4_checked = NULL;
 $Cy2p5_checked = NULL;
+$Cy2p6_checked = NULL;
 $cyVersion = NULL;
 $names = NULL; // author names
 $emails = NULL;
@@ -121,6 +122,9 @@ if ($tried == NULL) {
 		if ($theVersion == '2.5') {
 			$Cy2p5_checked = "checked";
 		}
+		if ($theVersion == '2.6') {
+			$Cy2p6_checked = "checked";
+		}		
 	}
 	
 }
