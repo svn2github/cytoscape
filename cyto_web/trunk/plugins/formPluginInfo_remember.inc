@@ -82,6 +82,14 @@ if (isset ($_POST['chk2p5'])) {
 		$cyVersion .= ',2.5';
 	}
 }
+if (isset ($_POST['chk2p6'])) {
+	$Cy2p6_checked = "checked";
+	if ($cyVersion == NULL) {
+		$cyVersion = '2.6';
+	} else {
+		$cyVersion .= ',2.6';
+	}
+}
 
 //Authors
 if (isset ($_POST['tfNames0'])) {
