@@ -57,7 +57,7 @@
   </tr>
   <tr>
     <td><div align="right"><span class="style4">*</span>Cytoscape versions </div></td>
-    <td><table width="404" border="0">
+    <td><table width="553" border="0">
       <tr>
         <td width="72"><label>2.0
             <input name="chk2p0" type="checkbox" id="chk2p0" value="Cy2p0" <?php echo $Cy2p0_checked ?> />
@@ -75,9 +75,10 @@
           2.4
           <input name="chk2p4" type="checkbox" id="chk2p4" value="Cy2p4" <?php echo $Cy2p4_checked ?> />
         </label></td>
-        <td width="135"><label>
-          2.5
-          <input name="chk2p5" type="checkbox" id="chk2p5" value="Cy2p5" <?php echo $Cy2p5_checked ?> />
+        <td width="63">2.5          
+          <input name="chk2p5" type="checkbox" id="chk2p5" value="Cy2p5" <?php echo $Cy2p5_checked ?> /></td>
+        <td width="99"><label>2.6
+            <input name="chk2p6" type="checkbox" id="chk2p6" value="Cy2p6" <?php echo $Cy2p6_checked ?> />
         </label></td>
       </tr>
     </table></td>
@@ -144,7 +145,7 @@
   </tr>
 
   <tr>
-    <td><div align="right">Project URL</div></td>
+    <td><div align="right"><?php if (isset($isPluginURLSubmission)) {echo '<span class="style4">*</span>'; }; ?>Project URL</div></td>
     <td><input name="tfProjectURL" type="text" id="tfProjectURL" value ="<?php echo $projectURL ?>" size="80" /></td>
   </tr>
   <tr>
