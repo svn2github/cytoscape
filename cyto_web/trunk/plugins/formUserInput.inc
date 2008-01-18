@@ -11,10 +11,16 @@
     <td width="208"><div align="right"></div></td>
     <td width="660"><label><?php if ($mode == 'edit') {echo 'If no file is selected, the existing one will be kept as is.'; } ?></label></td>
   </tr>
-  <tr>
-    <td><div align="right"><span class="style4">*</span>Jar/Zip File </div></td>
-    <td><input name="filePlugin" type="file" id="filePlugin" size="80" /></td>
-  </tr>
+  <?php 
+  if (!isset($isPluginURLSubmission)) {
+	?>  
+	  <tr>
+		<td><div align="right"><span class="style4">*</span>Jar/Zip File </div></td>
+		<td><input name="filePlugin" type="file" id="filePlugin" size="80" /></td>
+	  </tr>
+  	<?php
+  }
+  ?>
   <tr>
     <td><div align="right"></div></td>
     <td><label></label></td>
