@@ -66,7 +66,7 @@ function getAuthorInfo($connection, $plugin_version_id) {
 } // End of function getAuthorInfo()
 
 // Construct the pluginInfo page     
-function getPluginInfoPage($connection, $pluginList_row) {
+function getPluginInfoPage($connection, $pluginList_row, $urlOnly) {
 
 	$pluginInfoPage = "<br>" .
 	"<b>Description:</b> " . stripslashes($pluginList_row["description"]);
@@ -142,11 +142,13 @@ function getPluginInfoPage($connection, $pluginList_row) {
 		if ($versionSpecific_row["comment"] != null) {
 			$pluginInfoPage .= "\n<b>Note:</b> " . stripslashes($versionSpecific_row["comment"]) . "<br>";
 		}
-
-		if ($versionSpecific_row["jar_url"] != null) {
-			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
-		} else {
-			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a>".getPluginFileSize($connection, $versionSpecific_row["plugin_file_id"])."<br>";
+		
+		if (!$urlOnly) {
+			if ($versionSpecific_row["jar_url"] != null) {
+				$pluginInfoPage .= "\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
+			} else {
+				$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a>".getPluginFileSize($connection, $versionSpecific_row["plugin_file_id"])."<br>";
+			}			
 		}
 
 		if ($versionSpecific_row["source_url"] != null) {
