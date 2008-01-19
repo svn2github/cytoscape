@@ -72,8 +72,12 @@ import ding.view.DingCanvas;
  * <P>
  */
 public class VisualMappingManager extends SubjectBase {
+	
+	// Catalog of visual styles and calculators.
+	// This is the actual object to store styles.
+	private CalculatorCatalog catalog;
+	
 	private CyNetworkView networkView; // the object displaying the network
-	private CalculatorCatalog catalog; // catalog of visual styles and calculators
 	private VisualStyle activeVS; // the currently active visual style
 
 	// reusable appearance objects
