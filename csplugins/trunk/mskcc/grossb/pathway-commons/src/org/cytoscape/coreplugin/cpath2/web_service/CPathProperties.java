@@ -26,10 +26,22 @@ public class CPathProperties {
      */
     public static final String CPATH_INSTANCE_BLURB = new String ("cpath2.server_blurb");
 
+    /**
+     * Download Networks in Full BioPAX Mode.
+     */
+    public final static int DOWNLOAD_FULL_BIOPAX = 1;
+
+    /**
+     * Download Networks in Binary SIF Reduced Mode
+     */
+    public final static int DOWNLOAD_REDUCED_BINARY_SIF = 2;
+
+
     private static CPathProperties cpathProperties;
     private static String cPathUrl;
     private static String serverName;
     private static String blurb;
+    private int downloadMode = DOWNLOAD_FULL_BIOPAX;
 
     /**
      * Gets singleton instance of cPath Properties.
@@ -96,4 +108,20 @@ public class CPathProperties {
 	public String getCPathBlurb() {
 		return blurb;
 	}
+
+    /**
+     * Gets Download Mode.
+     * @return DOWNLOAD_FULL_BIOPAX or DOWNLOAD_REDUCED_BINARY_SIF.
+     */
+    public int getDownloadMode() {
+        return downloadMode;
+    }
+
+    /**
+     * Sets Download Mode.
+     * @param downloadMode DOWNLOAD_FULL_BIOPAX or DOWNLOAD_REDUCED_BINARY_SIF.
+     */
+    public void setDownloadMode(int downloadMode) {
+        this.downloadMode = downloadMode;
+    }    
 }
