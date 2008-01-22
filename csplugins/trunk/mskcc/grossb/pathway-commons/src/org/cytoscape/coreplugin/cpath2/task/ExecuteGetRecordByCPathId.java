@@ -5,10 +5,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.readers.GraphReader;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -72,13 +69,25 @@ public class ExecuteGetRecordByCPathId implements Task {
             taskMonitor.setPercentCompleted(-1);
             taskMonitor.setStatus("Retrieving " + networkTitle + ".");
 
-            //  Get BioPAX XML
-            String xml = webApi.getRecordsByIds(ids, taskMonitor);
-
             //  Store BioPAX to Temp File
             String tmpDir = System.getProperty("java.io.tmpdir");
-            File tmpFile =  File.createTempFile("temp", ".xml", new File(tmpDir));
+            CPathProperties config = CPathProperties.getInstance();
+            //  Branch based on download mode setting.
+            File tmpFile;
+            String format;
+            if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+                tmpFile =  File.createTempFile("temp", ".xml", new File(tmpDir));
+                format = CPathProtocol.FORMAT_BIOPAX;
+            } else {
+                tmpFile =  File.createTempFile("temp", ".sif", new File(tmpDir));
+                format = CPathProtocol.FORMAT_BINARY_SIF;
+            }
             tmpFile.deleteOnExit();
+
+            //  Get BioPAX XML
+            String xml = webApi.getRecordsByIds(ids, format, taskMonitor);
+
+
             FileWriter writer = new FileWriter(tmpFile);
             writer.write(xml);
             writer.close();
