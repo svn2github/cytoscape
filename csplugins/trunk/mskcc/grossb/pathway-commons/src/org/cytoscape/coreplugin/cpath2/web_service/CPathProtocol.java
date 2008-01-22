@@ -74,6 +74,11 @@ public class CPathProtocol {
     public static final String FORMAT_BIOPAX = "biopax";
 
     /**
+     * Binary SIF Format.
+     */
+    public static final String FORMAT_BINARY_SIF = "binary_sif";    
+
+    /**
      * Count Only Format.
      */
     public static final String FORMAT_COUNT_ONLY = "count_only";
@@ -248,7 +253,7 @@ public class CPathProtocol {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
-            // System.out.println("Connect:  " + liveUrl);
+            System.out.println("Connect:  " + liveUrl);
 
             // Create an instance of HttpClient.
             HttpClient client = new HttpClient();
