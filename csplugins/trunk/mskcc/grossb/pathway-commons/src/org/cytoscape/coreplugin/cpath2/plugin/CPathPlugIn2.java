@@ -47,7 +47,10 @@ import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.io.IOException;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager
@@ -78,11 +81,19 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         final CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);
 
         CPathWebService webApi = CPathWebService.getInstance();
+
         final cPathSearchPanel pcPanel = new cPathSearchPanel(webApi);
+
+        final JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add("Search", pcPanel);
+
+        JPanel configPanel = createConfigPanel();
+        tabbedPane.add("Options", configPanel);
+
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cytoPanelWest.add(CPathProperties.getInstance().getCPathServerName(), pcPanel);
+                cytoPanelWest.add(CPathProperties.getInstance().getCPathServerName(), tabbedPane);
                 cytoPanelWest.setState(CytoPanelState.DOCK);
             }
         });
@@ -92,5 +103,33 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         PluginProperties pluginProperties = new PluginProperties(this);
         CPathProperties cpathProperties = CPathProperties.getInstance();
         cpathProperties.initProperties(pluginProperties);
+    }
+
+    private JPanel createConfigPanel() {
+        JPanel configPanel = new JPanel();
+        configPanel.setBorder(new TitledBorder("Retrieval Options"));
+        configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
+        final JRadioButton button1 = new JRadioButton("Full Model");
+        button1.setSelected(true);
+        final JRadioButton button2 = new JRadioButton("Reduced Binary Model");
+        ButtonGroup group = new ButtonGroup();
+        group.add(button1);
+        group.add(button2);
+        configPanel.add(button1);
+        configPanel.add(button2);
+
+        button1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                CPathProperties config = CPathProperties.getInstance();
+                config.setDownloadMode(CPathProperties.DOWNLOAD_FULL_BIOPAX);
+            }
+        });
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                CPathProperties config = CPathProperties.getInstance();
+                config.setDownloadMode(CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF);
+            }
+        });
+        return configPanel;
     }
 }
