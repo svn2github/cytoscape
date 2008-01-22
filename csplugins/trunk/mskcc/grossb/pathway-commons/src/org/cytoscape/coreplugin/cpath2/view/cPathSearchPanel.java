@@ -9,10 +9,6 @@ import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseTyp
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
 import javax.swing.*;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 
 /**
