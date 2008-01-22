@@ -6,6 +6,7 @@ import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.StringReader;
+import java.io.File;
 
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.*;
@@ -142,16 +143,17 @@ public class CPathWebService {
     /**
      * Gets One or more records by Primary ID.
      * @param ids               Array of Primary IDs.
+     * @param format            FORMAT_BIOPAX or FORMAT_BINARY_SIF.
      * @param taskMonitor       Task Monitor Object.
      * @return  BioPAX XML String.
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(long[] ids, TaskMonitor taskMonitor) throws
+    public String getRecordsByIds(long[] ids, String format, TaskMonitor taskMonitor) throws
             CPathException, EmptySetException {
         protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
-        protocol.setFormat(CPathProtocol.FORMAT_BIOPAX);
+        protocol.setFormat(format);
         StringBuffer q = new StringBuffer();
         for (int i=0; i<ids.length; i++) {
             q.append (Long.toString(ids[i])+",");
