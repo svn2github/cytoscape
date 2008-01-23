@@ -143,7 +143,7 @@ public class BioPaxDetailsPanel extends JPanel {
 	 * @param nodeID RDF ID String.
 	 */
 	public void showDetails(String nodeID) {
-		String stringRef;
+        String stringRef;
 
 		StringBuffer buf = new StringBuffer("<HTML>");
 
@@ -153,12 +153,10 @@ public class BioPaxDetailsPanel extends JPanel {
         String shortName = nodeAttributes.getStringAttribute(nodeID,
             MapNodeAttributes.BIOPAX_SHORT_NAME);
 
-        if ((shortName != null) && (shortName.length() > 0) && !stringRef.equals(shortName)) {
-            buf.append("<h2>" + shortName + "</h2>");
-        } else {
-            if (stringRef != null) {
-                buf.append("<h2>" + stringRef + "</h2>");
-            }
+        if ((shortName != null) && (shortName.length() > 0)) {
+                buf.append("<h2>" + shortName + "</h2>");
+        } else if (stringRef != null && stringRef.length() > 0) {
+            buf.append("<h2>" + stringRef + "</h2>");
         }
 
         addType(nodeID, buf);

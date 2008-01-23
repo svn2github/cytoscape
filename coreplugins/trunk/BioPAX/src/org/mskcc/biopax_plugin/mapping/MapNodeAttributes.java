@@ -94,12 +94,14 @@ public class MapNodeAttributes {
 	/**
 	 * BioPax Node Attribute: CHEMICAL_MODIFICATIONS_MAP
 	 */
-	public static final String BIOPAX_CHEMICAL_MODIFICATIONS_MAP = "biopax.chemical_modifications_map";
+	public static final String BIOPAX_CHEMICAL_MODIFICATIONS_MAP
+            = "biopax.chemical_modifications_map";
 
 	/**
 	 * BioPax Node Attribute: CHEMICAL_MODIFICATIONS_LIST
 	 */
-	public static final String BIOPAX_CHEMICAL_MODIFICATIONS_LIST = "biopax.chemical_modifications";
+	public static final String BIOPAX_CHEMICAL_MODIFICATIONS_LIST
+            = "biopax.chemical_modifications";
 
 	/**
 	 * BioPax Node Attribute: CELLULAR_LOCATION
@@ -169,7 +171,8 @@ public class MapNodeAttributes {
 	/**
 	 * BioPax Node Attribute: AFFYMETRIX_REFERENCES
 	 */
-	public static final String BIOPAX_AFFYMETRIX_REFERENCES_LIST = "biopax.affymetrix_references_list";
+	public static final String BIOPAX_AFFYMETRIX_REFERENCES_LIST
+            = "biopax.affymetrix_references_list";
 
 	// custom node images (phosphorylation)
 	private static final String PHOSPHORYLATION_GRAPHICS = "PHOSPHORYLATION_GRAPHICS";
@@ -183,22 +186,27 @@ public class MapNodeAttributes {
 
 	static {
 		try {
-			phosNode = javax.imageio.ImageIO.read(MapNodeAttributes.class.getResource("resources/phos-node.jpg"));
-			phosNodeSelectedTop = javax.imageio.ImageIO.read(MapNodeAttributes.class.getResource("resources/phos-node-selected-top.jpg"));
-			phosNodeSelectedRight = javax.imageio.ImageIO.read(MapNodeAttributes.class.getResource("resources/phos-node-selected-right.jpg"));
-			phosNodeSelectedBottom = javax.imageio.ImageIO.read(MapNodeAttributes.class.getResource("resources/phos-node-selected-bottom.jpg"));
-			phosNodeSelectedLeft = javax.imageio.ImageIO.read(MapNodeAttributes.class.getResource("resources/phos-node-selected-left.jpg"));
+			phosNode = javax.imageio.ImageIO.read
+                    (MapNodeAttributes.class.getResource("resources/phos-node.jpg"));
+			phosNodeSelectedTop = javax.imageio.ImageIO.read
+                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-top.jpg"));
+			phosNodeSelectedRight = javax.imageio.ImageIO.read
+                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-right.jpg"));
+			phosNodeSelectedBottom = javax.imageio.ImageIO.read
+                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-bottom.jpg"));
+			phosNodeSelectedLeft = javax.imageio.ImageIO.read
+                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-left.jpg"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static BufferedImage[] customPhosGraphics = {
-	                                                        phosNodeSelectedTop,
-	                                                        phosNodeSelectedRight,
-	                                                        phosNodeSelectedBottom,
-	                                                        phosNodeSelectedLeft
-	                                                    };
+        phosNodeSelectedTop,
+        phosNodeSelectedRight,
+        phosNodeSelectedBottom,
+        phosNodeSelectedLeft
+    };
 
 	/**
 	 * Maps biopax details to node attributes.
@@ -210,7 +218,7 @@ public class MapNodeAttributes {
 	public static void doMapping(BioPaxUtil bpUtil, ArrayList nodeList) {
 		// class instances we need for rdf queries
 		HashMap rdfMap = bpUtil.getRdfResourceMap();
-		RdfQuery rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
+
 
 		// get the node attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -228,114 +236,153 @@ public class MapNodeAttributes {
 			String biopaxID = nodeAttributes.getStringAttribute(nodeID, BIOPAX_RDF_ID);
 			Element resource = (Element) rdfMap.get(biopaxID);
 
-			if (resource != null) {
-				String stringRef;
-				BioPaxEntityParser bpParser = new BioPaxEntityParser(resource, rdfMap);
-
-				// type
-				stringRef = addType(bpParser, nodeID, nodeAttributes);
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_ENTITY_TYPE, stringRef);
-				}
-
-				// short name
-				stringRef = bpParser.getShortName();
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_SHORT_NAME, stringRef);
-				}
-
-				// synonyms
-				ArrayList synList = bpParser.getSynonymList();
-
-				if (synList != null) {
-					nodeAttributes.setListAttribute(nodeID, BIOPAX_SYNONYMS, synList);
-				}
-
-				// organism
-				stringRef = bpParser.getOrganismName();
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_ORGANISM_NAME, stringRef);
-				}
-
-				// comment
-				stringRef = bpParser.getComment();
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_COMMENT, stringRef);
-				}
-
-				// unification references
-				stringRef = addXRefs(bpParser.getUnificationXRefs());
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_UNIFICATION_REFERENCES, stringRef);
-				}
-
-				// the following code should replace the old way to set
-				// relationship references
-				List xrefList = getXRefList(bpParser, BIOPAX_AFFYMETRIX_REFERENCES_LIST);
-
-				if ((xrefList != null) && (xrefList.size() > 0)) {
-					nodeAttributes.setListAttribute(nodeID, BIOPAX_AFFYMETRIX_REFERENCES_LIST,
-					                                xrefList);
-				}
-
-				// relationship references - old way
-				stringRef = addXRefs(bpParser.getRelationshipXRefs());
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_RELATIONSHIP_REFERENCES, stringRef);
-				}
-
-				// publication references
-				stringRef = addPublicationXRefs(rdfQuery, resource);
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_PUBLICATION_REFERENCES, stringRef);
-				}
-
-				// availability
-				stringRef = bpParser.getAvailability();
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_AVAILABILITY, stringRef);
-				}
-
-				// data sources
-				stringRef = addDataSource(rdfQuery, resource);
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_DATA_SOURCES, stringRef);
-				}
-
-				// ihop links
-				stringRef = addIHOPLinks(bpParser);
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_IHOP_LINKS, stringRef);
-				}
-
-				// pathway name
-				stringRef = addPathwayMembership(bpParser.getRdfId(), bpUtil);
-
-				if (stringRef != null) {
-					nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
-				}
-
-				//  add all xref ids for global lookup
-				List idList = addXRefIds(bpParser.getAllXRefs());
-
-				if (idList != null) {
-					nodeAttributes.setListAttribute(nodeID, BIOPAX_XREF_IDS, idList);
-				}
-			}
-		}
+            mapNodeAttribute(resource, nodeID, nodeAttributes, bpUtil);
+        }
 	}
 
-	/**
+    /**
+     * Maps Attributes for a Single Node.
+     * @param resource          JDOM Element Object.
+     * @param nodeID            Node ID
+     * @param nodeAttributes    Node Attributes.
+     * @param bpUtil            BioPAX Util.
+     */
+    public static void mapNodeAttribute(Element resource, String nodeID,
+            CyAttributes nodeAttributes, BioPaxUtil bpUtil) {
+        if (resource != null) {
+            String stringRef;
+            RdfQuery rdfQuery = new RdfQuery(bpUtil.getRdfResourceMap());
+            BioPaxEntityParser bpParser = new BioPaxEntityParser(resource,
+                    bpUtil.getRdfResourceMap());
+
+            // type
+            stringRef = addType(bpParser, nodeID, nodeAttributes);
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_ENTITY_TYPE, stringRef);
+            }
+
+            // short name
+            stringRef = bpParser.getShortName();
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_SHORT_NAME, stringRef);
+            }
+
+            // name
+            stringRef = bpParser.getName();
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_NAME, stringRef);
+            }
+
+            // synonyms
+            ArrayList synList = bpParser.getSynonymList();
+
+            if (synList != null) {
+                nodeAttributes.setListAttribute(nodeID, BIOPAX_SYNONYMS, synList);
+            }
+
+            // organism
+            stringRef = bpParser.getOrganismName();
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_ORGANISM_NAME, stringRef);
+            }
+
+            // comment
+            stringRef = bpParser.getComment();
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_COMMENT, stringRef);
+            }
+
+            // unification references
+            stringRef = addXRefs(bpParser.getUnificationXRefs());
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_UNIFICATION_REFERENCES, stringRef);
+            }
+
+            // the following code should replace the old way to set
+            // relationship references
+            List xrefList = getXRefList(bpParser, BIOPAX_AFFYMETRIX_REFERENCES_LIST);
+
+            if ((xrefList != null) && (xrefList.size() > 0)) {
+                nodeAttributes.setListAttribute(nodeID, BIOPAX_AFFYMETRIX_REFERENCES_LIST,
+                                                xrefList);
+            }
+
+            // relationship references - old way
+            stringRef = addXRefs(bpParser.getRelationshipXRefs());
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_RELATIONSHIP_REFERENCES, stringRef);
+            }
+
+            // publication references
+            stringRef = addPublicationXRefs(rdfQuery, resource);
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_PUBLICATION_REFERENCES, stringRef);
+            }
+
+            // availability
+            stringRef = bpParser.getAvailability();
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_AVAILABILITY, stringRef);
+            }
+
+            // data sources
+            stringRef = addDataSource(rdfQuery, resource);
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_DATA_SOURCES, stringRef);
+            }
+
+            // ihop links
+            stringRef = addIHOPLinks(bpParser);
+
+            if (stringRef != null) {
+                nodeAttributes.setAttribute(nodeID, BIOPAX_IHOP_LINKS, stringRef);
+            }
+
+            // pathway name
+            if (bpUtil != null) {
+                stringRef = addPathwayMembership(bpParser.getRdfId(), bpUtil);
+
+                if (stringRef != null) {
+                    nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
+                }
+            }
+
+            //  add all xref ids for global lookup
+            List idList = addXRefIds(bpParser.getAllXRefs());
+
+            if (idList != null) {
+                nodeAttributes.setListAttribute(nodeID, BIOPAX_XREF_IDS, idList);
+            }
+
+            //  Optionally add Node Label
+            String label = nodeAttributes.getStringAttribute
+                    (nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+            if (label == null) {
+                BioPaxNameUtil nameUtil = new BioPaxNameUtil(rdfQuery);
+                label = nameUtil.getNodeName(nodeID, resource);
+                if (label != null) {
+                    //  Truncate long labels.
+                    if (label.length() > 25) {
+                        label = label.substring(0, 25) + "...";
+                    }
+                    nodeAttributes.setAttribute(nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
+                            label);
+                }
+            }
+        }
+    }
+
+    /**
 	 * Addes custom node shapes to biopax nodes.
 	 *
 	 * @param networkView CyNetworkView
@@ -360,8 +407,7 @@ public class MapNodeAttributes {
 			if (mhmdef.getAttributeValueType(BIOPAX_CHEMICAL_MODIFICATIONS_MAP) != -1) {
 				MultiHashMap mhmap = nodeAttributes.getMultiHashMap();
 				CountedIterator modsIt = mhmap.getAttributeKeyspan(node.getIdentifier(),
-				                                                   MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP,
-				                                                   null);
+                               MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, null);
 
 				// do we have phosphorylation ?
 				while (modsIt.hasNext()) {
@@ -372,8 +418,7 @@ public class MapNodeAttributes {
 
 						Object[] key = { BioPaxConstants.PHOSPHORYLATION_SITE };
 						String countStr = (String) mhmap.getAttributeValue(node.getIdentifier(),
-						                                                   MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP,
-						                                                   key);
+                            MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, key);
 						count = ((Integer) Integer.valueOf(countStr)).intValue();
 
 						break;
@@ -391,48 +436,48 @@ public class MapNodeAttributes {
 	/**
 	 * Initializes attribute descriptions and user interaction flags.
 	 */
-	private static void initAttributes(CyAttributes nodeAttributes) {
+	public static void initAttributes(CyAttributes nodeAttributes) {
 		nodeAttributes.setAttributeDescription(BIOPAX_RDF_ID,
 		                                       "The Resource Description Framework (RDF) Identifier.");
 		nodeAttributes.setAttributeDescription(BIOPAX_ENTITY_TYPE,
-		                                       "The BioPAX entity type.  "
-		                                       + "For example, interactions could be of type:  "
-		                                       + "physical interaction, control, conversion, etc.  "
-		                                       + "Likewise, "
-		                                       + "physical entities could be of type:  complex, DNA, "
-		                                       + "RNA, protein or small molecule.");
+                               "The BioPAX entity type.  "
+                               + "For example, interactions could be of type:  "
+                               + "physical interaction, control, conversion, etc.  "
+                               + "Likewise, "
+                               + "physical entities could be of type:  complex, DNA, "
+                               + "RNA, protein or small molecule.");
 		nodeAttributes.setAttributeDescription(BIOPAX_NAME,
 		                                       "The preferred full name for this entity.");
 		nodeAttributes.setAttributeDescription(BIOPAX_SHORT_NAME,
-		                                       "The abbreviated name for this entity. Preferably a name that "
-		                                       + "is short enough to be used in a visualization "
-		                                       + "application to label a graphical element that "
-		                                       + "represents this entity.");
+                               "The abbreviated name for this entity. Preferably a name that "
+                               + "is short enough to be used in a visualization "
+                               + "application to label a graphical element that "
+                               + "represents this entity.");
 		nodeAttributes.setAttributeDescription(BIOPAX_SYNONYMS,
-		                                       "One or more synonyms for the name of this entity.  ");
+                               "One or more synonyms for the name of this entity.  ");
 		nodeAttributes.setAttributeDescription(BIOPAX_COMMENT, "Comments regarding this entity.  ");
 		nodeAttributes.setAttributeDescription(BIOPAX_AVAILABILITY,
-		                                       "Describes the availability of this data (e.g. a copyright "
-		                                       + "statement).");
+                               "Describes the availability of this data (e.g. a copyright "
+                               + "statement).");
 		nodeAttributes.setAttributeDescription(BIOPAX_ORGANISM_NAME,
-		                                       "Organism name, e.g. Homo sapiens.");
+                               "Organism name, e.g. Homo sapiens.");
 		nodeAttributes.setAttributeDescription(BIOPAX_CELLULAR_LOCATIONS,
-		                                       "A list of one or more cellular locations, e.g. 'cytoplasm'.  "
-		                                       + "This attribute should reference a term in the "
-		                                       + "Gene Ontology " + "Cellular Component ontology.");
+                               "A list of one or more cellular locations, e.g. 'cytoplasm'.  "
+                               + "This attribute should reference a term in the "
+                               + "Gene Ontology " + "Cellular Component ontology.");
 		nodeAttributes.setAttributeDescription(BIOPAX_AFFYMETRIX_REFERENCES_LIST,
-		                                       "A list of one or more Affymetrix probeset identifers "
-		                                       + "associated with the entity.");
+                               "A list of one or more Affymetrix probeset identifers "
+                               + "associated with the entity.");
 		nodeAttributes.setAttributeDescription(BIOPAX_CHEMICAL_MODIFICATIONS_LIST,
-		                                       "A list of one or more chemical modifications "
-		                                       + "associated with the entity.  For example:  "
-		                                       + "phoshorylation, acetylation, etc.");
+                               "A list of one or more chemical modifications "
+                               + "associated with the entity.  For example:  "
+                               + "phoshorylation, acetylation, etc.");
 		nodeAttributes.setAttributeDescription(BIOPAX_DATA_SOURCES,
-		                                       "Indicates the database source of the entity.");
+                               "Indicates the database source of the entity.");
 		nodeAttributes.setAttributeDescription(BIOPAX_XREF_IDS,
-		                                       "External reference IDs associated with this entity.  For example, "
-		                                       + "a protein record may be annotated with UNIPROT or "
-		                                       + "REFSeq accession numbers.");
+                               "External reference IDs associated with this entity.  For example, "
+                               + "a protein record may be annotated with UNIPROT or "
+                               + "REFSeq accession numbers.");
 
         nodeAttributes.setUserVisible(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, true);
         nodeAttributes.setAttributeDescription(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,

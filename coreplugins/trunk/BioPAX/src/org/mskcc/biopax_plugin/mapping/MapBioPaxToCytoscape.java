@@ -48,6 +48,7 @@ import giny.model.Edge;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.output.XMLOutputter;
 
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxCellularLocationMap;
@@ -124,8 +125,9 @@ public class MapBioPaxToCytoscape {
 	private ArrayList warningList = new ArrayList();
 	private BioPaxCellularLocationMap cellularLocationAbbr = new BioPaxCellularLocationMap();
 	private BioPaxChemicalModificationMap chemicalModificationAbbr = new BioPaxChemicalModificationMap();
+    private BioPaxNameUtil bpNameUtil;
 
-	// created cynodes - cyNodeId is key, cpath id is value
+    // created cynodes - cyNodeId is key, cpath id is value
 	private Map<String, String> createdCyNodes;
 	
 	// complex cellular location wrapper - cyNodeId (of complex is key, NodeAttributesWrapper is value)
@@ -190,7 +192,8 @@ public class MapBioPaxToCytoscape {
 		this.warningList = new ArrayList();
 		this.createdCyNodes = new HashMap<String,String>();
 		this.complexCellularLocationWrapperMap = new HashMap<String, NodeAttributesWrapper>();
-	}
+        this.bpNameUtil = new BioPaxNameUtil(rdfQuery);
+    }
 
 	/**
 	 * Execute the Mapping.
@@ -340,7 +343,7 @@ public class MapBioPaxToCytoscape {
 
 			//  Extract Name
 			String name = interactionElement.getName();
-			name = getNodeName(name, interactionElement);
+			name = bpNameUtil.getNodeName(name, interactionElement);
 
 			//  set node attributes
 			setNodeAttributes(interactionNode, name, interactionElement.getName(), id, null);
@@ -419,7 +422,7 @@ public class MapBioPaxToCytoscape {
 
 			//  Extract Name
 			String name = id;
-			name = getNodeName(name, e);
+			name = bpNameUtil.getNodeName(name, e);
 
 			//  Create New Node via getCyNode Method
 			CyNode node = Cytoscape.getCyNode(id, true);
@@ -441,63 +444,6 @@ public class MapBioPaxToCytoscape {
 				taskMonitor.setPercentCompleted((int) (100.0 * perc));
 			}
 		}
-	}
-
-	private String getNodeName(String id, Element e) {
-
-		String nodeName = null;
-		List nameList = null;
-		Element nameElement = null;
-
-		// short name
-		nameList = rdfQuery.getNodes(e, "SHORT-NAME");
-
-		if ((nameList != null) && (nameList.size() > 0)) {
-			nameElement = (Element) nameList.get(0);
-			nodeName = nameElement.getTextNormalize();
-		}
-
-		if ((nodeName != null) && (nodeName.length() > 0)) {
-			return nodeName;
-		}
-
-		// name
-		nameList = rdfQuery.getNodes(e, "NAME");
-
-		if ((nameList != null) & (nameList.size() > 0)) {
-			nameElement = (Element) nameList.get(0);
-			nodeName = nameElement.getTextNormalize();
-		}
-
-		if ((nodeName != null) && (nodeName.length() > 0)) {
-			return nodeName;
-		}
-
-		// shortest synonym
-		int shortestSynonymIndex = -1;
-		nameList = rdfQuery.getNodes(e, "SYNONYMS");
-
-		if ((nameList != null) && (nameList.size() > 0)) {
-			int minLength = -1;
-
-			for (int lc = 0; lc < nameList.size(); lc++) {
-				nameElement = (Element) nameList.get(lc);
-
-				String curNodeName = nameElement.getTextNormalize();
-
-				if ((minLength == -1) || (curNodeName.length() < minLength)) {
-					minLength = curNodeName.length();
-					nodeName = curNodeName;
-				}
-			}
-
-			if (shortestSynonymIndex > -1) {
-				return nodeName;
-			}
-		}
-
-		// made it this far, outta here
-		return null;
 	}
 
 	private String truncateLongStr(String str) {
@@ -818,7 +764,7 @@ public class MapBioPaxToCytoscape {
 		}
 
 		//  get node name
-		String nodeName = getNodeName(id, physicalEntity);
+		String nodeName = bpNameUtil.getNodeName(id, physicalEntity);
 		nodeName = (nodeName == null) ? id : nodeName;
 
 		// create a node label & CyNode id
@@ -896,7 +842,7 @@ public class MapBioPaxToCytoscape {
 			getInteractionChemicalModifications(complexElement, complexMemberElement, BioPaxConstants.COMPLEX);
 
 		// get node name
-		String complexMemberNodeName = getNodeName(complexMemberId, complexMemberElement);
+		String complexMemberNodeName = bpNameUtil.getNodeName(complexMemberId, complexMemberElement);
 		complexMemberNodeName = (complexMemberNodeName == null) ? complexMemberId : complexMemberNodeName;
 
 		// create node id & label strings
