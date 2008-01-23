@@ -142,7 +142,9 @@
 		  <arg line="-p plugins/cpath2.jar"/>
 		  <arg line="-p ${cytoscape_plugin_dir}/biopax.jar"/>
 		  <arg line="-p ${cytoscape_plugin_dir}/yLayouts.jar"/>
-            <arg line="-p ${cytoscape_plugin_dir}/quick_find.jar"/>
+          <arg line="-p ${cytoscape_plugin_dir}/quick_find.jar"/>
+          <arg line="-p ${cytoscape_plugin_dir}/browser.jar"/>
+          <arg line="-p ${cytoscape_plugin_dir}/linkout.jar"/>
         </java>
     </target>
 
