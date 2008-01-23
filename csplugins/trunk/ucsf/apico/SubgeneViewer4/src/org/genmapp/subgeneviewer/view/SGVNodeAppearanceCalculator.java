@@ -22,6 +22,7 @@ public class SGVNodeAppearanceCalculator extends NodeAppearanceCalculator {
 	public static int FEATURE_NODE_HEIGHT = 25;
 	
 	public SGVNodeAppearanceCalculator() {
+		
 
 	}
 	
@@ -36,34 +37,34 @@ public class SGVNodeAppearanceCalculator extends NodeAppearanceCalculator {
 			//Node label
 			String label = nodeAttribs.getStringAttribute(feature_id, "label");
 			appr.set(VisualPropertyType.NODE_LABEL, label != null ? label : feature_id);
+//			
+//			//Node shape
+//			setNodeSizeLocked(false);
+//			appr.set(VisualPropertyType.NODE_SHAPE, NodeShape.RECT);
+//			appr.set(VisualPropertyType.NODE_WIDTH, FEATURE_NODE_WIDTH);
+//			appr.set(VisualPropertyType.NODE_HEIGHT, FEATURE_NODE_HEIGHT);
 			
-			//Node shape
-			setNodeSizeLocked(false);
-			appr.set(VisualPropertyType.NODE_SHAPE, NodeShape.ROUND_RECT);
-			appr.set(VisualPropertyType.NODE_WIDTH, FEATURE_NODE_WIDTH);
-			appr.set(VisualPropertyType.NODE_HEIGHT, FEATURE_NODE_HEIGHT);
-			
-			//Node colors
-			Color stroke = new Color(0,0,0);
-			if(stroke != null) {
-				appr.set(VisualPropertyType.NODE_BORDER_COLOR, stroke);
-			}
-			Color fill = new Color(255,255,255);
-			if(fill != null) {
-				appr.set(VisualPropertyType.NODE_FILL_COLOR, fill);
-			}
+//			//Node colors
+//			Color stroke = new Color(0,0,0);
+//			if(stroke != null) {
+//				appr.set(VisualPropertyType.NODE_BORDER_COLOR, stroke);
+//			}
+//			Color fill = new Color(255,255,255);
+//			if(fill != null) {
+//				appr.set(VisualPropertyType.NODE_FILL_COLOR, fill);
+//			}
 			
 		
 	}
 		
-	public String calculateNodeLabel(Node node, CyNetwork network) {
-		String feature_id = SpliceController.get_nodeId();
-		CyNode feature = Cytoscape.getCyNode(feature_id);
-		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-		if(feature != null) {
-			String label = nodeAttribs.getStringAttribute(feature_id, "label");
-			return label;
-		}
-		return null;
-	}
+//	public String calculateNodeLabel(Node node, CyNetwork network) {
+//		String feature_id = SpliceController.get_nodeId();
+//		CyNode feature = Cytoscape.getCyNode(feature_id);
+//		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+//		if(feature != null) {
+//			String label = nodeAttribs.getStringAttribute(feature_id, "label");
+//			return label;
+//		}
+//		return null;
+//	}
 }

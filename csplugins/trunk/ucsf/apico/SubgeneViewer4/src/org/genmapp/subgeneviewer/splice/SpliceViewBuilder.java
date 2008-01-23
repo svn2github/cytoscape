@@ -2,8 +2,12 @@ package org.genmapp.subgeneviewer.splice;
 
 import giny.view.NodeView;
 
+import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JInternalFrame;
 
 import org.genmapp.subgeneviewer.splice.controller.SpliceController;
 import org.genmapp.subgeneviewer.splice.model.SpliceEvent;
@@ -14,10 +18,12 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
@@ -57,8 +63,10 @@ public abstract class SpliceViewBuilder {
 
 	private static int windowHeight = 200;
 
-	private static int yOffset = (int) (windowHeight / 2 + NODE_HEIGHT
-			+ SpliceRegion.REGION_HEIGHT + SpliceRegion.VGAP + SpliceEvent.spliceHeight);
+	private static int windowWidth = 500;
+
+	private static int yOffset = (int) (windowHeight/2 - ((windowHeight) - (NODE_HEIGHT
+			+ SpliceRegion.REGION_HEIGHT + SpliceRegion.VGAP + SpliceEvent.spliceHeight)) / 2) - NODE_HEIGHT;
 
 	/**
 	 * Processes feature, structure and splice attributes and creates a network
@@ -134,15 +142,34 @@ public abstract class SpliceViewBuilder {
 		dummyNet.setTitle(nodeLabel);
 		myView = Cytoscape.getCurrentNetworkView();
 
+		// Disable node dragging in SGV window
+		((DGraphView) myView).getCanvas().disableNodeMovement();
+
 		// Sets size of SGV window. ONLY WORKS WITH Cytoscape v2.6!
+		JInternalFrame i = Cytoscape.getDesktop().getNetworkViewManager()
+				.getInternalFrame(myView);
+
 		Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame(myView)
-				.setBounds(0, 0, 500, windowHeight);
+				.setBounds(0, 0, windowWidth, windowHeight);
 
 		// layout feature nodes
+		xOffset = HGAP;
 		for (Object f : features) {
 			NodeView nv = myView.getNodeView((CyNode) f);
-			nv.setOffset(xOffset + HGAP / 2, yOffset);
+			nv.setOffset(xOffset + HGAP / 2, 0);
 			xOffset += HGAP + NODE_WIDTH;
+		}
+
+		myView.fitContent();
+		myView.setZoom(1.0);
+
+		xOffset = (features.size() * (NODE_WIDTH + HGAP)) / 2 - windowWidth/2
+				+ HGAP;
+		for (Object f : features) {
+			NodeView nv = myView.getNodeView((CyNode) f);
+			Point2D p = nv.getOffset();
+			Double newP = p.getX() + xOffset;
+			nv.setOffset(newP, yOffset);
 		}
 
 	}
@@ -232,8 +259,20 @@ public abstract class SpliceViewBuilder {
 				sgvStyle = new VisualStyle("SGV");
 			}
 			sgvStyle.setName("SGV");
-			sgvStyle
-					.setNodeAppearanceCalculator(new SGVNodeAppearanceCalculator());
+			NodeAppearanceCalculator nac = new SGVNodeAppearanceCalculator();
+			nac.getDefaultAppearance().setNodeSizeLocked(false);
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_HEIGHT,
+					SGVNodeAppearanceCalculator.FEATURE_NODE_HEIGHT);
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_WIDTH,
+					SGVNodeAppearanceCalculator.FEATURE_NODE_WIDTH);
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE,
+					NodeShape.RECT);
+			nac.getDefaultAppearance().set(
+					VisualPropertyType.NODE_BORDER_COLOR, new Color(0, 0, 0));
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
+					new Color(255, 255, 255));
+
+			sgvStyle.setNodeAppearanceCalculator(nac);
 			catalog.addVisualStyle(sgvStyle);
 		}
 		vmm.setNetworkView(myView);

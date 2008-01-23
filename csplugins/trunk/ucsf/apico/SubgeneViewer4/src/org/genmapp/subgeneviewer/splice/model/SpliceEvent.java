@@ -1,6 +1,5 @@
 package org.genmapp.subgeneviewer.splice.model;
 
-
 import giny.view.NodeView;
 
 import java.awt.BasicStroke;
@@ -8,6 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -40,7 +41,7 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 	private double nodeW1;
 
 	private double nodeH1;
-	
+
 	public static int spliceHeight = 50;
 
 	/**
@@ -71,7 +72,7 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 
 	private int viewportHeight;
 
-	private String _splice_from; 
+	private String _splice_from;
 
 	private String _splice_to;
 
@@ -97,24 +98,24 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 		_splice_from = from;
 		_splice_to = to;
 		myView = view;
-		
+
 		SpliceRegion region_from = getRegionById(_splice_from);
 		SpliceRegion region_to = getRegionById(_splice_to);
-		
+
 		double from_x = region_from.getBounds().getMaxX();
 		double from_y = region_from.getBounds().getMinY();
 		double to_x = region_to.getBounds().getMinX();
 
 		double h = (double) spliceHeight;
 		double w = to_x - from_x + 2;
-		double x = from_x  - 1;
+		double x = from_x - 1;
 		double y = from_y - h + 0.25;
 
 		setBounds(x, y, w, h, true);
 
 		((DGraphView) myView).addViewportChangeListener(this);
 	}
-	
+
 	/**
 	 * Convoluted code to get Region by id for processing Splice Events
 	 * 
@@ -333,7 +334,6 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 				true);
 	}
 
-
 	public void setBounds(double x, double y, double width, double height,
 			boolean fromNode) {
 
@@ -416,29 +416,39 @@ public class SpliceEvent extends JComponent implements ViewportChangeListener {
 			// image to draw
 			Graphics2D image2D = image.createGraphics();
 
-//			image2D.setPaint(_fillColor);
-//
-//				image2D.fillRect(0, 0, image.getWidth(null), image
-//						.getHeight(null));
-				image2D.setPaint(drawColor);
-				// image2D.fillRect(0, image.getHeight()/2 - 1,
-				// image.getWidth(null), image.getHeight()/2 +1);
-				image2D.setStroke(new BasicStroke(1.0f));
-				image2D.drawLine(0, image.getHeight(),
-						image.getWidth(null)/2, 0);
-				image2D.drawLine(image.getWidth(null)/2, 0,
-						image.getWidth(null), image.getHeight());
-//				image2D.setPaint(drawColor);
-//				// image2D.drawRect(0, 0, image.getWidth(null), 1);
-//				image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
-//						BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
-//				image2D.drawLine(0, image.getHeight() / 2,
-//						image.getWidth(null), image.getHeight() / 2);
+			// image2D.setPaint(_fillColor);
+			//
+			// image2D.fillRect(0, 0, image.getWidth(null), image
+			// .getHeight(null));
+			image2D.setPaint(drawColor);
+
+			Line2D line = new Line2D.Double();
+			line.setLine(0, image.getHeight(), image.getWidth(null)/2, 0);
+			image2D.setPaint(drawColor);
+			image2D.draw(line);
+			line.setLine(image.getWidth(null)/2, 0, image.getWidth(), image
+					.getHeight());
+			image2D.setPaint(drawColor);
+			image2D.draw(line);
+
+			// image2D.fillRect(0, image.getHeight()/2 - 1,
+			// image.getWidth(null), image.getHeight()/2 +1);
+			// image2D.setStroke(new BasicStroke(1.0f));
+			// image2D.drawLine(0, image.getHeight(),
+			// image.getWidth(null)/2, 0);
+			// image2D.drawLine(image.getWidth(null)/2, 0,
+			// image.getWidth(null), image.getHeight());
+			// image2D.setPaint(drawColor);
+			// // image2D.drawRect(0, 0, image.getWidth(null), 1);
+			// image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
+			// BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
+			// image2D.drawLine(0, image.getHeight() / 2,
+			// image.getWidth(null), image.getHeight() / 2);
 
 			((Graphics2D) g).drawImage(image, null, 0, 0);
 
 		}
-		
+
 	}
 
 	public void setMyView(CyNetworkView view) {

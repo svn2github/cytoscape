@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -14,14 +16,14 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import org.genmapp.subgeneviewer.view.SGVNodeAppearanceCalculator;
+
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.groups.CyGroup;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.ViewportChangeListener;
-
-import org.genmapp.subgeneviewer.view.SGVNodeAppearanceCalculator;
 
 @SuppressWarnings("serial")
 public class SpliceRegion extends JComponent implements ViewportChangeListener {
@@ -90,7 +92,7 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 	
 	public static double REGION_HEIGHT = NODE_HEIGHT * 0.75;
 
-	public static int VGAP = NODE_HEIGHT *2;
+	public static int VGAP = NODE_HEIGHT * 2;
 
 	/**
 	 * Constructs an object to graphically represent the exon, intron or
@@ -349,6 +351,7 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 
 	}
 
+	
 	public void paint(Graphics g) {
 
 		// only paint if we have an image to paint onto
@@ -361,27 +364,68 @@ public class SpliceRegion extends JComponent implements ViewportChangeListener {
 			Graphics2D image2D = image.createGraphics();
 
 			image2D.setPaint(_fillColor);
+			
 
 			if (_type.equalsIgnoreCase("e")) { // exon
-				image2D.fillRect(0, 0, image.getWidth(null), image
-						.getHeight(null));
+//				image2D.fillRect(0, 0, image.getWidth(null), image
+//						.getHeight(null));
+//				image2D.setPaint(drawColor);
+//				image2D.fillRect(0-1, 0-1, image.getWidth(null)+2, image
+//						.getHeight(null)+2);
+//				image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
+//						.getHeight(null) - 1, true);
+				
+				//Shape for nicer graphics export
+				GeneralPath rect = new GeneralPath();
+				//Background rect for border
+				rect.reset();
+				rect.moveTo(0, 0);
+				rect.lineTo(0, image.getHeight(null));
+				rect.lineTo(image.getWidth(null), image.getHeight(null));
+				rect.lineTo(image.getWidth(null), 0);
+				rect.lineTo(0, 0);
+				rect.closePath();
 				image2D.setPaint(drawColor);
-				image2D.draw3DRect(0, 0, image.getWidth(null) - 1, image
-						.getHeight(null) - 1, true);
+				image2D.fill(rect);
+				
+				//Foreground rect with color
+				rect.reset();
+				rect.moveTo(1, 1);
+				rect.lineTo(1, image.getHeight(null)-1);
+				rect.lineTo(image.getWidth(null)-1, image.getHeight(null)-1);
+				rect.lineTo(image.getWidth(null)-1, 1);
+				rect.lineTo(1, 1);
+				rect.closePath();
+				image2D.setPaint(_fillColor);
+				image2D.fill(rect);
+				
 			} else if (_type.equalsIgnoreCase("i")) { // intron
-				image2D.setPaint(drawColor);
-				// image2D.fillRect(0, image.getHeight()/2 - 1,
-				// image.getWidth(null), image.getHeight()/2 +1);
-				image2D.setStroke(new BasicStroke(1.5f));
-				image2D.drawLine(0, image.getHeight() / 2,
+				Line2D line = new Line2D.Double();
+				line.setLine(0, image.getHeight() / 2,
 						image.getWidth(null), image.getHeight() / 2);
+				image2D.setPaint(drawColor);
+				image2D.draw(line);
+				
+//				// image2D.fillRect(0, image.getHeight()/2 - 1,
+//				// image.getWidth(null), image.getHeight()/2 +1);
+//				image2D.setStroke(new BasicStroke(1.5f));
+//				image2D.drawLine(0, image.getHeight() / 2,
+//						image.getWidth(null), image.getHeight() / 2);
 			} else { // untranslated
-				image2D.setPaint(drawColor);
-				// image2D.drawRect(0, 0, image.getWidth(null), 1);
-				image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
-						BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
-				image2D.drawLine(0, image.getHeight() / 2,
+				Line2D line = new Line2D.Double();
+				line.setLine(0, image.getHeight() / 2,
 						image.getWidth(null), image.getHeight() / 2);
+				image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
+				BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
+				image2D.setPaint(drawColor);
+				image2D.draw(line);
+
+//			    image2D.setPaint(drawColor);
+//				// image2D.drawRect(0, 0, image.getWidth(null), 1);
+//				image2D.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE,
+//						BasicStroke.JOIN_MITER, 10, new float[] { 4, 4 }, 0));
+//				image2D.drawLine(0, image.getHeight() / 2,
+//						image.getWidth(null), image.getHeight() / 2);
 			}
 
 			((Graphics2D) g).drawImage(image, null, 0, 0);

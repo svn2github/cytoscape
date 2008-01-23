@@ -44,6 +44,8 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 
 			System.out.println("Checking for exon structure data");
 			boolean dataReady = exonDataCheck();
+			//If not; prompt to collect data from server
+			// See http://www.exampledepot.com/egs/java.net/Post.html
 
 			if (dataReady) {
 				System.out.println("Building splice view");
