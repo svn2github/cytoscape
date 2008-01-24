@@ -671,7 +671,7 @@ public class ExpressionData implements Serializable {
 			                      + numTokens);
 		}
 
-		String geneDescript = null;
+		String geneDescript = "";
 		if (hasCOMMON) {
 			geneDescript = strtok.nextToken();
 		}
@@ -707,10 +707,10 @@ public class ExpressionData implements Serializable {
 
 		for (int ii = 0; ii < gNames.size(); ii++) {
 			geneNames.add(gNames.get(ii));
-			if (hasCOMMON) {
-				/* store descriptor token */
-				geneDescripts.add(geneDescript);
-			}
+
+			/* store descriptor token */
+			geneDescripts.add(geneDescript);
+
 			Vector measurements = new Vector(numConds);
 
 			for (int jj = 0; jj < numConds; jj++) {
