@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.ActionEvent; 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,7 +19,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.lang.reflect.Method;
-
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -202,6 +204,7 @@ public class ImportNetworkDialog extends JDialog
 
 		importButton.setText("Import");
 		importButton.setName("btnImport");
+		importButton.setEnabled(false);
 
 		cancelButton.setText("Cancel");
 		cancelButton.setName("btnCancel");
@@ -210,7 +213,7 @@ public class ImportNetworkDialog extends JDialog
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
 		networkFileComboBox.setName("networkFileComboBox");
-		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");
+		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");		
 		final ToolTipManager tp = ToolTipManager.sharedInstance();
 		tp.setInitialDelay(1);
 		tp.setDismissDelay(7500);
@@ -443,6 +446,7 @@ public class ImportNetworkDialog extends JDialog
 			// We assume that the user is going to type in a filename.  If so,
 			// we want to set the import button to be the default
 			getRootPane().setDefaultButton(importButton);
+			importButton.setEnabled(true);
 		}
 	}
 
@@ -565,6 +569,7 @@ public class ImportNetworkDialog extends JDialog
 					switchImportView("Local");
 				} else { // from rbtRemote
 					switchImportView("Remote");
+					importButton.setEnabled(true);
 				}
 
 				pack();
