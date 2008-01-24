@@ -555,7 +555,7 @@ public class ExpressionData implements Serializable {
 		return (attributeToIdList);
 	}
 
-	// Check if the name of the second column is "COMMON" 
+	// Check if the name of the second column is "COMMON" or "DESCRIPT"
 	private boolean doesHeaderLineHasCOMMON(String hline) {
 
 		StringTokenizer headerTok = new StringTokenizer(hline);
@@ -567,7 +567,7 @@ public class ExpressionData implements Serializable {
 		headerTok.nextToken();
 		String secondColHeader = headerTok.nextToken(); 
 		
-		if (secondColHeader.equalsIgnoreCase("COMMON")) {
+		if (secondColHeader.equalsIgnoreCase("COMMON")||secondColHeader.equalsIgnoreCase("DESCRIPT")) {
 			return true;
 		}
 		return false;		
