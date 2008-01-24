@@ -192,6 +192,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
 
+	private static final String REGION_NETWORK_ATT = "__Region_network";
+
 	private int viewID = 0;
 
 	/**
@@ -296,8 +298,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 					.indexOf("cytoscape"));
 			path = path.replace("!", "");
 
-			JarFile jar = new JarFile(path);
-			Enumeration files = jar.entries();
+			Enumeration files;
+			try {
+				JarFile jar = new JarFile(path);
+				files = jar.entries();
+			} catch (Exception e) {
+				// An error at this point probably means we don't have
+				// any data files in our jar
+				return;
+			}
 
 			while (files.hasMoreElements()) {
 				ZipEntry entry = (ZipEntry) files.nextElement();
@@ -901,6 +910,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				groupName);
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT,
 				region.getColorIndex());
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_NETWORK_ATT, 
+				Cytoscape.getCurrentNetwork().getIdentifier());
 
 		// Set Region Variables to Hidden
 		attributes.setUserVisible(REGION_NAME_ATT, false);
@@ -909,6 +920,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		attributes.setUserVisible(REGION_Y_ATT, false);
 		attributes.setUserVisible(REGION_W_ATT, false);
 		attributes.setUserVisible(REGION_H_ATT, false);
+		attributes.setUserVisible(REGION_NETWORK_ATT, false);
 
 	}
 
@@ -955,6 +967,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				REGION_H_ATT);
 		String nameString = attributes.getStringAttribute(groupNode
 				.getIdentifier(), REGION_NAME_ATT);
+
 		nameString = nameString.replace("[", "");
 		nameString = nameString.replace("]_", ","); // mark viewID
 		String[] nameArray = nameString.split(",");
@@ -975,7 +988,15 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		int color = attributes.getIntegerAttribute(groupNode.getIdentifier(),
 				REGION_COLORINT_ATT);
 
+		String networkTarget = attributes.getStringAttribute(groupNode
+		    .getIdentifier(), REGION_NETWORK_ATT);
+
 		// TODO: rename GroupNode based on new viewID
+		// See if this is the network we want
+		if (!networkTarget.equals(myView.getNetwork().getIdentifier())) {
+			// No, return without actually building the region
+			return;
+		}
 
 		group.setState(SELECTED);
 		groupPanel.groupCreated(group);
@@ -987,6 +1008,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		attributes.setUserVisible(REGION_Y_ATT, false);
 		attributes.setUserVisible(REGION_W_ATT, false);
 		attributes.setUserVisible(REGION_H_ATT, false);
+		attributes.setUserVisible(REGION_NETWORK_ATT, false);
 
 		// Create Region
 		new LayoutRegion(x, y, w, h, name, nv, color, myView, group);

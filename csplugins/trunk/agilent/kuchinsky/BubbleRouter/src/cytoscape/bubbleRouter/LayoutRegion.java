@@ -695,7 +695,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 						BubbleRouterPlugin.REGION_W_ATT, nodeW1);
 				attributes.setAttribute(groupNode.getIdentifier(),
 						BubbleRouterPlugin.REGION_H_ATT, nodeH1);
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -115,7 +115,7 @@ class UnCrossAction extends CytoscapeAction {
 	 * for performance reasons, set threshold so that this doesn't execute with
 	 * large networks
 	 */
-	public static final int UNCROSS_THRESHOLD = 50;
+	public static final int UNCROSS_THRESHOLD = 100;
 
 	/**
 	 * iterations counter
