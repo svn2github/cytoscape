@@ -568,17 +568,27 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		// Find key
 		int keyIndex = -1;
-		for(int i=0; i<attributeNames.size(); i++) {
-			if(attributeNames.get(i).equals(AttributeBrowser.ID)) {
-				keyIndex = i;
-				break;
+		int columnOffset = 0;
+		if (attributeNames.contains(AttributeBrowser.ID) == false) {
+			// The ID is not in our attribute list, so it must be in the first column
+			// We will need to offset our index into the attribute names list to get
+			// the correct value.  Note that this is only safe because AttributeBrowser.ID
+			// is not editable
+			keyIndex = 0;
+			columnOffset = 1;
+		} else {
+			for(int i=0; i<attributeNames.size(); i++) {
+				if(attributeNames.get(i).equals(AttributeBrowser.ID)) {
+					keyIndex = i;
+					break;
+				}
 			}
 		}
 		if(keyIndex == -1) return;
 		
 		if (this.objectType != NETWORK) {
 			edit = new DataEditAction(this, getValueAt(rowIndex, keyIndex).toString(),
-			                          attributeNames.get(columnIndex), null,
+			                          attributeNames.get(columnIndex-columnOffset), null,
 			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
 		} else {
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
