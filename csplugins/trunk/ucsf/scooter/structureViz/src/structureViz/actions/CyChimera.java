@@ -65,7 +65,7 @@ import structureViz.model.ChimeraModel;
  */
 public class CyChimera {
 	public static final String[] structureKeys = {"Structure","pdb","pdbFileName",null};
-	public static final String[] residueKeys = {"FunctionalResidues",null};
+	public static final String[] residueKeys = {"FunctionalResidues","ResidueList",null};
 	public static final String[] sequenceKeys = {"sequence",null};
 	private static CyAttributes cyAttributes;
 
@@ -84,6 +84,10 @@ public class CyChimera {
 		if (structureAttribute != null) {
 			structureKeys[3] = structureAttribute;
 		}
+		String residueAttribute = getProperty("residueAttribute");
+		if (residueAttribute != null) {
+			residueKeys[2] = residueAttribute;
+		}
 		List<Structure>structureList = new ArrayList<Structure>();
     //get the network object; this contains the graph
     CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -94,7 +98,7 @@ public class CyChimera {
     //can't continue if any of these is null
     if (network == null || view == null || cyAttributes == null) {return structureList;}
 
-		List selectedNodes = view.getSelectedNodes();
+		List<NodeView> selectedNodes = view.getSelectedNodes();
 
     if (selectedNodes.size() == 0) {
 			if (nodeView == null) {
@@ -104,13 +108,16 @@ public class CyChimera {
 			selectedNodes.add(nodeView);
     }
     //iterate over every node view
-    for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); ) {
-      NodeView nView = (NodeView)iter.next();
+		for (NodeView nView: selectedNodes) {
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
 			String structure = getStructureName(node);
 			String residues = getResidueList(node);
-			if (structure == null) continue;
+			if (structure == null) {
+				structure = findStructures(residues);
+				if (structure == null)
+					continue;
+			}
 			// Check to see if this node has a list of structures, first
 			String[] sList = structure.split(",");
 			if (sList != null && sList.length > 0) {
@@ -156,6 +163,7 @@ public class CyChimera {
 	 * @return a comma-separated String of functional residue identifiers
 	 */
 	public static String getResidueList(CyNode node) {
+		if (node == null) return null;
     String nodeID = node.getIdentifier();
 		for (int key = 0; key < residueKeys.length; key++) {
 			if (residueKeys[key] == null) continue;
@@ -216,7 +224,7 @@ public class CyChimera {
     //can't continue if any of these is null
     if (network == null || view == null || cyAttributes == null) {return sequenceList;}
 
-		List selectedNodes = view.getSelectedNodes();
+		List<NodeView> selectedNodes = view.getSelectedNodes();
 
     if (selectedNodes.size() == 0) {
 			if (nodeView == null) {
@@ -226,8 +234,7 @@ public class CyChimera {
 			selectedNodes.add(nodeView);
     }
     //iterate over every node view
-    for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); ) {
-      NodeView nView = (NodeView)iter.next();
+		for (NodeView nView: selectedNodes) {
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
 			Sequence seq = getSequence(node);
@@ -269,14 +276,12 @@ public class CyChimera {
 	 * @param chimeraModels the list of ChimeraModels we currently have open
 	 */
 	public static void selectCytoscapeNodes(CyNetworkView networkView, HashMap modelsToSelect,
-																					List chimeraModels) {
+																					List<ChimeraModel> chimeraModels) {
 		CyNetwork network = networkView.getNetwork();
 
 		if (selectedList == null) selectedList = new ArrayList();
 
-		Iterator modelIter = chimeraModels.iterator();
-		while (modelIter.hasNext()) {
-			ChimeraModel model = (ChimeraModel)modelIter.next();
+		for (ChimeraModel model: chimeraModels) {
 			if (model == null) continue;
 			CyNode node = model.getStructure().node();
 			NodeView nodeView = networkView.getNodeView(node);
@@ -313,5 +318,27 @@ public class CyChimera {
 	 */
 	public static String getProperty(String name) {
 		return CytoscapeInit.getProperties().getProperty("structureViz."+name);
+	}
+
+	/**
+	 * Search for structure references in the residue list
+	 *
+	 * @param residueList the list of residues
+	 * @return a concatenated list of structures encoded in the list
+	 */
+	public static String findStructures(String residueList) {
+		if (residueList == null) return null;
+		String[] residues = residueList.split(",");
+		String structures = new String();
+		for (int i = 0; i < residues.length; i++) {
+			String[] components = residues[i].split("#");
+			if (components.length > 1) {
+				if (structures.length() > 1)
+					structures = structures.concat(",");
+				structures = structures.concat(components[0]);
+			}
+		}
+		if (structures.length() > 0) return structures;
+		return null;
 	}
 }

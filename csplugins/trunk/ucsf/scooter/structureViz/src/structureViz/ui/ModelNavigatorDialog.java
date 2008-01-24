@@ -36,7 +36,6 @@ package structureViz.ui;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -66,6 +65,7 @@ import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraTreeModel;
+import structureViz.model.Structure;
 import structureViz.actions.CyChimera;
 import structureViz.actions.Chimera;
 import structureViz.ui.PopupMenuListener;
@@ -152,12 +152,10 @@ public class ModelNavigatorDialog
 			navigationTree.removeSelectionPath(ePath);
 		}
 		// Get the selected children of that path
-		List children = nodeInfo.getChildren();
+		List<ChimeraStructuralObject>children = nodeInfo.getChildren();
 		// Add them to our selection
 		if (children != null) {
-			Iterator iter = children.iterator();
-			while (iter.hasNext()) {
-				ChimeraStructuralObject o = (ChimeraStructuralObject)iter.next();
+			for (ChimeraStructuralObject o: children) {
 				if (o.isSelected()) {
 					TreePath path = (TreePath)o.getUserData();
 					navigationTree.addSelectionPath(path);
@@ -290,16 +288,13 @@ public class ModelNavigatorDialog
 	 *
 	 * @param selectionList the List of ChimeraStructuralObjects to be selected
 	 */
-	public void updateSelection(List selectionList) {
+	public void updateSelection(List<ChimeraStructuralObject> selectionList) {
 		TreePath path = null;
 		this.ignoreSelection = true;
 		clearSelectionState();
 		navigationTree.clearSelection();
 		// Need to clear currently selected objects
-		Iterator selectionIter = selectionList.iterator();
-		while (selectionIter.hasNext()) {
-			ChimeraStructuralObject selectedObject = 
-				(ChimeraStructuralObject)selectionIter.next();
+		for (ChimeraStructuralObject selectedObject: selectionList) {
 			path = (TreePath)selectedObject.getUserData();
 			navigationTree.addSelectionPath(path);
 			navigationTree.makeVisible(path);
@@ -317,23 +312,17 @@ public class ModelNavigatorDialog
 	 */
 	private void clearSelectionState() {
 		selectedObjects.clear();
-		List models = chimeraObject.getChimeraModels();
+		List<ChimeraModel>models = chimeraObject.getChimeraModels();
 		if (models == null) return;
-		Iterator mIter = models.iterator();
-		while (mIter.hasNext()) {
-			ChimeraModel m = (ChimeraModel)mIter.next();
+		for (ChimeraModel m: models) {
 			m.setSelected(false);
-			Collection chains = m.getChains();
+			Collection<ChimeraChain>chains = m.getChains();
 			if (chains == null) continue;
-			Iterator cIter = chains.iterator();
-			while (cIter.hasNext()) {
-				ChimeraChain c = (ChimeraChain)cIter.next();
+			for (ChimeraChain c: chains) {
 				c.setSelected(false);
-				Collection residues = c.getResidues();
+				Collection<ChimeraResidue>residues = c.getResidues();
 				if (residues == null ) continue;
-				Iterator rIter = residues.iterator();
-				while (rIter.hasNext()) {
-					ChimeraResidue r = (ChimeraResidue)rIter.next();
+				for (ChimeraResidue r: residues) {
 					if (r != null) r.setSelected(false);
 				}
 			}
@@ -354,10 +343,8 @@ public class ModelNavigatorDialog
 		}
 		if (obj.getClass() == ChimeraResidue.class)
 			return false;
-		Iterator childIter = obj.getChildren().iterator();
-		while (childIter.hasNext()) {
-			ChimeraStructuralObject child = 
-				(ChimeraStructuralObject) childIter.next();
+
+		for (ChimeraStructuralObject child:(List<ChimeraStructuralObject>)obj.getChildren()) {
 			if (hasSelectedChildren(child))
 				return true;
 		}
@@ -563,10 +550,8 @@ public class ModelNavigatorDialog
 				alDialog.setVisible(false);
 				alDialog.dispose();
 			}
-			List structureList = new ArrayList();
-			Iterator iter = chimeraObject.getChimeraModels().iterator();
-			while (iter.hasNext()) {
-				ChimeraModel model = (ChimeraModel)iter.next();
+			List<Structure> structureList = new ArrayList();
+			for (ChimeraModel model: chimeraObject.getChimeraModels()) {
 				structureList.add(model.getStructure());
 			}	
 			// Bring up the dialog

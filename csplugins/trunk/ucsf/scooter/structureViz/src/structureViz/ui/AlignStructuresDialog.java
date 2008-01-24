@@ -36,7 +36,6 @@ package structureViz.ui;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -211,13 +210,11 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 	 * @param structures a List of structures to be included in the menu
 	 * @return an array of Objects to be used in a menu
 	 */
-	private Object[] structureList(List structures) {
+	private Object[] structureList(List<Structure> structures) {
 		Object[] structureList = new Object[structures.size()+1];
-		Iterator iter = structures.iterator();
 		int index = 0;
 		structureList[index++] = new String("      ---------");
-		while (iter.hasNext()) {
-			Structure st = (Structure)iter.next();
+		for (Structure st: structures) {
 			structureList[index++] = st;
 		}
 		return structureList;
@@ -245,10 +242,8 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 				chimeraObject.open(referenceStruct);
 			}
 
-			List matchList = tableModel.getSelectedStructures();
-			Iterator modelIter = matchList.iterator();
-			while (modelIter.hasNext()) {
-				Structure structure = (Structure)modelIter.next();
+			List<Structure> matchList = tableModel.getSelectedStructures();
+			for (Structure structure: matchList) {
 				if (chimeraObject.getModel(structure.name()) == null) {
 					chimeraObject.open(structure);
 				}
@@ -259,9 +254,7 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 			alignment.align(referenceStruct, matchList);
 
 			// Display the results
-			modelIter = matchList.iterator();
-			while (modelIter.hasNext()) {
-				Structure structure = (Structure)modelIter.next();
+			for (Structure structure: matchList) {
 				float[] results = alignment.getResults(structure.name());
 				tableModel.setResults(structure.name(), results);
 			}

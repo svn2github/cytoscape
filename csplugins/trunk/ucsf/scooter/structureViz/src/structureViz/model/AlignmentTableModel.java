@@ -36,7 +36,6 @@ package structureViz.model;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -197,9 +196,7 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 		} else {
 			this.matchStructures = new ArrayList();
 			this.resultsMap = new HashMap();
-			Iterator iter = allStructures.iterator();
-			while (iter.hasNext()) {
-				Structure structure = (Structure)iter.next();
+			for (Structure structure: allStructures) {
 				if (structure.name().equals(refStruct)) continue;
 				matchStructures.add(structure);
 			}

@@ -32,6 +32,9 @@
  */
 package structureViz.model;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import cytoscape.*;
 
 /**
@@ -41,7 +44,7 @@ import cytoscape.*;
 public class Structure {
 	static int nStructures = 0;
 	String structureName;
-	String residueList;
+	List<String> residueList;
 	CyNode cytoscapeNode;
 	int modelNumber;
 
@@ -112,7 +115,7 @@ public class Structure {
 	 *
 	 * @return String representation of the residues (comma separated)
 	 */
-	public String getResidueList() {
+	public List<String> getResidueList() {
 		return residueList;
 	}
 
@@ -122,6 +125,19 @@ public class Structure {
 	 * @param residues String representation of the residues (comma separated)
 	 */
 	public void setResidueList(String residues) {
-		this.residueList = residues;
+		this.residueList = new ArrayList();
+		if (residues == null) {
+			return;
+		}
+		String[] list = residues.split(",");
+		for (int i = 0; i < list.length; i++) {
+			// Parse out the structure, if there is one
+			String[] components = list[i].split("#");
+			if (components.length > 1 && structureName.equals(components[0])) {
+				this.residueList.add(components[1]);
+			} else if (components.length == 1) {
+				this.residueList.add(components[0]);
+			}
+		}
 	}
 }

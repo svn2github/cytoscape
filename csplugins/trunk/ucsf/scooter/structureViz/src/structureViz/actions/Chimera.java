@@ -49,6 +49,7 @@ import cytoscape.data.CyAttributes;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraResidue;
+import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 import structureViz.actions.CyChimera;
 import structureViz.ui.ModelNavigatorDialog;
@@ -67,9 +68,9 @@ public class Chimera {
    */
   // Chimera process
   static Process chimera;
-	static private ArrayList replyLog;
-	static private ArrayList models;
-	static private HashMap modelHash;
+	static private ArrayList<String> replyLog;
+	static private ArrayList<ChimeraModel> models;
+	static private HashMap<Integer,ChimeraModel> modelHash;
 	static private ListenerThreads listener;
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
@@ -95,7 +96,7 @@ public class Chimera {
 	 *
 	 * @return list of ChimeraModels
 	 */
-	public List getChimeraModels () { return models; }
+	public List<ChimeraModel> getChimeraModels () { return models; }
 
 	/**
 	 * Return our network view
@@ -176,9 +177,7 @@ public class Chimera {
 	 * @return the ChimeraModel with a model name of modelName
 	 */
 	public ChimeraModel getModel(String modelName) {
-		Iterator modelIter = models.iterator();
-		while (modelIter.hasNext()) {
-			ChimeraModel model = (ChimeraModel)modelIter.next();
+		for (ChimeraModel model: models) {
 			if (model.getModelName().equals(modelName))
 				return model;
 		}
@@ -362,12 +361,10 @@ public class Chimera {
 		this.command("listen stop select; listen stop models");
 
 		// Get all of the open models
-		List newModelList = getModelList();
+		List<ChimeraModel> newModelList = getModelList();
 
 		// Match them up -- assume that the model #'s haven't changed
-		Iterator modelIter = newModelList.iterator();
-		while (modelIter.hasNext()) {
-			ChimeraModel model = (ChimeraModel)modelIter.next();
+		for (ChimeraModel model: newModelList) {
 			Integer modelNumber = new Integer(model.getModelNumber());
 			// Get the color (for our navigator)
 			model.setModelColor(getModelColor(model));
@@ -418,13 +415,12 @@ public class Chimera {
 	 * and update our list.
 	 */
 	public void updateSelection() {
-		HashMap modelSelHash = new HashMap();
-		ArrayList selectionList = new ArrayList();
-		Iterator lineIter;
+		HashMap<Integer,ChimeraModel>modelSelHash = new HashMap();
+		ArrayList<ChimeraStructuralObject>selectionList = new ArrayList();
 		// System.out.println("updateSelection()");
 
 		// Execute the command to get the list of models with selections
-		lineIter = commandReply("lists level molecule");
+		Iterator lineIter = commandReply("lists level molecule");
 		while (lineIter.hasNext()) {
 			String modelLine = (String)lineIter.next();
 			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
@@ -444,10 +440,7 @@ public class Chimera {
 		}
 
 		// Get the selected objects
-		Iterator modelIter = modelSelHash.values().iterator();
-		while (modelIter.hasNext()) {
-			// Get the model
-			ChimeraModel selectedModel = (ChimeraModel)modelIter.next();
+		for (ChimeraModel selectedModel: modelSelHash.values()) {
 			int modelNumber = selectedModel.getModelNumber();
 			// Get the corresponding "real" model
 			if (containsModel(modelNumber)) {
@@ -456,17 +449,14 @@ public class Chimera {
 					// Select the entire model
 					selectionList.add(dataModel);
 				} else {
-					Iterator chainIter = selectedModel.getChains().iterator();
-					while (chainIter.hasNext()) {
-						ChimeraChain selectedChain = (ChimeraChain)chainIter.next();
+					for (ChimeraChain selectedChain: selectedModel.getChains()) {
 						ChimeraChain dataChain = dataModel.getChain(selectedChain.getChainId());
 						if (selectedChain.getResidueCount() == dataChain.getResidueCount()) {
 							selectionList.add(dataChain);
 						} else {
 							// Need to select individual residues
-							Iterator resIter = selectedChain.getResidues().iterator();
-							while (resIter.hasNext()) {
-								String residueIndex = ((ChimeraResidue)resIter.next()).getIndex();
+							for (ChimeraResidue res: selectedChain.getResidues()) {
+								String residueIndex = res.getIndex();
 								ChimeraResidue residue = dataChain.getResidue(residueIndex);
 								selectionList.add(residue);
 							} // resIter.hasNext

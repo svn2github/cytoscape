@@ -35,8 +35,8 @@ package structureViz.actions;
 // System imports
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 
 // giny imports
@@ -141,11 +141,9 @@ public class Align {
 	 * @param reference the reference model
 	 */
 	public void alignAll(ChimeraModel reference) {
-		List modelList = chimeraObject.getChimeraModels();
-		ArrayList matchList = new ArrayList();
-		Iterator modelIter = modelList.iterator();
-		while (modelIter.hasNext()) {
-			ChimeraModel match = (ChimeraModel)modelIter.next();
+		List<ChimeraModel> modelList = chimeraObject.getChimeraModels();
+		ArrayList<ChimeraModel>matchList = new ArrayList();
+		for (ChimeraModel match: modelList) {
 			if (match != reference)
 				matchList.add(match);
 		}
@@ -162,12 +160,10 @@ public class Align {
 	 * @param reference the reference model
 	 * @param models a List of ChimeraModels to align to the reference
 	 */
-	public void align(ChimeraModel reference, List models) {
+	public void align(ChimeraModel reference, List<ChimeraModel>models) {
 		results = new HashMap();
 
-		Iterator modelIter = models.iterator();
-		while (modelIter.hasNext()) {
-			ChimeraModel match = (ChimeraModel)modelIter.next();
+		for (ChimeraModel match: models) {
 			Iterator matchResult = singleAlign(reference, match);
 			results.put(match.getModelName(), parseResults(matchResult));
 		}
@@ -185,13 +181,11 @@ public class Align {
 	 * @param refStruct the reference model expressed as a Structure
 	 * @param structures a List of Structures to align to the reference
 	 */
-	public void align(Structure refStruct, List structures) {
+	public void align(Structure refStruct, List<Structure> structures) {
 		results = new HashMap();
-		ArrayList modelList = new ArrayList();
+		ArrayList<ChimeraModel> modelList = new ArrayList();
 		ChimeraModel reference = chimeraObject.getModel(refStruct.name());
-		Iterator structIter = structures.iterator();
-		while (structIter.hasNext()) {
-			Structure matchStruct = (Structure)structIter.next();
+		for (Structure matchStruct: structures) {
 			ChimeraModel match = chimeraObject.getModel(matchStruct.name());
 			modelList.add(match);
 			Iterator matchResult = singleAlign(reference, match);
@@ -251,10 +245,8 @@ public class Align {
 	 * (the reference structure)
 	 * @param targetList the list of targets (aligned structures)
 	 */
-	private void setAllAttributes(ChimeraModel source, List targetList) {
-		Iterator targetIter = targetList.iterator();
-		while (targetIter.hasNext()) {
-			ChimeraModel target = (ChimeraModel)targetIter.next();
+	private void setAllAttributes(ChimeraModel source, List<ChimeraModel> targetList) {
+		for (ChimeraModel target: targetList) {
 			float[] results = getResults(target.getModelName());
 			setEdgeAttributes(results, source, target);
 		}

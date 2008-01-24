@@ -130,9 +130,7 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 		DefaultMutableTreeNode model = null;
 
 		// Add all of the Chimera models
-		Iterator modelIter = chimeraObject.getChimeraModels().iterator();
-		while (modelIter.hasNext()) {
-			ChimeraModel chimeraModel = (ChimeraModel)modelIter.next();
+		for (ChimeraModel chimeraModel: chimeraObject.getChimeraModels()) {
 			model = new DefaultMutableTreeNode(chimeraModel);
 			path = rootPath.pathByAddingChild(model);
 			chimeraModel.setUserData(path);
@@ -154,10 +152,9 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 														 TreePath treePath) {
 		DefaultMutableTreeNode chain = null;
 		TreePath chainPath = null;
-		ChimeraChain chimeraChain = null; 
 
 		// Get the list of chains
-		Collection chainList = chimeraModel.getChains();
+		Collection<ChimeraChain> chainList = chimeraModel.getChains();
 
 		if (chainList.size() == 0) {
 			// No chains!  Just add the residues
@@ -167,9 +164,7 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 
 		// Iterate over the chains and add the chain and all of
 		// the chain's residues
-		Iterator chainIter = chainList.iterator();
-		while (chainIter.hasNext()) {
-			chimeraChain = (ChimeraChain)chainIter.next();
+		for (ChimeraChain chimeraChain: chainList) {
 			chain = new DefaultMutableTreeNode(chimeraChain);
 			chainPath = treePath.pathByAddingChild(chain);
 			chimeraChain.setUserData(chainPath);
@@ -185,16 +180,14 @@ public class ChimeraTreeModel extends DefaultTreeModel {
 	 * @param treeModel the tree model to add the residues to
 	 * @param treePath the tree path where the residues should be added
 	 */
-	private void addResidues(Collection residues, 
+	private void addResidues(Collection<ChimeraResidue> residues, 
 													 DefaultMutableTreeNode treeModel,
 													 TreePath treePath) {
 		DefaultMutableTreeNode residue = null;
 		TreePath residuePath = null;
 
 		// Iterate over all residues & add them to the tree
-		Iterator resIter = residues.iterator();
-		while (resIter.hasNext()) {
-			ChimeraResidue res = (ChimeraResidue)resIter.next();
+		for (ChimeraResidue res: residues) {
 			res.setDisplayType(this.residueDisplay);
 			residue = new DefaultMutableTreeNode(res);
 			residuePath = treePath.pathByAddingChild(residue);

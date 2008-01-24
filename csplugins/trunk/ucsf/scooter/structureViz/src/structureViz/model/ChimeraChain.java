@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +69,7 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	/**
 	 * The residues that are part of this chain
 	 */
-	private TreeMap residueList;
+	private TreeMap<Integer,ChimeraResidue> residueList;
 
 	/**
 	 * userData to associate with this chain
@@ -120,7 +119,7 @@ public class ChimeraChain implements ChimeraStructuralObject {
 		// Get the value of the index (should be an int!)
 		Integer index = new Integer(residue.getIndex());
 		// Put it in our map so that we can return it in order
-		residueList.put(index.intValue(), residue);
+		residueList.put(index, residue);
 	}
 
 	/**
@@ -128,14 +127,14 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 *
 	 * @return a Collection of residues in residue order
 	 */
-	public Collection getResidues() { return residueList.values(); }
+	public Collection<ChimeraResidue> getResidues() { return residueList.values(); }
 
 	/**
 	 * Return the list of residues in this chain as a list
 	 *
 	 * @return List of residues
 	 */
-	public List getChildren() { 
+	public List<ChimeraResidue> getChildren() { 
 		return new ArrayList(residueList.values()); 
 	}
 
@@ -147,7 +146,7 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 */
 	public ChimeraResidue getResidue(String residueIndex) {
 		Integer index = new Integer(residueIndex);
-		return (ChimeraResidue)residueList.get(index.intValue());
+		return residueList.get(index);
 	}
 
 	/**

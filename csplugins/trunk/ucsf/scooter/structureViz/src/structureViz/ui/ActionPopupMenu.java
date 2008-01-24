@@ -61,10 +61,10 @@ import structureViz.actions.Chimera;
 
 public class ActionPopupMenu extends JPopupMenu {
 	private Chimera chimeraObject;
-	private List modelList;
-	private List chainList;
-	private List residueList;
-	private List objectList;
+	private List<ChimeraModel> modelList;
+	private List<ChimeraChain> chainList;
+	private List<ChimeraResidue> residueList;
+	private List<ChimeraStructuralObject> objectList;
 	private JTree navTree;
 	private int context = GENERIC_CONTEXT;
 
@@ -393,9 +393,9 @@ public class ActionPopupMenu extends JPopupMenu {
 			} else if (postCommand == MODEL_SELECTION) {
 				// Special case for chemistry selection commands
 				String spec = new String();
-				Iterator modelIter = objectList.iterator();
+				Iterator<ChimeraStructuralObject> modelIter = objectList.iterator();
 				while (modelIter.hasNext()) {
-					ChimeraStructuralObject obj = (ChimeraStructuralObject)modelIter.next();
+					ChimeraStructuralObject obj = modelIter.next();
 					spec = spec.concat(obj.toSpec());
 					if (modelIter.hasNext()) spec = spec.concat(",");
 				}
@@ -424,18 +424,14 @@ public class ActionPopupMenu extends JPopupMenu {
 			} else if (postCommand == FUNCTIONAL_RESIDUES) {
 				// Get the object
 				int index = 0;
-				Iterator objIterator = objectList.iterator();
-				while (objIterator.hasNext()) {
-					ChimeraStructuralObject obj = (ChimeraStructuralObject)objIterator.next();
+				for (ChimeraStructuralObject obj: objectList) {
 					ChimeraModel model = obj.getChimeraModel();
-					String residueL = model.getStructure().getResidueList();
+					List<String> residueL = model.getStructure().getResidueList();
 					if (residueL == null) return;
 					// The residue list is of the form RRRnnn,RRRnnn.  We want
 					// to reformat this to nnn,nnn
-					String[] list = residueL.split(",");
 					String residues = new String();
-					for (int i = 0; i < list.length; i++) {
-						String residue = list[i];
+					for (String residue: residueL) {
 						residues = residues.concat(residue.substring(3)+",");
 					}
 					residues = residues.substring(1,residues.length()-1);
@@ -465,9 +461,7 @@ public class ActionPopupMenu extends JPopupMenu {
 				navTree.clearSelection();
 			} else if (postCommand == CLOSE) {
 				// Get the object
-				Iterator objIterator = objectList.iterator();
-				while (objIterator.hasNext()) {
-					ChimeraStructuralObject obj = (ChimeraStructuralObject)objIterator.next();
+				for (ChimeraStructuralObject obj: objectList) {
 					ChimeraModel model = obj.getChimeraModel();
 					chimeraObject.close(model.getStructure());
 				}

@@ -84,7 +84,7 @@ public class StructureViz extends CytoscapePlugin
 	public static final int EXIT = 4;
 	public static final int COMPARE = 5;
 	public static final int SALIGN = 6;
-	public static final String[] attributeKeys = {"Structure","pdb","pdbFileName"};
+	public static final int SELECTRES = 7;
 
   /**
    * Create our action and add it to the plugins menu
@@ -147,15 +147,13 @@ public class StructureViz extends CytoscapePlugin
 			// Add our menu items
 			{
 			  JMenu item = new JMenu("Open structure(s)");
-				List structures =  CyChimera.getSelectedStructures(overNode);
+				List<Structure>structures =  CyChimera.getSelectedStructures(overNode);
 				if (structures.size() == 0) {
 					item.setEnabled(false);
 				} else {
 					if (structures.size() > 1)
 						addSubMenu(item, "all", OPEN, structures);
-					Iterator iter = structures.iterator();
-					while (iter.hasNext()) {
-						Structure structure = (Structure)iter.next();
+					for (Structure structure: structures) {
 						addSubMenu(item, structure.name(), OPEN, structure);
 					}
 				}
@@ -172,6 +170,20 @@ public class StructureViz extends CytoscapePlugin
 				m.add(item);
 			}
 			{
+				String residueList = CyChimera.getResidueList((CyNode)overNode.getNode());
+				if (residueList != null) {
+					// Get the structures for this node
+					List<Structure>structures =  CyChimera.getSelectedStructures(overNode);
+					if (structures.size() > 0) {
+			  		JMenuItem item = new JMenuItem("Select residues");
+						StructureVizCommandListener l = 
+						    new StructureVizCommandListener(SELECTRES, structures);
+						item.addActionListener(l);
+						m.add(item);
+					}
+				}
+			}
+			{
 				if (staticHandle.getChimera() == null || !staticHandle.getChimera().isLaunched())  
 				{
 			  	JMenuItem item = new JMenuItem("Close structure(s)");
@@ -181,9 +193,7 @@ public class StructureViz extends CytoscapePlugin
 			  	JMenu item = new JMenu("Close structure(s)");
 					List<Structure>openStructures = staticHandle.getOpenStructs();
 					addSubMenu(item, "all", CLOSE, openStructures);
-					Iterator iter = openStructures.iterator();
-					while (iter.hasNext()) {
-						Structure structure = (Structure)iter.next();
+					for (Structure structure: openStructures) {
 						addSubMenu(item, structure.name(), CLOSE, structure);
 					}
 					m.add(item);
@@ -261,6 +271,8 @@ public class StructureViz extends CytoscapePlugin
 				exitAction();
 			} else if (command == ALIGN) {
 				alignAction(label);
+			} else if (command == SELECTRES) {
+				selectResiduesAction();
 			} else if (command == CLOSE) {
 				closeAction(label);
 			} else if (command == SALIGN) {
@@ -288,12 +300,11 @@ public class StructureViz extends CytoscapePlugin
 			List<Structure>st = new ArrayList<Structure>();
 			if (chimera == null) return st;
 
-			List modelList = chimera.getChimeraModels();
+			List<ChimeraModel> modelList = chimera.getChimeraModels();
 			if (modelList == null) return st;
 
-			Iterator modelIter = modelList.iterator();
-			while (modelIter.hasNext()) {
-				Structure structure = ((ChimeraModel)modelIter.next()).getStructure();
+			for (ChimeraModel model: modelList) {
+				Structure structure = model.getStructure();
 				if (structure != null)
 					st.add(structure);
 			}
@@ -327,6 +338,38 @@ public class StructureViz extends CytoscapePlugin
 			alDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			alDialog.setVisible(true);
 			chimera.setAlignDialog(alDialog);
+		}
+
+		/**
+ 		 * Open the structures (if necessary) and select the residues.  Residues
+ 		 * can be formatted as pdb1:res1,pdb1:res2,pdb2:res1 or just res1,res2,res3.
+ 		 * In the latter case, the residues are assumed to be on all of the associated
+ 		 * structures.
+ 		 */
+		private void selectResiduesAction() {
+			System.out.println("Select Residues");
+			// Open all of the structures
+			openAction("all");
+			List<Structure>structuresList = (List<Structure>)userData;
+
+			String command = "select ";
+			for (Structure structure: structuresList) {
+				// Select the residues
+				List<String> residueL = structure.getResidueList();
+				if (residueL == null) return;
+				// The residue list is of the form RRRnnn,RRRnnn.  We want
+				// to reformat this to nnn,nnn
+				String residues = new String();
+				for (String residue: residueL) {
+					residues = residues.concat(residue.substring(3)+",");
+				}
+				residues = residues.substring(0,residues.length()-1);
+
+				command = command.concat(" #"+structure.modelNumber()+":"+residues);
+			}
+			System.out.println(command);
+			chimera.select(command);
+			chimera.modelChanged();
 		}
 
 		/**
@@ -384,7 +427,7 @@ public class StructureViz extends CytoscapePlugin
 				chimera = launchChimera();
 			}
 
-			ArrayList<Structure>structList = null;
+			List<Structure>structList = null;
 			if (commandLabel.compareTo("all") == 0) {
 				structList = (ArrayList)userData;
 			} else {
@@ -392,12 +435,30 @@ public class StructureViz extends CytoscapePlugin
 				structList.add((Structure)userData);
 			}
 
+			// Get the list of structures we already have open
+			List<Structure>openStructs = getOpenStructs();
+
+			List<Structure>newList = new ArrayList();
+
       // Send initial commands
-			Iterator iter = structList.iterator();
-			while (iter.hasNext()) {
-				Structure structure = (Structure) iter.next();
-				chimera.open(structure);
+      for (Structure structure: structList) {
+				boolean open = false;
+				String structureName = structure.name();
+				for (Structure openStructure: openStructs) {
+					if (structureName.equals(openStructure.name())) {
+						newList.add(openStructure);
+						open = true;
+						break;
+					}
+				}
+				if (open == false) {
+					chimera.open(structure);
+					newList.add(structure);
+				}
 			}
+
+			// Update userData
+			userData = newList;
 
 			if (mnDialog == null || !isLaunched) {
 				// Finally, open up our navigator dialog

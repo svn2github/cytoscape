@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.awt.Color;
@@ -56,9 +55,9 @@ import structureViz.model.Structure;
 public class ChimeraModel implements ChimeraStructuralObject {
 	private String name; 				// The name of this model
 	private int identifier; 		// The model number
-	private TreeMap chains; 		// The list of chains
-	private TreeMap residues; 	// The list of residues
-	private HashMap residueMap;	// A map of residue names and residues
+	private TreeMap<String,ChimeraChain> chains; 		// The list of chains
+	private TreeMap<String,ChimeraResidue> residues; 	// The list of residues
+	private HashMap<String,ChimeraResidue> residueMap;	// A map of residue names and residues
 	private Structure structure;// A pointer to the structure
 	private Color modelColor;		// The color of this model (from Chimera)
 	private Object userData;		// User data associated with this model
@@ -139,14 +138,14 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 *
 	 * @return the chains in this model
 	 */
-	public Collection getChains () { return chains.values(); }
+	public Collection<ChimeraChain> getChains () { return chains.values(); }
 
 	/**
 	 * Return the chains in this model as a List
 	 *
 	 * @return the chains in this model as a list
 	 */
-	public List getChildren () {
+	public List<ChimeraChain>getChildren () {
 		return new ArrayList(chains.values());
 	}
 
@@ -173,7 +172,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 * @return ChimeraChain associated with the chain
 	 */
 	public ChimeraChain getChain(String chain) {
-		return (ChimeraChain)chains.get(chain);
+		return chains.get(chain);
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 *
 	 * @return the list of residues in this model
 	 */
-	public Collection getResidues () { return residues.values(); }
+	public Collection<ChimeraResidue> getResidues () { return residues.values(); }
 
 	/**
 	 * Return a specific residue based on its index
@@ -190,7 +189,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 * @return the residue associated with that index
 	 */
 	public ChimeraResidue getResidue (String index) {
-		return (ChimeraResidue)residueMap.get(index);
+		return residueMap.get(index);
 	}
 
 	/**
@@ -283,13 +282,9 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		String chainId = residue.getChainId();
 		if (chainId != null) {
 			addResidue(chainId, residue);
-			residues.put(residue.getIndex(),residue);
-		} else {
-			// Get the value of the index (should be an int!)
-			Integer index = new Integer(residue.getIndex());
-			// Put it in our map so that we can return it in order
-			residues.put(index.intValue(), residue);
 		}
+		// Put it in our map so that we can return it in order
+		residues.put(residue.getIndex(), residue);
 	}
 
 	/**
@@ -306,7 +301,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 			chain.setChimeraModel(this);
 			chains.put(chainId, chain);
 		} else {
-			chain = (ChimeraChain)chains.get(chainId);
+			chain = chains.get(chainId);
 		}
 		chain.addResidue(residue);
 	}

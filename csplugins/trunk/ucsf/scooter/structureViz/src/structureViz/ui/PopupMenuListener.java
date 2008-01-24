@@ -34,7 +34,6 @@ package structureViz.ui;
 
 // System imports
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -122,16 +121,16 @@ class PopupMenuListener implements MouseListener {
 		}
 
 		// Create lists of types
-		ArrayList modelList = new ArrayList();
-		ArrayList chainList = new ArrayList();
-		ArrayList residueList = new ArrayList();
+		ArrayList<ChimeraModel>modelList = new ArrayList();
+		ArrayList<ChimeraChain> chainList = new ArrayList();
+		ArrayList<ChimeraResidue>residueList = new ArrayList();
 		int context = 0;
 
 		for (int i = 0; i < paths.length; i++) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i].getLastPathComponent();
 			Object nodeInfo = node.getUserObject();
 			if (nodeInfo.getClass() == ChimeraModel.class) {
-				modelList.add(nodeInfo);
+				modelList.add((ChimeraModel)nodeInfo);
 				if (modelList.contains(userObject)) {
 					if (context == 0)
 						context = ActionPopupMenu.MODEL_CONTEXT;
@@ -139,7 +138,7 @@ class PopupMenuListener implements MouseListener {
 						context = ActionPopupMenu.GENERIC_CONTEXT;
 				}
 			} else if (nodeInfo.getClass() == ChimeraChain.class) {
-				chainList.add(nodeInfo);
+				chainList.add((ChimeraChain)nodeInfo);
 				if (chainList.contains(userObject)) {
 					if (context == 0)
 						context = ActionPopupMenu.CHAIN_CONTEXT;
@@ -147,7 +146,7 @@ class PopupMenuListener implements MouseListener {
 						context = ActionPopupMenu.GENERIC_CONTEXT;
 				}
 			} else if (nodeInfo.getClass() == ChimeraResidue.class) {
-				residueList.add(nodeInfo);
+				residueList.add((ChimeraResidue)nodeInfo);
 				if (residueList.contains(userObject)) {
 					if (context == 0)
 						context = ActionPopupMenu.RESIDUE_CONTEXT;
