@@ -69,17 +69,23 @@ public class ExpressionDataTest extends TestCase {
 	private static String testDataDir = "testData";
 
 	/**
-	 * Test File Name.
+	 * Test File Names.
 	 */
-	private static String testDataFilename = "/gal1.22x5.mRNA";
+	private static String testDataFilename_1st = "/gal1.22x5.mRNA";
+	private static String testDataFilename_2nd = "/gal1.22x5.mRNA_wo_descript";
 
 	/**
 	 * Tests Loading of Sample Data.
 	 * @throws Exception    All Errors.
 	 */
 	public void testExpressionDataLoading() throws Exception {
+		expressionDataLoading(testDataFilename_1st);
+		expressionDataLoading(testDataFilename_2nd);		
+	}
+	
+	private void expressionDataLoading(String pTestDataFilename) throws Exception {
 		//  Load the specified Expression Data File
-		ExpressionData data = new ExpressionData(testDataDir + testDataFilename);
+		ExpressionData data = new ExpressionData(testDataDir + pTestDataFilename);
 		Vector measurements = data.getAllMeasurements();
 		assertTrue(data.getNumberOfGenes() == measurements.size());
 		assertTrue(data.getNumberOfGenes() > 0);
@@ -93,7 +99,12 @@ public class ExpressionDataTest extends TestCase {
 
 		//  Validate the Gene Descriptor.
 		String geneDescriptor = data.getGeneDescriptors()[0];
-		assertEquals("COX6", geneDescriptor);
+		if (!pTestDataFilename.contains("_wo_descript")) {
+			assertEquals("COX6", geneDescriptor);			
+		}
+		else {
+			assertEquals("", geneDescriptor);
+		}
 
 		//  Validate the 0th Experimental Condition
 		String conditionName = data.getConditionNames()[0];
@@ -119,7 +130,12 @@ public class ExpressionDataTest extends TestCase {
 	 * @throws Exception    All Errors.
 	 */
 	public void testGetMeasurement() throws Exception {
-		ExpressionData data = new ExpressionData(testDataDir + testDataFilename);
+		getMeasurement(testDataFilename_1st);
+		getMeasurement(testDataFilename_2nd);
+	}
+	
+	private void getMeasurement(String pTestDataFilename) throws Exception {
+		ExpressionData data = new ExpressionData(testDataDir + pTestDataFilename);
 
 		//  Validate data for all rows.
 		for (int i = 0; i < data.getGeneNames().length; i++) {
