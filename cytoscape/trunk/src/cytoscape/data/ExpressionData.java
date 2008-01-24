@@ -372,7 +372,8 @@ public class ExpressionData implements Serializable {
 			headerLine = lines[lineCount++];
 		}
 
-		boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine);
+		boolean hasCOMMON = doesHeaderLineHasCOMMON(headerLine);
+		boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine, hasCOMMON);
 
 		if ((this.significanceType != this.LAMBDA) && !expectPvals) {
 			// we know that we don't have a lambda header and we don't
@@ -383,10 +384,13 @@ public class ExpressionData implements Serializable {
 		StringTokenizer headerTok = new StringTokenizer(headerLine);
 		int numTokens = headerTok.countTokens();
 
-		// if we expect p-values, 4 is the minimum number.
-		// if we don't, 3 is the minimum number. Ergo:
-		// either way, we need 3, and if we expectPvals, we need 4.
-		if ((numTokens < 3) || ((numTokens < 4) && expectPvals)) {
+		// if we don't expect p-values, 3 is the minimum number with COMMON column, 2 if without COMMON.
+		// if we expect p-values, 4 is the minimum number with COMMON column, 3 if without COMMON.
+		int minTokens = 2;
+		if (hasCOMMON) {
+			minTokens = 3;
+		}
+		if ((numTokens < minTokens) || ((numTokens < (minTokens+1)) && expectPvals)) {
 			StringBuffer msg = new StringBuffer("Invalid header format in data file.");
 			msg.append("\nNumber of tokens parsed: " + numTokens);
 
@@ -414,9 +418,26 @@ public class ExpressionData implements Serializable {
 			numberOfConditions = numTokens - 2;
 		}
 
+		// Since COMMON is optional, it may not exist
+		if (!hasCOMMON) {			
+			if (expectPvals) {
+				if (tmpI == tmpF) {
+					numberOfConditions = (numTokens - 2) / 2;
+					haveExtraTokens = 1;
+				} else {
+					numberOfConditions = (numTokens - 1) / 2;
+					haveExtraTokens = 0;
+				}
+			} else {
+				numberOfConditions = numTokens - 1;
+			}
+		}
+		
 		/* eat the first two tokens from the header line */
 		headerTok.nextToken();
-		headerTok.nextToken();
+		if (hasCOMMON) {
+			headerTok.nextToken();			
+		}
 
 		/* the next numConds tokens are the condition names */
 		Vector cNames = new Vector(numberOfConditions);
@@ -467,7 +488,7 @@ public class ExpressionData implements Serializable {
 				taskMonitor.setPercentCompleted((int) percentComplete);
 			}
 
-			parseOneLine(lines[ii], ii, expectPvals, mappingByKeyAttribute, attributeToId);
+			parseOneLine(lines[ii], ii, expectPvals, mappingByKeyAttribute, attributeToId, hasCOMMON);
 		}
 
 		/* save numGenes and build hash of gene names to indices */
@@ -534,17 +555,42 @@ public class ExpressionData implements Serializable {
 		return (attributeToIdList);
 	}
 
-	private boolean doesHeaderLineHaveDuplicates(String hline) {
+	// Check if the name of the second column is "COMMON" 
+	private boolean doesHeaderLineHasCOMMON(String hline) {
+
+		StringTokenizer headerTok = new StringTokenizer(hline);
+
+		if (headerTok.countTokens() <2) {
+			return false;
+		}
+
+		headerTok.nextToken();
+		String secondColHeader = headerTok.nextToken(); 
+		
+		if (secondColHeader.equalsIgnoreCase("COMMON")) {
+			return true;
+		}
+		return false;		
+	}
+
+	
+	private boolean doesHeaderLineHaveDuplicates(String hline, boolean hasCOMMON) {
 		boolean retval = false;
 
 		StringTokenizer headerTok = new StringTokenizer(hline);
 		int numTokens = headerTok.countTokens();
 
-		if (numTokens < 3) {
+		int minTokens =2;
+		if (hasCOMMON) {
+			minTokens =3;			
+		}
+		if (numTokens < minTokens) {
 			retval = false;
 		} else {
 			headerTok.nextToken();
-			headerTok.nextToken();
+			if (hasCOMMON) {
+				headerTok.nextToken();				
+			}
 
 			HashMap names = new HashMap();
 
@@ -595,7 +641,7 @@ public class ExpressionData implements Serializable {
 	}
 
 	private void parseOneLine(String oneLine, int lineCount, boolean sig_vals,
-	                          boolean mappingByAttribute, Hashtable attributeToId)
+	                          boolean mappingByAttribute, Hashtable attributeToId, boolean hasCOMMON)
 	    throws IOException {
 		// 
 		// Step 1: divide the line into input tokens, and parse through
@@ -615,13 +661,21 @@ public class ExpressionData implements Serializable {
 			return;
 		}
 
-		if ((sig_vals && (numTokens < ((2 * numConds) + 2)))
-		    || ((!sig_vals) && (numTokens < (numConds + 2)))) {
+		int numPreCols = 2; // Number of columns before data columns 
+		if (!hasCOMMON) {
+			numPreCols = 1;
+		}
+		if ((sig_vals && (numTokens < ((2 * numConds) + numPreCols)))
+		    || ((!sig_vals) && (numTokens < (numConds + numPreCols)))) {
 			throw new IOException("Warning: parse error on line " + lineCount + "  tokens read: "
 			                      + numTokens);
 		}
 
-		String geneDescript = strtok.nextToken();
+		String geneDescript = null;
+		if (hasCOMMON) {
+			geneDescript = strtok.nextToken();
+		}
+		
 		String[] expData = new String[numConds];
 
 		for (int i = 0; i < numConds; i++) {
@@ -653,9 +707,10 @@ public class ExpressionData implements Serializable {
 
 		for (int ii = 0; ii < gNames.size(); ii++) {
 			geneNames.add(gNames.get(ii));
-			/* store descriptor token */
-			geneDescripts.add(geneDescript);
-
+			if (hasCOMMON) {
+				/* store descriptor token */
+				geneDescripts.add(geneDescript);
+			}
 			Vector measurements = new Vector(numConds);
 
 			for (int jj = 0; jj < numConds; jj++) {
