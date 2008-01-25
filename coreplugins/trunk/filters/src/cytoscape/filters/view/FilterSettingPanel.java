@@ -37,6 +37,7 @@ import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputAdapter;
 
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
@@ -274,9 +275,26 @@ public class FilterSettingPanel extends JPanel {
 		RangeSlideMouseAdapter l = new RangeSlideMouseAdapter(); 
 		rangeSlider.addMouseListener(l);
 		
+		MyMouseInputAdapter myMouseInputAdapter = new MyMouseInputAdapter();		
+		rangeSlider.addMouseMotionListener(myMouseInputAdapter);
+		
 		return rangeSlider;
 	}
 	
+	private class MyMouseInputAdapter extends MouseInputAdapter {
+		public void mouseMoved(MouseEvent e) {
+			String toolTipText = "";
+			JRangeSliderExtended _range = null;
+			NumberRangeModel _model = null;
+			Object _obj = e.getSource();			
+			if (_obj instanceof JRangeSliderExtended) {
+				_range = (JRangeSliderExtended) _obj;
+				_model = (NumberRangeModel) _range.getModel();
+				toolTipText = _model.getLowValue() + "~~" + _model.getHighValue(); 
+				_range.setToolTipText(toolTipText);
+			}
+		}
+	}
 	
 	public boolean hasNullIndexChildFilter() {
 		List<CyFilter> children = theFilter.getChildren();
