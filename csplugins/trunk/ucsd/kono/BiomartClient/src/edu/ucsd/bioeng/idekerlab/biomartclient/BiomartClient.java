@@ -156,10 +156,8 @@ public class BiomartClient extends WebServiceClientImpl {
 		
 		
 		for (int i = 0; i < colSize; i++) {
-			System.out.println("Key = " + key +", colname = " + columnNames[i] + ", Key attr name = " + keyAttrName);
 			if (columnNames[i].equals(key)) {
 				keyPosition = i;
-				System.out.println("Key found!!!!!!!!!!!!" + i);
 			}
 		}
 
