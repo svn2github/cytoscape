@@ -268,7 +268,7 @@ public class BiomartStub {
 		                + detail.get("path") + "?virtualschema="
 		                + detail.get("serverVirtualSchema") + "&type=filters&dataset="
 		                + datasetName;
-		System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
+		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 
 		URL url = new URL(urlStr);
 		URLConnection uc = url.openConnection();
@@ -288,7 +288,7 @@ public class BiomartStub {
 				} else if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
 				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false) && (parts[0].endsWith("-2") == false)) {
 					filters.put(parts[1], parts[0]);
-					System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
+					//System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
 				}
 			}
 		}
@@ -320,7 +320,7 @@ public class BiomartStub {
 		                + detail.get("path") + "?virtualschema="
 		                + detail.get("serverVirtualSchema") + "&type=attributes&dataset="
 		                + datasetName;
-		System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
+		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 
 		URL url = new URL(urlStr);
 		URLConnection uc = url.openConnection();
@@ -350,16 +350,6 @@ public class BiomartStub {
 			}
 
 			attributes.put(parts[0], attrInfo);
-
-			for (String e : parts) {
-				System.out.print("(" + e + "), ");
-			}
-
-			for (String e : attrInfo) {
-				System.out.print("[" + e + "], ");
-			}
-
-			System.out.println("");
 		}
 
 		is.close();
