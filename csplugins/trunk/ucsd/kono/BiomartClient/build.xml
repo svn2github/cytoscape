@@ -120,7 +120,7 @@
 		<copy todir="${biomartClient.classes.dir}/resource">
 							<fileset dir="${biomartClient.root.dir}/resource" />
 		</copy>
-		<copy todir="${biomartClient.classes.dir}/edu/ucsd/bioeng/coreplugin/biomartClient" 
+		<copy todir="${biomartClient.classes.dir}/edu/ucsd/bioeng/idekerlab/biomartclient" 
 			file="${biomartClient.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${biomartClient.classes.dir}">
