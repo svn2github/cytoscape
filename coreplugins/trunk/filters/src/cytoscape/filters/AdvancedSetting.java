@@ -5,7 +5,7 @@ package cytoscape.filters;
 public class AdvancedSetting {
 	// default settings
 	private boolean session = true, global=false; //scope
-	private boolean node=true, edge=false; // selectionType
+	private boolean node=true, edge=true; // selectionType
 	private boolean source=true, target=true; // EdgeType
 	private Relation relation = Relation.AND;
 		
