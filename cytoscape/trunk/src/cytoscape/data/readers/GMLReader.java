@@ -1323,19 +1323,19 @@ public class GMLReader extends AbstractGraphReader {
 
 				ArrowShape shape = ArrowShape.ARROW;
 				String arrowName = shape.getName();
-				if (keyVal.value.toString().equalsIgnoreCase("first")) {
+				if (keyVal.value.toString().equalsIgnoreCase(ARROW_FIRST)) {
 					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, (String)edgeCol.get(edgeName));
+					//graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, (String)edgeCol.get(edgeName));
 				}				
-				else if (keyVal.value.toString().equalsIgnoreCase("last")) {
+				else if (keyVal.value.toString().equalsIgnoreCase(ARROW_LAST)) {
 					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);	
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, (String)edgeCol.get(edgeName));					
+					//graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, (String)edgeCol.get(edgeName));					
 				}
-				else if (keyVal.value.toString().equalsIgnoreCase("both")) {
+				else if (keyVal.value.toString().equalsIgnoreCase(ARROW_BOTH)) {
 					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, (String)edgeCol.get(edgeName));
+					//graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, (String)edgeCol.get(edgeName));
 					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);	
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, (String)edgeCol.get(edgeName));					
+					//graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, (String)edgeCol.get(edgeName));					
 				}
 				else {// none
 				}
