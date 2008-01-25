@@ -662,6 +662,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 			for (CyNode groupNode: groupMap.keySet()) {
+				CyGroup newGroup = null;
 				List<CyNode> childList = groupMap.get(groupNode);
 				String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
 				                                                  CyGroup.GROUP_VIEWER_ATTR);
@@ -674,15 +675,15 @@ public class XGMMLReader extends AbstractGraphReader {
 				// Do we already have a view?
 				if (view == null || view == Cytoscape.getNullNetworkView()) {
 					// No, just create the group, but don't assign a viewer
-					CyGroupManager.createGroup(groupNode, childList, null);
+					newGroup = CyGroupManager.createGroup(groupNode, childList, null);
 				} else {
 					// Yes, see if the group already exists
-					CyGroup newGroup = CyGroupManager.getCyGroup(groupNode);
+					newGroup = CyGroupManager.getCyGroup(groupNode);
 					if (newGroup == null) {
 						// No, OK so create it and pass down the viewer
 						CyGroupManager.createGroup(groupNode, childList, viewer);
 					} else {
-						// Yes, just set the viewer
+						// Either the group doesn't have a viewer or it has a different viewer -- change it
 						CyGroupManager.setGroupViewer(newGroup, viewer, view, true);
 					}
 				}
