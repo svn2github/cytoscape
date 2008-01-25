@@ -249,7 +249,7 @@
 	            ***********************************************
 		</echo>
 		<mkdir dir="${junit.report.dir}" />
-		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+		<junit printsummary="withOutAndErr" showoutput="yes" haltonfailure="no" maxmemory="1g">
 			<classpath refid="ncbiClient.project.class.path" />
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />
