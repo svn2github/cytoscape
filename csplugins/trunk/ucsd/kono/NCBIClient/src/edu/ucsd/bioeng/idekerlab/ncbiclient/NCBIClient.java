@@ -74,6 +74,7 @@ import java.beans.PropertyChangeEvent;
 import java.rmi.RemoteException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,12 +88,13 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class NCBIClient extends WebServiceClientImpl implements NetworkImportWebServiceClient {
+	// Annotation categories available in NCBI
 	public enum AnnotationCategory {
 		SUMMARY("Summary"),
-		REFERENCE("References"),
+		PUBLICATION("Publications"),
 		PHENOTYPE("Phenotypes"),
 		PATHWAY("Pathways"),
-		GENERAL("General"),
+		GENERAL("General Protein Information"),
 		LINK("Additional Links");
 
 		private String name;
@@ -118,10 +120,9 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 	// Display name for this Client
 	private static final String DISPLAY_NAME = "NCBI Entrez EUtilities Web Service Client";
-	
+
 	// Client's ID
 	private static final String CLIENT_ID = "ncbi_entrez";
-	
 	private static NCBIClient client;
 	private static final String DEF_ITR_TYPE = "pp";
 	private CopyOnWriteArrayList<Node> nodeList;
@@ -129,6 +130,10 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	private Map<String[], Object> nodeAttrMap = new ConcurrentHashMap<String[], Object>();
 	private Map<String[], Object> edgeAttrMap = new ConcurrentHashMap<String[], Object>();
 	private List<AnnotationCategory> selectedAnn = new ArrayList<AnnotationCategory>();
+	private int threadNum;
+	private int buketNum;
+	private static final int DEF_BUCKET_SIZE = 5;
+	private static final int DEF_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 5;
 
 	static {
 		try {
@@ -161,9 +166,11 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 		props = new ModulePropertiesImpl(clientID, "wsc");
 		props.add(new Tunable("max_search_result", "Maximum number of search result",
-		                      Tunable.INTEGER, new Integer(50)));
-		props.add(new Tunable("with_anno", "Import selected annotations", Tunable.BOOLEAN,
-		                      new Boolean(false)));
+		                      Tunable.INTEGER, new Integer(10000)));
+		props.add(new Tunable("thread_pool_size", "Thread pool size", Tunable.INTEGER,
+		                      new Integer(DEF_POOL_SIZE)));
+		props.add(new Tunable("buket_size", "Number of IDs send at once", Tunable.INTEGER,
+		                      new Integer(DEF_BUCKET_SIZE)));
 	}
 
 	/**
@@ -208,7 +215,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 			} else {
 				Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
 				                             new DatabaseSearchResult(Integer.getInteger(result
-				                                                                                                                                                                                               .getCount()),
+				                                                                                                                                                                                                          .getCount()),
 				                                                      result,
 				                                                      WSEventType.IMPORT_NETWORK));
 			}
@@ -242,25 +249,42 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		nodeAttrMap = new ConcurrentHashMap<String[], Object>();
 		edgeAttrMap = new ConcurrentHashMap<String[], Object>();
 
-		long startTime = System.nanoTime();
+		long startTime = System.currentTimeMillis();
+		setPerformanceParameters();
 
-		ExecutorService e = Executors.newFixedThreadPool(20);
-		System.out.println("Initial Thread Pool:");
+		ExecutorService e = Executors.newFixedThreadPool(10);
 
 		List<Node> nodes = Cytoscape.getRootGraph().nodesList();
 
+		int group = 0;
+		String[] box = new String[10];
+
 		for (Node node : nodes) {
-			System.out.println("##########EXECUTE2: " + node.getIdentifier());
-			e.submit(new ImportAnnotationTask(node.getIdentifier()));
+			box[group] = node.getIdentifier();
+			group++;
+
+			if (group == 10) {
+				e.submit(new ImportAnnotationTask(box));
+				group = 0;
+				box = new String[10];
+			}
 		}
+
+		String[] newbox = new String[group];
+
+		for (int i = 0; i < group; i++) {
+			newbox[i] = box[i];
+		}
+
+		e.submit(new ImportAnnotationTask(newbox));
 
 		try {
 			e.shutdown();
-			e.awaitTermination(1500, TimeUnit.SECONDS);
+			e.awaitTermination(6000, TimeUnit.SECONDS);
 
-			long endTime = System.nanoTime();
-			double msec = (endTime - startTime) / (1000.0 * 1000.0);
-			System.out.println("FINISHED!!!!!!!!! = " + msec);
+			long endTime = System.currentTimeMillis();
+			double msec = (endTime - startTime) / (1000.0);
+			System.out.println("NCBI Import finished in " + msec +" msec.");
 
 			CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 
@@ -278,36 +302,78 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			System.out.println("TIMEOUT 2=================================");
+			System.out.println("TIMEOUT!");
 			e1.printStackTrace();
 		}
 	}
 
-	private void importNetwork(Object searchResult, CyNetwork net) {
+	public CyNetwork importNetwork(ESearchResult result) {
+		return importNetwork(result, null);
+	}
+
+	private void setPerformanceParameters() {
+		final String threadPool = props.getValue("thread_pool_size");
+		threadNum = DEF_POOL_SIZE;
+
+		try {
+			threadNum = Integer.parseInt(threadPool);
+		} catch (NumberFormatException e) {
+			threadNum = DEF_POOL_SIZE;
+		}
+
+		final String buket = props.getValue("buket_size");
+		buketNum = DEF_BUCKET_SIZE;
+
+		try {
+			buketNum = Integer.parseInt(threadPool);
+		} catch (NumberFormatException e) {
+			buketNum = DEF_BUCKET_SIZE;
+		}
+	}
+
+	private CyNetwork importNetwork(Object searchResult, CyNetwork net) {
 		ESearchResult res = (ESearchResult) searchResult;
 		IdListType ids = res.getIdList();
 
 		nodeList = new CopyOnWriteArrayList<Node>();
 		edgeList = new CopyOnWriteArrayList<Edge>();
 
-		long startTime = System.nanoTime();
+		long startTime = System.currentTimeMillis();
+		setPerformanceParameters();
 
-		ExecutorService e = Executors.newFixedThreadPool(20);
-		System.out.println("Initial Thread Pool:");
+		ExecutorService e = Executors.newFixedThreadPool(threadNum);
+
+		System.out.println("Thread Pool Initialized.");
+
+		int group = 0;
+		String[] box = new String[3];
 
 		for (String entrezID : ids.getId()) {
-			System.out.println("##########EXECUTE: " + entrezID);
-			e.submit(new ImportNetworkTask(entrezID));
+			box[group] = entrezID;
+			group++;
+
+			if (group == 3) {
+				e.submit(new ImportNetworkTask(box));
+				group = 0;
+				box = new String[3];
+			}
 		}
+
+		String[] newbox = new String[group];
+
+		for (int i = 0; i < group; i++) {
+			newbox[i] = box[i];
+		}
+
+		e.submit(new ImportNetworkTask(newbox));
 
 		try {
 			e.shutdown();
-			e.awaitTermination(1500, TimeUnit.SECONDS);
+			e.awaitTermination(6000, TimeUnit.SECONDS);
 
-			long endTime = System.nanoTime();
-			double msec = (endTime - startTime) / (1000.0 * 1000.0);
-			System.out.println("FINISHED!!!!!!!!! = " + msec);
+			long endTime = System.currentTimeMillis();
+			double sec = (endTime - startTime) / (1000.0);
+			System.out.println("FINISHED!!!!!!!!! = " + sec + " sec.");
 
 			// Set attributes
 			CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
@@ -325,7 +391,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 			}
 
 			if (net == null) {
-				Cytoscape.createNetwork(nodeList, edgeList, "NCBI-Net", null);
+				net = Cytoscape.createNetwork(nodeList, edgeList, "NCBI-Net", null);
 				Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
 			} else {
 				for (Node node : nodeList) {
@@ -345,11 +411,14 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 			}
 
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+			e = null;
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
-			System.out.println("TIMEOUT=================================");
+			System.out.println("TIMEOUT");
 			e1.printStackTrace();
 		}
+
+		return net;
 	}
 
 	/**
@@ -368,9 +437,9 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	 *
 	 */
 	class ImportNetworkTask implements Runnable {
-		private String entrezID;
+		private String[] entrezID;
 
-		public ImportNetworkTask(String id) {
+		public ImportNetworkTask(String[] id) {
 			this.entrezID = id;
 		}
 
@@ -378,35 +447,62 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		}
 
 		public void run() {
-			System.out.println("RunnableTask starts.");
-
-			try {
-				EFetchRequest parameters = new EFetchRequest();
+			{
+				final EFetchRequest parameters = new EFetchRequest();
+				final StringBuilder builder = new StringBuilder();
 				parameters.setDb("gene");
-				parameters.setId(entrezID);
 
-				EFetchResult res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
+				for (String id : entrezID) {
+					builder.append(id + ",");
+				}
+
+				String query = builder.toString();
+				parameters.setId(query.substring(0, query.length() - 1));
+
+				EFetchResult res = null;
+
+				while (res == null) {
+					try {
+						res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						//						e.printStackTrace();
+						res = null;
+
+						try {
+							System.out.println("!!!!!!!!!!!!!!!!! BGW error !!!!!!!!!!!!!!!! Sleep "
+							                   + query.substring(0, query.length() - 1));
+							TimeUnit.SECONDS.sleep(1);
+						} catch (InterruptedException e2) {
+							// TODO Auto-generated catch block
+							System.out.println("=========Time error !!!!!!!!!!!!!!!!");
+						}
+					}
+
+					if (res == null) {
+						System.out.println("=========Try again!!! "
+						                   + query.substring(0, query.length() - 1));
+					}
+				}
 
 				// Create network from Interactions section
 				final int entryLen = res.getEntrezgeneSet().getEntrezgene().length;
 				Node centerNode = null;
 				String interactionType = null;
-				String sourceDB = null;
+
+				//String sourceDB = null;
 				String otherGeneName = null;
 				String nodeid = null;
 				GeneCommentaryType[] gc = null;
 				GeneCommentaryType[] interactions = null;
 
-				String[] attrPair = new String[2];
+				Node n1;
+				Edge e1;
+
+				String edgeID;
 
 				for (int i = 0; i < entryLen; i++) {
-					//					System.out.println("summary: "
-					//					                   + res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_gene()
-					//					                                                              .getGeneRef()
-					//					                                                              .getGeneRef_desc());
-					centerNode = Cytoscape.getCyNode(entrezID, true);
-					nodeList.add(centerNode);
-
+					// Get commentary section.
 					gc = res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_comments()
 					                                              .getGeneCommentary();
 
@@ -414,6 +510,20 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 						if ((g.getGeneCommentary_heading() != null)
 						    && g.getGeneCommentary_heading().equals("Interactions")) {
 							// Interaction section found.
+							try {
+								centerNode = Cytoscape.getCyNode(res.getEntrezgeneSet()
+								                                                                          .getEntrezgene()[i].getEntrezgene_trackInfo()
+								                                                                          .getGeneTrack()
+								                                                                          .getGeneTrack_geneid(),
+								                                 true);
+								System.out.println("#########Center = "
+								                   + centerNode.getIdentifier());
+							} catch (Exception e) {
+								System.out.println("NPE!!!!!!!!!!!!!!!!");
+							}
+
+							nodeList.add(centerNode);
+
 							// Parse individual interactions.
 							interactions = g.getGeneCommentary_comment().getGeneCommentary();
 
@@ -425,11 +535,6 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 								}
 
 								if (itr.getGeneCommentary_comment().getGeneCommentary().length > 1) {
-									String otherGene = itr.getGeneCommentary_comment()
-									                      .getGeneCommentary(1)
-									                      .getGeneCommentary_source()
-									                      .getOtherSource(0).getOtherSource_anchor();
-
 									// Find node ID.  If available, use Entrez Gene ID.
 									// If not, use the database-specific ID instead.
 									try {
@@ -443,24 +548,23 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 										continue;
 									}
 
-									Node n1 = Cytoscape.getCyNode(nodeid, true);
+									n1 = Cytoscape.getCyNode(nodeid, true);
 									nodeList.add(n1);
 
-									Edge e1 = Cytoscape.getCyEdge(centerNode, n1, "interaction",
-									                              interactionType, true);
+									e1 = Cytoscape.getCyEdge(centerNode, n1, "interaction",
+									                         interactionType, true);
 									edgeList.add(e1);
+									edgeID = e1.getIdentifier();
 
 									// Add edge attributes
-									String[] source = new String[] { e1.getIdentifier(), "datasource" };
-
-									sourceDB = itr.getGeneCommentary_source().getOtherSource(0)
-									              .getOtherSource_src().getDbtag().getDbtag_db();
-									edgeAttrMap.put(source, sourceDB);
+									edgeAttrMap.put(new String[] { edgeID, "datasource" },
+									                itr.getGeneCommentary_source().getOtherSource(0)
+									                   .getOtherSource_src().getDbtag().getDbtag_db());
 
 									PubType[] pubmed = itr.getGeneCommentary_refs().getPub();
 
 									if ((pubmed != null) && (pubmed.length > 0)) {
-										String[] pmid = new String[] { e1.getIdentifier(), "PubMed ID" };
+										String[] pmid = new String[] { edgeID, "PubMed ID" };
 										List<String> pmids = new ArrayList<String>();
 
 										for (PubType pub : pubmed) {
@@ -471,15 +575,13 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 									}
 								}
 							}
+
+							break;
 						}
 					}
-
-					//System.out.println("summary: "+res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_properties().getGeneCommentary(0).getGeneCommentary_type());
-					//		                System.out.println("Abstract: "+res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_nonUniqueKeys().getDbtag(0));
 				}
-			} catch (Exception e) {
-				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Problem for: " + entrezID);
-				e.printStackTrace();
+
+				System.out.println(entrezID + ": Finished " + (new Date()).toString());
 			}
 		}
 	}
@@ -487,32 +589,73 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	// Task for importing annotations
 	//
 	class ImportAnnotationTask implements Runnable {
-		private String entrezID;
+		private String[] ids;
 
-		public ImportAnnotationTask(String id) {
-			this.entrezID = id;
+		public ImportAnnotationTask(String[] ids) {
+			this.ids = ids;
 		}
 
 		private void parseAnnotation(EFetchResult res) {
 		}
 
 		public void run() {
-			System.out.println("Annotation task starts.");
+			
 
-			try {
-				EFetchRequest parameters = new EFetchRequest();
-				parameters.setDb("gene");
-				parameters.setId(entrezID);
+			StringBuilder builder = new StringBuilder();
+			final EFetchRequest parameters = new EFetchRequest();
+			parameters.setDb("gene");
 
-				EFetchResult res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
+			for (String id : ids) {
+				try {
+					// Entrez ID should be an integer
+					Integer.parseInt(id);
+					builder.append(id + ",");
+				} catch (NumberFormatException ne) {
+					continue;
+				}
+				
+			}
 
-				if ((res == null) || (res.getEntrezgeneSet() == null)
-				    || (res.getEntrezgeneSet().getEntrezgene(0) == null)
-				    || (res.getEntrezgeneSet().getEntrezgene().length < 1)) {
-					return;
+			String query = builder.toString();
+			parameters.setId(query.substring(0, query.length() - 1));
+
+			EFetchResult res = null;
+			int retry = 0;
+			while (res == null) {
+				try {
+					res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					//						e.printStackTrace();
+					res = null;
+
+					try {
+						retry++;
+						System.out.println("!!!!!!!!!!!!!!!!! BGW error !!!!!!!!!!!!!!!! Sleep "
+						                   + query.substring(0, query.length() - 1));
+						TimeUnit.SECONDS.sleep(1);
+					} catch (InterruptedException e2) {
+						// TODO Auto-generated catch block
+						System.out.println("=========Time error !!!!!!!!!!!!!!!!");
+					}
 				}
 
-				EntrezgeneType entry = res.getEntrezgeneSet().getEntrezgene(0);
+				if (res == null && retry<3) {
+					System.out.println("=========Try again!!! "
+					                   + query.substring(0, query.length() - 1));
+				} else if(retry>3) {
+					return;
+				}
+			}
+
+
+			EntrezgeneType[] entries = res.getEntrezgeneSet().getEntrezgene();
+
+			for (EntrezgeneType entry : entries) {
+				String entrezID = entry.getEntrezgene_trackInfo().getGeneTrack()
+				                       .getGeneTrack_geneid();
+				
+				System.out.println("Extracting annotation for: " + entrezID);
 
 				// Species
 				String species = entry.getEntrezgene_source().getBioSource().getBioSource_org()
@@ -586,26 +729,57 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 							String[] pwl = new String[] { entrezID, "Pathway Link" };
 							edgeAttrMap.put(pwl, pathwayLinks);
+						} else if ((comment.getGeneCommentary_heading() != null)
+						    && comment.getGeneCommentary_heading().equals("Phenotypes")) {
+							final GeneCommentaryType[] phenotypes = comment.getGeneCommentary_comment()
+							                                             .getGeneCommentary();
+
+							List<String> phenotypeNames = new ArrayList<String>();
+							List<String> phenotypeIDs = new ArrayList<String>();
+
+							for (GeneCommentaryType p : phenotypes) {
+								String pName = p.getGeneCommentary_text();
+								String pID = p.getGeneCommentary_source().getOtherSource(0)
+								                .getOtherSource_anchor();
+								phenotypeNames.add(pName);
+								phenotypeIDs.add(pID);
+							}
+
+							String[] pwn = new String[] { entrezID, "Phenotypes" };
+							edgeAttrMap.put(pwn, phenotypeNames);
+
+							String[] pwl = new String[] { entrezID, "Phenotype ID" };
+							edgeAttrMap.put(pwl, phenotypeIDs);
+						} else if ((comment.getGeneCommentary_heading() != null)
+						    && comment.getGeneCommentary_heading().equals("Additional Links")) {
+							final GeneCommentaryType[] links = comment.getGeneCommentary_comment()
+							                                             .getGeneCommentary();
+
+							List<String> sourceName = new ArrayList<String>();
+							List<String> externalLink = new ArrayList<String>();
+
+							for (GeneCommentaryType p : links) {
+								String link = p.getGeneCommentary_source().getOtherSource(0)
+				                .getOtherSource_url();
+								String name = p.getGeneCommentary_source().getOtherSource(0)
+								                .getOtherSource_anchor();
+								if(link != null) {
+									externalLink.add(link);
+								}
+								if(name != null) {
+								sourceName.add(name);
+								}
+							}
+
+							String[] pwn = new String[] { entrezID, "Additional Links Name" };
+							edgeAttrMap.put(pwn, sourceName);
+
+							String[] pwl = new String[] { entrezID, "Additional Links" };
+							edgeAttrMap.put(pwl, externalLink);
 						}
+						
 					}
-				}
-
-				// Link
-
-				//					for (GeneCommentaryType g : gc) {
-				//						if ((g.getGeneCommentary_heading() != null)
-				//						    && g.getGeneCommentary_heading().equals("Interactions")) {
-				//							// Interaction section found.
-				//							// Parse individual interactions.
-				//							interactions = g.getGeneCommentary_comment().getGeneCommentary();
-				//
-				//					}
-
-				//System.out.println("summary: "+res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_properties().getGeneCommentary(0).getGeneCommentary_type());
-				//		                System.out.println("Abstract: "+res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_nonUniqueKeys().getDbtag(0));
-			} catch (Exception e) {
-				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Problem for: " + entrezID);
-				e.printStackTrace();
+				} 
 			}
 		}
 	}
