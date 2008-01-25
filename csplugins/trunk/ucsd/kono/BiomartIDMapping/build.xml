@@ -73,7 +73,9 @@
 			<fileset dir="${biomartUI.lib.dir}">
 				<include name="*.jar" />
 			</fileset>
-			
+			<fileset dir="${biomartUI.root.dir}/../BiomartClient">
+							<include name="*.jar" />
+			</fileset>
 			<fileset dir="${cytoscape.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -121,7 +123,7 @@
 		<copy todir="${biomartUI.classes.dir}/resource">
 					<fileset dir="${biomartUI.root.dir}/resource" />
 		</copy>
-		<copy todir="${biomartUI.classes.dir}/edu/ucsd/bioeng/coreplugin/biomartUI" 
+		<copy todir="${biomartUI.classes.dir}/edu/ucsd/bioeng/idekerlab/biomartui/" 
 			file="${biomartUI.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${biomartUI.classes.dir}">
