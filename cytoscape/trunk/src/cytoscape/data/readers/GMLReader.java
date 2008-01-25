@@ -345,9 +345,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *  DOCUMENT ME!
 	 *
 	 * @param vizmapper DOCUMENT ME!
-	 * @deprecated Will be removed 1/2009
 	 */
-	@Deprecated
 	public void setNodeMaps(VisualMappingManager vizmapper) {
 		//
 		// Set label for the nodes. (Uses "label" tag in the GML file)
@@ -533,9 +531,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *  DOCUMENT ME!
 	 *
 	 * @param vizmapper DOCUMENT ME!
-	 * @deprecated Will be removed 1/2009
 	 */
-	@Deprecated
 	public void setEdgeMaps(VisualMappingManager vizmapper) {
 		//
 		// Set the color of the edges and arrows.
@@ -665,9 +661,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param mapSuffix DOCUMENT ME!
 	 * @param VSName DOCUMENT ME!
-	 * @deprecated Will be removed 1/2009
 	 */
-	@Deprecated
 	public void applyMaps(String mapSuffix, String VSName) {
 		// CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
 		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
@@ -1303,6 +1297,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 	}
 
+
 	//
 	// Extract edge attributes from GML input
 	//
@@ -1325,14 +1320,26 @@ public class GMLReader extends AbstractGraphReader {
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_COLOR, new String(keyVal.value.toString()));
 			} else if (keyVal.key.equals(ARROW)) {
 				edgeArrow.put(edgeName, (String) keyVal.value);
-				if (keyVal.value.toString().equalsIgnoreCase("last")) {
-					System.out.println("VisualPropertyType.EDGE_TGTARROW_SHAPE");
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, keyVal.value.toString());
-				}
-				else { // first?
-					System.out.println("VisualPropertyType.EDGE_SRCARROW_SHAPE");
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, keyVal.value.toString());					
+
+				ArrowShape shape = ArrowShape.ARROW;
+				String arrowName = shape.getName();
+				if (keyVal.value.toString().equalsIgnoreCase("first")) {
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, (String)edgeCol.get(edgeName));
 				}				
+				else if (keyVal.value.toString().equalsIgnoreCase("last")) {
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);	
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, (String)edgeCol.get(edgeName));					
+				}
+				else if (keyVal.value.toString().equalsIgnoreCase("both")) {
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, (String)edgeCol.get(edgeName));
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);	
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, (String)edgeCol.get(edgeName));					
+				}
+				else {// none
+				}
+				
 			} else if (keyVal.key.equals(TYPE)) {
 				value = (String) keyVal.value;
 
