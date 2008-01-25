@@ -103,9 +103,8 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 		BiomartAttrMappingPanel panel = new BiomartAttrMappingPanel();
 		panel.addPropertyChangeListener(this);
 		tabs.addTab("Query", panel);
-		tabs.addTab("Options", tPanel);
-
-		tabs.addTab("PICR", new PICRPanel());
+		//tabs.addTab("Options", tPanel);
+		//tabs.addTab("PICR", new PICRPanel());
 
 		add(tabs);
 
@@ -175,7 +174,6 @@ public class BiomartMainDialog extends JDialog implements PropertyChangeListener
 	 * @param evt DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
 		if (evt.getPropertyName().equals("CLOSE")) {
 			dispose();
 		}

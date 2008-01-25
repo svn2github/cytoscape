@@ -58,7 +58,7 @@ public class BiomartUIPlugin extends CytoscapePlugin {
 	 * Creates a new UI and register it to plugin menu.
 	 */
 	public BiomartUIPlugin() {
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(new AbstractAction("Import Attributes from Biomart") {
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(new AbstractAction("Import attributes from Biomart...") {
 				public void actionPerformed(ActionEvent e) {
 					BiomartMainDialog.showUI();
 				}

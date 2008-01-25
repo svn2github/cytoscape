@@ -273,7 +273,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		final String keyAttrName = attributeComboBox.getSelectedItem().toString();
 
-		System.out.println("##### Target attr name found: " + keyAttrName);
+		System.out.println("Target attr name found: " + keyAttrName);
 
 		Dataset dataset;
 		Attribute[] attrs;
@@ -281,7 +281,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		// Name of the datasource
 		dataset = new Dataset(datasource);
-		System.out.println("======dataset = " + dataset.getName());
+		System.out.println("Target Dataset = " + dataset.getName());
 
 		final Object[] selectedAttr = attrList.getSelectedValues();
 		attrs = new Attribute[selectedAttr.length + 1];
@@ -289,7 +289,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		// This is the mapping key
 		String filterName = fMap.get(attributeTypeComboBox.getSelectedItem());
 		String dbName = this.databaseComboBox.getSelectedItem().toString();
-		System.out.println("FilterName -----------------> " + filterName);
+		System.out.println("Filter Name = " + filterName);
 
 		// Database-specific modification.
 		// This is not the best way, but cannot provide universal solution.
@@ -306,15 +306,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 			attrs[0] = new Attribute(filterName);
 		}
 
-		System.out.println("======ATTR Key = " + attrs[0].getName());
-
 		for (int i = 1; i <= selectedAttr.length; i++) {
 			attrs[i] = new Attribute(attrMap.get(selectedAttr[i - 1]));
-			System.out.println("======ATTR = " + attrs[i].getName());
-		}
-
-		for (Attribute at : attrs) {
-			System.out.println("Result -----------------> " + at.getName());
 		}
 
 		// For name mapping, just use ID list filter for query.
@@ -327,7 +320,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		for (String key : attrMap.keySet()) {
 			if (attrMap.get(key).equals(filterName)) {
 				keyInHeader = key.split("\\t")[1];
-				System.out.println("Key in header = " + keyInHeader);
+				System.out.println("Key Attr = " + keyInHeader);
 			}
 		}
 
@@ -345,6 +338,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
+		
+		firePropertyChange(CLOSE_EVENT, null, null);
 	}
 
 	private static String getIDFilterString(String keyAttrName) {
@@ -378,8 +373,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 
 		String filterStr = builder.toString();
 		filterStr = filterStr.substring(0, filterStr.length() - 1);
-
-		System.out.println("Filter =====>>> " + filterStr);
 
 		return filterStr;
 	}
@@ -440,7 +433,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		 * @return  DOCUMENT ME!
 		 */
 		public String getTitle() {
-			// TODO Auto-generated method stub
 			return "Loading Attributes from Web Service";
 		}
 
@@ -448,9 +440,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		 *  DOCUMENT ME!
 		 */
 		public void halt() {
-			// TODO Auto-generated method stub
-			System.out.println("HALT@@@@@@@@@@@@");
-
 			return;
 		}
 
@@ -497,7 +486,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
-			System.out.println("#########Updating attr list!");
 			setAttributes();
 		}
 	}
