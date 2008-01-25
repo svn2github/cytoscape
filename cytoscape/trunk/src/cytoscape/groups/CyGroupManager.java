@@ -152,10 +152,13 @@ public class CyGroupManager {
 	 * @return the group, or null if no such group exists
 	 */
 	public static CyGroup findGroup(String groupName) {
-		Iterator <CyGroup>groupIter = getGroupList().iterator();
-		while (groupIter.hasNext()) {
-			CyGroup group = groupIter.next();
+		for (CyGroup group: getGroupList()) {
 			if (group.getGroupName().equals(groupName)) {
+				return group;
+			} else if (group.getGroupNode().getIdentifier().equals(groupName)) {
+				// This means that someone changed the name of our groupNode, but
+				// not the name of the group.  Update our name and return
+				((CyGroupImpl)group).setGroupName(group.getGroupNode().getIdentifier());
 				return group;
 			}
 		}

@@ -187,6 +187,13 @@ public class CyGroupImpl implements CyGroup {
 	}
 
 	/**
+	 * Set the name of this group
+	 */
+	public void setGroupName(String name) {
+		this.groupName = name;
+	}
+
+	/**
 	 * Get all of the nodes in this group
 	 *
 	 * @return list of nodes in the group
