@@ -1,12 +1,11 @@
 package edu.ucsd.bioeng.idekerlab.SeniorDesign;
 
 public interface SeniorDesignPluginInterface extends CytoscapePlugin {
-
-		void getRightClick(Node NodeInfo); 
-		void setUpPopup(); 
-		void userStartButtonPress();
-		void setUpDefaults();
-		void searchThread(Node NodeInfo, String SpeciesName, DatabaseName);
-		void initializeDatabase(DatabaseName);
-		void updateNetwork();
+	private void getRightClick(Node NodeInfo); 
+	private void setUpPopup(); 
+	private void userStartButtonPress();
+	private void setUpDefaults();
+	private void searchThread(Node NodeInfo, String SpeciesName, DatabaseName);
+	private void initializeDatabase(DatabaseName);
+	private void updateNetwork();
 }

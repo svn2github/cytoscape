@@ -3,12 +3,12 @@ package edu.ucsd.bioeng.idekerlab.SeniorDesign;
 public class SeniorDesignPlugin implements SeniorDesignPluginInterface
 {
 
-        void getRightClick(Node NodeInfo)
+        private void getRightClick(Node NodeInfo)
         {
                 setUpPopup();
         }
 
-        void setUpPopup()
+        private void setUpPopup()
         {
                 intializeSwingGui();
                 setUpDefaults();
@@ -22,7 +22,7 @@ public class SeniorDesignPlugin implements SeniorDesignPluginInterface
                 }
         }
 
-        void userStartButtonPress()
+        private void userStartButtonPress()
         {
                 //start downloads
                 for(each checked database checkbox)
@@ -31,25 +31,25 @@ public class SeniorDesignPlugin implements SeniorDesignPluginInterface
                 }
         }
 
-        void setUpDefaults()
+        private void setUpDefaults()
         {
                 loadDatabaseNames();
                 scanSpecies();
         }
 
-        void searchThread(Node NodeInfo, String SpeciesName, DatabaseName) extends Thread
+        private void searchThread(Node NodeInfo, String SpeciesName, DatabaseName) extends Thread
         {
                 initializeOurWebServiceClient(DatabaseName);
                 getData();
 
         }
 
-        void initializeOurWebServiceClient(DatabaseName)
+        private void initializeOurWebServiceClient(DatabaseName)
         {
                 //use polymorphism to define getData function
         }
 
-        void updateNetwork()
+        private void updateNetwork()
         {
                 //update using CyNetwork / CyNode
         }
