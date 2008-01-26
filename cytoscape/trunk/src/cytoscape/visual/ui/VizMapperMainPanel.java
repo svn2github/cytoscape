@@ -125,8 +125,10 @@ import java.lang.reflect.Constructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -890,7 +892,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * Set Visual Style selector combo box.
 	 */
 	private void setVSSelector() {
-		Set<String> vsNames = vmm.getCalculatorCatalog().getVisualStyleNames();
+		List<String> vsNames = new ArrayList<String>(vmm.getCalculatorCatalog().getVisualStyleNames());
 
 		vsNameComboBox.removeAllItems();
 
@@ -901,6 +903,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		CyNetworkView oldView = vmm.getNetworkView();
 
+		Collections.sort(vsNames);
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
 
@@ -912,7 +915,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				createDefaultImage(name, view, panelSize);
 			}
 		}
-
+		
 		// vmm.setNetworkView(oldView);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
@@ -3649,16 +3652,39 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = vmm.getVisualStyle().getName();
 
+		//System.out.println("VMM Change event: " + e.getSource());
+		
 		if ((selectedName == null) || (currentName == null) || (selectedName.equals(currentName))) {
 			return;
 		}
-
+		
 		// We need to update the combo box and switch visual styles.
 		// Now check if we need to add a new item:
 		if (!findVSName(currentName)) {
 			vsNameComboBox.addItem(currentName);
 		}
-
+		
+		// Update GUI based on CalcCatalog's state.
+		String styleName;
+		List<String> namesInBox = new ArrayList<String>();
+		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
+		
+		for(int i=0; i<vsNameComboBox.getItemCount(); i++) {
+			styleName = vsNameComboBox.getItemAt(i).toString();
+			if(vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
+				// No longer exists in the VMM.  Remove.
+				vsNameComboBox.removeItem(styleName);
+				defaultImageManager.remove(styleName);
+				propertyMap.remove(styleName);
+			} 
+		}
+		Collections.sort(namesInBox);
+		
+		vsNameComboBox.removeAllItems();
+		for(String name: namesInBox) {
+			vsNameComboBox.addItem(name);
+		}
+		
 		vsNameComboBox.setSelectedItem(currentName);
 		switchVS(currentName);
 	}
