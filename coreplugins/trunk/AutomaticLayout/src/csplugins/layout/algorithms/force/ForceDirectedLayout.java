@@ -116,42 +116,29 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 	protected void initialize_local() {
 		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
-		// Depending on whether we are partitioned or not,
-		// we use different initialization.  Note that if the user only wants
-		// to lay out selected nodes, partitioning becomes a very bad idea!
-		if (selectedOnly) {
-			// We still use the partition abstraction, even if we're
-			// not partitioning.  This makes the code further down
-			// much cleaner
-			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly,
-			                                                edgeAttribute);
-			partitionList = new ArrayList(1);
-			partitionList.add(partition);
-		} else {
-			partitionList = LayoutPartition.partition(network, networkView, selectedOnly,
-			                                          edgeAttribute);
-		}
 	}
 
 
 	public void layoutPartion(LayoutPartition part) {
+		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges");
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
+		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
 
-        m_fsim.clear();
+		m_fsim.clear();
 
-	   	// initialize nodes
+		// initialize nodes
 		Iterator iter = part.nodeIterator();
-        while ( iter.hasNext() ) {
+			while ( iter.hasNext() ) {
 			LayoutNode ln = (LayoutNode)iter.next();
 			if ( !forceItems.containsKey(ln) )
 				forceItems.put(ln, new ForceItem());
-            ForceItem fitem = forceItems.get(ln); 
-            fitem.mass = getMassValue(ln);
-            fitem.location[0] = 0f; 
-            fitem.location[1] = 0f; 
-            m_fsim.addItem(fitem);
-        }
+			ForceItem fitem = forceItems.get(ln); 
+			fitem.mass = getMassValue(ln);
+			fitem.location[0] = 0f; 
+			fitem.location[1] = 0f; 
+			m_fsim.addItem(fitem);
+		}
 		
 		// initialize edges
 		iter =  part.edgeIterator(); 
@@ -180,53 +167,53 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 			setTaskStatus((int)(((double)i/(double)numIterations)*90.+5));
 		}
 		
-        // update positions
-        iter = part.nodeIterator(); 
-        while ( iter.hasNext() ) {
+		// update positions
+		iter = part.nodeIterator(); 
+		while ( iter.hasNext() ) {
 			LayoutNode ln = (LayoutNode)iter.next();
 			if (!ln.isLocked()) {
-            	ForceItem fitem = forceItems.get(ln); 
+				ForceItem fitem = forceItems.get(ln); 
 				ln.setX(fitem.location[0]);
 				ln.setY(fitem.location[1]);
 				part.moveNodeToLocation(ln);
 			}
-        }
-    }
-    
-    /**
-     * Get the mass value associated with the given node. Subclasses should
-     * override this method to perform custom mass assignment.
-     * @param n the node for which to compute the mass value
-     * @return the mass value for the node. By default, all items are given
-     * a mass value of 1.0.
-     */
-    protected float getMassValue(LayoutNode n) {
-        return (float)defaultNodeMass;
-    }
-    
-    /**
-     * Get the spring length for the given edge. Subclasses should
-     * override this method to perform custom spring length assignment.
-     * @param e the edge for which to compute the spring length
-     * @return the spring length for the edge. A return value of
-     * -1 means to ignore this method and use the global default.
-     */
-    protected float getSpringLength(LayoutEdge e) {
+		}
+	}
+
+	/**
+	 * Get the mass value associated with the given node. Subclasses should
+	 * override this method to perform custom mass assignment.
+	 * @param n the node for which to compute the mass value
+	 * @return the mass value for the node. By default, all items are given
+	 * a mass value of 1.0.
+	 */
+	protected float getMassValue(LayoutNode n) {
+		return (float)defaultNodeMass;
+	}
+
+	/**
+	 * Get the spring length for the given edge. Subclasses should
+	 * override this method to perform custom spring length assignment.
+	 * @param e the edge for which to compute the spring length
+	 * @return the spring length for the edge. A return value of
+	 * -1 means to ignore this method and use the global default.
+	*/
+	protected float getSpringLength(LayoutEdge e) {
 		double weight = e.getWeight();
 		return (float)(defaultSpringLength/weight);
-    }
+	}
 
-    /**
-     * Get the spring coefficient for the given edge, which controls the
-     * tension or strength of the spring. Subclasses should
-     * override this method to perform custom spring tension assignment.
-     * @param e the edge for which to compute the spring coefficient.
-     * @return the spring coefficient for the edge. A return value of
-     * -1 means to ignore this method and use the global default.
-     */
-    protected float getSpringCoefficient(LayoutEdge e) {
-        return (float)defaultSpringCoefficient;
-    }
+	/**
+	 * Get the spring coefficient for the given edge, which controls the
+	 * tension or strength of the spring. Subclasses should
+	 * override this method to perform custom spring tension assignment.
+	 * @param e the edge for which to compute the spring coefficient.
+	 * @return the spring coefficient for the edge. A return value of
+	 * -1 means to ignore this method and use the global default.
+	 */
+	protected float getSpringCoefficient(LayoutEdge e) {
+		return (float)defaultSpringCoefficient;
+	}
 
 	/**
 	 * Return information about our algorithm

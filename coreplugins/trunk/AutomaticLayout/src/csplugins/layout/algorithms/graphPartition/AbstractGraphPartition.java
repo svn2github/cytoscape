@@ -94,7 +94,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			// We still use the partition abstraction, even if we're
 			// not partitioning.  This makes the code further down
 			// much cleaner
-			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, null);
+			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, edgeAttribute);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else if (staticNodes != null && staticNodes.size() > 0) {
@@ -106,11 +106,11 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 					unlockedNodes.add(node);
 				}
 			}
-			LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, null);
+			LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, edgeAttribute);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else {
-			partitionList = LayoutPartition.partition(network, networkView, false, null);
+			partitionList = LayoutPartition.partition(network, networkView, false, edgeAttribute);
 		}
 
 		total_nodes = network.getNodeCount();
