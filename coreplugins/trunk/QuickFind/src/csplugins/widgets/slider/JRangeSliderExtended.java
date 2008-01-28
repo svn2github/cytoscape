@@ -116,7 +116,7 @@ public class JRangeSliderExtended extends JRangeSlider implements ChangeListener
 	/**
 	 * Resets / hides Popup window.
 	 */
-	void resetPopup() {
+	public void resetPopup() {
 		if (popup != null) {
 			popup.hide();
 		}
