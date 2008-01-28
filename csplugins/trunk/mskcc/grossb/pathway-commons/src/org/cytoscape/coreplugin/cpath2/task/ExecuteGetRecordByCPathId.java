@@ -12,6 +12,8 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.web_service.*;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
+import org.cytoscape.coreplugin.cpath2.view.EdgeFilterPanel;
+import org.cytoscape.coreplugin.cpath2.view.TabUi;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
@@ -210,6 +212,14 @@ public class ExecuteGetRecordByCPathId implements Task {
         BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         NetworkListener networkListener = bpContainer.getNetworkListener();
         networkListener.registerNetwork(cyNetwork);
+
+        //  Activate Edge Filter.
+        TabUi tabs = TabUi.getInstance();
+        if (tabs.getComponents().length == 2) {
+            EdgeFilterPanel panel = new EdgeFilterPanel(cyNetwork);
+            tabs.add(panel, "Edge Filter");
+        }
+        tabs.setSelectedIndex(2);
     }
 
     private String convertToSifFileName (String networkFileName) {
