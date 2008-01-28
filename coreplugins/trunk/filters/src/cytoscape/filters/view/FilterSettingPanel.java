@@ -668,12 +668,30 @@ public class FilterSettingPanel extends JPanel {
 			int childIndex =widgetGridY /2;
 			
 			theFilter.removeChildAt(childIndex);
+			hidePopupForRangeSlider();
 			pnlCustomSettings.removeAll();			
 			initCustomSetting();
 		}
 		doSelection();
 	}
 
+	
+	private void hidePopupForRangeSlider() {
+		if (pnlCustomSettings.getComponentCount() == 0) {
+			return;
+		}
+		
+		int cmpCount = pnlCustomSettings.getComponentCount();
+		for (int i=0; i< cmpCount; i++) {
+			Component theCmp = pnlCustomSettings.getComponent(i);
+			if (theCmp instanceof JRangeSliderExtended) {
+				JRangeSliderExtended theSlider = (JRangeSliderExtended) theCmp;
+				theSlider.resetPopup();
+			}
+		}
+		
+	}
+	
 	
 	/**
 	 * Listens for Final Selection from User.
