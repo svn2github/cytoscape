@@ -95,7 +95,8 @@ public class ExecuteGetRecordByCPathId implements Task {
                 tmpFile =  File.createTempFile("temp", ".xml", new File(tmpDir));
                 format = CPathProtocol.FORMAT_BIOPAX;
             } else {
-                tmpFile =  File.createTempFile("temp", ".sif", new File(tmpDir));
+                String tmpFileName = this.convertToSifFileName(networkTitle);
+                tmpFile =  File.createTempFile(tmpFileName, ".sif", new File(tmpDir));
                 format = CPathProtocol.FORMAT_BINARY_SIF;
             }
             tmpFile.deleteOnExit();
@@ -157,6 +158,10 @@ public class ExecuteGetRecordByCPathId implements Task {
 
         //  Init the node attribute meta data, e.g. description, visibility, etc.
         MapNodeAttributes.initAttributes(nodeAttributes);
+
+        //  As of January 28, this call does not yet update the network view panel;
+        //  Refer to bug #1698.
+        cyNetwork.setTitle(networkTitle);
         
         taskMonitor.setStatus("Retrieving node details...");
         taskMonitor.setPercentCompleted(0);
@@ -205,6 +210,11 @@ public class ExecuteGetRecordByCPathId implements Task {
         BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         NetworkListener networkListener = bpContainer.getNetworkListener();
         networkListener.registerNetwork(cyNetwork);
+    }
+
+    private String convertToSifFileName (String networkFileName) {
+        String temp = networkFileName.replaceAll(" ", "_");
+        return temp + "_";
     }
 }
 
