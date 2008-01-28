@@ -779,7 +779,7 @@
 	<target name="nightly-release" depends="release">
 		<tstamp>
 			<format property="todays.date" 
-			        pattern="yyyy-MM-dd_hh:mmaa" />
+			        pattern="yyyy-MM-dd_hhmmaa" />
 		</tstamp>
 		<mkdir dir="${dist.dir}" />
 		<zip destfile="${dist.dir}/cytoscape-${todays.date}.zip" 
