@@ -73,7 +73,7 @@ public class LicenseDialog extends javax.swing.JDialog {
         declineRadio = new javax.swing.JRadioButton();
         licenseLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         licenseSplitPane.setDividerLocation(150);
         pluginList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
