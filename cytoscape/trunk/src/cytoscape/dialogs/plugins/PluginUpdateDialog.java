@@ -319,7 +319,8 @@ public class PluginUpdateDialog extends JDialog implements
             }
         });
 
-        msgLabel.setForeground(new java.awt.Color(204, 0, 51));
+        msgLabel.setForeground(java.awt.Color.BLACK);
+        //msgLabel.setForeground(new java.awt.Color(204, 0, 51));
         msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());

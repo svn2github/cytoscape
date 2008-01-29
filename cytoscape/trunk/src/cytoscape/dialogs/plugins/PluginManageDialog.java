@@ -73,7 +73,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	public enum CommonError {
-
 		NOXML("ERROR: Failed to read XML file "), BADXML(
 				"ERROR: XML file may be incorrectly formatted, unable to read ");
 
@@ -130,6 +129,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			infoTextPane.setText(((DownloadableInfo) Node.getObject())
 					.htmlOutput());
 			infoTextPane.setCaretPosition(0);
+			infoTextPane
+					.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
+						public void hyperlinkUpdate(
+								javax.swing.event.HyperlinkEvent evt) {
+							if (evt.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+								// call open browser on the link
+								java.awt.Toolkit.getDefaultToolkit().beep();
+								System.out.println("**** hyperlinkUpdate: Not yet implemented, should call OpenBrowser on "
+												+ evt.toString());
+							}
+						}
+					});
 
 			if (Node.isNodeAncestor(installedNode)) {
 				installDeleteButton.setText("Delete");
@@ -155,6 +166,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	 * @param Msg
 	 */
 	public void setMessage(String Msg) {
+		msgLabel.setForeground(java.awt.Color.BLACK);
+		msgLabel.setText(Msg);
+	}
+
+	public void setError(String Msg) {
+		msgLabel.setForeground(new java.awt.Color(204, 0, 51));
 		msgLabel.setText(Msg);
 	}
 
@@ -207,14 +224,17 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			}
 			break;
 		}
-		
-		 javax.swing.ToolTipManager.sharedInstance().registerComponent(pluginTree);
-		 javax.swing.ImageIcon warningIcon = createImageIcon("/cytoscape/images/misc/alert-red2.gif", "Warning");
-		 javax.swing.ImageIcon okIcon = createImageIcon("/cytoscape/images/misc/check-mark.gif", "Ok");
-		 if (warningIcon != null) {
+
+		javax.swing.ToolTipManager.sharedInstance().registerComponent(
+				pluginTree);
+		javax.swing.ImageIcon warningIcon = createImageIcon(
+				"/cytoscape/images/misc/alert-red2.gif", "Warning");
+		javax.swing.ImageIcon okIcon = createImageIcon(
+				"/cytoscape/images/misc/check-mark.gif", "Ok");
+		if (warningIcon != null) {
 			treeRenderer = new TreeCellRenderer(warningIcon, okIcon);
-	        pluginTree.setCellRenderer(treeRenderer);
-	    }
+			pluginTree.setCellRenderer(treeRenderer);
+		}
 	}
 
 	// add category to the set of plugins under given node
@@ -225,11 +245,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		for (DownloadableInfo CurrentPlugin : Plugins) {
 			TreeNode PluginNode = new TreeNode(CurrentPlugin);
 
-			if (node.equals(availableNode) && !CurrentPlugin.isCytoscapeVersionCurrent()) {
+			if (node.equals(availableNode)
+					&& !CurrentPlugin.isCytoscapeVersionCurrent()) {
 				java.util.List<TreeNode> hiddenCat = hiddenNodes.get(Category);
 				if (hiddenCat == null)
 					hiddenCat = new java.util.ArrayList<TreeNode>();
-				
+
 				hiddenCat.add(PluginNode);
 				hiddenNodes.put(Category, hiddenCat);
 				if (versionCheck.isSelected())
@@ -248,33 +269,39 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		dialog.setVisible(true);
 	}
 
+	 
+	
 	// allow for outdated versions
-    private void versionCheckItemStateChanged(java.awt.event.ItemEvent evt) {                                              
-
+	private void versionCheckItemStateChanged(java.awt.event.ItemEvent evt) {
 		if (evt.getStateChange() == ItemEvent.SELECTED) {
-			for (TreeNode Category: hiddenNodes.keySet()) {
-				for (TreeNode Plugin: hiddenNodes.get(Category)) {
+			availableNode.removeChildren();
+			for (TreeNode Category : hiddenNodes.keySet()) {
+				for (TreeNode Plugin : hiddenNodes.get(Category)) {
 					treeModel.addNodeToParent(Category, Plugin);
 				}
-				treeModel.addNodeToParent(availableNode, Category);				
+				treeModel.addNodeToParent(availableNode, Category);
 			}
 		} else if (evt.getStateChange() == ItemEvent.DESELECTED) {
-			for (TreeNode Category: hiddenNodes.keySet()) {
-				treeModel.removeNodesFromParent(hiddenNodes.get(Category));
-				treeModel.removeNodeFromParent(Category);
+			for (TreeNode Category : hiddenNodes.keySet()) {
+				for (TreeNode Plugin: hiddenNodes.get(Category)) {
+					treeModel.removeNodesFromParent(hiddenNodes.get(Category));
+					if (Category.getChildCount() <= 0) {
+						availableNode.removeChild(Category);
+						treeModel.reload();
+					}
+				}
 			}
-			
 		}
-    }                                             
-    
-    private void installDeleteButtonActionPerformed(ActionEvent evt) {
-    	if (installDeleteButton.getText().equals("Delete")) {
-    		deleteButtonActionPerformed(evt);
-    	} else if (installDeleteButton.getText().equals("Install")) {
-    		installButtonActionPerformed(evt);
-    	}
-    }
-	
+	}
+
+	private void installDeleteButtonActionPerformed(ActionEvent evt) {
+		if (installDeleteButton.getText().equals("Delete")) {
+			deleteButtonActionPerformed(evt);
+		} else if (installDeleteButton.getText().equals("Install")) {
+			installButtonActionPerformed(evt);
+		}
+	}
+
 	// delete event
 	private void deleteButtonActionPerformed(ActionEvent evt) {
 		TreeNode Node = (TreeNode) pluginTree.getLastSelectedPathComponent();
@@ -401,164 +428,281 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		hiddenNodes = new java.util.HashMap<TreeNode, java.util.List<TreeNode>>();
 	}
 
+	/**
+	 * This method is called from within the constructor to initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is always
+	 * regenerated by the Form Editor.
+	 */
+	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
+	private void initComponents() {
+		jSplitPane1 = new javax.swing.JSplitPane();
+		infoScrollPane = new javax.swing.JScrollPane();
+		infoTextPane = new javax.swing.JEditorPane();
+		treeScrollPane = new javax.swing.JScrollPane();
+		pluginTree = new javax.swing.JTree();
+		availablePluginsLabel = new javax.swing.JLabel();
+		msgLabel = new javax.swing.JLabel();
+		buttonPanel = new javax.swing.JPanel();
+		installDeleteButton = new javax.swing.JButton();
+		closeButton = new javax.swing.JButton();
+		sitePanel = new javax.swing.JPanel();
+		changeSiteButton = new javax.swing.JButton();
+		versionCheck = new javax.swing.JCheckBox();
 
-    
-    
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">                          
-    private void initComponents() {
-        jSplitPane1 = new javax.swing.JSplitPane();
-        infoScrollPane = new javax.swing.JScrollPane();
-        infoTextPane = new javax.swing.JEditorPane();
-        treeScrollPane = new javax.swing.JScrollPane();
-        pluginTree = new javax.swing.JTree();
-        availablePluginsLabel = new javax.swing.JLabel();
-        msgLabel = new javax.swing.JLabel();
-        buttonPanel = new javax.swing.JPanel();
-        installDeleteButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
-        sitePanel = new javax.swing.JPanel();
-        changeSiteButton = new javax.swing.JButton();
-        versionCheck = new javax.swing.JCheckBox();
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		jSplitPane1.setDividerLocation(250);
+		infoScrollPane.setViewportView(infoTextPane);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        jSplitPane1.setDividerLocation(250);
-        infoScrollPane.setViewportView(infoTextPane);
+		jSplitPane1.setRightComponent(infoScrollPane);
 
-        jSplitPane1.setRightComponent(infoScrollPane);
+		treeScrollPane.setViewportView(pluginTree);
 
-        treeScrollPane.setViewportView(pluginTree);
+		jSplitPane1.setLeftComponent(treeScrollPane);
 
-        jSplitPane1.setLeftComponent(treeScrollPane);
+		availablePluginsLabel.setLabelFor(jSplitPane1);
+		availablePluginsLabel.setText("Plugins available for download from:");
+		availablePluginsLabel
+				.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        availablePluginsLabel.setLabelFor(jSplitPane1);
-        availablePluginsLabel.setText("Plugins available for download from:");
-        availablePluginsLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+		msgLabel.setForeground(java.awt.Color.BLACK);
+		// msgLabel.setForeground(new java.awt.Color(204, 0, 51));
+		msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        msgLabel.setForeground(new java.awt.Color(204, 0, 51));
-        msgLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+		installDeleteButton.setText("Install");
+		installDeleteButton.setEnabled(false);
+		installDeleteButton
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						installDeleteButtonActionPerformed(evt);
+					}
+				});
 
-        installDeleteButton.setText("Install");
-        installDeleteButton.setEnabled(false);
-        installDeleteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                installDeleteButtonActionPerformed(evt);
-            }
-        });
+		closeButton.setText("Close");
+		closeButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				closeButtonActionPerformed(evt);
+			}
+		});
 
-        closeButton.setText("Close");
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
-            }
-        });
+		org.jdesktop.layout.GroupLayout buttonPanelLayout = new org.jdesktop.layout.GroupLayout(
+				buttonPanel);
+		buttonPanel.setLayout(buttonPanelLayout);
+		buttonPanelLayout
+				.setHorizontalGroup(buttonPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								buttonPanelLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												installDeleteButton,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												75,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												closeButton,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												75,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addContainerGap(
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)));
+		buttonPanelLayout
+				.setVerticalGroup(buttonPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								buttonPanelLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												buttonPanelLayout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(
+																installDeleteButton)
+														.add(closeButton))
+										.addContainerGap(8, Short.MAX_VALUE)));
 
-        org.jdesktop.layout.GroupLayout buttonPanelLayout = new org.jdesktop.layout.GroupLayout(buttonPanel);
-        buttonPanel.setLayout(buttonPanelLayout);
-        buttonPanelLayout.setHorizontalGroup(
-            buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(installDeleteButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(closeButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        buttonPanelLayout.setVerticalGroup(
-            buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(installDeleteButton)
-                    .add(closeButton))
-                .addContainerGap(8, Short.MAX_VALUE))
-        );
+		changeSiteButton.setText("Change Download Site");
+		changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				changeSiteButtonActionPerformed(evt);
+			}
+		});
 
-        changeSiteButton.setText("Change Download Site");
-        changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeSiteButtonActionPerformed(evt);
-            }
-        });
+		versionCheck.setText("Show Outdated Plugins");
+		versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,
+				0, 0, 0));
+		versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		versionCheck.addItemListener(new java.awt.event.ItemListener() {
+			public void itemStateChanged(java.awt.event.ItemEvent evt) {
+				versionCheckItemStateChanged(evt);
+			}
+		});
 
-        versionCheck.setText("Show Outdated Plugins");
-        versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        versionCheck.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                versionCheckItemStateChanged(evt);
-            }
-        });
+		org.jdesktop.layout.GroupLayout sitePanelLayout = new org.jdesktop.layout.GroupLayout(
+				sitePanel);
+		sitePanel.setLayout(sitePanelLayout);
+		sitePanelLayout.setHorizontalGroup(sitePanelLayout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING)
+				.add(
+						sitePanelLayout.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING).add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								changeSiteButton).add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								versionCheck)));
+		sitePanelLayout.setVerticalGroup(sitePanelLayout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(
+				sitePanelLayout.createSequentialGroup().addContainerGap().add(
+						changeSiteButton).addPreferredGap(
+						org.jdesktop.layout.LayoutStyle.RELATED).add(
+						versionCheck,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)));
 
-        org.jdesktop.layout.GroupLayout sitePanelLayout = new org.jdesktop.layout.GroupLayout(sitePanel);
-        sitePanel.setLayout(sitePanelLayout);
-        sitePanelLayout.setHorizontalGroup(
-            sitePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sitePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, changeSiteButton)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, versionCheck))
-        );
-        sitePanelLayout.setVerticalGroup(
-            sitePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sitePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(changeSiteButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(versionCheck, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
+				getContentPane());
+		getContentPane().setLayout(layout);
+		layout
+				.setHorizontalGroup(layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								layout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.TRAILING)
+														.add(
+																org.jdesktop.layout.GroupLayout.LEADING,
+																jSplitPane1,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																610,
+																Short.MAX_VALUE)
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				194,
+																				194,
+																				194)
+																		.add(
+																				msgLabel,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				174,
+																				Short.MAX_VALUE)
+																		.add(
+																				52,
+																				52,
+																				52)
+																		.add(
+																				buttonPanel,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				availablePluginsLabel,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				250,
+																				Short.MAX_VALUE)
+																		.add(
+																				191,
+																				191,
+																				191)
+																		.add(
+																				sitePanel,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+										.add(74, 74, 74)));
+		layout
+				.setVerticalGroup(layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								layout
+										.createSequentialGroup()
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.LEADING)
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				16,
+																				16,
+																				16)
+																		.add(
+																				availablePluginsLabel,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				37,
+																				Short.MAX_VALUE)
+																		.add(
+																				41,
+																				41,
+																				41))
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.addContainerGap()
+																		.add(
+																				sitePanel,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)))
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												jSplitPane1,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												330, Short.MAX_VALUE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.LEADING)
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				msgLabel,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				31,
+																				Short.MAX_VALUE)
+																		.add(
+																				35,
+																				35,
+																				35))
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				buttonPanel,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																				46,
+																				org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+																		.addContainerGap()))));
+		pack();
+	}// </editor-fold>
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(194, 194, 194)
-                        .add(msgLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                        .add(52, 52, 52)
-                        .add(buttonPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createSequentialGroup()
-                        .add(availablePluginsLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                        .add(191, 191, 191)
-                        .add(sitePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(74, 74, 74))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(16, 16, 16)
-                        .add(availablePluginsLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                        .add(41, 41, 41))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(sitePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(msgLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                        .add(35, 35, 35))
-                    .add(layout.createSequentialGroup()
-                        .add(buttonPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
-        );
-        pack();
-    }// </editor-fold>                        
-	
-	
-	
 	/*
 	 * --- create the tasks and task monitors to show the user what's going on
 	 * during download/install ---
@@ -608,28 +752,28 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	public static void main(String[] args) {
 		PluginManageDialog pd = new PluginManageDialog();
 		List<DownloadableInfo> Plugins = new java.util.ArrayList<DownloadableInfo>();
-		
+
 		PluginInfo infoC = new PluginInfo("1", "A Plugin");
 		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		Plugins.add(infoC);
-		
+
 		infoC = new PluginInfo("2", "B Plugin");
 		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		Plugins.add(infoC);
-		
+
 		infoC = new PluginInfo("3", "C");
 		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		Plugins.add(infoC);
-		
+
 		pd.addCategory(cytoscape.plugin.Category.NONE.toString(), Plugins,
 				PluginInstallStatus.AVAILABLE);
 
 		List<DownloadableInfo> Outdated = new java.util.ArrayList<DownloadableInfo>();
-		
+
 		PluginInfo infoOD = new PluginInfo("11", "CyGoose");
 		infoOD.addCytoscapeVersion("2.3");
 		Outdated.add(infoOD);
-		
+
 		infoOD = new PluginInfo("12", "Y");
 		infoOD.addCytoscapeVersion("2.3");
 		Outdated.add(infoOD);
@@ -639,7 +783,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		pd.setVisible(true);
 	}
 
-	
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	private javax.swing.ImageIcon createImageIcon(String path,
 			String description) {
@@ -652,7 +795,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	
 	private class InstallTask implements cytoscape.task.Task {
 		private cytoscape.task.TaskMonitor taskMonitor;
 
@@ -701,20 +843,20 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				infoObj = null;
 				ioe.printStackTrace();
 			} catch (cytoscape.plugin.ManagerException me) {
-				PluginManageDialog.this.setMessage("Failed to install "
+				PluginManageDialog.this.setError("Failed to install "
 						+ infoObj.toString());
 				taskMonitor.setException(me, me.getMessage());
 				infoObj = null;
 				me.printStackTrace();
 			} catch (cytoscape.plugin.PluginException pe) {
-				PluginManageDialog.this.setMessage("Failed to install "
+				PluginManageDialog.this.setError("Failed to install "
 						+ infoObj.toString());
 				infoObj = null;
 				taskMonitor.setException(pe, pe.getMessage());
 				pe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
 				taskMonitor.setException(cne, cne.getMessage());
-				PluginManageDialog.this.setMessage("Failed to install "
+				PluginManageDialog.this.setError("Failed to install "
 						+ infoObj.toString());
 				infoObj = null;
 				cne.printStackTrace();
@@ -743,7 +885,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	}
 
-
 	// Variables declaration - do not modify
 	private javax.swing.JLabel availablePluginsLabel;
 
@@ -753,13 +894,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	private javax.swing.JButton installDeleteButton;
 
-    private javax.swing.JPanel buttonPanel;
+	private javax.swing.JPanel buttonPanel;
 
-    private javax.swing.JPanel sitePanel;
-
-//	private javax.swing.JButton deleteButton;
-//	
-//	private javax.swing.JButton installButton;
+	private javax.swing.JPanel sitePanel;
 
 	private javax.swing.JScrollPane infoScrollPane;
 
@@ -784,6 +921,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	private ManagerModel treeModel;
 
 	private TreeCellRenderer treeRenderer;
-	
+
 	private java.util.HashMap<TreeNode, java.util.List<TreeNode>> hiddenNodes;
 }
