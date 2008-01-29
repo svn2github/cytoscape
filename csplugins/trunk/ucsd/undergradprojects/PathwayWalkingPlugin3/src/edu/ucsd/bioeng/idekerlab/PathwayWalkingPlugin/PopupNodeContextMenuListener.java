@@ -25,6 +25,9 @@ public class PopupNodeContextMenuListener implements NodeContextMenuListener {
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
 		//System.out.println("[LinkOutContextMenuListener]: addNodeContextMenuItem called");
 		PathwayWalking pw = new PathwayWalking();
-		pw.startGUI(nodeView);
+		
+		menu.add(new JSeparator());
+		menu.add(pw.addLinks(nodeView));
+		menu.add(new JSeparator());
 	}
 }
