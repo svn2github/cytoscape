@@ -19,6 +19,7 @@ import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.PluginStatus;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -35,7 +36,9 @@ public class PluginUpdateAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		PluginUpdateDialog Dialog = new PluginUpdateDialog(Cytoscape
 				.getDesktop());
-
+		ArrayList<String> XmlIncorrect = new ArrayList<String>();
+		ArrayList<String> BadXml = new ArrayList<String>();
+		
 		if (!PluginManager.usingWebstartManager()) {
 			boolean updateFound = false;
 			PluginManager Mgr = PluginManager.getPluginManager();
@@ -59,19 +62,25 @@ public class PluginUpdateAction extends CytoscapeAction {
 						updateFound = true;
 					}
 				} catch (org.jdom.JDOMException jde) {
-					System.err.println("Failed to retrieve updates for "
-							+ Current.getName() + ", XML incorrect at "
-							+ Current.getDownloadableURL());
+//					System.err.println("Failed to retrieve updates for "
+//							+ Current.getName() + ", XML incorrect at "
+//							+ Current.getDownloadableURL());
 					System.err.println(jde.getMessage());
+					XmlIncorrect.add(Current.toString());
 					// jde.printStackTrace();
 				} catch (java.io.IOException ioe) {
 					System.err.println("Failed to read XML file for "
 							+ Current.getName() + " at "
 							+ Current.getDownloadableURL());
 					ioe.printStackTrace();
+					BadXml.add(Current.toString());
 				}
 
 			}
+			if (XmlIncorrect.size() > 0) {
+				// show option pane warning message?
+			}
+			
 			if (updateFound) {
 				Dialog.setVisible(true);
 			} else {

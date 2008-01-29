@@ -154,13 +154,13 @@ public class PluginManagerAction extends CytoscapeAction {
 				if (getIOException() != null) {
 					getIOException().printStackTrace();
 					// failed to read the given url
-					dialog.setMessage(PluginManageDialog.CommonError.NOXML.toString());
+					dialog.setError(PluginManageDialog.CommonError.NOXML.toString());
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
 					getJDOMException().printStackTrace();
-					dialog.setMessage(PluginManageDialog.CommonError.BADXML.toString());
+					dialog.setError(PluginManageDialog.CommonError.BADXML.toString());
 				} else {
-					dialog.setMessage(getException().getMessage());
+					dialog.setError(getException().getMessage());
 				}
 			} else {
 				List<DownloadableInfo> Unique = ManagerUtil.getUnique(Mgr.getDownloadables(PluginStatus.CURRENT), Results);
