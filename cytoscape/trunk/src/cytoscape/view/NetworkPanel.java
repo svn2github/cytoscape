@@ -38,7 +38,7 @@ package cytoscape.view;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-
+import cytoscape.CyNetworkTitleChange;
 import cytoscape.actions.CreateNetworkViewAction;
 
 import cytoscape.data.SelectEvent;
@@ -132,6 +132,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 				treeTable.setInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
 			}
 		}
+		
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
 	}
 
 	protected void initialize() {
@@ -409,6 +411,15 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			if ( e.getSource() != this )
 				focusNetworkNode((String) e.getNewValue());
+		}
+		else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
+			String newID = cyNetworkTitleChange.getNetworkIdentifier();
+			//String newTitle = cyNetworkTitleChange.getNetworkTitle();
+			CyNetwork _network = Cytoscape.getNetwork(newID);
+			if (_network != null) {
+				updateTitle(_network);				
+			}
 		}
 	}
 
