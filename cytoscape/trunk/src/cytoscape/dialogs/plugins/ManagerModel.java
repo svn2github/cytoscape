@@ -69,6 +69,7 @@ public class ManagerModel implements TreeModel {
 		recursiveRemoveNodeFromParent(child);
 	}
 
+	// not recursive anymore
 	private void recursiveRemoveNodeFromParent(TreeNode child) {
 		TreeNode Parent = child.getParent();
 		TreeNode[] Children = new TreeNode[] { child };
@@ -223,11 +224,8 @@ public class ManagerModel implements TreeModel {
 	// this will reset entire tree
 	protected void fireTreeStructureChanged(Object source, Object[] path,
 			int[] childIndicies, Object[] children) {
-		System.out.println("fireTreeStructureChanged");
 		TreeModelEvent Event = new TreeModelEvent(source, path, childIndicies,
 				children);
-		System.out.println("Event: " + Event.toString());
-
 		TreeModelListener[] listeners = getTreeModelListeners();
 		for (int i = listeners.length - 1; i >= 0; i--) {
 			listeners[i].treeStructureChanged(Event);
