@@ -294,8 +294,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	private void preloadCellularComponents() {
 		try {
 			String path = this.getClass().getResource("data/").toString();
-			path = path.substring(path.indexOf("e:") + 2, path
-					.indexOf("cytoscape"));
+			System.out.println("path: "+path);
+			path = path.substring(path.indexOf("jar:file:") + 9, path
+					.indexOf("cytoscape/bubbleRouter/data"));
+			System.out.println("path: "+path);
 			path = path.replace("!", "");
 
 			Enumeration files;
