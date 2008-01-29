@@ -1,5 +1,7 @@
 package cytoscape.bubbleRouter;
 
+import giny.model.Node;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -11,8 +13,11 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -430,6 +435,53 @@ public class BRQuickFindConfigDialog extends JDialog {
 								if (lsm.isSelectedIndex(i)) {
 									selectedValues.add(attributeValuesTable
 											.getModel().getValueAt(i, 0));
+									//TODO: select nodeviews
+									Comparator<Object> comparator = new Comparator<Object>() {
+										public int compare(Object o1, Object o2) {
+											return o1.toString().compareToIgnoreCase(o2.toString());
+										}
+									};
+									SortedSet<Object> selectedNodes = new TreeSet<Object>(comparator);
+									CyAttributes attribs = Cytoscape.getNodeAttributes();
+									Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
+									while (it.hasNext()) {
+										Cytoscape.getCurrentNetwork().unselectAllNodes();
+										Node node = (Node) it.next();
+										String val = null;
+										String terms[] = new String[1];
+										// add support for parsing List type attributes
+										String attributeName = (String) attributeComboBox.getSelectedItem();
+										if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
+											List valList = attribs.getListAttribute(node.getIdentifier(),
+													attributeName);
+											// iterate through all elements in the list
+											if (valList != null && valList.size() > 0) {
+												terms = new String[valList.size()];
+												for (int j = 0; j < valList.size(); j++) {
+													Object o = valList.get(j);
+													terms[j] = o.toString();
+												}
+											}
+											val = join(terms);
+										} else {
+											val = attribs.getStringAttribute(node.getIdentifier(),
+													attributeName);
+										}
+
+										// loop through elements in array below and match
+
+										if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
+											for (Object o : selectedValues) {
+												if (val.indexOf(o.toString()) >= 0) {
+													selectedNodes.add(node);
+												}
+											}
+										} else if (selectedValues.get(0).equals("unassigned")) {
+											selectedNodes.add(node);
+										}
+									}
+									Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
+									Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 								}
 							}
 						}
@@ -682,6 +734,17 @@ public class BRQuickFindConfigDialog extends JDialog {
 		 * Create LayoutRegion object
 		 */
 		new LayoutRegion(x, y, w, h, newAttribute, selectedValuesForRegion);
+	}
+	
+	private static String join(String values[]) {
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < values.length; i++) {
+			buf.append(values[i]);
+			if (i < values.length - 1) {
+				buf.append(", ");
+			}
+		}
+		return buf.toString();
 	}
 
 }
