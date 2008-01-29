@@ -45,12 +45,18 @@ import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
+import org.cytoscape.coreplugin.cpath2.view.TabUi;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.*;
+
+import com.sun.glf.util.GridBagConstants;
 
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager
@@ -84,10 +90,10 @@ public class CPathPlugIn2 extends CytoscapePlugin {
 
         final cPathSearchPanel pcPanel = new cPathSearchPanel(webApi);
 
-        final JTabbedPane tabbedPane = new JTabbedPane();
+        final JTabbedPane tabbedPane = TabUi.getInstance();
         tabbedPane.add("Search", pcPanel);
 
-        JPanel configPanel = createConfigPanel();
+        JScrollPane configPanel = createConfigPanel();
         tabbedPane.add("Options", configPanel);
 
 
@@ -105,18 +111,64 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         cpathProperties.initProperties(pluginProperties);
     }
 
-    private JPanel createConfigPanel() {
+    private JScrollPane createConfigPanel() {
         JPanel configPanel = new JPanel();
         configPanel.setBorder(new TitledBorder("Retrieval Options"));
-        configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
+        configPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
         final JRadioButton button1 = new JRadioButton("Full Model");
+
+        JTextArea textArea1 = new JTextArea();
+        textArea1.setLineWrap(true);
+        textArea1.setWrapStyleWord(true);
+        textArea1.setEditable(false);
+        textArea1.setOpaque(false);
+        Font font = textArea1.getFont();
+        Font smallerFont = new Font(font.getFamily(), font.getStyle(), font.getSize()-2);
+        textArea1.setFont(smallerFont);
+        textArea1.setText("Retrieve the full model, as stored in the original BioPAX "
+            + "representation.  In this representation, nodes within a network can "
+            + "refer to physical entities and interactions.");
+        textArea1.setBorder(new EmptyBorder(5, 20, 0, 0));
+
+        JTextArea textArea2 = new JTextArea(3, 20);
+        textArea2.setLineWrap(true);
+        textArea2.setWrapStyleWord(true);
+        textArea2.setEditable(false);
+        textArea2.setOpaque(false);
+        textArea2.setFont(smallerFont);
+        textArea2.setText("Retrieve a simplified binary network, as inferred from the original "
+            + "BioPAX representation.  In this representation, nodes within a network refer "
+            + "to physical entities only, and edges refer to inferred interactions.");
+        textArea2.setBorder(new EmptyBorder(5, 20, 0, 0));
+
         button1.setSelected(true);
         final JRadioButton button2 = new JRadioButton("Reduced Binary Model");
         ButtonGroup group = new ButtonGroup();
         group.add(button1);
         group.add(button2);
-        configPanel.add(button1);
-        configPanel.add(button2);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+
+        c.gridx = 0;
+        c.gridy = 0;
+        configPanel.add(button1, c);
+
+        c.gridy = 1;
+        configPanel.add(textArea1, c);
+
+        c.gridy = 2;
+        configPanel.add(button2, c);
+
+        c.gridy = 3;
+        configPanel.add(textArea2, c);
+
+        //  Add invisible filler to take up all remaining space
+        c.gridy = 4;
+        c.weighty = 1.0;
+        JPanel panel = new JPanel();
+        configPanel.add(panel, c);
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -130,6 +182,7 @@ public class CPathPlugIn2 extends CytoscapePlugin {
                 config.setDownloadMode(CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF);
             }
         });
-        return configPanel;
+        JScrollPane scrollPane = new JScrollPane(configPanel);
+        return scrollPane;
     }
 }
