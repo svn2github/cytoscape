@@ -406,8 +406,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				data_vector[j][0] = graphObjects.get(j).getIdentifier();
 
 			setDataVector(data_vector, column_names);
-			Cytoscape.getSwingPropertyChangeSupport()
-			         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+//			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+//			         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+			AttributeBrowserPlugin.getPropertyChangeSupport().firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
 
 			return;
 		} else if (attributeNames.contains(AttributeBrowser.ID) == false) {
@@ -452,8 +453,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		setDataVector(data_vector, column_names);
 		
-		Cytoscape.getSwingPropertyChangeSupport()
-		         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+		AttributeBrowserPlugin.getPropertyChangeSupport().firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
 	}
 
 	/**

@@ -41,6 +41,8 @@ import static browser.DataObjectType.NODES;
 import cytoscape.plugin.CytoscapePlugin;
 
 import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +55,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.swing.event.SwingPropertyChangeSupport;
+
 
 /**
  * Attribute browser's main class.<br>
@@ -63,6 +67,20 @@ import java.util.Properties;
  *
  */
 public class AttributeBrowserPlugin extends CytoscapePlugin {
+	
+	protected static Object pcsO = new Object();
+	protected static PropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);
+	
+	
+	public static PropertyChangeSupport getPropertyChangeSupport() {
+		return pcs;
+	}
+	
+	public static void firePropertyChange(String property_type, Object old_value, Object new_value) {
+		final PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type, old_value, new_value);
+		getPropertyChangeSupport().firePropertyChange(e);
+	}
+	
 	// Name of browser's property file.
 	private static final String PROP_FILE_NAME = "attributeBrowser.props";
 

@@ -34,42 +34,16 @@
 */
 package browser.ui;
 
-import browser.AttributeBrowser;
-import browser.AttributeModel;
-import browser.DataObjectType;
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
-
-import browser.DataTableModel;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.dialogs.NetworkMetaDataDialog;
-
-import cytoscape.util.swing.CheckBoxJList;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -81,11 +55,27 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
+
+import browser.AttributeBrowser;
+import browser.AttributeBrowserPlugin;
+import browser.AttributeModel;
+import browser.DataObjectType;
+import browser.DataTableModel;
+import cytoscape.Cytoscape;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.util.swing.CheckBoxJList;
 
 
 /**
@@ -630,8 +620,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		tableModel.setTableData(null, orderedCol);
-		Cytoscape.getSwingPropertyChangeSupport()
-        .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+		AttributeBrowserPlugin.firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
 		
 	}
 	

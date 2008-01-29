@@ -34,27 +34,12 @@
  */
 package browser;
 
-import browser.ui.AttributeBrowserToolBar;
-import browser.ui.CyAttributeBrowserTable;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
-
 import giny.model.GraphObject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +52,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumnModel;
+
+import browser.ui.AttributeBrowserToolBar;
+import browser.ui.CyAttributeBrowserTable;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
 
 
 /**

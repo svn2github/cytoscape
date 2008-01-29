@@ -45,6 +45,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
@@ -78,6 +79,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import browser.AttributeBrowser;
+import browser.AttributeBrowserPlugin;
 import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.SortTableModel;
@@ -100,13 +102,14 @@ import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 
 
+
 /**
  * Based on JSortTable and completely rewrote by kono
- * 
+ *
  */
 public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener,
                                                                PropertyChangeListener,
-                                                               SelectEventListener {
+                                                               SelectEventListener, MouseMotionListener {
 	// Local Signal
 	/**
 	 *
@@ -161,6 +164,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private DataObjectType objectType;
 	private Map<String, Map<String, String>> linkoutProps;
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
+	
+	// For turning off listener during session loading
+	private boolean ignore = false;
 
 	/**
 	 *  DOCUMENT ME!
@@ -193,7 +199,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 		this.tableModel = model;
 		this.objectType = objectType;
-
+		
 		initialize();
 	}
 
@@ -213,7 +219,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 		this.setDefaultRenderer(Object.class, new BrowserTableCellRenderer(false, objectType));
 		this.getColumnModel().addColumnModelListener(this);
-
 	}
 
 	private void setKeyStroke() {
@@ -346,7 +351,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private void resetObjectColor(int idLocation) {
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
-		if (view == Cytoscape.getNullNetworkView() || view == null)
+		if ((view == Cytoscape.getNullNetworkView()) || (view == null))
 			return;
 
 		final int rowCount = dataModel.getRowCount();
@@ -769,6 +774,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param event DOCUMENT ME!
 	 */
 	public void mouseEntered(MouseEvent event) {
+		
 	}
 
 	/**
@@ -1007,12 +1013,26 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
+		
+		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+			ignore = true;
+		} else if(e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED) || e.getPropertyName().equals(Cytoscape.SESSION_LOADED) ) {
+			ignore = false;
+		}
+		
+		// Ignore all signal if this flag is on.
+		if(ignore) return;
+		
+		
 		if (e.getPropertyName().equals(RESTORE_COLUMN)) {
 			ColumnResizer.adjustColumnPreferredWidths(this);
+			return;
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+			
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+			AttributeBrowserPlugin.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
@@ -1035,10 +1055,10 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 				if (objectType == NODES) {
 					tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork()
-					                                                      .getSelectedNodes()), null);
+					                                               .getSelectedNodes()), null);
 				} else if (objectType == EDGES) {
 					tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork()
-					                                                      .getSelectedEdges()), null);
+					                                               .getSelectedEdges()), null);
 				} else {
 					// Network Attribute
 					tableModel.setTableData(null, null);
@@ -1110,7 +1130,6 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param arg0 DOCUMENT ME!
 	 */
 	public void onSelectEvent(SelectEvent event) {
-
 		if ((objectType == NODES)
 		    && ((event.getTargetType() == SelectEvent.SINGLE_NODE)
 		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
@@ -1119,7 +1138,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_NODE);
 
 			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-			                                                                   .getSelectedNodes()), null);
+			                                                            .getSelectedNodes()), null);
 		} else if ((objectType == EDGES)
 		           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
 		              || (event.getTargetType() == SelectEvent.EDGE_SET))) {
@@ -1127,8 +1146,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_EDGE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_EDGE);
 			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-			                                                                   .getSelectedEdges()), null);
-
+			                                                            .getSelectedEdges()), null);
 		}
 
 		ColumnResizer.adjustColumnPreferredWidths(this);
@@ -1147,6 +1165,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
 		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+	}
+
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		
 	}
 }
 
@@ -1176,6 +1203,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	private static final Color SELECTED_LABEL_COLOR = Color.black.brighter();
 	private DataObjectType type = DataObjectType.NODES;
 	private boolean coloring;
+	private Object vl;
 
 	/**
 	 * Creates a new BrowserTableCellRenderer object.
@@ -1187,7 +1215,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		super();
 		this.type = type;
 		this.coloring = coloring;
-
 		setOpaque(true);
 		setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 	}
@@ -1206,6 +1233,8 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 	 */
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 	                                               boolean hasFocus, int row, int column) {
+		vl = value;
+
 		final String colName = table.getColumnName(column);
 
 		// First, set values
@@ -1268,8 +1297,8 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		if (type == NODES) {
 			if (netview != Cytoscape.getNullNetworkView()) {
 				NodeView nodeView = netview.getNodeView(Cytoscape.getCyNode((String) table
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .getValueAt(row,
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      column)));
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getValueAt(row,
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            column)));
 
 				if (nodeView != null) {
 					Color nodeColor = (Color) nodeView.getUnselectedPaint();
@@ -1280,7 +1309,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			if (netview != Cytoscape.getNullNetworkView()) {
 				final String edgeName = (String) table.getValueAt(row, column);
 				final EdgeView edgeView = netview.getEdgeView(((CyAttributeBrowserTable) table)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      .getEdge(edgeName));
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getEdge(edgeName));
 
 				if (edgeView != null) {
 					Color edgeColor = (Color) edgeView.getUnselectedPaint();
@@ -1303,9 +1332,9 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		html.append(HTML_BEG + "<strong text=\"#4169E1\" >" + colName + "</strong><br><hr>"
 		            + HTML_STYLE);
 
-		if (value instanceof List == false && value instanceof Map == false ) {
+		if ((value instanceof List == false) && (value instanceof Map == false)) {
 			html.append(value.toString());
-		} else if(value instanceof List) {
+		} else if (value instanceof List) {
 			html.append("<ul leftmargin=\"0\">");
 
 			for (Object item : (List<Object>) value) {
