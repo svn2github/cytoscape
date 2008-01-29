@@ -262,10 +262,11 @@ public class XGMMLReader extends AbstractGraphReader {
 		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
 		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
 
-		System.out.println("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
-		System.out.println("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
-		System.out.println("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
-		System.out.println("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
+//		System.out.println("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
+//		System.out.println("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
+//		System.out.println("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
+//		System.out.println("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
+		
 		try {
 			/*
 			 * Read the file and map the entire XML document into data
@@ -305,12 +306,12 @@ public class XGMMLReader extends AbstractGraphReader {
 		nonHeapUsage = mbean.getNonHeapMemoryUsage();
 		long memend = Runtime.getRuntime().freeMemory();
 
-		System.out.println("============= Total time for " + networkName + " = "
-		                   + (System.currentTimeMillis() - start));
-		System.out.println("Heap memory after parsing = " + (heapUsage.getUsed() / 1000)
-			                   + "KB");
-		System.out.println("Non-heap memory after parsing = " + (nonHeapUsage.getUsed() / 1000)
-			                   + "KB");
+//		System.out.println("============= Total time for " + networkName + " = "
+//		                   + (System.currentTimeMillis() - start));
+//		System.out.println("Heap memory after parsing = " + (heapUsage.getUsed() / 1000)
+//			                   + "KB");
+//		System.out.println("Non-heap memory after parsing = " + (nonHeapUsage.getUsed() / 1000)
+//			                   + "KB");
 	}
 
 	public int[] getNodeIndicesArray() {
@@ -705,7 +706,6 @@ public class XGMMLReader extends AbstractGraphReader {
 		if (center != null)
 			((DGraphView) view).setCenter(center.getX(), center.getY());
 
-		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		vizmapper.applyAppearances();
+		Cytoscape.getVisualMappingManager().applyAppearances();
 	}
 }

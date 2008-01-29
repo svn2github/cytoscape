@@ -269,6 +269,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private Map<VisualPropertyType, JDialog> editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
 
+	
+	private boolean ignore = false;
+	
 	// For node size lock
 	VizMapperProperty nodeSize;
 	VizMapperProperty nodeWidth;
@@ -804,10 +807,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void switchVS(String vsName, boolean redraw) {
+		
+		if(ignore)
+			return;
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName) {
 			return;
 		}
+		
+		//System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		vmm.setVisualStyle(vsName);
@@ -1806,24 +1814,28 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				vmm.setVisualStyle(targetName);
 				Cytoscape.getDesktop().setFocus(focus);
 				Cytoscape.getDesktop().repaint();
-
-				// System.out.println("=========After============= " +
-				// targetName + ", CurVS = " + vmm.getVisualStyle().getName());
 			}
 		}
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * On/Off listeners.
+	 * This is for performance.
 	 *
 	 * @param on
 	 *            DOCUMENT ME!
 	 */
 	public void enableListeners(boolean on) {
 		if (on) {
-			Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+			//System.out.println("=========Truning ON listeners!!!!!!!!!=============");
+			//Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+			Cytoscape.getVisualMappingManager().addChangeListener(this);
+			syncStyleBox();
+			ignore = false;
 		} else {
-			Cytoscape.getSwingPropertyChangeSupport().removePropertyChangeListener(this);
+			//System.out.println("=========REMOVING listeners!!!!!!!!!=============");
+			//Cytoscape.getSwingPropertyChangeSupport().removePropertyChangeListener(this);
+			Cytoscape.getVisualMappingManager().removeChangeListener(this);
 		}
 	}
 
@@ -1843,6 +1855,18 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
+		
+		// Set ignore flag.
+		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+			ignore = true;;
+			enableListeners(false);
+		}
+//		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+//			ignore = false;
+//		}	
+		
+		if(ignore) return;
+//		
 		/*
 		 * Managing editor windows.
 		 */
@@ -1901,7 +1925,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Got global siginal
 		 */
 
-		// System.out.println("GLOBAL Signal: " + e.getPropertyName());
+		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
 
@@ -2493,11 +2517,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (name == null)
 				return;
 
-			final String selectedID = Cytoscape.getCurrentNetworkView().getIdentifier();
-
 			// Create the new style
 			final VisualStyle newStyle = new VisualStyle(name);
-
 			final List<Calculator> calcs = new ArrayList<Calculator>(vmm.getCalculatorCatalog()
 			                                                            .getCalculators());
 			final Calculator dummy = calcs.get(0);
@@ -2521,10 +2542,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				setDefaultPanel(defaultImageManager.get(name));
 			}
 
-			// Move thge current focus
-			// vmm.setNetworkView(Cytoscape.getNetworkView(selectedID));
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			switchVS(name);
 		}
 	}
 
@@ -2772,7 +2792,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
 		}
 
-		// vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 		final Property[] props = visualPropertySheetPanel.getProperties();
@@ -2802,7 +2821,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		prop.setValue("Double-Click to create...");
 		visualPropertySheetPanel.addProperty(prop);
 
-		propertyMap.get(vmm.getVisualStyle().getName()).add(prop);
+		if(propertyMap.get(vmm.getVisualStyle().getName()) != null) {
+			propertyMap.get(vmm.getVisualStyle().getName()).add(prop);
+		}
+		
 		visualPropertySheetPanel.repaint();
 	}
 
@@ -3651,20 +3673,29 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void stateChanged(ChangeEvent e) {
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = vmm.getVisualStyle().getName();
+		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 
-		//System.out.println("VMM Change event: " + e.getSource());
+		System.out.println("Got VMM Change event.  Cur VS in VMM: " + vmm.getVisualStyle().getName());
 		
-		if ((selectedName == null) || (currentName == null) || (selectedName.equals(currentName))) {
+		if (selectedName == null || currentName == null || curView == null || curView.equals(Cytoscape.getNullNetworkView()) )
 			return;
-		}
 		
-		// We need to update the combo box and switch visual styles.
-		// Now check if we need to add a new item:
-		if (!findVSName(currentName)) {
-			vsNameComboBox.addItem(currentName);
-		}
+//		// We need to update the combo box and switch visual styles.
+//		// Now check if we need to add a new item:
+//		if (!findVSName(currentName)) {
+//			vsNameComboBox.addItem(currentName);
+//		}
 		
 		// Update GUI based on CalcCatalog's state.
+		if(!findVSName(currentName)) {
+			syncStyleBox();
+		}
+	}
+	
+	private void syncStyleBox() {
+		
+		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
+		
 		String styleName;
 		List<String> namesInBox = new ArrayList<String>();
 		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
@@ -3680,13 +3711,39 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 		Collections.sort(namesInBox);
 		
+		// Reset combobox items.
 		vsNameComboBox.removeAllItems();
 		for(String name: namesInBox) {
 			vsNameComboBox.addItem(name);
 		}
 		
-		vsNameComboBox.setSelectedItem(currentName);
-		switchVS(currentName);
+		switchVS(vmm.getVisualStyle().getName());
+		
+		//vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
+		
+		// Sync style and selected item.
+		
+//		if(curView != null && curView.equals(Cytoscape.getNullNetworkView()) == false) {
+//			
+//			// Get visual style name associated with the current network view.
+//			String curNetVSName = curView.getVisualStyle().getName();
+//			
+//			if(curNetVSName.equals(vmm.getVisualStyle().getName()) == false) {
+//				vmm.removeChangeListener(this);
+//				vmm.setVisualStyle(curView.getVisualStyle());
+//				vmm.addChangeListener(this);
+//			}
+//			
+//			if(vsNameComboBox.getSelectedItem().toString().equals(curNetVSName) == false) {
+//				//vmm.setNetworkView(curView);
+//				//switchVS(curNetVSName);
+//			}
+//			
+//		}
+//		if(vmm.getVisualStyle().getName().equals(vsNameComboBox.getSelectedItem().toString()) == false) {
+//			vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
+//			switchVS(vmm.getVisualStyle().getName());
+//		}
 	}
 
 	// return true iff 'match' is found as a name within the

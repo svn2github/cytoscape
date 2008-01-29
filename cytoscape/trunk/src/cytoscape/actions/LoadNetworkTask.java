@@ -40,52 +40,26 @@
 // $Author: pwang $
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.data.ImportHandler;
-
-import cytoscape.data.readers.GraphReader;
-
-import cytoscape.data.servers.BioDataServer;
-
-import cytoscape.dialogs.ImportNetworkDialog;
-
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.CyNetworkNaming;
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CyMenus;
-
-import java.awt.event.ActionEvent;
-
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import javax.swing.JOptionPane;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.init.CyInitParams;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.view.CytoscapeDesktop;
+import ding.view.DGraphView;
 
 
 /**
@@ -171,7 +145,14 @@ public class LoadNetworkTask implements Task {
 		if (reader == null) return;
 
 		taskMonitor.setStatus("Reading in Network Data...");
-
+		
+		// Remove unnecessary listeners:
+		if((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
+			    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+	         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+		}
+		
 		try {
 			taskMonitor.setPercentCompleted(-1);
 
@@ -183,6 +164,14 @@ public class LoadNetworkTask implements Task {
 			ret_val[0] = cyNetwork;
 			ret_val[1] = uri;
 
+			if((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
+				    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+				Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+				Cytoscape.getDesktop().getNetworkViewManager().firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, Cytoscape.getCurrentNetworkView()
+						.getNetwork().getIdentifier());
+			}
+			
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 			if (cyNetwork != null) {
@@ -199,6 +188,8 @@ public class LoadNetworkTask implements Task {
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Unable to load network.");
 		}
+		
+		
 	}
 
 	/**

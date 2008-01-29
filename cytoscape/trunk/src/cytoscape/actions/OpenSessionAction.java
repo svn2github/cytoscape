@@ -127,7 +127,7 @@ public class OpenSessionAction extends CytoscapeAction {
 				// this is because the selection was canceled
 				return;
 			}
-
+			
 			// Close all networks in the workspace.
 			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 			Cytoscape.createNewSession();
