@@ -66,8 +66,10 @@ function getAuthorInfo($connection, $plugin_version_id) {
 } // End of function getAuthorInfo()
 
 // Construct the pluginInfo page     
-function getPluginInfoPage($connection, $pluginList_row, $urlOnly) {
+function getPluginInfoPage($connection, $pluginList_row) {
 
+	$isURLonly = false;
+	
 	$pluginInfoPage = "<br>" .
 	"<b>Description:</b> " . stripslashes($pluginList_row["description"]);
 	$projectURL = $pluginList_row["project_url"];
@@ -143,14 +145,12 @@ function getPluginInfoPage($connection, $pluginList_row, $urlOnly) {
 			$pluginInfoPage .= "\n<b>Note:</b> " . stripslashes($versionSpecific_row["comment"]) . "<br>";
 		}
 		
-		if (!$urlOnly) {
-			if ($versionSpecific_row["jar_url"] != null) {
-				$pluginInfoPage .= "\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
-			} else {
-				$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a>".getPluginFileSize($connection, $versionSpecific_row["plugin_file_id"])."<br>";
-			}			
+		if ($versionSpecific_row["plugin_file_id"] == null) {
+			$isURLonly = true;
+			$pluginInfoPage .= "<B>Download Jar/zip:</B> Please follow the Project URL to download and install manually."; //"\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
+		} else {
+			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a>".getPluginFileSize($connection, $versionSpecific_row["plugin_file_id"])."<br>";
 		}
-
 		if ($versionSpecific_row["source_url"] != null) {
 			$pluginInfoPage .= "\n<b>Download source:</b> <a href=\"" . $versionSpecific_row["source_url"] . "\">" . $versionSpecific_row["source_url"] . "</a>";
 		}
@@ -159,6 +159,10 @@ function getPluginInfoPage($connection, $pluginList_row, $urlOnly) {
 	} // end of while loop
 
 	$pluginInfoPage .= "<br><br>";
+
+	if ($isURLonly) {
+		return "<br><font color=\"red\">This plugin is not available through the Plugin Manager!</font><br>" . $pluginInfoPage;
+	}
 
 	return $pluginInfoPage;
 }
