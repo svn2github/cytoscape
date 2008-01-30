@@ -66,7 +66,7 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 	 * @param max the maximum value allowed for ranges
 	 */
 	public NumberRangeModel(int lo, int hi, int min, int max) {
-		this(new Integer(lo), new Integer(hi), new Integer(min), new Integer(hi));
+		this(new Integer(lo), new Integer(hi), new Integer(min), new Integer(max));
 	}
 
 	/**
