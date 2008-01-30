@@ -4,22 +4,23 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=IntAct Client
+pluginName=IntActWSClient
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Web service client for IntAct database.  Users can import network data from IntAct.
+pluginDescription=<html><body><h2>Web Service Client for IntAct Database</h2>
+<p>Users can import network data from IntAct interaction database.  This is a web service client and accessible from other plugins through WebServiceClientManager.</p>
+</body></html>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.5
+pluginVersion=0.51
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Web Service Client
-
+pluginCategory=Network and Attribute I/O
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Keiichiro Ono:UCSD
+pluginAuthorsIntsitutions=Keiichiro Ono:UCSD Bioengineering Ideker Lab
