@@ -385,7 +385,7 @@ public class FilterSettingPanel extends JPanel {
 					NumberRangeModel model = (NumberRangeModel) theSlider.getModel();
 					
 					Vector<String> boundVect = new Vector<String>();
-					boundVect.add((String)model.getLowValue().toString());
+					boundVect.add(model.getLowValue().toString());
 					boundVect.add(model.getHighValue().toString());
 					boundVect.add(model.getMinValue().toString());
 					boundVect.add(model.getMaxValue().toString());
@@ -396,7 +396,7 @@ public class FilterSettingPanel extends JPanel {
 		            	theDialog.setVisible(true);
 		                //if lowBound < min, set it to min
 		                //if highBound > max, set it to max
-		            	// ????
+		            	adjustBoundValues(boundVect, "int");
 
 						model.setValueRange(new Integer(boundVect.elementAt(0)),new Integer(boundVect.elementAt(1)), (Integer) model.getMinValue(), (Integer) model.getMaxValue());						
 					}
@@ -404,13 +404,45 @@ public class FilterSettingPanel extends JPanel {
 		            	EditRangeDialog theDialog = new EditRangeDialog(new javax.swing.JFrame(), true, theSlider.getName(), boundVect, "double");												
 		            	theDialog.setLocation(theSlider.getLocationOnScreen());
 		            	theDialog.setVisible(true);
+		            	adjustBoundValues(boundVect, "double");
 		            	model.setValueRange(new Double(boundVect.elementAt(0)),new Double(boundVect.elementAt(1)), (Double) model.getMinValue(), (Double) model.getMaxValue());
-					}	                
+					}	 
 				}
 			}
 		}
 	}
 
+	private void adjustBoundValues(Vector<String> pBoundVect, String pDataType){
+		if (pDataType.equalsIgnoreCase("int")) {
+	    	int lowBound = new Integer(pBoundVect.elementAt(0)).intValue();
+	    	int highBound = new Integer(pBoundVect.elementAt(1)).intValue();
+	    	int min = new Integer(pBoundVect.elementAt(2)).intValue();
+	    	int max = new Integer(pBoundVect.elementAt(3)).intValue();
+	    	if (lowBound < min) {
+	    		lowBound = min;
+	    		pBoundVect.setElementAt(new Integer(lowBound).toString(),0);
+	    	}
+	    	if (highBound > max) {
+	    		highBound = max;
+	    		pBoundVect.setElementAt(new Integer(highBound).toString(),1);	    		
+	    	}
+		}
+		else if (pDataType.equalsIgnoreCase("double")) {
+	    	double lowBound = new Double(pBoundVect.elementAt(0)).doubleValue();
+	    	double highBound = new Double(pBoundVect.elementAt(1)).doubleValue();
+	    	double min = new Double(pBoundVect.elementAt(2)).doubleValue();
+	    	double max = new Double(pBoundVect.elementAt(3)).doubleValue();
+	    	if (lowBound < min) {
+	    		lowBound = min;
+	    		pBoundVect.setElementAt(new Double(lowBound).toString(),0);
+	    	}
+	    	if (highBound > max) {
+	    		highBound = max;
+	    		pBoundVect.setElementAt(new Double(highBound).toString(),1);	    		
+	    	}
+		}
+	}
+	
 	private AtomicFilter getAtomicFilterFromStr(String pCtrlAttribute, int pIndexType) {
 		AtomicFilter retFilter = null;
 		
