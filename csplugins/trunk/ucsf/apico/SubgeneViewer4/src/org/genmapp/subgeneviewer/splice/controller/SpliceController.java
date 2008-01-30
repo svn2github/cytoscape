@@ -2,13 +2,13 @@ package org.genmapp.subgeneviewer.splice.controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.Properties;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
 import org.genmapp.subgeneviewer.splice.SpliceViewBuilder;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 
@@ -44,13 +44,15 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 
 			System.out.println("Checking for exon structure data");
 			boolean dataReady = exonDataCheck();
-			//If not; prompt to collect data from server
-			// See http://www.exampledepot.com/egs/java.net/Post.html
-
 			if (dataReady) {
+				System.out.println("Adding link out for Affy probesets");
+				probesetLinkOut();
+
 				System.out.println("Building splice view");
 				buildSpliceView();
 			} else {
+				// If not; prompt to collect data from server
+				// See http://www.exampledepot.com/egs/java.net/Post.html
 				System.out
 						.println("Insufficient exon structure data for this gene");
 			}
@@ -81,9 +83,26 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	/**
 	 * 
 	 */
-	public void buildSpliceView() {
+	public void probesetLinkOut() {
+		Properties props = CytoscapeInit.getProperties();
+		props
+		.setProperty(
+				"nodelinkouturl.SubgeneViewer.Affymetrix Human Exon 1_0 Probe Sets",
+				"http://genome.ucsc.edu/cgi-bin/hgc?g=affyHuEx1&i=%Affy_probeset%");
+		props
+		.setProperty(
+				"nodelinkouturl.SubgeneViewer.Affymetrix NetAffx Probe Sets (requires login)",
+				"https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:%Affy_probeset%");
+		props
+		.setProperty(
+				"nodelinkouturl.SubgeneViewer.UCSC Genome Browser (link by gene)",
+				"http://genome.ucsc.edu/cgi-bin/hgTracks?position=%ID%");
+	}
 
-//		SpliceViewPanel.;
+	/**
+	 * 
+	 */
+	public void buildSpliceView() {
 		SpliceViewBuilder.createSpliceNetworkView();
 		Cytoscape.getDesktop().repaint();
 
