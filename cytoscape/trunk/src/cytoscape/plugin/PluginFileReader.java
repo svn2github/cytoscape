@@ -47,6 +47,7 @@ public class PluginFileReader {
 		SAXBuilder Builder = new SAXBuilder(false);
 		document = Builder.build(is);
 
+		// don't use this xsd it's no longer valid
 		// InputStream is = URLUtil.getInputStream( new URL(downloadUrl) );
 		// BufferedReader xsdReader = new BufferedReader( new
 		// InputStreamReader(PluginFileReader.class.getResourceAsStream("plugins.xsd"))

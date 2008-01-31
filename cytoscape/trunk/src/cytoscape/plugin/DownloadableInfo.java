@@ -166,21 +166,6 @@ public abstract class DownloadableInfo {
 	}
 
 	/**
-	 * @param cyVersion
-	 *            Sets the Cytoscape version this object is compatible with.
-	 */
-//	public void setCytoscapeVersion(String cyVersion)
-//			throws NumberFormatException {
-//		if (versionOk(cyVersion, false)) {
-//			this.cytoscapeVersion = cyVersion;
-//		} else {
-//			throw new NumberFormatException(
-//					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
-//		}
-//	}
-
-	
-	/**
 	 * Contains a list of all the Cytoscape versions this object
 	 * is compatible with.
 	 * 
@@ -194,11 +179,8 @@ public abstract class DownloadableInfo {
 			throw new NumberFormatException(
 					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
 		}
-		
-		
-		
-		
 	}
+
 	/**
 	 * @param version
 	 *            Sets the version of this object.
@@ -316,7 +298,6 @@ public abstract class DownloadableInfo {
 				CurrentVersion = v;
 		}
 		return CurrentVersion;
-		//return this.cytoscapeVersion;
 	}
 
 	/**
@@ -325,10 +306,6 @@ public abstract class DownloadableInfo {
 	public java.util.List<String> getCytoscapeVersions() {
 		return new java.util.ArrayList<String>(this.compatibleCyVersions);
 	}
-	
-//	public boolean isCytoscapeVersionCompatible(String cyVersion) {
-//		return compatibleCyVersions.contains(cyVersion);
-//	}
 	
 	public boolean containsVersion(String cyVersion) {
 		return compatibleCyVersions.contains(cyVersion);
@@ -396,18 +373,25 @@ public abstract class DownloadableInfo {
 	}
 
 	
-	// wonder if this will overwrite the Object.equals method...
+	// careful, this overwrites the Object.equals method
 	/**
 	 * Compare the two info objects.  If the ID, downloadable url and object version
 	 * are the same they are considered to be the same object.
 	 */
 	public boolean equals(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
-		if (this.getID().equals(obj.getID()) &&
-			this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
-			this.getObjectVersion().equals(obj.getObjectVersion()))
+
+		if (this.getID() != null && obj.getID() != null) {
+			if (this.getID().equals(obj.getID()) &&
+				this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+				this.getObjectVersion().equals(obj.getObjectVersion()))
+				return true;
+		} else if (this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+				   this.getObjectVersion().equals(obj.getObjectVersion())) {
+			// should I do this?? Without an id there is no other good way to tell I suppose
 			return true;
-		
+		}
+			
 		return false;
 	}
 

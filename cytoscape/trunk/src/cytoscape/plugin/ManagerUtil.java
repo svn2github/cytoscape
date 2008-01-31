@@ -157,8 +157,7 @@ public class ManagerUtil {
 	public static DownloadableInfo getInfoObject(Class pluginClass) {
 		PluginManager mgr = PluginManager.getPluginManager();
 		
-		List<DownloadableInfo> Downloadables = mgr
-				.getDownloadables(PluginStatus.CURRENT);
+		List<DownloadableInfo> Downloadables = mgr.getDownloadables(PluginStatus.CURRENT);
 
 		for (DownloadableInfo Current : Downloadables) {
 			

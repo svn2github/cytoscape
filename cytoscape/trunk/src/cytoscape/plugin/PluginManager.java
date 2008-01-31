@@ -56,7 +56,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+//import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -301,16 +301,15 @@ public class PluginManager {
 		// try to get it from the file
 		// XXX PROBLEM: what to do about a plugin that attempts to register
 		// itself and is not compatible with the current version?
-		System.err.println("     Registering " + Plugin.getClass().getName());
+		//PluginObj = null;
+			System.err.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
 			PluginObj = pp.fillPluginInfoObject(PluginObj);
 
 		} catch (IOException ioe) {
 			System.err.println("ERROR registering plugin: " + ioe.getMessage());
-			System.err
-					.println(Plugin.getClass().getName()
-							+ " loaded but not registered, this will not affect the operation of the plugin");
+			System.err.println(Plugin.getClass().getName()+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
 			System.err.println("ERROR registering plugin: ");
 			e.printStackTrace();
@@ -318,7 +317,6 @@ public class PluginManager {
 			if (PluginObj == null) { // still null, create a default one
 				PluginObj = new PluginInfo();
 				PluginObj.addCytoscapeVersion(cyVersion);
-				//PluginObj.setCytoscapeVersion(cyVersion);
 				PluginObj.setName(Plugin.getClass().getName());
 				PluginObj.setObjectVersion(0.1);
 			}
@@ -329,12 +327,12 @@ public class PluginManager {
 				PluginObj.addFileName(Jar.getName());
 			}
 			PluginObj.setFiletype(PluginInfo.FileType.JAR);
-
+			
 			initializedPlugins.put(PluginObj.getPluginClassName(), PluginObj);
 			// TODO This causes a bug where theme plugins essentially get added
 			// to the current list twice
+			System.out.println("Track plugin: " + addToTracker);
 			if (addToTracker) {
-				System.out.println("--- Registering PLUGIN " + PluginObj.getName());
 				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
 			}
 		}
