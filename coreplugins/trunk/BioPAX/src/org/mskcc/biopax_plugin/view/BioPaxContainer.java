@@ -63,28 +63,30 @@ public class BioPaxContainer extends JPanel {
 	 * CytoPanel Location of this Panel
 	 */
 	public static final int CYTO_PANEL_LOCATION = SwingConstants.EAST;
-	private JTabbedPane tabbedPane;
 	private BioPaxDetailsPanel bpDetailsPanel;
 	private NetworkListener networkListener;
 	private static BioPaxContainer bioPaxContainer;
-    private JFrame legendFrame;
+    private JEditorPane label;
+    private JPanel cards;
+
+    private final static String DETAILS_CARD = "DETAILS";
+    private final static String LEGEND_CARD = "LEGEND";
 
     /**
 	 * Private Constructor.
 	 */
 	private BioPaxContainer() {
-        final JPanel cards = new JPanel(new CardLayout());
-
+        cards = new JPanel(new CardLayout());
         bpDetailsPanel = new BioPaxDetailsPanel();
         LegendPanel legendPanel = new LegendPanel();
 
-        cards.add (bpDetailsPanel, "DETAILS");
-        cards.add (legendPanel, "LEGEND");
+        cards.add (bpDetailsPanel, DETAILS_CARD);
+        cards.add (legendPanel, LEGEND_CARD);
         
 		this.setLayout(new BorderLayout());
 		this.add(cards, BorderLayout.CENTER);
 
-        final JEditorPane label = new JEditorPane ("text/html", "<a href='LEGEND'>Visual Legend</a>");
+        label = new JEditorPane ("text/html", "<a href='LEGEND'>Visual Legend</a>");
         label.setEditable(false);
         label.setOpaque(false);
         label.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
@@ -93,12 +95,10 @@ public class BioPaxContainer extends JPanel {
             public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
                 if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     String name = hyperlinkEvent.getDescription();
-                    CardLayout cl = (CardLayout)(cards.getLayout());
-                    cl.show(cards, name);
-                    if (name.equalsIgnoreCase("LEGEND")) {
-                        label.setText("<a href='DETAILS'>View Details</a>");
+                    if (name.equalsIgnoreCase(LEGEND_CARD)) {
+                        showLegend();
                     } else {
-                        label.setText("<a href='LEGEND'>Visual Legend</a>");
+                        showDetails();
                     }
                 }
             }
@@ -113,7 +113,25 @@ public class BioPaxContainer extends JPanel {
         this.networkListener = new NetworkListener(bpDetailsPanel);
 	}
 
-	/**
+    /**
+     * Show Details Panel.
+     */
+    public void showDetails() {
+        CardLayout cl = (CardLayout)(cards.getLayout());
+        cl.show(cards, DETAILS_CARD);
+        label.setText("<a href='LEGEND'>Visual Legend</a>");
+    }
+
+    /**
+     * Show Legend Panel.
+     */
+    public void showLegend() {
+        CardLayout cl = (CardLayout)(cards.getLayout());
+        cl.show(cards, LEGEND_CARD);
+        label.setText("<a href='DETAILS'>View Details</a>");
+    }
+
+    /**
 	 * Gets Instance of Singleton.
 	 *
 	 * @return BioPaxContainer Object.
