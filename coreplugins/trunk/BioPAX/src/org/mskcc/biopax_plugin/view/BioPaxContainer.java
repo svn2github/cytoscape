@@ -31,12 +31,10 @@
  **/
 package org.mskcc.biopax_plugin.view;
 
-import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 
 import java.awt.*;
-
-import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -44,6 +42,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.data.CyAttributes;
 
 
 /**
@@ -52,7 +52,7 @@ import cytoscape.Cytoscape;
  * Currently includes:
  * <UL>
  * <LI>BioPaxDetailsPanel
- * <LI>LegendPanel
+ * <LI>BioPaxLegendPanel
  * <LI>AboutPanel
  * </UL>
  *
@@ -70,7 +70,8 @@ public class BioPaxContainer extends JPanel {
     private JPanel cards;
 
     private final static String DETAILS_CARD = "DETAILS";
-    private final static String LEGEND_CARD = "LEGEND";
+    private final static String LEGEND_BIOPAX_CARD = "LEGEND_BIOPAX";
+    private final static String LEGEND_BINARY_CARD = "LEGEND_BINARY";
 
     /**
 	 * Private Constructor.
@@ -78,12 +79,14 @@ public class BioPaxContainer extends JPanel {
 	private BioPaxContainer() {
         cards = new JPanel(new CardLayout());
         bpDetailsPanel = new BioPaxDetailsPanel();
-        LegendPanel legendPanel = new LegendPanel();
+        LegendPanel bioPaxLegendPanel = new LegendPanel(LegendPanel.BIOPAX_LEGEND);
+        LegendPanel binaryLegendPanel = new LegendPanel(LegendPanel.BINARY_LEGEND);
 
         cards.add (bpDetailsPanel, DETAILS_CARD);
-        cards.add (legendPanel, LEGEND_CARD);
+        cards.add (bioPaxLegendPanel, LEGEND_BIOPAX_CARD);
+        cards.add (binaryLegendPanel, LEGEND_BINARY_CARD);
         
-		this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
 		this.add(cards, BorderLayout.CENTER);
 
         label = new JEditorPane ("text/html", "<a href='LEGEND'>Visual Legend</a>");
@@ -95,7 +98,7 @@ public class BioPaxContainer extends JPanel {
             public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
                 if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     String name = hyperlinkEvent.getDescription();
-                    if (name.equalsIgnoreCase(LEGEND_CARD)) {
+                    if (name.equalsIgnoreCase("LEGEND")) {
                         showLegend();
                     } else {
                         showDetails();
@@ -127,7 +130,15 @@ public class BioPaxContainer extends JPanel {
      */
     public void showLegend() {
         CardLayout cl = (CardLayout)(cards.getLayout());
-        cl.show(cards, LEGEND_CARD);
+        CyNetwork network = Cytoscape.getCurrentNetwork();
+        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+        Boolean isBioPaxNetwork = networkAttributes.getBooleanAttribute(network.getIdentifier(),
+                MapBioPaxToCytoscape.BIOPAX_NETWORK);
+        if (isBioPaxNetwork != null) {
+            cl.show(cards, LEGEND_BIOPAX_CARD);
+        } else {
+            cl.show(cards, LEGEND_BINARY_CARD);
+        }
         label.setText("<a href='DETAILS'>View Details</a>");
     }
 
