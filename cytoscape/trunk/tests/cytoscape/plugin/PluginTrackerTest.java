@@ -122,7 +122,6 @@ public class PluginTrackerTest extends TestCase {
 		ThemeInfo themeObj = new ThemeInfo("themeTest123");
 		themeObj.setName("Test Theme");
 		themeObj.setDownloadableURL("http://booya.com/foo.xml");
-		//themeObj.setCytoscapeVersion("2.5.1");
 		themeObj.addCytoscapeVersion("2.5.1");
 		
 		PluginInfo obj = getInfoObj();
@@ -250,7 +249,6 @@ public class PluginTrackerTest extends TestCase {
 		assertEquals(Current.getName(), objB.getName());
 	}
 	
-	
 	private Document getDoc() throws Exception {
 		File TestFile = new File( tmpDir, fileName);
 		assertTrue(TestFile.exists());
@@ -265,13 +263,22 @@ public class PluginTrackerTest extends TestCase {
 		PluginInfo infoObj = new PluginInfo("123");
 		infoObj.setName("myTest");
 		infoObj.setCategory("Test");
-		//infoObj.setCytoscapeVersion("2.5.1");
 		infoObj.addCytoscapeVersion("2.5.1");
 		
 		infoObj.setPluginClassName("some.class.MyTest");
 		infoObj.setDownloadableURL("http://test.com/x.xml");
 		infoObj.setFiletype(PluginInfo.FileType.JAR);
 		return infoObj;
+	}
+
+	private PluginInfo fillInPI(PluginInfo obj) {
+  	obj.setCategory("Test");
+  	obj.addCytoscapeVersion("2.5.1");
+  	obj.setPluginClassName("some.class.MyTest");
+  	obj.setDownloadableURL("http://test.com/x.xml");
+  	obj.setFiletype(PluginInfo.FileType.JAR);
+  	obj.setDownloadableURL("http://booya.com/foo.xml");
+  	return obj;
 	}
 	
 }

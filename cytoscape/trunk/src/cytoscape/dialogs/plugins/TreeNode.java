@@ -38,8 +38,10 @@ package cytoscape.dialogs.plugins;
 import cytoscape.plugin.DownloadableInfo;
 
 import java.util.Vector;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
-public class TreeNode {
+public class TreeNode extends DefaultMutableTreeNode {
 	private Vector<TreeNode> children;
 
 	private DownloadableInfo infoObj;
@@ -288,6 +290,30 @@ public class TreeNode {
 			return getTitle() + ": " + getLeafCount();
 	}
 
+	
+//	public TreePath getPath(TreeNode node) {
+//		return node.getPath(node);
+//	}
+	
+//	 public javax.swing.tree.TreePath getPath(TreeNode node) {
+//		    // Get node depth
+//		    int depth = 0;
+//		    for(TreeNode node = current; node != null; node.getParent())
+//		        depth++;
+//		    // Construct node path 
+//		    // First scan helped us, now we can directly allocate array of exact
+//		    // size => no extra objects created (be kind to your local gc, it has 
+//		    // hard job cleaning that mess already), no collection reverse.
+//		    // Price is doubling path construction time.
+//		    // But in many situations you know the depth already. In such case
+//		    // Only code below applies and time complexity is O(depth) not 
+//		    // O(2*depth)
+//		    TreeNode[] path = new TreeNode[depth];
+//		    for(TreeNode node = current; node != null; node.getParent())
+//		        path[--depth] = node; // reverse fill array
+//		    return new TreePath(path);
+	
+	
 	private int recursiveTotalSubCategorySize(TreeNode node) {
 		int n = 0;
 		n += node.getChildCount();

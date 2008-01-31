@@ -197,14 +197,42 @@ public class DownloadableInfoTest extends TestCase {
 		assertTrue(di.isCytoscapeVersionCurrent());
 	}
 
+	public void testEquals() {
+		di = new InfoObj("1234");
+		InfoObj di2 = new InfoObj("1234");
+		assertTrue(di.equals(di2));
+		
+		InfoObj di3 = new InfoObj("4321");
+		assertFalse(di.equals(di3));
+	}
+
+
+	// in the absence of an id the object version and downloadable url alone are used to determine equality
+	public void testEqualsNoId() {
+		di = new InfoObj();
+		InfoObj di2 = new InfoObj();
+		assertTrue(di.equals(di2));
+
+		InfoObj di3 = new InfoObj();
+		di3.setObjectVersion(2.3);
+		assertFalse(di.equals(di3));
+	}
+	
 	private class InfoObj extends DownloadableInfo {
 		
 		public InfoObj() {
 			super();
+			init();
 		}
 		
 		public InfoObj(String arg) {
 			super(arg);
+			init();
+		}
+		
+		private void init() {
+			this.setObjectVersion(1.1);
+			this.setDownloadableURL("http://foo.com/infoobj");
 		}
 		
 		public InfoObj(String arg, DownloadableInfo parent) {

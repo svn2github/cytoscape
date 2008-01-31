@@ -3,6 +3,7 @@ package cytoscape.plugin;
 import cytoscape.*;
 
 import java.io.File;
+import java.net.URLClassLoader;
 import java.util.*;
 import junit.framework.TestCase;
 
@@ -173,11 +174,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#register(cytoscape.plugin.CytoscapePlugin, java.lang.String)}.
 	 */
-	public void testRegister() {
-		// can't test this without a real plugin but can't create a plugin w/o
-		// cytoscape being started up?
-		// fail("Not yet implemented, can't create a plugin w/o full
-		// Cytoscape");
+	public void testRegister() throws Exception {
 	}
 
 	public void testInstallTheme() throws java.io.IOException,
@@ -678,16 +675,6 @@ public class PluginManagerTest extends TestCase {
 		public MyPlugin() {
 			System.out.println("MyPlugin instantiated");
 		}
-
-		public PluginInfo getPluginInfoObj() {
-			PluginInfo Info = new PluginInfo();
-			Info.setName("myPlugin");
-			Info.setDescription("None");
-			Info.setObjectVersion(1.23);
-			Info.addCytoscapeVersion("2.5");
-			//Info.setCytoscapeVersion("2.5");
-			Info.setCategory("Test");
-			return Info;
-		}
 	}
+	
 }
