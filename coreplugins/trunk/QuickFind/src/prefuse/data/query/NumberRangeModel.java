@@ -131,11 +131,12 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 			        - v;
 			setRange(v, e, 0, 10000);
 		} else {
-			int v = 10000 * (int) ((m_lo.doubleValue() - m_min.doubleValue()) / (m_max.doubleValue()
-			                                                                    - m_min.doubleValue()));
-			int e = (10000 * (int) ((m_hi.doubleValue() - m_min.doubleValue()) / (m_max.doubleValue()
+			int v = (int) Math.round(10000 *  ((m_lo.doubleValue() - m_min.doubleValue()) / (m_max.doubleValue()
+			                                                                    - m_min.doubleValue())));
+			int e = (int) Math.round(10000 *  ((m_hi.doubleValue() - m_min.doubleValue()) / (m_max.doubleValue()
 			                                                                     - m_min.doubleValue())))
 			        - v;
+			
 			setRange(v, e, 0, 10000);
 		}
 	}
