@@ -289,7 +289,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			
 			for (TreeNode Category : hiddenNodes.keySet()) {
 				for (TreeNode Plugin: hiddenNodes.get(Category)) {
-					System.out.println(Category);
 					hiddenNodes.get(Category);
 					treeModel.removeNodesFromParent(hiddenNodes.get(Category));
 					if (Category.getChildCount() <= 0) {

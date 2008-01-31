@@ -301,7 +301,6 @@ public class PluginManager {
 		// try to get it from the file
 		// XXX PROBLEM: what to do about a plugin that attempts to register
 		// itself and is not compatible with the current version?
-		//PluginObj = null;
 			System.err.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
