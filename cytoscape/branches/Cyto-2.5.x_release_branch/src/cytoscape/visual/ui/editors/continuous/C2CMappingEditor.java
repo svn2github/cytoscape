@@ -53,6 +53,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import org.jdesktop.swingx.multislider.TrackRenderer;
+
 
 /**
  * Continuous-Continuous mapping editor.<br>
@@ -82,7 +84,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		belowPanel.setVisible(false);
 		pack();
 		setSlider();
-		((ContinuousTrackRenderer) slider.getTrackRenderer()).addPropertyChangeListener(this);
+//		((ContinuousTrackRenderer) slider.getTrackRenderer()).addPropertyChangeListener(this);
 	}
 
 	/**
@@ -114,11 +116,15 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	                                VisualPropertyType type) {
 		editor = new C2CMappingEditor(type);
 
-		ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider
-		                                                                                                          .getTrackRenderer();
-		rend.getRendererComponent(editor.slider);
-
-		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
+		TrackRenderer rend = editor.slider.getTrackRenderer();
+		
+		if(rend instanceof ContinuousTrackRenderer) {
+			rend.getRendererComponent(editor.slider);
+			return ((ContinuousTrackRenderer)rend).getTrackGraphicIcon(iconWidth, iconHeight);
+		} else {
+			return null;
+		}
+		
 	}
 
 	/**
@@ -241,6 +247,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 		ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type, minValue, maxValue,
 		                                                            (Number) below, (Number) above);
+		cRend.addPropertyChangeListener(this);
 
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(cRend);
