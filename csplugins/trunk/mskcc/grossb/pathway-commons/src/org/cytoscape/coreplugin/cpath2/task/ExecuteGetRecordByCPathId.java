@@ -6,6 +6,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.data.readers.GraphReader;
@@ -22,6 +23,7 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.jdom.JDOMException;
 import org.jdom.Element;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -209,17 +211,24 @@ public class ExecuteGetRecordByCPathId implements Task {
 
         // Now, set up clickable node details.
         CytoscapeWrapper.initBioPaxPlugInUI();
-        BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+        final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
         NetworkListener networkListener = bpContainer.getNetworkListener();
         networkListener.registerNetwork(cyNetwork);
 
-        //  Activate Edge Filter.
+        //  Add Edge Filter.
         TabUi tabs = TabUi.getInstance();
         if (tabs.getComponents().length == 2) {
             EdgeFilterPanel panel = new EdgeFilterPanel(cyNetwork);
             tabs.add(panel, "Edge Filter");
         }
         tabs.setSelectedIndex(2);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
+                bpContainer.showLegend();
+            }
+        });
     }
 
     private String convertToSifFileName (String networkFileName) {
