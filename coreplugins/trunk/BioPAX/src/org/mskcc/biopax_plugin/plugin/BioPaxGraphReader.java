@@ -219,7 +219,8 @@ public class BioPaxGraphReader implements GraphReader {
 		CytoscapeWrapper.initBioPaxPlugInUI();
 
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-		NetworkListener networkListener = bpContainer.getNetworkListener();
+        bpContainer.showLegend();
+        NetworkListener networkListener = bpContainer.getNetworkListener();
 		networkListener.registerNetwork(cyNetwork);
 	}
 
