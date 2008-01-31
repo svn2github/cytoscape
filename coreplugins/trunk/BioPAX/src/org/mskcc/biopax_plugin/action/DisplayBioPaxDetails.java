@@ -41,6 +41,7 @@ import cytoscape.data.SelectEventListener;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
+import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import java.awt.*;
 
@@ -122,7 +123,11 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 
 		//  If we are part of an embedded set of tabs, activate our Tab(s)
 		activateTabs(bpPanel);
-	}
+
+        //  If legend is showing, show details
+        BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+        bpContainer.showDetails();
+    }
 
 	/**
 	 * Recursive Method for Walking up a Containment Tree, looking for
