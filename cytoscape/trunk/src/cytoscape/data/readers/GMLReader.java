@@ -171,6 +171,7 @@ public class GMLReader extends AbstractGraphReader {
 	private Color DEF_COLOR = new Color(153, 153, 255);
 
 	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
+	private boolean buildVisualStyle = false;
 	private VisualStyleBuilder graphStyle = null;
 	
 	// Entries in the file
@@ -328,16 +329,40 @@ public class GMLReader extends AbstractGraphReader {
 	// Initialize variables for the new style created from GML
 	//
 	private void initStyle() {
+		        
+		// 
+		CyInitParams init = CytoscapeInit.getCyInitParams();
+
+		if (init == null)
+			return;
 		
+		if (vsbSwitch != null && vsbSwitch.equals("off")){
+			buildVisualStyle = false;
+		}
+		else {
+			buildVisualStyle = true;
+		}
+
 		nac = new NodeAppearanceCalculator();
 		eac = new EdgeAppearanceCalculator();
 		gac = new GlobalAppearanceCalculator();
 
+		gac.setDefaultBackgroundColor(DEF_COLOR);
+		
 		// Unlock the size object, then we can modify the both width and height.
 		nac.setNodeSizeLocked(false);
-        
-		// 
-		graphStyle = new VisualStyleBuilder(getNetworkName(), false);
+
+		if ((init.getMode() == CyInitParams.GUI)
+			    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+
+				// Build VS based on the Cytoscape property -- "visualStyleBuilder"
+				if (buildVisualStyle) {
+					graphStyle = new VisualStyleBuilder(getNetworkName(), false);
+				}
+				else {
+					graphStyle = new VisualStyleBuilder(getNetworkName(), true);
+				}
+		}
 	}
 
 	// Create maps for the node attribute and set it as a Visual Style.
@@ -351,7 +376,7 @@ public class GMLReader extends AbstractGraphReader {
 		// Set label for the nodes. (Uses "label" tag in the GML file)
 		//
 		String cName = "GML Labels" + mapSuffix;
-		Calculator nlc = catalog.getCalculator(VisualPropertyType.NODE_LABEL, cName);
+		Calculator nlc = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getCalculator(VisualPropertyType.NODE_LABEL, cName);
 
 		if (nlc == null) {
 			//System.out.println("creating passthrough mapping");
@@ -663,8 +688,8 @@ public class GMLReader extends AbstractGraphReader {
 	 * @param VSName DOCUMENT ME!
 	 */
 	public void applyMaps(String mapSuffix, String VSName) {
-		// CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+
+		/*
 		if (VSName != null) {
 			styleName = VSName;
 		}
@@ -672,23 +697,12 @@ public class GMLReader extends AbstractGraphReader {
 		if (mapSuffix != null) {
 			this.mapSuffix = mapSuffix;
 		}
+		*/
 
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		catalog = vizmapper.getCalculatorCatalog();
-
+	
 		setNodeMaps(vizmapper);
 		setEdgeMaps(vizmapper);
-
-		//
-		// Create new VS and apply it
-		//
-		gac.setDefaultBackgroundColor(DEF_COLOR);
-		gmlstyle = new VisualStyle(styleName, nac, eac, gac);
-
-		catalog.addVisualStyle(gmlstyle);
-		vizmapper.setVisualStyle(gmlstyle);
-
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 
 	//
@@ -1560,20 +1574,15 @@ public class GMLReader extends AbstractGraphReader {
 	 * @param net DOCUMENT ME!
 	 */
 	public void doPostProcessing(CyNetwork net) {
-		CyInitParams init = CytoscapeInit.getCyInitParams();
-
-		if (init == null)
-			return;
-
-		if ((init.getMode() == CyInitParams.GUI)
-		    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-
-			// Build VS based on the Cytoscape property -- "visualStyleBuilder"
-			if (vsbSwitch != null && vsbSwitch.equals("off")) {
-				return;
-			}
-            
-			graphStyle.buildStyle();	
+		
+		if (buildVisualStyle) {
+			graphStyle.buildStyle();
+			Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalAppearanceCalculator(gac);
+			Cytoscape.getVisualMappingManager().getVisualStyle().setNodeAppearanceCalculator(nac);
+			Cytoscape.getVisualMappingManager().getVisualStyle().setEdgeAppearanceCalculator(eac);
+			
+			applyMaps(null, null);
+			Cytoscape.getVisualMappingManager().applyAppearances();
 		}
 	}
 
