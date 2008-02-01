@@ -420,6 +420,9 @@ public class CalculatorIO {
 				                      NODE_LINE_WIDTH.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericNodeLineWidthCalculator");
 				storeKey(key, props, calcNames);
+
+			// These change the visual styles (rather than calculators) so that the
+			// visual style, instead of mapping a TGTARROW, now maps a TGTARROW_SHAPE.
 			} else if (key.endsWith(EDGE_TGTARROW.getPropertyLabel())) {
 				key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
 				                      EDGE_TGTARROW_SHAPE.getPropertyLabel(),
@@ -440,6 +443,9 @@ public class CalculatorIO {
 				                      NODE_LINE_STYLE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
 				storeKey(key, props, calcNames);
+
+			// Likewise, these change the default values of visual styles to so that
+			// the default LINETYPE gets turned into the default LINE_STYLE.
 			} else if (key.endsWith(NODE_LINETYPE.getDefaultPropertyLabel())) {
 				key = updateLegacyKey(key, props, NODE_LINETYPE.getDefaultPropertyLabel(),
 				                      NODE_LINE_STYLE.getDefaultPropertyLabel(),
@@ -460,6 +466,8 @@ public class CalculatorIO {
 				                      EDGE_SRCARROW_SHAPE.getDefaultPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
 				storeKey(key, props, calcNames);
+
+			// Store the key as is.
 			} else
 				storeKey(key, props, calcNames);
 		}
