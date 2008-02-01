@@ -353,11 +353,11 @@ public class PluginUrlDialog extends JDialog {
 				if (getIOException() != null) {
 					// failed to read the given url
 					getIOException().printStackTrace();
-					dialog.setMessage(PluginManageDialog.CommonError.NOXML + url);
+					dialog.setError(PluginManageDialog.CommonError.NOXML + url);
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
 					getJDOMException().printStackTrace();
-					dialog.setMessage(PluginManageDialog.CommonError.BADXML + url);
+					dialog.setError(PluginManageDialog.CommonError.BADXML + url);
 				}
 			} else {
 
@@ -369,7 +369,7 @@ public class PluginUrlDialog extends JDialog {
 						.sortByCategory(UniqueAvailable);
 
 				if (NewPlugins.size() <= 0) {
-					dialog.setMessage("No plugins compatible with "
+					dialog.setError("No plugins compatible with "
 							+ new CytoscapeVersion().getFullVersion()
 							+ " available from this site.");
 				} else {
