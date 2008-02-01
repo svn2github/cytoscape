@@ -171,7 +171,6 @@ public class GMLReader extends AbstractGraphReader {
 	private Color DEF_COLOR = new Color(153, 153, 255);
 
 	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
-	private boolean buildVisualStyle = false;
 	private VisualStyleBuilder graphStyle = null;
 	
 	// Entries in the file
@@ -329,19 +328,6 @@ public class GMLReader extends AbstractGraphReader {
 	// Initialize variables for the new style created from GML
 	//
 	private void initStyle() {
-		        
-		// 
-		CyInitParams init = CytoscapeInit.getCyInitParams();
-
-		if (init == null)
-			return;
-		
-		if (vsbSwitch != null && vsbSwitch.equals("off")){
-			buildVisualStyle = false;
-		}
-		else {
-			buildVisualStyle = true;
-		}
 
 		nac = new NodeAppearanceCalculator();
 		eac = new EdgeAppearanceCalculator();
@@ -352,17 +338,7 @@ public class GMLReader extends AbstractGraphReader {
 		// Unlock the size object, then we can modify the both width and height.
 		nac.setNodeSizeLocked(false);
 
-		if ((init.getMode() == CyInitParams.GUI)
-			    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-
-				// Build VS based on the Cytoscape property -- "visualStyleBuilder"
-				if (buildVisualStyle) {
-					graphStyle = new VisualStyleBuilder(getNetworkName(), false);
-				}
-				else {
-					graphStyle = new VisualStyleBuilder(getNetworkName(), true);
-				}
-		}
+		graphStyle = new VisualStyleBuilder(getNetworkName(), false);
 	}
 
 	// Create maps for the node attribute and set it as a Visual Style.
@@ -689,7 +665,7 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public void applyMaps(String mapSuffix, String VSName) {
 
-		/*
+		
 		if (VSName != null) {
 			styleName = VSName;
 		}
@@ -697,7 +673,7 @@ public class GMLReader extends AbstractGraphReader {
 		if (mapSuffix != null) {
 			this.mapSuffix = mapSuffix;
 		}
-		*/
+		
 
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 	
@@ -780,6 +756,7 @@ public class GMLReader extends AbstractGraphReader {
 	 * on a node that was skipped, then that edge will be skipped as well.
 	 */
 	protected void createGraph() {
+		
 		Cytoscape.ensureCapacity(nodes.size(), sources.size());
 		nodeIDMap = new OpenIntIntHashMap(nodes.size());
 		giny_nodes = new IntArrayList(nodes.size());
@@ -1574,18 +1551,27 @@ public class GMLReader extends AbstractGraphReader {
 	 * @param net DOCUMENT ME!
 	 */
 	public void doPostProcessing(CyNetwork net) {
-		
-		if (buildVisualStyle) {
-			graphStyle.buildStyle();
-			Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalAppearanceCalculator(gac);
-			Cytoscape.getVisualMappingManager().getVisualStyle().setNodeAppearanceCalculator(nac);
-			Cytoscape.getVisualMappingManager().getVisualStyle().setEdgeAppearanceCalculator(eac);
-			
-			applyMaps(null, null);
-			Cytoscape.getVisualMappingManager().applyAppearances();
-		}
-	}
+		 
+		// 
+		CyInitParams init = CytoscapeInit.getCyInitParams();
 
-	
+		if (init == null)
+			return;
+
+		if ((init.getMode() == CyInitParams.GUI)
+			    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+		
+			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
+				graphStyle.buildStyle();
+				Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalAppearanceCalculator(gac);
+				Cytoscape.getVisualMappingManager().getVisualStyle().setNodeAppearanceCalculator(nac);
+				Cytoscape.getVisualMappingManager().getVisualStyle().setEdgeAppearanceCalculator(eac);
+				
+				applyMaps(null, null);
+				Cytoscape.getVisualMappingManager().applyAppearances();
+			}			
+		}
+		
+	}
 	
 }
