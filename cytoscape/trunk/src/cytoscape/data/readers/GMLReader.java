@@ -305,7 +305,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		mapSuffix = " for " + fileName;
 
-		return fileName.concat("_GML_style");
+		return getNetworkName();//fileName.concat("_GML_style");
 	}
 
 	private void initializeHash() {
@@ -338,7 +338,7 @@ public class GMLReader extends AbstractGraphReader {
 		// Unlock the size object, then we can modify the both width and height.
 		nac.setNodeSizeLocked(false);
 
-		graphStyle = new VisualStyleBuilder(getNetworkName(), false);
+		graphStyle = new VisualStyleBuilder(styleName, true);
 	}
 
 	// Create maps for the node attribute and set it as a Visual Style.
@@ -1563,15 +1563,22 @@ public class GMLReader extends AbstractGraphReader {
 		
 			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
 				graphStyle.buildStyle();
-				Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalAppearanceCalculator(gac);
+								
+				applyMaps(null, null);
+
+				Cytoscape.getVisualMappingManager().setVisualStyle(styleName+ " style");
+
 				Cytoscape.getVisualMappingManager().getVisualStyle().setNodeAppearanceCalculator(nac);
 				Cytoscape.getVisualMappingManager().getVisualStyle().setEdgeAppearanceCalculator(eac);
+				Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalAppearanceCalculator(gac);
 				
-				applyMaps(null, null);
 				Cytoscape.getVisualMappingManager().applyAppearances();
+				
+				CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
+			    view.applyVizmapper(Cytoscape.getVisualMappingManager().getVisualStyle()); 
+			    view.redrawGraph(false, true); 
 			}			
 		}
-		
 	}
 	
 }
