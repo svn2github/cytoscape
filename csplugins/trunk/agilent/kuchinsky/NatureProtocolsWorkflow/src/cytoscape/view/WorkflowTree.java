@@ -19,6 +19,11 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.actions.WorkflowAbstractAction;
 import cytoscape.actions.WorkflowExportAsGraphicsAction;
+import cytoscape.actions.WorkflowExport_Edge_Attributes_Action;
+import cytoscape.actions.WorkflowExport_GML_Action;
+import cytoscape.actions.WorkflowExport_Node_Attributes_Action;
+import cytoscape.actions.WorkflowExport_SIF_Action;
+import cytoscape.actions.WorkflowExport_XGMML_Action;
 import cytoscape.actions.WorkflowImportNetworkFromFileAction;
 import cytoscape.actions.WorkflowImportNetworkFromTableAction;
 import cytoscape.actions.WorkflowImport_Annotation_Action;
@@ -72,12 +77,18 @@ public class WorkflowTree extends JPanel
     private static final String ANALYZE_JACTIVE_MODULES = "jActiveModules";
     private static final String ANALYZE_BINGO = "BiNGO";
     private static final String ANALYZE_FILTERS = "Filters";
-    private static final String PUBLISH = "Publish";
+    private static final String PUBLISH = "Publish/Save your work";
     private static final String PUBLISH_EXPORT_GRAPHICS = "Export Graphics";
     private static final String PUBLISH_EXPORT_SESSION = "Export Session to Web";
     private static final String NODE_ATTRIBUTES = "Node Attributes";
     private static final String EDGE_ATTRIBUTES = "Edge Attributes";
     private static final String TABLE_ATTRIBUTES = "Attributes from Table";
+    
+    private static final String EXPORT_NETWORK = "Export Network";
+    private static final String EXPORT_GML = "as GML";
+    private static final String EXPORT_XGMML = "as XGMML";
+    private static final String EXPORT_SIF = "as Interactions";
+    private static final String EXPORT_ATTRIBUTES = "from File";
     
     private static final String OVERVIEW = "Overview";
     private static final String ABSTRACT = "Abstract";
@@ -215,6 +226,7 @@ public class WorkflowTree extends JPanel
         category.add(tool);
         
         
+  
         // import attributes: Node, Edge, and from Table
         tool = new DefaultMutableTreeNode(DATA_ATTRIBUTE);
         category.add(tool);
@@ -224,8 +236,7 @@ public class WorkflowTree extends JPanel
         tool.add(subTool);
         subTool = new DefaultMutableTreeNode(new WorkflowImport_Table_Attributes_Action(TABLE_ATTRIBUTES));
         tool.add(subTool);
-        
-        
+                
         
         
         tool = new DefaultMutableTreeNode(new WorkflowImport_Expression_Matrix_Action(DATA_EXPRESSION));
@@ -252,6 +263,25 @@ public class WorkflowTree extends JPanel
         top.add(category);
         tool = new DefaultMutableTreeNode(new WorkflowExportAsGraphicsAction(PUBLISH_EXPORT_GRAPHICS));
         category.add(tool);
+    
+        // export network
+        tool = new DefaultMutableTreeNode(EXPORT_NETWORK);
+        category.add(tool);
+        subTool = new DefaultMutableTreeNode(new WorkflowExport_GML_Action(EXPORT_GML));
+        tool.add(subTool);
+        subTool = new DefaultMutableTreeNode(new WorkflowExport_XGMML_Action(EXPORT_XGMML));
+        tool.add(subTool);
+        subTool = new DefaultMutableTreeNode(new WorkflowExport_SIF_Action(EXPORT_SIF));
+        tool.add(subTool);
+        
+        // export attributes: Node, Edge
+        tool = new DefaultMutableTreeNode(DATA_ATTRIBUTE);
+        category.add(tool);
+        subTool = new DefaultMutableTreeNode(new WorkflowExport_Node_Attributes_Action(NODE_ATTRIBUTES));
+        tool.add(subTool);
+        subTool = new DefaultMutableTreeNode(new WorkflowExport_Edge_Attributes_Action(EDGE_ATTRIBUTES));
+        tool.add(subTool);
+ 
 //        tool = new DefaultMutableTreeNode(new WorkflowPanelAction(PUBLISH_EXPORT_SESSION));
 //        category.add(tool);
     }
