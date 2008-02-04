@@ -62,7 +62,7 @@ public final class RepeatedAllRootGraphMethodsTest {
 			if ((i % 100) == 0)
 				System.out.println("Now running iteration " + (i + 1) + " of " + numIterations);
 
-			AllRootGraphMethodsTest.runTest(root);
+			//AllRootGraphMethodsTest.runTest(root);
 		}
 	}
 }

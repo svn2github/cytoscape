@@ -96,42 +96,6 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final boolean isMetaRelationshipNodesCreatedType() {
-		return (getType() & META_RELATIONSHIP_NODES_CREATED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isMetaRelationshipEdgesCreatedType() {
-		return (getType() & META_RELATIONSHIP_EDGES_CREATED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isMetaRelationshipNodesRemovedType() {
-		return (getType() & META_RELATIONSHIP_NODES_REMOVED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isMetaRelationshipEdgesRemovedType() {
-		return (getType() & META_RELATIONSHIP_EDGES_REMOVED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public Node[] getCreatedNodes() {
 		return null;
 	}
@@ -168,42 +132,6 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node[][] getMetaRelationshipCreatedNodes() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object[][] getMetaRelationshipCreatedEdges() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Node[][] getMetaRelationshipRemovedNodes() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object[][] getMetaRelationshipRemovedEdges() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public int[] getCreatedNodeIndices() {
 		return null;
 	}
@@ -232,42 +160,6 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 * @return  DOCUMENT ME!
 	 */
 	public int[] getRemovedEdgeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[][] getMetaRelationshipCreatedNodeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[][] getMetaRelationshipCreatedEdgeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[][] getMetaRelationshipRemovedNodeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[][] getMetaRelationshipRemovedEdgeIndices() {
 		return null;
 	}
 }

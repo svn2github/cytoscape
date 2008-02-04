@@ -71,11 +71,16 @@ public class Bug646Test {
 		}
 
 		public GraphPerspective getGraphPerspective() {
+			return null;
+			/*
 			return m_rootGraph.createGraphPerspective(m_rootGraph.getNodeMetaChildIndicesArray(m_rootGraphIndex),
 			                                          m_rootGraph.getEdgeMetaChildIndicesArray(m_rootGraphIndex));
+													  */
 		}
 
 		public boolean setGraphPerspective(GraphPerspective gp) {
+			return true;
+			/*
 			if (gp.getRootGraph() != m_rootGraph)
 				return false;
 
@@ -89,6 +94,7 @@ public class Bug646Test {
 				m_rootGraph.addEdgeMetaChild(m_rootGraphIndex, edgeInx[i]);
 
 			return true;
+			*/
 		}
 
 		public RootGraph getRootGraph() {
