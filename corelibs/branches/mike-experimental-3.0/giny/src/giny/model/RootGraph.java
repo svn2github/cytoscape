@@ -79,12 +79,6 @@ public interface RootGraph {
     );
 
   /**
-   * @deprecated Please don't call this silly method; implementors: I suggest
-   *   creating an easter egg and having it take effect when this method is called.
-   */
-  public void ensureCapacity( int nodes, int edges );
-
-  /**
    * Returns number of nodes in this RootGraph.  A call to nodesIterator()
    * will return an Iterator containing exactly getNodeCount() elements
    * (unless nodes are created or removed in the meantime).
@@ -177,7 +171,6 @@ public interface RootGraph {
   public int removeNode(int node_index);
 
   /**
-   * @deprecated Use removeNode(Node) or removeNodes(int[]) instead.
    * @see #removeNode(Node)
    * @see #removeNodes(int[])
    */
@@ -192,7 +185,6 @@ public interface RootGraph {
    * values except at positions that in the input array contain indices
    * corresponding to Nodes that don't exist in this RootGraph; at these positions the
    * result array will contain the value 0.
-   * @deprecated Use removeNode(int) instead.
    * @see #removeNode(int)
    */
   public int[] removeNodes ( int[] node_indices );
@@ -250,17 +242,6 @@ public interface RootGraph {
   public int createNode ( int[] node_indices, int[] edge_indices );
 
   /**
-   * Create <tt>new_node_count</tt> new Nodes in this RootGraph, and return
-   * their indices.
-   * @param new_node_count the number of new nodes to create.
-   * @return an array of length new_node_count containing the indices of the
-   * newly created Nodes.
-   * @deprecated Use createNode() instead.
-   * @see #createNode()
-   */
-  public int[] createNodes ( int new_node_count );
-
-  /**
    * Remove the given Edge from this RootGraph and all of its
    * GraphPerspectives.<p>
    * TECHNICAL DETAIL: The Edge input parameter should be an Edge that was
@@ -291,7 +272,6 @@ public interface RootGraph {
   public int removeEdge(int edge_index);
 
   /**
-   * @deprecated Use removeEdge(Edge) or removeEdges(int[]) instead.
    * @see #removeEdge(Edge)
    * @see #removeEdges(int[])
    */
@@ -306,7 +286,6 @@ public interface RootGraph {
    * values except at positions that in the input array contain indices
    * corresponding to Edges that don't exist in this RootGraph; at these positions the
    * result array will contain the value 0.
-   * @deprecated Use removeEdge(int) instead.
    * @see #removeEdge(int)
    */
   public int[] removeEdges ( int[] edge_indices );
@@ -376,32 +355,6 @@ public interface RootGraph {
   public int createEdge(int source_index, int target_index, boolean directed);
 
   /**
-   * Create some Edges.  The indices of the sources and the targets are given
-   * in two arrays, which must be of equal length, and the indices of the
-   * created edges are returned in an array of the same length.  The newly
-   * created Edges will be directed iff the boolean argument is true.<p>
-   * If returnArr represents the int[] that is returned by this method, then
-   * returnArr[i] defines the index of newly created edge whose source node index
-   * is source_indices[i] and whose target node index is
-   * target_indices[i].
-   * @param source_indices a non-null array of the indices of the source Nodes for the
-   * new Edges.
-   * @param target_indices a non-null array of length <tt>source_indices.length</tt> of
-   * the indices of the target Nodes for the new Edges.
-   * @param directed The new Edges will be directed iff this argument is true.
-   * @return an array of length <tt>source_indices.length</tt> of the indices
-   * of the newly created Edges; an entry of 0 in the returned array corresponds
-   * an ill-defined source or target node index within the input parameters, at the same
-   * array offset.
-   * @deprecated Use createEdge(int, int, boolean) instead.
-   * @see #createEdge(int, int, boolean)
-   */
-  public int[] createEdges (int[] source_indices,
-                            int[] target_indices,
-                            boolean directed
-                            );
-
-  /**
    * Return true if the given Node is in this RootGraph.  False
    * otherwise.<p>
    * TECHNICAL DETAIL: The Node input parameter should be an object
@@ -424,60 +377,22 @@ public interface RootGraph {
   public boolean containsEdge ( Edge edge );
 
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
-   *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
-   *   if there exists an edge [directed or undirected] E such that A is E's target and
-   *   B is E's source, or
-   *   A is E's source and B is E's target; this method then returns a non-repeating list
-   *   of all nodes N in this
-   *   RootGraph such that N is a "node neighbor" of node, the input parameter.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public List neighborsList ( Node node );
 
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
-   *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
-   *   if there exists an edge [directed or undirected] E such that A is E's target and
-   *   B is E's source, or A is E's source and B is E's target; this method then returns
-   *   true if and only if a_node is a "node neighbor" of another_node in this RootGraph.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public boolean isNeighbor ( Node a_node, Node another_node );
 
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways, please note that the definition
-   *   of "node neighbor" is such: Node A is a "node neighbor" of node B if and only
-   *   if there exists an edge [directed or undirected] E such that A is E's target and
-   *   B is E's source, or A is E's source and B is E's target; this method then returns
-   *   true if and only if node at index a_node_index is a "node neighbor" of node at
-   *   index another_node_index in this RootGraph.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public boolean isNeighbor ( int a_node_index, int another_node_index );
 
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways: this method returns true if and only if
-   *   either 1) there exists a directed edge E in this RootGraph such that the from
-   *   node specified is E's source node and the target node specified is E's target node
-   *   or 2) there exists an undirected edge E in this RootGraph such that E's endpoints
-   *   are the from and to nodes specified.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public boolean edgeExists ( Node from, Node to );
 
   /**
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead;
-   *   if you decide to use this method anyways: this method returns true if and only if
-   *   either 1) there exists a directed edge E in this RootGraph such that
-   *   from_node_index is E's source node's index and to_node_index is E's target node's
-   *   index or 2) there exists an undirected edge E in this RootGraph such that E's
-   *   endpoint nodes have indices from_node_index and to_node_index.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public boolean edgeExists ( int from_node_index, int to_node_index );
 
@@ -492,8 +407,6 @@ public interface RootGraph {
    * @return the number of Edges from the <tt>from</tt> Node to the 
    * <tt>to</tt> Node; returns -1 if either the <tt>from</tt> or the
    *   <tt>to</tt> Node is not in this RootGraph.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int getEdgeCount ( Node from,
                             Node to,
@@ -513,8 +426,6 @@ public interface RootGraph {
    * @return the number of Edges from the Node with index <tt>from_index</tt>
    * to the Node with index <tt>to_index</tt>; returns -1 if either one of the two
    * specified nodes is not in this RootGraph.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int getEdgeCount (int from_node_index,
                            int to_node_index,
@@ -567,22 +478,7 @@ public interface RootGraph {
   public int[] getConnectingEdgeIndicesArray ( int[] node_indices );
 
   /**
-   * Return the nodes that connect the given edges.
-   * The input edge indices array need not be non-repeating.
-   * Returns null if any one of the edge indices specified does not correspond to
-   * an edge in this RootGraph.
-   * @deprecated Use getEdgeSourceIndex(int) and getEdgeTargetIndex(int) instead, or
-   *   use createGraphPerspective(int[], int[]).
-   * @see #getEdgeSourceIndex(int)
-   * @see #getEdgeTargetIndex(int)
-   * @see #createGraphPerspective(int[], int[])
-   */
-  public int[] getConnectingNodeIndicesArray ( int[] edge_indices );
-
-  /**
    * @return null is returned if either of the specified Nodes is not in this RootGraph.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int[] getEdgeIndicesArray ( 
                                     int from_node_index,
@@ -599,8 +495,6 @@ public interface RootGraph {
    * @return a new List of the Edges from the <tt>from</tt> Node to the
    * <tt>to</tt> Node, or the empty List if none exist; null is returned if either
    * of the specified nodes is not in this RootGraph.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public List edgesList ( Node from, Node to );
 
@@ -615,8 +509,6 @@ public interface RootGraph {
    * <tt>from_node_index</tt> to the Node corresponding to
    * <tt>to_node_index</tt>, or the empty List if none exist; null is returned
    * if either of the specified nodes does not exist in this RootGraph.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public List edgesList (int from_node_index,
                          int to_node_index,
@@ -634,8 +526,6 @@ public interface RootGraph {
    * <tt>from_node_index</tt> to the Node corresponding to
    * <tt>to_node_index</tt>; the empty array is returned if none exist; null is
    * returned if either of the specified Nodes does not exist in this RootGraph.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int[] getEdgeIndicesArray (int from_node_index,
                                     int to_node_index,

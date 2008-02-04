@@ -42,70 +42,10 @@ public abstract class GraphPerspectiveChangeEvent
   public abstract boolean isNodesHiddenType ();
   public abstract boolean isEdgesHiddenType ();
 
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies node selection logic.
-   */
-  public abstract boolean isNodesSelectedType ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies node un-selection logic.
-   */
-  public abstract boolean isNodesUnselectedType ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies edge selection logic.
-   */
-  public abstract boolean isEdgesSelectedType ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies edge un-selection logic.
-   */
-  public abstract boolean isEdgesUnselectedType ();
 
   public abstract Node[] getRestoredNodes ();
   public abstract Edge[] getRestoredEdges ();
 
-  /**
-   * @deprecated Use getHiddenNodeIndices() instead; the nodes returned by
-   *   this method may have undefined state.
-   * @see #getHiddenNodeIndices()
-   */
-  public abstract Node[] getHiddenNodes ();
-
-  /**
-   * @deprecated Use getHiddenEdgeIndices() instead; the edges returned by
-   *   this method may have undefined state.
-   * @see #getHiddenEdgeIndices()
-   */
-  public abstract Edge[] getHiddenEdges ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies node selection logic.
-   */
-  public abstract Node[] getSelectedNodes ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies node un-selection logic.
-   */
-  public abstract Node[] getUnselectedNodes ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies edge selection logic.
-   */
-  public abstract Edge[] getSelectedEdges ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies edge un-selection logic.
-   */
-  public abstract Edge[] getUnselectedEdges ();
 
   /** The integer values in the returned array are RootGraph indices. */
   public abstract int[] getRestoredNodeIndices ();
@@ -118,29 +58,5 @@ public abstract class GraphPerspectiveChangeEvent
 
   /** The integer values in the returned array are RootGraph indices. */
   public abstract int[] getHiddenEdgeIndices ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies node selection logic.
-   */
-  public abstract int[] getSelectedNodeIndices ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies node un-selection logic.
-   */
-  public abstract int[] getUnselectedNodeIndices ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies edge selection logic.
-   */
-  public abstract int[] getSelectedEdgeIndices ();
-
-  /**
-   * @deprecated Nowhere in GraphPerspective is there functionality that
-   *   specifies edge un-selection logic.
-   */
-  public abstract int[] getUnselectedEdgeIndices ();
 
 } // abstract class GraphPerspectiveChangeEvent

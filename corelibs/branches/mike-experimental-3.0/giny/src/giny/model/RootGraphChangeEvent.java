@@ -27,14 +27,12 @@ public abstract class RootGraphChangeEvent
   public abstract Edge[] getCreatedEdges  ();
 
   /**
-   * @deprecated Use getRemovedNodeIndices() instead; the nodes returned by
    *   this method may have undefined state.
    * @see #getRemovedNodeIndices()
    */
   public abstract Node[] getRemovedNodes  ();
 
   /**
-   * @deprecated Use getRemovedEdgeIndices() instead; the edges returned by
    *   this method may have undefined state.
    * @see #getRemovedEdgeIndices()
    */

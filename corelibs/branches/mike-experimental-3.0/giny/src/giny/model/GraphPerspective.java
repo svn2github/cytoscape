@@ -87,7 +87,6 @@ public interface GraphPerspective {
   /**
    * @return null is returned if either of the specified Nodes is not in this
    *   GraphPerspective.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public int[] getEdgeIndicesArray ( 
@@ -116,7 +115,6 @@ public interface GraphPerspective {
    public int hideNode ( int node_index ) ;
  
   /**
-   * @deprecated Use hideNode(Node) or hideNodes(int[]) instead.
    * @see #hideNode(Node)
    * @see #hideNodes(int[])
    */
@@ -158,16 +156,12 @@ public interface GraphPerspective {
    public int restoreNode ( int node_index ) ;
  
   /**
-   * @deprecated Use restoreNode(Node) restoreNodes(int[]) instead.
    * @see #restoreNode(Node)
    * @see #restoreNodes(int[])
    */
   public List restoreNodes ( List nodes ) ;
   
   /**
-   * @deprecated Use restoreNodes(int[]) and restoreEdges(int[]) instead; to
-   *   get edges incident to specified nodes, use
-   *   RootGraph.getConnectingEdgeIndicesArray(int[]).
    * @see #restoreNodes(int[])
    * @see #restoreEdges(int[])
    * @see RootGraph#getConnectingEdgeIndicesArray(int[])
@@ -185,9 +179,6 @@ public interface GraphPerspective {
    *   contain indices corresponding to Nodes that were already restored or
    *   don't exist in the RootGraph; at these positions the result array will
    *   contain the value 0.
-   * @deprecated Use restoreNodes(int[]) and restoreEdges(int[]) instead; to
-   *   get edges incident to specified nodes, use
-   *   RootGraph.getConnectingEdgeIndicesArray(int[]).
    * @see #restoreNodes(int[])
    * @see #restoreEdges(int[])
    * @see RootGraph#getConnectingEdgeIndicesArray(int[])
@@ -231,7 +222,6 @@ public interface GraphPerspective {
    public int hideEdge ( int edge_index ) ;
  
   /**
-   * @deprecated Use hideEdge(Edge) or hideEdges(int[]) instead.
    * @see #hideEdge(Edge)
    * @see #hideEdges(int[])
    */
@@ -274,7 +264,6 @@ public interface GraphPerspective {
    public int restoreEdge ( int edge_index ) ;
  
   /**
-   * @deprecated Use restoreEdges(int[]) instead.
    * @see #restoreEdges(int[])
    */
    public List restoreEdges ( List edges ) ;
@@ -360,7 +349,6 @@ public interface GraphPerspective {
    *   given Nodes and Edges, plus any Nodes incident on the given Edges array but
    *   omitted from the given Nodes array; returns null if any of the specified Nodes
    *   or Edges are not in this GraphPerspective.
-   * @deprecated Use RootGraph.createGraphPerspective(int[], int[]) instead.
    * @see RootGraph#createGraphPerspective(int[], int[])
    */
    public GraphPerspective createGraphPerspective ( Node[] nodes,
@@ -379,7 +367,6 @@ public interface GraphPerspective {
    *   and Edges with the given indices, including all Nodes incident on those Edges;
    *   returns null if any of the specified Node or Edge indices do not correspond
    *   to Nodes or Edges existing in this GraphPerspective.
-   * @deprecated Use RootGraph.createGraphPerspective(int[], int[]) instead.
    * @see RootGraph#createGraphPerspective(int[], int[])
    */
   public GraphPerspective createGraphPerspective (int[] node_indices,
@@ -394,7 +381,6 @@ public interface GraphPerspective {
    public GraphPerspective createGraphPerspective ( Filter filter ) ;
  
   /**
-   * @deprecated Use neighborsArray(int) instead;
    * @see #neighborsArray(int)
    */
    public List neighborsList ( Node node ) ;
@@ -525,7 +511,6 @@ public interface GraphPerspective {
    * <tt>from_node_index</tt> to the Node corresponding to
    * <tt>to_node_index</tt>, or the empty List if none exist; null is returned
    * if either of the specified nodes does not exist in this GraphPerspective.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public List edgesList (int from_node_index,
@@ -551,8 +536,6 @@ public interface GraphPerspective {
    * <tt>to_node_index</tt>; the empty array is returned if no such Edges exist;
    * null is returned if either of the specified Nodes does not exist in this
    * GraphPerspective.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
-   * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
    public int[] getEdgeIndicesArray (int from_node_index,
                                      int to_node_index,
@@ -696,12 +679,6 @@ public interface GraphPerspective {
    */
    public int getIndex ( Node node ) ;
  
-  /**
-   * @deprecated Use getRootGraphNodeIndex(int), whose functionality is
-   *   identical.
-   * @see #getRootGraphNodeIndex(int)
-   */
-   public int getNodeIndex ( int root_graph_node_index ) ;
  
   /**
    * This method returns the input parameter if and only if a Node at the
@@ -730,12 +707,6 @@ public interface GraphPerspective {
    */
    public int getIndex ( Edge edge ) ;
  
-  /**
-   * @deprecated Use getRootGraphEdgeIndex(int), whose functionality is
-   *   identical.
-   * @see #getRootGraphEdgeIndex(int)
-   */
-   public int getEdgeIndex ( int root_graph_edge_index ) ;
  
   /**
    * This method returns the input parameter if and only if an Edge at the
@@ -792,7 +763,6 @@ public interface GraphPerspective {
    * @return a List of giny.model.Edge objects; an empty List is returned if
    *   no adjacent Edges are found; null is returned if the specified Node does not
    *   exist in this GraphPerspective.
-   * @deprecated Use getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
   public List getAdjacentEdgesList ( Node node, boolean include_undirected_edges, boolean incoming_edges, boolean outgoing_edges );
@@ -845,14 +815,6 @@ public interface GraphPerspective {
    */
   public int[] getConnectingEdgeIndicesArray ( int[] node_indices );
  
-  /**
-   * Return the Nodes that connect the given Edges in this GraphPerspective.
-   * @deprecated Use getEdgeSourceIndex(int) and getEdgeTargetIndex(int) instead.
-   * @see #getEdgeSourceIndex(int)
-   * @see #getEdgeTargetIndex(int)
-   */
-  public int[] getConnectingNodeIndicesArray ( int[] edge_indices );
-  
   /**
    * Create a new GraphPerspective given a list of Nodes.  This method
    * will automatically find all the interconnected Edges.
