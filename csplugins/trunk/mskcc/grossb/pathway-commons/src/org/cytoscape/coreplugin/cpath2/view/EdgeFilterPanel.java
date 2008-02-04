@@ -19,57 +19,6 @@ import java.awt.event.ActionEvent;
 import giny.view.EdgeView;
 
 /**
- * Edge Filter Dialog.
- */
-public class EdgeFilterPanel extends JPanel {
-    private CyNetwork cyNetwork;
-    private HashSet checkBoxSet;
-
-    /**
-     * Constructor.
-     * @param cyNetwork CyNetwork Object.
-     */
-    public EdgeFilterPanel(CyNetwork cyNetwork) {
-        this.cyNetwork = cyNetwork;
-        initGui();
-    }
-
-    /**
-     * Initializes GUI.
-     */
-    private void initGui() {
-        checkBoxSet = new HashSet();
-        Set interactionSet = new TreeSet();
-        CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-        Iterator edgeIterator = cyNetwork.edgesIterator();
-        while (edgeIterator.hasNext()) {
-            CyEdge edge = (CyEdge) edgeIterator.next();
-            String interactionType = edgeAttributes.getStringAttribute(edge.getIdentifier(),
-                    Semantics.INTERACTION);
-            interactionSet.add(interactionType);
-        }
-        Iterator interactionIterator = interactionSet.iterator();
-
-        JPanel edgeSetPanel = new JPanel();
-        edgeSetPanel.setBorder(new TitledBorder("Edge Filter"));
-        edgeSetPanel.setLayout(new BoxLayout(edgeSetPanel, BoxLayout.Y_AXIS));
-        while (interactionIterator.hasNext()) {
-            String interactionType = (String) interactionIterator.next();
-            JCheckBox checkBox = new JCheckBox (interactionType);
-            checkBox.setActionCommand(interactionType);
-            checkBox.addActionListener(new ApplyEdgeFilter(cyNetwork, checkBoxSet));
-            checkBox.setSelected(true);
-            edgeSetPanel.add(checkBox);
-            checkBoxSet.add(checkBox);
-        }
-        this.setLayout (new BorderLayout());
-        this.add(edgeSetPanel, BorderLayout.CENTER);
-        this.setVisible(true);
-    }
-
-}
-
-/**
  * Apply Edge Filter.
  */
 class ApplyEdgeFilter implements ActionListener {
