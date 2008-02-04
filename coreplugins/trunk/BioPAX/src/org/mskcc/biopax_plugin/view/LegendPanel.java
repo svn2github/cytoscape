@@ -3,9 +3,13 @@ package org.mskcc.biopax_plugin.view;
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.net.URL;
 import java.io.IOException;
+
+import cytoscape.Cytoscape;
 
 /**
  * Displays the Default Visual Style Legend for the BioPAX Mapper.
@@ -55,7 +59,20 @@ public class LegendPanel extends JPanel {
 		temp.append("</BODY></HTML>");
 		textPane.setText(temp.toString());
 
-		JScrollPane scrollPane = new JScrollPane(textPane);
+        textPane.addHyperlinkListener(new HyperlinkListener() {
+
+            public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
+                if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    String name = hyperlinkEvent.getDescription();
+                    if (name.equalsIgnoreCase("filter")) {
+                        EdgeFilterUi ui = new EdgeFilterUi(Cytoscape.getCurrentNetwork());
+                    }
+                }
+            }
+        });
+        BioPaxDetailsPanel.modifyStyleSheetForSingleDocument(textPane);
+
+        JScrollPane scrollPane = new JScrollPane(textPane);
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 }
