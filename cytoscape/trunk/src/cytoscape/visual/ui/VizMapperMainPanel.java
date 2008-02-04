@@ -2171,8 +2171,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				              newRootProp, EDGE_VISUAL_MAPPING);
 
 			removeProperty(typeRootProp);
-			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-
+			if(propertyMap.get(vmm.getVisualStyle().getName()) != null)
+				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+			
 			typeRootProp = null;
 
 			expandLastSelectedItem(type.getName());
