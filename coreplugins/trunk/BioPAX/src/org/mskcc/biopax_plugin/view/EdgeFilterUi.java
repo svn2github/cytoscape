@@ -64,6 +64,10 @@ public class EdgeFilterUi extends JDialog {
             checkBoxSet.add(checkBox);
         }
 
+        //  Select all edges
+        ApplyEdgeFilter apply = new ApplyEdgeFilter (cyNetwork, checkBoxSet);
+        apply.executeFilter();
+
         Container contentPane = this.getContentPane();
         contentPane.setLayout (new BorderLayout());
         contentPane.add(edgeSetPanel, BorderLayout.CENTER);
@@ -96,6 +100,13 @@ class ApplyEdgeFilter implements ActionListener {
      * @param actionEvent Action Event.
      */
     public void actionPerformed(ActionEvent actionEvent) {
+        executeFilter();
+    }
+
+    /**
+     * Executes the Edge Filter.
+     */
+    public void executeFilter() {
         HashSet selectedInteractionSet = new HashSet();
         Iterator checkBoxIterator = checkBoxSet.iterator();
         while (checkBoxIterator.hasNext()) {
