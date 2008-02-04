@@ -43,29 +43,34 @@ public class BinarySifVisualStyleUtil {
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
-		VisualStyle visualStyle = new VisualStyle(BINARY_SIF_VISUAL_STYLE);
+        VisualStyle visualStyle = catalog.getVisualStyle(BINARY_SIF_VISUAL_STYLE);
+        if (visualStyle == null) {
+            visualStyle = new VisualStyle(BINARY_SIF_VISUAL_STYLE);
 
-        NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
-        Color color = new Color (255, 153, 153);
-        nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR,
-                color);
-        nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_SHAPE,
-                NodeShape.ELLIPSE);
-        createNodeLabel(nac);
+            NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+            Color color = new Color (255, 153, 153);
+            nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR,
+                    color);
+            nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_SHAPE,
+                    NodeShape.ELLIPSE);
+            createNodeLabel(nac);
 
-        EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
-        createEdgeColor (eac);
-        createDirectedEdges (eac);
+            EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+            eac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH,
+                    4.0);
+            createEdgeColor (eac);
+            createDirectedEdges (eac);
 
-        visualStyle.setNodeAppearanceCalculator(nac);
-        visualStyle.setEdgeAppearanceCalculator(eac);
-        GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator();
-        gac.setDefaultBackgroundColor(new Color (204, 204, 255));
-        visualStyle.setGlobalAppearanceCalculator(gac);
+            visualStyle.setNodeAppearanceCalculator(nac);
+            visualStyle.setEdgeAppearanceCalculator(eac);
+            GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator();
+            gac.setDefaultBackgroundColor(Color.WHITE);
+            visualStyle.setGlobalAppearanceCalculator(gac);
 
-        //  The visual style must be added to the Global Catalog
-        //  in order for it to be written out to vizmap.props upon user exit
-        catalog.addVisualStyle(visualStyle);
+            //  The visual style must be added to the Global Catalog
+            //  in order for it to be written out to vizmap.props upon user exit
+            catalog.addVisualStyle(visualStyle);
+        }
         return visualStyle;
     }
 
