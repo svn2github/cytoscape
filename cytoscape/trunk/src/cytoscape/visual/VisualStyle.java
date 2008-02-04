@@ -164,21 +164,20 @@ public class VisualStyle implements Cloneable {
 	 *
 	 * @throws NullPointerException if the second argument is null
 	 */
-	public VisualStyle(VisualStyle toCopy, String newName) {
+	public VisualStyle(final VisualStyle toCopy, final String newName) {
 		if (toCopy == null)
 			return;
 		
-		if (newName == null) {
-			String s = "Unexpected null name in VisualStyle constructor";
-			throw new NullPointerException(s);
-		}
-		setName (newName);
+		if (newName == null)
+			throw new NullPointerException("Unexpected null name in VisualStyle constructor");
+		
+		setName(newName);
 		setNodeAppearanceCalculator((NodeAppearanceCalculator)toCopy.getNodeAppearanceCalculator().clone());
 		setEdgeAppearanceCalculator((EdgeAppearanceCalculator)toCopy.getEdgeAppearanceCalculator().clone());
+		
 		try {
 			setGlobalAppearanceCalculator((GlobalAppearanceCalculator)toCopy.getGlobalAppearanceCalculator().clone());
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

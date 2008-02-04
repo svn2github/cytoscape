@@ -42,16 +42,21 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.visual.calculators.*;
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.calculators.Calculator;
 
-import cytoscape.visual.mappings.*;
+import cytoscape.visual.mappings.ObjectMapping;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
-import java.io.*;
+import java.awt.Color;
 
-//----------------------------------------------------------------------------
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
 
 
 //----------------------------------------------------------------------------
@@ -61,12 +66,15 @@ import java.util.*;
  * to stdout.
  */
 public class VizMapPropertiesTest extends TestCase {
+	private CalculatorCatalog catalog;
+	private Properties props;
+
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void testProperties() {
-		CalculatorCatalog catalog = new CalculatorCatalog();
-		Properties props = new Properties();
+	public void setUp() {
+		catalog = new CalculatorCatalog();
+		props = new Properties();
 
 		try {
 			String propsFile = "testData/old_vizmap.props";
@@ -80,17 +88,28 @@ public class VizMapPropertiesTest extends TestCase {
 		}
 
 		CalculatorIO.loadCalculators(props, catalog);
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void tearDown() {
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void testProperties() {
 		Collection nodeColorCalcs = catalog.getCalculators(VisualPropertyType.NODE_FILL_COLOR);
 		System.out.println("nodeColorCalcs.size() = " + nodeColorCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FILL_COLOR,"RedGreen"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FILL_COLOR, "RedGreen"));
 		System.out.println();
 
 		Collection nodeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.NODE_LINETYPE);
 		System.out.println("nodeLineTypeCalcs.size() = " + nodeLineTypeCalcs.size());
 		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
 		assertNull(catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, "BasicDiscrete"));
-		
+
 		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicContinuous"));
 		assertNull(catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, "BasicContinuous"));
 		System.out.println();
@@ -121,14 +140,14 @@ public class VizMapPropertiesTest extends TestCase {
 
 		Collection nodeFontFaceCalcs = catalog.getCalculators(VisualPropertyType.NODE_FONT_FACE);
 		System.out.println("nodeFontFaceCalcs.size() = " + nodeFontFaceCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_FACE,"BasicDiscrete"));
-		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_FACE,"BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_FACE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_FACE, "BasicContinuous"));
 		System.out.println();
 
 		Collection nodeFontSizeCalcs = catalog.getCalculators(VisualPropertyType.NODE_FONT_SIZE);
 		System.out.println("nodeFontSizeCalcs.size() = " + nodeFontSizeCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_SIZE,"BasicDiscrete"));
-		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_SIZE,"BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_SIZE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FONT_SIZE, "BasicContinuous"));
 		System.out.println();
 
 		Collection edgeColorCalcs = catalog.getCalculators(VisualPropertyType.EDGE_COLOR);
@@ -139,8 +158,8 @@ public class VizMapPropertiesTest extends TestCase {
 		Collection edgeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.EDGE_LINETYPE);
 		System.out.println("edgeLineTypeCalcs.size() = " + edgeLineTypeCalcs.size());
 		assertEquals(0, edgeLineTypeCalcs.size());
-//		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicDiscrete"));
-//		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
+		//		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicDiscrete"));
+		//		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
 		System.out.println();
 
 		Collection edgeArrowCalcs = catalog.getCalculators(VisualPropertyType.EDGE_SRCARROW);
@@ -158,29 +177,83 @@ public class VizMapPropertiesTest extends TestCase {
 
 		Collection edgeToolTipCalcs = catalog.getCalculators(VisualPropertyType.EDGE_TOOLTIP);
 		System.out.println("edgeToolTipCalcs.size() = " + edgeToolTipCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TOOLTIP,"BasicDiscrete"));
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TOOLTIP,"BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TOOLTIP, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TOOLTIP, "BasicContinuous"));
 		System.out.println();
 
 		Collection edgeFontFaceCalcs = catalog.getCalculators(VisualPropertyType.EDGE_FONT_FACE);
 		System.out.println("edgeFontFaceCalcs.size() = " + edgeFontFaceCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_FACE,"BasicDiscrete"));
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_FACE,"BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_FACE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_FACE, "BasicContinuous"));
 		System.out.println();
 
 		Collection edgeFontSizeCalcs = catalog.getCalculators(VisualPropertyType.EDGE_FONT_SIZE);
 		System.out.println("edgeFontSizeCalcs.size() = " + edgeFontSizeCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_SIZE,"BasicDiscrete"));
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_SIZE,"BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_SIZE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_FONT_SIZE, "BasicContinuous"));
 		System.out.println();
+	}
 
-		Iterator vizStyles = catalog.getVisualStyles().iterator();
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void testVisualStyle() {
+		final String DEF = "default";
+		final String CLONE = "default clone1";
 
-		while (vizStyles.hasNext()) {
-			VisualStyle style = (VisualStyle) vizStyles.next();
-			System.out.println(style.getName());
-			System.out.println();
-		}
+		System.out.println("====================== Start Visual Style Test ====================");
+
+		Collection<VisualStyle> vizStyles = catalog.getVisualStyles();
+
+		// Show current style names
+		for (VisualStyle style : vizStyles)
+			System.out.println("Style Names: " + style.getName());
+
+		// Create clone
+		final VisualStyle originalStyle = catalog.getVisualStyle(DEF);
+		assertNotNull(originalStyle);
+
+		// Set original style node & background color
+		originalStyle.getGlobalAppearanceCalculator().setDefaultBackgroundColor(Color.white);
+		originalStyle.getNodeAppearanceCalculator().getDefaultAppearance()
+		             .set(VisualPropertyType.NODE_FILL_COLOR, Color.red);
+		System.out.println("Original Style BG Color = "
+                + originalStyle.getGlobalAppearanceCalculator().getDefaultBackgroundColor());
+		System.out.println("Original Style Def Node Color = "
+		                   + originalStyle.getNodeAppearanceCalculator().getDefaultAppearance()
+		                                  .get(VisualPropertyType.NODE_FILL_COLOR));
+
+		final VisualStyle cloneStyle = new VisualStyle(originalStyle, CLONE);
+		assertNotNull(originalStyle);
+		assertEquals(cloneStyle.getName(), CLONE);
+
+		// Register clone to the catalog
+		catalog.addVisualStyle(cloneStyle);
+
+		cloneStyle.getGlobalAppearanceCalculator().setDefaultBackgroundColor(Color.black);
+		cloneStyle.getNodeAppearanceCalculator().getDefaultAppearance()
+		          .set(VisualPropertyType.NODE_FILL_COLOR, Color.blue);
+		System.out.println("Clone Style BG Color = "
+                + cloneStyle.getGlobalAppearanceCalculator().getDefaultBackgroundColor());
+		System.out.println("Clone Style Def Node Color = "
+		                   + cloneStyle.getNodeAppearanceCalculator().getDefaultAppearance()
+		                               .get(VisualPropertyType.NODE_FILL_COLOR));
+
+		for (VisualStyle style : vizStyles)
+			System.out.println("New Style Names: " + style.getName());
+
+		assertEquals(catalog.getVisualStyle(DEF).getGlobalAppearanceCalculator()
+		                    .getDefaultBackgroundColor(), Color.white);
+		assertEquals(catalog.getVisualStyle(CLONE).getGlobalAppearanceCalculator()
+		                    .getDefaultBackgroundColor(), Color.black);
+
+		assertEquals(catalog.getVisualStyle(DEF).getNodeAppearanceCalculator().getDefaultAppearance()
+		                    .get(VisualPropertyType.NODE_FILL_COLOR), Color.red);
+		assertEquals(catalog.getVisualStyle(CLONE).getNodeAppearanceCalculator()
+		                    .getDefaultAppearance().get(VisualPropertyType.NODE_FILL_COLOR),
+		             Color.blue);
+
+		System.out.println("====================== End Visual Style Test ====================");
 	}
 
 	private void checkCalculator(Calculator c) {
