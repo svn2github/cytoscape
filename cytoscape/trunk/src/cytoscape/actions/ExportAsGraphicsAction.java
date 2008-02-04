@@ -124,6 +124,13 @@ class ExportTask
 				{
 					monitor.setException(e, "Could not complete export of network");
 				}
+
+				try {
+					stream.close();					
+				}
+				catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
 			}
 		};
 		
