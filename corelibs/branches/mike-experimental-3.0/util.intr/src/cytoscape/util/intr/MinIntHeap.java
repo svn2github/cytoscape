@@ -386,63 +386,14 @@ public final class MinIntHeap implements java.io.Serializable {
 	 * into the output array starting at beginIndex in the output array.  The
 	 * output array must be large enough to hold all the elements in this
 	 * heap.<p>
-	 * NOTE: This method has been deprecated ever since it was added to this
-	 * class.  A decision is being made as to whether or not to keep this
-	 * method.
 	 * @param output the array into which the elements of this heap get copied.
 	 * @param beginIndex an index in the output array which is the beginning
 	 *   of where elements are copied to.
 	 * @exception IndexOutOfBoundsException if copying would cause access of
 	 *   data outside output array bounds.
-	 * @deprecated Use elements() instead.
 	 * @see #elements()
 	 */
 	public final void copyInto(int[] output, int beginIndex) {
 		System.arraycopy(m_heap, 1, output, beginIndex, m_currentSize);
-	}
-
-	/**
-	 * Copies the elements of this heap into the specified output array in
-	 * descending order.  The largest element (the largest integer, that is)
-	 * in this heap is placed at index beginIndex in the output array.
-	 * The smallest element in this heap is placed at index
-	 * beginIndex+size()-1 in the output array.  The output array must be large
-	 * enough to hold all the elements in this heap.<p>
-	 * This operation takes O(N*log(N)) time complexity, regardless of whether
-	 * or not this heap is in an ordered state at the time this method is
-	 * called.  (Truth be told, this method will be faster if the heap is in an
-	 * ordered state when this method is called.)  This operation also
-	 * leaves this heap in an unordered state.  No elements are added or
-	 * removed from this heap as a result of using this operation.<p>
-	 * NOTE: This method has been deprecated ever since it was added to this
-	 * class.  A decision is being made as to whether or not to keep this
-	 * method.
-	 * @param output the array into which the elements of this heap get copied.
-	 * @param beginIndex an index in the output array which is the beginning
-	 *   of where elements are copied to.
-	 * @exception IndexOutOfBoundsException if copying would cause access of
-	 *   data outside output array bounds.
-	 * @deprecated Use orderedElements(boolean) or deleteMin() instead.
-	 * @see #orderedElements(boolean)
-	 * @see #deleteMin()
-	 */
-	public final void copyIntoReverseOrder(int[] output, int beginIndex) {
-		final int[] heap = m_heap;
-		final int size = m_currentSize;
-
-		if (!m_orderOK) // Fix heap.
-			for (int i = size / 2; i > 0; i--)
-				percolateDown(heap, i, size);
-
-		m_orderOK = false; // That's right - the heap becomes unordered.
-
-		int sizeIter = size;
-
-		while (sizeIter > 0) {
-			swap(m_heap, 1, sizeIter);
-			percolateDown(heap, 1, --sizeIter);
-		}
-
-		System.arraycopy(heap, 1, output, beginIndex, size);
 	}
 }
