@@ -16,6 +16,7 @@ import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
+import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.jdom.JDOMException;
 import org.jdom.Element;
@@ -198,6 +199,10 @@ public class ExecuteGetRecordByCPathId implements Task {
             counter++;
         }
 
+        //  Do Layout
+        LayoutUtil layoutUtil = new LayoutUtil();
+        layoutUtil.doLayout(Cytoscape.getCurrentNetworkView());
+
         // now, also set up the right visual style
         final VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
         final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
@@ -216,6 +221,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             public void run() {
                 CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
                 bpContainer.showLegend();
+                Cytoscape.getCurrentNetworkView().fitContent();
             }
         });
     }
