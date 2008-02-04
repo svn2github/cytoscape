@@ -514,7 +514,7 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE) != null) {
 			String borderLineType = XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINETYPE, borderLineType);
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINE_STYLE, borderLineType);
 		}
 
 		String type = XGMMLParser.getAttribute(graphics,"type");

@@ -53,28 +53,9 @@ import java.awt.event.ActionListener;
  */
 public class DeletePointListener
     implements ActionListener {
-    @Deprecated
-    private ContinuousUI ui;
     private ContinuousMapping cm;
     private int index = -1; // Index Value in Point List.
 
-    /**
-     * Deprecated.  Use DeletePointListener(ContinuousMapping cm, int i)
-     * instead.
-     *
-     * @param ui
-     *            ContinuousUI Object.
-     * @param cm
-     *            ContinuousMapping Object.
-     *            
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public DeletePointListener(ContinuousUI ui, ContinuousMapping cm, int i) {
-        this.ui = ui;
-        this.cm = cm;
-        index = i;
-    }
 
     /**
      * Creates a new DeletePointListener object.
@@ -97,8 +78,5 @@ public class DeletePointListener
             return;
 
         cm.removePoint(index);
-
-        // Will be removed once old ui is deleted.
-        ui.resetUI();
     }
 }

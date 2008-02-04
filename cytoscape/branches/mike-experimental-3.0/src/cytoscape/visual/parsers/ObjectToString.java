@@ -46,9 +46,7 @@ import cytoscape.util.Misc;
 
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
-import cytoscape.visual.ShapeNodeRealizer;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -70,10 +68,6 @@ public class ObjectToString {
 			return "";
         else if (o instanceof Color)
             return Misc.getRGBText((Color) o);
-        else if (o instanceof LineType)
-            return o.toString();
-        else if (o instanceof Byte)
-            return ShapeNodeRealizer.getNodeShapeText((Byte) o);
         else if (o instanceof NodeShape)
             return NodeShape.getNodeShapeText((NodeShape) o);
         else if (o instanceof Arrow)

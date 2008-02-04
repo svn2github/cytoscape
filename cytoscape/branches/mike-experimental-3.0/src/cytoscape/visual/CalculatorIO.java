@@ -44,7 +44,6 @@ package cytoscape.visual;
 
 
 //----------------------------------------------------------------------------
-import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
@@ -56,7 +55,6 @@ import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_LINETYPE;
 import static cytoscape.visual.VisualPropertyType.NODE_LINE_STYLE;
 import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
@@ -98,6 +96,12 @@ public class CalculatorIO {
 	private static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
 	private static final String edgeAppearanceBaseKey = "edgeAppearanceCalculator";
 	private static final String globalAppearanceBaseKey = "globalAppearanceCalculator";
+
+	// backwards compatibility
+	private static final String edgeLineTypeLabel = "edgeLineTypeCalculator";
+	private static final String nodeLineTypeLabel = "nodeLineTypeCalculator";
+	private static final String edgeLineTypeDefaultLabel = "defaultEdgeLineType";
+	private static final String nodeLineTypeDefaultLabel = "defaultNodeLineType";
 
 	/**
 	 * Writes the contents of a CalculatorCatalog to the specified file as a
@@ -390,13 +394,13 @@ public class CalculatorIO {
 
 				// handle normal names
 				// This is how all "modern" properties files should work.
-			} else if (key.startsWith(EDGE_LINETYPE.getPropertyLabel() + ".")) {
+			} else if (key.startsWith(edgeLineTypeLabel + ".")) {
 				// This first store is to support deprecated EDGE_LINETYPE.
 				// This should be replaced with line style and line width.
 				//storeKey(key, props, calcNames);
 
 				// eventually, these should be the only separations
-				key = updateLegacyKey(key, props, EDGE_LINETYPE.getPropertyLabel(),
+				key = updateLegacyKey(key, props, edgeLineTypeLabel,
 				                      EDGE_LINE_STYLE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
 				storeKey(key, props, calcNames);
@@ -405,13 +409,13 @@ public class CalculatorIO {
 				                      EDGE_LINE_WIDTH.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeLineWidthCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.startsWith(NODE_LINETYPE.getPropertyLabel() + ".")) {
+			} else if (key.startsWith(nodeLineTypeLabel + ".")) {
 				// This first store is to support deprecated EDGE_LINETYPE.
 				// This should be replaced with line style and line width.
 				//storeKey(key, props, calcNames);
 
 				// eventually, these should be the only separations
-				key = updateLegacyKey(key, props, NODE_LINETYPE.getPropertyLabel(),
+				key = updateLegacyKey(key, props, nodeLineTypeLabel,
 				                      NODE_LINE_STYLE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
 				storeKey(key, props, calcNames);
@@ -433,26 +437,26 @@ public class CalculatorIO {
 				                      EDGE_SRCARROW_SHAPE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.endsWith(EDGE_LINETYPE.getPropertyLabel())) {
-				key = updateLegacyKey(key, props, EDGE_LINETYPE.getPropertyLabel(),
+			} else if (key.endsWith(edgeLineTypeLabel)) {
+				key = updateLegacyKey(key, props, edgeLineTypeLabel,
 				                      EDGE_LINE_STYLE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.endsWith(NODE_LINETYPE.getPropertyLabel())) {
-				key = updateLegacyKey(key, props, NODE_LINETYPE.getPropertyLabel(),
+			} else if (key.endsWith(nodeLineTypeLabel)) {
+				key = updateLegacyKey(key, props, nodeLineTypeLabel,
 				                      NODE_LINE_STYLE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
 				storeKey(key, props, calcNames);
 
 			// Likewise, these change the default values of visual styles to so that
 			// the default LINETYPE gets turned into the default LINE_STYLE.
-			} else if (key.endsWith(NODE_LINETYPE.getDefaultPropertyLabel())) {
-				key = updateLegacyKey(key, props, NODE_LINETYPE.getDefaultPropertyLabel(),
+			} else if (key.endsWith(nodeLineTypeDefaultLabel)) {
+				key = updateLegacyKey(key, props, nodeLineTypeDefaultLabel,
 				                      NODE_LINE_STYLE.getDefaultPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.endsWith(EDGE_LINETYPE.getDefaultPropertyLabel())) {
-				key = updateLegacyKey(key, props, EDGE_LINETYPE.getDefaultPropertyLabel(),
+			} else if (key.endsWith(edgeLineTypeDefaultLabel)) {
+				key = updateLegacyKey(key, props, edgeLineTypeDefaultLabel,
 				                      EDGE_LINE_STYLE.getDefaultPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
 				storeKey(key, props, calcNames);
@@ -641,8 +645,10 @@ public class CalculatorIO {
 	private static void handleCalculators(Map<String, Properties> nameMap,
 	                                      CalculatorCatalog catalog, boolean overWrite,
 	                                      String calcTypeKey) {
+		System.out.println("calcTypeKey: " + calcTypeKey);
 		// for each calculator name
 		for (String name : nameMap.keySet()) {
+			System.out.println("   name: " + name);
 			// get the properties object that contains all info for
 			// that particular calculator
 
@@ -659,7 +665,10 @@ public class CalculatorIO {
 				} else
 					renameAsNeeded(c, catalog);
 
+				System.out.println("    calc is good ... adding");
 				catalog.addCalculator(c);
+			} else {
+				System.out.println("    calc is null");
 			}
 		}
 	}

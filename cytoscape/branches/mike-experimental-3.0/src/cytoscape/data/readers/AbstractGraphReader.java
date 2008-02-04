@@ -140,11 +140,4 @@ public abstract class AbstractGraphReader implements GraphReader {
  	 */
 	public void setTaskMonitor(TaskMonitor monitor) {
 	}
-
-	/**
-	 * @deprecated Use getLayoutAlgorithm().doLayout(view) instead. Will be removed 5/2008.
-	 */
-	public void layout(GraphView view) {
-		getLayoutAlgorithm().doLayout((CyNetworkView)view);
-	}
 }

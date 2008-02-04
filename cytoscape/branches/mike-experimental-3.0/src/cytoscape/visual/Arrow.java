@@ -95,119 +95,6 @@ public class Arrow
      * Following arrow types will not be used after 2.5.
      */
 
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow COLOR_DIAMOND = DIAMOND;
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow COLOR_DELTA = DELTA;
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow COLOR_ARROW = ARROW;
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow COLOR_T = T;
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow COLOR_CIRCLE = CIRCLE;
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow BLACK_DIAMOND = new Arrow(ArrowShape.DIAMOND,
-            Color.BLACK);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow WHITE_DIAMOND = new Arrow(ArrowShape.DIAMOND,
-            Color.WHITE);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow BLACK_DELTA = new Arrow(ArrowShape.DELTA,
-            Color.BLACK);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow WHITE_DELTA = new Arrow(ArrowShape.DELTA,
-            Color.WHITE);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow BLACK_ARROW = new Arrow(ArrowShape.ARROW,
-            Color.BLACK);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow WHITE_ARROW = new Arrow(ArrowShape.ARROW,
-            Color.WHITE);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow BLACK_T = new Arrow(ArrowShape.T, Color.BLACK);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow WHITE_T = new Arrow(ArrowShape.T, Color.WHITE);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow BLACK_CIRCLE = new Arrow(ArrowShape.CIRCLE,
-            Color.BLACK);
-
-    /**
-     * DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static final Arrow WHITE_CIRCLE = new Arrow(ArrowShape.CIRCLE,
-            Color.WHITE);
-
     /*
      * New in 2.5: Arrow can have arbitrary color. This can be different from
      */
@@ -216,8 +103,6 @@ public class Arrow
 
     // Maybe supported in future.
     private int size;
-    @Deprecated
-    private String name;
 
     /**
      * New constructor for 2.5 and later:<br>
@@ -230,69 +115,6 @@ public class Arrow
         this.arrowColor = arrowColor;
     }
 
-    /**
-     * Creates a new Arrow object.
-     *
-     * @param name DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public Arrow(String name) {
-        this.name = name;
-        this.arrowColor = DEFAULT_ARROW_COLOR;
-        this.shape = ArrowShape.parseArrowText(name);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public int getGinyArrow() {
-        if (name == null)
-            return shape.getGinyArrow();
-
-        if (name.equals("WHITE_DIAMOND"))
-            return EdgeView.WHITE_DIAMOND;
-        else if (name.equals("BLACK_DIAMOND"))
-            return EdgeView.BLACK_DIAMOND;
-        else if (name.equals("COLOR_DIAMOND"))
-            return EdgeView.EDGE_COLOR_DIAMOND;
-
-        else if (name.equals("WHITE_DELTA"))
-            return EdgeView.WHITE_DELTA;
-        else if (name.equals("BLACK_DELTA"))
-            return EdgeView.BLACK_DELTA;
-        else if (name.equals("COLOR_DELTA"))
-            return EdgeView.EDGE_COLOR_DELTA;
-
-        else if (name.equals("WHITE_ARROW"))
-            return EdgeView.WHITE_ARROW;
-        else if (name.equals("BLACK_ARROW"))
-            return EdgeView.BLACK_ARROW;
-        else if (name.equals("COLOR_ARROW"))
-            return EdgeView.EDGE_COLOR_ARROW;
-
-        else if (name.equals("WHITE_T"))
-            return EdgeView.WHITE_T;
-        else if (name.equals("BLACK_T"))
-            return EdgeView.BLACK_T;
-        else if (name.equals("COLOR_T"))
-            return EdgeView.EDGE_COLOR_T;
-
-        else if (name.equals("WHITE_CIRCLE"))
-            return EdgeView.WHITE_CIRCLE;
-        else if (name.equals("BLACK_CIRCLE"))
-            return EdgeView.BLACK_CIRCLE;
-        else if (name.equals("COLOR_CIRCLE"))
-            return EdgeView.EDGE_COLOR_CIRCLE;
-
-        else
-
-            return EdgeView.NO_END;
-    }
 
     /**
      * DOCUMENT ME!
@@ -328,17 +150,6 @@ public class Arrow
      */
     public void setColor(Color newColor) {
         this.arrowColor = newColor;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getName() {
-        return name;
     }
 
     /**

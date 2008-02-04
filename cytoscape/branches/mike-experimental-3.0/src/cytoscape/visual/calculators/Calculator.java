@@ -74,16 +74,6 @@ public interface Calculator extends Cloneable {
 	public static final String ID = "ID";
 
     /**
-     * Get the UI for a calculator.
-     *
-     * @param parent
-     *            Parent JDialog for the UI
-     * @param network
-     *            CyNetwork object containing underlying graph data
-     */
-    JPanel getUI(JDialog parent, CyNetwork network);
-
-    /**
      * Gets calculator name.
      */
     public String toString();
@@ -134,33 +124,6 @@ public interface Calculator extends Cloneable {
     /*
      * Use public VisualPropertyType getVisualPropertyType() instead.
      */
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public byte getType();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getTypeName();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public String getPropertyLabel();
 
     /**
      *

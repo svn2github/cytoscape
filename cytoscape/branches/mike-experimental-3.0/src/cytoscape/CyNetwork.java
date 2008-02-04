@@ -219,33 +219,6 @@ public interface CyNetwork extends GraphPerspective {
 	 */
 	public SelectFilter getSelectFilter();
 
-	// --------------------//
-	// Network Client Data
-
-	/**
-	 * Networks can support client data.
-	 *
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in May, 2007.
-	 */
-	public void putClientData(String data_name, Object data);
-
-	/**
-	 * Get a list of all currently available ClientData objects
-	 *
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in May, 2007.
-	 */
-	public Collection getClientDataNames();
-
-	/**
-	 * Get Some client data
-	 *
-	 * @deprecated Use {@link CyAttributes} directly. This method will be
-	 *             removed in May, 2007.
-	 */
-	public Object getClientData(String data_name);
-
 	// ----------------------------------------//
 	// Node and Edge creation/deletion
 	// ----------------------------------------//

@@ -117,19 +117,6 @@ abstract class AppearanceCalculator implements Cloneable {
 	}
 
 	/**
-	 * Use Calculator getCalculator(final VisualPropertyType type) instead.
-	 *
-	 * @param type
-	 * @return
-	 * 
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Calculator getCalculator(byte type) {
-		return getCalculator(VisualPropertyType.getVisualPorpertyType(type));
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param type DOCUMENT ME!
@@ -152,17 +139,6 @@ abstract class AppearanceCalculator implements Cloneable {
 	 */
 	public List<Calculator> getCalculators() {
 		return calcs;
-	}
-
-	/**
-	 * Use removeCalculator(final VisualPropertyType type) instead.
-	 *
-	 * @param type
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void removeCalculator(byte type) {
-		removeCalculator(VisualPropertyType.getVisualPorpertyType(type));
 	}
 
 	/**

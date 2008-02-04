@@ -66,8 +66,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 * Set default colors
 	 */
 	private Color defaultBackgroundColor = Color.WHITE;
-	@Deprecated
-	private Color defaultSloppySelectionColor = Color.GRAY;
 	private Color defaultNodeSelectionColor = Color.YELLOW;
 	private Color defaultNodeReverseSelectionColor = Color.GREEN;
 	private Color defaultEdgeSelectionColor = Color.RED;
@@ -158,7 +156,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 		}
 
 		setDefaultBackgroundColor(toCopy.getDefaultBackgroundColor());
-		setDefaultSloppySelectionColor(toCopy.getDefaultSloppySelectionColor());
 		setDefaultNodeSelectionColor(toCopy.getDefaultNodeSelectionColor());
 		setDefaultNodeReverseSelectionColor(toCopy.getDefaultNodeReverseSelectionColor());
 		setDefaultEdgeSelectionColor(toCopy.getDefaultEdgeSelectionColor());
@@ -191,7 +188,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 */
 	public void calculateGlobalAppearance(GlobalAppearance appr, CyNetwork network) {
 		appr.setBackgroundColor(calculateBackgroundColor(network));
-		appr.setSloppySelectionColor(calculateSloppySelectionColor(network));
 		appr.setNodeSelectionColor(calculateNodeSelectionColor(network));
 		appr.setNodeReverseSelectionColor(calculateNodeReverseSelectionColor(network));
 		appr.setEdgeSelectionColor(calculateEdgeSelectionColor(network));
@@ -225,31 +221,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 */
 	public Color calculateBackgroundColor(CyNetwork network) {
 		return defaultBackgroundColor;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Color getDefaultSloppySelectionColor() {
-		return defaultSloppySelectionColor;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param c DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void setDefaultSloppySelectionColor(Color c) {
-		if (c != null) {
-			this.fireStateChanged();
-			defaultSloppySelectionColor = c;
-		}
 	}
 
 	/**
@@ -336,15 +307,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 		}
 	}
 
-	/**
-	 * Currently no calculators are supported for global visual attributes, so
-	 * this method simply returns the default sloppy selection color.
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Color calculateSloppySelectionColor(CyNetwork network) {
-		return defaultSloppySelectionColor;
-	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -399,8 +361,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 		sb.append("GlobalAppearanceCalculator:" + lineSep);
 		sb.append("defaultBackgroundColor = ");
 		sb.append(defaultBackgroundColor).append(lineSep);
-		sb.append("defaultSloppySelectionColor = ");
-		sb.append(defaultSloppySelectionColor).append(lineSep);
 
 		return sb.toString();
 	}
@@ -426,16 +386,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 
 			if (c != null) {
 				setDefaultBackgroundColor(c);
-			}
-		}
-
-		value = nacProps.getProperty(baseKey + ".defaultSloppySelectionColor");
-
-		if (value != null) {
-			Color c = (new ColorParser()).parseColor(value);
-
-			if (c != null) {
-				setDefaultSloppySelectionColor(c);
 			}
 		}
 
@@ -492,10 +442,6 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 		// save default values
 		key = baseKey + ".defaultBackgroundColor";
 		value = ObjectToString.getStringValue(getDefaultBackgroundColor());
-		newProps.setProperty(key, value);
-
-		key = baseKey + ".defaultSloppySelectionColor";
-		value = ObjectToString.getStringValue(getDefaultSloppySelectionColor());
 		newProps.setProperty(key, value);
 
 		key = baseKey + ".defaultNodeSelectionColor";

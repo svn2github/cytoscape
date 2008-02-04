@@ -64,14 +64,6 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
 
 
     /**
-     * @deprecated This only exists to support deprecated code. DO NOT USE!!!
-     *             will be removed 10/2007
-     */
-    public void set(VisualPropertyType t) {
-		type = t;
-    }
-
-    /**
      * Creates a new AbstractNodeColorCalculator object.
      *
      * @param name DOCUMENT ME!

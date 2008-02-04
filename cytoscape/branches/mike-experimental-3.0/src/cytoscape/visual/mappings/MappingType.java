@@ -43,22 +43,4 @@ public enum MappingType {DISCRETE("Discrete"), CONTINUOUS("Continuous"),
     public String getPropertyKey() {
         return name + ".type";
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param baseKey DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public static MappingType getMappingType(final String baseKey) {
-        for (MappingType type : values()) {
-            if (baseKey.equals(type.getBaseKey()))
-                return type;
-        }
-
-        return null;
-    }
 }

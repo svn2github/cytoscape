@@ -85,10 +85,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * A Vector that holds all of the Interactions
 	 */
 	protected List<Interaction> allInteractions = new ArrayList<Interaction>();
-	@Deprecated
-	private BioDataServer dataServer;
-	@Deprecated
-	private String species;
 	
 	private String zip_entry;
 	private boolean is_zip = false;
@@ -154,32 +150,6 @@ public class InteractionsReader extends AbstractGraphReader {
  	 */
 	public void setTaskMonitor(TaskMonitor monitor) {
 		this.taskMonitor = monitor;
-	}
-
-	/**
-	 * layout calls the default CyLayoutAlgorithm but forces it to use our
-	 * own taskMonitor.
-	 *
-	 * @param networkView the view of the network we want to layout
-	 * @deprecated Use getLayoutAlgorithm() instead. Gone 5/2008.
-	 */
-	public void layout(CyNetworkView networkView) {
-		getLayoutAlgorithm().doLayout(networkView, taskMonitor);
-	}
-
-	// ----------------------------------------------------------------------------------------
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param canonicalize This parameter does not in use from 2.5.
-	 *
-	 * @throws IOException DOCUMENT ME!
-	 * 
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void read(boolean canonicalize) throws IOException {
-		read();
 	}
 
 	// -----------------------------------------------------------------------------------------
@@ -254,26 +224,6 @@ public class InteractionsReader extends AbstractGraphReader {
 		//		}
 		return allInteractions.toArray(new Interaction[0]);
 	}
-
-	/*
-	 * KONO: 5/4/2006 "Canonical Name" is no longer used in Cytoscape. Use ID
-	 * instead.
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	protected String canonicalizeName(String name) {
-		String canonicalName = name;
-
-		if (dataServer != null) {
-			canonicalName = dataServer.getCanonicalName(species, name);
-
-			if (canonicalName == null) {
-				canonicalName = name;
-			}
-		}
-
-		return canonicalName;
-	} // canonicalizeName
 
 	// -------------------------------------------------------------------------------------------
 	protected void createRootGraphFromInteractionData() {

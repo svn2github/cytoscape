@@ -69,21 +69,6 @@ public class VisualStyleBuilder {
 	}
 
 	/**
-	 * Build a new VisualStyleBuilder object whose output style will be called "name" based
-	 * on JAXB Graphics objects.  This constructor is no longer used and is not supported.
-	 * 
-	 * @param newName the name of the visual style that will be created.
-	 * @param nodeGraphics the map of node to JAXB Graphics object
-	 * @param edgeGraphics the map of edge to JAXB Graphics object
-	 * @param globalGraphics the map of network to JAXB Graphics object
-	 * @deprecated this should no longer be used and is not functional.  Use VisualStyleBuilder(String)
-	 * instead and then call addProperty for each value
-	 */
-	public VisualStyleBuilder(String newName, Map nodeGraphics, Map edgeGraphics, Map globalGraphics) {
-		this.name = newName;
-	}
-
-	/**
 	 * Build a new VisualStyleBuilder object whose output style will be called "name".
 	 * 
 	 * @param name the name of the visual style that will be created.

@@ -1367,14 +1367,6 @@ public class GMLReader extends AbstractGraphReader {
 	}
 
 	/**
-	 * @deprecated Don't use this. Set the line width directly. Gone 5/2008.
-	 */
-	@Deprecated
-	public static cytoscape.visual.LineType getLineType(int width) {
-		return new cytoscape.visual.LineType(LineStyle.SOLID, (new Integer(width)).floatValue());
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 */
 	public void showMaps() {

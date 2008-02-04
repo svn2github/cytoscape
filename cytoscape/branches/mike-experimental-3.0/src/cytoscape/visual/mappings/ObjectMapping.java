@@ -137,14 +137,6 @@ public interface ObjectMapping extends Cloneable {
 
     Object calculateRangeValue(Map attrBundle);
 
-    JPanel getUI(JDialog parent, CyNetwork network);
-
-	/**
-	 * @deprecated Use getLegend(VisualPropertyType) instead.  Gone 5/2008.
-	 */
-	@Deprecated
-    JPanel getLegend(String s, byte type);
-
     JPanel getLegend(VisualPropertyType type);
 
     Object clone();

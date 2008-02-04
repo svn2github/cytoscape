@@ -48,7 +48,6 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.readers.GMLParser;
-import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GMLWriter;
 
 import cytoscape.task.Task;
@@ -231,14 +230,7 @@ class ExportAsGMLTask implements Task {
 	 */
 	private void saveGraph() throws IOException {
 		FileWriter fileWriter = new FileWriter(fileName);
-		List list = null;
-		GMLReader reader = (GMLReader) network.getClientData("GML");
-
-		if (reader != null) {
-			list = reader.getList();
-		} else {
-			list = new Vector();
-		}
+		List list = new Vector();
 
 		GMLWriter gmlWriter = new GMLWriter();
 		gmlWriter.writeGML(network, view, list);

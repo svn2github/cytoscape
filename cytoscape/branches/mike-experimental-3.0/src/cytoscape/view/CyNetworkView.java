@@ -101,13 +101,6 @@ public interface CyNetworkView extends GraphView {
 
 	/**
 	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public cytoscape.visual.ui.VizMapUI getVizMapUI();
-
-	/**
-	 *  DOCUMENT ME!
 	 */
 	public void toggleVisualMapperEnabled();
 
@@ -144,19 +137,6 @@ public interface CyNetworkView extends GraphView {
 	 * @param data_name the data to get
 	 */
 	public Object getClientData(String data_name);
-
-	/**
-	 * Sets the Given nodes Selected<br>
-	 * @deprecated this method is not working, use {@link Cytoscape.CyNetwork#setSelectedNodeState(Collection, boolean)}
-	 *
-	 */
-	public boolean setSelected(CyNode[] nodes);
-
-	/**
-	 * Sets the Given nodes Selected<br>
-	 * @deprecated this method is not working, use {@link Cytoscape.CyNetwork#setSelectedNodeState(Collection, boolean)}
-	 */
-	public boolean setSelected(NodeView[] node_views);
 
 	/**
 	 * Applies the given edge to the given vizmapper
@@ -197,18 +177,6 @@ public interface CyNetworkView extends GraphView {
 	 * Applies the given node to the given vizmapper
 	 */
 	public boolean applyVizMap(NodeView node_view, VisualStyle style);
-
-	/**
-	 * Sets the Given edges Selected<br>
-	 * @deprecated this method is not working, use {@link cytoscape.CyNetwork#setSelectedEdgeState(Collection, boolean)}
-	 */
-	public boolean setSelected(CyEdge[] edges);
-
-	/**
-	 * Sets the Given edges Selected<br>
-	 * @deprecated this method is not working, use {@link cytoscape.CyNetwork#setSelectedEdgeState(Collection, boolean)}
-	 */
-	public boolean setSelected(EdgeView[] edge_views);
 
 	/**
 	 * @param applyAppearances  if true, the vizmapper will recalculate

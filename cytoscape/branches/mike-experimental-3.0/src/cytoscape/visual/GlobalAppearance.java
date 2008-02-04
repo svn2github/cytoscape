@@ -84,8 +84,6 @@ public class GlobalAppearance {
 	}
 
 	private Color backgroundColor;
-	@Deprecated
-	private Color sloppySelectionColor;
 	private Color nodeSelectionColor;
 	private Color nodeReverseSelectionColor;
 	private Color edgeSelectionColor;
@@ -119,27 +117,6 @@ public class GlobalAppearance {
 		backgroundColor = c;
 	}
 
-	/**
-	 *  Do not use this.
-	 *
-	 * @return  DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Color getSloppySelectionColor() {
-		return sloppySelectionColor;
-	}
-
-	/**
-	 *  Do not use this.
-	 *
-	 * @param c DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void setSloppySelectionColor(Color c) {
-		sloppySelectionColor = c;
-	}
 
 	/**
 	 *  DOCUMENT ME!

@@ -71,20 +71,6 @@ public class DiscreteLegend extends JPanel {
 	 * Creates a new DiscreteLegend object.
 	 *
 	 * @param legendMap  DOCUMENT ME!
-	 * @param visualAttr  DOCUMENT ME!
-	 * @param dataAttr  DOCUMENT ME!
-	 * @param b  DOCUMENT ME!
-	 * @deprecated Use VisualPropertyType constructor instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public DiscreteLegend(Map legendMap, String visualAttr, String dataAttr, byte b) {
-		this(legendMap, dataAttr, VisualPropertyType.getVisualPorpertyType(b));
-	}
-
-	/**
-	 * Creates a new DiscreteLegend object.
-	 *
-	 * @param legendMap  DOCUMENT ME!
 	 * @param dataAttr  DOCUMENT ME!
 	 * @param vpt  DOCUMENT ME!
 	 */

@@ -166,39 +166,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 		return identifier;
 	}
 
-	//-------------------------------------//
-	// Client Data - Deprecated April 2006
-	//-------------------------------------//
-
-	/**
-	 * @deprecated
-	 *
-	 * Networks can support client data.
-	 * @param data_name the name of this client data
-	 */
-	public void putClientData(String data_name, Object data) {
-		clientData.put(data_name, data);
-	}
-
-	/**
-	 * @deprecated
-	 *
-	 * Get a list of all currently available ClientData objects
-	 */
-	public Collection getClientDataNames() {
-		return clientData.keySet();
-	}
-
-	/**
-	 * @deprecated
-	 *
-	 * Get Some client data
-	 * @param data_name the data to get
-	 */
-	public Object getClientData(String data_name) {
-		return clientData.get(data_name);
-	}
-
 	/**
 	 * Appends all of the nodes and edges in teh given Network to
 	 * this Network

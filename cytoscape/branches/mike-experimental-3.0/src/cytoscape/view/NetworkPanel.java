@@ -350,14 +350,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	/**
-	 * @deprecated No longer used.  If you need to fire focus, call CytoscapeDesktop.setFocus().
-	 * will be removed 11/2008.
-	 */
-	@Deprecated
-	public void fireFocus(String network_id) {
-	}
-
-	/**
 	 * This method highlights a network in the NetworkPanel. 
 	 *
 	 * @param e DOCUMENT ME!

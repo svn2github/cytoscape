@@ -288,21 +288,6 @@ public class CyMenus implements GraphViewChangeListener {
 	}
 
 	/**
-	 * @deprecated Will be removed April 2008. Item state is now handled by Actions directly. Don't use this.
-	 */
-	public void setVisualMapperItemsEnabled(boolean newState) { }
-
-	/**
-	 * @deprecated Will be removed April 2008. Item state is now handled by Actions directly. Don't use this.
-	 */
-	public void setOverviewEnabled(boolean newState) { }
-
-	/**
-	 * @deprecated Will be removed April 2008. Item state is now handled by Actions directly. Don't use this.
-	 */
-	public void setNodesRequiredItemsEnabled() { }
-
-	/**
 	 * We are not listening for any GraphViewChangeEvents.  MenuItems are responsible for
 	 * updating their own state, which is generally accomplished by implementing the menuSelected() 
 	 * method.
@@ -311,19 +296,6 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	public void graphViewChanged(GraphViewChangeEvent e) { }
 
-	/**
-	 * Used to return the cytopanels menu.
-	 * @deprecated Will be removed April 2008. Cytopanels no longer have a separate menu (they're in View). 
-	 */
-	public JMenu getCytoPanelMenu() {
-		return null;
-	}
-
-	/**
-	 * Used to set up the CytoPanelMenu items. 
-	 * @deprecated Will be removed April 2008. Cytopanels are initialized in the Display* actions. Do not use.
-	 */
-	public void initCytoPanelMenus() { }
 
 	/**
 	 * This method should be called by the creator of this object after the

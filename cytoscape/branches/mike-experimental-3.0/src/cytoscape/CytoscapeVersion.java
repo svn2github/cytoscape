@@ -120,14 +120,4 @@ public class CytoscapeVersion {
 		return version;
 	}
 	
-
-	/** @deprecated See cytoscape.org for history. Will be removed 10/2007 */
-	public String getBriefHistory() {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < briefHistory.length; i++) {
-			sb.append(briefHistory[i]);
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
 }

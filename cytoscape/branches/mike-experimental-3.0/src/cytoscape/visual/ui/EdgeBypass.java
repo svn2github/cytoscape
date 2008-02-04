@@ -40,9 +40,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.visual.Arrow;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineType;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 

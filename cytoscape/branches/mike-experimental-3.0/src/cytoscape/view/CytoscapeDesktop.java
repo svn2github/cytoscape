@@ -52,7 +52,6 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.ui.VizMapperMainPanel;
 
 import java.awt.BorderLayout;
@@ -135,25 +134,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
-	/**
-	 * Displays all network views in TabbedPanes ( like Mozilla )
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static final int TABBED_VIEW = 0;
-
-	/**
-	 * Displays all network views in JInternalFrames, using the mock desktop
-	 * interface. ( like MS Office )
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static final int INTERNAL_VIEW = 1;
-
-	/**
-	 * Displays all network views in JFrames, so each Network has its own
-	 * window. ( like the GIMP )
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static final int EXTERNAL_VIEW = 2;
 	private static final String SMALL_ICON = "images/c16.png";
 
 	// --------------------//
@@ -198,15 +178,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected VisualMappingManager vmm;
 
 	/**
-	 * user interface to the {@link VisualMappingManager VisualMappingManager}
-	 * {@link #vmm vizMapper}.
-	 *
-	 *  @deprecated Use VizMapperMainPanel instead.
-	 */
-	@Deprecated
-	protected VizMapUI vizMapUI;
-
-	/**
 	 * New VizMapper UI
 	 */
 	protected VizMapperMainPanel vizmapperUI;
@@ -246,14 +217,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	// Overview Window;
 	//
 	private BirdsEyeViewHandler bevh;
-
-	/**
-	 * @deprecated view_type is no longer used.  Use the other CytoscapeDesktop() instead.
-	 * Will be gone August 1008.
-	 */
-	public CytoscapeDesktop(int view_type) {
-		this();
-	}
 
 	/**
 	 * Creates a new CytoscapeDesktop object.
@@ -398,38 +361,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	/**
-	 * @deprecated Will be removed April 2008. Use CyHelpBroker.getHelpBroker() instead.
-	 */
-	public HelpBroker getHelpBroker() {
-		return CyHelpBroker.getHelpBroker();
-	}
-
-	/**
-	 * @deprecated Will be removed April 2008. Use CyHelpBroker.getHelpSet() instead.
-	 */
-	public HelpSet getHelpSet() {
-		return CyHelpBroker.getHelpSet();
-	}
-
-	/**
-	 * Don't use this!
-	 *
-	 * @param edit An undoable edit.
-	 * @deprecated Use CyUndo.getUndoableEditSupport().postEdit(edit) instead. Will be removed March 2008.
-	 */
-	public void addEdit(javax.swing.undo.UndoableEdit edit) {
-		CyUndo.getUndoableEditSupport().postEdit(edit);
-	}
-
-	/**
-	 * Return the view type for this CytoscapeDesktop
-	 * @deprecated View type is no longer used, so just don't use this method. Will be gone August 2008.
-	 */
-	public int getViewType() {
-		return 1; // what was internal
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -446,15 +377,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public void setNewNetwork(CyNetwork newNetwork) {
 	}
 
-	/**
-	 * returns the top-level UI object for the visual mapper.
-	 *
-	 * @deprecated use getVizMapperUI() isntead.
-	 */
-	@Deprecated
-	public VizMapUI getVizMapUI() {
-		return vizMapUI;
-	}
 
 	/**
 	 *  Returns new vizmapper GUI.
@@ -470,47 +392,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		}
 
 		return vizmapperUI;
-	}
-
-	/**
-	 * Create the VizMapper and the UI for it.
-	 *
-	 * @deprecated use VizMapperMainPanel instead.
-	 *
-	 */
-	@Deprecated
-	public void setupVizMapper() {
-		this.vmm = Cytoscape.getVisualMappingManager();
-
-		// create the VizMapUI
-		vizMapUI = new VizMapUI(vmm, this);
-		vizMapUI.setName("vizMapUI");
-
-		// In order for the VizMapper to run when the StyleSelector is
-		// run, it needs to listen to the selector.
-		vmm.addChangeListener(vizMapUI.getStyleSelector());
-
-		// Add the StyleSelector to the ToolBar
-		// TODO: maybe put this somewhere else to make it easier to make
-		// vertical ToolBars.
-		JComboBox styleBox = vizMapUI.getStyleSelector().getToolbarComboBox();
-		Dimension newSize = new Dimension(150, (int) styleBox.getPreferredSize().getHeight());
-		styleBox.setMaximumSize(newSize);
-		styleBox.setPreferredSize(newSize);
-
-		JToolBar toolBar = cyMenus.getToolBar();
-
-		// first time
-		if (styleBoxIndex == -1) {
-			toolBar.add(styleBox);
-			styleBoxIndex = toolBar.getComponentCount() - 1;
-			toolBar.addSeparator();
-
-			// subsequent times
-		} else {
-			toolBar.remove(styleBoxIndex);
-			toolBar.add(styleBox, styleBoxIndex);
-		}
 	}
 
 	// ----------------------------------------//
@@ -814,15 +695,4 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return bevh;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vt DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 * @deprecated View types are no longer support so stop using this.  Will be removed August 2008.
-	 */
-	public static int parseViewType(String vt) {
-		return 1; // What was internal
-	}
 }

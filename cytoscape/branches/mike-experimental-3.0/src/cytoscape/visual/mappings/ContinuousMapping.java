@@ -44,7 +44,6 @@ package cytoscape.visual.mappings;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 
@@ -53,7 +52,6 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 import cytoscape.visual.mappings.continuous.ContinuousMappingReader;
 import cytoscape.visual.mappings.continuous.ContinuousMappingWriter;
 import cytoscape.visual.mappings.continuous.ContinuousRangeCalculator;
-import cytoscape.visual.mappings.continuous.ContinuousUI;
 
 import cytoscape.visual.parsers.ValueParser;
 
@@ -94,12 +92,6 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 *  {@link ObjectMapping#EDGE_MAPPING} or {@link ObjectMapping#NODE_MAPPING}
 	 */
 	public ContinuousMapping(Object defaultObj, byte mapType) throws IllegalArgumentException {
-		// TODO
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defaultObj instanceof Byte) {
-			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte) defaultObj).byteValue());
-		}
 
 		this.rangeClass = defaultObj.getClass();
 		this.defaultObj = defaultObj;
@@ -263,27 +255,6 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 */
 	public void setInterpolator(Interpolator interpolator) {
 		this.interpolator = interpolator;
-	}
-
-	/**
-	 * Gets the UI Object Associated with the Mapper.
-	 * Required by the ObjectMapping interface.
-	 * @param dialog Parent Dialog.
-	 * @param network CyNetwork.
-	 * @return JPanel Object.
-	 */
-	public JPanel getUI(JDialog dialog, CyNetwork network) {
-		ContinuousUI ui = new ContinuousUI(dialog, defaultObj, network, this);
-
-		return ui;
-	}
-
-	/**
-	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
 	}
 
 	/**

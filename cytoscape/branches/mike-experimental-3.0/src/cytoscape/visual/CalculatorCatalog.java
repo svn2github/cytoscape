@@ -125,13 +125,7 @@ public class CalculatorCatalog {
 	 *            constants
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
-	 * @deprecated Will be removed 5/2008
 	 */
-	@Deprecated
-	protected List getListenerList(byte type) throws IllegalArgumentException {
-		return getListenerList(VisualPropertyType.getVisualPorpertyType(type));
-	}
-
 	protected List getListenerList(final VisualPropertyType type) throws IllegalArgumentException {
 		List l = listeners.get(type);
 
@@ -159,20 +153,6 @@ public class CalculatorCatalog {
 	 *            constants
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public void addChangeListener(ChangeListener l, byte type) throws IllegalArgumentException {
-		addChangeListener(l, VisualPropertyType.getVisualPorpertyType(type));
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @throws IllegalArgumentException DOCUMENT ME!
 	 */
 	public void addChangeListener(ChangeListener l, VisualPropertyType type)
 	    throws IllegalArgumentException {
@@ -197,13 +177,7 @@ public class CalculatorCatalog {
 	 *            one of VizMapUI constants, which set of listeners to notify
 	 * @throws IllegalArgumentException
 	 *             if type is unknown
-	 * @deprecated Will be removed 5/2008
 	 */
-	@Deprecated
-	protected void fireStateChanged(byte type) throws IllegalArgumentException {
-		fireStateChanged(VisualPropertyType.getVisualPorpertyType(type));
-	}
-
 	protected void fireStateChanged(final VisualPropertyType type) throws IllegalArgumentException {
 		List notifyEvents = getListenerList(type);
 
@@ -228,13 +202,7 @@ public class CalculatorCatalog {
 	 * @param type
 	 *            a known type identifier
 	 * @return Map the matching Map structure
-	 * @deprecated Will be removed 5/2008
 	 */
-	@Deprecated
-	protected Map<String, Calculator> getCalculatorMap(byte type) {
-		return getCalculatorMap(VisualPropertyType.getVisualPorpertyType(type));
-	}
-
 	protected Map<String, Calculator> getCalculatorMap(final VisualPropertyType type) {
 		Map<String, Calculator> m = calculators.get(type);
 
@@ -264,6 +232,7 @@ public class CalculatorCatalog {
 	 */
 	public void addCalculator(Calculator dupe)
 	    throws DuplicateCalculatorNameException, IllegalArgumentException {
+		System.out.println("adding calculator: " + dupe.getVisualPropertyType());
 		final VisualPropertyType calcType = dupe.getVisualPropertyType();
 		Map<String, Calculator> theMap = getCalculatorMap(calcType);
 		addCalculator(dupe, theMap);
@@ -283,20 +252,6 @@ public class CalculatorCatalog {
 	 * @return a valid name for the calculator. If the given name was not valid,
 	 *         numbers are appended until a valid name is found; this valid name
 	 *         is returned to the caller.
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String checkCalculatorName(String calcName, byte calcType) {
-		return checkCalculatorName(calcName, VisualPropertyType.getVisualPorpertyType(calcType));
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param calcName DOCUMENT ME!
-	 * @param calcType DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
 	 */
 	public String checkCalculatorName(String calcName, VisualPropertyType calcType) {
 		Map<String, Calculator> theMap = getCalculatorMap(calcType);
@@ -570,19 +525,6 @@ public class CalculatorCatalog {
 	 *
 	 * @param type
 	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Collection<Calculator> getCalculators(byte type) {
-		return getCalculators(VisualPropertyType.getVisualPorpertyType(type));
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
 	 */
 	public Collection<Calculator> getCalculators(VisualPropertyType type) {
 		Map<String, Calculator> m = getCalculatorMap(type);
@@ -596,20 +538,6 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @param name
 	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Calculator getCalculator(byte type, String name) {
-		return getCalculator(VisualPropertyType.getVisualPorpertyType(type), name);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 * @param name DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
 	 */
 	public Calculator getCalculator(VisualPropertyType type, String name) {
 		Map<String, Calculator> m = getCalculatorMap(type);
@@ -623,20 +551,6 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @param name
 	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String checkCalculatorName(byte type, String name) {
-		return checkCalculatorName(VisualPropertyType.getVisualPorpertyType(type), name);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 * @param name DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
 	 */
 	public String checkCalculatorName(VisualPropertyType type, String name) {
 		return checkName(name, getCalculatorMap(type));
@@ -648,20 +562,6 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @param name
 	 * @return
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public Calculator removeCalculator(byte type, String name) {
-		return removeCalculator(VisualPropertyType.getVisualPorpertyType(type), name);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 * @param name DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
 	 */
 	public Calculator removeCalculator(VisualPropertyType type, String name) {
 		Map<String, Calculator> m = getCalculatorMap(type);
@@ -693,6 +593,17 @@ public class CalculatorCatalog {
 
 		defaultVS.getNodeAppearanceCalculator().setCalculator(nlc);
 		addVisualStyle(defaultVS);
+	}
+
+	public void dumpCalculators() {
+		System.out.println("---------------------------------------------------------");
+		System.out.println("calculators");
+		for ( VisualPropertyType p : calculators.keySet() ) {
+			System.out.println(p);	
+			Map<String,Calculator> m = calculators.get(p);
+			for ( String k : m.keySet() ) 
+				System.out.println("  " + k + " -> " + m.get(k) );
+		}	
 	}
 
 }

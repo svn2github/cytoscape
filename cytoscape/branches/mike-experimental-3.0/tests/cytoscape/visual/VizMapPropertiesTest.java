@@ -79,20 +79,24 @@ public class VizMapPropertiesTest extends TestCase {
 			return;
 		}
 
+		assertNotNull(props);
+		assertNotNull(catalog);
+		System.out.println("before:");
+		catalog.dumpCalculators();
 		CalculatorIO.loadCalculators(props, catalog);
+		System.out.println("after:");
+		catalog.dumpCalculators();
 
 		Collection nodeColorCalcs = catalog.getCalculators(VisualPropertyType.NODE_FILL_COLOR);
+		assertTrue(nodeColorCalcs.size() > 0);
 		System.out.println("nodeColorCalcs.size() = " + nodeColorCalcs.size());
 		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_FILL_COLOR,"RedGreen"));
 		System.out.println();
 
-		Collection nodeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.NODE_LINETYPE);
-		System.out.println("nodeLineTypeCalcs.size() = " + nodeLineTypeCalcs.size());
-		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicDiscrete"));
-		assertNull(catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, "BasicDiscrete"));
-		
-		//checkCalculator(catalog.getNodeLineTypeCalculator("BasicContinuous"));
-		assertNull(catalog.getCalculator(VisualPropertyType.NODE_LINETYPE, "BasicContinuous"));
+		Collection nodeLineStyleCalcs = catalog.getCalculators(VisualPropertyType.NODE_LINE_STYLE);
+		System.out.println("nodeLineStyleCalcs.size() = " + nodeLineStyleCalcs.size());
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_LINE_STYLE,"BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.NODE_LINE_STYLE, "BasicContinuous"));
 		System.out.println();
 
 		Collection nodeShapeCalcs = catalog.getCalculators(VisualPropertyType.NODE_SHAPE);
@@ -136,9 +140,9 @@ public class VizMapPropertiesTest extends TestCase {
 		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_COLOR, "BasicDiscrete"));
 		System.out.println();
 
-		Collection edgeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.EDGE_LINETYPE);
-		System.out.println("edgeLineTypeCalcs.size() = " + edgeLineTypeCalcs.size());
-		assertEquals(0, edgeLineTypeCalcs.size());
+//		Collection edgeLineTypeCalcs = catalog.getCalculators(VisualPropertyType.EDGE_LINESTYLE);
+//		System.out.println("edgeLineTypeCalcs.size() = " + edgeLineTypeCalcs.size());
+//		assertEquals(0, edgeLineTypeCalcs.size());
 //		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicDiscrete"));
 //		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
 		System.out.println();

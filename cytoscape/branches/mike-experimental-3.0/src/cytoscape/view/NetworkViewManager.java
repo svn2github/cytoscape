@@ -70,7 +70,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
  * 
  */
 public class NetworkViewManager implements PropertyChangeListener,
-		InternalFrameListener, WindowFocusListener, ChangeListener {
+		InternalFrameListener {
 	private JDesktopPane desktopPane;
 
 	private Map<String, JInternalFrame> networkViewMap;
@@ -84,14 +84,6 @@ public class NetworkViewManager implements PropertyChangeListener,
 	protected SwingPropertyChangeSupport pcs;
 
 	/**
-	 * @deprecated view_type is no longer used. Use the other constructor. Will
-	 *             be removed Aug 2008.
-	 */
-	public NetworkViewManager(CytoscapeDesktop desktop, int view_type) {
-		this(desktop);
-	}
-
-	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
 	 * @param desktop
@@ -103,7 +95,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 		pcs = new SwingPropertyChangeSupport(this);
 
 		// add Help hooks
-		cytoscapeDesktop.getHelpBroker().enableHelp(desktopPane,
+		CyHelpBroker.getHelpBroker().enableHelp(desktopPane,
 				"network-view-manager", null);
 
 		networkViewMap = new HashMap<String, JInternalFrame>();
@@ -118,13 +110,6 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 */
 	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
 		return pcs;
-	}
-
-	/**
-	 * @deprecated Tabbed view is no longer used. Will be removed Aug 2008.
-	 */
-	public JTabbedPane getTabbedPane() {
-		return null;
 	}
 
 	/**
@@ -187,13 +172,6 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		frame.setTitle(network.getTitle());
 		frame.repaint();
-	}
-
-	/**
-	 * @deprecated Will no longer support ChangeListener. Will be removed August
-	 *             2008.
-	 */
-	public void stateChanged(ChangeEvent e) {
 	}
 
 	/**
@@ -261,20 +239,6 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 *            DOCUMENT ME!
 	 */
 	public void internalFrameIconified(InternalFrameEvent e) {
-	}
-
-	/**
-	 * @deprecated Will no longer support WindowFocusListener. Will be removed
-	 *             August 2008.
-	 */
-	public void windowGainedFocus(WindowEvent e) {
-	}
-
-	/**
-	 * @deprecated Will no longer support WindowFocusListener. Will be removed
-	 *             August 2008.
-	 */
-	public void windowLostFocus(WindowEvent e) {
 	}
 
 	/**

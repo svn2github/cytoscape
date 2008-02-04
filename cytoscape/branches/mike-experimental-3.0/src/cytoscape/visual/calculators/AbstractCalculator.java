@@ -124,23 +124,6 @@ public abstract class AbstractCalculator implements Calculator {
 	protected transient ChangeEvent changeEvent;
 
 	/**
-	 * Create a calculator with the specified object mapping and name. The
-	 * object mapping is used to determine what classes of attribute data this
-	 * calculator can map from. If the object mapping is null, no filtration on
-	 * the attribute data is performed.
-	 *
-	 * @param m
-	 *            Object mapping for this calculator, or null
-	 * @param name
-	 *            Name of this calculator
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public AbstractCalculator(String name, ObjectMapping m, Class c) {
-		this(name, m, VisualPropertyType.NODE_FILL_COLOR);
-	}
-
-	/**
 	 * Creates a new AbstractCalculator object.
 	 *
 	 * @param name DOCUMENT ME!
@@ -293,14 +276,6 @@ public abstract class AbstractCalculator implements Calculator {
 	}
 
 	/**
-	 * @deprecated Just use getProperties() - baseKey is already known by the
-	 *             calculator. This will be removed 10/2007.
-	 */
-	public Properties getProperties(String baseKey) {
-		return getProperties();
-	}
-
-	/**
 	 * updateAttribute is called when the currently selected attribute changes.
 	 * Any changes needed in the mapping UI should be performed at this point.
 	 * Use {@link #updateAttribute(String, CyNetwork, int)} for best
@@ -348,183 +323,6 @@ public abstract class AbstractCalculator implements Calculator {
 		m.setControllingAttributeName(attrName, network, false);
 
 		// fireStateChanged();
-	}
-
-	/**
-	 * Get the UI for the calculator.
-	 *
-	 * @param parent
-	 *            Parent JDialog for the UI
-	 * @param network
-	 *            CyNetwork object containing underlying graph data
-	 */
-	public JPanel getUI(JDialog parent, CyNetwork network) {
-		return getUI(type.isNodeProp() ? Cytoscape.getNodeAttributes() : Cytoscape.getEdgeAttributes(),
-		             parent, network);
-	}
-
-	/**
-	 * Get the UI for calculators. Display a JComboBox with attributes in the
-	 * given CyAttributes whose data are instances of the classes accepted by
-	 * each ObjectMapping. The resulting JComboBox calls
-	 * {@link #updateAttribute(String, CyNetwork, int)} when frobbed.
-	 *
-	 * @param attr
-	 *            CyAttributes to look up attributes from
-	 * @return UI with controlling attribute selection facilities
-	 */
-	protected JPanel getUI(CyAttributes attr, JDialog parent, CyNetwork network) {
-		return new CalculatorUI(attr, parent, network);
-	}
-
-	/**
-	 * UI class for the calculator.
-	 */
-	protected class CalculatorUI extends JPanel {
-		/**
-		 * Remember the grid bag group in case the mapper UI needs to be
-		 * updated.
-		 */
-		protected GridBagGroup myGBG;
-
-		public CalculatorUI(CyAttributes attr, JDialog parent, CyNetwork network) {
-			this.myGBG = new GridBagGroup(this);
-
-			MiscGB.inset(this.myGBG.constraints, 5, 5, 5, 5);
-
-			String[] attrNames = attr.getAttributeNames();
-			// 20030916 cworkman added Arrays.sort()
-			Arrays.sort(attrNames);
-
-			int i;
-			int yPos;
-
-			for (i = yPos = 0; i < mappings.size(); i++, yPos++) {
-				MiscGB.insert(this.myGBG, new JLabel("Map Attribute:", SwingConstants.RIGHT), 0,
-				              yPos);
-				MiscGB.insert(this.myGBG, Box.createHorizontalStrut(5), 1, yPos);
-
-				ObjectMapping m = (ObjectMapping) mappings.get(i);
-
-				// filter list of interactions
-				String[] validAttr;
-				Class[] okClass = (Class[]) acceptedDataClasses.get(i);
-
-				if (okClass != null) {
-					Vector validAttrV = new Vector(attrNames.length);
-
-					for (int j = 0; j < attrNames.length; j++) {
-						// Class attrClass = attr.getClass(attrNames[j]);
-						Class attrClass = CyAttributesUtils.getClass(attrNames[j], attr);
-
-						for (int k = 0; k < okClass.length; k++) {
-							if (okClass[k].isAssignableFrom(attrClass)) {
-								validAttrV.add(attrNames[j]);
-
-								break;
-							}
-						}
-					}
-
-					validAttr = (String[]) validAttrV.toArray(new String[0]);
-				} else
-					validAttr = attrNames;
-
-				// add generic "ID" attribute
-				Vector v = new Vector();
-				v.add(ID);
-
-				for (int lc = 0; lc < validAttr.length; lc++)
-					v.add(validAttr[lc]);
-
-				validAttr = (String[]) v.toArray(new String[0]);
-
-				// create the JComboBox
-				JComboBox attrBox = new JComboBox(validAttr);
-				attrBox.setName("attrBox");
-
-				// set the attrBox to the currently selected attribute
-				String selectedAttr = m.getControllingAttributeName();
-				// make no selection first, in case the selectedAttr doesn't
-				// exist
-				attrBox.setSelectedIndex(-1);
-				attrBox.setSelectedItem(selectedAttr);
-
-				MiscGB.insert(this.myGBG, attrBox, 2, yPos, 1, 1, 1, 0,
-				              GridBagConstraints.HORIZONTAL);
-
-				// underlying mapping's UI
-				JPanel mapperUI = m.getUI(parent, network);
-				attrBox.addItemListener(new AttributeSelectorListener(parent, network, i, ++yPos,
-				                                                      mapperUI));
-				// MiscGB.insert(this.myGBG, mapperUI, 0, yPos, 3, 1, 2, 2,
-				// GridBagConstraints.BOTH);
-				MiscGB.insert(this.myGBG, mapperUI, 0, yPos, 3, 1, 1, 0,
-				              GridBagConstraints.HORIZONTAL);
-
-				// Add a blank JLabel at the bottom to take up extra spacce in
-				// the panel
-				MiscGB.insert(this.myGBG, new JLabel(), 0, yPos + 1, 3, 1, 1, 1,
-				              GridBagConstraints.BOTH);
-			}
-		}
-
-		/**
-		 * AttributeSelectorListener listens for events on the JComboBoxes that
-		 * select the controlling attribute for mappers contained in each
-		 * calculator.
-		 */
-		protected class AttributeSelectorListener implements ItemListener {
-			private CyNetwork network;
-			private int mapIndex;
-			private int yPos;
-			private JPanel mapperUI;
-			private JDialog parent;
-
-			/**
-			 * Constructs an AttributeSelectorListener for the ObjectMapping at
-			 * index mapIndex.
-			 *
-			 * @param parent
-			 *            parent JDialog
-			 * @param network
-			 *            passed to the mapping to get data values for the new
-			 *            attribute
-			 * @param mapIndex
-			 *            Index of the mapping in the {@link #mappings} Vector
-			 *            to report changes in the selected attribute to.
-			 * @param yPos
-			 *            Position to add the mapping UI into master GBG when
-			 *            updating mapping UI.
-			 * @param mapperUI
-			 *            Current mapper UI panel
-			 */
-			protected AttributeSelectorListener(JDialog parent, CyNetwork network, int mapIndex,
-			                                    int yPos, JPanel mapperUI) {
-				this.parent = parent;
-				this.network = network;
-				this.mapIndex = mapIndex;
-				this.yPos = yPos;
-				this.mapperUI = mapperUI;
-			}
-
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					JComboBox c = (JComboBox) e.getItemSelectable();
-					String attrName = (String) c.getSelectedItem();
-					updateAttribute(attrName, network, this.mapIndex);
-					// change the panel referenced to get a new panel from the
-					// mapping
-					// to reflect the new mapped attribute.
-					remove(this.mapperUI);
-					this.mapperUI = ((ObjectMapping) mappings.get(mapIndex)).getUI(this.parent,
-					                                                               network);
-					MiscGB.insert(myGBG, this.mapperUI, 0, this.yPos, 3, 1, 2, 2,
-					              GridBagConstraints.BOTH);
-					parent.validate();
-				}
-			}
-		}
 	}
 
 	/**
@@ -656,36 +454,4 @@ public abstract class AbstractCalculator implements Calculator {
 		return type;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public byte getType() {
-		return type.getType();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String getPropertyLabel() {
-		return type.getPropertyLabel();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public String getTypeName() {
-		return type.toString();
-	}
 }

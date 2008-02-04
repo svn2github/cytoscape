@@ -559,12 +559,6 @@ public interface CyAttributes {
 	public boolean deleteAttribute(String attributeName);
 
 	/**
-	 * @deprecated Use {@link CyAttributes#setListAttribute setListAttribute()} instead. Will be removed 11/2007.
-	 */
-	public void setAttributeList(String id, String attributeName, List list)
-	    throws IllegalArgumentException;
-
-	/**
 	 * Sets a simple list of attributes.
 	 * <p/>
 	 * <P>A simple list is defined as follows:
@@ -595,11 +589,6 @@ public interface CyAttributes {
 	 */
 	public void setListAttribute(String id, String attributeName, List list)
 	    throws IllegalArgumentException;
-
-	/**
-	 * @deprecated Use {@link CyAttributes#getListAttribute getListAttribute()} instead. Will be removed 11/2007.
-	 */
-	public List getAttributeList(String id, String attributeName) throws ClassCastException;
 
 	/**
 	 * Gets a 'simple' list of attributes for the id/attributeName pair.
@@ -635,12 +624,6 @@ public interface CyAttributes {
 	public List getListAttribute(String id, String attributeName) throws ClassCastException;
 
 	/**
-	 * @deprecated Use {@link CyAttributes#setMapAttribute setMapAttribute()} instead. Will be removed 11/2007.
-	 */
-	public void setAttributeMap(String id, String attributeName, Map map)
-	    throws IllegalArgumentException;
-
-	/**
 	 * Sets a 'simple' map of attribute values.
 	 * <P>
 	 * A 'simple' map is defined as follows:
@@ -674,11 +657,6 @@ public interface CyAttributes {
 	 */
 	public void setMapAttribute(String id, String attributeName, Map map)
 	    throws IllegalArgumentException;
-
-	/**
-	 * @deprecated Use {@link CyAttributes#getMapAttribute getMapAttribute()} instead. Will be removed 11/2007.
-	 */
-	public Map getAttributeMap(String id, String attributeName);
 
 	/**
 	 * Gets a 'simple' map of attribute values.

@@ -50,7 +50,6 @@ import cytoscape.visual.properties.EdgeLabelOpacityProp;
 import cytoscape.visual.properties.EdgeLabelPositionProp;
 import cytoscape.visual.properties.EdgeLabelProp;
 import cytoscape.visual.properties.EdgeLineStyleProp;
-import cytoscape.visual.properties.EdgeLineTypeProp;
 import cytoscape.visual.properties.EdgeLineWidthProp;
 import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
@@ -73,7 +72,6 @@ import cytoscape.visual.properties.NodeLabelOpacityProp;
 import cytoscape.visual.properties.NodeLabelPositionProp;
 import cytoscape.visual.properties.NodeLabelProp;
 import cytoscape.visual.properties.NodeLineStyleProp;
-import cytoscape.visual.properties.NodeLineTypeProp;
 import cytoscape.visual.properties.NodeLineWidthProp;
 import cytoscape.visual.properties.NodeOpacityProp;
 import cytoscape.visual.properties.NodeShapeProp;
@@ -104,9 +102,6 @@ public enum VisualPropertyType {
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", 
 	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ), 
-	NODE_LINETYPE("Node Line Type", "nodeLineTypeCalculator", "node.lineType",
-	              "defaultNodeLineType", LineType.class,
-	              new NodeLineTypeProp(), new LineTypeParser(), true, false ), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           NodeShape.class, new NodeShapeProp(),
 			   new NodeShapeParser(), true, true), 
@@ -140,9 +135,6 @@ public enum VisualPropertyType {
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           Color.class, new EdgeColorProp(),
 			   new ColorParser(), false, true), 
-	EDGE_LINETYPE("Edge Line Type", "edgeLineTypeCalculator", "edge.lineType",
-	              "defaultEdgeLineType", LineType.class,
-	              new EdgeLineTypeProp(), new LineTypeParser(), false, false), 
 	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
 	              "defaultEdgeSourceArrow", Arrow.class,
 	              new EdgeSourceArrowProp(), new ArrowParser(), false, false), 
@@ -320,36 +312,6 @@ public enum VisualPropertyType {
 	 */
 	public String getDefaultPropertyKey(final String baseKey) {
 		return baseKey + "." + defaultPropertyLabel;
-	}
-
-	/**
-	 * Return position in thie enum as byte.<br>
-	 * Will be used as type.
-	 *
-	 * DO NOT USE THIS. This is only for backward compatibility.<br>
-	 * Replace your "byte" with is emum!
-	 *
-	 * @return byte type
-	 * @deprecated Will be removed 5/2008
-	 */
-	@Deprecated
-	public byte getType() {
-		return (byte) ordinal();
-	}
-
-	/**
-	 * DO NOT USE THIS. This is only for backward compatibility.
-	 *
-	 * @param type
-	 * @return
-	 * @deprecated Will be removed 5/2008.
-	 */
-	@Deprecated
-	public static VisualPropertyType getVisualPorpertyType(byte type) {
-		/*
-		 * Type is always equal to ordinal.
-		 */
-		return values()[type];
 	}
 
 	/**

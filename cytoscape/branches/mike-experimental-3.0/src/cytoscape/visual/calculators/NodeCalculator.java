@@ -56,19 +56,6 @@ import cytoscape.visual.parsers.ValueParser;
  * object tree.
  */
 public class NodeCalculator extends BasicCalculator {
-    /**
-     * Creates a new NodeCalculator object.
-     *
-     * @param name DOCUMENT ME!
-     * @param m DOCUMENT ME!
-     * @param c DOCUMENT ME!
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public NodeCalculator(String name, ObjectMapping m, Class c) {
-        this(name, m, c, null);
-    }
 
     /**
      * Creates a new NodeCalculator object.
@@ -80,18 +67,6 @@ public class NodeCalculator extends BasicCalculator {
      */
     public NodeCalculator(String name, ObjectMapping m, Class c, VisualPropertyType type) {
         super(name, m, type);
-    }
-
-    /**
-     * Constructor that calls {@link MappingFactory} to construct a new
-     * ObjectMapping based on the supplied arguments.
-     * 
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public NodeCalculator(String name, Properties props, String baseKey,
-        ValueParser parser, Object defObj) {
-        this(name,props,baseKey,parser, defObj, null);
     }
 
     /**

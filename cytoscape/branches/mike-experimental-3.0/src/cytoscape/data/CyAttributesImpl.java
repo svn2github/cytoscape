@@ -518,18 +518,6 @@ public class CyAttributesImpl implements CyAttributes {
 		return b;
 	}
 
-	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param list DOCUMENT ME!
-	 */
-	public void setAttributeList(String id, String attributeName, List list) {
-		setListAttribute(id, attributeName, list);
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -609,19 +597,6 @@ public class CyAttributesImpl implements CyAttributes {
 		}
 	}
 
-	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List getAttributeList(String id, String attributeName) {
-		return getListAttribute(id, attributeName);
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -657,18 +632,6 @@ public class CyAttributesImpl implements CyAttributes {
 		}
 
 		return returnThis;
-	}
-
-	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param map DOCUMENT ME!
-	 */
-	public void setAttributeMap(String id, String attributeName, Map map) {
-		setMapAttribute(id, attributeName, map);
 	}
 
 	/**
@@ -758,19 +721,6 @@ public class CyAttributesImpl implements CyAttributes {
 			key[0] = entry.getKey();
 			mmap.setAttributeValue(id, attributeName, entry.getValue(), key);
 		}
-	}
-
-	// deprecated
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Map getAttributeMap(String id, String attributeName) {
-		return getMapAttribute(id, attributeName);
 	}
 
 	/**

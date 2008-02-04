@@ -51,8 +51,6 @@ import cytoscape.view.FlagAndSelectionHandler;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import cytoscape.visual.ui.VizMapUI;
-
 import ding.view.DGraphView;
 import ding.view.EdgeContextMenuListener;
 
@@ -187,16 +185,6 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualMappingManager getVizMapManager() {
-		// Believe it or not, this is the correct f***ing implementation.
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VizMapUI getVizMapUI() {
 		// Believe it or not, this is the correct f***ing implementation.
 		return null;
 	}

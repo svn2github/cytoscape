@@ -97,19 +97,6 @@ public abstract class CalculatorCatalogFactory {
     static CalculatorCatalog calculatorCatalog = new CalculatorCatalog();
 
     public static CalculatorCatalog loadCalculatorCatalog() {
-        return loadCalculatorCatalog(null);
-    }
-
-    /**
-     * Loads a CalculatorCatalog object from the various properties files
-     * specified by the options in the supplied CytoscapeConfig object. The
-     * catalog will be properly initialized with known mapping types and a
-     * default visual style (named "default").
-     *
-     * @deprecated The vmName parameter is no longer used - just use
-     *             loadCalculatorCatalog(). Will be removed 10/06.
-     */
-    public static CalculatorCatalog loadCalculatorCatalog(String vmName) {
         vizmapProps = CytoscapeInit.getVisualProperties();
 
         initCatalog();

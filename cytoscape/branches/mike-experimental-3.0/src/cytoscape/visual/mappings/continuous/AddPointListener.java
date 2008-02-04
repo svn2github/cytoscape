@@ -55,25 +55,8 @@ import java.awt.event.ActionListener;
 public class AddPointListener
     implements ActionListener {
 	
-	@Deprecated
-    private ContinuousUI ui = null;
-	
     private ContinuousMapping cm;
     private Object defaultObject;
-
-    /**
-     * Constructor.
-     * @param ui ContinuousUI Object.
-     * @param cm ContinuousMapping Object.
-     * @deprecated Will be removed 5/2008
-     */
-    @Deprecated
-    public AddPointListener(ContinuousUI ui, ContinuousMapping cm,
-        Object defaultObject) {
-        this.ui = ui;
-        this.cm = cm;
-        this.defaultObject = defaultObject;
-    }
 
     /**
      * Creates a new AddPointListener object.
@@ -113,9 +96,5 @@ public class AddPointListener
         }
 
         cm.addPoint(value, brv);
-
-        // Will be removed once old UI is deleted.
-        if (ui != null)
-            ui.resetUI();
     }
 }

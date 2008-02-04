@@ -44,7 +44,6 @@ package cytoscape.visual.mappings;
 
 import cytoscape.CyNetwork;
 
-import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.parsers.ValueParser;
@@ -99,12 +98,6 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @param defaultObj  DOCUMENT ME!
 	 */
 	public PassThroughMapping(Object defaultObj) {
-		// TODO
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defaultObj instanceof Byte)
-			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte) defaultObj).byteValue());
-
 		this.rangeClass = defaultObj.getClass();
 	}
 
@@ -115,12 +108,6 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @param attrName  DOCUMENT ME!
 	 */
 	public PassThroughMapping(Object defaultObj, String attrName) {
-		// TODO
-		// Converts shape bytes to NodeShape enum values.
-		// Remove once ShapeNodeRealizer is removed when its deprecation period is up!
-		if (defaultObj instanceof Byte)
-			defaultObj = ShapeNodeRealizer.getNodeShape(((Byte) defaultObj).byteValue());
-
 		this.rangeClass = defaultObj.getClass();
 		setControllingAttributeName(attrName, null, false);
 	}
@@ -303,20 +290,6 @@ public class PassThroughMapping implements ObjectMapping {
 			newProps.setProperty(contKey, contValue);
 
 		return newProps;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param visualAttr DOCUMENT ME!
-	 * @param b DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 * @deprecated Use getLegend(VisualPropertyType) instead. Gone 5/2008.
-	 */
-	@Deprecated
-	public JPanel getLegend(String visualAttr, byte b) {
-		return getLegend(VisualPropertyType.getVisualPorpertyType(b));
 	}
 
 	/**
