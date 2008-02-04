@@ -99,7 +99,7 @@ public class BioPaxDetailsPanel extends JPanel {
 		nodeAttributes = Cytoscape.getNodeAttributes();
 	}
 
-    private void modifyStyleSheetForSingleDocument(JTextPane textPane) {
+    public static void modifyStyleSheetForSingleDocument(JTextPane textPane) {
         HTMLDocument htmlDoc = (HTMLDocument) textPane.getDocument();
         StyleSheet styleSheet = htmlDoc.getStyleSheet();
         styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
@@ -110,6 +110,8 @@ public class BioPaxDetailsPanel extends JPanel {
                 + "padding-left: 1em;	text-indent: -1em;}");
         styleSheet.addRule("h4 {color: #66333; font-weight: bold; margin-bottom:3px;}");
         styleSheet.addRule(".link {color:blue; text-decoration: underline;}");
+        styleSheet.addRule(".description {font-size: 85%;}");
+        styleSheet.addRule(".rule {font-size: 90%; font-weight:bold}");
         styleSheet.addRule(".excerpt {font-size: 90%;}");
     }
 
