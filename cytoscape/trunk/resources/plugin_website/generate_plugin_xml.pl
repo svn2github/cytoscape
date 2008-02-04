@@ -120,7 +120,7 @@ FROM plugin_list L
     ON L.plugin_auto_id = V.plugin_id
   INNER JOIN categories C 
     ON L.category_id = C.category_id
-WHERE V.status = 'published' 
+WHERE V.status = 'published' AND V.plugin_file_id is not NULL
 ); 
 
 	$pluginSql .= "AND V.theme_only = 'no' " if (!$ThemeOnly || $ThemeOnly eq 'no');
