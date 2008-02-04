@@ -38,7 +38,7 @@ public class EdgeFilterUi extends JDialog {
      */
     private void initGui() {
         this.setModal(true);
-        this.setTitle("Dynamic Edge Filter");
+        this.setTitle("Edge Filter");
         checkBoxSet = new HashSet();
         Set interactionSet = new TreeSet();
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
