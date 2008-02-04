@@ -54,9 +54,6 @@ import java.util.Iterator;
  * class versioning.
  */
 public final class RTree implements MutableSpacialIndex2D, java.io.Serializable {
-	/**
-	 * @deprecated Use the no-arg constructor.
-	 */
 	public final static int DEFAULT_MAX_BRANCHES = 11;
 	private final float[] m_MBR; // { xMin, yMin, xMax, yMax }.
 	private final int m_maxBranches;
@@ -92,7 +89,6 @@ public final class RTree implements MutableSpacialIndex2D, java.io.Serializable 
 	 * testing purposes; there are no performance gains to be had.
 	 * @param maxBranches the maximum branching factor of this tree.
 	 * @exception IllegalArgumentException if maxBranches is less than three.
-	 * @deprecated Use the no-arg constructor instead.
 	 */
 	public RTree(final int maxBranches) {
 		if (maxBranches < 3)
