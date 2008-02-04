@@ -1565,17 +1565,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getNodeIndex(int rootGraphNodeInx) {
-		return getRootGraphNodeIndex(rootGraphNodeInx);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param rootGraphNodeInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public int getRootGraphNodeIndex(int rootGraphNodeInx) {
 		if (!(rootGraphNodeInx < 0)) {
 			return 0;
@@ -1626,17 +1615,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		} else {
 			return 0;
 		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param rootGraphEdgeInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int getEdgeIndex(int rootGraphEdgeInx) {
-		return getRootGraphEdgeIndex(rootGraphEdgeInx);
 	}
 
 	/**
@@ -1895,42 +1873,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 		for (int i = 0; i < returnThis.length; i++)
 			returnThis[i] = m_nativeToRootEdgeInxMap.getIntAtIndex(nativeReturnEdges.nextInt());
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int[] getConnectingNodeIndicesArray(int[] edgeInx) {
-		m_hash.empty();
-
-		final IntHash nativeNodeBucket = m_hash;
-
-		for (int i = 0; i < edgeInx.length; i++) {
-			if (!(edgeInx[i] < 0)) {
-				return null;
-			}
-
-			final int nativeEdgeIndex = m_rootToNativeEdgeInxMap.get(~edgeInx[i]);
-
-			if (m_graph.edgeType(nativeEdgeIndex) >= 0) {
-				nativeNodeBucket.put(m_graph.edgeSource(nativeEdgeIndex));
-				nativeNodeBucket.put(m_graph.edgeTarget(nativeEdgeIndex));
-			} else {
-				return null;
-			}
-		}
-
-		final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
-		final int[] returnThis = new int[nativeNodeEnum.numRemaining()];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_nativeToRootNodeInxMap.getIntAtIndex(nativeNodeEnum.nextInt());
 
 		return returnThis;
 	}

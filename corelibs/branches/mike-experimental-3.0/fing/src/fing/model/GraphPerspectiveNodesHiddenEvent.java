@@ -68,19 +68,6 @@ final class GraphPerspectiveNodesHiddenEvent extends GraphPerspectiveChangeEvent
 		return NODES_HIDDEN_TYPE;
 	}
 
-	// This method has been deprecated in the Giny API.
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final Node[] getHiddenNodes() {
-		final Node[] returnThis = new Node[m_hiddenNodes.length];
-		System.arraycopy(m_hiddenNodes, 0, returnThis, 0, m_hiddenNodes.length);
-
-		return returnThis;
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *

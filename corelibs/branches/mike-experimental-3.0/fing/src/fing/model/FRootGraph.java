@@ -301,16 +301,6 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param nodes DOCUMENT ME!
-	 * @param edges DOCUMENT ME!
-	 */
-	public void ensureCapacity(int nodes, int edges) {
-		System.out.println("The secret easter egg module has been activated.");
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public int getNodeCount() {
@@ -605,22 +595,6 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param numNewNodes DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] createNodes(int numNewNodes) {
-		final int[] returnThis = new int[numNewNodes];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = createNode();
-
-		return returnThis;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @param edge DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -747,27 +721,6 @@ class FRootGraph implements RootGraph, DynamicGraph {
 		final int returnThis = ~nativeEdgeInx;
 		Edge newEdge = m_edgeDepot.getEdge(this, returnThis, null);
 		m_edges.setEdgeAtIndex(newEdge, nativeEdgeInx);
-
-		return returnThis;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param sourceNodeIndices DOCUMENT ME!
-	 * @param targetNodeIndices DOCUMENT ME!
-	 * @param directed DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] createEdges(int[] sourceNodeIndices, int[] targetNodeIndices, boolean directed) {
-		if (sourceNodeIndices.length != targetNodeIndices.length)
-			throw new IllegalArgumentException("input arrays not same length");
-
-		final int[] returnThis = new int[sourceNodeIndices.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = createEdge(sourceNodeIndices[i], targetNodeIndices[i], directed);
 
 		return returnThis;
 	}
@@ -1010,38 +963,6 @@ class FRootGraph implements RootGraph, DynamicGraph {
 
 		for (int i = 0; i < returnThis.length; i++)
 			returnThis[i] = ~(returnEdges.nextInt());
-
-		return returnThis;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] getConnectingNodeIndicesArray(int[] edgeInx) {
-		m_hash.empty();
-
-		final IntHash nodeBucket = m_hash;
-
-		for (int i = 0; i < edgeInx.length; i++) {
-			final int positiveEdge = ~edgeInx[i];
-
-			if (m_graph.edgeType(positiveEdge) >= 0) {
-				nodeBucket.put(m_graph.edgeSource(positiveEdge));
-				nodeBucket.put(m_graph.edgeTarget(positiveEdge));
-			} else {
-				return null;
-			}
-		}
-
-		final IntEnumerator nodes = nodeBucket.elements();
-		final int[] returnThis = new int[nodes.numRemaining()];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = ~(nodes.nextInt());
 
 		return returnThis;
 	}

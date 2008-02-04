@@ -53,7 +53,9 @@ public class GCTest {
 	 */
 	public static void main(String[] args) {
 		final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
-		final int[] nodeInx = root.createNodes(10000);
+		final int[] nodeInx = new int[10000];
+		for ( int x = 0; x < nodeInx.length; x++ )
+			nodeInx[x] = root.createNode();
 		final int[] edgeInx = new int[100000];
 
 		for (int i = 0; i < edgeInx.length; i++)

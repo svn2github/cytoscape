@@ -840,13 +840,6 @@ public final class AllGraphPerspectiveMethodsTest {
 		if (persp.getIndex(persp.getNode(nodeInx[2])) != nodeInx[2])
 			throw new IllegalStateException("wrong node index");
 
-		// getNodeIndex(int).
-		if ((persp.getNodeIndex(nodeInx[1]) != nodeInx[1])
-		    || (persp.getNodeIndex(nodeNotInPersp.getRootGraphIndex()) != 0)
-		    || (persp.getNodeIndex(minNodeInx - 1) != 0)
-		    || (persp.getNodeIndex(Integer.MAX_VALUE) != 0) || (persp.getNodeIndex(1) != 0))
-			throw new IllegalStateException("bad getNodeIndex(int)");
-
 		// getRootGraphNodeIndex(int).
 		if ((persp.getRootGraphNodeIndex(nodeInx[3]) != nodeInx[3])
 		    || (persp.getRootGraphNodeIndex(nodeNotInPersp.getRootGraphIndex()) != 0)
@@ -872,13 +865,6 @@ public final class AllGraphPerspectiveMethodsTest {
 
 		if ((persp.getIndex(root2Edge) != 0) || (persp.getIndex(edge1NotInPersp) != 0))
 			throw new IllegalStateException("getIndex(Edge) should have been 0");
-
-		// getEdgeIndex(int).
-		if ((persp.getEdgeIndex(edgeInx[3]) != edgeInx[3])
-		    || (persp.getEdgeIndex(edge1NotInPersp.getRootGraphIndex()) != 0)
-		    || (persp.getEdgeIndex(minEdgeInx - 1) != 0)
-		    || (persp.getEdgeIndex(Integer.MIN_VALUE) != 0) || (persp.getEdgeIndex(1) != 0))
-			throw new IllegalStateException("bad getEdgeIndex(int)");
 
 		// getRootGraphEdgeIndex(int).
 		if ((persp.getRootGraphEdgeIndex(edgeInx[4]) != edgeInx[4])
@@ -1163,69 +1149,6 @@ public final class AllGraphPerspectiveMethodsTest {
 		                                                nodeNotInPersp.getRootGraphIndex()
 		                                            }) != null))
 			throw new IllegalStateException("expected null connecting edge inx");
-
-		// getConnectingNodeIndicesArray(int[]).
-		int[] edgeInputInxArr = new int[3];
-		edgeInputInxArr[0] = edgeInx[0];
-		edgeInputInxArr[1] = edgeInx[2];
-		edgeInputInxArr[2] = edgeInx[4];
-
-		int[] connectingNodeInx = persp.getConnectingNodeIndicesArray(edgeInputInxArr);
-
-		if (connectingNodeInx.length != 3)
-			throw new IllegalStateException("expected 3 connecting nodes");
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[0])
-				break;
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[1])
-				break;
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[2])
-				break;
-
-		edgeInputInxArr = new int[2];
-		edgeInputInxArr[0] = edgeInx[6];
-		edgeInputInxArr[1] = edgeInx[1];
-		connectingNodeInx = persp.getConnectingNodeIndicesArray(edgeInputInxArr);
-
-		if (connectingNodeInx.length != 3)
-			throw new IllegalStateException("expected 3 connecting nodes");
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[1])
-				break;
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[2])
-				break;
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[3])
-				break;
-
-		edgeInputInxArr = new int[1];
-		edgeInputInxArr[0] = edgeInx[3];
-		connectingNodeInx = persp.getConnectingNodeIndicesArray(edgeInputInxArr);
-
-		if (connectingNodeInx.length != 1)
-			throw new IllegalStateException("expected one connecting node");
-
-		for (int i = 0;; i++)
-			if (connectingNodeInx[i] == nodeInx[2])
-				break;
-
-		if ((persp.getConnectingNodeIndicesArray(new int[76]) != null)
-		    || (persp.getConnectingNodeIndicesArray(new int[] { Integer.MIN_VALUE, Integer.MAX_VALUE }) != null)
-		    || (persp.getConnectingNodeIndicesArray(new int[] { minEdgeInx - 1, edgeInx[0] }) != null)
-		    || (persp.getConnectingNodeIndicesArray(new int[] {
-		                                                edgeInx[2],
-		                                                edge1NotInPersp.getRootGraphIndex()
-		                                            }) != null))
-			throw new IllegalStateException("expected null connecting node inx");
 
 	}
 }

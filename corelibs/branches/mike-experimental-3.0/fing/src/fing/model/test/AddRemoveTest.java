@@ -86,7 +86,9 @@ public final class AddRemoveTest {
 			if (print)
 				System.out.println("creating " + numNodes + " nodes");
 
-			nodeInx = root.createNodes(numNodes);
+			nodeInx = new int[numNodes];
+			for ( int x = 0; x < numNodes; x++ )
+				nodeInx[x] = root.createNode();
 
 			if (print)
 				System.out.println("creating " + edgeInx.length + " edges");

@@ -68,19 +68,6 @@ final class GraphPerspectiveEdgesHiddenEvent extends GraphPerspectiveChangeEvent
 		return EDGES_HIDDEN_TYPE;
 	}
 
-	// This method has been deprecated in the Giny API.
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final Edge[] getHiddenEdges() {
-		final Edge[] returnThis = new Edge[m_hiddenEdges.length];
-		System.arraycopy(m_hiddenEdges, 0, returnThis, 0, m_hiddenEdges.length);
-
-		return returnThis;
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *

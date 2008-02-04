@@ -70,33 +70,6 @@ public class Bug646Test {
 			m_identifier = id;
 		}
 
-		public GraphPerspective getGraphPerspective() {
-			return null;
-			/*
-			return m_rootGraph.createGraphPerspective(m_rootGraph.getNodeMetaChildIndicesArray(m_rootGraphIndex),
-			                                          m_rootGraph.getEdgeMetaChildIndicesArray(m_rootGraphIndex));
-													  */
-		}
-
-		public boolean setGraphPerspective(GraphPerspective gp) {
-			return true;
-			/*
-			if (gp.getRootGraph() != m_rootGraph)
-				return false;
-
-			final int[] nodeInx = gp.getNodeIndicesArray();
-			final int[] edgeInx = gp.getEdgeIndicesArray();
-
-			for (int i = 0; i < nodeInx.length; i++)
-				m_rootGraph.addNodeMetaChild(m_rootGraphIndex, nodeInx[i]);
-
-			for (int i = 0; i < edgeInx.length; i++)
-				m_rootGraph.addEdgeMetaChild(m_rootGraphIndex, edgeInx[i]);
-
-			return true;
-			*/
-		}
-
 		public RootGraph getRootGraph() {
 			return m_rootGraph;
 		}
