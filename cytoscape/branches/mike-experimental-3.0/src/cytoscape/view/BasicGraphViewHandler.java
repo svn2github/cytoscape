@@ -598,6 +598,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * to the barycenter of its children
 	 */
 	static public void positionToBarycenter(NodeView node_view) {
+		return;
+		/*
 		Node node = node_view.getNode();
 		int rootIndex = node.getRootGraphIndex();
 		GraphView graphView = node_view.getGraphView();
@@ -643,6 +645,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			node_view.setXPosition(x);
 			node_view.setYPosition(y);
 		}
+		*/
 	} //positionToBarycenter
 
 	/**

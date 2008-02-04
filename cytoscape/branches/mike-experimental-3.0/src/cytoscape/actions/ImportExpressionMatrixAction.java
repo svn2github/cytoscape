@@ -93,7 +93,7 @@ public class ImportExpressionMatrixAction extends CytoscapeAction {
 		                                                                  true);
 		amd.pack();
 		amd.setLocationRelativeTo(Cytoscape.getDesktop());
-		amd.show();
+		amd.setVisible(true);
 
 		if (amd.getStatus() == false) {
 			return;

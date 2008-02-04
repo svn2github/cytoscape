@@ -372,12 +372,12 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 
 		if (event.isNodesHiddenType()) { // at least one node was hidden
 
-			Node[] hiddenNodes = event.getHiddenNodes();
+			int[] hiddenNodes = event.getHiddenNodeIndices();
 			final int hNodesCount = hiddenNodes.length;
 			Node node;
 			boolean setChanged;
 			for (int index = 0; index <hNodesCount; index++) {
-				node = hiddenNodes[index];
+				node = graph.getNode(hiddenNodes[index]);
 				setChanged = selectedNodes.remove(node);
 
 				if (setChanged) { // the hidden node was actually selected
