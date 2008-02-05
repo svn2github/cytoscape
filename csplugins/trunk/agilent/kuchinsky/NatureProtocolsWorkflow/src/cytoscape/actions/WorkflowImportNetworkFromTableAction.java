@@ -14,8 +14,6 @@ import cytoscape.Cytoscape;
  * Imports a graph of arbitrary type. The types of graphs allowed are defined by
  * the ImportHandler.
  * 
- * OY GEVALT! This is cloned from the code in cytoscape.actions. figure out a
- * better way to do this without duplicating code.
  * 
  */
 public class WorkflowImportNetworkFromTableAction extends WorkflowPanelAction {

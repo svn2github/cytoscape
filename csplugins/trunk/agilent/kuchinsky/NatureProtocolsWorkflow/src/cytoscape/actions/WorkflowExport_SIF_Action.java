@@ -23,8 +23,9 @@ public class WorkflowExport_SIF_Action extends WorkflowPanelAction {
 	private static final String EXPORT_MENU_TEXT = "Export";
 
 	private static final String SIF_MENU_TEXT = "Network as SIF File...";
+	
+	private ExportAsInteractionsAction exportSIF = new ExportAsInteractionsAction();
 
-	private String menuItemText;
 
 	/**
 	 * Constructor.
@@ -34,7 +35,7 @@ public class WorkflowExport_SIF_Action extends WorkflowPanelAction {
 	 */
 	public WorkflowExport_SIF_Action(String myString) {
 		super(myString);
-
+		
 	}
 	
 	public String getToolTipText()
@@ -48,51 +49,10 @@ public class WorkflowExport_SIF_Action extends WorkflowPanelAction {
 		{
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Sorry, you must first have a network to export");
 			return;
-		} 
-		Component[] pluginsMenuItems = Cytoscape.getDesktop().getCyMenus()
-				.getFileMenu().getMenuComponents();
-		for (int i = 0; i < pluginsMenuItems.length; i++) {
-			Component comp = pluginsMenuItems[i];
-			if (comp instanceof JMenuItem) {
-				JMenuItem jItem = (JMenuItem) comp;
-				menuItemText = jItem.getText();
-				if (menuItemText != null) {
-					if (menuItemText.equals(EXPORT_MENU_TEXT)) {
-						MenuElement[] subMenuItems = jItem.getSubElements();
-						for (int j = 0; j < subMenuItems.length; j++) {
-							if (subMenuItems[j] instanceof JPopupMenu) {
-								JPopupMenu kPopup = (JPopupMenu) subMenuItems[j];
-								Component[] popupItems = kPopup.getComponents();
-								for (int k = 0; k < popupItems.length; k++) {
-									if (popupItems[k] instanceof JMenuItem) {
-										JMenuItem kPopupItem = (JMenuItem) popupItems[k];
-										menuItemText = kPopupItem.getText();
-
-										if (menuItemText != null) {
-											if (menuItemText
-													.equals(SIF_MENU_TEXT)) {
-												ActionListener[] actionListeners = kPopupItem
-														.getActionListeners();
-												ActionListener action = actionListeners[0];
-
-												if (action != null) {
-													action
-															.actionPerformed(null);
-												}
-											}
-										}
-									}
-
-								}
-							}
-						}
-
-					}
-				}
-
-			}
-
 		}
+		exportSIF.actionPerformed(e);
 	}
 }
+		
+		
 

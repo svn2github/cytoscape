@@ -23,7 +23,7 @@ public class WorkflowExport_Node_Attributes_Action extends WorkflowPanelAction {
 
 	private static final String NODE_ATTRIBUTES_MENU_TEXT = "Node Attributes";
 
-	private String menuItemText;
+	private ExportNodeAttributesAction exportNodeAttributes = new ExportNodeAttributesAction();
 
 	/**
 	 * Constructor.
@@ -42,51 +42,6 @@ public class WorkflowExport_Node_Attributes_Action extends WorkflowPanelAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		String menuItemText = "";
-
-		Component[] pluginsMenuItems = Cytoscape.getDesktop().getCyMenus()
-				.getFileMenu().getMenuComponents();
-		for (int i = 0; i < pluginsMenuItems.length; i++) {
-			Component comp = pluginsMenuItems[i];
-			if (comp instanceof JMenuItem) {
-				JMenuItem jItem = (JMenuItem) comp;
-				menuItemText = jItem.getText();
-				if (menuItemText != null) {
-					if (menuItemText.equals(EXPORT_MENU_TEXT)) {
-						MenuElement[] subMenuItems = jItem.getSubElements();
-						for (int j = 0; j < subMenuItems.length; j++) {
-							if (subMenuItems[j] instanceof JPopupMenu) {
-								JPopupMenu kPopup = (JPopupMenu) subMenuItems[j];
-								Component[] popupItems = kPopup.getComponents();
-								for (int k = 0; k < popupItems.length; k++) {
-									if (popupItems[k] instanceof JMenuItem) {
-										JMenuItem kPopupItem = (JMenuItem) popupItems[k];
-										menuItemText = kPopupItem.getText();
-
-										if (menuItemText != null) {
-											if (menuItemText
-													.equals(NODE_ATTRIBUTES_MENU_TEXT)) {
-												ActionListener[] actionListeners = kPopupItem
-														.getActionListeners();
-												ActionListener action = actionListeners[0];
-
-												if (action != null) {
-													action
-															.actionPerformed(null);
-												}
-											}
-										}
-									}
-
-								}
-							}
-						}
-
-					}
-				}
-
-			}
-
-		}
+		exportNodeAttributes.actionPerformed(e);
 	}
 }
