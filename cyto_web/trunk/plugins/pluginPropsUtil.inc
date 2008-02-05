@@ -289,6 +289,10 @@ function getPluginProps($zipFileName) {
 						if (stristr($cur_line, 'cytoscapeVersion') == $lines[$i]) {
 								$pos = strpos($cur_line, "="); // find first "="
 							$pluginProps['cytoscapeVersion'] = trim(substr($cur_line, $pos +1));
+							//remove any white space
+							$pluginProps['cytoscapeVersion'] = ereg_replace(' ','',$pluginProps['cytoscapeVersion']);
+							$pluginProps['cytoscapeVersion'] = ereg_replace('\t','',$pluginProps['cytoscapeVersion']);
+
 						}
 						if (stristr($cur_line, 'pluginCategory') == $lines[$i]) {
 							$pos = strpos($cur_line, "="); // find first "="
