@@ -18,7 +18,8 @@
 	' plugin_version.source_url as sourceURL, ' .
 	' plugin_version.cy_version as cyVersion, ' .
 	' plugin_version.status as status,' .	
-	' plugin_version.reference as reference' .
+	' plugin_version.reference as reference,' .
+	' plugin_version.theme_only as theme_only' .
 	' FROM categories, plugin_list, plugin_version' .
 	' WHERE  categories.category_id     = plugin_list.category_id and ' .
 	'    plugin_list.plugin_auto_id = plugin_version.plugin_id and ' .
@@ -40,6 +41,7 @@
 	$db_projectURL = $first_row['projectURL'];
 	$db_releaseNote = stripslashes($first_row['releaseNote']);
 	$db_releaseNoteURL = $first_row['releaseNoteURL'];
+	$db_themeOnly = $first_row['theme_only'];
 
 	//fileUpload
 	$db_pluginFileID = $first_row['pluginFileID'];
@@ -62,6 +64,7 @@
 	$db_pluginProps['releaseDate'] = $first_row['releaseDate'];
 	$db_pluginProps['projectURL'] = $first_row['projectURL'];
 	$db_pluginProps['cytoscapeVersion'] = $first_row['cyVersion'];
+	$db_pluginProps['themeOnly'] = $first_row['theme_only'];
 	
 	// The following data were not available from the file plugin.props
 	$db_pluginProps2['releaseNote'] = stripslashes($first_row['releaseNote']);
