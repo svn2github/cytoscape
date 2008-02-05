@@ -91,6 +91,7 @@ $license = NULL;
 $license_required = NULL;
 $contactName = NULL;
 $contactEmail = NULL;
+$themeOnly = NULL;
 
 // Case for 'edit', pull data out of DB for the given versionID
 if (($tried == NULL) && ($mode == 'edit')) {
@@ -123,6 +124,7 @@ if (($tried == NULL) && ($mode == 'edit')) {
 	$authorInst['insts'] = $db_affiliations;
 	$pluginProps['pluginAuthorsInstitutions'] = $authorInst;
 	$pluginProps['cytoscapeVersion'] = $db_cyVersion;
+	$pluginProps['themeOnly'] = $db_themeOnly;
 
 	if ($license_required == "yes") {
 		$license_required_checked = "checked";
@@ -288,6 +290,9 @@ else
 		}
 		if ($pluginProps['releaseDate'] != $db_releaseDate) {
 			$query2 .= 'release_date ="' . $pluginProps['releaseDate'] . '",';
+		}
+		if ($pluginProps['themeOnly'] != $db_themeOnly) {
+			$query2 .= 'theme_only ="' . $pluginProps['themeOnly'] . '",';
 		}
 		if ($releaseNote != $db_releaseNote) {
 			$query2 .= 'release_note ="' . $releaseNote . '",';
