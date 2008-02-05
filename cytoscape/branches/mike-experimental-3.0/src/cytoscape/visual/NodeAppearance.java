@@ -93,11 +93,6 @@ public class NodeAppearance extends Appearance {
 	public void set(VisualPropertyType p, Object o) {
 		if (o == null)
 			return;
-
-		if ( p == VisualPropertyType.NODE_WIDTH || p == VisualPropertyType.NODE_HEIGHT ) 
-			if ( nodeSizeLocked )
-				vizProps[VisualPropertyType.NODE_SIZE.ordinal()] = o;
-
 		vizProps[p.ordinal()] = o;
 	}
 

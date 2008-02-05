@@ -130,12 +130,17 @@ public class NodeAppearanceTest extends TestCase {
 
 		na.set(VisualPropertyType.NODE_WIDTH,20.0);
 
-		assertEquals("node uniform size", 20.0, ((Double)na.get(VisualPropertyType.NODE_SIZE)).doubleValue(), SLACK);
+		assertEquals("node uniform size", 35.0, ((Double)na.get(VisualPropertyType.NODE_SIZE)).doubleValue(), SLACK);
+		assertEquals("node width", 35.0, ((Double)na.get(VisualPropertyType.NODE_WIDTH)).doubleValue(), SLACK);
+		na.setNodeSizeLocked(false);
 		assertEquals("node width", 20.0, ((Double)na.get(VisualPropertyType.NODE_WIDTH)).doubleValue(), SLACK);
 
+		na.setNodeSizeLocked(true);
 		na.set(VisualPropertyType.NODE_HEIGHT,80.0);
 
-		assertEquals("node uniform size", 80.0, ((Double)na.get(VisualPropertyType.NODE_SIZE)).doubleValue(), SLACK);
+		assertEquals("node uniform size", 35.0, ((Double)na.get(VisualPropertyType.NODE_SIZE)).doubleValue(), SLACK);
+		assertEquals("node heigth", 35.0, ((Double)na.get(VisualPropertyType.NODE_HEIGHT)).doubleValue(), SLACK);
+		na.setNodeSizeLocked(false);
 		assertEquals("node heigth", 80.0, ((Double)na.get(VisualPropertyType.NODE_HEIGHT)).doubleValue(), SLACK);
 	}
 }
