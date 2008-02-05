@@ -170,16 +170,18 @@ public class StructureViz extends CytoscapePlugin
 				m.add(item);
 			}
 			{
-				String residueList = CyChimera.getResidueList((CyNode)overNode.getNode());
-				if (residueList != null) {
-					// Get the structures for this node
-					List<Structure>structures =  CyChimera.getSelectedStructures(overNode);
-					if (structures.size() > 0) {
-			  		JMenuItem item = new JMenuItem("Select residues");
-						StructureVizCommandListener l = 
-						    new StructureVizCommandListener(SELECTRES, structures);
-						item.addActionListener(l);
-						m.add(item);
+        if (overNode != null) {
+					String residueList = CyChimera.getResidueList((CyNode)overNode.getNode());
+					if (residueList != null) {
+						// Get the structures for this node
+						List<Structure>structures =  CyChimera.getSelectedStructures(overNode);
+						if (structures.size() > 0) {
+			  			JMenuItem item = new JMenuItem("Select residues");
+							StructureVizCommandListener l = 
+							    new StructureVizCommandListener(SELECTRES, structures);
+							item.addActionListener(l);
+							m.add(item);
+						}
 					}
 				}
 			}
@@ -361,7 +363,12 @@ public class StructureViz extends CytoscapePlugin
 				// to reformat this to nnn,nnn
 				String residues = new String();
 				for (String residue: residueL) {
-					residues = residues.concat(residue.substring(3)+",");
+					// Are residues three-letter or one-letter
+					if (Character.isDigit(residue.charAt(1))) {
+						residues = residues.concat(residue.substring(1)+",");
+					} else {
+						residues = residues.concat(residue.substring(3)+",");
+					}
 				}
 				residues = residues.substring(0,residues.length()-1);
 
