@@ -32,4 +32,8 @@ class Get {
 	static NodeShape nodeShape(Object o) {
 		return (NodeShape)o;
 	}
+
+	static ArrowShape arrowShape(Object o) {
+		return (ArrowShape)o;
+	}
 }
