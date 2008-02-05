@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/cytoscape.jar"/>
 	<classpathentry kind="lib" path="/Applications/Cytoscape_v2.5.1/lib/giny.jar"/>
 	<classpathentry kind="lib" path="/Applications/Cytoscape_v2.5.1/lib/ding.jar"/>
+	<classpathentry kind="lib" path="/cellar/users/sfernald/Desktop/swing-layout-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -30,11 +30,14 @@ public class PathwayWalking {
 		// Get the set of attribute names for this node
 		Node n = mynode.getNode();
 		CyAttributes na = Cytoscape.getNodeAttributes();
-		final JMenuItem source = new JMenuItem("Get Neighbors");
+		menuActionPressed map =   new menuActionPressed(  "Get Neighbors", null,
+                n.getIdentifier(), new Integer(5));
+
+		final JMenuItem source = new JMenuItem(map);
 		source.setBackground(Color.red);
 		source.setEnabled(true);
 		top_menu.add(source);
-		HelloWorld hw =  new HelloWorld(na);
+		//HelloWorld hw =  new HelloWorld(na);
 		return top_menu;
 	}
 
