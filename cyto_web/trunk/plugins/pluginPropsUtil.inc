@@ -306,6 +306,15 @@ function getPluginProps($zipFileName) {
 							$pos = strpos($cur_line, "="); // find first "="
 							$pluginProps['releaseDate'] = getReleaseDateFromStr(trim(substr($cur_line, $pos +1)));
 						}
+						if (stristr($cur_line, 'themeOnly') == $lines[$i]) {
+							$pos = strpos($cur_line, "="); // find first "="
+							$pluginProps['themeOnly'] = trim(substr($cur_line, $pos +1));
+						}
+					}
+
+					//If themeOnly is not provided, set it to "no".
+					if (!array_key_exists('themeOnly', $pluginProps)) {
+						$pluginProps['themeOnly'] = 'no';					
 					}
 					
 					//If release Date is not provided, set it to today (system date).
