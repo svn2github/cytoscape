@@ -58,6 +58,7 @@ import javax.swing.Action;
  * visual mapper.
  */
 public class ToggleVisualMapperAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870921743L;
 
 	private static String LOCK = "Lock VizMapper\u2122";
 	private static String UNLOCK = "Unlock VizMapper\u2122";

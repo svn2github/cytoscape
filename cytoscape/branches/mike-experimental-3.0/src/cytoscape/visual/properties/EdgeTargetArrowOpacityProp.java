@@ -78,6 +78,7 @@ public class EdgeTargetArrowOpacityProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
         final LineTypeIcon icon = new LineTypeIcon() {
+	private final static long serialVersionUID = 1202339876271830L;
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 super.setColor(new Color(10, 10, 10, 0));
                 super.paintIcon(c, g, x, y);

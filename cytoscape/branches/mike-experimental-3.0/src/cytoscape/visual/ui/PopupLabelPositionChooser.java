@@ -63,6 +63,7 @@ import javax.swing.JPanel;
  *
  */
 public class PopupLabelPositionChooser extends JDialog implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339876929138L;
 	protected LabelPosition lp;
 	protected LabelPosition newlp;
 

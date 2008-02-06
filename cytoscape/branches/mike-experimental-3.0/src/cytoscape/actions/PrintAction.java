@@ -74,6 +74,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class PrintAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870257629L;
 	/**
 	 *
 	 */

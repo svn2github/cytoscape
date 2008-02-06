@@ -67,6 +67,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class ListFromFileSelectionAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869837208L;
 	/**
 	 * Creates a new ListFromFileSelectionAction object.
 	 */

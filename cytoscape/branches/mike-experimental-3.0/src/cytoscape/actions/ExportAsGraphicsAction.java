@@ -35,6 +35,7 @@ import cytoscape.dialogs.ExportAsGraphicsFileChooser;
  */
 public class ExportAsGraphicsAction extends CytoscapeAction
 {
+	private final static long serialVersionUID = 1202339869482358L;
 	private static ExportFilter BMP_FILTER = new BitmapExportFilter("bmp", "BMP");
 	private static ExportFilter JPG_FILTER = new BitmapExportFilter("jpg", "JPEG");
 	private static ExportFilter PDF_FILTER = new PDFExportFilter();

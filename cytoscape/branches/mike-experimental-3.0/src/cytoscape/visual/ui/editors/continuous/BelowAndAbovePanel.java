@@ -28,6 +28,7 @@ import javax.swing.JPanel;
  * @author $author$
  */
 public class BelowAndAbovePanel extends JPanel {
+	private final static long serialVersionUID = 1202339876961477L;
     private VisualPropertyType type;
     private Color boxColor;
     private boolean below;

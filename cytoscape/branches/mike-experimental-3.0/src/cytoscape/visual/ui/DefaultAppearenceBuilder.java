@@ -98,6 +98,7 @@ import javax.swing.SwingConstants;
  * @author kono
  */
 public class DefaultAppearenceBuilder extends JDialog {
+	private final static long serialVersionUID = 1202339876675416L;
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
 	private static DefaultAppearenceBuilder dab = null;
@@ -498,6 +499,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 1202339876646385L;
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
 		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
@@ -553,6 +555,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * Draw global color icon
 	 */
 	class GlobalIcon extends VisualPropertyIcon {
+	private final static long serialVersionUID = 1202339876659938L;
 		public GlobalIcon(String name, Color color) {
 			super(name, color);
 		}

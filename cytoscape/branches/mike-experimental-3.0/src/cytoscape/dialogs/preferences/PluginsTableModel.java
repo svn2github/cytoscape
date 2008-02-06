@@ -54,6 +54,7 @@ import javax.swing.table.*;
  * removed December 2007.
  */
 public class PluginsTableModel extends AbstractTableModel {
+	private final static long serialVersionUID = 1202339873355004L;
 	static int[] columnWidth = new int[] { 400 };
 	static int[] alignment = new int[] { JLabel.LEFT };
 	private Properties properties;

@@ -63,6 +63,7 @@ import javax.swing.event.MenuListener;
  * attributes, etc.
  */
 public class LayoutMenu extends JMenu implements MenuListener {
+	private final static long serialVersionUID = 1202339874255880L;
 	List<CyLayoutAlgorithm> subMenuList;
 
 	/**

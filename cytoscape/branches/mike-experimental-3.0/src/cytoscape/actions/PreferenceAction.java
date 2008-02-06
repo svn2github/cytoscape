@@ -63,6 +63,7 @@ import javax.swing.JFrame;
  *
  */
 public class PreferenceAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870248574L;
 	/**
 	 * Creates a new PreferenceAction object.
 	 */

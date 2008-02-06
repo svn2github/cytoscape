@@ -58,6 +58,7 @@ import javax.swing.border.*;
  */
 class LabelPlacerControl extends JPanel
     implements ActionListener, PropertyChangeListener {
+	private final static long serialVersionUID = 1202339876754050L;
     private LabelPosition lp;
     private JComboBox justifyCombo;
     private JTextField xoffsetBox;

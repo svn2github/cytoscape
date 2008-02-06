@@ -63,6 +63,7 @@ import javax.swing.ImageIcon;
  * by the DGraphView class.
  */
 public class InternalFrameComponent extends JComponent implements Printable {
+	private final static long serialVersionUID = 1202339868667544L;
 	/**
 	 * z-order enumeration
 	 */

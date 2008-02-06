@@ -41,6 +41,7 @@ import java.util.EventObject;
  * Event object used by Web Service Clients and the core.
  */
 public class CyWebServiceEvent extends EventObject {
+	private final static long serialVersionUID = 1202339872405859L;
 	
 	public enum WSEventType {
 		SEARCH_DATABASE,

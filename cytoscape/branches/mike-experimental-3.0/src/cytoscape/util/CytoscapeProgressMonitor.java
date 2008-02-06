@@ -70,6 +70,7 @@ import javax.swing.*;
  * to wait until the task is done running to resume.
  */
 public class CytoscapeProgressMonitor extends JFrame implements Runnable {
+	private final static long serialVersionUID = 1202339874731601L;
 	/**
 	 *
 	 */

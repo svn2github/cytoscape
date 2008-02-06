@@ -82,6 +82,7 @@ import javax.swing.table.TableModel;
  *
  */
 public class PreferencesDialog extends JDialog implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339873396288L;
 	int[] selection = null;
 	JScrollPane propsTablePane = new JScrollPane();
 	JTable prefsTable = new JTable();

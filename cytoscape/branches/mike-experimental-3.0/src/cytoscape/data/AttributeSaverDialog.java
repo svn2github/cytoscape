@@ -78,6 +78,7 @@ import javax.swing.table.TableModel;
  * @version 1.1
  */
 public class AttributeSaverDialog extends JDialog {
+	private final static long serialVersionUID = 1202339870988313L;
 	/**
 	 * Default suffix for node attribute files
 	 */

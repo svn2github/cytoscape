@@ -53,6 +53,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class DestroyNetworkViewAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869451581L;
 	/**
 	 * Creates a new DestroyNetworkViewAction object.
 	 */

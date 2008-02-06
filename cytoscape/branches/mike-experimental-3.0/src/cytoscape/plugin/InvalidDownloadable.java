@@ -10,6 +10,7 @@ package cytoscape.plugin;
  */
 public class InvalidDownloadable extends PluginException
 	{
+	private final static long serialVersionUID = 1202339870229337L;
 
 	/**
 	 * @param arg0

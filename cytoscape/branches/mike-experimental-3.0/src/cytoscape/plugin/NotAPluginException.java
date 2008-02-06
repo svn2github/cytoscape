@@ -42,6 +42,7 @@ package cytoscape.plugin;
  * becuase it does not extend CytoscapePlugin.
  */
 public class NotAPluginException extends PluginException {
+	private final static long serialVersionUID = 1202339874674502L;
 	/**
 	 * constructor.
 	 * @param msg

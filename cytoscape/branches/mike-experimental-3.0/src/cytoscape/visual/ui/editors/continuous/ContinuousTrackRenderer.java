@@ -77,6 +77,7 @@ import javax.swing.SwingUtilities;
  * @author kono
   */
 public class ContinuousTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+	private final static long serialVersionUID = 1202339877100033L;
 	/*
 	 * Constants for diagram.
 	 */

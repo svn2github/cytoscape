@@ -63,6 +63,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class InvertSelectedNodesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869825557L;
 	/**
 	 * Creates a new InvertSelectedNodesAction object.
 	 */

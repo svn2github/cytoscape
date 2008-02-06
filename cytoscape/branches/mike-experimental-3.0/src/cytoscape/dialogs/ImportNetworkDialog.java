@@ -54,6 +54,7 @@ import cytoscape.util.FileUtil;
  */
 public class ImportNetworkDialog extends JDialog 
 	                               implements ActionListener,FocusListener {
+	private final static long serialVersionUID = 120233987313024L;
 	private boolean status;
 	private File[] networkFiles;
 	private Bookmarks theBookmarks = null; // get it from session
@@ -578,6 +579,7 @@ public class ImportNetworkDialog extends JDialog
 	}
 
 	class MyCellRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 1202339872997986L;
 		public MyCellRenderer() {
 			setOpaque(true);
 		}

@@ -7,6 +7,7 @@ package cytoscape.data.webservice.ui;
  * @author  kono
  */
 public class WSImportResultDialog extends javax.swing.JDialog {
+	private final static long serialVersionUID = 1202339872450637L;
     
 	public void showResult() {
 		

@@ -42,6 +42,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 public class TreeNode extends DefaultMutableTreeNode {
+	private final static long serialVersionUID = 1202339870185674L;
 	private Vector<TreeNode> children;
 
 	private DownloadableInfo infoObj;

@@ -70,6 +70,7 @@ import javax.swing.event.DocumentListener;
  *
  */
 public class FilterHistoryJList extends JList {
+	private final static long serialVersionUID = 1202339875121578L;
 	private FilterField filterField;
 	private int DEFAULT_FIELD_WIDTH = 20;
 
@@ -115,6 +116,7 @@ public class FilterHistoryJList extends JList {
 
 	// inner class to provide filtered model
 	class FilterModel extends AbstractListModel {
+	private final static long serialVersionUID = 120233987592111L;
 		ArrayList items;
 		ArrayList filterItems;
 
@@ -156,6 +158,7 @@ public class FilterHistoryJList extends JList {
 
 	// inner class provides filter-by-keystroke field
 	class FilterField extends JComponent implements DocumentListener, ActionListener {
+	private final static long serialVersionUID = 1202339875100770L;
 		LinkedList prevSearches;
 		JTextField textField;
 		JButton prevSearchButton;
@@ -214,6 +217,7 @@ public class FilterHistoryJList extends JList {
 	}
 
 	class PrevSearchAction extends AbstractAction {
+	private final static long serialVersionUID = 1202339875113029L;
 		String term;
 
 		public PrevSearchAction(String s) {

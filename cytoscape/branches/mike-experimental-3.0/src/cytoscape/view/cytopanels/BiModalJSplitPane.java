@@ -71,6 +71,7 @@ import javax.swing.SwingConstants;
  * @author Ethan Cerami, Ben Gross
  */
 public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer {
+	private final static long serialVersionUID = 1202339868270146L;
 	/**
 	 * Reference application frame.
 	 */

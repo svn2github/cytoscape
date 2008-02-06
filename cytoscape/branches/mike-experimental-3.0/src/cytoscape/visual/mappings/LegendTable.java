@@ -63,6 +63,7 @@ import javax.swing.table.TableCellRenderer;
  * @author $author$
   */
 public class LegendTable extends JPanel {
+	private final static long serialVersionUID = 1202339875884157L;
 	private static VisualPropertyType type;
 	private JTable legendTable;
 

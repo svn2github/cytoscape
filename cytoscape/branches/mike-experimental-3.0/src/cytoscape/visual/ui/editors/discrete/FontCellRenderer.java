@@ -14,6 +14,7 @@ import javax.swing.JTable;
  * @author kono
  */
 public class FontCellRenderer extends DefaultCellRenderer {
+	private final static long serialVersionUID = 120233986931967L;
     /**
      * DOCUMENT ME!
      *

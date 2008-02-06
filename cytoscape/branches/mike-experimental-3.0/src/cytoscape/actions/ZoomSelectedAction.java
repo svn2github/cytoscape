@@ -69,6 +69,7 @@ import javax.swing.AbstractAction;
  *
  */
 public class ZoomSelectedAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870974913L;
 	/**
 	 * Creates a new ZoomSelectedAction object.
 	 */

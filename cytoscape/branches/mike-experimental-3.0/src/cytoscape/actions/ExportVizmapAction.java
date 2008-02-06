@@ -59,6 +59,7 @@ import java.awt.event.ActionEvent;
  *
  */
 public class ExportVizmapAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869537770L;
 	/**
 	 * Creates a new ExportVizmapAction object.
 	 */

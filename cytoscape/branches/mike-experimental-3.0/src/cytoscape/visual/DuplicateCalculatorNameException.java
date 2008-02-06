@@ -50,6 +50,7 @@ package cytoscape.visual;
  * interface type.
  */
 public class DuplicateCalculatorNameException extends RuntimeException {
+	private final static long serialVersionUID = 120233986958674L;
 	/**
 	 * Creates a new DuplicateCalculatorNameException object.
 	 *

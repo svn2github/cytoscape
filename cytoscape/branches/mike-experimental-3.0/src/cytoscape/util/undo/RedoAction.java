@@ -50,6 +50,7 @@ import cytoscape.util.CytoscapeAction;
  * undoable edit stack.  
  */
 public class RedoAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339875203626L;
 
 	/**
 	 * Constructs the action. 

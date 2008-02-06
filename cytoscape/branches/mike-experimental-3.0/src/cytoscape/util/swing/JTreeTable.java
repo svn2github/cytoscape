@@ -65,6 +65,7 @@ import javax.swing.tree.TreePath;
  * @author Scott Violet
  */
 public class JTreeTable extends JTable {
+	private final static long serialVersionUID = 1202339868625600L;
 	/** A subclass of JTree. */
 	protected TreeTableCellRenderer tree;
 
@@ -203,6 +204,7 @@ public class JTreeTable extends JTable {
 	 * A TreeCellRenderer that displays a JTree.
 	 */
 	public class TreeTableCellRenderer extends JTree implements TableCellRenderer {
+	private final static long serialVersionUID = 1202339868600141L;
 		/** Last table/tree row asked to renderer. */
 		protected int visibleRow;
 
@@ -344,6 +346,7 @@ public class JTreeTable extends JTable {
 	 * DefaultTreeSelectionModel.
 	 */
 	class ListToTreeSelectionModelWrapper extends DefaultTreeSelectionModel {
+	private final static long serialVersionUID = 1202339868611480L;
 		/** Set to true when we are updating the ListSelectionModel. */
 		protected boolean updatingListSelectionModel;
 

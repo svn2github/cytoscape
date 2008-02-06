@@ -10,6 +10,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 public class LicenseDialog extends javax.swing.JDialog {
+	private final static long serialVersionUID = 1202339873145611L;
 	private static String title = "Plugin License Agreement";
 
     /** Creates new form LicenseDialog */
@@ -249,6 +250,7 @@ public class LicenseDialog extends javax.swing.JDialog {
     
     // class LicenseListModel
     class LicenseListModel extends javax.swing.AbstractListModel {
+	private final static long serialVersionUID = 1202339873118999L;
     	
     	private java.util.List<DownloadableInfo> licenseObjs;
     	public LicenseListModel() {
@@ -276,6 +278,7 @@ public class LicenseDialog extends javax.swing.JDialog {
     
 	// class LicenseListCellRenderer
 	class LicenseListCellRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 1202339873133515L;
 		public LicenseListCellRenderer() {
 			setOpaque(true);
 		}

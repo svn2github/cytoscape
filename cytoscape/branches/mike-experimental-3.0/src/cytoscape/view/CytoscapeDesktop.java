@@ -90,6 +90,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
 public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339866271348L;
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
 

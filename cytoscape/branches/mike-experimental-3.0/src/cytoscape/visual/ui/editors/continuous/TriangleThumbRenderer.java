@@ -20,6 +20,7 @@ import javax.swing.JComponent;
   */
 public class TriangleThumbRenderer extends JComponent
     implements ThumbRenderer {
+	private final static long serialVersionUID = 1202339877445372L;
     private static final Color SELECTED_COLOR = Color.red;
     private static final Color DEFAULT_COLOR = Color.DARK_GRAY;
     private static final Color BACKGROUND_COLOR = Color.white;

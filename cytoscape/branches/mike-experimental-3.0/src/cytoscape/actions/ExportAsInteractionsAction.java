@@ -82,6 +82,7 @@ import javax.swing.event.MenuEvent;
  * </code>
  */
 public class ExportAsInteractionsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869493908L;
 	/**
 	 * Constructor.
 	 */

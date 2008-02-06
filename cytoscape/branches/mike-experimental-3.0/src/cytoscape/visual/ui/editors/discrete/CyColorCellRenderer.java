@@ -37,6 +37,7 @@ import javax.swing.UIManager;
  * @since Cytoscape 2.5
  */
 public class CyColorCellRenderer extends DefaultCellRenderer {
+	private final static long serialVersionUID = 1202339868706383L;
     /**
      * DOCUMENT ME!
      *

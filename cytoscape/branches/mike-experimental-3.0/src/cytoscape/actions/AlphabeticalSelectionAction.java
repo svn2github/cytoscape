@@ -65,6 +65,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class AlphabeticalSelectionAction extends CytoscapeAction implements ActionListener {
+	private final static long serialVersionUID = 120233986968086L;
 	JDialog dialog;
 	JButton search;
 	JButton cancel;

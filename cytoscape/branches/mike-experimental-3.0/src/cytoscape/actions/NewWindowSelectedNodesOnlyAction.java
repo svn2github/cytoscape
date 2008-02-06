@@ -67,6 +67,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870134859L;
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */

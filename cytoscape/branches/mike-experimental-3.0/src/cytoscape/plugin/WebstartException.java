@@ -8,6 +8,7 @@ package cytoscape.plugin;
  * webstart is running are called.
  */
 public class WebstartException extends PluginException {
+	private final static long serialVersionUID = 1202339874687226L;
 
 	public WebstartException() {
 		super("Method unavailable in webstart");

@@ -59,6 +59,7 @@ import java.awt.event.ActionEvent;
  * @author kono
  */
 public class SaveSessionAsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870512966L;
 	// Extension for the new cytoscape session file
 	/**
 	 *

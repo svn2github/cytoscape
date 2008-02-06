@@ -54,6 +54,7 @@ import javax.swing.table.*;
  *
  */
 public class PreferenceValueDialog extends JDialog {
+	private final static long serialVersionUID = 1202339873382923L;
 	String preferenceName = null;
 	String preferenceValue = null;
 	String title = null;

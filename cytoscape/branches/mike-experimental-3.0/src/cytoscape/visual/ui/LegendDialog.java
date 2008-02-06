@@ -40,6 +40,7 @@ import javax.swing.border.TitledBorder;
  *
  */
 public class LegendDialog extends JDialog {
+	private final static long serialVersionUID = 1202339876783665L;
 	private VisualStyle visualStyle;
 	private JPanel jPanel1;
 	private JButton jButton1;

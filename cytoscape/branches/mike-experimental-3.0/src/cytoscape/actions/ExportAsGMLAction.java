@@ -78,6 +78,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class ExportAsGMLAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869469352L;
 	/**
 	 * Creates a new ExportAsGMLAction object.
 	 */

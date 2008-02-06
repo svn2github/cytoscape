@@ -54,6 +54,7 @@ import javax.swing.JMenuItem;
  * menu.
  */
 public class StaticLayoutMenu extends JMenuItem implements ActionListener {
+	private final static long serialVersionUID = 1202339874301391L;
 	private CyLayoutAlgorithm layout;
 
 	/**

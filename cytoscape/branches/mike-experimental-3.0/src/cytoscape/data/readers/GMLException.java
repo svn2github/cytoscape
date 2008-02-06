@@ -43,6 +43,7 @@ package cytoscape.data.readers;
  *
  */
 public class GMLException extends RuntimeException {
+	private final static long serialVersionUID = 1202339871240997L;
 	/**
 	 * Creates a new GMLException object.
 	 *

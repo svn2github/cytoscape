@@ -41,6 +41,7 @@ package cytoscape.data.readers;
  *
  */
 public class XGMMLException extends RuntimeException {
+	private final static long serialVersionUID = 1202339871532853L;
 	/**
 	 * Creates a new XGMMLException object.
 	 *

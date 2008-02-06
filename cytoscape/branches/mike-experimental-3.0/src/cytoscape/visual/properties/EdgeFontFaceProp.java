@@ -73,6 +73,7 @@ public class EdgeFontFaceProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
 		return new LineTypeIcon() {
+	private final static long serialVersionUID = 1202339875930797L;
 				public void paintIcon(Component c, Graphics g, int x, int y) {
 					super.setColor(new Color(10, 10, 10, 0));
 					super.paintIcon(c, g, x, y);

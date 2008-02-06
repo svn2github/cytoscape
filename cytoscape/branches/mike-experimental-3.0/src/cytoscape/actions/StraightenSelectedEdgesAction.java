@@ -62,6 +62,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class StraightenSelectedEdgesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870912396L;
 	/**
 	 * Creates a new StraightenSelectedEdgesAction object.
 	 */

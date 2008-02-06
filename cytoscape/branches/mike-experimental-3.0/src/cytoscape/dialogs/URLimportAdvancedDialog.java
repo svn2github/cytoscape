@@ -77,6 +77,7 @@ import javax.xml.bind.JAXBException;
  */
 public class URLimportAdvancedDialog extends JDialog implements ActionListener,
                                                                 ListSelectionListener, ItemListener {
+	private final static long serialVersionUID = 1202339873104172L;
 	JDialog parent;
 	private String bookmarkCategory;
 	private Bookmarks theBookmarks;
@@ -470,6 +471,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 	}
 
 	class MyListModel extends javax.swing.AbstractListModel {
+	private final static long serialVersionUID = 120233987352994L;
 		List<DataSource> theDataSourceList = new ArrayList<DataSource>(0);
 
 		public MyListModel(List<DataSource> pDataSourceList) {
@@ -504,6 +506,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 
 	//class MyListCellrenderer 
 	class MyListCellRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 120233987368361L;
 		public MyListCellRenderer() {
 			setOpaque(true);
 		}
@@ -531,6 +534,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 	}
 
 	public class BookmarkDialog extends JDialog implements ActionListener {
+	private final static long serialVersionUID = 120233987384690L;
 		private String name;
 		private String URLstr;
 		private JDialog parent;

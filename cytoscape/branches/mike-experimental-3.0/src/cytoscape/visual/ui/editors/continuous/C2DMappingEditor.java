@@ -63,6 +63,7 @@ import javax.swing.ImageIcon;
  * @author Keiichiro Ono
   */
 public class C2DMappingEditor extends ContinuousMappingEditorPanel {
+	private final static long serialVersionUID = 120233987786262L;
 	/**
 	 * Creates a new C2DMappingEditor object.
 	 *

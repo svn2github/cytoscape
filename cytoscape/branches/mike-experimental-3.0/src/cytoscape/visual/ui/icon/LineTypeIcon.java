@@ -57,6 +57,7 @@ import javax.swing.SwingUtilities;
  * @author $author$
   */
 public class LineTypeIcon extends VisualPropertyIcon {
+	private final static long serialVersionUID = 1202339875918391L;
 	private BasicStroke stroke;
 	protected Graphics2D g2d;
 

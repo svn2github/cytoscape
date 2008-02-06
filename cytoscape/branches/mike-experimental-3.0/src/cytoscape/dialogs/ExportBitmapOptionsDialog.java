@@ -14,6 +14,7 @@ import cytoscape.Cytoscape;
  */
 public class ExportBitmapOptionsDialog extends JDialog
 {
+	private final static long serialVersionUID = 1202339872514493L;
 	private JFormattedTextField zoomField;
 	private JFormattedTextField widthInPixelsField;
 	private JFormattedTextField heightInPixelsField;

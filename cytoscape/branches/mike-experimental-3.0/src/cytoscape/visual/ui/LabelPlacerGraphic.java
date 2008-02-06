@@ -65,6 +65,7 @@ import javax.swing.JPanel;
  * of node labels.
  */
 public class LabelPlacerGraphic extends JPanel implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339876768377L;
 	private LabelPosition lp;
 
 	// dimensions of panel 

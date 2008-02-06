@@ -91,6 +91,7 @@ import javax.swing.event.ChangeListener;
  * @author Ethan Cerami, Benjamin Gross
  */
 public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
+	private final static long serialVersionUID = 1202339868245830L;
 	/**
 	 * The JTabbedPane we hide.
 	 */

@@ -72,6 +72,7 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
  * @author $author$
   */
 public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+	private final static long serialVersionUID = 1202339877125834L;
 	/*
 	 * Constants for diagram.
 	 */

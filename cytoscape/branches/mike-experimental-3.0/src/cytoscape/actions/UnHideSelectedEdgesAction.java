@@ -58,6 +58,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class UnHideSelectedEdgesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870934817L;
 	/**
 	 * Creates a new UnHideSelectedEdgesAction object.
 	 */

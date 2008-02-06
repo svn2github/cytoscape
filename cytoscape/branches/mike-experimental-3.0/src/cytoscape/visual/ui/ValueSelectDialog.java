@@ -68,6 +68,7 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
  * @author kono
  */
 public class ValueSelectDialog extends JDialog {
+	private final static long serialVersionUID = 1202339876950593L;
 	
 	private final VisualPropertyType type;
 	private Map shapeMap;
@@ -258,6 +259,7 @@ public class ValueSelectDialog extends JDialog {
 	}
 
 	public class IconCellRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 1202339876940871L;
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 18);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 14);
 		private final Color SELECTED_COLOR = new Color(30, 30, 80, 25);

@@ -8,6 +8,7 @@ package cytoscape.plugin;
  *
  */
 public class PluginException extends Exception {
+	private final static long serialVersionUID = 1202339870209387L;
 
 	/**
 	 * For all plugin exceptions

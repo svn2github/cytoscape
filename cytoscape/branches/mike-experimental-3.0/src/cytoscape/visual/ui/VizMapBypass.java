@@ -68,6 +68,7 @@ abstract class VizMapBypass {
 
 	protected void addResetAllMenuItem(JMenu menu) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
+	private final static long serialVersionUID = 1202339876700753L;
 				public void actionPerformed(ActionEvent e) {
 					List<String> names = getBypassNames();
 					String id = graphObj.getIdentifier();
@@ -85,6 +86,7 @@ abstract class VizMapBypass {
 
 	protected void addResetMenuItem(JMenu menu, final VisualPropertyType type) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
+	private final static long serialVersionUID = 1202339876709140L;
 				public void actionPerformed(ActionEvent e) {
 					String id = graphObj.getIdentifier();
 
@@ -100,6 +102,7 @@ abstract class VizMapBypass {
 
 	protected void addMenuItem(JMenu menu, final VisualPropertyType type) {
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
+	private final static long serialVersionUID = 1202339876717506L;
 				public void actionPerformed(ActionEvent e) {
 					Object obj = null;
 

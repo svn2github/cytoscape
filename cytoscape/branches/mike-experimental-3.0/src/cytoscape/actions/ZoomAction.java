@@ -57,6 +57,7 @@ import javax.swing.AbstractAction;
  *
  */
 public class ZoomAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870966892L;
 	double factor;
 
 	/**

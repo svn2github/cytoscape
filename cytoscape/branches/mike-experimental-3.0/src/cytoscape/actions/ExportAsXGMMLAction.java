@@ -80,6 +80,7 @@ import javax.xml.stream.XMLStreamException;
  *
  */
 public class ExportAsXGMMLAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869504936L;
 	/**
 	 * Creates a new ExportAsXGMMLAction object.
 	 */

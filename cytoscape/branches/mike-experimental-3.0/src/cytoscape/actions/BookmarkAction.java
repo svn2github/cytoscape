@@ -61,6 +61,7 @@ import javax.xml.bind.JAXBException;
  *
  */
 public class BookmarkAction extends CytoscapeAction {
+	private final static long serialVersionUID = 120233986993206L;
 	/**
 	 * Creates a new BookmarkAction object.
 	 */

@@ -44,6 +44,7 @@ import javax.swing.event.MenuEvent;
 /**
  */
 public class SettingsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339874289357L;
 
 
 	public SettingsAction() {

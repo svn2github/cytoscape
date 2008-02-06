@@ -48,6 +48,7 @@ import javax.swing.*;
  *
  */
 public class HelpContactHelpDeskAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869692169L;
 	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
 
 	/**

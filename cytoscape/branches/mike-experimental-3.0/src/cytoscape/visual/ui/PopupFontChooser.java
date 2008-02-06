@@ -54,6 +54,7 @@ import javax.swing.JPanel;
  *
  */
 public class PopupFontChooser extends JDialog {
+	private final static long serialVersionUID = 1202339876814272L;
     /**
      * DOCUMENT ME!
      *
@@ -117,6 +118,7 @@ public class PopupFontChooser extends JDialog {
         JButton okBut = new JButton("OK");
         okBut.addActionListener(
             new AbstractAction() {
+	private final static long serialVersionUID = 1202339876795625L;
                 public void actionPerformed(ActionEvent e) {
                     font = chooser.getSelectedFont()
                                   .deriveFont(12F);
@@ -127,6 +129,7 @@ public class PopupFontChooser extends JDialog {
         JButton cancelBut = new JButton("Cancel");
         cancelBut.addActionListener(
             new AbstractAction() {
+	private final static long serialVersionUID = 1202339876804773L;
                 public void actionPerformed(ActionEvent e) {
                     dispose();
                 }

@@ -65,6 +65,7 @@ import javax.swing.event.ListSelectionListener;
  * </p>
  */
 public class CheckBoxJList extends JList implements ListSelectionListener {
+	private final static long serialVersionUID = 120233987581935L;
 	private static final Color SELECTED_COLOR = new Color(0, 100, 250, 250);
 	private static final Color NORMAL_COLOR = new Color(100, 100, 100, 170);
 	
@@ -159,6 +160,7 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 	}
 
 	class CheckBoxListCellRenderer extends JComponent implements ListCellRenderer {
+	private final static long serialVersionUID = 120233987573888L;
 		private final DefaultListCellRenderer defaultComp;
 		private final JCheckBox checkbox;
 		private final BorderLayout layout = new BorderLayout();

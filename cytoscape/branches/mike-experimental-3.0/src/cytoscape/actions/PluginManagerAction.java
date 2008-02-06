@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PluginManagerAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870172822L;
 	private String bookmarkCategory = "plugins";
 
 	public PluginManagerAction() {

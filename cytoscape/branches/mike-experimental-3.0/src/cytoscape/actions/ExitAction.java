@@ -51,6 +51,7 @@ import java.awt.event.ActionEvent;
  *
  */
 public class ExitAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869460858L;
 	protected int returnVal;
 
 	/**

@@ -79,6 +79,7 @@ import javax.swing.ListSelectionModel;
  */
 public class IconPopupButton extends JPanel
     implements ActionListener {
+	private final static long serialVersionUID = 1202339872970554L;
     String title; // title of the button
     String objectName;
     String currentIconName; // internal storage of node icon type
@@ -249,6 +250,7 @@ public class IconPopupButton extends JPanel
     }
 
     public class ApplyIconAction extends AbstractAction {
+	private final static long serialVersionUID = 1202339872531183L;
         public void actionPerformed(ActionEvent e) {
             //setIcon((String) iconList.getSelectedValue());
             ImageIcon icon = (ImageIcon) iconList.getSelectedValue();
@@ -259,6 +261,7 @@ public class IconPopupButton extends JPanel
     }
 
     public class CancelIconAction extends AbstractAction {
+	private final static long serialVersionUID = 1202339872544799L;
         CancelIconAction() {
             super("");
         }

@@ -63,6 +63,7 @@ import javax.swing.AbstractAction;
  *
  */
 public class HideSelectedAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869713059L;
 	/**
 	 * Creates a new HideSelectedAction object.
 	 */

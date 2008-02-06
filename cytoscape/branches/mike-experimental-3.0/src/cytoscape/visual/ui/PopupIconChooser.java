@@ -227,6 +227,7 @@ public class PopupIconChooser {
     }
 
     public class ApplyIconAction extends AbstractAction {
+	private final static long serialVersionUID = 1202339876823601L;
         public void actionPerformed(ActionEvent e) {
             // setIcon((String) iconList.getSelectedValue());
             ImageIcon icon = (ImageIcon) iconList.getSelectedValue();
@@ -236,6 +237,7 @@ public class PopupIconChooser {
     }
 
     public class CancelIconAction extends AbstractAction {
+	private final static long serialVersionUID = 1202339876914447L;
         CancelIconAction() {
             super("");
         }

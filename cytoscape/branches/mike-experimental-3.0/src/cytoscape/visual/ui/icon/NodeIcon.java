@@ -59,6 +59,7 @@ import java.awt.geom.Rectangle2D;
  *
  */
 public class NodeIcon extends VisualPropertyIcon {
+	private final static long serialVersionUID = 1202339876280466L;
 	protected Shape newShape;
 	protected Graphics2D g2d;
 

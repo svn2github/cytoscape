@@ -62,6 +62,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class BendSelectedEdgesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 120233986978691L;
 	/**
 	 * Creates a new BendSelectedEdgesAction object.
 	 */

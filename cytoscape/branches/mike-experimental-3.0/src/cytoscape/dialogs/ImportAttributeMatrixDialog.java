@@ -37,6 +37,7 @@ import javax.swing.JDialog;
  * @author cline
  */
 public class ImportAttributeMatrixDialog extends javax.swing.JDialog {
+	private final static long serialVersionUID = 1202339872982922L;
 	private boolean status;
 	private String currentKeyAttributeName = "ID";
 	private DefaultComboBoxModel keyAttributeModel = new DefaultComboBoxModel();

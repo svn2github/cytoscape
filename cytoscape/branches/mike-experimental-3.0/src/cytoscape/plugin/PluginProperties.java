@@ -14,6 +14,7 @@ import java.util.Properties;
  * the PluginManager
  */
 public class PluginProperties extends Properties {
+	private final static long serialVersionUID = 1202339874697254L;
 	private String configFileName = "plugin.props";
 	private String packageName;
 	private String errorMsg;

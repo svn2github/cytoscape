@@ -69,6 +69,7 @@ import java.io.File;
  * User has requested loading of an Expression Matrix File.
  */
 public class ImportExpressionMatrixAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869766676L;
 	protected CyMenus windowMenu;
 
 	/**

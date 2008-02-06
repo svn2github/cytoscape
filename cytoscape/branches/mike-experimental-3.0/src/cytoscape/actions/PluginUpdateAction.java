@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class PluginUpdateAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870238849L;
 	public PluginUpdateAction() {
 		super("Update Plugins");
 		setPreferredMenu("Plugins");

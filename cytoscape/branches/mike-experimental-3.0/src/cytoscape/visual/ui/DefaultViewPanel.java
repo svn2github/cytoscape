@@ -62,6 +62,7 @@ import ding.view.DGraphView;
  * @author kono
   */
 public class DefaultViewPanel extends JPanel {
+	private final static long serialVersionUID = 1202339876691085L;
 	private static final int PADDING = 20;
 	private CyNetworkView view;
 	private CyNetworkView oldView;

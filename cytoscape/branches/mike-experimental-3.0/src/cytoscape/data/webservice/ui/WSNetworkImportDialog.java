@@ -52,6 +52,7 @@ import javax.swing.JDialog;
  * @author  kono
  */
 public class WSNetworkImportDialog extends javax.swing.JDialog {
+	private final static long serialVersionUID = 1202339872463169L;
 	private static final WSNetworkImportDialog dialog;
 
 	// Key is display name, value is actual service name.

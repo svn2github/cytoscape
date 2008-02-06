@@ -63,6 +63,7 @@ import javax.swing.tree.TreeModel;
  * @author  kono
  */
 public class WebServiceClientManagerDialog extends JDialog implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339872476937L;
 	private static WebServiceClientManagerDialog dialog;
 	private static Map<String, JPanel> clientUIs;
 

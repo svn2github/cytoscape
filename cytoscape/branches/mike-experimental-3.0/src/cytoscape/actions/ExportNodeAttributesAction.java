@@ -49,6 +49,7 @@ import java.awt.event.ActionEvent;
  *
  */
 public class ExportNodeAttributesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869526910L;
 	/**
 	 * Creates a new ExportNodeAttributesAction object.
 	 */

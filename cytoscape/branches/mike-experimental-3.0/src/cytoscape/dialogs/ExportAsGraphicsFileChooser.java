@@ -14,6 +14,7 @@ import cytoscape.util.CyFileFilter;
  */
 public class ExportAsGraphicsFileChooser extends JDialog
 {
+	private final static long serialVersionUID = 1202339872502192L;
 	protected JTextField filePathField;
 	protected JComboBox formatComboBox;
 	protected JButton okButton;

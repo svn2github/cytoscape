@@ -42,6 +42,7 @@ package cytoscape.plugin;
  * @author skillcoyne
  */
 public class ManagerException extends PluginException {
+	private final static long serialVersionUID = 1202339870220493L;
 	/**
 	 * Creates a new ManagerError object.
 	 *

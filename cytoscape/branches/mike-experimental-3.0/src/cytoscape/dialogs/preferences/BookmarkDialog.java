@@ -80,6 +80,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 	// private Category theCategory = new Category();;
 	private String[] bookmarkCategories = { "network", "annotation", "plugins" };
+	private final static long serialVersionUID = 1202339873340615L;
 
 	// private URL bookmarkURL;
 
@@ -320,6 +321,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	}
 
 	class MyListModel extends javax.swing.AbstractListModel {
+	private final static long serialVersionUID = 1202339873199984L;
 		List<DataSource> theDataSourceList = new ArrayList<DataSource>(0);
 
 		public MyListModel(List<DataSource> pDataSourceList) {
@@ -354,6 +356,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 	// class MyListCellrenderer
 	class MyListCellRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 1202339873310334L;
 		public MyListCellRenderer() {
 			setOpaque(true);
 		}
@@ -371,6 +374,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	}
 
 	public class EditBookmarkDialog extends JDialog implements ActionListener {
+	private final static long serialVersionUID = 1202339873325728L;
 		private String name;
 		private String URLstr;
 		private JDialog parent;

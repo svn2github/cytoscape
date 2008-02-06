@@ -57,6 +57,7 @@ import javax.swing.AbstractAction;
  *
  */
 public class ShowAllAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870893288L;
 	/**
 	 * Creates a new ShowAllAction object.
 	 */

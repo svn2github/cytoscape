@@ -49,6 +49,7 @@ import javax.swing.JToolBar;
  *
  */
 public class CytoscapeToolBar extends JToolBar {
+	private final static long serialVersionUID = 1202339868655256L;
 	protected Map actionButtonMap = null;
 	protected Set actionMembersSet;
 

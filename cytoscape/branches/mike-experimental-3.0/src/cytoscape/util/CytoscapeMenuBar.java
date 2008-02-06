@@ -53,6 +53,7 @@ import javax.swing.JCheckBoxMenuItem;
  *
  */
 public class CytoscapeMenuBar extends JMenuBar {
+	private final static long serialVersionUID = 1202339868642259L;
 	/**
 	 *
 	 */

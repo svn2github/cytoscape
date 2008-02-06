@@ -56,6 +56,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
      */
     public CyComboBoxPropertyEditor() {
         editor = new JComboBox() {
+	private final static long serialVersionUID = 120233986911049L;
                     public void setSelectedItem(Object anObject) {
                         oldValue = getSelectedItem();
                         super.setSelectedItem(anObject);
@@ -153,6 +154,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
     }
 
     public class Renderer extends DefaultListCellRenderer {
+	private final static long serialVersionUID = 120233986920362L;
         public Component getListCellRendererComponent(JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
             Component component = super.getListCellRendererComponent(list,

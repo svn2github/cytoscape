@@ -69,6 +69,7 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 
 	private void addMenuItem(WebServiceClient client, JMenu menu) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction(client.getDisplayName()) {
+	private final static long serialVersionUID = 1202339872420066L;
 			public void actionPerformed(ActionEvent e) {
 
 				System.out.println("Start Expanding network: " + e.getActionCommand() );

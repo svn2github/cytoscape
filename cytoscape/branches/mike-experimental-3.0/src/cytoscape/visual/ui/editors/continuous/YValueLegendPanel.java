@@ -22,6 +22,7 @@ import cytoscape.visual.VisualPropertyType;
  * @author $author$
   */
 public class YValueLegendPanel extends JPanel {
+	private final static long serialVersionUID = 1202339877453677L;
     private VisualPropertyType type;
 
     /**

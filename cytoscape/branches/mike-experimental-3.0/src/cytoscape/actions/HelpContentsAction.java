@@ -49,6 +49,7 @@ import javax.help.CSH;
  * Really just a wrapper for the CSH.DisplayHelpFromSource action.
  */
 public class HelpContentsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869703278L;
 
 	private CSH.DisplayHelpFromSource csh; 
 

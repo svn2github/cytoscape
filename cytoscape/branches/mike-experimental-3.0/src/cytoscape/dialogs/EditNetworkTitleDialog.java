@@ -54,6 +54,7 @@ import javax.swing.JTextField;
  *
  */
 public class EditNetworkTitleDialog extends JDialog implements ActionListener {
+	private final static long serialVersionUID = 1202339872489743L;
 	/**
 	 * Creates a new EditNetworkTitleDialog object.
 	 *

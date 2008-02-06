@@ -100,6 +100,7 @@ import javax.xml.bind.JAXBException;
  * the ImportHandler.
  */
 public class ImportGraphFileAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869779868L;
 	protected CyMenus windowMenu;
 
 	/**

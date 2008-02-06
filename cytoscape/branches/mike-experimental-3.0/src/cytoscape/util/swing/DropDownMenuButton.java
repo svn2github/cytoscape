@@ -22,6 +22,7 @@ import javax.swing.JButton;
  * @author kono
   */
 public class DropDownMenuButton extends JButton {
+	private final static long serialVersionUID = 1202339868695691L;
     private final Icon buttonIcon = new MenuArrowIcon();
 
     /**

@@ -25,6 +25,7 @@ import cytoscape.task.util.TaskManager;
 
 public class PluginUpdateDialog extends JDialog implements
 		TreeSelectionListener {
+	private final static long serialVersionUID = 1202339873160441L;
 	private static String title = "Update Plugins";
 
 	public PluginUpdateDialog(javax.swing.JDialog owner) {

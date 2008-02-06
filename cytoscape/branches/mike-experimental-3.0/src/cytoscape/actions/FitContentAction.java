@@ -65,6 +65,7 @@ import java.util.Iterator;
  *
  */
 public class FitContentAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869547666L;
 	/**
 	 * Creates a new FitContentAction object.
 	 */

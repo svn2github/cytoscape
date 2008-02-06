@@ -53,6 +53,7 @@ import javax.swing.*;
  *
  */
 public class HelpAboutAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869681795L;
 	/**
 	 * Creates a new HelpAboutAction object.
 	 */

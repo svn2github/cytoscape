@@ -43,6 +43,7 @@ package cytoscape.data;
  *
  */
 public class mRNAMeasurement implements java.io.Serializable {
+	private final static long serialVersionUID = 1202339866840143L;
 	private double expressionRatio;
 	private double significance;
 

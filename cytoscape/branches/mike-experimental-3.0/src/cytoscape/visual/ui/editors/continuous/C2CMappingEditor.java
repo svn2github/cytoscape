@@ -69,6 +69,7 @@ import org.jdesktop.swingx.multislider.TrackRenderer;
  *
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
+	private final static long serialVersionUID = 1202339876975020L;
 	
 	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;

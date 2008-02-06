@@ -121,6 +121,7 @@ import java.util.*;
  * <P>
  */
 public class ExpressionData implements Serializable {
+	private final static long serialVersionUID = 1202339866255109L;
 	private TaskMonitor taskMonitor;
 
 	/**

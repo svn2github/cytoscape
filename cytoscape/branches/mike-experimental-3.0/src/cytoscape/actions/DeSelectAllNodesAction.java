@@ -56,6 +56,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class DeSelectAllNodesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869421133L;
 	/**
 	 * Creates a new DeSelectAllNodesAction object.
 	 */

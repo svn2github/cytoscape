@@ -77,6 +77,7 @@ import javax.swing.text.Position;
  * JPanel that provides all of its settings.
  */
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
+	private final static long serialVersionUID = 1202339874277105L;
 	private CyLayoutAlgorithm currentLayout = null;
 
 	// Dialog components
@@ -250,6 +251,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private class MyItemRenderer extends JLabel implements ListCellRenderer {
+	private final static long serialVersionUID = 1202339874266209L;
 		public MyItemRenderer() {
 		}
 

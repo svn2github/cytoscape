@@ -61,6 +61,7 @@ import cytoscape.visual.mappings.LegendTable;
  *
  */
 public class DiscreteLegend extends JPanel {
+	private final static long serialVersionUID = 1202339875908701L;
 	
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
 	private static final Font TITLE_FONT2 = new Font("SansSerif", Font.BOLD, 18);

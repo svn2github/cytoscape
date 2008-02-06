@@ -74,6 +74,7 @@ import javax.xml.bind.JAXBException;
  *
  */
 public class OpenSessionAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870146467L;
 	protected CyMenus windowMenu;
 
 	// Extension for the new cytoscape session file

@@ -12,6 +12,7 @@ import cytoscape.plugin.DownloadableInfo;
  * 
  */
 public class TreeCellRenderer extends DefaultTreeCellRenderer {
+	private final static long serialVersionUID = 1202339870198101L;
 
 	javax.swing.Icon warningIcon;
 

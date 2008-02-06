@@ -57,6 +57,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class CytoPanelAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869395571L;
 
 	protected static String SHOW = "Show";
 	protected static String HIDE = "Hide";

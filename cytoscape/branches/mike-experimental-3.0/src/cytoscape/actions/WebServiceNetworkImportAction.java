@@ -6,6 +6,7 @@ import cytoscape.data.webservice.ui.UnifiedNetworkImportDialog;
 import cytoscape.util.CytoscapeAction;
 
 public class WebServiceNetworkImportAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870958212L;
 	/**
 	 * Creates a new FitContentAction object.
 	 */

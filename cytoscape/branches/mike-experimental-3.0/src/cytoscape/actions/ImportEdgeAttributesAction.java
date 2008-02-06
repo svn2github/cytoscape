@@ -64,6 +64,7 @@ import java.io.File;
  *
  */
 public class ImportEdgeAttributesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869755791L;
 	/**
 	 * Constructor.
 	 */

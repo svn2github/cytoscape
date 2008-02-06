@@ -59,6 +59,7 @@ import javax.swing.UIManager;
  * JList or JComboBox in the face specified.
  */
 public class FontRenderer extends DefaultListCellRenderer {
+	private final static long serialVersionUID = 1202339876741828L;
     /**
      *  DOCUMENT ME!
      *

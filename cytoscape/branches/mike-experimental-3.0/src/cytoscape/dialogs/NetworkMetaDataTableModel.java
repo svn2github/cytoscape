@@ -56,6 +56,7 @@ import javax.swing.table.DefaultTableModel;
  *
  */
 public class NetworkMetaDataTableModel extends DefaultTableModel {
+	private final static long serialVersionUID = 120233987340104L;
 	private CyNetwork network;
 	private Object[][] dataArray;
 	private Map data;

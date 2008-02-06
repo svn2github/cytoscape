@@ -70,6 +70,7 @@ import java.awt.geom.Point2D.Double;
  *
  */
 public class CloneGraphInNewWindowAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869106208L;
 	/**
 	 * Creates a new CloneGraphInNewWindowAction object.
 	 */

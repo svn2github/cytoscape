@@ -49,6 +49,7 @@ import javax.swing.JOptionPane;
  *
  */
 public class NewSessionAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869847514L;
 	/**
 	 * Creates a new NewSessionAction object.
 	 */

@@ -65,6 +65,7 @@ import javax.swing.border.*;
  * impression of a frozen program).
  */
 public class IndeterminateProgressBar extends JDialog {
+	private final static long serialVersionUID = 120233987564687L;
 	JPanel mainPanel;
 	JPanel labelPanel;
 	JPanel barPanel;

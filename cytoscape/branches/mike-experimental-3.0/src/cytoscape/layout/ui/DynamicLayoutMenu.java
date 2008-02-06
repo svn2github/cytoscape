@@ -74,6 +74,7 @@ import javax.swing.event.MenuListener;
  * attributes, etc.
  */
 public class DynamicLayoutMenu extends JMenu implements MenuListener {
+	private final static long serialVersionUID = 1202339874245069L;
 	private CyLayoutAlgorithm layout;
 	private static final String NOATTRIBUTE = "(none)";
 	private Set<Node> selectedNodes;
@@ -206,6 +207,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	}
 
 	protected class LayoutAttributeMenuItem extends JMenuItem implements ActionListener {
+	private final static long serialVersionUID = 1202339874231860L;
 		boolean selectedOnly = false;
 
 		public LayoutAttributeMenuItem(String label, boolean selectedOnly) {

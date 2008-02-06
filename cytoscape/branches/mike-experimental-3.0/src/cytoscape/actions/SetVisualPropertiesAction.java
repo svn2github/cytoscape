@@ -60,6 +60,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class SetVisualPropertiesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870882109L;
 	private static String title = "Open VizMapper\u2122";
 
 	/**

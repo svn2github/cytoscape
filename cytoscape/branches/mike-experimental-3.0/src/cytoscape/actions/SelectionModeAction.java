@@ -54,6 +54,7 @@ import javax.swing.event.MenuListener;
  *
  */
 public class SelectionModeAction extends JMenu implements MenuListener {
+	private final static long serialVersionUID = 1202340442665222L;
 	/**
 	 * Creates a new SelectionModeAction object.
 	 */
@@ -66,6 +67,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 
 		ButtonGroup modeGroup = new ButtonGroup();
 		nodes = new JCheckBoxMenuItem(new AbstractAction("Nodes Only") {
+	private final static long serialVersionUID = 1202339870593036L;
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
@@ -80,6 +82,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 		                                                        | ActionEvent.SHIFT_MASK));
 
 		edges = new JCheckBoxMenuItem(new AbstractAction("Edges Only") {
+				private final static long serialVersionUID = 1202339870603352L;
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
@@ -94,6 +97,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 		                                                        | ActionEvent.SHIFT_MASK));
 
 		nodesAndEdges = new JCheckBoxMenuItem(new AbstractAction("Nodes and Edges") {
+				private final static long serialVersionUID = 1202339870615014L;
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {

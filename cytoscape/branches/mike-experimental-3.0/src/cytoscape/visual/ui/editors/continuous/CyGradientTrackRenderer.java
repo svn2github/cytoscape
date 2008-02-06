@@ -64,6 +64,7 @@ import org.jdesktop.swingx.multislider.Thumb;
  * @author $author$
  */
 public class CyGradientTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+	private final static long serialVersionUID = 1202339877115160L;
 	private int trackHeight = 40;
 	private final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 16);
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);

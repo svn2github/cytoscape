@@ -60,6 +60,7 @@ import javax.swing.JPanel;
  * components to display font face selection.
  */
 public class FontChooser extends JPanel {
+	private final static long serialVersionUID = 1202339876728781L;
     private Font selectedFont;
     protected DefaultComboBoxModel fontFaceModel;
     protected JComboBox face;

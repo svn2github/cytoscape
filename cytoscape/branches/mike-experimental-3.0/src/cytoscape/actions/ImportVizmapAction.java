@@ -56,6 +56,7 @@ import java.io.File;
  *
  */
 public class ImportVizmapAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869805870L;
 	/**
 	 * Creates a new ImportVizmapAction object.
 	 */

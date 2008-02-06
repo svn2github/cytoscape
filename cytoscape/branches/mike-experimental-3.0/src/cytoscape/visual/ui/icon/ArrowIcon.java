@@ -59,6 +59,7 @@ import java.awt.geom.Rectangle2D;
  * @author kono
  */
 public class ArrowIcon extends VisualPropertyIcon {
+	private final static long serialVersionUID = 1202339877462891L;
 	private static final Stroke EDGE_STROKE = new BasicStroke(6.0f, BasicStroke.CAP_SQUARE,
 	                                                          BasicStroke.JOIN_MITER);
 	private static final Stroke EDGE_STROKE_SMALL = new BasicStroke(4.0f, BasicStroke.CAP_SQUARE,

@@ -56,6 +56,7 @@ import javax.swing.JTable;
  * @author $author$
  */
 public class ShapeCellRenderer extends DefaultCellRenderer {
+	private final static long serialVersionUID = 1202339868999601L;
 	private final Map<Object, Icon> icons;
 	private VisualPropertyType type;
 

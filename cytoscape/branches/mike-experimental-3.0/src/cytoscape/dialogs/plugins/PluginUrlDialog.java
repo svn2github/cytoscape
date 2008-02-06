@@ -50,6 +50,7 @@ import javax.swing.WindowConstants;
  * @author skillcoy
  */
 public class PluginUrlDialog extends JDialog {
+	private final static long serialVersionUID = 1202339873187949L;
 	private String bookmarkCategory = "plugins";
 
 	private Bookmarks theBookmarks;
@@ -308,6 +309,7 @@ public class PluginUrlDialog extends JDialog {
 	// combo box
 	private class BookmarkCellRenderer extends JLabel implements
 			ListCellRenderer {
+	private final static long serialVersionUID = 1202339873175045L;
 		
 		public BookmarkCellRenderer() {
 			setOpaque(true);

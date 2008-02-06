@@ -67,6 +67,7 @@ import javax.swing.event.MenuEvent;
  * selected nodes.
  */
 public class SelectFirstNeighborsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870583078L;
 	/**
 	 * Creates a new SelectFirstNeighborsAction object.
 	 */

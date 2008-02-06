@@ -56,6 +56,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class SelectAllEdgesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870545507L;
 	/**
 	 * Creates a new SelectAllEdgesAction object.
 	 */

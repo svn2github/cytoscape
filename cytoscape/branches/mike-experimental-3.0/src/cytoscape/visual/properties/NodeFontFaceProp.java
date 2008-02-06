@@ -73,6 +73,7 @@ public class NodeFontFaceProp extends AbstractVisualProperty {
 	 */
 	public Icon getIcon(final Object value) {
 		final NodeIcon icon = new NodeIcon() {
+	private final static long serialVersionUID = 1202339876314424L;
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				super.setColor(new Color(10, 10, 10, 0));
 				super.paintIcon(c, g, x, y);

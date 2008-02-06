@@ -68,6 +68,7 @@ import java.io.File;
  *
  */
 public class SaveSessionAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870278024L;
 	// Extension for the new cytoscape session file
 	/**
 	 *

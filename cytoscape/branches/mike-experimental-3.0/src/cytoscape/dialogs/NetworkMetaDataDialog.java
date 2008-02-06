@@ -37,6 +37,7 @@ import javax.xml.bind.JAXBException;
  *
  */
 public class NetworkMetaDataDialog extends JDialog implements TableModelListener {
+	private final static long serialVersionUID = 120233987326805L;
 	private NetworkMetaDataTableModel metaTM;
 	private MetadataParser mdp;
 	private CyNetwork network;

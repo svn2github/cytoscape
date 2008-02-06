@@ -61,6 +61,7 @@ import javax.swing.event.MenuEvent;
  *
  */
 public class HideSelectedNodesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869740974L;
 	/**
 	 * Creates a new HideSelectedNodesAction object.
 	 */

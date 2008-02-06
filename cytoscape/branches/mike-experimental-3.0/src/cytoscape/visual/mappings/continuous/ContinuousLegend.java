@@ -69,6 +69,7 @@ import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
  *
  */
 public class ContinuousLegend extends JPanel {
+	private final static long serialVersionUID = 1202339875895702L;
 	private static final Font TITLE_FONT2 = new Font("SansSerif", Font.BOLD, 18);
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
 	private static final Border BORDER = new MatteBorder(0, 6, 3, 0, Color.DARK_GRAY);

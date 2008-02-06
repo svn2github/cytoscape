@@ -64,6 +64,7 @@ import javax.swing.JFrame;
  *
  */
 public class ProxyServerAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870267736L;
 	/**
 	 * Creates a new ProxyServerAction object.
 	 */

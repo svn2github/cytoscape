@@ -52,6 +52,7 @@ import javax.swing.table.*;
  *
  */
 public class PreferenceTableModel extends AbstractTableModel {
+	private final static long serialVersionUID = 1202339873369342L;
 	static int[] columnWidth = new int[] { 150, 250 };
 	static int[] alignment = new int[] { JLabel.LEFT, JLabel.LEFT };
 	private Properties properties;

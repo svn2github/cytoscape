@@ -79,6 +79,7 @@ import javax.swing.JScrollPane;
  */
 public class UnifiedNetworkImportDialog extends javax.swing.JDialog
     implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339872434259L;
 	private static final UnifiedNetworkImportDialog dialog;
 	private String selectedClientID = null;
 

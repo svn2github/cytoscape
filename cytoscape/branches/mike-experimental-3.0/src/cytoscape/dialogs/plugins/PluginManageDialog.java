@@ -60,6 +60,7 @@ import javax.swing.tree.TreePath;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
+	private final static long serialVersionUID = 1202339870156796L;
 
 	public enum PluginInstallStatus {
 		INSTALLED("Currently Installed"), AVAILABLE("Available for Install");

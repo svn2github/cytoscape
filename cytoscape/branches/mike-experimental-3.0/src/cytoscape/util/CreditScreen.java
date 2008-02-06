@@ -60,6 +60,7 @@ import javax.swing.Timer;
  *
  */
 public abstract class CreditScreen {
+	private final static long serialVersionUID = 1202339874708904L;
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -79,6 +80,7 @@ public abstract class CreditScreen {
 		window.setVisible(true);
 
 		Action scrollText = new AbstractAction() {
+			private final static long serialVersionUID = 1202340446391603L;
 			boolean shouldDraw = false;
 
 			public void actionPerformed(ActionEvent e) {
@@ -112,6 +114,7 @@ public abstract class CreditScreen {
 	}
 
 	private static class ScrollingLinesPanel extends JPanel {
+	private final static long serialVersionUID = 1202339874718767L;
 		int yPos;
 		int xPos;
 		ImageIcon background;

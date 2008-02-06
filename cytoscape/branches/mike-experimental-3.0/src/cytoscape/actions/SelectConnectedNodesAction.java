@@ -63,6 +63,7 @@ import javax.swing.event.MenuEvent;
  * select every node connected to the current selected edges.
  */
 public class SelectConnectedNodesAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870568036L;
 	/**
 	 * Creates a new SelectConnectedNodesAction object.
 	 */

@@ -60,6 +60,7 @@ import javax.swing.Action;
  *
  */
 public class ShowGraphicsDetailsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870902858L;
 	boolean showFlag = true;
 
 	/**

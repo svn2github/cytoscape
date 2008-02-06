@@ -71,6 +71,7 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
  */
 public class GradientEditorPanel extends ContinuousMappingEditorPanel
     implements PropertyChangeListener {
+	private final static long serialVersionUID = 1202339877433771L;
 
 	/**
 	 * Creates a new GradientEditorPanel object.

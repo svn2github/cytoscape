@@ -47,6 +47,7 @@ import javax.swing.JPanel;
  *
  */
 public class JStatusBar extends JPanel {
+	private final static long serialVersionUID = 1202339875133611L;
 	/**
 	 * Creates a new JStatusBar object.
 	 */
