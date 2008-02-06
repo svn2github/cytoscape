@@ -38,6 +38,7 @@ public class ExecuteGetRecordByCPathId implements Task {
     private TaskMonitor taskMonitor;
     private long ids[];
     private String networkTitle;
+    private boolean haltFlag = false;
 
     /**
      * Constructor.
@@ -56,6 +57,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      */
     public void halt() {
         webApi.abort();
+        haltFlag = true;
     }
 
     /**
@@ -172,8 +174,9 @@ public class ExecuteGetRecordByCPathId implements Task {
         getNodeDetails(cyNetwork, nodeIterator, nodeAttributes);
 
         //  Create the view, visual style, and layout.
-        if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-                        .getProperty("viewThreshold"))) {
+        if (haltFlag == false &&
+                cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+                .getProperty("viewThreshold"))) {
             taskMonitor.setStatus("Creating Network View...");
             taskMonitor.setPercentCompleted(-1);            
 
@@ -201,6 +204,11 @@ public class ExecuteGetRecordByCPathId implements Task {
                     cyNetwork.setTitle(networkTitle);
                 }
             });
+        } else {
+            //  If we have requested a halt, and we have a network, destroy it.
+            if (cyNetwork != null) {
+                Cytoscape.destroyNetwork(cyNetwork);
+            }
         }
     }
 
@@ -213,7 +221,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         taskMonitor.setPercentCompleted(0);
         int numNodes = cyNetwork.nodesList().size();
         int counter = 0;
-        while (nodeIterator.hasNext()) {
+        while (nodeIterator.hasNext() && haltFlag == false) {
             CyNode node = (CyNode) nodeIterator.next();
             String nodeId = node.getIdentifier();
             long ids[] = new long[1];
