@@ -647,10 +647,10 @@ public class CalculatorIO {
 	private static void handleCalculators(Map<String, Properties> nameMap,
 	                                      CalculatorCatalog catalog, boolean overWrite,
 	                                      String calcTypeKey) {
-		System.out.println("calcTypeKey: " + calcTypeKey);
+		//System.out.println("calcTypeKey: " + calcTypeKey);
 		// for each calculator name
 		for (String name : nameMap.keySet()) {
-			System.out.println("   name: " + name);
+			//System.out.println("   name: " + name);
 			// get the properties object that contains all info for
 			// that particular calculator
 
@@ -667,10 +667,10 @@ public class CalculatorIO {
 				} else
 					renameAsNeeded(c, catalog);
 
-				System.out.println("    calc is good ... adding");
+				//System.out.println("    calc is good ... adding");
 				catalog.addCalculator(c);
 			} else {
-				System.out.println("    calc is null");
+				//System.out.println("    calc is null");
 			}
 		}
 	}

@@ -60,8 +60,6 @@ import cytoscape.visual.LineStyle;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
-import giny.model.RootGraph;
-
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -560,8 +558,6 @@ public class XGMMLWriter {
 	}
 
 	private void writeGroups() throws IOException {
-		RootGraph rootGraph = Cytoscape.getRootGraph();
-
 		// Two pass approach. First, walk through the list
 		// and see if any of the children of a group are
 		// themselves a group. If so, remove them from

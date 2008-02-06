@@ -204,10 +204,9 @@ public class Aliases {
 
 		switch (objectType) {
 			case NODE:
-				it = Cytoscape.getRootGraph().nodesIterator();
-
-				while (it.hasNext()) {
-					id = ((Node) it.next()).getIdentifier();
+				List<Node> nodes = Cytoscape.getCyNodesList();
+				for ( Node n : nodes ) {
+					id = n.getIdentifier();
 
 					final List aliases = attributes.getListAttribute(id, ALIAS);
 
@@ -219,10 +218,9 @@ public class Aliases {
 				break;
 
 			case EDGE:
-				it = Cytoscape.getRootGraph().edgesIterator();
-
-				while (it.hasNext()) {
-					id = ((Edge) it.next()).getIdentifier();
+				List<Edge> edges = Cytoscape.getCyEdgesList();
+				for ( Edge e : edges ) {
+					id = e.getIdentifier();
 
 					final List aliases = attributes.getListAttribute(id, ALIAS);
 

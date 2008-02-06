@@ -287,10 +287,6 @@ public class CyGroupManager {
 
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			network.removeNode(groupNode.getRootGraphIndex(), false);
-			// Remove the group node form the network
-			// RootGraph rg = groupNode.getRootGraph();
-			// Remove it from the root graph
-			// rg.removeNode(groupNode);
 
 			notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_DELETED);
 		}

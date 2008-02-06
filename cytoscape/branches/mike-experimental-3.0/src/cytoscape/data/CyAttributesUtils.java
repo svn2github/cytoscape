@@ -561,14 +561,14 @@ public class CyAttributesUtils {
 		// Extract ids
 		if (type == AttributeType.NODE) {
 			attr = Cytoscape.getNodeAttributes();
-			final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
+			final List<Node> nodes = Cytoscape.getCyNodesList();
 
 			for (Node node : nodes) {
 				ids.add(node.getIdentifier());
 			}
 		} else if (type == AttributeType.EDGE) {
 			attr = Cytoscape.getEdgeAttributes();
-			final List<Edge> edges = Cytoscape.getRootGraph().edgesList();
+			final List<Edge> edges = Cytoscape.getCyEdgesList();
 
 			for (Edge edge : edges) {
 				ids.add(edge.getIdentifier());

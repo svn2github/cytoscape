@@ -44,8 +44,6 @@ import cytoscape.CyEdge;
 
 import cytoscape.data.CyAttributes;
 
-import giny.model.RootGraph;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -471,8 +469,6 @@ public class CyGroupImpl implements CyGroup {
 	private void removeNodeFromGroup ( CyNode node ) {
 		// Remove the node from our map
 		nodeMap.remove(node);
-
-		RootGraph rg = node.getRootGraph();
 
 		// Get the list of edges
 		List <CyEdge>edgeArray = nodeToEdgeMap.get(node);

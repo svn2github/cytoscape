@@ -69,13 +69,13 @@ public class CalculatorFactory {
 				t = VisualPropertyType.valueOf(typeName);
 
 			if ( t == null ) {
-				System.out.println("Couldn't parse baseKey: " + baseKey);
+				//System.out.println("Couldn't parse baseKey: " + baseKey);
 				return null;	
 			}
 
 			return new BasicCalculator(name,calcProps,baseKey,t);
 		} catch (IllegalArgumentException e) { 
-			System.out.println("Couldn't parse visual property type: " + typeName);
+			//System.out.println("Couldn't parse visual property type: " + typeName);
 			return null;	
 		}
 	}

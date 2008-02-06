@@ -244,9 +244,9 @@ public class GMLWriter {
 			return false;
 		}
 
-		Node node = Cytoscape.getRootGraph().getNode(root_index.intValue());
+		Node node = network.getNode(root_index.intValue());
 
-		if (!network.containsNode(node)) {
+		if (node == null || !network.containsNode(node)) {
 			return false;
 		}
 
@@ -331,9 +331,9 @@ public class GMLWriter {
 			return false;
 		}
 
-		Edge edge = Cytoscape.getRootGraph().getEdge(root_index.intValue());
+		Edge edge = network.getEdge(root_index.intValue());
 
-		if (!network.containsEdge(edge)) {
+		if (edge == null || !network.containsEdge(edge)) {
 			return false;
 		}
 

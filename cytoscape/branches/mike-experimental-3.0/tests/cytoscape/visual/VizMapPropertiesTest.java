@@ -82,10 +82,10 @@ public class VizMapPropertiesTest extends TestCase {
 		assertNotNull(props);
 		assertNotNull(catalog);
 		System.out.println("before:");
-		catalog.dumpCalculators();
+		//catalog.dumpCalculators();
 		CalculatorIO.loadCalculators(props, catalog);
 		System.out.println("after:");
-		catalog.dumpCalculators();
+		//catalog.dumpCalculators();
 
 		Collection nodeColorCalcs = catalog.getCalculators(VisualPropertyType.NODE_FILL_COLOR);
 		assertTrue(nodeColorCalcs.size() > 0);

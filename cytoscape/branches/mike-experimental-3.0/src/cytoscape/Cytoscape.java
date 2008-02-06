@@ -572,13 +572,35 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @param alias
-	 *            an alias of a node
+	 * This method is used to replace direct access to the rootgraph.
+	 */
+	public static Node getNode(int index) {
+		return getRootGraph().getNode(index);
+	}
+
+	/**
+	 * This method is used to replace direct access to the rootgraph.
+	 */
+	public static Edge getEdge(int index) {
+		return getRootGraph().getEdge(index);
+	}
+
+	/**
+	 * @param alias an alias of a node
 	 * @return will return a node, if one exists for the given alias
 	 */
 	public static CyNode getCyNode(String alias) {
 		return getCyNode(alias, false);
 	}
+
+	/**
+	 * @param id the edge identifier 
+	 * @return will return an edge, if one exists for the given identifier
+	 */
+	public static CyEdge getCyEdge(String id) {
+		return getRootGraph().getEdge(id);
+	}
+
 
 	/**
 	 * @param nodeID

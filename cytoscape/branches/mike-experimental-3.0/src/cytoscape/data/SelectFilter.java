@@ -51,7 +51,6 @@ import giny.model.GraphPerspective;
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
 import giny.model.Node;
-import giny.model.RootGraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -403,20 +402,24 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 			                             // but the Edge array contains null objects
 			                             // for now, get around this by converting indices to edges ourselves
 
-			Object eventSource = event.getSource();
-			RootGraph root;
-
-			if (eventSource instanceof RootGraph)
-				root = (RootGraph) eventSource;
-			else
-				root = ((GraphPerspective) eventSource).getRootGraph();
+			// WTF?  why are we concerned with the root graph?
+			//Object eventSource = event.getSource();
+//
+//			RootGraph root;
+//
+//			if (eventSource instanceof RootGraph)
+//				root = (RootGraph) eventSource;
+//			else
+//				root = ((GraphPerspective) eventSource).getRootGraph();
+//				
 
 			int[] indices = event.getHiddenEdgeIndices();
 			final int eLength = indices.length;
 			Edge edge;
 			boolean setChanged;
 			for (int index = 0; index < eLength; index++) {
-				edge = root.getEdge(indices[index]);
+				//edge = root.getEdge(indices[index]);
+				edge = graph.getEdge(indices[index]);
 				setChanged = selectedEdges.remove(edge);
 
 				if (setChanged) { // the hidden edge was actually selected
@@ -429,14 +432,6 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 					                       // fire
 				}
 			}
-
-			/*
-			 * this is the code that sometimes doesn't work Edge[] hiddenEdges =
-			 * event.getHiddenEdges(); for (int index=0; index<hiddenEdges.length;
-			 * index++) { Edge edge = hiddenEdges[index]; boolean setChanged =
-			 * selectedEdges.remove(edge); if (setChanged) { if (edgeChanges ==
-			 * null) {edgeChanges = new HashSet();} edgeChanges.add(edge); } }
-			 */
 		}
 
 		if ((edgeChanges != null) && (edgeChanges.size() > 0)) {

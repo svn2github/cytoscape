@@ -42,6 +42,7 @@
 //---------------------------------------------------------------------------
 package cytoscape.view;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.SelectFilter;
@@ -49,7 +50,6 @@ import cytoscape.data.SelectFilter;
 //---------------------------------------------------------------------------
 import giny.model.Edge;
 import giny.model.Node;
-import giny.model.RootGraph;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;
@@ -150,7 +150,6 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 		// but incorrect Node and Edge objects. For now we get around this
 		// by converting indices to graph objects ourselves
 		final GraphView source = (GraphView) event.getSource();
-		final RootGraph rootGraph = source.getGraphPerspective().getRootGraph();
 
 		int[] objIndecies;
 
@@ -160,7 +159,7 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 			final List<Node> selList = new ArrayList<Node>();
 
 			for (int index = 0; index < objIndecies.length; index++) {
-				selList.add(rootGraph.getNode(objIndecies[index]));
+				selList.add(Cytoscape.getNode(objIndecies[index]));
 			}
 
 			selectFilter.setSelectedNodes(selList, true);
@@ -174,7 +173,7 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 			final List<Node> unselList = new ArrayList<Node>();
 
 			for (int index = 0; index < objIndecies.length; index++) {
-				unselList.add(rootGraph.getNode(objIndecies[index]));
+				unselList.add(Cytoscape.getNode(objIndecies[index]));
 			}
 
 			selectFilter.setSelectedNodes(unselList, false);
@@ -184,7 +183,7 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 			final List<Edge> selList = new ArrayList<Edge>();
 
 			for (int index = 0; index < objIndecies.length; index++) {
-				selList.add(rootGraph.getEdge(objIndecies[index]));
+				selList.add(Cytoscape.getEdge(objIndecies[index]));
 			}
 
 			selectFilter.setSelectedEdges(selList, true);
@@ -198,7 +197,7 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 			final List<Edge> unselList = new ArrayList<Edge>();
 
 			for (int index = 0; index < objIndecies.length; index++) {
-				unselList.add(rootGraph.getEdge(objIndecies[index]));
+				unselList.add(Cytoscape.getEdge(objIndecies[index]));
 			}
 
 			selectFilter.setSelectedEdges(unselList, false);

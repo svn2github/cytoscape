@@ -232,7 +232,7 @@ public class CalculatorCatalog {
 	 */
 	public void addCalculator(Calculator dupe)
 	    throws DuplicateCalculatorNameException, IllegalArgumentException {
-		System.out.println("adding calculator: " + dupe.getVisualPropertyType());
+		//System.out.println("adding calculator: " + dupe.getVisualPropertyType());
 		final VisualPropertyType calcType = dupe.getVisualPropertyType();
 		Map<String, Calculator> theMap = getCalculatorMap(calcType);
 		addCalculator(dupe, theMap);
@@ -594,7 +594,7 @@ public class CalculatorCatalog {
 		defaultVS.getNodeAppearanceCalculator().setCalculator(nlc);
 		addVisualStyle(defaultVS);
 	}
-
+/*
 	public void dumpCalculators() {
 		System.out.println("---------------------------------------------------------");
 		System.out.println("calculators");
@@ -605,5 +605,6 @@ public class CalculatorCatalog {
 				System.out.println("  " + k + " -> " + m.get(k) );
 		}	
 	}
+	*/
 
 }
