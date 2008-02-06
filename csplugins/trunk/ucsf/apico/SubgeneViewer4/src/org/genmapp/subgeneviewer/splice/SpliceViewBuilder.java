@@ -146,9 +146,6 @@ public abstract class SpliceViewBuilder {
 		((DGraphView) myView).getCanvas().disableNodeMovement();
 
 		// Sets size of SGV window. ONLY WORKS WITH Cytoscape v2.6!
-		JInternalFrame i = Cytoscape.getDesktop().getNetworkViewManager()
-				.getInternalFrame(myView);
-
 		Cytoscape.getDesktop().getNetworkViewManager().getInternalFrame(myView)
 				.setBounds(0, 0, windowWidth, windowHeight);
 
