@@ -37,7 +37,6 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
-import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.NodeShape;
 
@@ -80,7 +79,7 @@ public class CytoShapeIcon implements Icon {
     // private byte _shape;
     // MLC 05/09/07:
 	private NodeShape _shape;
-	private Arrow _arrowType = null;
+	private ArrowShape _arrowType = null;
  
     public CytoShapeIcon(NodeShape shape, Color color, Dimension size) {
     	this(shape, color);
@@ -109,7 +108,7 @@ public class CytoShapeIcon implements Icon {
 	 *
 	 * @param arrowType  DOCUMENT ME!
 	 */
-	public CytoShapeIcon(Arrow arrowType) {
+	public CytoShapeIcon(ArrowShape arrowType) {
 		_arrowType = arrowType;
 	}
 
@@ -165,12 +164,9 @@ public class CytoShapeIcon implements Icon {
 		}
 
 		if (_arrowType != null) {
-			g.setColor(_arrowType.getColor());
+			//g.setColor(_arrowType.getColor());
 
-			// MLC 05/09/07:
-			// if (_arrowType == Arrow.DELTA) {
-			// MLC 05/09/07:
-			if (_arrowType.getShape() == ArrowShape.DELTA) {
+			if (_arrowType == ArrowShape.DELTA) {
 				g.fillPolygon(new int[] {
 				                  x, x + ((3 * width) / 4), x + ((3 * width) / 4), x + width,
 				                  x + ((3 * width) / 4), x + ((3 * width) / 4), x
@@ -181,24 +177,15 @@ public class CytoShapeIcon implements Icon {
 				                  y + ((11 * height) / 16), y + ((9 * height) / 16),
 				                  y + ((9 * height) / 16)
 				              }, 7);
-			// MLC 05/09/07:
-			// } else if (_arrowType == Arrow.CIRCLE) {
-			// MLC 05/09/07:
-			} else if (_arrowType.getShape() == ArrowShape.CIRCLE) {
+			} else if (_arrowType == ArrowShape.CIRCLE) {
 				g.fillRect(x, y + ((7 * height) / 16), (13 * (width / 16)), height / 8);
 				g.fillOval(x + ((5 * width) / 8), y + ((5 * height) / 16), (6 * width) / 16,
 				           (6 * height) / 16);
-			// MLC 05/09/07:
-			// } else if (_arrowType == Arrow.T) {
-			// MLC 05/09/07:
-			} else if (_arrowType.getShape() == ArrowShape.T) {
+			} else if (_arrowType == ArrowShape.T) {
 				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
 				g.fillRect(x + (15 * (width / 16)), y + ((5 * height) / 16), width / 16,
 				           (height * 6) / 16);
-			// MLC 05/09/07:
-			// } else if (_arrowType == Arrow.NONE) {
-			// MLC 05/09/07:
-			} else if (_arrowType.getShape() == ArrowShape.NONE) {
+			} else if (_arrowType == ArrowShape.NONE) {
 				g.fillRect(x, y + ((7 * height) / 16), (15 * (width / 16)), height / 8);
 			}
 
@@ -207,41 +194,26 @@ public class CytoShapeIcon implements Icon {
 
 		g.setColor(_color);
 
-		// MLC 05/09/07:
-		// if (_shape == ShapeNodeRealizer.TRIANGLE) {
-		// MLC 05/09/07:
 		if (_shape == NodeShape.TRIANGLE) {
 			g.fillPolygon(new int[] { x, x + (width / 2), x + width },
 			              new int[] { y + height, y, y + height }, 3);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] { x, x + (width / 2), x + width },
 			              new int[] { y + height, y, y + height }, 3);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.ROUND_RECT) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.ROUND_RECT) {
 			g.fillRoundRect(x, y, width, height, width / 2, height / 2);
 			g.setColor(Color.BLACK);
 			g.drawRoundRect(x, y, width, height, width / 2, height / 2);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.DIAMOND) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.DIAMOND) {
 			g.fillPolygon(new int[] { x, x + (width / 2), x + width, x + (width / 2) },
 			              new int[] { y + (height / 2), y, y + (height / 2), y + height }, 4);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(new int[] { x, x + (width / 2), x + width, x + (width / 2) },
 			              new int[] { y + (height / 2), y, y + (height / 2), y + height }, 4);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.ELLIPSE) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.ELLIPSE) {
 			g.fillOval(x, y, width, height);
 			g.setColor(Color.BLACK);
 			g.drawOval(x, y, width, height);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.HEXAGON) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.HEXAGON) {
 			g.fillPolygon(new int[] {
 			                  x, x + (width / 4), x + ((3 * width) / 4), x + width,
@@ -256,9 +228,6 @@ public class CytoShapeIcon implements Icon {
 			              },
 			              new int[] { y + (height / 2), y, y, y + (height / 2), y + height, y
 				          + height }, 6);
-		// MLC 05/09/07:
-		// } else if (_shape == ShapeNodeRealizer.OCTAGON) {
-		// MLC 05/09/07:
 		} else if (_shape == NodeShape.OCTAGON) {
 			g.fillPolygon(new int[] {
 			                  x, x + (width / 4), x + ((3 * width) / 4), x + width, x + width,

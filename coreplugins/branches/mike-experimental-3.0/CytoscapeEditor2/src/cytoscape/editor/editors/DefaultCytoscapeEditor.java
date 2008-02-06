@@ -58,7 +58,7 @@ import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
-import cytoscape.visual.Arrow;
+import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
@@ -162,18 +162,13 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 
 		if (!spEntries.hasNext()) {
 			shapePalette.addShape(controllingAttribute, "DirectedEdge",
-					      // MLC 10/24/07:
-			                      // new CytoShapeIcon(Arrow.DELTA), "Directed Edge",
-					      // MLC 10/24/07:
-			                      new CytoShapeIcon(Arrow.NONE), "Directed Edge",
+			                      new CytoShapeIcon(ArrowShape.NONE), "Directed Edge",
 			_edgeCursorSetter);
 		} else {
 			while (spEntries.hasNext()) {
 				ShapePaletteInfo spi = spEntries.next();
 				shapePalette.addShape(spi.getControllingAttributeName(), spi.getKey(),
-						      // MLC 05/09/07:
-				                      // new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
-				                      new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE)),
+				                      new CytoShapeIcon((ArrowShape) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE)),
 				                      spi.getKey(), // MLC 12/16/06:
 				_edgeCursorSetter);
 			}
