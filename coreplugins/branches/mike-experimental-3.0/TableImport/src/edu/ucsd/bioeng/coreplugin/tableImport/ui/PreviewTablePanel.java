@@ -896,7 +896,7 @@ public class PreviewTablePanel extends JPanel {
 					if (cell == null) {
 						rowVector.add(null);
 					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-						rowVector.add(cell.getStringCellValue());
+						rowVector.add(cell.getRichStringCellValue().getString());
 					} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 						final Double dblValue = cell.getNumericCellValue();
 						final Integer intValue = dblValue.intValue();

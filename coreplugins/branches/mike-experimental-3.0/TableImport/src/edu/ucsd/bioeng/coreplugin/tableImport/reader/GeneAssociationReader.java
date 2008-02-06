@@ -214,7 +214,7 @@ public class GeneAssociationReader implements TextTableReader {
 	private void buildMap() {
 		attr2id = new HashMap<String, List<String>>();
 
-		Iterator it = Cytoscape.getRootGraph().nodesIterator();
+		Iterator it = Cytoscape.getCyNodesList().iterator();
 
 		String nodeID = null;
 		Node node = null;

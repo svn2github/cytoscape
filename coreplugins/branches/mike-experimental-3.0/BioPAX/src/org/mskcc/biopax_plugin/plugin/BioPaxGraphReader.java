@@ -41,7 +41,6 @@ import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
-import giny.model.RootGraph;
 import giny.view.GraphView;
 
 import cytoscape.CyNetwork;
@@ -231,15 +230,6 @@ public class BioPaxGraphReader implements GraphReader {
 	 * @throws IOException IO Error.
 	 */
 	public void read(boolean canonicalizeNodeNames) throws IOException {
-	}
-
-	/**
-	 * Get root graph.
-	 * @deprecated Use Cytoscape.getRootGraph() instead. Will be removed Dec 2006.
-	 * @return RootGraph Object.
-	 */
-	public RootGraph getRootGraph() {
-		return null;
 	}
 
 	/**

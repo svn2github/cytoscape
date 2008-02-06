@@ -213,14 +213,14 @@ public class AttributeMappingParameters implements MappingParameter {
 			case NODE:
 				attributes = Cytoscape.getNodeAttributes();
 				existingAliases = Cytoscape.getOntologyServer().getNodeAliases();
-				it = Cytoscape.getRootGraph().nodesIterator();
+				it = Cytoscape.getCyNodesList().iterator();
 
 				break;
 
 			case EDGE:
 				attributes = Cytoscape.getEdgeAttributes();
 				existingAliases = Cytoscape.getOntologyServer().getEdgeAliases();
-				it = Cytoscape.getRootGraph().edgesIterator();
+				it = Cytoscape.getCyEdgesList().iterator();
 
 				break;
 

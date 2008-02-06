@@ -2699,14 +2699,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		if (selectedKeyAttribute.equals(ID)) {
 			if (objType == NODE) {
-				it = Cytoscape.getRootGraph().nodesIterator();
+				it = Cytoscape.getCyNodesList().iterator();
 
 				while (it.hasNext()) {
 					Node node = (Node) it.next();
 					valueSet.add(node.getIdentifier());
 				}
 			} else if (objType == EDGE) {
-				it = Cytoscape.getRootGraph().edgesIterator();
+				it = Cytoscape.getCyEdgesList().iterator();
 
 				while (it.hasNext()) {
 					valueSet.add(((Edge) it.next()).getIdentifier());

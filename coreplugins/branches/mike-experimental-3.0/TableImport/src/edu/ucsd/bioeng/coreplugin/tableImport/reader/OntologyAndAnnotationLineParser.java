@@ -169,11 +169,11 @@ public class OntologyAndAnnotationLineParser {
 
 			case EDGE:
 
-				Edge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
+				Edge edge = Cytoscape.getCyEdge(primaryKey);
 
 				if (edge == null) {
 					for (String alias : aliasSet) {
-						edge = Cytoscape.getRootGraph().getEdge(alias);
+						edge = Cytoscape.getCyEdge(alias);
 
 						if (edge != null) {
 							altKey = alias;
