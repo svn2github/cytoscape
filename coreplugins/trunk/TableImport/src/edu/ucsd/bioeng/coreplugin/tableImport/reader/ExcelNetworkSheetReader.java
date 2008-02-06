@@ -122,7 +122,7 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 			if (cell == null) {
 				cells[i] = null;
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-				cells[i] = cell.getStringCellValue();
+				cells[i] = cell.getRichStringCellValue().getString();
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 				if (nmp.getAttributeTypes()[i] == CyAttributes.TYPE_INTEGER) {
 					Double dblValue = cell.getNumericCellValue();
