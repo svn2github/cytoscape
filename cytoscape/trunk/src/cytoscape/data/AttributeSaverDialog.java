@@ -321,18 +321,12 @@ class AttributeSaverState implements TableModel {
 
 		for (int idx = 0; idx < attributeNames.size(); idx++) {
 			if (selectedAttributes.get(idx)) {
-				final String attributeName = attributeNames.get(idx);
-
-				final File attributeFile = new File(saveDirectory, filenames.get(idx));
-				final FileWriter fileWriter = new FileWriter(attributeFile);
-				fileWriter.write(attributeName + newline);
-
 				final CyAttributesWriter2 writer = new CyAttributesWriter2(cyAttributes,
 				                                                           attributeNames.get(idx),
-				                                                           fileWriter);
+				                                                           new FileWriter(new File(saveDirectory,
+				                                                                                   filenames
+				                                                                                   .get(idx))));
 				writer.writeAttributes();
-
-				fileWriter.close();
 				count++;
 			}
 		}
