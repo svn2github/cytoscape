@@ -54,11 +54,9 @@ import cytoscape.visual.properties.EdgeLineWidthProp;
 import cytoscape.visual.properties.EdgeOpacityProp;
 import cytoscape.visual.properties.EdgeSourceArrowColorProp;
 import cytoscape.visual.properties.EdgeSourceArrowOpacityProp;
-import cytoscape.visual.properties.EdgeSourceArrowProp;
 import cytoscape.visual.properties.EdgeSourceArrowShapeProp;
 import cytoscape.visual.properties.EdgeTargetArrowColorProp;
 import cytoscape.visual.properties.EdgeTargetArrowOpacityProp;
-import cytoscape.visual.properties.EdgeTargetArrowProp;
 import cytoscape.visual.properties.EdgeTargetArrowShapeProp;
 import cytoscape.visual.properties.EdgeToolTipProp;
 import cytoscape.visual.properties.NodeBorderColorProp;
@@ -135,12 +133,12 @@ public enum VisualPropertyType {
 	EDGE_COLOR("Edge Color", "edgeColorCalculator", "edge.color", "defaultEdgeColor",
 	           Color.class, new EdgeColorProp(),
 			   new ColorParser(), false, true), 
-	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
-	              "defaultEdgeSourceArrow", Arrow.class,
-	              new EdgeSourceArrowProp(), new ArrowParser(), false, false), 
-	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
-	              "defaultEdgeTargetArrow", Arrow.class,
-	              new EdgeTargetArrowProp(), new ArrowParser(), false, false), 
+//	EDGE_SRCARROW("Edge Source Arrow", "edgeSourceArrowCalculator", "edge.sourceArrow",
+//	              "defaultEdgeSourceArrow", Arrow.class,
+//	              new EdgeSourceArrowProp(), new ArrowParser(), false, false), 
+//	EDGE_TGTARROW("Edge Target Arrow", "edgeTargetArrowCalculator", "edge.targetArrow",
+//	              "defaultEdgeTargetArrow", Arrow.class,
+//	              new EdgeTargetArrowProp(), new ArrowParser(), false, false), 
 	EDGE_LABEL("Edge Label", "edgeLabelCalculator", "edge.label", "defaultEdgeLabel",
 	           String.class, new EdgeLabelProp(),
 			   new StringParser(), false, true), 

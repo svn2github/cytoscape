@@ -46,10 +46,8 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_COLOR;
 import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW;
 import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
 import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
@@ -102,6 +100,10 @@ public class CalculatorIO {
 	private static final String nodeLineTypeLabel = "nodeLineTypeCalculator";
 	private static final String edgeLineTypeDefaultLabel = "defaultEdgeLineType";
 	private static final String nodeLineTypeDefaultLabel = "defaultNodeLineType";
+	private static final String edgeSrcArrowLabel = "edgeSourceArrowCalculator";
+	private static final String edgeSrcArrowDefaultLabel = "defaultEdgeSourceArrow"; 
+	private static final String edgeTgtArrowLabel = "edgeTargetArrowCalculator";
+	private static final String edgeTgtArrowDefaultLabel = "defaultEdgeTargetArrow";
 
 	/**
 	 * Writes the contents of a CalculatorCatalog to the specified file as a
@@ -328,17 +330,17 @@ public class CalculatorIO {
 				// the first two separations are to support the 
 				// deprecated EDGE_SRCARROW and EDGE_TGTARROW
 				key = updateLegacyKey(key, props, edgeArrowBaseKey,
-				                      EDGE_SRCARROW.getPropertyLabel(),
+				                      edgeSrcArrowLabel,
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowCalculator");
 				storeKey(key, props, calcNames);
 
-				key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(),
-				                      EDGE_TGTARROW.getPropertyLabel(),
+				key = updateLegacyKey(key, props, edgeSrcArrowLabel,
+				                      edgeTgtArrowLabel,
 				                      "cytoscape.visual.calculators.GenericEdgeTargetArrowCalculator");
 				storeKey(key, props, calcNames);
 
 				// eventually (4/2008), these should be the only separations
-				key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
+				key = updateLegacyKey(key, props, edgeTgtArrowLabel,
 				                      EDGE_SRCARROW_COLOR.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator");
 				storeKey(key, props, calcNames);
@@ -359,12 +361,12 @@ public class CalculatorIO {
 				storeKey(key, props, calcNames);
 
 				// separated source arrow into source color and source shape
-			} else if (key.startsWith(EDGE_SRCARROW.getPropertyLabel() + ".")) {
+			} else if (key.startsWith(edgeSrcArrowLabel + ".")) {
 				// this first store is to support deprecated EDGE_SRCARROW
 				//storeKey(key, props, calcNames);
 
 				// eventually, these should be the only separations
-				key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(),
+				key = updateLegacyKey(key, props, edgeSrcArrowLabel,
 				                      EDGE_SRCARROW_COLOR.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowColorCalculator");
 				storeKey(key, props, calcNames);
@@ -376,12 +378,12 @@ public class CalculatorIO {
 				storeKey(key, props, calcNames);
 
 				// separated target arrow into target color and target shape
-			} else if (key.startsWith(EDGE_TGTARROW.getPropertyLabel() + ".")) {
+			} else if (key.startsWith(edgeTgtArrowLabel + ".")) {
 				// this first store is to support deprecated EDGE_TGTARROW
 				//storeKey(key, props, calcNames);
 
 				// eventually, these should be the only separations
-				key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
+				key = updateLegacyKey(key, props, edgeTgtArrowLabel,
 				                      EDGE_TGTARROW_COLOR.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeTargetArrowColorCalculator");
 				storeKey(key, props, calcNames);
@@ -427,13 +429,13 @@ public class CalculatorIO {
 
 			// These change the visual styles (rather than calculators) so that the
 			// visual style, instead of mapping a TGTARROW, now maps a TGTARROW_SHAPE.
-			} else if (key.endsWith(EDGE_TGTARROW.getPropertyLabel())) {
-				key = updateLegacyKey(key, props, EDGE_TGTARROW.getPropertyLabel(),
+			} else if (key.endsWith(edgeTgtArrowLabel)) {
+				key = updateLegacyKey(key, props, edgeTgtArrowLabel,
 				                      EDGE_TGTARROW_SHAPE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.endsWith(EDGE_SRCARROW.getPropertyLabel())) {
-				key = updateLegacyKey(key, props, EDGE_SRCARROW.getPropertyLabel(),
+			} else if (key.endsWith(edgeSrcArrowLabel)) {
+				key = updateLegacyKey(key, props, edgeSrcArrowLabel,
 				                      EDGE_SRCARROW_SHAPE.getPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
 				storeKey(key, props, calcNames);
@@ -460,13 +462,13 @@ public class CalculatorIO {
 				                      EDGE_LINE_STYLE.getDefaultPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel())) {
-				key = updateLegacyKey(key, props, EDGE_TGTARROW.getDefaultPropertyLabel(),
+			} else if (key.endsWith(edgeTgtArrowDefaultLabel)) {
+				key = updateLegacyKey(key, props, edgeTgtArrowDefaultLabel,
 				                      EDGE_TGTARROW_SHAPE.getDefaultPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeTargetArrowShapeCalculator");
 				storeKey(key, props, calcNames);
-			} else if (key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
-				key = updateLegacyKey(key, props, EDGE_SRCARROW.getDefaultPropertyLabel(),
+			} else if (key.endsWith(edgeSrcArrowDefaultLabel)) {
+				key = updateLegacyKey(key, props, edgeSrcArrowDefaultLabel,
 				                      EDGE_SRCARROW_SHAPE.getDefaultPropertyLabel(),
 				                      "cytoscape.visual.calculators.GenericEdgeSourceArrowShapeCalculator");
 				storeKey(key, props, calcNames);
@@ -693,18 +695,6 @@ public class CalculatorIO {
 	private static String updateLegacyKey(String key, Properties props, String oldKey,
 	                                      String newKey, String newClass) {
 		String value = props.getProperty(key);
-
-		// Update arrow
-		if ((key.endsWith("equal") || key.endsWith("greater") || key.endsWith("lesser"))
-		    && (key.startsWith(EDGE_TGTARROW.getPropertyLabel() + ".")
-		       || key.startsWith(EDGE_SRCARROW.getPropertyLabel() + "."))) {
-			value = Arrow.parseArrowText(value).getShape().toString();
-		}
-
-		if (key.endsWith(EDGE_TGTARROW.getDefaultPropertyLabel())
-		    || key.endsWith(EDGE_SRCARROW.getDefaultPropertyLabel())) {
-			value = Arrow.parseArrowText(value).getShape().toString();
-		}
 
 		key = key.replace(oldKey, newKey);
 

@@ -42,18 +42,8 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import static cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_FACE;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_COLOR;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
-import static cytoscape.visual.VisualPropertyType.NODE_OPACITY;
-import static cytoscape.visual.VisualPropertyType.NODE_SHAPE;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_TOOLTIP;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 import giny.view.NodeView;
 

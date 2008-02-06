@@ -47,21 +47,6 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 //----------------------------------------------------------------------------
-import static cytoscape.visual.VisualPropertyType.EDGE_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_FONT_FACE;
-import static cytoscape.visual.VisualPropertyType.EDGE_FONT_SIZE;
-import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
-import static cytoscape.visual.VisualPropertyType.EDGE_LABEL_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_SHAPE;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_COLOR;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE;
-import static cytoscape.visual.VisualPropertyType.EDGE_TOOLTIP;
-import static cytoscape.visual.VisualPropertyType.EDGE_SRCARROW;
-import static cytoscape.visual.VisualPropertyType.EDGE_TGTARROW;
-
-import cytoscape.visual.parsers.ArrowParser;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.parsers.FontParser;

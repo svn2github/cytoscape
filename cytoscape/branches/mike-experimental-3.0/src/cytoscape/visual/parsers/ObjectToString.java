@@ -44,7 +44,6 @@ package cytoscape.visual.parsers;
 
 import cytoscape.util.Misc;
 
-import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.NodeShape;
 
@@ -70,8 +69,6 @@ public class ObjectToString {
             return Misc.getRGBText((Color) o);
         else if (o instanceof NodeShape)
             return NodeShape.getNodeShapeText((NodeShape) o);
-        else if (o instanceof Arrow)
-            return o.toString();
         else if (o instanceof Font)
             return getFontStringValue((Font) o);
         else if (o instanceof Number)

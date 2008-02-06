@@ -286,11 +286,6 @@
 			<compilerarg line="-Xmaxwarns 10000" />
 		</javac>
 
-		<!-- Run RMIC for BioDataServer -->
-		<rmic classname="cytoscape.data.servers.BioDataServerRmi" 
-		      base="${build.classes}" 
-		      classpathref="classpath" />
-
 		<!-- copy resources/ directory to build area -->
 		<echo>Copying resources/ directory to build</echo>
 		<copy todir="${build.classes}/cytoscape/resources">

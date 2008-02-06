@@ -41,7 +41,6 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
-import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ArrowShapeParser;

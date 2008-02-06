@@ -36,7 +36,7 @@ package cytoscape.visual.ui.icon;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.Arrow;
+import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 
 import java.awt.BasicStroke;
@@ -71,9 +71,9 @@ public class ArrowIcon extends VisualPropertyIcon {
 	 */
 	public ArrowIcon(Shape shape) {
 		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((Arrow) (VisualPropertyType.EDGE_SRCARROW
-		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle()))).getShape()
-		      .getName(), DEFAULT_ICON_COLOR);
+		     ((ArrowShape)VisualPropertyType.EDGE_SRCARROW_SHAPE
+		      .getDefault(Cytoscape.getVisualMappingManager().getVisualStyle())).getName(), 
+			  DEFAULT_ICON_COLOR);
 	}
 
 	/**

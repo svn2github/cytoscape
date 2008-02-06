@@ -147,10 +147,10 @@ public class VizMapPropertiesTest extends TestCase {
 //		checkCalculator(catalog.getEdgeLineTypeCalculator("BasicContinuous"));
 		System.out.println();
 
-		Collection edgeArrowCalcs = catalog.getCalculators(VisualPropertyType.EDGE_SRCARROW);
+		Collection edgeArrowCalcs = catalog.getCalculators(VisualPropertyType.EDGE_SRCARROW_SHAPE);
 		System.out.println("edgeArrowCalcs.size() = " + edgeArrowCalcs.size());
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_SRCARROW, "BasicDiscrete"));
-		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TGTARROW, "BasicContinuous"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_SRCARROW_SHAPE, "BasicDiscrete"));
+		checkCalculator(catalog.getCalculator(VisualPropertyType.EDGE_TGTARROW_SHAPE, "BasicContinuous"));
 		System.out.println();
 
 		Collection edgeLabelCalcs = catalog.getCalculators(VisualPropertyType.EDGE_LABEL);
