@@ -26,9 +26,9 @@
 <tr>
     <td>
     <span class='description'>
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-    Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-    ligula magna ac erat.
+    Infers an interaction between A and B entities if they belong to the same molecular complex.
+    This does not necessarily mean they directly physically interact. In a complex with n molecules,
+    this rule will create a clique composed of n(n-1)/2 interactions. The inferred interaction is undirected.
     </span>
     </td>
  </tr>
@@ -44,10 +44,29 @@
 <tr>
     <td>
     <span class='description'>
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-    Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-    ligula magna ac erat.
+    Infers an interaction between A and C entities if A is a component of C, which is a complex.
+    This interaction is transient in the sense that A component_of B and B component_of C implies A
+    component_of C. The inferred interaction is directed.
     </span>
+    </td>
+ </tr>
+
+<tr>
+    <td VALIGN=CENTER>
+        <span class="rule">CO_CONTROL_DEPENDENT_ANTI</span>
+    </td>
+    <td BGCOLOR="#FFFF00" VALIGN=CENTER>
+        &nbsp;
+    </td>
+</tr>
+<tr>
+    <td>
+        <span class='description'>
+        Infers an interaction between A and B entities if they exert control over the same process,
+        and their control is dependent, i.e. they both affect control of the most downstream process.
+        Also, their effect is in different directions (one of them activates, the other inhibits).
+        The inferred interaction is undirected.
+        </span>
     </td>
  </tr>
 
@@ -62,9 +81,10 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if they exert control over the same process,
+        and their control is dependent, i.e. they both affect control of the most downstream
+        process. Also, their effect is in the same direction (both activate or both inhibit).
+        The inferred interaction is undirected.
         </span>
     </td>
  </tr>
@@ -80,9 +100,10 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if they exert control over the same process,
+        and their control is independent, i.e. they act without affecting each other's activity.
+        Also, their effect is in different directions (one of them activates, the other inhibits).
+        The inferred interaction is undirected.
         </span>
     </td>
  </tr>
@@ -98,27 +119,10 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
-        </span>
-    </td>
- </tr>
-
-<tr>
-    <td VALIGN=CENTER>
-        <span class="rule">CONTROL_DEPENDENT_ANTI</span>
-    </td>
-    <td BGCOLOR="#FFFF00" VALIGN=CENTER>
-        &nbsp;
-    </td>
-</tr>
-<tr>
-    <td>
-        <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if they exert control over the same process,
+        and their control is independent, i.e. they act without affecting each other's activity.
+        Also, their effect is in the same direction (both activate or both inhibit).
+        The inferred interaction is undirected.
         </span>
     </td>
  </tr>
@@ -134,9 +138,10 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if A catalyses a reaction that either
+        consumes or produces B. More formally, this rule will connect two entities A and B if and
+        only if A controls a conversion which B participates and appears only on the left
+        or right side of the conversion but not both. The inferred interaction is directed.
         </span>
     </td>
  </tr>
@@ -152,9 +157,11 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if A catalyses a reaction that either
+        consumes or produces B. More formally, this rule will find an interaction between two
+        entities A and B if and only if A controls a conversion which B participates and
+        appears both on the left or right side of the conversion. The inferred interaction
+        is directed.
         </span>
     </td>
  </tr>
@@ -170,9 +177,9 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if they both participate in a conversion
+        as substrates or products. Controllers are not included. The inferred interaction
+        is undirected.
         </span>
     </td>
  </tr>
@@ -188,9 +195,8 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B entities if they both participate in an interaction.
+        Controllers are not included. The inferred interaction is undirected.
         </span>
     </td>
  </tr>
@@ -206,9 +212,9 @@
 <tr>
     <td>
         <span class='description'>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Proin cursus, nunc quis malesuada pellentesque, elit velit dictum diam, non pulvinar
-        ligula magna ac erat.
+        Infers an interaction between A and B if they catalyze two conversions that are connected
+        by a common molecule, and where potentially that common substrate is produced by the
+        former and consumed by the latter. The inferred interaction is directed.
         </span>
     </td>
  </tr>
