@@ -253,7 +253,7 @@ public class CPathProtocol {
         try {
             NameValuePair[] nvps = createNameValuePairs();
             String liveUrl = createURI(baseUrl, nvps);
-            //System.out.println("Connect:  " + liveUrl);
+            System.out.println("Connect:  " + liveUrl);
 
             // Create an instance of HttpClient.
             HttpClient client = new HttpClient();
@@ -449,12 +449,13 @@ class NameValuePair {
      */
     public NameValuePair (String name, String value) {
         this.name = name;
-		try {
-			this.value = URLEncoder.encode(value, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			this.value = value;
-		}
+		//try {
+			//this.value = URLEncoder.encode(value, "UTF-8");
+            this.value = value;
+        //        } catch (UnsupportedEncodingException e) {
+        //			e.printStackTrace();
+        //			this.value = value;
+        //		}
 	}
 
     /**
