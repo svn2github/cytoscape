@@ -2,19 +2,19 @@ package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-
+import giny.model.*;
 
 import java.awt.event.*;
 
 class menuActionPressed extends AbstractAction {
+	Node selectedNode;
     public menuActionPressed(String text, ImageIcon icon,
-                      String desc, Integer mnemonic) {
-        super(text, icon);
-        putValue(SHORT_DESCRIPTION, desc);
-        putValue(MNEMONIC_KEY, mnemonic);
+                      Node node, Integer mnemonic) {
+        super(text, icon);   
+        selectedNode = node;
     }
     public void actionPerformed(ActionEvent e) {
-        GUI yay = new GUI();
-        yay.loadGui();
+        GUI yay = new GUI(selectedNode);
+        yay.loadGui(selectedNode);
     }
 }

@@ -1,4 +1,6 @@
 package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
+
+import giny.model.Node;
 /*
  * GUI.java
  *
@@ -9,11 +11,16 @@ package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
  *
  * @author  Administrator
  */
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 public class GUI extends javax.swing.JFrame {
    
     /** Creates new form GUI */
-    public GUI() {
+    public GUI(Node nd) {
+    	node = nd;
+    	cyAtts = Cytoscape.getNodeAttributes();
+    	nodeId = node.getIdentifier();
         initComponents();
     }
    
@@ -63,7 +70,7 @@ public class GUI extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
  
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         titleText.setFont(new java.awt.Font("Tahoma", 1, 18));
         titleText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleText.setText("Pathway Walking Plugin");
@@ -74,7 +81,7 @@ public class GUI extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel3.setText("Database Name:");
  
-        nodeIDText.setText("default");
+        nodeIDText.setText(nodeId);
  
         databaseNameText.setText("default");
  
@@ -128,7 +135,9 @@ public class GUI extends javax.swing.JFrame {
  
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel5.setText("Nodes");
- 
+        
+        jList1.setListData(cyAtts.getAttributeNames()) ;
+        
         jScrollPane1.setViewportView(jList1);
  
         jLabel13.setFont(new java.awt.Font("Tahoma", 1, 12));
@@ -319,10 +328,11 @@ public class GUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public void loadGui() {
+    public void loadGui(Node nd) {
+    	final Node node = nd;
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUI().setVisible(true);
+        	public void run() {
+                new GUI(node).setVisible(true);
             }
         });
     }
@@ -366,6 +376,9 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nodeIDText;
     private javax.swing.JLabel titleText;
+    private String nodeId;
+    private Node node;
+    private CyAttributes cyAtts;
     // End of variables declaration                  
    
 }

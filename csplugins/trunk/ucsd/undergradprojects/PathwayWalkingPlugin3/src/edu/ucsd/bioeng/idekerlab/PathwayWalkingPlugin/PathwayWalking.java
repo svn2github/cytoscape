@@ -31,7 +31,7 @@ public class PathwayWalking {
 		Node n = mynode.getNode();
 		CyAttributes na = Cytoscape.getNodeAttributes();
 		menuActionPressed map =   new menuActionPressed(  "Get Neighbors", null,
-                n.getIdentifier(), new Integer(5));
+                n, new Integer(5));
 
 		final JMenuItem source = new JMenuItem(map);
 		source.setBackground(Color.red);
