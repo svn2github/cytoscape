@@ -15,8 +15,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -29,6 +27,7 @@ import java.util.zip.ZipEntry;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -153,6 +152,16 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	public static String UNCROSS_EDGES = "Uncross Edges";
 
+	public static String MOVE_FORWARD = "Bring Forward";
+
+	public static String MOVE_BACKWARD = "Send Backward";
+
+	public static String MOVE_TO_FRONT = "Bring To Front";
+
+	public static String MOVE_TO_BACK = "Send To Back";
+
+	public static String ORDER = "Order";
+
 	/**
 	 * For Cytoscape Menu
 	 */
@@ -229,6 +238,11 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		JMenuItem uncrossEdgesItem = new JMenuItem(UNCROSS_EDGES);
 		JMenuItem deleteRegionItem = new JMenuItem(DELETE_REGION);
 		JMenuItem layoutRegionItem = new JMenuItem(LAYOUT_REGION);
+		JMenu orderRegionSubmenu = new JMenu(ORDER);
+		JMenuItem forwardRegionItem = new JMenuItem(MOVE_FORWARD);
+		JMenuItem backwardRegionItem = new JMenuItem(MOVE_BACKWARD);
+		JMenuItem frontRegionItem = new JMenuItem(MOVE_TO_FRONT);
+		JMenuItem backRegionItem = new JMenuItem(MOVE_TO_BACK);
 		JMenuItem helpItem = new JMenuItem(ITEM_HELP);
 
 		// Tool tips per item
@@ -237,6 +251,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		deleteRegionItem.setToolTipText("Delete region");
 		layoutRegionItem
 				.setToolTipText("Run layout algorithm on all nodes associated with region");
+		orderRegionSubmenu.setToolTipText("Move regions forward and back");
 		helpItem.setToolTipText("Open online help");
 
 		// Popup action listeners per item
@@ -244,15 +259,24 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		uncrossEdgesItem.addActionListener(popupActionListener);
 		deleteRegionItem.addActionListener(popupActionListener);
 		layoutRegionItem.addActionListener(popupActionListener);
+		forwardRegionItem.addActionListener(popupActionListener);
+		backwardRegionItem.addActionListener(popupActionListener);
+		frontRegionItem.addActionListener(popupActionListener);
+		backRegionItem.addActionListener(popupActionListener);
 		helpItem.addActionListener(popupActionListener);
 
 		// Add items to context menu
+		orderRegionSubmenu.add(frontRegionItem);
+		orderRegionSubmenu.add(forwardRegionItem);
+		orderRegionSubmenu.add(backwardRegionItem);
+		orderRegionSubmenu.add(backRegionItem);
 		menu.add(uncrossEdgesItem);
 		menu.add(layoutRegionItem);
 		menu.add(deleteRegionItem);
+		menu.add(orderRegionSubmenu);
 		menu.add(helpItem);
 		menu.setVisible(false);
-
+		
 		/**
 		 * Cytoscape Menu Items: Layout > Delete All Regions Help > Bubble
 		 * Router Help
@@ -294,10 +318,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	private void preloadCellularComponents() {
 		try {
 			String path = this.getClass().getResource("data/").toString();
-			System.out.println("path: "+path);
+			System.out.println("path: " + path);
 			path = path.substring(path.indexOf("jar:file:") + 9, path
 					.indexOf("cytoscape/bubbleRouter/data"));
-			System.out.println("path: "+path);
+			System.out.println("path: " + path);
 			path = path.replace("!", "");
 
 			Enumeration files;
@@ -912,7 +936,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				groupName);
 		attributes.setAttribute(groupNode.getIdentifier(), REGION_COLORINT_ATT,
 				region.getColorIndex());
-		attributes.setAttribute(groupNode.getIdentifier(), REGION_NETWORK_ATT, 
+		attributes.setAttribute(groupNode.getIdentifier(), REGION_NETWORK_ATT,
 				Cytoscape.getCurrentNetwork().getIdentifier());
 
 		// Set Region Variables to Hidden
@@ -991,7 +1015,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				REGION_COLORINT_ATT);
 
 		String networkTarget = attributes.getStringAttribute(groupNode
-		    .getIdentifier(), REGION_NETWORK_ATT);
+				.getIdentifier(), REGION_NETWORK_ATT);
 
 		// TODO: rename GroupNode based on new viewID
 		// See if this is the network we want
@@ -1205,6 +1229,52 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			} else if ((label == ITEM_HELP) && (pickedRegion != null)) {
 				String helpURL = "http://www.genmapp.org/BubbleRouter/manual.htm";
 				cytoscape.util.OpenBrowser.openURL(helpURL);
+			} else if ((label == MOVE_TO_FRONT) && (pickedRegion != null)) {
+				((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(
+						LayoutRegionManager.REGION_CANVAS).setComponentZOrder(
+						pickedRegion, 0);
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			} else if ((label == MOVE_TO_BACK) && (pickedRegion != null)) {
+				((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(
+						LayoutRegionManager.REGION_CANVAS).setComponentZOrder(
+						pickedRegion, ((DGraphView) Cytoscape
+								.getCurrentNetworkView())
+								.getCanvas(
+										LayoutRegionManager.REGION_CANVAS)
+								.getComponentCount() - 1);
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			} else if ((label == MOVE_FORWARD) && (pickedRegion != null)) {
+				if (((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(
+						LayoutRegionManager.REGION_CANVAS).getComponentZOrder(
+						pickedRegion) > 0) {
+					((DGraphView) Cytoscape.getCurrentNetworkView())
+							.getCanvas(LayoutRegionManager.REGION_CANVAS)
+							.setComponentZOrder(
+									pickedRegion,
+									((DGraphView) Cytoscape
+											.getCurrentNetworkView())
+											.getCanvas(
+													LayoutRegionManager.REGION_CANVAS)
+											.getComponentZOrder(pickedRegion) - 1);
+				}
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			} else if ((label == MOVE_BACKWARD) && (pickedRegion != null)) {
+				if (((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas(
+						LayoutRegionManager.REGION_CANVAS).getComponentZOrder(
+						pickedRegion) < ((DGraphView) Cytoscape
+						.getCurrentNetworkView()).getCanvas(
+						LayoutRegionManager.REGION_CANVAS).getComponentCount()) {
+					((DGraphView) Cytoscape.getCurrentNetworkView())
+							.getCanvas(LayoutRegionManager.REGION_CANVAS)
+							.setComponentZOrder(
+									pickedRegion,
+									((DGraphView) Cytoscape
+											.getCurrentNetworkView())
+											.getCanvas(
+													LayoutRegionManager.REGION_CANVAS)
+											.getComponentZOrder(pickedRegion) + 1);
+				}
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 			} else {
 				// throw an exception here?
 				System.err.println("Unexpected Region popup option");

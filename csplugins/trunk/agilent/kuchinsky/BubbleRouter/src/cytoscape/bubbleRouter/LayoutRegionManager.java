@@ -25,7 +25,7 @@ public class LayoutRegionManager {
 	/**
 	 * canvas to add regions to -- currently BACKGROUND_CANVAS
 	 */
-	private static final Canvas REGION_CANVAS = DGraphView.Canvas.BACKGROUND_CANVAS;
+	public static final Canvas REGION_CANVAS = DGraphView.Canvas.BACKGROUND_CANVAS;
 
 	/**
 	 * Returns a list of of regions per view.
@@ -150,8 +150,8 @@ public class LayoutRegionManager {
 		// layout region
 		DGraphView dview = (DGraphView) view;
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
-		backgroundLayer.add(region);
-
+		backgroundLayer.add(region, 0);
+		
 		// oy what a hack: do an infinitesimal change of zoom factor so that it
 		// forces a viewport changed event,
 		// which enables us to get original viewport centerpoint and scale
@@ -182,8 +182,8 @@ public class LayoutRegionManager {
 		// layout region
 		DGraphView dview = (DGraphView) view;
 		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
-		backgroundLayer.add(region);
-
+		backgroundLayer.add(region, 0);
+		
 		// oy what a hack: do an infinitesimal change of zoom factor so that it
 		// forces a viewport changed event,
 		// which enables us to get original viewport centerpoint and scale
@@ -230,8 +230,8 @@ public class LayoutRegionManager {
 		DingCanvas myCanvas = ((DGraphView) Cytoscape.getCurrentNetworkView())
 				.getCanvas(REGION_CANVAS);
 
-		for (int i = myCanvas.getComponentCount(); i > 0; i--) {
-			LayoutRegion region = (LayoutRegion) myCanvas.getComponent(i - 1);
+		for (int i = 0; i < myCanvas.getComponentCount(); i++) {
+			LayoutRegion region = (LayoutRegion) myCanvas.getComponent(i);
 			if (region != null) {
 				if (isPointOnRegion(pt, region)) {
 					return region;
