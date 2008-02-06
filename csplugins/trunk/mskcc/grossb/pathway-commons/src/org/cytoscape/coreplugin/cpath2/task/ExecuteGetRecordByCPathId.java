@@ -5,9 +5,8 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.view.CyNetworkView;
+import cytoscape.CytoscapeInit;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.VisualMappingManager;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.web_service.*;
@@ -121,11 +120,16 @@ public class ExecuteGetRecordByCPathId implements Task {
             GraphReader reader = Cytoscape.getImportHandler().getReader(tmpFile.getAbsolutePath());
             taskMonitor.setStatus("Creating Cytoscape Network...");
             taskMonitor.setPercentCompleted(-1);
-            CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
-            // For the BINARY SIF Case
+            CyNetwork cyNetwork = null;
+            // Branch, based on download mode.
             if (config.getDownloadMode() == CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF) {
+                // create network, without the view.
+                cyNetwork = Cytoscape.createNetwork(reader, false, null);
                 postProcessingBinarySif(cyNetwork);
+            } else {
+                //  create network, with the view.
+                cyNetwork = Cytoscape.createNetwork(reader, true, null);
             }
 
             // update the task monitor
@@ -133,7 +137,6 @@ public class ExecuteGetRecordByCPathId implements Task {
             ret_val[0] = cyNetwork;
             ret_val[1] = networkTitle;
             Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
-            Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, ret_val);
 
             taskMonitor.setStatus("Done");
             taskMonitor.setPercentCompleted(100);
@@ -154,17 +157,58 @@ public class ExecuteGetRecordByCPathId implements Task {
      * Execute Post-Processing on BINARY SIF Network.
      * @param cyNetwork Cytoscape Network Object.
      */
-    private void postProcessingBinarySif(CyNetwork cyNetwork) {
+    private void postProcessingBinarySif(final CyNetwork cyNetwork) {
         Iterator nodeIterator = cyNetwork.nodesIterator();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
         //  Init the node attribute meta data, e.g. description, visibility, etc.
         MapNodeAttributes.initAttributes(nodeAttributes);
 
-        //  As of January 28, this call does not yet update the network view panel;
-        //  Refer to bug #1698.
-        cyNetwork.setTitle(networkTitle);
-        
+        //  Set the Quick Find Default Index
+        Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
+                "quickfind.default_index", "biopax.node_label");
+
+        //  Get all node details.
+        getNodeDetails(cyNetwork, nodeIterator, nodeAttributes);
+
+        //  Create the view, visual style, and layout.
+        if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+                        .getProperty("viewThreshold"))) {
+            taskMonitor.setStatus("Creating Network View...");
+            taskMonitor.setPercentCompleted(-1);            
+
+            //  Set up the right visual style
+            VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
+
+            //  Set up the right layout algorithm.
+            LayoutUtil layoutAlgorithm = new LayoutUtil();
+
+            //  Now, create the view.
+            Cytoscape.createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
+                    visualStyle);
+
+            // Set up clickable node details.
+            CytoscapeWrapper.initBioPaxPlugInUI();
+            final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+            NetworkListener networkListener = bpContainer.getNetworkListener();
+            networkListener.registerNetwork(cyNetwork);
+
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
+                    bpContainer.showLegend();
+                    Cytoscape.getCurrentNetworkView().fitContent();
+                    cyNetwork.setTitle(networkTitle);
+                }
+            });
+        }
+    }
+
+    /**
+     * Gets Details for Each Node from Web Service API.
+     */
+    private void getNodeDetails(CyNetwork cyNetwork, Iterator nodeIterator,
+            CyAttributes nodeAttributes) {
         taskMonitor.setStatus("Retrieving node details...");
         taskMonitor.setPercentCompleted(0);
         int numNodes = cyNetwork.nodesList().size();
@@ -198,32 +242,6 @@ public class ExecuteGetRecordByCPathId implements Task {
             taskMonitor.setPercentCompleted(percentComplete);
             counter++;
         }
-
-        //  Do Layout
-        LayoutUtil layoutUtil = new LayoutUtil();
-        layoutUtil.doLayout(Cytoscape.getCurrentNetworkView());
-
-        // now, also set up the right visual style
-        final VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
-        final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-        final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-        view.setVisualStyle(visualStyle.getName());
-        manager.setVisualStyle(visualStyle);
-        view.applyVizmapper(visualStyle);
-
-        // Now, set up clickable node details.
-        CytoscapeWrapper.initBioPaxPlugInUI();
-        final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-        NetworkListener networkListener = bpContainer.getNetworkListener();
-        networkListener.registerNetwork(cyNetwork);
-
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
-                bpContainer.showLegend();
-                Cytoscape.getCurrentNetworkView().fitContent();
-            }
-        });
     }
 
     private String convertToSifFileName (String networkFileName) {
