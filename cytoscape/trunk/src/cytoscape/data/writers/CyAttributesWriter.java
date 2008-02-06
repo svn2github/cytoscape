@@ -48,8 +48,9 @@ import java.util.Iterator;
 
 
 /**
- *
+ * Please use CyAttributesWriter2 instead.
  */
+@Deprecated
 public class CyAttributesWriter {
 	/**
 	 *  DOCUMENT ME!
