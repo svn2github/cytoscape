@@ -64,21 +64,12 @@ import javax.swing.event.SwingPropertyChangeSupport;
  * as well as the GraphPerspective inteface, and also provides the
  * functionality formally provided by GraphObjAttributes.
  *
- * The Network will notify listeners when nodes/edges are added/removed
- * and when relavant data changes.
  */
 public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyNetwork,
                                                                              GraphPerspective {
 	private static int uid_counter = 0;
 	private String identifier;
 	protected String title;
-
-	/**
-	 * The Network Listeners Set
-	 */
-
-	//TODO: implement the bean accepted way
-	protected Set listeners = new HashSet();
 
 	/**
 	 * The ClientData map
@@ -514,51 +505,6 @@ public class FingCyNetwork extends FingExtensibleGraphPerspective implements CyN
 	 */
 	public void deleteEdgeAttribute(String attribute) {
 		Cytoscape.getEdgeAttributes().deleteAttribute(attribute);
-	}
-
-	//------------------------------//
-	// Listener Methods
-	//------------------------------//
-
-	/**
-	 * Registers the argument as a listener to this object. Does nothing if
-	 * the argument is already a listener.
-	 */
-	public void addCyNetworkListener(CyNetworkListener listener) {
-		listeners.add(listener);
-	}
-
-	/**
-	 * Removes the argument from the set of listeners for this object. Returns
-	 * true if the argument was a listener before this call, false otherwise.
-	 */
-	public boolean removeCyNetworkListener(CyNetworkListener listener) {
-		return listeners.remove(listener);
-	}
-
-	/**
-	 * Returns the set of listeners registered with this object.
-	 */
-	public Set getCyNetworkListeners() {
-		return new HashSet(listeners);
-	}
-
-	//--------------------//
-	// Event Firing
-	//--------------------//
-
-	/**
-	 * Fires an event to all listeners registered with this object. The argument
-	 * should be a constant from the CyNetworkEvent class identifying the type
-	 * of the event.
-	 */
-	protected void fireEvent(int type) {
-		CyNetworkEvent event = new CyNetworkEvent(this, type);
-
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			CyNetworkListener listener = (CyNetworkListener) i.next();
-			listener.onCyNetworkEvent(event);
-		}
 	}
 
 	//----------------------------------------//

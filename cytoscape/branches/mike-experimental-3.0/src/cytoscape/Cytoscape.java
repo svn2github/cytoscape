@@ -52,7 +52,6 @@ import cytoscape.data.readers.BookmarkReader;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.GraphReader;
 
-import cytoscape.data.servers.BioDataServer;
 import cytoscape.data.servers.OntologyServer;
 
 import cytoscape.ding.CyGraphLOD;
@@ -316,7 +315,6 @@ public abstract class Cytoscape {
 	 */
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
-	private static BioDataServer bioDataServer;
 
 	/**
 	 * New ontology server. This will replace BioDataServer.
@@ -1548,30 +1546,6 @@ public abstract class Cytoscape {
 				}
 			}
 		}
-	}
-
-	/**
-	 * A BioDataServer should be loadable from a file systems file or from a
-	 * URL.
-	 */
-	public static BioDataServer loadBioDataServer(String location) {
-		try {
-			bioDataServer = new BioDataServer(location);
-		} catch (Exception e) {
-			System.err.println("Could not Load BioDataServer from: " + location);
-
-			return null;
-		}
-
-		return bioDataServer;
-	}
-
-	/**
-	 * @return the BioDataServer that was loaded, should not be null, but not
-	 *         contain any data.
-	 */
-	public static BioDataServer getBioDataServer() {
-		return bioDataServer;
 	}
 
 	/**

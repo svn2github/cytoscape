@@ -52,8 +52,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.Interaction;
 
-import cytoscape.data.servers.BioDataServer;
-
 import cytoscape.task.TaskMonitor;
 
 import cytoscape.util.FileUtil;

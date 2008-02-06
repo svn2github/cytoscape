@@ -44,8 +44,6 @@ import cytoscape.CytoscapeInit;
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 
-import cytoscape.data.servers.BioDataServer;
-
 import giny.model.Edge;
 
 import java.util.ArrayList;
@@ -139,25 +137,6 @@ public class Semantics {
 	 */
 	public static final String CELLULAR_COMPONENT = "cellular_component";
 
-	/**
-	 * This method should be called in the process of creating a new network, or
-	 * upon loading a new bioDataServer. This method will use the bioDataServer
-	 * to assign common names to the network using the synonym utilities of the
-	 * bioDataServer. In the process, it will assign a species attribute for any
-	 * name that does not currently have one.
-	 *
-	 * Currently, this method calls assignSpecies and assignCommonNames. At some
-	 * point it may be desirable to check the configuration to see what to do,
-	 * or put up a UI to prompt the user for what services they would like.
-	 *
-	 * KONO: 04/19/2006 Since attribute cannonical name no longer exists, these
-	 * names should be created node identifiers.
-	 *
-	 */
-	public static void applyNamingServices(final CyNetwork network) {
-		assignSpecies(network);
-		assignCommonNames(network, Cytoscape.getBioDataServer());
-	}
 
 	/**
 	 * This method attempts to set a species attribute for every canonical name
@@ -221,140 +200,6 @@ public class Semantics {
 		return returnSet;
 	}
 
-	/**
-	 * Use the given BioDataServer to set all of the aliases for a node, given
-	 * its species.<p>
-	 *
-	 * Note: This is only for GO data!
-	 *
-	 *
-	 * @param node
-	 *            the Node that will be assigned names
-	 * @param species
-	 *            the species of the Node ( NOTE: if null, there will be a check
-	 *            to see if the node has a species set for attribute
-	 *            Semantics.SPECIES, if not, then the general Cytoscape
-	 *            defaultSpecies ( settable with -s ) will be used. )
-	 * @param bds
-	 *            the given BioDataServer ( NOTE: if null, then the general
-	 *            Cytoscape BioDataServer will be used ( settable with -b ) ).
-	 */
-	public static void assignNodeAliases(final CyNode node, String species, BioDataServer bds) {
-		final String nodeID = node.getIdentifier();
-		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-
-		// can't have a null node
-		if (node == null) {
-			return;
-		}
-
-		// If species are null, use default species name
-		if (species == null) {
-			species = nodeAttributes.getStringAttribute(nodeID, SPECIES);
-
-			if (species == null) {
-				species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-			}
-		}
-
-		// Check for the case when we don't have a default species
-		if (species != null) {
-			nodeAttributes.setAttribute(nodeID, SPECIES, species);
-		}
-
-		// Get Gene Ontology Server
-		if (bds == null) {
-			bds = Cytoscape.getBioDataServer();
-		}
-
-		// return if no deafult BioDataServer
-		if (bds == null) {
-			return;
-		}
-
-		// now do the name assignment
-		// String nodeLabel = id;
-
-		// First, try to get aliases using the label.
-		final String[] synonyms = bds.getAllCommonNames(species, nodeID);
-
-		// Next,check the aliases, since nodeLabel can be a part of aliases.
-		final String canonicalFromAliases = bds.getCanonicalName(species, nodeID);
-		final String[] reverseSynonyms = bds.getAllCommonNames(species, canonicalFromAliases);
-
-		final Set synoSet = new TreeSet();
-
-		// StringBuffer concat = new StringBuffer();
-		String commonName = null;
-
-		/*
-		 * Check the normal synonyms.
-		 */
-		for (int j = 0; j < synonyms.length; ++j) {
-			if (!synonyms[j].equals(nodeID)) {
-				synoSet.add(synonyms[j]);
-			}
-		}
-
-		/*
-		 * Check the reverse synonyms
-		 */
-		for (int i = 0; i < reverseSynonyms.length; ++i) {
-			if (!reverseSynonyms[i].equals(nodeID)) {
-				synoSet.add(reverseSynonyms[i]);
-			}
-		}
-
-		/*
-		 * Add canonical name obtained from alias.
-		 * This should be in the GO Aliases.
-		 */
-		if (!synoSet.contains(canonicalFromAliases)) {
-			synoSet.add(canonicalFromAliases);
-		}
-
-		/*
-		 * Set common name.
-		 * This choice is arbitrary.
-		 */
-		if ((canonicalFromAliases != null) && !canonicalFromAliases.equals(nodeID)) {
-			commonName = canonicalFromAliases;
-		} else if (synonyms.length != 0) {
-			commonName = synonyms[0];
-		} else if (synoSet.size() == 0) {
-			commonName = nodeID;
-			synoSet.add(commonName);
-		} else {
-			commonName = nodeID;
-		}
-
-		nodeAttributes.setListAttribute(nodeID, GO_ALIASES, new ArrayList(synoSet));
-		nodeAttributes.setAttribute(nodeID, GO_COMMON_NAME, commonName);
-	}
-
-	/**
-	 * This method takes every canonical name defines in the node attributes of
-	 * the given network, and attempts to assign a common name by getting a list
-	 * of synonyms for the canonical name from the bioDataServer and using the
-	 * first synonym as the common name.
-	 *
-	 * This operation requires the SPECIES attribute to be defined for the
-	 * canonical name, as input to the bioDataServer. Any canonicalName that
-	 * does not have this attribute defined is skipped.
-	 *
-	 * This method does nothing if either argument is null. Also, for any
-	 * canonical name, this method does nothing if no synonyms for that name can
-	 * be provided by the bioDataServer.
-	 */
-	public static void assignCommonNames(final CyNetwork network, final BioDataServer bioDataServer) {
-		if ((network == null) || (bioDataServer == null)) {
-			return;
-		}
-
-		for (Iterator it = network.nodesIterator(); it.hasNext();) {
-			assignNodeAliases((CyNode) it.next(), null, bioDataServer);
-		}
-	}
 
 	/**
 	 * Returns an array containing all of the unique interaction types present
@@ -483,23 +328,6 @@ public class Semantics {
 				returnList.add(commonName);
 			}
 
-			species = Cytoscape.getNodeAttributes().getStringAttribute(name, SPECIES);
-		}
-
-		species = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-
-		if (species != null) {
-			BioDataServer bds = Cytoscape.getBioDataServer();
-
-			if (bds != null)
-				returnList.addAll(Arrays.asList(bds.getAllCommonNames(species, name)));
-
-			// we assume that this list of synonyms from the bioDataServer
-			// includes
-			// any canonical and common names registered with the node
-			// attributes,
-			// so we don't have to get a canonical name from the bioDataServer
-			// and go back to the node attributes to check those attributes
 		}
 
 		return returnList;

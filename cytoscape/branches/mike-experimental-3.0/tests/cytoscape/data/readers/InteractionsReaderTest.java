@@ -46,8 +46,6 @@ import cytoscape.data.Interaction;
 
 import cytoscape.data.readers.InteractionsReader;
 
-import cytoscape.data.servers.BioDataServer;
-
 import giny.model.RootGraph;
 
 import junit.framework.*;
@@ -64,7 +62,6 @@ import java.util.Vector;
  */
 public class InteractionsReaderTest extends TestCase {
 	private boolean runAllTests = false;
-	private BioDataServer nullServer = null;
 	private String species = "unknown";
 
 	/**

@@ -48,9 +48,6 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 
-import cytoscape.dialogs.GridBagGroup;
-import cytoscape.dialogs.MiscGB;
-
 import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
 

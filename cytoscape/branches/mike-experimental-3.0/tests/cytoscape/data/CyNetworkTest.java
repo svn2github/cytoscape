@@ -240,21 +240,6 @@ public class CyNetworkTest extends TestCase {
 
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#addCyNetworkListener(cytoscape.CyNetworkListener)}
-	 * and {@link cytoscape.giny.CyNetwork#getCyNetworkListeners()}
-	 * and and {@link cytoscape.giny.CyNetwork#removeCyNetworkListener(cytoscape.CyNetworkListener}
-	 */
-	public void testCyNetworkListener() {
-		CyNetworkListener listener = new CyNetworkAdapter() {
-			public void onCyNetworkEvent(CyNetworkEvent event) {
-			}
-		};
-		network.addCyNetworkListener(listener);
-		assertEquals(network.getCyNetworkListeners().size(), 1);
-		assertTrue(network.removeCyNetworkListener(listener));
-	}
-
-	/**
 	/**
 	 * Test method for {@link cytoscape.giny.CyNetwork#addNode(int)}.
 	 */

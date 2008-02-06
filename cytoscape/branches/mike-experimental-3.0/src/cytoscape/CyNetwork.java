@@ -97,27 +97,6 @@ public interface CyNetwork extends GraphPerspective {
 	 */
 	public void appendNetwork(CyNetwork network);
 
-	// ------------------------------//
-	// Listener Methods
-	// ------------------------------//
-
-	/**
-	 * Registers the argument as a listener to this object. Does nothing if the
-	 * argument is already a listener.
-	 */
-	public void addCyNetworkListener(CyNetworkListener listener);
-
-	/**
-	 * Removes the argument from the set of listeners for this object. Returns
-	 * true if the argument was a listener before this call, false otherwise.
-	 */
-	public boolean removeCyNetworkListener(CyNetworkListener listener);
-
-	/**
-	 * Returns the set of listeners registered with this object.
-	 */
-	public Set getCyNetworkListeners();
-
 	/**
 	 * Sets the selected state of all nodes in this CyNetwork to true
 	 */
