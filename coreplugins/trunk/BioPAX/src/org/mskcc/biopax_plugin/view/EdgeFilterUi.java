@@ -10,6 +10,9 @@ import cytoscape.data.Semantics;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -52,7 +55,11 @@ public class EdgeFilterUi extends JDialog {
         Iterator interactionIterator = interactionSet.iterator();
 
         JPanel edgeSetPanel = new JPanel();
-        edgeSetPanel.setBorder(new TitledBorder("Edge Filter"));
+
+        Border emptyBorder = new EmptyBorder (10,10,10,100);
+        Border titledBorder = new TitledBorder ("Edge Filter");
+        CompoundBorder compoundBorder = new CompoundBorder (titledBorder, emptyBorder);
+        edgeSetPanel.setBorder(compoundBorder);
         edgeSetPanel.setLayout(new BoxLayout(edgeSetPanel, BoxLayout.Y_AXIS));
         while (interactionIterator.hasNext()) {
             String interactionType = (String) interactionIterator.next();
@@ -71,6 +78,20 @@ public class EdgeFilterUi extends JDialog {
         Container contentPane = this.getContentPane();
         contentPane.setLayout (new BorderLayout());
         contentPane.add(edgeSetPanel, BorderLayout.CENTER);
+
+        JPanel panel = new JPanel();
+        JButton closeButton = new JButton ("Close");
+        closeButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent actionEvent) {
+                EdgeFilterUi.this.dispose();
+
+            }
+        });
+        panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        panel.add(closeButton);
+        contentPane.add(panel, BorderLayout.SOUTH);
+
         this.setLocationRelativeTo(Cytoscape.getDesktop());
         this.pack();
         this.setVisible(true);
