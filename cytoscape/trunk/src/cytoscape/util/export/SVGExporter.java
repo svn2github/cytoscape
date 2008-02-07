@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import cytoscape.Cytoscape;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 
@@ -28,6 +29,8 @@ import org.freehep.graphics2d.VectorGraphics;
  */
 public class SVGExporter implements Exporter
 {
+	private boolean exportTextAsFont = true;
+
 	public SVGExporter()
 	{
 	}
@@ -48,10 +51,18 @@ public class SVGExporter implements Exporter
 	*/
 	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
+		DingNetworkView theView = (DingNetworkView) view;
+		theView.setPrintingTextAsShape(!exportTextAsFont);
+
 		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
 		VectorGraphics g = new SVGGraphics2D(stream, ifc);
 		g.startExport();
 		ifc.print(g);
 		g.endExport();
 	}
+	
+	public void setExportTextAsFont(boolean pExportTextAsFont) {
+		exportTextAsFont = pExportTextAsFont;
+	}
+
 }
