@@ -5,7 +5,7 @@ import java.awt.geom.*;
 import giny.model.*;
 
 
-public interface EdgeView  {
+public interface EdgeView  extends GraphViewObject {
   
   /**
    * Draws splined curves for edges.
@@ -56,10 +56,6 @@ public interface EdgeView  {
    */
   public Edge getEdge();
 
-  /**
-   * @return the GraphView we are in
-   */
-  public GraphView getGraphView ();
 
   /**
    * @param width set a new line width for this edge

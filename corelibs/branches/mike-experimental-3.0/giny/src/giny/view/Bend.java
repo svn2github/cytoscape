@@ -23,7 +23,7 @@ public interface  Bend {
 	/**
 	 * Returns a (new) List of clones of the Point2Ds that locate the handles.
 	 */
-	public java.util.List getHandles();
+	public java.util.List<Point2D> getHandles();
 
 	/**
 	 *  Moves the handle specified at the given index to the given point.

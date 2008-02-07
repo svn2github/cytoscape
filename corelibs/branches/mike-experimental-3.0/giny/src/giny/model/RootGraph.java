@@ -2,7 +2,6 @@ package giny.model;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import java.beans.PropertyChangeSupport;
@@ -102,13 +101,13 @@ public interface RootGraph {
    * @return an Iterator over the Nodes in this graph; each Object in the
    *   returned Iterator is of type giny.model.Node.
    */
-  public Iterator nodesIterator ();
+  public Iterator<Node> nodesIterator ();
 
   /**
    * Returns a list of Node objects.
    * @see #nodesIterator()
    */
-  public List nodesList ();
+  public List<Node> nodesList ();
 
   /**
    * Returns an array of node indices.
@@ -125,13 +124,13 @@ public interface RootGraph {
    * @return an Iterator over the Edges in this graph; each Object in the
    *   returned Iterator is of type giny.model.Edge.
    */
-  public Iterator edgesIterator ();
+  public Iterator<Edge> edgesIterator ();
 
   /**
    * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
-  public List edgesList ();
+  public List<Edge> edgesList ();
 
   /**
    * Returns an array of edge indices.
@@ -174,7 +173,7 @@ public interface RootGraph {
    * @see #removeNode(Node)
    * @see #removeNodes(int[])
    */
-  public List removeNodes ( List nodes );
+  public List<Node> removeNodes ( List<Node> nodes );
 
   /**
    * Remove the Nodes with the given indices (and all of those Nodes' incident
@@ -275,7 +274,7 @@ public interface RootGraph {
    * @see #removeEdge(Edge)
    * @see #removeEdges(int[])
    */
-  public List removeEdges ( List edges );
+  public List<Edge> removeEdges ( List<Edge> edges );
 
   /**
    * Remove the Edges with the given indices from this RootGraph and all of its
@@ -378,7 +377,7 @@ public interface RootGraph {
 
   /**
    */
-  public List neighborsList ( Node node );
+  public List<Node> neighborsList ( Node node );
 
   /**
    */
@@ -496,7 +495,7 @@ public interface RootGraph {
    * <tt>to</tt> Node, or the empty List if none exist; null is returned if either
    * of the specified nodes is not in this RootGraph.
    */
-  public List edgesList ( Node from, Node to );
+  public List<Edge> edgesList ( Node from, Node to );
 
   /**
    * Return an array of the indices of all Edges from the Node with the first
@@ -510,7 +509,7 @@ public interface RootGraph {
    * <tt>to_node_index</tt>, or the empty List if none exist; null is returned
    * if either of the specified nodes does not exist in this RootGraph.
    */
-  public List edgesList (int from_node_index,
+  public List<Edge> edgesList (int from_node_index,
                          int to_node_index,
                          boolean include_undirected_edges
                          );

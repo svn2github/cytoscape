@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
  
  * @author Rowan Christmas
  */
-public interface NodeView  {
+public interface NodeView  extends GraphViewObject {
   
   public static final int TRIANGLE = 0;
   public static final int DIAMOND = 1;
@@ -19,11 +19,6 @@ public interface NodeView  {
   public static final int PARALELLOGRAM = 5;
   public static final int RECTANGLE = 6;
   public static final int ROUNDED_RECTANGLE = 7;
-
-  /**
-   * @return the view we are in
-   */
-  public GraphView getGraphView() ;
 
   /**
    * @return The Node we are a view on
@@ -44,7 +39,7 @@ public interface NodeView  {
   /**
    * @return The list of EdgeViews connecting these two nodes. Possibly null.
    */
-  public java.util.List getEdgeViewsList(NodeView otherNode) ;
+  public java.util.List<EdgeView> getEdgeViewsList(NodeView otherNode) ;
 
   /**
    * Shape is currently defined via predefined variables in 

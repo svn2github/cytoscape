@@ -46,14 +46,14 @@ public interface GraphPerspective {
    * @return an Iterator over the Nodes in this graph; each Object in the
    *   returned Iterator is of type giny.model.Node.
    */
-   public Iterator nodesIterator () ;
+   public Iterator<Node> nodesIterator () ;
    
  
   /**
    * Returns a list of Node objects.
    * @see #nodesIterator()
    */
-   public List nodesList () ;
+   public List<Node> nodesList () ;
  
   /**
    * Returns an array of length getNodeCount(); the array contains
@@ -67,13 +67,13 @@ public interface GraphPerspective {
   /**
    * @return an Iterator over the Edges in this graph.
    */
-   public Iterator edgesIterator () ;
+   public Iterator<Edge> edgesIterator () ;
    
   /**
    * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
-   public List edgesList () ;
+   public List<Edge> edgesList () ;
  
   /**
    * Returns an array of length getEdgeCount(); the array contains
@@ -159,14 +159,14 @@ public interface GraphPerspective {
    * @see #restoreNode(Node)
    * @see #restoreNodes(int[])
    */
-  public List restoreNodes ( List nodes ) ;
+  public List<Node> restoreNodes ( List<Node> nodes ) ;
   
   /**
    * @see #restoreNodes(int[])
    * @see #restoreEdges(int[])
    * @see RootGraph#getConnectingEdgeIndicesArray(int[])
    */
-  public List restoreNodes (List nodes, boolean restore_incident_edges);
+  public List<Node> restoreNodes (List<Node> nodes, boolean restore_incident_edges);
   
   /**
    * If this GraphPerspective hides any of the Nodes with the given RootGraph
@@ -225,7 +225,7 @@ public interface GraphPerspective {
    * @see #hideEdge(Edge)
    * @see #hideEdges(int[])
    */
-   public List hideEdges ( List edges ) ;
+   public List<Edge> hideEdges ( List<Edge> edges ) ;
  
   /**
    * If this GraphPerspective does not hide any of the Edges corresponding to
@@ -266,7 +266,7 @@ public interface GraphPerspective {
   /**
    * @see #restoreEdges(int[])
    */
-   public List restoreEdges ( List edges ) ;
+   public List<Edge> restoreEdges ( List<Edge> edges ) ;
  
   /**
    * If this GraphPerspective hides any of the Edges corresponding to the
@@ -383,7 +383,7 @@ public interface GraphPerspective {
   /**
    * @see #neighborsArray(int)
    */
-   public List neighborsList ( Node node ) ;
+   public List<Node> neighborsList ( Node node ) ;
 
   /**
    *   Please note that the definition
@@ -495,7 +495,7 @@ public interface GraphPerspective {
    * <tt>to</tt> Node, or the empty List if none exist; null is returned if either
    * of the specified nodes is not in this GraphPerspective.
    */
-   public List edgesList ( Node from, Node to ) ;
+   public List<Edge> edgesList ( Node from, Node to ) ;
  
   /**
    * Return an array of the indices in this GraphPerspective of all Edges from
@@ -513,7 +513,7 @@ public interface GraphPerspective {
    * if either of the specified nodes does not exist in this GraphPerspective.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
-  public List edgesList (int from_node_index,
+  public List<Edge> edgesList (int from_node_index,
                          int to_node_index,
                          boolean include_undirected_edges
                          );
@@ -765,7 +765,7 @@ public interface GraphPerspective {
    *   exist in this GraphPerspective.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
-  public List getAdjacentEdgesList ( Node node, boolean include_undirected_edges, boolean incoming_edges, boolean outgoing_edges );
+  public List<Edge> getAdjacentEdgesList ( Node node, boolean include_undirected_edges, boolean incoming_edges, boolean outgoing_edges );
 
   /**
    * Returns [RootGraph] indices of all Edges in this GraphPerspective
@@ -808,7 +808,7 @@ public interface GraphPerspective {
   /**
    * This will return a List of giny.model.Edge objects that are the Edges between Nodes.
    */
-  public List getConnectingEdges ( List nodes );
+  public List<Edge> getConnectingEdges ( List<Node> nodes );
 
   /**
    * This will return an array of Edge indices that are the Edges between Nodes.

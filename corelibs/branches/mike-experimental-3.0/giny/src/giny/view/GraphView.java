@@ -81,7 +81,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return a list of the selected NodeView
    */
-  public List getSelectedNodes();
+  public List<NodeView> getSelectedNodes();
 
   /**
    * @return an int array of the graph perspective indices of the selected edges
@@ -91,7 +91,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return a list of the selected EdgeView
    */
-  public List getSelectedEdges();
+  public List<EdgeView> getSelectedEdges();
 
   /**
    * Adds a new GraphViewChangeListener to this GraphViews list of listeners.
@@ -277,20 +277,20 @@ public static int NODE_X_POSITION = 0;
   /**
    * Return all of the EdgeViews in this GraphView
    */
-  public java.util.List getEdgeViewsList();
+  public java.util.List<EdgeView> getEdgeViewsList();
   
   /**
    * Note that this will return a list of Edge objects, the other one will return indices
    * @return The list of EdgeViews connecting these two nodes. Possibly null.
    */
-  public  java.util.List getEdgeViewsList(
+  public  java.util.List<EdgeView> getEdgeViewsList(
                                           Node oneNode,
                                           Node otherNode);
   
   /**
    * @return a List of indicies
    */
-  public  java.util.List getEdgeViewsList(
+  public  java.util.List<EdgeView> getEdgeViewsList(
                                           int from_node_index,
                                           int to_node_index,
                                           boolean include_undirected_edges);
@@ -303,7 +303,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * Return all of the EdgeViews in this GraphView
    */
-  public Iterator getEdgeViewsIterator();
+  public Iterator<EdgeView> getEdgeViewsIterator();
   
   /**
    * @return the EdgeView that corresponds to the given Edge
@@ -334,13 +334,13 @@ public static int NODE_X_POSITION = 0;
    * <B> Warning!!!!!!!</B><BR>
    * Only to be used for homogenous groups!!!!
    */
-  public boolean hideGraphObjects(List objects);
+  public boolean hideGraphObjects(List<? extends GraphViewObject> objects);
   
   /**
    * <B> Warning!!!!!!!</B><BR>
    * Only to be used for homogenous groups!!!!
    */
-  public boolean showGraphObjects(List objects);
+  public boolean showGraphObjects(List<? extends GraphViewObject> objects);
   
 
   /**

@@ -45,7 +45,10 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
-           fork="${fork}"/>
+           fork="${fork}">
+       <compilerarg line="-Xlint:all -Xlint:-path"/>
+     </javac>
+
   </target>
 
   <!-- =================================================================== -->
