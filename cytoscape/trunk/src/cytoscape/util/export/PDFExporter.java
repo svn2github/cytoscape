@@ -14,15 +14,21 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
-
+import cytoscape.ding.DingNetworkView;
 /**
  * PDF exporter by the iText library.
  * @author Samad Lotia
  */
 public class PDFExporter implements Exporter
 {
+	private boolean exportTextAsFont = true;
+	
 	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
+
+		DingNetworkView theView = (DingNetworkView) view;
+		theView.setPrintingTextAsShape(!exportTextAsFont);
+		
 		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
 		Rectangle pageSize = PageSize.LETTER;
 		Document document = new Document(pageSize);
@@ -35,6 +41,7 @@ public class PDFExporter implements Exporter
 			double imageScale = Math.min(pageSize.getWidth()  / ((double) ifc.getWidth()),
 			                             pageSize.getHeight() / ((double) ifc.getHeight()));
 			g.scale(imageScale, imageScale);
+		
 			ifc.print(g);
 			g.dispose();
 		}
@@ -44,5 +51,9 @@ public class PDFExporter implements Exporter
 		}
 
 		document.close();
+	}
+	
+	public void setExportTextAsFont(boolean pExportTextAsFont) {
+		exportTextAsFont = pExportTextAsFont;
 	}
 }
