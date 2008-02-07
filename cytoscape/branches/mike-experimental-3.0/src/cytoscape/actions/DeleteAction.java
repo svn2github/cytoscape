@@ -29,8 +29,8 @@
 package cytoscape.actions;
 
 import giny.model.GraphObject;
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import giny.model.Edge;
+import giny.model.Node;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -99,25 +99,21 @@ public class DeleteAction extends CytoscapeAction {
 
 		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
 		CyNetwork cyNet = myView.getNetwork();
-		List<EdgeView> edgeViews = myView.getSelectedEdges();
-		List<NodeView> nodeViews = myView.getSelectedNodes();
-		CyNode cyNode;
-		CyEdge cyEdge;
-		NodeView nv;
-		EdgeView ev;
+		List<Edge> edgeViews = myView.getSelectedEdges();
+		List<Node> nodeViews = myView.getSelectedNodes();
+		Node cyNode;
+		Edge cyEdge;
 
 		// if an argument exists, add it to the appropriate list
 		if (graphObj != null ) {
 			if ( graphObj instanceof giny.model.Node) {
-				cyNode = (CyNode) graphObj;
-				nv = Cytoscape.getCurrentNetworkView().getNodeView(cyNode);
-				if ( !nodeViews.contains(nv) )
-					nodeViews.add(nv);
+				cyNode = (Node) graphObj;
+				if ( !nodeViews.contains(cyNode) )
+					nodeViews.add(cyNode);
 			} else if ( graphObj instanceof giny.model.Edge) {
 				cyEdge = (CyEdge) graphObj;
-				ev = Cytoscape.getCurrentNetworkView().getEdgeView(cyEdge);
-				if ( !edgeViews.contains(ev) )
-					edgeViews.add(ev);
+				if ( !edgeViews.contains(cyEdge) )
+					edgeViews.add(cyEdge);
 			}
 		}
 
@@ -126,8 +122,7 @@ public class DeleteAction extends CytoscapeAction {
 
 		// add all node indices
 		for (int i = 0; i < nodeViews.size(); i++) {
-			nv = (NodeView) nodeViews.get(i);
-			cyNode = (CyNode) nv.getNode();
+			cyNode = nodeViews.get(i);
 			nodeIndices.add(cyNode.getRootGraphIndex());
 
 			// add adjacent edge indices for each node 
@@ -138,8 +133,7 @@ public class DeleteAction extends CytoscapeAction {
 
 		// add all selected edge indices
 		for (int i = 0; i < edgeViews.size(); i++) {
-			ev = (EdgeView) edgeViews.get(i); 
-			cyEdge = (CyEdge) ev.getEdge();
+			cyEdge = edgeViews.get(i); 
 			edgeIndices.add( cyEdge.getRootGraphIndex() );
 		}
 

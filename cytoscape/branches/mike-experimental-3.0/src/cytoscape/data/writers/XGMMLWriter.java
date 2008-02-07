@@ -63,6 +63,8 @@ import ding.view.DingCanvas;
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
+import giny.model.Node;
+import giny.model.Edge;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -417,7 +419,8 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeNodes() throws IOException {
-		for (CyNode curNode: (List<CyNode>)network.nodesList()) {
+		for (Node node: network.nodesList()) {
+			CyNode curNode = (CyNode)node;
 			if (!curNode.isaGroup())
 				writeNode(curNode, null);
 		}
@@ -604,7 +607,8 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeEdges() throws IOException {
-		for (CyEdge curEdge: (List<CyEdge>)network.edgesList()) {
+		for (Edge edge: network.edgesList()) {
+			CyEdge curEdge = (CyEdge)edge;
 			edgeMap.put(curEdge,curEdge);
 			writeEdge(curEdge);
 		}

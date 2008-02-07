@@ -125,19 +125,13 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 		}
 
 		// flag all nodes that are selected but not currently flagged
-		for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
-			NodeView nv = (NodeView) iter.next();
-			Node node = nv.getNode();
-			selectFilter.setSelected(node, true); // does nothing if already
-			                                   // flagged
+		for (Node node : selectedNodes) {
+			selectFilter.setSelected(node, true); // does nothing if already flagged
 		}
 
 		// flag all edges that are selected but not currently flagged
-		for (Iterator iter = selectedEdges.iterator(); iter.hasNext();) {
-			EdgeView ev = (EdgeView) iter.next();
-			Edge edge = ev.getEdge();
-			selectFilter.setSelected(edge, true); // does nothing if already
-			                                   // flagged
+		for (Edge edge : selectedEdges) {
+			selectFilter.setSelected(edge, true); // does nothing if already flagged
 		}
 	}
 

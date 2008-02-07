@@ -3660,7 +3660,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private Set<Object> loadID(final int nOre) {
 		Set<Object> ids = new TreeSet<Object>();
 
-		List<Object> obj;
+		List<? extends GraphObject> obj;
 
 		if (nOre == ObjectMapping.NODE_MAPPING) {
 			obj = Cytoscape.getCurrentNetworkView().getNetwork().nodesList();
@@ -3668,8 +3668,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			obj = Cytoscape.getCurrentNetworkView().getNetwork().edgesList();
 		}
 
-		for (Object o : obj) {
-			ids.add(((GraphObject) o).getIdentifier());
+		for (GraphObject o : obj) {
+			ids.add( o.getIdentifier());
 		}
 
 		return ids;
