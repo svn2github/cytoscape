@@ -34,15 +34,24 @@
 		<! ========== Main Contents ============ >
 		<!>
 		<div id="content">
+
+
 			<div class="item">
-				<h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5.1</h2>
+				<h2><i>NEW!</i> &nbsp;&nbsp;Cytoscape 2.5.2</h2>
+				<div class="paragraph">
+				This is a bug-fix release that addresses issues related to XGMML loading and parsing old vizmap.props files.  Enjoy!
+				</div>
+			</div>
+
+
+			<div class="item">
+				<h2>&nbsp;&nbsp;Cytoscape 2.5.1</h2>
 				<div class="paragraph">
 				A point release to address a variety of bugs in the 2.5.0 release.
 				</div>
 			</div>
-		</div>
 
-		<div id="content">
+
 			<div class="item">
 				<h2>&nbsp;&nbsp;Cytoscape 2.5.0</h2>
 				<a href="screenshots/2_5_ss1.png"><img src="screenshots/2_5_ss1_thumb.png" alt="Cytoscape 2.5 Screenshot" align="left" border="0"> </a>
@@ -99,7 +108,7 @@
 				</div>
 			</div>
 			<div class="item">
-				<h2><i>NEW!</i> &nbsp;&nbsp;<a href="retreat2007/index.php">Cytoscape Retreat 2007!</a></h2>
+				<h2>&nbsp;&nbsp;<a href="retreat2007/index.php">Cytoscape Retreat 2007!</a></h2>
 				<a href="retreat2007/venue.php"><img src="retreat2007/images/magere-brug-small.jpg" alt="Amsterdam by night" border="0"> </a>
 				<div class="paragraph">
 						Now in Europe! November 6<sup>th</sup> - 9<sup>th</sup><br>
