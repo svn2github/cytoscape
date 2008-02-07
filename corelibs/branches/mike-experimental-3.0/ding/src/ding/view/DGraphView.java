@@ -60,6 +60,7 @@ import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;
+import giny.view.GraphViewObject;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -176,12 +177,12 @@ public class DGraphView implements GraphView, Printable {
 	/**
 	 *
 	 */
-	HashMap m_nodeViewMap;
+	HashMap<Integer,NodeView> m_nodeViewMap;
 
 	/**
 	 *
 	 */
-	HashMap m_edgeViewMap;
+	HashMap<Integer,EdgeView> m_edgeViewMap;
 
 	/**
 	 *
@@ -314,8 +315,8 @@ public class DGraphView implements GraphView, Printable {
 		m_spacialA = new RTree();
 		m_nodeDetails = new DNodeDetails(this);
 		m_edgeDetails = new DEdgeDetails(this);
-		m_nodeViewMap = new HashMap();
-		m_edgeViewMap = new HashMap();
+		m_nodeViewMap = new HashMap<Integer,NodeView>();
+		m_edgeViewMap = new HashMap<Integer,EdgeView>();
 		m_printLOD = new PrintLOD();
 		m_defaultNodeXMin = 0.0f;
 		m_defaultNodeYMin = 0.0f;
@@ -472,17 +473,17 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return A list of selected node objects.
 	 */
-	public List getSelectedNodes() {
+	public List<Node> getSelectedNodes() {
 		synchronized (m_lock) {
 			// all nodes from the btree
 			final IntEnumerator elms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
 			                                                       Integer.MAX_VALUE, false);
-			final ArrayList returnThis = new ArrayList();
+			final ArrayList<Node> returnThis = new ArrayList<Node>();
 
 			while (elms.numRemaining() > 0)
 				// GINY requires all node indices to be negative (why?), 
 				// hence the bitwise complement here.
-				returnThis.add(m_nodeViewMap.get(new Integer(~elms.nextInt())));
+				returnThis.add(m_nodeViewMap.get(new Integer(~elms.nextInt())).getNode());
 
 			return returnThis;
 		}
@@ -511,14 +512,14 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return A list of selected edge objects.
 	 */
-	public List getSelectedEdges() {
+	public List<Edge> getSelectedEdges() {
 		synchronized (m_lock) {
 			final IntEnumerator elms = m_selectedEdges.searchRange(Integer.MIN_VALUE,
 			                                                       Integer.MAX_VALUE, false);
-			final ArrayList returnThis = new ArrayList();
+			final ArrayList<Edge> returnThis = new ArrayList<Edge>();
 
 			while (elms.numRemaining() > 0)
-				returnThis.add(m_edgeViewMap.get(new Integer(~elms.nextInt())));
+				returnThis.add(m_edgeViewMap.get(new Integer(~elms.nextInt())).getEdge());
 
 			return returnThis;
 		}
@@ -1002,7 +1003,7 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Iterator getNodeViewsIterator() {
+	public Iterator<NodeView> getNodeViewsIterator() {
 		synchronized (m_lock) {
 			return m_nodeViewMap.values().iterator();
 		}
@@ -1073,10 +1074,10 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getEdgeViewsList() {
+	public List<EdgeView> getEdgeViewsList() {
 		synchronized (m_lock) {
-			final ArrayList returnThis = new ArrayList(m_edgeViewMap.size());
-			final Iterator values = m_edgeViewMap.values().iterator();
+			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>(m_edgeViewMap.size());
+			final Iterator<EdgeView> values = m_edgeViewMap.values().iterator();
 
 			while (values.hasNext())
 				returnThis.add(values.next());
@@ -1099,17 +1100,17 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getEdgeViewsList(Node oneNode, Node otherNode) {
+	public List<EdgeView> getEdgeViewsList(Node oneNode, Node otherNode) {
 		synchronized (m_lock) {
-			List edges = m_structPersp.edgesList(oneNode.getRootGraphIndex(),
+			List<Edge> edges = m_structPersp.edgesList(oneNode.getRootGraphIndex(),
 			                                     otherNode.getRootGraphIndex(), true);
 
 			if (edges == null) {
 				return null;
 			}
 
-			final ArrayList returnThis = new ArrayList();
-			Iterator it = edges.iterator();
+			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>();
+			Iterator<Edge> it = edges.iterator();
 
 			while (it.hasNext()) {
 				Edge e = (Edge) it.next();
@@ -1133,16 +1134,16 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getEdgeViewsList(int oneNodeInx, int otherNodeInx, boolean includeUndirected) {
+	public List<EdgeView> getEdgeViewsList(int oneNodeInx, int otherNodeInx, boolean includeUndirected) {
 		synchronized (m_lock) {
-			List edges = m_structPersp.edgesList(oneNodeInx, otherNodeInx, includeUndirected);
+			List<Edge> edges = m_structPersp.edgesList(oneNodeInx, otherNodeInx, includeUndirected);
 
 			if (edges == null) {
 				return null;
 			}
 
-			final ArrayList returnThis = new ArrayList();
-			Iterator it = edges.iterator();
+			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>();
+			Iterator<Edge> it = edges.iterator();
 
 			while (it.hasNext()) {
 				Edge e = (Edge) it.next();
@@ -1179,7 +1180,7 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Iterator getEdgeViewsIterator() {
+	public Iterator<EdgeView> getEdgeViewsIterator() {
 		synchronized (m_lock) {
 			return m_edgeViewMap.values().iterator();
 		}
@@ -1424,8 +1425,8 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean hideGraphObjects(List objects) {
-		final Iterator it = objects.iterator();
+	public boolean hideGraphObjects(List<? extends GraphViewObject> objects) {
+		final Iterator<? extends GraphViewObject> it = objects.iterator();
 
 		while (it.hasNext())
 			hideGraphObject(it.next());
@@ -1441,8 +1442,8 @@ public class DGraphView implements GraphView, Printable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean showGraphObjects(List objects) {
-		final Iterator it = objects.iterator();
+	public boolean showGraphObjects(List<? extends GraphViewObject> objects) {
+		final Iterator<? extends GraphViewObject> it = objects.iterator();
 
 		while (it.hasNext())
 			showGraphObject(it.next());

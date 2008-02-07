@@ -59,6 +59,7 @@ import undo.Undo;
  * A Ding specific undoable edit.
  */
 public class ViewChangeEdit extends AbstractUndoableEdit {
+	private final static long serialVersionUID = 1202416511789433L;
 
 	private ViewState origState;
 	private ViewState newState;

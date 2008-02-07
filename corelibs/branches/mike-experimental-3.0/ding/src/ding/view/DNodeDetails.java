@@ -61,19 +61,19 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 	// The values are Byte objects; the bytes are shapes defined in
 	// cytoscape.render.immed.GraphGraphics.
-	final HashMap m_shapes = new HashMap();
-	final HashMap m_fillPaints = new HashMap();
-	final HashMap m_borderWidths = new HashMap();
-	final HashMap m_borderPaints = new HashMap();
-	final HashMap m_labelCounts = new HashMap();
-	final HashMap m_labelTexts = new HashMap();
-	final HashMap m_labelFonts = new HashMap();
-	final HashMap m_labelPaints = new HashMap();
-	final HashMap m_labelTextAnchors = new HashMap();
-	final HashMap m_labelNodeAnchors = new HashMap();
-	final HashMap m_labelJustifys = new HashMap();
-	final HashMap m_labelOffsetXs = new HashMap();
-	final HashMap m_labelOffsetYs = new HashMap();
+	final HashMap<Integer,Object> m_shapes = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_fillPaints = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_borderWidths = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_borderPaints = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelCounts = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelTextAnchors = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelNodeAnchors = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelJustifys = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelOffsetXs = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelOffsetYs = new HashMap<Integer,Object>();
+	final HashMap<Long,Paint> m_labelPaints = new HashMap<Long,Paint>();
+	final HashMap<Long,Object> m_labelTexts = new HashMap<Long,Object>();
+	final HashMap<Long,Font> m_labelFonts = new HashMap<Long,Font>();
 
 	DNodeDetails(DGraphView view) {
 		m_view = view;
@@ -307,12 +307,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public Font labelFont(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Object o = m_labelFonts.get(new Long(key));
+		final Font o = m_labelFonts.get(new Long(key));
 
 		if (o == null)
 			return super.labelFont(node, labelInx);
 
-		return (Font) o;
+		return o;
 	}
 
 	/*
@@ -337,12 +337,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public Paint labelPaint(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Object o = m_labelPaints.get(new Long(key));
+		final Paint o = m_labelPaints.get(new Long(key));
 
 		if (o == null)
 			return super.labelPaint(node, labelInx);
 
-		return (Paint) o;
+		return o;
 	}
 
 	/*

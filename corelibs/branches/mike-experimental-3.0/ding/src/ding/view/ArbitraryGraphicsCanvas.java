@@ -64,6 +64,7 @@ import java.util.Map;
  * used for arbitrary graphics drawing (background & foreground panes).
  */
 public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChangeListener {
+	private final static long serialVersionUID = 1202416510975364L;
 	/**
 	 * Testing boolean to quickly turn on/off anchor nodes.
 	 */

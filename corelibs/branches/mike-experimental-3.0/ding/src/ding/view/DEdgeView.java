@@ -81,7 +81,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	Paint m_targetSelectedPaint;
 	int m_sourceEdgeEnd; // One of the EdgeView edge end constants.
 	int m_targetEdgeEnd; // Ditto.
-	ArrayList m_anchors; // A list of Point2D objects.
+	ArrayList<Point2D> m_anchors; // A list of Point2D objects.
 	int m_lineType;
 	String m_toolTipText = null;
 
@@ -999,9 +999,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List getHandles() {
+	public List<Point2D> getHandles() {
 		synchronized (m_view.m_lock) {
-			final ArrayList returnThis = new ArrayList();
+			final ArrayList<Point2D> returnThis = new ArrayList<Point2D>();
 
 			if (m_anchors == null)
 				return returnThis;
@@ -1155,7 +1155,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			addThis.setLocation(pt);
 
 			if (m_anchors == null)
-				m_anchors = new ArrayList();
+				m_anchors = new ArrayList<Point2D>();
 
 			m_anchors.add(insertInx, addThis);
 

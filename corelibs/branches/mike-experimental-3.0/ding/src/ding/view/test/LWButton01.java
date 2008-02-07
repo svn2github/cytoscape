@@ -82,6 +82,7 @@ import java.awt.event.*;
 
 //=======================================================//
 class LWButton01 extends Component {
+	private final static long serialVersionUID = 1202416512246930L;
 	//Save the raw label provided by the user here to make
 	// it available to the getLabel() method.
 	String rawLabel;

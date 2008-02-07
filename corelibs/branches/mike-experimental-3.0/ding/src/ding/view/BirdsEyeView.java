@@ -57,6 +57,7 @@ import java.awt.image.BufferedImage;
  * @author $author$
  */
 public class BirdsEyeView extends Component {
+	private final static long serialVersionUID = 1202416511863994L;
 	private final double[] m_extents = new double[4];
 	private DGraphView m_view;
 	private final ContentChangeListener m_cLis;

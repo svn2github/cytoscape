@@ -56,17 +56,17 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	final DGraphView m_view;
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
-	final HashMap m_segmentThicknesses = new HashMap();
-	final HashMap m_sourceArrows = new HashMap();
-	final HashMap m_sourceArrowPaints = new HashMap();
-	final HashMap m_targetArrows = new HashMap();
-	final HashMap m_targetArrowPaints = new HashMap();
-	final HashMap m_segmentPaints = new HashMap();
-	final HashMap m_segmentDashLengths = new HashMap();
-	final HashMap m_labelCounts = new HashMap();
-	final HashMap m_labelTexts = new HashMap();
-	final HashMap m_labelFonts = new HashMap();
-	final HashMap m_labelPaints = new HashMap();
+	final HashMap<Integer,Object> m_segmentThicknesses = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_sourceArrows = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_sourceArrowPaints = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_targetArrows = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_targetArrowPaints = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_segmentPaints = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_segmentDashLengths = new HashMap<Integer,Object>();
+	final HashMap<Integer,Object> m_labelCounts = new HashMap<Integer,Object>();
+	final HashMap<Long,String> m_labelTexts = new HashMap<Long,String>();
+	final HashMap<Long,Font> m_labelFonts = new HashMap<Long,Font>();
+	final HashMap<Long,Paint> m_labelPaints = new HashMap<Long,Paint>();
 
 	DEdgeDetails(DGraphView view) {
 		m_view = view;
@@ -510,12 +510,12 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public String labelText(int edge, int labelInx) {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
-		final Object o = m_labelTexts.get(new Long(key));
+		final String o = m_labelTexts.get(new Long(key));
 
 		if (o == null)
 			return super.labelText(edge, labelInx);
 
-		return (String) o;
+		return o;
 	}
 
 	/*
@@ -540,12 +540,12 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public Font labelFont(int edge, int labelInx) {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
-		final Object o = m_labelFonts.get(new Long(key));
+		final Font o = m_labelFonts.get(new Long(key));
 
 		if (o == null)
 			return super.labelFont(edge, labelInx);
 
-		return (Font) o;
+		return o;
 	}
 
 	/*
@@ -570,12 +570,12 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public Paint labelPaint(int edge, int labelInx) {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
-		final Object o = m_labelPaints.get(new Long(key));
+		final Paint o = m_labelPaints.get(new Long(key));
 
 		if (o == null)
 			return super.labelPaint(edge, labelInx);
 
-		return (Paint) o;
+		return o;
 	}
 
 	/*

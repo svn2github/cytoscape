@@ -42,6 +42,7 @@ import giny.view.GraphView;
 
 
 final class GraphViewEdgesHiddenEvent extends GraphViewChangeEventAdapter {
+	private final static long serialVersionUID = 120241651250257L;
 	private final GraphView m_view;
 	private final int[] m_hiddenEdgeInx;
 

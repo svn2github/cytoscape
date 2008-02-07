@@ -100,10 +100,10 @@ class ViewState {
 		    whatToSave == ViewChangeEdit.SavedObjs.SELECTED_NODES ) {
 			points = new HashMap<Node, Point2D.Double>();
 
-			Iterator<NodeView> nodeIter = view.getSelectedNodes().iterator();
+			Iterator<Node> nodeIter = view.getSelectedNodes().iterator();
 			while (nodeIter.hasNext()) {
-				NodeView nv = nodeIter.next();
-				Node n = nv.getNode();
+				Node n = nodeIter.next();
+				NodeView nv = view.getNodeView(n);
 				points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 			}
 		}
@@ -113,10 +113,10 @@ class ViewState {
 			anchors = new HashMap<Edge, List>();
 			linetype = new HashMap<Edge, Integer>();
 
-			Iterator<EdgeView> edgeIter = view.getSelectedEdges().iterator();
+			Iterator<Edge> edgeIter = view.getSelectedEdges().iterator();
 			while (edgeIter.hasNext()) {
-				EdgeView ev = edgeIter.next();
-				Edge e = ev.getEdge();
+				Edge e = edgeIter.next();
+				EdgeView ev = view.getEdgeView(e);
 				anchors.put(e, ev.getBend().getHandles());
 				linetype.put(e, ev.getLineType());
 			}

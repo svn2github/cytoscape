@@ -118,6 +118,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
                                                        java.awt.dnd.DropTargetListener,
                                                        PhoebeCanvasDroppable, KeyListener,
                                                        MouseWheelListener {
+	private final static long serialVersionUID = 1202416511420671L;
 	final double[] m_ptBuff = new double[2];
 	final float[] m_extentsBuff2 = new float[4];
 	final float[] m_floatBuff1 = new float[2];
@@ -160,7 +161,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	/**
 	 * DOCUMENT ME!
 	 */
-	public Vector listeners = new Vector();
+	public Vector<PhoebeCanvasDropListener> listeners = new Vector<PhoebeCanvasDropListener>();
 
 	/**
 	 * AJK: 01/12/07
@@ -168,7 +169,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * N.B. -- don't use this code -- just a quick fix that will be replaced in
 	 * Cytosape 2.5.
 	 */
-	private Vector transferComponents = new Vector();
+	private Vector<JComponent> transferComponents = new Vector<JComponent>();
 
 	//       AJK: 04/02/06 END
 	// AJK: 04/27/06 for context menus
@@ -176,12 +177,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	/**
 	 * DOCUMENT ME!
 	 */
-	public Vector nodeContextMenuListeners = new Vector();
+	public Vector<NodeContextMenuListener> nodeContextMenuListeners = new Vector<NodeContextMenuListener>();
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	public Vector edgeContextMenuListeners = new Vector();
+	public Vector<EdgeContextMenuListener> edgeContextMenuListeners = new Vector<EdgeContextMenuListener>();
 
 	InnerCanvas(Object lock, DGraphView view) {
 		super();
@@ -1269,10 +1270,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		Transferable t = event.getTransferable();
 		TransferHandler th;
 		JComponent jComp;
-		Iterator it = transferComponents.iterator();
+		Iterator<JComponent> it = transferComponents.iterator();
 
 		while (it.hasNext()) {
-			jComp = (JComponent) it.next();
+			jComp = it.next();
 			th = jComp.getTransferHandler();
 
 			if (th != null) {

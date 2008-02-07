@@ -42,6 +42,7 @@ import giny.view.GraphView;
 
 
 final class GraphViewEdgesRestoredEvent extends GraphViewChangeEventAdapter {
+	private final static long serialVersionUID = 120241651269164L;
 	private final GraphView m_view;
 	private final int[] m_restoredEdgeInx;
 

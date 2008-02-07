@@ -116,6 +116,7 @@ public class SanityTest {
 		EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					Frame f = new Frame() {
+	private final static long serialVersionUID = 1202416512279563L;
 						public void update(Graphics g) {
 							paint(g);
 						}
@@ -170,6 +171,7 @@ public class SanityTest {
 		EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					Frame f = new Frame() {
+	private final static long serialVersionUID = 1202416512293057L;
 						public void update(Graphics g) {
 							paint(g);
 						}

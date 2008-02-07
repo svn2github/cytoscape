@@ -45,6 +45,7 @@ import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;
 import giny.view.Label;
 import giny.view.NodeView;
+import giny.view.EdgeView;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -92,8 +93,8 @@ public class DNodeView implements NodeView, Label {
 	float m_hiddenXMax;
 	float m_hiddenYMax;
 
-	ArrayList m_graphicShapes;
-	ArrayList m_graphicPaints;
+	ArrayList<Shape> m_graphicShapes;
+	ArrayList<Paint> m_graphicPaints;
 
 	// AJK: 04/26/06 for tooltip
 	String m_toolTipText = null;
@@ -157,7 +158,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List getEdgeViewsList(NodeView otherNodeView) {
+	public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
 		synchronized (m_view.m_lock) {
 			return m_view.getEdgeViewsList(getNode(), otherNodeView.getNode());
 		}
@@ -921,7 +922,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public Shape getCustomGraphicShape(int index) {
 		synchronized (m_view.m_lock) {
-			return (Shape) m_graphicShapes.get(index);
+			return m_graphicShapes.get(index);
 		}
 	}
 
@@ -975,8 +976,8 @@ public class DNodeView implements NodeView, Label {
 				index = getCustomGraphicCount();
 
 			if (m_graphicShapes == null) {
-				m_graphicShapes = new ArrayList();
-				m_graphicPaints = new ArrayList();
+				m_graphicShapes = new ArrayList<Shape>();
+				m_graphicPaints = new ArrayList<Paint>();
 			}
 
 			m_graphicShapes.add(index, s);

@@ -42,6 +42,7 @@ package ding.view;
  *
  */
 public class InnerCanvasEvent extends java.util.EventObject {
+	private final static long serialVersionUID = 1202416512194586L;
 	/**
 	 * Constructor.
 	 */
