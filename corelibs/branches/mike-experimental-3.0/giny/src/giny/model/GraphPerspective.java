@@ -118,7 +118,7 @@ public interface GraphPerspective {
    * @see #hideNode(Node)
    * @see #hideNodes(int[])
    */
-   public List hideNodes ( List nodes ) ;
+   public List<Node> hideNodes ( List<Node> nodes ) ;
  
   /**
    * If this GraphPerspective does not hide any of the Nodes corresponding to
