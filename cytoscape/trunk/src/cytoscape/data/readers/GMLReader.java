@@ -1564,13 +1564,7 @@ public class GMLReader extends AbstractGraphReader {
 			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
 				graphStyle.buildStyle();
 								
-				applyMaps(null, null);
-
 				Cytoscape.getVisualMappingManager().setVisualStyle(styleName+ " style");
-
-				Cytoscape.getVisualMappingManager().getVisualStyle().setNodeAppearanceCalculator(nac);
-				Cytoscape.getVisualMappingManager().getVisualStyle().setEdgeAppearanceCalculator(eac);
-				Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalAppearanceCalculator(gac);
 				
 				Cytoscape.getVisualMappingManager().applyAppearances();
 				
