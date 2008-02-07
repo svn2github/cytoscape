@@ -98,8 +98,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 tmpFile =  File.createTempFile("temp", ".xml", new File(tmpDir));
                 format = CPathProtocol.FORMAT_BIOPAX;
             } else {
-                String tmpFileName = this.convertToSifFileName(networkTitle);
-                tmpFile =  File.createTempFile(tmpFileName, ".sif", new File(tmpDir));
+                tmpFile =  File.createTempFile("temp", ".sif", new File(tmpDir));
                 format = CPathProtocol.FORMAT_BINARY_SIF;
             }
             tmpFile.deleteOnExit();
