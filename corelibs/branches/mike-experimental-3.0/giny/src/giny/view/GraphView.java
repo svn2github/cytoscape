@@ -81,7 +81,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return a list of the selected NodeView
    */
-  public List<NodeView> getSelectedNodes();
+  public List<Node> getSelectedNodes();
 
   /**
    * @return an int array of the graph perspective indices of the selected edges
@@ -91,7 +91,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return a list of the selected EdgeView
    */
-  public List<EdgeView> getSelectedEdges();
+  public List<Edge> getSelectedEdges();
 
   /**
    * Adds a new GraphViewChangeListener to this GraphViews list of listeners.
