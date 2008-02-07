@@ -59,13 +59,16 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 	public void actionPerformed(ActionEvent e)
 	{
 		final ExportAsGraphicsFileChooser chooser = new ExportAsGraphicsFileChooser(FILTERS);
-		chooser.setVisible(true);
+
 		ActionListener listener = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent event)
 			{
 				ExportFilter filter = (ExportFilter) chooser.getSelectedFormat();
+				filter.setExportTextAsFont(chooser.getExportTextAsFont());
+
 				File file = chooser.getSelectedFile();
+				
 				chooser.dispose();
 
 				FileOutputStream stream = null;
@@ -85,6 +88,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 			}
 		};
 		chooser.addActionListener(listener);
+		chooser.setVisible(true);
 	}
 }
 
@@ -150,6 +154,7 @@ class ExportTask
 
 abstract class ExportFilter extends CyFileFilter
 {
+	protected boolean exportTextAsFont = false;
 	public ExportFilter(String extension, String description)
 	{
 		super(extension, description);
@@ -165,6 +170,14 @@ abstract class ExportFilter extends CyFileFilter
 		return getDescription();
 	}
 
+	public void setExportTextAsFont(boolean pExportTextAsFont) {
+		exportTextAsFont = pExportTextAsFont;
+	}
+	
+	public boolean getExportTextAsFont() {
+		return exportTextAsFont;
+	}
+	
 	public abstract void export(CyNetworkView view, FileOutputStream stream);
 }
 
@@ -177,6 +190,7 @@ class PDFExportFilter extends ExportFilter
 	public void export(final CyNetworkView view, final FileOutputStream stream)
 	{
 		PDFExporter exporter = new PDFExporter();
+		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to PDF", exporter, view, stream);
 	}
 }
@@ -219,6 +233,7 @@ class SVGExportFilter extends ExportFilter
 	public void export(final CyNetworkView view, final FileOutputStream stream)
 	{
 		SVGExporter exporter = new SVGExporter();
+		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to SVG", exporter, view, stream);
 	}
 }
