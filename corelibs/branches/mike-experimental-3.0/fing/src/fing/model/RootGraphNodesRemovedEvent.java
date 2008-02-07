@@ -41,6 +41,7 @@ import giny.model.RootGraph;
 
 
 final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362824948L;
 	private final Node[] m_removedNodes;
 
 	// Note that no copy of the array removedNodes is made - the exact

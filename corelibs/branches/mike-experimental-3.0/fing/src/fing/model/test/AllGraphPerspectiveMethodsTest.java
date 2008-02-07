@@ -166,7 +166,7 @@ public final class AllGraphPerspectiveMethodsTest {
 		Node[] twoNodes = new Node[] { (Node) nodesIter.next(), (Node) nodesIter.next() };
 
 		// nodesList().
-		List nodesList = persp.nodesList();
+		List<Node> nodesList = persp.nodesList();
 
 		if (nodesList.size() != 5)
 			throw new IllegalStateException("incorrect node List size");
@@ -193,7 +193,7 @@ public final class AllGraphPerspectiveMethodsTest {
 		Edge[] twoEdges = new Edge[] { (Edge) edgesIter.next(), (Edge) edgesIter.next() };
 
 		// edgesList().
-		List edgesList = persp.edgesList();
+		List<Edge> edgesList = persp.edgesList();
 
 		if (edgesList.size() != 7)
 			throw new IllegalStateException("incorrect edge List size");
@@ -345,7 +345,7 @@ public final class AllGraphPerspectiveMethodsTest {
 
 
 		// neighborsList(Node).
-		List neighList = persp.neighborsList(persp.getNode(nodeInx[0]));
+		List<Node> neighList = persp.neighborsList(persp.getNode(nodeInx[0]));
 
 		if (neighList.size() != 2)
 			throw new IllegalStateException("wrong number of neighbors");
@@ -363,7 +363,7 @@ public final class AllGraphPerspectiveMethodsTest {
 		int[] neighInx = new int[neighList.size()];
 
 		for (int i = 0; i < neighList.size(); i++) {
-			Node node = (Node) neighList.get(i);
+			Node node = neighList.get(i);
 			int nodeIndex = node.getRootGraphIndex();
 
 			if (persp.getNode(nodeIndex) == null)
@@ -930,7 +930,7 @@ public final class AllGraphPerspectiveMethodsTest {
 			throw new IllegalStateException("edge is directed");
 
 		// getAdjacentEdgesList(Node, boolean, boolean, boolean).
-		List adjacentEdges = persp.getAdjacentEdgesList(persp.getNode(nodeInx[2]), true, true, true);
+		List<Edge> adjacentEdges = persp.getAdjacentEdgesList(persp.getNode(nodeInx[2]), true, true, true);
 
 		if (adjacentEdges.size() != 4)
 			throw new IllegalStateException("expected 4 adjacent edges");
@@ -1027,12 +1027,12 @@ public final class AllGraphPerspectiveMethodsTest {
 			throw new IllegalStateException("expected null adjacent edge inx arr");
 
 		// getConnectingEdges(List).
-		ArrayList nodeInputList = new ArrayList(3);
+		ArrayList<Node> nodeInputList = new ArrayList<Node>(3);
 		nodeInputList.add(0, persp.getNode(nodeInx[0]));
 		nodeInputList.add(1, persp.getNode(nodeInx[3]));
 		nodeInputList.add(2, persp.getNode(nodeInx[2]));
 
-		List connectingEdgesList = persp.getConnectingEdges(nodeInputList);
+		List<Edge> connectingEdgesList = persp.getConnectingEdges(nodeInputList);
 
 		if (connectingEdgesList.size() != 3)
 			throw new IllegalStateException("expected 3 connecting edges");
@@ -1049,7 +1049,7 @@ public final class AllGraphPerspectiveMethodsTest {
 			if (((Edge) connectingEdgesList.get(i)).getRootGraphIndex() == edgeInx[6])
 				break;
 
-		nodeInputList = new ArrayList(3);
+		nodeInputList = new ArrayList<Node>(3);
 		nodeInputList.add(0, persp.getNode(nodeInx[2]));
 		nodeInputList.add(1, persp.getNode(nodeInx[0]));
 		nodeInputList.add(2, persp.getNode(nodeInx[1]));
@@ -1062,14 +1062,14 @@ public final class AllGraphPerspectiveMethodsTest {
 			if (((Edge) connectingEdgesList.get(i)).getRootGraphIndex() == edgeInx[6])
 				throw new IllegalStateException("wrong connecting edge");
 
-		nodeInputList = new ArrayList(2);
+		nodeInputList = new ArrayList<Node>(2);
 		nodeInputList.add(0, persp.getNode(nodeInx[0]));
 		nodeInputList.add(1, nodeNotInPersp);
 
 		if (persp.getConnectingEdges(nodeInputList) != null)
 			throw new IllegalStateException("expected null connecting edges");
 
-		nodeInputList = new ArrayList(2);
+		nodeInputList = new ArrayList<Node>(2);
 		nodeInputList.add(0, root2Node);
 		nodeInputList.add(1, persp.getNode(nodeInx[1]));
 

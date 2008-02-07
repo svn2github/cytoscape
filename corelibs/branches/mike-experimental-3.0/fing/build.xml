@@ -72,8 +72,8 @@
            optimize="${optimize}"
            fork="${fork}">
 <!--
-       <compilerarg line="-Xlint:all -Xlint:-path"/>
 -->
+       <compilerarg line="-Xlint:all -Xlint:-path"/>
 	   <compilerarg line="-Xmaxwarns 10000" />
      </javac>
      <echo message="Successfully ran compile task!"/>

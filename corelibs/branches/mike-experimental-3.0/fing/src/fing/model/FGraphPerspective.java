@@ -339,10 +339,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Iterator nodesIterator() {
+	public Iterator<Node> nodesIterator() {
 		final IntEnumerator nodes = m_graph.nodes();
 
-		return new Iterator() {
+		return new Iterator<Node>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -351,7 +351,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 					return nodes.numRemaining() > 0;
 				}
 
-				public Object next() {
+				public Node next() {
 					if (!hasNext()) {
 						throw new NoSuchElementException();
 					}
@@ -366,10 +366,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List nodesList() {
+	public java.util.List<Node> nodesList() {
 		final int nodeCount = getNodeCount();
-		final java.util.ArrayList returnThis = new java.util.ArrayList(nodeCount);
-		Iterator iter = nodesIterator();
+		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>(nodeCount);
+		Iterator<Node> iter = nodesIterator();
 
 		for (int i = 0; i < nodeCount; i++)
 			returnThis.add(iter.next());
@@ -397,10 +397,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Iterator edgesIterator() {
+	public Iterator<Edge> edgesIterator() {
 		final IntEnumerator edges = m_graph.edges();
 
-		return new Iterator() {
+		return new Iterator<Edge>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -409,7 +409,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 					return edges.numRemaining() > 0;
 				}
 
-				public Object next() {
+				public Edge next() {
 					if (!hasNext()) {
 						throw new NoSuchElementException();
 					}
@@ -424,10 +424,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List edgesList() {
+	public java.util.List<Edge> edgesList() {
 		final int edgeCount = getEdgeCount();
-		final java.util.ArrayList returnThis = new java.util.ArrayList(edgeCount);
-		Iterator iter = edgesIterator();
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>(edgeCount);
+		Iterator<Edge> iter = edgesIterator();
 
 		for (int i = 0; i < edgeCount; i++)
 			returnThis.add(iter.next());
@@ -522,8 +522,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List hideNodes(java.util.List nodes) {
-		final java.util.ArrayList returnThis = new java.util.ArrayList();
+	public java.util.List<Node> hideNodes(java.util.List<Node> nodes) {
+		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>();
 
 		for (int i = 0; i < nodes.size(); i++)
 			if (hideNode((Node) nodes.get(i)) != null) {
@@ -617,8 +617,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List restoreNodes(java.util.List nodes) {
-		final java.util.ArrayList returnThis = new java.util.ArrayList();
+	public java.util.List<Node> restoreNodes(java.util.List<Node> nodes) {
+		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>();
 
 		for (int i = 0; i < nodes.size(); i++)
 			if (restoreNode((Node) nodes.get(i)) != null) {
@@ -636,8 +636,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List restoreNodes(java.util.List nodes, boolean restoreIncidentEdges) {
-		final java.util.List returnThis = restoreNodes(nodes);
+	public java.util.List<Node> restoreNodes(java.util.List<Node> nodes, boolean restoreIncidentEdges) {
+		final java.util.List<Node> returnThis = restoreNodes(nodes);
 		final int[] restoredNodeInx = new int[returnThis.size()];
 
 		for (int i = 0; i < restoredNodeInx.length; i++)
@@ -731,8 +731,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List hideEdges(java.util.List edges) {
-		final java.util.ArrayList returnThis = new java.util.ArrayList();
+	public java.util.List<Edge> hideEdges(java.util.List<Edge> edges) {
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>();
 
 		for (int i = 0; i < edges.size(); i++)
 			if (hideEdge((Edge) edges.get(i)) != null) {
@@ -857,8 +857,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List restoreEdges(java.util.List edges) {
-		final java.util.ArrayList returnThis = new java.util.ArrayList();
+	public java.util.List<Edge> restoreEdges(java.util.List<Edge> edges) {
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>();
 
 		for (int i = 0; i < edges.size(); i++)
 			if (restoreEdge((Edge) edges.get(i)) != null) {
@@ -1108,7 +1108,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		m_heap.empty();
 
 		final MinIntHeap nodeInxBucket = m_heap;
-		final Iterator nodesIter = nodesIterator();
+		final Iterator<Node> nodesIter = nodesIterator();
 
 		while (nodesIter.hasNext()) {
 			final Node nodeCandidate = (Node) (nodesIter.next());
@@ -1146,7 +1146,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List neighborsList(Node node) {
+	public java.util.List<Node> neighborsList(Node node) {
 		if (node.getRootGraph() == m_root) {
 			final int[] neighInx = neighborsArray(node.getRootGraphIndex());
 
@@ -1154,7 +1154,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 				return null;
 			}
 
-			final java.util.ArrayList returnThis = new java.util.ArrayList(neighInx.length);
+			final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>(neighInx.length);
 
 			for (int i = 0; i < neighInx.length; i++)
 				returnThis.add(getNode(neighInx[i]));
@@ -1328,7 +1328,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List edgesList(Node from, Node to) {
+	public java.util.List<Edge> edgesList(Node from, Node to) {
 		if ((from.getRootGraph() == m_root) && (to.getRootGraph() == m_root)) {
 			return edgesList(from.getRootGraphIndex(), to.getRootGraphIndex(), true);
 		} else {
@@ -1345,14 +1345,14 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
+	public java.util.List<Edge> edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
 		final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx, includeUndirectedEdges);
 
 		if (edgeInx == null) {
 			return null;
 		}
 
-		java.util.ArrayList returnList = new java.util.ArrayList(edgeInx.length);
+		java.util.ArrayList<Edge> returnList = new java.util.ArrayList<Edge>(edgeInx.length);
 
 		for (int i = 0; i < edgeInx.length; i++)
 			returnList.add(getEdge(edgeInx[i]));
@@ -1730,7 +1730,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List getAdjacentEdgesList(Node node, boolean undirected, boolean incoming,
+	public java.util.List<Edge> getAdjacentEdgesList(Node node, boolean undirected, boolean incoming,
 	                                           boolean outgoing) {
 		if (node.getRootGraph() != m_root) {
 			return null;
@@ -1743,7 +1743,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 			return null;
 		}
 
-		final java.util.ArrayList returnThis = new java.util.ArrayList(adjEdgeInx.length);
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>(adjEdgeInx.length);
 
 		for (int i = 0; i < adjEdgeInx.length; i++)
 			returnThis.add(getEdge(adjEdgeInx[i]));
@@ -1790,7 +1790,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public java.util.List getConnectingEdges(java.util.List nodes) {
+	public java.util.List<Edge> getConnectingEdges(java.util.List<Node> nodes) {
 		m_heap.empty();
 
 		final MinIntHeap nodeInxBucket = m_heap;
@@ -1814,7 +1814,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 			return null;
 		}
 
-		final java.util.ArrayList returnThis = new java.util.ArrayList(connEdgeInxArr.length);
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>(connEdgeInxArr.length);
 
 		for (int i = 0; i < connEdgeInxArr.length; i++)
 			returnThis.add(getEdge(connEdgeInxArr[i]));

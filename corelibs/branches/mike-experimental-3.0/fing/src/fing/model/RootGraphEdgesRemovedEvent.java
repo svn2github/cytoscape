@@ -41,6 +41,7 @@ import giny.model.RootGraph;
 
 
 final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362785130L;
 	private final Edge[] m_removedEdges;
 
 	// Note that no copy of the array removedEdges is made - the exact

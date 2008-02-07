@@ -42,6 +42,7 @@ import giny.model.RootGraph;
 
 // This class is not currently being used.  Thus its constructor is private.
 final class RootGraphEdgesCreatedEvent extends RootGraphChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362764078L;
 	private final int[] m_createdEdgeInx;
 
 	// Note that no copy of the array createdEdgeInx is made - the exact

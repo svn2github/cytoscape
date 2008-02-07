@@ -41,6 +41,7 @@ import giny.model.Node;
 
 
 final class GraphPerspectiveNodesRestoredEvent extends GraphPerspectiveChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362702215L;
 	private final GraphPerspective m_persp;
 	private final int[] m_restoredNodeInx;
 

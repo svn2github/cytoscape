@@ -321,11 +321,11 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Iterator nodesIterator() {
+	public Iterator<Node> nodesIterator() {
 		final IntEnumerator nodes = m_graph.nodes();
 		final FRootGraph rootGraph = this;
 
-		return new Iterator() {
+		return new Iterator<Node>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -334,7 +334,7 @@ class FRootGraph implements RootGraph, DynamicGraph {
 					return nodes.numRemaining() > 0;
 				}
 
-				public Object next() {
+				public Node next() {
 					if (!hasNext())
 						throw new NoSuchElementException();
 
@@ -348,10 +348,10 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List nodesList() {
+	public java.util.List<Node> nodesList() {
 		final int nodeCount = getNodeCount();
-		final java.util.ArrayList returnThis = new java.util.ArrayList(nodeCount);
-		Iterator iter = nodesIterator();
+		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>(nodeCount);
+		Iterator<Node> iter = nodesIterator();
 
 		for (int i = 0; i < nodeCount; i++)
 			returnThis.add(iter.next());
@@ -379,11 +379,11 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Iterator edgesIterator() {
+	public Iterator<Edge> edgesIterator() {
 		final IntEnumerator edges = m_graph.edges();
 		final FRootGraph rootGraph = this;
 
-		return new Iterator() {
+		return new Iterator<Edge>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -392,7 +392,7 @@ class FRootGraph implements RootGraph, DynamicGraph {
 					return edges.numRemaining() > 0;
 				}
 
-				public Object next() {
+				public Edge next() {
 					if (!hasNext())
 						throw new NoSuchElementException();
 
@@ -406,10 +406,10 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List edgesList() {
+	public java.util.List<Edge> edgesList() {
 		final int edgeCount = getEdgeCount();
-		final java.util.ArrayList returnThis = new java.util.ArrayList(edgeCount);
-		Iterator iter = edgesIterator();
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>(edgeCount);
+		Iterator<Edge> iter = edgesIterator();
 
 		for (int i = 0; i < edgeCount; i++)
 			returnThis.add(iter.next());
@@ -495,8 +495,8 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List removeNodes(java.util.List nodes) {
-		final java.util.ArrayList returnThis = new java.util.ArrayList();
+	public java.util.List<Node> removeNodes(java.util.List<Node> nodes) {
+		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>();
 
 		for (int i = 0; i < nodes.size(); i++)
 			if (removeNode((Node) nodes.get(i)) != null)
@@ -636,8 +636,8 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List removeEdges(java.util.List edges) {
-		final java.util.ArrayList returnThis = new java.util.ArrayList();
+	public java.util.List<Edge> removeEdges(java.util.List<Edge> edges) {
+		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>();
 
 		for (int i = 0; i < edges.size(); i++)
 			if (removeEdge((Edge) edges.get(i)) != null)
@@ -754,7 +754,7 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List neighborsList(Node node) {
+	public java.util.List<Node> neighborsList(Node node) {
 		if (node.getRootGraph() == this) {
 			final int nodeIndex = node.getRootGraphIndex();
 			int[] adjacentEdgeIndices = getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
@@ -773,7 +773,7 @@ class FRootGraph implements RootGraph, DynamicGraph {
 			}
 
 			IntEnumerator enumx = neighbors.elements();
-			java.util.ArrayList list = new java.util.ArrayList(enumx.numRemaining());
+			java.util.ArrayList<Node> list = new java.util.ArrayList<Node>(enumx.numRemaining());
 
 			while (enumx.numRemaining() > 0)
 				list.add(getNode(~(enumx.nextInt())));
@@ -1006,7 +1006,7 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List edgesList(Node from, Node to) {
+	public java.util.List<Edge> edgesList(Node from, Node to) {
 		if ((from.getRootGraph() == this) && (to.getRootGraph() == this))
 			return edgesList(from.getRootGraphIndex(), to.getRootGraphIndex(), true);
 		else
@@ -1023,13 +1023,13 @@ class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
+	public java.util.List<Edge> edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
 		final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx, includeUndirectedEdges);
 
 		if (edgeInx == null)
 			return null;
 
-		java.util.ArrayList returnList = new java.util.ArrayList(edgeInx.length);
+		java.util.ArrayList<Edge> returnList = new java.util.ArrayList<Edge>(edgeInx.length);
 
 		for (int i = 0; i < edgeInx.length; i++)
 			returnList.add(getEdge(edgeInx[i]));
