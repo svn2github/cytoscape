@@ -73,7 +73,7 @@
 			<fileset dir="${ncbiUI.lib.dir}">
 				<include name="*.jar" />
 			</fileset>
-			
+
 			<fileset dir="${cytoscape.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -94,7 +94,7 @@
 	<target name="clean" depends="init-ncbiUI">
 		<delete dir="${ncbiUI.classes.dir}" />
 		<delete dir="${ncbiUI.testclasses.dir}" />
-		<delete dir="${ncbiUI.tests.reports.dir}"/>
+		<delete dir="${ncbiUI.tests.reports.dir}" />
 		<delete file="ncbiUI.jar" />
 		<delete file="${ncbiUI.lib.dir}/ncbiUI.jar" />
 	</target>
@@ -119,11 +119,10 @@
 			<fileset dir="${ncbiUI.root.dir}/images" />
 		</copy>
 		<copy todir="${ncbiUI.classes.dir}/resource">
-					<fileset dir="${ncbiUI.root.dir}/resource" />
+			<fileset dir="${ncbiUI.root.dir}/resource" />
 		</copy>
-		<copy todir="${ncbiUI.classes.dir}/edu/ucsd/bioeng/coreplugin/ncbiUI" 
-			file="${ncbiUI.manifest.dir}/plugin.props"/>
-
+		<copy todir="${ncbiUI.classes.dir}/edu/ucsd/bioeng/idekerlab/ncbiclientui" file="${ncbiUI.manifest.dir}/plugin.props" />
+		
 		<unjar dest="${ncbiUI.classes.dir}">
 			<fileset dir="${ncbiUI.lib.dir}">
 				<include name="*.jar" />
@@ -132,9 +131,9 @@
 				<exclude name="ncbiUITest.jar" />
 				<exclude name="ncbiws.jar" />
 				<exclude name="ncbiClient.jar" />
-				
+
 			</fileset>
-			
+
 		</unjar>
 		<jar destfile="ncbiUI.jar" manifest="${ncbiUI.manifest.dir}/ncbiUI.manifest">
 			<fileset dir="${ncbiUI.classes.dir}" includes="**" />
@@ -197,10 +196,10 @@
 	<!-- ======================================================= -->
 	<!-- Run all of the Swing Unit Tests                       -->
 	<!-- ======================================================= -->
-	<target name="test-swing" depends="ncbiUI" >
+	<target name="test-swing" depends="ncbiUI">
 		<mkdir dir="${ncbiUI.tests.reports.dir}" />
 		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
-			
+
 			<classpath>
 				<fileset dir="${ncbiUI.root.dir}">
 					<include name="**/*.jar" />
@@ -218,12 +217,12 @@
 					<include name="**/*.jar" />
 				</fileset>
 				<fileset dir="${ncbiUI.root.dir}/testClasses">
-									<include name="**/*" />
+					<include name="**/*" />
 				</fileset>
 			</classpath>
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />
-			<batchtest fork="yes" todir="${ncbiUI.tests.reports.dir}"  >
+			<batchtest fork="yes" todir="${ncbiUI.tests.reports.dir}">
 				<fileset dir="${ncbiUI.tests.dir}" includes="**/*TestSwing.java" />
 			</batchtest>
 

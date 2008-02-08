@@ -23,6 +23,7 @@ public class NCBIGeneDialog extends JDialog implements PropertyChangeListener {
 			panel.addPropertyChangeListener(this);
 			add(panel);
 			pack();
+			setLocationRelativeTo(Cytoscape.getDesktop());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

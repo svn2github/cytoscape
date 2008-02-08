@@ -34,6 +34,7 @@
 */
 package edu.ucsd.bioeng.idekerlab.ncbiclientui.ui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Map;
@@ -54,8 +55,8 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.swing.AttributeImportPanel;
-
 import edu.ucsd.bioeng.idekerlab.ncbiclient.NCBIClient.AnnotationCategory;
+
 
 
 
@@ -77,7 +78,7 @@ public class NCBIGenePanel extends AttributeImportPanel {
 	 * @throws IOException  DOCUMENT ME!
 	 */
 	public NCBIGenePanel() throws IOException {
-		this(LOGO, "", "Available Attributes");
+		this(LOGO, "", "Available Annotation Category");
 	}
 
 	/**
@@ -92,6 +93,7 @@ public class NCBIGenePanel extends AttributeImportPanel {
 	public NCBIGenePanel(Icon logo, String title, String attrPanelName) throws IOException {
 		super(logo, title, attrPanelName);
 		initDataSources();
+		this.setPreferredSize(new Dimension(550, 480));
 	}
 
 	private void initDataSources() {
@@ -104,16 +106,23 @@ public class NCBIGenePanel extends AttributeImportPanel {
 		this.attributeTypeComboBox.addItem("Entrez Gene ID");
 		attributeTypeComboBox.setEnabled(false);
 		
+		buildList();
+	}
+
+	protected void importButtonActionPerformed(ActionEvent e) {
+		importAttributes();
+	}
+	
+	protected void resetButtonActionPerformed(ActionEvent e) {
+		buildList();
+	}
+	
+	private void buildList() {
 		model = new DefaultListModel();
 		attrList.setModel(model);
 		for(AnnotationCategory dispAttrName : AnnotationCategory.values()) {
 			model.addElement(dispAttrName.getName());
 		}
-	}
-
-	protected void importButtonActionPerformed(ActionEvent e) {
-		System.out.println("======================PW Import =================");
-		importAttributes();
 	}
 
 	
@@ -127,7 +136,7 @@ public class NCBIGenePanel extends AttributeImportPanel {
 	protected void importAttributes() {
 		String keyInHeader = null;
 		// Create Task
-		final ImportAttributeTask task = new ImportAttributeTask(keyInHeader, null);
+		final ImportAttributeTask task = new ImportAttributeTask(attributeComboBox.getSelectedItem().toString(), keyInHeader);
 
 		// Configure JTask Dialog Pop-Up Box
 		final JTaskConfig jTaskConfig = new JTaskConfig();
