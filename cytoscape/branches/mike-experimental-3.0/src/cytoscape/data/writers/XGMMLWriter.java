@@ -421,7 +421,7 @@ public class XGMMLWriter {
 	private void writeNodes() throws IOException {
 		for (Node node: network.nodesList()) {
 			Node curNode = (Node)node;
-			if (!curNode.isaGroup())
+			if (!CyGroupManager.isaGroup(curNode))
 				writeNode(curNode, null);
 		}
 	}
@@ -455,7 +455,7 @@ public class XGMMLWriter {
 			writeElement("<graph>\n");
 			depth++;
 			for (Node childNode: groupList) {
-				if (childNode.isaGroup()) {
+				if (CyGroupManager.isaGroup(childNode)) {
 					// We have an embedded group -- recurse
 					CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
 					writeNode(childGroup.getGroupNode(), childGroup.getNodes());
