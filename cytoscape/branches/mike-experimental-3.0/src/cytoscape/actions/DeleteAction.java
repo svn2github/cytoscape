@@ -28,9 +28,9 @@
  */
 package cytoscape.actions;
 
-import giny.model.GraphObject;
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.GraphObject;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -40,9 +40,9 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
@@ -83,11 +83,9 @@ public class DeleteAction extends CytoscapeAction {
 
 	public DeleteAction(GraphObject obj) {
 		super(ACTION_TITLE);
-		System.out.println("starting delete action");
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
-		System.out.println("ending delete action");
 	}
 
 
@@ -98,7 +96,7 @@ public class DeleteAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent ae) {
 
 		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
-		CyNetwork cyNet = myView.getNetwork();
+		GraphPerspective cyNet = myView.getNetwork();
 		List<Edge> edgeViews = myView.getSelectedEdges();
 		List<Node> nodeViews = myView.getSelectedNodes();
 		Node cyNode;
@@ -106,12 +104,12 @@ public class DeleteAction extends CytoscapeAction {
 
 		// if an argument exists, add it to the appropriate list
 		if (graphObj != null ) {
-			if ( graphObj instanceof giny.model.Node) {
+			if ( graphObj instanceof cytoscape.Node) {
 				cyNode = (Node) graphObj;
 				if ( !nodeViews.contains(cyNode) )
 					nodeViews.add(cyNode);
-			} else if ( graphObj instanceof giny.model.Edge) {
-				cyEdge = (CyEdge) graphObj;
+			} else if ( graphObj instanceof cytoscape.Edge) {
+				cyEdge = (Edge) graphObj;
 				if ( !edgeViews.contains(cyEdge) )
 					edgeViews.add(cyEdge);
 			}
@@ -158,7 +156,7 @@ public class DeleteAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent me) {
-        CyNetwork n = Cytoscape.getCurrentNetwork();
+        GraphPerspective n = Cytoscape.getCurrentNetwork();
         if ( n == null || n == Cytoscape.getNullNetwork() ) {
             setEnabled(false);
             return;

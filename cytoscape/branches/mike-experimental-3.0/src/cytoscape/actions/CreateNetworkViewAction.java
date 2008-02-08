@@ -36,7 +36,7 @@
  */
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -84,7 +84,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
 		createViewFromCurrentNetwork(cyNetwork);
 	}
 
@@ -93,7 +93,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 *
 	 * @param cyNetwork DOCUMENT ME!
 	 */
-	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork) {
+	public static void createViewFromCurrentNetwork(GraphPerspective cyNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
 		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
@@ -124,7 +124,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * Sets the state of the action before rendering the menu. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		CyNetwork currNet = Cytoscape.getCurrentNetwork();
+		GraphPerspective currNet = Cytoscape.getCurrentNetwork();
 		if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
 			setEnabled(false);
 			return;

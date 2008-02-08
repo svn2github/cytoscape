@@ -36,7 +36,7 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.CyAttributes;
 
@@ -44,7 +44,7 @@ import cytoscape.task.TaskMonitor;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 
-import giny.model.RootGraph;
+import cytoscape.RootGraph;
 
 import giny.view.GraphView;
 
@@ -88,7 +88,7 @@ public interface GraphReader {
 	/**
 	 * Execute whatever post-processing is required.
 	 */
-	public void doPostProcessing(CyNetwork network);
+	public void doPostProcessing(GraphPerspective network);
 
 	/**
 	 * Gets the name of the network.

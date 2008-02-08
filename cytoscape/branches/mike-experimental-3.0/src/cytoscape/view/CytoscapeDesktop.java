@@ -36,7 +36,7 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
 
@@ -375,7 +375,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 * @param newNetwork DOCUMENT ME!
 	 */
-	public void setNewNetwork(CyNetwork newNetwork) {
+	public void setNewNetwork(GraphPerspective newNetwork) {
 	}
 
 

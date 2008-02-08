@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.ding.DingNetworkView;
@@ -54,7 +54,6 @@ import cytoscape.view.CyNetworkView;
 //-------------------------------------------------------------------------
 import giny.view.*;
 
-// import cytoscape.giny.Phoeb*NetworkView;
 import java.awt.event.ActionEvent;
 
 import java.util.Iterator;

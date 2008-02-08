@@ -36,9 +36,9 @@
 */
 package cytoscape.visual;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -56,9 +56,9 @@ import cytoscape.visual.mappings.*;
 
 import cytoscape.visual.ui.*;
 
-import giny.model.Edge;
-import giny.model.Node;
-import giny.model.RootGraph;
+import cytoscape.Edge;
+import cytoscape.Node;
+import cytoscape.RootGraph;
 
 import giny.view.Label;
 

@@ -34,7 +34,7 @@
 */
 package cytoscape.visual;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import giny.view.GraphView;
 import giny.view.Label;

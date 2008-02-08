@@ -42,7 +42,7 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -55,9 +55,9 @@ import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.visual.mappings.ObjectMapping;
 
 //------------------------------------------------------------------------------
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.GraphObject;
+import cytoscape.Node;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
@@ -275,7 +275,7 @@ public abstract class AbstractCalculator implements Calculator {
 	/**
 	 * updateAttribute is called when the currently selected attribute changes.
 	 * Any changes needed in the mapping UI should be performed at this point.
-	 * Use {@link #updateAttribute(String, CyNetwork, int)} for best
+	 * Use {@link #updateAttribute(String, GraphPerspective, int)} for best
 	 * performance.
 	 *
 	 * @param attrName
@@ -287,7 +287,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @throws IllegalArgumentException
 	 *             if the given object mapping isn't in this calculator.
 	 */
-	void updateAttribute(String attrName, CyNetwork network, ObjectMapping m)
+	void updateAttribute(String attrName, GraphPerspective network, ObjectMapping m)
 	    throws IllegalArgumentException {
 		int mapIndex = this.mappings.indexOf(m);
 
@@ -314,7 +314,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if the given object mapping index is out of bounds.
 	 */
-	void updateAttribute(String attrName, CyNetwork network, int mIndex)
+	void updateAttribute(String attrName, GraphPerspective network, int mIndex)
 	    throws ArrayIndexOutOfBoundsException {
 		ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
 		m.setControllingAttributeName(attrName, network, false);
@@ -397,7 +397,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param e DOCUMENT ME!
 	 * @param net DOCUMENT ME!
 	 */
-	public void apply(Appearance appr, Edge e, CyNetwork net) {
+	public void apply(Appearance appr, Edge e, GraphPerspective net) {
 		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
 		Object o = getRangeValue(e);
 
@@ -415,7 +415,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param n DOCUMENT ME!
 	 * @param net DOCUMENT ME!
 	 */
-	public void apply(Appearance appr, Node n, CyNetwork net) {
+	public void apply(Appearance appr, Node n, GraphPerspective net) {
 		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
 		Object o = getRangeValue(n);
 

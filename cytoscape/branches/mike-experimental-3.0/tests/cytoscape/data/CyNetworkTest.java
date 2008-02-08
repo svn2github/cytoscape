@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 
 public class CyNetworkTest extends TestCase {
 	private String title = "My Network";
-	private CyNetwork network;
+	private GraphPerspective network;
 	private int defaultNodeSetSize = 10;
 
 	/* (non-Javadoc)
@@ -21,8 +21,8 @@ public class CyNetworkTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		java.util.Collection<CyNode> nodes = this.getNodes(defaultNodeSetSize);
-		java.util.Collection<CyEdge> edges = this.getEdges(nodes);
+		java.util.Collection<Node> nodes = this.getNodes(defaultNodeSetSize);
+		java.util.Collection<Edge> edges = this.getEdges(nodes);
 		network = Cytoscape.createNetwork(nodes, edges, title);
 	}
 
@@ -35,7 +35,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	public void testCreateNetwork() {
-		//CyNetwork net = new CyNetwork(new CytoscapeFingRootGraph(), );
+		//GraphPerspective net = new GraphPerspective(new CytoscapeFingRootGraph(), );
 		assertNotNull(network);
 		assertEquals(network.getNodeCount(), defaultNodeSetSize);
 		assertEquals(network.getEdgeCount(), defaultNodeSetSize-1);
@@ -43,14 +43,14 @@ public class CyNetworkTest extends TestCase {
 	}
 	
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#getTitle()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#getTitle()}.
 	 */
 	public void testGetTitle() {
 		assertEquals(network.getTitle(), title);
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#setTitle(java.lang.String)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#setTitle(java.lang.String)}.
 	 */
 	public void testSetTitle() {
 		network.setTitle("foobar");
@@ -58,14 +58,14 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#getIdentifier()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#getIdentifier()}.
 	 */
 	public void testGetIdentifier() {
 		assertNotNull(network.getIdentifier());
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#setIdentifier(java.lang.String)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#setIdentifier(java.lang.String)}.
 	 */
 	public void testSetIdentifier() {
 		String id = "12345";
@@ -74,16 +74,16 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#appendNetwork(cytoscape.CyNetwork)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#appendNetwork(cytoscape.GraphPerspective)}.
 	 */
 	public void testAppendNetwork() {
-		java.util.Collection<CyNode> nodes = new java.util.ArrayList<CyNode>();
+		java.util.Collection<Node> nodes = new java.util.ArrayList<Node>();
 		nodes.add( Cytoscape.getCyNode("foobar", true) );
 		nodes.add( Cytoscape.getCyNode("blat", true) );
 		nodes.add( Cytoscape.getCyNode("some name", true) );
-		java.util.Collection<CyEdge> edges = this.getEdges(nodes);
+		java.util.Collection<Edge> edges = this.getEdges(nodes);
 		
-		CyNetwork appNet = Cytoscape.createNetwork(nodes, edges, "My network");
+		GraphPerspective appNet = Cytoscape.createNetwork(nodes, edges, "My network");
 		assertNotNull(appNet);
 		assertNotSame(appNet, network);
 		
@@ -94,7 +94,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#selectAllNodes()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#selectAllNodes()}.
 	 */
 	public void testSelectAllNodes() {
 		network.selectAllNodes();
@@ -103,7 +103,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#selectAllEdges()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#selectAllEdges()}.
 	 */
 	public void testSelectAllEdges() {
 		network.selectAllEdges();
@@ -112,7 +112,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#unselectAllNodes()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#unselectAllNodes()}.
 	 */
 	public void testUnselectAllNodes() {
 		network.selectAllNodes();
@@ -125,7 +125,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#unselectAllEdges()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#unselectAllEdges()}.
 	 */
 	public void testUnselectAllEdges() {
 		network.selectAllEdges();
@@ -137,7 +137,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedNodeState(java.util.Collection, boolean)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#setSelectedNodeState(java.util.Collection, boolean)}.
 	 */
 	public void testSetSelectedNodeStateCollectionBoolean() {
 		network.setSelectedNodeState(this.getNodes(3), true);
@@ -145,7 +145,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedNodeState(giny.model.Node, boolean)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#setSelectedNodeState(cytoscape.Node, boolean)}.
 	 */
 	public void testSetSelectedNodeStateNodeBoolean() {
 		network.setSelectedNodeState(Cytoscape.getCyNode("1"), true);
@@ -153,24 +153,24 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedEdgeState(java.util.Collection, boolean)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#setSelectedEdgeState(java.util.Collection, boolean)}.
 	 */
 	public void testSetSelectedEdgeStateCollectionBoolean() {
 		network.unselectAllNodes();
 		network.unselectAllEdges();
 		
 		network.setSelectedNodeState(this.getNodes(3), true);
-		java.util.Set<CyNode> selectedNodes = network.getSelectedNodes();
+		java.util.Set<Node> selectedNodes = network.getSelectedNodes();
 		
-		for (CyNode node: selectedNodes) {
+		for (Node node: selectedNodes) {
 			assertTrue(network.containsNode(node));
 		}
 		
-		java.util.Collection<CyEdge> edges = this.getEdges(selectedNodes);
+		java.util.Collection<Edge> edges = this.getEdges(selectedNodes);
 		assertEquals(2, edges.size());
 		
 		// XXX Why does this fix the getSelected edges test???
-//		for (CyEdge edge: edges) {
+//		for (Edge edge: edges) {
 //			assertTrue(network.containsEdge(edge));
 //		}
 //		
@@ -180,38 +180,38 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#setSelectedEdgeState(giny.model.Edge, boolean)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#setSelectedEdgeState(cytoscape.Edge, boolean)}.
 	 */
 	public void testSetSelectedEdgeStateEdgeBoolean() {
 		network.setSelectedNodeState(this.getNodes(2), true);
-		java.util.Set<CyNode> selectedNodes = network.getSelectedNodes();
+		java.util.Set<Node> selectedNodes = network.getSelectedNodes();
 		
 		assertEquals(this.getEdges(selectedNodes).size(), 1);
-		java.util.Iterator<CyEdge> edgeI = this.getEdges(selectedNodes).iterator();
+		java.util.Iterator<Edge> edgeI = this.getEdges(selectedNodes).iterator();
 		while (edgeI.hasNext()) {
-			CyEdge edge = edgeI.next();
+			Edge edge = edgeI.next();
 			network.setSelectedEdgeState(edge, true);
 		}
 		assertEquals(network.getSelectedEdges().size(), 1);
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#isSelected(giny.model.Node)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#isSelected(cytoscape.Node)}.
 	 */
 	public void testIsSelectedNode() {
-		CyNode node = Cytoscape.getCyNode("1");
+		Node node = Cytoscape.getCyNode("1");
 		network.setSelectedNodeState(node, true);
 		assertTrue(network.isSelected(node));
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#isSelected(giny.model.Edge)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#isSelected(cytoscape.Edge)}.
 	 */
 	public void testIsSelectedEdge() {
-		CyNode node_1 = Cytoscape.getCyNode("1");
-		CyNode node_2 = Cytoscape.getCyNode("2");
+		Node node_1 = Cytoscape.getCyNode("1");
+		Node node_2 = Cytoscape.getCyNode("2");
 		
-		CyEdge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, "test", false);
+		Edge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, "test", false);
 		assertNotNull(edge);
 		
 		network.setSelectedEdgeState(edge, true);
@@ -220,7 +220,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#getSelectedNodes()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#getSelectedNodes()}.
 	 */
 	public void testGetSelectedNodes() {
 		network.selectAllNodes();
@@ -229,7 +229,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#getSelectedEdges()}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#getSelectedEdges()}.
 	 */
 	public void testGetSelectedEdges() {
 		network.selectAllEdges();
@@ -241,56 +241,56 @@ public class CyNetworkTest extends TestCase {
 
 	/**
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#addNode(int)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#addNode(int)}.
 	 */
 	public void testAddNodeInt() {
-		CyNode newNode = Cytoscape.getCyNode("123", true);
+		Node newNode = Cytoscape.getCyNode("123", true);
 		assertNotNull(network.addNode(newNode.getRootGraphIndex()));
 		assertTrue(network.containsNode(newNode));
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#addNode(giny.model.Node)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#addNode(cytoscape.Node)}.
 	 */
 	public void testAddNodeNode() {
-		CyNode newNode = Cytoscape.getCyNode("321", true);
+		Node newNode = Cytoscape.getCyNode("321", true);
 		assertNotNull(network.addNode(newNode));
 		assertTrue(network.containsNode(newNode));
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#removeNode(int, boolean)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#removeNode(int, boolean)}.
 	 */
 	public void testRemoveNode() {
-		CyNode node = Cytoscape.getCyNode("1");
+		Node node = Cytoscape.getCyNode("1");
 		assertNotNull(node);
 		assertTrue(network.removeNode(node.getRootGraphIndex(), true));
 	}
 
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#addEdge(int)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#addEdge(int)}.
 	 */
 	public void testAddEdgeInt() {
-		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("4"), Semantics.INTERACTION, "test", true);
+		Edge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("4"), Semantics.INTERACTION, "test", true);
 		assertNotNull(edge);
 		assertNotNull(network.addEdge(edge.getRootGraphIndex()));
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#addEdge(giny.model.Edge)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#addEdge(cytoscape.Edge)}.
 	 */
 	public void testAddEdgeEdge() {
-		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("4"), Semantics.INTERACTION, "test", true);
+		Edge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("4"), Semantics.INTERACTION, "test", true);
 		assertNotNull(edge);
 		assertNotNull(network.addEdge(edge));
 	}
 
 	/**
-	 * Test method for {@link cytoscape.giny.CyNetwork#removeEdge(int, boolean)}.
+	 * Test method for {@link cytoscape.giny.GraphPerspective#removeEdge(int, boolean)}.
 	 */
 	public void testRemoveEdge() {
-		CyEdge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("2"), Semantics.INTERACTION, "test", true);
+		Edge edge = Cytoscape.getCyEdge( Cytoscape.getCyNode("1"), Cytoscape.getCyNode("2"), Semantics.INTERACTION, "test", true);
 		assertNotNull(edge);
 		assertTrue(network.removeEdge(edge.getRootGraphIndex(), true));
 	}
@@ -299,7 +299,7 @@ public class CyNetworkTest extends TestCase {
 	public void testSetTitleEvent() {
 		String InitialTitle = "My Network";
 		String NewTitle = "Foobar";
-		CyNetwork network = Cytoscape.createNetwork(InitialTitle);
+		GraphPerspective network = Cytoscape.createNetwork(InitialTitle);
 		TitleListener tl =  new TitleListener();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(tl);
 		network.setTitle(NewTitle);
@@ -327,21 +327,21 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	
-	private java.util.Collection<CyNode> getNodes(int size) {
-		java.util.List<CyNode> Nodes = new java.util.ArrayList<CyNode>();
+	private java.util.Collection<Node> getNodes(int size) {
+		java.util.List<Node> Nodes = new java.util.ArrayList<Node>();
 		for (int i=0; i<size; i++) {
 			Nodes.add(Cytoscape.getCyNode(Integer.toString(i), true));	
 		}
 		return Nodes;
 	}
 
-	private java.util.Collection<CyEdge> getEdges(java.util.Collection<CyNode> Nodes) {
-		java.util.List<CyEdge> Edges = new java.util.ArrayList<CyEdge>();
+	private java.util.Collection<Edge> getEdges(java.util.Collection<Node> Nodes) {
+		java.util.List<Edge> Edges = new java.util.ArrayList<Edge>();
 		
-		java.util.Iterator<CyNode> nodeI = Nodes.iterator();
-		CyNode LastNode = null;
+		java.util.Iterator<Node> nodeI = Nodes.iterator();
+		Node LastNode = null;
 		while (nodeI.hasNext()) {
-			CyNode Node = nodeI.next();
+			Node Node = nodeI.next();
 			if (LastNode != null) 
 				Edges.add(Cytoscape.getCyEdge(LastNode, Node, Semantics.INTERACTION, "test", true));
 

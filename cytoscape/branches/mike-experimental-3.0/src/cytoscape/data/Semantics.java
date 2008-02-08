@@ -36,15 +36,15 @@
  */
 package cytoscape.data;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 
-import giny.model.Edge;
+import cytoscape.Edge;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,7 +150,7 @@ public class Semantics {
 	 *
 	 * This method does nothing at all if either argument is null.
 	 */
-	public static void assignSpecies(final CyNetwork network) {
+	public static void assignSpecies(final GraphPerspective network) {
 		if (network == null) {
 			return;
 		}
@@ -166,7 +166,7 @@ public class Semantics {
 		final Iterator nodeIt = network.nodesIterator();
 
 		while (nodeIt.hasNext()) {
-			final String nodeLabel = ((CyNode) nodeIt.next()).getIdentifier();
+			final String nodeLabel = ((Node) nodeIt.next()).getIdentifier();
 			final String species = nodeAttributes.getStringAttribute(nodeLabel, SPECIES);
 
 			if (species == null) { // only do something if no value exists
@@ -180,7 +180,7 @@ public class Semantics {
 	 * the species attribute in the node attributes of the supplied network and
 	 * returns a Set containing every unique value found.
 	 */
-	public static Set getSpeciesInNetwork(final CyNetwork network) {
+	public static Set getSpeciesInNetwork(final GraphPerspective network) {
 		final Set returnSet = new HashSet();
 
 		if (network == null) {
@@ -208,7 +208,7 @@ public class Semantics {
 	 *
 	 * If the argument is null, returns an array of length 0.
 	 */
-	public static String[] getInteractionTypes(final CyNetwork network) {
+	public static String[] getInteractionTypes(final GraphPerspective network) {
 		if (network == null) {
 			return new String[0];
 		}
@@ -242,7 +242,7 @@ public class Semantics {
 	 *
 	 * If either argument is null, returns null.
 	 */
-	public static String getInteractionType(final CyNetwork network, final Edge edge) {
+	public static String getInteractionType(final GraphPerspective network, final Edge edge) {
 		if ((network == null) || (edge == null)) {
 			return null;
 		}
@@ -269,7 +269,7 @@ public class Semantics {
 	 * the tests that can be done to find synonyms.
 	 */
 	public static boolean areSynonyms(final String firstName, final String secondName,
-	                                  final CyNetwork network) {
+	                                  final GraphPerspective network) {
 		if ((firstName == null) || (secondName == null)) {
 			return ((firstName == null) && (secondName == null));
 		}
@@ -309,7 +309,7 @@ public class Semantics {
 	 * be determined, then use the BioDataServer to add all the synonyms that
 	 * are registered for the name argument.
 	 */
-	public static List getAllSynonyms(final String name, final CyNetwork network) {
+	public static List getAllSynonyms(final String name, final GraphPerspective network) {
 		final List returnList = new ArrayList();
 
 		if (name == null) {

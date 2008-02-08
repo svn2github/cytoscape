@@ -34,7 +34,7 @@
 */
 package cytoscape;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 
@@ -330,7 +330,7 @@ public class CytoscapeTestSwing extends TestCase {
 
 		// store current selection
 		Set nodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
-		HashSet<CyEdge> edges = new HashSet<CyEdge>();
+		HashSet<Edge> edges = new HashSet<Edge>();
 
 		// store all edges between these nodes; use another method than getConnectingEdges, we're testing
 		Object[] nodeObj = nodes.toArray();
@@ -339,12 +339,12 @@ public class CytoscapeTestSwing extends TestCase {
 			Node node1 = (Node) nodeObj[i];
 
 			// store self edges; the current loaded att is string type "interaction" having values pp or pd
-			CyEdge ppSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pp", false);
+			Edge ppSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pp", false);
 
 			if (ppSelfEdge != null)
 				edges.add(ppSelfEdge);
 
-			CyEdge pdSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pd", false);
+			Edge pdSelfEdge = Cytoscape.getCyEdge(node1, node1, "interaction", "pd", false);
 
 			if (pdSelfEdge != null)
 				edges.add(pdSelfEdge);
@@ -352,22 +352,22 @@ public class CytoscapeTestSwing extends TestCase {
 			// 
 			for (int j = i + 1; j < nodeObj.length; j++) {
 				Node node2 = (Node) nodeObj[j];
-				CyEdge ppEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pp", false, true);
+				Edge ppEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pp", false, true);
 
 				if (ppEdge != null)
 					edges.add(ppEdge);
 
-				CyEdge pdEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pd", false, true);
+				Edge pdEdge = Cytoscape.getCyEdge(node1, node2, "interaction", "pd", false, true);
 
 				if (pdEdge != null)
 					edges.add(pdEdge);
 
-				CyEdge pp2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pp", false, true);
+				Edge pp2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pp", false, true);
 
 				if (pp2Edge != null)
 					edges.add(pp2Edge);
 
-				CyEdge pd2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pd", false, true);
+				Edge pd2Edge = Cytoscape.getCyEdge(node2, node1, "interaction", "pd", false, true);
 
 				if (pd2Edge != null)
 					edges.add(pd2Edge);
@@ -390,10 +390,10 @@ public class CytoscapeTestSwing extends TestCase {
 		assertTrue(nodes.isEmpty());
 
 		// and check the edges
-		Iterator<CyEdge> iterOverEdges = edges.iterator();
+		Iterator<Edge> iterOverEdges = edges.iterator();
 
 		while (iterOverEdges.hasNext()) {
-			CyEdge edge = iterOverEdges.next();
+			Edge edge = iterOverEdges.next();
 			assertNotNull(Cytoscape.getCurrentNetwork().getEdge(edge.getRootGraphIndex()));
 		}
 
@@ -421,7 +421,7 @@ public class CytoscapeTestSwing extends TestCase {
 	            "galFiltered.sif");
 	    player.run(robot, "IMPORT_NETWORK_FILE");
 
-	    CyNetwork curr = Cytoscape.getCurrentNetwork();
+	    GraphPerspective curr = Cytoscape.getCurrentNetwork();
 
 	    //
 	    // first do nodes

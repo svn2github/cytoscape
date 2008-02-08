@@ -51,7 +51,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
@@ -216,7 +216,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *
 	 * @param    attrName    The name of the new attribute to map to
 	 */
-	public void setControllingAttributeName(String attrName, CyNetwork n, boolean preserveMapping) {
+	public void setControllingAttributeName(String attrName, GraphPerspective n, boolean preserveMapping) {
 		this.attrName = attrName;
 
 		if (preserveMapping == false) {

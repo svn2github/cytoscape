@@ -1,7 +1,7 @@
 /* -*-Java-*-
 ********************************************************************************
 *
-* File:         BugGetCyNodeTest.java
+* File:         BugGetNodeTest.java
 * RCS:          $Header: $
 * Description:
 * Author:       Michael L. Creech
@@ -17,8 +17,8 @@
 */
 package cytoscape;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import junit.framework.Assert;
@@ -58,13 +58,13 @@ public class BugGetCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBug() {
-		CyNode S = Cytoscape.getCyNode("S", true);
+		Node S = Cytoscape.getCyNode("S", true);
 		String sid = S.getIdentifier();
-		CyNetwork net1 = Cytoscape.createNetwork("net1");
+		GraphPerspective net1 = Cytoscape.createNetwork("net1");
 		net1.restoreNode(S);
 		Cytoscape.getRootGraph().removeNode(S);
 		// The following gets a NullPointerException:
-		System.out.println("BugGetCyNodeTest sid " + sid);
+		System.out.println("BugGetNodeTest sid " + sid);
 		Assert.assertNull(Cytoscape.getCyNode(sid, false));
 	}
 }

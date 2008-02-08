@@ -45,7 +45,7 @@ import cytoscape.AllTests;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 
@@ -60,11 +60,11 @@ import java.util.*;
  *
  */
 public class CytoscapeViewTests extends TestCase {
-	CyNetwork network;
-	CyNode node1;
-	CyNode node2;
-	CyEdge edge1;
-	CyEdge edge2;
+	GraphPerspective network;
+	Node node1;
+	Node node2;
+	Edge edge1;
+	Edge edge2;
 	CyNetworkView view;
 	NodeView nodeView1;
 	NodeView nodeView2;

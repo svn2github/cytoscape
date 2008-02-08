@@ -42,16 +42,12 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+import cytoscape.*;
 
 import cytoscape.ding.DingNetworkView;
 import cytoscape.ding.DingNetworkView;
-
-import cytoscape.giny.*;
 
 import cytoscape.util.*;
-import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;

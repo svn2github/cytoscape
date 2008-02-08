@@ -43,9 +43,10 @@ import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.GraphObject;
+import cytoscape.Node;
+import cytoscape.Edge;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
@@ -98,8 +99,6 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 import ding.view.DGraphView;
 
-import giny.model.GraphObject;
-import giny.model.Node;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -232,11 +231,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	static {
 		/*
 		 * Make dummy network nodes & edges
-		 */
-		final CyNode source = Cytoscape.getCyNode("Source", true);
-		final CyNode target = Cytoscape.getCyNode("Target", true);
-		final CyEdge edge = Cytoscape.getCyEdge(source, target, "dummyInteraction", "interaction",
-		                                        true, true);
+		final Node source = Cytoscape.getCyNode("Source", true);
+		final Node target = Cytoscape.getCyNode("Target", true);
+		final Edge edge = Cytoscape.getCyEdge(source, target, "dummyInteraction", "interaction", true, true);
 
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
@@ -247,6 +244,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
 		edgeAttr.setUserVisible("dummyInteraction", false);
 		edgeAttr.setUserEditable("dummyInteraction", false);
+		 */
 	}
 
 	/*

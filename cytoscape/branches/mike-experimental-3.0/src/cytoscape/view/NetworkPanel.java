@@ -36,7 +36,7 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkTitleChange;
 import cytoscape.actions.CreateNetworkViewAction;
@@ -259,7 +259,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	/**
 	 * update a network title
 	 */
-	public void updateTitle(final CyNetwork network) {
+	public void updateTitle(final GraphPerspective network) {
 		// updates the title in the network panel
 		treeTableModel.setValueAt(network.getTitle(),
 		                          treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
@@ -409,7 +409,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			String newID = cyNetworkTitleChange.getNetworkIdentifier();
 			//String newTitle = cyNetworkTitleChange.getNetworkTitle();
-			CyNetwork _network = Cytoscape.getNetwork(newID);
+			GraphPerspective _network = Cytoscape.getNetwork(newID);
 			if (_network != null) {
 				updateTitle(_network);				
 			}
@@ -473,12 +473,12 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			if (column == 0)
 				return ((DefaultMutableTreeNode) node).getUserObject();
 			else if (column == 1) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
+				GraphPerspective cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
 
 				return "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size()
 				       + ")";
 			} else if (column == 2) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
+				GraphPerspective cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
 
 				return "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()
 				       + ")";
@@ -582,7 +582,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 					String networkID = (String) ((NetworkTreeNode) treePath.getLastPathComponent())
 					                   .getNetworkID();
 
-					CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
+					GraphPerspective cyNetwork = Cytoscape.getNetwork(networkID);
 
 					if (cyNetwork != null) {
 						// disable or enable specific options with respect to
@@ -643,7 +643,7 @@ class PopupActionListener implements ActionListener {
 	 * appropriately, the network associated with the ID associated with the row
 	 * associated with the JTable that originated the popup event
 	 */
-	protected CyNetwork cyNetwork;
+	protected GraphPerspective cyNetwork;
 
 	/**
 	 * Based on the action event, destroy or create a view, or destroy a network
@@ -675,7 +675,7 @@ class PopupActionListener implements ActionListener {
 	 * Right before the popup menu is displayed, this function is called so we
 	 * know which network the user is clicking on to call for the popup menu
 	 */
-	public void setActiveNetwork(final CyNetwork cyNetwork) {
+	public void setActiveNetwork(final GraphPerspective cyNetwork) {
 		this.cyNetwork = cyNetwork;
 	}
 }

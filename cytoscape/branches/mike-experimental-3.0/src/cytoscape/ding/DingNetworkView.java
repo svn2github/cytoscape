@@ -34,9 +34,9 @@
 */
 package cytoscape.ding;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -85,7 +85,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param network  DOCUMENT ME!
 	 * @param title  DOCUMENT ME!
 	 */
-	public DingNetworkView(CyNetwork network, String title) {
+	public DingNetworkView(GraphPerspective network, String title) {
 		super(network);
 		this.title = title;
 
@@ -100,7 +100,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 			addEdgeView(edges[i]);
 		}
 
-		new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getSelectFilter(), this);
+		new FlagAndSelectionHandler(((GraphPerspective) getNetwork()).getSelectFilter(), this);
 	}
 
 	/**
@@ -135,8 +135,8 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyNetwork getNetwork() {
-		return (CyNetwork) getGraphPerspective();
+	public GraphPerspective getNetwork() {
+		return (GraphPerspective) getGraphPerspective();
 	}
 
 	/**
@@ -251,11 +251,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setSelected(CyNode[] nodes) {
+	public boolean setSelected(Node[] nodes) {
 		return setSelected(convertToViews(nodes));
 	}
 
-	private NodeView[] convertToViews(CyNode[] nodes) {
+	private NodeView[] convertToViews(Node[] nodes) {
 		NodeView[] views = new NodeView[nodes.length];
 
 		for (int i = 0; i < nodes.length; i++) {
@@ -287,7 +287,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean applyVizMap(CyEdge edge) {
+	public boolean applyVizMap(Edge edge) {
 		return applyVizMap(getEdgeView(edge));
 	}
 
@@ -309,7 +309,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean applyVizMap(CyNode node) {
+	public boolean applyVizMap(Node node) {
 		return applyVizMap(getNodeView(node));
 	}
 
@@ -332,7 +332,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean applyVizMap(CyEdge edge, VisualStyle style) {
+	public boolean applyVizMap(Edge edge, VisualStyle style) {
 		return applyVizMap(getEdgeView(edge), style);
 	}
 
@@ -360,7 +360,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean applyVizMap(CyNode node, VisualStyle style) {
+	public boolean applyVizMap(Node node, VisualStyle style) {
 		return applyVizMap(getNodeView(node), style);
 	}
 
@@ -387,11 +387,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setSelected(CyEdge[] edges) {
+	public boolean setSelected(Edge[] edges) {
 		return setSelected(convertToViews(edges));
 	}
 
-	private EdgeView[] convertToViews(CyEdge[] edges) {
+	private EdgeView[] convertToViews(Edge[] edges) {
 		EdgeView[] views = new EdgeView[edges.length];
 
 		for (int i = 0; i < edges.length; i++) {
@@ -442,7 +442,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
+	public void applyLockedLayout(CyLayoutAlgorithm layout, Node[] nodes, Edge[] edges) {
 		layout.lockNodes(convertToViews(nodes));
 		layout.doLayout();
 	}
@@ -454,7 +454,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
+	public void applyLayout(CyLayoutAlgorithm layout, Node[] nodes, Edge[] edges) {
 		layout.lockNodes(getInverseViews(convertToViews(nodes)));
 		layout.doLayout();
 	}

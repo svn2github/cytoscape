@@ -47,7 +47,8 @@ import cern.colt.list.IntArrayList;
 
 import cern.colt.map.OpenIntIntHashMap;
 
-import cytoscape.CyEdge;
+import cytoscape.Edge;
+import cytoscape.FEdge;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Interaction;
@@ -59,8 +60,8 @@ import cytoscape.util.PercentUtil;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -312,7 +313,7 @@ public class InteractionsReader extends AbstractGraphReader {
 			for (int t = 0; t < targetLength; t++) {
 				targetNodeName = targets[t];
 
-				edgeName = CyEdge.createIdentifier(nodeName, interactionType, targetNodeName);
+				edgeName = FEdge.createIdentifier(nodeName, interactionType, targetNodeName);
 				edge = Cytoscape.getCyEdge(nodeName, edgeName, targetNodeName, interactionType);
 				edges.put(edge.getRootGraphIndex(), 0);
 			} // for t

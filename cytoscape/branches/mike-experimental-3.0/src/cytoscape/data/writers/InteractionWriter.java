@@ -36,7 +36,7 @@
 */
 package cytoscape.data.writers;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -44,7 +44,7 @@ import cytoscape.data.Semantics;
 
 import cytoscape.task.TaskMonitor;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -63,7 +63,7 @@ public class InteractionWriter {
 	 * @param writer The writer the network should be written to.
 	 * @param taskMonitor An optional task monitor.
 	 */
-	public static void writeInteractions(CyNetwork network, Writer writer, TaskMonitor taskMonitor)
+	public static void writeInteractions(GraphPerspective network, Writer writer, TaskMonitor taskMonitor)
 	    throws IOException {
 		String sif = getInteractionString(network, taskMonitor);
 		writer.write(sif);
@@ -74,7 +74,7 @@ public class InteractionWriter {
 	 * @param network The network to be written.
 	 * @param writer The writer the network should be written to.
 	 */
-	public static void writeInteractions(CyNetwork network, Writer writer)
+	public static void writeInteractions(GraphPerspective network, Writer writer)
 	    throws IOException {
 		writeInteractions(network, writer, null);
 	}
@@ -84,7 +84,7 @@ public class InteractionWriter {
 	 * @param network The network to be formatted as a SIF string.
 	 * @return A string of a CyNetwork in SIF format.
 	 */
-	public static String getInteractionString(CyNetwork network) {
+	public static String getInteractionString(GraphPerspective network) {
 		return getInteractionString(network, null);
 	}
 
@@ -95,7 +95,7 @@ public class InteractionWriter {
 	 * use one. Use null otherwise.
 	 * @return A string of a CyNetwork in SIF format.
 	 */
-	public static String getInteractionString(CyNetwork network, TaskMonitor taskMonitor) {
+	public static String getInteractionString(GraphPerspective network, TaskMonitor taskMonitor) {
 		if (network == null) {
 			return "";
 		}
@@ -106,7 +106,7 @@ public class InteractionWriter {
 		final List<Node> nodeList = network.nodesList();
 
 		final CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
-		final Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
+		final Node[] nodes = (cytoscape.Node[]) nodeList.toArray(new cytoscape.Node[0]);
 		
 		final int nodeCount = nodes.length;
 		
@@ -127,11 +127,11 @@ public class InteractionWriter {
 				Iterator it = edges.iterator();
 
 				while (it.hasNext()) {
-					giny.model.Edge edge = (giny.model.Edge) it.next();
+					cytoscape.Edge edge = (cytoscape.Edge) it.next();
 
 					if (node == edge.getSource()) { //do only for outgoing edges
 
-						giny.model.Node target = edge.getTarget();
+						cytoscape.Node target = edge.getTarget();
 
 						String canonicalTargetName = target.getIdentifier();
 

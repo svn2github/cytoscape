@@ -36,8 +36,8 @@
  */
 package cytoscape.data.readers;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -67,9 +67,9 @@ import org.xml.sax.Attributes;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
@@ -402,9 +402,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
-		HashMap<CyNode, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
+		HashMap<Node, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
 
-		for (CyNode node: nodeGraphicsMap.keySet()) {
+		for (Node node: nodeGraphicsMap.keySet()) {
 			view = myView.getNodeView(node.getRootGraphIndex());
 
 			if ((label != null) && (view != null)) {
@@ -540,9 +540,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		String label = null;
 		int tempid = 0;
 		EdgeView view = null;
-		HashMap<CyEdge, Attributes> edgeGraphicsMap = parser.getEdgeGraphics();
+		HashMap<Edge, Attributes> edgeGraphicsMap = parser.getEdgeGraphics();
 
-		for (CyEdge edge: edgeGraphicsMap.keySet()) {
+		for (Edge edge: edgeGraphicsMap.keySet()) {
 			view = myView.getEdgeView(edge.getRootGraphIndex());
 
 			if ((edgeGraphicsMap != null) && (view != null)) {
@@ -647,7 +647,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	public void doPostProcessing(CyNetwork network) {
+	public void doPostProcessing(GraphPerspective network) {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
@@ -658,13 +658,13 @@ public class XGMMLReader extends AbstractGraphReader {
 		// only called when we create a view.  For large networks,
 		// we don't create views by default, but groups should still
 		// exist even when we don't create the view
-		Map<CyNode,List<CyNode>>groupMap = parser.getGroupMap();
+		Map<Node,List<Node>>groupMap = parser.getGroupMap();
 		if (groupMap != null) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-			for (CyNode groupNode: groupMap.keySet()) {
+			for (Node groupNode: groupMap.keySet()) {
 				CyGroup newGroup = null;
-				List<CyNode> childList = groupMap.get(groupNode);
+				List<Node> childList = groupMap.get(groupNode);
 				String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
 				                                                  CyGroup.GROUP_VIEWER_ATTR);
 

@@ -49,7 +49,7 @@ import cytoscape.data.SelectFilter;
 
 import cytoscape.view.FlagAndSelectionHandler;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 

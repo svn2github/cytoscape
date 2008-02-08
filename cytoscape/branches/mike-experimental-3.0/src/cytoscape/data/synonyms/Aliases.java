@@ -38,8 +38,8 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.Iterator;

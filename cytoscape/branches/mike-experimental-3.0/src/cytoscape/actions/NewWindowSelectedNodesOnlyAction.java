@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CyNetworkNaming;
@@ -53,7 +53,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 
 //-------------------------------------------------------------------------
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.awt.event.ActionEvent;
 
@@ -84,7 +84,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// save the vizmapper catalog
-		CyNetwork current_network = Cytoscape.getCurrentNetwork();
+		GraphPerspective current_network = Cytoscape.getCurrentNetwork();
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
@@ -97,7 +97,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		Set nodes = current_network.getSelectedNodes();
 
-		CyNetwork new_network = Cytoscape.createNetwork(nodes,
+		GraphPerspective new_network = Cytoscape.createNetwork(nodes,
 		                                                current_network.getConnectingEdges(new ArrayList(nodes)),
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 		                                                current_network);
@@ -134,7 +134,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-        CyNetwork n = Cytoscape.getCurrentNetwork();
+        GraphPerspective n = Cytoscape.getCurrentNetwork();
         if ( n == null || n == Cytoscape.getNullNetwork() ) {
            	setEnabled(false); 
 			return;

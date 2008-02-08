@@ -36,15 +36,15 @@
  */
 package cytoscape.data.readers;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -91,7 +91,7 @@ public class GMLWriter {
 	 * list is empty in that case. Those same update functions must be able to
 	 * create all relevant key-value pairs as well then.
 	 */
-	public void writeGML(final CyNetwork network, final CyNetworkView view, final List oldList) {
+	public void writeGML(final GraphPerspective network, final CyNetworkView view, final List oldList) {
 		/*
 		 * Initially all the nodes and edges have not been seen
 		 */
@@ -187,7 +187,7 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with a graph key
 	 */
-	private void writeGraph(final CyNetwork network, final CyNetworkView view, final List oldList) {
+	private void writeGraph(final GraphPerspective network, final CyNetworkView view, final List oldList) {
 		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = it.next();
 
@@ -212,7 +212,7 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with a node key
 	 */
-	private boolean writeGraphNode(final CyNetwork network, final CyNetworkView view,
+	private boolean writeGraphNode(final GraphPerspective network, final CyNetworkView view,
 	                               final List oldList) {
 		/*
 		 * We expect a list associated with node key to potentially have a
@@ -296,7 +296,7 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with an edge key
 	 */
-	private boolean writeGraphEdge(final CyNetwork network, final CyNetworkView view,
+	private boolean writeGraphEdge(final GraphPerspective network, final CyNetworkView view,
 	                               final List oldList) {
 		/*
 		 * An edge key will definitely have a root_index, labelPair (we enforce
@@ -378,7 +378,7 @@ public class GMLWriter {
 	 * This writes all the graphical information for a particular node into an
 	 * object tree
 	 */
-	private void writeGraphNodeGraphics(final CyNetwork network, final NodeView nodeView,
+	private void writeGraphNodeGraphics(final GraphPerspective network, final NodeView nodeView,
 	                                    final List oldList) {
 		KeyValue x = null;
 		KeyValue y = null;
@@ -497,7 +497,7 @@ public class GMLWriter {
 		}
 	}
 
-	private void writeGraphEdgeGraphics(final CyNetwork network, final EdgeView edgeView,
+	private void writeGraphEdgeGraphics(final GraphPerspective network, final EdgeView edgeView,
 	                                    final List oldList) {
 		KeyValue width = null;
 		KeyValue fill = null;

@@ -35,7 +35,7 @@
 package cytoscape.data.readers;
 
 import cytoscape.AllTests;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.readers.GraphReader;
@@ -60,7 +60,7 @@ public class FileImporterTest extends TestCase {
 	String title;
 	int nodeCount;
 	int edgeCount;
-	CyNetwork network;
+	GraphPerspective network;
 
 	//	VisualStyleBuilderDialog vsd;
 	/**

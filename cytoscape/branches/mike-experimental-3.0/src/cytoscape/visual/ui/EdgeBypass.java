@@ -43,7 +43,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 
-import giny.model.Edge;
+import cytoscape.Edge;
 
 import java.awt.Color;
 import java.awt.Font;

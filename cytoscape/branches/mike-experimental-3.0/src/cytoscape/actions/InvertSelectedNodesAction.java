@@ -42,13 +42,13 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
 //-------------------------------------------------------------------------
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.awt.event.ActionEvent;
 
@@ -79,7 +79,7 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
 		final List<Node> selectedNodes = new ArrayList<Node>(cyNetwork.getSelectedNodes());
 		cyNetwork.selectAllNodes();
 		cyNetwork.setSelectedNodeState(selectedNodes, false);

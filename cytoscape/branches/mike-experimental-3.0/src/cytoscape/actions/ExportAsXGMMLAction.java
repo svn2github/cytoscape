@@ -36,7 +36,7 @@
 */
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.writers.XGMMLWriter;
@@ -149,7 +149,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 			name = name + ".xgmml";
 
 		// Get Current Network and View
-		final CyNetwork network = Cytoscape.getCurrentNetwork();
+		final GraphPerspective network = Cytoscape.getCurrentNetwork();
 		final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Create Task
@@ -177,7 +177,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
  */
 class ExportAsXGMMLTask implements Task {
 	private String fileName;
-	private CyNetwork network;
+	private GraphPerspective network;
 	private CyNetworkView view;
 	private TaskMonitor taskMonitor;
 
@@ -189,7 +189,7 @@ class ExportAsXGMMLTask implements Task {
 	 * @param view
 	 *            Network View Object.
 	 */
-	public ExportAsXGMMLTask(String fileName, CyNetwork network, CyNetworkView view) {
+	public ExportAsXGMMLTask(String fileName, GraphPerspective network, CyNetworkView view) {
 		this.fileName = fileName;
 		this.network = network;
 		this.view = view;

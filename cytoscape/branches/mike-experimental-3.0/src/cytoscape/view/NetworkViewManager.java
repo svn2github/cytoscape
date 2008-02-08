@@ -36,7 +36,7 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -167,7 +167,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 * @param network
 	 *            DOCUMENT ME!
 	 */
-	public void updateNetworkTitle(CyNetwork network) {
+	public void updateNetworkTitle(GraphPerspective network) {
 		JInternalFrame frame = networkViewMap.get(network.getIdentifier());
 
 		frame.setTitle(network.getTitle());

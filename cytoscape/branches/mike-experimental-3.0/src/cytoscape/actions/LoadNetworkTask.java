@@ -49,7 +49,7 @@ import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.readers.GraphReader;
@@ -158,7 +158,7 @@ public class LoadNetworkTask implements Task {
 
 			taskMonitor.setStatus("Creating Cytoscape Network...");
 
-			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
+			GraphPerspective cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;
@@ -201,7 +201,7 @@ public class LoadNetworkTask implements Task {
 	// For the new GML format import function, added some messages
 	// for the users.
 	//
-	private void informUserOfGraphStats(CyNetwork newNetwork) {
+	private void informUserOfGraphStats(GraphPerspective newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 

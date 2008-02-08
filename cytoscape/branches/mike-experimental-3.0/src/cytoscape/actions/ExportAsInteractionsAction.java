@@ -40,7 +40,7 @@
 // $Author$
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -166,7 +166,7 @@ class SaveAsSifTask implements Task {
 			}
 
 			FileWriter f = new FileWriter(fileName);
-			CyNetwork netToSave = Cytoscape.getCurrentNetwork();
+			GraphPerspective netToSave = Cytoscape.getCurrentNetwork();
 			InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
 			f.close();
 

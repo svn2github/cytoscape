@@ -46,9 +46,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.dialogs.preferences.*;
 
-import cytoscape.giny.*;
-
-import cytoscape.util.*;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyNetworkView;

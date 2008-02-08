@@ -65,8 +65,8 @@ import java.util.Map;
  * nodes and edges.  The unique identifiers for nodes and edges are available
  * via the <CODE>getIdentifier()</CODE> method:
  * <UL>
- * <LI>For nodes, use {@link cytoscape.CyNode#getIdentifier()}.
- * <LI>For edges, use {@link cytoscape.CyEdge#getIdentifier()}.
+ * <LI>For nodes, use {@link cytoscape.Node#getIdentifier()}.
+ * <LI>For edges, use {@link cytoscape.Edge#getIdentifier()}.
  * </UL>
  * <h3>Data Type Restrictions:</h3>
  * CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap} data structure,

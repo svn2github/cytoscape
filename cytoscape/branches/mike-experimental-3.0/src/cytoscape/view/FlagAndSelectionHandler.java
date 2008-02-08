@@ -48,8 +48,8 @@ import cytoscape.data.SelectEventListener;
 import cytoscape.data.SelectFilter;
 
 //---------------------------------------------------------------------------
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;

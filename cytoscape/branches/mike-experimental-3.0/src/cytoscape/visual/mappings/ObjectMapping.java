@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.VisualPropertyType;
@@ -105,7 +105,7 @@ public interface ObjectMapping extends Cloneable {
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
      */
-    void setControllingAttributeName(String attrName, CyNetwork network,
+    void setControllingAttributeName(String attrName, GraphPerspective network,
         boolean preserveMapping);
 
     /**

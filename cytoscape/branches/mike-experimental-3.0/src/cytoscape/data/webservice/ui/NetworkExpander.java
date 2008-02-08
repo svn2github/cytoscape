@@ -1,6 +1,6 @@
 package cytoscape.data.webservice.ui;
 
-import giny.model.Node;
+import cytoscape.Node;
 import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;

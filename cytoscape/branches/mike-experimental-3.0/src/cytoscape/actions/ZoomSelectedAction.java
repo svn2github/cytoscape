@@ -46,8 +46,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.ding.DingNetworkView;
 
-import cytoscape.giny.*;
-
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyNetworkView;

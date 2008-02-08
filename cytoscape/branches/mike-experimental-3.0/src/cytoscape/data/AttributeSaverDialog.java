@@ -41,7 +41,7 @@ import cytoscape.CytoscapeInit;
 
 import cytoscape.data.writers.CyAttributesWriter2;
 
-import giny.model.GraphObject;
+import cytoscape.GraphObject;
 
 import java.awt.BorderLayout;
 import java.awt.Container;

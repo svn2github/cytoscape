@@ -45,10 +45,11 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
+import cytoscape.RootGraph;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
@@ -66,37 +67,37 @@ public class DefaultViewPanel extends JPanel {
 	private static final int PADDING = 20;
 	private CyNetworkView view;
 	private CyNetworkView oldView;
-	private static CyNetwork dummyNet;
+	private static GraphPerspective dummyNet;
 	private Color background;
 
 	/*
 	 * Dummy graph component
 	 */
-	private static final CyNode source;
-	private static final CyNode target;
-	private static final CyEdge edge;
+	private final Node source;
+	private final Node target;
+	private final Edge edge;
 	private Component canvas = null;
 
-	static {
-		source = Cytoscape.getCyNode("Source");
-		target = Cytoscape.getCyNode("Target");
-		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
-		                           "interaction");
-
-		List nodes = new ArrayList();
-		List edges = new ArrayList();
-		nodes.add(source);
-		nodes.add(target);
-		edges.add(edge);
-
-		dummyNet = Cytoscape.getRootGraph().createNetwork(nodes, edges);
-		dummyNet.setTitle("Default Appearance");
-	}
 
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
 	public DefaultViewPanel() {
+
+		source = Cytoscape.getCyNode("Source",true);
+		target = Cytoscape.getCyNode("Target",true);
+		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(), "interaction");
+
+		List<Node> nodes = new ArrayList<Node>();
+		List<Edge> edges = new ArrayList<Edge>();
+		nodes.add(source);
+		nodes.add(target);
+		edges.add(edge);
+
+		dummyNet = Cytoscape.getRootGraph().createGraphPerspective(nodes, edges);
+		dummyNet.setTitle("Default Appearance");
+
+
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()

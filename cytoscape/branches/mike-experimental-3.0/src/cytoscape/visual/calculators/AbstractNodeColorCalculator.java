@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
@@ -52,7 +52,7 @@ import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
 
 //----------------------------------------------------------------------------
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.awt.Color;
 
@@ -96,7 +96,7 @@ abstract class AbstractNodeColorCalculator extends NodeCalculator {
      *
      * @return DOCUMENT ME!
      */
-    public Color calculateNodeColor(Node e, CyNetwork n) {
+    public Color calculateNodeColor(Node e, GraphPerspective n) {
         final Appearance ea = new Appearance();
         apply(ea, e, n);
 

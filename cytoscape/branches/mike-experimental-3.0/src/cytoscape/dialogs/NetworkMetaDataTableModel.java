@@ -34,7 +34,7 @@
 */
 package cytoscape.dialogs;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.readers.MetadataParser;
 
@@ -57,7 +57,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class NetworkMetaDataTableModel extends DefaultTableModel {
 	private final static long serialVersionUID = 120233987340104L;
-	private CyNetwork network;
+	private GraphPerspective network;
 	private Object[][] dataArray;
 	private Map data;
 	private String description;
@@ -78,7 +78,7 @@ public class NetworkMetaDataTableModel extends DefaultTableModel {
 	 * @param network
 	 *                 Metadata for this network will be edited.
 	 */
-	public NetworkMetaDataTableModel(CyNetwork network) {
+	public NetworkMetaDataTableModel(GraphPerspective network) {
 		super();
 		this.network = network;
 		description = null;

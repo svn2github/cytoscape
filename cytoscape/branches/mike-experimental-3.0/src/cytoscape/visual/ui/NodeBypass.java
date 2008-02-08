@@ -36,7 +36,7 @@
  */
 package cytoscape.visual.ui;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.List;

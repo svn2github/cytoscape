@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.VisualPropertyType;
 
@@ -172,7 +172,7 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @param network DOCUMENT ME!
 	 * @param preserveMapping DOCUMENT ME!
 	 */
-	public void setControllingAttributeName(String attrName, CyNetwork network,
+	public void setControllingAttributeName(String attrName, GraphPerspective network,
 	                                        boolean preserveMapping) {
 		this.attrName = attrName;
 	}
@@ -197,7 +197,7 @@ public class PassThroughMapping implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public JPanel getUI(JDialog parent, CyNetwork network) {
+	public JPanel getUI(JDialog parent, GraphPerspective network) {
 		//construct a UI to view/edit this mapping; only needs to view/set
 		//the controlling attribute name
 		JPanel p = new JPanel();

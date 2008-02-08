@@ -36,15 +36,15 @@
  */
 package cytoscape.visual;
 
-import giny.model.Node;
+import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.util.Iterator;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
@@ -159,7 +159,7 @@ public class VisualMappingManager extends SubjectBase {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public CyNetwork getNetwork() {
+	public GraphPerspective getNetwork() {
 		return networkView.getNetwork();
 	}
 
@@ -230,7 +230,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * attributes are calculated by delegating to the NodeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyNodeAppearances(final CyNetwork network, final CyNetworkView network_view) {
+	public void applyNodeAppearances(final GraphPerspective network, final CyNetworkView network_view) {
 		final NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 
 		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
@@ -256,7 +256,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * attributes are calculated by delegating to the EdgeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyEdgeAppearances(final CyNetwork network, final CyNetworkView network_view) {
+	public void applyEdgeAppearances(final GraphPerspective network, final CyNetworkView network_view) {
 		final EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 
 		EdgeView edgeView;
@@ -294,7 +294,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param network_view
 	 *            the view to apply to
 	 */
-	public void applyGlobalAppearances(CyNetwork network, CyNetworkView network_view) {
+	public void applyGlobalAppearances(GraphPerspective network, CyNetworkView network_view) {
 		GlobalAppearanceCalculator globalAppearanceCalculator = activeVS.getGlobalAppearanceCalculator();
 		globalAppearanceCalculator.calculateGlobalAppearance(myGlobalApp, network);
 
@@ -313,13 +313,13 @@ public class VisualMappingManager extends SubjectBase {
 		Iterator nodeIt = network.nodesIterator();
 
 		while (nodeIt.hasNext())
-			network_view.getNodeView((CyNode) nodeIt.next())
+			network_view.getNodeView((Node) nodeIt.next())
 			            .setSelectedPaint(myGlobalApp.getNodeSelectionColor());
 
 		Iterator edgeIt = network.edgesIterator();
 
 		while (edgeIt.hasNext())
-			network_view.getEdgeView((CyEdge) edgeIt.next())
+			network_view.getEdgeView((Edge) edgeIt.next())
 			            .setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
 	}
 
@@ -344,7 +344,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param network_view DOCUMENT ME!
 	 */
 	public void vizmapNode(NodeView nodeView, CyNetworkView network_view) {
-		CyNode node = (CyNode) nodeView.getNode();
+		Node node = (Node) nodeView.getNode();
 		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getNetwork());
 		myNodeApp.applyAppearance(nodeView);
@@ -357,7 +357,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param network_view DOCUMENT ME!
 	 */
 	public void vizmapEdge(EdgeView edgeView, CyNetworkView network_view) {
-		CyEdge edge = (CyEdge) edgeView.getEdge();
+		Edge edge = (Edge) edgeView.getEdge();
 		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getNetwork());
 		myEdgeApp.applyAppearance(edgeView);

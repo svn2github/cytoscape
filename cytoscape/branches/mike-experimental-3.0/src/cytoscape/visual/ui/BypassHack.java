@@ -37,7 +37,7 @@
  */
 package cytoscape.visual.ui;
 
-import giny.model.GraphObject; 
+import cytoscape.GraphObject; 
 
 /**
  * ARgh.  This is a horrible, horrible hack that allows LabelPosition to

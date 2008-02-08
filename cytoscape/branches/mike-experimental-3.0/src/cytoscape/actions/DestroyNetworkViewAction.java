@@ -37,7 +37,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.util.CytoscapeAction;
 

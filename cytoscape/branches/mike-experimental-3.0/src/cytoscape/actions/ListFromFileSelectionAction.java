@@ -40,7 +40,7 @@
 // $Author$
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
@@ -97,7 +97,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 			return false;
 		}
 
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		GraphPerspective network = Cytoscape.getCurrentNetwork();
 
 		try {
 			FileReader fin = new FileReader(name);
@@ -118,10 +118,10 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 			// loop through all the node of the graph
 			// selecting those in the file
 			List nodeList = network.nodesList();
-			giny.model.Node[] nodes = (giny.model.Node[]) nodeList.toArray(new giny.model.Node[0]);
+			cytoscape.Node[] nodes = (cytoscape.Node[]) nodeList.toArray(new cytoscape.Node[0]);
 
 			for (int i = 0; i < nodes.length; i++) {
-				giny.model.Node node = nodes[i];
+				cytoscape.Node node = nodes[i];
 				boolean select = false;
 				String canonicalName = node.getIdentifier();
 				List synonyms = Semantics.getAllSynonyms(canonicalName, network);

@@ -46,11 +46,11 @@ package cytoscape.data;
 //---------------------------------------------------------------------------
 import giny.filter.Filter;
 
-import giny.model.Edge;
-import giny.model.GraphPerspective;
-import giny.model.GraphPerspectiveChangeEvent;
-import giny.model.GraphPerspectiveChangeListener;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.GraphPerspectiveChangeEvent;
+import cytoscape.GraphPerspectiveChangeListener;
+import cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -245,7 +245,7 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * @return a Set containing the objects for which the selected state changed
 	 * @throws ClassCastException
 	 *             if the first argument contains objects other than
-	 *             giny.model.Node objects
+	 *             cytoscape.Node objects
 	 */
 	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState) {
 		final Set<Node> returnSet = new HashSet<Node>();
@@ -292,7 +292,7 @@ public class SelectFilter implements Filter, GraphPerspectiveChangeListener {
 	 * @return a Set containing the objects for which the selected state changed
 	 * @throws ClassCastException
 	 *             if the first argument contains objects other than
-	 *             giny.model.Edge objects
+	 *             cytoscape.Edge objects
 	 */
 	public Set<Edge> setSelectedEdges(final Collection<Edge> edgesToSet, final boolean newState) {
 		

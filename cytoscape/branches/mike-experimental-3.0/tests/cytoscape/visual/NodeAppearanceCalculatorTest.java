@@ -43,8 +43,8 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import giny.model.Node;
-import giny.model.RootGraph;
+import cytoscape.Node;
+import cytoscape.RootGraph;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -54,9 +54,9 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -67,11 +67,11 @@ import cytoscape.util.FileUtil;
  * 
  */
 public class NodeAppearanceCalculatorTest extends TestCase {
-	CyNetwork cyNet;
-	CyNode a;
-	CyNode b;
-	CyNode c;
-	CyEdge ab;
+	GraphPerspective cyNet;
+	Node a;
+	Node b;
+	Node c;
+	Edge ab;
 	CalculatorCatalog catalog;
 	Properties props;
 
@@ -380,7 +380,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		int index2 = graph.createNode();
 		Node second = graph.getNode(index2);
 
-		CyNetwork network2 = Cytoscape.createNetwork(Cytoscape.getRootGraph()
+		GraphPerspective network2 = Cytoscape.createNetwork(Cytoscape.getRootGraph()
 				.getNodeIndicesArray(), Cytoscape.getRootGraph()
 				.getEdgeIndicesArray(), null);
 

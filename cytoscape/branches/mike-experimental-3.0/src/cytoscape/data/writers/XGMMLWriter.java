@@ -38,9 +38,9 @@ package cytoscape.data.writers;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.groups.CyGroup;
@@ -63,8 +63,8 @@ import ding.view.DingCanvas;
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
-import giny.model.Node;
-import giny.model.Edge;
+import cytoscape.Node;
+import cytoscape.Edge;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -218,11 +218,11 @@ public class XGMMLWriter {
 	private String[] nodeAttNames = null;
 	private String[] edgeAttNames = null;
 	private String[] networkAttNames = null;
-	private CyNetwork network;
+	private GraphPerspective network;
 	private CyNetworkView networkView;
 	private ArrayList <CyGroup>groupList;
-	private	HashMap <CyNode, CyNode>nodeMap;
-	private	HashMap <CyEdge, CyEdge>edgeMap;
+	private	HashMap <Node, Node>nodeMap;
+	private	HashMap <Edge, Edge>edgeMap;
 	private boolean noCytoscapeGraphics = false;
 
 	private int depth = 0; // XML depth
@@ -240,7 +240,7 @@ public class XGMMLWriter {
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final CyNetwork network, final CyNetworkView view)
+	public XGMMLWriter(final GraphPerspective network, final CyNetworkView view)
 	    throws IOException, URISyntaxException {
 		this.network = network;
 		this.networkView = view;
@@ -250,8 +250,8 @@ public class XGMMLWriter {
 		networkAttributes = Cytoscape.getNetworkAttributes();
 
 		groupList = new ArrayList<CyGroup>();
-		nodeMap = new HashMap<CyNode, CyNode>();
-		edgeMap = new HashMap<CyEdge, CyEdge>();
+		nodeMap = new HashMap<Node, Node>();
+		edgeMap = new HashMap<Edge, Edge>();
 
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
@@ -275,7 +275,7 @@ public class XGMMLWriter {
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final CyNetwork network, final CyNetworkView view,
+	public XGMMLWriter(final GraphPerspective network, final CyNetworkView view,
 	                   boolean noCytoscapeGraphics) throws IOException, URISyntaxException {
 		this(network, view);
 		this.noCytoscapeGraphics = noCytoscapeGraphics;
@@ -420,7 +420,7 @@ public class XGMMLWriter {
 	 */
 	private void writeNodes() throws IOException {
 		for (Node node: network.nodesList()) {
-			CyNode curNode = (CyNode)node;
+			Node curNode = (Node)node;
 			if (!curNode.isaGroup())
 				writeNode(curNode, null);
 		}
@@ -432,7 +432,7 @@ public class XGMMLWriter {
 	 * @param node the node to output
 	 * @throws IOException
 	 */
-	private void writeNode(CyNode node, List<CyNode> groupList) throws IOException {
+	private void writeNode(Node node, List<Node> groupList) throws IOException {
 		// Remember that we've seen this node
 		nodeMap.put(node, node);
 
@@ -454,7 +454,7 @@ public class XGMMLWriter {
 			depth++;
 			writeElement("<graph>\n");
 			depth++;
-			for (CyNode childNode: groupList) {
+			for (Node childNode: groupList) {
 				if (childNode.isaGroup()) {
 					// We have an embedded group -- recurse
 					CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
@@ -492,7 +492,7 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeNodeGraphics(CyNode node, NodeView nodeView) throws IOException {
+	private void writeNodeGraphics(Node node, NodeView nodeView) throws IOException {
 
 		/*
 		 * In case node is hidden, we cannot get the show and extract node
@@ -573,12 +573,12 @@ public class XGMMLWriter {
 		HashMap embeddedGroupList = new HashMap();
 
 		for (CyGroup group: groupList) {
-			List<CyNode> childList = group.getNodes();
+			List<Node> childList = group.getNodes();
 
 			if ((childList == null) || (childList.size() == 0))
 				continue;
 
-			for (CyNode childNode: childList) {
+			for (Node childNode: childList) {
 				if (CyGroupManager.isaGroup(childNode)) {
 					// Get the actual group
 					CyGroup embGroup = CyGroupManager.getCyGroup(childNode);
@@ -597,7 +597,7 @@ public class XGMMLWriter {
 	}
 
 	private void writeGroup(CyGroup group) throws IOException {
-		CyNode groupNode = group.getGroupNode();
+		Node groupNode = group.getGroupNode();
 		writeNode(groupNode, group.getNodes());
 	}
 
@@ -608,20 +608,20 @@ public class XGMMLWriter {
 	 */
 	private void writeEdges() throws IOException {
 		for (Edge edge: network.edgesList()) {
-			CyEdge curEdge = (CyEdge)edge;
+			Edge curEdge = (Edge)edge;
 			edgeMap.put(curEdge,curEdge);
 			writeEdge(curEdge);
 		}
 
 		// Now add all of the group edges in case they're hidden
 		for (CyGroup group: groupList) {
-			for (CyEdge edge: group.getInnerEdges()) {
+			for (Edge edge: group.getInnerEdges()) {
 				if (!edgeMap.containsKey(edge)) {
 					edgeMap.put(edge,edge);
 					writeEdge(edge);
 				}
 			}
-			for (CyEdge edge: group.getOuterEdges()) {
+			for (Edge edge: group.getOuterEdges()) {
 				if (!edgeMap.containsKey(edge)) {
 					edgeMap.put(edge,edge);
 					writeEdge(edge);
@@ -637,7 +637,7 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeEdge(CyEdge curEdge) throws IOException {
+	private void writeEdge(Edge curEdge) throws IOException {
 		// Write the edge 
 		String target = quote(Integer.toString(curEdge.getTarget().getRootGraphIndex()));
 		String source = quote(Integer.toString(curEdge.getSource().getRootGraphIndex()));
@@ -671,7 +671,7 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeEdgeGraphics(CyEdge edge, EdgeView edgeView) throws IOException {
+	private void writeEdgeGraphics(Edge edge, EdgeView edgeView) throws IOException {
 		if (edgeView == null) 
 			return;
 

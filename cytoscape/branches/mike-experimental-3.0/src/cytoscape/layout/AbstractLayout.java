@@ -36,9 +36,9 @@
 */
 package cytoscape.layout;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -81,7 +81,7 @@ import javax.swing.JPanel;
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected Set<NodeView> staticNodes;
 	protected CyNetworkView networkView;
-	protected CyNetwork network;
+	protected GraphPerspective network;
 	protected TaskMonitor taskMonitor; 
 	protected boolean selectedOnly = false;
 	protected String edgeAttribute = null;

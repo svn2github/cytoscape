@@ -42,7 +42,7 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.VisualPropertyType;

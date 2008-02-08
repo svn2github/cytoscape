@@ -36,7 +36,7 @@
  */
 package cytoscape.visual.ui;
 
-import giny.model.GraphObject;
+import cytoscape.GraphObject;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;

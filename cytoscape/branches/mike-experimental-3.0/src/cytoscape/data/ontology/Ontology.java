@@ -34,8 +34,8 @@
 */
 package cytoscape.data.ontology;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -45,7 +45,7 @@ import cytoscape.data.ontology.readers.OBOTags;
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import org.biojava.ontology.AlreadyExistsException;
 import org.biojava.ontology.OntologyOps;
@@ -108,7 +108,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	/*
 	 * Actual DAG of the Ontology
 	 */
-	private CyNetwork ontologyGraph;
+	private GraphPerspective ontologyGraph;
 	private CyAttributes ontologyAttr;
 	private CyAttributes termAttr;
 
@@ -142,7 +142,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 * @throws URISyntaxException
 	 */
 	public Ontology(final String name, final String curator, final String description,
-	                final CyNetwork dag) {
+	                final GraphPerspective dag) {
 		ontologyAttr = Cytoscape.getNetworkAttributes();
 		termAttr = Cytoscape.getNodeAttributes();
 
@@ -246,7 +246,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 * @return true if the term is in the DAG.
 	 */
 	public boolean containsTerm(String id) {
-		CyNode testNode = Cytoscape.getCyNode(id, false);
+		Node testNode = Cytoscape.getCyNode(id, false);
 
 		if (testNode == null) {
 			return false;

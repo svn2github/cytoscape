@@ -42,8 +42,8 @@
 //---------------------------------------------------------------------------
 package cytoscape.data;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 //---------------------------------------------------------------------------
 import java.util.Set;

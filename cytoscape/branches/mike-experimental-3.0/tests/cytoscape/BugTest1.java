@@ -38,8 +38,8 @@ package cytoscape;
 
 import cytoscape.Cytoscape;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import junit.framework.Assert;
 import junit.framework.Test;

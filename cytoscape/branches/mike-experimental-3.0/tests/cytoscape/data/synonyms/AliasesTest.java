@@ -39,7 +39,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.synonyms.AliasType;
 import cytoscape.data.synonyms.Aliases;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import junit.framework.TestCase;
 

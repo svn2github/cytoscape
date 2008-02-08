@@ -36,8 +36,8 @@
 */
 package cytoscape.data;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.AttributeFilter;
@@ -49,7 +49,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
-import giny.model.GraphObject;
+import cytoscape.GraphObject;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -65,9 +65,9 @@ import java.util.Map;
  *
  */
 public class CyAttributesUtilsTest extends TestCase {
-	private CyNode testNode1;
-	private CyNode testNode2;
-	private CyEdge testEdge;
+	private Node testNode1;
+	private Node testNode2;
+	private Edge testEdge;
 
 	// track complex p-values:
 	private List<Double> PValues = new ArrayList<Double>();
@@ -165,7 +165,7 @@ public class CyAttributesUtilsTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testCopyAttributes() {
-		CyNode copyTestNode1 = Cytoscape.getCyNode("copyTestNode1", true);
+		Node copyTestNode1 = Cytoscape.getCyNode("copyTestNode1", true);
 		CyAttributes attrs = Cytoscape.getNodeAttributes();
 		// copy all attributes to copyTestNode1:
 		CyAttributesUtils.copyAttributes(testNode1.getIdentifier(), copyTestNode1.getIdentifier(),
@@ -192,8 +192,8 @@ public class CyAttributesUtilsTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testCopyAttribute() {
-		CyNode testNode3 = Cytoscape.getCyNode("testNode3", true);
-		CyEdge testEdgeCopy = Cytoscape.getCyEdge(testNode1.getIdentifier(), "Interaction Value",
+		Node testNode3 = Cytoscape.getCyNode("testNode3", true);
+		Edge testEdgeCopy = Cytoscape.getCyEdge(testNode1.getIdentifier(), "Interaction Value",
 		                                          testNode3.getIdentifier(), Semantics.INTERACTION);
 		CyAttributes attrs = Cytoscape.getEdgeAttributes();
 		// only copy ListTest attribute:
@@ -215,9 +215,9 @@ public class CyAttributesUtilsTest extends TestCase {
 		String goID = go.getIdentifier();
 		CyAttributes attrs = null;
 
-		if (go instanceof CyNode) {
+		if (go instanceof Node) {
 			attrs = Cytoscape.getNodeAttributes();
-		} else if (go instanceof CyEdge) {
+		} else if (go instanceof Edge) {
 			attrs = Cytoscape.getEdgeAttributes();
 		}
 
@@ -306,9 +306,9 @@ public class CyAttributesUtilsTest extends TestCase {
 		String goID = go.getIdentifier();
 		CyAttributes attrs = null;
 
-		if (go instanceof CyNode) {
+		if (go instanceof Node) {
 			attrs = Cytoscape.getNodeAttributes();
-		} else if (go instanceof CyEdge) {
+		} else if (go instanceof Edge) {
 			attrs = Cytoscape.getEdgeAttributes();
 		}
 

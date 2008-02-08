@@ -42,16 +42,16 @@ package cytoscape.data;
 
 import ViolinStrings.Strings;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -78,7 +78,7 @@ public class CyNetworkUtilities {
 	 * name.
 	 * TODO: The CyNetworkView is not a needed parameter
 	 */
-	public static boolean saveSelectedNodeNames(CyNetworkView networkView, CyNetwork network,
+	public static boolean saveSelectedNodeNames(CyNetworkView networkView, GraphPerspective network,
 	                                            String filename) {
 		if ((networkView == null) || (network == null) || (filename == null)) {
 			return false;
@@ -100,7 +100,7 @@ public class CyNetworkUtilities {
 			FileWriter fout = new FileWriter(file);
 
 			for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
+				Node node = (Node) i.next();
 				String nodeUID = node.getIdentifier();
 				fout.write(nodeUID + lineSep);
 			} // for i
@@ -123,7 +123,7 @@ public class CyNetworkUtilities {
 	 * Saves all nodes in the given network to a file with the given
 	 * name.
 	 */
-	public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
+	public static boolean saveVisibleNodeNames(GraphPerspective network, String filename) {
 		if ((network == null) || (filename == null)) {
 			return false;
 		}
@@ -139,7 +139,7 @@ public class CyNetworkUtilities {
 			FileWriter fout = new FileWriter(file);
 
 			for (Iterator i = network.nodesIterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
+				Node node = (Node) i.next();
 				// String canonicalName = nodeAttributes.getCanonicalName(node);
 				//String canonicalName = nodeAttributes.getStringAttribute(node
 				//		.getIdentifier(), "canonicalName");
@@ -169,7 +169,7 @@ public class CyNetworkUtilities {
 	 * match the given key, allowing multiple selection queries to be
 	 * concatenated.
 	 */
-	public static boolean selectNodesStartingWith(CyNetwork network, String key,
+	public static boolean selectNodesStartingWith(GraphPerspective network, String key,
 	                                              CyNetworkView networkView) {
 		if ((network == null) || (key == null) || (networkView == null)) {
 			return false;
@@ -186,7 +186,7 @@ public class CyNetworkUtilities {
 		Vector matchedNodes = new Vector();
 
 		for (Iterator i = network.nodesIterator(); i.hasNext();) {
-			CyNode node = (CyNode) i.next();
+			Node node = (Node) i.next();
 			String nodeUID = node.getIdentifier();
 
 			boolean matched = false;

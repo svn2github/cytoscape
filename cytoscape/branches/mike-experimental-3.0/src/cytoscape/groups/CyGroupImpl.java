@@ -38,9 +38,9 @@
 package cytoscape.groups;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
+import cytoscape.Edge;
 
 import cytoscape.data.CyAttributes;
 
@@ -65,28 +65,28 @@ public class CyGroupImpl implements CyGroup {
 	/**
 	 * The members of this group, indexed by the Node.
 	 */
-	private HashMap<CyNode, CyNode> nodeMap;
+	private HashMap<Node, Node> nodeMap;
 
 	/**
 	 * The edges in this group that only involve members of this group
 	 */
-	private HashMap<CyEdge, CyEdge> innerEdgeMap;
+	private HashMap<Edge, Edge> innerEdgeMap;
 
 	/**
 	 * The edges in this group that involve members outside of this group
 	 */
-	private HashMap<CyEdge, CyEdge> outerEdgeMap;
+	private HashMap<Edge, Edge> outerEdgeMap;
 
 	/**
 	 * A map storing the list of edges for a node at the time it was
 	 * added to the group
 	 */
-	private HashMap<CyNode,List<CyEdge>> nodeToEdgeMap;
+	private HashMap<Node,List<Edge>> nodeToEdgeMap;
 
 	/**
 	 * The node that represents this group
 	 */
-	private CyNode groupNode = null;
+	private Node groupNode = null;
 
 	/**
 	 * The group name
@@ -138,7 +138,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param groupNode the CyNode to use for this group
 	 */
-	protected CyGroupImpl(CyNode groupNode) {
+	protected CyGroupImpl(Node groupNode) {
 		this();
 		this.groupNode = groupNode;
 		this.groupName = this.groupNode.getIdentifier();
@@ -151,13 +151,13 @@ public class CyGroupImpl implements CyGroup {
 	 * @param groupNode the group node to use for this group
 	 * @param nodeList the initial set of nodes for this group
 	 */
-	protected CyGroupImpl(CyNode groupNode, List nodeList) {
+	protected CyGroupImpl(Node groupNode, List nodeList) {
 		this(groupNode); // Create all of the necessary structures
 
 		Iterator iter = nodeList.iterator();
 
 		while (iter.hasNext()) {
-			this.addNodeToGroup ( (CyNode)iter.next() );
+			this.addNodeToGroup ( (Node)iter.next() );
 		}
 	}
 
@@ -173,7 +173,7 @@ public class CyGroupImpl implements CyGroup {
 		Iterator iter = nodeList.iterator();
 
 		while (iter.hasNext()) {
-			this.addNodeToGroup ( (CyNode)iter.next() );
+			this.addNodeToGroup ( (Node)iter.next() );
 		}
 	}
 
@@ -196,10 +196,10 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return list of nodes in the group
 	 */
-	public List<CyNode> getNodes() {
-		Collection<CyNode> v = nodeMap.values();
+	public List<Node> getNodes() {
+		Collection<Node> v = nodeMap.values();
 
-		return new ArrayList<CyNode>(v);
+		return new ArrayList<Node>(v);
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return CyNode representing the group
 	 */
-	public CyNode getGroupNode() {
+	public Node getGroupNode() {
 		return this.groupNode;
 	}
 
@@ -216,8 +216,8 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return node iterator
 	 */
-	public Iterator<CyNode> getNodeIterator() {
-		Collection<CyNode> v = nodeMap.values();
+	public Iterator<Node> getNodeIterator() {
+		Collection<Node> v = nodeMap.values();
 
 		return v.iterator();
 	}
@@ -227,10 +227,10 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return list of edges in the group
 	 */
-	public List<CyEdge> getInnerEdges() {
-		Collection<CyEdge> v = innerEdgeMap.values();
+	public List<Edge> getInnerEdges() {
+		Collection<Edge> v = innerEdgeMap.values();
 
-		return new ArrayList<CyEdge>(v);
+		return new ArrayList<Edge>(v);
 	}
 
 	/**
@@ -238,10 +238,10 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return list of edges in the group
 	 */
-	public List<CyEdge> getOuterEdges() {
-		Collection<CyEdge> v = outerEdgeMap.values();
+	public List<Edge> getOuterEdges() {
+		Collection<Edge> v = outerEdgeMap.values();
 
-		return new ArrayList<CyEdge>(v);
+		return new ArrayList<Edge>(v);
 	}
 
 	/**
@@ -250,7 +250,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param edge the CyEdge to add to the outer edge map
 	 */
-	public void addOuterEdge(CyEdge edge) {
+	public void addOuterEdge(Edge edge) {
 		outerEdgeMap.put(edge, edge);
 	}
 
@@ -260,7 +260,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
-	public void addInnerEdge(CyEdge edge) {
+	public void addInnerEdge(Edge edge) {
 		innerEdgeMap.put(edge, edge);
 	}
 
@@ -270,7 +270,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param node the CyNode to test
 	 * @return true if node is a member of the group
 	 */
-	public boolean contains(CyNode node) {
+	public boolean contains(Node node) {
 		if (nodeMap.containsKey(node))
 			return true;
 
@@ -357,23 +357,23 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to add
 	 */
-	public void addNode ( CyNode node ) {
+	public void addNode ( Node node ) {
 		// We need to go throught our outerEdgeMap first to see if this
 		// node has outer edges and proactively move them to inner edges.
 		// this needs to be done here because some viewers might have
 		// hidden edges on us, so the the call to getAdjacentEdgeIndices in
 		// addNodeToGroup won't return all of the edges.
-		List <CyEdge> eMove = new ArrayList<CyEdge>();
-		Iterator <CyEdge>edgeIter = outerEdgeMap.keySet().iterator();
+		List <Edge> eMove = new ArrayList<Edge>();
+		Iterator <Edge>edgeIter = outerEdgeMap.keySet().iterator();
 		while (edgeIter.hasNext()) {
-			CyEdge edge = edgeIter.next();
+			Edge edge = edgeIter.next();
 			if (edge.getTarget() == node || edge.getSource() == node) {
 				eMove.add(edge);
 			}
 		}
 		edgeIter = eMove.iterator();
 		while (edgeIter.hasNext()) {
-			CyEdge edge = edgeIter.next();
+			Edge edge = edgeIter.next();
 			outerEdgeMap.remove(edge);
 			innerEdgeMap.put(edge,edge);
 		}
@@ -398,7 +398,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to remove
 	 */
-	public void removeNode ( CyNode node ) {
+	public void removeNode ( Node node ) {
 		removeNodeFromGroup(node);
 		// Get our viewer
 		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
@@ -413,16 +413,16 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to add
 	 */
-	private void addNodeToGroup ( CyNode node ) {
+	private void addNodeToGroup ( Node node ) {
 		// Put this node in our map
 		nodeMap.put(node, node);
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		List <CyEdge>edgeList = null;
+		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		List <Edge>edgeList = null;
 
 		if (nodeToEdgeMap.containsKey(node)) {
 			edgeList = nodeToEdgeMap.get(node);
 		} else {
-			edgeList = new ArrayList<CyEdge>();
+			edgeList = new ArrayList<Edge>();
 		}
 
 		// Add all of the edges
@@ -430,14 +430,14 @@ public class CyGroupImpl implements CyGroup {
 		if (edgeArray == null)
 			edgeArray = new int[]{};
 		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
+			Edge edge = (Edge)network.getEdge(edgeArray[edgeIndex]);
 			// Not sure if this is faster or slower than going through the entire loop
 			if (edgeList.contains(edge))
 				continue;
 
 			edgeList.add(edge);
-			CyNode target = (CyNode)edge.getTarget();
-			CyNode source = (CyNode)edge.getSource();
+			Node target = (Node)edge.getTarget();
+			Node source = (Node)edge.getSource();
 
 			// Check to see if this edge is one of our own metaEdges
 			if (source == groupNode || target == groupNode) {
@@ -466,14 +466,14 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to remove
 	 */
-	private void removeNodeFromGroup ( CyNode node ) {
+	private void removeNodeFromGroup ( Node node ) {
 		// Remove the node from our map
 		nodeMap.remove(node);
 
 		// Get the list of edges
-		List <CyEdge>edgeArray = nodeToEdgeMap.get(node);
-		for (Iterator <CyEdge>iter = edgeArray.iterator(); iter.hasNext(); ) {
-			CyEdge edge = iter.next();
+		List <Edge>edgeArray = nodeToEdgeMap.get(node);
+		for (Iterator <Edge>iter = edgeArray.iterator(); iter.hasNext(); ) {
+			Edge edge = iter.next();
 			if (innerEdgeMap.containsKey(edge)) {
 				innerEdgeMap.remove(edge);
 				outerEdgeMap.put(edge,edge);

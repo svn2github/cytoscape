@@ -40,8 +40,8 @@ import cern.colt.list.IntArrayList;
 
 import cern.colt.map.OpenIntIntHashMap;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
 import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -78,8 +78,8 @@ import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 
 // -----------------------------------------------------------------------------------------
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;
@@ -803,12 +803,12 @@ public class GMLReader extends AbstractGraphReader {
 				String label = (String) edge_labels.get(idx);
 				String sourceName = (String) node_labels.get(gml_id2order.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order.get(targets.get(idx)));
-				String edgeName = CyEdge.createIdentifier(sourceName, label, targetName);
+				String edgeName = cytoscape.FEdge.createIdentifier(sourceName, label, targetName);
 
 				int duplicate_count = 1;
 
 				while (!edgeNameSet.add(edgeName)) {
-					edgeName = CyEdge.createIdentifier(sourceName, label, targetName) + "_"
+					edgeName = cytoscape.FEdge.createIdentifier(sourceName, label, targetName) + "_"
 					           + duplicate_count;
 
 					duplicate_count += 1;
@@ -1529,7 +1529,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param net DOCUMENT ME!
 	 */
-	public void doPostProcessing(CyNetwork net) {
+	public void doPostProcessing(GraphPerspective net) {
 		 
 		// 
 		CyInitParams init = CytoscapeInit.getCyInitParams();

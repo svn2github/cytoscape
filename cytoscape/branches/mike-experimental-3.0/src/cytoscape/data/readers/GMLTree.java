@@ -43,8 +43,8 @@ import cytoscape.data.Semantics;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;

@@ -43,9 +43,9 @@ import cytoscape.data.CyAttributes;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
 
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.GraphObject;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;

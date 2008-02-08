@@ -44,11 +44,11 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
-import cytoscape.CyNode;
+import cytoscape.Node;
 
-import cytoscape.CyEdge;
+import cytoscape.Edge;
 
 import cytoscape.util.CytoscapeAction;
 
@@ -83,11 +83,11 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		HashMap<CyEdge,CyEdge> edgeMap = new HashMap<CyEdge,CyEdge>();
+		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		HashMap<Edge,Edge> edgeMap = new HashMap<Edge,Edge>();
 
 		// Get the list of selected nodes
-		for (CyNode node: (Set<CyNode>)network.getSelectedNodes()) {
+		for (Node node: (Set<Node>)network.getSelectedNodes()) {
 			// Get the list of edges connected to this node
 			int[] edgeIndices = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), true, true, true);
 			// For each node, select the appropriate edges
@@ -95,7 +95,7 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 				continue;
 
 			for (int i = 0; i < edgeIndices.length; i++)  {
-				CyEdge edge = (CyEdge)network.getEdge(edgeIndices[i]);
+				Edge edge = (Edge)network.getEdge(edgeIndices[i]);
 				edgeMap.put(edge,edge);
 			}
 		}

@@ -42,7 +42,7 @@
  */
 package cytoscape.view;
 
-import giny.model.GraphPerspectiveChangeEvent;
+import cytoscape.GraphPerspectiveChangeEvent;
 
 import giny.view.GraphView;
 
@@ -58,13 +58,13 @@ public interface GraphViewHandler {
 	 *
 	 * @param event the event to handle
 	 * @param graph_view the <code>giny.view.GraphView</code> that views the
-	 * <code>giny.model.GraphPerspective</code> that generated the event and that should
+	 * <code>cytoscape.GraphPerspective</code> that generated the event and that should
 	 * be updated as necessary
 	 */
 	public void handleGraphPerspectiveEvent(GraphPerspectiveChangeEvent event, GraphView graph_view);
 
 	/**
-	 * Updates graph_view so that it is synchronized with its <code>giny.model.GraphPerspective</code>
+	 * Updates graph_view so that it is synchronized with its <code>cytoscape.GraphPerspective</code>
 	 * Useful if <code>GraphPerspectiveChangeEvents</code> haven't been handled,
 	 * and a <code>graph_view</code> must be made synchronized with its GraphPerspective.
 	 *

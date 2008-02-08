@@ -65,7 +65,7 @@ public interface CyNetworkView extends GraphView {
 	/**
 	 * Returns the network displayed by this object.
 	 */
-	public CyNetwork getNetwork();
+	public GraphPerspective getNetwork();
 
 	/**
 	 * Sets the Title of this View
@@ -141,7 +141,7 @@ public interface CyNetworkView extends GraphView {
 	/**
 	 * Applies the given edge to the given vizmapper
 	 */
-	public boolean applyVizMap(CyEdge edge);
+	public boolean applyVizMap(Edge edge);
 
 	/**
 	 * Applies the given edge to the given vizmapper
@@ -151,7 +151,7 @@ public interface CyNetworkView extends GraphView {
 	/**
 	 * Applies the given node to the given vizmapper
 	 */
-	public boolean applyVizMap(CyNode node);
+	public boolean applyVizMap(Node node);
 
 	/**
 	 * Applies the given node to the given vizmapper
@@ -161,7 +161,7 @@ public interface CyNetworkView extends GraphView {
 	/**
 	* Applies the given edge to the given vizmapper
 	*/
-	public boolean applyVizMap(CyEdge edge, VisualStyle style);
+	public boolean applyVizMap(Edge edge, VisualStyle style);
 
 	/**
 	 * Applies the given edge to the given vizmapper
@@ -171,7 +171,7 @@ public interface CyNetworkView extends GraphView {
 	/**
 	 * Applies the given node to the given vizmapper
 	 */
-	public boolean applyVizMap(CyNode node, VisualStyle style);
+	public boolean applyVizMap(Node node, VisualStyle style);
 
 	/**
 	 * Applies the given node to the given vizmapper
@@ -193,12 +193,12 @@ public interface CyNetworkView extends GraphView {
 	 * Applies the given layout to the entire CyNetworkView,
 	 * but locks the given Nodes and Edges in place
 	 */
-	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
+	public void applyLockedLayout(CyLayoutAlgorithm layout, Node[] nodes, Edge[] edges);
 
 	/**
 	 * Applies the  given layout to only the given Nodes and Edges
 	 */
-	public void applyLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
+	public void applyLayout(CyLayoutAlgorithm layout, Node[] nodes, Edge[] edges);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,

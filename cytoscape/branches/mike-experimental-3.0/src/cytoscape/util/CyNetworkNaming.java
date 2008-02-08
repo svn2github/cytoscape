@@ -36,7 +36,7 @@
 */
 package cytoscape.util;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import java.awt.Component;
@@ -58,7 +58,7 @@ public class CyNetworkNaming {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static String getSuggestedSubnetworkTitle(CyNetwork parentNetwork) {
+	public static String getSuggestedSubnetworkTitle(GraphPerspective parentNetwork) {
 		for (int i = 0; true; i++) {
 			String nameCandidate = parentNetwork.getTitle() + "--child"
 			                       + ((i == 0) ? "" : ("." + i));
@@ -89,7 +89,7 @@ public class CyNetworkNaming {
 		Iterator iter = existingNetworks.iterator();
 
 		while (iter.hasNext()) {
-			CyNetwork existingNetwork = (CyNetwork) iter.next();
+			GraphPerspective existingNetwork = (GraphPerspective) iter.next();
 
 			if (existingNetwork.getTitle().equals(titleCandidate))
 				return true;
@@ -104,7 +104,7 @@ public class CyNetworkNaming {
 	 * this will assign that title to the given CyNetwork
 	 * @para network is the CyNetwork whose title is to be changed
 	 */
-	public static void editNetworkTitle(CyNetwork network) {
+	public static void editNetworkTitle(GraphPerspective network) {
 		Component parent = Cytoscape.getDesktop();
 		String pname = network.getTitle();
 		String name = null;

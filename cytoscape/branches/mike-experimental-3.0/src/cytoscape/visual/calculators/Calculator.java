@@ -42,7 +42,7 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
@@ -50,8 +50,8 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.ObjectMapping;
 
 //------------------------------------------------------------------------------
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -140,7 +140,7 @@ public interface Calculator extends Cloneable {
      * @param e DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(Appearance appr, Edge e, CyNetwork net);
+    public void apply(Appearance appr, Edge e, GraphPerspective net);
 
     /**
      * DOCUMENT ME!
@@ -149,7 +149,7 @@ public interface Calculator extends Cloneable {
      * @param n DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(Appearance appr, Node n, CyNetwork net);
+    public void apply(Appearance appr, Node n, GraphPerspective net);
 
     /**
      * DOCUMENT ME!

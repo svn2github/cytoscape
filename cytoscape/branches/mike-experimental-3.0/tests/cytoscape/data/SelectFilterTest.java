@@ -43,7 +43,7 @@ import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.SelectFilter;
 
-import giny.model.*;
+import cytoscape.*;
 
 import junit.framework.*;
 

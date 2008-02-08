@@ -44,7 +44,7 @@ package cytoscape.actions;
 
 
 //-------------------------------------------------------------------------
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 

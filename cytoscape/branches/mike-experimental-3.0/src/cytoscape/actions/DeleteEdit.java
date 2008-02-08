@@ -2,7 +2,7 @@
 package cytoscape.actions;
 
 import giny.view.NodeView;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import cytoscape.view.CyNetworkView;
@@ -18,9 +18,9 @@ class DeleteEdit extends CyAbstractEdit {
 	int[] edges;
 	double[] xPos;
 	double[] yPos;
-	CyNetwork net;
+	GraphPerspective net;
 
-	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd) {
+	DeleteEdit(GraphPerspective net, int[] nodeInd, int[] edgeInd) {
 		super("Delete");
 		if ( net == null )
 			throw new IllegalArgumentException("network is null");

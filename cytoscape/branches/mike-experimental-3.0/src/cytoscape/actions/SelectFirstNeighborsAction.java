@@ -42,13 +42,13 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
 //-------------------------------------------------------------------------
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -83,7 +83,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		final GraphPerspective currentNetwork = Cytoscape.getCurrentNetwork();
 		final List<Node> selectedNodes = new ArrayList<Node>(currentNetwork.getSelectedNodes());
 
 		for (final Iterator it = selectedNodes.iterator(); it.hasNext();) {

@@ -36,12 +36,12 @@
 */
 package cytoscape.data.writers;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.writers.InteractionWriter;
 
-import giny.model.RootGraph;
+import cytoscape.RootGraph;
 
 import junit.framework.TestCase;
 
@@ -54,7 +54,7 @@ import java.io.StringWriter;
  *
  */
 public class InteractionWriterTest extends TestCase {
-	protected CyNetwork net;
+	protected GraphPerspective net;
 	protected int a;
 	protected int b;
 	protected int c;

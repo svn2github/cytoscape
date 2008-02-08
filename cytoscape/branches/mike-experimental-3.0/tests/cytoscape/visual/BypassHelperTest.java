@@ -36,8 +36,8 @@
  */
 package cytoscape.visual;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -58,9 +58,9 @@ import java.awt.Font;
  * more into the Appearance unit test.
  */
 public class BypassHelperTest extends TestCase {
-	CyNode homer;
-	CyNode marge;
-	CyEdge lisa;
+	Node homer;
+	Node marge;
+	Edge lisa;
 	CyAttributes nodeAttrs;
 	CyAttributes edgeAttrs;
 	String id;

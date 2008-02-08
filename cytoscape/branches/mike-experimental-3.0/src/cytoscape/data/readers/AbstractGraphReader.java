@@ -36,7 +36,7 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -50,7 +50,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
 
-import giny.model.RootGraph;
+import cytoscape.RootGraph;
 
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -123,7 +123,7 @@ public abstract class AbstractGraphReader implements GraphReader {
 	/**
 	 * Executes post-processing:  no-op.
 	*/
-	public void doPostProcessing(CyNetwork network) {
+	public void doPostProcessing(GraphPerspective network) {
 	}
 
 	/**

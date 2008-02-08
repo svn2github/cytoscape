@@ -39,14 +39,14 @@
 package cytoscape.data.readers;
 
 import cytoscape.AllTests;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Interaction;
 
 import cytoscape.data.readers.InteractionsReader;
 
-import giny.model.RootGraph;
+import cytoscape.RootGraph;
 
 import junit.framework.*;
 

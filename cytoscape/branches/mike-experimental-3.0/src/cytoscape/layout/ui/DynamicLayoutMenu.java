@@ -36,7 +36,7 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -48,7 +48,7 @@ import cytoscape.view.CyNetworkView;
 
 import cytoscape.task.util.TaskManager;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import giny.view.NodeView;
 
@@ -118,7 +118,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Base the menu structure only on the current network. 
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		GraphPerspective network = Cytoscape.getCurrentNetwork();
 
 		// First, do we support selectedOnly?
 		selectedNodes = network.getSelectedNodes();

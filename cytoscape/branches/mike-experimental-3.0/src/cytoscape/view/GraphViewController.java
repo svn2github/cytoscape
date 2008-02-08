@@ -44,9 +44,9 @@ package cytoscape.view;
 
 import cern.colt.list.IntArrayList;
 
-import giny.model.GraphPerspective;
-import giny.model.GraphPerspectiveChangeEvent;
-import giny.model.GraphPerspectiveChangeListener;
+import cytoscape.GraphPerspective;
+import cytoscape.GraphPerspectiveChangeEvent;
+import cytoscape.GraphPerspectiveChangeListener;
 
 import giny.view.GraphView;
 
@@ -56,7 +56,7 @@ import java.util.*;
 /**
  *
  */
-public class GraphViewController implements giny.model.GraphPerspectiveChangeListener {
+public class GraphViewController implements cytoscape.GraphPerspectiveChangeListener {
 	protected Map graphViewToHandler; // a map of GraphViews to GraphViewHandlers
 	protected Map gpToGv; // a map of GraphPerspectives to GraphViews
 
@@ -79,7 +79,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	 *
 	 * @param graph_views an array of <code>giny.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized to
-	 * their corresponding <code>giny.model.GraphPerspective</code> objects
+	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method.
 	 */
 	public GraphViewController(GraphView[] graph_views) {
@@ -94,7 +94,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	 *
 	 * @param graph_views an array of <code>giny.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized to
-	 * their corresponding <code>giny.model.GraphPerspective</code> objects
+	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method
 	 * @param gv_to_handler a <code>Map</code> with <code>giny.view.GraphView</code>
 	 * objects as keys, and <code>cytoscape.view.GraphViewHandler</code> objects
@@ -111,7 +111,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	/**
 	 * Sets the array of <code>giny.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized with
-	 * their corresponding <code>giny.model.GraphPerspective</code> objects
+	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method, the
 	 * DEFAULT_GRAPH_VIEW_HANDLER is set for all the views. Any previous <code>GraphView</code>
 	 * objects are removed from this listener
@@ -132,7 +132,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	/**
 	* Sets the array of <code>giny.view.GraphView</code> objects
 	* that this <code>GraphViewController</code> will keep synchronized with
-	* their corresponding <code>giny.model.GraphPerspective</code> objects
+	* their corresponding <code>cytoscape.GraphPerspective</code> objects
 	* available through their <code>getGraphPerspective()</code> method, the
 	* <code>cytoscape.view.GraphViewHandler</code> objects for the
 	* <code>GraphView</code>s are obtained from the given <code>Map</code>,
@@ -165,7 +165,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	/**
 	 * Gets an array of <code>giny.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized with
-	 * their corresponding <code>giny.model.GraphPerspective</code> objects
+	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method
 	 *
 	 * @return an array of <code>giny.view.GraphView</code> objects
@@ -204,7 +204,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	 * If this <code>GraphViewController</code> contains the given
 	 * <code>giny.view.GraphView</code>, then it is removed from it, and it no longer listens
 	 * for change events from the removed <code>giny.view.GraphView</code>'s
-	 * <code>giny.model.GraphPerspective</code>.
+	 * <code>cytoscape.GraphPerspective</code>.
 	 *
 	 * @param graph_view the <code>giny.view.GraphView</code> that will be removed
 	 * @return the removed  <code>giny.view.GraphView</code>'s
@@ -228,7 +228,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	/**
 	 * Adds to the set of <code>giny.view.GraphView</code> objects that this
 	 * <code>GraphViewController</code> keeps synchronized with their
-	 * <code>giny.model.GraphPerspective</code> objects.
+	 * <code>cytoscape.GraphPerspective</code> objects.
 	 * DEFAULT_GRAPH_VIEW_HANDLER is used for the given <code>giny.view.GraphView</code>
 	 *
 	 * @param graph_view the <code>giny.view.GraphView</code> to be added
@@ -252,12 +252,12 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	/**
 	 * Adds to the set of <code>giny.view.GraphView</code> objects that this
 	 * <code>GraphViewController</code> keeps synchronized to their
-	 * <code>giny.model.GraphPerspective</code> objects. The given <code>GraphViewHandler</code>
+	 * <code>cytoscape.GraphPerspective</code> objects. The given <code>GraphViewHandler</code>
 	 * is used for the given <code>giny.view.GraphView</code> object.
 	 *
 	 * @param graph_view the <code>giny.view.GraphView</code> to be added
 	 * @param gv_to_handler the <code>GraphViewHandler</code> that will handle
-	 * change events from <code>graph_view</code>'s <code>giny.model.GraphPerspective</code> member
+	 * change events from <code>graph_view</code>'s <code>cytoscape.GraphPerspective</code> member
 	 * @return true if succesfully added, false otherwise (if <code>graph_view</code> is
 	 * already in this controller)
 	 * @see #setGraphViewHandler(GraphView, GraphViewHandler) setGraphViewHandler
@@ -283,7 +283,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	 *
 	 * @param graph_view the <code>giny.view.GraphView</code> to be updated
 	 * @param gv_handler the <code>GraphViewHandler</code> that will handle
-	 * change events from <code>graph_view</code>'s <code>giny.model.GraphPerspective</code>
+	 * change events from <code>graph_view</code>'s <code>cytoscape.GraphPerspective</code>
 	 * @return true if the method was successful, false otherwise (if <code>graph_view</code>
 	 * is not in this controller)
 	 */
@@ -300,8 +300,8 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	/**
 	 * Removes all of the current <code>giny.view.GraphView</code> objects that this
 	 * <code>GraphViewController</code> keeps synchronized to their corresponding
-	 * <code>giny.model.GraphPerspective</code> members. This <code>GraphViewController</code>
-	 * will no longer receive events from <code>giny.model.GraphPerspective</code>s after
+	 * <code>cytoscape.GraphPerspective</code> members. This <code>GraphViewController</code>
+	 * will no longer receive events from <code>cytoscape.GraphPerspective</code>s after
 	 * this call.
 	 *
 	 * @return the array of removed <code>giny.view.GraphView</code> objects
@@ -322,7 +322,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 
 	/**
 	 * Whether or not the given <code>giny.view.GraphView</code> is kept synchronized
-	 * with its <code>giny.model.GraphPerspective</code> member by this
+	 * with its <code>cytoscape.GraphPerspective</code> member by this
 	 * <code>GraphViewController</code>.
 	 *
 	 * @param graph_view the <code>giny.view.GraphView</code> object to test
@@ -333,7 +333,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 
 	/**
 	 * It temporarily removes this <code>GraphViewController</code> as a listener for
-	 * all <code>giny.model.GraphPerspective</code> objects that it currently
+	 * all <code>cytoscape.GraphPerspective</code> objects that it currently
 	 * listens to
 	 *
 	 * @see #resumeListening() resumeListening
@@ -349,7 +349,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 
 	/**
 	 * It temporarily removes this <code>GraphViewController</code> listener
-	 * from the <code>giny.model.GraphPerspective</code> object that the given
+	 * from the <code>cytoscape.GraphPerspective</code> object that the given
 	 * <code>giny.view.GraphView</code> views.
 	 *
 	 * @see #resumeListening(GraphView)
@@ -364,7 +364,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 
 	/**
 	 * It adds this <code>GraphViewController</code> as a listener for
-	 * all <code>giny.model.GraphPerspective</code> that were temporarily
+	 * all <code>cytoscape.GraphPerspective</code> that were temporarily
 	 * "removed" by calling <code>stopListening()</code>, it updates the <code>GraphViews</code>
 	 * of the <code>GraphPerspectives</code> so that they are synchronized to reflect changes that
 	 * may have occured while not listening.
@@ -384,7 +384,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 
 	/**
 	 * It adds this <code>GraphViewController</code> listener to the
-	 * <code>giny.model.GraphPerspective</code> of the given <code>giny.view.GraphView</code>
+	 * <code>cytoscape.GraphPerspective</code> of the given <code>giny.view.GraphView</code>
 	 * that was temporarily "removed" by a call to <code>stopListening(GraphView)</code>, it updates
 	 * <code>graph_view</code> so that it's synchronized to its <code>GraphPerspective</code>
 	 * due to changes that may have occured while not listening.
@@ -400,12 +400,12 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	} //resumeListening
 
 	/**
-	 * Invoked when a graph change to any of the <code>giny.model.GraphPerspective</code>
+	 * Invoked when a graph change to any of the <code>cytoscape.GraphPerspective</code>
 	 * objects accessed through <code>giny.view.GraphView.getGraphPerspective()</code> of
 	 * this object's graphViews is made.
 	 *
 	 * @param event the event that was generated, contains the source
-	 * <code>giny.model.GraphPerspective</code>
+	 * <code>cytoscape.GraphPerspective</code>
 	 */
 	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event) {
 		//TODO: Remove

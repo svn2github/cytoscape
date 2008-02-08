@@ -34,7 +34,7 @@
 */
 package cytoscape.data.ontology.readers;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -55,8 +55,8 @@ import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.XREF;
 import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -111,7 +111,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	protected static final String TERM_TAG = "[Term]";
 	private static final String DEF_ONTOLOGY_NAME = "Ontology DAG";
 	private ArrayList<String[]> interactionList;
-	private CyNetwork ontologyDAG;
+	private GraphPerspective ontologyDAG;
 
 	/*
 	 * This is for attributes of nodes.
@@ -179,9 +179,9 @@ public class OBOFlatFileReader implements OntologyReader {
 		String rootID = Cytoscape.getOntologyRootID();
 
 		if (rootID == null) {
-			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+			Set<GraphPerspective> networkSet = Cytoscape.getNetworkSet();
 
-			for (CyNetwork net : networkSet) {
+			for (GraphPerspective net : networkSet) {
 				if (net.getTitle().equals(ONTOLOGY_DAG_ROOT)) {
 					rootID = net.getIdentifier();
 				}
@@ -396,7 +396,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyNetwork getDag() {
+	public GraphPerspective getDag() {
 		return ontologyDAG;
 	}
 

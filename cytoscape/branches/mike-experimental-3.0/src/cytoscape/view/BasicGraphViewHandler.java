@@ -44,10 +44,10 @@ package cytoscape.view;
 
 import cern.colt.list.IntArrayList;
 
-import giny.model.Edge;
-import giny.model.GraphPerspective;
-import giny.model.GraphPerspectiveChangeEvent;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.GraphPerspectiveChangeEvent;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;
@@ -72,7 +72,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 *
 	 * @param event the event to handle
 	 * @param graph_view the <code>giny.view.GraphView</code> that views the
-	 * <code>giny.model.GraphPerspective</code> that generated the event and that should
+	 * <code>cytoscape.GraphPerspective</code> that generated the event and that should
 	 * be updated as necessary
 	 */
 	public void handleGraphPerspectiveEvent(GraphPerspectiveChangeEvent event, GraphView graph_view) {
@@ -109,45 +109,21 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 		// Edge events:
 		if (event.isEdgesHiddenType()) {
-			//TODO: Remove
-			//System.out.println("isEdgesHiddenType == " + event.isEdgesHiddenType());
 			removeGraphViewEdges(graph_view, event.getHiddenEdgeIndices());
 			numTypes++;
 		}
 
 		if (event.isEdgesRestoredType()) {
-			//TODO: Remove
-			//System.out.println("isEdgesRestoredType == " + event.isEdgesRestoredType());
 			restoreGraphViewEdges(graph_view, event.getRestoredEdgeIndices());
 			numTypes++;
 		}
 
-		// A GraphPerspective cannot have selected graph objects (Rowan told me)
-		//if(event.isEdgesSelectedType()){
-		//selectGraphViewEdges(graph_view, event.getSelectedEdges());
-		//numTypes++;
-		//}
-
-		// Same as above
-		//if(event.isEdgesUnselectedType()){
-		//unselectGraphViewEdges(graph_view, event.getUnselectedEdges());
-		//numTypes++;
-		//}
 		if (numTypes == 0) {
-			//System.err.println("In BasicGraphViewHandler.handleGraphPerspectiveEvent, "
-			//+ "unrecognized event type");
 			return;
 		}
 
 		graph_view.updateView();
 
-		//     if ( graph_view instanceof cytoscape.giny.Phoeb*NetworkView ) {
-		//       ( ( cytoscape.giny.Phoeb*NetworkView )graph_view ).redrawGraph();
-		//     }
-
-		//TODO: Remove
-		//System.out.println("Leaving BasicGraphViewHandler.handleGraphPerspectiveEvent()." +
-		//" numTypes caught = " + numTypes);
 	} //handleGraphPerspectiveEvent
 
 	/**
@@ -162,8 +138,6 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// TESTED: Gets an exception because the edges array has references to null.
 	// USE INSTEAD: removeGraphViewEdges(GraphView, int [])
 	static public Edge[] removeGraphViewEdges(GraphView graph_view, Edge[] edges) {
-		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.removeGraphViewEdges()");
 		Set removedEdges = new HashSet();
 
 		for (int i = 0; i < edges.length; i++) {

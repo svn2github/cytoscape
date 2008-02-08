@@ -47,9 +47,6 @@ import cytoscape.Cytoscape;
 import cytoscape.dialogs.preferences.*;
 import cytoscape.dialogs.preferences.ProxyServerDialog;
 
-import cytoscape.giny.*;
-
-import cytoscape.util.*;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CyNetworkView;

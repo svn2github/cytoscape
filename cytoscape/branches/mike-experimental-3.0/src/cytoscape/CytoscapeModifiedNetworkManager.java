@@ -41,7 +41,7 @@
  */
 package cytoscape;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import java.beans.PropertyChangeEvent;
@@ -97,18 +97,18 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 		//		System.out.println ("Old value = " + e.getOldValue());
 		//		System.out.println ("New value = " + e.getNewValue());
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
-			CyNetwork net = (CyNetwork) e.getNewValue();
+			GraphPerspective net = (GraphPerspective) e.getNewValue();
 
-			if (net instanceof CyNetwork) {
+			if (net instanceof GraphPerspective) {
 				setModified(net, MODIFIED);
 			}
 		} else if (e.getPropertyName().equals(Cytoscape.NETWORK_SAVED)) {
 			// MLC 09/19/05 BEGIN:
 			// CyNetwork net = (CyNetwork) e.getNewValue();
-			CyNetwork net = (CyNetwork) (((Object[]) e.getNewValue())[0]);
+			GraphPerspective net = (GraphPerspective) (((Object[]) e.getNewValue())[0]);
 
 			// MLC 09/19/05 END.
-			if (net instanceof CyNetwork) {
+			if (net instanceof GraphPerspective) {
 				setModified(net, CLEAN);
 			}
 		}
@@ -119,7 +119,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @param net
 	 * @return
 	 */
-	public static boolean isModified(CyNetwork net) {
+	public static boolean isModified(GraphPerspective net) {
 		Object modObj = networkStateMap.get(net);
 
 		if (modObj == null) // no network in table, so it can't be modified
@@ -137,7 +137,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @param net
 	 * @param state values supported in this version: CLEAN, MODIFIED
 	 */
-	public static void setModified(CyNetwork net, String state) {
+	public static void setModified(GraphPerspective net, String state) {
 		networkStateMap.put(net, state);
 	}
 }

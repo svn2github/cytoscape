@@ -44,7 +44,7 @@
 //--------------------------------------------------------------------
 package cytoscape.data;
 
-import cytoscape.CyNode;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 //--------------------------------------------------------------------
@@ -532,7 +532,7 @@ public class ExpressionData implements Serializable {
 		byte attributeType = Cytoscape.getNodeAttributes().getType(keyAttributeName);
 
 		for (Iterator ii = allNodes.iterator(); ii.hasNext();) {
-			CyNode node = (CyNode) ii.next();
+			Node node = (Node) ii.next();
 			String nodeName = node.getIdentifier();
 			Object attrValue = getAttributeValue(attributeType, nodeName, keyAttributeName);
 

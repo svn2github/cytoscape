@@ -57,9 +57,6 @@ import cytoscape.data.servers.OntologyServer;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.DingNetworkView;
 
-import cytoscape.giny.CytoscapeFingRootGraph;
-import cytoscape.giny.CytoscapeRootGraph;
-
 import cytoscape.init.CyInitParams;
 
 import cytoscape.layout.CyLayouts;
@@ -73,8 +70,8 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.GraphView;
 import java.beans.PropertyChangeEvent;
@@ -105,7 +102,7 @@ import javax.xml.bind.JAXBException;
  *
  * All Nodes and Edges must be created using the methods getCyNode and
  * getCyEdge, available only in this class. Once A node or edge is created using
- * these methods it can then be added to a CyNetwork, where it can be used
+ * these methods it can then be added to a GraphPerspective, where it can be used
  * algorithmically.<BR>
  * <BR>
  * The methods get/setNode/EdgeAttributeValue allow you to assocate data with
@@ -333,7 +330,7 @@ public abstract class Cytoscape {
 	/**
 	 * The shared RootGraph between all Networks
 	 */
-	protected static CytoscapeRootGraph cytoscapeRootGraph;
+	protected static RootGraph cytoscapeRootGraph;
 
 	/**
 	 * Node CyAttributes.
@@ -383,8 +380,7 @@ public abstract class Cytoscape {
 	/**
 	 * A null CyNetwork to give when there is no Current Network
 	 */
-	protected static CyNetwork nullNetwork = getRootGraph()
-	                                             .createNetwork(new int[] {  }, new int[] {  });
+	protected static GraphPerspective nullNetwork = getRootGraph().createGraphPerspective(new int[] { },new int[] { });
 	private static ImportHandler importHandler = new ImportHandler();
 
 	/**
@@ -395,7 +391,7 @@ public abstract class Cytoscape {
 	/**
 	 * The list analog to the currentNetworkID
 	 */
-	protected static LinkedList<CyNetwork> selectedNetworks;
+	protected static LinkedList<GraphPerspective> selectedNetworks;
 
 	/**
 	 *  DOCUMENT ME!
@@ -425,9 +421,9 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @return the nullNetwork CyNetwork. This is NOT simply a null object.
+	 * @return the nullNetwork GraphPerspective. This is NOT simply a null object.
 	 */
-	public static CyNetwork getNullNetwork() {
+	public static GraphPerspective getNullNetwork() {
 		return nullNetwork;
 	}
 
@@ -540,11 +536,11 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Return the CytoscapeRootGraph
+	 * Return the RootGraph
 	 */
-	public static CytoscapeRootGraph getRootGraph() {
+	public static RootGraph getRootGraph() {
 		if (cytoscapeRootGraph == null)
-			cytoscapeRootGraph = new CytoscapeFingRootGraph();
+			cytoscapeRootGraph = new FRootGraph();
 
 		return cytoscapeRootGraph;
 	}
@@ -589,7 +585,7 @@ public abstract class Cytoscape {
 	 * @param alias an alias of a node
 	 * @return will return a node, if one exists for the given alias
 	 */
-	public static CyNode getCyNode(String alias) {
+	public static Node getCyNode(String alias) {
 		return getCyNode(alias, false);
 	}
 
@@ -597,7 +593,7 @@ public abstract class Cytoscape {
 	 * @param id the edge identifier 
 	 * @return will return an edge, if one exists for the given identifier
 	 */
-	public static CyEdge getCyEdge(String id) {
+	public static Edge getCyEdge(String id) {
 		return getRootGraph().getEdge(id);
 	}
 
@@ -610,8 +606,8 @@ public abstract class Cytoscape {
 	 * @return will always return a node, if <code>create</code> is true
 	 *
 	 */
-	public static CyNode getCyNode(String nodeID, boolean create) {
-		CyNode node = Cytoscape.getRootGraph().getNode(nodeID);
+	public static Node getCyNode(String nodeID, boolean create) {
+		Node node = Cytoscape.getRootGraph().getNode(nodeID);
 
 		// If the node is already exists,return it.
 		if (node != null) {
@@ -624,7 +620,7 @@ public abstract class Cytoscape {
 		}
 
 		// Now, create a new node.
-		node = (CyNode) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
+		node = (Node) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
 		node.setIdentifier(nodeID);
 
 		// create the CANONICAL_NAME attribute
@@ -659,7 +655,7 @@ public abstract class Cytoscape {
 	 *         <code>create</code> is true and attribute is
 	 *         Semantics.INTERACTION, otherwise returns null.
 	 */
-	public static CyEdge getCyEdge(Node node_1, Node node_2, String attribute,
+	public static Edge getCyEdge(Node node_1, Node node_2, String attribute,
 	                               Object attribute_value, boolean create) {
 		return getCyEdge(node_1, node_2, attribute, attribute_value, create, false);
 	}
@@ -688,7 +684,7 @@ public abstract class Cytoscape {
 	 *         <code>create</code> is true and attribute is
 	 *         Semantics.INTERACTION, otherwise returns null.
 	 */
-	public static CyEdge getCyEdge(Node source, Node target, String attribute,
+	public static Edge getCyEdge(Node source, Node target, String attribute,
 	                               Object attribute_value, boolean create, boolean directed) {
 		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
 			int[] n1Edges = Cytoscape.getRootGraph()
@@ -696,15 +692,15 @@ public abstract class Cytoscape {
 			                                                      true, true);
 
 			for (int i = 0; i < n1Edges.length; i++) {
-				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(n1Edges[i]);
+				Edge edge = (Edge) Cytoscape.getRootGraph().getEdge(n1Edges[i]);
 				Object attValue = private_getEdgeAttributeValue(edge, attribute);
 
 				if ((attValue != null) && attValue.equals(attribute_value)) {
 					// Despite the fact that we know the source node
 					// matches, the case of self edges dictates that
 					// we must check the source as well.
-					CyNode edgeTarget = (CyNode) edge.getTarget();
-					CyNode edgeSource = (CyNode) edge.getSource();
+					Node edgeTarget = (Node) edge.getTarget();
+					Node edgeSource = (Node) edge.getSource();
 
 					if ((edgeTarget.getRootGraphIndex() == target.getRootGraphIndex())
 					    && (edgeSource.getRootGraphIndex() == source.getRootGraphIndex())) {
@@ -724,12 +720,12 @@ public abstract class Cytoscape {
 
 		if (create && attribute instanceof String && attribute.equals(Semantics.INTERACTION)) {
 			// create the edge
-			CyEdge edge = (CyEdge) Cytoscape.getRootGraph()
+			Edge edge = (Edge) Cytoscape.getRootGraph()
 			                                .getEdge(Cytoscape.getRootGraph()
 			                                                  .createEdge(source, target));
 
 			// create the edge id
-			String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
+			String edge_name = FEdge.createIdentifier(source.getIdentifier(),
 			                                           (String) attribute_value,
 			                                           target.getIdentifier());
 			edge.setIdentifier(edge_name);
@@ -754,18 +750,18 @@ public abstract class Cytoscape {
 	 *            an alias of a node
 	 * @return will always return an edge
 	 */
-	public static CyEdge getCyEdge(String source_alias, String edge_name, String target_alias,
+	public static Edge getCyEdge(String source_alias, String edge_name, String target_alias,
 	                               String interaction_type) {
 
-		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
+		Edge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
 		if (edge != null) {
 			return edge;
 		}
 
 		// edge does not exist, create one
-		CyNode source = getCyNode(source_alias);
-		CyNode target = getCyNode(target_alias);
+		Node source = getCyNode(source_alias);
+		Node target = getCyNode(target_alias);
 
 		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
 	}
@@ -801,29 +797,29 @@ public abstract class Cytoscape {
 	 * Return the Network that currently has the Focus. Can be different from
 	 * getCurrentNetworkView
 	 */
-	public static CyNetwork getCurrentNetwork() {
+	public static GraphPerspective getCurrentNetwork() {
 		if ((currentNetworkID == null) || !(getNetworkMap().containsKey(currentNetworkID)))
 			return nullNetwork;
 
-		CyNetwork network = (CyNetwork) getNetworkMap().get(currentNetworkID);
+		GraphPerspective network = (GraphPerspective) getNetworkMap().get(currentNetworkID);
 
 		return network;
 	}
 
 	/**
-	 * Return a List of all available CyNetworks
+	 * Return a List of all available GraphPerspective
 	 */
 	public static Set getNetworkSet() {
 		return new java.util.LinkedHashSet(((HashMap) getNetworkMap()).values());
 	}
 
 	/**
-	 * @return the CyNetwork that has the given identifier or the nullNetwork
+	 * @return the GraphPerspective that has the given identifier or the nullNetwork
 	 *         (see {@link #getNullNetwork()}) if there is no such network.
 	 */
-	public static CyNetwork getNetwork(String id) {
+	public static GraphPerspective getNetwork(String id) {
 		if ((id != null) && getNetworkMap().containsKey(id))
-			return (CyNetwork) getNetworkMap().get(id);
+			return (GraphPerspective) getNetworkMap().get(id);
 
 		return nullNetwork;
 	}
@@ -903,13 +899,13 @@ public abstract class Cytoscape {
 	/**
 	 * Returns the list of selected networks.
 	 */
-	public static List<CyNetwork> getSelectedNetworks() {
+	public static List<GraphPerspective> getSelectedNetworks() {
 		if ( selectedNetworks == null ) {
-			selectedNetworks = new LinkedList<CyNetwork>();
+			selectedNetworks = new LinkedList<GraphPerspective>();
 			selectedNetworks.add( getCurrentNetwork() );
 		}
 
-		return (List<CyNetwork>)selectedNetworks.clone();
+		return (List<GraphPerspective>)selectedNetworks.clone();
 	}
 
 	/**
@@ -918,7 +914,7 @@ public abstract class Cytoscape {
 	public static void setSelectedNetworks(final List<String> ids) {
 
 		if ( selectedNetworks == null ) 
-			selectedNetworks = new LinkedList<CyNetwork>();
+			selectedNetworks = new LinkedList<GraphPerspective>();
 			
 		selectedNetworks.clear();
 
@@ -926,13 +922,13 @@ public abstract class Cytoscape {
 			return;
 
 		for ( String id : ids ) {
-			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
+			GraphPerspective n = (GraphPerspective) getNetworkMap().get(id);
 			if ( n != null ) {
 				selectedNetworks.add( n );
 			}
 		}
 
-		CyNetwork cn = getCurrentNetwork();
+		GraphPerspective cn = getCurrentNetwork();
 		if ( !selectedNetworks.contains( cn ) ) {
 			selectedNetworks.add( cn );
 		}
@@ -998,13 +994,13 @@ public abstract class Cytoscape {
 	 * destroys the given network
 	 */
 	public static void destroyNetwork(String network_id) {
-		destroyNetwork((CyNetwork) getNetworkMap().get(network_id));
+		destroyNetwork((GraphPerspective) getNetworkMap().get(network_id));
 	}
 
 	/**
 	 * destroys the given network
 	 */
-	public static void destroyNetwork(CyNetwork network) {
+	public static void destroyNetwork(GraphPerspective network) {
 		destroyNetwork(network, false);
 	}
 
@@ -1017,7 +1013,7 @@ public abstract class Cytoscape {
 	 *            if this is true, then all Nodes and Edges that are in this
 	 *            network, but no other are also destroyed.
 	 */
-	public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
+	public static void destroyNetwork(GraphPerspective network, boolean destroy_unique) {
 		if ((network == null) || (network == nullNetwork))
 			return;
 
@@ -1060,7 +1056,7 @@ public abstract class Cytoscape {
 				boolean add = true;
 
 				for (Iterator n_i = networks.iterator(); n_i.hasNext();) {
-					CyNetwork net = (CyNetwork) n_i.next();
+					GraphPerspective net = (GraphPerspective) n_i.next();
 
 					if (net.containsNode(node)) {
 						add = false;
@@ -1079,7 +1075,7 @@ public abstract class Cytoscape {
 				boolean add = true;
 
 				for (Iterator n_i = networks.iterator(); n_i.hasNext();) {
-					CyNetwork net = (CyNetwork) n_i.next();
+					GraphPerspective net = (GraphPerspective) n_i.next();
 
 					if (net.containsEdge(edge)) {
 						add = false;
@@ -1156,11 +1152,11 @@ public abstract class Cytoscape {
 	/**
 	 * destroys the networkview, including any layout information
 	 */
-	public static void destroyNetworkView(CyNetwork network) {
+	public static void destroyNetworkView(GraphPerspective network) {
 		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network.getIdentifier()));
 	}
 
-	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent,
+	protected static void addNetwork(GraphPerspective network, String title, GraphPerspective parent,
 	                                 boolean create_view) {
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
@@ -1186,7 +1182,7 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title of the new network.
 	 */
-	public static CyNetwork createNetwork(String title) {
+	public static GraphPerspective createNetwork(String title) {
 		return createNetwork(new int[] {  }, new int[] {  }, title, null, true);
 	}
 
@@ -1199,7 +1195,7 @@ public abstract class Cytoscape {
 	 *            if the size of the network is under the node limit, create a
 	 *            view
 	 */
-	public static CyNetwork createNetwork(String title, boolean create_view) {
+	public static GraphPerspective createNetwork(String title, boolean create_view) {
 		return createNetwork(new int[] {  }, new int[] {  }, title, null, create_view);
 	}
 
@@ -1212,7 +1208,7 @@ public abstract class Cytoscape {
 	 *            if the size of the network is under the node limit, create a
 	 *            view
 	 */
-	public static CyNetwork createNetwork(String title, CyNetwork parent, boolean create_view) {
+	public static GraphPerspective createNetwork(String title, GraphPerspective parent, boolean create_view) {
 		return createNetwork(new int[] {  }, new int[] {  }, title, parent, create_view);
 	}
 
@@ -1226,7 +1222,7 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title of the new network.
 	 */
-	public static CyNetwork createNetwork(int[] nodes, int[] edges, String title) {
+	public static GraphPerspective createNetwork(int[] nodes, int[] edges, String title) {
 		return createNetwork(nodes, edges, title, null, true);
 	}
 
@@ -1240,7 +1236,7 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title of the new network.
 	 */
-	public static CyNetwork createNetwork(Collection nodes, Collection edges, String title) {
+	public static GraphPerspective createNetwork(Collection nodes, Collection edges, String title) {
 		return createNetwork(nodes, edges, title, null, true);
 	}
 
@@ -1257,8 +1253,8 @@ public abstract class Cytoscape {
 	 * @param parent
 	 *            the parent of the this Network
 	 */
-	public static CyNetwork createNetwork(int[] nodes, int[] edges, String child_title,
-	                                      CyNetwork parent) {
+	public static GraphPerspective createNetwork(int[] nodes, int[] edges, String child_title,
+	                                      GraphPerspective parent) {
 		return createNetwork(nodes, edges, child_title, parent, true);
 	}
 
@@ -1276,9 +1272,9 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(int[] nodes, int[] edges, String child_title,
-	                                      CyNetwork parent, boolean create_view) {
-		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+	public static GraphPerspective createNetwork(int[] nodes, int[] edges, String child_title,
+	                                      GraphPerspective parent, boolean create_view) {
+		GraphPerspective network = getRootGraph().createGraphPerspective(nodes, edges);
 		addNetwork(network, child_title, parent, create_view);
 
 		return network;
@@ -1295,8 +1291,8 @@ public abstract class Cytoscape {
 	 * @param parent
 	 *            the parent of the this Network
 	 */
-	public static CyNetwork createNetwork(Collection nodes, Collection edges, String child_title,
-	                                      CyNetwork parent) {
+	public static GraphPerspective createNetwork(Collection nodes, Collection edges, String child_title,
+	                                      GraphPerspective parent) {
 		return createNetwork(nodes, edges, child_title, parent, true);
 	}
 
@@ -1312,16 +1308,16 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(Collection nodes, Collection edges, String child_title,
-	                                      CyNetwork parent, boolean create_view) {
-		CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+	public static GraphPerspective createNetwork(Collection nodes, Collection edges, String child_title,
+	                                      GraphPerspective parent, boolean create_view) {
+		GraphPerspective network = getRootGraph().createGraphPerspective(nodes, edges);
 		addNetwork(network, child_title, parent, create_view);
 
 		return network;
 	}
 
 	/**
-	 * Creates a CyNetwork from a file. The file type is determined by the
+	 * Creates a GraphPerspective from a file. The file type is determined by the
 	 * suffix of the file.* Uses the new ImportHandler and thus the passed in
 	 * location should be a file of a recognized "Graph Nature". The "Nature" of
 	 * a file is a new way to tell what a file is beyond it's filetype e.g.
@@ -1334,12 +1330,12 @@ public abstract class Cytoscape {
 	 * @param location
 	 *            the location of the file
 	 */
-	public static CyNetwork createNetworkFromFile(String location) {
+	public static GraphPerspective createNetworkFromFile(String location) {
 		return createNetworkFromFile(location, true);
 	}
 
 	/**
-	 * Creates a CyNetwork from a file. The file type is determined by the
+	 * Creates a GraphPerspective from a file. The file type is determined by the
 	 * suffix of the file.* Uses the new ImportHandler and thus the passed in
 	 * location should be a file of a recognized "Graph Nature". The "Nature" of
 	 * a file is a new way to tell what a file is beyond it's filetype e.g.
@@ -1354,12 +1350,12 @@ public abstract class Cytoscape {
 	 * @return a network based on the specified file or null if the file type is
 	 *         supported but the file is not of Graph Nature.
 	 */
-	public static CyNetwork createNetworkFromFile(String loc, boolean create_view) {
+	public static GraphPerspective createNetworkFromFile(String loc, boolean create_view) {
 		return createNetwork(importHandler.getReader(loc), create_view, null);
 	}
 
 	/**
-	 * Creates a CyNetwork from a URL. The file type is determined by the
+	 * Creates a GraphPerspective from a URL. The file type is determined by the
 	 * suffix of the file or, if one does't exist, the contentType of the data.
 	 * Uses the new ImportHandler and thus the passed in
 	 * location should be a file of a recognized "Graph Nature". The "Nature" of
@@ -1375,12 +1371,12 @@ public abstract class Cytoscape {
 	 * @return a network based on the specified file or null if the file type is
 	 *         supported but the file is not of Graph Nature.
 	 */
-	public static CyNetwork createNetworkFromURL(URL url, boolean create_view) {
+	public static GraphPerspective createNetworkFromURL(URL url, boolean create_view) {
 		return createNetwork(importHandler.getReader(url), create_view, null);
 	}
 
 	/**
-	 * Creates a cytoscape.data.CyNetwork from a reader. Neccesary with
+	 * Creates a cytoscape.data.GraphPerspective from a reader. Neccesary with
 	 * cesssions.
 	 * <p>
 	 * This operation may take a long time to complete. It is a good idea NOT to
@@ -1394,8 +1390,8 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static CyNetwork createNetwork(final GraphReader reader, final boolean create_view,
-	                                      final CyNetwork parent) {
+	public static GraphPerspective createNetwork(final GraphReader reader, final boolean create_view,
+	                                      final GraphPerspective parent) {
 		if (reader == null) {
 			throw new RuntimeException("Couldn't read specified file.");
 		}
@@ -1427,7 +1423,7 @@ public abstract class Cytoscape {
 			System.err.println("reader returned null edges");
 		}
 
-		final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+		final GraphPerspective network = getRootGraph().createGraphPerspective(nodes, edges);
 		// network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, false);
 
@@ -1607,7 +1603,7 @@ public abstract class Cytoscape {
 	 * @param network
 	 *            the network to create a view of
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network) {
+	public static CyNetworkView createNetworkView(GraphPerspective network) {
 		return createNetworkView(network, network.getTitle(), null, null);
 	}
 
@@ -1621,7 +1617,7 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title to use for the view
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title) {
+	public static CyNetworkView createNetworkView(GraphPerspective network, String title) {
 		return createNetworkView(network, title, null, null);
 	}
 
@@ -1637,7 +1633,7 @@ public abstract class Cytoscape {
 	 * @param layout
 	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
+	public static CyNetworkView createNetworkView(GraphPerspective network, String title, CyLayoutAlgorithm layout) {
 		return createNetworkView(network,title,layout,null);
 	}
 
@@ -1657,7 +1653,7 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout,
+	public static CyNetworkView createNetworkView(GraphPerspective network, String title, CyLayoutAlgorithm layout,
 	                                              VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
@@ -1817,7 +1813,7 @@ public abstract class Cytoscape {
 		Iterator it = netSet.iterator();
 
 		while (it.hasNext()) {
-			CyNetwork net = (CyNetwork) it.next();
+			GraphPerspective net = (GraphPerspective) it.next();
 			destroyNetwork(net);
 		}
 

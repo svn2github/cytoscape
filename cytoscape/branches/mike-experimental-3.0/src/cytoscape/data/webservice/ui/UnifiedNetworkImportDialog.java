@@ -34,7 +34,7 @@
 */
 package cytoscape.data.webservice.ui;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.webservice.CyWebServiceEvent;
@@ -441,7 +441,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 			                                           JOptionPane.QUESTION_MESSAGE);
 
 			if ((value != null) || (value.length() != 0)) {
-				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+				final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
 				cyNetwork.setTitle(value);
 				Cytoscape.getCurrentNetwork().setTitle(value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);

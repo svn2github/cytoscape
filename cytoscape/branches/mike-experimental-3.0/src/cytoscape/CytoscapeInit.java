@@ -546,7 +546,7 @@ public class CytoscapeInit {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
 
-			CyNetwork network = null;
+			GraphPerspective network = null;
 
 			boolean createView = false;
 

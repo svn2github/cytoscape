@@ -36,12 +36,12 @@
  */
 package cytoscape.visual;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.ObjectMapping;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -85,7 +85,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * object, compute an appearance for the requested Node in the supplied
      * CyNetwork. A new NodeApperance object will be created.
      */
-    public NodeAppearance calculateNodeAppearance(Node node, CyNetwork network) {
+    public NodeAppearance calculateNodeAppearance(Node node, GraphPerspective network) {
         NodeAppearance appr = new NodeAppearance();
         calculateNodeAppearance(appr, node, network);
 
@@ -123,9 +123,10 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * new values.
      */
     public void calculateNodeAppearance(NodeAppearance appr, Node node,
-        CyNetwork network) {
+        GraphPerspective network) {
         appr.copy(defaultAppearance); // set defaults and node lock state
 
+		System.err.println("%%%%%%%%%%%%% node " + node.getIdentifier() + "  net  " + network.getIdentifier());
         for (Calculator nc : calcs)
             nc.apply(appr, node, network);
 

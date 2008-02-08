@@ -42,16 +42,16 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
 
-import giny.model.Node;
+import cytoscape.Node;
 import giny.view.NodeView;
-import giny.model.Edge;
+import cytoscape.Edge;
 import giny.view.EdgeView;
 import giny.view.Bend;
 
@@ -85,11 +85,11 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetwork origNet = Cytoscape.getCurrentNetwork();
+		GraphPerspective origNet = Cytoscape.getCurrentNetwork();
 		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
 
-		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
+		GraphPerspective new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
 		                                                origNet.getEdgeIndicesArray(),
 		                                                origNet.getTitle() + " copy", 
 														null,

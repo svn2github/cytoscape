@@ -34,15 +34,16 @@
 */
 package cytoscape;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
+import cytoscape.Edge;
+import cytoscape.FEdge;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.ImportHandler;
 import cytoscape.data.Semantics;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import junit.framework.TestCase;
 
@@ -55,7 +56,7 @@ import java.util.*;
  *
  */
 public class CytoscapeTest extends TestCase {
-	CyNetwork cytoNetwork;
+	GraphPerspective cytoNetwork;
 	String title;
 	int nodeCount;
 	int edgeCount;
@@ -148,20 +149,20 @@ public class CytoscapeTest extends TestCase {
 		}
 
 		Set<String> edges = new HashSet<String>();
-		edges.add(CyEdge.createIdentifier("n1", "activates", "n2"));
-		edges.add(CyEdge.createIdentifier("n1", "activates", "n4"));
-		edges.add(CyEdge.createIdentifier("n1", "activates", "n5"));
-		edges.add(CyEdge.createIdentifier("n2", "activates", "n1"));
-		edges.add(CyEdge.createIdentifier("n2", "activates", "n5"));
-		edges.add(CyEdge.createIdentifier("n3", "inhibits", "n3"));
-		edges.add(CyEdge.createIdentifier("n3", "inhibits", "n4"));
-		edges.add(CyEdge.createIdentifier("n3", "inhibits", "n5"));
-		edges.add(CyEdge.createIdentifier("n4", "activates", "n1"));
-		edges.add(CyEdge.createIdentifier("n4", "activates", "n2"));
-		edges.add(CyEdge.createIdentifier("n4", "activates", "n4"));
-		edges.add(CyEdge.createIdentifier("n5", "activates", "n1"));
-		edges.add(CyEdge.createIdentifier("n5", "activates", "n4"));
-		edges.add(CyEdge.createIdentifier("n5", "activates", "n5"));
+		edges.add(FEdge.createIdentifier("n1", "activates", "n2"));
+		edges.add(FEdge.createIdentifier("n1", "activates", "n4"));
+		edges.add(FEdge.createIdentifier("n1", "activates", "n5"));
+		edges.add(FEdge.createIdentifier("n2", "activates", "n1"));
+		edges.add(FEdge.createIdentifier("n2", "activates", "n5"));
+		edges.add(FEdge.createIdentifier("n3", "inhibits", "n3"));
+		edges.add(FEdge.createIdentifier("n3", "inhibits", "n4"));
+		edges.add(FEdge.createIdentifier("n3", "inhibits", "n5"));
+		edges.add(FEdge.createIdentifier("n4", "activates", "n1"));
+		edges.add(FEdge.createIdentifier("n4", "activates", "n2"));
+		edges.add(FEdge.createIdentifier("n4", "activates", "n4"));
+		edges.add(FEdge.createIdentifier("n5", "activates", "n1"));
+		edges.add(FEdge.createIdentifier("n5", "activates", "n4"));
+		edges.add(FEdge.createIdentifier("n5", "activates", "n5"));
 
 		it = cytoNetwork.edgesIterator();
 
@@ -182,23 +183,23 @@ public class CytoscapeTest extends TestCase {
 		assertEquals(2, cytoNetwork.getNodeCount());
 		assertEquals(4, cytoNetwork.getEdgeCount());
 
-		String en1 = CyEdge.createIdentifier("a", "pp", "b");
+		String en1 = FEdge.createIdentifier("a", "pp", "b");
 
 		// edge should exist in network already
-		CyEdge ce1 = Cytoscape.getCyEdge("a", en1, "b", "pp");
+		Edge ce1 = Cytoscape.getCyEdge("a", en1, "b", "pp");
 		assertNotNull(ce1);
 
-		CyEdge ce1_again = Cytoscape.getCyEdge("a", en1, "b", "pp");
+		Edge ce1_again = Cytoscape.getCyEdge("a", en1, "b", "pp");
 		assertTrue(ce1 == ce1_again);
 
 		// edge should be created
-		String en2 = CyEdge.createIdentifier("a", "xx", "b");
-		CyEdge ce2 = Cytoscape.getCyEdge("a", en2, "b", "pp");
+		String en2 = FEdge.createIdentifier("a", "xx", "b");
+		Edge ce2 = Cytoscape.getCyEdge("a", en2, "b", "pp");
 		assertNotNull(ce2);
 
 		// should create a different edge because of directedness
-		String en3 = CyEdge.createIdentifier("b", "pp", "a");
-		CyEdge ce3 = Cytoscape.getCyEdge("b", en3, "a", "pp");
+		String en3 = FEdge.createIdentifier("b", "pp", "a");
+		Edge ce3 = Cytoscape.getCyEdge("b", en3, "a", "pp");
 		assertTrue(ce1 != ce3);
 	}
 

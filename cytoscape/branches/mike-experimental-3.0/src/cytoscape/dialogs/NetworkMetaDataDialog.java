@@ -5,7 +5,7 @@
  */
 package cytoscape.dialogs;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
@@ -40,7 +40,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 	private final static long serialVersionUID = 120233987326805L;
 	private NetworkMetaDataTableModel metaTM;
 	private MetadataParser mdp;
-	private CyNetwork network;
+	private GraphPerspective network;
 	private String description;
 
 	/**
@@ -48,7 +48,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 	 *
 	 * @throws URISyntaxException
 	 */
-	public NetworkMetaDataDialog(java.awt.Frame parent, boolean modal, CyNetwork network) {
+	public NetworkMetaDataDialog(java.awt.Frame parent, boolean modal, GraphPerspective network) {
 		super(parent, modal);
 		this.network = network;
 		this.mdp = new MetadataParser(network);

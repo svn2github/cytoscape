@@ -36,9 +36,9 @@
 */
 package cytoscape.layout.algorithms;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.layout.AbstractLayout;
@@ -49,7 +49,7 @@ import cytoscape.util.*;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;

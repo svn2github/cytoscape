@@ -50,9 +50,9 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
@@ -62,10 +62,10 @@ import cytoscape.util.FileUtil;
  * 
  */
 public class EdgeAppearanceCalculatorTest extends TestCase {
-	CyNetwork cyNet;
-	CyNode a;
-	CyNode b;
-	CyEdge ab;
+	GraphPerspective cyNet;
+	Node a;
+	Node b;
+	Edge ab;
 	CalculatorCatalog catalog;
 	Properties props;
 

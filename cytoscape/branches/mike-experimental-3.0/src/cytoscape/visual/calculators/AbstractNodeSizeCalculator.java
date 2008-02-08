@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
@@ -52,7 +52,7 @@ import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
 
 //----------------------------------------------------------------------------
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.util.Properties;
 
@@ -93,7 +93,7 @@ abstract class AbstractNodeSizeCalculator extends NodeCalculator {
      *
      * @return DOCUMENT ME!
      */
-    public double calculateNodeSize(Node e, CyNetwork n) {
+    public double calculateNodeSize(Node e, GraphPerspective n) {
         final Appearance ea = new Appearance();
         apply(ea, e, n);
 

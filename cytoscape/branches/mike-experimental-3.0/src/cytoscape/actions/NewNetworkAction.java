@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CyNetworkNaming;
@@ -38,6 +38,6 @@ public class NewNetworkAction extends CytoscapeAction {
 	 * create the new network and view
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetwork newNet = Cytoscape.createNetwork( CyNetworkNaming.getSuggestedNetworkTitle("Network") );
+		GraphPerspective newNet = Cytoscape.createNetwork( CyNetworkNaming.getSuggestedNetworkTitle("Network") );
 	}
 }

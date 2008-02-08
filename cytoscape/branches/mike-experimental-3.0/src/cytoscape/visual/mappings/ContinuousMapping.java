@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
@@ -234,7 +234,7 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 * @param network CytoscapeNetwork Object.
 	 * @param preserveMapping Flag to preserve mapping.
 	 */
-	public void setControllingAttributeName(String attrName, CyNetwork network,
+	public void setControllingAttributeName(String attrName, GraphPerspective network,
 	                                        boolean preserveMapping) {
 		this.attrName = attrName;
 	}

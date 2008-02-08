@@ -93,7 +93,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 * CyNetwork, which can be the same, or different, it doesn't really matter,
 	 * and is up to the individual plugin.
 	 */
-	public CyNetwork interpretScript(String[] args, CyNetwork network) {
+	public GraphPerspective interpretScript(String[] args, GraphPerspective network) {
 		return null;
 	}
 

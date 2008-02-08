@@ -34,7 +34,7 @@
 */
 package cytoscape.data.ontology;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -77,7 +77,7 @@ public class GeneOntology extends Ontology {
 			return aspect;
 		}
 	}
-	public GeneOntology(String name, String curator, String description, CyNetwork dag)
+	public GeneOntology(String name, String curator, String description, GraphPerspective dag)
 	    throws URISyntaxException, MalformedURLException {
 		super(name, curator, description, dag);
 

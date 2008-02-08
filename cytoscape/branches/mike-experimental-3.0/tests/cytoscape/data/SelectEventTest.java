@@ -42,7 +42,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectFilter;
 
-import giny.model.*;
+import cytoscape.*;
 
 import junit.framework.*;
 
