@@ -63,30 +63,12 @@
 
     <path id="browser.project.class.path">
       <pathelement location="${browser.classes.dir}"/>
-      <pathelement location="${cytoscape.plugin.dir}/core/filter.jar"/>
-      <pathelement location="${cytoscape.plugin.dir}/core/filters.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
-      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/glf.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
-      <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
-      <pathelement location="${browser.lib.dir}/exesto.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-legacy.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
-    	<pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.1.jar"/> 
-      <pathelement path="${project.class.path}/"/>
+       <fileset dir="${cytoscape.lib.dir}">
+        <include name="*.jar"/>
+       </fileset>
+       <fileset dir="${cytoscape.dir}">
+        <include name="*.jar"/>
+       </fileset>
     </path>
 
   </target>

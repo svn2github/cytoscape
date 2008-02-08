@@ -455,32 +455,32 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
 						final GraphPerspective curNet = Cytoscape.getCurrentNetwork();
 
-						final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
-
 						GraphObject fromMap;
 
 						if (objectType == NODES) {
-							for (Object curNode : curNet.getSelectedNodes()) {
-								fromMap = selectedMap.get(((Node) curNode).getIdentifier());
+							final List<Node> nonSelectedNodes = new ArrayList<Node>();
+							for (Node curNode : curNet.getSelectedNodes()) {
+								fromMap = selectedMap.get(curNode.getIdentifier());
 
 								if (fromMap == null) {
-									nonSelectedObjects.add((GraphObject) curNode);
+									nonSelectedNodes.add(curNode);
 								}
 							}
 
 							resetObjectColor(idLocation);
-							curNet.setSelectedNodeState(nonSelectedObjects, false);
+							curNet.setSelectedNodeState(nonSelectedNodes, false);
 						} else {
-							for (Object curEdge : curNet.getSelectedEdges()) {
-								fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
+							final List<Edge> nonSelectedEdges = new ArrayList<Edge>();
+							for (Edge curEdge : curNet.getSelectedEdges()) {
+								fromMap = selectedMap.get(curEdge.getIdentifier());
 
 								if (fromMap == null) {
-									nonSelectedObjects.add((GraphObject) curEdge);
+									nonSelectedEdges.add(curEdge);
 								}
 							}
 
 							resetObjectColor(idLocation);
-							curNet.setSelectedEdgeState(nonSelectedObjects, false);
+							curNet.setSelectedEdgeState(nonSelectedEdges, false);
 						}
 
 						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
