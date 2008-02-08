@@ -43,7 +43,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.view.CytoscapeDesktop;
 
 /**
@@ -60,7 +60,7 @@ class NewEmptyNetworkListener implements PropertyChangeListener {
 
 		// listen for new views that get created 
 		if ( e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
-			CyNetwork net = Cytoscape.getCurrentNetwork();
+			GraphPerspective net = Cytoscape.getCurrentNetwork();
 
 			// only if the network in question doesn't have any nodes (i.e. it's an
 			// empty network), do we automatically switch to the editor

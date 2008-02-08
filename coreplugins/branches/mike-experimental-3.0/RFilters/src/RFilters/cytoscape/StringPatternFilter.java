@@ -44,7 +44,7 @@ import cytoscape.data.CyAttributes;
 
 import filter.model.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -148,8 +148,8 @@ public class StringPatternFilter implements Filter {
 	 */
 	public StringPatternFilter(String desc) {
 		try {
-			NODE_CLASS = Class.forName("giny.model.Node");
-			EDGE_CLASS = Class.forName("giny.model.Edge");
+			NODE_CLASS = Class.forName("cytoscape.Node");
+			EDGE_CLASS = Class.forName("cytoscape.Edge");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

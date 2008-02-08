@@ -2,8 +2,8 @@
 package cytoscape.editor;
 
 import giny.view.NodeView;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import cytoscape.view.CyNetworkView;
@@ -15,12 +15,12 @@ public class AddNodeEdit extends CyAbstractEdit {
 
 	// MLC 05/09/07:
 	private static final long serialVersionUID = 4869581496913388294L;
-	protected CyNetwork net;
-	protected CyNode node;
+	protected GraphPerspective net;
+	protected Node node;
 	protected double xPos = 0.0;
 	protected double yPos = 0.0;
 
-	public AddNodeEdit(CyNetwork net, CyNode node) {
+	public AddNodeEdit(GraphPerspective net, Node node) {
 		super("Add Node");
 		if ( net == null || node == null )
 			throw new IllegalArgumentException("network or node is null"); 

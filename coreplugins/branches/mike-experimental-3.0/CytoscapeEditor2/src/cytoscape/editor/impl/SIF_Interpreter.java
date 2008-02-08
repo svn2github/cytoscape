@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.editor.CytoscapeEditor;
@@ -33,7 +33,7 @@ public class SIF_Interpreter {
 				String name1 = terms[0].trim();
 				if (!name1.equals(null)) {
 					// first see if we already have a node
-					CyNode node1 = Cytoscape.getCyNode(terms[0], false);
+					Node node1 = Cytoscape.getCyNode(terms[0], false);
 					if (node1 == null) {
 
 						node1 = Cytoscape.getCyNode(terms[0], true);
@@ -56,7 +56,7 @@ public class SIF_Interpreter {
 							.getNodeView(node1).getWidth();
 					if (terms.length == 3) // simple case of 'A interaction B'
 					{
-						CyNode node2 = Cytoscape.getCyNode(terms[2], false);
+						Node node2 = Cytoscape.getCyNode(terms[2], false);
 						if (node2 == null) {
 							node2 = Cytoscape.getCyNode(terms[2], true);
 							Cytoscape.getCurrentNetwork().restoreNode(node2);
@@ -67,7 +67,7 @@ public class SIF_Interpreter {
 						}
 						// CytoscapeEditorManager.log("Node 2 = " + node2);
 						// CytoscapeEditorManager.log("NodeView 2 = " + nv2);
-						CyEdge edge = Cytoscape.getCyEdge(node1, node2,
+						Edge edge = Cytoscape.getCyEdge(node1, node2,
 								Semantics.INTERACTION, terms[1], true, true);
 						Cytoscape.getCurrentNetwork().restoreEdge(edge);
 
@@ -80,7 +80,7 @@ public class SIF_Interpreter {
 						String interactionType = terms[1];
 						for (int i = 2; i < terms.length; i++)
 						{
-							CyNode node2 = Cytoscape.getCyNode(terms[i], false);
+							Node node2 = Cytoscape.getCyNode(terms[i], false);
 							if (node2 == null) {
 								node2 = Cytoscape.getCyNode(terms[i], true);
 								
@@ -89,7 +89,7 @@ public class SIF_Interpreter {
 										.getNodeView(node2);
 								nodeViews.add(nv2);
 							}
-							CyEdge edge = Cytoscape.getCyEdge(node1, node2,
+							Edge edge = Cytoscape.getCyEdge(node1, node2,
 									Semantics.INTERACTION, interactionType, true, true);
 							Cytoscape.getCurrentNetwork().restoreEdge(edge);
 						}

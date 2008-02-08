@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.model;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.view.CyNetworkView;
 
@@ -58,9 +58,9 @@ public class SearchResponse {
 	private Throwable exception;
 
 	/**
-	 * The Corresponding CyNetwork in Cytoscape.
+	 * The Corresponding GraphPerspective in Cytoscape.
 	 */
-	private CyNetwork cyNetwork;
+	private GraphPerspective cyNetwork;
 
 	/**
 	 * The Corresponding CyNetworkView in Cytoscape.
@@ -105,20 +105,20 @@ public class SearchResponse {
 	}
 
 	/**
-	 * Gets the CyNetwork Corresponding to this list of interactions.
+	 * Gets the GraphPerspective Corresponding to this list of interactions.
 	 *
-	 * @return Cytoscape CyNetwork Object.
+	 * @return Cytoscape GraphPerspective Object.
 	 */
-	public CyNetwork getCyNetwork() {
+	public GraphPerspective getGraphPerspective() {
 		return cyNetwork;
 	}
 
 	/**
-	 * Sets the CyNetwork Corresponding to this list of interactions.
+	 * Sets the GraphPerspective Corresponding to this list of interactions.
 	 *
-	 * @param cyNetwork Cytoscape CyNetwork Object.
+	 * @param cyNetwork Cytoscape GraphPerspective Object.
 	 */
-	public void setCyNetwork(CyNetwork cyNetwork) {
+	public void setGraphPerspective(GraphPerspective cyNetwork) {
 		this.cyNetwork = cyNetwork;
 	}
 

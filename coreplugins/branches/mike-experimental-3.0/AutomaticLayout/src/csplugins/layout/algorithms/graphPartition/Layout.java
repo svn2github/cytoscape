@@ -40,11 +40,11 @@ import cern.colt.list.*;
 
 import cern.colt.map.*;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 
@@ -57,14 +57,14 @@ import java.util.*;
 public class Layout {
 	OpenIntDoubleHashMap nodeXMap;
 	OpenIntDoubleHashMap nodeYMap;
-	CyNetwork gp;
+	GraphPerspective gp;
 
 	/**
 	 * Creates a new Layout object.
 	 *
 	 * @param gp  DOCUMENT ME!
 	 */
-	public Layout(CyNetwork gp) {
+	public Layout(GraphPerspective gp) {
 		this.gp = gp;
 		nodeXMap = new OpenIntDoubleHashMap(PrimeFinder.nextPrime(gp.getNodeCount()));
 		nodeYMap = new OpenIntDoubleHashMap(PrimeFinder.nextPrime(gp.getNodeCount()));

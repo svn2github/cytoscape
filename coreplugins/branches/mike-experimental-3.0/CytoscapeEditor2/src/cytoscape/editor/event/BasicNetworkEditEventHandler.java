@@ -31,7 +31,7 @@ import ding.view.DGraphView;
 import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 
-import giny.model.Node;
+import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -42,8 +42,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
@@ -369,7 +369,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 * @param location works in Canvas coordinates
 	 */
-	public CyEdge finishEdge(Point2D location, NodeView target) {
+	public Edge finishEdge(Point2D location, NodeView target) {
 		// CytoscapeEditorManager.log("finishEdge in BasicNetworkEventHandler");
 		// MLC 12/07/06 BEGIN:
 		//        edgeStarted = false;
@@ -385,7 +385,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		Node source_node = source.getNode();
 		Node target_node = target.getNode();
 
-		CyEdge myEdge = _caller.addEdge(source_node, target_node,
+		Edge myEdge = _caller.addEdge(source_node, target_node,
 		                                cytoscape.data.Semantics.INTERACTION,
 		                                (this.getEdgeAttributeValue() != null)
 		                                ? this.getEdgeAttributeValue()
@@ -466,8 +466,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 * @param location    point of mouse press (in Canvas coordinates)
 	 */
-	public CyNode createNode(Point2D location) {
-		CyNode cn = null;
+	public Node createNode(Point2D location) {
+		Node cn = null;
 		cn = _caller.addNode("node" + counter, this.getNodeAttributeName(),
 		                     this.getNodeAttributeValue(), location);
 		counter++;

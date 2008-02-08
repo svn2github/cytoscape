@@ -32,7 +32,7 @@
  */
 package cytoscape.editor.editors;
 
-import giny.model.Node;
+import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -49,9 +49,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.actions.DeleteAction;
@@ -194,13 +194,13 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
 	 * @param location
 	 *            the position at which to add the node
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 *
 	 */
-	public CyNode addNode(String nodeName, String attribute, String value, Point2D location) {
+	public Node addNode(String nodeName, String attribute, String value, Point2D location) {
 		CytoscapeEditorManager.log("Adding node " + nodeName + " at position " + location);
 
-		CyNode cn = Cytoscape.getCyNode(nodeName, false); // first see if
+		Node cn = Cytoscape.getCyNode(nodeName, false); // first see if
 		                                                  // there is an
 		                                                  // existing node
 
@@ -232,7 +232,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		// now create a unique node
 		cn = Cytoscape.getCyNode(nodeName, true);
 
-		CyNetwork net = Cytoscape.getCurrentNetwork();
+		GraphPerspective net = Cytoscape.getCurrentNetwork();
 
 		if (attribute != null) {
 			Cytoscape.getNodeAttributes().setAttribute(cn.getIdentifier(), attribute, value);
@@ -247,7 +247,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 
 		net.unselectAllNodes();
 
-		List<CyNode> l = new ArrayList<CyNode>(1);
+		List<Node> l = new ArrayList<Node>(1);
 		l.add(cn);
 		net.setSelectedNodeState(l, true);
 
@@ -376,10 +376,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 *            conjunction with the Visual Mapper to assign visual
 	 *            characteristics to different types of nodes, for example to
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 *
 	 */
-	public CyNode addNode(String nodeName, String attribute, String value) {
+	public Node addNode(String nodeName, String attribute, String value) {
 		return addNode(nodeName, attribute, value, null);
 	}
 
@@ -399,9 +399,9 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 *            characteristics to different types of nodes. Also can be used,
 	 *            by the canvas when handling, a dropped item, to distinguish
 	 *            between nodes and edges.
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 */
-	public CyNode addNode(String nodeName, String nodeType) {
+	public Node addNode(String nodeName, String nodeType) {
 		return addNode(nodeName, CytoscapeEditorManager.NODE_TYPE, nodeType);
 	}
 
@@ -416,9 +416,9 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 * @param nodeName
 	 *            the name of the node to be created. This will be used as a
 	 *            unique identifier for the node.
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 */
-	public CyNode addNode(String nodeName) {
+	public Node addNode(String nodeName) {
 		return addNode(nodeName, null);
 	}
 
@@ -445,14 +445,14 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 * @param edgeType
 	 *            a value for the "EdgeType" attribute assigned to the edge.
 	 *            This can be used in conjunction with the Visual Mapper.
-	 * @return the CyEdge that has either been reused or created
+	 * @return the Edge that has either been reused or created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
 	                      boolean create, String edgeType) {
 		// first see if edge already exists. If it does, then
 		// there is no need to set up undoable edit or fire event
-		CyEdge edge;
+		Edge edge;
 		boolean uniqueEdge = true;
 		edge = Cytoscape.getCyEdge(node_1, node_2, attribute, attribute_value, false, true); // edge is directed
 
@@ -463,7 +463,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		}
 
 		if (edge != null) {
-			CyNetwork net = Cytoscape.getCurrentNetwork();
+			GraphPerspective net = Cytoscape.getCurrentNetwork();
 			net.restoreEdge(edge);
 
 			if (uniqueEdge) {
@@ -510,10 +510,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 *            Semantics.INTERACTION
 	 * @param attribute_value
 	 *            a value for the attribute, like "pp" or "default"
-	 * @return the CyEdge that has been created
+	 * @return the Edge that has been created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value) {
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value) {
 		return addEdge(node_1, node_2, attribute, attribute_value, true, null);
 	}
 
@@ -538,10 +538,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 * @param edgeType
 	 *            a value for the "EdgeType" attribute assigned to the edge.
 	 *            This can be used in conjunction with the Visual Mapper.
-	 * @return the CyEdge that has been created
+	 * @return the Edge that has been created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
 	                      String edgeType) {
 		return addEdge(node_1, node_2, attribute, attribute_value, true, edgeType);
 	}
@@ -566,10 +566,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 * @param create
 	 *            if true, then create an edge if one does not already exist.
 	 *            Otherwise, return the edge if it already exists.
-	 * @return the CyEdge that has either been reused or created
+	 * @return the Edge that has either been reused or created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
 	                      boolean create) {
 		return addEdge(node_1, node_2, attribute, attribute_value, create, null);
 	}
@@ -581,7 +581,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 *            the node to be deleted
 	 */
 	public void deleteNode(Node node) {
-		CyNetwork net = Cytoscape.getCurrentNetwork();
+		GraphPerspective net = Cytoscape.getCurrentNetwork();
 		net.hideNode(node);
 		CytoscapeModifiedNetworkManager.setModified(net, CytoscapeModifiedNetworkManager.MODIFIED);
 	}
@@ -592,8 +592,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 * @param edge
 	 *            the edge to be deleted
 	 */
-	public void deleteEdge(CyEdge edge) {
-		CyNetwork net = Cytoscape.getCurrentNetwork();
+	public void deleteEdge(Edge edge) {
+		GraphPerspective net = Cytoscape.getCurrentNetwork();
 		net.hideEdge(edge);
 		CytoscapeModifiedNetworkManager.setModified(net, CytoscapeModifiedNetworkManager.MODIFIED);
 	}
@@ -808,12 +808,12 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 
 			for (int i = 0; i < (nodes.size() - 1); i++) {
 				NodeView nv = (NodeView) nodes.get(i);
-				CyNode firstCyNode = (CyNode) nv.getNode();
+				Node firstNode = (Node) nv.getNode();
 
 				for (int j = i + 1; j < nodes.size(); j++) {
 					NodeView nv2 = (NodeView) nodes.get(j);
-					CyNode secondCyNode = (CyNode) nv2.getNode();
-					addEdge(firstCyNode, secondCyNode, Semantics.INTERACTION, edgeTypeValue, true,
+					Node secondNode = (Node) nv2.getNode();
+					addEdge(firstNode, secondNode, Semantics.INTERACTION, edgeTypeValue, true,
 					        edgeTypeName);
 				}
 			}

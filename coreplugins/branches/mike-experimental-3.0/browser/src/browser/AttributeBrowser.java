@@ -34,7 +34,7 @@
  */
 package browser;
 
-import giny.model.GraphObject;
+import cytoscape.GraphObject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

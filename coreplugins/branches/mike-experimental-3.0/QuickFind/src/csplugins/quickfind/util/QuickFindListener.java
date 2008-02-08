@@ -38,7 +38,7 @@ package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.Hit;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 
 /**
@@ -50,25 +50,25 @@ public interface QuickFindListener {
 	/**
 	 * Network has been added to the Quick Find Index.
 	 *
-	 * @param network CyNetwork Object.
+	 * @param network GraphPerspective Object.
 	 */
-	void networkAddedToIndex(CyNetwork network);
+	void networkAddedToIndex(GraphPerspective network);
 
 	/**
 	 * Network has been removed from the Quick Find Index.
 	 *
-	 * @param network CyNetwork Object.
+	 * @param network GraphPerspective Object.
 	 */
-	void networkRemovedfromIndex(CyNetwork network);
+	void networkRemovedfromIndex(GraphPerspective network);
 
 	/**
 	 * Indexing started.
 	 *
-	 * @param cyNetwork     CyNetwork.
+	 * @param cyNetwork     GraphPerspective.
 	 * @param indexType     QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
 	 * @param controllingAttribute Controlling Attribute.
 	 */
-	void indexingStarted(CyNetwork cyNetwork, int indexType, String controllingAttribute);
+	void indexingStarted(GraphPerspective cyNetwork, int indexType, String controllingAttribute);
 
 	/**
 	 * Indexing operation ended.
@@ -79,18 +79,18 @@ public interface QuickFindListener {
 	 * Indicates that the user has selected a hit within the QuickFind
 	 * search box.
 	 *
-	 * @param network       the current CyNetwork.
+	 * @param network       the current GraphPerspective.
 	 * @param hit           hit value chosen by the user.
 	 */
-	void onUserSelection(CyNetwork network, Hit hit);
+	void onUserSelection(GraphPerspective network, Hit hit);
 
 	/**
 	 * Indicates that the user has selected a range within the QuickFind
 	 * range selector.
 	 *
-	 * @param network       the current CyNetwork.
+	 * @param network       the current GraphPerspective.
 	 * @param low           the low value of the range.
 	 * @param high          the high value of the range.
 	 */
-	void onUserRangeSelection(CyNetwork network, Number low, Number high);
+	void onUserRangeSelection(GraphPerspective network, Number low, Number high);
 }

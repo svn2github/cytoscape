@@ -36,7 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.readers.GraphReader;

@@ -8,7 +8,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.Edge;
+import cytoscape.Edge;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -87,7 +87,7 @@ public final class GraphConverter {
 		// There are exactly m_nodeTranslation.length keys in this hashtable.
 		// Key-to-value mappings define index-of-node-in-Giny to
 		// index-of-node-in-GraphTopology mappings.  When I say
-		// "index-of-node-in-Giny", I mean giny.model.Node.getRootGraphIndex().
+		// "index-of-node-in-Giny", I mean cytoscape.Node.getRootGraphIndex().
 		private final Hashtable m_nodeIndexTranslation;
 		private final double m_xOff;
 		private final double m_yOff;
@@ -293,7 +293,7 @@ public final class GraphConverter {
 		// There are exactly numNodesInTopology keys in this hashtable.
 		// Key-to-value mappings define index-of-node-in-Giny to
 		// index-of-node-in-GraphTopology mappings.  When I say
-		// "index-of-node-in-Giny", I mean giny.model.Node.getRootGraphIndex().
+		// "index-of-node-in-Giny", I mean cytoscape.Node.getRootGraphIndex().
 		final Hashtable nodeIndexTranslation = new Hashtable();
 
 		Iterator nodeIterator = graphView.getNodeViewsIterator();
@@ -560,7 +560,7 @@ public final class GraphConverter {
 		// There are exactly numNodesInTopology keys in this hashtable.
 		// Key-to-value mappings define index-of-node-in-Giny to
 		// index-of-node-in-GraphTopology mappings.  When I say
-		// "index-of-node-in-Giny", I mean giny.model.Node.getRootGraphIndex().
+		// "index-of-node-in-Giny", I mean cytoscape.Node.getRootGraphIndex().
 		final Hashtable nodeIndexTranslation = new Hashtable();
 
 		Iterator nodeIterator = graphView.getNodeViewsIterator();

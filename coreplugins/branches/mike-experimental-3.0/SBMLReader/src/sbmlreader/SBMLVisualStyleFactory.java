@@ -84,7 +84,7 @@ public class SBMLVisualStyleFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static VisualStyle createVisualStyle(CyNetwork network) {
+	public static VisualStyle createVisualStyle(GraphPerspective network) {
 		VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
 		NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
 		EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();

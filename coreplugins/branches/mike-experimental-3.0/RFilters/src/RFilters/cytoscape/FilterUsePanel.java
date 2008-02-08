@@ -50,7 +50,7 @@ import filter.model.*;
 
 import filter.view.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 
@@ -299,7 +299,7 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener, Ac
 
 	protected void testObjects() {
 		final Filter filter = filterListPanel.getSelectedFilter();
-		final CyNetwork network = Cytoscape.getCurrentNetwork();
+		final GraphPerspective network = Cytoscape.getCurrentNetwork();
 
 		final List<Node> nodes_list = network.nodesList();
 		final List<Edge> edges_list = network.edgesList();

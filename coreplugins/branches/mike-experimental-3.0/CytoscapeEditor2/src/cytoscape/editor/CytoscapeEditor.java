@@ -24,13 +24,13 @@
 */
 package cytoscape.editor;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.awt.geom.Point2D;
 import java.util.List;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
+import cytoscape.Edge;
+import cytoscape.Node;
 import cytoscape.data.SelectEventListener;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 
@@ -66,7 +66,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	public void buildVisualStyle();
 
 	/**
-	 * specialized initialization code for editor, called by CyNetworkEditorFactory, should be overridden
+	 * specialized initialization code for editor, called by GraphPerspectiveEditorFactory, should be overridden
 	 * @param args an arbitrary list of arguments to be used in initializing the editor
 	 */
 	public void initializeControls(List args);
@@ -125,9 +125,9 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            conjunction with the Visual Mapper to assign visual
 	 *            characteristics to different types of nodes, for example to
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 */
-	public CyNode addNode(String nodeName, String attribute, String value);
+	public Node addNode(String nodeName, String attribute, String value);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -158,9 +158,9 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
 	 * @param location
 	 *            position at which to add the node
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 */
-	public CyNode addNode(String nodeName, String attribute, String value, Point2D location);
+	public Node addNode(String nodeName, String attribute, String value, Point2D location);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -178,9 +178,9 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            characteristics to different types of nodes. Also can be used,
 	 *            by the canvas when handling, a dropped item, to distinguish
 	 *            between nodes and edges.
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 */
-	public CyNode addNode(String nodeName, String nodeType);
+	public Node addNode(String nodeName, String nodeType);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -193,9 +193,9 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param nodeName
 	 *            the name of the node to be created. This will be used as a
 	 *            unique identifier for the node.
-	 * @return the CyNode that has been either reused or created.
+	 * @return the Node that has been either reused or created.
 	 */
-	public CyNode addNode(String nodeName);
+	public Node addNode(String nodeName);
 
 	/**
 	 *
@@ -220,10 +220,10 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param edgeType
 	 *            a value for the "EdgeType" attribute assigned to the edge.
 	 *            This can be used in conjunction with the Visual Mapper.
-	 * @return the CyEdge that has either been reused or created
+	 * @return the Edge that has either been reused or created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
 	                      boolean create, String edgeType);
 
 	/**
@@ -244,10 +244,10 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            Semantics.INTERACTION
 	 * @param attribute_value
 	 *            a value for the attribute, like "pp" or "default"
-	 * @return the CyEdge that has been created
+	 * @return the Edge that has been created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value);
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value);
 
 	/**
 	 *
@@ -270,10 +270,10 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param edgeType
 	 *            a value for the "EdgeType" attribute assigned to the edge.
 	 *            This can be used in conjunction with the Visual Mapper.
-	 * @return the CyEdge that has been created
+	 * @return the Edge that has been created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
 	                      String edgeType);
 
 	/**
@@ -296,10 +296,10 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param create
 	 *            if true, then create an edge if one does not already exist.
 	 *            Otherwise, return the edge if it already exists.
-	 * @return the CyEdge that has either been reused or created
+	 * @return the Edge that has either been reused or created
 	 *
 	 */
-	public CyEdge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
 	                      boolean create);
 
 	/**
@@ -316,7 +316,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param edge
 	 *            the edge to be deleted
 	 */
-	public void deleteEdge(CyEdge edge);
+	public void deleteEdge(Edge edge);
 
 	/**
 	 *

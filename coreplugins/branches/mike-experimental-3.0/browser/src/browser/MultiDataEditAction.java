@@ -41,7 +41,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import giny.model.GraphObject;
+import cytoscape.GraphObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;

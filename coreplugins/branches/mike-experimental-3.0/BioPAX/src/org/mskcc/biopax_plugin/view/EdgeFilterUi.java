@@ -1,7 +1,7 @@
 package org.mskcc.biopax_plugin.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyEdge;
+import cytoscape.GraphPerspective;
+import cytoscape.Edge;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.actions.GinyUtils;
@@ -21,14 +21,14 @@ import giny.view.EdgeView;
  * Edge Filter Dialog.
  */
 public class EdgeFilterUi extends JDialog {
-    private CyNetwork cyNetwork;
+    private GraphPerspective cyNetwork;
     private HashSet checkBoxSet;
 
     /**
      * Constructor.
-     * @param cyNetwork CyNetwork Object.
+     * @param cyNetwork GraphPerspective Object.
      */
-    public EdgeFilterUi(CyNetwork cyNetwork) {
+    public EdgeFilterUi(GraphPerspective cyNetwork) {
         this.cyNetwork = cyNetwork;
         initGui();
     }
@@ -44,7 +44,7 @@ public class EdgeFilterUi extends JDialog {
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         Iterator edgeIterator = cyNetwork.edgesIterator();
         while (edgeIterator.hasNext()) {
-            CyEdge edge = (CyEdge) edgeIterator.next();
+            Edge edge = (Edge) edgeIterator.next();
             String interactionType = edgeAttributes.getStringAttribute(edge.getIdentifier(),
                     Semantics.INTERACTION);
             interactionSet.add(interactionType);
@@ -78,15 +78,15 @@ public class EdgeFilterUi extends JDialog {
  * Apply Edge Filter.
  */
 class ApplyEdgeFilter implements ActionListener {
-    private CyNetwork cyNetwork;
+    private GraphPerspective cyNetwork;
     private HashSet checkBoxSet;
 
     /**
      * Constructor.
-     * @param cyNetwork     CyNetwork Object.
+     * @param cyNetwork     GraphPerspective Object.
      * @param checkBoxSet   Set of JCheckBox Objects.
      */
-    public ApplyEdgeFilter (CyNetwork cyNetwork, HashSet checkBoxSet) {
+    public ApplyEdgeFilter (GraphPerspective cyNetwork, HashSet checkBoxSet) {
         this.cyNetwork = cyNetwork;
         this.checkBoxSet = checkBoxSet;
     }
@@ -111,7 +111,7 @@ class ApplyEdgeFilter implements ActionListener {
 
         int allEdgeIds[] = new int[edgeList.size()];
         for (int i=0; i< edgeList.size(); i++) {
-            CyEdge edge = (CyEdge) edgeList.get(i);
+            Edge edge = (Edge) edgeList.get(i);
             String interactionType = edgeAttributes.getStringAttribute(edge.getIdentifier(),
                     Semantics.INTERACTION);
             if (!selectedInteractionSet.contains(interactionType)) {
@@ -124,7 +124,7 @@ class ApplyEdgeFilter implements ActionListener {
         GinyUtils.unHideAll(networkView);
         ArrayList edgeViewList = new ArrayList();
         for (int i=0; i<edgeSet.size(); i++) {
-            CyEdge edge = (CyEdge) edgeSet.get(i);
+            Edge edge = (Edge) edgeSet.get(i);
             EdgeView edgeView = networkView.getEdgeView(edge);
             edgeViewList.add(edgeView);
 

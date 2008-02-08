@@ -60,7 +60,7 @@ public class LayoutEdge {
 	private LayoutNode v2;
 	private double weight = 0.5;
 	private double logWeight;
-	private CyEdge edge;
+	private Edge edge;
 
 	/**
 	 * An empty constructor
@@ -74,9 +74,9 @@ public class LayoutEdge {
 	 * Create a LayoutEdge that will contain information about this edge.
 	 * Additional information must be filled in later.
 	 *
-	 * @param    edge    CyEdge that this LayoutEdge represents
+	 * @param    edge    Edge that this LayoutEdge represents
 	 */
-	public LayoutEdge(CyEdge edge) {
+	public LayoutEdge(Edge edge) {
 		this.edge = edge;
 
 		if (edgeAttributes == null)
@@ -87,11 +87,11 @@ public class LayoutEdge {
 	 * Create a LayoutEdge that will contains information about this edge,
 	 * and that record that it connects LayoutNodes v1 and v2.
 	 *
-	 * @param    edge    CyEdge that this LayoutEdge represents
+	 * @param    edge    Edge that this LayoutEdge represents
 	 * @param    v1    The LayoutNode that represents the source of the edge
 	 * @param    v2    The LayoutNode that represents the target of the edge
 	 */
-	public LayoutEdge(CyEdge edge, LayoutNode v1, LayoutNode v2) {
+	public LayoutEdge(Edge edge, LayoutNode v1, LayoutNode v2) {
 		this.edge = edge;
 		this.v1 = v1;
 		this.v2 = v2;
@@ -107,7 +107,7 @@ public class LayoutEdge {
 
 	/**
 	 * Set the nodes associated with this edge.  This is used subsequent
-	 * to a call to the LayoutEdge(CyEdge) constructor to associate the
+	 * to a call to the LayoutEdge(Edge) constructor to associate the
 	 * source and target nodes since we don't always know that information
 	 * at the time the edge is encountered.
 	 *
@@ -216,18 +216,18 @@ public class LayoutEdge {
 	}
 
 	/**
-	 * Return the CyEdge this LayoutEdge represents
+	 * Return the Edge this LayoutEdge represents
 	 *
-	 * @return     The CyEdge for this LayoutEdge
+	 * @return     The Edge for this LayoutEdge
 	 */
-	public CyEdge getEdge() {
+	public Edge getEdge() {
 		return this.edge;
 	}
 
 	/**
 	 * Return a string representation for this LayoutEdge.
 	 *
-	 * @return    A String containting the name of the CyEdge, the connecting LayoutNodes
+	 * @return    A String containting the name of the Edge, the connecting LayoutNodes
 	 *          and the current weight.
 	 */
 	public String toString() {

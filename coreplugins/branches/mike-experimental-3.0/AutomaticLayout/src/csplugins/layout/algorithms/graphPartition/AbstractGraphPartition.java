@@ -8,9 +8,9 @@ import cern.colt.map.*;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import cytoscape.CyNode;
+import cytoscape.Node;
 
 import cytoscape.layout.AbstractLayout;
 
@@ -18,7 +18,7 @@ import cytoscape.task.*;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.*;
+import cytoscape.*;
 
 import java.lang.Throwable;
 
@@ -100,8 +100,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		} else if (staticNodes != null && staticNodes.size() > 0) {
 			// Someone has programmatically locked a set of nodes -- construct
 			// the list of unlocked nodes
-			List<CyNode> unlockedNodes = new ArrayList();
-			for (CyNode node: (List<CyNode>)network.nodesList()) {
+			List<Node> unlockedNodes = new ArrayList();
+			for (Node node: (List<Node>)network.nodesList()) {
 				if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
 					unlockedNodes.add(node);
 				}

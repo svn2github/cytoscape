@@ -1,4 +1,4 @@
-// $Id: CyNetworkUtil.java,v 1.4 2006/06/15 22:06:02 grossb Exp $
+// $Id: GraphPerspectiveUtil.java,v 1.4 2006/06/15 22:06:02 grossb Exp $
 //------------------------------------------------------------------------------
 /** Copyright (c) 2006 Memorial Sloan-Kettering Cancer Center.
  **
@@ -31,7 +31,7 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.CytoscapeInit;
 
 import java.text.DecimalFormat;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 
 /**
- * Utility for Creating CyNetwork Objects.
+ * Utility for Creating GraphPerspective Objects.
  *
  * @author Ethan Cerami
  */
@@ -49,11 +49,11 @@ public class CyNetworkUtil {
 	/**
 	 * Gets Network Stats, for presentation to end-user.
 	 *
-	 * @param network     CyNetwork Object.
+	 * @param network     GraphPerspective Object.
 	 * @param warningList ArrayList of Warning Messages.
 	 * @return Human Readable String.
 	 */
-	public static String getNetworkStats(CyNetwork network, ArrayList warningList) {
+	public static String getNetworkStats(GraphPerspective network, ArrayList warningList) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 

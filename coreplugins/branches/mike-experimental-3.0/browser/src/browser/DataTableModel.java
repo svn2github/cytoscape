@@ -40,7 +40,7 @@ import static browser.DataObjectType.NODES;
 
 import browser.ui.CyAttributeBrowserTable;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -50,9 +50,9 @@ import cytoscape.view.CyNetworkView;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
 
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.GraphObject;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -320,7 +320,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		int k = 0;
 
 		while (it.hasNext()) {
-			CyNetwork network = (CyNetwork) it.next();
+			GraphPerspective network = (GraphPerspective) it.next();
 			String id = network.getIdentifier();
 
 			data_vector[k][0] = id;
@@ -340,7 +340,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			int j = 0;
 
 			while (it.hasNext()) {
-				CyNetwork network = (CyNetwork) it.next();
+				GraphPerspective network = (GraphPerspective) it.next();
 				Object value = getAttributeValue(type, network.getIdentifier(), attributeName);
 
 				data_vector[j][i] = value;

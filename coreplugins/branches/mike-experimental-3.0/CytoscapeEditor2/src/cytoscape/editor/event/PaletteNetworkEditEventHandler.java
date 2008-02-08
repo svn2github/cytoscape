@@ -35,7 +35,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 import phoebe.PhoebeCanvasDropEvent;
-import cytoscape.CyNode;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
@@ -236,9 +236,9 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 				// CytoscapeEditorManager.log ("Handling dropped URL = " +
 				// URLString);
 				// MLC 12/07/06:
-				// CyNode cn = _caller.addNode("node" + counter, "URL");
+				// Node cn = _caller.addNode("node" + counter, "URL");
 				// MLC 12/07/06:
-				CyNode cn = get_caller().addNode("node" + counter, "URL");
+				Node cn = get_caller().addNode("node" + counter, "URL");
 				counter++;
 				Cytoscape.getCurrentNetwork().restoreNode(cn);
 			}

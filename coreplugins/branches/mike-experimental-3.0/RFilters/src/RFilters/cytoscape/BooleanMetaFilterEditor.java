@@ -39,7 +39,7 @@ package filter.cytoscape;
 import ViolinStrings.Strings;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 

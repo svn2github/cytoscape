@@ -69,7 +69,7 @@ public class ExportNetworkAsPsiMiOne extends CytoscapeAction {
 	 * PropertyChange event with property=Cytoscape.NETWORK_SAVED,
 	 * old_value=null, and new_value=a three element Object array containing:
 	 * <OL>
-	 * <LI>first element = CyNetwork saved
+	 * <LI>first element = GraphPerspective saved
 	 * <LI>second element = URI of the location where saved
 	 * <LI>third element = an Integer representing the format in which the
 	 * Network was saved (e.g., Cytoscape.FILE_PSI_MI).

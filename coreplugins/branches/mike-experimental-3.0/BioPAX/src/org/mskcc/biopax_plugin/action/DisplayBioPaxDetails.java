@@ -31,8 +31,8 @@
  **/
 package org.mskcc.biopax_plugin.action;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.SelectEvent;
@@ -98,10 +98,10 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 
 			if (event.getEventType() && (totalNumNodesSelected == 1)) {
 				Iterator iterator = set.iterator();
-				CyNode node = (CyNode) iterator.next();
+				Node node = (Node) iterator.next();
 
 				//  Get the BioPAX Util Object from the current network
-				CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+				GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
 				String id = node.getIdentifier();
 
 				if (id != null) {

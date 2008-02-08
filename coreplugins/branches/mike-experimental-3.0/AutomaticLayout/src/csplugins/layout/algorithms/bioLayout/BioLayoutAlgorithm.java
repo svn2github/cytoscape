@@ -523,8 +523,8 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 			} else {
       	// Someone has programmatically locked a set of nodes -- construct
       	// the list of unlocked nodes
-      	List<CyNode> unlockedNodes = new ArrayList();
-      	for (CyNode node: (List<CyNode>)network.nodesList()) {
+      	List<Node> unlockedNodes = new ArrayList();
+      	for (Node node: (List<Node>)network.nodesList()) {
       		if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
       			unlockedNodes.add(node);
       		}

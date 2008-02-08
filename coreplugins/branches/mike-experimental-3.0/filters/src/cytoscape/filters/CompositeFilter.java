@@ -36,11 +36,11 @@
 
 package cytoscape.filters;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.util.List;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class CompositeFilter implements CyFilter {
 	protected String description;
 	protected AdvancedSetting advancedSetting = null;
 	//private int indexType = -1; //QuickFind.INDEX_NODES //QuickFind.INDEX_EDGES 
-	protected CyNetwork network;
+	protected GraphPerspective network;
 
 	protected Hashtable compositeNotTab = new Hashtable<CompositeFilter, Boolean>();
 	
@@ -75,7 +75,7 @@ public class CompositeFilter implements CyFilter {
 		children = new LinkedList<CyFilter>();
 	}
 		
-	public void setNetwork(CyNetwork pNetwork) {
+	public void setNetwork(GraphPerspective pNetwork) {
 		if (network != null && network == pNetwork) {
 			return;
 		}
@@ -91,7 +91,7 @@ public class CompositeFilter implements CyFilter {
 		childChanged();
 	}
 	
-	public CyNetwork getNetwork(){
+	public GraphPerspective getNetwork(){
 		return network;
 	}
 

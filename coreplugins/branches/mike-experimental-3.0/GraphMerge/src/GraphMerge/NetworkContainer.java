@@ -36,7 +36,7 @@
 */
 package GraphMerge;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -45,8 +45,8 @@ import cytoscape.util.GraphSetUtils;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.Label;
@@ -87,14 +87,14 @@ import javax.swing.event.ListSelectionListener;
  * panel. There's probably a better way to do this, but oh well.
  */
 class NetworkContainer {
-	CyNetwork network;
+	GraphPerspective network;
 
 	/**
 	 * Creates a new NetworkContainer object.
 	 *
 	 * @param network  DOCUMENT ME!
 	 */
-	public NetworkContainer(CyNetwork network) {
+	public NetworkContainer(GraphPerspective network) {
 		this.network = network;
 	}
 
@@ -112,7 +112,7 @@ class NetworkContainer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyNetwork getNetwork() {
+	public GraphPerspective getNetwork() {
 		return network;
 	}
 }

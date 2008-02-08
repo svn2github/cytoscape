@@ -34,7 +34,7 @@
 */
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.bookmarks.Attribute;
@@ -94,8 +94,8 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSe
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.STRING_ICON;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -2715,7 +2715,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				it = Cytoscape.getNetworkSet().iterator();
 
 				while (it.hasNext()) {
-					valueSet.add(((CyNetwork) it.next()).getTitle());
+					valueSet.add(((GraphPerspective) it.next()).getTitle());
 				}
 			}
 		} else {

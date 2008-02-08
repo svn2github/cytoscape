@@ -37,7 +37,7 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
 import cytoscape.CyMain;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -156,10 +156,10 @@ public class TableImportTestSwing extends TestCase {
 		player.run(robot, "WRITE_SESSION");
 
 		// write assertion code here.
-		Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+		Set<GraphPerspective> networkSet = Cytoscape.getNetworkSet();
 		Set<String> networkTitles = new TreeSet<String>();
 
-		for (CyNetwork net : networkSet) {
+		for (GraphPerspective net : networkSet) {
 			networkTitles.add(net.getTitle());
 		}
 

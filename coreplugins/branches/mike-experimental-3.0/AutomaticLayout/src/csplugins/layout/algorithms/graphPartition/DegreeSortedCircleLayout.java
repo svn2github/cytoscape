@@ -14,7 +14,7 @@ import cytoscape.view.*;
 
 import filter.cytoscape.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 

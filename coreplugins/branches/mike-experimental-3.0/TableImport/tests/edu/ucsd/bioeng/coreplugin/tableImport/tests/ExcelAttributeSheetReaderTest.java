@@ -36,7 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -85,7 +85,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		 * Load test network
 		 */
 		File network = new File(NETWORK_FILE);
-		CyNetwork net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
+		GraphPerspective net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
 
 		/*
 		 * Single Sheet Test

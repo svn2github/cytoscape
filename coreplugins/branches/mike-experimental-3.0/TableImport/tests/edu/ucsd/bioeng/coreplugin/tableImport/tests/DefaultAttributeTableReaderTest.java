@@ -36,7 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -87,10 +87,10 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		File galNetwork = new File(NETWORK_FILE2);
 
 		//
-		CyNetwork net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
+		GraphPerspective net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
 		File source = new File(DATA_FILE);
 
-		CyNetwork galNet = Cytoscape.createNetworkFromFile(galNetwork.getAbsolutePath());
+		GraphPerspective galNet = Cytoscape.createNetworkFromFile(galNetwork.getAbsolutePath());
 
 		File galSource = new File(DATA_FILE2);
 

@@ -71,7 +71,7 @@ public class LinkOutPlugin extends CytoscapePlugin {
 			Set networkSet = Cytoscape.getNetworkSet();
 
 			for (Iterator it = networkSet.iterator(); it.hasNext();) {
-				CyNetwork cyNetwork = (CyNetwork) it.next();
+				GraphPerspective cyNetwork = (GraphPerspective) it.next();
 
 				LinkOutNodeContextMenuListener nodeMenuListener = new LinkOutNodeContextMenuListener();
 				((DGraphView) Cytoscape.getNetworkView(cyNetwork.getIdentifier()))

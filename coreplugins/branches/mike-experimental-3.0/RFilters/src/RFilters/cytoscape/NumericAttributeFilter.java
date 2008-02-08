@@ -39,13 +39,13 @@ package filter.cytoscape;
 import ViolinStrings.Strings;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.CyAttributes;
 
 import filter.model.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -153,8 +153,8 @@ public class NumericAttributeFilter implements Filter {
 		this.comparison = comparison;
 
 		try {
-			NODE_CLASS = Class.forName("giny.model.Node");
-			EDGE_CLASS = Class.forName("giny.model.Edge");
+			NODE_CLASS = Class.forName("cytoscape.Node");
+			EDGE_CLASS = Class.forName("cytoscape.Edge");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

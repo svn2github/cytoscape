@@ -36,7 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -70,7 +70,7 @@ public class GeneAssociationReaderTest extends TestCase {
 	private static final String GO_SLIM = "testData/annotation/goslim_generic.obo";
 	private static final String GAL_NETWORK = "testData/galFiltered.sif";
 	private static final String GENE_ASSOCIATION = "testData/annotation/gene_association.sgd";
-	private CyNetwork gal;
+	private GraphPerspective gal;
 	private CyAttributes nodeAttr;
 
 	protected void setUp() throws Exception {

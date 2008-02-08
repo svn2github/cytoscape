@@ -39,7 +39,7 @@ package ManualLayout.control.actions.align;
 import ManualLayout.control.actions.AbstractControlAction;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.*;
@@ -49,7 +49,7 @@ import cytoscape.util.*;
 import cytoscape.view.*;
 import cytoscape.view.CyNetworkView;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 

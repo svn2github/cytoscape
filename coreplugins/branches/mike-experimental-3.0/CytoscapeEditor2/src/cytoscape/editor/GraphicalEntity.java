@@ -76,7 +76,7 @@ public interface GraphicalEntity {
 	/**
 	 * returns the name of the attribute associated with the Graphical Entity.
 	 * This is used to determine whether a Node or an Edge has been dropped on the canvas.
-	 * This attribute will also be set for the CyNode or CyEdge created as a result of the drop operation.
+	 * This attribute will also be set for the Node or Edge created as a result of the drop operation.
 	 * @return the attribute name
 	 */
 	public String getAttributeName();
@@ -84,21 +84,21 @@ public interface GraphicalEntity {
 	/**
 	 * sets the name of the attribute associated with the Graphical Entity.
 	 * This is used to determine whether a Node or an Edge has been dropped on the canvas.
-	 * This attribute will also be set for the CyNode or CyEdge created as a result of the drop operation.
+	 * This attribute will also be set for the Node or Edge created as a result of the drop operation.
 	 * @param attributeName the attribute name to set
 	 */
 	public void setAttributeName(String attributeName);
 
 	/**
 	 * returns the value of the attribute associated with the Graphical Entity.
-	 * This attribute will be set for the CyNode or CyEdge created as a result of the drop operation.
+	 * This attribute will be set for the Node or Edge created as a result of the drop operation.
 	 * @return the attribute value
 	 */
 	public String getAttributeValue();
 
 	/**
 	 * sets the value of the attribute associated with the Graphical Entity.
-	 * This attribute will be set for the CyNode or CyEdge created as a result of the drop operation.
+	 * This attribute will be set for the Node or Edge created as a result of the drop operation.
 	 * @param attributeValue The attributeValue to set.
 	 */
 	public void setAttributeValue(String attributeValue);

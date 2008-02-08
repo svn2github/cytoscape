@@ -26,9 +26,9 @@ package browser.ui;
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.GraphObject;
+import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -84,7 +84,7 @@ import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.SortTableModel;
 import browser.util.HyperLinkOut;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
@@ -136,7 +136,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public static final int REV_SELECTED_EDGE = 4;
 
 	// Target network to watch selection
-	CyNetwork currentNetwork;
+	GraphPerspective currentNetwork;
 
 	// Gloval calcs used for coloring
 	private VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
@@ -453,7 +453,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						}
 
 						final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
-						final CyNetwork curNet = Cytoscape.getCurrentNetwork();
+						final GraphPerspective curNet = Cytoscape.getCurrentNetwork();
 
 						final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
 

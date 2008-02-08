@@ -37,7 +37,7 @@
 package filter.cytoscape;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 

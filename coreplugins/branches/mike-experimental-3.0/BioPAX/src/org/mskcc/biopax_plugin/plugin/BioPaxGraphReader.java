@@ -43,7 +43,7 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import giny.view.GraphView;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.GraphReader;
@@ -159,9 +159,9 @@ public class BioPaxGraphReader implements GraphReader {
 	/**
 	 * Executes Post-Processing on newly created network.
 	 *
-	 * @param cyNetwork CyNetwork object.
+	 * @param cyNetwork GraphPerspective object.
 	 */
-	public void doPostProcessing(CyNetwork cyNetwork) {
+	public void doPostProcessing(GraphPerspective cyNetwork) {
 		/**
 		 * Sets a network attribute which indicates this network
 		 * is a biopax network

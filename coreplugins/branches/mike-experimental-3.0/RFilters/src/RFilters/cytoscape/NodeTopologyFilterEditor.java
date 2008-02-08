@@ -39,7 +39,7 @@ package filter.cytoscape;
 import ViolinStrings.Strings;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 
@@ -47,7 +47,7 @@ import filter.model.*;
 
 import filter.view.*;
 
-import giny.model.GraphPerspective;
+import cytoscape.GraphPerspective;
 
 import java.awt.*;
 import java.awt.event.*;

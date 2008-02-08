@@ -36,7 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -109,7 +109,7 @@ public class NetworkTableReaderTest extends TestCase {
 
 		reader = new NetworkTableReader(network.getName(), network.toURL(), mapping, 0, null);
 
-		CyNetwork net = Cytoscape.createNetwork(reader, false, null);
+		GraphPerspective net = Cytoscape.createNetwork(reader, false, null);
 
 		/*
 		 * test cases

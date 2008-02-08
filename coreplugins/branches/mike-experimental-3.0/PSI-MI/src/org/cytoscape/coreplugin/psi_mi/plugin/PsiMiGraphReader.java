@@ -34,13 +34,13 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.CyAttributes;
 
 import cytoscape.data.readers.AbstractGraphReader;
 
-import giny.model.RootGraph;
+import cytoscape.RootGraph;
 
 import giny.view.GraphView;
 import giny.view.NodeView;

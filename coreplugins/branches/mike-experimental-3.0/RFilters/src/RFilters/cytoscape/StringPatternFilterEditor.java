@@ -94,8 +94,8 @@ public class StringPatternFilterEditor extends FilterEditor implements ActionLis
 
 		try {
 			STRING_CLASS = Class.forName("java.lang.String");
-			NODE_CLASS = Class.forName("giny.model.Node");
-			EDGE_CLASS = Class.forName("giny.model.Edge");
+			NODE_CLASS = Class.forName("cytoscape.Node");
+			EDGE_CLASS = Class.forName("cytoscape.Edge");
 			filterClass = Class.forName("filter.cytoscape.StringPatternFilter");
 			nodeAttributeModel = new NodeAttributeComboBoxModel(STRING_CLASS);
 			edgeAttributeModel = new EdgeAttributeComboBoxModel(STRING_CLASS);

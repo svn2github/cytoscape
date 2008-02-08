@@ -36,7 +36,7 @@
 
 package cytoscape.filters;
 
-import giny.model.Node;
+import cytoscape.Node;
 import java.util.*;
 import cytoscape.Cytoscape;
 

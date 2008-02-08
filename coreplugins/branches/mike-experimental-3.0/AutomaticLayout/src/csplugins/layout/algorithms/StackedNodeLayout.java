@@ -36,7 +36,7 @@
 
 package csplugins.layout.algorithms;
 
-import cytoscape.CyNode;
+import cytoscape.Node;
 
 import cytoscape.layout.AbstractLayout;
 
@@ -87,7 +87,7 @@ public class StackedNodeLayout extends AbstractLayout {
 		double yPosition = y_start_position;
 
 		while (it.hasNext()) {
-			CyNode node = (CyNode) it.next();
+			Node node = (Node) it.next();
 			NodeView nodeView = networkView.getNodeView(node);
 			nodeView.setXPosition(x_position);
 			nodeView.setYPosition(yPosition);

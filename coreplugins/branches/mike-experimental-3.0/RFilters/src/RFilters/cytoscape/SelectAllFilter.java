@@ -44,7 +44,7 @@ import cytoscape.data.*;
 
 import filter.model.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import java.awt.*;
 import java.awt.event.*;

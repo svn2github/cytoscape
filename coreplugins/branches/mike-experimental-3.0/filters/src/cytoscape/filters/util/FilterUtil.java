@@ -1,11 +1,11 @@
 package cytoscape.filters.util;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.filters.CompositeFilter;
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 import java.util.ArrayList;
 import java.util.List;
 import csplugins.quickfind.util.QuickFind;
@@ -23,7 +23,7 @@ public class FilterUtil {
 		
 		pFilter.apply();
 		
-		CyNetwork network = pFilter.getNetwork();
+		GraphPerspective network = pFilter.getNetwork();
 
 		network.unselectAllNodes();
 		network.unselectAllEdges();
@@ -81,7 +81,7 @@ public class FilterUtil {
 	}
 	
 	
-	public static GenericIndex getQuickFindIndex(String pCtrlAttribute, CyNetwork pNetwork, int pIndexType) {
+	public static GenericIndex getQuickFindIndex(String pCtrlAttribute, GraphPerspective pNetwork, int pIndexType) {
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		quickFind.reindexNetwork(pNetwork, pIndexType, pCtrlAttribute, new TaskMonitorBase());
 		
@@ -112,7 +112,7 @@ public class FilterUtil {
 	// If a network size (node count and edge count) is less than DYNAMIC_FILTER_THRESHOLD, return true
 	// Otherwise, return false
 	public static boolean isDynamicFilter(CompositeFilter pFilter) {
-		CyNetwork theNetwork = pFilter.getNetwork();
+		GraphPerspective theNetwork = pFilter.getNetwork();
 
 		if (theNetwork == null) {
 			return false;

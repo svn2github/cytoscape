@@ -39,7 +39,7 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.layout.AbstractLayout;

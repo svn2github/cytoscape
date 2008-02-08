@@ -16,12 +16,12 @@ import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import giny.model.*;
+import cytoscape.*;
 
 import java.awt.GridLayout;
 
@@ -412,7 +412,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] neighborsArray(CyNetwork network, int nodeIndex) {
+	public int[] neighborsArray(GraphPerspective network, int nodeIndex) {
 		// Get a list of edges
 		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
 		int[] neighbors = new int[edges.length];

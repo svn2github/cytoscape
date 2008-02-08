@@ -38,7 +38,7 @@ package csplugins.quickfind.util;
 
 import cytoscape.data.CyAttributes;
 
-import giny.model.GraphObject;
+import cytoscape.GraphObject;
 
 import java.util.HashSet;
 import java.util.Iterator;

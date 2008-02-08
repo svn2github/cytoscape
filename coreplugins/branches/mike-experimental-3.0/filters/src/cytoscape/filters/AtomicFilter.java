@@ -36,12 +36,12 @@
 
 package cytoscape.filters;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.util.*;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 
@@ -56,7 +56,7 @@ public abstract class AtomicFilter implements CyFilter {
 	protected String name; // Name of the filter
 	protected String controllingAttribute = null;
 	protected boolean negation = false;
-	protected CyNetwork network = null;
+	protected GraphPerspective network = null;
 	
 	protected int index_type = QuickFind.INDEX_NODES;
 
@@ -65,11 +65,11 @@ public abstract class AtomicFilter implements CyFilter {
 	public AtomicFilter() {
 	}
 	
-	public void setNetwork(CyNetwork pNetwork) {
+	public void setNetwork(GraphPerspective pNetwork) {
 		network = pNetwork;
 	}
 
-	public CyNetwork getNetwork() {
+	public GraphPerspective getNetwork() {
 		return network;
 	}
 

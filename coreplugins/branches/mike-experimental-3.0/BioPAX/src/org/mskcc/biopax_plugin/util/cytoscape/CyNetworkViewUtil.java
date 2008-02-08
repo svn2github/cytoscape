@@ -31,8 +31,8 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -63,20 +63,20 @@ import javax.swing.*;
 
 
 /**
- * A Utility Class for Creating CyNetwork Views.
+ * A Utility Class for Creating GraphPerspective Views.
  *
  * @author Ethan Cerami
  */
 public class CyNetworkViewUtil {
 	/**
-	 * Creates a CyNetworkView from the specified CyNetwork.
+	 * Creates a CyNetworkView from the specified GraphPerspective.
 	 *
-	 * @param cyNetwork           CyNetwork Object.
+	 * @param cyNetwork           GraphPerspective Object.
 	 * @param taskMonitor         TaskMonitor Object.
 	 * @param executeSpringLayout Flag to Execute Spring Layout.
 	 * @param applyVisualStyle    Flag to Apply Current Visual Style.
 	 */
-	public static void createNetworkView(CyNetwork cyNetwork, TaskMonitor taskMonitor,
+	public static void createNetworkView(GraphPerspective cyNetwork, TaskMonitor taskMonitor,
 	                                     boolean executeSpringLayout, boolean applyVisualStyle) {
 		// hack to make sure progress bar get set to 100%
 		// after network creation is complete
@@ -121,11 +121,11 @@ public class CyNetworkViewUtil {
 	 * view from the user, and I didn't want to use this hack in the core
 	 * Cytoscape.java class.
 	 *
-	 * @param cyNetwork        CyNetwork
+	 * @param cyNetwork        GraphPerspective
 	 * @param applyVisualStyle Flag to Apply Current Visual Style.
 	 * @return CyNetworkView
 	 */
-	private static CyNetworkView createCyNetworkView(CyNetwork cyNetwork, boolean applyVisualStyle) {
+	private static CyNetworkView createCyNetworkView(GraphPerspective cyNetwork, boolean applyVisualStyle) {
 		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork.getTitle());
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -157,7 +157,7 @@ public class CyNetworkViewUtil {
 		Iterator i = networkView.getNetwork().nodesIterator();
 
 		if (i.hasNext()) {
-			CyNode node = (CyNode) i.next();
+			Node node = (Node) i.next();
 			NodeView nodeView = networkView.getNodeView(node);
 			double xPos = nodeView.getXPosition();
 			double yPos = nodeView.getYPosition();

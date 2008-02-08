@@ -42,7 +42,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.data.CyAttributes;
 
 
@@ -130,7 +130,7 @@ public class BioPaxContainer extends JPanel {
      */
     public void showLegend() {
         CardLayout cl = (CardLayout)(cards.getLayout());
-        CyNetwork network = Cytoscape.getCurrentNetwork();
+        GraphPerspective network = Cytoscape.getCurrentNetwork();
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         Boolean isBioPaxNetwork = networkAttributes.getBooleanAttribute(network.getIdentifier(),
                 MapBioPaxToCytoscape.BIOPAX_NETWORK);

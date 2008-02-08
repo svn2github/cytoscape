@@ -43,7 +43,7 @@ import ManualLayout.scale.ScaleLayouter;
 import ManualLayout.scale.ScalePanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
@@ -104,7 +104,7 @@ public class CheckBoxTracker implements SelectEventListener, PropertyChangeListe
 
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
-			CyNetwork curr = Cytoscape.getCurrentNetwork();
+			GraphPerspective curr = Cytoscape.getCurrentNetwork();
 			String nid = curr.getIdentifier();
 
 			// only add this as a listener if it hasn't been done already

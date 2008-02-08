@@ -36,7 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -46,7 +46,7 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.*;
 
-import giny.model.Node;
+import cytoscape.Node;
 
 import java.io.IOException;
 
@@ -138,9 +138,9 @@ public class AttributeMappingParameters implements MappingParameter {
 		if (this.objectType == NETWORK) {
 			networkTitle2ID = new HashMap<String, String>();
 
-			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+			Set<GraphPerspective> networkSet = Cytoscape.getNetworkSet();
 
-			for (CyNetwork net : networkSet) {
+			for (GraphPerspective net : networkSet) {
 				networkTitle2ID.put(net.getTitle(), net.getIdentifier());
 			}
 		} else {

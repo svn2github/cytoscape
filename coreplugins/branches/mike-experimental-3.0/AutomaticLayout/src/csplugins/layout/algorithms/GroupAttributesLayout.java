@@ -44,8 +44,8 @@ import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 
 import java.awt.GridLayout;
 import java.awt.Rectangle;

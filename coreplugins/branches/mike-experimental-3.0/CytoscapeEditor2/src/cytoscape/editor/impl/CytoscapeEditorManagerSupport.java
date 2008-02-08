@@ -38,7 +38,7 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.editor.CytoscapeEditor;
@@ -55,8 +55,8 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import giny.model.GraphPerspectiveChangeEvent;
-import giny.model.GraphPerspectiveChangeListener;
+import cytoscape.GraphPerspectiveChangeEvent;
+import cytoscape.GraphPerspectiveChangeListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -170,9 +170,9 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 				// DON'T call the one argument createNetwork()--it will end up setting
 				// our current visual style to  "default" thru CytoscapeDesktop
 				// event listener:
-				// CyNetwork newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
+				// GraphPerspective newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
 				// DON'T create a CyNetworkView:
-				 CyNetwork newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
+				 GraphPerspective newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
 				 					   CytoscapeEditorManager.createUniqueNetworkName(),
 									   null,
 									   false);
@@ -291,7 +291,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		//CytoscapeEditorManager.log("Got property change: " + e.getPropertyName());
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)) {
 			String netId = e.getNewValue().toString();
-			CyNetwork net = Cytoscape.getNetwork(netId);
+			GraphPerspective net = Cytoscape.getNetwork(netId);
 			net.addGraphPerspectiveChangeListener(this);
 		}
 
@@ -375,7 +375,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event) {
 		// careful: this event can represent both hidden nodes and hidden edges
 		// if a hide node operation implicitly hid its incident edges
-		CyNetwork net = Cytoscape.getCurrentNetwork();
+		GraphPerspective net = Cytoscape.getCurrentNetwork();
 
 		// CytoscapeEditorManager.log ("GraphPerspectiveChanged for network: " + net);
 		boolean nodeChanges = false; // only create the set if we need it

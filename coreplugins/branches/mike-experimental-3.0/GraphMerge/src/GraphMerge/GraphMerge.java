@@ -36,7 +36,7 @@
 */
 package GraphMerge;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -45,8 +45,8 @@ import cytoscape.util.GraphSetUtils;
 
 import cytoscape.view.CyNetworkView;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.Label;

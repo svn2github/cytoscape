@@ -36,12 +36,12 @@
 
 package cytoscape.filters;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.util.*;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
@@ -262,7 +262,7 @@ public class TopologyFilter extends CompositeFilter {
 		name = pName;
 	}
 
-	public void setNetwork(CyNetwork pNetwork) {
+	public void setNetwork(GraphPerspective pNetwork) {
 		if (network != null && network == pNetwork) {
 			return;
 		}

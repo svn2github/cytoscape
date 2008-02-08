@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.task;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -179,7 +179,7 @@ public class QueryCPathTask implements Task {
             increment = LARGER_INCREMENT;
         }
 
-        //  Create CyNetwork
+        //  Create GraphPerspective
         String title = searchRequest.toString();
 
         if (title.length() > 25) {
@@ -187,7 +187,7 @@ public class QueryCPathTask implements Task {
         }
 
         //  Create Network w/o view
-        CyNetwork cyNetwork = Cytoscape.createNetwork(title, false);
+        GraphPerspective cyNetwork = Cytoscape.createNetwork(title, false);
 
         GraphReader graphReader = null;
         while (index < endIndex && !isInterrupted) {
@@ -239,7 +239,7 @@ public class QueryCPathTask implements Task {
         return graphReader;
     }
 
-    private void addToCyNetwork (GraphReader reader, CyNetwork cyNetwork) {
+    private void addToCyNetwork (GraphReader reader, GraphPerspective cyNetwork) {
         //  Add new nodes/edges to network
         int nodeIndices[] = reader.getNodeIndicesArray();
         int edgeIndices[] = reader.getEdgeIndicesArray();
@@ -251,7 +251,7 @@ public class QueryCPathTask implements Task {
         }
     }
 
-    private CyNetworkView createNetworkView (CyNetwork cyNetwork) {
+    private CyNetworkView createNetworkView (GraphPerspective cyNetwork) {
         //  Conditionally Create a View, based on Number of Nodes.
         //  GetViewThreshold is settable by the End User.
         logToConsole("Total Number of Nodes in Network:  "

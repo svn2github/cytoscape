@@ -38,7 +38,7 @@ package cytoscape.filters.util;
 
 import ViolinStrings.Strings;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -55,8 +55,8 @@ import cytoscape.filters.view.FilterMainPanel;
 import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.CytoscapeAction;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.beans.PropertyChangeEvent;
 
@@ -214,7 +214,7 @@ class ApplyFilterThread extends Thread {
 	}
 
 	protected void testObjects(CompositeFilter pCompositeFilter) {
-		final CyNetwork network = Cytoscape.getCurrentNetwork();
+		final GraphPerspective network = Cytoscape.getCurrentNetwork();
 
 		final List<Node> nodes_list = network.nodesList();
 		final List<Edge> edges_list = network.edgesList();

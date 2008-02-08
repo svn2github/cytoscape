@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.filters.AtomicFilter;
@@ -74,7 +74,7 @@ public class FilterSettingPanel extends JPanel {
 
 	private CompositeFilter theFilter;
 	private FilterMainPanel parentPanel;
-	private CyNetwork currentNetwork = null;
+	private GraphPerspective currentNetwork = null;
 	private TopoFilterPanel topoPanel = null;
 	private InteractionFilterPanel interactionPanel = null;
 
@@ -326,7 +326,7 @@ public class FilterSettingPanel extends JPanel {
 			return;
 		}
 		
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		GraphPerspective network = Cytoscape.getCurrentNetwork();
 		
 		for (int i=0; i<children.size(); i++) {
 			CyFilter child = children.get(i);

@@ -42,8 +42,8 @@ import cytoscape.data.CyAttributes;
 
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 
-import giny.model.Edge;
-import giny.model.Node;
+import cytoscape.Edge;
+import cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.List;

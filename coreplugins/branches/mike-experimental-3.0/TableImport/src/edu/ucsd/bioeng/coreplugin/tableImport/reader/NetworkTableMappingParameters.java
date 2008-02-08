@@ -41,7 +41,7 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.Obje
 import java.util.List;
 
 /**
- * Text table <---> CyAttribute & CyNetwork mapping parameters for network
+ * Text table <---> CyAttribute & GraphPerspective mapping parameters for network
  * table.
  *
  * @since Cytoscape 2.4

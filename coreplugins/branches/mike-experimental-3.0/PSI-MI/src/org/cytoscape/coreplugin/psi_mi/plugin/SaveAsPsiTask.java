@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.task.Task;
@@ -100,7 +100,7 @@ public class SaveAsPsiTask implements Task {
 			}
 
 			FileWriter f = new FileWriter(fileName);
-			CyNetwork netToSave = Cytoscape.getCurrentNetwork();
+			GraphPerspective netToSave = Cytoscape.getCurrentNetwork();
 
 			//  First, map to Data Service Objects
 			MapFromCytoscape mapper1 = new MapFromCytoscape(netToSave);

@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import junit.framework.TestCase;
@@ -80,7 +80,7 @@ public class TestMapInteractionsToPsiOne extends TestCase {
 		assertEquals(6, interactions.size());
 
 		//  Second, map to Cytoscape objects
-		CyNetwork network = Cytoscape.createNetwork("network1");
+		GraphPerspective network = Cytoscape.createNetwork("network1");
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
 		mapper2.doMapping();
 		addToCyNetwork(mapper2, network);
@@ -122,7 +122,7 @@ public class TestMapInteractionsToPsiOne extends TestCase {
 		//  System.out.println(writer.toString());
 	}
 
-	private void addToCyNetwork(MapToCytoscape mapper, CyNetwork cyNetwork) {
+	private void addToCyNetwork(MapToCytoscape mapper, GraphPerspective cyNetwork) {
 		//  Add new nodes/edges to network
 		int[] nodeIndices = mapper.getNodeIndices();
 		int[] edgeIndices = mapper.getEdgeIndices();

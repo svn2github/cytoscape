@@ -33,8 +33,8 @@ package org.mskcc.biopax_plugin.mapping;
 
 
 // imports
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -229,7 +229,7 @@ public class MapNodeAttributes {
 
 		while (nodeIterator.hasNext()) {
 			// get node id
-			CyNode node = (CyNode) nodeIterator.next();
+			Node node = (Node) nodeIterator.next();
 			String nodeID = node.getIdentifier();
 
 			// get node element
@@ -389,7 +389,7 @@ public class MapNodeAttributes {
 	 */
 	public static void customNodes(CyNetworkView networkView) {
 		// grab node attributes
-		CyNetwork cyNetwork = networkView.getNetwork();
+		GraphPerspective cyNetwork = networkView.getNetwork();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// iterate through the nodes
@@ -397,7 +397,7 @@ public class MapNodeAttributes {
 
 		if (nodesIt.hasNext()) {
 			// grab the node
-			CyNode node = (CyNode) nodesIt.next();
+			Node node = (Node) nodesIt.next();
 
 			// get chemical modifications
 			int count = 0;
@@ -500,10 +500,10 @@ public class MapNodeAttributes {
 	/**
 	 * Based on given arguments, adds proper custom node shape to node.
 	 */
-	private static void addCustomShapes(CyNetworkView networkView, CyNode node, String shapeType,
+	private static void addCustomShapes(CyNetworkView networkView, Node node, String shapeType,
 	                                    int modificationCount) {
 		// create refs to help views
-		CyNetwork cyNetwork = networkView.getNetwork();
+		GraphPerspective cyNetwork = networkView.getNetwork();
 		NodeView nodeView = networkView.getNodeView(node);
 		DNodeView dingNodeView = (DNodeView) nodeView;
 

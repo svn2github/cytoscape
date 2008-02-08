@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.model;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -104,14 +104,14 @@ public class SearchBundleList extends Observable {
 	/**
 	 * Gets the Search Bundle with the Specified CyNewtork ID.
 	 *
-	 * @param networkId Unique CyNetwork Identifier.
+	 * @param networkId Unique GraphPerspective Identifier.
 	 * @return SearchBundle Object.
 	 */
 	public SearchBundle getSearchBundleByCynetworkId(int networkId) {
 		for (int i = 0; i < searchBundles.size(); i++) {
 			SearchBundle bundle = (SearchBundle) searchBundles.get(i);
 			SearchResponse response = bundle.getResponse();
-			CyNetwork network = response.getCyNetwork();
+			GraphPerspective network = response.getGraphPerspective();
 
 			if (network != null) {
 				int id = Integer.parseInt(network.getIdentifier());

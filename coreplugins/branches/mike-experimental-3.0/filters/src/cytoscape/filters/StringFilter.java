@@ -36,12 +36,12 @@
 
 package cytoscape.filters;
 
-import giny.model.Node;
-import giny.model.Edge;
+import cytoscape.Node;
+import cytoscape.Edge;
 import java.util.*;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import csplugins.quickfind.util.QuickFind;
 import cytoscape.filters.util.FilterUtil;

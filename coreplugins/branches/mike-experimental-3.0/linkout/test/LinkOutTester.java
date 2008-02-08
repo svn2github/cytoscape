@@ -13,7 +13,7 @@ import cytoscape.view.*;
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.activities.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 

@@ -46,7 +46,7 @@ import cytoscape.task.TaskMonitor;
 
 import cytoscape.view.*;
 
-import giny.model.*;
+import cytoscape.*;
 
 import giny.view.*;
 
@@ -308,7 +308,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		// create Vertices
 		while (node_iterator.hasNext() && !canceled) {
 			// get the GINY node and node view
-			giny.model.Node giny = (giny.model.Node) node_iterator.next();
+			cytoscape.Node giny = (cytoscape.Node) node_iterator.next();
 			NodeView node_view = networkView.getNodeView(giny);
 
 			DefaultGraphCell jcell = new DefaultGraphCell(giny.getIdentifier());
@@ -334,7 +334,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		percentProgressPerIter = 20 / (double) (networkView.getEdgeViewCount());
 
 		while (edge_iterator.hasNext() && !canceled) {
-			giny.model.Edge giny = (giny.model.Edge) edge_iterator.next();
+			cytoscape.Edge giny = (cytoscape.Edge) edge_iterator.next();
 
 			DefaultGraphCell j_source = (DefaultGraphCell) giny_j_node_map.get(giny.getSource());
 			DefaultGraphCell j_target = (DefaultGraphCell) giny_j_node_map.get(giny.getTarget());
@@ -388,7 +388,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 			if (cell_view instanceof VertexView) {
 				// ok, we found a node
 				Rectangle2D rect = graph.getCellBounds(cell_view.getCell());
-				giny.model.Node giny = (giny.model.Node) j_giny_node_map.get(cell_view.getCell());
+				cytoscape.Node giny = (cytoscape.Node) j_giny_node_map.get(cell_view.getCell());
 				NodeView node_view = networkView.getNodeView(giny);
 				node_view.setXPosition(rect.getX(), false);
 				node_view.setYPosition(rect.getY(), false);

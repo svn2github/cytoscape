@@ -37,7 +37,7 @@
 package filter.cytoscape;
 
 import cytoscape.*;
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 
@@ -96,8 +96,8 @@ public class NumericAttributeFilterEditor extends FilterEditor implements Action
 
 		try {
 			NUMBER_CLASS = Class.forName("java.lang.Number");
-			NODE_CLASS = Class.forName("giny.model.Node");
-			EDGE_CLASS = Class.forName("giny.model.Edge");
+			NODE_CLASS = Class.forName("cytoscape.Node");
+			EDGE_CLASS = Class.forName("cytoscape.Edge");
 			filterClass = Class.forName("filter.cytoscape.NumericAttributeFilter");
 			nodeAttributeModel = new NodeAttributeComboBoxModel(NUMBER_CLASS);
 			edgeAttributeModel = new EdgeAttributeComboBoxModel(NUMBER_CLASS);

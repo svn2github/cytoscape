@@ -40,7 +40,7 @@ import csplugins.quickfind.util.*;
 
 import csplugins.widgets.autocomplete.index.GenericIndex;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -92,7 +92,7 @@ public class QuickFindConfigDialog extends JDialog {
 	/**
 	 * Current Network
 	 */
-	private CyNetwork currentNetwork;
+	private GraphPerspective currentNetwork;
 
 	/**
 	 * Current Index
@@ -567,7 +567,7 @@ public class QuickFindConfigDialog extends JDialog {
  */
 class ReindexQuickFind implements Task {
 	private String newAttributeKey;
-	private CyNetwork cyNetwork;
+	private GraphPerspective cyNetwork;
 	private int indexType;
 	private TaskMonitor taskMonitor;
 
@@ -577,7 +577,7 @@ class ReindexQuickFind implements Task {
 	 * @param indexType       Index Type.
 	 * @param newAttributeKey New Attribute Key for Indexing.
 	 */
-	ReindexQuickFind(CyNetwork cyNetwork, int indexType, String newAttributeKey) {
+	ReindexQuickFind(GraphPerspective cyNetwork, int indexType, String newAttributeKey) {
 		this.cyNetwork = cyNetwork;
 		this.indexType = indexType;
 		this.newAttributeKey = newAttributeKey;
@@ -659,7 +659,7 @@ class DetermineDistinctValuesTask implements Task {
 		taskMonitor.setPercentCompleted(-1);
 
 		//  Obtain distinct attribute values
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		GraphPerspective network = Cytoscape.getCurrentNetwork();
 		CyAttributes attributes = parentDialog.getCyAttributes();
 
 		Iterator iterator;

@@ -31,13 +31,13 @@
  **/
 package org.mskcc.test.mapper;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import giny.model.Edge;
-import giny.model.Node;
-import giny.model.RootGraph;
+import cytoscape.Edge;
+import cytoscape.Node;
+import cytoscape.RootGraph;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -92,7 +92,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil);
 		mapper.doMapping();
 
-		CyNetwork cyNetwork = createNetwork("network1", mapper);
+		GraphPerspective cyNetwork = createNetwork("network1", mapper);
 		verifyNodeList(cyNetwork);
 		verifyControlConversion(cyNetwork);
 
@@ -111,7 +111,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil);
 		mapper.doMapping();
 
-		CyNetwork cyNetwork = createNetwork("network1", mapper);
+		GraphPerspective cyNetwork = createNetwork("network1", mapper);
 		int nodeCount = cyNetwork.getNodeCount();
 		assertEquals(3, nodeCount);
 
@@ -121,7 +121,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		Iterator nodeIterator = cyNetwork.nodesIterator();
 
 		while (nodeIterator.hasNext()) {
-			CyNode node = (CyNode) nodeIterator.next();
+			Node node = (Node) nodeIterator.next();
 
 			if (node.getIdentifier().equals("CPATH-126")) {
 				targetNodeIndex = node.getRootGraphIndex();
@@ -147,8 +147,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		}
 	}
 
-	private CyNetwork createNetwork(String name, MapBioPaxToCytoscape mapper) {
-		CyNetwork cyNetwork = Cytoscape.createNetwork(name,false);
+	private GraphPerspective createNetwork(String name, MapBioPaxToCytoscape mapper) {
+		GraphPerspective cyNetwork = Cytoscape.createNetwork(name,false);
 		int[] nodeIndices = mapper.getNodeIndices();
 		int[] edgeIndices = mapper.getEdgeIndices();
 
@@ -175,7 +175,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil);
 		mapper.doMapping();
 
-		CyNetwork cyNetwork = createNetwork("network1", mapper);
+		GraphPerspective cyNetwork = createNetwork("network1", mapper);
 		int nodeCount = cyNetwork.getNodeCount();
 		assertEquals(3, nodeCount);
 
@@ -185,7 +185,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		Iterator nodeIterator = cyNetwork.nodesIterator();
 
 		while (nodeIterator.hasNext()) {
-			CyNode node = (CyNode) nodeIterator.next();
+			Node node = (Node) nodeIterator.next();
 
 			if (node.getIdentifier().equals("physicalInteraction1")) {
 				targetNodeIndex = node.getRootGraphIndex();
@@ -214,9 +214,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	/**
 	 * Verifies the List of Newly Added Nodes.
 	 *
-	 * @param cyNetwork CyNetwork Object.
+	 * @param cyNetwork GraphPerspective Object.
 	 */
-	private void verifyNodeList(CyNetwork cyNetwork) {
+	private void verifyNodeList(GraphPerspective cyNetwork) {
 		int nodeCount = cyNetwork.getNodeCount();
 		assertEquals(12, nodeCount);
 
@@ -241,7 +241,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		Iterator nodeIterator = cyNetwork.nodesIterator();
 
 		while (nodeIterator.hasNext()) {
-			CyNode node = (CyNode) nodeIterator.next();
+			Node node = (Node) nodeIterator.next();
 			String id = node.getIdentifier();
 
 			//  Test a specific node label
@@ -276,14 +276,14 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * Verifies that Control Interactions and Conversion Interactions
 	 * were mapped over sucessfully.
 	 */
-	private void verifyControlConversion(CyNetwork cyNetwork) {
+	private void verifyControlConversion(GraphPerspective cyNetwork) {
 		//  First, find the Target Interaction:  biochemicalReaction37.
 		int targetNodeIndex = 0;
 		RootGraph rootGraph = cyNetwork.getRootGraph();
 		Iterator nodeIterator = cyNetwork.nodesIterator();
 
 		while (nodeIterator.hasNext()) {
-			CyNode node = (CyNode) nodeIterator.next();
+			Node node = (Node) nodeIterator.next();
 
 			if (node.getIdentifier().equals("biochemicalReaction37")) {
 				targetNodeIndex = node.getRootGraphIndex();
@@ -334,14 +334,14 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	/**
 	 * Verifies that CoFactors were mapped over successfully
 	 */
-	private void verifyCoFactors(CyNetwork cyNetwork) {
+	private void verifyCoFactors(GraphPerspective cyNetwork) {
 		//  First, find the Target Interaction:  protein45.
 		int targetNodeIndex = 0;
 		RootGraph rootGraph = cyNetwork.getRootGraph();
 		Iterator nodeIterator = cyNetwork.nodesIterator();
 
 		while (nodeIterator.hasNext()) {
-			CyNode node = (CyNode) nodeIterator.next();
+			Node node = (Node) nodeIterator.next();
 
 			if (node.getIdentifier().equals("smallMolecule99-Mg2+")) {
 				targetNodeIndex = node.getRootGraphIndex();

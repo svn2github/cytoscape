@@ -39,7 +39,7 @@ package csplugins.quickfind.util;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
 
-import cytoscape.CyNetwork;
+import cytoscape.GraphPerspective;
 
 import cytoscape.task.TaskMonitor;
 
@@ -63,7 +63,7 @@ import cytoscape.task.TaskMonitor;
  * </pre>
  * After this network is loaded, it can be automatically added to the quick
  * find index via the
- * {@link QuickFind#addNetwork(cytoscape.CyNetwork, cytoscape.task.TaskMonitor)}
+ * {@link QuickFind#addNetwork(cytoscape.GraphPerspective, cytoscape.task.TaskMonitor)}
  * method.  By default, this method iterates through each node in the network,
  * and indexes each node by its unique identifier, e.g. node.getIdentifier().
  * <p/>
@@ -73,10 +73,10 @@ import cytoscape.task.TaskMonitor;
  * <p/>
  * To do so, we must first obtain the text index associated with this network
  * via the
- * {@link QuickFind#getIndex(cytoscape.CyNetwork)} method.  For example:
+ * {@link QuickFind#getIndex(cytoscape.GraphPerspective)} method.  For example:
  * <BR/>
  * <PRE>
- * CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+ * GraphPerspective currentNetwork = Cytoscape.getCurrentNetwork();
  * TextIndex textIndex = QuickFind.getIndex (currentNetwork);
  * </PRE>
  * We can then retrieve all hits that begin with the prefix:  "YLR" via the
@@ -91,7 +91,7 @@ import cytoscape.task.TaskMonitor;
  * <LI>By default, this class will automatically index node objects based on the
  * their unique node identifier, e.g. node.getIdentifier().</LI>
  * <LI>You can index by a different attribute by calling the
- * {@link QuickFind#reindexNetwork(CyNetwork, int, String,
+ * {@link QuickFind#reindexNetwork(GraphPerspective, int, String,
  * cytoscape.task.TaskMonitor)}.
  * <LI>You can specify any attribute name you like.  However, QuickFind
  * is not yet capable of indexing attributes of type CyAttributes.TYPE_COMPLEX.
@@ -151,7 +151,7 @@ public interface QuickFind {
 	 * @param network     Cytoscape Network.
 	 * @param taskMonitor TaskMonitor Object.
 	 */
-	void addNetwork(CyNetwork network, TaskMonitor taskMonitor);
+	void addNetwork(GraphPerspective network, TaskMonitor taskMonitor);
 
 	/**
 	 * Removes the specified network from the global index.
@@ -159,9 +159,9 @@ public interface QuickFind {
 	 * To free up memory, this method should be called whenever a network
 	 * is destroyed.
 	 *
-	 * @param network CyNetwork Object.
+	 * @param network GraphPerspective Object.
 	 */
-	void removeNetwork(CyNetwork network);
+	void removeNetwork(GraphPerspective network);
 
 	/**
 	 * Gets the index associated with the specified network.
@@ -169,7 +169,7 @@ public interface QuickFind {
 	 * @param network Cytoscape Network.
 	 * @return Index Object.
 	 */
-	GenericIndex getIndex(CyNetwork network);
+	GenericIndex getIndex(GraphPerspective network);
 
 	/**
 	 * Reindexes a network with the specified controlling attribute.
@@ -190,25 +190,25 @@ public interface QuickFind {
 	 *                             progress of task.
 	 * @return GenericIndex Object.
 	 */
-	GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType, String controllingAttribute,
+	GenericIndex reindexNetwork(GraphPerspective cyNetwork, int indexType, String controllingAttribute,
 	                            TaskMonitor taskMonitor);
 
 	/**
 	 * Select a specific text item in QuickFind.
 	 *
-	 * @param network       the current CyNetwork.
+	 * @param network       the current GraphPerspective.
 	 * @param hit           Hit chosen by the user.
 	 */
-	void selectHit(CyNetwork network, Hit hit);
+	void selectHit(GraphPerspective network, Hit hit);
 
 	/**
 	 * Select a range in QuickFind.
 	 *
-	 * @param network       the current CyNetwork.
+	 * @param network       the current GraphPerspective.
 	 * @param low           the low value of the range.
 	 * @param high          the high value of the range.
 	 */
-	void selectRange(CyNetwork network, Number low, Number high);
+	void selectRange(GraphPerspective network, Number low, Number high);
 
 	/**
 	 * Adds a new QuickFind Listener.

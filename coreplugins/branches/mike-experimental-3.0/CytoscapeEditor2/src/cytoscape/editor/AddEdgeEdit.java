@@ -1,8 +1,8 @@
 
 package cytoscape.editor;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 
@@ -13,10 +13,10 @@ public class AddEdgeEdit extends CyAbstractEdit {
 
 	// MLC 05/09/07:
 	private static final long serialVersionUID = 2403924055921657412L;
-	protected CyNetwork net;
-	protected CyEdge edge; 
+	protected GraphPerspective net;
+	protected Edge edge; 
 
-	public AddEdgeEdit(CyNetwork net, CyEdge edge) {
+	public AddEdgeEdit(GraphPerspective net, Edge edge) {
 		super("Add Edge");
 		if ( net == null || edge == null )
 			throw new IllegalArgumentException("network or edge is null");
