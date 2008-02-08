@@ -126,7 +126,6 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
         GraphPerspective network) {
         appr.copy(defaultAppearance); // set defaults and node lock state
 
-		System.err.println("%%%%%%%%%%%%% node " + node.getIdentifier() + "  net  " + network.getIdentifier());
         for (Calculator nc : calcs)
             nc.apply(appr, node, network);
 
