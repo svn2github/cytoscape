@@ -34,31 +34,50 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
-import cytoscape.Edge;
-import cytoscape.RootGraph;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 
 
-/**
- * Please try to restrain from using this class, or even looking at it.
- * This class was created so that certain legacy applications would have an
- * easier time using this cytoscape implementation.  Please use
- * FingRootGraphFactory instead of this class.
- * @see FingRootGraphFactory
- **/
-public interface FingEdgeDepot {
+final class GraphPerspectiveNodesHiddenEvent extends GraphPerspectiveChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362681230L;
+	private final Node[] m_hiddenNodes;
+	private final int[] m_hiddenNodeInx;
+
+	// Note that no copy of the array hiddenNodes is made - the exact
+	// array reference is kept.  However, copies are made in the return values
+	// of methods of this class.  Note that the Node objects in the input array
+	// must contain valid RootGraph indices at the time this constructor is
+	// called; further behavior of the Node objects is not too important
+	// because the getHiddenNodes() method has been deprecated.
+	GraphPerspectiveNodesHiddenEvent(Object source, Node[] hiddenNodes) {
+		super(source);
+		m_hiddenNodes = hiddenNodes;
+		m_hiddenNodeInx = new int[m_hiddenNodes.length];
+
+		for (int i = 0; i < m_hiddenNodeInx.length; i++)
+			m_hiddenNodeInx[i] = m_hiddenNodes[i].getRootGraphIndex();
+	}
+
 	/**
-	 * This either instantiates a new edge or gets one from the recyclery,
-	 * initializing it with the parameters specified.
-	 **/
-	public Edge getEdge(RootGraph root, int index, String id);
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final int getType() {
+		return NODES_HIDDEN_TYPE;
+	}
 
 	/**
-	 * Recycles an edge.  Implementations may choose to do nothing in this
-	 * method and instantiate a new edge in each call to getEdge().  This method
-	 * is simply a hook for Fing to tell the depository "I'm done using this edge
-	 * object -- it's no longer part of a RootGraph".
-	 **/
-	public void recycleEdge(Edge node);
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final int[] getHiddenNodeIndices() {
+		final int[] returnThis = new int[m_hiddenNodeInx.length];
+		System.arraycopy(m_hiddenNodeInx, 0, returnThis, 0, m_hiddenNodeInx.length);
+
+		return returnThis;
+	}
 }

@@ -34,23 +34,34 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
+import cytoscape.Edge;
+import cytoscape.GraphPerspective;
+import cytoscape.GraphPerspectiveChangeEvent;
 import cytoscape.Node;
-import cytoscape.RootGraph;
 
 
-// This class is currently not being used.  Thus its constructor is private.
-final class RootGraphNodesCreatedEvent extends RootGraphChangeEventAdapter {
-	private final static long serialVersionUID = 1202347362803334L;
-	private final int[] m_createdNodeInx;
+abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChangeEvent {
+	GraphPerspectiveChangeEventAdapter(Object source) {
+		super(source);
+	}
 
-	// Note that no copy of the array createdNodeInx is made - the exact
-	// array reference is kept.  Methods on this class return this same
-	// array reference.
-	private RootGraphNodesCreatedEvent(RootGraph rootGraph, int[] createdNodeInx) {
-		super(rootGraph);
-		m_createdNodeInx = createdNodeInx;
+	// This is the only abstract method on this class; whatever the type of
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public abstract int getType();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final boolean isNodesRestoredType() {
+		return (getType() & NODES_RESTORED_TYPE) != 0;
 	}
 
 	/**
@@ -58,27 +69,80 @@ final class RootGraphNodesCreatedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final int getType() {
-		return NODES_CREATED_TYPE;
+	public final boolean isEdgesRestoredType() {
+		return (getType() & EDGES_RESTORED_TYPE) != 0;
 	}
 
-	// This method throws an exception, which is fine, because this system of
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Node[] getCreatedNodes() {
-		throw new UnsupportedOperationException("don't call this method!");
+	public final boolean isNodesHiddenType() {
+		return (getType() & NODES_HIDDEN_TYPE) != 0;
 	}
 
-	// If this system of listeners and events is to be used publicly (outside
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final int[] getCreatedNodeIndices() {
-		return m_createdNodeInx;
+	public final boolean isEdgesHiddenType() {
+		return (getType() & EDGES_HIDDEN_TYPE) != 0;
+	}
+
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Node[] getRestoredNodes() {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Edge[] getRestoredEdges() {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int[] getRestoredNodeIndices() {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int[] getRestoredEdgeIndices() {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int[] getHiddenNodeIndices() {
+		return null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int[] getHiddenEdgeIndices() {
+		return null;
 	}
 }

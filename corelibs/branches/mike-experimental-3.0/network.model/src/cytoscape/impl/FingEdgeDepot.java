@@ -34,50 +34,31 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.Edge;
-import cytoscape.GraphPerspective;
+import cytoscape.RootGraph;
 
 
-final class GraphPerspectiveEdgesHiddenEvent extends GraphPerspectiveChangeEventAdapter {
-	private final static long serialVersionUID = 1202347362644474L;
-	private final Edge[] m_hiddenEdges;
-	private final int[] m_hiddenEdgeInx;
-
-	// Note that no copy of the array hiddenEdges is made - the exact
-	// array reference is kept.  However, copies are made in the return values
-	// of methods of this class.  Note that the Edge objects in the input array
-	// must contain valid RootGraph indices at the time this constructor is
-	// called; further behavior of the Edge objects is not too important
-	// because the getHiddenEdges() method has been deprecated.
-	GraphPerspectiveEdgesHiddenEvent(Object source, Edge[] hiddenEdges) {
-		super(source);
-		m_hiddenEdges = hiddenEdges;
-		m_hiddenEdgeInx = new int[m_hiddenEdges.length];
-
-		for (int i = 0; i < m_hiddenEdgeInx.length; i++)
-			m_hiddenEdgeInx[i] = m_hiddenEdges[i].getRootGraphIndex();
-	}
+/**
+ * Please try to restrain from using this class, or even looking at it.
+ * This class was created so that certain legacy applications would have an
+ * easier time using this cytoscape implementation.  Please use
+ * FingRootGraphFactory instead of this class.
+ * @see FingRootGraphFactory
+ **/
+public interface FingEdgeDepot {
+	/**
+	 * This either instantiates a new edge or gets one from the recyclery,
+	 * initializing it with the parameters specified.
+	 **/
+	public Edge getEdge(RootGraph root, int index, String id);
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final int getType() {
-		return EDGES_HIDDEN_TYPE;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final int[] getHiddenEdgeIndices() {
-		final int[] returnThis = new int[m_hiddenEdgeInx.length];
-		System.arraycopy(m_hiddenEdgeInx, 0, returnThis, 0, m_hiddenEdgeInx.length);
-
-		return returnThis;
-	}
+	 * Recycles an edge.  Implementations may choose to do nothing in this
+	 * method and instantiate a new edge in each call to getEdge().  This method
+	 * is simply a hook for Fing to tell the depository "I'm done using this edge
+	 * object -- it's no longer part of a RootGraph".
+	 **/
+	public void recycleEdge(Edge node);
 }

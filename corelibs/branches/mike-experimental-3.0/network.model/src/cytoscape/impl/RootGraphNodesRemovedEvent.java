@@ -34,31 +34,54 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.Node;
 import cytoscape.RootGraph;
 
 
-/**
- * Please try to restrain from using this class, or even looking at it.
- * This class was created so that certain legacy applications would have an
- * easier time using this cytoscape implementation.  Please use
- * FingRootGraphFactory instead of this class.
- * @see FingRootGraphFactory
- **/
-public interface FingNodeDepot {
-	/**
-	 * This either instantiates a new node or gets one from the recyclery,
-	 * initializing it with the parameters specified.
-	 **/
-	public Node getNode(RootGraph root, int index, String id);
+final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362824948L;
+	private final Node[] m_removedNodes;
+
+	// Note that no copy of the array removedNodes is made - the exact
+	// array reference is kept.  Methods on this class return this same
+	// array reference.  Note that the Node objects in the input array
+	// must contain valid RootGraph indices at the time this constructor is
+	// called; further behavior of the Node objects is not too important
+	// becuase the getRemovedNodes() method has been deprecated in both
+	// GraphPerspective and RootGraph listener systems.
+	RootGraphNodesRemovedEvent(RootGraph rootGraph, Node[] removedNodes) {
+		super(rootGraph);
+		m_removedNodes = removedNodes;
+	}
 
 	/**
-	 * Recycles a node.  Implementations may choose to do nothing in this
-	 * method and instantiate a new node in each call to getNode().  This method
-	 * is simply a hook for Fing to tell the depository "I'm done using this node
-	 * object -- it's no longer part of a RootGraph".
-	 **/
-	public void recycleNode(Node node);
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final int getType() {
+		return NODES_REMOVED_TYPE;
+	}
+
+	// If this system of listeners and events is to be used publicly (outside
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final Node[] getRemovedNodes() {
+		return m_removedNodes;
+	}
+
+	// This method throws an exception, which is fine, because this system of
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final int[] getRemovedNodeIndices() {
+		throw new UnsupportedOperationException("don't call this method!");
+	}
 }

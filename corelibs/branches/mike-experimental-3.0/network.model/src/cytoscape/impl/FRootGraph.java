@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
@@ -65,7 +65,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 
 // This implementation of cytoscape is safe to use with a single thread only.
-class FRootGraph implements RootGraph, DynamicGraph {
+public class FRootGraph implements RootGraph, DynamicGraph {
 	////////////////////////////////////
 	/**
 	 *  DOCUMENT ME!
@@ -1411,12 +1411,12 @@ class FRootGraph implements RootGraph, DynamicGraph {
 
 
 	// Package visible constructor.
-	FRootGraph() {
+	public FRootGraph() {
 		this(new NodeDepository(), new EdgeDepository());
 	}
 
 	// Package visible constructor.
-	FRootGraph(FingNodeDepot nodeDepot, FingEdgeDepot edgeDepot) {
+	public FRootGraph(FingNodeDepot nodeDepot, FingEdgeDepot edgeDepot) {
 		if (nodeDepot == null)
 			throw new NullPointerException("nodeDepot is null");
 

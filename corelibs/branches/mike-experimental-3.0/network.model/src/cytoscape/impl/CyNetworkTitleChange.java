@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cytoscape;
+package cytoscape.impl;
 
 /**
  * Class used for passing along information about the network when the

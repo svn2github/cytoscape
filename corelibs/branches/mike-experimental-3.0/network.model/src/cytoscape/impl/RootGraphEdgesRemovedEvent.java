@@ -34,26 +34,26 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
-import cytoscape.Node;
+import cytoscape.Edge;
 import cytoscape.RootGraph;
 
 
-final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
-	private final static long serialVersionUID = 1202347362824948L;
-	private final Node[] m_removedNodes;
+final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362785130L;
+	private final Edge[] m_removedEdges;
 
-	// Note that no copy of the array removedNodes is made - the exact
+	// Note that no copy of the array removedEdges is made - the exact
 	// array reference is kept.  Methods on this class return this same
-	// array reference.  Note that the Node objects in the input array
+	// array reference.  Note that the Edge objects in the input array
 	// must contain valid RootGraph indices at the time this constructor is
-	// called; further behavior of the Node objects is not too important
-	// becuase the getRemovedNodes() method has been deprecated in both
+	// called; further behavior of the Edge objects is not too important
+	// because the getRemovedEdges() method has been deprecated in both
 	// GraphPerspective and RootGraph listener systems.
-	RootGraphNodesRemovedEvent(RootGraph rootGraph, Node[] removedNodes) {
+	RootGraphEdgesRemovedEvent(RootGraph rootGraph, Edge[] removedEdges) {
 		super(rootGraph);
-		m_removedNodes = removedNodes;
+		m_removedEdges = removedEdges;
 	}
 
 	/**
@@ -62,7 +62,7 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
 	 * @return  DOCUMENT ME!
 	 */
 	public final int getType() {
-		return NODES_REMOVED_TYPE;
+		return EDGES_REMOVED_TYPE;
 	}
 
 	// If this system of listeners and events is to be used publicly (outside
@@ -71,8 +71,8 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Node[] getRemovedNodes() {
-		return m_removedNodes;
+	public final Edge[] getRemovedEdges() {
+		return m_removedEdges;
 	}
 
 	// This method throws an exception, which is fine, because this system of
@@ -81,7 +81,7 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final int[] getRemovedNodeIndices() {
+	public final int[] getRemovedEdgeIndices() {
 		throw new UnsupportedOperationException("don't call this method!");
 	}
 }

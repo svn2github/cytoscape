@@ -34,23 +34,24 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
-import cytoscape.Edge;
-import cytoscape.RootGraph;
+import cytoscape.GraphPerspective;
+import cytoscape.Node;
 
 
-// This class is not currently being used.  Thus its constructor is private.
-final class RootGraphEdgesCreatedEvent extends RootGraphChangeEventAdapter {
-	private final static long serialVersionUID = 1202347362764078L;
-	private final int[] m_createdEdgeInx;
+final class GraphPerspectiveNodesRestoredEvent extends GraphPerspectiveChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362702215L;
+	private final GraphPerspective m_persp;
+	private final int[] m_restoredNodeInx;
 
-	// Note that no copy of the array createdEdgeInx is made - the exact
-	// array reference is kept.  Methods on this class return this same
-	// array reference.
-	private RootGraphEdgesCreatedEvent(RootGraph rootGraph, int[] createdEdgeInx) {
-		super(rootGraph);
-		m_createdEdgeInx = createdEdgeInx;
+	// Note that no copy of the array restoredNodeInx is made - the exact
+	// array reference is kept.  However, copies are made in the return values
+	// of methods of this class.
+	GraphPerspectiveNodesRestoredEvent(GraphPerspective persp, int[] restoredNodeInx) {
+		super(persp);
+		m_persp = persp;
+		m_restoredNodeInx = restoredNodeInx;
 	}
 
 	/**
@@ -59,17 +60,7 @@ final class RootGraphEdgesCreatedEvent extends RootGraphChangeEventAdapter {
 	 * @return  DOCUMENT ME!
 	 */
 	public final int getType() {
-		return EDGES_CREATED_TYPE;
-	}
-
-	// This method throws an exception, which is fine, because this system of
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final Edge[] getCreatedEdges() {
-		throw new UnsupportedOperationException("don't call this method!");
+		return NODES_RESTORED_TYPE;
 	}
 
 	/**
@@ -77,7 +68,24 @@ final class RootGraphEdgesCreatedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final int[] getCreatedEdgeIndices() {
-		return m_createdEdgeInx;
+	public final Node[] getRestoredNodes() {
+		final Node[] returnThis = new Node[m_restoredNodeInx.length];
+
+		for (int i = 0; i < returnThis.length; i++)
+			returnThis[i] = m_persp.getRootGraph().getNode(m_restoredNodeInx[i]);
+
+		return returnThis;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final int[] getRestoredNodeIndices() {
+		final int[] returnThis = new int[m_restoredNodeInx.length];
+		System.arraycopy(m_restoredNodeInx, 0, returnThis, 0, m_restoredNodeInx.length);
+
+		return returnThis;
 	}
 }

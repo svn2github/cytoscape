@@ -34,60 +34,85 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.Node;
+import cytoscape.RootGraph;
 
 
-// Valid indices: [0, Integer.MAX_VALUE - 1].
-class NodeArray {
-	private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
-	private Node[] m_nodeArr;
+final class NodeDepository implements FingNodeDepot {
+/*
+	private final static int INITIAL_CAPACITY = 11; // Must be non-negative.
+	private Node[] m_nodeStack;
+	private int m_size;
 
-	NodeArray() {
-		m_nodeArr = new Node[INITIAL_CAPACITY];
+	NodeDepository() {
+		m_nodeStack = new Node[INITIAL_CAPACITY];
+		m_size = 0;
 	}
 
-	// Understand that this method will not increase the size of the underlying
-	// array, no matter what.
-	// Throws ArrayIndexOutOfBoundsException if index is negative or
-	// Integer.MAX_VALUE.
-	Node getNodeAtIndex(int index) {
-		// Do pre-checking because try/catch with thrown exception causes huge
-		// performance hit.
-		if ((index >= m_nodeArr.length) && (index != Integer.MAX_VALUE))
-			return null;
+	// Gimme a node, darnit!
+	public Node getNode(RootGraph root, int index, String id) {
+		final FNode returnThis;
 
-		return m_nodeArr[index]; // Exception if Integer.MAX_VALUE or negative.
+		if (m_size == 0) {
+			returnThis = new FNode(root,index);
+		} else {
+			returnThis = (FNode) m_nodeStack[--m_size];
+			returnThis.m_rootGraph = root;
+			returnThis.m_rootGraphIndex = index;
+			returnThis.setIdentifier(id);
+		}
+
+		return returnThis;
 	}
 
-	// Understand that this method will potentially increase the size of the
-	// underlying array, but only if two conditions hold:
-	//   1. node is not null and
-	//   2. index is greater than or equal to the length of the array.
-	// Throws ArrayIndexOutOfBoundsException if index is negative or
-	// Integer.MAX_VALUE.
-	void setNodeAtIndex(Node node, int index) {
-		// Do pre-checking because try/catch with thrown exception causes huge
-		// performance hit.
-		if ((index >= m_nodeArr.length) && (node == null) && (index != Integer.MAX_VALUE))
+	// Deinitialize the object's members yourself if you need or want to.
+	public void recycleNode(Node node) {
+		if (node == null)
 			return;
 
 		try {
-			m_nodeArr[index] = node;
+			m_nodeStack[m_size] = node;
+			m_size++;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			if ((index < 0) || (index == Integer.MAX_VALUE)) {
-				throw e;
-			}
-
 			final int newArrSize = (int) Math.min((long) Integer.MAX_VALUE,
-			                                      Math.max((((long) m_nodeArr.length) * 2L) + 1L,
-			                                               ((long) index) + 1L
-			                                               + (long) INITIAL_CAPACITY));
+			                                      (((long) m_nodeStack.length) * 2L) + 1L);
+
+			if (newArrSize == m_nodeStack.length)
+				throw new IllegalStateException("unable to allocate large enough array");
+
 			Node[] newArr = new Node[newArrSize];
-			System.arraycopy(m_nodeArr, 0, newArr, 0, m_nodeArr.length);
-			m_nodeArr = newArr;
-			m_nodeArr[index] = node;
+			System.arraycopy(m_nodeStack, 0, newArr, 0, m_nodeStack.length);
+			m_nodeStack = newArr;
+			m_nodeStack[m_size++] = node;
 		}
+	}
+	*/
+
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param root DOCUMENT ME!
+	 * @param index DOCUMENT ME!
+	 * @param id DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Node getNode(RootGraph root, int index, String id) {
+		final FNode returnThis = new FNode(root, index);
+
+		//     returnThis.setIdentifier(id);
+		return returnThis;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param node DOCUMENT ME!
+	 */
+	public void recycleNode(Node node) {
+		node.setIdentifier(null);
 	}
 }

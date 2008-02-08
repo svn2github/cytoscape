@@ -34,30 +34,33 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
-import cytoscape.RootGraphChangeEvent;
-import cytoscape.RootGraphChangeListener;
+import cytoscape.GraphPerspectiveChangeEvent;
+import cytoscape.GraphPerspectiveChangeListener;
 
 
 // Package visible.
 // Analagous to java.awt.AWTEventMulticaster for chaining together
-// cytoscape.RootGraphChangeListener objects.  Example usage:
+// cytoscape.GraphPerspectiveChangeListener objects.  Example usage:
 //
-// public class Bar implements RootGraph
+// public class Foo implements GraphPerspective
 // {
-//   private RootGraphChangeListener lis = null;
-//   void addRootGraphChangeListener(RootGraphChangeListener l) {
-//     lis = RootGraphChangeListenerChain.add(lis, l); }
-//   void removeRootGraphChangeListener(RootGraphChangeListener l) {
-//     lis = RootGraphChangeListenerChain.remove(lis, l); }
+//   private GraphPerspectiveChangeListener lis = null;
+//   public void addGraphPerspectiveChangeListener(
+//                                          GraphPerspectiveChangeListener l) {
+//     lis = GraphPerspectiveChangeListenerChain.add(lis, l); }
+//   public void removeGraphPerspectiveChangeListener(
+//                                          GraphPerspectiveChangeListener l) {
+//     lis = GraphPerspectiveChangeListenerChain.remove(lis, l); }
 //   ...
 // }
-class RootGraphChangeListenerChain implements RootGraphChangeListener {
-	private final RootGraphChangeListener a;
-	private final RootGraphChangeListener b;
+class GraphPerspectiveChangeListenerChain implements GraphPerspectiveChangeListener {
+	private final GraphPerspectiveChangeListener a;
+	private final GraphPerspectiveChangeListener b;
 
-	private RootGraphChangeListenerChain(RootGraphChangeListener a, RootGraphChangeListener b) {
+	private GraphPerspectiveChangeListenerChain(GraphPerspectiveChangeListener a,
+	                                            GraphPerspectiveChangeListener b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -67,40 +70,42 @@ class RootGraphChangeListenerChain implements RootGraphChangeListener {
 	 *
 	 * @param evt DOCUMENT ME!
 	 */
-	public void rootGraphChanged(RootGraphChangeEvent evt) {
-		a.rootGraphChanged(evt);
-		b.rootGraphChanged(evt);
+	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent evt) {
+		a.graphPerspectiveChanged(evt);
+		b.graphPerspectiveChanged(evt);
 	}
 
-	static RootGraphChangeListener add(RootGraphChangeListener a, RootGraphChangeListener b) {
+	static GraphPerspectiveChangeListener add(GraphPerspectiveChangeListener a,
+	                                          GraphPerspectiveChangeListener b) {
 		if (a == null)
 			return b;
 
 		if (b == null)
 			return a;
 
-		return new RootGraphChangeListenerChain(a, b);
+		return new GraphPerspectiveChangeListenerChain(a, b);
 	}
 
-	static RootGraphChangeListener remove(RootGraphChangeListener l, RootGraphChangeListener oldl) {
+	static GraphPerspectiveChangeListener remove(GraphPerspectiveChangeListener l,
+	                                             GraphPerspectiveChangeListener oldl) {
 		if ((l == oldl) || (l == null))
 			return null;
-		else if (l instanceof RootGraphChangeListenerChain)
-			return ((RootGraphChangeListenerChain) l).remove(oldl);
+		else if (l instanceof GraphPerspectiveChangeListenerChain)
+			return ((GraphPerspectiveChangeListenerChain) l).remove(oldl);
 		else
 
 			return l;
 	}
 
-	private RootGraphChangeListener remove(RootGraphChangeListener oldl) {
+	private GraphPerspectiveChangeListener remove(GraphPerspectiveChangeListener oldl) {
 		if (oldl == a)
 			return b;
 
 		if (oldl == b)
 			return a;
 
-		RootGraphChangeListener a2 = remove(a, oldl);
-		RootGraphChangeListener b2 = remove(b, oldl);
+		GraphPerspectiveChangeListener a2 = remove(a, oldl);
+		GraphPerspectiveChangeListener b2 = remove(b, oldl);
 
 		if ((a2 == a) && (b2 == b))
 			return this;

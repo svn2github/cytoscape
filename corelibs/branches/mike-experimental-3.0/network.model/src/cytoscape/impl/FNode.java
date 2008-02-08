@@ -34,10 +34,11 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.groups.CyGroup;
-//import cytoscape.groups.CyGroupManager;
+import cytoscape.Node;
+import cytoscape.RootGraph;
 
 import java.util.ArrayList;
 import java.util.List;

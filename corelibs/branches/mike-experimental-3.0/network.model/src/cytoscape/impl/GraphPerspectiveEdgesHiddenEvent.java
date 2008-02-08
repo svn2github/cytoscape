@@ -34,24 +34,30 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.Edge;
 import cytoscape.GraphPerspective;
 
 
-final class GraphPerspectiveEdgesRestoredEvent extends GraphPerspectiveChangeEventAdapter {
-	private final static long serialVersionUID = 1202347362661870L;
-	private final GraphPerspective m_persp;
-	private final int[] m_restoredEdgeInx;
+final class GraphPerspectiveEdgesHiddenEvent extends GraphPerspectiveChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362644474L;
+	private final Edge[] m_hiddenEdges;
+	private final int[] m_hiddenEdgeInx;
 
-	// Note that no copy of the array restoredEdgeInx is made - the exact
+	// Note that no copy of the array hiddenEdges is made - the exact
 	// array reference is kept.  However, copies are made in the return values
-	// of methods of this class.
-	GraphPerspectiveEdgesRestoredEvent(GraphPerspective persp, int[] restoredEdgeInx) {
-		super(persp);
-		m_persp = persp;
-		m_restoredEdgeInx = restoredEdgeInx;
+	// of methods of this class.  Note that the Edge objects in the input array
+	// must contain valid RootGraph indices at the time this constructor is
+	// called; further behavior of the Edge objects is not too important
+	// because the getHiddenEdges() method has been deprecated.
+	GraphPerspectiveEdgesHiddenEvent(Object source, Edge[] hiddenEdges) {
+		super(source);
+		m_hiddenEdges = hiddenEdges;
+		m_hiddenEdgeInx = new int[m_hiddenEdges.length];
+
+		for (int i = 0; i < m_hiddenEdgeInx.length; i++)
+			m_hiddenEdgeInx[i] = m_hiddenEdges[i].getRootGraphIndex();
 	}
 
 	/**
@@ -60,7 +66,7 @@ final class GraphPerspectiveEdgesRestoredEvent extends GraphPerspectiveChangeEve
 	 * @return  DOCUMENT ME!
 	 */
 	public final int getType() {
-		return EDGES_RESTORED_TYPE;
+		return EDGES_HIDDEN_TYPE;
 	}
 
 	/**
@@ -68,23 +74,9 @@ final class GraphPerspectiveEdgesRestoredEvent extends GraphPerspectiveChangeEve
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Edge[] getRestoredEdges() {
-		final Edge[] returnThis = new Edge[m_restoredEdgeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_persp.getRootGraph().getEdge(m_restoredEdgeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final int[] getRestoredEdgeIndices() {
-		final int[] returnThis = new int[m_restoredEdgeInx.length];
-		System.arraycopy(m_restoredEdgeInx, 0, returnThis, 0, m_restoredEdgeInx.length);
+	public final int[] getHiddenEdgeIndices() {
+		final int[] returnThis = new int[m_hiddenEdgeInx.length];
+		System.arraycopy(m_hiddenEdgeInx, 0, returnThis, 0, m_hiddenEdgeInx.length);
 
 		return returnThis;
 	}

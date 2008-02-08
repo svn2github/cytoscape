@@ -34,43 +34,34 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.GraphPerspectiveChangeEvent;
 import cytoscape.Node;
+import cytoscape.Edge;
+import cytoscape.RootGraph;
 
+// Package visible class.
+public class FEdge implements Edge {
 
-abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChangeEvent {
-	GraphPerspectiveChangeEventAdapter(Object source) {
-		super(source);
+	// Variables specific to public get/set methods.
+	RootGraph m_rootGraph = null;
+	int m_rootGraphIndex = 0;
+	String m_identifier = null;
+
+	/**
+	 * Creates a new CyEdge object.
+	 *
+	 * @param root  DOCUMENT ME!
+	 * @param rootGraphIndex  DOCUMENT ME!
+	 */
+	public FEdge(RootGraph root, int rootGraphIndex) {
+		this.m_rootGraph = root;
+		this.m_rootGraphIndex = rootGraphIndex;
+		this.m_identifier = new Integer(m_rootGraphIndex).toString();
 	}
 
-	// This is the only abstract method on this class; whatever the type of
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public abstract int getType();
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isNodesRestoredType() {
-		return (getType() & NODES_RESTORED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isEdgesRestoredType() {
-		return (getType() & EDGES_RESTORED_TYPE) != 0;
+	// Package visible constructor.
+	FEdge() {
 	}
 
 	/**
@@ -78,8 +69,8 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final boolean isNodesHiddenType() {
-		return (getType() & NODES_HIDDEN_TYPE) != 0;
+	public Node getSource() {
+		return m_rootGraph.getNode(m_rootGraph.getEdgeSourceIndex(m_rootGraphIndex));
 	}
 
 	/**
@@ -87,18 +78,8 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final boolean isEdgesHiddenType() {
-		return (getType() & EDGES_HIDDEN_TYPE) != 0;
-	}
-
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Node[] getRestoredNodes() {
-		return null;
+	public Node getTarget() {
+		return m_rootGraph.getNode(m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));
 	}
 
 	/**
@@ -106,8 +87,8 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge[] getRestoredEdges() {
-		return null;
+	public boolean isDirected() {
+		return m_rootGraph.isEdgeDirected(m_rootGraphIndex);
 	}
 
 	/**
@@ -115,8 +96,8 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] getRestoredNodeIndices() {
-		return null;
+	public RootGraph getRootGraph() {
+		return m_rootGraph;
 	}
 
 	/**
@@ -124,8 +105,8 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] getRestoredEdgeIndices() {
-		return null;
+	public int getRootGraphIndex() {
+		return m_rootGraphIndex;
 	}
 
 	/**
@@ -133,16 +114,37 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] getHiddenNodeIndices() {
-		return null;
+	public String getIdentifier() {
+		return m_identifier;
 	}
+
+/*
+  File: CyEdge.java
+*/
 
 	/**
 	 *  DOCUMENT ME!
 	 *
+	 * @param new_id DOCUMENT ME!
+	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] getHiddenEdgeIndices() {
-		return null;
+	public boolean setIdentifier(String new_id) {
+		if (new_id == null) {
+			m_rootGraph.setEdgeIdentifier(m_identifier, 0);
+		} else {
+			m_rootGraph.setEdgeIdentifier(new_id, m_rootGraphIndex);
+		}
+
+		m_identifier = new_id;
+
+		return true;
+	}
+
+	/**
+	 * A static method used to create edge identifiers.
+	 */
+	public static String createIdentifier(String source, String attribute_value, String target) {
+		return source + " (" + attribute_value + ") " + target;
 	}
 }

@@ -34,34 +34,23 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package cytoscape.impl;
 
 import cytoscape.Edge;
-import cytoscape.Node;
 import cytoscape.RootGraph;
-import cytoscape.RootGraphChangeEvent;
 
 
-abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
-	RootGraphChangeEventAdapter(RootGraph rootGraph) {
+// This class is not currently being used.  Thus its constructor is private.
+final class RootGraphEdgesCreatedEvent extends RootGraphChangeEventAdapter {
+	private final static long serialVersionUID = 1202347362764078L;
+	private final int[] m_createdEdgeInx;
+
+	// Note that no copy of the array createdEdgeInx is made - the exact
+	// array reference is kept.  Methods on this class return this same
+	// array reference.
+	private RootGraphEdgesCreatedEvent(RootGraph rootGraph, int[] createdEdgeInx) {
 		super(rootGraph);
-	}
-
-	// This is the only abstract method on this class; whatever the type of
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public abstract int getType();
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isNodesCreatedType() {
-		return (getType() & NODES_CREATED_TYPE) != 0;
+		m_createdEdgeInx = createdEdgeInx;
 	}
 
 	/**
@@ -69,8 +58,18 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final boolean isEdgesCreatedType() {
-		return (getType() & EDGES_CREATED_TYPE) != 0;
+	public final int getType() {
+		return EDGES_CREATED_TYPE;
+	}
+
+	// This method throws an exception, which is fine, because this system of
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public final Edge[] getCreatedEdges() {
+		throw new UnsupportedOperationException("don't call this method!");
 	}
 
 	/**
@@ -78,88 +77,7 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final boolean isNodesRemovedType() {
-		return (getType() & NODES_REMOVED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public final boolean isEdgesRemovedType() {
-		return (getType() & EDGES_REMOVED_TYPE) != 0;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Node[] getCreatedNodes() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Edge[] getCreatedEdges() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Node[] getRemovedNodes() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Edge[] getRemovedEdges() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] getCreatedNodeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] getCreatedEdgeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] getRemovedNodeIndices() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int[] getRemovedEdgeIndices() {
-		return null;
+	public final int[] getCreatedEdgeIndices() {
+		return m_createdEdgeInx;
 	}
 }
