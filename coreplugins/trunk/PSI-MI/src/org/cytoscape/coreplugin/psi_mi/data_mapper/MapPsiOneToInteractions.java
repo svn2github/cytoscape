@@ -504,9 +504,16 @@ public class MapPsiOneToInteractions implements Mapper {
 			String commonName = names.getShortLabel();
 			String fullName = names.getFullName();
 			BigInteger ncbiTaxID = organism.getNcbiTaxId();
-			interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
-			interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
-			interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID, ncbiTaxID.toString());
-		}
+            if (commonName != null && commonName.length() > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
+            }
+            if (fullName != null && fullName.length() > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
+            }
+            if (ncbiTaxID != null) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
+                        ncbiTaxID.toString());
+            }
+        }
 	}
 }
