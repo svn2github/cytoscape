@@ -120,8 +120,9 @@
 		<copy todir="${ncbiClient.classes.dir}/images">
 			<fileset dir="${ncbiClient.root.dir}/images" />
 		</copy>
-		<copy todir="${ncbiClient.classes.dir}/edu/ucsd/bioeng/coreplugin/ncbiClient" 
-			file="${ncbiClient.manifest.dir}/plugin.props"/>
+		
+		<copy todir="${ncbiClient.classes.dir}/edu/ucsd/bioeng/idekerlab/ncbiclient" 
+					file="${ncbiClient.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${ncbiClient.classes.dir}">
 			<fileset dir="${ncbiClient.lib.dir}">
