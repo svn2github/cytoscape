@@ -93,6 +93,9 @@ public class SelectScriptDialog extends JDialog {
 	public SelectScriptDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
+		parameterPanel.setVisible(false);
+		pack();
+		repaint();
 	}
 
 	private void initComponents() {
