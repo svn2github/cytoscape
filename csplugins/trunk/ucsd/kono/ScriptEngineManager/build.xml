@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Ruby on Cytoscape (Rucy) by Kei Ono -->
+<!-- Script engine manager for Cytoscape by Kei Ono -->
 
 <project name="ScriptEngineManager" default="all" basedir=".">
 
