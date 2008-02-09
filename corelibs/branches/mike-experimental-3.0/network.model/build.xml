@@ -86,7 +86,8 @@
   <target name="jar" 
           depends="compile" >
     <mkdir dir="${lib.dir}"/>
-    <jar destfile="${project.jar}" >
+    <jar destfile="${project.jar}"
+	     manifest="osgi-manifest.mf">
       <fileset dir="${build.dir}"
                includes="**"/>
     </jar>
