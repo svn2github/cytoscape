@@ -51,16 +51,15 @@
 			</fileset>
 
 		</unjar>
-
+		
+		<copy todir="${build.dir}/classes/edu/ucsd/bioeng/idekerlab/scriptenginemanager" 
+							file="${basedir}/plugin.props"/>
 
 		<jar destfile="${project.jar}" basedir="${build.dir}/classes">
 
 			<manifest>
 				<attribute name="Cytoscape-Plugin" value="edu.ucsd.bioeng.idekerlab.scriptenginemanager.ScriptEngineManagerPlugin" />
 			</manifest>
-			<fileset dir="${basedir}/lib" includes="**" />
-
-
 		</jar>
 	</target>
 
