@@ -104,8 +104,6 @@
 		<fileset dir="${buildlib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="${basedir}/extra-jars"/>
-
 	</path>
 
 	<!-- ======================================================= -->

@@ -540,7 +540,7 @@ public abstract class Cytoscape {
 	 */
 	public static RootGraph getRootGraph() {
 		if (cytoscapeRootGraph == null)
-			cytoscapeRootGraph = new FRootGraph();
+			cytoscapeRootGraph = RootGraphFactory.getRootGraph(); 
 
 		return cytoscapeRootGraph;
 	}
