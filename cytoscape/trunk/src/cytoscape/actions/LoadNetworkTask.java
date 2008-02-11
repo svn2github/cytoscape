@@ -57,6 +57,7 @@ import cytoscape.init.CyInitParams;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.ui.JTask;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
@@ -74,7 +75,7 @@ public class LoadNetworkTask implements Task {
 	 */
 	public static void loadURL(URL u, boolean skipMessage) {
 		LoadNetworkTask task = new LoadNetworkTask(u);
-		setupTask(task, skipMessage);
+		setupTask(task, skipMessage, true);
 	}
 
 	/**
@@ -86,14 +87,16 @@ public class LoadNetworkTask implements Task {
 	public static void loadFile(File file, boolean skipMessage) {
 		// Create LoadNetwork Task
 		LoadNetworkTask task = new LoadNetworkTask(file);
-		setupTask(task, skipMessage);
+		setupTask(task, skipMessage, false);
 	}
 
-	private static void setupTask(LoadNetworkTask task, boolean skipMessage) {
+	private static void setupTask(LoadNetworkTask task, boolean skipMessage, boolean cancelable) {
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
+		if (cancelable)
+			jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(skipMessage);
 
@@ -105,25 +108,15 @@ public class LoadNetworkTask implements Task {
 	private TaskMonitor taskMonitor;
 	private GraphReader reader;
 	private String name;
+	private URL url;
+	private Thread myThread = null;
+	private boolean interrupted = false;
 
 	private LoadNetworkTask(URL u) {
+		url = u;
 		name = u.toString();
-		try {
-			reader = Cytoscape.getImportHandler().getReader(u);
-			uri = u.toURI();
-		} catch (Exception e) {
-			uri = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-			                              "Unable to connect to URL "+name+": "+e.getMessage(),
-			                              "URL Syntax Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		} 
-		if (reader == null) {
-			uri = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-			                              "Unable to connect to URL "+name, 
-			                              "URL Connect Error", JOptionPane.ERROR_MESSAGE);
-		}
+		reader = null;
+		// Postpone getting the reader since we want to do that in a thread
 	}
 
 	private LoadNetworkTask(File file) {
@@ -132,6 +125,7 @@ public class LoadNetworkTask implements Task {
 		name = file.getName();
 		if (reader == null) {
 			uri = null;
+			url = null;
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
 			                              "Unable to open file "+name, 
 			                              "File Open Error", JOptionPane.ERROR_MESSAGE);
@@ -142,7 +136,32 @@ public class LoadNetworkTask implements Task {
 	 * Executes Task.
 	 */
 	public void run() {
-		if (reader == null) return;
+		if (reader == null && url == null) return;
+		myThread = Thread.currentThread();
+
+		if (reader == null && url != null) {
+			try {
+				taskMonitor.setStatus("Opening URL "+url);
+				reader = Cytoscape.getImportHandler().getReader(url);
+				if (interrupted) return;	
+				uri = url.toURI();
+			} catch (Exception e) {
+				uri = null;
+				taskMonitor.setException(e, 
+							      "Unable to connect to URL "+name+": "+e.getMessage());
+				return;
+			} 
+			if (reader == null) {
+				uri = null;
+				taskMonitor.setException(null, 
+							      "Unable to connect to URL "+name); 
+				return;
+			}
+
+			// URL is open, things will get very messy if the user cancels the actual
+			// network load, so prevent them from doing so
+			((JTask)taskMonitor).setCancel(false);
+		}
 
 		taskMonitor.setStatus("Reading in Network Data...");
 		
@@ -233,6 +252,12 @@ public class LoadNetworkTask implements Task {
 	 */
 	public void halt() {
 		// Task can not currently be halted.
+		System.out.println("Halt called");
+		if (myThread != null) {
+			myThread.interrupt();
+			this.interrupted = true;
+			((JTask)taskMonitor).setDone();
+		}
 	}
 
 	/**
