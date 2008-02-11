@@ -32,9 +32,6 @@
  */
 package SFLDLoader;
 
-import SFLDLoader.ui.SFLDQueryDialog;
-import SFLDLoader.model.Superfamily;
-
 // System imports
 import javax.swing.JOptionPane;
 import java.util.List;
@@ -57,6 +54,13 @@ import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
+
+// SFLDloader imports
+import SFLDLoader.ui.SFLDQueryDialog;
+import SFLDLoader.model.Superfamily;
+import SFLDLoader.model.Family;
+import SFLDLoader.model.Subgroup;
+
 
 /**
  * The SFLDLoader class provides the primary interface to the
@@ -131,10 +135,15 @@ public class SFLDLoader extends CytoscapePlugin {
 	public class SFLDEnumerator extends Thread {
 
 		public SFLDEnumerator() {
+			// Why do we need to do this?
+			// Superfamily superFoo = new Superfamily("none",-1);
+			// Subgroup subFoo = new Subgroup("none",-1);
+			// Family familyFoo = new Family("none",-1);
 		}
 
 		public void run() {
 			System.out.println("Initializing SFLD enumeration");
+
 			DocumentBuilder builder = null;
 			Document enumeration = null;
 			try {

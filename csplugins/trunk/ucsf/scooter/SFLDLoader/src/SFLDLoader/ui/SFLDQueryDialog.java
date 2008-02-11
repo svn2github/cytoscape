@@ -71,6 +71,11 @@ import java.net.URL;
 // Cytoscape imports
 import cytoscape.util.CytoscapeAction;
 import cytoscape.actions.LoadNetworkTask;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.Tunable;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.Cytoscape;
 
 // SFLDLoader imports
 import SFLDLoader.model.*;
@@ -113,6 +118,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 	private List<Family> selFamilies = null;
 	private String URLBase = null;
 	private String backgroundColor = null;
+	private boolean automaticLayout = true;
 
 	static final int MAX_CUTOFF = 2;
 	static final int MIN_CUTOFF = -150;
@@ -267,8 +273,12 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 			loadURL = loadURL+"&cutoff=1e"+slider.getValue();
 			// Load it
 			try {
-				System.out.println("Calling loadURL("+loadURL+")");
-				LoadNetworkTask.loadURL(new URL(loadURL), false);
+				System.out.println("Loading "+loadURL);
+				if (!automaticLayout) {
+					LoadNetworkTask.loadURL(new URL(loadURL), false);
+				} else {
+					LoadNetworkTask.loadURL(new URL(loadURL), false, configureLayout());
+				}
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
 			}
@@ -339,6 +349,39 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 			                       +Integer.toHexString(bg.getBlue())+"\"";
 		}
 		return "<html bgcolor="+backgroundColor+">1x10<sup>"+val+"</sup></html>";
+	}
+
+	private CyLayoutAlgorithm configureLayout() {
+		// Get the force-directed layout (if available)
+		CyLayoutAlgorithm layoutAlgorithm = CyLayouts.getLayout("force-directed");
+		if (layoutAlgorithm != null) {
+    	LayoutProperties propertyList = layoutAlgorithm.getSettings();
+    	if (propertyList == null)
+     		return CyLayouts.getDefaultLayout();
+			{
+			Tunable tunable = propertyList.get("edge_attribute");
+				tunable.setValue("BlastProbability");
+				layoutAlgorithm.updateSettings();
+			}
+			{
+				Tunable tunable = propertyList.get("defaultSpringCoefficient");
+				tunable.setValue("5");
+			layoutAlgorithm.updateSettings();
+			}
+			{
+				Tunable tunable = propertyList.get("defaultSpringLength");
+				tunable.setValue("30");
+				layoutAlgorithm.updateSettings();
+			}
+			{
+				Tunable tunable = propertyList.get("defaultNodeMass");
+				tunable.setValue("30");
+				layoutAlgorithm.updateSettings();
+			}
+		} else {
+			return CyLayouts.getDefaultLayout();
+		}
+		return layoutAlgorithm;
 	}
 
 	public class BrowseTableModel extends AbstractTableModel 
