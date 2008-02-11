@@ -1,4 +1,4 @@
-// Ellen
+// Frankie
 package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
 
 import java.awt.Window;
