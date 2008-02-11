@@ -97,8 +97,9 @@
    		  echo "<span class=\"style3\"><B>",$categoryName,"</B></span>&nbsp;&nbsp;--&nbsp;&nbsp;",$categoryDescription;
    		  //echo $categoryName;
    
-   		  //Get the plugin list for the category
-     	  $query = 'SELECT * FROM plugin_list WHERE category_id =' . $categoryID;
+   		  //Get the plugin list for the category. "plugin_list.plugin_auto_id = plugin_version.plugin_id" will exclude
+          // those with data in plugin_list, but no data in plugin_version (caused by failed transaction)
+     	  $query = 'SELECT * FROM plugin_list, plugin_version WHERE plugin_list.plugin_auto_id = plugin_version.plugin_id AND category_id =' . $categoryID;
  
   		  // Run the query
           if (!($pluginList = @ mysql_query ($query, $connection))) 
