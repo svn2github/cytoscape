@@ -1,9 +1,10 @@
 
 package cytoscape.editor;
 
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+
 import giny.view.NodeView;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import cytoscape.view.CyNetworkView;

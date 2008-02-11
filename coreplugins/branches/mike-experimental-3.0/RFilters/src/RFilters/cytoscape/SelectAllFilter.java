@@ -38,13 +38,13 @@ package filter.cytoscape;
 
 import ViolinStrings.Strings;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.data.*;
 
 import filter.model.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import java.awt.*;
 import java.awt.event.*;

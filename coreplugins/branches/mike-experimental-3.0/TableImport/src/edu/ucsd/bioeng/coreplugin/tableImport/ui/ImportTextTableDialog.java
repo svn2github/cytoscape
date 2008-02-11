@@ -34,7 +34,7 @@
 */
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.bookmarks.Attribute;
@@ -94,8 +94,8 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSe
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
 import static edu.ucsd.bioeng.coreplugin.tableImport.ui.theme.ImportDialogIconSets.STRING_ICON;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

@@ -36,8 +36,8 @@
 
 package filter.cytoscape;
 
-import cytoscape.*;
-import cytoscape.GraphPerspective;
+import org.cytoscape.*;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 

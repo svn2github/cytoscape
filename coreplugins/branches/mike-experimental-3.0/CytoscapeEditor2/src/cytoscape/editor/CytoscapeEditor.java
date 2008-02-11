@@ -24,14 +24,14 @@
 */
 package cytoscape.editor;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import java.awt.geom.Point2D;
 import java.util.List;
 
-import cytoscape.Edge;
-import cytoscape.Node;
-import cytoscape.data.SelectEventListener;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.data.SelectEventListener;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 
 

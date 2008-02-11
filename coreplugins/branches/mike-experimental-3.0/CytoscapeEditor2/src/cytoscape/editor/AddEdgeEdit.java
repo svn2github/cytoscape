@@ -1,8 +1,9 @@
 
 package cytoscape.editor;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 

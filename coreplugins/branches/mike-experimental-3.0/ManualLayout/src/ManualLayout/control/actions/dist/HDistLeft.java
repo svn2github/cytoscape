@@ -38,7 +38,7 @@ package ManualLayout.control.actions.dist;
 
 import ManualLayout.control.actions.AbstractControlAction;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.data.*;
 
@@ -46,7 +46,7 @@ import cytoscape.util.*;
 
 import cytoscape.view.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

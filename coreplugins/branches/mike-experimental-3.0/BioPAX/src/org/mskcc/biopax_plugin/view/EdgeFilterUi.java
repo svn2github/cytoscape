@@ -1,7 +1,7 @@
 package org.mskcc.biopax_plugin.view;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Edge;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.actions.GinyUtils;

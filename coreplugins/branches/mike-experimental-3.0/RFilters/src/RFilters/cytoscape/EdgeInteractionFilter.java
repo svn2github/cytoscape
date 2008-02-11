@@ -36,14 +36,14 @@
 
 package filter.cytoscape;
 
-import cytoscape.*;
-import cytoscape.GraphPerspective;
+import org.cytoscape.*;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 
 import filter.model.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import java.awt.*;
 import java.awt.event.*;

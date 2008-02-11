@@ -1,7 +1,7 @@
 //package csplugins.mskcc.doron;
 package linkout;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.init.*;
 
@@ -13,7 +13,7 @@ import cytoscape.view.*;
 import edu.umd.cs.piccolo.*;
 import edu.umd.cs.piccolo.activities.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

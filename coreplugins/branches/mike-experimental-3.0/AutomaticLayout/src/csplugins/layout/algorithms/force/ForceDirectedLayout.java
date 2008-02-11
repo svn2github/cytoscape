@@ -36,7 +36,7 @@
 
 package csplugins.layout.algorithms.force;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.layout.*;

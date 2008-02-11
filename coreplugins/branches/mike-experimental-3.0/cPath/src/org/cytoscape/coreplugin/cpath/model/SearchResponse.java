@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.model;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.view.CyNetworkView;
 

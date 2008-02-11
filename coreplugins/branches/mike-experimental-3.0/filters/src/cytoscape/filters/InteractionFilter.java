@@ -36,7 +36,7 @@
 
 package cytoscape.filters;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 
 public class InteractionFilter extends CompositeFilter {

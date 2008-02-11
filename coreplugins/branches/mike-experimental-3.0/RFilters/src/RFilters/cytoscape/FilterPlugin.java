@@ -36,7 +36,7 @@
 
 package filter.cytoscape;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.data.*;
 

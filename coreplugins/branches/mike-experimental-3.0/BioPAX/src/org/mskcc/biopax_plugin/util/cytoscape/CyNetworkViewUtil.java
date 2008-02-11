@@ -31,8 +31,8 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 

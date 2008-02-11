@@ -8,9 +8,7 @@ import cern.colt.map.*;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import cytoscape.Node;
 
 import cytoscape.layout.AbstractLayout;
 
@@ -18,13 +16,14 @@ import cytoscape.task.*;
 
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.*;
 
 import java.lang.Throwable;
 
 import java.util.*;
 
 import javax.swing.JOptionPane;
+
+import org.cytoscape.*;
 
 
 /**

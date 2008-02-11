@@ -6,7 +6,8 @@ import cern.colt.list.*;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 
-import cytoscape.*;
+import org.cytoscape.*;
+import cytoscape.Cytoscape;
 
 import cytoscape.data.*;
 
@@ -14,7 +15,7 @@ import cytoscape.view.*;
 
 import filter.cytoscape.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

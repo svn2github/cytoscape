@@ -43,10 +43,7 @@ import ManualLayout.scale.ScaleLayouter;
 import ManualLayout.scale.ScalePanel;
 
 import cytoscape.Cytoscape;
-import cytoscape.GraphPerspective;
 
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
 
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
@@ -76,6 +73,10 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectEventListener;
 
 
 /**

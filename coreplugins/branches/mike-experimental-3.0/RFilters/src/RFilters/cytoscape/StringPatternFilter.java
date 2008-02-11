@@ -44,7 +44,7 @@ import cytoscape.data.CyAttributes;
 
 import filter.model.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import java.awt.*;
 import java.awt.event.*;

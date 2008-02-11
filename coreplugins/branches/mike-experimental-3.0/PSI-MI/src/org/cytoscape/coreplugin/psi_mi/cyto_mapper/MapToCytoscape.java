@@ -34,13 +34,13 @@
 */
 package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapperException;

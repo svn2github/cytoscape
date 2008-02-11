@@ -38,8 +38,8 @@ package csplugins.test.quickfind.test;
 
 import csplugins.quickfind.util.CyAttributesUtil;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;

@@ -42,7 +42,7 @@ import javax.swing.*;
 import javax.swing.tree.*;
 
 
-//import cytoscape.*;
+//import org.cytoscape.*;
 /**
  *
  */

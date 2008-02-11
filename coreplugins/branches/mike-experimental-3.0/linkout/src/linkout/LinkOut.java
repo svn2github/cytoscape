@@ -8,8 +8,8 @@ import cytoscape.data.CyAttributes;
 
 import cytoscape.util.OpenBrowser;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;

@@ -1,11 +1,11 @@
 package cytoscape.filters.util;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.filters.CompositeFilter;
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 import java.util.ArrayList;
 import java.util.List;
 import csplugins.quickfind.util.QuickFind;

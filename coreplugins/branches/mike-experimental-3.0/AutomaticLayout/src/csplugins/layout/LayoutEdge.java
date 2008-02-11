@@ -34,7 +34,8 @@ package csplugins.layout;
 
 import csplugins.layout.LayoutNode;
 
-import cytoscape.*;
+import org.cytoscape.*;
+import cytoscape.Cytoscape;
 
 import cytoscape.data.*;
 

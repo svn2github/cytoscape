@@ -46,7 +46,7 @@ import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutAlgorith
 import csplugins.layout.algorithms.circularLayout.CircularLayoutAlgorithm;
 import csplugins.layout.algorithms.force.ForceDirectedLayout;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.layout.*;
 import cytoscape.layout.CyLayouts;

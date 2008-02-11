@@ -34,7 +34,6 @@
  */
 package browser;
 
-import cytoscape.GraphObject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -52,6 +51,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumnModel;
+
+import org.cytoscape.GraphObject;
 
 import browser.ui.AttributeBrowserToolBar;
 import browser.ui.CyAttributeBrowserTable;

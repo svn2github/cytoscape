@@ -38,7 +38,6 @@ package cytoscape.filters.util;
 
 import ViolinStrings.Strings;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -55,8 +54,6 @@ import cytoscape.filters.view.FilterMainPanel;
 import csplugins.quickfind.util.QuickFind;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import java.beans.PropertyChangeEvent;
 
@@ -73,6 +70,10 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 
 class ApplyFilterThread extends Thread {

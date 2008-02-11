@@ -40,11 +40,11 @@ import cern.colt.list.*;
 
 import cern.colt.map.*;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

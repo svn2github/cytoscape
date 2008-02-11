@@ -38,8 +38,6 @@ package ManualLayout.common;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -61,6 +59,9 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
+
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectEventListener;
 
 
 /**

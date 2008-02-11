@@ -41,8 +41,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.List;

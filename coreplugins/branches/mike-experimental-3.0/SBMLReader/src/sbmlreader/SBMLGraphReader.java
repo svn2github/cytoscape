@@ -36,9 +36,9 @@
 
 package sbmlreader;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -52,7 +52,7 @@ import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.visual.*;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import giny.view.GraphView;
 import giny.view.NodeView;

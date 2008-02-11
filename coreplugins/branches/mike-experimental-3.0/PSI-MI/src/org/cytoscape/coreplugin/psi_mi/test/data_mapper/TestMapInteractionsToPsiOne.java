@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import junit.framework.TestCase;

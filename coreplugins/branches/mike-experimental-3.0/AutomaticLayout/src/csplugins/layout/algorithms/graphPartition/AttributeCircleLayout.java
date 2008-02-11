@@ -37,9 +37,9 @@ import csplugins.layout.LayoutPartition;
 
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 
-import cytoscape.*;
+import cytoscape.Cytoscape;
 
-import cytoscape.data.*;
+import cytoscape.data.CyAttributes;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
@@ -48,7 +48,6 @@ import cytoscape.view.*;
 
 import filter.cytoscape.*;
 
-import cytoscape.*;
 
 import giny.view.*;
 
@@ -57,6 +56,9 @@ import java.awt.GridLayout;
 import java.util.*;
 
 import javax.swing.JPanel;
+
+import org.cytoscape.*;
+import org.cytoscape.data.*;
 
 
 /**

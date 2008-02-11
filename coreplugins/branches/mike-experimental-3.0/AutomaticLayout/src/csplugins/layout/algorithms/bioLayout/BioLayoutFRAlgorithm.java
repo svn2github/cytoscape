@@ -37,9 +37,7 @@ import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
 
-import cytoscape.*;
 
-import cytoscape.data.*;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
@@ -57,6 +55,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Properties;
+
+import org.cytoscape.*;
+import org.cytoscape.data.*;
 
 
 /**

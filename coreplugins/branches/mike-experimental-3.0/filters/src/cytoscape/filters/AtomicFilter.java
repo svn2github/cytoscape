@@ -36,12 +36,13 @@
 
 package cytoscape.filters;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import java.util.*;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+
 import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 

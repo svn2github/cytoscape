@@ -36,7 +36,7 @@
 
 package cytoscape.filters;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 import java.util.*;
 import cytoscape.Cytoscape;
 

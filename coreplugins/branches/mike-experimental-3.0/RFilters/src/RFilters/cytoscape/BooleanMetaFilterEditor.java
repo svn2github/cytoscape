@@ -38,8 +38,8 @@ package filter.cytoscape;
 
 import ViolinStrings.Strings;
 
-import cytoscape.*;
-import cytoscape.GraphPerspective;
+import org.cytoscape.*;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 

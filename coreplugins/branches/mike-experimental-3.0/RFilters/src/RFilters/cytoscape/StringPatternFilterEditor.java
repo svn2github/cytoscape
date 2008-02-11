@@ -38,7 +38,7 @@ package filter.cytoscape;
 
 import ViolinStrings.Strings;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.data.CyAttributes;
 

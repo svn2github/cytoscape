@@ -44,8 +44,8 @@ import ManualLayout.scale.ScalePanel;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectEventListener;
 
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 

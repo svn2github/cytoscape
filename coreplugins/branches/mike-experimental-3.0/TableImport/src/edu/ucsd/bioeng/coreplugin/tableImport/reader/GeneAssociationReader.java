@@ -48,7 +48,7 @@ import cytoscape.data.synonyms.Aliases;
 import cytoscape.util.URLUtil;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import java.io.BufferedReader;
 import java.io.IOException;

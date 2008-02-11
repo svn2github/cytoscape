@@ -57,7 +57,7 @@ import javax.swing.SwingConstants;
 import javax.swing.undo.UndoableEdit;
 
 import cern.colt.list.IntArrayList;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.editor.event.NetworkEditEventAdapter;

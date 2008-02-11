@@ -31,12 +31,12 @@
  **/
 package org.mskcc.biopax_plugin.action;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectEventListener;
 
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;

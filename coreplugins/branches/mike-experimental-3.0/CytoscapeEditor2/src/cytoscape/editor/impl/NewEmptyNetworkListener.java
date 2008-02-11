@@ -43,7 +43,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.view.CytoscapeDesktop;
 
 /**

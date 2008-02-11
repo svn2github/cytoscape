@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.editor.CytoscapeEditor;

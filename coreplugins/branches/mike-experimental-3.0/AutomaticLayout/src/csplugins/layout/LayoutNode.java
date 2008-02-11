@@ -32,7 +32,7 @@
  */
 package csplugins.layout;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.view.*;
 

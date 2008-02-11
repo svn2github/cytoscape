@@ -32,7 +32,6 @@
  */
 package cytoscape.editor.editors;
 
-import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -49,14 +48,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectEventListener;
+
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeModifiedNetworkManager;
 import cytoscape.actions.DeleteAction;
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
 import cytoscape.editor.AddEdgeEdit;
 import cytoscape.editor.AddNodeEdit;

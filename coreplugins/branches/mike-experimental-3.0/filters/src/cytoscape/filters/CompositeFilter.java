@@ -36,17 +36,18 @@
 
 package cytoscape.filters;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import java.util.List;
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.BitSet;
 import java.util.LinkedList;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 public class CompositeFilter implements CyFilter {
 

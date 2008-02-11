@@ -38,8 +38,8 @@ package ManualLayout.control.actions.align;
 
 import ManualLayout.control.actions.AbstractControlAction;
 
-import cytoscape.*;
-import cytoscape.GraphPerspective;
+import org.cytoscape.*;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.*;
@@ -49,7 +49,7 @@ import cytoscape.util.*;
 import cytoscape.view.*;
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

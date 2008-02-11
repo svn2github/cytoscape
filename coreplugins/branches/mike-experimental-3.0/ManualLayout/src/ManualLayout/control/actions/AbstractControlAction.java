@@ -36,18 +36,13 @@
 
 package ManualLayout.control.actions;
 
-import cytoscape.*;
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.*;
 
 import cytoscape.util.*;
 
 import cytoscape.view.*;
-import cytoscape.view.CyNetworkView;
 
-import cytoscape.*;
 import giny.view.*;
 
 import ding.view.DGraphView;
@@ -58,6 +53,9 @@ import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
+
+import org.cytoscape.*;
+import org.cytoscape.data.*;
 
 
 /**

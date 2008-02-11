@@ -36,7 +36,7 @@
 
 package filter.cytoscape;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.data.*;
 
@@ -50,7 +50,8 @@ import filter.model.*;
 
 import filter.view.*;
 
-import cytoscape.*;
+import org.cytoscape.*;
+import cytoscape.Cytoscape;
 
 import giny.view.*;
 

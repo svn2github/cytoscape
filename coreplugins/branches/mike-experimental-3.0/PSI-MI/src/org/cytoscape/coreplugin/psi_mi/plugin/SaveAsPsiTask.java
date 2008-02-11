@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.task.Task;

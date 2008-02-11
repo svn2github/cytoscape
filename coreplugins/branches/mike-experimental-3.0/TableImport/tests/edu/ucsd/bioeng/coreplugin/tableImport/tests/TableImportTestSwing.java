@@ -37,7 +37,7 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.tests;
 
 import cytoscape.CyMain;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;

@@ -39,7 +39,7 @@ import csplugins.layout.Profile;
 import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.IntObjHash;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.view.*;
 

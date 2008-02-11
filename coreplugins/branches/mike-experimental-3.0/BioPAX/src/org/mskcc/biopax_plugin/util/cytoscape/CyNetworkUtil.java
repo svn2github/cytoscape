@@ -31,7 +31,7 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.CytoscapeInit;
 
 import java.text.DecimalFormat;

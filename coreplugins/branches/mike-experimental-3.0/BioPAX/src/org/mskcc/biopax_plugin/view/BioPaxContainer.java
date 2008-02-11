@@ -31,6 +31,7 @@
  **/
 package org.mskcc.biopax_plugin.view;
 
+import org.cytoscape.GraphPerspective;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 
@@ -42,7 +43,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 
 import cytoscape.Cytoscape;
-import cytoscape.GraphPerspective;
 import cytoscape.data.CyAttributes;
 
 

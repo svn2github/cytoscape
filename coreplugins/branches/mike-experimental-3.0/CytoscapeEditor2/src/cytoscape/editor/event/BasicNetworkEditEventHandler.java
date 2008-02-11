@@ -31,7 +31,6 @@ import ding.view.DGraphView;
 import ding.view.DingCanvas;
 import ding.view.InnerCanvas;
 
-import cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -42,8 +41,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
+
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;

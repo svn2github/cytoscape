@@ -40,7 +40,7 @@ import static browser.DataObjectType.NODES;
 
 import browser.ui.CyAttributeBrowserTable;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -50,9 +50,9 @@ import cytoscape.view.CyNetworkView;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
 
-import cytoscape.Edge;
-import cytoscape.GraphObject;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphObject;
+import org.cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;

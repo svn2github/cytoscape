@@ -38,8 +38,8 @@ package filter.cytoscape;
 
 import ViolinStrings.Strings;
 
-import cytoscape.*;
-import cytoscape.GraphPerspective;
+import org.cytoscape.*;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.data.*;
 
@@ -47,7 +47,7 @@ import filter.model.*;
 
 import filter.view.*;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import java.awt.*;
 import java.awt.event.*;

@@ -31,9 +31,9 @@
  **/
 package org.mskcc.biopax_plugin.mapping;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -44,7 +44,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;

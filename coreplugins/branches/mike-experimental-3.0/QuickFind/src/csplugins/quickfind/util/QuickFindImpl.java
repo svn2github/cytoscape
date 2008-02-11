@@ -40,15 +40,15 @@ import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.IndexFactory;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import cytoscape.data.CyAttributes;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.GraphObject;
+import org.cytoscape.GraphObject;
 
 import java.util.ArrayList;
 import java.util.Date;

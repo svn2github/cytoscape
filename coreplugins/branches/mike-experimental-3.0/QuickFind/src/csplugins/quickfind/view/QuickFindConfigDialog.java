@@ -40,7 +40,7 @@ import csplugins.quickfind.util.*;
 
 import csplugins.widgets.autocomplete.index.GenericIndex;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;

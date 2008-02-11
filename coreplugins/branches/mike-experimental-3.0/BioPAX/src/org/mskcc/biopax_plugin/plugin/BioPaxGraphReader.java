@@ -43,7 +43,6 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import giny.view.GraphView;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.GraphReader;
@@ -53,6 +52,8 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.layout.CyLayoutAlgorithm;
 
 import java.net.URLDecoder;
+
+import org.cytoscape.GraphPerspective;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import java.io.FileReader;

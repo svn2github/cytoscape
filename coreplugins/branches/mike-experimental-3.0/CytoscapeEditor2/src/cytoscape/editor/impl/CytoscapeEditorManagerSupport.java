@@ -38,7 +38,7 @@
 */
 package cytoscape.editor.impl;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.editor.CytoscapeEditor;
@@ -55,8 +55,8 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import cytoscape.GraphPerspectiveChangeEvent;
-import cytoscape.GraphPerspectiveChangeListener;
+import org.cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.GraphPerspectiveChangeListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

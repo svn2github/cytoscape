@@ -8,7 +8,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;

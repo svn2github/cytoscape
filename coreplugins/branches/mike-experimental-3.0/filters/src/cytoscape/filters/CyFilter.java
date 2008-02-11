@@ -37,7 +37,7 @@
 package cytoscape.filters;
 
 import java.util.*;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 //import giny.filter.Filter;
 

@@ -31,13 +31,13 @@
  **/
 package org.mskcc.test.mapper;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import cytoscape.Edge;
-import cytoscape.Node;
-import cytoscape.RootGraph;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.RootGraph;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -35,7 +35,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 import phoebe.PhoebeCanvasDropEvent;
-import cytoscape.Node;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;

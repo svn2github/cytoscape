@@ -36,7 +36,6 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -46,7 +45,6 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.*;
 
-import cytoscape.Node;
 
 import java.io.IOException;
 
@@ -56,6 +54,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 /**
  * Parameter object for text table <---> CyAttributes mapping.<br>

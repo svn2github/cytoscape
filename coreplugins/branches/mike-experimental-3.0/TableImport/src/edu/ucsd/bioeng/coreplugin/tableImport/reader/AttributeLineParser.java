@@ -40,8 +40,6 @@ import cytoscape.data.CyAttributes;
 
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +47,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 
 /**

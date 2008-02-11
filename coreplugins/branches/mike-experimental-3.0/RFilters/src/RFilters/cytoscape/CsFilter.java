@@ -36,7 +36,7 @@
 
 package filter.cytoscape;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.data.*;
 
@@ -45,6 +45,9 @@ import cytoscape.plugin.*;
 import cytoscape.util.*;
 
 import cytoscape.view.*;
+
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import filter.model.*;
 

@@ -16,12 +16,12 @@ import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import java.awt.GridLayout;
 

@@ -38,7 +38,7 @@ package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.Hit;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 
 /**

@@ -31,11 +31,11 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
-import cytoscape.data.SelectFilter;
+import org.cytoscape.data.SelectFilter;
 
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;

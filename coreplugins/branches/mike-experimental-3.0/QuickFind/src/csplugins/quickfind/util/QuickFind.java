@@ -39,7 +39,7 @@ package csplugins.quickfind.util;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.task.TaskMonitor;
 

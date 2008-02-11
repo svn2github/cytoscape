@@ -33,8 +33,8 @@ package org.mskcc.biopax_plugin.mapping;
 
 
 // imports
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
