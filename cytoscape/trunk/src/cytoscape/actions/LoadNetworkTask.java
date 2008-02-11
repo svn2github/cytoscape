@@ -59,6 +59,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.ui.JTask;
 import cytoscape.task.util.TaskManager;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 
@@ -74,8 +75,7 @@ public class LoadNetworkTask implements Task {
 	 * @param skipMessage DOCUMENT ME!
 	 */
 	public static void loadURL(URL u, boolean skipMessage) {
-		LoadNetworkTask task = new LoadNetworkTask(u);
-		setupTask(task, skipMessage, true);
+		loadURL(u, skipMessage, null);
 	}
 
 	/**
@@ -86,8 +86,17 @@ public class LoadNetworkTask implements Task {
 	 */
 	public static void loadFile(File file, boolean skipMessage) {
 		// Create LoadNetwork Task
-		LoadNetworkTask task = new LoadNetworkTask(file);
-		setupTask(task, skipMessage, false);
+		loadFile(file, skipMessage, null);
+	}
+
+	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm);
+		setupTask(task, skipMessage, true);
+	}
+
+	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm);
+		setupTask(task, skipMessage, true);
 	}
 
 	private static void setupTask(LoadNetworkTask task, boolean skipMessage, boolean cancelable) {
@@ -111,18 +120,21 @@ public class LoadNetworkTask implements Task {
 	private URL url;
 	private Thread myThread = null;
 	private boolean interrupted = false;
+	private CyLayoutAlgorithm layoutAlgorithm = null;
 
-	private LoadNetworkTask(URL u) {
+	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout) {
 		url = u;
 		name = u.toString();
 		reader = null;
+		layoutAlgorithm = layout;
 		// Postpone getting the reader since we want to do that in a thread
 	}
 
-	private LoadNetworkTask(File file) {
+	private LoadNetworkTask(File file, CyLayoutAlgorithm layout) {
 		reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
 		uri = file.toURI();
 		name = file.getName();
+		layoutAlgorithm = layout;
 		if (reader == null) {
 			uri = null;
 			url = null;
@@ -206,9 +218,19 @@ public class LoadNetworkTask implements Task {
 			taskMonitor.setPercentCompleted(100);
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Unable to load network.");
+			return;
 		}
 		
+		// Are we supposed to lay this out?
+		if (layoutAlgorithm == null)
+			return;
 		
+		// Yes, do it
+		// Layouts are, in general cancelable
+		((JTask)taskMonitor).setCancel(true);
+		taskMonitor.setStatus("Performing layout...");
+		layoutAlgorithm.doLayout(Cytoscape.getCurrentNetworkView(),taskMonitor);
+		taskMonitor.setStatus("Layout complete");
 	}
 
 	/**
