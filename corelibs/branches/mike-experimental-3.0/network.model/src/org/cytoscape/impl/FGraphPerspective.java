@@ -2433,9 +2433,9 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		if (title == null) {
 			title = new_id;
 		} else if (!title.equals(new_id)) { // new title is different from the old one
-			CyNetworkTitleChange OldTitle = new CyNetworkTitleChange(this.getIdentifier(), title);
 			title = new_id;
 			// TODO!!!
+//			CyNetworkTitleChange OldTitle = new CyNetworkTitleChange(this.getIdentifier(), title);
 			//Cytoscape.firePropertyChange(Cytoscape.NETWORK_TITLE_MODIFIED, OldTitle, new CyNetworkTitleChange(this.getIdentifier(), new_id) );
 		}
 	}

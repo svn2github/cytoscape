@@ -140,11 +140,4 @@ public class FEdge implements Edge {
 
 		return true;
 	}
-
-	/**
-	 * A static method used to create edge identifiers.
-	 */
-	public static String createIdentifier(String source, String attribute_value, String target) {
-		return source + " (" + attribute_value + ") " + target;
-	}
 }

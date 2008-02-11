@@ -13,15 +13,6 @@
     <ant dir="commons-cli-1.x-cytocape-custom"/>
     <copy todir="${build.dir}" file="commons-cli-1.x-cytocape-custom/target/commons-cli-1.x-cytoscape-custom.jar"/>
 
-    <ant dir="giny"/>
-    <copy todir="${build.dir}" file="giny/giny.jar"/>
-
-    <ant dir="ding"/>
-    <copy todir="${build.dir}" file="ding/ding.jar"/>
-
-    <ant dir="fing"/>
-    <copy todir="${build.dir}" file="fing/fing.jar"/>
-
     <ant dir="geom.rtree"/>
     <copy todir="${build.dir}" file="geom.rtree/cytoscape-geom-rtree.jar"/>
 
@@ -58,14 +49,14 @@
     <ant dir="undo.support"/>
     <copy todir="${build.dir}" file="undo.support/undo.support.jar"/>
 
+    <ant dir="network.model"/>
+    <copy todir="${build.dir}" file="network.model/network.model.jar"/>
+
   </target>
 
   <!-- clean all corelib projects  -->
   <target name="clean" depends="init">
     <ant dir="commons-cli-1.x-cytocape-custom" target="clean"/>
-    <ant dir="giny" target="clean"/>
-    <ant dir="ding" target="clean"/>
-    <ant dir="fing" target="clean"/>
     <ant dir="geom.rtree" target="clean"/>
     <ant dir="geom.spacial" target="clean"/>
     <ant dir="graph.dynamic" target="clean"/>
@@ -78,6 +69,7 @@
     <ant dir="task" target="clean"/>
     <ant dir="util.intr" target="clean"/>
     <ant dir="undo.support" target="clean"/>
+    <ant dir="network.model" target="clean"/>
     <delete dir="${build.dir}"/>
   </target>
 
