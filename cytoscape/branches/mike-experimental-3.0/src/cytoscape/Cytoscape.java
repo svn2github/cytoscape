@@ -70,8 +70,11 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.RootGraph;
+import org.cytoscape.RootGraphFactory;
 
 import giny.view.GraphView;
 import java.beans.PropertyChangeEvent;
@@ -725,7 +728,7 @@ public abstract class Cytoscape {
 			                                                  .createEdge(source, target));
 
 			// create the edge id
-			String edge_name = FEdge.createIdentifier(source.getIdentifier(),
+			String edge_name = Cytoscape.createEdgeIdentifier(source.getIdentifier(),
 			                                           (String) attribute_value,
 			                                           target.getIdentifier());
 			edge.setIdentifier(edge_name);
@@ -1888,4 +1891,12 @@ public abstract class Cytoscape {
 	public static void setBookmarks(Bookmarks pBookmarks) {
 		bookmarks = pBookmarks;
 	}
+
+    /**
+     * A static method used to create edge identifiers.
+     */
+    public static String createEdgeIdentifier(String source, String attribute_value, String target) {
+        return source + " (" + attribute_value + ") " + target;
+    }
+
 }

@@ -1,7 +1,7 @@
 package giny.view;
 
 import java.util.EventObject;
-import cytoscape.*;
+import org.cytoscape.*;
 
 /**
  * The event source must be the GraphPerspective that changed.

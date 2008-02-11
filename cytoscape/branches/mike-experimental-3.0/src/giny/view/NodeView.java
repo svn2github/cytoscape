@@ -1,7 +1,7 @@
 package giny.view;
 
 import java.awt.*;
-import cytoscape.*;
+import org.cytoscape.*;
 import java.awt.geom.Point2D;
 
 /** 

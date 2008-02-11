@@ -52,7 +52,7 @@ import cytoscape.visual.parsers.FloatParser;
 import cytoscape.visual.parsers.FontParser;
 import cytoscape.visual.parsers.ObjectToString;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import giny.view.EdgeView;
 import giny.view.Label;

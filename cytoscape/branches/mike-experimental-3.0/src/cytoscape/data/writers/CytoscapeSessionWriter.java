@@ -38,7 +38,7 @@ package cytoscape.data.writers;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -723,7 +723,7 @@ public class CytoscapeSessionWriter {
 			HiddenNodes hn = factory.createHiddenNodes();
 			List hNodeList = hn.getNode();
 
-			cytoscape.Node targetNode = null;
+			org.cytoscape.Node targetNode = null;
 			String curNodeName = null;
 
 			for (Iterator i = view.getNodeViewsIterator(); i.hasNext();) {
@@ -732,7 +732,7 @@ public class CytoscapeSessionWriter {
 				// Check if the node is hidden or not.
 				// If it's hidden, store in the session file.
 				if (view.showGraphObject(nview)) {
-					targetNode = (cytoscape.Node) nview.getNode();
+					targetNode = (org.cytoscape.Node) nview.getNode();
 					curNodeName = targetNode.getIdentifier();
 
 					cytoscape.generated.Node tempNode = factory.createNode();
@@ -754,7 +754,7 @@ public class CytoscapeSessionWriter {
 			HiddenEdges he = factory.createHiddenEdges();
 			List hEdgeList = he.getEdge();
 
-			cytoscape.Edge targetEdge = null;
+			org.cytoscape.Edge targetEdge = null;
 			String curEdgeName = null;
 
 			for (Iterator i = view.getEdgeViewsIterator(); i.hasNext();) {
@@ -763,7 +763,7 @@ public class CytoscapeSessionWriter {
 				// Check if the edge is hidden or not.
 				// If it's hidden, store in the session file.
 				if (view.showGraphObject(eview)) {
-					targetEdge = (cytoscape.Edge) eview.getEdge();
+					targetEdge = (org.cytoscape.Edge) eview.getEdge();
 					curEdgeName = targetEdge.getIdentifier();
 
 					cytoscape.generated.Edge tempEdge = factory.createEdge();
@@ -808,10 +808,10 @@ public class CytoscapeSessionWriter {
 
 			if (selectedNodes.size() != 0) {
 				Iterator iterator = selectedNodes.iterator();
-				cytoscape.Node targetNode = null;
+				org.cytoscape.Node targetNode = null;
 
 				while (iterator.hasNext()) {
-					targetNode = (cytoscape.Node) iterator.next();
+					targetNode = (org.cytoscape.Node) iterator.next();
 
 					String curNodeName = targetNode.getIdentifier();
 					cytoscape.generated.Node tempNode = factory.createNode();
@@ -832,10 +832,10 @@ public class CytoscapeSessionWriter {
 
 			if (selectedEdges.size() != 0) {
 				Iterator iterator = selectedEdges.iterator();
-				cytoscape.Edge targetEdge = null;
+				org.cytoscape.Edge targetEdge = null;
 
 				while (iterator.hasNext()) {
-					targetEdge = (cytoscape.Edge) iterator.next();
+					targetEdge = (org.cytoscape.Edge) iterator.next();
 
 					String curEdgeName = targetEdge.getIdentifier();
 					cytoscape.generated.Edge tempEdge = factory.createEdge();

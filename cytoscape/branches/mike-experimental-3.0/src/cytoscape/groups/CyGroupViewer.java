@@ -37,8 +37,9 @@
 */
 package cytoscape.groups;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 import cytoscape.view.CyNetworkView;
+import org.cytoscape.groups.CyGroup;
 
 /**
  * The CyGroupViewer interface provides a mechanism for group view implementations

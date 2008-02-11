@@ -36,7 +36,7 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.*;
+import org.cytoscape.*;
 import cytoscape.util.URLUtil;
 
 import java.io.*;

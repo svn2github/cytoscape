@@ -17,8 +17,9 @@
 */
 package cytoscape;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+
 import cytoscape.Cytoscape;
 
 import junit.framework.Assert;

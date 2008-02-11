@@ -44,16 +44,17 @@ package cytoscape.view;
 
 import cern.colt.list.IntArrayList;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.GraphPerspectiveChangeEvent;
-import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.util.*;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.Node;
 
 
 /**

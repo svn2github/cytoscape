@@ -43,7 +43,7 @@ import cytoscape.render.immed.GraphGraphics;
 
 import cytoscape.util.intr.IntBTree;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import giny.view.Bend;
 import giny.view.EdgeView;

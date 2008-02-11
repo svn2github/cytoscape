@@ -44,9 +44,9 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.Cytoscape;
-import cytoscape.GraphObject;
-import cytoscape.Node;
-import cytoscape.Edge;
+import org.cytoscape.GraphObject;
+import org.cytoscape.Node;
+import org.cytoscape.Edge;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;

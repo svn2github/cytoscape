@@ -51,7 +51,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;

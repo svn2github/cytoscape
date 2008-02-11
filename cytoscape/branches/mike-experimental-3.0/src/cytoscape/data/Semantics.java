@@ -36,15 +36,15 @@
  */
 package cytoscape.data;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMap;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import java.util.ArrayList;
 import java.util.Arrays;

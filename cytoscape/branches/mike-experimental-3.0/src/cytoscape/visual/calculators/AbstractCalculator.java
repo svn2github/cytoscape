@@ -42,7 +42,6 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -55,9 +54,6 @@ import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.visual.mappings.ObjectMapping;
 
 //------------------------------------------------------------------------------
-import cytoscape.Edge;
-import cytoscape.GraphObject;
-import cytoscape.Node;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
@@ -77,6 +73,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphObject;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 
 //------------------------------------------------------------------------------

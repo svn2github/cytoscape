@@ -38,10 +38,8 @@
 // package
 package ding.view;
 
-import cytoscape.GraphPerspective;
 
 // import
-import cytoscape.Node;
 
 import giny.view.NodeView;
 
@@ -56,6 +54,9 @@ import java.awt.image.BufferedImage;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 
 /**

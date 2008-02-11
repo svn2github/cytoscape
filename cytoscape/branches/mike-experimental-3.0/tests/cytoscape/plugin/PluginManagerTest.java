@@ -1,6 +1,9 @@
 package cytoscape.plugin;
 
-import cytoscape.*;
+import org.cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.CytoscapeVersion;
 
 import java.io.File;
 import java.net.URLClassLoader;

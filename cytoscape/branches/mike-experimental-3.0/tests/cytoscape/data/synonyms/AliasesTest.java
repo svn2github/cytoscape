@@ -39,13 +39,14 @@ import cytoscape.Cytoscape;
 import cytoscape.data.synonyms.AliasType;
 import cytoscape.data.synonyms.Aliases;
 
-import cytoscape.Node;
 
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.cytoscape.Node;
 
 
 /**

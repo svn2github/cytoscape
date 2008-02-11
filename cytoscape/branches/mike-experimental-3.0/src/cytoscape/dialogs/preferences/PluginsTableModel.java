@@ -36,6 +36,7 @@
 */
 package cytoscape.dialogs.preferences;
 
+import org.cytoscape.*;
 import cytoscape.*;
 
 import java.io.*;

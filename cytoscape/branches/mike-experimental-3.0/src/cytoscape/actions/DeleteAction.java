@@ -28,9 +28,10 @@
  */
 package cytoscape.actions;
 
-import cytoscape.GraphObject;
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.GraphObject;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -40,9 +41,6 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
@@ -104,11 +102,11 @@ public class DeleteAction extends CytoscapeAction {
 
 		// if an argument exists, add it to the appropriate list
 		if (graphObj != null ) {
-			if ( graphObj instanceof cytoscape.Node) {
+			if ( graphObj instanceof Node) {
 				cyNode = (Node) graphObj;
 				if ( !nodeViews.contains(cyNode) )
 					nodeViews.add(cyNode);
-			} else if ( graphObj instanceof cytoscape.Edge) {
+			} else if ( graphObj instanceof Edge) {
 				cyEdge = (Edge) graphObj;
 				if ( !edgeViews.contains(cyEdge) )
 					edgeViews.add(cyEdge);

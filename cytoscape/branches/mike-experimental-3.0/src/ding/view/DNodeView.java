@@ -38,8 +38,8 @@ package ding.view;
 
 import cytoscape.render.immed.GraphGraphics;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 import giny.view.GraphView;
 import giny.view.GraphViewChangeListener;

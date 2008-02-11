@@ -38,14 +38,14 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
 //-------------------------------------------------------------------------
-import cytoscape.Node;
-import cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.Edge;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

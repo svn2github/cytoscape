@@ -36,13 +36,13 @@
  */
 package cytoscape.view;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkTitleChange;
 import cytoscape.actions.CreateNetworkViewAction;
 
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectEventListener;
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectEventListener;
 
 import cytoscape.util.CyNetworkNaming;
 

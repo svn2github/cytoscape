@@ -36,7 +36,7 @@
 
 package ding.view;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import giny.view.GraphView;
 

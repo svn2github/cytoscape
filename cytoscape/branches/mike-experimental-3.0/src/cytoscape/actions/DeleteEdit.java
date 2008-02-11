@@ -2,7 +2,7 @@
 package cytoscape.actions;
 
 import giny.view.NodeView;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import cytoscape.view.CyNetworkView;

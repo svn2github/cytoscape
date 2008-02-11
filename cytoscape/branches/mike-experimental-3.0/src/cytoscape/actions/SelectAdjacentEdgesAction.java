@@ -44,11 +44,11 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import cytoscape.util.CytoscapeAction;
 

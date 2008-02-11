@@ -36,7 +36,9 @@
 */
 package cytoscape.data.writers;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -44,7 +46,6 @@ import cytoscape.data.Semantics;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.Node;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -106,7 +107,7 @@ public class InteractionWriter {
 		final List<Node> nodeList = network.nodesList();
 
 		final CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
-		final Node[] nodes = (cytoscape.Node[]) nodeList.toArray(new cytoscape.Node[0]);
+		final Node[] nodes = (Node[]) nodeList.toArray(new Node[0]);
 		
 		final int nodeCount = nodes.length;
 		
@@ -127,11 +128,11 @@ public class InteractionWriter {
 				Iterator it = edges.iterator();
 
 				while (it.hasNext()) {
-					cytoscape.Edge edge = (cytoscape.Edge) it.next();
+					Edge edge = (Edge) it.next();
 
 					if (node == edge.getSource()) { //do only for outgoing edges
 
-						cytoscape.Node target = edge.getTarget();
+						Node target = edge.getTarget();
 
 						String canonicalTargetName = target.getIdentifier();
 

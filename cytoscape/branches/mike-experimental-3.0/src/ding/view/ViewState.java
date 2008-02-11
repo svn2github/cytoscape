@@ -36,8 +36,8 @@
 
 package ding.view;
 
-import cytoscape.Node;
-import cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.Edge;
 import giny.view.NodeView;
 import giny.view.EdgeView;
 

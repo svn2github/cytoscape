@@ -10,10 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 
 // giny
-import cytoscape.Edge;
-import cytoscape.Node;
-import cytoscape.RootGraph;
-import cytoscape.GraphPerspective;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.RootGraph;
+import org.cytoscape.GraphPerspective;
 import giny.view.EdgeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.NodeView;

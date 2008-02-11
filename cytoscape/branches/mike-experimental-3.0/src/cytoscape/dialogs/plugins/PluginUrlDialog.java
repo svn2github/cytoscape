@@ -3,6 +3,7 @@
  */
 package cytoscape.dialogs.plugins;
 
+import org.cytoscape.*;
 import cytoscape.*;
 
 import cytoscape.bookmarks.Bookmarks;

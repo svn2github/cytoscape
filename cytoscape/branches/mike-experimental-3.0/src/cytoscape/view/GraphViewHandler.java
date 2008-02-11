@@ -42,7 +42,7 @@
  */
 package cytoscape.view;
 
-import cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.GraphPerspectiveChangeEvent;
 
 import giny.view.GraphView;
 

@@ -44,9 +44,9 @@ package cytoscape.view;
 
 import cern.colt.list.IntArrayList;
 
-import cytoscape.GraphPerspective;
-import cytoscape.GraphPerspectiveChangeEvent;
-import cytoscape.GraphPerspectiveChangeListener;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.GraphPerspectiveChangeListener;
 
 import giny.view.GraphView;
 
@@ -56,7 +56,7 @@ import java.util.*;
 /**
  *
  */
-public class GraphViewController implements cytoscape.GraphPerspectiveChangeListener {
+public class GraphViewController implements GraphPerspectiveChangeListener {
 	protected Map graphViewToHandler; // a map of GraphViews to GraphViewHandlers
 	protected Map gpToGv; // a map of GraphPerspectives to GraphViews
 

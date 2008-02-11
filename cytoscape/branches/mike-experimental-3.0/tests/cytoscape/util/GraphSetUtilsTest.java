@@ -35,7 +35,7 @@
 package cytoscape.util;
 
 import cytoscape.AllTests;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -43,7 +43,7 @@ import cytoscape.data.CyAttributes;
 
 import cytoscape.util.GraphSetUtils;
 
-import cytoscape.RootGraph;
+import org.cytoscape.RootGraph;
 
 import junit.framework.*;
 

@@ -36,7 +36,7 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.GraphObject;
+import org.cytoscape.GraphObject;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;

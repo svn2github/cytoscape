@@ -247,7 +247,7 @@ public class CalculatorCatalog {
 	 * @param calcName
 	 *            Name to check
 	 * @param calcType
-	 *            Type of calculator {@link cytoscape.visual.ui.VizMapUI}
+	 *            Type of calculator {@link org.cytoscape.visual.ui.VizMapUI}
 	 *
 	 * @return a valid name for the calculator. If the given name was not valid,
 	 *         numbers are appended until a valid name is found; this valid name

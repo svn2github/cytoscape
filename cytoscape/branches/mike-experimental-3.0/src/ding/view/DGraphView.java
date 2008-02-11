@@ -51,10 +51,10 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
-import cytoscape.RootGraph;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+import org.cytoscape.RootGraph;
 
 import giny.view.EdgeView;
 import giny.view.GraphView;

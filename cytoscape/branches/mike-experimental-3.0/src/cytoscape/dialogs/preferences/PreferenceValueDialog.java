@@ -36,7 +36,7 @@
 */
 package cytoscape.dialogs.preferences;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.util.CyFileFilter;
 

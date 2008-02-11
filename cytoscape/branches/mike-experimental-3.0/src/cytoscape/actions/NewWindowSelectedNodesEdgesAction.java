@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CyNetworkNaming;
@@ -52,7 +52,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 
 //-------------------------------------------------------------------------
-import cytoscape.Node;
+import org.cytoscape.Node;
 import java.awt.event.ActionEvent;
 
 import java.util.Iterator;

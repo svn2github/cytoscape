@@ -49,7 +49,7 @@ import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.readers.GraphReader;

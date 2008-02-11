@@ -36,7 +36,7 @@
 */
 package cytoscape.view;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import cytoscape.layout.*;
 

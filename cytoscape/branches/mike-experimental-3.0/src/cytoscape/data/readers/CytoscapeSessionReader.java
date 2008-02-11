@@ -64,7 +64,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.bookmarks.Bookmarks;
@@ -735,7 +735,7 @@ public class CytoscapeSessionReader {
 
 		while (it.hasNext()) {
 			final cytoscape.generated.Node hiddenNodeObject = (cytoscape.generated.Node) it.next();
-			final cytoscape.Node hiddenNode = Cytoscape.getCyNode(hiddenNodeObject.getId(), false);
+			final org.cytoscape.Node hiddenNode = Cytoscape.getCyNode(hiddenNodeObject.getId(), false);
 			view.hideGraphObject(view.getNodeView(hiddenNode));
 		}
 	}
@@ -749,7 +749,7 @@ public class CytoscapeSessionReader {
 
 		while (it.hasNext()) {
 			final cytoscape.generated.Edge hiddenEdgeObject = (cytoscape.generated.Edge) it.next();
-			final cytoscape.Edge hiddenEdge = getCyEdge(hiddenEdgeObject);
+			final org.cytoscape.Edge hiddenEdge = getCyEdge(hiddenEdgeObject);
 
 			if (hiddenEdge != null) {
 				view.hideGraphObject(view.getEdgeView(hiddenEdge));
@@ -762,7 +762,7 @@ public class CytoscapeSessionReader {
 			return;
 		}
 
-		cytoscape.Edge targetEdge = null;
+		org.cytoscape.Edge targetEdge = null;
 		final List selectedEdgeList = new ArrayList();
 		final Iterator it = selected.getEdge().iterator();
 
@@ -778,13 +778,13 @@ public class CytoscapeSessionReader {
 		network.setSelectedEdgeState(selectedEdgeList, true);
 	}
 
-	private cytoscape.Edge getCyEdge(final cytoscape.generated.Edge edge) {
-		cytoscape.Edge targetEdge = null;
+	private org.cytoscape.Edge getCyEdge(final cytoscape.generated.Edge edge) {
+		org.cytoscape.Edge targetEdge = null;
 
 		final String sourceString = edge.getSource();
 		final String targetString = edge.getTarget();
-		cytoscape.Node source = null;
-		cytoscape.Node target = null;
+		org.cytoscape.Node source = null;
+		org.cytoscape.Node target = null;
 		String interaction = edge.getInteraction();
 
 		// Try to get CyEdge by the source & target IDs

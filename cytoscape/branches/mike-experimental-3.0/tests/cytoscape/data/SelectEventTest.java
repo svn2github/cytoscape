@@ -39,10 +39,10 @@ package cytoscape.data;
 import cytoscape.AllTests;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.SelectEvent;
-import cytoscape.data.SelectFilter;
+import org.cytoscape.data.SelectEvent;
+import org.cytoscape.data.SelectFilter;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import junit.framework.*;
 

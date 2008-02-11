@@ -42,7 +42,7 @@ import cytoscape.visual.parsers.ObjectToString;
 import cytoscape.visual.VisualPropertyType;
 
 import giny.view.Label;
-import cytoscape.GraphObject;
+import org.cytoscape.GraphObject;
 
 
 import java.awt.Dialog;

@@ -36,7 +36,6 @@
  */
 package cytoscape.actions;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -53,6 +52,8 @@ import java.text.NumberFormat;
 import javax.swing.JOptionPane;
 
 import javax.swing.event.MenuEvent;
+
+import org.cytoscape.GraphPerspective;
 
 
 /**

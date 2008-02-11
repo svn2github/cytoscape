@@ -36,6 +36,7 @@
 
 package cytoscape.plugin;
 
+import org.cytoscape.*;
 import cytoscape.*;
 
 import cytoscape.util.FileUtil;
@@ -884,17 +885,18 @@ public class PluginManager {
 	 *            the name of the putative plugin class
 	 */
 	private Class getPluginClass(String name) throws ClassNotFoundException, NoClassDefFoundError {
-		Class c = classLoader.loadClass(name);
-//		try {
-//			c = classLoader.loadClass(name);
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//			return null;
-//		} catch (NoClassDefFoundError e) {
-//			e.printStackTrace();
-//
-//			return null;
-//		}
+		//Class c = classLoader.loadClass(name);
+		Class c; 
+		try {
+			c = classLoader.loadClass(name);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (NoClassDefFoundError e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;

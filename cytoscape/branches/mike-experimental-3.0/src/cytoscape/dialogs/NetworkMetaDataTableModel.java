@@ -34,7 +34,7 @@
 */
 package cytoscape.dialogs;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.data.readers.MetadataParser;
 

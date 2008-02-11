@@ -39,7 +39,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.readers.XGMMLReader;
 
-import cytoscape.RootGraph;
+import org.cytoscape.RootGraph;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

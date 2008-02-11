@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.ObjectToString;

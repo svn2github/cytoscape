@@ -40,12 +40,11 @@
 // $Author$
 package cytoscape.view;
 
-import cytoscape.*;
+import org.cytoscape.*;
+import cytoscape.Cytoscape;
 import cytoscape.AllTests;
 
 import cytoscape.view.CyNetworkView;
-
-import cytoscape.*;
 
 import giny.view.*;
 

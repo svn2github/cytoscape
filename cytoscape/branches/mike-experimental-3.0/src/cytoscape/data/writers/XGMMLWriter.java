@@ -38,12 +38,12 @@ package cytoscape.data.writers;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import cytoscape.groups.CyGroup;
+import org.cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 
 import cytoscape.data.CyAttributes;
@@ -63,8 +63,8 @@ import ding.view.DingCanvas;
 import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
-import cytoscape.Node;
-import cytoscape.Edge;
+import org.cytoscape.Node;
+import org.cytoscape.Edge;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

@@ -2,7 +2,7 @@ package giny.view;
 
 import java.awt.*;
 import java.awt.geom.*;
-import cytoscape.*;
+import org.cytoscape.*;
 
 
 public interface EdgeView  extends GraphViewObject {

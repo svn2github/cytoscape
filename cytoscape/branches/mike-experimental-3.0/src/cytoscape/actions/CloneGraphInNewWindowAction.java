@@ -42,16 +42,13 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.Node;
 import giny.view.NodeView;
-import cytoscape.Edge;
 import giny.view.EdgeView;
 import giny.view.Bend;
 
@@ -60,6 +57,10 @@ import ding.view.DGraphView;
 import java.awt.event.ActionEvent;
 
 import javax.swing.event.MenuEvent;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 import java.util.Iterator;
 

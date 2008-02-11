@@ -36,8 +36,8 @@
  */
 package cytoscape.data.readers;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -67,9 +67,9 @@ import org.xml.sax.Attributes;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
@@ -77,7 +77,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.writers.XGMMLWriter;
-import cytoscape.groups.CyGroup;
+import org.cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.LayoutAdapter;
 import cytoscape.layout.CyLayoutAlgorithm;

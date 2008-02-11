@@ -36,10 +36,11 @@
 */
 package cytoscape;
 
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
+
 import cytoscape.Cytoscape;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import junit.framework.Assert;
 import junit.framework.Test;

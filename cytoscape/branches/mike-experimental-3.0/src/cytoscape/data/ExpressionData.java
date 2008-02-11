@@ -44,7 +44,7 @@
 //--------------------------------------------------------------------
 package cytoscape.data;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 //--------------------------------------------------------------------

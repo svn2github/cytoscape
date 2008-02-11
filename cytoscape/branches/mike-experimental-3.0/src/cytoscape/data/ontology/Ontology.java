@@ -34,8 +34,8 @@
 */
 package cytoscape.data.ontology;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -45,7 +45,7 @@ import cytoscape.data.ontology.readers.OBOTags;
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import org.biojava.ontology.AlreadyExistsException;
 import org.biojava.ontology.OntologyOps;

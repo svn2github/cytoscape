@@ -37,7 +37,7 @@
 
 package cytoscape.view;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.actions.*; // * because we need access to all actions!

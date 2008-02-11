@@ -38,14 +38,15 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 
 /**

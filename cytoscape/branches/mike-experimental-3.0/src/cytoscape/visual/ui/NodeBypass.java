@@ -36,7 +36,7 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import java.util.ArrayList;
 import java.util.List;

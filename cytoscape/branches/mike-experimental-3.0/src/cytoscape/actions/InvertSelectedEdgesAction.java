@@ -42,13 +42,13 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
 //-------------------------------------------------------------------------
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import java.awt.event.ActionEvent;
 

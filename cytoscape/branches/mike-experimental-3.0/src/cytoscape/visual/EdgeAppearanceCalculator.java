@@ -42,14 +42,14 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 
 import cytoscape.visual.mappings.ObjectMapping;
 
-import cytoscape.Edge;
+import org.cytoscape.Edge;
 
 import java.awt.Color;
 import java.awt.Font;

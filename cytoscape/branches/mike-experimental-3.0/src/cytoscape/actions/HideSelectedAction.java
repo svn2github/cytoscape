@@ -46,7 +46,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

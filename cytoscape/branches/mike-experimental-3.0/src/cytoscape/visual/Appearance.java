@@ -43,9 +43,6 @@ import cytoscape.data.CyAttributes;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
 
-import cytoscape.Edge;
-import cytoscape.GraphObject;
-import cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -55,6 +52,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 import java.awt.Color;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphObject;
+import org.cytoscape.Node;
 
 
 /**

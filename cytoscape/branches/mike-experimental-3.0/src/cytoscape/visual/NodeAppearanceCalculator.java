@@ -36,12 +36,12 @@
  */
 package cytoscape.visual;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.ObjectMapping;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import java.awt.Color;
 import java.awt.Font;

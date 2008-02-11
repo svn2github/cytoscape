@@ -37,7 +37,7 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.GraphObject; 
+import org.cytoscape.GraphObject;
 
 /**
  * ARgh.  This is a horrible, horrible hack that allows LabelPosition to

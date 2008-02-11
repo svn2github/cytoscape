@@ -6,7 +6,9 @@ package cytoscape.data;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import cytoscape.*;
+import org.cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CyNetworkTitleChange;
 import cytoscape.data.Semantics;
 import junit.framework.TestCase;
 

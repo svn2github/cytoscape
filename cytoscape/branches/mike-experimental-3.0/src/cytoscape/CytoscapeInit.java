@@ -36,6 +36,8 @@
  */
 package cytoscape;
 
+import org.cytoscape.GraphPerspective;
+
 import cytoscape.data.readers.CytoscapeSessionReader;
 
 import cytoscape.init.CyInitParams;
@@ -246,6 +248,9 @@ public class CytoscapeInit {
 
 			System.out.println("loading expression files...");
 			loadExpressionFiles();
+		} catch (Throwable t) {
+			System.out.println("Caught something");
+			t.printStackTrace();	
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
 			// exception

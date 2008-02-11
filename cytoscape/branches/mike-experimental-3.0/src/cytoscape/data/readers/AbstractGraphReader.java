@@ -36,7 +36,6 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -50,7 +49,6 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.RootGraph;
 
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -62,6 +60,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.RootGraph;
 
 
 /**

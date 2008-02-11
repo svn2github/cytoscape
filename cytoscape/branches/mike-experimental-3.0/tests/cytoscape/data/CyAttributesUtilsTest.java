@@ -36,8 +36,8 @@
 */
 package cytoscape.data;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.AttributeFilter;
@@ -49,7 +49,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
-import cytoscape.GraphObject;
+import org.cytoscape.GraphObject;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

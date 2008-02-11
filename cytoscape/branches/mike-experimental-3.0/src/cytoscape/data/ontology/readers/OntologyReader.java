@@ -34,7 +34,7 @@
 */
 package cytoscape.data.ontology.readers;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import java.io.IOException;
 

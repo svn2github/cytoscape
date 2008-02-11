@@ -17,15 +17,16 @@
 */
 package cytoscape;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.GraphPerspectiveChangeListener;
+import org.cytoscape.Node;
+
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
-import cytoscape.GraphPerspectiveChangeEvent;
-import cytoscape.GraphPerspectiveChangeListener;
 
 import junit.framework.Assert;
 import junit.framework.Test;

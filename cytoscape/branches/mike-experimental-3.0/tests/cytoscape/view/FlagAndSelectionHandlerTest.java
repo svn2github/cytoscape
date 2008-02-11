@@ -45,11 +45,11 @@ package cytoscape.view;
 import cytoscape.AllTests;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.SelectFilter;
+import org.cytoscape.data.SelectFilter;
 
 import cytoscape.view.FlagAndSelectionHandler;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

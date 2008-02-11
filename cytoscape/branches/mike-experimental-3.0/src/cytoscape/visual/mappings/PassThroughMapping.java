@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 
 import cytoscape.visual.VisualPropertyType;
 

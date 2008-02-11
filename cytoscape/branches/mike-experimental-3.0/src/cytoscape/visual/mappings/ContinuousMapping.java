@@ -42,7 +42,6 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings;
 
-import cytoscape.GraphPerspective;
 
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
@@ -64,6 +63,8 @@ import java.util.Properties;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
+
+import org.cytoscape.GraphPerspective;
 
 
 /**

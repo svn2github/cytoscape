@@ -38,9 +38,10 @@
 package cytoscape.groups;
 
 import cytoscape.Cytoscape;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
-import cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.groups.CyGroup;
 
 import cytoscape.data.CyAttributes;
 

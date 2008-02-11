@@ -41,7 +41,6 @@ import cytoscape.CytoscapeInit;
 
 import cytoscape.data.writers.CyAttributesWriter2;
 
-import cytoscape.GraphObject;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -70,6 +69,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+
+import org.cytoscape.GraphObject;
 
 
 /**

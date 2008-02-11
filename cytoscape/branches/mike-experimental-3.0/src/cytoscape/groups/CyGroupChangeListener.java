@@ -37,6 +37,8 @@
 */
 package cytoscape.groups;
 
+import org.cytoscape.groups.CyGroup;
+
 /**
  * The CyGroupChangeListener interface provides a mechanism for plugins that track
  * group related information to get notified of changes to groups.

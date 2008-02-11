@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CyNetworkNaming;

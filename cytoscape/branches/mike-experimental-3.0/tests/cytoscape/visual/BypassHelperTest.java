@@ -36,8 +36,6 @@
  */
 package cytoscape.visual;
 
-import cytoscape.Edge;
-import cytoscape.Node;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -50,6 +48,9 @@ import junit.framework.TestSuite;
 
 import java.awt.Color;
 import java.awt.Font;
+
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 
 /**

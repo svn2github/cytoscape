@@ -36,7 +36,7 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -48,7 +48,7 @@ import cytoscape.view.CyNetworkView;
 
 import cytoscape.task.util.TaskManager;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 
 import giny.view.NodeView;
 

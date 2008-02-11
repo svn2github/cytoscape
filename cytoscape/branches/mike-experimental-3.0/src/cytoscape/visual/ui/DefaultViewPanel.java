@@ -45,11 +45,11 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-import cytoscape.RootGraph;
+import org.cytoscape.RootGraph;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;

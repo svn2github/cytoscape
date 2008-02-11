@@ -36,6 +36,7 @@
  */
 package cytoscape.plugin;
 
+import org.cytoscape.*;
 import cytoscape.*;
 
 import java.beans.PropertyChangeEvent;

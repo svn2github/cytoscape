@@ -43,8 +43,8 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.Node;
-import cytoscape.RootGraph;
+import org.cytoscape.Node;
+import org.cytoscape.RootGraph;
 import giny.view.NodeView;
 
 import java.awt.Color;
@@ -54,9 +54,9 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;

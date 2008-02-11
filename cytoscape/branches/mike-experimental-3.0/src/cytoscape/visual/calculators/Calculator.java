@@ -42,7 +42,6 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.GraphPerspective;
 
 import cytoscape.visual.Appearance;
 import cytoscape.visual.VisualPropertyType;
@@ -50,8 +49,6 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.ObjectMapping;
 
 //------------------------------------------------------------------------------
-import cytoscape.Edge;
-import cytoscape.Node;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -59,6 +56,10 @@ import java.util.Vector;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 
 //------------------------------------------------------------------------------

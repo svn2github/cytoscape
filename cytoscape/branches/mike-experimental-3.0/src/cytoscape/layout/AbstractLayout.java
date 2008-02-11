@@ -36,9 +36,6 @@
 */
 package cytoscape.layout;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -72,6 +69,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JPanel;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 
 /**

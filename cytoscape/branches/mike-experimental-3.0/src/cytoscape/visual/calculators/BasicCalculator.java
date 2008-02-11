@@ -42,7 +42,6 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 
-import cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.visual.VisualPropertyType;
@@ -54,6 +53,8 @@ import cytoscape.visual.parsers.ValueParser;
 
 import java.util.Map;
 import java.util.Properties;
+
+import org.cytoscape.GraphPerspective;
 
 
 

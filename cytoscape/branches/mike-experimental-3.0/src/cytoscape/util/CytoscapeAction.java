@@ -46,7 +46,7 @@ import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 
 import cytoscape.Cytoscape;
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.view.CyNetworkView;
 
 /**

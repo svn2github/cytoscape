@@ -36,15 +36,15 @@
  */
 package cytoscape.visual;
 
-import cytoscape.Node;
+import org.cytoscape.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.util.Iterator;
 
-import cytoscape.Edge;
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;

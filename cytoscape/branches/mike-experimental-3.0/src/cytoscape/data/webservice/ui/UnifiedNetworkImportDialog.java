@@ -34,7 +34,7 @@
 */
 package cytoscape.data.webservice.ui;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.webservice.CyWebServiceEvent;

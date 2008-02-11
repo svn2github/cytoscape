@@ -36,7 +36,7 @@
 */
 package cytoscape.util;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import java.awt.Component;

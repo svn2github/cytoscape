@@ -36,15 +36,15 @@
  */
 package cytoscape.data.readers;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
 import cytoscape.view.CyNetworkView;
 
-import cytoscape.Edge;
-import cytoscape.Node;
+import org.cytoscape.Edge;
+import org.cytoscape.Node;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;

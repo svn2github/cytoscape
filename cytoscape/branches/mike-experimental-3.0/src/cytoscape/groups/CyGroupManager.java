@@ -43,8 +43,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import cytoscape.GraphPerspective;
-import cytoscape.Node;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+import org.cytoscape.groups.CyGroup;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;;

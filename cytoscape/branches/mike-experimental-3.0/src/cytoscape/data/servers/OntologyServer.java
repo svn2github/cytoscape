@@ -34,7 +34,7 @@
 */
 package cytoscape.data.servers;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.bookmarks.Bookmarks;

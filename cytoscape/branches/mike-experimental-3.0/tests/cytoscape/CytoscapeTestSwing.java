@@ -34,7 +34,7 @@
 */
 package cytoscape;
 
-import cytoscape.*;
+import org.cytoscape.*;
 
 import giny.view.*;
 

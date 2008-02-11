@@ -36,12 +36,12 @@
 */
 package cytoscape.data.writers;
 
-import cytoscape.GraphPerspective;
+import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.writers.InteractionWriter;
 
-import cytoscape.RootGraph;
+import org.cytoscape.RootGraph;
 
 import junit.framework.TestCase;
 
