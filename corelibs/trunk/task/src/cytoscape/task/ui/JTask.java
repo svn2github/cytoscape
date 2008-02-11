@@ -298,6 +298,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 						dispose();
 					} else {
 						setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						removeProgressBar();
 						cancelButton.setEnabled(false);
 						closeButton.setEnabled(true);
 
@@ -306,9 +307,21 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 						if (haltRequested) {
 							setCancelStatusMsg("Canceled by User");
 						}
+						pack();
 					}
 				}
 			});
+	}
+
+	/**
+	 * Call to externally control whether the cancel button is enabled
+	 * or disabled.  This can be used by threads which have some sections
+	 * that can be canceled and some that can not.
+	 *
+	 * @param enable if true, enable the cancel button
+	 */
+	public void setCancel(boolean enable) {
+		cancelButton.setEnabled(enable);
 	}
 
 	/**
