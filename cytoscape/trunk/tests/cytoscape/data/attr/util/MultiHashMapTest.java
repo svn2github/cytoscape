@@ -46,21 +46,28 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-/**
- *
- */
-public final class TestMultiHashMap {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 */
-	public final static void main(final String[] args) {
-		Object o = MultiHashMapFactory.instantiateDataModel();
-		final MultiHashMapDefinition def = (MultiHashMapDefinition) o;
-		final MultiHashMap data = (MultiHashMap) o;
-		RuntimeException exc = null;
+public final class MultiHashMapTest extends TestCase {
+
+
+    public static Test suite() {
+		return new TestSuite(MultiHashMapTest.class);
+	}
+
+	MultiHashMapDefinition def; 
+	MultiHashMap data;
+	RuntimeException exc; 
+
+	public void setUp() {
+
+		Object mm = MultiHashMapFactory.instantiateDataModel();
+		def = (MultiHashMapDefinition) mm;
+		data = (MultiHashMap) mm;
+
 		def.defineAttribute("p-values", MultiHashMapDefinition.TYPE_FLOATING_POINT,
 		                    new byte[] {
 		                        MultiHashMapDefinition.TYPE_STRING,
@@ -85,6 +92,11 @@ public final class TestMultiHashMap {
 		data.setAttributeValue("node4", "p-values", new Double(0.9),
 		                       new Object[] { "BarBar", new Integer(9) });
 
+		exc = null;
+	}
+
+	public void testSetAttrValue1() {
+
 		try {
 			data.setAttributeValue("node4", "p-values", new Double(0.4),
 			                       new Object[] { "BarBar", new Long(1) });
@@ -92,10 +104,10 @@ public final class TestMultiHashMap {
 			exc = e;
 		}
 
-		if (exc == null)
-			throw new IllegalStateException("expected exception");
-
-		exc = null;
+		assertNotNull(exc);
+	}
+	
+	public void testSetAttrValue2() {
 
 		try {
 			data.setAttributeValue("node5", "p-values", new Double(0.4),
@@ -104,14 +116,13 @@ public final class TestMultiHashMap {
 			exc = e;
 		}
 
-		if (exc == null)
-			throw new IllegalStateException("expected exception");
+		assertNotNull(exc);
+	}
 
-		exc = null;
+	public void testDefineAttr() {
 
 		def.defineAttribute("color", MultiHashMapDefinition.TYPE_STRING, null);
 		data.setAttributeValue("node1", "color", "red", null);
-		data.setAttributeValue("node4", "color", "cyan", null);
 		data.setAttributeValue("node8", "color", "yellow", null);
 
 		try {
@@ -120,49 +131,19 @@ public final class TestMultiHashMap {
 			exc = e;
 		}
 
-		if (exc == null)
-			throw new IllegalStateException("expected exception");
+		assertNotNull(exc);
 
-		exc = null;
+	}
 
-		if (!(data.removeAttributeValue("node4", "p-values",
-		                                new Object[] { "BarBar", new Integer(9) })
-		          .equals(new Double(0.9))))
-			throw new IllegalStateException("expected to remove 0.9");
+	public void testRemoveAttr() {
+		Object o = data.removeAttributeValue("node4", "p-values", new Object[] { "BarBar", new Integer(9) });
+		assertEquals(new Double(0.9), (Double)o);
 
-		if (!(data.removeAttributeValue("node4", "color", null).equals("cyan")))
-			throw new IllegalStateException("expected to remove cyan");
+		def.defineAttribute("color", MultiHashMapDefinition.TYPE_STRING, null);
+		data.setAttributeValue("node4", "color", "cyan", null);
 
-		Iterator attrDefIter = def.getDefinedAttributes();
+		o = data.removeAttributeValue("node4", "color", null);
+		assertEquals("cyan",(String)o);
 
-		while (attrDefIter.hasNext()) {
-			String attrDefName = (String) attrDefIter.next();
-			System.out.println("ATTRIBUTE DOMAIN " + attrDefName + ":");
-
-			Iterator objKeyIter = data.getObjectKeys(attrDefName);
-
-			while (objKeyIter.hasNext()) {
-				String objKey = (String) objKeyIter.next();
-				System.out.println("(" + objKey + ")");
-
-				List keySeqList = MultiHashMapHelpers.getAllAttributeKeys(objKey, attrDefName,
-				                                                          data, def);
-				Iterator keySeqIter = keySeqList.iterator();
-
-				while (keySeqIter.hasNext()) {
-					System.out.print(objKey);
-
-					Object[] keySeq = (Object[]) keySeqIter.next();
-
-					for (int i = 0; i < keySeq.length; i++)
-						System.out.print("." + keySeq[i]);
-
-					System.out.print(" = ");
-					System.out.println(data.getAttributeValue(objKey, attrDefName, keySeq));
-				}
-			}
-
-			System.out.println();
-		}
 	}
 }
