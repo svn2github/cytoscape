@@ -2,6 +2,7 @@ package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 //import java.awt.Color;
 //import java.util.ArrayList;
 //import java.util.HashSet;
@@ -26,10 +27,21 @@ public class PathwayWalking {
 
 		final JMenu top_menu = new JMenu("PathwayWalking");
 		final NodeView mynode = (NodeView) node;
-
+		
 		// Get the set of attribute names for this node
 		Node n = mynode.getNode();
 		CyAttributes na = Cytoscape.getNodeAttributes();
+		
+		
+//		// ***ELLEN PLAYING WITH CODE
+//		
+//		String[] message = na.getAttributeNames();
+//		for(int i=0; i<message.length; i++){
+//			System.out.println(na.getAttributeDescription(message[i]));
+//	        // use the CytoscapeDesktop as parent for a Swing dialog
+//			System.out.println( Cytoscape.getDesktop() + na.getAttributeDescription(message[i]));
+//		}
+//		// *** END OF ELLEN PLAYING WITH CODE
 		menuActionPressed map =   new menuActionPressed(  "Get Neighbors", null,
                 n, new Integer(5));
 
@@ -37,7 +49,6 @@ public class PathwayWalking {
 		source.setBackground(Color.red);
 		source.setEnabled(true);
 		top_menu.add(source);
-		//HelloWorld hw =  new HelloWorld(na);
 		return top_menu;
 	}
 
@@ -64,23 +75,6 @@ public class PathwayWalking {
 		}
 
 		return null;
-	}
-	
-	
-	
-
-	
-	
-	
-	
-	private static void PopupMenu() {
-		// Steve's Swing/GUI thing. :D
-		
-		// Methods we need to write (for the future)
-//		String NodeID = getNodeID();
-//		boolean database[] = getDatabase();
-		
-		
 	}
 //	public JMenuItem addLinks(NodeView nv){
 //		return ;
