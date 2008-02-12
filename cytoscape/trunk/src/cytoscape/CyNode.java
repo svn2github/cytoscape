@@ -158,7 +158,7 @@ public class CyNode implements giny.model.Node {
 		// We want to create this lazily to avoid any unnecessary performance/memory
 		// hits on CyNodes!
 		if (groupList == null)
-			groupList = new ArrayList();
+			groupList = new ArrayList<CyGroup>();
 
 		groupList.add(group);
 
