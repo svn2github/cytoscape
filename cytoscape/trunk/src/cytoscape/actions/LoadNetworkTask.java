@@ -61,6 +61,7 @@ import cytoscape.task.ui.JTask;
 import cytoscape.task.util.TaskManager;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
 
@@ -69,31 +70,63 @@ import ding.view.DGraphView;
  */
 public class LoadNetworkTask implements Task {
 	/**
-	 *  DOCUMENT ME!
+	 *  Load a network from a url.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the HTTP content-type
+	 *  header.  If it is unable to figure it out from there, it will try writing
+	 *  the HTTP stream to a file to look at the first couple of bytes.  Note that
+	 *  the actual opening of the HTTP stream is postponed until the task is
+	 *  initiated to facility the ability of the user to abort the attempt.
 	 *
-	 * @param u DOCUMENT ME!
-	 * @param skipMessage DOCUMENT ME!
+	 * @param u the URL to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
 	public static void loadURL(URL u, boolean skipMessage) {
 		loadURL(u, skipMessage, null);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Load a network from a file.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the file extension.
+	 *  If it is unable to figure it out from there, it will try reading
+	 *  the the first couple of bytes from the file.
 	 *
-	 * @param file DOCUMENT ME!
-	 * @param skipMessage DOCUMENT ME!
+	 * @param file the file to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
 	public static void loadFile(File file, boolean skipMessage) {
 		// Create LoadNetwork Task
 		loadFile(file, skipMessage, null);
 	}
 
+	/**
+	 *  Load a network from a url.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the HTTP content-type
+	 *  header.  If it is unable to figure it out from there, it will try writing
+	 *  the HTTP stream to a file to look at the first couple of bytes.  Note that
+	 *  the actual opening of the HTTP stream is postponed until the task is
+	 *  initiated to facility the ability of the user to abort the attempt.
+	 *
+	 * @param u the URL to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
+	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
+	 *                        after it has been read in (provided that a view was created).
+	 */
 	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
 		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm);
 		setupTask(task, skipMessage, true);
 	}
 
+	/**
+	 *  Load a network from a file.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the file extension.
+	 *  If it is unable to figure it out from there, it will try reading
+	 *  the the first couple of bytes from the file.
+	 *
+	 * @param file the file to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
+	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
+	 *                        after it has been read in (provided that a view was created).
+	 */
 	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
 		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm);
 		setupTask(task, skipMessage, true);
@@ -191,6 +224,17 @@ public class LoadNetworkTask implements Task {
 
 			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
+			// Are we supposed to lay this out?
+			CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+			if (layoutAlgorithm != null && view != null) {
+				// Yes, do it
+				// Layouts are, in general cancelable
+				((JTask)taskMonitor).setCancel(true);
+				taskMonitor.setStatus("Performing layout...");
+				layoutAlgorithm.doLayout(view, taskMonitor);
+				taskMonitor.setStatus("Layout complete");
+			}
+
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;
 			ret_val[1] = uri;
@@ -220,17 +264,6 @@ public class LoadNetworkTask implements Task {
 			taskMonitor.setException(e, "Unable to load network.");
 			return;
 		}
-		
-		// Are we supposed to lay this out?
-		if (layoutAlgorithm == null)
-			return;
-		
-		// Yes, do it
-		// Layouts are, in general cancelable
-		((JTask)taskMonitor).setCancel(true);
-		taskMonitor.setStatus("Performing layout...");
-		layoutAlgorithm.doLayout(Cytoscape.getCurrentNetworkView(),taskMonitor);
-		taskMonitor.setStatus("Layout complete");
 	}
 
 	/**
