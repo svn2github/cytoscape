@@ -70,6 +70,16 @@ public class CyAttributesTest extends TestCase {
 		cyAttributes = new CyAttributesImpl();
 	}
 
+	public void testBug1363() {
+		try {
+		boolean b = cyAttributes.deleteAttribute("non-existent-attribute.asdffdsa");
+		assertFalse(b);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("deleting non-existent attr shouldn't have caused exception");
+		}
+	}
+
 	/**
 	 * Tests Boolean Values.
 	 */
