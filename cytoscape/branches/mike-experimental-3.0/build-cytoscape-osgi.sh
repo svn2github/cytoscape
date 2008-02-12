@@ -33,4 +33,6 @@ mv bnd/jaxb-impl.bar $INSTALL/plugins/jaxb-impl.jar
 
 cp plugins/core/* $INSTALL/old_plugins
 
+cp osgi-plugins/* $INSTALL/plugins
+
 echo "done"

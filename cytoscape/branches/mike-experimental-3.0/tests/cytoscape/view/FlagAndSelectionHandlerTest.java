@@ -105,7 +105,7 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 		Node[] nodeArray = { node1, node2 };
 		Edge[] edgeArray = { edge1, edge2 };
 		gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
-		filter = new SelectFilter(gp);
+		filter = gp.getSelectFilter();
 		view = new ding.view.DGraphView(gp);
 
 		for (int i = 0; i < nodeArray.length; i++) {
