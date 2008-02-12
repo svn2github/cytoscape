@@ -14,7 +14,8 @@ import giny.model.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.webservice.WebServiceClient;
-import edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient;
+import cytoscape.data.webservice.WebServiceClientManager;
+import edu.ucsd.bioeng.idekerlab.intactclient.IntactClient;
 
 
 public class GUI extends javax.swing.JFrame {
@@ -355,11 +356,8 @@ public class GUI extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 // TODO add your handling code here:
         System.out.println("Start Search Button Pressed");
-        try{
-        	WebServiceClient try1 = IntactClient.getClient();
-        }catch (Exception e){
-        	System.err.println("Exception caught!");
-        }
+        WebServiceClient try1 = IntactClient.getClient();
+        WebServiceClientManager.registerClient(try1);
         System.out.println("After Intact Client was called.");
     }
  

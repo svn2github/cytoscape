@@ -14,6 +14,10 @@ import giny.model.Node;
 import giny.view.NodeView;
 import java.awt.Color;
 //import ding.*;
+//import cytoscape.CyNode;
+//import cytoscape.CyEdge;
+import giny.model.Edge;
+import giny.view.EdgeView;
 
 // Assume user has right-clicked, and called PathwayWalking (via Sam's Linkout NodeListener thing)
 public class PathwayWalking {
@@ -29,21 +33,36 @@ public class PathwayWalking {
 		final NodeView mynode = (NodeView) node;
 		
 		// Get the set of attribute names for this node
-		Node n = mynode.getNode();
+		Node selectedNode = mynode.getNode();
 		CyAttributes na = Cytoscape.getNodeAttributes();
 		
 		
-//		// ***ELLEN PLAYING WITH CODE
-//		
+
+		
+		// ***ELLEN PLAYING WITH CODE
+		// Long term goal: need to find out how to find *all* the attributes of CyNetwork
+//		EdgeView edge1;
+//		Edge e1 = mynode.getEdge();
+		System.out.println("Cytoscape.getNodeAttributes");
+		System.out.println(Cytoscape.getNodeAttributes());
+		System.out.println("Cytoscape.getEdgeAttribues");
+		System.out.println(Cytoscape.getEdgeAttributes());
+		System.out.println("node");
+		System.out.println(selectedNode);
+		System.out.println("edge ... not ready");
+//		System.out.println(e1);
+		System.out.println("Cytoscape Node Attributes");
+		System.out.println(na.getAttributeNames());
+		
 //		String[] message = na.getAttributeNames();
 //		for(int i=0; i<message.length; i++){
 //			System.out.println(na.getAttributeDescription(message[i]));
 //	        // use the CytoscapeDesktop as parent for a Swing dialog
 //			System.out.println( Cytoscape.getDesktop() + na.getAttributeDescription(message[i]));
 //		}
-//		// *** END OF ELLEN PLAYING WITH CODE
+		// *** END OF ELLEN PLAYING WITH CODE
 		menuActionPressed map =   new menuActionPressed(  "Get Neighbors", null,
-                n, new Integer(5));
+                selectedNode, new Integer(5));
 
 		final JMenuItem source = new JMenuItem(map);
 		source.setBackground(Color.red);
