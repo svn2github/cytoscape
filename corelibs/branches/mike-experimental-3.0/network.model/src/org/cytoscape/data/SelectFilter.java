@@ -35,30 +35,17 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//---------------------------------------------------------------------------
-//  $Revision: 12984 $ 
-//  $Date: 2008-02-08 13:12:37 -0800 (Fri, 08 Feb 2008) $
-//  $Author: mes $
-//---------------------------------------------------------------------------
 package org.cytoscape.data;
 
 
-//---------------------------------------------------------------------------
 import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.GraphPerspectiveChangeListener;
 import org.cytoscape.Node;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 
-//---------------------------------------------------------------------------
 /**
  * This class implements the ability to set the selected state of every node or
  * edge in a GraphPerspective. The state can be either on or off. Methods are
@@ -93,26 +80,7 @@ import java.util.Set;
  * as applicable.
  * <P>
  */
-public class SelectFilter  implements GraphPerspectiveChangeListener {
-	private GraphPerspective graph;
-	private final Set<Node> selectedNodes = new HashSet<Node>();
-	private final Set<Edge> selectedEdges = new HashSet<Edge>();
-	
-	private List<SelectEventListener> listeners = new ArrayList<SelectEventListener>();
-
-	/**
-	 * Standard Constructor. The argument is the graph that this filter will
-	 * apply to; it cannot be null.
-	 *
-	 * @throws NullPointerException
-	 *             if the argument is null.
-	 */
-	public SelectFilter(final GraphPerspective graph) {
-		this.graph = graph;
-
-		// this throws a NullPointerException if the graph is null
-		graph.addGraphPerspectiveChangeListener(this);
-	}
+public interface SelectFilter {
 
 	/**
 	 * Returns the set of all selected nodes in the referenced GraphPespective.
@@ -121,9 +89,7 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 * WARNING: the returned set is the actual data object, not a copy. Don't
 	 * directly modify this set.
 	 */
-	public Set<Node> getSelectedNodes() {
-		return selectedNodes;
-	}
+	public Set<Node> getSelectedNodes(); 
 
 	/**
 	 * Returns the set of all selected edges in the referenced GraphPespective.
@@ -132,38 +98,26 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 * WARNING: the returned set is the actual data object, not a copy. Don't
 	 * directly modify this set.
 	 */
-	public Set<Edge> getSelectedEdges() {
-		return selectedEdges;
-	}
+	public Set<Edge> getSelectedEdges(); 
 
 	/**
 	 * Returns true if the argument is a selected Node in the referenced
 	 * GraphPerspective, false otherwise.
 	 */
-	public boolean isSelected(Node node) {
-		return selectedNodes.contains(node);
-	}
+	public boolean isSelected(Node node);
 
 	/**
 	 * Returns true if the argument is a selected Edge in the referenced
 	 * GraphPerspective, false otherwise.
 	 */
-	public boolean isSelected(Edge edge) {
-		return selectedEdges.contains(edge);
-	}
+	public boolean isSelected(Edge edge);
 
 	/**
 	 * Implementation of the Filter interface. Returns true if the argument is a
 	 * selected Node or Edge in the referenced GraphPerspective, false
 	 * otherwise.
 	 */
-	public boolean passesFilter(Object o) {
-		if (selectedNodes.contains(o) || selectedEdges.contains(o)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+	public boolean passesFilter(Object o);
 
 	/**
 	 * If the first argument is a Node in the referenced GraphPerspective, sets
@@ -172,32 +126,8 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 *
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(final Node node, final boolean newState) {
-		boolean setChanged;
+	public boolean setSelected(final Node node, final boolean newState);
 
-		if (newState == true) { // set flag to on
-			                    // don't flag the node if it's not in the graph
-
-			if (!graph.containsNode(node)) {
-				return false;
-			}
-
-			setChanged = selectedNodes.add(node);
-
-			if (setChanged) {
-				fireEvent(node, true);
-			}
-		} else { // set flag to off
-			     // a node can't be selected unless it's in the graph
-			setChanged = selectedNodes.remove(node);
-
-			if (setChanged) {
-				fireEvent(node, false);
-			}
-		}
-
-		return setChanged;
-	}
 
 	/**
 	 * If the first argument is an Edge in the referenced GraphPerspective, sets
@@ -206,32 +136,7 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 *
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(final Edge edge, final boolean newState) {
-		boolean setChanged;
-
-		if (newState == true) { // set flag to on
-			                    // don'tflagthe edge if it's not in the graph
-
-			if (!graph.containsEdge(edge)) {
-				return false;
-			}
-
-			setChanged = selectedEdges.add(edge);
-
-			if (setChanged) {
-				fireEvent(edge, true);
-			}
-		} else { // set flag to off
-			     // an edge can't be selected unless it's in the graph
-			setChanged = selectedEdges.remove(edge);
-
-			if (setChanged) {
-				fireEvent(edge, false);
-			}
-		}
-
-		return setChanged;
-	}
+	public boolean setSelected(final Edge edge, final boolean newState); 
 
 	/**
 	 * Sets the selected state defined by the second argument for all Nodes
@@ -245,40 +150,7 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 *             if the first argument contains objects other than
 	 *             cytoscape.Node objects
 	 */
-	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState) {
-		final Set<Node> returnSet = new HashSet<Node>();
-		if (nodesToSet == null || nodesToSet.size() == 0) {
-			return returnSet;
-		}
-		
-		
-		if (newState == true) {
-			for (Node node : nodesToSet) {
-				if (!graph.containsNode(node)) {
-					continue;
-				}
-
-				if (selectedNodes.add(node)) {
-					returnSet.add(node);
-				}
-			}
-
-			if (returnSet.size() > 0) {
-				fireEvent(returnSet, true);
-			}
-		} else {
-			for (Node node : nodesToSet) {
-				if (selectedNodes.remove(node)) {
-					returnSet.add(node);
-				}
-			}
-
-			if (returnSet.size() > 0) {
-				fireEvent(returnSet, false);
-			}
-		}
-		return returnSet;
-	}
+	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState); 
 
 	/**
 	 * Sets the selected state defined by the second argument for all Edges
@@ -292,69 +164,27 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 *             if the first argument contains objects other than
 	 *             cytoscape.Edge objects
 	 */
-	public Set<Edge> setSelectedEdges(final Collection<Edge> edgesToSet, final boolean newState) {
-		
-		final Set<Edge> edgeReturnSet = new HashSet<Edge>();
-		
-		if (edgesToSet == null || edgesToSet.size() == 0) {
-			return edgeReturnSet;
-		}
-
-		if (newState == true) {
-			for (Edge edge : edgesToSet) {
-				if (!graph.containsEdge(edge)) {
-					continue;
-				}
-
-				if (selectedEdges.add(edge)) {
-					edgeReturnSet.add(edge);
-				}
-			}
-
-			if (edgeReturnSet.size() > 0) {
-				fireEvent(edgeReturnSet, true);
-			}
-		} else {
-			for (Edge edge : edgesToSet) {
-				if (selectedEdges.remove(edge)) {
-					edgeReturnSet.add(edge);
-				}
-			}
-
-			if (edgeReturnSet.size() > 0) {
-				fireEvent(edgeReturnSet, false);
-			}
-		}
-		return edgeReturnSet;
-	}
+	public Set<Edge> setSelectedEdges(final Collection<Edge> edgesToSet, final boolean newState);
 
 	/**
 	 * Sets the selected state to true for all Nodes in the GraphPerspective.
 	 */
-	public Set selectAllNodes() {
-		return setSelectedNodes(graph.nodesList(), true);
-	}
+	public Set selectAllNodes(); 
 
 	/**
 	 * Sets the selected state to true for all Edges in the GraphPerspective.
 	 */
-	public Set selectAllEdges() {
-		return setSelectedEdges(graph.edgesList(), true);
-	}
+	public Set selectAllEdges();
 
 	/**
 	 * Sets the selected state to false for all Nodes in the GraphPerspective.
 	 */
-	public Set unselectAllNodes() {
-		return setSelectedNodes(graph.nodesList(), false);
-	}
+	public Set unselectAllNodes(); 
 
 	/**
 	 * Sets the selected state to false for all Edges in the GraphPerspective.
 	 */
-	public Set unselectAllEdges() {
-		return setSelectedEdges(graph.edgesList(), false);
-	}
+	public Set unselectAllEdges(); 
 
 	/**
 	 * Implementation of the GraphPerspectiveChangeListener interface. Responds
@@ -362,120 +192,24 @@ public class SelectFilter  implements GraphPerspectiveChangeListener {
 	 * selected graph objects if needed. Fires an event only if there was an
 	 * actual change in the current selected set.
 	 */
-	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event) {
-		// careful: this event can represent both hidden nodes and hidden edges
-		// if a hide node operation implicitly hid its incident edges
-		Set<Node> nodeChanges = null; // only create the set if we need it
-
-		if (event.isNodesHiddenType()) { // at least one node was hidden
-
-			int[] hiddenNodes = event.getHiddenNodeIndices();
-			final int hNodesCount = hiddenNodes.length;
-			Node node;
-			boolean setChanged;
-			for (int index = 0; index <hNodesCount; index++) {
-				node = graph.getNode(hiddenNodes[index]);
-				setChanged = selectedNodes.remove(node);
-
-				if (setChanged) { // the hidden node was actually selected
-
-					if (nodeChanges == null) {
-						nodeChanges = new HashSet<Node>();
-					}
-
-					nodeChanges.add(node); // save change for the event we'll
-					                       // fire
-				}
-			}
-		}
-
-		if ((nodeChanges != null) && (nodeChanges.size() > 0)) {
-			fireEvent(nodeChanges, false);
-		}
-
-		Set<Edge> edgeChanges = null; // only create the set if we need it
-
-		if (event.isEdgesHiddenType()) { // at least one edge was hidden
-			                             // GINY bug: sometimes we get an event that has valid edge indices
-			                             // but the Edge array contains null objects
-			                             // for now, get around this by converting indices to edges ourselves
-
-			// WTF?  why are we concerned with the root graph?
-			//Object eventSource = event.getSource();
-//
-//			RootGraph root;
-//
-//			if (eventSource instanceof RootGraph)
-//				root = (RootGraph) eventSource;
-//			else
-//				root = ((GraphPerspective) eventSource).getRootGraph();
-//				
-
-			int[] indices = event.getHiddenEdgeIndices();
-			final int eLength = indices.length;
-			Edge edge;
-			boolean setChanged;
-			for (int index = 0; index < eLength; index++) {
-				//edge = root.getEdge(indices[index]);
-				edge = graph.getEdge(indices[index]);
-				setChanged = selectedEdges.remove(edge);
-
-				if (setChanged) { // the hidden edge was actually selected
-
-					if (edgeChanges == null) {
-						edgeChanges = new HashSet<Edge>();
-					}
-
-					edgeChanges.add(edge); // save change for the event we'll
-					                       // fire
-				}
-			}
-		}
-
-		if ((edgeChanges != null) && (edgeChanges.size() > 0)) {
-			fireEvent(edgeChanges, false);
-		}
-	}
+	//public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event); 
 
 	/**
 	 * If the argument is not already a listener to this object, it is added.
 	 * Does nothing if the argument is null.
 	 */
-	public void addSelectEventListener(SelectEventListener listener) {
-		if (listener != null) {
-			listeners.add(listener);
-		}
-	}
+	public void addSelectEventListener(SelectEventListener listener); 
 
 	/**
 	 * If the argument is a listener to this object, removes it from the list of
 	 * listeners.
 	 */
-	public void removeSelectEventListener(SelectEventListener listener) {
-		listeners.remove(listener);
-	}
+	public void removeSelectEventListener(SelectEventListener listener); 
 
 	/**
 	 * Gets a List of All Registered Listeners.
 	 *
 	 * @return List of SelectEventListeners
 	 */
-	public List<SelectEventListener> getSelectEventListeners() {
-		return listeners;
-	}
-
-	/**
-	 * Fires an event to all registered listeners that represents the operation
-	 * described by the arguments. The first argument should be the graph object
-	 * whose selected state changed, or a Set of such objects. The second
-	 * argument identifies the change; true for setting a flag and false for
-	 * removing it. Creates a suitable event and passes it to all listeners.
-	 */
-	protected void fireEvent(final Object target, final boolean selectOn) {
-		final SelectEvent event = new SelectEvent(this, target, selectOn);
-
-		for ( SelectEventListener listener : listeners ) { 
-			listener.onSelectEvent(event);
-		}
-	}
+	public List<SelectEventListener> getSelectEventListeners();
 }

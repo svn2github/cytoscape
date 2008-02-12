@@ -56,6 +56,7 @@ import org.cytoscape.Node;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphChangeEvent;
 import org.cytoscape.RootGraphChangeListener;
+import org.cytoscape.data.impl.SelectFilterImpl;
 import org.cytoscape.data.SelectFilter;
 import org.cytoscape.data.SelectEventListener;
 
@@ -919,7 +920,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	public boolean containsNode(Node node) {
 		int nativeInx;
 
-		return (node.getRootGraph() == m_root)
+		return (node!=null) 
+		       && (node.getRootGraph() == m_root)
 		       && ((nativeInx = m_rootToNativeNodeInxMap.get(~(node.getRootGraphIndex()))) >= 0)
 		       && (nativeInx != Integer.MAX_VALUE);
 	}
@@ -933,7 +935,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @return DOCUMENT ME!
 	 */
 	public boolean containsNode(Node node, boolean recurse) {
-		if (node.getRootGraph() != m_root) {
+		if (node == null || node.getRootGraph() != m_root) {
 			return false;
 		}
 
@@ -2017,7 +2019,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		m_root.addRootGraphChangeListener(m_changeSniffer);
 		Integer i = new Integer(uid_counter++);
 		identifier = i.toString();
-		selectFilter = new SelectFilter(this);
+		selectFilter = new SelectFilterImpl(this);
 	}
 
 	// Cannot have any recursize reference to a FGraphPerspective in this

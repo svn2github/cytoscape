@@ -761,7 +761,8 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 * @return  DOCUMENT ME!
 	 */
 	public int createEdge(Node source, Node target, boolean directed) {
-		if ((source.getRootGraph() == this) && (target.getRootGraph() == this))
+		if ((source != null) && (target != null) &&
+		    (source.getRootGraph() == this) && (target.getRootGraph() == this))
 			return createEdge(source.getRootGraphIndex(), target.getRootGraphIndex(), directed);
 		else
 

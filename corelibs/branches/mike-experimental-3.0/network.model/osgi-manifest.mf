@@ -2,15 +2,16 @@ Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.6.5
 Created-By: 1.5.0_12 (Sun Microsystems Inc.)
 Originally-Created-By: 1.5.0_12-b04 (Sun Microsystems Inc.)
-Import-Package: cytoscape;resolution:=optional,cytoscape.data;resoluti
- on:=optional,cytoscape.graph.dynamic;resolution:=optional,cytoscape.g
- raph.dynamic.util;resolution:=optional,cytoscape.graph.fixed;resoluti
- on:=optional,cytoscape.groups;resolution:=optional,cytoscape.impl;res
- olution:=optional,cytoscape.util.intr;resolution:=optional
+Import-Package: cytoscape.graph.dynamic;resolution:=optional,cytoscape
+ .graph.dynamic.util;resolution:=optional,cytoscape.graph.fixed;resolu
+ tion:=optional,cytoscape.util.intr;resolution:=optional,org.cytoscape
+ ;resolution:=optional,org.cytoscape.data;resolution:=optional,org.cyt
+ oscape.groups;resolution:=optional,org.cytoscape.impl;resolution:=opt
+ ional
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: network.model
-Export-Package: cytoscape;uses:="cytoscape.graph.dynamic.util,cytoscap
- e.graph.dynamic,cytoscape.util.intr,cytoscape.graph.fixed,cytoscape.i
- mpl,cytoscape.data,cytoscape.groups",cytoscape.groups;uses:=cytoscape
+Export-Package: org.cytoscape.groups;uses:="org.cytoscape",org.cytosca
+ pe;uses:="org.cytoscape.data,org.cytoscape.groups,org.cytoscape.impl"
+ ,org.cytoscape.data;uses:="org.cytoscape"
 Bundle-Version: 0
 
