@@ -59,7 +59,7 @@ import java.util.*;
 /**
  *
  */
-public class CytoscapeViewTests extends TestCase {
+public class CytoscapeViewTest extends TestCase {
 	CyNetwork network;
 	CyNode node1;
 	CyNode node2;
@@ -76,7 +76,7 @@ public class CytoscapeViewTests extends TestCase {
 	 *
 	 * @param name  DOCUMENT ME!
 	 */
-	public CytoscapeViewTests(String name) {
+	public CytoscapeViewTest(String name) {
 		super(name);
 	}
 
@@ -102,17 +102,30 @@ public class CytoscapeViewTests extends TestCase {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * Tests whether selected nodes become unselected after a view of the
+	 * network is destroyed and then recreated.
+	 * @see http://cbio.mskcc.org/cytoscape/bugs/view.php?id=925
 	 */
-	public void tearDown() throws Exception {
+	public void testBug925() {
+		network.unselectAllEdges();
+		network.unselectAllNodes();
+		assertEquals("num nodes selected", 0, network.getSelectedNodes().size());
+		assertEquals("num edges selected", 0, network.getSelectedEdges().size());
+		network.setSelectedNodeState(node1,true);
+		assertEquals("num nodes selected", 1, network.getSelectedNodes().size());
+		assertTrue("node1 is selected",network.isSelected(node1));
+		Cytoscape.destroyNetworkView( view );
+		assertEquals("num nodes selected", 1, network.getSelectedNodes().size());
+		assertTrue("node1 is selected",network.isSelected(node1));
+		view = Cytoscape.createNetworkView(network);
+		assertEquals("num nodes selected", 1, network.getSelectedNodes().size());
+		assertTrue("node1 is selected",network.isSelected(node1));
 	}
 
 	/**
 	 * Tests that the view is properly modified when the selectfilter is changed.
 	 */
-	public void testFilterToView() throws Exception {
+	public void testFilterToViewSelect() throws Exception {
 		checkState(false, false, false, false);
 		network.setSelectedNodeState(node1, true);
 		checkState(true, false, false, false);
@@ -128,14 +141,14 @@ public class CytoscapeViewTests extends TestCase {
 		checkState(true, false, false, true);
 		network.unselectAllEdges();
 		checkState(true, false, false, false);
-		network.unselectAllEdges();
+		network.unselectAllNodes();
 		checkState(false, false, false, false);
 	}
 
 	/**
 	 * Tests that the selectfilter is properly modified when the view is changed.
 	 */
-	public void testViewToFilter() throws Exception {
+	public void testViewToFilterSelect() throws Exception {
 		checkState(false, false, false, false);
 		nodeView1.setSelected(true);
 		checkState(true, false, false, false);
@@ -159,16 +172,11 @@ public class CytoscapeViewTests extends TestCase {
 	 * Checks that the current state of the filter and the view match the state
 	 * defined by the arguments.
 	 */
-	public void checkState(boolean n1, boolean n2, boolean e1, boolean e2) {
-		assertTrue(network.isSelected(node1) == n1);
-		assertTrue(network.isSelected(node2) == n2);
-
-		//assertTrue( network.isSelected(edge1) == e1 );
-		//assertTrue( network.isSelected(edge2) == e2 );
-		//assertTrue( nodeView1.isSelected() == n1 );
-		// assertTrue( nodeView2.isSelected() == n2 );
-		//assertTrue( edgeView1.isSelected() == e1 );
-		//assertTrue( edgeView2.isSelected() == e2 );
+	private void checkState(boolean n1, boolean n2, boolean e1, boolean e2) {
+		assertTrue( network.isSelected(node1) == n1 );
+		assertTrue( network.isSelected(node2) == n2 );
+		assertTrue( network.isSelected(edge1) == e1 );
+		assertTrue( network.isSelected(edge2) == e2 );
 	}
 
 	/**
@@ -177,7 +185,7 @@ public class CytoscapeViewTests extends TestCase {
 	 * @param args DOCUMENT ME!
 	 */
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(new TestSuite(CytoscapeViewTests.class));
+		junit.textui.TestRunner.run(new TestSuite(CytoscapeViewTest.class));
 		Cytoscape.exit(0);
 	}
 
