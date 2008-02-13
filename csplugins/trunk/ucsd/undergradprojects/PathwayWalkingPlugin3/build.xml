@@ -82,7 +82,7 @@
 			<fileset dir="${cytoscape.lib.dir}/build-libs">
 				<include name="*.jar" />
 			</fileset>
-			<fileset dir="${pathwayWalking.root.dir}/../IntActClient">
+			<fileset dir="${pathwayWalking.root.dir}/../IntActClientPlugin">
 				<include name="*.jar" />
 			</fileset>
 		</path>
