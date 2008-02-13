@@ -8,6 +8,7 @@ import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.view.model.ExtendedRecordWrapper;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
@@ -104,7 +105,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         URL url = GradientHeader.class.getResource ("resources/stock_zoom-16.png");
         ImageIcon detailsIcon = new ImageIcon(url);
         JButton button = new JButton (detailsIcon);
-        button.setToolTipText("View Gene Details");
+        button.setToolTipText("View Complete Gene Details");
         button.setOpaque(false);
 
         button.addActionListener(new ActionListener() {
@@ -117,7 +118,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
     }
 
     private JList createHitJList(DefaultListModel peListModel) {
-        JList peList = new JList(peListModel);
+        JList peList = new JListWithToolTips(peListModel);
         peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         peList.setPrototypeCellValue("12345678901234567890");
         return peList;
@@ -201,8 +202,8 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
             peListModel.setSize(searchHits.size());
             int i = 0;
             for (ExtendedRecordType searchHit : searchHits) {
-                String name = searchHit.getName();
-                peListModel.setElementAt(name, i++);
+                ExtendedRecordWrapper wrapper = new ExtendedRecordWrapper (searchHit);
+                peListModel.setElementAt(wrapper, i++);
             }
         } else {
             SwingUtilities.invokeLater(new Runnable(){
