@@ -45,7 +45,7 @@ public class CyNetworkImpl implements CyNetwork {
 
 	public synchronized CyNode addNode() {
 		int newNodeInd = dg.nodeCreate();	
-		CyNode newNode = new CyNodeImpl(this,newNodeInd);
+		CyNode newNode = new CyNodeImpl<CyEdge>(this,newNodeInd);
 		if ( newNodeInd == nodeList.size() )
 			nodeList.add( newNode );
 		else if ( newNodeInd < nodeList.size() && newNodeInd >= 0 )

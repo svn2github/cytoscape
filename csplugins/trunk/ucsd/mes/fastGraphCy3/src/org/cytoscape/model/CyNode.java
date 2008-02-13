@@ -8,6 +8,6 @@ public interface CyNode extends GraphObject {
 
 	// I still don't think these should be here.
 	public List<CyNode> getNeighborList( EdgeType edgeType );
-	public List<CyEdge> getAdjacentEdgeList( EdgeType edgeType );
-	public List<CyEdge> getConnectingEdgeList( CyNode target, EdgeType edgeType );
+	public List<? extends CyBaseEdge> getAdjacentEdgeList( EdgeType edgeType );
+	public List<? extends CyBaseEdge> getConnectingEdgeList( CyNode target, EdgeType edgeType );
 }

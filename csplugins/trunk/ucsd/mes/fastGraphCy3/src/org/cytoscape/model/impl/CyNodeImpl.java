@@ -1,17 +1,17 @@
 package org.cytoscape.model.impl;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyBaseEdge;
+import org.cytoscape.model.CyGraph;
 import org.cytoscape.model.EdgeType;
 import java.util.List; 
 
-class CyNodeImpl extends GraphObjImpl implements CyNode {
+class CyNodeImpl<E extends CyBaseEdge> extends GraphObjImpl implements CyNode {
 
 	final private int index;
-	final private CyNetwork net;
+	final private CyGraph<E> net;
 
-	CyNodeImpl(CyNetwork n, int ind) {
+	CyNodeImpl(CyGraph<E> n, int ind) {
 		super();
 		net = n; 
 		index = ind;
@@ -29,11 +29,11 @@ class CyNodeImpl extends GraphObjImpl implements CyNode {
 		return net.getNeighborList(this, edgeType);
 	}
 
-    public List<CyEdge> getAdjacentEdgeList( EdgeType edgeType ) {
+    public List<E> getAdjacentEdgeList( EdgeType edgeType ) {
 		return net.getAdjacentEdgeList(this, edgeType);
 	}
 
-    public List<CyEdge> getConnectingEdgeList( CyNode target, EdgeType edgeType ) {
+    public List<E> getConnectingEdgeList( CyNode target, EdgeType edgeType ) {
 		return net.getConnectingEdgeList(this, target, edgeType);
 	}
 }

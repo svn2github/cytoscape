@@ -2,13 +2,12 @@ package org.cytoscape.model;
 
 import java.util.List;
 
-interface CyGraph<E extends CyBaseEdge> {
+public interface CyGraph<E extends CyBaseEdge> {
 	public String getIdentifier();
 
 	public CyNode addNode();
 	public boolean removeNode(CyNode node);
 
-	public E addEdge(CyNode source, CyNode target, boolean isDirected);
 	public boolean removeEdge(E edge);
 
 	public int getNodeCount();
