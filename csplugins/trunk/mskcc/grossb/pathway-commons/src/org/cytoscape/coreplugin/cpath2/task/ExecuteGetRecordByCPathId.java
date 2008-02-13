@@ -250,11 +250,6 @@ public class ExecuteGetRecordByCPathId implements Task {
             counter++;
         }
     }
-
-    private String convertToSifFileName (String networkFileName) {
-        String temp = networkFileName.replaceAll(" ", "_");
-        return temp + "_";
-    }
 }
 
 class NullTaskMonitor implements TaskMonitor {
