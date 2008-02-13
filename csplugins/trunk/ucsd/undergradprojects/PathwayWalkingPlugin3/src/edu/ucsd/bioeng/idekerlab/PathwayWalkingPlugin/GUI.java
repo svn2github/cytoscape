@@ -2,7 +2,6 @@ package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
 
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -114,7 +113,7 @@ public class GUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         titleText.setFont(new java.awt.Font("Tahoma", 1, 18));
         titleText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        titleText.setText("Pathway Walking Plugin");
+        titleText.setText("");
  
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel2.setText("Current Node ID:");
@@ -398,21 +397,23 @@ public class GUI extends javax.swing.JFrame {
 //        System.out.println(try2);
         
         try{
+        	setProperty();
 //        	public void search(String id, int i) {}
 //        	try1.execute("executeService", new Class[]{String.class,Integer.class}, new Object[]{"brca2",new Integer(5)});
 
 //			This following line only works if try2 is of type IntActClient
 //        	try2.execute("executeService", new Class[]{CyWebServiceEvent.class}, new Object[]{new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node)});
         	
-        	
         	Object blah1 = try2.execute("findBinaryInteractions", new Class[]{String.class}, new Object[]{nodeId});
 
         	SearchResult result = (SearchResult) blah1;
-
         	
-        	Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
+//        	Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
+        	
+        	Cytoscape.firePropertyChange("SEARCH_RESULT", "uk.ac.ebi.intact.binarysearch.wsclient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
 
         	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node);
+        	
         	
         	System.out.println("RESULTS.GETINTERACTIONS() RETURNS...");
         	System.out.println(result.getInteractions().toString());
@@ -423,8 +424,16 @@ public class GUI extends javax.swing.JFrame {
 //			importNetwork(nodeId, Cytoscape.getCurrentNetwork());
         	
         	search(cyweb1.getParameter().toString(), cyweb1);
-        	importNetwork(cyweb1.getParameter(), null);
-			importNetwork(cyweb1.getParameter(), Cytoscape.getCurrentNetwork());
+        	
+        	System.out.println("SEARCH RESULTS (blah1):");
+        	System.out.println(blah1);
+        	System.out.println("SEARCH RESULTS (cyweb1.getParameter):");
+        	System.out.println(cyweb1.getParameter());
+//        	importNetwork(cyweb1.getParameter(), null);
+//			importNetwork(cyweb1.getParameter(), Cytoscape.getCurrentNetwork());
+
+        	importNetwork(blah1, null);
+        	importNetwork(blah1, Cytoscape.getCurrentNetwork());
 			
         } catch(Exception e){
         	System.out.println(e.toString());
@@ -432,67 +441,6 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("After Intact Client was called.");
     }
     
-    
-	private void setProperty() {
-		props = new ModulePropertiesImpl("edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", "wsc");
-
-		List<String> searchType = new ArrayList<String>();
-		searchType.add("Lucene");
-		searchType.add("Keyword Search");
-
-		//		props.add(new Tunable("search_type", "The edge attribute that contains the weights",
-		//                Tunable.LIST, searchType));
-		props.add(new Tunable("search_mode", "Enable keyword search", Tunable.BOOLEAN,
-		                      new Boolean(false)));
-
-		props.add(new Tunable("max_interactions", "Maximum number of interactions",
-		                      Tunable.INTEGER, new Integer(500)));
-		props.add(new Tunable("search_depth", "Search depth", Tunable.INTEGER, new Integer(0)));
-		props.add(new Tunable("select_interaction", "Import only selected interactions",
-		                      Tunable.BOOLEAN, new Boolean(false)));
-	}
-	
-	public void executeService(CyWebServiceEvent e) {
-		if (e.getSource().equals(CLIENT_ID)) {
-			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK)) {
-				importNetwork(e.getParameter(), null);
-			} else if (e.getEventType().equals(WSEventType.EXPAND_NETWORK)) {
-				importNetwork(e.getParameter(), Cytoscape.getCurrentNetwork());
-			} else if (e.getEventType().equals(WSEventType.SEARCH_DATABASE)) {
-				
-				search(e.getParameter().toString(), e);
-			}
-		}
-	}
-	
-	private void search(String query, CyWebServiceEvent e) {
-		if (stub == null) {
-			stub = new BinarySearchServiceClient();
-		}
-
-		BinarySearchServiceClient client = (BinarySearchServiceClient) stub;
-		System.out.println("=========CLASS = " + client.getClass());
-		
-		for(int i=1; i<10; i++) {
-		System.out.println("HELP HELP HELP");		
-		}
-		System.out.println("THIS IS THE QUERY:" + query);
-		System.out.println("THIS IS e:" + e);
-		System.out.println("THIS IS e.getParameter: " + e.getParameter());
-		System.out.println("THIS IS instance of Node " + (e.getParameter() instanceof Node));
-		System.out.println("THIS IS instance of String " + (e.getParameter() instanceof String));
-		System.out.println("THIS IS instance of Object " + (e.getParameter() instanceof Object));
-		
-
-		SearchResult result = client.findBinaryInteractions(query);
-		if(e.getNextMove() != null) {
-			Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, e.getNextMove()));
-		} else {
-			Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
-		}
-		
-
-	}
  
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("Add to existing network");
@@ -518,14 +466,26 @@ public class GUI extends javax.swing.JFrame {
 			if (stub == null) {
 				stub = new BinarySearchServiceClient();
 			}
-
+	
 			if(searchResult instanceof SearchResult == false) {
 				return;
 			}
 
+			System.out.println("searchResult:");
+			System.out.println(searchResult);
+			System.out.println("end");
+			
 			BinarySearchServiceClient client = (BinarySearchServiceClient) stub;
 			SearchResult result = (SearchResult) searchResult;
 			List<BinaryInteraction> binaryInteractions = result.getInteractions();
+			
+			System.out.println("result:");
+			System.out.println(result);
+			System.out.println("end");
+			
+			System.out.println("result.getInteractions:");
+			System.out.println(result.getInteractions());
+			System.out.println("end");
 
 			final Integer max = (Integer) props.get("max_interactions").getValue();
 			int i = 0;
@@ -697,6 +657,58 @@ public class GUI extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
+    
+	private void setProperty() {
+		props = new ModulePropertiesImpl("edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", "wsc");
+
+		List<String> searchType = new ArrayList<String>();
+		searchType.add("Lucene");
+		searchType.add("Keyword Search");
+
+		//		props.add(new Tunable("search_type", "The edge attribute that contains the weights",
+		//                Tunable.LIST, searchType));
+		props.add(new Tunable("search_mode", "Enable keyword search", Tunable.BOOLEAN,
+		                      new Boolean(false)));
+
+		props.add(new Tunable("max_interactions", "Maximum number of interactions",
+		                      Tunable.INTEGER, new Integer(500)));
+		props.add(new Tunable("search_depth", "Search depth", Tunable.INTEGER, new Integer(0)));
+		props.add(new Tunable("select_interaction", "Import only selected interactions",
+		                      Tunable.BOOLEAN, new Boolean(false)));
+	}
+	
+	public void executeService(CyWebServiceEvent e) {
+		if (e.getSource().equals(CLIENT_ID)) {
+			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK)) {
+				importNetwork(e.getParameter(), null);
+			} else if (e.getEventType().equals(WSEventType.EXPAND_NETWORK)) {
+				importNetwork(e.getParameter(), Cytoscape.getCurrentNetwork());
+			} else if (e.getEventType().equals(WSEventType.SEARCH_DATABASE)) {
+				
+				search(e.getParameter().toString(), e);
+			}
+		}
+	}
+	
+	private void search(String query, CyWebServiceEvent e) {
+		if (stub == null) {
+			stub = new BinarySearchServiceClient();
+		}
+
+		BinarySearchServiceClient client = (BinarySearchServiceClient) stub;
+		System.out.println("=========CLASS = " + client.getClass());
+
+		SearchResult result = client.findBinaryInteractions(query);
+		if(e.getNextMove() != null) {
+			Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, e.getNextMove()));
+		} else {
+			Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
+		}
+		
+
+	}
+	
+	
 
     
     // Variables declaration - do not modify
