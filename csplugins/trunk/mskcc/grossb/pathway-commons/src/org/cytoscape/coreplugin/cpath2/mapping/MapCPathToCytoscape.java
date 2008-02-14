@@ -43,6 +43,7 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPConnectionHandler;
 import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
+import org.cytoscape.coreplugin.cpath2.util.NetworkGroupUtil;
 import org.cytoscape.coreplugin.cpath2.view.MergeDialog;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
@@ -103,7 +104,8 @@ public class MapCPathToCytoscape implements HTTPServerListener {
             }
         }
 
-        Set<CyNetwork> bpNetworkSet = getBiopaxNetworkSet();
+        Set<CyNetwork> bpNetworkSet = NetworkGroupUtil.getNetworkSet
+                (CPathProperties.DOWNLOAD_FULL_BIOPAX);
 
         // if no other networks are loaded, we can just load it up
         if (bpNetworkSet.size() == 0) {
@@ -113,36 +115,6 @@ public class MapCPathToCytoscape implements HTTPServerListener {
         else {
             loadMergeDialog(cpathRequest, bpNetworkSet);
         }
-    }
-
-    /**
-     * Constructs a set of BioPAX networks.
-     *
-     * @return Set<CyNetwork>
-     */
-    private Set<CyNetwork> getBiopaxNetworkSet() {
-
-        // set to return
-        Set<CyNetwork> bpNetworkSet = new HashSet<CyNetwork>();
-
-        // get set of cynetworks
-        Set<CyNetwork> cyNetworks = (Set<CyNetwork>) Cytoscape.getNetworkSet();
-        if (cyNetworks.size() == 0) return cyNetworks;
-
-        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-        for (CyNetwork net : cyNetworks) {
-            String networkID = net.getIdentifier();
-
-            // is the biopax network attribute true ?
-            Boolean b = networkAttributes.getBooleanAttribute(networkID,
-                    MapBioPaxToCytoscape.BIOPAX_NETWORK);
-            if (b != null && b) {
-                bpNetworkSet.add(net);
-            }
-        }
-
-        // outta here
-        return bpNetworkSet;
     }
 
     /**
