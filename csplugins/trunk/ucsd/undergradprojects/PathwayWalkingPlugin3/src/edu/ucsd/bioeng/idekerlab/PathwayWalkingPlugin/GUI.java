@@ -386,59 +386,57 @@ public class GUI extends javax.swing.JFrame {
         AdvancedGUI advG = new AdvancedGUI();
         advG.openGUI();
     }
+    
+    
  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 // TODO add your handling code here:
-        System.out.println("Start Search Button Pressed");
-//        WebServiceClient try1 = WebServiceClientManager.getClient("IntAct");
-//        WebServiceClientImpl try1 = WebServiceClientManager.getClient("IntAct");
-        
-        WebServiceClientImpl try2 = (IntactClient) IntactClient.getClient();
-//        System.out.println(try2);
-        
-        try{
-        	setProperty();
-//        	public void search(String id, int i) {}
-//        	try1.execute("executeService", new Class[]{String.class,Integer.class}, new Object[]{"brca2",new Integer(5)});
-
-//			This following line only works if try2 is of type IntActClient
-//        	try2.execute("executeService", new Class[]{CyWebServiceEvent.class}, new Object[]{new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node)});
-        	
-        	Object blah1 = try2.execute("findBinaryInteractions", new Class[]{String.class}, new Object[]{nodeId});
-
-        	SearchResult result = (SearchResult) blah1;
-        	
-//        	Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
-        	
-        	Cytoscape.firePropertyChange("SEARCH_RESULT", "uk.ac.ebi.intact.binarysearch.wsclient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
-
-        	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node);
-        	
-        	
-        	System.out.println("RESULTS.GETINTERACTIONS() RETURNS...");
-        	System.out.println(result.getInteractions().toString());
-        	System.out.println("END OF RESULTS.GETINTERACTIONS");
-        	
-//			importNetwork(nodeId, null);
-//			System.out.println("Attempting to Import Network");
-//			importNetwork(nodeId, Cytoscape.getCurrentNetwork());
-        	
-        	search(cyweb1.getParameter().toString(), cyweb1);
-        	
-        	System.out.println("SEARCH RESULTS (blah1):");
-        	System.out.println(blah1);
-        	System.out.println("SEARCH RESULTS (cyweb1.getParameter):");
-        	System.out.println(cyweb1.getParameter());
-//        	importNetwork(cyweb1.getParameter(), null);
-//			importNetwork(cyweb1.getParameter(), Cytoscape.getCurrentNetwork());
-
-        	importNetwork(blah1, null);
-        	importNetwork(blah1, Cytoscape.getCurrentNetwork());
-			
-        } catch(Exception e){
-        	System.out.println(e.toString());
-        }
-        System.out.println("After Intact Client was called.");
+    	if(jCheckBox1.isSelected() == true)
+    	{
+    		jProgressBar1.setIndeterminate(true);
+	        System.out.println("Start Search Button Pressed");
+	        
+	        WebServiceClientImpl try2 = (IntactClient) IntactClient.getClient();
+	//        System.out.println(try2);
+	        
+	        try{
+	        	setProperty();
+	//        	public void search(String id, int i) {}
+	//        	try1.execute("executeService", new Class[]{String.class,Integer.class}, new Object[]{"brca2",new Integer(5)});
+	
+	//			This following line only works if try2 is of type IntActClient
+	//        	try2.execute("executeService", new Class[]{CyWebServiceEvent.class}, new Object[]{new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node)});
+	        	
+	        	Object blah1 = try2.execute("findBinaryInteractions", new Class[]{String.class}, new Object[]{nodeId});
+	
+	        	SearchResult result = (SearchResult) blah1;
+	        	  	
+	        	Cytoscape.firePropertyChange("SEARCH_RESULT", "uk.ac.ebi.intact.binarysearch.wsclient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
+	
+	        	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node);
+	        	
+	        	
+	        	System.out.println("RESULTS.GETINTERACTIONS() RETURNS...");
+	        	System.out.println(result.getInteractions().toString());
+	        	System.out.println("END OF RESULTS.GETINTERACTIONS");
+	        	
+	        	
+	        	search(cyweb1.getParameter().toString(), cyweb1);
+	        	
+	        	System.out.println("SEARCH RESULTS (blah1):");
+	        	System.out.println(blah1);
+	        	System.out.println("SEARCH RESULTS (cyweb1.getParameter):");
+	        	System.out.println(cyweb1.getParameter());
+	
+	        	importNetwork(blah1, null);
+	        	importNetwork(blah1, Cytoscape.getCurrentNetwork());
+				
+	        } catch(Exception e){
+	        	System.out.println(e.toString());
+	        }
+	        System.out.println("After Intact Client was called.");
+	        jProgressBar1.setIndeterminate(false);
+    	}
     }
     
  
