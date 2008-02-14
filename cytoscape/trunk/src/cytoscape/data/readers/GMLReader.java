@@ -95,6 +95,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -198,16 +199,6 @@ public class GMLReader extends AbstractGraphReader {
 	// New Visual Style comverted from GML file.
 	VisualStyle gmlstyle;
 
-	// Node appearence
-	NodeAppearanceCalculator nac;
-
-	// Edge appearence
-	EdgeAppearanceCalculator eac;
-
-	// Global appearence
-	GlobalAppearanceCalculator gac;
-	CalculatorCatalog catalog;
-
 	// Hashes for node & edge attributes
 	HashMap nodeW;
 
@@ -301,7 +292,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		// File fileTest = new File(fileName);
 		// target = fileTest.getName();
-		System.out.println("Target GML file is " + fileName);
+		//System.out.println("Target GML file is " + fileName);
 
 		mapSuffix = " for " + fileName;
 
@@ -310,16 +301,16 @@ public class GMLReader extends AbstractGraphReader {
 
 	private void initializeHash() {
 		// Initialize HashMap for new visual style
-		nodeW = new HashMap();
-		nodeH = new HashMap();
-		nodeShape = new HashMap<String,NodeShape>();
-		nodeCol = new HashMap();
-		nodeBWidth = new HashMap<String,Double>();
-		nodeBCol = new HashMap();
-		edgeCol = new HashMap();
-		edgeWidth = new HashMap<String,Float>();
-		edgeArrow = new HashMap<String,String>();
-		edgeShape = new HashMap();
+		//nodeW = new HashMap();
+		//nodeH = new HashMap();
+		//nodeShape = new HashMap<String,NodeShape>();
+		//nodeCol = new HashMap();
+		//nodeBWidth = new HashMap<String,Double>();
+		//nodeBCol = new HashMap();
+		//edgeCol = new HashMap();
+		//edgeWidth = new HashMap<String,Float>();
+		//edgeArrow = new HashMap<String,String>();
+		//edgeShape = new HashMap();
 
 		edge_names = new Vector();
 		node_names = new Vector();
@@ -328,17 +319,8 @@ public class GMLReader extends AbstractGraphReader {
 	// Initialize variables for the new style created from GML
 	//
 	private void initStyle() {
-
-		nac = new NodeAppearanceCalculator();
-		eac = new EdgeAppearanceCalculator();
-		gac = new GlobalAppearanceCalculator();
-
-		gac.setDefaultBackgroundColor(DEF_COLOR);
-		
-		// Unlock the size object, then we can modify the both width and height.
-		nac.setNodeSizeLocked(false);
-
-		graphStyle = new VisualStyleBuilder(styleName, true);
+		graphStyle = new VisualStyleBuilder(styleName, false);
+		graphStyle.setNodeSizeLocked(false);
 	}
 
 	// Create maps for the node attribute and set it as a Visual Style.
@@ -346,185 +328,10 @@ public class GMLReader extends AbstractGraphReader {
 	 *  DOCUMENT ME!
 	 *
 	 * @param vizmapper DOCUMENT ME!
+	 * @deprecated Don't use this. Gone 2/2009.
 	 */
+	@Deprecated
 	public void setNodeMaps(VisualMappingManager vizmapper) {
-		//
-		// Set label for the nodes. (Uses "label" tag in the GML file)
-		//
-		String cName = "GML Labels" + mapSuffix;
-		Calculator nlc = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getCalculator(VisualPropertyType.NODE_LABEL, cName);
-
-		if (nlc == null) {
-			//System.out.println("creating passthrough mapping");
-			PassThroughMapping m = new PassThroughMapping("", Calculator.ID);
-			nlc = new BasicCalculator(cName, m, VisualPropertyType.NODE_LABEL);
-		}
-
-		nac.setCalculator(nlc);
-
-		//
-		// Set node shapes (Uses "type" tag in the GML file)
-		//
-		DiscreteMapping nodeShapeMapping = new DiscreteMapping(NodeShape.ELLIPSE,
-		                                                       Calculator.ID,
-		                                                       ObjectMapping.NODE_MAPPING);
-		nodeShapeMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), false);
-
-		for (int i = 0; i < node_names.size(); i++) {
-			String key = (String) node_names.get(i);
-			NodeShape value;
-
-			if (nodeShape.containsKey(key)) {
-				value = nodeShape.get(key);
-			} else
-				value = NodeShape.ELLIPSE;
-
-			nodeShapeMapping.putMapValue(key, value);
-		}
-
-		Calculator shapeCalculator = new BasicCalculator("GML_Node_Shape" + mapSuffix,
-		                                                            nodeShapeMapping, VisualPropertyType.NODE_SHAPE);
-		nac.setCalculator(shapeCalculator);
-
-		//
-		// Set the color of the node
-		//
-		Color defcol = Color.WHITE;
-
-		DiscreteMapping nodeColorMapping = new DiscreteMapping(defcol, ObjectMapping.NODE_MAPPING);
-		nodeColorMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(),
-		                                             true);
-
-		for (int i = 0; i < node_names.size(); i++) {
-			String key = (String) node_names.get(i);
-			String col;
-			Color c;
-
-			if (nodeCol.containsKey(key) == true) {
-				col = nodeCol.get(key).toString();
-				c = getColor(col);
-			} else
-				c = defcol;
-
-			nodeColorMapping.putMapValue(key, c);
-		}
-
-		Calculator nodeColorCalculator = new BasicCalculator("GML Node Color" + mapSuffix,
-		                                                      nodeColorMapping, 
-		                                                      VisualPropertyType.NODE_FILL_COLOR);
-		nac.setCalculator(nodeColorCalculator);
-
-		//
-		// Set the color of the node border
-		//
-		Color defbcol = Color.BLACK;
-		DiscreteMapping nodeBorderColorMapping = new DiscreteMapping(defcol,
-		                                                             ObjectMapping.NODE_MAPPING);
-		nodeBorderColorMapping.setControllingAttributeName(Calculator.ID,
-		                                                   vizmapper.getNetwork(), true);
-
-		for (int i = 0; i < node_names.size(); i++) {
-			String key = (String) node_names.get(i);
-			String col;
-			Color c;
-
-			if (nodeBCol.containsKey(key) == true) {
-				col = nodeBCol.get(key).toString();
-				c = getColor(col);
-			} else
-				c = defbcol;
-
-			nodeBorderColorMapping.putMapValue(key, c);
-		}
-
-		Calculator nodeBorderColorCalculator = new BasicCalculator("GML Node Border Color"
-		                                                           + mapSuffix,
-		                                                           nodeBorderColorMapping,
-		                                                           VisualPropertyType.NODE_BORDER_COLOR);
-		nac.setCalculator(nodeBorderColorCalculator);
-
-		//
-		// Set the size of the nodes
-		//
-		Double defaultWidth = (Double)nac.getDefaultAppearance().get(VisualPropertyType.NODE_WIDTH);
-
-		// First, set the width of the node
-		DiscreteMapping nodeWMapping = new DiscreteMapping(defaultWidth, ObjectMapping.NODE_MAPPING);
-
-		nodeWMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), true);
-
-		// Set atrributes to each node
-		for (int i = 0; i < node_names.size(); i++) {
-			String key = (String) node_names.get(i);
-			Double w;
-
-			if (nodeW.containsKey(key) == true) {
-				w = new Double(Double.parseDouble(nodeW.get(key).toString()));
-			} else
-				w = defaultWidth;
-
-			nodeWMapping.putMapValue(key, w);
-		}
-
-		Calculator nodeSizeCalculatorW = new BasicCalculator("GML Node Width"
-		                                                     + mapSuffix, nodeWMapping,
-		                                                     VisualPropertyType.NODE_WIDTH);
-		nac.setCalculator(nodeSizeCalculatorW);
-
-		// Then set the height
-		Double defaultHeight = (Double)nac.getDefaultAppearance().get(VisualPropertyType.NODE_HEIGHT);
-
-		DiscreteMapping nodeHMapping = new DiscreteMapping(defaultHeight, ObjectMapping.NODE_MAPPING);
-		nodeHMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), true);
-
-		// Set node height to each node
-		for (int i = 0; i < node_names.size(); i++) {
-			String key = (String) node_names.get(i);
-			Double h;
-
-			if (nodeH.containsKey(key) == true) {
-				h = new Double(Double.parseDouble(nodeH.get(key).toString()));
-			} else
-				h = defaultHeight;
-
-			nodeHMapping.putMapValue(key, h);
-		}
-
-		Calculator nodeSizeCalculatorH = new BasicCalculator("GML Node Height"
-		                                                      + mapSuffix, nodeHMapping,
-		                                                     VisualPropertyType.NODE_HEIGHT);
-		nac.setCalculator(nodeSizeCalculatorH);
-
-
-		//
-		// Set node border line type
-		//
-
-		// first set the style to solid
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_STYLE, LineStyle.SOLID);
-
-		// then set the width
-
-		DiscreteMapping nodeBorderWidthMapping = new DiscreteMapping(new Float(1.0f), 
-		                                                            ObjectMapping.NODE_MAPPING);
-		nodeBorderWidthMapping.setControllingAttributeName(Calculator.ID,
-		                                                  vizmapper.getNetwork(), false);
-
-		for (int i = 0; i < node_names.size(); i++) {
-			String key = (String) node_names.get(i);
-			Double value = new Double(1.0); 
-
-			if (nodeBWidth.containsKey(key) == true) {
-				value = nodeBWidth.get(key);
-			}
-
-			nodeBorderWidthMapping.putMapValue(key, value);
-		}
-
-		Calculator nodeBoderWidthCalculator = new BasicCalculator("GML Node Border" + mapSuffix,
-		                                                          nodeBorderWidthMapping,
-		                                                          VisualPropertyType.NODE_LINE_WIDTH);
-		nac.setCalculator(nodeBoderWidthCalculator);
 	}
 
 	//
@@ -532,140 +339,26 @@ public class GMLReader extends AbstractGraphReader {
 	 *  DOCUMENT ME!
 	 *
 	 * @param vizmapper DOCUMENT ME!
+	 * @deprecated Don't use this. Gone 2/2009.
 	 */
+	@Deprecated
+
 	public void setEdgeMaps(VisualMappingManager vizmapper) {
-		//
-		// Set the color of the edges and arrows.
-		// Arrows are the same color as edges.
-		//
-		Color defcol = (Color)eac.getDefaultAppearance().get(VisualPropertyType.EDGE_COLOR);
-
-		DiscreteMapping edgeColorMapping = new DiscreteMapping(defcol, ObjectMapping.EDGE_MAPPING);
-		edgeColorMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), false);
-
-		DiscreteMapping srcArrowColorMapping = new DiscreteMapping(defcol, ObjectMapping.EDGE_MAPPING);
-		srcArrowColorMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), false);
-		DiscreteMapping tgtArrowColorMapping = new DiscreteMapping(defcol, ObjectMapping.EDGE_MAPPING);
-		tgtArrowColorMapping.setControllingAttributeName(Calculator.ID, vizmapper.getNetwork(), false);
-		for (int i = 0; i < edge_names.size(); i++) {
-			String key = (String) edge_names.get(i);
-			Color c = defcol;
-
-			if (edgeCol.containsKey(key) == true) {
-				c = getColor( edgeCol.get(key).toString() );
-			} 
-
-			edgeColorMapping.putMapValue(key, c);
-			srcArrowColorMapping.putMapValue(key, c);
-			tgtArrowColorMapping.putMapValue(key, c);
-		}
-
-		Calculator edgeColorCalculator = new BasicCalculator("GML Edge Color" + mapSuffix,
-		                                                     edgeColorMapping,
-		                                                     VisualPropertyType.EDGE_COLOR);
-		eac.setCalculator(edgeColorCalculator);
-
-		Calculator srcArrowColorCalculator = new BasicCalculator("GML Edge Source Arrow Color"
-		                                                          + mapSuffix,
-		                                                          srcArrowColorMapping,
-		                                                          VisualPropertyType.EDGE_SRCARROW_COLOR);
-		eac.setCalculator(srcArrowColorCalculator);
-
-		Calculator tgtArrowColorCalculator = new BasicCalculator("GML Edge Target Arrow Color"
-		                                                         + mapSuffix,
-		                                                         tgtArrowColorMapping,
-		                                                         VisualPropertyType.EDGE_TGTARROW_COLOR);
-		eac.setCalculator(tgtArrowColorCalculator);
-
-		// 
-		// Set line type based on the given width
-		//
-		DiscreteMapping edgeLineWidthMapping = new DiscreteMapping(new Float(1.0f),
-		                                                          ObjectMapping.EDGE_MAPPING);
-		edgeLineWidthMapping.setControllingAttributeName(Calculator.ID,
-		                                                vizmapper.getNetwork(), false);
-
-		for (int i = 0; i < edge_names.size(); i++) {
-			String key = (String) edge_names.get(i);
-			Float value = new Float(1.0f);
-
-			if (edgeWidth.containsKey(key) == true) {
-				value = edgeWidth.get(key);
-			}
-
-			edgeLineWidthMapping.putMapValue(key, value);
-		}
-
-		Calculator edgeLineWidthCalculator = new BasicCalculator("GML Line Type" + mapSuffix,
-		                                                         edgeLineWidthMapping,
-		                                                         VisualPropertyType.EDGE_LINE_WIDTH);
-		eac.setCalculator(edgeLineWidthCalculator);
-
-		// 
-		// Set arrow type.
-		// GML does not include shape of the arrow, so the type is fixed.
-		// Just determine the direction (node, both, source or target).
-		//
-
-		// For source
-		DiscreteMapping edgeSourceArrowMapping = new DiscreteMapping(ArrowShape.NONE,
-		                                                             ObjectMapping.EDGE_MAPPING);
-		edgeSourceArrowMapping.setControllingAttributeName(Calculator.ID,
-		                                                   vizmapper.getNetwork(), false);
-
-		// For target
-		DiscreteMapping edgeTargetArrowMapping = new DiscreteMapping(ArrowShape.NONE,
-		                                                             ObjectMapping.EDGE_MAPPING);
-		edgeTargetArrowMapping.setControllingAttributeName(Calculator.ID,
-		                                                   vizmapper.getNetwork(), false);
-
-		for (int i = 0; i < edge_names.size(); i++) {
-			// Determine direction and arrow type
-			String key = (String) edge_names.get(i);
-			String value = "none";
-
-			if (edgeArrow.containsKey(key) == true) {
-				value = edgeArrow.get(key);
-			} 
-
-			if (value.equals("none")) {
-				edgeSourceArrowMapping.putMapValue(key, ArrowShape.NONE);
-				edgeTargetArrowMapping.putMapValue(key, ArrowShape.NONE);
-			} else if (value.equals("both")) {
-				edgeSourceArrowMapping.putMapValue(key, ArrowShape.ARROW);
-				edgeTargetArrowMapping.putMapValue(key, ArrowShape.ARROW);
-			} else if (value.equals("last")) {
-				edgeSourceArrowMapping.putMapValue(key, ArrowShape.NONE);
-				edgeTargetArrowMapping.putMapValue(key, ArrowShape.ARROW);
-			} else if (value.equals("first")) {
-				edgeSourceArrowMapping.putMapValue(key, ArrowShape.ARROW);
-				edgeTargetArrowMapping.putMapValue(key, ArrowShape.NONE);
-			}
-
-			// Alternative syntax: source and target with 0 || 1
-			Calculator edgeSourceArrowCalculator = new BasicCalculator("GML Source Arrow Type"
-			                                                           + mapSuffix,
-			                                                           edgeSourceArrowMapping, 
-			                                                           VisualPropertyType.EDGE_SRCARROW_SHAPE);
-			Calculator edgeTargetArrowCalculator = new BasicCalculator("GML Target Arrow Type"
-			                                                           + mapSuffix,
-			                                                            edgeTargetArrowMapping, 
-			                                                           VisualPropertyType.EDGE_TGTARROW_SHAPE);
-			eac.setCalculator(edgeTargetArrowCalculator);
-			eac.setCalculator(edgeSourceArrowCalculator);
-		}
 	}
 
-	//
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param mapSuffix DOCUMENT ME!
 	 * @param VSName DOCUMENT ME!
+	 * @deprecated Don't use this. Gone 2/2009.
 	 */
+	@Deprecated
 	public void applyMaps(String mapSuffix, String VSName) {
-
-		
+		// CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		/*
 		if (VSName != null) {
 			styleName = VSName;
 		}
@@ -673,12 +366,24 @@ public class GMLReader extends AbstractGraphReader {
 		if (mapSuffix != null) {
 			this.mapSuffix = mapSuffix;
 		}
-		
 
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-	
+		catalog = vizmapper.getCalculatorCatalog();
+
 		setNodeMaps(vizmapper);
 		setEdgeMaps(vizmapper);
+
+		//
+		// Create new VS and apply it
+		//
+		gac.setDefaultBackgroundColor(DEF_COLOR);
+		gmlstyle = new VisualStyle(styleName, nac, eac, gac);
+
+		catalog.addVisualStyle(gmlstyle);
+		vizmapper.setVisualStyle(gmlstyle);
+
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		*/
 	}
 
 	//
@@ -1246,43 +951,21 @@ public class GMLReader extends AbstractGraphReader {
 		// (Assume we do not have duplicate node name.)
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-
+			
 			if (keyVal.key.equals(X) || keyVal.key.equals(Y)) {
 				// Do nothing.
 			} else if (keyVal.key.equals(H)) {
-				nodeH.put(nodeName, keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, ""+keyVal.value);
 			} else if (keyVal.key.equals(W)) {
-				nodeW.put(nodeName, keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_WIDTH, ""+keyVal.value);
 			} else if (keyVal.key.equals(FILL)) {
-				nodeCol.put(nodeName, keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_FILL_COLOR, ""+keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE)) {
-				nodeBCol.put(nodeName, keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_BORDER_COLOR, ""+keyVal.value);
-			} else if (keyVal.key.equals(OUTLINE_WIDTH)) {
-				nodeBWidth.put(nodeName, (Double)keyVal.value);
+			} else if (keyVal.key.equals(WIDTH)) {
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_LINE_WIDTH, ""+keyVal.value);
 			} else if (keyVal.key.equals(TYPE)) {
 				String type = (String) keyVal.value;
-
-				if (type.equals(ELLIPSE)) {
-					nodeShape.put(nodeName, NodeShape.ELLIPSE);
-				} else if (type.equals(RECTANGLE)) {
-					nodeShape.put(nodeName, NodeShape.RECT);
-				} else if (type.equals(DIAMOND)) {
-					nodeShape.put(nodeName, NodeShape.DIAMOND);
-				} else if (type.equals(HEXAGON)) {
-					nodeShape.put(nodeName, NodeShape.HEXAGON);
-				} else if (type.equals(OCTAGON)) {
-					nodeShape.put(nodeName, NodeShape.OCTAGON);
-				} else if (type.equals(PARALELLOGRAM)) {
-					nodeShape.put(nodeName, NodeShape.PARALLELOGRAM);
-				} else if (type.equals(TRIANGLE)) {
-					nodeShape.put(nodeName, NodeShape.TRIANGLE);
-				}
-				
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_SHAPE,type);
 			}
 		}
@@ -1308,17 +991,16 @@ public class GMLReader extends AbstractGraphReader {
 				// Current version of CS does not support this, so ignore this
 				// at this point of time...
 			} else if (keyVal.key.equals(WIDTH)) {
-				edgeWidth.put(edgeName, new Float(((Number) keyVal.value).floatValue()));
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_LINE_WIDTH, new String(keyVal.value.toString()));
 			} else if (keyVal.key.equals(FILL)) {
-				edgeCol.put(edgeName, (String) keyVal.value);
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_COLOR, new String(keyVal.value.toString()));
 				edgeFill = keyVal.value.toString();
 			} else if (keyVal.key.equals(ARROW)) {
-				edgeArrow.put(edgeName, (String) keyVal.value);
+				//edgeArrow.put(edgeName, (String) keyVal.value);
 				isArrow = true;
 				ArrowShape shape = ArrowShape.ARROW;
 				String arrowName = shape.getName();
+				
 				if (keyVal.value.toString().equalsIgnoreCase(ARROW_FIRST)) {
 					arrowShape = ARROW_FIRST;
 					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
@@ -1339,8 +1021,7 @@ public class GMLReader extends AbstractGraphReader {
 				value = (String) keyVal.value;
 
 				if (value.equals(STRAIGHT_LINES)) {
-					edgeShape.put(edgeName, (String) keyVal.value);
-
+					//edgeShape.put(edgeName, (String) keyVal.value);
 				} else if (value.equals(CURVED_LINES)) {
 					// edgeView.setLineType(EdgeView.CURVED_LINES);
 				}
@@ -1562,15 +1243,13 @@ public class GMLReader extends AbstractGraphReader {
 			    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 		
 			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
-				graphStyle.buildStyle();
-								
-				Cytoscape.getVisualMappingManager().setVisualStyle(styleName+ " style");
+				graphStyle.buildStyle();	
 				
-				Cytoscape.getVisualMappingManager().applyAppearances();
+				Cytoscape.getVisualMappingManager().setVisualStyle(graphStyle.getStyleNmae());
 				
 				CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
 			    view.applyVizmapper(Cytoscape.getVisualMappingManager().getVisualStyle()); 
-			    view.redrawGraph(false, true); 
+			    //view.redrawGraph(false, true); 
 			}			
 		}
 	}
