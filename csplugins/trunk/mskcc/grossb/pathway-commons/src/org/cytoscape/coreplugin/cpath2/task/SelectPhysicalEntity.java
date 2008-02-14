@@ -162,6 +162,7 @@ public class SelectPhysicalEntity {
                 pathwayTableModel.setColumnCount(2);
             }
             if (pathwayList.size() == 0) {
+                pathwayTableModel.setRowCount(1);
                 pathwayTableModel.setValueAt("No pathways found.", 0, 0);    
             } else {
                 for (int i = 0; i < pathwayList.size(); i++) {
