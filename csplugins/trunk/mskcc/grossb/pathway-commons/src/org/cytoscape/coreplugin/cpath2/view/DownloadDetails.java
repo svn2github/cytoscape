@@ -3,6 +3,8 @@ package org.cytoscape.coreplugin.cpath2.view;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.util.NetworkGroupUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,8 +13,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
+import java.util.Set;
+import java.util.HashMap;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
@@ -22,6 +27,7 @@ import cytoscape.task.util.TaskManager;
  * @author Ethan Cerami
  */
 public class DownloadDetails extends JDialog {
+    private JComboBox networkComboBox;
 
     /**
      * Constructor.
@@ -78,7 +84,14 @@ public class DownloadDetails extends JDialog {
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = createButtonPanel(ids, peName, this);
-        contentPane.add(buttonPanel, BorderLayout.SOUTH);
+        JPanel mergePanel = createMergePanel();
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        if (mergePanel != null) {
+            panel.add(mergePanel);
+        }
+        panel.add(buttonPanel);
+        contentPane.add(panel, BorderLayout.SOUTH);
         pack();
         setLocationRelativeTo(Cytoscape.getDesktop());
     }
@@ -113,13 +126,46 @@ public class DownloadDetails extends JDialog {
         return buttonPanel;
     }
 
+    private JPanel createMergePanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        CPathProperties cPathProperties = CPathProperties.getInstance();
+        int downloadMode = cPathProperties.getDownloadMode();
+        if (downloadMode == CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF) {
+            Set <CyNetwork> networkSet = NetworkGroupUtil.getNetworkSet(downloadMode);
+
+            Vector networkVector = new Vector();
+            networkVector.add(new NetworkWrapper(null));
+            if (networkSet != null && networkSet.size() > 0) {
+                for (CyNetwork net : networkSet) {
+                    NetworkWrapper netWrapper = new NetworkWrapper (net);
+                    networkVector.add(netWrapper);
+                }
+                networkComboBox = new JComboBox(networkVector);
+                JLabel label = new JLabel ("Create / Merge:  ");
+                panel.add(label);
+                panel.add(networkComboBox);
+                networkComboBox.setSelectedIndex(0);
+            }
+        }
+        return panel;
+    }
+
     /**
      * Downloads interaction bundles in a new thread.
      */
     private void downloadInteractions(long ids[], String peName) {
+        CyNetwork networkToMerge = null;
+        if (networkComboBox != null) {
+            NetworkWrapper netWrapper = (NetworkWrapper) networkComboBox.getSelectedItem();
+            if (netWrapper != null) {
+                networkToMerge = netWrapper.getNetwork();
+            }
+        }
         String networkTitle = peName + ":  Network";
         CPathWebService webApi = CPathWebService.getInstance();
-        ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, networkTitle);
+        ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, networkTitle,
+                networkToMerge);
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
         jTaskConfig.displayStatus(true);
@@ -147,5 +193,25 @@ class NonEditableTableModel extends DefaultTableModel {
      */
     public boolean isCellEditable(int row, int col) {
         return false;
+    }
+}
+
+class NetworkWrapper {
+    private CyNetwork network;
+
+    public NetworkWrapper (CyNetwork network) {
+        this.network = network;
+    }
+
+    public CyNetwork getNetwork() {
+        return network;
+    }
+
+    public String toString() {
+        if (network != null) {
+            return "Merge with:  " + network.getTitle();
+        } else {
+            return "Create New Network";
+        }
     }
 }
