@@ -1,6 +1,10 @@
 package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.*;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.ding.CyGraphLOD;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.GraphReader;
@@ -257,7 +261,8 @@ public class ExecuteGetRecordByCPathId implements Task {
                 LayoutUtil layoutAlgorithm = new LayoutUtil();
 
                 //  Now, create the view.
-                Cytoscape.createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
+                //  Use local create view option, so that we don't mess up the visual style.
+                createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
                         visualStyle);
 
                 // Set up clickable node details.
@@ -325,6 +330,36 @@ public class ExecuteGetRecordByCPathId implements Task {
             taskMonitor.setPercentCompleted(percentComplete);
             counter++;
         }
+    }
+
+    private CyNetworkView createNetworkView (CyNetwork network, String title, CyLayoutAlgorithm
+            layout, VisualStyle vs) {
+
+		if (Cytoscape.viewExists(network.getIdentifier())) {
+			return Cytoscape.getNetworkView(network.getIdentifier());
+		}
+
+		final DingNetworkView view = new DingNetworkView(network, title);
+		view.setGraphLOD(new CyGraphLOD());
+		view.setIdentifier(network.getIdentifier());
+		view.setTitle(network.getTitle());
+		Cytoscape.getNetworkViewMap().put(network.getIdentifier(), view);
+		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
+
+		if (vs != null) {
+			view.setVisualStyle(vs.getName());
+		}
+
+		if (layout == null) {
+			layout = CyLayouts.getDefaultLayout();
+		}
+
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
+                null, view);
+		layout.doLayout(view);
+		view.fitContent();
+		view.redrawGraph(false, true);
+		return view;
     }
 }
 
