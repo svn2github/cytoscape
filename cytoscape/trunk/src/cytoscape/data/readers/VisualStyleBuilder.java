@@ -204,7 +204,7 @@ public class VisualStyleBuilder {
 	 * This method return the name of visual style created. If visual style is not created, returned value will be "undefined". 
 	 */
 	
-	public String getStyleNmae() {
+	public String getStyleName() {
 		return styleName;
 	}
 }
