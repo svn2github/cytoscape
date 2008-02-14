@@ -44,10 +44,13 @@ public class BitmapExporter implements Exporter
 		int width  = (int) (ifc.getWidth() * scale);
 		int height = (int) (ifc.getHeight() * scale);
 
+		// System.out.println("Exporting "+width+"X"+height+" image");
+
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.scale(scale, scale);
-		ifc.printNoImposter(g);
+		// ifc.printNoImposter(g);
+		ifc.print(g);
 		g.dispose();
 		
 		ImageIO.write(image, extension, stream);
