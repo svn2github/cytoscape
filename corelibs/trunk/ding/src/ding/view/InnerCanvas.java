@@ -138,6 +138,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private int m_lastRenderDetail = 0;
 	private Rectangle m_selectionRect = null;
 	private ViewChangeEdit m_undoable_edit;
+	
+	private boolean NodeMovement = true;
 
 	//final boolean[] m_printingTextAsShape = new boolean[1];
 
@@ -803,6 +805,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public void mouseDragged(MouseEvent e) {
 		if (m_currMouseButton == 1) {
 			if (m_button1NodeDrag) {
+				if (this.isNodeMovementDisabled()) {
+					return;
+				}
 				//*****SAVE SELECTED NODE & EDGE POSITIONS******
 				if (m_undoable_edit == null) {
 					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move");
@@ -1484,5 +1489,17 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		String os = System.getProperty("os.name");
 
 		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
+	}
+	
+	public void enableNodeMovement(){
+		this.NodeMovement = true;
+	}
+	
+	public void disableNodeMovement(){
+		this.NodeMovement = false;
+	}
+	
+	public boolean isNodeMovementDisabled(){
+		return !(this.NodeMovement);
 	}
 }
