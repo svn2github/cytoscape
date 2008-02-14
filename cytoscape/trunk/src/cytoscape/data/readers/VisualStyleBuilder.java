@@ -54,9 +54,7 @@ import java.awt.Color;
 public class VisualStyleBuilder {
 
 	Map<VisualPropertyType,Map<Object,Object>> valueMaps;
-	Map<VisualPropertyType,Map<String,Object>> idMaps;
 	String name;
-	boolean addOverride = false;
 	private boolean nodeSizeLocked = true;
 	private String styleName = "undefined";
 
@@ -89,12 +87,11 @@ public class VisualStyleBuilder {
 	 * Build a new VisualStyleBuilder object whose output style will be called "name".
 	 * 
 	 * @param name the name of the visual style that will be created.
-	 * @param addOvAttr adds override attributes for each style set
+	 * @param addOvAttr not used. 
 	 */
 	public VisualStyleBuilder(String name, boolean addOvAttr) {
 		this.name = name;
 		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
-		this.addOverride = addOvAttr;
 	}
 
 	/**
@@ -111,20 +108,42 @@ public class VisualStyleBuilder {
 		nac.setNodeSizeLocked(nodeSizeLocked);
 		
 		for ( VisualPropertyType type : valueMaps.keySet() ) {
-			DiscreteMapping dm = new DiscreteMapping( type.getVisualProperty().getDefaultAppearanceObject(), 
-			                                          getAttrName(type), 
-			                                          type.isNodeProp() ? 
-													   ObjectMapping.NODE_MAPPING : 
-													   ObjectMapping.EDGE_MAPPING );
+		
+			Map<Object,Object> valMap = valueMaps.get(type);
 
-			dm.putAll( valueMaps.get(type) );
+			// If there is more than one value specified for a given
+			// visual property, then create a mapping and calculator.
+			if ( valMap.size() > 1 ) {
 
-			Calculator calc = new BasicCalculator("homer " + getAttrName(type), dm, type);
+				DiscreteMapping dm = new DiscreteMapping( type.getVisualProperty().getDefaultAppearanceObject(), 
+			   	                                       getAttrName(type), 
+			   	                                       type.isNodeProp() ? 
+														   ObjectMapping.NODE_MAPPING : 
+														   ObjectMapping.EDGE_MAPPING );
 
-			if ( type.isNodeProp() )
-				nac.setCalculator( calc );
-			else
-				eac.setCalculator( calc );
+				System.out.println( "ValueMaps size: " + valueMaps.get(type).size() );
+				dm.putAll( valMap );
+
+				Calculator calc = new BasicCalculator("homer " + getAttrName(type), dm, type);
+	
+				if ( type.isNodeProp() )
+					nac.setCalculator( calc );
+				else
+					eac.setCalculator( calc );
+
+			// Otherwise, set the default appearance value for the visual style
+			// and then remove the attribute that was created.
+			} else {
+				if ( type.isNodeProp() ) {
+					for ( Object key : valMap.keySet() ) 
+						nac.getDefaultAppearance().set( type, valMap.get(key) );
+					Cytoscape.getNodeAttributes().deleteAttribute(getAttrName(type));
+				} else {
+					for ( Object key : valMap.keySet() ) 
+						eac.getDefaultAppearance().set( type, valMap.get(key) );
+					Cytoscape.getEdgeAttributes().deleteAttribute(getAttrName(type));
+				}
+			}
 		}
 
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
@@ -163,20 +182,11 @@ public class VisualStyleBuilder {
 		else
 			attrs = Cytoscape.getEdgeAttributes();
 
-		attrs.setAttribute(id, getAttrName(type), value.hashCode());
-		if (addOverride) {
-			String strValue = value.toString();
-			if (type.getDataType() == Color.class) {
-				strValue = ((Color)value).getRed()+","+((Color)value).getGreen()+","+((Color)value).getBlue();
-			}
-			attrs.setAttribute(id, type.getBypassAttrName(), strValue);
-			attrs.setUserVisible(type.getBypassAttrName(), false);
-		}
+		attrs.setAttribute(id, getAttrName(type), value.toString());
 
 		if ( !valueMaps.containsKey(type) )
 			valueMaps.put( type, new HashMap<Object,Object>() );
-		valueMaps.get(type).put( new Integer(value.hashCode()), value );
-	
+		valueMaps.get(type).put( value.toString(), value );
 	}
 	
 	/**
