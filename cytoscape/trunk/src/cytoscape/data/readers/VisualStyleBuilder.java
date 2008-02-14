@@ -164,7 +164,6 @@ public class VisualStyleBuilder {
 			attrs = Cytoscape.getEdgeAttributes();
 
 		attrs.setAttribute(id, getAttrName(type), value.hashCode());
-		attrs.setUserVisible(getAttrName(type), false);
 		if (addOverride) {
 			String strValue = value.toString();
 			if (type.getDataType() == Color.class) {
