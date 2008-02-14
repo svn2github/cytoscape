@@ -57,6 +57,8 @@ public class VisualStyleBuilder {
 	Map<VisualPropertyType,Map<String,Object>> idMaps;
 	String name;
 	boolean addOverride = false;
+	private boolean nodeSizeLocked = true;
+	private String styleName = "undefined";
 
 	/**
 	 * Build a new VisualStyleBuilder object whose output style will be called "name".
@@ -106,6 +108,8 @@ public class VisualStyleBuilder {
 		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
 		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
 
+		nac.setNodeSizeLocked(nodeSizeLocked);
+		
 		for ( VisualPropertyType type : valueMaps.keySet() ) {
 			DiscreteMapping dm = new DiscreteMapping( type.getVisualProperty().getDefaultAppearanceObject(), 
 			                                          getAttrName(type), 
@@ -126,7 +130,7 @@ public class VisualStyleBuilder {
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
-		String styleName = name+" style";
+		styleName = name+" style";
 		VisualStyle graphStyle = new VisualStyle(styleName, nac, eac, gac);
 
 		// Remove this in case we've already loaded this network once
@@ -174,5 +178,24 @@ public class VisualStyleBuilder {
 			valueMaps.put( type, new HashMap<Object,Object>() );
 		valueMaps.get(type).put( new Integer(value.hashCode()), value );
 	
+	}
+	
+	/**
+	 * This method lock/unlock the size object (Node Width, Node Height) in NodeAppearanceCalculator
+	 * If unlocked, we can modify both width and height of node
+	 * 
+	 * @param pLock
+	 */
+	
+	public void setNodeSizeLocked(boolean pLock){
+		nodeSizeLocked = pLock;
+	}
+	
+	/**
+	 * This method return the name of visual style created. If visual style is not created, returned value will be "undefined". 
+	 */
+	
+	public String getStyleNmae() {
+		return styleName;
 	}
 }
