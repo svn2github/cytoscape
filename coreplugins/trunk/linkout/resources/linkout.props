@@ -84,3 +84,6 @@ edgelinkouturl.Ontology.Molecular\ Interaction\ (PSI-MI)=http://www.ebi.ac.uk/on
 #Interaction Database Links
 edgelinkouturl.Network\ Database.IntAct=http://www.ebi.ac.uk/intact/search/do/search?searchString=%ID%&filter=ac
 edgelinkouturl.Network\ Database.BioGRID=http://www.thebiogrid.org/SearchResults/summary/%ID%
+
+#Attribute name for user-embedded URLs
+externalLinkName=Linkout.ExternalLinks

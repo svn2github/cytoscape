@@ -55,7 +55,8 @@ public class LinkOut {
 	//keyword that marks properties that should be added to LinkOut
 	private static final String nodeMarker = "nodelinkouturl.";
 	private static final String edgeMarker = "edgelinkouturl.";
-	private static final String externalLinksAttribute = "ExternalLinks";
+	private static final String linkMarker = "externalLinkName.";
+	private static String externalLinksAttribute = "Linkout.ExternalLinks";
 	private Properties props;
 	private static final Font TITLE_FONT = new Font("sans-serif", Font.BOLD, 14);
 
@@ -430,13 +431,20 @@ public class LinkOut {
 		// command line. Only use the defaults if nothing
 		// else can be found.
 		boolean linkoutFound = false;
+		boolean externalLinkNameFound = false;
 		Enumeration names = props.propertyNames();
 
 		while (names.hasMoreElements()) {
 			String name = (String) names.nextElement();
+			if (name.compareToIgnoreCase(linkMarker) == 0) {
+				externalLinkNameFound = true;
+				externalLinksAttribute = props.getProperty(linkMarker);
+				continue;
+			}
 			int p = name.lastIndexOf(nodeMarker);
+			int q = name.lastIndexOf(edgeMarker);
 
-			if (p != -1) {
+			if (p != -1 || q != -1) {
 				linkoutFound = true;
 
 				break;
@@ -450,6 +458,9 @@ public class LinkOut {
 
 				ClassLoader cl = LinkOut.class.getClassLoader();
 				props.load(cl.getResource("linkout.props").openStream());
+				if (!externalLinkNameFound) {
+					externalLinksAttribute = props.getProperty(linkMarker);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Couldn't load default linkout props");
