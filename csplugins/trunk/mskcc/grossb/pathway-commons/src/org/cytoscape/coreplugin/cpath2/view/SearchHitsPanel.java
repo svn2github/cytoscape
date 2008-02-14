@@ -79,7 +79,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         JScrollPane hitListPane = new JScrollPane(peList);
 
         detailsButton = createDetailsButton();
-        GradientHeader header = new GradientHeader("Step 2:  Select Gene", detailsButton);
+        GradientHeader header = new GradientHeader("Step 2:  Select", detailsButton);
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(header);
 
