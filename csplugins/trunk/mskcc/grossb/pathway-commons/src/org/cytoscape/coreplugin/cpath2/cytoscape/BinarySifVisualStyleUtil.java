@@ -19,7 +19,7 @@ import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
  */
 public class BinarySifVisualStyleUtil {
     public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
-
+    public final static String BINARY_NETWORK = "BINARY_NETWORK";
     public final static String COMPONENT_OF = "Component_Of";
     public final static String COMPONENT_IN_SAME = "Component_InSame";
     public final static String SEQUENTIAL_CATALYSIS = "SequentialCatalysis";
