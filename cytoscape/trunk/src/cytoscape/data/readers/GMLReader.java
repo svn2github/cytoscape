@@ -1245,8 +1245,8 @@ public class GMLReader extends AbstractGraphReader {
 			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
 				graphStyle.buildStyle();	
 				
-				Cytoscape.getVisualMappingManager().setVisualStyle(graphStyle.getStyleNmae());
-				
+				// The following code is required, because of a bug in VMM
+				Cytoscape.getVisualMappingManager().setVisualStyle(graphStyle.getStyleName());
 				CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
 			    view.applyVizmapper(Cytoscape.getVisualMappingManager().getVisualStyle()); 
 			    //view.redrawGraph(false, true); 
