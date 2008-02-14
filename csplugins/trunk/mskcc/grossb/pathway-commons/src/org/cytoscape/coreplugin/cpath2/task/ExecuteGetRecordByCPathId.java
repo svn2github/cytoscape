@@ -1,32 +1,32 @@
 package org.cytoscape.coreplugin.cpath2.task;
 
+import cytoscape.*;
+import cytoscape.view.CyNetworkView;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.CytoscapeInit;
 import cytoscape.visual.VisualStyle;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.CyAttributes;
-import org.cytoscape.coreplugin.cpath2.web_service.*;
+import cytoscape.visual.VisualMappingManager;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
+import org.cytoscape.coreplugin.cpath2.web_service.*;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
-import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
+import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
-import org.jdom.JDOMException;
-import org.jdom.Element;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Controller for Executing a Get Record(s) by CPath ID(s) command.
@@ -39,17 +39,34 @@ public class ExecuteGetRecordByCPathId implements Task {
     private long ids[];
     private String networkTitle;
     private boolean haltFlag = false;
+    private CyNetwork mergedNetwork;
 
     /**
      * Constructor.
      *
-     * @param webApi         cPath Web Api.
-     * @param ids            Array of CPath IDs.
+     * @param webApi cPath Web Api.
+     * @param ids    Array of CPath IDs.
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], String networkTitle) {
         this.webApi = webApi;
         this.ids = ids;
         this.networkTitle = networkTitle;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param webApi        CPathWebService AI.
+     * @param ids           List of IDs.
+     * @param networkTitle  Network Title.
+     * @param mergedNetwork Network to merge with.
+     */
+    public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], String networkTitle,
+            CyNetwork mergedNetwork) {
+        this.webApi = webApi;
+        this.ids = ids;
+        this.networkTitle = networkTitle;
+        this.mergedNetwork = mergedNetwork;
     }
 
     /**
@@ -76,7 +93,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      */
     public String getTitle() {
         return "Retrieving " + networkTitle + " from "
-            + CPathProperties.getInstance().getCPathServerName() +"...";
+                + CPathProperties.getInstance().getCPathServerName() + "...";
     }
 
     /**
@@ -95,20 +112,18 @@ public class ExecuteGetRecordByCPathId implements Task {
             File tmpFile;
             String format;
             if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
-                tmpFile =  File.createTempFile("temp", ".xml", new File(tmpDir));
+                tmpFile = File.createTempFile("temp", ".xml", new File(tmpDir));
                 format = CPathProtocol.FORMAT_BIOPAX;
             } else {
-                tmpFile =  File.createTempFile("temp", ".sif", new File(tmpDir));
+                tmpFile = File.createTempFile("temp", ".sif", new File(tmpDir));
                 format = CPathProtocol.FORMAT_BINARY_SIF;
             }
             tmpFile.deleteOnExit();
 
-            //  Get BioPAX XML
-            String xml = webApi.getRecordsByIds(ids, format, taskMonitor);
-
-
+            //  Get Data, and write to temp file.
+            String data = webApi.getRecordsByIds(ids, format, taskMonitor);
             FileWriter writer = new FileWriter(tmpFile);
-            writer.write(xml);
+            writer.write(data);
             writer.close();
 
             //  Load up File via ImportHandler Framework
@@ -133,12 +148,21 @@ public class ExecuteGetRecordByCPathId implements Task {
                 cyNetwork = Cytoscape.createNetwork(reader, true, null);
             }
 
-            // update the task monitor
-            Object[] ret_val = new Object[2];
-            ret_val[0] = cyNetwork;
-            ret_val[1] = networkTitle;
-            Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
-
+            // Fire appropriate network event.
+            if (mergedNetwork == null) {
+                //  Fire a Network Loaded Event
+                Object[] ret_val = new Object[2];
+                ret_val[0] = cyNetwork;
+                ret_val[1] = networkTitle;
+                Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+            } else {
+                //  Fire a Network Modified Event;  causes Quick Find to Re-Index.
+                Object[] ret_val = new Object[2];
+                ret_val[0] = mergedNetwork;
+                ret_val[1] = networkTitle;
+                Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
+                    ret_val);
+            }
             taskMonitor.setStatus("Done");
             taskMonitor.setPercentCompleted(100);
         } catch (IOException e) {
@@ -156,6 +180,7 @@ public class ExecuteGetRecordByCPathId implements Task {
 
     /**
      * Execute Post-Processing on BINARY SIF Network.
+     *
      * @param cyNetwork Cytoscape Network Object.
      */
     private void postProcessingBinarySif(final CyNetwork cyNetwork) {
@@ -169,40 +194,87 @@ public class ExecuteGetRecordByCPathId implements Task {
         Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
                 "quickfind.default_index", "biopax.node_label");
 
+        //  Specify that this is a BINARY_NETWORK
+        Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
+                BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE);
+
         //  Get all node details.
+        //  TODO:  For efficiency, only get the new nodes
         getNodeDetails(cyNetwork, nodeIterator, nodeAttributes);
 
-        //  Create the view, visual style, and layout.
-        if (haltFlag == false &&
-                cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-                .getProperty("viewThreshold"))) {
-            taskMonitor.setStatus("Creating Network View...");
-            taskMonitor.setPercentCompleted(-1);            
-
-            //  Set up the right visual style
-            VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
-
-            //  Set up the right layout algorithm.
-            LayoutUtil layoutAlgorithm = new LayoutUtil();
-
-            //  Now, create the view.
-            Cytoscape.createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
-                    visualStyle);
-
-            // Set up clickable node details.
-            CytoscapeWrapper.initBioPaxPlugInUI();
-            final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-            NetworkListener networkListener = bpContainer.getNetworkListener();
-            networkListener.registerNetwork(cyNetwork);
-
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
-                    bpContainer.showLegend();
-                    Cytoscape.getCurrentNetworkView().fitContent();
-                    cyNetwork.setTitle(networkTitle);
+        if (haltFlag == false) {
+            if (mergedNetwork != null) {
+                taskMonitor.setStatus("Merging Network...");
+                List nodeList = cyNetwork.nodesList();
+                for (int i = 0; i < nodeList.size(); i++) {
+                    CyNode node = (CyNode) nodeList.get(i);
+                    mergedNetwork.addNode(node);
                 }
-            });
+                List edgeList = cyNetwork.edgesList();
+                for (int i = 0; i < edgeList.size(); i++) {
+                    CyEdge edge = (CyEdge) edgeList.get(i);
+                    mergedNetwork.addEdge(edge);
+                }
+
+                //  Select this view
+                CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetwork.getIdentifier());
+                Cytoscape.setCurrentNetwork(mergedNetwork.getIdentifier());
+                Cytoscape.setCurrentNetworkView(mergedNetwork.getIdentifier());
+
+                //  Apply Layout
+                LayoutUtil layoutAlgorithm = new LayoutUtil();
+                networkView.applyLayout(layoutAlgorithm);
+
+                final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
+                        bpContainer.showLegend();
+                        Cytoscape.getCurrentNetworkView().fitContent();
+                        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+                        vizmapper.applyAppearances();
+                    }
+                });
+
+                //  Select only the new nodes
+                mergedNetwork.unselectAllEdges();
+                mergedNetwork.unselectAllNodes();
+                mergedNetwork.setSelectedNodeState(nodeList, true);
+                mergedNetwork.setSelectedEdgeState(edgeList, true);
+
+                //  Delete the temp network.
+                Cytoscape.destroyNetwork(cyNetwork);
+
+            } else if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+                    .getProperty("viewThreshold"))) {
+                taskMonitor.setStatus("Creating Network View...");
+                taskMonitor.setPercentCompleted(-1);
+
+                //  Set up the right visual style
+                VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
+
+                //  Set up the right layout algorithm.
+                LayoutUtil layoutAlgorithm = new LayoutUtil();
+
+                //  Now, create the view.
+                Cytoscape.createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
+                        visualStyle);
+
+                // Set up clickable node details.
+                CytoscapeWrapper.initBioPaxPlugInUI();
+                final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+                NetworkListener networkListener = bpContainer.getNetworkListener();
+                networkListener.registerNetwork(cyNetwork);
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
+                        bpContainer.showLegend();
+                        Cytoscape.getCurrentNetworkView().fitContent();
+                        cyNetwork.setTitle(networkTitle);
+                    }
+                });
+            }
         } else {
             //  If we have requested a halt, and we have a network, destroy it.
             if (cyNetwork != null) {
@@ -214,8 +286,12 @@ public class ExecuteGetRecordByCPathId implements Task {
     /**
      * Gets Details for Each Node from Web Service API.
      */
-    private void getNodeDetails(CyNetwork cyNetwork, Iterator nodeIterator,
-            CyAttributes nodeAttributes) {
+    private void getNodeDetails
+            (CyNetwork
+                    cyNetwork, Iterator
+                    nodeIterator,
+                    CyAttributes
+                            nodeAttributes) {
         taskMonitor.setStatus("Retrieving node details...");
         taskMonitor.setPercentCompleted(0);
         int numNodes = cyNetwork.nodesList().size();
@@ -229,7 +305,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             try {
                 String xml = webApi.getRecordsByIds(ids, CPathProtocol.FORMAT_BIOPAX,
                         new NullTaskMonitor());
-                StringReader reader = new StringReader (xml);
+                StringReader reader = new StringReader(xml);
                 BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
                 ArrayList peList = bpUtil.getPhysicalEntityList();
                 if (peList.size() > 0) {
