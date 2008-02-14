@@ -331,16 +331,20 @@ public class CPathProtocol {
         //  proxy.server.type=HTTP
         if (proxyServer != null) {
             String proxyAddress = proxyServer.toString();
+            System.out.println("full proxy string:  " + proxyAddress);
             String[] addressComponents = proxyAddress.split("@");
             if (addressComponents.length == 2) {
                 String parts[] = addressComponents[1].split(":");
                 if (parts.length == 2) {
-                    String host = parts[0].trim();
-                    host = host.replaceAll("/", "");
-                    String port = parts[1].trim();
-                    System.out.println ("proxy host: " + host);
-                    System.out.println("proxy port:  " + port);
-                    client.getHostConfiguration().setProxy(host, Integer.parseInt(port));
+                    String hostString = parts[0].trim();
+                    String hostParts[] = hostString.split("/");
+                    if (hostParts.length > 0) {
+                        String host = hostParts[0].trim();
+                        String port = parts[1].trim();
+                        System.out.println ("proxy host: " + host);
+                        System.out.println("proxy port:  " + port);
+                        client.getHostConfiguration().setProxy(host, Integer.parseInt(port));
+                    }
                 }
             }
         }
