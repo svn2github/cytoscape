@@ -36,21 +36,22 @@ a Java Swing utility class is used to display the message in a dialog window.
 </p>
 
 
-<pre><code>
+<pre>
+<code>
 import javax.swing.JOptionPane;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.Cytoscape;
+import cytoscape.Cytoscape;
 
-public class HelloWorldPlugin extends CytoscapePlugin {
+public class HelloWorld extends CytoscapePlugin {
 
-    public HelloWorldPlugin () {
+    public HelloWorld() {
         String message = "Hello World!";
         System.out.println(message);
-        // use the CytoscapeDesktop as parent for a Swing dialog
-        JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+        JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
     }
 }
-</code></pre>
+</code>
+</pre>
 
 
 <p>
