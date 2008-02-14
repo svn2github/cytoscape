@@ -7,7 +7,7 @@
 	<property name="lib.dir" value="lib"/>
 	<property name="pathvisio.dir" value="${lib.dir}/pathvisio"/>
 	<property name="pathvisio.class.dir" value="class.pathvisio"/>
-	<property name="cytoscape.dir" value="/home/thomas/programs/cytoscape-v2.5.1"/>
+	<property name="cytoscape.dir" value="/home/thomas/programs/cytoscape"/>
 	<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 	
 	<path id="class.path">
