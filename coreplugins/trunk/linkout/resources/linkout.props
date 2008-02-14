@@ -86,4 +86,4 @@ edgelinkouturl.Network\ Database.IntAct=http://www.ebi.ac.uk/intact/search/do/se
 edgelinkouturl.Network\ Database.BioGRID=http://www.thebiogrid.org/SearchResults/summary/%ID%
 
 #Attribute name for user-embedded URLs
-externalLinkName=Linkout.ExternalLinks
+Linkout.externalLinkName=Linkout.ExternalLinks

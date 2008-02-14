@@ -55,7 +55,7 @@ public class LinkOut {
 	//keyword that marks properties that should be added to LinkOut
 	private static final String nodeMarker = "nodelinkouturl.";
 	private static final String edgeMarker = "edgelinkouturl.";
-	private static final String linkMarker = "externalLinkName.";
+	private static final String linkMarker = "Linkout.externalLinkName";
 	private static String externalLinksAttribute = "Linkout.ExternalLinks";
 	private Properties props;
 	private static final Font TITLE_FONT = new Font("sans-serif", Font.BOLD, 14);
