@@ -43,6 +43,7 @@ import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;
 
 import java.util.*;
+import java.lang.Math;
 import java.awt.Color;
 
 /**
@@ -54,9 +55,13 @@ import java.awt.Color;
 public class VisualStyleBuilder {
 
 	Map<VisualPropertyType,Map<Object,Object>> valueMaps;
+	Map<VisualPropertyType,Map<Object,Integer>> counts;
 	String name;
 	private boolean nodeSizeLocked = true;
 	private String styleName = "undefined";
+
+	private int nodeMax;
+	private int edgeMax;
 
 	/**
 	 * Build a new VisualStyleBuilder object whose output style will be called "name".
@@ -66,6 +71,7 @@ public class VisualStyleBuilder {
 	public VisualStyleBuilder(String name) {
 		this.name = name;
 		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
+		counts = new EnumMap<VisualPropertyType,Map<Object,Integer>>(VisualPropertyType.class);
 	}
 
 	/**
@@ -80,7 +86,7 @@ public class VisualStyleBuilder {
 	 * instead and then call addProperty for each value
 	 */
 	public VisualStyleBuilder(String newName, Map nodeGraphics, Map edgeGraphics, Map globalGraphics) {
-		this.name = newName;
+		this(newName);
 	}
 
 	/**
@@ -90,8 +96,7 @@ public class VisualStyleBuilder {
 	 * @param addOvAttr not used. 
 	 */
 	public VisualStyleBuilder(String name, boolean addOvAttr) {
-		this.name = name;
-		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
+		this(name);
 	}
 
 	/**
@@ -106,14 +111,17 @@ public class VisualStyleBuilder {
 		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
 
 		nac.setNodeSizeLocked(nodeSizeLocked);
-		
+
+		processCounts();
+
 		for ( VisualPropertyType type : valueMaps.keySet() ) {
 		
 			Map<Object,Object> valMap = valueMaps.get(type);
 
 			// If there is more than one value specified for a given
-			// visual property, then create a mapping and calculator.
-			if ( valMap.size() > 1 ) {
+			// visual property, or if only a subset of nodes/edges
+			// have a property then create a mapping and calculator.
+			if ( createMapping(type) ) {
 
 				DiscreteMapping dm = new DiscreteMapping( type.getVisualProperty().getDefaultAppearanceObject(), 
 			   	                                       getAttrName(type), 
@@ -184,9 +192,21 @@ public class VisualStyleBuilder {
 
 		attrs.setAttribute(id, getAttrName(type), value.toString());
 
+		String vString = value.toString();
+
+		// store the value
 		if ( !valueMaps.containsKey(type) )
 			valueMaps.put( type, new HashMap<Object,Object>() );
-		valueMaps.get(type).put( value.toString(), value );
+		valueMaps.get(type).put( vString, value );
+
+		// store the count
+		if ( !counts.containsKey(type) ) 
+			counts.put( type, new HashMap<Object,Integer>() );
+
+		if ( !counts.get(type).containsKey(vString) )
+			counts.get(type).put( vString, 0 );
+
+		counts.get(type).put( vString, counts.get(type).get(vString) + 1 );
 	}
 	
 	/**
@@ -201,10 +221,72 @@ public class VisualStyleBuilder {
 	}
 	
 	/**
-	 * This method return the name of visual style created. If visual style is not created, returned value will be "undefined". 
+	 * This method return the name of visual style created. If visual style 
+	 * is not created, returned value will be "undefined". 
 	 */
-	
 	public String getStyleName() {
 		return styleName;
+	}
+
+	/**
+	 * Processes the counts for the various visual properties and establishes
+	 * how many nodes and edges there are.
+	 */
+	private void processCounts() {
+		Map<VisualPropertyType,Integer> cm = new EnumMap<VisualPropertyType,Integer>(VisualPropertyType.class);
+		for ( VisualPropertyType vpt : counts.keySet() ) {
+			int total = 0;
+			for ( Object o : counts.get(vpt).keySet() ) {
+				total += counts.get(vpt).get(o);
+			}
+			cm.put(vpt,total);
+			System.out.println(vpt + "  " + total);
+		}
+		
+		nodeMax = 0;
+		edgeMax = 0;
+		for ( VisualPropertyType vpt : counts.keySet() ) {
+			if ( counts.get(vpt).size() == 1 ) {
+				for ( Object o : counts.get(vpt).keySet() ) {
+					if ( vpt.isNodeProp() ) 
+							nodeMax = Math.max( counts.get(vpt).get(o), nodeMax );
+					else 
+							edgeMax = Math.max( counts.get(vpt).get(o), edgeMax );
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method determines whether or not to create a mapping for
+	 * this visual property type.  There are two times when you want
+	 * to create a mapping: 1) when there is more than one key mapped
+	 * to a value for type and 2) when only one key is mapped to a value,
+	 * but only a subset of nodes or edges have that mapping (which is
+	 * to say the property doesn't hold for all nodes or all edges).
+	 */
+	private boolean createMapping(VisualPropertyType vpt) {
+		// if there is more than one mapping
+		if ( counts.get(vpt).size() > 1 )
+			return true;
+
+		// check the number of times the value is mapped
+		// relative to the number of nodes or edges
+		for ( Object o : counts.get(vpt).keySet() ) {
+			int ct = counts.get(vpt).get(o).intValue();
+			if ( vpt.isNodeProp() ) {
+				if ( ct < nodeMax )
+					return true;
+				else 
+					return false;
+			} else {
+				if ( ct < edgeMax )
+					return true;
+				else 
+					return false;
+			}
+		}
+
+		return false;
 	}
 }
