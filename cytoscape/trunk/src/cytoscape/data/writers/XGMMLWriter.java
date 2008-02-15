@@ -74,6 +74,7 @@ import java.awt.geom.Point2D;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.io.UnsupportedEncodingException;
 
 import java.math.BigInteger;
 
@@ -443,8 +444,7 @@ public class XGMMLWriter {
 		// Output the node attributes
 		for (int att = 0; att < nodeAttNames.length; att++) {
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), nodeAttNames[att]))
-				if (!nodeAttNames[att].startsWith("vizmap:"))
-					writeAttribute(node.getIdentifier(), nodeAttributes, nodeAttNames[att]);
+				writeAttribute(node.getIdentifier(), nodeAttributes, nodeAttNames[att]);
 		}
 
 		if (groupList != null && groupList.size() > 0) {
@@ -652,8 +652,7 @@ public class XGMMLWriter {
 		// Write the edge attributes
 		for (int att = 0; att < edgeAttNames.length; att++) {
 			if (edgeAttributes.hasAttribute(curEdge.getIdentifier(), edgeAttNames[att]))
-				if (!edgeAttNames[att].startsWith("vizmap:"))
-					writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
+				writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
 		}
 
 		// Write the edge graphics
@@ -945,9 +944,9 @@ public class XGMMLWriter {
 		else {
 			writeElement("<att type="+quote(type.toString()));
 			if (name != null)
-				writer.write(" name="+quote(name));
+				writer.write(utf8Convert(" name="+quote(name)));
 			if (value != null)
-				writer.write(" value="+quote(value.toString()));
+				writer.write(utf8Convert(" value="+quote(value.toString())));
 			if (end)
 				writer.write("/>\n");
 			else
@@ -964,7 +963,7 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttributePair(String name, Object value) throws IOException {
-		writer.write(" "+name+"=\""+value.toString()+"\"");
+		writer.write(utf8Convert(" "+name+"=\""+value.toString()+"\""));
 	}
 
 	/**
@@ -978,7 +977,7 @@ public class XGMMLWriter {
 		while ( depth*2 > indentString.length()-1 ) 
 			indentString = indentString + "                        ";
 		writer.write(indentString,0,depth*2);
-		writer.write(line);
+		writer.write(utf8Convert(line));
 	}
 
 	/**
@@ -1141,5 +1140,21 @@ public class XGMMLWriter {
 			}
 		}
 		return false;
+	}
+
+	/**
+ 	 * Make absolutely sure that the output characters are UTF8-clean
+ 	 *
+ 	 * @param str - the string to convert
+ 	 * @return the converted string
+ 	 */
+	private String utf8Convert(String str) {
+		String cStr = null;
+		try {
+			cStr = new String(str.getBytes(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return str;
+		}
+		return cStr;
 	}
 }
