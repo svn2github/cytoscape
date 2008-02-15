@@ -11,6 +11,8 @@ import cytoscape.data.Semantics;
 import java.awt.*;
 
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 
 /**
  * Binary SIF Visual Style.
@@ -31,6 +33,7 @@ public class BinarySifVisualStyleUtil {
     public final static String CO_CONTROL_INDEPENDENT_ANTI = "Co-Control_Dependent_Anti";
     public final static String CO_CONTROL_DEPENDENT_SIMILAR = "Co-Control_Dependent_Similar";
     public final static String CONTROL_DEPENDENT_ANTI = "Control_Dependent_Anti";
+    private final static String COMPLEX = "Complex"; 
 
     /**
 	 * Constructor.
@@ -48,11 +51,8 @@ public class BinarySifVisualStyleUtil {
             visualStyle = new VisualStyle(BINARY_SIF_VISUAL_STYLE);
 
             NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
-            Color color = new Color (255, 153, 153);
-            nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR,
-                    color);
-            nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_SHAPE,
-                    NodeShape.ELLIPSE);
+            createNodeShapes(nac);
+            createNodeColors(nac);
             createNodeLabel(nac);
 
             EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
@@ -74,7 +74,35 @@ public class BinarySifVisualStyleUtil {
         return visualStyle;
     }
 
-	private static void createEdgeColor(EdgeAppearanceCalculator eac) {
+    private static void createNodeShapes(NodeAppearanceCalculator nac) {
+        //  Default shape is an ellipse.
+        nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.ELLIPSE);
+
+        //  Complexes are Hexagons.
+        DiscreteMapping discreteMapping = new DiscreteMapping(NodeShape.ELLIPSE,
+            MapNodeAttributes.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
+        discreteMapping.putMapValue(COMPLEX, NodeShape.HEXAGON);
+        Calculator nodeShapeCalculator = new BasicCalculator("Node Shape",
+            discreteMapping, VisualPropertyType.NODE_SHAPE);
+		nac.setCalculator(nodeShapeCalculator);        
+    }
+
+    private static void createNodeColors(NodeAppearanceCalculator nac) {
+        Color color = new Color (255, 153, 153);
+        nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR, color);
+
+        //  Complexes are a Different Color.
+        Color lightBlue = new Color (153, 153, 255);
+        DiscreteMapping discreteMapping = new DiscreteMapping(color,
+            MapNodeAttributes.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
+        discreteMapping.putMapValue(COMPLEX, lightBlue);
+
+        Calculator nodeShapeCalculator = new BasicCalculator("Node Color",
+            discreteMapping, VisualPropertyType.NODE_FILL_COLOR);
+		nac.setCalculator(nodeShapeCalculator);
+    }
+
+    private static void createEdgeColor(EdgeAppearanceCalculator eac) {
 		// create a discrete mapper, for mapping biopax node type
 		// to a particular node color
 		DiscreteMapping discreteMapping = new DiscreteMapping(Color.BLACK,
