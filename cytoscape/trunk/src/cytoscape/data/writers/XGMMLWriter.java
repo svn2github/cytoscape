@@ -1153,7 +1153,9 @@ public class XGMMLWriter {
 		try {
 			cStr = new String(str.getBytes(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			return str;
+			System.err.println("Can't encode string '"+str+"' as UTF-8");
+			e.printStackTrace();
+			return "[unencodeable string]";
 		}
 		return cStr;
 	}
