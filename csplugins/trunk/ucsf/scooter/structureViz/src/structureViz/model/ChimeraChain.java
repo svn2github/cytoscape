@@ -54,7 +54,7 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	/**
 	 * The model number this chain is a part of
 	 */
-	private int model;
+	private float model;
 
 	/**
 	 * A pointer to the model this chain is a part of
@@ -88,7 +88,7 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 * @param model	the model number this chain is part of
 	 * @param chainId the chain ID for this chain
 	 */
-	public ChimeraChain(int model, String chainId) {
+	public ChimeraChain(float model, String chainId) {
 		this.model = model;
 		this.chainId = chainId;
 		residueList = new TreeMap();
@@ -161,7 +161,7 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 *
 	 * @return the model number
 	 */
-	public int getModelNumber() { return model; }
+	public float getModelNumber() { return model; }
 		
 	/**
 	 * Return a string representation of this chain as follows:

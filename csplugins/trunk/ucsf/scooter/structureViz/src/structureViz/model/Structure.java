@@ -47,6 +47,9 @@ public class Structure {
 	List<String> residueList;
 	CyNode cytoscapeNode;
 	int modelNumber;
+	StructureType type;
+
+	public enum StructureType {PDB_MODEL, MODBASE_MODEL};
 
 	/**
  	 * Create a new Structure
@@ -54,11 +57,12 @@ public class Structure {
 	 * @param name the name of the structure
 	 * @param node the CyNode that this structure points to
 	 */
-	public Structure (String name, CyNode node) {
+	public Structure (String name, CyNode node, StructureType type) {
 		this.structureName = name;
 		this.cytoscapeNode = node;
 		this.modelNumber = nStructures++;
 		this.residueList = null;
+		this.type = type;
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class Structure {
 	/**
 	 * Get the modelNumber for this structure
 	 *
-	 * @return the model number as an integer
+	 * @return the model number as a float
 	 */
 	public int modelNumber() {return this.modelNumber;}
 
@@ -87,8 +91,9 @@ public class Structure {
 	 *
 	 * @param number the model number
 	 */
-	public void setModelNumber (int number) {
-		this.modelNumber = number;
+	public void setModelNumber (float number) {
+		Float floatNumber = new Float(number);
+		this.modelNumber = floatNumber.intValue();
 	}
 
 	/**
@@ -99,6 +104,15 @@ public class Structure {
 	 */
 	public String getIdentifier() {
 		return cytoscapeNode.getIdentifier();
+	}
+
+	/**
+	 * Get the type of the model corresponding to this structure
+	 *
+	 * @return model type
+	 */
+	public StructureType getType() {
+		return this.type;
 	}
 
 	/**

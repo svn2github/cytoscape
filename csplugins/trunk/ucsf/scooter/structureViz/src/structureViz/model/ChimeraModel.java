@@ -54,7 +54,7 @@ import structureViz.model.Structure;
 
 public class ChimeraModel implements ChimeraStructuralObject {
 	private String name; 				// The name of this model
-	private int identifier; 		// The model number
+	private float identifier; 		// The model number
 	private TreeMap<String,ChimeraChain> chains; 		// The list of chains
 	private TreeMap<String,ChimeraResidue> residues; 	// The list of residues
 	private HashMap<String,ChimeraResidue> residueMap;	// A map of residue names and residues
@@ -211,14 +211,14 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 *
 	 * @return integer model number 
 	 */
-	public int getModelNumber () { return this.identifier; }
+	public float getModelNumber () { return this.identifier; }
 
 	/**
 	 * Set the model number of this model
 	 *
 	 * @param modelNumber integer model number 
 	 */
-	public void setModelNumber (int modelNumber) { this.identifier = modelNumber; }
+	public void setModelNumber (float modelNumber) { this.identifier = modelNumber; }
 
 	/**
 	 * Get the ChimeraModel (required for ChimeraStructuralObject interface)
@@ -327,14 +327,14 @@ public class ChimeraModel implements ChimeraStructuralObject {
 
 	/**
 	 * Parse the model number returned by Chimera and return
-	 * the integer value
+	 * the float value
 	 */
-	private int parseModelNumber(String inputLine) {
+	private float parseModelNumber(String inputLine) {
 		int hash = inputLine.indexOf('#');
 		int space = inputLine.indexOf(' ',hash);
 		// model number is between hash+1 and space
-		Integer modelInteger = new Integer(inputLine.substring(hash+1,space));
-		return modelInteger.intValue();
+		Float modelNumber = new Float(inputLine.substring(hash+1,space));
+		return modelNumber.floatValue();
 	}
 
 	/**

@@ -57,7 +57,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	private String type;	// Residue type
 	private String index;	// Residue index
 	private String chainId; // ChainID for this residue
-	private int modelNumber; // model number for this residue
+	private float modelNumber; // model number for this residue
 	private ChimeraModel chimeraModel; // ChimeraModel thie residue is part of
 	private Object userData; // user data to associate with this residue
 	private static HashMap aaNames = null; // a map of amino acid names
@@ -71,7 +71,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 * @param index the index of the residue
 	 * @param modelNumber the model number this residue is part of
 	 */
-	public ChimeraResidue (String type, String index, int modelNumber) {
+	public ChimeraResidue (String type, String index, float modelNumber) {
 		this.type = type;
 		this.index = index;
 		this.modelNumber = modelNumber;
@@ -92,7 +92,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 		// First half has model number -- get the number
 		int numberOffset = split1[0].indexOf('#');
 		String model = split1[0].substring(numberOffset+1);
-		this.modelNumber = (new Integer(model)).intValue();
+		this.modelNumber = (new Float(model)).floatValue();
 
 		// Second half has residue info: index & type
 		String[] rTokens = split1[1].split(" ");
@@ -197,7 +197,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 *
 	 * @return the model number
 	 */
-	public int getModelNumber () { return this.modelNumber; }
+	public float getModelNumber () { return this.modelNumber; }
 
 	/**
 	 * Get the model this residue is part of

@@ -70,7 +70,7 @@ public class Chimera {
   static Process chimera;
 	static private ArrayList<String> replyLog;
 	static private ArrayList<ChimeraModel> models;
-	static private HashMap<Integer,ChimeraModel> modelHash;
+	static private HashMap<Float,ChimeraModel> modelHash;
 	static private ListenerThreads listener;
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
@@ -141,19 +141,19 @@ public class Chimera {
 	/**
 	 * Test to see if we currently have a particular model open
 	 *
-	 * @param modelNumber the model number expressed as an Integer object
+	 * @param modelNumber the model number expressed as an Float object
 	 */
-	public boolean containsModel(Integer modelNumber) {
+	public boolean containsModel(Float modelNumber) {
 		return modelHash.containsKey(modelNumber);
 	}
 
 	/**
 	 * Test to see if we currently have a particular model open
 	 *
-	 * @param modelNumber the model number expressed as an integer
+	 * @param modelNumber the model number expressed as a float
 	 */
-	public boolean containsModel(int modelNumber) {
-		Integer mn = new Integer(modelNumber);
+	public boolean containsModel(float modelNumber) {
+		Float mn = new Float(modelNumber);
 		return modelHash.containsKey(mn);
 	}
 
@@ -161,11 +161,11 @@ public class Chimera {
 	 * Return the ChimeraModel associated with the requested 
 	 * model number
 	 *
-	 * @param modelNumber the model number expressed as an integer
+	 * @param modelNumber the model number expressed as a float
 	 * @return the ChimeraModel with a model number of modelNumber
 	 */
-	public ChimeraModel getModel(int modelNumber) {
-		Integer mn = new Integer(modelNumber);
+	public ChimeraModel getModel(float modelNumber) {
+		Float mn = new Float(modelNumber);
 		return (ChimeraModel)modelHash.get(mn);
 	}
 
@@ -240,33 +240,36 @@ public class Chimera {
    * @param structure the Structure to open
    */
   public void open(Structure structure) {
-		this.command("listen stop models; listen stop selection; open "+structure.name());
+		if (structure.getType() == Structure.StructureType.MODBASE_MODEL)
+			this.command("listen stop models; listen stop selection; open modbase:"+structure.name());
+		else
+			this.command("listen stop models; listen stop selection; open "+structure.name());
 
 		// Now, figure out exactly what model # we got
-		ChimeraModel newModel = getModelInfo(structure);
-		if (newModel == null) return;
+		List<ChimeraModel> modelList = getModelInfoList(structure);
+		if (modelList == null) return;
+		for (ChimeraModel newModel: modelList) {
 
-		// Get the color (for our navigator)
-		newModel.setModelColor(getModelColor(newModel));
+			// Get the color (for our navigator)
+			newModel.setModelColor(getModelColor(newModel));
 
-		// Get our properties (default color scheme, etc.)
-		// Make the molecule look decent
-		this.command("repr stick #"+newModel.getModelNumber());
+			// Get our properties (default color scheme, etc.)
+			// Make the molecule look decent
+			this.command("repr stick #"+newModel.getModelNumber());
+
+			// Create the information we need for the navigator
+			getResidueInfo(newModel);
+
+			// Add it to our list of models
+			models.add(newModel);
+			//System.out.println("Added "+newModel.toString()+" to list");
+
+			// Add it to the hash table
+			modelHash.put(new Float(newModel.getModelNumber()),newModel);
+		}
+
 		this.command("focus");
-
-		// Create the information we need for the navigator
-		getResidueInfo(newModel);
-
-		// Add it to our list of models
-		models.add(newModel);
-		//System.out.println("Added "+newModel.toString()+" to list");
-
-		// Add it to the hash table
-		modelHash.put(new Integer(newModel.getModelNumber()),newModel);
 		this.command("listen start models; listen start selection");
-
-		// Update the structure model #
-		structure.setModelNumber(newModel.getModelNumber());
 
   	return;
   }
@@ -277,13 +280,13 @@ public class Chimera {
    * @param structure the Structure to close
 	 */
 	public void close(Structure structure) {
-		int model = structure.modelNumber();
+		float model = structure.modelNumber();
 		this.command("listen stop models; listen stop select; close #"+model);
 		
-		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Integer(model));
+		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Float(model));
 		if (chimeraModel != null) {
 			models.remove(chimeraModel);
-			modelHash.remove(new Integer(model));
+			modelHash.remove(new Float(model));
 		}
 		this.command("listen start models; listen start select");
 		return;
@@ -365,7 +368,7 @@ public class Chimera {
 
 		// Match them up -- assume that the model #'s haven't changed
 		for (ChimeraModel model: newModelList) {
-			Integer modelNumber = new Integer(model.getModelNumber());
+			Float modelNumber = new Float(model.getModelNumber());
 			// Get the color (for our navigator)
 			model.setModelColor(getModelColor(model));
 
@@ -415,7 +418,7 @@ public class Chimera {
 	 * and update our list.
 	 */
 	public void updateSelection() {
-		HashMap<Integer,ChimeraModel>modelSelHash = new HashMap();
+		HashMap<Float,ChimeraModel>modelSelHash = new HashMap();
 		ArrayList<ChimeraStructuralObject>selectionList = new ArrayList();
 		// System.out.println("updateSelection()");
 
@@ -424,7 +427,7 @@ public class Chimera {
 		while (lineIter.hasNext()) {
 			String modelLine = (String)lineIter.next();
 			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
-			modelSelHash.put(new Integer(chimeraModel.getModelNumber()), chimeraModel);
+			modelSelHash.put(new Float(chimeraModel.getModelNumber()), chimeraModel);
 		}
 
 		// Now get the residue-level data
@@ -432,7 +435,7 @@ public class Chimera {
 		while (lineIter.hasNext()) {
 			String inputLine = (String)lineIter.next();
 			ChimeraResidue r = new ChimeraResidue(inputLine);
-			Integer modelNumber = new Integer(r.getModelNumber());
+			Float modelNumber = new Float(r.getModelNumber());
 			if (modelSelHash.containsKey(modelNumber)) {
 				ChimeraModel model = (ChimeraModel)modelSelHash.get(modelNumber);
 				model.addResidue(r);
@@ -441,7 +444,7 @@ public class Chimera {
 
 		// Get the selected objects
 		for (ChimeraModel selectedModel: modelSelHash.values()) {
-			int modelNumber = selectedModel.getModelNumber();
+			float modelNumber = selectedModel.getModelNumber();
 			// Get the corresponding "real" model
 			if (containsModel(modelNumber)) {
 				ChimeraModel dataModel = getModel(modelNumber);
@@ -514,19 +517,25 @@ public class Chimera {
 	 * @param structure the Structure we want to get the ChimeraModel for
 	 * @return the ChimeraModel for this structure
 	 */
-	private ChimeraModel getModelInfo(Structure structure) {
+	private List<ChimeraModel> getModelInfoList(Structure structure) {
 		String name = structure.name();
+		List<ChimeraModel>infoList = new ArrayList();
 
+		// System.out.println("Getting model info for "+name);
 		Iterator modelIter = this.commandReply ("listm type molecule");
 		while (modelIter.hasNext()) {
 			String modelLine = (String)modelIter.next();
+			// System.out.println(modelLine);
 			if (modelLine.contains(name)) {
 				// got the right model, now get the model number
 				ChimeraModel chimeraModel = new ChimeraModel(structure, modelLine);
 				structure.setModelNumber(chimeraModel.getModelNumber());
-				return chimeraModel;
+				// System.out.println("Identified model as "+chimeraModel);
+				infoList.add(chimeraModel);
 			}
 		}
+		if (infoList.size() > 0)
+			return infoList;
 		return null;
 	}
 
@@ -564,7 +573,7 @@ public class Chimera {
 	 * 
 	 */
 	private void getResidueInfo(ChimeraModel model) {
-		int modelNumber = model.getModelNumber();
+		float modelNumber = model.getModelNumber();
 
 		// Get the list -- it will be in the reply log
 		Iterator resIter = this.commandReply ("listr spec #"+modelNumber);

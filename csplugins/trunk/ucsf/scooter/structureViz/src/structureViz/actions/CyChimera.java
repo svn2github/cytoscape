@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 // giny imports
@@ -77,9 +78,10 @@ public class CyChimera {
 	 * Get the list of structures associated with this node
 	 *
 	 * @param nodeView the NodeView of the node we're looking at
+	 * @param overNodeOnly only look for structures in the node we're over
 	 * @return a list of Structures associated with this node
 	 */
-	public static List getSelectedStructures(NodeView nodeView) {
+	public static List getSelectedStructures(NodeView nodeView, boolean overNodeOnly) {
 		String structureAttribute = getProperty("structureAttribute");
 		if (structureAttribute != null) {
 			structureKeys[3] = structureAttribute;
@@ -98,9 +100,11 @@ public class CyChimera {
     //can't continue if any of these is null
     if (network == null || view == null || cyAttributes == null) {return structureList;}
 
-		List<NodeView> selectedNodes = view.getSelectedNodes();
+		List<NodeView> selectedNodes = null;
+		if (!overNodeOnly || nodeView == null)
+			selectedNodes = view.getSelectedNodes();
 
-    if (selectedNodes.size() == 0) {
+    if (selectedNodes == null || selectedNodes.size() == 0) {
 			if (nodeView == null) {
 				return structureList;
 			}
@@ -113,9 +117,9 @@ public class CyChimera {
       CyNode node = (CyNode)nView.getNode();
 			String structure = getStructureName(node);
 			String residues = getResidueList(node);
-			if (structure == null) {
+			if (structure == null || structure.length() == 0) {
 				structure = findStructures(residues);
-				if (structure == null)
+				if (structure == null || structure.length() == 0)
 					continue;
 			}
 			// Check to see if this node has a list of structures, first
@@ -123,12 +127,12 @@ public class CyChimera {
 			if (sList != null && sList.length > 0) {
 				// It does, so add them all
 				for (int i = 0; i < sList.length; i++) {
-					Structure s = new Structure(sList[i].trim(),node);
+					Structure s = new Structure(sList[i].trim(),node, Structure.StructureType.PDB_MODEL);
 					s.setResidueList(residues);
 					structureList.add(s);
 				}
 			} else if (structure != null) {
-				Structure s = new Structure(structure,node);
+				Structure s = new Structure(structure,node, Structure.StructureType.PDB_MODEL);
 				s.setResidueList(residues);
         structureList.add(s);
 			}
@@ -194,7 +198,7 @@ public class CyChimera {
         	String[] pdblist = cyAttributes.getStringAttribute(node.getIdentifier(), structureKeys[key]).split(",");
 					for (int i = 0; i < pdblist.length; i++) {
 						if (pdblist[i].equals(name))
-							return new Structure(name, node);
+							return new Structure(name, node, Structure.StructureType.PDB_MODEL);
 					}
 				}
 			}
@@ -330,15 +334,24 @@ public class CyChimera {
 		if (residueList == null) return null;
 		String[] residues = residueList.split(",");
 		String structures = new String();
+		Map<String,String> structureMap = new HashMap();
 		for (int i = 0; i < residues.length; i++) {
 			String[] components = residues[i].split("#");
 			if (components.length > 1) {
-				if (structures.length() > 1)
-					structures = structures.concat(",");
-				structures = structures.concat(components[0]);
+				structureMap.put(components[0],components[1]);
 			}
 		}
-		if (structures.length() > 0) return structures;
-		return null;
+		if (structureMap.isEmpty())
+			return null;
+
+		String structure = null;
+		for (String struct: structureMap.keySet()) {
+			if (structure == null)
+				structure = new String();
+			else
+				structure = structure.concat(",");
+			structure = structure.concat(struct);
+		}
+		return structure;
 	}
 }

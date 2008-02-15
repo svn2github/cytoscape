@@ -85,6 +85,7 @@ public class StructureViz extends CytoscapePlugin
 	public static final int COMPARE = 5;
 	public static final int SALIGN = 6;
 	public static final int SELECTRES = 7;
+	public static final int FINDMODELS = 8;
 
   /**
    * Create our action and add it to the plugins menu
@@ -147,7 +148,7 @@ public class StructureViz extends CytoscapePlugin
 			// Add our menu items
 			{
 			  JMenu item = new JMenu("Open structure(s)");
-				List<Structure>structures =  CyChimera.getSelectedStructures(overNode);
+				List<Structure>structures =  CyChimera.getSelectedStructures(overNode, false);
 				if (structures.size() == 0) {
 					item.setEnabled(false);
 				} else {
@@ -161,7 +162,7 @@ public class StructureViz extends CytoscapePlugin
 			}
 			{
 				JMenuItem item = new JMenuItem("Align structures");
-				List structures = CyChimera.getSelectedStructures(overNode);
+				List structures = CyChimera.getSelectedStructures(overNode, false);
 				StructureVizCommandListener l = new StructureVizCommandListener(ALIGN, structures);
 				item.addActionListener(l);
 				if (structures.size() < 2) {
@@ -170,11 +171,11 @@ public class StructureViz extends CytoscapePlugin
 				m.add(item);
 			}
 			{
-        if (overNode != null) {
+				if (overNode != null) {
 					String residueList = CyChimera.getResidueList((CyNode)overNode.getNode());
 					if (residueList != null) {
 						// Get the structures for this node
-						List<Structure>structures =  CyChimera.getSelectedStructures(overNode);
+						List<Structure>structures =  CyChimera.getSelectedStructures(overNode, true);
 						if (structures.size() > 0) {
 			  			JMenuItem item = new JMenuItem("Select residues");
 							StructureVizCommandListener l = 
@@ -183,6 +184,15 @@ public class StructureViz extends CytoscapePlugin
 							m.add(item);
 						}
 					}
+				}
+			}
+			{
+				if (overNode != null) {
+			  	JMenuItem item = new JMenuItem("Find modelled structures");
+					StructureVizCommandListener l = 
+				 	   new StructureVizCommandListener(FINDMODELS, (CyNode)overNode.getNode());
+					item.addActionListener(l);
+					m.add(item);
 				}
 			}
 			{
@@ -275,6 +285,8 @@ public class StructureViz extends CytoscapePlugin
 				alignAction(label);
 			} else if (command == SELECTRES) {
 				selectResiduesAction();
+			} else if (command == FINDMODELS) {
+				findModelsAction();
 			} else if (command == CLOSE) {
 				closeAction(label);
 			} else if (command == SALIGN) {
@@ -343,13 +355,39 @@ public class StructureViz extends CytoscapePlugin
 		}
 
 		/**
+ 		 * Search modbase for modelled structures that correspond to this identifier.
+ 		 * Since modelled structures can be somewhat misleading, popup a warning dialog
+ 		 * while we do the fetch.
+ 		 */
+		private void findModelsAction() {
+			CyNode node = (CyNode)userData;
+			// Bring up the warning dialog, but do it in a thread to allow the load to continue
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					String message = "<html><b>Warning</b>: Modelled structures can be very misleading.  Please review the data<br>";
+					message += "and structure carefully.</b>";
+					message += "Modelled structures are obtained from the ModBase<br>";
+					message += "web service at <a href=\"http://modbase.salilab.org\">http://modbase.salilab.org/</a></html>";
+					JOptionPane.showMessageDialog(mnDialog, 
+						message,
+						"Modelled Structure Warning",JOptionPane.WARNING_MESSAGE);
+				}
+			});
+			String ident = node.getIdentifier();
+			if (ident.startsWith("gi"))
+				ident = ident.substring(2);
+			Structure struct = new Structure(ident, node, Structure.StructureType.MODBASE_MODEL);
+			userData = struct;
+			openAction(ident);
+		}
+
+		/**
  		 * Open the structures (if necessary) and select the residues.  Residues
  		 * can be formatted as pdb1:res1,pdb1:res2,pdb2:res1 or just res1,res2,res3.
  		 * In the latter case, the residues are assumed to be on all of the associated
  		 * structures.
  		 */
 		private void selectResiduesAction() {
-			System.out.println("Select Residues");
 			// Open all of the structures
 			openAction("all");
 			List<Structure>structuresList = (List<Structure>)userData;
@@ -374,7 +412,6 @@ public class StructureViz extends CytoscapePlugin
 
 				command = command.concat(" #"+structure.modelNumber()+":"+residues);
 			}
-			System.out.println(command);
 			chimera.select(command);
 			chimera.modelChanged();
 		}
