@@ -1,12 +1,17 @@
 package cytoscape.dialogs;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.List;
+
 import cytoscape.Cytoscape;
 import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.Calculator;
 
 /**
  * Dialog that chooses file to export to.
@@ -35,12 +40,66 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		formatComboBox.setModel(new DefaultComboBoxModel(formats));
 		formatComboBox.setSelectedIndex(0);
 		
+		formatComboBox.addItemListener(new MyItemListener());
+		
 		removeFile();
 
 		setLocationRelativeTo(Cytoscape.getDesktop());
 		pack();
 	}
+
+	// This is a work-around, because ItemEvent is received twice in MyItemListener.
+	private static int eventCount =0;
+
+	private class MyItemListener implements ItemListener {
+		public void itemStateChanged(ItemEvent e) {
+			// Ignore double event
+			eventCount++;
+			if (eventCount%2 == 0) {
+				eventCount =0;
+				return;
+			}
+			if (formatComboBox.getSelectedItem().toString().equalsIgnoreCase("EPS (*.eps)")) {
+				if (useTransparency()) {
+					JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
+							"Could not export in EPS format, because transparency is used in the visual style!");
+				}
+			}
+		}		
+	}
 	
+	// Check if transparency is used in the visual style
+	private boolean useTransparency(){
+		boolean nodeOpacity = false;
+		boolean edgeOpacity = false;
+
+		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+		
+		List<Calculator> node_calculators = vs.getNodeAppearanceCalculator().getCalculators();
+		for (Calculator cal: node_calculators) {
+			if (cal.getVisualPropertyType() == cytoscape.visual.VisualPropertyType.NODE_OPACITY || 
+			cal.getVisualPropertyType() == cytoscape.visual.VisualPropertyType.NODE_BORDER_OPACITY ||
+			(cal.getVisualPropertyType() == cytoscape.visual.VisualPropertyType.NODE_LABEL_OPACITY))
+			{
+				nodeOpacity = true;
+				break;
+			}
+		}
+		
+		List<Calculator> edge_calculators = vs.getEdgeAppearanceCalculator().getCalculators();
+		for (Calculator cal: edge_calculators) {
+			if (cal.getVisualPropertyType()== cytoscape.visual.VisualPropertyType.EDGE_OPACITY ||
+					cal.getVisualPropertyType()== cytoscape.visual.VisualPropertyType.EDGE_LABEL_OPACITY ||
+					cal.getVisualPropertyType()== cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_OPACITY ||
+					cal.getVisualPropertyType()== cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_OPACITY
+			) {
+				edgeOpacity = true;
+				break;
+			}
+		}
+		return nodeOpacity || edgeOpacity;
+	}
+
 	public CyFileFilter getSelectedFormat()
 	{
 		return (CyFileFilter) formatComboBox.getSelectedItem();
@@ -53,8 +112,6 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 
 	public void addActionListener(ActionListener l)
 	{
-		System.out.println("ExportAsGraphicsFileChooser: addActionListener() ...");
-		
 		okButton.addActionListener(l);
 	}
 
