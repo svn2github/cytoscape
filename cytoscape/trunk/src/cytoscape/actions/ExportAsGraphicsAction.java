@@ -7,6 +7,8 @@ import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
@@ -14,7 +16,6 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
 
 import cytoscape.task.ui.JTaskConfig;
@@ -26,8 +27,13 @@ import cytoscape.util.export.Exporter;
 import cytoscape.util.export.BitmapExporter;
 import cytoscape.util.export.PDFExporter;
 import cytoscape.util.export.SVGExporter;
+import cytoscape.util.export.PSExporter;
 import cytoscape.dialogs.ExportBitmapOptionsDialog;
 import cytoscape.dialogs.ExportAsGraphicsFileChooser;
+
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.Calculator;
+
 
 /**
  * Action for exporting a network view to bitmap or vector graphics.
@@ -40,7 +46,8 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 	private static ExportFilter PDF_FILTER = new PDFExportFilter();
 	private static ExportFilter PNG_FILTER = new BitmapExportFilter("png", "PNG");
 	private static ExportFilter SVG_FILTER = new SVGExportFilter();
-	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
+	private static ExportFilter EPS_FILTER = new PSExportFilter("eps", "EPS");
+	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, EPS_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
 
 	private static String TITLE = "Network View as Graphics";
 
@@ -66,7 +73,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 			{
 				ExportFilter filter = (ExportFilter) chooser.getSelectedFormat();
 				filter.setExportTextAsFont(chooser.getExportTextAsFont());
-
+				
 				File file = chooser.getSelectedFile();
 				
 				chooser.dispose();
@@ -89,8 +96,9 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 		};
 		chooser.addActionListener(listener);
 		chooser.setVisible(true);
-	}
+	}	
 }
+
 
 class ExportTask
 {
@@ -237,3 +245,19 @@ class SVGExportFilter extends ExportFilter
 		ExportTask.run("Exporting to SVG", exporter, view, stream);
 	}
 }
+
+class PSExportFilter extends ExportFilter
+{
+	public PSExportFilter(String extension, String description)
+	{
+		super(extension, description);
+	}
+
+	public void export(final CyNetworkView view, final FileOutputStream stream)
+	{
+		PSExporter exporter = new PSExporter();
+		//exporter.setExportTextAsFont(this.getExportTextAsFont());
+		ExportTask.run("Exporting to EPS", exporter, view, stream);
+	}
+}
+
