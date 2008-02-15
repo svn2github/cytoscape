@@ -142,8 +142,9 @@ public class CPathPlugIn2 extends CytoscapePlugin {
             + "to physical entities only, and edges refer to inferred interactions.");
         textArea2.setBorder(new EmptyBorder(5, 20, 0, 0));
 
-        button1.setSelected(true);
-        final JRadioButton button2 = new JRadioButton("Reduced Binary Model");
+
+        final JRadioButton button2 = new JRadioButton("Simplified Binary Model");
+        button2.setSelected(true);
         ButtonGroup group = new ButtonGroup();
         group.add(button1);
         group.add(button2);
@@ -153,16 +154,16 @@ public class CPathPlugIn2 extends CytoscapePlugin {
 
         c.gridx = 0;
         c.gridy = 0;
-        configPanel.add(button1, c);
-
-        c.gridy = 1;
-        configPanel.add(textArea1, c);
-
-        c.gridy = 2;
         configPanel.add(button2, c);
 
-        c.gridy = 3;
+        c.gridy = 1;
         configPanel.add(textArea2, c);
+
+        c.gridy = 2;
+        configPanel.add(button1, c);
+
+        c.gridy = 3;
+        configPanel.add(textArea1, c);
 
         //  Add invisible filler to take up all remaining space
         c.gridy = 4;

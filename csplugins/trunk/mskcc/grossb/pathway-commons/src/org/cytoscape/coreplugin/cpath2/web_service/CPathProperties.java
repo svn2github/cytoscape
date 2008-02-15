@@ -41,7 +41,7 @@ public class CPathProperties {
     private static String cPathUrl;
     private static String serverName;
     private static String blurb;
-    private int downloadMode = DOWNLOAD_FULL_BIOPAX;
+    private int downloadMode = DOWNLOAD_REDUCED_BINARY_SIF;
 
     /**
      * Gets singleton instance of cPath Properties.
