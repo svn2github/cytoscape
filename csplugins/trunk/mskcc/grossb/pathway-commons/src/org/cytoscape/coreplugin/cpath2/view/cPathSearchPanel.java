@@ -56,6 +56,11 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
         this.setMinimumSize(new Dimension (300,40));
     }
 
+    public void showAboutPanel() {
+        CardLayout cl = (CardLayout)(cards.getLayout());
+        cl.show(cards, "ABOUT");
+    }
+
     private JPanel createAboutPanel() {
         JPanel aboutPanel = new JPanel();
         aboutPanel.setLayout(new BorderLayout());
