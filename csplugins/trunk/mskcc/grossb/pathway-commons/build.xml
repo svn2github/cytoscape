@@ -105,8 +105,7 @@
             <fileset dir="." includes="*.log"/>
             <fileset dir="." includes="*.gz"/>
         </delete>
-        <delete dir="${src.dir}/org/cytoscape/coreplugin/cpath2schemas/search_response"/>
-        <delete dir="${src.dir}org/cytoscape/coreplugin/cpath2/schemas/summary_response"/>
+        <delete dir="${src.dir}/org/cytoscape/coreplugin/cpath2/schemas"/>
     </target>
 
     <!--  Target to compile all code -->
