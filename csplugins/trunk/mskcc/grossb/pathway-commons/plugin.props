@@ -29,5 +29,8 @@ releaseDate=January 1, 2008
 
 # Change these properties if you want to point the plugin to a different cPath server.
 #cpath2.server_name=Mouse Interaction Database
-cpath2.server_url=http://awabi.cbio.mskcc.org/pc/webservice.do
+#cpath2.server_url=http://awabi.cbio.mskcc.org/pc-demo/webservice.do
+#cpath2.server_url=http://localhost:8080/cpath/webservice.do
+cpath2.server_url=http://pathwaycommons.org/pc/webservice.do
+#cpath2.server_url=http://www.pathwaycommons.org/pc/webservice.do
 #cpath2.server_blurb=The Mouse Interaction Database is... blah, blah, blah....
