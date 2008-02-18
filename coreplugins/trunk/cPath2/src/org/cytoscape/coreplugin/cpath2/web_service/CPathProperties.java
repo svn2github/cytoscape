@@ -27,6 +27,11 @@ public class CPathProperties {
     public static final String CPATH_INSTANCE_BLURB = new String ("cpath2.server_blurb");
 
     /**
+     * Property:  Icon Tool Tip
+     */
+    public static final String ICON_TOOL_TIP = new String ("cpath2.icon_tool_tip");
+
+    /**
      * Download Networks in Full BioPAX Mode.
      */
     public final static int DOWNLOAD_FULL_BIOPAX = 1;
@@ -41,6 +46,7 @@ public class CPathProperties {
     private static String cPathUrl;
     private static String serverName;
     private static String blurb;
+    private static String iconToolTip;
     private int downloadMode = DOWNLOAD_REDUCED_BINARY_SIF;
 
     /**
@@ -69,6 +75,11 @@ public class CPathProperties {
         serverName = pluginProperties.getProperty(CPATH_INSTANCE_BNAME);
         if (serverName == null) {
             serverName = "Pathway Commons";
+        }
+
+        iconToolTip = pluginProperties.getProperty(ICON_TOOL_TIP);
+        if (iconToolTip == null) {
+            iconToolTip = "Retrieve Pathway Data from PathwayCommons.org";
         }
 
         blurb = pluginProperties.getProperty(CPATH_INSTANCE_BLURB);
@@ -108,6 +119,14 @@ public class CPathProperties {
 	public String getCPathBlurb() {
 		return blurb;
 	}
+
+    /**
+     * Gets the Icon Tool Tip.
+     * @return Gets the Icon Tool Tip.
+     */
+    public String getIconToolTip() {
+        return iconToolTip;
+    }
 
     /**
      * Gets Download Mode.

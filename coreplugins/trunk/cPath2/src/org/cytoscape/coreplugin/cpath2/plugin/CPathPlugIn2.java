@@ -97,7 +97,7 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         URL iconURL = SearchHitsPanel.class.getResource("resources/stock_update.png");
         ImageIcon icon = new ImageIcon(iconURL);
         JButton button = new JButton(icon);
-        button.setToolTipText("Retrieve Pathway Data from PathwayCommons.org");
+        button.setToolTipText(CPathProperties.getInstance().getIconToolTip());
         button.setBorder(new EmptyBorder(0,0,0,0));
         toolBar.add(button);
         toolBar.addSeparator();
@@ -112,6 +112,7 @@ public class CPathPlugIn2 extends CytoscapePlugin {
                     int index = cytoPanel.indexOfComponent(tabbedPane);
                     cytoPanel.setSelectedIndex(index);
                     cpathPanel.showAboutPanel();
+                    tabbedPane.setSelectedIndex(0);
                 }
             }
             });
