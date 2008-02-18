@@ -36,7 +36,9 @@ package org.cytoscape.coreplugin.cpath2.plugin;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginProperties;
 import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CyMenus;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
@@ -46,6 +48,7 @@ import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 import org.cytoscape.coreplugin.cpath2.view.TabUi;
+import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -55,6 +58,7 @@ import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.*;
+import java.net.URL;
 
 import com.sun.glf.util.GridBagConstants;
 
@@ -65,6 +69,9 @@ import com.sun.glf.util.GridBagConstants;
  * @author Benjamin Gross.
  */
 public class CPathPlugIn2 extends CytoscapePlugin {
+    private static boolean uiInitialized = false;
+    private cPathSearchPanel cpathPanel;
+    private JTabbedPane tabbedPane;
 
     /**
      * Constructor.
@@ -84,23 +91,50 @@ public class CPathPlugIn2 extends CytoscapePlugin {
                 new MapCPathToCytoscape(networkListener), debug).start();
 
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        final CytoPanel cytoPanelWest = desktop.getCytoPanel(SwingConstants.EAST);
+        CyMenus cyMenus = desktop.getCyMenus();
+        CytoscapeToolBar toolBar = cyMenus.getToolBar();
+        toolBar.addSeparator();
+        URL iconURL = SearchHitsPanel.class.getResource("resources/stock_update.png");
+        ImageIcon icon = new ImageIcon(iconURL);
+        JButton button = new JButton(icon);
+        button.setToolTipText("Retrieve Pathway Data from PathwayCommons.org");
+        button.setBorder(new EmptyBorder(0,0,0,0));
+        toolBar.add(button);
+        toolBar.addSeparator();
+        button.addActionListener (new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (!uiInitialized) {
+                    initUi();
+                    uiInitialized = true;
+                } else {
+                    CytoscapeDesktop desktop = Cytoscape.getDesktop();
+                    CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
+                    int index = cytoPanel.indexOfComponent(tabbedPane);
+                    cytoPanel.setSelectedIndex(index);
+                    cpathPanel.showAboutPanel();
+                }
+            }
+            });
+    }
+
+    private void initUi() {
+        CytoscapeDesktop desktop = Cytoscape.getDesktop();
+        final CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
 
         CPathWebService webApi = CPathWebService.getInstance();
 
-        final cPathSearchPanel pcPanel = new cPathSearchPanel(webApi);
+        cpathPanel = new cPathSearchPanel(webApi);
 
-        final JTabbedPane tabbedPane = TabUi.getInstance();
-        tabbedPane.add("Search", pcPanel);
+        tabbedPane = TabUi.getInstance();
+        tabbedPane.add("Search", cpathPanel);
 
         JScrollPane configPanel = createConfigPanel();
         tabbedPane.add("Options", configPanel);
 
-
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cytoPanelWest.add(CPathProperties.getInstance().getCPathServerName(), tabbedPane);
-                cytoPanelWest.setState(CytoPanelState.DOCK);
+                cytoPanel.add(CPathProperties.getInstance().getCPathServerName(), tabbedPane);
+                cytoPanel.setState(CytoPanelState.DOCK);
             }
         });
     }
