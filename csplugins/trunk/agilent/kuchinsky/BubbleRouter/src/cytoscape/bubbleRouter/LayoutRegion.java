@@ -475,7 +475,10 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		this.setBounds(this.getX1(), this.getY1(), this.getW1(), this.getH1());
 	}
 
-	// select all nodeViews with specified attribute value for attribute
+	/**
+	 * Select all nodeViews with specified attribute value for attribute.
+	 * Note: logic is symmetrical with BRQuickFindConfigDialog.addSortTableModel().
+	 */ 
 	public List<NodeView> populateNodeViews() {
 		Comparator<Object> comparator = new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
@@ -504,12 +507,14 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 				}
 				val = join(terms);
 			} else {
-				val = attribs.getStringAttribute(node.getIdentifier(),
+				String valCheck = attribs.getStringAttribute(node.getIdentifier(),
 						attributeName);
+				if (valCheck != null && !valCheck.equals("")) {
+					val = valCheck;
+				}
 			}
 
 			// loop through elements in array below and match
-
 			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
 				for (Object o : regionAttributeValues) {
 					if (val.indexOf(o.toString()) >= 0) {
@@ -518,7 +523,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 				}
 			} else if (regionAttributeValues.get(0).equals("unassigned")) {
 				selectedNodes.add(node);
-			}
+			} 
 		}
 		Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
 		System.out.println("Selected " + selectedNodes.size()

@@ -378,10 +378,43 @@ public class BRQuickFindConfigDialog extends JDialog {
 				nodeIterator, nodeAttributes, attributeKey, 50);
 
 		/**
-		 * Add "unassigned" to list.
+		 * Create list of strings to contain possible attribute values
 		 */
 		ArrayList<String> finalValues = new ArrayList<String>();
-		finalValues.add("unassigned");
+
+		/**
+		 * Add "unassigned" to list if there is at least one node without an
+		 * attribute value. Note: logic is symmetrical with
+		 * LayoutRegion.popluateNodeViews()
+		 */
+		boolean isUnassigned = false;
+		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
+		while (it.hasNext()) {
+			Cytoscape.getCurrentNetwork().unselectAllNodes();
+			Node node = (Node) it.next();
+
+			// add support for parsing List type attributes
+			if (!isUnassigned) {
+				if (nodeAttributes.getType(attributeKey) == CyAttributes.TYPE_SIMPLE_LIST) {
+					List valList = nodeAttributes.getListAttribute(node
+							.getIdentifier(), attributeKey);
+					// iterate through all elements in the list
+					if (valList == null || valList.size() <= 0) {
+						isUnassigned = true;
+					}
+				} else {
+					String val = nodeAttributes.getStringAttribute(node
+							.getIdentifier(), attributeKey);
+					if (val == null || val.equals("")) {
+						isUnassigned = true;
+					}
+				}
+			}
+		}
+		
+		if (isUnassigned) {
+			finalValues.add("unassigned");
+		}
 
 		/**
 		 * Split up comma-separated lists into individual values.
@@ -396,9 +429,9 @@ public class BRQuickFindConfigDialog extends JDialog {
 					}
 				}
 			}
-			
+
 			this.enableApplyButton(true);
-			
+
 			/**
 			 * Populate table model with first 50 values.
 			 */
@@ -417,7 +450,8 @@ public class BRQuickFindConfigDialog extends JDialog {
 			/**
 			 * Define default selection and allow multiple selection.
 			 */
-			table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			table
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			ListSelectionModel rowSM = table.getSelectionModel();
 			rowSM.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
@@ -435,53 +469,75 @@ public class BRQuickFindConfigDialog extends JDialog {
 								if (lsm.isSelectedIndex(i)) {
 									selectedValues.add(attributeValuesTable
 											.getModel().getValueAt(i, 0));
-									//TODO: select nodeviews
+									// TODO: select nodeviews
 									Comparator<Object> comparator = new Comparator<Object>() {
 										public int compare(Object o1, Object o2) {
-											return o1.toString().compareToIgnoreCase(o2.toString());
+											return o1.toString()
+													.compareToIgnoreCase(
+															o2.toString());
 										}
 									};
-									SortedSet<Object> selectedNodes = new TreeSet<Object>(comparator);
-									CyAttributes attribs = Cytoscape.getNodeAttributes();
-									Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
+									SortedSet<Object> selectedNodes = new TreeSet<Object>(
+											comparator);
+									CyAttributes attribs = Cytoscape
+											.getNodeAttributes();
+									Iterator it = Cytoscape.getCurrentNetwork()
+											.nodesIterator();
 									while (it.hasNext()) {
-										Cytoscape.getCurrentNetwork().unselectAllNodes();
+										Cytoscape.getCurrentNetwork()
+												.unselectAllNodes();
 										Node node = (Node) it.next();
 										String val = null;
 										String terms[] = new String[1];
-										// add support for parsing List type attributes
-										String attributeName = (String) attributeComboBox.getSelectedItem();
+										// add support for parsing List type
+										// attributes
+										String attributeName = (String) attributeComboBox
+												.getSelectedItem();
 										if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
-											List valList = attribs.getListAttribute(node.getIdentifier(),
-													attributeName);
-											// iterate through all elements in the list
-											if (valList != null && valList.size() > 0) {
-												terms = new String[valList.size()];
-												for (int j = 0; j < valList.size(); j++) {
+											List valList = attribs
+													.getListAttribute(node
+															.getIdentifier(),
+															attributeName);
+											// iterate through all elements in
+											// the list
+											if (valList != null
+													&& valList.size() > 0) {
+												terms = new String[valList
+														.size()];
+												for (int j = 0; j < valList
+														.size(); j++) {
 													Object o = valList.get(j);
 													terms[j] = o.toString();
 												}
 											}
 											val = join(terms);
 										} else {
-											val = attribs.getStringAttribute(node.getIdentifier(),
+											val = attribs.getStringAttribute(
+													node.getIdentifier(),
 													attributeName);
 										}
 
-										// loop through elements in array below and match
+										// loop through elements in array below
+										// and match
 
-										if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
+										if ((!(val == null)
+												&& (!val.equals("null")) && (val
+												.length() > 0))) {
 											for (Object o : selectedValues) {
 												if (val.indexOf(o.toString()) >= 0) {
 													selectedNodes.add(node);
 												}
 											}
-										} else if (selectedValues.get(0).equals("unassigned")) {
+										} else if (selectedValues.get(0)
+												.equals("unassigned")) {
 											selectedNodes.add(node);
 										}
 									}
-									Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
-									Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+									Cytoscape.getCurrentNetwork()
+											.setSelectedNodeState(
+													selectedNodes, true);
+									Cytoscape.getCurrentNetworkView()
+											.redrawGraph(true, true);
 								}
 							}
 						}
@@ -492,9 +548,12 @@ public class BRQuickFindConfigDialog extends JDialog {
 			});
 
 		} else {
-			//No values map to network
+			// No values map to network
 			TableModel modelEmpty = new DefaultSortTableModel(columnNames, 1);
-			modelEmpty.setValueAt("No attibutes values found in network!  Please choose another attribute.", 0, 0);
+			modelEmpty
+					.setValueAt(
+							"No attibutes values found in network!  Please choose another attribute.",
+							0, 0);
 			table.setModel(modelEmpty);
 			table.setAutoscrolls(true);
 		}
@@ -735,7 +794,7 @@ public class BRQuickFindConfigDialog extends JDialog {
 		 */
 		new LayoutRegion(x, y, w, h, newAttribute, selectedValuesForRegion);
 	}
-	
+
 	private static String join(String values[]) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < values.length; i++) {
