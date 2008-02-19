@@ -66,8 +66,10 @@ public class Intact{
         	System.out.println(blah1);
         	System.out.println("SEARCH RESULTS (cyweb1.getParameter):");
         	System.out.println(cyweb1.getParameter());
-
-        	importNetwork(blah1, null);
+			//This creates a new network
+//        	importNetwork(blah1, null);
+        	//this will modify the current network 
+        	//(which would be the newly created one)
         	importNetwork(blah1, Cytoscape.getCurrentNetwork());
 			
         } catch(Exception e){
