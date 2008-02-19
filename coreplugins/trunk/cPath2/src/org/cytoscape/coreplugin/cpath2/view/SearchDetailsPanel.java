@@ -39,11 +39,7 @@ import cytoscape.task.util.TaskManager;
  * @author Ethan Cerami.
  */
 public class SearchDetailsPanel extends JPanel {
-    private CheckNode dataSourceFilter;
-    private CheckNode interactionTypeFilter;
     private InteractionBundleModel interactionBundleModel;
-    private JLabel matchingInteractionsLabel;
-    private JButton retrieveButton;
 
     /**
      * Constructor.
@@ -59,7 +55,7 @@ public class SearchDetailsPanel extends JPanel {
         this.add(header, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        JScrollPane interactionPanel = createInteractionBundlePanel(interactionBundleModel);
+        JPanel interactionPanel = new InteractionBundlePanel(interactionBundleModel);
         JPanel pathwayPane = createPathwayPane(pathwayTableModel);
         Font font = tabbedPane.getFont();
         Font newFont = new Font (font.getFamily(), Font.PLAIN, font.getSize()-2);
@@ -81,200 +77,6 @@ public class SearchDetailsPanel extends JPanel {
         pathwayPane.add(label, BorderLayout.SOUTH);
         return pathwayPane;
     }
-
-    /**
-     * Creats the Interaction Bundle Table.
-     *
-     * @return JScrollPane Object.
-     */
-    private JScrollPane createInteractionBundlePanel(final InteractionBundleModel
-            interactionBundleModel) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        matchingInteractionsLabel = new JLabel ("Matching Interactions:  N/A");
-        matchingInteractionsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        Font font = matchingInteractionsLabel.getFont();
-        Font newFont = new Font (font.getFamily(), Font.BOLD,  font.getSize());
-        matchingInteractionsLabel.setFont(newFont);
-        matchingInteractionsLabel.setBorder(new EmptyBorder(5,10,5,5));
-        panel.add(matchingInteractionsLabel);
-
-        final CheckNode rootNode = new CheckNode("All Filters");
-        final JTreeWithCheckNodes tree = new JTreeWithCheckNodes(rootNode);
-        tree.setOpaque(false);
-
-        CollapsablePanel filterPanel = new CollapsablePanel("Filters (Optional)");
-        filterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        filterPanel.getContentPane().add(tree);
-
-        panel.add(filterPanel);
-        addObserver(interactionBundleModel, matchingInteractionsLabel, tree, rootNode);
-
-        JPanel footer = new JPanel();
-        footer.setAlignmentX(Component.LEFT_ALIGNMENT);
-        footer.setLayout(new FlowLayout(FlowLayout.LEFT));
-        createInteractionDownloadButton(footer);
-        panel.add(footer);
-        JScrollPane scrollPane = new JScrollPane (panel);
-        return scrollPane;
-    }
-
-    private void addObserver(final InteractionBundleModel interactionBundleModel,
-            final JLabel matchingInteractionsLabel, final JTreeWithCheckNodes tree,
-            final CheckNode rootNode) {
-        interactionBundleModel.addObserver(new Observer() {
-            public void update(Observable observable, Object object) {
-                RecordList recordList = interactionBundleModel.getRecordList();
-                matchingInteractionsLabel.setText("Matching Interactions:  "
-                        + recordList.getNumRecords());
-
-                TreeMap<String, Integer> dataSourceMap = recordList.getDataSourceMap();
-                TreeMap<String, Integer> entityTypeMap = recordList.getEntityTypeMap();
-
-                //  Store current expansion states
-                boolean dataSourceFilterExpanded = false;
-                if (dataSourceFilter != null) {
-                    TreePath path = new TreePath (dataSourceFilter.getPath());
-                    dataSourceFilterExpanded = tree.isExpanded(path);
-                }
-                boolean interactionTypeFilterExpanded = false;
-                if (interactionTypeFilter != null) {
-                    TreePath path = new TreePath (interactionTypeFilter.getPath());
-                    interactionTypeFilterExpanded = tree.isExpanded(path);
-                }
-
-                //  Remove all children
-                rootNode.removeAllChildren();
-
-                //  Create Data Source Filter
-                if (dataSourceMap.size() > 0) {
-                    dataSourceFilter = new CheckNode ("Filter by Data Source");
-                    rootNode.add(dataSourceFilter);
-                    for (String key:  dataSourceMap.keySet()) {
-                        CategoryCount categoryCount = new CategoryCount(key,
-                                dataSourceMap.get(key));
-                        CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
-                        dataSourceFilter.add(dataSourceNode);
-                    }
-                    dataSourceFilter.setSelected(true);
-                }
-
-                //  Create Entity Type Filter
-                if (entityTypeMap.size() > 0) {
-                    interactionTypeFilter = new CheckNode ("Filter by Interaction Type");
-                    rootNode.add(interactionTypeFilter);
-                    for (String key:  entityTypeMap.keySet()) {
-                        CategoryCount categoryCount = new CategoryCount(key,
-                                entityTypeMap.get(key));
-                        CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
-                        interactionTypeFilter.add(dataSourceNode);
-                    }
-                }
-                DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-                tree.setModel(treeModel);
-                treeModel.addTreeModelListener(new TreeModelListener() {
-
-                    /**
-                     * Respond to user check node selections.
-                     * @param treeModelEvent Tree Model Event Object.
-                     */
-                    public void treeNodesChanged(TreeModelEvent treeModelEvent) {
-                        List<BasicRecordType> passedRecordList =  executeFilter();
-                        if (passedRecordList != null) {
-                            matchingInteractionsLabel.setText("Matching Interactions:  "
-                                + passedRecordList.size());
-                            if (passedRecordList.size() > 0) {
-                                retrieveButton.setEnabled(true);
-                            } else {
-                                retrieveButton.setEnabled(false);
-                            }
-                        }
-                    }
-
-                    public void treeNodesInserted(TreeModelEvent treeModelEvent) {
-                        //  no-op
-                    }
-
-                    public void treeNodesRemoved(TreeModelEvent treeModelEvent) {
-                        //  no-op
-                    }
-
-                    public void treeStructureChanged(TreeModelEvent treeModelEvent) {
-                        //  no-op
-                    }
-                });
-
-                //  Restore expansion state.
-                if (dataSourceFilterExpanded) {
-                    TreePath path = new TreePath (dataSourceFilter.getPath());
-                    tree.expandPath(path);
-                }
-                if (interactionTypeFilterExpanded) {
-                    TreePath path = new TreePath (interactionTypeFilter.getPath());
-                    tree.expandPath(path);
-                }
-            }
-        });
-    }
-
-    private void createInteractionDownloadButton(JPanel footer) {
-        retrieveButton = new JButton ("Retrieve Interactions");
-        retrieveButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent actionEvent) {
-                List<BasicRecordType> passedRecordList =  executeFilter();
-                    if (passedRecordList.size() == 0) {
-                        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                "Your current filter settings result in 0 matching interactions.  "
-                                + "\nPlease check your filter settings and try again.",
-                                "No matches.", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        DownloadDetails detailsFrame = new DownloadDetails(passedRecordList,
-                                interactionBundleModel.getPhysicalEntityName());
-                        detailsFrame.setVisible(true);
-                    }
-            }
-        });
-        footer.add(retrieveButton);
-    }
-
-    private List<BasicRecordType> executeFilter() {
-        Set <String> dataSourceSet = new HashSet<String>();
-        Set <String> entityTypeSet = new HashSet<String>();
-        int childCount = dataSourceFilter.getChildCount();
-        for (int i=0; i< childCount; i++) {
-            CheckNode checkNode = (CheckNode) dataSourceFilter.getChildAt(i);
-            CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
-            String dataSource = categoryCount.getCategoryName();
-            if (checkNode.isSelected()) {
-                dataSourceSet.add(dataSource);
-            }
-        }
-        childCount = interactionTypeFilter.getChildCount();
-        for (int i=0; i< childCount; i++) {
-            CheckNode checkNode = (CheckNode) interactionTypeFilter.getChildAt(i);
-            CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
-            String entityType = categoryCount.getCategoryName();
-            if (checkNode.isSelected()) {
-                entityTypeSet.add(entityType);
-            }
-        }
-        ChainedFilter chainedFilter = new ChainedFilter();
-        DataSourceFilter dataSourceFilter = new DataSourceFilter(dataSourceSet);
-        EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
-        chainedFilter.addFilter(dataSourceFilter);
-        chainedFilter.addFilter(entityTypeFilter);
-        List<BasicRecordType> passedRecordList;
-        try {
-            passedRecordList =  chainedFilter.filter (interactionBundleModel.getRecordList().
-                    getSummaryResponse().getRecord());
-        } catch (NullPointerException e) {
-            passedRecordList = null;
-        }
-        return passedRecordList;
-    }
-
     /**
      * Creates the Pathway Table.
      *
