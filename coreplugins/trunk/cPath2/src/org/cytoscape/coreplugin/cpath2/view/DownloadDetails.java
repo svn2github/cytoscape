@@ -5,6 +5,7 @@ import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.util.NetworkGroupUtil;
+import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,7 +28,7 @@ import cytoscape.task.util.TaskManager;
  * @author Ethan Cerami
  */
 public class DownloadDetails extends JDialog {
-    private JComboBox networkComboBox;
+    private MergePanel mergePanel;
 
     /**
      * Constructor.
@@ -84,7 +85,7 @@ public class DownloadDetails extends JDialog {
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = createButtonPanel(ids, peName, this);
-        JPanel mergePanel = createMergePanel();
+        mergePanel = new MergePanel();
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         if (mergePanel != null) {
@@ -126,36 +127,12 @@ public class DownloadDetails extends JDialog {
         return buttonPanel;
     }
 
-    private JPanel createMergePanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        CPathProperties cPathProperties = CPathProperties.getInstance();
-        int downloadMode = cPathProperties.getDownloadMode();
-        if (downloadMode == CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF) {
-            Set <CyNetwork> networkSet = NetworkGroupUtil.getNetworkSet(downloadMode);
-
-            Vector networkVector = new Vector();
-            networkVector.add(new NetworkWrapper(null));
-            if (networkSet != null && networkSet.size() > 0) {
-                for (CyNetwork net : networkSet) {
-                    NetworkWrapper netWrapper = new NetworkWrapper (net);
-                    networkVector.add(netWrapper);
-                }
-                networkComboBox = new JComboBox(networkVector);
-                JLabel label = new JLabel ("Create / Merge:  ");
-                panel.add(label);
-                panel.add(networkComboBox);
-                networkComboBox.setSelectedIndex(0);
-            }
-        }
-        return panel;
-    }
-
     /**
      * Downloads interaction bundles in a new thread.
      */
     private void downloadInteractions(long ids[], String peName) {
         CyNetwork networkToMerge = null;
+        JComboBox networkComboBox = mergePanel.getNetworkComboBox();
         if (networkComboBox != null) {
             NetworkWrapper netWrapper = (NetworkWrapper) networkComboBox.getSelectedItem();
             if (netWrapper != null) {
@@ -196,22 +173,3 @@ class NonEditableTableModel extends DefaultTableModel {
     }
 }
 
-class NetworkWrapper {
-    private CyNetwork network;
-
-    public NetworkWrapper (CyNetwork network) {
-        this.network = network;
-    }
-
-    public CyNetwork getNetwork() {
-        return network;
-    }
-
-    public String toString() {
-        if (network != null) {
-            return "Merge with:  " + network.getTitle();
-        } else {
-            return "Create New Network";
-        }
-    }
-}

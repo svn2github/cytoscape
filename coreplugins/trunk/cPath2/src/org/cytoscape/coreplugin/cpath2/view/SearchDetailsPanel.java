@@ -13,10 +13,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
+import java.net.URL;
 
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
 import org.cytoscape.coreplugin.cpath2.view.tree.JTreeWithCheckNodes;
 import org.cytoscape.coreplugin.cpath2.view.tree.CheckNode;
 import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
@@ -25,7 +27,9 @@ import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
@@ -302,6 +306,26 @@ public class SearchDetailsPanel extends JPanel {
      */
     private void downloadPathway(int[] rows, PathwayTableModel pathwayTableModel) {
         try {
+            NetworkWrapper mergeNetwork = null;
+            NetworkMergeUtil mergeUtil = new NetworkMergeUtil();
+            if (mergeUtil.mergeNetworksExist()) {
+                NetworkWrapper[] networks = (NetworkWrapper[]) mergeUtil.getMergeNetworks().toArray
+                    (new NetworkWrapper[mergeUtil.getMergeNetworks().size()]);
+                URL iconURL = SearchDetailsPanel.class.getResource("resources/question.png");
+                Icon icon = null;
+                if (iconURL != null) {
+                    icon = new ImageIcon(iconURL);
+                }
+                mergeNetwork = (NetworkWrapper)
+                        JOptionPane.showInputDialog(Cytoscape.getDesktop(),
+                        "Create new network or merge with existing network?", "Create / Merge",
+                        JOptionPane.PLAIN_MESSAGE, icon,
+                        networks, networks[0]);
+                if (mergeNetwork == null) {
+                    return;
+                }
+            }
+
             long internalId = pathwayTableModel.getInternalId(rows[0]);
             String title = pathwayTableModel.getValueAt(rows[0], 0)
                     + " (" + pathwayTableModel.getValueAt(rows[0], 1) + ")";
@@ -309,7 +333,13 @@ public class SearchDetailsPanel extends JPanel {
             ids[0] = internalId;
 
             CPathWebService webApi = CPathWebService.getInstance();
-            ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, title);
+            ExecuteGetRecordByCPathId task;
+            if (mergeNetwork != null && mergeNetwork.getNetwork() != null) {
+                task = new ExecuteGetRecordByCPathId(webApi, ids, title, mergeNetwork.getNetwork());
+            } else {
+                task = new ExecuteGetRecordByCPathId(webApi, ids, title);
+            }
+
             JTaskConfig jTaskConfig = new JTaskConfig();
             jTaskConfig.setOwner(Cytoscape.getDesktop());
             jTaskConfig.displayStatus(true);
