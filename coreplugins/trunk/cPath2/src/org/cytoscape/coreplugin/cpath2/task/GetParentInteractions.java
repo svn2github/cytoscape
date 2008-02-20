@@ -8,6 +8,7 @@ import cytoscape.data.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
@@ -19,7 +20,7 @@ import javax.swing.*;
 public class GetParentInteractions implements Task {
     private long cpathId;
     private TaskMonitor taskMonitor;
-    private CPathWebService webApi = CPathWebService.getInstance();
+    private CPathWebService webApi = CPathWebServiceImpl.getInstance();
     private InteractionBundleModel interactionBundleModel;
     private CyNode node;
 
