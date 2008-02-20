@@ -22,17 +22,17 @@ import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 public class BinarySifVisualStyleUtil {
     public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
     public final static String BINARY_NETWORK = "BINARY_NETWORK";
-    public final static String COMPONENT_OF = "Component_Of";
-    public final static String COMPONENT_IN_SAME = "Component_InSame";
-    public final static String SEQUENTIAL_CATALYSIS = "SequentialCatalysis";
-    public final static String CONTROLS_STATE_CHANGE = "Controls_StateChange";
-    public final static String CONTROLS_METABOLIC_CHANGE = "Controls_MetabolicChange";
-    public final static String PARTICIPATES_CONVERSION = "Participates_Conversion";
-    public final static String PARTICIPATES_INTERACTION = "Participates_Interaction";
-    public final static String CO_CONTROL_INDEPENDENT_SIMILAR = "Co-Control-Indepedent_Similar";
-    public final static String CO_CONTROL_INDEPENDENT_ANTI = "Co-Control_Dependent_Anti";
-    public final static String CO_CONTROL_DEPENDENT_SIMILAR = "Co-Control_Dependent_Similar";
-    public final static String CONTROL_DEPENDENT_ANTI = "Control_Dependent_Anti";
+    public final static String COMPONENT_OF = "COMPONENT_OF";
+    public final static String COMPONENT_IN_SAME = "COMPONENT_IN_SAME";
+    public final static String SEQUENTIAL_CATALYSIS = "SEQUENTIAL_CATALYSIS";
+    public final static String CONTROLS_STATE_CHANGE = "CONTROLS_STATE_CHANGE";
+    public final static String CONTROLS_METABOLIC_CHANGE = "CONTROLS_METABOLIC_CHANGE";
+    public final static String PARTICIPATES_CONVERSION = "PARTICIPATES_CONVERSION";
+    public final static String PARTICIPATES_INTERACTION = "PARTICIPATES_INTERACTION";
+    public final static String CO_CONTROL_INDEPENDENT_SIMILAR = "CO_CONTROL_INDEPENDENT_SIMILAR";
+    public final static String CO_CONTROL_INDEPENDENT_ANTI = "CO_CONTROL_INDEPENDENT_ANTI";
+    public final static String CO_CONTROL_DEPENDENT_SIMILAR = "CO_CONTROL_DEPENDENT_SIMILAR";
+    public final static String CO_CONTROL_DEPENDENT_ANTI = "CO_CONTROL_DEPENDENT_ANTI";
     private final static String COMPLEX = "Complex"; 
 
     /**
@@ -108,17 +108,17 @@ public class BinarySifVisualStyleUtil {
 		DiscreteMapping discreteMapping = new DiscreteMapping(Color.BLACK,
             Semantics.INTERACTION, ObjectMapping.EDGE_MAPPING);
 
-        discreteMapping.putMapValue(COMPONENT_OF, Color.decode("#0000FF"));
-        discreteMapping.putMapValue(COMPONENT_IN_SAME, Color.decode("#00FFFF"));
-        discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, Color.decode("#808080"));
-        discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, Color.decode("#8B008B"));
-        discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, Color.decode("#008000"));
-        discreteMapping.putMapValue(PARTICIPATES_CONVERSION, Color.decode("#90EE90"));
-        discreteMapping.putMapValue(PARTICIPATES_INTERACTION, Color.decode("#FF00FF"));
-        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_SIMILAR, Color.decode("#FFA500"));
-        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_ANTI, Color.decode("#FFC0CB"));
-        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_SIMILAR, Color.decode("#FF0000"));
-        discreteMapping.putMapValue(CONTROL_DEPENDENT_ANTI, Color.decode("#FFFF00"));
+        discreteMapping.putMapValue(PARTICIPATES_CONVERSION, Color.decode("#ccc1da"));
+        discreteMapping.putMapValue(PARTICIPATES_INTERACTION, Color.decode("#7030a0"));
+        discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, Color.decode("#0070c0"));
+        discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, Color.decode("#00b0f0"));
+        discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, Color.decode("#7f7f7f"));        
+        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_ANTI, Color.decode("#ff0000"));
+        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_ANTI, Color.decode("#fd95a6"));
+        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_SIMILAR, Color.decode("#00b050"));
+        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_SIMILAR, Color.decode("#92d050"));
+        discreteMapping.putMapValue(COMPONENT_IN_SAME, Color.decode("#ffff00"));
+        discreteMapping.putMapValue(COMPONENT_OF, Color.decode("#ffc000"));
 
         // create and set edge label calculator in edge appearance calculator
 		Calculator edgeColorCalculator = new BasicCalculator("Edge Color",
