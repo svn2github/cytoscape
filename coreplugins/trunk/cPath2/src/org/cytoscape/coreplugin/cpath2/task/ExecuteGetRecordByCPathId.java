@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import ding.view.DGraphView;
+
 /**
  * Controller for Executing a Get Record(s) by CPath ID(s) command.
  *
@@ -270,6 +272,11 @@ public class ExecuteGetRecordByCPathId implements Task {
                 final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
                 NetworkListener networkListener = bpContainer.getNetworkListener();
                 networkListener.registerNetwork(cyNetwork);
+
+                ExpandNode menuListener = new ExpandNode();
+                ((DGraphView) Cytoscape.getNetworkView(cyNetwork.getIdentifier()))
+                                      .addNodeContextMenuListener(menuListener);
+
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
