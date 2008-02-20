@@ -137,6 +137,7 @@ public class BinarySifVisualStyleUtil {
         discreteMapping.putMapValue(COMPONENT_OF, ArrowShape.ARROW);
         discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, ArrowShape.ARROW);
         discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, ArrowShape.ARROW);
+        discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, ArrowShape.ARROW);
 
         // create and set edge label calculator in edge appearance calculator
 		Calculator edgeColorCalculator = new BasicCalculator("Edge Source Arrow Shape",
