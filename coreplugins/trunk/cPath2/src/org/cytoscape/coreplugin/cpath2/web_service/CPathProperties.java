@@ -32,6 +32,11 @@ public class CPathProperties {
     public static final String ICON_TOOL_TIP = new String ("cpath2.icon_tool_tip");
 
     /**
+     * Property:  Icon File
+     */
+    public static final String ICON_FILE_NAME = new String ("cpath2.icon_file_name");    
+
+    /**
      * Download Networks in Full BioPAX Mode.
      */
     public final static int DOWNLOAD_FULL_BIOPAX = 1;
@@ -47,6 +52,7 @@ public class CPathProperties {
     private static String serverName;
     private static String blurb;
     private static String iconToolTip;
+    private static String iconFileName;
     private int downloadMode = DOWNLOAD_REDUCED_BINARY_SIF;
 
     /**
@@ -80,6 +86,11 @@ public class CPathProperties {
         iconToolTip = pluginProperties.getProperty(ICON_TOOL_TIP);
         if (iconToolTip == null) {
             iconToolTip = "Retrieve Pathway Data from PathwayCommons.org";
+        }
+
+        iconFileName = pluginProperties.getProperty(ICON_FILE_NAME);
+        if (iconFileName == null) {
+            iconFileName = "pc.png";
         }
 
         blurb = pluginProperties.getProperty(CPATH_INSTANCE_BLURB);
@@ -126,6 +137,14 @@ public class CPathProperties {
      */
     public String getIconToolTip() {
         return iconToolTip;
+    }
+
+    /**
+     * Gets the Icon File Name.
+     * @return Icon File Name.
+     */
+    public String getIconFileName() {
+        return iconFileName;
     }
 
     /**

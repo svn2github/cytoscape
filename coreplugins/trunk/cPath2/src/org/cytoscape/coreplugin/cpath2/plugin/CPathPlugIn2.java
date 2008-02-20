@@ -97,7 +97,9 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         CyMenus cyMenus = desktop.getCyMenus();
         CytoscapeToolBar toolBar = cyMenus.getToolBar();
         toolBar.addSeparator();
-        URL iconURL = SearchHitsPanel.class.getResource("resources/stock_update.png");
+        CPathProperties cpathProperties = CPathProperties.getInstance();
+        URL iconURL = SearchHitsPanel.class.getResource("resources/"
+                + cpathProperties.getIconFileName());
         ImageIcon icon = new ImageIcon(iconURL);
         JButton button = new JButton(icon);
         button.setToolTipText(CPathProperties.getInstance().getIconToolTip());
