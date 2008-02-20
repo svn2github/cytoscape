@@ -116,7 +116,7 @@ public class GUI extends javax.swing.JFrame {
         jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
-        jCheckBox2.setText("MINT");
+        jCheckBox2.setText("NCBI");
         jCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
@@ -384,6 +384,17 @@ public class GUI extends javax.swing.JFrame {
  
 	        System.out.println("After Intact Client was called.");
 	        jProgressBar1.setIndeterminate(false);
+    	}
+    	if(jCheckBox2.isSelected() == true)
+    	{
+    		jProgressBar2.setIndeterminate(true);
+	        System.out.println("Start Search Button Pressed");
+	        
+	        NCBI attempt2 = new NCBI();
+	        attempt2.startSearch(nodeId, node);
+ 
+	        System.out.println("After NCBI Client was called.");
+	        jProgressBar2.setIndeterminate(false);
     	}
     }
     
