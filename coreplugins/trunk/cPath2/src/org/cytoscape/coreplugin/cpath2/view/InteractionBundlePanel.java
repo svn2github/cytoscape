@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Interaction Bundle Panel.
@@ -33,6 +34,15 @@ public class InteractionBundlePanel extends JPanel {
     private CheckNode dataSourceFilter;
     private CheckNode interactionTypeFilter;
     private JButton retrieveButton;
+    private JTreeWithCheckNodes tree;
+    private CollapsablePanel filterPanel;
+    private JDialog dialog;
+
+    public InteractionBundlePanel(InteractionBundleModel
+            interactionBundleModel, JDialog dialog) {
+        this(interactionBundleModel);
+        this.dialog = dialog;
+    }
 
     public InteractionBundlePanel(InteractionBundleModel
             interactionBundleModel) {
@@ -49,10 +59,10 @@ public class InteractionBundlePanel extends JPanel {
         panel.add(matchingInteractionsLabel);
 
         final CheckNode rootNode = new CheckNode("All Filters");
-        final JTreeWithCheckNodes tree = new JTreeWithCheckNodes(rootNode);
+        tree = new JTreeWithCheckNodes(rootNode);
         tree.setOpaque(false);
 
-        CollapsablePanel filterPanel = new CollapsablePanel("Filters (Optional)");
+        filterPanel = new CollapsablePanel("Filters (Optional)");
         filterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         filterPanel.getContentPane().add(tree);
 
@@ -68,6 +78,19 @@ public class InteractionBundlePanel extends JPanel {
 
         this.setLayout(new BorderLayout());
         this.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    /**
+     * Expands all Nodes.
+     */
+    public void expandAllNodes() {
+        filterPanel.setCollapsed(false);
+        dataSourceFilter.setSelected(true);
+        interactionTypeFilter.setSelected(true);
+        TreePath path = new TreePath(dataSourceFilter.getPath());
+        tree.expandPath(path);
+        path = new TreePath(interactionTypeFilter.getPath());
+        tree.expandPath(path);
     }
 
     private void addObserver(final InteractionBundleModel interactionBundleModel,
@@ -183,6 +206,13 @@ public class InteractionBundlePanel extends JPanel {
                 } else {
                     DownloadDetails detailsFrame = new DownloadDetails(passedRecordList,
                             interactionBundleModel.getPhysicalEntityName());
+                    if (dialog != null) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    dialog.dispose();
+                                }
+                            });
+                    }
                     detailsFrame.setVisible(true);
                 }
             }
