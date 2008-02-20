@@ -5,6 +5,7 @@ import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
@@ -125,7 +126,7 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         cPathSearchPanel form = new cPathSearchPanel(
-                CPathWebService.getInstance());
+                CPathWebServiceImpl.getInstance());
         frame.getContentPane().add(form);
         frame.pack();
         form.initFocus();

@@ -4,6 +4,7 @@ import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 import org.cytoscape.coreplugin.cpath2.util.NetworkGroupUtil;
 import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
 
@@ -140,7 +141,7 @@ public class DownloadDetails extends JDialog {
             }
         }
         String networkTitle = peName + ":  Network";
-        CPathWebService webApi = CPathWebService.getInstance();
+        CPathWebService webApi = CPathWebServiceImpl.getInstance();
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, networkTitle,
                 networkToMerge);
         JTaskConfig jTaskConfig = new JTaskConfig();
