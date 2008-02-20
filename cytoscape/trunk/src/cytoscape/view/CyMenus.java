@@ -412,7 +412,6 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new PreferenceAction());
 		addAction(new BookmarkAction());
 		addAction(new ProxyServerAction());
-
 		//
 		// Select menu
 		//
@@ -458,8 +457,8 @@ public class CyMenus implements GraphViewChangeListener {
 		menuBar.getMenu("View").add(new JSeparator());
 
 		addAction(new SetVisualPropertiesAction());
-		//addAction(new ToggleVisualMapperAction());
-
+		viewMenu.add(new ArrangeAction());
+		
 		//
 		// Layout menu
 		//
