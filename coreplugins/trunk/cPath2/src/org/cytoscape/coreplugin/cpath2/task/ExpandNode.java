@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
 import org.cytoscape.coreplugin.cpath2.view.InteractionBundlePanel;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
@@ -20,13 +21,13 @@ import cytoscape.task.util.TaskManager;
  * Expand a Node Feature.
  */
 public class ExpandNode implements NodeContextMenuListener, ActionListener {
-    private static URL iconURL = SearchHitsPanel.class.getResource("resources/stock_update.png");
-    private ImageIcon icon = new ImageIcon(iconURL);
     private NodeView nodeView;
 
     public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu jPopupMenu) {
         this.nodeView = nodeView;
-        JMenuItem menuItem = new JMenuItem ("Get Neighbors", icon);
+        CPathProperties cpathProperties = CPathProperties.getInstance();
+        JMenuItem menuItem = new JMenuItem ("Get Neighbors from:  "
+                + cpathProperties.getCPathServerName());
         menuItem.addActionListener(this);
         jPopupMenu.add(menuItem);
     }
