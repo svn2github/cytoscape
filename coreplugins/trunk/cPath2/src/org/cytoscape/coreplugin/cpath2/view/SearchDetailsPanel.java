@@ -27,6 +27,7 @@ import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -134,7 +135,7 @@ public class SearchDetailsPanel extends JPanel {
             long ids[] = new long[1];
             ids[0] = internalId;
 
-            CPathWebService webApi = CPathWebService.getInstance();
+            CPathWebService webApi = CPathWebServiceImpl.getInstance();
             ExecuteGetRecordByCPathId task;
             if (mergeNetwork != null && mergeNetwork.getNetwork() != null) {
                 task = new ExecuteGetRecordByCPathId(webApi, ids, title, mergeNetwork.getNetwork());
