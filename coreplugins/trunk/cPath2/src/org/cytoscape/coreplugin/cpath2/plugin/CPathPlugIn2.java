@@ -36,6 +36,7 @@ package org.cytoscape.coreplugin.cpath2.plugin;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginProperties;
 import cytoscape.Cytoscape;
+import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyMenus;
@@ -46,6 +47,8 @@ import org.cytoscape.coreplugin.cpath2.mapping.MapCPathToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CytoscapeCPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 import org.cytoscape.coreplugin.cpath2.view.TabUi;
 import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
@@ -116,13 +119,14 @@ public class CPathPlugIn2 extends CytoscapePlugin {
                 }
             }
             });
+        //WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
     }
 
     private void initUi() {
         CytoscapeDesktop desktop = Cytoscape.getDesktop();
         final CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
 
-        CPathWebService webApi = CPathWebService.getInstance();
+        CPathWebService webApi = CPathWebServiceImpl.getInstance();
 
         cpathPanel = new cPathSearchPanel(webApi);
 
