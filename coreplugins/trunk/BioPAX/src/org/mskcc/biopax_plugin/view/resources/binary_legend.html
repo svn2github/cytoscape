@@ -19,16 +19,16 @@
     <td VALIGN=CENTER>
         <span class="rule">COMPONENT_IN_SAME</span>
     </td>
-    <td BGCOLOR="#00FFFF" VALIGN=CENTER>
+    <td BGCOLOR="#ffff00" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
     <span class='description'>
-    Infers an interaction between A and B entities if they belong to the same molecular complex.
-    This does not necessarily mean they directly physically interact. In a complex with n molecules,
-    this rule will create a clique composed of n(n-1)/2 interactions. The inferred interaction is undirected.
+    Edge is drawn if the first entity is a component of the second entity, which is a complex.
+    This interaction is transient in the sense that A COMPONENT_OF B and B COMPONENT_OF
+    C implies A COMPONENT_OF C. This interaction is undirected.
     </span>
     </td>
  </tr>
@@ -37,16 +37,17 @@
     <td VALIGN=CENTER>
         <span class="rule">COMPONENT_OF</span>
     </td>
-    <td BGCOLOR="#0000FF" VALIGN=CENTER>
+    <td BGCOLOR="#ffc000" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
     <span class='description'>
-    Infers an interaction between A and C entities if A is a component of C, which is a complex.
-    This interaction is transient in the sense that A component_of B and B component_of C implies A
-    component_of C. The inferred interaction is directed.
+    Edge is drawn if two entities belong to at least one molecular complex.
+    This does not necessarily mean they interact directly. In a complex with n molecules, this rule
+    will create a clique composed of n(n-1)/2 interactions. This
+    interaction is directed.
     </span>
     </td>
  </tr>
@@ -55,17 +56,17 @@
     <td VALIGN=CENTER>
         <span class="rule">CO_CONTROL_DEPENDENT_ANTI</span>
     </td>
-    <td BGCOLOR="#FFFF00" VALIGN=CENTER>
+    <td BGCOLOR="#ff0000" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if they exert control over the same process,
-        and their control is dependent, i.e. they both affect control of the most downstream process.
-        Also, their effect is in different directions (one of them activates, the other inhibits).
-        The inferred interaction is undirected.
+        Edge is drawn if the first and second entities have control over
+        the same process, their control is dependent, i.e. one of them have effect over control
+        of the other one, and their effect is in different directions (one of them activates,
+        the other inhibits.  This interaction is undirected."
         </span>
     </td>
  </tr>
@@ -74,17 +75,17 @@
     <td VALIGN=CENTER>
         <span class="rule">CO_CONTROL_DEPENDENT_SIMILAR</span>
     </td>
-    <td BGCOLOR="#FF0000" VALIGN=CENTER>
+    <td BGCOLOR="#00b050" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if they exert control over the same process,
-        and their control is dependent, i.e. they both affect control of the most downstream
-        process. Also, their effect is in the same direction (both activate or both inhibit).
-        The inferred interaction is undirected.
+       Edge is drawn if the first and second entities have control over the
+       same process, their control is dependent, i.e. one of them have effect over control of
+       the other one, and their effect is in the same direction (both activates or both inhibits). 
+       This interaction is undirected.
         </span>
     </td>
  </tr>
@@ -93,17 +94,17 @@
     <td VALIGN=CENTER>
         <span class="rule">CO_CONTROL_INDEPENDENT_ANTI</span>
     </td>
-    <td BGCOLOR="#FFC0CB" VALIGN=CENTER>
+    <td BGCOLOR="#fd95a6" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if they exert control over the same process,
-        and their control is independent, i.e. they act without affecting each other's activity.
-        Also, their effect is in different directions (one of them activates, the other inhibits).
-        The inferred interaction is undirected.
+        Edge is drawn if the first and second entities have control over the
+        same process, their control is independent, i.e. they act without affecting each
+        other's activity, and their effect is in different directions (one of them activates,
+        the other inhibits.  This interaction is undirected.
         </span>
     </td>
  </tr>
@@ -112,17 +113,17 @@
     <td VALIGN=CENTER>
         <span class="rule">CO_CONTROL_INDEPENDENT_SIMILAR</span>
     </td>
-    <td BGCOLOR="#FFA500" VALIGN=CENTER>
+    <td BGCOLOR="#92d050" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if they exert control over the same process,
-        and their control is independent, i.e. they act without affecting each other's activity.
-        Also, their effect is in the same direction (both activate or both inhibit).
-        The inferred interaction is undirected.
+       Edge is drawn if the first and second entities have control over
+       the same process, their control is independent, i.e. they act without affecting each
+       other's activity, and their effect is in the same direction (both activates or both inhibits).
+       This interaction is undirected.
         </span>
     </td>
  </tr>
@@ -131,17 +132,18 @@
     <td VALIGN=CENTER>
         <span class="rule">CONTROLS_METABOLIC_CHANGE</span>
     </td>
-    <td BGCOLOR="#008000" VALIGN=CENTER>
+    <td BGCOLOR="#00b0f0" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if A catalyses a reaction that either
-        consumes or produces B. More formally, this rule will connect two entities A and B if and
-        only if A controls a conversion which B participates and appears only on the left
-        or right side of the conversion but not both. The inferred interaction is directed.
+        Edge is drawn if the first entity catalyses a reaction that either
+        consumes or produces the second entity. More specifically, this rule
+        will find an interaction between two entities A and B if and only
+        if A controls a conversion which B participates and appears only on
+        the left or right side of the conversion but not both.  This interaction is directed.
         </span>
     </td>
  </tr>
@@ -150,18 +152,18 @@
     <td VALIGN=CENTER>
         <span class="rule">CONTROLS_STATE_CHANGE</span>
     </td>
-    <td BGCOLOR="#8B008B" VALIGN=CENTER>
+    <td BGCOLOR="#0070c0" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if A catalyses a reaction that either
-        consumes or produces B. More formally, this rule will find an interaction between two
-        entities A and B if and only if A controls a conversion which B participates and
-        appears both on the left or right side of the conversion. The inferred interaction
-        is directed.
+       Edge is drawn if the first entity catalyses a reaction that either
+       consumes or produces the second entity. More specifically, this rule
+       will find an interaction between two entities A and B if and only
+       if A controls a conversion which B participates and appears both on
+       the left or right side of the conversion. This interaction is directed.
         </span>
     </td>
  </tr>
@@ -170,16 +172,16 @@
     <td VALIGN=CENTER>
         <span class="rule">PARTICIPATES_CONVERSION</span>
     </td>
-    <td BGCOLOR="#90EE90" VALIGN=CENTER>
+    <td BGCOLOR="#ccc1da" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if they both participate in a conversion
-        as substrates or products. Controllers are not included. The inferred interaction
-        is undirected.
+        Edge is drawn if both A and B participates in a conversion as
+        substrates or products. Controllers are not included. This interaction is
+        undirected.
         </span>
     </td>
  </tr>
@@ -188,15 +190,15 @@
     <td VALIGN=CENTER>
         <span class="rule">PARTICIPATES_INTERACTION</span>
     </td>
-    <td BGCOLOR="#FF00FF" VALIGN=CENTER>
+    <td BGCOLOR="#7030a0" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B entities if they both participate in an interaction.
-        Controllers are not included. The inferred interaction is undirected.
+        Edge is drawn if both A and B participates in an interaction as
+        participants. Controllers are not included. This interaction is undirected.
         </span>
     </td>
  </tr>
@@ -205,19 +207,18 @@
     <td VALIGN=CENTER>
         <span class="rule">SEQUENTIAL_CATALYSIS</span>
     </td>
-    <td BGCOLOR="#808080" VALIGN=CENTER>
+    <td BGCOLOR="#7f7f7f" VALIGN=CENTER>
         &nbsp;
     </td>
 </tr>
 <tr>
     <td>
         <span class='description'>
-        Infers an interaction between A and B if they catalyze two conversions that are connected
-        by a common molecule, and where potentially that common substrate is produced by the
-        former and consumed by the latter. The inferred interaction is directed.
+       Edge is drawn if A and B catalyzes two conversions that are connected
+       via a common molecule, and where potentially that common substrate
+       is produced by the former and consumed by the latter.
+       This interaction is directed.
         </span>
     </td>
  </tr>
-
-
 </table>
