@@ -380,7 +380,7 @@ public class GUI extends javax.swing.JFrame {
 	        System.out.println("Start Search Button Pressed");
 	        
 	        Intact attempt = new Intact();
-	        attempt.search(nodeId, node);
+	        attempt.startSearch(nodeId, node);
  
 	        System.out.println("After Intact Client was called.");
 	        jProgressBar1.setIndeterminate(false);

@@ -38,7 +38,7 @@ public class Intact{
     Object stub;
     ModuleProperties props;
 	
-	public void search(String nodeId, Node node){
+	public void startSearch(String nodeId, Node node){
 
 	    
         WebServiceClientImpl try2 = (IntactClient) IntactClient.getClient();
@@ -70,6 +70,7 @@ public class Intact{
 //        	importNetwork(blah1, null);
         	//this will modify the current network 
         	//(which would be the newly created one)
+  
         	importNetwork(blah1, Cytoscape.getCurrentNetwork());
 			
         } catch(Exception e){
