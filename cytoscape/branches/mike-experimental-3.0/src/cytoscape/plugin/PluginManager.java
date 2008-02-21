@@ -757,7 +757,8 @@ public class PluginManager {
 		}
 
 		// the creation of the class loader automatically loads the plugins
-		classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		//classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		classLoader = new URLClassLoader(urls,Cytoscape.class.getClassLoader()); 
 
 		// iterate through the given jar files and find classes that are
 		// assignable from CytoscapePlugin
