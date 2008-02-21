@@ -56,9 +56,9 @@ public class HostActivator implements BundleActivator
         new Thread() {
         	public void run() {
         		try {
-        			String params = m_context.getProperty("cytoscape.old.params");
+        			//String params = m_context.getProperty("cytoscape.old.params");
 
-        			CyMain.main(params.split(" "));
+        			CyMain.main(new String[]{"-p","plugins"});
 					ServiceHandler sh = new ServiceHandler(m_context);
         		} catch (Exception e) {
         			e.printStackTrace();
