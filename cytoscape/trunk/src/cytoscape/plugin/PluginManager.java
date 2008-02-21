@@ -86,6 +86,8 @@ public class PluginManager {
 
 	private static Set<String> loadedPlugins;
 
+	private static Set<Throwable> loadingErrors;
+	
 	private static HashMap<String, PluginInfo> initializedPlugins;
 
 	private static URLClassLoader classLoader;
@@ -94,6 +96,25 @@ public class PluginManager {
 
 	private static String cyVersion = new CytoscapeVersion().getMajorVersion();
 
+	/**
+	 * Returns list of loading exceptions.
+	 */
+	public List<Throwable> getLoadingErrors() {
+		if (pluginTracker.getTotalCorruptedElements() > 0) {
+			loadingErrors.add(new TrackerException(pluginTracker.getTotalCorruptedElements() + 
+					" corrupted elements removed from the Plugin Tracker.  Some plugins may need to be reinstalled."));
+		}
+		return new ArrayList<Throwable>(loadingErrors);
+	}
+
+	/**
+	 * Clears the loading error list. Ideally this should be called after
+	 * checking the list each time.
+	 */
+	public void clearErrorList() {
+		loadingErrors.clear();
+	}
+	
 	/**
 	 * @return URLClassLoader used to load plugins at startup.
 	 */
@@ -201,30 +222,26 @@ public class PluginManager {
 	 * CYTOSCAPE RUNTIME CODE
 	 */
 	protected void resetManager() {
+		pluginTracker = null;
 		pluginMgr = null;
 	}
 
 	// create plugin manager
 	private PluginManager(PluginTracker Tracker) {
+		loadingErrors = new HashSet<Throwable>();
 		setWebstart();
-		try {
 			String trackerFileName = "track_plugins.xml";
 
 			if (tempDir == null) {
 				if (usingWebstartManager()) {
 					tempDir = new File(CytoscapeInit.getConfigDirectory(),
-							"webstart"
-									+ File.separator
-									+ (new CytoscapeVersion())
-											.getMajorVersion() + File.separator
+							"webstart" + File.separator
+									+ (new CytoscapeVersion()).getMajorVersion() + File.separator
 									+ "plugins");
-					;
-					this.removeWebstartInstalls();
-
+					removeWebstartInstalls();
 					trackerFileName = "track_webstart_plugins.xml";
 				} else {
-					tempDir = new File(CytoscapeInit
-							.getConfigVersionDirectory(), "plugins");
+					tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
 				}
 			}
 
@@ -239,12 +256,21 @@ public class PluginManager {
 			if (Tracker != null) {
 				pluginTracker = Tracker;
 			} else {
-				pluginTracker = new PluginTracker(tempDir.getParentFile(),
-						trackerFileName);
+				try {
+				pluginTracker = new PluginTracker(tempDir, trackerFileName);					
+				//pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
+				} catch (IOException ioe) {
+					loadingErrors.add(ioe);
+				} catch (TrackerException te) {
+					loadingErrors.add(te);
+				} finally { // document should be cleaned out now
+					try {
+						pluginTracker = new PluginTracker(tempDir, trackerFileName);
+					} catch (Exception e) {
+						e.printStackTrace(); // this could go on forever, surely there's a better way!
+					}
+				}
 			}
-		} catch (java.io.IOException E) {
-			E.printStackTrace(); // TODO do something useful with error
-		}
 		pluginURLs = new ArrayList<java.net.URL>();
 		loadedPlugins = new HashSet<String>();
 		initializedPlugins = new HashMap<String, PluginInfo>();
@@ -301,7 +327,7 @@ public class PluginManager {
 		// try to get it from the file
 		// XXX PROBLEM: what to do about a plugin that attempts to register
 		// itself and is not compatible with the current version?
-			System.err.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
+			System.out.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
 			PluginObj = pp.fillPluginInfoObject(PluginObj);

@@ -57,6 +57,8 @@ public class PluginTracker {
 	private Document trackerDoc;
 	private File installFile;
 	private HashMap<String, Element> infoObjMap;
+	private Set<Element> corruptedElements;
+	
 	/**
 	 * Used for testing
 	 * 
@@ -66,12 +68,12 @@ public class PluginTracker {
 	 *            directory to to write xml file
 	 * @throws java.io.IOException
 	 */
-	protected PluginTracker(File Dir, String FileName) throws java.io.IOException {
+	protected PluginTracker(File Dir, String FileName) throws java.io.IOException, TrackerException {
 		installFile = new File(Dir, FileName);
 		init();
 	}
 	
-	protected PluginTracker(File file) throws java.io.IOException {
+	protected PluginTracker(File file) throws java.io.IOException, TrackerException {
 		installFile = file;
 		init();
 	}
@@ -86,7 +88,9 @@ public class PluginTracker {
 	/*
 	 * Sets up the xml doc for tracking.
 	 */
-	private void init() throws java.io.IOException {
+	private void init() throws java.io.IOException, TrackerException {
+		corruptedElements = new HashSet<Element>();
+		
 		if (PluginManager.usingWebstartManager()) { 
 			// we don't want the old webstart file
 			installFile.delete();
@@ -98,20 +102,29 @@ public class PluginTracker {
 				trackerDoc = Builder.build(installFile);
 				removeMissingIdEntries();
 				write();
-			} catch (JDOMException E) { // TODO do something with this error
-				E.printStackTrace();
+			} catch (JDOMException jde) {
+				installFile.delete();
+				createCleanDoc();
+				throw new TrackerException("File is corrupted, deleting " + 
+						installFile.getAbsolutePath(), jde);
+			} finally {
+				createPluginTable();
 			}
 		} else {
-			trackerDoc = new Document();
-			trackerDoc.setRootElement(new Element("CytoscapePlugin"));
-			trackerDoc.getRootElement().addContent(new Element(PluginStatus.CURRENT.getTagName()));
-			trackerDoc.getRootElement().addContent(new Element(PluginStatus.INSTALL.getTagName()));
-			trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
-			write();
+			createCleanDoc();
+			createPluginTable();
 		}
-		this.createPluginTable();
 	}
 
+	private void createCleanDoc() {
+		trackerDoc = new Document();
+		trackerDoc.setRootElement(new Element("CytoscapePlugin"));
+		trackerDoc.getRootElement().addContent(new Element(PluginStatus.CURRENT.getTagName()));
+		trackerDoc.getRootElement().addContent(new Element(PluginStatus.INSTALL.getTagName()));
+		trackerDoc.getRootElement().addContent(new Element(PluginStatus.DELETE.getTagName()));
+		write();
+	}
+	
 	/* In order to maintain a list of plugins that does not duplicate entries due to lack of a unique identifier
 	 * all entries that lack an unique id will be purged and expected to re-register.  User will see no difference.
 	 */
@@ -330,6 +343,8 @@ public class PluginTracker {
 	private void createPluginTable() {
 		this.infoObjMap = new java.util.HashMap<String, Element>();
 		for (PluginStatus ps: PluginStatus.values()) {
+			// TODO how should a missing status tag be handled?  Probably the entire file 
+			// is bad and should be reinitialized
 			Iterator<Element> iter = trackerDoc.getRootElement().getChild(ps.getTagName()).getChildren().iterator();
 
 			while (iter.hasNext()) {
@@ -369,17 +384,25 @@ public class PluginTracker {
 	 * Writes doc to file
 	 */
 	protected void write() {
+		// before writing remove all corrupted elements
+		for (Element e: corruptedElements) {
+			e.getParentElement().removeContent(e);
+		}
+		
 		try {
 			XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
 			FileWriter Writer = new FileWriter(installFile);
 			out.output(trackerDoc, Writer);
-			out.outputString(trackerDoc);
+			//System.out.println(out.outputString(trackerDoc));
 			Writer.close();
 		} catch (java.io.IOException E) {
 			E.printStackTrace();
 		}
 	}
 
+	public int getTotalCorruptedElements() {
+		return corruptedElements.size();
+	}
 	
 	public String toString() {
 		XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
@@ -434,10 +457,18 @@ public class PluginTracker {
 			Iterator<Element> pluginI = CurrentTheme.getChild(PluginXml.PLUGIN_LIST.getTag()).getChildren(PluginXml.PLUGIN.getTag()).iterator();
 			while (pluginI.hasNext()) {
 				PluginInfo pluginInfo = createPluginObject(pluginI.next());
+				if (pluginInfo == null) { 
+					// remove the element
+					corruptedElements.add(CurrentTheme);
+					break;
+				}
 				pluginInfo.setParent(themeInfo);
 				themeInfo.addPlugin(pluginInfo);
 			}
-			Content.add(themeInfo);
+			// if it wasn't corrupted
+			if (!corruptedElements.contains(CurrentTheme)) {
+				Content.add(themeInfo);
+			}
 		}
 		return Content;
 	}
@@ -455,6 +486,11 @@ public class PluginTracker {
 
 		for (Element CurrentPlugin : Plugins) {
 			PluginInfo Info = createPluginObject(CurrentPlugin);
+			if (Info == null) {
+				// remove the Element and move on
+				corruptedElements.add(CurrentPlugin);
+				continue;
+			}
 			Content.add(Info);
 		}
 		return Content;
@@ -481,12 +517,24 @@ public class PluginTracker {
 	 */
 	private PluginInfo createPluginObject(Element PluginElement) {
     	PluginInfo Info = (PluginInfo) createBasicObject(PluginElement, DownloadableType.PLUGIN);
+
+    	if (PluginElement.getChildren().size() <= 0 ||
+    		PluginElement.getChild(classTag) == null ||
+    		PluginElement.getChild(installLocTag) == null ||
+    		PluginElement.getChild(pluginVersTag) == null ||
+    		PluginElement.getChild(fileTypeTag) == null ||
+    		PluginElement.getChild(fileListTag) == null) {
+    		// bad xml, remove it and return null
+    		//PluginElement.getParent().removeContent(PluginElement);
+    		return null;
+    	} 
     	
     	Info.setPluginClassName(PluginElement.getChildTextTrim(classTag));
-    	Info.setProjectUrl(PluginElement.getChildTextTrim(projUrlTag));
     	Info.setInstallLocation(PluginElement.getChildTextTrim(installLocTag));
 		Info.setObjectVersion(Double.valueOf(PluginElement.getChildTextTrim(pluginVersTag)));
+    	Info.setProjectUrl(PluginElement.getChildTextTrim(projUrlTag));
 
+		
 		// set file type
 		String FileType = PluginElement.getChildTextTrim(fileTypeTag);
 		if (FileType.equalsIgnoreCase(PluginInfo.FileType.JAR.toString())) {
@@ -502,11 +550,13 @@ public class PluginTracker {
 		}
 
 		// add plugin authors
-		List<Element> Authors = PluginElement.getChild(authorListTag)
-		                                     .getChildren(authorTag);
-		for (Element Author : Authors) {
-			Info.addAuthor(Author.getChildTextTrim(nameTag),
-			               Author.getChildTextTrim(instTag));
+		if (PluginElement.getChild(authorListTag) != null) {
+			List<Element> Authors = PluginElement.getChild(authorListTag)
+			                                     .getChildren(authorTag);
+			for (Element Author : Authors) {
+				Info.addAuthor(Author.getChildTextTrim(nameTag),
+				               Author.getChildTextTrim(instTag));
+			}
 		}
 
 		Info = PluginFileReader.addLicense(Info, PluginElement);

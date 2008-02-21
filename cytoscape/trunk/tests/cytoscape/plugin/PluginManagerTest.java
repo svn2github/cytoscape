@@ -2,7 +2,11 @@ package cytoscape.plugin;
 
 import cytoscape.*;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.net.URLClassLoader;
 import java.util.*;
 import junit.framework.TestCase;
@@ -45,14 +49,14 @@ public class PluginManagerTest extends TestCase {
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	protected void setUp() throws java.io.IOException {
+	protected void setUp() throws Exception {
 		transformedXML = PluginTestXML.transformXML("test_plugin.xml", getFileUrl());
 		testUrl = cleanFileUrl(transformedXML.getAbsolutePath());
 		fileName = "test_tracker.xml";
 		File tmpDir = new File(CytoscapeInit.getConfigDirectory(), "test"); 
 		
 		tmpDownloadDir = new File(tmpDir, (new CytoscapeVersion()).getMajorVersion());
-		System.err.println(tmpDownloadDir.getAbsolutePath());
+		//System.err.println(tmpDownloadDir.getAbsolutePath());
 		tmpDownloadDir.mkdirs();
 
 		PluginManager.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
@@ -626,32 +630,63 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 0);
 		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 1);
 		assertEquals(mgr.getDownloadables(PluginStatus.DELETE).size(), 0);
+	}
 
+	public void testMinorCorruptedTrackerFile() {
+		mgr.resetManager();
+		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
+		File file = new File("testData/plugins/track_plugins_c1.xml");
+		file = copyFileToTempDir(file);
+
+		PluginManager mg = PluginManager.getPluginManager();
+		assertEquals(mg.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
+		 // errors that aren't major failures don't show up until you've tried to read the file
+		assertTrue(mg.getDownloadables(PluginStatus.CURRENT).size() > 0);
+		assertEquals(mg.pluginTracker.getTotalCorruptedElements(), 1);
+		assertEquals(mg.getLoadingErrors().size(), 1);
+		assertTrue(mg.getLoadingErrors().get(0).getClass().equals(TrackerException.class));
 	}
 	
-/*	
-	public void testLoadIndication() throws java.io.IOException, org.jdom.JDOMException, ManagerException {
-		PluginInfo TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl),
-				"mcode_1", "1.0");
+	public void testMajorCorruptedTrackerFile() {
+		mgr.resetManager();
+		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
+		File file = new File("testData/plugins/track_plugins_c2.xml");
+		file = copyFileToTempDir(file);
 
-		DownloadableInfo DownloadedObj = mgr.download(TestObj, null);
-		assertEquals(mgr.getDownloadables(PluginStatus.INSTALL).size(), 1);
-		mgr.install(DownloadedObj);
+		PluginManager mg = PluginManager.getPluginManager();
+		assertEquals(mg.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
+		assertEquals(mg.getDownloadables(PluginStatus.CURRENT).size(), 0);
+		List<Throwable> LoadingErrors = mg.getLoadingErrors();
+		assertEquals(LoadingErrors.size(), 1);
+		assertTrue(LoadingErrors.get(0).getClass().equals(TrackerException.class));
 		
-		try {
-			mgr.loadPlugin(DownloadedObj);
-		} catch (PluginException pe) {
-			// good
-			assertNotNull(pe);
-		} catch (ClassNotFoundException cne) {
-			fail(cne.getMessage());
-		}
-
+		mg.clearErrorList();
+		assertEquals(mg.getLoadingErrors().size(), 0);
 	}
-	
-*/	
 	
 	/*--------------------------------------------------------------------*/
+	private File copyFileToTempDir(File fileToCopy) {
+		File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + 
+				new CytoscapeVersion().getMajorVersion());
+		File tempFile = new File(tempDir, "track_plugins.xml");
+		try {
+			BufferedReader reader = new BufferedReader( new FileReader(fileToCopy) );
+			BufferedWriter writer = new BufferedWriter( new FileWriter(tempFile) );
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				writer.write(line);
+				writer.newLine();
+				writer.flush();
+			}
+			reader.close();
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return tempFile;
+	}
+
+	
 	private ThemeInfo setUpCorrectUrls(ThemeInfo info) {
 		for (PluginInfo plugin: info.getPlugins()) {
 			plugin.setObjectUrl(getFileUrl() + plugin.getObjectUrl());

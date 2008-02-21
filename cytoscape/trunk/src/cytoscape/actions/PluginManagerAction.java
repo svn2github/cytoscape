@@ -86,10 +86,18 @@ public class PluginManagerAction extends CytoscapeAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		PluginManageDialog dialog = new PluginManageDialog(Cytoscape
-				.getDesktop());
+		PluginManageDialog dialog = new PluginManageDialog(Cytoscape.getDesktop());
+		// TODO add a dialog specific to manager errors, replace generic JOption with it
 		PluginManager Mgr = PluginManager.getPluginManager();
 
+		if (Mgr.getLoadingErrors().size() > 0) {
+			String message = "";
+			for (Throwable t: Mgr.getLoadingErrors()) 
+				message += t.getMessage() + "\n";
+			javax.swing.JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, 
+					"Plugin Manager Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+		}
+		
 		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
 		String DefaultTitle = "Cytoscape";
 
