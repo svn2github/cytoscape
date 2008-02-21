@@ -5,7 +5,11 @@ To build:
 % ant all
 % build-cytoscape-osgi.sh
 
-Then cd into build/cytoscape-osgi. Now run:
+
+To run with Equinox:
+====================
+
+Then cd into build/equinox-cytoscape. Now run:
 
 % cytoscape -clean -console
 
@@ -25,6 +29,15 @@ osgi> start 13
 
 That should get Cytoscape up and running.
 
+To run with Felix:
+==================
+
+cd into build/felix-cytoscape.  Now run:
+
+% cytoscape.sh
+
+
+
 
 Configuration:
 ==============
@@ -41,14 +54,14 @@ api, implementation, and cytoscape to share their classpath.  This is necessary
 for jaxb reflection to work.
 
 
-Once bnd has been run, then the contents of the osgi-template directory are copied
-into place.  Then the libraries are copied into place.  Then cytoscape is ready to 
-run.
+Once bnd has been run, then the contents of the osgi/*-template directories are copied
+into place.  Then the wrapped libraries are copied into place.  Then cytoscape is ready 
+to run.
 
 
 
-osgi-template
-=============
+osgi/equinox-template
+=====================
 
 plugins - This dir contains the osgi launcher bundles and osgi framework bundles.
 This includes the configurator for automatically launching all plugins from the
