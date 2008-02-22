@@ -175,6 +175,11 @@ public class GridNodeLayout extends AbstractLayout {
 
 		while (nodeViews.hasNext()) {
 			NodeView nView = (NodeView) nodeViews.next();
+			List<CyEdge>edgeList = network.getAdjacentEdgesList(nView.getNode(),true,true,true);
+			for (CyEdge edge: edgeList) { 
+				EdgeView ev = networkView.getEdgeView(edge);
+				ev.clearBends(); 
+			}
 
 			if (isLocked(nView)) {
 				continue;
