@@ -39,6 +39,7 @@ package cytoscape;
 import cytoscape.data.readers.CytoscapeSessionReader;
 
 import cytoscape.init.CyInitParams;
+import cytoscape.dialogs.ErrorDialog;
 
 import cytoscape.plugin.PluginManager;
 
@@ -57,13 +58,13 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
+//import java.net.URLClassLoader;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
+//import java.util.Set;
 
 import javax.swing.ImageIcon;
 
@@ -134,6 +135,7 @@ public class CytoscapeInit {
 	 */
 	public boolean init(CyInitParams params) {
 		long begintime = System.currentTimeMillis();
+		ErrorDialog errorDialog = null;
 
 		try {
 			initParams = params;
@@ -174,14 +176,15 @@ public class CytoscapeInit {
 
 				setUpAttributesChangedListener();
 			}
+			errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
 
-			// TODO what to do with the exception?
 			PluginManager mgr = PluginManager.getPluginManager();
 			try {
 				System.out.println("Updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				ErrorMsg += me.getMessage();
+				errorDialog.addError(me);
+				me.printStackTrace();
 			}
 			mgr.install();
 
@@ -226,11 +229,8 @@ public class CytoscapeInit {
 			mgr.loadPlugins(InstalledPlugins);
 			
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
-			// TODO Create a nice dialog box to display errors for user for now:
-			if (pluginLoadingErrors.size() > 0)
-				ErrorMsg += "Plugin Loading Errors: \n";
-			for (Throwable t: pluginLoadingErrors) { 
-				ErrorMsg += "  " + t.toString() + "\n";
+			for (Throwable t: pluginLoadingErrors) {
+				errorDialog.addError(t);
 				t.printStackTrace();
 			}
 			mgr.clearErrorList();
@@ -269,12 +269,9 @@ public class CytoscapeInit {
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null,
 				null);
 
-		if ((ErrorMsg != null) && (ErrorMsg.length() > 0)) {
-			javax.swing.JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-					ErrorMsg, "Initialization Error",
-					javax.swing.JOptionPane.ERROR_MESSAGE);
-		}
-
+		if (errorDialog.hasErrors())
+			errorDialog.setVisible(true);
+		
 		return true;
 	}
 
