@@ -82,6 +82,8 @@ public class NetworkViewManager implements PropertyChangeListener,
 	protected CytoscapeDesktop cytoscapeDesktop;
 
 	protected SwingPropertyChangeSupport pcs;
+	protected int MINIMUM_WIN_WIDTH = 200;
+	protected int MINIMUM_WIN_HEIGHT = 200;
 
 	/**
 	 * @deprecated view_type is no longer used. Use the other constructor. Will
@@ -411,12 +413,21 @@ public class NetworkViewManager implements PropertyChangeListener,
 			y = selectedFrame.getLocation().y + 20;
 		}
 
-		if ((x > desktopPane.getWidth() -60) || (y > desktopPane.getHeight() -60)){
-			x = 30;
-			y = 30;
+		if (x > desktopPane.getWidth() - MINIMUM_WIN_WIDTH){
+			x = desktopPane.getWidth() - MINIMUM_WIN_WIDTH;
+		}
+		if (y > desktopPane.getHeight() - MINIMUM_WIN_HEIGHT){
+			y = desktopPane.getHeight() - MINIMUM_WIN_HEIGHT;
+		}
+
+		if (x < 0) {
+			x =0;
+		}
+		if (y < 0) {
+			y =0;
 		}
 		
-		iframe.setBounds(x, y,400, 400);
+		iframe.setBounds(x, y, 400, 400);
 		
 		// maximize the frame if the specified property is set
 		try {
