@@ -70,8 +70,7 @@ public class ArrangeAction extends JMenu {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							CyDesktopManager.setDesktop(Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane());
-							CyDesktopManager.arrangeFrames(CyDesktopManager.ARRANGE_CASCADE);
+							CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.CASCADE);
 						}
 					});
 			}
@@ -81,8 +80,7 @@ public class ArrangeAction extends JMenu {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							CyDesktopManager.setDesktop(Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane());
-							CyDesktopManager.arrangeFrames(CyDesktopManager.ARRANGE_GRID);
+							CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.GRID);
 						}
 					});
 			}
@@ -92,8 +90,7 @@ public class ArrangeAction extends JMenu {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							CyDesktopManager.setDesktop(Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane());
-							CyDesktopManager.arrangeFrames(CyDesktopManager.ARRANGE_HORIZONTAL);
+							CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.HORIZONTAL);
 						}
 					});
 			}
@@ -103,8 +100,7 @@ public class ArrangeAction extends JMenu {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							CyDesktopManager.setDesktop(Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane());
-							CyDesktopManager.arrangeFrames(CyDesktopManager.ARRANGE_VERTICAL);
+							CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.VERTICAL);
 						}
 					});
 			}
