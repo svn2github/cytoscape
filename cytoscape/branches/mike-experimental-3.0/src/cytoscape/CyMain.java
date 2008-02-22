@@ -348,7 +348,7 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getGraphFiles() {
+	public List<String> getGraphFiles() {
 		return createList(graphFiles);
 	}
 
@@ -357,7 +357,7 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getEdgeAttributeFiles() {
+	public List<String> getEdgeAttributeFiles() {
 		return createList(edgeAttrFiles);
 	}
 
@@ -366,7 +366,7 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getNodeAttributeFiles() {
+	public List<String> getNodeAttributeFiles() {
 		return createList(nodeAttrFiles);
 	}
 
@@ -375,7 +375,7 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getExpressionFiles() {
+	public List<String> getExpressionFiles() {
 		return createList(expressionFiles);
 	}
 
@@ -384,7 +384,7 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getPlugins() {
+	public List<String> getPlugins() {
 		return createList(plugins);
 	}
 
@@ -415,11 +415,11 @@ public class CyMain implements CyInitParams {
 		return args;
 	}
 
-	private List createList(String[] vals) {
+	private List<String> createList(String[] vals) {
 		if (vals == null)
-			return new ArrayList();
+			return new ArrayList<String>();
 
-		ArrayList a = new ArrayList(vals.length);
+		ArrayList<String> a = new ArrayList<String>(vals.length);
 
 		for (int i = 0; i < vals.length; i++)
 			a.add(i, vals[i]);

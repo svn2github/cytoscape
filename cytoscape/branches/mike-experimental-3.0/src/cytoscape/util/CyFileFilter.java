@@ -63,11 +63,11 @@ import javax.swing.filechooser.FileFilter;
 public class CyFileFilter extends FileFilter implements FilenameFilter {
 	private static String TYPE_UNKNOWN = "Type Unknown";
 	private static String HIDDEN_FILE = "Hidden File";
-	private Hashtable filters = null;
+	private Hashtable<String,CyFileFilter> filters = null;
 	private String description = null;
 	private String fullDescription = null;
 	private boolean useExtensionsInDescription = true;
-	private Hashtable contentTypes = null;
+	private Hashtable<String,CyFileFilter> contentTypes = null;
 	protected GraphReader reader = null;
 	protected String fileNature = "UNKNOWN";
 
@@ -78,7 +78,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 * @see #addExtension
 	 */
 	public CyFileFilter() {
-		this.filters = new Hashtable();
+		this.filters = new Hashtable<String,CyFileFilter>();
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 * @see #addExtension
 	 */
 	public CyFileFilter(String extension, String description, String nature) {
-		this.filters = new Hashtable();
+		this.filters = new Hashtable<String,CyFileFilter>();
 
 		if (extension != null) {
 			addExtension(extension);
@@ -163,7 +163,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 * @see #addExtension
 	 */
 	public CyFileFilter(String[] filters, String description, String nature) {
-		this.filters = new Hashtable();
+		this.filters = new Hashtable<String,CyFileFilter>();
 
 		for (int i = 0; i < filters.length; i++) {
 			// add filters one by one
@@ -297,7 +297,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 */
 	public void addExtension(String extension) {
 		if (filters == null) {
-			filters = new Hashtable(5);
+			filters = new Hashtable<String,CyFileFilter>(5);
 		}
 
 		filters.put(extension.toLowerCase(), this);
@@ -318,7 +318,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 */
 	public void addContentType(String type) {
 		if (contentTypes == null) {
-			contentTypes = new Hashtable(5);
+			contentTypes = new Hashtable<String,CyFileFilter>(5);
 		}
 
 		contentTypes.put(type.toLowerCase(), this);
@@ -407,7 +407,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	/**
 	 * Returns the Set of file extension names.
 	 */
-	public Set getExtensionSet() {
+	public Set<String> getExtensionSet() {
 		return filters.keySet();
 	}
 

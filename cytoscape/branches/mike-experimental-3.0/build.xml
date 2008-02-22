@@ -404,6 +404,9 @@
 			<fileset dir="${lib.dir}">
 				<include name="*.jar" />
 			</fileset>
+		    <fileset dir="${osgi-plugin.dir}">
+			    <include name="*.jar" />
+		    </fileset>
 		</path>
 		<pathconvert property="manifest.classpath.string"
 			     pathsep=" ">

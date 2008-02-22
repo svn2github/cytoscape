@@ -92,7 +92,7 @@ public class ImportHandler {
 	/**
 	 * Set of all registered CyFileFilter Objects.
 	 */
-	protected static Set cyFileFilters = new HashSet();
+	protected static Set<CyFileFilter> cyFileFilters = new HashSet<CyFileFilter>();
 
 	/**
 	 * Constructor.
@@ -118,11 +118,9 @@ public class ImportHandler {
 	 * @return true indicates filter was added successfully.
 	 */
 	public boolean addFilter(CyFileFilter cff) {
-		Set check = cff.getExtensionSet();
+		Set<String> check = cff.getExtensionSet();
 
-		for (Iterator it = check.iterator(); it.hasNext();) {
-			String extension = (String) it.next();
-
+		for ( String extension : check ) {
 			if (getAllExtensions().contains(extension) && !extension.equals("xml")) {
 				return false;
 			}
@@ -158,11 +156,7 @@ public class ImportHandler {
 	 */
 	public GraphReader getReader(String fileName) {
 		//  check if fileType is available
-		CyFileFilter cff;
-
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
-
+		for ( CyFileFilter cff : cyFileFilters ) {
 			if (cff.accept(fileName)) {
 				return cff.getReader(fileName);
 			}
@@ -178,9 +172,6 @@ public class ImportHandler {
 	 * @return GraphReader capable of reading the specified URL.
 	 */
 	public GraphReader getReader(URL url) {
-		// check if fileType is available
-		CyFileFilter cff;
-
 		// Open up the connection
 		Proxy pProxyServer = ProxyHandler.getProxyServer();
 		URLConnection conn = null;
@@ -207,9 +198,8 @@ public class ImportHandler {
 		if (cend >= 0)
 			contentType = contentType.substring(0, cend);
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
-
+	
+		for ( CyFileFilter cff : cyFileFilters ) {
 			if (cff.accept(url, contentType)) {
 				// System.out.println("Found reader: "+cff.getDescription());
 				GraphReader reader = cff.getReader(url, conn);
@@ -251,12 +241,10 @@ public class ImportHandler {
 	 * @param fileNature type:  GRAPH_NATURE, NODE_NATURE, EDGE_NATURE, etc.
 	 * @return Collection of String descriptions, e.g. "XGMML files"
 	 */
-	public Collection getAllTypes(String fileNature) {
-		Collection ans = new HashSet();
-		CyFileFilter cff;
+	public Collection<String> getAllTypes(String fileNature) {
+		Collection<String> ans = new HashSet<String>();
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
+		for ( CyFileFilter cff : cyFileFilters ) {
 
 			//if statement to check if nature equals fileNature
 			if (cff.getFileNature().equals(fileNature)) {
@@ -274,11 +262,11 @@ public class ImportHandler {
 	 *
 	 * @return Collection of Strings, e.g. "xgmml", "sif", etc.
 	 */
-	public Collection getAllExtensions() {
-		Collection ans = new HashSet();
+	public Collection<String> getAllExtensions() {
+		Collection<String> ans = new HashSet<String>();
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			ans.addAll(((CyFileFilter) (it.next())).getExtensionSet());
+		for ( CyFileFilter cff : cyFileFilters ) {
+			ans.addAll(cff.getExtensionSet());
 		}
 
 		return ans;
@@ -291,11 +279,11 @@ public class ImportHandler {
 	 *
 	 * @return Collection of Strings, e.g. "GML files (*.gml)", etc.
 	 */
-	public Collection getAllDescriptions() {
-		Collection ans = new HashSet();
+	public Collection<String> getAllDescriptions() {
+		Collection<String> ans = new HashSet<String>();
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			ans.add(((CyFileFilter) it.next()).getDescription());
+		for ( CyFileFilter cff : cyFileFilters ) {
+			ans.add(cff.getDescription());
 		}
 
 		return ans;
@@ -308,11 +296,9 @@ public class ImportHandler {
 	 * @return name of filter capable of reading the specified file.
 	 */
 	public String getFileType(String fileName) {
-		CyFileFilter cff;
 		String ans = null;
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
+		for ( CyFileFilter cff : cyFileFilters ) {
 
 			if (cff.accept(fileName)) {
 				cff.setExtensionListInDescription(false);
@@ -329,11 +315,11 @@ public class ImportHandler {
 	 *
 	 * @return List of CyFileFilter Objects.
 	 */
-	public List getAllFilters() {
-		List ans = new ArrayList();
+	public List<CyFileFilter> getAllFilters() {
+		List<CyFileFilter> ans = new ArrayList<CyFileFilter>();
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			ans.add((CyFileFilter) it.next());
+		for ( CyFileFilter cff : cyFileFilters ) {
+			ans.add(cff);
 		}
 
 		if (ans.size() > 1) {
@@ -351,12 +337,10 @@ public class ImportHandler {
 	 * @param fileNature type:  GRAPH_NATURE, NODE_NATURE, EDGE_NATURE, etc.
 	 * @return List of CyFileFilter Objects.
 	 */
-	public List getAllFilters(String fileNature) {
-		List ans = new ArrayList();
-		CyFileFilter cff;
+	public List<CyFileFilter> getAllFilters(String fileNature) {
+		List<CyFileFilter> ans = new ArrayList<CyFileFilter>();
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
+		for ( CyFileFilter cff : cyFileFilters ) {
 
 			//if statement to check if nature equals fileNature
 			if (cff.getFileNature().equals(fileNature)) {
@@ -378,7 +362,7 @@ public class ImportHandler {
 	 * Resets everything with a clean slate.
 	 */
 	public void resetImportHandler() {
-		cyFileFilters = new HashSet();
+		cyFileFilters = new HashSet<CyFileFilter>();
 		init();
 	}
 
@@ -386,10 +370,10 @@ public class ImportHandler {
 	 * Creates a String array of all extensions
 	 */
 	private String[] concatAllExtensions(List cffs) {
-		Set ans = new HashSet();
+		Set<String> ans = new HashSet<String>();
 
-		for (Iterator it = cffs.iterator(); it.hasNext();) {
-			ans.addAll(((CyFileFilter) (it.next())).getExtensionSet());
+		for ( CyFileFilter cff : cyFileFilters ) {
+			ans.addAll(cff.getExtensionSet());
 		}
 
 		String[] stringAns = (String[]) ans.toArray(new String[0]);
@@ -417,11 +401,9 @@ public class ImportHandler {
 		// Try if we can determine the network type from URLstr
 		// test the URL against the various file extensions,
 		// if one matches, then extract the basename
-		Collection theExts = getAllExtensions();
+		Collection<String> theExts = getAllExtensions();
 
-		for (Iterator it = theExts.iterator(); it.hasNext();) {
-			String theExt = (String) it.next();
-
+		for ( String theExt : theExts ) {
 			if (pURLstr.endsWith(theExt)) {
 				tmpFile = new File(tmpDir + System.getProperty("file.separator")
 				                   + pURLstr.substring(pURLstr.lastIndexOf("/") + 1));

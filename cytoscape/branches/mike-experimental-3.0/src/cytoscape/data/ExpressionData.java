@@ -163,16 +163,16 @@ public class ExpressionData implements Serializable {
 	int numConds;
 	int extraTokens;
 	boolean haveSigValues;
-	Vector geneNames;
-	Vector geneDescripts;
-	Vector condNames;
-	Hashtable geneNameToIndex;
-	Hashtable condNameToIndex;
+	Vector<String> geneNames;
+	Vector<String> geneDescripts;
+	Vector<String> condNames;
+	Hashtable<String,Integer> geneNameToIndex;
+	Hashtable<String,Integer> condNameToIndex;
 	double minExp;
 	double maxExp;
 	double minSig;
 	double maxSig;
-	Vector allMeasurements;
+	Vector<Vector<mRNAMeasurement>> allMeasurements;
 
 	/**
 	 * Constructor. Creates an empty Expression Data object with no data.
@@ -301,31 +301,31 @@ public class ExpressionData implements Serializable {
 			geneNames.clear();
 		}
 
-		geneNames = new Vector(0, expand);
+		geneNames = new Vector<String>(0, expand);
 
 		if (geneDescripts != null) {
 			geneDescripts.clear();
 		}
 
-		geneDescripts = new Vector(0, expand);
+		geneDescripts = new Vector<String>(0, expand);
 
 		if (condNames != null) {
 			condNames.clear();
 		}
 
-		condNames = new Vector();
+		condNames = new Vector<String>();
 
 		if (geneNameToIndex != null) {
 			geneNameToIndex.clear();
 		}
 
-		geneNameToIndex = new Hashtable();
+		geneNameToIndex = new Hashtable<String,Integer>();
 
 		if (condNameToIndex != null) {
 			condNameToIndex.clear();
 		}
 
-		condNameToIndex = new Hashtable();
+		condNameToIndex = new Hashtable<String,Integer>();
 		minExp = Double.MAX_VALUE;
 		maxExp = Double.MIN_VALUE;
 		minSig = Double.MAX_VALUE;
@@ -335,7 +335,7 @@ public class ExpressionData implements Serializable {
 			allMeasurements.clear();
 		}
 
-		allMeasurements = new Vector(0, expand);
+		allMeasurements = new Vector<Vector<mRNAMeasurement>>(0, expand);
 	}
 
 	/**
@@ -346,7 +346,7 @@ public class ExpressionData implements Serializable {
 	 * @throws IOException Error loading / parsing the Expression Data File.
 	 */
 	public boolean loadData(String filename, String keyAttributeName) throws IOException {
-		Hashtable attributeToId = new Hashtable();
+		Hashtable<String,List<String>> attributeToId = new Hashtable<String,List<String>>();
 
 		if (filename == null)
 			return false;
@@ -441,7 +441,7 @@ public class ExpressionData implements Serializable {
 		}
 
 		/* the next numConds tokens are the condition names */
-		Vector cNames = new Vector(numberOfConditions);
+		Vector<String> cNames = new Vector<String>(numberOfConditions);
 
 		for (int i = 0; i < numberOfConditions; i++)
 			cNames.add(headerTok.nextToken());
@@ -526,13 +526,12 @@ public class ExpressionData implements Serializable {
 		return null;
 	}
 
-	private Hashtable getAttributeToIdList(String keyAttributeName) {
-		Hashtable attributeToIdList = new Hashtable();
-		List allNodes = Cytoscape.getCyNodesList();
+	private Hashtable<String,List<String>> getAttributeToIdList(String keyAttributeName) {
+		Hashtable<String,List<String>> attributeToIdList = new Hashtable<String,List<String>>();
+		List<Node> allNodes = Cytoscape.getCyNodesList();
 		byte attributeType = Cytoscape.getNodeAttributes().getType(keyAttributeName);
 
-		for (Iterator ii = allNodes.iterator(); ii.hasNext();) {
-			Node node = (Node) ii.next();
+		for (Node node : allNodes) {
 			String nodeName = node.getIdentifier();
 			Object attrValue = getAttributeValue(attributeType, nodeName, keyAttributeName);
 
@@ -542,11 +541,11 @@ public class ExpressionData implements Serializable {
 
 				if (attributeValue != null) {
 					if (!attributeToIdList.contains(attributeValue)) {
-						ArrayList newGeneList = new ArrayList();
+						ArrayList<String> newGeneList = new ArrayList<String>();
 						newGeneList.add(nodeName);
 						attributeToIdList.put(attributeValue, newGeneList);
 					} else {
-						ArrayList genesThisAttribute = (ArrayList) attributeToIdList.get(attributeValue);
+						List<String> genesThisAttribute = attributeToIdList.get(attributeValue);
 						genesThisAttribute.add(nodeName);
 					}
 				}
@@ -593,7 +592,7 @@ public class ExpressionData implements Serializable {
 				headerTok.nextToken();				
 			}
 
-			HashMap names = new HashMap();
+			HashMap<Object,Object> names = new HashMap<Object,Object>();
 
 			while ((!retval) && headerTok.hasMoreTokens()) {
 				String title = headerTok.nextToken();
@@ -642,7 +641,7 @@ public class ExpressionData implements Serializable {
 	}
 
 	private void parseOneLine(String oneLine, int lineCount, boolean sig_vals,
-	                          boolean mappingByAttribute, Hashtable attributeToId, boolean hasCOMMON)
+	                          boolean mappingByAttribute, Hashtable<String,List<String>> attributeToId, boolean hasCOMMON)
 	    throws IOException {
 		// 
 		// Step 1: divide the line into input tokens, and parse through
@@ -695,14 +694,14 @@ public class ExpressionData implements Serializable {
 			}
 		}
 
-		ArrayList gNames = new ArrayList();
+		List<String> gNames = new ArrayList<String>();
 
 		if (mappingByAttribute) {
 			if (attributeToId.containsKey(firstToken)) {
-				gNames = (ArrayList) attributeToId.get(firstToken);
+				gNames = attributeToId.get(firstToken);
 			}
 		} else {
-			gNames = new ArrayList();
+			gNames = new ArrayList<String>();
 			gNames.add(firstToken);
 		}
 
@@ -712,7 +711,7 @@ public class ExpressionData implements Serializable {
 			/* store descriptor token */
 			geneDescripts.add(geneDescript);
 
-			Vector measurements = new Vector(numConds);
+			Vector<mRNAMeasurement> measurements = new Vector<mRNAMeasurement>(numConds);
 
 			for (int jj = 0; jj < numConds; jj++) {
 				mRNAMeasurement m = new mRNAMeasurement(expData[jj], sigData[jj]);
@@ -757,18 +756,12 @@ public class ExpressionData implements Serializable {
 	 * Converts all lambdas to p-values. Lambdas are lost after this call.
 	 */
 	public void convertLambdasToPvals() {
-		Iterator it = this.allMeasurements.iterator();
-
-		while (it.hasNext()) {
-			Vector v = (Vector) it.next();
-			Iterator it2 = v.iterator();
-
-			while (it2.hasNext()) {
-				mRNAMeasurement m = (mRNAMeasurement) it2.next();
+		for ( Vector<mRNAMeasurement> v : allMeasurements ) {
+			for ( mRNAMeasurement m : v ) {
 				double pval = ExpressionData.getPvalueFromLambda(m.getSignificance());
 				m.setSignificance(pval);
-			} // while it2
-		} // while it
+			} 
+		} 
 	} // convertPValsToLambdas
 
 	/**
@@ -857,7 +850,7 @@ public class ExpressionData implements Serializable {
 	 *
 	 * @param newNames Vector of String Objects.
 	 */
-	public void setGeneNames(Vector newNames) {
+	public void setGeneNames(Vector<String> newNames) {
 		geneNames = newNames;
 		geneNameToIndex.clear();
 
@@ -880,7 +873,7 @@ public class ExpressionData implements Serializable {
 	 *
 	 * @return Vector of String Objects.
 	 */
-	public Vector getGeneDescriptorsVector() {
+	public Vector<String> getGeneDescriptorsVector() {
 		return geneDescripts;
 	}
 
@@ -890,7 +883,7 @@ public class ExpressionData implements Serializable {
 	 *
 	 * @param newDescripts Vector of String Objects.
 	 */
-	public void setGeneDescriptors(Vector newDescripts) {
+	public void setGeneDescriptors(Vector<String> newDescripts) {
 		geneDescripts = newDescripts;
 	}
 
@@ -944,7 +937,7 @@ public class ExpressionData implements Serializable {
 	 * @return A Vector of Vectors. The embedded Vector contains mRNAMeasurement
 	 *         Objects.
 	 */
-	public Vector getAllMeasurements() {
+	public Vector<Vector<mRNAMeasurement>> getAllMeasurements() {
 		return allMeasurements;
 	}
 
@@ -964,7 +957,7 @@ public class ExpressionData implements Serializable {
 	 *
 	 * @return Vector of String Objects.
 	 */
-	public Vector getGeneNamesVector() {
+	public Vector<String> getGeneNamesVector() {
 		return geneNames;
 	}
 
@@ -1017,18 +1010,18 @@ public class ExpressionData implements Serializable {
 	 * @param gene Gene Name.
 	 * @return Vector of mRNAMeasurement Objects.
 	 */
-	public Vector getMeasurements(String gene) {
+	public Vector<mRNAMeasurement> getMeasurements(String gene) {
 		if (gene == null) {
 			return null;
 		}
 
-		Integer geneIndex = (Integer) geneNameToIndex.get(gene);
+		Integer geneIndex = geneNameToIndex.get(gene);
 
 		if (geneIndex == null) {
 			return null;
 		}
 
-		Vector measurements = (Vector) (this.getAllMeasurements().get(geneIndex.intValue()));
+		Vector<mRNAMeasurement> measurements = this.getAllMeasurements().get(geneIndex.intValue());
 
 		return measurements;
 	}
@@ -1043,19 +1036,19 @@ public class ExpressionData implements Serializable {
 	 * @return an mRNAMeasurement Object.
 	 */
 	public mRNAMeasurement getMeasurement(String gene, String condition) {
-		Integer condIndex = (Integer) condNameToIndex.get(condition);
+		Integer condIndex = condNameToIndex.get(condition);
 
 		if (condIndex == null) {
 			return null;
 		}
 
-		Vector measurements = this.getMeasurements(gene);
+		Vector<mRNAMeasurement> measurements = this.getMeasurements(gene);
 
 		if (measurements == null) {
 			return null;
 		}
 
-		mRNAMeasurement returnVal = (mRNAMeasurement) measurements.get(condIndex.intValue());
+		mRNAMeasurement returnVal = measurements.get(condIndex.intValue());
 
 		return returnVal;
 	}
@@ -1075,7 +1068,7 @@ public class ExpressionData implements Serializable {
 			String sStr = condName + "sig";
 
 			for (int i = 0; i < geneNames.size(); i++) {
-				String canName = (String) geneNames.get(i);
+				String canName = geneNames.get(i);
 
 				mRNAMeasurement mm = getMeasurement(canName, condName);
 

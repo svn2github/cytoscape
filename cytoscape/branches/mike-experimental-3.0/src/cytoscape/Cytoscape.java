@@ -364,8 +364,8 @@ public abstract class Cytoscape {
 	// Test
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
-	protected static Map networkViewMap;
-	protected static Map networkMap;
+	protected static Map<String,CyNetworkView> networkViewMap;
+	protected static Map<String,GraphPerspective> networkMap;
 	protected static CytoscapeDesktop defaultDesktop;
 	protected static String currentNetworkID;
 	protected static String currentNetworkViewID;
@@ -559,14 +559,14 @@ public abstract class Cytoscape {
 	/**
 	 * @return all CyNodes that are present in Cytoscape
 	 */
-	public static List getCyNodesList() {
+	public static List<Node> getCyNodesList() {
 		return getRootGraph().nodesList();
 	}
 
 	/**
 	 * @return all CyEdges that are present in Cytoscape
 	 */
-	public static List getCyEdgesList() {
+	public static List<Edge> getCyEdgesList() {
 		return getRootGraph().edgesList();
 	}
 
@@ -812,8 +812,8 @@ public abstract class Cytoscape {
 	/**
 	 * Return a List of all available GraphPerspective
 	 */
-	public static Set getNetworkSet() {
-		return new java.util.LinkedHashSet(((HashMap) getNetworkMap()).values());
+	public static Set<GraphPerspective> getNetworkSet() {
+		return new java.util.LinkedHashSet<GraphPerspective>(getNetworkMap().values());
 	}
 
 	/**
@@ -870,7 +870,11 @@ public abstract class Cytoscape {
 			selectedNetworkViews.add( getCurrentNetworkView() );
 		}
 
-		return (List<CyNetworkView>) selectedNetworkViews.clone();
+		LinkedList<CyNetworkView> l = new LinkedList<CyNetworkView>();
+		for (CyNetworkView g : selectedNetworkViews)
+			l.add(g);
+
+		return l; 
 	}
 
 	/**
@@ -908,7 +912,11 @@ public abstract class Cytoscape {
 			selectedNetworks.add( getCurrentNetwork() );
 		}
 
-		return (List<GraphPerspective>)selectedNetworks.clone();
+		LinkedList<GraphPerspective> l = new LinkedList<GraphPerspective>();
+		for (GraphPerspective g : selectedNetworks)
+			l.add(g);
+
+		return l; 
 	}
 
 	/**
@@ -973,9 +981,9 @@ public abstract class Cytoscape {
 	 * This Map has keys that are Strings ( network_ids ) and values that are
 	 * networks.
 	 */
-	protected static Map getNetworkMap() {
+	protected static Map<String,GraphPerspective> getNetworkMap() {
 		if (networkMap == null) {
-			networkMap = new HashMap();
+			networkMap = new HashMap<String,GraphPerspective>();
 		}
 
 		return networkMap;
@@ -985,9 +993,9 @@ public abstract class Cytoscape {
 	 * This Map has keys that are Strings ( network_ids ) and values that are
 	 * networkviews.
 	 */
-	public static Map getNetworkViewMap() {
+	public static Map<String,CyNetworkView> getNetworkViewMap() {
 		if (networkViewMap == null) {
-			networkViewMap = new HashMap();
+			networkViewMap = new HashMap<String,CyNetworkView>();
 		}
 
 		return networkViewMap;
@@ -1026,7 +1034,7 @@ public abstract class Cytoscape {
 
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
-		Map nmap = getNetworkMap();
+		Map<String,GraphPerspective> nmap = getNetworkMap();
 		nmap.remove(networkId);
 
 		if (networkId.equals(currentNetworkID)) {
@@ -1034,9 +1042,8 @@ public abstract class Cytoscape {
 				currentNetworkID = null;
 			} else {
 				// randomly pick a network to become the current network
-				for (Iterator it = nmap.keySet().iterator(); it.hasNext();) {
-					currentNetworkID = (String) it.next();
-
+				for ( String s : nmap.keySet() ) {
+					currentNetworkID = s;
 					break;
 				}
 			}
@@ -1046,20 +1053,19 @@ public abstract class Cytoscape {
 			destroyNetworkView(network);
 
 		if (destroy_unique) {
-			ArrayList nodes = new ArrayList();
-			ArrayList edges = new ArrayList();
+			ArrayList<Node> nodes = new ArrayList<Node>();
+			ArrayList<Edge> edges = new ArrayList<Edge>();
 
-			Collection networks = networkMap.values();
+			Collection<GraphPerspective> networks = networkMap.values();
 
-			Iterator nodes_i = network.nodesIterator();
-			Iterator edges_i = network.edgesIterator();
+			Iterator<Node> nodes_i = network.nodesIterator();
+			Iterator<Edge> edges_i = network.edgesIterator();
 
 			while (nodes_i.hasNext()) {
-				Node node = (Node) nodes_i.next();
+				Node node = nodes_i.next();
 				boolean add = true;
-
-				for (Iterator n_i = networks.iterator(); n_i.hasNext();) {
-					GraphPerspective net = (GraphPerspective) n_i.next();
+			
+				for ( GraphPerspective net : networks ) {
 
 					if (net.containsNode(node)) {
 						add = false;
@@ -1074,12 +1080,10 @@ public abstract class Cytoscape {
 			}
 
 			while (edges_i.hasNext()) {
-				Edge edge = (Edge) edges_i.next();
+				Edge edge = edges_i.next();
 				boolean add = true;
 
-				for (Iterator n_i = networks.iterator(); n_i.hasNext();) {
-					GraphPerspective net = (GraphPerspective) n_i.next();
-
+				for ( GraphPerspective net : networks ) {
 					if (net.containsEdge(edge)) {
 						add = false;
 
@@ -1239,7 +1243,7 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title of the new network.
 	 */
-	public static GraphPerspective createNetwork(Collection nodes, Collection edges, String title) {
+	public static GraphPerspective createNetwork(Collection<Node> nodes, Collection<Edge> edges, String title) {
 		return createNetwork(nodes, edges, title, null, true);
 	}
 
@@ -1294,7 +1298,7 @@ public abstract class Cytoscape {
 	 * @param parent
 	 *            the parent of the this Network
 	 */
-	public static GraphPerspective createNetwork(Collection nodes, Collection edges, String child_title,
+	public static GraphPerspective createNetwork(Collection<Node> nodes, Collection<Edge> edges, String child_title,
 	                                      GraphPerspective parent) {
 		return createNetwork(nodes, edges, child_title, parent, true);
 	}
@@ -1311,7 +1315,7 @@ public abstract class Cytoscape {
 	 * @param create_view
 	 *            whether or not a view will be created
 	 */
-	public static GraphPerspective createNetwork(Collection nodes, Collection edges, String child_title,
+	public static GraphPerspective createNetwork(Collection<Node> nodes, Collection<Edge> edges, String child_title,
 	                                      GraphPerspective parent, boolean create_view) {
 		GraphPerspective network = getRootGraph().createGraphPerspective(nodes, edges);
 		addNetwork(network, child_title, parent, create_view);

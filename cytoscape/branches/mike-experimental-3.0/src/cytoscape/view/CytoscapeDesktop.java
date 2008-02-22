@@ -487,6 +487,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
+	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
 			// add the new view to the GraphViewController
