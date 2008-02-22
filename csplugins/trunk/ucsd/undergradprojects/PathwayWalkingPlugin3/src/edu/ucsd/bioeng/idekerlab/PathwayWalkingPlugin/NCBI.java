@@ -84,7 +84,7 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  */
-public class NCBI {
+public class NCBI extends Thread{
 	private static final String DISPLAY_NAME = "NCBI Entrez Utilities Web Service Client";
 	private static final String CLIENT_ID = "ncbi_entrez";
 	private static WebServiceClient client;
@@ -93,7 +93,15 @@ public class NCBI {
 	// Newly Added {
 	private static final String DEF_VS_NAME = "NCBI Entrez Style";
 	private VisualStyle defaultVS = null;
-	
+	private String nodeId;
+    private Node node;
+    private javax.swing.JProgressBar jProgressBar2;
+    
+    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar){
+    	nodeId = nodeID;
+    	node=node1;
+    	jProgressBar2 = jBar;
+    }
 	Object stub;
 
 	// }
@@ -129,6 +137,7 @@ public class NCBI {
 		stub = service3.geteUtilsServiceSoap();
 		
 		System.out.println("THIS IS YOUR geteUtils... : "  + service3.geteUtilsServiceSoap());
+		jProgressBar2.setIndeterminate(false);
 		
 		} catch(Throwable t) {
 			System.out.println("Oh Noes!");
@@ -146,6 +155,7 @@ public class NCBI {
 //		importNetwork("675", Cytoscape.getCurrentNetwork());
 		System.out.println("the network has been imported");
 		
+		jProgressBar2.setIndeterminate(false);
 		
     	
 //		search(cyweb1.getParameter().toString(), cyweb1);

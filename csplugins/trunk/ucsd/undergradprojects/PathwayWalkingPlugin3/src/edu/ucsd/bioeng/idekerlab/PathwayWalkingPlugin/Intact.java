@@ -32,14 +32,23 @@ import uk.ac.ebi.intact.binarysearch.wsclient.generated.SearchResult;
 import cytoscape.util.ModuleProperties;
 import cytoscape.util.ModulePropertiesImpl;
 
-public class Intact{
+public class Intact extends Thread{
 
 	private static final String CLIENT_ID = "intact";
     Object stub;
     ModuleProperties props;
+    private String nodeId;
+    private Node node;
+    private javax.swing.JProgressBar jProgressBar1;
+    
+    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar){
+    	nodeId = nodeID;
+    	node=node1;
+    	jProgressBar1 = jBar;
+    }
 	
-	public void startSearch(String nodeId, Node node){
-
+	//public void startSearch(String nodeId, Node node){
+    public void run(){
 	    
         WebServiceClientImpl try2 = (IntactClient) IntactClient.getClient();
         try{
@@ -71,7 +80,7 @@ public class Intact{
         	//(which could be a newly created one)
   
         	importNetwork(blah1, Cytoscape.getCurrentNetwork());
-        	
+        	jProgressBar1.setIndeterminate(false);
 			//This will create a new network
 //        	importNetwork(blah1, null);
         	

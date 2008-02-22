@@ -379,22 +379,26 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar1.setIndeterminate(true);
 	        System.out.println("Start Search Button Pressed");
 	        
-	        Intact attempt = new Intact();
-	        attempt.startSearch(nodeId, node);
+	        //Intact attempt = new Intact();
+	        //attempt.startSearch(nodeId, node);
+	        
+	        Intact attempt =new Intact(nodeId, node, jProgressBar1);
+	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
-	        jProgressBar1.setIndeterminate(false);
+	        //jProgressBar1.setIndeterminate(false);
     	}
     	if(jCheckBox2.isSelected() == true)
     	{
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("Start Search Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI();
-	        attempt2.startSearch(nodeId, node);
+	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2);
+	        //attempt2.startSearch(nodeId, node);
+	        attempt2.start();
  
 	        System.out.println("After NCBI Client was called.");
-	        jProgressBar2.setIndeterminate(false);
+	        
     	}
     }
     
