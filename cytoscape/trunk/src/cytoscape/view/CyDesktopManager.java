@@ -39,47 +39,35 @@ package cytoscape.view;
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+
+import cytoscape.Cytoscape;
+
 import java.awt.Dimension;
 
 /**
  *
   */
-public class CyDesktopManager extends DefaultDesktopManager  {
+public class CyDesktopManager  {
 	
-	public static final int ARRANGE_GRID = 0; // TILED
-	public static int ARRANGE_CASCADE = 2;
-	public static int ARRANGE_HORIZONTAL = 3;
-	public static int ARRANGE_VERTICAL = 4;
-	
+	public static enum Arrange {
+		GRID,CASCADE,HORIZONTAL,VERTICAL
+	}
+	public static int MINIMUM_WIN_WIDTH = 200;
+	public static int MINIMUM_WIN_HEIGHT = 200;
+		
 	protected static JDesktopPane desktop;
 	private CyDesktopManager() {
+		desktop = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane();
 	}
-	
-	//Minimises all windows that are iconifiable
-	public static void minizeWindows() {
-		
-	}
-
-	// Restore all minimised windows
-	public static void restoreWindows() {
-		
-	}
-	
+			
 	//Closes all open windows
-	public static void closeAllWindows() {
+	public  void closeAllWindows() {
+		JInternalFrame[] allFrames = desktop.getAllFrames();
+		for (int i= allFrames.length -1; i>=0; i--) {
+			allFrames[i].dispose();			
+		}
+	}
 		
-	}
-	
-	//Get the desktop we are managing
-	public static JDesktopPane getDesktop() {
-		return desktop;
-	}
-
-	//Set the desktop we are managing
-	public static void setDesktop(JDesktopPane pDesktop) {
-		desktop = pDesktop;
-	}
-	
 	// Implementation of grid layout algorithm
 	// gridLayout -- an int array-- int[i] holds the number of row for column i 
 	private static void getGridLayout(final int pTotal, final int pCol, final int pRow, int[] gridLayout) {
@@ -102,7 +90,11 @@ public class CyDesktopManager extends DefaultDesktopManager  {
 	
 	
 	// Arrange all windows in the desktop according to the given style
-	public static void arrangeFrames(int pStyle) {
+	public static void arrangeFrames(Arrange pStyle) {
+		if (desktop == null) {
+			new CyDesktopManager();
+		}
+		
 		Dimension desktopSize = desktop.getSize();
 		
 		JInternalFrame[] allFrames = desktop.getAllFrames();
@@ -112,7 +104,7 @@ public class CyDesktopManager extends DefaultDesktopManager  {
 			return;
 		}
 
-		if (pStyle == CyDesktopManager.ARRANGE_CASCADE) {
+		if (pStyle == Arrange.CASCADE) {
 			int delta_x = 20;
 			int delta_y = 20;
 			
@@ -124,7 +116,7 @@ public class CyDesktopManager extends DefaultDesktopManager  {
 				allFrames[frameCount -1-i].setBounds(delta_x * i, delta_y*i, w, h);
 			}
 		}
-		else if (pStyle == CyDesktopManager.ARRANGE_GRID) {
+		else if (pStyle == Arrange.GRID) {
 			// Determine the max_col and max_row for grid layout 
 			int maxCol = (new Double(Math.ceil(Math.sqrt(frameCount)))).intValue();
 			int maxRow = maxCol;
@@ -153,26 +145,49 @@ public class CyDesktopManager extends DefaultDesktopManager  {
 				}				
 			}
 		}
-		else if (pStyle == CyDesktopManager.ARRANGE_HORIZONTAL) {
+		else if (pStyle == Arrange.HORIZONTAL) {
 			int x = 0;
-			int[] y = new int[frameCount];
+			int y = 0;
 			int w = desktopSize.width;
 			int h = desktopSize.height/frameCount;
+			if (h < MINIMUM_WIN_HEIGHT ) {
+				h = MINIMUM_WIN_HEIGHT;
+			}
+			
+			double delta_h = 0;
+			if (frameCount > 1) {
+				delta_h = ((double)(desktopSize.height - MINIMUM_WIN_HEIGHT))/(frameCount-1);	
+			}
 			
 			for (int i=0; i< frameCount; i++) {
-				y[i] = h * i;
-				allFrames[i].setBounds(x, y[i], w, h);
+				y = (int)(delta_h * i);
+				if (y> desktopSize.height - MINIMUM_WIN_HEIGHT) {
+					y = desktopSize.height - MINIMUM_WIN_HEIGHT;
+				}
+				allFrames[frameCount-i-1].setBounds(x, y, w, h);
 			}
 		}
-		else if (pStyle == CyDesktopManager.ARRANGE_VERTICAL) {
-			int[] x = new int[frameCount];
+		else if (pStyle == Arrange.VERTICAL) {
+			int x = 0;
 			int y = 0;
-			int w = desktopSize.width/allFrames.length;
+			int w = desktopSize.width/frameCount;
 			int h = desktopSize.height;
 			
+			if (w < MINIMUM_WIN_WIDTH) {
+				w = MINIMUM_WIN_WIDTH;
+			}
+
+			double delta_w = 0;
+			if (frameCount > 1) {
+				delta_w = ((double)(desktopSize.width - MINIMUM_WIN_WIDTH))/(frameCount-1);	
+			}
+			
 			for (int i=0; i< frameCount; i++) {
-				x[i] = w * i;
-				allFrames[i].setBounds(x[i], y, w, h);
+				x = (int)(delta_w * i);
+				if (x > desktopSize.width - MINIMUM_WIN_WIDTH) {
+					x = desktopSize.width - MINIMUM_WIN_WIDTH;
+				}
+				allFrames[frameCount-i-1].setBounds(x, y, w, h);
 			}
 		}
 	}
