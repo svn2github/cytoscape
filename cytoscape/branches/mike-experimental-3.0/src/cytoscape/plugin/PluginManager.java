@@ -747,17 +747,9 @@ public class PluginManager {
 
 		duplicateClasses = new ArrayList<String>();
 		duplicateLoadError = false;
-
-		for (URL url : urls) {
-			try {
-				addClassPath(url);
-			} catch (Exception e) {
-				throw new IOException("Classloader Error.");
-			}
-		}
-
-		// the creation of the class loader automatically loads the plugins
-		//classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+	
+		// note that the urls point to the jars that provide the classpath
+		// to be searched.
 		classLoader = new URLClassLoader(urls,Cytoscape.class.getClassLoader()); 
 
 		// iterate through the given jar files and find classes that are
@@ -966,23 +958,6 @@ public class PluginManager {
 			Value = m.getMainAttributes().getValue("Cytoscape-Plugin");
 		}
 		return Value;
-	}
-
-	/**
-	 * This will be used to add plugin jars' URL to the System Loader's
-	 * classpath.
-	 * 
-	 * @param url
-	 * @throws NoSuchMethodException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
-	private void addClassPath(URL url) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
-		Method method = URLClassLoader.class.getDeclaredMethod("addURL",
-				new Class[] { URL.class });
-		method.setAccessible(true);
-		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
 	}
 
 }
