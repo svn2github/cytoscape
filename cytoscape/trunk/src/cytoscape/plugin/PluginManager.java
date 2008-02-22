@@ -696,6 +696,9 @@ public class PluginManager {
 				if (PluginsSeen.contains(currentPlugin))
 					continue;
 
+				if (currentPlugin.contains(".cytoscape"))
+					System.out.println(currentPlugin);
+				
 				File f = new File(currentPlugin);
 
 				// If the file name ends with .jar add it to the list as a url.

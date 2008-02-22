@@ -98,7 +98,6 @@ public class PluginManagerAction extends CytoscapeAction {
 				message += t.getMessage() + "\n";
 			javax.swing.JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, 
 					"Plugin Manager Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-			
 		}
 		
 		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");

@@ -371,13 +371,12 @@ public class PluginTracker {
 		}
 	}
 	
+	// important to have the type in this key or a plugin and theme with the same id will appear to be the same object
 	private String infoMapKey(DownloadableInfo Obj, PluginStatus Status) {
-		return (Obj.getID() != null)? Obj.getID() + "_" + Obj.getDownloadableURL() + "_" + Status.getTagName(): null;
+		return (Obj.getID() != null)? Obj.getID() + "_" + Obj.getType().value() + "_" + Obj.getDownloadableURL() + "_" + Status.getTagName(): null;
 	}
-
 	private String infoMapKey(Element el, PluginStatus Status) {
-		return  el.getChildTextTrim(uniqueIdTag) + "_" + el.getChildTextTrim(downloadUrlTag) + "_" +
-			Status.getTagName();
+		return  el.getChildTextTrim(uniqueIdTag) + "_" +  el.getName() + "_" + el.getChildTextTrim(downloadUrlTag) + "_" + Status.getTagName();
 	}
 
 	

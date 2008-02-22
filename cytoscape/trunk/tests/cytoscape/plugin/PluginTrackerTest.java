@@ -174,7 +174,7 @@ public class PluginTrackerTest extends TestCase {
 		assertNotNull(Install.getChild(PluginXml.THEME.getTag()).getChild(
 				PluginXml.PLUGIN_LIST.getTag()));
 	}
-
+	
 	public void testRemoveTheme() throws Exception {
 		ThemeInfo themeObj = new ThemeInfo("themeTest123");
 		themeObj.setName("Test Theme");
@@ -206,6 +206,30 @@ public class PluginTrackerTest extends TestCase {
 				.size(), 0);
 	}
 
+	public void testAddThemeAndPlugin() throws Exception {
+		ThemeInfo themeObj = new ThemeInfo("1A");
+		themeObj.setName("Test Theme");
+		themeObj.setDownloadableURL("http://booya.com/foo.xml");
+		themeObj.addCytoscapeVersion("2.6");
+
+		PluginInfo themePlugin = getInfoObj();
+		themePlugin.addCytoscapeVersion("2.6");
+		themeObj.addPlugin(themePlugin);
+		
+		tracker.addDownloadable(themeObj, PluginStatus.CURRENT);
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.CURRENT).size(), 1);
+		
+		PluginInfo pluginObj = new PluginInfo("1A");
+		pluginObj.setName("Plugin Test");
+		pluginObj.addCytoscapeVersion("2.6");
+		pluginObj.setDownloadableURL("http://booya.com/foo.xml");
+		pluginObj.setFiletype(PluginInfo.FileType.JAR);
+		
+		tracker.addDownloadable(pluginObj, PluginStatus.CURRENT);
+		assertEquals(tracker.getDownloadableListByStatus(PluginStatus.CURRENT).size(), 2);
+	}
+	
+	
 	public void testAddSamePlugin() throws Exception {
 		PluginInfo InfoObject = getInfoObj();
 
