@@ -30,8 +30,6 @@ public enum PluginXml {
 	AUTHOR_LIST("authorlist"), AUTHOR("author"), INSTITUTION("institution"),
 	// license  
 	LICENSE("license"), LICENSE_TEXT("text"), LICENSE_REQUIRED("license_required");
-	// parent info
-	//PARENT_OBJ("parentObj"), PARENT_TYPE("parentType");
 
 	private String tagName;
 

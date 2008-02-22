@@ -3,8 +3,6 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.util.ProxyHandler;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;

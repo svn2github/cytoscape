@@ -19,8 +19,6 @@ public class PluginManagerTest extends TestCase {
 	private PluginTracker tracker;
 	private String testUrl;
 	private File transformedXML;
-	private File tmpDownloadDir;
-	private String fileName;
 
 	private static void print(String s) {
 		System.out.println(s);
@@ -52,16 +50,9 @@ public class PluginManagerTest extends TestCase {
 	protected void setUp() throws Exception {
 		transformedXML = PluginTestXML.transformXML("test_plugin.xml", getFileUrl());
 		testUrl = cleanFileUrl(transformedXML.getAbsolutePath());
-		fileName = "test_tracker.xml";
-		File tmpDir = new File(CytoscapeInit.getConfigDirectory(), "test"); 
-		
-		tmpDownloadDir = new File(tmpDir, (new CytoscapeVersion()).getMajorVersion());
-		//System.err.println(tmpDownloadDir.getAbsolutePath());
-		tmpDownloadDir.mkdirs();
-
-		PluginManager.setPluginManageDirectory(tmpDownloadDir.getAbsolutePath());
-		tracker = new PluginTracker(tmpDownloadDir, fileName);
-		mgr = PluginManager.getPluginManager(tracker);
+		 
+		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
+		mgr = PluginManager.getPluginManager();
 	}
 
 	/*
@@ -70,10 +61,9 @@ public class PluginManagerTest extends TestCase {
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() {
-		tracker.delete();
 		mgr.resetManager();
-		tmpDownloadDir.delete();
-		tmpDownloadDir.getParentFile().delete(); 
+		mgr.getPluginManageDirectory().delete();
+		mgr.getPluginManageDirectory().getParentFile().delete();
 		transformedXML.delete();
 		// make sure this isn't set, the webstart tests can set it themselves
 		System.setProperty("javawebstart.version", "");
@@ -93,52 +83,45 @@ public class PluginManagerTest extends TestCase {
 		mgr.resetManager();
 		// the manager checks this property to find out if it's webstarted
 		System.setProperty("javawebstart.version", "booya");
-		File wsTmpDir = new File(CytoscapeInit.getConfigDirectory(), "webstart_test"); 
 
-		PluginManager.setPluginManageDirectory(wsTmpDir.getAbsolutePath());
-		PluginManager wsMgr = PluginManager.getPluginManager();
-		assertNotNull(wsMgr);
-
-		File TempTrackingFile = wsMgr.pluginTracker.getTrackerFile();
+		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
+		mgr = PluginManager.getPluginManager();
+		
+		assertNotNull(mgr);
+		assertTrue(PluginManager.usingWebstartManager());
+		
+		File TempTrackingFile = mgr.pluginTracker.getTrackerFile();
 		assertNotNull(TempTrackingFile);
 		assertTrue(TempTrackingFile.exists());
 		assertTrue(TempTrackingFile.canRead());
-	
-		// reset
-		assertTrue(wsMgr.removeWebstartInstalls());
-		assertFalse(TempTrackingFile.exists());
-		assertFalse(wsTmpDir.exists());
+		
+		mgr.resetManager();
 	}
 	
 	public void testDownloadPluginWebstart() throws java.io.IOException, org.jdom.JDOMException, cytoscape.plugin.ManagerException {
 		mgr.resetManager();
 		System.setProperty("javawebstart.version", "booya");
 
-		File wsTmpDir = new File(CytoscapeInit.getConfigDirectory(), "webstart_test"); 
-		
-		PluginManager.setPluginManageDirectory(wsTmpDir.getAbsolutePath());
-		PluginManager wsMgr = PluginManager.getPluginManager();
-		assertNotNull(wsMgr);
-
-		PluginInfo TestObj = (PluginInfo) getSpecificObj(wsMgr.inquire(testUrl), "goodJarPlugin123", "1.0");
-		DownloadableInfo DLTestObj = wsMgr.download(TestObj);
+		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
+		PluginManager mgr = PluginManager.getPluginManager();
+		assertNotNull(mgr);
+		assertTrue(PluginManager.usingWebstartManager());
+		PluginInfo TestObj = (PluginInfo) getSpecificObj(mgr.inquire(testUrl), "goodJarPlugin123", "1.0");
+		DownloadableInfo DLTestObj = mgr.download(TestObj);
 		assertNotNull(DLTestObj);
 		
 		PluginInfo testObjPlugin = (PluginInfo) DLTestObj;
 		for (String f: testObjPlugin.getFileList()) {
-			assertTrue(f.startsWith(wsTmpDir.getAbsolutePath()));
+			assertTrue(f.startsWith(mgr.getPluginManageDirectory().getAbsolutePath()));
 		}
 		
 		// can't delete when in webstart
 		try { 
-			wsMgr.delete(DLTestObj);
+			mgr.delete(DLTestObj);
 		} catch (cytoscape.plugin.WebstartException wse) {
 			assertNotNull(wse);
 		}
-		
-		// reset
-		assertTrue(wsMgr.removeWebstartInstalls());
-		assertFalse(wsTmpDir.exists());
+		mgr.resetManager();
 	}
 	
 	
@@ -638,13 +621,15 @@ public class PluginManagerTest extends TestCase {
 		File file = new File("testData/plugins/track_plugins_c1.xml");
 		file = copyFileToTempDir(file);
 
-		PluginManager mg = PluginManager.getPluginManager();
-		assertEquals(mg.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
+		mgr = PluginManager.getPluginManager();
+		assertEquals(mgr.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
 		 // errors that aren't major failures don't show up until you've tried to read the file
-		assertTrue(mg.getDownloadables(PluginStatus.CURRENT).size() > 0);
-		assertEquals(mg.pluginTracker.getTotalCorruptedElements(), 1);
-		assertEquals(mg.getLoadingErrors().size(), 1);
-		assertTrue(mg.getLoadingErrors().get(0).getClass().equals(TrackerException.class));
+		assertTrue(mgr.getDownloadables(PluginStatus.CURRENT).size() > 0);
+		assertEquals(mgr.pluginTracker.getTotalCorruptedElements(), 1);
+		assertEquals(mgr.getLoadingErrors().size(), 1);
+		assertTrue(mgr.getLoadingErrors().get(0).getClass().equals(TrackerException.class));
+		
+		file.delete();
 	}
 	
 	public void testMajorCorruptedTrackerFile() {
@@ -652,16 +637,19 @@ public class PluginManagerTest extends TestCase {
 		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
 		File file = new File("testData/plugins/track_plugins_c2.xml");
 		file = copyFileToTempDir(file);
-
-		PluginManager mg = PluginManager.getPluginManager();
-		assertEquals(mg.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
-		assertEquals(mg.getDownloadables(PluginStatus.CURRENT).size(), 0);
-		List<Throwable> LoadingErrors = mg.getLoadingErrors();
+		mgr = PluginManager.getPluginManager();
+		assertNotNull(mgr);
+		
+		assertEquals(mgr.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
+		assertEquals(mgr.getDownloadables(PluginStatus.CURRENT).size(), 0);
+		List<Throwable> LoadingErrors = mgr.getLoadingErrors();
 		assertEquals(LoadingErrors.size(), 1);
 		assertTrue(LoadingErrors.get(0).getClass().equals(TrackerException.class));
 		
-		mg.clearErrorList();
-		assertEquals(mg.getLoadingErrors().size(), 0);
+		mgr.clearErrorList();
+		assertEquals(mgr.getLoadingErrors().size(), 0);
+		
+		file.delete();
 	}
 	
 	/*--------------------------------------------------------------------*/
@@ -669,6 +657,9 @@ public class PluginManagerTest extends TestCase {
 		File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + 
 				new CytoscapeVersion().getMajorVersion());
 		File tempFile = new File(tempDir, "track_plugins.xml");
+		
+		assertTrue(fileToCopy.exists());
+		
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader(fileToCopy) );
 			BufferedWriter writer = new BufferedWriter( new FileWriter(tempFile) );

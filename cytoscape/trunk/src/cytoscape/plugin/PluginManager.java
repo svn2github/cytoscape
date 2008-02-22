@@ -55,8 +55,7 @@ import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
-//import java.util.Map;
+import java.util.ArrayList; // import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -79,7 +78,7 @@ public class PluginManager {
 	private static PluginManager pluginMgr = null;
 
 	private static File tempDir;
-
+	
 	private static List<java.net.URL> pluginURLs;
 
 	private static List<String> resourcePlugins;
@@ -87,7 +86,7 @@ public class PluginManager {
 	private static Set<String> loadedPlugins;
 
 	private static Set<Throwable> loadingErrors;
-	
+
 	private static HashMap<String, PluginInfo> initializedPlugins;
 
 	private static URLClassLoader classLoader;
@@ -100,9 +99,9 @@ public class PluginManager {
 	 * Returns list of loading exceptions.
 	 */
 	public List<Throwable> getLoadingErrors() {
-		if (pluginTracker.getTotalCorruptedElements() > 0) {
-			loadingErrors.add(new TrackerException(pluginTracker.getTotalCorruptedElements() + 
-					" corrupted elements removed from the Plugin Tracker.  Some plugins may need to be reinstalled."));
+		if (pluginTracker.hasCorruptedElements()) {
+			loadingErrors.add(new TrackerException(
+							"Corrupted elements removed from the Plugin Tracker.  Some plugins may need to be reinstalled."));
 		}
 		return new ArrayList<Throwable>(loadingErrors);
 	}
@@ -112,9 +111,10 @@ public class PluginManager {
 	 * checking the list each time.
 	 */
 	public void clearErrorList() {
+		pluginTracker.clearCorruptedElements();
 		loadingErrors.clear();
 	}
-	
+
 	/**
 	 * @return URLClassLoader used to load plugins at startup.
 	 */
@@ -185,10 +185,19 @@ public class PluginManager {
 		}
 	}
 
+	/**
+	 * 
+	 * @return The current version directory under .cytoscape
+	 *  that includes the plugins/ directory.
+	 *  
+	 *  Ex. /<user dir>/.cytoscape/2.6/plugins
+	 */
 	public File getPluginManageDirectory() {
 		return tempDir;
 	}
 
+	
+	
 	/*
 	 * Just checks the system property 'javawebstart.version' which is only set
 	 * when running as a webstart.
@@ -222,55 +231,62 @@ public class PluginManager {
 	 * CYTOSCAPE RUNTIME CODE
 	 */
 	protected void resetManager() {
-		pluginTracker = null;
-		pluginMgr = null;
+		if (pluginTracker != null && pluginMgr != null) {
+			pluginTracker.delete();
+			pluginTracker = null;
+			recursiveDeleteFiles(tempDir);
+			pluginMgr = null;
+		}
 	}
 
 	// create plugin manager
 	private PluginManager(PluginTracker Tracker) {
 		loadingErrors = new HashSet<Throwable>();
 		setWebstart();
-			String trackerFileName = "track_plugins.xml";
+		String trackerFileName = "track_plugins.xml";
 
-			if (tempDir == null) {
-				if (usingWebstartManager()) {
-					tempDir = new File(CytoscapeInit.getConfigDirectory(),
-							"webstart" + File.separator
-									+ (new CytoscapeVersion()).getMajorVersion() + File.separator
-									+ "plugins");
-					removeWebstartInstalls();
-					trackerFileName = "track_webstart_plugins.xml";
-				} else {
-					tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
-				}
-			}
-
-			if (!tempDir.exists()) {
-				System.err.println("Creating directories for "
-						+ tempDir.getAbsolutePath());
-				if (!tempDir.mkdirs()) {
-					Cytoscape.exit(-1);
-				}
-			}
-
-			if (Tracker != null) {
-				pluginTracker = Tracker;
+		if (tempDir == null) {
+			if (usingWebstartManager()) {
+				tempDir = new File(CytoscapeInit.getConfigDirectory(),
+						"webstart" + File.separator
+								+ (new CytoscapeVersion()).getMajorVersion()
+								+ File.separator + "plugins");
+				removeWebstartInstalls();
+				trackerFileName = "track_webstart_plugins.xml";
 			} else {
+				tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
+			}
+		} else if (!tempDir.getAbsolutePath().endsWith("/plugins")) {
+			tempDir = new File(tempDir, "plugins");
+		}
+
+		
+		
+		if (!tempDir.exists()) {
+			System.err.println("Creating directories for " + tempDir.getAbsolutePath());
+			if (!tempDir.mkdirs()) {
+				Cytoscape.exit(-1);
+			}
+		}
+
+		if (Tracker != null) {
+			pluginTracker = Tracker;
+		} else {
+			try {
+				pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
+			} catch (IOException ioe) {
+				loadingErrors.add(ioe);
+			} catch (TrackerException te) {
+				loadingErrors.add(te); 
+			} finally { // document should be cleaned out by now
 				try {
-				pluginTracker = new PluginTracker(tempDir, trackerFileName);					
-				//pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
-				} catch (IOException ioe) {
-					loadingErrors.add(ioe);
-				} catch (TrackerException te) {
-					loadingErrors.add(te);
-				} finally { // document should be cleaned out now
-					try {
-						pluginTracker = new PluginTracker(tempDir, trackerFileName);
-					} catch (Exception e) {
-						e.printStackTrace(); // this could go on forever, surely there's a better way!
-					}
+					pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
+				} catch (Exception e) {
+					e.printStackTrace(); 
+					// this could go on forever, surely there's a better way!
 				}
 			}
+		}
 		pluginURLs = new ArrayList<java.net.URL>();
 		loadedPlugins = new HashSet<String>();
 		initializedPlugins = new HashMap<String, PluginInfo>();
@@ -303,7 +319,6 @@ public class PluginManager {
 		return infoObjs;
 	}
 
-
 	/**
 	 * Registers a currently installed plugin with tracking object. Only useful
 	 * if the plugin was not installed via the install process.
@@ -327,14 +342,17 @@ public class PluginManager {
 		// try to get it from the file
 		// XXX PROBLEM: what to do about a plugin that attempts to register
 		// itself and is not compatible with the current version?
-			System.out.println("     Registering " + Plugin.getClass().getName() + " " + Jar.getName());
+		System.out.println("     Registering " + Plugin.getClass().getName()
+				+ " " + Jar.getName());
 		try {
 			PluginProperties pp = new PluginProperties(Plugin);
 			PluginObj = pp.fillPluginInfoObject(PluginObj);
 
 		} catch (IOException ioe) {
 			System.err.println("ERROR registering plugin: " + ioe.getMessage());
-			System.err.println(Plugin.getClass().getName()+ " loaded but not registered, this will not affect the operation of the plugin");
+			System.err
+					.println(Plugin.getClass().getName()
+							+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
 			System.err.println("ERROR registering plugin: ");
 			e.printStackTrace();
@@ -352,7 +370,7 @@ public class PluginManager {
 				PluginObj.addFileName(Jar.getName());
 			}
 			PluginObj.setFiletype(PluginInfo.FileType.JAR);
-			
+
 			initializedPlugins.put(PluginObj.getPluginClassName(), PluginObj);
 			// TODO This causes a bug where theme plugins essentially get added
 			// to the current list twice
@@ -370,7 +388,8 @@ public class PluginManager {
 		for (PluginInfo plugin : ThemeObj.getPlugins()) {
 			if (plugin.getPluginClassName().equals(Plugin.getClass().getName())) {
 				System.out.println(plugin.getName());
-				PluginInfo updatedPlugin = registerPlugin(Plugin, Jar, plugin, false);
+				PluginInfo updatedPlugin = registerPlugin(Plugin, Jar, plugin,
+						false);
 				ThemeObj.replacePlugin(plugin, updatedPlugin);
 			}
 		}
@@ -575,23 +594,22 @@ public class PluginManager {
 	 *            .cytoscape/plugins/[cytoscape version number]
 	 * @return File downloaded
 	 */
-	public DownloadableInfo download(DownloadableInfo Obj,
-			TaskMonitor taskMonitor) throws IOException, ManagerException {
-
+	public DownloadableInfo download(DownloadableInfo Obj, TaskMonitor taskMonitor) 
+		throws IOException, ManagerException {
 		// run a check for plugins in a theme
 		List<DownloadableInfo> CurrentAndInstalled = new ArrayList<DownloadableInfo>();
 		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.CURRENT));
 		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.INSTALL));
 		for (DownloadableInfo info : CurrentAndInstalled) {
-			switch (Obj.getType()) {
+			switch (Obj.getType()) { // TODO get rid of these switches
 			case THEME: // check for other themes that include the same plugins
 				if (info.getType().equals(DownloadableType.THEME)) {
 					ThemeInfo Theme = (ThemeInfo) Obj;
 					for (PluginInfo plugin : Theme.getPlugins()) {
 						if (((ThemeInfo) info).containsPlugin(plugin)) {
 							throw new ManagerException(Obj.getName()
-								+ " cannot be downloaded, it includes plugins that are installed in the theme '"
-								+ info.getName() + "'");
+											+ " cannot be downloaded, it includes plugins that are installed in the theme '"
+											+ info.getName() + "'");
 						}
 					}
 				}
@@ -615,7 +633,7 @@ public class PluginManager {
 	}
 
 	/*
-	 * Methods for loading plugins when Cytoscape starts up. 
+	 * Methods for loading plugins when Cytoscape starts up.
 	 */
 	public void loadPlugin(DownloadableInfo i) throws MalformedURLException,
 			IOException, ClassNotFoundException, PluginException {
@@ -638,35 +656,28 @@ public class PluginManager {
 	 * 
 	 * @param PluginInfo
 	 *            The plugin to load
-	 * @throws MalformedURLException
+	 * @throws ManagerException
 	 */
-	public void loadPlugin(PluginInfo p) throws MalformedURLException,
-			IOException, PluginException, ClassNotFoundException {
+	public void loadPlugin(PluginInfo p) throws ManagerException {
 		List<URL> ToLoad = new ArrayList<URL>();
-		
+
 		for (String FileName : p.getFileList()) {
 			if (FileName.endsWith(".jar")) {
-				ToLoad.add(jarURL(FileName));
+				try {
+					ToLoad.add(jarURL(FileName));
+				} catch (MalformedURLException mue) {
+					loadingErrors.add(mue);
+				}
 			}
 		}
 		// don't need to register if we have the info object
 		InstallablePlugin insp = new InstallablePlugin(p);
-		try {
-			loadURLPlugins(ToLoad, false);
-		} catch (IOException ioe) {
-			insp.uninstall();
-			pluginTracker.removeDownloadable(p, PluginStatus.CURRENT);
-			throw ioe;			
-		} catch (PluginException pe) {
-			insp.uninstall();
-			pluginTracker.removeDownloadable(p, PluginStatus.CURRENT);
-			throw(pe);
-		}
-		
+		loadURLPlugins(ToLoad, false);
+
 		if (duplicateLoadError) {
 			insp.uninstall();
 			pluginTracker.removeDownloadable(p, PluginStatus.CURRENT);
-			throwDuplicateError();
+			addDuplicateError();
 		}
 
 	}
@@ -675,89 +686,96 @@ public class PluginManager {
 	 * Parses the plugin input strings and transforms them into the appropriate
 	 * URLs or resource names. The method first checks to see if the
 	 */
-	public void loadPlugins(List<String> p) throws MalformedURLException,
-			IOException, ClassNotFoundException, PluginException {
-
+	public void loadPlugins(List<String> p) { 
 		Set<String> PluginsSeen = new HashSet<String>();
 
 		// Parse the plugin strings and determine whether they're urls,
 		// files, directories, class names, or manifest file names.
 		for (String currentPlugin : p) {
-			if (PluginsSeen.contains(currentPlugin))
-				continue;
+			try {
+				if (PluginsSeen.contains(currentPlugin))
+					continue;
 
-			File f = new File(currentPlugin);
+				File f = new File(currentPlugin);
 
-			// If the file name ends with .jar add it to the list as a url.
-			if (currentPlugin.endsWith(".jar")) {
-				PluginsSeen.add(f.getAbsolutePath());
+				// If the file name ends with .jar add it to the list as a url.
+				if (currentPlugin.endsWith(".jar")) {
+					PluginsSeen.add(f.getAbsolutePath());
 
-				// If the name doesn't match a url, turn it into one.
-				if (!currentPlugin.matches(FileUtil.urlPattern)) {
-					System.out.println(" - file: " + f.getAbsolutePath());
-					pluginURLs.add(jarURL(f.getAbsolutePath()));
-				} else {
-					System.out.println(" - url: " + f.getAbsolutePath());
-					pluginURLs.add(jarURL(currentPlugin));
-				}
-			} else if (!f.exists()) {
-				// If the file doesn't exists, assume
-				// that it's a resource plugin.
-				System.out.println(" - classpath: " + currentPlugin);
-				resourcePlugins.add(currentPlugin);
-			} else if (f.isDirectory()) {
-				// If the file is a directory, load
-				// all of the jars in the directory.
-				System.out.println(" - directory: " + f.getAbsolutePath());
-
-				for (String fileName : f.list()) {
-					if (!fileName.endsWith(".jar")) {
-						continue;
+					// If the name doesn't match a url, turn it into one.
+					if (!currentPlugin.matches(FileUtil.urlPattern)) {
+						System.out.println(" - file: " + f.getAbsolutePath());
+						pluginURLs.add(jarURL(f.getAbsolutePath()));
+					} else {
+						System.out.println(" - url: " + f.getAbsolutePath());
+						pluginURLs.add(jarURL(currentPlugin));
 					}
-					PluginsSeen.add(f.getAbsolutePath()
-							+ System.getProperty("file.separator") + fileName);
-					pluginURLs.add(jarURL(f.getAbsolutePath()
-							+ System.getProperty("file.separator") + fileName));
-				}
-			} else {
-				// Assume the file is a manifest (i.e. list of jar names)
-				// and make urls out of them.
-				System.out.println(" - file manifest: " + f.getAbsolutePath());
+				} else if (!f.exists()) {
+					// If the file doesn't exists, assume
+					// that it's a resource plugin.
+					System.out.println(" - classpath: " + currentPlugin);
+					resourcePlugins.add(currentPlugin);
+				} else if (f.isDirectory()) {
+					// If the file is a directory, load
+					// all of the jars in the directory.
+					System.out.println(" - directory: " + f.getAbsolutePath());
 
-				String text = FileUtil.getInputString(currentPlugin);
+					for (String fileName : f.list()) {
+						if (!fileName.endsWith(".jar")) {
+							continue;
+						}
+						PluginsSeen.add(f.getAbsolutePath()
+								+ System.getProperty("file.separator")
+								+ fileName);
+						pluginURLs.add(jarURL(f.getAbsolutePath()
+								+ System.getProperty("file.separator")
+								+ fileName));
+					}
+				} else {
+					// Assume the file is a manifest (i.e. list of jar names)
+					// and make urls out of them.
+					System.out.println(" - file manifest: "
+							+ f.getAbsolutePath());
 
-				String[] allLines = text.split(System
-						.getProperty("line.separator"));
-				for (String pluginLoc : allLines) {
-					if (pluginLoc.endsWith(".jar")) {
-						PluginsSeen.add(pluginLoc);
-						if (pluginLoc.matches(FileUtil.urlPattern)) {
-							pluginURLs.add(jarURL(pluginLoc));
-						} else {
-							// TODO this should have a better error
-							// perhaps, throw an exception??
-							System.err.println("Plugin location specified in "
-									+ currentPlugin + " is not a valid url: "
-									+ pluginLoc + " -- NOT adding it.");
+					String text = FileUtil.getInputString(currentPlugin);
+
+					String[] allLines = text.split(System
+							.getProperty("line.separator"));
+					for (String pluginLoc : allLines) {
+						if (pluginLoc.endsWith(".jar")) {
+							PluginsSeen.add(pluginLoc);
+							if (pluginLoc.matches(FileUtil.urlPattern)) {
+								pluginURLs.add(jarURL(pluginLoc));
+							} else {
+								// TODO this should have a better error
+								// perhaps, throw an exception??
+								loadingErrors.add( new PluginException("Plugin location specified in "  
+												+ currentPlugin
+												+ " is not a valid url: "
+												+ pluginLoc
+												+ " -- NOT adding it."));
+							}
 						}
 					}
 				}
+			} catch (MalformedURLException mue) {
+				loadingErrors.add(mue);
 			}
 		}
 		// now load the plugins in the appropriate manner
 		loadURLPlugins(pluginURLs, true);
 		loadResourcePlugins(resourcePlugins);
+
 		cleanCurrentList();
-		if (duplicateLoadError) {
-			throwDuplicateError();
-		}
+		if (duplicateLoadError)
+			addDuplicateError();
 	}
 
-	private void throwDuplicateError() throws PluginException {
+	private void addDuplicateError() {
 		String Msg = "The following plugins were not loaded due to duplicate class definitions:\n";
 		for (String dup : duplicateClasses)
 			Msg += "\t" + dup + "\n";
-		throw new PluginException(Msg);
+		loadingErrors.add(new DuplicatePluginClassException(Msg));
 	}
 
 	/**
@@ -765,8 +783,7 @@ public class PluginManager {
 	 * URLClassLoader, then interating through each Jar file looking for classes
 	 * that are CytoscapePlugins
 	 */
-	private void loadURLPlugins(List<URL> pluginUrls, boolean register)
-			throws IOException, PluginException, ClassNotFoundException {
+	private void loadURLPlugins(List<URL> pluginUrls, boolean register) {
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
 
@@ -777,7 +794,7 @@ public class PluginManager {
 			try {
 				addClassPath(url);
 			} catch (Exception e) {
-				throw new IOException("Classloader Error.");
+				loadingErrors.add(new IOException("Classloader Error: " + url));
 			}
 		}
 
@@ -787,75 +804,84 @@ public class PluginManager {
 		// iterate through the given jar files and find classes that are
 		// assignable from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
-			System.out.println("");
-			System.out.println("attempting to load plugin url: ");
-			System.out.println(urls[i]);
 
-			JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
-			// Ensure we are reading the real content from urls[i],
-			// and not some out-of-date cached content:
-			jc.setUseCaches(false);
-			JarFile jar = jc.getJarFile();
+			try {
 
-			// if the jar file is null, do nothing
-			if (jar == null) {
-				continue;
-			}
+				System.out.println("");
+				System.out.println("attempting to load plugin url: ");
+				System.out.println(urls[i]);
 
-			// try to get class name from the manifest file
-			String className = getPluginClass(jar.getName(),
-					PluginInfo.FileType.JAR);
+				JarURLConnection jc = (JarURLConnection) urls[i]
+						.openConnection();
+				// Ensure we are reading the real content from urls[i],
+				// and not some out-of-date cached content:
+				jc.setUseCaches(false);
+				JarFile jar = jc.getJarFile();
 
-			if (className != null) {
-				Class pc = getPluginClass(className);
-
-				if (pc != null) {
-					System.out.println("Loading from manifest");
-					// loadPlugin(pc, jar.getName(), register);
-					loadPlugin(pc, jar, register);
+				// if the jar file is null, do nothing
+				if (jar == null) {
 					continue;
 				}
-			}
 
-			// new-school failed, so revert to old school. Search through the
-			// jar entries
-			Enumeration entries = jar.entries();
+				// try to get class name from the manifest file
+				String className = getPluginClass(jar.getName(),
+						PluginInfo.FileType.JAR);
 
-			if (entries == null) {
-				System.out.println("Jar file " + jar.getName()
-						+ " has no entries");
-				continue;
-			}
+				if (className != null) {
+					Class pc = getPluginClass(className);
 
-			int totalPlugins = 0;
-			while (entries.hasMoreElements()) {
-				// get the entry
-				String entry = entries.nextElement().toString();
-
-				if (entry.endsWith("class")) {
-					// convert the entry to an assignable class name
-					entry = entry.replaceAll("\\.class$", "");
-					// A regex to match the two known types of file
-					// separators. We can't use File.separator because
-					// the system the jar was created on is not
-					// necessarily the same is the one it is running on.
-					entry = entry.replaceAll("/|\\\\", ".");
-
-					Class pc = getPluginClass(entry);
-
-					if (pc == null) {
+					if (pc != null) {
+						System.out.println("Loading from manifest");
+						loadPlugin(pc, jar, register);
 						continue;
 					}
-
-					totalPlugins++;
-					// loadPlugin(pc, jar.getName(), register);
-					loadPlugin(pc, jar, register);
-					break;
 				}
-			}
-			if (totalPlugins == 0) {
-				System.out
-						.println("No plugin found in specified jar - assuming it's a library.");
+
+				// new-school failed, so revert to old school. Search through
+				// the jar entries
+				Enumeration entries = jar.entries();
+
+				if (entries == null) {
+					loadingErrors.add( new PluginException("Jar file " + jar.getName() + " has no entries, skipped loading."));
+					continue;
+				}
+
+				int totalPlugins = 0;
+				while (entries.hasMoreElements()) {
+					// get the entry
+					String entry = entries.nextElement().toString();
+
+					if (entry.endsWith("class")) {
+						// convert the entry to an assignable class name
+						entry = entry.replaceAll("\\.class$", "");
+						// A regex to match the two known types of file
+						// separators. We can't use File.separator because
+						// the system the jar was created on is not
+						// necessarily the same is the one it is running on.
+						entry = entry.replaceAll("/|\\\\", ".");
+
+						Class pc = getPluginClass(entry);
+
+						if (pc == null) {
+							continue;
+						}
+
+						totalPlugins++;
+
+						loadPlugin(pc, jar, register);
+						break;
+					}
+				}
+				if (totalPlugins == 0) {
+					System.out
+							.println("No plugin found in specified jar - assuming it's a library.");
+				}
+			} catch (IOException ioe) {
+				loadingErrors.add(ioe);
+			} catch (ClassNotFoundException cne) {
+				loadingErrors.add(cne);
+			} catch (PluginException pe) {
+				loadingErrors.add(pe);
 			}
 		}
 		System.out.println("");
@@ -863,18 +889,22 @@ public class PluginManager {
 
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
 	// used by jars that do
-	private void loadResourcePlugins(List<String> resourcePlugins)
-			throws ClassNotFoundException, PluginException {
+	private void loadResourcePlugins(List<String> resourcePlugins) {
+		// throws ClassNotFoundException, PluginException {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
 			System.out.println("");
-			System.out.println("attempting to load plugin resourse: "
-					+ resource);
+			System.out.println("attempting to load plugin resourse: " + resource);
 
 			// try to get the class
-			Class rclass = null;
-			rclass = Class.forName(resource);
-			loadPlugin(rclass, null, true);
+			try {
+				Class rclass = Class.forName(resource);
+				loadPlugin(rclass, null, true);
+			} catch (ClassNotFoundException cne) {
+				loadingErrors.add(cne);
+			} catch (PluginException pe) {
+				loadingErrors.add(pe);
+			}
 		}
 		System.out.println("");
 	}
@@ -891,9 +921,9 @@ public class PluginManager {
 					}
 				}
 			} catch (InstantiationException inse) {
-				inse.printStackTrace();
+				loadingErrors.add(inse);
 			} catch (IllegalAccessException ille) {
-				ille.printStackTrace();
+				loadingErrors.add(ille);
 			}
 
 		} else if (loadedPlugins.contains(plugin.getName())) {
@@ -911,17 +941,6 @@ public class PluginManager {
 	 */
 	private Class getPluginClass(String name) throws ClassNotFoundException, NoClassDefFoundError {
 		Class c = classLoader.loadClass(name);
-//		try {
-//			c = classLoader.loadClass(name);
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//			return null;
-//		} catch (NoClassDefFoundError e) {
-//			e.printStackTrace();
-//
-//			return null;
-//		}
-
 		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;
 		else
@@ -941,7 +960,7 @@ public class PluginManager {
 
 	/*
 	 * Iterate through all class files, return the subclass of CytoscapePlugin.
-	 * Only plugins with manifest files that describe the class of the 
+	 * Only plugins with manifest files that describe the class of the
 	 * CytoscapePlugin are valid.
 	 */
 	private String getPluginClass(String FileName, PluginInfo.FileType Type)
@@ -976,7 +995,6 @@ public class PluginManager {
 				is.close();
 			}
 		}
-		;
 		return PluginClassName;
 	}
 
@@ -1002,8 +1020,7 @@ public class PluginManager {
 	 */
 	private void addClassPath(URL url) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		Method method = URLClassLoader.class.getDeclaredMethod("addURL",
-				new Class[] { URL.class });
+		Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
 		method.setAccessible(true);
 		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
 	}

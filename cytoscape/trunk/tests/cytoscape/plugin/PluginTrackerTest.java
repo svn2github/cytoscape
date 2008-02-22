@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class PluginTrackerTest extends TestCase {
 	private SAXBuilder builder;
 
-	private Document xmlDoc;
+	//private Document xmlDoc;
 
 	private PluginTracker tracker;
 
@@ -124,7 +124,6 @@ public class PluginTrackerTest extends TestCase {
 		newObj.setName("mySecondInstallTest");
 		newObj.setProjectUrl("http://foobar.com/booya.xml");
 		newObj.setFiletype(PluginInfo.FileType.JAR);
-		// newObj.setCytoscapeVersion("2.5.1");
 		newObj.addCytoscapeVersion("2.5.1");
 		tracker.addDownloadable(newObj, PluginStatus.INSTALL);
 		assertEquals(
@@ -180,7 +179,6 @@ public class PluginTrackerTest extends TestCase {
 		ThemeInfo themeObj = new ThemeInfo("themeTest123");
 		themeObj.setName("Test Theme");
 		themeObj.setDownloadableURL("http://booya.com/foo.xml");
-		// themeObj.setCytoscapeVersion("2.5.1");
 		themeObj.addCytoscapeVersion("2.5.1");
 
 		PluginInfo obj = getInfoObj();
@@ -249,7 +247,6 @@ public class PluginTrackerTest extends TestCase {
 		obj.setDownloadableURL("http://foobar.org/y.xml");
 		obj.setCategory("Test");
 		obj.setFiletype(PluginInfo.FileType.JAR);
-		// obj.setCytoscapeVersion("2.5.1");
 		obj.addCytoscapeVersion("2.5.1");
 
 		tracker.addDownloadable(obj, PluginStatus.INSTALL);
@@ -283,7 +280,6 @@ public class PluginTrackerTest extends TestCase {
 		objB.setDownloadableURL("http://test.com/blue.xml");
 		objB.setFiletype(PluginInfo.FileType.JAR);
 		objB.setPluginClassName("some.other.class.DifferentTest");
-		// objB.setCytoscapeVersion(objA.getCytoscapeVersion());
 		objB.addCytoscapeVersion(objA.getCytoscapeVersion());
 
 		tracker.addDownloadable(objA, PluginStatus.CURRENT);
@@ -311,6 +307,7 @@ public class PluginTrackerTest extends TestCase {
 			assertNotNull(tk);
 			// Note: do NOT call write or you change the test file
 			assertEquals(tk.getDownloadableListByStatus(PluginStatus.CURRENT).size(), 13);
+			assertTrue(tk.hasCorruptedElements());
 			assertEquals(tk.getTotalCorruptedElements(), 1);
 		} catch (NullPointerException npe) {
 			npe.printStackTrace();
@@ -324,11 +321,12 @@ public class PluginTrackerTest extends TestCase {
 	public void testCompletelyCorruptedXml() {
 		// completely corrupted file
 		PluginTracker tk = null;
+		File tempFile = null;
 		try {
 			File file = new File("testData/plugins/track_plugins_c2.xml");
 			// need to copy file to new location because it will be deleted
-			file = copyFileToTempDir(file);
-			tk = new PluginTracker(file);
+			tempFile = copyFileToTempDir(file);
+			tk = new PluginTracker(tempFile);
 		} catch (NullPointerException npe) {
 			npe.printStackTrace();
 			fail("Failed to handle corrupted xml: " + npe.getMessage());
@@ -338,6 +336,9 @@ public class PluginTrackerTest extends TestCase {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			fail("Failed to read file: " + ioe.getMessage());
+		} finally {
+			if (tempFile != null && tempFile.exists())
+				tempFile.delete();
 		}
 	}
 	

@@ -44,17 +44,17 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+//import cytoscape.CytoscapeInit;
 
 import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.Category;
+//import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 
 import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.dialogs.plugins.PluginManageDialog.PluginInstallStatus;
 
 import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.PluginInfo;
+//import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.PluginInquireAction;
 import cytoscape.plugin.ManagerUtil;
@@ -87,15 +87,18 @@ public class PluginManagerAction extends CytoscapeAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		PluginManageDialog dialog = new PluginManageDialog(Cytoscape.getDesktop());
-		// TODO add a dialog specific to manager errors, replace generic JOption with it
+
 		PluginManager Mgr = PluginManager.getPluginManager();
 
+		// this actually won't ever get called I think because the PM already has the trackign document in memory
+		// but in case it ever does get called...
 		if (Mgr.getLoadingErrors().size() > 0) {
 			String message = "";
 			for (Throwable t: Mgr.getLoadingErrors()) 
 				message += t.getMessage() + "\n";
 			javax.swing.JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, 
 					"Plugin Manager Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+			
 		}
 		
 		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
