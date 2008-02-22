@@ -402,8 +402,22 @@ public class NetworkViewManager implements PropertyChangeListener,
 		}
 
 		iframe.pack();
-		iframe.setSize(400, 400);
+		//iframe.setSize(400, 400);
+		// create cascade iframe
+		int x=0,y=0;
+		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+		if (selectedFrame != null) {
+			x = selectedFrame.getLocation().x + 20;
+			y = selectedFrame.getLocation().y + 20;
+		}
 
+		if ((x > desktopPane.getWidth() -60) || (y > desktopPane.getHeight() -60)){
+			x = 30;
+			y = 30;
+		}
+		
+		iframe.setBounds(x, y,400, 400);
+		
 		// maximize the frame if the specified property is set
 		try {
 			String max = CytoscapeInit.getProperties().getProperty(
