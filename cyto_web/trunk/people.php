@@ -29,7 +29,7 @@
     <td><a href="http://cbio.mskcc.org/people/info/chris_sander.html">Chris Sander</a></td>
     <td><a href="http://www.systemsbiology.org/Scientists_and_Research/Faculty_Groups/Hood_Group">Leroy Hood</a></td>
     <td><a href="http://www.pasteur.fr/recherche/unites/Biolsys/benno/">Benno<br />Schwikowski<a/></td>
-   <td><a href="http://www.unilever.com/">Guy Warner<a/></td>
+   <td><a href="http://www.unilever.com/">Yeyejide Adeleye<a/></td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -37,7 +37,7 @@
     <td><img src="people_photos/chris_s.jpg"></img></td>
     <td><img src="people_photos/hood.jpg"></img></td>
     <td><img src="people_photos/benno.jpg"></img></td>
-    <td><img src="people_photos/guy.jpg"></img></td>
+    <td><img src="people_photos/yeyejide.jpg"></img></td>
   </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
@@ -121,13 +121,15 @@
 			<hr width="100%" size="2">
 			<big>
 				<b>
-					Past Software Developers:</b></big>
+					Past Developers and Directors:</b></big>
 			<br>
 			<br>
 			<table cellpadding="2" cellspacing="2" border="0" width="100%">
 				<tbody>
 					<tr>
 						<td>
+						Guy Warner
+						<br>
 						Iliana Avila-Campillo
 						<br>
 						Nerius Landys
