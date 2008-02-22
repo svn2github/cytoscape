@@ -26,7 +26,8 @@
 	<p>
 		Cytoscape includes a flexible PlugIn architecture that enables developers to add extra functionality beyond that provided in the core. PlugIns also provide a convenient place for testing out new Cytoscape features. </p> 
 	<p>
-		<b>Note that PlugIns on this page will only work with Cytoscape 1.1</b>. We also maintain a list of <a href="plugins2.php">Cytoscape 2.x PlugIns</a>. 
+		<b>Note that PlugIns on this page will only work with Cytoscape 1.1. Refer to the current plugin page for a list of plugins registered with the plugin manager</b> <a href="http://cytoscape.org/plugins/index.php">Current Cytoscape 2.x Plugins</a>. 
+	</p>
 	<p><big><b>PlugIn License Policy:</b></big>
 	<P>
 	Although the Cytoscape core
