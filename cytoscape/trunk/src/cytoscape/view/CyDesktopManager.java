@@ -46,10 +46,11 @@ import java.awt.Dimension;
   */
 public class CyDesktopManager extends DefaultDesktopManager  {
 	
-	public static int ARRANGE_GRID = 0; // TILED
+	public static final int ARRANGE_GRID = 0; // TILED
 	public static int ARRANGE_CASCADE = 2;
 	public static int ARRANGE_HORIZONTAL = 3;
 	public static int ARRANGE_VERTICAL = 4;
+	
 	protected static JDesktopPane desktop;
 	private CyDesktopManager() {
 	}
@@ -79,6 +80,27 @@ public class CyDesktopManager extends DefaultDesktopManager  {
 		desktop = pDesktop;
 	}
 	
+	// Implementation of grid layout algorithm
+	// gridLayout -- an int array-- int[i] holds the number of row for column i 
+	private static void getGridLayout(final int pTotal, final int pCol, final int pRow, int[] gridLayout) {
+		if (pTotal > pRow) {
+			int row = -1;
+			if (pTotal%pCol == 0) {
+				row = pTotal/pCol;
+				gridLayout[pCol-1] = row;
+			}
+			else {
+				row = pRow;				
+				gridLayout[pCol-1] = pRow;
+			}
+			getGridLayout(pTotal-row, pCol-1,row, gridLayout);
+		}
+		else {
+			gridLayout[0] = pTotal;
+		}		
+	}
+	
+	
 	// Arrange all windows in the desktop according to the given style
 	public static void arrangeFrames(int pStyle) {
 		Dimension desktopSize = desktop.getSize();
@@ -103,39 +125,35 @@ public class CyDesktopManager extends DefaultDesktopManager  {
 			}
 		}
 		else if (pStyle == CyDesktopManager.ARRANGE_GRID) {
-			
+			// Determine the max_col and max_row for grid layout 
 			int maxCol = (new Double(Math.ceil(Math.sqrt(frameCount)))).intValue();
-			int minCol = (new Double(Math.floor(Math.sqrt(frameCount)))).intValue();
-			
-			//System.out.println("mincol, maxCol = " + minCol + ","+maxCol);
-			
-			if (minCol == maxCol) {
-				int w = desktopSize.width/minCol;
-				int h = desktopSize.height/minCol;
-				for (int i=0; i< frameCount; i++) {
-					int col = minCol - i/minCol-1;
-					int row = minCol-1 - i%minCol;		
-					allFrames[frameCount-i-1].setBounds(col*w, row*h, w, h);
+			int maxRow = maxCol;
+			while (true) {
+				if (frameCount <= maxCol*(maxRow -1)) {
+					maxRow--;
+					continue;
 				}
+				break;
 			}
-			else {
-				System.out.println("TODO: Not defined yet");
+
+			// Calculate frame layout on the screen, i.e. the number of frames for each column 
+			int[] gridLayout = new int[maxCol];
+			getGridLayout(frameCount, maxCol, maxRow, gridLayout);
+			
+			// Apply the layout on screen
+			int w = desktopSize.width/maxCol;
+			int curFrame = frameCount -1;
+			for (int col=maxCol-1; col>=0; col--) {
+				int h = desktopSize.height/gridLayout[col];
 				
-				
-				
-				
-				
-				
-				
-				
-				
+				for (int i=0; i< gridLayout[col]; i++) {
+					int x = col * w;
+					int y = (gridLayout[col]-i-1)* h;					
+					allFrames[curFrame--].setBounds(x, y, w, h);
+				}				
 			}
-			
-			
-			
 		}
 		else if (pStyle == CyDesktopManager.ARRANGE_HORIZONTAL) {
-			
 			int x = 0;
 			int[] y = new int[frameCount];
 			int w = desktopSize.width;
