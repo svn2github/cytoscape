@@ -35,6 +35,7 @@
 package edu.ucsd.bioeng.idekerlab.PathwayWalkingPlugin;
 
 import cytoscape.CyNode;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -140,6 +141,11 @@ public class NCBI {
     	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("ncbi_entrez", WSEventType.SEARCH_DATABASE, node);
     	ImportTask task1 = new ImportTask(nodeId);
 		task1.run();
+		System.out.println("trying to import network");
+		importNetwork("675", null);
+//		importNetwork("675", Cytoscape.getCurrentNetwork());
+		System.out.println("the network has been imported");
+		
 		
     	
 //		search(cyweb1.getParameter().toString(), cyweb1);
@@ -164,46 +170,11 @@ public class NCBI {
 				importNetwork(e.getParameter().toString(), Cytoscape.getCurrentNetwork());
 			} else if (e.getEventType().equals(WSEventType.SEARCH_DATABASE)) {
 				System.out.println("CHECKPOINT 2 in executeService");
-				search(e.getParameter().toString(), e);
+//				search(e.getParameter().toString(), e);
 
 			}
 		}
 	}
-	
-	private void search(String query, CyWebServiceEvent e) {
-		// WE NEED TO WRITE THIS!!! @_@
-		try {
-			System.out.println("In try block of search()");
-			System.out.println("This is your query: " + query);
-			
-			EFetchRequest parameters = new EFetchRequest();
-			
-			System.out.println("Created EFetchRequest: " + parameters);
-			
-			parameters.setDb("gene");
-			parameters.setId(query);
-			
-			System.out.println("This is what's in your EFetchRequest" + parameters);
-			
-			EFetchResult res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
-			
-			System.out.println("This is the EFetchResult: " + res);
-			
-//				 results output
-//			 res.getIdList().getId().length
-			
-			System.out.println( res.getTaxaSet().getTaxon()[0].getScientificName() + ": " + 
-                   			res.getTaxaSet().getTaxon()[0].getDivision() + " (" + 
-                   			res.getTaxaSet().getTaxon()[0].getRank() + ")" );
-				
-			
-		} catch (Exception exception) {
-			System.out.println("Your search has FAILED!!!!!!");
-			System.out.println(exception.toString());
-		}
-		
-	}
-
 	
 	
 	public void propertyChange(PropertyChangeEvent e) {
@@ -221,8 +192,9 @@ public class NCBI {
 		}
 	}
 
-	private void importNetwork(String string, Object object) {
-		ESearchRequest parameters1 = new ESearchRequest();
+//	private void importNetwork(String string, Object object) {
+	private void importNetwork(String string, CyNetwork net) {
+	ESearchRequest parameters1 = new ESearchRequest();
 		
 		// Set search parameters.
 		parameters1.setDb("gene");
@@ -272,8 +244,8 @@ public class NCBI {
 			e1.printStackTrace();
 		}
 
-		Set<Node> nodeSet = new HashSet<Node>();
-		Set<Edge> edgeSet = new HashSet<Edge>();
+		Set<Node> nodes = new HashSet<Node>();
+		Set<Edge> edges = new HashSet<Edge>();
 
 		CyAttributes nAttr = Cytoscape.getNodeAttributes();
 		CyAttributes eAttr = Cytoscape.getEdgeAttributes();
@@ -307,13 +279,29 @@ public class NCBI {
 
 				System.out.println("Entry: " + node1.getIdentifier() + " - "
 				                   + node2.getIdentifier() + "===== " + node2.getClass());
-				nodeSet.add(node1);
-				nodeSet.add(node2);
-				edgeSet.add(edge);
+				nodes.add(node1);
+				nodes.add(node2);
+				edges.add(edge);
 			}
 		}
+		
+		if (net == null) {
+			Cytoscape.createNetwork(nodes, edges, "NCBI: ", null);
+//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+		} else {
+			for (Node node : nodes) {
+				net.addNode(node);
+			}
 
-		Cytoscape.createNetwork(nodeSet, edgeSet, "NCBI: " + string);
+			for (Edge edge : edges) {
+				net.addEdge(edge);
+			}
+
+			net.setSelectedNodeState(nodes, true);
+//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
+		}
+
+		// Cytoscape.createNetwork(nodes, edges, "NCBI: " + string);
 	}
 
 	/**
