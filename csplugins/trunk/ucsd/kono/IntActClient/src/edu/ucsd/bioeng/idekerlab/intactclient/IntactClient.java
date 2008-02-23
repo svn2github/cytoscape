@@ -51,7 +51,6 @@ import cytoscape.layout.Tunable;
 
 import cytoscape.util.ModulePropertiesImpl;
 
-import cytoscape.visual.Arrow;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
@@ -91,9 +90,11 @@ import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -181,54 +182,66 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 
 		// Loop through the result and extract the interactions.
 		for (IntActBinaryInteraction bin : binaryInteractions) {
-			
 			n1 = Cytoscape.getCyNode(extractNodeEntry(bin.getInteractorA()), true);
 			n2 = Cytoscape.getCyNode(extractNodeEntry(bin.getInteractorB()), true);
 
 			nodes.add(n1);
 			nodes.add(n2);
-			
+
 			// Extract node attributes.
 			List<CrossReference> crossRefs;
-			
-			if(bin.hasInteractorTypeA()) {
+
+			if (bin.hasInteractorTypeA()) {
 				crossRefs = bin.getInteractorTypeA();
-				if(crossRefs.size()>0)
-					nodeAttr.setAttribute(n1.getIdentifier(), "interactor type", crossRefs.get(0).getText());
+
+				if ((crossRefs.size() > 0) && (crossRefs.get(0).getText() != null) && nodeAttr.getStringAttribute(n1.getIdentifier(), "interactor type") == null)
+					nodeAttr.setAttribute(n1.getIdentifier(), "interactor type",
+					                      crossRefs.get(0).getText());
 			}
-			
-			if(bin.hasInteractorTypeB()) {
+
+			if (bin.hasInteractorTypeB()) {
 				crossRefs = bin.getInteractorTypeB();
-				if(crossRefs.size()>0)
-					nodeAttr.setAttribute(n2.getIdentifier(), "interactor type", crossRefs.get(0).getText());
+
+				if ((crossRefs.size() > 0) && (crossRefs.get(0).getText() != null) && nodeAttr.getStringAttribute(n2.getIdentifier(), "interactor type") == null)
+					nodeAttr.setAttribute(n2.getIdentifier(), "interactor type",
+					                      crossRefs.get(0).getText());
 			}
-			
-			if(bin.hasPropertiesA()) {
+
+			if (bin.hasPropertiesA()) {
 				crossRefs = bin.getPropertiesA();
-				for(CrossReference prop : crossRefs) {
-					List<Object> attr = nodeAttr.getListAttribute(n1.getIdentifier(), prop.getDatabase());
-					if(attr == null) {
+
+				for (CrossReference prop : crossRefs) {
+					Collection<Object> attr = nodeAttr.getListAttribute(n1.getIdentifier(),
+					                                              prop.getDatabase());
+					if (attr == null) {
 						List<String> newList = new ArrayList<String>();
 						newList.add(prop.getIdentifier());
 						nodeAttr.setListAttribute(n1.getIdentifier(), prop.getDatabase(), newList);
 					} else {
-						attr.add(prop.getIdentifier());
-						nodeAttr.setListAttribute(n1.getIdentifier(), prop.getDatabase(), attr);
+						if(attr.contains(prop.getIdentifier()) == false) {
+							attr.add(prop.getIdentifier());
+							nodeAttr.setListAttribute(n1.getIdentifier(), prop.getDatabase(), new ArrayList<Object>(attr));
+						}
 					}
 				}
 			}
-			
-			if(bin.hasPropertiesB()) {
+
+			if (bin.hasPropertiesB()) {
 				crossRefs = bin.getPropertiesB();
-				for(CrossReference prop : crossRefs) {
-					List<Object> attr = nodeAttr.getListAttribute(n2.getIdentifier(), prop.getDatabase());
-					if(attr == null) {
+
+				for (CrossReference prop : crossRefs) {
+					Collection<Object> attr = nodeAttr.getListAttribute(n2.getIdentifier(),
+					                                              prop.getDatabase());
+
+					if (attr == null) {
 						List<String> newList = new ArrayList<String>();
 						newList.add(prop.getIdentifier());
 						nodeAttr.setListAttribute(n2.getIdentifier(), prop.getDatabase(), newList);
 					} else {
-						attr.add(prop.getIdentifier());
-						nodeAttr.setListAttribute(n2.getIdentifier(), prop.getDatabase(), attr);
+						if(attr.contains(prop.getIdentifier()) == false) {
+							attr.add(prop.getIdentifier());
+							nodeAttr.setListAttribute(n2.getIdentifier(), prop.getDatabase(), new ArrayList<Object>(attr));
+						}
 					}
 				}
 			}
@@ -244,7 +257,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 		}
 
 		if (net == null) {
-			CyNetwork newNet = Cytoscape.createNetwork(nodes, edges, "IntAct: ", null);
+			Cytoscape.createNetwork(nodes, edges, "IntAct: ", null);
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
 		} else {
 			for (Node node : nodes) {
@@ -326,18 +339,20 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 
 		List<CrossReference> roleA = bin.getExperimentalRolesInteractorA();
 		List<CrossReference> roleB = bin.getExperimentalRolesInteractorB();
-		
+
 		for (int i = 0; i < numEdge; i++) {
 			final Edge e = Cytoscape.getCyEdge(a, b, "interaction", acs.get(i).getIdentifier(), true);
 			edges.add(e);
 
 			final String edgeID = e.getIdentifier();
-			
-			if(bin.hasExperimentalRolesInteractorA() && roleA.size()>0)
-				edgeAttr.setAttribute(e.getIdentifier(), "source experimental role", roleA.get(i).getText());
-			
-			if(bin.hasExperimentalRolesInteractorB() && roleB.size()>0)
-				edgeAttr.setAttribute(e.getIdentifier(), "target experimental role", roleB.get(i).getText());
+
+			if (bin.hasExperimentalRolesInteractorA() && (roleA.size() > 0))
+				edgeAttr.setAttribute(e.getIdentifier(), "source experimental role",
+				                      roleA.get(i).getText());
+
+			if (bin.hasExperimentalRolesInteractorB() && (roleB.size() > 0))
+				edgeAttr.setAttribute(e.getIdentifier(), "target experimental role",
+				                      roleB.get(i).getText());
 
 			if (itrTypes.size() > i)
 				edgeAttr.setAttribute(edgeID, "interaction type", itrTypes.get(i).getText());
@@ -349,22 +364,24 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 			if ((detMethod.size() != 0) && (detMethod.size() > i))
 				edgeAttr.setAttribute(edgeID, "detection method", detMethod.get(i).getText());
 
-			if (bin.hasHostOrganism() && hostOrg.size()>0)
+			if (bin.hasHostOrganism() && (hostOrg.size() > i)
+			    && (hostOrg.get(i).getIdentifier() != null))
 				edgeAttr.setAttribute(edgeID, "host organism", hostOrg.get(i).getIdentifier());
 
-			if (bin.hasDatasetName() && dataset.size()>i) {
-//				System.out.println("Dataset len = " + dataset.size() +", edge = " + numEdge);
+			if (bin.hasDatasetName() && (dataset.size() > i)) {
+				//				System.out.println("Dataset len = " + dataset.size() +", edge = " + numEdge);
 				edgeAttr.setAttribute(edgeID, "dataset", dataset.get(i));
 			}
+
 			if ((pubs.size() != 0) && (pubs.size() > i))
 				edgeAttr.setAttribute(edgeID, "publication", pubs.get(i).getIdentifier());
 
 			if ((sourceDB.size() != 0) && (sourceDB.size() > i))
 				edgeAttr.setAttribute(edgeID, "source database", sourceDB.get(i).getText());
 
-			if (confs.size() != 0 && confs.size()>i) {
-//				System.out.println("CONF = " + confs.get(0).getText());
-//				System.out.println("CONF VAL = " + confs.get(0).getValue());
+			if ((confs.size() != 0) && (confs.size() > i)) {
+				//				System.out.println("CONF = " + confs.get(0).getText());
+				//				System.out.println("CONF VAL = " + confs.get(0).getValue());
 				edgeAttr.setAttribute(edgeID, "confidence", confs.get(i).getText());
 				edgeAttr.setAttribute(edgeID, "confidence value", confs.get(i).getValue());
 			}
@@ -379,10 +396,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 			stub = new BinarySearchServiceClient();
 		}
 
-		BinarySearchServiceClient client = (BinarySearchServiceClient) stub;
-		System.out.println("=========CLASS = " + client.getClass() + ", Max itr = "
-		                   + (Integer) props.get("max_interactions").getValue());
-
+		final BinarySearchServiceClient client = (BinarySearchServiceClient) stub;
 		final SearchResult<IntActBinaryInteraction> result = client.findBinaryInteractionsLimited(query,
 		                                                                                          0,
 		                                                                                          (Integer) props.get("max_interactions")
@@ -476,39 +490,57 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL, "");
 
 		// Prey and Bait
-		DiscreteMapping targetShape = new DiscreteMapping(ArrowShape.NONE, "target experimental role", ObjectMapping.EDGE_MAPPING);
+		DiscreteMapping targetShape = new DiscreteMapping(ArrowShape.NONE,
+		                                                  "target experimental role",
+		                                                  ObjectMapping.EDGE_MAPPING);
 
 		targetShape.putMapValue("bait", ArrowShape.DIAMOND);
 		targetShape.putMapValue("prey", ArrowShape.CIRCLE);
-		EdgeCalculator targetShapeCalc = new EdgeCalculator(DEF_VS_NAME + "-" + "EdgeTargetArrowShapeMapping", targetShape, null,
-		                                          VisualPropertyType.EDGE_TGTARROW_SHAPE);
 
-		DiscreteMapping sourceShape = new DiscreteMapping(ArrowShape.NONE, "source experimental role", ObjectMapping.EDGE_MAPPING);
+		EdgeCalculator targetShapeCalc = new EdgeCalculator(DEF_VS_NAME + "-"
+		                                                    + "EdgeTargetArrowShapeMapping",
+		                                                    targetShape, null,
+		                                                    VisualPropertyType.EDGE_TGTARROW_SHAPE);
+
+		DiscreteMapping sourceShape = new DiscreteMapping(ArrowShape.NONE,
+		                                                  "source experimental role",
+		                                                  ObjectMapping.EDGE_MAPPING);
 
 		sourceShape.putMapValue("bait", ArrowShape.DIAMOND);
 		sourceShape.putMapValue("prey", ArrowShape.CIRCLE);
-		EdgeCalculator sourceShapeCalc = new EdgeCalculator(DEF_VS_NAME + "-" + "EdgeSourceArrowShapeMapping", sourceShape, null,
-		                                          VisualPropertyType.EDGE_SRCARROW_SHAPE);
-		
-		DiscreteMapping targetColor = new DiscreteMapping(Color.black, "target experimental role", ObjectMapping.EDGE_MAPPING);
+
+		EdgeCalculator sourceShapeCalc = new EdgeCalculator(DEF_VS_NAME + "-"
+		                                                    + "EdgeSourceArrowShapeMapping",
+		                                                    sourceShape, null,
+		                                                    VisualPropertyType.EDGE_SRCARROW_SHAPE);
+
+		DiscreteMapping targetColor = new DiscreteMapping(Color.black, "target experimental role",
+		                                                  ObjectMapping.EDGE_MAPPING);
 
 		targetColor.putMapValue("bait", Color.red);
 		targetColor.putMapValue("prey", Color.red);
-		EdgeCalculator targetColorCalc = new EdgeCalculator(DEF_VS_NAME + "-" + "EdgeTargetArrowColorMapping", targetColor, null,
-		                                          VisualPropertyType.EDGE_TGTARROW_COLOR);
 
-		DiscreteMapping sourceColor = new DiscreteMapping(Color.black, "source experimental role", ObjectMapping.EDGE_MAPPING);
+		EdgeCalculator targetColorCalc = new EdgeCalculator(DEF_VS_NAME + "-"
+		                                                    + "EdgeTargetArrowColorMapping",
+		                                                    targetColor, null,
+		                                                    VisualPropertyType.EDGE_TGTARROW_COLOR);
+
+		DiscreteMapping sourceColor = new DiscreteMapping(Color.black, "source experimental role",
+		                                                  ObjectMapping.EDGE_MAPPING);
 
 		sourceColor.putMapValue("bait", Color.red);
 		sourceColor.putMapValue("prey", Color.red);
-		EdgeCalculator sourceColorCalc = new EdgeCalculator(DEF_VS_NAME + "-" + "EdgeSourceArrowColorMapping", targetColor, null,
-		                                          VisualPropertyType.EDGE_SRCARROW_COLOR);
-		
-		
+
+		EdgeCalculator sourceColorCalc = new EdgeCalculator(DEF_VS_NAME + "-"
+		                                                    + "EdgeSourceArrowColorMapping",
+		                                                    targetColor, null,
+		                                                    VisualPropertyType.EDGE_SRCARROW_COLOR);
+
 		eac.setCalculator(sourceShapeCalc);
 		eac.setCalculator(targetShapeCalc);
 		eac.setCalculator(sourceColorCalc);
 		eac.setCalculator(targetColorCalc);
+
 		return defStyle;
 	}
 }
