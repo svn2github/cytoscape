@@ -1,0 +1,7 @@
+<?xml encoding="US-ASCII"?>
+<!-- Revision: 60 1.2 data/personal.dtd, docs, xml4j2, xml4j2_0_9  -->
+<!ELEMENT bindingPairs (bindingPair)*>
+<!ELEMENT bindingPair (a, b, species)>
+<!ELEMENT a (#PCDATA)>
+<!ELEMENT b (#PCDATA)>
+<!ELEMENT species (#PCDATA)>
