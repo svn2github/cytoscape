@@ -172,7 +172,7 @@ public class SearchBoxPanel extends JPanel {
                     "Search Error", JOptionPane.ERROR_MESSAGE);
         } else {
             ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
-                    (webApi, keyword.trim(), ncbiTaxonomyId, 1);
+                    (webApi, keyword.trim(), ncbiTaxonomyId);
             if (animator.isRunning()) {
                 pulsatingBorder.setThickness(0);
                 animator.stop();
