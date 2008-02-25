@@ -74,8 +74,7 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
         return aboutPanel;
     }
 
-    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex) {
+    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId) {
     }
 
     public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
