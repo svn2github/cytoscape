@@ -46,22 +46,21 @@ public class CPathWebServiceImpl implements CPathWebService {
      *
      * @param keyword        Keyword to search for.
      * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms)
-     * @param startIndex     Start index into search results; used to perform pagination.
      * @return SearchResponseType Object.
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex, TaskMonitor taskMonitor) throws CPathException, EmptySetException {
+            TaskMonitor taskMonitor) throws CPathException, EmptySetException {
 
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
             CPathWebServiceListener listener = listeners.get(i);
-            listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId, startIndex);
+            listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId);
         }
 
         protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_SEARCH);
         protocol.setOrganism(ncbiTaxonomyId);
-        protocol.setFormat(CPathProtocol.FORMAT_XML);
+        protocol.setFormat(CPathResponseFormat.GENERIC_XML);
         protocol.setQuery(keyword);
 
         SearchResponseType searchResponse;
@@ -113,7 +112,7 @@ public class CPathWebServiceImpl implements CPathWebService {
 
         protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_GET_PARENTS);
-        protocol.setFormat(CPathProtocol.FORMAT_XML);
+        protocol.setFormat(CPathResponseFormat.GENERIC_XML);
 
         protocol.setQuery(Long.toString(primaryId));
 
@@ -144,14 +143,14 @@ public class CPathWebServiceImpl implements CPathWebService {
     /**
      * Gets One or more records by Primary ID.
      * @param ids               Array of Primary IDs.
-     * @param format            FORMAT_BIOPAX or FORMAT_BINARY_SIF.
+     * @param format            CPathResponseFormat Object.
      * @param taskMonitor       Task Monitor Object.
      * @return  BioPAX XML String.
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(long[] ids, String format, TaskMonitor taskMonitor) throws
-            CPathException, EmptySetException {
+    public String getRecordsByIds(long[] ids, CPathResponseFormat format,
+            TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         protocol = new CPathProtocol();
         protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
         protocol.setFormat(format);
@@ -230,7 +229,7 @@ public class CPathWebServiceImpl implements CPathWebService {
      * @return ArrayList of Organism Type Objects.
      */
     public ArrayList<OrganismType> getOrganismList() {
-        return null;
+        throw new UnsupportedOperationException("getOrganismList() is not yet implemented.");
     }
 
     /**
