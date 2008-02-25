@@ -15,10 +15,8 @@ public interface CPathWebServiceListener {
      *
      * @param keyword        Keyword Term(s)
      * @param ncbiTaxonomyId NCBI Texonomy ID.
-     * @param startIndex     Start Index Value.
      */
-    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex);
+    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId);
 
     /**
      * Indicates that a search for physical entities has completed.
