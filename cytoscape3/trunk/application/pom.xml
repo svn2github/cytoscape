@@ -378,6 +378,11 @@
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+				    <compilerArguments>
+                      <Xlint:all></Xlint:all>
+				    </compilerArguments>
                 </configuration>
             </plugin>
       <plugin>
