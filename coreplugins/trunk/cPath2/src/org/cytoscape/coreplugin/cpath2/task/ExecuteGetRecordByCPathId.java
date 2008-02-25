@@ -116,13 +116,13 @@ public class ExecuteGetRecordByCPathId implements Task {
             CPathProperties config = CPathProperties.getInstance();
             //  Branch based on download mode setting.
             File tmpFile;
-            String format;
+            CPathResponseFormat format;
             if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
                 tmpFile = File.createTempFile("temp", ".xml", new File(tmpDir));
-                format = CPathProtocol.FORMAT_BIOPAX;
+                format = CPathResponseFormat.BIOPAX;
             } else {
                 tmpFile = File.createTempFile("temp", ".sif", new File(tmpDir));
-                format = CPathProtocol.FORMAT_BINARY_SIF;
+                format = CPathResponseFormat.BINARY_SIF;
             }
             tmpFile.deleteOnExit();
 
@@ -315,7 +315,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             ids[0] = Long.valueOf(nodeId);
 
             try {
-                String xml = webApi.getRecordsByIds(ids, CPathProtocol.FORMAT_BIOPAX,
+                String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX,
                         new NullTaskMonitor());
                 StringReader reader = new StringReader(xml);
                 BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
