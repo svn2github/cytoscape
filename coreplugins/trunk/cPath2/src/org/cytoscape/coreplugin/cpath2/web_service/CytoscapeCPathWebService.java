@@ -1,29 +1,27 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
-import cytoscape.data.webservice.*;
-import cytoscape.util.ModulePropertiesImpl;
-import cytoscape.util.ModuleProperties;
-import cytoscape.layout.Tunable;
 import cytoscape.Cytoscape;
+import cytoscape.data.webservice.*;
+import cytoscape.layout.Tunable;
+import cytoscape.util.ModuleProperties;
+import cytoscape.util.ModulePropertiesImpl;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
-import org.cytoscape.coreplugin.cpath2.util.NullTaskMonitor;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
+import org.cytoscape.coreplugin.cpath2.util.NullTaskMonitor;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
- *
- * 
  */
-public class CytoscapeCPathWebService extends WebServiceClientImpl{
-	// Display name of this client.
+public class CytoscapeCPathWebService extends WebServiceClientImpl {
+    // Display name of this client.
     private static final String DISPLAY_NAME = CPathProperties.getInstance().getCPathServerName() +
-                " Web Service Client";
+            " Web Service Client";
 
-	// Client ID. This should be unique.
+    // Client ID. This should be unique.
     private static final String CLIENT_ID = CPathProperties.getInstance().getWebServicesId();
 
-	// Instance of this client.  This is a singleton.
-	private static final WebServiceClient client = new CytoscapeCPathWebService();
+    // Instance of this client.  This is a singleton.
+    private static final WebServiceClient client = new CytoscapeCPathWebService();
 
     /**
      * NCBI Taxonomy ID Filter.
@@ -36,29 +34,46 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl{
     public static final String RESPONSE_FORMAT = "response_format";
 
     /**
-	 * Return instance of this client.
-	 * @return WebServiceClient Object.
-	 */
-	public static WebServiceClient getClient() {
-		return client;
-	}
+     * Return instance of this client.
+     *
+     * @return WebServiceClient Object.
+     */
+    public static WebServiceClient getClient() {
+        return client;
+    }
 
     /**
-	 * Creates a new IntactClient object.
-	 */
-	private CytoscapeCPathWebService() {
-		super(CLIENT_ID, DISPLAY_NAME, new WebServiceClientManager.ClientType[]
-                { WebServiceClientManager.ClientType.NETWORK });
+     * Execute Request Service.
+     * @param e CyWebService Object.
+     * @throws Exception All Errors.
+     */
+    public void executeService(CyWebServiceEvent e) throws Exception {
+        if (e.getSource().equals(CLIENT_ID)) {
+            if (e.getEventType().equals(CyWebServiceEvent.WSEventType.IMPORT_NETWORK)) {
+                importNetwork(e);
+            } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.EXPAND_NETWORK)) {
+            } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.SEARCH_DATABASE)) {
+                searchDatabase(e);
+            }
+        }
+    }
+
+    /**
+     * Creates a new Web Services client.
+     */
+    private CytoscapeCPathWebService() {
+        super(CLIENT_ID, DISPLAY_NAME, new WebServiceClientManager.ClientType[]
+                {WebServiceClientManager.ClientType.NETWORK});
         // Set properties for this client.
         stub = CPathWebServiceImpl.getInstance();
         setProperty();
-	}
+    }
 
-	/**
-	 * Set props for this client.
-	 */
-	private void setProperty() {
-		props = new ModulePropertiesImpl(clientID, "wsc");
+    /**
+     * Set props for this client.
+     */
+    private void setProperty() {
+        props = new ModulePropertiesImpl(clientID, "wsc");
 
         //  TODO:  Can we add Tunable Lists? e.g. enums 
         props.add(new Tunable(NCBI_TAXONOMY_ID_FILTER, "Filter by Organism - NCBI Taxonomy ID",
@@ -67,25 +82,14 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl{
                 Tunable.INTEGER, CPathResponseFormat.BINARY_SIF.getFormatString()));
     }
 
-    public void executeService(CyWebServiceEvent e) throws Exception {
-		if (e.getSource().equals(CLIENT_ID)) {
-			if (e.getEventType().equals(CyWebServiceEvent.WSEventType.IMPORT_NETWORK)) {
-                importNetwork(e);
-            } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.EXPAND_NETWORK)) {
-			} else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.SEARCH_DATABASE)) {
-                searchDatabase(e);
-            }
-        }
-    }
-
     private void importNetwork(CyWebServiceEvent e) {
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
         String q = e.getParameter().toString();
 
         //  TODO:  Is there a convention for specifying multiple Ids / keywords?
         String idStrs[] = q.split(" ");
-        long ids[] = new long [idStrs.length];
-        for (int i=0; i<ids.length; i++) {
+        long ids[] = new long[idStrs.length];
+        for (int i = 0; i < ids.length; i++) {
             ids[i] = Long.parseLong(idStrs[i]);
         }
 
@@ -121,12 +125,12 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl{
         //  TODO:  "SEARCH_RESULT" should probably be a constant somewhere.
         if (e.getNextMove() != null) {
             Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-                 new DatabaseSearchResult(totalNumHits, response,
-                    e.getNextMove()));
+                    new DatabaseSearchResult(totalNumHits, response,
+                            e.getNextMove()));
         } else {
             Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-                 new DatabaseSearchResult(totalNumHits, response,
-                      CyWebServiceEvent.WSEventType.IMPORT_NETWORK));
+                    new DatabaseSearchResult(totalNumHits, response,
+                            CyWebServiceEvent.WSEventType.IMPORT_NETWORK));
         }
     }
 }
