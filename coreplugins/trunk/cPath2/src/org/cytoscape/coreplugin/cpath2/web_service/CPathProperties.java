@@ -62,6 +62,7 @@ public class CPathProperties {
     public static CPathProperties getInstance() {
         if (cpathProperties == null) {
                cpathProperties = new CPathProperties();
+               cpathProperties.initProperties (new Properties());
         }
         return cpathProperties;
     }
@@ -70,12 +71,11 @@ public class CPathProperties {
         //  no-op; private constructor;
     }
 
-    public void initProperties (PluginProperties pluginProperties) {
+    public void initProperties (Properties pluginProperties) {
         cPathUrl = pluginProperties.getProperty(CPATH_URL);
 
         if (cPathUrl == null) {
-            cPathUrl = "http://localhost:8080/cpath/webservice.do";
-           //return "http://awabi.cbio.mskcc.org/pc-demo/webservice.do";
+            cPathUrl = "http://www.pathwaycommons.org/pc/webservice.do";
         }
 
         serverName = pluginProperties.getProperty(CPATH_INSTANCE_BNAME);
