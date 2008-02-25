@@ -28,6 +28,8 @@ import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
 import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -137,10 +139,20 @@ public class SearchDetailsPanel extends JPanel {
 
             CPathWebService webApi = CPathWebServiceImpl.getInstance();
             ExecuteGetRecordByCPathId task;
-            if (mergeNetwork != null && mergeNetwork.getNetwork() != null) {
-                task = new ExecuteGetRecordByCPathId(webApi, ids, title, mergeNetwork.getNetwork());
+
+            CPathResponseFormat format;
+            CPathProperties config = CPathProperties.getInstance();
+            if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+                format = CPathResponseFormat.BIOPAX;
             } else {
-                task = new ExecuteGetRecordByCPathId(webApi, ids, title);
+                format = CPathResponseFormat.BINARY_SIF;
+            }
+
+            if (mergeNetwork != null && mergeNetwork.getNetwork() != null) {
+                task = new ExecuteGetRecordByCPathId(webApi, ids, format,
+                        title, mergeNetwork.getNetwork());
+            } else {
+                task = new ExecuteGetRecordByCPathId(webApi, ids, format, title);
             }
 
             JTaskConfig jTaskConfig = new JTaskConfig();
