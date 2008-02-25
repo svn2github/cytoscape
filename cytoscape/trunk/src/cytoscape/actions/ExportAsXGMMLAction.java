@@ -58,6 +58,8 @@ import java.awt.event.ActionEvent;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.IOException;
 
 import java.net.URISyntaxException;
@@ -259,7 +261,9 @@ class ExportAsXGMMLTask implements Task {
 	private void saveGraph()
 	    throws IOException, JAXBException, URISyntaxException, XMLStreamException,
 	               FactoryConfigurationError {
-		final FileWriter fileWriter = new FileWriter(fileName);
+		// final FileWriter fileWriter = new FileWriter(fileName);
+		OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
+		System.out.println("Character encoding: "+fileWriter.getEncoding());
 		final XGMMLWriter writer = new XGMMLWriter(network, view);
 
 		try {
