@@ -175,10 +175,8 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
      *
      * @param keyword        Keyword.
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
-     * @param startIndex     Start Index.
      */
-    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex) {
+    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId) {
         this.currentKeyword = keyword;
     }
 
