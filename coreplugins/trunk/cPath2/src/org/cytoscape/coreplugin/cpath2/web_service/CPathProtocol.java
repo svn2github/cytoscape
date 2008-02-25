@@ -14,7 +14,6 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.net.SocketException;
 import java.net.Proxy;
-import java.net.URLEncoder;
 
 /**
  * Utility Class for Connecting to the cPath Web Service API.
@@ -62,21 +61,6 @@ public class CPathProtocol {
      * Version Argument.
      */
     public static final String ARG_VERSION = "version";
-
-    /**
-     * PSI-MI XML Format.
-     */
-    public static final String FORMAT_XML = "xml";
-
-    /**
-     * BIOXPAX XML Format.
-     */
-    public static final String FORMAT_BIOPAX = "biopax";
-
-    /**
-     * Binary SIF Format.
-     */
-    public static final String FORMAT_BINARY_SIF = "binary_sif";    
 
     /**
      * Count Only Format.
@@ -174,6 +158,7 @@ public class CPathProtocol {
      */
     public CPathProtocol() {
         this.baseUrl = CPathProperties.getInstance().getCPathUrl();
+        System.out.println("Base URL:  " + baseUrl);
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
     }
@@ -201,8 +186,8 @@ public class CPathProtocol {
      *
      * @param format Format Argument.
      */
-    public void setFormat (String format) {
-        this.format = format;
+    public void setFormat (CPathResponseFormat format) {
+        this.format = format.getFormatString();
     }
 
     /**
@@ -271,7 +256,9 @@ public class CPathProtocol {
             InputStream instream = method.getResponseBodyAsStream();
             long contentLength = method.getResponseContentLength();
             if (contentLength > 0) {
-                taskMonitor.setPercentCompleted(0);
+                if (taskMonitor != null) {
+                    taskMonitor.setPercentCompleted(0);
+                }
             }
 
             ByteArrayOutputStream outstream = new ByteArrayOutputStream(
@@ -355,9 +342,10 @@ public class CPathProtocol {
         if (contentLength > 0) {
             totalBytes += len;
             int percentComplete = (int) (100.0 * (totalBytes / (double) contentLength));
-            taskMonitor.setPercentCompleted(percentComplete);
+            if (taskMonitor != null) {
+                taskMonitor.setPercentCompleted(percentComplete);
+            }
             if (debug) {
-                System.out.println ("Percent complete:  " + percentComplete);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
