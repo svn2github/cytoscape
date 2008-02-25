@@ -20,18 +20,29 @@ import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseT
 public interface CPathWebService {
 
     /**
-     * Searches Physical Entities in cPath Instance.
+     * Searches for Physical Entities in cPath Instance.
+     * Given a keyword, such as "BRCA1", this method returns the first 10 physical entities
+     * which contain this keyword.  For each matching physical entity, you will receive
+     * entity details, such as name, synonyms, external links, and list of all pathways in
+     * which this entity participates. 
      *
      * @param keyword        Keyword to search for.
-     * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms)
-     * @param startIndex     Start index into search results; used to perform pagination.
+     * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms).
+     * @param taskMonitor    TaskMonitor Object (can be null);
      * @return SearchResponseType Object.
+     * @throws CPathException   CPath Connect Error.
+     * @throws EmptySetException    No matches found to specified query.
      */
     public SearchResponseType searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            int startIndex, TaskMonitor taskMonitor) throws CPathException, EmptySetException;
+            TaskMonitor taskMonitor) throws CPathException, EmptySetException;
 
     /**
      * Gets parent summaries for specified record.
+     * For example, if primaryId refers to protein A, the "parent" records are all
+     * interactions in which protein A participates.  If primaryId refers to interaction X,
+     * the "parent" records are all parent interactions which control or modulate X.
+     * To retrieve the full record (instead of just the summary), you must extract the primary
+     * ID, and follow-up with a call to getRecordsByIds(). 
      *
      * @param primaryId     Primary ID of Record.
      * @param taskMonitor   Task Monitor Object.
@@ -43,19 +54,22 @@ public interface CPathWebService {
             throws CPathException, EmptySetException;
 
     /**
-     * Gets One or more records by Primary ID.
+     * Gets One or more records by primary ID.
+     * You can obtain primary IDs for physical entities and/or pathways via the
+     * searchPhysicalEntities() method.
+     * 
      * @param ids               Array of Primary IDs.
-     * @param format            FORMAT_BIOPAX or FORMAT_BINARY_SIF.
+     * @param format            CPathResponseFormat.BIOPAX or CPathResponseFormat.BINARY_SIF.
      * @param taskMonitor       Task Monitor Object.
-     * @return  BioPAX XML String.
+     * @return  BioPAX XML String or SIF String.
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(long[] ids, String format, TaskMonitor taskMonitor) throws
-            CPathException, EmptySetException;
+    public String getRecordsByIds(long[] ids, CPathResponseFormat format, TaskMonitor taskMonitor)
+            throws CPathException, EmptySetException;
 
     /**
-     * Gets a list of all Organisms currently available within cPath instance.
+     * Gets a list of all Organisms currently available within the cPath instance.
      *
      * @return ArrayList of Organism Type Objects.
      */
