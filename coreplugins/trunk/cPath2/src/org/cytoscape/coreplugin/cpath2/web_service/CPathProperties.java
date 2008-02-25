@@ -123,6 +123,15 @@ public class CPathProperties {
 	}
 
     /**
+     * Gets the Web Services ID.
+     * @return Web Service ID.
+     */
+    public String getWebServicesId() {
+        String temp = serverName.toLowerCase();
+        return temp.replaceAll(" ", "_");
+    }
+
+    /**
 	 * Gets Text Blurb for cPath Instance
 	 *
 	 * @return cPath URL.

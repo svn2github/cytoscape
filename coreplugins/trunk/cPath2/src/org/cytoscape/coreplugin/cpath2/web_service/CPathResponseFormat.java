@@ -26,12 +26,12 @@ public class CPathResponseFormat {
      * @param format    Format String.
      * @return          CPathResponseFormat Object.
      */
-    public CPathResponseFormat getResponseFormat (String format) {
-        if (format.equals(BIOPAX)) {
+    public static CPathResponseFormat getResponseFormat (String format) {
+        if (format.equals(BIOPAX.getFormatString())) {
             return BIOPAX;
-        } else if (format.equals(BINARY_SIF)) {
+        } else if (format.equals(BINARY_SIF.getFormatString())) {
             return BINARY_SIF;
-        } else if (format.equals(GENERIC_XML)) {
+        } else if (format.equals(GENERIC_XML.getFormatString())) {
             return GENERIC_XML;
         }
         else {
