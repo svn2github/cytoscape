@@ -20,7 +20,6 @@ public class ExecutePhysicalEntitySearch implements Task {
     private CPathWebService webApi;
     private String keyword;
     private int ncbiTaxonomyId;
-    private int startIndex;
     private TaskMonitor taskMonitor;
 
     /**
@@ -29,14 +28,12 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @param webApi         cPath Web Api.
      * @param keyword        Keyword
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
-     * @param startIndex     Start Index.
      */
     public ExecutePhysicalEntitySearch(CPathWebService webApi, String keyword,
-            int ncbiTaxonomyId, int startIndex) {
+            int ncbiTaxonomyId) {
         this.webApi = webApi;
         this.keyword = keyword;
         this.ncbiTaxonomyId = ncbiTaxonomyId;
-        this.startIndex = startIndex;
     }
 
     /**
@@ -75,7 +72,7 @@ public class ExecutePhysicalEntitySearch implements Task {
 
             //  Execute the Search
             SearchResponseType searchResponse = webApi.searchPhysicalEntities(keyword,
-                    ncbiTaxonomyId, startIndex, taskMonitor);
+                    ncbiTaxonomyId, taskMonitor);
             List<ExtendedRecordType> searchHits = searchResponse.getSearchHit();
 
             int numHits = searchHits.size();
