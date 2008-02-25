@@ -46,31 +46,38 @@ public class ExecuteGetRecordByCPathId implements Task {
     private String networkTitle;
     private boolean haltFlag = false;
     private CyNetwork mergedNetwork;
+    private CPathResponseFormat format;
 
     /**
      * Constructor.
      *
-     * @param webApi cPath Web Api.
-     * @param ids    Array of CPath IDs.
+     * @param webApi        cPath Web API.
+     * @param ids           Array of cPath IDs.
+     * @param format        CPathResponseFormat Object.
+     * @param networkTitle  Tentative Network Title.
      */
-    public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], String networkTitle) {
+    public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
+            String networkTitle) {
         this.webApi = webApi;
         this.ids = ids;
+        this.format = format;
         this.networkTitle = networkTitle;
     }
 
     /**
      * Constructor.
      *
-     * @param webApi        CPathWebService AI.
-     * @param ids           List of IDs.
-     * @param networkTitle  Network Title.
-     * @param mergedNetwork Network to merge with.
+     * @param webApi        cPath Web API.
+     * @param ids           Array of cPath IDs.
+     * @param format        CPathResponseFormat Object.
+     * @param networkTitle  Tentative Network Title.
+     * @param mergedNetwork Network to merge into.
      */
-    public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], String networkTitle,
-            CyNetwork mergedNetwork) {
+    public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
+            String networkTitle, CyNetwork mergedNetwork) {
         this.webApi = webApi;
         this.ids = ids;
+        this.format = format;
         this.networkTitle = networkTitle;
         this.mergedNetwork = mergedNetwork;
     }
@@ -108,21 +115,19 @@ public class ExecuteGetRecordByCPathId implements Task {
     public void run() {
         try {
             // read the network from cpath instance
-            taskMonitor.setPercentCompleted(-1);
-            taskMonitor.setStatus("Retrieving " + networkTitle + ".");
+            if (taskMonitor != null) {
+                taskMonitor.setPercentCompleted(-1);
+                taskMonitor.setStatus("Retrieving " + networkTitle + ".");
+            }
 
             //  Store BioPAX to Temp File
             String tmpDir = System.getProperty("java.io.tmpdir");
-            CPathProperties config = CPathProperties.getInstance();
             //  Branch based on download mode setting.
             File tmpFile;
-            CPathResponseFormat format;
-            if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+            if (format == CPathResponseFormat.BIOPAX) {
                 tmpFile = File.createTempFile("temp", ".xml", new File(tmpDir));
-                format = CPathResponseFormat.BIOPAX;
             } else {
                 tmpFile = File.createTempFile("temp", ".sif", new File(tmpDir));
-                format = CPathResponseFormat.BINARY_SIF;
             }
             tmpFile.deleteOnExit();
 
@@ -140,12 +145,14 @@ public class ExecuteGetRecordByCPathId implements Task {
                 System.setProperty("biopax.network_view_title", networkTitle);
             }
             GraphReader reader = Cytoscape.getImportHandler().getReader(tmpFile.getAbsolutePath());
-            taskMonitor.setStatus("Creating Cytoscape Network...");
-            taskMonitor.setPercentCompleted(-1);
+            if (taskMonitor != null) {
+                taskMonitor.setStatus("Creating Cytoscape Network...");
+                taskMonitor.setPercentCompleted(-1);
+            }
 
             CyNetwork cyNetwork = null;
             // Branch, based on download mode.
-            if (config.getDownloadMode() == CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF) {
+            if (format == CPathResponseFormat.BINARY_SIF) {
                 // create network, without the view.
                 cyNetwork = Cytoscape.createNetwork(reader, false, null);
                 postProcessingBinarySif(cyNetwork);
@@ -169,8 +176,10 @@ public class ExecuteGetRecordByCPathId implements Task {
                 Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
                     ret_val);
             }
-            taskMonitor.setStatus("Done");
-            taskMonitor.setPercentCompleted(100);
+            if (taskMonitor != null) {
+                taskMonitor.setStatus("Done");
+                taskMonitor.setPercentCompleted(100);
+            }
         } catch (IOException e) {
             taskMonitor.setException(e, "Failed to retrieve records.",
                     "Please try again.");
@@ -253,8 +262,10 @@ public class ExecuteGetRecordByCPathId implements Task {
 
             } else if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
                     .getProperty("viewThreshold"))) {
-                taskMonitor.setStatus("Creating Network View...");
-                taskMonitor.setPercentCompleted(-1);
+                if (taskMonitor != null) {
+                    taskMonitor.setStatus("Creating Network View...");
+                    taskMonitor.setPercentCompleted(-1);
+                }
 
                 //  Set up the right visual style
                 VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
@@ -299,13 +310,11 @@ public class ExecuteGetRecordByCPathId implements Task {
      * Gets Details for Each Node from Web Service API.
      */
     private void getNodeDetails
-            (CyNetwork
-                    cyNetwork, Iterator
-                    nodeIterator,
-                    CyAttributes
-                            nodeAttributes) {
-        taskMonitor.setStatus("Retrieving node details...");
-        taskMonitor.setPercentCompleted(0);
+            (CyNetwork cyNetwork, Iterator nodeIterator, CyAttributes nodeAttributes) {
+        if (taskMonitor != null) {
+            taskMonitor.setStatus("Retrieving node details...");
+            taskMonitor.setPercentCompleted(0);
+        }
         int numNodes = cyNetwork.nodesList().size();
         int counter = 0;
         while (nodeIterator.hasNext() && haltFlag == false) {
@@ -334,7 +343,9 @@ public class ExecuteGetRecordByCPathId implements Task {
                 e.printStackTrace();
             }
             int percentComplete = (int) (100.0 * (counter / (double) numNodes));
-            taskMonitor.setPercentCompleted(percentComplete);
+            if (taskMonitor != null) {
+                taskMonitor.setPercentCompleted(percentComplete);
+            }
             counter++;
         }
     }
