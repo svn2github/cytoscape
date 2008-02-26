@@ -34,51 +34,48 @@
 */
 package edu.ucsd.bioeng.idekerlab.ncbiclient;
 
-import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-
-import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+
 import cytoscape.data.CyAttributes;
+
 import cytoscape.data.webservice.AttributeImportQuery;
 import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.*;
+import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.DatabaseSearchResult;
 import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientImpl;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+
 import cytoscape.layout.Tunable;
+
 import cytoscape.util.ModulePropertiesImpl;
+
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
+import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
+import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
+
 import cytoscape.visual.VisualStyle;
+
 import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.EdgeCalculator;
 import cytoscape.visual.calculators.NodeCalculator;
+
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+
 import giny.model.Edge;
 import giny.model.Node;
+
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceLocator;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceSoap;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.DbtagType;
@@ -96,6 +93,25 @@ import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchRequest;
 import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchResult;
 import gov.nih.nlm.ncbi.www.soap.eutils.esearch.IdListType;
 
+import java.awt.Color;
+
+import java.beans.PropertyChangeEvent;
+
+import java.rmi.RemoteException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import javax.xml.rpc.ServiceException;
 
 /**
  *
@@ -114,9 +130,9 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		PATHWAY("Pathways"),
 		GENERAL("General Protein Information"),
 		LINK("Additional Links"),
-//		MARKERS("Markers"),
-		GO("Gene Ontology");
 
+		//		MARKERS("Markers"),
+		GO("Gene Ontology");
 		private String name;
 
 		private AnnotationCategory(String name) {
@@ -181,14 +197,19 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 	/**
 	 * Creates a new NCBIClient object.
+	 * @throws CyWebServiceException 
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
-	public NCBIClient() throws Exception {
+	public NCBIClient() throws CyWebServiceException {
 		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK, ClientType.ATTRIBUTE });
 
 		EUtilsServiceLocator service = new EUtilsServiceLocator();
-		stub = service.geteUtilsServiceSoap();
+		try {
+			stub = service.geteUtilsServiceSoap();
+		} catch (ServiceException e) {
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		}
 
 		props = new ModulePropertiesImpl(clientID, "wsc");
 		props.add(new Tunable("max_search_result", "Maximum number of search result",
@@ -203,25 +224,27 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
+	 * @throws CyWebServiceException 
 	 */
 	@Override
-	public void executeService(CyWebServiceEvent e) {
+	public void executeService(CyWebServiceEvent e) throws CyWebServiceException {
 		if (e.getSource().equals(CLIENT_ID)) {
 			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK)) {
 				importNetwork(e.getParameter(), null);
 			} else if (e.getEventType().equals(WSEventType.EXPAND_NETWORK)) {
 				importNetwork(e.getParameter(), Cytoscape.getCurrentNetwork());
 			} else if (e.getEventType().equals(WSEventType.SEARCH_DATABASE)) {
-				search(e.getParameter().toString(), e);
+				search(e);
 			} else if (e.getEventType().equals(WSEventType.IMPORT_ATTRIBUTE)) {
 				importAnnotations(e.getParameter());
 			}
 		}
 	}
 
-	private void search(String keyword, CyWebServiceEvent e) {
+	private void search(CyWebServiceEvent<String> e) throws CyWebServiceException {
 		final EUtilsServiceSoap ncbiStub = (EUtilsServiceSoap) stub;
 		final ESearchRequest searchParam = new ESearchRequest();
+		final String keyword = e.getParameter();
 
 		searchParam.setDb("gene");
 		searchParam.setRetMax(props.getValue("max_search_result"));
@@ -234,22 +257,26 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 			System.out.println("Number of Result from Entrez Gene = " + resSize);
 
 			if (e.getNextMove() != null) {
-				Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-				                             new DatabaseSearchResult(resSize, result,
-				                                                      e.getNextMove()));
+				Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED.toString(),
+				                             this.clientID,
+				                             new DatabaseSearchResult<ESearchResult>(resSize,
+				                                                                     result,
+				                                                                     e.getNextMove()));
 			} else {
-				Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-				                             new DatabaseSearchResult(Integer.getInteger(result
-				                                                                                                                                                                                                                                                 .getCount()),
-				                                                      result,
-				                                                      WSEventType.IMPORT_NETWORK));
+				Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED.toString(),
+				                             this.clientID,
+				                             new DatabaseSearchResult<ESearchResult>(Integer
+				                                                                                                                                                                                                                                                    .getInteger(result
+				                                                                                                                                                                                                                                                                .getCount()),
+				                                                                     result,
+				                                                                     WSEventType.IMPORT_NETWORK));
 			}
 		} catch (RemoteException e1) {
-			e1.printStackTrace();
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
 		}
 	}
 
-	private void importAnnotations(Object parameter) {
+	private void importAnnotations(Object parameter) throws CyWebServiceException {
 		if (parameter instanceof AttributeImportQuery == false) {
 			return;
 		}
@@ -393,11 +420,11 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		} catch (InterruptedException e1) {
 			System.out.println("TIMEOUT!");
-			e1.printStackTrace();
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
 		}
 	}
 
-	public CyNetwork importNetwork(ESearchResult result) {
+	public CyNetwork importNetwork(ESearchResult result) throws CyWebServiceException {
 		return importNetwork(result, null);
 	}
 
@@ -421,7 +448,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		}
 	}
 
-	private CyNetwork importNetwork(Object searchResult, CyNetwork net) {
+	private CyNetwork importNetwork(Object searchResult, CyNetwork net) throws CyWebServiceException {
 		ESearchResult res = (ESearchResult) searchResult;
 		IdListType ids = res.getIdList();
 
@@ -463,7 +490,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 			long endTime = System.currentTimeMillis();
 			double sec = (endTime - startTime) / (1000.0);
-			System.out.println("FINISHED!!!!!!!!! = " + sec + " sec.");
+			System.out.println("Finished in " + sec + " sec.");
 
 			// Set attributes
 			CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
@@ -482,7 +509,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 			if (net == null) {
 				net = Cytoscape.createNetwork(nodeList, edgeList, "NCBI-Net", null);
-				Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+				Cytoscape.firePropertyChange(WSResponseType.DATA_IMPORT_FINISHED.toString(), null, null);
 			} else {
 				for (Node node : nodeList) {
 					net.addNode(node);
@@ -503,9 +530,8 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 			e = null;
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			System.out.println("TIMEOUT");
-			e1.printStackTrace();
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
 		}
 
 		return net;
@@ -706,12 +732,12 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 					try {
 						retry++;
-						System.out.println("!!!!!!!!!!!!!!!!! BGW error !!!!!!!!!!!!!!!! Sleep "
+						System.out.println("BGW error !!!!!!!!!!!!!!!! Sleep "
 						                   + query.substring(0, query.length() - 1));
 						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e2) {
 						// TODO Auto-generated catch block
-						System.out.println("=========Time error !!!!!!!!!!!!!!!!");
+						System.out.println("Time out!");
 					}
 				}
 
@@ -782,9 +808,9 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 								idStr = dbTag.getDbtag_tag().getObjectId().getObjectId_str();
 
 								String[] singleID = new String[] {
-								                        entrezID, dbTag
-								                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getDbtag_db()
-								                        + " ID"
+								                        entrezID,
+								                        
+								dbTag.getDbtag_db() + " ID"
 								                    };
 
 								if (id != null) {
@@ -861,7 +887,6 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 						if (selectedAnn.contains(AnnotationCategory.GO)
 						    && (comment.getGeneCommentary_heading() != null)
 						    && comment.getGeneCommentary_heading().equals("GeneOntology")) {
-							
 							// Extract GO section
 							final GeneCommentaryType[] go = comment.getGeneCommentary_comment()
 							                                       .getGeneCommentary();
@@ -877,7 +902,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 								List<String> goTermsProcess = new ArrayList<String>();
 								List<String> evidenceCodesProcess = new ArrayList<String>();
 								List<String> goTermIDsProcess = new ArrayList<String>();
-								
+
 								List<String> goTermsComponent = new ArrayList<String>();
 								List<String> evidenceCodesComponent = new ArrayList<String>();
 								List<String> goTermIDsComponent = new ArrayList<String>();
@@ -892,16 +917,18 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 										                            .getDbtag_tag().getObjectId()
 										                            .getObjectId_id();
 										String evidence = oneTerm[0].getOtherSource_postText();
-										
+
 										if (goCategory.getGeneCommentary_label().equals("Function")) {
 											goTerms.add(goTerm);
 											goTermIDs.add(goTermID);
 											evidenceCodes.add(evidence.split(": ")[1]);
-										} else if (goCategory.getGeneCommentary_label().equals("Process")) {
+										} else if (goCategory.getGeneCommentary_label()
+										                     .equals("Process")) {
 											goTermsProcess.add(goTerm);
 											goTermIDsProcess.add(goTermID);
 											evidenceCodesProcess.add(evidence.split(": ")[1]);
-										} else if (goCategory.getGeneCommentary_label().equals("Component")) {
+										} else if (goCategory.getGeneCommentary_label()
+										                     .equals("Component")) {
 											goTermsComponent.add(goTerm);
 											goTermIDsComponent.add(goTermID);
 											evidenceCodesComponent.add(evidence.split(": ")[1]);
@@ -911,18 +938,22 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 								String[] got = new String[] { entrezID, "GO Term: Molecular Function" };
 								attrMap.put(got, goTerms);
+
 								String[] gotid = new String[] { entrezID, "GO ID: Molecular Function" };
 								attrMap.put(gotid, goTermIDs);
-								String[] ev = new String[] { entrezID, "GO Evidence Code: Molecular Function" };
+
+								String[] ev = new String[] {
+								                  entrezID, "GO Evidence Code: Molecular Function"
+								              };
 								attrMap.put(ev, evidenceCodes);
-								
+
 								got = new String[] { entrezID, "GO Term: Biological Process" };
 								attrMap.put(got, goTermsProcess);
 								gotid = new String[] { entrezID, "GO ID: Biological Process" };
 								attrMap.put(gotid, goTermIDsProcess);
 								ev = new String[] { entrezID, "GO Evidence Code: Biological Process" };
 								attrMap.put(ev, evidenceCodesProcess);
-								
+
 								got = new String[] { entrezID, "GO Term: Cellular Component" };
 								attrMap.put(got, goTermsComponent);
 								gotid = new String[] { entrezID, "GO ID: Cellular Component" };
@@ -940,15 +971,14 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 				final List<String> geneRIFText = new ArrayList<String>();
 
 				for (GeneCommentaryType comment : commentary) {
-//					if (selectedAnn.contains(AnnotationCategory.MARKERS)
-//					    && (comment.getGeneCommentary_heading() != null)
-//					    && comment.getGeneCommentary_heading().startsWith("Markers")) {
-//						// Extract Marker section
-//						
-						
+					//					if (selectedAnn.contains(AnnotationCategory.MARKERS)
+					//					    && (comment.getGeneCommentary_heading() != null)
+					//					    && comment.getGeneCommentary_heading().startsWith("Markers")) {
+					//						// Extract Marker section
+					//						
 					if (selectedAnn.contains(AnnotationCategory.PATHWAY)
-					           && (comment.getGeneCommentary_heading() != null)
-					           && comment.getGeneCommentary_heading().equals("Pathways")) {
+					    && (comment.getGeneCommentary_heading() != null)
+					    && comment.getGeneCommentary_heading().equals("Pathways")) {
 						final GeneCommentaryType[] pathways = comment.getGeneCommentary_comment()
 						                                             .getGeneCommentary();
 
