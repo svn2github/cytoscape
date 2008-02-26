@@ -97,10 +97,27 @@ public class NCBI extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar2;
     
-    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar){
+    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2){
     	nodeId = nodeID;
     	node=node1;
-    	jProgressBar2 = jBar;
+    	jProgressBar2 = jBar2;
+    	
+		try {
+			EUtilsServiceLocator service3 = new EUtilsServiceLocator();
+			
+			System.out.println("THIS IS YOUR SERVICE3: " + service3);
+			
+//			System.out.println("THIS IS YOUR SERVICE SOAP ADDY" + service3.geteUtilsServiceSoapAddres());
+			
+//			EUtilsServiceSoap stub = service3.geteUtilsServiceSoap();
+			stub = service3.geteUtilsServiceSoap();
+			
+			System.out.println("THIS IS YOUR geteUtils... : "  + service3.geteUtilsServiceSoap());
+			
+			} catch(Throwable t) {
+				System.out.println("Oh Noes!");
+			}
+    	
     }
 	Object stub;
 
@@ -120,42 +137,42 @@ public class NCBI extends Thread{
 		return client;
 	}
 
-	public NCBI() {
+//	public NCBI() {
 //		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK });
-
+//
 //		URL url1 = new URL("gov.nih.nlm.ncbi.www.soap.eutils.efetch.EntrezgeneType");
-		URL url1 = new URL("www.ncbi.nlm.nih.gov");
-		
-		try {
-		EUtilsServiceLocator service3 = new EUtilsServiceLocator();
-		
-		System.out.println("THIS IS YOUR SERVICE3: " + service3);
-		
+//		URL url1 = new URL("www.ncbi.nlm.nih.gov");
+//		
+//		try {
+//		EUtilsServiceLocator service3 = new EUtilsServiceLocator();
+//		
+//		System.out.println("THIS IS YOUR SERVICE3: " + service3);
+//		
 //		System.out.println("THIS IS YOUR SERVICE SOAP ADDY" + service3.geteUtilsServiceSoapAddres());
-		
-//		EUtilsServiceSoap stub = service3.geteUtilsServiceSoap();
-		stub = service3.geteUtilsServiceSoap();
-		
-		System.out.println("THIS IS YOUR geteUtils... : "  + service3.geteUtilsServiceSoap());
-		jProgressBar2.setIndeterminate(false);
-		
-		} catch(Throwable t) {
-			System.out.println("Oh Noes!");
-		}
-	}
+//				EUtilsServiceSoap stub = service3.geteUtilsServiceSoap();
+//		stub = service3.geteUtilsServiceSoap();
+//		
+//		System.out.println("THIS IS YOUR geteUtils... : "  + service3.geteUtilsServiceSoap());
+//		
+//		} catch(Throwable t) {
+//			System.out.println("Oh Noes!");
+//		}
+//	}
 
 	
-	public void startSearch(String nodeId, Node node){
+//	public void startSearch(String nodeId, Node node){
+	public void run(){
 		
     	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("ncbi_entrez", WSEventType.SEARCH_DATABASE, node);
     	ImportTask task1 = new ImportTask(nodeId);
-		task1.run();
+		task1.startsearch();
 		System.out.println("trying to import network");
-		importNetwork("675", null);
-//		importNetwork("675", Cytoscape.getCurrentNetwork());
+//		importNetwork("675", null);
+		importNetwork("675", Cytoscape.getCurrentNetwork());
 		System.out.println("the network has been imported");
-		
 		jProgressBar2.setIndeterminate(false);
+		
+		
 		
     	
 //		search(cyweb1.getParameter().toString(), cyweb1);
@@ -237,7 +254,7 @@ public class NCBI extends Thread{
 				String entrezID = idlist.getId(i);
 
 				System.out.println("##########EXECUTE: " + entrezID);
-				e.submit(new ImportTask(entrezID));
+//				e.submit(new ImportTask(entrezID));
 			}
 		}
 
@@ -297,7 +314,7 @@ public class NCBI extends Thread{
 		
 		if (net == null) {
 			Cytoscape.createNetwork(nodes, edges, "NCBI: ", null);
-//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
 		} else {
 			for (Node node : nodes) {
 				net.addNode(node);
@@ -308,10 +325,11 @@ public class NCBI extends Thread{
 			}
 
 			net.setSelectedNodeState(nodes, true);
-//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
 		}
 
 		// Cytoscape.createNetwork(nodes, edges, "NCBI: " + string);
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 
 	/**
@@ -320,14 +338,16 @@ public class NCBI extends Thread{
 	 * @author kono
 	 *
 	 */
-	class ImportTask implements Runnable {
+//	class ImportTask implements Runnable {
+	class ImportTask {
 		private String entrezID;
 
 		public ImportTask(String id) {
 			this.entrezID = id;
 		}
 
-		public void run() {
+//		public void run() {
+		public void startsearch() {
 			System.out.println("start run() in ImportTask.");
 			
 			

@@ -174,14 +174,14 @@ public class GUI extends javax.swing.JFrame {
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel16.setText("Name");
  
-        jButton1.setText("Start Search");
+        jButton1.setText("Search & Add on Existing");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
  
-        jButton2.setText("Add to Existing Network");
+        jButton2.setText("Search & Open in New");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -374,6 +374,7 @@ public class GUI extends javax.swing.JFrame {
     
  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    	System.out.println("Add to Existing Network");
     	if(jCheckBox1.isSelected() == true)
     	{
     		jProgressBar1.setIndeterminate(true);
@@ -382,7 +383,7 @@ public class GUI extends javax.swing.JFrame {
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
 	        
-	        Intact attempt =new Intact(nodeId, node, jProgressBar1);
+	        Intact attempt = new Intact(nodeId, node, jProgressBar1);
 	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
@@ -394,7 +395,7 @@ public class GUI extends javax.swing.JFrame {
 	        System.out.println("Start Search Button Pressed");
 	        
 	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2);
-	        //attempt2.startSearch(nodeId, node);
+//	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
 	        System.out.println("After NCBI Client was called.");
@@ -404,7 +405,33 @@ public class GUI extends javax.swing.JFrame {
     
  
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("Add to existing network");
+        System.out.println("Open in New Network");
+    	if(jCheckBox1.isSelected() == true)
+    	{
+    		jProgressBar1.setIndeterminate(true);
+	        System.out.println("Start Search Button Pressed");
+	        
+	        //Intact attempt = new Intact();
+	        //attempt.startSearch(nodeId, node);
+	        
+	        Intact attempt = new Intact(nodeId, node, jProgressBar1);
+	        attempt.start();
+ 
+	        System.out.println("After Intact Client was called.");
+	        //jProgressBar1.setIndeterminate(false);
+    	}
+    	if(jCheckBox2.isSelected() == true)
+    	{
+    		jProgressBar2.setIndeterminate(true);
+	        System.out.println("Start Search Button Pressed");
+	        
+	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2);
+//	        attempt2.startSearch(nodeId, node);
+	        attempt2.start();
+ 
+	        System.out.println("After NCBI Client was called.");
+	        
+    	}
     }
  
     /**

@@ -41,10 +41,10 @@ public class Intact extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar1;
     
-    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar){
+    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1){
     	nodeId = nodeID;
     	node=node1;
-    	jProgressBar1 = jBar;
+    	jProgressBar1 = jBar1;
     }
 	
 	//public void startSearch(String nodeId, Node node){
