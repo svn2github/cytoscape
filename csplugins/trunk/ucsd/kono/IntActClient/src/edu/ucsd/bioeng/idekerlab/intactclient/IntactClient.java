@@ -41,6 +41,9 @@ import cytoscape.data.CyAttributes;
 
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.*;
+import cytoscape.data.webservice.CyWebServiceException;
+import static cytoscape.data.webservice.CyWebServiceException.WSErrorCode.*;
 import cytoscape.data.webservice.DatabaseSearchResult;
 import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
@@ -74,6 +77,8 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import psidev.psi.mi.search.SearchResult;
+import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
+import psidev.psi.mi.tab.converter.txt2tab.MitabLineParser;
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.Author;
 import psidev.psi.mi.tab.model.Confidence;
@@ -82,19 +87,23 @@ import psidev.psi.mi.tab.model.InteractionDetectionMethod;
 import psidev.psi.mi.tab.model.InteractionType;
 import psidev.psi.mi.tab.model.Interactor;
 
-import uk.ac.ebi.intact.binarysearch.wsclient.BinarySearchServiceClient;
+import uk.ac.ebi.intact.BinarySearch;
+import uk.ac.ebi.intact.BinarySearchService_Impl;
+import uk.ac.ebi.intact.SimplifiedSearchResult;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 
 import java.awt.Color;
 
 import java.beans.PropertyChangeEvent;
+
+import java.rmi.RemoteException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 
 /**
@@ -140,7 +149,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 	 */
 	private IntactClient() {
 		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK });
-		stub = new BinarySearchServiceClient();
+		stub = new BinarySearchService_Impl();
 
 		// Set properties for this client.
 		setProperty();
@@ -160,17 +169,61 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 		//                      Tunable.BOOLEAN, new Boolean(false)));
 	}
 
+	private void setListAttr(final CyAttributes cyAttr, final List<CrossReference> crossRefs,
+	                         final String id, final String attrName) {
+		if ((crossRefs != null) && (crossRefs.size() > 0)) {
+			Collection<Object> attr = cyAttr.getListAttribute(id, attrName);
+
+			if (attr == null) {
+				List<String> newList = new ArrayList<String>();
+
+				for (CrossReference ref : crossRefs) {
+					if (ref.getText() != null)
+						newList.add(ref.getText());
+				}
+
+				cyAttr.setListAttribute(id, attrName, newList);
+			} else {
+				for (CrossReference ref : crossRefs) {
+					if ((ref.getText() != null) && (attr.contains(ref.getText()) == false))
+						attr.add(ref.getText());
+				}
+
+				cyAttr.setListAttribute(id, attrName, new ArrayList<Object>(attr));
+			}
+		}
+	}
+
+	private void setDBListAttr(final List<CrossReference> crossRefs, final String id) {
+		for (CrossReference prop : crossRefs) {
+			Collection<Object> attr = nodeAttr.getListAttribute(id, prop.getDatabase());
+
+			if (attr == null) {
+				List<String> newList = new ArrayList<String>();
+				newList.add(prop.getIdentifier());
+				nodeAttr.setListAttribute(id, prop.getDatabase(), newList);
+			} else {
+				if (attr.contains(prop.getIdentifier()) == false) {
+					attr.add(prop.getIdentifier());
+					nodeAttr.setListAttribute(id, prop.getDatabase(), new ArrayList<Object>(attr));
+				}
+			}
+		}
+	}
+
 	/**
 	 *  Import network from the search result.
+	 * @throws CyWebServiceException
 	 */
 	private void importNetwork(final Object searchResult, final CyNetwork net)
-	    throws Exception {
-		if (searchResult instanceof SearchResult == false) {
-			return;
+	    throws CyWebServiceException {
+		if (searchResult instanceof SimplifiedSearchResult == false) {
+			throw new CyWebServiceException(NO_RESULT);
 		}
 
-		SearchResult<IntActBinaryInteraction> result = (SearchResult) searchResult;
-		List<IntActBinaryInteraction> binaryInteractions = result.getInteractions();
+		final SimplifiedSearchResult result = (SimplifiedSearchResult) searchResult;
+		final SearchResult<IntActBinaryInteraction> srObj = toSearchResult(result);
+		final List<IntActBinaryInteraction> binaryInteractions = srObj.getInteractions();
 
 		final Integer max = (Integer) props.get("max_interactions").getValue();
 		int i = 0;
@@ -189,62 +242,24 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 			nodes.add(n2);
 
 			// Extract node attributes.
-			List<CrossReference> crossRefs;
 
 			if (bin.hasInteractorTypeA()) {
-				crossRefs = bin.getInteractorTypeA();
-
-				if ((crossRefs.size() > 0) && (crossRefs.get(0).getText() != null) && nodeAttr.getStringAttribute(n1.getIdentifier(), "interactor type") == null)
-					nodeAttr.setAttribute(n1.getIdentifier(), "interactor type",
-					                      crossRefs.get(0).getText());
+				setListAttr(nodeAttr, bin.getInteractorTypeA(), n1.getIdentifier(),
+				            "interactor type");
+				setDBListAttr(bin.getInteractorTypeA(), n1.getIdentifier());
 			}
 
 			if (bin.hasInteractorTypeB()) {
-				crossRefs = bin.getInteractorTypeB();
-
-				if ((crossRefs.size() > 0) && (crossRefs.get(0).getText() != null) && nodeAttr.getStringAttribute(n2.getIdentifier(), "interactor type") == null)
-					nodeAttr.setAttribute(n2.getIdentifier(), "interactor type",
-					                      crossRefs.get(0).getText());
+				setListAttr(nodeAttr, bin.getInteractorTypeB(), n2.getIdentifier(),
+				            "interactor type");
+				setDBListAttr(bin.getInteractorTypeB(), n2.getIdentifier());
 			}
 
-			if (bin.hasPropertiesA()) {
-				crossRefs = bin.getPropertiesA();
+			if (bin.hasPropertiesA())
+				setDBListAttr(bin.getPropertiesA(), n1.getIdentifier());
 
-				for (CrossReference prop : crossRefs) {
-					Collection<Object> attr = nodeAttr.getListAttribute(n1.getIdentifier(),
-					                                              prop.getDatabase());
-					if (attr == null) {
-						List<String> newList = new ArrayList<String>();
-						newList.add(prop.getIdentifier());
-						nodeAttr.setListAttribute(n1.getIdentifier(), prop.getDatabase(), newList);
-					} else {
-						if(attr.contains(prop.getIdentifier()) == false) {
-							attr.add(prop.getIdentifier());
-							nodeAttr.setListAttribute(n1.getIdentifier(), prop.getDatabase(), new ArrayList<Object>(attr));
-						}
-					}
-				}
-			}
-
-			if (bin.hasPropertiesB()) {
-				crossRefs = bin.getPropertiesB();
-
-				for (CrossReference prop : crossRefs) {
-					Collection<Object> attr = nodeAttr.getListAttribute(n2.getIdentifier(),
-					                                              prop.getDatabase());
-
-					if (attr == null) {
-						List<String> newList = new ArrayList<String>();
-						newList.add(prop.getIdentifier());
-						nodeAttr.setListAttribute(n2.getIdentifier(), prop.getDatabase(), newList);
-					} else {
-						if(attr.contains(prop.getIdentifier()) == false) {
-							attr.add(prop.getIdentifier());
-							nodeAttr.setListAttribute(n2.getIdentifier(), prop.getDatabase(), new ArrayList<Object>(attr));
-						}
-					}
-				}
-			}
+			if (bin.hasPropertiesB())
+				setDBListAttr(bin.getPropertiesB(), n2.getIdentifier());
 
 			// Add edges
 			extractEdgeEntry(n1, n2, bin);
@@ -258,7 +273,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 
 		if (net == null) {
 			Cytoscape.createNetwork(nodes, edges, "IntAct: ", null);
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
+			Cytoscape.firePropertyChange(DATA_IMPORT_FINISHED.toString(), null, null);
 		} else {
 			for (Node node : nodes) {
 				net.addNode(node);
@@ -391,26 +406,62 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 		}
 	}
 
-	private void search(String query, CyWebServiceEvent e) {
+	private void search(String query, CyWebServiceEvent<String> e) throws CyWebServiceException {
 		if (stub == null) {
-			stub = new BinarySearchServiceClient();
+			stub = new BinarySearchService_Impl();
 		}
 
-		final BinarySearchServiceClient client = (BinarySearchServiceClient) stub;
-		final SearchResult<IntActBinaryInteraction> result = client.findBinaryInteractionsLimited(query,
-		                                                                                          0,
-		                                                                                          (Integer) props.get("max_interactions")
-		                                                                                                         .getValue());
+		BinarySearch searchClient = ((BinarySearchService_Impl) stub).getBinarySearchPort();
+		SimplifiedSearchResult result = null;
+
+		try {
+			result = searchClient.findBinaryInteractionsLimited(query, 0,
+			                                                    (Integer) props.get("max_interactions")
+			                                                                   .getValue());
+		} catch (RemoteException e1) {
+			throw new CyWebServiceException(REMOTE_EXEC_FAILED);
+		}
 
 		if (e.getNextMove() != null) {
-			Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-			                             new DatabaseSearchResult(result.getTotalCount(), result,
-			                                                      e.getNextMove()));
+			Cytoscape.firePropertyChange(SEARCH_FINISHED.toString(), this.clientID,
+			                             new DatabaseSearchResult<SimplifiedSearchResult>(result
+			                                                                                                                                                                                                                                                                                                                                                                                                                                   .getTotalResults(),
+			                                                                              result,
+			                                                                              e
+			                                                                                                                                                                                                                                                                                                                                                                                                                                      .getNextMove()));
 		} else {
-			Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
-			                             new DatabaseSearchResult(result.getTotalCount(), result,
-			                                                      WSEventType.IMPORT_NETWORK));
+			Cytoscape.firePropertyChange(SEARCH_FINISHED.toString(), this.clientID,
+			                             new DatabaseSearchResult<SimplifiedSearchResult>(result
+			                                                                                                                                                                                                                                                                                                                                                                                                                                          .getTotalResults(),
+			                                                                              result,
+			                                                                              WSEventType.IMPORT_NETWORK));
 		}
+	}
+
+	private SearchResult<IntActBinaryInteraction> toSearchResult(SimplifiedSearchResult ssr) {
+		List<IntActBinaryInteraction> interactions = new ArrayList<IntActBinaryInteraction>(ssr
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                      .getInteractionLines().length);
+
+		MitabLineParser parser = new MitabLineParser();
+
+		parser.setBinaryInteractionClass(IntActBinaryInteraction.class);
+		parser.setColumnHandler(new IntActColumnHandler());
+
+		for (String line : ssr.getInteractionLines()) {
+			IntActBinaryInteraction interaction = null;
+
+			try {
+				interaction = (IntActBinaryInteraction) parser.parse(line);
+			} catch (MitabLineException e) {
+				throw new RuntimeException("Wrong line returned by the server: " + line);
+			}
+
+			interactions.add(interaction);
+		}
+
+		return new SearchResult<IntActBinaryInteraction>(interactions, ssr.getTotalResults(),
+		                                                 ssr.getFirstResult(), ssr.getMaxResults(),
+		                                                 ssr.getLuceneQuery());
 	}
 
 	/**
@@ -419,7 +470,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 	 * @param e DOCUMENT ME!
 	 */
 	@Override
-	public void executeService(CyWebServiceEvent e) throws Exception {
+	public void executeService(CyWebServiceEvent e) throws CyWebServiceException {
 		if (e.getSource().equals(CLIENT_ID)) {
 			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK)) {
 				importNetwork(e.getParameter(), null);
