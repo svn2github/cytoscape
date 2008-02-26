@@ -166,7 +166,7 @@ public class LegendDialog extends JDialog {
 			});
 
 		jButton2 = new JButton();
-		jButton2.setText("Cancel");
+		jButton2.setText("Done");
 		jButton2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					dispose();
